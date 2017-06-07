@@ -1,0 +1,31 @@
+
+ [existFlag,figNumber]=figflag('Lambert Map',1);
+
+       if existFlag == 0;  ac3 = 'new'; overmap;   end
+       if existFlag == 1,
+          figure(to1)
+          delete(gca); delete(gca);delete(gca)
+       end
+
+ l  = get(h1,'XLim');
+   s1 = l(2); s2 = l(1);
+   l  = get(h1,'YLim');
+   s3 = l(2); s4 = l(1);
+
+m_proj('lambert','long',[s2 s1],'lat',[s4 s3]);
+%m_coast('patch',[1 .85 .7]);
+
+m_gshhs_c('patch',[.5 .6 .5]);
+
+lico = m_line(coastline(:,1),coastline(:,2),'color','k')
+lifa = m_line(faults(:,1),faults(:,2),'color','r');
+
+m_grid('box','fancy','tickdir','in','linestyle','none');
+hold on
+
+if co == 'w' ; co = 'k'; end
+li = m_line(a(:,1),a(:,2));
+set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
+%set(gcf,'Color','w')
+
+

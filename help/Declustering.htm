@@ -1,0 +1,260 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Declustering_files/filelist.xml">
+<link rel=Edit-Time-Data href="./Declustering_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Declustering an Earthquake Catalog</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>stefan wiemer</o:Author>
+  <o:LastAuthor>stefan wiemer</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>83</o:TotalTime>
+  <o:Created>2001-10-19T12:49:00Z</o:Created>
+  <o:LastSaved>2001-10-19T14:12:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>318</o:Words>
+  <o:Characters>1813</o:Characters>
+  <o:Company>ETH Zurich</o:Company>
+  <o:Lines>15</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>2226</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-ansi-language:DE;}
+h1
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:0pt;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1424304869;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1578340536 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:1.0in;
+	mso-level-number-position:left;
+	margin-left:1.0in;
+	text-indent:-.25in;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h1>Declustering an Earthquake Catalog</h1>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'>Introduction<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'>To separate the
+dependent from the independent seismicity, the earthquake catalog can be
+declustered. The decluster algorithm used in ZMAP is based on an algorithm
+developed by Reasenberg (Reasenberg, 1985). Most of the ZMAP software for the
+declustering has been developed by Alexander Allmann. The Y2K compatible
+FORTRAN code was provided by C. Goltz (Univ. Kiel). <o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'>When you choose
+&quot;Decluster the catalog&quot; from the &quot;Tools&quot; pulldown menu of
+either the map or cumulative number windows, an input parameter box<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'>will appear. Eight
+different parameters can be set:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>taumin: the
+look-ahead time for un-clustered events in days (default is one day).<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>taumax: the
+maximum look-ahead time for clustered events in days (default 10 days)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>P1: a measure of
+the confidence that you are observing the next event in the sequence (default
+is 0.95)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>xk: the factor
+used in xmeff (default 0.5)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>xmeff: the
+&quot;effective&quot; lower magnitude cutoff for the catalog.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>rfact: the factor
+for the interaction radius of dependent events (default is 10)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>Epicenter-Error:
+horizontal location error in km (default is 1.5)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-indent:-.25in;mso-list:l0 level1 lfo1;
+tab-stops:list 1.0in'><![if !supportLists]><span style='font-family:Symbol;
+mso-ansi-language:EN-US'>·<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><span style='mso-ansi-language:EN-US'>Depth-Error:
+vertical error in hypocenter location in km (default is 2) For additional
+information about these parameters hit &quot;Info&quot;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='mso-ansi-language:EN-US'><!--[if gte vml 1]><v:shapetype id="_x0000_t75"
+ coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe"
+ filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:177.75pt;
+ height:242.25pt'>
+ <v:imagedata src="./Declustering_files/image001.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img width=237 height=323
+src="./Declustering_files/image002.jpg" v:shapes="_x0000_i1025"><![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'>In ZMAP6, there are two option to decluster: within Matlab, or using an
+external call. The main advantage to the second option is that it is much
+faster, and provides access to the original output files. In either option,
+declustering can be memory consuming for larger catalogs. <o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'>In order to use the FORTAN option, you need to be able to execute the
+file ./external/clus.f . The PC version includes a precompiled clus.exe. On
+UNIX/LINUX systems, you may have to compile this file. To run the declustering,
+the data is saved in the appropriate format in the file ./external/data and the
+program called with a ‘Unix’ call from within Matlab. Output data are the files
+./external outf.clu, outf.dec, and outf.out. <o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'>After the completion of the declustering, the results will be summarized
+as shown below. The seismicity map then plots the newly declustered catalog,
+and the identified clusters on top as magenta ‘o’. <o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='mso-ansi-language:EN-US'><!--[if gte vml 1]><v:shape id="_x0000_i1035"
+ type="#_x0000_t75" style='width:252.75pt;height:87pt'>
+ <v:imagedata src="./Declustering_files/image003.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img width=337 height=116
+src="./Declustering_files/image004.jpg" v:shapes="_x0000_i1035"><![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

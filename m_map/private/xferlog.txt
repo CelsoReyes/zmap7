@@ -1,0 +1,56 @@
+receiving gshhs_h.b.gz as gshhs_h.b.gz (1 of 1)
+Saving restart info for  - gshhs_h.b.gz
+TYPE I
+200 Type set to I.
+PASV
+227 Entering Passive Mode (140,172,180,164,138,48)
+connecting to 140.172.180.164:35376
+- -
+connecting to 140.172.180.164:35376
+Connected to 140.172.180.164 port 35376
+RETR gshhs_h.b.gz
+150 Opening BINARY mode data connection for gshhs_h.b.gz (14982050 bytes).
+Received 14982050 bytes in 139.6 secs, (1.03 Mbps), transfer succeeded
+226 Transfer complete.
+receiving gshhs_c.b.gz as gshhs_c.b.gz (1 of 1)
+Saving restart info for  - gshhs_c.b.gz
+PASV
+421 Timeout (900 seconds): closing control connection.
+PORT 129,132,95,146,6,90
+
+! Failed "port":
+QUIT
+! Send error: connection reset
+! Receive error: connection reset
+
+receiving gshhs_c.b.gz as gshhs_c.b.gz (1 of 2)
+Saving restart info for  - gshhs_c.b.gz
+TYPE I
+200 Type set to I.
+PASV
+227 Entering Passive Mode (140,172,180,165,130,160)
+connecting to 140.172.180.165:33440
+- -
+connecting to 140.172.180.165:33440
+Connected to 140.172.180.165 port 33440
+RETR gshhs_c.b.gz
+150 Opening BINARY mode data connection for gshhs_c.b.gz (127631 bytes).
+Received 127631 bytes in 1.4 secs, (893.57 Kbps), transfer succeeded
+226 Transfer complete.
+receiving gshhs_l.b.gz as gshhs_l.b.gz (2 of 2)
+Saving restart info for  - gshhs_l.b.gz
+PASV
+227 Entering Passive Mode (140,172,180,165,137,158)
+connecting to 140.172.180.165:35230
+- -
+connecting to 140.172.180.165:35230
+Connected to 140.172.180.165 port 35230
+RETR gshhs_l.b.gz
+150 Opening BINARY mode data connection for gshhs_l.b.gz (828845 bytes).
+Received 828845 bytes in 9.4 secs, (864.09 Kbps), transfer succeeded
+226 Transfer complete.
+QUIT
+221-You have transferred 956476 bytes in 2 files.
+221-Total traffic for this session was 959009 bytes in 3 transfers.
+221-Thank you for using the FTP service on zenith.
+221 Goodbye.

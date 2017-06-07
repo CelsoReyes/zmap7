@@ -1,0 +1,174 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I) [Netscape]">
+   <title>Synthetic b and z distributions</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="title.htm">[Top]</a> <a href="chap11.htm">[Prev]</a><a href="seislap.htm">[Next]</a><a href="zmapdoci.htm">[Bottom]</a>
+<hr>
+<br><a NAME="996747"></a>
+<center>
+<h1>
+Chapter 10 Synthetic earthquake catalogs</h1></center>
+<a NAME="996866"></a>
+<h2>
+Overview</h2>
+<a NAME="996910"></a>How significant is a seismicity rate decrease, or
+a b-value increase? Using randomized catalogs and synthetic catalogs can
+help to resolve these questions. The "Monte Carlo" submenu from the Tools
+option of the Seismicity Window offers a number of newly developed techniques
+<p><a NAME="996931"></a>
+<p><a NAME="996923"></a>
+<h2>
+Evaluate random z-value distribution (one window-length)</h2>
+<a NAME="996937"></a>A random sample containing N events is drawn from
+the data. The cumulative number curve is constructed, and LTA(t) function
+for a window-length Tw calculated. This process is repeated K times. The
+resulting histogram of (K x number of time-steps) z-values is displayed
+(Figure ??). On top of the real distribution, a normal distribution with
+the same number of events, and the same mean and standard deviation is
+plotted as a yellow line.
+<p><a NAME="996940"></a>This histogram can give clues to the distribution
+of seismicity rate changes in the catalog. A `good' catalog will show an
+almost normally distributed distribution with a mean of about zero. For
+a synthetic dataset with a poissonian distribution of the events, one would
+expect a mean of zero and a standard deviation of 2.57. Often the distributions
+are skewed towards the positive side, indicating more seismicity rate decreases
+than increases in the catalog. Sometimes a bimodal distribution can be
+detected, the meaning of which is somewhat unclear.&nbsp;<img SRC="syntcata.gif" >
+<p><a NAME="996945"></a>
+<h2>
+Evaluate random z-value distribution (window-length)</h2>
+<a NAME="996941"></a>The random z-value evaluation can be repeated for
+a number of different window-length Tw. The results of this analysis can
+be plotted in a graph of the range of b as a function of window-length
+Tw. The absolute maximum and minimum values, the 1 and&nbsp;<img SRC="syntcab1.gif" >99
+percentiles, and the mean will be shown. In general, the range of z will
+decrease with increasing window-length.
+<p><a NAME="996975"></a>
+<p><a NAME="996976"></a>
+<p><a NAME="996977"></a>
+<p><a NAME="996978"></a>
+<p><a NAME="996979"></a>
+<p><a NAME="996980"></a>
+<p><a NAME="996981"></a>
+<p><a NAME="996911"></a>
+<p><a NAME="996991"></a>
+<h2>
+Evaluate random z-value distribution (repeat maximum)</h2>
+<a NAME="996994"></a>
+<h2>
+Evaluate synthetic random z-value distribution (repeat maximum)</h2>
+<a NAME="996992"></a>
+<p><a NAME="996912"></a>
+<h2>
+Evaluate random b-value distribution</h2>
+<a NAME="996869"></a>This option will explore the dependency of the b-
+and a-value and the sample size. Instead of using synthetic catalogs (Bender,
+1983), the original data is used in the following way:
+<ul>
+<ul><a NAME="996872"></a>
+<li>
+Draw a sample of size N from the catalog<a NAME="996873"></a></li>
+
+<li>
+Estimate the b-and a-values using both the maximum likelihood technique
+and the weighted least squares technique, either with or without an automatic
+estimation of the magnitude of completeness.<a NAME="996874"></a></li>
+
+<li>
+Repeat the process k times.&nbsp;<a NAME="996875"></a></li>
+
+<li>
+Repeat the process for a different sample size N.&nbsp;<a NAME="996879"></a>A
+plot of the distribution of b-values for one sample size is shown in Figure
+? The estimates are approximately normally distributed. The width the distribution
+and to a smaller extend the mean of the distribution depends on the sample
+size N - the larger the sample size, the smaller the range over which the
+b-value varies.</li>
+
+<br>&nbsp;
+<p>&nbsp;
+<br>&nbsp;
+<br>&nbsp;
+<p><a NAME="996886"></a>The confidence limits for the Parkfield region
+for <i>N=100</i> are about <font face="Symbol">D</font>b = +/- 0.15 and
+<font face="Symbol">D</font>a
+= +/- 0.16, for <i>N = 250</i> we find <font face="Symbol">D</font>b =
++/- 0.08, and <font face="Symbol">D</font>a = +/- 0.11. Generally, the
+maximum likelihood method results in a more constant mean and a more symmetric
+distribution of the b-values around the mean than the weighted least squares
+approach. We found that using our technique, lower-quality data-sets such
+as the early recording period (1971-1980) for the Calaveras fault, show
+larger confidence limits of <i>a</i> and <i>b</i> (Wiemer and Wyss, 1996).
+<p><a NAME="996884"></a><img SRC="syntcaa1.gif" >
+<p><a NAME="996990"></a>FIGURE 75. Range of the b-value (left) and the
+a-value (right) determined from a randomized catalog as a function of sample
+size
+<br>&nbsp;</ul>
+
+<h2>
+Calculate a random b map and compare to observed data.</h2>
+<a NAME="20000901"></a>This option can help distinguish b-value variations
+which stand out as too large or too low. The idea is to compare the observed
+b-value distribution, as in a b-value map, to a "synthetic" distribution
+based on a random permutation of magnitudes, preserving the original hypocenter
+location and time.
+<p>This task is acomplished in the following way:
+<br>&nbsp;
+<ul>
+<li>
+Create a second catalog using original catalog and applying a random permutation
+on the magnitude data</li>
+
+<li>
+Add 500 years to date, and concatenate to original catalog as a consecutive
+time period</li>
+
+<li>
+Use the differential b-map routines to calculate a b-value map for both
+original and permutted data</li>
+
+<li>
+Differential maps allow the user to select which map is to be displayed:
+first (original data) period, second period (permutted data) or difference.
+Note: dates for the permutted data are not true values, original data is
+kept unchanged as the first period.</li>
+
+<li>
+Using the probability button the difference is displayed only for values
+which exceed a user-defined confidence (Utsu's test is applied)</li>
+</ul>
+
+<p><br>NOTE:&nbsp; The routine changes the original catalog, concatenating&nbsp;
+the "synthetic" data to it. If needed, other routines can be performed
+on separate sections of the data (see for example, the "Compare" options
+under the Cumulative number Vs. Time display). If you want to reset the
+catalog to its original form, use the "Reset Catalog" button on the differential
+b-map display.
+<p>The following figure shows an example of resulting b-map.
+<p><img SRC="diffmap.jpg" height=70% width=70% align=ABSBOTTOM>
+<br>&nbsp;
+<p>Differential b map, no predefined probability.
+<div style="line-height: 100%; margin-top: 0; margin-bottom: 0">(zones
+with selected confidence limit or more that difference exists are displayed,
+based on Utsu's test).</div>
+
+<div style="line-height: 100%; margin-top: 0; margin-bottom: 0">Colors
+stand for the difference in b-value between the original distribution and
+that of the randomized b values.</div>
+
+<br>&nbsp;
+<br>&nbsp;</ul>
+
+<hr>
+<br><a href="title.htm">[Top]</a> <a href="chap11.htm">[Prev]</a> <a href="seislap.htm">[Next]</a><a href="zmapdoci.htm">[Bottom]</a>
+<hr>
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a></address>
+
+<br><i>Copyright &copy; 1996, XYZ Corporation. All rights reserved.</i><!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA --><!-- --><!-- For more information on how this document, and how the rest of --><!-- this server was created, email yourEmail@xyzcorp.com --><!-- --><!-- Last updated: 09/15/96 16:30:16 -->
+</body>
+</html>

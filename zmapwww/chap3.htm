@@ -1,0 +1,204 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap2.htm">[Prev]</a> <a href="chap4.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996793">
+<center><h1>Chapter   3     	 Data Import<img src="chap3a.gif"></h1></center>
+</a><a name="996794">
+For fast and easy data access, ZMAP uses the internal Matlab data format (*.mat data files). Earthquake catalogs, as well as additional information, must first be loaded. A variety of options are available to import data into ZMAP: <p>
+</a><ul><ul>
+<a name="997518">
+<li>As ascii columns, each column separeted by a blank. This is probably the most robust way to import data. We use commonly either the program 'Freeform' by Ted Haberman to reformat catalogs (contact stefan@giseis.alaska.edu for details), or cut the catalog using unix type commands (cut, paste). You can add any number of columes to the standard format of 9 columes. 
+</a><a name="997523">
+<li>Formated import using `fscanf'. This is the fastes way to import your data, but it may require a few modifications to the import filter. Especially when dealing with large catalogs the way to go. However, allows you to apply a preselection criteria, and once you have the filter setup, you don't have to reconvert files any more. 
+</a><a name="997524">
+<li>Import as hypoellipse. This import filter will read the data as a string, and convert each column into a number.  Works OK for hypoellipse, but is the slowest of the import options. 
+</a><a name="997520">
+. To import data into ZMAP hit the "Create *.mat Datafile" button in the main menu window. A new window will appear. (<a href="chap3.htm#997520">Figure 12</a>) <img src="chap3a1.gif"> The only dataset required is an earthquake catalog. In addition, you can import data that add overlay symbols to maps (such as coastlines, faults). <p>
+</a><a name="996841">
+When you click on the "EQ datafile" button, a new window will allow you to choose from these different data import  formats.  (<a href="chap3.htm#998443">Figure 13</a>). <img src="chap3a2.gif"><p>
+</a><a name="998443">
+FIGURE 13.    Import data format selection<p>
+</a></ul>
+</ul><a name="998446">
+<h2> Importing Data as ASCII Columns Files</h2>
+</a><a name="996877">
+The second data import option is to create a file were each variable is separated by at least one blank. You can change the popup menu FORMAT (<a href="chap3.htm#997625">Figure 15</a>) to ASCII Columns. This will open a new window (<a href="chap3.htm#996889">Figure 14</a>) that explains who the columns need to be set up. <p>
+</a><a name="996887">
+<img src="chap3a3.gif"><p>
+</a><a name="996889">
+FIGURE 14.    ASCII earthquake dataset setup <p>
+</a><a name="996890">
+You will need to supply an ASCII file with the following information in columns, separated by at least one blank between each entry:<p>
+</a><a name="996891">
+Column number: <p>
+</a><a name="997327">
+1	2	3 	4	5	6	7	8	9 <p>
+</a><a name="997328">
+lon 	lat 	year	 month	 day 	mag	depth 	hour	min <p>
+</a><a name="997720">
+Example: (from an earthquake in California) <p>
+</a><a name="997721">
+-116.86 	34.35 	86 	03	 27 	4.2 	15.0	 10	 25 <p>
+</a><a name="997722">
+Please note the minus sign for West longitudes! You choose the magnitude that you would like to work with. Latitudes and Longitudes are expresses as decimals in ZMAP (e.g. -155.95). To load the data click on the "Load" button. A filename selection box will appear (<a href="chap3.htm#998422">Figure 16</a>). <p>
+</a><a name="997138">
+<h2> Writing your own formatted import filter</h2>
+</a><a name="997139">
+The fastest way to import data into ZMAP is using the function fscanf provided by matlab. This function reads formatted data from a file in a vectorized fashion. In the /src directory I provide an example script that can be used to generate your own import filter. In addition, this script performs a pre-selection based an a lat/lon box, and a magnitude-time window. If you are dealing with large datasets (&gt;100.000 events), using this pre-selection and the formatted data import capability will be your best choice. <p>
+</a><a name="998450">
+When you selelct one of the formatted data import options (<a href="chap3.htm#998443">Figure 13</a>), you will have the option to define pre-selection parameters. <img src="chap3aa4.gif"> A pre-selection in space (lat/long` box), time, magnitude, and depth, making it possible to scan large catalogs for a subset of data. <p>
+</a><a name="997146">
+The example file /src/myload.m has been designed to import Northern California data in Hypoellipse format. To modify this import filter, please note the following; <p>
+</a><ul><ul>
+<a name="997147">
+<li>You data set must have the right number of characters in each line (default: 88). 
+</a><a name="997148">
+<li>Blanks are a problem, and should be replaced throughout the entire file with zeros. However, a filed sucgh as 0-53 will not workeither, the correct structure is -053.  
+</a><a name="997149">
+<li>On a UNIX system you could use the following command line to cut the file, swap the minus signs, and substitute zeros for blanks: 
+</a><a name="997650">
+cut -c1-88 infilename | sed -e "s/ -/- /g" | sed -e "s/ -/- /g" | sed -e "s/ /0/g" &gt; outfilename
+</a><a name="998391">
+Shown below is part of the file myload.m. To customize this file for a differnt data format, you need to modify a few lines. <p>
+</a><a name="998384">
+<img src="chap3aa3.gif"><p>
+</a><a name="998388">
+Note that some of the columns are divided by a decimation factor to bring them into the right format. This example uses the horizontal and vertical error in columns 10 and 11, which is different from the standard ZMAP format, but will not cause problems. <p>
+</a></ul>
+</ul><a name="998386">
+<h2> Import as Hypoellipse</h2>
+</a><a name="997705">
+The first 36 characters of the hypoellipse data format contain all the information currently used in ZMAP (lon,lat,year,month,magnitude,depth,hour,minute). You can import hypoellipse catalogs with more than 36 characters, but it will take more time. In Unix we commonly pre-prepare a hypoellipse catalog in the following way: <p>
+</a><a name="997706">
+cut -c1-36 catalog.dat |  sed -e "s/ /0/g" &gt; catalog.sum<p>
+</a><a name="997710">
+The file catalog.m can then be loaded using the default setup in the Data input window (<a href="chap3.htm#997625">Figure 15</a>). Proceed by selecting <em>Go. </em>You will be asked for the name of the file to import (<a href="chap3.htm#998422">Figure 16</a>). The first three lines of the important data file will be displayed in the Matlab command window, you should check if they are in the right format. <p>
+</a><a name="997605">
+9301011202132061N1802152W15040019004<p>
+</a><a name="997606">
+9301011607022260N3111152W44020052702<p>
+</a><a name="997607">
+If for example the number of columns was wrong, you will see the W shifted in its position, a clear indication that something went wrong. Blank spaces in the data are allowed and will be replaced by zeros. Once the data import is completed, the General Parameter window will appear (<a href="chap2.htm#997750">Figure 9</a>) and allows you to select a subset of earthquakes in magnitude, time, and depth. The selected earthquakes will be displayed in the map window (<a href="chap4.htm#997704">Figure 19</a>). <p>
+</a><a name="997614">
+You can customize the import format in two ways: (a) change the columns number for a variable or (b) define a new format that can be selected from the FORMAT popup menu in <a href="chap3.htm#997625">Figure 15</a>. This is a two step process: First create a new file such as myfor_de.m, similar to the hypoellipse default format description in the file /src/hypo_de.m. Next you need to edit the file /src/loadhypo.m. You need to add the new format to the label list (line 36) and un-comment the lines 40-42. <p>
+</a><a name="997625">
+<img src="chap3a4.gif"><p>
+</a><a name="997592">
+<img src="chap3a5.gif"><p>
+</a><a name="998422">
+FIGURE 16.    File name selection (UNIX system) <p>
+</a><a name="996920">
+COASTLINE DATA:<p>
+</a><a name="996921">
+When you select "Coastlines" from the setup window a new window will explain how to set up the ASCII file containing the coastline information (Figure 10): <p>
+</a><a name="996925">
+<img src="chap3a6.gif"><p>
+</a><a name="996926">
+FIGURE 17.    Input parameter window for the setup of coastlines<p>
+</a><a name="996927">
+ZMAP will plot coastlines and/or state borders on maps. You need to supply an ASCII datafile, with columns separated by at least one blank: <p>
+</a><a name="996928">
+	lon 	lat 	<p>
+</a><a name="996929">
+for example: 	-116.86	 34.34<p>
+</a><a name="996930">
+A "lift pen" command can be initiated by the line:<p>
+</a><a name="996931">
+	Nan	 Nan	 (This avoids connecting islands etc.) <p>
+</a><a name="996933">
+CONTOUR LINES:<br>If you have a data-set of contour lines defined as line-drawings, you can append them to your coastline file and import them in the same way the coastline is imported. Two contour lines again need to be separated by a `Nan Nan' statement. <img src="chap3a7.gif"><p>
+</a><a name="997316">
+FAULTS DATA: <p>
+</a><a name="996934">
+Faults data are imported in the same way as coastlines. <p>
+</a><a name="996936">
+SYMBOLS: <p>
+</a><a name="996937">
+Two type of symbols can be displayed on the seismicity maps: (1) epicenters of large earthquakes as '+' signs, and (2) main faults as thick lines. The input format is identical to the above - note that you can separate multiple main faults by "Nan Nan". <p>
+</a><a name="996938">
+Again, once you have completed loading all the information you would like to include in the new datafile in *.mat format, click on "Save as *.mat file". You will be asked for a filename, which must end in .mat! <p>
+</a><a name="996940">
+<h2> Adding Information to an Existing *.mat File or Replacing Information</h2>
+</a><a name="996941">
+If you already have a *.mat file, and would like to add additional overlay symbols, select the "Create *mat Datafile" button from the main menu window anytime after you have loaded the *.mat datafile. In the setup window, click on the button representing the information that you would like to add, (e.g. faults), and select an ASCII datafile containing the information. Then click on "Save as *.mat file". You can override the old file. The new datafile will contain the old information plus the newly imported information. Use the same procedure to overwrite existing data (such as main-faults) with a new dataset. <p>
+</a><a name="996943">
+<h2> Manually Entering Overlay Symbols</h2>
+</a><a name="996944">
+Instead of loading data as an ASCII file, you can enter data manually using the keyboard. For example, if you would like to enter the two main-faults for Landers and Big Bear manually, type in the Matlab command window: <p>
+</a><a name="996945">
+mainfault = [	 -116.7500   34.2800<p>
+</a><a name="996946">
+	 -116.8270   34.2023<p>
+</a><a name="996947">
+	 -116.9000   34.1300<p>
+</a><a name="996948">
+	 Nan	              Nan<p>
+</a><a name="998434">
+	 -116.6500   34.6200<p>
+</a><a name="996950">
+	 -116.5500   34.5700<p>
+</a><a name="996951">
+	 -116.4350   34.2012<p>
+</a><a name="996952">
+	 -116.3500   34.0000<p>
+</a><a name="996953">
+ 	-116.3000   33.9000 ]; <p>
+</a><a name="996954">
+<p>
+</a><a name="996955">
+To save this information along with already existing catalog and overlay symbol data, you can either use the setup window by selecting "Save as *.mat file", or type in the Matlab command window: <p>
+</a><a name="996957">
+save filename.mat a faults mainfault coastline main infstri <p>
+</a><a name="996958">
+The variables above contain the following information: <p>
+</a><a name="996959">
+a	earthquake catalog<p>
+</a><a name="996960">
+faults	data for overlay symbol faults <p>
+</a><a name="996961">
+mainfault 	data for overlay symbol mainfault<p>
+</a><a name="996962">
+coastline	data for overlay symbol for coastlines and borders<p>
+</a><a name="996963">
+main	data for overlay symbol <p>
+</a><a name="996964">
+infstri	dataset information<p>
+</a><a name="996966">
+<h2> Current Dataset Information</h2>
+</a><a name="996967">
+When you select "Current Dataset Information" from the main menu window, the current information about the dataset used is displayed (<a href="chap3.htm#996986">Figure 18</a>)<p>
+</a><a name="996984">
+<img src="chap3a8.gif"> <p>
+</a><a name="996986">
+FIGURE 18.    The current dataset information window<p>
+</a><a name="996987">
+This is an editable window. You can enter any text describing your dataset in this window. The added information will be saved along with the dataset when you click on "Save" (no grid will be saved!). Entering as much information as possible here is strongly recommended, to avoid later confusion. You can re-size the window if you want to add more information than the default window will fit. <p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap2.htm">[Prev]</a> <a href="chap4.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:stefan@giseis.alaska.edu">stefan@giseis.alaska.edu</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email stefan@giseis.alaska.edu -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:04:21 -->
+
+</body>
+</html>

@@ -1,0 +1,322 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./plottopo_files/filelist.xml">
+<link rel=Edit-Time-Data href="./plottopo_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Plotting DEM Data in ZMAP</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>stefan wiemer</o:Author>
+  <o:LastAuthor>stefan wiemer</o:LastAuthor>
+  <o:Revision>5</o:Revision>
+  <o:TotalTime>79</o:TotalTime>
+  <o:Created>2001-11-26T13:08:00Z</o:Created>
+  <o:LastSaved>2001-11-26T14:28:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>544</o:Words>
+  <o:Characters>3102</o:Characters>
+  <o:Company>ETH Zurich</o:Company>
+  <o:Lines>25</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>3809</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:yellow;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	font-size:36.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:windowtext;
+	font-style:italic;
+	text-decoration:underline;
+	text-underline:single;}
+a:link, span.MsoHyperlink
+	{color:#FF99FF;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#33FF33;
+	text-decoration:underline;
+	text-underline:single;}
+p
+	{margin-right:0in;
+	mso-margin-top-alt:auto;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:yellow;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1822306919;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1699210360 -1419475006 2097212064 -1281474248 1545402844 430324040 -721898664 -994794654 -1804148506 1770285000;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:1974940582;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1592533550 67698689 67698691 67698693 67698689 67698691 67698693 67698689 67698691 67698693;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l2
+	{mso-list-id:2054843944;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1661827810 1000489348 -914689020 13036770 1324788472 1920617748 1930565304 -292889634 -1908133408 -405362212;}
+@list l2:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1083">
+  <o:colormenu v:ext="edit" fillcolor="white"/>
+ </o:shapedefaults></xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white lang=EN-US link="#ff99ff" vlink="#33ff33" style='tab-interval:
+.5in' alink="#FF6666">
+
+<div class=Section1>
+
+<p class=MsoBodyText>Plotting Topography Data in ZMAP</p>
+
+<p class=MsoNormal align=center style='text-align:center'><span
+style='color:windowtext'>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal align=center style='text-align:center'><b><span
+style='font-family:Arial;color:windowtext'>Last updated:&nbsp;11/2001 sw<o:p></o:p></span></b></p>
+
+<p class=MsoNormal align=right style='text-align:right'><b><span
+style='font-family:Arial;color:windowtext'>&nbsp;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span style='font-family:Arial;color:windowtext'>Topography
+and bathymetry data make an epicenter maps much more vivid. However, plotting
+these maps can be a considerable drain on your computer power &#8211; a good graphics
+cards is necessary once you like to attempt to plot detailed topo maps. ZMAP
+allows plotting of the following DEM (Digital Elevation Model) data sets: <o:p></o:p></span></b></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='color:windowtext;mso-margin-top-alt:auto;
+     mso-margin-bottom-alt:auto;mso-list:l0 level1 lfo3;tab-stops:list .5in'><b><span
+     style='font-family:Arial'>Terrain Base, a 5 min global topography and
+     bathymetry. This data set is available for download from&nbsp;The
+     Mathworks web site at <a
+     href="ftp://ftp.mathworks.com/pub/mathworks/toolbox/map/extMapData/tbase.tar"><span
+     style='color:windowtext'>ftp://ftp.mathworks.com/pub/mathworks/toolbox/map/extMapData/tbase</span></a>
+     The figure below shows an example for Japan and Korea. The untared data should
+     be moved into the directory zmap/dem. To read the data file tbase.bin, the
+     mapping tool function tbase is used, which is only available if you have
+     purchased a license of the mapping Toolbox. Below is an example of the
+     world plus plate boundaries from this database. <o:p></o:p></span></b></li>
+</ul>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'><b><span style='font-family:Arial;color:windowtext'><span
+style="mso-spacerun: yes">&nbsp;</span><!--[if gte vml 1]><v:shapetype id="_x0000_t75"
+ coordsize="21600,21600" o:spt="75" o:preferrelative="t" path="m@4@5l@4@11@9@11@9@5xe"
+ filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1026" type="#_x0000_t75" style='width:353.25pt;
+ height:189pt'>
+ <v:imagedata src="./plottopo_files/image001.png" o:title="" croptop="19146f"
+  cropbottom="14333f" cropleft="4084f" cropright="12276f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=471 height=252
+src="./plottopo_files/image002.jpg" v:shapes="_x0000_i1026"><![endif]><o:p></o:p></span></b></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='color:windowtext;mso-margin-top-alt:auto;
+     mso-margin-bottom-alt:auto;mso-list:l2 level1 lfo6;tab-stops:list .5in'><b><span
+     style='font-family:Arial'>ETOPO2, a 2 min global topography and bathymetry
+     data set (<a href="http://topex.ucsd.edu/marine_topo/mar_topo.html"><span
+     style='color:windowtext'>Sandwick and Smith</span></a>, 136 MB file size).
+     If you Internet connection is fast enough, you can <a
+     href="ftp://topex.ucsd.edu/pub/global_topo_2min/topo_6.2.img"><span
+     style='color:windowtext'>download the file&nbsp; topo_6.2.img, </span></a>and
+     copy it into the zmap/dem directory. The Mapping Toolbox is NOT needed to
+     load this data. Both data files, ETOPO2 and Terrain Base are included on
+     the&nbsp; ZMAP CD-ROM. Once you have copied this data set into the dem
+     directory, plotting DEM data is easy: Simply select the &quot;Plot
+     Topography Map &gt; 2 deg Resolution (Etopo2)&quot;&nbsp; from the Tools
+     menu of the seismicity map. The area covered will be equal to the area
+     currently show in the seismicity map. Zoom into the seismicity map to plot
+     a smaller region. Below an example for the western USA. The right frame
+     shows the same map plotted using the mapping toolbox in a 3D rendering.
+     This plot can be achieved using the &#8220;plot using mapping toolbox&#8217; button on
+     the lower left side of the topography map. <o:p></o:p></span></b></li>
+</ul>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'><b><span style='font-family:Arial;color:windowtext'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1027" type="#_x0000_t75" style='width:313.5pt;height:296.25pt'>
+ <v:imagedata src="./plottopo_files/image003.png" o:title="" croptop="8631f"
+  cropbottom="-656f" cropleft="-194f" cropright="15948f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=418 height=395
+src="./plottopo_files/image004.jpg" v:shapes="_x0000_i1027"><![endif]><!--[if gte vml 1]><v:shape
+ id="_x0000_i1028" type="#_x0000_t75" style='width:278.25pt;height:260.25pt'>
+ <v:imagedata src="./plottopo_files/image005.png" o:title="" croptop="8246f"
+  cropbottom="9001f" cropleft="5170f" cropright="18045f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=371 height=347
+src="./plottopo_files/image006.jpg" v:shapes="_x0000_i1028"><![endif]><o:p></o:p></span></b></p>
+
+<ul type=disc>
+ <li class=MsoNormal style='color:windowtext;mso-margin-top-alt:auto;
+     mso-margin-bottom-alt:auto;mso-list:l2 level1 lfo6;tab-stops:list .5in'><b><span
+     style='font-family:Arial'>30 arc seconds land topography: GTOPO30 and
+     GLOBE DEM. These DEM&#8217;s have a 1 x 1 km resolution of the landmass of the
+     Earth. The data is saved in a number of tiles, which can be downloaded from
+     the Internet for free. See <a
+     href="http://edcwww.cr.usgs.gov/landdaac/gtopo30/gtopo30.html">http://edcwww.cr.usgs.gov/landdaac/gtopo30/gtopo30.html</a>
+     and <a href="http://www.ngdc.noaa.gov/seg/topo/globe.shtml">http://www.ngdc.noaa.gov/seg/topo/globe.shtml</a>
+     for more details and download. Each globedem files is about 120 Mb. An
+     example for Switzerland is shown below. <o:p></o:p></span></b></li>
+</ul>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'><b><span style='font-family:Arial;color:windowtext'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'><b><span style='font-family:Arial;color:windowtext'>To make
+ZMAP work with GLOBE 1 DEM files, you need to create a directory structure
+underneath the dem<span style="mso-spacerun: yes">&nbsp; </span>directory.
+First create a director ./dedm/esri, the copy the subdirectory<span
+style="mso-spacerun: yes">&nbsp; </span><a
+href="ftp://ftp.ngdc.noaa.gov/GLOBE_DEM/data/elev/esri/hdr">ftp://ftp.ngdc.noaa.gov/GLOBE_DEM/data/elev/esri/hdr</a>
+into esri. Next download the necessary tiles and rename them by deleting the
+.gz extension. You do not need to unzip them (at least I did not need to do
+this on my PC). <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;
+margin-left:.25in'><b><span style='font-family:Arial;color:windowtext'>To use
+Gtopo30 files, download the necessary tiles and uncompress them. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span style='font-family:Arial;color:windowtext'>&nbsp;<!--[if gte vml 1]><v:shape
+ id="_x0000_i1029" type="#_x0000_t75" style='width:236.25pt;height:210pt'>
+ <v:imagedata src="./plottopo_files/image007.png" o:title="" croptop="8923f"
+  cropbottom="4036f" cropleft="3274f" cropright="13561f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=315 height=280
+src="./plottopo_files/image008.jpg" v:shapes="_x0000_i1029"><![endif]></span></b><b><span
+style='font-family:Arial'><!--[if gte vml 1]><v:shape id="_x0000_i1030" type="#_x0000_t75"
+ style='width:380.25pt;height:220.5pt'>
+ <v:imagedata src="./plottopo_files/image009.png" o:title="" croptop="8973f"
+  cropbottom="15093f" cropleft="7019f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=507 height=294
+src="./plottopo_files/image010.jpg" v:shapes="_x0000_i1030"><![endif]></span></b><b><span
+style='font-family:Arial;color:windowtext'><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span style='font-family:Arial;color:windowtext'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p style='margin-left:.75in;text-indent:-.25in;mso-list:l1 level1 lfo9;
+tab-stops:list .75in'><![if !supportLists]><span style='font-family:Symbol;
+mso-bidi-font-family:Arial;color:windowtext;mso-bidi-font-weight:bold'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><![endif]><b><span style='font-family:Arial;color:windowtext'>USGS
+3 acr sec DEM tiles co me in 1x1 degree sizes. They can be downloaded from <a
+href="ftp://edcftp.cr.usgs.gov/pub/data/DEM/250/">ftp://edcftp.cr.usgs.gov/pub/data/DEM/250/</a><o:p></o:p></span></b></p>
+
+<p style='margin-left:.5in'><b><span style='font-family:Arial;color:windowtext'>The
+necessary file names will be displayed when you first attempt to plot a
+topography map. Show below is an example of the San Andreas fault near the Parkfield
+region. As you can see, the plain view can be rotated into a 3D perspective
+view, using the rotated option from the menu. If the mountains are too step,
+you need to edit the daspectm line in the file overmaptb.m <o:p></o:p></span></b></p>
+
+<p><b><span style='font-family:Arial;color:windowtext'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1031" type="#_x0000_t75" style='width:189pt;height:255pt'>
+ <v:imagedata src="./plottopo_files/image011.png" o:title="" croptop="10612f"
+  cropbottom="7611f" cropleft="13144f" cropright="23734f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=252 height=340
+src="./plottopo_files/image012.jpg" v:shapes="_x0000_i1031"><![endif]><!--[if gte vml 1]><v:shape
+ id="_x0000_i1032" type="#_x0000_t75" style='width:275.25pt;height:233.25pt'>
+ <v:imagedata src="./plottopo_files/image013.png" o:title="" croptop="12848f"
+  cropbottom="15964f" cropleft="9043f" cropright="21003f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=367 height=311
+src="./plottopo_files/image014.jpg" v:shapes="_x0000_i1032"><![endif]><o:p></o:p></span></b></p>
+
+<p><b><span style='font-family:Arial;color:windowtext'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+</div>
+
+</body>
+
+</html>

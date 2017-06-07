@@ -1,0 +1,69 @@
+function newclust  
+% newclust                                 A.Allmann
+% builds cluster out out of information stored in clus
+% calculates also biggest event in a cluster
+%
+% Last modification 11/95
+
+global newcat bgevent clus mbg k1 clust clustnumbers cluslength bg
+
+cluslength=[];
+n=0;tmp3=0;
+
+k1=max(clus);
+for j=1:k1                            %for all clusters
+ cluslength(j)=length(find(clus==j));  %length of each clusters
+end
+
+
+tmp=find(cluslength);      %numbers of clusters that are not empty
+tmp1=find(cluslength>19)   %maximal size of a row in clust
+                            %to avoid storage problems
+
+  tmp2=rem(cluslength(tmp1)/19);
+  if isempty(tmp2)
+   tmp2=0;
+  end
+  tmp3=sum(tmp2)+length(tmp);        %number of columns in clus      
+   
+
+if isempty(tmp1)
+ clust=zeros(max(cluslength),length(tmp));
+else
+ clust=zeros(20,tmp3);
+end
+
+for j=tmp                      %for all not empty clusters
+ tmp5=find(clus==j)            
+ if cluslength(j)<20  
+  n=n+1
+  clust(1:cluslength(j),n)=tmp5; %matrix which stores clusters
+  clust(20,n)=1;
+ else
+  tmp4=ceil(cluslength(j)/19);
+  if (cluslength(j)/19-rem(cluslength(j)/19))==0
+   tmp4=tmp4-1;
+  end
+  for i=1:tmp4
+   n=n+1
+   if i==1      %first column in clust of this cluster
+    n1=n;
+   end
+   clust(20,n)=tmp4; 
+   if i~=tmp4
+    clust(1:19,n)=tmp5(1+(i-1)*19:i*19);   
+   else 
+    clust(1:cluslength(j)-(i-1)*19)=tmp5(1+(i-1)*19:cluslength(j));
+   end
+  end
+ end
+end
+
+%cluslength,bg,mbg only for events which are not zero
+cluslength=cluslength(tmp); 
+bgevent=bgevent(tmp);
+mbg=mbg(tmp);
+bg=bgevent;
+bgevent=newcat(bg,:); %biggest event in a cluster(if more than one,take first)
+
+clustnumbers=sort([find(clust(20,:)==1;n1]);

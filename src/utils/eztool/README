@@ -1,0 +1,57 @@
+Eztools are a set of gui controls to aid in annotating Matlab
+figures.  Separate portions of Eztools can be called directly
+from the command line, or the entire set of routines can be 
+added to the current plot by typing 'eztools' from the
+command line (after the eztools directory is added to the
+current path).  
+
+Eztools was patterned after Keith Roger's matmenus, modified 
+to include the ez routines.  Eztools also uses Eric Johnson's
+arrow.m routine and subzoom.m written by Doug Harriman.   
+All are available from the Math Work's ftp site.
+
+A description of each routine is provided in the help portion
+of each .m file.
+
+These routines were written on a unix platform and also tested
+under Windows 3.1 running in 1024 x 768 resolution.  For lower
+resolutions, the window sizes may require adjusting.  
+Compatability on other platforms was not tested.  
+
+The following routines can also be run directly from the command
+line and require no input arguments.
+
+	ezlegend     ezaxes
+	ezarrow      viewer
+	ezlabels     pageset
+  	eztext       wysiwyg
+	crsshair     subzoom
+
+Edit the file printerf.m to include the path for your default
+printer.
+
+Notes:
+   Eztools makes use of the gcf and gca commands, and thus it
+is possible to get the pointers mixed up and apply attributes
+to a figure or axis other than the intended one.  Attributes are
+applied to the current axes in the current figure.  Clicking on the
+desired axes in the desired figure window will set the current values.
+This is particularly useful when using figures with subplots.
+
+   Text objects are assigned to the current axes, therefore rescaling
+the axes after text is added will move the text.
+
+   Labels (xlabel, ylabel, zlabel, title) are treated differently than
+text objects and therefore should not be moved or rotated.
+
+   Arrows should be added last, since it places an additional set of
+axes on the figure (invisible).
+
+   When a hardcopy is desired, pagesetup should be used to set 
+margins and figure sizes first, and then select wysiwyg to set 
+the window size to the hardcopy size.  Add text, legends and
+arrows after wysiwyg to ensure objects are printed as they appear 
+on the screen.
+
+Richard G. Cobb                                       3/96
+email: rcobb@afit.af.mil

@@ -1,0 +1,4 @@
+normlap2(ll)= tapera';
+re3=reshape(normlap2,length(yvect),length(xvect));
+view_bpva
+

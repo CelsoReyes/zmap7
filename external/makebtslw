@@ -1,0 +1,25 @@
+#makefile for bootslick, which runs the bootstrap for slfast
+
+SRCS = bootslickw.c myrand.c switchsub.c stridip.c slfast_sub.c \
+       leasq.c eigen.c dirplg.c
+
+OBJS = bootslickw.o myrand.o switchsub.o stridip.o slfast_sub.o \
+       leasq.o eigen.o dirplg.o
+
+INCL = /usr/include/stdio.h  /usr/include/math.h
+
+CFLAGS= -O
+
+.c.o:; cc -c ${CFLAGS} $*.c
+
+a.out: ${OBJS} ${INCL}
+	cc ${CFLAGS} -o bootslickw ${OBJS} -lm
+
+bootslickw.o: ${INCL}
+myrand.o: ${INCL}
+switchsub.o: ${INCL}
+stridip.o: ${INCL}
+slfast_sub.o: ${INCL}
+leasq.o: ${INCL}
+eigen.o: ${INCL}
+dirplg.o: ${INCL}

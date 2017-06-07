@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Downloads the Harvard CMT catalog and converts it into fixed-column format
+#
+# Parameters expected:
+# --------------------
+#
+# Download-directory
+# $1
+#
+# Example:
+# --------
+#
+# getharvardcatalog /home/user/harvard
+#
+# Author: Danijel Schorlemmer, Swiss Seismological Service, ETH Zuerich
+# Licence: GPL
+
+
+# Store current directory
+WHEREAMI=`pwd`
+
+# Create download directories
+if [ ! -d $1 ]; then
+  mkdir $1
+  chmod 775 $1
+fi
+if [ ! -d $1/retrieve ]; then
+  mkdir $1/retrieve
+  chmod 775 $1/retrieve
+fi
+
+# Change to the download directory
+cd $1/retrieve
+
+# Get the data in HTML-format
+wget -nH --cut-dirs=4 http://www.seismology.harvard.edu/projects/CMT/catalog/1976/1976.dek
+wget -nH --cut-dirs=3 http://www.seismology.harvard.edu/projects/CMT/catalog/allorder.dek
+wget -r --no-parent -A .dek -nH --cut-dirs=4 http://www.seismology.harvard.edu/projects/CMT/catalog/MONTHLY/
+
+# Append all files to catalog
+for i in `find $1/retrieve -type f -name '*.dek'` ; do
+  cat $i >> $1/harvard_catalog.tmp.dat
+done
+
+# Convert from Hardvard-format into fixed-column format
+$WHEREAMI/cmtsel $WHEREAMI/cmtsel.parameters $1/harvard_catalog.tmp.dat $1/harvard_catalog.dat
+
+# Remove the directories created by wget (Garbage collection)
+cd $1
+rm -R -f retrieve
+
+# Remove temporary catalog (Garbage collection)
+rm harvard_catalog.tmp.dat
+
+# Return
+cd $WHEREAMI
+

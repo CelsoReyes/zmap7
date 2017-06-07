@@ -1,0 +1,20 @@
+#makefile for slickenside inversion program
+
+
+SRCS =  slick.c leasq.c eigen.c dirplg.c
+
+OBJS =  slick.o leasq.o eigen.o dirplg.o
+
+INCL = /usr/include/stdio.h  /usr/include/math.h
+
+CFLAGS= -O
+
+.c.o:; cc -c ${CFLAGS} $*.c
+
+a.out: ${OBJS} ${INCL}
+	cc ${CFLAGS} -o slick ${OBJS} -lm
+
+slick.o: ${INCL}
+leasq.o: ${INCL}
+eigen.o: ${INCL}
+dirplg.o: ${INCL}

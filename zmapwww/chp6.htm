@@ -1,0 +1,146 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap4.htm">[Prev]</a> <a href="chap7.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996751">
+<center><h1>Chapter   5     	 The Cumulative Number Window </h1></center>
+</a><a name="997334">
+   <img src="chp6aa.gif"><p>
+</a><a name="997591">
+ After using "Circle" or "Select", the seismicity within the selected area will be displayed as a cumulative number versus time plot in a new window. The cumulative number window allows you to perform certain statistical tests to judge the significance of rate changes. You can also calculate the b-value curve and the magnitude signature (for a explanation of the magnitude signature see Habermann, 1982, 1985). An example of the cumulative number window is shown in <a href="chp6.htm#997409">Figure 35</a>. <p>
+</a><a name="996756">
+<h2> The Tools</h2>
+</a><a name="997199">
+The following tools are available from the cumulative number window: <p>
+</a><a name="997204">
+<strong>Cuts in magnitude and depth</strong><strong>: </strong>Will open a selection window to select the minimum and maximum magnitude and depth. To make this selection in the current working catalog that is displayed in the map window, you have to press the "Keep as newcat" button in the lower right corner of the cumulative number window.<p>
+</a><a name="996766">
+<img src="chp6a.gif"> <p>
+</a><a name="997698">
+FIGURE 34.    Select a subset in time, magnitude and depth<p>
+</a><a name="997703">
+<strong>Decluster the catalog</strong><strong>:</strong> <a href="chap7.htm#996752">See "Declustering an Earthquake Catalog" on page &#32;55.</a> for details. <p>
+</a><a name="997704">
+<strong>Overlay another curve</strong><strong>:</strong> After selecting this option, you can plot another cumulative number curve in the same window. Select a second set of earthquakes in the map window.<p>
+</a><a name="997378">
+<strong>Compare two rates (fit)</strong><strong>: </strong>Starts the analysis of the seismicity rate using the assumption of a constant b-value. More details <a href="chap8.htm#997335">See "Investigating Seismicity Rate Changes" on page &#32;59.</a> <p>
+</a><a name="997382">
+<strong>Compare two rates (no fit)</strong><strong>: </strong>Shortened version of the Compare option. No fit to the data will be calculated. More details <a href="chap8.htm#997335">See "Investigating Seismicity Rate Changes" on page &#32;59.</a><p>
+</a><a name="997374">
+<strong>Statistics</strong>: Three different statistical measurements can be used to asses the significance of a seismicity rate change: <p>
+</a><a name="997155">
+<strong>AS(t) function</strong><strong>: </strong>Calculates a z-value based on the AS function. AS is defined in the following way (Habermann, 1983):<p>
+</a><a name="996791">
+<img src="chp6a1.gif"><p>
+</a><a name="997388">
+<em>R</em>1<em> </em>is the mean rate in period 1 (from t0 to t), <em>R</em>2 the mean rate in period 2 (from t to te), where t is the `current' time (t0 &lt; t &lt; te). <img src="chars/sigma.gif">1 and <img src="chars/sigma.gif">2 are the standard deviations in these periods, and <em>n</em>1 and <em>n</em>2 the number of samples. A z-value is calculated for all times t between t0+iwl and te-iwl, where iwl is a time length in years. Once the calculation is done, the AS(t) curve will be plotted. The time and value of the maximum will be shown. An input box will appear In the lower left corner of the figure where the user can interactively select a new value for iwl. Press "Go" to recalculate z(t) using the new iwl.<p>
+</a><a name="997407">
+<img src="chp6a2.gif"><p>
+</a><a name="997409">
+FIGURE 35.    The cumulative number window (left) and the cumulative number window with the AS(t) curve displayed (right).<p>
+</a><a name="996816">
+<strong>Rubberband function</strong><strong>:</strong> This function uses the same equation as AS, but different time periods. It compares the seismicity rate in the window t0 to t to the seismicity in the window t to t+iwl. The window length iwl can be edited in the same way as described for AS. The advantage of this function is that it does not incorporate future seismicity and therefore models a real-time approach. <img src="chp6a3.gif"><p>
+</a><a name="996838">
+<strong>LTA function</strong><strong>:</strong> This function uses the same equation as AS, but different time periods. It compares the seismicity rate in the window t0 to te to the seismicity in the window t to t+iwl (therefore the overall rate and the rate in the window of length iwl). The window length iwl can be edited in the same way as described for AS.<img src="chp6a4.gif"><p>
+</a><a name="997633">
+<strong>b-value estimation</strong><strong>:</strong> The frequency magnitude distribution can in many cases be described using the equation <em>log10N = a - bM</em>, (<em>Ishimuto and Ida</em>, 1939; <em>Gutenberg and Richter</em>, 1944), where N is the number of earthquakes having magnitudes larger than M, and a and b are constants. Five options can be selected: manual, automatic, b with depth, b with time, and b with magnitude. The manual option lets you determine the b-value of the selected catalog by selecting two points on the logarithmic plot of cumulative number versus magnitude (<a href="chp6.htm#997161">Figure 36</a>) in between which the b-value will be defined. The b-value and standard deviation will be calculated using a weighted least square method and the maximum likelihood method. The automatic option will use the maximum of the derivative of the frequency magnitude distribution to estimate the magnitude of completeness. <img src="chp6a5.gif"><p>
+</a><a name="997161">
+FIGURE 36.    The b-value estimation.<p>
+</a><a name="997629">
+ <img src="chp6a6.gif"><p>
+</a><a name="996894">
+FIGURE 37.    Automatic b-value estimation. <p>
+</a><a name="996895">
+To estimate the b-value as a function of depth the user needs to define the window size in number of earthquakes N. The b-value is determined in sliding windows containing N earthquakes starting with the N shallowest earthquakes. The window will be moved by N/10 earthquake steps. The result of this analyses will be displayed as a plot of b-value as a function of depth (<a href="chp6.htm#996925">Figure 38</a>). Two different techniques will be used to estimate the b-value: <p>
+</a><ul><ul>
+<a name="996902">
+<li>Weighted least square fit to the slope of the frequency-magnitude distribution. The fit will extend from the point of maximum curvature of the frequency magnitude distribution (as measured by the derivative) to the maximum magnitude in the subset of data. 
+</a><a name="996904">
+<li>Maximum likelihood estimate of the b-value based on the mean magnitude (Aki, 1965). <img src="chp6a7.gif">
+</a><a name="996908">
+where [M] is the mean value of all magnitudes within the selected ranges. The maximum likelihood estimation is performed using all the events. The user has to pre-select events greater than or equal to the magnitude of completeness Mmin, no automatic determination of Mmin is applied. The maximum likelihood estimate can be more sensitive to increases in the detection threshold, which might cause an artificially low b-value. In general, both the maximum likelihood estimate and the weighted least square fit give results within 10% of each other. Using the `b-value' as a function of magnitude' option can be instructive when trying to understand the differences between the two methods. On some occasions, the weighted least square method estimates a much larger b-value. In all these cases we find that the derivative of the frequency magnitude curve showed a second, higher, peak for larger magnitudes, and therefore the weighted least square estimation is limited to larger magnitudes. This second knee in the curve indicates a nonlinear or bi-modal behavior of the frequency magnitude distribution. <p>
+</a><a name="996909">
+ <p>
+</a><a name="996923">
+1<img src="chp6a8.gif"><p>
+</a><a name="996925">
+FIGURE 38.    b-value as a function of depth. <p>
+</a><a name="996927">
+The b-value as a function of time is calculated using the same sliding window technique, where the first window contains the N earliest earthquakes in time. The display of the results is analogous to <a href="chp6.htm#996925">Figure 38</a>. <p>
+</a><a name="997178">
+<img src="chp6a9.gif"><p>
+</a><a name="997186">
+FIGURE 39.    b-value as a function of magnitude. The top panel displays the b-values calculated using the maximum likelihood method, the middle panel using the weighted least squares approach. The bottom shows the difference between the tow estimates.,<p>
+</a></ul>
+</ul><a name="996932">
+<h2> p-value estimation<a href="#997649"><sup>1</sup></a>: </h2>
+</a><a name="997495">
+You can estimate the p-value of an aftershock sequence by selecting "p-value estimation" from the "Tools" pulldown menu of the cumulative number window. The function finds the maximum likelihood estimates of p, c and k, the parameters in the modified Omori equation: <img src="chp6a10.gif"><p>
+</a><a name="996937">
+The standard deviations of these parameters will also be calculated. To estimate a p-value manually, select start and end time of the calculation using the mouse. If you choose the option "automatic", the start time will be set automatically to the biggest increase in seismicity rate in the sequence. A new window (<a href="chp6.htm#996953">Figure 40</a>) will show the input parameter window for the p-value estimation. The minimum magnitude is the smallest magnitude in the catalog. It is suggested to choose the magnitude of completeness as the minimum magnitude.<p>
+</a><a name="997659">
+ <img src="chp6a11.gif"><p>
+</a><a name="996953">
+FIGURE 40.    p-value input parameter window. <p>
+</a><a name="996954">
+When you click on "Go", the p-value, c-value, and k-value will be calculated and displayed in the window, along with the standard deviation (<a href="chp6.htm#997570">Figure 41</a>). In addition, the Integrated Omori Law will be displayed, where N(t) is the integration of this equation. A and B are the values from the Gutenberg/Richter relationship, based on the constant k. The selected parameter for time and magnitude are shown inside the cumulative number plot. If the selected earthquake sequence is not suited for a stable p-value estimation, the calculation will be interrupted and an error message will be shown. <p>
+</a><a name="997498">
+The options "with magnitude" and "with time" calculate the parameters of the modified omori law as a function of minimum magnitude or as a function of time respectively. In addition to the parameter input described above you have to specify the magnitude or time range of interest and the step size as shown in Figure 31. The numbers in the input field have to separated by a colon.<p>
+</a><a name="997568">
+<img src="chp6a12.gif"> <p>
+</a><a name="997570">
+FIGURE 41.    p-value estimation output<img src="chp6aa13.gif"><p>
+</a><a name="997577">
+FIGURE 42.    Part of input window for p-value with magnitude<p>
+</a><a name="997578">
+The results are displayed in a new window with subplots for the p-value, k-value and c-value where error-bars correspond to the standard deviation (Figure 32). Commonly the values will converge as time progresses, and the error-bars will decrease. These plots allows to judge after how much time the estimate leads to a stable reliable result or whether your choice of the lower magnitude cutoff was appropriate. <p>
+</a><a name="997517">
+<img src="chp6aa14.gif"><p>
+</a><a name="997518">
+FIGURE 43.    Display of p-value with time <p>
+</a><a name="996980">
+<strong>Cumulative Moment Release: </strong>This option will calculate the cumulative moment release using the equation <img src="chp6a13.gif"><img src="chp6a14.gif"><p>
+</a><a name="996985">
+<strong>Get coordinates with cursor:</strong> This option will wait for a mouse click in the cumulative number window. The coordinates of the point will be displayed in the Matlab command-line window. <p>
+</a><a name="996987">
+<strong>Save cumulative number curve</strong><strong>: </strong>Allows you to save the cumulative number curve and the z-values of the currently selected statistical function in an ASCII file.<p>
+</a><a name="996747">
+<h2> Time to failure analysis<a href="#997216"><sup>2</sup></a></h2>
+</a><a name="997419">
+The hypothesis has been proposed that prior to large earthquakes an accelerated moment release can be observed (Varnes, 1992, Bufe, 1994). The case studies presented are mostly based on gap filling subduction earthquakes. We integrated a Matlab code provided by C. Bufe into ZMAP. This code performs a time to failure analysis based on the accelerated moment release hypothesis, and predicts the time and magnitude of a future event. To start a time to failure analysis, select the option from the tools menu of the cumulative number plot. Make sure to select only the largest events in the catalog, as only those contribute significantly to the moment release, and a short catalog will result in much faster performance of the algorithm. <p>
+</a><a name="997425">
+ <img src="chp6a15.gif"><p>
+</a><a name="997426">
+FIGURE 44.    Output of the time to failure analysis<p>
+</a><a name="997226">
+The hypothesis has been proposed that prior to large earthquakes an accelerated moment release can be observed (<em>Varnes</em>, 1989, <em>Bufe et al.</em>, 1994). The case studies presented are mostly based on gap filling subduction earthquakes. We integrated a Matlab code provided by C. Bufe into ZMAP. This code performs a time to failure analysis based on the accelerated moment release hypothesis, and predicts the time and magnitude of a future event. To start a time to failure analysis, select the option from the tools menu of the cumulative number plot. Make sure to select only the largest events in the catalog, as only those contribute significantly to the moment release, and a short catalog will result in much faster performance of the algorithm. <p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap4.htm">[Prev]</a> <a href="chap7.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<sup>1</sup><a name="997649">
+ code mainly written by A. Allman<p>
+</a><sup>2</sup><a name="997216">
+ this code was adopted with the help of Margaret Boettcher.<p>
+</a>
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:13:22 -->
+
+</body>
+</html>

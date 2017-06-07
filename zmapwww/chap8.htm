@@ -1,0 +1,177 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="GENERATOR" content="Mozilla/4.7 [en] (Win98; I) [Netscape]">
+   <title>chap8</title>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="title.htm">[Top]</a> <a href="chap7.htm">[Prev]</a> <a href="chp10.htm">[Next]</a><a href="zmapdoci.htm">[Bottom]</a>
+<hr>
+<br><a NAME="997335"></a>
+<center>
+<h1>
+Chapter 7 Investigating Seismicity Rate Changes <sup><a href="#997345">1</a></sup></h1></center>
+<a NAME="997336"></a>
+<p><a NAME="997342"></a>
+<p><a NAME="997343"></a>
+<p><a NAME="997338"></a>
+<h2>
+<img SRC="chap8aa.gif" >Comparing seismicity rates</h2>
+<a NAME="997189"></a><b><font size=+1>Compare-Fit option.</font></b>
+<p>When you select "Compare-Fit" from the "Tools" pulldown menu of the
+cumulative number window, you will start a comparison of the seismicity
+rates in two time periods. This includes the fitting of possible magnitude
+shifts, or stretches of magnitude scale, by means of synthetic b-value
+plots. Also provided are estimates for the b-value, minimum magnitude of
+completeness, and mean rate for each period, as well as a result of performing
+a z-test comparing the rates of the two periods. This routine was developed
+mainly by Ramon Zuniga. For a more detailed description on magnitude stretches,
+see <i>Zuniga and Wyss</i> (1995).
+<p><a NAME="996755"></a>After selecting the "Compare-fit" option&nbsp;
+in the cumulative number plot window, a time selection widow appears. FOUR
+TIME END-POINTS MUST BE SELECTED, which define the two time intervals.
+This can be done either by entering numerical values (e.g. 1988.65), or
+by using the cursor directly on the cumulative number plot. The intervals
+may overlap each other.
+<p><a NAME="996756"></a>An observed frequency-magnitude relation (normalized
+to a year) for each interval is plotted with different symbols. The first
+interval is labeled as "background", while the subsequent interval is the
+"foreground". TWO MAGNITUDE END-POINTS MUST THEN BE DEFINED FOR EACH CURVE
+to obtain an estimated b-value for each interval; these have to be selected
+on the basis of the linearity of the observed curves. Once this selection
+has been performed, the routine attempts to fit the background to the foreground
+by assuming two possibilities:
+<p><a NAME="996757"></a>(1) The background is first adjusted to fit the
+foreground by assuming a simple magnitude shift. The shift is estimated
+from the separation between the two curves and by using the minimum magnitude
+at which the curve departs from a linear fit by more than one standard
+deviation.
+<p><a NAME="996758"></a>(2) The background, Mback, is matched to the foreground,
+Mfore, by assuming a linear magnitude transformation (stretch or compression
+of magnitude scale) of the type (<i>Zuniga and Wyss</i>, 1995):
+<p><a NAME="996759"></a>Mfore = c * Mback + dM
+<p><a NAME="996760"></a>where c and dM are constants.
+<p>Results are graphically displayed in a new window which shows:
+<br>a) The frequency-magnitude distribution of the foreground and the frequency-magnitude
+distribution of the corrected background, using the last values for c and
+dM (for the first run, it uses the values found from a direct comparison
+between background and foreground).
+<br>b) Magnitude histograms for both foreground and corrected background
+<br>c) Magnitude signatures (if needed)
+<p><a NAME="997349"></a><img SRC="chap8a.jpg" height=80% width=70%>
+<p><a NAME="997190"></a>FIGURE 49. (next page) The "Compare-Fit" output
+window
+<p><a NAME="996827"></a>The results window includes the Gutenberg-Richter
+relation estimation for the original backround and foreground as well as
+the minimum magnitudes for each and a Z-score calculated between both rates.
+It also indicates the values which give the best fit to the selected trend
+for
+<br>the two aforementioned possibilities (simple shift and complete linear
+relation or stretch).
+<br>A rate change between the two intervals can also be accounted for by
+applying a correction to the number of events given in terms of a factor.&nbsp;
+The values estimated for dM, c, and rate factor can be manually changed
+to test&nbsp; results for any combination specified by the user. For example,
+entering c = 1 and fac = 1, returns results of a simple magnitude shif
+specified by the value of dM.
+<br>As expected, using dM = 0, c = 1, and fac = 1 returns the result of
+a comparison between background and foreground without fit (same result
+as the Compare-no fit option, see below).
+<p><a NAME="996854"></a><img SRC="chap8a1.jpg" height=80% width=40%>
+<p><a NAME="996855"></a>FIGURE 50. The results from "Compare"
+<p>Selecting the "Magnitude Signature" button produces two magnitude signatures,
+calculated from a comparison between foreground and background as well
+as from comparing the last synthetic foreground which was estimated to
+the actual foreground.
+<p><a NAME="996856"></a><b><font size=+1>Compare-No Fit option.</font></b><b><font size=+1></font></b>
+<p>It is also possible to perform a shortened comparison of two seismicity
+periods. The "Compare-no fit" option in the Tools menu of the cumulative
+number plot will ask for four dates which can be entered either using the
+mouse or keyboard. The normalized number and cumulative number versus magnitude
+will be displayed, and a magnitude signature can be calculated (<a href="chap8.htm#996875">Figure
+51</a>).
+<p>This option also provides probability values after applying Utsu's test
+to compare both distributions and other useful parameters such as
+<b><i>a</i></b>
+and <b><i>b</i></b> values, standard deviations for both, and Minimum magnitudes
+.
+<p><a NAME="996873"></a><img SRC="chap8a2.gif" >
+<p><a NAME="996875"></a>FIGURE 51. Output of the "Compare (no fit)" option
+<p><a NAME="997197"></a>
+<h2>
+GenAS</h2>
+<a NAME="997198"></a>In the main map window you can select GenAS (Generate
+AS). This tool was introduced by Habermann (1983) to find all significant
+rate changes in an earthquake catalog. GenAS will ask you for a minimum
+magnitude and a magnitude increment (<a href="chap8.htm#997396">Figure
+52</a>). GenAS uses the current catalog, and you can limit your analysis
+to a subarea by using "Select". <a href="chap8.htm#997403">Figure 53</a>,
+27, and 28 show the output of GenAS. GenAS calculates cumulative number
+curves for different magnitude cutoffs (below and above). When the AS(t)
+function detects a z-value above 2.57, (this is the 99% confidence level),
+it will plot a `+' in the output window for the magnitude band in question.
+For a significant seismicity rate decrease (z &lt; -2.57) a `-' will be
+plotted. GenAS varies the two endpoints of the AS(t) function, this makes
+it possible to find all significant magnitude changes in the catalog. Using
+the "save out" option, the points of significant change will be saved in
+the file above.out and below.out in the ZMAP home-directory.
+<p><a NAME="997306"></a><img SRC="chap8a3.gif" >
+<p><a NAME="997396"></a>FIGURE 52. GENAS input parameter window
+<p><a NAME="997400"></a><img SRC="chap8aa5.gif" >
+<p><a NAME="997403"></a>FIGURE 53. GENAS output: Times of significant change
+(at the 99% confidence level) are marked with a black vertical line. A
+cumulative number curve is plotted for each magnitude band
+<p><a NAME="997307"></a><img SRC="chap8a5.gif" >
+<p><a NAME="997268"></a>FIGURE 54. GENAS output. Times of significant changes
+(at the 99% confidence level) are marked in blue for seismicity rate increase,
+in red for seismicity rate decreases as a function of magnitude band.
+<p><a NAME="997272"></a><img SRC="chap8a6.gif" >
+<p><a NAME="997273"></a>FIGURE 55. GENAS output - Plus Minus display: Times
+of significant changes (at the 99% confidence level) are marked as a +
+for seismicity rate increase, as a - for seismicity rate decreases as a
+function of magnitude band.
+<p><a NAME="997275"></a>
+<h2>
+Using GENAS with a Grid</h2>
+<a NAME="997279"></a>In the GENAS input parameter window (<a href="chap8.htm#997396">Figure
+52</a>), you can select "GENASGRID". This will open another input parameter
+box asking you to give the grid-spacing in latitude and longitude, and
+the number of events sampled around each gridpoint. Just as for the cumulative
+number grid, (necessary to produce z-value maps), you will be asked to
+define the location of the grid by defining the lower left and upper right
+corner in the map window. A GENAS analysis will be performed for each gridpoint.
+A wait-bar shows the percentage of the total analysis completed, and each
+individual GENAS output window (<a href="chap8.htm#997403">Figure 53</a>and
+<a href="chap8.htm#997268">Figure
+54</a>) will be displayed. The final result of this analyses is a plot
+of the significant changes as a function of grid-note (that is all grid-points
+in a line [1,1],[1,2],[1,3]...[2,1],[2,2]....).
+<a href="chap8.htm#997296">Figure
+56</a> shows an example of such a plot. All magnitude bands in the analysis
+are displayed as one value, either the mean z-value or the absolute sum.
+Although this plot may give some indications of where significant rate
+changes are located in time and space, the output is rather hard to interpret.
+<p><a NAME="997290"></a>In addition, you can now select a time-cut, and
+a GENAS map will be displayed at this time-cut. See the section on z-value
+maps for details about z-value maps and the z-value map window.
+<p><a NAME="997294"></a><img SRC="chap8a7.gif" >
+<p><a NAME="997296"></a>FIGURE 56. GENAS grid output window, displaying
+the z-value as a function of time and grid-node. The left plot shows the
+mean z-value for all magnitude bands using GENAS. The right plot shows
+the absolute sum of all the z-values using GENAS.
+<p><a NAME="997297"></a>
+<p><a NAME="996747"></a>
+<p>
+<hr>
+<br><a href="title.htm">[Top]</a> <a href="chap7.htm">[Prev]</a> <a href="chp10.htm">[Next]</a><a href="zmapdoci.htm">[Bottom]</a>
+<hr>
+<br><sup>1<a NAME="997345"></a></sup> written partly by Ramon Zuniga
+<br>&nbsp;
+<br>&nbsp;
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a></address>
+
+<br><i>Copyright &copy; 1996, XYZ Corporation. All rights reserved.</i><!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA --><!-- --><!-- For more information on how this document, and how the rest of --><!-- this server was created, email yourEmail@xyzcorp.com --><!-- --><!-- Last updated: 09/15/96 16:17:57 -->
+</body>
+</html>

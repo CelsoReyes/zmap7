@@ -1,0 +1,32 @@
+5) External calls in ZMAP
+If you are planning to run stress tensor inversions, you need to run several executables. These maybe already precompiled for your operating system. The HOWTO_invert is a description of how to use A. Michael's code. Gephardt's program is described in the reference J.W. Gephardt, FMSI: A fortran program for inverting fault/slickenside and  earthquake focal mechanism data to obtain the regional stress tensor, Computer & Geosciences, Vol. 16, No. 7, pp. 953-989, 1990
+
+Windows PC systems: The necessary *.exe files are included in the ZMAPv6.exe distribution and should run without problems.
+
+UNIX systems: Several makefiles have been provided by Andy Michael as part of his stress tensor inversion software. The can be found in the ./external directory. Specifically, you will need to run:
+
+makeslfast
+makeslick
+makebtswl
+
+Linux systems: (Suse Linux 8.0 nad later)
+Compiler: We are using g77 and the makefiles given by A. Michael!
+Michael's code: Precompiled are the executables
+slick           (make -f makeslick)
+slfast          (make -f makeslfast)
+bootslickw      (make -f makebtswl)
+bothplanes      (make -f makeboth, not used in Matlab-scripts, but nice to compute the second possible fault plane)
+
+Gephardt's code:
+Compiler: We are using g77.
+I had to change some FORMAT lines in the original fmsti_ste.f and datasetDD.f, so the ones used for Linux are indicated.
+fmsi_ste_linuxg77.f    (g77 -o fmsi_ste fmsi_ste_linuxg77.f)
+datasetupDD_linuxg77.f (g77 -o datasetupDD datasetupDD_linuxg77.f)
+
+
+Depending on your system, you may have to change some compiler options.
+
+Gephart’s stress tensor inversion program and the cumulative misfit method are precompiled for the Windows version. If you want to run them on a different operating system, please contact me, I will provide you with the necessary codes.
+
+If you would like to use Reasenbergs declustering code as a FORTRAN executables rather then the Matlab internal version (because it is faster and you do get the output of the clusters in Reasenbergs form), you need to compile the file ./external/myclus.f. (e.g., f90 –o myclus myclus.f) This should also already work in the PC version.
+

@@ -1,0 +1,124 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chp6.htm">[Prev]</a> <a href="chap8.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996752">
+<center><h1>Chapter   6     	 Declustering an Earthquake Catalog</h1></center>
+</a><a name="997165">
+I<p>
+</a><a name="997159">
+<h2> Introduction</h2>
+</a><a name="997173">
+To separate the dependent from the independent seismicity, the earthquake catalog can be declustered. The decluster algorithm used in ZMAP is based on an algorithm developed by Reasenberg (Reasenberg, 1985). Most of the software for the declustering has been developed by Alexander Allmann. <p>
+</a><a name="997174">
+When you choose "Decluster the catalog" from the "Tools" pulldown menu of either the map or cumulative number windows, an input parameter box will appear. Eight different parameters can be set: <p>
+</a><ul><ul>
+<a name="997175">
+<li><strong>taumin</strong><strong>: </strong>the look-ahead time for un-clustered events in days (default is one day).
+</a><a name="997176">
+<li><strong>taumax</strong><strong>: </strong>the maximum look-ahead time for clustered events in days (default 10 days)
+</a><a name="997177">
+<li><strong>P1</strong><strong>: </strong>a measure of the confidence that you are observing the next event in the sequence (default is 0.95)
+</a><a name="997178">
+<li><strong>xk</strong><strong>: </strong>the factor used in xmeff    (default 0.5)
+</a><a name="997179">
+<li><strong>xmeff</strong><strong>: </strong>the "effective" lower magnitude cutoff for the catalog. 
+</a><a name="997180">
+<li><strong>rfact</strong><strong>:</strong> the factor for the interaction radius of dependent events (default is 10)
+</a><a name="997181">
+<li><strong>Epicenter-Error:</strong> horizontal location error in km (default is 1.5)
+</a><a name="997182">
+<li><strong>Depth-Error:</strong><strong> </strong>vertical error in hypocenter location in km (default is 2)
+</a><a name="997189">
+For additional information about these parameters hit "Info".<p>
+</a><a name="996764">
+<img src="chap7a.gif"><p>
+</a><a name="996765">
+FIGURE 45.    The declustering input parameter window<p>
+</a><a name="996766">
+Press "Go" to start the declustering. Depending on the speed of your computer and the size of the catalog, this may take some time. A wait-bar will indicate what percentage of the declustering is completed. <p>
+</a><a name="996770">
+<img src="chap7a1.gif"><p>
+</a><a name="996771">
+FIGURE 46.    Waitbar<p>
+</a><a name="997195">
+Once the declustering is completed, the catalog containing the clusters can be saved in a cluster data file for further analyses. HIt `Cancel' if you do not want to save the cluster datafile. The current catalog in the map window will be updated to the declustered catalog, and this is the catalog all further analyses will be based on. <p>
+</a><a name="997196">
+To investigate the clusters in more detail press the "Load Cluster Datafile" button in the main menu, and select a datafile created by the declustering algorithm. A new window will pop up, the cluster menu. <p>
+</a></ul>
+</ul><a name="996776">
+<h2> Cluster Menu</h2>
+</a><a name="996777">
+The cluster menu provides a variety of tools for a detailed investigation of the clustered part of the catalog<img src="chap7a2.gif"><p>
+</a><a name="996796">
+FIGURE 47.    Display of the clusters, equivalent events and big events<p>
+</a><a name="996798">
+Tools from the Cluster Window<p>
+</a><a name="996799">
+The options "Select" and "Cuts" in this window are based on the equivalent events of the clusters. The magnitude of an equivalent event is based on the cumulative seismic moment of all earthquakes in the cluster. The center of the sequence is the location of the equivalent event.<p>
+</a><a name="996800">
+<strong>Symbol</strong><strong>:</strong> Changes the symbol size and type.<p>
+</a><a name="996801">
+<strong>Select</strong><strong>: </strong>Lets you select a subset of earthquakes using polygons or circles. See the description about how to select earthquakes in chapter 4. All clusters will be selected whose equivalent event is in the marked area<p>
+</a><a name="996802">
+<strong>Histogram</strong><strong>:</strong> Displays histograms of the magnitudes of the biggest events, the equivalent event magnitudes, depth, duration, foreshock duration and foreshock percentage<p>
+</a><a name="996803">
+<strong>Tools</strong>: Plots the cumulative number curve and allows a b-value estimation. See the "Cumulative Number Window" section for details. <p>
+</a><a name="996804">
+<strong>Display</strong><strong>:</strong> Allows you to zoom into the map using a rubberband zoom, refresh the plot, and show and hide the map window. Back will reset the catalog to the initial selection.<p>
+</a><a name="996805">
+<strong>Cuts</strong>: You can create a subset of all the clusters. You can cut in time, magnitude, depth, or number of earthquakes related with the cluster.<p>
+</a><a name="996806">
+<strong>Special:</strong> You can select a subset of all the clusters. You can display only <br>regular sequences (foreshocks, aftershocks, whole sequences), doublets, or swarms. Using "Single" allows to select a single cluster of earthquakes either with the mouse or by entering the cluster number, and provides a new environment for some further investigations of the selected cluster<p>
+</a><a name="997199">
+<h2> Seismicity Map (Cluster)</h2>
+</a><a name="997200">
+This window displays a seismicity map either of the original or the declustered catalog. In addition to most of the routines already known from the regular seismicity map it gives you the opportunity of a selection of sub-catalogs with parameters corresponding to the present cluster window. It is therefore easy to inspect the quality of the declustering in small areas of interest or to compare cluster features with the respective features in the background seismicity.<p>
+</a><a name="997201">
+<strong>Select:</strong> Area selection with polygons or circles as described in chapter 4. "Cluster Window Values" selects a sub-catalog with the same time, area and magnitude limits used in the current cluster window. "Expanded Cluster Window Values" expands these limits by 0.2 degrees, 0.2 years, 0.2 magnitudes and 10 km in depth. With "Select new parameters" you can change all parameters of the current data set. The default values are the current limits. All these options work with the original or the declustered catalog.<p>
+</a><a name="997202">
+<strong>Catalog:</strong> "Reset Catalog" sets the original catalog and "Declustered Catalog" the declustered catalog to the current one. This selection has to be made first, otherwise any following selection will be undone.<p>
+</a><a name="997203">
+<strong>Tools:</strong> all options here are described in chapter 4. <p>
+</a><a name="997197">
+<h2> .Single Cluster Examination</h2>
+</a><a name="996808">
+This window allows a detailed examination of a specific cluster<p>
+</a><a name="996818">
+<img src="chap7a3.gif"><p>
+</a><a name="996819">
+FIGURE 48.    Single cluster examination window<p>
+</a><a name="996820">
+Aftershocks are displayed in red, foreshocks in blue. The pink cross is the location of the largest earthquake in the selected sequence. The "After" and "Fore" buttons allow to work only with the respective events. This selection must be done before area selections and cuts, which can be made at any time.<br><strong>Options</strong><em>: </em>You have the opportunity of area selections, cuts, histograms, cumulative number plots, b-value and p-value estimation. Different from the "Cumulative Number Window", the option "p-value automatic" requires no further input and displays the result in the familiar way.<p>
+</a><a name="996821">
+Hit "Back" to go to the original Cluster Window and hit "Close" to leave the single cluster examination tool.<p>
+</a><a name="996822">
+<p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chp6.htm">[Prev]</a> <a href="chap8.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:17:15 -->
+
+</body>
+</html>

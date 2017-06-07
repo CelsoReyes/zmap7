@@ -1,0 +1,222 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap3.htm">[Prev]</a> <a href="chp6.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996775">
+<center><h1>Chapter   4     	 The Map Window</h1></center>
+</a><a name="996779">
+The map window (<a href="chap4.htm#997704">Figure 20</a>) displays the seismicity in the selected catalog, and plots an overlay of faults, coastlines, rupture symbols etc. This overlay can be customized by changing the file '<em>src/overlay_.m'</em>. The map window is used to interactively design the size of a grid, and select earthquakes. Several pull-down menus are available from here. <a href="chap4.htm#996788">Figure 19</a> shows an example of how to change the symbol type of the earthquakes plotted in the map window. Many of the options are self-explanatory and will not be discussed in further detail. The options under "Tools" will be mostly discussed in separate chapters. <p>
+</a><a name="996786">
+<img src="chap4a.gif"><p>
+</a><a name="996788">
+FIGURE 19.    Pulldown menu to change the symbol type used to plot earthquakes in the map window<p>
+</a><a name="996826">
+<img src="chap4a1.gif"><p>
+</a><a name="997704">
+FIGURE 20.    The map window<p>
+</a><a name="997701">
+<h2> Layout Tools</h2>
+</a><a name="996829">
+The gray shaded menus are created using the package `<em>eztools</em>' available from the MathWorks anonymous ftp site. In order to create this menu bar in a figure, you only need to type `matdraw' in the matlab command window. These functions make it possible to add or modify text as well as change the general appearance of a figure before printing. Most of the functions are pretty much self-explanatory, and here only a few highlights will be pointed  out.     <img src="chap4a2.gif"><p>
+</a><a name="996869">
+Menu Functions<p>
+</a><a name="996870">
+WORKSPACE<p>
+</a><a name="996871">
+New Figure   	Generates a new figure, complete with menus.<p>
+</a><a name="996872">
+Load          	Presents a dialog box for loading data files.<p>
+</a><a name="996873">
+Save        	Saves entire workspace to file. If "Save As" has already been used, "Save" overwrites the formerly selected file, 	otherwise it presents a dialog box.<p>
+</a><a name="996874">
+Save As     	Saves entire workspace to a new file. Controlled by dialog box.<p>
+</a><a name="997528">
+WYSIWYG	What you see is what you get option. This will display the figure in the same size that it will be printed<p>
+</a><a name="996891">
+Figure -&gt; PageSetup 	Will show a setup box to change the paper size, orientation, and margins for printing (<a href="chap4.htm#996906">Figure 21</a>). You can drag and re-size the displayed outline of the page. <img src="chap4a3.gif"><p>
+</a><a name="996906">
+FIGURE 21.    Page Setup window<p>
+</a><a name="996920">
+Zoom        	 To use the Rubberband zoom, click with the left mouse button, then drag the box until you get the desired area. If you don't like that zoom, or want to retrace your steps, simply click with the right mouse button and your previous axes will be restored. Currently the depth of zooming is 10 units. When you want to exit the zoom function (turn off re-size), press the &lt;RETURN&gt; key in the figure window.<p>
+</a><a name="997540">
+<h2> Changing Symbol Sizes<img src="chap4a4.gif"></h2>
+</a><a name="997555">
+The size of the symbols used to display earthquakes can be changed using the symbol menu. In addition, you can change the type and color of the symbols used, and change the type of the legend used (time, depth, or magnitude). The `Change Background colors' option makes it possible to change the background color of the windows (default: gray 0.9 0.9 0.9) and the axes (default: light yellow, 1 1 0.6). <p>
+</a><a name="997557">
+<h2> <img src="chap4a5.gif">Selecting Earthquakes</h2>
+</a><a name="997558">
+The map window allows you to select earthquakes in space using four methods:<p>
+</a><a name="996929">
+<strong>Select earthquakes in circle (fixed ni): </strong>Selects the ni closest earthquakes to a point that you choose in the map. "Circle" is a fast and easy tool to sample the seismicity rate in various areas. Hit "Circle", wait until the cursor changes into a cross, and click where you would like the circle centered. The 100 closest epicenters in space over the entire length of the catalog are marked by black symbols in the map and the cumulative number curve is displayed (<a href="../doc/latest/ug5to10.htm#">Figure 34</a>). You can vary ni by editing the number displayed in the upper right corner of the map window and hitting "set ni".<p>
+</a><a name="996933">
+<strong>Select earthquakes in circle (Menu): </strong>This will open a menu where you can either select the ni closest earthquakes to a center point, or select earthquakes within a fixed radius from the center-point. Coordinates of the center can be entered using the mouse or using the keyboard. <p>
+</a><a name="996966">
+<img src="chap4a6.gif">
+</a><a name="996967">
+FIGURE 22.    Circle input menu<p>
+</a><a name="996968">
+<strong>Select earthquakes in polygon: </strong>Allows you to select earthquakes within a polygon of any shape. After clicking on "Select", the cursor will change into a cross. Select now the corners of your polygon using the left mouse button. Use the right mouse button to select the last point of the polygon (Macintosh users: select any key on the keyboard to select the last point). The polygon outline is displayed and the events inside are highlighted in the map. In addition, the cumulative number curve is displayed in the cumulative number window (<a href="../doc/latest/ug5to10.htm#">Figure 34</a>).<p>
+</a><a name="997945">
+<strong>Select earthquakes in polygon (Menu): </strong>Allows you to input the coordinates of a polygon interactively by mouse, enter them via keyboard, or load a file with the coordinates. If you decide to import the coordinates of the polygon with the keyboard, press "More" to add another corner to the polygon, press "Last" after the last entry. <img src="chap4a7.gif"><p>
+</a><a name="997966">
+FIGURE 23.    Polygon input menu<p>
+</a><a name="996994">
+<p>
+</a><a name="996998">
+<h2> The Catalog Menu<img src="chap4a8.gif"></h2>
+</a><a name="996999">
+<p>
+</a><a name="997000">
+<p>
+</a><a name="997001">
+<strong>Refresh</strong><strong>:</strong> Refreshes the window display<p>
+</a><a name="997003">
+<strong>Reset catalog</strong><strong>: </strong>This option will reset the catalog to the initial selection made in the general parameter window. Use this button to reset the catalog after working with a subset of data in space, time, depth or magnitude. <p>
+</a><a name="997005">
+<strong>Open new catalog</strong><strong>:</strong> Opens a load datafile window to select a new catalog.<p>
+</a><a name="997007">
+<strong>Select new parameters</strong><strong>:</strong> Resets the catalog to the original loaded catalog prior to the selection in the general parameter window. You can apply a new selection of general parameters.<p>
+</a><a name="997008">
+<strong>Save selected catalog (*.mat)</strong><strong>:</strong> Opens a save data window to input a filename for the catalog to be saved. The saved catalog will contain the current selection of earthquakes as well as fault-lines, coastlines, and main fault symbols. <p>
+</a><a name="997562">
+<strong>Save selected catalog (ascii)</strong><strong>:</strong> Opens a save data window to input a filename for the catalog to be saved. The current catalog only will be save in ascii format. <p>
+</a><a name="997468">
+<h2> The Tools - an overview</h2>
+</a><a name="997459">
+A number of tools can be accessed from the map window. Most of them are described in more detail in subsequent chapters of this manual.<img src="chap4a9.gif"><p>
+</a><a name="997464">
+<strong>Plot cumulative number:</strong> Plots the cumulative number of the current catalog. See "The Cumulative Number Window" for details.
+</a><a name="997782">
+<strong>Run GENAS: </strong>See the GENAS section for details.
+</a><a name="997776">
+<strong>Monte Carlo:</strong> Compares the distribution of z - and b-values with synthetic catalogs. See the chapter on synthetic catalogs for details.<p>
+</a><a name="997789">
+<strong>Create Cross-Section: </strong>This will create a cross-section using a Lambert projection. You can use the projected events to perform a b- or z-value analysis in a cross-section view. 
+</a><a name="997790">
+<strong>3D View</strong>: Displays the earthquakes in a 3-dimensional view.
+</a><a name="997793">
+<strong>Time Series:</strong> Creates Time-Depth, Time-Magnitude, and Mean-Depth plots. <strong></strong>
+</a><a name="997798">
+<strong>Summary Plot</strong>: Plots a number of seismicity parameters in one summary figure.
+</a><a name="997799">
+<strong>Mapping z-values: </strong>This submenu is used to create a z-value map in either map-view or cross-section. Datafiles containing cumulative number grids created in earlier session can be loaded. 
+</a><a name="997800">
+<strong>Mapping b-values:</strong> Used to investigate the frequency-magnitude distribution using grids in map view or cross-section. Existing grids can be reloaded. 
+</a><a name="997024">
+<strong>Decluster the Catalog:</strong> Opens a decluster input parameter window. See the chapter on Declustering for details. 
+</a><a name="997801">
+<strong>Misfit calculation:</strong> This function will calculate the misfit of each individual event to a assumed homogeneous stress tensor. See the chapter on stress tensor inversions and the cumulative misfit method for details. 
+</a><a name="997025">
+<strong>get coordinates with cursor: </strong>The coordinates of the point where you click with the mouse will be displayed in the Matlab command-line window. 
+</a><a name="997027">
+<strong>Zmapmenu: </strong>Shows the menu of different z-value maps. You need to create a grid first to use this option.
+</a><a name="997802">
+<strong>SEISMOLAP:</strong> Initiate investigation of seismicity rate changes using  the SeismoLap function (Zschau, 1995), either at one point or for a grid. See the chapter on SeismoLap for details. 
+</a><a name="997029">
+<strong>Histogram: </strong>You can plot histograms of the magnitude, depth, and time distribution of the current catalog.
+</a><a name="997033">
+<img src="chap4a10.gif">
+</a><a name="997034">
+FIGURE 24.    Histogram of the magnitude distribution<p>
+</a><a name="998025">
+Below is a more detailed description of some of the tools. <p>
+</a><a name="997036">
+<h2> Mean Depth Investigation</h2>
+</a><a name="997037">
+Mean depth can be investigated as a function of time. A sliding window containing a fixed number of earthquakes will be moved in steps of n earthquakes over the entire time-series. When you choose "Mean Depth" from the "Tools" pull-down menu of the map window, an input parameter box will allow you to select the number of earthquakes in each averaging window, as well as the step in days. <p>
+</a><a name="997041">
+<img src="chap4a11.gif"><p>
+</a><a name="997042">
+FIGURE 25.    Mean depth input parameter box<p>
+</a><a name="997043">
+Hit "Go" to start the analysis using the current selection. A waitbar will indicate the progress of the mean depth calculation. When the calculation is completed, a new window will display two plots: the depth of the earthquakes as a function of time, and the mean depth and standard deviation as a function of time.<p>
+</a><a name="997816">
+ <img src="chap4a12.gif"><p>
+</a><a name="997078">
+FIGURE 26.    Mean depth output window<p>
+</a><a name="997082">
+Selecting The 'comp' option in <a href="chap4.htm#997078">Figure 26</a> will compare the depth distribution of two given periods. The two depth histograms for both periods are displayed (<a href="chap4.htm#997091">Figure 27</a>) as well as the difference between the two histograms. This makes it possible to detect shifts in the depth distribution of earthquakes.<img src="chap4a13.gif"><p>
+</a><a name="997091">
+FIGURE 27.    Comparison of the distribution of earthquakes with depth for two periods. The bottom histogram is the difference between the two above. <p>
+</a><a name="997093">
+<h2> 3D View</h2>
+</a><a name="998005">
+The 3D view option displays a 3 dimensional view of the currently selected seismicity (<a href="chap4.htm#998015">Figure 28</a>). You can change the angle of view using the viewer window. The color code of the symbols will be according to the depth or time of the events, depending on the latest selection in the map window.<p>
+</a><a name="998023">
+<p>
+</a><a name="998024">
+<p>
+</a><a name="998013">
+<img src="chap4a14.gif"><p>
+</a><a name="998015">
+FIGURE 28.    3-D plot of the seismicity and viewer window to change the angle of view<p>
+</a><a name="997105">
+<h2> Time Depth Plot</h2>
+</a><a name="997112">
+This option will display a time depth plot of the seismicity (<a href="chap4.htm#997114">Figure 29</a>).<img src="chap4a15.gif"> <p>
+</a><a name="997114">
+FIGURE 29.    Time depth plot <p>
+</a><a name="997115">
+<h2> Time Magnitude Plot</h2>
+</a><a name="997116">
+This option will display a stem plot of the magnitude distribution as a function of time and depth (<a href="chap4.htm#997124">Figure 30</a>). <img src="chap4a16.gif"><p>
+</a><a name="997124">
+FIGURE 30.    Time Magnitude Plot <p>
+</a><a name="997857">
+<p>
+</a><a name="997863">
+<p>
+</a><a name="997865">
+<p>
+</a><a name="997858">
+<p>
+</a><a name="997859">
+<p>
+</a><a name="997860">
+<p>
+</a><a name="997861">
+<p>
+</a><a name="997862">
+<p>
+</a><a name="997359">
+<h2> Summary Plots</h2>
+</a><a name="997439">
+A comprehensive summary of the seismicity can be viewed by selecting the `Summary Plot' option from the Tools Menu. The seismicity will be shown in a variety of time-series, a map, and a b-value plot. The objective of this summary is to obtain a quick overview over the changes in the seismicity, important for example for monitoring the seismicity during a volcanic crisis. <img src="chap4a17.gif"><p>
+</a><a name="997872">
+FIGURE 31.    Summary plot of the seismicity at Iliamna volcano during the 1996 earthquake swarm. <p>
+</a><a name="997433">
+<h2> Cross-Sections</h2>
+</a><a name="997128">
+From the Tools Menus of the Map window the option "Create Cross-Section" can be selected. A new window will display the seismicity using a Lambert projection. You can either choose the `Select endpoints by mouse' or "coordibardinate input" option by clicking on the menu ("select an option") displayed in the lower right corner of the figure. The two endpoints (labled A and B) of the cross-section need to be defined with a mouse-click. The width of the cross-section is the total width of the box. It can be redefined in the field in the lower right corner. The selected events are displayed on the map as red crosses and the cross-section window will pop up (<a href="chap4.htm#997923">Figure 33</a>). A new selection can be initiated by hitting the 'New selection' button in the Seismicity Map (<a href="chap4.htm#997704">Figure 20</a>). The 'Cross-section Window' is the starting point for b- and z-value analysis using the cross-section (<a href="../doc/latest/ug10toen.htm#">See "b-values in cross-section view" on page &#32;85.</a>).<p>
+</a><a name="997880">
+<img src="chap4a18.gif"><p>
+</a><a name="997978">
+FIGURE 32.    <img src="chap4a19.gif">Map of Alaska displayed using the Lambert projection<p>
+</a><a name="997923">
+FIGURE 33.    Cross-section through the subducting slab in Alaska<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap3.htm">[Prev]</a> <a href="chp6.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:06:28 -->
+
+</body>
+</html>

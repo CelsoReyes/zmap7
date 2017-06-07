@@ -1,0 +1,6 @@
+#!/bin/csh
+  foreach j  (*.htm
+        set nam  = `echo $j | awk -F. '{ printf("%s", $1) }'`
+        echo $nam
+        cat $nam.htm |sed -e "s/htm\"/html\"/g"  > $nam.html
+end

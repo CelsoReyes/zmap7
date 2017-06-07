@@ -1,0 +1,118 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap1.htm">[Prev]</a> <a href="chap3.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996759">
+<center><h1>Chapter   2     	 Getting Started<img src="chap2aa.gif"></h1></center>
+</a><a name="996761">
+<h2> General Remarks</h2>
+</a><a name="997113">
+This User Guide describes most of the features of ZMAP. The Users Guide is written more as a manual or reference guide and only briefly describes the reasons for developing the tools contained in ZMAP, and the applications we envision for these tools. For more information on how these tools can be used to address scientific questions, please refer to the  published articles that use ZMAP (<em>Wiemer and Wyss,</em> 1994, <em>Wiemer and Benoit</em>, 1996; <em>Wiemer and McNutt</em>, 1996; <em>Wiemer and Wyss</em>, 1996;<em> Wyss and Wiemer</em>, 1996ab, <em>Zuniga and Wiemer</em>, 1995; <em>Allmann</em>, 1996).   The figures of various ZMAP windows are screen-dumps from the UNIX version. However, the windows in the PC and Mac version are basically the same as in the UNIX version, only the shape of buttons and menus might be slightly different. <p>
+</a><a name="996767">
+<h2> System Requirements</h2>
+</a><a name="997761">
+  PC systems<p>
+</a><a name="997762">
+In order to run ZMAP you need to install Matlab on your PC. Contact MathWork at <em>info@mathwork.com </em>for general information and prices. Please read the system requirements and installation part of the Matlab Users Guide for further details about the system requirements. Essentially you need an Intel Pentium or 486 processor, at least 8 Mb of extended memory, and a 387 or 487 co-processor chip (except 486DX or Pentium). We tested ZMAP on a 468DX, 66 MHz Gateway PC and a Pentium 133 MHz. To be able to run all the features ZMAP offers you will need to have a 256 color display, otherwise z-value maps will look poor and movies cannot be created. Check the "Windows Setup" for a device driver that supports 256 color. <p>
+</a><a name="996771">
+We loaded earthquake catalog of up to 5000 events without problems on an 8 MB memory machine. The plotting of the maps is a little bit slow for a large number of events. <p>
+</a><a name="997769">
+  Unix systems<p>
+</a><a name="997770">
+Using a SUN Sparc 20 with 64 MB memory, we loaded catalogs of up to 100.000 earthquakes before we started to run out of internal memory. ZMAP should run under SOLARIS as well as SunsOS, as long as matlab is functional. The stress tensor inversion routines have been compiled under Solaris 2.5 on a SUN workstation, and have not been tested on other systems. <p>
+</a><a name="997812">
+  Macintosh<p>
+</a><a name="997813">
+The Macintosh version has the one difference that only one mouse key can be used. To circumnavigate the few instances where two mouse-keys are needed, the keyboard can be used as a substitute. Selecting  the `1' key for example will end the data entry for a polygon selection. <p>
+</a><a name="996791">
+<h2> Installing ZMAP on Your Computer<img src="chap2a.gif"></h2>
+</a><a name="996792">
+  PC floppy disk<p>
+</a><a name="996793">
+Copy the two floppies with (1) the source code, and (2) the sample datasets on to your hard-disc. The directory structure of the ZMAP home directory is shown in <a href="chap2.htm#996812">Figure 6</a>. The home directory '<em>zmap'</em> contains the file '<em>README</em>' and the script-file '<em>zmap.m'</em>. The sub-directory '<em>eq_data'</em> contains the earthquake datafiles as well as coastline files, faults etc. The sub-directory '<em>out' </em>is used for output of data from ZMAP (e.g. gridfiles, cumulative number curves). The sub-directories '<em>src</em>', <em>'src/utils'</em>, and <em>'src/declus' </em>contain the Matlab script-files used for ZMAP. The directory <em>myfiles</em> is empty. Here you can add you own functions or keep modified versions of ZMAP script files. When you update ZMAP to a later release, this directory will not be overwritten. Also, the priority of the directory structure is such that if a file with identical name exists in <em>src</em> and <em>myfiles</em>, the file in your personal directory <em>myfiles</em> will be executed.<p>
+</a><a name="997868">
+  UNIX Version<p>
+</a><a name="997908">
+Uncompress the files [uncompress *.Z], untar the files  [tar xvf zmaphtml.tar,  tar xvf zmap.tar,  tar xvf manual.tar.Z]. This will create the subdirectories src, doc, eq_data, myfiles and out. Print the Users Guide located in the /doc directory. The files are postscript files created with FrameMaker. If you are not able to print the Users Guide I can mail you a hardcopy. To view the html document using a web browser of your choice (e.g. netscape www/ug.book_1.html)<p>
+</a><a name="997215">
+<img src="chap2a1.gif"><p>
+</a><a name="996812">
+FIGURE 6.    Directory structure<p>
+</a><a name="996814">
+<h2> Starting ZMAP</h2>
+</a><a name="996815">
+To start ZMAP you have to start Matlab first by clicking on the Matlab icon (PC) or typing Matlab (UNIX). Then type in the Matlab command window:<p>
+</a><a name="996816">
+cd &lt;path&gt;\zmap (or cd &lt;path&gt;/zmap on the UNIX system)
+</a><a name="996817">
+where &lt;path&gt; is the path to the zmap home-directory. Now type:<p>
+</a><a name="996818">
+zmap
+</a><a name="997493">
+This will start ZMAP and two windows will pop up on your screen: (1) The welcome window, and (2) the ZMAP main menu window. The Matlab command window is used occasionally to input data, display messages and errors. You should keep it on the screen, but you may change the size or location.<p>
+</a><a name="997865">
+<img src="chap2a2.gif"><p>
+</a><a name="997666">
+FIGURE 7.    Welcome window<p>
+</a><a name="997708">
+<img src="chap2a3.gif"><p>
+</a><a name="997710">
+FIGURE 8.    Main menu<p>
+</a><a name="997611">
+If you already have a datafile, or would like to use one of the example datafiles, click on "Load *.mat file and go<em>"</em>. An input window will ask you for your selection. After you have selected a datafile, ZMAP will ask you for various input parameters (<a href="chap2.htm#997750">Figure 9</a>). You can limit your analyses to a part of the catalog, limited in time and magnitude. You can adjust the magnitude threshold above which earthquakes in the map and in the cumulative number curves are displayed with an 'x'. Earthquakes are displayed in different colors according to their depth. Click on the "Go<em>" </em>button after you complete your selection. This will pop up a map of the seismicity on your screen (<a href="chap4.htm#997704">Figure 19</a>). <img src="chap2a4.gif"><p>
+</a><a name="997750">
+FIGURE 9.    . The general parameter window<p>
+</a><a name="998042">
+<p>
+</a><a name="998043">
+<p>
+</a><a name="997751">
+<p>
+</a><a name="997755">
+<h2> Help in ZMAP<img src="chap2a5.gif"></h2>
+</a><a name="997756">
+On-line help is available in many windows. The "Info" button in each individual window will display a help text (<a href="chap2.htm#996952">Figure 10</a> ). Help about a specific function can be obtained by typing '<em>help function-name</em>'. This is true for general Matlab functions as well as (some) ZMAP functions. Unfortunately, in some cases the `Info' button may display help associated with an earlier window. <p>
+</a><a name="996951">
+<img src="chap2a6.gif"><p>
+</a><a name="996952">
+FIGURE 10.    Example window of the on-line help option<p>
+</a><a name="996954">
+<h2> Printing in ZMAP</h2>
+</a><a name="996955">
+To print a figure in ZMAP, hit the "Print" button in the upper left corner of most windows. A new window, the print dialog box, will open (<a href="chap2.htm#996964">Figure 11</a>). You can print to the default printer installed under Matlab by selecting "OK", or you can print the figure into a file. The print will not contain menus and buttons. To print a color figure make sure to select the `psc' or psc2' option. If you want to change the paper size or plot orientation, use the PageSetup option (<a href="chap4.htm#996906">Figure 20</a>). For more information about printing in Matlab and the different device drivers type '<em>help print</em>' and '<em>help printopt</em>' in the Matlab command window. <p>
+</a><a name="997933">
+We have imported ZMAP figures in a number of programs, and found that for the UNIX system post-script files work well with FrameMaker when converted to epsi files (uses ps2epsi, part of the ghostscript language). IslandDraw work well for most figures, but does not handle interpolated colormaps (or sometimes not-interpolated colormap) well. However, the advantage is that the postscript-file can be ungrouped and individual elemts (such as font-sizes, line-thickness) modified after the figure has been completed. ON PC systems, I have succesfully imported windows metafiles from Matlab into Microsoft Powerpoint 7. Use the print -dmeta option to print your figure. Again, individual elemts of the figure can be post-processed, but I have not been able to import interpolated colormaps. <p>
+</a><a name="997521">
+<p>
+</a><a name="996963">
+<img src="chap2a7.gif"><p>
+</a><a name="996964">
+FIGURE 11.    Print Dialog Box <p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap1.htm">[Prev]</a> <a href="chap3.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:stefan@giseis.alaska.edu">stefan@giseis.alaska.edu</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email stefan@giseis.alaska.edu -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:02:36 -->
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+#makefile for fast slickenside inversion program
+
+
+SRCS =  slfast.c leasq.c eigen.c dirplg.c
+
+OBJS =  slfast.o leasq.o eigen.o dirplg.o
+
+INCL = /usr/include/stdio.h  /usr/include/math.h
+
+CFLAGS= -O
+
+.c.o:; cc -c ${CFLAGS} $*.c
+
+a.out: ${OBJS} ${INCL}
+	cc ${CFLAGS} -o slfast ${OBJS} -lm
+
+slfast.o: ${INCL}
+leasq.o: ${INCL}
+dirplg.o: ${INCL}
+eigen.o: ${INCL}

@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Microsoft FrontPage 4.0">
+   <TITLE>Analysing 3D grids in ZMAP</TITLE>
+</HEAD>
+<BODY TEXT="#FFFF00" BGCOLOR="#000000" LINK="#FF00FF">
+
+<p align="center"><b><i><u><font color="#FFFF00" face="Arial" size="5">Analyzing
+3D grids in ZMAP</font></u></i></b> <CENTER><B><I><U><FONT FACE="Arial"><FONT COLOR="#FFFF00"><FONT SIZE=+4></FONT></FONT></FONT></U></I></B>&nbsp;</CENTER>
+
+<CENTER><B><I><U><FONT FACE="Arial"><FONT COLOR="#FFFF00"><FONT SIZE=+4></FONT></FONT></FONT></U></I></B></CENTER>
+
+<CENTER><B><FONT FACE="Arial">Last updated:&nbsp;<!--webbot
+bot="Timestamp" startspan s-type="EDITED" s-format="%m/%d/%y" -->10/25/01<!--webbot
+bot="Timestamp" i-CheckSum="12429" endspan --></CENTER>
+
+<DIV ALIGN=right>&nbsp;</DIV>
+
+<UL><B><FONT FACE="Arial">ZMAP&nbsp; allow you to compute&nbsp; three dimensional grids
+to spatially map b-values as well as z-values. Sampling volumes
+are spherical rather then cylindrical as used in a map or cross sectional
+approach. A slicer tool allows interactive slicing the 3 dimensional
+data matrix along vertical or horizontal planes. With some effort, topography
+  can be plotted on top.&nbsp;</FONT></B>
+
+<P><IMG SRC="redoubtb.jpg" height=330 width=263><IMG SRC="norib.jpg" height=334 width=261>
+
+<P><B>To produce a 3D b-value analysis it is necessary to first prepare
+the data set of interest. Choose the appropriate period, magnitude range,
+depth range, area etc. and make this data set the current data selection
+(for example using the "Keep as newcat" option from the Cumulative number
+window).&nbsp; Then select the&nbsp; "Mapping b-values -> Calculate a 3D
+b-value distribution" option from the Tools menu of the seismicity map.
+The following input parameter window will appear:</B>
+
+  <P><img border="0" src="3dgrid1.gif" align="left" width="406" height="295">The
+sample size is the number of nearest neighbors in a spherical volume that
+should be analyzed around each grid node.&nbsp; In addition, the grid node
+spacing in dx, dy and dz must be defined. Note the the spacing in dx and
+dy is in degrees, and in dz in kilometers! Lastly, the depth range to be
+analyzed needs to be defined, first the deeper extend,&nbsp; next the shallower
+extent.&nbsp; Click OK. To define the area of analysis, define a polygon in the
+  map window. The resulting 2D projection of the grid nodes will be displayed.&nbsp;
+  If the grid seems too dense, or the waitbar progress seems too slow, interrupt the calculation using&nbsp; Control C in the Matlab command window&nbsp;
+and start again.&nbsp; Once the computation is done you
+may save the results into a *.mat file, or select "Cancel"&nbsp;to not save
+the results.<BR CLEAR=BOTH>
+<BR>
+<BR>Analyzing three dimensional grids is not a simple matter, and the two ZMAP
+  tools to slice and analyze the data are, unfortunately, not very satisfying
+  solutions. After the grid is completed, you can choose from two different viewers:
+  1) The Slicer in map view, which allows you to view different depth slices
+  through your data. 2) The 3D slicer, which allows you to create combinations
+  of horizontal and vertical planes, possibly overlain by topography. The first
+  analysis tool includes the ability to interactively view the seismicty data
+  sample at each node. The 2nd tool is generally more suiate to cerate 'pretty'
+  summary plots.&nbsp;<P><img border="0" src="3dgrid2.gif" width="406" height="107"><P><font color="#FFFFFF" size="5" face="Arial">1)
+  The slicer in map view</font>
+
+<P><img border="0" src="3dgrid3.gif" width="626" height="480"><P>The window
+  displays a horizontal slice through the 3D data matrix at a depth that is
+  indicated in the title of the axes. To move to a different depth. move the
+  slider on the top left. To cumulative number of events and the frequency
+  magnitude distribution are displayed in the two right frames for two selected
+  sample volumes. The respective volumes are marked by a red star and green
+  triangle in the map. These frames are automatically updated when the star or triangle
+  are moved, or the depth is changed. The radius of the sampled volume is marked
+  by a white circle. To analyze a particular volume in more detail , select the
+  V1 and V2 button on the upper right. The range of the caxis can be set using
+  the buttons near the colorbar. To view a different map, use the pull-down menu
+  on the lower left. The slicer button will open the alternative data viewer
+  described below. Lastly, a cross-sectiional view through the data space can be
+  obtained using the &quot;Define X-section' button in the upper left. The
+  cursor changes to a cross; select the starting point of the x-section, then
+  draw a&nbsp; line and release the button at the end point of the
+  x-section.&nbsp;
+
+<P><font size="5" color="#FFFFFF">2) The slicer in 3D view&nbsp;</font>
+
+<P><img border="0" src="3dgrid4.gif" align="left" width="388" height="342">The
+slicer window will open up, and show a map of the seismicity under investigation.
+You can now define vertical cross section in any orientation and length,
+as well as horizontal slices through the 3D data matrix. To define a vertical
+cross section through your data, click on the "Define X-section" button.
+Next click in the map area to define the start point of the x-section and
+hold and drag a line to the endpoint. To view this x-section, select the
+"new vert. slice" button. To add this line to an existing slice, use the
+"Add vert. slice" option. "refresh" will redraw this window to erase old
+x-section lines.&nbsp; You can also slice horizontally, either starting
+a new slice, or adding to an existing plot of horizontal and/or vertical
+x-sections.&nbsp;<BR CLEAR=BOTH>
+</UL>
+
+<p align="left"><B>&nbsp;</B> <B>&nbsp;</B>
+<B>&nbsp;</B>
+<BR>The resulting 3 dimensional cube can be rotated in any direction
+by simply clicking and dragging the mouse. For horizontal slices, the "Above"
+view help to orient the cube. Earthquake hypocenters, coastlines, and faults
+can be plotted as well, however, the Matlab 3D rendering algorithm does
+not always produce satisfying results for oblique views. lastly, you can
+plot Topography. Use the "Add Topo" button at the upper right corer of
+the figure, and select either a planar contour type rendering of the topography,
+or true 3D rendering. The topography plotted will be the same as used&nbsp;
+last from the Seismicity map window (either ETOPO2 or mydem will be used).
+A mouse rotation will now rotate the view-point of the topography, which
+is the top layer in the plot. To make the viewpoint equal for both topography
+and data cube, use the "Fix View" button in the lower left corner
+
+<P align="left"><B>Producing pretty looking images will likely require some time, playing
+around with different slice orientations and view-points, or using different
+light sources, color maps etc. See the&nbsp;</B>
+
+<P align="left"><B>&nbsp;</B>
+<p align="center"><img border="0" src="3dgrid5.gif" width="361" height="337"></p>
+</BODY>
+</HTML>

@@ -1,0 +1,167 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./plotm_map_files/filelist.xml">
+<link rel=Edit-Time-Data href="./plotm_map_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Plotting maps using m_map</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Stefan Wiemer</o:Author>
+  <o:LastAuthor>Stefan Wiemer</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>40</o:TotalTime>
+  <o:Created>2001-05-16T13:27:00Z</o:Created>
+  <o:LastSaved>2001-05-16T14:07:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>219</o:Words>
+  <o:Characters>1249</o:Characters>
+  <o:Company>ETH Zurich</o:Company>
+  <o:Lines>10</o:Lines>
+  <o:Paragraphs>2</o:Paragraphs>
+  <o:CharactersWithSpaces>1533</o:CharactersWithSpaces>
+  <o:Version>9.2720</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin:0cm;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:0pt;}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+@page Section1
+	{size:595.3pt 841.9pt;
+	margin:72.0pt 90.0pt 72.0pt 90.0pt;
+	mso-header-margin:35.4pt;
+	mso-footer-margin:35.4pt;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:36.0pt'>
+
+<div class=Section1>
+
+<h1>Plotting maps using m_map</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A useful tool, called m_map (<a
+href="http://www2.ocgy.ubc.ca/~rich/map.html">http://www2.ocgy.ubc.ca/~rich/map.html</a>)<span
+style="mso-spacerun: yes">  </span>to plot nice maps was written by Rich
+Pawlowicz (<a href="mailto:rich@ocgy.ubc.ca">rich@ocgy.ubc.ca</a>). ZMAP uses
+m_map to produce reasonable looking maps when the standard Cartesian coordinate
+system used in Matlab just doesn’t cut it. The m_map code is distributed as
+part of ZMAP in the m_map and m_map/private subdirectories. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>From the Map-window in ZMAP. choose the ZTOOLS -&gt; Plot
+map using _map/Import coastline option,. This will open an input box: </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><!--[if gte vml 1]><v:shapetype
+ id="_x0000_t75" coordsize="21600,21600" o:spt="75" o:preferrelative="t"
+ path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:261pt;
+ height:273.75pt'>
+ <v:imagedata src="./plotm_map_files/image001.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=348 height=365
+src="./plotm_map_files/image002.jpg" v:shapes="_x0000_i1025"><![endif]></p>
+
+<p class=MsoNormal align=center style='text-align:center'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The first line allows you to choose various projections. If
+you are familiar with m_map and you would like to add new projections, you will
+need to edit the file m_map/plotmymap.m. Next choose a suitable resolution
+suitable for your map. If you choose too high a resolution, the map will take a
+long time. As part of the ftp distribution of ZMAP, the crude and low GSSHS
+files are included in the<span style="mso-spacerun: yes">  </span>m_map/private
+directory. If your resolution is not available, an message will remind you to
+download the appropriate file from ftp://ftp.ngdc.noaa.gov/MGG/shorelines/</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The map will then be plotted in a separate window. Use the
+button in the lower right to make transfer the plotted coastline into the ZMAP
+map window. If you permanently want to attach this coastline with the earthquake
+data set, choose now from the mapping window the Catalog -&gt; Save current
+catalog as mat file<span style="mso-spacerun: yes">   </span>option. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal align=center style='text-align:center'><!--[if gte vml 1]><v:shape
+ id="_x0000_i1027" type="#_x0000_t75" style='width:327.75pt;height:309pt'>
+ <v:imagedata src="./plotm_map_files/image003.png" o:title=""/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=437 height=412
+src="./plotm_map_files/image004.jpg" v:shapes="_x0000_i1027"><![endif]></p>
+
+<p class=MsoNormal align=right style='text-align:right'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

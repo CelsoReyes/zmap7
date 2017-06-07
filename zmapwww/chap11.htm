@@ -1,0 +1,96 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chp10.htm">[Prev]</a> <a href="syntcat.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996950">
+<center><h1>Chapter   9     	 Mapping the frequency-magnitude distribution</h1></center>
+</a><a name="997508">
+ <p>
+</a><a name="996951">
+<h2> General Remarks</h2>
+</a><a name="997509">
+One of the latest additions to ZMAP is an option to map out b-values. We use the same gridding technique described for z-value maps. The b-value at a grid point is calculated by a weighted least squares fit as well as a the mean magnitude. The section <a href="../doc/latest/ug5to10.htm#">" </a> describes in more detail how the b-values are estimated. Different from z-value maps, b-value maps are assumed not to be time dependent. Just as for the z-value maps, there are two different projections used to calculated b-value maps: map views and cross-sections. <p>
+</a><a name="997378">
+Recently, a number of high resolution studies of the frequency-magnitude distribution showed that highly heterogeneous distributions of b-values with significant variations over short distances are abundant in seismogenic regions. Detailed maps of the frequency-magnitude distribution in two subduction zones showed significant variations of <em>b</em> at scales of 10 km (<em>Wiemer and Benoit</em>, 1996). These authors identified a region of anomalously high b-value at a depth of 90-100 km on the upper surface of the Wadati-Benioff Zone, directly underlying the volcanic arc. At this depth, slab dehydration may increase pore pressure, thus lowering the effective stress and increasing the b-value. Increased pore pressure would also lower the solidus in the overlying asthenosphere, giving rise to the volcanism that occurs directly above this zone. Similar results have been found by <em>Wyss et al.</em> (1996a) using data from Japan. Mapping b-values at a scale of less than 1 km grid spacing, <em>Wiemer and McNutt</em> (1996) found high b-values in the vicinity of active magma chambers at Mt. St. Helens (Washington) and Crater Peak (Alaska). Preliminary results by <em>Wyss et al.</em> (1996b) for several volcanoes in Japan support these findings. Our technique of mapping b-values thus may offer a tool to locate seismically active magma chambers.<p>
+</a><a name="996959">
+We estimate b-values in two ways, because different methods have different advantages. We use both the maximum likelihood method and a weighted least squares fit (<em>Utsu,</em> 1965; <em>Aki,</em> 1965; <em>Hamilton</em>, 1967; <em>Page,</em> 1968; <em>Bender</em>, 1983; <em>Shi and Bolt</em>, 1983). By comparing the results obtained using the two methods, we can ensure that our results are independent of the technique used to estimate b. Before claiming any significant differences between b-values in sub-volumes we inspect the magnitude frequency plots visually to make sure that the data are defining the b-value well, and that the computed fit is acceptable based on common sense inspection.<p>
+</a><a name="996978">
+Two different methods will be used to calculate the b-value: The maximum likelihood method, and a weighted least squares method. For each of these methods you can determine whether or not you would like to use an automatic determination of the magnitude of completeness to be performed prior to estimating the b-value. This automatic estimation of the b-value is based on the numerical derivative - the highest value of the derivative is used as a first order approximation of the magnitude of completeness. Of you choose to use the automatic determination, the frequency-magnitude distribution is only determined for events with M &gt;= Mcomp. Even when the magnitude of completeness is estimated automatically, it is advisable to limit the analysis to magnitudes above the magnitude of completeness.<p>
+</a><a name="996979">
+ <img src="chap11a.gif"><p>
+</a><a name="996981">
+The probability that two frequency-magnitude distributions are different is estimated using a test proposed by <em>Utsu</em> (1992). If <em>b1</em> and <em>b2</em> are the slopes of two frequency magnitude distributions, and <em>n1 </em>and<em> n2</em> are the total numbers of events larger <em>Mcomp</em>, then the probability <em>P</em> that the two distributions are different can be written as: <img src="chap11a1.gif"><img src="chap11a2.gif"><p>
+</a><a name="996991">
+and <em>n = n1 + n2</em>. A value of<em> P = 0.05</em> indicates that we can reject the hypothesis that the two b-values are equal at the 95% confidence limit. In order to establish a significant difference we will require that two b-values will be different at the 99% confidence limit (<em>P = 0.01</em>). <p>
+</a><a name="997383">
+The recurrence time for an earthquake with magnitude equal or greater than M can be calculated from the <em>b</em> and <em>a</em>-value obtained at each grid-node as:<img src="chap11a3.gif"> <p>
+</a><a name="997400">
+where <img src="chars/capdelta.gif">T is the recording period covered by the seismicity catalog. The error in <em>Tr </em>can be estimated from the confidence limits of <em>a</em> and <em>b</em> (Figure 6 3). An equivalent way of presenting the recurrence times would be as the Poisson probability of an earthquake occurring per year, the inverse of <em>Tr</em>.<p>
+</a><a name="996756">
+<h2> Map view of the frequency-magnitude distribution</h2>
+</a><a name="996757">
+From the Tools menu of the Seismicity Map window one can select the option 'b-value map'. This will open an input parameter box similar to <a href="../doc/latest/ug5to10.htm#">Figure 48</a> where the grid spacing in degrees and the number of events in each volume need to be defined. The area of the analysis will be defined by clicking the mouse in the lower left and upper right corner of the desired grid. Once the b-value calculation is completed, a map view of the b-value distribution will be displayed. The 'Select EQ in Circle' option from the Select Menu expect a mouse-click in the b-value map and display the frequency magnitude distribution as well as a b-value fit for the selected events. As a rule of thumb we suggest to not use fewer than 30, preferably 50-200 earthquakes in each circle.<p>
+</a><a name="997015">
+The `Select' menu offers the option to display  <img src="chap11a4.gif"> the frequency-magnitude distribution of a population of earthquakes in a circle or in a polygon. The `hold' option makes it possible to compare two frequency-magnitude distributions in one plot. In addition, the probability that the two distributions are from the same population (based on Utsu's 1992 test) is shown in the upper right corner. The `TimePlot' button will display the cumulative number plot of the selected population of events. <p>
+</a><a name="997028">
+A variety of maps can be viewed: <p>
+</a><a name="997000">
+<strong><img src="chap11a5.gif">b-value map</strong> (weighted lest Squares)<p>
+</a><a name="997001">
+<strong>b-value map </strong>(Maximum likelihood)<p>
+</a><a name="997002">
+<strong>a-value map </strong>(based on weighted least squares)<p>
+</a><a name="997003">
+standard error map<p>
+</a><a name="997004">
+maximum magnitude map<p>
+</a><a name="997005">
+<strong>magnitude range map</strong> (maximum magnitude - magnitude of completeness)<p>
+</a><a name="997006">
+<strong>recurrence time map</strong>, a magnitude for the projected event needs to be specified<p>
+</a><a name="997007">
+<strong>probability map</strong>. This map displays the probability based on Utsu's test that the current volumes is different from the overall volume.<p>
+</a><a name="997008">
+magnitude of completeness map<p>
+</a><a name="997031">
+<strong>resolution map</strong>: depicts the radius of each volume, which is inversely proportional to the density of earthquakes<p>
+</a><a name="997032">
+<strong>histogram</strong>: Shows a histogram of the currently displayed map<img src="chap11a6.gif"><p>
+</a><a name="997034">
+<h2> b-values in cross-section view</h2>
+</a><a name="996763">
+It is possible to view b-value maps in cross-section view instead of map view. After creating a Cross-Section (<a href="../doc/latest/ug1to5.htm#">See "Cross-Sections" on page &#32;39.</a>) select the 'Make b cross' option from the Cross Section window. You will need to define the grid spacing in km, the number of earthquakes in each volume and the size of the grid. The b-value plot will be displayed in a new window. <p>
+</a><a name="996776">
+ <img src="chap11a7.gif"><p>
+</a><a name="996795">
+FIGURE 72.    b-value in cross-section view of Mt. St. Helens (1988-1996) [Wiemer and McNutt, 1996]. <p>
+</a><a name="996747">
+<img src="chap11a8.gif"><p>
+</a><a name="997076">
+FIGURE 73.    Top: seismicity in the Parkfield region shown in a NW-SE cross-section. Middle: Distribution of b-values. Bottom: Recurrence time for a magnitude M6 event (Wiemer and Wyss, 1996). <p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chp10.htm">[Prev]</a> <a href="syntcat.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:28:02 -->
+
+</body>
+</html>

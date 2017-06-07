@@ -1,0 +1,138 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap12.htm">[Prev]</a> <a href="refs.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996874">
+<center><h1>Chapter   15     	 Tips for programmers</h1></center>
+</a><a name="996875">
+<h2> General remarks</h2>
+</a><a name="996868">
+The modular structure of ZMAP and the open file architecture make it relatively easy to modify existing code, or add new componets to ZMAP. The main problem is that by now ZMAP contain more than 50.000 lines of native code  in more than 100 individual scriptfiles, and several hundred variables are kept in the workspace. This chapter will describe some of the main varibles and some of the main functions called. <p>
+</a><a name="996897">
+To view all the names of the variables used typw `who' or `whos' in the matlab command window. A long list will apear. Typing just the name of a variable will display its value.<p>
+</a><a name="996985">
+Your additional sript files should be store din the ZMAP/myfiles directory. This directory will not be overwritten when installing a new version of ZMAP. If you would like to modify a script provided with zmap, copy the file into the myfiles directory and modify it. Make sure you keep the same filename. Your file stored in the `myfiles' directory will be the current version, since the `myfiles' directory' is defined later in the Matlab serach path. Type `path' to see the current path definition. <p>
+</a><a name="996902">
+To find out which (.m file is called when executed a particular task, execute the task and check if a message in the matlab command window shows which file is currently active (e.g. "This is /src/timeplot.m"). Within these files you will find the callback strings for the options called from this file. For example, if you would like to modify the files that plots a 3-D view of the seismicity, view the file `subcata.m' which plots the main seismicity map, and search for the callback you are interested in (`3-D view'). You will find the line: <p>
+</a><a name="996938">
+  uimenu(op3,'Label','3-D view ',...<p>
+</a><a name="996939">
+                'Callback','plot3d');<p>
+</a><a name="996936">
+So the file that plots the 3-D view must be called plot3d.m. To find th elocation o fthe file, type <p>
+</a><a name="996940">
+`which plot3d' in the matlab command window. The answer will be something like `/home/stefan/ZMAP/src/plot3d.m', identifying the file you need to modify. <p>
+</a><a name="996978">
+Here is a number of simple examples: <p>
+</a><a name="996979">
+1.	  Installing a new call from the main seismicity map: <p>
+</a><a name="996980">
+Copy the file subcata.m from ./src to ./myfiles. This will ensure that your modification will not be overwritten when you update ZMAP. Open the file ./myfiles/subcata.m. Find the appropiate line where you would like to add your new callback to the function or scriptfile you wrote. <p>
+</a><a name="996992">
+         uimenu(op3C,'Label','Time magnitude Plot ',...<p>
+</a><a name="996993">
+                 'Callback',' timmag');<p>
+</a><a name="996998">
+Now add our callback: <p>
+</a><a name="997002">
+ uimenu(op3C,'Label','Do what I wantt it to do',...<p>
+</a><a name="997003">
+                 'Callback',' mycallback');<p>
+</a><a name="997008">
+Exit the file. You will have to close the main map window and replot it to see the newly installed submenu item (for example by typing `subcata' in the matlab command window). <p>
+</a><a name="997009">
+2.	  Make a preselection basd on the RMS values. <p>
+</a><a name="997014">
+Lest assume you would like to use only events that have a location error with an RMS error less than 0.1 sec. Although the RMS rror is not loaded as a standard part o fthe catalog description, you can simply add a tenth colums when loading the data as an ascii file. This columns can be used to define a subset of data in the following way: <p>
+</a><a name="997015">
+ l = a(:,10) &lt;= 0.1;   % l is a vector of 0 and 1, depending if the statement RMS &lt;+ 0.1 is true <p>
+</a><a name="997029">
+ a = a(l,:);                % Re-define `a' is the events for which selection criteria is true<p>
+</a><a name="997016">
+That's it! This structure, although a bit crypty for the novice user, is extremly powerful to build a querry of any kind. Now just select the `Refresh' option from the main map window and the newly plotted map will conatin only the events that fullfill your search criteria. You can save the newly created catalog using the `Save as..' option. <p>
+</a><a name="997022">
+<p>
+</a><a name="997021">
+<p>
+</a><a name="996999">
+ <p>
+</a><a name="996994">
+ <p>
+</a><a name="996995">
+        uimenu(op3,'Label','Summary Plot ',...<p>
+</a><a name="996988">
+<p>
+</a><a name="996968">
+<p>
+</a><a name="996974">
+List of varibles used: <p>
+</a><a name="996969">
+a - conatins the earthquake datafile (lon, lat, yr, mo, da, ma, dep, hr, min [dip, dip_dir, rake])<p>
+</a><a name="996970">
+coastline  - stores the coastline and contour lines (lon,lat)<p>
+</a><a name="996971">
+faults - stores the fault line data (lon, lat)<p>
+</a><a name="996972">
+newt2 - subset of `a' after selection in space, time or magnitide<p>
+</a><a name="996973">
+newa - subset of `a' after selection a cross-section<p>
+</a><a name="996927">
+<p>
+</a><a name="996964">
+Filenames to some of the files: <p>
+</a><a name="996965">
+<p>
+</a><a name="996966">
+./ZMAP directory: <p>
+</a><a name="996903">
+zmap.m : starts the software, defines search path etc. <p>
+</a><a name="996904">
+ini_sun.m: initialize some of the setup-parameters on UNIX systems <p>
+</a><a name="996906">
+ini_pc.m: same for the PC and Mac<p>
+</a><a name="996917">
+./ZMAP/src directory: <p>
+</a><a name="996918">
+startmen.m: Main menu<p>
+</a><a name="996919">
+startzma.m: Load *.mat datafiles <p>
+</a><a name="996920">
+inpu.m: displays the preselection window<p>
+</a><a name="996921">
+sele_sub.m: creates the selection based on the selection parameters defined bu inpu.m<p>
+</a><a name="996922">
+subcata.m: Plots the main map <p>
+</a><a name="996924">
+timeplot.m: plots the cumualtive number plot<p>
+</a><a name="996925">
+zmapmenu.m: Plot the menu of a number of z-value -maps. <p>
+</a><a name="996926">
+<p>
+</a><a name="996954">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap12.htm">[Prev]</a> <a href="refs.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:36:49 -->
+
+</body>
+</html>

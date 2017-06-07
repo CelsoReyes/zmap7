@@ -1,0 +1,284 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="chap8.htm">[Prev]</a> <a href="chap11.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="998060">
+<center><h1>Chapter   8     	 Maps     of  z-values</h1></center>
+</a><a name="998062">
+<p>
+</a><a name="998064">
+<h2> Producing a Grid</h2>
+</a><a name="997457">
+ZMAP features some standard techniques, like selecting earthquakes, plotting cumulative number curves and magnitude signatures. The original idea that motivated the entire package is to provide an unbiased analysis of the seismicity over space and time. <p>
+</a><a name="997458">
+For a spacial analysis of the seismicity rate changes using ZMAP, it is first necessary to calculate the cumulative number curve at each grid point. These grids can be saved and re-loaded for various analyses later on. Producing a grid is the most time consuming process in the analysis, as it takes up to one hour to calculate a large grid of 100x100 grid-points on a Pentium PC or Unix Sparc 20. So get a cup of coffee and hang on. <img src="chp10a.gif"> <p>
+</a><a name="997482">
+<p>
+</a><a name="998067">
+<p>
+</a><a name="997788">
+<p>
+</a><a name="997483">
+When you select "Create a Grid" from the "Tools" pulldown menu of the map window <img src="chp10aa1.gif">(<a href="chap4.htm#997704">Figure 19</a>), an input box pops up. You will have to set the number of earthquakes per gridpoint and the latitudinal and longitudinal distance between grid points (grid spacing) in degrees. The number of earthquakes in each volume around a grid-point is critical for the resolution of the z-value maps. There is a trade off between the significance of the calculated z-values and the resolution. Small volumes, meaning few earthquakes, result in less significant z-values but a good spatial resolution, and vice versa. The volumes have to be overlapping to get a continuous image. For a more detailed discussion about the design of a grid see Wiemer and Wyss (1994). As an example, <a href="chp10.htm#997504">Figure 57</a> displays the grid we used to investigate the Landers region. For some selected grid-points, the circle containing 100 earthquakes are plotted, and you can see how the size of the circles is inversely proportional to the density of earthquake. At each grid-point the N clostest earthquakes are sampled, even when they are not within the boundary of the grid. To avoid sampling areas outside the grid, apply a pre-selection by polygon. <p>
+</a><a name="997502">
+<img src="chp10a1.gif"><p>
+</a><a name="997504">
+FIGURE 57.    Map view of the Landers region showing the concept used to create z-value maps<p>
+</a><a name="997508">
+<img src="chp10a2.gif"><p>
+</a><a name="997510">
+FIGURE 58.    Input parameters to create a grid<p>
+</a><a name="997511">
+A grid spacing that is too small, therefore a grid with too many gridpoints, can not only take a long time to be calculated but also crash the program! This happened several times using a 386. One option is to re-configure your PC so that other application programs (Word, File manager) do not occupy the extended memory.<p>
+</a><a name="997512">
+As a rule of thumb, I successfully used ni = 100 and a grid with up to 70x70 points (preferably less) on a UNIX sparc20. Using a PC with 8 MB of internal memory I advise to use as a maximum a grid size of 35x35. <p>
+</a><a name="997513">
+Click on "ZMAPGRID" in the makegrid input window when you have finished your selection of the grid parameters. You will be asked to interactively select the size of the grid on the map. Mark the lower left corner by hitting the left mouse button, then mark the upper right corner by hitting the left mouse button again. The outline of the grid will be displayed in the map.<p>
+</a><a name="997514">
+A cumulative number curve is now calculated for each grid-point. A small window displays the percentage of the total calculation done. Once the gridding is completed, you can enter a filename where the grid will be saved. If you would like to use this grid later on again, load this grid file using the "Load *.mat Datafile" option in the main menu window. The grid, as well as the catalog used to calculate this grid, will be loaded. In a later session you can instead of loading the catalog and the grid separately load the grid-data-file from the "Main Menu window". Since the grid-data-file contains the catalog information as well, the catalog will be plotted in the Map window and you can open the menu of the different z-value maps from the tools menu of the map window. This shortcut also guaranties that you work with the same set of earthquakes as you used to produce the grid in the first place. <p>
+</a><a name="996755">
+<p>
+</a><a name="997451">
+Once you have created a grid, you can apply various statistical functions to investigate changes in the seismicity rate. A description of these statistics is given by Haberman (1983,1987,1991). A section Menu will pop up automatically once the grid is produced. You can also open this menu from the tools menu of the map window. In the following I will first discuss the different statistics used and then the various presentation options.<p>
+</a><a name="997530">
+ <img src="chp10a3.gif"><p>
+</a><a name="996786">
+FIGURE 59.    Menu of  the various z-maps available in ZMAP version 2.1 <p>
+</a><a name="996788">
+<h2> The AS(t) Function</h2>
+</a><a name="996789">
+The AS(t) function (<em>Habermann</em>, 1983, 1987, 1991) was designed to answer a very specific question: Where in time is the strongest rate change between two specific end-points? In the past we have found the AS(t) function useful for the identification of an anomaly at the end of a time series, and for the identification of its onset-time. However, AS(t) may not detect anomalies when two or more rate changes occur in a time series. The z-value at time t at each grid point was calculated using the following equation (Habermann, 1983): <p>
+</a><a name="996806">
+<img src="chp10a4.gif"><p>
+</a><a name="996807">
+<em>R</em>1<em> </em>is the mean rate in period 1 (from t0 to t), <em>R</em>2 the mean rate in period 2 (from t to te), where t is the `current' time (t0 &lt; t &lt; te). <img src="chars/sigma.gif">1 and <img src="chars/sigma.gif">2 are the standard deviations in these periods, and <em>n</em>1 and <em>n</em>2 the number of samples. <p>
+</a><a name="996809">
+<h2> The LTA Function</h2>
+</a><a name="998100">
+For an unbiased statistical test of the significance of an anomaly, as well as to detect a period of reduced rate within a time series, the LTA-function (Long Term Average: Habermann, 1988, 1991) is more applicable:<p>
+</a><a name="998123">
+<img src="chp10a5.gif">The LTA function compares the overall mean rate <em>R</em>all to the mean rate <em>R</em>wl in a window of length wl (<em>n</em> indicates t he number of samples, <img src="chars/sigma.gif">1 and <img src="chars/sigma.gif">2 the standard deviation). This window is moved over the entire period in, for example, 2 week steps. The length of the LTA window introduces another parameter into the analysis. <p>
+</a><a name="996836">
+<h2> The Rubberband Function</h2>
+</a><a name="996837">
+This function uses the same equation as AS, but different periods. It compares the seismicity rate in the window t0 to t to the seismicity in the window t to t+iwl. The window length iwl can be edited in the same way as described for AS. The advantage of this function is that it does not use "future" seismicity in this comparison and therefore models a real-time approach. <p>
+</a><a name="996857">
+<img src="chp10a6.gif"><p>
+</a><a name="996858">
+<h2> Percent</h2>
+</a><a name="996859">
+The percent comparison simply calculates change in rate 1 (to to t) and rate 2 (t to te) in percent. The range of this function is from -100% (no earthquakes in second period) to infinity (no earthquakes in first period). <p>
+</a><a name="996876">
+<h2> Plotting a Map</h2>
+</a><a name="996877">
+After producing a grid, we have a time-series of z-values at each grid-point. This is a three-dimensional array of data, with a z-value at each point (x,y,t). One way to visualize this array is by slicing it in time. Therefore, we plot a latitude/longitude map of z-values at a specific time t. Each z-value is assigned a color. By viewing a sequence of time slices as an animation one can visualize seismicity rate changes in space and time. <p>
+</a><a name="996879">
+<h2> Understanding Z-value Maps</h2>
+</a><a name="996883">
+<a href="chp10.htm#997871">Figure 61</a> shows an example of a z-value map for the central Hawaiian region prior to the 1983 Kaoiki earthquake. A few remarks for the understanding of z-value maps: <p>
+</a><ul><ul>
+<a name="996884">
+<li>High (positive) z-values (hot colors in this presentation) represent a decrease in the seismicity rate. Low (negative) z-values represent an increase.
+</a><a name="996885">
+<li>The maps are scaled relative to the maximum value, so one can expect a hot-spot in every map, but not every hot-spot has to be significant. You can change the scaling of the z-axis by clicking on "FixAx".
+</a><a name="996886">
+<li>The location of a hot-spot is only the center of the volume that is actually sampled! In the example case, a large region is not covered by the catalog. In this situation you observe a 'smearing out' of the colors towards the edges due to the leaking of information from the area with data into areas without data. To avoid over interpretation an option was build into the program to select a maximum radius acceptable for N events. It is recommended to reduce this number until colors on the z-value map appear only on areas containing earthquakes. 
+</a><a name="996887">
+<li>The density and distribution of earthquakes is a critical factor for the understanding of a z-value map. Large areas with a constant color may just sample the same population of earthquakes over and over again - or may indicate a homogeneous seismicity rate over this area. 
+</a><a name="996888">
+<li>The seismicity is sampled in circular volumes (actually cylinders with no depth constraint). A linear seismicity feature, for example, may not show up as a linear feature in the z-value maps. Using "Circle" allows to view the distribution of the seismicity sampled. 
+</a><a name="996892">
+In the example shown in <a href="chp10.htm#997871">Figure 61</a>, one can see a red spot in the upper right corner of the plot with a z-value up to 7. The best way to proceed from here is to use<em> "</em>Circle",<em> </em>and display the cumulative number curve at this point. The cumulative number window is identical to the display discussed earlier, various tools are now available for further analyses. <p>
+</a><a name="996893">
+The events selected by "Circle" are highlighted in the z-value map, just like they are in the map window. This allows the user to judge the sampled area of each circle. You can also use "Polygon" to select earthquakes within a polygon. Again, the cumulative number curve will be displayed. <p>
+</a></ul>
+</ul><a name="996894">
+<h2> Maximum Z-value Maps</h2>
+</a><a name="996895">
+A more concise way to present the information of a three-dimensional array is to compress the array in one dimension. Sometimes one is mainly interested in the most significant rate change over the entire length of the catalog. Using the maximum value of the time series z(xi,yi,t) produces a map of maximum z-values that highlights the most significant changes in the entire catalog for a certain in LTA window length. The time information is lost, but can be reconstructed. Two neighboring points can represent a z-value at largely different times. This can be confusing, but in many cases we found the maximum z-value maps the most comprehensive tool to investigate seismicity rate changes and judge their relative significance. An example of a maximum z-value map, in the Landers region (California), is shown on the title page of this manual. The window length is 1.5 years, the hot spots indicate seismicity rate decrease prior to the 1992 Landers and Big Bear earthquakes (see Wiemer and Wyss, 1994). <p>
+</a><a name="996896">
+<p>
+</a><a name="996930">
+<h2> Animating Z-value Maps<img src="chp10a7.gif"></h2>
+</a><a name="996931">
+Instead of viewing just one time slice, the user can produce an animation or movie of time slices. In order to do that, several time slices are calculated, displayed, and stored as a bitmap. The advantage of this techniques is that these bit-maps can be displayed without the time consuming calculation of the z-values.<p>
+</a><a name="996934">
+To produce an animation, select one of the animations in the z-value map menu (<a href="chp10.htm#996786">Figure 59</a>). You will be asked for the number of slices, and, if you selected LTA, the window length of the LTA function. As a first step, ZMAP finds the maximum and minimum of all time slices, this is necessary to scale the images in a uniform way. Then ZMAP displays the slices on the screen and stores the bitmap.<p>
+</a><a name="996946">
+<img src="chp10a8.gif"><p>
+</a><a name="996947">
+FIGURE 60.    Movie input parameter using the LTA function<p>
+</a><a name="996948">
+The larger the displayed map on the screen, the larger the stored matrix of bitmaps. The size of a movie file can easily reach several MB. After all maps are displayed, ZMAP will ask if you would like to store the movie in a file. You can press "Cancel" if you don't want to save the movie.  ZMAP will now display the first movie-frame (<a href="chp10.htm#997845">Figure 62</a>). You can play the whole animation by selecting "Play". The number of runs and the speed in frames per second can be selected. Use<em> "</em>Circle<em>"</em> to select interactively the ni closest earthquakes to a point.<p>
+</a><a name="997871">
+FIGURE 61.    (<img src="chp10a9.gif">Z-value map of AS(t) values for the Parkfield segment of the San Andreas fault. <p>
+</a><a name="997880">
+<p>
+</a><a name="997881">
+<p>
+</a><a name="997873">
+<p>
+</a><a name="997854">
+<p>
+</a><a name="997855">
+<p>
+</a><a name="997874">
+<p>
+</a><a name="997875">
+<p>
+</a><a name="997876">
+<p>
+</a><a name="997877">
+<p>
+</a><a name="997856">
+<p>
+</a><a name="997857">
+<p>
+</a><a name="997591">
+<img src="chp10a10.gif"><p>
+</a><a name="997845">
+FIGURE 62.     First frame of the animation of AS z-value maps.<p>
+</a><a name="997796">
+<h2> Time-cuts of Z-value Maps</h2>
+</a><a name="997019">
+When you select any of the functions under "timecut" from the Z-value map window, a map view of the z-values at this time will be displayed. For the LTA and Rubberband function you also need to input the length of the window. AS(t) and Percent does not require a time length, since it spans the two time periods t0 to t and t to te (see earlier discussion of these functions). <img src="chp10a11.gif"><p>
+</a><a name="997025">
+FIGURE 63.    Time-cut input parameter<p>
+</a><a name="997027">
+<h2> Tools from the Z-value Map Window<img src="chp10a12.gif"></h2>
+</a><a name="997652">
+<em>ZMAP menu</em>: Opens the menu (<a href="chp10.htm#996786">Figure 59</a>) for a new selection <p>
+</a><a name="997037">
+<strong>Fix color of z-scale</strong><strong>:</strong> This options allows you to set the minimum and maximum value of the z-scale (colorbar) interactively. You can use the current selection for following figures by selecting the "Freeze Colorbar" option.<p>
+</a><a name="998128">
+<p>
+</a><a name="997666">
+<p>
+</a><a name="997663">
+<img src="chp10a13.gif"><p>
+</a><a name="997046">
+FIGURE 64.    Input parameters to scale the colorbar<p>
+</a><a name="997048">
+<strong>Histogram of z-values</strong>: This will produce a plot of the distribution of the z-values in the current ma<p>
+</a><a name="997768">
+FIGURE 65.    .<img src="chp10a14.gif">Histogram of z-values of the current z-value map<p>
+</a><a name="997054">
+<h2> Probability Maps </h2>
+</a><a name="997055">
+Probability maps are a first attempt to quantify the enhanced probability of a large earthquake occurring based on the seismic quiescence hypothesis. So far, we use a empirical relation based on earlier case studies. The probability is calculated based on the z-value using the equation (Wyss and Wiemer, 1995; Wiemer and Wyss, 1995)<img src="chp10a15.gif"><p>
+</a><a name="997059">
+z-values below 2.57 (99% confidence level) are considered normal and the probability of an earthquake occurring is equal to the Poisson probability (here judged for California and weighted with the average size of the anomaly). To modify this equation, edit line 18 and 19 in file src\view_max.m. <p>
+</a><a name="997060">
+When you select "Probability" from the z-value map menu, the current z-value map will be transformed into a probability map. If nothing else, this transformation enhances the maxima in the data. Hit the "Back to z-value map" button in the tools menu to go back to the z-value map. <img src="chp10a16.gif"><p>
+</a><a name="997064">
+FIGURE 66.    Probability map for the Italy region<p>
+</a><a name="997065">
+<strong>Back to z-value map:</strong> This will return from either the probability map or the resolution map to the original z-value map.<p>
+</a><a name="997066">
+<strong>Colormap InvertGray:</strong> This colormap is a gray scale map which is useful for black and white printers.<p>
+</a><a name="997068">
+<h2> Resolution Maps</h2>
+</a><a name="997069">
+One finds that the z-value maps leak information into areas with no data. Large neighboring circles sample virtually the same population of earthquakes and therefore show the same color. Z-value maps tend to'smear out' towards the edges. To suppress this effect you can set the threshold value minimum radius in kilometers in the upper right corner of the z-value map window. That is, areas where the sampling circle is larger than the minimum radius will not be plotted. To visualize the density of earthquakes in the catalog you can choose "Resolution Map" from the Tools menu of the z-value map window. This will display a map where the color code of the overlying image is proportional to the radius of each circle.<p>
+</a><a name="997074">
+.<img src="chp10a17.gif"><p>
+</a><a name="997075">
+FIGURE 67.    Left Side: Resolution map for Italy. The size of the circles increases towards the edges. Right: Resolution map with minimum radius set to 200 km. Areas of low seismicity rate are not considered. <p>
+</a><a name="997093">
+<h2> The Alarm Cube <img src="chp10a18.gif"></h2>
+</a><a name="997094">
+<p>
+</a><a name="997095">
+<p>
+</a><a name="998131">
+<p>
+</a><a name="997096">
+The alarm cube is a first attempt to visualize anomalous seismicity rate decreases in time and space in one figure. Z-value maps for all times are calculated using either the LTA or the Rubberband function. This can be a time consuming process, a waitbar indicates the percentage of the calculation done. A histogram of all these z-values is plotted first, then the alarm cube is displayed. An alarm is issued when a z-value exceeds a threshold that can be set in the lower right corner of the alarm cube window. The minimum possible threshold is z = 2.57. Each alarm is plotted as a red circle in the space-time cube. A blue line of Tw length is plotted as a tail to each alarm (where Tw is the window length of the LTA or Rubberband function in years). <img src="chp10aa20.gif"><p>
+</a><a name="997099">
+FIGURE 68.    Alarm cube input parameters<p>
+</a><a name="998331">
+Once the cube is displayed, you can change the viewpoint using the viewer window (<a href="chp10.htm#997150">Figure 70</a>). It is sometimes difficult to identify the space-time position of alarms, so rotating the cube in extreme positions (vertical or horizontal) helps to identify time or location. The alarms shown in the cube are also plotted in the seismicity map as circles. <p>
+</a><a name="997751">
+You can eliminate the plotting of z-values in areas of low seismicity rate by setting the value of MinRad in the upper right corner. This will suppress coloring areas with a circle size larger than MinRad. You can also create an animation of the cube by selecting "Make Movie" from the lower left corner of the cube window. This will create an animation of the cube going through several different viewpoints. This movie uses lots of memory and might crash Matlab! Reduce the window size of the cube before you create a movie, this reduces the memory used.<p>
+</a><a name="997763">
+ <img src="chp10a19.gif"><p>
+</a><a name="997758">
+FIGURE 69.    Histogram of all z-values ('all' meaning all times and all locations)<p>
+</a><a name="997147">
+.<img src="chp10a20.gif"> <p>
+</a><a name="997150">
+FIGURE 70.    Alarm cube for Italy. An alarm is issued when a z-value exceeds the threshold of z=6.5. Alarms are displayed as red circles, the blue line has the time length iwl (window length of the LTA or Rubberband function). Large earthquakes are shown as black asterix.<p>
+</a><a name="997342">
+<h2> Tools from the Alarm cube window</h2>
+</a><a name="997343">
+ Find Anomaly Groups<img src="chp10a21.gif"><p>
+</a><a name="997349">
+The alarms in a typical alarm cube can usually be distinguished into a number of distinct groups of alarms. The distinction as made based on the separation in time and space. The "Find Anomaly Groups" option will identify distinct anomaly groups based on the following criteria: <p>
+</a><ul><ul>
+<a name="997352">
+<li>Overlap in space: Two alarms belong to the same alarm group when they sample radius overlap. 
+</a><a name="997361">
+<li>Overlap in time: Two alarms belong to the same alarm group when the later alarm is declared while the first is still in progress. 
+</a><a name="997364">
+Both of these criteria need to be fulfilled. Alarm group will be displayed as differently colored circles (randomly assigned colors) in the seismicity map window, and the number of alarms found will be displayed in the matlab command window. <p>
+</a><a name="997376">
+ Display one anomaly group<p>
+</a><a name="997377">
+This option will display the combined seismicity of one anomaly group. The seismicity from all individual alarms in each alarm group will be combined, and identical events will removed. The cumulative number window will display the time series of seismicity in the selected alarm group, and the location of the events will be marked in the seismicity map. <p>
+</a><a name="997382">
+ Determine Valarm/Zalarm ratio<p>
+</a><a name="997419">
+ We also use the alarm cube analysis to investigate the percentage of the total space time volume covered by alarms and thus judge the probability of an anomaly correlating with a mainshock by chance.   The total space-time volume<em> Vtotal</em> is calculated as a sum over all grid points<p>
+</a><a name="997423">
+<img src="chp10a22.gif"><p>
+</a><a name="997390">
+were <em>Rx,y</em> is the radius of the circle containing 100 earthquakes at each grid-point and <em>Ttotal</em> is the time length of the catalog in years. The space-time volume <em>Valarm </em>covered by alarms can be expressed as:<p>
+</a><a name="997394">
+ <img src="chp10a23.gif"><p>
+</a><a name="998150">
+with <em>Talarm</em> being the time length of the declared alarm. <em>Valarm</em> is a function of the alarm threshold <em>zalarm</em>. Both <em>Valarm</em> and <em>Vtotal</em> contain individual volumes that are not independent but overlap in space and time. The percentage F of space time covered by alarms is consequently <img src="chp10a24.gif">, <p>
+</a><a name="998154">
+and is shown as a function of the alarm threshold zalarm. As an example, for an alarm threshold zalarm = 8.0 approximately only 2% of the total space time volume is covered with alarms. <p>
+</a><a name="998162">
+FIGURE 71.     <img src="chp10a25.gif">Ratio of alarm volume Va over the total volume Vtotal as a function of alarm threshold Zalarm<p>
+</a><a name="998163">
+  Determine the number of alarm groups as a function of Zalarm<img src="chp10a26.gif"><p>
+</a><a name="997673">
+The number of alarm groups depends in the selected alarm threshold Zalarm. In general, the higher Zalarm, the fewer alarm groups will be detected. However, in some instances increasing the alarm threshold will actually increase the number of alarms as seen in the Figure to the right. This can happen when the connecting `bridge' between two alarm groups is eliminated when raising the alarm threshold. <p>
+</a></ul>
+</ul><a name="997675">
+<h2> z-values in cross-sections</h2>
+</a><a name="997676">
+In many instances we found that cross sections along (or perpendicular to) the strike of faults reveal information indiscernible in map views (Wyss and Wiemer, 1996). For example, a seismicity rate decrease at depth can be obscured by a seismicity rate increase for shallow earthquakes, thus resulting in a map view indicating little change. In a cross section the difference between the two volumes can be mapped. Since many large earthquakes initiate in the lower part of the seismogenic crust, seismic quiescence may be limited to deeper volumes. We have expanded our initial z-value map view to cross-sections of z-values, using the same gridding technique described for z-value maps. After creating a cross-section (<a href="chap4.htm#997433">See "Cross-Sections" on page &#32;42.</a>) you van select the  'Make Grid' option from the Cross-Section window (<a href="../doc/latest/ug1to5.htm#">Figure 27</a>). An input window basically identical to that shown in <a href="chp10.htm#997510">Figure 58</a> will appear, only that you now select the grid spacing in distance and depth. The units are kilometer. After clicking the'Go' button, you need to define with a mouse-click the lower left and upper right corner of the grid in the cross-section plot. Once the calculation is completed, a menu will pop up, giving you the choice of time-cuts using various functions (LTA, AS, Percent, Rubberband). The z-value maps are displayed in as described above. <p>
+</a><a name="997712">
+<img src="chp10a27.gif"><p>
+</a><a name="997713">
+FIGURE 72.    z-value cross sections along the strike of the Landers fault (top)and the Big Bear fault (bottom). Using the standard deviate z, we compare the seismicity rates from 1980.3 to 1990 to those from 1990 to 1992. Positive z-values (red) indicate a decrease in the seismicity rate, negative values (dark blue) an increase. The hypocenter location of the two mainshocks is marked by a black asterix, the hypocenter of the Joshua Tree earthquake is marked with a pink cross. Cumulative number plots containing 50 earthquakes are shown for six regions.<p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="chap8.htm">[Prev]</a> <a href="chap11.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:20:40 -->
+
+</body>
+</html>

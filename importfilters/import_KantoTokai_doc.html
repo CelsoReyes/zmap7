@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Harvard CMT catalog</title>
+                                                              
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+            
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+     <tbody>
+       <tr>
+         <td valign="top" bgcolor="#990000" width="415" rowspan="1"
+ colspan="1"><b><font face="Helvetica, Arial, sans-serif"
+ color="#ffffff" size="+2">NIED Kanto-Tokai catalog</font></b><br>
+               </td>
+                         </tr>
+                                                                        
+                                                                        
+              
+  </tbody>         
+</table>
+         <br>
+        <font face="Helvetica, Arial, sans-serif">Download URL: <a
+ href="http://www.bosai.go.jp/center/kanto-tokai/index_e.html">http://www.bosai.go.jp/center/kanto-tokai/index_e.html</a></font><font
+ face="Helvetica, Arial, sans-serif"><a
+ href="http://www.bosai.go.jp/center/kanto-tokai/index_e.html"><br>
+   <br>
+   </a></font><font size="+1" face="Helvetica, Arial, sans-serif">To retrieve 
+ the catalog <br>
+   </font><font face="Helvetica, Arial, sans-serif"><br>
+   Change to the </font><tt>importfilters/KantoTokai</tt> <font
+ face="Helvetica, Arial, sans-serif">directory<br>
+   </font><font face="Helvetica, Arial, sans-serif"><br>
+   Call </font><tt>gettokaicatalog directory</tt><br>
+   <br>
+   <font face="Helvetica, Arial, sans-serif">The script retrieves all necessary 
+ data and converts it into fixed-column format to be used with this importfilter</font><font
+ face="Helvetica, Arial, sans-serif"> and stores it into </font><tt>directory</tt>.<font
+ face="Helvetica, Arial, sans-serif">  The script uses </font><tt>sed</tt>
+<font face="Helvetica, Arial, sans-serif">and</font> <tt>xsltproc</tt>.<font
+ face="Helvetica, Arial, sans-serif"><br>
+   <br>
+   <font size="+1">Dokumentation of the original *.html files:</font><br>
+   </font><br>
+   
+<center>   
+<h2>Explanation of mechanism solution</h2>
+   </center>
+     
+<hr>  The contents of mechanism solution data is as following.  
+<p>  IDNO JYMD IOTH IOTM OTS HLAT HLNG HDEP FMAMP JDMAMP NPOL NERR RANKPX
+ AZP THP RANKTX AZT THT SCORE STRIK1 DIP1 SLIP1 STRIK2 DIP2 SLIP2</p>
+   
+<p>    
+<table align="center" bgcolor="#ffffff" border="0" width="80%">
+   <tbody>
+      <tr>
+        <th>IDNO</th>
+        <th>ID No.</th>
+      </tr>
+   <tr>
+        <th>JYMD</th>
+        <th>origin time, ymd(JST)</th>
+      </tr>
+   <tr>
+        <th>IOTH</th>
+        <th>origin time, hour</th>
+      </tr>
+   <tr>
+        <th>IOTM</th>
+        <th>origin time, minute</th>
+      </tr>
+   <tr>
+        <th>OTS</th>
+        <th>origin time, second</th>
+      </tr>
+   <tr>
+        <th>HLAT</th>
+        <th>latitude of hypocenter</th>
+      </tr>
+   <tr>
+        <th>HLNG</th>
+        <th>longitude of hypocenter</th>
+      </tr>
+   <tr>
+        <th>HDEP</th>
+        <th>hypocentral depth</th>
+      </tr>
+   <tr>
+        <th>FMAMP</th>
+        <th>magnitude</th>
+      </tr>
+   <tr>
+        <th>JDMAMP</th>
+        <th>index of magnitude</th>
+      </tr>
+   <tr>
+        <th>NPOL</th>
+        <th>number of station whose polarity is detected</th>
+      </tr>
+   <tr>
+        <th>NERR</th>
+        <th>number of station whose polarity doesn't match solution</th>
+      </tr>
+   <tr>
+        <th>RANKPX</th>
+        <th>rank of P axes</th>
+      </tr>
+   <tr>
+        <th>AZP</th>
+        <th>azimuth of P axes(N-&gt;E)</th>
+      </tr>
+   <tr>
+        <th>THP</th>
+        <th>theta of P axes(down-&gt;up)</th>
+      </tr>
+   <tr>
+        <th>RANKTX</th>
+        <th>rank of T axes</th>
+      </tr>
+   <tr>
+        <th>AZT</th>
+        <th>azimuth of T axes(N-&gt;E)</th>
+      </tr>
+   <tr>
+        <th>THT</th>
+        <th>theta of T axes(down-&gt;up)</th>
+      </tr>
+   <tr>
+        <th>SCORE</th>
+        <th>score of mechanism solution</th>
+      </tr>
+   <tr>
+        <th>STRIK1</th>
+        <th>strike of nodal plane1</th>
+      </tr>
+   <tr>
+        <th>DIP1</th>
+        <th>dip angle of nodal plane1</th>
+      </tr>
+   <tr>
+        <th>SLIP1</th>
+        <th>slip of nodal plane1</th>
+      </tr>
+   <tr>
+        <th>STRIK2</th>
+        <th>strike of nodal plane2</th>
+      </tr>
+   <tr>
+        <th>DIP2</th>
+        <th>dip angle of nodal plane2</th>
+      </tr>
+   <tr>
+        <th>SLIP2</th>
+        <th>slip of nodal plane2</th>
+      </tr>
+         
+  </tbody>  
+</table>
+  </p>
+   
+<p>  </p>
+   
+<hr><br>
+   <br>
+</body>
+</html>

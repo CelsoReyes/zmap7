@@ -1,0 +1,165 @@
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=x-sjis">
+<TITLE>JMA Format definition</TITLE>
+</HEAD>
+<BODY background="../../../../_themes/sandston/stonbk.jpg" bgcolor="#FFFFFF" text="#000000" link="#993300" vlink="#CC6633" alink="#660000"><!--mstheme--><font face="ＭＳ Ｐゴシック"><P ALIGN="JUSTIFY">Hypocenter record (96bytes)-----------------------------------------</P> 
+<P ALIGN="JUSTIFY">Cols. Type  Description</P> 
+<P ALIGN="JUSTIFY">  <b>  1   A1    Header (Agency Code). Coded as</b> </P>  
+<blockquote>  
+<P ALIGN="JUSTIFY">              J: Hypocenter record determined by JMA </P>  
+<P ALIGN="JUSTIFY">                 (This code should be written)  </P>  
+<P ALIGN="JUSTIFY">              I: Hypocenter record determined by ISC  </P>  
+<P ALIGN="JUSTIFY">              U: Hypocenter record determined by USGS </P>  
+<P ALIGN="JUSTIFY">              C: Comment record</P>  
+</blockquote>  
+<P ALIGN="JUSTIFY">       <b>       - Origin time (Japan Standard Time = UT + 9h) -</b></P>  
+<blockquote>  
+<P ALIGN="JUSTIFY">  2   I4    Years</P>  
+<P ALIGN="JUSTIFY">  3   I2    Months</P>  
+<P ALIGN="JUSTIFY">  4   I2    Days</P>  
+<P ALIGN="JUSTIFY">  5   I2    Hours</P>  
+<P ALIGN="JUSTIFY">  6   I2    Minutes</P>  
+<P ALIGN="JUSTIFY">  7   F4.2  Seconds</P>  
+<P ALIGN="JUSTIFY">  8   F4.2  Standard error for origin time (Seconds)</P>  
+</blockquote>  
+<P ALIGN="JUSTIFY">       <b>       - Hypocenter -</b></P>  
+<blockquote>  
+<P ALIGN="JUSTIFY">  9   I3    Latitude (Degrees, North+ and South-) </P>  
+<P ALIGN="JUSTIFY"> 10   F4.2           (Minutes)</P>  
+<P ALIGN="JUSTIFY"> 11   F4.2  Standard error for latitude (Minutes)</P>  
+</blockquote>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<blockquote>  
+<P ALIGN="JUSTIFY"> 12   I4 Longitude (Degrees, East+ and West-)</P>  
+<P ALIGN="JUSTIFY"> 13   F4.2           (Minutes)</P>  
+<P ALIGN="JUSTIFY"> 14   F4.2  Standard error for longitude (Minutes)</P>  
+</blockquote>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<blockquote>  
+<P ALIGN="JUSTIFY"> 15   F5.2  Depth in kilometers (Depth-free method) This method computes the hypocenter with the 
+initial condition of the depth as unknown<br>  
+or<br>  
+I3,2X Depth in kilometers (depth-sliced method) This method assigns the depths changing by 1 
+kilometer increments.</P>  
+<P ALIGN="JUSTIFY"> 16   F3.2  Standard error for depth (kilometers)</P>  
+</blockquote>  
+<P ALIGN="JUSTIFY">　</P> 
+<P ALIGN="JUSTIFY">       <b>       - Magnitude -</b></P>  
+  
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+<blockquote>  
+<P ALIGN="JUSTIFY"> 17   F2.1  Magnitude 1</P>  
+<P ALIGN="JUSTIFY"> 18   A1    Type of magnitude 1.</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              J: JMA magnitude</P>  
+<P ALIGN="JUSTIFY">              B: Mb  - USGS or ISC body wave magnitude</P>  
+<P ALIGN="JUSTIFY">              S: Ms  - USGS or ISC surface wave magnitude</P>  
+  </blockquote>  
+<P ALIGN="JUSTIFY"> 19   F2.1  Magnitude 2</P>  
+<P ALIGN="JUSTIFY"> 20   A1    Type of magnitude 2.</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              B: Mb  - USGS or ISC body wave magnitude</P>  
+<P ALIGN="JUSTIFY">              S: Ms  - USGS or ISC surface wave magnitude</P>  
+  </blockquote>  
+</blockquote>  
+<P ALIGN="JUSTIFY"><b>- Other Parameters</b></P> 
+<blockquote> 
+<P ALIGN="JUSTIFY"> 21   A1    Type of travel time table.</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              1: Standard table</P>  
+<P ALIGN="JUSTIFY">              2: Table of far east off the Sanriku district</P>  
+<P ALIGN="JUSTIFY">              3: Table of the east off Hokkaido district</P>  
+<P ALIGN="JUSTIFY">              4: Table of the regions of southern part of the                 Kurile Islands&nbsp; </P> 
+<P ALIGN="JUSTIFY">               
+ 
+blank: Determined by another agency </P>  
+  </blockquote>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<P ALIGN="JUSTIFY"> 22   A1    Precision of hypocenter</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              1: Depth-free method</P>  
+<P ALIGN="JUSTIFY">              2: Depth-sliced method</P>  
+<P ALIGN="JUSTIFY">              3: Fixed depth</P>  
+<P ALIGN="JUSTIFY">              4: Using depth phase</P>  
+<P ALIGN="JUSTIFY">              7: Poor solution</P>  
+<P ALIGN="JUSTIFY">              8: Not determined or not accepted</P>  
+  </blockquote>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<P ALIGN="JUSTIFY"> 23   A1    Subsidiary information of the event.</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              1: Natural earthquake</P>  
+<P ALIGN="JUSTIFY">              2: Insufficient number of JMA station</P>  
+<P ALIGN="JUSTIFY">              3: Artificial event</P>  
+<P ALIGN="JUSTIFY">              4: Noise</P>  
+  </blockquote>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<P ALIGN="JUSTIFY"> 24   A1    Maximum Seismic Intensity (JMA scale)</P>  
+ 
+<FONT SIZE=3>  
+<P ALIGN="JUSTIFY">　</P>  
+</FONT>  
+  
+<P ALIGN="JUSTIFY"> 25   A1    Damage class (after Utsu)</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">              1: Slight damage (cracks on walls and ground)</P>  
+<P ALIGN="JUSTIFY">              2: Light damaged (broken houses, roads, etc.)</P>  
+<P ALIGN="JUSTIFY">              3: 2 - 19 persons killed or 2 - 999 houses completely destroyed </P>  
+<P ALIGN="JUSTIFY">              4: 20 - 199 persons killed or 1,000 - 9,999 houses 
+completely destroyed </P>  
+<P ALIGN="JUSTIFY">              5: 200 - 1,999 persons killed or 10,000 - 99,999 houses 
+completely destroyed </P>  
+<P ALIGN="JUSTIFY">              6: 2,000 - 19,999 persons killed or 100,000 - 999,999 houses 
+completely destroyed </P>  
+<P ALIGN="JUSTIFY">              7: 20,000 or more persons killed or 1,000,000 or more houses 
+completely destroyed </P>  
+  </blockquote>  
+<P ALIGN="JUSTIFY">　</P> 
+<P ALIGN="JUSTIFY"> 26   A1    Tsunami class (after Imamura and Iida)</P>  
+  <blockquote>  
+<P ALIGN="JUSTIFY">                Tsunami height Damage</P> 
+    <blockquote> 
+<P ALIGN="JUSTIFY">              1:    50cm          none</P> 
+<P ALIGN="JUSTIFY">              2:     1m           very slight damage</P> 
+<P ALIGN="JUSTIFY">              3:     2m           slight damage to coastal areas and ships</P> 
+<P ALIGN="JUSTIFY">              4:  4- 6m           human injures</P> 
+<P ALIGN="JUSTIFY">              5: 10-20m           damage to more than 400km of coastline</P> 
+<P ALIGN="JUSTIFY">              6:    30m           damage to more than 500km of coastline</P> 
+    </blockquote> 
+  </blockquote> 
+  
+<FONT SIZE=3> 
+<P ALIGN="JUSTIFY">　</P> 
+</FONT>  
+  
+<P ALIGN="JUSTIFY"> 27   I1    District number of epicenter</P> 
+<P ALIGN="JUSTIFY"> 28   I3    Geographical region number of epicenter</P> 
+<P ALIGN="JUSTIFY"> 29   A24   Geographical region name of epicenter</P> 
+<P ALIGN="JUSTIFY"> 30   I3    Number of observations contributing to hypocenter 
+determination (After and from 1983) or Number of phase data employed&nbsp; in hypocenter determination (Before 1983 if indicated) </P>  
+<P ALIGN="JUSTIFY"> 31   A1    Hypocenter determination flag depends on JMA computer 
+system </P>
+</blockquote>
+</HTML>

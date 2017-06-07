@@ -1,0 +1,7 @@
+#!/bin/csh
+  foreach j  (pfig12?.ps)
+        set nam  = `echo $j | awk -F. '{ printf("%s", $1) }'`
+        cat $j | sed -e "s/park_grid4.mat//;" > tmp.ps
+
+        ps2epsi tmp.ps $nam.epsi
+end

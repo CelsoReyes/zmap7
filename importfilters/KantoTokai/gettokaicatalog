@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# Downloads the NIED Kanto-Tokai catalog and converts it into fixed-column format
+#
+# Parameters expected:
+# --------------------
+#
+# Download-directory
+# $1
+#
+# Example:
+# --------
+#
+# gettokaicatalog /home/user/tokai
+#
+# Author: Danijel Schorlemmer, Swiss Seismological Service, ETH Zuerich
+# Licence: GPL
+
+# Store current directory
+WHEREAMI=`pwd`
+
+# Create download directories
+if [ ! -d $1 ]; then
+  mkdir $1
+  chmod 775 $1
+fi
+if [ ! -d $1/retrieve ]; then
+  mkdir $1/retrieve
+  chmod 775 $1/retrieve
+fi
+
+# Change to the download directory
+cd $1/retrieve
+
+# Get the data in HTML-format
+wget -nH --cut-dirs=4 --input-file=$WHEREAMI/filelist.dat
+
+# Apply SED to prute textfiles from HTML files
+for i in `ls $1/retrieve` ; do
+  # Transform HTML to valid XML
+  sed -f $WHEREAMI/sed_script $i >> $i.xml
+  # XSLT from XML to pure textfile
+  xsltproc -o $i.txt $WHEREAMI/extract.xsl $i.xml
+  # Append to catalog
+  cat $i.txt >> $1/tokaicatalog.dat
+done
+
+# Remove blank lines from catalog
+sed '/^$/d' $1/tokaicatalog.dat >> $1/tokaicatalog.txt
+
+# Garbage collection
+rm -R $1/retrieve
+rm $1/tokaicatalog.dat

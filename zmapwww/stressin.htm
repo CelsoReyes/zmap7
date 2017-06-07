@@ -1,0 +1,277 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="seislap.htm">[Prev]</a> <a href="chap12.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="998540">
+<center><h1>Chapter   12     	 Stress-tensor  inversions and the cumulative misfit method</h1></center>
+</a><a name="998638">
+ <p>
+</a><a name="998541">
+<h2> Introduction </h2>
+</a><a name="996869">
+This chapter describes how to use ZMAP to invert for the stress tensor using fault plane solutions. The actual inversion is done by a Fortran code based on <em>Gephart and Forsyth's </em>(1984)  and <em>Gepard</em> (1990) algorithm. This inversion will <strong>only run for the UNIX version</strong>! Another feature described in this chapter is the cumulative misfit method, introduced by <em>Wyss and Lu</em> (1995) and <em>Lu and Wyss</em> (1995). <p>
+</a><a name="996875">
+<h2> Data requirements</h2>
+</a><a name="996876">
+The data imported into ZMAP needs to contain three additional columns: <p>
+</a><a name="996909">
+column 10: 	Dip-direction<p>
+</a><a name="997679">
+column 11: 	Dip<p>
+</a><a name="997680">
+column 12: 	Rake<p>
+</a><a name="997750">
+column 13: 	Misfit - faultplane uncertainty assigned by hypoinverse  (optional) <p>
+</a><a name="997746">
+Shown below is an example of the input data.  
+<Table Border="3">
+<caption><a name="997683">
+Table 1:  Fault plane solution input data format<p>
+</a></caption>
+<tr><th><a name="997691">
+<h2> dip-direction</h2>
+</a><th><a name="997693">
+<h2> dip  </h2>
+</a><th><a name="997695">
+<h2> rake</h2>
+</a><th><a name="997697">
+<h2> misfit</h2>
+</a>
+<tr><td><a name="997699">
+ 230.0000<p>
+</a><td><a name="997701">
+ 75.0000<p>
+</a><td><a name="997703">
+ 137.3870<p>
+</a><td><a name="997705">
+ 0.03<p>
+</a>
+<tr><td><a name="997707">
+ 325.0000<p>
+</a><td><a name="997709">
+ 90.0000<p>
+</a><td><a name="997711">
+ 55.0000<p>
+</a><td><a name="997713">
+ 0.04<p>
+</a>
+<tr><td><a name="997715">
+ 145.0000<p>
+</a><td><a name="997717">
+ 80.0000<p>
+</a><td><a name="997719">
+ -55.0000<p>
+</a><td><a name="997721">
+ 0.12<p>
+</a>
+<tr><td><a name="997723">
+ 140.0000<p>
+</a><td><a name="997725">
+ 75.0000<p>
+</a><td><a name="997727">
+ 50.0000<p>
+</a><td><a name="997729">
+ 0.01<p>
+</a>
+<tr><td><a name="997731">
+ 50.0000<p>
+</a><td><a name="997733">
+ 50.0000<p>
+</a><td><a name="997735">
+ 140.0000<p>
+</a><td><a name="997737">
+ 0.10<p>
+</a>
+<tr><td><a name="997739">
+ 45.0000<p>
+</a><td><a name="997741">
+ 50.0000<p>
+</a><td><a name="997743">
+ -135.0000<p>
+</a><td><a name="997745">
+ 0.03<p>
+</a>
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+<p>
+</a><a name="997747">
+Data import is only supported through the ascii option. Select the EQ Datafile (+focal) option when Importing your data into ZMAP. <p>
+</a><a name="997765">
+<h2> Stress Tensor Inversion</h2>
+</a><a name="997766">
+To initiate a stress tensor inversion, select the "Invert for stress tensor" option from the Tools pulldown menu of the Cumulative Number window. The dataset currently selected in this window will be used for the inversion. The actual inversion is performed using a Fortran code based on <em>Gephart and Forsyth (</em>1984) algorithm, and modified by Zhong Lu. You will be asked on which computer you would like to perform the inversion (e.g. `moment'). You answer is used for a UNIX `rsh' command that initiates the inversion. <p>
+</a><a name="997771">
+The actual program is described by <em>Gephart and Forsyth</em> (1984), <em>Gephart</em> (1990), and <em>Gillard and Wyss </em>(1995). Two main assumptions need are made: 1) the stress tensor is uniform in the crustal volume investigated; 2) on each fault plane slip occurs in the direction of the resolved shear stress. In order to invert the focal mechanism data successfully for the direction of principal stresses, one must have a crustal volume with faults representing zones of weakness with different orientations in a homogeneous stress field. If only one type of focal mechanism is observed, then the direction of the principal stresses would be poorly constraint (modified from <em>Gillard and Wyss,</em> 1995) <p>
+</a><a name="998022">
+<img src="stressia.gif"><p>
+</a><a name="998012">
+FIGURE 82.    Schematic representation of the misfit angle (Figure provided by Zhong Lu)<p>
+</a><a name="998013">
+To determine the unknown parameters, the difference between the prediction of the model and the observations needs to be minimized. This difference, is called the misfit, and is defined as the minimum rotation about any arbitrary axes that brings the fault plane geometry into coincidence with a new fault plane. A grid search over the focal sphere is performed - at first with a 90 degree variance with 10 degree spacing (approximate method) then with a 30 degree variance and 5 degree spacing. Each inversion takes a significant amount of time to run, which depends mainly on the number of earthquakes to be inverted. As a rule of thumb: 30 earthquakes take about 15 minutes to be inverted on a SUN Sparc 20. The inversion creates a number of temporary files in the directory `~/ZMAP/stinvers'. The final result can be found in the file `stress.out'  
+<Table Border="3">
+<caption><a name="997837">
+Table 2:  Output of the stress tensor inversion in file `stress.out' and out95<p>
+</a></caption>
+<tr><th><a name="997855">
+<h2> S1</h2>
+</a><a name="997890">
+<h2> (az)</h2>
+</a><th><a name="997857">
+<h2> S1</h2>
+</a><a name="997891">
+<h2> (plun)</h2>
+</a><th><a name="997859">
+<h2> S2</h2>
+</a><a name="997892">
+<h2> (az)</h2>
+</a><th><a name="997861">
+<h2> S2</h2>
+</a><a name="997893">
+<h2> (plun)</h2>
+</a><th><a name="997863">
+<h2> S3</h2>
+</a><a name="997894">
+<h2> (az)</h2>
+</a><th><a name="997865">
+<h2> S3</h2>
+</a><a name="997895">
+<h2> (plun)</h2>
+</a><th><a name="997867">
+<h2> PHI</h2>
+</a><th><a name="997869">
+<h2> R</h2>
+</a><th><a name="997871">
+<h2> Misfit</h2>
+</a>
+<tr><td><a name="997873">
+ 13<p>
+</a><td><a name="997875">
+ 46<p>
+</a><td><a name="997877">
+ 5<p>
+</a><td><a name="997879">
+ 314<p>
+</a><td><a name="997881">
+ 76<p>
+</a><td><a name="997883">
+ 201<p>
+</a><td><a name="997885">
+ -5.6<p>
+</a><td><a name="997887">
+ 0.9<p>
+</a><td><a name="997889">
+ 3.597<p>
+</a>
+
+</Table>
+
+<Table>
+<tr><td>
+</Table>
+<p>
+</a><a name="997834">
+<p>
+</a><a name="998146">
+The ratio is defined as: <img src="stressa1.gif">. <p>
+</a><a name="998020">
+<p>
+</a><a name="998021">
+For the defination of PHI, see Geprart (1990). The file out95 contains the entire grid-search, where each line is in the same format as shown in Table 2. To plot the best fitting stress tensor (the one with the smallest misfit value), type `plot95' in the matlab command window. This will load the file plot95 and calculate the 95 percent confidence regions using the formula (Parker and McNutt, 1980)<img src="stressa2.gif"><p>
+</a><a name="997914">
+were n is the number of earthquakes used in the inversion and MImin the minimum achieved misfit. All grid-points with a misfit MI &lt;= li will be plotted, as shown in <a href="stressin.htm#997930">Figure 83</a>. Note that this is currently a polar and <strong>not</strong> a stereographic projection! Also: the 95% confidence regions are only calculated using a 30 degree grid. This is done in order to reduce computer time (by about a factor four). As a result, in some situations there may be grid-points outside the 30 degree variance  that are significant at the 95% confidence limit but not shown in the plot. To change this to a 90 degree variance search for  the exact method, edit the file stinvers/fmsiWindow_1.c, line 5<p>
+</a><a name="997937">
+<p>
+</a><a name="998147">
+#define   VARIANCE_30     30<p>
+</a><a name="997938">
+change to: <p>
+</a><a name="997945">
+#define   VARIANCE_30     90<p>
+</a><a name="997939">
+<p>
+</a><a name="998148">
+and re-compile (cc -o msiWindow_1 msiWindow_1.c)<p>
+</a><a name="997934">
+ <img src="stressa3.gif"><p>
+</a><a name="997930">
+FIGURE 83.    Polar projection of the stress-tensor inversion results. Shown are the best fitting tensor (in black), and the 95% confidence limits for each of the three axes. <p>
+</a><a name="998149">
+<h2> The cumulative misfit method</h2>
+</a><a name="998150">
+Stress tensor inversion are time consuming, and the resulting tensor is not easily visualized. To identify crustal volumes that satisfy one homogeneous stress tensor Lu and Wyss (1995) and Wyss and Lu (1995) introduced the cumulative misfit method. The misfit, <em>f</em>, for each individual earthquake can be summed up in a number of different ways, for example along the strike of a fault or plate boundary. If the stress direction along strike is uniforms within segments, but different from other segments, the cumulative misfit <img src="stressa4.gif"> will show constant, but different slope for each segment (<a href="stressin.htm#998143">Figure 84</a>). We can also study the cumulative misfit as a function of latitude, depth, time, or magnitude, and try to identify segments with constant but different slope. <p>
+</a><a name="998159">
+ZMAP allows to take the cumulative misfit method one step further: A grid (in map view or cross-section) is used, and the average misfit <img src="stressa5.gif"> <p>
+</a><a name="998175">
+<p>
+</a><a name="998176">
+of the <em>n</em> closest earthquakes in an euclidean sense is calculated. The distribution of this average misfit can be displayed using a color representation. Maps of this type, calculated for a number of different assumed homogeneous stress tensor can identify homogeneous volumes which then can be inverted using the stress tensor inversion method described earlier. <p>
+</a><a name="998174">
+<p>
+</a><a name="998068">
+<h2> <img src="stressa6.gif"></h2>
+</a><a name="998143">
+FIGURE 84.    Schematic explanation of the cumulative misfit method. Changes in the slop of the cumulative misfit curve (blue) indicate a change in the stress regime. Figure courtesy of Zhong Lu <p>
+</a><a name="998186">
+<img src="stressa7.gif"><p>
+</a><a name="998189">
+FIGURE 85.    Input parameters for the misfit calculation<p>
+</a><a name="998196">
+To initiate a cumulative misfit analysis, a refernce stress model needs to be defined. The misfit between the observed and the theoretical slip directions estimated based on the refernce stress model will then be calculated. The refernce stress mode is defined by: 1) Plunge of S1 or S3; 2) Azimuth of S1 or S3; 3) R value; and 4) Phi value (Figure ??). Hit `Go' to start the analysis. Once the calculation is complete, a map will display the misfit f of each individual event  with respect to the assumed reference stress tensor. The symbol size and gray-shading represents the misfit: small and black indicate a small misfit, and large and white symbols a large misfit.<p>
+</a><a name="998640">
+ <img src="stressa8.gif"><p>
+</a><a name="998207">
+FIGURE 86.    Map of the individual misfit f to an assumed homogeneous stress field<p>
+</a><a name="998244">
+Also displayed will be the cumulative misfit F as a function of Longitude (<a href="stressin.htm#998230">Figure 88</a>). Using the `Tools' button the catalog can be saved using the currently selected sorting, the standard derivative z can be calculated to quantify a change in slope, and two segments can be compared. <p>
+</a><a name="998246">
+Selecting the X-Sec button in the Misfit map will create a cross-section view of the misfit f of each individual earthquake. Again, the size and color of the symbol depicts the misfit value f. Please note that in order to show this cross-section view a cross-section must have been defined previously.<p>
+</a><a name="998264">
+To calculate a map the grid spacing needs to be defined (in degrees) and the number of earthquakes sampled around each grid-node. The distribution of average misfit values will then be shown in a color image (<a href="stressin.htm#998287">Figure 89</a>). A low average misfit will be indicated in red, a high misfit in blue. A study by <em>Gillard and Wyss </em>(1995) showed that in many cases average misfit values of F&lt;6 degrees indicate that the assumption of a uniform stress field is fulfilled. <p>
+</a><a name="998275">
+ <img src="stressa9.gif"><p>
+</a><a name="998245">
+FIGURE 87.    Cross-section view of the misfit f of individual events. The size and color of each symbol indicates the misfit f. <p>
+</a><a name="998229">
+<img src="stresa10.gif"><p>
+</a><a name="998230">
+FIGURE 88.    Cumulative misfit F as a function of Latitude <p>
+</a><a name="998286">
+ <img src="stresa11.gif"><p>
+</a><a name="998287">
+FIGURE 89.    Image showing the distribution of average misfit values F in map view. Red colors indicate an low average misfit and thus good compliance with the assumed theoretical stress field. This map shows the Parkfield segment of the san Andreas fault. The theoretical stress filed was given as (151 deg az, 2 deg plunge, R=0.9, Phi = 1. <p>
+</a><a name="998281">
+<img src="stresa12.gif"><p>
+</a><a name="998414">
+FIGURE 90.    Image showing the distribution of average misfit values F in cross-section view. See Figure ?? for more information. <p>
+</a><a name="998393">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="seislap.htm">[Prev]</a> <a href="chap12.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:33:21 -->
+
+</body>
+</html>

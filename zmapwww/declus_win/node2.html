@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 99.2beta8 (1.43)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Method</TITLE>
+<META NAME="description" CONTENT="Method">
+<META NAME="keywords" CONTENT="master_gen">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v99.2beta8">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="master_gen.css">
+
+<LINK REL="next" HREF="node3.html">
+<LINK REL="previous" HREF="node1.html">
+<LINK REL="up" HREF="node1.html">
+<LINK REL="next" HREF="node3.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html36"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="next.gif"></A> 
+<A NAME="tex2html34"
+  HREF="node1.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="up.gif"></A> 
+<A NAME="tex2html28"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="prev.gif"></A>   
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html37"
+  HREF="node3.html">Declustering</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html35"
+  HREF="node1.html">Declustering by using spatial</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html29"
+  HREF="node1.html">Declustering by using spatial</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00011000000000000000"></A><A NAME="pic:cluster_quest"></A><A NAME="pic:declus_winlength"></A>
+<BR>
+Method
+</H2>
+The windowing technique based on the ideas of Knopoff &amp; Gardner [<A
+ HREF="node4.html#Knopoff1972">2</A>] and Gardner &amp; Knopoff [<A
+ HREF="node4.html#Gardner1974">1</A>] to identify clustered events is implemented as follows. For the earthquakes in the current catalog, a search is conducted for subsequent earthquakes that both fit within the magnitude dependent time and distance intervall. As distance intervall, a circle of radius l is used. Any quake within this circle and the specific time window is labelled as aftershock. The filter is used for each earthquake in the catalog except for those already labelled as aftershock. In case there is an event in the windows that has a bigger magnitude than the actual event, the window is resized using the higher magnitude but still starting at the date and location of the first detected event. The event with the highest magnitude in each cluster is labelled as the mainshock of the cluster. If there are two or more earthquakes in a cluster having the maximum magnitude, the algorithm defines the first of those earthquakes in time as the mainshock. Resizing the window of a certain aftershock sequence also requires to take into account the time difference between the originally chosen event and the biggest aftershock in the sequence. In order to adjust this, the time window is first accomodated to the magnitude of the biggest aftershock in the sequence and then the time difference between the biggest aftershock (which will be the mainshock of the cluster later on) and the originally chosen event is added, thus not loosing events of the cluster. Using the resizing technique, foreshocks and aftershocks are treated in the same way.
+<BR>
+Additionally in some cases, events are found as aftershocks of different mainshocks. This is illustrated in Figure <A HREF="node2.html#pic:cluster_quest">1</A>, showing the aftershock (red dot) falling into the spacial (black circle) and temporal (blue line) window of three different other earthquakes. In this case, the aftershock is added to the sequence in which it was first detected, thus to the earliest mainshock in time. 
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="23"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 1:</STRONG>
+Schematic scheme of assigning aftershocks to a certain mainshock. Red dot is the aftershock, small circles represent hypocenters of mainshocks, thick and bigger sized black circles represent spatial window of the aftershock zone and blue lines represent the time window length.</CAPTION>
+<TR><TD>
+<DIV ALIGN="CENTER"><!-- MATH
+ $\includegraphics[scale=0.6]{pictures/cluster_quest.eps}$
+ -->
+<IMG
+ WIDTH="409" HEIGHT="335" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.gif"
+ ALT="\includegraphics[scale=0.6]{pictures/cluster_quest.eps}">
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+The declustering algorithm yet does not include a definition of a minimum magnitude threshold. It might be worthwhile exploring the influence of using e. g. the time dependent magnitude of completeness Mc as threshold, but this needs still to be investigated.
+<BR>
+As the sizes of the time and space windows is crucial for the selection of aftershocks, we have implemented several time window suggestions from different authors, i. e. Gardner &amp; Knopoff [<A
+ HREF="node4.html#Gardner1974">1</A>], Gr&#252;nthal (pers. comm.), and Uhrhammer [<A
+ HREF="node4.html#Uhrhammer1986">3</A>]. Others, e. g. Youngs et al. [<A
+ HREF="node4.html#Youngs1987">4</A>], exist, but are not implemented. The time dependence of the specific windows illustrated in Figure <A HREF="node2.html#pic:declus_winlength">2</A> were interpolated from the tables given in the cited publications or taken from graphs.
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="32"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Abbildung 2:</STRONG>
+Top: Time window length vs. magnitude. Bottom: Spacial window length vs. magnitude. </CAPTION>
+<TR><TD>
+<DIV ALIGN="CENTER"><!-- MATH
+ $\includegraphics[scale=0.4]{zmap/pictures/declus_winlength.eps}$
+ -->
+<IMG
+ WIDTH="332" HEIGHT="408" ALIGN="BOTTOM" BORDER="0"
+ SRC="img4.gif"
+ ALT="\includegraphics[scale=0.4]{zmap/pictures/declus_winlength.eps}">
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html36"
+  HREF="node3.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="next.gif"></A> 
+<A NAME="tex2html34"
+  HREF="node1.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="up.gif"></A> 
+<A NAME="tex2html28"
+  HREF="node1.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="prev.gif"></A>   
+<BR>
+<B> N&auml;chste Seite:</B> <A NAME="tex2html37"
+  HREF="node3.html">Declustering</A>
+<B> Aufw&auml;rts:</B> <A NAME="tex2html35"
+  HREF="node1.html">Declustering by using spatial</A>
+<B> Vorherige Seite:</B> <A NAME="tex2html29"
+  HREF="node1.html">Declustering by using spatial</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Jochen Woessner
+2002-08-15
+</ADDRESS>
+</BODY>
+</HTML>

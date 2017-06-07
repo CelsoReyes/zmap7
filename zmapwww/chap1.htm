@@ -1,0 +1,168 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="zmapdocl.htm">[Prev]</a> <a href="chap2.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="997428">
+<center><h1>Chapter   1     	 Introduction<img src="chap1aa.gif"></h1></center>
+</a><a name="997429">
+<h2> What is ZMAP anyway?</h2>
+</a><a name="997418">
+My Ph.D. thesis was partly devoted to developing new techniques in seismicity analysis. These tools have been combined into a software package, ZMAP, that enables the user to interactively perform a number of standard as well as innovative tasks to investigate seismicity. At first, ZMAP was mainly a tool to investigate seismic quiescence and artificial seismicity rate changes. However, as time went on a number of new features were added, allowing the study of seismicity in a broader sense. By making ZMAP available to interested scientist via anonymous ftp, we ensure that other research groups can benefit from our software development and at the same time re-evaluate our analysis. <p>
+</a><a name="997326">
+A number of publications have been supported by the tools provided by ZMAP. These studies  can be classified into several groups: 1) Studies investigating seismicity rate changes and the precursory seismic quiescence hypothesis (<em>Wiemer and Wyss</em>, 1994; <em>Wyss and Wiemer</em>, 1996ab; <em>Wyss et al.,</em> 1996b); 2) Studies focusing on catalog homogeneity and artificially introduced seismicity rate changes (<em>Zuniga and Wyss</em>, 1995; <em>Zuniga and Wiemer</em>, 1995); 3) Studies exploiting the capability of ZMAP to resolve and visualize variations of the frequency-magnitude distribution as a function of space (<em>Wiemer and Benoit</em>, 1996; <em>Wiemer and McNutt</em>, 1996;<em> Wiemer and Wyss</em>, 1996; <em>Wyss et al</em>, 1996a). 4) Studies investigating earthquake clustering (<em>Allmann</em>, 1996). <p>
+</a><a name="997016">
+ZMAP can be used to investigate or monitor the reorting history and health of a seismic network. The user can address questions like: Did the detection threshold change in a particular area for a certain time? Did the meaning of magnitude change? A long list of artificial changes in earthquake catalogs has by now been documented (e.g. <em>Habermann</em> 1983, 1987, 1991; <em>Wyss,</em> 1991). These artificial changes of the reporting rate can be introduced by modifications to the network configuration, the software or hardware used, the calibration of seismic stations etc. Artificial changes can either mask natural changes in the seismicity or, worse, be misinterpreted as natural changes. Using magnitude signatures and b-value curves, one can attempt to unravel the reporting history of earthquake catalogs.<p>
+</a><a name="997247">
+ZMAP is a tool uniquely suited to detect seismicity rate changes prior to major earthquakes - either after the fact or applied in 'real time'. ZMAP identifies seismicity rate changes in earthquake catalogs and helps also to investigate the characteristics of changes. <p>
+</a><a name="997017">
+Here, in a nutshell, is a list of features that ZMAP provides: <p>
+</a><ul><ul>
+<a name="997018">
+<li>	Display of standard plots such as maps, cross-sections, time-series, time-magnitude, time depth, 3-dimensional view of the seismicity, histograms (Figure 1).
+</a><a name="997029">
+ <img src="chap1a.gif"><p>
+</a><a name="997030">
+FIGURE 1.    A number of example windows of ZMAP<p>
+</a><a name="997032">
+<li>	 Interactive event selection in polygons of any shape. 
+</a><a name="997033">
+<li>	Separation of the dependent and the independent part of the seismicity (declustering), based on <em>Reasenberg's </em>(1985) algorithm. The properties of the clusters, such as the b- and p-values, histograms, rate changes) can be investigated for individual clusters as well as groups of clusters. 
+</a><a name="997034">
+<li>	Evaluation of seismicity rate changes as a function of space and time, using maps, cross-sections, or movies of the standard deviate z. The standard deviate z describes the significance of a rate change. 
+</a><a name="997057">
+<li>	Identification of all occurrences of seismicity patterns in space time by using alarm cubes. An alarm is declared when a specified pattern (for example a seismic quiescence) has been identified at a certain significance level.<img src="chap1a1.gif">
+</a><a name="997061">
+FIGURE 2.    Alarm cube for Italy<p>
+</a><a name="997064">
+<li>	Evaluation of the significance of a seismic quiescence as compared to the randomized catalog or under the assumption of a Poissonian seismicity distribution.
+</a><a name="997391">
+<li>	Enables the user to study of the characteristic of the frequency-magnitude distribution of events in space and time. Maps, cross-sections, and a number of space-time projections of the b-value can be computed. The b-value and its confidence limits are estimated using both a weighted least squares and maximum likelihood method. The magnitude of completeness can also be analyzed spatially.
+</a><a name="997395">
+<img src="chap1a2.gif"><p>
+</a><a name="997396">
+FIGURE 3.    Example plot of the frequency-magnitude distribution. <p>
+</a><a name="997071">
+<li>	Evaluation of the confidence limits of the a and b-value estimates as a function of sample size. 
+</a><a name="997072">
+<li>	Interactive estimation of the p-value of an aftershock sequence from Omori's law. 
+</a><a name="997073">
+<li> 	Calculation of the recurrence time for a magnitude M event from the frequency-magnitude distribution. 
+</a><a name="997074">
+<li>	Investigation of the properties of seismicity rate changes using magnitude signatures and GENAS (first introduced by <em>Habermann</em>, 1983). This approach evaluates seismicity rate changes in different magnitude bands. Magnitude shifts, stretches, and rate changes can be identified and modeled. 
+</a><a name="997075">
+<li>	Performs a time to failure analysis based on accelerated moment release. <em>Varnes</em> (1989) and <em>Bufe et al. </em>(1993) suggested that the moment release accelerates in the 10-20 years prior to a major earthquake. 
+</a><a name="997076">
+<li>	Inverts for the stress direction using <em>Gephart's</em> (1984) algorithm. Using fault plane solutions the principal stress directions and their 95% confidence limits can be calculated for an interactively selected subset of data. In addition, the implementation of the cumulative misfit method by <em>Lu and Wyss</em> (1996) allows the identification of regions with a homogeneous stress direction. Maps or cross-sections of the cumulative misfit and the stress tensor directions can be displayed (UNIX version only). 
+</a><a name="997077">
+In addition, ZMAP features: <p>
+</a><a name="997081">
+<li>	Built in on-line help, HTML users guide, and a 100 page manual. 
+</a><a name="997355">
+<img src="chap1a3.gif"><p>
+</a><a name="997082">
+FIGURE 4.    Example window showing the on-line help available<p>
+</a><a name="997087">
+<li>	Userfriendly, interactive interface (Figure A.6)<img src="chap1a4.gif">
+</a><a name="997088">
+FIGURE 5.    Example window showing the pull-down menu capability of ZMAP. <p>
+</a><a name="997091">
+<li>	Open system architecture, making it easy to add new components without having to re-compile the entire program. 
+</a><a name="997092">
+<li>	Automatic downloading of the latest version via anonymous ftp. 
+</a><a name="997093">
+<li>	Graphics output in many different formats. 
+</a><a name="997094">
+<li>	Data import from a number of catalogs formats (ascii, Hypoinverse, Hypoellipse) 
+</a></ul>
+</ul><a name="997095">
+<h2> HTML Users Guide</h2>
+</a><a name="997096">
+This Users Guide is distributed as a postscript file and as a HTML document. You can point your web browser (such as netscape) to the file &lt;zmaphome&gt;/wwwdoc/wmworks/www/ug.book_1.html and you should be able to browse through the Users Guide. This allows fast access, saves paper, and shows all the figures in color. <p>
+</a><a name="997098">
+<h2> Obtaining ZMAP</h2>
+</a><a name="997099">
+ZMAP is freeware and available for a number of operating systems (UNIX, PC, MAC). As mentioned above, ZMAP is essesntially a collection of MATLAB scriptfiles (with by now more than 50.000 lines of code), and you do need a version of MATLAB (4.1 or higher) to run ZMAP. Some of the functions (such as stress-tensor inversions) will run only on UNIX machines, as they call FORTRAN or C subroutines. The latest version of ZMAP and the Users Guide can be obtained via anonymous ftp: <p>
+</a><dl>
+<a name="997100">
+<dt><dd> ftp eq.giseis.alaska.edu
+</a><a name="997101">
+<dt><dd> password: anonymous
+</a><a name="997102">
+To get the <strong>UNIX</strong> version as a compressed tar file type <p>
+</a><a name="997103">
+<dt><dd> cd pub/zmap/unix
+</a><a name="997104">
+<dt><dd> binary
+</a><a name="997105">
+<dt><dd> get zmap.tar.Z
+</a><a name="997106">
+<dt><dd> get manual.tar.Z
+</a><a name="997397">
+<dt><dd> get zmaphtml.tar.Z 
+</a><a name="997107">
+To get the <strong>PC</strong> or<strong> Macintosh</strong> version as a compressed zip file: <p>
+</a><a name="997108">
+<dt><dd> cd pub/zmap/pc
+</a><a name="997109">
+<dt><dd> binary
+</a><a name="997110">
+<dt><dd> prompt off
+</a><a name="997111">
+<dt><dd> mget *
+</a><a name="997112">
+Read the file install.txt to find out how to install ZMAP. If you don't have access to ftp, send fax or e-mail to Stefan Wiemer,<em> stefan@giseis.alaska.edu</em>, fax (907) 479 7290. I will mail you a floppy or CD-ROM with the source code and a hardcopy of the UsersGuide. <p>
+</a></dl>
+<a name="997114">
+<h2> Sample Data </h2>
+</a><a name="997115">
+You can also retrieve a number of sample data sets via <em>ftp</em>. Log in via anonymous ftp as described above and cd into the directory pub/zmap/data. Set the file type to binary. There will be a list of data sets in this directory, among them: <p>
+</a><ul><ul>
+<a name="997116">
+<li>landers.mat: Seismicity prior to the Landers and Big Bear earthquake (see <em>Wiemer and Wyss,</em> 1994)
+</a><a name="997117">
+<li>red8995.mat: Seismicity in the vicinity of Redoubt, Alaska. This time-period includes all of the 89-90 eruptions. Only VT events are listed. 
+</a><a name="997118">
+<li>ak8994.mat: AEIC earthquake catalog for Alaska. 
+</a></ul>
+</ul><a name="997170">
+<h2> Why Matlab?</h2>
+</a><a name="997171">
+We decided to program the whole package to Matlab, a commercial software package, that is widely used on workstations, PC's, the Macintosh, and even the Cray supercomputer. Many of the standard procedures and the handling of the graphics are just a short command in Matlab, making it easy to design a user-friendly, interactive software package with a minimum of programming time. The open architecture of Matlab makes it possible to add new functions and integrate existing tools developed by others, without re-compiling the code. A user familiar with the MATLAB language can customize the program or add new functions (check the `Tips for programmers' chapter for details), but in order to run ZMAP no knowledge of MATLAB is necessary. ZMAP was originally designed on a SUN workstation, but is implemented for PC and Macintosh platforms. The back-draw of the decision to use a commercial package is, that every potential user of ZMAP needs to purchase a licence of Matlab.<p>
+</a><a name="996775">
+<h2> Nothing Is Perfect...</h2>
+</a><a name="996776">
+ZMAP and this manual are no exception to this rule. We encourage comments, ideas, or criticism,  about the software and the User Guide. Please send an e-mail with your input to: <p>
+</a><a name="997273">
+<em>stefan@giseis.alaska.edu</em><img src="chap1a5.gif"><p>
+</a><a name="997275">
+<h2> Acknowledgments</h2>
+</a><a name="997277">
+My special thanks for advice, support, and encouragement goes to my advisor Max Wyss. Ramon Zuniga wrote some of the features, (especially the GENAS and compare option), and helped me to produce a more comprehensive version of ZMAP. Alexander Allmann wrote most of the declustering and cluster investigation functions as well as the p-value investigation routines. Guy Tytgat developed many useful functions that made cross-section analysis possible, John Benoit helped with the programming of the b-value routines. I also would like to thank Hilary Fletcher for correcting this manuscript. A PC software development scholarship from IASPEI has greatly encouraged me to continue the work on ZMAP. <p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="zmapdocl.htm">[Prev]</a> <a href="chap2.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:01:09 -->
+
+</body>
+</html>

@@ -1,0 +1,491 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns:dt="uuid:C2F41010-65B3-11d1-A29F-00AA00C14882"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta name="Microsoft Theme 2.00" content="rmnsque 011">
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./IntrotoZMAP6_files/filelist.xml">
+<link rel=Edit-Time-Data href="./IntrotoZMAP6_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Introduction to ZMAP 6</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>stefan wiemer</o:Author>
+  <o:LastAuthor>stefan wiemer</o:LastAuthor>
+  <o:Revision>12</o:Revision>
+  <o:TotalTime>166</o:TotalTime>
+  <o:Created>2001-09-21T11:42:00Z</o:Created>
+  <o:LastSaved>2001-11-26T15:45:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>347</o:Words>
+  <o:Characters>1979</o:Characters>
+  <o:Company>ETH Zurich</o:Company>
+  <o:Lines>16</o:Lines>
+  <o:Paragraphs>3</o:Paragraphs>
+  <o:CharactersWithSpaces>2430</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>150</w:Zoom>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+@font-face
+	{font-family:"Book Antiqua";
+	panose-1:2 4 6 2 5 3 5 3 3 4;
+	mso-font-charset:0;
+	mso-generic-font-family:roman;
+	mso-font-pitch:variable;
+	mso-font-signature:647 0 0 0 159 0;}
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	mso-ansi-language:DE;}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:24.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-font-kerning:16.0pt;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;}
+h2
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:18.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;
+	mso-bidi-font-style:italic;}
+h3
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:14.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;}
+h4
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:4;
+	font-size:12.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;}
+h5
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:5;
+	font-size:10.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;
+	mso-bidi-font-style:italic;}
+h6
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	mso-outline-level:6;
+	font-size:8.0pt;
+	font-family:"Book Antiqua";
+	color:#660000;
+	mso-ansi-language:DE;
+	font-weight:normal;
+	mso-bidi-font-weight:bold;}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin-top:0in;
+	margin-right:70.5pt;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;}
+p.MsoBodyText2, li.MsoBodyText2, div.MsoBodyText2
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+p.MsoBlockText, li.MsoBlockText, div.MsoBlockText
+	{margin-top:0in;
+	margin-right:53.25pt;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:Arial;
+	mso-fareast-font-family:"Times New Roman";
+	color:black;
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{color:#996600;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:#666666;
+	text-decoration:underline;
+	text-underline:single;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:1080641848;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1462621350 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:1.25in;
+	mso-level-number-position:left;
+	margin-left:1.25in;
+	text-indent:-.25in;}
+@list l0:level2
+	{mso-level-tab-stop:1.75in;
+	mso-level-number-position:left;
+	margin-left:1.75in;
+	text-indent:-.25in;}
+@list l0:level3
+	{mso-level-tab-stop:2.25in;
+	mso-level-number-position:left;
+	margin-left:2.25in;
+	text-indent:-.25in;}
+@list l0:level4
+	{mso-level-tab-stop:2.75in;
+	mso-level-number-position:left;
+	margin-left:2.75in;
+	text-indent:-.25in;}
+@list l0:level5
+	{mso-level-tab-stop:3.25in;
+	mso-level-number-position:left;
+	margin-left:3.25in;
+	text-indent:-.25in;}
+@list l0:level6
+	{mso-level-tab-stop:3.75in;
+	mso-level-number-position:left;
+	margin-left:3.75in;
+	text-indent:-.25in;}
+@list l0:level7
+	{mso-level-tab-stop:4.25in;
+	mso-level-number-position:left;
+	margin-left:4.25in;
+	text-indent:-.25in;}
+@list l0:level8
+	{mso-level-tab-stop:4.75in;
+	mso-level-number-position:left;
+	margin-left:4.75in;
+	text-indent:-.25in;}
+@list l0:level9
+	{mso-level-tab-stop:5.25in;
+	mso-level-number-position:left;
+	margin-left:5.25in;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="1027"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body bgcolor=white background="./IntrotoZMAP6_files/image001.jpg" lang=EN-US
+link="#996600" vlink="#666666" style='tab-interval:.5in'>
+<!--[if gte mso 9]><xml>
+ <v:background id="_x0000_s1025" o:bwmode="white" o:targetscreensize="800,600">
+  <v:fill src="./IntrotoZMAP6_files/image002.jpg" o:title="romtextb" type="frame"/>
+ </v:background></xml><![endif]-->
+
+<div class=Section1>
+
+<p class=MsoTitle>Introduction to ZMAP 6</p>
+
+<p class=MsoNormal align=center style='margin-top:0in;margin-right:70.5pt;
+margin-bottom:0in;margin-left:.5in;margin-bottom:.0001pt;text-align:center'><b><span
+style='font-size:14.0pt;mso-bidi-font-size:12.0pt;font-family:Arial;mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal align=center style='margin-top:0in;margin-right:70.5pt;
+margin-bottom:0in;margin-left:.5in;margin-bottom:.0001pt;text-align:center'><span
+lang=DE style='font-size:14.0pt;mso-bidi-font-size:12.0pt;font-family:Arial'>Stefan
+Wiemer, <a href="http://www.ethz.ch/">ETH</a>, 11/2001<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><span lang=DE
+style='font-size:14.0pt;mso-bidi-font-size:12.0pt;font-family:Arial'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoBodyText style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt'><b>It is a great pleasure for me to
+announce the newest version of ZMAP, version 6.0. Who would have thought, back
+in 1994 when the first public version of ZMAP was released, that ZMAP would
+still be alive in 2001? I take this, as well as the growing number of users and
+publications based on ZMAP, as an indication that ZMAP fills a certain gap in
+the toolbox of seismologists. Most of the features offered in ZMAP are neither
+novel nor unique, but combined into one interactive software package they turn
+into a powerful tool to tackle numerous aspects of quantitative seismicity
+analysis. <o:p></o:p></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>Of course, all of this would
+not have been able without the help of the people and organizations who have
+actively supported ZMAP over the years<a href="zmapdevellopers.htm">. Check
+them out by clicking here!</a> <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoBlockText>There are a number of resources available, mostly on the
+Internet, which can help ZMAP users. Click on the appropriate link: </p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'><a href="Firststeps.htm">First</a> steps: Installing and starting ZMAP. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>An <a href="ftp://seismo.ethz.ch/pub/stefan/Elecseis.pdf">overview</a>
+of the features offered by ZMAP (2001 SRL article as PDF file). <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>Examples of ZMAP uses: A <a href="cookbook.pdf">cookbook</a> contributed
+by Max Wyss and Stefan Wiemer<o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>A <a href="http://www.seismo.ethz.ch/staff/stefan/zmapnews/papers.html">list
+of publications</a> that use ZMAP, with download links to some manuscripts. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>5)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>Several <a href="http://seismo.ethz.ch/staff/stefan/talks.html">presentations</a>
+and posters that have used ZMAP. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>6)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>A (growing) online documentation for selected functions in ZMAP 6. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>7)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'>The old <a href="http://www.seismo.ethz.ch/staff/stefan/zmap/title.html">manual</a>
+for ZMAP 3.<span style="mso-spacerun: yes">  </span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>8)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'><a
+href="http://www.seismo.ethz.ch/staff/stefan/zmap6/help/onlinedata.htm">Online</a>
+data <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:1.0in;margin-bottom:.0001pt;text-align:justify;text-indent:
+-.25in;mso-list:l0 level1 lfo2;tab-stops:list 1.0in 1.25in'><![if !supportLists]><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>9)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></b><![endif]><b><span style='font-family:Arial;mso-ansi-language:
+EN-US'><span style="mso-spacerun: yes"> </span>Importing datasets <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.25in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'>I have tried hard to make
+ZMAP as versatile, user-friendly, and accurate as possible. Nevertheless, some
+bugs remain and others have undoubtedly been introduced, and some features will
+remain cryptic to many users. If you have questions, suggestions or bug to
+report, feel free to send me an e-mail (stefan@seismo.ifg.ethz.ch). <o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoNormal align=center style='margin-top:0in;margin-right:53.25pt;
+margin-bottom:0in;margin-left:.5in;margin-bottom:.0001pt;text-align:center'><span
+lang=DE-CH style='mso-ansi-language:DE-CH'><!--[if gte vml 1]><v:shapetype
+ id="_x0000_t75" coordsize="21600,21600" o:spt="75" o:preferrelative="t"
+ path="m@4@5l@4@11@9@11@9@5xe" filled="f" stroked="f">
+ <v:stroke joinstyle="miter"/>
+ <v:formulas>
+  <v:f eqn="if lineDrawn pixelLineWidth 0"/>
+  <v:f eqn="sum @0 1 0"/>
+  <v:f eqn="sum 0 0 @1"/>
+  <v:f eqn="prod @2 1 2"/>
+  <v:f eqn="prod @3 21600 pixelWidth"/>
+  <v:f eqn="prod @3 21600 pixelHeight"/>
+  <v:f eqn="sum @0 0 1"/>
+  <v:f eqn="prod @6 1 2"/>
+  <v:f eqn="prod @7 21600 pixelWidth"/>
+  <v:f eqn="sum @8 21600 0"/>
+  <v:f eqn="prod @7 21600 pixelHeight"/>
+  <v:f eqn="sum @10 21600 0"/>
+ </v:formulas>
+ <v:path o:extrusionok="f" gradientshapeok="t" o:connecttype="rect"/>
+ <o:lock v:ext="edit" aspectratio="t"/>
+</v:shapetype><v:shape id="_x0000_i1025" type="#_x0000_t75" style='width:381.75pt;
+ height:199.5pt'>
+ <v:imagedata src="./IntrotoZMAP6_files/image003.jpg" o:title="havmap"
+  croptop="14600f" cropbottom="16556f" cropleft="6454f" cropright="9599f"/>
+</v:shape><![endif]--><![if !vml]><img border=0 width=509 height=266
+src="./IntrotoZMAP6_files/image004.jpg" v:shapes="_x0000_i1025"><![endif]></span><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:0in;margin-right:53.25pt;margin-bottom:
+0in;margin-left:.5in;margin-bottom:.0001pt;text-align:justify'><b><span
+style='font-family:Arial;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></b></p>
+
+<p class=MsoBodyText2><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-weight:normal'>(The above map shows the spatial variations in the completeness
+of reporting, Mc, of the Harward Mw catalog (1983 – 2000) – courtesy of Juerg
+Hauser, 2001). <o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-size:14.0pt;
+mso-bidi-font-size:12.0pt;mso-ansi-language:EN-US'><span style="mso-spacerun:
+yes"> </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='font-size:14.0pt;
+mso-bidi-font-size:12.0pt;mso-ansi-language:EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><span style="mso-spacerun: yes">  </span><o:p></o:p></span></p>
+
+<p class=MsoNormal style='text-align:justify'><span style='mso-ansi-language:
+EN-US'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>

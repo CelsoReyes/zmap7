@@ -1,0 +1,7 @@
+% This directory contain the main source code files
+% used in zmap. two subdirectories can be accessed 
+% from here: 
+%  declus: Declustering 
+%  utils: Utilities, mostly from the matlab ftp server
+
+%   Stefan Wiemer   6/95

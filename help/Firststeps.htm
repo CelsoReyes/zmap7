@@ -1,0 +1,220 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="./Firststeps_files/filelist.xml">
+<title>First steps – installing and starting ZMAP</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>stefan wiemer</o:Author>
+  <o:LastAuthor>stefan wiemer</o:LastAuthor>
+  <o:Revision>8</o:Revision>
+  <o:TotalTime>1088</o:TotalTime>
+  <o:Created>2001-09-13T08:20:00Z</o:Created>
+  <o:LastSaved>2001-12-07T09:26:00Z</o:LastSaved>
+  <o:Pages>2</o:Pages>
+  <o:Words>581</o:Words>
+  <o:Characters>3314</o:Characters>
+  <o:Company>eth zurich</o:Company>
+  <o:Lines>27</o:Lines>
+  <o:Paragraphs>6</o:Paragraphs>
+  <o:CharactersWithSpaces>4069</o:CharactersWithSpaces>
+  <o:Version>9.3821</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:Zoom>150</w:Zoom>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoTitle, li.MsoTitle, div.MsoTitle
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:center;
+	mso-pagination:widow-orphan;
+	font-size:16.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	font-weight:bold;}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin:0in;
+	margin-bottom:.0001pt;
+	text-align:justify;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<p class=MsoTitle>First steps – installing and starting ZMAP</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'><b>1) Requirements<o:p></o:p></b></p>
+
+<p class=MsoNormal style='text-align:justify'>ZMAP consists numerous Matlab
+scripts and functions (m-files).<span style="mso-spacerun: yes">  </span>There
+are also a few FORTRAN or C codes that are called for specific tasks (e.g.,
+stress tensor inversions). The core of ZMAP should run on any system Matlab
+runs on. ZMAP has been tested under Windows PC (95, 98, 2000, NT), HP UNIX 10.x
+and 11.x, SUN SOLARIS and LINUX. We recommend a recent version of Matlab (5.3,
+6.x). Specific toolboxes are not required, but some functionalities of ZMAP
+will only be available if the mapping toolbox or statistic toolboxes are
+installed. Some applications can be quite memory intensive (large datasets,
+topographic maps), and Matlab generally does not recover well once memory
+limitations are reached. </p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'><b>2) Installing ZMAP from the
+Internet<o:p></o:p></b></p>
+
+<p class=MsoNormal style='text-align:justify'>The most recent version of ZMAP
+can be obtained from <a href="http://seismo.ethz.ch/staff/stefan">http://seismo.ethz.ch/staff/stefan</a>.
+You can download either a UNIX tar file, which would be the best option for HP,
+SUN, or LINIX, or a self extracting *.exe file for PC. These versions are
+identical except for the external calls to FORTRAN and C routines, which are
+explained later on. </p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'>On a UNIX system: </p>
+
+<p class=MsoNormal style='text-align:justify'>Uncompress the file (uncompress
+ZMAPv6.tar.Z), and untar it (tar –xvf ZMAPv6.tar). This will create a
+subdirectory ZMAP6. </p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'>On a Windows PC: </p>
+
+<p class=MsoNormal style='text-align:justify'>Double click the ZMAPv6.exe. This
+will open a WinZip self-extractor. The files will be installed in a directory
+called ZMAP6. <span style="mso-spacerun: yes"> </span></p>
+
+<p class=MsoNormal style='text-align:justify'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='text-align:justify'><b>3) Starting ZMAP<o:p></o:p></b></p>
+
+<p class=MsoBodyText>Start Matlab on you system. Change into the ZMAP
+installation directory (e.g., cd c:\ZMAPv6) and type zmap . This should bring
+up the two initial windows.<span style="mso-spacerun: yes">  </span>Test out
+the basic functions by clicking on the ‘Load *.mat ‘ button from the menu. Load
+a file from the ./eq_data directory. An input selection window should appear.
+Press ‘Go’, and a map should appear. Go to Ztools and select the “Analyze time
+series …” button. The cumulative number will appear.<span style="mso-spacerun:
+yes">  </span>Finally, check the connection with your web browser by selecting
+the “Instruction &amp; Help” button from the Menu. You browser should open,
+along with possibly the Matlab help browser. Both should display the Help web
+page. If not, open your browser manually and try again. If there is still no
+window, check out the Matlab help for the command ‘web’, and see if you can
+open any of the listed example web pages (e.g., web http://www.mathworks.com<span
+style="mso-spacerun: yes">  </span>-browser). </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><b>4) What’s next? <o:p></o:p></b></p>
+
+<p class=MsoBodyText>Check out the cookbook (in ./help/cookbook.pdf) and help
+options listed from the “Introduction &amp; Help” section. A number of
+precompiled datasets are available in the eq_data directory, including a two
+(Harward and Southern California) with focal mechanism information. Download
+additional datasets available from our database. Play around with some of the
+functionalities to familiarize yourself with ZMAP. </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><b>5) External calls in ZMAP<o:p></o:p></b></p>
+
+<p class=MsoBodyText>If you are planning to run stress tensor inversions, you
+need to run several executables. These maybe already precompiled for your
+operating system. </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><b>On a PC:</b> The necessary *.exe files are included in
+the ZMAPv6.exe distribution and should run without problems. </p>
+
+<p class=MsoBodyText><b>Under UNIX:</b> Several makefiles have been provided by
+Andy Michael as part of his stress tensor inversion software. The can be found
+in the ./external directory. Specifically, you will need to run: </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>makeslfast</p>
+
+<p class=MsoBodyText>makeslick</p>
+
+<p class=MsoBodyText>makebtswl</p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>Depending on your system, you may have to change some
+compiler options. </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>Gephart’s stress tensor inversion program and the
+cumulative misfit method are precompiled for the Windows version. If you want
+to run them on a different operating system, please contact me, I will provide you
+with the necessary codes. </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText>If you would like to use Reasenberg’s declustering code as
+a FORTRAN executables rather then the Matlab internal version (because it is
+faster and you do get the output of the clusters in Reasenbergs form), you need
+to compile the file ./external/myclus.f. (e.g., f90 –o myclus myclus.f) This
+should also already work in the PC version. </p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoBodyText><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>

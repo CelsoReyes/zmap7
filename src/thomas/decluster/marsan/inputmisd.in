@@ -1,0 +1,28 @@
+*______ DATA ______
+* CATALOGUE FILE NAME
+/home/thomas/zmap/src/thomas/decluster/marsan/misd_input.dat
+* # COLUMN FOR (1) time (2) magnitude (3) latitude (4) longitude [NB: 1st column is "1", not "0"]
+1 2 3 4
+* ARE THE EPICENTRES REALLY IN (LAT,LON) OR RATHER IN (X,Y) FORMAT (1/0)?
+1
+* CORRECTION FOR DETECTION (0/1)? IF yes (1), THEN FOLLOW WITH NAME OF FILE CONTAINING THE CORRECTION VALUES
+1 /home/thomas/zmap/src/thomas/decluster/marsan/misdMcorr.dat
+*______ DISCRETIZATION ______
+* MAGNITUDE INTERVALS
+1.5 2 2.5 3 3.5  4 4.5  5 5.5 6 6.5 7
+* TIME INTERVALS
+0. 0.001 0.004 0.016 0.064 0.256 1.024 4.096 16.384 65.536 262 1048
+* DISTANCE INTERVALS (km if epicentres in lat/lon)
+0. 0.1 0.25 0.5 1. 2. 5. 10. 25. 50. 100. 200. 500 1000
+*______ BACKGROUND ______
+* BACKGROUND OPTIONS: (1) imposed rate (follow with rate), (2) random 2D Poisson (follow with surface), 
+* (3) random 2D Poisson with periodic boundaries (follow with square surface), (4) Poisson & spatial clustering
+4
+*______ CONVERGENCE _______
+* CONVERGENCE LEVEL
+0.03
+*______ OUTPUT _______
+* SUFFIX FOR OUTPUT FILES
+.out 
+* SAVE mbin, tbin, rbin, lambda_t, lambda_s, lambda0, w, w0 (0/1 for each)?
+0 0 0 0 0 0 0 1

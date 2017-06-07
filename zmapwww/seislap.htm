@@ -1,0 +1,90 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="syntcat.htm">[Prev]</a> <a href="stressin.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996885">
+<center><h1>Chapter   11     	 SEISMOLAP</h1></center>
+</a><a name="996888">
+<h2> METHOD</h2>
+</a><a name="996889">
+SEISMOLAP as proposed by <em>Zschau</em> (1995) measures the overlap of earthquakes in space and time. The elegance of the method is that clustering of earthquakes as well as seismic quiescence at one location can be measured with one variable. Figure 2 shows a schematic illustration on how SEISMOLAP work. Zschau uses earthquakes above a minimum magnitude threshold Mmin. To calculate the SEISMOLAP value S1 at a point P(x,y,z) one needs to measure the overlap of a cubical volume C1 centered at P(x,y,z), (a 4 dimensional cube of length X = Y = Z in kilometer and time length Tlap in days), with the volume C2 centered at the location Ei. Typical values range within   X = 200 - 400 km, Tlap = 500-800 days and Mmin = 3.5 - 4.5. The overlap S1 of all earthquakes E(xi,yi,zi,ti) at point P(x,y,z) at a particular time t can be expressed by:<img src="seislapa.gif"><p>
+</a><a name="996893">
+Each term in the product has to be positive, otherwise the earthquake Ei is outside the influence area of P, and S(i) is set to zero. S1 is normalized by dividing by the size of the 4 dimensional cube:<img src="seislaa1.gif"><p>
+</a><a name="996897">
+It turns out that S1 is best suited to investigate clustering of earthquakes and aftershock sequences. In order to investigate seismic quiescence Zschau calculates the inverse S2: <img src="seislaa2.gif"><p>
+</a><a name="996901">
+Note that through this definition S2 is inherently nonlinear, and thus small changes in S1 can result in strong changes in S2. To measure the significance of an anomaly Zschau calculates the probability distribution of S2 values using the Pearson type III distribution. The probability distribution of S2 values is estimated using a background of length 3 times Tlap. The background time Tback includes the window covered by Tlap, and moves with Tlap. This probability is plotted as a function of time for three locations in Figure 1. A probability value of e.g. -500 indicates that the probability to observe this quiescence is -1/500 = 0.2%. <p>
+</a><a name="996963">
+<img src="seislaa3.gif"><p>
+</a><a name="997097">
+FIGURE 76.     Schematic illustration of the clustering parameter of SEISMOLAP, S1. Zschau defines the overlap of the influence zone of earthquakes at positions Ei with the influence zone of a potential future earthquake located at P as the overlap of the four-dimensional cubes Ci(X, Y, Z, Tlap) formed around both Ei and P. The map view of the spatial cubes is shown in the map, and the overlap in time for an earthquake Ei with a particular window position of Tlap is shown at the bottom. The spatial cube around P, the location to be evaluated for earthquake potential, remains stationary throughout the experiment, while cubes in different positions Ei (the epicenters in the catalog) appear and disappear as a function of time. <p>
+</a><a name="997095">
+ <img src="seislaa4.gif"><p>
+</a><a name="996978">
+<p>
+</a><a name="997020">
+FIGURE 77.     The parameter S2 of SEISMOLAP, expressed as the probability (-1/the numbers on the ordinate) with which S2 is expected to occur, plotted as a function of time for three cases: (a) Landers (1992, M7.2), (b) Northridge (1994, M6.7), and (c) Chalfant Valley (1986, M6.2). A value of e.g. -500 indicates that the probability to observe this quiescence is -1/500 = 0.2%. In each case the SEISMOLAP parameter S2 is calculated for the location of the epicenter of the mainshock, with the parameters X and Tlap tuned to maximize the anomaly. The earthquake catalog was that for central California, distributed by the USGS Menlo Park (as used by Zschau). The parameters used were Mmin = 4.5, X = 800 km, an Tlap = 800 days for Landers (a), and Mmin = 3.8, X = 200 km, Tlap = 500 days for the other two cases (b, c). The occurrence times of the mainshocks are marked by stars. In frame (c) both the Chalfant and Landers earthquakes are marked, and each is preceded by an anomaly. <p>
+</a><a name="997163">
+<h2> SEISMOLAP calculated at one point</h2>
+</a><a name="997352">
+Selecting this option will open a input parameter window.<img src="seislaa5.gif"> A number of input parameters need to be defined: The overlap in time Dt  (in days), the overlap in space Dx (in km), the minimum magnitude above events should be used, the coordinates of the point of interest (lat, lon, depth), and the time step in days for which a SEISMOLAP values will be calculated. The output window (<a href="seislap.htm#997610">Figure 78</a>) shows two curves: the overlap S1 (bottom frame) and the probability to observe S2 =1/S1 (top frame).<p>
+</a><a name="997406">
+) <p>
+</a><a name="997561">
+<p>
+</a><a name="997562">
+<p>
+</a><a name="997579">
+<p>
+</a><a name="997609">
+<img src="seislaa6.gif"><p>
+</a><a name="997610">
+FIGURE 78.    SEISMOLAP value calculated for one point. <p>
+</a><a name="997385">
+<h2> SEISMOLAP calculated for a grid</h2>
+</a><a name="997180">
+A time series of SEISMOLAP values for a give set of parameters can be calculated at each grid-node of an evenly spaced grid. This allows to investigate large regions at once, and find the center of SEISMOLAPSEISMOLAP anomalies. After selecting the grid-option from the SEISMOLAP submenu of the Map window, the same SEISMOLAP parameters need to defined, as well as the grid-spacing longitude and latitude (in degrees). The grid will then be selected in the using the mouse (next point: left mouse button, last point: right mouse button). The calculation will take a while, a waitbar will indicate the progress. Once the calculation at each grid-point is competed, a color-image will display the distribution of SEISMOLAP values in a map view (<a href="seislap.htm#997191">Figure 79</a>). The time series of Seismolap values can be viewed using the `Mouse' option. This will display S1 and S2 in the same display used for the one point calculation. In addition, the cumulative SEISMOLAP Curve will be displayed in a separate window. <img src="seislaa7.gif"><p>
+</a><a name="997191">
+FIGURE 79.    SEISMOLAP in a map view for one point in time<p>
+</a><a name="997675">
+To create an animation of Seismolap time-slices, select the `Movie' button, and define the start and stop time as well as the increment of the animation. Each frame of the movie will be screen-captured, the movie is displayed in a new window (<a href="seislap.htm#997247">Figure 80</a>).<p>
+</a><a name="997335">
+<img src="seislaa8.gif"> <p>
+</a><a name="997247">
+FIGURE 80.    The SEISMOLAP movie window<p>
+</a><a name="997447">
+<h2> SEISMOLAP Alarm Cube</h2>
+</a><a name="997448">
+To calculate an alarm cube, select the `Cube' option on the left side of the SEISMOLAP map window. All alarm above a certain threshold will be displayed in there appropriate space-time location. Alarms are marked by a red circle, the duration of an alarm (1 year) is indicated by a blue tail. At this point ZMAP does not offer to calculate the ration of the space time volume covered by alarm versus the total ratio. <img src="seislaa9.gif"><p>
+</a><a name="997115">
+<em><img src="seisla10.gif"></em> <p>
+</a><a name="997118">
+FIGURE 81.    <em>a) Contour map of SEISMOLAP probability values prior to the 1986 Chalfant Valley earthquakes. By calculating SEISMOLAP at each grid point of a rectangular grid with a 5 by 5 km grid spacing the distribution of SEISMOLAP values was mapped out as a function of space for one particular time (June 1986). The input parameters are Mmin = 3.8, Tlap = 600 days, and X = 200 km. The location of the mainshock is indicated by a star.</em> <p>
+</a><a name="997021">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="syntcat.htm">[Prev]</a> <a href="stressin.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:30:51 -->
+
+</body>
+</html>

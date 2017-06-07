@@ -1,0 +1,7 @@
+This is an automatically created mail. The declustering
+should be completed and the results save in the file
+/home/ftp/pub/preprints/wyss/tohoku/tohodec.mat
+
+Hope is worked. 
+stefan
+

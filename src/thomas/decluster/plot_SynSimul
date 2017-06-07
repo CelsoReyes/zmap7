@@ -1,0 +1,15 @@
+function plot_SynSimul(sFileName)
+
+load sFileName
+
+n=1;
+nSimul=length(params.mValueGrid);
+vResults=params;
+clear vResults.mValueGrid;
+for kk=1:nSimul
+    vResults.mValueGrid(:,kk)=params.mValueGrid{kk}(:,n);
+end
+
+gui_result(vResult);
+
+

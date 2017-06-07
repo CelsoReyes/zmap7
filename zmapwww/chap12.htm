@@ -1,0 +1,196 @@
+<html><head><title></title></head>
+<body bgcolor=#ffffff>
+ 
+<a href="title.htm">[Top]</a> <a href="stressin.htm">[Prev]</a> <a href="progguid.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+<a name="996762">
+<center><h1>Chapter   13     	 Troubleshooting<img src="chap12a.gif"></h1></center>
+</a><a name="996763">
+Lets face it: ZMAP will produce errors and may even crash the system. Here is a list of helpful hints and tips to prevent this from happening:<p>
+</a><ul><ul>
+<a name="996764">
+<li>A 'control-C' issued in the command window can recover you from infinite loops and from situations in which the screen is apparently locked. 
+</a><a name="996765">
+<li>ZMAP can use lots of memory! Especially grids and movies can fill up your memory fast. A PC with 8 MB memory should be the minimum size - the more the better, Matlab is not always very graceful when a 'Out of Memory' error occurs. You may have to leave Matlab or even Windows altogether. 
+</a><a name="996767">
+<li>To reduce the size of a grid, change the 'bin length in days' in the general Parameter selection window to a higher value. The grid size depends linearly on the number of time steps. Alternatively, increase the grid spacing. 
+</a><a name="996769">
+<li>Find a device driver that supports 256 colors. Otherwise you will not be able to create movies and the color display of z-value maps will be rather poor. 
+</a><a name="996770">
+<li>Set your windows device driver to a larger number of pixels (800x600 for example) and a small font. 
+</a><a name="996771">
+<li>The command window usually displays which function is currently executed. When an error occurs, Matlab will tell you the function and line number. You can edit this function to avoid errors or to customize ZMAP to your needs. 
+</a><a name="996773">
+<li>If an error occurs, send e-mail to <em>stefan@giseis.alaska.edu</em>. Please explain when the error occurred and give the error message. <img src="chap12a1.gif">
+</a><a name="996792">
+<li>ZMAP should be downward compatible to Matlab version 4.0. However, since Matlab version 4.0 is less robust and slower, we recommend using Matlab version 4.1 or higher. The only two problem that I am aware of using Matlab 4.0 are: (1) the zoom function does not work, and (2) movies of the cube will not be created. 
+</a><a name="996794">
+<li>In some rare occasions Matlab can cause a General Application Error in windows. This will on the PC  close Matlab and eventually the whole window system. Even when matlab crashed you may have to leave the Windows to free the memory still occupied by Matlab, otherwise you may run into "out of Memory" problems. You should complain to the Matlab technical support if this occurs frequently. They claim that the problem does not (or not as frequently) occur with Matlab 4.1 or higher. The uNIX version will sometimes display a message `Save your workspace and quit Matlab, Conatct Mathworks if the problem persists'. This message can usually be ignored. 
+</a></ul>
+</ul><a name="996796">
+<center><h1>Chapter   14     	 Customizing ZMAP</h1></center>
+</a><a name="996797">
+The open file architecture of Matlab makes it possible to edit any of the script files that build ZMAP. For example: You don't like the color that the main faults are displayed in the map window? Go to src/overlay_.m and edit the lines <p>
+</a><a name="996798">
+if isempty(mainfault) == 0	% check if exist <p>
+</a><a name="996799">
+	 plo3 = plot(mainfault(:,1),mainfault(:,2),'m');<p>
+</a><a name="996800">
+	 set(plo3,'LineWidth',3.0)<p>
+</a><a name="996801">
+end 	% if exist mainfault<p>
+</a><a name="996802">
+<p>
+</a><a name="996803">
+instead of 'm' choose 'b' to get a blue line. <p>
+</a><a name="996804">
+Or would you like to have a new symbol size in the "Size" pulldown menu of the map window? Add this line to the file /src/subcata.m.<p>
+</a><a name="996805">
+uimenu(SizeMenu,'Label','24','Callback','ms6 =36;eval(cal6)');<p>
+</a><a name="996806">
+In addition to changes in the source code, you can customize some display variables by editing the file ini_pc.m in the ZMAP home directory. Here you can for example change the default background color for the windows. <p>
+</a><a name="996807">
+ <p>
+</a><a name="996808">
+ %    This is the ZMAP default file used for the PC Version. <p>
+</a><a name="996809">
+ %    Customize setting if desired<p>
+</a><a name="996810">
+ %    <p>
+</a><a name="996811">
+ report_this_filefun(mfilename('fullpath'));<p>
+</a><a name="996812">
+ <p>
+</a><a name="996813">
+ % Set the font size for most text<p>
+</a><a name="996814">
+ %<p>
+</a><a name="996815">
+ fs8 = 8;<p>
+</a><a name="996816">
+ fs10 = 8;<p>
+</a><a name="996817">
+ fs12 = 10;<p>
+</a><a name="996818">
+ fs12 = 11;<p>
+</a><a name="996819">
+ fs14 = 12;<p>
+</a><a name="996820">
+ fs16 = 12;<p>
+</a><a name="996821">
+ <p>
+</a><a name="996822">
+ % Marker sizes<p>
+</a><a name="996823">
+ ms6 = 6;<p>
+</a><a name="996824">
+ ms10 = 10;<p>
+</a><a name="996825">
+ ms12 = 12;<p>
+</a><a name="996826">
+ <p>
+</a><a name="996827">
+ % Marker type (initial plot symbols in the map window) <p>
+</a><a name="996828">
+ ty ='o';<p>
+</a><a name="996829">
+ ty1 = '+';<p>
+</a><a name="996830">
+ ty2 = 'o';<p>
+</a><a name="996831">
+ ty3 = 'x';<p>
+</a><a name="996832">
+ co = 'w';<p>
+</a><a name="996833">
+ <p>
+</a><a name="996834">
+ % Type of the legend in the map window (either 'dep' or 'tim')<p>
+</a><a name="996835">
+ typele = 'dep';<p>
+</a><a name="996836">
+ <p>
+</a><a name="996837">
+ %Initial position and size of the welcome window and some other windows. <p>
+</a><a name="996838">
+ wex = 10;<p>
+</a><a name="996839">
+ wey = fipo(4)-200;<p>
+</a><a name="996840">
+ welx = 300;<p>
+</a><a name="996841">
+ wely = 250;<p>
+</a><a name="996842">
+ <p>
+</a><a name="996843">
+ % Size of the Map window <p>
+</a><a name="996844">
+ winx = 550;<p>
+</a><a name="996845">
+ winy = 420;<p>
+</a><a name="996846">
+ <p>
+</a><a name="996847">
+ <p>
+</a><a name="996848">
+ iwl2 = 1.5;% initial length of statistical evaluation <p>
+</a><a name="996849">
+ step = 3;% initial time step width <p>
+</a><a name="996850">
+ ni = 100; % initial number of EQ in each circle<p>
+</a><a name="996851">
+ <p>
+</a><a name="996852">
+ % initial string for the data information window <p>
+</a><a name="996853">
+ infstri = ' Please enter information about the | current dataset here';<p>
+</a><a name="996854">
+ <p>
+</a><a name="996855">
+ % set the background color of the windows (c1 = red, c2 = green, c3 = blue)<p>
+</a><a name="996856">
+ % default: light gray 0.9 0.9 0.9 <p>
+</a><a name="996857">
+ c1 = 0.9;<p>
+</a><a name="996858">
+ c2 = 0.9;<p>
+</a><a name="996859">
+ c3 = 0.9;<p>
+</a><a name="996860">
+ <p>
+</a><a name="996862">
+ % Set the Background color for the plot - default \: light yellow 1 1 0.6<p>
+</a><a name="996863">
+ cb1 = 1.0;<p>
+</a><a name="996864">
+ cb2 = 1.0;<p>
+</a><a name="996865">
+ cb3 = 0.6;	<p>
+</a><a name="996866">
+ <p>
+</a><a name="996747">
+<p>
+</a>
+<hr><br>
+ 
+<a href="title.htm">[Top]</a> <a href="stressin.htm">[Prev]</a> <a href="progguid.htm">[Next]</a> <a href="zmapdoci.htm">[Bottom]</a>
+<hr><br>
+ 
+
+
+<address>
+<a href="mailto:yourEmail@xyzcorp.com">yourEmail@xyzcorp.com</a>
+</address>
+
+<i>Copyright &#169; 1996, XYZ Corporation.   All rights
+reserved.</i>
+
+<!-- This file was created with Quadralay WebWorks Publisher 3.0.7BETA -->
+<!-- -->
+<!-- For more information on how this document, and how the rest of -->
+<!-- this server was created, email yourEmail@xyzcorp.com -->
+<!-- -->
+<!-- Last updated: 09/15/96 16:36:28 -->
+
+</body>
+</html>

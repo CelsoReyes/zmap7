@@ -1,0 +1,267 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+                       <!--Converted with LaTeX2HTML 99.2beta8 (1.43)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+  <title>Declustering</title>
+                                                                        
+                                                                        
+                 
+  <meta name="description" content="Declustering">
+                                                                        
+                   
+  <meta name="keywords" content="master_gen">
+                                                                        
+              
+  <meta name="resource-type" content="document">
+                                                                        
+                   
+  <meta name="distribution" content="global">
+                                                                        
+                     
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+                                                                        
+                   
+  <meta name="Generator" content="LaTeX2HTML v99.2beta8">
+                                                                        
+                   
+  <meta http-equiv="Content-Style-Type" content="text/css">
+                                                                        
+                     
+  <link rel="STYLESHEET" href="master_gen.css">
+                                                                        
+                     
+  <link rel="previous" href="node2.html">
+                                                                        
+                   
+  <link rel="up" href="node1.html">
+                                                                        
+                   
+  <link rel="next" href="node4.html">
+</head>
+  <body>
+<!--Navigation Panel--><a name="tex2html44" href="node4.html"><img width="37" height="24" align="Baseline" border="0" alt="next" src="next.gif">
+</a>
+<a name="tex2html42" href="node1.html"><img width="26" height="24" align="Baseline" border="0" alt="up" src="up.gif">
+</a>
+<a name="tex2html38" href="node2.html"><img width="63" height="24" align="Baseline" border="0" alt="previous" src="prev.gif">
+</a>
+<br>
+<b> N&auml;chste Seite:</b><a name="tex2html45" href="node4.html">Literatur</a>
+<b> Aufw&auml;rts:</b><a name="tex2html43" href="node1.html">Declustering 
+           by using spatial</a>
+<b> Vorherige Seite:</b><a name="tex2html39" href="node2.html">Method</a>
+<br>
+<br>
+<!--End of Navigation Panel-->
+<h2><a name="SECTION00012000000000000000"> Declustering</a>
+</h2>
+                        In order to start the declustering algorithm using
+ the   windowing      approach    by Gardner &amp; Knopoff [<a href="node4.html#Gardner1974">
+            1</a>
+                       ], choose "Decluster the catalogfrom the ZTools pulldown 
+   menu,    then   "Decluster   using Garnder &amp; Knopoff". Thereafter, 
+a  little menu   pops   up giving the   choice of the window to be applied.One 
+  can have a  look at   the windows by  pressing the "Plot" button (see Figure 
+  <a href="node2.html#pic:declus_winlength">               2</a>
+                        and <a href="node3.html#pic:declus_menu">3</a>
+                       ).                         
+<div align="Center"><a name="pic:declus_menu"></a>
+<a name="75"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 3:</strong> Declustering menu 
+           for the windowing approach by Gardner &amp; Knopoff [<a href="node4.html#Gardner1974">
+                       1</a>
+                       ].</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><!-- MATH
+ $\includegraphics[scale=0.6]{zmap/pictures/declus_menu.eps}$
+ --><img width="400" height="400" border="0" src="img5.gif" alt="\includegraphics[scale=0.6]{zmap/pictures/declus_menu.eps}">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+    After choosing the window, start the declustering procedure    by  pressing
+      the "Go" button. "Exit" gets you out of the declustering    procedure.
+   During     the process, waitbars show the progress of the declustering.
+    The  process    finishes displaying the cluster location as magenta pluses
+     in the seismicity    map and the declustered catalog as dots (Figure
+<a href="node3.html#pic:declus_seismicity">                     4</a>
+                       ). The length of the clusters compared to the original 
+  applied     window    is  shown in the "Cluster length in time and space" 
+  window (Figure     <a href="node3.html#pic:declus_lengthcomp">         
+5</a>
+                       ) and the overall distribution of magnitudes of the
+ events    detected     in  the  clusters is shown in the "Histogram" window
+ (Figure    <a href="node3.html#pic:declus_histogram">              6</a>
+                       ).                          
+<div align="Center"><a name="pic:declus_seismicity"></a>
+<a name="76"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 4:</strong> Seismicity window 
+           output for the Swiss catalog ECOS Ver. 31.03.2002 from declustering 
+     using      Gardner &amp; Knopoff [<a href="node4.html#Gardner1974">1</a>
+                       ]. Dots indicate declustered catalog, magenta pluses 
+ show   cluster     location.</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><!-- MATH
+ $\includegraphics[scale=0.4]{zmap/pictures/declus_seismicity.eps}$
+ --><img width="357" height="353" align="Baseline" border="0" src="img6.gif" alt="\includegraphics[scale=0.4]{zmap/pictures/declus_seismicity.eps}">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div align="Center"><a name="pic:declus_lengthcomp"></a>
+<a name="54"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 5:</strong> Comparison of actual 
+           determined cluster (blue stars) length and predefined windows (red
+    lines).       Higher values result from adding the time difference between
+    originally     chosen  earthquake and strongest shock in the sequence
+(see    text for description).       Example for the ECOS catalog Ver. 31.03.2002
+    using Gardner &amp; Knopoff      windows.</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><!-- MATH
+ $\includegraphics[scale=0.5]{zmap/pictures/declus_lengthcomp.eps}$
+ --><img width="333" height="411" align="Baseline" border="0" src="img7.gif" alt="\includegraphics[scale=0.5]{zmap/pictures/declus_lengthcomp.eps}">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div align="Center"><a name="pic:declus_histogram"></a>
+<a name="59"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 6:</strong> Histogram of magnitudes 
+           of all events detected in clusters for the ECOS catalog Ver. 31.03.2002 
+         using  Gardner &amp; Knopoff windows.</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><!-- MATH
+ $\includegraphics[scale=0.5]{zmap/pictures/declus_histogram.eps}$
+ --><img width="345" height="307" align="Baseline" border="0" src="img8.gif" alt="\includegraphics[scale=0.5]{zmap/pictures/declus_histogram.eps}">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+                        Finally, information on clustered events, events
+of  the   declustered       catalog,   and moment release is displayed in
+the  "Decluster   informationmessage       box  (Figure <a href="node3.html#pic:declus_info">
+       7</a>
+                       ).                          
+<div align="Center"><a name="pic:declus_info"></a>
+<a name="65"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 7:</strong> Decluster information 
+           message box. Example of the ECOS catalog Ver. 31.03.2002 using 
+Gardner        &amp;   Knopoff windows.</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><!-- MATH
+ $\includegraphics[scale=0.8]{zmap/pictures/declus_info.eps}$
+ --><img width="580" height="217" align="Baseline" border="0" src="img9.gif" alt="\includegraphics[scale=0.8]{zmap/pictures/declus_info.eps}">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+                       After the declustering process, one can map out the
+ degree    of  clustering      of the catalog using the "Create"--button.
+Another window    pops up letting      the user define the important parameters
+(Figure   <a href="node3.html#pic:declus_degree"> 8</a>
+       ):<br>
+<ul>
+  <li>Max. number of events: Sets a limit for the number of events used at
+          each gridnode. </li>
+  <li>Maximim radius (km): Maximum radius to select earthquakes for determining 
+           the degree of clustering.</li>
+  <li>Minimum number of events: A smaller number produces a white spot on 
+           the map.</li>
+  <li>Grid spacing / [deg]: Grid spacing in decimal degree.</li>
+</ul>
+<div align="Center"><a name="pic:declus_degree"></a>
+<a name="65"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 8:</strong> Parameters for degree 
+    of clustering map.</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><img width="350" height="300" align="Baseline" border="0" src="declus_degree.jpg">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+        The algorithm  sets up a grid and calculates the degree of clustering 
+     per  gridnode, i.e. the number of events in clusters divided by the number
+       of independent events regardless of time. Default  values are given,
+  but    are  strongly dependent on the region one is working  on. It is
+worthwhile       testing  different parameters. The grid points are displayed
+ in the  seismicity     map.  Figure  <a href="node3.html#pic:declus_degree_map">
+  9</a>
+       shows an example  for the european    region  using the ECOS catalog 
+ (Ver.  31.03.2002) of the Swiss  Seismological    Service.  <br>
+<div align="Center"><a name="pic:declus_degree_map"></a>
+<a name="65"></a>
+<table>
+  <caption align="Bottom"><strong>Abbildung 9:</strong> Degree of declustering
+   map for Central Europe using ECOS Ver. 31.03.02 .</caption><tbody>
+    <tr>
+      <td>
+      <div align="Center"><img width="580" height="500" align="Baseline" border="0" src="declus_degree_map.jpg">
+      </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<br>
+     The catalog can be reset to the original one using the Catalog  pulldown
+      menue from the "Seismicity map" window. <br>
+       As mentioned earlier, the definition of the window length  in  space 
+    and   time are crucial to the selection of clusters. In case  that  the 
+  user    wants   to apply other window length to the actual catalog,   one 
+   can easily    edit the  function <i>calc_windows.m</i> and add other  
+functions.   For interactive     usage  of the new function, the script <i>
+     declus_inp.m</i>       needs a little     change  in the string property 
+of  the variable <i>   inp1</i>  . If the user   wants  to investigate the 
+cluster  in more detail,  use the  Matlab help-function   for  the script 
+<i> calc_decluster.m</i>      . The clusters  and mainshocks are   indicated 
+ through vectors, each  cluster  having a single  number. With these,   one 
+can  select single clusters  or  whatever one wants  to have a look at.  Have
+fun!   <br>
+                        These scripts where implemented by J. Woessner. Please
+   address     your   questions   to woessnerseismo.ifg.ethz.ch or stefanseismo.ifg.ethz.ch. 
+                              
+<hr><!--Navigation Panel--><a name="tex2html44" href="node4.html"><img width="37" height="24" align="Baseline" border="0" alt="next" src="next.gif">
+</a>
+<a name="tex2html42" href="node1.html"><img width="26" height="24" align="Baseline" border="0" alt="up" src="up.gif">
+</a>
+<a name="tex2html38" href="node2.html"><img width="63" height="24" align="Baseline" border="0" alt="previous" src="prev.gif">
+</a>
+<br>
+<b> N&auml;chste Seite:</b><a name="tex2html45" href="node4.html">Literatur</a>
+<b> Aufw&auml;rts:</b><a name="tex2html43" href="node1.html">Declustering 
+           by using spatial</a>
+<b> Vorherige Seite:</b><a name="tex2html39" href="node2.html">Method</a>
+<!--End of Navigation Panel-->
+<address> Jochen Woessner 2002-08-15 </address>
+</body>
+</html>

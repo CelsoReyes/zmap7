@@ -1,0 +1,38 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1250">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; SunOS 5.5.1 sun4u) [Netscape]">
+</HEAD>
+<BODY TEXT="#FFFF00" BGCOLOR="#000000" LINK="#FFCCCC" VLINK="#66FFFF" ALINK="#FF0000">
+
+<H1>
+<B><FONT COLOR="#FFFF00">Plotting Maps in ZMAP using the M_MAP software</FONT></B></H1>
+<B><FONT COLOR="#FFFF00">ZMAP maps are mostly plain xy plots, no map projection
+re available. The MATLAB mapping toolbox addresses this need, but is rather
+expensive and a bit cumbersome. <A HREF="http://www.soest.hawaii.edu/soest/gmt.html">GMT</A>
+is an elegant way to plot nice looking maps, but requires to export all
+data from ZMAP. The <A HREF="http://www.ocgy.ubc.ca/~rich/map.html">M_MAP
+software </A>is a nice set of tools that produce nice looking maps with
+little effort.</FONT></B>
+
+<P><B><FONT COLOR="#FFFF00">To plot a Lambert projection map, choose the
+Tools -> Plot Map using m_map -> Lambert Projection option from the seismicity
+map window. The resulting new window plot a map of the following type:</FONT></B>
+<CENTER><IMG SRC="m_map.jog" HEIGHT=482 WIDTH=398 ALIGN=TEXTTOP></CENTER>
+
+
+<P><B>In a similar fashion, color maps can be plotted using the m_map features.
+To change the projection used, modify the file /m_map/ploymymap.m. See
+the M_Map documentation for available projections.</B><B></B>
+
+<P><B>To plot these maps with pathced landed area, the low and intermediate
+resolution <A HREF="http://www.ngdc.noaa.gov/mgg/shorelines/gshhs.html">GHSSS</A>
+database of coastline data needs to be within the Matlab search path, for
+example in the dem directory.&nbsp;&nbsp;&nbsp;</B>
+<BR><B>&nbsp;</B>
+<BR><B>&nbsp;</B>
+<BR><B>&nbsp;</B>
+<BR><B>&nbsp;</B>
+<BR><B>&nbsp;</B>
+</BODY>
+</HTML>

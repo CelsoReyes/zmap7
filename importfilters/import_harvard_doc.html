@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Harvard CMT catalog</title>
+                                                
+  <meta http-equiv="content-type"
+ content="text/html; charset=ISO-8859-1">
+</head>
+  <body>
+     
+<div align="center"><font size="+2"><b><font
+ face="Helvetica, Arial, sans-serif"></font></b></font></div>
+ 
+<table cellpadding="2" cellspacing="0" border="0" width="100%">
+   <tbody>
+     <tr>
+       <td valign="top" bgcolor="#990000" width="415" rowspan="1"
+ colspan="1"><b><font face="Helvetica, Arial, sans-serif"
+ color="#ffffff" size="+2">Harvard CMT catalog</font></b><br>
+             </td>
+                       </tr>
+                                                                        
+                                                                        
+      
+  </tbody>       
+</table>
+       <br>
+      <font face="Helvetica, Arial, sans-serif">Download URL: <a
+ href="http://www.seismology.harvard.edu/CMTsearch.html">http://www.seismology.harvard.edu/CMTsearch.html<br>
+ <br>
+ </a></font><font size="+1" face="Helvetica, Arial, sans-serif">To retrieve 
+the catalog <br>
+ </font><font face="Helvetica, Arial, sans-serif"><br>
+ Change to the </font><tt>importfilters/harvard</tt> <font
+ face="Helvetica, Arial, sans-serif">directory<br>
+ </font><font face="Helvetica, Arial, sans-serif"><br>
+ Call </font><tt>getharvardcatalog directory</tt><br>
+ <br>
+ <font face="Helvetica, Arial, sans-serif">The script retrieves all necessary 
+data and converts it into fixed-column format to be used with this importfilter
+and stores it into </font><tt>directory</tt>. <font
+ face="Helvetica, Arial, sans-serif">The script uses a fortran programm</font>
+<tt>cmtsel.f</tt>. <font face="Helvetica, Arial, sans-serif">Compile it with
+</font><tt>g77 -O -o cmtsel cmtsel.f</tt>.<font
+ face="Helvetica, Arial, sans-serif"><br>
+ <br>
+ <br>
+ <font size="+1">Dokumentation of the original *.dek files</font><br>
+ </font><br>
+ <tt>================================================================================<br>
+ <br>
+ This file contains a brief description of the format used in the ASCII<br>
+ version of the Harvard centroid-moment-tensor (CMT) catalog. The original<br>
+ description of the CMT method can be found in:<br>
+ <br>
+ Dziewonski, Chou, and Woodhouse, JGR, 86, 2825-2852, 1981.<br>
+ Dziewonski and Woodhouse, JGR, 88, 3247-3271, 1983.<br>
+ <br>
+ All of the moment-tensor solutions have been published in Physics of the<br>
+ Earth and Planetary Interiors, and new solutions are published there as<br>
+ quarterly or yearly reports. These reports also contain descriptions of<br>
+ various enhancements to the original algorithm, including the incorporation 
+<br>
+ of laterally heterogeneous earth models and the use of broad-band data<br>
+ for depth determination.<br>
+ <br>
+ ================================================================================<br>
+ <br>
+ B010177C&nbsp; 1/ 1/77 11:33:41.6&nbsp; 30.66&nbsp; 137.06 476.05.20.0SOUTH 
+OF HONSHU, JAPAN<br>
+ MLI BW: 5 14&nbsp; 45 MW: 0&nbsp; 0&nbsp;&nbsp; 0 DT=&nbsp;&nbsp; 4.3 0.7&nbsp; 
+30.62 0.07&nbsp; 136.80 0.10 476.5&nbsp; 4.8<br>
+ &nbsp;DUR 1.8 EX 24 -0.32 0.05&nbsp; 0.80 0.08 -0.48 0.09&nbsp; 1.01 0.10 
+-0.36 0.08&nbsp; 0.40 0.07<br>
+ &nbsp;&nbsp; 1.41 29 354&nbsp; -0.15 31 104&nbsp; -1.26 45 230&nbsp;&nbsp; 
+1.34&nbsp; 33 32 -163 289 81&nbsp; -59<br>
+ C010277A&nbsp; 1/ 2/77&nbsp; 9:55:28.4 -10.17&nbsp; 118.99&nbsp; 19.05.86.3SUMBA 
+ISLAND REGION<br>
+ MLI BW: 5 12&nbsp; 45 MW: 5 15 135 DT=&nbsp;&nbsp; 8.8 0.3 -10.41 0.02&nbsp; 
+118.86 0.04&nbsp; 24.5&nbsp; 1.5<br>
+ &nbsp;DUR 6.0 EX 25&nbsp; 2.48 0.09 -2.46 0.05 -0.02 0.07&nbsp; 1.81 0.20&nbsp; 
+0.06 0.16 -0.01 0.04<br>
+ &nbsp;&nbsp; 3.07 72 357&nbsp; -0.02&nbsp; 1&nbsp; 89&nbsp; -3.06 18 179&nbsp;&nbsp; 
+3.07 271 27&nbsp;&nbsp; 92&nbsp; 89 63&nbsp;&nbsp; 89<br>
+ <br>
+ B010177C&nbsp; 1/ 1/77 11:33:41.6&nbsp; 30.66&nbsp; 137.06 476.05.20.0SOUTH 
+OF HONSHU, JAPAN<br>
+ 1st line: event_id, date,origin time,latitude,longitude,depth, mb, MS, region 
+<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (all as reported
+by NEIS or ISC).<br>
+ <br>
+ MLI BW: 5 14&nbsp; 45 MW: 0&nbsp; 0&nbsp;&nbsp; 0 DT=&nbsp;&nbsp; 4.3 0.7&nbsp; 
+30.62 0.07&nbsp; 136.80 0.10 476.5&nbsp; 4.8<br>
+ 2nd line: first three characters: MLI=epicenter info from NEIC Monthly listings;<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PDE=from Preliminary 
+listings; ISC=from ISC catalog.<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Number of stations 
+and total number of body-wave records used in the<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inversion&nbsp; (5 
+and 14) and cut-off in seconds (45). Same for mantle<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; waves (0, 0 and 0). 
+DT is the centroid time from the inversion<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (4.3 seconds) measured 
+from origin time; its standard error (0.7);<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; centroid latitude, 
+longitude and depth, each with standard error.<br>
+ <br>
+ DUR 1.8 EX 24 -0.32 0.05&nbsp; 0.80 0.08 -0.48 0.09&nbsp; 1.01 0.10 -0.36 
+0.08&nbsp; 0.40 0.07<br>
+ 3rd line: Assumed half duration (1.8 sec) [NOTE - this value is assumed
+and is<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; not a result of the 
+inversion]; EX=exponent of all moment values that <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; follow&nbsp; (24&nbsp; 
+means all moments are 'value*10**24'); moment tensor<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; elements, each followed 
+immediately by its standard error. <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The coordinate system 
+is r-up, s-South, e-East, and the 6 elements<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; are ordered Mrr,
+Mss, Mee, Mrs, Mre, Mse. See Aki and Richards for <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conversion to other 
+systems.<br>
+ <br>
+ &nbsp;&nbsp; 1.41 29 354&nbsp; -0.15 31 104&nbsp; -1.26 45 230&nbsp;&nbsp; 
+1.34&nbsp; 33 32 -163 289 81&nbsp; -59<br>
+ 4th line: moment tensor expressed in its principle axis system; <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; eigenvalue (1.41), 
+plunge (29) and strike (354) of eigenvector 1<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- repeated for 2 
+other axes. Scalar moment (1.34 -- to be multiplied <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; by 10**24). Strike 
+(33), dip (32), and rake (-163) for best<br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; double couple --
+repeated for second nodal plane. Aki and Richards <br>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; convention for fault 
+angles.<br>
+ <br>
+ ================================================================================<br>
+ <br>
+ Goran Ekstrom<br>
+ Harvard University <br>
+ Department of Earth and Planetary Sciences<br>
+ 20 Oxford Street<br>
+ Cambridge, MA 02138<br>
+ <br>
+ ekstrom@eps.harvard.edu<br>
+ <br>
+ ================================================================================<br>
+ </tt><br>
+ <br>
+</body>
+</html>
