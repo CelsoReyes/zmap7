@@ -75,12 +75,12 @@ axes('position',rect)
 p5 = gca;
 
 deplo1 =plot(newt2(newt2(:,7)<=dep1,3),-newt2(newt2(:,7)<=dep1,7),'.b');
-set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
+set(deplo1,'MarkerSize',ms6,'Marker',ty1)
 hold on
 deplo2 =plot(newt2(newt2(:,7)<=dep2&newt2(:,7)>dep1,3),-newt2(newt2(:,7)<=dep2&newt2(:,7)>dep1,7),'.g');
-set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
+set(deplo2,'MarkerSize',ms6,'Marker',ty2);
 deplo3 =plot(newt2(newt2(:,7)<=dep3&newt2(:,7)>dep2,3),-newt2(newt2(:,7)<=dep3&newt2(:,7)>dep2,7),'.r');
-set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
+set(deplo3,'MarkerSize',ms6,'Marker',ty3)
 
 hold on
 if isempty(maepi) == 0

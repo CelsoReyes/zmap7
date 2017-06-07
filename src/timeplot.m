@@ -155,16 +155,16 @@ if newCumWindowFlag
 
     op4 = uimenu(options,'Label','Mc and b-value estimation');
     uimenu(op4,'Label','automatic', 'Callback','ho = ''noho'',selt = ''in'',; bdiff2')
-    uimenu(op4,'Label','automatic - overlay existing plot', 'Callback','ho = ''hold'',selt = ''in'',;,bdiff2')
+    % uimenu(op4,'Label','automatic - overlay existing plot', 'Callback','ho = ''hold'',selt = ''in'',;,bdiff2')
     uimenu(op4,'label','Mc with time ', 'Callback','selt = ''in''; sPar = ''mc''; plot_McBwtime');
-    uimenu(op4,'Label','manual', 'Callback','bfitnew(newt2)')
-    uimenu(op4,'Label','Estimate Mc', 'Callback','mcperc')
+    % uimenu(op4,'Label','manual', 'Callback','bfitnew(newt2)')
+    % uimenu(op4,'Label','Estimate Mc', 'Callback','mcperc')
     uimenu(op4,'Label','b with depth', 'Callback','bwithde2')
     %     uimenu(op4,'Label','b with time', 'Callback','selt=''in'';bwithti')
     uimenu(op4,'label','b with magnitude', 'Callback','bwithmag');
     %     uimenu(op4,'label','Magnitude of completeness (Mc) with time', 'Callback','mcwti');
     uimenu(op4,'label','b with time', 'Callback','selt = ''in''; sPar = ''b''; plot_McBwtime');
-    uimenu(op4,'label','Create synthetic catalog', 'Callback','synthb');
+    % uimenu(op4,'label','Create synthetic catalog', 'Callback','synthb');
 
 
     pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl ttcat;ttcat=newt2;'];
@@ -178,14 +178,14 @@ if newCumWindowFlag
     %displayed (the catalog newt2).
     uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
     uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ho = ''noho'';inpu_main')
-    uimenu(op5,'Label','Compute p and overlay existing plot', 'Callback','ho = ''hold''; pvalcat')
+    % uimenu(op5,'Label','Compute p and overlay existing plot', 'Callback','ho = ''hold''; pvalcat')
     %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
     %initial time.
     uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')
-    uimenu(op5,'Label','Aftershock rate change detection (fixed number)', 'Callback','call_relrate')
-    uimenu(op5,'Label','Forecast aftershock occurence (RMS)', 'Callback','call_bootfitF')
-    uimenu(op5,'Label','Forecast aftershock occurence (MLE)', 'Callback','call_llforecast')
-    uimenu(op5,'Label','Omori law fit', 'Callback','call_Omorifit')
+    % uimenu(op5,'Label','Aftershock rate change detection (fixed number)', 'Callback','call_relrate')
+    % uimenu(op5,'Label','Forecast aftershock occurence (RMS)', 'Callback','call_bootfitF')
+    % uimenu(op5,'Label','Forecast aftershock occurence (MLE)', 'Callback','call_llforecast')
+    % uimenu(op5,'Label','Omori law fit', 'Callback','call_Omorifit')
     %uimenu(op5,'Label','Aftershock rate change map', 'Callback','call_rcgrid')
     %uimenu(op5,'Label','Run aspar3x', 'Callback',' runasp')
     %The previous option is available only under UNIX. The file must contain the mainshock!!
@@ -198,8 +198,7 @@ if newCumWindowFlag
     uimenu(op6,'Label','Compute D with time', 'Callback',' org = 6; startfd;');
     uimenu(op6,'Label',' Help/Info on  fractal dimension', 'Callback',' showweb(''fractal''); ')
 
-    uimenu(options,'Label','get coordinates with cursor ',...
-         'Callback','gi = ginput(1),plot(gi(1),gi(2),''+'');')
+    % uimenu(options,'Label','get coordinates with cursor ','Callback','gi = ginput(1),plot(gi(1),gi(2),''+'');')
     %uimenu(options,'Label','CUSUM ',...
     % 'Callback','cusum(newt2);')
     %uimenu(options,'Label','CUFIT ',...

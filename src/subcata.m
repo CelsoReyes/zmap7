@@ -96,6 +96,7 @@ if newMapWindowFlag
     %
     symbolmenu = uimenu('Label',' --   Overlay ');
 
+    %TODO use add_symbol_menu(...) instead of creating all these menus
     SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
     TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
     ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
@@ -141,22 +142,22 @@ if newMapWindowFlag
 
     lemenu = uimenu(symbolmenu,'Label',' Legend by ...  ');
 
-    TypeMenu = uimenu(lemenu,'Label',' Legend by time ',...
+    uimenu(lemenu,'Label',' Legend by time ',...
         'Callback','typele = ''tim'';setleg');
-    TypeMenu = uimenu(lemenu,'Label',' Legend by depth ',...
+    uimenu(lemenu,'Label',' Legend by depth ',...
         'Callback','typele = ''dep'';subcata');
-    TypeMenu = uimenu(lemenu,'Label',' Legend by magnitude ',...
+    uimenu(lemenu,'Label',' Legend by magnitude ',...
         'Callback','typele = ''mag'';setlegm');
-    TypeMenu = uimenu(lemenu,'Label',' Mag by size and depth by color (slow) ',...
+    uimenu(lemenu,'Label',' Mag by size and depth by color (slow) ',...
         'Callback','typele = ''mad'';subcata');
-    TypeMenu = uimenu(lemenu,'Label',' Symbol color by faulting type (slow) ',...
+    uimenu(lemenu,'Label',' Symbol color by faulting type (slow) ',...
         'Callback','typele = ''fau'';subcata');
 
     fosmenu = uimenu(symbolmenu,'Label',' Change font size ...  ');
 
-    TypeMenu = uimenu(fosmenu,'Label',' FontSize +2',...
+    uimenu(fosmenu,'Label',' FontSize +2',...
         'Callback','fontsz=fontsz+2; subcata');
-    TypeMenu = uimenu(fosmenu,'Label',' FontSize +1',...
+    uimenu(fosmenu,'Label',' FontSize +1',...
         'Callback','fontsz=fontsz+1; subcata');
     TypeMenu = uimenu(fosmenu,'Label',' FontSize -1',...
         'Callback','fontsz=fontsz-1; subcata');
@@ -233,6 +234,22 @@ if newMapWindowFlag
         'Callback','eval(catSave);');
 
     %Syntax change Matlab Version 7, no window positioning on macs
+    %{
+    % the following is the unrolled version of catSave
+    welcome('Save Data', ' ');
+    try
+    think;
+    [file1, path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Earthquake Datafile');
+    if length(file1) > 1
+        wholePath=[path1 file1]
+        save('WholePath', 'a', 'faults','main','mainfault','coastline','infstri','well');
+    end
+    done
+    catch ME
+        warning(ME)
+    end
+    %}
+    
     catSave =...
         [ 'welcome(''Save Data'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Earthquake Datafile'');',...
@@ -270,22 +287,15 @@ if newMapWindowFlag
     uimenu(op1F,'Label',' Help on plotting topography',...
         'Callback','plt = ''genhelp''; pltopo;');
 
-    op2F   =  uimenu(op3,'Label','Plot map using m_map/Import coastline  ');
-    uimenu(op2F,'Label',' Select a projection ...',...
-        'Callback','selt = ''in'';  plotmymap;');
+   %  op2F   =  uimenu(op3,'Label','Plot map using m_map/Import coastline  ');
+   % uimenu(op2F,'Label',' Select a projection ...','Callback','selt = ''in'';  plotmymap;');
 
 
 
-    uimenu(op2F,'Label',' Help on plotting maps ',...
-        'Callback','web([''file:///'' which(''plotm_map.htm'')]); ');
-    uimenu(op2F,'Label',' Information on m_map',...
-        'Callback','web http://www2.ocgy.ubc.ca/~rich/map.html ');
+  %  uimenu(op2F,'Label',' Help on plotting maps ','Callback','web([''file:///'' which(''plotm_map.htm'')]); ');
+  %  uimenu(op2F,'Label',' Information on m_map','Callback','web http://www2.ocgy.ubc.ca/~rich/map.html ');
 
-    uimenu(op3,'Label','GenAS',...
-        'Callback','ingenas');
-
-    uimenu(op3,'Label','Play seismicty movie',...
-        'Callback','smovie');
+    % uimenu(op3,'Label','GenAS','Callback','ingenas');
 
     op4C  =   uimenu(op3,'Label','Random data simulations');
     uimenu(op4C,'label','Create permutated catalog (also new b-value)...', 'Callback',' org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; subcata; bdiff(a); revertcat');
@@ -346,13 +356,12 @@ if newMapWindowFlag
     uimenu(op3B,'Label','Load a b-value depth ratio grid',...
         'Callback','sel= ''lo'';,bdepth_ratio')
 
-    op3C = uimenu(op3, 'Label', 'Probabilistic forecast test');
-    uimenu(op3C, 'Label', 'Probabilistic forecast test...',...
-        'Callback','pt_start(a, gcf, 1, coastline, faults, [], name);');
-    uimenu(op3C, 'Label', 'Load probilistic forecast test results...', 'Callback', 'kj_load;');
+    % op3C = uimenu(op3, 'Label', 'Probabilistic forecast test');
+    % uimenu(op3C, 'Label', 'Probabilistic forecast test...','Callback','pt_start(a, gcf, 1, coastline, faults, [], name);');
+    % uimenu(op3C, 'Label', 'Load probilistic forecast test results...', 'Callback', 'kj_load;');
 
-    op3D = uimenu(op3, 'label', 'b-cubed');
-    uimenu(op3D, 'label', 'b-cubed map...',  'Callback', 'bc_start(a, gcf, 1, coastline, faults, [], name);');
+    % op3D = uimenu(op3, 'label', 'b-cubed');
+    % uimenu(op3D, 'label', 'b-cubed map...',  'Callback', 'bc_start(a, gcf, 1, coastline, faults, [], name);');
 
     op3E  =   uimenu(op3,'Label','Mapping p-values');
     uimenu(op3E,'Label','Calculate p and b-value map ',...

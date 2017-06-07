@@ -38,6 +38,10 @@ classdef FontSizeTracker
             obj.base_size = obj.base_size + val;
         end
         
+        function add_font_menuitem(parent)
+        end
+        
+        
     end
         
 end

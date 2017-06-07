@@ -115,6 +115,7 @@ if newMapWindowFlag
     %nilabel = uicontrol('style','text','units','norm','pos',[.88 .92 .04 .06]);
     %set(nilabel,'string','ni:','background','y');
 
+    %TODO use add_symbol_menu(...) instead of creating all these menus
     % Make the menu to change symbol size and type
     %
     symbolmenu = uimenu('Label',' Symbol ');
@@ -224,7 +225,22 @@ if newMapWindowFlag
     uimenu(op2,'Label','Save selected Catalog (mat) ',...
         'Callback','eval(catSave);');
 
-    %Syntax change Matlab Version 7, no window positioning on macs
+    %Syntax change Matlab Version 7, no window positioning on macs   
+    %{
+    % the following is the unrolled version of catSave
+    welcome('Save Data', ' ');
+    try
+    think;
+    [file1, path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Earthquake Datafile');
+    if length(file1) > 1
+        wholePath=[path1 file1]
+        save('WholePath', 'a', 'faults','main','mainfault','coastline','infstri','well');
+    end
+    done
+    catch ME
+        warning(ME)
+    end
+    %}
     catSave =...
         [ 'welcome(''Save Data'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Earthquake Datafile'');',...
@@ -249,16 +265,13 @@ if newMapWindowFlag
     uimenu(op1F,'Label',' Help on plotting Topography',...
         'Callback','plt = ''genhelp''; pltopo;');
 
-    op2F   =  uimenu(op3,'Label','Plot  Map using m_map  ');
-    uimenu(op2F,'Label','Lambert Projection - low resolution ',...
-        'Callback','res = ''c'';  plotmymap;');
-    uimenu(op2F,'Label','Lambert Projection - intermediate resolution (slow!)',...
-        'Callback','res = ''i'';  plotmymap;');
+    % op2F   =  uimenu(op3,'Label','Plot  Map using m_map  ');
+    % uimenu(op2F,'Label','Lambert Projection - low resolution ','Callback','res = ''c'';  plotmymap;');
+    % uimenu(op2F,'Label','Lambert Projection - intermediate resolution (slow!)','Callback','res = ''i'';  plotmymap;');
 
 
 
-    uimenu(op3,'Label','Run GenAS',...
-        'Callback','ingenas');
+    % uimenu(op3,'Label','Run GenAS','Callback','ingenas');
 
     op4C  =   uimenu(op3,'Label','Monte Carlo ');
     uimenu(op4C,'Label','evaluate random z(windowlength) distribution  ',...
@@ -320,14 +333,10 @@ if newMapWindowFlag
         'Callback','sel= ''lo'';bcross')
 
 
-    uimenu(op3,'Label','Decluster the catalog',...
-        'Callback','inpude;');
-    uimenu(op3,'Label','Misfit Calculation',...
-        'Callback','inmisfit;');
-    uimenu(op3,'Label','get coordinates with Cursor',...
-         'Callback','ginput(1)');
-    uimenu(op3,'Label','Zmapmenu',...
-        'Callback','zmapmenu;');
+    uimenu(op3,'Label','Decluster the catalog','Callback','inpude;');
+    uimenu(op3,'Label','Misfit Calculation','Callback','inmisfit;');
+    uimenu(op3,'Label','get coordinates with Cursor','Callback','ginput(1)');
+    uimenu(op3,'Label','Zmapmenu',Callback','zmapmenu;');
 
     op4C  = uimenu(op3,'Label','SEISMOLAP');
     uimenu(op4C,'Label','News on  Seismo Lap ',...
