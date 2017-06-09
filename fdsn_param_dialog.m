@@ -653,7 +653,7 @@ function [optlist] = add_datetime(handles, optlist, label)
     % adds only if 'something is not nan or empty
     val = get(handles.(label),'Value');
     if ~isempty(val) && ~isnan(val)
-        val=datestr(val,'yyyy-mm-dd hh:MM:SS.FFF');
+        val=datestr(val,'yyyy-mm-dd hh:MM:SS');
         val(val==' ') = 'T'
         optlist = [optlist, {label, val}];
     end

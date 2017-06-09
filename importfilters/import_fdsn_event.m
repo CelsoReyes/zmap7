@@ -8,7 +8,7 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     %   [uOutput] = import_fdsn_event(1, filename);
     %   The file should be a text-formatted (not xml) response from an FDSN webservice.
     %   and will have a single line header and the following fields, using a pipe as separator:
-    % 
+    %
     % EventID|Time|Latitude|Longitude|Depth/km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName
     %
     % to fetch from web:
@@ -27,7 +27,7 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     persistent datacenter_details
     if isempty(datacenter_details)
         datacenter_details = webread('http://service.iris.edu/irisws/fedcatalog/1/datacenters');
-
+        
         %dump datacenters with no event catalog access
         i=1;
         while i <= numel(datacenter_details)
@@ -107,43 +107,84 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         % spacing in header line is not guaranteed
         
         % scan only the relevant fields
-        nanoformat= 'yyyy-MM-dd''T''HH:mm:ss.SSSSSS';
-        milliformat='yyyy-MM-dd''T''HH:mm:ss.SSS';
-        flatformat ='yyyy-MM-dd''T''HH:mm:ss';
-        try
-        mData = textscan(...
-            ... xx|Time|Latitude|Longitude|Depth/km|
-            ... xx|xx|xx|xx|
-            ... MagType|Magnitude|xx|xx
-            data,'%*s%{yyyy-MM-dd''T''HH:mm:ss.SSSSSS}D%f%f%f%*s%*s%*s%*s%s%f%*s%*s',...
-            'Delimiter','|','Headerlines',1,'MultipleDelimsAsOne',false);
-        catch
-            disp('unable to scan. trying again, with simple seconds');
-            % yes, this is a brute approach to a most-likely scenario
-            % where datacenters use differing details in seconds
-            
-        mData = textscan(...
-            ... xx|Time|Latitude|Longitude|Depth/km|
-            ... xx|xx|xx|xx|
-            ... MagType|Magnitude|xx|xx
-            data,'%*s%{yyyy-MM-dd''T''HH:mm:ss}D%f%f%f%*s%*s%*s%*s%s%f%*s%*s',...
-            'Delimiter','|','Headerlines',1,'MultipleDelimsAsOne',false);
+        
+        %This version makes no assumptions other than the field titles it expects.
+        % various FDSN services tend to disagree on text format
+        
+        newlines = find(data==newline,2);
+        headerline =data(1:newlines(1)-1);
+        firstrow = data(newlines(1)+1:newlines(2)-1);
+        hdrs=lower(strip(split(headerline,'|')));
+        vals=strip(split(firstrow,'|'));
+       
+        mappings = containers.Map;
+        midx = containers.Map;
+        
+        time_pos = find(strcmp(hdrs,'time'));
+        
+        % look at format for the time field
+        if ismember('/',vals{time_pos}) 
+            date_format = 'yyyy/MM/dd';
+        else
+            date_format = 'yyyy-MM-dd'; %FDSN date standard
         end
-            
+        
+        if ismember('.',vals{time_pos})
+            time_format = 'HH:mm:ss.SSSSSS';
+        else
+            time_format ='HH:mm:ss';
+        end
+        
+        if ismember('T', vals{time_pos}) % FDSN date standard
+            mappings('time')=['%{', date_format, '''T''', time_format, '}D'];
+        else
+            mappings('time')=['%{', date_format, ' ', time_format, '}D'];
+        end
+        
+        mappings('latitude')='%f';
+        mappings('longitude')='%f';
+        mappings('depth/km')='%f';
+        mappings('magnitude')='%f';
+        mappings('magtype')='%s';
+        
+        fmtstr=[];
+        next_idx = 1;
+        for ij=1:numel(hdrs)
+                
+            field = hdrs{ij};
+            if (strcmp(field,'longtitude')) %SCEDC mispelling
+                hdrs{ij} = 'longitude';
+                field = hdrs{ij};
+            end
+           if mappings.isKey(field)
+               fmtstr=[fmtstr, mappings(field)]; %field of interest
+               midx(field) = next_idx;
+               next_idx = next_idx + 1;
+           else
+               fmtstr=[fmtstr,'%*s']; % ignore field
+           end
+        end
+        try
+            mData = textscan(data,fmtstr,'Delimiter','|','Headerlines',1,'MultipleDelimsAsOne',false);
+        catch ME
+            disp('unable to scan data');
+            disp(ME)
+        end
+        
         
         uOutput=zeros(numel(mData{1}),10);
-        uOutput(:,1)=mData{3}; % Longitude
-        uOutput(:,2)=mData{2}; % Latitude
-        uOutput(:,3)=decyear(mData{1});% decimal year.
-        uOutput(:,4)=mData{1}.Month;
-        uOutput(:,5)=mData{1}.Day;
-        uOutput(:,6)=mData{6}; % Magnitude
-        uOutput(:,7)=mData{4}; % depth (km)
-        uOutput(:,8)=mData{1}.Hour;
-        uOutput(:,9)=mData{1}.Minute;
-        uOutput(:,10)=mData{1}.Second;
+        uOutput(:,1)=mData{midx('longitude')}; % Longitude
+        uOutput(:,2)=mData{midx('latitude')}; % Latitude
+        uOutput(:,3)=decyear(mData{midx('time')});% decimal year.
+        uOutput(:,4)=mData{midx('time')}.Month;
+        uOutput(:,5)=mData{midx('time')}.Day;
+        uOutput(:,6)=mData{midx('magnitude')}; % Magnitude
+        uOutput(:,7)=mData{midx('depth/km')}; % depth (km)
+        uOutput(:,8)=mData{midx('time')}.Hour;
+        uOutput(:,9)=mData{midx('time')}.Minute;
+        uOutput(:,10)=mData{midx('time')}.Second;
         
-        %% 
+        %%
         
     end
     
