@@ -28,13 +28,13 @@ end
  M1b = [];
  M1b= ginput(1);
  tt1= M1b(1);
- plot(M1b(1),0,'o','era','back');
+ plot(M1b(1),0,'o');
   set(seti,'String','Select Time2');
  %pause(1)
  M2b = [];
 set(gcf,'Pointer','cross')
  M2b = ginput(1);
- plot(M2b(1),0,'o','era','back')
+ plot(M2b(1),0,'o')
  tt2= M2b(1);
  delete(seti)
  if tt1>tt2     % if start and end time are switched

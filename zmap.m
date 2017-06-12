@@ -173,26 +173,20 @@ end
 %
 % SO... if something doesn't have buttons, but should, then maybe it was assuming "pixels".
 
-%set(0,'DefaultFigurePosition',[wex wey welx wely]')
-%set(0,'DefaultFigureColor',[1,1,1]) %%N.B this has side %%effects.
 set(0,'DefaultAxesFontName','Arial')
 set(0,'DefaultTextFontName','Arial')
-%set(0,'DefaultAxesFontSize',12)
-%set(0,'DefaultTextFontSize',12)
-%set(0,'DefaultAxesTickDir','out')
 set(0,'DefaultAxesTickLength',[0.01 0.01])
 
 set(0,'DefaultFigurePaperPositionMode','auto')
 
 
-% find out what computer we are on
 % open message window
-
-message_zmap
+zmap_message_center;
+% message_zmap
 think
 echo off
 my_dir = hodi;
 % open selection window
-startmen(mess)
+% startmen(mess)
 done; %close(fi0)
 %set(gcf,'Units','pixel','position', [100 200 300 250])

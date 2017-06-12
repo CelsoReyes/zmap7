@@ -1,6 +1,7 @@
 % This is the main message window of zmap
 % It is use to display messages and input parameters
-
+%TODO Remove this file
+error('this is no longer used')
 report_this_filefun(mfilename('fullpath'));
 
 %
@@ -21,8 +22,10 @@ set(mess,...
 
 
 %  set(gcf,'Color',[0.8 0.8 0.8])
-if term == 'mono ' ; whitebg(mess) ; end
+if term == 'mono ';
+    whitebg(mess) ; 
+end
 set(gca,'visible','off');
-welcome
+welcome()
 set(mess,'visible','on');
-done
+done()

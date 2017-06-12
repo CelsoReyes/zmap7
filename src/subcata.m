@@ -461,14 +461,14 @@ hold on
 %plot earthquakes according to magnitude
 if typele == 'mag'
     deplo1=plot(a(a(:,6)>=dep1&a(:,6)<dep2,1),a(a(:,6)>=dep1&a(:,6)<dep2,2),'ob');
-    % set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-    set(deplo1,'MarkerSize',ms6,'era','normal')
+    % set(deplo1,'MarkerSize',ms6,'Marker',ty1)
+    set(deplo1,'MarkerSize',ms6)
     deplo2=plot(a(a(:,6)>=dep2&a(:,6)<dep3,1),a(a(:,6)>=dep2&a(:,6)<dep3,2),'ob');
-    % set(deplo2,'MarkerSize',ms6*2,'Marker',ty2,'era','normal');
-    set(deplo2,'MarkerSize',ms6*2,'era','normal');
+    % set(deplo2,'MarkerSize',ms6*2,'Marker',ty2);
+    set(deplo2,'MarkerSize',ms6*2);
     deplo3 =plot(a(a(:,6)>=dep3,1),a(a(:,6)>=dep3,2),'ob');
-    % set(deplo3,'MarkerSize',ms6*3,'Marker',ty3,'era','normal')
-    set(deplo3,'MarkerSize',ms6*3,'era','normal')
+    % set(deplo3,'MarkerSize',ms6*3,'Marker',ty3)
+    set(deplo3,'MarkerSize',ms6*3)
 
     ls1 = sprintf('M > %3.1f ',dep1);
     ls2 = sprintf('M > %3.1f ',dep2);
@@ -489,11 +489,11 @@ if typele == 'dep'
     dep2 = 0.6*max(a(:,7));
     dep3 = max(a(:,7));
     deplo1 =plot(a(a(:,7)<=dep1,1),a(a(:,7)<=dep1,2),'.b');
-    set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal');
+    set(deplo1,'MarkerSize',ms6,'Marker',ty1);
     deplo2 =plot(a(a(:,7)<=dep2&a(:,7)>dep1,1),a(a(:,7)<=dep2&a(:,7)>dep1,2),'.g');
-    set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
+    set(deplo2,'MarkerSize',ms6,'Marker',ty2);
     deplo3 =plot(a(a(:,7)<=dep3&a(:,7)>dep2,1),a(a(:,7)<=dep3&a(:,7)>dep2,2),'.r');
-    set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
+    set(deplo3,'MarkerSize',ms6,'Marker',ty3)
     ls1 = sprintf('z<%3.1f km',dep1);
     ls2 = sprintf('z<%3.1f km',dep2);
     ls3 = sprintf('z<%3.1f km',dep3);
@@ -502,7 +502,7 @@ end
 %plot earthquakes according time
 if typele == 'tim'
     deplo1 =plot(a(a(:,3)<=tim2&a(:,3)>=tim1,1),a(a(:,3)<=tim2&a(:,3)>=tim1,2),'.b');
-    set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
+    set(deplo1,'MarkerSize',ms6,'Marker',ty1)
     deplo2 =plot(a(a(:,3)<=tim3&a(:,3)>tim2,1),a(a(:,3)<=tim3&a(:,3)>tim2,2),'.g');
     set(deplo2,'MarkerSize',ms6,'Marker',ty2);
     deplo3 =plot(a(a(:,3)<=tim4&a(:,3)>tim3,1),a(a(:,3)<=tim4&a(:,3)>tim3,2),'.r');
@@ -530,7 +530,7 @@ end
 
 set(gca,'FontSize',fontsz.s,'FontWeight','normal',...
     'Ticklength',[0.01 0.01],'LineWidth',1.0,...
-    'Box','on','drawmode','normal','TickDir','out')
+    'Box','on','TickDir','out')
 
 xlabel('Longitude [deg]','FontSize',fontsz.m)
 ylabel('Latitude [deg]','FontSize',fontsz.m)

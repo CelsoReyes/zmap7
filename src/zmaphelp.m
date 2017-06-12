@@ -154,6 +154,6 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     set(figNumber,'Visible','on');
     % Turn off the watch pointer in the old figure
     %watchoff(oldFigNumber);
-    watchoff(gpf) %TOFIX Undefined function or variable 'gpf'.
+    watchoff(gcf) %TOFIX Undefined function or variable 'gpf'.
     figure_w_normalized_uicontrolunits(figNumber);
     watchoff

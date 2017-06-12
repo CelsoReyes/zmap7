@@ -1,13 +1,14 @@
-function think()
-    report_this_filefun(mfilename('fullpath'));
-
-    global action_button
-    try
-        set(action_button, 'String', 'Working, hang on...');
-    catch ME
-        error_handler(ME, @do_nothing)
+function think(title_text, message_text)
+    h = zmap_message_center();
+    if nargin==2
+        h.set_message(title_text, message_text);
+    elseif nargin==0
+        % do nothing
+    else
+        error('wrong number of inputs');
     end
-    %watchon
-    drawnow
+    
+    h.start_action('Working, hang on...');
+    drawnow();
 end
 

@@ -43,7 +43,7 @@ messtext=...
 welcome('Load Data',messtext)
 
 % Get eq data
-[file1,path1] = uigetfile([ '*.mat'],' Earthquake Datafile','Location',[400 400]);
+[file1,path1] = uigetfile([ '*.mat'],' Earthquake Datafile');
 
 if length(path1) < 2
     welcome(' ',' ');done

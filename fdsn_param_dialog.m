@@ -620,11 +620,10 @@ end
     queryset = add_numeric(handles, queryset, 'mindepth');
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
-    p=get(gcf,'pointer');
-    set(gcf,'pointer','watch');
+    think('Importing FDSN data','Importing FDSN data from the web. This might take a minute');
     a = import_fdsn_event(1, queryset{:});
     assignin('base','a',a);
-    set(gcf,'pointer',p);
+    done();
     evalin('base','inpu'); %yuck
     % TODO: close this window
     % 

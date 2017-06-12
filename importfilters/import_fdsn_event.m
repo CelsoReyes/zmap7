@@ -94,11 +94,11 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     options = weboptions('timeout',120); %seconds
     disp(['sending request to:' baseurl 'query  with options'])
     disp(varargin)
-    data = webread([baseurl 'query'], varargin{:},'format','text',options)
+    data = webread([baseurl 'query'], varargin{:},'format','text',options);
     uOutput = convert_from_fdsn_text(data);
     
     function uOutput = convert_from_fdsn_text(data)
-        % the FDSN text format is as follows:
+        % the FDSN text format is something like:
         % EventID|Time|Latitude|Longitude|Depth/km|
         % Author|Catalog|Contributor|ContributorID|
         % MagType|Magnitude|MagAuthor|EventLocationName
@@ -109,7 +109,7 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         % scan only the relevant fields
         
         %This version makes no assumptions other than the field titles it expects.
-        % various FDSN services tend to disagree on text format
+        % various FDSN services tend to disagree on formats.. time, spellings, capitalization, etc.
         
         newlines = find(data==newline,2);
         headerline =data(1:newlines(1)-1);

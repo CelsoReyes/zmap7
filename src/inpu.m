@@ -3,6 +3,8 @@
 %  extrema in the catalog
 %
 %a = org;        % resets the main catalogue "a" to initial state
+
+% TODO remove this file, it has been replaced by catalog_overview.m
 report_this_filefun(mfilename('fullpath'));
 
 %  default values

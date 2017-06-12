@@ -1,6 +1,8 @@
 %    Create  reduced (in time and magnitude) catalogues "a" and "newcat"
 %
 
+% TODO dump this file. it is now in catalog_overview
+
 report_this_filefun(mfilename('fullpath'));
 
 %l = org(:,6) >= minma  & org(:,6) <= maxma  &  org(:,3) >= minti & org(:,3) <= maxti & org(:,7) >= mindep & org(:,7) <= maxdep;

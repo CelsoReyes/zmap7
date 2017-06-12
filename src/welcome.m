@@ -3,25 +3,22 @@ function welcome(titStr, messtext)
     
     report_this_filefun(mfilename('fullpath'));
     
-    global mess term sys wex wey welx wely fontsz action_button c1 c2 c3
+    global term sys wex wey welx wely fontsz action_button
     global txtHndlList txtHndl ttlHndl
     
     clear size
     
     if nargin == 0   % reinitialize window
+        mess = zmap_message_center;
+        return
+        welcome_text = 'Welcome to ZMAP v 7.0';
         
-        figure_w_normalized_uicontrolunits(mess)
+        well_fig = figure_w_normalized_uicontrolunits(mess)
         messtext = '  ';
         titStr ='Messages';
         rng('shuffle');
-        %if term > 1  && sys(1:3) =='SOL' ;whitebg(mess,[rand rand rand]); end
-        if  sys(1:3) =='SOL'
-            whitebg(mess,[c1 c2 c3]);
-        end
-        if    sys(1:2) =='PC'
-            whitebg(mess,[c1 c2 c3]) ;
-        end
-        clf
+        % whitebg(mess,[c1 c2 c3]); %c1 c2 and c3 are globals
+        
         set(gca,'visible','off','SortMethod','childorder');
         set(gcf,'NumberTitle','off',...
             'Name','Message Window',...
@@ -29,10 +26,10 @@ function welcome(titStr, messtext)
             'Units','pixel','backingstore','off',...
             'pos',[ wex wey welx wely]);
         
-        te1 = text(0.02,0.9,'Welcome to ZMAP v6.0') ;
+        te1 = text(0.02,0.9,welcome_text) ;
         set(te1,'FontSize',12,'Color','k','FontWeight','bold')
         
-        te2 = text(0.11,0.90,'   ') ;
+        te2 = text(0.11,0.90,'xxx') ;
         set(te2,'FontSize',fontsz.s,'Color','k','FontWeight','bold' )
         if term == 1
             whitebg(mess,[1 1 1 ]);
@@ -98,14 +95,19 @@ function welcome(titStr, messtext)
             'Visible','off', ...
             'Position',txtPos);
         set(txtHndlList(1),'Visible','on');
-        %startmen(mess);
+        startmen(mess);
     end % if nargin == 0
     
     if nargin == 2    % text display only
+        h = zmap_message_center();
+        h.set_message(titStr, messtext);
+        return
         try
             set(txtHndlList(1), 'String', messtext);
             set(ttlHndl, 'String', titStr)
-        catch
+        catch ME
+            warning('failed to display text.');
+            disp(ME);
             welcome
         end
     end
