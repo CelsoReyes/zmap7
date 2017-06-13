@@ -82,5 +82,5 @@ l = a(:,3) == 0;
 a(l,:) = [];
 a = a;
 par1 = 14;
-subcata
+mainmap_overview()
 fclose(fid)

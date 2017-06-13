@@ -273,7 +273,7 @@ if sel == 'pl'
 
     figure
     raf = 5
-    subcata
+    mainmap_overview()
     hold on
     l = bvg(:,1)>= 1.3;
     scatter3(bvg(l,3),bvg(l,4),bvg(l,5),10,'k','filled');

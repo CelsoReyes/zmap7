@@ -9,7 +9,7 @@ tpre =  120;
 
 l = org2(:,3) <= maepi(1,3) +60/365;
 a = org2(l,:);
-subcata; newt2 = a;
+mainmap_overview(); newt2 = a;
 timeplot
 
 d = [];

@@ -319,9 +319,9 @@ function mycat = catalog_overview(mycat)
         %assignin('base','a',mycat);
         h=zmap_message_center();
         h.update_catalog()%;
-        %TODO make subcata a function
-       % evalin('base',subcata);
-         mainmap_overview('dep');
+        %TODO make mainmap_overview() a function
+       % evalin('base',mainmap_overview());
+         mainmap_overview();
         % changes in bin length go to global par1
     end
     

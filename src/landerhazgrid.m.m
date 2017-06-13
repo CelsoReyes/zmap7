@@ -8,7 +8,7 @@ mati = maepi(1,3);
 M = 7.3 - 5;
 da = []; anz = [];
 B = [];
-subcata
+mainmap_overview()
 
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones2.txt','w');

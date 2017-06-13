@@ -1,15 +1,19 @@
-function mainmap_overview(typele)
-    % This is  the .m file substitute for "subcata.m". It plots the earthquake data
+function mainmap_overview()
+    % This is  the .m file substitute for "mainmap_overview().m". It plots the earthquake data
     % on a map and supplies the user with an
     %  interface to do further analyses.
     %
     %  Depending on the selection it resets newt2, newcat and a
+    %
+    % Tag: 'main_map_ax' contains the main map
     
-    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name% newt2 newcat
+    
+    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele% newt2 newcat
     ty1=evalin('base','ty1');
     ty2=evalin('base','ty2');
     ty3=evalin('base','ty3');
     ms6=evalin('base','ms6');
+    typele = evalin('base','typele');
     
     if isempty(a)
         think
@@ -19,7 +23,11 @@ function mainmap_overview(typele)
         welcome('Messages', 'Choose a catalog' );
         return
     end
-        
+    
+    if isempty(typele)
+        typele = 'dep';
+    end
+    
     think
     report_this_filefun(mfilename('fullpath'));
     welcome('Message','Plotting Seismicity Map ....');
@@ -98,7 +106,7 @@ function mainmap_overview(typele)
     
     % Find out of figure already exists
     
-    [existFlag,figNumber]=figure_exists('Seismicity Map',1);
+    [existFlag,map]=figure_exists('Seismicity Map',1);
     newMapWindowFlag=~existFlag;
     
     % Set up the Seismicity Map window Enviroment
@@ -151,13 +159,11 @@ function mainmap_overview(typele)
     
     % show the figure
     %
-    figure_w_normalized_uicontrolunits(map)
+    figure(map)
     %reset(gca)
     %cla
-    delete(gca),delete(gca),delete(gca);delete(gca);
-    delete(gca),delete(gca),delete(gca);delete(gca);
-    dele = 'delete(si),delete(le)';er = 'disp('' '')'; eval(dele,er);
-    watchon;
+    delete(findobj(map, 'type','axes'));
+    watchon();
     set(gca,'visible','off','SortMethod','childorder')
     hold off
     
@@ -173,12 +179,12 @@ function mainmap_overview(typele)
     end
     if s3 == s4
         s3 = s3 + 0.1;
-        s4 = s4 - 0.1; 
+        s4 = s4 - 0.1;
     end
     orient landscape
     set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
     rect = [0.15,  0.20, 0.75, 0.65];
-    axes('position',rect)
+    main_map_ax = axes('position',rect,'Tag','main_map_ax');
     %
     % find start and end time of catalogue "a"
     %
@@ -204,24 +210,158 @@ function mainmap_overview(typele)
             dep3 = max(a_mags);
             
             depth_mask = a_mags>=dep1 & a_mags<dep2;
-            deplo1=plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            deplo1=plot(main_map_ax,a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6);
             
             depth_mask = a_mags>=dep2 & a_mags< dep3;
-            deplo2=plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            deplo2=plot(main_map_ax, a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6*2);
             
             depth_mask = a_mags>=dep3;
-            deplo3 =plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            deplo3 =plot(main_map_ax, a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6*3)
             
             ls1 = sprintf('M > %3.1f ',dep1);
             ls2 = sprintf('M > %3.1f ',dep2);
             ls3 = sprintf('M > %3.1f ',dep3);
+            le = legend(main_map_ax,ls1,ls2,ls3);
+            set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
+            
         case 'mad'
-            symbol_magsize
+            mindep = min(a(:,dep_idx));
+            maxdep = max(a(:,dep_idx));
+            c = jet;
+            
+            colormapName = colormapdialog();
+            
+            switch colormapName
+                case 'jet'
+                    c = jet;
+                    c = c(64:-1:1,:);
+                otherwise
+                    c = colormap(colormapName);
+            end % switch
+            
+            % sort by depth
+            [s,is] = sort(a(:,dep_idx));
+            a = a(is(:,lon_idx),:) ;
+            %%
+            % get all colors by depth at once
+            fac = 64 / max(a(:,dep_idx));
+            colrs = ceil(a(:, dep_idx) .* fac) + 1;
+            colrs = min(colrs, 63);
+            colrs = max(colrs, 1);
+            % set all sizes by mag
+            sm = mag2dotsize(a(:,mag_idx));
+            
+            pl = scatter(main_map_ax, a(:,lon_idx), a(:,lat_idx), sm, colrs,'o','filled');
+            pl.MarkerEdgeColor = 'flat';
+            set(main_map_ax,'pos',[0.13 0.08 0.65 0.85]) %why?
+            drawnow
+            watchon;
+            
+            % resort by time
+            [s,is] = sort(a(:,3));
+            a = a(is(:,lon_idx),:) ;
+            
+            % make a depth legend
+            
+            vx =  (mindep:1:maxdep);
+            v = [vx ; vx]; v = v';
+            rect = [0.83 0.2 0.01 0.2];
+            h1 = axes('position',rect)
+            h=pcolor((1:2),vx,v)
+            shading flat
+            set(gca,'XTickLabels',[]);
+            set(gca,'FontSize',8,'FontWeight','normal',...
+                'LineWidth',1.0,'YAxisLocation','right',...
+                'Box','on','SortMethod','childorder','TickDir','out','ydir','reverse')
+            xlabel('  Depth [km]');
+            colormap(c)
+            % make a mag legend:
+            
+            anzmag = 0;
+            allpl = [];
+            allls = [];
+             
+            axes(h1);
+            hold on
+            eventsizes = floor(min(a(:,mag_idx))) : ceil(max(a(:,mag_idx)));
+            eqmarkersizes = mag2dotsize(eventsizes);
+            
+            for i = eqmarkersizes
+                pl = plot(h1, a(1,lon_idx),a(1,lat_idx),'.k');
+                i = max(i,1);
+                set(pl,'Markersize',i);
+                anzmag = anzmag+1;
+            end
+            allls = {strcat('M ',num2str(eventsizes(end:-1:1)'))};
+            le = legend(h1.Children, allls{:});
+            set(le,'position',[ 0.83 0.7 0.08 0.2],'FontSize',10,'color','w')
+            hold off;
+            axes(h1)
+            watchoff;
+            set(gcf,'color','w');
         case 'fau'
-            symbol_faulttype
+            error('not fully implemented');
+            % Script: symbol_faultingtype.m
+            % Plot eqs according to faulting style using rake as discriminator
+            % -180 <= Rake <= 180
+            % This is an approximation!
+            % last update: J. Woessner, jowoe@gps.caltech.edu
+            report_this_filefun(mfilename('fullpath'));
+            
+            % Load colormap
+            load rakec.mat
+            c = rakec;
+            
+            % Loop over events
+            for i = 1:length(a)
+                pl =plot(main_map_ax,a(i,lon_idx), a(i,lat_idx), 'ow');
+                hold on
+                fac = 64/max(a(:,12));
+                col = floor(a(i,12)+180/360*63);
+                col = ceil(abs(a(i,12)*fac))+1;
+                if col > 63
+                    col = 63;
+                end
+                if col < 1
+                    col = 1 ;
+                end
+                set(pl,'Markersize',6,'markerfacecolor',[c(col,:)],'markeredgecolor','k');
+            end
+            h1 = gca;
+            drawnow
+            watchon;
+            
+            % make a faulting style legend
+            vx =  (-180:1:180);
+            v = [vx ; vx]; v = v';
+            rect = [0.86 0.22 0.02 0.4];
+            axes('position',rect)
+            pcolor((1:2),vx,v)
+            shading flat
+            set(gca,'XTickLabels',[],'Ytick',[-180 -90 0 90 180])
+            set(gca,'FontSize',8,'FontWeight','normal',...
+                'LineWidth',1.0,'YAxisLocation','right',...
+                'Box','on','SortMethod','childorder','TickDir','out')
+            xlabel('   Rake ');
+            colormap(rakec)
+            axes(h1)
+            set(h1,'pos',[0.12 0.2 0.65 0.6])
+            watchoff;
+            %typele = 'dep';
+            
+            
+            axes('pos',[0 0 1 1 ]);
+            axis off
+            
+            text(0.92,0.22,'right lat.','FontSize',8);
+            text(0.92,0.34,'normal','FontSize',8);
+            text(0.92,0.42,'left lat.','FontSize',8);
+            text(0.92,0.5,'thrust','FontSize',8);
+            text(0.92,0.62,'right lat.','FontSize',8);
+            axes(h1)
             
             
             %plot earthquakes according to depth
@@ -233,61 +373,72 @@ function mainmap_overview(typele)
             dep2 = 0.6*max(a_depths);
             dep3 = max(a_depths);
             
-            deplo1 =plot(a(a_depths<=dep1,1),a(a_depths<=dep1,2),'.b');
+            % shallowest
+            dep_mask = a_depths <= dep1;
+            deplo1 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.b','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6,'Marker',ty1);
             
-            deplo2 =plot(a(a_depths<=dep2&a_depths>dep1,1),a(a_depths<=dep2&a_depths>dep1,2),'.g');
+            % mid level
+            dep_mask = dep1<a_depths & a_depths<=dep2;
+            deplo2 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.g','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
             
-            deplo3 =plot(a(a_depths<=dep3&a_depths>dep2,1),a(a_depths<=dep3&a_depths>dep2,2),'.r');
+            % deep
+            dep_mask =  dep2<a_depths & a_depths<=dep3;
+            deplo3 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.r','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
-            ls1 = sprintf('z<%3.1f km',dep1);
-            ls2 = sprintf('z<%3.1f km',dep2);
-            ls3 = sprintf('z<%3.1f km',dep3);
+            ls1 = sprintf('Z ≤ %3.1f km',dep1);
+            ls2 = sprintf('Z ≤ %3.1f km',dep2);
+            ls3 = sprintf('Z ≤ %3.1f km',dep3);
             
+            le = legend(main_map_ax,ls1,ls2,ls3);
+            set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
             %plot earthquakes according time
         case 'tim'
             a_times = a(:,decyr_idx);
             timedivisions = linspace(min(a_times),max(a_times),4);
             
             time_mask = timedivisions(2) <= a_times & a_times >= timedivisions(1);
-            deplo1 =plot(a(time_mask,1), a(time_mask,2),'.b');
+            deplo1 =plot(main_map_ax, a(time_mask,lon_idx), a(time_mask,lat_idx),'.b','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6,'Marker',ty1)
             
             time_mask = timedivisions(2) < a_times & a_times <= timedivisions(3);
-            deplo2 =plot(a(time_mask,1), a(time_mask,2),'.g');
+            deplo2 =plot(main_map_ax, a(time_mask,lon_idx), a(time_mask,lat_idx),'.g','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
             
             time_mask = timedivisions(3)< a_times & a_times <= timedivisions(4);
-            deplo3 =plot(a(time_mask,1),a(time_mask),'.r');
+            deplo3 =plot(main_map_ax, a(time_mask,lon_idx),a(time_mask,lat_idx),'.r','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
             ls1 = sprintf('%3.1f ≤ t ≤ %3.1f ',timedivisions(1),timedivisions(2));
             ls2 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(2),timedivisions(3));
             ls3 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(3),timedivisions(4));
             
-        otherwise
-            le = legend([deplo1 deplo2 deplo3],ls1,ls2,ls3);
+            le = legend(main_map_ax,ls1,ls2,ls3);
             set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
+        otherwise
+            errror
+            %le = legend([deplo1 deplo2 deplo3],ls1,ls2,ls3);
+            % set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
     end
     
     
     
-    set(gca,'FontSize',fontsz.s,'FontWeight','normal',...
+    set(main_map_ax,'FontSize',fontsz.s,'FontWeight','normal',...
         'Ticklength',[0.01 0.01],'LineWidth',1.0,...
         'Box','on','TickDir','out')
     
-    xlabel('Longitude [deg]','FontSize',fontsz.m)
-    ylabel('Latitude [deg]','FontSize',fontsz.m)
+    xlabel(main_map_ax,'Longitude [deg]','FontSize',fontsz.m)
+    ylabel(main_map_ax,'Latitude [deg]','FontSize',fontsz.m)
     strib = [  ' Map of '  name '; '  num2str(t0b,5) ' to ' num2str(teb,5) ];
-    title2(strib,'FontWeight','normal',...
+    title(main_map_ax,strib,'FontWeight','normal',...
         'FontSize',fontsz.m,'Color','k')
     
     %make depth legend
     %
-    
-    h1 = gca;
+    axes(main_map_ax);
+    h1 = main_map_ax;
     
     %
     %  Plots epicenters  and faults
@@ -297,14 +448,11 @@ function mainmap_overview(typele)
     % Make the figure visible
     
     figure_w_normalized_uicontrolunits(map);
-    if term == 1; whitebg; whitebg;end
     
     axes('pos',[ 0 0 1 1 ]); axis off
     str = [ 'ZMAP ' date ];
     text(0.02,0.02,str,'FontWeight','normal','FontSize',12);
     
-    axes(le);
-    axes(h1);
     watchoff(map)
     set(map,'Visible','on');
     done
@@ -323,38 +471,36 @@ function mainmap_overview(typele)
         TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
         ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
         
-        uimenu(SizeMenu,'Label','1','Callback','ms6 =1;eval(cal6)');
-        uimenu(SizeMenu,'Label','3','Callback','ms6 =3;eval(cal6)');
-        uimenu(SizeMenu,'Label','6','Callback','ms6 =6;eval(cal6)');
-        uimenu(SizeMenu,'Label','9','Callback','ms6 =9;eval(cal6)');
-        uimenu(SizeMenu,'Label','12','Callback','ms6 =12;eval(cal6)');
-        uimenu(SizeMenu,'Label','14','Callback','ms6 =14;eval(cal6)');
-        uimenu(SizeMenu,'Label','18','Callback','ms6 =18;eval(cal6)');
-        uimenu(SizeMenu,'Label','24','Callback','ms6 =24;eval(cal6)');
+        sizes_to_create = [1 3 6 9 12 14 18 24];
+        for n = sizes_to_create
+            uimenu(SizeMenu,'Label',num2str(n),'Callback', @(s,e) change_markersize(n));
+        end
         
-        uimenu(TypeMenu,'Label','dot',...
-            'Callback','ty1=''o'';ty2=''.'';ty3=''.'';eval(cal6)');
-        uimenu(TypeMenu,'Label','o','Callback',...
-            'ty1=''o'';ty2=''o'';ty3=''o'';eval(cal6)');
-        uimenu(TypeMenu,'Label','x','Callback',...
-            'ty1=''x'';ty2=''x'';ty3=''x'';eval(cal6)');
-        uimenu(TypeMenu,'Label','*',...
-            'Callback','ty1=''*'';ty2=''*'';ty3=''*'';eval(cal6)');
-        uimenu(TypeMenu,'Label','red+ blue o green x',...
-            'Callback','ty1=''+'';ty2=''o'';ty3=''x'';eval(cal6)');
-        uimenu(TypeMenu,'Label','red^  blue h black o',...
-            'Callback','ty1=''+'';ty2=''o'';ty3=''x'';eval(cal6)');
+        symbols_to_create = {...
+            {'dot',[],'...'},...
+            {'o',[],'ooo'},...
+            {'x',[],'xxx'},...
+            {'*',[],'***'},...
+            {'red+ blue o green x',[1 0 0;0 0 1; 0 1 0],'+ox'},...
+            {'red^  blue h black o',[1 0 0; 0 0 1; 0 0 0],'^ho'}};
+        
+        for z = 1:numel(symbols_to_create)
+            this_symb = symbols_to_create{z};
+            uimenu(TypeMenu,'Label',this_symb{1},...
+                'Callback', @(s,e) change_symbol(this_symb{:}));
+        end
+        
         uimenu(TypeMenu,'Label','none','Callback','set(deplo1,''visible'',''off'');set(deplo2,''visible'',''off'');set(deplo3,''visible'',''off''); ');
         ovmenu = uimenu(symbolmenu,'Label',' Volcanoes, Plate Boundaries etc.  ');
         
-        TypeMenu = uimenu(ovmenu,'Label','Load/show volcanoes ',...
-            'Callback','load volcano.mat; subcata');
-        TypeMenu = uimenu(ovmenu,'Label',' Do not show volcanoes ',...
-            'Callback','vo = [];subcata');
-        TypeMenu = uimenu(ovmenu,'Label','Load/show plate boundaries ',...
-            'Callback','load plates.mat ; fa_back = faults; faults = [faults ; plates]; subcata');
-        TypeMenu = uimenu(ovmenu,'Label',' Do not show plates/faults boundaries ',...
-            'Callback','faults = [];subcata');
+        uimenu(ovmenu,'Label','Load/show volcanoes ',...
+            'Callback','load volcano.mat; mainmap_overview()');
+        uimenu(ovmenu,'Label',' Do not show volcanoes ',...
+            'Callback','vo = [];mainmap_overview()');
+        uimenu(ovmenu,'Label','Load/show plate boundaries ',...
+            'Callback','load plates.mat ; fa_back = faults; faults = [faults ; plates]; mainmap_overview()');
+        uimenu(ovmenu,'Label',' Do not show plates/faults boundaries ',...
+            'Callback','faults = [];mainmap_overview()');
         uimenu(ovmenu,'Label',' Load a coastline  from GSHHS database',...
             'Callback','selt = ''in'';  plotmymap;');
         uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
@@ -367,29 +513,29 @@ function mainmap_overview(typele)
         uimenu(lemenu,'Label',' Legend by time ',...
             'Callback','typele = ''tim'';setleg');
         uimenu(lemenu,'Label',' Legend by depth ',...
-            'Callback','typele = ''dep'';subcata');
+            'Callback','typele = ''dep'';mainmap_overview()');
         uimenu(lemenu,'Label',' Legend by magnitude ',...
             'Callback','typele = ''mag'';setlegm');
-        uimenu(lemenu,'Label',' Mag by size and depth by color (slow) ',...
-            'Callback','typele = ''mad'';subcata');
+        uimenu(lemenu,'Label',' Mag by size and depth by color',...
+            'Callback','typele = ''mad'';mainmap_overview()');
         uimenu(lemenu,'Label',' Symbol color by faulting type (slow) ',...
-            'Callback','typele = ''fau'';subcata');
+            'Callback','typele = ''fau'';mainmap_overview()');
         
         fosmenu = uimenu(symbolmenu,'Label',' Change font size ...  ');
         
         uimenu(fosmenu,'Label',' FontSize +2',...
-            'Callback','fontsz=fontsz+2; subcata');
+            'Callback','fontsz=fontsz+2; mainmap_overview()');
         uimenu(fosmenu,'Label',' FontSize +1',...
-            'Callback','fontsz=fontsz+1; subcata');
-        TypeMenu = uimenu(fosmenu,'Label',' FontSize -1',...
-            'Callback','fontsz=fontsz-1; subcata');
-        TypeMenu = uimenu(fosmenu,'Label',' FontSize -2',...
-            'Callback','fontsz=fontsz-2; subcata');
-        TypeMenu = uimenu(symbolmenu,'Label',' Change background colors ',...
+            'Callback','fontsz=fontsz+1; mainmap_overview()');
+        uimenu(fosmenu,'Label',' FontSize -1',...
+            'Callback','fontsz=fontsz-1; mainmap_overview()');
+        uimenu(fosmenu,'Label',' FontSize -2',...
+            'Callback','fontsz=fontsz-2; mainmap_overview()');
+        uimenu(symbolmenu,'Label',' Change background colors ',...
             'Callback','setcol');
         
-        TypeMenu = uimenu(symbolmenu,'Label',' Mark large event with M > ??',...
-            'Callback','pl_large');
+        uimenu(symbolmenu,'Label',' Mark large event with M > ??',...
+            'Callback',@(s,e) plot_large_quakes);
         
         uimenu(ColorMenu,'Label','black','Callback','co=''k'';eval(cal6B)');
         uimenu(ColorMenu,'Label','white','Callback','co=''w'';eval(cal6B)');
@@ -398,16 +544,12 @@ function mainmap_overview(typele)
         uimenu(ColorMenu,'Label','yellow','Callback','co=''y'';eval(cal6B)');
         
         
-        cal6 = ...
-            [ 'set(deplo1,''MarkerSize'',ms6,''Marker'',ty1,''visible'',''on'',''Color'',''b'');',...
-            'set(deplo2,''MarkerSize'',ms6,''Marker'',ty2,''visible'',''on'',''Color'',''g'');',...
-            'set(deplo3,''MarkerSize'',ms6,''Marker'',ty3,''visible'',''on'',''Color'',''r'');' ];
-        
         cal6B = ...
             [ 'set(deplo1,''MarkerSize'',ms6,''Marker'',ty1,''Color'',co,''visible'',''on'');',...
             'set(deplo2,''MarkerSize'',ms6,''Marker'',ty2,''Color'',co,''visible'',''on'');',...
             'set(deplo3,''MarkerSize'',ms6,''Marker'',ty3,''Color'',co,''visible'',''on'');' ];
     end
+   
     function create_select_menu()
         submenu = uimenu('Label',' Select ');
         uimenu(submenu,'Label','Select EQ in Polygon (Menu) ',...
@@ -428,7 +570,7 @@ function mainmap_overview(typele)
     function create_catalog_menu()
         submenu = uimenu('Label','Catalog');
         uimenu(submenu,'Label','Refresh map window ',...
-            'Callback','delete(gca);delete(gca);delete(gca);delete(gca);subcata');
+            'Callback','delete(findobj(gcf, ''type'',''axes''));mainmap_overview()');
         
         uimenu(submenu,'Label','Open new catalog ',...
             'Callback','think;hold off;startzma');
@@ -437,7 +579,7 @@ function mainmap_overview(typele)
             'Callback','org2 = a; ');
         
         uimenu(submenu,'Label','Reset catalog to the one saved in memory previously',...
-            'Callback','think;clear plos1 mark1 ; a = org2; newcat = org2; newt2= org2;subcata');
+            'Callback','think;clear plos1 mark1 ; a = org2; newcat = org2; newt2= org2;mainmap_overview()');
         
         uimenu(submenu,'Label','Select new parameters (reload last catalog) ',...
             'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu');
@@ -457,6 +599,9 @@ function mainmap_overview(typele)
     end
     function create_ztools_menu()
         submenu = uimenu('Label','ZTools');
+        
+        uimenu(submenu,'Label','Show main message window',...
+            'Callback', @(s,e)zmap_message_center());
         
         uimenu(submenu,'Label','Analyse time series ... ',...
             'Callback','stri = ''Polygon''; newt2 = a; newcat = a; timeplot');
@@ -510,8 +655,8 @@ function mainmap_overview(typele)
     end
     function create_random_data_simulations_menu(parent)
         submenu  =   uimenu(parent,'Label','Random data simulations');
-        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',' org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; subcata; bdiff(a); revertcat');
-        uimenu(submenu,'label','Create synthetic catalog...', 'Callback',' org2 = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; subcata; bdiff(a); revertcat');
+        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',' org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; mainmap_overview(); bdiff(a); revertcat');
+        uimenu(submenu,'label','Create synthetic catalog...', 'Callback',' org2 = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; mainmap_overview(); bdiff(a); revertcat');
         
         uimenu(submenu,'Label','Evaluate significance of b- and a-values  ',...
             'Callback','brand');
@@ -614,7 +759,7 @@ function mainmap_overview(typele)
             think;
             [file1, path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Earthquake Datafile');
             if length(file1) > 1
-                wholePath=[path1 file1]
+                wholePath=[path1 file1];
                 save('WholePath', 'a', 'faults','main','mainfault','coastline','infstri','well');
             end
             done
@@ -624,3 +769,67 @@ function mainmap_overview(typele)
     end
     
 end
+
+function change_markersize(val)
+    global ms6
+    ms6 = val;
+    ax = findobj(0,'Tag','main_map_ax');
+    set(findobj(ax,'Type','Line'),'MarkerSize',val);
+end
+
+function change_symbol(~, clrs, symbs)
+    global ty1 ty2 ty3 ms6
+    ty1 = symbs(1);
+    ty2 = symbs(2);
+    ty3 = symbs(3);
+    ax = findobj(0,'Tag','main_map_ax');
+    line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
+    for n=1:3
+        ax_ln = findobj(ax,'Tag',line_tags{n});
+        if ~isempty(clrs)
+            set(ax_ln,'MarkerSize',ms6,'Marker',symbs(n),'Color',clrs(n,:),'Visible','on');
+        else
+            set(ax_ln,'MarkerSize',ms6,'Marker',symbs(n), 'Visible', 'on');
+        end
+    end
+end
+
+function plot_large_quakes()
+    global minmag maex maix maey maiy maepi a 
+    def = {'6'};
+    ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
+    l = ni2{:};
+    minmag = str2double(l);
+
+    clear maex maix maey maiy
+    l = a(:,6) > minmag ;
+    maepi = a(l,:);
+    mainmap_overview()
+end
+function choice = colormapdialog()
+    d = dialog('Position',[300 300 250 150], 'Name', 'Choose Colormap');
+    txt = uicontrol('Parent',d, 'Style','Popup','Position',[20 80 210 40],...
+        'String',{'parula';'jet';'hsv';'hot';'cool';'spring';'summer';'autumn';'winter'},...
+        'Callback', @popup_callback);
+    btn = uicontrol('Parent',d,...
+        'Position',[89 20 70 25],...
+        'String','Close',...
+        'Callback','delete(gcf)');
+    choice = 'parula';
+    uiwait(d);
+    
+    function popup_callback(popup, ~)
+        idx = popup.Value;
+        popup_items = popup.String;
+        choice = char(popup_items(idx,:));
+    end
+end
+    
+
+function sz = mag2dotsize(maglist)
+    facm = 8 ./ max(maglist);
+    sz = maglist .* facm;
+    sz = ceil(max(1,sz) .^ 2);
+end
+    
+    

@@ -8,7 +8,7 @@ cd /nfs/alaska/home2/stefan/ZMAP
 load /nfs/alaska/home2/stefan/ZMAP/eq_data2/swisshistoric.mat
 minmag = 6;
 par1 = 60;
-subcata
+mainmap_overview()
 hold on
 map0 = map;
 

@@ -17,7 +17,7 @@ if length(path1) > 1
     d =  [min(gx) min(gy) ; min(gx) max(gy) ; max(gx) max(gy) ; max(gx) min(gy); min(gx) min(gy)];
 
     org2 = a;
-    subcata;
+    mainmap_overview();
     pl = plot(newgri(:,1),newgri(:,2),'+k','era','normal');
     set(pl,'MarkerSize',8,'LineWidth',1)
 

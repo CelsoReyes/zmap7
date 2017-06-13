@@ -3,6 +3,8 @@
 % -180 <= Rake <= 180
 % This is an approximation!
 % last update: J. Woessner, jowoe@gps.caltech.edu
+
+%TODO delete me, only used by subcata.m which is going away.
 report_this_filefun(mfilename('fullpath'));
 
 % Load colormap

@@ -55,5 +55,5 @@ a(:,9) = mi';
 
 a = [  10 46 2001 1 1 7 5 1 1 ; a];
 
-subcata
+mainmap_overview()
 

@@ -188,7 +188,7 @@ else
 %    newcat=a;
 %    org2 = original;
 %    cluscat=original(find(clus),:);
-%    subcata
+%    mainmap_overview()
 %    hold on
 %    plot(cluscat(:,1),cluscat(:,2),'m+');
 %    st1 = [' The declustering found ' num2str(length(bgevent(:,1))) ' clusters of earthquakes, a total of '...

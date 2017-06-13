@@ -114,7 +114,7 @@ hold on
 
 if isempty(abo) == 0
     figure_w_normalized_uicontrolunits(map)
-    subcata
+    mainmap_overview()
     plot(abo(:,1),abo(:,2),'o',...
         'MarkerFaceColor','r','MarkerEdgeColor','y');
 

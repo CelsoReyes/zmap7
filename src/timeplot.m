@@ -235,7 +235,7 @@ if newCumWindowFlag
 
 
     uicontrol('Units','normal','Position',[.0 .0 .1 .05],'String','Reset', 'Callback','nosort = ''of'';newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot','tooltip','Resets the catalog to the original selection')
-    uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;subcata','tooltip','Plots this subset in the map window')
+    uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;mainmap_overview()','tooltip','Plots this subset in the map window')
 
     ho2 = 'noho';
 

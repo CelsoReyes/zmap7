@@ -224,7 +224,7 @@ if selt == 'sa';  % save to file only
     load coastl.mat
 
     coastline = ncst;
-    subcata
+    mainmap_overview()
     clear  ncst coastl
 
 end

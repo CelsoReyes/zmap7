@@ -98,5 +98,5 @@ t4p(1) = 93.;
 tresh = 10;
 
 % call the map window
-subcata
+mainmap_overview()
 

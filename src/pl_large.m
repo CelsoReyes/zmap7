@@ -9,5 +9,5 @@ minmag = str2double(l);
 clear maex maix maey maiy
 l = a(:,6) > minmag ;
 maepi = a(l,:);
-subcata
+mainmap_overview()
 

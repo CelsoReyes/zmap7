@@ -69,5 +69,5 @@ a(l,:) = [];
 a(:,3) = decyear(a(:,[3:5 8 9]));
 par1 = 14;
 minmag = 8;
-subcata
+mainmap_overview()
 fclose(fid)

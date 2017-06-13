@@ -173,7 +173,7 @@ if da == 'fa'
             befehl=['faults = ',tr,';'];
             eval(befehl);
             %    clear(tr)
-            close;done;subcata; setup
+            close;done;mainmap_overview(); setup
         else
             close, setup
         end % if
@@ -206,7 +206,7 @@ if da == 'mf'
             tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
             eval(befehl);
             %  clear(tr)
-            close;done;subcata; setup
+            close;done;mainmap_overview(); setup
         else
             close, setup
         end % if
@@ -241,7 +241,7 @@ if da == 'ma'
             befehl=['main = ',tr,';'];
             eval(befehl);
             %  clear(tr)
-            close;done; subcata;setup
+            close;done; mainmap_overview();setup
         else
             close, setup
         end % if
@@ -275,7 +275,7 @@ if da == 'co'
             befehl=['coastline = ',tr,';'];
             eval(befehl);
             %clear(tr)
-            close;done; subcata;setup
+            close;done; mainmap_overview();setup
         else
             close, setup
         end % if

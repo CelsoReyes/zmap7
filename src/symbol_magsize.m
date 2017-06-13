@@ -1,4 +1,5 @@
 % plot eqs according to depth and size
+%TODO Delete me, only used by subcata.m, which is going away
 
 report_this_filefun(mfilename('fullpath'));
 

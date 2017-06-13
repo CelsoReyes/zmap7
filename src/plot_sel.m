@@ -21,7 +21,7 @@ l = sqrt(((a(:,1)-los)*cos(pi/180*las)*111).^2 + ((a(:,2)-las)*111).^2) ;
 l2 = a(:,6) >= 0.0 & a(:,7) >= l;
 %l2 = a(:,6) >=2.0 & a(:,7) <= 30 & l < 100;
 a = a(l2,:);
-subcata
+mainmap_overview()
 pl = plot(los,las,'rs')
 set(pl,'LineWidth',1.0,'MarkerSize',10,...
     'MarkerFaceColor','r','MarkerEdgeColor','y');

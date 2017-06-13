@@ -12,7 +12,7 @@ eval(do)
 do = ['newcat = anB' num2str(n) ';' ];
 eval(do)
 timeplot
-subcata
+mainmap_overview()
 axes(h1)
 plot(newt2(:,1),newt2(:,2),'*k','era','normal')
 %

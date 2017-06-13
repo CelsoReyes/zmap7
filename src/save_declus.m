@@ -68,7 +68,7 @@ clus = a(l,:);
 a(l,:) = [];
 
 % plot the results
-subcata
+mainmap_overview()
 hold on
 plot(clus(:,1),clus(:,2),'m+');
 

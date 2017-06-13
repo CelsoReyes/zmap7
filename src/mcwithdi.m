@@ -1,6 +1,6 @@
 report_this_filefun(mfilename('fullpath'));
 
-subcata
+mainmap_overview()
 [x, y] = ginput(1) ;   %use you cursor to fix the location of interest
 
 di =  sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;

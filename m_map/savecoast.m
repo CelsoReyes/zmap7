@@ -20,7 +20,7 @@
     load coastl.mat
 
     coastline = ncst;
-    subcata
+    mainmap_overview()
     clear  ncst coastl
 
 

@@ -57,4 +57,4 @@ end
 [s,is] = sort(a(:,3));
 a = a(is(:,1),:) ;
 
-subcata
+mainmap_overview()

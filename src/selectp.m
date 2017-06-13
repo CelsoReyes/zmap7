@@ -40,7 +40,7 @@ messtext=...
 welcome('Select EQ in Polygon',messtext);
 
 
-axes(h1)
+axes(findobj('Tag','main_map_ax'))
 hold on
 x = [];
 y = [];
@@ -52,7 +52,7 @@ n = 0;
 but = 1;
 while but == 1 | but == 112
     [xi,yi,but] = ginput(1);
-    mark1 =    plot(xi,yi,'ok'); % erase mode was xor, but xor is removed
+    mark1 =    plot(xi,yi,'ok'); % erase mode was xor, but erasemode is removed from matlab
     % used so long as its not NORMAL
     set(mark1,'MarkerSize',5,'LineWidth',2.0)
     n = n + 1;

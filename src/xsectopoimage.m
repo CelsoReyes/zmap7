@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 % make a x-section plus topography...
 
 if exist('tmap') == 0
-    subcata
+    mainmap_overview()
     warndlg('Please create a topo map first')
 end
 

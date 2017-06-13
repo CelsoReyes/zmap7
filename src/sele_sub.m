@@ -55,4 +55,4 @@ if length(a(:,3)) > 10000
     ty2='.';
     ty3='.';
 end
-subcata
+mainmap_overview()

@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 % first layer 0 - 1.5 km
 l = org2(:,7) <=1.5 ;
 a = org2(l,:);
-subcata
+mainmap_overview()
 hetopo
 
 dx = 0.001;

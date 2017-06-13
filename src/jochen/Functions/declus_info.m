@@ -32,7 +32,7 @@ fAfter = length(vAftershock(vSel,:));
 
 %%% Plot seismicity map, clusters and mainshocks
 % a = mCatDecluster;
-% subcata;
+% mainmap_overview();
 % plot(mCluster(:,1),mCluster(:,2),'m+');
 
 %%% Calculate moment release

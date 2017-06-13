@@ -39,7 +39,7 @@ a = org2(l,:);
 da = []; anz = [];
 B = [];
 dt = 1;
-subcata
+mainmap_overview()
 
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');

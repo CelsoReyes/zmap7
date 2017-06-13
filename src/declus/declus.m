@@ -202,7 +202,7 @@ else
     cluscat=original(find(clus),:);
     %[dura,foretime,forepercent]=clusdura(clustnumbers);
 
-    subcata
+    mainmap_overview()
     hold on
     plot(cluscat(:,1),cluscat(:,2),'m+');
 

@@ -100,5 +100,5 @@ sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 
 % call the map window
-subcata
+mainmap_overview()
 

@@ -18,7 +18,7 @@ disp(cegt)
 %     try
 %         l  = get(h1,'XLim');
 %     catch
-%         subcata
+%         mainmap_overview()
 %         pltopo
 %     end
 

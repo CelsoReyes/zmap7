@@ -50,5 +50,5 @@ end
 
 %a = aa;
 %clear aa
-subcata
+mainmap_overview()
 
