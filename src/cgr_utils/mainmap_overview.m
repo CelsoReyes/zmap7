@@ -1,10 +1,25 @@
-function mainmap_overview(action)
+function mainmap_overview(typele)
     % This is  the .m file substitute for "subcata.m". It plots the earthquake data
     % on a map and supplies the user with an
     %  interface to do further analyses.
     %
     %  Depending on the selection it resets newt2, newcat and a
     
+    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name% newt2 newcat
+    ty1=evalin('base','ty1');
+    ty2=evalin('base','ty2');
+    ty3=evalin('base','ty3');
+    ms6=evalin('base','ms6');
+    
+    if isempty(a)
+        think
+        welcome('Message','No data in catalog, cannot plot Seismicity Map ....');
+        pause(2)
+        done;
+        welcome('Messages', 'Choose a catalog' );
+        return
+    end
+        
     think
     report_this_filefun(mfilename('fullpath'));
     welcome('Message','Plotting Seismicity Map ....');
@@ -82,38 +97,42 @@ function mainmap_overview(action)
     sec_idx = 10;
     
     % Find out of figure already exists
-    %
+    
     [existFlag,figNumber]=figure_exists('Seismicity Map',1);
     newMapWindowFlag=~existFlag;
     
     % Set up the Seismicity Map window Enviroment
     %
     if newMapWindowFlag
-        map = figure_w_normalized_uicontrolunits( ...
+        fipo = get(groot, 'ScreenSize');
+        winx = 750;
+        winy = 650;
+        map=figure_w_normalized_uicontrolunits( ...
             'Name','Seismicity Map',...
             'NumberTitle','off', ...
             'backingstore','on',...
             'NextPlot','add', ...
             'Visible','on', ...
-            'Position',[ fipo(3)-1000 fipo(4)-700 winx winy]);
+            'Tag','seismicity_map',...
+            'Position',[10 10 750 650]); %[ fipo(3)-1000 fipo(4)-700 winx winy]);
         
-        stri1 = [file1];
+        stri1 = file1;
         
         %  call supplementary program to make menus at the top of the plot
-        matdraw
+        % matdraw
         
         create_main_plot();
         create_overlay_menu();
         create_select_menu();
         create_catalog_menu();
         create_ztools_menu();
-        
+        %{
         catSave =...
             [ 'welcome(''Save Data'',''  '');think;',...
             '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Earthquake Datafile'');',...
             'if length(file1) > 1 , wholePath=[path1 file1],sapa2 = [''save('' ''wholePath'' '', ''''a'''', ''''faults'''', ''''main'''', ''''mainfault'''', ''''coastline'''', ''''infstri'''', ''''well'''')''],',...
             'eval(sapa2) ,end, done'];
-        
+        %}
         %sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri well'']
         seisstr=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 freq_field6 map h1 a ldx Mmin tlap stime dx dy,seisgrid(1);'];
         
@@ -121,7 +140,10 @@ function mainmap_overview(action)
         
         
         %calculate several histogramms
-        stt1='Magnitude ';stt2='Depth ';stt3='Duration ';st4='Foreshock Duration ';
+        stt1='Magnitude ';
+        stt2='Depth ';
+        stt3='Duration ';
+        st4='Foreshock Duration ';
         st5='Foreshock Percent ';
         
     end
@@ -145,13 +167,14 @@ function mainmap_overview(action)
     s3 = max(a(:,lat_idx));
     s4 = min(a(:,lat_idx));
     
-    if s1 == s2;
+    if s1 == s2
         s2 = s2 +- 0.1 ;
         s1 = s1 - 0.1;
     end
-    if s3 == s4 ; ]
-        s3 = s3 +0.1;
-        s4 = s4 - 0.1; end
+    if s3 == s4
+        s3 = s3 + 0.1;
+        s4 = s4 - 0.1; 
+    end
     orient landscape
     set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
     rect = [0.15,  0.20, 0.75, 0.65];
@@ -162,7 +185,7 @@ function mainmap_overview(action)
     t0b = a(1,3);
     n = length(a(:,lon_idx));
     teb = a(n,3) ;
-    tdiff =round(teb - t0b)*365/par1;
+    % tdiff =round(teb - t0b)*365/par1;
     
     n = length(a);
     
@@ -175,12 +198,22 @@ function mainmap_overview(action)
     switch typele
         case 'mag'
             a_mags = a(:,mag_idx);
-            deplo1=plot(a(a_mags>=dep1&a_mags<dep2,1),a(a_mags>=dep1&a_mags<dep2,2),'ob');
-            set(deplo1,'MarkerSize',ms6,'era','normal')
-            deplo2=plot(a(a_mags>=dep2&a_mags)<dep3,1),a(a_mags>=dep2&a_mags<dep3,2),'ob');
-            set(deplo2,'MarkerSize',ms6*2,'era','normal');
-            deplo3 =plot(a(a_mags>=dep3,1),a(a_mags>=dep3,2),'ob');
-            set(deplo3,'MarkerSize',ms6*3,'era','normal')
+            % divide magnitudes into 3 categories
+            dep1 = 0.3*max(a_mags);
+            dep2 = 0.6*max(a_mags);
+            dep3 = max(a_mags);
+            
+            depth_mask = a_mags>=dep1 & a_mags<dep2;
+            deplo1=plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            set(deplo1,'MarkerSize',ms6);
+            
+            depth_mask = a_mags>=dep2 & a_mags< dep3;
+            deplo2=plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            set(deplo2,'MarkerSize',ms6*2);
+            
+            depth_mask = a_mags>=dep3;
+            deplo3 =plot(a(depth_mask,1), a(depth_mask,2),'ob');
+            set(deplo3,'MarkerSize',ms6*3)
             
             ls1 = sprintf('M > %3.1f ',dep1);
             ls2 = sprintf('M > %3.1f ',dep2);
@@ -194,15 +227,21 @@ function mainmap_overview(action)
             %plot earthquakes according to depth
         case 'dep'
             a_depths = a(:,dep_idx);
+            
+            % divide depths into 3 categories
             dep1 = 0.3*max(a_depths);
             dep2 = 0.6*max(a_depths);
             dep3 = max(a_depths);
+            
             deplo1 =plot(a(a_depths<=dep1,1),a(a_depths<=dep1,2),'.b');
             set(deplo1,'MarkerSize',ms6,'Marker',ty1);
+            
             deplo2 =plot(a(a_depths<=dep2&a_depths>dep1,1),a(a_depths<=dep2&a_depths>dep1,2),'.g');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
+            
             deplo3 =plot(a(a_depths<=dep3&a_depths>dep2,1),a(a_depths<=dep3&a_depths>dep2,2),'.r');
-            set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
+            set(deplo3,'MarkerSize',ms6,'Marker',ty3)
+            
             ls1 = sprintf('z<%3.1f km',dep1);
             ls2 = sprintf('z<%3.1f km',dep2);
             ls3 = sprintf('z<%3.1f km',dep3);
@@ -210,16 +249,24 @@ function mainmap_overview(action)
             %plot earthquakes according time
         case 'tim'
             a_times = a(:,decyr_idx);
-            deplo1 =plot(a(a_times<=tim2&a_times>=tim1,1),a(a_times<=tim2&a_times>=tim1,2),'.b');
-            set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-            deplo2 =plot(a(a_times<=tim3&a_times>tim2,1),a(a_times<=tim3&a_times>tim2,2),'.g');
+            timedivisions = linspace(min(a_times),max(a_times),4);
+            
+            time_mask = timedivisions(2) <= a_times & a_times >= timedivisions(1);
+            deplo1 =plot(a(time_mask,1), a(time_mask,2),'.b');
+            set(deplo1,'MarkerSize',ms6,'Marker',ty1)
+            
+            time_mask = timedivisions(2) < a_times & a_times <= timedivisions(3);
+            deplo2 =plot(a(time_mask,1), a(time_mask,2),'.g');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
-            deplo3 =plot(a(a_times<=tim4&a_times>tim3,1),a(a_times<=tim4&a_times>tim3,2),'.r');
+            
+            time_mask = timedivisions(3)< a_times & a_times <= timedivisions(4);
+            deplo3 =plot(a(time_mask,1),a(time_mask),'.r');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
-            ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
-            ls2 = sprintf('%3.1f < t < %3.1f ',tim2,tim3);
-            ls3 = sprintf('%3.1f < t < %3.1f ',tim3,tim4);
+            ls1 = sprintf('%3.1f ≤ t ≤ %3.1f ',timedivisions(1),timedivisions(2));
+            ls2 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(2),timedivisions(3));
+            ls3 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(3),timedivisions(4));
+            
         otherwise
             le = legend([deplo1 deplo2 deplo3],ls1,ls2,ls3);
             set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
@@ -229,7 +276,7 @@ function mainmap_overview(action)
     
     set(gca,'FontSize',fontsz.s,'FontWeight','normal',...
         'Ticklength',[0.01 0.01],'LineWidth',1.0,...
-        'Box','on','drawmode','normal','TickDir','out')
+        'Box','on','TickDir','out')
     
     xlabel('Longitude [deg]','FontSize',fontsz.m)
     ylabel('Latitude [deg]','FontSize',fontsz.m)
@@ -241,9 +288,6 @@ function mainmap_overview(action)
     %
     
     h1 = gca;
-    if term > 1;
-        set(gca,'Color',[cb1 cb2 cb3]);
-    end
     
     %
     %  Plots epicenters  and faults
@@ -259,15 +303,16 @@ function mainmap_overview(action)
     str = [ 'ZMAP ' date ];
     text(0.02,0.02,str,'FontWeight','normal','FontSize',12);
     
-    
-    do = 'axes(le) ;'; err = ' '; eval(do,err);
-    do = 'axes(h1) ;'; err = ' '; eval(do,err);
+    axes(le);
+    axes(h1);
     watchoff(map)
     set(map,'Visible','on');
     done
     welcome('Message','   ');
     function create_main_plot()
     end
+    
+    %% create menus
     function create_overlay_menu()
         % Make the menu to change symbol size and type
         %
@@ -562,7 +607,7 @@ function mainmap_overview(action)
             'Callback','declus_inp;');
     end
     
-    % % % % % callbacks
+    %% % % % callbacks
     function catSave()
         welcome('Save Data', ' ');
         try

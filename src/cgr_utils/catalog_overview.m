@@ -8,6 +8,7 @@ function mycat = catalog_overview(mycat)
     report_this_filefun(mfilename('fullpath'));
     global fontsz term
     global file1 tim1 tim2 minma2 maxma2 minde maxde maepi dep1 dep2 dep3
+    global ty1 ty2 ty3
     
     %INDICES INTO ZMAP ARRAY
     lon_idx = 1;
@@ -22,8 +23,8 @@ function mycat = catalog_overview(mycat)
     sec_idx = 10;
     
     %  default values
-    t0b = min(mycat(:,date_idx));
-    teb = max(mycat(:,date_idx));
+    t0b = min(mycat(:,decyr_idx));
+    teb = max(mycat(:,decyr_idx));
     tdiff = (teb - t0b)*365;
     
     if exist('par1') == 0
@@ -41,8 +42,8 @@ function mycat = catalog_overview(mycat)
     dep1 = 0.3*max(mycat(:,dep_idx));
     dep2 = 0.6*max(mycat(:,dep_idx));
     dep3 = max(mycat(:,dep_idx));
-    minti = min(mycat(:,date_idx));
-    maxti  = max(mycat(:,date_idx));
+    minti = min(mycat(:,decyr_idx));
+    maxti  = max(mycat(:,decyr_idx));
     minma = min(mycat(:,mag_idx));
     maxma = max(mycat(:,mag_idx));
     mindep = min(mycat(:,dep_idx));
@@ -81,11 +82,15 @@ function mycat = catalog_overview(mycat)
         
         n_eqs_field=uicontrol('Style','edit','Position',[.70 .90 .22 .05],...
             'Units','normalized','String',num2str(length(mycat)),...
+            'Value',length(mycat),...
+            'Tag','mapview_nquakes_field',...
             'Callback',@upate_numeric);
         
         % plot big events with M gt
         big_evt_field=uicontrol('Style','edit','Position',[.70 .80 .22 .05],...
             'Units','normalized','String',num2str(big_evt_minmag),...
+            'Value',big_evt_minmag,...
+            'Tag','mapview_big_evt_field',...
             'Callback',@update_numeric);
         
         text(...
@@ -98,6 +103,8 @@ function mycat = catalog_overview(mycat)
         %  bin length in days
         binlen_days_field=uicontrol('Style','edit','Position',[.70 .70 .22 .05],...
             'Units','normalized','String',num2str(par1),...
+            'Value', par1,...
+            'Tag','mapview_binlen_field',...
             'Callback','par1=str2double(get(binlen_days_field,''String'')); set(binlen_days_field,''String'',num2str(par1));');
         
         text(...
@@ -109,7 +116,9 @@ function mycat = catalog_overview(mycat)
         %  beginning year
         start_field=uicontrol('Style','edit','Position',[.65 .60 .27 .05],...
             'Units','normalized','String',num2str(minti),...
+            'Value', minti,...
             'Callback',@update_dates,...
+            'Tag','mapview_start_field',...
             'tooltipstring', 'as decimal year or yyyy-mm-dd hh:mm:ss');
         
         text(...
@@ -121,7 +130,9 @@ function mycat = catalog_overview(mycat)
         % ending year
         end_field=uicontrol('Style','edit','Position',[.65 .50 .27 .05],...
             'Units','normalized','String',num2str(maxti),...
+            'Value', maxti,...
             'Callback',@update_dates,...
+            'Tag','mapview_end_field',...
             'tooltipstring', 'as decimal year or yyyy-mm-dd hh:mm:ss');
         
         text(...
@@ -133,6 +144,8 @@ function mycat = catalog_overview(mycat)
         %  min mag
         minmag_field=uicontrol('Style','edit','Position',[.70 .40 .22 .05],...
             'Units','normalized','String',num2str(minma),...
+            'Value', minma,...
+            'Tag','mapview_minmag_field',...
             'Callback',@update_numeric);
         
         text(...
@@ -144,6 +157,8 @@ function mycat = catalog_overview(mycat)
         % max mag
         maxmag_field=uicontrol('Style','edit','Position',[.70 .30 .22 .05],...
             'Units','normalized','String',num2str(maxma),...
+            'Value', maxma,...
+            'Tag','mapview_maxmag_field',...
             'Callback',@update_numeric);
         
         text(...
@@ -156,11 +171,15 @@ function mycat = catalog_overview(mycat)
         % min depth
         mindepth_field=uicontrol('Style','edit','Position',[.30 .15 .15 .05],...
             'Units','normalized','String',num2str(mindep),...
+            'Value', mindep,...
+            'Tag','mapview_mindepth_field',...
             'Callback',@update_numeric);
         
         % max depth
         maxdepth_field=uicontrol('Style','edit','Position',[.50 .15 .15 .05],...
             'Units','normalized','String',num2str(maxdep),...
+            'Value', maxdep,...
+            'Tag','mapview_maxdepth_field',...
             'Callback',@update_numeric);
         
         text(...
@@ -178,7 +197,7 @@ function mycat = catalog_overview(mycat)
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.35 .02 .20 .10 ],...
             'Units','normalized',...
-            'Callback',{@go, minmag_field.Value, maxmag_field.Value, mindepth_field.Value, maxdepth_field.Value, start_field.Value, end_field.Value},...
+            'Callback',@go,...
             'String','Go');
         
         info_button=uicontrol('Style','Pushbutton',...
@@ -224,9 +243,25 @@ function mycat = catalog_overview(mycat)
         
     end
     
-    function go(src, ~, minma, maxma, mindep, maxdep, minti, maxti)
+    function go(src, ~)
         %TODO remove all the side-effects.  store relevent data somewhere specific
         %filter the catalog, then return
+        global a
+        myparent=get(src,'Parent');
+        
+        h = findall(myparent,'Tag','mapview_maxdepth_field');
+        maxdep = h.Value;
+        h = findall(myparent,'Tag','mapview_minmag_field');
+        minma = h.Value;
+        h = findall(myparent,'Tag','mapview_maxmag_field');
+        maxma = h.Value;
+        h = findall(myparent,'Tag','mapview_mindepth_field');
+        mindep = h.Value;
+        h = findall(myparent,'Tag','mapview_start_field');
+        minti = h.Value;
+        h = findall(myparent,'Tag','mapview_end_field');
+        maxti = h.Value;
+        mycat = a; %TODO see if this is really supposed to be so
         close;
         think;
 
@@ -234,7 +269,7 @@ function mycat = catalog_overview(mycat)
         %    Create  reduced (in time and magnitude) catalogues "a" and "newcat"
         %
         mask = mycat(:,mag_idx) >= minma  & mycat(:,mag_idx) <= maxma  &...
-            mycat(:,date_idx) >= minti & mycat(:,date_idx) <= maxti &...
+            mycat(:,decyr_idx) >= minti & mycat(:,decyr_idx) <= maxti &...
             mycat(:,dep_idx) >= mindep & mycat(:,dep_idx) <= maxdep;
         
         mycat = mycat(mask,:);
@@ -273,23 +308,28 @@ function mycat = catalog_overview(mycat)
         maepi = mycat(mask,:);
         
         %sort in time
-        mycat = sortrows(mycat, date_idx);
+        mycat = sortrows(mycat, decyr_idx);
         
         if length(mycat(:,3)) > 10000
             ty1='.';
             ty2='.';
             ty3='.';
         end
-        assignin('base','a',mycat);
+        a = mycat;
+        %assignin('base','a',mycat);
+        h=zmap_message_center();
+        h.update_catalog()%;
         %TODO make subcata a function
+       % evalin('base',subcata);
+         mainmap_overview('dep');
         % changes in bin length go to global par1
     end
     
     function cancel(src, ~)
         % return without making changes to catalog
+        h=zmap_message_center();
+        h.update_catalog();
         close;
-        welcome(' ',' ');
-        done;
     end
     
 end

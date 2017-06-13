@@ -28,7 +28,7 @@ if nargin==1
         'Callback', {@think_and_do,'zdataimport'});
     uimenu(genmen, ...
         'Label','FDSN web fetch',... %TODO
-        'Callback', {@think_and_do,@fdsn_param_dialog});
+        'Callback', @get_fdsn_data_from_web);
     uimenu(genmen, ...
         'Label', 'Create or Modify *.mat datafile',...
         'Callback', {@think_and_do, 'setup'});
@@ -137,5 +137,17 @@ function think_and_do(s, e, f_handle, varargin)
         f_handle(varargin{:});
     end
 end
+
+function get_fdsn_data_from_web(s, e)
+    think;
+    h = findall(0,'Tag','fdsn_import_dialog');
+    if isempty(h)
+        fdsn_param_dialog(); % create
+    else
+        h.Visible = 'on'; % show existing
+    end
+end
+
+
 
     

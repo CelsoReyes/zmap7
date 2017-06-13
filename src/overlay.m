@@ -8,7 +8,8 @@
 
 
 report_this_filefun(mfilename('fullpath'));
-doexist
+
+global main mainfault faults coastline vo
 %plot earthquakes
 %
 hold on

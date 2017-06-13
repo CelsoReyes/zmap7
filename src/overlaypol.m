@@ -7,6 +7,8 @@
 
 report_this_filefun(mfilename('fullpath'));
 
+global main mainfault faults coastline vo
+
 figure_w_normalized_uicontrolunits(map)
 ax = axis;
 if ax(1) < min(coastline(:,1)) | ax(2) > min(coastline(:,1))
@@ -49,8 +51,6 @@ for i = 1:j
 end
 
 coastline = [lon lat];
-
-doexist
 
 hold on
 if exist('coastline') >  0

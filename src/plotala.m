@@ -9,7 +9,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-doexist
+global main mainfault faults coastline
 watchon
 think
 ttlStr='The Alarm Cube Window                                ';

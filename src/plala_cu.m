@@ -9,7 +9,6 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-doexist
 watchon
 think
 ttlStr='The Alarm Cube Window                                ';

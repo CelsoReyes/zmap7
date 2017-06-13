@@ -254,7 +254,7 @@ if ho2 == 'hold'
 
     hold on
     axes(ht)
-    tiplot2 = plot(newt2(:,3),(1:length(newt2(:,3))),'r','era','xor');
+    tiplot2 = plot(newt2(:,3),(1:length(newt2(:,3))),'r');
     set(tiplot2,'LineWidth',2.0)
 
 
@@ -385,7 +385,7 @@ if par1>=1
         %option to plot the location of big events in the map
         %
         % figure_w_normalized_uicontrolunits(map)
-        % plog = plot(big(:,1),big(:,2),'or','EraseMode','xor');
+        % plog = plot(big(:,1),big(:,2),'or');
         %set(plog,'MarkerSize',ms10,'LineWidth',2.0)
         %figure_w_normalized_uicontrolunits(cum)
 

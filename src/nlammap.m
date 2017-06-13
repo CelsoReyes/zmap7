@@ -6,7 +6,8 @@
 % Stefan Wiemer 2/95
 % last update: 12.10.2004, jochen.woessner@sed.ethz.ch
 
-doexist
+
+global main mainfault faults coastline vo
 global mapl hoc
 if exist('hoc') == 0 ; hoc = 'noho';end
 if isempty(hoc) == 1 ; hoc = 'noho';end

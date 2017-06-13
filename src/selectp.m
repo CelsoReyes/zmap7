@@ -52,7 +52,7 @@ n = 0;
 but = 1;
 while but == 1 | but == 112
     [xi,yi,but] = ginput(1);
-    mark1 =    plot(xi,yi,'ok','era','xor'); % doesn't matter what erase mode is
+    mark1 =    plot(xi,yi,'ok'); % erase mode was xor, but xor is removed
     % used so long as its not NORMAL
     set(mark1,'MarkerSize',5,'LineWidth',2.0)
     n = n + 1;
@@ -66,7 +66,7 @@ x = [x ; x(1)];
 y = [y ; y(1)];      %  closes polygon
 
 figure_w_normalized_uicontrolunits(cufi)
-plos2 = plot(x,y,'b-','era','xor');        % plot outline
+plos2 = plot(x,y,'b-');        % plot outline
 sum3 = 0.;
 pause(0.3)
 % calculate points with a polygon
@@ -89,9 +89,9 @@ for i = 1:m;
         l2(l) = 1 - l2(l);
     else
         l2 = l;
-    end;         % if i
+    end         % if i
 
-end;         %  for
+end         %  for
 
 newt2 = a(l2,:);                % newcat is created
 %a = newcat;                      % a and newcat now equal to reduced catalogue

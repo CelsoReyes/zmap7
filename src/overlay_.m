@@ -6,7 +6,8 @@
 %  Stefan Wiemer   11/94
 
 report_this_filefun(mfilename('fullpath'));
-doexist
+
+global main mainfault faults coastline vo
 
 hold on
 if exist('coastline','var')

@@ -8,7 +8,8 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-doexist
+global maex maey maix maiy
+
 
 if sel == 'in'
     % get the grid parameter
