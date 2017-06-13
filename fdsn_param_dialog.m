@@ -88,6 +88,15 @@ set(handles.provider_details,'String',...
     currprovider.description,...
     currprovider.location,...
     currprovider.serviceURLs.eventService));
+if hObject.Value==1
+    hObject.BackgroundColor = [1.0 0.95 0.95];    
+    welcome('Importing FDSN data','First choose a data provider...');
+
+else
+    hObject.BackgroundColor = [0.95 1.0 0.95];    
+    welcome('Importing FDSN data','Choose the desired catalog constraints (time, magnitude, etc..)');
+
+end
 
 % --- Executes during object creation, after setting all properties.
 function data_provider_CreateFcn(hObject, eventdata, handles)
@@ -112,9 +121,18 @@ while i <= numel(datacenter_details)
         i=i+1;
     end
 end
+datacenter_details(2:end+1) = datacenter_details;
+datacenter_details(1).name = '<none>';
+datacenter_details(1).description = 'choose a datacenter';
+datacenter_details(1).website = ' ';
+datacenter_details(1).location = ' ';
+datacenter_details(1).lastUpdate = ' ';
+datacenter_details(1).serviceURLs.eventService = '';
 hObject.UserData = datacenter_details;
 currprovider = datacenter_details(hObject.Value);
-set(hObject,'string',{datacenter_details.name});
+set(hObject,'string',{datacenter_details.name});    
+welcome('Importing FDSN data','First choose a data provider, then specify the desired constraints.');
+
     
 
 
@@ -598,6 +616,15 @@ function Fetch_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % assemble the actual query
 % TODO: do this
+global a
+if (handles.data_provider.Value == 1)
+    % no datacenter has been chosen
+    beep;
+    handles.data_provider.BackgroundColor = [1.0 0.95 0.95];
+    welcome('Importing FDSN data (problem)',...
+        'Import won''t work. You must first choose a data provider.');
+    return
+end
 queryset=handles.data_provider.String{handles.data_provider.Value};
 
     queryset = add_datetime(handles, queryset, 'starttime');
@@ -622,9 +649,12 @@ end
     queryset = add_string(handles, queryset, 'magnitudetype');
     think('Importing FDSN data','Importing FDSN data from the web. This might take a minute');
     a = import_fdsn_event(1, queryset{:});
-    assignin('base','a',a);
+    a = catalog_overview(a); % further modify
+    %assignin('base','a',a);
     done();
-    evalin('base','inpu'); %yuck
+    % evalin('base','inpu'); %yuck
+    set(hObject.Parent,'Visible','off');
+    % close(hObject.Parent); % or set Visibility to 'off' ?
     % TODO: close this window
     % 
 
