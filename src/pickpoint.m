@@ -5,16 +5,15 @@
 report_this_filefun(mfilename('fullpath'));
 
 length(newcat);
-figure_w_normalized_uicontrolunits(map);
+figure(getobj('Tag','main_map_ax'));
 if but == 1               %more option
     xi=xcordinate;
     yi=ycordinate;
 
-    mark1 =    plot(xi,yi,'wo','era','back'); % doesn't matter what erase mode is
-    % used so long as its not NORMAL
-    set(mark1,'MarkerSize',10,'LineWidth',2.0)
+    mark1 =    plot(ax,xi,yi,'wo');
+    set(mark1,'MarkerSize',8,'LineWidth',2.0)
     n = n + 1;
-    % mark2 =     text(xi,yi,[' ' int2str(n)],'era','back');
+    % mark2 =     text(xi,yi,[' ' int2str(n)],'era','normal');
     % set(mark2,'FontSize',15,'FontWeight','bold')
 
     x = [x; xi];
@@ -34,22 +33,30 @@ else
 
     if but==3
 
-        [file1,path1] = uigetfile(['*'],'Polygon Datafile');
+        [file1,path1] = uigetfile([hodo '*'],'Polygon Datafile');
 
         if length(path1) > 1
             think
-            lofi = ['!cat  ' path1 file1 ' > poltmp.m '  ];
-            eval(lofi)
-            lofi = ['load poltmp.m ' ]
-            eval(lofi)
+            %lofi = ['!cat  ' path1 file1 ' > poltmp.m '  ];
+            %eval(lofi)
+            %bullshit again
+            %lofi = ['load ' path1 file1 ];
+            %eval(lofi)
+            loadedPoly=load([path1 file1]);
+            %dopo = find(file1 == '.');
+            %lofi = ['poltmp = ' file1(1:dopo-1) ];
+            %eval(lofi)
+            %poltmp = file1(dopo-1);
         else
             return
         end
 
-        x=poltmp(:,1);
-        y=poltmp(:,2);
+        %x=poltmp(:,1);
+        %y=poltmp(:,2);
+        x=loadedPoly(:,1);
+        y=loadedPoly(:,2);
         n=length(x);
-        for i=1:length(poltmp(:,1))
+        for i=1:length(loadedPoly(:,1))
             mark1 = plot(x(i),y(i),'ro','era','back');
             set(mark1,'MarkerSize',10,'LineWidth',2.0)
         end %for
@@ -68,7 +75,7 @@ else
         click = 1;
         while click == 1
             [xi,y1,click] = ginput(1);
-            mark1 =    plot(xi,yi,'ko','era','back'); % doesn't matter what erase mode is
+            mark1 =    plot(ax,xi,yi,'ko'); % doesn't matter what erase mode is
             % used so long as its not NORMAL
             set(mark1,'MarkerSize',10,'LineWidth',2.0)
             n = n + 1;
@@ -94,26 +101,7 @@ else
 
     XI = a(:,1);          % this substitution just to make equation below simple
     YI = a(:,2);
-    m = length(x)-1;      %  number of coordinates of polygon
-    l = 1:length(XI);
-    l = (l*0)';
-    ll = l;               %  Algorithm to select points inside a closed
-    %  polygon based on Analytic Geometry    R.Z. 4/94
-    for i = 1:m;
-
-        l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-            ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-        if i ~= 1
-            ll(l) = 1 - ll(l);
-        else
-            ll = l;
-        end;         % if i
-
-    end;         %  for
-
+    ll = polygon_filter(x,y, XI, YI, 'inside');
     newcat = a(ll,:);                % newcat is created
     % a = newcat;                      % a and newcat now equal to reduced catalogue
     newt2 = newcat;                  % resets newt2

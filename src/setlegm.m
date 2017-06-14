@@ -4,13 +4,10 @@
 
 
 %
+global dep1 dep2 dep3 a
+
 report_this_filefun(mfilename('fullpath'));
 
-
-%initial values
-depselect_dlg = figure_w_normalized_uicontrolunits('Menu','none','Tag','timeselect_dlg',...
-    'Units','pixel','NumberTitle','off','Name','Choose DEPTH divisions','pos',[ wex  wey 240 250]);
-depselect_ax = axes('Visible','off','pos',[0 0 1 1]);
 
 if typele =='mag'
 
@@ -21,59 +18,53 @@ if typele =='mag'
     dep2 = (dep1+dep3)*2/3;
     dep1 = (dep1+dep3)*1/3;
 
-    tx_x = 0.05;
-    fl_x = 0.6;
-    fl_w = 0.3;
-    
-    inp2_field  = uicontrol(depselect_dlg,'Style','edit',...
-        'Position',[fl_x .78 fl_w .15],...
-        'Units','normalized','String',num2str(dep1),...
-        'Callback','dep1=str2double(get(inp2_field,''String''));set(inp2_field,''String'',num2str(dep1));');
-
-    txt2 = text(depselect_ax,...
-        'Position',[tx_x 0.85],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Magnitude 1:');
-
-
-    txt3 = text(depselect_ax,...
-        'Position',[tx_x 0.65],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Magnitude 2:');
-
-    text(depselect_ax,...
-        'Position',[tx_x 0.45],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Magnitude 3:');
-
-
-    inp3_field=uicontrol(depselect_dlg,'Style','edit',...
-        'Position',[fl_x .58 fl_w .15],...
-        'Units','normalized','String',num2str(dep2),...
-        'Callback','dep2=str2double(get(inp3_field,''String'')); set(inp3_field,''String'',num2str(dep2));');
-
-    inp4_field=uicontrol(depselect_dlg,'Style','edit',...
-        'Position',[fl_x .38 fl_w .15],...
-        'Units','normalized','String',num2str(dep3),...
-        'Callback','dep3=str2double(get(inp4_field,''String'')); set(inp4_field,''String'',num2str(dep3));');
-
+    dlg_title='Legend Magnitude Breaks';
+    prompt={'First magnitude division (smallest):','Second magnitude division:','Third magnitude division (largest):'};
+    defaultans = {num2str(dep1), num2str(dep2), num2str(dep3)};
+    answer = inputdlg(prompt, dlg_title, 1, defaultans);
+    if ~isempty(answer)
+        for i=1:3
+            % convert from string
+            answer{i} = str2double(answer{i});
+        end
+        typele='mag'; %redundant?
+        dep1=answer{1};
+        dep2=answer{2};
+        dep3=answer{3};
+    else
+        welcome;
+    end
 end
 
 
+if typele == 'dep'
+    % creates a dialog box to input some parameters
+    %
+    dep_idx = 7;
+    % divide depths into 3 categories
+    dep1 = 0.3*max(a(:,dep_idx));
+    dep2 = 0.6*max(a(:,dep_idx));
+    dep3 = max(a(:,dep_idx));
 
-close_button=uicontrol(depselect_dlg,'Style','Pushbutton',...
-    'Position', [.60 .05 .3 .15 ],...
-    'Units','normalized','Callback','close(depselect_dlg);welcome','String','Cancel');
+    dlg_title='Legend Depth Breaks';
+    prompt={'First depth division (shallowest, km):','Second depth division (km):','Third magnitude division (deepest, km):'};
+    defaultans = {num2str(dep1), num2str(dep2), num2str(dep3)};
+    answer = inputdlg(prompt, dlg_title, 1, defaultans);
+    if ~isempty(answer)
+        for i=1:3
+            % convert from string
+            answer{i} = str2double(answer{i});
+        end
+        typele='dep'; %redundant?
+        dep1=answer{1};
+        dep2=answer{2};
+        dep3=answer{3};
+    else
+        welcome;
+    end
+end
+clear answer temp defaultans prompt dlg_title
+mainmap_overview()
 
-go_button=uicontrol(depselect_dlg,'Style','Pushbutton',...
-    'Position',[.25 .05 .3 .15 ],...
-    'Units','normalized',...
-    'Callback','close(depselect_dlg);welcome;typele =''mag'';mainmap_overview()',...
-    'String','Go');
-
-set(gcf,'visible','on');watchoff
 
 

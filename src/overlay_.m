@@ -10,41 +10,49 @@ function overlay_()
     global main mainfault faults coastline vo maepi well minmag
     
     hold on
-    
+    ax = findobj('Tag','main_map_ax');
     if ~isempty(coastline)
-        mapplot = plot(coastline(:,1),coastline(:,2));
+        mapplot = plot(ax,coastline(:,1),coastline(:,2));
         set(mapplot,'LineWidth', 1.0, 'Color',[0  0  0 ])
+        mapplot.DisplayName = 'coastline';
+        mapplot.Tag = 'coastline';
     end
     
     
     if ~isempty(vo)
-        plovo = plot(vo(:,1),vo(:,2),'^r');
+        plovo = plot(ax,vo(:,1),vo(:,2),'^r');
         set(plovo,'LineWidth', 1.5,'MarkerSize',6,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
+        plovo.DisplayName = 'Volcanoes';
+        plovo.Tag = 'volcanoes';
     end
     
     % plot the well location
     if ~isempty(well)
         i = find(well(:,1) == inf);
-        plowe = plot(well(i+1,1),well(i+1,2),'d');
+        plowe = plot(ax,well(i+1,1),well(i+1,2),'d');
         set(plowe,'LineWidth',1.5,'MarkerSize',6,...
             'MarkerFaceColor','k','MarkerEdgeColor','k');
+        plowe.DisplayName = 'wells';
+        plowe.Tag = 'wells';
     end
     
     %plot main faultline
     if ~isempty(mainfault)
-        plo3 = plot(mainfault(:,1),mainfault(:,2),'b');
-        set(plo3,'LineWidth',3.0)
+        plo3 = plot(ax,mainfault(:,1),mainfault(:,2),'b');
+        plo3.LineWidth = 3.0;
+        plo3.DisplayName = 'main faultline';
+        plo3.Tag = 'faultlines';
     end
     
     %
     % plot big earthquake epicenters with a 'x' and the data/magnitude
     %
     if ~isempty(maepi)
-        epimax = plot(maepi(:,1),maepi(:,2),'hm');
+        epimax = plot(ax,maepi(:,1),maepi(:,2),'hm');
         set(epimax,'LineWidth',1.5,'MarkerSize',12,...
             'MarkerFaceColor','y','MarkerEdgeColor','k')
-        epimax.DisplayName = sprintf('Events > M %2.1f',minmag);
+        epimax.DisplayName = sprintf('Events > M %2.1f', minmag);
         
         stri2 = [];
         for i = 1:length(maepi(:,1))
@@ -54,7 +62,7 @@ function overlay_()
             if length(s) == 13 ; s = ['   ' s] ; end
             stri2 = [stri2 ; s];
         end   % for i
-        te1 = text(maepi(:,1),maepi(:,2),stri2);
+        te1 = text(ax,maepi(:,1),maepi(:,2),stri2);
         set(te1,'FontWeight','bold','Color','k','FontSize',9,'Clipping','on')
     end
     
@@ -62,13 +70,17 @@ function overlay_()
     %plot mainshock(s)
     %
     if ~isempty(main)
-        plo1 = plot(main(:,1),main(:,2),'*k');
+        plo1 = plot(ax,main(:,1),main(:,2),'*k');
         set(plo1,'MarkerSize',12,'LineWidth',2.0)
+        plo1.DisplayName = 'mainshocks';
+        plo1.Tag = 'mainshocks';
     end
     
     if ~isempty(faults)
-        plo4 = plot(faults(:,1),faults(:,2),'k');
+        plo4 = plot(ax,faults(:,1),faults(:,2),'k');
         set(plo4,'LineWidth',0.2)
+        plo4.DisplayName = 'faults';
+        plo4.Tag = 'faults';
     end
 end
     

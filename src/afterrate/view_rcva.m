@@ -97,12 +97,6 @@ if oldfig_button == 0
     uimenu(options,'Label','Select EQ with const. number',...
          'Callback','h1 = gca;ho2=''hold'';ho = ''hold'';plot_constnrbootfitF;watchoff(rcmap)')
 
-    %
-    %    uimenu(options,'Label','Select EQ in Polygon -new ',...
-    %        'Callback','cufi = gcf;ho = ''noho'';selectp2')
-    %    uimenu(options,'Label','Select EQ in Polygon - hold ',...
-    %        'Callback','cufi = gcf;ho = ''hold'';selectp2')
-    %
 
     op1 = uimenu('Label',' Maps ');
 

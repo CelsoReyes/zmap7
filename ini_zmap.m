@@ -3,7 +3,15 @@
 %
 report_this_filefun(mfilename('fullpath'));
 global winx winy
-
+global wex wey welx wely sel typele
+global ty ty1 ty2 ty3
+global lth1 lth15 lth2
+global rad xa0 iwl3 ic ya0 iwl2 step ni
+global name strib stri2 ho ho2 infstri maix maiy
+global tresh wi rotationangle fre
+global co par1 minmag
+global fontsz
+global ca vi sha inb1 inb2 inda ra
 % Set the font size
 %
 fontsz = FontSizeTracker;
@@ -87,7 +95,7 @@ cb3 = 1.0;
 
 in = 'initf';
 
-% seislap default para,eters
+% seislap default parameters
 ldx = 100;
 tlap = 100;
 
@@ -100,8 +108,8 @@ inda = 1;
 ra = 5;
 
 co = 'w';
-par1 = 14;
-minmag = 8;
+par1 = 14; % bin length, days
+minmag = 8; % minimum cutoff for "large" earthquakes
 
 %set the recursion slightly, to avoid error (specialy with the function ploop2.m
 set(0,'RecursionLimit',750)

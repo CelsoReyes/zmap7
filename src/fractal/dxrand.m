@@ -166,31 +166,14 @@ if sel == 'ca'
     welcome('Select Polygon for a grid',messtext);
 
     figure;
-    plot(Da(:,1), -Da(:,7),'o');
+    ax=plot(Da(:,1), -Da(:,7),'o');
     xlabel('Distance in [km]')
     ylabel('Depth in [km]')
 
-    x = [];
-    y = [];
     hold on
-    but=1;
-    while but==1 | but == 112
-        [xi,yi,but] = ginput(1);
-        mark1 =    plot(xi,yi,'ob','era','back'); % doesn't matter what erase mode is
-        % used so long as its not NORMAL
-        set(mark1,'MarkerSize',8,'LineWidth',1.0, 'Color', 'r')
-        n = n + 1;
-        % mark2 =     text(xi,yi,[' ' int2str(n)],'era','normal');
-        % set(mark2,'FontSize',15,'FontWeight','bold')
-
-        x = [x; xi];
-        y = [y; yi];
-
-    end  % while but
+    ax = findobj('Tag','main_map_ax');
+    [x,y, mouse_points_overlay] = select_polygon(ax);
     welcome('Message',' Thank you .... ')
-
-    x = [x ; x(1)];
-    y = [y ; y(1)];     %  closes polygon
 
     plos2 = plot(x,y,'b-','era','xor', 'Color', 'r');        % plot outline
     sum3 = 0.;
@@ -212,25 +195,7 @@ if sel == 'ca'
     XI=tmpgri(:,1);
     YI=tmpgri(:,2);
 
-    m = length(x)-1;      %  number of coordinates of polygon
-    l = 1:length(XI);
-    l = (l*0)';
-    ll = l;               %  Algorithm to select points inside a closed
-    %  polygon based on Analytic Geometry    R.Z. 4/94
-    for i = 1:m
-
-        l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-            ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-        if i ~= 1
-            ll(l) = 1 - ll(l);
-        else
-            ll = l;
-        end         % if i
-
-    end         %
+    ll = polygon_filter(x,y, XI, YI, 'inside');
     %grid points in polygon
     newgri=tmpgri(ll,:);
 

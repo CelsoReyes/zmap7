@@ -8,12 +8,14 @@ function mainmap_overview()
     % Tag: 'main_map_ax' contains the main map
     
     
-    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele% newt2 newcat
-    ty1=evalin('base','ty1');
-    ty2=evalin('base','ty2');
-    ty3=evalin('base','ty3');
-    ms6=evalin('base','ms6');
-    typele = evalin('base','typele');
+    global a file1 t0b teb par1 ms6 ty ty1 ty2 ty3 fontsz name typele% newt2 newcat
+    global tim1 tim2 tim3 tim4 dep1 dep2 dep3
+    global main mainfault faults coastline vo maepi well minmag
+    %ty1=evalin('base','ty1');
+    %y2=evalin('base','ty2');
+    %ty3=evalin('base','ty3');
+    %ms6=evalin('base','ms6');
+    %typele = evalin('base','typele');
     
     if isempty(a)
         think
@@ -205,9 +207,9 @@ function mainmap_overview()
         case 'mag'
             a_mags = a(:,mag_idx);
             % divide magnitudes into 3 categories
-            dep1 = 0.3*max(a_mags);
-            dep2 = 0.6*max(a_mags);
-            dep3 = max(a_mags);
+            %dep1 = 0.3*max(a_mags);
+            %dep2 = 0.6*max(a_mags);
+            %dep3 = max(a_mags);
             
             depth_mask = a_mags>=dep1 & a_mags<dep2;
             deplo1=plot(main_map_ax,a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part1');
@@ -369,9 +371,9 @@ function mainmap_overview()
             a_depths = a(:,dep_idx);
             
             % divide depths into 3 categories
-            dep1 = 0.3*max(a_depths);
-            dep2 = 0.6*max(a_depths);
-            dep3 = max(a_depths);
+            %dep1 = 0.3*max(a_depths);
+            %dep2 = 0.6*max(a_depths);
+            %dep3 = max(a_depths);
             
             % shallowest
             dep_mask = a_depths <= dep1;
@@ -397,7 +399,11 @@ function mainmap_overview()
             %plot earthquakes according time
         case 'tim'
             a_times = a(:,decyr_idx);
-            timedivisions = linspace(min(a_times),max(a_times),4);
+            if isempty(tim1)
+                timedivisions = linspace(min(a_times),max(a_times),4);
+            else
+                timedivisions = [tim1 tim2 tim3 tim4];
+            end
             
             time_mask = timedivisions(2) <= a_times & a_times >= timedivisions(1);
             deplo1 =plot(main_map_ax, a(time_mask,lon_idx), a(time_mask,lat_idx),'.b','Tag','mapax_part1');
@@ -494,26 +500,26 @@ function mainmap_overview()
         ovmenu = uimenu(symbolmenu,'Label',' Volcanoes, Plate Boundaries etc.  ');
         
         uimenu(ovmenu,'Label','Load/show volcanoes ',...
-            'Callback','load volcano.mat; mainmap_overview()');
+            'Callback','global vo;load volcano.mat; mainmap_overview()');
         uimenu(ovmenu,'Label',' Do not show volcanoes ',...
             'Callback','vo = [];mainmap_overview()');
         uimenu(ovmenu,'Label','Load/show plate boundaries ',...
-            'Callback','load plates.mat ; fa_back = faults; faults = [faults ; plates]; mainmap_overview()');
+            'Callback','global faults; load plates.mat ; fa_back = faults; faults = [faults ; plates]; mainmap_overview()');
         uimenu(ovmenu,'Label',' Do not show plates/faults boundaries ',...
-            'Callback','faults = [];mainmap_overview()');
+            'Callback','glo bal faults; faults = [];mainmap_overview()');
         uimenu(ovmenu,'Label',' Load a coastline  from GSHHS database',...
             'Callback','selt = ''in'';  plotmymap;');
         uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
-            'Callback','think;addcoast');
+            'Callback','think; addcoast');
         uimenu(ovmenu,'Label','Plot stations + station names',...
-            'Callback','think;plotstations');
+            'Callback','think; plotstations');
         
         lemenu = uimenu(symbolmenu,'Label',' Legend by ...  ');
         
         uimenu(lemenu,'Label',' Legend by time ',...
             'Callback','typele = ''tim'';setleg');
         uimenu(lemenu,'Label',' Legend by depth ',...
-            'Callback','typele = ''dep'';mainmap_overview()');
+            'Callback','typele = ''dep'';setlegm');
         uimenu(lemenu,'Label',' Legend by magnitude ',...
             'Callback','typele = ''mag'';setlegm');
         uimenu(lemenu,'Label',' Mag by size and depth by color',...
@@ -553,13 +559,13 @@ function mainmap_overview()
     function create_select_menu()
         submenu = uimenu('Label',' Select ');
         uimenu(submenu,'Label','Select EQ in Polygon (Menu) ',...
-            'Callback','noh1 = gca;newt2 = a; stri = ''Polygon''; keysel');
+            'Callback','noh1 = gca;newt2 = a; stri = ''Polygon''; keyselect');
         
         uimenu(submenu,'Label','Select EQ inside Polygon ',...
-            'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf; selectp');
+            'Callback','h1 = gca;stri = ''Polygon'';selectp(''inside'')');
         
         uimenu(submenu,'Label','Select EQ outside Polygon ',...
-            'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf; selectpo');
+            'Callback','h1 = gca;stri = ''Polygon'';selectp(''outside'')');
         
         uimenu(submenu,'Label','Select EQ in Circle (fixed ni)',...
             'Callback',' h1 = gca;set(gcf,''Pointer'',''watch''); stri = [''  '']; stri1 = ['' ''];circle');

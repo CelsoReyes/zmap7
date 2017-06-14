@@ -37,26 +37,7 @@ for x3=-180:dx:170
 
         XI = a(:,1);          % this substitution just to make equation below simple
         YI = a(:,2);
-        m = length(x2)-1;      %  number of coordinates of polygon
-        l = 1:length(XI);
-        l = (l*0)';
-        l2 = l;               %  Algorithm to select points inside a closed
-        %  polygon based on Analytic Geometry    R.Z. 4/94
-        for i = 1:m
-
-            l= ((y2(i)-YI < 0) & (y2(i+1)-YI >= 0)) & ...
-                (XI-x2(i)-(YI-y2(i))*(x2(i+1)-x2(i))/(y2(i+1)-y2(i)) < 0) | ...
-                ((y2(i)-YI >= 0) & (y2(i+1)-YI < 0)) & ...
-                (XI-x2(i)-(YI-y2(i))*(x2(i+1)-x2(i))/(y2(i+1)-y2(i)) < 0);
-
-            if i ~= 1
-                l2(l) = 1 - l2(l);
-            else
-                l2 = l;
-            end         % if i
-
-        end         %  for
-
+        l2 = polygon_filter(x,y, XI, YI, 'inside');
         newt2 = a(l2,:);                  % newcat is created
         %a = newcat;                      % a and newcat now equal to reduced catalogue
         %newt2 = newcat;                  % resets newt2

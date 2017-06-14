@@ -182,13 +182,13 @@ if newMapWindowFlag
     cufi = gcf;
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
-        'Callback','h1 = gca;newt2 = a; stri = ''Polygon''; keysel');
+        'Callback','h1 = gca;newt2 = a; stri = ''Polygon''; keyselect');
 
     uimenu(options,'Label','Select EQ inside Polygon ',...
         'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf; selectp');
 
     uimenu(options,'Label','Select EQ outside Polygon ',...
-        'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf; selectpo');
+        'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf; selectp');
 
     uimenu(options,'Label','Select EQ in Circle (fixed ni)',...
         'Callback',' h1 = gca;set(gcf,''Pointer'',''watch''); stri = [''  '']; stri1 = ['' ''];circle');

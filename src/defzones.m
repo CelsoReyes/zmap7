@@ -1,26 +1,7 @@
 report_this_filefun(mfilename('fullpath'));
 
-figure_w_normalized_uicontrolunits(map);
-x = [];
-y = [];
-hold on
-but=1;
-while but==1 | but == 112
-    [xi,yi,but] = ginput(1)
-    mark1 =    plot(xi,yi,'+k','erase','back'); % doesn't matter what erase mode is
-    % used so long as its not NORMAL
-    set(mark1,'MarkerSize',8,'LineWidth',2.0)
-    n = n + 1;
-    % mark2 =     text(xi,yi,[' ' int2str(n)],'era','normal');
-    % set(mark2,'FontSize',15,'FontWeight','bold')
-
-    x = [x; xi];
-    y = [y; yi];
-
-end
-
-x = [x ; x(1)];
-y = [y ; y(1)];     %  closes polygon
+ax = findobj('Tag','main_map_ax');
+[x,y, mouse_points_overlay] = select_polygon(ax);
 figure_w_normalized_uicontrolunits(map)
 
 plos2 = plot(x,y,'k-','Linewidth',2);        % plot outline
@@ -55,27 +36,7 @@ y = [p(:,2)];      %  closes polygon
 sum3 = 0.;
 XI = a(:,1);          % this substitution just to make equation below simple
 YI = a(:,2);
-m = length(x)-1;      %  number of coordinates of polygon
-l = 1:length(XI);
-l = (l*0)';
-l2 = l;               %  Algorithm to select points inside a closed
-%  polygon based on Analytic Geometry    R.Z. 4/94
-for i = 1:m
-
-    l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-        (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-        ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-        (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-    if i ~= 1
-        l2(l) = 1 - l2(l);
-    else
-        l2 = l;
-    end         % if i
-
-end         %  for
-
-newt2 = a(l2,:);
+    l2 = polygon_filter(x,y, XI, YI, 'inside');
 newt2 = a(l2,:);
 
 if length(newt2(:,1)) > 10   % nur wenn mindestens 6 EQ in zone

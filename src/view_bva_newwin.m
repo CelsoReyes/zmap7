@@ -101,9 +101,9 @@ if oldfig_button == 0
          'Callback','h1 = gca;ho = ''hold'';cirbva;watchoff(bmap)')
 
     uimenu(options,'Label','Select EQ in Polygon -new ',...
-         'Callback','cufi = gcf;ho = ''noho'';selectp2')
+         'Callback','cufi = gcf;ho = ''noho'';selectp')
     uimenu(options,'Label','Select EQ in Polygon - hold ',...
-         'Callback','cufi = gcf;ho = ''hold'';selectp2')
+         'Callback','cufi = gcf;ho = ''hold'';selectp')
 
 
     op1 = uimenu('Label',' Maps ');

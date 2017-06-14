@@ -13,10 +13,11 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-global tmvar                      %for P-Value
-global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess til plo2 cum newt2 ho2 statime
+global tmvar  minmag                    %for P-Value
+global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p iwl2
+global cplot mess til plo2 cum newt2 ho2 statime winx winy
 global magco selt hndl2 wls_button ml_button
+global fontsz name
 
 if ~exist('xt','var')
 xt=[]; % time series that will be used
@@ -24,10 +25,15 @@ end
 if ~exist('as','var')
     as=[]; % z values, maybe? used by the save callback.
 end
+if isempty(par1)
+    par1=1;
+end
 
 welcome(' ','Plotting cumulative number plot...');
 
-if exist('nosort') == 0 ; nosort = 'of'  ; end
+if ~exist('nosort','var')
+    nosort = 'of'  ;
+end
 
 if nosort == 'of'
     [s,is] = sort(newt2(:,3));
@@ -281,9 +287,7 @@ if isempty(newcat), newcat =a; end
 %
 l = newt2(:,6) > minmag;
 big = newt2(l,:);
-%big=[];
 %calculate start -end time of overall catalog
-%R
 statime=[];
 par2=par1;
 t0b = min(a(:,3));
@@ -306,20 +310,9 @@ else
     tdiff = (teb-t0b)*365/par1;
 end
 % set arrays to zero
-%
-%if par1>=1
 cumu = 0:1:((teb-t0b)*365/par1)+2;
 cumu2 = 0:1:((teb-t0b)*365/par1)-1;
-%else
-%  cumu = 0:par1:tdiff+2*par1;
-%  cumu2 =  0:par1:tdiff-1;
-%end
-% cumu = cumu * 0;
-% cumu2 = cumu2 * 0;
-
-%
 % calculate cumulative number versus time and bin it
-%
 n = length(newt2(:,1));
 if par1 >=1
     [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
@@ -329,19 +322,11 @@ end
 cumu2=cumsum(cumu);
 % plot time series
 %
-%orient tall
 set(gcf,'PaperPosition',[0.5 0.5 5.5 8.5])
 rect = [0.25,  0.18, 0.60, 0.70];
 axes('position',rect)
 hold on
-%tiplo = plot(xt,cumu2,'ob');
 set(gca,'visible','off')
-%tiplo2 = plot(xt,cumu2,'b');
-%set(tiplo2,'LineWidth',2.5)
-
-%d = datenum(ceil(a(:,3))+1900,a(:,4),a(:,5),a(:,8),a(:,9),a(:,9)*0);
-%tiplo2 = plot(d,(1:length(d)),'r-.');
-%datetick('x',2)
 
 nu = (1:length(newt2(:,3))); nu(length(newt2(:,3))) = length(newt2(:,3));
 
@@ -364,8 +349,6 @@ set(gca,'Ylim',[0 length(newt2(:,1))*1.05]);
 %
 if par1>=1
     if ~isempty(big)
-        %if ceil(big(:,3) -t0b) > 0
-        %f = cumu2(ceil((big(:,3) -t0b)*365/par1));
         l = newt2(:,6) > minmag;
         f = find( l  == 1);
         bigplo = plot(big(:,3),f,'hm');
@@ -378,32 +361,14 @@ if par1>=1
             stri4 = [stri4 ; s];
         end   % for i
 
-        %te1 = text(big(:,3),f,stri4);
-        %set(te1,'FontWeight','normal','Color','k','FontSize',8)
-        %end
-
-        %option to plot the location of big events in the map
-        %
-        % figure_w_normalized_uicontrolunits(map)
-        % plog = plot(big(:,1),big(:,2),'or');
-        %set(plog,'MarkerSize',ms10,'LineWidth',2.0)
-        %figure_w_normalized_uicontrolunits(cum)
-
     end
 end %if big
 
-if exist('stri') > 0
-    %v = axis;
-    %if par1>=1
-    % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);
-    %end
-    %tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-    % set(tea,'FontSize',fontsz.s,'Color','k')
-else
-    strib = [file1];
-end %% if stri
+if ~exist('stri','var')
+    strib = file1;
+end
 
-strib = [name];
+strib = name;
 
 title2(strib,'FontWeight','normal',...
     'FontSize',fontsz.s,...
@@ -417,23 +382,16 @@ else
 end
 ylabel('Cumulative Number ','FontSize',fontsz.s)
 ht = gca;
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]);end
 
-%clear strib stri4 s l f bigplo plog tea v
 % Make the figure visible
 %
 set(gca,'visible','on','FontSize',fontsz.s,...
     'LineWidth',1.0,'TickDir','out','Ticklength',[0.02 0.02],...
     'Box','on')
 figure_w_normalized_uicontrolunits(cum);
-if term == 1 ; whitebg(cum,[0 0 0 ]); end
-%sicum = signatur('ZMAP','',[0.65 0.98 .04]);
-%set(sicum,'Color','b')
 axes(ht);
 set(cum,'Visible','on');
 watchoff(cum)
-watchoff(map)
 welcome(' ',' ')
-%par1=par2;
-done
+done()
 

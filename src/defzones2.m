@@ -21,27 +21,7 @@ for k = 1:lek
     sum3 = 0.;
     XI = a(:,1);          % this substitution just to make equation below simple
     YI = a(:,2);
-    m = length(x)-1;      %  number of coordinates of polygon
-    l = 1:length(XI);
-    l = (l*0)';
-    l2 = l;               %  Algorithm to select points inside a closed
-    %  polygon based on Analytic Geometry    R.Z. 4/94
-    for i = 1:m
-
-        l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-            ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-            (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-        if i ~= 1
-            l2(l) = 1 - l2(l);
-        else
-            l2 = l;
-        end         % if i
-
-    end         %  for
-
-    newt2 = a(l2,:);
+    l2 = polygon_filter(x,y, XI, YI, 'inside');
     newt2 = a(l2,:);
 
     if length(newt2(:,1)) > 10   % nur wenn mindestens 6 EQ in zone

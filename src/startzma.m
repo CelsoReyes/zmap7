@@ -71,13 +71,19 @@ else
         error_handler(ME, 'Error lodaing data! Are they in the right *.mat format?');
     end
 
-    if exist('a')==0   ; errordlg(' Error - No catalog data loaded !');return; end
-    if isempty(a)==1   ; errordlg(' Error - No catalog data loaded !');return; end
+    if ~exist('a','var') 
+        errordlg(' Error - No catalog data loaded !');
+        return;
+    end
+    if isempty(a)
+        errordlg(' Error - No catalog data loaded !');
+        return; 
+    end
 
-    if max(a(:,3)) < 100;
+    if max(a(:,3)) < 100
         a(:,3) = a(:,3)+1900;
         errdisp =    ['The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance'];
-        welcome('Error!  Alert!',errdisp)
+        welcome('Error!  Alert!', errdisp)
         warndlg(errdisp)
     end
 
@@ -156,5 +162,7 @@ ra = 5;
 mrt = 6;
 met = 'ni';
 
-inpu
+%h = zmap_message_center();
+%h.update_catalog();
+a=catalog_overview(a);
 

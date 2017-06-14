@@ -8,6 +8,7 @@ function mycat = catalog_overview(mycat)
     report_this_filefun(mfilename('fullpath'));
     global fontsz term
     global file1 tim1 tim2 minma2 maxma2 minde maxde maepi dep1 dep2 dep3
+    global a maxdep maxma mindep minti maxti minmag
     global ty1 ty2 ty3
     
     %INDICES INTO ZMAP ARRAY
@@ -234,19 +235,28 @@ function mycat = catalog_overview(mycat)
     end
     
     function update_numeric(src, ~)
+        % update the value from the string
         src.Value = str2double(src.String);
-        set(mindepth_field,'String',num2str(mindep));
+        %set(mindepth_field,'String',num2str(mindep));
     end
     
     function update_dates(src, ~)
         % interpret as decimal year or full date
+        isTextdate = contains(src.String,{':',' ','/','-'});
         
+        if isTextdate
+            src.Value = decyear(datetime(src.String)); %provides extra parsing
+        else
+            try
+                src.Value=str2double(src.String);
+            catch ME
+            end
+        end
     end
     
     function go(src, ~)
         %TODO remove all the side-effects.  store relevent data somewhere specific
         %filter the catalog, then return
-        global a
         myparent=get(src,'Parent');
         
         h = findall(myparent,'Tag','mapview_maxdepth_field');
@@ -261,6 +271,8 @@ function mycat = catalog_overview(mycat)
         minti = h.Value;
         h = findall(myparent,'Tag','mapview_end_field');
         maxti = h.Value;
+        h = findall(myparent,'Tag','mapview_big_evt_field');
+        minmag = h.Value;
         mycat = a; %TODO see if this is really supposed to be so
         close;
         think;
@@ -304,7 +316,7 @@ function mycat = catalog_overview(mycat)
         tresh = nan;
         %create catalog of "big events" if not merged with the original one:
         %
-        mask = mycat(:,mag_idx) > big_evt_minmag ;
+        mask = mycat(:,mag_idx) > minmag ;
         maepi = mycat(mask,:);
         
         %sort in time
@@ -319,9 +331,7 @@ function mycat = catalog_overview(mycat)
         %assignin('base','a',mycat);
         h=zmap_message_center();
         h.update_catalog()%;
-        %TODO make mainmap_overview() a function
-       % evalin('base',mainmap_overview());
-         mainmap_overview();
+        mainmap_overview();
         % changes in bin length go to global par1
     end
     

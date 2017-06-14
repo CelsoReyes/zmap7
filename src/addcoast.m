@@ -1,5 +1,5 @@
 % This files adds a coastline from an existing data set
-
+global coastline faults mainfault main
 report_this_filefun(mfilename('fullpath'));
 
 %aa = a;
@@ -47,7 +47,7 @@ end
 if ~loaded
     disp('Error lodaing data! Are they in the right *.mat format??')
 end
-
+whos
 %a = aa;
 %clear aa
 mainmap_overview()

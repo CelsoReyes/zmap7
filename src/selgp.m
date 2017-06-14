@@ -1,4 +1,4 @@
-report_this_filefun(mfilename('fullpath'));
+sreport_this_filefun(mfilename('fullpath'));
 
 messtext=...
     ['To select a polygon for a grid.       '
@@ -11,31 +11,11 @@ messtext=...
     '                                      '];
 welcome('Select Polygon for a grid',messtext);
 
-figure_w_normalized_uicontrolunits(map);
-x = [];
-y = [];
 hold on
-but=1;
-while but==1 | but == 112
-    [xi,yi,but] = ginput(1);
-
-    mark1 =    plot(xi,yi,'ok','era','xor'); % doesn't matter what erase mode is
-    % used so long as its not NORMAL
-    set(mark1,'MarkerSize',5,'LineWidth',2.0)
-
-    n = n + 1;
-    % mark2 =     text(xi,yi,[' ' int2str(n)],'era','normal');
-    % set(mark2,'FontSize',15,'FontWeight','bold')
-
-    x = [x; xi];
-    y = [y; yi];
-    drawnow
-
-end
+ax = findobj('Tag','main_map_ax');
+[x,y, mouse_points_overlay] = select_polygon(ax);
 welcome('Message',' Thank you .... ')
 
-x = [x ; x(1)];
-y = [y ; y(1)];     %  closes polygon
 figure_w_normalized_uicontrolunits(map)
 
 plos2 = plot(x,y,'b-');        % plot outline
@@ -59,25 +39,7 @@ end
 XI=tmpgri(:,1);
 YI=tmpgri(:,2);
 
-m = length(x)-1;      %  number of coordinates of polygon
-l = 1:length(XI);
-l = (l*0)';
-ll = l;               %  Algorithm to select points inside a closed
-%  polygon based on Analytic Geometry    R.Z. 4/94
-for i = 1:m;
-
-    l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-        (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-        ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-        (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-    if i ~= 1
-        ll(l) = 1 - ll(l);
-    else
-        ll = l;
-    end;         % if i
-
-end;         %
+ll = polygon_filter(x,y, XI, YI, 'inside');
 %grid points in polygon
 newgri=tmpgri(ll,:);
 

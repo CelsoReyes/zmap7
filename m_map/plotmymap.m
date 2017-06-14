@@ -106,18 +106,21 @@ if selt == 'ca'
 
         errordlg(st1,'Error: File not found ');
 
-        selt == 'in';
+        selt = 'in';
         return
     end
 
 
 
 
-    [existFlag,figNumber]=figure_exists('Lambert Map',1);
+    [existFlag,h1]=figure_exists('Lambert Map',1);
 
-    if existFlag == 0;  ac3 = 'new'; overmap;   end
+    if existFlag == 0 
+        ac3 = 'new'; 
+        overmap;  
+    end
     if existFlag == 1
-        figure_w_normalized_uicontrolunits(to1)
+        h1 = figure(to1)
         delete(gca); delete(gca);delete(gca)
     end
 
@@ -140,30 +143,30 @@ if selt == 'ca'
 
     if inpr5 == 1
         if inpr3 == 1
-            m_gshhs_c('patch',[.8 .8 .8]); ;
+            m_gshhs_c('patch',[.8 .8 .8]);
             FILNAME='private/gshhs_c.b';
 
         elseif inpr3 == 2
-            m_gshhs_l('patch',[.8 .8 .8]); ;
+            m_gshhs_l('patch',[.8 .8 .8]);
             FILNAME='private/gshhs_l.b';
         elseif inpr3 == 3
-            m_gshhs_i('patch',[.8 .8 .8]); ;
+            m_gshhs_i('patch',[.8 .8 .8]);
             FILNAME='private/gshhs_i.b';
 
         elseif inpr3 == 4
-            m_gshhs_h('patch',[.8 .8 .8]); ;
+            m_gshhs_h('patch',[.8 .8 .8]);
             FILNAME='private/gshhs_h.b';
 
         end
     elseif inpr5 == 2
         if inpr3 == 1
-            m_gshhs_c('line'); ;
+            m_gshhs_c('line');
         elseif inpr3 == 2
-            m_gshhs_l('line'); ;
+            m_gshhs_l('line');
         elseif inpr3 == 3
-            m_gshhs_i('line'); ;
+            m_gshhs_i('line');
         elseif inpr3 == 4
-            m_gshhs_h('line'); ;
+            m_gshhs_h('line');
         end
     end
 
@@ -202,7 +205,7 @@ if selt == 'ca'
 end
 watchoff
 
-if selt == 'sa';  % save to file only
+if selt == 'sa'  % save to file only
     axes(mapax);
     if inpr3 == 1
         FILNAME='private/gshhs_c.b';

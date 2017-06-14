@@ -130,25 +130,7 @@ function clpickp(but)
 
         XI = a(:,1);          % this substitution just to make equation below simple
         YI = a(:,2);
-        m = length(x)-1;      %  number of coordinates of polygon
-        l = 1:length(XI);
-        l = (l*0)';
-        ll = l;               %  Algorithm to select points inside a closed
-        %  polygon based on Analytic Geometry    R.Z. 4/94
-        for i = 1:m
-
-            l= ((y(i)-YI < 0) & (y(i+1)-YI >= 0)) & ...
-                (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0) | ...
-                ((y(i)-YI >= 0) & (y(i+1)-YI < 0)) & ...
-                (XI-x(i)-(YI-y(i))*(x(i+1)-x(i))/(y(i+1)-y(i)) < 0);
-
-            if i ~= 1
-                ll(l) = 1 - ll(l);
-            else
-                ll = l;
-            end         % if i
-
-        end         %  for
+    ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
             if isempty(ttcat)
                 equi = a(ll,:);       %all equievents inside selection area

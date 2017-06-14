@@ -2,91 +2,50 @@
 % make dialog interface for the fixing of the legend
 %
 
-
+global tim1 tim2 tim3 tim4 t0b teb typele
 % TODO fix the way times are handled
 report_this_filefun(mfilename('fullpath'));
 
 
-%initial values
-timeselect_dlg = figure_w_normalized_uicontrolunits('Menu','none','Tag','timeselect_dlg',...
-    'Units','pixel','NumberTitle','off','Name','Choose TIME divisions','pos',[ wex  wey 200 250]);
-timeselect_ax = axes('Visible','off');
-
 
 if typele =='tim'
-
+    
     % creates a dialog box to input some parameters
     %
     tim1 = t0b;
     tim2 = t0b +  (teb-t0b)/3;
     tim3 = t0b +  (teb-t0b)*0.663;
     tim4 = teb;
-
-    tx_x = .05;
-    fl_x = 0.5;
-    fl_w = 0.4;
-    inp2_field  = uicontrol(timeselect_dlg,'Style','edit',...
-        'Position',[fl_x .800 fl_w .15],...
-        'Units','normalized','String',num2str(tim1),...
-        'Callback','tim1=str2double(get(inp2_field,''String''));set(inp2_field,''String'',num2str(tim1));');
-
-    txt2 = text(timeselect_ax,...
-        'Position',[tx_x 0.9],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Time 1:');
-
-
-    txt3 = text(timeselect_ax,...
-        'Position',[tx_x 0.70],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Time2 :');
-
-    text(timeselect_ax,...
-        'Position',[tx_x 0.45],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Time3 :');
-
-    text(timeselect_ax,...
-        'Position',[tx_x 0.25],...
-        'FontWeight','bold',...
-        'FontSize',fontsz.m ,...
-        'String','Time4 :');
-
-
-
-    inp3_field=uicontrol(timeselect_dlg,'Style','edit',...
-        'Position',[fl_x .630 fl_w .15],...
-        'Units','normalized','String',num2str(tim2),...
-        'Callback','tim2=str2double(get(inp3_field,''String'')); set(inp3_field,''String'',num2str(tim2));');
-
-    inp4_field=uicontrol(timeselect_dlg,'Style','edit',...
-        'Position',[fl_x .450 fl_w .15],...
-        'Units','normalized','String',num2str(tim3),...
-        'Callback','tim3=str2double(get(inp4_field,''String'')); set(inp4_field,''String'',num2str(tim3));');
-
-    inp5_field=uicontrol(timeselect_dlg,'Style','edit',...
-        'Position',[fl_x .250 fl_w .15],...
-        'Units','normalized','String',num2str(tim4),...
-        'Callback','tim4=str2double(get(inp5_field,''String'')); set(inp5_field,''String'',num2str(tim4));');
-
+    
+    
+    dlg_title='Legend Time Breaks';
+    prompt={'Time 1 (earliest):','Time2:','Time 3:','Time 4 (latest):'};
+    defaultans = {num2str(tim1), num2str(tim2), num2str(tim3), num2str(tim4)};
+    answer = inputdlg(prompt, dlg_title, 1, defaultans);
+    if ~isempty(answer)
+        for i=1:4
+            if contains(answer{i},{' ','/','-',':'})
+                % convert from string
+                answer{i} = decyear(datetime(answer{i}));
+            else
+                tmp=str2double(answer{i});
+                if isnan(tmp)
+                    answer{i} = decyear(datetime(answer{i}));
+                else
+                    answer{i}=tmp;
+                end
+                    
+            end
+        end
+        typele='tim'; %redundant?
+        tim1=answer{1};
+        tim2=answer{2};
+        tim3=answer{3};
+        tim4=answer{4};
+    else
+        welcome;
+    end
 end
-
-
-
-close_button=uicontrol(timeselect_dlg,'Style','Pushbutton',...
-    'Position', [.60 .05 .3 .15 ],...
-    'Units','normalized','Callback','close(timeselect_dlg);welcome','String','Cancel');
-
-go_button=uicontrol(timeselect_dlg,'Style','Pushbutton',...
-    'Position',[.25 .05 .3 .15 ],...
-    'Units','normalized',...
-    'Callback','close(timeselect_dlg);welcome;typele =''tim'';mainmap_overview()',...
-    'String','Go');
-
-timeselect.dlg.Visible = 'on';
-watchoff();
-
-
+clear answer temp defaultans prompt dlg_title
+mainmap_overview()
+    

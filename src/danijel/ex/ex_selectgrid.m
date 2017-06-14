@@ -32,6 +32,8 @@ try
     vYLim = get(gca, 'YLim');
     vX = [vXLim(1); vXLim(1); vXLim(2); vXLim(2)];
     vY = [vYLim(2); vYLim(1); vYLim(1); vYLim(2)];
+    x = [x ; x(1)];
+    y = [y ; y(1)];     %  closes polygon
   else
     % Prepare variables
     vX = [];
@@ -72,25 +74,7 @@ try
   XI=mGrid(:,1);
   YI=mGrid(:,2);
 
-  m = length(vX)-1;      %  number of coordinates of polygon
-  l = 1:length(XI);
-  l = (l*0)';
-  vUsedNodes = l;               %  Algorithm to select points inside a closed
-  %  polygon based on Analytic Geometry    R.Z. 4/94
-  for i = 1:m
-
-    l= ((vY(i)-YI < 0) & (vY(i+1)-YI >= 0)) & ...
-      (XI-vX(i)-(YI-vY(i))*(vX(i+1)-vX(i))/(vY(i+1)-vY(i)) < 0) | ...
-      ((vY(i)-YI >= 0) & (vY(i+1)-YI < 0)) & ...
-      (XI-vX(i)-(YI-vY(i))*(vX(i+1)-vX(i))/(vY(i+1)-vY(i)) < 0);
-
-    if i ~= 1
-      vUsedNodes(l) = 1 - vUsedNodes(l);
-    else
-      vUsedNodes = l;
-    end
-
-  end
+    vUsedNodes = polygon_filter(x,y, XI, YI, 'inside');
   %grid points in polygon
   mGrid = mGrid(vUsedNodes,:);
 
