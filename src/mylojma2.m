@@ -33,7 +33,7 @@ end
 % open the file and read 10000 lines at a time
 [file1,path1] = uigetfile([ '*'],' Earthquake Datafile - JMA Format');
 if length(file1) >1
-    fid = fopen([path1 file1],'r') ;;
+    fid = fopen([path1 file1],'r') ;
 else
     disp('Data import canceled'); return
 end

@@ -50,14 +50,23 @@ welcome('Message',' Thank you .... ')
 if ~exist('in_or_out','var')
     in_or_out = 'inside';
 end
-mask = polygon_filter(x,y, a(:,1), a(:,2), in_or_out);
-newt2 = a(mask,:);
-
-
-% Plot of new catalog
-%
-plos1 = plot(ax,newt2(:,1),newt2(:,2),'xg','Tag','poly_selected_events','DisplayName','event subset');
-
+if isnumeric(a)
+    warning('old catalog');
+    mask = polygon_filter(x,y, a(:,1), a(:,2), in_or_out);
+    newt2 = a(mask,:);
+    newt2.Name = 'newt2';
+    % Plot of new catalog
+    %
+    plos1 = plot(ax,newt2(:,1),newt2(:,2),'xg','Tag','poly_selected_events','DisplayName','event subset');
+else
+    mask = polygon_filter(x,y, a.Longitude, a.Latitude, in_or_out);
+    a.addFilter(mask);
+    newt2 = a.getCropped();
+    a.clearFilter();
+    % Plot of new catalog
+    %
+plos1 = plot(ax,newt2.Longitude,newt2.Latitude,'xg','Tag','poly_selected_events','DisplayName','event subset');
+end
 xy = [x y];
 
 %save polcor.dat xy -ascii

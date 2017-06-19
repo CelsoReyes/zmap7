@@ -79,8 +79,6 @@ dep2 = 0.6*(max(a(:,7))-min(a(:,7)))+min(a(:,7));
 dep3 = max(a(:,7));
 
 stri1 = [file1];
-%tim1 = minti;
-%tim2 = maxti;
 minma2 = minma;
 maxma2 = maxma;
 minde = min(a(:,7));

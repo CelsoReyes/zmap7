@@ -209,19 +209,6 @@ function h = create_message_figure()
         
         %%  add catalog details
         
-        %INDICES INTO ZMAP ARRAY
-        lon_idx = 1;
-        lat_idx = 2;
-        decyr_idx = 3;
-        month_idx = 4;
-        day_idx = 5;
-        mag_idx = 6;
-        dep_idx = 7;
-        hr_idx = 8;
-        min_idx = 9;
-        sec_idx = 10;
-        
-        % aa=text(0.5, 0.4, 'No Catalog loaded','HorizontalAlignment','center');
         
         % create panel to hold catalog details
         cat1panel = uipanel(h,'Title','Current Catalog Summary',...
@@ -299,47 +286,14 @@ function update_current_catalog_pane(~,~)
     
     
     if ~isempty(a)
-        mycat=a;
-
-        %INDICES INTO ZMAP ARRAY
-        lon_idx = 1;
-        lat_idx = 2;
-        decyr_idx = 3;
-        month_idx = 4;
-        day_idx = 5;
-        mag_idx = 6;
-        dep_idx = 7;
-        hr_idx = 8;
-        min_idx = 9;
-        sec_idx = 10;
-
-        %  default values
-        t0b = min(mycat(:,decyr_idx));
-        teb = max(mycat(:,decyr_idx));
-        tdiff = (teb - t0b)*365;
-
-        %big_evt_minmag = max(mycat(:,mag_idx)) -0.2;
-        dep1 = 0.3*max(mycat(:,dep_idx));
-        dep2 = 0.6*max(mycat(:,dep_idx));
-        dep3 = max(mycat(:,dep_idx));
-        [minti, minti_idx] = min( mycat(:,decyr_idx) );
-        [maxti, maxti_idx]  = max(mycat(:,decyr_idx));
-        minma = min(mycat(:,mag_idx));
-        maxma = max(mycat(:,mag_idx));
-        mindep = min(mycat(:,dep_idx));
-        maxdep = max(mycat(:,dep_idx));
-
-        fmtstr = 'Number of events: %d\nStart: %s\nEnd:   %s\nDepths: %4.2f km ≤ Z ≤ %4.2f km\nMagnitudes: %2.1f ≤ mags ≤ %2.1f';
-        earliest=mycat(minti_idx,:);
-        min_datetime = datetime(floor(earliest(decyr_idx)),earliest(month_idx),earliest(day_idx),earliest(hr_idx),earliest(min_idx),earliest(sec_idx));
-        
+        if isa(a,'ZmapCatalog')
+            mycat = a;
+        else
+            mycat=ZmapCatalog(a,'a');
+        end
         h = findall(0,'tag','zmap_curr_cat_summary');
-        latest=mycat(maxti_idx,:);
-        max_datetime = datetime(floor(latest(decyr_idx)),latest(month_idx),latest(day_idx),latest(hr_idx),latest(min_idx),latest(sec_idx));
-        h.String = sprintf(fmtstr, size(mycat,1), ...
-            char(min_datetime,'uuuu-MM-dd HH:mm:ss'), char(max_datetime,'uuuu-MM-dd HH:mm:ss'),...
-            mindep, maxdep,...
-            minma, maxma);
+        h.String = mycat.summary('simple');
+        return
     else
         h = findall(0,'tag','zmap_curr_cat_summary');
         h.String = 'No catalog loaded';
@@ -351,46 +305,9 @@ function update_selected_catalog_pane(~,~)
     
     
     if ~isempty(newcat)
-        mycat=newcat;
-
-        %INDICES INTO ZMAP ARRAY
-        lon_idx = 1;
-        lat_idx = 2;
-        decyr_idx = 3;
-        month_idx = 4;
-        day_idx = 5;
-        mag_idx = 6;
-        dep_idx = 7;
-        hr_idx = 8;
-        min_idx = 9;
-        sec_idx = 10;
-
-        %  default values
-        t0b = min(mycat(:,decyr_idx));
-        teb = max(mycat(:,decyr_idx));
-        tdiff = (teb - t0b)*365;
-
-        %big_evt_minmag = max(mycat(:,mag_idx)) -0.2;
-        dep1 = 0.3*max(mycat(:,dep_idx));
-        dep2 = 0.6*max(mycat(:,dep_idx));
-        dep3 = max(mycat(:,dep_idx));
-        [minti, minti_idx] = min( mycat(:,decyr_idx));
-        [maxti, maxti_idx] = max(mycat(:,decyr_idx));
-        minma = min(mycat(:,mag_idx));
-        maxma = max(mycat(:,mag_idx));
-        mindep = min(mycat(:,dep_idx));
-        maxdep = max(mycat(:,dep_idx));
-
+        mycat=ZmapCatalog(newcat,'newcat');
         h = findall(0,'tag','zmap_sel_cat_summary');
-        earliest=mycat(minti_idx,:);
-        min_datetime = datetime(floor(earliest(decyr_idx)),earliest(month_idx),earliest(day_idx),earliest(hr_idx),earliest(min_idx),earliest(sec_idx));
-        latest=mycat(maxti_idx,:);
-        max_datetime = datetime(floor(latest(decyr_idx)),latest(month_idx),latest(day_idx),latest(hr_idx),latest(min_idx),latest(sec_idx));
-        fmtstr = 'Number of events: %d\nStart: %s\nEnd:   %s\nDepths: %4.2f km ≤ Z  ≤ %4.2f km\nMagnitudes: %2.1f ≤ mags ≤ %2.1f';
-        h.String = sprintf(fmtstr, size(mycat,1), ...
-            char(min_datetime,'uuuu-MM-dd HH:mm:ss'), char(max_datetime,'uuuu-MM-dd HH:mm:ss'),...
-            mindep, maxdep,...
-            minma, maxma);
+        h.String = mycat.summary('simple');
     else
         h = findall(0,'tag','zmap_sel_cat_summary');
         h.String = 'No subset selected';

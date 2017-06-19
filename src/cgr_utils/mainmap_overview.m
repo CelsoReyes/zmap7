@@ -8,13 +8,13 @@ function mainmap_overview()
     % Tag: 'main_map_ax' contains the main map
     
     
-    global a file1 t0b teb par1 ms6 ty ty1 ty2 ty3 fontsz name typele% newt2 newcat
+    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele% newt2 newcat
     global tim1 tim2 tim3 tim4 dep1 dep2 dep3
     global main mainfault faults coastline vo maepi well minmag
     %ty1=evalin('base','ty1');
     %y2=evalin('base','ty2');
     %ty3=evalin('base','ty3');
-    %ms6=evalin('base','ms6');
+    ms6=evalin('base','ms6');
     %typele = evalin('base','typele');
     
     if isempty(a)
@@ -25,6 +25,7 @@ function mainmap_overview()
         welcome('Messages', 'Choose a catalog' );
         return
     end
+    mycat = ZmapCatalog(a);
     
     if isempty(typele)
         typele = 'dep';
@@ -94,17 +95,6 @@ function mainmap_overview()
         '                                                '];
     
     
-    %INDICES INTO ZMAP ARRAY
-    lon_idx = 1;
-    lat_idx = 2;
-    decyr_idx = 3;
-    month_idx = 4;
-    day_idx = 5;
-    mag_idx = 6;
-    dep_idx = 7;
-    hr_idx = 8;
-    min_idx = 9;
-    sec_idx = 10;
     
     % Find out of figure already exists
     
@@ -149,12 +139,6 @@ function mainmap_overview()
         
         
         
-        %calculate several histogramms
-        stt1='Magnitude ';
-        stt2='Depth ';
-        stt3='Duration ';
-        st4='Foreshock Duration ';
-        st5='Foreshock Percent ';
         
     end
     %end;    if figure exist
@@ -170,10 +154,10 @@ function mainmap_overview()
     hold off
     
     % find min and Maximum axes points
-    s1 = max(a(:,lon_idx));
-    s2 = min(a(:,lon_idx));
-    s3 = max(a(:,lat_idx));
-    s4 = min(a(:,lat_idx));
+    s1 = max(mycat.Longitude);
+    s2 = min(mycat.Longitude);
+    s3 = max(mycat.Latitude);
+    s4 = min(mycat.Latitude);
     
     if s1 == s2
         s2 = s2 +- 0.1 ;
@@ -190,12 +174,10 @@ function mainmap_overview()
     %
     % find start and end time of catalogue "a"
     %
-    t0b = a(1,3);
-    n = length(a(:,lon_idx));
-    teb = a(n,3) ;
+    t0b = min(mycat.Date);
+    n = mycat.Count;
+    teb = max(mycat.Date);
     % tdiff =round(teb - t0b)*365/par1;
-    
-    n = length(a);
     
     % plot earthquakes (different symbols for various parameters) as
     % defined in "startzmap"
@@ -205,22 +187,21 @@ function mainmap_overview()
     %plot earthquakes according to magnitude
     switch typele
         case 'mag'
-            a_mags = a(:,mag_idx);
             % divide magnitudes into 3 categories
             %dep1 = 0.3*max(a_mags);
             %dep2 = 0.6*max(a_mags);
             %dep3 = max(a_mags);
             
-            depth_mask = a_mags>=dep1 & a_mags<dep2;
-            deplo1=plot(main_map_ax,a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part1');
+            depth_mask = mycat.Magnitude>=dep1 & mycat.Magnitude<dep2;
+            deplo1=plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6);
             
-            depth_mask = a_mags>=dep2 & a_mags< dep3;
-            deplo2=plot(main_map_ax, a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part2');
+            depth_mask = mycat.Magnitude>=dep2 & mycat.Magnitude< dep3;
+            deplo2=plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6*2);
             
-            depth_mask = a_mags>=dep3;
-            deplo3 =plot(main_map_ax, a(depth_mask,lon_idx), a(depth_mask,lat_idx),'ob','Tag','mapax_part3');
+            depth_mask = mycat.Magnitude>=dep3;
+            deplo3 =plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6*3)
             
             ls1 = sprintf('M > %3.1f ',dep1);
@@ -230,8 +211,8 @@ function mainmap_overview()
             set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
             
         case 'mad'
-            mindep = min(a(:,dep_idx));
-            maxdep = max(a(:,dep_idx));
+            mindep = min(mycat.Depth);
+            maxdep = max(mycat.Depth);
             c = jet;
             
             colormapName = colormapdialog();
@@ -245,26 +226,24 @@ function mainmap_overview()
             end % switch
             
             % sort by depth
-            [s,is] = sort(a(:,dep_idx));
-            a = a(is(:,lon_idx),:) ;
-            %%
+            mycat.sort('Depth');
+            
             % get all colors by depth at once
-            fac = 64 / max(a(:,dep_idx));
-            colrs = ceil(a(:, dep_idx) .* fac) + 1;
+            fac = 64 / max(mycat.Depth);
+            colrs = ceil(mycat.Depth .* fac) + 1;
             colrs = min(colrs, 63);
             colrs = max(colrs, 1);
             % set all sizes by mag
-            sm = mag2dotsize(a(:,mag_idx));
+            sm = mag2dotsize(mycat.Magnitude);
             
-            pl = scatter(main_map_ax, a(:,lon_idx), a(:,lat_idx), sm, colrs,'o','filled');
+            pl = scatter(main_map_ax, mycat.Longitude, mycat.Latitude, sm, colrs,'o','filled');
             pl.MarkerEdgeColor = 'flat';
             set(main_map_ax,'pos',[0.13 0.08 0.65 0.85]) %why?
             drawnow
             watchon;
             
             % resort by time
-            [s,is] = sort(a(:,3));
-            a = a(is(:,lon_idx),:) ;
+            mycat.sort('Date');
             
             % make a depth legend
             
@@ -288,11 +267,11 @@ function mainmap_overview()
              
             axes(h1);
             hold on
-            eventsizes = floor(min(a(:,mag_idx))) : ceil(max(a(:,mag_idx)));
+            eventsizes = floor(min(mycat.Magnitude)) : ceil(max(mycat.Magnitude));
             eqmarkersizes = mag2dotsize(eventsizes);
             
             for i = eqmarkersizes
-                pl = plot(h1, a(1,lon_idx),a(1,lat_idx),'.k');
+                pl = plot(h1, min(mycat.Longitude),min(mycat.Latitude),'.k');
                 i = max(i,1);
                 set(pl,'Markersize',i);
                 anzmag = anzmag+1;
@@ -306,6 +285,7 @@ function mainmap_overview()
             set(gcf,'color','w');
         case 'fau'
             error('not fully implemented');
+            %{
             % Script: symbol_faultingtype.m
             % Plot eqs according to faulting style using rake as discriminator
             % -180 <= Rake <= 180
@@ -318,7 +298,7 @@ function mainmap_overview()
             c = rakec;
             
             % Loop over events
-            for i = 1:length(a)
+            for i = 1:mycat.Count
                 pl =plot(main_map_ax,a(i,lon_idx), a(i,lat_idx), 'ow');
                 hold on
                 fac = 64/max(a(:,12));
@@ -365,10 +345,9 @@ function mainmap_overview()
             text(0.92,0.62,'right lat.','FontSize',8);
             axes(h1)
             
-            
+            %}
             %plot earthquakes according to depth
         case 'dep'
-            a_depths = a(:,dep_idx);
             
             % divide depths into 3 categories
             %dep1 = 0.3*max(a_depths);
@@ -376,18 +355,18 @@ function mainmap_overview()
             %dep3 = max(a_depths);
             
             % shallowest
-            dep_mask = a_depths <= dep1;
-            deplo1 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.b','Tag','mapax_part1');
+            dep_mask = mycat.Depth <= dep1;
+            deplo1 =plot(main_map_ax, mycat.Longitude(dep_mask),mycat.Latitude(dep_mask),'.b','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6,'Marker',ty1);
             
             % mid level
-            dep_mask = dep1<a_depths & a_depths<=dep2;
-            deplo2 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.g','Tag','mapax_part2');
+            dep_mask = dep1<mycat.Depth & mycat.Depth<=dep2;
+            deplo2 =plot(main_map_ax,  mycat.Longitude(dep_mask),mycat.Latitude(dep_mask),'.g','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
             
             % deep
-            dep_mask =  dep2<a_depths & a_depths<=dep3;
-            deplo3 =plot(main_map_ax, a(dep_mask,lon_idx),a(dep_mask,lat_idx),'.r','Tag','mapax_part3');
+            dep_mask =  dep2<mycat.Depth & mycat.Depth<=dep3;
+            deplo3 =plot(main_map_ax,  mycat.Longitude(dep_mask),mycat.Latitude(dep_mask),'.r','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
             ls1 = sprintf('Z ≤ %3.1f km',dep1);
@@ -398,23 +377,22 @@ function mainmap_overview()
             set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
             %plot earthquakes according time
         case 'tim'
-            a_times = a(:,decyr_idx);
             if isempty(tim1)
-                timedivisions = linspace(min(a_times),max(a_times),4);
+                timedivisions = linspace(min(mycat.Date),max(mycat.Date),4);
             else
                 timedivisions = [tim1 tim2 tim3 tim4];
             end
             
-            time_mask = timedivisions(2) <= a_times & a_times >= timedivisions(1);
-            deplo1 =plot(main_map_ax, a(time_mask,lon_idx), a(time_mask,lat_idx),'.b','Tag','mapax_part1');
+            time_mask = timedivisions(2) <= mycat.Date & mycat.Date >= timedivisions(1);
+            deplo1 =plot(main_map_ax, mycat.Longitude(time_mask), mycat.Latitude(time_mask),'.b','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6,'Marker',ty1)
             
-            time_mask = timedivisions(2) < a_times & a_times <= timedivisions(3);
-            deplo2 =plot(main_map_ax, a(time_mask,lon_idx), a(time_mask,lat_idx),'.g','Tag','mapax_part2');
+            time_mask = timedivisions(2) < mycat.Date & mycat.Date <= timedivisions(3);
+            deplo2 =plot(main_map_ax, mycat.Longitude(time_mask), mycat.Latitude(time_mask),'.g','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6,'Marker',ty2);
             
-            time_mask = timedivisions(3)< a_times & a_times <= timedivisions(4);
-            deplo3 =plot(main_map_ax, a(time_mask,lon_idx),a(time_mask,lat_idx),'.r','Tag','mapax_part3');
+            time_mask = timedivisions(3)< mycat.Date & mycat.Date <= timedivisions(4);
+            deplo3 =plot(main_map_ax, mycat.Longitude(time_mask), mycat.Latitude(time_mask),'.r','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
             ls1 = sprintf('%3.1f ≤ t ≤ %3.1f ',timedivisions(1),timedivisions(2));
@@ -437,7 +415,7 @@ function mainmap_overview()
     
     xlabel(main_map_ax,'Longitude [deg]','FontSize',fontsz.m)
     ylabel(main_map_ax,'Latitude [deg]','FontSize',fontsz.m)
-    strib = [  ' Map of '  name '; '  num2str(t0b,5) ' to ' num2str(teb,5) ];
+    strib = [  ' Map of '  mycat.Name '; '  char(t0b,'uuuu-MM-dd HH:mm:ss') ' to ' char(teb,'uuuu-MM-dd HH:mm:ss') ];
     title(main_map_ax,strib,'FontWeight','normal',...
         'FontSize',fontsz.m,'Color','k')
     
@@ -463,6 +441,8 @@ function mainmap_overview()
     set(map,'Visible','on');
     done
     welcome('Message','   ');
+    figure(findobj('Tag','seismicity_map'))
+    
     function create_main_plot()
     end
     
@@ -737,18 +717,19 @@ function mainmap_overview()
     end
     
     function create_histogram_menu(parent)
+        
         submenu = uimenu(parent,'Label','Histograms');
         
         uimenu(submenu,'Label','Magnitude',...
-            'Callback','global histo;hisgra(a(:,mag_idx),stt1);');
+            'Callback','global histo;hisgra(a.Magnitude,''Magnitude '');');
         uimenu(submenu,'Label','Depth',...
-            'Callback','global histo;hisgra(a(:,dep_idx),stt2);');
+            'Callback','global histo;hisgra(a.Depth,''Depth '');');
         uimenu(submenu,'Label','Time',...
-            'Callback','global histo;hisgra(a(:,decyr_idx),''Time '');');
+            'Callback','global histo;hisgra(a.Date,''Time '');');
         uimenu(submenu,'Label','Hr of the day',...
-            'Callback','global histo;hisgra(a(:,hr_idx),''Hr '');');
-        uimenu(submenu,'Label','Stress tensor quality',...
-            'Callback','global histo;hisgra(a(:,13),''Quality '');');
+            'Callback','global histo;hisgra(a.Date.Hour,''Hr '');');
+       % uimenu(submenu,'Label','Stress tensor quality',...
+       %    'Callback','global histo;hisgra(a(:,13),''Quality '');');
     end
     function create_decluster_menu(parent)
         submenu = uimenu(parent,'Label','Decluster the catalog');
@@ -802,16 +783,18 @@ end
 
 function plot_large_quakes()
     global minmag maex maix maey maiy maepi a 
+    mycat=ZmapCatalog(a);
     def = {'6'};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
     l = ni2{:};
     minmag = str2double(l);
 
     clear maex maix maey maiy
-    l = a(:,6) > minmag ;
-    maepi = a(l,:);
+    mycat.addFilter('Magnitude','>', minmag);
+    maepi = mycat.getCropped().ZmapArray(); %yes, this is the long way to do it. just testing
     mainmap_overview()
 end
+
 function choice = colormapdialog()
     d = dialog('Position',[300 300 250 150], 'Name', 'Choose Colormap');
     txt = uicontrol('Parent',d, 'Style','Popup','Position',[20 80 210 40],...

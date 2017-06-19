@@ -2,8 +2,9 @@ function hisgra(vari1,stri2)
     %histogram.m                               A.Allmann
     %plots histogram in cumulative number window
     %vari1 depends on input parameter
-    %
-    %Last modification 6/95
+    
+    %modified by Reyes 2017
+    
     global mess  ccum freq_field histo hisvar strii1 strii2 fontsz
     stri1='Histogram';
     strii1=stri1;
