@@ -27,8 +27,8 @@ report_this_filefun(mfilename('fullpath'));
     % find the extremes in the obs data to get est. fault length
     % take the 1% and 99% distance to avoid extreme eq locations
     %%
-    [latsort,lasi] = sort(newt2(:,2));
-    [longsort, losi] = sort(newt2(:,1));
+    [latsort,lasi] = sort(newt2.Latitude);
+    [longsort, losi] = sort(newt2.Longitude);
     mila = round(length(latsort)*.01);
     mala = round(length(latsort)*.99);
     milo = round(length(longsort)*.01);
@@ -38,10 +38,10 @@ report_this_filefun(mfilename('fullpath'));
     minlong = longsort(milo);
     maxlong = longsort(malo);
 
-    %[minlat,mila] = min(newt2(:,2));
-    %[maxlat,mala] = max(newt2(:,2));
-    %[minlong,milo] = min(newt2(:,1));
-    %[maxlong,malo] = max(newt2(:,1));
+    %[minlat,mila] = min(newt2.Latitude);
+    %[maxlat,mala] = max(newt2.Latitude);
+    %[minlong,milo] = min(newt2.Longitude);
+    %[maxlong,malo] = max(newt2.Longitude);
 
     latl = maxlat-minlat;
     longl = maxlong-minlong;

@@ -18,7 +18,7 @@ messtext=...
     'producing a reduced  subset which in turn '
     'the other routines operate on.            '];
 
-welcome('Input ruptured fault',messtext);
+zmap_message_center.set_message('Input ruptured fault',messtext);
 hold on
 x = []; y = []; n = 0;
 figure_w_normalized_uicontrolunits(map);
@@ -39,7 +39,7 @@ while but == 1 | but == 112
 end
 % define the fault
 fa = [x   y ];
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 think
 
 abo = abo2;

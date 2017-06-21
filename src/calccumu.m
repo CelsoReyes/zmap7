@@ -1,6 +1,6 @@
 report_this_filefun(mfilename('fullpath'));
 
-dx = uiInput1 ;
+dx = uiInput1 ; %TOFIX uiInput1 never exists/existed 
 dy = dx;
 gx = x0:dx:x1;
 gy = y0:dy:y1;
@@ -9,7 +9,7 @@ itotal = length(gx) * length(gy);
 
 [g1,g2] = meshgrid(gx,gy);
 t0b = a(1,3) * 365/par1  + a(1,4)* 30./par1 + a(1,5)/par1;
-n = length(a(:,1));
+n = a.Count;
 teb = a(n,3) * 365/par1  + a(n,4)* 30 /par1 + a(n,5)/par1;
 tdiff = round(teb - t0b);
 cumu = 0:1:tdiff+2;
@@ -27,7 +27,7 @@ for x =  x0:dx:x1
         allcount = allcount + 1.;
         percent = allcount/itotal * 100
         i2 = i2+1;
-        a(:,7) = sqrt((a(:,1)-x).^2 + (a(:,2)-y).^2) * 92.0;
+        a.Depth = sqrt((a.Longitude-x).^2 + (a.Latitude-y).^2) * 92.0;
         [s,is] = sort(a);
         new = a(is(:,7),:) ;
         newt = new(1:ni,:);

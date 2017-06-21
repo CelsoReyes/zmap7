@@ -6,12 +6,12 @@
 [filename,pathname] = uigetfile('*.mat','Load earthquake sequence');
 do = ['load ' pathname filename]; eval(do)
 
-lon = a(:,1); lat = a(:,2); mag = a(:,6); dep = a(:,7);
-[m_main, main] = max(a(:,6));
+lon = a.Longitude; lat = a.Latitude; mag = a.Magnitude; dep = a.Depth;
+[m_main, main] = max(a.Magnitude);
 if size(a,2) == 9
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
 else
-    date_matlab = datenum(floor(a(:,3)),a(:,4), a(:,5),a(:,8),a(:,9),a(:,10));
+    date_matlab = datenum(a.Date.Year,a.Date.Month, a.Date.Day,a.Date.Hour,a.Date.Minute,a(:,10));
 end
 
 date_main = date_matlab(main);
@@ -19,7 +19,7 @@ time_aftershock = date_matlab-date_main;
 
 l = time_aftershock(:) > 0;
 t_aftershock = time_aftershock(l);
-eqcatalogue = a(l,:);
+eqcatalogue = a.subset(l);
 
 ncum = (1:length(t_aftershock))';
 

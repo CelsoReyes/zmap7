@@ -63,7 +63,7 @@ inp8=uicontrol('Style','edit','Position',[.50 .15 .15 .05],...
 
 close_button=uicontrol('Style','Pushbutton',...
     'Position',[.65 .02 .20 .10 ],...
-    'Units','normalized','Callback','close;welcome('' '','' '');done','String','cancel');
+    'Units','normalized','Callback','close;zmap_message_center.set_info('' '','' '');done','String','cancel');
 
 go_button=uicontrol('Style','Pushbutton',...
     'Position',[.35 .02 .20 .10 ],...
@@ -184,6 +184,6 @@ set(gcf,'visible','on')
 watchoff
 str = [ 'Please Select a subset of earthquakes'
     ' and press Go                        '];
-welcome('Message',str);
+zmap_message_center.set_message('Message',str);
 
 

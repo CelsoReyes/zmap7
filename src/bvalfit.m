@@ -35,14 +35,14 @@ if ic == 0
     if isempty(newcat)
         newcat = a;
     end
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0
         mima = 0 ;
     end
-    t0b = min(newcat(:,3));
-    teb = max(newcat(:,3));
-    n = length(newcat(:,1));
+    t0b = min(newcat.Date);
+    teb = max(newcat.Date);
+    n = newcat.Count;
     tdiff = round(teb - t0b);
 
     % number of mag units
@@ -64,8 +64,8 @@ if ic == 0
     td12 = t2p(1) - t1p(1);
     td34 = t4p(1) - t3p(1);
 
-    l = newcat(:,3) > t1p(1) & newcat(:,3) < t2p(1) ;
-    backg =  newcat(l,:);
+    l = newcat.Date > t1p(1) & newcat.Date < t2p(1) ;
+    backg =  newcat.subset(l);
     [bval,xt2] = hist(backg(:,6),(mima:0.1:maxmag));
     bval = bval/td12;                      % normalization
     bvalsum = cumsum(bval);                        % N for M <=
@@ -73,8 +73,8 @@ if ic == 0
     xt3 = (maxmag:-0.1:mima);
     [cumux, xt] = hist(newcat(l,3),t1p(1):par1/365:t2p(1));
 
-    l = newcat(:,3) > t3p(1) & newcat(:,3) < t4p(1) ;
-    foreg = newcat(l,:);
+    l = newcat.Date > t3p(1) & newcat.Date < t4p(1) ;
+    foreg = newcat.subset(l);
     bval2 = histogram(foreg(:,6),(mima:0.1:maxmag));
     bval2 = bval2/td34;                     % normallization
     bvalsum2 = cumsum(bval2);

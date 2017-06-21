@@ -64,9 +64,9 @@ fclose(fid);
 
 % Convert the third column into time in decimals
 if length(a(1,:))== 7
-    a(:,3) = decyear(a(:,3:5));
+    a.Date = decyear(a(:,3:5));
 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-    a(:,3) = decyear(a(:,[3:5 8 9]));
+    a.Date = decyear(a(:,[3:5 8 9]));
 end
 
 % save the data

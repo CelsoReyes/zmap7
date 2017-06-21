@@ -31,7 +31,7 @@ function timeplot(nosort)
         par1=1;
     end
     
-    welcome(' ','Plotting cumulative number plot...');
+    zmap_message_center.set_info(' ','Plotting cumulative number plot...');
     
     if ~exist('nosort','var')
         nosort = 'of'  ;
@@ -126,9 +126,9 @@ function timeplot(nosort)
         
         options = uimenu('Label','ZTools');
         
-        uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2')
-        uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot;');
-        uimenu(options,'Label','Date Ticks in different format', 'Callback','newtimetick');
+        uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2;timeplot()')
+        uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot();');
+        uimenu(options,'Label','Date Ticks in different format', 'Callback','newtimetick','Enable','off');
         
         uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
         iwl = iwl2*365/par1;
@@ -201,9 +201,9 @@ function timeplot(nosort)
         op5C = uimenu(options,'Label','Histograms');
         
         uimenu(op5C,'Label','Magnitude',...
-            'Callback','global histo;hisgra(newt2.Magnitude,stt1);');
+            'Callback','global histo;hisgra(newt2.Magnitude,''Magnitude '');');
         uimenu(op5C,'Label','Depth',...
-            'Callback','global histo;hisgra(newt2.Depth,stt2);');
+            'Callback','global histo;hisgra(newt2.Depth,''Depth '');');
         uimenu(op5C,'Label','Time',...
             'Callback','global histo;hisgra(newt2.Date,''Time '');');
         uimenu(op5C,'Label','Hr of the day',...
@@ -216,8 +216,12 @@ function timeplot(nosort)
         
         %
         
-        uicontrol('Units','normal','Position',[.0 .0 .1 .05],'String','Reset', 'Callback','nosort = ''of'';newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot','tooltip','Resets the catalog to the original selection')
-        uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;mainmap_overview()','tooltip','Plots this subset in the map window')
+        uicontrol('Units','normal','Position',[.0 .0 .1 .05],'String','Reset',...
+             'Callback','nosort = ''of'';global newcat a newt2; newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot(nosort)',...
+            'tooltip','Resets the catalog to the original selection')
+        uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat',...
+            'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();mainmap_overview()',...
+            'tooltip','Plots this subset in the map window')
         
         ho2 = 'noho';
         
@@ -363,7 +367,7 @@ function timeplot(nosort)
     axes(ht);
     set(cum,'Visible','on');
     watchoff(cum)
-    welcome(' ',' ')
+    zmap_message_center.clear_message();
     done()
     
 end

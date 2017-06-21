@@ -104,7 +104,7 @@ set(gca,'box','on',...
     'bold','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2(:,6))) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
 ylabel('b-value')
 xlabel('Time [years]')
 title2(strib,'FontWeight','bold',...

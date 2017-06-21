@@ -1,4 +1,4 @@
-welcome('Message','Please set my_dir to your working directory!!!!');
+zmap_message_center.set_info('Message','Please set my_dir to your working directory!!!!');
 report_this_filefun(mfilename('fullpath'));
 
 % make the interface

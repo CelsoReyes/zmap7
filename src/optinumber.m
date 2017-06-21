@@ -73,7 +73,7 @@ done
 
 nu = [];
 for i = 1:length(bv2)
-    l = newt2(:,3) >= bv2(i,2) &  newt2(:,6) >= bv2(i,1);
+    l = newt2.Date >= bv2(i,2) &  newt2.Magnitude >= bv2(i,1);
     nu = [nu length(newt2(l,1))];
 end
 

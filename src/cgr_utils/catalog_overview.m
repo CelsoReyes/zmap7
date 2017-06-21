@@ -6,10 +6,8 @@ function a = catalog_overview(a)
     %  extrema in the catalog
     if ~isa(a,'ZmapCatalog')
         mycat = ZmapCatalog(a);
-        AS_CATALOG = true;
     else
         mycat = a;
-        AS_CATALOG = false;
     end
     report_this_filefun(mfilename('fullpath'));
     global fontsz term
@@ -40,9 +38,8 @@ function a = catalog_overview(a)
     fignum = create_dialog();
     
     watchoff
-    str = [ 'Please Select a subset of earthquakes'
-        ' and press Go                        '];
-    welcome('Message',str);
+    str = 'Please Select a subset of earthquakes and press "Go"';
+    zmap_message_center.set_message('Message',str);
     figure(fignum);
     
     uiwait(fignum)
@@ -65,8 +62,6 @@ function a = catalog_overview(a)
         
         % control display parameters
         label_x = 0.08;
-        box_x = 0.
-        box_w = .15;
         all_h = 0.17;
         
         
@@ -172,7 +167,7 @@ function a = catalog_overview(a)
             'FontWeight','bold',...
             'HorizontalAlignment','left',...
             'String','Magnitude:');
-            
+        
         
         uicontrol('Parent',filter_panel,...
             'Style','text',...
@@ -205,7 +200,7 @@ function a = catalog_overview(a)
             'FontWeight','bold',...
             'HorizontalAlignment','left',...
             'String','Depth:');
-            
+        
         
         uicontrol('Parent',filter_panel,...
             'Style','text',...
@@ -231,41 +226,27 @@ function a = catalog_overview(a)
         
         % buttons
         close_button=uicontrol('Style','Pushbutton',...
-            'Position',[.65 .02 .20 .10 ],...
-            'Units','normalized','Callback',@cancel,'String','cancel');
+            'Position',[.79 .02 .20 .10 ],...
+            'Units','normalized','Callback',@cancel_callback,'String','cancel');
         
         go_button=uicontrol('Style','Pushbutton',...
-            'Position',[.35 .02 .20 .10 ],...
+            'Position',[.58 .02 .20 .10 ],...
             'Units','normalized',...
-            'Callback',@go,...
+            'Callback',@go_callback,...
             'String','Go');
         
         info_button=uicontrol('Style','Pushbutton',...
-            'Position',[.05 .02 .20 .10 ],...
+            'Position',[.01 .02 .20 .10 ],...
             'Units','normalized',...
-            'Callback','zmaphelp(titstr,hlpStr)',...
+            'Callback',@info_callback, ...
             'String','Info');
         
-        titstr = 'General Parameters';
-        hlpStr = ...
-            ['This window allows you to select earthquakes '
-            'from a catalog. You can select a subset in   '
-            'time, magnitude and depth.                   '
-            '                                             '
-            'The top frame displays the number of         '
-            'earthquakes in the catalog - no selection is '
-            'possible.                                    '
-            '                                             '
-            'Two more parameters can be adjusted: The Bin '
-            'length in days that is used to sample the    '
-            'seismicity and the minimum magnitude of      '
-            'quakes displayed with a larger symbol in the '
-            'map.                                         '];
+        distro_button=uicontrol('Style','Pushbutton',...
+            'Position',[.22 .02 .35 .10 ],...
+            'Units','normalized',...
+            'Callback',{@distro_callback, a}, ...
+            'String','see distributions');
         
-        
-        if term ==1
-            whitebg(gcf,[1 1 1 ]);
-        end
         set(gcf,'visible','on')
     end
     
@@ -293,7 +274,7 @@ function a = catalog_overview(a)
         end
     end
     
-    function go(src, ~)
+    function go_callback(src, ~)
         %TODO remove all the side-effects.  store relevent data somewhere specific
         %filter the catalog, then return
         myparent=get(src,'Parent');
@@ -319,7 +300,7 @@ function a = catalog_overview(a)
         else
             mycat = ZmapCatalog(a);
         end
-
+        
         % following code originally from sele_sub.m
         %    Create  reduced (in time and magnitude) catalogues "a" and "newcat"
         %
@@ -352,8 +333,7 @@ function a = catalog_overview(a)
         %create catalog of "big events" if not merged with the original one:
         %
         mycat.clearFilter();
-        mycat.addFilter('Magnitude','>',minmag);
-        maepi = mycat.getCropped().ZmapArray();
+        maepi = mycat.subset(mycat.Magnitude > minmag);
         
         mycat.sort('Date');
         
@@ -363,14 +343,9 @@ function a = catalog_overview(a)
             ty2='.';
             ty3='.';
         end
-        if AS_CATALOG
-            a = mycat;
-        else
-            a = mycat.ZmapArray();
-        end
+        a = mycat;
         %assignin('base','a',mycat);
-        h=zmap_message_center();
-        h.update_catalog()%;
+        zmap_message_center.update_catalog();
         mainmap_overview();
         h = findobj('Tag','catalog_overview_dlg');
         close(h);
@@ -378,12 +353,52 @@ function a = catalog_overview(a)
     end
     
     
-    function cancel(src, ~)
-        % return without making changes to catalog
-        h=zmap_message_center();
-        h.update_catalog();
-        h = findobj('Tag','catalog_overview_dlg');
-        close(h);
-    end
     
 end
+
+function cancel_callback(~, ~)
+    % return without making changes to catalog
+    zmap_message_center.update_catalog();
+    %h=zmap_message_center();
+    %h.update_catalog();
+    h = findobj('Tag','catalog_overview_dlg');
+    close(h);
+end
+
+function info_callback(~,~)
+    
+    titstr = 'General Parameters';
+    hlpStr = ...
+        ['This window allows you to select earthquakes '
+        'from a catalog. You can select a subset in   '
+        'time, magnitude and depth.                   '
+        '                                             '
+        'The top frame displays the number of         '
+        'earthquakes in the catalog - no selection is '
+        'possible.                                    '
+        '                                             '
+        'Two more parameters can be adjusted: The Bin '
+        'length in days that is used to sample the    '
+        'seismicity and the minimum magnitude of      '
+        'quakes displayed with a larger symbol in the '
+        'map.                                         '];
+    zmaphelp(titstr,hlpStr)
+end
+
+function distro_callback(~,~,a)
+    f = findall(0,'Tag','catoverview_distribution');
+    if isempty(f)
+        f = figure('Name','Catalog time, mag, depth distributions','MenuBar','none','NumberTitle','off','Tag','catoverview_distribution');
+    end
+    t_p=subplot(3,1,1);
+    m_p=subplot(3,1,2);
+    d_p=subplot(3,1,3);
+    histogram(t_p,a.Date);
+    xlabel(t_p,'Time');
+    histogram(m_p,a.Magnitude);
+    xlabel(m_p,'Magnitude');
+    histogram(d_p,a.Depth);
+    xlabel(d_p,'Depth');
+    
+end
+    

@@ -8,14 +8,14 @@ messtext= ...
     ' second catalog filname. The data will be sorted'
     ' in time                                        '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 figure_w_normalized_uicontrolunits(mess)
 
 [file1,path1] = uigetfile([ '*.mat'],' Second Earthquake Datafile');
 aa = a;
 
 if length(path1) < 2
-    welcome(' ',' ');done
+    zmap_message_center.clear_message();;done
     return
 else
     lopa = [path1 file1];
@@ -23,7 +23,7 @@ else
     messtext=...
         ['Thank you! Now loading data'
         'Hang on...                 '];
-    welcome('  ',messtext)
+    zmap_message_center.set_message('  ',messtext)
 end
 try
     load(lopa)
@@ -31,12 +31,12 @@ catch ME
     error_handler(ME,'Error loading data! Are they in the right *.mat format?');
 end
 
-if max(a(:,3)) < 100;
-    a(:,3) = a(:,3)+1900;
+if max(a.Date) < 100;
+    a.Date = a.Date+1900;
     errdisp = ...
         ['The catalog dates appear to be 2 digit.    '
         'Action taken: added 1900 for Y2K compliance'];
-    welcome('Error!  Alert!',errdisp)
+    zmap_message_center.set_message('Error!  Alert!',errdisp)
     warndlg(errdisp)
 
 end
@@ -54,7 +54,7 @@ catch
 end
 
 % Sort the catalog in time
-[s,is] = sort(a(:,3));
+[s,is] = sort(a.Date);
 a = a(is(:,1),:) ;
 
 mainmap_overview()

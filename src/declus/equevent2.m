@@ -8,7 +8,7 @@ function equi=equevent
     global clust newcat  cluslength bg clustnumbers
 
     n=0;
-    eqmoment=10.^(newcat(:,6).*1.2);
+    eqmoment=10.^(newcat.Magnitude.*1.2);
 
     for j=clustnumbers
         if clust(30,j)==1

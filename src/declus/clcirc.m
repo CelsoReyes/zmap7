@@ -64,16 +64,16 @@ function clcirc(var1)
     %  and sort by distance
     %
     if var1==3
-        ll = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+        ll = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 
         l = ll < rad;
-        newt2 = a(l,:);
+        newt2 = a.subset(l);
         %
         % plot events on map as 'x':
 
         hold on
         if ~isempty(newt2)
-            plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','back');
+            plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
             set(gcf,'Pointer','arrow')
         else
             var1==6;
@@ -84,7 +84,7 @@ function clcirc(var1)
         %  and sort by distance   fixed ni
         %
     elseif var1==4
-        l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+        l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 
         [s,is] = sort(l);            % sort by distance
         new = a(is(:,1),:) ;
@@ -97,7 +97,7 @@ function clcirc(var1)
 
         hold on
         if ~isempty(newt2);
-            plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','back');
+            plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
         else
             var1==6;
         end

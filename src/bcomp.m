@@ -8,7 +8,7 @@ function  bcomp(newcat,d1,d2,d3,d4)
     %  Stefan Wiemer 1/95
     %
     think
-    %welcome('  ','Calculating b-value...')
+    %zmap_message_center.set_info('  ','Calculating b-value...')
     global cluscat mess bfig backcat fontsz
     global ttcat cb1 cb2 cb3
     report_this_filefun(mfilename('fullpath'));
@@ -47,8 +47,8 @@ function  bcomp(newcat,d1,d2,d3,d4)
     l = org(:,7) >= d1 & org(:,7) <= d2;
     newcat = org(l,:);
 
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -58,7 +58,7 @@ function  bcomp(newcat,d1,d2,d3,d4)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -76,7 +76,7 @@ function  bcomp(newcat,d1,d2,d3,d4)
     % Marks the point of maximum curvature
     %
     i = find(difb == max(difb));
-    i = length(xt3)-10*min(newcat(:,6))
+    i = length(xt3)-10*min(newcat.Magnitude)
 
     % Estimate the b-value
     %
@@ -128,8 +128,8 @@ function  bcomp(newcat,d1,d2,d3,d4)
     l = org(:,7) >= d3 & org(:,7) <= d4;
     newcat = org(l,:);
 
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -139,7 +139,7 @@ function  bcomp(newcat,d1,d2,d3,d4)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -157,7 +157,7 @@ function  bcomp(newcat,d1,d2,d3,d4)
     % Marks the point of maximum curvature
     %
     i = find(difb == max(difb));
-    i = length(xt3)-10*min(newcat(:,6))
+    i = length(xt3)-10*min(newcat.Magnitude)
 
     % Estimate the b-value
     %

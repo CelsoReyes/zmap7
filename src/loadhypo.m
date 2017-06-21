@@ -353,7 +353,7 @@ if in == 'readd'
     end
     % read the first three lines as a test...
     fid = fopen([path1 file1],'r');
-    welcome(' ','Loading data...hang on');
+    zmap_message_center.set_info(' ','Loading data...hang on');
     so = fscanf(fid,'%c',[nu+1, inf]);
     fclose(fid);
     so = so';
@@ -391,19 +391,19 @@ if in == 'readd'
     a = [lon+lonm lat+latm yr mo da mag dep hr mi];
 
     % eliminate zero events
-    l = a(:,4) == 0 | a(:,1) ==0 | a(:,2) ==0;
+    l = a.Date.Month == 0 | a.Longitude ==0 | a.Latitude ==0;
     a(l,:) = [];
 
     if length(a(1,:))== 7
-        a(:,3) = decyear(a(:,3:5));
+        a.Date = decyear(a(:,3:5));
     elseif length(a(1,:))==9       %if catalog includes hr and minutes
-        a(:,3) = decyear(a(:,[3:5 8 9]));
+        a.Date = decyear(a(:,[3:5 8 9]));
     end
 
     % Sort the catalog in time just to make sure ...
-    [s,is] = sort(a(:,3));
+    [s,is] = sort(a.Date);
     a = a(is(:,1),:) ;
-    minmag = max(a(:,6)) -0.2;       %  as a default to be changed by inpu
+    minmag = max(a.Magnitude) -0.2;       %  as a default to be changed by inpu
 
     %  ask for input parameters
     %

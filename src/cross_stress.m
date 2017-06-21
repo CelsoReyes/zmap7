@@ -238,12 +238,12 @@ if sel == 'ca'
             'point to select, "l" last point.      '
             '                                      '];
 
-        welcome('Select Polygon for a grid',messtext);
+        zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
         hold on
         ax = findobj('Tag','main_map_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
-        welcome('Message',' Thank you .... ')
+        zmap_message_center.set_info('Message',' Thank you .... ')
     end % of if bGridEntireArea
 
     % Plot outline if grid is interactively chosen or when gridding
@@ -285,7 +285,7 @@ if sel == 'ca'
 
     if save_grid == 1
         grid_save =...
-            [ 'welcome(''Saving Grid'',''  '');think;',...
+            [ 'zmap_message_center.set_info(''Saving Grid'',''  '');think;',...
             '[file1,path1] = uiputfile([my_dir fs ''eq_data'' fs ''*.mat''], ''Grid File Name?'') ;',...
             ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll dd dx ra ni Nmin fMaxRad tgl1 xsecx xsecy''];',...
             ' if length(file1) > 1, eval(gs),end , done']; eval(grid_save)
@@ -295,7 +295,7 @@ if sel == 'ca'
     % Total number of grid points (needed for waitbar)
     itotal = length(newgri(:,1));
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     % loop over  all points
@@ -328,7 +328,7 @@ if sel == 'ca'
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = newa(l3,:);      % new data per grid point (b) is sorted in distanc
+            b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = ra;
         else  % Take first ni points
             % Set minimum number to constant number of events

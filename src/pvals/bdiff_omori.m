@@ -18,8 +18,8 @@ think
 %report_this_filefun(mfilename('fullpath'));
 
 
-maxmag = ceil(10*max(newt2(:,6)))/10;
-mima = min(newt2(:,6));
+maxmag = ceil(10*max(newt2.Magnitude))/10;
+mima = min(newt2.Magnitude);
 if mima > 0 ; mima = 0 ; end
 
 % number of mag units
@@ -39,7 +39,7 @@ bvalsum3 = zeros(1,nmagu);
 %
 %%
 
-[bval,xt2] = hist(newt2(:,6),(mima:0.1:maxmag));
+[bval,xt2] = hist(newt2.Magnitude,(mima:0.1:maxmag));
 bvalsum = cumsum(bval); % N for M <=
 bval2 = bval(length(bval):-1:1);
 bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)

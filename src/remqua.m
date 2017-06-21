@@ -9,12 +9,12 @@ report_this_filefun(mfilename('fullpath'));
 % this line identifies all elemnets that fullfill
 % the selection criteria (e.g Hr. bewteen 11 and 13)
 
-l = newt2(:,8) >=11 & newt2(:,8) <=13;
+l = newt2.Date.Hour >=11 & newt2.Date.Hour <=13;
 
 % the day subcatalog contain all the elements
 % for which the selection is true (that is  l = 1)
 
-day = a(l,:);
+day = a.subset(l);
 
 % the nig catalog contain the ones for which it is not true
 

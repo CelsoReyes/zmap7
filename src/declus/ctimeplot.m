@@ -7,7 +7,7 @@
 %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
 %                       - newt2 if "Save as Newcat" button is pressed.
 %Last modification 8/95
-welcome(' ','Plotting cumulative number plot...');
+zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 think
 report_this_filefun(mfilename('fullpath'));
 
@@ -82,7 +82,7 @@ if newCumWindowFlag
     options = uimenu('Label','Tools ');
 
     uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','inpu2')
-    uimenu (options,'Label','Decluster the catalog', 'Callback','inpude;')
+    uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2*365/par1;
     uimenu(options,'Label','AS(t)function',...
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''ast'';newsta')
@@ -108,7 +108,7 @@ if newCumWindowFlag
     %uimenu(options,'Label',' Magnitude signature', 'Callback','dispma0')
     uimenu(options,'Label','Save cumulative number curve', 'Callback','eval(calSave)')
     calSave =...
-        [ 'welcome(''Save Data'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Data'',''  '');think;',...
         '[file1,path1] = uigetfile([hodi hodi fs ''out'' fs ''*.dat''], ''Earthquake Datafile'');',...
         'out=[xt;cumu2]'';',...
         ' sapa = [''save '' path1 file1 '' out  -ascii''];',...
@@ -144,8 +144,8 @@ if ho == 'hold'
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
-    n = length(newt2(:,1));
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    n = newt2.Count;
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
     cumu2 = cumsum(cumu);
 
 
@@ -175,16 +175,16 @@ if isempty(newcat), newcat =a; end
 
 % select big events ( > minmag)
 %
-l = newt2(:,6) > minmag;
+l = newt2.Magnitude > minmag;
 big = newt2(l,:);
 %big=[];
 %calculate start -end time of overall catalog
 %R
 statime=[];
 par2=par1;
-t0b = min(a(:,3));
-n = length(newt2(:,1));
-teb = max(a(:,3));
+t0b = min(a.Date);
+n = newt2.Count;
+teb = max(a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
     par1 = ceil(ttdif/300);
@@ -216,11 +216,11 @@ end
 %
 % calculate cumulative number versus time and bin it
 %
-n = length(newt2(:,1));
+n = newt2.Count;
 if par1 >=1
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
 else
-    [cumu, xt] = hist((newt2(:,3)-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((newt2.Date-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
 end
 cumu2=cumsum(cumu);
 par1
@@ -308,7 +308,7 @@ axes(ht);
 set(cum,'Visible','on');
 watchoff(cum)
 watchoff(map)
-welcome(' ',' ')
+zmap_message_center.clear_message();
 par1=par2;
 done
 

@@ -52,7 +52,7 @@ end
 % colormap(cc)
 
 % get longitude / latitude
-lon = a(:,1); lat = a(:,2);
+lon = a.Longitude; lat = a.Latitude;
 % define grid
 xmax = round(10*max(lon))/10+dx;
 xmin = round(10*min(lon))/10-dx;

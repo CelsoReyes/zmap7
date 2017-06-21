@@ -136,7 +136,7 @@ switch (distr)
 
         clear str5 msg3
 
-        ran1 = [E(:,1)+ nerrx, E(:,2) + nerry, rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1), (E(:,7) + nerrz)];
+        ran1 = [E.Longitude+ nerrx, E.Latitude + nerry, rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1), (E.Depth + nerrz)];
         %ran2 = find(ran1(:,7)>0.1);
         ran = ran1;%(ran2,:);
         ranp = ran(:,[1 2 7]);

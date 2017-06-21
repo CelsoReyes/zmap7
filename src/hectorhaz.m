@@ -15,21 +15,21 @@ dt = 0.1;
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');
 
-l1 = prctile2(a(:,2),33)
-l1 = prctile2(a(:,2),66)
+l1 = prctile2(a.Latitude,33)
+l1 = prctile2(a.Latitude,66)
 for y = 34.34:dy:34.8
-   l = a(:,2) >= y & a(:,2) < y+dy;
+   l = a.Latitude >= y & a.Latitude < y+dy;
    b1 = prctile2(a(l,1),25);
    b2 = prctile2(a(l,1),75);
 
-   newt2 = a(l,:);
+   newt2 = a.subset(l);
    calcp
    B = [B ; b1 y  b2 y];
 
    anz = [];
    for m2 = 4.75:0.5:7.25
       M2 = maepi(1,6) - m2;
-      t0 = (max(a(:,3)) - mati)*365;
+      t0 = (max(a.Date) - mati)*365;
       pla = 0; pla2 = 0;
 
       for t = t0:dt:t0+tpre
@@ -37,7 +37,7 @@ for y = 34.34:dy:34.8
          pla2 = pla2 + (10^(A + bv*(M2-0.5)) * (t + c)^(-p))  *dt;
       end
 
-      %fac = length(a(l,1))/length(a(:,1))
+      %fac = length(a(l,1))/a.Count
       anz = [anz ;  m2+0.25  (pla-pla2)/tpre];
 
   end

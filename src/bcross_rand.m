@@ -31,7 +31,7 @@ for ii = 1:1000
 
 
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -70,7 +70,7 @@ for ii = 1:1000
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = newa(l3,:);      % new data per grid point (b) is sorted in distanc
+            b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = ra;
         else
             % take first ni points

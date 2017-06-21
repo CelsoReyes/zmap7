@@ -102,5 +102,5 @@ hRate = pcolor(xvect,yvect,mRelchange)
 set(hRate, 'AlphaData', 0.6, 'AlphaDataMapping', 'none');
 shading(gca,'flat')
 % Plot seismicity
-ploeq=plot(a(:,1),a(:,2),'Markersize',3,'Marker','o','Linestyle','none','Color',[0 0 0],'Tag','eq_plot');
+ploeq=plot(a.Longitude,a.Latitude,'Markersize',3,'Marker','o','Linestyle','none','Color',[0 0 0],'Tag','eq_plot');
 hold off;

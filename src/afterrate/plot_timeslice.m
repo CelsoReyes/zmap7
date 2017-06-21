@@ -9,7 +9,7 @@ answer  = inputdlg(prompt,title,lines,def);
 t = str2double(answer{1});
 
 % get longitude / latitude
-lon = newt2(:,1); lat = newt2(:,2);
+lon = newt2.Longitude; lat = newt2.Latitude;
 % define grid
 xmax = round(10*max(lon))/10+dx;
 xmin = round(10*min(lon))/10-dx;

@@ -11,7 +11,7 @@ ni  = input('Please input  number of events ni:')
 axes(h6)
 [xa0,ya0]  = ginput(1);
 
-l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 
 [s,is] = sort(l);
 new = a(is(:,1),:) ;
@@ -25,7 +25,7 @@ newt = new(1:ni,:);
 [st,ist] = sort(newt);
 newt2 = newt(ist(:,3),:);
 
-newt2(:,9) = newt2(:,3) + newt2(:,4)/12 + newt2(:,5)/365;
+newt2(:,9) = newt2.Date + newt2.Date.Month/12 + newt2.Date.Day/365;
 [st,ist] = sort(newt2);
 newt3 = newt2(ist(:,9),:);
 

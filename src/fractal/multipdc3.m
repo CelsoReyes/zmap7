@@ -15,7 +15,7 @@ j = nchoosek(N,2);			% j= # of interevent distances calculated
 pairdist = zeros((N-1),N);
 depth = zeros((N-1),N);
 k = 1;
-%E(:,2)= (max(Da(:,2))+min(Da(:,2)))/2;
+%E.Latitude= (max(Da(:,2))+min(Da(:,2)))/2;
 
 
 %Ho_Wb = waitbar(0,'Calculating the fractal dimension D');
@@ -35,9 +35,9 @@ for i = 1:(N-1)
 
     E(i,:) = [];
 
-    lon2 = E(:,1);
-    lat2 = E(:,2);
-    depth2 = E(:,7);
+    lon2 = E.Longitude;
+    lat2 = E.Latitude;
+    depth2 = E.Depth;
 
     pairdist(1:(N-1),k) = distance(lat1,lon1,lat2,lon2);
     depth(1:(N-1),k) = depth1-depth2;

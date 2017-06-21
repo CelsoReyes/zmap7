@@ -22,6 +22,6 @@ set(gca,'Xlim',[min(vlat) max(vlat)]);
 
 hold on
 
-%pl = plot3(a(:,2),a(:,1),a(:,1)*0+6000,'or');
+%pl = plot3(a.Latitude,a.Longitude,a.Longitude*0+6000,'or');
 
 

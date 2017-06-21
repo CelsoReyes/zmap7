@@ -7,10 +7,14 @@
 % last update: 12.10.2004, jochen.woessner@sed.ethz.ch
 
 
-global main mainfault faults coastline vo
+global main mainfault faults coastline vo s1 s2 s3 s4
 global mapl hoc
-if exist('hoc') == 0 ; hoc = 'noho';end
-if isempty(hoc) == 1 ; hoc = 'noho';end
+if ~exist('hoc')
+    hoc = 'noho';
+end
+if isempty(hoc)
+    hoc = 'noho';
+end
 report_this_filefun(mfilename('fullpath'));
 %
 % Find out of figure already exists
@@ -47,13 +51,13 @@ if newMapLaWindowFlag
 end % if figure exist
 
 figure_w_normalized_uicontrolunits(mapl)
-if hoc == 'noho' |  newMapLaWindowFlag == 1
+if strcmp(hoc,'noho') ||  newMapLaWindowFlag == 1
     delete(gca)
     delete(gca)
     delete(gca)
     delete(gca)
     if isempty(coastline)
-        coastline = [a(1,1) a(1,2)]
+        coastline = [a.Longitude(1) a.Latitude(1)];
     end
     hold on
     % Added try-catch to prevent failure if no coastline is inside
@@ -78,15 +82,15 @@ if hoc == 'noho' |  newMapLaWindowFlag == 1
         lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
     end
 
-    if length(a(:,1)) > 5000;
-        %lc_event(a(:,2),a(:,1),'.k')
-        lc_event(a(a(:,7)<=dep1,2),a(a(:,7)<=dep1,1),'.b',1);
-        lc_event(a(a(:,7)<=dep2&a(:,7)>dep1,2),a(a(:,7)<=dep2&a(:,7)>dep1,1),'.g',1);
-        lc_event(a(a(:,7)<=dep3&a(:,7)>dep2,2),a(a(:,7)<=dep3&a(:,7)>dep2,1),'.r',1);
+    if a.Count > 5000;
+        %lc_event(a.Latitude,a.Longitude,'.k')
+        lc_event(a(a.Depth<=dep1,2),a(a.Depth<=dep1,1),'.b',1);
+        lc_event(a(a.Depth<=dep2&a.Depth>dep1,2),a(a.Depth<=dep2&a.Depth>dep1,1),'.g',1);
+        lc_event(a(a.Depth<=dep3&a.Depth>dep2,2),a(a.Depth<=dep3&a.Depth>dep2,1),'.r',1);
     else
-        lc_event(a(a(:,7)<=dep1,2),a(a(:,7)<=dep1,1),'+b');
-        lc_event(a(a(:,7)<=dep2&a(:,7)>dep1,2),a(a(:,7)<=dep2&a(:,7)>dep1,1),'og');
-        lc_event(a(a(:,7)<=dep3&a(:,7)>dep2,2),a(a(:,7)<=dep3&a(:,7)>dep2,1),'xr');
+        lc_event(a(a.Depth<=dep1,2),a(a.Depth<=dep1,1),'+b');
+        lc_event(a(a.Depth<=dep2&a.Depth>dep1,2),a(a.Depth<=dep2&a.Depth>dep1,1),'og');
+        lc_event(a(a.Depth<=dep3&a.Depth>dep2,2),a(a.Depth<=dep3&a.Depth>dep2,1),'xr');
 
     end
 
@@ -107,7 +111,7 @@ end % if hol
 %'FontSize',fontsz.m,'Color','k')
 labelList=['Select an option | Select Endpoints by Mouse | Coordinate Input | Multiple segments | Rotate X-Section'];
 labelPos = [.05 .00 .40 .06];
-tmp1=a(:,2)';tmp2=a(:,1)';
+tmp1=a.Latitude';tmp2=a.Longitude';
 
 uic = uicontrol(...
     'Style','popup',...
@@ -115,7 +119,7 @@ uic = uicontrol(...
     'Position',labelPos,...
     'String',labelList,...
     'Backgroundcolor',[0.9 0.9 0.9],...
-     'Callback','in2=get(uic,''Value'');if in2 ==2,[xsecx xsecy,  inde] = mysect(tmp1,tmp2,a(:,7),wi);nlammap2;elseif in2==3, posinpu; elseif in2==4; musec; elseif in2==5; rotateit; end');
+     'Callback','in2=get(uic,''Value'');if in2 ==2,[xsecx xsecy,  inde] = mysect(tmp1,tmp2,a.Depth,wi);nlammap2;elseif in2==3, posinpu; elseif in2==4; musec; elseif in2==5; rotateit; end');
 
 
 set_width = uicontrol('style','edit','value',wi,...

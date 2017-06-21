@@ -41,21 +41,21 @@ set(pl,'LineWidth',1,'MarkerSize',3,...
 
 
 plmag = 4.
-l = a(:,3) > t0+4/365 & a(:,3) < t0+34/365 & a(:,6) >= plmag & a(:,6) < 5;
+l = a.Date > t0+4/365 & a.Date < t0+34/365 & a.Magnitude >= plmag & a.Magnitude < 5;
 
 pl = plotm(a(l,2),a(l,1),'ow','Markersize',9);
 set(pl,'LineWidth',1,'MarkerSize',6,...
     'MarkerFaceColor',[1 1 1 ],'MarkerEdgeColor',[ 0 0 0  ])
 
 
-l = a(:,3) > t0+4/365 & a(:,3) < t0+34/365 & a(:,6) >= 5.0 ;
+l = a.Date > t0+4/365 & a.Date < t0+34/365 & a.Magnitude >= 5.0 ;
 pl = plotm(a(l,2),a(l,1),'^w','Markersize',9);
 set(pl,'LineWidth',1,'MarkerSize',10,...
     'MarkerFaceColor',[1 1 1 ],'MarkerEdgeColor',[ 0 0 0  ])
 
 
 
-% pl = plotm(a(:,2),a(:,1),'+k');
+% pl = plotm(a.Latitude,a.Longitude,'+k');
 %set(pl,'LineWidth',0.5,'MarkerSize',2,...
 %   'MarkerFaceColor','k','MarkerEdgeColor','k')
 pl = plotm(main(:,2),main(:,1),'hw');

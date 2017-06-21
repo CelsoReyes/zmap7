@@ -3,8 +3,8 @@ report_this_filefun(mfilename('fullpath'));
 tr2 = [];
 tr2u = [];
 tr2l = [];
-for m = max(newt2(:,6))-1:0.1:max(newt2(:,6))+2
-    %set si to 0 if not definded
+for m = max(newt2.Magnitude) -1 : 0.1 : max(newt2.Magnitude) + 2
+    %set si to 0 if not defined
     if isempty(si)
         si=0;
     end
@@ -17,7 +17,7 @@ for m = max(newt2(:,6))-1:0.1:max(newt2(:,6))+2
     tr2l = [tr2l ; trl  m];
 end
 
-pl =  plot(tr2(:,2),tr2(:,1),'k');
+pl =  plot(years(tr2(:,2)), years(tr2(:,1)),'k');
 set(pl,'LineWidth',2.0)
 hold on
 %pl =  plot(tr2u(:,2),tr2u(:,1),'b-.');

@@ -71,7 +71,7 @@ elseif ic == 2
 
     if isempty(newcat) newcat = a; end
     %iwl = round(iwln* 365/par1);    % window length in years is converted to bins
-    len = length(newcat(:,3));
+    len = newcat.Count;
     xt2  = [ ];
     meand = [ ];
     er = [];
@@ -86,7 +86,7 @@ elseif ic == 2
     for it=1:step:len-iwln
         ind = ind + 1;
         waitbar(it/(len-iwln));
-        %        l = newcat(:,3) >= it & newcat(:,3) < it+iwln;  % for time window
+        %        l = newcat.Date >= it & newcat.Date < it+iwln;  % for time window
         %        meand(ind) = mean(newcat(l,7));
         %        xt2(ind) = it + iwln/2.;
         meand(ind) = mean(newcat(it:it+iwln-1,7)) ;
@@ -173,7 +173,7 @@ elseif ic == 2
         set(pl,'LineWidth',2.0)
     end
 
-    axis([min(newcat(:,3)) max(newcat(:,3)+1) min(meand*1.1)  max(meand*0.9)])
+    axis([min(newcat.Date) max(newcat.Date+1) min(meand*1.1)  max(meand*0.9)])
     v = axis;
     xlabel('Time (years)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
     ylabel('Mean Depth (km)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
@@ -189,7 +189,7 @@ elseif ic == 2
 
     rect = [0.15,  0.45, 0.65, 0.30];
     axes('position',rect)
-    pl =plot(newcat(:,3),-newcat(:,7),'ob')
+    pl =plot(newcat.Date,-newcat.Depth,'ob')
     set(pl,'MarkerSize',3')
     set(pl,'LineWidth',1.0)
     hold on
@@ -197,7 +197,7 @@ elseif ic == 2
         pl =  plot(maepi(:,3),-maepi(:,7),'xm');
         set(pl,'LineWidth',2.0)
     end
-    axis([ v(1) v(2) -max(newcat(:,7))  -min(newcat(:,7))])
+    axis([ v(1) v(2) -max(newcat.Depth)  -min(newcat.Depth)])
     %xlabel('Time (years)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
     ylabel('Depth (km)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
     set(gca,'XTicklabels',[])

@@ -169,7 +169,7 @@ switch(ac3)
     case 'eva4'
 
         in3 =get(hndl4,'Value');
-        if in3 == 1 ; ploe = plot3(a(:,2),a(:,1),-a(:,7),'.w','MarkerSize',1) ; end
+        if in3 == 1 ; ploe = plot3(a.Latitude,a.Longitude,-a.Depth,'.w','MarkerSize',1) ; end
         if in3 == 2 ; delete(ploe);  end
 
     case 'eva5'

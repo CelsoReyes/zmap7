@@ -43,10 +43,10 @@ report_this_filefun(mfilename('fullpath'));
 %
 % %set(set_ni3,'String',num2str(ni));
 % % find min and Maximum axes points
-% s1 = max(a(:,1));
-% s2 = min(a(:,1));
-% s3 = max(a(:,2));
-% s4 = min(a(:,2));
+% s1 = max(a.Longitude);
+% s2 = min(a.Longitude);
+% s3 = max(a.Latitude);
+% s4 = min(a.Latitude);
 % %ni = 100;
 % orient landscape
 % set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
@@ -57,7 +57,7 @@ report_this_filefun(mfilename('fullpath'));
 % % find start and end time of catalogue "a"
 % %
 %   t0b = a(1,3);
-%   n = length(a(:,1));
+%   n = a.Count;
 %   teb = a(n,3) ;
 %   tdiff =round(teb - t0b)*365/par1;
 %
@@ -72,11 +72,11 @@ report_this_filefun(mfilename('fullpath'));
 % dep1 = -1;
 % dep2 = 1;
 % dep3 = 4;
-%  deplo1 =plot(a(a(:,6)<=dep1,1),a(a(:,6)<=dep1,2),'.b');
+%  deplo1 =plot(a(a.Magnitude<=dep1,1),a(a.Magnitude<=dep1,2),'.b');
 %  set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-%  deplo2 =plot(a(a(:,6)<=dep2&a(:,6)>dep1,1),a(a(:,6)<=dep2&a(:,6)>dep1,2),'.g');
+%  deplo2 =plot(a(a.Magnitude<=dep2&a.Magnitude>dep1,1),a(a.Magnitude<=dep2&a.Magnitude>dep1,2),'.g');
 %  set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
-%  deplo3 =plot(a(a(:,6)<=dep3&a(:,6)>dep2,1),a(a(:,6)<=dep3&a(:,6)>dep2,2),'.r');
+%  deplo3 =plot(a(a.Magnitude<=dep3&a.Magnitude>dep2,1),a(a.Magnitude<=dep3&a.Magnitude>dep2,2),'.r');
 %  set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
 %  ls1 = sprintf('M < %3.1f ',dep1);
 %  ls2 = sprintf('M < %3.1f ',dep2);
@@ -104,11 +104,11 @@ report_this_filefun(mfilename('fullpath'));
 % axes('position',rect)
 % h2 = gca;
 %
-% hs = stem(a(:,3),a(:,6));
+% hs = stem(a.Date,a.Magnitude);
 % set(hs,'MarkerSize',4)
 % hold on
 %
-% set(gca,'XLIM',[min(a(:,3)) max(a(:,3))+0.01])
+% set(gca,'XLIM',[min(a.Date) max(a.Date)+0.01])
 % xl = get(gca,'Xlim');
 %
 % xlabel('Time in Years ]','FontWeight','normal','FontSize',fontsz.m)
@@ -129,7 +129,7 @@ report_this_filefun(mfilename('fullpath'));
 % axes('position',rect)
 % h3 = gca;
 %
-% [n,x] =histogram(a(:,3),(min(a(:,3)):par1:max(a(:,3))));
+% [n,x] =histogram(a.Date,(min(a.Date):par1:max(a.Date)));
 % fillbar(x,n,'k')
 % ylabel('# per day','FontWeight','normal','FontSize',fontsz.m)
 %
@@ -147,12 +147,12 @@ report_this_filefun(mfilename('fullpath'));
 % axes('position',rect)
 % h4 = gca;
 %
-% deplo1 =plot(a(a(:,7)<=dep1,3),-a(a(:,7)<=dep1,7),'.b');
+% deplo1 =plot(a(a.Depth<=dep1,3),-a(a.Depth<=dep1,7),'.b');
 %  set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
 %  hold on
-%  deplo2 =plot(a(a(:,7)<=dep2&a(:,7)>dep1,3),-a(a(:,7)<=dep2&a(:,7)>dep1,7),'.g') ;
+%  deplo2 =plot(a(a.Depth<=dep2&a.Depth>dep1,3),-a(a.Depth<=dep2&a.Depth>dep1,7),'.g') ;
 %  set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
-%  deplo3 =plot(a(a(:,7)<=dep3&a(:,7)>dep2,3),-a(a(:,7)<=dep3&a(:,7)>dep2,7),'.r') ;
+%  deplo3 =plot(a(a.Depth<=dep3&a.Depth>dep2,3),-a(a.Depth<=dep3&a.Depth>dep2,7),'.r') ;
 %  set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
 %
 % hold on
@@ -175,7 +175,7 @@ report_this_filefun(mfilename('fullpath'));
 % hold on
 % h3 = gca;
 %
-% [n,x] =histogram(a(:,3),(min(a(:,3)):par1:max(a(:,3))));
+% [n,x] =histogram(a.Date,(min(a.Date):par1:max(a.Date)));
 % fillbar(x,cumsum(n),'k')
 % ylabel('Cumulative # ','FontWeight','normal','FontSize',fontsz.m)
 % set(gca,'Xlim',xl)
@@ -210,7 +210,7 @@ watchoff
 % rect=[0 0 1 1];
 % h2 =axes('position',rect);
 % set(h2,'visible','off');
-%   l = length(a(:,1));
+%   l = a.Count;
 %   txt1=text(.15, .85,[' ' num2str(floor(a(1,3))) '/'  num2str(a(1,4))  '/' ,...
 %       num2str(a(1,5)) ' - '  num2str(floor(a(l,3))) '/'  num2str(a(l,4))  '/'  num2str(a(l,5)) ]);
 %   set(txt1,'FontWeight','bold','FontSize',14);

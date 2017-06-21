@@ -95,7 +95,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
         mData = [vN' vNonCFMD'];
         vSel = (mData(:,2) >= fMc);
         mDataTest = mData(~vSel,:);
-        mDataTmp = mData(vSel,:);
+        mDataTmp = mData.subset(vSel);
         % Check for zeros in observed data
         vSelCheck = (mDataTest(:,3) == 0);
         mDataTest = mDataTest(~vSelCheck,:);

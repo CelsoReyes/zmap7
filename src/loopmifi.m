@@ -27,7 +27,7 @@ for az= 35:2:55
     fprintf(fid,'%6.2f\n',az);
     fprintf(fid,'%6.2f\n',phi);
     fprintf(fid,'%3.2f\n',R);
-    fprintf(fid,'%6.2f\n',length(a(:,6)));
+    fprintf(fid,'%6.2f\n',a.Count);
 
     fclose(fid);
     comm = ['!/bin/rm ' outfi];

@@ -187,7 +187,7 @@ hold on
 pco1 = pcolor(gx,gy,re3);
 
 axis([ min(gx) max(gx) min(gy) max(gy)])
-set(gca,'dataaspect',[1 cos(pi/180*nanmean(a(:,2))) 1]);
+set(gca,'dataaspect',[1 cos(pi/180*nanmean(a.Latitude)) 1]);
 hold on
 if sha == 'fl'
     shading flat
@@ -215,7 +215,7 @@ ylabel('Latitude [deg]','FontWeight','normal','FontSize',fontsz.s)
 %
 hold on
 overlay_
-ploeq = plot(a(:,1),a(:,2),'k.');
+ploeq = plot(a.Longitude,a.Latitude,'k.');
 set(ploeq,'Tag','eq_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 

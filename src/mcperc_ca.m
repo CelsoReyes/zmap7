@@ -11,7 +11,7 @@ im = magco0 - 0.7;
 
 while rati < 0.95;
     im = im + 0.1;
-    l = newt2(:,6) >= im;
+    l = newt2.Magnitude >= im;
     nu = length(newt2(l,6));
     [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(l,:),2,2);
     nc = 10.^(av - bv*(im+0.05)) ;nu   , nc

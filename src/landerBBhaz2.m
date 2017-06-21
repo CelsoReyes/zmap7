@@ -43,32 +43,32 @@ timeplot
 
 d = [];
 
-l = a(:,6) > 7;
-maepi = a(l,:);
+l = a.Magnitude > 7;
+maepi = a.subset(l);
 
 mati = maepi(1,3);
 da = []; anz = [];
 B = [];
-t0 = (max(a(:,3)) - mati)*365;
+t0 = (max(a.Date) - mati)*365;
 tlen = t0;
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');
 
 a0 = a;
-l = a(:,1) > -116.6912; % the landers side.
-a = a(l,:);
+l = a.Longitude > -116.6912; % the landers side.
+a = a.subset(l);
 
 % find the boxes starting at 33:85, stepping in dy
 
 for y = 33.85:dy:34.6
-    l = a(:,2) >= y & a(:,2) < y+dy;
+    l = a.Latitude >= y & a.Latitude < y+dy;
 
     % defined as the 10 amd 90 percentile of the seismicity
 
     b1 = prctile2(a(l,1),10);
     b2 = prctile2(a(l,1),90);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     figure_w_normalized_uicontrolunits(map)
 
     try
@@ -77,7 +77,7 @@ for y = 33.85:dy:34.6
         error_handler(ME, @do_nothing);
     end
     hold on
-    pl = plot(newt2(:,1),newt2(:,2),'xk');drawnow
+    pl = plot(newt2.Longitude,newt2.Latitude,'xk');drawnow
     timeplot
     % compute the p , a, b, values
     calcp
@@ -119,21 +119,21 @@ end
 
 
 a = a0; % reset the catalog
-l = a(:,1) <= -116.6912; % the the BB side.
-a = a(l,:);
-l = a(:,6) > 6; % find the mmainshock for Big bear
-maepi = a(l,:);
+l = a.Longitude <= -116.6912; % the the BB side.
+a = a.subset(l);
+l = a.Magnitude > 6; % find the mmainshock for Big bear
+maepi = a.subset(l);
 mati = a(l,3);
-t0 = (max(a(:,3)) - mati)*365;
+t0 = (max(a.Date) - mati)*365;
 tlen = t0;
 
 % loop for Big bear
 for y = 34.05:dy:34.25
-    l = a(:,2) >= y & a(:,2) < y+dy;
+    l = a.Latitude >= y & a.Latitude < y+dy;
     b1 = prctile2(a(l,1),25);
     b2 = prctile2(a(l,1),85);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     figure_w_normalized_uicontrolunits(map)
 
     try
@@ -142,7 +142,7 @@ for y = 34.05:dy:34.25
         error_handler(ME, @do_nothing);
     end
     hold on
-    pl = plot(newt2(:,1),newt2(:,2),'xk');
+    pl = plot(newt2.Longitude,newt2.Latitude,'xk');
     drawnow
     timeplot
     calcp

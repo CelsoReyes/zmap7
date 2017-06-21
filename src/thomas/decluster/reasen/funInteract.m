@@ -7,8 +7,8 @@ function [rmain,r1]= funInteract(var1,newcat,rfact,xmeff)
 %global newcat rfact xmeff
 
 if var1==1
-rmain = 0.011*10.^(0.4*newcat(:,6)); %interaction zone for mainshock
-%rmain = 10.^(-2.44+(.59*newcat(:,6)));
+rmain = 0.011*10.^(0.4*newcat.Magnitude); %interaction zone for mainshock
+%rmain = 10.^(-2.44+(.59*newcat.Magnitude));
 
 %tm1=find(rmain==0.011);             %these eqs got no magnitude in the catalog
 %tm2= 0.011*10^(0.4*xmeff);          %assume that for eqs with magnitude 0

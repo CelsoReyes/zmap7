@@ -19,7 +19,7 @@ sir2 = [];
 %prompt = {'Minimum magnitude','Min. time after mainshock (in days)','Enter a negative value if you wish a fix c'};
 %title = 'You can change the following parameters:';
 %lines = 1;
-valm1 = min(newt2(:,6));
+valm1 = min(newt2.Magnitude);
 valtm1 = 0;
 valeg2 = 0;
 %def = {num2str(valm1), num2str(valtm1) num2str(valeg2)};
@@ -36,7 +36,7 @@ if (valeg2 < 0)
     CO = str2double(answer{1});
 end
 
-paramc1 = (newt2(:,6) >= valm1);
+paramc1 = (newt2.Magnitude >= valm1);
 pcat = newt2(paramc1,:);
 
 lt = pcat(:,6) >= valtm1;

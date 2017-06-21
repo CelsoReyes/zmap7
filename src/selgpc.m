@@ -116,10 +116,10 @@ if sel == 'ca'
         'point to select, "l" last point.      '
         '                                      '];
 
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
     ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     plos2 = plot(x,y,'b-','era','xor');        % plot outline
     sum3 = 0.;
@@ -155,7 +155,7 @@ if sel == 'ca'
 
     itotal = length(newgri(:,1));
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;

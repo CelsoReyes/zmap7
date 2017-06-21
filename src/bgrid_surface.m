@@ -129,13 +129,13 @@ end   % if sel == 'in'
 if sel == 'ca'
 
     itotal = length(slabc(:,1));
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     bvg = zeros(itotal,12)*nan;
 
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     Rconst = R;
@@ -161,13 +161,13 @@ if sel == 'ca'
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + ((a(:,7) - z)).^2 ) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + ((a.Depth - z)).^2 ) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= R;
-            b = a(l3,:);      % new data per grid point (b) is sorted in distanc
+            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = length(b(:,1));
         else
             % take first ni points

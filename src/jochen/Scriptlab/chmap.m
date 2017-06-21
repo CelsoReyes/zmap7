@@ -8,16 +8,16 @@ selgp
 mRes = [];
 
 % Initialize
-fMinTime = min(a(:,3));
-fMaxTime = max(a(:,3));
+fMinTime = min(a.Date);
+fMaxTime = max(a.Date);
 fTimePeriod = fMaxTime-fMinTime;
 
 % Minimum bin
-fMinBin = roundn(min(a(:,6)),-1);
-fMaxBin = roundn(max(a(:,6)),-1);
+fMinBin = roundn(min(a.Magnitude),-1);
+fMaxBin = roundn(max(a.Magnitude),-1);
 
 % Seismicity of catalog normalized to time period
-nNumevents = max(length(a(:,1)));
+nNumevents = max(a.Count);
 fNum = nNumevents/fTimePeriod;
 
 % Starttime
@@ -31,8 +31,8 @@ vFigpos = [300 400 600 500];
 figure_w_normalized_uicontrolunits('visible','off','tag','time','Position', vFigpos);
 
 while fTime < fMaxTime-2*fTimeWindow
-    vSel = (a(:,3) >= fTime & a(:,3) < fTime+2*fTimeWindow);
-    mCatalog = a(vSel,:);
+    vSel = (a.Date >= fTime & a.Date < fTime+2*fTimeWindow);
+    mCatalog = a.subset(vSel);
 
     for i= 1:length(newgri(:,1))
         i/length(newgri(:,1));

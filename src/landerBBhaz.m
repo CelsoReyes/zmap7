@@ -8,29 +8,29 @@ newt0 = newt2;
 tpre = 7;
 d = [];
 
-l = a(:,6) > 7;
-maepi = a(l,:);
+l = a.Magnitude > 7;
+maepi = a.subset(l);
 
 mati = maepi(1,3);
 M = 7.3 - 5;
 da = []; anz = [];
 B = [];
-t0 = (max(a(:,3)) - mati)*365;
+t0 = (max(a.Date) - mati)*365;
 tlen = t0;
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');
 
 a0 = a;
-l = a(:,1) > -116.6912; % the landers side.
-a = a(l,:);
+l = a.Longitude > -116.6912; % the landers side.
+a = a.subset(l);
 
 
 for y = 33.85:dy:34.6
-    l = a(:,2) >= y & a(:,2) < y+dy;
+    l = a.Latitude >= y & a.Latitude < y+dy;
     b1 = prctile2(a(l,1),10);
     b2 = prctile2(a(l,1),90);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     figure_w_normalized_uicontrolunits(map)
     try
         delete(pl);
@@ -39,7 +39,7 @@ for y = 33.85:dy:34.6
     end
 
     hold on
-    pl = plot(newt2(:,1),newt2(:,2),'xk');drawnow
+    pl = plot(newt2.Longitude,newt2.Latitude,'xk');drawnow
 
     calcp
     da = [da ; y+dy/2 P];
@@ -78,22 +78,22 @@ end
 
 
 a = a0;
-l = a(:,1) <= -116.6912; % the the BB side.
-a = a(l,:);
-l = a(:,6) > 6;
-maepi = a(l,:);
+l = a.Longitude <= -116.6912; % the the BB side.
+a = a.subset(l);
+l = a.Magnitude > 6;
+maepi = a.subset(l);
 mati = a(l,3);
-t0 = (max(a(:,3)) - mati)*365;
+t0 = (max(a.Date) - mati)*365;
 tlen = t0;
 
 
 
 for y = 34.10:dy:34.25
-    l = a(:,2) >= y & a(:,2) < y+dy;
+    l = a.Latitude >= y & a.Latitude < y+dy;
     b1 = prctile2(a(l,1),10);
     b2 = prctile2(a(l,1),90);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     figure_w_normalized_uicontrolunits(map)
 
     try
@@ -103,7 +103,7 @@ for y = 34.10:dy:34.25
     end
 
     hold on
-    pl = plot(newt2(:,1),newt2(:,2),'xk');
+    pl = plot(newt2.Longitude,newt2.Latitude,'xk');
     drawnow
 
     calcp

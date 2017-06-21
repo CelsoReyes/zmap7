@@ -56,16 +56,16 @@ aa = a;
 
 
 l = aa(:,6) > 1.5 & aa(:,3) < 1992.2;
-a = aa(l,:);
+a = aa.subset(l);
 for i = 1:length(a)
 
     dep = interp2(lon,lat,tmap,a(i,1),a(i,2));
 
     pl =plot3m(a(i,2),a(i,1),dep+55,'or');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 9/max(a(:,6));
+    facm = 9/max(a.Magnitude);
     sm = aa(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -74,16 +74,16 @@ for i = 1:length(a)
 end
 
 l = aa(:,6) > 1.5 & aa(:,3) > 1992.55;
-a = aa(l,:);
+a = aa.subset(l);
 for i = 1:length(a)
 
     dep = interp2(lon,lat,tmap,a(i,1),a(i,2));
 
     pl =plot3m(a(i,2),a(i,1),dep+55,'^b');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 9/max(a(:,6));
+    facm = 9/max(a.Magnitude);
     sm = aa(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -98,9 +98,9 @@ for i = 1:length(a)
 
     pl =plot3m(a(i,2),a(i,1),dep+55,'ok');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -116,9 +116,9 @@ for i = 1:length(a)
     pl =plot3m(a(i,2),a(i,1),dep+55,'sk');
     ;
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -133,9 +133,9 @@ for i = 1:length(a)
     pl =plot3m(a(i,2),a(i,1),dep+55,'sk');
 
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 

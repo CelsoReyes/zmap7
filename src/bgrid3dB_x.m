@@ -14,7 +14,7 @@ if sel == 'i1'
 
     % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
     % D = [x,y,z ]
-    Da = [eq1(1,:)' eq1(2,:)' a(:,3) a(:,4) a(:,5) a(:,6) a(:,7)];
+    Da = [eq1(1,:)' eq1(2,:)' a.Date a.Date.Month a.Date.Day a.Magnitude a.Depth];
 
     % make the interface
 
@@ -158,14 +158,14 @@ if sel == 'ca'
 
     gz = zvect;
     itotal = length(t3);
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t5= zeros(length(gx),length(gy),length(gz))*nan;
 
 
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));

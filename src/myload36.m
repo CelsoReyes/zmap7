@@ -64,9 +64,9 @@ fclose(fid);
 
 % Convert the third column into time in decimals
 if length(a(1,:))== 7
-    a(:,3) = decyear(a(:,3:5));
+    a.Date = decyear(a(:,3:5));
 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-    a(:,3) = decyear(a(:,[3:5 8 9]));
+    a.Date = decyear(a(:,[3:5 8 9]));
 end
 
 % save the data
@@ -74,15 +74,15 @@ end
 sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 
-dep1 = 0.3*(max(a(:,7))-min(a(:,7)))+min(a(:,7));
-dep2 = 0.6*(max(a(:,7))-min(a(:,7)))+min(a(:,7));
-dep3 = max(a(:,7));
+dep1 = 0.3*(max(a.Depth)-min(a.Depth))+min(a.Depth);
+dep2 = 0.6*(max(a.Depth)-min(a.Depth))+min(a.Depth);
+dep3 = max(a.Depth);
 
 stri1 = [file1];
 minma2 = minma;
 maxma2 = maxma;
-minde = min(a(:,7));
-maxde = max(a(:,7));
+minde = min(a.Depth);
+maxde = max(a.Depth);
 rad = 50.;
 ic = 0;
 ya0 = 0.;

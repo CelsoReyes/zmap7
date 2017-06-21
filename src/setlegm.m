@@ -13,8 +13,8 @@ if typele =='mag'
 
     % creates a dialog box to input some parameters
     %
-    dep3 = max(a(:,6));
-    dep1 = min(a(:,6));
+    dep3 = max(a.Magnitude);
+    dep1 = min(a.Magnitude);
     dep2 = (dep1+dep3)*2/3;
     dep1 = (dep1+dep3)*1/3;
 
@@ -40,14 +40,15 @@ end
 if typele == 'dep'
     % creates a dialog box to input some parameters
     %
-    dep_idx = 7;
     % divide depths into 3 categories
-    dep1 = 0.3*max(a(:,dep_idx));
-    dep2 = 0.6*max(a(:,dep_idx));
-    dep3 = max(a(:,dep_idx));
+    dep1 = 0.3*max(a.Depth);
+    dep2 = 0.6*max(a.Depth);
+    dep3 = max(a.Depth);
 
     dlg_title='Legend Depth Breaks';
-    prompt={'First depth division (shallowest, km):','Second depth division (km):','Third magnitude division (deepest, km):'};
+    prompt={'First depth division (shallowest, km):',...
+        'Second depth division (km):',...
+        'Third magnitude division (deepest, km):'};
     defaultans = {num2str(dep1), num2str(dep2), num2str(dep3)};
     answer = inputdlg(prompt, dlg_title, 1, defaultans);
     if ~isempty(answer)

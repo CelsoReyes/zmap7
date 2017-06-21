@@ -131,7 +131,7 @@ function sinclus(var1)
         mark1 =    plot(x,y,'ko','era','back');
         set(mark1,'MarkerSize',7,'LineWidth',1.5)
         a=equi;
-        l=sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l=sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);            % sort by distance
         new = a(is(1),:) ;
         mark2= plot(new(1,1),new(1,2),'xr','era','back');

@@ -5,8 +5,8 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
 
     newcat = b;
     dm1 = 0.1;
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -16,7 +16,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:dm1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:dm1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-dm1:mima);
@@ -26,7 +26,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     %
     i = find(difb == max(difb));
     i = max(i);
-    %i = length(xt3)-10*min(newcat(:,6));
+    %i = length(xt3)-10*min(newcat.Magnitude);
     i2 = 1;
     magco = max(xt3(i));
 

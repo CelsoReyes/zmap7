@@ -50,7 +50,7 @@ hold on
 if ~isempty(mainfault)
     lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
 end
-lc_event(a(:,2),a(:,1),'.k')
+lc_event(a.Latitude,a.Longitude,'.k')
 if ~isempty(maepi)
     lc_event(maepi(:,2),maepi(:,1),'xm')
 end
@@ -72,11 +72,11 @@ messtext= ...
     ' crossection                                    '
     ];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 if term == 1 ; whitebg([0 0 0 ]);end
 
 
-[xsecx xsecy,  inde] = mysect(a(:,2)',a(:,1)',a(:,7),wi);
+[xsecx xsecy,  inde] = mysect(a.Latitude',a.Longitude',a.Depth,wi);
 
 %if ~isempty(maepi)
 % [maex, maey] = lc_xsec2(maepi(:,2)',maepi(:,1)',maepi(:,7),wi,leng,lat1,lon1,lat2,lon2);
@@ -114,7 +114,7 @@ if term == 1 ; whitebg([0 0 0 ]);end
 
 % create the selected catalog
 %
-newa  = a(inde,:);
+newa  = a.subset(inde);
 newa = [newa xsecx'];
 % call the m script that produces a grid
 sel = 'in';

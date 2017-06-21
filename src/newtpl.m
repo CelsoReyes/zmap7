@@ -9,7 +9,7 @@
 %Last modification 11/95
 
 global tmvar                      %for P-Value
-welcome(' ','Plotting cumulative number plot...');
+zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 
 if ~exist('xt','var')
 xt=[]; % time series that will be used
@@ -91,7 +91,7 @@ if newCumWindowFlag
 
     uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2')
     uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot;');
-    uimenu (options,'Label','Decluster the catalog', 'Callback','inpude;')
+    uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2*365/par1;
     uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2 = ''hold''; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
@@ -132,9 +132,9 @@ if newCumWindowFlag
          'Callback','myprint')
 
 
-    uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; timeplot')
+    uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','global newcat a newt2;newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; zmap_message_center.update_catalog();timeplot()')
 
-    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;mainmap_overview()')
+    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','global newcat a newt2; newcat = newt2;a=newt2;zmap_message_center.update_catalog();mainmap_overview()')
 
 
 end
@@ -145,14 +145,14 @@ if ho2 == 'hold'
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
-    n = length(newt2(:,1));
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    n = newt2.Count;
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
     cumu2 = cumsum(cumu);
 
 
     hold on
     axes(ht)
-    tiplo2 = plot(newt2(:,3),(1:length(newt2(:,3))),'b');
+    tiplo2 = plot(newt2.Date,(1:newt2.Count),'b');
     set(tiplo2,'LineWidth',2.5)
 
     ho2 = 'noho'
@@ -180,16 +180,16 @@ if isempty(newcat), newcat =a; end
 
 % select big events ( > minmag)
 %
-l = newt2(:,6) >= minmag;
+l = newt2.Magnitude >= minmag;
 big = newt2(l,:);
 %big=[];
 %calculate start -end time of overall catalog
 %R
 statime=[];
 par2=par1;
-t0b = min(newt2(:,3));
-n = length(newt2(:,1));
-teb = max(a(:,3));
+t0b = min(newt2.Date);
+n = newt2.Count;
+teb = max(a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
     %par1 = ceil(ttdif/300);
@@ -221,11 +221,11 @@ cumu2 = 0:1:(tdiff*365/par1)-1;
 %
 % calculate cumulative number versus time and bin it
 %
-n = length(newt2(:,1));
+n = newt2.Count;
 if par1 >=1
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
 else
-    [cumu, xt] = hist((newt2(:,3)-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((newt2.Date-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
 end
 cumu2=cumsum(cumu);
 % plot time series
@@ -239,7 +239,7 @@ hold on
 set(gca,'visible','off')
 %tiplo2 = plot(xt,cumu2,'b');
 %set(tiplo2,'LineWidth',2.5)
-tiplo2 = plot(newt2(:,3),(1:length(newt2(:,3))),'b');
+tiplo2 = plot(newt2.Date,(1:newt2.Count),'b');
 set(tiplo2,'LineWidth',2.5)
 
 % plot big events on curve
@@ -313,7 +313,7 @@ axes(ht);
 set(cum,'Visible','on');
 watchoff(cum)
 watchoff(map)
-welcome(' ',' ')
+zmap_message_center.clear_message();
 %par1=par2;
 done
 

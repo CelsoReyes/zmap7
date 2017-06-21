@@ -21,7 +21,7 @@ function [outmat] = selmaval(a,lowb,highb,rowindex,type)
         outmat=outmat(outmat(:,rowindex)<=highb,:);
         %     for i=1:1:endma
         %        if ((a(i,rowindex)>=lowb)  && (a(i,rowindex)<=highb))
-        %             outmat(j,:)=a(i,:);
+        %             outmat(j,:)=a.subset(i);
         %             j=j+1;
         %         end
         %     end
@@ -32,7 +32,7 @@ function [outmat] = selmaval(a,lowb,highb,rowindex,type)
         outmat=[parta;partb];
         %         for i=1:1:endma
         %         if ((a(i,rowindex)>=lowb) | (a(i,rowindex)<=highb))
-        %             outmat(j,:)=a(i,:);
+        %             outmat(j,:)=a.subset(i);
         %             j=j+1;
         %         end
         %     end

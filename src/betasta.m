@@ -37,7 +37,7 @@ ni2 = inputdlg(prompt,tit,1,def);
 l = ni2{1}; iwl2= str2double(l);
 l = ni2{2}; par1= str2double(l);
 
-[cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+[cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
 cumu2=cumsum(cumu);
 
 Catalog=newcat;

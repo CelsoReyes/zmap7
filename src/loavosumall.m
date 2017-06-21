@@ -51,9 +51,9 @@ ferror(fid)
 fclose(fid);
 
 if length(a(1,:))== 7
-    a(:,3) = decyear(a(:,3:5));
+    a.Date = decyear(a(:,3:5));
 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-    a(:,3) = decyear(a(:,[3:5 ]));
+    a.Date = decyear(a(:,[3:5 ]));
 end
 
 disp('Now plotting summary plot')

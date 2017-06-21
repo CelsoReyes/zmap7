@@ -8,7 +8,7 @@ if isunix ~= 1
 end
 
 
-teq = (newt2(:,3) - mati)* 365;
+teq = (newt2.Date - mati)* 365;
 [rpd, tbin] = hist(log10(teq),-1:0.2:3.3);
 
 wei = gradient(10.^tbin);

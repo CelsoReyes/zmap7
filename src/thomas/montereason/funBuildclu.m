@@ -30,7 +30,7 @@ cluslength=cluslength(tmp);
 bgevent=bgevent(tmp);
 mbg=mbg(tmp);
 bg=bgevent;
-bgevent=newcat(bg,:); %biggest event in a cluster(if more than one,take first)
+bgevent=newcat.subset(bg); %biggest event in a cluster(if more than one,take first)
 
 clustnumbers=(1:length(tmp));    %stores numbers of clusters
 

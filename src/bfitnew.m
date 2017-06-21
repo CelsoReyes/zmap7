@@ -34,7 +34,7 @@ function bfitnew(newcat)
         'String','Print','Position',[0.02 .93 .08 .05]);
 
     uicontrol('Style','Pushbutton',...
-        'Callback','close;welcome('' '','' '');done',...
+        'Callback','close;zmap_message_center.set_info('' '','' '');done',...
         'Units','normalized',...
         'String','Close','Position',[0.02 .73 .08 .05]);
     uicontrol('Style','Pushbutton',...
@@ -46,8 +46,8 @@ function bfitnew(newcat)
         'Position',[.0 .55 .10 .06],'String','Automatic',...
          'Callback','bdiff(newcat)');
 
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 mima = 0;end
 
     % number of mag units
@@ -57,7 +57,7 @@ function bfitnew(newcat)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -76,7 +76,7 @@ function bfitnew(newcat)
     xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
     ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
     set(gca,'Color',[cb1 cb2 cb3 ])
-    set(gca,'XLim',[min(newcat(:,6))-0.5  max(newcat(:,6))+0.3])
+    set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+0.3])
     set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
@@ -88,7 +88,7 @@ function bfitnew(newcat)
         ' Wait until after the selection '
         ' before pressing Info or Close. '];
 
-    welcome('b-value fit',str)
+    zmap_message_center.set_message('b-value fit',str)
 
     figure_w_normalized_uicontrolunits(bfig)
     seti = uicontrol('Units','normal',...

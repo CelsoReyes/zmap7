@@ -6,7 +6,7 @@
 
 %report_this_filefun(mfilename('fullpath'));
 
-TN = length(newt2(:,1));  %total number of events
+TN = newt2.Count;  %total number of events
 B = bv2 ;%b-value
 IM= i;%starting magnitude (hypothetical Mc)
 inc = 0.1 ;%magnitude increment

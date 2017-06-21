@@ -90,11 +90,11 @@ set(handles.provider_details,'String',...
     currprovider.serviceURLs.eventService));
 if hObject.Value==1
     hObject.BackgroundColor = [1.0 0.95 0.95];    
-    welcome('Importing FDSN data','First choose a data provider...');
+    zmap_message_center.set_info('Importing FDSN data','First choose a data provider...');
 
 else
     hObject.BackgroundColor = [0.95 1.0 0.95];    
-    welcome('Importing FDSN data','Choose the desired catalog constraints (time, magnitude, etc..)');
+    zmap_message_center.set_info('Importing FDSN data','Choose the desired catalog constraints (time, magnitude, etc..)');
 
 end
 
@@ -131,7 +131,7 @@ datacenter_details(1).serviceURLs.eventService = '';
 hObject.UserData = datacenter_details;
 currprovider = datacenter_details(hObject.Value);
 set(hObject,'string',{datacenter_details.name});    
-welcome('Importing FDSN data','First choose a data provider, then specify the desired constraints.');
+zmap_message_center.set_info('Importing FDSN data','First choose a data provider, then specify the desired constraints.');
 
     
 
@@ -621,7 +621,7 @@ if (handles.data_provider.Value == 1)
     % no datacenter has been chosen
     beep;
     handles.data_provider.BackgroundColor = [1.0 0.95 0.95];
-    welcome('Importing FDSN data (problem)',...
+    zmap_message_center.set_warning('Importing FDSN data (problem)',...
         'Import won''t work. You must first choose a data provider.');
     return
 end

@@ -74,7 +74,7 @@ rect = [0.15, 0.15, 0.75, 0.65];
 axes('position',rect)
 p5 = gca;
 
-stem(newt2(:,3),newt2(:,6));
+stem(newt2.Date,newt2.Magnitude);
 
 hold on
 

@@ -104,7 +104,7 @@ if sel == 'ca'
     message2 = ['right corner (with same mouse button). Allow  '
         'some time to complete calculation of curves.  '];
     try
-        welcome(' ',message2);
+        zmap_message_center.set_message(' ',message2);
     end
 
     figure_w_normalized_uicontrolunits(map)
@@ -120,11 +120,11 @@ if sel == 'ca'
     gy = y0:dy:y1;
     itotal = length(gx) * length(gy);
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     cumu = zeros(length(t0b:par1/365:teb)+2);
@@ -154,7 +154,7 @@ if sel == 'ca'
             i2 = i2+1;
 
             % calculate distance from center point and sort wrt distance
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
             [s,is] = sort(l);
             b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 

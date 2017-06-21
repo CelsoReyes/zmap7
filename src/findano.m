@@ -14,10 +14,10 @@ Y = reshape(loc(2,:),length(gy),length(gx));
 %pla = plot(X(i,j),Y(i,j),'*w')
 %set(pla,'MarkerSize',12,'LineWidth',1.5,'EraseMode','xor')
 
-l = a(:,3) < td | a(:,3) > ted;
-ba = a(l,:);
-l = a(:,3) >= td & a(:,3) <= ted;
-an = a(l,:);
+l = a.Date < td | a.Date > ted;
+ba = a.subset(l);
+l = a.Date >= td & a.Date <= ted;
+an = a.subset(l);
 
 
 figure

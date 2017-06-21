@@ -22,11 +22,11 @@ pathname = '/eq_data/hector/'
 file_in = 'test.mat'
 load([pathname file_in]);
 
-welcome(' ','Running... ');think
+zmap_message_center.set_info(' ','Running... ');think
 %  make grid, calculate start- endtime etc.  ...
 %
 t0b = a(1,3)  ;
-n = length(a(:,1));
+n = a.Count;
 teb = a(n,3) ;
 tdiff = round((teb - t0b)*365/par1);
 loc = zeros(3,length(gx)*length(gy));
@@ -51,7 +51,7 @@ valeg = 1;
 % overall b-value
 %%
 [bv magco stan av me mer me2,  pr] =  bvalca3(a,inb1,inb2);
-bo1 = bv; no1 = length(a(:,1));
+bo1 = bv; no1 = a.Count;
 
 num_events = length(newt2);
 itotal = length(newgri);
@@ -90,7 +90,7 @@ for rand_loop = 1:100
         rand_ind = round(rand(num_atnode,1)*num_events);
         ri0 = rand_ind == 0;
         rand_ind(ri0) = 1;
-        rand_cat = a(rand_ind,:);
+        rand_cat = a.subset(rand_ind);
 
         %%
         % now estimate the completeness and a,p,c and b-value
@@ -199,7 +199,7 @@ end
 % save it
 %%
 catSave3 =...
-    [ 'welcome(''Save Grid'',''  '');think;',...
+    [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
     ' sapa2 = [''save '' path1 file1 '' rpvg gx gy yvect xvect tmpgri allpv''];',...
     ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)

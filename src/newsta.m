@@ -9,8 +9,8 @@ think
 report_this_filefun(mfilename('fullpath'));
 b = newcat;
 %select big evenets
-l = newt2(:,6) > minmag;
-big = newt2(l,:);
+l = newt2.Magnitude > minmag;
+big = newt2.subset(l);
 
 def = {num2str(iwl2),num2str(par1)};
 
@@ -20,10 +20,14 @@ prompt={ 'Compare window length (years)',...
     };
 ni2 = inputdlg(prompt,tit,1,def);
 
-l = ni2{1}; iwl2= str2double(l);
-l = ni2{2}; par1= str2double(l);
+l = ni2{1}; 
+iwl2= str2double(l);
+l = ni2{2}; 
+par1= str2double(l);
 
-[cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+% for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.
+[cumu, xt] = histcounts(newt2.Date,min(newt2.Date): par1 : max(newt2.Date));%(t0b:par1/365:teb));
+xt = xt + (xt(2)-xt(1))/2; xt(end)=[]; % convert from edges to centers!
 cumu2=cumsum(cumu);
 
 %
@@ -37,10 +41,10 @@ cumu2=cumsum(cumu);
 ncu = length(xt);
 as = zeros(1,ncu)*nan;
 
-t0b = a(1,3);
-n = length(a(:,1));
-teb = max(a(:,3));
-tdiff = round((teb - t0b)*365/par1);
+t0b = min(a.Date);
+n = a.Count;
+teb = max(a.Date);
+tdiff = round(days(teb - t0b)/par1); % in days/par1
 
 if sta == 'rub'
     iwl = floor(iwl2*365/par1);
@@ -67,7 +71,7 @@ end % if sta == ast
 if sta == 'lta'
     iwl = floor(iwl2*365/par1);
     %for i = 1:tdiff-iwl-1
-    for i = 1:length(cumu)-iwl;
+    for i = 1:length(cumu)-iwl
         cu = [cumu(1:i-1) cumu(i+iwl+1:ncu)];
         mean1 = mean(cu);
         mean2 = mean(cumu(i:i+iwl));
@@ -82,9 +86,9 @@ if sta == 'bet'
     Catalog=newcat;
     NumberBins = length(xt);
     BetaValues = zeros(1,NumberBins)*NaN;
-    TimeBegin = Catalog(1,3);
-    NumberEQs = length(Catalog(:,1));
-    TimeEnd = max(Catalog(:,3));
+    TimeBegin = min(Catalog.Date);
+    NumberEQs = Catalog.Count;
+    TimeEnd = max(Catalog.Date);
 
     iwl = floor(iwl2*365/par1);
     if (iwl2 >= TimeEnd-TimeBegin) | (iwl2 <= 0)
@@ -176,11 +180,14 @@ end
 i = find(as == max(as));
 if length(i) > 1 ; i = i(1) ;  end
 
-tet1 =sprintf('Zmax: %3.1f at %3.1f ',max(as),xt(i));
+tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(i),'uuuu-MM-dd hh:mm:ss'));
 
-v = axis;
-axis([ v(1) ceil(teb) v(3)  v(4)+0.05*v(4)]);
-te2 = text(v(1)+0.5, v(4)*0.9,tet1);
+vx = xlim;
+vy = ylim;
+%v = axis;
+xlim([vx(1), dateshift(teb,'end','Year') ]);
+ylim([vy(1),  vy(2)+0.05*vy(2)]);
+te2 = text(vx(1)+0.5, vy(2)*0.9,tet1);
 set(te2,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
 
 grid
@@ -194,15 +201,14 @@ hold on;
 if ~isempty(big)
     %if ceil(big(:,3) -t0b) > 0
     %f = cumu2(ceil((big(:,3) -t0b)*365/par1));
-    l = newt2(:,6) > minmag;
+    l = newt2.Magnitude > minmag;
     f = find( l  == 1);
-    bigplo = plot(big(:,3),f,'hm');
+    bigplo = plot(big.Date,f,'hm');
     set(bigplo,'LineWidth',1.0,'MarkerSize',10,...
         'MarkerFaceColor','y','MarkerEdgeColor','k')
     stri4 = [];
-    [le1,le2] = size(big);
-    for i = 1:le1;
-        s = sprintf('  M=%3.1f',big(i,6));
+    for i = 1:big.Count
+        s = sprintf('  M=%3.1f',big.Magnitude(i));
         stri4 = [stri4 ; s];
     end   % for i
 
@@ -227,9 +233,11 @@ uicontrol('Units','normal',...
      'Callback','newsta')
 
 if exist('stri') > 0
-    v = axis;
+    vx=xlim;
+    vy=ylim;
+    %v = axis;
 
-    tea = text(v(1)+0.5,v(4)*0.9,stri) ;
+    tea = text(vx(1)+0.5,vy(2)*0.9,stri) ;
     set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
 else
     strib = [file1];

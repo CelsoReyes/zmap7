@@ -205,12 +205,12 @@ function myprint(command,param1)
                 'The current window will be printed   '
                 'as a postscript file. Buttons etc are'
                 'not printed.                         '];
-            welcome('Print',messtext)
+            zmap_message_center.set_message('Print',messtext)
             if sys(1:3)=='SUN' | sys(1:3)=='SOL';[file1,path1] = uigetfile([hodi  '/out/*.ps'],'PS  Filename');end;
             if sys(1:2)=='PC';[file1,path1] = uiputfile([hodi  '\out\*.ps'],' PS Filename');end;
 
             messtext = ['Thank you! Printing in PS file...'];
-            welcome('  ',messtext)
+            zmap_message_center.set_message('  ',messtext)
             watchon;
             drawnow
 
@@ -226,7 +226,7 @@ function myprint(command,param1)
             set(gca,'Color',cuca)
         end
         close(ptt)
-        welcome(' ',' ')
+        zmap_message_center.clear_message();
         done
     else
         error('Error: myprint.m called with incorrect command.')

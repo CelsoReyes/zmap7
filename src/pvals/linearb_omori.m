@@ -70,7 +70,7 @@ endt = (calc_ed-calc_sd);
 %%
 % error check on GUI values
 %%
-maxt = (max(newt2(:,3))-min(newt2(:,3))+(0.05/365))*365;
+maxt = (max(newt2.Date)-min(newt2.Date)+(0.05/365))*365;
 if (calc_ed-calc_sd) > maxt
     disp('Less days in catalog that calculation period');
     return;
@@ -82,7 +82,7 @@ end
 % the following line is to take care of last eq's missed in
 % bwith t calc
 %%
-m = min(newt2(:,6));
+m = min(newt2.Magnitude);
 
 
 
@@ -277,7 +277,7 @@ if compflag == 'of'
     % plot results
     %%
     figure
-    p1 = plot(newt2(:,3),1:length(newt2(:,3)),'.k','MarkerSize',3);
+    p1 = plot(newt2.Date,1:newt2.Count,'.k','MarkerSize',3);
     hold on
     l = cut_cat(:,3) > maepi(1,3) + x(3)/365;
     p2 = plot(cut_cat(l,3),1:length(cut_cat(l,3)),'.y','MarkerSize',6);

@@ -13,7 +13,7 @@ global main mainfault faults coastline vo
 %plot earthquakes
 %
 hold on
-ploeq = plot(a(:,1),a(:,2),'.k');
+ploeq = plot(a.Longitude,a.Latitude,'.k');
 set(ploeq,'Markersize',2);
 hold on
 set(gca,'Clipping','on')

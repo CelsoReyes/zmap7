@@ -38,7 +38,7 @@ function [rc] = calc_ratechange(a,time_as,step,mintime, maxtime,timestep)
         end
 
         % estimation of Omori parameters
-        l = time_as <= time & a(:,6) >= fMc;
+        l = time_as <= time & a.Magnitude >= fMc;
         [pval, pvalstd, cval, cvalstd, kval, kvalstd, loopout] = bruteboot(time_as(l));
 
         if isnan(pval) == 0
@@ -55,7 +55,7 @@ function [rc] = calc_ratechange(a,time_as,step,mintime, maxtime,timestep)
                     return
                 end
 
-                l = time_as <= t_forecast & a(:,6) >= fMc & time_as >= time;
+                l = time_as <= t_forecast & a.Magnitude >= fMc & time_as >= time;
                 numreal = sum(l); % observed number of aftershocks
                 absdiff = numreal-nummod;
 

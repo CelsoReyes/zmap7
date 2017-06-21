@@ -8,7 +8,7 @@ function equi=equevent
 global clus newcat  cluslength bg clustnumbers
 
 j=0;
-eqmoment=10.^(newcat(:,6).*1.2);
+eqmoment=10.^(newcat.Magnitude.*1.2);
 
 for n=1:max(clus)
    l = clus == n;

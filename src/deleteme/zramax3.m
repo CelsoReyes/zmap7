@@ -41,7 +41,7 @@ messtext= ...
     ' calculated so far are stored in the variable   '
     ' pmab and save to a *.mat file                  '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 figure_w_normalized_uicontrolunits(mess)
 
 [newmatfile, newpath] = uiputfile([hodi '/*.mat'], 'Filename for saving of intermediate results ');
@@ -58,7 +58,7 @@ for k=1:nr
     while na+100 > 100;
         if na  > 100 ; na == 100; end
         con = con+1;
-        l = ceil(rand([ni na])*length(a(:,3)));
+        l = ceil(rand([ni na])*a.Count);
         [cumu, xt] = hist(reshape(a(l,3),ni,na),(t0b:par1/365:teb));
         for j = 2:tdiff-iwl
             cu = [cumu(1:j-1,:) ; cumu(j+iwl+1:length(cumu(:,1)),:)];

@@ -14,7 +14,7 @@ function plot_StressVarBeta(vVariance,vBeta)
 % Deselect nans
 vSel = (~isnan(vVariance) & ~isnan(vBeta));
 vVariance = vVariance(vSel,:);
-vBeta = vBeta(vSel,:);
+vBeta = vBeta.subset(vSel);
 
 % Plot figure
 figure

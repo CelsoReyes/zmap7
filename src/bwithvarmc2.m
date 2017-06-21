@@ -1,11 +1,11 @@
 
-maxmag = ceil(10*max(newt2(:,6)))/10;
-mima = min(newt2(:,6));
+maxmag = ceil(10*max(newt2.Magnitude))/10;
+mima = min(newt2.Magnitude);
 if mima > 0 ; mima = 0 ; end
 
-[bval,xt2] = hist(newt2(:,6),(mima:0.1:maxmag));
+[bval,xt2] = hist(newt2.Magnitude,(mima:0.1:maxmag));
 % normalise to annula rates
-bval = bval/(max(newt2(:,3))-min(newt2(:,3)));
+bval = bval/(max(newt2.Date)-min(newt2.Date));
 bvalsum = cumsum(bval); % N for M <=
 bval2 = bval(length(bval):-1:1);
 bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -53,7 +53,7 @@ plot(TMC(:,1),TMC(:,2),'k');
 xlabel('Time')
 ylabel('Completeness')
 set(gca,'XAxisLocation','top');
-set(gca,'Xlim',[min(newt2(:,3)) max(newt2(:,3))]);
+set(gca,'Xlim',[min(newt2.Date) max(newt2.Date)]);
 axes(ax1);
 
 for i = 1:2:length(TMC)-1

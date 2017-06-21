@@ -57,7 +57,7 @@ for ni = 50:20:250;
             while na+100 > 100;
                 if na  > 100 ; na == 100; end
                 con = con+1;
-                l = ceil(rand([ni na])*length(a(:,3)));
+                l = ceil(rand([ni na])*a.Count);
                 [cumu, xt] = hist(reshape(a(l,3),ni,na),(t0b:par1/365:teb));
                 j = tdiff-iwl;
                 cu = [cumu(1:j-1,:) ; cumu(j+iwl+1:length(cumu(:,1)),:)];

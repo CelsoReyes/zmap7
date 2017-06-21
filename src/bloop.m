@@ -1,9 +1,9 @@
 report_this_filefun(mfilename('fullpath'));
 
 re = []
-for i = min(newt2(:,6)):0.1:max(newt2(:,6))-0.5
+for i = min(newt2.Magnitude):0.1:max(newt2.Magnitude)-0.5
     i
-    l = newt2(:,6) >= i;
+    l = newt2.Magnitude >= i;
     [bv magco stan av me,  mer] =  bvalcalc(newt2(l,:));
     re = [re ; i bv me];
 end

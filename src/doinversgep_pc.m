@@ -120,7 +120,7 @@ end
 disp('done...! ')
 
 % Now plot the results
-n = length(newt2(:,1));
+n = newt2.Count;
 load out95
 f2 = out95;
 fit = min(out95(:,9));

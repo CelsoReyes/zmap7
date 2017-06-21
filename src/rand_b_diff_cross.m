@@ -187,11 +187,11 @@ if sel == 'ca'
             'Mac Users: Use the keyboard "p" more  '
             'point to select, "l" last point.      '
             '                                      '];
-        welcome('Select Polygon for a grid',messtext);
+        zmap_message_center.set_message('Select Polygon for a grid',messtext);
         hold on
         ax = findobj('Tag','main_map_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
-        welcome('Message',' Thank you .... ')
+        zmap_message_center.set_info('Message',' Thank you .... ')
     end; % of if bGridEntireArea
 
 
@@ -235,7 +235,7 @@ if sel == 'ca'
     end
 
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -283,7 +283,7 @@ if sel == 'ca'
 
             if tgl1 == 0   % take point within r
                 l3 = l <= ra;
-                b = newa(l3,:);      % new data per grid point (b) is sorted in distanc
+                b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
                 rd = ra;
             else
                 % take first ni points
@@ -381,7 +381,7 @@ if sel == 'ca'
     gx = xvect;gy = yvect;
 
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile([ ''*.mat''], ''Grid Datafile Name?'') ;',...
         'sapa2=[''save '' path1 file1 '' mValues ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)

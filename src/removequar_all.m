@@ -132,11 +132,11 @@ if sel == 'ca'
     selgp3d
     gz = 50:dz:400;
     itotal = length(gx)*length(gz)*length(gy);
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -173,7 +173,7 @@ if sel == 'ca'
                     i2 = i2+1;
 
                     % calculate distance from center point and sort wrt distance
-                    l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+                    l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
                     [s,is] = sort(l);
                     b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -211,13 +211,13 @@ if sel == 'ca'
         re3 = zvg(:,:,k(1))'; r = re3; view_bva;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a(:,1)-rx)*cos(pi/180*ry)*111).^2 + ((a(:,2)-ry)*111).^2) ;
+        l = sqrt(((a.Longitude-rx)*cos(pi/180*ry)*111).^2 + ((a.Latitude-ry)*111).^2) ;
         [s,is] = sort(l);
         ld2 = sort(l); di = ld2(rni);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
-        l2 = ismember(a(:,8),D) & l <= di;
-        %l2 = a(:,8) >= 8 & a(:,8) <= 17 & l <= di;
+        l2 = ismember(a.Date.Hour,D) & l <= di;
+        %l2 = a.Date.Hour >= 8 & a.Date.Hour <= 17 & l <= di;
         % take first ni points
         q = [q ; a(l2,:)];
         a(l2,:) = [];      % new data per grid point (b) is sorted in distance

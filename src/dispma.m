@@ -8,10 +8,10 @@ figure
 set(gcf,'Units','normalized','NumberTitle','off','Name','b-value curves');
 set(gcf,'pos',[ 0.2  0.8 0.5 0.8])
 if isempty(newcat), newcat = a ; end ;
-maxmag = max(newcat(:,6));
-t0b = min(newcat(:,3));
-teb = max(newcat(:,3));
-n = length(newcat(:,1));
+maxmag = max(newcat.Magnitude);
+t0b = min(newcat.Date);
+teb = max(newcat.Date);
+n = newcat.Count;
 tdiff = round(teb - t0b);
 
 
@@ -25,16 +25,16 @@ bvalsum2 = zeros(1,nmagu);
 bvalsum3 = zeros(1,nmagu);
 bvalsum4 = zeros(1,nmagu);
 
-l = newcat(:,3) > t1p(1) & newcat(:,3) < t2p(1) ;
-bval =  newcat(l,:);
+l = newcat.Date > t1p(1) & newcat.Date < t2p(1) ;
+bval =  newcat.subset(l);
 [bval,xt2] = hist(bval(:,6),(0:0.1:maxmag));
 bvalsum = cumsum(bval);
 bvalsum3 = cumsum(bval(length(bval):-1:1));
 xt3 = (maxmag:-0.1:0);
 
 
-l = newcat(:,3) > t2p(1) & newcat(:,3) < t3p(1) ;
-bval2 = newcat(l,:);
+l = newcat.Date > t2p(1) & newcat.Date < t3p(1) ;
+bval2 = newcat.subset(l);
 bval2 = histogram(bval2(:,6),(0:0.1:maxmag));
 bvalsum2 = cumsum(bval2);
 bvalsum4 = cumsum(bval2(length(bval2):-1:1));

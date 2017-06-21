@@ -97,7 +97,7 @@ for fMc = fMcBound-0.6:0.1:fMcBound+0.6
         mData = [vN' vNonCFMD'];
         vSel = (mData(:,2) >= fMc);
         mDataTest = mData(~vSel,:);
-        mDataTmp = mData(vSel,:);
+        mDataTmp = mData.subset(vSel);
         % Choices of normalization
         fNmax = mDataTmp(1,3); % Frequency of events in Mc bin
         %fNmax = max(mDataTest(:,3));  % Use maximum frequency of events in bins below Mc

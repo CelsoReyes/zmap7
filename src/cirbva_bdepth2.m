@@ -25,7 +25,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -37,7 +37,7 @@ pause(0.1)
 %  calculate distance for each earthquake from center point
 %  and sort by distance
 %
-l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
@@ -48,7 +48,7 @@ l =  sort(l);
 
 
 %% Sort by depth so newt2 can be divided into depth ratio zones
-[s,is] = sort(newt2(:,7));
+[s,is] = sort(newt2.Depth);
 adepth = newt2(is(:,1),:);
 
 if tgl1 == 0   % take point within r
@@ -66,16 +66,16 @@ end
 
 messtext = ['Radius of selected Circle:' circle_r  ' km' ];
 disp(messtext)
-welcome('Message',messtext)
+zmap_message_center.set_message('Message',messtext)
 
 hold on
 
-plot(newt2(:,1),newt2(:,2),'xk');
+plot(newt2.Longitude,newt2.Latitude,'xk');
 
-l = newt2(:,7) >= top_zonet & newt2(:,7) <  top_zoneb;
+l = newt2.Depth >= top_zonet & newt2.Depth <  top_zoneb;
 top_zone = newt2(l,:);
 
-l = newt2(:,7) >= bot_zonet & newt2(:,7) <  bot_zoneb;
+l = newt2.Depth >= bot_zonet & newt2.Depth <  bot_zoneb;
 bot_zone = newt2(l,:);
 
 

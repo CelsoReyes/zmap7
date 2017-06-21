@@ -4,8 +4,8 @@ report_this_filefun(mfilename('fullpath'));
 str = [];
 [newmatfile, newpath] = uiputfile([ hodo '*.dat'], 'Save As');
 
-s = [a(:,6) ];
-le = length(a(:,1));
+s = [a.Magnitude ];
+le = a.Count;
 
 fid = fopen([newpath newmatfile],'w') ;
 fprintf(fid,'%5.0f %2.0f %2.0f\n',[floor(a(1,3)) a(1,4) a(1,5)]);
@@ -26,8 +26,8 @@ return
 str = [];
 [newmatfile, newpath] = uiputfile([ hodo '*.dat'], 'Save As');
 
-s = [floor(a(:,3)) a(:,4) a(:,5) a(:,6) ];
-le = length(a(:,1));
+s = [a.Date.Year a.Date.Month a.Date.Day a.Magnitude ];
+le = a.Count;
 
 fid = fopen([newpath newmatfile],'w') ;
 fprintf(fid,'%5.0f %2.0f %2.0f\n',[floor(a(1,3))-1 a(1,4) a(1,5)]);

@@ -12,7 +12,7 @@ eval(do)
 
 % lets addev the mainshock as the fisrt and largest event...
 
-l = newt2(:,3) > maepi(1,3) & newt2(:,3) < mati + tlen/365;
+l = newt2.Date > maepi(1,3) & newt2.Date < mati + tlen/365;
 newt3 =  newt2(l,1:9);
 newt3 = [maepi(1:1:9) ; newt3 ];
 

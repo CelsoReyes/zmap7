@@ -24,15 +24,15 @@ function [mRateChange] = calc_relrate(a,step,mintime, maxtime,timestep,bootloops
     warning off;
 
     % Main event time and time after mainshock
-    [m_main, main] = max(a(:,6));
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    [m_main, main] = max(a.Magnitude);
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
     date_main = date_matlab(main);
     time_aftershock = date_matlab-date_main;
 
     %
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l); % Time of aftershocks
-    eqcatalogue = a(l,:); % Catalog of aftershocks
+    eqcatalogue = a.subset(l); % Catalog of aftershocks
 
     l = eqcatalogue(:,6) >= 5;
     largeas = eqcatalogue(l,:);

@@ -33,7 +33,7 @@ pvmat = [];
 prompt = {'Min. threshold. magnitude','Max. threshold magnitude','Magnit. step','Min. threshold time', 'Max. threshold time','Time step'};
 title = 'Input parameters';
 lines = 1;
-valm1 = min(newt2(:,6));
+valm1 = min(newt2.Magnitude);
 valm2 = valm1 + 2;
 valm3 = 0.1;
 valtm1 = 0;
@@ -45,11 +45,11 @@ valm1=str2double(answer{1}); valm2 = str2num(answer{2}); valm3=str2num(answer{3}
 valtm1 = str2double(answer{4}); valtm2 = str2num(answer{5}); valtm3 = str2num(answer{6});
 
 % cut catalog at mainshock time:
-l = newt2(:,3) > maepi(1,3);
+l = newt2.Date > maepi(1,3);
 newt2 = newt2(l,:);
 
 % cat at selecte magnitude threshold
-l = newt2(:,6) < valm1;
+l = newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
 ho2 = 'hold';
@@ -63,7 +63,7 @@ set(wai,'NumberTitle','off','Name',' 3D gridding - percent done');;
 drawnow
 
 for valm = valm1:valm3:valm2
-    paramc1 = (newt2(:,6) >= valm);
+    paramc1 = (newt2.Magnitude >= valm);
     pcat = newt2(paramc1,:);
     [timpa] = timabs(pcat);
     [timpar] = timabs(maepi);

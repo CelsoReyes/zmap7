@@ -33,8 +33,8 @@ if sel == 'in'
     fMaxRadius = 5;
 
     % cut catalog at mainshock time:
-    l = a(:,3) > maepi(1,3);
-    a = a(l,:);
+    l = a.Date > maepi(1,3);
+    a = a.subset(l);
 
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -251,12 +251,12 @@ if sel == 'ca'
             'Mac Users: Use the keyboard "p" more  '
             'point to select, "l" last point.      '
             '                                      '];
-        welcome('Select Polygon for a grid',messtext);
+        zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
         ax = findobj('Tag','main_map_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
 
-        welcome('Message',' Thank you .... ')
+        zmap_message_center.set_info('Message',' Thank you .... ')
     end % of if bGridEntireArea
 
     plos2 = plot(x,y,'b-','era','xor');        % plot outline
@@ -297,7 +297,7 @@ if sel == 'ca'
     end
 
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -337,7 +337,7 @@ if sel == 'ca'
         %         % Choose method of constant radius or constant number
         %         if tgl1 == 0   % take point within r
         %             l3 = l <= ra;
-        %             b = newa(l3,:);      % new data per grid point (b) is sorted in distanc
+        %             b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
         %             rd = ra;
         %         else
         %             % take first ni points
@@ -348,7 +348,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             % Use Radius to determine grid node catalogs
             l3 = l <= ra;
-            b = a(l3,:);      % new data per grid point (b) is sorted in distance
+            b = a.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
             vDist = sort(l(l3));
             fMaxDist = max(vDist);
@@ -425,7 +425,7 @@ if sel == 'ca'
     save rcval_grid.mat mRcCross gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops maepi xsecx xsecy
     disp('Saving data to rcval_grid.mat in current directory')
     %     catSave3 =...
-    %         [ 'welcome(''Save Grid'',''  '');think;',...
+    %         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     %             '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
     %             ' sapa2 = [''save '' path1 file1 '' mRcCross gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll''];',...
     %             ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
@@ -633,7 +633,7 @@ if sel == 'lo'
         re3 = mRelchange;
         lab1 = 'Rate change';
         nlammap
-        [xsecx xsecy,  inde] =mysect(a(:,2)',a(:,1)',a(:,7),wi,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
 

@@ -5,8 +5,6 @@ classdef zmap_message_center < handle
     % it is more robust, and is self-contained.
     
     properties
-        current_catalog_details % if a catalog has been loaded
-        prev_catalog_details % if a saved catalog exists
     end
     
     methods
@@ -19,7 +17,7 @@ classdef zmap_message_center < handle
             if (isempty(h))
                 h = create_message_figure();
                 startmen(h);
-                obj.set_message('To get started...',...
+                zmap_message_center.set_message('To get started...',...
                     ['Choose an import option from the "Data" menu', newline,...
                     'data can be imported from .MAT files, from  ', newline,...
                     'formatted text files, or from the web       ']);
@@ -29,7 +27,7 @@ classdef zmap_message_center < handle
                 figure(h)
             end
         end
-        
+        %{
         function set_message(obj, messageTitle, messageText, messageColor)
             % set_message displays a message to the user
             %
@@ -81,8 +79,78 @@ classdef zmap_message_center < handle
                 texth.String = '';
             end
         end
+        %}
         
-        function start_action(obj, action_name)
+        
+    end
+    methods(Static)
+        function create()
+            h = findall(0,'tag','zmap_message_title');
+            if isempty(h)
+                zmap_message_center();
+            end
+        end
+        function set_message(messageTitle, messageText, messageColor)
+            % set_message displays a message to the user
+            %
+            % usage: 
+            %    msgcenter.set_message(title, text)
+            %
+            % see also set_warning, set_error, set_info, clear_message
+            zmap_message_center.create();
+            titleh = findall(0,'tag','zmap_message_title');
+            % TODO see if control still exists
+            titleh.String = messageTitle;
+            texth = findall(0,'tag','zmap_message_text');
+            texth.String = messageText;
+            if exist('messageColor','var')
+                titleh.ForegroundColor = messageColor;
+            end
+        end
+        
+        function set_warning(messageTitle, messageText)
+            % set_warning displays a message to the user in orange
+            zmap_message_center.set_message(messageTitle, messageText, [.8 .2 .2]);
+        end
+        
+        function set_error(messageTitle, messageText)
+            % set_error displays a message to the user in red
+            zmap_message_center.set_message(messageTitle, messageText, [.8 0 0]);
+        end
+        
+        function set_info(messageTitle, messageText)
+            % set_info displays a messaget ot the user in blue
+            zmap_message_center.set_message(messageTitle, messageText, [0 0 0.8]);
+        end
+        
+        function clear_message()
+            % clear_message will return the message center to neutral state
+            %
+            %  usage:
+            %      msgcenter.clear_message()
+            zmap_message_center.create();
+            titleh = findall(0,'tag','zmap_message_title');
+            % TODO see if control still exists
+            if ~isempty(titleh)
+                titleh.String = 'Messages';
+                titleh.ForegroundColor = 'k';
+            end
+            texth = findall(0,'tag','zmap_message_text');
+            % TODO see if control still exists
+            if ~isempty(texth)
+                texth.String = '';
+            end
+            zmap_message_center.update_catalog();
+            
+        end
+        
+        function update_catalog()
+            %obj = zmap_message_center();
+            update_current_catalog_pane();
+            update_selected_catalog_pane();
+        end
+        
+        function start_action(action_name)
             % start_action sets the text for the action button, and sets the spinner
             buth = findall(0,'tag','zmap_action_button');
             if ~isempty(buth)
@@ -91,18 +159,13 @@ classdef zmap_message_center < handle
             watchon();
         end
         
-        function end_action(obj)
+        function end_action()
             % end_action sets the text button to idling, and unsets the spinner
             buth = findall(0,'tag','zmap_action_button');
             if ~isempty(buth)
                 buth.String = 'Ready, now idling';
             end
             watchoff();
-        end
-        
-        function update_catalog(obj)
-            update_current_catalog_pane();
-            update_selected_catalog_pane();
         end
     end
 end
@@ -220,7 +283,7 @@ function h = create_message_figure()
         uicontrol('Parent',cat1panel,'Style','text', ...
             'String','No Catalog Loaded!',...
             'Units','normalized',...
-            'Position',[0.1 0.4 .85 .55],...
+            'Position',[0.05 0.4 .9 .55],...
             'HorizontalAlignment','left',...
             'FontName','FixedWidth',...
             'FontSize',12,...
@@ -233,7 +296,7 @@ function h = create_message_figure()
             'String','Refresh',...
             'Units','normalized',...
             'Position',[0.05 0.05 .3 .3],...
-            'Callback','h=zmap_message_center();h.update_catalog()',...
+            'Callback','zmap_message_center.update_catalog()',...
             'Tag','zmap__cat_updatebutton');
         
         % edit button to modify catalog parameters
@@ -263,7 +326,7 @@ function h = create_message_figure()
         uicontrol('Parent',cat2panel,'Style','text', ...
             'String','No sub-selection of catalog!',...
             'Units','normalized',...
-            'Position',[0.1 0.1 .85 .85],...
+            'Position',[0.05 0.1 .9 .85],...
             'HorizontalAlignment','left',...
             'FontName','FixedWidth',...
             'FontSize',12,...
@@ -305,9 +368,11 @@ function update_selected_catalog_pane(~,~)
     
     
     if ~isempty(newcat)
-        mycat=ZmapCatalog(newcat,'newcat');
+        if ~isa(newcat,'ZmapCatalog')
+            newcat=ZmapCatalog(newcat,'newcat');
+        end
         h = findall(0,'tag','zmap_sel_cat_summary');
-        h.String = mycat.summary('simple');
+        h.String = newcat.summary('simple');
     else
         h = findall(0,'tag','zmap_sel_cat_summary');
         h.String = 'No subset selected';

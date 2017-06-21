@@ -35,10 +35,10 @@ la = 0;
 m0 = maepi(1,6);
 
 
-m = min(newt2(:,6));
+m = min(newt2.Magnitude);
 dt = 0.5;
 
-%t0 = ( max(newt2(:,3)) - mati)*365;
+%t0 = ( max(newt2.Date) - mati)*365;
 t0 = tlen;
 
 
@@ -54,7 +54,7 @@ for t = c0:dt:t0
     ti2 = [ti2 mati+t/365];
 end
 pla = 0; pla2 = 0;
-M = max(a(:,6)) - 5.;
+M = max(a.Magnitude) - 5.;
 for t = t0:dt:t0+365
     pla  = pla + (10^(A + bv*(M)) * (t + c)^(-p))  *dt;
     pla2 = pla2 + (10^(A + b0*(M)) * (t + c0)^(-p0))  *dt;
@@ -64,7 +64,7 @@ P = 1 - exp(-pla)
 P0  = 1 - exp(-pla2);
 figure_w_normalized_uicontrolunits(cum)
 
-l = newt2(:,3) >= mati + c/365;
+l = newt2.Date >= mati + c/365;
 tmpn = newt2(l,:);
 nu = (1:length(tmpn(:,3))+1); nu(length(tmpn(:,3))+1) = length(tmpn(:,3));
 try delete(plc); catch ME, error_handler(ME,@do_nothing);end

@@ -6,12 +6,12 @@ dx = 0.15 ;
 dz = 0.30 ;
 ni = 150;
 
-%a(:,1) = (a(:,1) - mean(a(:,1)))*111;
-%a(:,2) = (a(:,2) - mean(a(:,2)))*111;
+%a.Longitude = (a.Longitude - mean(a.Longitude))*111;
+%a.Latitude = (a.Latitude - mean(a.Latitude))*111;
 xc = 0; yc = 0; zc =0 ;
-x0 = min(a(:,1)); x1 = max(a(:,1));
-y0 = min(a(:,2)); y1 = max(a(:,2));
-z0 = min(a(:,7)); z1 = max(a(:,7));
+x0 = min(a.Longitude); x1 = max(a.Longitude);
+y0 = min(a.Latitude); y1 = max(a.Latitude);
+z0 = min(a.Depth); z1 = max(a.Depth);
 xv = x0:dx:x1;yv= y0:dy:y1;zv = z0:dz:z1;
 bvg = ones(length(x0:dx:x1),length(y0:dy:y1),length(z0:dz:z1));
 ra = ones(length(x0:dx:x1),length(y0:dy:y1),length(z0:dz:z1));
@@ -33,7 +33,7 @@ for x = x0:dx:x1
             i2 = i2+1;
 
             % calculate distance from center point and sort wrt distance
-            l = sqrt(((a(:,1) - x)).^2 + ((a(:,2) - y).^2 + ((a(:,7) - z)).^2)) ;
+            l = sqrt(((a.Longitude - x)).^2 + ((a.Latitude - y).^2 + ((a.Depth - z)).^2)) ;
             [s,is] = sort(l);
             b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -72,7 +72,7 @@ sl = slice(X,Y,Z,bvg,[x0+3*dx],[y0+4*dy],zs)
 clf
 sl1 = slice(X,Y,Z,bvg,x1-6*dx,y1-6*dy,[ z0+4*dz 9 14])
 hold on
-%plot3(a(:,2),a(:,1),a(:,7),'k.','MarkerSize',2)
+%plot3(a.Latitude,a.Longitude,a.Depth,'k.','MarkerSize',2)
 rotate3d on
 caxis([1.8 2.8])
 set(gca,'XLim',[-3 3 ],'xgrid','off')

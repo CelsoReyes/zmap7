@@ -27,11 +27,11 @@ if length(gx) < 2  ||  length(gy) < 2
 end
 
 close(gpf)
-welcome(' ',' ');think
+zmap_message_center.clear_message();;think
 %  make grid, calculate start- endtime etc.  ...
 %
 t0b = a(1,3)  ;
-n = length(a(:,1));
+n = a.Count;
 teb = a(n,3) ;
 tdiff = round((teb - t0b)*365/par1);
 cumu = zeros(length(t0b:par1/365:teb)+2);
@@ -54,11 +54,11 @@ drawnow
 x = newgri(:,1);y = newgri(:,2);
 % calculate distance from center point and sort wrt distance
 %
-lea = length(a(:,1));
+lea = a.Count;
 lex = length(x(:,1));
-al  = a(:,1) * ones(1,lex);
-ala = a(:,2) * ones(1,lex);
-alt = a(:,3) * ones(1,lex);
+al  = a.Longitude * ones(1,lex);
+ala = a.Latitude * ones(1,lex);
+alt = a.Date * ones(1,lex);
 al  = (al' - x * ones(1,lea)) * cos(pi/180*mean(y)*111);
 ala  = (ala' - y * ones(1,lea)) * 111;
 l = sqrt(al.^2 + ala.^2);
@@ -82,7 +82,7 @@ drawnow
 %save cumugrid.mat cumuall par1 ni dx dy gx gy tdiff t0b teb loc
 
 catSave3 =...
-    [ 'welcome(''Save Grid'',''  '');think;',...
+    [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     ' [file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile'');',...
     ' sapa2 = [''save '' path1 file1 '' x y tmpgri newgri xvect yvect ll cumuall par1 ni dx dy gx gy tdiff t0b teb loc a main faults mainfault coastline''];',...
     ' if length(file1) > 1, eval(sapa2),end , done'];

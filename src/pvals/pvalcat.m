@@ -23,7 +23,7 @@ maepi(1,3) = decyear([maepi(:,3:5) maepi(1,8:9)]);
 prompt = {'Minimum magnitude','Min. time after mainshock (in days)','Enter a negative value if you wish a fix c'};
 title = 'You can change the following parameters:';
 lines = 1;
-valm1 = min(newt2(:,6));
+valm1 = min(newt2.Magnitude);
 valtm1 = 0;
 valeg2 = 0;
 
@@ -33,11 +33,11 @@ answer = inputdlg(prompt,title,lines,def);
 valm1=str2double(answer{1}); valtm1 = str2num(answer{2}); valeg2 = str2num(answer{3});
 
 % cut catalog at mainshock time:
-l = newt2(:,3) > maepi(1,3);
+l = newt2.Date > maepi(1,3);
 newt2 = newt2(l,:);
 
 % cat at selecte magnitude threshold
-l = newt2(:,6) < valm1;
+l = newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
 ho2 = 'hold';
@@ -55,7 +55,7 @@ if (valeg2 < 0)
     CO = str2double(answer{1});
 end
 
-paramc1 = (newt2(:,6) >= valm1);
+paramc1 = (newt2.Magnitude >= valm1);
 pcat = newt2(paramc1,:);
 
 lt = pcat(:,3) >= valtm1;

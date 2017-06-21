@@ -32,7 +32,7 @@ function cllta(var1)
     end
 
     t0b = a(1,3);
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3);
     tdiff = round((teb - t0b)*365/par5);
     iwl3 = iwl*par5/365;                 % iwl3 is window in years

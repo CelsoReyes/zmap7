@@ -70,14 +70,17 @@ hold on
 
 % plot earthquakes according to depth
 if typele == 'dep'
-    plo  = plot3(a(a(:,7)<=dep1,1),a(a(:,7)<=dep1,2),...
-        -a(a(:,7)<=dep1,7),'xb');
+    depidx = a.Depth<=dep1;
+    plo  = plot3(a.Longitude(depidx),a.Latitude(depidx),...
+        -a.Depth(depidx),'xb');
     set(plo,'MarkerSize',6,'LineWidth',1.)
-    plo  = plot3(a(a(:,7)<=dep2&a(:,7)>dep1,1),a(a(:,7)<=dep2&a(:,7)>dep1,2),...
-        -a(a(:,7)<=dep2&a(:,7)>dep1,7),'xg');
+    depidx = a.Depth<=dep2&a.Depth>dep1;
+    plo  = plot3(a.Longitude(depidx),a.Latitude(depidx),...
+        -a.Depth(depidx),'xg');
     set(plo,'MarkerSize',3,'LineWidth',1.)
-    plo  = plot3(a(a(:,7)<=dep3&a(:,7)>dep2,1),a(a(:,7)<=dep3&a(:,7)>dep2,2),...
-        -a(a(:,7)<=dep3&a(:,7)>dep2,7),'xr');
+    depidx = a.Depth<=dep3&a.Depth>dep2;
+    plo  = plot3(a.Longitude(depidx),a.Latitude(depidx),...
+        -a.Depth(depidx),'xr');
     set(plo,'MarkerSize',6,'LineWidth',1.)
 
     % Plot a legend as a function of depth
@@ -89,14 +92,14 @@ end % if ty == dep
 
 %plot earthquakes according time
 if typele == 'tim'
-    plo =plot3(a(a(:,3)<=tim2&a(:,3)>=tim1,1),a(a(:,3)<=tim2&a(:,3)>=tim1,2),...
-        -a(a(:,3)<=tim2&a(:,3)>=tim1,7),'+b');;
+    timidx = a.Date<=tim2&a.Date>=tim1;
+    plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'+b');
     set(plo,'MarkerSize',6,'LineWidth',1.)
-    plo =plot3(a(a(:,3)<=tim3&a(:,3)>tim2,1),a(a(:,3)<=tim3&a(:,3)>tim2,2),...
-        -a(a(:,3)<=tim3&a(:,3)>tim2,7),'og');
+    timidx = a.Date<=tim3&a.Date>tim2;
+    plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'og');
     set(plo,'MarkerSize',6,'LineWidth',1.)
-    plo =plot3(a(a(:,3)<=tim4&a(:,3)>tim3,1),a(a(:,3)<=tim4&a(:,3)>tim3,2),...
-        -a(a(:,3)<=tim4&a(:,3)>tim3,7),'xr');
+    timidx = a.Date<=tim4&a.Date>tim3;
+    plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'xr');
     set(plo,'MarkerSize',6,'LineWidth',1.)
 
     ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -137,7 +140,7 @@ if isempty(main) ==0
     set(pl3b,'LineWidth',3.0)
 end
 
-axis([ s2 s1 s4 s3 min(-a(:,7)) max(-a(:,7))  ])
+axis([ min(a.Longitude) max(a.Longitude) min(a.Latitude) max(a.Latitude) min(-a.Depth) max(-a.Depth)  ])
 orient tall
 
 set(gca,'box','on',...
@@ -148,7 +151,6 @@ if term > 1;set(gca,'Color',[0 0 0]);end
 whitebg(gcf,[0 0 0]);
 watchoff(map3)
 
-viewer
 watchoff
 vie = gcf;
 figure_w_normalized_uicontrolunits(map3)

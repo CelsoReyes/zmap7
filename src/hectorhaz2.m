@@ -47,12 +47,12 @@ fid2 = fopen('sourczones.txt','w');
 l1 = [];
 
 for kk = 1:nb-1
-    l1 = [l1 prctile2(a(:,2),kk*100/nb)];
+    l1 = [l1 prctile2(a.Latitude,kk*100/nb)];
 end
 
 bo = [34.35 l1 34.88 ];
 for ii = 1:length(bo)-1
-    l = a(:,2) >= bo(ii) & a(:,2) < bo(ii+1);
+    l = a.Latitude >= bo(ii) & a.Latitude < bo(ii+1);
     figure_w_normalized_uicontrolunits(map)
     hold on
     plot(a(l,1),a(l,2),'k+')
@@ -65,14 +65,14 @@ for ii = 1:length(bo)-1
     plot(b2,bo(ii+1),'+r','Markersize',12)
     drawnow
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     calcp
     B = [B ; b1 bo(ii)  b2 bo(ii)];
 
     anz = [];
     for m2 = 4.25:0.5:6.25
         M2 = maepi(1,6) - m2;
-        t0 = (max(a(:,3)) - mati)*365;
+        t0 = (max(a.Date) - mati)*365;
         pla = 0; pla2 = 0;
 
         for t = t0:dt:t0+tpre
@@ -80,7 +80,7 @@ for ii = 1:length(bo)-1
             pla2 = pla2 + (10^(A + bv*(M2-0.5)) * (t + c)^(-p))  *dt;
         end
 
-        %fac = length(a(l,1))/length(a(:,1))
+        %fac = length(a(l,1))/a.Count
         anz = [anz ;  m2+0.25  (pla-pla2)/tpre];
 
     end

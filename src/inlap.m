@@ -27,7 +27,7 @@ set(gcf,'Units','pixel','NumberTitle','off','Name','Input Parameters for Seislap
 
 set(gcf,'pos',[ wex  wey welx+100 wely+50])
 
-bev=find(newcat(:,6)==max(newcat(:,6))); %biggest events in catalog
+bev=find(newcat.Magnitude==max(newcat.Magnitude)); %biggest events in catalog
 
 
 %default values of input parameters

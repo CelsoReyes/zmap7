@@ -12,7 +12,7 @@ tbckg = length(t1p(1):par1/365:t2p(1));
 tforg = length(t3p(1):par1/365:t4p(1));
 
 pause(0.1)
-minmag2 = min(newcat(:,6) + 0.1 );
+minmag2 = min(newcat.Magnitude + 0.1 );
 minmag2 = minmag2*10 ;
 minmag2 = round(minmag2);
 minmag2 = minmag2/10 ;       %  round to 0.1

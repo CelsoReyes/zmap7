@@ -4,8 +4,8 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-l = newcat(:,3) > t1p(1) & newcat(:,3) < t2p(1);
-n = length(newcat(l,:));
+l = newcat.Date > t1p(1) & newcat.Date < t2p(1);
+n = length(newcat.subset(l));
 mean_m1 = mean(newcat(l,6));
 b1 = (1/(mean_m1-min(newcat(l,6))))*log10(exp(1));
 sig1 = (sum((newcat(l,6)-mean_m1).^2))/(n*(n-1));
@@ -14,8 +14,8 @@ sig1 = 2.30*sig1*b1^2;            % standard deviation
 disp ([' b-value segment 1 = ' num2str(b1) ]);
 disp ([' standard dev b_val_1 = ' num2str(sig1) ]);
 
-l = newcat(:,3) > t3p(1) & newcat(:,3) < t4p(1);
-n = length(newcat(l,:));
+l = newcat.Date > t3p(1) & newcat.Date < t4p(1);
+n = length(newcat.subset(l));
 mean_m2 = mean(newcat(l,6));
 b2 = (1/(mean_m2-min(newcat(l,6))))*log10(exp(1));
 sig2 = (sum((newcat(l,6)-mean_m2).^2))/(n*(n-1));

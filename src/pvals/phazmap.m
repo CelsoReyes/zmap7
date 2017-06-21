@@ -155,7 +155,7 @@ switch(dohaz)
                 Y = exp(Y);
                 Y0(ste(K):ste(K+1)-1) = Y;
 
-                %af = log10(bvg(:,5)) + ass_b*min(a(:,6));
+                %af = log10(bvg(:,5)) + ass_b*min(a.Magnitude);
 
                 if inb1 == 1
                     % generic california model

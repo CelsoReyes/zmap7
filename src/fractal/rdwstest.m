@@ -10,9 +10,9 @@ global no1 bo1 inb1 inb2 eq0p
 
 % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
 % D = [x,y,z ]
-Da = [eq0p(1,:)' eq0p(2,:)' a(:,3) a(:,4) a(:,5) a(:,6) a(:,7)];
+Da = [eq0p(1,:)' eq0p(2,:)' a.Date a.Date.Month a.Date.Day a.Magnitude a.Depth];
 Da0 = find(Da(:,7) > 0);
-Da = Da(Da0,:);
+Da = Da.subset(Da0);
 clear Da0;
 
 if sel == 'in'
@@ -162,7 +162,7 @@ if sel == 'ca'
         'point to select, "l" last point.      '
         '                                      '];
 
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
     figure;
     ax=plot(Da(:,1),-Da(:,7),'o');
@@ -172,7 +172,7 @@ if sel == 'ca'
     hold on
     %ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     plos2 = plot(x,y,'b-','era','xor', 'Color', 'r');        % plot outline
     sum3 = 0.;
@@ -215,7 +215,7 @@ if sel == 'ca'
     end
 
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -255,7 +255,7 @@ if sel == 'ca'
 
             if tgl1 == 0   % take point within r
                 l3 = l <= ra;
-                b = Da(l3,:);      % new data per grid point (b) is sorted in distanc
+                b = Da.subset(l3);      % new data per grid point (b) is sorted in distanc
                 rd = ra;
             else
                 % take first ni points

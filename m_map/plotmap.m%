@@ -32,7 +32,7 @@ m_grid('box','on','linestyle',':');
 hold on
 shading flat
 
-%li = m_line(a(:,1),a(:,2));
+%li = m_line(a.Longitude,a.Latitude);
 %set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
 set(gcf,'Color','w')
 

@@ -22,16 +22,16 @@ switch ButtonName
 end % switch
 
 % sort by depth
-[s,is] = sort(a(:,7));
+[s,is] = sort(a.Depth);
 a = a(is(:,1),:) ;
 
 for i = 1:length(a)
 
     pl =plotm(a(i,2),a(i,1),'ow');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 4/max(a(:,6));
+    facm = 4/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -43,7 +43,7 @@ set(h1,'pos',[0.13 0.08 0.65 0.85])
 zdatam(handlem('allline'),max(max(tmap))) % keep line on surface
 
 % resort by time
-[s,is] = sort(a(:,3));
+[s,is] = sort(a.Date);
 a = a(is(:,1),:) ;
 
 return
@@ -66,7 +66,7 @@ colormap(c)
 % make a mag legend:
 
 anzmag = 0;allpl = [];allls = [];
-for i = floor(min(a(:,6))):1:ceil(max(a(:,6)))
+for i = floor(min(a.Magnitude)):1:ceil(max(a.Magnitude))
     axes(h1);
     pl = plotm(a(1,1),a(1,2),'ok');
     if i < 1; i = 1; end

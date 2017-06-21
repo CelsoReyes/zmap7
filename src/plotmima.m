@@ -16,7 +16,7 @@ function plotmima(var1)
 
     if var1 == 1
 
-        for i = 1:length(a(:,6))
+        for i = 1:a.Count
             pl =  plot(a(i,1),a(i,2),'ro');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc)
@@ -24,7 +24,7 @@ function plotmima(var1)
 
     elseif var1 == 2
 
-        for i = 1:length(a(:,6))
+        for i = 1:a.Count
             pl =  plot(a(i,1),a(i,2),'bx');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc)
@@ -32,7 +32,7 @@ function plotmima(var1)
 
     elseif var1 == 3
 
-        for i = 1:length(a(:,6))
+        for i = 1:a.Count
             pl =  plot(a(i,1),a(i,2),'bx');
             hold on
             c = mi(i,2)/max(mi(:,2));
@@ -40,7 +40,7 @@ function plotmima(var1)
         end
 
     elseif var1 == 4
-        pl =  plot(a(:,1),a(:,2),'bx');
+        pl =  plot(a.Longitude,a.Latitude,'bx');
     end
 
     hold on

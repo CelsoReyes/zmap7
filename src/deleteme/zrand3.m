@@ -35,7 +35,7 @@ na = no;
 
 while na+1000 > 1000;
     if na > 1000; na = 1000; end
-    l = ceil(rand([ni na])*length(a(:,3)));
+    l = ceil(rand([ni na])*a.Count);
     [cumu, xt] = hist(reshape(a(l,3),ni,na),(t0b:par1/365:teb));
     for j = 2:tdiff-iwl
         cu = [cumu(1:j-1,:) ; cumu(j+iwl+1:length(cumu(:,1)),:)];

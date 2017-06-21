@@ -26,6 +26,6 @@ if term == 'mono ';
     whitebg(mess) ; 
 end
 set(gca,'visible','off');
-welcome()
+zmap_message_center.set_message()
 set(mess,'visible','on');
 done()

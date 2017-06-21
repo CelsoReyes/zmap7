@@ -9,8 +9,8 @@ clear global ztime1
 clear global ztime2
 clear ZBEL
 clear ZABO
-%    maxmg = floor(max(newcat(:,6)));
-xsum = length(newcat(:,1));
+%    maxmg = floor(max(newcat.Magnitude));
+xsum = newcat.Count;
 t0b = newcat(1,3)
 teb = newcat(xsum,3)
 incx = par1/365;
@@ -56,8 +56,8 @@ for i = minmg:magstep:maxmg,         % steps in magnitude
 
     %uicontrol('Units','normal','Position',[.90 .10 .10 %.10],'String','Wait... ')
 
-    l =   newcat(:,6) < i;            % Mags and below
-    junk = newcat(l,:);
+    l =   newcat.Magnitude < i;            % Mags and below
+    junk = newcat.subset(l);
     if ~isempty(junk), [cumu1, xt] = hist(junk(:,3),xt); end
 
     ztime1 = genas(cumu1,xt,bin1,bin0,bin1);    % call GenAS algorithm
@@ -69,8 +69,8 @@ for i = minmg:magstep:maxmg,         % steps in magnitude
 
     clear global ztimes               %clears ztimes from previous results
 
-    l =   newcat(:,6) > i;           % Mags and above
-    junk = newcat(l,:);
+    l =   newcat.Magnitude > i;           % Mags and above
+    junk = newcat.subset(l);
     if ~isempty(junk), [cumu2, xt] = hist(junk(:,3),xt); end
 
     ztime2 = genas(cumu2,xt,bin1,bin0,bin1);   % call GenAS algorithm

@@ -25,21 +25,21 @@ for xx = -117.07:dx:-116.4
         y = [p(:,2)];      %  closes polygon
 
         sum3 = 0.;
-        XI = a(:,1);          % this substitution just to make equation below simple
-        YI = a(:,2);
+        XI = a.Longitude;          % this substitution just to make equation below simple
+        YI = a.Latitude;
         l2 = polygon_filter(x,y, XI, YI, 'inside');
 
-        newt2 = a(l2,:);
+        newt2 = a.subset(l2);
 
-        if length(newt2(:,1)) > 10   % nur wenn mindestens 6 EQ in zone
+        if newt2.Count > 10   % nur wenn mindestens 6 EQ in zone
 
             timeplot
 
             set(pl,'color','k')
             figure_w_normalized_uicontrolunits(map); hold on;
-            plot(newt2(:,1),newt2(:,2),'go')
+            plot(newt2.Longitude,newt2.Latitude,'go')
             disp(['This is source zone # ' num2str(cu) ]);
-            tlen = (max(a(:,3)) - mati)*365;
+            tlen = (max(a.Date) - mati)*365;
             calcp
             % da = [da ; y+dy/2 P];
             %B = [B ; b1 y  b2 y];

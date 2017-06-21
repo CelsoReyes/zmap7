@@ -21,12 +21,12 @@ end
 %
 %  Variables
 %
-long1 = min(E(:,1));
-long2 = max(E(:,1));
-lati1 = min(E(:,2));
-lati2 = max(E(:,2));
-dept1 = min(abs(E(:,7)));
-dept2 = max(abs(E(:,7)));
+long1 = min(E.Longitude);
+long2 = max(E.Longitude);
+lati1 = min(E.Latitude);
+lati2 = max(E.Latitude);
+dept1 = min(abs(E.Depth));
+dept2 = max(abs(E.Depth));
 
 long = abs(long1 - long2)/2;
 lati = abs(lati1 - lati2)/2;
@@ -50,7 +50,7 @@ de1 = (dept1 + dept2)/2 + (w*de);
 de2 = (dept1 + dept2)/2 - (w*de);
 
 
-Eb1 = find(E(:,1)<=lo1 & E(:,1)>=lo2);
+Eb1 = find(E.Longitude<=lo1 & E.Longitude>=lo2);
 Ebox = E(Eb1,:);
 Eb2 = find(Ebox(:,2)<=la1 & Ebox(:,2)>=la2);
 Ebox = Ebox(Eb2,:);
@@ -81,9 +81,9 @@ for i = 1:size(Ebox,1)
     lat1 = repmat(Ebox(i,2), [N,1]);
     depth1 = repmat(Ebox(i,7), [N,1]);
 
-    lon2 = E(:, 1);
-    lat2 = E(:, 2);
-    depth2 = E(:, 7);
+    lon2 = E.Longitude;
+    lat2 = E.Latitude;
+    depth2 = E.Depth;
 
     pairdist(k+1:k + size(lon1, 1)) = distance(lat1,lon1,lat2,lon2);
     depth(k+1:k + size(lon1, 1)) = depth1-depth2;

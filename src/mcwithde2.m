@@ -13,7 +13,7 @@ ni2 = inputdlg('Depth extend?','Input',1,def);
 l = ni2{:};
 intdep = str2double(l);
 think
-[s,is] = sort(newt2(:,7));
+[s,is] = sort(newt2.Depth);
 newt1 = newt2(is(:,1),:) ;
 watchon;
 
@@ -119,7 +119,7 @@ set(gca,'box','on',...
     'normal','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', di [km] = ' num2str(intdep), ', Mmin = ' num2str(min(newt2(:,6))) ];
+strib = [name ', di [km] = ' num2str(intdep), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
 ylabel('Mc')
 xlabel('Depth [km]')
 title2(strib,'FontWeight','bold',...

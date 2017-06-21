@@ -25,13 +25,13 @@ ButtonName=questdlg('Mc determination?', ...
 
 
 think
-[s,is] = sort(newt2(:,7));
+[s,is] = sort(newt2.Depth);
 newt1 = newt2(is(:,1),:) ;
 watchon;
 
-for t = min(newt2(:,7)):mokm:max(newt2(:,7))
+for t = min(newt2.Depth):mokm:max(newt2.Depth)
     % calculate b-value based an weighted LS
-    l = newt2(:,7) >= t & newt2(:,7) < t+drkm;
+    l = newt2.Depth >= t & newt2.Depth < t+drkm;
     b = newt2(l,:);
 
     switch ButtonName
@@ -121,7 +121,7 @@ set(gca,'box','on',...
     'bold','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2(:,6))) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
 ylabel('b-value')
 xlabel('Depth [km]')
 title2(strib,'FontWeight','bold',...

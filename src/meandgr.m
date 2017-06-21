@@ -107,7 +107,7 @@ if sel == 'ca'
         'Wait for point selected, then select the upper'
         'right corner (with same mouse button). Allow  '
         'some time to complete calculation of curves.  '];
-    welcome(' ',message2);
+    zmap_message_center.set_message(' ',message2);
     figure_w_normalized_uicontrolunits(map)
     [x0,y0]  = ginput(1);
     mark1 =    plot(x0,y0,'ro','era','normal');
@@ -128,11 +128,11 @@ if sel == 'ca'
         return
     end
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -149,7 +149,7 @@ if sel == 'ca'
     %
     % longitude  loop
     %
-    t2 = a(500,3)+2:0.3:max(a(:,3))-0.2;
+    t2 = a(500,3)+2:0.3:max(a.Date)-0.2;
     for x =  x0:dx:x1
         i1 = i1+ 1;
 
@@ -160,7 +160,7 @@ if sel == 'ca'
             i2 = i2+1;
 
             % calculate distance from center point and sort wrt distance
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
             [s,is] = sort(l);
             b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 

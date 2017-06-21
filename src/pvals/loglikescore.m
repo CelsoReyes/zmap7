@@ -43,7 +43,7 @@ end
 %%
 fore_start = maepi(:,3) + fore_sday/365;
 fore_end = maepi(:,3) + fore_eday/365;
-ll = tmp_newt2(:,3) >= fore_start & tmp_newt2(:,3) <= fore_end;
+ll = tmp_newt2.Date >= fore_start & tmp_newt2.Date <= fore_end;
 fore_cat = newt2(ll,:);
 
 dt = .1

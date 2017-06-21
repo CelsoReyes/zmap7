@@ -4,7 +4,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-length(newcat);
+newcat.Count;
 figure(getobj('Tag','main_map_ax'));
 if but == 1               %more option
     xi=xcordinate;
@@ -99,10 +99,10 @@ else
     pause(0.3)
     % calculate points with a polygon
 
-    XI = a(:,1);          % this substitution just to make equation below simple
-    YI = a(:,2);
+    XI = a.Longitude;          % this substitution just to make equation below simple
+    YI = a.Latitude;
     ll = polygon_filter(x,y, XI, YI, 'inside');
-    newcat = a(ll,:);                % newcat is created
+    newcat = a.subset(ll);                % newcat is created
     % a = newcat;                      % a and newcat now equal to reduced catalogue
     newt2 = newcat;                  % resets newt2
 
@@ -113,7 +113,7 @@ else
     disp('Done!')
     delete(wai)
     if isempty(newcat) ; disp('Catalog is empty!'); return;end
-    plot(newcat(:,1),newcat(:,2),'.g','era','back')
+    plot(newcat.Longitude,newcat.Latitude,'.g','era','back')
 
     timeplot
     %++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -127,7 +127,7 @@ else
     save polcor.dat xy -ascii
     messtext = [' The selected polygon has been saved '
         ' in the file polcor.dat              '];
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     disp(' The selected polygon has been saved in the file polcor.dat')
 
 end

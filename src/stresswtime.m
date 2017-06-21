@@ -22,10 +22,10 @@ cd(hodis);
 
 think
 
-for i = 1:nStep:length(newt2(:,1))-ni
+for i = 1:nStep:newt2.Count-ni
     % Check for data in catalog
     nCnt = i+ni;
-    if nCnt < length(newt2(:,1))-1
+    if nCnt < newt2.Count-1
         tmpi = [newt2(i:i+ni,10:12)];
         fMeanTime = mean(newt2(i:i+ni,3));
     else
@@ -133,7 +133,7 @@ bdep= figNumber;
 % pl3 = plot(mResStress(:,1),mResStress(:,6),'g^');
 % set(pl3,'LineWidth',1.,'MarkerSize',4,...
 %    'MarkerFaceColor','w','MarkerEdgeColor','b')
-% set(gca,'Xlim',[floor(min(newt2(:,3))) max(newt2(:,3))],'XTicklabel',[]);
+% set(gca,'Xlim',[floor(min(newt2.Date)) max(newt2.Date)],'XTicklabel',[]);
 % set(gca,'Ylim',[0 180]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
@@ -155,7 +155,7 @@ bdep= figNumber;
 % pl3 = plot(mResStress(:,1),mResStress(:,7),'g^');
 % set(pl3,'LineWidth',1.,'MarkerSize',4,...
 %     'MarkerFaceColor','w','MarkerEdgeColor','b')
-% set(gca,'Xlim',[floor(min(newt2(:,3))) max(newt2(:,3))],'XTicklabel',[]);
+% set(gca,'Xlim',[floor(min(newt2.Date)) max(newt2.Date)],'XTicklabel',[]);
 % set(gca,'Ylim',[0 90]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
@@ -171,7 +171,7 @@ bdep= figNumber;
 % pl3 =plot(mResStress(:,1),mResStress(:,8),'^k');
 % set(pl3,'LineWidth',1.,'MarkerSize',6,...
 %     'MarkerFaceColor','w','MarkerEdgeColor','k')
-% set(gca,'Xlim',[floor(min(newt2(:,3))) max(newt2(:,3)) ]);
+% set(gca,'Xlim',[floor(min(newt2.Date)) max(newt2.Date) ]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
 %     'bold','FontSize',fontsz.m,'Linewidth',1.2)

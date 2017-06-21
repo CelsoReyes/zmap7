@@ -15,10 +15,10 @@ for i= 1:length(newgri(:,1))
     %take first ni points
     %b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
     l = l <= ra;
-    b = newa(l,:);
+    b = newa.subset(l);
 
     % call the b-value function
-    if isempty(b) == 1; b = newa(1,:); end
+    if isempty(b) == 1; b = newa.subset(1); end
     if length(b(:,1)) >= 30;
 
         [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);

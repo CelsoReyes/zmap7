@@ -273,7 +273,7 @@ switch(plt)
         set(gca,'FontSize',12,'FontWeight','bold','TickDir','out','Ticklength',[0.02 0.02])
         set(gcf,'Color','w','InvertHardcopy','off')
         set(gcf,'renderer','zbuffer')
-        set(gca,'dataaspect',[1 cos(pi/180*nanmean(a(:,2))) 1])
+        set(gca,'dataaspect',[1 cos(pi/180*nanmean(a.Latitude)) 1])
 
 
     case 'plo2'
@@ -302,7 +302,7 @@ switch(plt)
         set(gcf,'Color','w','InvertHardcopy','off')
         xlabel('Longitude'),ylabel('Latitude')
         set(gcf,'renderer','zbuffer')
-        set(gca,'dataaspect',[1 cos(pi/180*mean(a(:,2))) 1])
+        set(gca,'dataaspect',[1 cos(pi/180*mean(a.Latitude)) 1])
 
 
     case 'ploy'
@@ -326,7 +326,7 @@ switch(plt)
         set(gcf,'Color','w','InvertHardcopy','off')
         axis([ s2 s1 s4 s3])
         set(gcf,'renderer','zbuffer')
-        set(gca,'dataaspect',[1 cos(pi/180*mean(a(:,2))) 1])
+        set(gca,'dataaspect',[1 cos(pi/180*mean(a.Latitude)) 1])
 
 
     case 'err'  % Tbase data not found
@@ -341,7 +341,7 @@ switch(plt)
                 [file1,path1] = uigetfile([ '*.bin'],' Terrain base global 5 min grid path (tbase.bin)');
 
                 if length(path1) < 2
-                    welcome(' ',' ');done
+                    zmap_message_center.clear_message();;done
                     return
                 else
                     addpath([path1]);
@@ -361,7 +361,7 @@ switch(plt)
         [file1,path1] = uigetfile([ '*.img'],' Please define the path to the file topo_6.2.img (2 min DEM)');
 
         if length(path1) < 2
-            welcome(' ',' ');done
+            zmap_message_center.clear_message();;done
             return
         else
             addpath([path1]);
@@ -387,7 +387,7 @@ switch(plt)
             case 'OK'
                 [file1,path1] = uigetfile([ '*.mat'],'File containing  mydem, mx, my ');
                 if length(path1) < 2
-                    welcome(' ',' ');done
+                    zmap_message_center.clear_message();;done
                     return
                 else
                     lopa = [path1 file1];

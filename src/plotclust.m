@@ -43,7 +43,7 @@ rect = [0.1,  0.20, 0.75, 0.65];
 axes('position',rect);
 
 
-plot(a(:,1),a(:,2),'k.','Markersize',2)
+plot(a.Longitude,a.Latitude,'k.','Markersize',2)
 hold on
 lec = max(clus);
 

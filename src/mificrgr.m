@@ -25,7 +25,7 @@ if var1==1
     ldx=100;                     %side length of interaction zone in km
     tlap=300;                    %interaction time in days
     Mmin=3;                      %minimum magnitude
-    stime=a(find(a(:,6)==max(a(:,6))),3);
+    stime=a(find(a.Magnitude==max(a.Magnitude)),3);
     stime=stime(1);
 
 
@@ -113,7 +113,7 @@ elseif var1==2           %area selection
         'or the cursor to the select the poly- '
         'gon. Use the RIGTH mouse button for   '
         'the final point.                      '];
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
 
     [existFlag,figNumber]=figure_exists('Cross -Section',1);
@@ -127,7 +127,7 @@ elseif var1==2           %area selection
     hold on
     ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     figure(xsec_fig)
 

@@ -98,7 +98,7 @@ figure_w_normalized_uicontrolunits(cube)
 delete(gca)
 abo = abo2;
 if isempty(abo)
-    welcome(' ','No data above threshold');
+    zmap_message_center.set_info(' ','No data above threshold');
     return;
 end
 rect= [0.2 0.2 0.6 0.6];

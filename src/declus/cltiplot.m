@@ -105,17 +105,17 @@ function cltiplot(var1)
     elseif var1==2
         newt2=ttcat;
     end
-    [ii,i]=sort(newt2(:,3));
+    [ii,i]=sort(newt2.Date);
     newt2=newt2(i,:);
     statime=[];
-    bigmag=max(newt2(:,6));
+    bigmag=max(newt2.Magnitude);
     % select big events ( > bigmag)
     %
-    l = newt2(:,6) == bigmag;
+    l = newt2.Magnitude == bigmag;
     big = newt2(l,:);
     %calculate start -end time of overall catalog
     t0b = newt2(1,3);
-    n = length(newt2(:,1));
+    n = newt2.Count;
     teb = newt2(n,3);
     tdiff = (teb - t0b)*365;
     par5=tdiff/100;         %bin length is 1/100 of timedifference(in days)
@@ -136,11 +136,11 @@ function cltiplot(var1)
     %
     % calculate cumulative number versus time and bin it
     %
-    n = length(newt2(:,1));
+    n = newt2.Count;
     if par5 >=1
-        [cumu, xt] = hist(newt2(:,3),(t0b-par5/365:par5/365:teb+par5/365));
+        [cumu, xt] = hist(newt2.Date,(t0b-par5/365:par5/365:teb+par5/365));
     else
-        [cumu, xt] = hist((newt2(:,3)-newt2(1,3)+par5/365)*365,(0:par5:(tdiff+2*par5)));
+        [cumu, xt] = hist((newt2.Date-newt2(1,3)+par5/365)*365,(0:par5:(tdiff+2*par5)));
     end
     cumu2=cumsum(cumu);
 

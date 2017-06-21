@@ -14,7 +14,7 @@ set(gca,'visible','on','FontSize',fontsz.s,...
 ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
 
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 
 plos2 = plot(x,y,'b-','era','xor', 'Color', 'r');        % plot outline
 sum3 = 0.;

@@ -14,5 +14,5 @@ eval(do)
 timeplot
 mainmap_overview()
 axes(h1)
-plot(newt2(:,1),newt2(:,2),'*k','era','normal')
+plot(newt2.Longitude,newt2.Latitude,'*k','era','normal')
 %

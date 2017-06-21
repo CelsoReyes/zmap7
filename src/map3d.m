@@ -23,7 +23,7 @@ for i3 = z0:1*dz:z1
     set(gca,'FontSize',8')
 
     hold on
-    l = a(:,7) > i3-dz/2 & a(:,7) < i3+dz/2;
+    l = a.Depth > i3-dz/2 & a.Depth < i3+dz/2;
     plot3(a(l,1),a(l,2),a(l,7)*0,'k.')
     shading interp
     % axis('off')

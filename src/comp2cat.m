@@ -20,19 +20,19 @@ switch(do)
                 lopa = [path1 file1];
                 do = ['load(lopa)'];
                 eval(do,'disp(''Error lodaing data! Are they in the right *.mat format??'')');
-                if max(a(:,3)) < 100;
-                    a(:,3) = a(:,3)+1900;
+                if max(a.Date) < 100;
+                    a.Date = a.Date+1900;
                     errdisp = ...
                         ['The catalog dates appear to be 2 digit.    '
                         'Action taken: added 1900 for Y2K compliance'];
-                    welcome('Error!  Alert!',errdisp)
+                    zmap_message_center.set_message('Error!  Alert!',errdisp)
                     warndlg(errdisp)
                 end
                 %R calculate time in decimals and substitute in column 3 of file  "a"
                 if length(a(1,:))== 7
-                    a(:,3) = decyear(a(:,3:5));
+                    a.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    a(:,3) = decyear(a(:,[3:5 8 9]));
+                    a.Date = decyear(a(:,[3:5 8 9]));
                 end
 
                 nie = a(:,:);
@@ -44,19 +44,19 @@ switch(do)
                 catch ME
                     error_handler(ME, 'Error loading data! Are they in the right *.mat format?');
                 end
-                if max(a(:,3)) < 100
-                    a(:,3) = a(:,3)+1900;
+                if max(a.Date) < 100
+                    a.Date = a.Date+1900;
                     errdisp = ...
                         ['The catalog dates appear to be 2 digit.    '
                         'Action taken: added 1900 for Y2K compliance'];
-                    welcome('Error!  Alert!',errdisp)
+                    zmap_message_center.set_message('Error!  Alert!',errdisp)
                     warndlg(errdisp)
                 end
                 %R calculate time in decimals and substitute in column 3 of file  "a"
                 if length(a(1,:))== 7
-                    a(:,3) = decyear(a(:,3:5));
+                    a.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    a(:,3) = decyear(a(:,[3:5 8 9]));
+                    a.Date = decyear(a(:,[3:5 8 9]));
                 end
 
                 jm = a(:,:);

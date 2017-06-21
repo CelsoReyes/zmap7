@@ -8,7 +8,7 @@ report_this_filefun(mfilename('fullpath'));
 dat = [];
 
 for i = magco0 - 0.5:0.1:magco0+0.7
-    l = newt2(:,6) >= i; nu = length(newt2(l,6));
+    l = newt2.Magnitude >= i; nu = length(newt2(l,6));
     [bv magco stan,  av] =  bvalca3(newt2(l,:),2,2);
     nc = 10.^(av - bv*(i+0.05)) ;
     dat = [dat ; i nc nu nu/nc];

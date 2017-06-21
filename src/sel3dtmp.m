@@ -8,7 +8,7 @@ figure_w_normalized_uicontrolunits(xsec_fig)
 
 ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 
 plos2 = plot(x,y,'b-','era','xor');        % plot outline
 sum3 = 0.;

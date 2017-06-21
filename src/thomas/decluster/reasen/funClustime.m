@@ -16,16 +16,16 @@ eqtime=[];%time of eqs. calculated according routine
 %  newcat=tmpcat;
 % end
 
-if max(newcat(:,3)) < 100
-   eqtime = datenum(floor(newcat(:,3))+1900, newcat(:,4), newcat(:,5), newcat(:,8), newcat(:,9),newcat(:,9)*0)-datenum(1902,1,1);
+if max(newcat.Date) < 100
+   eqtime = datenum(floor(newcat.Date)+1900, newcat.Date.Month, newcat.Date.Day, newcat.Date.Hour, newcat.Date.Minute,newcat.Date.Minute*0)-datenum(1902,1,1);
 else
-   eqtime = datenum(floor(newcat(:,3)), newcat(:,4), newcat(:,5), newcat(:,8), newcat(:,9),newcat(:,9)*0)-datenum(1902,1,1);
+   eqtime = datenum(floor(newcat.Date), newcat.Date.Month, newcat.Date.Day, newcat.Date.Hour, newcat.Date.Minute,newcat.Date.Minute*0)-datenum(1902,1,1);
 end
 return
 
- l =  find(rem(fix(newcat(:,3)),4)==0);     %leapyears
+ l =  find(rem(fix(newcat.Date),4)==0);     %leapyears
  if size(l,1) > 0
-  if length(newcat(1,:))>=9
+  if length(newcat.subset(1))>=9
    eqtime(l)=mdayl(newcat(l,4),1)+(newcat(l,5)-1)+newcat(l,8)/24+newcat(l,9)/1440+...
         c(fix(newcat(l,3))-1,1);
   else
@@ -33,9 +33,9 @@ return
   end
  end
 
- l =  find(rem(fix(newcat(:,3)),4)~=0);   %normal years
+ l =  find(rem(fix(newcat.Date),4)~=0);   %normal years
  if size(l,1) > 0
-  if length(newcat(1,:))>=9
+  if length(newcat.subset(1))>=9
    eqtime(l)=mday(newcat(l,4),1)+(newcat(l,5)-1)+newcat(l,8)/24+newcat(l,9)/1440+...
         c(fix(newcat(l,3))-1,1);
   else

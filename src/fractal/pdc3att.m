@@ -15,7 +15,7 @@ j = nchoosek(N,2);			% j= # of interevent distances calculated
 pairdist = zeros(j,1);
 depth = zeros(j,1);
 k = 0;
-%E(:,2)= (max(Da(:,2))+min(Da(:,2)))/2;
+%E.Latitude= (max(Da(:,2))+min(Da(:,2)))/2;
 
 
 Ho_Wb = waitbar(0,'Calculating the fractal dimension D');

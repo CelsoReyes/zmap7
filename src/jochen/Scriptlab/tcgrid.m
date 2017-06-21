@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
 
 valeg = 1;
-valm1 = min(a(:,6));
+valm1 = min(a.Magnitude);
 prf = NaN;
 if sel == 'in'
     % Set the grid parameter
@@ -25,11 +25,11 @@ if sel == 'in'
     fSplitTime = 2000.4;
 
     % cut catalog at mainshock time:
-%     l = a(:,3) > maepi(1,3);
-%     a = a(l,:);
+%     l = a.Date > maepi(1,3);
+%     a = a.subset(l);
 
     % cat at selecte magnitude threshold
-    l = a(:,6) < valm1;
+    l = a.Magnitude < valm1;
     a(l,:) = [];
     newt2 = a;
 
@@ -258,7 +258,7 @@ if sel == 'ca'
 
     if save_grid == 1
         grid_save =...
-            [ 'welcome(''Saving Grid'',''  '');think;',...
+            [ 'zmap_message_center.set_info(''Saving Grid'',''  '');think;',...
                 '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid File Name?'') ;',...
                 ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll''];',' if length(file1) > 1, eval(gs),end , done'];
         eval(grid_save)
@@ -271,11 +271,11 @@ if sel == 'ca'
         return
     end
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -299,21 +299,21 @@ if sel == 'ca'
 
 
         % calculate distance from center point and sort with distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         mCat = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         % Use Radius to determine grid node catalogs
         l3 = l <= ra;
-        mCat = a(l3,:);      % new data per grid point (mCat) is sorted in distance
+        mCat = a.subset(l3);      % new data per grid point (mCat) is sorted in distance
 
 
         %         % Select earthquakes in non-overlapping rectangles
-        %         vSel = (a(:,1) >= (newgri(i,1)-dx/2)) & (a(:,1) < (newgri(i,1)+dx/2)) &...
-        %             (a(:,2) >= (newgri(i,2)-dy/2)) & (a(:,2) < (newgri(i,2)+dy/2));
+        %         vSel = (a.Longitude >= (newgri(i,1)-dx/2)) & (a.Longitude < (newgri(i,1)+dx/2)) &...
+        %             (a.Latitude >= (newgri(i,2)-dy/2)) & (a.Latitude < (newgri(i,2)+dy/2));
         %         % Select earthquakes in overlapping rectangles
-        %         vSel = (a(:,1) >= (newgri(i,1)-dx)) & (a(:,1) < (newgri(i,1)+dx)) &...
-        %             (a(:,2) >= (newgri(i,2)-dy)) & (a(:,2) < (newgri(i,2)+dy));
-        %         mCat = a(vSel,:);
+        %         vSel = (a.Longitude >= (newgri(i,1)-dx)) & (a.Longitude < (newgri(i,1)+dx)) &...
+        %             (a.Latitude >= (newgri(i,2)-dy)) & (a.Latitude < (newgri(i,2)+dy));
+        %         mCat = a.subset(vSel);
 
         % Initialize
         fMinTime = min(mCat(:,3));

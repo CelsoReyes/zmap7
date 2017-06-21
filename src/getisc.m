@@ -78,7 +78,7 @@ for i = 1:le
 
 end
 
-l = a(:,3) == 0;
+l = a.Date == 0;
 a(l,:) = [];
 a = a;
 par1 = 14;

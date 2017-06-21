@@ -1,26 +1,26 @@
 report_this_filefun(mfilename('fullpath'));
 
 m = [];
-m =0:0.1:max(newt2(:,6));
-m2 =min(newt2(:,6)):0.1:max(newt2(:,6));
-m3 = 10.^(-(m2-min(newt2(:,6))));
-m3 = m3*length(newt2(:,6));
+m =0:0.1:max(newt2.Magnitude);
+m2 =min(newt2.Magnitude):0.1:max(newt2.Magnitude);
+m3 = 10.^(-(m2-min(newt2.Magnitude)));
+m3 = m3*newt2.Count;
 
-k = 0:0.1:min(newt2(:,6))-0.1;
-m4 = k*8+length(newt2(:,6));
+k = 0:0.1:min(newt2.Magnitude)-0.1;
+m4 = k*8+newt2.Count;
 m = [m4 m3];
 clf
-%plot(0:0.1:max(newt2(:,6)),log10(m))
+%plot(0:0.1:max(newt2.Magnitude),log10(m))
 %grid
 %hold on
 newcat = newt2;
 
 lepo = length(m) -1;
-mm = [length(newt2(:,6)) m(1:lepo) ];
+mm = [newt2.Count m(1:lepo) ];
 bval = mm-m;
 bvalfl = bval(length(bval):-1:1);
-maxmag = max(newcat(:,6));
-mima = min(newcat(:,6));
+maxmag = max(newcat.Magnitude);
+mima = min(newcat.Magnitude);
 if mima > 0 ; mima = 0 ; end
 
 % number of mag units
@@ -87,7 +87,7 @@ text( M2b(1),M2b(2),['|: M2=',tt4] )
 ll = xt3 > M1b(1) & xt3 < M2b(1);
 x = xt3(ll);
 
-l = newcat(:,6) > M1b(1) & newcat(:,6) < M2b(1);
+l = newcat.Magnitude > M1b(1) & newcat.Magnitude < M2b(1);
 me = 0.4343/(sum(bval.*xt3)/(sum(bval))-M1b(1));
 mer = 1.96*me/(sqrt(length(newcat(l,6))));
 
@@ -134,7 +134,7 @@ set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 txt1=text(.16, .1,['Standard Deviation: ',tt2]);
 set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 set(gcf,'visible','on');
-welcome('  ','Done')
+zmap_message_center.set_info('  ','Done')
 done
 
 

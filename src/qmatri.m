@@ -12,15 +12,15 @@ y = an(1,2),x = an(1,1); z = an(:,7); Te = an(:,3);
 %figure_w_normalized_uicontrolunits(map)
 axes(hs);
 [x,y] = ginput(1)
-Te = max(a(:,3))
+Te = max(a.Date)
 z = 5
 
-l = a(:,3) < Te;
-a = a(l,:);
+l = a.Date < Te;
+a = a.subset(l);
 
 
-dT = max(a(:,3)) - min(a(:,3));
-di = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+dT = max(a.Date) - min(a.Date);
+di = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
 
 
 N =[];
@@ -29,7 +29,7 @@ for i1 = 1:1:length(R)
     % take first ni points
     %
     l = di <= R(i1);
-    b = a(l,:);      % ne
+    b = a.subset(l);      % ne
     for i2 = 1:1:length(Tw)
 
         l = b(:,3) >= Te-Tw(i2) & b(:,3) < Te;

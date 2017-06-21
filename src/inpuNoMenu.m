@@ -10,8 +10,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
-t0b = min(a(:,3));
-teb = max(a(:,3));
+t0b = min(a.Date);
+teb = max(a.Date);
 tdiff = (teb - t0b)*365;
 
 if ~exist('par1','var')
@@ -25,16 +25,16 @@ if ~exist('par1','var')
     par1 = 30;
 end
 
-minmag = max(a(:,6)) -0.2;
-dep1 = 0.3*max(a(:,7));
-dep2 = 0.6*max(a(:,7));
-dep3 = max(a(:,7));
-minti = min(a(:,3));
-maxti  = max(a(:,3));
-minma = min(a(:,6));
-maxma = max(a(:,6));
-mindep = min(a(:,7));
-maxdep = max(a(:,7));
+minmag = max(a.Magnitude) -0.2;
+dep1 = 0.3*max(a.Depth);
+dep2 = 0.6*max(a.Depth);
+dep3 = max(a.Depth);
+minti = min(a.Date);
+maxti  = max(a.Date);
+minma = min(a.Magnitude);
+maxma = max(a.Magnitude);
+mindep = min(a.Depth);
+maxdep = max(a.Depth);
 
 
 think;

@@ -38,16 +38,16 @@ function [rc] = calc_ratechangeF(a,time,timef,bootloops,maepi)
     %     fMc = fMc0;
     % end
 report_this_filefun(mfilename('fullpath'));
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
     date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
     time_aftershock = date_matlab-date_main;
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a(l,:);
+    eqcatalogue = a.subset(l);
 
     % Estimation of Omori parameters from learning period
-    l = tas <= time;% & a(:,6) >= fMc;
+    l = tas <= time;% & a.Magnitude >= fMc;
     time_as=tas(l);
     % [pval, pvalstd, cval, cvalstd, kval, kvalstd, loopout] = brutebootF(time_as, bootloops);
     % Calculate uncertainties and mean values of p,c,and k
@@ -89,7 +89,7 @@ report_this_filefun(mfilename('fullpath'));
         %         if t_forecast > max(time_as)
         %             return
         %         end
-        %l = time_as <= t_forecast & a(:,6) >= fMc & time_as >= time;
+        %l = time_as <= t_forecast & a.Magnitude >= fMc & time_as >= time;
         %l = tas <= time+timef;
         % Find amount of events in forecast period for modeled data
         nummod = max(cumnr_modelf)-cumnr_modelf(length(time_as));

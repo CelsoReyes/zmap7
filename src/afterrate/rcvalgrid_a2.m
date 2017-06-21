@@ -13,7 +13,7 @@ global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
 report_this_filefun(mfilename('fullpath'));
 
 valeg = 1;
-valm1 = min(a(:,6));
+valm1 = min(a.Magnitude);
 prf = NaN;
 if sel == 'in'
     % Set the grid parameter
@@ -31,11 +31,11 @@ if sel == 'in'
     bGridEntireArea = 0; % Grid area, interactive or entire map
 
     % cut catalog at mainshock time:
-    l = a(:,3) > maepi(1,3);
-    a = a(l,:);
+    l = a.Date > maepi(1,3);
+    a = a.subset(l);
 
     % cat at selecte magnitude threshold
-    l = a(:,6) < valm1;
+    l = a.Magnitude < valm1;
     a(l,:) = [];
     newt2 = a;
 
@@ -296,11 +296,11 @@ if sel == 'ca'
     % Plot all grid points
     plot(newgri(:,1),newgri(:,2),'+k','era','back')
     drawnow
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
 
@@ -320,7 +320,7 @@ if sel == 'ca'
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort with distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -328,7 +328,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             % Use Radius to determine grid node catalogs
             l3 = l <= ra;
-            b = a(l3,:);      % new data per grid point (b) is sorted in distance
+            b = a.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
             vDist = sort(l(l3));
             fMaxDist = max(vDist);

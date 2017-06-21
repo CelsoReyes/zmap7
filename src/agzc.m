@@ -20,7 +20,7 @@ messtext= ...
     ' the calculation with a ^C. The results         '
     ' calculated so far are stored in the variable re'];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 figure_w_normalized_uicontrolunits(mess)
 
 def = {'5','0.1'};

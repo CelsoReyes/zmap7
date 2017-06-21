@@ -16,22 +16,22 @@ function plot_optfit(a,time,timef,bootloops,maepi)
     warning off;
 
     [fMc] = calc_Mc(a, 1, 0.1)+0.2;
-    l = a(:,6) >= fMc;
-    a = a(l,:);
+    l = a.Magnitude >= fMc;
+    a = a.subset(l);
 
     if size(a,2) == 9
-        date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+        date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
         date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
     else
-        date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),a(:,10));
+        date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,a(:,10));
         date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),maepi(10));
     end
     time_aftershock = date_matlab-date_main;
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
     fDay = 1;
     ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (a(:,3) > maepi(:,3)+ft_c & a(:,3)<= maepi(:,3)+time/365);
-    mCat = a(vSel,:);
+    vSel = (a.Date > maepi(:,3)+ft_c & a.Date<= maepi(:,3)+time/365);
+    mCat = a.subset(vSel);
     vSel = mCat(:,6) == max(mCat(:,6));
     vBigAf = mCat(vSel,:);
     if length(mCat(:,1)) > 1
@@ -49,7 +49,7 @@ function plot_optfit(a,time,timef,bootloops,maepi)
     % Aftershock times
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a(l,:);
+    eqcatalogue = a.subset(l);
 
     % time_as: Learning period
     l = tas <= time;

@@ -41,15 +41,15 @@ elseif ic == 2
     %  calculate distance for each earthquake from center point
     %  and sort by distance
     %
-    ll = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+    ll = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 
     l = ll < rad;
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     %
     % plot events on map as 'x':
 
     hold on
-    plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','back');
+    plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
 
 
@@ -58,7 +58,7 @@ elseif ic == 2
     stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6) '; R = ' num2str(rad) ' km'];
     stri = stri1;
 
-    [s,is] = sort(newt2(:,3));
+    [s,is] = sort(newt2.Date);
     newt2 = newt2(is(:,1),:) ;
     newcat = newt2;                   % resets newcat and newt2
     timeplot
@@ -71,7 +71,7 @@ elseif ic == 3
     %  calculate distance for each earthquake from center point
     %  and sort by distance
     %
-    l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+    l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 
     [s,is] = sort(l);            % sort by distance
     new = a(is(:,1),:) ;
@@ -87,7 +87,7 @@ elseif ic == 3
     % plot events on map as 'x':
 
     hold on
-    plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','back');
+    plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
 
     newcat = newt2;                   % resets newcat and newt2

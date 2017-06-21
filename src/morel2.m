@@ -14,13 +14,13 @@ set(gcf,'PaperPosition',[2 1 5.5 7.5])
 matdraw
 
 %  Do the calculation
-%  newt2 is the currently selected catalog, newt2(:,6) is the
+%  newt2 is the currently selected catalog, newt2.Magnitude is the
 % vextor containing the magnitudes
-c = cumsum( 10.^(1.5*newt2(:,6) + 16.1));
+c = cumsum( 10.^(1.5*newt2.Magnitude + 16.1));
 
 
 % plot the results in an xy plot
-pl = plot(newt2(:,3),c);
+pl = plot(newt2.Date,c);
 set(pl,'LineWidth',2.0)
 xlabel('Time in years ','FontWeight','bold','FontSize',fontsz.m)
 ylabel('Cumulative Moment ','FontWeight','bold','FontSize',fontsz.m)

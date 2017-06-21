@@ -270,11 +270,11 @@ if strcmp('ca', sel)
     % Plot all grid points
     plot(newgri(:,1),newgri(:,2),'+k','era','back')
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -292,7 +292,7 @@ if strcmp('ca', sel)
 
     itotal = length(newgri(:,1));
     bvg = zeros(itotal,14)*nan;
-    bo1 = bv; no1 = length(a(:,1));
+    bo1 = bv; no1 = a.Count;
 
     % loop over all points
     for i= 1:length(newgri(:,1))
@@ -300,13 +300,13 @@ if strcmp('ca', sel)
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = a(l3,:);      % new data per grid point (b) is sorted in distanc
+            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = ra;
         else
             % take first ni points
@@ -373,19 +373,19 @@ if strcmp('ca', sel)
     % save data
     %
     %catSave3 =...
-    %    [ 'welcome(''Save Grid'',''  '');think;',...
+    %    [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     %        '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
     %        ' sapa2 = [''save '' path1 file1 '' bvg gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ''];',...
     %        ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
 
     %not tmpgri but newgri
 
-    %[ 'welcome(''Save Grid'',''  '');think;',...
+    %[ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     %       '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
     %       ' sapa2 = [''save '' path1 file1 '' bvg gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect newgri ll ''];',...
     %       ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;wholePath=[path1 file1]; ',...
         ' sapa2 = [''save('' ''wholePath'' '', ''''bvg'''',''''gx'''', ''''gy'''', ''''dx'''', ''''dy'''', ''''par1'''', ''''tdiff'''', ''''t0b'''', ''''teb'''', ''''a'''', ''''main'''', ''''faults'''', ''''mainfault'''', ''''coastline'''', ''''yvect'''', ''''xvect'''', ''''newgri'''', ''''ll'''')''];',...
         ' if length(file1) > 1, eval(sapa2);,end , done'];

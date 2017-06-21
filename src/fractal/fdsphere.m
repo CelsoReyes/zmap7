@@ -9,12 +9,12 @@
 %
 %  Variables
 %
-slon1 = min(E(:,1));
-slon2 = max(E(:,1));
-slat1 = min(E(:,2));
-slat2 = max(E(:,2));
-sdep1 = min(abs(E(:,7)));
-sdep2 = max(abs(E(:,7)));
+slon1 = min(E.Longitude);
+slon2 = max(E.Longitude);
+slat1 = min(E.Latitude);
+slat2 = max(E.Latitude);
+sdep1 = min(abs(E.Depth));
+sdep2 = max(abs(E.Depth));
 %
 %
 % Calculates the distances from the center point to all the other of the given catalog
@@ -23,7 +23,7 @@ sdep2 = max(abs(E(:,7)));
 ctr = [(slon1 + slon2)/2, (slat1 + slat2)/2, (sdep1 + sdep2)/2];		% Center point of the volume
 %ctr = [-152.4, (slat1 + slat2)/2, (sdep1 + sdep2)/2];
 
-%Ein = find(E(:,7)>-15 & E(:,7)<0);
+%Ein = find(E.Depth>-15 & E.Depth<0);
 %E1 = E(Ein,:);
 E1 = E;
 N1 = size(E1,1);			% N= # of events in the earthquake catalogue, or random catalog
@@ -32,7 +32,7 @@ ctrlon = repmat(ctr(1,1), [N1,1]);
 ctrlat = repmat(ctr(1,2), [N1,1]);
 ctrdep = repmat(ctr(1,3), [N1,1]);
 
-%ctrdist1 = distance(ctrlat, ctrlon, E(:,2), E(:,1));
+%ctrdist1 = distance(ctrlat, ctrlon, E.Latitude, E.Longitude);
 londif = ctrlon - E1(:,1);
 latdif = ctrlat - E1(:,2);
 ctrdepth = ctrdep - E1(:,7);

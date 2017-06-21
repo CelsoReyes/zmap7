@@ -176,7 +176,7 @@ if selt == 'ca'
     hold on
 
     if co == 'w' ; co = 'k'; end
-    li = m_plot(a(:,1),a(:,2));
+    li = m_plot(a.Longitude,a.Latitude);
     set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
 
     if exist('vo') >0

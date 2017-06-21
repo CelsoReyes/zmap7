@@ -9,7 +9,7 @@ end
 
 save_aspar;
 
-def = {num2str(min(newt2(:,6))-0.1) };
+def = {num2str(min(newt2.Magnitude)-0.1) };
 ni2 = inputdlg('Minimum Magnitude used? ','Input',1,def);
 l = ni2{:};
 mi = str2double(l);

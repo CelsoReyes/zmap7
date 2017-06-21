@@ -42,7 +42,7 @@ l = newa2(:,10) == 1;
 pl =plot(newa2(l,11),-newa2(l,7),'ro');
 set(pl,'Linewidth',1.,'MarkerSize',2)
 hold on
-newa = newa(l,:);
+newa = newa.subset(l);
 xsecx = newa(:,po)';
 xsecy = newa(:,7);
 
@@ -54,7 +54,7 @@ xcoyo = newa2(l,:);
 %l = newa2(:,10) == 3;
 %pl =plot(newa2(l,11),-newa2(l,7),'xg');
 %set(pl,'Linewidth',1.,'MarkerSize',2)
-%xmor = newa(l,:);
+%xmor = newa.subset(l);
 
 l = newa2(:,10) == 4;
 pl =plot(newa2(l,11),-newa2(l,7),'hm');

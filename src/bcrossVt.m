@@ -146,12 +146,12 @@ if sel == 'ca'
         'point to select, "l" last point.      '
         '                                      '];
 
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
     hold on
 ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     plos2 = plot(x,y,'b-','era','xor');        % plot outline
     sum3 = 0.;
@@ -187,7 +187,7 @@ ax = findobj('Tag','main_map_ax');
 
     itotal = length(newgri(:,1));
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -225,9 +225,9 @@ ax = findobj('Tag','main_map_ax');
 
         % take first ni points
         l = l <= ra;
-        b = newa(l,:);      % new data per grid point (b) is sorted in distance
+        b = newa.subset(l);      % new data per grid point (b) is sorted in distance
 
-        if isempty(b) == 1; b = newa(1,:); end
+        if isempty(b) == 1; b = newa.subset(1); end
         if length(b(:,1)) >= 50;
             % call the b-value function
             lt =  b(:,3) >= t1 &  b(:,3) <t2 ;
@@ -277,7 +277,7 @@ ax = findobj('Tag','main_map_ax');
     gx = xvect;gy = yvect;
 
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
         ' sapa2 = [''save '' path1 file1 '' ll tmpgri bvg xvect yvect gx gy ni dx dd par1 ni newa maex maey maix maiy ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)

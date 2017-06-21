@@ -22,7 +22,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -34,14 +34,14 @@ pause(0.1)
 %  calculate distance for each earthquake from center point
 %  and sort by distance
 %
-l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
 disp(messtext)
-welcome('Message',messtext)
+zmap_message_center.set_message('Message',messtext)
 %
 
 l3 = l <=ra;
@@ -49,10 +49,10 @@ newt2 = newt2(l3,:);
 R2 = l(ni);
 global t1 t2 t3 t4
 
-lt =  newt2(:,3) >= t1 &  newt2(:,3) <t2 ;
+lt =  newt2.Date >= t1 &  newt2.Date <t2 ;
 bdiff(newt2(lt,:));
 ho = 'hold';
-lt =  newt2(:,3) >= t3 &  newt2(:,3) <t4 ;
+lt =  newt2.Date >= t3 &  newt2.Date <t4 ;
 bdiff(newt2(lt,:));
 
 % end % <- A random END that either doesn't belong here or is meant to suppress the rest. -CGR
@@ -65,7 +65,7 @@ R2 = ra;
 
 figure_w_normalized_uicontrolunits(bmap)
 hold on
-plos1 = plot(newt2(:,1),newt2(:,2),'ow','EraseMode','normal','markersize',3);
+plos1 = plot(newt2.Longitude,newt2.Latitude,'ow','EraseMode','normal','markersize',3);
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;

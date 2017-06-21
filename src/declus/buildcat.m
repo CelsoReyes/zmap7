@@ -2,42 +2,47 @@ function newt2=buildcat(var1)
     %buildcat.m                                A.Allmann
     %builds declustered catalog with equivalent events
     %
-    %Last modification 8/95
+   
+    % highly modified by Celso Reyes, 2017
     global newcat equi clus eqtime bg original backequi bgevent
-
-
+    
+    
     tm1=find(clus==0);    %elements which are not related to a cluster
-
+    
     if var1==1
-
+        
         ans_ = questdlg('  ',...
             'Replace mainshocks with equivalent events?',...
             'Yes please','No thank you','No' );
-
+        
         switch ans_
             case 'Yes please'
-                tmpcat=[newcat(tm1,1:9);equi(:,1:9)];  %new catalog, but not sorted
+                tmpcat=cat(newcat.subset(tm1), ZmapCatalog(equi));  %new catalog, but not sorted
             case 'No thank you'
-                tmpcat=[newcat(tm1,:);bgevent]; % builds catalog with biggest events instead
-
+                tmpcat=cat(newcat.subset(tm1),bgevent); % builds catalog with biggest events instead
+                
                 disp('Original mainshocks kept');
-
+                
         end
-
+        
         % I am not sure that this is right , may need 10 coloum
         %equivalent event
-        [tm2,i]=sort([tm1';bg']);  %i is the index vector to sort tmpcat
-
+        tmpcat.sort('Date')
+        
     elseif var1==2
         if isempty(backequi)
-            tmpcat=[original(tm1,1:9);equi(:,1:9)];
+            tmpcat=cat(original.subset(tm1),ZmapCatalog(equi));
         else
-            tmpcat=[original(tm1,1:9);backequi(:,1:9)];
+            tmpcat=cat(original.subset(tm1),ZmapCatalog(backequi));
         end
-        [tm2,i]=sort(tmpcat(:,3));
     end
-
-    newt2=tmpcat(i,:);       %sorted catalog,ready to load in basic program
+    if exist('tmpcat','var')
+        tmpcat.sort('Date')
+        newt2 = tmpcat;
+    else
+        warning('tmpcat was never created');
+    end
+end
 
 
 

@@ -5,7 +5,7 @@ report_this_filefun(mfilename('fullpath'));
 
 %issue a warning if no grid exist
 if exist('cumuall') == 0
-    welcome('Warning', ' You have to create a grid first!')
+    zmap_message_center.set_message('Warning', ' You have to create a grid first!')
     return
 end
 

@@ -5,14 +5,14 @@ pt = 4;
 newt0 = newt2;
 
 
-lt =  newt2(:,3) >= t0b &  newt2(:,3) <teb-pt ;
-%lt =  newt2(:,3) >= 1981 &  newt2(:,3) < 1992 ;
+lt =  newt2.Date >= t0b &  newt2.Date <teb-pt ;
+%lt =  newt2.Date >= 1981 &  newt2.Date < 1992 ;
 
 obs = newt2(lt,:);
 
-lt =  newt2(:,3) >= teb-pt &  newt2(:,3) <= teb ;
+lt =  newt2.Date >= teb-pt &  newt2.Date <= teb ;
 
-%lt =  newt2(:,3) >= 1995 &  newt2(:,3) <= 1999.9 ;
+%lt =  newt2.Date >= 1995 &  newt2.Date <= 1999.9 ;
 pre = newt2(lt,:);
 
 

@@ -119,12 +119,12 @@ report_this_filefun(mfilename('fullpath'));
         % compute average magnitude above cutoff - to calc max like b
         % and then a from k (dk) and b
         %%
-        magi = newt2(:,6) >= valm1 & newt2(:,6) <= 6.1 ;
+        magi = newt2.Magnitude >= valm1 & newt2.Magnitude <= 6.1 ;
         magz = newt2(magi,6);
         amag = sum(magz)/length(magz);
 
         rjb = .4343/(amag-valm1+.05);
-        rja = log10(dk) - rjb * (maepi(:,6) - min(newt2(:,6)));
+        rja = log10(dk) - rjb * (maepi(:,6) - min(newt2.Magnitude));
 
 
         dk=round(dk*100)/100;

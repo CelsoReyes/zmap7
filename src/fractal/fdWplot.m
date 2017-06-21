@@ -4,7 +4,7 @@
 %
 numran = 800;
 longi = -151.3;
-latit1 = min(a(:,2));
+latit1 = min(a.Latitude);
 latit2 = 62.24;
 latit = latit2 - latit1;
 depti = -50;
@@ -48,7 +48,7 @@ axis([0.1 0.9 2.1 3.1]);
 figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Random Catalog','toolbar','figure');
 plot3 (rann(:,1), rann(:,2), rann(:,7),'r*');
 set(gca,'pos',[0.15 0.11 0.76 0.76]);
-axis([min(a(:,1)) -150.53 min(a(:,2)) 62.24 -50 -abs(min(a(:,7)))]);
+axis([min(a.Longitude) -150.53 min(a.Latitude) 62.24 -50 -abs(min(a.Depth))]);
 xlabel('Longitude');
 ylabel('Latitude');
 zlabel('Depth');

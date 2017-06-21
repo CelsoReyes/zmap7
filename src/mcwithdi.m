@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 mainmap_overview()
 [x, y] = ginput(1) ;   %use you cursor to fix the location of interest
 
-di =  sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+di =  sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
 
 [s,is] = sort(di);
 di = sort(di);
@@ -97,7 +97,7 @@ for  m = max(bv2(:,1)):-0.1:min(bv2(:,1))
     end
 end
 
-nt(1,2) = min(newt2(:,3))
+nt(1,2) = min(newt2.Date)
 i = max(find((ms-min(ms) > 0.01)));
 % nt(con,2) = bv2(i+1,2);
 

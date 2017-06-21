@@ -196,7 +196,7 @@ elseif loopNumber == 10
     set(pl(10),'MarkerSize',[ 8]);
 
 end %if loopNumber
-stress = stressPara(colI,:);
+stress = stressPara.subset(colI);
 grid;
 
 

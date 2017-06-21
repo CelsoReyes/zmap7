@@ -41,7 +41,7 @@ for z = 1:100
     Idata(:,8)=[cumsum(Idata(:,7))];
     Idata(:,9)=[Idata(:,8)-Idata(:,7)];
     Idata(:,10)=[(Idata(:,9)+Idata(:,8))/2];
-    Idata(:,6) = a(:,3);
+    Idata(:,6) = a.Date;
 
     if z == 1
         manual = input('type 1 for manual choosing of first and last points, or 2 to do it automatically');

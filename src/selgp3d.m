@@ -20,12 +20,12 @@ hold on
 axis manual
 plot(x,y) % redraw in dataspace units
 
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 
 %create a rectangular grid
 xvect=[min(x):dx:max(x)];
 yvect=[min(y):dy:max(y)];
-zvect=[min(a(:,7)):dz:max(a(:,7))];
+zvect=[min(a.Depth):dz:max(a.Depth)];
 gx = xvect;
 gy= yvect;
 gz= zvect;

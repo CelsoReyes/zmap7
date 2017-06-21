@@ -7,7 +7,7 @@ l = ni2{:};
 minmag = str2double(l);
 
 clear maex maix maey maiy
-l = a(:,6) > minmag ;
-maepi = a(l,:);
+l = a.Magnitude > minmag ;
+maepi = a.subset(l);
 mainmap_overview()
 

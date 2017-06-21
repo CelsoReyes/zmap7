@@ -17,7 +17,7 @@ for k = 1:length(i)
     xa0 = X(i(k),j(k));
     ya0 = Y(i(k),j(k));
     plot(xa0,ya0,'xk')
-    l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 +   ((a(:,2)-ya0)*111).^2) ;
+    l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 +   ((a.Latitude-ya0)*111).^2) ;
     [s,is] = sort(l);
     is3 = [is3 ; is(1:ni)];
 end   % for k
@@ -35,21 +35,21 @@ l = sort(l);
 newt2= (a(l,:));
 figure_w_normalized_uicontrolunits(map)
 hold on
-plot(newt2(:,1),newt2(:,2),'bo');
+plot(newt2.Longitude,newt2.Latitude,'bo');
 
 % estimate length of anomaly
 %
-i1 = find(newt2(:,1) == min(newt2(:,1)));i1 = max(i1);
-i2 = find(newt2(:,1) == max(newt2(:,1)));i2 = max(i2);
+i1 = find(newt2.Longitude == min(newt2.Longitude));i1 = max(i1);
+i2 = find(newt2.Longitude == max(newt2.Longitude));i2 = max(i2);
 di  = sqrt(((newt2(i1,1)-newt2(i2,1))*cos(pi/180*ya0)*111).^2 +   ((newt2(i1,2)-newt2(i2,2))*111).^2) ;
 li = [newt2(i1,1) newt2(i1,2) ; newt2(i2,1) newt2(i2,2)];
 plot(li(:,1),li(:,2))
 
 
 
-i1 = find(newt2(:,2) == min(newt2(:,2)));
+i1 = find(newt2.Latitude == min(newt2.Latitude));
 i1 = max(i1);
-i2 = find(newt2(:,2) == max(newt2(:,2)));
+i2 = find(newt2.Latitude == max(newt2.Latitude));
 i2 = max(i2)
 di2  = sqrt(((newt2(i1,1)-newt2(i2,1))*cos(pi/180*ya0)*111).^2 +   ((newt2(i1,2)-newt2(i2,2))*111).^2) ;
 

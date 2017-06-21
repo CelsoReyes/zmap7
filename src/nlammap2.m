@@ -72,7 +72,7 @@ options = uimenu('Label','Select');
 uimenu(options,'Label','Select EQ inside Polygon ',...
     'Callback','h1 = gca;stri = ''Polygon''; selectp');
 uimenu(options,'Label','Refresh ',...
-     'Callback','[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a(:,7),wi,0,lat1,lon1,lat2,lon2);');
+     'Callback','[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a.Depth,wi,0,lat1,lon1,lat2,lon2);');
 
 options = uimenu('Label','Ztool');
 
@@ -128,7 +128,7 @@ if term == 1 ; whitebg([0 0 0 ]);end
 
 % create the selected catalog
 %
-newa  = a(inde,:);
+newa  = a.subset(inde);
 % Check size of catalog, then decide where to put the xsex values
 [nY,nX] = size(a);
 % if nX < 11

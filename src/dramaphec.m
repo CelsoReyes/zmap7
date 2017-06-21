@@ -44,7 +44,7 @@ set(pl,'LineWidth',1,'MarkerSize',4,...
 
 
 
-% pl = plotm(a(:,2),a(:,1),'+k');
+% pl = plotm(a.Latitude,a.Longitude,'+k');
 %set(pl,'LineWidth',0.5,'MarkerSize',2,...
 %   'MarkerFaceColor','k','MarkerEdgeColor','k')
 pl = plotm(main(:,2),main(:,1),'hw');

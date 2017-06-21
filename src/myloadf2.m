@@ -55,17 +55,17 @@ ferror(fid)
 fclose(fid);
 
 % save the catalog
-dep1 = 0.3*(max(a(:,7))-min(a(:,7)))+min(a(:,7));
-dep2 = 0.6*(max(a(:,7))-min(a(:,7)))+min(a(:,7));
-dep3 = max(a(:,7));
+dep1 = 0.3*(max(a.Depth)-min(a.Depth))+min(a.Depth);
+dep2 = 0.6*(max(a.Depth)-min(a.Depth))+min(a.Depth);
+dep3 = max(a.Depth);
 
 stri1 = [file1];
 tim1 = minti;
 tim2 = maxti;
 minma2 = minma;
 maxma2 = maxma;
-minde = min(a(:,7));
-maxde = max(a(:,7));
+minde = min(a.Depth);
+maxde = max(a.Depth);
 rad = 50.;
 ic = 0;
 ya0 = 0.;

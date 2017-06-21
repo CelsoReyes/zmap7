@@ -5,7 +5,7 @@ do = ['cd  ' hodis ]; eval(do)
 
 str = [];
 
-s = [  floor(a(:,3))  a(:,4)  a(:,5) a(:,8) a(:,9) a(:,6)   a(:,2)  a(:,1)  a(:,7)   ];
+s = [  a.Date.Year  a.Date.Month  a.Date.Day a.Date.Hour a.Date.Minute a.Magnitude   a.Latitude  a.Longitude  a.Depth   ];
 fid = fopen(['data'],'w') ;;
 fprintf(fid,'%4.0f%2.0f%2.0f%2.0f%2.0f  %3.1fmb%7.3f%8.3f%5.1fA\n',s');
 fclose(fid);
@@ -48,7 +48,7 @@ da=  str2double(dat(:,7:8));
 hr=  str2double(dat(:,9:10));
 mi=  str2double(dat(:,11:12));
 
-a = [lon lat a(:,3) mo da mag org2(:,7) hr mi clu];
+a = [lon lat a.Date mo da mag org2(:,7) hr mi clu];
 
 cluslength=[];
 n=0;
@@ -64,7 +64,7 @@ cluslength=cluslength(tmp);
 
 clustnumbers=(1:length(tmp));    %stores numbers of clusters
 l = a(:,10) > 0;
-clus = a(l,:);
+clus = a.subset(l);
 a(l,:) = [];
 
 % plot the results
@@ -74,7 +74,7 @@ plot(clus(:,1),clus(:,2),'m+');
 
 st1 = [' The declustering found ' num2str(max(clu)) ' clusters of earthquakes, a total of '...
     ' ' num2str(length(clus(:,1))) ' events (out of ' num2str(length(org2(:,1))) '). '...
-    ' The map window now display the declustered catalog containing ' num2str(length(a(:,1))) ' events . The individual clusters are displayed as magenta o in the map. ' ];
+    ' The map window now display the declustered catalog containing ' num2str(a.Count) ' events . The individual clusters are displayed as magenta o in the map. ' ];
 
 msgbox(st1,'Declustering Information')
 watchoff;

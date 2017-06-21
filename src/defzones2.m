@@ -19,23 +19,23 @@ for k = 1:lek
     y = [p(:,2)];      %  closes polygon
 
     sum3 = 0.;
-    XI = a(:,1);          % this substitution just to make equation below simple
-    YI = a(:,2);
+    XI = a.Longitude;          % this substitution just to make equation below simple
+    YI = a.Latitude;
     l2 = polygon_filter(x,y, XI, YI, 'inside');
-    newt2 = a(l2,:);
+    newt2 = a.subset(l2);
 
-    if length(newt2(:,1)) > 10   % nur wenn mindestens 6 EQ in zone
+    if newt2.Count > 10   % nur wenn mindestens 6 EQ in zone
 
         timeplot
 
         set(pl,'color','k')
         figure_w_normalized_uicontrolunits(map); hold on;
-        plot(newt2(:,1),newt2(:,2),'go')
+        plot(newt2.Longitude,newt2.Latitude,'go')
         disp(['This is source zone # ' num2str(k) ]);
 
 
         %This adjust the data for the completeness and computes rates per year
-        l2 = newt2(:,3) >= 1963; newt3 = newt2(l2,:);td = 30;
+        l2 = newt2.Date >= 1963; newt3 = newt2(l2,:);td = 30;
 
         l = newt3(:,6) >= 4.75 & newt3(:,6) < 5.25;
         r0 = length(newt3(l,6))/td;
@@ -45,7 +45,7 @@ for k = 1:lek
         r2 = length(newt3(l,6))/td;
 
 
-        l2 = newt2(:,3) >= 1930; newt3 = newt2(l2,:); td = 63;
+        l2 = newt2.Date >= 1930; newt3 = newt2(l2,:); td = 63;
 
         l = newt3(:,6) >= 6.25 & newt3(:,6) < 6.75;
         r3 = length(newt3(l,6))/td;

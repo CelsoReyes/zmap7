@@ -24,8 +24,8 @@ report_this_filefun(mfilename('fullpath'));
     warning off
 
     [fMc] = calc_Mc(a, 1, 0.1)+0.2;
-    l = a(:,6) >= fMc;
-    a = a(l,:);
+    l = a.Magnitude >= fMc;
+    a = a.subset(l);
     time_as = time_as(l);
 
     time_as = sort(time_as);
@@ -37,7 +37,7 @@ report_this_filefun(mfilename('fullpath'));
     end
     l = time_as <= t0;
     time_as = time_as(l);
-    a = a(l,:);
+    a = a.subset(l);
     l = time_asf <= t1;
     time_asf = time_asf(l);
     time = t0; timef = t1-t0;
@@ -50,12 +50,12 @@ report_this_filefun(mfilename('fullpath'));
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
     fDay = 1;
     ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (a(:,3) > maepi(:,3)+ft_c & a(:,3)<= maepi(:,3)+time/365);
+    vSel = (a.Date > maepi(:,3)+ft_c & a.Date<= maepi(:,3)+time/365);
     if sum(vSel) == 0
         rc = NaN; numreal = NaN; nummod = NaN; sigma = NaN;
         return
     end
-    mCat = a(vSel,:);
+    mCat = a.subset(vSel);
     vSel = mCat(:,6) == max(mCat(:,6));
     vBigAf = mCat(vSel,:);
     if length(mCat(:,1)) > 1

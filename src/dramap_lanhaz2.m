@@ -37,7 +37,7 @@ load worldlo
 plotm(faults(:,2), faults(:,1),'k','Linewidth',1.4);
 % plotm(mainfault(:,2), mainfault(:,1),'m','Linewidth',3);
 
-pl = plotm(a(:,2),a(:,1),'ok');
+pl = plotm(a.Latitude,a.Longitude,'ok');
 set(pl,'LineWidth',0.3,'MarkerSize',2,...
     'MarkerFaceColor','k','MarkerEdgeColor','k')
 pl = plotm(main(:,2),main(:,1),'hw');

@@ -89,9 +89,9 @@ vResults(3).mValueGrid=mValueGrid;
 
 % clf
 % subplot(1,2,1);
-% plot(a(:,1),a(:,2),'.');
+% plot(a.Longitude,a.Latitude,'.');
 % subplot(1,2,2);
-% plot(a(:,3),[1:1:sum(vMain)],'b');
+% plot(a.Date,[1:1:sum(vMain)],'b');
 % hold on;plot(mCatalog(:,3),[1:1:size(mCatalog,1)],'r');
 % a=mCatalog;
 % timeplot;

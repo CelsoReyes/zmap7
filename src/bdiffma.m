@@ -8,7 +8,7 @@ function  bdiffma(newcat)
     %  Stefan Wiemer 1/95
     %
     think
-    %welcome('  ','Calculating b-value...')
+    %zmap_message_center.set_info('  ','Calculating b-value...')
     global cluscat mess bfig backcat fontsz ho xt3 bvalsum3
     global ttcat les n teb t0b cb1 cb2 cb3 cua b1 b2 n1 n2
     report_this_filefun(mfilename('fullpath'));
@@ -44,8 +44,8 @@ function  bdiffma(newcat)
 
     end
 
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -55,7 +55,7 @@ function  bdiffma(newcat)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -127,7 +127,7 @@ function  bdiffma(newcat)
     x = xt3(ll);
 
     %n   = ((M2b(1)+0.05) - (M1b(1)-0.05))/0.1;
-    %les = (mean(newcat(:,6)) - (min(newcat(:,6)-0.05)))/0.1;
+    %les = (mean(newcat.Magnitude) - (min(newcat.Magnitude-0.05)))/0.1;
     %global n les
     %so = fzero('sofu',1.0);
     %bv = log(so)/(-2.3026*0.1);
@@ -148,7 +148,7 @@ function  bdiffma(newcat)
     hold on
     ttm= semilogy(x,f,'r');                         % plot linear fit to backg
     set(ttm,'LineWidth',1)
-    set(gca,'XLim',[min(newcat(:,6))-0.5  max(newcat(:,6))+1.0])
+    set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+1.0])
     r = corrcoef(x,y);
     r = r(1,2);
     std_backg = ew;      % standard deviation of fit
@@ -169,7 +169,7 @@ function  bdiffma(newcat)
     if ho(1:2) == 'no'
         txt1=text(.16, .18,['b-value (w LS, M  > ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2]);
         set(txt1,'FontWeight','bold','FontSize',fontsz.m)
-        txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat(:,6))) '): ',tt4, ' +/- ', tt5]);
+        txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5]);
         set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 
     else
@@ -177,12 +177,12 @@ function  bdiffma(newcat)
         set(txt1,'FontWeight','bold','FontSize',fontsz.m,'Color','r')
     end
     set(gcf,'visible','on');
-    welcome('  ','Done')
+    zmap_message_center.set_info('  ','Done')
     done
 
     if ho(1:2) == 'ho'
         % calculate the probability that the two distributins are differnt
-        b2 = str2double(tt1); n2 = length(newcat);
+        b2 = str2double(tt1); n2 = newcat.Count;
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;
         pr = exp(-da/2-2);
@@ -190,7 +190,7 @@ function  bdiffma(newcat)
         txt1=text(.65, .85,['Utsu Test: ', num2str(pr)]);
         set(txt1,'FontWeight','bold','FontSize',fontsz.m)
     else
-        b1 = str2double(tt1); n1 = length(newcat);
+        b1 = str2double(tt1); n1 = newcat.Count;
     end
 
 

@@ -1,12 +1,17 @@
-%  This scriptfile ask for several selection parameters that can be set
-%  for part of the analysis. The original input parameters can be reset using
-%  the  Reset button in the main figure map
-%
-%
-% make the interface
-%
-
-report_this_filefun(mfilename('fullpath'));
+function inpu2()
+    %  This scriptfile ask for several selection parameters that can be set
+    %  for part of the analysis. The original input parameters can be reset using
+    %  the  Reset button in the main figure map
+    %
+    %
+    % make the interface
+    %
+    global newt2
+    report_this_filefun(mfilename('fullpath'));
+    newt2 = catalog_overview(newt2);
+end
+%{
+h=zmap_message_center();
 message_window_candidates = findobj('Name','Message Window');
 
 mess = max([message_window_candidates.Number]);
@@ -14,19 +19,19 @@ clear message_window_candidates
 if isempty(mess) == 1; mess = 1 ; end
 figure_w_normalized_uicontrolunits(mess)
 
-mint = min(newt2(:,3));
-maxt = max(newt2(:,3));
+mint = min(newt2.Date);
+maxt = max(newt2.Date);
 clf
 set(gca,'visible','off');
 set(gcf,'Units','pixel','pos',[20 fipo(4)-350 400 300])
 set(gcf,'Name','Selection Parameters');
 
 inp5t=uicontrol('Style','edit','Position',[.70 .70 .22 .06],...
-    'Units','normalized','String',num2str(min(newt2(:,3))),...
+    'Units','normalized','String',char(min(newt2.Date)),...
     'Callback','mint=str2double(get(inp5t,''String'')); set(inp5t,''String'',num2str(mint,6));');
 
 inp6t=uicontrol('Style','edit','Position',[.70 .60 .22 .06],...
-    'Units','normalized','String',num2str(max(newt2(:,3))),...
+    'Units','normalized','String',char(max(newt2.Date)),...
     'Callback','maxt=str2double(get(inp6t,''String'')); set(inp6t,''String'',num2str(maxt,6));');
 
 inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...
@@ -116,6 +121,6 @@ txt7 = text(...
 
 
 set(gcf,'visible','on')
-
+%}
 
 

@@ -2,7 +2,7 @@
 
 % This is a comleteness determination test
 
-[bval,xt2] = hist(newt2(:,6),-2:0.1:6);
+[bval,xt2] = hist(newt2.Magnitude,-2:0.1:6);
 l = max(find(bval == max(bval)));
 magco0 =  xt2(l);
 
@@ -10,7 +10,7 @@ dat = [];
 
 %for i = magco0-0.6:0.1:magco0+0.2
 for i = magco0-0.5:0.1:magco0+0.7
-    l = newt2(:,6) >= i - 0.0499; nu = length(newt2(l,6));
+    l = newt2.Magnitude >= i - 0.0499; nu = length(newt2(l,6));
     if length(newt2(l,6)) >= 25;
         %[bv magco stan,  av] =  bvalca3(newt2(l,:),2,2);
         [mw bv2 stan2,  av] =  bmemag(newt2(l,:));

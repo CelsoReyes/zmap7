@@ -34,7 +34,7 @@ function anseiswa(action)
 
         case 'tipl'
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
 
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
@@ -51,9 +51,9 @@ function anseiswa(action)
 
             [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
             newt2 = newt2(ist(:,3),:);
-            set(tiplo2,'Xdata',[newt2(:,3) ; teb],'Ydata',[(1:length(newt2(:,3))) length(newt2(:,3))  ] );
+            set(tiplo2,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
             set(xc1,'era','normal')
-            set(ax3,'YLim',[0 length(newt2(:,1))+15],'Xlim',[ (min(a(:,3))) (max(a(:,3)))]);
+            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ (min(a.Date)) (max(a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
             bv = bvalca3(newt2,1,1);
@@ -91,7 +91,7 @@ function anseiswa(action)
 
         case 'tipl2'
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             if tgl1 == 0   % take point within r
@@ -105,9 +105,9 @@ function anseiswa(action)
             end
             [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
             newt2 = newt2(ist(:,3),:);
-            set(tiplo1,'Xdata',[newt2(:,3) ; teb],'Ydata',[(1:length(newt2(:,3))) length(newt2(:,3))  ] );
+            set(tiplo1,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
             set(xc1,'era','normal')
-            set(ax3,'YLim',[0 length(newt2(:,1))+15],'Xlim',[ (min(a(:,3))) (max(a(:,3)))]);
+            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ (min(a.Date)) (max(a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
             bv = bvalca3(newt2,1,1);
@@ -122,7 +122,7 @@ function anseiswa(action)
         case 'samp1'
 
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);
@@ -130,7 +130,7 @@ function anseiswa(action)
         case 'samp2'
 
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);

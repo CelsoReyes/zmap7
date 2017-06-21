@@ -16,7 +16,7 @@ pairdist = []; 			% pairdist= Vector of interevent distances
 j = nchoosek(N,2);			% j= # of interevent distances calculated
 pairdist = zeros(j,1);
 k = 0;
-%E(:,2)= (max(Da(:,2))+min(Da(:,2)))/2;
+%E.Latitude= (max(Da(:,2))+min(Da(:,2)))/2;
 %
 %
 % Calculation of the interevent distances in 2D plus the depths differences.

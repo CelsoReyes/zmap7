@@ -6,7 +6,7 @@
 %
 % Variables
 %
-N = size(E,1);				% N= # of events in the catalogue; E= Earthquake catalogue
+N = E.Count;				% N= # of events in the catalogue; E= Earthquake catalogue
 pairdist = []; 			% pairdist= Vector of interevent distances
 j = nchoosek(N,2);			% j= # of interevent distances calculated
 pairdist = zeros(j,1);
@@ -27,13 +27,13 @@ set(Hf_child,'pointer','watch','papertype','A4');
 
 for i = 1:(N-1)
 
-    lon1 = repmat(E(i,1), [(N-i),1]);
-    lat1 = repmat(E(i,2), [(N-i),1]);
-    depth1 = repmat(E(i,7), [(N-i),1]);
+    lon1 = repmat(E.Longitude(i), [(N-i),1]);
+    lat1 = repmat(E.Latitude(i), [(N-i),1]);
+    depth1 = repmat(E.Depth(i), [(N-i),1]);
 
-    lon2 = E((i+1):end, 1);
-    lat2 = E((i+1):end, 2);
-    depth2 = E((i+1):end, 7);
+    lon2 = E.Longitude((i+1):end);
+    lat2 = E.Latitude((i+1):end);
+    depth2 = E.Depth((i+1):end);
 
     pairdist(k+1:k + size(lon1, 1)) = distance(lat1,lon1,lat2,lon2);
     depth(k+1:k + size(lon1, 1)) = depth1-depth2;

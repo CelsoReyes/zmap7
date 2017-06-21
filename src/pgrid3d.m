@@ -151,10 +151,10 @@ end   % if nargin ==0
 
 if sel == 'ca'
     selgp3d
-    zvect=[min(a(:,7)):dz:max(a(:,7))];
+    zvect=[min(a.Depth):dz:max(a.Depth)];
     gz = zvect;
     itotal = length(newgri(:,1))*length(gz);
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     bvg = ones(length(gx),length(gy),length(gz))*nan;
@@ -163,7 +163,7 @@ if sel == 'ca'
     ra  = ones(length(gx),length(gy),length(gz));
 
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -179,7 +179,7 @@ if sel == 'ca'
     %
     % overall b-value
     [bv magco stan av me mer me2,  pr] =  bvalca3(a,inb1,inb2);
-    bo1 = bv; no1 = length(a(:,1));
+    bo1 = bv; no1 = a.Count;
 
     z0 = 0; x0 = 0; y0 = 0; dt = 1;
     % loop over all points
@@ -193,7 +193,7 @@ if sel == 'ca'
                 i2 = i2+1;
 
                 % calculate distance from center point and sort wrt distance
-                l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + ((a(:,7) - z)).^2 ) ;
+                l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + ((a.Depth - z)).^2 ) ;
                 [s,is] = sort(l);
                 b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -239,7 +239,7 @@ if sel == 'ca'
     % save data
     %
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
         ' sapa2 = [''save '' path1 file1 '' bvg pvg pro ra gx gy gz dx dy dz dd par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
@@ -287,7 +287,7 @@ rotate3d on
 caxis([0 0.3])
 %set(gca,'XLim',[s1 s2],'xgrid','off')
 %set(gca,'YLim',[s4 s3],'ygrid','off')
-%set(gca,'ZLim',[ -max(a(:,7))-2 0 ],'zgrid','off')
+%set(gca,'ZLim',[ -max(a.Depth)-2 0 ],'zgrid','off')
 
 shading interp
 cob = colorbar('vert')
@@ -303,7 +303,7 @@ set(sl(:),'EdgeColor',[0.5 0.5 0.5]);
 view([-36 10])
 axis([min(gy) max(gy) min(gx) max(gx) min(gz) max(gz)]);
 grid off
-plot3(a(:,2),a(:,1),-a(:,7),'yo','MarkerSize',2)
+plot3(a.Latitude,a.Longitude,-a.Depth,'yo','MarkerSize',2)
 hold on
 
 main =  [ -118.5370   34.2133   94.0453    1.0000   17.0000    6.7000   18.4010];

@@ -1,14 +1,14 @@
 % create ana-value map at a given Mc.
 
 prompt={'Enter the magnitude at which you like to compute thea-value:'};
-def={num2str(min(a(:,6)))};
+def={num2str(min(a.Magnitude))};
 dlgTitle='Input fora-value map';
 lineNo=1;
 answer=inputdlg(prompt,dlgTitle,lineNo,def);
 
 Mc_a = str2double(answer{1});
 
-av2 = log10(length(a(:,6)))+b1*min(a(:,6));
+av2 = log10(a.Count)+b1*min(a.Magnitude);
 
 AV = zeros(length(bvg(:,1)),1);
 for i = 1:length(bvg)

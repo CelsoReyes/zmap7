@@ -83,7 +83,7 @@ for fMc =fMinMag:0.1:fMaxMag-1
         mDataTest(:,2) = mDataTest(:,2)-fMinMag;
         if (~isempty(fNmax) & ~isnan(fNmax) & fNmax ~= 0 & length(mDataTest(:,1) > 4))
             mDataTest(:,3) = mDataTest(:,3)/fNmax; % Normalize datavalues for fitting with CDF
-            mDataTmp = mData(vSel,:);
+            mDataTmp = mData.subset(vSel);
             % Curve fitting: Non cumulative part below Mc
             options = optimset;
             options = optimset('Display','iter','Tolfun',1e-5,'TolX',0.001,'MaxFunEvals', 100000);

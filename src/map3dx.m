@@ -22,7 +22,7 @@ for i3 = 1:2:length(gx)
     title([ 'Long=' num2str(i3) ' km'],'FontSize',8)
     set(gca,'FontSize',8')
     hold on
-    l = a(:,1) > i3-dx/2 & a(:,1) < i3+dx/2;
+    l = a.Longitude > i3-dx/2 & a.Longitude < i3+dx/2;
     plot3(a(l,2),-a(l,7),a(l,7)*0,'k.')
     shading interp
     % axis('off')

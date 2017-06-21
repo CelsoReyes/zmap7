@@ -49,7 +49,7 @@ Lest assume you would like to use only events that have a location error with an
 </a><a name="997015">
  l = a(:,10) &lt;= 0.1;   % l is a vector of 0 and 1, depending if the statement RMS &lt;+ 0.1 is true <p>
 </a><a name="997029">
- a = a(l,:);                % Re-define `a' is the events for which selection criteria is true<p>
+ a = a.subset(l);                % Re-define `a' is the events for which selection criteria is true<p>
 </a><a name="997016">
 That's it! This structure, although a bit crypty for the novice user, is extremly powerful to build a querry of any kind. Now just select the `Refresh' option from the main map window and the newly plotted map will conatin only the events that fullfill your search criteria. You can save the newly created catalog using the `Save as..' option. <p>
 </a><a name="997022">

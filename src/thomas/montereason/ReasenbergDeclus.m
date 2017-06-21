@@ -57,7 +57,7 @@ man =[taumin;taumax;xk;xmeff;P;rfact;err;derr];
 
 [rmain,r1]=funInteract(1,newcat,rfact,xmeff);                     %calculation of interaction radii
 
-limag=find(newcat(:,6)>=6);     % index of earthquakes with magnitude bigger or
+limag=find(newcat.Magnitude>=6);     % index of earthquakes with magnitude bigger or
 % equal magnitude 6
 if isempty(limag)
    limag=0;
@@ -67,11 +67,11 @@ end
 eqtime=funClustime(1,newcat);
 
 %variable to store information wether earthquake is already clustered
-clus = zeros(1,length(newcat(:,1)));
+clus = zeros(1,newcat.Count);
 
 k = 0;                                %clusterindex
 
-ltn=length(newcat(:,1))-1;
+ltn=newcat.Count-1;
 
 % wai = waitbar(0,' Please Wait ...  ');
 % set(wai,'NumberTitle','off','Name','Decluster - Percent done');
@@ -193,7 +193,7 @@ else
 %    plot(cluscat(:,1),cluscat(:,2),'m+');
 %    st1 = [' The declustering found ' num2str(length(bgevent(:,1))) ' clusters of earthquakes, a total of '...
 %          ' ' num2str(length(cluscat(:,1))) ' events (out of ' num2str(length(original(:,1))) '). '...
-%          ' The map window now display the declustered catalog containing ' num2str(length(a(:,1))) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
+%          ' The map window now display the declustered catalog containing ' num2str(a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
 %
 %    msgbox(st1,'Declustering Information')
 %
@@ -221,7 +221,7 @@ else
 %    % Plot the clusters
 %   %  plotclust
 %
-%    welcome('Declustering done!',mete)
+%    zmap_message_center.set_message('Declustering done!',mete)
 end
 
 

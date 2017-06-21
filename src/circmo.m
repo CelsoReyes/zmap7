@@ -23,7 +23,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -36,14 +36,14 @@ pause(0.1)
 %  calculate distance for each earthquake from center point
 %  and sort by distance
 %
-l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 messtext = ['Radius of selected Circle: ' num2str(l(ni))  ' km' ];
 disp(messtext)
-welcome('Message',messtext)
+zmap_message_center.set_message('Message',messtext)
 %
 % take first ni and sort by time
 %
@@ -54,7 +54,7 @@ newt2 = newt2(ist(:,3),:);
 % plot Ni clostest events on map as 'x':
 
 hold on
-plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','normal');
+plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','normal');
 set(gcf,'Pointer','arrow')
 
 % plot circle containing events as circle

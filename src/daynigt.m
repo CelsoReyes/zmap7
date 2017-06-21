@@ -2,7 +2,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-l = newt2(:,8) >=7 & newt2(:,8) <=18;
+l = newt2.Date.Hour >=7 & newt2.Date.Hour <=18;
 day = newt2(l,:);
 
 nig = newt2;

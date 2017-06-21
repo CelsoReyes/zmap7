@@ -53,8 +53,8 @@ function clbdiff(var1)
         end
 
     end
-    maxmag = max(newcat(:,6));
-    mima = min(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -64,7 +64,7 @@ function clbdiff(var1)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -137,7 +137,7 @@ function clbdiff(var1)
 
 
     % n   = ((M2b(1)+0.05) - (M1b(1)-0.05))/0.1;
-    %les = (mean(newcat(:,6)) - (min(newcat(:,6)-0.05)))/0.1;
+    %les = (mean(newcat.Magnitude) - (min(newcat.Magnitude-0.05)))/0.1;
     %global n les
     %so = fzero('sofu',1.0);
     %bv = log(so)/(-2.3026*0.1);
@@ -157,7 +157,7 @@ function clbdiff(var1)
     hold on
     ttm= semilogy(x,f,'r');                         % plot linear fit to backg
     set(ttm,'LineWidth',1)
-    set(gca,'XLim',[min(newcat(:,6))-0.5  max(newcat(:,6))+0.3])
+    set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+0.3])
     r = corrcoef(x,y);
     r = r(1,2);
     %std_backg = std(y - polyval(p,x));      % standard deviation of fit
@@ -179,12 +179,12 @@ function clbdiff(var1)
 
     txt1=text(.16, .18,['b-value (w LS, M  > ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2]);
     set(txt1,'FontWeight','bold','FontSize',fontsz.m)
-    txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat(:,6))) '): ',tt4, ' +/- ', tt5]);
+    txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5]);
     set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 
 
     set(gcf,'visible','on');
-    welcome('  ','Done')
+    zmap_message_center.set_info('  ','Done')
     done
 
 

@@ -21,8 +21,8 @@ function bvalmag(newcat,var1)
         report_this_filefun(mfilename('fullpath'));
 
 
-        dx = min(newcat(:,6));           % smallest minimum magnitude
-        dy = max(newcat(:,6))-1.5 ;        % biggest minimum magnitude
+        dx = min(newcat.Magnitude);           % smallest minimum magnitude
+        dy = max(newcat.Magnitude)-1.5 ;        % biggest minimum magnitude
         ni = .1;                         % magnitude step size
         nh = dy+1.5;
         % make the interface
@@ -123,9 +123,9 @@ function bvalmag(newcat,var1)
         set(gcf,'visible','on');
 
     elseif var1==2
-        tt=find(newcat(:,6)<=nh);
-        newcat=newcat(tt,:);
-        nh=max(newcat(:,6));
+        tt=find(newcat.Magnitude<=nh);
+        newcat=newcat.subset(tt);
+        nh=max(newcat.Magnitude);
         j=0;
         i2=1;
 
@@ -137,11 +137,11 @@ function bvalmag(newcat,var1)
         for ii= magn
             j=j+1;
             waitbar(j/length(magn))
-            ttt=find(newcat(:,6)>=ii);
-            newcat=newcat(ttt,:);
+            ttt=find(newcat.Magnitude>=ii);
+            newcat=newcat.subset(ttt);
 
-            maxmag = max(newcat(:,6));
-            mima = min(newcat(:,6));
+            maxmag = max(newcat.Magnitude);
+            mima = min(newcat.Magnitude);
             if mima > 0 ; mima = 0 ; end
 
             % number of mag units
@@ -151,7 +151,7 @@ function bvalmag(newcat,var1)
             bvalsum = zeros(1,nmagu);
             bvalsum3 = zeros(1,nmagu);
 
-            [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+            [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
             bvalsum = cumsum(bval);                        % N for M <=
             bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
             xt3 = (maxmag:-0.1:mima);
@@ -218,7 +218,7 @@ function bvalmag(newcat,var1)
 
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
-             'Callback','f1=gcf; f2=gpf; set(f1,''Visible'',''off''),close(f1);if f1~=f2, welcome('' '','' '');done; end')
+             'Callback','f1=gcf; f2=gpf; set(f1,''Visible'',''off''),close(f1);if f1~=f2, zmap_message_center.set_info('' '','' '');done; end')
 
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...

@@ -17,7 +17,7 @@ wai = waitbar(0,' Please Wait ...  ');
 set(wai,'NumberTitle','off','Name','Makegrid  -Percent done');;
 zr = [];
 for k=1:nr
-    l = ceil(rand([ni na])*length(a(:,3)));
+    l = ceil(rand([ni na])*a.Count);
     [cumu, xt] = hist(reshape(a(l,3),[ni,na]),(t0b:par1/365:teb));
     for ti = 1:ni
         mean1 = mean([cumu(1:ti-1,:) ; cumu(ti+iwl+1:ni,:)]);

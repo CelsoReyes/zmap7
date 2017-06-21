@@ -51,20 +51,20 @@ function anseiswa(action)
 
         case 'tipl'
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);
             di = sort(l); Rjma = di(ni);
             [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
             newt2 = newt2(ist(:,3),:);
-            set(tiplo2,'Xdata',[newt2(:,3) ; teb],'Ydata',[(1:length(newt2(:,3))) length(newt2(:,3))  ] );
+            set(tiplo2,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
             set(xc1,'era','normal')
-            set(ax3,'YLim',[0 length(newt2(:,1))+15],'Xlim',[ floor(min(a(:,3))) ceil(max(a(:,3)))]);
+            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
             iwl = floor(iwl2*365/par1);
-            [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+            [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
             ncu = length(xt);
             as = NaN(1,ncu);
 
@@ -78,13 +78,13 @@ function anseiswa(action)
             end     % for i2
 
             set(plas,'Ydata',as,'Xdata',xt);
-            set(plev,'Xdata',newt2(:,1),'Ydata',newt2(:,2));
+            set(plev,'Xdata',newt2.Longitude,'Ydata',newt2.Latitude);
             set(plx2,'Xdata',[]','Ydata',[]);
 
 
 
 
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt3 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             l2 = l < Rjma;
@@ -101,19 +101,19 @@ function anseiswa(action)
             i = find(abs(x-gd) == min(abs(x-gd)) );
             x = gx2(i); y = gy2(i) ;
 
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);
             di = sort(l); Rjma = di(ni);
             [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
             newt2 = newt2(ist(:,3),:);
-            set(tiplo2,'Xdata',[newt2(:,3) ; teb],'Ydata',[(1:length(newt2(:,3))) length(newt2(:,3))  ] );
-            set(ax3,'YLim',[0 length(newt2(:,1))+15],'Xlim',[ floor(min(a(:,3))) ceil(max(a(:,3)))]);
+            set(tiplo2,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
+            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
             iwl = floor(iwl2*365/par1);
-            [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+            [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
             ncu = length(xt);
             as = NaN(1,ncu);
 
@@ -129,14 +129,14 @@ function anseiswa(action)
             set(plas,'Ydata',as,'Xdata',xt);
 
             % update the X-sec
-            [xsecx2 xsecy2,  inde2] =mysectnoplo(newt2(:,2)',newt2(:,1)',newt2(:,7),900,0,lat1, lon1, lat2,lon2);
+            [xsecx2 xsecy2,  inde2] =mysectnoplo(newt2.Latitude',newt2.Longitude',newt2.Depth,900,0,lat1, lon1, lat2,lon2);
             newa2  = newt2(inde2,:);
             newa2 = [newa2 xsecx2'];
             set(plx2,'Xdata',xsecx2','Ydata',-newa2(:,7));
 
             if lon2 < lon1 ; xsecx2 = abs(xsecx2 - max(gd)) ;  end
             set(plx2,'Xdata',xsecx2','Ydata',-newa2(:,7));
-            set(plev,'Xdata',newt2(:,1),'Ydata',newt2(:,2));
+            set(plev,'Xdata',newt2.Longitude,'Ydata',newt2.Latitude);
 
 
 
@@ -161,7 +161,7 @@ function anseiswa(action)
         case 'samp1'
 
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);
@@ -169,7 +169,7 @@ function anseiswa(action)
         case 'samp2'
 
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
             [s,is] = sort(l);
             newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             newt2 = newt2(1:ni,:);

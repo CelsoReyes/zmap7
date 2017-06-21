@@ -30,10 +30,10 @@ tpre2 = 365
 la = 0;
 m0 = maepi(1,6);
 
-m = min(newt2(:,6));
+m = min(newt2.Magnitude);
 dt = 0.05;
 
-t0 = ( max(newt2(:,3)) - mati)*365;
+t0 = ( max(newt2.Date) - mati)*365;
 pla = 0;plae = 0;
 
 P2 = [];
@@ -113,10 +113,10 @@ A0 =  re(3,1);
 la = 0;
 m0 = maepi(1,6);
 
-m = min(newt2(:,6));
+m = min(newt2.Magnitude);
 dt = 0.05;
 
-t0 = ( max(newt2(:,3)) - mati)*365;
+t0 = ( max(newt2.Date) - mati)*365;
 pla = 0;plae = 0;
 
 P3 = [];

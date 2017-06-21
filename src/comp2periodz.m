@@ -189,18 +189,18 @@ if sel == 'ca'
 
     if save_grid == 1
         grid_save =...
-            [ 'welcome(''Saving Grid'',''  '');think;',...
+            [ 'zmap_message_center.set_info(''Saving Grid'',''  '');think;',...
             '[file1,path1] = uiputfile([my_dir fs ''eq_data'' fs ''*.mat''], ''Grid File Name?'') ;',...
             ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll''];',...
             ' if length(file1) > 1, eval(gs),end , done']; eval(grid_save)
     end
 
     itotal = length(newgri(:,1));
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -216,8 +216,8 @@ if sel == 'ca'
     drawnow
     %
     bvg = zeros(length(newgri(:,1)),4)*nan;
-    lt =  a(:,3) >= t1 &  a(:,3) < t2  | a(:,3) >= t3 &  a(:,3) <= t4;
-    aa = a(lt,:);
+    lt =  a.Date >= t1 &  a.Date < t2  | a.Date >= t3 &  a.Date <= t4;
+    aa = a.subset(lt);
 
     % loop over all points
     for i= 1:length(newgri(:,1))

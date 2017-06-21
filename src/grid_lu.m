@@ -114,7 +114,7 @@ if sel == 'ca'
     % plot the map here
     %
     clf
-    plot(a(:,1),a(:,2),'o')
+    plot(a.Longitude,a.Latitude,'o')
     hold on
 
     % Now find the grid-size
@@ -153,7 +153,7 @@ if sel == 'ca'
             i2 = i2+1;
 
             % calculate distance from center point and sort wrt distance
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
             [s,is] = sort(l);
             b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 

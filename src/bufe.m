@@ -31,7 +31,7 @@ Idata(:,7)=exp((kf(1)*(Idata(:,magn))+kf(2))*log(10));
 Idata(:,8)=[cumsum(Idata(:,7))];
 Idata(:,9)=[Idata(:,8)-Idata(:,7)];
 Idata(:,10)=[(Idata(:,9)+Idata(:,8))/2];
-Idata(:,6) = a(:,3);
+Idata(:,6) = a.Date;
 
 figure
 pl = plot(Idata(:,time),Idata(:,8:9),'b+')

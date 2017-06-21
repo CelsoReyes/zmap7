@@ -7,7 +7,7 @@ function [newt2,is_mainshock]=funBuildcat(newcat,clus,bg,bgevent)
 
 
 tm1=find(clus==0);    %elements which are not related to a cluster
-tmpcat=[newcat(tm1,:);bgevent]; % builds catalog with biggest events instead
+tmpcat=[newcat.subset(tm1);bgevent]; % builds catalog with biggest events instead
 
 % I am not sure that this is right , may need 10 coloum
                                    %equivalent event

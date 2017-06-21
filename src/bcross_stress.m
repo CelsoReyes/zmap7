@@ -162,12 +162,12 @@ if sel == 'ca'
         'point to select, "l" last point.      '
         '                                      '];
 
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
     hold on
     ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     plos2 = plot(x,y,'b-');        % plot outline
     sum3 = 0.;
@@ -209,7 +209,7 @@ if sel == 'ca'
     end
 
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -251,7 +251,7 @@ if sel == 'ca'
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = newa(l3,:);      % new data per grid point (b) is sorted in distanc
+            b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = ra;
         else
             % take first ni points

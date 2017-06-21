@@ -26,9 +26,9 @@ XI = newa(:,length(newa(1,:)));
     ll = polygon_filter(x,y, XI, YI, 'inside');
 
 %plot the selected eqs and mag freq curve
-newa2 = newa(ll,:);
+newa2 = newa.subset(ll);
 newt2 = newa2;
-newcat = newa(ll,:);
+newcat = newa.subset(ll);
 pl = plot(newa2(:,length(newa2(1,:))),-newa2(:,7),'xk');
 set(pl,'MarkerSize',5,'LineWidth',1)
 bdiff(newa2)

@@ -40,9 +40,9 @@ c = hsv;
 for i = 1:length(a)
     pl =plotm(a(i,2),a(i,1),'sk');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 10/max(a(:,6));
+    facm = 10/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 

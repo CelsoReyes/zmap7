@@ -13,11 +13,11 @@ cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');
 
 for y = 33.8:dy:34.6
-    l = a(:,2) >= y & a(:,2) < y+dy;
+    l = a.Latitude >= y & a.Latitude < y+dy;
     b1 = prctile2(a(l,1),5);
     b2 = prctile2(a(l,1),95);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     calcp
     da = [da ; y+dy/2 P];
     B = [B ; b1 y  b2 y];

@@ -15,7 +15,7 @@ function cluticut(var1)
 
 
     if var1==2 | var1==4
-        tmeq=clustime(2);
+        tmeq=clustime(ttcat);
         tmeqtime=tmeq-tmeq(1);
     end
 

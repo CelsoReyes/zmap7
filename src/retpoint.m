@@ -14,10 +14,10 @@ l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
 %take first ni points
 %b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
 l = l <= ra;
-b = newa(l,:);
+b = newa.subset(l);
 
 % call the b-value function
-if isempty(b) == 1; b = newa(1,:); end
+if isempty(b) == 1; b = newa.subset(1); end
 if length(b(:,1)) >= 40;
 
     [ me, bv, si, av2] = bmemag(b)  ;

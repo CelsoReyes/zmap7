@@ -64,7 +64,7 @@ if newClusterFlag
     set(gca,'visible','off');
     clear options op2 op3
 
-    par1 = (newcat(length(newcat(:,1)),3)-newcat(1,3))/100*365;
+    par1 = (newcat(newcat.Count,3)-newcat(1,3))/100*365;
     if par1 < 1
         par1 = 0.1;
     else
@@ -221,7 +221,7 @@ if newClusterFlag
 
     uicontrol('Units','normal',...
         'Position',[.00 .83 .10 .06],'String','Close',...
-        'Style','Pushbutton','Callback','close(clu);welcome('' '','' '');');
+        'Style','Pushbutton','Callback','close(clu);zmap_message_center.set_info('' '','' '');');
 
 else
     figure_w_normalized_uicontrolunits(clu)

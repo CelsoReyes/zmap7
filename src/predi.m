@@ -9,13 +9,13 @@ pt = str2double(l);
 newt0 = newt2;
 
 
-lt =  newt2(:,3) >= t0b &  newt2(:,3) <teb-pt ;
+lt =  newt2.Date >= t0b &  newt2.Date <teb-pt ;
 
 obs = newt2(lt,:);
 ho = 'noho';
 bdiff(newt2(lt,:));
 ho = 'hold';
-lt =  newt2(:,3) >= teb-pt &  newt2(:,3) <= teb ;
+lt =  newt2.Date >= teb-pt &  newt2.Date <= teb ;
 bdiff(newt2(lt,:));
 
 pre = newt2(lt,:);

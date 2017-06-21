@@ -56,7 +56,7 @@ for fMc = 0.8:0.1:2
     mData = [vN' vNonCFMD'];
     vSel = (mData(:,2) >= fMc);
     mDataTest = mData(~vSel,:);
-    mDataTmp = mData(vSel,:);
+    mDataTmp = mData.subset(vSel);
     % Curve fitting: Non cumulative part below Mc
     options = optimset;
     options = optimset('Display','off','Tolfun',1e-6,'TolX',0.0001);

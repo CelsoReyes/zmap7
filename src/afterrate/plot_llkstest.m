@@ -17,15 +17,15 @@ function plot_llkstest(a,time,timef,bootloops,maepi)
     % Surpress warnings from fmincon
     warning off;
 
-    %[m_main, main] = max(a(:,6));
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    %[m_main, main] = max(a.Magnitude);
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
     date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
     time_aftershock = date_matlab-date_main;
 
     % Aftershock catalog
     vSel1 = time_aftershock(:) > 0;
     tas = time_aftershock(vSel1);
-    eqcatalogue = a(vSel1,:);
+    eqcatalogue = a.subset(vSel1);
 
     % Estimation of Omori parameters from learning period
     l = tas <= time;

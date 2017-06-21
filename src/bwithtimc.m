@@ -112,7 +112,7 @@ if selt == 'ca'
             %%
             if inpr1 == 3
                 mcperc_ca3;
-                l = newt2(:,6) >= Mc90-0.05;
+                l = newt2.Magnitude >= Mc90-0.05;
                 magco = Mc90;
                 if length(newt2(l,6)) >= Nmin
                     disp(['%%Warning --bwithtimc--%%  less than 50 events in step ', step_cat(day_end,3)]);
@@ -124,7 +124,7 @@ if selt == 'ca'
                 %%
             elseif inpr1 == 4
                 mcperc_ca3;
-                l = newt2(:,6) >= Mc95-0.05;
+                l = newt2.Magnitude >= Mc95-0.05;
                 magco = Mc95;
                 if length(newt2(l,6)) <= Nmin
                     disp(['%%Warning --bwithtimc--%%  less than 50 events in step ', step_cat(day_end,3)]);
@@ -140,9 +140,9 @@ if selt == 'ca'
                 elseif isnan(Mc90) == 0 
                     magco = Mc90;
                 else
-                    [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(:,6),1,1);
+                    [bv magco stan av me mer me2,  pr] =  bvalca3(newt2.Magnitude,1,1);
                 end
-                l = newt2(:,6) >= magco-0.05;
+                l = newt2.Magnitude >= magco-0.05;
                 if length(newt2(l,6)) <= Nmin
                     disp(['%%Warning --bwithtimc--%%  less than 50 events in step ', step_cat(day_end,3)]);
                 end
@@ -151,8 +151,8 @@ if selt == 'ca'
                 % calculation based on MAX CURVATURE
                 %%
             elseif inpr1 == 1
-                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(:,6),1,1);
-                l = newt2(:,6) >= magco-0.05;
+                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2.Magnitude,1,1);
+                l = newt2.Magnitude >= magco-0.05;
                 if length(newt2(l,:)) <= Nmin
                     disp(['%%Warning --bwithtimc--%%  less than 50 events in step ', step_cat(day_end,3)]);
                 end
@@ -161,7 +161,7 @@ if selt == 'ca'
                 % calculation based on FIXED Mc
                 %%
             elseif inpr1 == 2
-                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(:,6),2,2);
+                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2.Magnitude,2,2);
             end
 
 
@@ -174,9 +174,9 @@ if selt == 'ca'
             %       elseif isnan(Mc90) == 0 
             %          magco = Mc90;
             %       else
-            %          [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(:,6),1,1);
+            %          [bv magco stan av me mer me2,  pr] =  bvalca3(newt2.Magnitude,1,1);
             %       end
-            %       l = newt2(:,6) >= magco-0.05;
+            %       l = newt2.Magnitude >= magco-0.05;
             %       if length(newt2(l,6)) <= 50
             %          disp(['%%Warning --bwithtimc--%%  less than 50 events in step ', step_cat(day_end,3)]);
             %       end
@@ -198,16 +198,16 @@ if selt == 'ca'
             elseif isnan(Mc90) == 0 
                 magco = Mc90;
             else
-                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2(:,6),1,1);
+                [bv magco stan av me mer me2,  pr] =  bvalca3(newt2.Magnitude,1,1);
             end
-            l = newt2(:,6) >= magco-0.05;
+            l = newt2.Magnitude >= magco-0.05;
             if length(newt2(l,6)) <= 50
                 disp('%%Warning --bwithtimc--%%  less than 50 events in step');
             end
             meb = newt2(l,:);
             [mea bv stand,  av] = bmemag(meb);
 
-            days = (max(newt2(:,3))-min(newt2(:,3)))*365.0;
+            days = (max(newt2.Date)-min(newt2.Date))*365.0;
 
             bvm = [bvm; bv step_cat(ind+ni,3) magco days];
         end  %% end of for loop!!

@@ -1,6 +1,6 @@
 report_this_filefun(mfilename('fullpath'));
 
-s = [a(:,3:5) a(:,8:9) a(:,6) a(:,7) l(l2)  ];
+s = [a(:,3:5) a(:,8:9) a.Magnitude a.Depth l(l2)  ];
 s = s';
 
 

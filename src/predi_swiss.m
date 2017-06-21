@@ -17,7 +17,7 @@ else
     [bv magco stan av me mer me2,  pr] =  bvalca3(newt2,1,1);
 end
 magco = magco+0.
-l = newt2(:,6) >= magco-0.05;
+l = newt2.Magnitude >= magco-0.05;
 
 [bv magco0 stan av me mer me2,  pr] =  bvalca3(obs(l,:),2,2);
 [av2 bv2 stan2 ] =  bmemag(obs(l,:));

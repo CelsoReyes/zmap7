@@ -21,10 +21,10 @@ if ic == 0
     bvfig = gcf;
     set(bvfig,'Units','normalized','NumberTitle','off','Name','b-value curves');
     set(gcf,'pos',[ 0.435  0.8 0.6 0.9])
-    maxmag = max(newcat(:,6));
-    t0b = min(newcat(:,3));
-    teb = max(newcat(:,3));
-    n = length(newcat(:,1));
+    maxmag = max(newcat.Magnitude);
+    t0b = min(newcat.Date);
+    teb = max(newcat.Date);
+    n = newcat.Count;
     tdiff = round(teb - t0b);
 
     % number of mag units
@@ -47,8 +47,8 @@ if ic == 0
     td12 = t2p(1) - t1p(1);
     td34 = t4p(1) - t3p(1);
 
-    l = newcat(:,3) > t1p(1) & newcat(:,3) < t2p(1) ;
-    backg =  newcat(l,:);
+    l = newcat.Date > t1p(1) & newcat.Date < t2p(1) ;
+    backg =  newcat.subset(l);
     [bval,xt2] = hist(backg(:,6),(0:0.1:maxmag));
     bval = bval *  td34/td12;                      % normalization
     bvalsum = cumsum(bval);                        % N for M <=
@@ -56,8 +56,8 @@ if ic == 0
     xt3 = (maxmag:-0.1:0);
     [cumux, xt] = hist(newcat(l,3),t1p(1):par1/365:t2p(1));
 
-    l = newcat(:,3) > t3p(1) & newcat(:,3) < t4p(1) ;
-    foreg = newcat(l,:);
+    l = newcat.Date > t3p(1) & newcat.Date < t4p(1) ;
+    foreg = newcat.subset(l);
     bval2 = histogram(foreg(:,6),(0:0.1:maxmag));
     bvalsum2 = cumsum(bval2);
     bvalsum4 = cumsum(bval2(length(bval2):-1:1));

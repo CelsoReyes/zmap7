@@ -15,14 +15,14 @@ timeplot
 d = [];
 prol = 0.90;
 
-l = a(:,6) > 7;
-maepi = a(l,:);
+l = a.Magnitude > 7;
+maepi = a.subset(l);
 
 mati = maepi(1,3);
 M = 7.4 - 4;
 da = []; anz = [];
 B2 = [];
-t0 = (max(a(:,3)) - mati)*365;
+t0 = (max(a.Date) - mati)*365;
 tlen = t0;
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');
@@ -31,11 +31,11 @@ dx = 0.33;
 
 
 for x = 29:dx:31
-    l = a(:,1) >= x & a(:,1) < x+dx;
+    l = a.Longitude >= x & a.Longitude < x+dx;
     b1 = prctile2(a(l,2),20);
     b2 = prctile2(a(l,2),80);
 
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
     mcperc_ca3;
     if isnan(Mc95) == 0
         magco = Mc95;
@@ -45,7 +45,7 @@ for x = 29:dx:31
         [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
     end
     magco
-    l = newt2(:,6) >= magco;
+    l = newt2.Magnitude >= magco;
     newt2 = newt2(l,:);
 
     figure_w_normalized_uicontrolunits(map)
@@ -56,7 +56,7 @@ for x = 29:dx:31
     end
 
     hold on
-    pl = plot(newt2(:,1),newt2(:,2),'xk');drawnow
+    pl = plot(newt2.Longitude,newt2.Latitude,'xk');drawnow
     timeplot
 
     calcp
@@ -110,7 +110,7 @@ do = [' !cat myrisk.out | grep -e "LAT   "  -e "' num2str(tpre) ' YE"  > tmp2 ']
 do = ['condata2']; err = [' ']; eval(do,err);
 save inpudata.xyz da -ascii
 
-eq = [a(:,1) a(:,2) a(:,6)];
+eq = [a.Longitude a.Latitude a.Magnitude];
 save eqs2.dat eq -ascii
 
 cd /home2/stefan/srisk/

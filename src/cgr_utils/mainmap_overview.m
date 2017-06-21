@@ -8,7 +8,7 @@ function mainmap_overview()
     % Tag: 'main_map_ax' contains the main map
     
     
-    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele% newt2 newcat
+    global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele newt2 newcat
     global tim1 tim2 tim3 tim4 dep1 dep2 dep3
     global main mainfault faults coastline vo maepi well minmag
     %ty1=evalin('base','ty1');
@@ -16,16 +16,23 @@ function mainmap_overview()
     %ty3=evalin('base','ty3');
     ms6=evalin('base','ms6');
     %typele = evalin('base','typele');
+    if ~isempty(newcat) && isnumeric(newcat)
+        warning('converting newcat to new catalog in mainmap_overview');
+        newcat = ZmapCatalog(newcat);
+    end
     
     if isempty(a)
         think
-        welcome('Message','No data in catalog, cannot plot Seismicity Map ....');
+        zmap_message_center.set_info('Message','No data in catalog, cannot plot Seismicity Map ....');
         pause(2)
         done;
-        welcome('Messages', 'Choose a catalog' );
+        zmap_message_center.set_message('Messages', 'Choose a catalog' );
         return
     end
-    mycat = ZmapCatalog(a);
+    if isnumeric(a)
+        a = ZmapCatalog(a);
+    end
+    mycat = a;
     
     if isempty(typele)
         typele = 'dep';
@@ -33,7 +40,7 @@ function mainmap_overview()
     
     think
     report_this_filefun(mfilename('fullpath'));
-    welcome('Message','Plotting Seismicity Map ....');
+    zmap_message_center.set_info('Message','Plotting Seismicity Map ....');
     
     % This is the info window text
     %
@@ -128,16 +135,13 @@ function mainmap_overview()
         create_ztools_menu();
         %{
         catSave =...
-            [ 'welcome(''Save Data'',''  '');think;',...
+            [ 'zmap_message_center.set_info(''Save Data'',''  '');think;',...
             '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Earthquake Datafile'');',...
             'if length(file1) > 1 , wholePath=[path1 file1],sapa2 = [''save('' ''wholePath'' '', ''''a'''', ''''faults'''', ''''main'''', ''''mainfault'''', ''''coastline'''', ''''infstri'''', ''''well'''')''],',...
             'eval(sapa2) ,end, done'];
         %}
         %sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri well'']
         seisstr=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 freq_field6 map h1 a ldx Mmin tlap stime dx dy,seisgrid(1);'];
-        
-        
-        
         
         
     end
@@ -192,16 +196,16 @@ function mainmap_overview()
             %dep2 = 0.6*max(a_mags);
             %dep3 = max(a_mags);
             
-            depth_mask = mycat.Magnitude>=dep1 & mycat.Magnitude<dep2;
-            deplo1=plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part1');
+            mag_mask = mycat.Magnitude>=dep1 & mycat.Magnitude<dep2;
+            deplo1=plot(main_map_ax, mycat.Longitude(mag_mask), mycat.Latitude(mag_mask),'ob','Tag','mapax_part1');
             set(deplo1,'MarkerSize',ms6);
             
-            depth_mask = mycat.Magnitude>=dep2 & mycat.Magnitude< dep3;
-            deplo2=plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part2');
+            mag_mask = mycat.Magnitude>=dep2 & mycat.Magnitude< dep3;
+            deplo2=plot(main_map_ax, mycat.Longitude(mag_mask), mycat.Latitude(mag_mask),'ob','Tag','mapax_part2');
             set(deplo2,'MarkerSize',ms6*2);
             
-            depth_mask = mycat.Magnitude>=dep3;
-            deplo3 =plot(main_map_ax, mycat.Longitudes(depth_mask), mycat.Latitudes(depth_mask),'ob','Tag','mapax_part3');
+            mag_mask = mycat.Magnitude>=dep3;
+            deplo3 =plot(main_map_ax, mycat.Longitude(mag_mask), mycat.Latitude(mag_mask),'ob','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6*3)
             
             ls1 = sprintf('M > %3.1f ',dep1);
@@ -250,15 +254,15 @@ function mainmap_overview()
             vx =  (mindep:1:maxdep);
             v = [vx ; vx]; v = v';
             rect = [0.83 0.2 0.01 0.2];
-            h1 = axes('position',rect)
-            h=pcolor((1:2),vx,v)
+            h1 = axes('position',rect);
+            h=pcolor((1:2),vx,v);
             shading flat
             set(gca,'XTickLabels',[]);
             set(gca,'FontSize',8,'FontWeight','normal',...
                 'LineWidth',1.0,'YAxisLocation','right',...
                 'Box','on','SortMethod','childorder','TickDir','out','ydir','reverse')
             xlabel('  Depth [km]');
-            colormap(c)
+            colormap(c);
             % make a mag legend:
             
             anzmag = 0;
@@ -395,9 +399,9 @@ function mainmap_overview()
             deplo3 =plot(main_map_ax, mycat.Longitude(time_mask), mycat.Latitude(time_mask),'.r','Tag','mapax_part3');
             set(deplo3,'MarkerSize',ms6,'Marker',ty3)
             
-            ls1 = sprintf('%3.1f ≤ t ≤ %3.1f ',timedivisions(1),timedivisions(2));
-            ls2 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(2),timedivisions(3));
-            ls3 = sprintf('%3.1f < t ≤ %3.1f ',timedivisions(3),timedivisions(4));
+            ls1 = sprintf('%3.1f ≤ t ≤ %3.1f ',decyear(timedivisions(1)),decyear(timedivisions(2)));
+            ls2 = sprintf('%3.1f < t ≤ %3.1f ',decyear(timedivisions(2)),decyear(timedivisions(3)));
+            ls3 = sprintf('%3.1f < t ≤ %3.1f ',decyear(timedivisions(3)),decyear(timedivisions(4)));
             
             le = legend(main_map_ax,ls1,ls2,ls3);
             set(le,'position',[ 0.65 0.02 0.32 0.12],'FontSize',12,'color','w')
@@ -440,7 +444,7 @@ function mainmap_overview()
     watchoff(map)
     set(map,'Visible','on');
     done
-    welcome('Message','   ');
+    zmap_message_center.set_info('Message','   ');
     figure(findobj('Tag','seismicity_map'))
     
     function create_main_plot()
@@ -539,7 +543,7 @@ function mainmap_overview()
     function create_select_menu()
         submenu = uimenu('Label',' Select ');
         uimenu(submenu,'Label','Select EQ in Polygon (Menu) ',...
-            'Callback','noh1 = gca;newt2 = a; stri = ''Polygon''; keyselect');
+            'Callback','global noh1 newt2 a;noh1 = gca;newt2 = a; stri = ''Polygon''; keyselect');
         
         uimenu(submenu,'Label','Select EQ inside Polygon ',...
             'Callback','h1 = gca;stri = ''Polygon'';selectp(''inside'')');
@@ -565,7 +569,7 @@ function mainmap_overview()
             'Callback','org2 = a; ');
         
         uimenu(submenu,'Label','Reset catalog to the one saved in memory previously',...
-            'Callback','think;clear plos1 mark1 ; a = org2; newcat = org2; newt2= org2;mainmap_overview()');
+            'Callback','think;clear plos1 mark1 ;global a newcat newt2; a = org2; newcat = org2; newt2= org2;mainmap_overview()');
         
         uimenu(submenu,'Label','Select new parameters (reload last catalog) ',...
             'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu');
@@ -590,7 +594,7 @@ function mainmap_overview()
             'Callback', @(s,e)zmap_message_center());
         
         uimenu(submenu,'Label','Analyse time series ... ',...
-            'Callback','stri = ''Polygon''; newt2 = a; newcat = a; timeplot');
+            'Callback','global newt2 a newcat; stri = ''Polygon''; newt2 = a; newcat = a; timeplot');
         
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
@@ -641,8 +645,8 @@ function mainmap_overview()
     end
     function create_random_data_simulations_menu(parent)
         submenu  =   uimenu(parent,'Label','Random data simulations');
-        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',' org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; mainmap_overview(); bdiff(a); revertcat');
-        uimenu(submenu,'label','Create synthetic catalog...', 'Callback',' org2 = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; mainmap_overview(); bdiff(a); revertcat');
+        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global org2 a newt2; org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; mainmap_overview(); bdiff(a); revertcat');
+        uimenu(submenu,'label','Create synthetic catalog...', 'Callback','global org2 a newt2; org2 = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; mainmap_overview(); bdiff(a); revertcat');
         
         uimenu(submenu,'Label','Evaluate significance of b- and a-values  ',...
             'Callback','brand');
@@ -741,7 +745,7 @@ function mainmap_overview()
     
     %% % % % callbacks
     function catSave()
-        welcome('Save Data', ' ');
+        zmap_message_center.set_message('Save Data', ' ');
         try
             think;
             [file1, path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Earthquake Datafile');
@@ -790,8 +794,7 @@ function plot_large_quakes()
     minmag = str2double(l);
 
     clear maex maix maey maiy
-    mycat.addFilter('Magnitude','>', minmag);
-    maepi = mycat.getCropped().ZmapArray(); %yes, this is the long way to do it. just testing
+    maepi = mycat.subset(mycat.Magnitude > minmag);
     mainmap_overview()
 end
 

@@ -241,11 +241,11 @@ if sel == 'ca'
     end
 
 
-    welcome(' ','Running bdepth_ratio... ');think
+    zmap_message_center.set_info(' ','Running bdepth_ratio... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -264,15 +264,15 @@ if sel == 'ca'
 
     % sort by depth
 
-    % [s,is] = sort(a(:,7));
+    % [s,is] = sort(a.Depth);
     % adepth = a(is(:,1),:);
 
     % find row index of ratio midpoint
-    l = a(:,7) >= top_zonet & a(:,7) <  top_zoneb;
-    top_zone = a(l,:);
+    l = a.Depth >= top_zonet & a.Depth <  top_zoneb;
+    top_zone = a.subset(l);
 
-    l = a(:,7) >= bot_zonet & a(:,7) <  bot_zoneb;
-    bot_zone = a(l,:);
+    l = a.Depth >= bot_zonet & a.Depth <  bot_zoneb;
+    bot_zone = a.subset(l);
 
 
 
@@ -298,13 +298,13 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = a(l3,:);      % new data per grid point (b) is sorted in distanc  (from center point)
+            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc  (from center point)
             rd = ra;
         else
             % take first ni points

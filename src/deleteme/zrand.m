@@ -5,7 +5,7 @@ for ni = 50:10:300
     ni
     zr = [];
     for i = 1:100;
-        l = ceil(rand([ni 1])*length(a(:,3)));
+        l = ceil(rand([ni 1])*a.Count);
         [cumu, xt] = hist(a(l,3),(t0b:par1/365:teb));
         for j = 2:tdiff-iwl
             cu = [cumu(1:j-1) cumu(j+iwl+1:length(cumu))];

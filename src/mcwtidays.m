@@ -46,7 +46,7 @@ delete(gca)
 delete(gca)
 axis off
 
-i  = min(find(newt2(:,6) ==  max(newt2(:,6))));
+i  = min(find(newt2.Magnitude ==  max(newt2.Magnitude)));
 maepi = newt2(i,:);
 
 rect = [0.15 0.30 0.7 0.45];
@@ -91,7 +91,7 @@ for  m = max(bv2(:,1)):-0.1:min(bv2(:,1))
     end
 end
 
-nt(1,2) = min(newt2(:,3))
+nt(1,2) = min(newt2.Date)
 i = max(find((ms-min(ms) > 0.01)));
 % nt(con,2) = bv2(i+1,2);
 

@@ -264,7 +264,7 @@ if  in == 'per'
     coma = coma(64:-1:1,:);
     colormap(coma)
 end
-set(gca,'dataaspect',[1 cos(pi/180*mean(a(:,2))) 1]);
+set(gca,'dataaspect',[1 cos(pi/180*mean(a.Latitude)) 1]);
 
 title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',fontsz.m,...
     'Color','k','FontWeight','bold')

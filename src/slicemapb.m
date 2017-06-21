@@ -257,7 +257,7 @@ switch(slm)
 
         hold on
         x = mean(gx); y = mean(gy) ; z = ds;
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
         [s,is] = sort(l);
         newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         newt2 = newt2(1:ni,:);
@@ -265,9 +265,9 @@ switch(slm)
         newt2 = newt2(ist(:,3),:);
         di = sort(l); Rjma = di(ni);
 
-        tiplo2 = plot(newt2(:,3),(1:length(newt2(:,3))),'m-','era','xor');
+        tiplo2 = plot(newt2.Date,(1:newt2.Count),'m-','era','xor');
         set(tiplo2,'LineWidth',2.0)
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a(:,3))) ceil(max(a(:,3)))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
         xlabel('Time [yrs]');
@@ -283,7 +283,7 @@ switch(slm)
         % Plot the events on map in yellow
         axes(hs)
         hold on
-        %plev =   plot(newt2(:,1),newt2(:,2),'.k','MarkerSize',4)
+        %plev =   plot(newt2.Longitude,newt2.Latitude,'.k','MarkerSize',4)
         xc1 = plot(mean(gx),mean(gy),'m^','MarkerSize',10,'LineWidth',1.5,'era','normal');
         set(xc1,'Markeredgecolor','w','Markerfacecolor','g')
         set(xc1,'ButtonDownFcn','anseiswa start1');
@@ -312,7 +312,7 @@ switch(slm)
         axes(ax3)
         hold on
         x = mean(gx)+std(gx)/2; y = mean(gy)+std(gy)/2 ; z = ds;
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2 + (a(:,7)-z).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
         [s,is] = sort(l);
         newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         newt2 = newt2(1:ni,:);
@@ -320,9 +320,9 @@ switch(slm)
         newt2 = newt2(ist(:,3),:);
         di = sort(l); Rjma = di(ni);
 
-        tiplo1 = plot(newt2(:,3),(1:length(newt2(:,3))),'c-','era','xor');
+        tiplo1 = plot(newt2.Date,(1:newt2.Count),'c-','era','xor');
         set(tiplo1,'LineWidth',2.0)
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a(:,3))) ceil(max(a(:,3)))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
 

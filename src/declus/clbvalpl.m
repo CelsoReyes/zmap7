@@ -55,7 +55,7 @@ function clbvalpl(var1)
 
         set(gcf,'visible','on');
     end
-    maxmag = max(newcat(:,6));
+    maxmag = max(newcat.Magnitude);
 
     % number of mag units
     nmagu = (maxmag*10)+1;
@@ -64,7 +64,7 @@ function clbvalpl(var1)
     % bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(0:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(0:0.1:maxmag));
     % bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:0);
@@ -122,7 +122,7 @@ function clbvalpl(var1)
     pause(0.1)
     delete(seti)
 
-    eqnumber=length(find(newcat(:,6)>M1b(1) & newcat(:,6)<M2b(1)));
+    eqnumber=length(find(newcat.Magnitude>M1b(1) & newcat.Magnitude<M2b(1)));
     tt6=num2str(eqnumber);
 
     ll = xt3 > M1b(1) & xt3 < M2b(1);

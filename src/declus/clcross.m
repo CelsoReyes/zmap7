@@ -46,7 +46,7 @@ messtext= ...
     ' crossection                                    '
     ];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 %if term == 1 ; whitebg([0 0 0 ]);end
 
 [xsecx xsecy,  inde] = mysect(al(:,2)',al(:,1)',al(:,7),wi);
@@ -76,7 +76,7 @@ if term == 1 ; whitebg([0 0 0 ]);end
 
 % create the selected catalog
 %
-newa  = a(inde,:);
+newa  = a.subset(inde);
 newa = [newa xsecx'];
 % call the m script that produces a grid
 sel = 'in';

@@ -48,29 +48,29 @@ function overlay_()
     %
     % plot big earthquake epicenters with a 'x' and the data/magnitude
     %
-    if ~isempty(maepi)
-        epimax = plot(ax,maepi(:,1),maepi(:,2),'hm');
+    if ~isempty(maepi) && maepi.Count > 0
+        epimax = plot(ax,maepi.Longitude,maepi.Latitude,'hm');
         set(epimax,'LineWidth',1.5,'MarkerSize',12,...
             'MarkerFaceColor','y','MarkerEdgeColor','k')
         epimax.DisplayName = sprintf('Events > M %2.1f', minmag);
         
-        stri2 = [];
-        for i = 1:length(maepi(:,1))
-            s = sprintf('   %3.2f M=%3.1f',maepi(i,3),maepi(i,6));
+        stri2 = '';
+        for i = 1:maepi.Count
+            s = sprintf('   %3.2f M=%3.1f',decyear(maepi.Date(i)),maepi.Magnitude(i));
             if length(s) == 15 ; s = [' ' s] ; end
             if length(s) == 14 ; s = ['  ' s] ; end
             if length(s) == 13 ; s = ['   ' s] ; end
             stri2 = [stri2 ; s];
         end   % for i
-        te1 = text(ax,maepi(:,1),maepi(:,2),stri2);
+        te1 = text(ax,maepi.Longitude,maepi.Latitude,stri2);
         set(te1,'FontWeight','bold','Color','k','FontSize',9,'Clipping','on')
     end
     
     
     %plot mainshock(s)
     %
-    if ~isempty(main)
-        plo1 = plot(ax,main(:,1),main(:,2),'*k');
+    if ~isempty(main) && main.Count > 0
+        plo1 = plot(ax,main.Longitude,main.Latitude,'*k');
         set(plo1,'MarkerSize',12,'LineWidth',2.0)
         plo1.DisplayName = 'mainshocks';
         plo1.Tag = 'mainshocks';

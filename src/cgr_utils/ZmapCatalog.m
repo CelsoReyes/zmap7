@@ -45,6 +45,11 @@ classdef ZmapCatalog < handle
                 % import Catalog from Array
                 obj.Longitude = varargin{1}(:,1);
                 obj.Latitude = varargin{1}(:,2);
+                if all(varargin{1}(:,3) < 100)
+                    varargin{1}(:,3) = varargin{1}(:,3)+1900;
+                    errdisp =    ['The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance'];
+                    warndlg(errdisp)
+                end
                 obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
                 obj.Depth = varargin{1}(:,7);
                 obj.Magnitude = varargin{1}(:,6);
@@ -77,6 +82,12 @@ classdef ZmapCatalog < handle
             if ~exist('verbosity','var')
                 verbosity='';
             end
+            
+            if obj.Count==0
+                s = sprintf('Empty Catalog, named "%s"',obj.Name);
+                return
+            end
+            
             switch verbosity
                 case 'simple'
                     minti = min( obj.Date );
@@ -108,11 +119,12 @@ classdef ZmapCatalog < handle
                     
                     fmtstr = [...
                         'Catalog "%s"\nNumber of events: %d\n',...
-                        'Start: %s\nEnd:   %s\n',...
+                        'Start Date: %s\n',...
+                        'End Date:   %s\n',...
                         '  %s\n',...
-                        'Depths: %4.2f km ≤ Z ≤ %4.2f km\n',...
+                        'Depths:     %4.2f km ≤ Z ≤ %4.2f km\n',...
                         '  %s\n',...
-                        'Magnitudes: %2.1f ≤ mags ≤ %2.1f\n',...
+                        'Magnitudes: %2.1f ≤ M ≤ %2.1f\n',...
                         '  %s'];
                     
                     mean_int = mean(diff(obj.Date));
@@ -275,12 +287,14 @@ classdef ZmapCatalog < handle
             [~,idx] = sort(obj.(field),direction);
             
             obj.Date = obj.Date(idx);       % datetime
-            % Nanosecond  % additional precision, if needed
             obj.Longitude = obj.Longitude(idx) ;
             obj.Latitude = obj.Latitude(idx);
             obj.Depth =  obj.Depth(idx) ;      % km
             obj.Magnitude = obj.Magnitude(idx) ;
             obj.MagnitudeType = obj.MagnitudeType(idx) ;
+            if isempty(obj.Filter)
+                obj.clearFilter();
+            end
             obj.Filter = obj.Filter(idx) ;
         end
          
@@ -290,7 +304,6 @@ classdef ZmapCatalog < handle
         
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime
-            % Nanosecond  % additional precision, if needed
             obj.Longitude = existobj.Longitude(range) ;
             obj.Latitude = existobj.Latitude(range);
             obj.Depth =  existobj.Depth(range) ;      % km
@@ -299,6 +312,16 @@ classdef ZmapCatalog < handle
             obj.Filter = existobj.Filter(range) ;
 
         end   
+        function obj = cat(objA, objB)
+            obj = objA;
+            objA.Date = [objA.Date; objB.Date];
+            objA.Longitude = [objA.Longitude; objB.Longitude];
+            objA.Latitude = [objA.Latitude; objB.Latitude];
+            objA.Depth = [objA.Depth; objB.Depth];
+            objA.Magnitude = [objA.Magnitude; objB.Magnitude];
+            objA.MagnitudeType = [objA.MagnitudeType; objB.MagnitudeType];
+            objA.clearFilter();
+        end
     end
     
 end

@@ -117,15 +117,15 @@ syn(:,6)=tmpo(1:TN);
 
 rng('shuffle');
 %if TN==length(a)
-%	syn(:,3)=rand(TN,1)*(max(a(:,3)-min(a(:,3))))  + min(a(:,3));
-%	syn(:,1)=a(:,1);
-%	syn(:,2)=a(:,2);
-%	syn(:,7)=a(:,7);
+%	syn(:,3)=rand(TN,1)*(max(a.Date-min(a.Date)))  + min(a.Date);
+%	syn(:,1)=a.Longitude;
+%	syn(:,2)=a.Latitude;
+%	syn(:,7)=a.Depth;
 %else
-syn(:,3)=rand(TN,1)*(max(a(:,3)-min(a(:,3))))  + min(a(:,3));
-syn(:,1)=rand(TN,1)*(max(a(:,1)-min(a(:,1))))  + min(a(:,1));
-syn(:,2)=rand(TN,1)*(max(a(:,2)-min(a(:,2))))  + min(a(:,2));
-syn(:,7)=rand(TN,1)*(max(a(:,7)-min(a(:,7))))  + min(a(:,7));
+syn(:,3)=rand(TN,1)*(max(a.Date-min(a.Date)))  + min(a.Date);
+syn(:,1)=rand(TN,1)*(max(a.Longitude-min(a.Longitude)))  + min(a.Longitude);
+syn(:,2)=rand(TN,1)*(max(a.Latitude-min(a.Latitude)))  + min(a.Latitude);
+syn(:,7)=rand(TN,1)*(max(a.Depth-min(a.Depth)))  + min(a.Depth);
 %The ranges of random generation for hours and minutes were increased, because this random generator
 %seems to generate non-random numbers near the boundaries (max and min values).
 rng('shuffle');
@@ -249,13 +249,13 @@ aa=a;
 a=synt;
 %R calculate time in decimals and substitute in column 3 of file  "a"
 if length(a(1,:))== 7
-    a(:,3) = decyear(a(:,3:5));
+    a.Date = decyear(a(:,3:5));
 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-    a(:,3) = decyear(a(:,[3:5 8 9]));
+    a.Date = decyear(a(:,[3:5 8 9]));
 end
 
 % Sort the catalog in time just to make sure ...
-[s,is] = sort(a(:,3));
+[s,is] = sort(a.Date);
 a = a(is(:,1),:) ;
 
 

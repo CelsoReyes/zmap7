@@ -193,7 +193,7 @@ ylabel('Latitude [deg]','FontWeight','normal','FontSize',fontsz.s)
 %
 hold on
 overlay_
-ploeq = plot(a(:,1),a(:,2),'k.');
+ploeq = plot(a.Longitude,a.Latitude,'k.');
 set(ploeq,'Tag','eq_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 

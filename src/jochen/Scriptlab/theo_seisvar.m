@@ -16,13 +16,13 @@ mCat = a;
 bChoice = 0;
 if bChoice == 1
     % %%% Use Parkfield data
-    vSel = (a(:,3) >= 1980.33 & a(:,3) < 1983.33 & 0.5 <= a(:,6) & a(:,6) < 1.5);
-    mCat1 = a(vSel,:);
+    vSel = (a.Date >= 1980.33 & a.Date < 1983.33 & 0.5 <= a.Magnitude & a.Magnitude < 1.5);
+    mCat1 = a.subset(vSel);
 %     mCat2 = mCat1;
     % Copy of time period 1980.33-1983.32 to 1983.33-1986.32
 %     mCat2(:,3) = mCat1(:,3)+3;
-    vSel2 = (a(:,3) >= 1983.33 & a(:,3) < 1988.33  & 0.5 <= a(:,6) & a(:,6) < 1.5);
-    mCat2 = a(vSel2,:);
+    vSel2 = (a.Date >= 1983.33 & a.Date < 1988.33  & 0.5 <= a.Magnitude & a.Magnitude < 1.5);
+    mCat2 = a.subset(vSel2);
 
 else
     %% Use synthetic data

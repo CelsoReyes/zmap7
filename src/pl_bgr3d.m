@@ -37,6 +37,6 @@ brighten(0.5)
 view([70 8])
 axis([min(gy) max(gy) min(gx) max(gx) min(gz) max(gz)]);
 grid off
-% plot3(a(:,2),a(:,1),-a(:,7),'wo','MarkerSize',2)
+% plot3(a.Latitude,a.Longitude,-a.Depth,'wo','MarkerSize',2)
 
 

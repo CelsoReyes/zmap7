@@ -9,9 +9,9 @@ Catalog=[];
 Catalog=newcat;
 NumberBins = length(xt);
 BetaValues = zeros(NumberBins+1,NumberBins+1)*NaN;
-TimeBegin = Catalog(1,3);
-NumberEQs = length(Catalog(:,1));
-TimeEnd = max(Catalog(:,3));
+TimeBegin = Catalog.Date;
+NumberEQs = Catalog.Count;
+TimeEnd = max(Catalog.Date);
 be_norm = [];
 watchon;
 % time normalisation
@@ -21,7 +21,7 @@ watchon;
 %betidiff=(betimax-betimin);					    % duration of catalogue
 %inc=1/ceil(betidiff*365/30);					    % sets increment to about 30 days, 1/inc is integer
 % inc is now 1/NumberBins
-be_norm = ceil((Catalog(:,3)-TimeBegin)/((TimeEnd-TimeBegin)/NumberBins));	% be_norm consists of number of intervals eq's belong into
+be_norm = ceil( decyear(Catalog.Date-TimeBegin)/(decyear(TimeEnd-TimeBegin)/NumberBins));	% be_norm consists of number of intervals eq's belong into
 be_norm(1,1)=1;									% artificially put first value into first interval
 
 for bei=1:NumberBins								% count # eqs in each interval

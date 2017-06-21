@@ -30,8 +30,8 @@ if sel == 'in'
     fBinning = 0.1;
 
     % cut catalog at mainshock time:
-    l = a(:,3) > maepi(1,3);
-    a = a(l,:);
+    l = a.Date > maepi(1,3);
+    a = a.subset(l);
 
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -222,12 +222,12 @@ if sel == 'ca'
             'Mac Users: Use the keyboard "p" more  '
             'point to select, "l" last point.      '
             '                                      '];
-        welcome('Select Polygon for a grid',messtext);
+        zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
         
         ax = findobj('Tag','main_map_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
-        welcome('Message',' Thank you .... ')
+        zmap_message_center.set_info('Message',' Thank you .... ')
     end % of if bGridEntireArea
 
 
@@ -257,7 +257,7 @@ if sel == 'ca'
     % Set itotal for waitbar
     itotal = length(newgri(:,1));
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = newa(1,3)  ;
@@ -376,7 +376,7 @@ if sel == 'ca'
     %save Omoricross.mat mCross gx gy dx dy par1 tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops maepi xsecx xsecy wi lon1 lat1 lon2 lat2
     %disp('Saving data to Omoricross.mat in current directory')
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
         ' sapa2 = [''save '' path1 file1 '' mCross gx gy dx dy par1 tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops maepi xsecx xsecy wi lon1 lat1 lon2 lat2 ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
@@ -525,7 +525,7 @@ if sel == 'lo'
         re3 = mPval;
         lab1 = 'p-value';
         nlammap
-        [xsecx, xsecy inde] =mysect(a(:,2)',a(:,1)',a(:,7),wi,0,lat1,lon1,lat2,lon2);
+        [xsecx, xsecy inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
 

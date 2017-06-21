@@ -64,9 +64,9 @@ for i = 1:le
     end
 end
 
-l = a(:,3) == 0;
+l = a.Date == 0;
 a(l,:) = [];
-a(:,3) = decyear(a(:,[3:5 8 9]));
+a.Date = decyear(a(:,[3:5 8 9]));
 par1 = 14;
 minmag = 8;
 mainmap_overview()

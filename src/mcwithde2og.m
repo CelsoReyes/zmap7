@@ -21,10 +21,10 @@ for ib=1:5
     xa0=cmp(ib,1);
     ya0=cmp(ib,2);
 
-    ll = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
-    %ll=distance(a(:,1),a(:,2),xa0,ya0,'km')
+    ll = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+    %ll=distance(a.Longitude,a.Latitude,xa0,ya0,'km')
     l = ll < rad;
-    newt2 = a(l,:);
+    newt2 = a.subset(l);
 
     BV = [];
     BV3 = [];
@@ -39,7 +39,7 @@ for ib=1:5
     %l = ni2{:};
     intdep = 15 %str2double(l);
     think
-    [s,is] = sort(newt2(:,7));
+    [s,is] = sort(newt2.Depth);
     newt1 = newt2(is(:,1),:) ;
     watchon;
 

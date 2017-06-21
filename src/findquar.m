@@ -126,8 +126,8 @@ if sel == 'hr'
     fihr = gcf
     hold on
     axes('pos',[0.1 0.2 0.6 0.6]);
-    histogram(a(:,8),-0.5:1:24.5);
-    [X,N] = hist(a(:,8),-0.5:1:24.5);
+    histogram(a.Date.Hour,-0.5:1:24.5);
+    [X,N] = hist(a.Date.Hour,-0.5:1:24.5);
 
     xlabel('Hr of the day')
     ylabel('Number of events per hour')
@@ -175,11 +175,11 @@ if sel == 'ca'
 
     selgp
     itotal = length(newgri(:,1));
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -205,7 +205,7 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 

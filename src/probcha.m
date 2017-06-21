@@ -2,10 +2,10 @@ report_this_filefun(mfilename('fullpath'));
 
 dt = 2;
 
-dT = max(a(:,3)) - min(a(:,3));
+dT = max(a.Date) - min(a.Date);
 tp = [];
 
-for t = min(newt2(:,3)):dt/10:max(newt2(:,3))-dt
+for t = min(newt2.Date):dt/10:max(newt2.Date)-dt
     ;
     b = newt2;;      % ne
 

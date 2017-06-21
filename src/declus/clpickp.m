@@ -128,12 +128,12 @@ function clpickp(but)
         pause(0.3)
         % calculate points with a polygon
 
-        XI = a(:,1);          % this substitution just to make equation below simple
-        YI = a(:,2);
+        XI = a.Longitude;          % this substitution just to make equation below simple
+        YI = a.Latitude;
     ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
             if isempty(ttcat)
-                equi = a(ll,:);       %all equievents inside selection area
+                equi = a.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
             newccat=newccat(ll,:);
@@ -154,7 +154,7 @@ function clpickp(but)
                 bgevent=backbgevent(tmp',:);
                 cluoverl(7);
             else
-                ttcat=a(ll,:);
+                ttcat=a.subset(ll);
                 cluoverl(8);
             end
         elseif decc==0

@@ -15,11 +15,11 @@ global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
 global cplot mess tiplo2 cum newt2 ho2 statime
 
 
-welcome(' ','Plotting cumulative number plot...');
+zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 
 
 
-[s,is] = sort(newt2(:,3));
+[s,is] = sort(newt2.Date);
 newt2 = newt2(is(:,1),:) ;
 
 if ~exist('xt','var')
@@ -97,9 +97,9 @@ if newCumWindowFlag
 
     options = uimenu('Label','Tools ');
 
-    uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2')
-    uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot;');
-    uimenu (options,'Label','Decluster the catalog', 'Callback','inpude;')
+    uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2;timeplot()')
+    uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot();');
+    uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2*365/par1;
     uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2 = ''hold''; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
@@ -116,13 +116,13 @@ if newCumWindowFlag
     op5C = uimenu(options,'Label','Histograms');
 
     uimenu(op5C,'Label','Magnitude',...
-        'Callback','global histo;hisgra(newt2(:,6),stt1);');
+        'Callback','global histo;hisgra(newt2.Magnitude,stt1);');
     uimenu(op5C,'Label','Depth',...
-        'Callback','global histo;hisgra(newt2(:,7),stt2);');
+        'Callback','global histo;hisgra(newt2.Depth,stt2);');
     uimenu(op5C,'Label','Time',...
-        'Callback','global histo;hisgra(newt2(:,3),''Time '');');
+        'Callback','global histo;hisgra(newt2.Date,''Time '');');
     uimenu(op5C,'Label','Hr of the day',...
-        'Callback','global histo;hisgra(newt2(:,8),''Hr '');');
+        'Callback','global histo;hisgra(newt2.Date.Hour,''Hr '');');
 
     op4B = uimenu(options,'Label','Rate changes (z-values) ');
     uimenu(op4B,'Label','AS(t)function',...
@@ -186,14 +186,14 @@ if ho2 == 'hold'
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
-    n = length(newt2(:,1));
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    n = newt2.Count;
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
     cumu2 = cumsum(cumu);
 
 
     hold on
     axes(ht)
-    tiplo2 = plot(newt2(:,3),(1:length(newt2(:,3))),'r-.','era','xor');
+    tiplo2 = plot(newt2.Date,(1:newt2.Count),'r-.','era','xor');
     set(tiplo2,'LineWidth',2.0)
 
 
@@ -218,16 +218,16 @@ if isempty(newcat), newcat =a; end
 
 % select big events ( > minmag)
 %
-l = newt2(:,6) > minmag;
+l = newt2.Magnitude > minmag;
 big = newt2(l,:);
 %big=[];
 %calculate start -end time of overall catalog
 %R
 statime=[];
 par2=par1;
-t0b = min(a(:,3));
-n = length(newt2(:,1));
-teb = max(a(:,3));
+t0b = min(a.Date);
+n = newt2.Count;
+teb = max(a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
     %par1 = ceil(ttdif/300);
@@ -259,11 +259,11 @@ cumu2 = 0:1:((teb-t0b)*365/par1)-1;
 %
 % calculate cumulative number versus time and bin it
 %
-n = length(newt2(:,1));
+n = newt2.Count;
 if par1 >=1
-    [cumu, xt] = hist(newt2(:,3),(t0b:par1/365:teb));
+    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
 else
-    [cumu, xt] = hist((newt2(:,3)-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((newt2.Date-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
 end
 cumu2=cumsum(cumu);
 % plot time series
@@ -278,17 +278,17 @@ set(gca,'visible','off')
 %tiplo2 = plot(xt,cumu2,'b');
 %set(tiplo2,'LineWidth',2.5)
 
-%d = datenum(ceil(a(:,3))+1900,a(:,4),a(:,5),a(:,8),a(:,9),a(:,9)*0);
+%d = datenum(ceil(a.Date)+1900,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,a.Date.Minute*0);
 %tiplo2 = plot(d,(1:length(d)),'r-.');
 %datetick('x',2)
 
-nu = (1:length(newt2(:,3))+1); nu(length(newt2(:,3))+1) = length(newt2(:,3));
+nu = (1:newt2.Count+1); nu(newt2.Count+1) = newt2.Count;
 
-tiplo2 = plot([newt2(:,3) ; teb],nu,'b');
+tiplo2 = plot([newt2.Date ; teb],nu,'b');
 set(tiplo2,'LineWidth',2.0)
 
 % plot end of data
-% pl = plot(teb,length(newt2(:,3)),'rs');
+% pl = plot(teb,newt2.Count,'rs');
 %set(pl,'LineWidth',1.0,'MarkerSize',6,...
 %  'MarkerFaceColor','r','MarkerEdgeColor','g');
 
@@ -299,7 +299,7 @@ if par1>=1
     if ~isempty(big)
         %if ceil(big(:,3) -t0b) > 0
         %f = cumu2(ceil((big(:,3) -t0b)*365/par1));
-        l = newt2(:,6) > minmag;
+        l = newt2.Magnitude > minmag;
         f = find( l  == 1);
         bigplo = plot(big(:,3),f,'hm');
         set(bigplo,'LineWidth',1.0,'MarkerSize',10,...
@@ -367,7 +367,7 @@ axes(ht);
 set(cum,'Visible','on');
 watchoff(cum)
 watchoff(map)
-welcome(' ',' ')
+zmap_message_center.clear_message();
 %par1=par2;
 done
 

@@ -18,7 +18,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 axes(h1)
@@ -39,7 +39,7 @@ if bMap == 0    % Cross section
     l = sqrt(((xsecx' - xa0)).^2 + (((xsecy+ya0))).^2) ;
 else % Map view
     newt2 = a;
-    l = sqrt(((newt2(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((newt2(:,2)-ya0)*111).^2) ;
+    l = sqrt(((newt2.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((newt2.Latitude-ya0)*111).^2) ;
 end
 [s,is] = sort(l);
 newt2 = newt2(is(:,1),:) ;
@@ -52,12 +52,12 @@ newt2 = newt2(l3,:);
 
 % Select radius in time
 newt3=newt2;
-vSel = (newt2(:,3) <= maepi(:,3)+time/365);
+vSel = (newt2.Date <= maepi(:,3)+time/365);
 newt2 = newt2(vSel,:);
 R2 = l(ni);
 messtext = ['Number of selected events: ' num2str(length(newt2))  ];
 disp(messtext)
-welcome('Message',messtext)
+zmap_message_center.set_message('Message',messtext)
 
 
 % Sort the catalog
@@ -68,7 +68,7 @@ R2 = ra;
 % Plot selected earthquakes
 hold on;
 
-plos1 = plot(newt2(:,1),newt2(:,2),'xk','EraseMode','normal');
+plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','normal');
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;

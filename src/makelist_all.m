@@ -53,8 +53,8 @@ crp =[los las]
 
 
 los = skn(1);las = skn(2);
-l = sqrt(((a(:,1)-los)*cos(pi/180*las)*111).^2 + ((a(:,2)-las)*111).^2) ;
-l2 = a(:,6) >=1.8 & 1.2*a(:,7) >= l & l > a(:,7);
+l = sqrt(((a.Longitude-los)*cos(pi/180*las)*111).^2 + ((a.Latitude-las)*111).^2) ;
+l2 = a.Magnitude >=1.8 & 1.2*a.Depth >= l & l > a.Depth;
 s = [floor(a(l2,3)) a(l2,4:5) a(l2,8:9)  ]; s = s';
 az = azimuth(las+a(l2,1)*0,los+a(l2,1)*0,a(l2,2),a(l2,1));
 
@@ -64,8 +64,8 @@ fprintf(fid,'%2.0f%2.0f%2.0f%2.0f%2.0f      %3.1f     %6.2f     %6.2f   %6.2f\n'
 fclose(fid)
 
 los = aui(1);las = aui(2);
-l = sqrt(((a(:,1)-los)*cos(pi/180*las)*111).^2 + ((a(:,2)-las)*111).^2) ;
-l2 = a(:,6) >=1.4 & a(:,7) >= l;
+l = sqrt(((a.Longitude-los)*cos(pi/180*las)*111).^2 + ((a.Latitude-las)*111).^2) ;
+l2 = a.Magnitude >=1.4 & a.Depth >= l;
 s = [floor(a(l2,3)) a(l2,4:5) a(l2,8:9)  ]; s = s';
 az = azimuth(las+a(l2,1)*0,los+a(l2,1)*0,a(l2,2),a(l2,1));
 
@@ -75,8 +75,8 @@ fprintf(fid,'%2.0f%2.0f%2.0f%2.0f%2.0f      %3.1f     %6.2f     %6.2f   %6.2f\n'
 fclose(fid)
 
 los = red(1);las = red(2);
-l = sqrt(((a(:,1)-los)*cos(pi/180*las)*111).^2 + ((a(:,2)-las)*111).^2) ;
-l2 = a(:,6) >=1.4 & a(:,7) >= l;
+l = sqrt(((a.Longitude-los)*cos(pi/180*las)*111).^2 + ((a.Latitude-las)*111).^2) ;
+l2 = a.Magnitude >=1.4 & a.Depth >= l;
 s = [floor(a(l2,3)) a(l2,4:5) a(l2,8:9)  ]; s = s';
 az = azimuth(las+a(l2,1)*0,los+a(l2,1)*0,a(l2,2),a(l2,1));
 

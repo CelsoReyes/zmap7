@@ -8,7 +8,7 @@ global name term cb1 cb2 cb3 minde maxde maxma2 minma2
 
 
 report_this_filefun(mfilename('fullpath'));
-welcome('Message','Plotting Seismicity Map(Cluster) ....');
+zmap_message_center.set_info('Message','Plotting Seismicity Map(Cluster) ....');
 org2=original;
 %set catalog to the original catalog used at declustering
 if isempty(newccat)
@@ -19,10 +19,10 @@ else
 end
 
 % For time and magnitude cut window
-minma2=min(a(:,6));
-maxma2=max(a(:,6));
-minde=min(a(:,7));
-maxde=max(a(:,7));
+minma2=min(a.Magnitude);
+maxma2=max(a.Magnitude);
+minde=min(a.Depth);
+maxde=max(a.Depth);
 
 % Find out of figure already exists
 %
@@ -114,7 +114,7 @@ if newMapWindowFlag
     uimenu(op2,'label','Declustered catalog',...
          'Callback','newccat=buildcat(2);csubcat');
     catSave =...
-        [ 'welcome(''Save Data'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Data'',''  '');think;',...
         '[file1,path1] = uigetfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Earthquake Datafile'');',...
         'if length(file1) > 1 , sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri ''],',...
         'eval(sapa2) ,end, done'];
@@ -135,7 +135,7 @@ if newMapWindowFlag
     uimenu(op3,'Label','Time magnitude Plot ',...
         'Callback',' timmag');
     uimenu(op3,'Label','Decluster the catalog',...
-        'Callback','inpude;');
+        'Callback','inpudenew;');
     uimenu(op3,'Label','get coordinates with Cursor',...
          'Callback','ginput(1)');
 
@@ -146,11 +146,11 @@ if newMapWindowFlag
     op5 = uimenu(op3,'Label','Histograms');
 
     uimenu(op5,'Label','Magnitude',...
-        'Callback','global histo;hisgra(a(:,6),stt1);');
+        'Callback','global histo;hisgra(a.Magnitude,stt1);');
     uimenu(op5,'Label','Depth',...
-        'Callback','global histo;hisgra(a(:,7),stt2);');
+        'Callback','global histo;hisgra(a.Depth,stt2);');
     uimenu(op5,'Label','Time',...
-        'Callback','global histo;hisgra(a(:,3),''Time '');');
+        'Callback','global histo;hisgra(a.Date,''Time '');');
 end
 %end;    if figure exist
 
@@ -166,10 +166,10 @@ hold off
 
 %set(set_ni3,'String',num2str(ni));
 % find min and Maximum axes points
-s1 = max(a(:,1));
-s2 = min(a(:,1));
-s3 = max(a(:,2));
-s4 = min(a(:,2));
+s1 = max(a.Longitude);
+s2 = min(a.Longitude);
+s3 = max(a.Latitude);
+s4 = min(a.Latitude);
 %ni = 100;
 orient landscape
 set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
@@ -181,7 +181,7 @@ axes('position',rect)
 
 
 t0b = a(1,3);
-n = length(a(:,1));
+n = a.Count;
 teb = a(n,3) ;
 tdiff =round(teb - t0b)*365/par1;
 
@@ -195,11 +195,11 @@ hold on
 
 %plot earthquakes according to depth
 if typele == 'dep'
-    deplo1 =plot(a(a(:,7)<=dep1,1),a(a(:,7)<=dep1,2),'.b');
+    deplo1 =plot(a(a.Depth<=dep1,1),a(a.Depth<=dep1,2),'.b');
     set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-    deplo2 =plot(a(a(:,7)<=dep2&a(:,7)>dep1,1),a(a(:,7)<=dep2&a(:,7)>dep1,2),'.g');
+    deplo2 =plot(a(a.Depth<=dep2&a.Depth>dep1,1),a(a.Depth<=dep2&a.Depth>dep1,2),'.g');
     set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
-    deplo3 =plot(a(a(:,7)<=dep3&a(:,7)>dep2,1),a(a(:,7)<=dep3&a(:,7)>dep2,2),'.r');
+    deplo3 =plot(a(a.Depth<=dep3&a.Depth>dep2,1),a(a.Depth<=dep3&a.Depth>dep2,2),'.r');
     set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
     ls1 = sprintf('Depth < %3.1f km',dep1);
     ls2 = sprintf('Depth < %3.1f km',dep2);
@@ -208,11 +208,11 @@ end
 
 %plot earthquakes according time
 if typele == 'tim'
-    deplo1 =plot(a(a(:,3)<=tim2&a(:,3)>=tim1,1),a(a(:,3)<=tim2&a(:,3)>=tim1,2),'.b');
+    deplo1 =plot(a(a.Date<=tim2&a.Date>=tim1,1),a(a.Date<=tim2&a.Date>=tim1,2),'.b');
     set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-    deplo2 =plot(a(a(:,3)<=tim3&a(:,3)>tim2,1),a(a(:,3)<=tim3&a(:,3)>tim2,2),'.g');
+    deplo2 =plot(a(a.Date<=tim3&a.Date>tim2,1),a(a.Date<=tim3&a.Date>tim2,2),'.g');
     set(deplo2,'MarkerSize',ms6,'Marker',ty2);
-    deplo3 =plot(a(a(:,3)<=tim4&a(:,3)>tim3,1),a(a(:,3)<=tim4&a(:,3)>tim3,2),'.r');
+    deplo3 =plot(a(a.Date<=tim4&a.Date>tim3,1),a(a.Date<=tim4&a.Date>tim3,2),'.r');
     set(deplo3,'MarkerSize',ms6,'Marker',ty3)
 
     ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -257,4 +257,4 @@ axes(h1);
 watchoff(mapp)
 set(mapp,'Visible','on');
 done
-welcome('Message','   ');
+zmap_message_center.set_info('Message','   ');

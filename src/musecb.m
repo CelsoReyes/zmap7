@@ -42,7 +42,7 @@ l = newa2(:,10) == 1;
 pl =plot(newa2(l,11),-newa2(l,7),'ro');
 set(pl,'Linewidth',1.,'MarkerSize',2)
 hold on
-newa = newa(l,:);
+newa = newa.subset(l);
 xsecx = newa(:,po)';
 xsecy = newa(:,7);
 

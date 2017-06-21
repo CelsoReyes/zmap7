@@ -43,7 +43,7 @@ vMagDiff = vN-vNonCFMD(2,:);
 % Data selection below Mc
 mData = [vMagDiff' vN' vNonCFMD'];
 vSel = (mData(:,3) < fMc);
-mData = mData(vSel,:);
+mData = mData.subset(vSel);
 
 % Curve fitting: Non cumulative part below Mc
 options = optimset;

@@ -17,7 +17,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -41,7 +41,7 @@ if ic == 1 % select N closest events
     l = s;
     messtext = ['Number of events in the sphere :' num2str(length(newt2(ll,1))) ];
     disp(messtext);
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -53,7 +53,7 @@ if ic == 1 % select N closest events
 
     hold on
     %[na,ma] = size(newt2);
-    plos1 = plot(newt2(:,1),-newt2(:,7),'k.','MarkerSize', 0.5, 'EraseMode','back');
+    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -84,7 +84,7 @@ if ic == 2 % select events within ra
     ll = l <= ra;
     messtext = ['Radius of selected sphere:' num2str(l(ni))  ' km' ];
     disp(messtext)
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -96,7 +96,7 @@ if ic == 2 % select events within ra
 
     hold on
     %[na,ma] = size(newt2);
-    plos1 = plot(newt2(:,1),-newt2(:,7),'k.','MarkerSize', 1, 'EraseMode','back');
+    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 1, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -127,7 +127,7 @@ if ic == 3 % select N closest events
     l = s;
     messtext = ['Radius of selected sphere:' num2str(l(ni))  ' km' ];
     disp(messtext);
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -139,7 +139,7 @@ if ic == 3 % select N closest events
 
     hold on
     %[na,ma] = size(newt2);
-    plos1 = plot(newt2(:,1),-newt2(:,7),'k.','MarkerSize', 0.5, 'EraseMode','back');
+    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle

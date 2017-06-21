@@ -105,8 +105,8 @@ case 'eva2'
 case 'eva4'
 
      in3 =get(hndl4,'Value');
-     if in3 == 1 ; ploe = plot(a(:,1),a(:,2),'.r','MarkerSize',1) ; end
-     if in3 == 2 ; ploe = plot(a(:,1),a(:,2),'or','MarkerSize',2) ; end
+     if in3 == 1 ; ploe = plot(a.Longitude,a.Latitude,'.r','MarkerSize',1) ; end
+     if in3 == 2 ; ploe = plot(a.Longitude,a.Latitude,'or','MarkerSize',2) ; end
      if in3 == 3 ; delete(ploe);  end
 
 case 'eva5'

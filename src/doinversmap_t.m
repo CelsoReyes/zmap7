@@ -57,7 +57,7 @@ if var1==1
     ldx=100;                     %side length of interaction zone in km
     tlap=300;                    %interaction time in days
     Mmin=3;                      %minimum magnitude
-    stime=a(find(a(:,6)==max(a(:,6))),3);
+    stime=a(find(a.Magnitude==max(a.Magnitude)),3);
     stime=stime(1);
 
 
@@ -151,7 +151,7 @@ elseif var1==2           %area selection
         i2 = i2+1;
         % calculate distance from center point and sort wrt distance
         %
-        l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         % take first ni points

@@ -30,13 +30,13 @@ x = [x(:,1) ; x(1,1)];
 plot(x,y,'b-','era','normal');
 sum3 = 0.;
 pause(0.3)
-%a(:,7) = a(:,6).*0;
+%a.Depth = a.Magnitude.*0;
 
-XI = a(:,1);          % this substitution just to make equation below simple
-YI = a(:,2);
+XI = a.Longitude;          % this substitution just to make equation below simple
+YI = a.Latitude;
     ll = polygon_filter(x,y, XI, YI, 'inside');
 
-newcat = a(ll,:);      % newcat is created
+newcat = a.subset(ll);      % newcat is created
 
 clear XI YI l ll;
 %
@@ -44,7 +44,7 @@ clear XI YI l ll;
 %
 disp('Done!')
 delete(wai)
-plot(newcat(:,1),newcat(:,2),'.m','era','normal')
+plot(newcat.Longitude,newcat.Latitude,'.m','era','normal')
 
 a = newcat;
 

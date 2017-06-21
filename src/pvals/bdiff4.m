@@ -9,7 +9,7 @@ global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
 think
-%welcome('  ','Calculating b-value...')
+%zmap_message_center.set_info('  ','Calculating b-value...')
 report_this_filefun(mfilename('fullpath'));
 
 %%
@@ -129,8 +129,8 @@ if selt == 'ca'
 
     end
 
-    maxmag = ceil(10*max(newt2(:,6)))/10;
-    mima = min(newt2(:,6));
+    maxmag = ceil(10*max(newt2.Magnitude))/10;
+    mima = min(newt2.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -150,7 +150,7 @@ if selt == 'ca'
     %
     %%
 
-    [bval,xt2] = hist(newt2(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newt2.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -275,7 +275,7 @@ if selt == 'ca'
         elseif inpr1 == 2
             [bvls magco stanls avls me mer me2,  pr] =  bvalca3(b,2,2);
             [mea bvml stanml avml ] =  bmemag(b);
-            magco = min(newt2(:,6));
+            magco = min(newt2.Magnitude);
         end
 
     else
@@ -399,12 +399,12 @@ if selt == 'ca'
     end
 
     set(gcf,'visible','on');
-    welcome('  ','Done')
+    zmap_message_center.set_info('  ','Done')
     done
 
     if ho(1:2) == 'ho'
         % calculate the probability that the two distributions are different
-        %l = newt2(:,6) >=  M1b(1);
+        %l = newt2.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;

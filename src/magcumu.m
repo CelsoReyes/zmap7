@@ -15,20 +15,20 @@ report_this_filefun(mfilename('fullpath'));
 
 newt2 = newcat;
 
-l = newt2(:,6) >= minma2 & newt2(:,6) <= maxma2 & ...
-    newt2(:,3) >= mint & newt2(:,3) <= maxt;
+l = newt2.Magnitude >= minma2 & newt2.Magnitude <= maxma2 & ...
+    newt2.Date >= mint & newt2.Date <= maxt;
 newt2 = newt2(l,:);
 
-l = newt2(:,7) >= minde & newt2(:,7) <= maxde ;
+l = newt2.Depth >= minde & newt2.Depth <= maxde ;
 newt2 = newt2(l,:);
 
-%l = newt2(:,3) >= minti & newt2(:,3) <= maxti ;
+%l = newt2.Date >= minti & newt2.Date <= maxti ;
 %newt2 = newt2(l,:);
 
 stri = ['# ' stri1 '#  ' num2str(minma2) ' <= M <= ' num2str(maxma2) ...
     '#  ' num2str(minde) ' <= h(km) < ' num2str(maxde) ];
 
-t0b = min(newt2(:,3));
+t0b = min(newt2.Date);
 timeplot
 
 

@@ -6,8 +6,8 @@ Rq = [];
 
 
 for i = 0:1:20
-    l = a(:,7) >= i & a(:,7) <= i+5;
-    b = a(l,:);
+    l = a.Depth >= i & a.Depth <= i+5;
+    b = a.subset(l);
 
     l = ismember(b(:,8),D);
     day = b(l,:);
@@ -29,8 +29,8 @@ Rq = [];
 
 
 for i = 1:0.1:5
-    l = a(:,6) >= i ;
-    b = a(l,:);
+    l = a.Magnitude >= i ;
+    b = a.subset(l);
 
     l = ismember(b(:,8),D);
     day = b(l,:);

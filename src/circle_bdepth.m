@@ -24,7 +24,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -36,14 +36,14 @@ pause(0.1)
 %  calculate distance for each earthquake from center point
 %  and sort by distance
 %
-l = sqrt(((a(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
-%l = sqrt(((a(:,1)-xa0)*111).^2 + ((a(:,2)-ya0)*111).^2) ;
+l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+%l = sqrt(((a.Longitude-xa0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
 
 %% Sort by depth so newt2 can be divided into depth ratio zones
-[s,is] = sort(newt2(:,7));
+[s,is] = sort(newt2.Depth);
 adepth = newt2(is(:,1),:);
 
 % find row index of ratio midpoint
@@ -71,7 +71,7 @@ bot_zone = adepth(bott_index:botb_index,:);
 l =  sort(l);
 messtext = ['Radius of selected Circle: ' num2str(l(ni))  ' km' ];
 disp(messtext)
-welcome('Message',messtext)
+zmap_message_center.set_message('Message',messtext)
 zone = 0;
 
 % perform loop twice =-- first loop is top zone, second loop is bottom zone

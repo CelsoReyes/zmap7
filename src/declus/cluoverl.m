@@ -54,7 +54,7 @@ function cluoverl(var1)
         set(gca,'Visible','off')
         hold off
         minde = 0.;
-        maxde = max(a(:,7));
+        maxde = max(a.Depth);
 
         dep1 = round(0.333*maxde);
         dep2 = round(0.666*maxde);
@@ -64,10 +64,10 @@ function cluoverl(var1)
 
 
         % find min and Maximum axes points
-        s1 = max(a(:,1));
-        s2 = min(a(:,1));
-        s3 = max(a(:,2));
-        s4 = min(a(:,2));
+        s1 = max(a.Longitude);
+        s2 = min(a.Longitude);
+        s3 = max(a.Latitude);
+        s4 = min(a.Latitude);
         ni = 100;
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
@@ -76,7 +76,7 @@ function cluoverl(var1)
         % find start and end time of catalogue "a"
         %
         t0b = a(1,3);
-        n = length(a(:,1));
+        n = a.Count;
         teb = a(n,3) ;
         tdiff = round(teb - t0b)*365/par1;
 
@@ -87,11 +87,11 @@ function cluoverl(var1)
         % defined in "startzmap"
         %
         hold on
-        dplo1_h =plot(a(a(:,7)<=dep1,1),a(a(:,7)<=dep1,2),'.b');
+        dplo1_h =plot(a(a.Depth<=dep1,1),a(a.Depth<=dep1,2),'.b');
         set(dplo1_h,'MarkerSize',ms6,'Marker',ty)
-        dplo2_h =plot(a(a(:,7)<=dep2&a(:,7)>dep1,1),a(a(:,7)<=dep2&a(:,7)>dep1,2),'.y');
+        dplo2_h =plot(a(a.Depth<=dep2&a.Depth>dep1,1),a(a.Depth<=dep2&a.Depth>dep1,2),'.y');
         set(dplo2_h,'MarkerSize',ms6,'Marker',ty);
-        dplo3_h =plot(a(a(:,7)<=dep3&a(:,7)>dep2,1),a(a(:,7)<=dep3&a(:,7)>dep2,2),'.r');set(dplo3_h,'MarkerSize',ms6,'Marker',ty)
+        dplo3_h =plot(a(a.Depth<=dep3&a.Depth>dep2,1),a(a.Depth<=dep3&a.Depth>dep2,2),'.r');set(dplo3_h,'MarkerSize',ms6,'Marker',ty)
 
         axis([ s2 s1 s4 s3])
         xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
@@ -134,10 +134,10 @@ function cluoverl(var1)
         cla
         set(gca,'visible','off')
         hold off
-        s1 = max(a(:,1));       %limits for area plot
-        s2 = min(a(:,1));
-        s3 = max(a(:,2));
-        s4 = min(a(:,2));
+        s1 = max(a.Longitude);       %limits for area plot
+        s2 = min(a.Longitude);
+        s3 = max(a.Latitude);
+        s4 = min(a.Latitude);
         if s1==s2                %to avoid error when all earthquakes have
             s1=s1+0.05;              %same longitude and/or latitude
             s2=s2-0.05;
@@ -153,12 +153,12 @@ function cluoverl(var1)
         % find start and end time of catalogue "a"
         %
         t0b = a(1,3);
-        n = length(a(:,1));
+        n = a.Count;
         teb = a(n,3) ;
         tdiff = round(teb - t0b)*365/par1;
         %define fore and aftershocks
         %
-        tmp = find(a(:,6)==max(a(:,6)));     %index in a of first mainshock
+        tmp = find(a.Magnitude==max(a.Magnitude));     %index in a of first mainshock
         if length(tmp)>1
             tmp=tmp(1,1);
         end
@@ -177,7 +177,7 @@ function cluoverl(var1)
             end
         end
         main_h=plot(a(tmp,1),a(tmp,2),'xm');
-        mainsh=a(tmp,:);
+        mainsh=a.subset(tmp);
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);
         if tmp+1<=n

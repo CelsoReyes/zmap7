@@ -37,7 +37,7 @@ caxis([cl(1) cl(2)]);
 
 hold on
 
-%li = m_line(a(:,1),a(:,2));
+%li = m_line(a.Longitude,a.Latitude);
 %set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
 set(gcf,'Color','w')
 

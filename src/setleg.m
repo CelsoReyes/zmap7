@@ -20,19 +20,20 @@ if typele =='tim'
     
     dlg_title='Legend Time Breaks';
     prompt={'Time 1 (earliest):','Time2:','Time 3:','Time 4 (latest):'};
-    defaultans = {num2str(tim1), num2str(tim2), num2str(tim3), num2str(tim4)};
+    defaultans = {char(tim1,'uuuu-MM-dd HH:mm:ss'), char(tim2,'uuuu-MM-dd HH:mm:ss'),...
+        char(tim3,'uuuu-MM-dd HH:mm:ss'), char(tim4,'uuuu-MM-dd HH:mm:ss')};
     answer = inputdlg(prompt, dlg_title, 1, defaultans);
     if ~isempty(answer)
         for i=1:4
             if contains(answer{i},{' ','/','-',':'})
                 % convert from string
-                answer{i} = decyear(datetime(answer{i}));
+                answer{i} = datetime(answer{i});
             else
                 tmp=str2double(answer{i});
                 if isnan(tmp)
-                    answer{i} = decyear(datetime(answer{i}));
+                    answer{i} = datetime(datevec(decyear(answer{i})));
                 else
-                    answer{i}=tmp;
+                    answer{i}=datetime(datevec(decyear2mat(tmp)));
                 end
                     
             end

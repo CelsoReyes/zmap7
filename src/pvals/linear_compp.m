@@ -22,7 +22,7 @@ fb=x(2);
 fc=x(3);
 fp=x(4);
 
-ll = tmp_newt2(:,3) >= fore_start & tmp_newt2(:,3) <= fore_end;
+ll = tmp_newt2.Date >= fore_start & tmp_newt2.Date <= fore_end;
 fore_cat = newt2(ll,:);
 
 llb = fore_cat(:,6) >= forem;

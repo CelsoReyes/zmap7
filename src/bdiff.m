@@ -15,7 +15,7 @@ function  bdiff(newcat,holdplot)
     end
 
     disp(ho)
-    %welcome('  ','Calculating b-value...')
+    %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
     %obsolate, replace
     %[existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
@@ -51,8 +51,8 @@ function  bdiff(newcat,holdplot)
 
     end
 
-    maxmag = ceil(10*max(newcat(:,6)))/10;
-    mima = min(newcat(:,6));
+    maxmag = ceil(10*max(newcat.Magnitude))/10;
+    mima = min(newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -62,7 +62,7 @@ function  bdiff(newcat,holdplot)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -129,8 +129,8 @@ function  bdiff(newcat,holdplot)
     ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
     x = xt3(ll);
 
-    l2 = newcat(:,6) >= M1b(1)- 0.05  & newcat(:,6) <= M2b(1)+ 0.05;
-    [ me, bv, si, av] = bmemag(newcat(l2,:)) ;
+    l2 = newcat.Magnitude >= M1b(1)- 0.05  & newcat.Magnitude <= M2b(1)+ 0.05;
+    [ me, bv, si, av] = bmemag(newcat.subset(l2)) ;
 
     bv = -bv;
 
@@ -172,8 +172,8 @@ function  bdiff(newcat,holdplot)
     %set(ttm,'LineWidth',1)
     %ttm= semilogy(x,f4+delta,'k-.');
     %set(ttm,'LineWidth',1)
-    set(gca,'XLim',[min(newcat(:,6))-0.5  max(newcat(:,6))+0.5])
-    set(gca,'YLim',[1 length(newcat(:,3)+20)*1.4]);
+    set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+0.5])
+    set(gca,'YLim',[1 (newcat.Count+20)*1.4]);
 
     set(gca,'FontSize',fontsz.s,'FontWeight','normal',...
         'LineWidth',1.,'TickDir','out','Ticklength',[0.02 0.02])
@@ -207,18 +207,18 @@ function  bdiff(newcat,holdplot)
     else
         txt1=text(.16, .14,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',fontsz.s)
-        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(newcat(:,6))) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
     end
 
     set(gcf,'visible','on');
-    welcome('  ','Done')
+    zmap_message_center.set_info('  ','Done')
     done
 
     if ho(1:2) == 'ho'
         % calculate the probability that the two distributins are differnt
-        %l = newcat(:,6) >=  M1b(1);
+        %l = newcat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;
@@ -234,7 +234,7 @@ function  bdiff(newcat,holdplot)
 
 
     bvalsumhold = bvalsum3;
-    da = 10^(aw+bw*6.5);;
+    da = 10^(aw+bw*6.5);
     db = 10^(aw+bw*6.5)*(-6.5);
     dp = sqrt(da^2*ew^2+db^2*0.05^2);
     dr = 1/dp;

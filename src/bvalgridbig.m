@@ -161,11 +161,11 @@ if sel == 'ca'
         return
     end
 
-    welcome(' ','Running... ');think
+    zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = a(1,3)  ;
-    n = length(a(:,1));
+    n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3,length(gx)*length(gy));
@@ -182,7 +182,7 @@ if sel == 'ca'
     %
     % overall b-value
     %[bv magco stan av me mer me2,  pr] =  bvalca3(a,inb1,inb2);
-    %bo1 = bv; no1 = length(a(:,1));
+    %bo1 = bv; no1 = a.Count;
     x0 = 0; y0 = 0; mr = 100; rd = 10
     % loop over all points
     for i= 1:length(newgri(:,1))
@@ -195,7 +195,7 @@ if sel == 'ca'
         lp = sqrt(((x0-x)*cos(pi/180*y)*111).^2 + ((y0-y)*111).^2) ;
         x0 = x; y0 = y;
         if mr < rd+lp*1.1
-            l = sqrt(((a(:,1)-x)*cos(pi/180*y)*111).^2 + ((a(:,2)-y)*111).^2) ;
+            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
             [s,is] = sort(l);
             b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         else
@@ -287,7 +287,7 @@ if sel == 'ca'
     % save data
     %
     catSave3 =...
-        [ 'welcome(''Save Grid'',''  '');think;',...
+        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
         ' sapa2 = [''save '' path1 file1 '' bvg gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)

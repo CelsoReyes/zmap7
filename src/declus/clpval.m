@@ -67,7 +67,7 @@ function clpval(var1)
         end
         %calculate start -end time of overall catalog
         t0b = newt2(1,3);
-        n = length(newt2(:,1));
+        n = newt2.Count;
         teb = newt2(n,3);
         tdiff=(teb-t0b)*365;       %time difference in days
 
@@ -81,11 +81,11 @@ function clpval(var1)
 
         % calculate cumulative number versus time and bin it
         %
-        n = length(newt2(:,1));
+        n = newt2.Count;
         if par3>=1
-            [cumu, xt] = hist(newt2(:,3),(t0b:par3/365:teb));
+            [cumu, xt] = hist(newt2.Date,(t0b:par3/365:teb));
         else
-            [cumu, xt] = hist((newt2(:,3)-newt2(1,3))*365,(0:par5:tdiff));
+            [cumu, xt] = hist((newt2.Date-newt2(1,3))*365,(0:par5:tdiff));
         end
         if var1==3 | var1==4
             difp= [0 diff(cumu)];
@@ -397,13 +397,13 @@ function clpval(var1)
                     ts=0.0000001;
                 end
             end
-            tmeqtime=clustime(3);
+            tmeqtime=clustime(tmpcat);
             tmeqtime=tmeqtime-tmeqtime(1);     %time in days relative to first eq
             tmeqtime=tmeqtime(2:length(tmeqtime));
 
             %automatic estimate works with whole sequence
         else
-            tmeqtime=clustime(2);
+            tmeqtime=clustime(ttcat);
             tmeqtime=tmeqtime-tmeqtime(1);
             tmeqtime=tmeqtime(2:length(tmeqtime));
 

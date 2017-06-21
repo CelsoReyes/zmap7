@@ -7,19 +7,19 @@
 [filename,pathname] = uigetfile('*.mat','Load earthquake sequence');
 do = ['load ' pathname filename]; eval(do)
 
-[m_main, main] = max(a(:,6));
+[m_main, main] = max(a.Magnitude);
 if size(a,2) == 9
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(length(a),1));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(length(a),1));
 else
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),a(:,10));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,a(:,10));
 end
 date_main = date_matlab(main);
 t_aftershock = date_matlab-date_main;
 
 % input dialog strings
-xmin = round(10*min(a(:,1)))/10; xmax = round(10*max(a(:,1)))/10;
-ymin = round(10*min(a(:,2)))/10; ymax = round(10*max(a(:,2)))/10;
-zmin = round(10*min(a(:,7)))/10; zmax = round(10*max(a(:,7)))/10;
+xmin = round(10*min(a.Longitude))/10; xmax = round(10*max(a.Longitude))/10;
+ymin = round(10*min(a.Latitude))/10; ymax = round(10*max(a.Latitude))/10;
+zmin = round(10*min(a.Depth))/10; zmax = round(10*max(a.Depth))/10;
 xstring = ['x = (Longitude: ' num2str(xmin) ' - ' num2str(xmax) ' deg)'];
 ystring = ['y = (Latitude: ' num2str(ymin) ' - ' num2str(ymax) ' deg)'];
 zstring = ['z = (Depth: ' num2str(zmin) ' - ' num2str(zmax) ' km)'];
@@ -38,10 +38,10 @@ tend = str2double(answ{6});
 percent = str2double(answ{7});
 
 % get quakes inside/outside chosen area
-l = ((a(:,1)-x).^2+(a(:,2)-y).^2+(km2deg(a(:,7)-z)).^2).^0.5 < r;
+l = ((a.Longitude-x).^2+(a.Latitude-y).^2+(km2deg(a.Depth-z)).^2).^0.5 < r;
 outside = a(l==0,:);
 tas_outside = t_aftershock(l==0);
-inside = a(l,:);
+inside = a.subset(l);
 t_aftershock = t_aftershock(l);
 
 % cut 'inside'
@@ -64,7 +64,7 @@ tas = [tas_outside; tas_inside_outdt; tas_newinside_indt];
 a = [outside; inside_outdt; newinside_indt];
 
 [tas, pos] = sort(tas);
-a = a(pos,:);
+a = a.subset(pos);
 
 [filename, pathname] = uiputfile('*.mat', 'Save new catalogue as');
 try

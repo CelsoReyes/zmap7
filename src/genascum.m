@@ -35,10 +35,10 @@ gy = y0:dy:y1;
 itotal = length(gx) * length(gy);
 clear global ztimes ztime1 ztime2
 incx = par1/365;
-maxmag = floor(max(newcat(:,6)));
-minmg = floor(min(newcat(:,6))); %added the missing minmg similar to maxmag
+maxmag = floor(max(newcat.Magnitude));
+minmg = floor(min(newcat.Magnitude)); %added the missing minmg similar to maxmag
 magstep = 0.5;                   %set the missing magstep to 0.5
-evsum = length(newcat(:,1));
+evsum = newcat.Count;
 n = evsum;
 t0b = newcat(1,3)
 teb = newcat(evsum,3)
@@ -124,7 +124,7 @@ for x =  x0:dx:x1
         i2 = i2+1;
         % calculate distance from center point and sort wrt distance
         %
-        newcat(:,7) = sqrt((newcat(:,1)-x).^2 + (newcat(:,2)-y).^2) * 92.0;
+        newcat.Depth = sqrt((newcat.Longitude-x).^2 + (newcat.Latitude-y).^2) * 92.0;
         [s,is] = sort(newcat);
         b = newcat(is(:,7),:) ;       % re-orders matrix to agree row-wise
         % take first ni points

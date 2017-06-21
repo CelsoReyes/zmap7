@@ -9,12 +9,12 @@ messtext=...
     'Mac Users: Use the keyboard "p" more  '
     'point to select, "l" last point.      '
     '                                      '];
-welcome('Select Polygon for a grid',messtext);
+zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
 hold on
 ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 
 figure_w_normalized_uicontrolunits(map)
 

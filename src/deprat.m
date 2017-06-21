@@ -67,22 +67,22 @@ format short;
 if isempty(newcat)
     newcat = a;
 end
-t0b = min(newcat(:,3));
-teb = max(newcat(:,3));
-n = length(newcat(:,1));
+t0b = min(newcat.Date);
+teb = max(newcat.Date);
+n = newcat.Count;
 tdiff = round(teb - t0b);
 
 td12 = t2p(1) - t1p(1);
 td34 = t4p(1) - t3p(1);
 
-l = newcat(:,3) > t1p(1) & newcat(:,3) < t2p(1) ;
-backg =  newcat(l,:);
-[n1,x1] = hist(backg(:,7),(0:1.0:max(newcat(:,7))));
+l = newcat.Date > t1p(1) & newcat.Date < t2p(1) ;
+backg =  newcat.subset(l);
+[n1,x1] = hist(backg(:,7),(0:1.0:max(newcat.Depth)));
 n1 = n1 *  td34/td12;                      % normalization
 
-l = newcat(:,3) > t3p(1) & newcat(:,3) < t4p(1) ;
-foreg = newcat(l,:);
-[n2,x2] = hist(foreg(:,7),(0:1.0:max(newcat(:,7))));
+l = newcat.Date > t3p(1) & newcat.Date < t4p(1) ;
+foreg = newcat.subset(l);
+[n2,x2] = hist(foreg(:,7),(0:1.0:max(newcat.Depth)));
 
 set(gcf,'PaperPosition',[2 1 5.5 7.5])
 rect = [0.2 0.70 0.65 0.25];
@@ -91,7 +91,7 @@ bar(x1,n1,'r')
 grid
 la1 = ['  Time: ' num2str(t1p(1)) ' to '  num2str(t2p(1))];
 te = text(0.6,0.8,la1,'units','normalized','FontWeight','Bold');
-set(gca,'XLim',[0 max(newcat(:,7))])
+set(gca,'XLim',[0 max(newcat.Depth)])
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',fontsz.s,'Linewidth',1.0)
@@ -101,7 +101,7 @@ rect = [0.2 0.4 0.65 0.25];
 axes('position',rect)
 bar(x2,n2,'r')
 grid
-set(gca,'XLim',[0 max(newcat(:,7))])
+set(gca,'XLim',[0 max(newcat.Depth)])
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',fontsz.s,'Linewidth',1.0)
@@ -119,7 +119,7 @@ bar(x2,n1-n2)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',fontsz.s,'Linewidth',1.0)
-set(gca,'XLim',[0 max(newcat(:,7))])
+set(gca,'XLim',[0 max(newcat.Depth)])
 xlabel('Depth')
 ylabel('Difference (t1-t2)')
 grid

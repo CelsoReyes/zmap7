@@ -59,9 +59,9 @@ for i = 1:length(a)
 
     pl =plot3m(a(i,2),a(i,1),dep+75,'ok');
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -77,9 +77,9 @@ for i = 1:length(a)
     pl =plot3m(a(i,2),a(i,1),dep+75,'sk');
     ;
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 
@@ -94,9 +94,9 @@ for i = 1:length(a)
     pl =plot3m(a(i,2),a(i,1),dep+75,'sk');
 
     hold on
-    fac = 64/max(a(:,7));
+    fac = 64/max(a.Depth);
 
-    facm = 6/max(a(:,6));
+    facm = 6/max(a.Magnitude);
     sm = a(i,6)* facm;
     if sm < 1; sm = 1; end
 

@@ -32,7 +32,7 @@ plc2 = plot(ti,cumsum(la),'r');
 
 synthb
 
-ma = a(:,6);
+ma = a.Magnitude;
 ma2 = ma(randperm(length(a)));
 le = length(ma2);
 
@@ -43,15 +43,15 @@ T = datenum(2001,1,1,0,0,0);
 T2 = T+YI;
 [y,m,d,h,mi,s] = datevec(T2);
 
-a(:,1) = 10 + randn(le,1)/4;
-a(:,2) = 46 + randn(le,1)/9;
-a(:,3) = 2001+YI'/365;
-a(:,4) = m';
-a(:,5) = d';
-a(:,6) = ma2;
-a(:,7) = ma2*0+5;
-a(:,8) = h';
-a(:,9) = mi';
+a.Longitude = 10 + randn(le,1)/4;
+a.Latitude = 46 + randn(le,1)/9;
+a.Date = 2001+YI'/365;
+a.Date.Month = m';
+a.Date.Day = d';
+a.Magnitude = ma2;
+a.Depth = ma2*0+5;
+a.Date.Hour = h';
+a.Date.Minute = mi';
 
 a = [  10 46 2001 1 1 7 5 1 1 ; a];
 

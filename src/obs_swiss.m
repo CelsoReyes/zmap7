@@ -5,10 +5,10 @@ b = a;
 % Hier vielleicht dx, dy aendern ...
 ve = [];dx = 0.1; dy = 0.1;
 
-x0 = min(a(:,1));
-x1 = max(a(:,1));
-y0 = min(a(:,2));
-y1 = max(a(:,2));
+x0 = min(a.Longitude);
+x1 = max(a.Longitude);
+y0 = min(a.Latitude);
+y1 = max(a.Latitude);
 
 
 for x = x0:dx:x1

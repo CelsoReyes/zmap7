@@ -17,7 +17,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -38,7 +38,7 @@ if ic == 1 % select  N clostest events
     l =  sort(l);
     messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
     disp(messtext)
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -50,7 +50,7 @@ if ic == 1 % select  N clostest events
 
     hold on
     [na,ma] = size(newt2);
-    plos1 = plot(newt2(:,ma),-newt2(:,7),'xk','EraseMode','back');
+    plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -74,7 +74,7 @@ if ic == 2 % select  events within ra
     ll = l <=ra;
     messtext = ['Number of events in Circle :' num2str(length(newt2(ll,1))) ];
     disp(messtext)
-    welcome('Message',messtext)
+    zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -86,7 +86,7 @@ if ic == 2 % select  events within ra
 
     hold on
     [na,ma] = size(newt2);
-    plos1 = plot(newt2(:,ma),-newt2(:,7),'xk','EraseMode','back');
+    plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -114,9 +114,9 @@ ax = findobj('Tag','main_map_ax');
     ll = polygon_filter(x,y, XI, YI, 'inside');
 
     %plot the selected eqs and mag freq curve
-    newa2 = newa(ll,:);
+    newa2 = newa.subset(ll);
     newt2 = newa2;
-    newcat = newa(ll,:);
+    newcat = newa.subset(ll);
     pl = plot(newa2(:,length(newa2(1,:))),-newa2(:,7),'xk');
     set(pl,'MarkerSize',5,'LineWidth',1)
     bdiff(newa2)

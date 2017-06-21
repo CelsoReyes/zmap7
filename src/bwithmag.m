@@ -9,7 +9,7 @@ Nmin = 20;
 
 
 think
-[s,is] = sort(newt2(:,6));
+[s,is] = sort(newt2.Magnitude);
 newt1 = newt2(is(:,1),:) ;
 watchon;
 
@@ -82,7 +82,7 @@ set(gca,'box','on',...
     'bold','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2(:,6))) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
 ylabel('b-value')
 xlabel('Magnitude')
 title(strib,'FontWeight','bold',...

@@ -85,7 +85,7 @@ for fMc =fMinMag:0.1:fMaxMag-1
     mDataTest = mData(~vSel,:);
     % For cutted catalog move lowest magnitude to 0
     mDataTest(:,2) = mDataTest(:,2)-fMinMag;
-    mDataTmp = mData(vSel,:);
+    mDataTmp = mData.subset(vSel);
     fNmax = max(mDataTest(:,3));
     if (~isempty(fNmax) & ~isnan(fNmax) & fNmax ~= 0 & length(mDataTest(:,1) > 4))
         mDataTest(:,3) = mDataTest(:,3)/fNmax; % Normalize datavalues for fitting with CDF

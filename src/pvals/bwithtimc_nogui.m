@@ -49,7 +49,7 @@ for ind = 1:win_step:length(step_cat)-win_step
     else
         [bv magco stan av me mer me2,  pr] =  bvalca3(newt2,1,1);
     end
-    l = newt2(:,6) >= magco-0.05;
+    l = newt2.Magnitude >= magco-0.05;
     if length(newt2(l,6)) <= Nmin
         %                disp(['%%Warning --bwithtimc--%%  less than 50 events in step ']);
     end
@@ -64,7 +64,7 @@ for ind = 1:win_step:length(step_cat)-win_step
 
 
 
-    days = (max(newt2(:,3))-min(newt2(:,3)))*365.0;
+    days = (max(newt2.Date)-min(newt2.Date))*365.0;
 
     bvm = [bvm; bv step_cat(ind,3) step_cat(ind+nibt,3) magco days ind ind+nibt av];
 end  %% end of for loop!!
@@ -92,7 +92,7 @@ if ind + win_step < length(step_cat)
         else
             [bv magco stan av me mer me2,  pr] =  bvalca3(newt2,1,1);
         end
-        l = newt2(:,6) >= magco-0.05;
+        l = newt2.Magnitude >= magco-0.05;
         if length(newt2(l,6)) <= Nmin
             %                disp(['%%Warning --bwithtimc--%%  less than 50 events in step ']);
         end

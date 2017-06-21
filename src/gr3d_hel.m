@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 clf
 sl1 = slice(X,Y,-Z+1.1,bvg,0,0,[ -2 -6 ]);
 hold on
-plot3(a(:,2),a(:,1),-a(:,7)+1.1,'wo','MarkerSize',2)
+plot3(a.Latitude,a.Longitude,-a.Depth+1.1,'wo','MarkerSize',2)
 rotate3d on
 %caxis([0.8 1.7])
 set(gca,'XLim',[-1.5 1.5 ],'xgrid','off')

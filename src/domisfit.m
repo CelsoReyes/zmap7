@@ -58,7 +58,7 @@ fprintf(fid,'%6.2f\n',plu);
 fprintf(fid,'%6.2f\n',az);
 fprintf(fid,'%6.2f\n',phi);
 fprintf(fid,'%3.2f\n',R);
-le = length(a(:,6));
+le = a.Count;
 fprintf(fid,'%6i\n',le);
 
 fclose(fid);

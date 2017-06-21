@@ -22,7 +22,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-welcome(titStr,messtext);
+zmap_message_center.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -54,7 +54,7 @@ end
 l =  sort(l);
 %messtext = ['Radius of selected Circle:' num2str(l(R2))  ' km' ];
 %disp(messtext)
-%welcome('Message',messtext)
+%zmap_message_center.set_message('Message',messtext)
 %
 % take first ni and sort by time
 %
@@ -65,7 +65,7 @@ l =  sort(l);
 
 hold on
 [na,ma] = size(newt2);
-plos1 = plot(newt2(:,ma),-newt2(:,7),'xk','EraseMode','back');
+plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
 set(gcf,'Pointer','arrow')
 %
 % plot circle containing events as circle

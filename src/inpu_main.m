@@ -6,16 +6,22 @@
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
-t0b = min(a(:,3));
-teb = max(a(:,3));
+t0b = min(a.Date);
+teb = max(a.Date);
 tdiff = (teb - t0b)*365;
 
 % if two mainshocks arte define, use one only ..
-if length(maepi(:,1)) > 1 ; maepi = maepi(1,:) ; end
+if maepi.Count > 1 ; 
+    maepi = maepi.subset(1) ;
+end
 % define maepi if not exist
-l = find(newt2(:,6) == max(newt2(:,6)));
-if exist('maepi') == 0 ; maepi = newt2(l,:);end
-if isempty('maepi') == 0 ; maepi = newt2(l,:);end
+l = find(newt2.Magnitude == max(newt2.Magnitude));
+if ~exist('maepi') ; 
+    maepi = newt2.subset(l);
+end
+if isempty('maepi') ; 
+    maepi = newt2.subset(l);
+end
 
 
 %
@@ -72,7 +78,7 @@ inp5=uicontrol('Style','edit','Position',[.70 .40 .22 .05],...
 
 close_button=uicontrol('Style','Pushbutton',...
     'Position',[.65 .02 .20 .10 ],...
-    'Units','normalized','Callback','close;welcome('' '','' '');done','String','cancel');
+    'Units','normalized','Callback','close;zmap_message_center.set_info('' '','' '');done','String','cancel');
 
 go_button=uicontrol('Style','Pushbutton',...
     'Position',[.35 .02 .20 .10 ],...
@@ -157,6 +163,6 @@ set(gcf,'visible','on')
 watchoff
 str = [ 'Please Select a subset of earthquakes'
     ' and press Go                        '];
-welcome('Message',str);
+zmap_message_center.set_message('Message',str);
 
 

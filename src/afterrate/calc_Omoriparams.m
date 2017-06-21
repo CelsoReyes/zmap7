@@ -32,20 +32,20 @@ report_this_filefun(mfilename('fullpath'));
     mResult = [];
 
     % Define aftershock times
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
     date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
     time_aftershock = date_matlab-date_main;
 
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
     fDay = 1;
     ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (a(:,3) > maepi(:,3)+ft_c & a(:,3)<= maepi(:,3)+time/365);
-    mCat = a(vSel,:);
+    vSel = (a.Date > maepi(:,3)+ft_c & a.Date<= maepi(:,3)+time/365);
+    mCat = a.subset(vSel);
     [nY,nX]=size(mCat);
     if nY == 0
         clear mCat;
-        vSel = (a(:,3)<= maepi(:,3)+time/365);
-        mCat = a(vSel,:);
+        vSel = (a.Date<= maepi(:,3)+time/365);
+        mCat = a.subset(vSel);
     end
 
     vSel = mCat(:,6) == max(mCat(:,6));
@@ -64,7 +64,7 @@ report_this_filefun(mfilename('fullpath'));
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a(l,:);
+    eqcatalogue = a.subset(l);
 
     % Estimation of Omori parameters from learning period
     l = tas <= time;

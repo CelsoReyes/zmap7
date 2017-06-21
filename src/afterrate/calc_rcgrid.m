@@ -24,19 +24,19 @@ function [RCREL,x,y] = calc_rcgrid(a,dx,dy,r,step,mintime,maxtime,timestep,nmine
     % J. Woessner
 
     % get longitude / latitude
-    lon = a(:,1); lat = a(:,2);
+    lon = a.Longitude; lat = a.Latitude;
 
     % determine mainshock
-    [m_main, main] = max(a(:,6));
+    [m_main, main] = max(a.Magnitude);
     % calculate delay times in days after mainshock
-    date_matlab = datenum(floor(a(:,3)),a(:,4),a(:,5),a(:,8),a(:,9),zeros(size(a,1),1));
+    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
     date_main = date_matlab(main);
     time_aftershock = date_matlab-date_main;
 
     % cut catalogue at mainshock
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a(l,:);
+    eqcatalogue = a.subset(l);
 
     % get M5+ aftershocks
     l = eqcatalogue(:,6) >= 5;

@@ -25,7 +25,7 @@ if var1==1
     ldx=100;                     %side length of interaction zone in km
     tlap=300;                    %interaction time in days
     Mmin=3;                      %minimum magnitude
-    stime=a(find(a(:,6)==max(a(:,6))),3);
+    stime=a(find(a.Magnitude==max(a.Magnitude)),3);
     stime=stime(1);
 
 
@@ -113,13 +113,13 @@ elseif var1==2           %area selection
         'or the cursor to the select the poly- '
         'gon. Use the RIGTH mouse button for   '
         'the final point.                      '];
-    welcome('Select Polygon for a grid',messtext);
+    zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
     figure_w_normalized_uicontrolunits(map);
     hold on
     ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
-    welcome('Message',' Thank you .... ')
+    zmap_message_center.set_info('Message',' Thank you .... ')
 
     %figure_w_normalized_uicontrolunits(mif1)
 
@@ -171,8 +171,8 @@ elseif var1==2           %area selection
 
 
     for i= 1:length(me1)   %all eqs which are in spacewindow in east-west direction
-        l = sqrt(((newcat(:,1)-newgri(i,1))*cos(pi/180*newgri(i,2))*111).^2 +...
-            ((newcat(:,2)-newgri(i,2))*111).^2) ;
+        l = sqrt(((newcat.Longitude-newgri(i,1))*cos(pi/180*newgri(i,2))*111).^2 +...
+            ((newcat.Latitude-newgri(i,2))*111).^2) ;
         [s,is] = sort(l);
         b = newcat(is(:,1),:) ;       % re-orders matrix to agree row-wise
         mi2 = mi(is(:,1),2);    % take first ni points

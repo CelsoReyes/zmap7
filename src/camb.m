@@ -77,7 +77,7 @@ str1=['Anteil mit Mb=0: ' num2str(nmb/n*100) '%'];
 disp(str1)
 disp(' ')
 disp('Unbenutzbare Eintr�ge')
-str1=num2str(sum((a(:,6)==0&a(:,10)==0)&a(:,11)==0)+sum((a(:,6)==0&a(:,10)==0)&a(:,11)>10));
+str1=num2str(sum((a.Magnitude==0&a(:,10)==0)&a(:,11)==0)+sum((a.Magnitude==0&a(:,10)==0)&a(:,11)>10));
 disp(str1)
 
 bins=0.05:.1:9;

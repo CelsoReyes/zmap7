@@ -21,7 +21,7 @@ global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
 think
-%welcome('  ','Calculating b-value...')
+%zmap_message_center.set_info('  ','Calculating b-value...')
 report_this_filefun(mfilename('fullpath'));
 
 %%
@@ -161,8 +161,8 @@ if selt == 'ca'
         uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
     end % existflag
 
-    maxmag = ceil(10*max(newt2(:,6)))/10;
-    mima = min(newt2(:,6));
+    maxmag = ceil(10*max(newt2.Magnitude))/10;
+    mima = min(newt2.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
 
@@ -176,7 +176,7 @@ if selt == 'ca'
     %
     %%
 
-    [bval,xt2] = hist(newt2(:,6),(mima:0.1:maxmag));
+    [bval,xt2] = hist(newt2.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -233,14 +233,14 @@ if selt == 'ca'
     b=newt2;
 
     %% enough events??
-    if length(bvs(:,6)) >= Nmin
+    if bvs.Count >= Nmin
         % Added to obtain goodness-of-fit to powerlaw value
         mcperc_ca3;
 
         [fMc] = calc_Mc(bvs, inpr1, fBinning, fMccorr);
-        l = bvs(:,6) >= fMc-(fBinning/2);
-        if length(bvs(l,:)) >= Nmin
-            [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(bvs(l,:), fBinning);
+        l = bvs.Magnitude >= fMc-(fBinning/2);
+        if sum(l) >= Nmin
+            [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(bvs.subset(l), fBinning);
         else
             fMc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN;
         end
@@ -250,8 +250,8 @@ if selt == 'ca'
         % Bootstrap uncertainties
         if bBst_button == 1
             % Check Mc from original catalog
-            l = bvs(:,6) >= fMc-(fBinning/2);
-            if length(bvs(l,:)) >= Nmin
+            l = bvs.Magnitude >= fMc-(fBinning/2);
+            if sum(l) >= Nmin
                 [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(bvs, fBinning, nBstSample, inpr1, Nmin, fMccorr);
             else
                 fMc = NaN; fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
@@ -323,8 +323,8 @@ if selt == 'ca'
     %%
 
     %pdf_calc;
-    set(gca,'XLim',[min(b(:,6))-0.5  max(b(:,6))+0.5])
-    set(gca,'YLim',[0.9 length(b(:,3)+30)*2.5]);
+    set(gca,'XLim',[min(b.Magnitude)-0.5  max(b.Magnitude)+0.5])
+    set(gca,'YLim',[0.9 length(b.Date+30)*2.5]);
 
 
     p=-p(1,1);
@@ -341,7 +341,7 @@ if selt == 'ca'
     h2=axes('position',rect);
     set(h2,'visible','off');
 
-    a0 = aw-log10(max(b(:,3))-min(b(:,3)));
+    a0 = aw-log10(years(max(b.Date)-min(b.Date)));
 
 
     if ho(1:2) == 'ho'
@@ -368,12 +368,12 @@ if selt == 'ca'
     end % ho
 
     set(gcf,'visible','on','Color','w');
-    welcome('  ','Done')
+    zmap_message_center.set_info('  ','Done')
     done
 
     if ho(1:2) == 'ho'
         % calculate the probability that the two distributins are differnt
-        %l = newt2(:,6) >=  M1b(1);
+        %l = newt2.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;

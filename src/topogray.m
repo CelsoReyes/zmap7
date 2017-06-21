@@ -38,7 +38,7 @@ set(gca,'projection','perspective');
 % 'MarkerFaceColor','y','MarkerEdgeColor','k')
 
 
-%pl = plotm(a(:,2), a(:,1),'.r','Linewidth',1);
+%pl = plotm(a.Latitude, a.Longitude,'.r','Linewidth',1);
 %set(pl,'LineWidth',1,'MarkerSize',1);
 pl = plotm(coastline(:,2), coastline(:,1),'w','Linewidth',2);
 set(pl,'LineWidth',2);

@@ -96,7 +96,7 @@ for  m = max(bv2(:,1)):-0.1:min(bv2(:,1))
     end
 end
 
-nt(1,2) = min(newt2(:,3))
+nt(1,2) = min(newt2.Date)
 i = max(find((ms-min(ms) > 0.01)));
 % nt(con,2) = bv2(i+1,2);
 

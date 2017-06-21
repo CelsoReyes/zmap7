@@ -26,28 +26,28 @@ for xx = -117.5:dx:-116
 
     l2 = polygon_filter(x,y, XI, YI, 'inside');
 
-        newt2 = a(l2,:);
-        if length(newt2(:,1)) > 6   % nur wenn mindestens 6 EQ in zone
+        newt2 = a.subset(l2);
+        if newt2.Count > 6   % nur wenn mindestens 6 EQ in zone
 
             timeplot
 
             set(pl,'color','k')
             figure_w_normalized_uicontrolunits(map); hold on;
-            plot(newt2(:,1),newt2(:,2),'go')
+            plot(newt2.Longitude,newt2.Latitude,'go')
             disp(['This is source zone # ' num2str(cu) ]);
 
 
-            l = newt2(:,6) >= 3.75 & newt2(:,6) < 4.25;
+            l = newt2.Magnitude >= 3.75 & newt2.Magnitude < 4.25;
             r0 = length(newt2(l,6))/120;
-            l = newt2(:,6) >= 4.25 & newt2(:,6) < 4.75;
+            l = newt2.Magnitude >= 4.25 & newt2.Magnitude < 4.75;
             r1 = length(newt2(l,6))/250;
-            l = newt2(:,6) >= 4.75 & newt2(:,6) < 5.25;
+            l = newt2.Magnitude >= 4.75 & newt2.Magnitude < 5.25;
             r2 = length(newt2(l,6))/250;
-            l = newt2(:,6) >= 5.25 & newt2(:,6) < 5.75;
+            l = newt2.Magnitude >= 5.25 & newt2.Magnitude < 5.75;
             r3 = length(newt2(l,6))/400;
-            l = newt2(:,6) >= 5.75 & newt2(:,6) < 6.25;
+            l = newt2.Magnitude >= 5.75 & newt2.Magnitude < 6.25;
             r4 = length(newt2(l,6))/700;
-            l = newt2(:,6) >= 6.25 & newt2(:,6) < 6.75;
+            l = newt2.Magnitude >= 6.25 & newt2.Magnitude < 6.75;
             r5 = length(newt2(l,6))/1000;
 
             if r4 == 0 r4 = r5; end

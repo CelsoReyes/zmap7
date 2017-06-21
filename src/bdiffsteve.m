@@ -8,7 +8,7 @@
 %  Stefan Wiemer 1/95
 %
 think
-%welcome('  ','Calculating b-value...')
+%zmap_message_center.set_info('  ','Calculating b-value...')
 global cluscat mess bfig backcat fontsz
 global ttcat les n
 report_this_filefun(mfilename('fullpath'));
@@ -33,7 +33,7 @@ uicontrol('Style','Pushbutton',...
     'String','Print','Position',[0.02 .73 .08 .05]);
 
 uicontrol('Style','Pushbutton',...
-    'Callback','close;welcome('' '','' '');done',...
+    'Callback','close;zmap_message_center.set_info('' '','' '');done',...
     'Units','normalized',...
     'String','Close','Position',[0.02 .93 .08 .05]);
 uicontrol('Style','Pushbutton',...
@@ -42,8 +42,8 @@ uicontrol('Style','Pushbutton',...
     'String','Info','Position',[0.02 .83 .08 .05]);
 
 newcat = c;
-maxmag = max(newcat(:,6));
-mima = min(newcat(:,6));
+maxmag = max(newcat.Magnitude);
+mima = min(newcat.Magnitude);
 if mima > 0 ; mima = 0 ; end
 
 % number of mag units
@@ -53,7 +53,7 @@ bval = zeros(1,nmagu);
 bvalsum = zeros(1,nmagu);
 bvalsum3 = zeros(1,nmagu);
 
-[bval,xt2] = hist(newcat(:,6),(mima:1:maxmag));
+[bval,xt2] = hist(newcat.Magnitude,(mima:1:maxmag));
 bvalsum = cumsum(bval);                        % N for M <=
 bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
 xt3 = (maxmag:-1:mima);
@@ -145,7 +145,7 @@ set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 txt1=text(.16, .1,['Standard Deviation: ',tt2]);
 set(txt1,'FontWeight','bold','FontSize',fontsz.m)
 set(gcf,'visible','on');
-welcome('  ','Done')
+zmap_message_center.set_info('  ','Done')
 done
 
 

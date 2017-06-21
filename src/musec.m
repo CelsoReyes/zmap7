@@ -16,7 +16,7 @@ messtext=...
     'point to select, "l" last point.      '
     '                                      '];
 
-welcome('Select Mutiple segments for x-section',messtext);
+zmap_message_center.set_message('Select Mutiple segments for x-section',messtext);
 
 % first lets input the endpoints
 but = 1;x=[];y=[];
@@ -33,7 +33,7 @@ newa=[];
 po = length(a(1,:))+1;
 for i=1:length(x)-1
     lat1 = y(i);lat2 = y(i+1);lon1 = x(i);lon2=x(i+1);
-    [xsecx xsecy,  inde] =mysect(tmp1,tmp2,a(:,7),wi,0,lat1,lon1,lat2,lon2);
+    [xsecx xsecy,  inde] =mysect(tmp1,tmp2,a.Depth,wi,0,lat1,lon1,lat2,lon2);
     if sw =='on' ; xsecx = -xsecx +max(xsecx);end
     if i==1; ma = 0; else ; ma = max(newa(:,po));end
     newa  = [newa ; a(inde,:) xsecx'+ma];
@@ -113,7 +113,7 @@ uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
 
 %uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...
 %   'Position',[.6 .9 .20 .05],'String','Refresh ',...
-%    'Callback','[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a(:,7),wi,0,lat1,lon1,lat2,lon2);');
+%    'Callback','[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a.Depth,wi,0,lat1,lon1,lat2,lon2);');
 
 uic3 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
     'Position',[.20 .95 .20 .05],'String','z-value grid',...

@@ -28,7 +28,7 @@ rotate3d on
 caxis([0 0.3])
 %set(gca,'XLim',[s1 s2],'xgrid','off')
 %set(gca,'YLim',[s4 s3],'ygrid','off')
-%set(gca,'ZLim',[ -max(a(:,7))-2 0 ],'zgrid','off')
+%set(gca,'ZLim',[ -max(a.Depth)-2 0 ],'zgrid','off')
 
 shading interp
 cob = colorbar('vert')
@@ -44,7 +44,7 @@ set(sl(:),'EdgeColor',[0.5 0.5 0.5]);
 view([-36 10])
 axis([min(gy) max(gy) min(gx) max(gx) min(gz) max(gz)]);
 grid off
-plot3(a(:,2),a(:,1),-a(:,7),'yo','MarkerSize',2)
+plot3(a.Latitude,a.Longitude,-a.Depth,'yo','MarkerSize',2)
 hold on
 
 main =  [ -118.5370   34.2133   94.0453    1.0000   17.0000    6.7000   18.4010];

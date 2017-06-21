@@ -35,20 +35,20 @@ for x3=-180:dx:170
         pause(0.3)
         % calculate points with a polygon
 
-        XI = a(:,1);          % this substitution just to make equation below simple
-        YI = a(:,2);
+        XI = a.Longitude;          % this substitution just to make equation below simple
+        YI = a.Latitude;
         l2 = polygon_filter(x,y, XI, YI, 'inside');
-        newt2 = a(l2,:);                  % newcat is created
+        newt2 = a.subset(l2);                  % newcat is created
         %a = newcat;                      % a and newcat now equal to reduced catalogue
         %newt2 = newcat;                  % resets newt2
 
-        if sum(not(newt2(:,6)==0) & not(newt2(:,10)==0))>cmeq  &&  sum(newt2(:,6)==0  &&  not(newt2(:,10)>0))>0
+        if sum(not(newt2.Magnitude==0) & not(newt2(:,10)==0))>cmeq  &&  sum(newt2.Magnitude==0  &&  not(newt2(:,10)>0))>0
             [b1,b2,newt3]=camsf(newt2);
             bs = [bs ; x3 y3 b1 b2];
             newt2=newt3;
         end
 
-        if sum(not(newt2(:,6)==0) & not(newt2(:,11)==0) & newt2(:,11)<10)>cmeq  &&  sum(newt2(:,6)==0  &&  not(newt2(:,10)>0))>0
+        if sum(not(newt2.Magnitude==0) & not(newt2(:,11)==0) & newt2(:,11)<10)>cmeq  &&  sum(newt2.Magnitude==0  &&  not(newt2(:,10)>0))>0
             [b1,b2,newt3]=camuf(newt2);
             bu = [bu ; x3 y3 b1 b2];
             newt2=newt3;

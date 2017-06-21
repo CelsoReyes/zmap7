@@ -58,7 +58,7 @@ nodes = tmpgri;
 %%
 fore_start = maepi(:,3) + fore_sday/365;
 fore_end = maepi(:,3) + fore_eday/365;
-ll = tmp_newt2(:,3) >= fore_start & tmp_newt2(:,3) <= fore_end;
+ll = tmp_newt2.Date >= fore_start & tmp_newt2.Date <= fore_end;
 fore_cat = tmp_newt2(ll,:);
 
 dt = .1
@@ -305,8 +305,8 @@ for rloop2 = 1:numrand+1
     slvary_ab(rloop2,1:numm) = sum(lvary_ab(:,:,rloop2),1);
     slvary_a(rloop2,1:numm) = sum(lvary_a(:,:,rloop2),1);
     if rloop2 >= 2
-        gdiffab(rloop2,1:length(slvary_ab(1,:))) = slvary_ab(rloop2,:) - slgca(rloop2,:);
-        gdiffa(rloop2,1:length(slvary_a(1,:))) = slvary_a(rloop2,:) - slgca(rloop2,:);
+        gdiffab(rloop2,1:length(slvary_ab(1,:))) = slvary_ab(rloop2,:) - slgca.subset(rloop2);
+        gdiffa(rloop2,1:length(slvary_a(1,:))) = slvary_a(rloop2,:) - slgca.subset(rloop2);
     end
 end
 

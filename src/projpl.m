@@ -1,25 +1,25 @@
 report_this_filefun(mfilename('fullpath'));
 
-l = a(:,6) > 6.6;
-maepi = a(l,:);
+l = a.Magnitude > 6.6;
+maepi = a.subset(l);
 
 lat1 = maepi(1,2);
 lon1 = maepi(1,1);
 dep = maepi(1,7);
-[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a(:,7),50,40,lat1,lon1,[122-90]);
+[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a.Depth,50,40,lat1,lon1,[122-90]);
 global eq1
 
 % this is rotate rect to the strike
-a(:,1)= -eq1(2,:)';
-a(:,2) = eq1(1,:)';
+a.Longitude= -eq1(2,:)';
+a.Latitude = eq1(1,:)';
 
-l = a(:,6) > 6.5;
-maepi = a(l,:);
-a(:,7) = a(:,7)-maepi(1,7);
+l = a.Magnitude > 6.5;
+maepi = a.subset(l);
+a.Depth = a.Depth-maepi(1,7);
 
 % lets see what we got
 figure
-plot(a(:,2),-a(:,7),'x')
+plot(a.Latitude,-a.Depth,'x')
 hold on
 sigma = (45)*pi/180
 l = (0:0.1:30);
@@ -34,7 +34,7 @@ invtransf = [cos(-sigma) sin(-sigma)
     -sin(-sigma) cos(-sigma)];
 
 
-b = [a(:,2) -a(:,7)];
+b = [a.Latitude -a.Depth];
 b = b*transf;
 lt = l'*transf;
 figure
@@ -50,13 +50,13 @@ plot(c(dist,1),c(dist,2),'gx')
 c = c*invtransf;
 
 figure
-plot(a(:,2),-a(:,7),'bx')
+plot(a.Latitude,-a.Depth,'bx')
 hold on
 plot(l(1,:),l(2,:),'r');
 plot(c(:,1),c(:,2),'g+')
 
 % now get the whole thing back to the original; system
-a(:,2) = c(:,1);
-a(:,7) = c(:,2)-dep;
+a.Latitude = c(:,1);
+a.Depth = c(:,2)-dep;
 
 

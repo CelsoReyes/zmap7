@@ -22,5 +22,5 @@ YI = -newa(:,7);          % this substitution just to make equation below simple
 XI = newa(:,length(newa(1,:)));
     ll = polygon_filter(x,y, XI, YI, 'inside');
 
-newa2 = newa(ll,:);
+newa2 = newa.subset(ll);
 plot( newa2(:,length(newa2(1,:))), -newa2(:,7),'xk','era','back')

@@ -11,7 +11,7 @@ switch (org)
 
     case 1 	% Call from timeplot.m, fdsphere.m, dorand.m
 
-        range = [1];
+        range = 1;
         radm = [];
         rasm = [];
         fdparain;
@@ -19,7 +19,7 @@ switch (org)
 
     case 2	% Call from fdparain.m
 
-        dtokm = [1];
+        dtokm = 1;
         pdc3;
 
 
@@ -28,16 +28,16 @@ switch (org)
         % Default values
         %
         numran = 1000;				% # of points in random catalog
-        distr = [1];
-        stdx = [0.5];
-        stdy = [0.5];
-        stdz = [1];
-        long1 = min(a(:,1));
-        long2 = max(a(:,1));
-        lati1 = min(a(:,2));
-        lati2 = max(a(:,2));
-        dept1 = min(abs(a(:,7)));
-        dept2 = max(abs(a(:,7)));
+        distr = 1;
+        stdx = 0.5;
+        stdy = 0.5;
+        stdz = 1;
+        long1 = min(a.Longitude);
+        long2 = max(a.Longitude);
+        lati1 = min(a.Latitude);
+        lati2 = max(a.Latitude);
+        dept1 = min(abs(a.Depth));
+        dept2 = max(abs(a.Depth));
 
         E = a;
         randomcat;
@@ -45,18 +45,18 @@ switch (org)
 
     case 4	% Call from timeplot.m
 
-        nev = [600];
-        inc = [100];
+        nev = 600;
+        inc = 100;
         fdtimin;
 
 
     case 5  % Call from view_Dv.m
 
-        range = [1];
+        range = 1;
         radm = [];
         rasm = [];
         crclparain;
 
-end	%end swicth(org)
+end	%end switch(org)
 
 

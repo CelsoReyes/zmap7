@@ -226,7 +226,7 @@ switch(plt)
                 [file1,path1] = uigetfile([ '*.bin'],' Terrain base global 5 min grid path (tbase.bin)');
 
                 if length(path1) < 2
-                    welcome(' ',' ');done
+                    zmap_message_center.clear_message();;done
                     return
                 else
                     addpath([path1]);
@@ -246,7 +246,7 @@ switch(plt)
         [file1,path1] = uigetfile([ '*.img'],' Please define the path to the file topo_6.2.img (2 min DEM)');
 
         if length(path1) < 2
-            welcome(' ',' ');done
+            zmap_message_center.clear_message();;done
             return
         else
             addpath([path1]);
@@ -269,7 +269,7 @@ switch(plt)
             case 'OK'
                 [file1,path1] = uigetfile([ '*.mat'],'File containing  mydem, mx, my ');
                 if length(path1) < 2
-                    welcome(' ',' ');done
+                    zmap_message_center.clear_message();;done
                     return
                 else
                     lopa = [path1 file1];

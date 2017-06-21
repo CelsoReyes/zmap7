@@ -39,25 +39,25 @@ messtext=...
     'producing a reduced  subset which in turn '
     'the other routines operate on.            '];
 
-welcome('Select EQ in Polygon',messtext);
+zmap_message_center.set_message('Select EQ in Polygon',messtext);
 
 
 % pick polygon points, 
 ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
 
-welcome('Message',' Thank you .... ')
+zmap_message_center.set_info('Message',' Thank you .... ')
 if ~exist('in_or_out','var')
     in_or_out = 'inside';
 end
 if isnumeric(a)
     warning('old catalog');
-    mask = polygon_filter(x,y, a(:,1), a(:,2), in_or_out);
-    newt2 = a(mask,:);
+    mask = polygon_filter(x,y, a.Longitude, a.Latitude, in_or_out);
+    newt2 = a.subset(mask);
     newt2.Name = 'newt2';
     % Plot of new catalog
     %
-    plos1 = plot(ax,newt2(:,1),newt2(:,2),'xg','Tag','poly_selected_events','DisplayName','event subset');
+    plos1 = plot(ax,newt2.Longitude,newt2.Latitude,'xg','Tag','poly_selected_events','DisplayName','event subset');
 else
     mask = polygon_filter(x,y, a.Longitude, a.Latitude, in_or_out);
     a.addFilter(mask);

@@ -11,7 +11,7 @@ function [tdiff, ac]  = timediff(j,ci,tau)
     ac=[];
     while tdiff(n) < tau       %while timedifference smaller than look ahead time
 
-        if j <= length(newcat(:,1))     %to avoid problems at end of catalog
+        if j <= newcat.Count     %to avoid problems at end of catalog
             n=n+1;
             tdiff(n)=eqtime(j)-eqtime(ci);
             j=j+1;

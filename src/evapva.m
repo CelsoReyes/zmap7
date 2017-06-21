@@ -29,10 +29,10 @@ A =  re(3,2);
 la = 0;
 m0 = maepi(1,6);
 
-m = min(newt2(:,6));
+m = min(newt2.Magnitude);
 dt = 1;
 
-t0 = ( max(newt2(:,3)) - mati)*365;
+t0 = ( max(newt2.Date) - mati)*365;
 
 c
 
@@ -44,7 +44,7 @@ end
 
 figure_w_normalized_uicontrolunits(cum)
 
-l = newt2(:,3) >= mati + c/365;
+l = newt2.Date >= mati + c/365;
 tmpn = newt2(l,:);
 nu = (1:length(tmpn(:,3))+1); nu(length(tmpn(:,3))+1) = length(tmpn(:,3));
 

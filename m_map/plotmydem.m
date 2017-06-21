@@ -24,7 +24,7 @@ hold on
 %axes
 %m_proj('lambert','long',[s2 s1],'lat',[s4 s3]);
 
-%li = m_line(a(:,1),a(:,2),'Linestyle','none','Marker',ty1);
+%li = m_line(a.Longitude,a.Latitude,'Linestyle','none','Marker',ty1);
 %axis off
 %set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color','y')
 %lifa = m_line(faults(:,1),faults(:,2),'color','r');
