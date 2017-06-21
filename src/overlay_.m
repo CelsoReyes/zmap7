@@ -11,11 +11,29 @@ function overlay_()
     
     hold on
     ax = findobj('Tag','main_map_ax');
+    
+    if isempty(coastline)
+        if exist ('gadm28_adm0.shp','file')
+            S=shaperead('gadm28_adm0.shp','UseGeoCoords',true); %country administrative level
+            coastline = [[S.Lon]',[S.Lat]'];
+        else
+            % missed opportunity
+        end
+    end
+
     if ~isempty(coastline)
-        mapplot = plot(ax,coastline(:,1),coastline(:,2));
-        set(mapplot,'LineWidth', 1.0, 'Color',[0  0  0 ])
-        mapplot.DisplayName = 'coastline';
-        mapplot.Tag = 'coastline';
+        latlon_idx = coastline(:,1) >= min(xlim(ax)) & coastline(:,1) <= max(xlim(ax)) & ...
+            coastline(:,2) >= min(ylim(ax)) & coastline(:,2) <= max(ylim(ax));
+        coast_temp=coastline;
+        coast_temp(~latlon_idx)=nan;
+        mapplot = findobj(ax,'Tag','mainmap_coast');
+        if isempty(mapplot)
+            mapplot = plot(ax,coast_temp(:,1),coast_temp(:,2),'Tag','mainmap_coastline');
+        else
+            set(mapplot,'XData',coast_temp(:,1),'YData',coast_temp(:,2));
+        end
+        set(mapplot,'LineWidth', 1.0, 'Color',[.1  .1  .1 ])
+        mapplot.DisplayName = 'Coastline/Borders';
     end
     
     

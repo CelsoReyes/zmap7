@@ -433,6 +433,9 @@ function mainmap_overview()
     overlay_
     axis([ s2 s1 s4 s3])
     
+    %rough choice for map aspect ratio
+    set(main_map_ax,'DataAspectRatio',[1 cosd(mean(ylim)) 10]); % adjust for latitude
+    
     % Make the figure visible
     
     figure_w_normalized_uicontrolunits(map);
