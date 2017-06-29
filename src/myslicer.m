@@ -387,7 +387,7 @@ switch(ac2)
         s3 = max(gy); s4 = min(gy);
         region = [s4 s3 s2 s1];
 
-        if exist('mydem') == 0
+        if ~exist('mydem', 'var')
 
             try
                 [mydem,my,mx] = mygrid_sand(region);
@@ -446,7 +446,7 @@ switch(ac2)
         s3 = max(gy); s4 = min(gy);
         region = [s4 s3 s2 s1];
 
-        if exist('mydem') == 0
+        if ~exist('mydem', 'var')
 
             try
                 [mydem,my,mx] = mygrid_sand(region);

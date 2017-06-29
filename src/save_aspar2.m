@@ -2,7 +2,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-if exist('tlen') == 0; tlen = 30 ; end
+if ~exist('tlen', 'var'); tlen = 30 ; end
 str = [];
 [newmatfile] = ['t1.sum'];
 [ newpath] = [hodi '/aspar/'];

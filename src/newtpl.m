@@ -271,7 +271,7 @@ if par1>=1
     end
 end %if big
 
-if exist('stri') > 0
+if exist('stri', 'var')
     v = axis;
     %if par1>=1
     % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);

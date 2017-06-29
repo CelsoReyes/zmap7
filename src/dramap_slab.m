@@ -6,12 +6,12 @@ smenu=menu
 clear('menu')
 j = colormap;
 % check if mapping toolbox and topo map exists
-if exist('meshgrat') ~= 2
+if ~license('test','map_toolbox')
     errordlg('It seems like you do not have the mapping toolbox installed - plotting topography will not work without it, sorry');
     return
 end
 
-if exist('tmap') == 0; tmap = 0; end
+if ~exist('tmap', 'var'); tmap = 0; end
 [xx, yy] = size(tmap);
 
 if xx*yy < 30
@@ -158,7 +158,7 @@ caxis([ mic*0.99 mac*1.01 ]);
 colormap(j); brighten(0.1);
 axis off;
 
-if exist('colback') == 0; colback = 1; end
+if ~exist('colback', 'var'); colback = 1; end
 
 setm(gca,'mlabellocation',dlo)
 setm(gca,'meridianlabel','on')

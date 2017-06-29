@@ -37,13 +37,13 @@ try
     end
 
 
-    if exist('maix') > 0
+    if exist('maix', 'var')
         hold on
         pl = plot(maix,maiy,'*k')
         set(pl,'MarkerSize',12,'LineWidth',2)
     end
 
-    if exist('maex') > 0
+    if exist('maex', 'var')
         hold on
         pl = plot(maex,-maey,'hk')
         set(pl,'LineWidth',1.5,'MarkerSize',12,...
@@ -51,14 +51,14 @@ try
 
     end
 
-    if exist('vox') > 0
+    if exist('vox', 'var')
         hold on
         plovo = plot(vox,-voy,'^r')
         set(plovo,'LineWidth',1.5,'MarkerSize',6,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
     end
 
-    if exist('wellx') > 0
+    if exist('wellx', 'var')
         hold on
         plwe = plot(wellx,-welly,'k')
         set(plwe,'LineWidth',2);

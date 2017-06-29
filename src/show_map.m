@@ -76,7 +76,7 @@ else     % if in2 ~=calma
 
     % check if time are with limits
     %
-    if exist('it') == 0 ; it = t0b + (teb-t0b)/2; end
+    if ~exist('it', 'var') ; it = t0b + (teb-t0b)/2; end
     if it + iwl2 > teb | it < t0b
         errordlg('Time out of limits')
         in2 = 'nocal';

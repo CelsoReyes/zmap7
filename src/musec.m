@@ -79,7 +79,7 @@ set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
 pl =plot(newa(:,po),-newa(:,7),'rx');
 set(pl,'Linewidth',1.5,'MarkerSize',6)
 
-if exist('maex') > 0
+if exist('maex', 'var')
     hold on
     pl = plot(maex,-maey,'xm')
     set(pl,'MarkerSize',10,'LineWidth',2)

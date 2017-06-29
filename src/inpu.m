@@ -12,7 +12,7 @@ t0b = min(a.Date);
 teb = max(a.Date);
 tdiff = (teb - t0b)*365;
 
-if exist('par1') == 0
+if ~exist('par1', 'var')
     %  if tdiff>10                 %select bin length respective to time in catalog
     %     par1 = ceil(tdiff/100);
     %  elseif tdiff<=10 & tdiff>1

@@ -232,7 +232,7 @@ uicontrol('Units','normal',...
     'Position',[.25 .0 .08 .05],'String','New',...
      'Callback','newsta')
 
-if exist('stri') > 0
+if exist('stri', 'var')
     vx=xlim;
     vy=ylim;
     %v = axis;

@@ -5,7 +5,7 @@
 %
 % Attributing the corresponding catalog to E
 %
-if exist('index') == 0
+if ~exist('index', 'var')
     index = 1;
 end
 

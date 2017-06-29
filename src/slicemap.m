@@ -8,9 +8,9 @@ global newt2  hndl2 tgl1 Rconst %killed one hs
 global ps1 ps2 plin pli xt3 bvalsum3 slfig
 
 
-if exist('slm') == 0; slm = 'new' ; end
-if exist('zv2') == 0; zv2= zvg ; end
-if exist('fix1') == 0; fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg))); end
+if ~exist('slm', 'var'); slm = 'new' ; end
+if ~exist('zv2', 'var'); zv2= zvg ; end
+if ~exist('fix1', 'var'); fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg))); end
 if isempty(fix1) == 1; fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg))); end
 
 switch(slm)
@@ -335,7 +335,7 @@ switch(slm)
         di = deg2km(distance(lat1,lon1,lat2,lon2));
 
         %lc_event(a(a.Depth<=dep1,2),a(a.Depth<=dep1,1),'.b',1);
-        if exist('wi') == 0; wi = 10; end
+        if ~exist('wi', 'var'); wi = 10; end
         [ax ay,  inde] = mysectnoplo(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lat2,lon1,lon2);
         hold on
         %figure

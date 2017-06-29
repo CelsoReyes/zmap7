@@ -107,7 +107,7 @@ function clpval(var1)
         end
 
 
-        if exist('stri') > 0
+        if exist('stri', 'var')
             v = axis;
             tea = text(v(1)+0.5,v(4)*0.9,stri) ;
             set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold')
@@ -604,7 +604,7 @@ function clpval(var1)
                 plot(xt,difp,'g');
             end
 
-            if exist('stri') > 0
+            if exist('stri', 'var')
                 v = axis;
                 tea = text(v(1)+0.5,v(4)*0.9,stri) ;
                 set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold')

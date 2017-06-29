@@ -49,7 +49,7 @@ switch(plt)
             fac = str2double(l);
         end
 
-        if exist('tbase.bin') == 0;  plt = 'err';
+        if ~exist('tbase.bin', 'var');  plt = 'err';
             pltopo
         else
 
@@ -95,9 +95,16 @@ switch(plt)
         region = [s4 s3 s2 s1];
 
         % is mydem defined?
-        if exist('mydem') ~= 1 ; plt = 'loadmydem'; pltopo ; end
+        if ~exist('mydem','var');
+            plt = 'loadmydem';
+            pltopo;
+        end
         % cut the data
-        if exist('butt')  == 1 ; if butt(1) == 'C' | butt(1) == 'H' ; return ; end ; end
+        if exist('butt', 'var'); 
+            if butt(1) == 'C' || butt(1) == 'H' ;
+                return ;
+            end
+        end
         l2 = min(find(mx >= s2));
         l1 = max(find(mx <= s1));
         l3 = max(find(my <= s3));

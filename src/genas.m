@@ -20,7 +20,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
 
     as = 1:1:totbin;
     as = as*0;
-    % if exist('sumx') == 0; sumx = sum(cumu); end
+    % if ~exist('sumx', 'var'); sumx = sum(cumu); end
     sumx = [sumx; sum(cumu)];
     sumx = max(sumx);
     par2 = sumx*0.1;

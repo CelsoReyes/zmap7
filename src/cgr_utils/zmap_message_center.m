@@ -305,7 +305,7 @@ function update_current_catalog_pane(~,~)
     if ~isempty(a)
         if isa(a,'ZmapCatalog')
             mycat = a;
-        elseif isnumeric && size(a,2)>=9
+        elseif isnumeric(a) && size(a,2)>=9
             % old style zmap array
             mycat=ZmapCatalog(a,'a');
         else

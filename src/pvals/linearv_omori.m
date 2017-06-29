@@ -103,7 +103,7 @@ nocut_cat = tcut_cat;
 % ni is step size for Mc calc Set in bwithtimc_nogui too
 %%
 % use all events to compute mc
-if exist('cutcat_flag') == 0
+if ~exist('cutcat_flag', 'var')
     keep_newt2 = newt2;
     newt2 = tcut_cat;
     bwithtimc_nogui;

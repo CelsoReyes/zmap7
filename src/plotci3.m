@@ -12,7 +12,7 @@ axis image
 xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.s)
 ylabel('Depth in [km]','FontWeight','bold','FontSize',fontsz.s)
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'xw');
     set(pl,'MarkerSize',10,'LineWidth',2)
 end

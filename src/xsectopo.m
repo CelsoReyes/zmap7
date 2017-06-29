@@ -2,7 +2,7 @@ report_this_filefun(mfilename('fullpath'));
 
 % make a x-section plus topography...
 
-if exist('tmap') == 0
+if ~exist('tmap', 'var')
     update(mainmap())
     warndlg('Please create a topo map first')
 end
@@ -109,7 +109,7 @@ box off
 
 hold on
 
-if exist('maix') > 0
+if exist('maix', 'var')
     if isempty(maix) == 0
         pl = plot(maix,6.5,'vr');
         set(pl,'Markersize',10,'markerfacecolor','r','clipping','off')

@@ -11,8 +11,8 @@ warning off
 
 sta = 'lta';
 
-if exist('slm') == 0; slm = 'new' ; end
-if exist('zv2') == 0; zv2= zvg ; end
+if ~exist('slm', 'var'); slm = 'new' ; end
+if ~exist('zv2', 'var'); zv2= zvg ; end
 
 switch(slm)
 

@@ -269,23 +269,23 @@ hold on
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
 set(ploeqc,'Tag','eqc_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
 
-if exist('vox') > 0
+if exist('vox', 'var')
     plovo = plot(vox,voy,'*b');
     set(plovo,'MarkerSize',6,'LineWidth',1)
 end
 
-if exist('maix') > 0
+if exist('maix', 'var')
     pl = plot(maix,maiy,'*k');
     set(pl,'MarkerSize',12,'LineWidth',2)
 end
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'hm');
     set(pl,'LineWidth',1.5,'MarkerSize',12,...
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 end
 
-if exist('wellx') > 0
+if exist('wellx', 'var')
     hold on
     plwe = plot(wellx,-welly,'w')
     set(plwe,'LineWidth',2);

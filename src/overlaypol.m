@@ -53,13 +53,13 @@ end
 coastline = [lon lat];
 
 hold on
-if exist('coastline') >  0
+if exist('coastline', 'var')
     if isempty(coastline) ==  0
         mapplot = plot(coastline(:,1),coastline(:,2));
         set(mapplot,'LineWidth',1.0,'Color',[0  0      0 ])
     end
 end
-if exist('vo') >0
+if exist('vo', 'var')
     if isempty(vo) ==  0
         plovo = plot(vo.Longitude,vo.Latitude,'^r');
         set(plovo,'LineWidth',1.5,'MarkerSize',6,...
@@ -68,7 +68,7 @@ if exist('vo') >0
 end
 
 % plot the well location
-if exist('well') >0
+if exist('well', 'var')
     if isempty(well) ==  0
         i = find(well(:,1) == inf);
         plowe = plot(well(i+1,1),well(i+1,2),'d');
@@ -79,7 +79,7 @@ end
 
 %plot main faultline
 
-if exist('mainfault') >0
+if exist('mainfault', 'var')
     if isempty(mainfault) == 0
         plo3 = plot(mainfault(:,1),mainfault(:,2),'b');
         set(plo3,'LineWidth',3.0)
@@ -89,7 +89,7 @@ end
 %
 % plot big earthquake epicenters with a 'x' and the data/magnitude
 %
-if exist('maepi') > 0
+if exist('maepi', 'var')
     if isempty(maepi) == 0
         epimax = plot(maepi(:,1),maepi(:,2),'hm');
         set(epimax,'LineWidth',1.5,'MarkerSize',12,...
@@ -108,7 +108,7 @@ end  %  if length(maepi)
 
 %plot mainshock(s)
 %
-if exist('main')  > 0
+if exist('main', 'var')
     if isempty(main) == 0
         plo1 = plot(main(:,1),main(:,2),'*k');
         set(plo1,'MarkerSize',12,'LineWidth',2.0)
@@ -116,7 +116,7 @@ if exist('main')  > 0
 end
 
 
-if exist('faults')  > 0
+if exist('faults', 'var')
     if isempty(faults) == 0
         plo4 = plot(faults(:,1),faults(:,2),'k');
         set(plo4,'LineWidth',0.2)

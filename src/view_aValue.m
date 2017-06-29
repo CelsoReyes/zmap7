@@ -6,7 +6,7 @@
 % define size of the plot etc.
 %
 
-if exist('Prmap')  == 0
+if ~exist('Prmap')
     Prmap = re3*nan;
 end
 if isempty(Prmap) >  0

@@ -69,9 +69,9 @@ function load_zmapfile()%
     % read the world coast + political ines if none are present
     %do = ['load worldlo'];
     %eval(do,' ')
-    %if exist('coastline') == 0;  coastline = []; end
+    %if ~exist('coastline', 'var');  coastline = []; end
     %if isempty('coastline') == 0
-    %   if exist('POline') >0
+    %   if exist('POline', 'var')
     %      Plong = [POline(1).long ; POline(2).long];
     %      Plat = [POline(1).lat;  POline(2).lat];
     %      coastline = [Plong Plat];
@@ -95,7 +95,7 @@ function load_zmapfile()%
     t0b = min(a.Date);
     teb = max(a.Date);
     tdiff = (teb - t0b)*365;
-    if exist('par1') == 0
+    if ~exist('par1', 'var')
         if tdiff>10                 %select bin length respective to time in catalog
             par1 = ceil(tdiff/100);
         elseif tdiff<=10  &&  tdiff>1

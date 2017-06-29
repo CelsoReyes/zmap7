@@ -30,7 +30,7 @@ er = 0;
 for i = 1:length(fname)
     l = fname{i};
     disp(['Checking for existence of file  ' l '  .... ']);
-    if exist(l) == 0
+    if ~exist(l)
         disp(['Please get the file  ' l '  via ftp from ftp://edcftp.cr.usgs.gov/pub/data/DEM/250 and copy it into usgsdem3']);
         er = 1;
     else

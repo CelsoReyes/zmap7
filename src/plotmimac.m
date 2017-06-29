@@ -72,13 +72,13 @@ elseif var1 == 4
     colormap(jet)
 end
 
-if exist('maex') > 0
+if exist('maex', 'var')
     hold on
     pl = plot(maex,-maey,'*m');
     set(pl,'MarkerSize',8,'LineWidth',2)
 end
 
-if exist('maex') > 0
+if exist('maex', 'var')
     hold on
     pl = plot(maex,-maey,'*m');
     set(pl,'MarkerSize',8,'LineWidth',2)

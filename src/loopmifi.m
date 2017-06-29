@@ -138,7 +138,7 @@ axis image
 
 hold on
 colorbar
-if exist('maex') > 0
+if exist('maex', 'var')
  hold on
  pl = plot(maex,-maey,'xw');
  set(pl,'MarkerSize',10,'LineWidth',2)
@@ -160,7 +160,7 @@ pco1 = pcolor(xvect,yvect,normlap3);
 axis([ min(gx) max(gx) min(gy) max(gy)])
 axis image
 
-if exist('maex') > 0
+if exist('maex', 'var')
  hold on
  pl = plot(maex,-maey,'xw');
  set(pl,'MarkerSize',10,'LineWidth',2)

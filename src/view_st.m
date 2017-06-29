@@ -200,7 +200,7 @@ pco1 = pcolor(gx,gy,re4);
 axis([ min(gx) max(gx) min(gy) max(gy)])
 axis image
 hold on
-if exist('pro') > 0
+if exist('pro', 'var')
     %l = pro < 0;
     %pro2 = pro;
     %pro2(l) = pro2(l)*nan;
@@ -236,17 +236,17 @@ ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.m)
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.w');
 set(ploteqc,'Tag','eqc_plot');
 
-if exist('vox') > 0
+if exist('vox', 'var')
     plovo = plot(vox,voy,'*b');
     set(plovo,'MarkerSize',6,'LineWidth',1)
 end
 
-if exist('maix') > 0
+if exist('maix', 'var')
     pl = plot(maix,maiy,'*k');
     set(pl,'MarkerSize',12,'LineWidth',2)
 end
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'xk');
     set(pl,'MarkerSize',10,'LineWidth',2)
 end

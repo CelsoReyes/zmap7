@@ -24,7 +24,7 @@ global magco selt hndl2 wls_button ml_button;;
 
 zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 
-if exist('nosort') == 0 ; nosort = 'of'  ; end
+if ~exist('nosort', 'var') ; nosort = 'of'  ; end
 
 if nosort == 'of'
     [s,is] = sort(newt2.Date);
@@ -375,7 +375,7 @@ if par1>=1
     end
 end %if big
 
-if exist('stri') > 0
+if exist('stri', 'var')
     %v = axis;
     %if par1>=1
     % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);

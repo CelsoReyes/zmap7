@@ -14,8 +14,8 @@ set(gca,'visible','off')
 te = text(0.01,0.80,'Please use the LEFT mouse button or the cursor \newlineto select the lower left corner of the area of \newlineinvestigation. Use the LEFT mouse button again \newlineto select the upper right corner ');
 set(te,'FontSize',12);
 
-%if exist('fplo') > 0 ; delete(fplo); clear fplo; end
-%if exist('mark1') > 0 ; delete(mark1); clear mark1;end
+%if exist('fplo', 'var') ; delete(fplo); clear fplo; end
+%if exist('mark1', 'var') ; delete(mark1); clear mark1;end
 
 b = newcat;                       % reset b
 as2 = [];

@@ -17,8 +17,8 @@ hlpStr1= ...
     ' corners with the mouse                         '];
 % Find out of figure already exists
 watchon
-if exist('iala')  == 0 ; iala = iwl2; end
-if exist('abo2')  == 0 ; errordlg('No alarms with z >= Zmin detected!');return; end
+if ~exist('iala') ; iala = iwl2; end
+if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
 if isempty(abo2)  == 1 ; errordlg('No alarms with z >= Zmin detected!');return; end
 
 abo = abo2;

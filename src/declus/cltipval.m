@@ -85,7 +85,7 @@ function cltipval(var1)
         cplot = plot(xt,cumu2,'ob');
         set(gca,'visible','off')
         ctiplo2 = plot(xt,cumu2,'r');
-        if exist('stri') > 0
+        if exist('stri', 'var')
             v = axis;
             tea = text(v(1)+0.5,v(4)*0.9,stri) ;
             set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold');

@@ -7,7 +7,7 @@ if ic == 1 | ic == 0
     % Input times t1p t2p t3p and t4p by editing or use cursor if desired
     %
 
-    if exist('t1p') == 0
+    if ~exist('t1p', 'var')
         t1p = t0b; t4p = teb; t2p = t4p - (t4p-t1p)/2; t3p = t2p;
     end
 

@@ -14,7 +14,7 @@ report_this_filefun(mfilename('fullpath'));
 newcat = a;
 global winx winy ptime lapf
 
-%if exist('/home/lu/stress/bin/fmsietab_matlab') == 0
+%if ~exist('/home/lu/stress/bin/fmsietab_matlab')
 %errordlg('Please contact stefan@giseis.alaska.edu for executable code for misfit calculation !');
 %return
 %end

@@ -3,12 +3,12 @@ report_this_filefun(mfilename('fullpath'));
 % compute the source zones for landers
 
 % define Input parameters
-if exist('dy') == 0; dy = 0.15; end
-if exist('tmin1') == 0; tmin1 = 0.05; end
-if exist('tpre') == 0; tpre = 30; end
-if exist('Tobs') == 0; Tobs = 30; end
-if exist('prol') == 0; prol = 0.5; end
-if exist('storedcat') == 0; storedcat = a; end
+if ~exist('dy', 'var'); dy = 0.15; end
+if ~exist('tmin1', 'var'); tmin1 = 0.05; end
+if ~exist('tpre', 'var'); tpre = 30; end
+if ~exist('Tobs', 'var'); Tobs = 30; end
+if ~exist('prol', 'var'); prol = 0.5; end
+if ~exist('storedcat', 'var'); storedcat = a; end
 
 
 def = {num2str(dy),num2str(tmin1),num2str(tpre),num2str(Tobs), num2str(prol)};

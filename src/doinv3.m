@@ -73,7 +73,7 @@ while i <  length(newgri(:,1))
         comm =['load /home/stefan/ZMAP/invers/howmany.dat '];
         eval(comm,'disp('' no'')')
 
-        if exist('howmany') ==0 ; howmany = 0; end
+        if ~exist('howmany','var'); howmany = 0; end
         if com(k,:) == 'moment     ' ; howmany(1:2) = [] ; end
         if length(howmany(:,1)) < 2
             comm = ['! rsh ' com(k,:) ' /home/stefan/ZMAP/invers/invshell ',...

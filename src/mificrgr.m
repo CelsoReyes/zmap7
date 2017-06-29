@@ -261,7 +261,7 @@ elseif var1==2           %area selection
 
     hold on
     colorbar
-    if exist('maex') > 0
+    if exist('maex', 'var')
         hold on
         pl = plot(maex,-maey,'*m');
         set(pl,'MarkerSize',8,'LineWidth',2)
@@ -283,7 +283,7 @@ elseif var1==2           %area selection
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
 
-    if exist('maex') > 0
+    if exist('maex', 'var')
         hold on
         pl = plot(maex,-maey,'*w');
         set(pl,'MarkerSize',8,'LineWidth',2)

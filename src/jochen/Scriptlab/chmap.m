@@ -97,13 +97,13 @@ while fTime < fMaxTime-2*fTimeWindow
     set(pco1,'Linestyle','none')
 
     % Plot caostline and faults
-    if exist('coastline') >  0
+    if exist('coastline', 'var')
         if isempty(coastline) ==  0
             mapplot = plot(coastline(:,1),coastline(:,2));
             set(mapplot,'LineWidth',1.0,'Color',[0  0      0 ])
         end
     end
-    if exist('faults') >0
+    if exist('faults', 'var')
         if isempty(faults) == 0
             plo3 = plot(faults(:,1),faults(:,2),'k');
             set(plo3,'LineWidth',1.0)

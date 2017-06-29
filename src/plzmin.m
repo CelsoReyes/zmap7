@@ -2,7 +2,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-if exist('con') == 0 ; con = 1; end%
+if ~exist('con', 'var') ; con = 1; end%
 
 % First lets load the data
 [file1,path1] = uigetfile(['*.mat'],'Zmax Data File Name?');

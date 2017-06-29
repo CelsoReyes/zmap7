@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 prompt  = {,'Enter length of learning period (days)','Enter number of bootstraps:'};
 title   = 'Parameters ';
 lines= 1;
-if exist('time') &  exist('bootloops')
+if exist('time') &&  exist('bootloops')
     time = num2str(time);
     bootloops = num2str(bootloops);
     def     = {time,bootloops};

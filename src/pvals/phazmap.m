@@ -5,7 +5,7 @@
 %
 % make the interface
 %
-if exist('dohaz') == 0 ; dohaz = 'in1' ;phazmap; end
+if ~exist('dohaz', 'var') ; dohaz = 'in1' ;phazmap; end
 
 m0=maepi(:,6);
 pgalev = 0.1;

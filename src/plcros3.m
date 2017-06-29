@@ -41,7 +41,7 @@ axis([ min(gx) max(gx) min(gy) max(gy)]); axis image; hold on
 set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[  10 8 6 4 2 ])
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'*k');
     set(pl,'MarkerSize',8,'LineWidth',2)
     pl = plot(maex,-maey,'*m');

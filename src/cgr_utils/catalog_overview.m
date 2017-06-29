@@ -20,7 +20,7 @@ function a = catalog_overview(a)
     teb = max(mycat.Date);
     tdiff = (teb - t0b);
     
-    if exist('par1') == 0   %select bin length respective to time in catalog
+    if ~exist('par1', 'var')   %select bin length respective to time in catalog
         par1 = 30;
     end
     
@@ -347,7 +347,6 @@ function a = catalog_overview(a)
         %assignin('base','a',mycat);
         zmap_message_center.update_catalog();
         update(mainmap())
-        %mainmap_overview();
         
         h = findobj('Tag','catalog_overview_dlg');
         close(h);

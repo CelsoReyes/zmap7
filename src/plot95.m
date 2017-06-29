@@ -19,7 +19,7 @@ global c i newgri ste s te te1  te2 te3
 load out95
 % find the 95% confidence region
 
-if exist('tmpi')==0 | exist('tmp.')==2
+if ~exist('tmpi','var') || exist('tmp.','file')
     def = {'30'};
     ni2 = inputdlg('How many events were used in the inversion?','Input',1,def);
     l = ni2{1};

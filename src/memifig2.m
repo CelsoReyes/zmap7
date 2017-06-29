@@ -76,7 +76,7 @@ set(h5,'Pos',[0.82 0.46 0.02 0.20],...
 
 
 
-if exist('maex') > 0
+if exist('maex', 'var')
     hold on
     pl = plot(maex,-maey,'*k');
     set(pl,'MarkerSize',6,'LineWidth',2)

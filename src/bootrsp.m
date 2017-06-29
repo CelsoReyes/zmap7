@@ -39,8 +39,8 @@ function[out]=bootrsp(in,B)
     %               in Signal Processing. IEEE Signal Processing Magazine,
     %               Vol. 15, No. 1, pp. 55-76, 1998.
 
-    if (exist('B')~=1), B=1;  end
-    if (exist('in')~=1), error('Provide input data'); end
+    if ~exist('B','var'), B=1;  end
+    if ~exist('in','var'), error('Provide input data'); end
 
     s=size(in);
     if length(s)>2

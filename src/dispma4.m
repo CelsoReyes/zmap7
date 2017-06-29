@@ -96,7 +96,7 @@ if ic == 1 | ic == 0
         'Callback','deprat',...
         'String','Go');
     figure_w_normalized_uicontrolunits(depfg)
-    %if exist('cumu2') == 0 ; timeplot;dispma4; end
+    %if ~exist('cumu2', 'var') ; timeplot;dispma4; end
     par2 = 0.1 * max(cumu2);
     %text( t1p(1),par2,['^ t1'] )
     %text( t2p(1),par2,['^ t2'] )

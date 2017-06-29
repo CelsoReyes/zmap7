@@ -510,7 +510,7 @@ function [map,maplegend,Astruc] = usgsdemc(samplefactor,latlim,lonlim)
     fileexist = 1;
     if ~isempty(fname)
         for j = 1:max(i)
-            if exist(fname{j}) == 0
+            if ~exist(fname{j})
                 fileexist = 0;
                 disp([fname{j},' does not exist or is not in a directory on the default path'])
             end

@@ -18,8 +18,8 @@ switch(dofd)
         % distances of depopulation "rad" and of saturation "ras". Manually chosen
         % they are named: radm and rasm.
         %
-        if exist('radm') == 0 ; radm = []; end
-        if exist('rasm') == 0 ; rasm = []; end
+        if ~exist('radm', 'var') ; radm = []; end
+        if ~exist('rasm', 'var') ; rasm = []; end
 
         if isempty(radm)  &&  isempty(rasm);
 
@@ -88,7 +88,7 @@ switch(dofd)
         te1 = text(0.18, 0.78, str1, 'fontsize', 12);
         te2 = text(0.18, 0.73, str2, 'fontsize', 12);
 
-        if exist('sph') == 1
+        if exist('sph','var')
             str7 = [sprintf('%.0f', size(E,1)) ' points in the sphere.'];
             te7 = text(0.25, 0.7, str7, 'Fontweight','bold');
         else

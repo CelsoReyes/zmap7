@@ -43,7 +43,7 @@ end
 l = clus == val;
 newt2 = original(l,:);
 
-if exist('tiplo') == 0; timeplot; end
+if ~exist('tiplo', 'var'); timeplot; end
 nu = (1:newt2.Count) ;nu = nu';
 set(tiplo2,'Xdata',newt2.Date,'Ydata',nu); figure_w_normalized_uicontrolunits(cum);
 

@@ -197,26 +197,26 @@ set(ploeqc,'Tag','eqc_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi
 
 try
 
-    if exist('vox') > 0
+    if exist('vox', 'var')
         plovo = plot(vox,voy,'^r');
         set(plovo,'MarkerSize',8,'LineWidth',1,'Markerfacecolor','w','Markeredgecolor','r')
         axis([ min(gx) max(gx) min(gy) max([ 1 max(gy)]) ])
 
     end
 
-    if exist('maix') > 0
+    if exist('maix', 'var')
         pl = plot(maix,maiy,'*k');
         set(pl,'MarkerSize',12,'LineWidth',2)
     end
 
-    if exist('maex') > 0
+    if exist('maex', 'var')
         pl = plot(maex,-maey,'hm');
         set(pl,'LineWidth',1.,'MarkerSize',12,...
             'MarkerFaceColor','w','MarkerEdgeColor','k')
 
     end
 
-    if exist('wellx') > 0
+    if exist('wellx', 'var')
         hold on
         plwe = plot(wellx,-welly,'w')
         set(plwe,'LineWidth',2);

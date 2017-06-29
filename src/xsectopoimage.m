@@ -2,7 +2,7 @@ report_this_filefun(mfilename('fullpath'));
 
 % make a x-section plus topography...
 
-if exist('tmap') == 0
+if ~exist('tmap', 'var')
     update(mainmap())
     warndlg('Please create a topo map first')
 end
@@ -106,13 +106,13 @@ box off
 
 hold on
 
-%if exist('vox') > 0
+%if exist('vox', 'var')
 %       plovo = plot(vox,voy,'^r');
 %       set(plovo,'MarkerSize',8,'LineWidth',1,'Markerfacecolor','w','Markeredgecolor','r')
 %
 %   end
 
-if exist('maix') > 0
+if exist('maix', 'var')
     if isempty(maix) == 0
         pl = plot(maix,6.5,'vr');
         set(pl,'Markersize',10,'markerfacecolor','r','clipping','off')

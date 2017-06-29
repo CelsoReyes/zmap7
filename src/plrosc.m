@@ -25,7 +25,7 @@ pco1 = pcolor(gx,gy,(re4));
 axis([ min(gx) max(gx) min(gy) max(gy)]); axis image; hold on
 shading interp;
 caxis([0.40 1.00])
-if exist('pro') > 0
+if exist('pro', 'var')
     l = pro > 0;
     pro2 = pro;
     pro2(l) = pro2(l)*nan;
@@ -47,7 +47,7 @@ set(gca,'Color',[0.9 0.9 0.9])
 %set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[12 10 8 6 4 2])
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'*k');
     set(pl,'MarkerSize',6,'LineWidth',2)
 end

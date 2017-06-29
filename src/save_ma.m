@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 str = [];
 [newmatfile, newpath] =  uiputfile([hodi], 'Save MagSig As'); %Syntax change Matlab Version 7, no window positioning on macs
 
-if exist('masi_syn') > 0
+if exist('masi_syn', 'var')
     s = [ (minmag2:0.1:maxmag)  ;  masi ; masi2   ];
     fid = fopen([newpath newmatfile],'w')
     fprintf(fid,'%6.2f %6.2f  %6.2f\n',s)

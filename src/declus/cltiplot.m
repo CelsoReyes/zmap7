@@ -185,7 +185,7 @@ function cltiplot(var1)
 
     end %if big
 
-    if exist('stri') > 0
+    if exist('stri', 'var')
         v = axis;
         tea = text(v(1)+0.5,v(4)*0.9,stri) ;
         set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold')

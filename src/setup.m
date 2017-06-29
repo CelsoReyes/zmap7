@@ -6,7 +6,7 @@ report_this_filefun(mfilename('fullpath'));
 % make the interface
 %
 
-if exist('par1') == 0
+if ~exist('par1', 'var')
     par1 = 14
 end
 

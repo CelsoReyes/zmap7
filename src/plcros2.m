@@ -39,7 +39,7 @@ set(gca,'YTickLabels',[  10 8  6 4  2])
 %xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.m)
 %ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.m)
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'*y');
     set(pl,'MarkerSize',6,'LineWidth',2)
 end

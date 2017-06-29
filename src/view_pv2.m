@@ -226,7 +226,7 @@ else
     shading interp
 end
 
-if exist('pro') > 0
+if exist('pro', 'var')
     %l = pro < 0;
     %pro2 = pro;
     %pro2(l) = pro2(l)*nan;
@@ -270,17 +270,17 @@ ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.s)
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.w');
 set(ploeqc,'Tag','eqc_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
 
-if exist('vox') > 0
+if exist('vox', 'var')
     plovo = plot(vox,voy,'*b');
     set(plovo,'MarkerSize',6,'LineWidth',1)
 end
 
-if exist('maix') > 0
+if exist('maix', 'var')
     pl = plot(maix,maiy,'*k');
     set(pl,'MarkerSize',12,'LineWidth',2)
 end
 
-if exist('maex') > 0
+if exist('maex', 'var')
     pl = plot(maex,-maey,'hm');
     set(pl,'LineWidth',1.5,'MarkerSize',12,...
         'MarkerFaceColor','w','MarkerEdgeColor','k')

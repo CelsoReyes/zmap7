@@ -37,7 +37,7 @@ if ~isempty(maepi)
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 end
 
-if exist('vo') >0
+if exist('vo', 'var')
     if isempty(vo) ==  0
         plovo = plot(vo.Longitude,vo.Latitude,'^r');
         set(plovo,'LineWidth',1.5,'MarkerSize',6,...

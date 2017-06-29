@@ -4,7 +4,7 @@ if existFlag == 0;  bc = 'new' ; end
 if isnan(bc);bc='new';end;
 
 % check if mapping toolbox and topo map exists
-if exist('meshgrat') ~= 2
+if ~license('test','map_toolbox')
     errordlg('It seems like you do not have the mapping toolbox installed - plotting topography will not work without it, sorry');
     return
 end

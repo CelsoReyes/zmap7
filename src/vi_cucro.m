@@ -247,7 +247,7 @@ xlabel('Distance along projection in [km]','FontWeight','normal','FontSize',font
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
 set(ploeqc,'MarkerSize',ms6,'Marker',ty,'Color',co,'visible', vi);
 
-if exist('maex') == 0; maex =[];maey = [];end
+if ~exist('maex', 'var'); maex =[];maey = [];end
 if ~isempty(maex)
     pl = plot(maex,-maey,'hm');
     %set(pl,'MarkerSize',12,'LineWidth',1)
@@ -255,7 +255,7 @@ if ~isempty(maex)
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 
 end
-if exist('maix') == 0; maex =[];maey = [];end
+if ~exist('maix', 'var'); maex =[];maey = [];end
 if ~isempty(maix)
     pl = plot(maix,maiy,'*k');
     set(pl,'MarkerSize',10,'LineWidth',2)
