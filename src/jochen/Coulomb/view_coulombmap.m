@@ -45,6 +45,7 @@ if oldfig_button == 0
     matdraw
 
     % Display
+    uimenu('Label','|','Enable','off'); % divider
     add_symbol_menu('eq_plot');
 
     % Menu: Ztools

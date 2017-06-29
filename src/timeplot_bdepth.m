@@ -174,7 +174,7 @@ if newCumWindowFlag
 
     uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; timeplot')
 
-    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;mainmap_overview()')
+    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;update(mainmap())')
 
     ho2 = 'noho';
 

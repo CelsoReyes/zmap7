@@ -53,7 +53,7 @@ pause(0.1)
 %  make grid, calculate start- endtime etc.  ...
 %
 %[g1,g2] = meshgrid(gx,gy);
-t0b = a(1,3) * 365/par1  + a(1,4)* 30./par1 + a(1,5)/par1;
+t0b = min(a.Date) * 365/par1  + a(1,4)* 30./par1 + a(1,5)/par1;
 n = a.Count;
 teb = a(n,3) * 365/par1  + a(n,4)* 30 /par1 + a(n,5)/par1;
 tdiff = round(teb - t0b);

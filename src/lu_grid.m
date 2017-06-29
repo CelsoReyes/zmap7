@@ -123,14 +123,14 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = a(1,3)  ;
+    t0b = min(a.Date)  ;
     n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     cumu = zeros(length(t0b:par1/365:teb)+2);
     ncu = length(cumu);
     cumuall = zeros(ncu,length(gx)*length(gy));
-    loc = zeros(3,length(gx)*length(gy));
+    loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
     %

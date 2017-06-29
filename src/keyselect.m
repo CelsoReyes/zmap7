@@ -1,13 +1,13 @@
 %  This .m file selects the earthquakes within a polygon
 %  and plots them. Sets "a" equal to the catalogue produced after the
-%  general parameter selection. Operates on "org2", replaces "a"
+%  general parameter selection. Operates on "storedcat", replaces "a"
 %  with new data and makes "a" equal to newcat
 %                                           Alexander Allmann
 
 report_this_filefun(mfilename('fullpath'));
 
 newt2 = [ ];           % reset catalogue variables
-%a = org2;              % uses the catalogue with the pre-selected main
+%a = storedcat;              % uses the catalogue with the pre-selected main
 % general parameters
 newcat = a;
 

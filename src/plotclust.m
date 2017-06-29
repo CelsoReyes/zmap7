@@ -26,6 +26,7 @@ else
 end
 
 matdraw
+uimenu('Label','|','Enable','off'); % divider
 
 op4 = uimenu('Label','ZTools','BackgroundColor','m') ;
 op6 =uimenu(op4,'Label','select clusters');

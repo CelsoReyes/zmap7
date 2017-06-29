@@ -649,10 +649,12 @@ end
     queryset = add_string(handles, queryset, 'magnitudetype');
     think('Importing FDSN data','Importing FDSN data from the web. This might take a minute');
     a = import_fdsn_event(1, queryset{:});
-
+    if ~isa(a,'ZmapCatalog')
+        a = ZmapCatalog(a);
+    end
     h=zmap_message_center();
     h.update_catalog()%;
-    mainmap_overview();
+    update(mainmap());
     %a = catalog_overview(a); % further modify
     %assignin('base','a',a);
     done();

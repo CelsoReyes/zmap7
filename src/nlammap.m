@@ -101,7 +101,7 @@ if strcmp(hoc,'noho') ||  newMapLaWindowFlag == 1
         lc_event(main(:,2),main(:,1),'hk',10,2.0)
     end
     if ~isempty(vo)
-        lc_event(vo(:,2),vo(:,1),'^r')
+        lc_event(vo.Latitude,vo.Longitude,'^r')
     end
     if ~isempty(well)
         lc_event(well(:,2),well(:,1),'dk')

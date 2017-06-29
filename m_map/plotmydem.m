@@ -28,7 +28,7 @@ hold on
 %axis off
 %set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color','y')
 %lifa = m_line(faults(:,1),faults(:,2),'color','r');
-%livo = m_line(vo(:,1),vo(:,2),'color','r');
+%livo = m_line(vo.Longitude,vo.Latitude,'color','r');
  %set(livo,'LineWidth',1.,'MarkerSize',8,'Linestyle','none',...
 %    'MarkerFaceColor','w','MarkerEdgeColor','r','marker','^');
 

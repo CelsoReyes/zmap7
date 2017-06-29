@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 
 global mCatalog
 
-org2 = a; % Keep original catalog for resetting in Seismicity map
+storedcat = a; % Keep original catalog for resetting in Seismicity map
 
 mCatalog=a; % Script works on mCatalog
 if isempty(mCatalog)

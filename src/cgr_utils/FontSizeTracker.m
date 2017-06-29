@@ -41,6 +41,10 @@ classdef FontSizeTracker
         function add_font_menuitem(parent)
         end
         
+        function obj=reset(obj)
+            obj.base_size = 14;
+        end
+        
         
     end
         

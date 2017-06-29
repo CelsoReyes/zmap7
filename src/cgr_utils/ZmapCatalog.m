@@ -47,13 +47,21 @@ classdef ZmapCatalog < handle
                 obj.Latitude = varargin{1}(:,2);
                 if all(varargin{1}(:,3) < 100)
                     varargin{1}(:,3) = varargin{1}(:,3)+1900;
-                    errdisp =    ['The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance'];
+                    errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
                     warndlg(errdisp)
                 end
                 obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
                 obj.Depth = varargin{1}(:,7);
                 obj.Magnitude = varargin{1}(:,6);
+                
                 obj.MagnitudeType = cell(size(obj.Magnitude));
+                
+                for i=1:numel(obj.MagnitudeType)
+                    if isempty(obj.MagnitudeType{i})
+                        obj.MagnitudeType(i)={''};
+                    end
+                end
+                
                 
                 if nargin==2 && ischar(varargin{2})
                     obj.Name = varargin{2};
@@ -164,6 +172,16 @@ classdef ZmapCatalog < handle
         function invertFilter(obj)
             % invertFilter flips all true to false and vice-versa
             obj.Filter = ~obj.Filter;
+        end
+        
+        function setFilterToAxesLimits(obj, ax)
+            if ~isvalid(ax)
+                return
+            end
+            obj.addFilter('Longitude','>=',min(ax.XLim));
+            obj.addFilter('Latitude','>=',min(ax.YLim));
+            obj.addFilter('Longitude','<=',max(ax.XLim));
+            obj.addFilter('Latitude','<=',max(ax.YLim));
         end
         
         function cropToFilter(obj)
@@ -313,6 +331,8 @@ classdef ZmapCatalog < handle
 
         end   
         function obj = cat(objA, objB)
+            % cat combines two catalogs
+            % duplicates are not looked for
             obj = objA;
             objA.Date = [objA.Date; objB.Date];
             objA.Longitude = [objA.Longitude; objB.Longitude];
@@ -322,6 +342,32 @@ classdef ZmapCatalog < handle
             objA.MagnitudeType = [objA.MagnitudeType; objB.MagnitudeType];
             objA.clearFilter();
         end
+        
+        function obj = removeDuplicates(obj, tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
+            % removeDuplicates removes events from catalog that are similar within tolerances
+            % catalog = catalog.removeDuplicates(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
+
+            obj.sort('Date');
+            orig_size = obj.Count;
+            if ~exist('tolLat','var') || isempty(tolLat), tolLat = 0.0001; end
+            if ~exist('tolLon','var') || isempty(tolLon), tolLon = 0.0001; end
+            if ~exist('tolDepth_m','var') || isempty(tolDepth_m), tolDepth_m = 0.5; end
+            if ~exist('tolTime_sec','var') || isempty(tolTime_sec), tolTime_sec = 0.01; end
+            if ~exist('tolMag','var') || isempty(tolMag), tolMag = 0.001; end
+            fprintf('Removing duplicates with the following tolerances:\n');
+            fprintf('  Time (s): %.2f\nLat: %f\nLon: %f\nDepth (m): %f\nMag:%.3f\n',...
+                tolTime_sec, tolLat, tolLon, tolDepth_m, tolMag);
+            
+            isSame = abs(diff(obj.Date)) <= seconds(tolTime_sec) & ...
+                abs(diff(obj.Latitude)) <= tolLat & ...
+                abs(diff(obj.Longitude)) <= tolLon & ...
+                abs(diff(obj.Depth)) <= (tolDepth_m / 1000) & ...
+                abs(diff(obj.Magnitude)) <= tolMag;
+            sameidx = [false; isSame];
+            obj = obj.subset(~sameidx);
+            fprintf('Removed %d duplicates\n', orig_size - obj.Count);
+        end
+            
     end
     
 end

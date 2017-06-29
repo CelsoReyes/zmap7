@@ -9,7 +9,7 @@ global name term cb1 cb2 cb3 minde maxde maxma2 minma2
 
 report_this_filefun(mfilename('fullpath'));
 zmap_message_center.set_info('Message','Plotting Seismicity Map(Cluster) ....');
-org2=original;
+storedcat=original;
 %set catalog to the original catalog used at declustering
 if isempty(newccat)
     a=original;
@@ -180,7 +180,7 @@ axes('position',rect)
 %
 
 
-t0b = a(1,3);
+t0b = min(a.Date);
 n = a.Count;
 teb = a(n,3) ;
 tdiff =round(teb - t0b)*365/par1;

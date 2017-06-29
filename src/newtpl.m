@@ -134,7 +134,7 @@ if newCumWindowFlag
 
     uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','global newcat a newt2;newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; zmap_message_center.update_catalog();timeplot()')
 
-    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','global newcat a newt2; newcat = newt2;a=newt2;zmap_message_center.update_catalog();mainmap_overview()')
+    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','global newcat a newt2; newcat = newt2;a=newt2;zmap_message_center.update_catalog();update(mainmap())')
 
 
 end

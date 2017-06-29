@@ -1,5 +1,5 @@
-function startzma()%
-    % startzma
+function load_zmapfile()%
+    % load_zmapfile
     %  load zmap file
     %  load volcanoes
     %
@@ -7,7 +7,7 @@ function startzma()%
     % it your startup.m file in the local directory must include several
     % searchpathes pointing to several supplementary .m files.
     %
-    % startzma file will ask you for an input file name. The data
+    % load_zmapfile file will ask you for an input file name. The data
     % format is at this point:
     %
     %  Columns 1 through 7
@@ -24,20 +24,13 @@ function startzma()%
     % and then saved as variable "a" in  <name>_cata.mat .
     %
     %   Matlab scriptfile written by Stefan Wiemer
-    %   last revision:    August 1994
     %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     report_this_filefun(mfilename('fullpath'));
     
     format short
-    %global hodi c1 c2 c3 sys fontsz bfig xsec_fig teb t0b ho a sax1 sax2
-    %global mess  cum freq_field histo hisvar strii1 strii2
-    %global torad Re scale cb1 cb2 cb3 lat1 lon1 lat2 lon2 leng pos
-    %global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button maepi
-    %global seismap dx dy ni xt3 bvalsum3 bmapc newa2 b1 b2 n1 n2 aw bw si ew mrt
     global a vo typele
-    
     
     % start program and load data:
     show_load_instructions();
@@ -86,7 +79,7 @@ function startzma()%
     %end
     
     % Sort the catalog in time just to make sure ...
-    sort(a,'Date');
+    a.sort('Date');
     
     % org = a;                         %  org is to remain unchanged
     
@@ -179,19 +172,6 @@ function show_loading_status()
     zmap_message_center.set_message('  ',messtext)
 end
 
-function out = load_volcanoes()
-    volcanoes_file = 'volcano.mat';
-    var_with_lons_lats = 'vo';
-    out = [];
-    try
-        XX = load(volcanoes_file, var_with_lons_lats);
-    catch ME
-        error_handler(ME, @do_nothing);
-    end
-    if isfield(XX,'var_with_lons_lats')
-        out = XX.vo;
-    end
-end
 
 function   a = loadCatalog(path, file)
     % 

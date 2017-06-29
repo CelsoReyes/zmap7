@@ -21,7 +21,7 @@ l = sqrt(((a.Longitude-los)*cos(pi/180*las)*111).^2 + ((a.Latitude-las)*111).^2)
 l2 = a.Magnitude >= 0.0 & a.Depth >= l;
 %l2 = a.Magnitude >=2.0 & a.Depth <= 30 & l < 100;
 a = a.subset(l2);
-mainmap_overview()
+update(mainmap())
 pl = plot(los,las,'rs')
 set(pl,'LineWidth',1.0,'MarkerSize',10,...
     'MarkerFaceColor','r','MarkerEdgeColor','y');

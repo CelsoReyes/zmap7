@@ -8,7 +8,7 @@ if exist('tmin1') == 0; tmin1 = 0.05; end
 if exist('tpre') == 0; tpre = 30; end
 if exist('Tobs') == 0; Tobs = 30; end
 if exist('prol') == 0; prol = 0.5; end
-if exist('org2') == 0; org2 = a; end
+if exist('storedcat') == 0; storedcat = a; end
 
 
 def = {num2str(dy),num2str(tmin1),num2str(tpre),num2str(Tobs), num2str(prol)};
@@ -36,9 +36,9 @@ l = ni2{5}; prol= str2double(l);
 newt0 = newt2;
 dt = 1;
 
-l = org2(:,3) <= maepi(1,3) + Tobs/365;
-a = org2(l,:);
-mainmap_overview(); newt2 = a;
+l = storedcat(:,3) <= maepi(1,3) + Tobs/365;
+a = storedcat(l,:);
+update(mainmap()); newt2 = a;
 timeplot
 
 d = [];

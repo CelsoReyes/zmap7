@@ -8,6 +8,6 @@ function calSave4(~, ~, a, faults, mainfault, coastline, main, infstri)
     [file1,path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Filename?');
     save([path1, file21], 'a', 'faults', 'mainfault', 'coastline', 'main', 'infstri');
     close(loda);
-    mainmap_overview();
+    update(mainmap());
     done
 end

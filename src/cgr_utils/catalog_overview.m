@@ -316,7 +316,7 @@ function a = catalog_overview(a)
         newt2 = ZmapCatalog;      %  newt2 is a subset to be changed during analysis
         
         % recompute depth and Magnitude display variables
-        %minmag = max(mycat(:,6)) -0.2;      % to startzma
+        %minmag = max(mycat(:,6)) -0.2;      % to load_zmapfile
         dep1 = 0.3* (max(mycat.Depth)-min(mycat.Depth)) + min(mycat.Depth);
         dep2 = 0.6* (max(mycat.Depth)-min(mycat.Depth)) + min(mycat.Depth);
         dep3 = max(mycat.Depth);
@@ -346,7 +346,9 @@ function a = catalog_overview(a)
         a = mycat;
         %assignin('base','a',mycat);
         zmap_message_center.update_catalog();
-        mainmap_overview();
+        update(mainmap())
+        %mainmap_overview();
+        
         h = findobj('Tag','catalog_overview_dlg');
         close(h);
         % changes in bin length go to global par1

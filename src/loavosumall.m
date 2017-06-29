@@ -57,5 +57,5 @@ elseif length(a(1,:))>=9       %if catalog includes hr and minutes
 end
 
 disp('Now plotting summary plot')
-org2 = a;
+storedcat = a;
 avosumplot

@@ -1,21 +1,21 @@
-titStr ='Combining two catalogs                          ';
-
+titStr ='Combining two catalogs';
+%TODO fix this, it's a mixture of old and new a
 report_this_filefun(mfilename('fullpath'));
 
 messtext= ...
     ['                                                '
-    ' To combine two catakogs please input the       '
-    ' second catalog filname. The data will be sorted'
-    ' in time                                        '];
+    ' To combine two catalogs please input the       '
+    ' second catalog filename. The data will be      '
+    ' sorted in time                                 '];
 
 zmap_message_center.set_message(titStr,messtext);
-figure_w_normalized_uicontrolunits(mess)
 
-[file1,path1] = uigetfile([ '*.mat'],' Second Earthquake Datafile');
+[file1,path1] = uigetfile('*.mat',' Second Earthquake Datafile');
 aa = a;
 
 if length(path1) < 2
-    zmap_message_center.clear_message();;done
+    zmap_message_center.clear_message();
+    done
     return
 else
     lopa = [path1 file1];
@@ -53,8 +53,6 @@ catch
     return
 end
 
-% Sort the catalog in time
-[s,is] = sort(a.Date);
-a = a(is(:,1),:) ;
+a.sort('Date');
 
-mainmap_overview()
+update(mainmap())

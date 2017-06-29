@@ -5,7 +5,7 @@
 % imported variables
 %
 % xt        beginning times of bins, calculated in \src\timeplot.m
-% par1      binlength in days, default defined in \src\startzma.m
+% par1      binlength in days, default defined in \src\load_zmapfile.m
 % iwl2      default set in \src\ini_zmap.m
 % cumu      number of earthquakes in each bin, calculated in \src\timeplot.m
 % cum       figure handle

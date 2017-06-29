@@ -137,9 +137,13 @@ if da == 'fo'
             % set up the focal mechanism data
             %prepfocal
 
-            close;done;inpu;setup
+            close;
+            done;
+            inpu;
+            setup
         else
-            close, setup
+            close 
+            setup
         end % if
     end   %if sa
 end   % if da == eq
@@ -173,7 +177,7 @@ if da == 'fa'
             befehl=['faults = ',tr,';'];
             eval(befehl);
             %    clear(tr)
-            close;done;mainmap_overview(); setup
+            close;done;update(mainmap()); setup
         else
             close, setup
         end % if
@@ -206,7 +210,7 @@ if da == 'mf'
             tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
             eval(befehl);
             %  clear(tr)
-            close;done;mainmap_overview(); setup
+            close;done;update(mainmap()); setup
         else
             close, setup
         end % if
@@ -241,7 +245,7 @@ if da == 'ma'
             befehl=['main = ',tr,';'];
             eval(befehl);
             %  clear(tr)
-            close;done; mainmap_overview();setup
+            close;done; update(mainmap());setup
         else
             close, setup
         end % if
@@ -275,7 +279,7 @@ if da == 'co'
             befehl=['coastline = ',tr,';'];
             eval(befehl);
             %clear(tr)
-            close;done; mainmap_overview();setup
+            close;done; update(mainmap());setup
         else
             close, setup
         end % if

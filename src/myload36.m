@@ -96,5 +96,5 @@ t4p(1) = 93.;
 tresh = 10;
 
 % call the map window
-mainmap_overview()
+update(mainmap())
 

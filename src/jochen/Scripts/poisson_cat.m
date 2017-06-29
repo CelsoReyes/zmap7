@@ -8,7 +8,7 @@
 % last update: 16.09.02
 
 % The script was used for a PEGASOS-Report on the poissonianess of the ECOS catalog.
-org2 = a;
+storedcat = a;
 mCatalog = a;
 
 % Catalog selection

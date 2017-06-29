@@ -27,61 +27,7 @@ classdef zmap_message_center < handle
                 figure(h)
             end
         end
-        %{
-        function set_message(obj, messageTitle, messageText, messageColor)
-            % set_message displays a message to the user
-            %
-            % usage: 
-            %    msgcenter.set_message(title, text)
-            %
-            % see also set_warning, set_error, set_info, clear_message
-            
-            titleh = findall(0,'tag','zmap_message_title');
-            % TODO see if control still exists
-            titleh.String = messageTitle;
-            texth = findall(0,'tag','zmap_message_text');
-            texth.String = messageText;
-            if exist('messageColor','var')
-                titleh.ForegroundColor = messageColor;
-            end
-        end
-        
-        function set_warning(obj, messageTitle, messageText)
-            % set_warning displays a message to the user in orange
-            obj.set_message(messageTitle, messageText, [.8 .2 .2]);
-        end
-        
-        function set_error(obj, messageTitle, messageText)
-            % set_error displays a message to the user in red
-            obj.set_message(messageTitle, messageText, [.8 0 0]);
-        end
-        
-        function set_info(obj, messageTitle, messageText)
-            % set_info displays a messaget ot the user in blue
-            obj.set_message(messageTitle, messageText, [0 0 0.8]);
-        end
-        
-        function clear_message(obj)
-            % clear_message will return the message center to neutral state
-            %
-            %  usage:
-            %      msgcenter.clear_message()
-            
-            titleh = findall(0,'tag','zmap_message_title');
-            % TODO see if control still exists
-            if ~isempty(titleh)
-                titleh.String = 'Messages';
-                titleh.FOregroundColor = 'k';
-            end
-            texth = findall(0,'tag','zmap_message_text');
-            % TODO see if control still exists
-            if ~isempty(texth)
-                texth.String = '';
-            end
-        end
-        %}
-        
-        
+              
     end
     methods(Static)
         function create()
@@ -312,7 +258,7 @@ function h = create_message_figure()
             'String','Show Map',...
             'Units','normalized',...
             'Position',[0.65 0.05 .3 .3],...
-            'Callback',@(s,e) mainmap_overview(),...
+            'Callback',@(s,e) update(mainmap()),...
             'Tag','zmap_curr_cat_mapbutton');
         
         %% selected catalog panel
@@ -344,6 +290,14 @@ function do_catalog_overview(s,~)
     update_current_catalog_pane(s);
 end
 
+function set_mapbutton_enable(val)
+    h = findobj(0, 'Tag','zmap_curr_cat_mapbutton');
+    h.Enable = val;
+end
+function set_editbutton_enable(val)
+    h = findobj(0, 'Tag','zmap_curr_cat_editbutton');
+    h.Enable = val;
+end
 function update_current_catalog_pane(~,~)
     global a
     
@@ -351,15 +305,28 @@ function update_current_catalog_pane(~,~)
     if ~isempty(a)
         if isa(a,'ZmapCatalog')
             mycat = a;
-        else
+        elseif isnumeric && size(a,2)>=9
+            % old style zmap array
             mycat=ZmapCatalog(a,'a');
+        else
+            % no map loaded, apparently
+            warning('current catalog doesn''t seem to contain the right kind of data');
+            h = findall(0,'tag','zmap_curr_cat_summary');
+            h.String = 'No catalog loaded';
+            set_mapbutton_enable('off');
+            set_editbutton_enable('off');
+            return
         end
         h = findall(0,'tag','zmap_curr_cat_summary');
         h.String = mycat.summary('simple');
+        set_mapbutton_enable('on');
+        set_editbutton_enable('on');
         return
     else
         h = findall(0,'tag','zmap_curr_cat_summary');
         h.String = 'No catalog loaded';
+        set_mapbutton_enable('off');
+        set_editbutton_enable('off');
     end
 end
 
@@ -378,4 +345,5 @@ function update_selected_catalog_pane(~,~)
         h.String = 'No subset selected';
     end
 end
+
 

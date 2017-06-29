@@ -9,5 +9,5 @@ minmag = str2double(l);
 clear maex maix maey maiy
 l = a.Magnitude > minmag ;
 maepi = a.subset(l);
-mainmap_overview()
+update(mainmap())
 

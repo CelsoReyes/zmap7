@@ -13,10 +13,10 @@
 report_this_filefun(mfilename('fullpath'));
 
 miret = [];
-n = length(newa(:,1));
+n = newa.Count;
 teb = newa(n,3) ;
 tdiff = round((teb - t0b)*365/par1);
-loc = zeros(3,length(gx)*length(gy));
+loc = zeros(3, length(gx)*length(gy));
 
 for ni = 50:10:150
     % loop over  all points

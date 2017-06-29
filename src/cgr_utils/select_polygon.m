@@ -5,14 +5,15 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
     % returns [x, y, lineobject]
     %
     % lineobject has tag 'mouse_points_overlay'
-    
+    axes(ax);
+    hold on
     mouse_points_overlay = plot(ax,0,0,'o-k',...
         'MarkerSize',5,'LineWidth',2.0,...
         'Tag','mouse_points_overlay',...
         'DisplayName','polygon outline');
+    hold off
     
     but=1;
-    axes(ax);
     x=[]; 
     y=[];
     

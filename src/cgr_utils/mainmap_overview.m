@@ -6,14 +6,11 @@ function mainmap_overview()
     %  Depending on the selection it resets newt2, newcat and a
     %
     % Tag: 'main_map_ax' contains the main map
-    
-    
+    % TODO: migrate plotting routines to MainInteractiveMap
+    error('This is deprecated');
     global a file1 t0b teb par1 ms6 ty1 ty2 ty3 fontsz name typele newt2 newcat
     global tim1 tim2 tim3 tim4 dep1 dep2 dep3
     global main mainfault faults coastline vo maepi well minmag
-    %ty1=evalin('base','ty1');
-    %y2=evalin('base','ty2');
-    %ty3=evalin('base','ty3');
     ms6=evalin('base','ms6');
     %typele = evalin('base','typele');
     if ~isempty(newcat) && isnumeric(newcat)
@@ -354,9 +351,9 @@ function mainmap_overview()
         case 'dep'
             
             % divide depths into 3 categories
-            %dep1 = 0.3*max(a_depths);
-            %dep2 = 0.6*max(a_depths);
-            %dep3 = max(a_depths);
+            dep1 = 0.3*max(mycat.Depth);
+            dep2 = 0.6*max(mycat.Depth);
+            dep3 = max(mycat.Depth);
             
             % shallowest
             dep_mask = mycat.Depth <= dep1;
@@ -457,7 +454,8 @@ function mainmap_overview()
     function create_overlay_menu()
         % Make the menu to change symbol size and type
         %
-        symbolmenu = uimenu('Label',' --   Overlay ');
+        divdr=uimenu('Label','|','Enable','off');
+        symbolmenu = uimenu('Label','Overlay');
         
         %TODO use add_symbol_menu(...) instead of creating all these menus
         SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
@@ -566,13 +564,13 @@ function mainmap_overview()
             'Callback','delete(findobj(gcf, ''type'',''axes''));mainmap_overview()');
         
         uimenu(submenu,'Label','Open new catalog ',...
-            'Callback','think;hold off;startzma');
+            'Callback','think;hold off;load_zmapfile()');
         
         uimenu(submenu,'Label','Keep this catalog in memory (use reset below to recall)',...
-            'Callback','org2 = a; ');
+            'Callback','storedcat = a; ');
         
         uimenu(submenu,'Label','Reset catalog to the one saved in memory previously',...
-            'Callback','think;clear plos1 mark1 ;global a newcat newt2; a = org2; newcat = org2; newt2= org2;mainmap_overview()');
+            'Callback','think;clear plos1 mark1 ;global a newcat newt2; a = storedcat; newcat = storedcat; newt2= storedcat;mainmap_overview()');
         
         uimenu(submenu,'Label','Select new parameters (reload last catalog) ',...
             'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu');
@@ -648,8 +646,8 @@ function mainmap_overview()
     end
     function create_random_data_simulations_menu(parent)
         submenu  =   uimenu(parent,'Label','Random data simulations');
-        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global org2 a newt2; org2 = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; mainmap_overview(); bdiff(a); revertcat');
-        uimenu(submenu,'label','Create synthetic catalog...', 'Callback','global org2 a newt2; org2 = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; mainmap_overview(); bdiff(a); revertcat');
+        uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global storedcat a newt2; storedcat = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; mainmap_overview(); bdiff(a); revertcat');
+        uimenu(submenu,'label','Create synthetic catalog...', 'Callback','global storedcat a newt2; storedcat = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; mainmap_overview(); bdiff(a); revertcat');
         
         uimenu(submenu,'Label','Evaluate significance of b- and a-values  ',...
             'Callback','brand');
@@ -802,21 +800,29 @@ function plot_large_quakes()
 end
 
 function choice = colormapdialog()
+    persistent colormap_choice
+    
+    if isempty(colormap_choice)
+        colormap_choice = 'jet';
+    end
+    color_maps = {'parula';'jet';'hsv';'hot';'cool';'spring';'summer';'autumn';'winter'};
+    % provide a simple dialog allowing the user to choose a colormap
     d = dialog('Position',[300 300 250 150], 'Name', 'Choose Colormap');
     txt = uicontrol('Parent',d, 'Style','Popup','Position',[20 80 210 40],...
-        'String',{'parula';'jet';'hsv';'hot';'cool';'spring';'summer';'autumn';'winter'},...
+        'String',color_maps,...
+        'Value',find(strcmp(color_maps,colormap_choice)),...
         'Callback', @popup_callback);
     btn = uicontrol('Parent',d,...
         'Position',[89 20 70 25],...
         'String','Close',...
         'Callback','delete(gcf)');
-    choice = 'parula';
     uiwait(d);
+    choice = colormap_choice;
     
     function popup_callback(popup, ~)
         idx = popup.Value;
         popup_items = popup.String;
-        choice = char(popup_items(idx,:));
+        colormap_choice = char(popup_items(idx,:));
     end
 end
     

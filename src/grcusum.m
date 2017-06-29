@@ -31,7 +31,7 @@ close(gpf)
 zmap_message_center.clear_message();;think
 %  make grid, calculate start- endtime etc.  ...
 %
-t0b = a(1,3)  ;
+t0b = min(a.Date)  ;
 n = a.Count;
 teb = a(n,3) ;
 tdiff = round((teb - t0b)*365/par1);

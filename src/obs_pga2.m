@@ -1,12 +1,12 @@
 report_this_filefun(mfilename('fullpath'));
 
 
-l = org2(:,3) > mati + tlen/365 &  org2(:,3) <  mati+ tlen/365 + tpre/365;
-b = org2(l,:);
+l = storedcat(:,3) > mati + tlen/365 &  storedcat(:,3) <  mati+ tlen/365 + tpre/365;
+b = storedcat(l,:);
 
 
-%l = org2(:,3) >93 &  org2(:,3) <  98;
-%b = org2(l,:);
+%l = storedcat(:,3) >93 &  storedcat(:,3) <  98;
+%b = storedcat(l,:);
 
 
 cd /home2/stefan/srisk/

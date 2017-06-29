@@ -180,7 +180,7 @@ ax = findobj('Tag','main_map_ax');
     % Plot all grid points
     plot(newgri(:,1),newgri(:,2),'+k')
 
-    if length(xvect) < 2  ||  length(yvect) < 2
+    if length(xvect) < 2 || length(yvect) < 2
         errordlg('Selection too small! (not a matrix)');
         return
     end
@@ -190,11 +190,11 @@ ax = findobj('Tag','main_map_ax');
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = newa(1,3)  ;
-    n = length(newa(:,1));
+    t0b = min(newa.Date)  ;
+    n = newa.Count;
     teb = newa(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
-    loc = zeros(3,length(gx)*length(gy));
+    loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
     %
@@ -211,7 +211,7 @@ ax = findobj('Tag','main_map_ax');
 
     % overall b-value
     [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-    bo1 = bv; no1 = length(newa(:,1));
+    bo1 = bv; no1 = newa.Count;
     %
     for i= 1:length(newgri(:,1))
         x = newgri(i,1);y = newgri(i,2);
@@ -233,7 +233,7 @@ ax = findobj('Tag','main_map_ax');
             lt =  b(:,3) >= t1 &  b(:,3) <t2 ;
             if  length(b(lt,1)) > 20;
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),inb1,inb2);
-                bo1 = bv; no1 = length(newa(:,1));
+                bo1 = bv; no1 = newa.Count;
             else
                 bv = NaN; pr = 50;
             end
@@ -334,45 +334,6 @@ end   %  if sel = ca
 
 % Load exist b-grid
 if sel == 'lo'
-    [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
-    if length(path1) > 1
-        think
-        load([path1 file1])
-        xsecx = newa(:,length(newa(1,:)))';
-        xsecy = newa(:,7);
-        xvect = gx; yvect = gy;
-        tmpgri=zeros((length(xvect)*length(yvect)),2);
-
-        normlap2=ones(length(tmpgri(:,1)),1)*nan;
-        normlap2(ll)= bvg(:,1);
-        re3=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,5);
-        r=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,6);
-        meg=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,2);
-        old1 =reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,7);
-        pro=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,8);
-        avm=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,9);
-        stanm=reshape(normlap2,length(yvect),length(xvect));
-
-        normlap2(ll)= bvg(:,10);
-        maxm=reshape(normlap2,length(yvect),length(xvect));
-
-        old = re3;
-
-        view_bv2
-    else
-        return
-    end
+    load_existing_bgrid_version_A
 end
 

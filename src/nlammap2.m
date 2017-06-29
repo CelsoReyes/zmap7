@@ -14,7 +14,7 @@ figure_w_normalized_uicontrolunits(xsec_fig)
 try
 
     if ~isempty(vo)
-        [vox, voy] = lc_xsec2(vo(:,2)',vo(:,1)',vo(:,1)*0,wi,leng,lat1,lon1,lat2,lon2);
+        [vox, voy] = lc_xsec2(vo.Latitude',vo.Longitude',vo.Longitude*0,wi,leng,lat1,lon1,lat2,lon2);
     end
 
     if ~isempty(maepi)
@@ -67,14 +67,14 @@ try
 catch
 end
 
-
+uimenu('Label','|','Enable','off'); % divider
 options = uimenu('Label','Select');
 uimenu(options,'Label','Select EQ inside Polygon ',...
     'Callback','h1 = gca;stri = ''Polygon''; selectp');
 uimenu(options,'Label','Refresh ',...
      'Callback','[xsecx xsecy,  inde] =mysect(tmp1,tmp2,a.Depth,wi,0,lat1,lon1,lat2,lon2);');
 
-options = uimenu('Label','Ztool');
+options = uimenu('Label','Ztools');
 
 
 uimenu(options,'Label', 'differential b ',...

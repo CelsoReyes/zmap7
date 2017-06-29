@@ -20,7 +20,7 @@ end
 load coastl.mat
 
 coastline = ncst;
-mainmap_overview()
+update(mainmap())
 clear  ncst coastl
 
 

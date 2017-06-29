@@ -39,7 +39,7 @@ end
 
 if exist('vo') >0
     if isempty(vo) ==  0
-        plovo = plot(vo(:,1),vo(:,2),'^r');
+        plovo = plot(vo.Longitude,vo.Latitude,'^r');
         set(plovo,'LineWidth',1.5,'MarkerSize',6,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
     end

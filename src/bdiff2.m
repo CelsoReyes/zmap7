@@ -152,7 +152,7 @@ if selt == 'ca'
         ho = 'noho';
         
         matdraw
-
+        uimenu('Label','|','Enable','off'); % divider
         options = uimenu('Label','ZTools');
         uimenu(options,'Label','Estimate recurrence time/probability', 'Callback','plorem');
         uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(newcat)');

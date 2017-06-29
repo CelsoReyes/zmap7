@@ -58,7 +58,7 @@ new(:,3) = decyear(new(:,[3:5 8 9]));
 
 % call the map window
 a = new;
-mainmap_overview()
+update(mainmap())
 
 
 % calculate the distance between the events in km
@@ -100,7 +100,7 @@ a = new;
 ty1 = 'o'; ty2 = 'o'; ty3 = 'o';
 ms6 = 3; co = 'k';
 
-mainmap_overview()
+update(mainmap())
 hold on
 plot(old(:,1),old(:,2),'xk')
 

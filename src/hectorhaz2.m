@@ -10,7 +10,7 @@ if exist('tmin1') == 0; tmin1 = 0.05; end
 if exist('tpre') == 0; tpre = 30; end
 if exist('Tobs') == 0; Tobs = 30; end
 if exist('prol') == 0; prol = 0.5; end
-if exist('org2') == 0; org2 = a; end
+if exist('storedcat') == 0; storedcat = a; end
 
 
 def = {num2str(nb),num2str(tmin1),num2str(tpre),num2str(Tobs), num2str(prol)};
@@ -34,12 +34,12 @@ l = ni2{5}; prol= str2double(l);
 
 mati = maepi(1,3);
 tlen = Tobs;
-l = org2(:,3) < mati + Tobs/365;
-a = org2(l,:);
+l = storedcat(:,3) < mati + Tobs/365;
+a = storedcat(l,:);
 da = []; anz = [];
 B = [];
 dt = 1;
-mainmap_overview()
+update(mainmap())
 
 cd /home2/stefan/ZMAP/aspar
 fid2 = fopen('sourczones.txt','w');

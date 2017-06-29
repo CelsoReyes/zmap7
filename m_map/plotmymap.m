@@ -181,7 +181,7 @@ if selt == 'ca'
 
     if exist('vo') >0
         if isempty(vo) ==  0
-            li = m_plot(vo(:,1),vo(:,2));
+            li = m_plot(vo.Longitude,vo.Latitude);
             set(li,'Linestyle','none','Marker','^','MarkerSize',6,'markeredgecolor','r','markerfacecolor','w')
         end
     end
@@ -227,7 +227,7 @@ if selt == 'sa'  % save to file only
     load coastl.mat
 
     coastline = ncst;
-    mainmap_overview()
+    update(mainmap())
     clear  ncst coastl
 
 end

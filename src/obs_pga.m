@@ -1,8 +1,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 
-l = org2(:,3) > mati+ 2.5/365 &  org2(:,3) <  mati+ 3/365 + 7/365;
-b = org2(l,:);
+l = storedcat(:,3) > mati+ 2.5/365 &  storedcat(:,3) <  mati+ 3/365 + 7/365;
+b = storedcat(l,:);
 
 cd /home2/stefan/srisk/
 

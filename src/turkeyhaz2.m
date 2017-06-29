@@ -7,9 +7,9 @@ tmin1 = 3;
 newt0 = newt2;
 tpre =  120;
 
-l = org2(:,3) <= maepi(1,3) +60/365;
-a = org2(l,:);
-mainmap_overview(); newt2 = a;
+l = storedcat(:,3) <= maepi(1,3) +60/365;
+a = storedcat(l,:);
+update(mainmap()); newt2 = a;
 timeplot
 
 d = [];

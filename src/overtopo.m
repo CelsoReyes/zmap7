@@ -116,7 +116,7 @@ switch(ac3)
     case 'eva2'
         in3 =get(hndl2,'Value');
         if in3 == 1
-            plovo = plot(vo(:,1),vo(:,2),'^r');
+            plovo = plot(vo.Longitude,vo.Latitude,'^r');
             set(plovo,'LineWidth',1.5,'MarkerSize',8,...
                 'MarkerFaceColor','w','MarkerEdgeColor','r');
         end

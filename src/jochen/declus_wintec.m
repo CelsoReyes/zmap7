@@ -20,7 +20,7 @@ mCluster = mCatalog(vSel,:);
 
 %%% Plot seismicity map, clusters and mainshocks
 a = mCatDecluster;
-mainmap_overview();
+update(mainmap());
 plot(mCluster(:,1),mCluster(:,2),'m+');
 
 %%% Calculate moment release

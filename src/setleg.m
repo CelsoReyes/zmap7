@@ -8,6 +8,7 @@ report_this_filefun(mfilename('fullpath'));
 
 
 
+% TOFIX these global variables are out of sync with the newer method of tracking divisions
 if typele =='tim'
     
     % creates a dialog box to input some parameters
@@ -48,5 +49,5 @@ if typele =='tim'
     end
 end
 clear answer temp defaultans prompt dlg_title
-mainmap_overview()
+update(mainmap())
     

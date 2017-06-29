@@ -82,5 +82,5 @@ l = a.Date == 0;
 a(l,:) = [];
 a = a;
 par1 = 14;
-mainmap_overview()
+update(mainmap())
 fclose(fid)

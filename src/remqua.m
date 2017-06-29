@@ -30,4 +30,4 @@ a = day;
 
 % to plot these events in a map, refresh the map windo or type
 
-mainmap_overview()  % which is just another *.m file in the src directory
+update(mainmap())  % which is just another *.m file in the src directory

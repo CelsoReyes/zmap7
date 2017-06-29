@@ -1,7 +1,7 @@
 % make a x-section plus topography...
 
 if exist('tmap') == 0
-    mainmap_overview()
+    update(mainmap())
     warndlg('Please create a topo map first')
 end
 

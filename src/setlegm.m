@@ -8,7 +8,7 @@ global dep1 dep2 dep3 a
 
 report_this_filefun(mfilename('fullpath'));
 
-
+% TOFIX these global variables are out of sync with the newer method of tracking divisions
 if typele =='mag'
 
     % creates a dialog box to input some parameters
@@ -65,7 +65,7 @@ if typele == 'dep'
     end
 end
 clear answer temp defaultans prompt dlg_title
-mainmap_overview()
+update(mainmap())
 
 
 

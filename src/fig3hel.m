@@ -1,9 +1,9 @@
 report_this_filefun(mfilename('fullpath'));
 
 % first layer 0 - 1.5 km
-l = org2(:,7) <=1.5 ;
-a = org2(l,:);
-mainmap_overview()
+l = storedcat(:,7) <=1.5 ;
+a = storedcat(l,:);
+update(mainmap())
 hetopo
 
 dx = 0.001;
@@ -58,8 +58,8 @@ set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[])
 
 % second layer 1.5 - 3.0 km
-l = org2(:,7) <=3.0 & org2(:,7) > 1.5 ;
-a = org2(l,:);
+l = storedcat(:,7) <=3.0 & storedcat(:,7) > 1.5 ;
+a = storedcat(l,:);
 
 sel = 'ca'
 bvalgrid
@@ -88,8 +88,8 @@ set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[])
 
 % third layer 3.0 - 6.0 km
-l = org2(:,7) <=6.0 & org2(:,7) > 3.0 ;
-a = org2(l,:);
+l = storedcat(:,7) <=6.0 & storedcat(:,7) > 3.0 ;
+a = storedcat(l,:);
 
 sel = 'ca'
 bvalgrid
@@ -118,8 +118,8 @@ set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[])
 
 % fourth layer 9.0 - 6.0 km
-l = org2(:,7) >6.0;
-a = org2(l,:);
+l = storedcat(:,7) >6.0;
+a = storedcat(l,:);
 
 sel = 'ca'
 bvalgrid
@@ -210,11 +210,11 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = newa(1,3)  ;
-    n = length(newa(:,1));
+    t0b = min(newa.Date)  ;
+    n = newa.Count;
     teb = newa(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
-    loc = zeros(3,length(gx)*length(gy));
+    loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
     %

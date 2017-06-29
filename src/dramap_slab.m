@@ -141,7 +141,7 @@ if isempty(coastline) == 0
 end
 
 if isempty(vo) == 0
-    pl = plot3m(vo(:,2),vo(:,1),vo(:,2)*0+2000,'^w');
+    pl = plot3m(vo.Latitude,vo.Longitude,vo.Latitude*0+2000,'^w');
     set(pl,'LineWidth',1,'MarkerSize',6,...
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 end

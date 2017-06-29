@@ -123,7 +123,7 @@ function timeplot(nosort)
         matdraw
         
         selt='in';
-        
+        uimenu('Label','|','Enable','off')
         options = uimenu('Label','ZTools');
         
         uimenu(options,'Label','Cuts in time, magnitude and depth', 'Callback','inpu2;timeplot()')
@@ -220,7 +220,7 @@ function timeplot(nosort)
              'Callback','nosort = ''of'';global newcat a newt2; newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot(nosort)',...
             'tooltip','Resets the catalog to the original selection')
         uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat',...
-            'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();mainmap_overview()',...
+            'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();update(mainmap())',...
             'tooltip','Plots this subset in the map window')
         
         ho2 = 'noho';

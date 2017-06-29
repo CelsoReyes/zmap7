@@ -56,4 +56,4 @@ end
 %plot3(Sier(:,1), Sier(:,2), Sier(:,7), 'k.', 'Markersize', 4);
 
 %a = Sier;
-%mainmap_overview();
+%update(mainmap());

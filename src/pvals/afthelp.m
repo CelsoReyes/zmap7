@@ -3,7 +3,7 @@
 %1. The routines are available from the "Cumulative Number" window
 %   or from "Seismicity Map Window" - for mapping of parameters.
 %   Thus, the file timeplot.m and
-%   mainmap_overview().m have options to call the relevant routines. Besides,
+%   update(mainmap()).m have options to call the relevant routines. Besides,
 %   the cross-sectional mapping is available from "Cross-section Window".
 %2. Before starting analysing the data, please execute the following
 %   command in "Matlab Command Window": set(0, 'recursionlimit', 510).

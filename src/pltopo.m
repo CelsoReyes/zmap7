@@ -9,7 +9,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 
@@ -59,7 +59,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 
@@ -99,7 +99,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 
@@ -145,7 +145,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 
@@ -174,7 +174,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 
@@ -219,7 +219,7 @@ switch(plt)
         try
             l  = get(h1,'XLim');
         catch
-            mainmap_overview()
+            update(mainmap())
             pltopo
         end
 

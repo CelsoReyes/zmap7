@@ -1,6 +1,6 @@
 report_this_filefun(mfilename('fullpath'));
 
-mainmap_overview()
+update(mainmap())
 [x, y] = ginput(1) ;   %use you cursor to fix the location of interest
 
 di =  sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;

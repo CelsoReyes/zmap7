@@ -69,5 +69,5 @@ a(l,:) = [];
 a.Date = decyear(a(:,[3:5 8 9]));
 par1 = 14;
 minmag = 8;
-mainmap_overview()
+update(mainmap())
 fclose(fid)

@@ -231,11 +231,11 @@ ax = findobj('Tag','main_map_ax');
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = newa(1,3)  ;
-    n = length(newa(:,1));
+    t0b = min(newa.Date)  ;
+    n = newa.Count;
     teb = newa(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
-    loc = zeros(3,length(gx)*length(gy));
+    loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
     %
@@ -251,7 +251,7 @@ ax = findobj('Tag','main_map_ax');
 
     % overall b-value
     [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-    bo1 = bv; no1 = length(newa(:,1));
+    bo1 = bv; no1 = newa.Count;
     %
     xsecy = dasp(1) * (newa(:,3)-min(newa(:,3)));
     for i= 1:length(newgri(:,1))

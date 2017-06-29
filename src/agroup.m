@@ -1,5 +1,5 @@
 % This script finds overlapping alarms in space-time
-% and groups them togetehr
+% and groups them together
 %
 % Stefan Wiemer    4/95
 

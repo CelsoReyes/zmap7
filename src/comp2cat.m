@@ -1,4 +1,4 @@
-% This file fins identical eventsi n two catalogs, and
+% This file finds identical events in two catalogs, and
 % compares the locations and magnitudes etc.
 
 % Stefan wiemer 02/99
@@ -66,7 +66,7 @@ switch(do)
                 try
                     web([ hodi '/help/comps2cat.htm']);
                 catch ME
-                    errordlg(' Error while opening, please open the browser first and try again or open the file ./help/comp2cat.hmt manually');
+                    errordlg(' Error while opening, please open the browser first and try again or open the file ./help/comp2cat.htm manually');
                 end
 
             case 'Cancel'

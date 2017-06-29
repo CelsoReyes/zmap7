@@ -269,7 +269,7 @@ switch(butto)
             'String','Change Catalog', 'Callback',' close; E = a; randomcat;');
 
         uicontrol('Units','normal','Position',[.4 .94 .2 .06],...
-            'String','Keep as Catalog', 'Callback','E = ran; ao=a; a = ran; mainmap_overview()');
+            'String','Keep as Catalog', 'Callback','E = ran; ao=a; a = ran; update(mainmap())');
 
 
 end  %switch (butto)

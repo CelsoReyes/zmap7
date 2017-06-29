@@ -1,4 +1,6 @@
 function overlay_()
+    % DELETE ME, function is now in MainInteractiveMap
+    %TODO Delete this
     % This subroutine "overlay.m" is called from varios
     % program (view_*.m, subcata.m). It plots an overlay
     % of coastlines, faults, earthquakes etc on a map.
@@ -6,6 +8,8 @@ function overlay_()
     %  Stefan Wiemer   11/94
     
     report_this_filefun(mfilename('fullpath'));
+    errordlg('Use update(mainmap()) instead');
+    return
     
     global main mainfault faults coastline vo maepi well minmag
     
@@ -38,7 +42,7 @@ function overlay_()
     
     
     if ~isempty(vo)
-        plovo = plot(ax,vo(:,1),vo(:,2),'^r');
+        plovo = plot(ax,vo.Longitude,vo.Latitude,'^r');
         set(plovo,'LineWidth', 1.5,'MarkerSize',6,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
         plovo.DisplayName = 'Volcanoes';

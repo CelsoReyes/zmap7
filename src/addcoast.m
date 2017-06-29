@@ -50,5 +50,5 @@ end
 whos
 %a = aa;
 %clear aa
-mainmap_overview()
+update(mainmap())
 

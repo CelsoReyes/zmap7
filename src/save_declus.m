@@ -1,5 +1,5 @@
 report_this_filefun(mfilename('fullpath'));
-org2 = a;
+storedcat = a;
 hodis = fullfile(hodi, 'external');
 do = ['cd  ' hodis ]; eval(do)
 
@@ -48,7 +48,7 @@ da=  str2double(dat(:,7:8));
 hr=  str2double(dat(:,9:10));
 mi=  str2double(dat(:,11:12));
 
-a = [lon lat a.Date mo da mag org2(:,7) hr mi clu];
+a = [lon lat a.Date mo da mag storedcat(:,7) hr mi clu];
 
 cluslength=[];
 n=0;
@@ -68,12 +68,12 @@ clus = a.subset(l);
 a(l,:) = [];
 
 % plot the results
-mainmap_overview()
+update(mainmap())
 hold on
 plot(clus(:,1),clus(:,2),'m+');
 
 st1 = [' The declustering found ' num2str(max(clu)) ' clusters of earthquakes, a total of '...
-    ' ' num2str(length(clus(:,1))) ' events (out of ' num2str(length(org2(:,1))) '). '...
+    ' ' num2str(length(clus(:,1))) ' events (out of ' num2str(length(storedcat(:,1))) '). '...
     ' The map window now display the declustered catalog containing ' num2str(a.Count) ' events . The individual clusters are displayed as magenta o in the map. ' ];
 
 msgbox(st1,'Declustering Information')

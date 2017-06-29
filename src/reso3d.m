@@ -166,11 +166,11 @@ if sel == 'ca'
     avm= NaN(length(gx),length(gy),length(gz));
     mcma  = NaN(length(gx),length(gy),length(gz));
 
-    t0b = a(1,3)  ;
+    t0b = min(a.Date)  ;
     n = a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
-    loc = zeros(3,length(gx)*length(gy));
+    loc = zeros(3, length(gx)*length(gy));
     Rconst = R;
     % loop over  all points
     %
