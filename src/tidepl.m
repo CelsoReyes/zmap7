@@ -2,7 +2,8 @@ function tidepl()
     %  tidpl  plots a time depth plot of the seismicity
     %  Stefan Wiemer 5/95
     %
-    global maepi dep1 dep2 dep3 newt2 ms6 ty1 ty2 ty3 a wex wey fontsz
+    %TODO delete this, replaced by TimeDepthPlotter.plot(catalog)
+    global maepi dep1 dep2 dep3 newt2 ms6 ty1 ty2 ty3 a wex wey
     report_this_filefun(mfilename('fullpath'));
     
     
@@ -112,12 +113,12 @@ function tidepl()
         set(pl,'LineWidth',2.0)
     end
     
-    xlabel(p5,'Time in Years','FontWeight','bold','FontSize',fontsz.m)
-    ylabel(p5,'Depth in [km]','FontWeight','bold','FontSize',fontsz.m)
+    xlabel(p5,'Time in Years','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel(p5,'Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
     set(p5,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
     
     grid
     hold off

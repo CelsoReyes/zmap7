@@ -7,7 +7,7 @@
 % Stefan Wiemer 03/96
 
 
-global mi mif1 mif2 term  hndl3 a newcat2 fontsz mi2
+global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmp cumu2
 report_this_filefun(mfilename('fullpath'));
 think

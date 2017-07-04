@@ -2,14 +2,15 @@
 % make dialog interface for the fixing of the legend
 %
 
-global tim1 tim2 tim3 tim4 t0b teb typele
+global tim1 tim2 tim3 tim4 t0b teb
 % TODO fix the way times are handled
 report_this_filefun(mfilename('fullpath'));
 
 
 
 % TOFIX these global variables are out of sync with the newer method of tracking divisions
-if typele =='tim'
+switch ZmapGlobal.Data.mainmap_plotby
+case 'tim'
     
     % creates a dialog box to input some parameters
     %
@@ -39,7 +40,7 @@ if typele =='tim'
                     
             end
         end
-        typele='tim'; %redundant?
+        zg=ZmapGlobal.Data;zg.mainmap_plotby='tim'; %redundant?
         tim1=answer{1};
         tim2=answer{2};
         tim3=answer{3};

@@ -65,7 +65,7 @@ hlpStr2= ...
     '                                                      '];
 
 global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess tiplo2 cum newt2 ho2 statime
+global cplot mess tiplo2 cum newt2 statime
 
 % Find out of figure already exists
 %
@@ -83,7 +83,7 @@ if newCumWindowFlag
         'NextPlot','replace', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ 100 100 winx-100 winy-20]);
+        'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
 
     matdraw
 
@@ -93,7 +93,7 @@ if newCumWindowFlag
     uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot;');
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2*365/par1;
-    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2 = ''hold''; ')
+    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2=true; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
     uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','dispma3')
 
@@ -140,7 +140,7 @@ if newCumWindowFlag
 end
 %end;    if figure exist
 
-if ho2 == 'hold'
+if ho2
     cumu = 0:1:(tdiff*365/par1)+2;
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
@@ -155,7 +155,7 @@ if ho2 == 'hold'
     tiplo2 = plot(newt2.Date,(1:newt2.Count),'b');
     set(tiplo2,'LineWidth',2.5)
 
-    ho2 = 'noho'
+    ho2=false
     return
 end
 
@@ -172,7 +172,7 @@ cla
 hold off
 watchon;
 
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -258,7 +258,7 @@ if par1>=1
             end   % for i
 
             te1 = text(big(:,3),f,stri4);
-            set(te1,'FontWeight','bold','Color','m','FontSize',fontsz.s)
+            set(te1,'FontWeight','bold','Color','m','FontSize',ZmapGlobal.Data.fontsz.s)
         end
 
         %option to plot the location of big events in the map
@@ -277,7 +277,7 @@ if exist('stri', 'var')
     % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);
     %end
     tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-    set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold')
+    set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold')
 else
     strib = [file1];
 end %% if stri
@@ -285,28 +285,28 @@ end %% if stri
 strib = [name];
 
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.l,...
+    'FontSize',ZmapGlobal.Data.fontsz.l,...
     'Color','k')
 
 grid
 if par1>=1
-    xlabel('Time in years ','FontWeight','bold','FontSize',fontsz.m)
+    xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 else
     statime=newt2(1,3)-par1/365;
-    xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',fontsz.m)
+    xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 end
-ylabel('Cumulative Number ','FontWeight','bold','FontSize',fontsz.m)
+ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ht = gca;
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]);end
+set(gca,'Color',color_bg);
 
 %clear strib stri4 s l f bigplo plog tea v
 % Make the figure visible
 %
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 figure_w_normalized_uicontrolunits(cum);
-if term == 1 ; whitebg(cum,[0 0 0 ]); end
+
 %sicum = signatur('ZMAP','',[0.65 0.98 .04]);
 %set(sicum,'Color','b')
 axes(ht);

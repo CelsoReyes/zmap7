@@ -12,7 +12,7 @@ if clusFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','on', ...
-        'Position',[ fipo(3)-600 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
     matdraw
     
@@ -26,7 +26,7 @@ else
 end
 
 matdraw
-uimenu('Label','|','Enable','off'); % divider
+add_menu_divider();
 
 op4 = uimenu('Label','ZTools','BackgroundColor','m') ;
 op6 =uimenu(op4,'Label','select clusters');
@@ -62,16 +62,16 @@ end
 overlay_
 
 axis image
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'FontWeight','bold','LineWidth',3.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 
 axis([s2 s1 s4 s3])
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Clusters in   '  name '; '  num2str(t0b,5) ' to ' num2str(teb,5) ];
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','k')
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 ga = gca;
 

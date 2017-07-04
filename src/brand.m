@@ -63,7 +63,7 @@ legend([pl1 pl2 pl3],'mean','95%','5%');
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 xlabel('Number of eqs')
 ylabel('Range of b-value')
 matdraw
@@ -84,7 +84,7 @@ legend([pl1 pl2 pl3],'mean','95%','5%');
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 xlabel('Number of eqs')
 ylabel('Range ofa-value')
 grid

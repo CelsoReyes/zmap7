@@ -70,7 +70,7 @@ newt3 = newt2;                   % resets newcat and newt2
 %
 clear l s is
 
-ho = 'hold'
+ho=true
 
 l = sqrt(((fa(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((fa(:,2)-ya0)*111).^2) ;
 [s,is] = sort(l);
@@ -100,7 +100,7 @@ set(gcf,'Pointer','arrow')
 clear l s is
 timeplot
 
-ho = 'hold'
+ho=true
 
 newt2 = newt3;
 timeplot

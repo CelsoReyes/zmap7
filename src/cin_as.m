@@ -54,7 +54,7 @@ hold on
 overlay
 
 tx2 = text(0.07,0.85 ,['AS(t); ti=' num2str(it*par1/365+t0b)  ] ,...
-    'Units','Norm','FontSize',fontsz.l,'Color','k','FontWeight','bold');
+    'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.l,'Color','k','FontWeight','bold');
 
 has = gca;
 

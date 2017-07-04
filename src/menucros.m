@@ -54,16 +54,16 @@ set(gca,'visible','off');
 set(gcf,'Units','points','pos',[200 200 220 350 ])
 
 te = text(0.1,0.90,'You can choose from the \newlinefollowing options:');
-set(te,'FontSize',fontsz.m,'FontWeight','bold')
+set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
 %te1 = text(0.15,0.92,'MAXZ ') ;
-%set(te1,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
+%set(te1,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
 
 %te2 = text(0.15,0.75,'Animation') ;
-%set(te2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
+%set(te2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
 
 te3 = text(0.15,0.38,'Timecuts') ;
-set(te3,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
+set(te3,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
 
 %LTA_button=uicontrol('BackGroundColor',[0.8 0.8 0.8]','Style','Pushbutton',...
 %'Position',[.10 .80 .45 .04 ],...

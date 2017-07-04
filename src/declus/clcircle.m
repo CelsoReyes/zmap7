@@ -7,8 +7,8 @@ function clcircle(var1)
     global mess clu rad ni newt2 newclcat equi backequi bgevent backbgeven
     global original clust h5 xa0 ya0 backcat
     global freq_field1 freq_field2 freq_field3 freq_field4
-    global button1 button2 button3 st1 go_button action_button
-    global winx winy sys fontsz minmag par1 ccum file1
+    global button1 button2 button3 st1 go_button
+   global  sys minmag par1 ccum file1
     global clclose_button
     ni=10;rad=100;xa0=[];ya0=[];       %default values
     % make the interface for input

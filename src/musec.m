@@ -89,7 +89,7 @@ axis('equal')
 axis([min(newa(:,po))*1.1 max(newa(:,po))*1.1 min(-newa(:,7))*1.1 max(-newa(:,7))*1.1]);
 
 
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',12,'Linewidth',1.2)
@@ -151,7 +151,7 @@ figure_w_normalized_uicontrolunits(mapl)
 uic2 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
     'Position',[.80 .92 .20 .06],'String','Refresh ',...
      'Callback','delete(uic2),delete(gca),delete(gca),delete(gca),nlammap');
-if term == 1 ; whitebg([0 0 0 ]);end
+
 
 % create the selected catalog
 %

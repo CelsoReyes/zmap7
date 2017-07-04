@@ -169,7 +169,7 @@ clf
 set(gca,'visible','off')
 
 te = text(0.01,0.95,'The cumulative number array \newlinehas been saved in \newlinefile cumugrid.mat \newlinePlease rename it \newlineto protect if from overwriting.');
-set(te,'FontSize',fontsz.m,'FontWeight','bold')
+set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
 uicontrol('Units','normal','Position',...
     [.7 .10 .2 .12],'String','Options ', 'Callback','zmapmenu')

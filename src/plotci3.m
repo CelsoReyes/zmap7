@@ -9,14 +9,14 @@ axes('position',[ 0.1 0.1 0.8 0.8])
 hold on
 axis([ min(gx) max(gx) min(gy) max(gy)])
 axis image
-xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.s)
-ylabel('Depth in [km]','FontWeight','bold','FontSize',fontsz.s)
+xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+ylabel('Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 
 if exist('maex', 'var')
     pl = plot(maex,-maey,'xw');
     set(pl,'MarkerSize',10,'LineWidth',2)
 end
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 h1 = gca;
@@ -43,6 +43,6 @@ for i = 1:st:m
 end
 
 
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 
 

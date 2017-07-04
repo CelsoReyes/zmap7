@@ -3,7 +3,7 @@ function welcome(titStr, messtext)
     
     report_this_filefun(mfilename('fullpath'));
     
-    global term sys wex wey welx wely fontsz action_button
+    global sys
     global txtHndlList txtHndl ttlHndl
     
     clear size
@@ -17,7 +17,6 @@ function welcome(titStr, messtext)
         messtext = '  ';
         titStr ='Messages';
         rng('shuffle');
-        % whitebg(mess,[c1 c2 c3]); %c1 c2 and c3 are globals
         
         set(gca,'visible','off','SortMethod','childorder');
         set(gcf,'NumberTitle','off',...
@@ -30,10 +29,8 @@ function welcome(titStr, messtext)
         set(te1,'FontSize',12,'Color','k','FontWeight','bold')
         
         te2 = text(0.11,0.90,'xxx') ;
-        set(te2,'FontSize',fontsz.s,'Color','k','FontWeight','bold' )
-        if term == 1
-            whitebg(mess,[1 1 1 ]);
-        end
+        set(te2,'FontSize',ZmapGlobal.Data.fontsz.s,'Color','k','FontWeight','bold' )
+
         
         % quit button
         quit_button=uicontrol('Style','Pushbutton',...
@@ -53,7 +50,7 @@ function welcome(titStr, messtext)
             'UserData',['frame1']);
         
         set(gcf,'Units','normalized');
-        txt1 = text(0.40, 0.80,'Action:','Units','Norm','FontSize',fontsz.l,...
+        txt1 = text(0.40, 0.80,'Action:','Units','Norm','FontSize',ZmapGlobal.Data.fontsz.l,...
             'Color','r','FontWeight','bold');
         
         % Display the message text

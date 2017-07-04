@@ -48,10 +48,10 @@ set(te,'LineWidth',1,'MarkerSize',6)
 te = semilogy(xt3(i2),bvalsum3(i2),'xk');
 set(te,'LineWidth',1,'MarkerSize',6)
 
-xlabel('Magnitude','FontWeight','normal','FontSize',fontsz.m)
-ylabel('Cumulative Number','FontWeight','normal','FontSize',fontsz.m)
-set(gca,'Color',[cb1 cb2 cb3])
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','normal',...
+xlabel('Magnitude','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulative Number','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+set(gca,'Color',color_bg)
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'FontWeight','normal','LineWidth',1.5,...
     'Box','on')
 
@@ -107,8 +107,8 @@ h2=axes('position',rect);
 set(h2,'visible','off');
 
 txt1=text(.60, .43,['b(wls, M  > ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2]);
-set(txt1,'FontWeight','normal','FontSize',fontsz.m)
+set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 %txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5]);
-set(txt1,'FontWeight','normal','FontSize',fontsz.m)
+set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
 

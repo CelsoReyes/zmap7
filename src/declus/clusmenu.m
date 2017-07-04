@@ -11,15 +11,15 @@ report_this_filefun(mfilename('fullpath'));
 global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3 histo hisvar strii1 strii2
 global plot1_h  plot2_h     %object handle for subplots
 global mess check1 cum freq_field bgevent equi cluscat par1
-global fontsz file1 clu h5 bg h1 ms6 ty
+global file1 clu h5 bg h1 ms6 ty
 global clust original cluslength         %bsubclus
 global backcat backequi backbgevent swarmtmp eqtime       %subclus
 global maintmp dubletttmp
 global ttcat tt1cat foresh aftersh mainsh                  %sinclus
 global equi_button newclcat iwl3 par5 newt2
-global button1 button2 button3 st1 go_button action_button
+global button1 button2 button3 st1 go_button
 global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
-global winx winy sys minmag welx wely wex wey
+global ZmapGlobal.Data.map_len sys minmag welx wely wex wey
 global inp1 inp2 inp3 inp4 inp5 inp6 inp7 inp8 inp9 inp10
 global tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10 clsel xt pyy ccum
 global fore_button after_button clop1 clop2 clop3 clop4 clop5

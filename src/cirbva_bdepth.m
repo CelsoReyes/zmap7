@@ -91,7 +91,7 @@ for dloop = 1:2
 
         lt =  newt2.Date >= t1 &  newt2.Date <t2 ;
         bdiff_bdepth(newt2(lt,:));
-        ho = 'hold';
+        ho=true;
         lt =  newt2.Date >= t3 &  newt2.Date <t4 ;
         bdiff_bdepth(newt2(lt,:));
 

@@ -2,7 +2,7 @@
 %  Stefan Wiemer 5/95
 %
 report_this_filefun(mfilename('fullpath'));
-
+ %TODO delete this, replaced by TimeDepthPlotter.plot(catalog)
 global a
 newcat = a;
 xt2  = [ ];
@@ -78,12 +78,12 @@ stem(newt2.Date,newt2.Magnitude);
 
 hold on
 
-xlabel('Time in Years ]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Time in Years ]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 grid
 hold off

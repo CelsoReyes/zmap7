@@ -17,7 +17,8 @@ cd(hodis);
 
 
 %unix([hodi fs 'external/slick data2 ']);
-if strcmp(cputype,'GLNX86') == 1
+switch computer
+case 'GLNX86'
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
         fid = fopen('data2','w');
@@ -40,7 +41,7 @@ if strcmp(cputype,'GLNX86') == 1
     end
 
     %unix([hodi fs 'external/slick_linux data2 ']);
-elseif strcmp(cputype,'MAC') == 1
+case 'MAC'
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
         fid = fopen('data2','w');
@@ -66,7 +67,7 @@ elseif strcmp(cputype,'MAC') == 1
 
 
 
-elseif strcmp(cputype,'MACI') == 1
+case 'MACI'
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
         fid = fopen('data2','w');
@@ -90,7 +91,7 @@ elseif strcmp(cputype,'MACI') == 1
 
 
 
-elseif strcmp(cputype,'MACI64') == 1
+case 'MACI64'
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
         fid = fopen('data2','w');
@@ -116,7 +117,7 @@ elseif strcmp(cputype,'MACI64') == 1
 
 
 
-else
+otherwise
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
         fid = fopen('data2','w');
@@ -207,7 +208,7 @@ set(gca,'Ylim',[0 180]);
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 legend([pl1,pl2,pl3],'S1','S2','S3')
 
@@ -239,7 +240,7 @@ set(gca,'Ylim',[0 90]);
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 ylabel(' Plunge ')
 
 
@@ -256,7 +257,7 @@ set(gca,'Xlim',[floor(min(newt2.Depth)) max(newt2.Depth) ]);
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
 xlabel('Depth  ')
 ylabel('Variance  ')

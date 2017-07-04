@@ -9,8 +9,8 @@
 %
 %%
 
-global cluscat mess bfig backcat fontsz ho xt3 bvalsum3  bval aw bw t1 t2 t3 t4;
-global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
+global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4;
+global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
 think

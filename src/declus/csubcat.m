@@ -3,8 +3,8 @@
 %  name map window
 %
 
-global newccat mapp decc par1 typele dep1 dep2 dep3 ms6 ty1 ty2 ty3 fontsz
-global name term cb1 cb2 cb3 minde maxde maxma2 minma2
+global newccat mapp decc par1 dep1 dep2 dep3 ms6 ty1 ty2 ty3
+global  name minde maxde maxma2 minma2
 
 
 report_this_filefun(mfilename('fullpath'));
@@ -39,9 +39,8 @@ if newMapWindowFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
-    if term  > 1;   whitebg([c1 c2 c3]); end
     stri1 = [file1];
 
 
@@ -79,9 +78,9 @@ if newMapWindowFlag
         'Callback','ty1=''*'';ty2=''*'';ty3=''*'';eval(cal6)');
     uimenu(TypeMenu,'Label','none','Callback','set(deplo1,''visible'',''off'');set(deplo2,''visible'',''off'');set(deplo3,''visible'',''off''); ');
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
-        'Callback','typele = ''tim'';setleg');
+        'Callback','zg=ZmapGlobal.Data;zg.mainmap_plotby=''tim'';setleg');
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...
-        'Callback','typele = ''dep'';csubcat');
+        'Callback','zg=ZmapGlobal.Data;zg.mainmap_plotby=''depth'';csubcat');
 
     cal6 = ...
         [ 'set(deplo1,''MarkerSize'',ms6,''LineStyle'',ty1,''visible'',''on'');',...
@@ -131,9 +130,9 @@ if newMapWindowFlag
     uimenu(op3,'Label','3 D view ',...
         'Callback','plot3d');
     uimenu(op3,'Label','Time Depth Plot ',...
-        'Callback',' tidepl');
+        'Callback',@(~,~)TimeDepthPlotter.plot(newt2));
     uimenu(op3,'Label','Time magnitude Plot ',...
-        'Callback',' timmag');
+        'Callback',@(~,~)TimeMagnitudePlotter.plot(newt2));
     uimenu(op3,'Label','Decluster the catalog',...
         'Callback','inpudenew;');
     uimenu(op3,'Label','get coordinates with Cursor',...
@@ -194,7 +193,8 @@ n = length(a);
 hold on
 
 %plot earthquakes according to depth
-if typele == 'dep'
+switch 
+case 'depth'
     deplo1 =plot(a(a.Depth<=dep1,1),a(a.Depth<=dep1,2),'.b');
     set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
     deplo2 =plot(a(a.Depth<=dep2&a.Depth>dep1,1),a(a.Depth<=dep2&a.Depth>dep1,2),'.g');
@@ -204,10 +204,9 @@ if typele == 'dep'
     ls1 = sprintf('Depth < %3.1f km',dep1);
     ls2 = sprintf('Depth < %3.1f km',dep2);
     ls3 = sprintf('Depth < %3.1f km',dep3);
-end
 
 %plot earthquakes according time
-if typele == 'tim'
+case  'tim'
     deplo1 =plot(a(a.Date<=tim2&a.Date>=tim1,1),a(a.Date<=tim2&a.Date>=tim1,2),'.b');
     set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
     deplo2 =plot(a(a.Date<=tim3&a.Date>tim2,1),a(a.Date<=tim3&a.Date>tim2,2),'.g');
@@ -224,21 +223,21 @@ end
 le =legend('+b',ls1,'og',ls2,'xr',ls3);
 set(le,'position',[ 0.65 0.02 0.32 0.12])
 axis([ s2 s1 s4 s3])
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','k')
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 %make depth legend
 %
 
 h1 = gca;
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+set(gca,'Color',color_bg);
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
-if term > 1;set(le,'Color','w'); end
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
+set(le,'Color','w');
 %axis('image')
 %  h1 is the graphic handle to the main figure in window 1
 %
@@ -250,7 +249,6 @@ overlay_
 % Make the figure visible
 %
 figure_w_normalized_uicontrolunits(mapp);
-if term == 1; whitebg; whitebg;end
 %si = signatur('ZMAP','',[0.02 0.04]);
 %set(si,'Color','k','FontWeight','bold')
 axes(h1);

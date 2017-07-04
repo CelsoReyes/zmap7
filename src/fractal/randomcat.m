@@ -8,7 +8,7 @@
 % Creates the input window
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[300 100 350 500 ],'Name','Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',[c1 c2 c3],'NextPlot','new');
+    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.70 .91 .22 .04],...
@@ -58,37 +58,37 @@ input11 = uicontrol('Style','edit','Position',[.74 .63 .18 .04],...
 
 
 tx1 = text('EraseMode','normal', 'Position',[0 1.01 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Number of random events: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Number of random events: ');
 
 tx2 = text('EraseMode','normal', 'Position',[0 .89 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Distribution: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Distribution: ');
 
 tx3 = text('EraseMode','normal', 'Position',[0 .53 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Longitude 1 [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Longitude 1 [deg]: ');
 
 tx4 = text('EraseMode','normal', 'Position',[0 .445 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Longitude 2 [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Longitude 2 [deg]: ');
 
 tx5 = text('EraseMode','normal', 'Position',[0 .36 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Latitude 1 [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Latitude 1 [deg]: ');
 
 tx6 = text('EraseMode','normal', 'Position',[0 .275 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Latitude 2 [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Latitude 2 [deg]: ');
 
 tx7 = text('EraseMode','normal', 'Position',[0 .19 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Minimum depth [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Minimum depth [km]: ');
 
 tx8 = text('EraseMode','normal', 'Position',[0 .105 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Maximum depth [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Maximum depth [km]: ');
 
 tx9 = text('EraseMode','normal', 'Position',[0 .81 0 ], 'Rotation',0, 'color', 'w',...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in longitude [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in longitude [km]: ');
 
 tx10 = text('EraseMode','normal', 'Position',[0 .74 0 ], 'Rotation',0,'color', 'w',...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in latitude [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in latitude [km]: ');
 
 tx11 = text('EraseMode','normal', 'Position',[0 .66 0 ], 'Rotation',0,'color', 'w',...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in depth [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Std. deviation in depth [km]: ');
 
 
 

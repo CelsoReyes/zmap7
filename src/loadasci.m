@@ -23,7 +23,7 @@ if newMapWindowFlag
 
     set(gca,'box','off',...
         'SortMethod','childorder','TickDir','out','FontWeight','bold',...
-        'visible','off','FontSize',fontsz.m,'Linewidth',1.2)
+        'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
     set(loasci,'Visible','on');
     figure_w_normalized_uicontrolunits(loasci)
@@ -50,10 +50,10 @@ if da == 'eq'
     t3 = text(0.03,0.68,' -116.86  34.35   1986        03     27    4.21    15.0   10   25 ') ;
 
     t4 = text(0.03,0.40,'Press <Load> when you are ready to load this file.');
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %Load earthquake data
     if sa =='on'
@@ -99,10 +99,10 @@ if da == 'fo'
     t3 = text(0.03,0.68,' -116.86  34.35   86        03     27    4.21    15.0   10   2  5     230      75                 137    ') ;
 
     t4 = text(0.03,0.40,'Press <Load> when you are ready to load this file.');
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %load focal mechanism data
     if sa =='on'
@@ -159,10 +159,10 @@ if da == 'fa'
     t3 = text(0.03,0.68,' -116.86  34.35 ') ;
     t4 = text(0.03,0.50,'If the file contains more than one fault #use   inf inf   to seperate the faults.#Press <Load> when you are ready to load this file.');
 
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %save faults data
     if sa =='on'
@@ -193,10 +193,10 @@ if da == 'mf'
     t3 = text(0.03,0.68,' -116.86  34.35 ') ;
     t4 = text(0.03,0.50,'If the file contains more than one continous segment #use  <inf inf> to seperate the segments.#Press <Load> when you are ready to load this file.');
 
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %save main faults data
     if sa =='on'
@@ -226,10 +226,10 @@ if da == 'ma'
     t3 = text(0.03,0.68,' -116.86  34.35 ') ;
     t4 = text(0.03,0.50,  'Press <Load> when you are ready to load this file.');
 
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %save faults data
     if sa =='on'
@@ -261,10 +261,10 @@ if da == 'co'
     t3 = text(0.03,0.68,' -116.86  34.35 ') ;
     t4 = text(0.03,0.50,'If the file contains more than one continuos line#use   <inf inf>   to seperate the segments.#Press <Load> when you are ready to load this file.');
 
-    set(te,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t2,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
-    set(t3,'FontSize',fontsz.m,'FontWeight','bold')
-    set(t4,'FontSize',fontsz.m,'FontWeight','bold')
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
+    set(t3,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
+    set(t4,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 
     %save coastline data
     if sa =='on'

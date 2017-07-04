@@ -19,9 +19,9 @@ report_this_filefun(mfilename('fullpath'));
 %         'backingstore','on',...
 %         'NextPlot','add', ...
 %         'Visible','off', ...
-%         'Position',[ fipo(3)-600 fipo(4)-600 winx+200 winy+80]);
+%         'Position',[ (fipo(3:4)-[600 600]), (ZmapGlobal.Data.map_len - [200 80])]);
 %
-%  if term  > 1;   whitebg([c1 c2 c3]); end
+
 %       stri1 = [file1];
 %
 % 
@@ -86,18 +86,18 @@ report_this_filefun(mfilename('fullpath'));
 % %le =legend('+b',ls1,'og',ls2,'xr',ls3);
 % %set(le,'position',[ 0.75 0.50 0.12 0.07],'FontSize',6)
 % axis([ s2 s1 s4 s3])
-% %xlabel('Longitude [deg]','FontWeight','normal','FontSize',fontsz.s)
-% %ylabel('Latitude [deg]','FontWeight','normal','FontSize',fontsz.s)
+% %xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+% %ylabel('Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
 % %strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];
 % %title2(strib,'FontWeight','normal',...
-%             % 'FontSize',fontsz.s,'Color','k')
+%             % 'FontSize',ZmapGlobal.Data.fontsz.s,'Color','k')
 %
 % h1 = gca;
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 %
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'normal','FontSize',fontsz.m,'Linewidth',1.2)
+%         'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
 % % next we plot a magnitude stem-plot
 % rect = [0.15, 0.10, 0.30, 0.20];
@@ -111,14 +111,14 @@ report_this_filefun(mfilename('fullpath'));
 % set(gca,'XLIM',[min(a.Date) max(a.Date)+0.01])
 % xl = get(gca,'Xlim');
 %
-% xlabel('Time in Years ]','FontWeight','normal','FontSize',fontsz.m)
-% ylabel('Magnitude','FontWeight','normal','FontSize',fontsz.m)
+% xlabel('Time in Years ]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+% ylabel('Magnitude','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 %
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'normal','FontSize',fontsz.m,'Linewidth',1.2)
+%         'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 % %grid
 % hold off
 %
@@ -131,15 +131,15 @@ report_this_filefun(mfilename('fullpath'));
 %
 % [n,x] =histogram(a.Date,(min(a.Date):par1:max(a.Date)));
 % fillbar(x,n,'k')
-% ylabel('# per day','FontWeight','normal','FontSize',fontsz.m)
+% ylabel('# per day','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 %
 % set(gca,'XTickLabels',[])
 % set(gca,'Xlim',xl)
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 %
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'normal','FontSize',fontsz.m,'Linewidth',1.2)
+%         'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 % %grid
 %
 % % now a time-depth plot
@@ -157,15 +157,15 @@ report_this_filefun(mfilename('fullpath'));
 %
 % hold on
 %
-% ylabel('Depth in [km] ','FontWeight','normal','FontSize',fontsz.m)
+% ylabel('Depth in [km] ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 % %grid
 % set(gca,'XTickLabels',[])
 % set(gca,'XLim',xl)
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'normal','FontSize',fontsz.m,'Linewidth',1.2)
+%         'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 
 
 % % next a cumulative number plot
@@ -177,16 +177,16 @@ report_this_filefun(mfilename('fullpath'));
 %
 % [n,x] =histogram(a.Date,(min(a.Date):par1:max(a.Date)));
 % fillbar(x,cumsum(n),'k')
-% ylabel('Cumulative # ','FontWeight','normal','FontSize',fontsz.m)
+% ylabel('Cumulative # ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 % set(gca,'Xlim',xl)
 %
 % set(gca,'XTickLabels',[])
 % set(gca,'Xlim',xl)
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 %
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'normal','FontSize',fontsz.m,'Linewidth',1.2)
+%         'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 % %grid
 
 
@@ -201,9 +201,9 @@ avob
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'normal','FontSize',fontsz.m,'Linewidth',1.2)
+    'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+ set(gca,'Color',color_bg);
 
 watchoff
 % set(gcf,'PaperPosition',[ 0.1 0.1 11 9])

@@ -15,7 +15,7 @@ function ci =  cusum(cat)
             'MenuBar','none',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
-        ho = 'noho';
+        ho=false;
         
         matdraw
     end   % if fig exist

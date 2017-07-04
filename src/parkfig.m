@@ -19,7 +19,7 @@ set(pl,'LineWidth',1.5,'MarkerSize',15,...
 set(gca,'Ylim',[-14 0])
 set(gca,'Xlim',[ 0 48 ])
 
-set(gca,'Color',[cb1 cb2 0.7])
+set(gca,'Color',[color_bg([1,2]) 0.7])
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',16,'Linewidth',1.2)
@@ -56,8 +56,8 @@ set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',16,'Linewidth',1.8)
 
-ylabel('Depth in  [km]','FontWeight','bold','FontSize',fontsz.m)
-xlabel('Distance along projection in [km]','FontWeight','bold','FontSize',fontsz.m)
+ylabel('Depth in  [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+xlabel('Distance along projection in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 vx =  (min(min(re3)):0.1:max(max(re3)));
 if fre == 1; vx =  (fix1:0.1:fix2); end

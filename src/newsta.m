@@ -125,7 +125,7 @@ try delete(te2); catch ME; error_handler(ME, ' '); end
 try delete(ax1); catch ME; error_handler(ME, ' '); end
 %clf
 hold on
-set(gca,'visible','off','FontSize',fontsz.m,...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,...
     'LineWidth',1.5,...
     'Box','on')
 
@@ -142,22 +142,22 @@ set(pyy(1),'XLim',xl);
 
 set(ax1,'LineWidth',2.0,'Color','b')
 set(ax2,'LineWidth',1.0,'Color','r')
-xlabel('Time in years ','FontWeight','normal','FontSize',fontsz.m)
-ylabel('Cumulative Number ','FontWeight','normal','FontSize',fontsz.m)
+xlabel('Time in years ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulative Number ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 
 if sta == 'ast'
     title(['AS(t) Function; wl = ' num2str(iwl2)],'FontWeight','bold',...
-        'FontSize',fontsz.m,'Color','k');
+        'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 end
 
 if sta == 'rub'
     title(['Rubberband Function; wl = ' num2str(iwl2)],'FontWeight','bold',...
-        'FontSize',fontsz.m,'Color','k');
+        'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 end
 
 if sta == 'lta'
     title(['LTA(t) Function; wl = ' num2str(iwl2)],'FontWeight','bold',...
-        'FontSize',fontsz.m,'Color','k');
+        'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 
     probut =   uicontrol('Units','normal',...
         'Position',[.35 .0 .3 .05],'String','Translate into probabilities',...
@@ -168,7 +168,7 @@ end
 if sta == 'bet'
 
     title(['LTA(t) Function; \beta-values; wl = ' num2str(iwl2)],'FontWeight','bold',...
-        'FontSize',fontsz.m,'Color','k');
+        'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 
     probut =  uicontrol('Units','normal',...
         'Position',[.35 .0 .3 .05],'String','Translate into probabilities',...
@@ -188,10 +188,10 @@ vy = ylim;
 xlim([vx(1), dateshift(teb,'end','Year') ]);
 ylim([vy(1),  vy(2)+0.05*vy(2)]);
 te2 = text(vx(1)+0.5, vy(2)*0.9,tet1);
-set(te2,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
+set(te2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','normal')
 
 grid
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 
 hold on;
 
@@ -238,7 +238,7 @@ if exist('stri', 'var')
     %v = axis;
 
     tea = text(vx(1)+0.5,vy(2)*0.9,stri) ;
-    set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
+    set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','normal')
 else
     strib = [file1];
 end %% if stri

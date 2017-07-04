@@ -25,16 +25,16 @@ plot(ba(:,1),ba(:,2),'rx')
 hold on
 plot(an(:,1),an(:,2),'bo')
 axis([ s2 s1 s4 s3])
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];
 
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','r')
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r')
 h1 = gca;
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 
 overlay_

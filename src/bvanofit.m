@@ -30,7 +30,7 @@ if newCompWindowFlag
         'NumberTitle','off', ...
         'backingstore','on',...
         'Visible','on', ...
-        'Position',[ fipo(3)-600 fipo(4)-600 winx winy+200]);
+        'Position',[ (fipo(3:4) - [600 600]) (ZmapGlobal.Data.map_len + [0 200]));
 
 
     uicontrol('Units','normal',...
@@ -152,22 +152,22 @@ semilogy(xt3,bvalsum3,'-.m')
 te1 = max([bvalsum  bvalsum2 bvalsum4 bvalsum3]);
 te1 = te1 - 0.2*te1;
 
-%xlabel('Magnitude','FontSize',fontsz.s,'FontWeight','bold')
-ylabel('Cum. rate/year','FontSize',fontsz.s,'FontWeight','bold')
-%title([file1 '   o: ' num2str(t1p(1),6) ' - ' num2str(t2p(1),6) '     x: ' num2str(t3p(1),6) ' - '  num2str(t4p(1),6) ],'FontSize',fontsz.s,'FontWeight','bold','Color','k')
+%xlabel('Magnitude','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+ylabel('Cum. rate/year','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+%title([file1 '   o: ' num2str(t1p(1),6) ' - ' num2str(t2p(1),6) '     x: ' num2str(t3p(1),6) ' - '  num2str(t4p(1),6) ],'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold','Color','k')
 str = [ '   o: ' num2str(t1p(1),6) ' - ' num2str(t2p(1),4) '     x: ' num2str(t3p(1),6) ' - '  num2str(t4p(1),6) ' ; Change in %: ' num2str(change,6) ];
 
-title(str,'FontSize',fontsz.s,'FontWeight','bold')
+title(str,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 %  find b-values;
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.0)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 p1 = gca;
 
 
 % Plot histogram
 %
-%set(gca,'Color',[cb1 cb2 cb3])
+%set(gca,'Color',color_bg)
 
 rect = [0.20,  0.40 0.70, 0.25];
 axes('position',rect)
@@ -185,20 +185,20 @@ disp([' Summation: ' num2str(sum(bval-bval2))])
 %bar(xt2,bval,'-.m')
 %bar(xt2,bval2,'b')
 v = axis;
-xlabel('Magnitude ','FontSize',fontsz.s,'FontWeight','bold')
-ylabel('rate/year','FontSize',fontsz.s,'FontWeight','bold')
+xlabel('Magnitude ','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+ylabel('rate/year','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.0)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 
 uic = uicontrol('Units','normal','Position',[.35 .15 .30 .07],'String','Magnitude Signature? ', 'Callback','delete(uic);synsig3');
 
 watchoff;watchoff(mess)
 
 % Plot he b-value comparison
-ho = 'noho';
+ho=false;
 bdiff(backg)
-ho = 'hold'
+ho=true
 bdiff(foreg)
 
 

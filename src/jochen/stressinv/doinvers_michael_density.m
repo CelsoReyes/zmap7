@@ -9,7 +9,7 @@
 % Save path to current folder
 sPath = pwd;
 
-global mi mif1 mif2 term  hndl3 a newcat2 fontsz mi2
+global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmpi cumu2
 report_this_filefun(mfilename('fullpath'));
 think
@@ -27,7 +27,6 @@ if size(newt2(1,:)) < 12
 end
 
 %get the computer type
-cputype = computer;
 
 hodis = fullfile(hodi, 'external');
 %2nd fault pplane assumed as equally likely...
@@ -57,17 +56,18 @@ helpdlg('The inversion is running right now ... it will take a few seconds ... p
 % Michael(1987): creates data2.slboot for bootslickw
 %[stat, res] = unix(['.' fs 'slfast data2 ']);
 
-if strcmp(cputype,'GLNX86') == 1
-                 [stat, res] = unix(['.' fs 'slfast_linux data2 ']);
-            elseif strcmp(cputype,'MAC') == 1
-                 [stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
-            elseif strcmp(cputype,'MACI') == 1
-                 [stat, res] = unix(['.' fs 'slfast_maci data2 ']);
-			elseif strcmp(cputype,'MACI64') == 1
-					[stat, res] = unix(['.' fs 'slfast_maci64 data2 ']);
-			else
-                 [stat, res] = dos(['.' fs 'slfast.exe data2 ']);
-            end
+switch computer
+    case 'GLNX86'
+        [stat, res] = unix(['.' fs 'slfast_linux data2 ']);
+    case 'MAC'
+        [stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
+        case 'MACI'
+        [stat, res] = unix(['.' fs 'slfast_maci data2 ']);
+    case 'MACI64'
+        [stat, res] = unix(['.' fs 'slfast_maci64 data2 ']);
+    otherwise
+        [stat, res] = dos(['.' fs 'slfast.exe data2 ']);
+end
 
 if strcmp(res,'') == 0
     helpdlg('It seems that the inversion did not run, because the command slick_* data2 could not be executed. Is the executebale slick in the directory extrenal? ','error inverting');
@@ -76,16 +76,17 @@ end
 % slick calculates the best solution for the stress tensor according to
 % Michael(1987): creates data2.oput
 
-if strcmp(cputype,'GLNX86') == 1
-    unix(['.' fs 'slick_linux data2 ']);
-elseif strcmp(cputype,'MAC') == 1
-    unix(['.' fs 'slick_macppc data2 ']);
-elseif strcmp(cputype,'MACI') == 1
-    unix(['.' fs 'slick_maci data2 ']);
-elseif strcmp(cputype,'MACI64') == 1
-	unix(['.' fs 'slick_maci64 data2 ']);
-else
-    dos(['.' fs 'slick.exe data2 ']);
+switch computer
+    case 'GLNX86'
+        unix(['.' fs 'slick_linux data2 ']);
+    case 'MAC'
+        unix(['.' fs 'slick_macppc data2 ']);
+    case 'MACI'
+        unix(['.' fs 'slick_maci data2 ']);
+    case 'MACI64'
+        unix(['.' fs 'slick_maci64 data2 ']);
+    otherwise
+        dos(['.' fs 'slick.exe data2 ']);
 end
 % Get data from data2.oput
 sFilename = ['data2.oput'];
@@ -96,16 +97,17 @@ load data2.slboot
 d0 = data2;
 
 % bootslickw resamples the data and uses slfast to calculate the best fitting stress tensor
-if strcmp(cputype,'GLNX86') == 1
-    unix(['.' fs 'bootslickw_linux data2 ' num2str(rep) ' 0.5' ]);
-elseif strcmp(cputype,'MAC') == 1
-    unix(['.' fs 'bootslickw_macppc data2 ' num2str(rep) ' 0.5' ]);
-elseif strcmp(cputype,'MACI') == 1
-    unix(['.' fs 'bootslickw_maci data2 ' num2str(rep) ' 0.5' ]);
-elseif strcmp(cputype,'MACI64') == 1
-	unix(['.' fs 'bootslickw_maci64 data2 ' num2str(rep) ' 0.5' ]);
-else
-    dos(['.' fs 'bootslickw.exe data2 ' num2str(rep) ' 0.5' ]);
+switch computer
+    case 'GLNX86'
+        unix(['.' fs 'bootslickw_linux data2 ' num2str(rep) ' 0.5' ]);
+    case 'MAC'
+        unix(['.' fs 'bootslickw_macppc data2 ' num2str(rep) ' 0.5' ]);
+    case 'MACI'
+        unix(['.' fs 'bootslickw_maci data2 ' num2str(rep) ' 0.5' ]);
+    case 'MACI64'
+        unix(['.' fs 'bootslickw_maci64 data2 ' num2str(rep) ' 0.5' ]);
+    otherwise
+        dos(['.' fs 'bootslickw.exe data2 ' num2str(rep) ' 0.5' ]);
 end
 
 disp(' Done !  ')

@@ -179,7 +179,7 @@ if selt == 'ca'
     li = m_plot(a.Longitude,a.Latitude);
     set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
 
-    if exist('vo') >0
+    if exist('vo', 'var')
         if isempty(vo) ==  0
             li = m_plot(vo.Longitude,vo.Latitude);
             set(li,'Linestyle','none','Marker','^','MarkerSize',6,'markeredgecolor','r','markerfacecolor','w')

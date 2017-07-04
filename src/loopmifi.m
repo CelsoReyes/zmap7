@@ -5,7 +5,7 @@
 %
 % Stefan Wiemer 07/95
 
-global mi mif1 mif2 term  hndl3 a newcat2 fontsz mi2
+global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmp cumu2
 report_this_filefun(mfilename('fullpath'));
 think
@@ -102,7 +102,7 @@ figure_w_normalized_uicontrolunits(mifmap)
 delete(gca);delete(gca); delete(gca);delete(gca);
 delete(gca);delete(gca); delete(gca);delete(gca);
 
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -145,11 +145,11 @@ if exist('maex', 'var')
 end
 
 %overlay
-title('Mean of the Misfit','FontWeight','bold','FontSize',fontsz.m)
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+title('Mean of the Misfit','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 
@@ -172,11 +172,11 @@ shading flat
 colormap(jet)
 hold on
 colorbar
-title(' Variance of the Misfit','FontWeight','bold','FontSize',fontsz.m)
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+title(' Variance of the Misfit','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 

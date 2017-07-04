@@ -125,13 +125,13 @@ mag1 = gca;
 set(mag1,'TickLength',[0 0])
 nu = [0.5 0 ; 3.0 0 ];
 plot(nu(:,1),nu(:,2),'-.g')
-xlabel('Mag and below','FontSize',fontsz.s,'FontWeight','bold')
-ylabel('z-value','FontSize',fontsz.s,'FontWeight','bold')
+xlabel('Mag and below','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+ylabel('z-value','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.2)
-set(gca,'Color',[cb1 cb2 cb3])
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.2)
+set(gca,'Color',color_bg)
 
 
 axis([mmin mmax min1 max1 ]);
@@ -148,7 +148,7 @@ axis([mmin mmax min1 max1 ]);
 axis([mmin mmax min1 max1 ]);
 h = gca;
 set(h,'YTick',[-10 10])
-xlabel('Mag and above','FontSize',fontsz.s,'FontWeight','bold')
+xlabel('Mag and above','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 nu = [0.5 0 ; 3.0 0 ];
 plot(nu(:,1),nu(:,2),'-.g')
 
@@ -156,8 +156,8 @@ uicontrol('Units','normal','Position',[.50 .95 .08 .03],'String','Save  ', 'Call
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.2)
-set(gca,'Color',[cb1 cb2 cb3])
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.2)
+set(gca,'Color',color_bg)
 
 watchoff
 watchoff(mess)

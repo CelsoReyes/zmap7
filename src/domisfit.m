@@ -6,7 +6,7 @@
 % Stefan Wiemer 07/95
 
 
-global mi mif1 mif2 term  hndl3 a newcat2 fontsz mi2
+global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmp cumu2
 report_this_filefun(mfilename('fullpath'));
 think
@@ -86,7 +86,7 @@ if newmif1WindowFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
     
     matdraw
@@ -157,7 +157,7 @@ if newmif2WindowFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-300 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [300 500]) ZmapGlobal.Data.map_len]);
 
     
     omp1= uimenu('Label','Tools');

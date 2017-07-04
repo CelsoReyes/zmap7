@@ -53,12 +53,12 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
 
     report_this_filefun(mfilename('fullpath'));
 
-    global torad Re scale cb1 cb2 cb3
+    global  torad Re scale
     global lat1 lon1 lat2 lon2 leng rbox box
     global sine_phi0 phi0 lambda0 phi1 phi2 pos sw eq1
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
-    global label1 label2 mapl hoc
+    global label1 label2 mapl
     global mindepth maxdepth xsec_fig h2
     global eq0p eq1
     todeg = 180 / pi;
@@ -237,10 +237,8 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     inde = idx_box;
 
     % plot the events on the map
-    %if hoc == 'noho'
     plot(eq(1,idx_box),eq(2,idx_box),'mo','MarkerSize',symb_size,...
         'LineWidth',symb_width,'era','back')
-    %end
 
 
     % Open another graphic window for the cross section
@@ -284,7 +282,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     plot(xdist,-depth(idx_box),symb_type,'MarkerSize',symb_size,...
         'LineWidth',symb_width,'era','back');
 
-    set(gca,'Color',[cb1 cb2 cb3])
+    set(gca,'Color',color_bg)
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
         'normal','FontSize',10,'Linewidth',1.,'Ticklength',[0.02 0.02])

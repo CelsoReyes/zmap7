@@ -89,7 +89,7 @@ catch ME
 end
 
 hold on;
-set(gca,'visible','off','FontSize',fontsz.m,...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,...
     'LineWidth',1.5,...
     'Box','on')
 
@@ -106,11 +106,11 @@ set(pyy(1),'XLim',xl);
 
 set(ax1,'LineWidth',2.0,'Color','b')
 set(ax2,'LineWidth',0.5,'Color','r')
-xlabel('Time in years ','FontWeight','normal','FontSize',fontsz.m)
-ylabel('Cumulative Number ','FontWeight','normal','FontSize',fontsz.m)
+xlabel('Time in years ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulative Number ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 
 title2(['LTA(t) Function; \beta-values; wl = ' num2str(iwl2)],'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','k');
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 
 
 i = find(BetaValues == min(BetaValues));
@@ -121,10 +121,10 @@ tet1 =sprintf('min. beta: %3.1f at %3.1f ',min(BetaValues),xt(i));
 v = axis;
 axis([ v(1) ceil(teb) v(3)  v(4)+0.05*v(4)]);
 te2 = text(v(1)+0.5, v(4)*0.9,tet1);
-set(te2,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
+set(te2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','normal')
 
 grid
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 
 hold on;
 
@@ -145,7 +145,7 @@ if ~isempty(big)
         stri2 = [stri2 ; s];
     end   % for i
     te1 = text(big(:,3),f,stri2);
-    set(te1,'FontWeight','normal','Color','m','FontSize',fontsz.m)
+    set(te1,'FontWeight','normal','Color','m','FontSize',ZmapGlobal.Data.fontsz.m)
 
 end %if big
 
@@ -166,7 +166,7 @@ uicontrol('Units','normal',...
 if exist('stri', 'var')
     v = axis;
     tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-    set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','normal')
+    set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','normal')
 else
     strib = [file1];
 end % if stri
@@ -175,7 +175,6 @@ strib = [name];
 
 set(cum,'Visible','on');
 figure_w_normalized_uicontrolunits(cum);
-if term == 1 ; whitebg(cum,[0 0 0 ]); end
 watchoff
 watchoff(cum)
 done

@@ -1,6 +1,6 @@
 function plotmi(var1)
 
-    global a mi fontsz term cb1 cb2 cb3 mif2 mif1
+    global  a mi mif2 mif1
 
     report_this_filefun(mfilename('fullpath'));
 
@@ -22,12 +22,12 @@ function plotmi(var1)
         pl = plot(newcat2(:,1),cumsum(mi2(:,2)),'b')
         set(pl,'LineWidth',2.0)
         grid
-        if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+         set(gca,'Color',color_bg);
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
-        xlabel('Longitude ','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',fontsz.m)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
+        xlabel('Longitude ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     elseif var1 == 3
         [s,is] = sort(newcat2(:,3));
@@ -36,13 +36,13 @@ function plotmi(var1)
         pl = plot(newcat2(:,3),cumsum(mi2(:,2)),'b')
         set(pl,'LineWidth',2.0)
         grid
-        if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+         set(gca,'Color',color_bg);
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
-        xlabel('Time in [Years]','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Time in [Years]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     elseif var1 == 2
         [s,is] = sort(newcat2(:,var1));
@@ -51,13 +51,13 @@ function plotmi(var1)
         pl = plot(newcat2(:,var1),cumsum(mi2(:,2)),'b')
         set(pl,'LineWidth',2.0)
         grid
-        if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+         set(gca,'Color',color_bg);
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
-        xlabel('Latitude ','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Latitude ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     elseif var1 == 4
         [s,is] = sort(newcat2(:,6));
@@ -66,13 +66,13 @@ function plotmi(var1)
         pl = plot(newcat2(:,6),cumsum(mi2(:,2)),'b')
         set(pl,'LineWidth',2.0)
         grid
-        if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+         set(gca,'Color',color_bg);
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
-        xlabel('Magnitude ','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Magnitude ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     elseif var1 == 5
         [s,is] = sort(newcat2(:,7));
@@ -81,13 +81,13 @@ function plotmi(var1)
         pl = plot(newcat2(:,7),cumsum(mi2(:,2)),'b')
         set(pl,'LineWidth',2.0)
         grid
-        if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+         set(gca,'Color',color_bg);
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
-        xlabel('Depth in [km] ','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Depth in [km] ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 
     end   % if var1

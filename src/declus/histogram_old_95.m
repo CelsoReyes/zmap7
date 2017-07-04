@@ -4,7 +4,7 @@ function histogram_old_95(vari1,stri2)
     %vari1 depends on input parameter
     %
     %Last modification 6/95
-    global mess  ccum freq_field histo hisvar strii1 strii2 fontsz
+    global mess  ccum freq_field histo hisvar strii1 strii2
     stri1='Histogram';
     strii1=stri1;
     strii2=stri2;
@@ -55,10 +55,10 @@ function histogram_old_95(vari1,stri2)
     hold on
 
     histogram(vari1,50);
-    title2([stri2,stri1],'FontWeight','bold','FontSize',fontsz.m,'Color','k')
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    title2([stri2,stri1],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,'Box','on')
 
-    xlabel(stri2,'FontWeight','bold','FontSize',fontsz.m)
-    ylabel('  Number ','FontWeight','bold','FontSize',fontsz.m)
+    xlabel(stri2,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('  Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     set(gcf,'Visible','on')

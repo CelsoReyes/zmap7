@@ -16,8 +16,8 @@
 % 28.07.04: Many changes: Now able to do computatios with all functions
 %           available in calc_Mc
 
-global cluscat mess  backcat fontsz ho xt3 bvalsum3  bval aw bw t1 t2 t3 t4; %bfig
-global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
+global cluscat mess  backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4; %bfig
+global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
 think
@@ -97,7 +97,7 @@ if selt == 'in'
         'EraseMode','normal',...
         'Position',[0.47 0.6 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.s ,...
+        'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String',' Bootstraps');
 
@@ -106,7 +106,7 @@ if selt == 'in'
         'EraseMode','normal',...
         'Position',[0.47 0.5 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.s ,...
+        'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Mc correction');
 
@@ -149,10 +149,10 @@ if selt == 'ca'
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
 
-        ho = 'noho';
+        ho=false;
         
         matdraw
-        uimenu('Label','|','Enable','off'); % divider
+        add_menu_divider();
         options = uimenu('Label','ZTools');
         uimenu(options,'Label','Estimate recurrence time/probability', 'Callback','plorem');
         uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(newcat)');
@@ -184,7 +184,7 @@ if selt == 'ca'
 
     backg_ab = log10(bvalsum3);
 
-    if ho(1:2) == 'ho'
+    if hold_state
         axes(cua)
         disp('hold on')
         hold on
@@ -211,9 +211,9 @@ if selt == 'ca'
     %%
 
 
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','normal',...
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
         'FontWeight','bold','LineWidth',1.0,'TickDir','out','Ticklength',[0.02 0.02],...
         'Box','on','Tag','cufi','color','w')
 
@@ -287,7 +287,7 @@ if selt == 'ca'
     set(te,'LineWidth',1.0,'MarkerSize',7)
 
     te = text(xt3(index_low)+0.2,bvalsum3(index_low)*1.5,'Mc');
-    set(te,'FontWeight','bold','FontSize',fontsz.s,'Color','b')
+    set(te,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s,'Color','b')
 
     %%
     % Set to correct method, maximum like or least squares
@@ -344,26 +344,26 @@ if selt == 'ca'
     a0 = aw-log10(years(max(b.Date)-min(b.Date)));
 
 
-    if ho(1:2) == 'ho'
+    if hold_state
         set(pl,'LineWidth',1.0,'MarkerSize',8,...
             'MarkerFaceColor','k','MarkerEdgeColor','k','Marker','^');
         %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
         %'MarkerFaceColor','c','MarkerEdgeColor','m','Marker','s');
         %   txt1=text(.16, .06,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s,'Color','r')
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
     else
         if bBst_button == 0
-            txt1=text(.16, .11,['b-value = ',tt1,' +/- ',tt2,',  a value = ',num2str(aw,3) ',  a value (annual) = ', num2str(a0,3)],'FontSize',fontsz.s);
+            txt1=text(.16, .11,['b-value = ',tt1,' +/- ',tt2,',  a value = ',num2str(aw,3) ',  a value (annual) = ', num2str(a0,3)],'FontSize',ZmapGlobal.Data.fontsz.s);
             set(txt1,'FontWeight','normal')
             set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
-            text(.16, .14,sol_type,'FontSize',fontsz.s );
-            text(.16, .08,['Magnitude of Completeness = ',tmc],'FontSize',fontsz.s);
+            text(.16, .14,sol_type,'FontSize',ZmapGlobal.Data.fontsz.s );
+            text(.16, .08,['Magnitude of Completeness = ',tmc],'FontSize',ZmapGlobal.Data.fontsz.s);
         else
-            txt1=text(.16, .11,['b-value = ',num2str(round(100*fBValue)/100),' +/- ',num2str(round(100*fStd_B)/100),',  a value = ',num2str(aw,3) ',  a value (annual) = ', num2str(a0,3)],'FontSize',fontsz.s);
+            txt1=text(.16, .11,['b-value = ',num2str(round(100*fBValue)/100),' +/- ',num2str(round(100*fStd_B)/100),',  a value = ',num2str(aw,3) ',  a value (annual) = ', num2str(a0,3)],'FontSize',ZmapGlobal.Data.fontsz.s);
             set(txt1,'FontWeight','normal')
             set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
-            text(.16, .14,sol_type,'FontSize',fontsz.s );
-            text(.16, .08,['Magnitude of Completeness = ',tmc ' +/- ', num2str(round(100*fStd_Mc)/100)],'FontSize',fontsz.s);
+            text(.16, .14,sol_type,'FontSize',ZmapGlobal.Data.fontsz.s );
+            text(.16, .08,['Magnitude of Completeness = ',tmc ' +/- ', num2str(round(100*fStd_Mc)/100)],'FontSize',ZmapGlobal.Data.fontsz.s);
         end
     end % ho
 
@@ -371,7 +371,7 @@ if selt == 'ca'
     zmap_message_center.set_info('  ','Done')
     done
 
-    if ho(1:2) == 'ho'
+    if hold_state
         % calculate the probability that the two distributins are differnt
         %l = newt2.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
@@ -380,7 +380,7 @@ if selt == 'ca'
         pr = exp(-da/2-2);
         disp(['Probability: ',  num2str(pr)]);
         txt1=text(.60, .85,['p=  ', num2str(pr,2)],'Units','normalized');
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s)
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         txt1=text(.60, .80,[ 'n1: ' num2str(n1) ', n2: '  num2str(n2) ', b1: ' num2str(b1)  ', b2: ' num2str(b2)]);
         set(txt1,'FontSize',8,'Units','normalized')
     end

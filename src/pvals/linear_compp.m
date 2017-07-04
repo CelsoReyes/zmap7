@@ -166,7 +166,7 @@ set(pl4,'LineWidth',2.0);
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 xlabel('Magnitude')
 ylabel('Ln(P)')
 %legend([pl1,pl2,pl3],'Fixed Mc Prediction','Variable Mc Prediction','Filled Mc Prediction',3);

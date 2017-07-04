@@ -39,13 +39,13 @@ try
 
     if exist('maix', 'var')
         hold on
-        pl = plot(maix,maiy,'*k')
+        pl = plot(maix,maiy,'*k');
         set(pl,'MarkerSize',12,'LineWidth',2)
     end
 
     if exist('maex', 'var')
         hold on
-        pl = plot(maex,-maey,'hk')
+        pl = plot(maex,-maey,'hk');
         set(pl,'LineWidth',1.5,'MarkerSize',12,...
             'MarkerFaceColor','y','MarkerEdgeColor','k')
 
@@ -67,7 +67,7 @@ try
 catch
 end
 
-uimenu('Label','|','Enable','off'); % divider
+add_menu_divider();
 options = uimenu('Label','Select');
 uimenu(options,'Label','Select EQ inside Polygon ',...
     'Callback','h1 = gca;stri = ''Polygon''; selectp');
@@ -124,8 +124,6 @@ figure_w_normalized_uicontrolunits(mapl)
 uic2 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
     'Position',[.8 .92 .20 .06],'String','Refresh ',...
      'Callback','delete(uic2),delete(gca),delete(gca),delete(gca),nlammap2');
-if term == 1 ; whitebg([0 0 0 ]);end
-
 % create the selected catalog
 %
 newa  = a.subset(inde);

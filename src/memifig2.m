@@ -34,7 +34,7 @@ figure_w_normalized_uicontrolunits(mifmap)
 delete(gca);delete(gca); delete(gca);delete(gca);
 delete(gca);delete(gca); delete(gca);delete(gca);
 
-set(gca,'visible','off','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -83,11 +83,11 @@ if exist('maex', 'var')
 end
 
 overlay
-title(['Mean of the Misfit (' num2str(sig) '/' num2str(az)  '/' num2str(plu) '/' num2str(phi) '/' num2str(R) ')'] ,'FontWeight','bold','FontSize',fontsz.s)
-xlabel('Longitude in [deg]','FontWeight','bold','FontSize',fontsz.s)
-ylabel('latitude in [deg]','FontWeight','bold','FontSize',fontsz.s)
+title(['Mean of the Misfit (' num2str(sig) '/' num2str(az)  '/' num2str(plu) '/' num2str(phi) '/' num2str(R) ')'] ,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+xlabel('Longitude in [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+ylabel('latitude in [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 

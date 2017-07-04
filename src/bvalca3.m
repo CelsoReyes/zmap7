@@ -1,5 +1,5 @@
 function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
-    global  backcat fontsz n les teb t0b no1 bo1 xt3 bvalsum3
+    global  backcat n les teb t0b no1 bo1 xt3 bvalsum3
 
     %report_this_filefun(mfilename('fullpath'));
 

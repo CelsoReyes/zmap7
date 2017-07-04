@@ -12,7 +12,7 @@ report_this_filefun(mfilename('fullpath'));
 
 global tmvar                      %for P-Value
 global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess tiplo2 cum newt2 ho2 statime
+global cplot mess tiplo2 cum newt2 statime
 
 
 zmap_message_center.set_info(' ','Plotting cumulative number plot...');
@@ -91,7 +91,7 @@ if newCumWindowFlag
         'NextPlot','replace', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ 100 100 winx-100 winy-20]);
+        'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
 
     matdraw
 
@@ -101,16 +101,16 @@ if newCumWindowFlag
     uimenu(options,'Label','Cut in Time (cursor) ', 'Callback','timesel(4);timeplot();');
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2*365/par1;
-    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2 = ''hold''; ')
+    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2=true; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
     uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','ic=0;dispma3')
     uimenu(options,'Label','Day/Night split ', 'Callback','daynigt')
 
     op3D  =   uimenu(options,'Label','Time Series ');
     uimenu(op3D,'Label','Time Depth Plot ',...
-        'Callback',' ;tidepl');
+        'Callback',@(~,~)TimeDepthPlotter.plot(newt2));
     uimenu(op3D,'Label','Time magnitude Plot ',...
-        'Callback',' timmag');
+        'Callback',@(~,~)TimeMagnitudePlotter.plot(newt2));
 
 
     op5C = uimenu(options,'Label','Histograms');
@@ -132,8 +132,8 @@ if newCumWindowFlag
     uimenu(op4B,'Label','LTA(t) function ',...
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''lta'';newsta')
     op4 = uimenu(options,'Label','Mc and b-value estimation');
-    uimenu(op4,'Label','automatic', 'Callback','ho = ''noho''; bdiff(newt2)')
-    uimenu(op4,'Label','automatic - overlay existing plot', 'Callback','ho = ''hold'';bdiff(newt2)')
+    uimenu(op4,'Label','automatic', 'Callback','ho=false; bdiff(newt2)')
+    uimenu(op4,'Label','automatic - overlay existing plot', 'Callback','ho=true;bdiff(newt2)')
     uimenu(op4,'Label','manual', 'Callback','bfitnew(newt2)')
     uimenu(op4,'Label','Estimate Mc', 'Callback','mcperc')
     uimenu(op4,'Label','b with depth', 'Callback','bwithde')
@@ -176,12 +176,12 @@ if newCumWindowFlag
 
     uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;update(mainmap())')
 
-    ho2 = 'noho';
+    ho2=false;
 
 end
 %end;    if figure exist
 
-if ho2 == 'hold'
+if ho2
     cumu = 0:1:(tdiff*365/par1)+2;
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
@@ -197,7 +197,7 @@ if ho2 == 'hold'
     set(tiplo2,'LineWidth',2.0)
 
 
-    ho2 = 'noho'
+    ho2=false
     return
 end
 
@@ -210,7 +210,7 @@ cla
 hold off
 watchon;
 
-set(gca,'visible','off','FontSize',fontsz.s,'FontWeight','normal',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
     'LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -331,7 +331,7 @@ if exist('stri', 'var')
     % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);
     %end
     %tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-    % set(tea,'FontSize',fontsz.s,'Color','k')
+    % set(tea,'FontSize',ZmapGlobal.Data.fontsz.s,'Color','k')
 else
     strib = [file1];
 end %% if stri
@@ -339,28 +339,26 @@ end %% if stri
 strib = [name];
 
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.m,...
+    'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','k')
 
 grid
 if par1>=1
-    xlabel('Time in years ','FontSize',fontsz.s)
+    xlabel('Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
 else
     statime=newt2(1,3)-par1/365;
-    xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',fontsz.m)
+    xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 end
-ylabel('Cumulative Number ','FontSize',fontsz.s)
+ylabel('Cumulative Number ','FontSize',ZmapGlobal.Data.fontsz.s)
 ht = gca;
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]);end
 
 %clear strib stri4 s l f bigplo plog tea v
 % Make the figure visible
 %
-set(gca,'visible','on','FontSize',fontsz.s,...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
     'LineWidth',1.0,'TickDir','out',...
     'Box','on')
 figure_w_normalized_uicontrolunits(cum);
-if term == 1 ; whitebg(cum,[0 0 0 ]); end
 %sicum = signatur('ZMAP','',[0.65 0.98 .04]);
 %set(sicum,'Color','b')
 axes(ht);

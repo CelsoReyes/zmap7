@@ -5,7 +5,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 figure
 
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -36,8 +36,8 @@ h = cool(64);h = [  h]; colormap(h)
 set(gca,'Color',[0.9 0.9 0.9])
 set(gca,'YTickLabels',[  10 8  6 4  2])
 
-%xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.m)
-%ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.m)
+%xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+%ylabel('depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 if exist('maex', 'var')
     pl = plot(maex,-maey,'*y');
@@ -45,7 +45,7 @@ if exist('maex', 'var')
 end
 overlay
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','normal','LineWidth',1.5,...
     'Box','on','TickDir','out')
 h1 = gca;hzma = gca;
@@ -54,7 +54,7 @@ h1 = gca;hzma = gca;
 %
 % h5 = colorbar('horiz');
 %set(h5,'Pos',[0.25 0.05 0.5 0.05],...
-%'FontWeight','bold','FontSize',fontsz.m)
+%'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 % Make the figure visible
 %

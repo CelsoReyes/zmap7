@@ -100,14 +100,14 @@ if ic == 0
 
     te1 = max([bvalsum  bvalsum2 bvalsum4 bvalsum3]);
     te1 = te1 - 0.2*te1;
-    title2([file1 '   o: ' num2str(t1p(1)) ' - ' num2str(t2p(1)) '     x: ' num2str(t3p(1)) ' - '  num2str(t4p(1)) ],'FontSize',fontsz.s,'FontWeight','bold')
+    title2([file1 '   o: ' num2str(t1p(1)) ' - ' num2str(t2p(1)) '     x: ' num2str(t3p(1)) ' - '  num2str(t4p(1)) ],'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 
-    xlabel('Magnitude','FontSize',fontsz.s,'FontWeight','bold')
-    ylabel('Cum. Number -normalized','FontSize',fontsz.s,'FontWeight','bold')
+    xlabel('Magnitude','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+    ylabel('Cum. Number -normalized','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
     %  find b-values;
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.s,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.2)
 
     figure_w_normalized_uicontrolunits(mess)
     clf;
@@ -118,15 +118,15 @@ if ic == 0
         'EraseMode','normal',...
         'Position',[.01 0.99 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Please select two magnitudes to be used');
     txt1 = text('Position',[.01 0.84 0 ],...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','in the calculation of straight line fit i.e.');
     txt2 = text('Position',[.01 0.66 0 ],...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','b value of BACKGROUND (o)');
 
@@ -174,16 +174,16 @@ if ic == 0
         'EraseMode','normal',...
         'Position',[.01 0.99 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Please select two magnitudes to be used');
     txt1 = text('Position',[.01 0.84 0 ],...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','in the calculation of straight line fit i.e.');
     txt2 = text(...
         'Position',[.01 0.66 0 ],...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','b value of FOREGROUND (x)');
 
@@ -228,10 +228,10 @@ if ic == 0
     set(gcf,'Name','Compare Results');
     orient tall
     te = text(0.,0.99, ['   Catalogue : ' file1]) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     stri = [ 'Background (o):   ' num2str(t1p(1)) '  to  ' num2str(t2p(1)) ];
     te = text(0.01,0.93, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     aa = p(2) *1000.0;
     aa = round(aa);
     aa = aa/1000.0;
@@ -240,10 +240,10 @@ if ic == 0
     bb = bb/1000.0;          % round to 0.001
     stri = [' Log N = ' num2str(aa)  num2str(bb) '*M ' ];
     te = text(0.01,0.88, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     stri = [ 'Foreground (x):   ' num2str(t3p(1)) '  to  ' num2str(t4p(1)) ];
     te = text(0.01,0.83, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     aa = pp(2) *1000.0;
     aa = round(aa);
     aa = aa/1000.0;
@@ -252,7 +252,7 @@ if ic == 0
     bb = bb/1000.0;          % round to 0.001
     stri = [' Log N = ' num2str(aa) num2str(bb) '*M '];
     te = text(0.01,0.78, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     disp([' Correlation coefficient for background = ', num2str(r) ]);                                disp([' Correlation coefficient for foreground = ', num2str(rr) ]);
     %  find simple shift
     % first find Mmin ( M for which the background relation
@@ -268,16 +268,16 @@ if ic == 0
     disp([' Mmin for background = ', num2str(min_backg) ]);                                disp([' Mmin for foreground = ', num2str(min_foreg) ]);
     stri = [ 'Minimum magnitude for Background = ' num2str(min_backg) ];
     te = text(0.01,0.73, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     stri = [ 'Minimum magnitude for Foreground = ' num2str(min_foreg) ];
     te = text(0.01,0.68, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     stri = ['Z score between both rates: '];
     te = text(0.01,0.63, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     stri = [' Z = ' num2str(zscore) ];
     te = text(0.01,0.58, stri) ;
-    set(te,'FontSize',fontsz.s);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
     dM = (round(dM *10.0))/10;     % round to 0.1
     backg_new = [backg(:,1:5), backg(:,6)+dM, backg(:,7)];    %  add shift
 
@@ -294,10 +294,10 @@ if ic == 0
     figure_w_normalized_uicontrolunits(mess)
     stri = [ 'Suggested single magnitude shift (d):']
     te = text(0.01,0.50, stri) ;
-    set(te,'FontSize',fontsz.s,'FontWeight','bold');
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold');
     stri = ['Mx = Mo + (', num2str(dM),')']
     te = text(0.01,0.45, stri) ;
-    set(te,'FontSize',fontsz.s,'FontWeight','bold');
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold');
     %  compute magnitude stretch and shift
     pause(0.1)
 
@@ -307,10 +307,10 @@ if ic == 0
     dM = (round(dM *100.0))/100.0;    % round to 0.01
     stri = [ 'Linear Mag correction (stretch, c, and shift, d):' ];
     te = text(0.01,0.38, stri) ;
-    set(te,'FontSize',fontsz.s,'FontWeight','bold');
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold');
     stri = [ 'Mx = ',num2str(mf), '* Mo + (', num2str(dM),')' ];
     te = text(0.01,0.33, stri) ;
-    set(te,'FontSize',fontsz.s,'FontWeight','bold');
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold');
     hold on
 end   % if ic
 
@@ -367,7 +367,7 @@ if ic == 0 | ic == 2
     if ic == 0 | ic == 1
         stri = [ 'Suggested rate change (Nx = fac*No): \newline fac = ' num2str(fac1) ];
         te = text(0.01,0.27, stri) ;
-        set(te,'FontSize',fontsz.s,'Visible','on');
+        set(te,'FontSize',ZmapGlobal.Data.fontsz.s,'Visible','on');
     end   % if ic
     magis = maxmag;
 
@@ -394,7 +394,7 @@ if ic == 0 | ic == 2
         'EraseMode','normal',...
         'Position',[.01 0.11 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.s ,...
+        'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'String','Shift (d)');
 
     txt2 = text(...
@@ -402,7 +402,7 @@ if ic == 0 | ic == 2
         'EraseMode','normal',...
         'Position',[.44 0.11 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.s ,...
+        'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'String','  Stretch factor (c)');
 
     txt3 = text(...
@@ -410,7 +410,7 @@ if ic == 0 | ic == 2
         'EraseMode','normal',...
         'Position',[.01 0.0 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.s ,...
+        'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'String','Rate factor');
 
     go_button=uicontrol('Style','Pushbutton',...
@@ -433,7 +433,7 @@ if ic == 0 | ic == 2
         'NumberTitle','off', ...
         'backingstore','on',...
         'Visible','on', ...
-        'Position',[ fipo(3)-600 fipo(4)-600 winx winy+200]);
+        'Position',[ (fipo(3:4) - [600 600]) (ZmapGlobal.Data.map_len + [0 200])]);
 
 
     uicontrol('Units','normal',...
@@ -483,14 +483,14 @@ if ic == 0 | ic == 2
     te1 = max([bvalsum  bvalsum2 bvalsum4 bvalsum3]);
     te1 = te1 - 0.2*te1;
 
-    ylabel('Cum. rate/year','FontSize',fontsz.s,'FontWeight','bold')
+    ylabel('Cum. rate/year','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
     str = [ '   o: ' num2str(t1p(1),6) ' - ' num2str(t2p(1),4) '     x: ' num2str(t3p(1),6) ' - '  num2str(t4p(1),6) ];
 
-    title(str,'FontSize',fontsz.s,'FontWeight','bold')
+    title(str,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
     %  find b-values;
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.s,'Linewidth',1.0)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
     p1 = gca;
 
 
@@ -510,11 +510,11 @@ if ic == 0 | ic == 2
     set(pl,'MarkerSize',ms3,'LineWidth',1.0)
     disp([' Summation: ' num2str(sum(bval-bval2))])
     v = axis;
-    xlabel('Magnitude ','FontSize',fontsz.s,'FontWeight','bold')
-    ylabel('rate/year','FontSize',fontsz.s,'FontWeight','bold')
+    xlabel('Magnitude ','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+    ylabel('rate/year','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.s,'Linewidth',1.0)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 
     uic = uicontrol('Units','normal','Position',[.35 .15 .30 .07],'String','Magnitude Signature? ', 'Callback','delete(uic);synsig');
 

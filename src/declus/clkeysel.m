@@ -5,7 +5,7 @@
 %selects clusters which equivalent events are inside selection area
 %
 %Last modification 6/95
-global x y n clu mess fontsz plot1_h plot2_h clust file1
+global x y n clu mess plot1_h plot2_h clust file1
 global  h5 xcordinate ycordinate equi newclcat clsel
 global equi_button backbgevent original backcat backequi
 global decc

@@ -79,7 +79,7 @@ if newzmapWindowFlag
         'NextPlot','new', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     matdraw
 
@@ -162,7 +162,7 @@ if newzmapWindowFlag
 
     tresh = max(max(r)); re4 = re3;
     nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
-    set(nilabel2,'string','MinRad (in km):','background',[c1 c2 c3]);
+    set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
     set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh))');
@@ -172,11 +172,7 @@ if newzmapWindowFlag
         'Position',[.95 .93 .05 .05],'String','Go ',...
          'Callback','think;pause(1);re4 =re3; vi_cucro')
     sha = 'in';
-    if term == 1
-        colormap(gray)
-    else
-        colormap(jet)
-    end
+    colormap(jet)
 
 
 end   % This is the end of the figure setup
@@ -236,11 +232,11 @@ if  in == 'per'
     colormap(coma)
 end
 
-title([name ' (' in '); ' num2str(t0b,6) ' to ' num2str(teb,6) ' - cut at ' num2str(it,6) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',fontsz.s,...
+title([name ' (' in '); ' num2str(t0b,6) ' to ' num2str(teb,6) ' - cut at ' num2str(it,6) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',ZmapGlobal.Data.fontsz.s,...
     'Color','k','FontWeight','normal')
 
-ylabel('Depth in  [km]','FontWeight','normal','FontSize',fontsz.s)
-xlabel('Distance along projection in [km]','FontWeight','normal','FontSize',fontsz.s)
+ylabel('Depth in  [km]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+xlabel('Distance along projection in [km]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
 
 % plot overlay
 %
@@ -261,7 +257,7 @@ if ~isempty(maix)
     set(pl,'MarkerSize',10,'LineWidth',2)
 end
 
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','normal',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
     'FontWeight','normal','LineWidth',1.,...
     'Box','on','TickDir','out','Ticklength',[0.015 0.015])
 h1 = gca;
@@ -272,7 +268,7 @@ hzma = gca;
 h5 = colorbar('vert');
 apo = get(h1,'Position');
 set(h5,'Pos',[apo(1)+apo(3)+0.14 apo(2) 0.01 apo(4)-0.05],...
-    'FontWeight','normal','FontSize',fontsz.s, 'Box','on','TickDir','out','Ticklength',[0.02 0.02])
+    'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s, 'Box','on','TickDir','out','Ticklength',[0.02 0.02])
 
 %Text Object Creation
 txt1 = text(...
@@ -281,7 +277,7 @@ txt1 = text(...
     'Units','normalized',...
     'Position',[ 1.40 0.4 0 ],...
     'Rotation',[ 90 ],...
-    'FontSize',fontsz.m,....
+    'FontSize',ZmapGlobal.Data.fontsz.m,....
     'FontWeight','normal',...
     'String','z-value:');
 if in =='per'

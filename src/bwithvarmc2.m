@@ -131,8 +131,8 @@ rect=[0 0 1 1];
 h2=axes('position',rect);
 set(h2,'visible','off');
 
-txt1=text(.16, .05,['b-value = ',tt1,' +/- ',tt2,',  a value = ',num2str(aw,3) ', Mc = ' num2str(magco) ],'FontSize',fontsz.s);
+txt1=text(.16, .05,['b-value = ',tt1,' +/- ',tt2,',  a value = ',num2str(aw,3) ', Mc = ' num2str(magco) ],'FontSize',ZmapGlobal.Data.fontsz.s);
 set(txt1,'FontWeight','normal')
 set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
-text(.16, .09,'Adjusted completeness solution','FontSize',fontsz.s );
+text(.16, .09,'Adjusted completeness solution','FontSize',ZmapGlobal.Data.fontsz.s );
 axes(ax1)

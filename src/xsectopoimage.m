@@ -49,7 +49,7 @@ ax = axis;
 
 sa = axis;
 
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.,...
     'Box','on','TickDir','out','color',[0.8 0.8 0.8],'Ticklength',[0.02 0.02])
 
@@ -58,7 +58,7 @@ xlabel('Distance [km]')
 
 h5 = colorbar('horz');
 set(h5,'Pos',[0.35 0.07 0.4 0.02],...
-    'FontWeight','normal','FontSize',fontsz.s,'TickDir','out')
+    'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'TickDir','out')
 
 
 hold on
@@ -96,7 +96,7 @@ end
 
 
 set(gca,'Ylim',[min(z/1000)*1.1 max(z/1000)*1.1],'Xlim',[ax(1) ax(2)])
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.,...
     'Box','on','TickDir','out','color',[  1 1  1])
 ylabel('Elevation [km]')

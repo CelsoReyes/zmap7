@@ -84,4 +84,3 @@ set(le,'position',[ 0.83 0.73 0.32 0.12],'FontSize',8,'color','w')
 axes(h1)
 watchoff;
 set(gcf,'color','w');
-%typele = 'dep';

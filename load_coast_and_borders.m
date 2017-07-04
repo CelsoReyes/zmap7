@@ -6,7 +6,7 @@ function out = load_coast_and_borders(filename, fileformat, varname)
     % out = load_coast_and_borders(filename, 'mat', varname) loads coastal info from
     %       a .mat file, stored in variable varname
     %
-    % returns out = [lon(:) , lat(:)]
+    % returns out = struct with fields Latitude, Longitude, Depth (km)
     out = [nan nan];
     if ~exist ('filename','var')
         if exist ('gadm28_adm0.shp','file')
@@ -14,9 +14,9 @@ function out = load_coast_and_borders(filename, fileformat, varname)
             fileformat = 'shp';
         else
             filename='coastlines.mat';
-            fileformat='mat';
+            %fileformat='mat';
             tmp=load(filename);
-            out = struct('Longitude',tmp.coastlon(:),'Latitude',tmp.coastlat(:));
+            out = struct('Longitude',tmp.coastlon(:),'Latitude',tmp.coastlat(:),'Depth',zeros(size(tmp.coastlat(:))));
             return
         end
     end
@@ -39,7 +39,7 @@ function out = load_coast_and_borders(filename, fileformat, varname)
     switch fileformat
         case 'shp'
             S=shaperead(filename,'UseGeoCoords',true); %country administrative level
-            out = struct('Longitude',[S.Lon],'Latitude',[S.Lat]');
+            out = struct('Longitude',[S.Lon],'Latitude',[S.Lat],'Depth',zeros(size([S.Lon])));
         case 'mat'
             if ~exist('varname','var')
                 whosinfo = whos('-FILE', filename);
@@ -54,7 +54,7 @@ function out = load_coast_and_borders(filename, fileformat, varname)
             if exist('varname','var')
                 tmp = load(filename, varname);
                 if isstruct(tmp.(varname)) || istable(tmp.(varname))
-                    out=struct('Longitude',[],'Latitude',[]);
+                    out=struct('Longitude',[],'Latitude',[],'Depth',[]);
                     fn = fieldnames(tmp.(varname));
                     for i = 1: numel(fn)
                         switch lower(fn{i})
@@ -62,7 +62,14 @@ function out = load_coast_and_borders(filename, fileformat, varname)
                                 out.Latitude = tmp.(varname).(fn{i});
                             case {'lon','longitude','coastlon'}
                                 out.Longitude = tmp.(varname).(fn{i});
+                            case {'depth', 'depthkm'}
+                                out.Depth = tmp.(varname).(fn{i});
+                            case {'elevation'}
+                                out.Depth = -tmp.(varname).(fn{i});
                         end
+                    end
+                    if ~isempty(out.Longitude) && isempty(out.Depth)
+                        out.Depth=zeros(size(out.Longitude));
                     end
                     if size(out,2) ~=2
                         errordlg('could not properly import lat/lon fields');

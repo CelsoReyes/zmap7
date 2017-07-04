@@ -9,8 +9,8 @@ global dep1 dep2 dep3 a
 report_this_filefun(mfilename('fullpath'));
 
 % TOFIX these global variables are out of sync with the newer method of tracking divisions
-if typele =='mag'
-
+switch ZmapGlobal.Data.mainmap_plotby
+case 'mag'
     % creates a dialog box to input some parameters
     %
     dep3 = max(a.Magnitude);
@@ -27,17 +27,15 @@ if typele =='mag'
             % convert from string
             answer{i} = str2double(answer{i});
         end
-        typele='mag'; %redundant?
+        zg=ZmapGlobal.Data;zg.mainmap_plotby='mag'; %redundant?
         dep1=answer{1};
         dep2=answer{2};
         dep3=answer{3};
     else
         welcome;
     end
-end
 
-
-if typele == 'dep'
+case 'depth'
     % creates a dialog box to input some parameters
     %
     % divide depths into 3 categories
@@ -56,7 +54,7 @@ if typele == 'dep'
             % convert from string
             answer{i} = str2double(answer{i});
         end
-        typele='dep'; %redundant?
+        zg=ZmapGlobal.Data;zg.mainmap_plotby='depth'; %redundant?
         dep1=answer{1};
         dep2=answer{2};
         dep3=answer{3};

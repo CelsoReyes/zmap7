@@ -3,7 +3,7 @@
 % factal dimension calculation.
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[200 400 550 150 ],'Name',' Time Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',[c1 c2 c3],'NextPlot','new');
+    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.75 .80 .20 .12],...
@@ -16,10 +16,10 @@ input2 = uicontrol('Style','edit','Position',[.75 .50 .20 .12],...
 
 
 tx1 = text('EraseMode','normal', 'Position',[0 .90 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Nb of events in the time window: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Nb of events in the time window: ');
 
 tx2 = text('EraseMode','normal', 'Position',[0 .55 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Incrementation step in nb of events: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Incrementation step in nb of events: ');
 
 
 

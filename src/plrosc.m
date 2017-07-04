@@ -4,7 +4,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 figure
 
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -42,8 +42,8 @@ end
 
 set(gca,'Color',[0.9 0.9 0.9])
 %brighten(0.5)
-%xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.m)
-%ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.m)
+%xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+%ylabel('depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 %set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[12 10 8 6 4 2])
 
@@ -62,7 +62,7 @@ h1 = gca;hzma = gca;
 %
 %h5 = colorbar('vertical');
 %set(h5,'Pos',[0.25 0.25 0.03 0.25],...
-%'FontWeight','bold','FontSize',fontsz.m,'TickDir','out')
+%'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'TickDir','out')
 
 
 % Make the figure visible

@@ -5,11 +5,7 @@ report_this_filefun(mfilename('fullpath'));
 %aa = a;
 [file1,path1] = uigetfile( '*.mat',' Earthquake Datafile'); %disabled window position
 loadpath = [path1 file1];
-try
-    set(action_button,'String','Loading Data...');
-catch
-    welcome
-end
+
 
 new_data = load(loadpath);
 

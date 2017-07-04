@@ -79,7 +79,7 @@ if newzmapWindowFlag
         'NextPlot','replace', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     matdraw
 
@@ -179,7 +179,7 @@ if newzmapWindowFlag
 
     tresh = max(max(r)); re4 = re3;
     nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
-    set(nilabel2,'string','MinRad (in km):','background',[c1 c2 c3]);
+    set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
     set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh))');
@@ -189,11 +189,7 @@ if newzmapWindowFlag
         'Position',[.95 .93 .05 .05],'String','Go ',...
          'Callback','think;pause(1);re4 =re3; view_max')
 
-    if term == 1
-        colormap(gray)
-    else
-        colormap(jet)
-    end
+    colormap(jet)
 
 end   % This is the end of the figure setup
 
@@ -208,7 +204,7 @@ reset(gca)
 cla
 hold off
 watchon;
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -266,18 +262,18 @@ if  in == 'per'
 end
 set(gca,'dataaspect',[1 cos(pi/180*mean(a.Latitude)) 1]);
 
-title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',fontsz.m,...
+title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','k','FontWeight','bold')
 
-xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 % plot overlay
 %
 overlay
 set(ploeq,'MarkerSize',ms6,'Marker',ty,'Color',co,'visible',vi);
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 h1 = gca;
@@ -287,7 +283,7 @@ hzma = gca;
 %
 h5 = colorbar('horiz');
 set(h5,'Pos',[0.25 0.09 0.5 0.05],'TickDir','out',...
-    'FontWeight','bold','FontSize',fontsz.m','YTick',[]')
+    'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m','YTick',[]')
 
 %  Text Object Creation
 txt1 = text(...
@@ -296,7 +292,7 @@ txt1 = text(...
     'Units','normalized',...
     'Position',[ -0.20 -0.2 0 ],...
     'Rotation',[ 0 ],...
-    'FontSize',fontsz.m,....
+    'FontSize',ZmapGlobal.Data.fontsz.m,....
     'FontWeight','bold',...
     'String','z-value:');
 if in =='per'
@@ -311,7 +307,7 @@ end
 
 % Make the figure visible
 %
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,'Color','k',...
     'Box','on','TickDir','out')
 figure_w_normalized_uicontrolunits(zmap);

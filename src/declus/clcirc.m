@@ -10,8 +10,8 @@ function clcirc(var1)
     % Last modification 6/95
     global mess clu rad ni newt2 newclcat equi backequi bgevent backbgevent
     global original clust h5 xa0 ya0 backcat
-    global button1 button2 button3 action_button
-    global winx winy sys fontsz minmag par1 ccum file1
+    global button1 button2 button3
+   global  sys minmag par1 ccum file1
     global freq_field3 freq_field4 freq_field2 freq_field1
 
     disp('Please use the LEFT mouse button or the cursor to #select the center point. The coordinates of the center will be displayed on the control window.Operates on the main subset of the catalogue. Events selected form the new subset to operate on (newclcat).');

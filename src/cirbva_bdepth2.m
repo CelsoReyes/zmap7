@@ -79,9 +79,9 @@ l = newt2.Depth >= bot_zonet & newt2.Depth <  bot_zoneb;
 bot_zone = newt2(l,:);
 
 
-ho = 'noho' ; dloop = 1;
+ho=false ; dloop = 1;
 bdiff_bdepth(top_zone);
-ho = 'hold'; dloop = 2;
+ho=true; dloop = 2;
 bdiff_bdepth(bot_zone);
 
 set(gcf,'Pointer','arrow')

@@ -2,19 +2,15 @@
 %    Customize setting if desired
 %
 report_this_filefun(mfilename('fullpath'));
-global winx winy
-global wex wey welx wely sel typele
+global ZmapGlobal.Data.map_len
+global wex wey welx wely sel
 global ty ty1 ty2 ty3
 global lth1 lth15 lth2
 global rad xa0 iwl3 ic ya0 iwl2 step ni
-global name strib stri2 ho ho2 infstri maix maiy
+global name strib stri2 infstri maix maiy
 global tresh wi rotationangle fre
 global co par1 minmag
-global fontsz
 global ca vi sha inb1 inb2 inda ra
-% Set the font size
-%
-fontsz = FontSizeTracker;
 
 % Marker sizes
 ms6 = 3;
@@ -26,7 +22,7 @@ ty ='.';
 ty1 ='+';
 ty2 = 'o';
 ty3 ='x';
-typele = 'dep';
+zg=ZmapGlobal.Data;zg.mainmap_plotby='depth';
 sel  = 'in';
 
 
@@ -37,12 +33,7 @@ lth15 = 1.5;
 lth2 = 2.0;
 
 % set up Window size
-%
-% Welcome window
-wex = 80;
-wey = fipo(4)-380;
-welx = 340;
-wely = 300;
+
 
 % Map window
 %
@@ -63,8 +54,8 @@ ni = 100;
 name = ' ';
 strib = ' ';
 stri2 = [];
-ho ='noho';
-ho2 = 'noho';
+ho=false;
+ho2=false;
 infstri = ' Please enter information about the | current dataset here';
 maix = [];
 maiy = [];
@@ -89,10 +80,7 @@ c3 = 0.9;
 
 % Set the Background color for the plot
 % default \: light yellow 1 1 0.6
-cb1 = 1.0;
-cb2 = 1.0;
-cb3 = 1.0;
-
+color_bg = [1.0 1.0 1.0];
 in = 'initf';
 
 % seislap default parameters

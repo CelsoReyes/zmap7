@@ -71,7 +71,7 @@ if newbmapcWindowFlag
         'MenuBar','none', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     matdraw
     lab1 = 'b-value';
@@ -98,13 +98,13 @@ if newbmapcWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_bv2')
     uimenu(options,'Label','Select EQ in Circle',...
-         'Callback',' h1 = gca;ho = ''noho'';cist;')
+         'Callback',' h1 = gca;ho=false;cist;')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ho = ''hold'';cicros;')
+         'Callback','h1 = gca;ho=true;cicros;')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
-         'Callback','ho = ''noho'';polyb;');
+         'Callback','ho=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...
-         'Callback','ho = ''hold'';polyb;');
+         'Callback','ho=true;polyb;');
 
     op1 = uimenu('Label',' Tools ');
     uimenu(op1,'Label','Fix color (z) scale', 'Callback','fixax2 ')
@@ -147,7 +147,7 @@ if newbmapcWindowFlag
 
     tresh = max(max(r)); re4 = re3;
     nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
-    set(nilabel2,'string','MinRad (in km):','background',[c1 c2 c3]);
+    set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
     set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh))');
@@ -170,7 +170,7 @@ reset(gca)
 cla
 hold off
 watchon;
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -214,22 +214,18 @@ if exist('pro', 'var')
     %clabel(cs)
 end % if exist pro
 shading flat
-if term == 1
-    colormap(gray)
-else
-    h = hsv(64);
+h = hsv(64);
     h = h(57:-1:1,:);
-    colormap(jet)
-end
+    colormap(jet);
 if fre == 1
     caxis([fix1 fix2])
 end
 
-title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',fontsz.m,...
+title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','r','FontWeight','bold')
 
-xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('depth in [km]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 % plot overlay
 %
@@ -253,7 +249,7 @@ end
 %overlay
 
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 h1 = gca;
@@ -263,7 +259,7 @@ hzma = gca;
 %
 h5 = colorbar('horiz');
 set(h5,'Pos',[0.25 0.05 0.5 0.05],...
-    'FontWeight','bold','FontSize',fontsz.m)
+    'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 %  Text Object Creation
 txt1 = text(...
@@ -272,13 +268,13 @@ txt1 = text(...
     'Units','normalized',...
     'Position',[ -0.20 -0.2 0 ],...
     'Rotation',[ 0 ],...
-    'FontSize',fontsz.m,....
+    'FontSize',ZmapGlobal.Data.fontsz.m,....
     'FontWeight','bold',...
     'String',lab1);
 
 % Make the figure visible
 %
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 figure_w_normalized_uicontrolunits(bmapc);

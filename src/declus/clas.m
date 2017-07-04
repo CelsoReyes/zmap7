@@ -5,8 +5,8 @@ function clas
     %
     %Last modification 6/95
 
-    global winx winy sys minmag clu te1 fontsz mess
-    global xt cumu ccum action_button cumu2 pyy
+   global  sys minmag clu te1 mess
+    global xt cumu ccum cumu2 pyy
     % start and end time
     %
     think
@@ -38,7 +38,7 @@ function clas
     figure_w_normalized_uicontrolunits(ccum);
     cla
     hold off
-    set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -47,8 +47,8 @@ function clas
     axes('position',rect)
     pyy = plotyy(xt,cumu2,'ob',xt,as,'r',[0 0 0 NaN NaN NaN NaN min(as)*3-1  max(as*3)+1  ]);
 
-    xlabel('Time in years ','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number ','FontWeight','bold','FontSize',fontsz.m)
+    xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     y2label('z-value')
     grid
 
@@ -60,7 +60,7 @@ function clas
     %  show option from here
     %
 
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
     set(ccum,'Visible','on');

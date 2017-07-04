@@ -26,7 +26,7 @@ if ic == 1 | ic == 0
 
     % creates a dialog box to input some parameters
     %
-    if term == 1 ; set(gcf,'Color',[1 1 1 ]);end
+    
     freq_field=uicontrol('Style','edit',...
         'Position',[.70 .60 .17 .10],...
         'Units','normalized','String',num2str(iwln),...
@@ -52,7 +52,7 @@ if ic == 1 | ic == 0
         'EraseMode','normal',...
         'Position',[0. 0.65 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold' ,...
         'String','Number of events in averaging window:');
 
@@ -61,7 +61,7 @@ if ic == 1 | ic == 0
         'EraseMode','normal',...
         'Position',[0. 0.40 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold' ,...
         'String','Step in number of events:');
 
@@ -139,7 +139,7 @@ elseif ic == 2
             'units','norm','pos',[.90 .30 .10 .06],'min',0.1,'max',100);
 
         newlabel = uicontrol('style','text','units','norm','pos',[.85 .30 .05 .06]);
-        set(newlabel,'string','iwl:','background',[c1 c2 c3]);
+        set(newlabel,'string','iwl:','background',color_fbg);
 
         uicontrol('Units','normal',...
             'Position',[.90 .25 .08 .06],'String','Go',...
@@ -175,14 +175,14 @@ elseif ic == 2
 
     axis([min(newcat.Date) max(newcat.Date+1) min(meand*1.1)  max(meand*0.9)])
     v = axis;
-    xlabel('Time (years)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
-    ylabel('Mean Depth (km)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
+    xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    ylabel('Mean Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     stri = ['Mean Depths and standard deviation ( ' file1 ')'];
     %title2(' Mean depths and mean depth error ',...
-    %        'FontWeight','bold','FontSize',fontsz.m,'Color','k')
+    %        'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
     grid
     hold off
@@ -198,16 +198,16 @@ elseif ic == 2
         set(pl,'LineWidth',2.0)
     end
     axis([ v(1) v(2) -max(newcat.Depth)  -min(newcat.Depth)])
-    %xlabel('Time (years)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
-    ylabel('Depth (km)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
+    %xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    ylabel('Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'XTicklabels',[])
     stro = [' ' file1 '; wl = ' num2str(iwln) ' events, inc = ' num2str(step)];
-    title2(stro,'FontWeight','bold','FontSize',fontsz.m,'Color','k')
+    title2(stro,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     grid
 
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
     set(gca,'visible','on');
     set(gcf,'visible','on');

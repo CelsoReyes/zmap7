@@ -4,8 +4,8 @@
 
 %  Stefan Wiemer 1/95
 %
-global mess bfig backcat fontsz ho xt3 bvalsum3  bval aw bw t1 t2 t3 t4;
-global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
+global mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4;
+global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
 think
@@ -100,7 +100,7 @@ if selt == 'ca'
             'MenuBar','none',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
-        ho = 'noho';
+        ho=false;
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...
@@ -158,7 +158,7 @@ if selt == 'ca'
 
     backg_ab = log10(bvalsum3);
 
-    if ho(1:2) == 'ho'
+    if hold_state
         axes(cua)
         disp('hold on')
         hold on
@@ -303,7 +303,7 @@ if selt == 'ca'
     set(te,'LineWidth',2.5,'MarkerSize',6)
 
     te = text(xt3(index_low+2),bvalsum3(index_low-3),'Mc');
-    set(te,'FontWeight','bold','FontSize',fontsz.m,'Color','k')
+    set(te,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 
     %%
@@ -381,7 +381,7 @@ if selt == 'ca'
     h2=axes('position',rect);
     set(h2,'visible','off');
 
-    if ho(1:2) == 'ho'
+    if hold_state
         set(pl,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','k','MarkerEdgeColor','k','Marker','^');
         txt1=text(.16, .10,['b-value = ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
@@ -390,7 +390,7 @@ if selt == 'ca'
         set(txt1,'FontWeight','normal','FontSize',12,'Color','r');
     else
         txt1=text(.16, .18,['b value = ',tt1,' +/- ',tt2,',  a value = ',num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.m);
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m);
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5]);
         txt1=text(.16, .22,sol_type );
         set(txt1,'FontWeight','bold','FontSize',14,'Color','k')
@@ -402,7 +402,7 @@ if selt == 'ca'
     zmap_message_center.set_info('  ','Done')
     done
 
-    if ho(1:2) == 'ho'
+    if hold_state
         % calculate the probability that the two distributions are different
         %l = newt2.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);

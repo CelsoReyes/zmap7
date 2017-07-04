@@ -100,11 +100,11 @@ close(wai)
 figure
 bar(x,n2,'k');
 grid
-xlabel('z-value ','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Number ','FontWeight','bold','FontSize',fontsz.m)
+xlabel('z-value ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 watchoff
 
-set(gca,'visible','on','FontSize',fontsz.l,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.l,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 

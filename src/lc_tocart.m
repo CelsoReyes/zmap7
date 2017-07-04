@@ -47,8 +47,6 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
         maxlong = maxlon; minlong = minlon;
 
         % set some constants
-        torad = pi / 180;
-        Re = 6378.137;
         scale = 1;
 
         % get the Standard Parallels and Center Coordinates

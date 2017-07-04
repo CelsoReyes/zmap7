@@ -1,7 +1,7 @@
 function selbpi(command,param1)
     % Symple print_tool to print to the
     % printer or to a ps file
-    global sys hodi pri c1 c2 c3 figp ptt
+    global  sys pri figp ptt
     report_this_filefun(mfilename('fullpath'));
     %
     %
@@ -189,7 +189,7 @@ function selbpi(command,param1)
             cuca = get(gca,'Color');
             set(gca,'Color','none');
             print
-            whitebg(gcf,[c1 c2 c3])
+            whitebg(gcf,'Color',color_fbg)
             set(gca,'Color',cuca)
         end
 
@@ -221,7 +221,7 @@ function selbpi(command,param1)
             set(gca,'Color',[1 1 1 ]);
             pri2 = [pri path1 file1];
             eval(pri2)
-            whitebg(gcf,[c1 c2 c3])
+            whitebg(gcf,'Color',color_fbg)
             set(gca,'Color',cuca)
         end
         close(ptt)

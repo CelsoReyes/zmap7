@@ -7,10 +7,10 @@ function cltiplot(var1)
     % be shown on the curve.
     %Last modification 8/95
 
-    global action_button freq_field freq_slider
+    global freq_field freq_slider
     global mess ccum bgevent equi file1 clust original cluslength newclcat
     global backcat ttcat cluscat
-    global winx winy sys minmag clu te1 fontsz
+   global  sys minmag clu te1
     global clu1 pyy stri tiplo2 statime
     global xt par1 cumu cumu2 newt2 iwl3
     global close_ti_button mtpl
@@ -36,7 +36,7 @@ function cltiplot(var1)
             'MenuBar','none', ...
             'NextPlot','new', ...
             'Visible','off', ...
-            'Position',[ 100 100 winx-60 winy-40]);
+            'Position',[ 100 100 (ZmapGlobal.Data.map_len - [60 40]) ]);
 
         set(ccum,'visible','off');
         matdraw
@@ -84,7 +84,7 @@ function cltiplot(var1)
     cla
     watchon;
 
-    set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -169,7 +169,7 @@ function cltiplot(var1)
         end   % for i
 
         te1 = text(big(:,3),f,stri4);
-        set(te1,'FontWeight','bold','Color','m','FontSize',fontsz.s)
+        set(te1,'FontWeight','bold','Color','m','FontSize',ZmapGlobal.Data.fontsz.s)
 
 
         %option to plot the location of big events in the map
@@ -188,27 +188,27 @@ function cltiplot(var1)
     if exist('stri', 'var')
         v = axis;
         tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-        set(tea,'FontSize',fontsz.m,'Color','k','FontWeight','bold')
+        set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold')
     end %% if stri
 
     strib = [file1];
 
     title2(strib,'FontWeight','bold',...
-        'FontSize',fontsz.l,...
+        'FontSize',ZmapGlobal.Data.fontsz.l,...
         'Color','r')
 
     grid
     if par5>=1
-        xlabel('Time in years ','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     else
         statime=newt2(1,3)-par5/365;
-        xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',fontsz.m)
+        xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
-    ylabel('Cumulative Number ','FontWeight','bold','FontSize',fontsz.m)
+    ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     % Make the figure visible
     %
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
     set(ccum,'Visible','on');

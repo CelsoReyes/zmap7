@@ -98,19 +98,11 @@ classdef zmap_message_center < handle
         
         function start_action(action_name)
             % start_action sets the text for the action button, and sets the spinner
-            buth = findall(0,'tag','zmap_action_button');
-            if ~isempty(buth)
-                buth.String = action_name;
-            end
             watchon();
         end
         
         function end_action()
             % end_action sets the text button to idling, and unsets the spinner
-            buth = findall(0,'tag','zmap_action_button');
-            if ~isempty(buth)
-                buth.String = 'Ready, now idling';
-            end
             watchoff();
         end
     end
@@ -120,12 +112,10 @@ function h = create_message_figure()
     % creates figure with following uicontrols
     %   TAG                 FUNCTION
     %   quit_button         leave matlab(?) 
-    %   zmap_action_button  display current ation that is happening
-    %   zmap_action_text    provide context for action button(?)
     %   welcome_text        welcome to zmap v whatever
     %   zmap_message_title  title of message
     %   zmap_message_text   text of message
-    global wex wey welx wely fontsz
+    
     hilighted_color = [0.8 0 0];
     
         h = figure();
@@ -152,7 +142,7 @@ function h = create_message_figure()
         set(te1,'FontSize',12,'Color','k','FontWeight','bold','Tag','welcome_text');
         
         te2 = text(0.05,0.94,'   ') ;
-        set(te2,'FontSize',fontsz.s,'Color','k','FontWeight','bold','Tag','te2');
+        set(te2,'FontSize',ZmapGlobal.Data.fontsz.s,'Color','k','FontWeight','bold','Tag','te2');
         
         % quit button
         uicontrol('Style','Pushbutton',...
@@ -161,20 +151,7 @@ function h = create_message_figure()
             'String','Quit', ...
             'Visible','on',...
             'Tag', 'quit_button');
-            
-        uicontrol(...
-            'BackgroundColor',[0.7 0.7 0.7 ],...
-            'ForegroundColor',[0 0 0 ],...
-            'Position',[20 485 200 45],...
-            'String','   ',...
-            'Style','pushbutton',...
-            'Visible','on',...
-            'Tag', 'zmap_action_button',...
-            'UserData','frame1');
-        
-        text(0.05,0.93 ,'Action:','FontSize',fontsz.l,...
-            'Color', hilighted_color,'FontWeight','bold','Tag','zmap_action_text');
-        
+    
         
         % Display the message text
         %

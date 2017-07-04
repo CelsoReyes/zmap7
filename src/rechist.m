@@ -29,7 +29,7 @@ if newhistWindowFlag
         'MenuBar','none', ...
         'NextPlot','new', ...
         'Visible','off', ...
-        'Position',[ 200 100 winx winy]);
+        'Position',[ 200 100 ZmapGlobal.Data.map_len]);
 
     matdraw
 
@@ -49,18 +49,18 @@ reall(l) = [];
 %[n,x] =histogram(reall,min(reall):10:5*min(reall));
 [n,x] =hist(log10(reall),30);
 bar(x,n,'k'); %change the obsolet fillbar to bar
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 set(gca,'XTicklabel',[]);
-ylabel('Number ','FontWeight','bold','FontSize',fontsz.m)
+ylabel('Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 rect = [0.15,  0.10, 0.70, 0.40];
 axes('position',rect)
 bar(x,cumsum(n),'k'); %change the obsolet fillbar to bar
-xlabel('Log10(Tr)','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Cumulat. Number ','FontWeight','bold','FontSize',fontsz.m)
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+xlabel('Log10(Tr)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulat. Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 

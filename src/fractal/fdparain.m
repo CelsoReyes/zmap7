@@ -3,7 +3,7 @@
 %
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[200 400 550 200 ],'Name','Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',[c1 c2 c3],'NextPlot','new');
+    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
 axis off;
 
 
@@ -23,19 +23,19 @@ input3 = uicontrol('Style','edit','Position',[.75 .43 .10 .09],...
 
 
 tx1 = text('EraseMode','normal', 'Position',[0 .85 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Distance Range within which D is computed: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Distance Range within which D is computed: ');
 
 tx2 = text('EraseMode','normal', 'Position',[0 .45 0], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Minimum value: ', 'color', 'w');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Minimum value: ', 'color', 'w');
 
 tx3 = text('EraseMode','normal', 'Position',[.52 .45 0], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Maximum value: ', 'color', 'w');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Maximum value: ', 'color', 'w');
 
 tx4 = text('EraseMode','normal', 'Position',[.41 .45 0], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','km', 'color', 'w');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','km', 'color', 'w');
 
 tx5 = text('EraseMode','normal', 'Position',[.94 .45 0], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','km', 'color', 'w');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','km', 'color', 'w');
 
 
 close_button=uicontrol('Style','Pushbutton',...

@@ -9,10 +9,10 @@ function clpickp(but)
     %
     %Last modification 6/95
 
-    global clu newclcat mess equi_button fontsz backcat clu1 mapp
+    global clu newclcat mess equi_button backcat clu1 mapp
     global n x y xcordinate ycordinate equi bgevent backequi par1
-    global typele dep1 dep2 dep3 ms6 ty1 ty2 ty3 fontsz name term
-    global cb1 cb2 cb3
+    global dep1 dep2 dep3 ms6 ty1 ty2 ty3 name
+    global color_bg
     global backbgevent original plot1_h plot2_h clust file1
     global ttcat tt1cat foresh aftersh mainsh clsel sys decc newccat
 
@@ -163,7 +163,7 @@ function clpickp(but)
         strib=[' Polygon of  ' file1];
         hold on
         title2(strib,'FontWeight','bold',...
-            'FontSize',fontsz.l,'Color','r')
+            'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         if decc~=0
             if isempty(ttcat)
                 eval(st1);

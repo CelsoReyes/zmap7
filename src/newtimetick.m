@@ -26,10 +26,10 @@ plot(T,(1:length(T)),'Linewidth',2);
 
 
 datetick('x',nuT);
-xlabel('Time  ','FontSize',fontsz.m)
-ylabel('Cumult. Number','FontSize',fontsz.m)
+xlabel('Time  ','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumult. Number','FontSize',ZmapGlobal.Data.fontsz.m)
 
-set(gca,'visible','on','FontSize',fontsz.s,...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
     'LineWidth',1.0,'TickDir','out','Ticklength',[0.02 0.02],...
     'Box','on')
 

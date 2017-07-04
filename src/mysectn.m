@@ -53,7 +53,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
 
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
 
-    global torad Re scale cb1 cb2 cb3 lat1 lon1 lat2 lon2 leng
+    global  torad Re scale lat1 lon1 lat2 lon2 leng
     global sine_phi0 phi0 lambda0 phi1 phi2 pos
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
@@ -275,7 +275,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     plot(xdist,-depth(idx_box),symb_type,'MarkerSize',symb_size,...
         'LineWidth',symb_width,'era','back');
 
-    set(gca,'Color',[cb1 cb2 cb3])
+    set(gca,'Color',color_bg)
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
         'bold','FontSize',12,'Linewidth',1.2)

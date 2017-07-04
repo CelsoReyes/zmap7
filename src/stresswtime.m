@@ -42,16 +42,17 @@ for i = 1:nStep:newt2.Count-ni
     % slick calculates the best solution for the stress tensor according to
     % Michael(1987): creates data2.oput
     %unix([hodi fs 'external/slick data2 ']);
-    if strcmp(cputype,'GLNX86') == 1
-        unix(['"' hodi fs 'external/slick_linux" data2 ']);
-    elseif strcmp(cputype,'MAC') == 1
-        unix(['"' hodi fs 'external/slick_macppc" data2 ']);
-    elseif strcmp(cputype,'MACI') == 1
-        unix(['"' hodi fs 'external/slick_maci" data2 ']);
-    elseif strcmp(cputype,'MACI64') == 1
-        unix(['"' hodi fs 'external/slick_maci" data2 ']);
-    else
-        dos(['"' hodi fs 'external\slick.exe" data2 ']);
+    switch(computer)
+        case 'GLNX86'
+            unix(['"' hodi fs 'external/slick_linux" data2 ']);
+        case 'MAC'
+            unix(['"' hodi fs 'external/slick_macppc" data2 ']);
+        case 'MACI'
+            unix(['"' hodi fs 'external/slick_maci" data2 ']);
+        case 'MACI64'
+            unix(['"' hodi fs 'external/slick_maci" data2 ']);
+        otherwise
+            dos(['"' hodi fs 'external\slick.exe" data2 ']);
     end
     % Get data from data2.oput
     sFilename = ['data2.oput'];
@@ -61,16 +62,17 @@ for i = 1:nStep:newt2.Count-ni
     delete data2.slboot
     % Calculate the stress tensor
     %unix([hodi fs 'external/slfast data2 ']);
-    if strcmp(cputype,'GLNX86') == 1
-        unix(['"' hodi fs 'external/slfast_linux" data2 ']);
-    elseif strcmp(cputype,'MAC') == 1
-        unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
-    elseif strcmp(cputype,'MACI') == 1
-        unix(['"' hodi fs 'external/slfast_maci" data2 ']);
-    elseif strcmp(cputype,'MACI64') == 1
-        unix(['"' hodi fs 'external/slfast_maci" data2 ']);
-    else
-        dos(['"' hodi fs 'external\slfast.exe" data2 ']);
+    switch(computer)
+        case 'GLNX86'
+            unix(['"' hodi fs 'external/slfast_linux" data2 ']);
+        case 'MAC'
+            unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
+        case 'MACI'
+            unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+        case 'MACI64'
+            unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+        otherwise
+            dos(['"' hodi fs 'external\slfast.exe" data2 ']);
     end
 
     load data2.slboot
@@ -137,7 +139,7 @@ bdep= figNumber;
 % set(gca,'Ylim',[0 180]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
-%     'bold','FontSize',fontsz.m,'Linewidth',1.2)
+%     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 % legend([pl1,pl2,pl3],'S1','S2','S3')
 % ylabel('Azimuth ')
 %
@@ -159,7 +161,7 @@ bdep= figNumber;
 % set(gca,'Ylim',[0 90]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
-%     'bold','FontSize',fontsz.m,'Linewidth',1.2)
+%     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 % ylabel(' Plunge ')
 %
 %
@@ -174,7 +176,7 @@ bdep= figNumber;
 % set(gca,'Xlim',[floor(min(newt2.Date)) max(newt2.Date) ]);
 % set(gca,'box','on',...
 %     'SortMethod','childorder','TickDir','out','FontWeight',...
-%     'bold','FontSize',fontsz.m,'Linewidth',1.2)
+%     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 % xlabel('Time [dec. year]')
 % ylabel('\phi')
 
@@ -183,7 +185,7 @@ figure
 hPlerr = plot(mResStress(:,1),mResStress(:,8),'^');
 set(hPlerr,'LineWidth',1.5,'Linestyle','-','MarkerSize',6,'Color',[0 0 0])
 set(gca,'box','on','SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.5)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.5)
 xlabel('Time [dec. year]');
 ylabel('Variance')
 
@@ -194,7 +196,7 @@ figure
 hPlerr = plot(mResStress(:,1),mResStress(:,9),'d');
 set(hPlerr,'LineWidth',1.5,'Linestyle','--','MarkerSize',6,'Color',[0 0 0])
 set(gca,'box','on','SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.5)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.5)
 xlabel('Time [dec. year]');
 ylabel('\beta [deg]')
 fBetamean = nanmean(mResStress(:,9))
@@ -205,7 +207,7 @@ fBetastd = nanmean(mResStress(:,10))
 % hPlS1 = plot(mResStress(:,1),mResStress(:,2));
 % set(hPlS1,'LineWidth',1.5,'Linestyle','-','MarkerSize',6,'Color',[0 0 0])
 % set(gca,'box','on','SortMethod','childorder','TickDir','out','FontWeight',...
-%     'bold','FontSize',fontsz.m,'Linewidth',1.5)
+%     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.5)
 % xlabel('Time [dec. year]');
 % ylabel('S1 trend [deg]')
 % fS1mean = nanmean(mResStress(:,2))

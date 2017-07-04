@@ -8,6 +8,7 @@ function out = load_volcanoes(alternateFilename, volcanoVariableName)
     %  LastKnownEruption - year in which eruption occurred (numeric, not a datetime)
     %  Latitude, Longitude - lat & lon in degrees
     %  Elevationm - elevation in meters
+    %  Depth - negative elevation in km
 
     if ~exist('alternateFilename','var')
         volcanoesFile = 'volcano.mat';
@@ -28,6 +29,9 @@ function out = load_volcanoes(alternateFilename, volcanoVariableName)
     end
     if isfield(XX,volcanoVariableName)
         out = XX.(volcanoVariableName);
+    end
+    if ~isfield(out,'Depth')
+        out.Depth= -(out.Elevationm ./ 1000);
     end
     fn = fieldnames(out);
     if ~all(ismember({'VolcanoName','Latitude','Longitude','Elevationm','LastKnownEruption'}, fn))

@@ -50,8 +50,6 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
         maxlong = maxlon; minlong = minlon;
 
         % set some constants
-        torad = pi / 180;
-        Re = 6378.137;
         scale = 1;
 
         % get the Standard Parallels and Center Coordinates

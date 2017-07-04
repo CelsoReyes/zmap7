@@ -30,7 +30,7 @@ function load_zmapfile()%
     report_this_filefun(mfilename('fullpath'));
     
     format short
-    global a vo typele
+    global a vo
     
     % start program and load data:
     show_load_instructions();
@@ -87,7 +87,7 @@ function load_zmapfile()%
     %
     watchoff
     clear s is
-    typele = 'dep';
+    zg=ZmapGlobal.Data;zg.mainmap_plotby='depth';
     
     setUpDefaultValues(a);
     %{
@@ -179,7 +179,6 @@ function   a = loadCatalog(path, file)
     lopa = fullfile(path, file);
     show_loading_status()
     
-    %set(action_button,'String','Loading Data...');
     watchon;
     drawnow
     

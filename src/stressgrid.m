@@ -139,7 +139,7 @@ if sel == 'in'
         'EraseMode','normal',...
         'Position',[0.30 0.75 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.l ,...
+        'FontSize',ZmapGlobal.Data.fontsz.l ,...
         'FontWeight','bold',...
         'String',' Grid Parameter');
     txt5 = text(...
@@ -147,7 +147,7 @@ if sel == 'in'
         'EraseMode','normal',...
         'Position',[-0.1 0.4 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Spacing in x (dx) in deg:');
 
@@ -156,7 +156,7 @@ if sel == 'in'
         'EraseMode','normal',...
         'Position',[-0.1 0.3 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Spacing in y (dy) in deg:');
 
@@ -165,7 +165,7 @@ if sel == 'in'
         'EraseMode','normal',...
         'Position',[-0.1 0.18 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Min. no. of evts. (const R):');
 
@@ -275,16 +275,17 @@ if sel == 'ca'
 
             % slick calculates the best solution for the stress tensor according to
             % Michael(1987): creates data2.oput
-            if strcmp(cputype,'GLNX86') == 1
-                unix(['".' fs 'slick_linux" data2 ']);
-            elseif strcmp(cputype,'MAC') == 1
-                unix(['".' fs 'slick_macppc" data2 ']);
-            elseif strcmp(cputype,'MACI') == 1
-                unix(['".' fs 'slick_maci" data2 ']);
-            elseif strcmp(cputype,'MACI64') == 1
-                unix(['".' fs 'slick_maci64" data2 ']);
-            else
-                dos(['".' fs 'slick.exe" data2 ']);
+            switch computer
+                case 'GLNX86'
+                    unix(['".' fs 'slick_linux" data2 ']);
+                case 'MAC'
+                    unix(['".' fs 'slick_macppc" data2 ']);
+                case 'MACI'
+                    unix(['".' fs 'slick_maci" data2 ']);
+                case 'MACI64'
+                    unix(['".' fs 'slick_maci64" data2 ']);
+                otherwise
+                    dos(['".' fs 'slick.exe" data2 ']);
             end
             %unix([hodi fs 'external/slick data2 ']);
             % Get data from data2.oput
@@ -298,16 +299,17 @@ if sel == 'ca'
             delete(sData2);
 
             % Stress tensor inversion
-            if strcmp(cputype,'GLNX86') == 1
-                unix(['"' hodi fs 'external/slfast_linux" data2 ']);
-            elseif strcmp(cputype,'MAC') == 1
-                unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
-            elseif strcmp(cputype,'MACI') == 1
-                unix(['"' hodi fs 'external/slfast_maci" data2 ']);
-            elseif strcmp(cputype,'MACI64') == 1
-                unix(['"' hodi fs 'external/slfast_maci64" data2 ']);
-            else
-                dos(['"' hodi fs 'external' fs 'slfast.exe" data2 ']);
+            switch computer
+                case 'GLNX86'
+                    unix(['"' hodi fs 'external/slfast_linux" data2 ']);
+                case 'MAC'
+                    unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
+                case 'MACI'
+                    unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+                case 'MACI64'
+                    unix(['"' hodi fs 'external/slfast_maci64" data2 ']);
+                otherwise
+                    dos(['"' hodi fs 'external' fs 'slfast.exe" data2 ']);
             end
             %unix([hodi fs 'external/slfast data2 ']);
             sGetFile = fullfile(hodi, 'external', 'data2.slboot');

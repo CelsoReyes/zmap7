@@ -15,7 +15,7 @@ if newWindowFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-300 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [300 500]) ZmapGlobal.Data.map_len]);
 
     
     matdraw
@@ -32,10 +32,10 @@ plot(x,ss,'go');
 grid
 %set(gca,'box','on',...
 %        'SortMethod','childorder','TickDir','out','FontWeight',...
-%        'bold','FontSize',fontsz.m,'Linewidth',1.2);
+%        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2);
 
-ylabel('Depth of Earthquake','FontWeight','bold','FontSize',fontsz.m);
-xlabel('Earthquake Number','FontWeight','bold','FontSize',fontsz.m);
+ylabel('Depth of Earthquake','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);
+xlabel('Earthquake Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);
 hold off;
 
 done

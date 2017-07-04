@@ -30,7 +30,7 @@ if newbmapcWindowFlag
         'MenuBar','none', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     matdraw
     lab1 = 'D-value';
@@ -46,11 +46,11 @@ if newbmapcWindowFlag
     uimenu(options,'Label','Refresh ', 'Callback','view_Dv')
 
     uimenu(options,'Label','Select EQ in Sphere (const N)',...
-         'Callback',' h1 = gca;ho = ''nohold'';ic = 1; org = [5]; startfd;')
+         'Callback',' h1 = gca;ho=false;ic = 1; org = [5]; startfd;')
     uimenu(options,'Label','Select EQ in Sphere (const R)',...
-         'Callback',' h1 = gca;ho = ''nohold'';icCircl = 2; org = [5]; startfd;')
+         'Callback',' h1 = gca;ho=false;icCircl = 2; org = [5]; startfd;')
     uimenu(options,'Label','Select EQ in Sphere (N) - Overlay existing plot',...
-         'Callback','h1 = gca;ho = ''hold'';ic = 1; org = [5]; startfd;')
+         'Callback','h1 = gca;ho=true;ic = 1; org = [5]; startfd;')
     %
     %
 
@@ -78,35 +78,7 @@ if newbmapcWindowFlag
     %
     %
 
-    op2e = uimenu('Label',' Display ');
-
-    uimenu(op2e,'Label','Fix color (z) scale', 'Callback','fixax2 ')
-
-    uimenu(op2e,'Label','Show Grid ',...
-         'Callback','hold on;plot(newgri(:,1),newgri(:,2),''+k'')')
-
-    uimenu(op2e,'Label','Show Circles ', 'Callback','plotci3')
-
-    uimenu(op2e,'Label','Colormap InvertGray',...
-         'Callback','g=gray; g = g(64:-1:1,:);colormap(g);brighten(.4)')
-
-    uimenu(op2e,'Label','Colormap Invertjet',...
-         'Callback','g=jet; g = g(64:-1:1,:);colormap(g)')
-
-    uimenu(op2e,'Label','shading flat',...
-         'Callback','axes(hzma); shading flat;sha=''fl'';')
-
-    uimenu(op2e,'Label','shading interpolated',...
-         'Callback','axes(hzma); shading interp;sha=''in'';')
-
-    uimenu(op2e,'Label','Brigten +0.4',...
-         'Callback','axes(hzma); brighten(0.4)')
-
-    uimenu(op2e,'Label','Brigten -0.4',...
-         'Callback','axes(hzma); brighten(-0.4)')
-
-    uimenu(op2e,'Label','Redraw Overlay',...
-         'Callback','hold on;overlay_')
+    add_display_menu(3);
 
     %  uicontrol('Units','normal',...
     %      'Position',[.92 .80 .08 .05],'String','set ni',...
@@ -123,7 +95,7 @@ if newbmapcWindowFlag
 
     % tresh = max(max(r)); re4 = re3;
     % nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
-    % set(nilabel2,'string','MinRad (in km):','background',[c1 c2 c3]);
+    % set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     % set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
     %     'background','y');
     % set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh))');
@@ -147,7 +119,7 @@ reset(gca)
 cla
 hold off
 watchon;
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.,...
     'Box','on','SortMethod','childorder')
 
@@ -199,7 +171,7 @@ ploeqc = plot(Da(:,1),-Da(:,7),'.k');
 set(ploeq,'Tag','eqc_plot''MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 h1 = gca;
@@ -210,7 +182,7 @@ hzma = gca;
 h5 = colorbar('horz');
 apo = get(h1,'pos');
 set(h5,'Pos',[0.3 0.1 0.4 0.02],...
-    'FontWeight','bold','FontSize',fontsz.m,'TickDir','out')
+    'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'TickDir','out')
 
 rect = [0.00,  0.0, 1 1];
 axes('position',rect)
@@ -224,14 +196,14 @@ txt1 = text(...
     'Position',[0.55 0.03],...
     'HorizontalAlignment','right',...
     'Rotation',[ 0 ],...
-    'FontSize',fontsz.m,....
+    'FontSize',ZmapGlobal.Data.fontsz.m,....
     'FontWeight','bold',...
     'String',lab1);
 
 % Make the figure visible
 
 axes(h1)
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 whitebg(gcf,[0 0 0])

@@ -16,7 +16,7 @@ if newWindowFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-300 fipo(4)-500 winx winy]);
+        'Position',[ (fipo(3:4) - [300 500]) ZmapGlobal.Data.map_len]);
 
     
     matdraw
@@ -41,16 +41,16 @@ for i = 1:length(tt)
     %     set(pl,'MarkerSize',mi(i,2)/sc)
 end
 
-% xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-% ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+% xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+% ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 % strib = [  'Earthquake Number Map '];
 % title2(strib,'FontWeight','bold',...
-%              'FontSize',fontsz.m,'Color','k')
+%              'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 %
-% if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+
 % set(gca,'box','on',...
 %         'SortMethod','childorder','TickDir','out','FontWeight',...
-%         'bold','FontSize',fontsz.m,'Linewidth',1.2)
+%         'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
 % grid
 

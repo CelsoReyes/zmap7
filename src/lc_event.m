@@ -29,8 +29,6 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
     global maxlatg minlatg maxlong minlong
 
     % set some constants
-    torad = pi / 180;
-    Re = 6378.137;
     scale = 1;
 
     % set the symbols defaults

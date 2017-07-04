@@ -57,7 +57,7 @@ if newCubeWindowFlag
         'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
 
     newlabel = uicontrol('style','text','units','norm','pos',[.40 .00 .40 .08]);
-    set(newlabel,'string','Alarm Threshold:','background',[c1 c2 c3]);
+    set(newlabel,'string','Alarm Threshold:','background',color_fbg);
 
     mamo1 = uicontrol('Units','normal',...
         'Position',[.90 .01 .08 .06],'String','Go',...
@@ -68,7 +68,7 @@ if newCubeWindowFlag
          'Callback','delete(mamo);delete(mamo1); delete(newlabel); mamovie ')
 
     nilabel2 = uicontrol('style','text','units','norm','pos',[.50 .92 .25 .06]);
-    set(nilabel2,'string','MinRad (in km):','background',[c1 c2 c3]);
+    set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh,3),...
         'background','y');
     set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh,3))');
@@ -163,19 +163,18 @@ end
 axis([ s2-0.1 s1+0.1 s4-0.1 s3+0.1 t0b teb+1  ])
 strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(iwl2,3) '; Zcut = ' num2str(tre2,3)  ];
 title2(strib4,'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','k')
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',2.0,'visible','on')
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',2.0,'visible','on')
 %set(gca,'Color',[0.7 0.7 0.7])
 
 viewer
 watchoff
 vie = gcf;
 figure_w_normalized_uicontrolunits(cube)
-if term == 1; whitebg; whitebg;end
 watchoff
 done;
 figure_w_normalized_uicontrolunits(cube)

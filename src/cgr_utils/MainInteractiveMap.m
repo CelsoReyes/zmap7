@@ -75,8 +75,10 @@ classdef MainInteractiveMap
                 
         end
         function update(obj)
+            global a
+            gh=ZmapGlobal.Data; %handle to globals;
+            watchon; drawnow;
             disp('MainInteractiveMap.update()');
-            global a fontsz
             %h=figureHandle();
             ax = mainAxes();
             if isempty(ax)
@@ -87,7 +89,7 @@ classdef MainInteractiveMap
             MainInteractiveMap.plotEarthquakes(a)
             xlim(ax,[min(a.Longitude) max(a.Longitude)])
             ylim(ax,[min(a.Latitude) max(a.Latitude)]);
-            ax.FontSize=fontsz.s;
+            ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
             for i=1:numel(obj.Features)
                 obj.Features(i).refreshPlot();
@@ -99,12 +101,27 @@ classdef MainInteractiveMap
                 tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
                 legend(ax,tolegend,'Location','southeastoutside');
                 ax.Legend.Title.String='Seismic Map';
-            align_supplimentary_legends(ax);
+            if strcmp(gh.lock_aspect,'on')
+                daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+            end
+            grid(ax,gh.mainmap_grid);
             
+            align_supplimentary_legends(ax);
+    
+    
+            % make sure we're back in a 2-d view
+            view(ax,2); %reset to top-down view
+            grid(ax,'on');
+            zlabel(ax,'Depth [km]');
+            rotate3d(ax,'off'); %activate rotation tool
+            set(findobj(figureHandle(),'Label','2-D view'),'Label','3-D view');
+            
+            watchoff;
+            drawnow;
         end
         function createFigure(obj)
             % will delete figure if it exist
-            global main mainfault faults coastline vo maepi well fontsz plates
+            global main mainfault faults coastline vo maepi well plates
             global a % primary event catalog
             disp('MainInterativeMap.createFigure()');
             h=figureHandle();
@@ -119,17 +136,18 @@ classdef MainInteractiveMap
                 'Visible','on', ...
                 'Tag','seismicity_map',...
                 'Position',[10 10 900 650]);
+            watchon; drawnow;
             ax = axes('Parent',h,'Position',[.09 .09 .85 .85],...
                 'Tag','mainmap_ax',...
-                'FontSize',fontsz.s,...
+                'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'FontWeight','normal',...
                 'Ticklength',[0.01 0.01],'LineWidth',1.0,...
                 'Box','on','TickDir','out');
-            xlabel(ax,'Longitude [deg]','FontSize',fontsz.m)
-            ylabel(ax,'Latitude [deg]','FontSize',fontsz.m)
+            xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
+            ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             strib = [  ' Map of '  a.Name '; '  char(min(a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(a.Date),'uuuu-MM-dd HH:mm:ss') ];
             title(ax,strib,'FontWeight','normal',...
-                ...%'FontSize',fontsz.m,...
+                ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k')
             if ~isempty(mainAxes())
                 % create the main earthquake axis
@@ -157,10 +175,16 @@ classdef MainInteractiveMap
                 disp(ax.Children);
                 rethrow(ME);
             end
+            gh = ZmapGlobal.Data; % handle to "globals"
+            if strcmp(gh.lock_aspect,'on')
+                daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+            end
+            grid(ax,gh.mainmap_grid);
             align_supplimentary_legends(ax);
             disp('adding menus to main map')
             obj.create_all_menus(true);
             disp('done')
+            watchoff; drawnow;
         end
         
         function show(obj, featurename)
@@ -184,11 +208,6 @@ classdef MainInteractiveMap
         end
         
         function initial_setup(obj)
-            global ms6
-            
-            if isempty(ms6)
-                ms6 = evalin('base','ms6');
-            end
             
             h = figureHandle();
             %% load/create features to be used in map
@@ -208,9 +227,7 @@ classdef MainInteractiveMap
                 delete(h); h=[];
             end
             if isempty(h)
-                uimenu('Label','|',...
-                    'Enable','off',...
-                    'Tag','mainmap_menu_divider'); % simple divider
+                add_menu_divider('mainmap_menu_divider');
             end
             obj.create_overlay_menu(force);
             obj.create_select_menu(force);
@@ -232,6 +249,11 @@ classdef MainInteractiveMap
             %
             mapoptionmenu = uimenu('Label','Map Options','Tag','mainmap_menu_overlay');
             
+            uimenu(mapoptionmenu,'Label','Refresh map window',...
+                'Callback','update(mainmap())');
+            
+            uimenu(mapoptionmenu,'Label','3-D view',...
+                'Callback',@set_3d_view); % callback was plot3d
             %TODO use add_symbol_menu(...) instead of creating all these menus
             symbolsubmenu = uimenu(mapoptionmenu,'Label','Map Symbols');
             
@@ -241,28 +263,7 @@ classdef MainInteractiveMap
                 'Callback',@(~,~)symboledit_dlg(mainAxes(),'Marker'));
             uimenu(symbolsubmenu,'Label','Change Symbol Color ...',...
                 'Callback', @(~,~)change_color);
-            %{
-            sizes_to_create = [1 3 6 9 12 14 18 24];
-            for n = sizes_to_create
-                uimenu(SizeMenu,'Label',num2str(n),'Callback', @(s,e) change_markersize(n));
-            end
             
-            symbols_to_create = {...
-                {'dot',[],'...'},...
-                {'o',[],'oooooo'},...
-                {'x',[],'xxxxxx'},...
-                {'*',[],'******'},...
-                {'red+ blue o green x',[1 0 0;0 0 1; 0 1 0],'+ox'},...
-                {'red^  blue h black o',[1 0 0; 0 0 1; 0 0 0],'^ho'}};
-            
-            for z = 1:numel(symbols_to_create)
-                this_symb = symbols_to_create{z};
-                uimenu(TypeMenu,'Label',this_symb{1},...
-                    'Callback', @(s,e) change_symbol(this_symb{:}));
-            end
-            uimenu(TypeMenu,'Label','none',...
-                'Callback',@(~,~) hide_events());
-            %}
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
             for i=1:numel(obj.Features)
                 obj.Features(i).addToggleMenu(ovmenu);
@@ -279,7 +280,7 @@ classdef MainInteractiveMap
                 uimenu(lemenu,'Label','Change legend breakpoints',...
                     'Callback',@change_legend_breakpoints);
                 legend_types = {'Legend by time','tim';...
-                    'Legend by depth','dep';...
+                    'Legend by depth','depth';...
                     'Legend by magnitudes','mag';...
                     'Mag by size, Depth by color','mad' %;...
                     % 'Symbol color by faulting type','fau'...
@@ -288,7 +289,7 @@ classdef MainInteractiveMap
                 for i=1:size(legend_types,1)
                     wrapped_leg = ['''' legend_types{i,2} ''''];
                     uimenu(lemenu,'Label',legend_types{i,1},...
-                        'Callback', ['typele = ' wrapped_leg ';update(mainmap());']);
+                        'Callback', ['zg=ZmapGlobal.Data;zg.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
                 end
                 clear legend_types
                 
@@ -296,12 +297,14 @@ classdef MainInteractiveMap
                     'Callback',@change_map_fonts);
                 
                 uimenu(mapoptionmenu,'Label','Change background colors',...
-                    'Callback','setcol');
+                    'Callback',@(~,~)setcol,'Enable','off'); %
                 
                 uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
                     'Callback',@(s,e) plot_large_quakes);
                 uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-                    'callback',@toggle_aspectratio);
+                    'callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
+                uimenu(mapoptionmenu,'Label','Toggle Grid',...
+                    'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
         end
         
         function create_select_menu(obj,force)
@@ -338,8 +341,6 @@ classdef MainInteractiveMap
                 return
             end
             submenu = uimenu('Label','Catalog','Tag','mainmap_menu_catalog');
-            uimenu(submenu,'Label','Refresh map window',...
-                'Callback','update(mainmap())');
             
             uimenu(submenu,'Label','Crop catalog to window',...
                 'Callback','a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));a.cropToFilter();update(mainmap())');
@@ -391,8 +392,6 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Create cross-section',...
                 'Callback','nlammap');
             
-            uimenu(submenu,'Label','3-D view',...
-                'Callback','plot3d');
             
             obj.create_histogram_menu(submenu);
             obj.create_mapping_rate_changes_menu(submenu);
@@ -509,7 +508,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Info on detecting quarries.',...
                 'Callback','web([''file:'' hodi ''/help/quarry.htm''])');
         end
-        
+
         function create_histogram_menu(obj,parent)
             
             submenu = uimenu(parent,'Label','Histograms');
@@ -543,12 +542,11 @@ classdef MainInteractiveMap
            
         %% plot CATALOG layer
         function plotEarthquakes(catalog, divs)
-            global typele
             disp('MainInteractiveMap.plotEarthquakes(...)');
             if ~exist('divs','var')
                 divs=[];
             end
-            switch typele
+            switch ZmapGlobal.Data.mainmap_plotby
                 
                 case {'tim','time'}
                     %delete(extralegends);
@@ -564,6 +562,14 @@ classdef MainInteractiveMap
                 otherwise
                     error('unanticipated legend type');
             end
+            
+            ax = mainAxes();
+            %set aspect ratio
+            gh = ZmapGlobal.Data; % handle to "globals"
+            if strcmp(gh.lock_aspect,'on')
+                daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+            end
+            align_supplimentary_legends(ax);
             % TODO show subset also
         end
         function plotQuakesByMagnitude(mycat, divs)
@@ -599,6 +605,7 @@ classdef MainInteractiveMap
                 'MarkerSize',ms6,...
                 'Tag','mapax_part0');
             h.DisplayName = sprintf('M ≤ %3.1f', divs(1));
+            h.ZData=-mycat.Depth(mask);
             
             for i = 1 : numel(divs)
                 mask = mycat.Magnitude > divs(i);
@@ -606,18 +613,23 @@ classdef MainInteractiveMap
                     mask = mask & mycat.Magnitude <= divs(i+1);
                 end
                 dispname = sprintf('M > %3.1f', divs(i));
-                plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
+                h=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
                     'LineStyle','none',...
                     'MarkerSize',ms6*(i+1),...
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
+                h.ZData=-mycat.Depth(mask);
             end
             if ~washeld; hold(ax,'off');end
         end
         
         function plotQuakesByDepth(mycat, divs)
+            % plotQuakesByDepth
+            % plotQuakesByDepth(catalog)
+            % plotQuakesByDepth(catalog, divisions)
+            %   divisions is a vector of depths (up to 7)
             
             % magdivisions: magnitude split points
             global event_marker_types ms6
@@ -645,12 +657,14 @@ classdef MainInteractiveMap
             ax = mainAxes();
             clear_quake_plotinfo();
             washeld = ishold(ax); hold(ax,'on')
+            
             h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                 'Marker',event_marker_types(1),...
                 'Color',cmapcolors(1,:),...
                 'LineStyle','none',...
                 'MarkerSize',ms6,...
                 'Tag','mapax_part0');
+                h.ZData=-mycat.Depth(mask);
             h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
             
             for i = 1 : numel(divs)
@@ -659,20 +673,20 @@ classdef MainInteractiveMap
                     mask = mask & mycat.Depth <= divs(i+1);
                 end
                 dispname = sprintf('Z > %.1f km', divs(i));
-                plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
+                myline=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
                     'LineStyle','none',...
                     'MarkerSize',ms6,...
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
+                myline.ZData=-mycat.Depth(mask);
             end
             if ~washeld; hold(ax,'off'); end
         end
         
         function plotQuakesByMagAndDepth(mycat)
-            % colorized by depth, with size dictated by magnitude
-            global fontsz
+            % colorized by depth, with size dictated by magnitude 
             persistent colormapName
             
             ax = mainAxes();
@@ -680,8 +694,6 @@ classdef MainInteractiveMap
             if isempty(hquakes)
                 clear_quake_plotinfo();
             end
-            %mindep = min(mycat.Depth);
-            %maxdep = max(mycat.Depth);
             if isempty(colormapName)
                 colormapName = colormapdialog();  %todo: move into menu.
             end
@@ -692,6 +704,7 @@ classdef MainInteractiveMap
                 otherwise
                     c = colormap(colormapName);
             end % switch
+            colormap(c)
             % sort by depth
             mycat.sort('Depth');
             
@@ -704,6 +717,7 @@ classdef MainInteractiveMap
                 set(plund, 'XData',mycat.Longitude,'YData',mycat.Latitude,'SizeData',sm*1.2);
             else
                 plund = scatter(ax, mycat.Longitude, mycat.Latitude, sm*1.2,'o','MarkerEdgeColor','k');
+                plund.ZData=-mycat.Depth;
                 plund.Tag='mapax_part1_bg_nolegend';
                 plund.DisplayName='';
                 plund.LineWidth=2;
@@ -713,6 +727,7 @@ classdef MainInteractiveMap
                     'CData',mycat.Depth);
             else
                 pl = scatter(ax, mycat.Longitude, mycat.Latitude, sm, mycat.Depth,'o','filled');
+                pl.ZData=-mycat.Depth;
                 pl.Tag='mapax_part0';
                 pl.DisplayName='Events by Mag & Depth';
                 pl.MarkerEdgeColor = 'flat';
@@ -739,7 +754,7 @@ classdef MainInteractiveMap
             eqmarkersizes = mag2dotsize(eventsizes);
             eqmarkerx = zeros(size(eqmarkersizes));
             eqmarkery = linspace(0,10,numel(eqmarkersizes));
-            magleg_ax = findobj(groot,'Tag','mainmap_supplimentary_maglegend')
+            magleg_ax = findobj(groot,'Tag','mainmap_supplimentary_maglegend');
             if ~isempty(magleg_ax)
                 pl = findobj(groot,'Tag','eqsizesamples');
                 set(pl,'XData',eqmarkerx, 'YData', eqmarkery, 'SizeData',eqmarkersizes);
@@ -757,7 +772,7 @@ classdef MainInteractiveMap
                 magleg_ax.XTick=[];
                 magleg_ax.YTick=[];
                 magleg_ax.Box='on';
-                set(magleg_ax,'FontSize',fontsz.s,'FontWeight','normal','yaxislocation','right');
+                set(magleg_ax,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal','yaxislocation','right');
                 ylabel(magleg_ax,'Magnitude');
                 xlabel(magleg_ax,'Events');
             end
@@ -846,6 +861,8 @@ classdef MainInteractiveMap
             
             washeld=ishold(ax); hold(ax,'on');
             h=plot(catalog.Longitude, catalog.Latitude, varargin{:});
+            
+            h.ZData=-catalog.Depth(mask);
             h.Tag = thisTag;
             if ~washeld, hold(ax,'off'),end
         end
@@ -1046,13 +1063,6 @@ function choice = colormapdialog()
     end
 end
 
-function sz = mag2dotsize(maglist)
-    % given magnittudes, return marker sizes
-    facm = 8 ./ max(maglist);
-    sz = maglist .* facm;
-    sz = ceil(max(1,sz) .^ 2.5);
-end
-
 
 %% % % % callbacks
 function catSave()
@@ -1122,26 +1132,55 @@ function plot_large_quakes()
 end
 function align_supplimentary_legends(ax)
     % reposition supplimentary legends, if they exist
-    le = ax.Legend;
-    if isempty(le), return; end
+    try
+        le = ax.Legend;
+    catch
+        return
+    end
+    if isempty(le) 
+        return;
+    end
     tags = {'mainmap_supplimentary_deplegend','mainmap_supplimentary_maglegend'};
     for i=1:numel(tags)
         c=findobj(0,'Tag',tags{i});
         if ~isempty(c)
-            c.Position([1]) = le.Position([1]); % scooot it over to match the legend
+            c.Position([1]) = le.Position([1]); % scoot it over to match the legend
         end
     end
 end
-function toggle_aspectratio(src, ~)
-    if startsWith(src.Label,'Set ')
-        ax = mainAxes();
-        src.Label = 'Unlock axis ratio';
-        daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
-    else % assume it starts with 'Unlock '
-        src.Label = 'Set aspect ratio by latitude';
-        ax = mainAxes();
-        daspect(ax,'auto');
+
+
+function toggle_grid(src, ~)
+    ax = mainAxes();
+    switch src.Checked
+        case 'off'
+            ax = mainAxes();
+            src.Checked = 'on';
+            grid(ax,'on');
+        case 'on'
+            src.Checked = 'off';
+            grid(ax,'off');
     end
+    gh = ZmapGlobal.Data;
+    gh.lock_aspect = src.Checked;
+    drawnow
+    align_supplimentary_legends();
+    drawnow
+    
+end
+
+function toggle_aspectratio(src, ~)
+    ax = mainAxes();
+    switch src.Checked
+        case 'off'
+            src.Checked = 'on';
+            daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+        case 'on'
+            src.Checked = 'off';
+            daspect(ax,'auto');
+    end
+    gh = ZmapGlobal.Data;
+    gh.lock_aspect = src.Checked;
     align_supplimentary_legends();
     
 end
@@ -1160,8 +1199,7 @@ end
     
 function change_legend_breakpoints(~, ~)
     % TODO fix this, breakpoints aren't changed
-    global typele
-    switch typele
+    switch ZmapGlobal.Data.mainmap_plotby
         case {'tim','time'}
             setleg;
         case {'dep','depth'}
@@ -1181,14 +1219,39 @@ function change_legend_breakpoints(~, ~)
 end
 
 function change_map_fonts(~,~)
-    global fontsz
     ax = findobj(0,'Tag','mainmap_ax');
     f = uisetfont(ax,'Change Font Size');
+    fontsz = ZmapGlobal.Data.fontsz;
     fontsz.base_size = f.FontSize;
     % TODO note, this does not change the font (maybe later)
     set(ax,'FontSize',f.FontSize);
     set(ax.Legend,'FontSize', f.FontSize);
     axmag=findobj(0,'Tag','mainmap_supplimentary_maglegend');
     set(axmag,'FontSize',f.FontSize);
-    
+end
+
+function set_3d_view(src,~)
+    watchon
+    drawnow;
+    switch src.Label
+        case '3-D view'
+            ax=mainAxes();
+            hold on
+            view(ax,3);
+            grid(ax,'on');
+            zlim(ax,'auto');
+            %axis(ax,'tight');
+            zlabel(ax,'Depth [km]');
+            rotate3d(ax,'on'); %activate rotation tool
+            hold off
+            src.Label = '2-D view';
+        otherwise
+            ax=mainAxes();
+            view(ax,2);
+            grid(ax,'on');
+            rotate3d(ax,'off'); %activate rotation tool
+            src.Label = '3-D view';
+    end
+    watchoff
+    drawnow;
 end

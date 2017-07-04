@@ -74,20 +74,16 @@ if newMapWindowFlag
         'MenuBar','none', ...
         'NextPlot','new', ...
         'Visible','off', ...
-        'Position',[ fipo(3)-500 fipo(4)-400 winx-100 winy-100]);
-
-    if term  > 1;   whitebg([c1 c2 c3]); end
-    if term  == 1;   whitebg([1 1 1 ]); end
-
+        'Position',[ (fipo(3:4) - [500 400]) (ZmapGlobal.Data.map_len - [100 100]) ]);
 
     te = text(0.1,0.99,'Load all the available data as ASCII files.\newlinePress <Save> to save the new catalog \newlineafter you have loaded all ASCII files!');
-    set(te,'FontSize',fontsz.m);
+    set(te,'FontSize',ZmapGlobal.Data.fontsz.m);
 
     te1 = text(0.40,0.80,'Data ') ;
-    set(te1,'FontSize',fontsz.m,'Color','r','FontWeight','bold')
+    set(te1,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold')
 
     te2 = text(0.25,0.58,'Overlay Symbols') ;
-    set(te2,'FontSize',fontsz.m,'Color','r','FontWeight','bold');
+    set(te2,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','r','FontWeight','bold');
 
     uicontrol('BackGroundColor',[0.8 0.8 0.8]','Style','Pushbutton',...
         'Position',[.01 .65 .30 .08 ],...
@@ -187,6 +183,6 @@ end   %if figure exist
 figure_w_normalized_uicontrolunits(loda)
 set(gca,'box','off',...
     'SortMethod','childorder','TickDir','out','FontWeight','bold',...
-    'visible','off','FontSize',fontsz.m,'Linewidth',1.2)
+    'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 set(loda,'Visible','on');

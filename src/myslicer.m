@@ -22,12 +22,6 @@ switch(ac2)
             zmap_message_center.set_message('  ',messtext);
 
             try
-                set(action_button,'String','Loading Data...');
-            catch ME
-                welcome;
-            end
-
-            try
                 load(lopa)
             catch ME
                 error_handler(ME,'Error loading data! Are they in the right *.mat format?');
@@ -49,7 +43,7 @@ switch(ac2)
             'backingstore','on',...
             'NextPlot','add', ...
             'Visible','on', ...
-            'Position',[ fipo(3)-600 fipo(4)-500 800 800]);
+            'Position',[ (fipo(3:4) - [600 500]) 800 800]);
         movegui(gcf,'center');
 
         uicontrol('Units','normal',...

@@ -87,21 +87,21 @@ for i = minmg:magstep:maxmg,         % steps in magnitude
 
     plot(xt,cumbelow,'r');
     plot(xt,cumabove,'b-.');
-    xlabel('time (yrs)','FontWeight','normal','FontSize',fontsz.m);
-    ylabel('cum number of events','FontWeight','normal','FontSize',fontsz.m);
-    set(gca,'FontWeight','normal','FontSize',fontsz.m,'Linewidth',1.2);
-    set(gca,'Color',[ cb1 cb2 cb3])
-    set(gcf,'Color',[c1 c2 c3])
+    xlabel('time (yrs)','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m);
+    ylabel('cum number of events','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m);
+    set(gca,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2);
+    set(gca,'Color',color_bg)
+    set(gcf,'Color',color_fbg)
     t1 = xsum-xsum*0.1;
     t1p = [  xt(10)  t1; xt(30)   t1];
     %plot(t1p(:,1),t1p(:,2),'r');
     tt1 = text(0.1,0.8,' mag and below: ___','Units','normalized');
-    set(tt1,'FontWeight','normal','FontSize',fontsz.m,'Color','r')
+    set(tt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m,'Color','r')
     t1 = xsum-xsum*0.2;
     t1p = [  xt(10)  t1; xt(30)   t1];
     %plot(t1p(:,1),t1p(:,2),'b-.');
     tt1 =text(0.1, 0.9,' mag and above: ._.','Units','normalized');
-    set(tt1,'FontWeight','normal','FontSize',fontsz.m,'Color','b')
+    set(tt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m,'Color','b')
     %figure_w_normalized_uicontrolunits(wai);
     %waitbar(i/maxmg)
     %percent = i/maxmg * 100	;
@@ -115,9 +115,9 @@ S = sprintf('                 FINISHED!', i);
 disp(S);
 %close(wai);
 stri = [  ' GenAS - ' file1];
-title2(stri,'FontWeight','normal','FontSize',fontsz.m)
+title2(stri,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 
@@ -154,27 +154,27 @@ mi1 = min(min([ ZBEL ZABO]));
 
 rect = [0.15 0.15 0.3 0.7];
 axes('pos',[rect]);
-set(gca,'FontSize',fontsz.m,'FontWeight','normal');
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 pcolor(ZBEL);
 colormap(jet)
 shading flat
 caxis([-7 7 ])
-xlabel('Mag and below','FontSize',fontsz.m,'FontWeight','normal');
-ylabel('Time (yrs)','FontSize',fontsz.m,'FontWeight','normal');
+xlabel('Mag and below','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
+ylabel('Time (yrs)','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 set(gca,'Xtick',xtick,'Xticklabels',xtlabls,'Ytick',ytick,...
     'Yticklabels',ytlabls);
 
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 
 stri = [  ' GenAS - ' file1];
-title2(stri,'FontSize',fontsz.m,'FontWeight','normal')
+title2(stri,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal')
 set(gca,'Ytick',ytick,'Yticklabels',ytlabls)
 p1 = gca;
 rect = [0.50 0.15 0.35 0.7];
 axes('pos',rect);
-set(gca,'FontSize',fontsz.m,'FontWeight','normal');
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 pcolor(ZABO);
 j = jet;
 j = [j(1:25,:) ; 0.9 .9 0.9 ; 0.9 0.9 0.9 ; j(40:64,:) ];
@@ -182,15 +182,15 @@ colormap(j)
 shading flat
 caxis([-7 7])
 co = colorbar;
-set(co,'FontSize',fontsz.m,'FontWeight','normal','TickDir','out','Ticklength',0.015)
+set(co,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal','TickDir','out','Ticklength',0.015)
 cop = get(co,'pos');
 set(co,'pos',[cop(1) cop(2) cop(3)/2 cop(4)/3 ]);
-xlabel('Mag and above','FontSize',fontsz.m,'FontWeight','normal');
+xlabel('Mag and above','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 set(gca,'Xtick',xtick,'Xticklabels',xtlabls,'Ytick',ytick,...
     'Yticklabels',ytlabls);
 set(gca,'Ytick',[],'Yticklabels',ytlabls);
 
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 

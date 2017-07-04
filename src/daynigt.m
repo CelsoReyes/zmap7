@@ -10,7 +10,7 @@ nig(l,:) = [];
 
 newt2 = day;
 timeplot
-ho2 = 'hold'
+ho2=true
 
 newt2 = nig;
 timeplot

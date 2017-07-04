@@ -77,7 +77,7 @@ p5 = gca;
 
 plot(xt3,as,'r')
 
-%set(ax1,'FontSize',fontsz.m,'FontWeight','bold')
+%set(ax1,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold')
 %set(ax2(1),'LineWidth',2.0)
 %set(ax2(2),'LineWidth',1.0)
 

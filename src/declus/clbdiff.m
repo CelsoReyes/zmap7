@@ -13,9 +13,9 @@ function clbdiff(var1)
 
 
 
-    global newclcat cluscat mess bfig backcat fontsz
+    global newclcat cluscat mess bfig backcat
     global ttcat ttm text3 text4 newcat txt1 txt2 txt3
-    global cb1 cb2 cb3 ho teb t0b
+    global color_bg teb t0b
 
     if var1==1
         if isempty(ttcat)
@@ -46,7 +46,7 @@ function clbdiff(var1)
                 'MenuBar','none',...
                 'visible','off',...
                 'pos',[ 0.300  0.7 0.5 0.5]);
-            ho = 'noho';
+            ho=false;
             
             matdraw
 
@@ -74,7 +74,7 @@ function clbdiff(var1)
     backg_ab = log10(bvalsum3);
     orient tall
 
-    if ho(1:2) == 'ho'
+    if hold_state
         axes(cua)
         hold on
     else
@@ -110,10 +110,10 @@ function clbdiff(var1)
     te = semilogy(xt3(i2),bvalsum3(i2),'xk');
     set(te,'LineWidth',2,'MarkerSize',ms10)
 
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
-    set(gca,'Color',[cb1 cb2 cb3])
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    set(gca,'Color',color_bg)
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -178,9 +178,9 @@ function clbdiff(var1)
     set(h2,'visible','off');
 
     txt1=text(.16, .18,['b-value (w LS, M  > ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2]);
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5]);
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 
     set(gcf,'visible','on');

@@ -19,7 +19,6 @@ result=[];
 sZmapPath = './AddOneFiles/zmap/';
 
 %get the computer type
-cputype = computer;
 % Array of focal mechanisms: dip direction, dip, rake
 mFPS = [mCatalog(:,10:12)];
 [nRow,nCol]=size(mFPS);
@@ -42,17 +41,18 @@ sPath = pwd;
 %unix([sZmapPath 'external/slick ' sPath '/data2 ']);
 
 %added support for different architectures
-if strcmp(cputype,'GLNX86') == 1
-                 unix([sZmapPath 'external/slick_linux ' sPath '/data2 ']);
-            elseif strcmp(cputype,'MAC') == 1
-                 unix([sZmapPath 'external/slick_macppc ' sPath '/data2 ']);
-            elseif strcmp(cputype,'MACI') == 1
-                 unix([sZmapPath 'external/slick_maci ' sPath '/data2 ']);
-			elseif strcmp(cputype,'MACI64') == 1
-				 unix([sZmapPath 'external/slick_maci64 ' sPath '/data2 ']);
-			else
-                 dos([sZmapPath 'external/slick.exe ' sPath '/data2 ']);
-            end
+switch computer
+    case 'GLNX86'
+        unix([sZmapPath 'external/slick_linux ' sPath '/data2 ']);
+    case 'MAC'
+        unix([sZmapPath 'external/slick_macppc ' sPath '/data2 ']);
+    case 'MACI'
+        unix([sZmapPath 'external/slick_maci ' sPath '/data2 ']);
+    case 'MACI64'
+        unix([sZmapPath 'external/slick_maci64 ' sPath '/data2 ']);
+    otherwise
+        dos([sZmapPath 'external/slick.exe ' sPath '/data2 ']);
+end
 
 % Get data from data2.oput
 sFilename = ['data2.oput'];
@@ -68,17 +68,18 @@ delete(sData2);
 %unix([sZmapPath 'external/slfast ' sPath '/data2 ']);
 
 %added support for different architectures
-if strcmp(cputype,'GLNX86') == 1
-                 unix([sZmapPath 'external/slfast_linux ' sPath '/data2 ']);
-            elseif strcmp(cputype,'MAC') == 1
-                 unix([sZmapPath 'external/slfast_macppc ' sPath '/data2 ']);
-            elseif strcmp(cputype,'MACI') == 1
-                 unix([sZmapPath 'external/slfast_maci ' sPath '/data2 ']);
-			elseif strcmp(cputype,'MACI64') == 1
-				 unix([sZmapPath 'external/slfast_maci64 ' sPath '/data2 ']);
-			else
-                 dos([sZmapPath 'external/slfast.exe ' sPath '/data2 ']);
-            end
+switch computer
+    case 'GLNX86'
+        unix([sZmapPath 'external/slfast_linux ' sPath '/data2 ']);
+    case 'MAC'
+        unix([sZmapPath 'external/slfast_macppc ' sPath '/data2 ']);
+    case 'MACI'
+        unix([sZmapPath 'external/slfast_maci ' sPath '/data2 ']);
+    case 'MACI64'
+        unix([sZmapPath 'external/slfast_maci64 ' sPath '/data2 ']);
+    otherwise
+        dos([sZmapPath 'external/slfast.exe ' sPath '/data2 ']);
+end
 
 
 

@@ -24,9 +24,9 @@ set(gca,'pos',[0.2 0.2 0.6 0.6])
 
 
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'LineWidth',1.2,'Box','on','TickDir','out')
-xlabel('Tr [years]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Percentage (T >= Tr)','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Tr [years]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Percentage (T >= Tr)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 ; matdraw

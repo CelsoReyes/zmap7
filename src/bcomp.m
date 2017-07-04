@@ -9,8 +9,8 @@ function  bcomp(newcat,d1,d2,d3,d4)
     %
     think
     %zmap_message_center.set_info('  ','Calculating b-value...')
-    global cluscat mess bfig backcat fontsz
-    global ttcat cb1 cb2 cb3
+    global cluscat mess bfig backcat
+    global  ttcat
     report_this_filefun(mfilename('fullpath'));
     org = newcat;
 
@@ -83,10 +83,10 @@ function  bcomp(newcat,d1,d2,d3,d4)
     i2 = round(i/3);
     i2 = 1;
 
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     set(gca,'Color',[1 1 0.6])
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -164,10 +164,10 @@ function  bcomp(newcat,d1,d2,d3,d4)
     i2 = round(i/3);
     i2 = 1;
 
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
-    set(gca,'Color',[cb1 cb2 cb3]);
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    set(gca,'Color',color_bg);
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -208,9 +208,9 @@ function  bcomp(newcat,d1,d2,d3,d4)
     grid
     % Label for the first depth intervall
     txt1=text(.10, -.16,['b  = ',tt1, ' +/- ', tt2, ' ; depth range ' num2str(d1) ' - ' num2str(d2) ' km' ],'units','normalized');
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m,'Color','m')
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','m')
     % Label for the sec depth intervall
     txt1=text(.10, -.22,['b  = ',tt1b, ' +/- ', tt2b, ' ; depth range ' num2str(d3) ' - ' num2str(d4) ' km' ],'units','normalized');
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m,'Color','b')
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','b')
 
 

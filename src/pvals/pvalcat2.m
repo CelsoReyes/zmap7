@@ -52,9 +52,9 @@ newt2 = newt2(l,:);
 l = newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
-ho2 = 'hold';
+ho2=true;
 timeplot; drawnow
-ho2 = 'noho';
+ho2=false;
 
 allcount = 0;
 itotal = length(valm1:valm3:valm2) * length(valtm1:valtm3:valtm2);
@@ -102,7 +102,7 @@ if newpmapWindowFlag
         'NextPlot','new', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
 end
 
 hold on
@@ -127,14 +127,14 @@ xlabel(['Min. Magnitude'])
 shading interp
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'normal','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
+    'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 
 % Create a colorbar
 %
 h5 = colorbar('horiz');
 set(h5,'Pos',[0.35 0.08 0.4 0.02],...
-    'FontWeight','normal','FontSize',fontsz.s,'TickDir','out')
+    'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'TickDir','out')
 
 rect = [0.00,  0.0, 1 1];
 axes('position',rect)
@@ -147,7 +147,7 @@ txt1 = text(...
     'Position',[ 0.33 0.09 0 ],...
     'HorizontalAlignment','right',...
     'Rotation',[ 0 ],...
-    'FontSize',fontsz.m,....
+    'FontSize',ZmapGlobal.Data.fontsz.m,....
     'FontWeight','normal',...
     'String','p-value');
 

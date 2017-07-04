@@ -38,8 +38,8 @@ if newsyntFlag,
         'backingstore','on',...
         'Visible','off', ...
         'Position',[10 20 500 500]);
-    %        'Position',[ 0 300 winx-275 winy-200]);
-    %        'Position',[ 50 650 winx-250 winy-170]);
+    %        'Position',[ 0 300 (ZmapGlobal.Data.map_len - [275 200]) ]);
+    %        'Position',[ 50 650 (ZmapGlobal.Data.map_len - [250 170]) ]);
     matdraw;
 else
     figure_w_normalized_uicontrolunits(syntf);

@@ -1,6 +1,30 @@
 classdef MapFeature < handle
-    %MapFeature Summary of this class goes here
-    %   Detailed explanation goes here
+    %MapFeature used to trak and plot features on a map (works in 3d)
+    %
+    %
+    %   sample usage:
+    %       load_fn = @get_earthquakes;
+    %       save_fn = [];
+    %       plot_defaults = struct('Tag','important_feature',...
+    %            'DisplayName','importantFeature',...
+    %            'LineWidth', 3.0,...
+    %            'Color',[.1 .2 .5]);
+    %
+    %       f = MapFeature('feature', load_fn, save_fn, plot_defaults);
+    %       ax = axes; % create new axes
+    %       f.plot(ax);
+    %
+    %       % .. do something here that might change the axes limits or something
+    %
+    %       f.refreshPlot();
+    %
+    %   global variables can be accessed & refreshed by wrapping them in a function:
+    %
+    %       function myValue = load_something()
+    %           % load_something retrieves catalog data from global variable a
+    %           global a
+    %           myValue = a;  % simplistic case!
+    %       exit
     
     properties
         Name                % name of this feature
@@ -13,8 +37,9 @@ classdef MapFeature < handle
     end
     properties(Dependent)
         Handle              % handle to this layer
-        Longitude
-        Latitude
+        Longitude           % vector of Longitudes [deg] (to be plotted on X)
+        Latitude            % vector of Latitudes [deg] (to be plotted on Y)
+        Depth               % vector of Depths [km] (to be plotted on -Z)
     end
     
     methods
@@ -47,9 +72,10 @@ classdef MapFeature < handle
         end
         
         function set.Value(obj, data)
+            % set.Value does the painful work of importing data form a variety of data types
             switch class(data)
                 case 'ZmapCatalog'
-                    obj.Value = data;
+                    obj.Value = data;  %sets Latitude, Longitude, and Depth
                 case {'table'}
                     x=startsWith(data.Properties.VariableNames,'Longitude','IgnoreCase',true);
                     y=startsWith(data.Properties.VariableNames,'Latitude','IgnoreCase',true);
@@ -110,9 +136,9 @@ classdef MapFeature < handle
                             error('Feature "%s" expected 2 columns of data, or something with Latitude and Longitude fields',obj.Name); %#ok<MCSUP>
                         end
                     end
-                        
+                    
             end
-                
+            
             
         end
         
@@ -121,6 +147,9 @@ classdef MapFeature < handle
         end
         function lats = get.Latitude(obj)
             lats = obj.Value.Latitude;
+        end
+        function depths = get.Depth(obj)
+            depths = obj.Value.Depth;
         end
         
         function plot(obj,ax)
@@ -136,6 +165,7 @@ classdef MapFeature < handle
             else
                 obj.ParentAxis = ax;
             end
+            
             if isempty(ax) || ~isvalid(ax)
                 error('Feature "%s" ->plot has no associated axis',obj.Name);
             end
@@ -153,6 +183,46 @@ classdef MapFeature < handle
             
             val = obj.getTrimmedData();
             layer=plot(ax,val.Longitude, val.Latitude);
+            layer.ZData = val.Depth;
+            
+            if ~holdstatus; hold(ax,'off'); end
+            
+            % set properties for this layer
+            set(layer, obj.PlottingDefaults);
+        end
+        function mplot(obj,ax)
+            % plot this layer
+            % will delete layer if it exists
+            % note features will only plot the subset of features within the
+            % currently visible axes
+            %
+            % see also refreshPlot
+            
+            if ~exist('ax','var')
+                ax = obj.ParentAxis;
+            else
+                obj.ParentAxis = ax;
+            end
+            
+            if isempty(ax) || ~isvalid(ax)
+                error('Feature "%s" ->plot has no associated axis',obj.Name);
+            end
+            
+            % clear the existing layer
+            h = obj.Handle;
+            if ~isempty(h)
+                delete(h);
+            end
+            
+            if isempty(obj.Value)
+                return % nothing to plot
+            end
+            
+            holdstatus = ishold(ax); hold(ax,'on');
+            
+            val = obj.getTrimmedData();
+            layer=plotm(val.Latitude, val.Longitude); %not allowed to specify axes
+            % layer.ZData = val.Depth;
             
             if ~holdstatus; hold(ax,'off'); end
             
@@ -161,10 +231,11 @@ classdef MapFeature < handle
         end
         
         function refreshPlot(obj)
-            % refreshPlot updates the X,Y values without deleting the layer
+            % refreshPlot updates the X,Y,Z values without deleting the layer
             %
             % refreshPlot useful for when the axis limits have changed or
-            % when the values have changed
+            % when the values have changed.  The plotted data will be trimmed, which reduces
+            % the plotting overhead.
             %
             % see also plot
             
@@ -177,12 +248,15 @@ classdef MapFeature < handle
             % set properties for this layer
             layer.XData=val.Longitude;
             layer.YData=val.Latitude;
+            layer.ZData=val.Depth;
             set(layer,obj.PlottingDefaults);
         end
         
         function load(obj)
             % load this feature
             % uses the Loadfn provided during Feature Construction
+            % loadFunction is expected to return a table or struct containing fields for
+            % 'Latitude', 'Longitude', and 'Depth' (things with ELEVATION would have negative depth)
             obj.Value = obj.Loadfn();
         end
         
@@ -202,29 +276,9 @@ classdef MapFeature < handle
         end
         
         
-        
-        function val = getTrimmedData(obj)
-            % trim data to parent axis limits
-            % obj.getTrimmedData()
-            %
-            % gaps where data was removed are replaced with a single "nan" value
-            % this reduces the data size, and keeps segments from connecting when
-            % they shouldn't.
-            
-            ax = obj.ParentAxis;
-            idx  = obj.Value.Longitude >= min(xlim(ax)) & obj.Value.Longitude <= max(xlim(ax));
-            idx = idx & obj.Value.Latitude >= min(ylim(ax)) & obj.Value.Latitude <= max(ylim(ax));
-            val=obj.Value;
-            todel = [false; ~idx(1:end-1)] & [false; ~idx(2:end)];
-            val.Longitude(~idx) = nan;
-            val.Latitude(~idx) = nan;
-            val.Longitude(todel) = [];
-            val.Latitude(todel) = [];
-        end
-        
         function addToggleMenu(obj, parentH)
             % addToggleMenu add menu that hides/shows this Feature
-            % addToggleMenu(parent) adds a toggle menu subordinate to the parent item
+            % addToggleMenu(parent) adds a toggle menu subordinate to the parent uimenu
             
             if ~isempty(obj.MenuToggle) && isvalid(obj.MenuToggle)
                 error('ToggleMenu for Feature "%s" already exists.',obj.Name);
@@ -235,7 +289,16 @@ classdef MapFeature < handle
                 'Callback',@(src,ev) obj.toggle_showhide_menu(src,ev));
         end
         function toggle_showhide_menu(obj, src, ~, contingencyFunction)
+            % switch the show/hide menu between the "Show" and "Hide" stat
+            % obj.toggle_showhide_menu(src, ~, contingencyFunction
+            %   this is intended to be the Callback for the addToggleMenu.
+            %
+            % if the plot this toggles no longer exists, then
+            % the user-provided contingencyFunction will be run, which might be able to get things
+            % back on track.
             h=obj.Handle;
+            watchon
+            drawnow;
             if isempty(h)
                 if exist('contingencyFunction','var')
                     contingencyFunction();
@@ -253,7 +316,39 @@ classdef MapFeature < handle
                 h.Visible = 'on';
             end
             if ~washeld, hold(obj.ParentAxis,'off');end
+            watchoff
+            drawnow;
         end
+    end
+    
+    methods(Access=protected)
+        function val = getTrimmedData(obj)
+            % trim data to parent axis limits
+            % obj.getTrimmedData()
+            %
+            % gaps where data was removed are replaced with a single "nan" value
+            % this reduces the data size, and keeps segments from connecting when
+            % they shouldn't.
+            
+            ax = obj.ParentAxis;
+            idx  = obj.Value.Longitude >= min(xlim(ax)) & obj.Value.Longitude <= max(xlim(ax));
+            idx = idx & obj.Value.Latitude >= min(ylim(ax)) & obj.Value.Latitude <= max(ylim(ax));
+            val=obj.Value;
+            
+            % index used to delete any nan's after the first (per gap)
+            todel = [false; ~idx(1:end-1)] & [false; ~idx(2:end)];
+            
+            % replace out-of-bounds values with NaN
+            val.Longitude(~idx) = nan;
+            val.Latitude(~idx) = nan;
+            val.Depth(~idx)=nan;
+            
+            % reduce dataset by removing all nan's EXCEPT for one (per gap)
+            val.Longitude(todel) = [];
+            val.Latitude(todel) = [];
+            val.Depth(todel)=[];
+        end
+        
     end
     
 end

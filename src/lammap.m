@@ -22,7 +22,7 @@ if newMapLaWindowFlag
         'MenuBar','none', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     
     matdraw
     drawnow
@@ -58,7 +58,7 @@ if ~isempty(main)
     lc_event(main(:,2),main(:,1),'+b')
 end
 %title2(strib,'FontWeight','bold',...
-%'FontSize',fontsz.m,'Color','k')
+%'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 uic = uicontrol('Units','normal',...
     'Position',[.05 .00 .40 .06],'String','Select Endpoints with cursor');
@@ -73,7 +73,6 @@ messtext= ...
     ];
 
 zmap_message_center.set_message(titStr,messtext);
-if term == 1 ; whitebg([0 0 0 ]);end
 
 
 [xsecx xsecy,  inde] = mysect(a.Latitude',a.Longitude',a.Depth,wi);
@@ -110,7 +109,6 @@ set_width = uicontrol('style','edit','value',wi,...
 
 wilabel = uicontrol('style','text','units','norm','pos',[.60 .00 .30 .06]);
 set(wilabel,'string','Width in km:','background','y');
-if term == 1 ; whitebg([0 0 0 ]);end
 
 % create the selected catalog
 %

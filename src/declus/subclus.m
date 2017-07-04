@@ -5,7 +5,7 @@ function subclus(var1)
     %Last modification 6/95
     global original clus cluslength bgevent  %for bsubclus.m
     global swarmtmp clust backcat equi bg maintmp dubletttmp
-    global fontsz par1 file1 clu h5
+    global par1 file1 clu h5
     global cluscat backequi backbgevent newclcat
     global plot1_h plot2_h
 
@@ -38,7 +38,7 @@ function subclus(var1)
             cluoverl(7);
             strib=[' Mainclusters of ' file1];
             title(strib,'FontWeight','bold',...
-                'FontSize',fontsz.l,'Color','r')
+                'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
 
         else
             var1==6
@@ -65,7 +65,7 @@ function subclus(var1)
                 cluoverl(7);
                 strib=[' Foreshocks of ' file1];
                 title(strib,'FontWeight','bold',...
-                    'FontSize',fontsz.l,'Color','r')
+                    'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
             end
         else
             var1==6;
@@ -94,7 +94,7 @@ function subclus(var1)
                 cluoverl(7);
                 strib=[' Aftershocks  of ' file1];
                 title(strib,'FontWeight','bold',...
-                    'FontSize',fontsz.l,'Color','r')
+                    'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
             end
         else
             var1==6;
@@ -113,7 +113,7 @@ function subclus(var1)
             cluoverl(7);
             strib=[' Swarms of ' file1];
             title(strib,'FontWeight','bold',...
-                'FontSize',fontsz.l,'Color','r')
+                'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
             hold on
         else
             var1==6;
@@ -132,7 +132,7 @@ function subclus(var1)
             strib=[' Dubletts of  ' file1];
             hold on
             title(strib,'FontWeight','bold',...
-                'FontSize',fontsz.l,'Color','r')
+                'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         else
             var1==6;
         end

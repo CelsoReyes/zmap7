@@ -16,12 +16,12 @@ c = cumsum( 10.^(1.5*newt2.Magnitude + 16.1));
 
 pl = plot(newt2.Date,c)
 set(pl,'LineWidth',2.0)
-xlabel('Time in years ','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Cumulative Moment ','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulative Moment ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 %te = text(0.1,0.9,'log10(Mo) = 1.5Ms + 16.1;','Units','normalized','FontWeight','bold')
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 

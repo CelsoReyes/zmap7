@@ -4,7 +4,7 @@ function bfitnew(newcat)
     %
     %   Calculates Freq-Mag functions (b-value) for a catalog
     %   works on newcat
-    global cluscat mess bfig backcat fontsz cb1 cb2 cb3
+    global  cluscat mess bfig backcat
     global ttcat xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
 
@@ -73,11 +73,11 @@ function bfitnew(newcat)
     hold on
     semilogy(xt3,bvalsum3,'om')
     grid
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
-    set(gca,'Color',[cb1 cb2 cb3 ])
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    set(gca,'Color',color_bg)
     set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+0.3])
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -139,9 +139,9 @@ function bfitnew(newcat)
     set(h2,'visible','off');
 
     txt1=text(.16, .18,['B-Value: ',tt1]);
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     txt1=text(.16, .1,['Standard Deviation: ',tt2]);
-    set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+    set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     uicontrol('Style','Pushbutton',...
         'Callback','bfitnew(newcat)',...

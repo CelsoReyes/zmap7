@@ -5,7 +5,7 @@ function hisgra(vari1,stri2)
     
     %modified by Reyes 2017
     
-    global mess  ccum freq_field histo hisvar strii1 strii2 fontsz
+    global mess  ccum freq_field histo hisvar strii1 strii2
     stri1='Histogram';
     strii1=stri1;
     strii2=stri2;
@@ -65,14 +65,14 @@ function hisgra(vari1,stri2)
         histogram(vari1,-0.1:0.01:1.1);
     end
 
-    title2([stri2,stri1],'FontWeight','bold','FontSize',fontsz.m,'Color','k')
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    title2([stri2,stri1],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','TickDir','out','Ticklength',[ 0.02 0.02],'LineWidth',1.,'Box','on')
     if strcmp(stri2,stri3)
         stri2='Duration in days';
     elseif strcmp(stri2,stri4)
         stri2='Foreshock Duration in days';
     end
-    xlabel(stri2,'FontWeight','bold','FontSize',fontsz.m)
-    ylabel('  Number ','FontWeight','bold','FontSize',fontsz.m)
+    xlabel(stri2,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('  Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     set(gcf,'Visible','on')

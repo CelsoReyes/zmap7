@@ -34,27 +34,30 @@ end
 cd ..
 
 % Get the screensizxe and color
-global a action_button aw
+global a aw
 global b1 b2 bfig bg bmapc bvalsum3 bw
-global c1 c2 c3 cb1 cb2 cb3 clus cputype cum dx dy equi eqtime
-global figp file1 freq_field freq_field1 freq_field2 freq_field3 freq_field4 fontsz
-global Go_p_button histo hisvar ho hodi
+global color_bg clus cum dx dy equi eqtime
+global figp file1 freq_field freq_field1 freq_field2 freq_field3 freq_field4
+global  Go_p_button histo hisvar
 global lat1 lon1 lat2 lon2 leng maepi mess ni n1 n2 newa2 newcat original
 global pos pri ptt Re sax1 sax2 scale seismap strii1 strii2 sys
-global teb t0b torad term ttcat wex wey welx wely winx winy
-global xsec_fig xt3
+global teb t0b torad ttcat wex wey welx wely ZmapGlobal.Data.map_len
+global xsec_fig xt3 ms6 hodi
 
 % temporarily turn off all warnings...
 % warning off   %nuh-uh - CGR
 
-fipo = get(groot,'ScreenSize');
-hodi = pwd;
-fipo(4) = fipo(4)-150;
-term = get(groot,'ScreenDepth');
+zg=ZmapGlobal.Data; % get zmap globals
+hodi = zg.hodi;
+ms6 = zg.ms6;
+
+%fipo = get(groot,'ScreenSize');
+%hodi = pwd;
+%fipo(4) = fipo(4)-150;
+% term = get(groot,'ScreenDepth');
 
 % Set up the different compuer systems
 sys = computer;
-cputype = computer;
 
 if verLessThan('matlab','9.2')
     messtext = ['Warning: You are running a version of MatLab '
@@ -142,20 +145,6 @@ well = [];
 stat = [];
 a = [];
 faults = [];
-
-
-% set a whitebackground if the terminal is black and white
-% Does not alway work
-
-if term  == 1
-    whitebg([0 0 0 ])
-    c1 = 0;
-    c2 = 0;
-    c3 = 0;
-    cb1 = 0;
-    cb2 = 0;
-    cb3 = 0;
-end
 
 % Almost all zmap routine's calls to th uicontrol do so in the following order:
 %   uicontrol(...,'Position',[0. ... ], 'Units', 'normalized')

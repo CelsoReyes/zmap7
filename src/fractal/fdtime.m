@@ -56,7 +56,7 @@ fdt = plot(fdtim3(:,2),fdtim3(:,1), 'k');
 set(fdt,'LineWidth',1.0);
 set(gca,'Ylim',[1 3],'Xlim',[t0b teb]);
 grid;
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
     'bold','FontSize',10,'Linewidth',1.2)
@@ -74,10 +74,10 @@ pl = plot(bv3(:,2),bv3(:,1),'k-');
 set(pl,'LineWidth',1.0)
 
 grid
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 ylabel('b-value', 'fontsize', 10);
 xlabel('Time in years', 'fontsize', 10);
 title('Temporal Variation of the b-value','fontsize',12);

@@ -12,9 +12,9 @@ newt0 = newt2;
 lt =  newt2.Date >= t0b &  newt2.Date <teb-pt ;
 
 obs = newt2(lt,:);
-ho = 'noho';
+ho=false;
 bdiff(newt2(lt,:));
-ho = 'hold';
+ho=true;
 lt =  newt2.Date >= teb-pt &  newt2.Date <= teb ;
 bdiff(newt2(lt,:));
 
@@ -90,7 +90,7 @@ set(pl3,'LineWidth',2.0)
 legend([pl pl3 pl2],'predicted (var. b)','observed','predicted (b = const.)');
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 ylabel(' Number ')
 set(gca,'XTicklabel',[])
 
@@ -124,7 +124,7 @@ legend([pl1  pl2],'predicted (var. b)','predicted (b = const.)','location','Sout
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 xlabel('Magnitude')
 ylabel('Ln(P)')
 

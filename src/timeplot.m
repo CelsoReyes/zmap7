@@ -16,9 +16,9 @@ function timeplot(nosort)
     global a newcat
     global tmvar  minmag                    %for P-Value
     global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p iwl2
-    global cplot mess til plo2 cum newt2 ho2 statime winx winy
+   global cplot mess til plo2 cum newt2 statime 
     global magco selt hndl2 wls_button ml_button
-    global fontsz name
+    global name
     
     if ~exist('xt','var')
         xt=[]; % time series that will be used
@@ -118,7 +118,7 @@ function timeplot(nosort)
             'NextPlot','replace', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ 100 100 winx-100 winy-20]);
+            'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
         
         matdraw
         
@@ -132,16 +132,16 @@ function timeplot(nosort)
         
         uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
         iwl = iwl2*365/par1;
-        uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2 = ''hold''; ')
+        uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2=true; ')
         uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
         uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','ic=0;dispma3')
         %uimenu(options,'Label','Day/Night split ', 'Callback','daynigt')
         
         op3D  =   uimenu(options,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
-            'Callback',' ;tidepl');
+            'Callback',@(~,~)TimeDepthPlotter.plot(newt2));
         uimenu(op3D,'Label','Time magnitude plot ',...
-            'Callback',' timmag');
+            'Callback',@(~,~)TimeMagnitudePlotter.plot(newt2));
         
         
         
@@ -161,7 +161,7 @@ function timeplot(nosort)
         
         
         op4 = uimenu(options,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'Callback','ho = ''noho'',selt = ''in'',; bdiff2')
+        uimenu(op4,'Label','automatic', 'Callback','ho=false,selt = ''in'',; bdiff2')
         uimenu(op4,'label','Mc with time ', 'Callback','selt = ''in''; sPar = ''mc''; plot_McBwtime');
         uimenu(op4,'Label','b with depth', 'Callback','bwithde2')
         uimenu(op4,'label','b with magnitude', 'Callback','bwithmag');
@@ -177,7 +177,7 @@ function timeplot(nosort)
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog newt2).
         uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
-        uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ho = ''noho'';inpu_main')
+        uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ho=false;inpu_main')
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
         uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')
@@ -223,12 +223,12 @@ function timeplot(nosort)
             'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();update(mainmap())',...
             'tooltip','Plots this subset in the map window')
         
-        ho2 = 'noho';
+        ho2=false;
         
     end
     %end;    if figure exist
     
-    if ho2 == 'hold'
+    if ho2
         cumu = 0:1:(tdiff*365/par1)+2;
         cumu2 = 0:1:(tdiff*365/par1)-1;
         cumu = cumu * 0;
@@ -244,7 +244,7 @@ function timeplot(nosort)
         set(tiplot2,'LineWidth',2.0)
         
         
-        ho2 = 'noho'
+        ho2=false
         return
     end
     
@@ -257,11 +257,13 @@ function timeplot(nosort)
     hold off
     watchon;
     
-    set(gca,'visible','off','FontSize',fontsz.s,'FontWeight','normal',...
+    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
         'LineWidth',1.5,...
         'Box','on','SortMethod','childorder')
     
-    if isempty(newcat), newcat =a; end
+    if isempty(newcat), 
+        newcat =a; 
+    end
     
     % select big events ( > minmag)
     %
@@ -342,25 +344,21 @@ function timeplot(nosort)
         end
     end %if big
     
-    strib = name;
-    
-    title2(strib,'FontWeight','normal',...
-        'FontSize',fontsz.s,...
-        'Color','k')
-    
     if par1>=1
-        xlabel('Time in years ','FontSize',fontsz.s)
+        xlabel('Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
     else
         statime=newt2.Date(1) - par1/365;
         xlabel(['Time in days relative to ',char(statime)],...
-            'FontWeight','bold','FontSize',fontsz.m)
+            'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
-    ylabel('Cumulative Number ','FontSize',fontsz.s)
+    ylabel('Cumulative Number ','FontSize',ZmapGlobal.Data.fontsz.s)
+    
+    title(['"', newt2.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
     ht = gca;
     
     % Make the figure visible
     %
-    set(gca,'visible','on','FontSize',fontsz.s,...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
         'LineWidth',1.0,'TickDir','out','Ticklength',[0.02 0.02],...
         'Box','on')
     figure_w_normalized_uicontrolunits(cum);

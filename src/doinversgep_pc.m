@@ -7,7 +7,7 @@
 % Stefan Wiemer 03/96
 
 
-global mi mif1 mif2 term  hndl3 a newcat2 fontsz mi2
+global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmpi cumu2
 report_this_filefun(mfilename('fullpath'));
 think
@@ -36,15 +36,16 @@ eval(comm)
 %unix(['.' fs 'datasetupDD < inmifi.dat ' ]);
 
 %added support for multiple platforms de 07/2009
-if strcmp(cputype,'GLNX86') == 1
-    [stat, res] = unix(['.' fs 'datasetupDD_linux < inmifi.dat ' ]);
-elseif strcmp(cputype,'MAC') == 1
-    %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
-    disp('PPC currently not supported')
-elseif strcmp(cputype,'MACI') == 1
-    [stat, res] = unix(['.' fs 'datasetupDD_maci < inmifi.dat ' ]);
-else
-    [stat, res] = dos(['.' fs 'datasetupDD.exe < inmifi.dat ' ]);
+switch computer
+    case 'GLNX86'
+        [stat, res] = unix(['.' fs 'datasetupDD_linux < inmifi.dat ' ]);
+    case 'MAC'
+        %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
+        disp('PPC currently not supported')
+    case 'MACI'
+        [stat, res] = unix(['.' fs 'datasetupDD_maci < inmifi.dat ' ]);
+    otherwise
+        [stat, res] = dos(['.' fs 'datasetupDD.exe < inmifi.dat ' ]);
 end
 
 
@@ -67,15 +68,16 @@ disp('Now doing the approximate inversion ...')
 %unix(['.' fs 'fmsi_ste < AP1.IN']);
 
 %added support for multiple platforms de 07/2009
-if strcmp(cputype,'GLNX86') == 1
-    [stat, res] = unix(['.' fs 'fmsi_ste_linux < AP1.IN']);
-elseif strcmp(cputype,'MAC') == 1
-    %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
-    disp('PPC currently not supported')
-elseif strcmp(cputype,'MACI') == 1
-    [stat, res] = unix(['.' fs 'fmsi_ste_maci < AP1.IN']);
-else
-    [stat, res] = dos(['.' fs 'fmsi_ste.exe < AP1.IN']);
+switch computer
+    case 'GLNX86'
+        [stat, res] = unix(['.' fs 'fmsi_ste_linux < AP1.IN']);
+    case 'MAC'
+        %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
+        disp('PPC currently not supported')
+    case 'MACI'
+        [stat, res] = unix(['.' fs 'fmsi_ste_maci < AP1.IN']);
+    otherwise
+        [stat, res] = dos(['.' fs 'fmsi_ste.exe < AP1.IN']);
 end
 
 disp('done...')
@@ -105,15 +107,16 @@ helpdlg('The inversion is running right now ... it will take a few minutes ... p
 %unix(['.' fs 'fmsi_ste < EX1.IN']);
 
 %added support for multiple platforms de 07/2009
-if strcmp(cputype,'GLNX86') == 1
-    [stat, res] = unix(['.' fs 'fmsi_ste_linux < EX1.IN']);
-elseif strcmp(cputype,'MAC') == 1
-    %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
-    disp('PPC currently not supported')
-elseif strcmp(cputype,'MACI') == 1
-    [stat, res] = unix(['.' fs 'fmsi_ste_maci < EX1.IN']);
-else
-    [stat, res] = dos(['.' fs 'fmsi_ste.exe < EX1.IN']);
+switch computer
+    case 'GLNX86'
+        [stat, res] = unix(['.' fs 'fmsi_ste_linux < EX1.IN']);
+    case 'MAC'
+        %[stat, res] = unix(['.' fs 'slfast_macppc data2 ']);
+        disp('PPC currently not supported')
+    case 'MACI'
+        [stat, res] = unix(['.' fs 'fmsi_ste_maci < EX1.IN']);
+    otherwise
+        [stat, res] = dos(['.' fs 'fmsi_ste.exe < EX1.IN']);
 end
 
 

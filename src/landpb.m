@@ -13,11 +13,11 @@ load /Seis/A/stefan/after_figs/landslip.mat
 figure
 
 gx = xvect; gy = yvect;
-ho = hot(64);
-ho = ho(length(ho):-1:1,:);
-cmap2 = ho;
+hocm = hot(64);
+hocm = hocm(length(hocm):-1:1,:);
+cmap2 = hocm;
 cmap = [cmap1;cmap2];
-colormap(ho)
+colormap(hocm)
 
 clf
 yl = [-12 0],xl=[-42 58];

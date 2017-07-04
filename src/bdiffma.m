@@ -9,8 +9,8 @@ function  bdiffma(newcat)
     %
     think
     %zmap_message_center.set_info('  ','Calculating b-value...')
-    global cluscat mess bfig backcat fontsz ho xt3 bvalsum3
-    global ttcat les n teb t0b cb1 cb2 cb3 cua b1 b2 n1 n2
+    global cluscat mess bfig backcat xt3 bvalsum3
+    global  ttcat les n teb t0b cua b1 b2 n1 n2
     report_this_filefun(mfilename('fullpath'));
 
     [existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
@@ -65,7 +65,7 @@ function  bdiffma(newcat)
     backg_ab = log10(bvalsum3);
     orient tall
 
-    if ho(1:2) == 'ho'
+    if hold_state
         axes(cua)
         hold on
     else
@@ -101,10 +101,10 @@ function  bdiffma(newcat)
     %te = semilogy(xt3(i2),bvalsum3(i2),'xk');
     %set(te,'LineWidth',2,'MarkerSize',ms10)
 
-    xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
-    set(gca,'Color',[cb1 cb2 cb3])
-    set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+    xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    set(gca,'Color',color_bg)
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
 
@@ -166,21 +166,21 @@ function  bdiffma(newcat)
     h2=axes('position',rect);
     set(h2,'visible','off');
 
-    if ho(1:2) == 'no'
+    if ~ho
         txt1=text(.16, .18,['b-value (w LS, M  > ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2]);
-        set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+        set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         txt1=text(.16, .12,['b-value (max lik, M > ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5]);
-        set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+        set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     else
         txt1=text(.16, .06,['b-value (weighted least square): ',tt1, ' +/- ', tt2]);
-        set(txt1,'FontWeight','bold','FontSize',fontsz.m,'Color','r')
+        set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','r')
     end
     set(gcf,'visible','on');
     zmap_message_center.set_info('  ','Done')
     done
 
-    if ho(1:2) == 'ho'
+    if hold_state
         % calculate the probability that the two distributins are differnt
         b2 = str2double(tt1); n2 = newcat.Count;
         n = n1+n2;
@@ -188,7 +188,7 @@ function  bdiffma(newcat)
         pr = exp(-da/2-2);
         disp(['Probability: ',  num2str(pr)]);
         txt1=text(.65, .85,['Utsu Test: ', num2str(pr)]);
-        set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+        set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     else
         b1 = str2double(tt1); n1 = newcat.Count;
     end

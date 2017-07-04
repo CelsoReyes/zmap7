@@ -53,7 +53,7 @@ mov =   figure_w_normalized_uicontrolunits( ...
 figure_w_normalized_uicontrolunits(mov)
 hold on
 mov = gcf;
-whitebg([ c1 c2 c3]);
+whitebg(color_fbg);
 h = gcf;
 speed = 0.5;
 clf reset
@@ -66,7 +66,7 @@ cur_color = 'jet';
 colormap(jet);
 m0 = uicontrol('style','text','unit','norm','pos',[.06 .5 .8 .1]);
 set(m0,'string','Please Wait .... loading Data');
-set(m0,'background',[c1 c2 c3]);
+set(m0,'background',color_fbg);
 drawnow;
 
 delete(m0);
@@ -109,20 +109,20 @@ cs = uicontrol('style','popupmenu','string','HSV|Hot|Cool|Pink|Bone|Gary|Jet');
 set(cs,'unit','norm','pos',[.763 .05 .202 .05],...
  'Callback','v = get(cs,''value'');if v==1,cur_color = ''hsv'';elseif v==2,cur_color = ''hot'';elseif v==3,cur_color = ''cool'';elseif v==4,cur_color = ''pink'';elseif v==5,cur_color = ''bone'';elseif v==6,cur_color = ''gray'';elseif v==7,cur_color = ''jet'';end,colormap(cur_color);movie(m(:,i),1,1);');
 h2 = uicontrol('style','text','unit','norm','string','Colormap');
-set(h2,'pos',[.763 .1 .2 .05],'background',[c1 c2 c3]);
+set(h2,'pos',[.763 .1 .2 .05],'background',color_fbg);
 
 
 frame_slide = uicontrol('style','slider','max',b1,'min',1,'uni','norm');
 set(frame_slide,'value',1,'pos',[.750 .25 .04 .5], 'Callback','i=(get(frame_slide,''Value'')),movie(m(:,i),1,1)');
 frame = uicontrol('style','edit','value',10,'string',num2str(i),'call','speed=str2double(get(frame,''String''))');
 flabel = uicontrol('style','text','units','norm','pos',[.55 .13 .2 .05]);
-set(flabel,'string','Speed','background',[c1 c2 c3]);
+set(flabel,'string','Speed','background',color_fbg);
 set(frame,'units','norm','pos',[.60 .07 .1 .05],'min',0.1,'max',30);
 
 uicontrol('style','text','units','norm','pos',[.80 .90 .20 .05],...
-    'String','Forward 1 ','background',[c1 c2 c3]);
+    'String','Forward 1 ','background',color_fbg);
 uicontrol('style','text','units','norm','pos',[.80 .80 .20 .05],...
-    'String','Backward 1 ','background',[c1 c2 c3]);
+    'String','Backward 1 ','background',color_fbg);
 
 next = uicontrol('style','pushbutton','unit','norm','pos',[0.75 .90 .04 .05]);
 set(next,'string','>','ForeGroundColor','k');
@@ -133,7 +133,7 @@ set(bac, 'Callback','i=i-1;if i < 1; i=1;end;movie(m(:,i),1,1);set(frame_slide,'
 time = uicontrol('style','edit','value',3,'string',num2str(3),'call','set(time,''value'',str2double(get(time,''string'')))');
 set(time,'units','norm','pos',[.23 .07 .1 .05],'min',1,'max',1000);
 tlabel = uicontrol('style','text','units','norm','pos',[.18 .13 .2 .05]);
-set(tlabel,'string','# of runs','background',[c1 c2 c3]);
+set(tlabel,'string','# of runs','background',color_fbg);
 start = uicontrol('style','pushbutton','unit','norm','pos',[.06 .05 .15 .1]);
 set(start,'interruptible','yes','string','Play');
 set(start, 'Callback','disp(m1),movie(m,fix(get(time,''value'')*15/size(m,2)),speed)');
@@ -148,7 +148,7 @@ set(set_ni,'Callback','ni=str2double(get(set_ni,''String'')); set(set_ni,''Strin
 
 set(set_ni,'units','norm','pos',[.40 .02 .15 .05],'min',10,'max',10000);
 nilabel = uicontrol('style','text','units','norm','pos',[.36 .02 .04 .05]);
-set(nilabel,'string','ni:','background',[c1 c2 c3]);
+set(nilabel,'string','ni:','background',color_fbg);
 
 
 uicontrol('Units','normal',...

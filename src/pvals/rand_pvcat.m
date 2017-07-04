@@ -96,12 +96,12 @@ tint = [tmin tmax];
 %      'NextPlot','new', ...
 %      'backingstore','on',...
 %      'Visible','off', ...
-%      'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+%      'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
 %%     'MenuBar','none', ...
 %end
 %
 %%If a new graph is overlayed or not
-%if ho(1:2) == 'ho'
+%if hold_state
 %   axes(cua2a);
 %   disp('Hold');
 %   hold on
@@ -170,7 +170,7 @@ tint = [tmin tmax];
 %frfr = [frf2(1) frf frf2(2)];
 %tavgr = [tint(1) tavg tint(2)];
 %
-%if ho(1:2) == 'ho'
+%if hold_state
 % loglog(tavg, ratac, '-k','LineStyle', 'none', 'Marker', '+','MarkerSize',9);
 % hold on
 % loglog(tavgr, frfr, '-k','LineWidth',2.0);

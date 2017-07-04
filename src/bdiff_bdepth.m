@@ -7,8 +7,8 @@ function  bdiff_bdepth(newcat)
 
     %  Stefan Wiemer 1/95
     %
-    global cluscat mess bfig backcat fontsz ho xt3 bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
-    global ttcat les n teb t0b cb1 cb2 cb3 cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
+    global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
+    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
     global mxlkbt lsbt ni
     think
     %zmap_message_center.set_info('  ','Calculating b-value...')
@@ -22,7 +22,7 @@ function  bdiff_bdepth(newcat)
         %set(bfig,'visible','off')
 
         if dloop == 2
-            ho = 'ho';
+            ho=true;
         end
     else
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
@@ -31,7 +31,7 @@ function  bdiff_bdepth(newcat)
             'MenuBar','none',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
-        ho = 'noho';
+        ho=false;
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...
@@ -82,7 +82,7 @@ function  bdiff_bdepth(newcat)
     backg_ab = log10(bvalsum3);
     orient tall
 
-    if ho(1:2) == 'ho'
+    if hold_state
         axes(cua)
         disp('hold on')
         hold on
@@ -121,10 +121,10 @@ function  bdiff_bdepth(newcat)
     te = semilogy(xt3(i2),bvalsum3(i2),'xk');
     set(te,'LineWidth',1.5,'MarkerSize',ms10)
 
-    xlabel('Magnitude','FontWeight','normal','FontSize',fontsz.s)
-    ylabel('Cumulative Number','FontWeight','normal','FontSize',fontsz.s)
-    %set(gca,'Color',[cb1 cb2 cb3])
-    set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','normal',...
+    xlabel('Magnitude','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+    ylabel('Cumulative Number','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+    %set(gca,'Color',color_bg)
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
         'FontWeight','normal','LineWidth',1.0,...
         'Box','on','Tag','cufi')
 
@@ -205,7 +205,7 @@ function  bdiff_bdepth(newcat)
     h2=axes('position',rect);
     set(h2,'visible','off');
 
-    %if ho(1:2) == 'ho'
+    %if hold_state
     if dloop == 2
         set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','y','MarkerEdgeColor','g','Marker','o');
@@ -214,22 +214,22 @@ function  bdiff_bdepth(newcat)
         %'MarkerFaceColor','c','MarkerEdgeColor','m','Marker','s');
 
         txt1=text(.10, .08,['Bottom Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s,'Color','r')
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
         txt1=text(.10, .04,['Bottom Zone b-value (max lik, M >= ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s, 'Color', 'r')
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s, 'Color', 'r')
         lsbb = bw; mxlkbb = bv;
 
         lsb = lsbt/lsbb; mxlkb = mxlkbt/mxlkbb;
         slsb = num2str(lsb);
         smxlkb = num2str(mxlkb);
         txt3 = text(.25, .94,['LS b ratio = ', slsb,'           max lik b ratio = ',smxlkb]);
-        set(txt3,'FontWeight','normal','FontSize',fontsz.s,'Color','b')
+        set(txt3,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','b')
         %  leg(2)=pldepth
     else
         txt1=text(.10, .18,['Top Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s)
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         txt1=text(.10, .14,['Top Zone b-value (max lik, M >= ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s)
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
         lsbt = bw; mxlkbt = bv;
     end
@@ -247,7 +247,7 @@ function  bdiff_bdepth(newcat)
     zmap_message_center.set_info('  ','Done')
     done
 
-    if ho(1:2) == 'ho'
+    if hold_state
         % calculate the probability that the two distributins are differnt
         l = newcat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
@@ -256,7 +256,7 @@ function  bdiff_bdepth(newcat)
         pr = exp(-da/2-2);
         disp(['Probability: ',  num2str(pr)]);
         txt1=text(.60, .75,['p=  ', num2str(pr,2)],'Units','normalized');
-        set(txt1,'FontWeight','normal','FontSize',fontsz.s)
+        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         txt1=text(.60, .70,[ 'n1: ' num2str(n1) ', n2: '  num2str(n2) ', b1: ' num2str(b1)  ', b2: ' num2str(b2)]);
         set(txt1,'FontSize',8,'Units','normalized')
     else

@@ -88,7 +88,7 @@ pl =plot(niv,pmib,'g--')
 set(pl,'LineWidth',2.0)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 grid
 xlabel('Windowlength in [years]')
 ylabel('Range of z')
@@ -102,7 +102,7 @@ shading flat
 colormap(jet)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 xlabel('Windowlength in [years]')
 ylabel('Range of z')
 title(['ni  =  ' num2str(ni) 'events, ' num2str(n0) ' random samples'])

@@ -22,9 +22,7 @@ set(mess,...
 
 
 %  set(gcf,'Color',[0.8 0.8 0.8])
-if term == 'mono ';
-    whitebg(mess) ; 
-end
+
 set(gca,'visible','off');
 zmap_message_center.set_message()
 set(mess,'visible','on');

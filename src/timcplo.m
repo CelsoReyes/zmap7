@@ -83,12 +83,12 @@ set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
 
 hold on
 
-xlabel('Distance in [km] ','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Time  in years ','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Distance in [km] ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Time  in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 grid
 hold off

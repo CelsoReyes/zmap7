@@ -34,7 +34,7 @@ figure_w_normalized_uicontrolunits(mifmap)
 delete(gca);delete(gca); delete(gca);delete(gca);
 delete(gca);delete(gca); delete(gca);delete(gca);
 
-set(gca,'visible','off','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -85,11 +85,11 @@ if exist('maex', 'var')
 end
 
 %overlay
-title('Mean of the Misfit','FontWeight','bold','FontSize',fontsz.s)
-xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.s)
-ylabel('Depth in [km]','FontWeight','bold','FontSize',fontsz.s)
+title('Mean of the Misfit','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+ylabel('Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 

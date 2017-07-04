@@ -9,7 +9,7 @@
 %
 think
 %zmap_message_center.set_info('  ','Calculating b-value...')
-global cluscat mess bfig backcat fontsz
+global cluscat mess bfig backcat
 global ttcat les n
 report_this_filefun(mfilename('fullpath'));
 
@@ -90,10 +90,10 @@ set(te,'LineWidth',2,'MarkerSize',ms10)
 te = semilogy(xt3(i2),bvalsum3(i2),'xk');
 set(te,'LineWidth',2,'MarkerSize',ms10)
 
-xlabel('Magnitude','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Cumulative Number','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 set(gca,'Color',[1 1 0.6])
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on')
 
@@ -141,9 +141,9 @@ h2=axes('position',rect);
 set(h2,'visible','off');
 
 txt1=text(.16, .18,['B-Value(L2): ',tt1,'  B(eff): ',num2str(me), '  B(mean2)= ']);
-set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 txt1=text(.16, .1,['Standard Deviation: ',tt2]);
-set(txt1,'FontWeight','bold','FontSize',fontsz.m)
+set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 set(gcf,'visible','on');
 zmap_message_center.set_info('  ','Done')
 done

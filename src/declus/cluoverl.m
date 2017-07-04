@@ -6,7 +6,7 @@ function cluoverl(var1)
     global bgevent plot1_h plot2_h  equi cluscat backequi newclcat a
     global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3
     global par1 file1 clu h5
-    global fontsz ms6 ty stri2 strib
+    global ms6 ty stri2 strib
     global after_h fore_h main_h ttcat after_button fore_button
     global foresh aftersh mainsh calll66
     global mainfault main faults clus_button coastline maepi
@@ -94,12 +94,12 @@ function cluoverl(var1)
         dplo3_h =plot(a(a.Depth<=dep3&a.Depth>dep2,1),a(a.Depth<=dep3&a.Depth>dep2,2),'.r');set(dplo3_h,'MarkerSize',ms6,'Marker',ty)
 
         axis([ s2 s1 s4 s3])
-        xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         if isempty(backequi)
             strib = [  ' Map of   '  file1 ];
             %ti2 =  title2(strib,'FontWeight','bold',...
-            %             'FontSize',fontsz.l,'Color','r')
+            %             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         else
             delete ti2;
         end
@@ -107,20 +107,20 @@ function cluoverl(var1)
         %
         s = sprintf('Depth < %3.1f km',dep1);
         text('Color','b','units','normalized', 'Position',[0.05 0.15 0 ],...
-            'FontSize',fontsz.m,'String',s);
+            'FontSize',ZmapGlobal.Data.fontsz.m,'String',s);
         s = sprintf('Depth < %3.1f km',dep2);
         text('Color','y','units','normalized', 'Position',[0.05 0.10 0 ],...
-            'FontSize',fontsz.m,'String',s);
+            'FontSize',ZmapGlobal.Data.fontsz.m,'String',s);
         s = sprintf('Depth < %3.1f km',dep3);
         text('Color','r','units','normalized', 'Position',[0.05 0.05 0 ],...
-            'FontSize',fontsz.m,'String',s);
+            'FontSize',ZmapGlobal.Data.fontsz.m,'String',s);
 
         %  h5 is the graphic handle to the main figure in window 1
         %
         h5 = gca;
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
         %
         %  Plots epicenters  and faults
@@ -193,14 +193,14 @@ function cluoverl(var1)
         set(after_button,'value',1);
         set(fore_button,'value',1);
         axis([ s2 s1 s4 s3])
-        xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-        ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+        xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         strib = [  ' Map of   '  file1 ' #' num2str(new(10))];
         title(strib,'FontWeight','bold',...
-            'FontSize',fontsz.l,'Color','r')
+            'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         set(gca,'box','on',...
             'SortMethod','childorder','TickDir','out','FontWeight',...
-            'bold','FontSize',fontsz.m,'Linewidth',1.2)
+            'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 
         set(gca,'visible','on')

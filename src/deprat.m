@@ -26,7 +26,7 @@ if newCompWindowFlag
         'backingstore','on',...
         'NextPlot','new', ...
         'Visible','on', ...
-        'Position',[ fipo(3)-600 fipo(4)-500 winx winy+200]);
+        'Position',[ (fipo(3:4) - [600 500]) (ZmapGlobal.Data.map_len + [0 200]));
 
 
     uicontrol('Units','normal',...
@@ -94,7 +94,7 @@ te = text(0.6,0.8,la1,'units','normalized','FontWeight','Bold');
 set(gca,'XLim',[0 max(newcat.Depth)])
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.0)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 ylabel('Number (normalized)')
 
 rect = [0.2 0.4 0.65 0.25];
@@ -104,7 +104,7 @@ grid
 set(gca,'XLim',[0 max(newcat.Depth)])
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.0)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 la1 = ['  Time: ' num2str(t3p(1)) ' to '  num2str(t4p(1))];
 te = text(0.6,0.8,la1,'units','normalized','FontWeight','Bold');
 xlabel('Depth')
@@ -118,7 +118,7 @@ bar(x2,n1-n2)
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.s,'Linewidth',1.0)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.s,'Linewidth',1.0)
 set(gca,'XLim',[0 max(newcat.Depth)])
 xlabel('Depth')
 ylabel('Difference (t1-t2)')

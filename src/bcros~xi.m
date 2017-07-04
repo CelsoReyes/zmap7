@@ -82,10 +82,10 @@ set(pl,'Linewidth',2.0,'MarkerSize',14)
 hold on
 pl =  plot(miret(:,2),miret(:,1),'-b')
 set(pl,'Linewidth',2.0)
-xlabel('Number of events in each volume','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Minimum recurrence time','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Number of events in each volume','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Minimum recurrence time','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 

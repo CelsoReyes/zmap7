@@ -40,12 +40,12 @@ if oldfig_button == 0
         'NextPlot','add', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     matdraw
 
     % Display
-    uimenu('Label','|','Enable','off'); % divider
+    add_menu_divider();
     add_symbol_menu('eq_plot');
 
     % Menu: Ztools
@@ -59,9 +59,9 @@ if oldfig_button == 0
     op2 = uimenu('Label',' ZAnalyze ');
     uimenu(op2,'Label','Refresh ', 'Callback','view_coulombmap')
     uimenu(op2,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ho=''noho'';plot_circbootfit_a2;watchoff(cfsmap)')
+         'Callback','h1 = gca;met = ''ra''; ho=false;plot_circbootfit_a2;watchoff(cfsmap)')
     uimenu(op2,'Label','Select EQ with const. number',...
-         'Callback','h1 = gca;ho2=''hold'';ho = ''hold'';plot_constnrbootfit_a2;watchoff(cfsmap)')
+         'Callback','h1 = gca;ho2=true;ho=true;plot_constnrbootfit_a2;watchoff(cfsmap)')
 
     % Set default colormap
     colormap(jet)

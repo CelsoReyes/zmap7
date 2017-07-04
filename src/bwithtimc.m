@@ -63,7 +63,7 @@ if selt == 'in'
         'EraseMode','normal',...
         'Position',[0.20 .42 0 ],...
         'Rotation',0 ,...
-        'FontSize',fontsz.m ,...
+        'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Constant time or event interval');
 
@@ -274,10 +274,10 @@ if selt == 'ca'
 
     %set(pl,'LineWidth',2.5)
     %grid
-    %set(gca,'Color',[cb1 cb2 cb3])
+    %set(gca,'Color',color_bg)
     %set(gca,'box','on',...
     %        'SortMethod','childorder','TickDir','out','FontWeight',...
-    %        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    %        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
     %
     %ylabel('b-value')
     %set(gca,'Xlim',[t0b teb]);
@@ -293,10 +293,10 @@ if selt == 'ca'
     %set(pl,'LineWidth',2.5)
     %set(gca,'Xlim',[t0b teb]);
     %grid
-    %set(gca,'Color',[cb1 cb2 cb3])
+    %set(gca,'Color',color_bg)
     %set(gca,'box','on',...
     %'SortMethod','childorder','TickDir','out','FontWeight',...
-    %'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    %'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
     %
     %ylabel('mean magnitude')
     %
@@ -311,11 +311,11 @@ if selt == 'ca'
     plot(bvm(:,2),bvm(:,1),'--b*')
 
     grid
-    set(gca,'Color',[cb1 cb2 cb3])
+    set(gca,'Color',color_bg)
     set(gca,'Xlim',[t0b teb]);
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
     ylabel('b-value')
     title('b value with time  based on Maximum Likelihood');
@@ -328,11 +328,11 @@ if selt == 'ca'
     plot(bvm(:,2),bvm(:,3),'--kx')
 
     grid
-    set(gca,'Color',[cb1 cb2 cb3])
+    set(gca,'Color',color_bg)
     set(gca,'Xlim',[t0b teb]);
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
     ylabel('Mc')
     xlabel('Time')

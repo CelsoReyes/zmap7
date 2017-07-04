@@ -9,9 +9,9 @@ set(gcf,'PaperPosition', [2. 1 7.0 5.0])
 
 
 cmap1 = jet(64);
-ho = hot(64);
-ho = ho(length(ho):-1:1,:);
-cmap2 = ho;
+hocm = hot(64);
+hocm = hocm(length(hocm):-1:1,:);
+cmap2 = hocm;
 cmap = [cmap1;cmap2];
 colormap(cmap)
 

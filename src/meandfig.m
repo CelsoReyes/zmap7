@@ -50,7 +50,7 @@ if newDep2WindowFlag
         'units','norm','pos',[.90 .30 .10 .06],'min',0.1,'max',100);
 
     newlabel = uicontrol('style','text','units','norm','pos',[.85 .30 .05 .06]);
-    set(newlabel,'string','iwl:','background',[c1 c2 c3]);
+    set(newlabel,'string','iwl:','background',color_fbg);
 
     uicontrol('Units','normal',...
         'Position',[.90 .25 .08 .06],'String','Go',...
@@ -89,20 +89,20 @@ end
 axis([min(xt2) max(xt2+0.5) min([meand*1.1 ])  max([meand*0.9 ])])
 v = axis;
 grid
-xlabel('Time (years)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
-ylabel('Mean Depth (km)','FontWeight','bold','FontSize',fontsz.m,'Color','k')
+xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+ylabel('Mean Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 stro = [' ' file1 '; ' num2str(iwln) ' / ' num2str(step)];
-title2(stro,'FontWeight','bold','FontSize',fontsz.m,'Color','k')
+title2(stro,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 hold off
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 set(gca,'visible','on');
 set(gcf,'visible','on');

@@ -2,7 +2,7 @@ function plotmima(var1)
 
     report_this_filefun(mfilename('fullpath'));
 
-    global a mi fontsz term cb1 cb2 cb3 mif2 mif1 hndl3
+    global  a mi mif2 mif1 hndl3
 
     sc = get(hndl3,'Value');
     mi(:,2) = mi(:,2)+1;
@@ -47,17 +47,15 @@ function plotmima(var1)
     %axis([ s2 s1 s4 s3])
     %overlay_
 
-    xlabel('Longitude [deg]','FontWeight','bold','FontSize',fontsz.m)
-    ylabel('Latitude [deg]','FontWeight','bold','FontSize',fontsz.m)
+    xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     strib = [  'Misfit Map '];
     title2(strib,'FontWeight','bold',...
-        'FontSize',fontsz.m,'Color','k')
+        'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
-    if term > 1
-        set(gca,'Color',[cb1 cb2 cb3]);
-    end
+    set(gca,'Color',color_bg);
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',fontsz.m,'Linewidth',1.2)
+        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
     mi(:,2) = mi(:,2)-1;
     watchoff

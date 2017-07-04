@@ -16,7 +16,7 @@ pl = plot(re(:,1),re(:,2),':r')
 set(pl,'LineWidth',2.5)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 
 le =legend('-b','b(L2)','ro','b(maxli)');

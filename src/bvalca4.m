@@ -1,5 +1,5 @@
 function [bv, magco, std_backg, av, me, mer , me2, rt , pr] =  bvalcalc(b)
-    global  backcat fontsz n les teb t0b no1 bo1
+    global  backcat n les teb t0b no1 bo1
 
     report_this_filefun(mfilename('fullpath'));
 

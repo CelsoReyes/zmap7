@@ -5,7 +5,7 @@ function [tt1,tt2]=timesel(var1)
     
     % works on newt2
     
-    global newt2 ccum tiplo2 ho statime cum fontsz
+    global newt2 ccum tiplo2 statime cum
     
     report_this_filefun(mfilename('fullpath'));
     
@@ -25,7 +25,7 @@ function [tt1,tt2]=timesel(var1)
         hold on
         seti = uicontrol('Style','text','Units','normal',...
             'Position',[.4 .01 .2 .05],...
-            'String','Select Time 1 ','FontSize',fontsz.m,'FontWeight','bold', 'ForegroundColor',[.2 0 .8]);
+            'String','Select Time 1 ','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold', 'ForegroundColor',[.2 0 .8]);
         % XLim=get(tiplot2,'Xdata');
         
         [M1b, ~, ~] = ginput_datetime(ax,1);
@@ -54,6 +54,6 @@ function [tt1,tt2]=timesel(var1)
             ll=newt2.Date>tt1 & newt2.Date<tt2;
         end
         newt2=newt2.subset(ll);
-        ho ='noho';
+        ho=false;
     end
 end

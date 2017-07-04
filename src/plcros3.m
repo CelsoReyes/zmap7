@@ -7,7 +7,7 @@ figure
 %[afx, afy] =lc_xsec2(af(:,2)',af(:,1)',af(:,7),wi,leng,lat1,lon1,lat2,lon2);
 
 
-set(gca,'visible','off','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
@@ -35,8 +35,8 @@ ploeqc = plot(newa2(:,length(newa2(1,:))),-newa2(:,7),'xb');
 set(ploeqc,'MarkerSize',2,'LineWidth',0.4)
 axis([ min(gx) max(gx) min(gy) max(gy)]); axis image; hold on
 
-%xlabel('Distance in [km]','FontWeight','bold','FontSize',fontsz.m)
-%ylabel('Depth in [km]','FontWeight','bold','FontSize',fontsz.m)
+%xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+%ylabel('Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 set(gca,'XTickLabels',[])
 set(gca,'YTickLabels',[  10 8 6 4 2 ])
@@ -47,14 +47,14 @@ if exist('maex', 'var')
     pl = plot(maex,-maey,'*m');
 end
 
-set(gca,'visible','on','FontSize',fontsz.m,'FontWeight','bold',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 h1 = gca;hzma = gca;
 %h5 = colorbar('horiz');
 %set(h5,'Pos',[0.25 0.05 0.5 0.05],...
-%'FontWeight','bold','FontSize',fontsz.m)
+%'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
 % Make the figure visible
 %

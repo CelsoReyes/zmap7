@@ -23,10 +23,10 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     % time
 
 
-    global action_button file1 term wex wey welx wely             %welcome
+    global file1             %welcome
     global mess ccum bgevent equi  clust original cluslength newclcat
     global backcat ttcat cluscat
-    global winx winy sys minmag clu te1 fontsz
+   global  sys minmag clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
     global xt par3 cumu cumu2
     global close_p_button pplot

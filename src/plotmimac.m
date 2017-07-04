@@ -2,7 +2,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-global a mi fontsz term cb1 cb2 cb3 mif2 mif1 hndl3
+global  a mi mif2 mif1 hndl3
 
 %var1 = 4;
 sc = get(hndl3,'Value');
@@ -84,16 +84,16 @@ if exist('maex', 'var')
     set(pl,'MarkerSize',8,'LineWidth',2)
 end
 
-xlabel('Distance [km]','FontWeight','bold','FontSize',fontsz.m)
-ylabel('Depth [km]','FontWeight','bold','FontSize',fontsz.m)
+xlabel('Distance [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+ylabel('Depth [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  'Misfit '];
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.m,'Color','k')
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
-if term > 1; set(gca,'Color',[cb1 cb2 cb3]); end
+ set(gca,'Color',color_bg);
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 uicontrol(...
     'Style','pushbutton',...
     'Units','normalized',...

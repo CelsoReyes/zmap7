@@ -74,14 +74,14 @@ overlay_
 
 axis([ s2 s1 s4 s3])
 
-title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',fontsz.s,...
+title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
     'Color','k','FontWeight','normal')
 
-xlabel('Longitude ','FontWeight','normal','FontSize',fontsz.s)
-ylabel('Latitude ','FontWeight','normal','FontSize',fontsz.s)
+xlabel('Longitude ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+ylabel('Latitude ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
 
 
-set(gca,'visible','on','FontSize',fontsz.s,'FontWeight','normal',...
+set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
     'FontWeight','normal','LineWidth',1.,...
     'Box','on','TickDir','out','Ticklength',[0.01 0.01])
 

@@ -19,7 +19,7 @@ Z = [tbin'; xtz'; zmag'; zval'];
 
 rect = [0.15 0.15 0.3 0.7];
 axes('pos',[rect]);
-set(gca,'FontSize',fontsz.m,'FontWeight','normal');
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 
 if length(Z(1,:)) > 0
     l = Z(4,:)  > 6; Z(4,l)  = Z(4,l)*0+6 ;
@@ -40,13 +40,13 @@ end
 axis([ minmg maxmg t0b teb])
 
 
-ylabel('Time (yrs)','FontWeight','normal','FontSize',fontsz.m);
-xlabel('Mag <','FontSize',fontsz.m,'FontWeight','normal');
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+ylabel('Time (yrs)','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m);
+xlabel('Mag <','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 
-set(gca,'Color',[ cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 
 
 [tbin,zmag,zval] = find(ZABO);
@@ -61,7 +61,7 @@ Z = [tbin'; xtz'; zmag'; zval'];
 
 rect = [0.45 0.15 0.3 0.7];
 axes('pos',[rect]);
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
 
@@ -82,14 +82,14 @@ if length(Z(1,:)) > 0
 end
 
 axis([ minmg maxmg t0b teb])
-xlabel('Mag >','FontSize',fontsz.m,'FontWeight','normal');
+xlabel('Mag >','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal');
 set(gca,'Yticklabels',[])
 
-set(gca,'FontSize',fontsz.m,'FontWeight','normal',...
+set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
     'Box','on','SortMethod','childorder','TickDir','out')
-%set(gca,'Color',[ cb1 cb2 cb3])
-set(gcf,'Color',[c1 c2 c3])
+%set(gca,'Color',color_bg)
+set(gcf,'Color',color_fbg)
 
 te = text(1.1,0.9,'Positive z: + ','Units','normalized','FontWeight','normal');
 te = text(1.1,0.8,'Negative z: o ','Units','normalized','FontWeight','normal');

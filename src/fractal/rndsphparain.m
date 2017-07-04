@@ -9,7 +9,7 @@
 % Creates the input window
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[150 100 350 350 ],'Name','Parameters for the sphere','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',[c1 c2 c3],'NextPlot','new');
+    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.70 .90 .22 .06],...
@@ -39,22 +39,22 @@ input6 = uicontrol('Style','edit','Position',[.70 .4 .22 .06],...
 
 
 tx1 = text('EraseMode','normal', 'Position',[0 1.00 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in x [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in x [deg]: ');
 
 tx2 = text('EraseMode','normal', 'Position',[0 .88 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in y [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in y [deg]: ');
 
 tx3 = text('EraseMode','normal', 'Position',[0 .76 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in z [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Radius of sphere in z [km]: ');
 
 tx4 = text('EraseMode','normal', 'Position',[0 .64 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String',' Center Coordinate x [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String',' Center Coordinate x [deg]: ');
 
 tx5 = text('EraseMode','normal', 'Position',[0 .515 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Center Coordinate y [deg]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Center Coordinate y [deg]: ');
 
 tx6 = text('EraseMode','normal', 'Position',[0 .39 0 ], 'Rotation',0 ,...
-    'FontSize',fontsz.m , 'FontWeight','bold' , 'String','Center Coordinate z [km]: ');
+    'FontSize',ZmapGlobal.Data.fontsz.m , 'FontWeight','bold' , 'String','Center Coordinate z [km]: ');
 
 
 close_button=uicontrol('Style','Pushbutton',...

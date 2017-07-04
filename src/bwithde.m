@@ -53,7 +53,7 @@ if newdepWindowFlag
         'NextPlot','add', ...
         'backingstore','on',...
         'Visible','on', ...
-        'Position',[ 150 150 winx-50 winy-20]);
+        'Position',[ 150 150 (ZmapGlobal.Data.map_len - [50 20]) ]);
 
     
     uicontrol('Units','normal',...
@@ -81,10 +81,10 @@ hold on
 pl = plot(bv2(:,2),bv2(:,1),'b');
 set(pl,'LineWidth',0.5)
 grid
-%set(gca,'Color',[cb1 cb2 cb3])
+%set(gca,'Color',color_bg)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 bax = gca;
 strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
@@ -92,7 +92,7 @@ set(gca,'XTickLabels',[])
 ylabel('b(LS)')
 %xlabel('Depth in [km]')
 title2(strib,'FontWeight','bold',...
-    'FontSize',fontsz.l,...
+    'FontSize',ZmapGlobal.Data.fontsz.l,...
     'Color','k')
 
 xl = get(gca,'Xlim');
@@ -114,10 +114,10 @@ xl = get(gca,'Xlim');
 %set(pl,'LineWidth',1.5)
 %set(gca,'Xlim',xl)
 %grid
-%set(gca,'Color',[cb1 cb2 cb3])
+%set(gca,'Color',color_bg)
 %set(gca,'box','on',...
 %'SortMethod','childorder','TickDir','out','FontWeight',...
-%'bold','FontSize',fontsz.m,'Linewidth',1.2)
+%'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 % set(gca,'XTickLabels',[])
 %ylabel('mean mag')
@@ -132,7 +132,7 @@ hold on
 grid
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 set(gca,'Xlim',xl)
 xlabel('depth')

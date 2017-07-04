@@ -114,7 +114,7 @@ while fTime < fMaxTime-2*fTimeWindow
     % Colorbar
     h5 = colorbar('horiz');
     set(h5,'Pos',[0.35 0.1 0.4 0.02],...
-        'FontWeight','bold','FontSize',fontsz.s,'TickDir','out')
+        'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s,'TickDir','out')
     sTitlestr = ['Splittime : ' num2str(fTime+fTimeWindow)];
     title(sTitlestr);
 %     sText = ['\Delta_{FMD}'];

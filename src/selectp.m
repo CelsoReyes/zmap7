@@ -18,7 +18,7 @@ function selectp(in_or_out)
     %  Use the right mouse button to select the final point.
     %_____________________________________________________________
     echo off
-        report_this_filefun(mfilename('fullpath'));
+    report_this_filefun(mfilename('fullpath'));
     %zoom off
     newt2 = [ ];           % reset catalogue variables
     %a = storedcat;              % uses the catalogue with the pre-selected main
@@ -57,8 +57,8 @@ function selectp(in_or_out)
         a.addFilter(mask);
         newt2 = a.getCropped();
         a.clearFilter();
+        
         % Plot of new catalog
-        %
         washeld=ishold(ax); hold(ax,'on');
         MainInteractiveMap.plotOtherEvents(newt2,0,...
             'Marker','.',...
@@ -67,8 +67,20 @@ function selectp(in_or_out)
             'MarkerFaceColor','none',...
             ...'Linewidth',1.5,...
             'DisplayName','Selected Events');
-        set(mouse_points_overlay,'LineStyle',':','LineWidth',1,'Color',[.5 .5 .5],'Marker','none');
+        
+        %change the polygon characteristics
+        set(mouse_points_overlay,'LineStyle',':','LineWidth',1.5,'Color',[.5 .5 .5],'Marker','none');
         if ~washeld; hold(ax,'off');end
+    end
+    % ask for a name for this new catalog
+    %ploc = get(0,'PointerLocation');
+    prompt = 'Please provide a catalog name:';
+    dlgname = 'CatalogSelection';
+    numlines = 1;
+    defaultans = {'new_catalog'};
+    sel_nm = inputdlg('Please provide a catalog name:','Name of Selected Catalog',1, defaultans);
+    if ~isempty(sel_nm)
+        newt2.Name = sel_nm{1};
     end
     xy = [x y];
     

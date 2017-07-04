@@ -7,7 +7,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 
-global fipo  lclu winx winy wi
+global fipo  lclu ZmapGlobal.Data.map_len wi
 
 al=cluscat;
 
@@ -23,7 +23,7 @@ if newMapLaWindowFlag
         'MenuBar','none', ...
         'backingstore','on',...
         'Visible','off', ...
-        'Position',[ fipo(3)-600 fipo(4)-400 winx winy]);
+        'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     
     matdraw
     drawnow
@@ -47,7 +47,6 @@ messtext= ...
     ];
 
 zmap_message_center.set_message(titStr,messtext);
-%if term == 1 ; whitebg([0 0 0 ]);end
 
 [xsecx xsecy,  inde] = mysect(al(:,2)',al(:,1)',al(:,7),wi);
 
@@ -72,7 +71,6 @@ set_width = uicontrol('style','edit','value',wi,...
 
 wilabel = uicontrol('style','text','units','norm','pos',[.60 .00 .30 .06]);
 set(wilabel,'string','Width in km:','background','y');
-if term == 1 ; whitebg([0 0 0 ]);end
 
 % create the selected catalog
 %

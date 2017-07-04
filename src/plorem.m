@@ -30,7 +30,7 @@ set(gca,'Yscale','log');
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2,'Ticklength',[0.02 0.02])
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2,'Ticklength',[0.02 0.02])
 
 ylabel('Recurrence Time [yrs] ')
 xlabel('Magnitude ')
@@ -52,7 +52,7 @@ grid
 %set(pl,'LineWidth',2.0)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.,'Ticklength',[0.02 0.02])
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[0.02 0.02])
 xlabel('Magnitude ')
 set(gca,'Yscale','log');
 ylabel('Annual Probability ')

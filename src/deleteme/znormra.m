@@ -36,7 +36,7 @@ figure
 histogram(ma)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 grid
 xlabel('Zmax')
 ylabel('Number ')

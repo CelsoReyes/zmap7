@@ -58,10 +58,10 @@ pl = plot(bv2(:,2),bv2(:,1),'b')
 set(pl,'LineWidth',1.0)
 
 grid
-set(gca,'Color',[cb1 cb2 cb3])
+set(gca,'Color',color_bg)
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...
-    'bold','FontSize',fontsz.m,'Linewidth',1.2)
+    'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 %
 ylabel('Mc')
 %set(gca,'Xlim',[t0b teb]);
