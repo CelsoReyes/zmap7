@@ -65,7 +65,7 @@ if verLessThan('matlab','9.2')
         ' older than 2017a. ZMAP was modified for compatibility ',...
         ' with r2017a or later, so your version may no longer be',...
         ' compatible'];
-    errdlg(messtext,'Warning!')
+    errordlg(messtext,'Warning!')
     pause(5)
 end
 

@@ -22,7 +22,7 @@ if xx*yy < 30
         case 'Yes'
             pltobo
         case 'No'
-            errdlg('Please create a topomap first, using the options from the seismicty map window');
+            errordlg('Please create a topomap first, using the options from the seismicty map window');
             return
     end % switch
 end

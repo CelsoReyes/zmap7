@@ -173,3 +173,6 @@ Focal Mechanisms:
 https://ch.mathworks.com/matlabcentral/fileexchange/61227-focalmech-fm--centerx--centery--diam--varargin-
 
 # uncertainties, EVENT data
+
+# completeness maps precalculated on the web
+completenessweb.org

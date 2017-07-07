@@ -101,7 +101,7 @@ classdef MainInteractiveMap
                 tolegend=findobj(ax,'Type','line');
                 tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
                 legend(ax,tolegend,'Location','southeastoutside');
-                ax.Legend.Title.String='Seismic Map';
+                ax.Legend.Title.String='Seismicity Map';
             if strcmp(gh.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
@@ -172,7 +172,7 @@ classdef MainInteractiveMap
                 tolegend=findobj(ax,'Type','line');
                 tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
                 legend(ax,tolegend,'Location','southeastoutside');
-                ax.Legend.Title.String='Seismic Map';
+                ax.Legend.Title.String='Seismicity Map';
             catch ME
                 disp(ax.Children);
                 rethrow(ME);

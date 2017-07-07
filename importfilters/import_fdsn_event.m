@@ -110,8 +110,8 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         
         %This version makes no assumptions other than the field titles it expects.
         % various FDSN services tend to disagree on formats.. time, spellings, capitalization, etc.
-        
-        newlines = find(data==newline,2);
+        newl = sprintf('\n');
+        newlines = find(data==newl,2);
         headerline =data(1:newlines(1)-1);
         firstrow = data(newlines(1)+1:newlines(2)-1);
         hdrs=lower(strip(split(headerline,'|')));
