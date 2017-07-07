@@ -6,7 +6,7 @@ function [tt1,tt2]=timesel(var1)
     % works on newt2
     
     global newt2 ccum tiplo2 statime cum
-    
+    ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
     %timeselection with mouse in cumulative number plot
@@ -54,6 +54,6 @@ function [tt1,tt2]=timesel(var1)
             ll=newt2.Date>tt1 & newt2.Date<tt2;
         end
         newt2=newt2.subset(ll);
-        ho=false;
+        ZG.hold_state=false;
     end
 end

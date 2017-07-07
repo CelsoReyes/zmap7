@@ -8,6 +8,7 @@
 %                       - newt2 if "Save as Newcat" button is pressed.
 %Last modification 8/95
 zmap_message_center.set_info(' ','Plotting cumulative number plot...');
+ZG=ZmapGlobal.Data;
 think
 report_this_filefun(mfilename('fullpath'));
 
@@ -90,7 +91,7 @@ if newCumWindowFlag
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''rub'';newsta')
     uimenu(options,'Label','LTA(t) function ',...
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''lta'';newsta')
-    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho=true; ')
+    uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=true; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
     uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','dispma3')
     op4 = uimenu(options,'Label','b-value estimation');
@@ -139,7 +140,7 @@ if newCumWindowFlag
 end
 %end;    if figure exist
 
-if ho
+if ZmapGlobal.Data.hold_state
     cumu = 0:1:(tdiff*365/par1)+2;
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
@@ -154,7 +155,7 @@ if ho
     tiplo2 = plot(xt,cumu2,'r');
     set(tiplo2,'LineWidth',2.5)
 
-    ho=false
+    ZG.hold_state=false
     return
 end
 

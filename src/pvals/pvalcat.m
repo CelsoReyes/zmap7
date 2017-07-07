@@ -2,7 +2,7 @@
 %Last modification May: 2001. B. Enescu
 
 global valeg valeg2 cua2a valm1 CO
-
+ZG=ZmapGlobal.Data;
 %The parameter valeg is used for choosing some options in mypval2m.m.
 %The parameter valeg2 decides if c is fixed or not.
 
@@ -40,9 +40,9 @@ newt2 = newt2(l,:);
 l = newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
-ho2=true;
+ZG.hold_state2=true;
 timeplot
-ho2=false;
+ZG.hold_state2=false;
 
 
 if (valeg2 < 0)

@@ -167,7 +167,7 @@ end % if ic == 3
 % distance r.
 %
 %
-switch(ho);
+switch(ZmapGlobal.Data.hold_state);
 
     case 'nohold'
 

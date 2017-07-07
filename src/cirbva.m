@@ -5,12 +5,13 @@
 %  Input Ni:
 %
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 try
     delete(plos1);
 catch ME
     @error_handler(ME,' ');
 end
-disp(ho)
+disp(ZmapGlobal.Data.hold_state)
 
 axes(h1)
 %zoom off
@@ -57,7 +58,7 @@ elseif met == 'ti'
 
     lt =  newt2.Date >= t1 &  newt2.Date <t2 ;
     bdiff(newt2(lt,:));
-    ho=true;
+    ZG.hold_state=true;
     lt =  newt2.Date >= t3 &  newt2.Date <t4 ;
     bdiff(newt2(lt,:));
 
@@ -88,4 +89,4 @@ newcat = newt2;                   % resets newcat and newt2
 % Call program "timeplot to plot cumulative number
 %
 clear l s is
-bdiff(newt2,ho)
+bdiff(newt2,ZmapGlobal.Data.hold_state)

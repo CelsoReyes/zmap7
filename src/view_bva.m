@@ -52,16 +52,16 @@ if newbmapWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_bva')
     uimenu(options,'Label','Select EQ in Circle',...
-         'Callback','h1 = gca;met = ''ni''; ho=false;cirbva;watchoff(bmap)')
+         'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirbva;watchoff(bmap)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ho=false;cirbva;watchoff(bmap)')
+         'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirbva;watchoff(bmap)')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ho=true;cirbva;watchoff(bmap)')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cirbva;watchoff(bmap)')
 
     uimenu(options,'Label','Select EQ in Polygon -new ',...
-         'Callback','cufi = gcf;ho=false;selectp')
+         'Callback','cufi = gcf;ZG=ZmapGlobal.Data; ZG.hold_state=false;selectp')
     uimenu(options,'Label','Select EQ in Polygon - hold ',...
-         'Callback','cufi = gcf;ho=true;selectp')
+         'Callback','cufi = gcf;ZG=ZmapGlobal.Data; ZG.hold_state=true;selectp')
 
 
     op1 = uimenu('Label',' Maps ');

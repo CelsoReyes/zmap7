@@ -9,12 +9,13 @@ function  bdiff(newcat,holdplot)
     %
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4
     global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
+    ZG=ZmapGlobal.Data;
     think
     if nargin==2
-        ho=holdplot;
+        ZG.hold_state=holdplot;
     end
 
-    disp(ho)
+    disp(ZmapGlobal.Data.hold_state)
     %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
     %obsolate, replace
@@ -33,7 +34,7 @@ function  bdiff(newcat,holdplot)
             'Name','frequency-magnitude distribution',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
-        ho=false;
+        ZG.hold_state=false;
 
         %uicontrol('Units','normal',...
         %   'Position',[.0 .85 .08 .06],'String','Info ',...
@@ -73,7 +74,7 @@ function  bdiff(newcat,holdplot)
     backg_ab = log10(bvalsum3);
     orient tall
 
-    if ho
+    if ZmapGlobal.Data.hold_state
         axes(cua)
         disp('hold on')
         hold on

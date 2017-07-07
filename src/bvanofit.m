@@ -7,6 +7,7 @@
 %   Nnew = fac*Nold     , i.e. Rate change (N = number of events)
 %                                      R. Zuniga IGF-UNAM/GI-UAF  6/94
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 ms3 = 5;
 newcat = newt2;
 
@@ -196,9 +197,9 @@ uic = uicontrol('Units','normal','Position',[.35 .15 .30 .07],'String','Magnitud
 watchoff;watchoff(mess)
 
 % Plot he b-value comparison
-ho=false;
+ZG.hold_state=false;
 bdiff(backg)
-ho=true
+ZG.hold_state=true
 bdiff(foreg)
 
 

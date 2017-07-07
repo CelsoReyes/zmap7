@@ -4,7 +4,7 @@
 %and Minimum time. The value of p is then displayed as a isoline map.
 
 global valeg newt2 valeg2 CO
-
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 prompt = {'If you wish a fixed c, please enter a negative value'};
@@ -52,9 +52,9 @@ newt2 = newt2(l,:);
 l = newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
-ho2=true;
+ZG.hold_state2=true;
 timeplot; drawnow
-ho2=false;
+ZG.hold_state2=false;
 
 allcount = 0;
 itotal = length(valm1:valm3:valm2) * length(valtm1:valtm3:valtm2);

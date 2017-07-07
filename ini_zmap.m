@@ -11,7 +11,7 @@ global tresh wi rotationangle fre
 global co par1 minmag
 global ca vi sha inb1 inb2 inda ra
 
-ZG= ZmapGlobal.Data;
+ZG=ZmapGlobal.Data;
 % Marker sizes
 ms6 = 3;
 ms10 = 10;
@@ -54,8 +54,8 @@ ni = 100;
 name = ' ';
 strib = ' ';
 stri2 = [];
-ho=false;
-ho2=false;
+ZG.hold_state=false;
+ZG.hold_state2=false;
 infstri = ' Please enter information about the | current dataset here';
 maix = [];
 maiy = [];

@@ -39,15 +39,15 @@ if newbmapcWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_av2')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ho=false;ic = 1;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 1;cicros;')
     uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'Callback',' h1 = gca;ho=false;ic = 2;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 2;cicros;')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ho=true;cicros;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros;')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
-         'Callback','ho=false;polyb;');
+         'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...
-         'Callback','ho=true;polyb;');
+         'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=true;polyb;');
 
     % Menu 'Maps'
     op1 = uimenu('Label',' Maps ');

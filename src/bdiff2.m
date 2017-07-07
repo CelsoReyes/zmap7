@@ -20,6 +20,7 @@ global cluscat mess  backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4; %bfig
 global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold b;
 global selt magco bvml avml bvls avls bv;
 global hndl2 inpr1;
+ZG=ZmapGlobal.Data;
 think
 %zmap_message_center.set_info('  ','Calculating b-value...')
 report_this_filefun(mfilename('fullpath'));
@@ -149,7 +150,7 @@ if selt == 'ca'
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
 
-        ho=false;
+        ZG.hold_state=false;
         
         matdraw
         add_menu_divider();
@@ -192,7 +193,7 @@ if selt == 'ca'
         figure_w_normalized_uicontrolunits(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
         rect = [0.22,  0.3, 0.65, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
-    end % ho
+    end % ZmapGlobal.Data.hold_state
 
     %%
     % plot the cum. sum in each bin  %%
@@ -365,7 +366,7 @@ if selt == 'ca'
             text(.16, .14,sol_type,'FontSize',ZmapGlobal.Data.fontsz.s );
             text(.16, .08,['Magnitude of Completeness = ',tmc ' +/- ', num2str(round(100*fStd_Mc)/100)],'FontSize',ZmapGlobal.Data.fontsz.s);
         end
-    end % ho
+    end % ZmapGlobal.Data.hold_state
 
     set(gcf,'visible','on','Color','w');
     zmap_message_center.set_info('  ','Done')

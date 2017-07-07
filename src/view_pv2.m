@@ -96,23 +96,23 @@ if newpmapcWindowFlag
 
     options = uimenu('Label',' Select-b ');
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ho=false;ic = 1;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 1;cicros;')
     uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'Callback',' h1 = gca;ho=false;ic = 2;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 2;cicros;')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ho=true;cicros;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros;')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
-         'Callback','ho=false;polyb;');
+         'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...
-         'Callback','ho=true;polyb;');
+         'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=true;polyb;');
 
 
     options = uimenu('Label',' Select-p ');
     uimenu(options,'Label','Refresh ', 'Callback','view_pv2')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ho2=false;ic = 1;cicros2;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=false;ic = 1;cicros2;')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ho2=true;cicros2;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=true;cicros2;')
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label',' 7 day aftyershock Probability  Map ',...

@@ -46,11 +46,11 @@ if newbmapcWindowFlag
     uimenu(options,'Label','Refresh ', 'Callback','view_Dv')
 
     uimenu(options,'Label','Select EQ in Sphere (const N)',...
-         'Callback',' h1 = gca;ho=false;ic = 1; org = [5]; startfd;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;ic = 1; org = [5]; startfd;')
     uimenu(options,'Label','Select EQ in Sphere (const R)',...
-         'Callback',' h1 = gca;ho=false;icCircl = 2; org = [5]; startfd;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;icCircl = 2; org = [5]; startfd;')
     uimenu(options,'Label','Select EQ in Sphere (N) - Overlay existing plot',...
-         'Callback','h1 = gca;ho=true;ic = 1; org = [5]; startfd;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=true;ic = 1; org = [5]; startfd;')
     %
     %
 

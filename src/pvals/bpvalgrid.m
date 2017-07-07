@@ -9,7 +9,7 @@
 %Otherwise the matrix "maepi", used by this program, does not exist.
 
 global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
-
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 
@@ -30,9 +30,9 @@ if sel == 'in'
     a(l,:) = [];
     newt2 = a;
 
-    ho2=true;
+    ZG.hold_state2=true;
     timeplot
-    ho2=false;
+    ZG.hold_state2=false;
     dx = 0.025;
     dy = 0.025;
     ni = 150;

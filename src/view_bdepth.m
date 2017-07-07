@@ -95,7 +95,7 @@ if newbmapWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','use_old_win = 1; view_bdepth')
     uimenu(options,'Label','Select EQ in Circle',...
-         'Callback','h1 = gca;met = ''rd''; ho=false;cirbva_bdepth2;watchoff(bmap)')
+         'Callback','h1 = gca;met = ''rd''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirbva_bdepth2;watchoff(bmap)')
 
 
     op1 = uimenu('Label',' Maps ');

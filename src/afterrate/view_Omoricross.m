@@ -82,11 +82,11 @@ if oldfig_button == 0
     options = uimenu('Label',' Analyze ');
     uimenu(options,'Label','Refresh ', 'Callback','view_Omoricross')
     %    uimenu(options,'Label','Select EQ in Circle',...
-    %        'Callback','h1 = gca;met = ''ni''; ho=false;cirpva;watchoff(hOmoricross)')
+    %        'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirpva;watchoff(hOmoricross)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ho=false;plot_circbootfit_a2;watchoff(hOmoricross)')
+         'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;plot_circbootfit_a2;watchoff(hOmoricross)')
     uimenu(options,'Label','Select EQ with const. number',...
-         'Callback','h1 = gca;ho2=true;ho=true;plot_constnrbootfit_a2;watchoff(hOmoricross)')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=true;ZG=ZmapGlobal.Data; ZG.hold_state=true;plot_constnrbootfit_a2;watchoff(hOmoricross)')
 
 
     op1 = uimenu('Label',' Maps ');

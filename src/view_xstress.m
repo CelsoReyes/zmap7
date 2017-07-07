@@ -36,11 +36,11 @@ if newstressmapWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','re3 = r;view_xstress')
     uimenu(options,'Label','Select N closest EQs',...
-        'Callback','h1 = gca;ic=1; ho=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1 = gca;ic=1; ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-        'Callback','h1 = gca;ic=2; ho=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1 = gca;ic=2; ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Polygon',...
-        'Callback','h1=gca;ic=3;ho=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1=gca;ic=3;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
     
     % Menu Maps
     op1 = uimenu('Label',' Maps ');

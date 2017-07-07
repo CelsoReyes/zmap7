@@ -1,5 +1,5 @@
 % plots two cum number plots as a function of day/night
-
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 l = newt2.Date.Hour >=7 & newt2.Date.Hour <=18;
@@ -10,7 +10,7 @@ nig(l,:) = [];
 
 newt2 = day;
 timeplot
-ho2=true
+ZG.hold_state2=true
 
 newt2 = nig;
 timeplot

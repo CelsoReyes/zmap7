@@ -45,12 +45,12 @@ if newbmapWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_varmap')
     uimenu(options,'Label','Select EQ in Circle',...
-         'Callback','h1 = gca;met = ''ni''; ho=false;circle;watchon;doinvers_michael;watchoff')
+         'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;circle;watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ho=false;circle;watchon;doinvers_michael;watchoff')
+         'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;circle;watchon;doinvers_michael;watchoff')
 
     uimenu(options,'Label','Select EQ in Polygon -new ',...
-         'Callback','cufi = gcf;ho=false;selectp;watchon;doinvers_michael;watchoff')
+         'Callback','cufi = gcf;ZG=ZmapGlobal.Data; ZG.hold_state=false;selectp;watchon;doinvers_michael;watchoff')
 
     op1 = uimenu('Label',' Maps ');
 

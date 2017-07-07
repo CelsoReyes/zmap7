@@ -10,6 +10,7 @@ function  bdiff_bdepth(newcat)
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
     global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
     global mxlkbt lsbt ni
+    ZG=ZmapGlobal.Data;
     think
     %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
@@ -22,7 +23,7 @@ function  bdiff_bdepth(newcat)
         %set(bfig,'visible','off')
 
         if dloop == 2
-            ho=true;
+            ZG.hold_state=true;
         end
     else
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
@@ -31,7 +32,7 @@ function  bdiff_bdepth(newcat)
             'MenuBar','none',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
-        ho=false;
+        ZG.hold_state=false;
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...

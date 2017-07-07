@@ -162,7 +162,7 @@ function timeplot(nosort)
         
         
         op4 = uimenu(options,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'Callback','ho=false,selt = ''in'',; bdiff2')
+        uimenu(op4,'Label','automatic', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false,selt = ''in'',; bdiff2')
         uimenu(op4,'label','Mc with time ', 'Callback','selt = ''in''; sPar = ''mc''; plot_McBwtime');
         uimenu(op4,'Label','b with depth', 'Callback','bwithde2')
         uimenu(op4,'label','b with magnitude', 'Callback','bwithmag');
@@ -178,7 +178,7 @@ function timeplot(nosort)
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog newt2).
         uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
-        uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ho=false;inpu_main')
+        uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;inpu_main')
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
         uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')

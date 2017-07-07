@@ -9,7 +9,7 @@
 % last update: 14.02.05
 
 global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
-
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 valeg = 1;
@@ -39,9 +39,9 @@ if sel == 'in'
     a(l,:) = [];
     newt2 = a;
 
-    ho2=true;
+    ZG.hold_state2=true;
     timeplot
-    ho2=false;
+    ZG.hold_state2=false;
 
 
     %The definitions in the following line were present in the initial bvalgrid.m file.

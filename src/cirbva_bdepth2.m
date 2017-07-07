@@ -5,7 +5,7 @@
 %  Input Ni:
 %
 global dloop
-
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 try
@@ -79,9 +79,9 @@ l = newt2.Depth >= bot_zonet & newt2.Depth <  bot_zoneb;
 bot_zone = newt2(l,:);
 
 
-ho=false ; dloop = 1;
+ZG.hold_state=false ; dloop = 1;
 bdiff_bdepth(top_zone);
-ho=true; dloop = 2;
+ZG.hold_state=true; dloop = 2;
 bdiff_bdepth(bot_zone);
 
 set(gcf,'Pointer','arrow')
