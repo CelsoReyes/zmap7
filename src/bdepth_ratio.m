@@ -316,10 +316,10 @@ if sel == 'ca'
 
         % sort by depth
 
-        l = b(:,7) >= top_zonet & b(:,7) <  top_zoneb;
+        l = b.Depth >= top_zonet & b.Depth <  top_zoneb;
         topb = b(l,:);
         per_in_top = (length(topb)/length(b))*100.0;
-        l = b(:,7) >= bot_zonet & b(:,7) <  bot_zoneb;
+        l = b.Depth >= bot_zonet & b.Depth <  bot_zoneb;
         botb = b(l,:);
         per_in_bot = (length(botb)/length(b))*100.0;
 

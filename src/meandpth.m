@@ -87,7 +87,7 @@ elseif ic == 2
     sto = max(a.Date);
     for it=sta+step:step:sto
         ind = ind + 1;
-        t = find( abs(b(:,3)-it)  == min(abs(b(:,3)-it)));
+        t = find( abs(b.Date-it)  == min(abs(b.Date-it)));
         if t <= iwln ; t = iwln+1; end
         meand(ind) =  mean(newcat(t-iwln:t,7)) ;
         er(ind) =  std(newcat(t-iwln:t,7)) ;

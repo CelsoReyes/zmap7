@@ -263,7 +263,7 @@ if sel == 'ca'
 
 
         %estimate the completeness and b-value, and take the zero depth events away.
-        %newt2 = [b(:,1) b(:,2) zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) b(:,3)];
+        %newt2 = [b.Longitude b.Latitude zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) b.Date];
         %
         newt2  = b;
         E = newt2;

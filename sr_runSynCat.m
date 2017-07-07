@@ -12,11 +12,7 @@ while (fFirst || (size(mCatalog,1)>45000))
     fFirst=logical(0);
     [mCatalog, vMain] = calc_SynCat(10000,2.5,2.5,8,200,'January 1,1975','December 31,1990',10,2);
 end
-% [mCatalog1, vMain1] = calc_SynCat(3333,2.5,2.5,8,100,'January 1,1980','December 31,1985',6.5,1);
-% [mCatalog2, vMain2] = calc_SynCat(1667,2.5,2.5,8,100,'January 1,1985','December 31,1990',6.5,1);
-% mCatalog=[mCatalog1; mCatalog2];
-% vMain=[vMain1; vMain2];
-% mCatalog(:,3)=mCat(randperm(size(mCatalog,1))',3);
+
 vcsGridNames_=[i sum(vMain) size(mCatalog,1) ];
 % calculation rate for background seismicity
 mCatalogTmp=mCatalog;
@@ -88,16 +84,6 @@ vResults(3).vUsedNodes=vUsedNodes{1};
 vResults(3).vResolution=vResolution{1};
 vResults(3).mValueGrid=mValueGrid;
 
-
-
-% clf
-% subplot(1,2,1);
-% plot(a.Longitude,a.Latitude,'.');
-% subplot(1,2,2);
-% plot(a.Date,[1:1:sum(vMain)],'b');
-% hold on;plot(mCatalog(:,3),[1:1:size(mCatalog,1)],'r');
-% a=mCatalog;
-% timeplot;
 save 07061301-r1-n7500.mat vResults -mat
 disp('Result saved in 07061301-r1-n7500.mat');
 % exit

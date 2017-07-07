@@ -198,9 +198,9 @@ if sel == 'ca'
         l3 = l <= ra;
         b = a.subset(l3);
 
-        if length(b(:,1)) >= 2*minnu;
+        if b.Count >= 2*minnu;
             % call the b-value function
-            lt =  b(:,3) >= t1 &  b(:,3) <t2 ;
+            lt =  b.Date >= t1 &  b.Date <t2 ;
             if  length(b(lt,1)) >= minnu;
                 [bv magco1 stan av me mer me2,  pr1] =  bvalca3(b(lt,:),inb1,inb2);
                 bo1 = bv; no1 = length(b(lt,1));
@@ -212,7 +212,7 @@ if sel == 'ca'
                 P6b = 10^(av2-bv*5)/(t2-t1);
                 bv = NaN; pr = 50;
             end
-            lt = b(:,3) >= t3 &  b(:,3) < t4 ;
+            lt = b.Date >= t3 &  b.Date < t4 ;
             if  length(b(lt,1)) >= minnu;
                 [bv2 magco2 stan av me mer me2,  pr] =  bvalca3(b(lt,:),inb1,inb2);
 
@@ -230,12 +230,12 @@ if sel == 'ca'
             l2 = sort(l);
             b2 = b;
             if inb2 ==  1
-                l = b(:,6) >= magco;
+                l = b.Magnitude >= magco;
                 % b2 = b(l,:);
             end
             % [av2 bv2 stan2 ] =  bmemag(b2);
             if pr >= 40
-                bvg = [bvg ; bv magco1 x y length(b(:,1)) bv2 pr av P6a  magco1-magco2  bv-bv2  magco2 P6a/P6b bv2/bv*100-100];
+                bvg = [bvg ; bv magco1 x y b.Count bv2 pr av P6a  magco1-magco2  bv-bv2  magco2 P6a/P6b bv2/bv*100-100];
             else
                 bvg = [bvg ; NaN NaN x y NaN NaN NaN NaN NaN  NaN NaN NaN NaN NaN] ;
             end

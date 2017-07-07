@@ -51,13 +51,13 @@ while  ferror(fid) == ''
     b = [ -l(9,:)-l(10,:)/6000 ; l(7,:)+l(8,:)/6000 ; l(1,:);l(2,:);l(3,:);
         l(13,:)/10;l(11,:)/100;l(4,:);l(5,:); l(14,:)/100;l(12,:)/10];
     b = b';
-    l =  b(:,6) >= Mmin & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
-        b(:,2) >= latmin & b(:,2) <= latmax & b(:,3) <= tmax  & ...
-        b(:,3) >= tmin  ;
+    l =  b.Magnitude >= Mmin & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
+        b(:,2) >= latmin & b(:,2) <= latmax & b.Date <= tmax  & ...
+        b.Date >= tmin  ;
     a = [a ; b(l,:)];
 
     disp([ num2str(n*10000) ' earthquakes scanned, ' num2str(length(a)) ' EQ found'])
-    if max(b(:,3)) >  tmax ; break; end
+    if max(b.Date) >  tmax ; break; end
 
 end
 ferror(fid)

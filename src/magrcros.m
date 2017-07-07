@@ -225,7 +225,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
             b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
-            rd = length(b(:,1));
+            rd = b.Count;
         else
             % take first ni points
             [s,is] = sort(l);
@@ -234,12 +234,12 @@ if sel == 'ca'
             l2 = sort(l); rd = l2(ni);
         end
         if isempty(b) == 0
-            if length(b(:,1)) > 4
+            if b.Count > 4
                 [st,ist] = sort(b);   % re-sort wrt time for cumulative count
                 b = b(ist(:,3),:);
                 cumu = cumu * 0;
                 % time (bin) calculation
-                n = length(b(:,1));
+                n = b.Count;
                 cumu = histogram(b(1:n,3),t0b:par1/365:teb);
                 l = sort(l);
                 cumuall(:,allcount) = [cumu';  x; rd];

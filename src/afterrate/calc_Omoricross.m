@@ -22,7 +22,7 @@ if sel == 'in'
     bv2 = NaN;
     Nmin = 50;  % Minimum number of events
     bGridEntireArea = 0;
-    time = 100;
+    time = 100; % days
     timef= 0; % No forecast done, but needed for functions
     bootloops = 50;
     ra = 5;
@@ -262,8 +262,9 @@ if sel == 'ca'
     %
     t0b = min(newa.Date)  ;
     n = newa.Count;
-    teb = newa(n,3) ;
-    tdiff = round((teb - t0b)*365/par1);
+    teb = max(newa.Date) ;
+    tdiff = round(days(teb-t0b)/par1)
+    %tdiff = round((teb - t0b)*365/par1); %days
 
     % loop over  all points
     mCross = [];%NaN(length(newgri),20);
@@ -293,12 +294,12 @@ if sel == 'ca'
         % Calculate distance from center point and sort with distance
         l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
         [s,is] = sort(l);
-        b = newa(is(:,1),:) ;
+        b = newa.subset(is) ;
         vDist = l(is(:,1),:);
 
         % Cut to time period
-        vSel =  b(:,3)<= maepi(1,3)+time/365;
-        b = b(vSel,:);
+        vSel =  b.Date <= maepi.Date+ days(time);
+        b = b.subset(vSel);
         vDist = vDist(vSel,:);
 
         if inb2 == 1
@@ -323,7 +324,7 @@ if sel == 'ca'
                     fMc = NaN;
                 end
             end
-            vSel = b(:,6) >= fMc;
+            vSel = b.Magnitude >= fMc;
             b = b(vSel,:);
             vDist = vDist(vSel,:);
             % Maximum Distance
@@ -338,7 +339,7 @@ if sel == 'ca'
             fMaxDist = vDist(ni);
             % Check for maximum distance
             if fMaxDist > fMaxRadius
-                vSel4 = (vDist(1:length(b(:,1)),:) < fMaxRadius);
+                vSel4 = (vDist(1:b.Count,:) < fMaxRadius);
                 b = b(vSel4,:);
             end
         end % End If on tgl1

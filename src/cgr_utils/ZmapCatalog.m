@@ -318,7 +318,11 @@ classdef ZmapCatalog < handle
          
         function obj = subset(existobj, range)
             % subset get a subset of this object
-            % newobj = obj.subset(mask)
+            % newobj = obj.subset(mask) where mask is a t/f array matching obj.Count
+            %    will keep all "true" events
+            % newobj = obj.subset(range), where range evaluates to an integer array
+            %    will retrieve the specified events.
+            %    this option can be used to change the order of the catalog too
         
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime
@@ -328,8 +332,8 @@ classdef ZmapCatalog < handle
             obj.Magnitude = existobj.Magnitude(range) ;
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
             obj.Filter = existobj.Filter(range) ;
-
         end   
+        
         function obj = cat(objA, objB)
             % cat combines two catalogs
             % duplicates are not looked for

@@ -1,13 +1,13 @@
-function [mResult] = calc_Omoriparams(a,time,timef,bootloops,maepi,nMod)
-    % function [mResult] = calc_Omoriparams(a,time,timef,bootloops,maepi,nMod);
+function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
+    % function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod);
     % ----------------------------------------------------------------
     % Determines Omori law parameter for one specific model and uncertainties using the bootstrap method
     %
     % Input parameters:
-    %   a           earthquake catalog
+    %   mycat           earthquake catalog
     %   time_as     delay times (days)
     %   step        number of quakes to determine forecast period
-    %   time        learning period
+    %   time        learning period days
     %   timef       forecast period: Set timef=0, anyway it is forced to 0
     %   bootloops   Number of bootstraps
     %   maepi       Mainshock values
@@ -18,7 +18,9 @@ function [mResult] = calc_Omoriparams(a,time,timef,bootloops,maepi,nMod)
     %
     % J. Woessner
     % last update: 11.03.04
+    % 2017 Celso Reyes
 
+%TODO fix the time periods from decyear to days or dates
 report_this_filefun(mfilename('fullpath'));
     % Set timef=0;
     if timef ~= 0
@@ -32,46 +34,44 @@ report_this_filefun(mfilename('fullpath'));
     mResult = [];
 
     % Define aftershock times
-    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
-    date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
-    time_aftershock = date_matlab-date_main;
+    date_matlab = mycat.Date;
+    date_main = maepi.Date;
+    time_aftershock = date_matlab - date_main;
 
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
-    fDay = 1;
+    fDay = days(1);
     ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (a.Date > maepi(:,3)+ft_c & a.Date<= maepi(:,3)+time/365);
-    mCat = a.subset(vSel);
-    [nY,nX]=size(mCat);
-    if nY == 0
-        clear mCat;
-        vSel = (a.Date<= maepi(:,3)+time/365);
-        mCat = a.subset(vSel);
+    vSel = (mycat.Date > maepi.Date+fDay & mycat.Date<= maepi.Date+days(time);
+    mCat = mycat.subset(vSel);
+    
+    if isempty(mCat)
+        vSel = (mycat.Date <= maepi.Date+days(time));
+        mCat = mycat.subset(vSel);
     end
 
-    vSel = mCat(:,6) == max(mCat(:,6));
-    vBigAf = mCat(vSel,:);
+    vSel = mCat.Magnitude == max(mCat.Magnitude);
+    vBigAf = mCat.Subset(vSel);
     if length(mCat(vSel,1)) > 1
-        [s,is] = sort(vBigAf(:,3));
-        vBigAf = vBigAf(is(:,1),:) ;
-        %vSel = vBigAf(:,3) == min(vBigAf(:,3));
-        vBigAf = vBigAf(1,:);
+        [~,is] = sort(vBigAf.Date);
+        vBigAf = vBigAf.subset(is);
+        vBigAf = vBigAf.subset(1); % grab first only?
     end
     if isempty(vBigAf)
         disp('help');
     end
-    date_biga = datenum(floor(vBigAf(3)),vBigAf(4),vBigAf(5),vBigAf(8),vBigAf(9),0);
+    date_biga = vBigAf.Date;
     fT1 = date_biga - date_main; % Time of big aftershock
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a.subset(l);
+    eqcatalogue = mycat.subset(l);
 
     % Estimation of Omori parameters from learning period
     l = tas <= time;
     time_as=tas(l);
     % Times up to the forecast time
     lf = tas <= time+timef ;
-    time_asf= [tas(lf) ];
+    time_asf= tas(lf);
     time_asf=sort(time_asf);
 
     % Calculate fits of different models

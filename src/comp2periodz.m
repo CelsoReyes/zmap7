@@ -239,14 +239,14 @@ if sel == 'ca'
             l2 = sort(l); rd = l2(ni);
 
         end
-        [s,is] = sort(b(:,3));
+        [s,is] = sort(b.Date);
         b = b(is(:,1),:) ;
 
-        lt =  b(:,3) >= t1 &  b(:,3) < t2 ;
+        lt =  b.Date >= t1 &  b.Date < t2 ;
         tback = b(lt,:);
         [cumu1, xt1] = hist(tback(:,3),(t1:par1/365:t2));
 
-        lt =  b(:,3) >= t3 &  b(:,3) <= t4 ;
+        lt =  b.Date >= t3 &  b.Date <= t4 ;
         tafter = b(lt,:);
         [cumu2, xt2] = hist(tafter(:,3),(t3:par1/365:t4));
 

@@ -61,7 +61,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
         %std_backg = std(y - polyval(p,x));      % standard deviation of fit
         std_backg = ew;
 
-        l = b(:,6) >= M1b(1) & b(:,6) <= M2b(1);
+        l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
         les = (mean(b(l,6)) - M1b(1))/dm1;
 
         av=p(1,2);

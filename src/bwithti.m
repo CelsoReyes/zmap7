@@ -44,17 +44,17 @@ for i = 1:ni/ofac:length(newt2)-ni
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
             end
         case 'Fixed Mc=Mmin'
-            magco = min(b(:,6))
+            magco = min(b.Magnitude)
     end
 
-    l = b(:,6) >= magco-0.05;
+    l = b.Magnitude >= magco-0.05;
     if length(b(l,:)) >= Nmin
         [mea bv stan,  av] =  bmemag(b(l,:));
     else
         bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
     end
-    BV = [BV ; bv min(b(:,3)) ; bv max(b(:,3)) ; inf inf];
-    BV3 = [BV3 ; bv mean(b(:,3)) stan ];
+    BV = [BV ; bv min(b.Date) ; bv max(b.Date) ; inf inf];
+    BV3 = [BV3 ; bv mean(b.Date) stan ];
 
 end
 

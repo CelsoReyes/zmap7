@@ -10,7 +10,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 %b = newcat;
 %select big evenets
-%l = b(:,6) > minmag;
+%l = b.Magnitude > minmag;
 %big = b(l,:);
 
 

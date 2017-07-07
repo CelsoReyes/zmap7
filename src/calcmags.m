@@ -5,7 +5,7 @@ report_this_filefun(mfilename('fullpath'));
 % n2 = length(cumunew) - tmid;
 
 pause(0.1)
-minmag2 = min(b(:,6) +0.1 );
+minmag2 = min(b.Magnitude +0.1 );
 
 masi =[];
 masi2 =[];
@@ -18,7 +18,7 @@ for i = minmag2:0.1:maxmag
 
     %
     % and below
-    l =  b(:,3) > t1p(1) & b(:,3) < t3p(1) & b(:,6) < i;
+    l =  b.Date > t1p(1) & b.Date < t3p(1) & b.Magnitude < i;
     junk = b(l,:);
     if ~isempty(junk)
         [cumunew, xt] = hist(junk(:,3),t1p(1):par1/365:t3p(1));
@@ -43,7 +43,7 @@ for i = minmag2:0.1:maxmag
 
     % and above
     %
-    l =  b(:,3) > t1p(1) & b(:,3) < t3p(1) & b(:,6) > i;
+    l =  b.Date > t1p(1) & b.Date < t3p(1) & b.Magnitude > i;
     junk = b(l,:);
     if ~isempty(junk)
         [cumunew2, xt] = hist(junk(:,3),t1p(1):par1/365:t3p(1));

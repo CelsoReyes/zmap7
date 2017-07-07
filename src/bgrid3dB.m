@@ -199,7 +199,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             l3 = l <= R;
             b = a.subset(l3);      % new data per grid point (b) is sorted in distanc
-            rd = length(b(:,1));
+            rd = b.Count;
         else
             % take first ni points
             b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
@@ -212,7 +212,7 @@ if sel == 'ca'
         if length(b) >= Nmin  % enough events?
 
             if inb1 == 3
-                mcperc_ca3;  l = b(:,6) >= Mc90-0.05; magco = Mc90;
+                mcperc_ca3;  l = b.Magnitude >= Mc90-0.05; magco = Mc90;
                 if length(b(l,:)) >= Nmin
                     [bv magco0 stan av me mer me2,  pr] =  bvalca3(b(l,:),2,2);
                     [mea bv2 stan2 av2 ] =  bmemag(b(l,:));
@@ -221,7 +221,7 @@ if sel == 'ca'
                 end
 
             elseif inb1 == 4
-                mcperc_ca3;  l = b(:,6) >= Mc95-0.05; magco = Mc95;
+                mcperc_ca3;  l = b.Magnitude >= Mc95-0.05; magco = Mc95;
                 if length(b(l,:)) >= Nmin
                     [bv magco0 stan av me mer me2,  pr] =  bvalca3(b(l,:),2,2);
                     [mea bv2 stan2 av2 ] =  bmemag(b(l,:));
@@ -237,7 +237,7 @@ if sel == 'ca'
                 else
                     [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
                 end
-                l = b(:,6) >= magco-0.05;
+                l = b.Magnitude >= magco-0.05;
                 if length(b(l,:)) >= Nmin
                     [bv magco0 stan av me mer me2,  pr] =  bvalca3(b(l,:),2,2);
                     [mea bv2 stan2,  av2] =  bmemag(b(l,:));
@@ -247,7 +247,7 @@ if sel == 'ca'
 
             elseif inb1 == 1
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
-                l = b(:,6) >= magco-0.05;
+                l = b.Magnitude >= magco-0.05;
                 if length(b(l,:)) >= Nmin
                     [mea bv2 stan2,  av2] =  bmemag(b(l,:));
                 else

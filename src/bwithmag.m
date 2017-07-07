@@ -18,7 +18,7 @@ for t = min(newt1(:,6)):0.1:max(newt1(:,6))
     l = newt1(:,6) >= t -0.05;
     b = newt1(l,:);
 
-    if length(b(:,1)) >= Nmin
+    if b.Count >= Nmin
         [bv magco stan av me mer me2,  pr] =  bvalca3(b,2,2);
         [mea bv stan2,  av] =  bmemag(b);
 

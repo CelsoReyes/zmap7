@@ -47,7 +47,7 @@ for t = 1:ni/ofac:length(newt1)-ni
             magco = min(newt1(:,6))
     end
 
-    l = b(:,6) >= magco-0.05;
+    l = b.Magnitude >= magco-0.05;
     if length(b(l,:)) >= Nmin
         %[bv magco0 stan av me mer me2,  pr] =  bvalca3(b(l,:),2,2);
         [mea bv stan,  av] =  bmemag(b(l,:));

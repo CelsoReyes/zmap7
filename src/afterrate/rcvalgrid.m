@@ -370,16 +370,16 @@ if sel == 'ca'
             vDist = sort(l(l3));
             fMaxDist = max(vDist);
             % Calculate number of events per gridnode in learning period time
-            vSel = b(:,3) <= maepi(1,3)+time/365;
+            vSel = b.Date <= maepi(1,3)+time/365;
             mb_tmp = b(vSel,:);
         else
             % Determine ni number of events in learning period
             % Set minimum number to constant number
             Nmin = ni;
             % Select events in learning time period
-            vSel = (b(:,3) <= maepi(1,3)+time/365);
+            vSel = (b.Date <= maepi(1,3)+time/365);
             b_learn = b(vSel,:);
-            vSel2 = (b(:,3) > maepi(1,3)+time/365 & b(:,3) <= maepi(1,3)+(time+timef)/365);
+            vSel2 = (b.Date > maepi(1,3)+time/365 & b.Date <= maepi(1,3)+(time+timef)/365);
             b_forecast = b(vSel2,:);
 
             % Distance from grid node for learning period and forecast period
@@ -396,7 +396,7 @@ if sel == 'ca'
                 b_forecast = b_forecast(vSel3,:);
                 b = [b_learn; b_forecast];
             else
-                vSel4 = (l < fMaxRadius & b(:,3) <= maepi(1,3)+time/365);
+                vSel4 = (l < fMaxRadius & b.Date <= maepi(1,3)+time/365);
                 b = b(vSel4,:);
                 b_learn = b;
             end

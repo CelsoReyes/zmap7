@@ -47,7 +47,7 @@ clusterno = 1;
 
 %l = mCatalog(:,6) >= Mc & mCatalog(:,3)>=startyear;
 b = [mCatalog(:,1:10) mCatalog(:,1:4)*0 ];
-le = length(b(:,1));
+le = b.Count;
 
 for i = 1:le
     %write i to screen
@@ -61,7 +61,7 @@ for i = 1:le
         latref = b(i,2);
         lonref = b(i,1);
         searchradius=10^(0.1238*magref+0.983); %search radius according to Uhrhammer
-        eventsDtbefore=(b(:,3) > tref-Dtbefore & b(:,3) < tref);
+        eventsDtbefore=(b.Date > tref-Dtbefore & b.Date < tref);
         eventsbefore = length(b(eventsDtbefore,1));
         lino = i-eventsbefore;
 
@@ -80,8 +80,8 @@ for i = 1:le
                         latref = b(lino,2);
                         lonref = b(lino,1);
                         magref= b(lino,6);
-                        eventsDtbefore=(b(:,3) > tref-Dtbefore &...
-                            b(:,3) < tref);
+                        eventsDtbefore=(b.Date > tref-Dtbefore &...
+                            b.Date < tref);
                         eventsbefore = length(b(eventsDtbefore,1));
                         lino = lino-eventsbefore -1;
                     end
@@ -113,11 +113,11 @@ end
 % column 13: mainshock with its cluster number
 % column 14: initiating event cluster number
 
-b(:,6)=round(b(:,6)*10)/10;%  round magnitudes to 0.1
+b.Magnitude=round(b.Magnitude*10)/10;%  round magnitudes to 0.1
 clusterno = 1;
 b(:,11)= 1:length(b)'; %introduce column 13 with row number
 
-for i = 1:length(b(:,1))
+for i = 1:b.Count
     vSel=find(b(:,12)==i);
     if isempty(vSel) ~=1
         nMin =min(find(b(vSel,6)== max(b(vSel,6))));

@@ -141,7 +141,7 @@ for x =  x0:dx:x1
             ztime1 = ztime1*0;
             ztime2 = ztime2*0;
 
-            l =   b(:,6) < i;            % Mags and below
+            l =   b.Magnitude < i;            % Mags and below
             junk = b(l,:);
             if ~isempty(junk), [cumu1, xt] = hist(junk(:,3),xt); end
 
@@ -158,7 +158,7 @@ for x =  x0:dx:x1
 
             clear global ztimes               %clears ztimes from previous results
 
-            l =   b(:,6) > i;           % Mags and above
+            l =   b.Magnitude > i;           % Mags and above
             junk = b(l,:);
             if ~isempty(junk), [cumu2, xt] = hist(junk(:,3),xt); end
 

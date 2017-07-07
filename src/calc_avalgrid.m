@@ -287,7 +287,7 @@ if sel == 'ca'
             if inb1 == 1;   % Calculation ofa-value by const b-value, and Mc
                 bv2 = fFixbValue;           % read fixed bValue to the bv2
                 magco=calc_Mc(b, 1, 0.1);
-                l = b(:,6) >= magco-0.05;
+                l = b.Magnitude >= magco-0.05;
                 if length(b(l,:)) >= Nmin   % calculation of thea-value according to determined Mc (magco)
                     faValue = calc_MaxLikelihoodA(b, bv2);
                     mea = nan;
@@ -301,7 +301,7 @@ if sel == 'ca'
             elseif inb1 == 2
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
                 magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
-                l = b(:,6) >= magco-0.05;
+                l = b.Magnitude >= magco-0.05;
                 if length(b(l,:)) >= Nmin
                     [mea bv2 stan2,  faValue] =  bmemag(b(l,:));
                 else
@@ -310,7 +310,7 @@ if sel == 'ca'
 
             elseif inb1 == 3; % a(0) for Mc(EMR)
                 [magco, bv2, faValue, stan2, stan] = calc_McEMR(b, 0.1);
-                l = b(:,6) >= magco-0.05;
+                l = b.Magnitude >= magco-0.05;
                 if length(b(l,:)) >= Nmin
                     faValue = calc_MaxLikelihoodA(b, bv2);
                 else
@@ -334,7 +334,7 @@ if sel == 'ca'
         end
 
         if tgl1 == 0   % take point within r
-            rd = length(b(:,1));
+            rd = b.Count;
         end
 
         avg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan faValue ];

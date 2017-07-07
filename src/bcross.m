@@ -254,7 +254,7 @@ if sel == 'ca'
             % Added to obtain goodness-of-fit to powerlaw value
             mcperc_ca3;
             [fMc] = calc_Mc(b, inb1, fBinning, fMccorr);
-            l = b(:,6) >= fMc-(fBinning/2);
+            l = b.Magnitude >= fMc-(fBinning/2);
             if length(b(l,:)) >= Nmin
                 [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
             else
@@ -265,7 +265,7 @@ if sel == 'ca'
             % Bootstrap uncertainties
             if bBst_button == 1
                 % Check Mc from original catalog
-                l = b(:,6) >= fMc-(fBinning/2);
+                l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
                     [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(b, fBinning, nBstSample, inb1);
                 else
@@ -285,7 +285,7 @@ if sel == 'ca'
             b = [NaN NaN NaN NaN NaN NaN NaN NaN NaN];
             nX = NaN;
         end
-        mab = max(b(:,6)) ;
+        mab = max(b.Magnitude) ;
         if isempty(mab)
             mab = NaN; 
         end

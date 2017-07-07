@@ -327,7 +327,7 @@ if strcmp('ca', sel)
             mcperc_ca3;
 
             [fMc] = calc_Mc(b, inb1, fBinning, fMccorr);
-            l = b(:,6) >= fMc-(fBinning/2);
+            l = b.Magnitude >= fMc-(fBinning/2);
             if length(b(l,:)) >= Nmin
                 [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
             else
@@ -340,7 +340,7 @@ if strcmp('ca', sel)
             % Bootstrap uncertainties
             if bBst_button == 1
                 % Check Mc from original catalog
-                l = b(:,6) >= fMc-(fBinning/2);
+                l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
                     [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(b, fBinning, nBstSample, inb1);
                 else
@@ -362,7 +362,7 @@ if strcmp('ca', sel)
             b = [NaN NaN NaN NaN NaN NaN NaN NaN NaN];
             nX = NaN;
         end
-        mab = max(b(:,6)) ; if isempty(mab)  == 1; mab = NaN; end
+        mab = max(b.Magnitude) ; if isempty(mab)  == 1; mab = NaN; end
 
         % Result matrix
         %bvg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan prf  mab av2 fStdDevB fStdDevMc nX];

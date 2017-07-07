@@ -212,9 +212,9 @@ if sel == 'ca'
 
         % call the p-value function
         % first find out what magco is
-        l = b(:,3) > mati + 3/365;
+        l = b.Date > mati + 3/365;
         %[bv magco stan av me mer me2,  pr] =  bvalca3(b(l,:),1,1);
-        %l = b(:,6) > magco+0.1;
+        %l = b.Magnitude > magco+0.1;
         newt2 = b;
         tmin1 =0.05;
 

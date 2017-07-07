@@ -333,7 +333,7 @@ if sel == 'ca'
         else  % Take first ni points
             % Set minimum number to constant number of events
             Nmin = ni;
-            if length(b(:,1)) < ni
+            if b.Count < ni
                 b = b;
                 rd = s(ni); % rd: Maximum distance [km]
             else
@@ -351,7 +351,7 @@ if sel == 'ca'
         newt2 = b;
 
         % Number of events in catalog
-        fNumEvents = length(b(:,1));
+        fNumEvents = b.Count;
 
         % Check for minimum number of events
         if length(b) >= Nmin

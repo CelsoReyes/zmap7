@@ -97,7 +97,7 @@ if sel == 'ca'
         l2 = find(is <= 300);
 
 
-        %[cumu, xt] = hist(b(:,3),(t0b:(teb-t0b)/99:teb));
+        %[cumu, xt] = hist(b.Date,(t0b:(teb-t0b)/99:teb));
 
         zvg(t5(il,5),t5(il,6),t5(il,7),:) = is(1:300);
         ram(t5(il,5),t5(il,6),t5(il,7),:) = di(is(1:300));

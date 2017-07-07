@@ -70,7 +70,7 @@ for i= 1:length(newgri(:,1))
     b = b(ist(:,3),:);
     cumu = cumu * 0;
     % time (bin) calculation
-    n = length(b(:,1));
+    n = b.Count;
     cumu = histogram(b(1:n,3),t0b:par1/365:teb);
     cumu2 = cumsum(cumu);
     %calcsimp

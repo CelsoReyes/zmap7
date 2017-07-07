@@ -228,17 +228,17 @@ ax = findobj('Tag','main_map_ax');
         b = newa.subset(l);      % new data per grid point (b) is sorted in distance
 
         if isempty(b) == 1; b = newa.subset(1); end
-        if length(b(:,1)) >= 50;
+        if b.Count >= 50;
             % call the b-value function
             [bv magco stan av me mer me2,  pr] =  bvalca3(b,inb1,inb2);
             l2 = sort(l);
             b2 = b;
             if inb2 ==  1
-                l = b(:,6) >= magco;
+                l = b.Magnitude >= magco;
                 b2 = b(l,:);
             end
             [av2 bv2 stan2 ] =  bmemag(b2);
-            bvg = [bvg ; bv magco x y length(b(:,1)) bv2 pr av stan  max(b(:,6))];
+            bvg = [bvg ; bv magco x y b.Count bv2 pr av stan  max(b.Magnitude)];
         else
             bvg = [bvg ; NaN NaN x y NaN NaN NaN NaN NaN  NaN];
         end
