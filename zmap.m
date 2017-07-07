@@ -61,9 +61,9 @@ ms6 = ZG.ms6;
 sys = computer;
 
 if verLessThan('matlab','9.2')
-    messtext = ['Warning: You are running a version of MatLab '
-        ' older than 2017a. ZMAP was modified for compatibility '
-        ' with r2017a or later, so your version may no longer be'
+    messtext = ['Warning: You are running a version of MatLab ',...
+        ' older than 2017a. ZMAP was modified for compatibility ',...
+        ' with r2017a or later, so your version may no longer be',...
         ' compatible'];
     errdlg(messtext,'Warning!')
     pause(5)
