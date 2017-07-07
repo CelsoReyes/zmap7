@@ -20,6 +20,7 @@ function timeplot(nosort)
     global magco selt hndl2 wls_button ml_button
     global name
     
+    ZG=ZmapGlobal.Data;
     if ~exist('xt','var')
         xt=[]; % time series that will be used
     end
@@ -132,7 +133,7 @@ function timeplot(nosort)
         
         uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
         iwl = iwl2*365/par1;
-        uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2=true; ')
+        uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state2=true; ')
         uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
         uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','ic=0;dispma3')
         %uimenu(options,'Label','Day/Night split ', 'Callback','daynigt')
@@ -223,12 +224,12 @@ function timeplot(nosort)
             'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();update(mainmap())',...
             'tooltip','Plots this subset in the map window')
         
-        ho2=false;
+        ZG.hold_state2=false;
         
     end
     %end;    if figure exist
     
-    if ho2
+    if ZG.hold_state2
         cumu = 0:1:(tdiff*365/par1)+2;
         cumu2 = 0:1:(tdiff*365/par1)-1;
         cumu = cumu * 0;
@@ -244,7 +245,7 @@ function timeplot(nosort)
         set(tiplot2,'LineWidth',2.0)
         
         
-        ho2=false
+        ZG.hold_state2=false;
         return
     end
     

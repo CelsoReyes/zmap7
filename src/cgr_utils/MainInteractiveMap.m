@@ -5,6 +5,7 @@ classdef MainInteractiveMap
     %
     %
     
+    % TODO: add menu option to delete layers from the map.
     properties
         Features
     end
@@ -110,6 +111,7 @@ classdef MainInteractiveMap
     
     
             % make sure we're back in a 2-d view
+            title(ax,MainInteractiveMap.get_title(a));
             view(ax,2); %reset to top-down view
             grid(ax,'on');
             zlabel(ax,'Depth [km]');
@@ -145,8 +147,8 @@ classdef MainInteractiveMap
                 'Box','on','TickDir','out');
             xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
-            strib = [  ' Map of '  a.Name '; '  char(min(a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(a.Date),'uuuu-MM-dd HH:mm:ss') ];
-            title(ax,strib,'FontWeight','normal',...
+            %strib = [  ' Map of '  a.Name '; '  char(min(a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(a.Date),'uuuu-MM-dd HH:mm:ss') ];
+            title(ax, MainInteractiveMap.get_title(a),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k')
             if ~isempty(mainAxes())
@@ -262,6 +264,7 @@ classdef MainInteractiveMap
                 obj.Features(i).addToggleMenu(ovmenu);
             end
                 uimenu(ovmenu,'Label','Load a coastline  from GSHHS database',...
+                'Separator','on',...
                     'Callback','selt = ''in'';  plotmymap;');
                 uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
                     'Callback','think; addcoast;done');
@@ -342,6 +345,8 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Edit Ranges...',...
                 'Callback','global a; a=catalog_overview(a);update(mainmap())');
             
+            uimenu(submenu,'Label','Rename...',...
+                'Callback','global a; nm=inputdlg(''Catalog Name:'',''Rename'',1,{a.Name});if ~isempty(nm),a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
             
             uimenu(submenu,'Label','Memorize/Recall Catalog',...
                 'Separator','on',...
@@ -403,6 +408,7 @@ classdef MainInteractiveMap
                 'Callback', @(s,e)zmap_message_center());
             
             uimenu(submenu,'Label','Analyse time series ...',...
+                'Separator','on',...
                 'Callback','global newt2 a newcat; stri = ''Polygon''; newt2 = a; newcat = a; timeplot');
             
             obj.create_topo_map_menu(submenu);
@@ -857,6 +863,7 @@ classdef MainInteractiveMap
                 end
                 h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                     'Tag',['mapax_part' num2str(i)]);
+                h.ZData=-mycat.Depth(mask);
                 set(h,'Marker',event_marker_types(i),...
                     'MarkerSize',ms6,...
                     'Color',cmapcolors(i,:),...
@@ -870,13 +877,13 @@ classdef MainInteractiveMap
         function plotOtherEvents(catalog, idx, varargin)
             %plotOtherEvents will plot the events from a catalog on the map
             % using the name-value pairs from varargin
-            % tag: 'mainmap_otherN' (where N is the value provided to idx)
+            % tag: 'mapax_otherN' (where N is the value provided to idx)
             %  this allows the plotting of a variety of clusters.
             % if varargin includes the pair {'DisplayName',..}
             % then that is how this would be represented in the legend
             ax = mainAxes();
             if isempty(idx), idx=0;end
-            thisTag = ['mainmap_other' num2str(idx)];
+            thisTag = ['mapax_other' num2str(idx)];
             h = findobj(ax,'Tag',thisTag);
             delete(h);
             
@@ -981,7 +988,11 @@ classdef MainInteractiveMap
         end
         
     end
-    
+    methods(Static, Access=protected)
+        function strib = get_title(mycat)
+            strib = [  ' Map of '  mycat.Name '; '  char(min(mycat.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(mycat.Date),'uuuu-MM-dd HH:mm:ss') ];
+        end
+    end
 end
 
 function h = figureHandle()
