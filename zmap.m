@@ -39,17 +39,18 @@ global b1 b2 bfig bg bmapc bvalsum3 bw
 global color_bg clus cum dx dy equi eqtime
 global figp file1 freq_field freq_field1 freq_field2 freq_field3 freq_field4
 global  Go_p_button histo hisvar
-global lat1 lon1 lat2 lon2 leng maepi mess ni n1 n2 newa2 newcat original
+global lat1 lon1 lat2 lon2 leng mess ni n1 n2 newa2 newcat original
 global pos pri ptt Re sax1 sax2 scale seismap strii1 strii2 sys
-global teb t0b torad ttcat wex wey welx wely ZmapGlobal.Data.map_len
+global teb t0b torad ttcat wex wey welx wely
 global xsec_fig xt3 ms6 hodi
 
 % temporarily turn off all warnings...
 % warning off   %nuh-uh - CGR
 
-zg=ZmapGlobal.Data; % get zmap globals
-hodi = zg.hodi;
-ms6 = zg.ms6;
+addpath(fullfile('src','cgr_utils')); % location of ZmapGlobal
+ZG=ZmapGlobal.Data; % get zmap globals
+hodi = ZG.hodi;
+ms6 = ZG.ms6;
 
 %fipo = get(groot,'ScreenSize');
 %hodi = pwd;

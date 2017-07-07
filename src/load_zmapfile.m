@@ -87,7 +87,7 @@ function load_zmapfile()%
     %
     watchoff
     clear s is
-    zg=ZmapGlobal.Data;zg.mainmap_plotby='depth';
+    ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth';
     
     setUpDefaultValues(a);
     %{

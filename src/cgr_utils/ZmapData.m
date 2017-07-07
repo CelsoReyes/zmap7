@@ -25,6 +25,8 @@ classdef ZmapData < handle
         % catalogs
         catalog % overall catalog of earthquakes
         catalog_working 
+        memorized_catalogs % manually stored via Memorize/Recall
+        storedcat % automatically stored catalog, used by synthetic catalogs, etc.
         
         % layers
         volcanoes % was vo
@@ -50,7 +52,7 @@ classdef ZmapData < handle
         color_bg = [1 1 1] % was [cb1 cb2 cb3] axis background
         color_fg = [.9 .9 .9]% was [c1 c2 c3] figure backgorund
         ms6 = 6 % standard markersize %TODO change to a markersize class
-        big_eq_minmag
+        big_eq_minmag = 8  % events of this magnitude or higher are plotted & labeled
         lock_aspect = 'off';
         mainmap_grid = 'on';
         mainmap_plotby = 'depth'; % was typele

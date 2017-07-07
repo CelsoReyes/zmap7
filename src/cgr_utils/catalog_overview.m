@@ -1,18 +1,16 @@
-function a = catalog_overview(a)
+function mycat = catalog_overview(mycat)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
     
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
-    if ~isa(a,'ZmapCatalog')
-        mycat = ZmapCatalog(a);
-    else
-        mycat = a;
+    if ~isa(mycat,'ZmapCatalog')
+        mycat = ZmapCatalog(mycat);
     end
+    
     report_this_filefun(mfilename('fullpath'));
-    global file1 tim1 tim2 minma2 maxma2 minde maxde maepi dep1 dep2 dep3
-    global maxdep maxma mindep minti maxti minmag
-    global ty1 ty2 ty3
+    %global file1 tim1 tim2 minma2 maxma2 minde maxde maepi
+    %global maxdep maxma mindep minti maxti minmag
     
     %  default values
     t0b = min(mycat.Date);
@@ -22,11 +20,14 @@ function a = catalog_overview(a)
     if ~exist('par1', 'var')   %select bin length respective to time in catalog
         par1 = 30;
     end
-    
+    big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
+    %{
+    %% these shouldn't be set here, they should be set at plot time, or in plot menu
     big_evt_minmag = max(mycat.Magnitude) -0.2;
     dep1 = 0.3*max(mycat.Depth);
     dep2 = 0.6*max(mycat.Depth);
     dep3 = max(mycat.Depth);
+    %}
     minti = min(mycat.Date);
     maxti  = max(mycat.Date);
     minma = min(mycat.Magnitude);
@@ -123,26 +124,7 @@ function a = catalog_overview(a)
             'Tag','mapview_big_evt_field',...
             'Callback',@update_numeric);
         
-        
-        
-        %  bin length in days
-        uicontrol('Parent',option_panel,...
-            'Style','text',...
-            'Position',[label_x 0.2 .7 .3 ],...
-            'Units', 'pixels', ...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold' ,...
-            'HorizontalAlignment','left',...
-            'String','Bin Length in days :');
-        
-        uicontrol('Parent',option_panel,...
-            'Style','edit','Position',[.75 .2 .22 .3],...
-            'Units', 'pixels', ...
-            'String',num2str(par1),...
-            'Value', par1,...
-            'Tag','mapview_binlen_field',...
-            'Callback',@update_numeric );
-        
+        % TODO: add reset button (would be nice...)
         
         %  beginning year
         uicontrol('Parent',filter_panel,...
@@ -261,27 +243,21 @@ function a = catalog_overview(a)
             'Callback',@update_numeric);
         
         % buttons
-        close_button=uicontrol('Style','Pushbutton',...
+        uicontrol('Style','Pushbutton',...
             'Position',[.79 .02 .20 .10 ],...
             'Units', 'pixels', ...
             'Callback',@cancel_callback,'String','cancel');
         
-        go_button=uicontrol('Style','Pushbutton',...
+        uicontrol('Style','Pushbutton',...
             'Position',[.58 .02 .20 .10 ],...
             'Units','pixels',...
             'Callback',@go_callback,...
             'String','Apply');
         
-        info_button=uicontrol('Style','Pushbutton',...
-            'Position',[.01 .02 .20 .10 ],...
-            'Units','pixels',...
-            'Callback',@info_callback, ...
-            'String','Info');
-        
-        distro_button=uicontrol('Style','Pushbutton',...
-            'Position',[.22 .02 .35 .10 ],...
+        uicontrol('Style','Pushbutton',...
+            'Position',[.05 .02 .35 .10 ],...
             'Units', 'pixels', ...
-            'Callback',{@distro_callback, a}, ...
+            'Callback',{@distro_callback, mycat}, ...
             'String','see distributions');
         
         set(gcf,'visible','on')
@@ -325,12 +301,10 @@ function a = catalog_overview(a)
         maxti = datetime(datevec(h.Value));
         h = findall(myparent,'Tag','mapview_big_evt_field');
         minmag = h.Value;
-        h = findall(myparent,'Tag','mapview_binlen_field');
-        par1 = h.Value;
-        if isa(a,'ZmapCatalog')
-            mycat = a;
-        else
-            mycat = ZmapCatalog(a);
+        %h = findall(myparent,'Tag','mapview_binlen_field');
+        %par1 = h.Value;
+        if ~isa(mycat,'ZmapCatalog')
+            mycat = ZmapCatalog(mycat);
         end
         
         % following code originally from sele_sub.m
@@ -344,14 +318,9 @@ function a = catalog_overview(a)
         mycat.addFilter('Depth','<=',maxdep);
         mycat.cropToFilter();
         % not changed unless a new set of general parameters is entered
-        newcat = ZmapCatalog;     % newcat is created to store the last subset data
-        newt2 = ZmapCatalog;      %  newt2 is a subset to be changed during analysis
-        
-        % recompute depth and Magnitude display variables
-        %minmag = max(mycat(:,6)) -0.2;      % to load_zmapfile
-        dep1 = 0.3* (max(mycat.Depth)-min(mycat.Depth)) + min(mycat.Depth);
-        dep2 = 0.6* (max(mycat.Depth)-min(mycat.Depth)) + min(mycat.Depth);
-        dep3 = max(mycat.Depth);
+        % TOFIX: newcat and new2 used to be set HERE, they need to be set elsewhere. maybe a replaceMainCatalog function?
+        % newcat = ZmapCatalog;     % newcat is created to store the last subset data
+        % newt2 = ZmapCatalog;      %  newt2 is a subset to be changed during analysis
         
         tim1 = minti;
         tim2 = maxti;
@@ -368,15 +337,7 @@ function a = catalog_overview(a)
         maepi = mycat.subset(mycat.Magnitude > minmag);
         
         mycat.sort('Date');
-        
-        
-        if newcat.Count > 10000
-            ty1='.';
-            ty2='.';
-            ty3='.';
-        end
-        a = mycat;
-        %assignin('base','a',mycat);
+       
         zmap_message_center.update_catalog();
         update(mainmap())
         
@@ -416,7 +377,7 @@ function info_callback(~,~)
     zmaphelp(titstr,hlpStr)
 end
 
-function distro_callback(src,~,a)
+function distro_callback(src,~,mycat)
     watchon; drawnow;
     dlg = main_dialog_figure('handle');
     if numel(dlg) >1
@@ -428,16 +389,16 @@ function distro_callback(src,~,a)
         % grow the catalog figure. create plots in the empty portion, change the button behavior
         dlg.Position = dlg.Position + [0 0 450 0];
         src.String = 'hide distributions';
-        pp=uipanel('Parent',gcf,'Units','pixels','Position',[310 10 420 370],'Tag','catoverview_distribution_pane');
+        pp=uipanel('Parent',gcf,'Units','pixels','Position',[310 10 420 370],'Tag','catoverview_distribution_pane','Title','Distributions');
         %f = figure('Name','Catalog time, mag, depth distributions','MenuBar','none','NumberTitle','off','Tag','catoverview_distribution');
         t_p=subplot(3,1,1,'Parent',pp);
         m_p=subplot(3,1,2,'Parent',pp);
         d_p=subplot(3,1,3,'Parent',pp);
-        histogram(t_p,a.Date);
+        histogram(t_p,mycat.Date);
         xlabel(t_p,'Time');
-        histogram(m_p,a.Magnitude);
+        histogram(m_p,mycat.Magnitude);
         xlabel(m_p,'Magnitude');
-        histogram(d_p,a.Depth);
+        histogram(d_p,mycat.Depth);
         xlabel(d_p,'Depth');
     else
         delete(findobj(0,'Tag','catoverview_distribution_pane'));

@@ -49,7 +49,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     global clust clustnumbers cluslength            %used in buildclu
     global faults coastline main mainfault name
     global xmeff xk rfact taumin taumax P
-    global err derr ijma storedcat
+    global err derr ijma 
     
     bg=[];k=[];k1=[];mbg=[];bgevent=[];equi=[];bgdiff=[];clust=[];clustnumbers=[];
     cluslength=[];rmain=[];r1=[];
@@ -193,7 +193,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         a=buildcat(1);        %new catalog for main program
         original=newcat;       %save newcat in variable original
         newcat=a;
-        storedcat = original;
+        storedcat=original;
         cluscat=original.subset(clus);
         %[dura,foretime,forepercent]=clusdura(clustnumbers);
         

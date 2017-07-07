@@ -12,7 +12,7 @@ report_this_filefun(mfilename('fullpath'));
 %end
 
 newcat = a;
-global ZmapGlobal.Data.map_len ptime lapf
+global ptime lapf
 
 %if ~exist('/home/lu/stress/bin/fmsietab_matlab')
 %errordlg('Please contact stefan@giseis.alaska.edu for executable code for misfit calculation !');

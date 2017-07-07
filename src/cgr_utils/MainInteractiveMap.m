@@ -255,14 +255,7 @@ classdef MainInteractiveMap
             uimenu(mapoptionmenu,'Label','3-D view',...
                 'Callback',@set_3d_view); % callback was plot3d
             %TODO use add_symbol_menu(...) instead of creating all these menus
-            symbolsubmenu = uimenu(mapoptionmenu,'Label','Map Symbols');
-            
-            uimenu(symbolsubmenu,'Label','Symbol Size ...',...
-                'Callback',@(~,~)symboledit_dlg(mainAxes(),'MarkerSize'));
-            uimenu(symbolsubmenu,'Label','Symbol Type ...',...
-                'Callback',@(~,~)symboledit_dlg(mainAxes(),'Marker'));
-            uimenu(symbolsubmenu,'Label','Change Symbol Color ...',...
-                'Callback', @(~,~)change_color);
+            add_symbol_menu('mainmap_ax', mapoptionmenu, 'Map Symbols');
             
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
             for i=1:numel(obj.Features)
@@ -289,7 +282,7 @@ classdef MainInteractiveMap
                 for i=1:size(legend_types,1)
                     wrapped_leg = ['''' legend_types{i,2} ''''];
                     uimenu(lemenu,'Label',legend_types{i,1},...
-                        'Callback', ['zg=ZmapGlobal.Data;zg.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
+                        'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
                 end
                 clear legend_types
                 
@@ -332,6 +325,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Select EQ in Circle (Menu)',...
                 'Callback','h1 = gca;set(gcf,''Pointer'',''watch''); stri = ['' '']; stri1 = ['' '']; incircle');
         end
+        
         function create_catalog_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_catalog');
             if ~isempty(h) && exist('force','var') && force
@@ -345,30 +339,55 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Crop catalog to window',...
                 'Callback','a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));a.cropToFilter();update(mainmap())');
             
-            uimenu(submenu,'Label','Open new catalog',...
-                'Callback','think;hold off;load_zmapfile();done');
+            uimenu(submenu,'Label','Edit Ranges...',...
+                'Callback','global a; a=catalog_overview(a);update(mainmap())');
             
-            uimenu(submenu,'Label','Keep this catalog in memory (use reset below to recall)',...
-                'Callback','storedcat = a; ');
             
-            uimenu(submenu,'Label','Reset catalog to the one saved in memory previously',...
-                'Callback','think;clear plos1 mark1 ;global a newcat newt2; a = storedcat; newcat = storedcat; newt2= storedcat;update(mainmap());done');
+            uimenu(submenu,'Label','Memorize/Recall Catalog',...
+                'Separator','on',...
+                ... % was "keep catalog in memory (use reset below to recall)"
+                'Callback',@(~,~) memorize_recall_catalog); %' storedcat=a; '
             
-            uimenu(submenu,'Label','Select new parameters (reload last catalog)',...
-                'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu;done');
+            uimenu(submenu,'Label','Clear Memorized Catalog',...
+                'Callback',['ZG=ZmapGlobal.Data;'...
+                'if isempty(ZG.memorized_catalogs),msg=''No catalogs are currently memorized     '';'...
+                'else, msg=''The memorized catalog has been cleared.      ''; end;'...
+                'ZG.memorized_catalogs=[];msgbox(msg,''Clear Memorized'')']);
             
-            uimenu(submenu,'Label','Combine two catalogs',...
+            uimenu(submenu,'Label','Combine catalogs',...
+                'Separator','on',...
                 'Callback','think;comcat;done');
             
-            uimenu(submenu,'Label','Compare two catalogs - find identical events',...
+            uimenu(submenu,'Label','Compare catalogs - find identical events',...
                 'Callback','do = ''initial''; comp2cat');
             
             
-            uimenu(submenu,'Label','Save current catalog (ASCII format)',...
+            catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
+                'Separator','on');
+
+            uimenu(submenu,'Label','Reload last catalog','Enable','off',...
+                'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu;done');
+            
+            uimenu(catmenu, ...
+                'Label','from *.mat file',...
+                'Callback', {@(s,e) load_zmapfile() });
+            
+            uimenu(catmenu, ...
+                'Label','from other formatted file',... %was Data ImportFilters
+                'Callback', 'think; zdataimport; done');
+            uimenu(catmenu, ...
+                'Label','from FDSN webservice',... %TODO
+                'Callback', @get_fdsn_data_from_web_callback);
+
+            uimenu(submenu,'Label','Save current catalog (ASCII)',...
                 'Callback','save_ca;');
             
-            uimenu(submenu,'Label','Save current catalog (mat format)',...
+            uimenu(submenu,'Label','Save current catalog (.mat)',...
                 'Callback','eval(catSave);');
+            
+            uimenu(submenu,'Label','Info (Summary)',...
+                'Separator','on',...
+                'Callback','msgbox(a.summary(''stats''),''Catalog Details'')');
         end
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
@@ -433,8 +452,9 @@ classdef MainInteractiveMap
         end
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global storedcat a newt2; storedcat = a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; update(mainmap()); bdiff(a); revertcat');
-            uimenu(submenu,'label','Create synthetic catalog...', 'Callback','global storedcat a newt2; storedcat = a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; update(mainmap()); bdiff(a); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global a newt2; =a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; update(mainmap()); bdiff(a); revertcat');
+            uimenu(submenu,'label','Create synthetic catalog...',...
+                'Callback','global a newt2; =a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; update(mainmap()); bdiff(a); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values',...
                 'Callback','brand');
@@ -553,6 +573,7 @@ classdef MainInteractiveMap
                     MainInteractiveMap.plotQuakesByTime(catalog,divs);
                 case {'dep','depth'}
                     %delete(extralegends);
+                    size(divs)
                     MainInteractiveMap.plotQuakesByDepth(catalog,divs);
                 case {'mad','magdepth'}
                     MainInteractiveMap.plotQuakesByMagAndDepth(catalog);
@@ -862,7 +883,7 @@ classdef MainInteractiveMap
             washeld=ishold(ax); hold(ax,'on');
             h=plot(catalog.Longitude, catalog.Latitude, varargin{:});
             
-            h.ZData=-catalog.Depth(mask);
+            h.ZData=-catalog.Depth;
             h.Tag = thisTag;
             if ~washeld, hold(ax,'off'),end
         end

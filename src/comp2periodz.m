@@ -296,7 +296,7 @@ if sel == 'ca'
     old = re3;
     det =  'ast'; sha = 'in';
     % View the b-value map
-    storedcat  = a;
+    storedcat=a;
     a = aa;
     view_ratecomp
 

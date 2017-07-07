@@ -1,6 +1,18 @@
 function symboledit_dlg(ax,field)
-    % choose properties for all lines & scatter plots for the current axis (that would be on legend)
-    % if DisplayName is empty, then this will not edit it
+    % symboledit_dlg choose line/scatterplot properties for specified axes
+    %
+    % symboledit_dlg(ax, field)
+    %    AX is either the Tag name of an axes, or a handle to the axes
+    %    FIELD is the property value to be chosen
+    %
+    % items that would not appear on the legend. If the DisplayName property is absent, then that
+    % particular item will be ignored
+    
+    if ischar(ax)
+        % ax was a Tag to an axis, but this requiers the handle
+        ax = findobj(0, 'Tag', ax);
+    end
+    
     lines=findobj(ax,'Type','Line','-or','Type','Scatter');
     toshow=get(lines,'DisplayName');
     ignore = cellfun(@isempty,toshow);

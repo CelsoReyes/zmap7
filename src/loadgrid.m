@@ -16,7 +16,7 @@ if length(path1) > 1
     figure_w_normalized_uicontrolunits(map)
     d =  [min(gx) min(gy) ; min(gx) max(gy) ; max(gx) max(gy) ; max(gx) min(gy); min(gx) min(gy)];
 
-    storedcat = a;
+    storedcat=a;
     update(mainmap());
     pl = plot(newgri(:,1),newgri(:,2),'+k','era','normal');
     set(pl,'MarkerSize',8,'LineWidth',1)

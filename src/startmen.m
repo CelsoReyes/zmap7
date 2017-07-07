@@ -23,14 +23,14 @@ function startmen(parent_fig)
         genmen = uimenu(parent_fig,'Label','Data');
         
         uimenu(genmen, ...
-            'Label','Load *.mat datafile',...
+            'Label','Load Catalog (*.mat file)',...
             'Callback', {@(s,e) load_zmapfile() });
         uimenu(genmen, ...
-            'Label','Import data from other formatted file',... %was Data ImportFilters
+            'Label','Import Catalog from other formatted file',... %was Data ImportFilters
             'Callback', {@think_and_do,'zdataimport'});
         uimenu(genmen, ...
             'Label','FDSN web fetch',... %TODO
-            'Callback', @get_fdsn_data_from_web);
+            'Callback', @get_fdsn_data_from_web_callback);
         uimenu(genmen, ...
             'Label', 'Create or Modify *.mat datafile',...
             'Callback', {@think_and_do, 'setup'});
@@ -66,16 +66,3 @@ function think_and_do(s, e, f_handle, varargin)
     end
     zmap_message_center.update_catalog();
 end
-
-function get_fdsn_data_from_web(s, e)
-    think;
-    h = findall(0,'Tag','fdsn_import_dialog');
-    if isempty(h)
-        fdsn_param_dialog(); % create
-    else
-        h.Visible = 'on'; % show existing
-    end
-end
-
-
-

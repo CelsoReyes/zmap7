@@ -2,7 +2,6 @@
 %    Customize setting if desired
 %
 report_this_filefun(mfilename('fullpath'));
-global ZmapGlobal.Data.map_len
 global wex wey welx wely sel
 global ty ty1 ty2 ty3
 global lth1 lth15 lth2
@@ -12,6 +11,7 @@ global tresh wi rotationangle fre
 global co par1 minmag
 global ca vi sha inb1 inb2 inda ra
 
+ZG= ZmapGlobal.Data;
 % Marker sizes
 ms6 = 3;
 ms10 = 10;
@@ -22,7 +22,7 @@ ty ='.';
 ty1 ='+';
 ty2 = 'o';
 ty3 ='x';
-zg=ZmapGlobal.Data;zg.mainmap_plotby='depth';
+ZG.mainmap_plotby='depth';
 sel  = 'in';
 
 
@@ -71,16 +71,9 @@ wi = 10 ;   % initial width of crossections
 rotationangle = 10; % initial rotation angle in cross-section window
 fre = 0;
 
-
-% set the background color (c1 = red, c2 = green, c3 = blue)
-% default: light gray 0.9 0.9 0.9
-c1 = 0.9;
-c2 = 0.9;
-c3 = 0.9;
-
 % Set the Background color for the plot
 % default \: light yellow 1 1 0.6
-color_bg = [1.0 1.0 1.0];
+ZG.color_bg = [1.0 1.0 1.0];
 in = 'initf';
 
 % seislap default parameters

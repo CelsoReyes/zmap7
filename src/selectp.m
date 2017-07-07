@@ -9,7 +9,7 @@ function selectp(in_or_out)
     %  'poly_selected_events' : earthquakes in/out of polygon
     %  'mouse_points_overlay' : polygon outline
     
-    global a newcat storedcat newt2 hoda
+    global a newcat  newt2 hoda
     echo on
     % ___________________________________________________________
     %  Please use the left mouse button or the cursor to select
@@ -21,7 +21,7 @@ function selectp(in_or_out)
     report_this_filefun(mfilename('fullpath'));
     %zoom off
     newt2 = [ ];           % reset catalogue variables
-    %a = storedcat;              % uses the catalogue with the pre-selected main
+    %a=storedcat;              % uses the catalogue with the pre-selected main
     % general parameters
     newcat = a;
     

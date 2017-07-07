@@ -409,7 +409,7 @@ if in == 'readd'
     watchoff
     close(lohy)
     clear so is yr da mag dep hr mi lat latm lon lonm mo
-    zg=ZmapGlobal.Data;zg.mainmap_plotby='depth';
+    ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth';
     do = 'view';
     inpu
 

@@ -1,19 +1,48 @@
-function add_symbol_menu(target_tag, parent)
-    % add a symbol_menu
-    % target_tag : if a string, then tag name (combined with findoj)
-    %              if a handle, then use the handle.
-    % parent is an optional parameter that allows you to specify a specific menu item
-    % leave blank to have this created as a child of the menu bar
-    % symbolmenu - attach submenus directly to this existing menu instead of cre
+function add_symbol_menu(target, parent, label)
+    % add_symbol_menu add menuitems to change symbol(marker) style, size, and color
+    %
+    % add_symbol_menu(target) create a default symbol menu, affecting the axes designated by 'target'
+    %     where TARGET [required] is either the Tag name (string) or handle to a line/axis object
+    %
+    %       Note: by providing a Tag name instead of a handle, resolving the target is deferred
+    %         until the menu item is chosen.  This way the axes must not necessarily be created
+    %         prior to creating the menu
+    %
+    % add_symbol_menu(target, parent) creates a default symbol menu subordinate to 'parent', where
+    %     PARENT is an optional parameter that allows you to specify a specific menu item.  Leave
+    %     this blank to have this created as a child of the main menu bar.
+    %
+    % add_symbol_menu(target, parent, label) will additionally use the provided label instead of the
+    %     default.  This is what the user sees as the menu item
     
     % cgr 2017
-    if exist('parent','var') && ~isempty(parent)
-        symbolmenu = uimenu(parent, 'Label', ' Symbol ');
-    else
-        symbolmenu = uimenu('Label',' Symbol ');
+    
+    if ~exist('label','var') || isempty('label')
+        label = 'Symbol';
     end
     
+    % create a menu, under which the other options (color,type,shape) will be provided
+    if exist('parent','var') && ~isempty(parent)
+        % create as subordinate to the parent menu item
+        symbolmenu = uimenu(parent, 'Label', label);
+    else
+        % create on main menu bar
+        symbolmenu = uimenu('Label', label);
+    end
     
+    % we do not test the target to see if it is valid, because it might not be valid until the 
+    % menu button is pressed.  It SHOULD ideally be either a handle or a Tag.
+    
+    uimenu(symbolmenu,'Label','Symbol Size ...',...
+        'Callback',@(~,~)symboledit_dlg(target,'MarkerSize'));
+    uimenu(symbolmenu,'Label','Symbol Type ...',...
+        'Callback',@(~,~)symboledit_dlg(target,'Marker'));
+    uimenu(symbolmenu,'Label','Change Symbol Color ...',...
+        'Callback', @(~,~)change_color);
+            
+    %{
+        %% old version
+        % TODO: delete these
     % master lists for the menu options as {'menulabel', value; ...}
     
     avail_sizes={'3',3;'6',6;'9',9;'12',12;'14',14;'18',18;'24',24};
@@ -114,6 +143,6 @@ function add_symbol_menu(target_tag, parent)
         % centralized messaging function
         disp(msg);
     end
-    
+    %}
     
 end

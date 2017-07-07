@@ -27,7 +27,7 @@ case 'mag'
             % convert from string
             answer{i} = str2double(answer{i});
         end
-        zg=ZmapGlobal.Data;zg.mainmap_plotby='mag'; %redundant?
+        ZG=ZmapGlobal.Data;ZG.mainmap_plotby='mag'; %redundant?
         dep1=answer{1};
         dep2=answer{2};
         dep3=answer{3};
@@ -54,7 +54,7 @@ case 'depth'
             % convert from string
             answer{i} = str2double(answer{i});
         end
-        zg=ZmapGlobal.Data;zg.mainmap_plotby='depth'; %redundant?
+        ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth'; %redundant?
         dep1=answer{1};
         dep2=answer{2};
         dep3=answer{3};

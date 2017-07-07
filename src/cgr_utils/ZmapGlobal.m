@@ -1,10 +1,20 @@
 classdef ZmapGlobal
     % class used to access ZMap's global data
-    % h = ZmapGlobal.Data
-    % value = h.variable % where variable is the variable of interest
-    % h.variable = value ; set the variable of interest
+    % 
+    % to READ a global is straight-forward (in this case, "abc"):
+    %    value = ZmapGlobal.Data.abc
+    %
+    % to WRITE a global is somewhat more complicated:
+    % 
+    %   h = ZmapGlobal.Data; % first, get handle to data
+    %   h.abc = value ;      % THEN, set the variable of interest
+    %
+    % Advantages of using this class:
+    % - more explicit, no confusing with local variables
+    % - ability to control/modify/verify values at set-time
+    % - one-stop shopping
     
     properties (Constant)
-        Data = ZmapData
+        Data = ZmapData % handle-based class containing global variables & constants
     end
 end

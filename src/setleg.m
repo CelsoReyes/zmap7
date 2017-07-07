@@ -40,7 +40,7 @@ case 'tim'
                     
             end
         end
-        zg=ZmapGlobal.Data;zg.mainmap_plotby='tim'; %redundant?
+        ZG=ZmapGlobal.Data;ZG.mainmap_plotby='tim'; %redundant?
         tim1=answer{1};
         tim2=answer{2};
         tim3=answer{3};

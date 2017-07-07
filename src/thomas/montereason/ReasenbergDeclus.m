@@ -47,7 +47,7 @@ report_this_filefun(mfilename('fullpath'));
 % global clust clustnumbers cluslength            %used in buildclu
 % global faults coastline main mainfault name
 % global xmeff xk rfact taumin taumax P
-% global err derr ijma storedcat
+% global err derr ijma 
 
 bg=[];k=[];k1=[];mbg=[];bgevent=[];equi=[];bgdiff=[];clust=[];clustnumbers=[];
 cluslength=[];rmain=[];r1=[];
@@ -186,7 +186,7 @@ else
    [a,is_mainshock] = funBuildcat(newcat,clus,bg,bgevent);        %new catalog for main program
 %   original=newcat;       %save newcat in variable original
 %    newcat=a;
-%    storedcat = original;
+%    storedcat=original;
 %    cluscat=original(find(clus),:);
 %    update(mainmap())
 %    hold on

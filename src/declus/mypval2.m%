@@ -25,7 +25,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati);
 global file1             %welcome 
 global mess ccum bgevent equi file1 clust original cluslength newclcat
 global backcat ttcat cluscat
-global ZmapGlobal.Data.map_len sys minmag clu te1 fs12 fs10 fs14
+global sys minmag clu te1 fs12 fs10 fs14
 global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
 global xt par3 cumu cumu2 mess 
 global close_p_button pplot 

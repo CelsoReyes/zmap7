@@ -7,7 +7,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 newt2 = [ ];           % reset catalogue variables
-%a = storedcat;              % uses the catalogue with the pre-selected main
+%a=storedcat;              % uses the catalogue with the pre-selected main
 % general parameters
 newcat = a;
 
