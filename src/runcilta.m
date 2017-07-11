@@ -41,7 +41,7 @@ tmp = gcf
 
 cin_lta
 axes(has)
-fs = get(gcf,'pos');
+fs_m = get(gcf,'pos');
 
 m = moviein(length(1:step:len-iwl));
 

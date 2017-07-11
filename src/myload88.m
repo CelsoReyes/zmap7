@@ -95,7 +95,7 @@ t4p(1) = 93.;
 tresh = 10;
 
 % save the data
-[file1,path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Save Earthquake Datafile');
+[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Earthquake Datafile');
 sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 

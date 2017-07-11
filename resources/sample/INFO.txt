@@ -1,0 +1,4 @@
+The *.dat files contain sample ASCII data files from Northern California 
+and PDE. They can be used to test the importfilters. 
+
+	

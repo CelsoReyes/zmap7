@@ -347,7 +347,7 @@ if in == 'readd'
 
     % read in the data file
 
-    [file1,path1] = uigetfile([hoda '*'],' Earthquake Datafile');
+    [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir ,'*'),' Earthquake Datafile');
     if length(file1) < 2
         return
     end

@@ -7,10 +7,6 @@ function memorize_recall_catalog()
     ZG = ZmapGlobal.Data;
     hasMemorized = ~isempty(ZG.memorized_catalogs);
     
-    if ~exist('newline') %R2017a and later
-        newline=sprintf('\n');
-    end
-    
     if hasMemorized
         % ask to memorize new catalog, or recall existing catalog
         todo=questdlg(['Memorize "',a.Name ,'"or  Recall "',ZG.memorized_catalogs.Name,'"?',...

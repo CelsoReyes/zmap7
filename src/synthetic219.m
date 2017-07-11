@@ -245,7 +245,7 @@ watchoff
 
 
 %str = [];
-%[newmatfile, newpath] = uiputfile([ hodo '*.dat'], 'Save As');
+%[newmatfile, newpath] = uiputfile([ ZmapGlobal.Data.out_dir '*.dat'], 'Save As');
 
 %s = [synt(:,1)   synt(:,2)  (synt(:,3))  synt(:,4)  synt(:,5)  synt(:,6)  synt(:,7) synt(:,8) synt(:,9)  ];
 % fid = fopen([newpath newmatfile],'w') ;;

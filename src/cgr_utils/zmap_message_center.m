@@ -12,9 +12,6 @@ classdef zmap_message_center < handle
             % zmap_message_center provides handle used to access zmap message center functionality
             % the message center will be created if it doesn't exist, otherwise it will be made the
             % active figure
-            if ~exist('newline') %R2017a and later
-                newline=sprintf('\n');
-            end
 
             h = findall(0,'tag','zmap_message_window');
             if (isempty(h))

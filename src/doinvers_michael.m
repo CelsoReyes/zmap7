@@ -7,11 +7,13 @@
 %
 % Stefan Wiemer 03/96
 
-% Save path to current folder
-sPath = pwd;
-
 global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmpi cumu2
+% Save path to current folder
+sPath = pwd;
+ZG = ZmapGlobal.Data;
+fs = filesep;
+
 report_this_filefun(mfilename('fullpath'));
 think
 

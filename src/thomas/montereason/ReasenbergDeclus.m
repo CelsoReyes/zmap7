@@ -43,7 +43,7 @@ report_this_filefun(mfilename('fullpath'));
 % global newcat clus rmain r1 eqtime              %catalogs
 % global  a                                       %catalogs
 % global k k1 bg mbg bgevent equi bgdiff          %indices
-% global ltn  hoda                                %variable to shorten code
+% global ltn                                      %variable to shorten code
 % global clust clustnumbers cluslength            %used in buildclu
 % global faults coastline main mainfault name
 % global xmeff xk rfact taumin taumax P

@@ -1,4 +1,4 @@
-function out = load_volcanoes(alternateFilename, volcanoVariableName)
+function out = load_volcanoes(filename, vname)
     % loads volcano information from a file
     % by default, this loads volcao.mat, which contains
     % a Table called GVPHoloceneVolcanoes
@@ -10,29 +10,31 @@ function out = load_volcanoes(alternateFilename, volcanoVariableName)
     %  Elevationm - elevation in meters
     %  Depth - negative elevation in km
 
-    if ~exist('alternateFilename','var')
-        volcanoesFile = 'volcano.mat';
-    else
-        volcanoesFile = alternateFilename;
+    if ~exist('filename','var')
+        filename = 'features/volcano.mat';
     end
     
-    if ~exist('volcanoVariableName','var')
-        volcanoVariableName = 'GVPHoloceneVolcanoes';
+    if ~exist('vname','var')
+        vname = 'data';
     end
     
     out = [];
+    
     try
-        XX = load(volcanoesFile, volcanoVariableName);
+        XX = load(filename, vname);
     catch ME
         error('unable to load volcanoes. Expected variable "%s" in file "%s"',...
-        volcanoVariableName, volcanoesFile)
+        vname, filename)
     end
-    if isfield(XX,volcanoVariableName)
-        out = XX.(volcanoVariableName);
+    
+    if isfield(XX,vname)
+        out = XX.(vname);
     end
+    
     if ~isfield(out,'Depth')
         out.Depth= -(out.Elevationm ./ 1000);
     end
+    
     fn = fieldnames(out);
     if ~all(ismember({'VolcanoName','Latitude','Longitude','Elevationm','LastKnownEruption'}, fn))
         warning('loaded volcano file, but it doesn''t appear to have all the required fields');

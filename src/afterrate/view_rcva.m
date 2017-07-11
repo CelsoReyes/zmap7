@@ -82,16 +82,8 @@ if oldfig_button == 0
     %lab1 = 'p-value:';
     add_symbol_menu('eq_plot');
 
-    %    uicontrol('Units','normal',...
-    %       'Position',[.0 .93 .08 .06],'String','Info ',...
-    %        'Callback',' web([''file:'' hodi ''/zmapwww/chp11.htm#996756'']) ');
-
-
-
     options = uimenu('Label',' Analyze ');
     uimenu(options,'Label','Refresh ', 'Callback','view_rcva')
-    %    uimenu(options,'Label','Select EQ in Circle',...
-    %        'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirpva;watchoff(rcmap)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
          'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;plot_circbootfitF;watchoff(rcmap)')
     uimenu(options,'Label','Select EQ with const. number',...

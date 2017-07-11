@@ -3,9 +3,6 @@ function load_zmapfile()%
     %  load zmap file
     %  load volcanoes
     %
-    % This is the startup file for the program "MagSig". To run
-    % it your startup.m file in the local directory must include several
-    % searchpathes pointing to several supplementary .m files.
     %
     % load_zmapfile file will ask you for an input file name. The data
     % format is at this point:
@@ -19,6 +16,8 @@ function load_zmapfile()%
     %  Columns 8 and 9
     %     10     51
     %    hour   min
+    %
+    %
     %
     % Any catalog is generally loaded once as an unformatted ascii file
     % and then saved as variable "a" in  <name>_cata.mat .
@@ -37,13 +36,13 @@ function load_zmapfile()%
     
     [file1,path1] = uigetfile('*.mat',' Earthquake Datafile');
     
-    if length(path1) < 2 % cancelled o
+    if length(path1) < 2 % cancelled
         zmap_message_center.clear_message();
         done
         return
     else
         if exist(fullfile(path1,file1),'file')
-            S=whos('-file','tempout.mat','a'); % get info about "a"
+            S=whos('-file',fullfile(path1,file1),'a'); % get info about "a"
             if ~isempty(S) %a exists
                 a = loadCatalog(path1, file1);
             else
@@ -90,34 +89,6 @@ function load_zmapfile()%
     ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth';
     
     setUpDefaultValues(a);
-    %{
-    %  default values
-    t0b = min(a.Date);
-    teb = max(a.Date);
-    tdiff = (teb - t0b)*365;
-    if ~exist('par1', 'var')
-        if tdiff>10                 %select bin length respective to time in catalog
-            par1 = ceil(tdiff/100);
-        elseif tdiff<=10  &&  tdiff>1
-            par1 = 0.1;
-        elseif tdiff<=1
-            par1 = 0.01;
-        end
-    end
-    minmag = max(a.Magnitude) -0.2;
-    dep1 = 0.3*max(a.Depth);
-    dep2 = 0.6*max(a.Depth);
-    dep3 = max(a.Depth);
-    minti = min(a.Date);
-    maxti  = max(a.Date);
-    minma = min(a.Magnitude);
-    maxma = max(a.Magnitude);
-    mindep = min(a.Depth);
-    maxdep = max(a.Depth);
-    ra = 5;
-    mrt = 6;
-    met = 'ni';
-    %}
     
     zmap_message_center.update_catalog();
     a = catalog_overview(a);

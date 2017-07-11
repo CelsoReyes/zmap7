@@ -6,17 +6,17 @@ report_this_filefun(mfilename('fullpath'));
 
 think
 tmp = [newt2(:,10:12)];
-do = ['save ' hodo 'data.inp tmp -ascii'];
-err =  ['Error - could not save file ' hodo 'data.inp - permission?'];
+do = ['save ' ZmapGlobal.Data.out_dir 'data.inp tmp -ascii'];
+err =  ['Error - could not save file ' ZmapGlobal.Data.out_dir 'data.inp - permission?'];
 err2 = ['errordlg(err);return'];
 eval(do,err2)
 
-infi = [hodo 'data.inp'];
-outfi = [hodo 'tmpout.dat'];
-outfi2 = [hodo 'tmpout2.dat'];
+infi = [ZmapGlobal.Data.out_dir 'data.inp'];
+outfi = [ZmapGlobal.Data.out_dir 'tmpout.dat'];
+outfi2 = [ZmapGlobal.Data.out_dir 'tmpout2.dat'];
 
 
-fid = fopen([hodo 'inmifi.dat'],'w');
+fid = fopen([ZmapGlobal.Data.out_dir 'inmifi.dat'],'w');
 
 fprintf(fid,'%s\n',infi);
 fprintf(fid,'%s\n',outfi);
@@ -25,13 +25,13 @@ fclose(fid);
 comm = ['!/bin/rm ' outfi];
 eval(comm)
 
-comm = ['!  ' hodi '/stinvers/datasetupDD < ' hodo 'inmifi.dat ' ]
+comm = ['!  ' hodi '/stinvers/datasetupDD < ' ZmapGlobal.Data.out_dir 'inmifi.dat ' ]
 eval(comm)
 
 comm = ['!grep  "1.0" ' outfi  '>'  outfi2];
 eval(comm)
 
-comm = ['load ' hodo 'tmpout2.dat'];
+comm = ['load ' ZmapGlobal.Data.out_dir 'tmpout2.dat'];
 eval(comm)
 
 %l = newt2(:,length(newt2(1,:)));

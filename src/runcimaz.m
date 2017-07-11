@@ -13,7 +13,7 @@ step = nustep;
 %
 cin_lta
 axes(h1)
-fs = get(gcf,'pos');
+fs_m = get(gcf,'pos');
 
 m = moviein(length(1:step:len-iwl));
 

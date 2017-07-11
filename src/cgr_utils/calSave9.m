@@ -1,9 +1,9 @@
 function calSave9 (~, ~, A, B)
     % calSave9 = save data to an interactively chosen file
-    global hodi
+    
     zmap_message_center.set_info('Save Data','  ');
     think;
-    [file1,path1] = uiputfile(fullfile(hodi, 'out', '*.dat'), 'Filename ? ');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.out_dir, '*.dat'), 'Filename ? ');
     if file1 && path1
         if ~iscolumn(A)
             A = A';

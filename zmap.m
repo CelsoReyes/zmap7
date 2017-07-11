@@ -5,9 +5,11 @@
 %  Stefan Wiemer  12/94
 %  Modified by Celso Reyes Spring/Summer 2017
 
+global a sys ms6
 %system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 
+%{
 % read the welcome screen
 rng('shuffle');
 r = ceil(rand(1,1)*21);
@@ -29,42 +31,22 @@ try
 catch ME
     % do nothing
 end
-
-
 cd ..
+%}
 
-% Get the screensizxe and color
-global a aw
-global b1 b2 bfig bg bmapc bvalsum3 bw
-global color_bg clus cum dx dy equi eqtime
-global figp file1 freq_field freq_field1 freq_field2 freq_field3 freq_field4
-global  Go_p_button histo hisvar
-global lat1 lon1 lat2 lon2 leng mess ni n1 n2 newa2 newcat original
-global pos pri ptt Re sax1 sax2 scale seismap strii1 strii2 sys
-global teb t0b torad ttcat wex wey welx wely
-global xsec_fig xt3 ms6 hodi
 
-% temporarily turn off all warnings...
-% warning off   %nuh-uh - CGR
+% set some of the paths
+set_zmap_paths();
 
-addpath(fullfile('src','cgr_utils')); % location of ZmapGlobal
 ZG=ZmapGlobal.Data; % get zmap globals
-hodi = ZG.hodi;
 ms6 = ZG.ms6;
-
-%fipo = get(groot,'ScreenSize');
-%hodi = pwd;
-%fipo(4) = fipo(4)-150;
-% term = get(groot,'ScreenDepth');
 
 % Set up the different compuer systems
 sys = computer;
 
-if verLessThan('matlab','9.2')
-    messtext = ['Warning: You are running a version of MatLab ',...
-        ' older than 2017a. ZMAP was modified for compatibility ',...
-        ' with r2017a or later, so your version may no longer be',...
-        ' compatible'];
+if verLessThan('matlab',ZG.min_matlab_version)
+    baseMsg = 'You are running a version of MATLAB older than %s. ZMAP %s requires MATLAB %s or newer';
+    messtext = sprintf(baseMsg, ZG.min_matlab_release, ZG.zmap_version, ZG.min_matlab_version);
     errordlg(messtext,'Warning!')
     pause(5)
 end
@@ -72,70 +54,13 @@ end
 tested_systems = {'MAC'};
 prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
 if ~ismember( sys(1:3), tested_systems)
-    errordlg(' Warning: ZMAP has not been tested on this computer type!','Warning!')
+    errordlg(' Warning: ZMAP has not been tested on this computer type.','Warning!')
     pause(5)
 end
 
-% set some of the paths
-    fs = filesep;
-    hodo = [hodi fs 'out' fs];
-    hoda = [hodi fs 'eq_data' fs];
-    p = path;
 
-    source_path = fullfile(hodi, 'src', filesep);
-    addpath(hodi);
-    addpath(...fullfile(hodi, 'myfiles'),...
-        fullfile(hodi, 'src'),...
-        [source_path 'utils'],...
-        [source_path 'declus'],...
-        [source_path 'fractal'],...
-        fullfile(hodi, 'help'),...
-        fullfile(hodi, 'dem'),...
-        fullfile(hodi, 'zmapwww'),...
-        fullfile(hodi, 'importfilters'),...
-        ...[hodi fs  fs 'src' fs 'utils' fs 'eztool'],...
-        fullfile(hodi, 'm_map'),...
-        [source_path 'pvals'],...
-        [source_path 'synthetic'], ...
-        ...[source_path 'movies'],...
-        [source_path 'danijel'],...
-        [source_path 'danijel' fs 'calc'],...
-        [source_path 'danijel' fs 'ex'],...
-        [source_path 'danijel' fs 'gui'],...
-        [source_path 'danijel' fs 'focal'],...
-        [source_path 'danijel' fs 'plot'],...
-        [source_path 'danijel' fs 'probfore'],...
-        [source_path 'jochen'],...
-        [source_path 'jochen' fs 'seisvar' fs 'calc'],...
-        [source_path 'jochen' fs 'seisvar'],...
-        [source_path 'jochen' fs 'ex'],...
-        [source_path 'thomas' fs 'slabanalysis'],...
-        [source_path 'thomas' fs 'seismicrates'],...
-        [source_path 'thomas' fs 'montereason'],...
-        [source_path 'thomas' fs 'gui'],...
-        [source_path 'jochen' fs 'plot'],...
-        [source_path 'jochen' fs 'stressinv'],...
-        [source_path 'jochen' fs 'auxfun'],...
-        [source_path 'thomas'], ...
-        [source_path 'thomas' fs 'seismicrates'], ...
-        [source_path 'thomas' fs 'montereason'], ...
-        [source_path 'thomas' fs 'etas'],...
-        [source_path 'thomas' fs 'decluster'],...
-        [source_path 'thomas' fs 'decluster' fs 'reasen'],...
-        [source_path 'thomas'], ...
-        [source_path 'thomas' fs 'seismicrates'], ...
-        [source_path 'thomas' fs 'montereason'], ...
-        [source_path 'thomas' fs 'etas'],...
-        [source_path 'thomas' fs 'decluster'],...
-        [source_path 'thomas' fs 'decluster' fs 'reasen'],...
-        ...[source_path 'juerg' fs 'misc'],...
-        [source_path 'afterrate'],...
-        [source_path 'cgr_utils' fs 'borders'],...
-        [source_path 'cgr_utils']...
-        );
-
- % set some initial variables
- ini_zmap
+% set some initial variables
+ini_zmap
 
 
 %Create the 5 data categories
@@ -147,6 +72,7 @@ stat = [];
 a = [];
 faults = [];
 
+%{
 % Almost all zmap routine's calls to th uicontrol do so in the following order:
 %   uicontrol(...,'Position',[0. ... ], 'Units', 'normalized')
 %   however, the program may have a different default, like 'Pixel', and so the previous
@@ -154,7 +80,7 @@ faults = [];
 %   uicontrol(...,'Units','normalized',Position',[0. ... ])
 %
 %   But there are thousands of uicontrol calls with differing formats making this a chore
-%   one solution, is to change the defaultuicontrolunits to 'normalized'. The problem, 
+%   one solution, is to change the defaultuicontrolunits to 'normalized'. The problem,
 %   however, is that this breaks the default dialogs which count on (for some reason) the
 %   default units being "pixels".
 %
@@ -163,21 +89,12 @@ faults = [];
 % or others like it, would allow us to control figure behavior across the entire codebase.
 %
 % SO... if something doesn't have buttons, but should, then maybe it was assuming "pixels".
+%}
 
-set(0,'DefaultAxesFontName','Arial')
-set(0,'DefaultTextFontName','Arial')
-set(0,'DefaultAxesTickLength',[0.01 0.01])
-
-set(0,'DefaultFigurePaperPositionMode','auto')
-
+set(0,'DefaultAxesFontName','Arial');
+set(0,'DefaultTextFontName','Arial');
+set(0,'DefaultAxesTickLength',[0.01 0.01]);
+set(0,'DefaultFigurePaperPositionMode','auto');
 
 % open message window
 zmap_message_center;
-% message_zmap
-think
-echo off
-my_dir = hodi;
-% open selection window
-% startmen(mess)
-done; %close(fi0)
-%set(gcf,'Units','pixel','position', [100 200 300 250])

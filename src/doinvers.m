@@ -20,13 +20,13 @@ end
 prepfocal2
 hodis = [hodi '/stinvers'];
 tmpi = tmpout2;
-do = ['save ' hodo 'data.inp tmpi -ascii'];
-err =  ['Error - could not save file ' hodo '/tmpin.dat - permission?'];
+do = ['save ' ZmapGlobal.Data.out_dir 'data.inp tmpi -ascii'];
+err =  ['Error - could not save file ' ZmapGlobal.Data.out_dir '/tmpin.dat - permission?'];
 err2 = ['errordlg(err);return'];
 eval(do,err2)
 
-infi = [hodo 'data.inp'];
-outfi = [hodo 'tmpout.dat'];
+infi = [ZmapGlobal.Data.out_dir 'data.inp'];
+outfi = [ZmapGlobal.Data.out_dir 'tmpout.dat'];
 
 
 %com1 =input('Which computer would you like to do the inversion on?','s');

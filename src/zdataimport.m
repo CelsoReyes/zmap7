@@ -11,7 +11,7 @@ end
 
 % start filters
 
-[a] = import_start([ hodi fs 'importfilters']);
+[a] = import_start(fullfle(ZmapGlobal.Data.hodi, 'importfilters'));
 if isnan(a)
     % import cancelled / failed
     return

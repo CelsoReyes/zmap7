@@ -18,7 +18,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 global no1 bo1 inb1 inb2
-
+fs=filesep;
+ZG=ZmapGlobal.Data;
 if sel == 'in'
     % get the grid parameter
     % initial values
@@ -202,7 +203,7 @@ if sel == 'ca'
     if save_grid == 1
         grid_save =...
             [ 'zmap_message_center.set_info(''Saving Grid'',''  '');think;',...
-            '[file1,path1] = uiputfile([my_dir fs ''eq_data'' fs ''*.mat''], ''Grid File Name?'') ;',...
+            '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir,''*.mat''), ''Grid File Name?'') ;',...
             ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll''];',...
             ' if length(file1) > 1, eval(gs),end , done']; eval(grid_save)
     end
@@ -233,7 +234,7 @@ if sel == 'ca'
     bvg = zeros(length(newgri),9)*nan;
 
 
-    hodis = fullfile(hodi, 'external');
+    hodis = fullfile(ZG.hodi, 'external');
     cd(hodis);
 
     % loop over all points
@@ -287,32 +288,32 @@ if sel == 'ca'
                 otherwise
                     dos(['".' fs 'slick.exe" data2 ']);
             end
-            %unix([hodi fs 'external/slick data2 ']);
+            %unix([ZG.hodi fs 'external/slick data2 ']);
             % Get data from data2.oput
             sFilename = ['data2.oput'];
             [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename);
 
             % Delete existing data2.slboot
 
-            sData2 = fullfile(hodi, 'external', 'data2.slboot');
+            sData2 = fullfile(ZG.hodi, 'external', 'data2.slboot');
 
             delete(sData2);
 
             % Stress tensor inversion
             switch computer
                 case 'GLNX86'
-                    unix(['"' hodi fs 'external/slfast_linux" data2 ']);
+                    unix(['"' ZG.hodi fs 'external/slfast_linux" data2 ']);
                 case 'MAC'
-                    unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
+                    unix(['"' ZG.hodi fs 'external/slfast_macpcc" data2 ']);
                 case 'MACI'
-                    unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+                    unix(['"' ZG.hodi fs 'external/slfast_maci" data2 ']);
                 case 'MACI64'
-                    unix(['"' hodi fs 'external/slfast_maci64" data2 ']);
+                    unix(['"' ZG.hodi fs 'external/slfast_maci64" data2 ']);
                 otherwise
-                    dos(['"' hodi fs 'external' fs 'slfast.exe" data2 ']);
+                    dos(['"' ZG.hodi fs 'external' fs 'slfast.exe" data2 ']);
             end
-            %unix([hodi fs 'external/slfast data2 ']);
-            sGetFile = fullfile(hodi, 'external', 'data2.slboot');
+            %unix([ZG.hodi fs 'external/slfast data2 ']);
+            sGetFile = fullfile(ZG.hodi, 'external', 'data2.slboot');
             load(sGetFile); % Creates variable data2 in workspace
             % Description of data2
             % Line 1: Variance S11 S12 S13 S22 S23 S33 => Variance and components of

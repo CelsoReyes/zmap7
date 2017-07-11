@@ -10,7 +10,7 @@ st1 = [' In order to plot stations plus station names on top of a map'...
 uiwait(msgbox(st1,'Plotting stations','modal'));
 
 str = [];
-[newmatfile, newpath] = uigetfile([ hodo '*'], 'Name of station file'); %disabled window positioning
+[newmatfile, newpath] = uigetfile(fullfile(ZmapGlobal.Data.out_dir, '*'), 'Name of station file'); %disabled window positioning
 
 fid = fopen([newpath newmatfile],'r') ;
 axes(h1)

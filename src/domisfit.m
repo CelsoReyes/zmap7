@@ -22,7 +22,7 @@ tmp(l,2) = tmp(l,2)*0+89.;
 try
     save data.inp tmp -ascii
 catch ME
-    error_handler(ME, ['Error - could not save file ' hodo 'data.inp - permission?']);
+    error_handler(ME, ['Error - could not save file ' ZmapGlobal.Data.out_dir 'data.inp - permission?']);
 end
 
 infi =  ['data.inp'];

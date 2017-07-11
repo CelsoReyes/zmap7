@@ -939,7 +939,7 @@ function r = LocalAxesTightBoundingBox(axesR, a)
             'fontweight',get(a,'fontweight'),...
             'fontangle',get(a,'fontangle'),...
             'visible','off');
-        fs = get(a,'fontsize');
+        fs_fsz = get(a,'fontsize');
 
         % handle y axis tick labels
         ry = [0 0 0 axesR(4)];

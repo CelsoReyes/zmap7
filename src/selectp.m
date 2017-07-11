@@ -9,7 +9,7 @@ function selectp(in_or_out)
     %  'poly_selected_events' : earthquakes in/out of polygon
     %  'mouse_points_overlay' : polygon outline
     
-    global a newcat  newt2 hoda
+    global a newcat  newt2
     echo on
     % ___________________________________________________________
     %  Please use the left mouse button or the cursor to select
@@ -85,7 +85,7 @@ function selectp(in_or_out)
     xy = [x y];
     
     %save polcor.dat xy -ascii
-    [file1,path1] = uiputfile([hoda '*.txt'],'Save Polygon ? (yes/cancel)');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.txt'),'Save Polygon ? (yes/cancel)');
     if length(file1) > 1
         if length(file1)>3
             if strcmp(file1(length(file1)-3:length(file1)),'.txt')==0

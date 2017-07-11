@@ -8,7 +8,7 @@ function slshow()
 end
 
 function setup_slideshow()
-    hodi = evalin('base','hodi');
+    hodi = ZmapGlobal.Data.hodi;
     file_extensions = {'jpg','png','bmp','gif'};
     slides = dir(fullfile(hodi, 'slides', ['*.', file_extensions{1}]));
     for n=2:numel(file_extensions)

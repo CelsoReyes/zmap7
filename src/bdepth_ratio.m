@@ -230,7 +230,7 @@ ni_plot = ni;
 
 if sel == 'ca'
 
-    [file1,path1] = uiputfile([my_dir fs '*.mat'], 'Grid Datafile Name?') ;
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.hodi, '*.mat'), 'Grid Datafile Name?') ;
 
 
     selgp
@@ -490,7 +490,7 @@ if sel == 'ca'
             [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
             ' sapa2 = [''save '' path1 file1 '' bvg gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll depth_ratio top_zonet top_zoneb bot_zoneb bot_zonet ni_plot''];',...
             ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
-        %%%%%%        '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
+        %%%%%%        '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
         close(wai)
         watchoff
     end

@@ -44,12 +44,6 @@ if newbmapWindowFlag
 
     add_symbol_menu('eq_plot');
 
-    %   uicontrol('Units','normal',...
-    %      'Position',[.1 .23 .08 .06],'String','Info ',...
-    %       'Callback',' web([''file:'' hodi ''/zmapwww/chp11.htm#996756'']) ');
-
-
-
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_aValue')
     uimenu(options,'Label','Select EQ in Circle',...

@@ -18,7 +18,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 global no1 bo1 inb1 inb2
-
+ZG = ZmapGlobal.Data;
 if sel == 'in'
     % Get the grid parameter
     % Set initial values
@@ -286,7 +286,7 @@ if sel == 'ca'
     if save_grid == 1
         grid_save =...
             [ 'zmap_message_center.set_info(''Saving Grid'',''  '');think;',...
-            '[file1,path1] = uiputfile([my_dir fs ''eq_data'' fs ''*.mat''], ''Grid File Name?'') ;',...
+            '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir,''*.mat''), ''Grid File Name?'') ;',...
             ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll dd dx ra ni Nmin fMaxRad tgl1 xsecx xsecy''];',...
             ' if length(file1) > 1, eval(gs),end , done']; eval(grid_save)
         %newgri dx dy xvect yvect tmpgri ll
@@ -312,7 +312,7 @@ if sel == 'ca'
     sPath = pwd;
 
     % Path to Stress Inversion program
-    hodis = fullfile(hodi, 'external');
+    hodis = fullfile(ZG.hodi, 'external');
     do = ['cd  ' hodis ]; eval(do)
 
 
@@ -373,37 +373,37 @@ if sel == 'ca'
             % slick calculates the best solution for the stress tensor according to
             % Michael(1987): creates data2.oput
             switch(computer)
+            % all files were relative to current directory '.'
             case 'GLNX86'
-                unix(['.' fs 'slick_linux data2 ']);
+                unix([fullfile(ZG.hodi ,'slick_linux'),' data2 ']);
             case 'MAC'
-                unix(['.' fs 'slick_macppc data2 ']);
+                unix([fullfile(ZG.hodi ,'slick_macppc'),' data2 ']);
             case 'MACI'
-                unix(['.' fs 'slick_maci data2 ']);
+                unix([fullfile(ZG.hodi ,'slick_maci'),' data2 ']);
             otherwise
-                dos(['.' fs 'slick.exe data2 ']);
+                dos([fullfile(ZG.hodi ,'slick.exe'),' data2 ']);
             end
-            %unix([hodi fs 'external/slick data2 ']);
+
             % Get data from data2.oput
             sFilename = ['data2.oput'];
             [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename)
 
             % Delete existing data2.slboot
-            sData2 = [hodi fs 'external/data2.slboot'];
+            sData2 = fullfile(ZG.hodi, 'external', 'data2.slboot');
             delete(sData2);
 
             % Stress tensor inversion
             switch(computer)
             case 'GLNX86'
-                unix([hodi fs 'external/slfast_linux data2 ']);
+                unix(fullfile(ZG.hodi, 'external','slfast_linux'),' data2 ']);
             case 'MAC'
-                unix([hodi fs 'external/slfast_macpcc data2 ']);
+                unix(fullfile(ZG.hodi, 'external','slfast_macpcc'),' data2 ']);
             case 'MACI'
-                unix([hodi fs 'external/slfast_maci data2 ']);
+                unix(fullfile(ZG.hodi, 'external','slfast_maci'),' data2 ']);
             otherwise
-                dos([hodi fs 'external/slfast.exe data2 ']);
+                dos(fullfile(ZG.hodi, 'external','slfast.exe'),' data2 ']);
             end
-            %unix([hodi fs 'external/slfast data2 ']);
-            sGetFile = [hodi fs 'external/data2.slboot'];
+            sGetFile = fullfile(ZG.hodi, 'external', 'data2.slboot');
             load(sGetFile)
             d0 = data2;
 

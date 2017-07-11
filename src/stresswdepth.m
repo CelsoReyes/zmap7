@@ -1,5 +1,6 @@
 report_this_filefun(mfilename('fullpath'));
-
+fs = filesep;
+ZG=ZmapGlobal.Data;
 bv2 = [];
 bv3 = [] ;
 me = [];
@@ -10,13 +11,13 @@ ni = str2double(l);
 [s,is] = sort(newt2.Depth);
 newt1 = newt2(is(:,1),:) ;
 think
-%hodis = fullfile(hodi, 'stinvers');
-hodis = fullfile(hodi, 'external');
+%hodis = fullfile( ZG.hodi, 'stinvers');
+hodis = fullfile( ZG.hodi, 'external');
 
 cd(hodis);
 
 
-%unix([hodi fs 'external/slick data2 ']);
+%unix([ ZG.hodi fs 'external/slick data2 ']);
 switch computer
 case 'GLNX86'
     for i = 1:ni/2:length(newt1)-ni
@@ -31,7 +32,7 @@ case 'GLNX86'
 
         delete data2.slboot
 
-        unix(['"' hodi fs 'external/slfast_linux" data2 ']);
+        unix(['"'  ZG.hodi fs 'external/slfast_linux" data2 ']);
         load data2.slboot
         d0 = data2;
         disp([' Now computing depth ' ...
@@ -40,7 +41,7 @@ case 'GLNX86'
 
     end
 
-    %unix([hodi fs 'external/slick_linux data2 ']);
+    %unix([ ZG.hodi fs 'external/slick_linux data2 ']);
 case 'MAC'
     for i = 1:ni/2:length(newt1)-ni
         tmpi = [newt1(i:i+ni,10:12)];
@@ -54,7 +55,7 @@ case 'MAC'
 
         delete data2.slboot
 
-        unix(['"' hodi fs 'external/slfast_macpcc" data2 ']);
+        unix(['"'  ZG.hodi fs 'external/slfast_macpcc" data2 ']);
         load data2.slboot
         d0 = data2;
         disp([' Now computing depth ' ...
@@ -63,7 +64,7 @@ case 'MAC'
 
     end
 
-    %unix([hodi fs 'external/slick_macppc data2 ']);
+    %unix([ ZG.hodi fs 'external/slick_macppc data2 ']);
 
 
 
@@ -80,7 +81,7 @@ case 'MACI'
 
         delete data2.slboot
 
-        unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+        unix(['"'  ZG.hodi fs 'external/slfast_maci" data2 ']);
         load data2.slboot
         d0 = data2;
         disp([' Now computing depth ' ...
@@ -104,7 +105,7 @@ case 'MACI64'
 
         delete data2.slboot
 
-        unix(['"' hodi fs 'external/slfast_maci" data2 ']);
+        unix(['"'  ZG.hodi fs 'external/slfast_maci" data2 ']);
         load data2.slboot
         d0 = data2;
         disp([' Now computing depth ' ...
@@ -112,7 +113,7 @@ case 'MACI64'
         bv2 = [bv2 ; mean(newt1(i:i+ni,7)) d0(2,2:7) d0(1,1) ];
 
     end
-    %unix([hodi fs 'external/slick_maci data2 ']);
+    %unix([ ZG.hodi fs 'external/slick_maci data2 ']);
 
 
 
@@ -130,7 +131,7 @@ otherwise
 
         delete data2.slboot
 
-        dos(['"' hodi fs 'external\slfast.exe" data2 ']);
+        dos(['"'  ZG.hodi fs 'external\slfast.exe" data2 ']);
         load data2.slboot
         d0 = data2;
         disp([' Now computing depth ' ...
@@ -141,7 +142,7 @@ otherwise
 
 
 
-    %dos([hodi fs 'external\slick.exe data2 ']);
+    %dos([ ZG.hodi fs 'external\slick.exe data2 ']);
 end
 
 

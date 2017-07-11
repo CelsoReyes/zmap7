@@ -20,7 +20,7 @@ fclose(fid);
 clear s
 
 % This executes the clus.exe FORTRAN code
-unix(['.' fs 'myclus ']);
+unix(['.' filesep 'myclus ']);
 
 %open datafile
 fid = 'outf.clu';

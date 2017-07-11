@@ -1,6 +1,7 @@
 % This plot a DEM map plus eq on top...
 
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 
 switch(plt)
 
@@ -23,11 +24,11 @@ switch(plt)
         l = ni2{:};
         fac = str2double(l);
 
-        do = ['cd  ' hodi];  eval(do);
+        do = ['cd  ' ZG.hodi];  eval(do);
 
         if ~exist('pathdem', 'var')
             if exist('dem','dir')
-                pathdem = fullfile(hodi, 'dem');
+                pathdem = fullfile(ZG.hodi, 'dem');
             else
                 [file1,pathdem] = uigetfile([ '*.mat'],'Directory containing dem data? (select any file)');
             end
@@ -73,19 +74,8 @@ switch(plt)
             l = ni2{:};
             fac = str2double(l);
         end
-        %     do = ['cd  ' hodi]; ; eval(do);
-        %     do = ['cd ' hodi fs 'dem' fs 'gtopo30']; eval(do);
-        %     if exist('gtopo30s2') == 2
-        %         fname = gtopo30s([s4 s3],[ s2 s1]);
-        %         do = [' [tmap, tmapleg] = gtopo30(fname,fac,[s4 s3],[ s2 s1]); '];
-        %     else
-        %         do = [' [tmap, tmapleg] = gtopo30(''test'',fac,[s4 s3],[ s2 s1]); '];
-        %     end
-        %
-        %     err = [' plt = ''err30''; pltopo '];
-        %     eval(do);
-        [tmap, tmapleg] = gtopo302(fullfile(hodi, 'dem', 'gtopo30'),fac,[s4 s3],[s2 s1]);
-        cd([hodi])
+        [tmap, tmapleg] = gtopo302(fullfile(ZG.hodi, 'dem', 'gtopo30'),fac,[s4 s3],[s2 s1]);
+        cd(ZG.hodi)
         my = s4:1/tmapleg(1):s3+0.1;
         mx = s2:1/tmapleg(1):s1+0.1;
         vlon = mx;
@@ -155,12 +145,6 @@ switch(plt)
         s3 = l(2); s4 = l(1);
         region = [s4 s3 s2 s1];
 
-        %region = [s4 s3 s2 s1];
-        %do = ['  [tmap,vlat,vlon] = mygrid_sand(region);'];
-        %err = [' plt = ''err2''; pltopo '];
-        % if exist('satbath') == 2
-        %    do = ['  [tmap,vlat,vlon] = satbath(fac,[s4 s3],[ s2 s1]); '];
-        %else
         do = ['  [tmap,vlat,vlon] = mygrid_sand(region);'];
         % end
         toflag = '2';
@@ -178,10 +162,10 @@ switch(plt)
             pltopo
         end
 
-        do = ['cd  ' hodi]; ; eval(do);
+        do = ['cd  ' ZG.hodi]; ; eval(do);
         if ~exist('pathdem', 'var')
             if exist('dem','dir')
-                pathdem = fullfile(hodi, 'dem');
+                pathdem = fullfile(ZG.hodi, 'dem');
             else
                 [file1,pathdem] = uigetfile([ '*.mat'],'Directory containing dem data? (select any file)');
             end
@@ -352,7 +336,7 @@ switch(plt)
                     plt = 'lo5'; pltopo;
                 end
             case 'Help'
-                do = [ 'web ' hodi '/help/plottopo.htm ;' ];
+                do = [ 'web ' fullfile(ZG.hodi , 'help','plottopo.htm'),' ;' ];
                 err=['errordlg('' Error while opening, please open the browser first and try again or open the file ./help/topo.hmt manually'');'];
                 eval(do,err)
 

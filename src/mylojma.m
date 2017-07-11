@@ -71,7 +71,7 @@ elseif length(a(1,:))>=9       %if catalog includes hr and minutes
 end
 
 % save the data
-[file1,path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Save Earthquake Datafile');
+[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Earthquake Datafile');
 sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 

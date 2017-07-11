@@ -38,7 +38,7 @@ tmp = gcf ;
 
 cin_as
 axes(has)
-fs = get(gcf,'pos');
+fs_m = get(gcf,'pos');
 
 m = moviein(length(1:step:len-iwl));
 

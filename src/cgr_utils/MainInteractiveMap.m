@@ -1101,7 +1101,7 @@ function catSave()
     zmap_message_center.set_message('Save Data', ' ');
     try
         think;
-        [file1, path1] = uiputfile(fullfile(hodi, 'eq_data', '*.mat'), 'Earthquake Datafile');
+        [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             wholePath=[path1 file1];
             save('WholePath', 'a', 'faults','main','mainfault','coastline','infstri','well');

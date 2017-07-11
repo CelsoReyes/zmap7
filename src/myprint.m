@@ -206,8 +206,7 @@ function myprint(command,param1)
                 'as a postscript file. Buttons etc are'
                 'not printed.                         '];
             zmap_message_center.set_message('Print',messtext)
-            if sys(1:3)=='SUN' | sys(1:3)=='SOL';[file1,path1] = uigetfile([hodi  '/out/*.ps'],'PS  Filename');end;
-            if sys(1:2)=='PC';[file1,path1] = uiputfile([hodi  '\out\*.ps'],' PS Filename');end;
+            [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir,'out','*.ps'),'PS  Filename');
 
             messtext = ['Thank you! Printing in PS file...'];
             zmap_message_center.set_message('  ',messtext)

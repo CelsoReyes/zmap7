@@ -48,7 +48,7 @@ function clpickp(but)
         y = [y; yi];
         but=5;
     elseif but==3
-        [file2,path2] = uigetfile([ hodi fs 'eq_data' fs '*.mat'],'Cluster Datafile');
+        [file2,path2] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'),'Cluster Datafile');
 
         load([path2 file2]);
         x=polcordinates(:,1);

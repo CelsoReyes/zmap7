@@ -9,6 +9,7 @@
 
 global mi mif1 mif2  hndl3 a newcat2 mi2
 global tmpi cumu2
+fs = filesep;
 report_this_filefun(mfilename('fullpath'));
 think
 
@@ -21,7 +22,7 @@ tmp = [newt2(:,10:12) ];
 try
     save data.inp tmp -ascii
 catch ME
-    error_handler(ME, ['Error - could not save file ', hodo ,'data.inp - permission?']);
+    error_handler(ME, ['Error - could not save file ', ZmapGlobal.Data.out_dir ,'data.inp - permission?']);
 end
 
 infi =  'data.inp';

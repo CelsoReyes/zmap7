@@ -217,7 +217,7 @@ else     % if in2 ~=calma
         disp('now getting frame...')
         m(:,j) = getframe(has);
         delete(gca);delete(gca);delete(gca)
-        fs = get(gcf,'pos');
+        fs_m = get(gcf,'pos');
 
     end  % loop over frames
 
