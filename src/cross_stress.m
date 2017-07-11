@@ -348,7 +348,7 @@ if sel == 'ca'
         end
 
         % New catalog to work on
-        newt2 = b;
+        ZG.newt2 = b;
 
         % Number of events in catalog
         fNumEvents = b.Count;
@@ -357,7 +357,7 @@ if sel == 'ca'
         if length(b) >= Nmin
             % Take the focal mechanism from actual catalog
             % tmpi-input: [dip direction (East of North), dip , rake (Kanamori)]
-            tmpi = [newt2(:,10:12)];
+            tmpi = [ZG.newt2(:,10:12)];
             % Take the first thousand FMS (Restriction by slfast.c)
             if length(tmpi(:,1)) >=1000
                 tmpi = tmpi(1:999,:);

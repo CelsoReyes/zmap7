@@ -9,8 +9,8 @@ Nmin = 20;
 
 
 think
-[s,is] = sort(newt2.Magnitude);
-newt1 = newt2(is(:,1),:) ;
+[s,is] = sort(ZG.newt2.Magnitude);
+newt1 = ZG.newt2(is(:,1),:) ;
 watchon;
 
 for t = min(newt1(:,6)):0.1:max(newt1(:,6))
@@ -82,7 +82,7 @@ set(gca,'box','on',...
     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(ZG.newt2.Magnitude)) ];
 ylabel('b-value')
 xlabel('Magnitude')
 title(strib,'FontWeight','bold',...

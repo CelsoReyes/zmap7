@@ -29,9 +29,9 @@ ButtonName=questdlg('Mc determination?', ...
 
 think
 
-for i = 1:ni/ofac:length(newt2)-ni
+for i = 1:ni/ofac:length(ZG.newt2)-ni
 
-    b = newt2(i:i+ni,:);
+    b = ZG.newt2(i:i+ni,:);
 
     switch ButtonName
         case 'Automatic'
@@ -104,7 +104,7 @@ set(gca,'box','on',...
     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(ZG.newt2.Magnitude)) ];
 ylabel('b-value')
 xlabel('Time [years]')
 title2(strib,'FontWeight','bold',...

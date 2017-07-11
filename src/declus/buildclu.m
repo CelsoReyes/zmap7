@@ -5,7 +5,7 @@ function  buildclu
     %
     % Last modification 8/95
 
-    global newcat bgevent clus mbg k1 clust clustnumbers cluslength bg
+    global ZG.newcat bgevent clus mbg k1 clust clustnumbers cluslength bg
     cluslength=[];
     n=0;
     k1=max(clus);
@@ -30,7 +30,7 @@ function  buildclu
     bgevent=bgevent(tmp);
     mbg=mbg(tmp);
     bg=bgevent;
-    bgevent=newcat.subset(bg); %biggest event in a cluster(if more than one,take first)
+    bgevent=ZG.newcat.subset(bg); %biggest event in a cluster(if more than one,take first)
 
     clustnumbers=(1:length(tmp));    %stores numbers of clusters
 

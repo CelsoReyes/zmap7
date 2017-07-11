@@ -2,18 +2,18 @@ report_this_filefun(mfilename('fullpath'));
 
 pt = 4;
 
-newt0 = newt2;
+newt0 = ZG.newt2;
 
 
-lt =  newt2.Date >= t0b &  newt2.Date <teb-pt ;
-%lt =  newt2.Date >= 1981 &  newt2.Date < 1992 ;
+lt =  ZG.newt2.Date >= t0b &  ZG.newt2.Date <teb-pt ;
+%lt =  ZG.newt2.Date >= 1981 &  ZG.newt2.Date < 1992 ;
 
-obs = newt2(lt,:);
+obs = ZG.newt2(lt,:);
 
-lt =  newt2.Date >= teb-pt &  newt2.Date <= teb ;
+lt =  ZG.newt2.Date >= teb-pt &  ZG.newt2.Date <= teb ;
 
-%lt =  newt2.Date >= 1995 &  newt2.Date <= 1999.9 ;
-pre = newt2(lt,:);
+%lt =  ZG.newt2.Date >= 1995 &  ZG.newt2.Date <= 1999.9 ;
+pre = ZG.newt2(lt,:);
 
 
 newt2 = obs;
@@ -23,7 +23,7 @@ if isnan(Mc95) == 0
 elseif isnan(Mc90) == 0 
     magco = Mc90;
 else
-    [bv magco stan av me mer me2,  pr] =  bvalca3(newt2,1,1);
+    [bv magco stan av me mer me2,  pr] =  bvalca3(ZG.newt2,1,1);
 end
 magco = magco+0;
 l = obs(:,6) >= magco-0.05;

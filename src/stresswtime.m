@@ -19,21 +19,21 @@ sPath = pwd;
 hodis = fullfile(ZG.hodi, 'external');
 fs=filesep;
 % Select  fault plane solution
-tmpi = [newt2(:,10:12) ];
+tmpi = [ZG.newt2(:,10:12) ];
 
 cd(hodis);
 
 think
 
-for i = 1:nStep:newt2.Count-ni
+for i = 1:nStep:ZG.newt2.Count-ni
     % Check for data in catalog
     nCnt = i+ni;
-    if nCnt < newt2.Count-1
-        tmpi = [newt2(i:i+ni,10:12)];
-        fMeanTime = mean(newt2(i:i+ni,3));
+    if nCnt < ZG.newt2.Count-1
+        tmpi = [ZG.newt2(i:i+ni,10:12)];
+        fMeanTime = mean(ZG.newt2(i:i+ni,3));
     else
-        tmpi = [newt2(i:end,10:12)];
-        fMeanTime = mean(newt2(i:end,3));
+        tmpi = [ZG.newt2(i:end,10:12)];
+        fMeanTime = mean(ZG.newt2(i:end,3));
     end
     % Create data file for inversion
     fid = fopen('data2','w');

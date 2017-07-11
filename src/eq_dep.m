@@ -26,7 +26,7 @@ figure_w_normalized_uicontrolunits(mif66)
 hold on
 
 x = [1:length(mi)]';
-[ss,ssi]=sort(a.Depth);
+[ss,ssi]=sort(ZG.a.Depth);
 plot(x,ss,'go');
 
 grid

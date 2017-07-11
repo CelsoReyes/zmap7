@@ -37,8 +37,8 @@ caxis([cl(1) cl(2)]);
 
 hold on
 
-%li = m_line(a.Longitude,a.Latitude);
-%set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
+%li = m_line(ZG.a.Longitude,ZG.a.Latitude);
+%set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ZG.ms6,'color',co)
 set(gcf,'Color','w')
 
 vx =  (cl(1):cstep:cl(2));

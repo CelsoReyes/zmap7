@@ -32,8 +32,8 @@ try close(gh); end
 zmap_message_center.clear_message();;think
 %  make grid, calculate start- endtime etc.  ...
 %
-t0b = min(a.Date)  ;
-n = a.Count;
+t0b = min(ZG.a.Date)  ;
+n = ZG.a.Count;
 teb = a(n,3) ;
 tdiff = round((teb - t0b)*365/par1);
 cumu = zeros(length(t0b:par1/365:teb)+2);
@@ -60,7 +60,7 @@ for i= 1:length(newgri(:,1))
     i2 = i2+1;
     % calculate distance from center point and sort wrt distance
     %
-    l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
+    l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
     [s,is] = sort(l);
     b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
     % take first ni points

@@ -201,7 +201,7 @@ ylabel('Depth [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 hold on
 [nYnewa,nXnewa] = size(newa);
 ploeq = plot(newa(:,nXnewa),-newa(:,7),'k.');
-set(ploeq,'Tag','eq_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
+set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
 set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')

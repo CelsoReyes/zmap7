@@ -25,7 +25,7 @@ if var1==1
     ldx=100;                     %side length of interaction zone in km
     tlap=300;                    %interaction time in days
     Mmin=3;                      %minimum magnitude
-    stime=a(find(a.Magnitude==max(a.Magnitude)),3);
+    stime=a(find(ZG.a.Magnitude==max(ZG.a.Magnitude)),3);
     stime=stime(1);
 
 
@@ -158,8 +158,8 @@ elseif var1==2           %area selection
 
     %calculate lap1(relative quiescence) at every grid point
     %
-    newcat=a;                   %newcat is only a local variable
-    bcat=newcat;
+    ZG.newcat=a;                   %ZG.newcat is only a local variable
+    bcat=ZG.newcat;
 
     me1=zeros(length(newgri(:,1)),1);
     va1=zeros(length(newgri(:,1)),1);
@@ -171,10 +171,10 @@ elseif var1==2           %area selection
 
 
     for i= 1:length(me1)   %all eqs which are in spacewindow in east-west direction
-        l = sqrt(((newcat.Longitude-newgri(i,1))*cos(pi/180*newgri(i,2))*111).^2 +...
-            ((newcat.Latitude-newgri(i,2))*111).^2) ;
+        l = sqrt(((ZG.newcat.Longitude-newgri(i,1))*cosd(newgri(i,2))*111).^2 +...
+            ((ZG.newcat.Latitude-newgri(i,2))*111).^2) ;
         [s,is] = sort(l);
-        b = newcat(is(:,1),:) ;       % re-orders matrix to agree row-wise
+        b = ZG.newcat(is(:,1),:) ;       % re-orders matrix to agree row-wise
         mi2 = mi(is(:,1),2);    % take first ni points
         mi2 = mi2(1:ni);
         me1(i) = mean(mi2);

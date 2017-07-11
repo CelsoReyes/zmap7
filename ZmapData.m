@@ -24,7 +24,10 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        catalog % overall catalog of earthquakes
+        a %
+        newcat
+        newt2
+        %catalog % overall catalog of earthquakes
         catalog_working 
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.

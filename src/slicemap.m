@@ -4,7 +4,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 global  tiplo2 ax3 a hs plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
-global newt2  hndl2 tgl1 Rconst %killed one hs
+global ZG.newt2  hndl2 tgl1 Rconst %killed one hs
 global ps1 ps2 plin pli xt3 bvalsum3 slfig
 
 
@@ -146,17 +146,17 @@ switch(slm)
 
         hold on
         x = mean(gx); y = mean(gy) ; z = ds;
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
         [s,is] = sort(l);
-        newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
-        newt2 = newt2(1:ni,:);
-        [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
-        newt2 = newt2(ist(:,3),:);
+        ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
+        ZG.newt2 = ZG.newt2(1:ni,:);
+        [st,ist] = sort(ZG.newt2);   % re-sort wrt time for cumulative count
+        ZG.newt2 = ZG.newt2(ist(:,3),:);
         di = sort(l); Rjma = di(ni);
 
-        tiplo2 = plot(newt2.Date,(1:newt2.Count),'m-','era','xor');
+        tiplo2 = plot(ZG.newt2.Date,(1:ZG.newt2.Count),'m-','era','xor');
         set(tiplo2,'LineWidth',2.0)
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(ZG.a.Date)) ceil(max(ZG.a.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
         xlabel('Time [yrs]');
@@ -168,13 +168,13 @@ switch(slm)
         % Plot the events on map in yellow
         axes(hs)
         hold on
-        %plev =   plot(newt2.Longitude,newt2.Latitude,'.k','MarkerSize',4)
+        %plev =   plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'.k','MarkerSize',4)
         xc1 = plot(mean(gx),mean(gy),'m^','MarkerSize',10,'LineWidth',1.5,'era','normal');
         set(xc1,'Markeredgecolor','w','Markerfacecolor','g')
         set(xc1,'ButtonDownFcn','anseiswa start1');
         % plot circle containing events as circle
         xx = -pi-0.1:0.1:pi;
-        plc1 = plot(x+sin(xx)*Rjma/(cos(pi/180*y)*111), y+cos(xx)*Rjma/(cos(pi/180*y)*111),'k','era','normal')
+        plc1 = plot(x+sin(xx)*Rjma/(cosd(y)*111), y+cos(xx)*Rjma/(cosd(y)*111),'k','era','normal')
 
 
 
@@ -186,7 +186,7 @@ switch(slm)
             'TickDir','out', ...
             'TickDirMode','manual');
 
-        bv = bvalca3(newt2,1,1);
+        bv = bvalca3(ZG.newt2,1,1);
 
         plb =semilogy(xt3,bvalsum3,'sb');
         set(plb,'LineWidth',1.0,'MarkerSize',4,...
@@ -197,17 +197,17 @@ switch(slm)
         axes(ax3)
         hold on
         x = mean(gx)+std(gx)/2; y = mean(gy)+std(gy)/2 ; z = ds;
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
         [s,is] = sort(l);
-        newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
-        newt2 = newt2(1:ni,:);
-        [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
-        newt2 = newt2(ist(:,3),:);
+        ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
+        ZG.newt2 = ZG.newt2(1:ni,:);
+        [st,ist] = sort(ZG.newt2);   % re-sort wrt time for cumulative count
+        ZG.newt2 = ZG.newt2(ist(:,3),:);
         di = sort(l); Rjma = di(ni);
 
-        tiplo1 = plot(newt2.Date,(1:newt2.Count),'c-','era','xor');
+        tiplo1 = plot(ZG.newt2.Date,(1:ZG.newt2.Count),'c-','era','xor');
         set(tiplo1,'LineWidth',2.0)
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(a.Date)) ceil(max(a.Date))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(ZG.a.Date)) ceil(max(ZG.a.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
         xlabel('Magnitude');
@@ -224,14 +224,14 @@ switch(slm)
         set(gcbf,'WindowButtonUpFcn','')
         % plot circle containing events as circle
         xx = -pi-0.1:0.1:pi;
-        plc2 = plot(x+sin(xx)*Rjma/(cos(pi/180*y)*111), y+cos(xx)*Rjma/(cos(pi/180*y)*111),'k','era','normal')
+        plc2 = plot(x+sin(xx)*Rjma/(cosd(y)*111), y+cos(xx)*Rjma/(cosd(y)*111),'k','era','normal')
         %plot(xa0+sin(x)*l(ni)/111, ya0+cos(x)*l(ni)/111,'k','era','normal')
 
 
         axes(ax4);
         hold on
 
-        bv = bvalca3(newt2,1,1);
+        bv = bvalca3(ZG.newt2,1,1);
 
         plb2 =semilogy(xt3,bvalsum3,'^b');
         set(plb2,'LineWidth',1.0,'MarkerSize',4,...
@@ -334,9 +334,9 @@ switch(slm)
         lat1 = y(1); lat2 = y(2);lon1 = x(1); lon2 = x(2);
         di = deg2km(distance(lat1,lon1,lat2,lon2));
 
-        %lc_event(a(a.Depth<=dep1,2),a(a.Depth<=dep1,1),'.b',1);
+        %lc_event(a(ZG.a.Depth<=dep1,2),a(ZG.a.Depth<=dep1,1),'.b',1);
         if ~exist('wi', 'var'); wi = 10; end
-        [ax ay,  inde] = mysectnoplo(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lat2,lon1,lon2);
+        [ax ay,  inde] = mysectnoplo(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lat2,lon1,lon2);
         hold on
         %figure
         plot(di-ax,-ay,'.k','Markersize',1);

@@ -244,7 +244,7 @@ end
 
 % Calculate distance from center point and sort with distance
 if handles.params.bMap
-  vDistances = sqrt(((handles.params.mCatalog(:,1)-fX)*cos(pi/180*fY)*111).^2 + ((handles.params.mCatalog(:,2)-fY)*111).^2);
+  vDistances = sqrt(((handles.params.mCatalog(:,1)-fX)*cosd(fY)*111).^2 + ((handles.params.mCatalog(:,2)-fY)*111).^2);
 else
   vDistances = sqrt(((xsecx2 - fX)).^2 + ((xsecy2 + fY)).^2);
 end

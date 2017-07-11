@@ -2,7 +2,7 @@
 %   genascum.m  creates a rectangular grid and calls GenAS
 %   at each grid point. The output for each grid point is compressed
 %   (averaged) magnitude-wise and saved in the file "cumgenas.mat".
-%   A map is created with these values.  Operates on catalogue "newcat"
+%   A map is created with these values.  Operates on catalogue "ZG.newcat"
 %                                        R. Zuniga  GI, 5/94
 %
 report_this_filefun(mfilename('fullpath'));
@@ -17,7 +17,7 @@ set(te,'FontSize',12);
 %if exist('fplo', 'var') ; delete(fplo); clear fplo; end
 %if exist('mark1', 'var') ; delete(mark1); clear mark1;end
 
-b = newcat;                       % reset b
+b = ZG.newcat;                       % reset b
 as2 = [];
 count = 0;
 figure_w_normalized_uicontrolunits(map)
@@ -35,13 +35,13 @@ gy = y0:dy:y1;
 itotal = length(gx) * length(gy);
 clear global ztimes ztime1 ztime2
 incx = par1/365;
-maxmag = floor(max(newcat.Magnitude));
-minmg = floor(min(newcat.Magnitude)); %added the missing minmg similar to maxmag
+maxmag = floor(max(ZG.newcat.Magnitude));
+minmg = floor(min(ZG.newcat.Magnitude)); %added the missing minmg similar to maxmag
 magstep = 0.5;                   %set the missing magstep to 0.5
-evsum = newcat.Count;
+evsum = ZG.newcat.Count;
 n = evsum;
-t0b = newcat(1,3)
-teb = newcat(evsum,3)
+t0b = ZG.newcat(1,3)
+teb = ZG.newcat(evsum,3)
 tdiff = round((teb - t0b)*365/par1);
 xt = t0b:incx:teb;
 bin0 = 1;
@@ -124,9 +124,9 @@ for x =  x0:dx:x1
         i2 = i2+1;
         % calculate distance from center point and sort wrt distance
         %
-        newcat.Depth = sqrt((newcat.Longitude-x).^2 + (newcat.Latitude-y).^2) * 92.0;
-        [s,is] = sort(newcat);
-        b = newcat(is(:,7),:) ;       % re-orders matrix to agree row-wise
+        ZG.newcat.Depth = sqrt((ZG.newcat.Longitude-x).^2 + (ZG.newcat.Latitude-y).^2) * 92.0;
+        [s,is] = sort(ZG.newcat);
+        b = ZG.newcat(is(:,7),:) ;       % re-orders matrix to agree row-wise
         % take first ni points
         %
         b = b(1:ni,:);      % new data per grid point (b) is sorted in distance

@@ -31,18 +31,18 @@ report_this_filefun(mfilename('fullpath'));
     [nY1,nX1] = size(a);
     if nX1 < 10
         vSek = zeros(nY1,1);
-        a = [a vSek];
+        ZG.a=[a vSek];
         maepi = [maepi 0];
     end
     % Define aftershock times
-    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,a.Date.Second);
+    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,ZG.a.Date.Second);
     date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),maepi(10));
     time_aftershock = date_matlab-date_main;
 
     % Aftershock catalog
     vSel1 = time_aftershock(:) > 0;
     tas = time_aftershock(vSel1);
-    eqcatalogue = a.subset(vSel1);
+    eqcatalogue = ZG.a.subset(vSel1);
 
     % Estimation of Omori parameters from learning period
     l = tas <= time;

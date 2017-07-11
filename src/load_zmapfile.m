@@ -29,7 +29,7 @@ function load_zmapfile()%
     report_this_filefun(mfilename('fullpath'));
     
     format short
-    global a vo
+    global  ZG
     
     % start program and load data:
     show_load_instructions();
@@ -44,7 +44,7 @@ function load_zmapfile()%
         if exist(fullfile(path1,file1),'file')
             S=whos('-file',fullfile(path1,file1),'a'); % get info about "a"
             if ~isempty(S) %a exists
-                a = loadCatalog(path1, file1);
+                ZG.a=loadCatalog(path1, file1);
             else
                 errordlg('File did not contain variable "a" - Nothing was loaded');
             end
@@ -53,32 +53,18 @@ function load_zmapfile()%
         end
             
     end
-    if isempty(a)
-        a=ZmapCatalog();
-        a.Name='no catalog';
+    if isempty(ZG.a)
+        ZG.a=ZmapCatalog();
+        ZG.a.Name='no catalog';
     end
     
-    if max(a.Magnitude) > 10
+    if max(ZG.a.Magnitude) > 10
         errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
         warndlg(errdisp)
     end   % if
     
-    vo = load_volcanoes();
-    
-    % read the world coast + political ines if none are present
-    %do = ['load worldlo'];
-    %eval(do,' ')
-    %if ~exist('coastline', 'var');  coastline = []; end
-    %if isempty('coastline') == 0
-    %   if exist('POline', 'var')
-    %      Plong = [POline(1).long ; POline(2).long];
-    %      Plat = [POline(1).lat;  POline(2).lat];
-    %      coastline = [Plong Plat];
-    %  end
-    %end
-    
     % Sort the catalog in time just to make sure ...
-    a.sort('Date');
+    ZG.a.sort('Date');
     
     % org = a;                         %  org is to remain unchanged
     
@@ -86,20 +72,20 @@ function load_zmapfile()%
     %
     watchoff
     clear s is
-    ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth';
+    ZG.mainmap_plotby='depth';
     
-    setUpDefaultValues(a);
+    setUpDefaultValues(ZG.a);
     
     zmap_message_center.update_catalog();
-    a = catalog_overview(a);
+    ZG.a=catalog_overview(ZG.a);
     
 end
 
-function setUpDefaultValues(a)
+function setUpDefaultValues(A)
     global t0b teb par1 minmag dep1 dep2 dep3 minti maxti minma maxma mindep maxdep ra mrt met
     %  default values
-    t0b = min(a.Date);
-    teb = max(a.Date);
+    t0b = min(A.Date);
+    teb = max(A.Date);
     tdiff = (teb - t0b)*365;
     if ~exist('par1','var')
         if tdiff>10                 %select bin length respective to time in catalog
@@ -110,16 +96,16 @@ function setUpDefaultValues(a)
             par1 = 0.01;
         end
     end
-    minmag = max(a.Magnitude) -0.2;
-    dep1 = 0.3*max(a.Depth);
-    dep2 = 0.6*max(a.Depth);
-    dep3 = max(a.Depth);
-    minti = min(a.Date);
-    maxti  = max(a.Date);
-    minma = min(a.Magnitude);
-    maxma = max(a.Magnitude);
-    mindep = min(a.Depth);
-    maxdep = max(a.Depth);
+    minmag = max(A.Magnitude) -0.2;
+    dep1 = 0.3*max(A.Depth);
+    dep2 = 0.6*max(A.Depth);
+    dep3 = max(A.Depth);
+    minti = min(A.Date);
+    maxti  = max(A.Date);
+    minma = min(A.Magnitude);
+    maxma = max(A.Magnitude);
+    mindep = min(A.Depth);
+    maxdep = max(A.Depth);
     ra = 5;
     mrt = 6;
     met = 'ni';
@@ -144,7 +130,7 @@ function show_loading_status()
 end
 
 
-function   a = loadCatalog(path, file)
+function   A=loadCatalog(path, file)
     % 
     % by the time this is called, it should be already known that 'a' exists
     lopa = fullfile(path, file);
@@ -154,22 +140,24 @@ function   a = loadCatalog(path, file)
     drawnow
     
     try
-        a=[];
-        load(lopa,'a')
+        A=[];
+        tmp = load(lopa,'a');
     catch ME
         error_handler(ME, 'Error loading data! Are they in the right *.mat format?');
     end
     
-    if ~exist('a','var') || isempty(a)
+    
+    if ~isfield(tmp,'a') || isempty(tmp.a)
         errordlg(' Error - No catalog data loaded !');
         return;
     end
-    
-    if isnumeric(a)
+    A=tmp.a;
+    clear tmp
+    if isnumeric(A)
         % convert to a ZmapCatalog
-        a = ZmapCatalog(a);
+        A=ZmapCatalog(A);
     end
-    a.Name = file;
+    A.Name = file;
     zmap_message_center.clear_message();
     
 end

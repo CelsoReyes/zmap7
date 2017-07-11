@@ -168,7 +168,7 @@ ylabel('Depth in [km]','FontWeight','bold','FontSize',12)
 % plot overlay
 %
 ploeqc = plot(Da(:,1),-Da(:,7),'.k');
-set(ploeq,'Tag','eqc_plot''MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
+set(ploeq,'Tag','eqc_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 
 set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...

@@ -5,7 +5,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 %
-if isempty(newcat), newcat = a; end   % verify whether to start with
+if isempty(ZG.newcat), ZG.newcat = a; end   % verify whether to start with
 % original catalogue
 % make the interface for input
 %

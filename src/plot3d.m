@@ -82,14 +82,14 @@ function plot3d()
     
     %plot earthquakes according time
     case 'tim'
-        timidx = a.Date<=tim2&a.Date>=tim1;
-        plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'+b');
+        timidx = ZG.a.Date<=tim2&ZG.a.Date>=tim1;
+        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'+b');
         set(plo,'MarkerSize',6,'LineWidth',1.)
-        timidx = a.Date<=tim3&a.Date>tim2;
-        plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'og');
+        timidx = ZG.a.Date<=tim3&ZG.a.Date>tim2;
+        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'og');
         set(plo,'MarkerSize',6,'LineWidth',1.)
-        timidx = a.Date<=tim4&a.Date>tim3;
-        plo =plot3(a.Longitude(timidx),a.Latitude(timidx),-a.Depth(timidx),'xr');
+        timidx = ZG.a.Date<=tim4&ZG.a.Date>tim3;
+        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'xr');
         set(plo,'MarkerSize',6,'LineWidth',1.)
         
         ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -130,7 +130,7 @@ function plot3d()
         set(pl3b,'LineWidth',3.0)
     end
     
-    axis([ min(a.Longitude) max(a.Longitude) min(a.Latitude) max(a.Latitude) min(-a.Depth) max(-a.Depth)  ])
+    axis([ min(ZG.a.Longitude) max(ZG.a.Longitude) min(ZG.a.Latitude) max(ZG.a.Latitude) min(-ZG.a.Depth) max(-ZG.a.Depth)  ])
     orient tall
     
     set(gca,'box','on',...
@@ -156,7 +156,7 @@ function plotQuakesByDepth(ax, mycat, divs)
     %   divisions is a vector of depths (up to 7)
     
     % magdivisions: magnitude split points
-    global event_marker_types ms6
+    global event_marker_types ZG.ms6
     if isempty(event_marker_types)
         event_marker_types='+++++++'; %each division gets next type.
     end
@@ -182,7 +182,7 @@ function plotQuakesByDepth(ax, mycat, divs)
         'Marker',event_marker_types(1),...
         'Color',cmapcolors(1,:),...
         'LineStyle','none',...
-        'MarkerSize',ms6,...
+        'MarkerSize',ZG.ms6,...
         'Tag','mapax_part0');
     h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
     
@@ -196,7 +196,7 @@ function plotQuakesByDepth(ax, mycat, divs)
             'Marker',event_marker_types(i+1),...
             'Color',cmapcolors(i+1,:),...
             'LineStyle','none',...
-            'MarkerSize',ms6,...
+            'MarkerSize',ZG.ms6,...
             'Tag',['mapax_part' num2str(i)],...
             'DisplayName',dispname);
     end

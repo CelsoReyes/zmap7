@@ -1,5 +1,5 @@
 %   This subroutine "circle"  selects the Ni closest earthquakes
-%   around a interactively selected point.  Resets newcat and newt2
+%   around a interactively selected point.  Resets ZG.newcat and ZG.newt2
 %   Operates on "a".
 
 %  Input Ni:
@@ -42,12 +42,12 @@ l =  sort(l);
 
 if met == 'ni'
     % take first ni and sort by time
-    newt2 = newt2(1:ni,:);
+    ZG.newt2 = ZG.newt2(1:ni,:);
     R2 = l(ni);
 
 elseif  met == 'ra'
     l3 = l <=ra;
-    newt2 = newt2(l3,:);
+    ZG.newt2 = ZG.newt2(l3,:);
     R2 = ra;
 end
 
@@ -58,14 +58,14 @@ l =  sort(l);
 %
 % take first ni and sort by time
 %
-%[st,ist] = sort(newt2);
-%newt2 = newt2(ist(:,3),:);
+%[st,ist] = sort(ZG.newt2);
+%ZG.newt2 = ZG.newt2(ist(:,3),:);
 %
 % plot Ni clostest events on map as 'x':
 
 hold on
-[na,ma] = size(newt2);
-plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
+[na,ma] = size(ZG.newt2);
+plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
 set(gcf,'Pointer','arrow')
 %
 % plot circle containing events as circle
@@ -75,7 +75,7 @@ set(gcf,'Pointer','arrow')
 
 
 %
-newcat = newt2;                   % resets newcat and newt2
+newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
 % Call program "timeplot to plot cumulative number
 %

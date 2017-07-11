@@ -5,7 +5,7 @@
 %  Stefan Wiemer  12/94
 %  Modified by Celso Reyes Spring/Summer 2017
 
-global a sys ms6
+global sys ZG
 %system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 
@@ -39,7 +39,6 @@ cd ..
 set_zmap_paths();
 
 ZG=ZmapGlobal.Data; % get zmap globals
-ms6 = ZG.ms6;
 
 % Set up the different compuer systems
 sys = computer;

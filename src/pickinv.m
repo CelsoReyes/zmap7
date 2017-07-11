@@ -25,5 +25,5 @@ XI = newa(:,length(newa(1,:)));
 
 newa2 = newa.subset(ll);
 plot( newa2(:,length(newa2(1,:))), -newa2(:,7),'xk','era','normal')
-newt2=newa2;newcat=newa2;timeplot
+newt2=newa2;ZG.newcat=newa2;timeplot
 

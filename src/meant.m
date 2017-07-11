@@ -2,14 +2,14 @@
 %  window in terms of number of events, and a selected step
 %  and plots the results.
 %                                                     R.Z. 6/94
-%                          Operates on newcat
+%                          Operates on ZG.newcat
 %
 report_this_filefun(mfilename('fullpath'));
 
 
 if ic == 1 | ic == 0
-    if isempty(newcat) newcat = a; end
-    newcat = a;
+    if isempty(ZG.newcat) ZG.newcat = a; end
+    ZG.newcat = a;
     iwln = 100;
     step = 10;
     iwl = 2;
@@ -69,14 +69,14 @@ if ic == 1 | ic == 0
 
 elseif ic == 2
 
-    if isempty(newcat) newcat = a; end
+    if isempty(ZG.newcat) ZG.newcat = a; end
     %iwl = round(iwln* 365/par1);    % window length in years is converted to bins
-    len = newcat.Count;
+    len = ZG.newcat.Count;
     xt2  = [ ];
     meand = [ ];
     er = [];
-    t0b = newcat(1,3);
-    teb = newcat(len,3);
+    t0b = ZG.newcat(1,3);
+    teb = ZG.newcat(len,3);
 
     wai = waitbar(0,'Please wait...');
     set(wai,'NumberTitle','off','Name','Percent completed');
@@ -88,13 +88,13 @@ elseif ic == 2
     for it=1:step:len-iwln
         ind = ind + 1;
         waitbar(it/(len-iwln));
-        meand(ind) = mean(newcat(it:it+iwln-1,7)) ;
-        [h, si] = ttest2(newcat.Depth,newcat(it:it+iwln-1,7),0.05,-1);
+        meand(ind) = mean(ZG.newcat(it:it+iwln-1,7)) ;
+        [h, si] = ttest2(ZG.newcat.Depth,ZG.newcat(it:it+iwln-1,7),0.05,-1);
         S = [S ; h si];
-        me = [me  newcat(it:it+iwln-1,7)];
+        me = [me  ZG.newcat(it:it+iwln-1,7)];
         [m,n] = size(a);
-        er(ind) = std(newcat(it:it+iwln-1,7)) ;
-        xt2(ind) = newcat(it+iwln,3);        % time is end of window
+        er(ind) = std(ZG.newcat(it:it+iwln-1,7)) ;
+        xt2(ind) = ZG.newcat(it+iwln,3);        % time is end of window
 
     end    % for it
     meand = -meand;
@@ -174,7 +174,7 @@ elseif ic == 2
         set(pl,'LineWidth',2.0)
     end
 
-    axis([min(newcat.Date) max(newcat.Date+1) min(meand*1.1)  max(meand*0.9)])
+    axis([min(ZG.newcat.Date) max(ZG.newcat.Date+1) min(meand*1.1)  max(meand*0.9)])
     v = axis;
     xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     ylabel('Mean Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
@@ -190,7 +190,7 @@ elseif ic == 2
 
     rect = [0.15,  0.45, 0.65, 0.30];
     axes('position',rect)
-    pl =plot(newcat.Date,-newcat.Depth,'ob')
+    pl =plot(ZG.newcat.Date,-ZG.newcat.Depth,'ob')
     set(pl,'MarkerSize',3')
     set(pl,'LineWidth',1.0)
     hold on
@@ -198,7 +198,7 @@ elseif ic == 2
         pl =  plot(maepi(:,3),-maepi(:,7),'xm');
         set(pl,'LineWidth',2.0)
     end
-    axis([ v(1) v(2) -max(newcat.Depth)  -min(newcat.Depth)])
+    axis([ v(1) v(2) -max(ZG.newcat.Depth)  -min(ZG.newcat.Depth)])
     %xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     ylabel('Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'XTicklabels',[])

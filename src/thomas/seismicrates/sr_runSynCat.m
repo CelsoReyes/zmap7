@@ -89,11 +89,11 @@ vResults(3).mValueGrid=mValueGrid;
 
 % clf
 % subplot(1,2,1);
-% plot(a.Longitude,a.Latitude,'.');
+% plot(ZG.a.Longitude,ZG.a.Latitude,'.');
 % subplot(1,2,2);
-% plot(a.Date,[1:1:sum(vMain)],'b');
+% plot(ZG.a.Date,[1:1:sum(vMain)],'b');
 % hold on;plot(mCatalog(:,3),[1:1:size(mCatalog,1)],'r');
-% a=mCatalog;
+% ZG.a=mCatalog;
 % timeplot;
 
 save 07052803_test.mat vResults -mat

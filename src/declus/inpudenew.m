@@ -8,13 +8,13 @@ function inpudenew()
     report_this_filefun(mfilename('fullpath'));
     
     global faults coastline main mainfault name
-    global newcat a wex wey
+    global ZG.newcat a wex wey
     global taumin taumax xmeff xk rfact P err derr
-    %routine works on newcat
+    %routine works on ZG.newcat
     %
-    newcat=a;
-    if isempty(newcat)
-        newcat=a;
+    ZG.newcat=a;
+    if isempty(ZG.newcat)
+        ZG.newcat=a;
     end
     
     

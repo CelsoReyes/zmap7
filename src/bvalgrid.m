@@ -275,8 +275,8 @@ if strcmp('ca', sel)
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -294,7 +294,7 @@ if strcmp('ca', sel)
 
     itotal = length(newgri(:,1));
     bvg = zeros(itotal,14)*nan;
-    bo1 = bv; no1 = a.Count;
+    bo1 = bv; no1 = ZG.a.Count;
 
     % loop over all points
     for i= 1:length(newgri(:,1))
@@ -302,13 +302,13 @@ if strcmp('ca', sel)
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = ra;
         else
             % take first ni points
@@ -320,7 +320,7 @@ if strcmp('ca', sel)
         [nX,nY] = size(b);
 
         % Estimate the completeness and b-value
-        newt2 = b;
+        ZG.newt2 = b;
 
         if length(b) >= Nmin  % enough events?
             % Added to obtain goodness-of-fit to powerlaw value

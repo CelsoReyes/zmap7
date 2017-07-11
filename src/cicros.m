@@ -1,5 +1,5 @@
 %   This subroutine "circle"  selects the Ni closest earthquakes
-%   around a interactively selected point.  Resets newcat and newt2
+%   around a interactively selected point.  Resets ZG.newcat and ZG.newt2
 %   Operates on "a".
 
 %  Input Ni:
@@ -42,15 +42,15 @@ if ic == 1 % select  N clostest events
     %
     % take first ni and sort by time
     %
-    newt2 = newt2(1:ni,:);
-    [st,ist] = sort(newt2);
-    newt2 = newt2(ist(:,3),:);
+    ZG.newt2 = ZG.newt2(1:ni,:);
+    [st,ist] = sort(ZG.newt2);
+    ZG.newt2 = ZG.newt2(ist(:,3),:);
     %
     % plot Ni clostest events on map as 'x':
 
     hold on
-    [na,ma] = size(newt2);
-    plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
+    [na,ma] = size(ZG.newt2);
+    plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -59,12 +59,12 @@ if ic == 1 % select  N clostest events
     l(ni)
 
     %
-    newcat = newt2;                   % resets newcat and newt2
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
     % Call program "timeplot to plot cumulative number
     %
     clear l s is
-    bdiff(newt2)
+    bdiff(ZG.newt2)
 
 end % if ic = 1
 
@@ -72,21 +72,21 @@ if ic == 2 % select  events within ra
 
     l =  sort(l);
     ll = l <=ra;
-    messtext = ['Number of events in Circle :' num2str(length(newt2(ll,1))) ];
+    messtext = ['Number of events in Circle :' num2str(length(ZG.newt2(ll,1))) ];
     disp(messtext)
     zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
-    newt2 = newt2(ll,:);
-    [st,ist] = sort(newt2);
-    newt2 = newt2(ist(:,3),:);
+    ZG.newt2 = ZG.newt2(ll,:);
+    [st,ist] = sort(ZG.newt2);
+    ZG.newt2 = ZG.newt2(ist(:,3),:);
     %
     % plot Ni clostest events on map as 'x':
 
     hold on
-    [na,ma] = size(newt2);
-    plos1 = plot(newt2(:,ma),-newt2.Depth,'xk','EraseMode','back');
+    [na,ma] = size(ZG.newt2);
+    plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -95,12 +95,12 @@ if ic == 2 % select  events within ra
     l(ni)
 
     %
-    newcat = newt2;                   % resets newcat and newt2
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
     % Call program "timeplot to plot cumulative number
     %
     clear l s is
-    bdiff(newt2)
+    bdiff(ZG.newt2)
 
 end % if ic == 2
 
@@ -115,8 +115,8 @@ ax = findobj('Tag','main_map_ax');
 
     %plot the selected eqs and mag freq curve
     newa2 = newa.subset(ll);
-    newt2 = newa2;
-    newcat = newa.subset(ll);
+    ZG.newt2 = newa2;
+    ZG.newcat = newa.subset(ll);
     pl = plot(newa2(:,length(newa2(1,:))),-newa2(:,7),'xk');
     set(pl,'MarkerSize',5,'LineWidth',1)
     bdiff(newa2)

@@ -21,7 +21,7 @@ rect = [0.25,  0.18, 0.60, 0.70];
 axes('position',rect);
 
 
-T = datenum( newt2.Date.Year, newt2.Date.Month, newt2.Date.Day , newt2.Date.Hour, newt2.Date.Minute, zeros(size(newt2.Date)));
+T = datenum( ZG.newt2.Date.Year, ZG.newt2.Date.Month, ZG.newt2.Date.Day , ZG.newt2.Date.Hour, ZG.newt2.Date.Minute, zeros(size(ZG.newt2.Date)));
 plot(T,(1:length(T)),'Linewidth',2);
 
 
@@ -37,7 +37,7 @@ hold on
 if par1>=1
     if ~isempty(big)
 
-        l = newt2.Magnitude > minmag;
+        l = ZG.newt2.Magnitude > minmag;
         f = find( l  == 1);
         bigplo = plot(T(f),f,'hm');
         set(bigplo,'LineWidth',1.0,'MarkerSize',10,...

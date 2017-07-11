@@ -1,5 +1,5 @@
 %   This subroutine "circle"  selects the Ni closest earthquakes
-%   around a interactively selected point.  Resets E, newcat and newt2
+%   around a interactively selected point.  Resets E, ZG.newcat and ZG.newt2
 %   Operates on "Da". The code is called from view_Dv.m.
 %
 %  Input Ni:
@@ -39,21 +39,21 @@ newt2 = Da(is(:,1),:) ;
 if ic == 1 % select N closest events
 
     l = s;
-    messtext = ['Number of events in the sphere :' num2str(length(newt2(ll,1))) ];
+    messtext = ['Number of events in the sphere :' num2str(length(ZG.newt2(ll,1))) ];
     disp(messtext);
     zmap_message_center.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
-    newt2 = newt2(1:ni,:);
-    [st,ist] = sort(newt2);
-    newt2 = newt2(ist(:,3),:);
+    ZG.newt2 = ZG.newt2(1:ni,:);
+    [st,ist] = sort(ZG.newt2);
+    ZG.newt2 = ZG.newt2(ist(:,3),:);
     %
     % plot Ni closest events on map as 'x':
 
     hold on
-    %[na,ma] = size(newt2);
-    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
+    %[na,ma] = size(ZG.newt2);
+    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -62,8 +62,8 @@ if ic == 1 % select N closest events
     l(ni)
 
     %
-    newcat = newt2;                   % resets E, newcat and newt2
-    E = newt2;
+    ZG.newcat = ZG.newt2;                   % resets E, ZG.newcat and ZG.newt2
+    E = ZG.newt2;
     %clear l s is
     %
     %
@@ -88,15 +88,15 @@ if ic == 2 % select events within ra
     %
     % take first ni and sort by time
     %
-    newt2 = newt2(ll,:);
-    [st,ist] = sort(newt2);
-    newt2 = newt2(ist(:,3),:);
+    ZG.newt2 = ZG.newt2(ll,:);
+    [st,ist] = sort(ZG.newt2);
+    ZG.newt2 = ZG.newt2(ist(:,3),:);
     %
     % plot Ni closest events on map as 'x':
 
     hold on
-    %[na,ma] = size(newt2);
-    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 1, 'EraseMode','back');
+    %[na,ma] = size(ZG.newt2);
+    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 1, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -105,8 +105,8 @@ if ic == 2 % select events within ra
     l(ni)
 
     %
-    newcat = newt2;                   % resets E, newcat and newt2
-    E = newt2;
+    ZG.newcat = ZG.newt2;                   % resets E, ZG.newcat and ZG.newt2
+    E = ZG.newt2;
     clear l s is
     %
     %
@@ -131,15 +131,15 @@ if ic == 3 % select N closest events
     %
     % take first ni and sort by time
     %
-    newt2 = newt2(1:ni,:);
-    %[st,ist] = sort(newt2);
-    %newt2 = newt2(ist(:,3),:);
+    ZG.newt2 = ZG.newt2(1:ni,:);
+    %[st,ist] = sort(ZG.newt2);
+    %ZG.newt2 = ZG.newt2(ist(:,3),:);
     %
     % plot Ni clostest events on map as 'x':
 
     hold on
-    %[na,ma] = size(newt2);
-    plos1 = plot(newt2.Longitude,-newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
+    %[na,ma] = size(ZG.newt2);
+    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5, 'EraseMode','back');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -148,8 +148,8 @@ if ic == 3 % select N closest events
     l(ni)
 
     %
-    newcat = newt2;                   % resets E, newcat and newt2
-    E = newt2;
+    ZG.newcat = ZG.newt2;                   % resets E, ZG.newcat and ZG.newt2
+    E = ZG.newt2;
     clear l s is
     %
     %

@@ -35,7 +35,7 @@ pause(0.1)
 
 %  Calculate distance for each earthquake from center point
 %  and sort by distance l
-l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
@@ -43,38 +43,38 @@ l =  sort(l);
 
 % Select data in radius ra
 l3 = l <=ra;
-newt2 = newt2(l3,:);
+newt2 = ZG.newt2(l3,:);
 
 % Select radius in time
-newt3=newt2;
-vSel = (newt2.Date <= maepi(:,3)+time/365);
-newt2 = newt2(vSel,:);
+newt3=ZG.newt2;
+vSel = (ZG.newt2.Date <= maepi(:,3)+time/365);
+newt2 = ZG.newt2(vSel,:);
 R2 = l(ni);
-messtext = ['Number of selected events: ' num2str(length(newt2))  ];
+messtext = ['Number of selected events: ' num2str(length(ZG.newt2))  ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
 
 
 
 % Sort the catalog
-[st,ist] = sort(newt2);
-newt2 = newt2(ist(:,3),:);
+[st,ist] = sort(ZG.newt2);
+newt2 = ZG.newt2(ist(:,3),:);
 R2 = ra;
 
 % Plot selected earthquakes
 hold on
-plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','normal');
+plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','normal');
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;
-pl = plot(xa0+sin(x)*R2/(cos(pi/180*ya0)*111), ya0+cos(x)*R2/(cos(pi/180*ya0)*111),'k','era','normal')
+pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k','era','normal')
 
 % Compute and Plot the forecast
 calc_bootfitF(newt3,time,timef,bootloops,maepi)
 
 set(gcf,'Pointer','arrow')
 %
-newcat = newt2;                   % resets newcat and newt2
+newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
 % Call program "timeplot to plot cumulative number
 clear l s is

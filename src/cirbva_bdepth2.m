@@ -1,5 +1,5 @@
 %   This subroutine "circle"  selects the Ni closest earthquakes
-%   around a interactively selected point.  Resets newcat and newt2
+%   around a interactively selected point.  Resets ZG.newcat and ZG.newt2
 %   Operates on "a".
 
 %  Input Ni:
@@ -37,7 +37,7 @@ pause(0.1)
 %  calculate distance for each earthquake from center point
 %  and sort by distance
 %
-l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
 newt2 = a(is(:,1),:) ;
 
@@ -47,20 +47,20 @@ l =  sort(l);
 %
 
 
-%% Sort by depth so newt2 can be divided into depth ratio zones
-[s,is] = sort(newt2.Depth);
-adepth = newt2(is(:,1),:);
+%% Sort by depth so ZG.newt2 can be divided into depth ratio zones
+[s,is] = sort(ZG.newt2.Depth);
+adepth = ZG.newt2(is(:,1),:);
 
 if tgl1 == 0   % take point within r
     l3 = l <= ra;
-    newt2 = newt2(l3,:);      % new data per grid point (b) is sorted in distanc  (from center point)
+    ZG.newt2 = ZG.newt2(l3,:);      % new data per grid point (b) is sorted in distanc  (from center point)
     circle_r = num2str(ra);
 else
-    newt2 = newt2(1:ni,:)
+    ZG.newt2 = ZG.newt2(1:ni,:)
     circle_r = num2str(l(ni));
 end
 
-%% newt2 = newt2(1:ni,:);
+%% ZG.newt2 = ZG.newt2(1:ni,:);
 
 
 
@@ -70,13 +70,13 @@ zmap_message_center.set_message('Message',messtext)
 
 hold on
 
-plot(newt2.Longitude,newt2.Latitude,'xk');
+plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk');
 
-l = newt2.Depth >= top_zonet & newt2.Depth <  top_zoneb;
-top_zone = newt2(l,:);
+l = ZG.newt2.Depth >= top_zonet & ZG.newt2.Depth <  top_zoneb;
+top_zone = ZG.newt2(l,:);
 
-l = newt2.Depth >= bot_zonet & newt2.Depth <  bot_zoneb;
-bot_zone = newt2(l,:);
+l = ZG.newt2.Depth >= bot_zonet & ZG.newt2.Depth <  bot_zoneb;
+bot_zone = ZG.newt2(l,:);
 
 
 ZG.hold_state=false ; dloop = 1;

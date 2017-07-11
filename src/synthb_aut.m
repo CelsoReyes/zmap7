@@ -6,7 +6,7 @@
 
 %report_this_filefun(mfilename('fullpath'));
 
-TN = newt2.Count;  %total number of events
+TN = ZG.newt2.Count;  %total number of events
 B = bv2 ;%b-value
 IM= i;%starting magnitude (hypothetical Mc)
 inc = 0.1 ;%magnitude increment
@@ -52,14 +52,14 @@ end
 
 PM=M(1:ct);
 PN=log10(N(1:ct));
-%bdiff(newt2)
+%bdiff(ZG.newt2)
 %ga = findobj('Tag','cufi');
 %axes(ga); hold on;
 %plot(PM,N(1:ct));
 %pause
 N = N(1:ct);
-le = length(newt2(l,:));
-[bval,xt2] = hist(newt2(l,6),PM);
+le = length(ZG.newt2(l,:));
+[bval,xt2] = hist(ZG.newt2(l,6),PM);
 b3 = fliplr(cumsum(fliplr(bval)));    % N for M >= (counted backwards)
 res2 = sum(abs(b3 - N))/sum(b3)*100;
 res = res2;

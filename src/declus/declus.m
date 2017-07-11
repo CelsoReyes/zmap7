@@ -2,7 +2,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     % declus.m                                A.Allmann
     % main decluster algorithm
     % modified version, uses two different circles for already related events
-    % works on newcat
+    % works on ZG.newcat
     % different clusters stored with respective numbers in clus
     % Program is based on Raesenberg paper JGR;Vol90;Pages5479-5495;06/10/85
     
@@ -33,7 +33,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     % k      index of the cluster
     % k1     working index for cluster
     
-    %routine works on newcat
+    %routine works on ZG.newcat
     
     report_this_filefun(mfilename('fullpath'));
     
@@ -42,7 +42,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     
     %declaration of global variables
     %
-    global newcat clus rmain r1 eqtime              %catalogs
+    global ZG.newcat clus rmain r1 eqtime              %catalogs
     global  a                                       %catalogs
     global k k1 bg mbg bgevent equi bgdiff          %indices
     global ltn                                      %variable to shorten code
@@ -58,7 +58,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     
     [rmain,r1]=interact(1);                     %calculation of interaction radii
     
-    limag=find(newcat.Magnitude >= 6);     % index of earthquakes with magnitude bigger or
+    limag=find(ZG.newcat.Magnitude >= 6);     % index of earthquakes with magnitude bigger or
     % equal magnitude 6
     if isempty(limag)
         limag=0;
@@ -68,17 +68,17 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     eqtime=clustime();
     
     %variable to store information wether earthquake is already clustered
-    clus = zeros(1,newcat.Count);
+    clus = zeros(1,ZG.newcat.Count);
     
     k = 0;                                %clusterindex
     
-    ltn=newcat.Count-1;
+    ltn=ZG.newcat.Count-1;
     
     wai = waitbar(0,' Please Wait ...  ');
     set(wai,'NumberTitle','off','Name','Decluster - Percent done');
     drawnow
     
-    %for every earthquake in newcat, main loop
+    %for every earthquake in ZG.newcat, main loop
     for i = 1:ltn
         if rem(i,50)==0
             
@@ -91,8 +91,8 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         % attach interaction time
         if k1~=0                          %If i is already related with a cluster
-            if newcat.Magnitude(i)>=mbg(k1)          %if magnitude of i is biggest in cluster
-                mbg(k1)=newcat.Magnitude(i);            %set biggest magnitude to magnitude of i
+            if ZG.newcat.Magnitude(i)>=mbg(k1)          %if magnitude of i is biggest in cluster
+                mbg(k1)=ZG.newcat.Magnitude(i);            %set biggest magnitude to magnitude of i
                 bgevent(k1)=i;                  %index of biggest event is i
                 tau=taumin;
             else
@@ -163,7 +163,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                     k=k+1;                         %zone nor i, already related to cluster
                     k1=k;
                     clus(i)=k1;
-                    mbg(k1)=newcat.Magnitude(i);
+                    mbg(k1)=ZG.newcat.Magnitude(i);
                     bgevent(k1)=i;
                 end
                 
@@ -190,9 +190,9 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         end
         
         
-        a=buildcat(1);        %new catalog for main program
-        original=newcat;       %save newcat in variable original
-        newcat=a;
+        ZG.a=buildcat(1);        %new catalog for main program
+        original=ZG.newcat;       %save ZG.newcat in variable original
+        ZG.newcat=a;
         storedcat=original;
         cluscat=original.subset(clus);
         %[dura,foretime,forepercent]=clusdura(clustnumbers);
@@ -204,7 +204,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         st1 = [' The declustering found ' num2str(length(bgevent(:,1))) ' clusters of earthquakes, a total of '...
             ' ' num2str(length(cluscat(:,1))) ' events (out of ' num2str(length(original(:,1))) '). '...
-            ' The map window now display the declustered catalog containing ' num2str(a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
+            ' The map window now display the declustered catalog containing ' num2str(ZG.a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
         
         msgbox(st1,'Declustering Information')
         

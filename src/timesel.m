@@ -3,9 +3,9 @@ function [tt1,tt2]=timesel(var1)
     % function to select time intervalls for further examination
     % Last change                  8/95
     
-    % works on newt2
+    % works on ZG.newt2
     
-    global newt2 ccum tiplo2 statime cum
+    global ZG.newt2 ccum tiplo2 statime cum
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
@@ -44,16 +44,16 @@ function [tt1,tt2]=timesel(var1)
             tt2=tt1;
             tt1=tt3;
         end
-        % build new catalog newt2
+        % build new catalog ZG.newt2
         if ~isempty(statime)
             error('statime comes from where?');
-            ll=newt2.Date>tt1 & newt2.Date<statime+tt2/365;
+            ll=ZG.newt2.Date>tt1 & ZG.newt2.Date<statime+tt2/365;
             tt1=statime+tt1/365;
             tt2=statime+tt2/365;
         else
-            ll=newt2.Date>tt1 & newt2.Date<tt2;
+            ll=ZG.newt2.Date>tt1 & ZG.newt2.Date<tt2;
         end
-        newt2=newt2.subset(ll);
+        ZG.newt2=ZG.newt2.subset(ll);
         ZG.hold_state=false;
     end
 end

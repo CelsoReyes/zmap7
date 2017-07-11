@@ -36,7 +36,7 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject3(cat,vEtas,vAfter,Start
 %RateGrid: Background rate, spatially varying.  minlon,maxlon, minlat,
 %maxlat, earthquake rate of M>=4.
 
-%CX, P, A: Omori's law parameters, c, p, and a.  They should be entered
+%CX, P, A: Omori's law parameters, c, p, and ZG.a.  They should be entered
 %as direct triggering parameters, with a recommended p = 1.37.  The value
 %of a should be appropriate for the rate of a mainshock of magnitude M
 %triggering aftershocks of magnitude >=M.  For Mmin = 2.5, we recommend CX = 0.095, P = 1.34, and

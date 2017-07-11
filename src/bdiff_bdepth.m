@@ -1,4 +1,4 @@
-function  bdiff_bdepth(newcat)
+function  bdiff_bdepth(ZG.newcat)
     %  This routine etsimates the b-value of a curve automatically
     %  The b-valkue curve is differenciated and the point
     %  of maximum curvature marked. The b-value will be calculated
@@ -39,7 +39,7 @@ function  bdiff_bdepth(newcat)
              'Callback','infoz(1)');
         uicontrol('Units','normal',...
             'Position',[.0 .45 .10 .06],'String','Manual ',...
-             'Callback','bfitnew(newcat)');
+             'Callback','bfitnew(ZG.newcat)');
 
         uicontrol('Units','normal',...
             'Position',[.0 .35 .10 .06],'String','RecTime ',...
@@ -61,8 +61,8 @@ function  bdiff_bdepth(newcat)
 
     end
 
-    maxmag = ceil(10*max(newcat.Magnitude))/10;
-    mima = min(newcat.Magnitude);
+    maxmag = ceil(10*max(ZG.newcat.Magnitude))/10;
+    mima = min(ZG.newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -72,7 +72,7 @@ function  bdiff_bdepth(newcat)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(newcat.Magnitude,(mima:0.1:maxmag));
+    [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -147,8 +147,8 @@ function  bdiff_bdepth(newcat)
     ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
     x = xt3(ll);
 
-    l2 = newcat.Magnitude >= M1b(1)- 0.05  & newcat.Magnitude <= M2b(1)+ 0.05;
-    [ me, bv, si, av] = bmemag(newcat.subset(l2)) ;
+    l2 = ZG.newcat.Magnitude >= M1b(1)- 0.05  & ZG.newcat.Magnitude <= M2b(1)+ 0.05;
+    [ me, bv, si, av] = bmemag(ZG.newcat.subset(l2)) ;
 
     bv = -bv;
 
@@ -184,8 +184,8 @@ function  bdiff_bdepth(newcat)
     set(ttm,'LineWidth',1)
     ttm= semilogy(x,f4+delta,'k-.');
     set(ttm,'LineWidth',1)
-    set(gca,'XLim',[min(newcat.Magnitude)-0.5  max(newcat.Magnitude)+0.5])
-    set(gca,'YLim',[1 (newcat.Count+20)*1.4]);
+    set(gca,'XLim',[min(ZG.newcat.Magnitude)-0.5  max(ZG.newcat.Magnitude)+0.5])
+    set(gca,'YLim',[1 (ZG.newcat.Count+20)*1.4]);
 
     r = corrcoef(x,y);
     r = r(1,2);
@@ -216,7 +216,7 @@ function  bdiff_bdepth(newcat)
 
         txt1=text(.10, .08,['Bottom Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
-        txt1=text(.10, .04,['Bottom Zone b-value (max lik, M >= ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.10, .04,['Bottom Zone b-value (max lik, M >= ', num2str(min(ZG.newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s, 'Color', 'r')
         lsbb = bw; mxlkbb = bv;
 
@@ -229,7 +229,7 @@ function  bdiff_bdepth(newcat)
     else
         txt1=text(.10, .18,['Top Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.10, .14,['Top Zone b-value (max lik, M >= ', num2str(min(newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.10, .14,['Top Zone b-value (max lik, M >= ', num2str(min(ZG.newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
         lsbt = bw; mxlkbt = bv;
@@ -250,7 +250,7 @@ function  bdiff_bdepth(newcat)
 
     if hold_state
         % calculate the probability that the two distributins are differnt
-        l = newcat.Magnitude >=  M1b(1);
+        l = ZG.newcat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;

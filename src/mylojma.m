@@ -65,9 +65,9 @@ fclose(fid);
 
 % Convert the third column into time in decimals
 if length(a(1,:))== 7
-    a.Date = decyear(a(:,3:5));
+    ZG.a.Date = decyear(a(:,3:5));
 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-    a.Date = decyear(a(:,[3:5 8 9]));
+    ZG.a.Date = decyear(a(:,[3:5 8 9]));
 end
 
 % save the data
@@ -75,29 +75,29 @@ end
 sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 
-minmag = max(a.Magnitude) -0.2;
-dep1 = 0.3*max(a.Depth);
-dep2 = 0.6*max(a.Depth);
-dep3 = max(a.Depth);
-minti = min(a.Date);
-maxti  = max(a.Date);
-minma = min(a.Magnitude);
-maxma = max(a.Magnitude);
-mindep = min(a.Depth);
-maxdep = max(a.Depth);
+minmag = max(ZG.a.Magnitude) -0.2;
+dep1 = 0.3*max(ZG.a.Depth);
+dep2 = 0.6*max(ZG.a.Depth);
+dep3 = max(ZG.a.Depth);
+minti = min(ZG.a.Date);
+maxti  = max(ZG.a.Date);
+minma = min(ZG.a.Magnitude);
+maxma = max(ZG.a.Magnitude);
+mindep = min(ZG.a.Depth);
+maxdep = max(ZG.a.Depth);
 
 
-dep1 = 0.3*(max(a.Depth)-min(a.Depth))+min(a.Depth);
-dep2 = 0.6*(max(a.Depth)-min(a.Depth))+min(a.Depth);
-dep3 = max(a.Depth);
+dep1 = 0.3*(max(ZG.a.Depth)-min(ZG.a.Depth))+min(ZG.a.Depth);
+dep2 = 0.6*(max(ZG.a.Depth)-min(ZG.a.Depth))+min(ZG.a.Depth);
+dep3 = max(ZG.a.Depth);
 
 stri1 = [file1];
 tim1 = minti;
 tim2 = maxti;
 minma2 = minma;
 maxma2 = maxma;
-minde = min(a.Depth);
-maxde = max(a.Depth);
+minde = min(ZG.a.Depth);
+maxde = max(ZG.a.Depth);
 rad = 50.;
 ic = 0;
 ya0 = 0.;

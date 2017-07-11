@@ -1,16 +1,16 @@
 %  This is subroutine " displayas.m". A as(t) value is calculated for
 %  a given cumulative number curve and displayed in the plot.
-%  Operates on catalogue newcat
+%  Operates on catalogue ZG.newcat
 
 %
 % start and end time
 %
 think
 report_this_filefun(mfilename('fullpath'));
-b = newcat;
+b = ZG.newcat;
 %select big evenets
-l = newt2.Magnitude > minmag;
-big = newt2.subset(l);
+l = ZG.newt2.Magnitude > minmag;
+big = ZG.newt2.subset(l);
 
 def = {num2str(iwl2),num2str(par1)};
 
@@ -26,7 +26,7 @@ l = ni2{2};
 par1= str2double(l);
 
 % for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.
-[cumu, xt] = histcounts(newt2.Date,min(newt2.Date): par1 : max(newt2.Date));%(t0b:par1/365:teb));
+[cumu, xt] = histcounts(ZG.newt2.Date,min(ZG.newt2.Date): par1 : max(ZG.newt2.Date));%(t0b:par1/365:teb));
 xt = xt + (xt(2)-xt(1))/2; xt(end)=[]; % convert from edges to centers!
 cumu2=cumsum(cumu);
 
@@ -41,9 +41,9 @@ cumu2=cumsum(cumu);
 ncu = length(xt);
 as = zeros(1,ncu)*nan;
 
-t0b = min(a.Date);
-n = a.Count;
-teb = max(a.Date);
+t0b = min(ZG.a.Date);
+n = ZG.a.Count;
+teb = max(ZG.a.Date);
 tdiff = round(days(teb - t0b)/par1); % in days/par1
 
 if sta == 'rub'
@@ -83,7 +83,7 @@ end % if sta == lta
 
 if sta == 'bet'
 
-    Catalog=newcat;
+    Catalog=ZG.newcat;
     NumberBins = length(xt);
     BetaValues = zeros(1,NumberBins)*NaN;
     TimeBegin = min(Catalog.Date);
@@ -201,7 +201,7 @@ hold on;
 if ~isempty(big)
     %if ceil(big(:,3) -t0b) > 0
     %f = cumu2(ceil((big(:,3) -t0b)*365/par1));
-    l = newt2.Magnitude > minmag;
+    l = ZG.newt2.Magnitude > minmag;
     f = find( l  == 1);
     bigplo = plot(big.Date,f,'hm');
     set(bigplo,'LineWidth',1.0,'MarkerSize',10,...

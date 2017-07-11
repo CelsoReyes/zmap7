@@ -54,11 +54,11 @@ function cltipval(var1)
                 'Position',[ 0.435  0.8 0.5 0.8]);
         end
         matdraw;
-        newt2=ttcat;
+        ZG.newt2=ttcat;
         %calculate start -end time of overall catalog
-        t0b = newt2(1,3);
-        n = newt2.Count;
-        teb = newt2(n,3);
+        t0b = ZG.newt2(1,3);
+        n = ZG.newt2.Count;
+        teb = ZG.newt2(n,3);
         tdiff=(teb-t0b)*365;       %time difference in days
         par3=tdiff/100;
         par5=par3;
@@ -68,11 +68,11 @@ function cltipval(var1)
 
         % calculate cumulative number versus time and bin it
         %
-        n = newt2.Count;
+        n = ZG.newt2.Count;
         if par3>=1
-            [cumu, xt] = hist(newt2.Date,(t0b:par3/365:teb));
+            [cumu, xt] = hist(ZG.newt2.Date,(t0b:par3/365:teb));
         else
-            [cumu, xt] = hist((newt2.Date-newt2(1,3))*365,(0:par5:tdiff));
+            [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
         end
         cumu2 = cumsum(cumu);
 

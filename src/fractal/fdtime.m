@@ -21,22 +21,22 @@ set(Hf_child,'pointer','watch','papertype','A4');
 
 m = 0;
 
-for l = 1:inc:size(newt2,1)-nev
+for l = 1:inc:size(ZG.newt2,1)-nev
 
-    E = newt2(l:(l + nev),:);
+    E = ZG.newt2(l:(l + nev),:);
 
     dtokm = [1];
     pdc3nofig;
     fdallfig;
 
-    fdtim3 = [fdtim3 ; coef(1,1) newt2(l,3) ; coef(1,1) newt2(l+nev-1,3) ; inf inf];
-    fdtim2 = [fdtim2 ; coef(1,1) newt2(l+nev,3) deltar];
+    fdtim3 = [fdtim3 ; coef(1,1) ZG.newt2(l,3) ; coef(1,1) ZG.newt2(l+nev-1,3) ; inf inf];
+    fdtim2 = [fdtim2 ; coef(1,1) ZG.newt2(l+nev,3) deltar];
 
-    [bv magco stan ] =  bvalca2(newt2(l:l+nev,:));
-    bv3 = [bv3 ; bv newt2(l,3) ; bv newt2(l+nev-1,3) ; inf inf];
-    bv2 = [bv2 ; bv newt2(l+nev,3) stan];
+    [bv magco stan ] =  bvalca2(ZG.newt2(l:l+nev,:));
+    bv3 = [bv3 ; bv ZG.newt2(l,3) ; bv ZG.newt2(l+nev-1,3) ; inf inf];
+    bv2 = [bv2 ; bv ZG.newt2(l+nev,3) stan];
 
-    waitbar(1/((size(newt2,1)-nev)/inc)*m, Ho_Wb);
+    waitbar(1/((size(ZG.newt2,1)-nev)/inc)*m, Ho_Wb);
     m = m + 1;
 
 end %for loop

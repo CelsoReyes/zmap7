@@ -6,7 +6,7 @@ function cluoverl(var1)
     global bgevent plot1_h plot2_h  equi cluscat backequi newclcat a
     global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3
     global par1 file1 clu h5
-    global ms6 ty stri2 strib
+    global ZG.ms6 ty stri2 strib
     global after_h fore_h main_h ttcat after_button fore_button
     global foresh aftersh mainsh calll66
     global mainfault main faults clus_button coastline maepi
@@ -46,15 +46,15 @@ function cluoverl(var1)
     elseif var1==7                  %plot clusters and faults for the first time
         set(clus_button,'Value',1)
         if isempty(newclcat);
-            a=cluscat;
+            ZG.a=cluscat;
         else
-            a=newclcat;
+            ZG.a=newclcat;
         end
         cla
         set(gca,'Visible','off')
         hold off
         minde = 0.;
-        maxde = max(a.Depth);
+        maxde = max(ZG.a.Depth);
 
         dep1 = round(0.333*maxde);
         dep2 = round(0.666*maxde);
@@ -64,10 +64,10 @@ function cluoverl(var1)
 
 
         % find min and Maximum axes points
-        s1 = max(a.Longitude);
-        s2 = min(a.Longitude);
-        s3 = max(a.Latitude);
-        s4 = min(a.Latitude);
+        s1 = max(ZG.a.Longitude);
+        s2 = min(ZG.a.Longitude);
+        s3 = max(ZG.a.Latitude);
+        s4 = min(ZG.a.Latitude);
         ni = 100;
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
@@ -75,8 +75,8 @@ function cluoverl(var1)
         %
         % find start and end time of catalogue "a"
         %
-        t0b = min(a.Date);
-        n = a.Count;
+        t0b = min(ZG.a.Date);
+        n = ZG.a.Count;
         teb = a(n,3) ;
         tdiff = round(teb - t0b)*365/par1;
 
@@ -87,11 +87,12 @@ function cluoverl(var1)
         % defined in "startzmap"
         %
         hold on
-        dplo1_h =plot(a(a.Depth<=dep1,1),a(a.Depth<=dep1,2),'.b');
-        set(dplo1_h,'MarkerSize',ms6,'Marker',ty)
-        dplo2_h =plot(a(a.Depth<=dep2&a.Depth>dep1,1),a(a.Depth<=dep2&a.Depth>dep1,2),'.y');
-        set(dplo2_h,'MarkerSize',ms6,'Marker',ty);
-        dplo3_h =plot(a(a.Depth<=dep3&a.Depth>dep2,1),a(a.Depth<=dep3&a.Depth>dep2,2),'.r');set(dplo3_h,'MarkerSize',ms6,'Marker',ty)
+        dplo1_h =plot(a(ZG.a.Depth<=dep1,1),a(ZG.a.Depth<=dep1,2),'.b');
+        set(dplo1_h,'MarkerSize',ZG.ms6,'Marker',ty)
+        dplo2_h =plot(a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,1),a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,2),'.y');
+        set(dplo2_h,'MarkerSize',ZG.ms6,'Marker',ty);
+        dplo3_h =plot(a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,1),a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,2),'.r');
+        set(dplo3_h,'MarkerSize',ZG.ms6,'Marker',ty)
 
         axis([ s2 s1 s4 s3])
         xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -130,14 +131,14 @@ function cluoverl(var1)
         % Make the figure visible
         %
     elseif var1==8
-        a=ttcat;
+        ZG.a=ttcat;
         cla
         set(gca,'visible','off')
         hold off
-        s1 = max(a.Longitude);       %limits for area plot
-        s2 = min(a.Longitude);
-        s3 = max(a.Latitude);
-        s4 = min(a.Latitude);
+        s1 = max(ZG.a.Longitude);       %limits for area plot
+        s2 = min(ZG.a.Longitude);
+        s3 = max(ZG.a.Latitude);
+        s4 = min(ZG.a.Latitude);
         if s1==s2                %to avoid error when all earthquakes have
             s1=s1+0.05;              %same longitude and/or latitude
             s2=s2-0.05;
@@ -152,13 +153,13 @@ function cluoverl(var1)
         %
         % find start and end time of catalogue "a"
         %
-        t0b = min(a.Date);
-        n = a.Count;
+        t0b = min(ZG.a.Date);
+        n = ZG.a.Count;
         teb = a(n,3) ;
         tdiff = round(teb - t0b)*365/par1;
         %define fore and aftershocks
         %
-        tmp = find(a.Magnitude==max(a.Magnitude));     %index in a of first mainshock
+        tmp = find(ZG.a.Magnitude==max(ZG.a.Magnitude));     %index in a of first mainshock
         if length(tmp)>1
             tmp=tmp(1,1);
         end
@@ -177,7 +178,7 @@ function cluoverl(var1)
             end
         end
         main_h=plot(a(tmp,1),a(tmp,2),'xm');
-        mainsh=a.subset(tmp);
+        mainsh=ZG.a.subset(tmp);
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);
         if tmp+1<=n

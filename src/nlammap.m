@@ -15,9 +15,9 @@ global mapl fipo
 %{
 %% This is how you do it with the mapping toolbox -CGR
 fig = figure;
-axm=axesm(fig,'lambert','MapLatLimit',[min(a.Latitude) max(a.Latitude)],'MapLonLimit',[min(a.Longitude) max(a.Longitude)]);
+axm=axesm(fig,'lambert','MapLatLimit',[min(ZG.a.Latitude) max(ZG.a.Latitude)],'MapLonLimit',[min(ZG.a.Longitude) max(ZG.a.Longitude)]);
 plm=plotm(coastlat,coastlon,'k');
-plm=plotm(a.Latitude,a.Longitude,'.');
+plm=plotm(ZG.a.Latitude,ZG.a.Longitude,'.');
 disp('Select one end of cross-section')
 p1=ginput(1); %TODO offer chance to redo/abort
 
@@ -75,7 +75,7 @@ if ~hoc ||  newMapLaWindowFlag == 1
     delete(gca)
     delete(gca)
     if isempty(coastline)
-        coastline = [a.Longitude(1) a.Latitude(1)];
+        coastline = [ZG.a.Longitude(1) ZG.a.Latitude(1)];
     end
     hold on
     % Added try-catch to prevent failure if no coastline is inside
@@ -100,18 +100,18 @@ if ~hoc ||  newMapLaWindowFlag == 1
         lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
     end
  
-    at_dep1 = a.Depth<=dep1;
-    at_dep2 = a.Depth<=dep2 & a.Depth>dep1;
-    at_dep3 = a.Depth<=dep3 & a.Depth>dep2;
-    if a.Count > 5000
-        %lc_event(a.Latitude,a.Longitude,'.k')
-        lc_event(a.Latitude(at_dep1),a.Longitude(at_dep1),'.b',1);
-        lc_event(a.Latitude(at_dep2),a.Longitude(at_dep2),'.g',1);
-        lc_event(a.Latitude(at_dep3),a.Longitude(at_dep3),'.r',1);
+    at_dep1 = ZG.a.Depth<=dep1;
+    at_dep2 = ZG.a.Depth<=dep2 & ZG.a.Depth>dep1;
+    at_dep3 = ZG.a.Depth<=dep3 & ZG.a.Depth>dep2;
+    if ZG.a.Count > 5000
+        %lc_event(ZG.a.Latitude,ZG.a.Longitude,'.k')
+        lc_event(ZG.a.Latitude(at_dep1),ZG.a.Longitude(at_dep1),'.b',1);
+        lc_event(ZG.a.Latitude(at_dep2),ZG.a.Longitude(at_dep2),'.g',1);
+        lc_event(ZG.a.Latitude(at_dep3),ZG.a.Longitude(at_dep3),'.r',1);
     else
-        lc_event(a.Latitude(at_dep1),a.Longitude(at_dep1),'+b');
-        lc_event(a.Latitude(at_dep2),a.Longitude(at_dep2),'og');
-        lc_event(a.Latitude(at_dep3),a.Longitude(at_dep3),'xr');
+        lc_event(ZG.a.Latitude(at_dep1),ZG.a.Longitude(at_dep1),'+b');
+        lc_event(ZG.a.Latitude(at_dep2),ZG.a.Longitude(at_dep2),'og');
+        lc_event(ZG.a.Latitude(at_dep3),ZG.a.Longitude(at_dep3),'xr');
  
     end
  
@@ -136,8 +136,8 @@ labelList={'Select an option',...
     'Rotate X-Section'};
 labelPos = [.05 .00 .40 .06];
 
-tmp1=a.Latitude';
-tmp2=a.Longitude';
+tmp1=ZG.a.Latitude';
+tmp2=ZG.a.Longitude';
  
 uic = uicontrol(...
     'Style','popup',...
@@ -187,7 +187,7 @@ end
         in2=uic.Value;
         switch in2
             case 2
-                [xsecx xsecy,  inde] = mysect(tmp1,tmp2,a.Depth,wi);
+                [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.a.Depth,wi);
                 nlammap2; %select endpoints by mouse
             case 3
                 posinpu; % coordinate input

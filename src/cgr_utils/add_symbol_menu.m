@@ -76,9 +76,9 @@ function add_symbol_menu(target, parent, label)
         end
         
         function set_symbol_size(~, ~, target_tag, val)
-            global ms6 vi
+            global ZG vi
             vi='on';
-            ms6=val;
+            ZG.ms6=val;
             
             set_this_property(target_tag, 'MarkerSize', val);
         end
@@ -145,4 +145,14 @@ function add_symbol_menu(target, parent, label)
     end
     %}
     
+    function change_color()
+        lines = findobj(0,'-regexp','Tag','\<mapax_part[0-9].*\>');
+        n =listdlg('PromptString','Change color for which item?',...
+            'SelectionMode','multiple',...
+            'ListString',{lines.DisplayName});
+        if ~isempty(n)
+            c = uisetcolor(lines(n(1)));
+            set(lines(n),'Color',c,'Visible','on');
+        end
+    end
 end

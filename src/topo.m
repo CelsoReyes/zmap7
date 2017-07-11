@@ -246,27 +246,27 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
     end
 
     if inp == 1
-        ploe=plotm(a.Latitude,a.Longitude,'ro');
+        ploe=plotm(ZG.a.Latitude,ZG.a.Longitude,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',2,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
         if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
     end
 
     if inp == 2
-        ploe=plotm(a.Latitude,a.Longitude,'ro');
+        ploe=plotm(ZG.a.Latitude,ZG.a.Longitude,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',3,...
             'MarkerFaceColor','w','MarkerEdgeColor','k');
         if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
     end
 
     if inp == 3  &&  handles.maptype==1
-        ploe=plot3m(a.Latitude,a.Longitude,depq+25,'ro');
+        ploe=plot3m(ZG.a.Latitude,ZG.a.Longitude,depq+25,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',2,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
     end
 
     if inp == 4  &&  handles.maptype==1
-        ploe=plot3m(a.Latitude,a.Longitude,depq+25,'ro');
+        ploe=plot3m(ZG.a.Latitude,ZG.a.Longitude,depq+25,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',3,...
             'MarkerFaceColor','w','MarkerEdgeColor','k');
     end

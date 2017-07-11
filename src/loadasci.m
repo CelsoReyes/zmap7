@@ -69,19 +69,19 @@ if da == 'eq'
             eval(befehl);
             clear(tr)
             %check for 0 in day or month - set to 1
-            l = a.Date.Day == 0; a(l,5) = 1;
-            l = a.Date.Month == 0; a(l,4) = 1;
+            l = ZG.a.Date.Day == 0; a(l,5) = 1;
+            l = ZG.a.Date.Month == 0; a(l,4) = 1;
 
             if length(a(1,:))== 7
-                a.Date = decyear(a(:,3:5));
+                ZG.a.Date = decyear(a(:,3:5));
             elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                a.Date = decyear(a(:,[3:5 8 9]));
+                ZG.a.Date = decyear(a(:,[3:5 8 9]));
             end
 
             % Sort the catalog in time just to make sure ...
-            [s,is] = sort(a.Date);
+            [s,is] = sort(ZG.a.Date);
             a = a(is(:,1),:) ;
-            minmag = max(a.Magnitude) -0.2;       %  as a default to be changed by inpu
+            minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
 
             close;done;inpu;setup
         else
@@ -118,22 +118,22 @@ if da == 'fo'
             eval(befehl);
             clear(tr)
             %check for 0 in day or month - set to 1
-            l = a.Date.Day == 0; a(l,5) = 1;
-            l = a.Date.Month == 0; a(l,4) = 1;
+            l = ZG.a.Date.Day == 0; a(l,5) = 1;
+            l = ZG.a.Date.Month == 0; a(l,4) = 1;
 
             if length(a(1,:))== 7
-                a.Date = decyear(a(:,3:5));
+                ZG.a.Date = decyear(a(:,3:5));
             elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                a.Date = decyear(a(:,[3:5 8 9]));
+                ZG.a.Date = decyear(a(:,[3:5 8 9]));
             end
             % create a 13 column if none exists and set it to zero
 
             if length(a(1,:))< 13 ; a = [a ; a(:,12)*0]; end
 
             % Sort the catalog in time just to make sure ...
-            [s,is] = sort(a.Date);
+            [s,is] = sort(ZG.a.Date);
             a = a(is(:,1),:) ;
-            minmag = max(a.Magnitude) -0.2;       %  as a default to be changed by inpu
+            minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
             % set up the focal mechanism data
             %prepfocal
 

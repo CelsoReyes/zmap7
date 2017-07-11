@@ -43,7 +43,7 @@ for nNode = 1:length(params.mPolygon(:,1))
 
   % Calculate distance from center point and sort with distance
   if params.bMap
-    vDistances = sqrt(((params.mCatalog(:,1)-x)*cos(pi/180*y)*111).^2 + ((params.mCatalog(:,2)-y)*111).^2);
+    vDistances = sqrt(((params.mCatalog(:,1)-x)*cosd(y)*111).^2 + ((params.mCatalog(:,2)-y)*111).^2);
   else
     vDistances = sqrt(((xsecx2 - x)).^2 + ((xsecy2 + y)).^2);
   end

@@ -1,14 +1,14 @@
 %  This is subroutine " medispas1.m". A as(t) value is calculated for
 %  a given mean depth  curve and displayed in the plot.
 %  Overlapping mean depth windows are avoided
-%  Operates on catalogue newcat                          A.Allmann
+%  Operates on catalogue ZG.newcat                          A.Allmann
 
 report_this_filefun(mfilename('fullpath'));
 
 %
 % start and end time
 %
-%b = newcat;
+%b = ZG.newcat;
 %select big evenets
 %l = b.Magnitude > minmag;
 %big = b(l,:);

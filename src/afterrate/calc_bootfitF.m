@@ -19,13 +19,13 @@ function [output] = calc_bootfitF(a,time,timef,bootloops,maepi)
     warning off;
 report_this_filefun(mfilename('fullpath'));
 
-    date_matlab = datenum(a.Date.Year,a.Date.Month,a.Date.Day,a.Date.Hour,a.Date.Minute,zeros(size(a,1),1));
+    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,zeros(size(a,1),1));
     date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
     time_aftershock = date_matlab-date_main;
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = a.subset(l);
+    eqcatalogue = ZG.a.subset(l);
 
     l = tas <= time;
     time_as=tas(l);

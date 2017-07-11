@@ -12,7 +12,7 @@ function cltiplot(var1)
     global backcat ttcat cluscat
    global  sys minmag clu te1
     global clu1 pyy stri tiplo2 statime
-    global xt par1 cumu cumu2 newt2 iwl3
+    global xt par1 cumu cumu2 ZG.newt2 iwl3
     global close_ti_button mtpl
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo
@@ -56,9 +56,9 @@ function cltiplot(var1)
 
         op2=uimenu(op1,'label','P-Value');
         uimenu(op2,'label','manual',...
-             'Callback','ttcat=newt2;clpval(1);');
+             'Callback','ttcat=ZG.newt2;clpval(1);');
         uimenu(op2,'label','automatic',...
-             'Callback','ttcat=newt2;clpval(3);');
+             'Callback','ttcat=ZG.newt2;clpval(3);');
         uimenu(op2,'label','with time', 'Callback','cltipval(2);');
         uimenu(op2,'label','with magnitude', 'Callback','cltipval(1);');
 
@@ -92,31 +92,31 @@ function cltiplot(var1)
         if ~isempty(newclcat)
             if ~isempty(backcat)
                 if length(newclcat(:,1))>=length(backcat(:,1))
-                    newt2=cluscat;
+                    ZG.newt2=cluscat;
                 else
-                    newt2=newclcat;
+                    ZG.newt2=newclcat;
                 end
             else
-                newt2=newclcat;
+                ZG.newt2=newclcat;
             end
         else
-            newt2=cluscat;
+            ZG.newt2=cluscat;
         end
     elseif var1==2
-        newt2=ttcat;
+        ZG.newt2=ttcat;
     end
-    [ii,i]=sort(newt2.Date);
-    newt2=newt2(i,:);
+    [ii,i]=sort(ZG.newt2.Date);
+    ZG.newt2=ZG.newt2(i,:);
     statime=[];
-    bigmag=max(newt2.Magnitude);
+    bigmag=max(ZG.newt2.Magnitude);
     % select big events ( > bigmag)
     %
-    l = newt2.Magnitude == bigmag;
-    big = newt2(l,:);
+    l = ZG.newt2.Magnitude == bigmag;
+    big = ZG.newt2(l,:);
     %calculate start -end time of overall catalog
-    t0b = newt2(1,3);
-    n = newt2.Count;
-    teb = newt2(n,3);
+    t0b = ZG.newt2(1,3);
+    n = ZG.newt2.Count;
+    teb = ZG.newt2(n,3);
     tdiff = (teb - t0b)*365;
     par5=tdiff/100;         %bin length is 1/100 of timedifference(in days)
     if par5>1
@@ -136,11 +136,11 @@ function cltiplot(var1)
     %
     % calculate cumulative number versus time and bin it
     %
-    n = newt2.Count;
+    n = ZG.newt2.Count;
     if par5 >=1
-        [cumu, xt] = hist(newt2.Date,(t0b-par5/365:par5/365:teb+par5/365));
+        [cumu, xt] = hist(ZG.newt2.Date,(t0b-par5/365:par5/365:teb+par5/365));
     else
-        [cumu, xt] = hist((newt2.Date-newt2(1,3)+par5/365)*365,(0:par5:(tdiff+2*par5)));
+        [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+par5/365)*365,(0:par5:(tdiff+2*par5)));
     end
     cumu2=cumsum(cumu);
 
@@ -201,7 +201,7 @@ function cltiplot(var1)
     if par5>=1
         xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     else
-        statime=newt2(1,3)-par5/365;
+        statime=ZG.newt2(1,3)-par5/365;
         xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

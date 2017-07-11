@@ -118,15 +118,15 @@ syn(:,6)=tmpo(1:TN);
 
 rng('shuffle');
 %if TN==length(a)
-%	syn(:,3)=rand(TN,1)*(max(a.Date-min(a.Date)))  + min(a.Date);
-%	syn(:,1)=a.Longitude;
-%	syn(:,2)=a.Latitude;
-%	syn(:,7)=a.Depth;
+%	syn(:,3)=rand(TN,1)*(max(ZG.a.Date-min(ZG.a.Date)))  + min(ZG.a.Date);
+%	syn(:,1)=ZG.a.Longitude;
+%	syn(:,2)=ZG.a.Latitude;
+%	syn(:,7)=ZG.a.Depth;
 %else
-syn(:,3)=rand(TN,1)*(max(a.Date-min(a.Date)))  + min(a.Date);
-syn(:,1)=rand(TN,1)*(max(a.Longitude-min(a.Longitude)))  + min(a.Longitude);
-syn(:,2)=rand(TN,1)*(max(a.Latitude-min(a.Latitude)))  + min(a.Latitude);
-syn(:,7)=rand(TN,1)*(max(a.Depth-min(a.Depth)))  + min(a.Depth);
+syn(:,3)=rand(TN,1)*(max(ZG.a.Date-min(ZG.a.Date)))  + min(ZG.a.Date);
+syn(:,1)=rand(TN,1)*(max(ZG.a.Longitude-min(ZG.a.Longitude)))  + min(ZG.a.Longitude);
+syn(:,2)=rand(TN,1)*(max(ZG.a.Latitude-min(ZG.a.Latitude)))  + min(ZG.a.Latitude);
+syn(:,7)=rand(TN,1)*(max(ZG.a.Depth-min(ZG.a.Depth)))  + min(ZG.a.Depth);
 %end
 %changing decimal year to year,month,day,hour,minute.
 

@@ -8,8 +8,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
-t0b = min(a.Date);
-teb = max(a.Date);
+t0b = min(ZG.a.Date);
+teb = max(ZG.a.Date);
 tdiff = (teb - t0b)*365;
 
 if ~exist('par1', 'var')
@@ -23,16 +23,16 @@ if ~exist('par1', 'var')
     par1 = 30;
 end
 
-minmag = max(a.Magnitude) -0.2;
-dep1 = 0.3*max(a.Depth);
-dep2 = 0.6*max(a.Depth);
-dep3 = max(a.Depth);
-minti = min(a.Date);
-maxti  = max(a.Date);
-minma = min(a.Magnitude);
-maxma = max(a.Magnitude);
-mindep = min(a.Depth);
-maxdep = max(a.Depth);
+minmag = max(ZG.a.Magnitude) -0.2;
+dep1 = 0.3*max(ZG.a.Depth);
+dep2 = 0.6*max(ZG.a.Depth);
+dep3 = max(ZG.a.Depth);
+minti = min(ZG.a.Date);
+maxti  = max(ZG.a.Date);
+minma = min(ZG.a.Magnitude);
+maxma = max(ZG.a.Magnitude);
+mindep = min(ZG.a.Depth);
+maxdep = max(ZG.a.Depth);
 
 %
 % make the interface

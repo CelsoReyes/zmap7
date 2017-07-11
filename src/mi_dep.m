@@ -26,7 +26,7 @@ figure_w_normalized_uicontrolunits(mif77)
 hold on
 
 
-plot(a.Depth,mi(:,2),'go');
+plot(ZG.a.Depth,mi(:,2),'go');
 
 grid
 %set(gca,'box','on',...

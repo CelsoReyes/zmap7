@@ -3,24 +3,23 @@ function timeplot(nosort)
     % or by other selection button as a cummultive number versus
     % time plot in window 2.
     % Time of events with a Magnitude greater than minmag will
-    % be shown on the curve.  Operates on newt2, resets  b  to newt2
-    %     newcat is reset to:
+    % be shown on the curve.  Operates on ZG.newt2, resets  b  to ZG.newt2
+    %     ZG.newcat is reset to:
     %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
-    %                       - newt2 if "Save as Newcat" button is pressed.
+    %                       - ZG.newt2 if "Save as Newcat" button is pressed.
     %Last modification 11/95
     
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
     report_this_filefun(mfilename('fullpath'));
-    global a newcat
+    global ZG
     global tmvar  minmag                    %for P-Value
     global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p iwl2
-   global cplot mess til plo2 cum newt2 statime 
+   global cplot mess til plo2 cum statime 
     global magco selt hndl2 wls_button ml_button
     global name
     
-    ZG=ZmapGlobal.Data;
     if ~exist('xt','var')
         xt=[]; % time series that will be used
     end
@@ -39,7 +38,7 @@ function timeplot(nosort)
     end
     
     if nosort == 'of'
-        newt2.sort('Date');
+        ZG.newt2.sort('Date');
     else  % f
         if t3>t2
             % logic does not make sense within ZmapCatalog.
@@ -140,9 +139,9 @@ function timeplot(nosort)
         
         op3D  =   uimenu(options,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
-            'Callback',@(~,~)TimeDepthPlotter.plot(newt2));
+            'Callback',@(~,~)TimeDepthPlotter.plot(ZG.newt2));
         uimenu(op3D,'Label','Time magnitude plot ',...
-            'Callback',@(~,~)TimeMagnitudePlotter.plot(newt2));
+            'Callback',@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
         
         
         
@@ -169,24 +168,24 @@ function timeplot(nosort)
         uimenu(op4,'label','b with time', 'Callback','selt = ''in''; sPar = ''b''; plot_McBwtime');
         
         
-        pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl ttcat;ttcat=newt2;'];
+        pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl ttcat;ttcat=ZG.newt2;'];
         ptstring=[pstring ' cltipval(2);'];
         pmstring=[pstring ' cltipval(1);'];
         
         op5 = uimenu(options,'Label','p-value estimation');
         
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
-        %displayed (the catalog newt2).
+        %displayed (the catalog ZG.newt2).
         uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
         uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;inpu_main')
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
         uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')
         uimenu(op5,'Label','Cut catalog at mainshock time',...
-            'Callback','l = min(find( newt2.Magnitude == max(newt2.Magnitude) ));newt2 = newt2(l+1:newt2.Count,:);timeplot ')
+            'Callback','l = min(find( ZG.newt2.Magnitude == max(ZG.newt2.Magnitude) ));ZG.newt2 = ZG.newt2(l+1:ZG.newt2.Count,:);timeplot ')
         
         op6 = uimenu(options,'Label','Fractal dimension estimation');
-        uimenu(op6,'Label','Compute the fractal dimension D', 'Callback',' E = newt2; org = 2; startfd');
+        uimenu(op6,'Label','Compute the fractal dimension D', 'Callback',' E = ZG.newt2; org = 2; startfd');
         uimenu(op6,'Label','Compute D for random catalog', 'Callback',' org = 5; startfd;');
         uimenu(op6,'Label','Compute D with time', 'Callback',' org = 6; startfd;');
         uimenu(op6,'Label',' Help/Info on  fractal dimension', 'Callback',' showweb(''fractal''); ')
@@ -202,13 +201,13 @@ function timeplot(nosort)
         op5C = uimenu(options,'Label','Histograms');
         
         uimenu(op5C,'Label','Magnitude',...
-            'Callback','global histo;hisgra(newt2.Magnitude,''Magnitude '');');
+            'Callback','global histo;hisgra(ZG.newt2.Magnitude,''Magnitude '');');
         uimenu(op5C,'Label','Depth',...
-            'Callback','global histo;hisgra(newt2.Depth,''Depth '');');
+            'Callback','global histo;hisgra(ZG.newt2.Depth,''Depth '');');
         uimenu(op5C,'Label','Time',...
-            'Callback','global histo;hisgra(newt2.Date,''Time '');');
+            'Callback','global histo;hisgra(ZG.newt2.Date,''Time '');');
         uimenu(op5C,'Label','Hr of the day',...
-            'Callback','global histo;hisgra(newt2.Date.Hour,''Hr '');');
+            'Callback','global histo;hisgra(ZG.newt2.Date.Hour,''Hr '');');
         
         
         uimenu(options,'Label','Save cumulative number curve', 'Callback',{@calSave1, xt, cumu2});
@@ -218,10 +217,10 @@ function timeplot(nosort)
         %
         
         uicontrol('Units','normal','Position',[.0 .0 .1 .05],'String','Reset',...
-             'Callback','nosort = ''of'';global newcat a newt2; newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot(nosort)',...
+             'Callback','nosort = ''of'';global ZG.newcat a ZG.newt2; ZG.newcat = ZG.newcat; ZG.newt2 = ZG.newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot(nosort)',...
             'tooltip','Resets the catalog to the original selection')
-        uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as newcat',...
-            'Callback','global newcat a newt2; newcat = newt2; a=newt2 ;zmap_message_center.update_catalog();update(mainmap())',...
+        uicontrol('Units','normal','Position',[.70 .0 .3 .05],'String','Keep as ZG.newcat',...
+            'Callback','global ZG.newcat a ZG.newt2; ZG.newcat = ZG.newt2; ZG.a=ZG.newt2 ;zmap_message_center.update_catalog();update(mainmap())',...
             'tooltip','Plots this subset in the map window')
         
         ZG.hold_state2=false;
@@ -234,14 +233,14 @@ function timeplot(nosort)
         cumu2 = 0:1:(tdiff*365/par1)-1;
         cumu = cumu * 0;
         cumu2 = cumu2 * 0;
-        n = newt2.Count;
-        [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
+        n = ZG.newt2.Count;
+        [cumu, xt] = hist(ZG.newt2.Date,(t0b:par1/365:teb));
         cumu2 = cumsum(cumu);
         
         
         hold on
         axes(ht)
-        tiplot2 = plot(newt2.Date,(1:newt2.Count),'r');
+        tiplot2 = plot(ZG.newt2.Date,(1:ZG.newt2.Count),'r');
         set(tiplot2,'LineWidth',2.0)
         
         
@@ -262,20 +261,20 @@ function timeplot(nosort)
         'LineWidth',1.5,...
         'Box','on','SortMethod','childorder')
     
-    if isempty(newcat), 
-        newcat =a; 
+    if isempty(ZG.newcat), 
+        ZG.newcat =a; 
     end
     
     % select big events ( > minmag)
     %
-    l = newt2.Magnitude > minmag;
-    big = newt2.subset(l);
+    l = ZG.newt2.Magnitude > minmag;
+    big = ZG.newt2.subset(l);
     %calculate start -end time of overall catalog
     statime=[];
     par2=par1;
-    t0b = min(a.Date);
-    n = newt2.Count;
-    teb = max(a.Date);
+    t0b = min(ZG.a.Date);
+    n = ZG.newt2.Count;
+    teb = max(ZG.a.Date);
     ttdif=(teb - t0b); % days
     if ttdif>10                 %select bin length respective to time in catalog
         %par1 = ceil(ttdif/300);
@@ -296,11 +295,11 @@ function timeplot(nosort)
     cumu = 0:1:((teb-t0b)*365/par1)+2;
     cumu2 = 0:1:((teb-t0b)*365/par1)-1;
     % calculate cumulative number versus time and bin it
-    n = newt2.Count;
+    n = ZG.newt2.Count;
     if par1 >=1
-        [cumu, xt] = histcounts(newt2.Date,(t0b:par1/365:teb));
+        [cumu, xt] = histcounts(ZG.newt2.Date,(t0b:par1/365:teb));
     else
-        [cumu, xt] = histcounts((newt2.Date-newt2.Date(1)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+        [cumu, xt] = histcounts((ZG.newt2.Date-ZG.newt2.Date(1)+par1/365)*365,(0:par1:(tdiff+2*par1)));
     end
     cumu2=cumsum(cumu);
     % plot time series
@@ -311,26 +310,26 @@ function timeplot(nosort)
     hold on
     set(gca,'visible','off')
     
-    nu = (1:newt2.Count);
-    nu(newt2.Count) = newt2.Count;
+    nu = (1:ZG.newt2.Count);
+    nu(ZG.newt2.Count) = ZG.newt2.Count;
     
-    tiplot2 = plot(newt2.Date, nu, 'b', 'LineWidth', 2.0);
+    tiplot2 = plot(ZG.newt2.Date, nu, 'b', 'LineWidth', 2.0);
     
     % plot end of data
-    pl = plot(teb,newt2.Count,'rs');
+    pl = plot(teb,ZG.newt2.Count,'rs');
     set(pl,'LineWidth',1.0,'MarkerSize',4,...
         'MarkerFaceColor','w','MarkerEdgeColor','r');
     
-    pl = plot([max(newt2.Date),teb],[newt2.Count, newt2.Count],'k:');
+    pl = plot([max(ZG.newt2.Date),teb],[ZG.newt2.Count, ZG.newt2.Count],'k:');
     set(pl,'LineWidth',2.0);
     
-    set(gca,'Ylim',[0 newt2.Count*1.05]);
+    set(gca,'Ylim',[0 ZG.newt2.Count*1.05]);
     
     % plot big events on curve
     %
     if par1>=1
         if ~isempty(big)
-            l = newt2.Magnitude > minmag;
+            l = ZG.newt2.Magnitude > minmag;
             f = find( l  == 1);
             bigplo = plot(big.Date,f,'hm');
             set(bigplo,'LineWidth',1.0,'MarkerSize',10,...
@@ -348,13 +347,13 @@ function timeplot(nosort)
     if par1>=1
         xlabel('Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
     else
-        statime=newt2.Date(1) - par1/365;
+        statime=ZG.newt2.Date(1) - par1/365;
         xlabel(['Time in days relative to ',char(statime)],...
             'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     ylabel('Cumulative Number ','FontSize',ZmapGlobal.Data.fontsz.s)
     
-    title(['"', newt2.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
+    title(['"', ZG.newt2.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
     ht = gca;
     
     % Make the figure visible

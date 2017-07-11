@@ -33,8 +33,8 @@ if sel == 'in'
     fMaxRadius = 5;
 
     % cut catalog at mainshock time:
-    l = a.Date > maepi(1,3);
-    a = a.subset(l);
+    l = ZG.a.Date > maepi(1,3);
+    ZG.a=ZG.a.subset(l);
 
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -348,7 +348,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             % Use Radius to determine grid node catalogs
             l3 = l <= ra;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distance
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
             vDist = sort(l(l3));
             fMaxDist = max(vDist);
@@ -390,7 +390,7 @@ if sel == 'ca'
         end % End If on tgl1
 
         %Set catalog after selection
-        newt2 = b;
+        ZG.newt2 = b;
 
         % Calculate the relative rate change, p, c, k, resolution
         if length(b) >= Nmin  % enough events?
@@ -633,7 +633,7 @@ if sel == 'lo'
         re3 = mRelchange;
         lab1 = 'Rate change';
         nlammap
-        [xsecx xsecy,  inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
 

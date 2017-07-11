@@ -2,10 +2,10 @@
 % or by other selection button as a cummultive number versus
 % time plot in window 2.
 % Time of events with a Magnitude greater than minmag will
-% be shown on the curve.  Operates on newt2, resets  b  to newt2,
-%     newcat is reset to:
+% be shown on the curve.  Operates on ZG.newt2, resets  b  to ZG.newt2,
+%     ZG.newcat is reset to:
 %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
-%                       - newt2 if "Save as Newcat" button is pressed.
+%                       - ZG.newt2 if "Save as Newcat" button is pressed.
 %Last modification 8/95
 zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 ZG=ZmapGlobal.Data;
@@ -46,7 +46,7 @@ hlpStr2= ...
     ' Save cumulative number cure: Will save the curve in  '
     '        an ASCII file                                 '
     '                                                      '
-    ' The "Keep as newcat" button in the lower right corner'
+    ' The "Keep as ZG.newcat" button in the lower right corner'
     ' will make the currently selected subset of eartquakes'
     ' in space, magnitude and depth the current one. This  '
     ' will also redraw the Map window!                     '
@@ -56,7 +56,7 @@ hlpStr2= ...
     '                                                      '];
 
 global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess tiplo2 cum newt2 statime maxde minde
+global cplot mess tiplo2 cum ZG.newt2 statime maxde minde
 global maxma2 minma2
 
 
@@ -95,14 +95,14 @@ if newCumWindowFlag
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
     uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','dispma3')
     op4 = uimenu(options,'Label','b-value estimation');
-    uimenu(op4,'Label','manual', 'Callback','bfitnew(newt2)')
-    uimenu(op4,'Label','automatic', 'Callback','bdiff(newt2)')
+    uimenu(op4,'Label','manual', 'Callback','bfitnew(ZG.newt2)')
+    uimenu(op4,'Label','automatic', 'Callback','bdiff(ZG.newt2)')
     uimenu(op4,'Label','b with depth', 'Callback','bwithde')
     uimenu(op4,'Label','b with time', 'Callback','bwithti')
 
     op5 = uimenu(options,'Label','p-value estimation');
-    uimenu(op5,'Label','manual', 'Callback','global hndl1;ttcat = newt2; clpval(1)')
-    uimenu(op5,'Label','automatic', 'Callback','global hndl1;ttcat =newt2; clpval(3)')
+    uimenu(op5,'Label','manual', 'Callback','global hndl1;ttcat = ZG.newt2; clpval(1)')
+    uimenu(op5,'Label','automatic', 'Callback','global hndl1;ttcat =ZG.newt2; clpval(3)')
     uimenu(options,'Label','get coordinates with Cursor', 'Callback','gi = ginput(1),plot(gi(1),gi(2),''+'');')
     uimenu(options,'Label','Cumlative Moment Release ', 'Callback','morel')
     uimenu(options,'Label','Time Selection', 'Callback','timeselect(4);ctimeplot;');
@@ -125,16 +125,16 @@ if newCumWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.0  .75 .08 .06],'String','Close ',...
-         'Callback','newcat=a;f1=gcf; f2=gpf; close(f1);if f1~=f2, figure_w_normalized_uicontrolunits(f2); end')
+         'Callback','ZG.newcat=a;f1=gcf; f2=gpf; close(f1);if f1~=f2, figure_w_normalized_uicontrolunits(f2); end')
 
     uicontrol('Units','normal',...
         'Position',[.0  .93 .08 .06],'String','Print ',...
          'Callback','myprint')
 
 
-    uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','newcat = newcat; newt2 = newcat; stri = ['' '']; stri1 = ['' '']; ctimeplot')
+    uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','ZG.newcat = ZG.newcat; ZG.newt2 = ZG.newcat; stri = ['' '']; stri1 = ['' '']; ctimeplot')
 
-    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as newcat', 'Callback','newcat = newt2;a=newt2;csubcata')
+    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as ZG.newcat', 'Callback','ZG.newcat = ZG.newt2 ;ZG.a=ZG.newt2;csubcata')
 
 
 end
@@ -145,8 +145,8 @@ if ZmapGlobal.Data.hold_state
     cumu2 = 0:1:(tdiff*365/par1)-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
-    n = newt2.Count;
-    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
+    n = ZG.newt2.Count;
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par1/365:teb));
     cumu2 = cumsum(cumu);
 
 
@@ -172,20 +172,20 @@ set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','SortMethod','childorder')
 
-if isempty(newcat), newcat =a; end
+if isempty(ZG.newcat), ZG.newcat =a; end
 
 % select big events ( > minmag)
 %
-l = newt2.Magnitude > minmag;
-big = newt2(l,:);
+l = ZG.newt2.Magnitude > minmag;
+big = ZG.newt2(l,:);
 %big=[];
 %calculate start -end time of overall catalog
 %R
 statime=[];
 par2=par1;
-t0b = min(a.Date);
-n = newt2.Count;
-teb = max(a.Date);
+t0b = min(ZG.a.Date);
+n = ZG.newt2.Count;
+teb = max(ZG.a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
     par1 = ceil(ttdif/300);
@@ -217,11 +217,11 @@ end
 %
 % calculate cumulative number versus time and bin it
 %
-n = newt2.Count;
+n = ZG.newt2.Count;
 if par1 >=1
-    [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par1/365:teb));
 else
-    [cumu, xt] = hist((newt2.Date-newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
 end
 cumu2=cumsum(cumu);
 par1
@@ -288,7 +288,7 @@ grid
 if par1>=1
     xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 else
-    statime=newt2(1,3)-par1/365;
+    statime=ZG.newt2(1,3)-par1/365;
     xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 end
 ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

@@ -117,7 +117,7 @@ if sel == 'in'
     dy = 0.1 ;
     dz = 5.00 ;
 
-    def = {'0.1','0.1',num2str(dz),num2str(max(a.Depth)), num2str(min(a.Depth))};
+    def = {'0.1','0.1',num2str(dz),num2str(max(ZG.a.Depth)), num2str(min(ZG.a.Depth))};
 
     tit ='Three dimesional b-value analysis';
     prompt={ 'Spacing in Longitude (dx in [deg])',...
@@ -164,8 +164,8 @@ if sel == 'ca'
     avm= ones(length(gx),length(gy),length(gz))*nan;
     mcma  = ones(length(gx),length(gy),length(gz))*nan;
 
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -192,13 +192,13 @@ if sel == 'ca'
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + ((a.Depth - z)).^2 ) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + ((ZG.a.Depth - z)).^2 ) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= R;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distanc
             rd = b.Count;
         else
             % take first ni points
@@ -208,7 +208,7 @@ if sel == 'ca'
         end
 
         %estimate the completeness and b-value
-        newt2 = b;
+        ZG.newt2 = b;
         if length(b) >= Nmin  % enough events?
 
             if inb1 == 3
@@ -258,7 +258,7 @@ if sel == 'ca'
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b,2,2);
                 [mea  bv2 stan2 av2 ] =  bmemag(b);
             end
-            newt2 = b;
+            ZG.newt2 = b;
             %  predi_ca
 
         else

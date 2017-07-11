@@ -41,7 +41,7 @@ if (length(mNodeCatalog_(:,1)) >= nNumberEvents)
 
     % Calculate distance from center point
     if bMap % Map view
-        vDistances_ = sqrt(((mNodeCatalog_(:,1)-fX_)*cos(pi/180*fY_)*111).^2 + ((mNodeCatalog_(:,2)-fY_)*111).^2);
+        vDistances_ = sqrt(((mNodeCatalog_(:,1)-fX_)*cosd(fY_)*111).^2 + ((mNodeCatalog_(:,2)-fY_)*111).^2);
     else  % Cross-section
         vDistances_ = sqrt(((vXSecX_ - fX_)).^2 + ((vXSecY_ - fY_)).^2);
     end

@@ -199,8 +199,8 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -216,8 +216,8 @@ if sel == 'ca'
     drawnow
     %
     bvg = zeros(length(newgri(:,1)),4)*nan;
-    lt =  a.Date >= t1 &  a.Date < t2  | a.Date >= t3 &  a.Date <= t4;
-    aa = a.subset(lt);
+    lt =  ZG.a.Date >= t1 &  ZG.a.Date < t2  | ZG.a.Date >= t3 &  ZG.a.Date <= t4;
+    aa = ZG.a.subset(lt);
 
     % loop over all points
     for i= 1:length(newgri(:,1))
@@ -225,7 +225,7 @@ if sel == 'ca'
         allcount = allcount + 1.;
         i2 = i2+1;
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((aa(:,1)-x)*cos(pi/180*y)*111).^2 + ((aa(:,2)-y)*111).^2 ) ;
+        l = sqrt(((aa(:,1)-x)*cosd(y)*111).^2 + ((aa(:,2)-y)*111).^2 ) ;
         [s,is] = sort(l);
         b = aa(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -297,7 +297,7 @@ if sel == 'ca'
     det =  'ast'; sha = 'in';
     % View the b-value map
     storedcat=a;
-    a = aa;
+    ZG.a=aa;
     view_ratecomp
 
 end   % if sel = ca

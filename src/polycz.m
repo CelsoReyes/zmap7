@@ -26,7 +26,7 @@ XI = newa(:,length(newa(1,:)));
 %plot the selected eqs and mag freq curve
 newt2 = newa.subset(lb);
 newcat = newa.subset(lb);
-pl = plot(newt2(:,length(newt2(1,:))),-newt2.Depth,'xk');
+pl = plot(ZG.newt2(:,length(ZG.newt2(1,:))),-ZG.newt2.Depth,'xk');
 set(pl,'MarkerSize',8,'LineWidth',1)
 timeplot
 

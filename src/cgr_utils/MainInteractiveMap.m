@@ -78,8 +78,7 @@ classdef MainInteractiveMap
                 
         end
         function update(obj)
-            global a
-            gh=ZmapGlobal.Data; %handle to globals;
+            ZG=ZmapGlobal.Data; %handle to globals;
             watchon; drawnow;
             disp('MainInteractiveMap.update()');
             %h=figureHandle();
@@ -89,9 +88,9 @@ classdef MainInteractiveMap
                 obj.createFigure()
                 return
             end
-            MainInteractiveMap.plotEarthquakes(a)
-            xlim(ax,[min(a.Longitude) max(a.Longitude)])
-            ylim(ax,[min(a.Latitude) max(a.Latitude)]);
+            MainInteractiveMap.plotEarthquakes(ZG.a)
+            xlim(ax,[min(ZG.a.Longitude) max(ZG.a.Longitude)])
+            ylim(ax,[min(ZG.a.Latitude) max(ZG.a.Latitude)]);
             ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
             k=obj.Features.keys;
@@ -106,16 +105,16 @@ classdef MainInteractiveMap
                 tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
                 legend(ax,tolegend,'Location','southeastoutside');
                 ax.Legend.Title.String='Seismicity Map';
-            if strcmp(gh.lock_aspect,'on')
+            if strcmp(ZG.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
-            grid(ax,gh.mainmap_grid);
+            grid(ax,ZG.mainmap_grid);
             
             align_supplimentary_legends(ax);
     
     
             % make sure we're back in a 2-d view
-            title(ax,MainInteractiveMap.get_title(a));
+            title(ax,MainInteractiveMap.get_title(ZG.a),'Interpreter','none');
             view(ax,2); %reset to top-down view
             grid(ax,'on');
             zlabel(ax,'Depth [km]');
@@ -127,8 +126,7 @@ classdef MainInteractiveMap
         end
         function createFigure(obj)
             % will delete figure if it exist
-            global main mainfault faults coastline vo maepi well plates
-            global a % primary event catalog
+            global ZG % primary event catalog
             disp('MainInterativeMap.createFigure()');
             h=figureHandle();
             if ~isempty(h)
@@ -151,16 +149,16 @@ classdef MainInteractiveMap
                 'Box','on','TickDir','out');
             xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
-            %strib = [  ' Map of '  a.Name '; '  char(min(a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(a.Date),'uuuu-MM-dd HH:mm:ss') ];
-            title(ax, MainInteractiveMap.get_title(a),'FontWeight','normal',...
+            %strib = [  ' Map of '  ZG.a.Name '; '  char(min(ZG.a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(ZG.a.Date),'uuuu-MM-dd HH:mm:ss') ];
+            title(ax, MainInteractiveMap.get_title(ZG.a),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
-                'Color','k')
+                'Color','k','Interpreter','none');
             if ~isempty(mainAxes())
                 % create the main earthquake axis
             end
             disp('setting up main map:');
             disp('preplotting catalog');
-            MainInteractiveMap.plotEarthquakes(a)
+            MainInteractiveMap.plotEarthquakes(ZG.a)
             xlim(ax,'auto')
             ylim(ax,'auto');
             axis(ax,'manual');
@@ -170,9 +168,9 @@ classdef MainInteractiveMap
                 ftr=obj.Features(k{i});
                 ftr.plot(ax);
             end
-            MainInteractiveMap.plotMainshocks(main);
+            MainInteractiveMap.plotMainshocks(ZG.main);
             disp('     "      "big" earthquakes');
-            MainInteractiveMap.plotBigEarthquakes(maepi);
+            MainInteractiveMap.plotBigEarthquakes(ZG.maepi);
             try
                 % to keep lines out of the legend, append a '_nolegend' to the item's Tag
                 tolegend=findobj(ax,'Type','line');
@@ -183,11 +181,11 @@ classdef MainInteractiveMap
                 disp(ax.Children);
                 rethrow(ME);
             end
-            gh = ZmapGlobal.Data; % handle to "globals"
-            if strcmp(gh.lock_aspect,'on')
+            ZG = ZmapGlobal.Data; % handle to "globals"
+            if strcmp(ZG.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
-            grid(ax,gh.mainmap_grid);
+            grid(ax,ZG.mainmap_grid);
             align_supplimentary_legends(ax);
             disp('adding menus to main map')
             obj.create_all_menus(true);
@@ -323,7 +321,7 @@ classdef MainInteractiveMap
             end
             submenu = uimenu('Label','Select ','Tag','mainmap_menu_select');
             uimenu(submenu,'Label','Select EQ in Polygon (Menu)',...
-                'Callback','global noh1 newt2 a;noh1 = gca;newt2 = a; stri = ''Polygon''; keyselect');
+                'Callback','global noh1 ZG;noh1 = gca;ZG.newt2 = ZG.a; stri = ''Polygon''; keyselect');
             
             uimenu(submenu,'Label','Select EQ inside Polygon',...
                 'Callback',@(~,~) selectp('inside'));
@@ -349,13 +347,13 @@ classdef MainInteractiveMap
             submenu = uimenu('Label','Catalog','Tag','mainmap_menu_catalog');
             
             uimenu(submenu,'Label','Crop catalog to window',...
-                'Callback','a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));a.cropToFilter();update(mainmap())');
+                'Callback','ZG.a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
             
             uimenu(submenu,'Label','Edit Ranges...',...
-                'Callback','global a; a=catalog_overview(a);update(mainmap())');
+                'Callback','global ZG; ZG.a=catalog_overview(ZG.a);update(mainmap())');
             
             uimenu(submenu,'Label','Rename...',...
-                'Callback','global a; nm=inputdlg(''Catalog Name:'',''Rename'',1,{a.Name});if ~isempty(nm),a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
+                'Callback','global ZG; nm=inputdlg(''Catalog Name:'',''Rename'',1,{ZG.a.Name});if ~isempty(nm),ZG.a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
             
             uimenu(submenu,'Label','Memorize/Recall Catalog',...
                 'Separator','on',...
@@ -380,7 +378,7 @@ classdef MainInteractiveMap
                 'Separator','on');
 
             uimenu(submenu,'Label','Reload last catalog','Enable','off',...
-                'Callback','think; load(lopa);if max(a(:,decyr_idx)) < 100; a(:,decyr_idx) = a(:,decyr_idx)+1900; end, if length(a(1,:))== 7,a(:,decyr_idx) = decyear(a(:,3:5));elseif length(a(1,:))>=9,a(:,decyr_idx) = decyear(a(:,[3:5 8 9]));end;inpu;done');
+                'Callback','think; load(lopa); if length(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;inpu;done');
             
             uimenu(catmenu, ...
                 'Label','from *.mat file',...
@@ -401,7 +399,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
-                'Callback','msgbox(a.summary(''stats''),''Catalog Details'')');
+                'Callback','msgbox(ZG.a.summary(''stats''),''Catalog Details'')');
         end
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
@@ -418,7 +416,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
-                'Callback','global newt2 a newcat; stri = ''Polygon''; newt2 = a; newcat = a; timeplot');
+                'Callback','global ZG; stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot');
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
@@ -467,9 +465,9 @@ classdef MainInteractiveMap
         end
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global a newt2; =a; [a] = syn_invoke_random_dialog(a); newt2 = a;timeplot; update(mainmap()); bdiff(a); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global ZG; [ZG.a] = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot; update(mainmap()); bdiff(ZG.a); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','global a newt2; =a; [a] = syn_invoke_dialog(a); newt2 = a; timeplot; update(mainmap()); bdiff(a); revertcat');
+                'Callback','global ZG; [ZG.a] = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot; update(mainmap()); bdiff(ZG.a); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values',...
                 'Callback','brand');
@@ -549,13 +547,13 @@ classdef MainInteractiveMap
             submenu = uimenu(parent,'Label','Histograms');
             
             uimenu(submenu,'Label','Magnitude',...
-                'Callback','global histo;hisgra(a.Magnitude,''Magnitude '');');
+                'Callback','global histo;hisgra(ZG.a.Magnitude,''Magnitude '');');
             uimenu(submenu,'Label','Depth',...
-                'Callback','global histo;hisgra(a.Depth,''Depth '');');
+                'Callback','global histo;hisgra(ZG.a.Depth,''Depth '');');
             uimenu(submenu,'Label','Time',...
-                'Callback','global histo;hisgra(a.Date,''Time '');');
+                'Callback','global histo;hisgra(ZG.a.Date,''Time '');');
             uimenu(submenu,'Label','Hr of the day',...
-                'Callback','global histo;hisgra(a.Date.Hour,''Hr '');');
+                'Callback','global histo;hisgra(ZG.a.Date.Hour,''Hr '');');
             % uimenu(submenu,'Label','Stress tensor quality',...
             %    'Callback','global histo;hisgra(a(:,13),''Quality '');');
         end
@@ -601,8 +599,8 @@ classdef MainInteractiveMap
             
             ax = mainAxes();
             %set aspect ratio
-            gh = ZmapGlobal.Data; % handle to "globals"
-            if strcmp(gh.lock_aspect,'on')
+            ZG = ZmapGlobal.Data; % handle to "globals"
+            if strcmp(ZG.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
             align_supplimentary_legends(ax);
@@ -613,7 +611,7 @@ classdef MainInteractiveMap
             
             % deletes existing event plots from the current axis
             
-            global event_marker_types ms6
+            global event_marker_types ZG
             if isempty(event_marker_types)
                 event_marker_types='ooooooo'; %each division gets next type.
             end
@@ -638,7 +636,7 @@ classdef MainInteractiveMap
                 'Marker',event_marker_types(1),...
                 'Color',cmapcolors(1,:),...
                 'LineStyle','none',...
-                'MarkerSize',ms6,...
+                'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
             h.DisplayName = sprintf('M ≤ %3.1f', divs(1));
             h.ZData=-mycat.Depth(mask);
@@ -653,7 +651,7 @@ classdef MainInteractiveMap
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
                     'LineStyle','none',...
-                    'MarkerSize',ms6*(i+1),...
+                    'MarkerSize',ZG.ms6*(i+1),...
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
                 h.ZData=-mycat.Depth(mask);
@@ -668,7 +666,7 @@ classdef MainInteractiveMap
             %   divisions is a vector of depths (up to 7)
             
             % magdivisions: magnitude split points
-            global event_marker_types ms6
+            global event_marker_types ZG
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
@@ -698,7 +696,7 @@ classdef MainInteractiveMap
                 'Marker',event_marker_types(1),...
                 'Color',cmapcolors(1,:),...
                 'LineStyle','none',...
-                'MarkerSize',ms6,...
+                'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
                 h.ZData=-mycat.Depth(mask);
             h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
@@ -713,7 +711,7 @@ classdef MainInteractiveMap
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
                     'LineStyle','none',...
-                    'MarkerSize',ms6,...
+                    'MarkerSize',ZG.ms6,...
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
                 myline.ZData=-mycat.Depth(mask);
@@ -822,7 +820,7 @@ classdef MainInteractiveMap
         end
         
         function plotQuakesByTime(mycat, divs)
-            global event_marker_types ms6
+            global event_marker_types ZG
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
@@ -874,7 +872,7 @@ classdef MainInteractiveMap
                     'Tag',['mapax_part' num2str(i)]);
                 h.ZData=-mycat.Depth(mask);
                 set(h,'Marker',event_marker_types(i),...
-                    'MarkerSize',ms6,...
+                    'MarkerSize',ZG.ms6,...
                     'Color',cmapcolors(i,:),...
                     'LineStyle','none',...
                     'DisplayName', dispname);
@@ -1113,7 +1111,8 @@ function catSave()
         [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             wholePath=[path1 file1];
-            save('WholePath', 'a', 'faults','main','mainfault','coastline','infstri','well');
+            error('not implemented')
+            %save('WholePath', 'ZG.a', 'faults','main','mainfault','coastline','infstri','well');
         end
         done
     catch ME
@@ -1122,25 +1121,25 @@ function catSave()
 end
 
 function change_markersize(val)
-    global ms6
-    ms6 = val;
+    global ZG
+    ZG.ms6 = val;
     ax = findobj(0,'Tag','mainmap_ax');
     set(findobj(ax,'Type','Line'),'MarkerSize',val);
 end
 
 function change_symbol(~, clrs, symbs)
-    global ms6
+    global ZG
     ax = findobj(0,'Tag','mainmap_ax');
     lines = findMapaxParts(ax);
     %line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
     for n=1:numel(lines)
         if ~isempty(clrs)
-            set(lines(n),'MarkerSize',ms6,...
+            set(lines(n),'MarkerSize',ZG.ms6,...
                 'Marker',symbs(n),...
                 'Color',clrs(n,:),...
                 'Visible','on');
         else
-            set(lines(n),'MarkerSize',ms6,...
+            set(lines(n),'MarkerSize',ZG.ms6,...
                 'Marker',symbs(n),...
                 'Visible', 'on');
         end
@@ -1160,8 +1159,8 @@ end
     
 
 function plot_large_quakes()
-    global minmag maex maix maey maiy maepi a
-    mycat=ZmapCatalog(a);
+    global minmag maex maix maey maiy maepi ZG
+    mycat=ZmapCatalog(ZG.a);
     def = {'6'};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
     l = ni2{:};
@@ -1202,8 +1201,8 @@ function toggle_grid(src, ~)
             src.Checked = 'off';
             grid(ax,'off');
     end
-    gh = ZmapGlobal.Data;
-    gh.lock_aspect = src.Checked;
+    ZG = ZmapGlobal.Data;
+    ZG.lock_aspect = src.Checked;
     drawnow
     align_supplimentary_legends();
     drawnow
@@ -1220,8 +1219,8 @@ function toggle_aspectratio(src, ~)
             src.Checked = 'off';
             daspect(ax,'auto');
     end
-    gh = ZmapGlobal.Data;
-    gh.lock_aspect = src.Checked;
+    ZG = ZmapGlobal.Data;
+    ZG.lock_aspect = src.Checked;
     align_supplimentary_legends();
     
 end

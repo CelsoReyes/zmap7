@@ -7,12 +7,12 @@ l = ni2{1};
 n = str2double(l);
 
 
-do = ['newt2 = anB' num2str(n) ';' ];
+do = ['ZG.newt2 = anB' num2str(n) ';' ];
 eval(do)
-do = ['newcat = anB' num2str(n) ';' ];
+do = ['ZG.newcat = anB' num2str(n) ';' ];
 eval(do)
 timeplot
 update(mainmap())
 axes(h1)
-plot(newt2.Longitude,newt2.Latitude,'*k','era','normal')
+plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'*k','era','normal')
 %

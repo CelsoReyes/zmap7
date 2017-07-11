@@ -89,13 +89,13 @@ if newzmapWindowFlag
     TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
     ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
 
-    uimenu(SizeMenu,'Label','3','Callback','ms6 =3;eval(cal7)');
-    uimenu(SizeMenu,'Label','6','Callback','ms6 =6;eval(cal7)');
-    uimenu(SizeMenu,'Label','9','Callback','ms6 =9;eval(cal7)');
-    uimenu(SizeMenu,'Label','12','Callback','ms6 =12;eval(cal7)');
-    uimenu(SizeMenu,'Label','14','Callback','ms6 =14;eval(cal7)');
-    uimenu(SizeMenu,'Label','18','Callback','ms6 =18;eval(cal7)');
-    uimenu(SizeMenu,'Label','24','Callback','ms6 =24;eval(cal7)');
+    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal7)');
+    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal7)');
+    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal7)');
+    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal7)');
+    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal7)');
+    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal7)');
+    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal7)');
 
     uimenu(TypeMenu,'Label','dot','Callback','ty =''.'';eval(cal7)');
     uimenu(TypeMenu,'Label','+','Callback','ty=''+'';eval(cal7)');
@@ -110,7 +110,7 @@ if newzmapWindowFlag
     uimenu(ColorMenu,'Label','yellow','Callback','co=''y'';eval(cal7)');
 
     cal7 = ...
-        [ 'vi=''on'';set(ploeq,''MarkerSize'',ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
+        [ 'vi=''on'';set(ploeq,''MarkerSize'',ZG.ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
 
 
 
@@ -260,7 +260,7 @@ if  in == 'per'
     coma = coma(64:-1:1,:);
     colormap(coma)
 end
-set(gca,'dataaspect',[1 cos(pi/180*mean(a.Latitude)) 1]);
+set(gca,'dataaspect',[1 cosd(mean(ZG.a.Latitude)) 1]);
 
 title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','k','FontWeight','bold')
@@ -271,7 +271,7 @@ ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 % plot overlay
 %
 overlay
-set(ploeq,'MarkerSize',ms6,'Marker',ty,'Color',co,'visible',vi);
+set(ploeq,'MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'visible',vi);
 
 set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...

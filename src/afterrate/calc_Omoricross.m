@@ -31,7 +31,7 @@ if sel == 'in'
 
     % cut catalog at mainshock time:
     l = a.Date > maepi(1,3);
-    a = a.subset(l);
+    ZG.a=a.subset(l);
 
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -378,7 +378,7 @@ if sel == 'ca'
     %disp('Saving data to Omoricross.mat in current directory')
     catSave3 =...
         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-        '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
+        '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
         ' sapa2 = [''save '' path1 file1 '' mCross gx gy dx dy par1 tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops maepi xsecx xsecy wi lon1 lat1 lon2 lat2 ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
 
@@ -526,7 +526,7 @@ if sel == 'lo'
         re3 = mPval;
         lab1 = 'p-value';
         nlammap
-        [xsecx, xsecy inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
+        [xsecx, xsecy inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
 

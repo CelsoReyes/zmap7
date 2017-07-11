@@ -190,7 +190,7 @@ if sel == 'ca'
     % loop
     dm = 0.1;
     dt = 0.01;
-    M = max(newt2.Magnitude) - 5.;
+    M = max(ZG.newt2.Magnitude) - 5.;
 
     %
     for i= 1:length(newgri(:,1))
@@ -215,7 +215,7 @@ if sel == 'ca'
         l = b.Date > mati + 3/365;
         %[bv magco stan av me mer me2,  pr] =  bvalca3(b(l,:),1,1);
         %l = b.Magnitude > magco+0.1;
-        newt2 = b;
+        ZG.newt2 = b;
         tmin1 =0.05;
 
         calcp

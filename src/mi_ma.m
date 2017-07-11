@@ -26,7 +26,7 @@ figure_w_normalized_uicontrolunits(mif88)
 hold on
 
 
-plot(a.Magnitude,mi(:,2),'go');
+plot(ZG.a.Magnitude,mi(:,2),'go');
 
 grid
 %set(gca,'box','on',...

@@ -31,8 +31,8 @@ catch ME
     error_handler(ME,'Error loading data! Are they in the right *.mat format?');
 end
 
-if max(a.Date) < 100;
-    a.Date = a.Date+1900;
+if max(ZG.a.Date) < 100;
+    ZG.a.Date = ZG.a.Date+1900;
     errdisp = ...
         ['The catalog dates appear to be 2 digit.    '
         'Action taken: added 1900 for Y2K compliance'];
@@ -45,14 +45,14 @@ end
 l1 = length(a(1,:));
 l2 = length(aa(1,:));
 l3 = min([l1 l2]);
-
+error('fix the following line')
 try
-    a = [a(:, 1:l3) ; aa(:, 1:l3)] ;
+    ZG.a=[a(:, 1:l3) ; aa(:, 1:l3)] ;
 catch
     errordlg('Error combining data - same number of colums?');
     return
 end
 
-a.sort('Date');
+ZG.a.sort('Date');
 
 update(mainmap())

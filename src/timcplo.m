@@ -36,13 +36,13 @@ if newDepWindowFlag
     symbolmenu = uimenu('Label',' Symbol ');
     SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
     TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
-    uimenu(SizeMenu,'Label','3','Callback','ms6 =3;eval(cal6)');
-    uimenu(SizeMenu,'Label','6','Callback','ms6 =6;eval(cal6)');
-    uimenu(SizeMenu,'Label','9','Callback','ms6 =9;eval(cal6)');
-    uimenu(SizeMenu,'Label','12','Callback','ms6 =12;eval(cal6)');
-    uimenu(SizeMenu,'Label','14','Callback','ms6 =14;eval(cal6)');
-    uimenu(SizeMenu,'Label','18','Callback','ms6 =18;eval(cal6)');
-    uimenu(SizeMenu,'Label','24','Callback','ms6 =24;eval(cal6)');
+    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal6)');
+    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal6)');
+    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal6)');
+    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal6)');
+    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal6)');
+    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal6)');
+    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal6)');
 
     uimenu(TypeMenu,'Label','dot',...
         'Callback','ty1=''.'';ty2=''.'';ty3=''.'';eval(cal6)');
@@ -56,9 +56,9 @@ if newDepWindowFlag
         'Callback','ty1=''*'';ty2=''*'';ty3=''*'';eval(cal6)');
     uimenu(TypeMenu,'Label','none','Callback','set(deplo1,''visible'',''off'');set(deplo2,''visible'',''off'');set(deplo3,''visible'',''off''); ');
     cal6 = ...
-        [ 'set(deplo1,''MarkerSize'',ms6,''LineStyle'',ty1,''visible'',''on'');',...
-        'set(deplo2,''MarkerSize'',ms6,''LineStyle'',ty2,''visible'',''on'');',...
-        'set(deplo3,''MarkerSize'',ms6,''LineStyle'',ty3,''visible'',''on'');' ];
+        [ 'set(deplo1,''MarkerSize'',ZG.ms6,''LineStyle'',ty1,''visible'',''on'');',...
+        'set(deplo2,''MarkerSize'',ZG.ms6,''LineStyle'',ty2,''visible'',''on'');',...
+        'set(deplo3,''MarkerSize'',ZG.ms6,''LineStyle'',ty3,''visible'',''on'');' ];
 
 end  % if figure exist
 
@@ -74,12 +74,12 @@ p5 = gca;
 
 n = length(newa(1,:));
 deplo1 =plot(newa(newa(:,7)<=dep1,n),newa(newa(:,7)<=dep1,3),'.b');
-set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
+set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1,'era','normal')
 hold on
 deplo2 =plot(newa(newa(:,7)<=dep2&newa(:,7)>dep1,n),newa(newa(:,7)<=dep2&newa(:,7)>dep1,3),'.g');
-set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
+set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2,'era','normal');
 deplo3 =plot(newa(newa(:,7)<=dep3&newa(:,7)>dep2,n),newa(newa(:,7)<=dep3&newa(:,7)>dep2,3),'.r');
-set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
+set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3,'era','normal')
 
 hold on
 

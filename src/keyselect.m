@@ -1,7 +1,7 @@
 %  This .m file selects the earthquakes within a polygon
 %  and plots them. Sets "a" equal to the catalogue produced after the
 %  general parameter selection. Operates on "storedcat", replaces "a"
-%  with new data and makes "a" equal to newcat
+%  with new data and makes "a" equal to ZG.newcat
 %                                           Alexander Allmann
 
 report_this_filefun(mfilename('fullpath'));

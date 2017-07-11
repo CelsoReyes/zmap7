@@ -87,8 +87,8 @@ if newbmapWindowFlag
 
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_qva')
-    uimenu(options,'Label','Select EQ in Circle', 'Callback','h1 = gca;circle;watchoff(qmap);global histo;hisgra(newt2.Date.Hour,''Hr '');')
-    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' stri = ''Polygon'';h1 = gca;cufi = gcf;selectp; global histo;hisgra(newt2.Date.Hour,''Hr '');')
+    uimenu(options,'Label','Select EQ in Circle', 'Callback','h1 = gca;circle;watchoff(qmap);global histo;hisgra(ZG.newt2.Date.Hour,''Hr '');')
+    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' stri = ''Polygon'';h1 = gca;cufi = gcf;selectp; global histo;hisgra(ZG.newt2.Date.Hour,''Hr '');')
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','day/night value map',...
@@ -190,8 +190,8 @@ ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 %
 hold on
 overlay_
-ploeq = plot(a.Longitude,a.Latitude,'k.');
-set(ploeq,'Tag','eq_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
+ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
+set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 
 

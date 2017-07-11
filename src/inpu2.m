@@ -6,9 +6,9 @@ function inpu2()
     %
     % make the interface
     %
-    global newt2
+    global ZG.newt2
     report_this_filefun(mfilename('fullpath'));
-    newt2 = catalog_overview(newt2);
+    ZG.newt2 = catalog_overview(ZG.newt2);
 end
 %{
 h=zmap_message_center();
@@ -19,19 +19,19 @@ clear message_window_candidates
 if isempty(mess) == 1; mess = 1 ; end
 figure_w_normalized_uicontrolunits(mess)
 
-mint = min(newt2.Date);
-maxt = max(newt2.Date);
+mint = min(ZG.newt2.Date);
+maxt = max(ZG.newt2.Date);
 clf
 set(gca,'visible','off');
 set(gcf,'Units','pixel','pos',[20 fipo(4)-350 400 300])
 set(gcf,'Name','Selection Parameters');
 
 inp5t=uicontrol('Style','edit','Position',[.70 .70 .22 .06],...
-    'Units','normalized','String',char(min(newt2.Date)),...
+    'Units','normalized','String',char(min(ZG.newt2.Date)),...
     'Callback','mint=str2double(get(inp5t,''String'')); set(inp5t,''String'',num2str(mint,6));');
 
 inp6t=uicontrol('Style','edit','Position',[.70 .60 .22 .06],...
-    'Units','normalized','String',char(max(newt2.Date)),...
+    'Units','normalized','String',char(max(ZG.newt2.Date)),...
     'Callback','maxt=str2double(get(inp6t,''String'')); set(inp6t,''String'',num2str(maxt,6));');
 
 inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...

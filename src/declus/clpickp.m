@@ -11,7 +11,7 @@ function clpickp(but)
 
     global clu newclcat mess equi_button backcat clu1 mapp
     global n x y xcordinate ycordinate equi bgevent backequi par1
-    global dep1 dep2 dep3 ms6 ty1 ty2 ty3 name
+    global dep1 dep2 dep3 ZG.ms6 ty1 ty2 ty3 name
     global color_bg
     global backbgevent original plot1_h plot2_h clust file1
     global ttcat tt1cat foresh aftersh mainsh clsel sys decc newccat
@@ -104,12 +104,12 @@ function clpickp(but)
         disp('Data is being processed - please wait...  ')
         if decc~=0
             if isempty(ttcat)
-                a=equi;
+                ZG.a=equi;
             else
-                a=ttcat;
+                ZG.a=ttcat;
             end
         elseif decc==0
-            a=newccat;
+            ZG.a=newccat;
         end
         x = [x ; x(1)];
         y = [y ; y(1)];      %  closes polygon
@@ -128,12 +128,12 @@ function clpickp(but)
         pause(0.3)
         % calculate points with a polygon
 
-        XI = a.Longitude;          % this substitution just to make equation below simple
-        YI = a.Latitude;
+        XI = ZG.a.Longitude;          % this substitution just to make equation below simple
+        YI = ZG.a.Latitude;
     ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
             if isempty(ttcat)
-                equi = a.subset(ll);       %all equievents inside selection area
+                equi = ZG.a.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
             newccat=newccat(ll,:);
@@ -154,7 +154,7 @@ function clpickp(but)
                 bgevent=backbgevent(tmp',:);
                 cluoverl(7);
             else
-                ttcat=a.subset(ll);
+                ttcat=ZG.a.subset(ll);
                 cluoverl(8);
             end
         elseif decc==0

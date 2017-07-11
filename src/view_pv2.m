@@ -244,7 +244,7 @@ ylabel('depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 % plot overlay
 %
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.w');
-set(ploeqc,'Tag','eqc_plot','MarkerSize',ms6,'Marker',ty,'Color',co,'Visible',vi)
+set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 if exist('vox', 'var')
     plovo = plot(vox,voy,'*b');

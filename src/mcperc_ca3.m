@@ -2,7 +2,7 @@
 
 % This is a comleteness determination test
 
-[bval,xt2] = histcounts(newt2.Magnitude,-2:0.1:6);
+[bval,xt2] = histcounts(ZG.newt2.Magnitude,-2:0.1:6);
 l = max(find(bval == max(bval)));
 magco0 =  xt2(l);
 
@@ -10,11 +10,11 @@ dat = [];
 
 %for i = magco0-0.6:0.1:magco0+0.2
 for i = magco0-0.5:0.1:magco0+0.7
-    l = newt2.Magnitude >= i - 0.0499; 
+    l = ZG.newt2.Magnitude >= i - 0.0499; 
     nu = sum(l);
     if sum(l) >= 25
-        %[bv magco stan,  av] =  bvalca3(newt2(l,:),2,2);
-        [mw bv2 stan2,  av] =  bmemag(newt2.subset(l));
+        %[bv magco stan,  av] =  bvalca3(ZG.newt2(l,:),2,2);
+        [mw bv2 stan2,  av] =  bmemag(ZG.newt2.subset(l));
         try %in case something goes wrong
             synthb_aut
         catch

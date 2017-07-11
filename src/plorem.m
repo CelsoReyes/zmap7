@@ -3,7 +3,7 @@ report_this_filefun(mfilename('fullpath'));
 tr2 = [];
 tr2u = [];
 tr2l = [];
-for m = max(newt2.Magnitude) -1 : 0.1 : max(newt2.Magnitude) + 2
+for m = max(ZG.newt2.Magnitude) -1 : 0.1 : max(ZG.newt2.Magnitude) + 2
     %set si to 0 if not defined
     if isempty(si)
         si=0;

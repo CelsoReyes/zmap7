@@ -248,7 +248,7 @@ if sel == 'ca'
         [nX,nY] = size(b);
 
         %estimate the completeness and b-value
-        newt2 = b;
+        ZG.newt2 = b;
 
         if length(b) >= Nmin  % enough events?
             % Added to obtain goodness-of-fit to powerlaw value
@@ -361,7 +361,7 @@ if sel == 'lo'
         re3 = mBvalue;
         
         nlammap
-        [xsecx xsecy,  inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
         plot(newgri(:,1),newgri(:,2),'+k','era','back')

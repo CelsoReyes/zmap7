@@ -32,12 +32,12 @@ switch (org)
         stdx = 0.5;
         stdy = 0.5;
         stdz = 1;
-        long1 = min(a.Longitude);
-        long2 = max(a.Longitude);
-        lati1 = min(a.Latitude);
-        lati2 = max(a.Latitude);
-        dept1 = min(abs(a.Depth));
-        dept2 = max(abs(a.Depth));
+        long1 = min(ZG.a.Longitude);
+        long2 = max(ZG.a.Longitude);
+        lati1 = min(ZG.a.Latitude);
+        lati2 = max(ZG.a.Latitude);
+        dept1 = min(abs(ZG.a.Depth));
+        dept2 = max(abs(ZG.a.Depth));
 
         E = a;
         randomcat;

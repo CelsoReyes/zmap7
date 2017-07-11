@@ -4,14 +4,14 @@ function [tdiff, ac]  = timediff(j,ci,tau)
     % works with variable eqtime from function clustime.m
     % gives the indices ac of the eqs not already related to cluster k1
     % last modification 8/95
-    global  clus eqtime k1 newcat
+    global  clus eqtime k1 ZG.newcat
 
     tdiff(1)=0;
     n=1;
     ac=[];
     while tdiff(n) < tau       %while timedifference smaller than look ahead time
 
-        if j <= newcat.Count     %to avoid problems at end of catalog
+        if j <= ZG.newcat.Count     %to avoid problems at end of catalog
             n=n+1;
             tdiff(n)=eqtime(j)-eqtime(ci);
             j=j+1;

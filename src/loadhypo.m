@@ -391,18 +391,18 @@ if in == 'readd'
     a = [lon+lonm lat+latm yr mo da mag dep hr mi];
 
     % eliminate zero events
-    l = a.Date.Month == 0 | a.Longitude ==0 | a.Latitude ==0;
+    l = ZG.a.Date.Month == 0 | ZG.a.Longitude ==0 | ZG.a.Latitude ==0;
     a(l,:) = [];
 
     if length(a(1,:))== 7
-        a.Date = decyear(a(:,3:5));
+        ZG.a.Date = decyear(a(:,3:5));
     elseif length(a(1,:))==9       %if catalog includes hr and minutes
-        a.Date = decyear(a(:,[3:5 8 9]));
+        ZG.a.Date = decyear(a(:,[3:5 8 9]));
     end
     a = ZmapCatalog(a);
-    a.sort('Date');
+    ZG.a.sort('Date');
 
-    minmag = max(a.Magnitude) -0.2;       %  as a default to be changed by inpu
+    minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
 
     %  ask for input parameters
     %

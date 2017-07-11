@@ -5,10 +5,10 @@ function cllta(var1)
     %operates on ttcat
     %
     %Last modification 6/95
-    global ttcat par1 xt cumu cumu2 newt2 pyy
+    global ttcat par1 xt cumu cumu2 ZG.newt2 pyy
     global file1 freq_field freq_slider iwl3 par5
 
-    a=newt2;
+    ZG.a=ZG.newt2;
 
     % initial values
     %
@@ -31,8 +31,8 @@ function cllta(var1)
         set(freq_slider,'Value',iwl3);
     end
 
-    t0b = min(a.Date);
-    n = a.Count;
+    t0b = min(ZG.a.Date);
+    n = ZG.a.Count;
     teb = a(n,3);
     tdiff = round((teb - t0b)*365/par5);
     iwl3 = iwl*par5/365;                 % iwl3 is window in years

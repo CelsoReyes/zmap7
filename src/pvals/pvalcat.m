@@ -15,7 +15,7 @@ ratac = [];
 dursir = [];
 tavg = [];
 sir2 = [];
-nn2 = newt2;
+nn2 = ZG.newt2;
 
 maepi(1,3) = decyear([maepi(:,3:5) maepi(1,8:9)]);
 
@@ -23,7 +23,7 @@ maepi(1,3) = decyear([maepi(:,3:5) maepi(1,8:9)]);
 prompt = {'Minimum magnitude','Min. time after mainshock (in days)','Enter a negative value if you wish a fix c'};
 title = 'You can change the following parameters:';
 lines = 1;
-valm1 = min(newt2.Magnitude);
+valm1 = min(ZG.newt2.Magnitude);
 valtm1 = 0;
 valeg2 = 0;
 
@@ -33,11 +33,11 @@ answer = inputdlg(prompt,title,lines,def);
 valm1=str2double(answer{1}); valtm1 = str2num(answer{2}); valeg2 = str2num(answer{3});
 
 % cut catalog at mainshock time:
-l = newt2.Date > maepi(1,3);
-newt2 = newt2(l,:);
+l = ZG.newt2.Date > maepi(1,3);
+newt2 = ZG.newt2(l,:);
 
 % cat at selecte magnitude threshold
-l = newt2.Magnitude < valm1;
+l = ZG.newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
 ZG.hold_state2=true;
@@ -55,8 +55,8 @@ if (valeg2 < 0)
     CO = str2double(answer{1});
 end
 
-paramc1 = (newt2.Magnitude >= valm1);
-pcat = newt2(paramc1,:);
+paramc1 = (ZG.newt2.Magnitude >= valm1);
+pcat = ZG.newt2(paramc1,:);
 
 lt = pcat(:,3) >= valtm1;
 bpcat = pcat(lt,:);
@@ -86,7 +86,7 @@ if ~(isnan(pv))
     end
     disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
     disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-    events_used = sum(newt2(paramc1,3) > maepi(:,3) + cv/365);
+    events_used = sum(ZG.newt2(paramc1,3) > maepi(:,3) + cv/365);
     disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
     disp(['tmin = ' num2str(tmin)]);
     disp(['tmax = ' num2str(tmax)]);
@@ -220,7 +220,7 @@ end
 te = text(0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bold','FontSize',12,'units','norm');
 
 %end % end of plot fig
-% reset newt2;
+% reset ZG.newt2;
 
 newt2 = nn2;
 

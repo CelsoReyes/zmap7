@@ -2,10 +2,10 @@
 ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
-l = newt2.Date.Hour >=7 & newt2.Date.Hour <=18;
-day = newt2(l,:);
+l = ZG.newt2.Date.Hour >=7 & ZG.newt2.Date.Hour <=18;
+day = ZG.newt2(l,:);
 
-nig = newt2;
+nig = ZG.newt2;
 nig(l,:) = [];
 
 newt2 = day;

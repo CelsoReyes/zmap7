@@ -5,7 +5,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 think
-tmp = [newt2(:,10:12)];
+tmp = [ZG.newt2(:,10:12)];
 do = ['save ' ZmapGlobal.Data.out_dir 'data.inp tmp -ascii'];
 err =  ['Error - could not save file ' ZmapGlobal.Data.out_dir 'data.inp - permission?'];
 err2 = ['errordlg(err);return'];
@@ -34,7 +34,7 @@ eval(comm)
 comm = ['load ' ZmapGlobal.Data.out_dir 'tmpout2.dat'];
 eval(comm)
 
-%l = newt2(:,length(newt2(1,:)));
+%l = ZG.newt2(:,length(ZG.newt2(1,:)));
 %a(:,10:13) = [];
 %a = [a  tmpout2  l tmp];
 

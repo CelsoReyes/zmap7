@@ -20,8 +20,8 @@ switch(do)
                 lopa = [path1 file1];
                 do = ['load(lopa)'];
                 eval(do,'disp(''Error lodaing data! Are they in the right *.mat format??'')');
-                if max(a.Date) < 100;
-                    a.Date = a.Date+1900;
+                if max(ZG.a.Date) < 100;
+                    ZG.a.Date = ZG.a.Date+1900;
                     errdisp = ...
                         ['The catalog dates appear to be 2 digit.    '
                         'Action taken: added 1900 for Y2K compliance'];
@@ -30,9 +30,9 @@ switch(do)
                 end
                 %R calculate time in decimals and substitute in column 3 of file  "a"
                 if length(a(1,:))== 7
-                    a.Date = decyear(a(:,3:5));
+                    ZG.a.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    a.Date = decyear(a(:,[3:5 8 9]));
+                    ZG.a.Date = decyear(a(:,[3:5 8 9]));
                 end
 
                 nie = a(:,:);
@@ -44,8 +44,8 @@ switch(do)
                 catch ME
                     error_handler(ME, 'Error loading data! Are they in the right *.mat format?');
                 end
-                if max(a.Date) < 100
-                    a.Date = a.Date+1900;
+                if max(ZG.a.Date) < 100
+                    ZG.a.Date = ZG.a.Date+1900;
                     errdisp = ...
                         ['The catalog dates appear to be 2 digit.    '
                         'Action taken: added 1900 for Y2K compliance'];
@@ -54,9 +54,9 @@ switch(do)
                 end
                 %R calculate time in decimals and substitute in column 3 of file  "a"
                 if length(a(1,:))== 7
-                    a.Date = decyear(a(:,3:5));
+                    ZG.a.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    a.Date = decyear(a(:,[3:5 8 9]));
+                    ZG.a.Date = decyear(a(:,[3:5 8 9]));
                 end
 
                 jm = a(:,:);
@@ -91,7 +91,7 @@ switch(do)
         for i = 1:length(jm)
             dt = abs(nie(:,3) - jm(i,3));
             xa0 = jm(i,1);     ya0 = jm(i,2);
-            di = sqrt(((nie(:,1)-xa0)*cos(pi/180*ya0)*111).^2 + ((nie(:,2)-ya0)*111).^2);
+            di = sqrt(((nie(:,1)-xa0)*cosd(ya0)*111).^2 + ((nie(:,2)-ya0)*111).^2);
             f = find(dt <= timax/(365*24*60) & di <= dimax);
             if rem(i,100) == 0;disp([' Percent completed: '  num2str(i/length(jm)*100)]) ; end
             if length(f) == 1
@@ -215,7 +215,7 @@ switch(do)
         yb0 = nie(id(:,2),2);
         za0 = jm(id(:,1),7);
         zb0 = nie(id(:,2),7);
-        di = sqrt(((xb0 -xa0)*cos(pi/180*36)*111).^2 + ((yb0-ya0)*111).^2);
+        di = sqrt(((xb0 -xa0)*cosd(36)*111).^2 + ((yb0-ya0)*111).^2);
 
 
         p2 = plot(xa0,ya0,'or');

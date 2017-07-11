@@ -17,7 +17,7 @@ hodis = fullfile(hodi, 'external');
 do = ['cd  ' hodis ]; eval(do)
 
 % prepare the focal; mechnism in Gephard format ...
-tmp = [newt2(:,10:12) ];
+tmp = [ZG.newt2(:,10:12) ];
 
 try
     save data.inp tmp -ascii
@@ -124,7 +124,7 @@ end
 disp('done...! ')
 
 % Now plot the results
-n = newt2.Count;
+n = ZG.newt2.Count;
 load out95
 f2 = out95;
 fit = min(out95(:,9));

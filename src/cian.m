@@ -7,7 +7,7 @@ for i = 1:j
     m = [];
     for t = 1:length(tmp(:,1) )
         xa0 = tmp(t,1);ya0 = tmp(t,2);
-        l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+        l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
         [s,is] = sort(l);
         m = [m ; is(1:ni,1)];
     end  % for t

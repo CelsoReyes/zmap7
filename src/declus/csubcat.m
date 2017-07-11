@@ -3,7 +3,7 @@
 %  name map window
 %
 
-global newccat mapp decc par1 dep1 dep2 dep3 ms6 ty1 ty2 ty3
+global newccat mapp decc par1 dep1 dep2 dep3 ZG.ms6 ty1 ty2 ty3
 global  name minde maxde maxma2 minma2
 
 
@@ -12,17 +12,17 @@ zmap_message_center.set_info('Message','Plotting Seismicity Map(Cluster) ....');
 storedcat=original;
 %set catalog to the original catalog used at declustering
 if isempty(newccat)
-    a=original;
+    ZG.a=original;
     newccat=original;
 else
-    a=newccat;
+    ZG.a=newccat;
 end
 
 % For time and magnitude cut window
-minma2=min(a.Magnitude);
-maxma2=max(a.Magnitude);
-minde=min(a.Depth);
-maxde=max(a.Depth);
+minma2=min(ZG.a.Magnitude);
+maxma2=max(ZG.a.Magnitude);
+minde=min(ZG.a.Depth);
+maxde=max(ZG.a.Depth);
 
 % Find out of figure already exists
 %
@@ -58,13 +58,13 @@ if newMapWindowFlag
     symbolmenu = uimenu('Label',' Symbol ');
     SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
     TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
-    uimenu(SizeMenu,'Label','3','Callback','ms6 =3;eval(cal6)');
-    uimenu(SizeMenu,'Label','6','Callback','ms6 =6;eval(cal6)');
-    uimenu(SizeMenu,'Label','9','Callback','ms6 =9;eval(cal6)');
-    uimenu(SizeMenu,'Label','12','Callback','ms6 =12;eval(cal6)');
-    uimenu(SizeMenu,'Label','14','Callback','ms6 =14;eval(cal6)');
-    uimenu(SizeMenu,'Label','18','Callback','ms6 =18;eval(cal6)');
-    uimenu(SizeMenu,'Label','24','Callback','ms6 =24;eval(cal6)');
+    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal6)');
+    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal6)');
+    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal6)');
+    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal6)');
+    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal6)');
+    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal6)');
+    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal6)');
 
     uimenu(TypeMenu,'Label','dot',...
         'Callback','ty1=''.'';ty2=''.'';ty3=''.'';eval(cal6)');
@@ -83,9 +83,9 @@ if newMapWindowFlag
         'Callback','ZG=ZmapGlobal.Data;ZG.mainmap_plotby=''depth'';csubcat');
 
     cal6 = ...
-        [ 'set(deplo1,''MarkerSize'',ms6,''LineStyle'',ty1,''visible'',''on'');',...
-        'set(deplo2,''MarkerSize'',ms6,''LineStyle'',ty2,''visible'',''on'');',...
-        'set(deplo3,''MarkerSize'',ms6,''LineStyle'',ty3,''visible'',''on'');' ];
+        [ 'set(deplo1,''MarkerSize'',ZG.ms6,''LineStyle'',ty1,''visible'',''on'');',...
+        'set(deplo2,''MarkerSize'',ZG.ms6,''LineStyle'',ty2,''visible'',''on'');',...
+        'set(deplo3,''MarkerSize'',ZG.ms6,''LineStyle'',ty3,''visible'',''on'');' ];
 
     cufi = gcf;
     options = uimenu('Label',' Select ');
@@ -96,7 +96,7 @@ if newMapWindowFlag
     uimenu(options,'Label','Select new parameters',...
         'Callback','cpara(1);');
     uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
-        'Callback','h1 = gca;newt2 = a; stri = ''Polygon'';decc=0;clkeysel');
+        'Callback','h1 = gca;ZG.newt2 = a; stri = ''Polygon'';decc=0;clkeysel');
 
     uimenu(options,'Label','Select EQ in Polygon ',...
         'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf;decc=0;clpickp(4)');
@@ -109,7 +109,7 @@ if newMapWindowFlag
         'Callback','delete(gca);delete(gca);delete(gca);delete(gca);csubcat');
 
     uimenu(op2,'Label','Reset Catalog ',...
-        'Callback','think;clear plos1 mark1 ; a = original; newccat = original; newt2= original;csubcat');
+        'Callback','think;clear plos1 mark1 ; ZG.a=original; newccat = original; ZG.newt2= original;csubcat');
     uimenu(op2,'label','Declustered catalog',...
          'Callback','newccat=buildcat(2);csubcat');
     catSave =...
@@ -123,16 +123,16 @@ if newMapWindowFlag
 
     op3 = uimenu('Label','Tools');
     uimenu(op3,'Label','Plot Cumulative Number ',...
-        'Callback','stri = ''Polygon''; newt2 = a; newcat = a; ctimeplot');
+        'Callback','stri = ''Polygon''; ZG.newt2 = a; ZG.newcat = a; ctimeplot');
 
     uimenu(op3,'Label','Create Cross-section ',...
         'Callback','lammap');
     uimenu(op3,'Label','3 D view ',...
         'Callback','plot3d');
     uimenu(op3,'Label','Time Depth Plot ',...
-        'Callback',@(~,~)TimeDepthPlotter.plot(newt2));
+        'Callback',@(~,~)TimeDepthPlotter.plot(ZG.newt2));
     uimenu(op3,'Label','Time magnitude Plot ',...
-        'Callback',@(~,~)TimeMagnitudePlotter.plot(newt2));
+        'Callback',@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
     uimenu(op3,'Label','Decluster the catalog',...
         'Callback','inpudenew;');
     uimenu(op3,'Label','get coordinates with Cursor',...
@@ -145,11 +145,11 @@ if newMapWindowFlag
     op5 = uimenu(op3,'Label','Histograms');
 
     uimenu(op5,'Label','Magnitude',...
-        'Callback','global histo;hisgra(a.Magnitude,stt1);');
+        'Callback','global histo;hisgra(ZG.a.Magnitude,stt1);');
     uimenu(op5,'Label','Depth',...
-        'Callback','global histo;hisgra(a.Depth,stt2);');
+        'Callback','global histo;hisgra(ZG.a.Depth,stt2);');
     uimenu(op5,'Label','Time',...
-        'Callback','global histo;hisgra(a.Date,''Time '');');
+        'Callback','global histo;hisgra(ZG.a.Date,''Time '');');
 end
 %end;    if figure exist
 
@@ -165,10 +165,10 @@ hold off
 
 %set(set_ni3,'String',num2str(ni));
 % find min and Maximum axes points
-s1 = max(a.Longitude);
-s2 = min(a.Longitude);
-s3 = max(a.Latitude);
-s4 = min(a.Latitude);
+s1 = max(ZG.a.Longitude);
+s2 = min(ZG.a.Longitude);
+s3 = max(ZG.a.Latitude);
+s4 = min(ZG.a.Latitude);
 %ni = 100;
 orient landscape
 set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
@@ -179,8 +179,8 @@ axes('position',rect)
 %
 
 
-t0b = min(a.Date);
-n = a.Count;
+t0b = min(ZG.a.Date);
+n = ZG.a.Count;
 teb = a(n,3) ;
 tdiff =round(teb - t0b)*365/par1;
 
@@ -195,24 +195,24 @@ hold on
 %plot earthquakes according to depth
 switch 
 case 'depth'
-    deplo1 =plot(a(a.Depth<=dep1,1),a(a.Depth<=dep1,2),'.b');
-    set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-    deplo2 =plot(a(a.Depth<=dep2&a.Depth>dep1,1),a(a.Depth<=dep2&a.Depth>dep1,2),'.g');
-    set(deplo2,'MarkerSize',ms6,'Marker',ty2,'era','normal');
-    deplo3 =plot(a(a.Depth<=dep3&a.Depth>dep2,1),a(a.Depth<=dep3&a.Depth>dep2,2),'.r');
-    set(deplo3,'MarkerSize',ms6,'Marker',ty3,'era','normal')
+    deplo1 =plot(a(ZG.a.Depth<=dep1,1),a(ZG.a.Depth<=dep1,2),'.b');
+    set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1,'era','normal')
+    deplo2 =plot(a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,1),a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,2),'.g');
+    set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2,'era','normal');
+    deplo3 =plot(a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,1),a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,2),'.r');
+    set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3,'era','normal')
     ls1 = sprintf('Depth < %3.1f km',dep1);
     ls2 = sprintf('Depth < %3.1f km',dep2);
     ls3 = sprintf('Depth < %3.1f km',dep3);
 
 %plot earthquakes according time
 case  'tim'
-    deplo1 =plot(a(a.Date<=tim2&a.Date>=tim1,1),a(a.Date<=tim2&a.Date>=tim1,2),'.b');
-    set(deplo1,'MarkerSize',ms6,'Marker',ty1,'era','normal')
-    deplo2 =plot(a(a.Date<=tim3&a.Date>tim2,1),a(a.Date<=tim3&a.Date>tim2,2),'.g');
-    set(deplo2,'MarkerSize',ms6,'Marker',ty2);
-    deplo3 =plot(a(a.Date<=tim4&a.Date>tim3,1),a(a.Date<=tim4&a.Date>tim3,2),'.r');
-    set(deplo3,'MarkerSize',ms6,'Marker',ty3)
+    deplo1 =plot(a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,1),a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,2),'.b');
+    set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1,'era','normal')
+    deplo2 =plot(a(ZG.a.Date<=tim3&ZG.a.Date>tim2,1),a(ZG.a.Date<=tim3&ZG.a.Date>tim2,2),'.g');
+    set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
+    deplo3 =plot(a(ZG.a.Date<=tim4&ZG.a.Date>tim3,1),a(ZG.a.Date<=tim4&ZG.a.Date>tim3,2),'.r');
+    set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3)
 
     ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
     ls2 = sprintf('%3.1f < t < %3.1f ',tim2,tim3);

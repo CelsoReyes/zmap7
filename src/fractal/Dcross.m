@@ -10,7 +10,7 @@ global no1 bo1 inb1 inb2 eq0p
 
 % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
 % D = [x,y,z ]
-Da = [eq0p(1,:)' eq0p(2,:)' a.Date a.Date.Month a.Date.Day a.Magnitude a.Depth];
+Da = [eq0p(1,:)' eq0p(2,:)' ZG.a.Date ZG.a.Date.Month ZG.a.Date.Day ZG.a.Magnitude ZG.a.Depth];
 Da0 = find(Da(:,7) > -2.99);
 Da = Da.subset(Da0);
 clear Da0;
@@ -263,10 +263,10 @@ if sel == 'ca'
 
 
         %estimate the completeness and b-value, and take the zero depth events away.
-        %newt2 = [b.Longitude b.Latitude zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) b.Date];
+        %ZG.newt2 = [b.Longitude b.Latitude zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) zeros(size(b,1),1) b.Date];
         %
-        newt2  = b;
-        E = newt2;
+        ZG.newt2  = b;
+        E = ZG.newt2;
 
         if length(b) >= ni  % enough events?
 
@@ -365,7 +365,7 @@ if sel == 'lo'
         old = re3;
 
         nlammap
-        [xsecx xsecy,  inde] =mysect(a.Latitude',a.Longitude',a.Depth,wi,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
         plot(newgri(:,1),newgri(:,2),'+k','era','back')

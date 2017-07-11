@@ -1,8 +1,8 @@
 % translating.m
 
 report_this_filefun(mfilename('fullpath'));
-if isempty('newcat')== 1
-    newcat=a;
+if isempty('ZG.newcat')== 1
+    ZG.newcat=a;
 end
 
 % call
@@ -21,10 +21,10 @@ NuBins=length(xt);
 if way=='unif'
     BigCatalog=sort(rand(100000,1));
 else % if way=='real'
-    whichs=ceil(length(newcat)*rand(100000,1)); % numbers in whichs from 1 to length(newcat)
+    whichs=ceil(length(ZG.newcat)*rand(100000,1)); % numbers in whichs from 1 to length(ZG.newcat)
     BigCatalog(100000,1)=0;
     for i=1:100000
-        BigCatalog(i,1)=newcat(whichs(i),3);    % ith element of BigCatalog is random out of newcat
+        BigCatalog(i,1)=ZG.newcat(whichs(i),3);    % ith element of BigCatalog is random out of ZG.newcat
     end
     BigCatalog=sort(BigCatalog);
     BigCatalog=(BigCatalog-min(BigCatalog))/(max(BigCatalog)-min(BigCatalog));

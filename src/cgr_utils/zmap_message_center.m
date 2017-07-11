@@ -272,7 +272,7 @@ function h = create_message_figure()
             'String','USE (and map)',...
             'Units','normalized',...
             'Position',[0.65 0.05 .3 .3],...
-            'Callback','a=newcat;zmap_message_center.update_catalog();update(mainmap())',...
+            'Callback','ZG=ZmapGlobal.Data; ZG.a=ZG.newcat;zmap_message_center.update_catalog();update(mainmap())',...
             'TooltipString','Makes this catalog the active catalog',...
             'Tag','zmap_sel_cat_usebutton');
         
@@ -290,15 +290,15 @@ function h = create_message_figure()
 end
 
 function do_catalog_overview(s,~)
-    global a
-    a = catalog_overview(a);
+    global ZG
+    ZG.a = catalog_overview(ZG.a);
     zmap_message_center.update_catalog();
     %update_current_catalog_pane(s);
 end
 
 function do_selected_catalog_overview(s,~)
-    global newcat
-    newcat = catalog_overview(newcat);
+    global ZG
+    ZG.newcat = catalog_overview(ZG.newcat);
     zmap_message_center.update_catalog();
     %update_current_catalog_pane(s);
     %update_selected_catalog_pane(s);
@@ -313,15 +313,15 @@ function set_editbutton_enable(val)
     h.Enable = val;
 end
 function update_current_catalog_pane(~,~)
-    global a
+    global ZG
     
     
-    if ~isempty(a)
-        if isa(a,'ZmapCatalog')
-            mycat = a;
-        elseif isnumeric(a) && size(a,2)>=9
+    if ~isempty(ZG.a)
+        if isa(ZG.a,'ZmapCatalog')
+            mycat = ZG.a;
+        elseif isnumeric(ZG.a) && size(ZG.a,2)>=9
             % old style zmap array
-            mycat=ZmapCatalog(a,'a');
+            mycat=ZmapCatalog(ZG.a,'a');
         else
             % no map loaded, apparently
             warning('current catalog doesn''t seem to contain the right kind of data');
@@ -345,15 +345,15 @@ function update_current_catalog_pane(~,~)
 end
 
 function update_selected_catalog_pane(~,~)
-    global newcat
+    global ZG
     
     
-    if ~isempty(newcat)
-        if ~isa(newcat,'ZmapCatalog')
-            newcat=ZmapCatalog(newcat,'newcat');
+    if ~isempty(ZG.newcat)
+        if ~isa(ZG.newcat,'ZmapCatalog')
+            ZG.newcat=ZmapCatalog(ZG.newcat,'ZG.newcat');
         end
         h = findall(0,'tag','zmap_sel_cat_summary');
-        h.String = newcat.summary('simple');
+        h.String = ZG.newcat.summary('simple');
     else
         h = findall(0,'tag','zmap_sel_cat_summary');
         h.String = 'No subset selected';

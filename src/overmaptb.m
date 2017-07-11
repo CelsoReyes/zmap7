@@ -147,26 +147,26 @@ switch (bc)
             eqontop=1
         end
 
-        %   if inp == 1 ; ploe = scatterm(a.Latitude,a.Longitude,8,'r','filled'); end
+        %   if inp == 1 ; ploe = scatterm(ZG.a.Latitude,ZG.a.Longitude,8,'r','filled'); end
         if inp == 1
-            ploe=plotm(a.Latitude,a.Longitude,'wo');
+            ploe=plotm(ZG.a.Latitude,ZG.a.Longitude,'wo');
             set(ploe,'LineWidth',0.1,'MarkerSize',2,...
                 'MarkerFaceColor','none','MarkerEdgeColor','w')
             zdatam(handlem('allline'),max(max(tmap)))
 
         elseif inp == 2
-            ploe=plotm(a.Latitude,a.Longitude,'ro');
+            ploe=plotm(ZG.a.Latitude,ZG.a.Longitude,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',3,...
                 'MarkerFaceColor','w','MarkerEdgeColor','k')
             zdatam(handlem('allline'),max(max(tmap)))
 
         elseif inp == 3
-            ploe=plot3m(a.Latitude,a.Longitude,depq+25,'ro');
+            ploe=plot3m(ZG.a.Latitude,ZG.a.Longitude,depq+25,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',2,...
                 'MarkerFaceColor','w','MarkerEdgeColor','r')
 
         elseif inp == 4
-            ploe=plot3m(a.Latitude,a.Longitude,depq+25,'ro');
+            ploe=plot3m(ZG.a.Latitude,ZG.a.Longitude,depq+25,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',3,...
                 'MarkerFaceColor','w','MarkerEdgeColor','k')
         end

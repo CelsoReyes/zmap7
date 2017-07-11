@@ -44,7 +44,7 @@ rect = [0.1,  0.20, 0.75, 0.65];
 axes('position',rect);
 
 
-plot(a.Longitude,a.Latitude,'k.','Markersize',2)
+plot(ZG.a.Longitude,ZG.a.Latitude,'k.','Markersize',2)
 hold on
 lec = max(clus);
 

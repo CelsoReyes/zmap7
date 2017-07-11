@@ -14,7 +14,7 @@ report_this_filefun(mfilename('fullpath'));
 global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
-valm1 = min(a.Magnitude);
+valm1 = min(ZG.a.Magnitude);
 prf = NaN;
 if sel == 'in'
     % Set the grid parameter
@@ -30,13 +30,13 @@ if sel == 'in'
     fMaxRadius = 5;
 
     % cut catalog at mainshock time:
-    l = a.Date > maepi(1,3);
-    a = a.subset(l);
+    l = ZG.a.Date > maepi(1,3);
+    ZG.a=ZG.a.subset(l);
 
     % cat at selecte magnitude threshold
-    l = a.Magnitude < valm1;
+    l = ZG.a.Magnitude < valm1;
     a(l,:) = [];
-    newt2 = a;
+    ZG.newt2 = a;
 
     ZG.hold_state2=true;
     timeplot
@@ -328,8 +328,8 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -346,7 +346,7 @@ if sel == 'ca'
     %
     % overall b-value
     %    [bv magco stan av me mer me2,  pr] =  bvalca3(a,inb1,inb2);
-    %    bo1 = bv; no1 = a.Count;
+    %    bo1 = bv; no1 = ZG.a.Count;
 
     % loop over all points
     for i= 1:length(newgri(:,1))
@@ -357,7 +357,7 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort with distance
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -365,7 +365,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             % Use Radius to determine grid node catalogs
             l3 = l <= ra;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distance
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
             vDist = sort(l(l3));
             fMaxDist = max(vDist);

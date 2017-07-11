@@ -6,8 +6,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
-t0b = min(a.Date);
-teb = max(a.Date);
+t0b = min(ZG.a.Date);
+teb = max(ZG.a.Date);
 tdiff = (teb - t0b)*365;
 
 % if two mainshocks arte define, use one only ..
@@ -15,12 +15,12 @@ if maepi.Count > 1 ;
     maepi = maepi.subset(1) ;
 end
 % define maepi if not exist
-l = find(newt2.Magnitude == max(newt2.Magnitude));
+l = find(ZG.newt2.Magnitude == max(ZG.newt2.Magnitude));
 if ~exist('maepi') ; 
-    maepi = newt2.subset(l);
+    maepi = ZG.newt2.subset(l);
 end
 if isempty('maepi') ; 
-    maepi = newt2.subset(l);
+    maepi = ZG.newt2.subset(l);
 end
 
 

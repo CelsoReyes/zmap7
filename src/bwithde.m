@@ -10,8 +10,8 @@ ni2 = inputdlg('Number of events in each window?','Input',1,def);
 l = ni2{:};
 ni = str2double(l);
 think
-[s,is] = sort(newt2.Depth);
-newt1 = newt2(is(:,1),:) ;
+[s,is] = sort(ZG.newt2.Depth);
+newt1 = ZG.newt2(is(:,1),:) ;
 watchon;
 
 for tt = 1:ni/4:length(newt1)-ni
@@ -87,7 +87,7 @@ set(gca,'box','on',...
     'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
 
 bax = gca;
-strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(newt2.Magnitude)) ];
+strib = [name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(ZG.newt2.Magnitude)) ];
 set(gca,'XTickLabels',[])
 ylabel('b(LS)')
 %xlabel('Depth in [km]')

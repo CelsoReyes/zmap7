@@ -176,8 +176,8 @@ if selt == 'ca'
     hold on
 
     if co == 'w' ; co = 'k'; end
-    li = m_plot(a.Longitude,a.Latitude);
-    set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ms6,'color',co)
+    li = m_plot(ZG.a.Longitude,ZG.a.Latitude);
+    set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ZG.ms6,'color',co)
 
     if exist('vo', 'var')
         if isempty(vo) ==  0

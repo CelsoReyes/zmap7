@@ -13,8 +13,8 @@ switch ZmapGlobal.Data.mainmap_plotby
 case 'mag'
     % creates a dialog box to input some parameters
     %
-    dep3 = max(a.Magnitude);
-    dep1 = min(a.Magnitude);
+    dep3 = max(ZG.a.Magnitude);
+    dep1 = min(ZG.a.Magnitude);
     dep2 = (dep1+dep3)*2/3;
     dep1 = (dep1+dep3)*1/3;
 
@@ -39,9 +39,9 @@ case 'depth'
     % creates a dialog box to input some parameters
     %
     % divide depths into 3 categories
-    dep1 = 0.3*max(a.Depth);
-    dep2 = 0.6*max(a.Depth);
-    dep3 = max(a.Depth);
+    dep1 = 0.3*max(ZG.a.Depth);
+    dep2 = 0.6*max(ZG.a.Depth);
+    dep3 = max(ZG.a.Depth);
 
     dlg_title='Legend Depth Breaks';
     prompt={'First depth division (shallowest, km):',...

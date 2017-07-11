@@ -59,7 +59,7 @@ for nNode_ = 1:nNumberNodes_
   if (nGriddingMode == 0) | (nGriddingMode == 1)  % Fixed radius or fixed number
     % Calculate distance from center point
     if bMap
-      vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cos(pi/180*fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2);
+      vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2);
     else
       vDistances_ = sqrt(((vXSecX_ - fX_)).^2 + ((vXSecY_ - fY_)).^2);
     end
@@ -97,7 +97,7 @@ for nNode_ = 1:nNumberNodes_
     caNodeIndices{nNode_} = find(vSel_ == 1);
   elseif nGriddingMode == 3     % Spherical grid node samples with constant no of events
       if bMap
-          vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cos(pi/180*fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2 + (mCatalog(:,7)-fZ_).^2);
+          vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2 + (mCatalog(:,7)-fZ_).^2);
       end
       if nGriddingMode == 3 % Fixed number
           if length(mCatalog(:,1)) == 0

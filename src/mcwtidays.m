@@ -10,12 +10,12 @@ ni = str2double(l);
 BV = [];
 think
 
-for i = 1:ni/5:length(newt2)-ni
-    % [bv magco,  stan] =  bvalcalc(newt2(i:i+ni,:));
-    [bv magco stan ] =  bvalca2(newt2(i:i+ni,:));
+for i = 1:ni/5:length(ZG.newt2)-ni
+    % [bv magco,  stan] =  bvalcalc(ZG.newt2(i:i+ni,:));
+    [bv magco stan ] =  bvalca2(ZG.newt2(i:i+ni,:));
 
-    bv2 = [bv2 ; magco newt2(i+ni/2,3)];
-    BV = [BV ; magco newt2(i,3) ; magco newt2(i+ni,3) ; inf inf];
+    bv2 = [bv2 ; magco ZG.newt2(i+ni/2,3)];
+    BV = [BV ; magco ZG.newt2(i,3) ; magco ZG.newt2(i+ni,3) ; inf inf];
 
 end
 
@@ -46,8 +46,8 @@ delete(gca)
 delete(gca)
 axis off
 
-i  = min(find(newt2.Magnitude ==  max(newt2.Magnitude)));
-maepi = newt2(i,:);
+i  = min(find(ZG.newt2.Magnitude ==  max(ZG.newt2.Magnitude)));
+maepi = ZG.newt2(i,:);
 
 rect = [0.15 0.30 0.7 0.45];
 axes('position',rect)
@@ -91,7 +91,7 @@ for  m = max(bv2(:,1)):-0.1:min(bv2(:,1))
     end
 end
 
-nt(1,2) = min(newt2.Date)
+nt(1,2) = min(ZG.newt2.Date)
 i = max(find((ms-min(ms) > 0.01)));
 % nt(con,2) = bv2(i+1,2);
 

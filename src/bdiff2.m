@@ -1,5 +1,5 @@
 % Script: bdiff2
-% Formerly : function  bdiff(newcat)
+% Formerly : function  bdiff(ZG.newcat)
 % This routine estimates the b-value of a curve automatically
 % The b-value curve is differenciated and the point
 % of the magnitude of completeness is marked. The b-value will be calculated
@@ -156,14 +156,14 @@ if selt == 'ca'
         add_menu_divider();
         options = uimenu('Label','ZTools');
         uimenu(options,'Label','Estimate recurrence time/probability', 'Callback','plorem');
-        uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(newcat)');
-        uimenu(options,'Label','Plot time series', 'Callback','newcat = newt2; timeplot');
+        uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(ZG.newcat)');
+        uimenu(options,'Label','Plot time series', 'Callback','ZG.newcat = ZG.newt2; timeplot');
         uimenu(options,'Label','Do not show discrete curve', 'Callback','delete(pl1)');
         uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
     end % existflag
 
-    maxmag = ceil(10*max(newt2.Magnitude))/10;
-    mima = min(newt2.Magnitude);
+    maxmag = ceil(10*max(ZG.newt2.Magnitude))/10;
+    mima = min(ZG.newt2.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
 
@@ -177,7 +177,7 @@ if selt == 'ca'
     %
     %%
 
-    [bval,xt2] = hist(newt2.Magnitude,(mima:0.1:maxmag));
+    [bval,xt2] = hist(ZG.newt2.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -230,8 +230,8 @@ if selt == 'ca'
     %% SET DEFAULTS TO BE ADDED INTERACTIVLY LATER
     Nmin = 10;
 
-    bvs=newt2;
-    b=newt2;
+    bvs=ZG.newt2;
+    b=ZG.newt2;
 
     %% enough events??
     if bvs.Count >= Nmin
@@ -374,7 +374,7 @@ if selt == 'ca'
 
     if hold_state
         % calculate the probability that the two distributins are differnt
-        %l = newt2.Magnitude >=  M1b(1);
+        %l = ZG.newt2.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;

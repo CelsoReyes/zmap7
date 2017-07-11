@@ -6,7 +6,7 @@ function [dura, foretime,forepercent] = clusdura(j)
     % Last modification 9/95
     %
 
-    global newcat bg k1 clust cluslength eqtime check1
+    global ZG.newcat bg k1 clust cluslength eqtime check1
     check1=j;
     %duration of the cluster
     dura=eqtime(diag(clust(cluslength(j),j)))-eqtime(clust(1,j));

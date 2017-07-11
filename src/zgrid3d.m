@@ -20,7 +20,7 @@ if sel == 'in'
     R = 10000;
 
 
-    def = {'0.1','0.1',num2str(dz),num2str(max(a.Depth)), num2str(min(a.Depth))};
+    def = {'0.1','0.1',num2str(dz),num2str(max(ZG.a.Depth)), num2str(min(ZG.a.Depth))};
 
     tit ='Three dimesional z-value analysis';
     prompt={...
@@ -62,8 +62,8 @@ if sel == 'ca'
     zvg = ones(length(gx),length(gy),length(gz),300)*nan;
     ram  = ones(length(gx),length(gy),length(gz),300)*nan;
 
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -91,7 +91,7 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort wrt distance
-        di = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + ((a.Depth - z)).^2 ) ;
+        di = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + ((ZG.a.Depth - z)).^2 ) ;
         [s,is] = sort(di);
 
         l2 = find(is <= 300);

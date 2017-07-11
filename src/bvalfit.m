@@ -32,17 +32,17 @@ if ic == 0
     set(bvfig,'Units','normalized','NumberTitle','off','Name','b-value curves');
     set(bvfig,'pos',[ 0.435  0.3 0.5 0.5])
 
-    if isempty(newcat)
-        newcat = a;
+    if isempty(ZG.newcat)
+        ZG.newcat = a;
     end
-    maxmag = max(newcat.Magnitude);
-    mima = min(newcat.Magnitude);
+    maxmag = max(ZG.newcat.Magnitude);
+    mima = min(ZG.newcat.Magnitude);
     if mima > 0
         mima = 0 ;
     end
-    t0b = min(newcat.Date);
-    teb = max(newcat.Date);
-    n = newcat.Count;
+    t0b = min(ZG.newcat.Date);
+    teb = max(ZG.newcat.Date);
+    n = ZG.newcat.Count;
     tdiff = round(teb - t0b);
 
     % number of mag units
@@ -64,22 +64,22 @@ if ic == 0
     td12 = t2p(1) - t1p(1);
     td34 = t4p(1) - t3p(1);
 
-    l = newcat.Date > t1p(1) & newcat.Date < t2p(1) ;
-    backg =  newcat.subset(l);
+    l = ZG.newcat.Date > t1p(1) & ZG.newcat.Date < t2p(1) ;
+    backg =  ZG.newcat.subset(l);
     [bval,xt2] = hist(backg(:,6),(mima:0.1:maxmag));
     bval = bval/td12;                      % normalization
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
-    [cumux, xt] = hist(newcat(l,3),t1p(1):par1/365:t2p(1));
+    [cumux, xt] = hist(ZG.newcat(l,3),t1p(1):par1/365:t2p(1));
 
-    l = newcat.Date > t3p(1) & newcat.Date < t4p(1) ;
-    foreg = newcat.subset(l);
+    l = ZG.newcat.Date > t3p(1) & ZG.newcat.Date < t4p(1) ;
+    foreg = ZG.newcat.subset(l);
     bval2 = histogram(foreg(:,6),(mima:0.1:maxmag));
     bval2 = bval2/td34;                     % normallization
     bvalsum2 = cumsum(bval2);
     bvalsum4 = cumsum(bval2(length(bval2):-1:1));
-    [cumux2, xt] = hist(newcat(l,3),t3p(1):par1/365:t4p(1));
+    [cumux2, xt] = hist(ZG.newcat(l,3),t3p(1):par1/365:t4p(1));
     mean1 = mean(cumux);
     mean2 = mean(cumux2);
     var1 = cov(cumux);

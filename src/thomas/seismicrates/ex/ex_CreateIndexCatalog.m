@@ -55,7 +55,7 @@ for nNode_ = 1:nNumberNodes_
         % Calculate distance from center point
         if bMap
 %             vDistances_=deg2km(distance(mCatalog(:,2),mCatalog(:,1),ones(size(mCatalog,1),1)*fY_,ones(size(mCatalog,1),1)*fX_));
-            vDistances_ = sqrt(   ((mCatalog(:,1)-fX_)*cos(pi/180*fY_)*111).^2   +     ((mCatalog(:,2)-fY_)*111).^2)  ;
+            vDistances_ = sqrt(   ((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2   +     ((mCatalog(:,2)-fY_)*111).^2)  ;
         else
             vDistances_ = sqrt(((vXSecX_ - fX_)).^2 + ((vXSecY_ - fY_)).^2);
         end

@@ -2,14 +2,14 @@ function selectp(in_or_out)
     %  This .m file selects the earthquakes within a polygon
     %  and plots them. Sets "a" equal to the catalogue produced after the
     %  general parameter selection. Operates on "storedcat", replaces "a"
-    %  with new data and makes "a" equal to newcat
+    %  with new data and makes "a" equal to ZG.newcat
     %
     %   operates on main map window
     % plot tags:
     %  'poly_selected_events' : earthquakes in/out of polygon
     %  'mouse_points_overlay' : polygon outline
     
-    global a newcat  newt2
+    global ZG
     echo on
     % ___________________________________________________________
     %  Please use the left mouse button or the cursor to select
@@ -20,10 +20,10 @@ function selectp(in_or_out)
     echo off
     report_this_filefun(mfilename('fullpath'));
     %zoom off
-    newt2 = [ ];           % reset catalogue variables
+    ZG.newt2 = [ ];           % reset catalogue variables
     %a=storedcat;              % uses the catalogue with the pre-selected main
     % general parameters
-    newcat = a;
+    ZG.newcat = ZG.a;
     
     delete(findobj('Tag','mouse_points_overlay'));
     delete(findobj('Tag','poly_selected_events'));
@@ -50,17 +50,17 @@ function selectp(in_or_out)
     if ~exist('in_or_out','var')
         in_or_out = 'inside';
     end
-    if isnumeric(a)
+    if isnumeric(ZG.a)
         error('old catalog');
     else
-        mask = polygon_filter(x,y, a.Longitude, a.Latitude, in_or_out);
-        a.addFilter(mask);
-        newt2 = a.getCropped();
-        a.clearFilter();
+        mask = polygon_filter(x,y, ZG.a.Longitude, ZG.a.Latitude, in_or_out);
+        ZG.a.addFilter(mask);
+        ZG.newt2 = ZG.a.getCropped();
+        ZG.a.clearFilter();
         
         % Plot of new catalog
         washeld=ishold(ax); hold(ax,'on');
-        MainInteractiveMap.plotOtherEvents(newt2,0,...
+        MainInteractiveMap.plotOtherEvents(ZG.newt2,0,...
             'Marker','.',...
             'LineStyle','none',...
             'MarkerEdgeColor','g',...
@@ -80,7 +80,7 @@ function selectp(in_or_out)
     defaultans = {'new_catalog'};
     sel_nm = inputdlg('Please provide a catalog name:','Name of Selected Catalog',1, defaultans);
     if ~isempty(sel_nm)
-        newt2.Name = sel_nm{1};
+        ZG.newt2.Name = sel_nm{1};
     end
     xy = [x y];
     
@@ -100,14 +100,14 @@ function selectp(in_or_out)
     
     %++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     %
-    %   The new catalog (newcat) with points only within the
+    %   The new catalog (ZG.newcat) with points only within the
     %   selected Polygon is created and resets the original
     %   "a" .
     disp(' The selected polygon was saved in the file polcor.dat')
     %
     %++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     
-    newcat = newt2;                   % resets newcat and newt2
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     
     timeplot
     

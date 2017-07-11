@@ -29,7 +29,7 @@ hold off;
 mNodeCatalog_ = params.mCatalog(params.caNodeIndices{nNodeGridPoint}, :);
 
 if (params.nGriddingMode == 1 && params.bMap == 1)
-    vDistances_ = sqrt(((mNodeCatalog_(:,1)-fXGridNode)*cos(pi/180*fYGridNode)*111).^2 + ((mNodeCatalog_(:,2)-fYGridNode)*111).^2);
+    vDistances_ = sqrt(((mNodeCatalog_(:,1)-fXGridNode)*cosd(fYGridNode)*111).^2 + ((mNodeCatalog_(:,2)-fYGridNode)*111).^2);
     vSel = (vDistances_ <= params.fRadius);
     fCheckDist = max(vDistances_(vSel, :));
     mNodeCatalog_=mNodeCatalog_(vSel,:);

@@ -244,8 +244,8 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running bdepth_ratio... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -264,15 +264,15 @@ if sel == 'ca'
 
     % sort by depth
 
-    % [s,is] = sort(a.Depth);
+    % [s,is] = sort(ZG.a.Depth);
     % adepth = a(is(:,1),:);
 
     % find row index of ratio midpoint
-    l = a.Depth >= top_zonet & a.Depth <  top_zoneb;
-    top_zone = a.subset(l);
+    l = ZG.a.Depth >= top_zonet & ZG.a.Depth <  top_zoneb;
+    top_zone = ZG.a.subset(l);
 
-    l = a.Depth >= bot_zonet & a.Depth <  bot_zoneb;
-    bot_zone = a.subset(l);
+    l = ZG.a.Depth >= bot_zonet & ZG.a.Depth <  bot_zoneb;
+    bot_zone = ZG.a.subset(l);
 
 
 
@@ -295,13 +295,13 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distanc  (from center point)
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distanc  (from center point)
             rd = ra;
         else
             % take first ni points
@@ -312,7 +312,7 @@ if sel == 'ca'
 
 
         %estimate the completeness and b-value
-        newt2 = b;
+        ZG.newt2 = b;
 
         % sort by depth
 
@@ -330,7 +330,7 @@ if sel == 'ca'
        if length(topb) >= Nmin  && length(botb) >= Nmin
 
             if inb1 == 3
-                newt2 = topb;
+                ZG.newt2 = topb;
                 mcperc_ca3;
                 l = topb(:,6) >= Mc90-0.05; magco = Mc90;
                 n1 = length(topb(l,:));
@@ -340,7 +340,7 @@ if sel == 'ca'
                 else  topbv = nan; topbv2 = nan, magco = nan; av = nan; topav2 = nan;
                     nobv = nobv + 1;
                 end
-                newt2 = botb;
+                ZG.newt2 = botb;
                 mcperc_ca3;
                 l = botb(:,6) >= Mc90-0.05; magco = Mc90;
                 n2 = length(botb(l,:));
@@ -353,7 +353,7 @@ if sel == 'ca'
                 end
 
             elseif inb1 == 4
-                newt2 = topb;
+                ZG.newt2 = topb;
                 mcperc_ca3;
                 l = topb(:,6) >= Mc95-0.05; magco = Mc95;
                 n1 = length(topb(l,:));
@@ -365,7 +365,7 @@ if sel == 'ca'
                     topbv = nan; topbv2 = nan, magco = nan; topav = nan; topav2 = nan;
                     nobv = nobv + 1;
                 end
-                newt2 = botb;
+                ZG.newt2 = botb;
                 mcperc_ca3;
                 l = botb(:,6) >= Mc90-0.05; magco = Mc95;
                 n2 = length(botb(l,:));
@@ -379,7 +379,7 @@ if sel == 'ca'
                 end
 
             elseif inb1 == 5
-                newt2 = topb;
+                ZG.newt2 = topb;
                 mcperc_ca3;
                 if isnan(Mc95) == 0 
                     magco = Mc95;
@@ -399,7 +399,7 @@ if sel == 'ca'
                     nobv = nobv + 1;
                 end
 
-                newt2 = botb;
+                ZG.newt2 = botb;
                 mcperc_ca3;
                 l = botb(:,6) >= magco-0.05;
                 n2 = length(botb(l,:));
@@ -413,7 +413,7 @@ if sel == 'ca'
                 end
 
             elseif inb1 == 1
-                % newt2 = topb;
+                % ZG.newt2 = topb;
                 % mcperc_ca3;
                 [topbv magco topstan topav topme topmer topme2,  toppr] =  bvalca3(topb,1,1);
                 l = topb(:,6) >= magco-0.05;
@@ -427,7 +427,7 @@ if sel == 'ca'
 
                     nobv = nobv + 1;
                 end
-                %    newt2 = botb;
+                %    ZG.newt2 = botb;
                 %    mcperc_ca3;
                 [botbv magco botstan botav botme botmer botme2,  botpr] =  bvalca3(botb,1,1);
                 l = botb(:,6) >= magco-0.05;

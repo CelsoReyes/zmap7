@@ -165,7 +165,7 @@ if selt == 'ca'
     % Set minimum number to number of moving window
     %nMinNumberevents = nSampleSize;
     % Calulate time series
-    [mResult] = calc_McBwtime(newt2, nSampleSize, nOverlap, nMethod, nBstSample, nMinNumberevents, fBinning,fMcCorr);
+    [mResult] = calc_McBwtime(ZG.newt2, nSampleSize, nOverlap, nMethod, nBstSample, nMinNumberevents, fBinning,fMcCorr);
 
     % Plot Mc time series
     if sPar == 'mc'

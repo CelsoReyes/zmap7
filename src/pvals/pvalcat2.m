@@ -3,7 +3,7 @@
 %This file is called from timeplot.m and helps for the computation of p-value from Omori formula. for different values of Mcut
 %and Minimum time. The value of p is then displayed as a isoline map.
 
-global valeg newt2 valeg2 CO
+global valeg ZG.newt2 valeg2 CO
 ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
@@ -33,7 +33,7 @@ pvmat = [];
 prompt = {'Min. threshold. magnitude','Max. threshold magnitude','Magnit. step','Min. threshold time', 'Max. threshold time','Time step'};
 title = 'Input parameters';
 lines = 1;
-valm1 = min(newt2.Magnitude);
+valm1 = min(ZG.newt2.Magnitude);
 valm2 = valm1 + 2;
 valm3 = 0.1;
 valtm1 = 0;
@@ -45,11 +45,11 @@ valm1=str2double(answer{1}); valm2 = str2num(answer{2}); valm3=str2num(answer{3}
 valtm1 = str2double(answer{4}); valtm2 = str2num(answer{5}); valtm3 = str2num(answer{6});
 
 % cut catalog at mainshock time:
-l = newt2.Date > maepi(1,3);
-newt2 = newt2(l,:);
+l = ZG.newt2.Date > maepi(1,3);
+newt2 = ZG.newt2(l,:);
 
 % cat at selecte magnitude threshold
-l = newt2.Magnitude < valm1;
+l = ZG.newt2.Magnitude < valm1;
 newt2(l,:) = [];
 
 ZG.hold_state2=true;
@@ -63,8 +63,8 @@ set(wai,'NumberTitle','off','Name',' 3D gridding - percent done');;
 drawnow
 
 for valm = valm1:valm3:valm2
-    paramc1 = (newt2.Magnitude >= valm);
-    pcat = newt2(paramc1,:);
+    paramc1 = (ZG.newt2.Magnitude >= valm);
+    pcat = ZG.newt2(paramc1,:);
     [timpa] = timabs(pcat);
     [timpar] = timabs(maepi);
     tmpar = timpar(1);
@@ -151,7 +151,7 @@ txt1 = text(...
     'FontWeight','normal',...
     'String','p-value');
 
-% reset newt2
+% reset ZG.newt2
 newt2 = nn2;
 
 

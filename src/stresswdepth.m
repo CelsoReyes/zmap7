@@ -8,8 +8,8 @@ def = {'150'};
 ni2 = inputdlg('Number of events in each window?','Input',1,def);
 l = ni2{:};
 ni = str2double(l);
-[s,is] = sort(newt2.Depth);
-newt1 = newt2(is(:,1),:) ;
+[s,is] = sort(ZG.newt2.Depth);
+newt1 = ZG.newt2(is(:,1),:) ;
 think
 %hodis = fullfile( ZG.hodi, 'stinvers');
 hodis = fullfile( ZG.hodi, 'external');
@@ -204,7 +204,7 @@ set(pl3,'LineWidth',1.,'MarkerSize',4,...
 
 
 
-set(gca,'Xlim',[floor(min(newt2.Depth)) max(newt2.Depth)],'XTicklabel',[]);
+set(gca,'Xlim',[floor(min(ZG.newt2.Depth)) max(ZG.newt2.Depth)],'XTicklabel',[]);
 set(gca,'Ylim',[0 180]);
 
 set(gca,'box','on',...
@@ -236,7 +236,7 @@ pl3 = plot(bv2(:,1),bv2(:,7),'g^');
 set(pl3,'LineWidth',1.,'MarkerSize',4,...
     'MarkerFaceColor','w','MarkerEdgeColor','b')
 
-set(gca,'Xlim',[floor(min(newt2.Depth)) max(newt2.Depth)],'XTicklabel',[]);
+set(gca,'Xlim',[floor(min(ZG.newt2.Depth)) max(ZG.newt2.Depth)],'XTicklabel',[]);
 set(gca,'Ylim',[0 90]);
 
 set(gca,'box','on',...
@@ -254,7 +254,7 @@ pl = plot(bv2(:,1),bv2(:,8),'^');
 set(pl,'LineWidth',1.,'MarkerSize',7,...
     'MarkerFaceColor','w','MarkerEdgeColor','k')
 
-set(gca,'Xlim',[floor(min(newt2.Depth)) max(newt2.Depth) ]);
+set(gca,'Xlim',[floor(min(ZG.newt2.Depth)) max(ZG.newt2.Depth) ]);
 
 set(gca,'box','on',...
     'SortMethod','childorder','TickDir','out','FontWeight',...

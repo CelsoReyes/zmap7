@@ -25,7 +25,7 @@ if var1==1
     ldx=100;                     %side length of interaction zone in km
     tlap=300;                    %interaction time in days
     Mmin=3;                      %minimum magnitude
-    stime=a(find(a.Magnitude==max(a.Magnitude)),3);
+    stime=a(find(ZG.a.Magnitude==max(ZG.a.Magnitude)),3);
     stime=stime(1);
 
 
@@ -167,8 +167,8 @@ elseif var1==2           %area selection
     think
 
     %
-    newcat=a;                   %newcat is only a local variable
-    bcat=newcat;
+    ZG.newcat=a;                   %ZG.newcat is only a local variable
+    bcat=ZG.newcat;
 
     me1=zeros(length(newgri(:,1)),1);
     va1=zeros(length(newgri(:,1)),1);
@@ -183,7 +183,7 @@ elseif var1==2           %area selection
 
         l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
         [s,is] = sort(l);
-        b = newcat(is(:,1),:) ;       % re-orders matrix to agree row-wise
+        b = ZG.newcat(is(:,1),:) ;       % re-orders matrix to agree row-wise
         mi2 = mic(is(:,1),2);    % take first ni points
         mi2 = mi2(1:ni);
         me1(i) = mean(mi2);

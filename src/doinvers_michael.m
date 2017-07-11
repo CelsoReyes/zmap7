@@ -24,7 +24,7 @@ rep = 2000;
 % return
 %end
 
-if size(newt2(1,:)) < 12
+if size(ZG.newt2(1,:)) < 12
     errordlg('You need 12 columns of Input Data to calculate misfit!');
     return
 end
@@ -32,8 +32,8 @@ end
 
 hodis = fullfile(hodi, 'external');
 %2nd fault pplane assumed as equally likely...
-%tmpi = [newt2(:,10:12) newt2(:,10)*0+0.5];
-tmpi = [newt2(:,10:12) ];
+%tmpi = [ZG.newt2(:,10:12) ZG.newt2(:,10)*0+0.5];
+tmpi = [ZG.newt2(:,10:12) ];
 
 cd(hodis);
 

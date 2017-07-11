@@ -89,13 +89,13 @@ if newzmapWindowFlag
     TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
     ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
 
-    uimenu(SizeMenu,'Label','3','Callback','ms6 =3;eval(cal8)');
-    uimenu(SizeMenu,'Label','6','Callback','ms6 =6;eval(cal8)');
-    uimenu(SizeMenu,'Label','9','Callback','ms6 =9;eval(cal8)');
-    uimenu(SizeMenu,'Label','12','Callback','ms6 =12;eval(cal8)');
-    uimenu(SizeMenu,'Label','14','Callback','ms6 =14;eval(cal8)');
-    uimenu(SizeMenu,'Label','18','Callback','ms6 =18;eval(cal8)');
-    uimenu(SizeMenu,'Label','24','Callback','ms6 =24;eval(cal8)');
+    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal8)');
+    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal8)');
+    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal8)');
+    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal8)');
+    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal8)');
+    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal8)');
+    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal8)');
 
     uimenu(TypeMenu,'Label','dot','Callback','ty =''.'';eval(cal8)');
     uimenu(TypeMenu,'Label','+','Callback','ty=''+'';eval(cal8)');
@@ -111,7 +111,7 @@ if newzmapWindowFlag
     uimenu(ColorMenu,'Label','yellow','Callback','co=''y'';eval(cal8)');
 
     cal8 = ...
-        [ 'vi=''on'';set(ploeqc,''MarkerSize'',ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
+        [ 'vi=''on'';set(ploeqc,''MarkerSize'',ZG.ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
 
     %
 
@@ -241,7 +241,7 @@ xlabel('Distance along projection in [km]','FontWeight','normal','FontSize',Zmap
 % plot overlay
 %
 ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
-set(ploeqc,'MarkerSize',ms6,'Marker',ty,'Color',co,'visible', vi);
+set(ploeqc,'MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'visible', vi);
 
 if ~exist('maex', 'var'); maex =[];maey = [];end
 if ~isempty(maex)

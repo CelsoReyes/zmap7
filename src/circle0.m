@@ -3,7 +3,7 @@
 %   the maximum radius of a circle.
 %   the center point can be interactively selected or fixed by given
 %   coordinates (as given by incircle).
-%   Resets newcat and newt2.     Operates on the map window on  "a".
+%   Resets ZG.newcat and ZG.newt2.     Operates on the map window on  "a".
 %                                                  R.Z. 6/94
 % last change 8/95
 
@@ -18,7 +18,7 @@ clf
 set(gca,'visible','off')
 
 if ic == 1 | ic == 0
-    te = text(0.01,0.90,'\newlinePlease use the LEFT mouse button or the cursor to \newlineselect the center point. The coordinates of the center \newlinewill be displayed on the control window.\newline \newlineOperates on the main subset of the catalogue. \newlineEvents selected form the new subset to operate on (newcat).');
+    te = text(0.01,0.90,'\newlinePlease use the LEFT mouse button or the cursor to \newlineselect the center point. The coordinates of the center \newlinewill be displayed on the control window.\newline \newlineOperates on the main subset of the catalogue. \newlineEvents selected form the new subset to operate on (ZG.newcat).');
     set(te,'FontSize',12);
 
     % Input center of circle with mouse
@@ -41,15 +41,15 @@ elseif ic == 2
     %  calculate distance for each earthquake from center point
     %  and sort by distance
     %
-    ll = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+    ll = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 
     l = ll < rad;
-    newt2 = a.subset(l);
+    ZG.newt2 = ZG.a.subset(l);
     %
     % plot events on map as 'x':
 
     hold on
-    plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
+    plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
 
 
@@ -58,9 +58,9 @@ elseif ic == 2
     stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6) '; R = ' num2str(rad) ' km'];
     stri = stri1;
 
-    [s,is] = sort(newt2.Date);
-    newt2 = newt2(is(:,1),:) ;
-    newcat = newt2;                   % resets newcat and newt2
+    [s,is] = sort(ZG.newt2.Date);
+    ZG.newt2 = ZG.newt2(is(:,1),:) ;
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     timeplot
 
     ic = 1;
@@ -71,7 +71,7 @@ elseif ic == 3
     %  calculate distance for each earthquake from center point
     %  and sort by distance
     %
-    l = sqrt(((a.Longitude-xa0)*cos(pi/180*ya0)*111).^2 + ((a.Latitude-ya0)*111).^2) ;
+    l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 
     [s,is] = sort(l);            % sort by distance
     new = a(is(:,1),:) ;
@@ -82,15 +82,15 @@ elseif ic == 3
 
     newt = new(1:ni,:);          % take first ni and sort by time
     [st,ist] = sort(newt);
-    newt2 = newt(ist(:,6),:);
+    ZG.newt2 = newt(ist(:,6),:);
     %
     % plot events on map as 'x':
 
     hold on
-    plos1 = plot(newt2.Longitude,newt2.Latitude,'xk','EraseMode','back');
+    plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
 
-    newcat = newt2;                   % resets newcat and newt2
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
     % Call program "timeplot to plot cumulative number
     %

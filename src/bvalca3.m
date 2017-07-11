@@ -3,11 +3,11 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
 
     %report_this_filefun(mfilename('fullpath'));
 
-    newcat = b;
+    ZG.newcat = b;
     dm1 = 0.1;
     pr = NaN; me2 = NaN; mer = NaN; av = NaN; me = NaN; std_backg = NaN; magco = NaN; bv = NaN;
-    maxmag = max(newcat.Magnitude);
-    mima = min(newcat.Magnitude);
+    maxmag = max(ZG.newcat.Magnitude);
+    mima = min(ZG.newcat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     try % if an error occures, set values to NaN
@@ -19,7 +19,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
         bvalsum = zeros(1,nmagu);
         bvalsum3 = zeros(1,nmagu);
 
-        [bval,xt2] = hist(newcat.Magnitude,(mima:dm1:maxmag));
+        [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:dm1:maxmag));
         bvalsum = cumsum(bval);                        % N for M <=
         bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
         xt3 = (maxmag:-dm1:mima);
@@ -33,7 +33,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
         magco = max(xt2(i2));
         % if no automatic etimate of Mcomp
         if inb1 == 2
-            i = length(xt3)-10*min(newcat.Magnitude);
+            i = length(xt3)-10*min(ZG.newcat.Magnitude);
             if i > length(xt3); i = length(xt3)-1 ; end
         end
 

@@ -39,17 +39,17 @@ set(gcf,'Units','pixel','NumberTitle','off','Name','Input Parameters for Misfit 
 
 set(gcf,'pos',[ wex  wey welx+100 wely+50])
 
-bev=find(newcat.Magnitude==max(newcat.Magnitude)); %biggest events in catalog
+bev=find(ZG.newcat.Magnitude==max(ZG.newcat.Magnitude)); %biggest events in catalog
 
 
 %default values of input parameters
 ldx=100;
 tlap=100;
-latt=newcat(bev(1),2);
-longt=newcat(bev(1),1);
+latt=ZG.newcat(bev(1),2);
+longt=ZG.newcat(bev(1),1);
 binlength=1;
 Mmin=3;
-ldepth=newcat(bev(1),7);
+ldepth=ZG.newcat(bev(1),7);
 
 % creates a dialog box to input some parameters
 %

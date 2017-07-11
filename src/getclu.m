@@ -12,7 +12,7 @@ switch  gecl
 
         x=tmp2;y=tmp1;
 
-        l=sqrt(((equi(:,1)-x)*cos(pi/180*y)*111).^2 + ((equi(:,2)-y)*111).^2) ;
+        l=sqrt(((equi(:,1)-x)*cosd(y)*111).^2 + ((equi(:,2)-y)*111).^2) ;
         [s,is] = sort(l);            % sort by distance
         new = equi(is(1),:);
 
@@ -44,8 +44,8 @@ l = clus == val;
 newt2 = original(l,:);
 
 if ~exist('tiplo', 'var'); timeplot; end
-nu = (1:newt2.Count) ;nu = nu';
-set(tiplo2,'Xdata',newt2.Date,'Ydata',nu); figure_w_normalized_uicontrolunits(cum);
+nu = (1:ZG.newt2.Count) ;nu = nu';
+set(tiplo2,'Xdata',ZG.newt2.Date,'Ydata',nu); figure_w_normalized_uicontrolunits(cum);
 
 
 val0 = val;;

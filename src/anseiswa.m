@@ -2,7 +2,7 @@ function anseiswa(action)
 
     %report_this_filefun(mfilename('fullpath'));
 
-    global pipo gx gy gz xc1  xc2 currPt xc3 a ni newt2 tiplo2 ds ax1 ax2 ax3
+    global pipo gx gy gz xc1  xc2 currPt xc3 ni ZG tiplo2 ds ax1 ax2 ax3
     global ax4 pl2 zvg X Y Z gd gx2 gy2 nie tiplo3 ax5 newt3 ax3b iwl2 t0b teb par1
     global ps1 ps2 pli plin
     global zv2 zall  plev tgl1 Rconst hs
@@ -34,35 +34,34 @@ function anseiswa(action)
 
         case 'tipl'
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
+            l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
             [s,is] = sort(l);
 
-            newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
+            ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
             if tgl1 == 0   % take point within r
                 l3 = l <= Rconst;
-                newt2 = newt2(l3,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2(l3,:);      % new data per grid point (b) is sorted in distance
                 Rjma = Rconst;
             else
                 % take first ni points
-                newt2 = newt2(1:ni,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2(1:ni,:);      % new data per grid point (b) is sorted in distance
                 l2 = sort(l); Rjma = l2(ni);
             end
 
-            [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
-            newt2 = newt2(ist(:,3),:);
-            set(tiplo2,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
+            ZG.newt2.sort('Date');   % re-sort wrt time for cumulative count
+            set(tiplo2,'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
             set(xc1,'era','normal')
-            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ (min(a.Date)) (max(a.Date))]);
+            set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
-            bv = bvalca3(newt2,1,1);
+            bv = bvalca3(ZG.newt2,1,1);
             set(plb,'Xdata',xt3,'Ydata',bvalsum3);
 
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;
-            xcir = x+sin(xx)*Rjma/(cos(pi/180*y)*111);
-            ycir = y+cos(xx)*Rjma/(cos(pi/180*y)*111);
+            xcir = x+sin(xx)*Rjma/(cosd(y)*111);
+            ycir = y+cos(xx)*Rjma/(cosd(y)*111);
             set(plc1,'Xdata',xcir,'Ydata',ycir);
             set(teb2,'string',['b-value: ' num2str(bv,3)]);
 
@@ -84,56 +83,54 @@ function anseiswa(action)
             set(gcf,'Pointer','arrow');
             set(gcbf,'WindowButtonMotionFcn','')
             set(gcbf,'WindowButtonUpFcn','')
-            %set(xc2,'Xdata',currPt(1,1))
-            %set(xc3,'Xdata',currPt(1,2))
             anseiswa tipl2
 
 
         case 'tipl2'
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
+            l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
             [s,is] = sort(l);
-            newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
+            ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             if tgl1 == 0   % take point within r
                 l3 = l <= Rconst;
-                newt2 = newt2(l3,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2(l3,:);      % new data per grid point (b) is sorted in distance
                 Rjma = Rconst;
             else
                 % take first ni points
-                newt2 = newt2(1:ni,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2(1:ni,:);      % new data per grid point (b) is sorted in distance
                 l2 = sort(l); Rjma = l2(ni);
             end
-            [st,ist] = sort(newt2);   % re-sort wrt time for cumulative count
-            newt2 = newt2(ist(:,3),:);
-            set(tiplo1,'Xdata',[newt2.Date ; teb],'Ydata',[(1:newt2.Count) newt2.Count  ] );
+            [st,ist] = sort(ZG.newt2);   % re-sort wrt time for cumulative count
+            ZG.newt2 = ZG.newt2(ist(:,3),:);
+            set(tiplo1,'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
             set(xc1,'era','normal')
-            set(ax3,'YLim',[0 newt2.Count+15],'Xlim',[ (min(a.Date)) (max(a.Date))]);
+            set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
 
-            bv = bvalca3(newt2,1,1);
+            bv = bvalca3(ZG.newt2,1,1);
             set(plb2,'Xdata',xt3,'Ydata',bvalsum3);
 
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;
-            xcir = x+sin(xx)*Rjma/(cos(pi/180*y)*111);
-            ycir = y+cos(xx)*Rjma/(cos(pi/180*y)*111);
+            xcir = x+sin(xx)*Rjma/(cosd(y)*111);
+            ycir = y+cos(xx)*Rjma/(cosd(y)*111);
             set(plc2,'Xdata',xcir,'Ydata',ycir);
             set(teb1,'string',['b-value: ' num2str(bv,3)]);
         case 'samp1'
 
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
-            [s,is] = sort(l);
-            newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
-            newt2 = newt2(1:ni,:);
+            l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
+            [~,is] = sort(l);
+            ZG.newt2 = ZG.a.subset(is) ;       % re-orders matrix to agree row-wise
+            ZG.newt2 = ZG.newt2.subset(1:ni);
 
         case 'samp2'
 
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2 + (a.Depth-z).^2) ;
-            [s,is] = sort(l);
-            newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
-            newt2 = newt2(1:ni,:);
+            l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
+            [~,is] = sort(l);
+            ZG.newt2 = ZG.a.subset(is) ;       % re-orders matrix to agree row-wise
+            ZG.newt2 = ZG.newt2.subset(1:ni);
 
     end  % switch
 

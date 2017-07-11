@@ -160,16 +160,16 @@ function ploop(var1)
         s(9)=(dk)*(f9-h9);
 
 
-        %assign the values of s to the matrix a(i,j)
+        %assign the values of s to the matrix A(i,j)
         %start inverting the matrix and calculate the standard deviation
         %for k,c,p .
 
 
-        a=[s(1) s(2) s(3); s(4) s(5) s(6); s(7) s(8) s(9)];
+        A=[s(1) s(2) s(3); s(4) s(5) s(6); s(7) s(8) s(9)];
 
-        a=inv(a);
+        A=inv(A);
 
-        sdk=sqrt(a(1,1));
-        sdc=sqrt(a(2,2));
-        sdp=sqrt(a(3,3));
+        sdk=sqrt(A(1,1));
+        sdc=sqrt(A(2,2));
+        sdp=sqrt(A(3,3));
     end

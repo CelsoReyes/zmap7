@@ -6,19 +6,19 @@ function [dist1, dist2] = distance(i,bgevent,ac)
     % cluster and for the current event
     % Last modification 6/95
 
-    global newcat err derr
+    global ZG.newcat err derr
 
 
     pi2 = 1.570796;
     rad = 1.745329e-2;
     flat= 0.993231;
 
-    alatr1=newcat(i,2)*rad;     %conversion from degrees to rad
-    alonr1=newcat(i,1)*rad;
-    alatr2=newcat(bgevent,2)*rad;
-    alonr2=newcat(bgevent,1)*rad;
-    blonr=newcat(ac,1)*rad;
-    blatr=newcat(ac,2)*rad;
+    alatr1=ZG.newcat(i,2)*rad;     %conversion from degrees to rad
+    alonr1=ZG.newcat(i,1)*rad;
+    alatr2=ZG.newcat(bgevent,2)*rad;
+    alonr2=ZG.newcat(bgevent,1)*rad;
+    blonr=ZG.newcat(ac,1)*rad;
+    blatr=ZG.newcat(ac,2)*rad;
 
     tana(1)=flat*tan(alatr1);
     tana(2)=flat*tan(alatr2);
@@ -45,8 +45,8 @@ function [dist1, dist2] = distance(i,bgevent,ac)
     if ~isempty(tmp1)
         r(tmp1)=zeros(length(tmp1),1);
     end
-    z(:,1)=abs(newcat(ac,7)-newcat(i,7));    %depth distance
-    z(:,2)=abs(newcat(ac,7)-newcat(bgevent,7));
+    z(:,1)=abs(ZG.newcat(ac,7)-ZG.newcat(i,7));    %depth distance
+    z(:,2)=abs(ZG.newcat(ac,7)-ZG.newcat(bgevent,7));
     z=z-derr;
     tmp2=find(z<0);
     if ~isempty(tmp2)

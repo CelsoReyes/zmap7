@@ -4,10 +4,10 @@ function [rmain,r1]= interact(var1)
     % in [km]
     %Last modification 6/95
 
-    global newcat rfact xmeff
+    global ZG.newcat rfact xmeff
 
     if var1==1
-        rmain = 0.011*10.^(0.4*newcat.Magnitude); %interaction zone for mainshock
+        rmain = 0.011*10.^(0.4*ZG.newcat.Magnitude); %interaction zone for mainshock
 
         %tm1=find(rmain==0.011);             %these eqs got no magnitude in the catalog
         %tm2= 0.011*10^(0.4*xmeff);          %assume that for eqs with magnitude 0

@@ -39,15 +39,15 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     %if var1 == 3
     tmvar=[];
     %input of parameters(Magnitude,Time)
-    newt2=ttcat;              %function operates with single cluster
+    ZG.newt2=ttcat;              %function operates with single cluster
     autop=0;
     if var1==4
         autop=1;
     end
     %calculate start -end time of overall catalog
-    t0b = newt2(1,3);
-    n = newt2.Count;
-    teb = newt2(n,3);
+    t0b = ZG.newt2(1,3);
+    n = ZG.newt2.Count;
+    teb = ZG.newt2(n,3);
     tdiff=(teb-t0b)*365;       %time difference in days
 
     par3=tdiff/100;
@@ -59,9 +59,9 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
 
     % calculate cumulative number versus time and bin it
     %
-    n = newt2.Count;
-    [cumu, xt] = hist(newt2.Date,(t0b:par3/365:teb));
-    [cumu, xt] = hist((newt2.Date-newt2(1,3))*365,(0:par5:tdiff));
+    n = ZG.newt2.Count;
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par3/365:teb));
+    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
     difp= [0 diff(cumu)];
     cumu2 = cumsum(cumu);
 

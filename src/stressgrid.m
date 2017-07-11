@@ -214,8 +214,8 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(a.Date)  ;
-    n = a.Count;
+    t0b = min(ZG.a.Date)  ;
+    n = ZG.a.Count;
     teb = a(n,3) ;
     tdiff = round((teb - t0b)*365/par1);
     loc = zeros(3, length(gx)*length(gy));
@@ -244,13 +244,13 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort wrt distance
-        l = sqrt(((a.Longitude-x)*cos(pi/180*y)*111).^2 + ((a.Latitude-y)*111).^2) ;
+        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
         if tgl1 == 0   % take point within r
             l3 = l <= ra;
-            b = a.subset(l3);      % new data per grid point (b) is sorted in distance
+            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
         else
             % take first ni points
@@ -261,11 +261,11 @@ if sel == 'ca'
 
 
         %estimate the completeness and b-value
-        newt2 = b;
+        ZG.newt2 = b;
         if length(b) >= Nmin  % enough events?
             % Take the focal mechanism from actual catalog
             % tmpi-input: [dip direction (East of North), dip , rake (Kanamori)]
-            tmpi = [newt2(:,10:12)];
+            tmpi = [ZG.newt2(:,10:12)];
 
             % Create file for inversion
             fid = fopen('data2','w');

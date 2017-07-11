@@ -308,7 +308,7 @@ function mycat = catalog_overview(mycat)
         end
         
         % following code originally from sele_sub.m
-        %    Create  reduced (in time and magnitude) catalogues "a" and "newcat"
+        %    Create  reduced (in time and magnitude) catalogues "a" and "ZG.newcat"
         %
         mycat.addFilter('Magnitude','>=', minma);
         mycat.addFilter('Magnitude','<=', maxma);
@@ -318,9 +318,9 @@ function mycat = catalog_overview(mycat)
         mycat.addFilter('Depth','<=',maxdep);
         mycat.cropToFilter();
         % not changed unless a new set of general parameters is entered
-        % TOFIX: newcat and new2 used to be set HERE, they need to be set elsewhere. maybe a replaceMainCatalog function?
-        % newcat = ZmapCatalog;     % newcat is created to store the last subset data
-        % newt2 = ZmapCatalog;      %  newt2 is a subset to be changed during analysis
+        % TOFIX: ZG.newcat and new2 used to be set HERE, they need to be set elsewhere. maybe a replaceMainCatalog function?
+        % ZG.newcat = ZmapCatalog;     % ZG.newcat is created to store the last subset data
+        % ZG.newt2 = ZmapCatalog;      %  ZG.newt2 is a subset to be changed during analysis
         
         tim1 = minti;
         tim2 = maxti;

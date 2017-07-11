@@ -1,8 +1,8 @@
-function[a,is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmeff,P,rfact,err,derr,newcat)
+function[a,is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmeff,P,rfact,err,derr,ZG.newcat)
 % declus.m                                A.Allmann
 % main decluster algorithm
 % modified version, uses two different circles for already related events
-% works on newcat
+% works on ZG.newcat
 % different clusters stored with respective numbers in clus
 % Program is based on Raesenberg paper JGR;Vol90;Pages5479-5495;06/10/85
 % Last change 8/95
@@ -32,7 +32,7 @@ function[a,is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmeff,P,rfact,err,d
 % k      index of the cluster
 % k1     working index for cluster
 
-%routine works on newcat
+%routine works on ZG.newcat
 
 report_this_filefun(mfilename('fullpath'));
 
@@ -41,7 +41,7 @@ report_this_filefun(mfilename('fullpath'));
 
 %declaration of global variables
 %
-% global newcat clus rmain r1 eqtime              %catalogs
+% global ZG.newcat clus rmain r1 eqtime              %catalogs
 % global  a                                       %catalogs
 % global k k1 bg mbg bgevent equi bgdiff          %indices
 % global ltn                                      %variable to shorten code
@@ -56,29 +56,29 @@ cluslength=[];rmain=[];r1=[];
 
 man =[taumin;taumax;xk;xmeff;P;rfact;err;derr];
 
-[rmain,r1]=funInteract(1,newcat,rfact,xmeff);                     %calculation of interaction radii
+[rmain,r1]=funInteract(1,ZG.newcat,rfact,xmeff);                     %calculation of interaction radii
 
-limag=find(newcat.Magnitude>=6);     % index of earthquakes with magnitude bigger or
+limag=find(ZG.newcat.Magnitude>=6);     % index of earthquakes with magnitude bigger or
 % equal magnitude 6
 if isempty(limag)
    limag=0;
 end
 
 %calculation of the eq-time relative to 1902
-eqtime=funClustime(1,newcat);
+eqtime=funClustime(1,ZG.newcat);
 
 %variable to store information wether earthquake is already clustered
-clus = zeros(1,newcat.Count);
+clus = zeros(1,ZG.newcat.Count);
 
 k = 0;                                %clusterindex
 
-ltn=newcat.Count-1;
+ltn=ZG.newcat.Count-1;
 
 % wai = waitbar(0,' Please Wait ...  ');
 % set(wai,'NumberTitle','off','Name','Decluster - Percent done');
 % drawnow
 
-%for every earthquake in newcat, main loop
+%for every earthquake in ZG.newcat, main loop
 for i = 1:ltn
 %    i
    % variable needed for distance and timediff
@@ -87,8 +87,8 @@ for i = 1:ltn
 
    % attach interaction time
    if k1~=0                          %If i is already related with a cluster
-      if newcat(i,6)>=mbg(k1)          %if magnitude of i is biggest in cluster
-         mbg(k1)=newcat(i,6);            %set biggest magnitude to magnitude of i
+      if ZG.newcat(i,6)>=mbg(k1)          %if magnitude of i is biggest in cluster
+         mbg(k1)=ZG.newcat(i,6);            %set biggest magnitude to magnitude of i
          bgevent(k1)=i;                  %index of biggest event is i
          tau=taumin;
       else
@@ -106,7 +106,7 @@ for i = 1:ltn
    end
 
    %extract eqs that fit interation time window
-   [tdiff,ac]=funTimediff(j,i,tau,clus,k1,newcat,eqtime);
+   [tdiff,ac]=funTimediff(j,i,tau,clus,k1,ZG.newcat,eqtime);
 
 
    if size(ac)~=0   %if some eqs qualify for further examination
@@ -127,9 +127,9 @@ for i = 1:ltn
 
       %calculate distances from the epicenter of biggest and most recent eq
       if k1==0
-         [dist1,dist2]=funDistance(i,i,ac,newcat,err,derr);
+         [dist1,dist2]=funDistance(i,i,ac,ZG.newcat,err,derr);
       else
-         [dist1,dist2]=funDistance(i,bgevent(k1),ac,newcat,err,derr);
+         [dist1,dist2]=funDistance(i,bgevent(k1),ac,ZG.newcat,err,derr);
       end
       %extract eqs that fit the spatial interaction time
       sl0=find(dist1<= rtest1 | dist2<= rtest2);
@@ -163,7 +163,7 @@ for i = 1:ltn
             k=k+1;                         %zone nor i, already related to cluster
             k1=k;
             clus(i)=k1;
-            mbg(k1)=newcat(i,6);
+            mbg(k1)=ZG.newcat(i,6);
             bgevent(k1)=i;
          end
 
@@ -178,15 +178,15 @@ end                            %for loop
 if ~find(clus~=0)
     return
 else
-    [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(newcat,bgevent,clus,mbg,k1,bg);              %builds a matrix clust that stored clusters
+    [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg,k1,bg);              %builds a matrix clust that stored clusters
 %     equi=equevent;               %calculates equivalent events
 %     if isempty(equi)
 %         disp('No clusters in the catalog with this input parameters');
 %         return;
 %     end
-   [a,is_mainshock] = funBuildcat(newcat,clus,bg,bgevent);        %new catalog for main program
-%   original=newcat;       %save newcat in variable original
-%    newcat=a;
+   [a,is_mainshock] = funBuildcat(ZG.newcat,clus,bg,bgevent);        %new catalog for main program
+%   original=ZG.newcat;       %save ZG.newcat in variable original
+%    ZG.newcat=a;
 %    storedcat=original;
 %    cluscat=original(find(clus),:);
 %    update(mainmap())
@@ -194,7 +194,7 @@ else
 %    plot(cluscat(:,1),cluscat(:,2),'m+');
 %    st1 = [' The declustering found ' num2str(length(bgevent(:,1))) ' clusters of earthquakes, a total of '...
 %          ' ' num2str(length(cluscat(:,1))) ' events (out of ' num2str(length(original(:,1))) '). '...
-%          ' The map window now display the declustered catalog containing ' num2str(a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
+%          ' The map window now display the declustered catalog containing ' num2str(ZG.a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
 %
 %    msgbox(st1,'Declustering Information')
 %
