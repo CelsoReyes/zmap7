@@ -12,7 +12,8 @@ classdef MainInteractiveMap
     
     methods
         function obj = MainInteractiveMap()
-            
+            obj.Features=ZmapGlobal.Data.features;
+            %{
             %% define the map features
             % each MapFeature is something that can be overlain on the main map
             %
@@ -42,7 +43,7 @@ classdef MainInteractiveMap
                 'LineWidth', 3.0,...
                 'Color',[.2 .2 .5])...
                 );
-            %{
+            
             obj.Features(4) = MapFeature('faults', @load_faults, [],...
                 struct('Tag','mainmap_faultlines',...
                     'DisplayName','main faultine',...
@@ -68,9 +69,10 @@ classdef MainInteractiveMap
                 );
                 
                 %}
-                
-                for i=1:numel(obj.Features)
-                    obj.Features(i).load();
+               k=obj.Features.keys;
+                for i=1:obj.Features.Count
+                    f=obj.Features(k{i});
+                    f.load();
                 end
                 obj.initial_setup()
                 
@@ -92,8 +94,10 @@ classdef MainInteractiveMap
             ylim(ax,[min(a.Latitude) max(a.Latitude)]);
             ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
-            for i=1:numel(obj.Features)
-                obj.Features(i).refreshPlot();
+            k=obj.Features.keys;
+            for i=1:numel(k)
+                ftr=obj.Features(k{i});
+                ftr.refreshPlot();
             end
             % bring selected events to front
             uistack(findobj('DisplayName','Selected Events'),'top');
@@ -161,8 +165,10 @@ classdef MainInteractiveMap
             ylim(ax,'auto');
             axis(ax,'manual');
             disp('     "      features');
-            for i=1:numel(obj.Features)
-                obj.Features(i).plot(ax);
+            k=obj.Features.keys;
+            for i=1:numel(k)
+                ftr=obj.Features(k{i});
+                ftr.plot(ax);
             end
             MainInteractiveMap.plotMainshocks(main);
             disp('     "      "big" earthquakes');
@@ -189,6 +195,7 @@ classdef MainInteractiveMap
             watchoff; drawnow;
         end
         
+        %{
         function show(obj, featurename)
             idx = strcmp(featurename, {obj.Features.Name});
             if any(idx)
@@ -208,7 +215,7 @@ classdef MainInteractiveMap
                 disp(['MainInteractiveMap: Feature "' featurename '" doesn''t exist']);
             end
         end
-        
+        %}
         function initial_setup(obj)
             
             h = figureHandle();
@@ -260,8 +267,10 @@ classdef MainInteractiveMap
             add_symbol_menu('mainmap_ax', mapoptionmenu, 'Map Symbols');
             
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
-            for i=1:numel(obj.Features)
-                obj.Features(i).addToggleMenu(ovmenu);
+            k=obj.Features.keys;
+            for i=1:numel(k)
+                ftr=obj.Features(k{i});
+                ftr.addToggleMenu(ovmenu);
             end
                 uimenu(ovmenu,'Label','Load a coastline  from GSHHS database',...
                 'Separator','on',...

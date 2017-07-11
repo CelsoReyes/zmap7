@@ -116,7 +116,9 @@ classdef MapFeature < handle
                     lon_field=fn{x};
                     lat_field=fn{y};
                     
-                    obj.Value = struct('Longitude',data.(lon_field)(:) , 'Latitude', data.(lat_field)(:));
+                    obj.Value = struct('Longitude',[data.(lon_field)] , 'Latitude', [data.(lat_field)]);
+                    obj.Value.Longitude=obj.Value.Longitude(:);
+                    obj.Value.Latitude=obj.Value.Latitude(:);
                 otherwise
                     obj.Value=struct('Longitude',[],'Latitude',[]);
                     if isnumeric(data)

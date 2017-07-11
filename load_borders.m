@@ -1,6 +1,7 @@
 function out=load_borders(level)
     % load borders 
     % level: 'i'ntermediate, 'h'igh, 'f'ull
+    assignin('base','db_stack',dbstack);
     tmp=load(fullfile('features',['borders_' level '.mat']), 'data', 'metadata');
     disp('Loading borders:');
     disp(tmp.metadata);
