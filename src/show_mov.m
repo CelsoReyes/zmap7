@@ -29,7 +29,7 @@ if in2 ~= 'calma'
     inp2_field=uicontrol('Style','edit',...
         'Position',[.80 .80 .18 .15],...
         'Units','normalized','String',num2str(nustep),...
-        'Callback','nustep=str2double(get(inp2_field,''String'')); set(inp2_field,''String'',num2str(nustep));');
+        'Callback','nustep=str2double(inp2_field.String); inp2_field.String=num2str(nustep);');
 
     txt2 = text(...
         'Color',[0 0 0 ],...
@@ -53,7 +53,7 @@ if in2 ~= 'calma'
         inp3_field=uicontrol('Style','edit',...
             'Position',[.80 .575 .18 .15],...
             'Units','normalized','String',num2str(iwl2),...
-            'Callback','iwl2=str2double(get(inp3_field,''String'')); set(inp3_field,''String'',num2str(iwl2));');
+            'Callback','iwl2=str2double(inp3_field.String); inp3_field.String=num2str(iwl2);');
 
     end   % if in = rub
 
@@ -64,7 +64,7 @@ if in2 ~= 'calma'
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.25 .05 .15 .15 ],...
         'Units','normalized',...
-        'Callback','nustep=str2num(get(inp2_field,''String''));iwl2=str2num(get(inp3_field,''String''));welcome,think,watchon;drawnow,in2 = ''calma'';fixaxmo;',...
+        'Callback','nustep=str2num(inp2_field.String);iwl2=str2num(inp3_field.String);welcome,think,watchon;drawnow,in2 = ''calma'';fixaxmo;',...
         'String','Go');
 
     set(gcf,'visible','on');watchoff
@@ -79,7 +79,7 @@ else     % if in2 ~=calma
 
 
     % initial parameter
-    iwl = iwl2* 365/par1; ti = (it -t0b)*365/par1;
+    iwl = iwl2* 365/par1; ti = (it -t0b)/days(par1);
     var1 = zeros(1,ncu);
     var2 = zeros(1,ncu);
     mean1 = zeros(1,ncu);
@@ -120,7 +120,7 @@ else     % if in2 ~=calma
             as = -((mean1-mean2)./mean1)*100;
 
             strib = 'Change in Percent';
-            stri2 = ['ti=' num2str(ti*par1/365 + t0b)  ];
+            stri2 = ['ti=' num2str(ti*days(par1) + t0b)  ];
 
 
 
@@ -193,17 +193,17 @@ else     % if in2 ~=calma
         hold on
         %overlay
         if in == 'ast'
-            tx2 = text(0.07,0.85 ,['AS; t=' num2str(ti*par1/365+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['AS; t=' num2str(ti*days(par1)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 
         if in == 'lta'
-            tx2 = text(0.07,0.85 ,['LTA; t=' num2str(ti*par1/365+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['LTA; t=' num2str(ti*days(par1)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 
         if in == 'rub'
-            tx2 = text(0.07,0.85 ,['RUB; t=' num2str(ti*par1/365+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['RUB; t=' num2str(ti*days(par1)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 

@@ -30,12 +30,12 @@ if ic == 1 | ic == 0
     freq_field=uicontrol('Style','edit',...
         'Position',[.70 .60 .17 .10],...
         'Units','normalized','String',num2str(iwln),...
-        'Callback','iwln=str2double(get(freq_field,''String'')); set(freq_field,''String'',num2str(iwln));');
+        'Callback','iwln=str2double(freq_field.String); freq_field.String=num2str(iwln);');
 
     inp2_field=uicontrol('Style','edit',...
         'Position',[.70 .40 .17 .10],...
         'Units','normalized','String',num2str(step),...
-        'Callback','step=str2double(get(inp2_field,''String'')); set(inp2_field,''String'',num2str(step));');
+        'Callback','step=str2double(inp2_field.String); inp2_field.String=num2str(step);');
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position', [.60 .05 .15 .15 ],...
@@ -69,15 +69,15 @@ if ic == 1 | ic == 0
 
 elseif ic == 2
 
-    step = step/365;
+    step = days(step);
     if isempty(ZG.newcat) ZG.newcat = a; end
     %iwl = round(iwln* 365/par1);    % window length in years is converted to bins
     len = ZG.newcat.Count;
     xt2  = [ ];
     meand = [ ];
     er = [];
-    t0b = ZG.newcat(1,3);
-    teb = ZG.newcat(len,3);
+    t0b = ZG.newcat.Date(1);
+    teb = ZG.newcat.Date(len);
     ind = 0;
 
     me = [];
@@ -98,7 +98,7 @@ elseif ic == 2
     %ind = ind + 1;
     %waitbar(it/(len-iwln));
     %%        l = ZG.newcat.Date >= it & ZG.newcat.Date < it+iwln;  % for time window
-    %%        meand(ind) = mean(ZG.newcat(l,7));
+    %%        meand(ind) = mean(ZG.newcat.Depth(l));
     %%        xt2(ind) = it + iwln/2.;
     %meand(ind) = mean(ZG.newcat(it:it+iwln-1,7)) ;
     %me = [me  ZG.newcat(it:it+iwln-1,7)];
@@ -146,7 +146,7 @@ elseif ic == 2
 
         new = uicontrol('style','edit','value',iwl,...
             'string',num2str(iwl), 'background','y',...
-            'Callback','iwl=str2num(get(new,''String''));''String'',num2str(iwl);medispas1',...
+            'Callback','iwl=str2num(new.String);''String'',num2str(iwl);medispas1',...
             'units','norm','pos',[.90 .30 .10 .06],'min',0.1,'max',100);
 
         newlabel = uicontrol('style','text','units','norm','pos',[.85 .30 .05 .06]);
@@ -175,8 +175,8 @@ elseif ic == 2
     pl = plot(xt2,meand,'-r')
     hold on
     set(pl,'LineWidth',1.0)
-    if isempty(maepi) == 0
-        pl =   plot(maepi(:,3),maepi(:,3)*0+mean(meand),'xm');
+    if isempty(ZG.maepi) == 0
+        pl =   plot(ZG.maepi.Date,ZG.maepi.Date*0+mean(meand),'xm');
         set(pl,'LineWidth',2.0)
     end
 
@@ -200,8 +200,8 @@ elseif ic == 2
     set(pl,'MarkerSize',3')
     set(pl,'LineWidth',1.0)
     hold on
-    if isempty(maepi) == 0
-        pl =  plot(maepi(:,3),-maepi(:,7),'xm');
+    if isempty(ZG.maepi) == 0
+        pl =  plot(ZG.maepi.Date,-ZG.maepi.Depth,'xm');
         set(pl,'LineWidth',2.0)
     end
     axis([ v(1) v(2) -max(ZG.newcat.Depth)  -min(ZG.newcat.Depth)])

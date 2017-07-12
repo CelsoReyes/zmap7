@@ -18,13 +18,13 @@ function [fCumMoment, vCumMoment, vMoment] = calc_moment(mCatalog)
 % last update: 09.11.05
 
 
-[nXSize, nYSize] = size(mCatalog);
+nXSize = mCatalog.Count;
 if nYSize > 1
     % Sort the catalog according to time
-    [s,is] = sort(mCatalog(:,3));
+    [s,is] = sort(mCatalog.Date);
     mCatalog = mCatalog(is(:,1),:);
     % Use magnitude column from ZMAP data catalog format
-    vMagnitude = mCatalog(:,6);
+    vMagnitude = mCatalog.Magnitude;
 else
     % Use one column magnitude vector
     vMagnitude = mCatalog;

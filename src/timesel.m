@@ -1,11 +1,9 @@
 function [tt1,tt2]=timesel(var1)
     % timesel.m                       Alexander Allmann
     % function to select time intervalls for further examination
-    % Last change                  8/95
     
-    % works on ZG.newt2
     
-    global ZG.newt2 ccum tiplo2 statime cum
+    global ccum cum
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
@@ -40,20 +38,10 @@ function [tt1,tt2]=timesel(var1)
         tt2= M2b;
         delete(seti)
         if tt1>tt2     % if start and end time are switched
-            tt3=tt2;
+            tmp=tt2;
             tt2=tt1;
-            tt1=tt3;
+            tt1=tmp;
         end
-        % build new catalog ZG.newt2
-        if ~isempty(statime)
-            error('statime comes from where?');
-            ll=ZG.newt2.Date>tt1 & ZG.newt2.Date<statime+tt2/365;
-            tt1=statime+tt1/365;
-            tt2=statime+tt2/365;
-        else
-            ll=ZG.newt2.Date>tt1 & ZG.newt2.Date<tt2;
-        end
-        ZG.newt2=ZG.newt2.subset(ll);
         ZG.hold_state=false;
     end
 end

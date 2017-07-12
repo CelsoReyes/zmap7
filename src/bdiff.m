@@ -1,10 +1,11 @@
-function  bdiff(ZG.newcat,holdplot)
+function  bdiff(mycat, holdplot)
     %  This routine estimates the b-value of a curve automatically
     %  The b-valkue curve is differenciated and the point
     %  of maximum curvature marked. The b-value will be calculated
     %  using this point and the point half way toward the high
     %  magnitude end of the b-value curve.
 
+    %  originally, "mycat" was "newcat"
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4
@@ -44,16 +45,16 @@ function  bdiff(ZG.newcat,holdplot)
         add_menu_divider();
         options = uimenu('Label','ZTools');
         uimenu(options,'Label','Estimate recurrence time/probability', 'Callback','plorem');
-        uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(ZG.newcat)');
-        uimenu(options,'Label','Plot time series', 'Callback','timeplot');
+        uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(mycat)');
+        uimenu(options,'Label','Plot time series', 'Callback','timeplot(mycat)');
         uimenu(options,'Label','Do not show discrete', 'Callback','delete(pl1)');
         uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
 
 
     end
 
-    maxmag = ceil(10*max(ZG.newcat.Magnitude))/10;
-    mima = min(ZG.newcat.Magnitude);
+    maxmag = ceil(10*max(mycat.Magnitude))/10;
+    mima = min(mycat.Magnitude);
     if mima > 0 ; mima = 0 ; end
 
     % number of mag units
@@ -63,7 +64,7 @@ function  bdiff(ZG.newcat,holdplot)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:0.1:maxmag));
+    [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
@@ -130,8 +131,8 @@ function  bdiff(ZG.newcat,holdplot)
     ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
     x = xt3(ll);
 
-    l2 = ZG.newcat.Magnitude >= M1b(1)- 0.05  & ZG.newcat.Magnitude <= M2b(1)+ 0.05;
-    [ me, bv, si, av] = bmemag(ZG.newcat.subset(l2)) ;
+    l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
+    [ me, bv, si, av] = bmemag(mycat.subset(l2)) ;
 
     bv = -bv;
 
@@ -173,8 +174,8 @@ function  bdiff(ZG.newcat,holdplot)
     %set(ttm,'LineWidth',1)
     %ttm= semilogy(x,f4+delta,'k-.');
     %set(ttm,'LineWidth',1)
-    set(gca,'XLim',[min(ZG.newcat.Magnitude)-0.5  max(ZG.newcat.Magnitude)+0.5])
-    set(gca,'YLim',[1 (ZG.newcat.Count+20)*1.4]);
+    set(gca,'XLim',[min(mycat.Magnitude)-0.5  max(mycat.Magnitude)+0.5])
+    set(gca,'YLim',[1 (mycat.Count+20)*1.4]);
 
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
         'LineWidth',1.,'TickDir','out','Ticklength',[0.02 0.02])
@@ -208,7 +209,7 @@ function  bdiff(ZG.newcat,holdplot)
     else
         txt1=text(.16, .14,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(ZG.newcat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
     end
@@ -219,7 +220,7 @@ function  bdiff(ZG.newcat,holdplot)
 
     if hold_state
         % calculate the probability that the two distributins are differnt
-        %l = ZG.newcat.Magnitude >=  M1b(1);
+        %l = mycat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
         n = n1+n2;
         da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;

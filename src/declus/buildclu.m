@@ -1,11 +1,12 @@
 function  buildclu
     % buildclu.m                                 A.Allmann
     % builds cluster out out of information stored in clus
-    % calculates also biggest event in a cluster
-    %
-    % Last modification 8/95
+    % calculates also biggest event in a cluster (bg)
+    % replaced by fnBuildClu
 
-    global ZG.newcat bgevent clus mbg k1 clust clustnumbers cluslength bg
+    global bgevent clus mbg k1 clustnumbers cluslength
+    global bg % bg seems to be an index, and is same as bgevent
+    ZG=ZmapGlobal.Data;
     cluslength=[];
     n=0;
     k1=max(clus);
@@ -14,16 +15,6 @@ function  buildclu
     end
 
     tmp=find(cluslength);      %numbers of clusters that are not empty
-
-    % modified to aviod large matrix clust
-
-    %clust=zeros(max(cluslength),length(tmp));
-
-    %for j=tmp                    %for all not empty clusters
-    %  n=n+1;
-    %  clust(1:cluslength(j),n)=find(clus==j)'; %matrix which stores clusters
-    %end
-
 
     %cluslength,bg,mbg only for events which are not zero
     cluslength=cluslength(tmp);

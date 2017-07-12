@@ -3,16 +3,16 @@ function cltiplot(var1)
     % function to create a cumulative number curve of a selected area
     % valid for all catalog types in Cluster Menu or Cluster
     % cumulative number versus time
-    % Time of events with a Magnitude greater than minmag will
+    % Time of events with a Magnitude greater than ZG.big_eq_minmag will
     % be shown on the curve.
-    %Last modification 8/95
+    %
 
     global freq_field freq_slider
     global mess ccum bgevent equi file1 clust original cluslength newclcat
     global backcat ttcat cluscat
-   global  sys minmag clu te1
+   global  sys clu te1
     global clu1 pyy stri tiplo2 statime
-    global xt par1 cumu cumu2 ZG.newt2 iwl3
+    global xt par1 cumu cumu2 iwl3
     global close_ti_button mtpl
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo
@@ -138,9 +138,9 @@ function cltiplot(var1)
     %
     n = ZG.newt2.Count;
     if par5 >=1
-        [cumu, xt] = hist(ZG.newt2.Date,(t0b-par5/365:par5/365:teb+par5/365));
+        [cumu, xt] = hist(ZG.newt2.Date,(t0b-days(par5):days(par5):teb+days(par5)));
     else
-        [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+par5/365)*365,(0:par5:(tdiff+2*par5)));
+        [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+days(par5))*365,(0:par5:(tdiff+2*par5)));
     end
     cumu2=cumsum(cumu);
 
@@ -158,7 +158,7 @@ function cltiplot(var1)
     % plot big events on curve
     %
     if length(big) < 4
-        f = cumu2(ceil((big(:,3) -t0b)*365/par5));
+        f = cumu2(ceil((big(:,3) -t0b)/days(par5)));
         bigplo = plot(big(:,3),f,'xr');
         set(bigplo,'MarkerSize',10,'LineWidth',2.5)
         stri4 = [];
@@ -201,7 +201,7 @@ function cltiplot(var1)
     if par5>=1
         xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     else
-        statime=ZG.newt2(1,3)-par5/365;
+        statime=ZG.newt2(1,3)-days(par5);
         xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

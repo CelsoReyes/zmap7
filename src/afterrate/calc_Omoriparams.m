@@ -1,5 +1,5 @@
-function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
-    % function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod);
+function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod)
+    % function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod);
     % ----------------------------------------------------------------
     % Determines Omori law parameter for one specific model and uncertainties using the bootstrap method
     %
@@ -10,7 +10,7 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     %   time        learning period days
     %   timef       forecast period: Set timef=0, anyway it is forced to 0
     %   bootloops   Number of bootstraps
-    %   maepi       Mainshock values
+    %   ZG.maepi       Mainshock values
     %   nMod        Model for aftershock sequence
     %
     % Output parameters:
@@ -35,17 +35,16 @@ report_this_filefun(mfilename('fullpath'));
 
     % Define aftershock times
     date_matlab = mycat.Date;
-    date_main = maepi.Date;
+    date_main = ZG.maepi.Date;
     time_aftershock = date_matlab - date_main;
 
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
-    fDay = days(1);
-    ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (mycat.Date > maepi.Date+fDay & mycat.Date<= maepi.Date+days(time);
+    fDay = days(1);% Time not considered to find biggest aftershock
+    vSel = (mycat.Date > ZG.maepi.Date+fDay & mycat.Date<= ZG.maepi.Date+days(time);
     mCat = mycat.subset(vSel);
     
     if isempty(mCat)
-        vSel = (mycat.Date <= maepi.Date+days(time));
+        vSel = (mycat.Date <= ZG.maepi.Date+days(time));
         mCat = mycat.subset(vSel);
     end
 

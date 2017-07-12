@@ -1,48 +1,41 @@
-function [rc] = calc_rcloglike_a2(a,time,timef,bootloops,maepi)
-    % function [rc] = calc_rcloglike_a2(a,time,timef,bootloops,maepi);
+function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
+    % function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
     % ----------------------------------------------------------------
     % Determines ratechanges within aftershock sequences for defined time window using log likelihood estimation
     % procedures; defines the best model using the corrected AIC and calculates uncertainties for the fitted
     % parameters
     %
     % Input parameters:
-    %   a           earthquake catalog
+    %   mycat       earthquake catalog
     %   time_as     delay times (days)
     %   step        number of quakes to determine forecast period
     %   time        learning period
     %   timeF       forecast period
     %   bootloops   Number of bootstraps
-    %   maepi       Mainsock values
+    %   ZG.maepi       Mainsock values
     %
     % Output parameters:
     %   rc      See results at the end of the script
     %
     % J. Woessner
-    % last update: 10.02.05
 
 report_this_filefun(mfilename('fullpath'));
     % Warning off for fmincon
-    warning off;
+    %warning off;
 
     % Initialize
     rc = [];
 
-    % Check if seconds are in catalog
-    [nY1,nX1] = size(a);
-    if nX1 < 10
-        vSek = zeros(nY1,1);
-        ZG.a=[a vSek];
-        maepi = [maepi 0];
-    end
+
     % Define aftershock times
-    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,ZG.a.Date.Second);
-    date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),maepi(10));
+    date_matlab = datenum(mycat.Date);
+    date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;
 
     % Aftershock catalog
     vSel1 = time_aftershock(:) > 0;
     tas = time_aftershock(vSel1);
-    eqcatalogue = ZG.a.subset(vSel1);
+    eqcatalogue = mycat.subset(vSel1);
 
     % Estimation of Omori parameters from learning period
     l = tas <= time;
@@ -55,18 +48,16 @@ report_this_filefun(mfilename('fullpath'));
     % Select biggest aftershock earliest in time, but more than 1 day after
     % mainshock and in learning period
     mAfLearnCat = eqcatalogue(l,:);
-    fDay = 1;
-    ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (mAfLearnCat(:,3) > maepi(:,3)+ft_c & mAfLearnCat(:,3)<= maepi(:,3)+time/365);
-    mCat = mAfLearnCat(vSel,:);
-    vSel = mCat(:,6) == max(mCat(:,6));
+    fDay = 1; %days
+    vSel = (mAfLearnCat.Date > ZG.maepi.Date + days(fDay) & mAfLearnCat.Date<= ZG.maepi.Date+days(time);
+    mCat = mAfLearnCat.subset(vSel);
+    vSel = mCat.Magnitude == max(mCat.Magnitude);
     vBigAf = mCat(vSel,:);
-    if length(mCat(vSel,1)) > 1
-        [s,is] = sort(vBigAf(:,3));
-        vBigAf = vBigAf(is(:,1),:) ;
-        vBigAf = vBigAf(1,:);
+    if sum(vSel) > 1
+        vBigAf.sort('Date')
+        vBigAf = vBigAf.subset(1);
     end
-    date_biga = datenum(floor(vBigAf(3)),vBigAf(4),vBigAf(5),vBigAf(8),vBigAf(9),vBigAf(10));
+    date_biga = datenum(vBigAf.Date);
     % Time of big aftershock
     fT1 = date_biga - date_main;
 

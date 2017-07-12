@@ -15,13 +15,13 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     % last update: 16.02.2005
 
     % Create catalog after split time (aftershock sequence)
-    vSel = (params.fTstart <= mCatalog(:,3) & mCatalog(:,3) < params.fTstart+params.fTimePeriod);
-    mCatAf = mCatalog(vSel,:);
+    vSel = (params.fTstart <= mCatalog.Date & mCatalog.Date < params.fTstart+params.fTimePeriodDays);
+    mCatAf = mCatalog.subset(vSel);
     % Set timef=0, this is used for rate change calculations
     timef = 0;
     nMod = 1; % Omori law computation
     % Compute Omori law
-    fTime = params.fTimePeriod*365;
+    fTime = params.fTimePeriodDays;
     [result] = calc_Omoriparams(mCatAf,fTime,timef,params.fBstnum,params.mMainshock,nMod);
     % Number of events in aftershock sequence
     [nYAf, nXAf] = size(mCatAf);
@@ -30,12 +30,12 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     % Compute backgroundrate [year] or use given
     if params.bTimeBgr == 0
         fBgrate = params.fBgrate;
-        vSel = (params.fTstart-params.fTimeBgr <= params.mCatalog(:,3) & params.mCatalog(:,3) < params.fTstart);
-        mCatBgr = params.mCatalog(vSel,:);
+        vSel = (params.fTstart-params.fTimeBgr <= params.mCatalog.Date & params.mCatalog.Date < params.fTstart);
+        mCatBgr = params.mCatalog.subset(vSel);
     else
         % Create catalog before split time (background)
-        vSel = (params.fTstart-params.fTimeBgr <= mCatalog(:,3) & mCatalog(:,3) < params.fTstart);
-        mCatBgr = mCatalog(vSel,:);
+        vSel = (params.fTstart-params.fTimeBgr <= mCatalog.Date & mCatalog.Date < params.fTstart);
+        mCatBgr = mCatalog.subset(vSel);
         if isempty(mCatBgr)
             fBgrate = params.fBgrate;
         elseif (length(mCatBgr(:,1)) == 1)
@@ -53,17 +53,16 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     result.nNumBgr = nYBgr;
 
     % Compute length of aftershock sequence; pck-values fitted to original data
-    [fTafseq] = calc_Afseqlength(result.pval1,result.cval1,result.kval1,fBgrate);
+    [fTafseq] = calc_Afseqlength(result.pval1,result.cval1,result.kval1,fBgrate); %years
     % Af Seismicity rate per year
-    result.fTafseq = fTafseq/365;
-    result.fLog10Tafseq = log10(fTafseq/365);
+    result.fLog10Tafseq = log10(fTafseq); %was days(blah), which only makes sense if fTafseq was in days
 
     % Compute length of aftershock sequence; pck-values bootstrapped
-    [fTafseqmean] = calc_Afseqlength(result.pmean1,result.cmean1,result.kmean1,fBgrate);
-    result.fTafseqmean = fTafseqmean/365;
+    [fTafseqmean] = calc_Afseqlength(result.pmean1,result.cmean1,result.kmean1,fBgrate); %years
+    result.fTafseqmean = fTafseqmean; %was days(blah), which only makes sense if fTafseq was in days
 
     % Number of events
-    [nY, nX] = size(mCatalog);
+    nY = mCatalog.Count;
     result.nNumEvents = nY;
     % Log EQ density
     result.fLogEqdens = log10(nY/(params.fRadius^2*pi));

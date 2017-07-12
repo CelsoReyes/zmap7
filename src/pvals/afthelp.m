@@ -17,7 +17,7 @@
 %   be sure to open the "Cumulative Number Window" at least ones before
 %   starting any analysis.
 %   This is because the mainshock information is contained in the matrix
-%   "maepi", which is not defined until you open the "Cumulative Number
+%   "ZG.maepi", which is not defined until you open the "Cumulative Number
 %   Window". After this,
 %   please eliminate the mainshock, by filtering the catalog in magnitude.
 %4. There are several files which permit the analysis of the parameters in

@@ -20,8 +20,8 @@ end
 
 try
   % Get maximum and minimum magnitudes of the catalog
-  fMaxMagnitude = max(mCatalog(:,6));
-  fMinMagnitude = min(mCatalog(:,6));
+  fMaxMagnitude = max(mCatalog.Magnitude);
+  fMinMagnitude = min(mCatalog.Magnitude);
   if fMinMagnitude > 0
     fMinMagnitude = 0;
   end
@@ -31,7 +31,7 @@ try
 
   % Create a histogram over magnitudes
   vHist = zeros(1, nNumberMagnitudes);
-  [vHist, vMagBins] = hist(mCatalog(:,6), (fMinMagnitude:0.1:fMaxMagnitude));
+  [vHist, vMagBins] = hist(mCatalog.Magnitude, (fMinMagnitude:0.1:fMaxMagnitude));
 
   % Get the points with highest number of events -> maximum curvature
   fMc = vMagBins(max(find(vHist == max(vHist))));

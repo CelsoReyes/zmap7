@@ -36,7 +36,6 @@ function set_zmap_paths()
        {fullfile(hodi, 'src', 'thomas')};
        fullfile(hodi, 'src', 'thomas', {'decluster';
                                         'etas';
-                                        'montereason';
                                         'slabanalysis';
                                         'seismicrates';
                                         });

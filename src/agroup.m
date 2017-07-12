@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 % Reset the alarms to the all alarms above the current threshold
 l = abo2(:,4) >= tre2;
 abo = abo2(l,:);
-abo(:,5) = abo(:,5)* par1/365 + a(1,3);
+abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
 
 
 j = 0;
@@ -33,7 +33,7 @@ while length(abo) > 1
     do = ['an' num2str(j) ' = abo(po3,:);'];
     disp([num2str(j) '  Anomalie groups  found'])
     eval(do)
-    pl = plot(abo(po3,1),abo(po3,2),'co','era','normal');
+    pl = plot(abo(po3,1),abo(po3,2),'co');
     set(pl,'MarkerSize',5,'Linewidth',4.0,...
         'Color',[rand rand rand])
     abo(po3,:) =[];

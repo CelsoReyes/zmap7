@@ -2,7 +2,7 @@
 % crosssel.m                      Alexander Allmann
 % function to select earthquakes in a cross-section and make them the
 % current catalog in the main map windo
-% Last change    8/95
+%
 %
 
 report_this_filefun(mfilename('fullpath'));
@@ -27,7 +27,7 @@ XI = newa(:,length(newa(1,:)));
 
 %plot the selected eqs and mag freq curve
 newa2 = newa.subset(ll);
-newt2 = newa2;
+ZG.newt2 = newa2;
 newcat = newa.subset(ll);
 pl = plot(newa2(:,length(newa2(1,:))),-newa2(:,7),'xk');
 set(pl,'MarkerSize',5,'LineWidth',1)

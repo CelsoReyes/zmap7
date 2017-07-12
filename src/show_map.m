@@ -29,7 +29,7 @@ if in2 ~= 'calma'
     inp2_field=uicontrol('Style','edit',...
         'Position',[.80 .775 .18 .15],...
         'Units','normalized','String',num2str(it),...
-        'Callback','it=str2double(get(inp2_field,''String''));set(inp2_field,''String'',num2str(it));');
+        'Callback','it=str2double(inp2_field.String);inp2_field.String=num2str(it);');
 
     txt2 = text(...
         'Color',[0 0 0 ],...
@@ -53,7 +53,7 @@ if in2 ~= 'calma'
         inp3_field=uicontrol('Style','edit',...
             'Position',[.80 .575 .18 .15],...
             'Units','normalized','String',num2str(iwl2),...
-            'Callback','iwl2=str2double(get(inp3_field,''String'')); set(inp3_field,''String'',num2str(iwl2));');
+            'Callback','iwl2=str2double(inp3_field.String); inp3_field.String=num2str(iwl2);');
 
     end   % if in = rub
 
@@ -85,7 +85,7 @@ else     % if in2 ~=calma
 
 
     % initial parameter
-    iwl = floor(iwl2* 365/par1); ti = floor((it -t0b)*365/par1);
+    iwl = floor(iwl2* 365/par1); ti = floor((it -t0b)/days(par1));
     [len, ncu] = size(cumuall); len = len-2;
     var1 = zeros(1,ncu);
     var2 = zeros(1,ncu);
@@ -107,7 +107,7 @@ else     % if in2 ~=calma
         as = -((mean1-mean2)./mean1)*100;
 
         strib = 'Change in Percent';
-        stri2 = ['ti=' num2str(ti*par1/365 + t0b)  ];
+        stri2 = ['ti=' num2str(ti*days(par1) + t0b)  ];
 
     end  % if in = = per
 

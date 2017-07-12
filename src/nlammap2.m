@@ -17,8 +17,8 @@ try
         [vox, voy] = lc_xsec2(vo.Latitude',vo.Longitude',vo.Longitude*0,wi,leng,lat1,lon1,lat2,lon2);
     end
 
-    if ~isempty(maepi)
-        [maex, maey] = lc_xsec2(maepi(:,2)',maepi(:,1)',maepi(:,7),wi,leng,lat1,lon1,lat2,lon2);
+    if ~isempty(ZG.maepi)
+        [maex, maey] = lc_xsec2(ZG.maepi.Latitude',ZG.maepi.Longitude',ZG.maepi.Depth,wi,leng,lat1,lon1,lat2,lon2);
     end
 
     if ~isempty(well)

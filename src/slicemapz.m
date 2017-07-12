@@ -2,12 +2,13 @@
 % To plot multiple slices through a 3D data cube
 
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 
-global  tiplo2 ax3 a hs plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
-global ZG.newt2  hndl2 tgl1 Rconst
+global  tiplo2 ax3 a plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
+global hndl2 tgl1 Rconst
 global ps1 ps2 plin pli xt3 bvalsum3 ni zvg gz
 
-warning off
+%warning off
 
 sta = 'lta';
 
@@ -45,7 +46,7 @@ switch(slm)
 
             for i = 1:length(l)
                 s0 = squeeze(zv3(l(i),l2(i),1:ni));
-                cumu = histogram(a(s0,3),(t0b:(teb-t0b)/99:teb));
+                cumu = histogram(ZG.a.Date(s0),(t0b:(teb-t0b)/99:teb));
                 s1 = cumu(tiz:tiz+lta_win);
                 s2 = cumu; s2(tiz:tiz+lta_win) = [];
                 var1= cov(s1);
@@ -81,25 +82,25 @@ switch(slm)
 
         box on
         shading flat; hold on
-        axis([min(gx) max(gx) min(gy) max(gy) ]);
+        hs=axis([min(gx) max(gx) min(gy) max(gy) ]);
         overlay_
 
         caxis([fix1 fix2]);
         colormap(jet);
 
-        set(gca,'TickDir','out','Ticklength',[0.02 0.02],'Fontweight','bold','Tag','hs');
-        hs = gca;
+        set(hs,'TickDir','out','Ticklength',[0.02 0.02],'Fontweight','bold','Tag','hs');
         h5 = colorbar('horz');
         hsp = get(hs,'pos');
         set(h5,'pos',[0.15 hsp(2)-0.1 0.3 0.02],'Tickdir','out','Ticklength',[0.02 0.02],'Fontweight','bold');
         ti = title(['Depth: ' num2str(ds,3) ' km Time: ' num2str(t0b+tiz*tdiff/100,6)],'Fontweight','bold');
 
         uicontrol(,'Units','normal',...
-            'Position',[.96 .93 .04 .04],'String',' V1',...
-             'Callback','anseiswa samp1; timeplot')
+            'Position',[.96 .93 .04 .04],...
+            'String',' V1',...
+             'Callback','anseiswa(''samp1''); timeplot(maybeZGnewt2_maybe_somethingelse_FIXME)')
         uicontrol('Units','normal',...
             'Position',[.96 .85 .04 .04],'String',' V2',...
-             'Callback','anseiswa samp2; timeplot')
+             'Callback','anseiswa(''samp2''); timeplot(maybeZGnewt2_maybe_somethingelse_FIXME)')
         uicontrol('Units','normal',...
             'Position',[.0 .10 .12 .04],'String',' Define X-section',...
              'Callback','action = ''start''; animatorz;')
@@ -182,7 +183,7 @@ switch(slm)
             'String',[num2str(ni)] , ...
             'TooltipString','Change the sample size (between 10 and 300) ', ...
             'Style','edit', ...
-             'Callback','ni = str2num(get(ed5,''string''));  anseiswa tipl2; anseiswa tipl; slm = ''newtime''; slicemapz') ;
+             'Callback','ni = str2num(get(ed5,''string''));  anseiswa(''tipl2''); anseiswa(''tipl''); slm = ''newtime''; slicemapz') ;
 
 
 
@@ -283,12 +284,12 @@ switch(slm)
 
 
         % Plot the events on map in yellow
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         hold on
         %plev =   plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'.k','MarkerSize',4)
         xc1 = plot(mean(gx),mean(gy),'m^','MarkerSize',10,'LineWidth',1.5,'era','normal');
         set(xc1,'Markeredgecolor','w','Markerfacecolor','g')
-        set(xc1,'ButtonDownFcn','anseiswa start1');
+        set(xc1,'ButtonDownFcn',@(~,~)anseiswa('start1'));
         % plot circle containing events as circle
         xx = -pi-0.1:0.1:pi;
         plc1 = plot(x+sin(xx)*Rjma/(cosd(y)*111), y+cos(xx)*Rjma/(cosd(y)*111),'k','era','normal')
@@ -329,11 +330,11 @@ switch(slm)
 
 
         % Plot the events on map in yellow
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         hold on
         xc2 = plot(mean(gx)+std(gx)/2,mean(gy)+std(gx)/2,'ch','MarkerSize',12,'LineWidth',1.0,'era','normal');
         set(xc2,'Markeredgecolor','w','Markerfacecolor','r')
-        set(xc2,'ButtonDownFcn','anseiswa start2');
+        set(xc2,'ButtonDownFcn',@(~,~)anseiswa('start2'));
         % plot circle containing events as circle
         xx = -pi-0.1:0.1:pi;
         plc2 = plot(x+sin(xx)*Rjma/(cosd(y)*111), y+cos(xx)*Rjma/(cosd(y)*111),'k','era','normal')
@@ -365,13 +366,13 @@ switch(slm)
     case 'newdep'
         watchon
         if ds < min(abs(gz)) ; ds = min(abs(gz)); end
-        chil = get(hs,'Children');
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         Z2 = (X2*0 + ds);
         sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sl);
         set(ti,'string',['Depth: ' num2str(ds,3) ' km; Time: ' num2str(t0b+tiz*tdiff/100,6) ]);
-        anseiswa tipl2
-        anseiswa tipl
+        anseiswa('tipl2')
+        anseiswa('tipl')
         if get(hndl3,'Value') > 1 ; slm = 'newtype'; slicemapz; end
 
         watchoff
@@ -395,7 +396,7 @@ switch(slm)
 
                 for i = 1:length(l)
                     s0 = squeeze(zv3(l(i),l2(i),1:ni));
-                    cumu = histogram(a(s0,3),(t0b:(teb-t0b)/99:teb));
+                    cumu = histogram(ZG.a.Date(s0),(t0b:(teb-t0b)/99:teb));
                     s1 = cumu(tiz:tiz+lta_win);
                     s2 = cumu; s2(tiz:tiz+lta_win) = [];
                     var1= cov(s1);
@@ -406,7 +407,7 @@ switch(slm)
                 end % for i
             end % for j
 
-            chil = get(hs,'Children');
+            chil = get(findobj(groot,'Tag','hs'),'Children');
             Z2 = (X2*0 + ds);
             sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
             set(chil(length(chil)),'Cdata',sl);
@@ -423,7 +424,8 @@ switch(slm)
 
 
     case 'newclim'
-        axes(hs)
+        findobj(groot,'Tag','hs');
+        axes(hs);
         caxis([fix1 fix2]);
         colorbar;
         hsp = get(hs,'pos');
@@ -461,7 +463,7 @@ switch(slm)
         if in3 == 8; co = jet; co = co(64:-1:1,:); colormap(co) ; end
 
 
-        chil = get(hs,'Children');
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         Z2 = (X2*0 + ds);
         sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sl);
@@ -571,9 +573,9 @@ switch(slm)
         as = zeros(1,500);
 
         for i = 1:500
-            s0 = ceil(rand(ni,1)*(length(a)-1));
+            s0 = ceil(rand(ni,1)*(ZG.a.Count-1));
             tizr = ceil(  rand(1,1)*(100 -lta_win));
-            cumu = histogram(a(s0,3),(t0b:(teb-t0b)/99:teb));
+            cumu = histogram(ZG.a.Date(s0),(t0b:(teb-t0b)/99:teb));
             s1 = cumu(tizr:tizr+lta_win);
             s2 = cumu; s2(tizr:tizr+lta_win) = [];
             var1= cov(s1);
@@ -585,7 +587,7 @@ switch(slm)
 
         mu = mean(as); varz = std(as);
 
-        chil = get(hs,'Children');
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         zvals = get(chil(length(chil)),'Cdata');
         l = isnan(zvals) == 0;
         zvals(l)  = log10(1- normcdf(zvals(l),mu,varz));
@@ -594,7 +596,7 @@ switch(slm)
         watchoff
         fix1 = -4; fix2 = -1.3;
         slm = 'newclim';
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         j = jet(64);
         j = [  j(64:-1:1,:);  zeros(1,3)+0.4; ];
         colormap(j); colorbar
@@ -606,9 +608,9 @@ switch(slm)
         as = zeros(1,500);
 
         for i = 1:500
-            s0 = ceil(rand(ni,1)*(length(a)-1));
+            s0 = ceil(rand(ni,1)*(ZG.a.Count-1));
             tizr = ceil(  rand(1,1)*(100 -lta_win));
-            cumu = histogram(a(s0,3),(t0b:(teb-t0b)/99:teb));
+            cumu = histogram(ZG.a.Date(s0),(t0b:(teb-t0b)/99:teb));
             s1 = cumu(tizr:tizr+lta_win);
             s2 = cumu; s2(tizr:tizr+lta_win) = [];
             var1= cov(s1);
@@ -620,7 +622,7 @@ switch(slm)
 
         mu = mean(as); varz = std(as);
 
-        chil = get(hs,'Children');
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         zvals = get(chil(length(chil)),'Cdata');
         l = isnan(zvals) == 0;
         zvals(l)  = log10(normcdf(zvals(l),mu,varz));
@@ -629,7 +631,7 @@ switch(slm)
         watchoff
         fix1 = -4; fix2 = -1.3;
         slm = 'newclim';
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         j = jet(64);
         j = [  j ;  zeros(1,3)+0.4; ];
         colormap(j); colorbar

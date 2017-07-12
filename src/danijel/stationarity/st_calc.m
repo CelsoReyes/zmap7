@@ -50,12 +50,12 @@ end
 % ----------------
 
 % Separate first catalog
-vSel_ = ((params.mCatalog(:,3) >= params.fStartFirstPeriod) & (params.mCatalog(:,3) <= params.fEndFirstPeriod));
-params.mFirstCatalog = params.mCatalog(vSel_,:);
+vSel_ = ((params.mCatalog.Date >= params.fStartFirstPeriod) & (params.mCatalog.Date <= params.fEndFirstPeriod));
+params.mFirstCatalog = params.mCatalog.subset(vSel_);
 
 % Separate second catalog
-vSel_ = ((params.mCatalog(:,3) >= params.fStartSecondPeriod) & (params.mCatalog(:,3) <= params.fEndSecondPeriod));
-params.mSecondCatalog = params.mCatalog(vSel_,:);
+vSel_ = ((params.mCatalog.Date >= params.fStartSecondPeriod) & (params.mCatalog.Date <= params.fEndSecondPeriod));
+params.mSecondCatalog = params.mCatalog.subset(vSel_);
 
 % Create indices of first catalog
 params.rOptions.caFirstNodeIndices = ex_CreateIndexCatalog(params.mFirstCatalog, params.mPolygon, params.bMap, ...

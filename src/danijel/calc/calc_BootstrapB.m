@@ -26,7 +26,7 @@ if bDebug
 end
 
 % Get number of events in catalog
-nLength = length(mCatalog(:,1));
+nLength = mCatalog.Count;
 % Init container
 mResult = [];
 % Bootstrap loop
@@ -36,7 +36,7 @@ for nRuns = 1:nNumberRuns
   % Get the random selection of events (multiples allowed)
   vRnd = ceil(rand(nLength,1) * nLength);
   % Create the bootstrapped catalog
-  mLoopCatalog = mCatalog(vRnd,:);
+  mLoopCatalog = mCatalog.subset(vRnd);
   % Reduce bootstrapped catalog to all events with M >= Mc
   fMc = calc_Mc(mLoopCatalog, 5, fBinning);
   vSel = mLoopCatalog(:,6) >= fMc;

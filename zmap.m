@@ -68,7 +68,7 @@ mainfault = [];
 coastline = [];
 well = [];
 stat = [];
-a = [];
+ZG.a = [];
 faults = [];
 
 %{

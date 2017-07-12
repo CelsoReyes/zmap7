@@ -156,7 +156,7 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Sampling
 % Time steps in days
-params.vTbin=[floor((params.fT-params.fTstart)*365/100)]';
+params.vTbin=[floor((params.fT-params.fTstart)/days(100))]';
 %params.vTbin=14;
 % No of Events per sample
 params.vN=[150]';
@@ -165,7 +165,7 @@ params.nMinimumNumber=50;        % Minimum Number of events if working with
 params.fRadius=80;               % Radius (if working with constant radius
 params.fMaxRadius=50;           % Max Radius if working with constant N
 params.fBinning=0.1;             % Bin size for magnitude binning
-params.fTimePeriod=365;          % Period lengths to be compared in days
+params.fTimePeriodDays=days(365);          % Period lengths to be compared in days
 
 params.vLonLim=[119.5 122.5];   % boundary of polygon for GRID
 params.vLatLim=[22 25];         % boundary of polygon for GRID

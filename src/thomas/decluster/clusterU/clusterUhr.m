@@ -39,11 +39,11 @@ function [mCatclus] =  clusterUhr(mCatalog, Mainmag, Mc, t1, t2)
 % mc completeness magnitude
 % twindow duration in time in which to look for related events
 
-Dtafter = t2/365; %30 days in decimal years
-Dtbefore = t1/365; %2 days in decimal years
+Dtafter = days(t2); %30 days in decimal years
+Dtbefore = days(t1); %2 days in decimal years
 clusterno = 1;
 
-% l = mCatalog(:,6) >= Mc & mCatalog(:,3)>=startyear;
+% l = mCatalog.Magnitude >= Mc & mCatalog.Date>=startyear;
 b = [mCatalog(:,1:10) mCatalog(:,1:4)*0 ];
 le = b.Count;
 

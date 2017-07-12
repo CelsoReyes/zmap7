@@ -16,7 +16,7 @@ if ic == 0
 
     inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...
         'Units','normalized','String',num2str(it),...
-        'Callback','it=str2double(get(inp5,''String'')); set(inp5,''String'',num2str(it));');
+        'Callback','it=str2double(inp5.String); inp5.String=num2str(it);');
 
     txt5 = text(...
         'Color',[0 0 0 ],...
@@ -37,8 +37,8 @@ if ic == 0
 else
 
     stri = ['Map of mean Z at time T'];
-    it = (it -t0b)*365/par1;
-    stri2 = ['ti=' num2str(it*par1/365 + t0b)  ];
+    it = (it -t0b)/days(par1);
+    stri2 = ['ti=' num2str(it*days(par1) + t0b)  ];
     meanZ_it = Zsumall(it,:);                         % pick meanZ at time it
 
     re3 = reshape(meanZ_it,length(gy),length(gx));

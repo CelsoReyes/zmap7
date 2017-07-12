@@ -9,7 +9,7 @@ function [timp] = timabs(catalog)
     %  (iyr,imo,iday,ihr,min) in catalog.
     %  This value is returned as argument timp.
     %  The routine is the adapted version for Matlab of the subroutine timabs, din aspar.
-    %  Last modification: 5/2001. B. Enescu
+    %  modified 5/2001. B. Enescu
 
     Datad = [0,31,59,90,120,151,181,212,243,273,304,334]';
 

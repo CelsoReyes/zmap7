@@ -5,7 +5,7 @@ function eqtime = clustime(some_cat)
   
     %rewritten by Celso Reyes 2017
     
-    global ZG.newcat
+    ZG=ZmapGlobal.Data;
     if exist('some_cat','var')
         ZG.newcat = some_cat;
     else

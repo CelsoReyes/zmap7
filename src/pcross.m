@@ -18,7 +18,7 @@ if sel == 'in'
     dx = 1.00 ;
     ni = 500;
 
-    def = {num2str(maepi(1,3))};
+    def = {num2str(ZG.maepi.Date(1))};
     ni2 = inputdlg('Input Time of Mainshock ?','Input',1,def);
     l = ni2{:};
     mati = str2double(l);
@@ -44,17 +44,17 @@ if sel == 'in'
     freq_field=uicontrol('Style','edit',...
         'Position',[.60 .50 .22 .10],...
         'Units','normalized','String',num2str(ni),...
-        'Callback','ni=str2double(get(freq_field,''String'')); set(freq_field,''String'',num2str(ni));');
+        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);');
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.60 .40 .22 .10],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(get(freq_field2,''String'')); set(freq_field2,''String'',num2str(dx));');
+        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.60 .30 .22 .10],...
         'Units','normalized','String',num2str(dd),...
-        'Callback','dd=str2double(get(freq_field3,''String'')); set(freq_field3,''String'',num2str(dd));');
+        'Callback','dd=str2double(freq_field3.String); freq_field3.String=num2str(dd);');
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
@@ -173,8 +173,8 @@ if sel == 'ca'
     %
     t0b = min(newa.Date)  ;
     n = newa.Count;
-    teb = newa(n,3) ;
-    tdiff = round((teb - t0b)*365/par1);
+    teb = newa.Date(n) ;
+    tdiff = round(days(teb-t0b)/par1);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -212,7 +212,7 @@ if sel == 'ca'
 
         % call the p-value function
         % first find out what magco is
-        l = b.Date > mati + 3/365;
+        l = b.Date > mati + days(3);
         %[bv magco stan av me mer me2,  pr] =  bvalca3(b(l,:),1,1);
         %l = b.Magnitude > magco+0.1;
         ZG.newt2 = b;

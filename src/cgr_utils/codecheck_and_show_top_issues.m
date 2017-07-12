@@ -1,6 +1,6 @@
 fn=dir('*.m');
 fn={fn.name};
-a=checkcode(fn);
+ZG.a=checkcode(fn);
 z=struct('message',''); 
 for n=1:numel(a)
     for m=1:numel(a{n})

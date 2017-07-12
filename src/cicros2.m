@@ -5,6 +5,7 @@
 %  Input Ni:
 %
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 try
     delete(plos1)
 catch ME
@@ -37,7 +38,7 @@ pause(0.1)
 n = length(newa(1,:));
 l = sqrt(((newa(:,n) - xa0)).^2 + ((newa(:,7) + ya0)).^2) ;
 [s,is] = sort(l);
-newt2 = newa(is(:,1),:) ;
+ZG.newt2 = newa(is(:,1),:) ;
 l =  sort(l);
 
 if met == 'ni'
@@ -80,4 +81,4 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 % Call program "timeplot to plot cumulative number
 %
 clear l s is
-timeplot
+timeplot(ZG.newt2)

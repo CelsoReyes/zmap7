@@ -12,9 +12,9 @@ eval(do)
 
 % lets addev the mainshock as the fisrt and largest event...
 
-l = ZG.newt2.Date > maepi(1,3) & ZG.newt2.Date < mati + tlen/365;
+l = ZG.newt2.Date > ZG.maepi.Date(1) & ZG.newt2.Date < mati + days(tlen);
 newt3 =  ZG.newt2(l,1:9);
-newt3 = [maepi(1:1:9) ; newt3 ];
+newt3 = [ZG.maepi(1:1:9) ; newt3 ];
 
 lam = (newt3(:,2)-floor(newt3(:,2)))*100*6/10;
 lom = (newt3(:,1)-floor(newt3(:,1)))*100*6/10;

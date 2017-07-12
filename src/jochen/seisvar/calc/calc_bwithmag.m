@@ -28,13 +28,13 @@ if nargin > 3, error('Too many arguments!'); end
 mBvalue = [];
 
 % Set fix values
-fMinMag = min(mCatalog(:,6));
-fMaxMag = max(mCatalog(:,6));
+fMinMag = min(mCatalog.Magnitude);
+fMaxMag = max(mCatalog.Magnitude);
 
 for fMag=fMinMag:fBinning:fMaxMag
     % Select magnitude range
-    vSel = mCatalog(:,6) >= fMag-0.05;
-    mCat = mCatalog(vSel,:);
+    vSel = mCatalog.Magnitude >= fMag-0.05;
+    mCat = mCatalog.subset(vSel);
     % Determine size of background catalog
     [nRow, nCol] = size(mCat);
     % Check for minimum number of events

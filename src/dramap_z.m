@@ -90,7 +90,7 @@ set(gca,'projection','perspective');
 % set(pl,'LineWidth',2,'MarkerSize',14,...
 %     'MarkerFaceColor','w','MarkerEdgeColor','k')
 %
-%pl = plotm(maepi(:,2),maepi(:,1),'hw');
+%pl = plotm(ZG.maepi.Latitude,ZG.maepi.Longitude,'hw');
 %set(pl,'LineWidth',1,'MarkerSize',14,...
 %    'MarkerFaceColor','w','MarkerEdgeColor','k')
 %zdatam(handlem('allline'),max(max(tmap))) % keep line on surface

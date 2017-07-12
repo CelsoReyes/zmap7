@@ -1,11 +1,11 @@
-function ZG.newt2=buildcat(var1)
+function newt2=buildcat(var1)
     %buildcat.m                                A.Allmann
     %builds declustered catalog with equivalent events
     %
    
     % highly modified by Celso Reyes, 2017
-    global ZG.newcat equi clus eqtime bg original backequi bgevent
-    
+    global equi clus eqtime original backequi bgevent
+    ZG=ZmapGlobal.Data;
     
     tm1=find(clus==0);    %elements which are not related to a cluster
     
@@ -38,7 +38,7 @@ function ZG.newt2=buildcat(var1)
     end
     if exist('tmpcat','var')
         tmpcat.sort('Date')
-        ZG.newt2 = tmpcat;
+        newt2 = tmpcat;
     else
         warning('tmpcat was never created');
     end

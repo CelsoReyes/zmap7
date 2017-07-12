@@ -139,8 +139,8 @@ switch (bc)
             [lat,lon] = meshgrat(tmap,tmapleg);
             hw = waitbar(0,'Please wait...');
             for i=1:size(a,1), % computation here %
-                waitbar(i/length(a))
-                depq(i) = interp2(lon,lat,tmap,a(i,1),a(i,2));
+                waitbar(i/ZG.a.Count)
+                depq(i) = interp2(lon,lat,tmap,ZG.a.Longitude(i),ZG.a.Latitude(i));
             end
             close(hw)
             depq=depq'
@@ -199,9 +199,9 @@ switch (bc)
             clear('depm')
             [lat,lon] = meshgrat(tmap,tmapleg);
             hw = waitbar(0,'Please wait...');
-            for i=1:size(maepi,1), % computation here %
-                waitbar(i/length(maepi))
-                depm(i) = interp2(lon,lat,tmap,maepi(i,1),maepi(i,2));
+            for i=1:size(ZG.maepi,1), % computation here %
+                waitbar(i/length(ZG.maepi))
+                depm(i) = interp2(lon,lat,tmap,ZG.maepi.Longitude(i),ZG.maepi.Latitude(i));
             end
             close(hw)
             depm=depm'
@@ -209,7 +209,7 @@ switch (bc)
         end
 
         if inp == 1 
-            plom = plot3m(maepi(:,2),maepi(:,1),depm+25,'hm');
+            plom = plot3m(ZG.maepi.Latitude,ZG.maepi.Longitude,depm+25,'hm');
             set(plom,'LineWidth',1.5,'MarkerSize',12,...
                 'MarkerFaceColor','y','MarkerEdgeColor','k')
         end

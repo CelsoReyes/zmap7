@@ -56,8 +56,8 @@ for jj=1:nJ
             %             [mCatalog, vMain] = calc_SynCat(params.nSynCatSize,2.5,2.5,8,100,...
             %                 'January 1,1975','December 31,1990',6.5,params.nSynCat,...
             %                 params.nSynMode,params.mCatalog,params.vPSQ);
-            [Ntmp,Xi]=sort(mCatalog(:,3));
-            mCatalog=mCatalog(Xi,:);clear Xi Ntmp;
+            [Ntmp,Xi]=sort(mCatalog.Date);
+            mCatalog=mCatalog.subset(Xi);clear Xi Ntmp;
             params.mCatalog=mCatalog;
             [pathstr, name, ext, versn] = fileparts(params.sFile);
             clear ext versn;
@@ -110,8 +110,8 @@ for jj=1:nJ
         %                 2 : both 0 + 1
         case 0 % Perform Monte Carlo Simulation for declustering
             mNumDeclus_=zeros(size(params.mCatalog,1),1);
-            vSel=(params.mCatalog(:,6)>=params.fMc);
-            [declusCat,mNumDeclus_(vSel)] = MonteDeclus(params.mCatalog(vSel,:),...
+            vSel=(params.mCatalog.Magnitude>=params.fMc);
+            [declusCat,mNumDeclus_(vSel)] = MonteDeclus(params.mCatalog.subset(vSel),...
                 params.nSimul,params.nDeclusMode,params.mReasenParam);
             if params.nSynCat~=2
                 if jj==1
@@ -141,8 +141,8 @@ for jj=1:nJ
             [params] = sr_calcZ(params);
         case 2
             mNumDeclus_=zeros(size(params.mCatalog,1),1);
-            vSel=(params.mCatalog(:,6)>=params.fMc);
-            [declusCat,mNumDeclus_(vSel)] = MonteDeclus(params.mCatalog(vSel,:),...
+            vSel=(params.mCatalog.Magnitude>=params.fMc);
+            [declusCat,mNumDeclus_(vSel)] = MonteDeclus(params.mCatalog.subset(vSel),...
                 params.nSimul,params.nDeclusMode,params.mReasenParam);
             if params.nSynCat==0
                 if jj==1

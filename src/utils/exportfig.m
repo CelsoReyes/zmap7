@@ -889,8 +889,8 @@ function c = LocalIsHG(obj,hgtype)
         c = strcmp(get(obj,'type'),hgtype);
     end
 
-function c = LocalHas3DPlot(a)
-    zticks = LocalGetAsCell(a,'ZTickLabel');
+function c = LocalHas3DPlot(A)
+    zticks = LocalGetAsCell(A,'ZTickLabel');
     c = 0;
     for k=1:length(zticks)
         if ~isempty(zticks{k})
@@ -914,13 +914,13 @@ function r = LocalUnionRect(r1,r2)
         r = r1;
     end
 
-function r = LocalAxesTightBoundingBox(axesR, a)
-    if strcmp(get(a,'handlevisibility'),'on')
-        r = get(a,'position');
+function r = LocalAxesTightBoundingBox(axesR, A)
+    if strcmp(get(A,'handlevisibility'),'on')
+        r = get(A,'position');
     else
         r = [];
     end
-    atext = findall(a,'type','text','visible','on');
+    atext = findall(A,'type','text','visible','on');
     if ~isempty(atext)
         set(atext,'units','points');
         res=LocalGetAsCell(atext,'extent');
@@ -928,27 +928,27 @@ function r = LocalAxesTightBoundingBox(axesR, a)
             r = LocalUnionRect(r,res{n});
         end
     end
-    if strcmp(get(a,'visible'),'on')
+    if strcmp(get(A,'visible'),'on')
         r = LocalUnionRect(r,[0 0 axesR(3:4)]);
-        oldunits = get(a,'fontunits');
-        set(a,'fontunits','points');
-        label = text(0,0,'','parent',a,...
+        oldunits = get(A,'fontunits');
+        set(A,'fontunits','points');
+        label = text(0,0,'','parent',A,...
             'units','points',...
-            'fontsize',get(a,'fontsize'),...
-            'fontname',get(a,'fontname'),...
-            'fontweight',get(a,'fontweight'),...
-            'fontangle',get(a,'fontangle'),...
+            'fontsize',get(A,'fontsize'),...
+            'fontname',get(A,'fontname'),...
+            'fontweight',get(A,'fontweight'),...
+            'fontangle',get(A,'fontangle'),...
             'visible','off');
-        fs_fsz = get(a,'fontsize');
+        fs_fsz = get(A,'fontsize');
 
         % handle y axis tick labels
         ry = [0 0 0 axesR(4)];
-        ylabs = get(a,'yticklabels');
-        yticks = get(a,'ytick');
+        ylabs = get(A,'yticklabels');
+        yticks = get(A,'ytick');
         maxw = 0;
         if ~isempty(ylabs)
             for n=1:size(ylabs,1)
-                if strcmp(get(a,'yscale'),'log')
+                if strcmp(get(A,'yscale'),'log')
                     set(label,'string',['10^' ylabs(n,:)]);
                 else
                     set(label,'string',ylabs(n,:));
@@ -956,7 +956,7 @@ function r = LocalAxesTightBoundingBox(axesR, a)
                 ext = get(label,'extent');
                 maxw = max(maxw,ext(3));
             end
-            if strcmp(get(a,'yaxislocation'),'left')
+            if strcmp(get(A,'yaxislocation'),'left')
                 ry(1) = -(maxw+5);
             else
                 ry(1) = axesR(3);
@@ -965,12 +965,12 @@ function r = LocalAxesTightBoundingBox(axesR, a)
             ry(3) = maxw+5;
             ry(4) = ry(4) + ext(4);
             if ~isempty(yticks)
-                if ~strcmp(get(a,'yscale'),'log')  &&  ...
+                if ~strcmp(get(A,'yscale'),'log')  &&  ...
                         ((str2num(ylabs(1,:)) ~= yticks(1)) | ...
                         (str2num(ylabs(end,:)) ~= yticks(end)))
                     set(label,'string','10^1');
                     ext = get(label,'extent');
-                    if strcmp(get(a,'xaxislocation'),'bottom')
+                    if strcmp(get(A,'xaxislocation'),'bottom')
                         ry(4) = ry(4) + ext(4);
                     end
                 end
@@ -980,17 +980,17 @@ function r = LocalAxesTightBoundingBox(axesR, a)
 
         % handle x axis tick labels
         rx = [0 0 axesR(3) 0];
-        xlabs = get(a,'xticklabels');
-        xticks = get(a,'xtick');
+        xlabs = get(A,'xticklabels');
+        xticks = get(A,'xtick');
         if ~isempty(xlabs)
-            if strcmp(get(a,'xscale'),'log')
+            if strcmp(get(A,'xscale'),'log')
                 set(label,'string',['10^' xlabs(1,:)]);
             else
                 set(label,'string',xlabs(1,:));
             end
             ext1 = get(label,'extent');
             rx(1) = -ext1(3)/2;
-            if strcmp(get(a,'xscale'),'log')
+            if strcmp(get(A,'xscale'),'log')
                 set(label,'string',['10^' xlabs(size(xlabs,1),:)]);
             else
                 set(label,'string',xlabs(size(xlabs,1),:));
@@ -999,16 +999,16 @@ function r = LocalAxesTightBoundingBox(axesR, a)
             rx(4) = max(ext1(4),ext2(4));
             rx(2) = -rx(4);
             rx(3) = axesR(3) + (ext2(3) + ext1(3))/2;
-            if strcmp(get(a,'xaxislocation'),'top')
+            if strcmp(get(A,'xaxislocation'),'top')
                 rx(2) = rx(2) + axesR(4);
             end
             if ~isempty(xticks)
-                if ~strcmp(get(a,'xscale'),'log')  &&  ...
+                if ~strcmp(get(A,'xscale'),'log')  &&  ...
                         ((str2num(xlabs(1,:)) ~= xticks(1)) | ...
                         (str2num(xlabs(end,:)) ~= xticks(end)))
                     set(label,'string','10^1');
                     ext = get(label,'extent');
-                    if strcmp(get(a,'xaxislocation'),'bottom')
+                    if strcmp(get(A,'xaxislocation'),'bottom')
                         rx(4) = rx(4) + ext(4)+5;
                         rx(2) = rx(2) - ext(4)-5;
                     else
@@ -1019,7 +1019,7 @@ function r = LocalAxesTightBoundingBox(axesR, a)
             end
             r = LocalUnionRect(r,rx);
         end
-        set(a,'fontunits',oldunits);
+        set(A,'fontunits',oldunits);
         delete(label);
     end
 

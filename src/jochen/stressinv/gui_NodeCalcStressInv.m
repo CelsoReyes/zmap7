@@ -108,7 +108,7 @@ result.fS3Trend = data2(2,6);
 result.fS3Plunge = data2(2,7);
 
 % Number of events
-[nY, nX] = size(mCatalog);
+nY = mCatalog.Count;
 result.nNumEvents = nY;
 
 % Compute diversity

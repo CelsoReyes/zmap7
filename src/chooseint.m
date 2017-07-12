@@ -186,7 +186,7 @@ switch(ac3)
     case 'eva7'
         in3 =get(hndl7,'Value');
         if in3 == 1 
-            epimax2 = plot3(maepi(:,2),maepi(:,1),-maepi(:,7),'hm');
+            epimax2 = plot3(ZG.maepi.Latitude,ZG.maepi.Longitude,-ZG.maepi.Depth,'hm');
             set(epimax2,'LineWidth',1.5,'MarkerSize',12,...
                 'MarkerFaceColor','y','MarkerEdgeColor','k')
         end

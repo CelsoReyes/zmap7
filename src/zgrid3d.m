@@ -64,8 +64,8 @@ if sel == 'ca'
 
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
-    teb = a(n,3) ;
-    tdiff = round((teb - t0b)*365/par1);
+    teb = ZG.a.Date(n) ;
+    tdiff = round(days(teb-t0b)/par1);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points

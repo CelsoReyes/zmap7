@@ -1,6 +1,6 @@
 function ploop31(var1)
     %ploop.m                          B. Enescu
-    %Last change   6/95
+    %
     %function to calculat the parameters of p-value
     %calls itsself with different parameters for different loops in programm
     %The covariance matrix is 3X3, as in AFT, IASPEI software (see ploop3.m for

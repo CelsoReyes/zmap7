@@ -33,7 +33,7 @@ else
   [vSel] = CreateSelectionVector(mCatalog, nType, fAngle, nRake1);
 end
 
-mNewCatalog = mCatalog(vSel,:);
+mNewCatalog = mCatalog.subset(vSel);
 
 % --- Helper function ---
 % Select earthquakes based on rake of one given column

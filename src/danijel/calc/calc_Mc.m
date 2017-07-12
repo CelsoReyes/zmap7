@@ -78,7 +78,7 @@ if nMethod == 1
     fMc = calc_McMaxCurvature(mCatalog);
 elseif nMethod == 2
     % Fixed Mc (Mc = Mmin)
-    fMc = min(mCatalog(:,6));
+    fMc = min(mCatalog.Magnitude);
 elseif nMethod == 3
     % Automatic Mc90
     [fDummy, fDummy, fMc] = calc_McBest(mCatalog, fBinning);

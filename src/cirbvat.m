@@ -37,7 +37,7 @@ pause(0.1)
 %
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
@@ -46,7 +46,7 @@ zmap_message_center.set_message('Message',messtext)
 %
 
 l3 = l <=ra;
-newt2 = ZG.newt2(l3,:);
+ZG.newt2 = ZG.newt2(l3,:);
 R2 = l(ni);
 global t1 t2 t3 t4
 
@@ -58,7 +58,7 @@ bdiff(ZG.newt2(lt,:));
 
 % end % <- A random END that either doesn't belong here or is meant to suppress the rest. -CGR
 [st,ist] = sort(ZG.newt2);
-newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2 = ZG.newt2(ist(:,3),:);
 R2 = ra;
 
 %

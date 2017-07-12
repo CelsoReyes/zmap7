@@ -23,11 +23,11 @@ fMagHi = vFMD(1,1);
 vSel = vFMD(1,:) <= fMagHi & vFMD(1,:) >= fMc-.0001;
 vMagnitudes = vFMD(1,vSel);
 
-[nXSize, nYSize] = size(mCatalog);
+nXSize = mCatalog.Count;
 % Selectoin of magnitudes M>Mc to calculate b-value
 if nXSize > 1
-    vSel = mCatalog(:,6) >= fMc-0.05;
+    vSel = mCatalog.Magnitude >= fMc-0.05;
 else
-    vSel = mCatalog(:,1) >= fMc-0.05;
+    vSel = mCatalog.Longitude >= fMc-0.05;
 end
 return

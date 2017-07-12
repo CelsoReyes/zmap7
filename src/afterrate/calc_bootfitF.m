@@ -1,31 +1,30 @@
-function [output] = calc_bootfitF(a,time,timef,bootloops,maepi)
-    % function [output] = calc_bootfitF(a,time,timef,bootloops,maepi);
+function [output] = calc_bootfitF(mycat,time,timef,bootloops,ZG.maepi)
+    % function [output] = calc_bootfitF(mycat,time,timef,bootloops,ZG.maepi);
     % --------------------------------------------------
     % Plots Ncum observed vs. Ncum modeled for specified time windows
     %
     % Input variables:
-    % a         : earthquake catalog
+    % mycat     : earthquake catalog
     % time      : learning period fo fit Omori parameters
     % timef     : forecast period
     % bootloops : Number of bootstraps
-    % maepi     : mainshock
+    % ZG.maepi     : mainshock
     % Output variables:
     % output    : [pval pstd cval cstd kval kstd sigma fStdBst fRc_Flaw fRc_Bst]
 
     % S.Neukomm / S.Wiemer / J.Woessner
-    % last update: 30.07.03
 
     % Surpress warnings from fmincon
-    warning off;
-report_this_filefun(mfilename('fullpath'));
+    %warning off;
+    report_this_filefun(mfilename('fullpath'));
 
-    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,zeros(size(a,1),1));
-    date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
+    date_matlab = datenum(mycat.Date);
+    date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = ZG.a.subset(l);
+    eqcatalogue = mycat.subset(l);
 
     l = tas <= time;
     time_as=tas(l);

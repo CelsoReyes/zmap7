@@ -44,12 +44,12 @@ if ~exist('fBinning')
 end
 
 % Check input
-[nY,nX] = size(mCatalog);
+nY = mCatalog.Count;
 
 if (~isempty(mCatalog) & nX == 1)
     vMag = mCatalog;
 elseif (~isempty(mCatalog)  &&  nX > 1)
-    vMag = mCatalog(:,6);
+    vMag = mCatalog.Magnitude;
 else
     disp('No magnitude data available!');
     return

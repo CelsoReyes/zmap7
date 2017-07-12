@@ -34,9 +34,9 @@ zmap_message_center.clear_message();;think
 %
 t0b = min(ZG.a.Date)  ;
 n = ZG.a.Count;
-teb = a(n,3) ;
-tdiff = round((teb - t0b)*365/par1);
-cumu = zeros(length(t0b:par1/365:teb)+2);
+teb = ZG.a.Date(n) ;
+tdiff = round(days(teb-t0b)/par1);
+cumu = zeros(length(t0b:days(par1):teb)+2);
 ncu = length(cumu);
 cumuall = zeros(ncu,length(newgri(:,1)));
 loc = zeros(3,length(newgri(:,1)));
@@ -71,7 +71,7 @@ for i= 1:length(newgri(:,1))
     cumu = cumu * 0;
     % time (bin) calculation
     n = b.Count;
-    cumu = histogram(b(1:n,3),t0b:par1/365:teb);
+    cumu = histogram(b(1:n,3),t0b:days(par1):teb);
     cumu2 = cumsum(cumu);
     %calcsimp
     %cvg = [cvg ; cv rcv];

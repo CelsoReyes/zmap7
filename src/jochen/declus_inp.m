@@ -20,7 +20,7 @@ end
 
 % Check if catalog has hour and minute saved
 %
-[m,n] = size(mCatalog);
+m = mCatalog.Count;
 if n < 9 
     errdisp = ...
         ['The catalog does not   '

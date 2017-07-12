@@ -1,9 +1,9 @@
-function bfitnew(ZG.newcat)
+function bfitnew(mycat)
     %bfitnew.m                      A.Allmann  10/94
     %  modified  Stefan Wiemer 12/94
     %
     %   Calculates Freq-Mag functions (b-value) for a catalog
-    %   works on ZG.newcat
+    %  originally, "mycat" was "newcat"
     global  cluscat mess bfig backcat
     global ttcat xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
@@ -44,10 +44,10 @@ function bfitnew(ZG.newcat)
 
     uicontrol('Units','normal',...
         'Position',[.0 .55 .10 .06],'String','Automatic',...
-         'Callback','bdiff(ZG.newcat)');
+         'Callback','bdiff(mycat)');
 
-    maxmag = max(ZG.newcat.Magnitude);
-    mima = min(ZG.newcat.Magnitude);
+    maxmag = max(mycat.Magnitude);
+    mima = min(mycat.Magnitude);
     if mima > 0 mima = 0;end
 
     % number of mag units
@@ -57,7 +57,7 @@ function bfitnew(ZG.newcat)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
 
-    [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:0.1:maxmag));
+    [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
@@ -76,7 +76,7 @@ function bfitnew(ZG.newcat)
     xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     set(gca,'Color',color_bg)
-    set(gca,'XLim',[min(ZG.newcat.Magnitude)-0.5  max(ZG.newcat.Magnitude)+0.3])
+    set(gca,'XLim',[min(mycat.Magnitude)-0.5  max(mycat.Magnitude)+0.3])
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
@@ -144,7 +144,7 @@ function bfitnew(ZG.newcat)
     set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     uicontrol('Style','Pushbutton',...
-        'Callback','bfitnew(ZG.newcat)',...
+        'Callback','bfitnew(mycat)',...
         'Units','normalized',...
         'String','Repeat','Position',[0.85 .02 .12 .08]);
 

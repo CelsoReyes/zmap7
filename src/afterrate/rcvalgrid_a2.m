@@ -3,7 +3,7 @@
 % Uses view_rcva_a2 to plot the results
 %
 % For the execution of this program, the "Cumulative Window" should have been opened before.
-% Otherwise the matrix "maepi", used by this program, does not exist.
+% Otherwise the matrix "ZG.maepi", used by this program, does not exist.
 %
 % J. Woessner
 % last update: 14.02.05
@@ -31,7 +31,7 @@ if sel == 'in'
     bGridEntireArea = 0; % Grid area, interactive or entire map
 
     % cut catalog at mainshock time:
-    l = ZG.a.Date > maepi(1,3);
+    l = ZG.a.Date > ZG.maepi.Date(1);
     ZG.a=ZG.a.subset(l);
 
     % cat at selecte magnitude threshold
@@ -40,7 +40,7 @@ if sel == 'in'
     ZG.newt2 = a;
 
     ZG.hold_state2=true;
-    timeplot
+    timeplot(newt2)
     ZG.hold_state2=false;
 
 
@@ -66,7 +66,7 @@ if sel == 'in'
     %         'Position',labelPos,...
     %         'Units','normalized',...
     %         'String',labelList2,...
-    %         'Callback','inb2 =get(hndl2,''Value''); ');
+    %         'Callback','inb2=hndl2.Value; ');
     %
     %     set(hndl2,'value',5);
 
@@ -85,75 +85,74 @@ if sel == 'in'
     freq_field=uicontrol('Style','edit',...
         'Position',[.30 .60 .12 .08],...
         'Units','normalized','String',num2str(ni),...
-        'Callback','ni=str2double(get(freq_field,''String'')); set(freq_field,''String'',num2str(ni));set(tgl2,''value'',0); set(tgl1,''value'',1)');
+        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);tgl2.Value=0; tgl1.Value=1;');
 
 
     freq_field0=uicontrol('Style','edit',...
         'Position',[.30 .50 .12 .08],...
         'Units','normalized','String',num2str(ra),...
-        'Callback','ra=str2double(get(freq_field0,''String'')); set(freq_field0,''String'',num2str(ra)) ; set(tgl2,''value'',1); set(tgl1,''value'',0)');
+        'Callback','ra=str2double(freq_field0.String); freq_field0.String=num2str(ra); tgl2.Value=1; tgl1.Value=0;');
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.30 .40 .12 .08],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(get(freq_field2,''String'')); set(freq_field2,''String'',num2str(dx));');
+        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.30 .30 .12 .080],...
         'Units','normalized','String',num2str(dy),...
-        'Callback','dy=str2double(get(freq_field3,''String'')); set(freq_field3,''String'',num2str(dy));');
+        'Callback','dy=str2double(freq_field3.String); freq_field3.String=num2str(dy);');
 
     freq_field4=uicontrol('Style','edit',...
         'Position',[.6 .30 .12 .080],...
         'Units','normalized','String',num2str(time),...
-        'Callback','time=str2double(get(freq_field4,''String'')); set(freq_field4,''String'',num2str(time));');
-
+        'Callback','time_field.Value=str2double(time_field.String);time=days(time_field.Value);');
     freq_field5=uicontrol('Style','edit',...
         'Position',[.6 .40 .12 .080],...
         'Units','normalized','String',num2str(timef),...
-        'Callback','timef=str2double(get(freq_field5,''String'')); set(freq_field5,''String'',num2str(timef));');
+        'Callback','timef=str2double(freq_field5.String); freq_field5.String=num2str(timef);');
 
     freq_field6=uicontrol('Style','edit',...
         'Position',[.6 .50 .12 .080],...
         'Units','normalized','String',num2str(bootloops),...
-        'Callback','bootloops=str2double(get(freq_field6,''String'')); set(freq_field6,''String'',num2str(bootloops));');
+        'Callback','bootloops=str2double(freq_field6.String); freq_field6.String=num2str(bootloops);');
 
     freq_field7=uicontrol('Style','edit',...
         'Position',[.30 .20 .12 .080],...
         'Units','normalized','String',num2str(Nmin),...
-        'Callback','Nmin=str2double(get(freq_field7,''String'')); set(freq_field7,''String'',num2str(Nmin));');
+        'Callback','Nmin=str2double(freq_field7.String); freq_field7.String=num2str(Nmin);');
 
     freq_field8=uicontrol('Style','edit',...
         'Position',[.6 .60 .12 .080],...
         'Units','normalized','String',num2str(fMaxRadius),...
-        'Callback','fMaxRadius=str2double(get(freq_field8,''String'')); set(freq_field8,''String'',num2str(fMaxRadius));');
+        'Callback','fMaxRadius=str2double(freq_field8.String); freq_field8.String=num2str(fMaxRadius);');
 
     tgl1 = uicontrol('Style','radiobutton',...
         'string','Number of Events:',...
-        'Position',[.05 .60 .2 .0800], 'Callback','set(tgl2,''value'',0)',...
+        'Position',[.05 .60 .2 .0800], 'Callback','tgl2.Value=0;',...
         'Units','normalized');
 
     set(tgl1,'value',0);
 
     tgl2 =  uicontrol('Style','radiobutton',...
         'string','OR: Constant Radius',...
-        'Position',[.05 .50 .2 .080], 'Callback','set(tgl1,''value'',0)',...
+        'Position',[.05 .50 .2 .080], 'Callback','tgl1.Value=0;',...
         'Units','normalized');
     set(tgl2,'value',1);
 
     create_grid =  uicontrol('Style','radiobutton',...
-        'string','Calculate a new grid', 'Callback','set(load_grid,''value'',0), set(prev_grid,''value'',0)','Position',[.78 .55 .2 .080],...
+        'string','Calculate a new grid', 'Callback','load_grid.Value=0; prev_grid.Value=0;','Position',[.78 .55 .2 .080],...
         'Units','normalized');
 
     set(create_grid,'value',1);
 
     prev_grid =  uicontrol('Style','radiobutton',...
-        'string','Reuse the previous grid', 'Callback','set(load_grid,''value'',0),set(create_grid,''value'',0)','Position',[.78 .45 .2 .080],...
+        'string','Reuse the previous grid', 'Callback','load_grid.Value=0;create_grid.Value=0;','Position',[.78 .45 .2 .080],...
         'Units','normalized');
 
 
     load_grid =  uicontrol('Style','radiobutton',...
-        'string','Load a previously saved grid', 'Callback','set(prev_grid,''value'',0),set(create_grid,''value'',0)','Position',[.78 .35 .2 .080],...
+        'string','Load a previously saved grid', 'Callback','prev_grid.Value=0;create_grid.Value=0;','Position',[.78 .35 .2 .080],...
         'Units','normalized');
 
     save_grid =  uicontrol('Style','checkbox',...
@@ -170,7 +169,7 @@ if sel == 'in'
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','tgl1 =get(tgl1,''Value'');tgl2 =get(tgl2,''Value'');prev_grid = get(prev_grid,''Value'');create_grid = get(create_grid,''Value''); load_grid = get(load_grid,''Value''); save_grid = get(save_grid,''Value''); oldfig_button = get(oldfig_button,''Value''); close,sel =''ca'', rcvalgrid_a2',...
+        'Callback','tgl1=tgl1.Value;tgl2=tgl2.Value;prev_grid=prev_grid.Value;create_grid=create_grid.Value; load_grid=load_grid.Value; save_grid=save_grid.Value; oldfig_button=oldfig_button.Value; close,sel =''ca'', rcvalgrid_a2',...
         'String','Go');
 
     text(...
@@ -301,8 +300,8 @@ if sel == 'ca'
     %
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
-    teb = a(n,3) ;
-    tdiff = round((teb - t0b)*365/par1);
+    teb = ZG.a.Date(n) ;
+    tdiff = round(days(teb-t0b)/par1);
 
     % Container
     mRcGrid =[];
@@ -333,16 +332,16 @@ if sel == 'ca'
             vDist = sort(l(l3));
             fMaxDist = max(vDist);
             % Calculate number of events per gridnode in learning period time
-            vSel = b.Date <= maepi(1,3)+time/365;
+            vSel = b.Date <= ZG.maepi.Date(1)+days(time);
             mb_tmp = b(vSel,:);
         else
             % Determine ni number of events in learning period
             % Set minimum number to constant number
             Nmin = ni;
             % Select events in learning time period
-            vSel = (b.Date <= maepi(1,3)+time/365);
+            vSel = (b.Date <= ZG.maepi.Date(1)+days(time));
             b_learn = b(vSel,:);
-            vSel2 = (b.Date > maepi(1,3)+time/365 & b.Date <= maepi(1,3)+(time+timef)/365);
+            vSel2 = (b.Date > ZG.maepi.Date(1)+days(time) & b.Date <= ZG.maepi.Date(1)+(time+timef)/365);
             b_forecast = b(vSel2,:);
 
             % Distance from grid node for learning period and forecast period
@@ -359,7 +358,7 @@ if sel == 'ca'
                 b_forecast = b_forecast(vSel3,:);
                 b = [b_learn; b_forecast];
             else
-                vSel4 = (l < fMaxRadius & b.Date <= maepi(1,3)+time/365);
+                vSel4 = (l < fMaxRadius & b.Date <= ZG.maepi.Date(1)+days(time));
                 b = b(vSel4,:);
                 b_learn = b;
             end
@@ -371,7 +370,7 @@ if sel == 'ca'
 
         % Calculate the relative rate change, p, c, k, resolution
         if length(mb_tmp(:,1)) >= Nmin  % enough events?
-            [mRc] = calc_rcloglike_a2(b,time,timef,bootloops, maepi);
+            [mRc] = calc_rcloglike_a2(b,time,timef,bootloops, ZG.maepi);
             % Relative rate change normalized to sigma of bootstrap
             if mRc.fStdBst~=0
                 mRc.fRcBst = mRc.absdiff/mRc.fStdBst;
@@ -394,11 +393,11 @@ if sel == 'ca'
     end  % for newgr
 
     % Save the data to rcval_grid.mat
-    % save rcval_grid.mat mRcGrid gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops maepi
+    % save rcval_grid.mat mRcGrid gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
     [sFilename, sPathname] = uiputfile('*.mat', 'Save MAT-file');
     sFileSave = [sPathname sFilename];
-    save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','maepi');
-    save rcval_grid.mat mRcGrid gx gy dx dy a main yvect xvect ll newgri ra time timef bootloops maepi
+    save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','ZG.maepi');
+    save rcval_grid.mat mRcGrid gx gy dx dy a main yvect xvect ll newgri ra time timef bootloops ZG.maepi
     disp('Saving data to rcval_grid.mat in current directory')
 
     close(wai)

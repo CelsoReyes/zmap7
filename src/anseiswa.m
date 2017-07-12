@@ -1,23 +1,34 @@
 function anseiswa(action)
+% anseiswa slice map callbacks based on action
+%    start1
+%    move1
+%    stop1
+%    tipl
+%    start2
+%    stop2
+%    move2
+%    tipl2
+%    samp1
+%    samp2
+%
 
-    %report_this_filefun(mfilename('fullpath'));
+    report_this_filefun(mfilename('fullpath'));
 
-    global pipo gx gy gz xc1  xc2 currPt xc3 ni ZG tiplo2 ds ax1 ax2 ax3
-    global ax4 pl2 zvg X Y Z gd gx2 gy2 nie tiplo3 ax5 newt3 ax3b iwl2 t0b teb par1
-    global ps1 ps2 pli plin
-    global zv2 zall  plev tgl1 Rconst hs
-    global plx plx2 lat1 lat2 lon1 lon2  plb bvalsum3 xt3 tiplo1 plb2 plc1 plc2 teb1 teb2 hndl2
-
+    global  xc1  xc2 currPt ni tiplo2 ds teb
+    global  tgl1 Rconst
+    global   plb bvalsum3 xt3 tiplo1 plb2 plc1 plc2 teb1 teb2 
+    
+    ZG=ZmapGlobal.Data;
 
     switch(action)
         case 'start1'
-            axes(hs)
+            axes(findobj(groot,'Tag','hs'))
             axis manual; hold on
             point1 = get(gca,'CurrentPoint'); % button down detected
-            set(xc1,'era','back','Xdata',point1(1,1),'Ydata',point1(1,2))
+            set(xc1,'Xdata',point1(1,1),'Ydata',point1(1,2))
 
-            set(gcf,'WindowButtonMotionFcn',' anseiswa move1')
-            set(gcf,'WindowButtonUpFcn','anseiswa stop1')
+            set(gcf,'WindowButtonMotionFcn',@(~,~)anseiswa('move1'))
+            set(gcf,'WindowButtonUpFcn',@(~,~)anseiswa('stop1'))
 
         case 'move1'
             currPt=get(gca,'CurrentPoint');
@@ -29,10 +40,10 @@ function anseiswa(action)
             set(gcbf,'WindowButtonUpFcn','')
             %set(xc2,'Xdata',currPt(1,1))
             %set(xc3,'Xdata',currPt(1,2))
-            anseiswa tipl
+            anseiswa('tipl')
 
 
-        case 'tipl'
+        case 'tipl' %change sample size (?)
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
             l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
             [s,is] = sort(l);
@@ -67,13 +78,13 @@ function anseiswa(action)
 
 
         case 'start2'
-            axes(hs)
+            axes(findobj(groot,'Tag','hs'))
             axis manual; hold on
             point1 = get(gca,'CurrentPoint'); % button down detected
             set(xc2,'era','back','Xdata',point1(1,1),'Ydata',point1(1,2))
 
-            set(gcf,'WindowButtonMotionFcn',' anseiswa move2')
-            set(gcf,'WindowButtonUpFcn','anseiswa stop2')
+            set(gcf,'WindowButtonMotionFcn',@(~,~) anseiswa('move2'))
+            set(gcf,'WindowButtonUpFcn',@(~,~) anseiswa('stop2'))
 
         case 'move2'
             currPt=get(gca,'CurrentPoint');
@@ -83,10 +94,10 @@ function anseiswa(action)
             set(gcf,'Pointer','arrow');
             set(gcbf,'WindowButtonMotionFcn','')
             set(gcbf,'WindowButtonUpFcn','')
-            anseiswa tipl2
+            anseiswa('tipl2')
 
 
-        case 'tipl2'
+        case 'tipl2' %change sample size (?)
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
             l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
             [s,is] = sort(l);
@@ -116,7 +127,7 @@ function anseiswa(action)
             ycir = y+cos(xx)*Rjma/(cosd(y)*111);
             set(plc2,'Xdata',xcir,'Ydata',ycir);
             set(teb1,'string',['b-value: ' num2str(bv,3)]);
-        case 'samp1'
+        case 'samp1' %V1
 
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
             l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;

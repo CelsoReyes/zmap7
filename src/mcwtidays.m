@@ -51,13 +51,13 @@ maepi = ZG.newt2(i,:);
 
 rect = [0.15 0.30 0.7 0.45];
 axes('position',rect)
-pl = plot((bv2(:,2)-maepi(1,3))*365,bv2(:,1),'^r');
+pl = plot((bv2(:,2)-ZG.maepi.Date(1))*365,bv2(:,1),'^r');
 set(pl,'LineWidth',1.5,'MarkerSize',10,...
     'MarkerFaceColor','y','MarkerEdgeColor','r')
 hold on
-pl = plot((bv2(:,2)-maepi(1,3))*365,bv2(:,1),'b')
+pl = plot((bv2(:,2)-ZG.maepi.Date(1))*365,bv2(:,1),'b')
 set(pl,'LineWidth',1.0)
-pl = plot(((BV(:,2)-maepi(1,3))*365),BV(:,1),'color',[0.5 0.5 0.5]);
+pl = plot(((BV(:,2)-ZG.maepi.Date(1))*365),BV(:,1),'color',[0.5 0.5 0.5]);
 
 %grid
 set(gca,'Color',color_bg)

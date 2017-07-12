@@ -21,7 +21,7 @@ if isnumeric(a)
     ZG.a.sort('Date');
 end
 disp(['Catalog loaded with ' num2str(ZG.a.Count) ' events ']);
-minmag = max(ZG.a.Magnitude)-0.2;       %  as a default to be changed by inpu
+ZG.big_eq_minmag = max(ZG.a.Magnitude)-0.2;       %  as a default to be changed by inpu
 
 % call the setup
 inpu

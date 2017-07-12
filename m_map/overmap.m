@@ -117,7 +117,7 @@ case 'eva5'
 case 'eva7'
      in3 =get(hndl7,'Value');
      if in3 == 1 
-        epimax2 = m_line(maepi(:,1),maepi(:,2));
+        epimax2 = m_line(ZG.maepi.Longitude,ZG.maepi.Latitude);
         set(epimax2,'LineWidth',1.5,'MarkerSize',12,'Marker','h',...
        'MarkerFaceColor','y','MarkerEdgeColor','k')
       end

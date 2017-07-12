@@ -6,7 +6,7 @@
 %   Stefan Wiemer 1/95
 %
 %For the execution of this program, the "Cumulative Window" should have been opened before.
-%Otherwise the matrix "maepi", used by this program, does not exist.
+%Otherwise the matrix "ZG.maepi", used by this program, does not exist.
 
 global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
 ZG=ZmapGlobal.Data;
@@ -22,7 +22,7 @@ if sel == 'in'
     %
 
     % cut catalog at mainshock time:
-    l = ZG.a.Date > maepi(1,3);
+    l = ZG.a.Date > ZG.maepi.Date(1);
     ZG.a=ZG.a.subset(l);
 
     % cat at selecte magnitude threshold
@@ -31,7 +31,7 @@ if sel == 'in'
     ZG.newt2 = a;
 
     ZG.hold_state2=true;
-    timeplot
+    timeplot(ZG.newt2)
     ZG.hold_state2=false;
     dx = 0.025;
     dy = 0.025;
@@ -62,7 +62,7 @@ if sel == 'in'
         'Position',labelPos,...
         'Units','normalized',...
         'String',labelList2,...
-        'Callback','inb2 =get(hndl2,''Value''); ');
+        'Callback','inb2=hndl2.Value; ');
 
     set(hndl2,'value',5);
 
@@ -81,23 +81,23 @@ if sel == 'in'
     freq_field=uicontrol('Style','edit',...
         'Position',[.30 .60 .12 .08],...
         'Units','normalized','String',num2str(ni),...
-        'Callback','ni=str2double(get(freq_field,''String'')); set(freq_field,''String'',num2str(ni));set(tgl2,''value'',0); set(tgl1,''value'',1)');
+        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);tgl2.Value=0; tgl1.Value=1;');
 
 
     freq_field0=uicontrol('Style','edit',...
         'Position',[.30 .50 .12 .08],...
         'Units','normalized','String',num2str(ra),...
-        'Callback','ra=str2double(get(freq_field0,''String'')); set(freq_field0,''String'',num2str(ra)) ; set(tgl2,''value'',1); set(tgl1,''value'',0)');
+        'Callback','ra=str2double(freq_field0.String); freq_field0.String=num2str(ra); tgl2.Value=1; tgl1.Value=0;');
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.30 .40 .12 .08],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(get(freq_field2,''String'')); set(freq_field2,''String'',num2str(dx));');
+        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.30 .30 .12 .080],...
         'Units','normalized','String',num2str(dy),...
-        'Callback','dy=str2double(get(freq_field3,''String'')); set(freq_field3,''String'',num2str(dy));');
+        'Callback','dy=str2double(freq_field3.String); freq_field3.String=num2str(dy);');
 
     rgroup1 = uibuttongroup('Title','event grouping','Position',[0.05 0.48 0.25 0.25]);
     rgroup2 = uibuttongroup('Title','grid source','Position',[.48 0.3 0.28 0.39]);
@@ -138,7 +138,7 @@ if sel == 'in'
     uicontrol('Style','edit',...
         'Position',[.30 .20 .12 .080],...
         'Units','normalized','String',num2str(Nmin),...
-        'Callback','Nmin=str2double(get(freq_field4,''String'')); set(freq_field4,''String'',num2str(Nmin));');
+        'Callback','Nmin=str2double(freq_field4.String); freq_field4.String=num2str(Nmin);');
 
 
     close_button=uicontrol('Style','Pushbutton',...
@@ -148,7 +148,7 @@ if sel == 'in'
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback',' inb1 =get(hndl2,''Value'');tgl1 =get(tgl1,''Value'');tgl2 =get(tgl2,''Value'');prev_grid = get(prev_grid,''Value'');create_grid = get(create_grid,''Value''); load_grid = get(load_grid,''Value''); save_grid = get(save_grid,''Value''); oldfig_button = get(oldfig_button,''Value''); close,sel =''ca'', bpvalgrid',...
+        'Callback',' inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;prev_grid=prev_grid.Value;create_grid=create_grid.Value; load_grid=load_grid.Value; save_grid=save_grid.Value; oldfig_button=oldfig_button.Value; close,sel =''ca'', bpvalgrid',...
         'String','Go');
 
     text(...
@@ -268,8 +268,8 @@ if sel == 'ca'
     %
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
-    teb = a(n,3) ;
-    tdiff = round((teb - t0b)*365/par1);
+    teb = ZG.a.Date(n) ;
+    tdiff = round(days(teb-t0b)/par1);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points

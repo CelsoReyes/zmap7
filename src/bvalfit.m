@@ -71,7 +71,7 @@ if ic == 0
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
-    [cumux, xt] = hist(ZG.newcat(l,3),t1p(1):par1/365:t2p(1));
+    [cumux, xt] = hist(ZG.newcat.Date(l),t1p(1):days(par1):t2p(1));
 
     l = ZG.newcat.Date > t3p(1) & ZG.newcat.Date < t4p(1) ;
     foreg = ZG.newcat.subset(l);
@@ -79,7 +79,7 @@ if ic == 0
     bval2 = bval2/td34;                     % normallization
     bvalsum2 = cumsum(bval2);
     bvalsum4 = cumsum(bval2(length(bval2):-1:1));
-    [cumux2, xt] = hist(ZG.newcat(l,3),t3p(1):par1/365:t4p(1));
+    [cumux2, xt] = hist(ZG.newcat.Date(l),t3p(1):days(par1):t4p(1));
     mean1 = mean(cumux);
     mean2 = mean(cumux2);
     var1 = cov(cumux);
@@ -377,17 +377,17 @@ if ic == 0 | ic == 2
     freq_field1=uicontrol('Style','edit',...
         'Position',[.30 .16 .13 .07],...
         'Units','normalized','String',num2str(dM),...
-        'Callback','dM=str2double(get(freq_field1,''String'')); set(freq_field1,''String'',num2str(dM));');
+        'Callback','dM=str2double(freq_field1.String); freq_field1.String=num2str(dM);');
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.75 .16 .13 .07],...
         'Units','normalized','String',num2str(mf),...
-        'Callback','mf=str2double(get(freq_field2,''String'')); set(freq_field2,''String'',num2str(mf));');
+        'Callback','mf=str2double(freq_field2.String); freq_field2.String=num2str(mf);');
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.30 .05 .13 .07],...
         'Units','normalized','String',num2str(fac),...
-        'Callback','fac=str2double(get(freq_field3,''String'')); set(freq_field3,''String'',num2str(fac));');
+        'Callback','fac=str2double(freq_field3.String); freq_field3.String=num2str(fac);');
 
     txt1 = text(...
         'Color',[0 0 0 ],...

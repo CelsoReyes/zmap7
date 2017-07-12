@@ -53,7 +53,7 @@ if newCubeWindowFlag
     tre2 = max(abo(:,4)) - 0.5;
     new = uicontrol('style','edit','value',iwl2,...
         'string',num2str(tre2,3), 'background','y',...
-        'Callback','tre2=str2num(get(new,''String''));''String'',num2str(tre2,3);',...
+        'Callback','tre2=str2num(new.String);''String'',num2str(tre2,3);',...
         'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
 
     newlabel = uicontrol('style','text','units','norm','pos',[.40 .00 .40 .08]);
@@ -71,7 +71,7 @@ if newCubeWindowFlag
     set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh,3),...
         'background','y');
-    set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh,3))');
+    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh,3))';
     set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
 
 
@@ -103,7 +103,7 @@ rect= [0.2 0.2 0.6 0.6];
 axes('pos',rect)
 set(gca,'visible','off')
 abo = abo2;
-abo(:,5) = abo(:,5)* par1/365 + a(1,3);
+abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
 l = abo(:,4) > tre2;
 abo = abo(l,:);
 if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
@@ -155,8 +155,8 @@ if isempty(main) == 0
 end
 % end
 
-if isempty(maepi) ==0
-    pl8 =plot3(maepi(:,1),maepi(:,2),maepi(:,3),'*k');
+if isempty(ZG.maepi) ==0
+    pl8 =plot3(ZG.maepi.Longitude,ZG.maepi.Latitude,ZG.maepi.Date,'*k');
     set(pl8,'LineWidth',2.0,'MarkerSize',10)
 end
 

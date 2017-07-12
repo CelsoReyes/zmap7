@@ -31,7 +31,7 @@ pause(0.1)
 %
 l = sqrt(((xsecx' - xa0)).^2 + ((xsecy + ya0)).^2) ;
 [s,is] = sort(l);
-newt2 = newa(is(:,1),:) ;
+ZG.newt2 = newa(is(:,1),:) ;
 
 if ic == 1 % select  N clostest events
 

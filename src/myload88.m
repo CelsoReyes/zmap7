@@ -10,7 +10,7 @@ disp('and all blanks have been substituted by zeros')
 safe_fclose(fid);
 
 % reset paramteres
-a = []; b = []; n = 0;
+ZG.a = []; b = []; n = 0;
 
 if inda == 1
     % initial selection option
@@ -56,7 +56,7 @@ while  ferror(fid) == ''
         b.Date >= tmin  ;
     a = [a ; b(l,:)];
 
-    disp([ num2str(n*10000) ' earthquakes scanned, ' num2str(length(a)) ' EQ found'])
+    disp([ num2str(n*10000) ' earthquakes scanned, ' num2str(ZG.a.Count) ' EQ found'])
     if max(b.Date) >  tmax ; break; end
 
 end

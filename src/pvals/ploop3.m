@@ -1,6 +1,6 @@
 function ploop3(var1)
     %ploop3.m                          B. Enescu
-    %Last change   5/2001
+    %
     %function to calculat the parameters of p-value
     %calls itsself with different parameters for different loops in program
     %C is fixed. The covariance matrix is 2X2, because there are 2 free parameters,

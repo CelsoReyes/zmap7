@@ -22,8 +22,8 @@ if bDebug
 end
 
 % Determine the magnitude range
-fMaxMagnitude = ceil(10 * max(mCatalog(:,6))) / 10;
-fMinMagnitude = floor(min(mCatalog(:,6)));
+fMaxMagnitude = ceil(10 * max(mCatalog.Magnitude)) / 10;
+fMinMagnitude = floor(min(mCatalog.Magnitude));
 if fMinMagnitude > 0
   fMinMagnitude = 0;
 end
@@ -33,7 +33,7 @@ end
 %   xxxxC : Cumulative number
 
 % Do the calculation
-[vNumberEvents] = hist(mCatalog(:,6), (fMinMagnitude:0.1:fMaxMagnitude));
+[vNumberEvents] = hist(mCatalog.Magnitude, (fMinMagnitude:0.1:fMaxMagnitude));
 vNumberEventsR  = vNumberEvents(length(vNumberEvents):-1:1);
 vNumberEventsCR = cumsum(vNumberEvents(length(vNumberEvents):-1:1));
 

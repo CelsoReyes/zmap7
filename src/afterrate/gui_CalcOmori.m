@@ -20,7 +20,7 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     %   params.fMaxMag            Upper limit of magnitude range for testing
     %   params.bTimePeriod        Calculate seismicity difference for 2 periods (0) until start and end of catalog or
     %                             a specific time period before and after fSplitTime (1)
-    %   params.fTimePeriod        Length of time periods
+    %   params.fTimePeriodDays        Length of time periods
     %   params.bTstart            Check for starting time of temporal mapping
     %   params.fTstart            Starting time for temporal mapping
     %   params.bBstnum            Check for boostrap sampling
@@ -56,8 +56,8 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     end
 
     % Determine time period of catalog
-    params.fTminCat = min(params.mCatalog(:,3));
-    params.fTmaxCat = max(params.mCatalog(:,3));
+    params.fTminCat = min(params.mCatalog.Date);
+    params.fTmaxCat = max(params.mCatalog.Date);
 
     % Init result matrix
     mValueGrid_ = [];
@@ -76,8 +76,6 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     % params.mCatalog = mCatalog;
 
     % Create Indices to catalog
-    % vSel = (fTstart <= params.mCatalog(:,3) & params.mCatalog(:,3) < fTstart+fTimePeriod);
-    % params.mCatalog = params.mCatalog(vSel,:);
     [params.caNodeIndices] = ex_CreateIndexCatalog(params.mCatalog, params.mPolygon, params.bMap, params.nGriddingMode, ...
         params.nNumberEvents, params.fRadius, params.fSizeRectHorizontal, params.fSizeRectDepth);
     % Loop over all grid nodes
@@ -92,7 +90,7 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
         end
         % Check for number of events in aftershock sequence
         % Create catalog after split time (aftershock sequence)
-        vSelAf = (params.fTstart <= mNodeCatalog_(:,3) & mNodeCatalog_(:,3) < params.fTstart+params.fTimePeriod);
+        vSelAf = (params.fTstart <= mNodeCatalog_(:,3) & mNodeCatalog_(:,3) < params.fTstart+params.fTimePeriodDays);
         [nX,nY] = size(mNodeCatalog_(vSelAf,:));
         if (nX < params.nMinimumNumber)
             [nNumBgr,nY2] = size(mNodeCatalog_(~vSelAf,:));
@@ -118,19 +116,19 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
             % Add parameter to params.sComment
             if  params.nGriddingMode == 0;   % Constant number
                 params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
                     num2str(params.fMaxRadius) ' km'];
                 vResults = params;
                 save(['tmp_result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
                     '_Nmin_' num2str(params.nMinimumNumber) '_Node' num2str(nNode_) '.mat'], 'vResults');
             elseif params.nGriddingMode == 1;   % Constant radius
                 params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
                 vResults = params;
                 save(['tmp_result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber)  '_Node' num2str(nNode_) '.mat'], 'vResults');
             else  % Rectangle mode
                 params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
                     ' km, Nmin: ' num2str(params.nMinimumNumber)];
                 vResults = params;
                 save(['tmp_result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
@@ -149,26 +147,23 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     % Add parameter to params.sComment
     if  params.nGriddingMode == 0;   % Constant number
         params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-            ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
             num2str(params.fMaxRadius) ' km'];
         vResults = params;
         save(['result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
             '_Nmin_' num2str(params.nMinimumNumber) '_Nodes_' num2str(nNodeStart) '_' num2str(nNodeEnd) '.mat'], 'vResults');
     elseif params.nGriddingMode == 1;   % Constant radius
         params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-            ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
         vResults = params;
         save(['result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber)...
             '_Nodes_' num2str(nNodeStart) '_' num2str(nNodeEnd) '.mat'], 'vResults');
     else  % Rectangle mode
         params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-            ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
             ' km, Nmin: ' num2str(params.nMinimumNumber)];
         vResults = params;
         save(['result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
             '_Nmin_' num2str(params.nMinimumNumber) '_Nodes_' num2str(nNodeStart) '_' num2str(nNodeEnd) '.mat'], 'vResults');
     end
-    %     vResults =[];
-    %     fTstart = fTstart+fTimePeriod;
-    % end % End of while fTstart
 

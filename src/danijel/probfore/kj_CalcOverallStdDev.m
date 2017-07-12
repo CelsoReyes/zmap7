@@ -38,12 +38,12 @@ for nNode = 1:length(params.mPolygon(:,1))
   if ~params.bMap
     [nRow, nColumn] = size(params.mCatalog);
     xsecx2 = params.mCatalog(:,nColumn);      % Length along cross-section
-    xsecy2 = params.mCatalog(:,7);            % Depth of hypocenters
+    xsecy2 = params.mCatalog.Depth;            % Depth of hypocenters
   end
 
   % Calculate distance from center point and sort with distance
   if params.bMap
-    vDistances = sqrt(((params.mCatalog(:,1)-x)*cosd(y)*111).^2 + ((params.mCatalog(:,2)-y)*111).^2);
+    vDistances = sqrt(((params.mCatalog.Longitude-x)*cosd(y)*111).^2 + ((params.mCatalog.Latitude-y)*111).^2);
   else
     vDistances = sqrt(((xsecx2 - x)).^2 + ((xsecy2 + y)).^2);
   end
@@ -57,7 +57,7 @@ for nNode = 1:length(params.mPolygon(:,1))
   else
     % Use all events within fRadius
     vDistances = (vDistances <= params.fRadius);
-    mNodeCatalog = params.mCatalog(vDistances,:);
+    mNodeCatalog = params.mCatalog.subset(vDistances);
   end
 
   % Determine the number of earthquakes in the sample

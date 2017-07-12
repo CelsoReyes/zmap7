@@ -145,8 +145,8 @@ if isempty(coastline) == 0
     set(pl,'LineWidth',0.5)
 end
 
-if isempty(maepi) == 0
-    pl = plotm(maepi(:,2),maepi(:,1),'hw');
+if isempty(ZG.maepi) == 0
+    pl = plotm(ZG.maepi.Latitude,ZG.maepi.Longitude,'hw');
     set(pl,'LineWidth',1,'MarkerSize',14,...
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 end

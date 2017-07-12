@@ -126,9 +126,9 @@ try
   hold on;
   if get(handles.chkSeismicity, 'Value') == 1
     if handles.vResult.bMap
-      handles.hEQPlot = plot(handles.vResult.mCatalog(:,1),handles.vResult.mCatalog(:,2),'.k','MarkerSize',6,'Marker','.','Color','k','Visible','on');
+      handles.hEQPlot = plot(handles.vResult.mCatalog.Longitude,handles.vResult.mCatalog.Latitude,'.k','MarkerSize',6,'Marker','.','Color','k','Visible','on');
     else
-      handles.hEQPlot = plot(handles.vResult.mCatalog(:,length(handles.vResult.mCatalog(1,:))),-handles.vResult.mCatalog(:,7),'.k','MarkerSize',6,'Marker','.','Color','k','Visible','on');
+      handles.hEQPlot = plot(handles.vResult.mCatalog(:,length(handles.vResult.mCatalog.subset(1))),-handles.vResult.mCatalog.Depth,'.k','MarkerSize',6,'Marker','.','Color','k','Visible','on');
     end
   end
   % Set information values

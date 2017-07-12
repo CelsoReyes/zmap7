@@ -13,7 +13,7 @@ set(mess,'pos',[ 0.02  0.9 0.3 0.2])
 format short
 
 [tbin,zmag,zval] = find(ZABO);           % deal with sparse matrix results
-xtz = t0b + (tbin*par1/365);
+xtz = t0b + (tbin*days(par1));
 zmag = minmg+(zmag-1)*magstep;
 [xx,l] = sort(xtz);                     % sort in time
 xtz = xtz(l);
@@ -27,7 +27,7 @@ fid = fopen([newpath newmatfile],'w');
 fprintf(fid,'%3.0f %4.2f  %3.2f+  %6.4f\n',Z);
 
 [tbin,zmag,zval] = find(ZBEL);
-xtz = t0b + (tbin*par1/365);
+xtz = t0b + (tbin*days(par1));
 zmag = minmg+(zmag-1)*magstep;
 [xx,l] = sort(xtz);                     % sort in time
 xtz = xtz(l);

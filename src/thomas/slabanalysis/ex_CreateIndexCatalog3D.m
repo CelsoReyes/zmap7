@@ -38,9 +38,9 @@ caNodeIndices = cell(nNumberNodes_, 1);
 
 % If cross-section calculate the length along cross-section
 if ~bMap
-  [nRow_, nColumn_] = size(mCatalog);
+  nRow_ = mCatalog.Count;
   vXSecX_ = mCatalog(:,nColumn_);  % length along x-section
-  vXSecY_ = (-1) * mCatalog(:,7);  % depth of hypocenters
+  vXSecY_ = (-1) * mCatalog.Depth;  % depth of hypocenters
 end
 
 
@@ -62,17 +62,17 @@ for nNode_ = 1:nNumberNodes_
   if (nGriddingMode == 0) | (nGriddingMode == 1)  % Fixed radius or fixed number
     % Calculate distance from center point
     if bMap
-      vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2);
+      vDistances_ = sqrt(((mCatalog.Longitude-fX_)*cosd(fY_)*111).^2 + ((mCatalog.Latitude-fY_)*111).^2);
     else
       vDistances_ = sqrt(((vXSecX_ - fX_)).^2 + ((vXSecY_ - fY_)).^2);
     end
     if nGriddingMode == 0 % Fixed number
-      if length(mCatalog(:,1)) == 0
+      if mCatalog.Count == 0
         caNodeIndices{nNode_} = [];
         % NaN for no events
         vResolution_(nNode_) = nan;
-      elseif nNumberEvents > length(mCatalog(:,1))
-        caNodeIndices{nNode_} = vIndices(1:length(mCatalog(:,1)));
+      elseif nNumberEvents > mCatalog.Count
+        caNodeIndices{nNode_} = vIndices(1:mCatalog.Count);
         % take the maximal distance for all eq. in the catalog
         vResolution_(nNode_) = max(vdistances_);
       else
@@ -89,8 +89,8 @@ for nNode_ = 1:nNumberNodes_
     end
   elseif nGriddingMode ==2  % Rectangular gridding (nGriddingMode == 2)
     if bMap
-      vSel_ = ((mCatalog(:,1) >= (fX_ - fSizeRectHorizontal/2)) & (mCatalog(:,1) < (fX_ + fSizeRectHorizontal/2)) & ...
-        (mCatalog(:,2) >= (fY_ - fSizeRectDepth/2)) & (mCatalog(:,2) < (fY_ + fSizeRectDepth/2)));
+      vSel_ = ((mCatalog.Longitude >= (fX_ - fSizeRectHorizontal/2)) & (mCatalog.Longitude < (fX_ + fSizeRectHorizontal/2)) & ...
+        (mCatalog.Latitude >= (fY_ - fSizeRectDepth/2)) & (mCatalog.Latitude < (fY_ + fSizeRectDepth/2)));
       vResolution_(nNode_) = length(find(vSel_ > 0))
     else
       vSel_ = ((vXSecX_ >= (fX_ - fSizeRectHorizontal/2)) & (vXSecX_ < (fX_ + fSizeRectHorizontal/2)) & ...
@@ -99,17 +99,17 @@ for nNode_ = 1:nNumberNodes_
     end
     caNodeIndices{nNode_} = find(vSel_ == 1);
   elseif ((nGriddingMode == 3) || (nGriddingMode == 4))     % Spherical grid node samples with constant no of events
-      vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2 + (mCatalog(:,7)-fZ_).^2);
+      vDistances_ = sqrt(((mCatalog.Longitude-fX_)*cosd(fY_)*111).^2 + ((mCatalog.Latitude-fY_)*111).^2 + (mCatalog.Depth-fZ_).^2);
       if nGriddingMode == 3  % Spherical grid node samples with constant no of events
       nNumberEvents=fSmpValue;
       fRadius=fSmpBnd;
-          if length(mCatalog(:,1)) == 0
+          if mCatalog.Count == 0
               caNodeIndices{nNode_} = [];
               % NaN for no events
               vResolution_{nNode_} = nan;
 %               vResolution_(nNode_) = nan;
-          elseif nNumberEvents > length(mCatalog(:,1))
-              caNodeIndices{nNode_} = vIndices(1:length(mCatalog(:,1)));
+          elseif nNumberEvents > mCatalog.Count
+              caNodeIndices{nNode_} = vIndices(1:mCatalog.Count);
               % take the maximal distance for all eq. in the catalog
               vResolution_{nNode_} = vdistances_;
 %               vResolution_(nNode_) = max(vdistances_);

@@ -44,19 +44,19 @@ vCl = zeros(length(mCatalog),1); % Initialize all events as mainshock
 vSel = zeros(length(mCatalog),1); % Initialize all events as mainshock
 vMainCluster = zeros(length(mCatalog),1); % Initialize
 
-[nXSize, nYsize] = size(mCatalog);
+nXSize = mCatalog.Count;
 if nXSize == 0
     disp('Load new catalog');
     return
 end
 
-vDecDate = mCatalog(:,3);
+vDecDate = mCatalog.Date;
 nCount = 0;    % Variable of cluster number
 
-fMagThreshold = min(mCatalog(:,6)); % Set Threshold to minimum magnitude of catalog
+fMagThreshold = min(mCatalog.Magnitude); % Set Threshold to minimum magnitude of catalog
 hWaitbar1 = waitbar(0,'Identifying clusters...');
 set(hWaitbar1,'Numbertitle','off','Name','Decluster percentage');
-for nEvent=1:length(mCatalog(:,6))
+for nEvent=1:length(mCatalog.Magnitude)
     %nEvent
     %nCount
     if vCluster(nEvent) == 0
@@ -67,17 +67,17 @@ for nEvent=1:length(mCatalog(:,6))
             [fSpace, fTime] = calc_windows(fMagnitude(nEvent), nMethod);
             fSpaceDeg = km2deg(fSpace);
             %% This first if is for events with no location given
-            if isnan(mCatalog(nEvent,1))
+            if isnan(mCatalog.Longitude(nEvent))
                 %vSel = (vDecDate(:,1)-vDecDate(nEvent,1) >= 0) & (vDecDate(:,1)-vDecDate(nEvent,1) <= fTime  & vCluster(nEvent) == 0);
-                vSel = (mCatalog(:,3) == mCatalog(nEvent,3));
+                vSel = (mCatalog.Date == mCatalog.Date(nEvent));
             else
-                mPos = [mCatalog(nEvent, 1) mCatalog(nEvent,2)];
-                mPos = repmat(mPos,length(mCatalog(:,1)), 1);
-                mDist = abs(distance(mCatalog(:,1), mCatalog(:,2), mPos(:,1), mPos(:,2)));
+                mPos = [mCatalog(nEvent, 1) mCatalog.Latitude(nEvent)];
+                mPos = repmat(mPos,mCatalog.Count, 1);
+                mDist = abs(distance(mCatalog.Longitude, mCatalog.Latitude, mPos(:,1), mPos(:,2)));
                 vSel = ((mDist <= fSpaceDeg) & (vDecDate(:,1)-vDecDate(nEvent,1) >= 0) &...
                     (vDecDate(:,1)-vDecDate(nEvent,1) <= fTime) & vCluster(nEvent) == 0);
             end;% End of isnan(mCatalog)
-            mTmp = mCatalog(vSel,:);
+            mTmp = mCatalog.subset(vSel);
             if length(mTmp(:,1)) == 1  % Only one event thus no cluster; IF to determine cluster or not
                 fMaxClusterMag = fMag;
             else
@@ -90,11 +90,11 @@ for nEvent=1:length(mCatalog(:,6))
                     fSpaceDeg = km2deg(fSpace);
                     %% Adding aftershocks from bigger aftershock
                     mPos = [mTmp(min(nIndiceMaxMag),1) mTmp(min(nIndiceMaxMag),2)];
-                    mPos = repmat(mPos,length(mCatalog(:,1)), 1);
-                    mDist = abs(distance(mCatalog(:,1), mCatalog(:,2), mPos(:,1), mPos(:,2)));
+                    mPos = repmat(mPos,mCatalog.Count, 1);
+                    mDist = abs(distance(mCatalog.Longitude, mCatalog.Latitude, mPos(:,1), mPos(:,2)));
                     vSel2 = ((mDist <= fSpaceDeg) & (vDecDate(:,1)-mTmp(min(nIndiceMaxMag),3) >= 0) &...
                         (vDecDate(:,1)-mTmp(min(nIndiceMaxMag),3) <= fTime) & vCluster == 0);
-                    mTmp = mCatalog(vSel2,:);
+                    mTmp = mCatalog.subset(vSel2);
                     vSel = (vSel > 0 | vSel2 > 0); % Actual addition
                     if isempty(mTmp) % no events in aftershock zone
                         break;
@@ -145,7 +145,7 @@ for nEvent=1:length(mCatalog(:,6))
         end; % End of if checking magnitude threshold fMagThreshold
     end; % End of if checking if vCluster == 0
     if rem(nEvent,100) == 0
-        waitbar(nEvent/length(mCatalog(:,6)))
+        waitbar(nEvent/length(mCatalog.Magnitude))
     end; % End updating waitbar
 end; % End of FOR over mCatalog
 close(hWaitbar1);
@@ -154,14 +154,14 @@ close(hWaitbar1);
 vCl = vCluster;
 
 %% Matrix with cluster indice, magnitude and time
-mTmpCat = [vCluster mCatalog(:,6) mCatalog(:,3)];
+mTmpCat = [vCluster mCatalog.Magnitude mCatalog.Date];
 %% Delete largest event from cluster series and add to mainshock catalog
 hWaitbar2 = waitbar(0,'Identifying mainshocks in clusters...');
 set(hWaitbar2,'Numbertitle','off','Name','Mainshock identification ');
 for nCevent = 1:nCount
     %nCevent
     vSel4 = (mTmpCat(:,1) == nCevent); % Select cluster
-    mTmpCat2 = mCatalog(vSel4,:);
+    mTmpCat2 = mCatalog.subset(vSel4);
     fTmpMaxMag = max(mTmpCat2(:,6)); % Select max magnitude of cluster
     vSelMag = (mTmpCat2(:,6) == fTmpMaxMag);
     [nMag] = find(vSelMag);
@@ -175,7 +175,7 @@ for nCevent = 1:nCount
         nCevent
     else
         vSel = (mTmpCat(:,1) == nCevent & mTmpCat(:,2) == fTmpMaxMag);
-        mTmpCat3 = mCatalog(vSel,:);
+        mTmpCat3 = mCatalog.subset(vSel);
         [vIndiceMag] = min(find(vSel)); % Find minimum indice of event with max magnitude in cluster
         vCluster(vIndiceMag) = 0;  % Set cluster value to zero, so it is a mainshock
         vMainCluster(vIndiceMag) = nCevent;  % Set mainshock vector to cluster number
@@ -188,5 +188,5 @@ close(hWaitbar2);
 %% Create a catalog of aftershocks (mCatAfter) and of declustered catalog (mCatDecluster)
 vSel = (vCluster(:,1) > 0);
 mCatDecluster=mCatalog(~vSel,:);
-mCatAfter = mCatalog(vSel,:);
+mCatAfter = mCatalog.subset(vSel);
 

@@ -42,9 +42,9 @@ caNodeIndices = cell(nNumberNodes_, 1);
 vResolution_ = cell(nNumberNodes_, 1);
 % If cross-section calculate the length along cross-section
 if ~bMap
-    [nRow_, nColumn_] = size(mCatalog);
+    nRow_ = mCatalog.Count;
     vXSecX_ = mCatalog(:,nColumn_);  % length along x-section
-    vXSecY_ = (-1) * mCatalog(:,7);  % depth of hypocenters
+    vXSecY_ = (-1) * mCatalog.Depth;  % depth of hypocenters
 end
 % Loop over all points of the polygon
 for nNode_ = 1:nNumberNodes_
@@ -54,16 +54,16 @@ for nNode_ = 1:nNumberNodes_
     if (nGriddingMode == 0) | (nGriddingMode == 1)  % Fixed radius or fixed number
         % Calculate distance from center point
         if bMap
-%             vDistances_=deg2km(distance(mCatalog(:,2),mCatalog(:,1),ones(size(mCatalog,1),1)*fY_,ones(size(mCatalog,1),1)*fX_));
-            vDistances_ = sqrt(((mCatalog(:,1)-fX_)*cosd(fY_)*111).^2 + ((mCatalog(:,2)-fY_)*111).^2);
+%             vDistances_=deg2km(distance(mCatalog.Latitude,mCatalog.Longitude,ones(size(mCatalog,1),1)*fY_,ones(size(mCatalog,1),1)*fX_));
+            vDistances_ = sqrt(((mCatalog.Longitude-fX_)*cosd(fY_)*111).^2 + ((mCatalog.Latitude-fY_)*111).^2);
         else
             vDistances_ = sqrt(((vXSecX_ - fX_)).^2 + ((vXSecY_ - fY_)).^2);
         end
         if nGriddingMode == 0 % Fixed number
-            if length(mCatalog(:,1)) == 0
+            if mCatalog.Count == 0
                 caNodeIndices{nNode_} = [];
-            elseif nNumberEvents > length(mCatalog(:,1))
-                caNodeIndices{nNode_} = vIndices(1:length(mCatalog(:,1)));
+            elseif nNumberEvents > mCatalog.Count
+                caNodeIndices{nNode_} = vIndices(1:mCatalog.Count);
 %                 Determine the Resolution i.e., radius
                 vResolution_{nNode_}=vDistances_(caNodeIndices{nNode_});
             else
@@ -81,8 +81,8 @@ for nNode_ = 1:nNumberNodes_
         end
     else % Rectangular gridding (nGriddingMode == 2)
         if bMap
-            vSel_ = ((mCatalog(:,1) >= (fX_ - fSizeRectHorizontal/2)) & (mCatalog(:,1) < (fX_ + fSizeRectHorizontal/2)) & ...
-                (mCatalog(:,2) >= (fY_ - fSizeRectDepth/2)) & (mCatalog(:,2) < (fY_ + fSizeRectDepth/2)));
+            vSel_ = ((mCatalog.Longitude >= (fX_ - fSizeRectHorizontal/2)) & (mCatalog.Longitude < (fX_ + fSizeRectHorizontal/2)) & ...
+                (mCatalog.Latitude >= (fY_ - fSizeRectDepth/2)) & (mCatalog.Latitude < (fY_ + fSizeRectDepth/2)));
         else
             vSel_ = ((vXSecX_ >= (fX_ - fSizeRectHorizontal/2)) & (vXSecX_ < (fX_ + fSizeRectHorizontal/2)) & ...
                 (vXSecY_ >= (fY_ - fSizeRectDepth/2)) & (vXSecY_ < (fY_ + fSizeRectDepth/2)));

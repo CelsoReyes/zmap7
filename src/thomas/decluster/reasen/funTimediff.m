@@ -1,17 +1,15 @@
-function [tdiff, ac]  = timediff(j,ci,tau,clus,k1,ZG.newcat,eqtime)
+function [tdiff, ac]  = timediff(j,ci,tau,clus,k1,mycat,eqtime)
 % timediff.m                                         A.Allmann
 % calculates the time difference between the ith and jth event
 % works with variable eqtime from function clustime.m
 % gives the indices ac of the eqs not already related to cluster k1
-% last modification 8/95
-% global  clus eqtime k1 ZG.newcat
 
 tdiff(1)=0;
 n=1;
 ac=[];
 while tdiff(n) < tau       %while timedifference smaller than look ahead time
 
- if j <= ZG.newcat.Count     %to avoid problems at end of catalog
+ if j <= mycat.Count     %to avoid problems at end of catalog
   n=n+1;
   tdiff(n)=eqtime(j)-eqtime(ci);
   j=j+1;

@@ -4,21 +4,21 @@ function cllta(var1)
     %calculates a z-value useing a given window length iwl
     %operates on ttcat
     %
-    %Last modification 6/95
-    global ttcat par1 xt cumu cumu2 ZG.newt2 pyy
+    %
+    global ttcat par1 xt cumu cumu2 pyy
     global file1 freq_field freq_slider iwl3 par5
-
+    ZG=ZmapGlobal.Data;
     ZG.a=ZG.newt2;
 
     % initial values
     %
     max_freq = 20;
-    min_freq = par5/365;
+    min_freq = days(par5);
     if var1==1                       %default
         iwl = 13*par5            % for bin of 28 days, iwl = 13 is about 1 year
 
     elseif var1==2
-        iwl = round(iwl3*365/par5);
+        iwl = round(iwl3/days(par5));
 
         if (iwl<min_freq)
             iwl=min_freq;
@@ -33,9 +33,9 @@ function cllta(var1)
 
     t0b = min(ZG.a.Date);
     n = ZG.a.Count;
-    teb = a(n,3);
-    tdiff = round((teb - t0b)*365/par5);
-    iwl3 = iwl*par5/365;                 % iwl3 is window in years
+    teb = ZG.a.Date(n);
+    tdiff = round((teb - t0b)/days(par5));
+    iwl3 = iwl*days(par5);                 % iwl3 is window in years
 
     pause(0.1)
     %
@@ -52,12 +52,12 @@ function cllta(var1)
     freq_field=uicontrol('Style','edit',...
         'Position',[.40 .00 .12 .06],...
         'Units','normalized','String',num2str(iwl3),...
-        'Callback','iwl3=str2double(get(freq_field,''String''));delete(pyy); cllta(2);');
+        'Callback','iwl3=str2double(freq_field.String);delete(pyy); cllta(2);');
 
     freq_slider=uicontrol('BackGroundColor',[ 0.8 0.8 0.8],'Style','slider',...
         'Position',[.30 .10 .45 .06],...
         'Units','normalized','Value',iwl3,'Max',max_freq,'Min',min_freq,...
-        'Callback','iwl3=get(freq_slider,''Value'');delete(pyy); cllta(2);');
+        'Callback','iwl3=freq_slider.Value;delete(pyy); cllta(2);');
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.9 .30 .10 .05],...
@@ -79,7 +79,7 @@ function cllta(var1)
     ncu=length(xt);
     lta=1:1:ncu;
     lta=lta*0;
-    iwl=round(iwl3*365/par1);
+    iwl=round(iwl3/days(par1));
     %
     %  calculated mean, var etc
     %

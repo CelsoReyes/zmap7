@@ -9,7 +9,7 @@ function selectp(in_or_out)
     %  'poly_selected_events' : earthquakes in/out of polygon
     %  'mouse_points_overlay' : polygon outline
     
-    global ZG
+    ZG=ZmapGlobal.Data;
     echo on
     % ___________________________________________________________
     %  Please use the left mouse button or the cursor to select
@@ -109,7 +109,7 @@ function selectp(in_or_out)
     
     ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     
-    timeplot
+    timeplot(ZG.newt2)
     
     h=zmap_message_center;
     h.update_catalog();

@@ -2,11 +2,11 @@ function inpu2()
     %  This scriptfile ask for several selection parameters that can be set
     %  for part of the analysis. The original input parameters can be reset using
     %  the  Reset button in the main figure map
-    %
+    %  Changes ZG.newt2
     %
     % make the interface
     %
-    global ZG.newt2
+    ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     ZG.newt2 = catalog_overview(ZG.newt2);
 end
@@ -28,27 +28,27 @@ set(gcf,'Name','Selection Parameters');
 
 inp5t=uicontrol('Style','edit','Position',[.70 .70 .22 .06],...
     'Units','normalized','String',char(min(ZG.newt2.Date)),...
-    'Callback','mint=str2double(get(inp5t,''String'')); set(inp5t,''String'',num2str(mint,6));');
+    'Callback','mint=str2double(inp5t.String); inp5t.String=num2str(mint,6);');
 
 inp6t=uicontrol('Style','edit','Position',[.70 .60 .22 .06],...
     'Units','normalized','String',char(max(ZG.newt2.Date)),...
-    'Callback','maxt=str2double(get(inp6t,''String'')); set(inp6t,''String'',num2str(maxt,6));');
+    'Callback','maxt=str2double(inp6t.String); inp6t.String=num2str(maxt,6);');
 
 inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...
     'Units','normalized','String',num2str(minma2),...
-    'Callback','minma2=str2double(get(inp5,''String'')); set(inp5,''String'',num2str(minma2));');
+    'Callback','minma2=str2double(inp5.String); inp5.String=num2str(minma2);');
 
 inp6=uicontrol('Style','edit','Position',[.70 .40 .22 .06],...
     'Units','normalized','String',num2str(maxma2),...
-    'Callback','maxma2=str2double(get(inp6,''String'')); set(inp6,''String'',num2str(maxma2));');
+    'Callback','maxma2=str2double(inp6.String); inp6.String=num2str(maxma2);');
 
 inp7=uicontrol('Style','edit','Position',[.30 .20 .10 .06],...
     'Units','normalized','String',num2str(minde),...
-    'Callback','minde=str2double(get(inp7,''String'')); set(inp7,''String'',num2str(minde));');
+    'Callback','minde=str2double(inp7.String); inp7.String=num2str(minde);');
 
 inp8=uicontrol('Style','edit','Position',[.60 .20 .10 .06],...
     'Units','normalized','String',num2str(maxde),...
-    'Callback','maxde=str2double(get(inp8,''String'')); set(inp8,''String'',num2str(maxde));');
+    'Callback','maxde=str2double(inp8.String); inp8.String=num2str(maxde);');
 
 
 

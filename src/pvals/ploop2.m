@@ -1,6 +1,6 @@
 function ploop2(var1)
     %ploop.m                          A.Allmann
-    %Last change   6/95
+    %
     %function to calculat the parameters of p-value
     %calls itsself with different parameters for different loops in programm
     %

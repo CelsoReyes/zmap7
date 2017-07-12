@@ -38,13 +38,13 @@ function [mLTA, mProb] =calc_zlta2(mCat0,mCat1,mCat2,fTstart,fT,fTw,nTbin,nN)
 bSyn=true;
 
 % calculate histogram for different time periods
-% nSteps=floor((fT-fTstart)/(nTbin/365));
-% vR1=histc(mCat1,  fTstart:(nTbin/365):fTstart+nSteps*(nTbin/365)  );
-vR1=histc(mCat1,fTstart : nTbin/365 : fT-fTw,1);
+% nSteps=floor((fT-fTstart)/(days(nTbin)));
+% vR1=histc(mCat1,  fTstart:(days(nTbin)):fTstart+nSteps*(days(nTbin))  );
+vR1=histc(mCat1,fTstart : days(nTbin) : fT-fTw,1);
 vR1=vR1(1:end-1,:);
 
-% vR1=histc(mCat1,fTimeStart:fTimeSteps/365:fTimeCut+fTimeWindow);
-vR2=histc(mCat2,fT-fTw : nTbin/365:fT,1);
+% vR1=histc(mCat1,fTimeStart:days(fTimeSteps):fTimeCut+fTimeWindow);
+vR2=histc(mCat2,fT-fTw : days(nTbin):fT,1);
 vR2=vR2(1:end-1,:);
 
 
@@ -72,9 +72,9 @@ if bSyn
     mSyn1=rand(nN,5000)*(fT-fTstart)+fTstart;
 end
 % apply histogram to synthetic catalog
-vS1=histc(mSyn1,fTstart : nTbin/365 : fT-fTw,1);
+vS1=histc(mSyn1,fTstart : days(nTbin) : fT-fTw,1);
 vS1=vS1(1:end-1,:);
-vS2=histc(mSyn1,fT-fTw : nTbin/365:fT,1);
+vS2=histc(mSyn1,fT-fTw : days(nTbin):fT,1);
 vS2=vS2(1:end-1,:);
 % calculate the mean rate for different periods in synthetic catalog
 mSynMean1=mean(vS1);

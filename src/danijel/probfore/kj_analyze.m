@@ -22,7 +22,7 @@ if (nargin == 2) & ~ischar(varargin{1})  % LAUNCH GUI
   try
     fSplit = handles.params.fSplitTime;
   catch
-    fSplit = ((max(handles.params.mCatalog(:,3)) - min(handles.params.mCatalog(:,3))) / 2) + min(handles.params.mCatalog(:,3));
+    fSplit = ((max(handles.params.mCatalog.Date) - min(handles.params.mCatalog.Date)) / 2) + min(handles.params.mCatalog.Date);
   end
   set(handles.txtSplit, 'String', num2str(fSplit, 6));
 
@@ -239,12 +239,12 @@ axes(kj_result('GetAxesHandle', handles.hParentFigure, [], guidata(handles.hPare
 if ~handles.params.bMap
   [nRow, nColumn] = size(handles.params.mCatalog);
   xsecx2 = handles.params.mCatalog(:,nColumn);  % length along x-section
-  xsecy2 = handles.params.mCatalog(:,7);        % depth of hypocenters
+  xsecy2 = handles.params.mCatalog.Depth;        % depth of hypocenters
 end
 
 % Calculate distance from center point and sort with distance
 if handles.params.bMap
-  vDistances = sqrt(((handles.params.mCatalog(:,1)-fX)*cosd(fY)*111).^2 + ((handles.params.mCatalog(:,2)-fY)*111).^2);
+  vDistances = sqrt(((handles.params.mCatalog.Longitude-fX)*cosd(fY)*111).^2 + ((handles.params.mCatalog.Latitude-fY)*111).^2);
 else
   vDistances = sqrt(((xsecx2 - fX)).^2 + ((xsecy2 + fY)).^2);
 end
@@ -253,12 +253,12 @@ end
 if handles.params.bNumber
   % Use first nNumberEvents events
   [vTmp, vIndices] = sort(vDistances);
-  mNodeCatalog = handles.params.mCatalog(vIndices,:);
+  mNodeCatalog = handles.params.mCatalog.subset(vIndices);
   mNodeCatalog = mNodeCatalog(1:handles.params.nNumberEvents);
 else
   % Use all events within fRadius
   vSelection = (vDistances <= handles.params.fRadius);
-  mNodeCatalog = handles.params.mCatalog(vSelection,:);
+  mNodeCatalog = handles.params.mCatalog.subset(vSelection);
 end
 
 % Store the subcatalog for later use

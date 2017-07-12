@@ -34,12 +34,11 @@ report_this_filefun(mfilename('fullpath'));
 bChk=logical(0);    % for debugging the code
 
 % Determine time period of catalog
-params.fTminCat = min(params.mCatalog(:,3));
-params.fTmaxCat = max(params.mCatalog(:,3));
+params.fTminCat = min(params.mCatalog.Date);
+params.fTmaxCat = max(params.mCatalog.Date);
 % Adjust to decimal years
-% fTimePeriod =params.fTimePeriod/365;
-mCat=params.mCatalog(:,3);
-mLoc=[params.mCatalog(:,1) params.mCatalog(:,2) params.mCatalog(:,7) ];
+mCat=params.mCatalog.Date;
+mLoc=[params.mCatalog.Longitude params.mCatalog.Latitude params.mCatalog.Depth ];
 % Init result matrix
 mValueGrid_ = [];
 %  Selection criteria for subcatalog (between StartTime and
@@ -68,13 +67,13 @@ for i=1:size(mVar,1)
     nTbin=mVar(i,3);
     mNumDeclus_=params.mNumDeclus(:,end);
 %     sum(params.mNumDeclus  )
-    % vSelMag=(params.mCatalog(:,6)>=params.fMc)
+    % vSelMag=(params.mCatalog.Magnitude>=params.fMc)
 
     % create vectors for time periods
-    vSelR0_=(params.mCatalog(:,3) > fTstart);
-    vSelR1_=(params.mCatalog(:,3) <= fT);
-    vSelR2_=(params.mCatalog(:,3) >= fT-fTw);
-    vSelR3_=(params.mCatalog(:,3)  <= fT-fTw);
+    vSelR0_=(params.mCatalog.Date > fTstart);
+    vSelR1_=(params.mCatalog.Date <= fT);
+    vSelR2_=(params.mCatalog.Date >= fT-fTw);
+    vSelR3_=(params.mCatalog.Date  <= fT-fTw);
 
     % combine time periods with decluster info's
     mSelD0_=repmat(vSelR0_,1,size(mNumDeclus_,2)) & mNumDeclus_;
@@ -88,7 +87,7 @@ for i=1:size(mVar,1)
     mSelD20=( mSelD1_ & mSelD2_);   % 2nd period
 
     % events in whole period  (us it for calculating probabilities of z and beta)
-    mCat=params.mCatalog(mSelD00,3);
+    mCat=params.mCatalog.Date(mSelD00);
 
     % repeat matrix for multiplication with grid node distance-ranking
     aSelD02=repmat(mSelD00,1,size(params.mPolygon,1));
@@ -138,14 +137,14 @@ for i=1:size(mVar,1)
 
     % prepare catalog (origin times) - copy them column-wise for each
     % grid point
-    mCat0=params.mCatalog(:,3);
+    mCat0=params.mCatalog.Date;
     mCat0=(repmat(mCat0,1,size(dSelD02,2)));
 
     if bChk
         % and for latitude and longitude aswell
-        mLon0=params.mCatalog(:,1);
+        mLon0=params.mCatalog.Longitude;
         mLon0=(repmat(mLon0,1,size(dSelD02,2)));
-        mLat0=params.mCatalog(:,2);
+        mLat0=params.mCatalog.Latitude;
         mLat0=(repmat(mLat0,1,size(dSelD02,2)));
     end
 

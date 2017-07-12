@@ -2,7 +2,7 @@ function [rmain,r1]= interact(var1)
     %interact.m                                        A.Allmann
     % calculates the interaction zones of the earthquakes
     % in [km]
-    %Last modification 6/95
+    %
 
     global ZG.newcat rfact xmeff
 

@@ -1,12 +1,12 @@
 % This .m file "ctimeplot" plots the events select by "circle"
 % or by other selection button as a cummultive number versus
 % time plot in window 2.
-% Time of events with a Magnitude greater than minmag will
+% Time of events with a Magnitude greater than ZG.big_eq_minmag will
 % be shown on the curve.  Operates on ZG.newt2, resets  b  to ZG.newt2,
 %     ZG.newcat is reset to:
 %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
 %                       - ZG.newt2 if "Save as Newcat" button is pressed.
-%Last modification 8/95
+%
 zmap_message_center.set_info(' ','Plotting cumulative number plot...');
 ZG=ZmapGlobal.Data;
 think
@@ -56,9 +56,9 @@ hlpStr2= ...
     '                                                      '];
 
 global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess tiplo2 cum ZG.newt2 statime maxde minde
+global cplot mess tiplo2 cum statime maxde minde
 global maxma2 minma2
-
+ZG=ZmapGlobal.Data;
 
 % Find out of figure already exists
 %
@@ -84,7 +84,7 @@ if newCumWindowFlag
 
     uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','inpu2')
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
-    iwl = iwl2*365/par1;
+    iwl = iwl2/days(par1);
     uimenu(options,'Label','AS(t)function',...
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''ast'';newsta')
     uimenu(options,'Label','Rubberband function',...
@@ -141,12 +141,12 @@ end
 %end;    if figure exist
 
 if ZmapGlobal.Data.hold_state
-    cumu = 0:1:(tdiff*365/par1)+2;
-    cumu2 = 0:1:(tdiff*365/par1)-1;
+    cumu = 0:1:(tdiff/days(par1))+2;
+    cumu2 = 0:1:(tdiff/days(par1))-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
     n = ZG.newt2.Count;
-    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par1/365:teb));
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par1):teb));
     cumu2 = cumsum(cumu);
 
 
@@ -174,9 +174,9 @@ set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',
 
 if isempty(ZG.newcat), ZG.newcat =a; end
 
-% select big events ( > minmag)
+% select big events ( > ZG.big_eq_minmag)
 %
-l = ZG.newt2.Magnitude > minmag;
+l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
 big = ZG.newt2(l,:);
 %big=[];
 %calculate start -end time of overall catalog
@@ -197,16 +197,16 @@ end
 
 
 if par1>=1
-    tdiff = round((teb - t0b)*365/par1);
+    tdiff = round(days(teb-t0b)/par1);
     %tdiff = round(teb - t0b);
 else
-    tdiff = (teb-t0b)*365/par1;
+    tdiff = (teb-t0b)/days(par1);
 end
 % set arrays to zero
 %
 %if par1>=1
-% cumu = 0:1:(tdiff*365/par1)+2;
-% cumu2 = 0:1:(tdiff*365/par1)-1;
+% cumu = 0:1:(tdiff/days(par1))+2;
+% cumu2 = 0:1:(tdiff/days(par1))-1;
 %else
 %  cumu = 0:par1:tdiff+2*par1;
 %  cumu2 =  0:par1:tdiff-1;
@@ -219,9 +219,9 @@ end
 %
 n = ZG.newt2.Count;
 if par1 >=1
-    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par1/365:teb));
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par1):teb));
 else
-    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+par1/365)*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+days(par1))*365,(0:par1:(tdiff+2*par1)));
 end
 cumu2=cumsum(cumu);
 par1
@@ -243,7 +243,7 @@ set(tiplo2,'LineWidth',2.5)
 if par1>=1
     if ~isempty(big)
         if ceil(big(:,3) -t0b) > 0
-            f = cumu2(ceil((big(:,3) -t0b)*365/par1));
+            f = cumu2(ceil((big(:,3) -t0b)/days(par1)));
             bigplo = plot(big(:,3),f,'xr');
             set(bigplo,'MarkerSize',10,'LineWidth',2.5)
             stri4 = [];
@@ -288,7 +288,7 @@ grid
 if par1>=1
     xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 else
-    statime=ZG.newt2(1,3)-par1/365;
+    statime=ZG.newt2(1,3)-days(par1);
     xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 end
 ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

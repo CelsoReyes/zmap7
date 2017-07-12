@@ -41,25 +41,24 @@ vMc = [];
 mBvalue = [];
 
 % Check size of catalog
-[nRow,nCol] = size(mCatalog);
+nRow=mCatalog.Count;
 
 % Restrict to minimum number
 if nRow >= nMinNum
     % Get magnitudes
-    vMags = mCatalog(:,6);
+    vMags = mCatalog.Magnitude;
     % Reset randomizer
     rand('state',sum(100*clock));
     % Create bootstrap samples using bootstrap matlab toolbox
     %mMag_bstsamp = bootrsp(vMags,nSample);
     % Determine Mc uncertainty
     for nSamp=1:nSample
-        %mCatalog(:,6) = mMag_bstsamp(:,nSamp);
-        mCatalog(:,6) = bootrsp(vMags,1);
+        mCatalog.Magnitude = bootrsp(vMags,1);
         [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorr);
         vMc =  [vMc; fMc];
         % Select magnitude range and calculate b-value
-        vSel = mCatalog(:,6) >= fMc-fBinning/2;
-        mCat = mCatalog(vSel,:);
+        vSel = mCatalog.Magnitude >= fMc-fBinning/2;
+        mCat = mCatalog.subset(vSel);
         % Check static for length of catalog
         [nY, nX] = size(mCat);
         if nY >= nMinNum

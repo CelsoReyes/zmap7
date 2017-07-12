@@ -39,7 +39,7 @@ for i=1:length(x)-1
     newa  = [newa ; a(inde,:) xsecx'+ma];
 end
 
-l = newa(:,6) >= minmag;
+l = newa(:,6) >= ZG.big_eq_minmag;
 maex = newa(l,po);
 maey = newa(l,7);
 if isempty(maex)==1 ; maex = 0; maey = 0;end
@@ -129,7 +129,7 @@ uic4 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
 
 uic5 = uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...
     'position',[0.0 .9 .2 .05],'String','Select Eqs',...
-     'Callback','crosssel;ZG.newt2=newa2;ZG.newcat=newa2;timeplot;');
+     'Callback','crosssel;ZG.newt2=newa2;ZG.newcat=newa2;timeplot(ZG.newt2);');
 
 uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...
     'position',[.2 .9 .2 .05],'String','Time Plot ',...

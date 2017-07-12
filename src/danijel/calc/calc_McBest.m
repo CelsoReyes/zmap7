@@ -6,7 +6,7 @@ if bDebug
 end
 
 % First estimation of magnitude of completeness (maximum curvature)
-[vEvents, vMag] = hist(mCatalog(:,6), -2:0.1:6);
+[vEvents, vMag] = hist(mCatalog.Magnitude, -2:0.1:6);
 nSel = max(find(vEvents == max(vEvents)));
 fMcStart = vMag(nSel);
 
@@ -19,11 +19,11 @@ if ~exist('fBinning')
 end
 
 for nCnt = (fMcStart - 0.9):fBinning:(fMcStart + 1.5)
-  vSel = mCatalog(:,6) > (nCnt - (fBinning/2));
-  %vSel = mCatalog(:,6) >= nCnt - 0.0499;
-  nNumberEvents = length(mCatalog(vSel,6));
+  vSel = mCatalog.Magnitude > (nCnt - (fBinning/2));
+  %vSel = mCatalog.Magnitude >= nCnt - 0.0499;
+  nNumberEvents = sum(vSel);
   if nNumberEvents >= 25
-    [fDummy fBValue fDummy,  fDummy] =  bmemag(mCatalog(vSel,:));
+    [fDummy fBValue fDummy,  fDummy] =  bmemag(mCatalog.subset(vSel));
 
     fStartMag = nCnt; % Starting magnitude (hypothetical Mc)
 
@@ -49,7 +49,7 @@ for nCnt = (fMcStart - 0.9):fBinning:(fMcStart + 1.5)
 
     PM=vMag(1:ct);
     vNumber = vNumber(1:ct);
-    [bval, vDummy] = hist(mCatalog(vSel,6),PM);
+    [bval, vDummy] = hist(mCatalog.Magnitude(vSel),PM);
     b3 = fliplr(cumsum(fliplr(bval)));    % N for M >= (counted backwards)
     res2 = sum(abs(b3 - vNumber))/sum(b3)*100;
     mData = [mData; nCnt res2];

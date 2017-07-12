@@ -115,8 +115,8 @@ if ~hoc ||  newMapLaWindowFlag == 1
  
     end
  
-    if ~isempty(maepi)
-        lc_event(maepi(:,2),maepi(:,1),'hy',10,2.0)
+    if ~isempty(ZG.maepi)
+        lc_event(ZG.maepi.Latitude,ZG.maepi.Longitude,'hy',10,2.0)
     end
     if ~isempty(main)
         lc_event(main(:,2),main(:,1),'hk',10,2.0)

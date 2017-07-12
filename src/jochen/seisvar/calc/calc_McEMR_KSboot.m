@@ -62,10 +62,10 @@ if (fSmu > 1)
 end
 
 % Determine exact time period
-fPeriod1 = max(mCatalog(:,3)) - min(mCatalog(:,3));
+fPeriod1 = max(mCatalog.Date) - min(mCatalog.Date);
 
 % Determine max. and min. magnitude
-fMaxMag = ceil(10 * max(mCatalog(:,6))) / 10;
+fMaxMag = ceil(10 * max(mCatalog.Magnitude)) / 10;
 
 
 % Calculate FMD for original catalog
@@ -78,8 +78,8 @@ vNonCFMD = vNonCFMDorg;
 vNonCFMD = fliplr(vNonCFMD);
 % Calculate a and b-value for GR-law and distribution vNCum
 [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
-if (length(mCatalog(vSel,1)) >= 20)
-    [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog(vSel,:), fBinning);
+if (length(mCatalog.Longitude(vSel)) >= 20)
+    [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
     % Normalize to time period
     vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
     vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed
@@ -183,7 +183,7 @@ if (length(mCatalog(vSel,1)) >= 20)
         vNmaxBest = [vNmaxBest; fNmax];
         vABValue = [vABValue; fAValue fBValue];
     end; % END of IF fNmax
-end; % END of IF length(mCatalog(vSel,1))
+end; % END of IF length(mCatalog.Longitude(vSel))
 
 
 
@@ -228,7 +228,7 @@ try
         vMag = [vMag; fM];
     end
     % Calculate KS-Test
-    [bH,fPval,fKsstat] = kstest2(roundn(mCatalog(:,6),-1),roundn(vMag,-1),0.05,0);
+    [bH,fPval,fKsstat] = kstest2(roundn(mCatalog.Magnitude,-1),roundn(vMag,-1),0.05,0);
 catch
     bH = NaN;
     fPval = NaN;

@@ -38,11 +38,11 @@ function [mBeta, mProb] =calc_beta4(mCat,fTstart,fT,fTw,nTbin,nN)
 % complete catalog (1)
 bSyn=true;
 
-vR1=histc(mCat1,fTstart : nTbin/365 : fT,1);
+vR1=histc(mCat1,fTstart : days(nTbin) : fT,1);
 vR1=vR1(1:end-1,:);
 
-% vR1=histc(mCat1,fTimeStart:fTimeSteps/365:fTimeCut+fTimeWindow);
-vR2=histc(mCat2,fT-fTw : nTbin/365:fT,1);
+% vR1=histc(mCat1,fTimeStart:days(fTimeSteps):fTimeCut+fTimeWindow);
+vR2=histc(mCat2,fT-fTw : days(nTbin):fT,1);
 vR2=vR2(1:end-1,:);
 
 % % calculate the mean rate for different periods
@@ -68,16 +68,16 @@ if bSyn
     mSyn1=rand(nN,5000)*(fT-fTstart)+fTstart;
 end
 % apply histogram to synthetic catalog
-vS1=histc(mSyn1,fTstart : nTbin/365 : fT,1);
+vS1=histc(mSyn1,fTstart : days(nTbin) : fT,1);
 vS1=vS1(1:end-1,:);
-vS2=histc(mSyn1,fT-fTw : nTbin/365:fT,1);
+vS2=histc(mSyn1,fT-fTw : days(nTbin):fT,1);
 vS2=vS2(1:end-1,:);
 % preparation for beta calculation
 nEq1=sum(vS1);  % no of eq in the 1st period
 nEq2=sum(vS2);  % no of eq in the 2nd period
 nBin1=size(vS1,1); % no of bins in 1st period
 % nBin2=size(vS2,1); % no of bins in 2nd period
-iwl=fTw*365/nTbin;
+iwl=fTw/days(nTbin);
 fNormInvalLength=iwl/nBin1; % normalized interval length
 % mSynBeta
 mSynBeta=(nEq2 - nEq1.*fNormInvalLength )./sqrt(nEq1.*fNormInvalLength.*(1-fNormInvalLength));
@@ -89,7 +89,7 @@ nEq1=sum(vR1);  % no of eq in the 1st period
 nEq2=sum(vR2);  % no of eq in the 2nd period
 nBin1=size(vR1,1); % no of bins in 1st period
 % nBin2=size(vR2,1); % no of bins in 2nd period
-iwl=fTw*365/nTbin;
+iwl=fTw/days(nTbin);
 fNormInvalLength=iwl/nBin1; % normalized interval length
 
 % mBeta

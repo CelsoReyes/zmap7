@@ -1,16 +1,16 @@
-function [rc] = calc_ratechangeF(a,time,timef,bootloops,maepi)
-    % function [rc] = calc_ratechangeF(a,time,timef,bootloops,maepi);
+function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,ZG.maepi)
+    % function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,ZG.maepi);
     % ----------------------------------------------------------------
     % Determines ratechanges within aftershock sequences for defined time window
     %
     % Input parameters:
-    %   a           earthquake catalog
+    %   mycat       earthquake catalog
     %   time_as     delay times (days)
     %   step        number of quakes to determine forecast period
     %   time        learning period
     %   timeF       forecast period
     %   bootloops   Number of bootstraps
-    %   maepi       Mainsock values
+    %   ZG.maepi       Mainsock values
     %
     % Output parameters:
     %   rc      Matrix containing: time, absdiff, sigma, numreal, nummod,
@@ -27,27 +27,27 @@ function [rc] = calc_ratechangeF(a,time,timef,bootloops,maepi)
 
     % Initialize
     rc = [];
-    % fMc0 = mcwithtime(a,time_as,7);
+    % fMc0 = mcwithtime(mycat,time_as,7);
     %
     % %time = mintime;
     %
     % % determination of magnitude of completeness
     % if time < 7
-    %     fMc = mcwithtime(a,time_as,time);
+    %     fMc = mcwithtime(mycat,time_as,time);
     % else
     %     fMc = fMc0;
     % end
 report_this_filefun(mfilename('fullpath'));
-    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,zeros(size(a,1),1));
-    date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
+    date_matlab = datenum(mycat.Date);
+    date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;
 
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = ZG.a.subset(l);
+    eqcatalogue = mycat.subset(l);
 
     % Estimation of Omori parameters from learning period
-    l = tas <= time;% & ZG.a.Magnitude >= fMc;
+    l = tas <= time;% & mycat.Magnitude >= fMc;
     time_as=tas(l);
     % [pval, pvalstd, cval, cvalstd, kval, kvalstd, loopout] = brutebootF(time_as, bootloops);
     % Calculate uncertainties and mean values of p,c,and k
@@ -89,7 +89,7 @@ report_this_filefun(mfilename('fullpath'));
         %         if t_forecast > max(time_as)
         %             return
         %         end
-        %l = time_as <= t_forecast & ZG.a.Magnitude >= fMc & time_as >= time;
+        %l = time_as <= t_forecast & mycat.Magnitude >= fMc & time_as >= time;
         %l = tas <= time+timef;
         % Find amount of events in forecast period for modeled data
         nummod = max(cumnr_modelf)-cumnr_modelf(length(time_as));

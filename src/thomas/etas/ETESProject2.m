@@ -126,7 +126,7 @@ end
 
 %Eliminating earthquakes below the cutoff magnitude
 
-a = find(cat(:,10)<Mmin);
+ZG.a = find(cat(:,10)<Mmin);
 
 cat(a,:) = [];
 
@@ -151,7 +151,7 @@ m = cat(:,10);
 
 %eliminating catalog earthquakes that are past the start of the projection
 
-a = find(tdist>=T2);
+ZG.a = find(tdist>=T2);
 cat(a,:) = [];
 tdist(a) = [];
 m(a) = [];
@@ -302,9 +302,9 @@ end
 %tracker = tracker(useC);
 
 %And doing some clean up
-a = find(r>=Px(end));
+ZG.a = find(r>=Px(end));
 tracker(a) = length(Px);
-a = find(r<Px(1));
+ZG.a = find(r<Px(1));
 tracker(a) = 1;
 
 %And moving on
@@ -419,7 +419,7 @@ maxID = max(ID);
 
 countAll = length(tdistAll)+1;
 
-a = find(m>=Mmin & tdist<=T3);
+ZG.a = find(m>=Mmin & tdist<=T3);
 
 NIttr = 0;
 

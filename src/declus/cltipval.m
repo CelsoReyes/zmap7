@@ -1,7 +1,7 @@
 function cltipval(var1)
     % cltipvla.m                            A.Allmann
     % function to calculate P-values for different time or magnitude windows
-    % Last modification 10/95
+    %
 
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
@@ -26,7 +26,7 @@ function cltipval(var1)
     global file1             %welcome
     global mess ccum bgevent equi  clust original cluslength newclcat
     global backcat ttcat cluscat
-   global  sys minmag clu te1
+   global  sys clu te1
     global xt par3 cumu cumu2
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
@@ -70,7 +70,7 @@ function cltipval(var1)
         %
         n = ZG.newt2.Count;
         if par3>=1
-            [cumu, xt] = hist(ZG.newt2.Date,(t0b:par3/365:teb));
+            [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par3):teb));
         else
             [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
         end
@@ -156,13 +156,13 @@ function cltipval(var1)
         freq_field1= uicontrol('Style','edit',...
             'Position',[.43 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp2),...
-            'Callback','tmp2=str2double(get(freq_field1,''String''));     set(freq_field1,''String'',num2str(tmp2));');
+            'Callback','tmp2=str2double(freq_field1.String);     freq_field1.String=num2str(tmp2);');
 
         tmp1=max(ttcat(:,6));
         freq_field2=uicontrol('Style','edit',...
             'Position',[.76 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp1),...
-            'Callback','tmp1=str2double(get(freq_field2,''String''));   set(freq_field2,''String'',num2str(tmp1));');
+            'Callback','tmp1=str2double(freq_field2.String);   freq_field2.String=num2str(tmp1);');
         tmp3=str2double(tt4);
         if tmp3 < 0
             tmp3=0;
@@ -171,13 +171,13 @@ function cltipval(var1)
         freq_field3=uicontrol('Style','edit',...
             'Position',[.43 .28 .1 .04],...
             'Units','normalized','String',num2str(tmp3),...
-            'Callback','tmp3=str2double(get(freq_field3,''String''));  set(freq_field3,''String'',num2str(tmp3));');
+            'Callback','tmp3=str2double(freq_field3.String);  freq_field3.String=num2str(tmp3);');
 
         tmp4=str2double(tt5);
         freq_field4=uicontrol('Style','edit',...
             'Position',[.76 .28 .1 .04],...
             'Units','normalized','String',num2str(tmp4),...
-            'Callback','tmp4=str2double(get(freq_field4,''String'')); set(freq_field4,''String'',num2str(tmp4));');
+            'Callback','tmp4=str2double(freq_field4.String); freq_field4.String=num2str(tmp4);');
 
 
         txt1 = text(...
@@ -232,7 +232,7 @@ function cltipval(var1)
             freq_field5=uicontrol('Style','edit',...
                 'Position',[.55 .2 .2 .04],...
                 'Units','normalized','String',num2str(magn),...
-                'Callback','magn=get(freq_field5,''String'');magn=eval(magn);');
+                'Callback','magn=freq_field5.String;magn=eval(magn);');
             set(freq_field5,'String',num2str(magn));
             tmm=0;
             text(0.54,0.17,'Vector (e.g. 1: 0.1: 3): ');
@@ -250,7 +250,7 @@ function cltipval(var1)
             freq_field5=uicontrol('Style','edit',...
                 'Position',[.55 .2 .2 .04],...
                 'Units','normalized','String',num2str(magn),...
-                'Callback','magn=get(freq_field5,''String'');magn=eval(magn);');
+                'Callback','magn=freq_field5.String;magn=eval(magn);');
             set(freq_field5,'String',num2str(magn));
             tmm=3;
             text(0.54,0.17,'Vector (e.g. 1: 0.5: 7): ');
@@ -348,12 +348,12 @@ function cltipval(var1)
             if par3<1             %if cumulative number curve is in days
 
                 if var1==4        %first event in sequence is mainevent if maininput
-                    mains=find(ttcat(:,3)>(tt4/365+ttcat(1,3)));
+                    mains=find(ttcat(:,3)>(days(tt4)+ttcat(1,3)));
                     mains=ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=tmp3/365+ttcat(1,3) &    ttcat(:,3)<=tmp4/365+ttcat(1,3)),:);
-                tmp6=tmp3/365+ttcat(1,3);
+                tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=days(tmp4)+ttcat(1,3)),:);
+                tmp6=days(tmp3)+ttcat(1,3);
 
             else                 %cumulative number curve is in  years
 
@@ -473,12 +473,12 @@ function cltipval(var1)
             if par3<1             %if cumulative number curve is in days
 
                 if var1==7        %first event in sequence is mainevent if maininput
-                    mains=find(ttcat(:,3)>(tt4/365+ttcat(1,3)));
+                    mains=find(ttcat(:,3)>(days(tt4)+ttcat(1,3)));
                     mains=ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=tmp3/365+ttcat(1,3) &    ttcat(:,3)<=magn(i)/365+ttcat(1,3)),:);
-                tmp6=tmp3/365+ttcat(1,3);
+                tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=magn(i)/365+ttcat(1,3)),:);
+                tmp6=days(tmp3)+ttcat(1,3);
 
             else                 %cumulative number curve is in  years
 

@@ -2,22 +2,32 @@
 % To plot multiple slices through a 3D data cube
 
 report_this_filefun(mfilename('fullpath'));
-
-global  tiplo2 ax3 a hs plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
-global ZG.newt2  hndl2 tgl1 Rconst %killed one hs
+ZG=ZmapGlobal.Data;
+global  tiplo2 ax3 plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
+global hndl2 tgl1 Rconst
 global ps1 ps2 plin pli xt3 bvalsum3 slfig
 
 
-if ~exist('slm', 'var'); slm = 'new' ; end
-if ~exist('zv2', 'var'); zv2= zvg ; end
-if ~exist('fix1', 'var'); fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg))); end
-if isempty(fix1) == 1; fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg))); end
+if ~exist('slm', 'var'); 
+    slm = 'new' ; 
+end
+if ~exist('zv2', 'var'); 
+    zv2= zvg ; 
+end
+
+minzvg=min(min(min(zvg)));
+maxzvg=max(max(max(zvg)));;
+if ~exist('fix1', 'var') || isempty(fix1); 
+    fix1 = minzvg; 
+    fix2 = maxzvg; 
+end
 
 switch(slm)
 
     case 'new'
 
-        fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg)));
+        fix1 = minzvg; 
+        fix2 = maxzvg;
 
         R = nan;
 
@@ -38,9 +48,8 @@ switch(slm)
 
 
         slfig = figure_w_normalized_uicontrolunits('pos', [80 50 900 650]);
-        axes('pos',[0.1 0.15 0.4 0.7]);
-        hold on
-        %sl = slice(X,Y,Z,zvg,Y2,X2,Z2)
+        hs=axes(slfig,'pos',[0.1 0.15 0.4 0.7]);
+        hold(hs,'on');
 
         sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         pcolor(X2,Y2,sl);
@@ -48,18 +57,20 @@ switch(slm)
 
         %axis image
 
-        box on
-        shading flat; hold on
+        box(hs,'on');
+        shading flat; 
+        hold(hs,'on')
         axis([min(gx) max(gx) min(gy) max(gy) ]);
 
-        hold on
-        overlay_
+        hold(hs,'on');
+        error('call to overlay_, but maybe is not same as update(mainmap())');
+        %overlay_
+
 
         caxis([fix1 fix2]);
         colormap(jet);
 
-        set(gca,'TickDir','out','Ticklength',[0.02 0.02],'Fontweight','bold','Tag','hs');
-        hs = gca;
+        set(hs,'TickDir','out','Ticklength',[0.02 0.02],'Fontweight','bold','Tag','hs');
         h5 = colorbar('horz');
         hsp = get(hs,'pos');
         set(h5,'pos',[0.15 hsp(2)-0.1 0.3 0.02],'Tickdir','out','Ticklength',[0.02 0.02],'Fontweight','bold');
@@ -71,10 +82,10 @@ switch(slm)
 
         uicontrol(,'Units','normal',...
             'Position',[.96 .90 .04 .04],'String',' V1',...
-             'Callback','anseiswa samp1; timeplot')
+             'Callback','anseiswa(''samp1''); timeplot(maybeZGnewt2_maybe_somethingelse_FIXME)')
         uicontrol('Units','normal',...
             'Position',[.96 .85 .04 .04],'String',' V2',...
-             'Callback','anseiswa samp2; timeplot')
+             'Callback','anseiswa(''samp2''); timeplot(maybeZGnewt2_maybe_somethingelse_FIXME)')
         uicontrol('Units','normal',...
             'Position',[.0 .95 .15 .04],'String',' Define X-section',...
              'Callback','action = ''start''; animatorb;')
@@ -166,12 +177,12 @@ switch(slm)
 
 
         % Plot the events on map in yellow
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         hold on
         %plev =   plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'.k','MarkerSize',4)
         xc1 = plot(mean(gx),mean(gy),'m^','MarkerSize',10,'LineWidth',1.5,'era','normal');
         set(xc1,'Markeredgecolor','w','Markerfacecolor','g')
-        set(xc1,'ButtonDownFcn','anseiswa start1');
+        set(xc1,'ButtonDownFcn',@(~,~)anseiswa('start1'));
         % plot circle containing events as circle
         xx = -pi-0.1:0.1:pi;
         plc1 = plot(x+sin(xx)*Rjma/(cosd(y)*111), y+cos(xx)*Rjma/(cosd(y)*111),'k','era','normal')
@@ -215,11 +226,11 @@ switch(slm)
 
 
         % Plot the events on map in yellow
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'))
         hold on
         xc2 = plot(mean(gx)+std(gx)/2,mean(gy)+std(gx)/2,'ch','MarkerSize',12,'LineWidth',1.0,'era','normal');
         set(xc2,'Markeredgecolor','w','Markerfacecolor','r')
-        set(xc2,'ButtonDownFcn','anseiswa start2');
+        set(xc2,'ButtonDownFcn',@(~,~)anseiswa('start2'));
         set(gcbf,'WindowButtonMotionFcn','')
         set(gcbf,'WindowButtonUpFcn','')
         % plot circle containing events as circle
@@ -244,20 +255,21 @@ switch(slm)
         set(xc2,'era','back')
 
     case 'newdep'
-        if ds < min(abs(gz)) ; ds = min(abs(gz)); end
-        chil = get(hs,'Children');
+        if ds < min(abs(gz)) ; 
+            ds = min(abs(gz)); 
+        end
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         Z2 = (X2*0 + ds);
         sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sl);
         set(ti,'string',['Depth: ' num2str(ds,3) ' km']);
-        anseiswa tipl2
-        anseiswa tipl
+        anseiswa('tipl2')
+        anseiswa('tipl')
 
     case 'newclim'
-        axes(hs)
+        axes(findobj(groot,'Tag','hs'));
         caxis([fix1 fix2]);
         h5 = colorbar('horiz');
-        %hsp = get(hs,'pos');
         set(h5,'pos',[0.15 hsp(2)-0.1 0.3 0.02],'Tickdir','out','Ticklength',[0.02 0.02],'Fontweight','bold');
 
     case 'newcolmap'
@@ -286,11 +298,11 @@ switch(slm)
 
         end
 
-        chil = get(hs,'Children');
+        chil = get(findobj(groot,'Tag','hs'),'Children');
         Z2 = (X2*0 + ds);
         sl = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sl);
-        fix1 = min(min(min(zvg))); fix2 = max(max(max(zvg)));
+        fix1 = minzvg; fix2 = maxzvg;
         set(ed1,  'String',[num2str(fix1,3)]);
         set(ed2,  'String',[num2str(fix2,3)]);
 
@@ -336,10 +348,10 @@ switch(slm)
 
         %lc_event(a(ZG.a.Depth<=dep1,2),a(ZG.a.Depth<=dep1,1),'.b',1);
         if ~exist('wi', 'var'); wi = 10; end
-        [ax ay,  inde] = mysectnoplo(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lat2,lon1,lon2);
+        [Ax Ay,  inde] = mysectnoplo(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lat2,lon1,lon2);
         hold on
         %figure
-        plot(di-ax,-ay,'.k','Markersize',1);
+        plot(di-Ax,-Ay,'.k','Markersize',1);
 
         shading flat
         caxis([fix1 fix2]);
@@ -370,11 +382,5 @@ switch(slm)
         if in3 == 8; co = jet; co = co(64:-1:1,:); colormap(co) ; end
 
         matdraw
-        %delete(ps2); delete(pli); delete(ps1);
-
-
         %killed one end
 end
-
-
-

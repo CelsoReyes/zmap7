@@ -148,7 +148,7 @@ m = cat(:,10);
 
 %eliminating catalog earthquakes that are past the start of the projection
 
-a=[];
+ZG.a=[];
 cat(a,:) = [];
 tdist(a) = [];
 m(a) = [];
@@ -196,7 +196,7 @@ maxID = max(ID);
 
 countAll = length(tdistAll)+1;
 
-a = find(m>=Mmin & tdist<=T3);
+ZG.a = find(m>=Mmin & tdist<=T3);
 
 NIttr = 1;
 

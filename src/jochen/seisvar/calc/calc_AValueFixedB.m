@@ -20,6 +20,6 @@ function [fAValue] = calc_AValueFixedB(mCatalog, fBValue)
 
 % If search doesn't converge, extrapolatea-value from magnitude of completeness
 if bExitFlag_ ~= 1
-  fMinMag_ = min(mCatalog(:,6));
-  fAValue = log10(length(mCatalog(:,1))) + (fBValue * fMinMag_);
+  fMinMag_ = min(mCatalog.Magnitude);
+  fAValue = log10(mCatalog.Count) + (fBValue * fMinMag_);
 end

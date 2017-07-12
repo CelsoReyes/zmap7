@@ -10,7 +10,7 @@
 
 % Check for declustered catalog
 
-if (isempty(vCluster) || isempty(mCatalog(:,1)))
+if (isempty(vCluster) || isempty(mCatalog.Longitude))
     errordlg('No declustered catalog availbale.','Error');
     return
 else

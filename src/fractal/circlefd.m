@@ -34,7 +34,7 @@ pause(0.1)
 %
 l = sqrt(((Da(:,1) - xa0)).^2 + ((Da(:,7) + ya0)).^2 + (Da(:,2).^2)) ;
 [s,is] = sort(l);
-newt2 = Da(is(:,1),:) ;
+ZG.newt2 = Da(is(:,1),:) ;
 
 if ic == 1 % select N closest events
 

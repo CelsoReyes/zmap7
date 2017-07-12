@@ -1,13 +1,15 @@
 % get the selected cluster
-
+% TOFIX this program expects the variables equi, clmap
+% TOFIX this program spits out several variables including new, val0
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
-
+error('trace through this file and try to fix understand/fix it');
 switch  gecl
 
     case 'mouse'
         disp(['Click with the left mouse button #next to the equivalent event #of the cluster you want to examine']);
 
-        figure_w_normalized_uicontrolunits(clmap)
+        figure(clmap)
         [tmp2,tmp1]=ginput(1);
 
         x=tmp2;y=tmp1;
@@ -41,11 +43,14 @@ end
 
 
 l = clus == val;
-newt2 = original(l,:);
+ZG.newt2 = original(l,:);
 
-if ~exist('tiplo', 'var'); timeplot; end
+if ~exist('tiplo', 'var'); 
+    timeplot(ZG.newt2);
+end
 nu = (1:ZG.newt2.Count) ;nu = nu';
-set(tiplo2,'Xdata',ZG.newt2.Date,'Ydata',nu); figure_w_normalized_uicontrolunits(cum);
+set(tiplo2,'Xdata',ZG.newt2.Date,'Ydata',nu); 
+figure(cum);
 
 
 val0 = val;;

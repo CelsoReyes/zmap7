@@ -3,7 +3,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja_, rjb_] = mypval2m(pcat)
     %mypval2m                            Bogdan Enescu
     % function to calculate the parameters of the modified Omori Law
     %
-    % Last modification 5/2000
+    %
 
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata.
@@ -28,7 +28,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja_, rjb_] = mypval2m(pcat)
     %otherwise there is non-determination in origin.
 
     global valeg valeg2 CO valm1
-    global pc nn pp nit t ieflag isflag maepi
+    global pc nn pp nit t ieflag isflag ZG.maepi
     global cstep pstep ts tt eps1 eps2 pcheck
     global loopcheck
     global p sdp c sdc dk sdk
@@ -75,7 +75,7 @@ report_this_filefun(mfilename('fullpath'));
 
     if (valeg == 1)
         [timpa] = timabs(newcat2);
-        [timpar] = timabs(maepi);
+        [timpar] = timabs(ZG.maepi);
         tmpar = timpar(1);
         t = (timpa-tmpar)/1440;
         ts = min(t);
@@ -124,7 +124,7 @@ report_this_filefun(mfilename('fullpath'));
         amag = sum(magz)/length(magz);
 
         rjb = .4343/(amag-valm1+.05);
-        rja = log10(dk) - rjb * (maepi(:,6) - min(ZG.newt2.Magnitude));
+        rja = log10(dk) - rjb * (ZG.maepi.Magnitude - min(ZG.newt2.Magnitude));
 
 
         dk=round(dk*100)/100;

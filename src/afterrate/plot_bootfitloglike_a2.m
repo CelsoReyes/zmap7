@@ -1,46 +1,45 @@
-function plot_bootfitloglike_a2(a,time,timef,bootloops,maepi)
-    % function plot_bootfitloglike_a2(a,time,timef,bootloops,maepi);
+function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
+    % function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
     % --------------------------------------------------
     % Plots Ncum observed vs. Ncum modeled for specified time windows
     % with choosing the model for the learning period
     % Input variables:
-    % a         : earthquake catalog
+    % mycat         : earthquake catalog
     % time      : learning period fo fit Omori parameters
     % timef     : forecast period
     % bootloops : Number of bootstraps
-    % maepi     : mainshock
+    % ZG.maepi     : mainshock
     %
     % J.Woessner, S. Wiemer
-    % last update: 05.08.03
 
+%TOFIX mCat ZG.maepi still treated as arrays
 report_this_filefun(mfilename('fullpath'));
     % Surpress warnings from fmincon
     warning off;
 
-    %[m_main, main] = max(ZG.a.Magnitude);
-    date_matlab = datenum(ZG.a.Date.Year,ZG.a.Date.Month,ZG.a.Date.Day,ZG.a.Date.Hour,ZG.a.Date.Minute,zeros(size(a,1),1));
-    date_main = datenum(floor(maepi(3)),maepi(4),maepi(5),maepi(8),maepi(9),0);
+    %[m_main, main] = max(mycat.Magnitude);
+    date_matlab = datenum(mycat.Date);
+    date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;
-    % Select biggest aftershock earliest in time, but more than 1 day after mainshock
-    fDay = 1;
-    ft_c=fDay/365; % Time not considered to find biggest aftershock
-    vSel = (ZG.a.Date > maepi(:,3)+ft_c & ZG.a.Date<= maepi(:,3)+time/365);
-    mCat = ZG.a.subset(vSel);
-    vSel = mCat(:,6) == max(mCat(:,6));
-    vBigAf = mCat(vSel,:);
-    if length(mCat(:,1)) > 1
-        vSel = vBigAf(:,3) == min(vBigAf(:,3));
-        vBigAf = vBigAf(vSel,:);
-    end
 
-    date_biga = datenum(floor(vBigAf(3)),vBigAf(4),vBigAf(5),vBigAf(8),vBigAf(9),0);
+% Select biggest aftershock earliest in time, but more than 1 day after mainshock
+    fDay = 1; %days
+    vSel = (mycat.Date > ZG.maepi.Date + days(fDay) & mycat.Date<= ZG.maepi.Date+days(time);
+    mCat = mycat.subset(vSel);
+    vSel = mCat.Magnitude == max(mCat.Magnitude);
+    vBigAf = mCat(vSel,:);
+    if sum(vSel) > 1
+        vBigAf.sort('Date')
+        vBigAf = vBigAf.subset(1);
+    end
+    date_biga = datenum(vBigAf.Date);
     fT1 = date_biga - date_main; % Time of big aftershock
 
 
     % Aftershock times
     l = time_aftershock(:) > 0;
     tas = time_aftershock(l);
-    eqcatalogue = ZG.a.subset(l);
+    eqcatalogue = mycat.subset(l);
 
     % time_as: Learning period
     l = tas <= time;

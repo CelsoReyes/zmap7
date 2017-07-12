@@ -246,55 +246,55 @@ function [map,maplegend,Astruc] = usgsdemf(fname,scalefactor,latlim,lonlim)
 
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function a = Adescription
+function A = Adescription
 
     % Data Set Identification (A) record contents
 
     % Data Set Identification (A) record contents
 
-    a( 1).length = 40;    a( 1).name = 'Quadrangle name';
-    a( 2).length = 40;    a( 2).name = 'Textual Info';
-    a( 3).length = 55;    a( 3).name = 'Filler';
-    a( 4).length = 1;     a( 4).name = 'Process Code';
-    a( 5).length = 1;     a( 5).name = 'Filler2';
-    a( 6).length = 3;     a( 6).name = 'Sectional Indicator';
-    a( 7).length = 4;     a( 7).name = 'MC origin Code';
-    a( 8).length = 1;     a( 8).name = 'DEM level Code'; 						a(8).type = '%6g';
-    a( 9).length = 1;     a( 9).name = 'Elevation Pattern Code'; 				a(9).type = '%6g';
-    a(10).length = 1;     a(10).name = 'Planimetric Reference System Code'; 	a(10).type = '%6g';
-    a(11).length = 1;     a(11).name = 'Zone';      							a(11).type = '%6g';
-    a(12).length = 15;    a(12).name = 'Projection Parameters'; 				a(12).type = '%24D';
-    a(13).length = 1;     a(13).name = 'Horizontal Units';  					a(13).type = '%6g';
-    a(14).length = 1;     a(14).name = 'Elevation Units';  						a(14).type = '%6g';
-    a(15).length = 1;     a(15).name = 'N sides To Bounding Box'; 				a(15).type = '%6g';
-    a(16).length = 8;     a(16).name = 'Bounding Box';     						a(16).type = '%24D';
-    a(17).length = 2;     a(17).name = 'Min Max Elevations';        			a(17).type = '%24D';
-    a(18).length = 1;     a(18).name = 'Rotation Angle';     					a(18).type = '%24D';
-    a(19).length = 1;     a(19).name = 'Accuracy Code';       					a(19).type = '%6g';
-    a(20).length = 3;     a(20).name = 'XYZ resolutions ';        				a(20).type = '%12E';
-    a(21).length = 2;     a(21).name = 'Nrows Cols';      						a(21).type = '%6g';
+    A( 1).length = 40;    A( 1).name = 'Quadrangle name';
+    A( 2).length = 40;    A( 2).name = 'Textual Info';
+    A( 3).length = 55;    A( 3).name = 'Filler';
+    A( 4).length = 1;     A( 4).name = 'Process Code';
+    A( 5).length = 1;     A( 5).name = 'Filler2';
+    A( 6).length = 3;     A( 6).name = 'Sectional Indicator';
+    A( 7).length = 4;     A( 7).name = 'MC origin Code';
+    A( 8).length = 1;     A( 8).name = 'DEM level Code'; 						A(8).type = '%6g';
+    A( 9).length = 1;     A( 9).name = 'Elevation Pattern Code'; 				A(9).type = '%6g';
+    A(10).length = 1;     A(10).name = 'Planimetric Reference System Code'; 	A(10).type = '%6g';
+    A(11).length = 1;     A(11).name = 'Zone';      							A(11).type = '%6g';
+    A(12).length = 15;    A(12).name = 'Projection Parameters'; 				A(12).type = '%24D';
+    A(13).length = 1;     A(13).name = 'Horizontal Units';  					A(13).type = '%6g';
+    A(14).length = 1;     A(14).name = 'Elevation Units';  						A(14).type = '%6g';
+    A(15).length = 1;     A(15).name = 'N sides To Bounding Box'; 				A(15).type = '%6g';
+    A(16).length = 8;     A(16).name = 'Bounding Box';     						A(16).type = '%24D';
+    A(17).length = 2;     A(17).name = 'Min Max Elevations';        			A(17).type = '%24D';
+    A(18).length = 1;     A(18).name = 'Rotation Angle';     					A(18).type = '%24D';
+    A(19).length = 1;     A(19).name = 'Accuracy Code';       					A(19).type = '%6g';
+    A(20).length = 3;     A(20).name = 'XYZ resolutions ';        				A(20).type = '%12E';
+    A(21).length = 2;     A(21).name = 'Nrows Cols';      						A(21).type = '%6g';
 
     % Old format stops here
 
-    a(22).length = 1;     a(22).name = 'MaxPcontourInt';      					a(22).type = '%5g';
-    a(23).length = 1;     a(23).name = 'SourceMaxCintUnits';     				a(23).type = '%1g';
-    a(24).length = 1;     a(24).name = 'Smallest Primary';        				a(24).type = '%5g';
-    a(25).length = 1;     a(25).name = 'SourceMinCintUnits';      				a(25).type = '%1g';
-    a(26).length = 1;     a(26).name = 'Data Source Date';        				a(26).type = '%4g';
-    a(27).length = 1;     a(27).name = 'DataInspRevDate';       				a(27).type = '%4g';
-    a(28).length = 1;     a(28).name = 'InspRev Flag';
-    a(29).length = 1;     a(29).name = 'DataValidationFlag'; 	      			a(29).type = '%1g';
-    a(30).length = 1;     a(30).name = 'SuspectVoidFlag';    	    			a(30).type = '%2g';
-    a(31).length = 1;     a(31).name = 'Vertical Datum';       					a(31).type = '%2g';
-    a(32).length = 1;     a(32).name = 'Horizontal Datum';        				a(32).type = '%2g';
-    a(33).length = 1;     a(33).name = 'DataEdition';       					a(33).type = '%4g';
-    a(34).length = 1;     a(34).name = 'Percent Void';      					a(34).type = '%4g';
+    A(22).length = 1;     A(22).name = 'MaxPcontourInt';      					A(22).type = '%5g';
+    A(23).length = 1;     A(23).name = 'SourceMaxCintUnits';     				A(23).type = '%1g';
+    A(24).length = 1;     A(24).name = 'Smallest Primary';        				A(24).type = '%5g';
+    A(25).length = 1;     A(25).name = 'SourceMinCintUnits';      				A(25).type = '%1g';
+    A(26).length = 1;     A(26).name = 'Data Source Date';        				A(26).type = '%4g';
+    A(27).length = 1;     A(27).name = 'DataInspRevDate';       				A(27).type = '%4g';
+    A(28).length = 1;     A(28).name = 'InspRev Flag';
+    A(29).length = 1;     A(29).name = 'DataValidationFlag'; 	      			A(29).type = '%1g';
+    A(30).length = 1;     A(30).name = 'SuspectVoidFlag';    	    			A(30).type = '%2g';
+    A(31).length = 1;     A(31).name = 'Vertical Datum';       					A(31).type = '%2g';
+    A(32).length = 1;     A(32).name = 'Horizontal Datum';        				A(32).type = '%2g';
+    A(33).length = 1;     A(33).name = 'DataEdition';       					A(33).type = '%4g';
+    A(34).length = 1;     A(34).name = 'Percent Void';      					A(34).type = '%4g';
 
 
 
-    for i=1:length(a);
-        if isempty(a(i).type)
-            a(i).type = 'char';
+    for i=1:ZG.a.Count;
+        if isempty(A(i).type)
+            A(i).type = 'char';
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

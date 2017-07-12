@@ -1,4 +1,4 @@
-%Last modification: May, 2001 Bogdan Enescu
+%Modified May, 2001 Bogdan Enescu
 
 %This file is called from timeplot.m and helps for the computation of p-value from Omori formula. for different values of Mcut
 %and Minimum time. The value of p is then displayed as a isoline map.
@@ -45,15 +45,16 @@ valm1=str2double(answer{1}); valm2 = str2num(answer{2}); valm3=str2num(answer{3}
 valtm1 = str2double(answer{4}); valtm2 = str2num(answer{5}); valtm3 = str2num(answer{6});
 
 % cut catalog at mainshock time:
-l = ZG.newt2.Date > maepi(1,3);
-newt2 = ZG.newt2(l,:);
+l = ZG.newt2.Date > ZG.maepi.Date(1);
+ZG.newt2 = ZG.newt2(l,:);
 
 % cat at selecte magnitude threshold
 l = ZG.newt2.Magnitude < valm1;
-newt2(l,:) = [];
+ZG.newt2(l,:) = [];
 
 ZG.hold_state2=true;
-timeplot; drawnow
+timeplot(ZG.newt2);
+drawnow
 ZG.hold_state2=false;
 
 allcount = 0;
@@ -66,7 +67,7 @@ for valm = valm1:valm3:valm2
     paramc1 = (ZG.newt2.Magnitude >= valm);
     pcat = ZG.newt2(paramc1,:);
     [timpa] = timabs(pcat);
-    [timpar] = timabs(maepi);
+    [timpar] = timabs(ZG.maepi);
     tmpar = timpar(1);
     pcat = (timpa-tmpar)/1440;
     for valtm = valtm1:valtm3:valtm2
@@ -152,6 +153,6 @@ txt1 = text(...
     'String','p-value');
 
 % reset ZG.newt2
-newt2 = nn2;
+ZG.newt2 = nn2;
 
 

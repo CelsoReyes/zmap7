@@ -2,12 +2,13 @@
 % crosssel.m                      Alexander Allmann
 % function to select earthquakes in a cross-section and make them the
 % current catalog in the main map windo
-% Last change    8/95
+%
 %
 
 global xsec_fig h2 newa newa2
 
 report_this_filefun(mfilename('fullpath'));
+ZG=ZmapGlobal.Data;
 
 figure_w_normalized_uicontrolunits(gcf)
 
@@ -19,11 +20,13 @@ ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
 
 plot(x,y,'b-','era','xor');
-YI = -newa(:,7);          % this substitution just to make equation below simple
-XI = newa(:,length(newa(1,:)));
+YI = -newa.Depth;          % this substitution just to make equation below simple
+XI = newa(:,newa.Count); % ??
     ll = polygon_filter(x,y, XI, YI, 'inside');
 
 newa2 = newa.subset(ll);
-plot( newa2(:,length(newa2(1,:))), -newa2(:,7),'xk','era','normal')
-newt2=newa2;ZG.newcat=newa2;timeplot
+plot( newa2(:,newa2.Count), -newa2.Depth,'xk','era','normal')
+ZG.newt2=newa2;
+ZG.newcat=newa2;
+timeplot(ZG.newt2)
 

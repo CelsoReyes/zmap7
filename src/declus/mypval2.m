@@ -2,7 +2,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     % clpvla.m                            A.Allmann
     % function to calculate the parameters of the modified Omori Law
     %
-    % Last modification 10/95
+    %
 
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
@@ -25,7 +25,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     global file1             %welcome
     global mess ccum bgevent equi clust original cluslength newclcat
     global backcat ttcat cluscat
-   global  sys minmag clu te1
+   global  sys clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
     global xt par3 cumu cumu2
     global close_p_button pplot
@@ -60,7 +60,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     % calculate cumulative number versus time and bin it
     %
     n = ZG.newt2.Count;
-    [cumu, xt] = hist(ZG.newt2.Date,(t0b:par3/365:teb));
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par3):teb));
     [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
     difp= [0 diff(cumu)];
     cumu2 = cumsum(cumu);
@@ -71,7 +71,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     nnn=nn(1,1)-2;
     tmvar=1;           %temperal variable
     if par3>=1
-        tmp3=t0b+nnn*par3/365;
+        tmp3=t0b+nnn*days(par3);
     else
         tmp3=nnn*par5;
     end
@@ -121,8 +121,8 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
         mains=find(ttcat(:,6)==max(ttcat(:,6)));
         mains=ttcat(mains(1),:);         %biggest shock in sequence
         if par3<0.001
-            tmpcat=ttcat(find(ttcat(:,3)>=tmp3/365+ttcat(1,3) &    ttcat(:,3)<=tmp4/365+ttcat(1,3)),:);
-            tmp6=tmp3/365+ttcat(1,3);
+            tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=days(tmp4)+ttcat(1,3)),:);
+            tmp6=days(tmp3)+ttcat(1,3);
         else
             tmpcat=ttcat(find(ttcat(:,3)>=tmp3 & ttcat(:,3)<=tmp4),:);
             tmp6=tmp3;
@@ -205,8 +205,8 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
         % set arrays to zero
         %
         if par3>=1
-            cumu = 0:1:(tdiff*365/par3)+1;
-            cumu2 = 0:1:(tdiff*365/par3)-1;
+            cumu = 0:1:(tdiff/days(par3))+1;
+            cumu2 = 0:1:(tdiff/days(par3))-1;
         else
             par5=par3/5;
             cumu = 0:par5:tdiff+2*par3;

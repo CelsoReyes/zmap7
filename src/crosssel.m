@@ -2,7 +2,7 @@
 % crosssel.m                      Alexander Allmann
 % function to select earthquakes in a cross-section and make them the
 % current catalog in the main map windo
-% Last change    8/95
+%
 %
 
 global xsec_fig h2 newa newa2

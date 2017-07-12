@@ -7,14 +7,13 @@ function inpudenew()
     % modified Celso Reyes 2017
     report_this_filefun(mfilename('fullpath'));
     
-    global faults coastline main mainfault name
-    global ZG.newcat a wex wey
+    global wex wey
     global taumin taumax xmeff xk rfact P err derr
+    ZG=ZmapGlobal.Data;
     %routine works on ZG.newcat
     %
-    ZG.newcat=a;
     if isempty(ZG.newcat)
-        ZG.newcat=a;
+        ZG.newcat=ZG.a;
     end
     
     
@@ -106,7 +105,7 @@ function inpudenew()
     go_button2=uicontrol('Style','Pushbutton',...
         'Position',[.205 .02 .30 .09 ],...
         'Units','normalized',...
-        'Callback','taumin=str2num(get(inp1,''String''));taumax=str2num(get(inp2,''String''));P=str2num(get(inp3,''String''));xk=str2num(get(inp4,''String''));xmeff=str2num(get(inp5,''String''));rfact=str2num(get(inp6,''String''));err=str2num(get(inp7,''String''));derr=str2num(get(inp8,''String''));close;think;save_declus;',...
+        'Callback','taumin=str2num(inp1.String);taumax=str2num(inp2.String);P=str2num(inp3.String);xk=str2num(inp4.String);xmeff=str2num(inp5.String);rfact=str2num(inp6.String);err=str2num(inp7.String);derr=str2num(inp8.String);close;think;save_declus;',...
         'String','Go FORTRAN');
     %}
     

@@ -181,11 +181,11 @@ axes('position',rect)
 
 t0b = min(ZG.a.Date);
 n = ZG.a.Count;
-teb = a(n,3) ;
-tdiff =round(teb - t0b)*365/par1;
+teb = ZG.a.Date(n) ;
+tdiff =round(teb - t0b)/days(par1);
 
 
-n = length(a);
+n = ZG.a.Count;
 
 % plot earthquakes (differnt colors for varous depth layers) as
 % defined in "startzmap"

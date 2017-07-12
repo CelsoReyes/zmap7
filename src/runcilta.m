@@ -8,7 +8,7 @@ think
 
 j = 0;
 it = 20
-iwl = iwl3*365/par1;
+iwl = iwl3/days(par1);
 [len, ncu] = size(cumuall);
 len = len -2;
 step = len/nustep;

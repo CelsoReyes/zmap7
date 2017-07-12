@@ -32,7 +32,7 @@ for k = 1:length(is3)-1
 end
 
 l = sort(l);
-newt2= (a(l,:));
+ZG.newt2= (a(l,:));
 figure_w_normalized_uicontrolunits(map)
 hold on
 plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'bo');
@@ -59,6 +59,5 @@ plot(li(:,1),li(:,2))
 di = max([di; di2])
 area = (di/2)^2 *pi
 
-%timeplot;
 
 

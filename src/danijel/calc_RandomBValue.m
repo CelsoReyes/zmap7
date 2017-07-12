@@ -28,9 +28,9 @@ vStdDev = [];
 % Simulation run
 for i = 1:nNumberRuns
   % Select nSampleSize earthquakes from the catalog
-  vSelection = ceil(rand([nSampleSize 1]) * length(mCatalog(:,6)));
+  vSelection = ceil(rand([nSampleSize 1]) * length(mCatalog.Magnitude));
   % Determine b-value and standard deviation of this sample
-  [v1 fBValue fStdDev,  v2] = bmemag(mCatalog(vSelection,:));
+  [v1 fBValue fStdDev,  v2] = bmemag(mCatalog.subset(vSelection));
   % Store the values in the containers
   vStdDev = [vStdDev; fStdDev];
   vBValue = [vBValue; fBValue];

@@ -42,8 +42,6 @@ elseif (params.nGriddingMode == 1 && params.bMap == 0)
     mNodeCatalog_=mNodeCatalog_(vSel,:);
     fCheckDist = max(vDistances_);
 end
-% Time period
-params.fTimePeriod = params.fTimePeriod/365;
 
 % Create the frequency magnitude distribution vectors for the two time periods
 [vFMD, vNonCFMD] = calc_FMD(mNodeCatalog_);

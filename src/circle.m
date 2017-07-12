@@ -5,7 +5,7 @@
 %  Input Ni:
 %
 report_this_filefun(mfilename('fullpath'));
-
+ZG=ZmapGlobal.Data;
 try
     delete(plos1)
 catch ME
@@ -39,7 +39,7 @@ pause(0.1)
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 %l = sqrt(((ZG.a.Longitude-xa0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 messtext = ['Radius of selected Circle: ' num2str(l(ni))  ' km' ];
@@ -48,9 +48,9 @@ zmap_message_center.set_message('Message',messtext)
 %
 % take first ni and sort by time
 %
-newt2 = ZG.newt2(1:ni,:);
+ZG.newt2 = ZG.newt2(1:ni,:);
 [st,ist] = sort(ZG.newt2);
-newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2 = ZG.newt2(ist(:,3),:);
 %
 % plot Ni clostest events on map as 'x':
 
@@ -69,4 +69,4 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 % Call program "timeplot to plot cumulative number
 %
 clear l s is
-timeplot
+timeplot(ZG.newt2)

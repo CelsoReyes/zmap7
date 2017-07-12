@@ -16,7 +16,7 @@ lt =  ZG.newt2.Date >= teb-pt &  ZG.newt2.Date <= teb ;
 pre = ZG.newt2(lt,:);
 
 
-newt2 = obs;
+ZG.newt2 = obs;
 mcperc_ca3;
 if isnan(Mc95) == 0 
     magco = Mc95;
@@ -51,7 +51,7 @@ pr = [  NaN NaN NaN ; pr];
 l = pre(:,6) > magco;
 [px,xxv] = hist(pre(l,6),magco-0.05:0.1:7);
 
-newt2 = newt0;
+ZG.newt2 = newt0;
 
 
 P = poisspdf(px',pr(:,1));

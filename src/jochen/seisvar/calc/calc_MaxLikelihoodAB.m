@@ -36,11 +36,11 @@ for nCnt_ = 1:nRow_
   if nCnt_ < nRow_
     vMaxTime_(nCnt_) = mControl(nCnt_+1, 1);
   else
-    vMaxTime_(nCnt_) = max(mCatalog(:,3));
+    vMaxTime_(nCnt_) = max(mCatalog.Date);
   end
   % Create subcatalog for period
-  vSel_ = (mCatalog(:,3) >= fMinTime_) & (mCatalog(:,3) < vMaxTime_(nCnt_));
-  mTmpCatalog_ = mCatalog(vSel_,:);
+  vSel_ = (mCatalog.Date >= fMinTime_) & (mCatalog.Date < vMaxTime_(nCnt_));
+  mTmpCatalog_ = mCatalog.subset(vSel_);
   % Rebin the catalog (should not be used)
   if bReBin
     fMaxMag_ = max(mTmpCatalog_(:,6));

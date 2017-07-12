@@ -8,7 +8,7 @@ figure
 clf ;
 
 [tbin,zmag,zval] = find(ZBEL);           % deal with sparse matrix results
-xtz = t0b + (tbin*par1/365);
+xtz = t0b + (tbin*days(par1));
 zmag = minmg+(zmag-1)*magstep;
 [xx,l] = sort(xtz);                     % sort in time
 xtz = xtz(l);
@@ -50,7 +50,7 @@ set(gca,'Color',color_bg)
 
 
 [tbin,zmag,zval] = find(ZABO);
-xtz = t0b + (tbin*par1/365);
+xtz = t0b + (tbin*days(par1));
 zmag = minmg+(zmag-1)*magstep;
 [xx,l] = sort(xtz);                     % sort in time
 xtz = xtz(l);

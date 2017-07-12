@@ -30,11 +30,11 @@ function [mBeta]=calc_beta4(mCat,fTstart,fT,fTw,nTbin)
 % add dummyrow
 mDummy=ones(1,size(mCat,2))*(-1);
 
-vR1=histc([mDummy;mCat],fTstart : nTbin/365 : fT,1);
+vR1=histc([mDummy;mCat],fTstart : days(nTbin) : fT,1);
 vR1=vR1(1:end-1,:);
 
-% vR1=histc(mCat1,fTimeStart:fTimeSteps/365:fTimeCut+fTimeWindow);
-vR2=histc([mDummy;mCat],fT-fTw : nTbin/365:fT,1);
+% vR1=histc(mCat1,fTimeStart:days(fTimeSteps):fTimeCut+fTimeWindow);
+vR2=histc([mDummy;mCat],fT-fTw : days(nTbin):fT,1);
 vR2=vR2(1:end-1,:);
 
 if isempty(vR1)
@@ -48,7 +48,7 @@ nEq1=sum(vR1);  % no of eq in the 1st period
 nEq2=sum(vR2);  % no of eq in the 2nd period
 nBin1=size(vR1,1); % no of bins in 1st period
 % nBin2=size(vR2,1); % no of bins in 2nd period
-iwl=fTw*365/nTbin;
+iwl=fTw/days(nTbin);
 fNormInvalLength=iwl/nBin1; % normalized interval length
 
 % mBeta

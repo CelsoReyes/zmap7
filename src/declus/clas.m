@@ -3,9 +3,9 @@ function clas
     % function to calculate an as-function of a given cumulative number curve
     % The AS-value is plotted in the cumulative number plot
     %
-    %Last modification 6/95
+    %
 
-   global  sys minmag clu te1 mess
+   global  sys clu te1 mess
     global xt cumu ccum cumu2 pyy
     % start and end time
     %

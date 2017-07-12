@@ -20,7 +20,7 @@ j = findobj('tag',num2str(val));
 set(j,'MarkerSize',22,'Linewidth',4);
 
 l = clus == val;
-newt2 = original(l,:);
+ZG.newt2 = original(l,:);
 
 nu = (1:ZG.newt2.Count) ;nu = nu';
 if length(nu) > 2

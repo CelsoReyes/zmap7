@@ -2,7 +2,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-global  a mi mif2 mif1 hndl3
+global mi mif2 mif1 hndl3
 
 %var1 = 4;
 sc = get(hndl3,'Value');

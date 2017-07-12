@@ -38,10 +38,10 @@ mResult=[];
 mDatPredBest = [];
 
 % Determine exact time period
-fPeriod1 = max(mCatalog(:,3)) - min(mCatalog(:,3));
+fPeriod1 = max(mCatalog.Date) - min(mCatalog.Date);
 
 % Determine max. and min. magnitude
-fMaxMag = ceil(10 * max(mCatalog(:,6))) / 10;
+fMaxMag = ceil(10 * max(mCatalog.Magnitude)) / 10;
 
 % Set starting value for Mc loop and LSQ fitting procedure
 fMcTry= calc_Mc(mCatalog,1);
@@ -69,9 +69,9 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     vNonCFMD = fliplr(vNonCFMD);
     %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
     % Select magnitudes to calculate b- anda-value
-    vSel = mCatalog(:,6) > fMc-fBinning/2;
-    if (length(mCatalog(vSel,1)) >= 20)
-        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog(vSel,:), fBinning);
+    vSel = mCatalog.Magnitude > fMc-fBinning/2;
+    if sum(vSel) >= 20
+        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed
@@ -174,8 +174,8 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
 %             vPredBest = [vPredBest; NaN NaN NaN];
             vNmaxBest = [vNmaxBest; fNmax];
             vABValue = [vABValue; fAValue fBValue];
-        end % END of IF fNmax
-    end % END of IF length(mCatalog(vSel,1))
+        end
+    end
 
 
     % Clear variables
@@ -227,7 +227,7 @@ try % Try catch block used as mDatPreBest not always calculated
         vMag = [vMag; fM];
     end
     % Calculate KS-Test
-    [bH,fPval,fKsstat] = kstest2(roundn(mCatalog(:,6),-1),roundn(vMag,-1),0.05,0)
+    [bH,fPval,fKsstat] = kstest2(roundn(mCatalog.Magnitude,-1),roundn(vMag,-1),0.05,0)
 catch
     bH = NaN;
     fPval = NaN;

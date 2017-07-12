@@ -21,7 +21,7 @@ function [params] = sv_calcMc(params)
 %   params.fMaxMag            Upper limit of magnitude range for testing
 %   params.bTimePeriod        Calculate seismicity difference for 2 periods (0) until start and end of catalog or
 %                             a specific time period before and after fSplitTime (1)
-%   params.fTimePeriod        Length of time periods
+%   params.fTimePeriodDays        Length of time periods
 %   params.bTstart            Check for starting time of temporal mapping
 %   params.fTstart            Starting time for temporal mapping
 %   params.bBstnum            Check for boostrap sampling
@@ -51,10 +51,8 @@ if isempty(params.fBinning)
 end
 
 % Determine time period of catalog
-params.fTminCat = min(params.mCatalog(:,3));
-params.fTmaxCat = max(params.mCatalog(:,3));
-% Adjust to decimal years
-fTimePeriod =params.fTimePeriod/365;
+params.fTminCat = min(params.mCatalog.Date);
+params.fTmaxCat = max(params.mCatalog.Date);
 
 % Init result matrix
 mValueGrid_ = [];
@@ -72,8 +70,8 @@ if (params.bBstnum == 1)
         mValueGrid_ = [];
         params.mCatalog = mCatalog;
         % Create Indices to catalog and select quakes in time period
-        vSel = (fTstart <= params.mCatalog(:,3) & params.mCatalog(:,3) < fTstart+fTimePeriod);
-        params.mCatalog = params.mCatalog(vSel,:);
+        vSel = (fTstart <= params.mCatalog.Date & params.mCatalog.Date < fTstart+fTimePeriodDays);
+        params.mCatalog = params.mCatalog.subset(vSel);
         [params.caNodeIndices] = ex_CreateIndexCatalog(params.mCatalog, params.mPolygon, params.bMap, params.nGriddingMode, ...
          params.nNumberEvents, params.fRadius, params.fSizeRectHorizontal, params.fSizeRectDepth);
         % Loop over all grid nodes
@@ -110,19 +108,19 @@ if (params.bBstnum == 1)
                 % Add parameter to params.sComment
                 if  params.nGriddingMode == 0;   % Constant number
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
                             num2str(params.fMaxRadius) ' km'];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
                             '_Nmin_' num2str(params.nMinimumNumber) '_Node' num2str(nNode_) '.mat'], 'vResults');
                 elseif params.nGriddingMode == 1;   % Constant radius
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber)  '_Node' num2str(nNode_) '.mat'], 'vResults');
                 else  % Rectangle mode
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
                             ' km, Nmin: ' num2str(params.nMinimumNumber)];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
@@ -141,26 +139,26 @@ if (params.bBstnum == 1)
         % Add parameter to params.sComment
         if  params.nGriddingMode == 0;   % Constant number
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
                     num2str(params.fMaxRadius) ' km'];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
                     '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         elseif params.nGriddingMode == 1;   % Constant radius
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         else  % Rectangle mode
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
                     ' km, Nmin: ' num2str(params.nMinimumNumber)];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
                     '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         end
         vResults =[];
-        fTstart = fTstart+fTimePeriod;
+        fTstart = fTstart+params.fTimePeriodDays;
     end; % End of while fTstart
 
     % Case of no bootstrapping
@@ -171,8 +169,8 @@ else
         mValueGrid_ = [];
         params.mCatalog = mCatalog;
         % Create Indices to catalog and select quakes in time period
-        vSel = (fTstart <= params.mCatalog(:,3) & params.mCatalog(:,3) < fTstart+fTimePeriod);
-        params.mCatalog = params.mCatalog(vSel,:);
+        vSel = (fTstart <= params.mCatalog.Date & params.mCatalog.Date < fTstart+params.fTimePeriodDays);
+        params.mCatalog = params.mCatalog.subset(vSel);
         [params.caNodeIndices] = ex_CreateIndexCatalog(params.mCatalog, params.mPolygon, params.bMap, params.nGriddingMode, ...
          params.nNumberEvents, params.fRadius, params.fSizeRectHorizontal, params.fSizeRectDepth);
         % Loop over all grid nodes
@@ -204,19 +202,19 @@ else
                 % Add parameter to params.sComment
                 if  params.nGriddingMode == 0;   % Constant number
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
                             num2str(params.fMaxRadius) ' km'];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
                             '_Nmin_' num2str(params.nMinimumNumber) '_Node' num2str(nNode_) '.mat'], 'vResults');
                 elseif params.nGriddingMode == 1;   % Constant radius
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber)  '_Node' num2str(nNode_) '.mat'], 'vResults');
                 else  % Rectangle mode
                     params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                            ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+                            ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
                             ' km, Nmin: ' num2str(params.nMinimumNumber)];
                     vResults = params;
                     save(['result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
@@ -233,25 +231,25 @@ else
         % Add parameter to params.sComment
         if  params.nGriddingMode == 0;   % Constant number
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Constant number: ' num2str(params.nNumberEvents) ', MaxRadius: '...
                     num2str(params.fMaxRadius) ' km'];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_Constnum_' num2str(params.nNumberEvents) '_MaxRad_' num2str(params.fMaxRadius)...
                     '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         elseif params.nGriddingMode == 1;   % Constant radius
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Radius: ' num2str(params.fRadius) ' km, Nmin: ' num2str(params.nMinimumNumber)];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_Rad_' num2str(params.fRadius) '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         else  % Rectangle mode
             params.sComment = ['Starttime ' num2str(fTstart) ' Spacing ' num2str(params.fSpacingHorizontal) ' deg.,'...
-                    ' Time period ' num2str(params.fTimePeriod) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
+                    ' Time period (days) ' num2str(params.fTimePeriodDays) ' d, Rect. X: ' num2str(params.fSizeRectHorizontal) ' km, Rect. Y: ' num2str(params.fSizeRectDepth)...
                     ' km, Nmin: ' num2str(params.nMinimumNumber)];
             vResults = params;
             save(['result_Time' num2str(fTstart) '_RectX_' num2str(params.fSizeRectHorizontal) '_RectY_' num2str(params.fSizeRectDepth)...
                     '_Nmin_' num2str(params.nMinimumNumber) '.mat'], 'vResults');
         end
         vResults =[];
-        fTstart = fTstart+fTimePeriod;
+        fTstart = fTstart+params.fTimePeriodDays;
     end; % End of while fTstart
 end; % END of if params.bBst

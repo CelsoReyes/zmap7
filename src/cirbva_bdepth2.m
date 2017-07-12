@@ -39,7 +39,7 @@ pause(0.1)
 %
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 
 

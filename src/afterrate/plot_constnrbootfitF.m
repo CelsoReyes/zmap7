@@ -37,14 +37,14 @@ pause(0.1)
 %  and sort by distance l
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 
 % Select events in learning time period
-vSel = (ZG.newt2.Date <= maepi(1,3)+time/365);
-newt2_learn = ZG.newt2(vSel,:);
-vSel2 = (ZG.newt2.Date > maepi(1,3)+time/365 & ZG.newt2.Date <= maepi(1,3)+(time+timef)/365);
+vSel = (ZG.newt2.Date <= ZG.maepi.Date(1)+days(time));
+newt2_learn = ZG.newt2.subset(vSel);
+vSel2 = (ZG.newt2.Date > ZG.maepi.Date(1)+days(time) & ZG.newt2.Date <= ZG.maepi.Date(1)+(time+timef)/365);
 newt2_forecast = ZG.newt2(vSel2,:);
 
 % Distance from grid node for learning period and forecast period
@@ -61,7 +61,7 @@ if fMaxDist <= fMaxRadius
     newt2_forecast = newt2_forecast(vSel3,:);
     ZG.newt2 = [newt2_learn; newt2_forecast];
 else
-    vSel4 = (l < fMaxRadius & ZG.newt2.Date <= maepi(1,3)+time/365);
+    vSel4 = (l < fMaxRadius & ZG.newt2.Date <= ZG.maepi.Date(1)+days(time));
     ZG.newt2 = ZG.newt2(vSel4,:);
     newt2_learn = ZG.newt2;
     fMaxDist = fMaxRadius;
@@ -75,7 +75,7 @@ disp(messtext)
 zmap_message_center.set_message('Message',messtext)
 % Sort by time
 [st,ist] = sort(ZG.newt2);
-newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2 = ZG.newt2(ist(:,3),:);
 
 % Set limiting radius to plot
 R2 = fMaxDist;
@@ -99,7 +99,7 @@ x = -pi-0.1:0.1:pi;
 pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k','era','normal')
 
 % Compute and Plot the forecast
-calc_bootfitF(ZG.newt2,time,timef,bootloops,maepi)
+calc_bootfitF(ZG.newt2,time,timef,bootloops,ZG.maepi)
 
 set(gcf,'Pointer','arrow')
 %
@@ -107,4 +107,4 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
 % Call program "timeplot to plot cumulative number
 clear l s is
-timeplot
+timeplot(newt2)

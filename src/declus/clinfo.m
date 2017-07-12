@@ -2,7 +2,7 @@ function clinfo(var1)
     %clinfo.m                        A.Allmann
     %function to make an info window for various routines
     %
-    %last modification 7/95
+    %
     global cinfo p1
 
 

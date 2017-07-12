@@ -38,7 +38,7 @@ pause(0.1)
 %
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
@@ -66,7 +66,7 @@ elseif met == 'ti'
 
 end
 [st,ist] = sort(ZG.newt2);
-newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2 = ZG.newt2(ist(:,3),:);
 R2 = ra;
 
 %

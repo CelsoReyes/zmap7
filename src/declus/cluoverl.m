@@ -1,17 +1,17 @@
 function cluoverl(var1)
     %cluoverl.m                             A.Allmann
     %orption to display equivalent events or biggest events or clear cluster events
-    %Last modification 9/95
+    %
 
     global bgevent plot1_h plot2_h  equi cluscat backequi newclcat a
     global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3
     global par1 file1 clu h5
-    global ZG.ms6 ty stri2 strib
+    global ty stri2 strib
     global after_h fore_h main_h ttcat after_button fore_button
     global foresh aftersh mainsh calll66
-    global mainfault main faults clus_button coastline maepi
+    global mainfault main faults clus_button coastline ZG.maepi
     global SizMenu TypMenu new
-
+    ZG=ZmapGlobal.Data;
 
 
     if var1==1                            %hide biggest events
@@ -77,11 +77,11 @@ function cluoverl(var1)
         %
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
-        teb = a(n,3) ;
-        tdiff = round(teb - t0b)*365/par1;
+        teb = ZG.a.Date(n) ;
+        tdiff = round(teb - t0b)/days(par1);
 
 
-        n = length(a);
+        n = ZG.a.Count;
 
         % plot earthquakes (differnt colors for varous depth layers) as
         % defined in "startzmap"
@@ -155,8 +155,8 @@ function cluoverl(var1)
         %
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
-        teb = a(n,3) ;
-        tdiff = round(teb - t0b)*365/par1;
+        teb = ZG.a.Date(n) ;
+        tdiff = round(teb - t0b)/days(par1);
         %define fore and aftershocks
         %
         tmp = find(ZG.a.Magnitude==max(ZG.a.Magnitude));     %index in a of first mainshock
@@ -177,7 +177,7 @@ function cluoverl(var1)
                 fore_h=[];
             end
         end
-        main_h=plot(a(tmp,1),a(tmp,2),'xm');
+        main_h=plotZG.a.Longitude(tmp),ZG.a.Latitude(tmp),'xm');
         mainsh=ZG.a.subset(tmp);
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);

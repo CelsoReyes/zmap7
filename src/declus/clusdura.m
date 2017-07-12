@@ -3,10 +3,11 @@ function [dura, foretime,forepercent] = clusdura(j)
     % normaly j should be clustnumbers
     % calculates the duration of the cluster and
     % calculates duration and percentage of foreshock activity
-    % Last modification 9/95
+    %
     %
 
-    global ZG.newcat bg k1 clust cluslength eqtime check1
+    global bg k1 clust cluslength eqtime check1
+    ZG=ZmapGlobal.Data;
     check1=j;
     %duration of the cluster
     dura=eqtime(diag(clust(cluslength(j),j)))-eqtime(clust(1,j));

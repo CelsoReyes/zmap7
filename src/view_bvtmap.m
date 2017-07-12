@@ -93,7 +93,7 @@ if newbmapWindowFlag
     set(nilabel2,'string','Min Probability:');
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
-    set(set_ni2,'Callback','tresh=str2double(get(set_ni2,''String'')); set(set_ni2,''String'',num2str(tresh))');
+    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh))';
     set(set_ni2,'units','norm','pos',[.85 .92 .08 .04],'min',0.01,'max',10000);
 
     uicontrol('Units','normal',...

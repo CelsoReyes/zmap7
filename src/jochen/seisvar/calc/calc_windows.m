@@ -60,7 +60,7 @@ case 3
 %         fSpace = 10.^(0.5281*fMagnitude-1.3937);
 %     end
 %     if fMagnitude <= 3.89
-%         fTime = 30/365;
+%         fTime = days(30);
 %     else
 %         fTime = (10.^(0.4916*fMagnitude-0.4317))/365;
 %     end
@@ -76,7 +76,7 @@ case 3
 %         fSpace = 10.^(0.1154*fMagnitude+1.0371);
 %     end; %End of IF
 %     if fMagnitude<=5
-%         fTime = 15/365;
+%         fTime = days(15);
 %     else
 %         fTime = (10.^(1.0526*fMagnitude-4.5610))/365;
 %     end

@@ -416,7 +416,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
-                'Callback','global ZG; stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot');
+                'Callback','global ZG; stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot(ZG.newt2)');
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
@@ -465,9 +465,9 @@ classdef MainInteractiveMap
         end
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global ZG; [ZG.a] = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot; update(mainmap()); bdiff(ZG.a); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global ZG; [ZG.a] = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','global ZG; [ZG.a] = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot; update(mainmap()); bdiff(ZG.a); revertcat');
+                'Callback','global ZG; [ZG.a] = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values',...
                 'Callback','brand');
@@ -906,14 +906,14 @@ classdef MainInteractiveMap
             % plot big earthquake epicenters labeled with the data/magnitude
             % DisplayName: Events > M [something]
             % Tag: 'mainmap_big_events'
-            global minmag
-            % TODO: dump the global reference, and maybe make maepi a view into the catalog
+
+            % TODO: dump the global reference, and maybe make ZG.maepi a view into the catalog
             
             persistent big_events defaults textdefaults
-            
+            ZG=ZmapGlobal.Data;
             if isempty(defaults)
                 defaults = struct('Tag','mainmap_big_events',...
-                    'DisplayName',sprintf('Events > M%2.1f',minmag),...
+                    'DisplayName',sprintf('Events > M%2.1f',ZG.big_eq_minmag),...
                     'Marker','h',...
                     'Color','m',...
                     'LineWidth',1.5,...
@@ -931,22 +931,22 @@ classdef MainInteractiveMap
             end
             
             if nargin
-                big_events = maepi;
+                big_events = ZG.maepi;
             end
             
             if isempty(big_events)
                 big_events = ZmapCatalog();
             end
             
-            defaults.DisplayName = sprintf('Events > M %2.1f', minmag);
+            defaults.DisplayName = sprintf('Events > M %2.1f', ZG.big_eq_minmag);
             
             if big_events.Count > 0
                 % show events
                 h = plot_helper(big_events,defaults,exist('reset','var')&&reset);
                 
-                evlabels = event_labels(maepi);
+                evlabels = event_labels(ZG.maepi);
                 ax = mainAxes();
-                te1 = text(ax,maepi.Longitude,maepi.Latitude,evlabels);
+                te1 = text(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,evlabels);
                 set(te1,textdefaults);
                 set(h,'Visible','on');
             end
@@ -1159,15 +1159,15 @@ end
     
 
 function plot_large_quakes()
-    global minmag maex maix maey maiy maepi ZG
+    global maex maix maey maiy ZG
     mycat=ZmapCatalog(ZG.a);
     def = {'6'};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
     l = ni2{:};
-    minmag = str2double(l);
+    ZG.big_eq_minmag = str2double(l);
     
     clear maex maix maey maiy
-    maepi = mycat.subset(mycat.Magnitude > minmag);
+    ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
     update(mainmap())
 end
 function align_supplimentary_legends(ax)

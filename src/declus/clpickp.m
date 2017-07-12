@@ -7,15 +7,15 @@ function clpickp(but)
     %older selection ares but if you hit back your working catalog becomes
     %the original clustercatalog again
     %
-    %Last modification 6/95
+    %
 
     global clu newclcat mess equi_button backcat clu1 mapp
     global n x y xcordinate ycordinate equi bgevent backequi par1
-    global dep1 dep2 dep3 ZG.ms6 ty1 ty2 ty3 name
+    global dep1 dep2 dep3 ty1 ty2 ty3 name
     global color_bg
     global backbgevent original plot1_h plot2_h clust file1
     global ttcat tt1cat foresh aftersh mainsh clsel sys decc newccat
-
+ZG=ZmapGlobal.Data;
     if decc~=0
         if isempty(ttcat)
             figure_w_normalized_uicontrolunits(clu);
@@ -136,7 +136,7 @@ function clpickp(but)
                 equi = ZG.a.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
-            newccat=newccat(ll,:);
+            newccat=newccat.subset(ll);
         end
         polcordinates = [x y ];
         save polcordinates.mat polcordinates

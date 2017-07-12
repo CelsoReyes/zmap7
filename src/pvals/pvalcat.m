@@ -1,5 +1,5 @@
 %This program is called from timeplot.m and displays the values of p, c and k from Omori law, together with their errors.
-%Last modification May: 2001. B. Enescu
+%Modified May: 2001. B. Enescu
 
 global valeg valeg2 cua2a valm1 CO
 ZG=ZmapGlobal.Data;
@@ -17,7 +17,8 @@ tavg = [];
 sir2 = [];
 nn2 = ZG.newt2;
 
-maepi(1,3) = decyear([maepi(:,3:5) maepi(1,8:9)]);
+%TOFIX this is broken, refers to old fields
+maepi.Date(1) = decyear([ZG.maepi(:,3:5) ZG.maepi(1,8:9)]);
 
 
 prompt = {'Minimum magnitude','Min. time after mainshock (in days)','Enter a negative value if you wish a fix c'};
@@ -33,15 +34,15 @@ answer = inputdlg(prompt,title,lines,def);
 valm1=str2double(answer{1}); valtm1 = str2num(answer{2}); valeg2 = str2num(answer{3});
 
 % cut catalog at mainshock time:
-l = ZG.newt2.Date > maepi(1,3);
-newt2 = ZG.newt2(l,:);
+l = ZG.newt2.Date > ZG.maepi.Date(1);
+ZG.newt2 = ZG.newt2(l,:);
 
 % cat at selecte magnitude threshold
 l = ZG.newt2.Magnitude < valm1;
-newt2(l,:) = [];
+ZG.newt2(l,:) = [];
 
 ZG.hold_state2=true;
-timeplot
+timeplot(ZG.newt2)
 ZG.hold_state2=false;
 
 
@@ -62,7 +63,7 @@ lt = pcat(:,3) >= valtm1;
 bpcat = pcat(lt,:);
 
 [timpa] = timabs(pcat);
-[timpar] = timabs(maepi);
+[timpar] = timabs(ZG.maepi);
 tmpar = timpar(1);
 pcat = (timpa-tmpar)/1440;
 paramc2 = (pcat >= valtm1);
@@ -72,7 +73,7 @@ tint = [tmin tmax];
 [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(pcat);
 
 %[mm1,llb, llsig1, lla] = bmemag(bpcat);
-%rja = (log10(kv) - llb * maepi(:,6) - min(bpcat(:,6)));
+%rja = (log10(kv) - llb * ZG.maepi.Magnitude - min(bpcat(:,6)));
 if ~(isnan(pv))
     disp([]);
     disp(['Parameters :']);
@@ -86,7 +87,7 @@ if ~(isnan(pv))
     end
     disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
     disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-    events_used = sum(ZG.newt2(paramc1,3) > maepi(:,3) + cv/365);
+    events_used = sum(ZG.newt2(paramc1,3) > ZG.maepi.Date + days(cv));
     disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
     disp(['tmin = ' num2str(tmin)]);
     disp(['tmax = ' num2str(tmax)]);
@@ -222,5 +223,5 @@ te = text(0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bo
 %end % end of plot fig
 % reset ZG.newt2;
 
-newt2 = nn2;
+ZG.newt2 = nn2;
 

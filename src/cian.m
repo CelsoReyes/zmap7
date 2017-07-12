@@ -1,4 +1,4 @@
-%
+% find anomalie groups
 report_this_filefun(mfilename('fullpath'));
 
 for i = 1:j

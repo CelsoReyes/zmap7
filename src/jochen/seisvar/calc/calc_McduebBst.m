@@ -45,19 +45,19 @@ mBave = [];
 mMcBA = [];
 
 % Set fix values
-fMinMag = min(mCatalog(:,6));
-fMaxMag = max(mCatalog(:,6));
+fMinMag = min(mCatalog.Magnitude);
+fMaxMag = max(mCatalog.Magnitude);
 
 % Create bootstrap samples using bootstrap matlab toolbox
-mMag_bstsamp = bootrsp(mCatalog(:,6),nSample);
+mMag_bstsamp = bootrsp(mCatalog.Magnitude,nSample);
 
 % Calculate b-with magnitude
 for fMag=fMinMag:fBinning:fMaxMag
     for nSamp=1:nSample
-        mCatalog(:,6) = mMag_bstsamp(:,nSamp);
+        mCatalog.Magnitude = mMag_bstsamp(:,nSamp);
         % Select magnitude range
-        vSel = mCatalog(:,6) >= fMag-0.05;
-        mCat = mCatalog(vSel,:);
+        vSel = mCatalog.Magnitude >= fMag-0.05;
+        mCat = mCatalog.subset(vSel);
         % Check for minimum number of events
         if length(mCat(:,1)) >= nMinNumberEvents
             try

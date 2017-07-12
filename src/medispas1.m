@@ -10,7 +10,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 %b = ZG.newcat;
 %select big evenets
-%l = b.Magnitude > minmag;
+%l = b.Magnitude > ZG.big_eq_minmag;
 %big = b(l,:);
 
 
@@ -96,7 +96,7 @@ grid
 % plot big events on curve
 %
 %if ~isempty(big)
-% f = cumu2((big(:,3) -t0b)*365/par1);
+% f = cumu2((big(:,3) -t0b)/days(par1));
 % bigplo = plot(big(:,3),f,'xb');
 % set(bigplo,'MarkerSize',10,'LineWidth',2.5)
 % stri2 = [];

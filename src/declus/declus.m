@@ -42,14 +42,15 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     
     %declaration of global variables
     %
-    global ZG.newcat clus rmain r1 eqtime              %catalogs
-    global  a                                       %catalogs
+    global  clus rmain r1 eqtime              %catalogs
     global k k1 bg mbg bgevent equi bgdiff          %indices
     global ltn                                      %variable to shorten code
-    global clust clustnumbers cluslength            %used in buildclu
+    global clust clustnumbers cluslength
     global faults coastline main mainfault name
     global xmeff xk rfact taumin taumax P
     global err derr ijma 
+
+    ZG=ZmapGlobal.Data;
     
     bg=[];k=[];k1=[];mbg=[];bgevent=[];equi=[];bgdiff=[];clust=[];clustnumbers=[];
     cluslength=[];rmain=[];r1=[];
@@ -181,9 +182,8 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         zmap_message_center.set_info('Alert','No Cluster found')
         return
     else
-        
-        buildclu;              %builds a matrix clust that stored clusters
-        equi=equevent;               %calculates equivalent events
+        [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg,k1,bg);%builds a matrix clust that stored clusters
+        equi=equevent(ZG.newcat, clus);               %calculates equivalent events
         if isempty(equi)
             disp('No clusters in the catalog with this input parameters');
             return;
@@ -192,7 +192,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         ZG.a=buildcat(1);        %new catalog for main program
         original=ZG.newcat;       %save ZG.newcat in variable original
-        ZG.newcat=a;
+        ZG.newcat=ZG.a;
         storedcat=original;
         cluscat=original.subset(clus);
         %[dura,foretime,forepercent]=clusdura(clustnumbers);

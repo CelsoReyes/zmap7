@@ -13,11 +13,11 @@ end
 % [mCatalog2, vMain2] = calc_SynCat(1667,2.5,2.5,8,100,'January 1,1985','December 31,1990',6.5,1);
 % mCatalog=[mCatalog1; mCatalog2];
 % vMain=[vMain1; vMain2];
-% mCatalog(:,3)=mCat(randperm(size(mCatalog,1))',3);
+% mCatalog.Date=mCat(randperm(size(mCatalog,1))',3);
 vcsGridNames_=[i sum(vMain) size(mCatalog,1) ];
 % calculation rate for background seismicity
 mCatalogTmp=mCatalog;
-mCatalog=mCatalog(vMain,:);
+mCatalog=mCatalog.subset(vMain);
 save mtest.mat mCatalog -mat
 sString=sprintf('save mCatBkgr%03.0f.mat mCatalog -mat',i);eval(sString);
 sString=sprintf('save vMain%03.0f.mat vMain -mat',i);eval(sString);
@@ -33,7 +33,7 @@ disp(sString);
 
 % calculation rate for background seismicity
 mCatalog=mCatalogTmp;
-mCatalog=mCatalog(vMain,:);
+mCatalog=mCatalog.subset(vMain);
 save mCatalog.mat mCatalog -mat
 params=sr_startZ(2);
 vUsedNodesBkgrDec{i}=params.vUsedNodes;
@@ -84,17 +84,6 @@ vResults(3)=params;
 vResults(3).vUsedNodes=vUsedNodes{1};
 vResults(3).vResolution=vResolution{1};
 vResults(3).mValueGrid=mValueGrid;
-
-
-
-% clf
-% subplot(1,2,1);
-% plot(ZG.a.Longitude,ZG.a.Latitude,'.');
-% subplot(1,2,2);
-% plot(ZG.a.Date,[1:1:sum(vMain)],'b');
-% hold on;plot(mCatalog(:,3),[1:1:size(mCatalog,1)],'r');
-% ZG.a=mCatalog;
-% timeplot;
 
 save 07052803_test.mat vResults -mat
 disp('Result saved in 07052803_test.mat');

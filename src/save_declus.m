@@ -50,7 +50,7 @@ da=  str2double(dat(:,7:8));
 hr=  str2double(dat(:,9:10));
 mi=  str2double(dat(:,11:12));
 
-a = [lon lat ZG.a.Date mo da mag storedcat.Depth hr mi clu];
+ZG.a = [lon lat ZG.a.Date mo da mag storedcat.Depth hr mi clu];
 
 cluslength=[];
 n=0;
@@ -67,7 +67,7 @@ cluslength=cluslength(tmp);
 clustnumbers=(1:length(tmp));    %stores numbers of clusters
 l = a(:,10) > 0;
 clus = ZG.a.subset(l);
-a(l,:) = [];
+ZG.a(l,:) = [];
 
 % plot the results
 update(mainmap())

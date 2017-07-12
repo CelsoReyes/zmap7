@@ -20,9 +20,9 @@ if bDebug
 end
 
 vSel = (vCluster(:,1) > 0);
-mCatalogDecl = mCatalog(vSel,:);
+mCatalogDecl = mCatalog.subset(vSel);
 if isempty(mCatalogDecl) % This means no events in cluster!
     fClusterDeg = NaN;
 else
-    fClusterDeg = length(mCatalogDecl(:,1))/length(mCatalog(:,1));
+    fClusterDeg = length(mCatalogDecl(:,1))/mCatalog.Count;
 end

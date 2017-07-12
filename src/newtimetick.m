@@ -37,7 +37,7 @@ hold on
 if par1>=1
     if ~isempty(big)
 
-        l = ZG.newt2.Magnitude > minmag;
+        l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
         f = find( l  == 1);
         bigplo = plot(T(f),f,'hm');
         set(bigplo,'LineWidth',1.0,'MarkerSize',10,...

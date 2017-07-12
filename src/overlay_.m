@@ -11,8 +11,6 @@ function overlay_()
     errordlg('Use update(mainmap()) instead');
     return
     
-    global main mainfault faults coastline vo maepi well minmag
-    
     hold on
     ax = findobj('Tag','main_map_ax');
     
@@ -70,21 +68,21 @@ function overlay_()
     %
     % plot big earthquake epicenters with a 'x' and the data/magnitude
     %
-    if ~isempty(maepi) && maepi.Count > 0
-        epimax = plot(ax,maepi.Longitude,maepi.Latitude,'hm');
+    if ~isempty(ZG.maepi) && ZG.maepi.Count > 0
+        epimax = plot(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,'hm');
         set(epimax,'LineWidth',1.5,'MarkerSize',12,...
             'MarkerFaceColor','y','MarkerEdgeColor','k')
-        epimax.DisplayName = sprintf('Events > M %2.1f', minmag);
+        epimax.DisplayName = sprintf('Events > M %2.1f', ZG.big_eq_minmag);
         
         stri2 = '';
-        for i = 1:maepi.Count
-            s = sprintf('   %3.2f M=%3.1f',decyear(maepi.Date(i)),maepi.Magnitude(i));
+        for i = 1:ZG.maepi.Count
+            s = sprintf('   %3.2f M=%3.1f',decyear(ZG.maepi.Date(i)),ZG.maepi.Magnitude(i));
             if length(s) == 15 ; s = [' ' s] ; end
             if length(s) == 14 ; s = ['  ' s] ; end
             if length(s) == 13 ; s = ['   ' s] ; end
             stri2 = [stri2 ; s];
         end   % for i
-        te1 = text(ax,maepi.Longitude,maepi.Latitude,stri2);
+        te1 = text(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,stri2);
         set(te1,'FontWeight','bold','Color','k','FontSize',9,'Clipping','on')
     end
     

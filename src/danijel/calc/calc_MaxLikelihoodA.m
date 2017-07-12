@@ -16,9 +16,9 @@ function [fAValue] = calc_MaxLikelihoodA(mCatalog, fBValue)
 % July 17, 2002
 
 % Determine number of earthquakes in catalog
-nNumber = length(mCatalog(:,1));
+nNumber = mCatalog.Count;
 % Determine minimum magnitude
-fMc = min(mCatalog(:,6));
+fMc = min(mCatalog.Magnitude);
 % Set up the magnitude range for computing the loglikelihood
 vMagnitudes = fMc:0.1:10.1;  % 10 is the maximum magnitude. Add an additional bin for diff
 % Compute the unscaled number of expected events for a given b-value

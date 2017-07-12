@@ -31,8 +31,8 @@ end
 %
 % plot big earthquake epicenters with a 'x' and the data/magnitude
 %
-if ~isempty(maepi)
-    epimax = plot(maepi(:,1),maepi(:,2),'hm');
+if ~isempty(ZG.maepi)
+    epimax = plot(ZG.maepi.Longitude,ZG.maepi.Latitude,'hm');
     set(epimax,'LineWidth',1.5,'MarkerSize',12,...
         'MarkerFaceColor','w','MarkerEdgeColor','k')
 end

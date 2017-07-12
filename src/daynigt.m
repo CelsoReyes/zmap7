@@ -3,17 +3,17 @@ ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 l = ZG.newt2.Date.Hour >=7 & ZG.newt2.Date.Hour <=18;
-day = ZG.newt2(l,:);
+dayCat = ZG.newt2(l,:);
 
-nig = ZG.newt2;
-nig(l,:) = [];
+nightCat = ZG.newt2;
+nightCat(l,:) = [];
 
-newt2 = day;
-timeplot
-ZG.hold_state2=true
+ZG.newt2 = dayCat;
+timeplot(ZG.newt2)
+ZG.hold_state2=true;
 
-newt2 = nig;
-timeplot
+ZG.newt2 = nightCat;
+timeplot(ZG.newt2)
 
 legend('day','night','location','SouthEast')
 

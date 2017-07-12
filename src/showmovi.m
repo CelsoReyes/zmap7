@@ -114,7 +114,7 @@ set(h2,'pos',[.763 .1 .2 .05],'background',color_fbg);
 
 frame_slide = uicontrol('style','slider','max',b1,'min',1,'uni','norm');
 set(frame_slide,'value',1,'pos',[.750 .25 .04 .5], 'Callback','i=(get(frame_slide,''Value'')),movie(m(:,i),1,1)');
-frame = uicontrol('style','edit','value',10,'string',num2str(i),'call','speed=str2double(get(frame,''String''))');
+frame = uicontrol('style','edit','value',10,'string',num2str(i),'Callback','speed=str2double(frame.String)');
 flabel = uicontrol('style','text','units','norm','pos',[.55 .13 .2 .05]);
 set(flabel,'string','Speed','background',color_fbg);
 set(frame,'units','norm','pos',[.60 .07 .1 .05],'min',0.1,'max',30);
@@ -126,11 +126,11 @@ uicontrol('style','text','units','norm','pos',[.80 .80 .20 .05],...
 
 next = uicontrol('style','pushbutton','unit','norm','pos',[0.75 .90 .04 .05]);
 set(next,'string','>','ForeGroundColor','k');
-set(next, 'Callback','i=i+1;if i > b1; i=b1;end;movie(m(:,i),1,1);set(frame_slide,''value'',i)');
+set(next, 'Callback','i=i+1;if i > b1; i=b1;end;movie(m(:,i),1,1);frame_slide.Value=i;');
 bac = uicontrol('style','pushbutton','unit','norm','pos',[0.75 .80 .04 .05]);
 set(bac,'string','<');
-set(bac, 'Callback','i=i-1;if i < 1; i=1;end;movie(m(:,i),1,1);set(frame_slide,''value'',i)');
-time = uicontrol('style','edit','value',3,'string',num2str(3),'call','set(time,''value'',str2double(get(time,''string'')))');
+set(bac, 'Callback','i=i-1;if i < 1; i=1;end;movie(m(:,i),1,1);frame_slide.Value=i;');
+time = uicontrol('style','edit','value',3,'string',num2str(3),'Callback','set(time,''Value'',str2double(get(time,''string'')))');
 set(time,'units','norm','pos',[.23 .07 .1 .05],'min',1,'max',1000);
 tlabel = uicontrol('style','text','units','norm','pos',[.18 .13 .2 .05]);
 set(tlabel,'string','# of runs','background',color_fbg);
@@ -144,7 +144,7 @@ set(circ,'string','Circle', 'Callback',' circmo');
 
 set_ni = uicontrol('style','edit','value',100,'string',num2str(100));
 
-set(set_ni,'Callback','ni=str2double(get(set_ni,''String'')); set(set_ni,''String'',num2str(ni));');
+set(set_ni,'Callback','ni=str2double(set_ni.String); set_ni.String=num2str(ni);');
 
 set(set_ni,'units','norm','pos',[.40 .02 .15 .05],'min',10,'max',10000);
 nilabel = uicontrol('style','text','units','norm','pos',[.36 .02 .04 .05]);

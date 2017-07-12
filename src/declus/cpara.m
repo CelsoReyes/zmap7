@@ -1,7 +1,7 @@
 function cpara(var1)
     % cpara.m               Alexander Allmann
     % function to select parameters in cluster environment
-    % Last change 8/95
+    %
 
     global newccat
     global inp1 inp2 inp3 inp4 inp5 inp6 inp7 inp8 inp9 inp10
@@ -12,16 +12,16 @@ report_this_filefun(mfilename('fullpath'));
     if var1==1
 
         % default values
-        tmp1=min(newccat(:,1));       %longitude
-        tmp2=max(newccat(:,1));
-        tmp3=min(newccat(:,2));       %latitude
-        tmp4=max(newccat(:,2));
-        tmp5=min(newccat(:,3));       %time
-        tmp6=max(newccat(:,3));
-        tmp7=min(newccat(:,6));       %magnitude
-        tmp8=max(newccat(:,6));
-        tmp9=min(newccat(:,7));       %depth
-        tmp10=max(newccat(:,7));
+        tmp1=min(newccat.Longitude);       %longitude
+        tmp2=max(newccat.Longitude);
+        tmp3=min(newccat.Latitude);       %latitude
+        tmp4=max(newccat.Latitude);
+        tmp5=min(newccat.Date);       %time
+        tmp6=max(newccat.Date);
+        tmp7=min(newccat.Magnitude);       %magnitude
+        tmp8=max(newccat.Magnitude);
+        tmp9=min(newccat.Depth);       %depth
+        tmp10=max(newccat.Depth);
 
         %make the interface
         figure_w_normalized_uicontrolunits(...
@@ -36,43 +36,43 @@ report_this_filefun(mfilename('fullpath'));
 
         inp1=uicontrol('Style','edit','Position',[.47 .80 .22 .06],...
             'Units','normalized','String',num2str(tmp7),...
-            'Callback','tmp7=str2double(get(inp1,''String'')); set(inp1,''String'',num2str(tmp7))');
+            'Callback','tmp7=str2double(inp1.String); inp1.String=num2str(tmp7))';
 
         inp2=uicontrol('Style','edit','Position',[.72 .80 .22 .06],...
             'Units','normalized','String',num2str(tmp8),...
-            'Callback','tmp8=str2double(get(inp2,''String'')); set(inp2,''String'',num2str(tmp8));');
+            'Callback','tmp8=str2double(inp2.String); inp2.String=num2str(tmp8);');
 
         inp3=uicontrol('Style','edit','Position',[.47 .65 .22 .06],...
             'Units','normalized','String',num2str(tmp5),...
-            'Callback','tmp5=str2double(get(inp3,''String'')); set(inp3,''String'',num2str(tmp5));');
+            'Callback','tmp5=str2double(inp3.String); inp3.String=num2str(tmp5);');
 
         inp4=uicontrol('Style','edit','Position',[.72 .65 .22 .06],...
             'Units','normalized','String',num2str(tmp6),...
-            'Callback','tmp6=str2double(get(inp4,''String'')); set(inp4,''String'',num2str(tmp6));');
+            'Callback','tmp6=str2double(inp4.String); inp4.String=num2str(tmp6);');
 
         inp5=uicontrol('Style','edit','Position',[.47 .50 .22 .06],...
             'Units','normalized','String',num2str(tmp9),...
-            'Callback','tmp9=str2double(get(inp5,''String'')); set(inp5,''String'',num2str(tmp9));');
+            'Callback','tmp9=str2double(inp5.String); inp5.String=num2str(tmp9);');
 
         inp6=uicontrol('Style','edit','Position',[.72 .50 .22 .06],...
             'Units','normalized','String',num2str(tmp10),...
-            'Callback','tmp10=str2double(get(inp6,''String'')); set(inp6,''String'',num2str(tmp10));');
+            'Callback','tmp10=str2double(inp6.String); inp6.String=num2str(tmp10);');
 
         inp7=uicontrol('Style','edit','Position',[.47 .35 .22 .06],...
             'Units','normalized','String',num2str(tmp1),...
-            'Callback','tmp1=str2double(get(inp7,''String'')); set(inp7,''String'',num2str(tmp1));');
+            'Callback','tmp1=str2double(inp7.String); inp7.String=num2str(tmp1);');
 
         inp8=uicontrol('Style','edit','Position',[.72 .35 .22 .06],...
             'Units','normalized','String',num2str(tmp2),...
-            'Callback','tmp2=str2double(get(inp8,''String'')); set(inp8,''String'',num2str(tmp2));');
+            'Callback','tmp2=str2double(inp8.String); inp8.String=num2str(tmp2);');
 
         inp9=uicontrol('Style','edit','Position',[.47 .20 .22 .06],...
             'Units','normalized','String',num2str(tmp3),...
-            'Callback','tmp3=str2double(get(inp9,''String'')); set(inp9,''String'',num2str(tmp3));');
+            'Callback','tmp3=str2double(inp9.String); inp9.String=num2str(tmp3);');
 
         inp10=uicontrol('Style','edit','Position',[.72 .2 .22 .06],...
             'Units','normalized','String',num2str(tmp4),...
-            'Callback','tmp4=str2double(get(inp10,''String'')); set(inp10,''String'',num2str(tmp4));');
+            'Callback','tmp4=str2double(inp10.String); inp10.String=num2str(tmp4);');
 
 
         txt1= text(...
@@ -158,7 +158,7 @@ report_this_filefun(mfilename('fullpath'));
 
     elseif var1==2
 
-        tmp11=find(newccat(:,1)>=tmp1 & newccat(:,1)<=tmp2 & newccat(:,2)>=tmp3 & newccat(:,2)<=tmp4 & newccat(:,3)>=tmp5 & newccat(:,3)<=tmp6 & newccat(:,6)>=tmp7 & newccat(:,6)<=tmp8 & newccat(:,7)>=tmp9 & newccat(:,7)<=tmp10);
-        newccat=newccat(tmp11,:);
+        tmp11=find(newccat.Longitude>=tmp1 & newccat.Longitude<=tmp2 & newccat.Latitude>=tmp3 & newccat.Latitude<=tmp4 & newccat.Date>=tmp5 & newccat.Date<=tmp6 & newccat.Magnitude>=tmp7 & newccat.Magnitude<=tmp8 & newccat.Depth>=tmp9 & newccat.Depth<=tmp10);
+        newccat=newccat.subset(tmp11);
 
     end

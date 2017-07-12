@@ -11,7 +11,7 @@ abo = abo2;
 
 for tre2 = min(abo(:,4)):0.1:max(abo(:,4)-0.1)
     abo = abo2;
-    abo(:,5) = abo(:,5)* par1/365 + a(1,3);
+    abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
     l = abo(:,4) >= tre2;
     abo = abo(l,:);
     l = abo(:,3) < tresh;

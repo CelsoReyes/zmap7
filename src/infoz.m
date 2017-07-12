@@ -2,7 +2,7 @@ function infoz(var1)
     %slapinfo.m                        A.Allmann
     %function to make an info window for various routines
     %
-    %last modification 7/95
+    %
     global slapinfo p1
 
     report_this_filefun(mfilename('fullpath'));

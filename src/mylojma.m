@@ -9,7 +9,7 @@ disp('Plase make sure that  all blanks have been substituted by zeros')
 safe_fclose(fid);
 
 % reset paramteres
-a = []; b = []; n = 0;
+ZG.a = []; b = []; n = 0;
 
 if inda == 1
     % initial selection option
@@ -55,7 +55,7 @@ while  ferror(fid) == ''
         b.Date >= tmin  ;
     a = [a ; b(l,:)];
 
-    disp([ num2str(n*100) ' earthquakes scanned, ' num2str(length(a)) ' EQ found'])
+    disp([ num2str(n*100) ' earthquakes scanned, ' num2str(ZG.a.Count) ' EQ found'])
     if max(b.Date) >  tmax ; break; end
     %ferror(fid)
 
@@ -75,7 +75,7 @@ end
 sapa2 = ['save ' path1 file1 ' a'];
 if length(file1) > 1; eval(sapa2);end
 
-minmag = max(ZG.a.Magnitude) -0.2;
+ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;
 dep1 = 0.3*max(ZG.a.Depth);
 dep2 = 0.6*max(ZG.a.Depth);
 dep3 = max(ZG.a.Depth);

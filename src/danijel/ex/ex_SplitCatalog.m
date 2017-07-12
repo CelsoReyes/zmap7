@@ -42,25 +42,25 @@ end
 
 % Create the first catalog
 if ~bFirstPeriod
-  vSelection = (mCatalog(:,3) < fSplitTime);
+  vSelection = (mCatalog.Date < fSplitTime);
 else
-  vSelection = ((mCatalog(:,3) < fSplitTime) & (mCatalog(:,3) >= (fSplitTime - fFirstPeriod)));
+  vSelection = ((mCatalog.Date < fSplitTime) & (mCatalog.Date >= (fSplitTime - fFirstPeriod)));
 end
 mFirstCatalog = mCatalog(vSelection, :);
 fFirstPeriodExact = max(mFirstCatalog(:,3)) - min(mFirstCatalog(:,3));
 
 % Create the second catalog
 if ~bSecondPeriod
-  vSelection = (mCatalog(:,3) > fSplitTime);
+  vSelection = (mCatalog.Date > fSplitTime);
 else
-  vSelection = ((mCatalog(:,3) > fSplitTime) & (mCatalog(:,3) <= (fSplitTime + fSecondPeriod)));
+  vSelection = ((mCatalog.Date > fSplitTime) & (mCatalog.Date <= (fSplitTime + fSecondPeriod)));
 end
 mSecondCatalog = mCatalog(vSelection, :);
 fSecondPeriodExact = max(mSecondCatalog(:,3)) - min(mSecondCatalog(:,3));
 
 % Adjust the input periods (must not be longer than the catalog contains data)
-fMaxFirst = fSplitTime - min(mCatalog(:,3));
-fMaxSecond = max(mCatalog(:,3)) - fSplitTime;
+fMaxFirst = fSplitTime - min(mCatalog.Date);
+fMaxSecond = max(mCatalog.Date) - fSplitTime;
 
 if bFirstPeriod
   fFirstPeriod = min(fFirstPeriod, fMaxFirst);

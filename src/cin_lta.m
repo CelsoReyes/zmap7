@@ -58,7 +58,7 @@ hold on
 overlay
 
 
-tx2 = text(0.07,0.85 ,['ti=' num2str(it*par1/365+t0b)  ] ,...
+tx2 = text(0.07,0.85 ,['ti=' num2str(it*days(par1)+t0b)  ] ,...
     'Units','Norm','FontSize',14,'Color','k','FontWeight','bold');
 
 

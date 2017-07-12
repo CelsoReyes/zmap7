@@ -1,5 +1,5 @@
 function [cline] = contour_dense(bpoints, solpoint, quan, acc)
-    %this function gives a contour line calculated out of a group of points and
+    %contour_dense gives a contour line calculated from a group of points and
     %a given mid/solution point.
     %cline: output contour line
     %bpoints: input points (bootstrap solution() , in retangular coord. (:,1)=x

@@ -5,7 +5,7 @@
 %   coordinates (as given by incircle).
 %   Resets ZG.newcat and ZG.newt2.     Operates on the map window on  "a".
 %                                                  R.Z. 6/94
-% last change 8/95
+%
 
 report_this_filefun(mfilename('fullpath'));
 
@@ -61,7 +61,7 @@ elseif ic == 2
     [s,is] = sort(ZG.newt2.Date);
     ZG.newt2 = ZG.newt2(is(:,1),:) ;
     ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
-    timeplot
+    timeplot(ZG.newt2);
 
     ic = 1;
 
@@ -96,7 +96,7 @@ elseif ic == 3
     %
     stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6)];
     stri = stri1;
-    timeplot
+    timeplot(ZG.newt2);
 
     ic = 1;
 

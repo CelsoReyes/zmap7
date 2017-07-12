@@ -9,8 +9,8 @@ function mycat = catalog_overview(mycat)
     end
     
     report_this_filefun(mfilename('fullpath'));
-    %global file1 tim1 tim2 minma2 maxma2 minde maxde maepi
-    %global maxdep maxma mindep minti maxti minmag
+    %global file1 tim1 tim2 minma2 maxma2 minde maxde ZG.maepi
+    %global maxdep maxma mindep minti maxti
     
     %  default values
     t0b = min(mycat.Date);
@@ -300,7 +300,7 @@ function mycat = catalog_overview(mycat)
         h = findall(myparent,'Tag','mapview_end_field');
         maxti = datetime(datevec(h.Value));
         h = findall(myparent,'Tag','mapview_big_evt_field');
-        minmag = h.Value;
+        ZG.big_eq_minmag = h.Value;
         %h = findall(myparent,'Tag','mapview_binlen_field');
         %par1 = h.Value;
         if ~isa(mycat,'ZmapCatalog')
@@ -334,7 +334,7 @@ function mycat = catalog_overview(mycat)
         %create catalog of "big events" if not merged with the original one:
         %
         mycat.clearFilter();
-        maepi = mycat.subset(mycat.Magnitude > minmag);
+        ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
         
         mycat.sort('Date');
        

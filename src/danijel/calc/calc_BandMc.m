@@ -85,9 +85,9 @@ try
   % Conservative Mc
   fMc = fMc + fMcAdd;
   % Calculate the b-value of the learning period
-  vSel_ = mCatalog(:,6) >= fMc;
-  mCatalog = mCatalog(vSel_,:);
-  nNumberQuakes = length(mCatalog(:,1));
+  vSel_ = mCatalog.Magnitude >= fMc;
+  mCatalog = mCatalog.subset(vSel_);
+  nNumberQuakes = mCatalog.Count;
   if nNumberQuakes >= nMinimumNumber
     [vDummy, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning);
   end

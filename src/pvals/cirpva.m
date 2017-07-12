@@ -37,7 +37,7 @@ pause(0.1)
 %
 l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
 [s,is] = sort(l);
-newt2 = a(is(:,1),:) ;
+ZG.newt2 = a(is(:,1),:) ;
 
 l =  sort(l);
 %
@@ -69,7 +69,7 @@ elseif met == 'ti'
 
 end
 [st,ist] = sort(ZG.newt2);
-newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2 = ZG.newt2(ist(:,3),:);
 R2 = ra;
 
 %
@@ -93,5 +93,5 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 %
 clear l s is
 %bdiff(ZG.newt2)
-timeplot
+timeplot(ZG.newt2)
 pvalcat

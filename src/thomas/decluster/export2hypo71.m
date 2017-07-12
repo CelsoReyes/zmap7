@@ -1,6 +1,6 @@
 function export2hypo71(mCat,sOutputFile)
-% function export2hypo71(a,sOutputFile)
-% EXAMPLE: export2hypo71(a,'Catalog.dat')
+% function export2hypo71(mCat ,sOutputFile)
+% EXAMPLE: export2hypo71(mCat, 'Catalog.dat')
 %
 % Author: van Stiphout, Thomas
 % vanstiphout@sed.ethz.ch

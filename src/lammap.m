@@ -34,7 +34,7 @@ delete(gca)
 delete(gca)
 delete(gca)
 if isempty(coastline)
-    coastline = [a(1,1) a(1,2)]
+    coastline = [ZG.a.Longitude(1) ZG.a.Latitude(1)]
 end
 hold on
 if length(coastline) > 1
@@ -51,8 +51,8 @@ if ~isempty(mainfault)
     lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
 end
 lc_event(ZG.a.Latitude,ZG.a.Longitude,'.k')
-if ~isempty(maepi)
-    lc_event(maepi(:,2),maepi(:,1),'xm')
+if ~isempty(ZG.maepi)
+    lc_event(ZG.maepi.Latitude,ZG.maepi.Longitude,'xm')
 end
 if ~isempty(main)
     lc_event(main(:,2),main(:,1),'+b')
@@ -77,8 +77,8 @@ zmap_message_center.set_message(titStr,messtext);
 
 [xsecx xsecy,  inde] = mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi);
 
-%if ~isempty(maepi)
-% [maex, maey] = lc_xsec2(maepi(:,2)',maepi(:,1)',maepi(:,7),wi,leng,lat1,lon1,lat2,lon2);
+%if ~isempty(ZG.maepi)
+% [maex, maey] = lc_xsec2(ZG.maepi.Latitude',ZG.maepi.Longitude',ZG.maepi.Depth,wi,leng,lat1,lon1,lat2,lon2);
 %end
 
 if ~isempty(main)
@@ -105,7 +105,7 @@ uic2 = uicontrol('Units','normal',...
 set_width = uicontrol('style','edit','value',wi,...
     'string',num2str(wi), 'background','y',...
     'units','norm','pos',[.90 .00 .08 .06],'min',0,'max',10000,...
-     'Callback','wi=str2double(get(set_width,''String''));');
+     'Callback','wi=str2double(set_width.String);');
 
 wilabel = uicontrol('style','text','units','norm','pos',[.60 .00 .30 .06]);
 set(wilabel,'string','Width in km:','background','y');

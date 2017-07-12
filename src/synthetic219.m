@@ -6,7 +6,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-TN = length(a);%total number of events
+TN = ZG.a.Count;%total number of events
 B = 1 ;%b-value
 IM= 1;%starting magnitude (hypothetical Mc)
 inc = 0.1 ;%magnitude increment
@@ -117,7 +117,7 @@ tmpo=new(is);
 syn(:,6)=tmpo(1:TN);
 
 rng('shuffle');
-%if TN==length(a)
+%if TN==ZG.a.Count
 %	syn(:,3)=rand(TN,1)*(max(ZG.a.Date-min(ZG.a.Date)))  + min(ZG.a.Date);
 %	syn(:,1)=ZG.a.Longitude;
 %	syn(:,2)=ZG.a.Latitude;
@@ -234,12 +234,12 @@ end
 [ttt,indt]=sortrows(syn,3);
 synt=ttt;
 aa=a;
-a=synt;
+ZG.a=synt;
 file = ['synt.mat'];
 do = [' save ' file  ' a' ];
 eval(do);
 helpdlg('Sythetic catalogs was saved in file synth.mat')
-a=aa ;
+ZG.a=aa ;
 done
 watchoff
 

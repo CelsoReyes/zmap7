@@ -42,8 +42,6 @@ elseif (params.nGriddingMode == 1 && params.bMap == 0)
     mNodeCatalog_=mNodeCatalog_(vSel,:);
     fCheckDist = max(vDistances_);
 end
-% Time period
-params.fTimePeriod = params.fTimePeriod/365;
 
 % Sort the catalog according to time
 [s,is] = sort(mNodeCatalog_(:,3));

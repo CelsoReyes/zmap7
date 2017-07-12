@@ -160,7 +160,7 @@ if newbpmapcsWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.92 .80 .08 .05],'String','set ni',...
-         'Callback','ni=str2num(get(set_nia,''String''));''String'',num2str(ni);')
+         'Callback','ni=str2num(set_nia.String);''String'',num2str(ni);')
 
 
     set_nia = uicontrol('style','edit','value',ni,'string',num2str(ni));

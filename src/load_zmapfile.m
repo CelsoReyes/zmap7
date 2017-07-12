@@ -1,8 +1,5 @@
 function load_zmapfile()%
     % load_zmapfile
-    %  load zmap file
-    %  load volcanoes
-    %
     %
     % load_zmapfile file will ask you for an input file name. The data
     % format is at this point:
@@ -18,7 +15,6 @@ function load_zmapfile()%
     %    hour   min
     %
     %
-    %
     % Any catalog is generally loaded once as an unformatted ascii file
     % and then saved as variable "a" in  <name>_cata.mat .
     %
@@ -29,7 +25,7 @@ function load_zmapfile()%
     report_this_filefun(mfilename('fullpath'));
     
     format short
-    global  ZG
+    ZG=ZmapGlobal.Data; % get zmap globals
     
     % start program and load data:
     show_load_instructions();
@@ -82,7 +78,9 @@ function load_zmapfile()%
 end
 
 function setUpDefaultValues(A)
-    global t0b teb par1 minmag dep1 dep2 dep3 minti maxti minma maxma mindep maxdep ra mrt met
+    
+    ZG=ZmapGlobal.Data; % get zmap globals
+    
     %  default values
     t0b = min(A.Date);
     teb = max(A.Date);
@@ -96,7 +94,7 @@ function setUpDefaultValues(A)
             par1 = 0.01;
         end
     end
-    minmag = max(A.Magnitude) -0.2;
+    ZG.big_eq_minmag = max(A.Magnitude) -0.2;
     dep1 = 0.3*max(A.Depth);
     dep2 = 0.6*max(A.Depth);
     dep3 = max(A.Depth);
