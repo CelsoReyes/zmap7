@@ -4,7 +4,7 @@
 
 
 %
-global dep1 dep2 dep3 a
+ZG=ZmapGlobal.Data;
 
 report_this_filefun(mfilename('fullpath'));
 

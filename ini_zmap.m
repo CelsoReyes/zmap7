@@ -5,7 +5,8 @@ report_this_filefun(mfilename('fullpath'));
 %global wex wey welx wely sel
 %global ty ty1 ty2 ty3
 %global lth1 lth15 lth2
-%global rad xa0 iwl3 ic ya0 iwl2 step ni
+%global rad xa0 ic ya0 step ni
+global iwl2 iwl3
 %global name strib stri2 infstri maix maiy
 %global tresh wi rotationangle fre
 %global co par1 
