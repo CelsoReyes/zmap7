@@ -23,7 +23,7 @@ function cltipval(var1)
     % time
 
 
-    global file1             %welcome
+    global file1             
     global mess ccum bgevent equi  clust original cluslength newclcat
     global backcat ttcat cluscat
    global  sys clu te1

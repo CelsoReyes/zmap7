@@ -1,6 +1,6 @@
 function welcome(titStr, messtext)
     % This is the ZMAP welcome message
-    
+    % TODO delete me
     report_this_filefun(mfilename('fullpath'));
     
     global sys
@@ -23,7 +23,7 @@ function welcome(titStr, messtext)
             'Name','Message Window',...
             'MenuBar','none',...
             'Units','pixel','backingstore','off',...
-            'pos',[ wex wey welx wely]);
+            'pos',[ ZG.welcome_pos ZG.welcome_len]);
         
         te1 = text(0.02,0.9,welcome_text) ;
         set(te1,'FontSize',12,'Color','k','FontWeight','bold')

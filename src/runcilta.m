@@ -19,7 +19,7 @@ mi = [];
 
 wai = waitbar(0,'Please wait...')
 set(wai,'Color',[0.8 0.8 0.8],'NumberTitle','off',...
-    'Name','fin_max -Percent done','pos',[wex wey 300 80]);
+    'Name','fin_max -Percent done','pos',[ZG.welcome_pos 300 80]);
 
 
 pause(0.1)
@@ -47,7 +47,7 @@ m = moviein(length(1:step:len-iwl));
 
 wai = waitbar(0,'Please wait...')
 set(wai,'Color',[0.8 0.8 0.8],'NumberTitle','off',...
-    'Name','Movie -Percent done','pos',[wex wey 300 80]);
+    'Name','Movie -Percent done','pos',[ZG.welcome_pos 300 80]);
 pause(0.1)
 
 for it = 1:step:len-iwl;

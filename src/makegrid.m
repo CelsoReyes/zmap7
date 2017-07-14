@@ -116,7 +116,7 @@ uicontrol('Units','normal','Position',...
     [.7 .10 .2 .12],'String','Options ', 'Callback','zmapmenu')
 
 uicontrol('Units','normal','Position',...
-    [.3 .10 .2 .12],'String','Back', 'Callback','welcome')
+    [.3 .10 .2 .12],'String','Back', 'Callback',@(~,~)zmap_Message_center())
 
 return
 

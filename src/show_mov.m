@@ -20,7 +20,7 @@ if in2 ~= 'calma'
     set(gca,'visible','off')
     set(gcf,'Units','pixel','NumberTitle','off','Name','Input Parameters');
 
-    set(gcf,'pos',[ wex  wey welx+200 wely-50])
+    set(gcf,'pos',[ ZG.welcome_pos ZG.welx+200 ZG.wely-50])
 
 
     % creates a dialog box to input some parameters
@@ -59,12 +59,12 @@ if in2 ~= 'calma'
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position', [.60 .05 .15 .15 ],...
-        'Units','normalized','Callback','welcome','String','Cancel');
+        'Units','normalized','Callback',@(~,~)zmap_Message_center(),'String','Cancel');
 
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.25 .05 .15 .15 ],...
         'Units','normalized',...
-        'Callback','nustep=str2num(inp2_field.String);iwl2=str2num(inp3_field.String);welcome,think,watchon;drawnow,in2 = ''calma'';fixaxmo;',...
+        'Callback','nustep=str2num(inp2_field.String);iwl2=str2num(inp3_field.String);zmap_message_center();think,watchon;drawnow,in2 = ''calma'';fixaxmo;',...
         'String','Go');
 
     set(gcf,'visible','on');watchoff

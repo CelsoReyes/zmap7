@@ -243,7 +243,6 @@ classdef MainInteractiveMap
         end
         
         function create_overlay_menu(obj,force)
-            global coast plates vo
             h = findobj(figureHandle(),'Tag','mainmap_menu_overlay');
             if ~isempty(h) && exist('force','var') && force
                 delete(h); h=[];
@@ -270,13 +269,18 @@ classdef MainInteractiveMap
                 ftr=obj.Features(k{i});
                 ftr.addToggleMenu(ovmenu);
             end
+            %{
+            % Calls GSHHS data already accessed in resources/features
+            % TODO: create option to control Resolution
                 uimenu(ovmenu,'Label','Load a coastline  from GSHHS database',...
                 'Separator','on',...
                     'Callback','selt = ''in'';  plotmymap;');
                 uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
                     'Callback','think; addcoast;done');
+                %}
                 uimenu(ovmenu,'Label','Plot stations + station names',...
-                    'Callback','think; plotstations;done');
+                    'Separator', 'on',...
+                    'Callback',@(~,~)plotstations(mainAxes()));
                 
                 lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
                 
@@ -1150,7 +1154,7 @@ function change_color(c)
     lines = findMapaxParts();
     n =listdlg('PromptString','Change color for which item?',...
         'SelectionMode','multiple',...
-        'ListString',{lines.DisplayName})
+        'ListString',{lines.DisplayName});
     if ~isempty(n)
         c = uisetcolor(lines(n(1)));
         set(lines(n),'Color',c,'Visible','on');

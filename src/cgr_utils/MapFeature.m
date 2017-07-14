@@ -254,12 +254,12 @@ classdef MapFeature < handle
             set(layer,obj.PlottingDefaults);
         end
         
-        function load(obj)
+        function load(obj,varargin)
             % load this feature
             % uses the Loadfn provided during Feature Construction
             % loadFunction is expected to return a table or struct containing fields for
             % 'Latitude', 'Longitude', and 'Depth' (things with ELEVATION would have negative depth)
-            obj.Value = obj.Loadfn();
+            obj.Value = obj.Loadfn(varargin{:});
         end
         
         function save(obj)

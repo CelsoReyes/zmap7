@@ -28,7 +28,7 @@ set(mark1,'MarkerSize',10,'LineWidth',2.0)
 f = [x0 y0 ; x1 y0 ; x1 y1 ; x0 y1 ; x0 y0];
 fplo = plot(f(:,1),f(:,2),'r','era','normal');
 set(fplo,'LineWidth',2)
-welcome
+zmap_message_center();
 
 gx = x0:dx:x1;
 gy = y0:dy:y1;
@@ -307,7 +307,7 @@ uicontrol('Units','normal','Position',...
     [.7 .10 .2 .12],'String','maxZmap', 'Callback','stri = [''Max of mean Z'']; re3 = re_1; view_max')
 
 close_button = uicontrol('Units','normal','Position',...
-    [.7 .7 .2 .12],'String','Close ', 'Callback','welcome')
+    [.7 .7 .2 .12],'String','Close ', 'Callback',@(~,~)zmap_Message_center())
 
 clear Zsumb Zsuma Zsum Zabsa Zabsb Zabs meanZ max_meanZ min_meanZ;
 

@@ -8,7 +8,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-global wex wey
+
 global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
 global freq_field6 ni mi me1 va1
 global a h1 map dx dy ldx tlap Mmin stime lap1 seismap
@@ -37,7 +37,7 @@ if var1==1
         'NextPlot','new', ...
         'units','points',...
         'Visible','off', ...
-        'Position',[ wex+200 wey-200 450 250]);
+        'Position',[ ZG.wex+200 ZG.wey-200 450 250]);
     axis off
 
     %create a dialog box for the input

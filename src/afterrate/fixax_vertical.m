@@ -15,7 +15,7 @@ function fixax_vertical(re3);
     clf
     set(gca,'visible','off')
     set(f,'Units','pixel','NumberTitle','off','Name','Input Parameters');
-    set(f,'pos',[ wex  wey welx+200 wely-50])
+    set(f,'pos',[ ZG.welcome_pos ZG.welx+200 ZG.wely-50])
     
     
     % Create a dialog box to input some parameters
@@ -89,7 +89,7 @@ function fixax_vertical(re3);
     
     function close_callback(mysrc, ~)
         % automatically created callback function from text
-        welcome;
+        zmap_message_center();
     end
     function go_callback(mysrc,myevt)
         % automatically created callback function from text
@@ -97,7 +97,7 @@ function fixax_vertical(re3);
         callback_tracker(mysrc,myevt,mfilename('fullpath'),'go_callback');
         fix2=inp3_field.Value;
         fix1=inp2_field.Value;
-        welcome;
+        zmap_message_center();
         axes(h1);
         caxis([fix1 fix2]);
         hold off;

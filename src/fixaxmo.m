@@ -14,7 +14,7 @@ clf
 set(gca,'visible','off')
 set(f,'Units','pixel','NumberTitle','off','Name','Input Parameters');
 
-set(f,'pos',[ wex  wey welx+200 wely-50])
+set(f,'pos',[ ZG.welcome_pos ZG.welx+200 ZG.wely-50])
 
 
 % creates a dialog box to input some parameters
@@ -55,7 +55,7 @@ inp3_field=uicontrol('Style','edit',...
 
 close_button=uicontrol('Style','Pushbutton',...
     'Position', [.60 .05 .15 .15 ],...
-    'Units','normalized','Callback','welcome','String','Cancel');
+    'Units','normalized','Callback',@(~,~)zmap_Message_center(),'String','Cancel');
 
 go_button=uicontrol('Style','Pushbutton',...
     'Position',[.25 .05 .15 .15 ],...

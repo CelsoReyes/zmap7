@@ -32,7 +32,7 @@ case 'mag'
         dep2=answer{2};
         dep3=answer{3};
     else
-        welcome;
+        zmap_message_center();
     end
 
 case 'depth'
@@ -59,7 +59,7 @@ case 'depth'
         dep2=answer{2};
         dep3=answer{3};
     else
-        welcome;
+        zmap_message_center();
     end
 end
 clear answer temp defaultans prompt dlg_title

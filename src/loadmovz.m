@@ -7,6 +7,6 @@ if length(path1) > 1
     load([path1 file1])
     showmovi
 else
-    welcome
+    zmap_message_center();
 end   % if exist
 

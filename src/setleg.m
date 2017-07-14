@@ -46,7 +46,7 @@ case 'tim'
         tim3=answer{3};
         tim4=answer{4};
     else
-        welcome;
+        zmap_message_center();
     end
 end
 clear answer temp defaultans prompt dlg_title

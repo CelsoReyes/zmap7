@@ -44,6 +44,6 @@ te = text(0.01,0.60,'Output was saved in files \newline \newlinebelow.out and ab
 set(te,'FontSize',16);
 
 pause(5.0);
-welcome;
+zmap_message_center();
 
 

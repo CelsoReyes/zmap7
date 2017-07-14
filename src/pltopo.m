@@ -341,7 +341,7 @@ switch(plt)
                 eval(do,err)
 
             case 'Cancel'
-                welcome; return
+                zmap_message_center(); return
 
         end %swith butt
 
@@ -386,7 +386,7 @@ switch(plt)
                 plt = 'genhelp'; pltopo; return; return;
 
             case 'Cancel'
-                welcome; return; return; return
+                zmap_message_center(); return; return; return
 
         end %swith butt
 

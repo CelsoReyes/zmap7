@@ -22,7 +22,7 @@ ztime1 = 1:bin1;
 time2 = 1:bin1;
 cumu1 = 1:bin1;
 cumu2 = 1:bin1;
-welcome
+zmap_message_center();
 think
 
 figure;

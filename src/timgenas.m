@@ -7,7 +7,7 @@ report_this_filefun(mfilename('fullpath'));
 if ic == 0
 
     it = t0b + 1;
-    welcome
+    zmap_message_center();
     mess = gcf;
     clf
     set(gca,'visible','off')
@@ -26,7 +26,7 @@ if ic == 0
         'String','Time to display (e.g. 84.537): ');
 
     close_button = uicontrol('Units','normal','Position',...
-        [.1 .7 .2 .12],'String','Close ', 'Callback','welcome');
+        [.1 .7 .2 .12],'String','Close ', 'Callback',@(~,~)zmap_Message_center());
 
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.35 .22 .20 .10 ],...

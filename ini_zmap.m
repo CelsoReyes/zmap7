@@ -2,7 +2,7 @@
 %    Customize setting if desired
 %
 report_this_filefun(mfilename('fullpath'));
-%global wex wey welx wely sel
+%global sel
 %global ty ty1 ty2 ty3
 %global lth1 lth15 lth2
 %global rad xa0 ic ya0 step ni

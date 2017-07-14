@@ -172,6 +172,6 @@ ZG=ZmapGlobal.Data;
         x=[];
         y=[];
         n=0;
-        welcome;
+        zmap_message_center();
     end
 

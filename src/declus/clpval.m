@@ -22,7 +22,7 @@ function clpval(var1)
     % time
 
 
-    global file1             %welcome
+    global file1             
     global mess ccum bgevent equi  clust original cluslength newclcat
     global backcat ttcat cluscat
    global  sys clu te1
@@ -632,7 +632,7 @@ function clpval(var1)
                 'FontWeight','bold','LineWidth',1.5,...
                 'Box','on')
         end;  %if autop~=1
-        welcome;
+        zmap_message_center();
         tmvar=[];
         if ~isempty(hndl1)
             delete(hndl1);

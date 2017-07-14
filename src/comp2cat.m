@@ -70,7 +70,7 @@ switch(do)
                 end
 
             case 'Cancel'
-                welcome; return
+                zmap_message_center(); return
 
         end %swith butt
 
