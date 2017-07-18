@@ -1,27 +1,27 @@
-function cpara(var1)
+function mycat=cpara(var1, mycat)
     % cpara.m               Alexander Allmann
     % function to select parameters in cluster environment
     %
 
-    global newccat
-    global inp1 inp2 inp3 inp4 inp5 inp6 inp7 inp8 inp9 inp10
-    global tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10
+    global mycat
+    persistent inp1 inp2 inp3 inp4 inp5 inp6 inp7 inp8 inp9 inp10
+    persistent tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10
 
 report_this_filefun(mfilename('fullpath'));
 
     if var1==1
 
         % default values
-        tmp1=min(newccat.Longitude);       %longitude
-        tmp2=max(newccat.Longitude);
-        tmp3=min(newccat.Latitude);       %latitude
-        tmp4=max(newccat.Latitude);
-        tmp5=min(newccat.Date);       %time
-        tmp6=max(newccat.Date);
-        tmp7=min(newccat.Magnitude);       %magnitude
-        tmp8=max(newccat.Magnitude);
-        tmp9=min(newccat.Depth);       %depth
-        tmp10=max(newccat.Depth);
+        tmp1=min(mycat.Longitude);       %longitude
+        tmp2=max(mycat.Longitude);
+        tmp3=min(mycat.Latitude);       %latitude
+        tmp4=max(mycat.Latitude);
+        tmp5=min(mycat.Date);       %time
+        tmp6=max(mycat.Date);
+        tmp7=min(mycat.Magnitude);       %magnitude
+        tmp8=max(mycat.Magnitude);
+        tmp9=min(mycat.Depth);       %depth
+        tmp10=max(mycat.Depth);
 
         %make the interface
         figure_w_normalized_uicontrolunits(...
@@ -158,7 +158,11 @@ report_this_filefun(mfilename('fullpath'));
 
     elseif var1==2
 
-        tmp11=find(newccat.Longitude>=tmp1 & newccat.Longitude<=tmp2 & newccat.Latitude>=tmp3 & newccat.Latitude<=tmp4 & newccat.Date>=tmp5 & newccat.Date<=tmp6 & newccat.Magnitude>=tmp7 & newccat.Magnitude<=tmp8 & newccat.Depth>=tmp9 & newccat.Depth<=tmp10);
-        newccat=newccat.subset(tmp11);
+        tmp11=mycat.Longitude>=tmp1 & mycat.Longitude<=tmp2 &...
+         mycat.Latitude>=tmp3 & mycat.Latitude<=tmp4 &...
+          mycat.Date>=tmp5 & mycat.Date<=tmp6 &...
+           mycat.Magnitude>=tmp7 & mycat.Magnitude<=tmp8 &...
+            mycat.Depth>=tmp9 & mycat.Depth<=tmp10;
+        mycat=mycat.subset(tmp11);
 
     end
