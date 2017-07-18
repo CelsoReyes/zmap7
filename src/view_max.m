@@ -262,7 +262,7 @@ if  in == 'per'
 end
 set(gca,'dataaspect',[1 cosd(mean(ZG.a.Latitude)) 1]);
 
-title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',ZmapGlobal.Data.fontsz.m,...
+title([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it) '; iwl = ' num2str(iwl2) ' yr'],'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','k','FontWeight','bold')
 
 xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

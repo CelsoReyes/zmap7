@@ -1,4 +1,4 @@
-function hisgra(vari1,stri2)
+function hisgra(vari1,stri2, catname)
     %histogram.m                               A.Allmann
     %plots histogram in cumulative number window
     %vari1 depends on input parameter
@@ -65,9 +65,16 @@ function hisgra(vari1,stri2)
         histogram(vari1,-0.1:0.01:1.1);
     end
 
-    title2([stri2,stri1],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    titlestr = [stri2, stri1];
+    if exist('catname','var')
+        titlestr = [titlestr, ' : ', catname];
+    end
+
+    %title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
+    th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
+    th.Interpreter='none';
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
-        'FontWeight','bold','TickDir','out','Ticklength',[ 0.02 0.02],'LineWidth',1.,'Box','on')
+        'FontWeight','bold','TickDir','out','Ticklength',[ 0.01 0.01],'LineWidth',1.,'Box','on');
     if strcmp(stri2,stri3)
         stri2='Duration in days';
     elseif strcmp(stri2,stri4)

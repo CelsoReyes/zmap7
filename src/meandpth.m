@@ -185,7 +185,7 @@ elseif ic == 2
     xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     ylabel('Mean Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     stri = ['Mean Depths and standard deviation ( ' file1 ')'];
-    %title2(' Mean depths and mean depth error ',...
+    %title(' Mean depths and mean depth error ',...
     %        'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
@@ -209,7 +209,7 @@ elseif ic == 2
     ylabel('Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'XTicklabels',[])
     stro = [' ' file1 '; wl = ' num2str(iwln) ' events, inc = ' num2str(step)];
-    title2(stro,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
+    title(stro,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     grid
 
     set(gca,'box','on',...

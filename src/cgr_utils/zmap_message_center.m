@@ -238,7 +238,7 @@ function h = create_message_figure()
             'String','Timeseries',...
             'Units','normalized',...
             'Position',[0.35 0.05 .3 .3],...
-            'Callback','disp(''I am supposed to bring up the timeseries for curr catalog'')',... change to bring up timeseries
+            'Callback','timeplot(ZG.a)',... change to bring up timeseries
             'Tag','zmap_curr_cat_tsbutton');
         
         %% selected catalog panel
@@ -272,7 +272,7 @@ function h = create_message_figure()
             'String','USE (and map)',...
             'Units','normalized',...
             'Position',[0.65 0.05 .3 .3],...
-            'Callback','ZG=ZmapGlobal.Data; ZG.a=ZG.newcat;zmap_message_center.update_catalog();update(mainmap())',...
+            'Callback','ZG=ZmapGlobal.Data; replaceMainCatalog(ZG.newcat);zmap_message_center.update_catalog();update(mainmap())',...
             'TooltipString','Makes this catalog the active catalog',...
             'Tag','zmap_sel_cat_usebutton');
         
@@ -281,7 +281,7 @@ function h = create_message_figure()
             'String','Timeseries',...
             'Units','normalized',...
             'Position',[0.35 0.05 .3 .3],...
-            'Callback','disp(''I am supposed to bring up the timeseries for sel catalog'')',... change to bring up timeseries
+            'Callback','timeplot(ZG.newcat)',... change to bring up timeseries
             'Tag','zmap_sel_cat_tsbutton');
         
         update_current_catalog_pane();
@@ -291,7 +291,7 @@ end
 
 function do_catalog_overview(s,~)
     global ZG
-    ZG.a = catalog_overview(ZG.a);
+    replaceMainCatalog(catalog_overview(ZG.a));
     zmap_message_center.update_catalog();
     %update_current_catalog_pane(s);
 end
@@ -308,10 +308,16 @@ function set_mapbutton_enable(val)
     h = findobj(0, 'Tag','zmap_curr_cat_mapbutton');
     h.Enable = val;
 end
+function set_timeseriesbutton_enable(val)
+    h = findobj(0, 'Tag','zmap_curr_cat_tsbutton');
+    h.Enable = val;
+end
+
 function set_editbutton_enable(val)
     h = findobj(0, 'Tag','zmap_curr_cat_editbutton');
     h.Enable = val;
 end
+
 function update_current_catalog_pane(~,~)
     global ZG
     
@@ -328,18 +334,21 @@ function update_current_catalog_pane(~,~)
             h = findall(0,'tag','zmap_curr_cat_summary');
             h.String = 'No catalog loaded';
             set_mapbutton_enable('off');
+            set_timeseriesbutton_enable('off');
             set_editbutton_enable('off');
             return
         end
         h = findall(0,'tag','zmap_curr_cat_summary');
         h.String = mycat.summary('simple');
         set_mapbutton_enable('on');
+        set_timeseriesbutton_enable('on');
         set_editbutton_enable('on');
         return
     else
         h = findall(0,'tag','zmap_curr_cat_summary');
         h.String = 'No catalog loaded';
         set_mapbutton_enable('off');
+        set_timeseriesbutton_enable('off');
         set_editbutton_enable('off');
     end
 end

@@ -106,4 +106,4 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
 % Call program "timeplot to plot cumulative number
 clear l s is
-timeplot(newt2)
+timeplot(ZG.newt2)

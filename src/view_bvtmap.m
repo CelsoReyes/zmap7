@@ -208,10 +208,10 @@ txt1 = text(...
 
 %RZ make  reset button
 %    uicontrol('Units','normal','Position',...
-%  [.85 .10 .15 .05],'String','Reset Catalog', 'Callback','think;clear plos1 mark1 conca ; ZG.a=storedcat; ZG.newcat=storedcat; ZG.newt2=storedcat; stri = ['' '']; stri1 = ['' '']');
+%  [.85 .10 .15 .05],'String','Reset Catalog', 'Callback','think;clear plos1 mark1 conca ; replaceMainCatalog(storedcat); ZG.newcat=storedcat; ZG.newt2=storedcat; stri = ['' '']; stri1 = ['' '']');
 
 %resets catalog  (useful for the random b map)
-%clear plos1 mark1 conca ; ZG.a=storedcat; ZG.newcat=storedcat; ZG.newt2=storedcat; stri = ['' '']; stri1 = ['' ''];
+%clear plos1 mark1 conca ; replaceMainCatalog(storedcat); ZG.newcat=storedcat; ZG.newt2=storedcat; stri = ['' '']; stri1 = ['' ''];
 
 % Make the figure visible
 %

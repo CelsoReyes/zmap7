@@ -616,7 +616,7 @@ function Fetch_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % assemble the actual query
 % TODO: do this
-global a
+ZG=ZmapGlobal.Data;
 if (handles.data_provider.Value == 1)
     % no datacenter has been chosen
     beep;
@@ -648,10 +648,13 @@ end
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
     think('Importing FDSN data','Importing FDSN data from the web. This might take a minute');
-    ZG.a=import_fdsn_event(1, queryset{:});
-    if ~isa(a,'ZmapCatalog')
-        ZG.a=ZmapCatalog(a);
+    tmp=import_fdsn_event(1, queryset{:});
+    if ~isa(tmp,'ZmapCatalog')
+        ZG.a=ZmapCatalog(tmp);
+    else
+        ZG.a=tmp;
     end
+    clear tmp
     h=zmap_message_center();
     h.update_catalog()%;
     update(mainmap());

@@ -354,7 +354,7 @@ classdef MainInteractiveMap
                 'Callback','ZG.a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
             
             uimenu(submenu,'Label','Edit Ranges...',...
-                'Callback','global ZG; ZG.a=catalog_overview(ZG.a);update(mainmap())');
+                'Callback','global ZG; replaceMainCatalog(catalog_overview(ZG.a));update(mainmap())');
             
             uimenu(submenu,'Label','Rename...',...
                 'Callback','global ZG; nm=inputdlg(''Catalog Name:'',''Rename'',1,{ZG.a.Name});if ~isempty(nm),ZG.a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
@@ -551,15 +551,15 @@ classdef MainInteractiveMap
             submenu = uimenu(parent,'Label','Histograms');
             
             uimenu(submenu,'Label','Magnitude',...
-                'Callback','global histo;hisgra(ZG.a.Magnitude,''Magnitude '');');
+                'Callback','global histo;hisgra(ZG.a.Magnitude,''Magnitude '',ZG.a.Name);');
             uimenu(submenu,'Label','Depth',...
-                'Callback','global histo;hisgra(ZG.a.Depth,''Depth '');');
+                'Callback','global histo;hisgra(ZG.a.Depth,''Depth '',ZG.a.Name);');
             uimenu(submenu,'Label','Time',...
-                'Callback','global histo;hisgra(ZG.a.Date,''Time '');');
+                'Callback','global histo;hisgra(ZG.a.Date,''Time '',ZG.a.Name);');
             uimenu(submenu,'Label','Hr of the day',...
-                'Callback','global histo;hisgra(ZG.a.Date.Hour,''Hr '');');
+                'Callback','global histo;hisgra(ZG.a.Date.Hour,''Hr '',ZG.a.Name);');
             % uimenu(submenu,'Label','Stress tensor quality',...
-            %    'Callback','global histo;hisgra(a(:,13),''Quality '');');
+            %    'Callback','global histo;hisgra(a(:,13),''Quality '', ZG.a.Name);');
         end
         function create_decluster_menu(obj,parent)
             submenu = uimenu(parent,'Label','Decluster the catalog');

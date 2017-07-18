@@ -67,7 +67,7 @@ grid
 xlabel('z-value','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m) %what is lab1, at the moment just print 'z-value'
 ylabel('Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
-%title2([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it)],'FontSize',ZmapGlobal.Data.fontsz.s,...
+%title([name ' (' in '); ' num2str(t0b) ' to ' num2str(teb) ' - cut at ' num2str(it)],'FontSize',ZmapGlobal.Data.fontsz.s,...
 %'Color','r','FontWeight','normal')
 
 

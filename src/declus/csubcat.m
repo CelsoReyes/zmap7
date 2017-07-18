@@ -12,10 +12,10 @@ zmap_message_center.set_info('Message','Plotting Seismicity Map(Cluster) ....');
 storedcat=original;
 %set catalog to the original catalog used at declustering
 if isempty(newccat)
-    ZG.a=original;
+    replaceMainCatalog(original);
     newccat=original;
 else
-    ZG.a=newccat;
+    replaceMainCatalog(newccat);
 end
 
 % For time and magnitude cut window
@@ -45,7 +45,7 @@ if newMapWindowFlag
 
 
     %  call supplementary program to make menus at the top of the plot
-    matdraw
+    % matdraw
 
     %
     % show buttons  for various analyses programs:
@@ -90,11 +90,11 @@ if newMapWindowFlag
     cufi = gcf;
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Cluster Window Values',...
-        'Callback','selclus(1);csubcat;');
+        'Callback','ZG.newccat=selclus(''cur_cluster'',ZG.newccat);csubcat;');
     uimenu(options,'Label','Expanded Cluster Values ',...
-        'Callback','selclus(2);csubcat;');
+        'Callback','ZG.newccat=selclus(''expanded_cluster'',ZG.newccat);csubcat;');
     uimenu(options,'Label','Select new parameters',...
-        'Callback','cpara(1);');
+        'Callback','ZG.newccat=cpara(''interactive'',ZG.newccat);');
     uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
         'Callback','h1 = gca;ZG.newt2 = a; stri = ''Polygon'';decc=0;clkeysel');
 
@@ -109,7 +109,7 @@ if newMapWindowFlag
         'Callback','delete(gca);delete(gca);delete(gca);delete(gca);csubcat');
 
     uimenu(op2,'Label','Reset Catalog ',...
-        'Callback','think;clear plos1 mark1 ; ZG.a=original; newccat = original; ZG.newt2= original;csubcat');
+        'Callback','think;clear plos1 mark1 ; replaceMainCatalog(original); newccat = original; ZG.newt2= original;csubcat');
     uimenu(op2,'label','Declustered catalog',...
          'Callback','newccat=buildcat(2);csubcat');
     catSave =...
@@ -226,7 +226,7 @@ axis([ s2 s1 s4 s3])
 xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];
-title2(strib,'FontWeight','bold',...
+title(strib,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 %make depth legend
@@ -249,10 +249,7 @@ overlay_
 % Make the figure visible
 %
 figure_w_normalized_uicontrolunits(mapp);
-%si = signatur('ZMAP','',[0.02 0.04]);
-%set(si,'Color','k','FontWeight','bold')
 axes(h1);
 watchoff(mapp)
 set(mapp,'Visible','on');
 done
-zmap_message_center.set_info('Message','   ');

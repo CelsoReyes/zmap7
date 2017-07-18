@@ -9,7 +9,7 @@ disp('and all blanks have been substituted by zeros')
 % Lets make sure the file is closed...
 safe_fclose(fid);
 % reset paramteres
-ZG.a = []; b = []; n = 0;
+replaceMainCatalog([]); b = []; n = 0;
 
 if inda == 1
     % initial selection option

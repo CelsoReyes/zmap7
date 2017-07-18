@@ -145,7 +145,7 @@ axis('equal')
 overlay_
 set(gca,'aspectratio',[0.827 1])
 axis([ s2 s1 s4 s3])
-title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
+title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
     'Color','k','FontWeight','normal');
 mygca = gca;
 xlabel('Longitude ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)

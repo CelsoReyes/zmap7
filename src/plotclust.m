@@ -70,7 +70,7 @@ axis([s2 s1 s4 s3])
 xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Clusters in   '  name '; '  num2str(t0b,5) ' to ' num2str(teb,5) ];
-title2(strib,'FontWeight','bold',...
+title(strib,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 ga = gca;

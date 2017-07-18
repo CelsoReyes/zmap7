@@ -46,9 +46,9 @@ function cluoverl(var1)
     elseif var1==7                  %plot clusters and faults for the first time
         set(clus_button,'Value',1)
         if isempty(newclcat);
-            ZG.a=cluscat;
+            replaceMainCatalog(cluscat);
         else
-            ZG.a=newclcat;
+            replaceMainCatalog(newclcat);
         end
         cla
         set(gca,'Visible','off')
@@ -99,7 +99,7 @@ function cluoverl(var1)
         ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         if isempty(backequi)
             strib = [  ' Map of   '  file1 ];
-            %ti2 =  title2(strib,'FontWeight','bold',...
+            %ti2 =  title(strib,'FontWeight','bold',...
             %             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         else
             delete ti2;
@@ -131,7 +131,7 @@ function cluoverl(var1)
         % Make the figure visible
         %
     elseif var1==8
-        ZG.a=ttcat;
+        replaceMainCatalog(ttcat);
         cla
         set(gca,'visible','off')
         hold off

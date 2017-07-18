@@ -190,7 +190,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         end
         
         
-        ZG.a=buildcat(1);        %new catalog for main program
+        replaceMainCatalog(buildcat(1));        %new catalog for main program
         original=ZG.newcat;       %save ZG.newcat in variable original
         ZG.newcat=ZG.a;
         storedcat=original;

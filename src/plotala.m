@@ -162,7 +162,7 @@ end
 
 axis([ s2-0.1 s1+0.1 s4-0.1 s3+0.1 t0b teb+1  ])
 strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(iwl2,3) '; Zcut = ' num2str(tre2,3)  ];
-title2(strib4,'FontWeight','bold',...
+title(strib4,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
 

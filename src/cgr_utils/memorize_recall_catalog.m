@@ -21,7 +21,7 @@ function memorize_recall_catalog()
             ZG.memorized_catalogs = a;
             msgbox(['Catalog ' ZG.a.Name ' has been Memorized.    '],'Memorize Catalog');
         case 'Recall'
-            ZG.a=ZG.memorized_catalogs;
+            replaceMainCatalog(ZG.memorized_catalogs);
             msgbox(['Catalog ' ZG.a.Name ' has been Recalled.     '],'Recall Catalog');
             think;
             ZG.newcat = ZG.memorized_catalogs; 

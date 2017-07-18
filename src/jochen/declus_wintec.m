@@ -19,7 +19,7 @@ mCluster = mCatalog.subset(vSel);
 [vMags, vClusTime, vDist]= plot_cluscomp(vMain, vCluster, mCatalog, nMethod);
 
 %%% Plot seismicity map, clusters and mainshocks
-ZG.a = mCatDecluster;
+replaceMainCatalog(mCatDecluster);
 update(mainmap());
 plot(mCluster(:,1),mCluster(:,2),'m+');
 

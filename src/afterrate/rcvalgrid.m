@@ -36,10 +36,10 @@ if sel == 'in'
     % cat at selecte magnitude threshold
     l = ZG.a.Magnitude < valm1;
     a(l,:) = [];
-    ZG.newt2 = a;
+    ZG.newt2 = ZG.a;
 
     ZG.hold_state2=true;
-    timeplot(newt2)
+    timeplot(ZG.newt2)
     ZG.hold_state2=false;
 
 

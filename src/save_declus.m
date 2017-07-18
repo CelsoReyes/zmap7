@@ -50,7 +50,7 @@ da=  str2double(dat(:,7:8));
 hr=  str2double(dat(:,9:10));
 mi=  str2double(dat(:,11:12));
 
-ZG.a = [lon lat ZG.a.Date mo da mag storedcat.Depth hr mi clu];
+replaceMainCatalog([lon lat ZG.a.Date mo da mag storedcat.Depth hr mi clu]);
 
 cluslength=[];
 n=0;

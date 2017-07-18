@@ -326,7 +326,7 @@ if sel == 'ca'
         end % End If on tgl1
 
         %Set catalog after selection
-        newt2 = b;
+        ZG.newt2 = b;
         % Number of events per gridnode
         [nY,nX]=size(b);
 

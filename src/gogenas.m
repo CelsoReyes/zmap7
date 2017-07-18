@@ -115,7 +115,7 @@ S = sprintf('                 FINISHED!', i);
 disp(S);
 %close(wai);
 stri = [  ' GenAS - ' file1];
-title2(stri,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+title(stri,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 
 set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Ticklength',[0.02 0.02],'LineWidth',1.0,...
@@ -169,7 +169,7 @@ set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
     'Box','on','SortMethod','childorder','TickDir','out')
 
 stri = [  ' GenAS - ' file1];
-title2(stri,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal')
+title(stri,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal')
 set(gca,'Ytick',ytick,'Yticklabels',ytlabls)
 p1 = gca;
 rect = [0.50 0.15 0.35 0.7];

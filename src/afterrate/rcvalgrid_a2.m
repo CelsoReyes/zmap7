@@ -40,7 +40,7 @@ if sel == 'in'
     ZG.newt2 = a;
 
     ZG.hold_state2=true;
-    timeplot(newt2)
+    timeplot(ZG.newt2)
     ZG.hold_state2=false;
 
 

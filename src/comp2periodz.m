@@ -297,7 +297,7 @@ if sel == 'ca'
     det =  'ast'; sha = 'in';
     % View the b-value map
     storedcat=a;
-    ZG.a=aa;
+    replaceMainCatalog(aa);
     view_ratecomp
 
 end   % if sel = ca

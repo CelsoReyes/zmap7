@@ -1,10 +1,10 @@
 fn=dir('*.m');
 fn={fn.name};
-ZG.a=checkcode(fn);
+A=checkcode(fn);
 z=struct('message',''); 
-for n=1:numel(a)
-    for m=1:numel(a{n})
-        z(end+1).message=a{n}(m).message;
+for n=1:numel(A)
+    for m=1:numel(A{n})
+        z(end+1).message=A{n}(m).message;
     end
 end
 zc={z.message};

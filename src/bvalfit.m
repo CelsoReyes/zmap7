@@ -100,7 +100,7 @@ if ic == 0
 
     te1 = max([bvalsum  bvalsum2 bvalsum4 bvalsum3]);
     te1 = te1 - 0.2*te1;
-    title2([file1 '   o: ' num2str(t1p(1)) ' - ' num2str(t2p(1)) '     x: ' num2str(t3p(1)) ' - '  num2str(t4p(1)) ],'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
+    title([file1 '   o: ' num2str(t1p(1)) ' - ' num2str(t2p(1)) '     x: ' num2str(t3p(1)) ' - '  num2str(t4p(1)) ],'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
 
     xlabel('Magnitude','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')
     ylabel('Cum. Number -normalized','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold')

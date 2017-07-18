@@ -134,7 +134,7 @@ if newCumWindowFlag
 
     uicontrol('Units','normal','Position',[.9 .10 .1 .05],'String','Back', 'Callback','ZG.newcat = ZG.newcat; ZG.newt2 = ZG.newcat; stri = ['' '']; stri1 = ['' '']; ctimeplot')
 
-    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as ZG.newcat', 'Callback','ZG.newcat = ZG.newt2 ;ZG.a=ZG.newt2;csubcata')
+    uicontrol(,'Units','normal','Position',[.65 .01 .3 .07],'String','Keep as ZG.newcat', 'Callback','ZG.newcat = ZG.newt2 ;replaceMainCatalog(ZG.newt2);csubcata')
 
 
 end
@@ -280,7 +280,7 @@ end %% if stri
 
 strib = [name];
 
-title2(strib,'FontWeight','bold',...
+title(strib,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.l,...
     'Color','k')
 

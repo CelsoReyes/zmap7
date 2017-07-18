@@ -50,7 +50,7 @@ function plotmima(var1)
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     strib = [  'Misfit Map '];
-    title2(strib,'FontWeight','bold',...
+    title(strib,'FontWeight','bold',...
         'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
     set(gca,'Color',color_bg);

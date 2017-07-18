@@ -87,8 +87,8 @@ if newbmapWindowFlag
 
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_qva')
-    uimenu(options,'Label','Select EQ in Circle', 'Callback','h1 = gca;circle;watchoff(qmap);global histo;hisgra(ZG.newt2.Date.Hour,''Hr '');')
-    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' stri = ''Polygon'';h1 = gca;cufi = gcf;selectp; global histo;hisgra(ZG.newt2.Date.Hour,''Hr '');')
+    uimenu(options,'Label','Select EQ in Circle', 'Callback','h1 = gca;circle;watchoff(qmap);global histo;hisgra(ZG.newt2.Date.Hour,''Hr '',ZG.newt2.Name);')
+    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' stri = ''Polygon'';h1 = gca;cufi = gcf;selectp; global histo;hisgra(ZG.newt2.Date.Hour,''Hr '',ZG.newt2.Name);')
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','day/night value map',...
@@ -180,7 +180,7 @@ if fre == 1
 end
 
 
-title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
+title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
     'Color','r','FontWeight','bold')
 
 xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)

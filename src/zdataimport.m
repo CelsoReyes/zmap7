@@ -17,7 +17,7 @@ if isnan(a)
     return
 end
 if isnumeric(a)
-    ZG.a=ZmapCatalog(a);
+    replaceMainCatalog(ZmapCatalog(a));
     ZG.a.sort('Date');
 end
 disp(['Catalog loaded with ' num2str(ZG.a.Count) ' events ']);

@@ -12,14 +12,14 @@ IM= 1;%starting magnitude (hypothetical Mc)
 inc = 0.1 ;%magnitude increment
 define = {num2str(TN),num2str(B),num2str(IM),num2str(inc)};
 
-title2 ='Synthetic Catalog';
+title ='Synthetic Catalog';
 prompt={
     'total number of events',...
     'b-value',...
     'hypothetical Mc',...
     'increment along magnitude axis',...
     };
-qq = inputdlg(prompt,title2,1,define);
+qq = inputdlg(prompt,title,1,define);
 l = qq{1}; TN= str2double(l);
 l = qq{2}; B= str2double(l);
 l = qq{3}; IM= str2double(l);
@@ -234,12 +234,12 @@ end
 [ttt,indt]=sortrows(syn,3);
 synt=ttt;
 aa=a;
-ZG.a=synt;
+replaceMainCatalog(synt);
 file = ['synt.mat'];
 do = [' save ' file  ' a' ];
 eval(do);
 helpdlg('Sythetic catalogs was saved in file synth.mat')
-ZG.a=aa ;
+replaceMainCatalog(aa) ;
 done
 watchoff
 

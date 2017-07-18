@@ -6,16 +6,16 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject2(cat,RateGrid,CX,P,A,Mm
 %of smoothed directly from the catalog.  See the companion MakeRateGrid.m
 %program also in this directory.
 
-%This program starts with a real earthquake catalog and then
-%projects what seismicity will follow further in time.  This is a Monte
+%This program starts with A real earthquake catalog and then
+%projects what seismicity will follow further in time.  This is A Monte
 %Carlo modeler -- ideally it should be run multiple times to get average
-%results and error.  It also has a background component.  The background
+%results and error.  It also has A background component.  The background
 %component is set by BckgrndR -- this gives the number of earthquakes that
 %you want each year as
 %background earthquakes.  The background earthquakes will have an r^1.37
 %distribution in one dimension distribution away from hypocenters in the
 %input catalog which are identified as being background earthquakes
-%themselves (e.g. not wihtin one fault length and 10 years of a bigger
+%themselves (e.g. not wihtin one fault length and 10 years of A bigger
 %earthquake).
 
 %Earthquakes that are smaller than magb are treated as point sources;
@@ -26,21 +26,21 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject2(cat,RateGrid,CX,P,A,Mm
 %mainshocks.  Where the mainshocks are too small for their focal mechanism
 %to be listed we use 75% 332 degree strike aqnd 25% 242 degree strike,
 %based on approximate assesement of trends in the Southern California
-%catalog, with a 90 degree dip.
+%catalog, with A 90 degree dip.
 
 %Input:
 
 % cat: Real eartquake catalog.  If the earthquake is classified as an
-%aftershock, there should be a non-zero value in column 12.  Otherwise this
+%aftershock, there should be A non-zero value in column 12.  Otherwise this
 %column should contain all zeros.  Aftershock status can be calculated and
 %placed in Column 12 by the code GetAftFullParam.m
 
 %RateGrid: Background rate, spatially varying.  minlon,maxlon, minlat,
 %maxlat, earthquake rate of M>=4.
 
-%CX, P, A: Omori's law parameters, c, p, and a  They should be entered
-%as direct triggering parameters, with a recommended p = 1.37.  The value
-%of a should be appropriate for the rate of a mainshock of magnitude M
+%CX, P, A: Omori's law parameters, c, p, and A  They should be entered
+%as direct triggering parameters, with A recommended p = 1.37.  The value
+%of A should be appropriate for the rate of A mainshock of magnitude M
 %triggering aftershocks of magnitude >=M.  For Mmin = 2.5, we recommend CX = 0.095, P = 1.34, and
 %A = 0.008. (from Felzer and Kilb, in preparation, 2007).
 
@@ -48,7 +48,7 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject2(cat,RateGrid,CX,P,A,Mm
 % MminR: Minimum earthquake magnitude for reporting in the output catalog
 % maxm: Maximum earthquake magnitude
 % DMax: Maximum distance for aftershocks
-% EndDate: Last date for the simulated catalog, to be entered as a string
+% EndDate: Last date for the simulated catalog, to be entered as A string
 %StartDate; First date for the projected catalog
 % (e.g. 'January 1, 2007').  The simulated catalog will begin immediately
 % after the last date in the input catalog cat.
@@ -75,7 +75,7 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject2(cat,RateGrid,CX,P,A,Mm
 
 %NOTE: At the present time no background rate is added into the catalog,
 %which means that the initial input cat should be as long as possible.
-%After testing forecast vs. real catalogs, a suitable background rate
+%After testing forecast vs. real catalogs, A suitable background rate
 %option may be added in.  For now all of the background rate code from
 %TotalAftSim7.m is simply commented out.
 
@@ -126,14 +126,14 @@ end
 
 %Eliminating earthquakes below the cutoff magnitude
 
-ZG.a = find(cat(:,10)<Mmin);
+A = find(cat(:,10)<Mmin);
 
-cat(a,:) = [];
+cat(A,:) = [];
 
 %NM = (0.002/-0.37)*(T^-0.37 - 0.0033^-0.37);
 
 %Setting up rotation matrices for later so that simulated M>magb mainshocks will have
-%either 332 degree strike or 242 degree strike.  Based on a quick eye
+%either 332 degree strike or 242 degree strike.  Based on A quick eye
 %assessment of the So Cal fault map, 75% of mainshocks will be assigned the
 %332 strike and 25% the 242 strike.
 
@@ -151,10 +151,10 @@ m = cat(:,10);
 
 %eliminating catalog earthquakes that are past the start of the projection
 
-ZG.a = find(tdist>=T2);
-cat(a,:) = [];
-tdist(a) = [];
-m(a) = [];
+A = find(tdist>=T2);
+cat(A,:) = [];
+tdist(A) = [];
+m(A) = [];
 
 
 %And changing the lat, lon to xy
@@ -190,7 +190,7 @@ for j=1:length(Mx)
     %setting all of the depths at 10 km -- especially for the older
     %earthquakes the depths are unreliable.
 
-    if(length(aftx)>20)  %We probably have a decent aftershock sequence and aren't being dominated by background
+    if(length(aftx)>20)  %We probably have A decent aftershock sequence and aren't being dominated by background
         LocsM(j,:) = [median(Locs(aftx,1)) median(Locs(aftx,2)) 10];
     else
        LocsM(j,:) = Locs(Mx(j),:);
@@ -302,10 +302,10 @@ end
 %tracker = tracker(useC);
 
 %And doing some clean up
-ZG.a = find(r>=Px(end));
-tracker(a) = length(Px);
-ZG.a = find(r<Px(1));
-tracker(a) = 1;
+A = find(r>=Px(end));
+tracker(A) = length(Px);
+A = find(r<Px(1));
+tracker(A) = 1;
 
 %And moving on
 
@@ -352,7 +352,7 @@ FaultParam = [FaultParam; FaultParamB];
 
 
 %And initiating ID, history, and fault distance tracking matrices, and
-%putting magnitudes in a vector
+%putting magnitudes in A vector
 
 ID = [1:1:length(tdist)];
 
@@ -419,23 +419,23 @@ maxID = max(ID);
 
 countAll = length(tdistAll)+1;
 
-ZG.a = find(m>=Mmin & tdist<=T3);
+A = find(m>=Mmin & tdist<=T3);
 
 NIttr = 0;
 
 
-while(~isempty(a))
+while(~isempty(A))
 
 
-    IDold = ID(a);
+    IDold = ID(A);
 
     %Running the small point source and larger extended source earthquakes
     %separtely, through different versions of the aftershock program.
     %First, the small point source earthquakes
 
-    a2 = find(m(a)<magb);
+    a2 = find(m(A)<magb);
 
-    a2 = a(a2);
+    a2 = A(a2);
 
     tdistSave = tdist;
     IDSave = ID;
@@ -449,9 +449,9 @@ while(~isempty(a))
 
     %And then doing the larger, plane source earthquakes
 
-    a3 = find(mSave(a)>=magb);
+    a3 = find(mSave(A)>=magb);
 
-    a3 = a(a3);
+    a3 = A(a3);
 
     if(~isempty(a3))
 
@@ -487,12 +487,12 @@ while(~isempty(a))
     maxID = max([maxID max(ID)]);
 
 
-    a = find(tdist>T2 & tdist<=T3);
+    A = find(tdist>T2 & tdist<=T3);
 
 
-    aa2 = find(m(a)>=MminR);  %we only report earthquakes in the final catalog for m>=MminR
+    aa2 = find(m(A)>=MminR);  %we only report earthquakes in the final catalog for m>=MminR
 
-    aa2 = a(aa2);
+    aa2 = A(aa2);
 
 
     if(~isempty(aa2))
@@ -517,8 +517,8 @@ while(~isempty(a))
     N = N + length(aa2);
 
 
-    if(max(m(a))>Mmax)
-        Mmax = max(m(a));
+    if(max(m(A))>Mmax)
+        Mmax = max(m(A));
     end
 
 
@@ -530,7 +530,7 @@ while(~isempty(a))
 end
 
 
-%And translating the results into a traditional earthquake catalog
+%And translating the results into A traditional earthquake catalog
 
 tdays = datenum(StartDate) + tdistAll;
 
@@ -571,7 +571,7 @@ x = find(A>0);
 tnew2 = [];
 
 
-%Making a vector with all of the mainshock times and locations
+%Making A vector with all of the mainshock times and locations
 
 %counter = 1;
 
@@ -640,13 +640,13 @@ AddDist = [lx' ly' lz'];
     AX = sum(A);
 
     %Now getting distances of all of the aftershocks from the faults
-    %Allowing a closest approach of 1 m.
+    %Allowing A closest approach of 1 m.
 
     dnew = GPowDistR(1.37,AX,0.001,DMax);
 
     FaultDist = dnew;
 
-    %Converting the distances into x, y using a random theta.
+    %Converting the distances into x, y using A random theta.
     %Although not completely accutate, to save computation time
     %just keeping z the same as the generating point on the fault
     %so that we don't need to worry about staying within seismogenic
@@ -735,7 +735,7 @@ tnew2 = [];
 %And setting up the fault plane
 
 
-%And for each aftershock that will be produced, picking a random reference
+%And for each aftershock that will be produced, picking A random reference
 %point on the mainshock fault that the distance of the aftershock from the
 %fault will be measured from.
 
@@ -774,7 +774,7 @@ end
 
 lambda2 = [cos(z2) sin(z2); -sin(z2) cos(z2)];
 
-%And rotating.  Fist going to a 0 degree strike, and then to a 90 degree
+%And rotating.  Fist going to A 0 degree strike, and then to A 90 degree
 %dip.
  rot = lambda1*[rpx rpy]';
 
@@ -812,13 +812,13 @@ if(~isempty(x))
     AX = sum(A);
 
     %Now getting distances of all of the aftershocks from the faults
-    %Allowing a closest approach of 1 m.
+    %Allowing A closest approach of 1 m.
 
     dnew = GPowDistR(1.37,AX,0.001,DMax);
 
     FaultDist = dnew;
 
-    %Converting the distances into x, y using a random theta.
+    %Converting the distances into x, y using A random theta.
     %Although not completely accurate, to save computation time
     %just keeping z the same as the generating point on the fault
     %so that we don't need to worry about staying within seismogenic
@@ -844,7 +844,7 @@ end
 %Now generating the aftershock times
 
 
-%Making a vector with all of the mainshock times
+%Making A vector with all of the mainshock times
 
 counter = 1;
 
@@ -928,7 +928,7 @@ for(k=1:length(m));
 
         [FaultY,FaultZ] = WellsCopper(m(k),1);
 
-%Placing the hypocenter of each mainshock at a random point on the fault
+%Placing the hypocenter of each mainshock at A random point on the fault
 %plane, and then determining the y, z limits of the fault plane.
 
         posY = rand(length(FaultY),1).*FaultY;

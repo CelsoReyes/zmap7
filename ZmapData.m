@@ -27,10 +27,15 @@ classdef ZmapData < handle
         a %
         newcat
         newt2
-        %catalog % overall catalog of earthquakes
         catalog_working
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.
+        
+        %cluster catalogs 
+        newccat % apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat  %  some sort of clustered catalog? selclust
+        cluscat %  some sort of clustered catalog? selclust
+        newclcat %   some sort of clustered catalog? selclust
         
         %{
         % layers

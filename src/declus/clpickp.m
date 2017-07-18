@@ -14,7 +14,7 @@ function clpickp(but)
     global dep1 dep2 dep3 ty1 ty2 ty3 name
     global color_bg
     global backbgevent original plot1_h plot2_h clust file1
-    global ttcat tt1cat foresh aftersh mainsh clsel sys decc newccat
+    global ttcat tt1cat foresh aftersh mainsh clsel sys decc
 ZG=ZmapGlobal.Data;
     if decc~=0
         if isempty(ttcat)
@@ -104,12 +104,12 @@ ZG=ZmapGlobal.Data;
         disp('Data is being processed - please wait...  ')
         if decc~=0
             if isempty(ttcat)
-                ZG.a=equi;
+                replaceMainCatalog(equi);
             else
-                ZG.a=ttcat;
+                replaceMainCatalog(ttcat);
             end
         elseif decc==0
-            ZG.a=newccat;
+            replaceMainCatalog(ZG.newccat);
         end
         x = [x ; x(1)];
         y = [y ; y(1)];      %  closes polygon
@@ -136,7 +136,7 @@ ZG=ZmapGlobal.Data;
                 equi = ZG.a.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
-            newccat=newccat.subset(ll);
+            ZG.newccat=ZG.newccat.subset(ll);
         end
         polcordinates = [x y ];
         save polcordinates.mat polcordinates
@@ -162,7 +162,7 @@ ZG=ZmapGlobal.Data;
         end
         strib=[' Polygon of  ' file1];
         hold on
-        title2(strib,'FontWeight','bold',...
+        title(strib,'FontWeight','bold',...
             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         if decc~=0
             if isempty(ttcat)

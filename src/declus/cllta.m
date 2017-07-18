@@ -8,7 +8,7 @@ function cllta(var1)
     global ttcat par1 xt cumu cumu2 pyy
     global file1 freq_field freq_slider iwl3 par5
     ZG=ZmapGlobal.Data;
-    ZG.a=ZG.newt2;
+    replaceMainCatalog(ZG.newt2);
 
     % initial values
     %

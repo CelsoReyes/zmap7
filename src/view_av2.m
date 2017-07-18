@@ -157,7 +157,7 @@ if fre == 1
     caxis([fix1 fix2])
 end
 
-title2([name ';  '   num2str(t0b,4) ' to ' num2str(teb,4) ],'FontSize',ZmapGlobal.Data.fontsz.m,...
+title([name ';  '   num2str(t0b,4) ' to ' num2str(teb,4) ],'FontSize',ZmapGlobal.Data.fontsz.m,...
     'Color','w','FontWeight','bold')
 
 xlabel('Distance [km]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)

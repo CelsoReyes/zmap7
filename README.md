@@ -7,7 +7,7 @@ Currently this is an internal only developer release. I will add more details wh
 
 ### UI Controls not showing up
 For `uicontrol` items, the `units` must be set to `normalized` prior to setting the `Position`, otherwise they will not show.  ex. `working_dir_in`
-My solution, to avoid fixing 1000's of individual callbacks: set the system's defaultuicontrolunits to 'normalized'
+My solution, to avoid fixing 1000's of individual callbacks: set the system's defaultuicontrolunits to 'normalized'.
 
 `set(0,'defaultuicontrolunits','normalized')`
 

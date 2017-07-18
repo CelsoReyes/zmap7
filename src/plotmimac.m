@@ -87,7 +87,7 @@ end
 xlabel('Distance [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Depth [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  'Misfit '];
-title2(strib,'FontWeight','bold',...
+title(strib,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
  set(gca,'Color',color_bg);

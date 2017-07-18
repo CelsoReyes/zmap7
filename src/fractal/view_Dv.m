@@ -159,7 +159,7 @@ if fre == 1
     caxis([fix1 fix2])
 end
 
-title2([name],'FontSize',12,...
+title([name],'FontSize',12,...
     'Color','w','FontWeight','bold')
 %num2str(t0b,4) ' to ' num2str(teb,4)
 xlabel('Distance in [km]','FontWeight','bold','FontSize',12)
