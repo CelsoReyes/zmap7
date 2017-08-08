@@ -1,16 +1,18 @@
+function view_bpva(gridstats)
 % This .m file, "view_bpva.m", plots the b and p values calculated
 % with bpvalgrid.m or other similar values as a color map.
 % needs re3, gx, gy, stri
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
-    name = '  '
+
+%TODO fix this, it broke when turned into a function. 
+
+if isempty(name)
+    name = '  ';
 end
 think
 report_this_filefun(mfilename('fullpath'));
-%co = 'w';
-
 
 
 % This is the info window text
@@ -64,10 +66,10 @@ hlpStr2zmap= ...
 newbpmapWindowFlag=~existFlag;
 
 if newbpmapWindowFlag
-    oldfig_button = 0
+    oldfig_button = false;
 end
 
-if oldfig_button == 0
+if oldfig_button == false
     bpmap = figure_w_normalized_uicontrolunits( ...
         'Name','bp-value-map',...
         'NumberTitle','off', ...
@@ -109,42 +111,42 @@ if oldfig_button == 0
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_bpva ')
+         'Callback','asel = ''mag''; adju2; view_bpva(gridstats) ')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_bpva')
+         'Callback','asel = ''rmax''; adju2; view_bpva(gridstats)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_bpva ')
+         'Callback','asel = ''gofi''; adju2; view_bpva(gridstats) ')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_bpva ')
+         'Callback','asel = ''pstdc''; adju2; view_bpva(gridstats) ')
 
 
     uimenu(op1,'Label','b-value map (WLS)',...
-         'Callback','lab1 =''b-value''; re3 = old; view_bpva')
+         'Callback','lab1 =''b-value''; re3 = old; view_bpva(gridstats)')
     uimenu(op1,'Label','b(max likelihood) map',...
-         'Callback','lab1=''b-value''; re3 = meg; view_bpva')
+         'Callback','lab1=''b-value''; re3 = meg; view_bpva(gridstats)')
     uimenu(op1,'Label','Mag of completness map',...
-         'Callback','lab1 = ''Mcomp''; re3 = old1; view_bpva')
+         'Callback','lab1 = ''Mcomp''; re3 = old1; view_bpva(gridstats)')
     uimenu(op1,'Label','max magnitude map',...
-         'Callback',' lab1=''Mmax'';re3 = maxm; view_bpva')
+         'Callback',' lab1=''Mmax'';re3 = maxm; view_bpva(gridstats)')
     uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bpva')
+         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bpva(gridstats)')
 
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = pvalg; view_bpva')
+         'Callback',' lab1=''p-value'';re3 = pvalg; view_bpva(gridstats)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = pvstd; view_bpva')
+         'Callback',' lab1=''p-valstd'';re3 = pvstd; view_bpva(gridstats)')
 
     uimenu(op1,'Label','a-value map',...
-         'Callback','lab1=''a-value'';re3 = avm; view_bpva')
+         'Callback','lab1=''a-value'';re3 = avm; view_bpva(gridstats)')
     uimenu(op1,'Label','Standard error map',...
-         'Callback',' lab1=''Error in b'';re3 = pro; view_bpva')
+         'Callback',' lab1=''Error in b'';re3 = pro; view_bpva(gridstats)')
     uimenu(op1,'Label','(WLS-Max like) map',...
-         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bpva')
+         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bpva(gridstats)')
 
     uimenu(op1,'Label','Resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = rama; view_bpva')
+         'Callback','lab1=''Radius in [km]'';re3 = rama; view_bpva(gridstats)')
     uimenu(op1,'Label','c map',...
-         'Callback','lab1=''c in days'';re3 = cmap2; view_bpva')
+         'Callback','lab1=''c in days'';re3 = cmap2; view_bpva(gridstats)')
 
     uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
@@ -152,7 +154,7 @@ if oldfig_button == 0
 
     %re3 = pvalg;
     tresh = nan; re4 = re3;
-    oldfig_button = 1;
+    oldfig_button = true;
 
     colormap(jet)
     tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
@@ -165,7 +167,8 @@ figure_w_normalized_uicontrolunits(bpmap)
 delete(gca)
 delete(gca)
 delete(gca)
-dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+dele = 'delete(sizmap)';er = 'disp('' '')'; 
+eval(dele,er);
 reset(gca)
 cla
 hold off
@@ -260,12 +263,9 @@ axes('position',rect)
 axis('off')
 %  Text Object Creation
 txt1 = text(...
-    'Color',[ 0 0 0 ],...
-    'EraseMode','normal',...
     'Units','normalized',...
     'Position',[ 0.33 0.06 0 ],...
     'HorizontalAlignment','right',...
-    'Rotation',[ 0 ],...
     'FontSize',ZmapGlobal.Data.fontsz.s,....
     'FontWeight','bold',...
     'String',lab1);
@@ -276,9 +276,7 @@ set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
     'FontWeight','bold','LineWidth',1.5,...
     'Box','on','TickDir','out')
 figure_w_normalized_uicontrolunits(bpmap);
-%sizmap = signatur('ZMAP','',[0.01 0.04]);
-%set(sizmap,'Color','k')
 axes(h1)
 watchoff(bpmap)
-%whitebg(gcf,[ 0 0 0 ])
 done
+end

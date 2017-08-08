@@ -10,8 +10,7 @@
 %   It can be any other
 %   number greater or equal than 502 instead of 510. The reason for this
 %   command is that the routine for determining the parameters in the
-%   Omori formula, ploop2.m
-%   or ploop3.m or ploop31.m, works by recursion and the default of
+%   Omori formula, ploop_c_and_p_calcs.m, works by recursion and the default of
 %   Matlab has a maximum of 500 recursive calls.
 %3. The file opened for analysis should contain the mainshock. Please
 %   be sure to open the "Cumulative Number Window" at least ones before
@@ -45,8 +44,7 @@
 %   - src/view_bpvs.m - plots map of b, p, Mc values, computed before with
 %     pcrossnew.m.
 %   - src/declus/mypval2m.m - interface between the programmes pvalcat.m,
-%     pvalcat2.m or bpvalgrid.m on one hand and ploop2.m (or ploop3.m or
-%     ploop31.m) on the
+%     pvalcat2.m or bpvalgrid.m on one hand and ploop_c_and_p_calcs.m
 %     other hand.
 %   - src/declus/ploop2.m - this is the routine which computes the p,c and
 %     K values in the "Modified Omori Law".
@@ -55,7 +53,6 @@
 %     because when the time
 %     approaches 0 the frequency tends to infinity. Please check the routine
 %     mypval2m.m to verify ts, the minimum time in the aftershock sequence.
-%   - src/declus/ploop31.m - variant of the routine above.
 %   - src/adju2.m - filters the results displayed on the map (for spatial
 %     variation of parameters) in function of different parameters, including
 %     the standard error

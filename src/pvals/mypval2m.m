@@ -1,38 +1,37 @@
-function [p_, sdp_, c_, sdc_, dk_, sdk_, rja_, rjb_] = mypval2m(pcat)
+function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat)
 
     %mypval2m                            Bogdan Enescu
     % function to calculate the parameters of the modified Omori Law
     %
     %
-
+    %
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata.
-
+    %
     % function finds the maximum liklihood estimates of p,c and k, the
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
-
+    %
     % Input: Earthquake Catalog of an Aftershock Sequence
-
+    %
     % Output: p c k values of the modified Omori Law with respective
     %         standard deviations
-
+    %
     %The parameter valeg shows from where the routine has been called:
-    %1 - called from bpvalgrid.m and pcrossnew.m (goal : maps or cross-sections); 2 - call from pvalcat, which in its turn is called
+    %1 - called from bpvalgrid.m and pcrossnew.m (goal : maps or cross-sections);
+    %2 - call from pvalcat, which in its turn is called
     %from timeplot.m (goal: determination of parameters in Omori formula for a certain set of data - the
     %one for which the Cumulative Number of earthquakes in time is displayed in the window
     %"Cumulative number").
-
-    %The parameter valeg2 establishes which routine is called, ploop2 or ploop3.
-    %The routine ploop3 considers a fix c value. In the case c=0, I have to have ts different from 0,
-    %otherwise there is non-determination in origin.
+    %
+    %The parameter valeg2 establishes whether to use a fix c value. In the case c=0, ts must be 
+    % different from 0, otherwise there is non-determination in origin.
 
     global valeg valeg2 CO valm1
-    global pc nn pp nit t ieflag isflag ZG.maepi
+    global pc nn pp nit t ieflag isflag 
     global cstep pstep ts tt eps1 eps2 pcheck
     global loopcheck
     global p sdp c sdc dk sdk
-    global ZG.newt2
 
 report_this_filefun(mfilename('fullpath'));
 
@@ -53,60 +52,47 @@ report_this_filefun(mfilename('fullpath'));
     pp=PO;
     pc=CO;
     nit=0;
-    ieflag=0;
-    isflag=0;
-    pcheck=0;
+    ieflag=false;
+    isflag=false;
+    pcheck=false;
 
     %Build timecatalog
 
-    if valeg == 1
-        newcat2 = sortrows(pcat,3);
-    elseif (valeg == 2  ||  valeg == 3)
-        t = pcat;
-        ts = min(t);
-        tt = max(t);
-        nn = length(t);
-        if (valeg2 >= 0)
-            if pc < 0 ; pc = 0.0; end
-            %The following line should be commented if, in ploop2.m, A is commented and B not.
-            %if pc <= ts; pc = ts + 0.05;end
-        end
+    if (valeg == 2  ||  valeg == 3)
+        t = pcat.Date;
+    elseif (valeg == 1)
+        t = days(pcat.Date - ZG.maepi.subset(1));
     end
 
-    if (valeg == 1)
-        [timpa] = timabs(newcat2);
-        [timpar] = timabs(ZG.maepi);
-        tmpar = timpar(1);
-        t = (timpa-tmpar)/1440;
-        ts = min(t);
-        tt = max(t);
-        nn = length(t);
-        if (valeg2 >= 0)
-            if pc < 0 ; pc = 0.0; end
-            %The following line should be commented if, in ploop2.m, A is commented and B not.
-            %if pc <= ts; pc = ts + 0.05;end
-        end
+    ts = min(t); % first event time
+    tt = max(t); % last event time
+    nn = length(t); %nEvents
+        
+    if (valeg2 >= 0)
+        pc = max(pc, 0.0);
     end
-
     %Loop begins here
     %call of function who calculates parameters
 
     loopcheck=0;
     if (valeg2 >= 0)
-        ploop2(1);
+        MIN_CSTEP = 0.0001; MIN_PSTEP = 0.0001;
+        ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, false,'kpc');
     else
-        ploop3(1);
+        MIN_PSTEP = 0.0001;
+        ploop_c_and_p_calcs([], MIN_PSTEP, false, 'kp');
     end
 
     %loopcheck
 
     if loopcheck<500
         %round values on two digits
-        p=round(p*100)/100;
-        sdp=round(sdp*100)/100;
-        c=round(c*1000)/1000;
+        p=round(p, -2);
+        sdp=round(sdp, -2);
+        c=round(c, -3);
+        
         if (valeg2 >= 0)
-            sdc=round(sdc*1000)/1000;
+            sdc=round(sdc, -3);
         else
             sdc = nan;
         end
@@ -120,32 +106,16 @@ report_this_filefun(mfilename('fullpath'));
         % and then a from k (dk) and b
         %%
         magi = ZG.newt2.Magnitude >= valm1 & ZG.newt2.Magnitude <= 6.1 ;
-        magz = ZG.newt2(magi,6);
-        amag = sum(magz)/length(magz);
+        magz = ZG.newt2.Magnitude(magi);
+        amag = sum(magz) / numel(magz);
 
         rjb = .4343/(amag-valm1+.05);
         rja = log10(dk) - rjb * (ZG.maepi.Magnitude - min(ZG.newt2.Magnitude));
 
-
-        dk=round(dk*100)/100;
-        sdk= round(sdk*100)/100;
-    else %if loopcheck
-        %disp(['No result']);
-        p = nan;
-        sdp = nan;
-        c= nan;
-        sdc=nan;
-        dk=nan;
-        sdk= nan;
-        rja = nan;
-        rjb = nan;
+        dk=round(dk, -2);
+        sdk= round(sdk, -2);
+    else 
+        [p, sdp, c, sdc, dk, sdk, rja, rjb] = deal(nan);
     end
-
-    p_=p;
-    sdp_=sdp;
-    c_=c;
-    sdc_=sdc;
-    dk_=dk;
-    sdk_=sdk;
-    rja_=rja;
-    rjb_=rjb;
+    [p_, sdp_, c_, sdc_, dk_, sdk_] = deal(p, sdp, c, sdc, dk, sdk);
+end

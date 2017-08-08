@@ -3,7 +3,7 @@
 %This file is called from timeplot.m and helps for the computation of p-value from Omori formula. for different values of Mcut
 %and Minimum time. The value of p is then displayed as a isoline map.
 
-global valeg ZG.newt2 valeg2 CO
+global valeg valeg2 CO
 ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
@@ -30,7 +30,12 @@ end
 valeg = 3;
 
 pvmat = [];
-prompt = {'Min. threshold. magnitude','Max. threshold magnitude','Magnit. step','Min. threshold time', 'Max. threshold time','Time step'};
+prompt = {'Min. threshold. magnitude',...
+'Max. threshold magnitude',...
+'Magnit. step',...
+'Min. threshold time', ...
+'Max. threshold time',...
+'Time step'};
 title = 'Input parameters';
 lines = 1;
 valm1 = min(ZG.newt2.Magnitude);
@@ -41,8 +46,12 @@ valtm2 = 0.5;
 valtm3 = 0.01;
 def = {num2str(valm1), num2str(valm2), num2str(valm3), num2str(valtm1), num2str(valtm2), num2str(valtm3)};
 answer = inputdlg(prompt,title,lines,def);
-valm1=str2double(answer{1}); valm2 = str2num(answer{2}); valm3=str2num(answer{3});
-valtm1 = str2double(answer{4}); valtm2 = str2num(answer{5}); valtm3 = str2num(answer{6});
+valm1=str2double(answer{1}); 
+valm2 = str2num(answer{2}); 
+valm3=str2num(answer{3});
+valtm1 = str2double(answer{4}); 
+valtm2 = str2num(answer{5}); 
+valtm3 = str2num(answer{6});
 
 % cut catalog at mainshock time:
 l = ZG.newt2.Date > ZG.maepi.Date(1);
@@ -127,8 +136,8 @@ ylabel(['c in days'])
 xlabel(['Min. Magnitude'])
 shading interp
 set(gca,'box','on',...
-    'SortMethod','childorder','TickDir','out','FontWeight',...
-    'normal','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
+    'SortMethod','childorder','TickDir','out',...
+    'FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.,'Ticklength',[ 0.02 0.02])
 
 
 % Create a colorbar
@@ -142,14 +151,10 @@ axes('position',rect)
 axis('off')
 %  Text Object Creation
 txt1 = text(...
-    'Color',[ 0 0 0 ],...
-    'EraseMode','normal',...
     'Units','normalized',...
     'Position',[ 0.33 0.09 0 ],...
     'HorizontalAlignment','right',...
-    'Rotation',[ 0 ],...
     'FontSize',ZmapGlobal.Data.fontsz.m,....
-    'FontWeight','normal',...
     'String','p-value');
 
 % reset ZG.newt2

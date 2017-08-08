@@ -4,38 +4,32 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     % function to calculate the parameters of the modified Omori Law
     %
     %
-
+    %
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
-
+    %
     % function finds the maximum liklihood estimates of p,c and k, the
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
-
+    %
     % Input: Earthquake Catalog of an Cluster Sequence
-
+    %
     % Output: p c k values of the modified Omori Law with respective
     %         standard deviations
     %         A and B values of the Gutenberg Relation based on k
-
+    %
     % Create an input window for magnitude thresholds and
     % plot cumulative number versus time to allow input of start and end
     % time
 
 
-    global file1             
-    global mess ccum bgevent equi  clust original cluslength newclcat
-    global backcat ttcat cluscat
-   global  sys clu te1
+
+    global backcat ttcat
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
     global xt par3 cumu cumu2
-    global close_p_button pplot
-    global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
-    global h2 cplot Info_p close_p  print_p
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
     global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk sdp cof qp cog aa bb pcheck loopcheck
-    global ppc cplot2 hndl1
+    global sdc sdk sdp  aa bb pcheck loopcheck
     global autop tmeqtime tmvar
     %if var1 == 3
     tmvar=[];
@@ -111,7 +105,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     nit=0;
     ieflag=0;
     isflag=0;
-    pcheck=0;
+    pcheck=false;
     err1x=0;
     err2x=0;
     ts=0.0000001;
@@ -150,8 +144,8 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
 
     end
 
-    tp1 = input('tp1=   ')
-    tp2 = input('tp2=    ')
+    tp1 = input('tp1=   ');
+    tp2 = input('tp2=    ');
     ts = tp1;
     l = tmeqtime >= tp1 & tmeqtime <= tp2;
     tmeqtime = tmeqtime(l);
@@ -168,18 +162,18 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     t=tmeqtime;
     if pc < 0 ; pc = 0.0; end
     if pc <= ts; pc = ts + 0.05;end
-    ploop(1);           %call of function who calculates parameters
+    ploop_option1();           %call of function who calculates parameters
 
     if loopcheck<500
         %round values on two digits
-        p=round(p*100)/100;
-        sdp=round(sdp*100)/100;
-        c=round(c*1000)/1000;
-        sdc=round(sdc*1000)/1000;
-        dk=round(dk*100)/100;
-        sdk= round(sdk*100)/100;
-        aa=round(aa*100)/100;
-        bb=round(bb*100)/100;
+        p=round(p, -2);
+        sdp=round(sdp, -2);
+        c=round(c, -3);
+        sdc=round(sdc, -3);
+        dk=round(dk, -2);
+        sdk= round(sdk, -2);
+        aa=round(aa, -2);
+        bb=round(bb, -2);
 
 
         disp(['p = ' num2str(p)  ' +/- ' num2str(sdp)]);
@@ -187,8 +181,8 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
         disp(['k = ' num2str(dk)  ' +/- ' num2str(sdk)]);
         disp(['b = ' num2str(bb)  ' +/- ' num2str(sdp)]);
         disp(['a = ' num2str(aa)  ' +/- ' num2str(sdp)]);
-    else    %if loopcheck
-        disp(['No result']);
+    else
+        disp('No result');
         %p = nan;
         %c = nan;
         %k = nan;
@@ -218,7 +212,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
         %
 
         %
-    end;  %if autop~=1
+    end
     tmvar=[];
     %end;
 
@@ -231,4 +225,4 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     sdk_=sdk;
     aa_=aa;
     bb_=bb;
-
+end
