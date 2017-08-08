@@ -365,18 +365,6 @@ end
 
     %Making A vector with all of the mainshock times and locations
 
-    %counter = 1;
-
-    %for j = 1:length(tdist(x))
-    %   AddOn(counter:counter+A(x(j))-1) = tdist(x(j));
-    %  nn = A(x(j));
-    % LocsT = [Locs(x(j),1)*ones(nn,1) Locs(x(j),2)*ones(nn,1) Locs(x(j),3)*ones(nn,1)];
-    %AddDist(counter:counter+A(x(j))-1,1:3) = LocsT;
-    %counter = counter + A(x(j));
-    %end
-
-    %TRYING TO DO THE ABOVE FASTER
-
     if(~isempty(x))
 
         Axx = A(x);
@@ -417,9 +405,9 @@ end
         %for j = 1:length(tdist(x))
 
 
-        %   nn = A(x(j));
+        %   idx = A(x(j));
 
-        %   LocsT = [Locs(x(j),1)*ones(nn,1) Locs(x(j),2)*ones(nn,1) Locs(x(j),3)*ones(nn,1)];
+        %   LocsT = [Locs(x(j),1)*ones(idx,1) Locs(x(j),2)*ones(idx,1) Locs(x(j),3)*ones(idx,1)];
 
         %  AddDist(counter:counter+A(x(j))-1,1:3) = LocsT;
         %  History(counter:counter+A(x(j))-1,1) = IDold(x(j));

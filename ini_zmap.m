@@ -94,6 +94,6 @@ co = 'w';
 par1 = 14; % bin length, days
 ZG.big_eq_minmag = 8; % minimum cutoff for "large" earthquakes
 
-%set the recursion slightly, to avoid error (specialy with the function ploop2.m
+%set the recursion slightly, to avoid error (specialy with ploop functions)
 set(0,'RecursionLimit',750)
 

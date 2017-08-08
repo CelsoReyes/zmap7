@@ -1,4 +1,5 @@
 function inpu2()
+%inpu2 
     %  This scriptfile ask for several selection parameters that can be set
     %  for part of the analysis. The original input parameters can be reset using
     %  the  Reset button in the main figure map

@@ -11,7 +11,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 
-global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
+global no1 bo1 inb1 inb2 valeg CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
 valm1 = min(ZG.a.Magnitude);

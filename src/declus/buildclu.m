@@ -9,9 +9,9 @@ function  buildclu
     ZG=ZmapGlobal.Data;
     cluslength=[];
     n=0;
-    k1=max(clus);
+    k1 = max(clus);
     for j=1:k1                         %for all clusters
-        cluslength(j)=length(find(clus==j));  %length of each clusters
+        cluslength(j)=length(find(clus==j));  %length of each cluster
     end
 
     tmp=find(cluslength);      %numbers of clusters that are not empty

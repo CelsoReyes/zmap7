@@ -4,11 +4,14 @@ function mycat = catalog_overview(mycat)
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
+    
+    report_this_filefun(mfilename('fullpath'));
+    
     if ~isa(mycat,'ZmapCatalog')
+        warning('catalog_overview should be passed a catalog')
         mycat = ZmapCatalog(mycat);
     end
     
-    report_this_filefun(mfilename('fullpath'));
     %global file1 tim1 tim2 minma2 maxma2 minde maxde ZG.maepi
     %global maxdep maxma mindep minti maxti
     
@@ -20,6 +23,7 @@ function mycat = catalog_overview(mycat)
     if ~exist('par1', 'var')   %select bin length respective to time in catalog
         par1 = 30;
     end
+    
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
     %{
     %% these shouldn't be set here, they should be set at plot time, or in plot menu
@@ -285,6 +289,7 @@ function mycat = catalog_overview(mycat)
     function go_callback(src, ~)
         %TODO remove all the side-effects.  store relevent data somewhere specific
         %filter the catalog, then return
+        ZG = ZmapGlobal.Data;
         myparent=get(src,'Parent');
         
         h = findall(myparent,'Tag','mapview_maxdepth_field');
@@ -344,9 +349,6 @@ function mycat = catalog_overview(mycat)
         close(main_dialog_figure('handle'));
         % changes in bin length go to global par1
     end
-    
-    
-    
 end
 
 function cancel_callback(~, ~)

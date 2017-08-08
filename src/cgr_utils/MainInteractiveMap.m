@@ -382,7 +382,7 @@ classdef MainInteractiveMap
                 'Separator','on');
 
             uimenu(submenu,'Label','Reload last catalog','Enable','off',...
-                'Callback','think; load(lopa); if length(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;inpu;done');
+                'Callback','think; load(lopa); if length(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;ZG.a=catalog_overview(ZG.a);done');
             
             uimenu(catmenu, ...
                 'Label','from *.mat file',...
@@ -529,13 +529,13 @@ classdef MainInteractiveMap
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
             uimenu(submenu,'Label','Calculate p and b-value map',...
-                'Callback','sel= ''in'';bpvalgrid');
+                'Callback','bpvalgrid(''in'')');
             uimenu(submenu,'Label','Load existing p and b-value map',...
-                'Callback','sel= ''lo'';bpvalgrid');
+                'Callback','bpvalgrid(''lo'')');
             uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)',...
-                'Callback','sel= ''in'';rcvalgrid_a2');
+                'Callback','rcvalgrid_a2(''in'')');
             uimenu(submenu,'Label','Load existing  Rate change, p-,c-,k-value map (MLE)',...
-                'Callback','sel= ''lo'';rcvalgrid_a2');
+                'Callback','rcvalgrid_a2(''lo'')');
         end
         
         function create_quarry_detection_menu(obj,parent)

@@ -54,16 +54,10 @@ cluslength=[];rmain=[];r1=[];
 
 man =[taumin;taumax;xk;xmeff;P;rfact;err;derr];
 
-[rmain,r1]=funInteract(1,mycat,rfact,xmeff);                     %calculation of interaction radii
-
-limag=find(mycat.Magnitude>=6);     % index of earthquakes with magnitude bigger or
-% equal magnitude 6
-if isempty(limag)
-   limag=0;
-end
+[rmain,r1]=funInteract(mycat,rfact);                     %calculation of interaction radii
 
 %calculation of the eq-time relative to 1902
-eqtime=funClustime(1,mycat);
+eqtime=clustime(mycat);
 
 %variable to store information wether earthquake is already clustered
 clus = zeros(1,mycat.Count);
@@ -84,9 +78,9 @@ for i = 1:ltn
    k1=clus(i);
 
    % attach interaction time
-   if k1~=0                          %If i is already related with a cluster
-      if mycat(i,6)>=mbg(k1)          %if magnitude of i is biggest in cluster
-         mbg(k1)=mycat(i,6);            %set biggest magnitude to magnitude of i
+   if k1~=0                          % if i is already related with a cluster
+      if mycat(i,6)>=mbg(k1)         % if magnitude of i is biggest in cluster
+         mbg(k1)=mycat(i,6);         %set biggest magnitude to magnitude of i
          bgevent(k1)=i;                  %index of biggest event is i
          tau=taumin;
       else
@@ -104,7 +98,7 @@ for i = 1:ltn
    end
 
    %extract eqs that fit interation time window
-   [tdiff,ac]=funTimediff(j,i,tau,clus,k1,mycat,eqtime);
+   [tdiff,ac]=funTimediff(j,i,tau,clus,eqtime);
 
 
    if size(ac)~=0   %if some eqs qualify for further examination

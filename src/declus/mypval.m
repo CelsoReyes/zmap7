@@ -33,7 +33,7 @@ function [p,sdp]=mypval(var1, mati)
     global h2 cplot Info_p close_p  print_p
     global c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
     global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk  cof qp cog aa bb pcheck loopcheck
+    global sdc sdk qp aa bb pcheck loopcheck
     global ppc  cplot2 hndl1
     global autop tmeqtime tmvar
     %if var1 == 3
@@ -67,8 +67,8 @@ function [p,sdp]=mypval(var1, mati)
 
     % find start time of time series
     %
-    nn=find(cumu==max(cumu));
-    nnn=nn(1,1)-2;
+    nn_=find(cumu==max(cumu));
+    nnn=nn_(1,1)-2;
     tmvar=1;           %temperal variable
     if par3>=1
         tmp3=t0b+nnn*days(par3);
@@ -110,7 +110,7 @@ function [p,sdp]=mypval(var1, mati)
     nit=0;
     ieflag=0;
     isflag=0;
-    pcheck=0;
+    pcheck=false;
     err1x=0;
     err2x=0;
     ts=0.0000001;
@@ -157,18 +157,21 @@ function [p,sdp]=mypval(var1, mati)
     loopcheck=0;
     tt=tmeqtime(nn);
     t=tmeqtime;
-    ploop(1);           %call of function who calculates parameters
+    MIN_CSTEP = 0.000001;
+    MIN_PSTEP = 0.00001;
+    
+    ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
 
     if loopcheck<500
         %round values on two digits
-        p=round(p*100)/100;
-        sdp=round(sdp*100)/100;
-        c=round(c*1000)/1000;
-        sdc=round(sdc*1000)/1000;
-        dk=round(dk*100)/100;
-        sdk= round(sdk*100)/100;
-        aa=round(aa*100)/100;
-        bb=round(bb*100)/100;
+        p=round(p, -2);
+        sdp=round(sdp, -2);
+        c=round(c, -3);
+        sdc=round(sdc, -3);
+        dk=round(dk, -2);
+        sdk= round(sdk, -2);
+        aa=round(aa, -2);
+        bb=round(bb, -2);
 
 
         disp(['p = ' num2str(p)  ' +/- ' num2str(sdp)]);

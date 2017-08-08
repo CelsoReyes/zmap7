@@ -11,7 +11,7 @@ end
 
 % start filters
 
-[a] = import_start(fullfle(ZmapGlobal.Data.hodi, 'importfilters'));
+[a] = import_start(fullfile(ZmapGlobal.Data.hodi, 'importfilters'));
 if isnan(a)
     % import cancelled / failed
     return
@@ -21,7 +21,7 @@ if isnumeric(a)
     ZG.a.sort('Date');
 end
 disp(['Catalog loaded with ' num2str(ZG.a.Count) ' events ']);
-ZG.big_eq_minmag = max(ZG.a.Magnitude)-0.2;       %  as a default to be changed by inpu
+ZG.big_eq_minmag = max(ZG.a.Magnitude)-0.2;       %  as a default
 
 % call the setup
-inpu
+ZG.a=catalog_overview(ZG.a);

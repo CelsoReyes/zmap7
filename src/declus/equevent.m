@@ -11,7 +11,6 @@ function equi=equevent(mycat,clus)
     %
      report_this_filefun(mfilename('fullpath'));
    
-    global clus
     global bg
 
     equi=ZmapCatalog;
@@ -44,7 +43,7 @@ function equi=equevent(mycat,clus)
     equi.Latitude=elat(:);
     equi.Longitude=elon(:);
     equi.Date=mycat.Date(bg); % why is this dissimilar?
-    assert(equal(size(eqi.Date),size(equi.Longitude)))
+    assert(isequal(size(equi.Date),size(equi.Longitude)))
     equi.Magnitude=emag(:);
     equi.Depth=edep(:);
 

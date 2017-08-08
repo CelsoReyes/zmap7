@@ -1,4 +1,4 @@
-% Scrip: rcvalgrid_a2.m
+function [sel]=rcvalgrid_a2(sel)
 % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
 % Uses view_rcva_a2 to plot the results
 %
@@ -8,7 +8,7 @@
 % J. Woessner
 % last update: 14.02.05
 
-global no1 bo1 inb1 inb2 valeg valeg2 CO valm1
+global no1 bo1 inb1 inb2 valeg CO valm1
 ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
@@ -169,7 +169,7 @@ if sel == 'in'
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','tgl1=tgl1.Value;tgl2=tgl2.Value;prev_grid=prev_grid.Value;create_grid=create_grid.Value; load_grid=load_grid.Value; save_grid=save_grid.Value; oldfig_button=oldfig_button.Value; close,sel =''ca'', rcvalgrid_a2',...
+        'Callback','tgl1=tgl1.Value;tgl2=tgl2.Value;prev_grid=prev_grid.Value;create_grid=create_grid.Value; load_grid=load_grid.Value; save_grid=save_grid.Value; oldfig_button=oldfig_button.Value; close,rcvalgrid_a2(''ca'')',...
         'String','Go');
 
     text(...

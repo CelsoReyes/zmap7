@@ -90,8 +90,8 @@ end
 % Deal with connectivity
 if nargin==2
     % Assume consecutive nodes if cnect not passed.
-    nn    = size(node,1);
-    cnect = [(1:nn-1)',(2:nn)'; nn,1];
+    n_nodes    = size(node,1);
+    cnect = [(1:n_nodes-1)',(2:n_nodes)'; n_nodes,1];
 else
     if size(cnect,2)~=2
         error ('Wrong input dimensions')

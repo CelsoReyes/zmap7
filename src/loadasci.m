@@ -81,9 +81,11 @@ if da == 'eq'
             % Sort the catalog in time just to make sure ...
             [s,is] = sort(ZG.a.Date);
             a = a(is(:,1),:) ;
-            ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
+            ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
 
-            close;done;inpu;setup
+            close;done;
+            ZG.a=catalog_overview(ZG.a);
+            setup
         else
             close, setup
         end % if
@@ -133,13 +135,13 @@ if da == 'fo'
             % Sort the catalog in time just to make sure ...
             [s,is] = sort(ZG.a.Date);
             a = a(is(:,1),:) ;
-            ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
+            ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
             % set up the focal mechanism data
             %prepfocal
 
             close;
             done;
-            inpu;
+            ZG.a=catalog_overview(ZG.a);
             setup
         else
             close 

@@ -8,6 +8,11 @@ function timeplot(mycat, nosort)
     %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
     %                       - mycat if "Save as Newcat" button is pressed.
     %
+    %
+    %
+    % 
+    %
+    
     
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
@@ -176,7 +181,8 @@ function timeplot(mycat, nosort)
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog mycat).
         uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
-        uimenu(op5,'Label','Define mainshock and estimate p', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;inpu_main')
+        uimenu(op5,'Label','Define mainshock', 'Callback','ZG=ZmapGlobal.Data;error(''not implemented: define mainshock.  Original input_main.m function broken');
+        uimenu(op5,'Label','Estimate p', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;pvalcat');
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
         uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')
@@ -375,7 +381,7 @@ function timeplot(mycat, nosort)
     
     function cut_tmd_callback(~,~)
         ZG=ZmapGlobal.Data;
-        inpu2; %changes ZG.newt2
+        ZG.newt2 = catalog_overview(ZG.newt2);
         timeplot(ZG.newt2)
     end
 

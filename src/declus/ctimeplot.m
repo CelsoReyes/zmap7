@@ -82,7 +82,7 @@ if newCumWindowFlag
 
     options = uimenu('Label','Tools ');
 
-    uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','inpu2')
+    uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','ZG=ZmapGlobal.Data;ZG.newt2=catalog_overview(ZG.newt2);')
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
     iwl = iwl2/days(par1);
     uimenu(options,'Label','AS(t)function',...

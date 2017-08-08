@@ -1,5 +1,5 @@
 % Plot the clusters
-
+global clus
 report_this_filefun(mfilename('fullpath'));
 
 [existFlag,figNumber]=figure_exists('Cluster Map',1);
@@ -12,7 +12,7 @@ if clusFlag
         'backingstore','on',...
         'NextPlot','add', ...
         'Visible','on', ...
-        'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
+        'Position',[ (ZmapGlobal.Data.fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
     matdraw
     
@@ -28,7 +28,7 @@ end
 matdraw
 add_menu_divider();
 
-op4 = uimenu('Label','ZTools','BackgroundColor','m') ;
+op4 = uimenu('Label','ZTools') ;
 op6 =uimenu(op4,'Label','select clusters');
 
 uimenu(op6,'Label','Select by Mouse',...

@@ -31,7 +31,7 @@ function cltipval(var1)
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
     global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk sdp cof qp cog aa bb pcheck loopcheck
+    global sdc sdk sdp qp aa bb pcheck loopcheck
     global callcheck mtpl tmm
     global freq_field5
     global magn mp mc mk msdk msdp msdc ctiplo
@@ -313,7 +313,7 @@ function cltipval(var1)
             nit=0;
             ieflag=0;
             isflag=0;
-            pcheck=0;
+            pcheck=false;
             err1x=0;
             err2x=0;
             ts=0.0000001;
@@ -388,7 +388,12 @@ function cltipval(var1)
             loopcheck=0;
             tt=tmeqtime(nn);
             t=tmeqtime;
-            ploop(1);           %call of function who calculates parameters
+
+            MIN_CSTEP = 0.000001;
+            MIN_PSTEP = 0.00001;
+    
+            ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');  % call of function who calculates parameters
+
             if loopcheck<499
                 mp(i)=p;              %storage of p,k,c +standard deviations
                 msdp(i)=sdp;
@@ -439,7 +444,7 @@ function cltipval(var1)
             nit=0;
             ieflag=0;
             isflag=0;
-            pcheck=0;
+            pcheck=false;
             err1x=0;
             err2x=0;
             ts=0.0000001;
@@ -512,7 +517,11 @@ function cltipval(var1)
             loopcheck=0;
             tt=tmeqtime(nn);
             t=tmeqtime;
-            ploop(1);           %call of function who calculates parameters
+            
+            MIN_CSTEP = 0.000001;
+            MIN_PSTEP = 0.00001;
+            ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+
             if loopcheck<499
                 mp(i)=p;              %storage of p,k,c +standard deviations
                 msdp(i)=sdp;

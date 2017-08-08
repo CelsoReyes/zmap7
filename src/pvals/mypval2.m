@@ -162,7 +162,11 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     t=tmeqtime;
     if pc < 0 ; pc = 0.0; end
     if pc <= ts; pc = ts + 0.05;end
-    ploop_option1();           %call of function who calculates parameters
+   
+    MIN_CSTEP = 0.000001;
+    MIN_PSTEP = 0.00001;
+    
+    ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc'); %call of function who calculates parameters
 
     if loopcheck<500
         %round values on two digits

@@ -1,10 +1,9 @@
 function [dist1, dist2] = distance(i,bgevent,ac)
-    % distance.m                                          A.Allmann
     % calculates the distance in [km] between two eqs
     % precise version based on Raesenbergs Program
     % the calculation is done simultaniously for the biggest event in the
     % cluster and for the current event
-    %
+    % A. Allmann
 
     global err derr
     ZG=ZmapGlobal.Data;

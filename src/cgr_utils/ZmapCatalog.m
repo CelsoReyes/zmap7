@@ -371,6 +371,10 @@ classdef ZmapCatalog < handle
             obj = obj.subset(~sameidx);
             fprintf('Removed %d duplicates\n', orig_size - obj.Count);
         end
+        
+        function disp(obj)
+            disp(obj.summary('stats'));
+        end
             
     end
     

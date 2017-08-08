@@ -661,7 +661,6 @@ end
     %ZG.a=catalog_overview(a); % further modify
     %assignin('base','a',a);
     done();
-    % evalin('base','inpu'); %yuck
     set(hObject.Parent,'Visible','off');
     % close(hObject.Parent); % or set Visibility to 'off' ?
     % TODO: close this window

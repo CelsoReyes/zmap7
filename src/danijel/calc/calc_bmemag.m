@@ -44,9 +44,9 @@ if ~exist('fBinning')
 end
 
 % Check input
-nY = mCatalog.Count;
+nX = mCatalog.Count;
 
-if (~isempty(mCatalog) & nX == 1)
+if (~isempty(mCatalog) && nX == 1)
     vMag = mCatalog;
 elseif (~isempty(mCatalog)  &&  nX > 1)
     vMag = mCatalog.Magnitude;

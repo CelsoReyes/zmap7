@@ -3,6 +3,12 @@
 %  extrema in the catalog
 %
 %a = org;        % resets the main catalogue "a" to initial state
+%
+%TODO create simple window to choose one earthquake as mainshock, using
+% maepi earthquake as default.
+
+error('this function is quite outdated.'); %
+ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
@@ -11,15 +17,15 @@ teb = max(ZG.a.Date);
 tdiff = (teb - t0b)*365;
 
 % if two mainshocks arte define, use one only ..
-if ZG.maepi.Count > 1 ; 
+if ZG.maepi.Count > 1
     ZG.maepi = ZG.maepi.subset(1) ;
 end
 % define ZG.maepi if not exist
 l = find(ZG.newt2.Magnitude == max(ZG.newt2.Magnitude));
-if ~exist('ZG.maepi') ; 
+if ~exist('ZG.maepi')
     ZG.maepi = ZG.newt2.subset(l);
 end
-if isempty('ZG.maepi') ; 
+if isempty('ZG.maepi')
     ZG.maepi = ZG.newt2.subset(l);
 end
 
@@ -33,17 +39,16 @@ figure_w_normalized_uicontrolunits(...
     'visible','off',...
     'NumberTitle','off',...
     'MenuBar','none',...
-    'Color',color_fbg,...
     'NextPlot','new');
 axis off
 
 inp1B=uicontrol('Style','edit','Position',[.70 .90 .22 .05],...
-    'Units','normalized','String',num2str(floor(ZG.maepi.Date(1))),...
+    'Units','normalized','String',num2str(dateshift(ZG.maepi.Date(1),'start','day')),...
     'Callback','ZG.maepi.Date(1)=str2double(inp1B.String); inp1B.String=num2str(floor(ZG.maepi.Date(1)));');
 
 inp1=uicontrol('Style','edit','Position',[.70 .80 .22 .05],...
     'Units','normalized','String',num2str(ZG.maepi(1,4)),...
-    'Callback','ZG.maepi(1,4))=str2double(inp1.String); inp1.String=num2str(ZG.maepi(1,4)))';
+    'Callback','ZG.maepi(1,4))=str2double(inp1.String); inp1.String=num2str(ZG.maepi(1,4)))');
 
 inp2=uicontrol('Style','edit','Position',[.70 .70 .22 .05],...
     'Units','normalized','String',num2str(ZG.maepi(1,5)),...
@@ -61,18 +66,6 @@ inp4=uicontrol('Style','edit','Position',[.70 .50 .22 .05],...
 inp5=uicontrol('Style','edit','Position',[.70 .40 .22 .05],...
     'Units','normalized','String',num2str(ZG.maepi.Magnitude),...
     'Callback','ZG.maepi.Magnitude=str2double(inp5.String); inp5.String=num2str(ZG.maepi.Magnitude);');
-
-% inp6=uicontrol('Style','edit','Position',[.70 .30 .22 .05],...
-%     'Units','normalized','String',num2str(ZG.maepi.Depth),...
-%     'Callback','ZG.maepi.Depth=str2double(inp6.String); inp6.String=num2str(ZG.maepi.Depth);');
-
-%   inp7=uicontrol('Style','edit','Position',[.20 .15 .25 .05],...
-%       'Units','normalized','String',num2str(ZG.maepi.Longitude),...
-%      'Callback','ZG.maepi.Longitude=str2double(inp7.String); inp7.String=num2str(ZG.maepi.Longitude);');
-
-% inp8=uicontrol('Style','edit','Position',[.60 .15 .25 .05],...
-%     'Units','normalized','String',num2str(ZG.maepi.Latitude),...
-%     'Callback','ZG.maepi.Latitude=str2double(inp8.String); inp8.String=num2str(ZG.maepi.Latitude;');
 
 
 
@@ -93,7 +86,7 @@ info_button=uicontrol('Style','Pushbutton',...
     'String','Info');
 titstr = 'General Parameters';
 hlpStr = ...
-    ['This window allows you to enyter the         '
+    ['This window allows you to enter the         '
     'mainshock magnitude and time etc.            '
     'time, magnitude and depth.                   '
     '                                             '];

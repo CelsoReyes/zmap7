@@ -38,56 +38,48 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     report_this_filefun(mfilename('fullpath'));
     
     
-    
-    
     %declaration of global variables
     %
     global  clus rmain r1 eqtime              %catalogs
     global k k1 bg mbg bgevent equi bgdiff          %indices
-    global ltn                                      %variable to shorten code
     global clust clustnumbers cluslength
-    global faults coastline main mainfault name
-    global xmeff xk rfact taumin taumax P
-    global err derr ijma 
+    global taumin taumax 
+    global xk xmeff P
 
     ZG=ZmapGlobal.Data;
     
-    bg=[];k=[];k1=[];mbg=[];bgevent=[];equi=[];bgdiff=[];clust=[];clustnumbers=[];
-    cluslength=[];rmain=[];r1=[];
+    bg=[];
+    k1=[];
+    mbg=[];
+    bgevent=[];
+    equi=[];
+    bgdiff=[];
+    clust=[];
+    clustnumbers=[];
+    cluslength=[];
     
-    
-    
-    [rmain,r1]=interact(1);                     %calculation of interaction radii
-    
-    limag=find(ZG.newcat.Magnitude >= 6);     % index of earthquakes with magnitude bigger or
-    % equal magnitude 6
-    if isempty(limag)
-        limag=0;
-    end
-    
+    [rmain,r1]=interact(ZG.newcat);   %calculation of interaction radii
+
     %calculation of the eq-time relative to 1902
-    eqtime=clustime();
+    eqtime=clustime(ZG.newcat);
     
-    %variable to store information wether earthquake is already clustered
+    %variable to store information whether earthquake is already clustered
     clus = zeros(1,ZG.newcat.Count);
     
     k = 0;                                %clusterindex
-    
-    ltn=ZG.newcat.Count-1;
     
     wai = waitbar(0,' Please Wait ...  ');
     set(wai,'NumberTitle','off','Name','Decluster - Percent done');
     drawnow
     
     %for every earthquake in ZG.newcat, main loop
-    for i = 1:ltn
+    for i = 1: (ZG.newcat.Count-1)
+        
         if rem(i,50)==0
-            
-            waitbar(i/ltn);
-            
+            waitbar(i/(ZG.newcat.Count-1));
         end
+        
         % variable needed for distance and timediff
-        j=i+1;
         k1=clus(i);
         
         % attach interaction time
@@ -98,7 +90,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                 tau=taumin;
             else
                 bgdiff=eqtime(i)-eqtime(bgevent(k1));
-                tau=taucalc;
+                tau=funTaucalc(xk,mbg,k1,xmeff,bgdiff,P);
                 tau = min(tau,taumax);
                 tau = max(tau, taumin);
             end
@@ -107,35 +99,35 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         end
         
         %extract eqs that fit interation time window
-        [tdiff,ac]=timediff(j,i,tau);
+        [tdiff,ac]=timediff(i+1, i, tau, clus, eqtime);
         
         
-        if size(ac)~=0   %if some eqs qualify for further examination
+        if ~isempty(ac)   %if some eqs qualify for further examination
             
-            if k1~=0                       % if i is already related with a cluster
-                tm1=find(clus(ac)~=k1);       %eqs with a clustnumber different than i
-                if ~isempty(tm1)
-                    ac=ac(tm1);
-                end
-            end
+            rtest1=r1(i);
             if tau==taumin
-                rtest1=r1(i);
-                rtest2=0;
+                rtest2 = 0;
             else
-                rtest1=r1(i);
                 rtest2=rmain(bgevent(k1));
             end
             
-            %calculate distances from the epicenter of biggest and most recent eq
-            if k1==0
-                [dist1,dist2]=distance2(i,i,ac);
+            if k1~=0                       % if i is already related with a cluster
+                tm1 = clus(ac) ~= k1;       %eqs with a clustnumber different than i
+                if any(tm1)
+                    ac=ac(tm1);
+                end
+                bg_ev_for_dist = bgevent(k1);
             else
-                [dist1,dist2]=distance2(i,bgevent(k1),ac);
+                bg_ev_for_dist = i;
             end
-            %extract eqs that fit the spatial interaction time
-            sl0=find(dist1<= rtest1 | dist2<= rtest2);
             
-            if size(sl0)~=0    %if some eqs qualify for further examination
+            %calculate distances from the epicenter of biggest and most recent eq
+            [dist1,dist2]=distance2(i,bg_ev_for_dist,ac);
+            
+            %extract eqs that fit the spatial interaction time
+            sl0 = dist1<= rtest1 | dist2<= rtest2;
+            
+            if any(sl0)    %if some eqs qualify for further examination
                 ll=ac(sl0);       %eqs that fit spatial and temporal criterion
                 lla=ll(find(clus(ll)~=0));   %eqs which are already related with a cluster
                 llb=ll(find(clus(ll)==0));   %eqs that are not already in a cluster
@@ -160,16 +152,16 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                     end
                 end
                 
-                if k1==0                    %if there was neither an event in the interaction
-                    k=k+1;                         %zone nor i, already related to cluster
+                if ~k1   %if there was neither an event in the interaction zone nor i, already related to cluster
+                    k=k+1;                         %
                     k1=k;
-                    clus(i)=k1;
-                    mbg(k1)=ZG.newcat.Magnitude(i);
-                    bgevent(k1)=i;
+                    clus(i) = k1;
+                    mbg(k1) = ZG.newcat.Magnitude(i);
+                    bgevent(k1) = i;
                 end
                 
-                if size(llb)>0                   %attach clustnumber to events not already
-                    clus(llb)=k1*ones(1,length(llb));  %related to a cluster
+                if size(llb)>0     %attach clustnumber to events not already related to a cluster
+                    clus(llb) = k1*ones(1,length(llb));  %
                 end
                 
             end                          %if ac
@@ -194,18 +186,18 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         original=ZG.newcat;       %save ZG.newcat in variable original
         ZG.newcat=ZG.a;
         storedcat=original;
-        cluscat=original.subset(clus);
+        cluscat=original.subset(clus(clus~=0));
         %[dura,foretime,forepercent]=clusdura(clustnumbers);
         
         update(mainmap())
         hold on
-        plot(cluscat.Longitude,cluscat.Latitude,'m+');
+        plot(cluscat.Longitude, cluscat.Latitude,'m+');
         
-        
-        st1 = [' The declustering found ' num2str(length(bgevent(:,1))) ' clusters of earthquakes, a total of '...
-            ' ' num2str(length(cluscat(:,1))) ' events (out of ' num2str(length(original(:,1))) '). '...
-            ' The map window now display the declustered catalog containing ' num2str(ZG.a.Count) ' events . The individual clusters are displayed as magenta o in the  map.  ' ];
-        
+        st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...
+            ' events (out of %d). The map window now display the declustered catalog containing %d events.'...
+            'The individual clusters are displayed as magenta o in the  map.' ] ...
+            , length(bgevent(:,1)), cluscat.Count, original.Count , ZG.a.Count);
+
         msgbox(st1,'Declustering Information')
         
         
@@ -222,16 +214,11 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                 
         end
         
-        mete =...
-            ['  The map window now displays             '
-            '  the declusterd catalog!                 '];
-        
         watchoff,done;
         
         % Plot the clusters
         %  plotclust
         
-        zmap_message_center.set_message('Declustering done!',mete)
     end
     
 end

@@ -1,6 +1,6 @@
 function [othercat,is_mainshock]=funBuildcat(mycat,clus,bg,bgevent)
-%buildcat.m                                A.Allmann
 %builds declustered catalog with equivalent events
+% buildcat.m                                A.Allmann
 
 tm1=find(clus==0);    %elements which are not related to a cluster
 tmpcat=[mycat.subset(tm1); bgevent]; % builds catalog with biggest events instead

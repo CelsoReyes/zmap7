@@ -103,7 +103,6 @@ function selectp(in_or_out)
     %   The new catalog (ZG.newcat) with points only within the
     %   selected Polygon is created and resets the original
     %   "a" .
-    disp(' The selected polygon was saved in the file polcor.dat')
     %
     %++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     

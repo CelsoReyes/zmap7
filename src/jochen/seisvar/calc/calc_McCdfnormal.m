@@ -68,7 +68,7 @@ fMinMag = min(vNonCFMDorg(1,:));
 % end
 % Loop over Mc-values
 for fMc = fMcBound-0.4:0.1:fMcBound+0.4
-    fMc = round(fMc*10)/10;
+    fMc = round(fMc, -1);
     vFMD = vFMDorg;
     vNonCFMD = vNonCFMDorg;
     vNonCFMD = fliplr(vNonCFMD);

@@ -9,8 +9,8 @@ report_this_filefun(mfilename('fullpath'));
 titstr='The Data Input Window                        ';
 hlpStr= ...
     ['                                                '
-    ' Allows you ti Import data into zmap. At this   '
-    ' You can either Import the data as ASCII colums '
+    ' Allows you to import data into zmap. At this   '
+    ' You can either import the data as ASCII colums '
     ' separated by blanks or as hypoellipsee.        '
     ' It is however possible to modify the input     '
     ' parameter such that you can read almost every  '
@@ -402,15 +402,17 @@ if in == 'readd'
     a = ZmapCatalog(a);
     ZG.a.sort('Date');
 
-    ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default to be changed by inpu
+    ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
 
     %  ask for input parameters
     %
     watchoff
     close(lohy)
     clear so is yr da mag dep hr mi lat latm lon lonm mo
-    ZG=ZmapGlobal.Data;ZG.mainmap_plotby='depth';
+    ZG=ZmapGlobal.Data;
+    ZG.mainmap_plotby='depth';
     do = 'view';
-    inpu
+    
+    ZG.a=catalog_overview(ZG.a);
 
 end   % if in in readd
