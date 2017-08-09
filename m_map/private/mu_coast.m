@@ -121,15 +121,15 @@ switch MAP_PROJECTION.routine
    % min long because that can cause problems in trying to decide which way
    % curves are oriented when doing the fill algorithm below. So instead
    % I sort of crunch the scale, preserving topology.
-   nn=ncst(:,1)<MAP_VAR_LIST.longs(1);
-   ncst(nn,1)=(ncst(nn,1)-MAP_VAR_LIST.longs(1))/100+MAP_VAR_LIST.longs(1);
+   n_n=ncst(:,1)<MAP_VAR_LIST.longs(1);
+   ncst(n_n,1)=(ncst(n_n,1)-MAP_VAR_LIST.longs(1))/100+MAP_VAR_LIST.longs(1);
   elseif MAP_VAR_LIST.longs(2)>180
    Area=[Area;Area];
    k=[k;k(2:end)+k(end)-1];
    ncst=[ncst;[ncst(2:end,1)+360 ncst(2:end,2)]];
    % Ditto.
-   nn=ncst(:,1)>MAP_VAR_LIST.longs(2);
-   ncst(nn,1)=(ncst(nn,1)-MAP_VAR_LIST.longs(2))/100+MAP_VAR_LIST.longs(2);
+   n_n=ncst(:,1)>MAP_VAR_LIST.longs(2);
+   ncst(n_n,1)=(ncst(n_n,1)-MAP_VAR_LIST.longs(2))/100+MAP_VAR_LIST.longs(2);
   end
 end
 
@@ -473,22 +473,22 @@ while cnt>0
 
    % Do y limits, then x so we can keep corner points.
 
-   nn=y>mtlim+tol | y<mblim-tol;
+   n_n=y>mtlim+tol | y<mblim-tol;
      % keep one extra point when crossing limits, also the beginning/end point.
-   nn=logical(nn-([0;diff(nn)]>0)-([diff(nn);0]<0));nn([1 end])=0;
+   n_n=logical(n_n-([0;diff(n_n)]>0)-([diff(n_n);0]<0));n_n([1 end])=0;
      % decimate vigorously
-   nn=nn & rem(1:length(nn),decfac)'~=0;
-   x(nn)=[];y(nn)=[];
+   n_n=n_n & rem(1:length(n_n),decfac)'~=0;
+   x(n_n)=[];y(n_n)=[];
 
    if mrlim>mllim,  % no wraparound
        % sections of line outside lat/long limits
-     nn=(x>mrlim+tol | x<mllim-tol) & y<mtlim & y>mblim;
+     n_n=(x>mrlim+tol | x<mllim-tol) & y<mtlim & y>mblim;
     else            % wraparound case
-     nn=(x>mrlim+tol & x<mllim-tol ) & y<mtlim & y>mblim;
+     n_n=(x>mrlim+tol & x<mllim-tol ) & y<mtlim & y>mblim;
    end
-   nn=logical(nn-([0;diff(nn)]>0)-([diff(nn);0]<0));nn([1 end])=0;
-   nn=nn & rem(1:length(nn),decfac)'~=0;
-   x(nn)=[];y(nn)=[];
+   n_n=logical(n_n-([0;diff(n_n)]>0)-([diff(n_n);0]<0));n_n([1 end])=0;
+   n_n=n_n & rem(1:length(n_n),decfac)'~=0;
+   x(n_n)=[];y(n_n)=[];
 
    % Move all points "near" to map boundaries.
    % I'm not sure about the wisdom of this - it might be better to clip
@@ -518,9 +518,9 @@ while cnt>0
    if xflag
      l=l+1;Area(l)=Area(l-1);
      if abs(Area(l))>1e5
-       nn=find(sx>180);nn=[nn;nn(1)];
-       k(l+1)=k(l)+length(nn)+1;
-       ncst(k(l)+1:k(l+1)-1,:)=[sx(nn)-360,sy(nn)];
+       n_n=find(sx>180);n_n=[n_n;n_n(1)];
+       k(l+1)=k(l)+length(n_n)+1;
+       ncst(k(l)+1:k(l+1)-1,:)=[sx(n_n)-360,sy(n_n)];
      else   % repeat the island at the other edge.
        k(l+1)=k(l)+length(sx)+1;
        ncst(k(l)+1:k(l+1)-1,:)=[sx-360,sy];

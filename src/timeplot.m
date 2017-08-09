@@ -18,7 +18,7 @@ function timeplot(mycat, nosort)
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
     report_this_filefun(mfilename('fullpath'));
-    global par1 iwl2
+    global  iwl2
    global  cum statime 
     global selt
     
@@ -30,8 +30,8 @@ function timeplot(mycat, nosort)
         as=[]; % z values, maybe? used by the save callback.
     end
     
-    if isempty(par1) %binning
-        par1=1;
+    if isempty(ZG.bin_days) %binning
+        ZG.bin_days=1;
     end
     
     zmap_message_center.set_info(' ','Plotting cumulative number plot...');
@@ -132,7 +132,7 @@ function timeplot(mycat, nosort)
         
         uimenu (analyzemenu,'Label','Decluster the catalog',...
             'Callback','inpudenew;')
-        iwl = days(iwl2/par1);
+        iwl = days(iwl2/ZG.bin_days);
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
             'Callback','ZG=ZmapGlobal.Data;ZG.hold_state2=true; ')
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
@@ -240,12 +240,12 @@ function timeplot(mycat, nosort)
     %end;    if figure exist
     
     if ZG.hold_state2
-        cumu = 0:1:(tdiff/days(par1))+2;
-        cumu2 = 0:1:(tdiff/days(par1))-1;
+        cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
+        cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
         cumu = cumu * 0;
         cumu2 = cumu2 * 0;
         n = mycat.Count;
-        [cumu, xt] = hist(mycat.Date,(t0b:days(par1):teb));
+        [cumu, xt] = hist(mycat.Date,(t0b:days(ZG.bin_days):teb));
         cumu2 = cumsum(cumu);
         
         
@@ -283,35 +283,35 @@ function timeplot(mycat, nosort)
     big = mycat.subset(l);
     %calculate start -end time of overall catalog
     statime=[];
-    par2=par1;
+    par2=ZG.bin_days;
     t0b = min(ZG.a.Date);
     n = mycat.Count;
     teb = max(ZG.a.Date);
     ttdif=(teb - t0b); % days
     if ttdif>10                 %select bin length respective to time in catalog
-        %par1 = ceil(ttdif/300);
+        %ZG.bin_days = ceil(ttdif/300);
     elseif ttdif<=10  &&  ttdif>1
-        %par1 = 0.1;
+        %ZG.bin_days = 0.1;
     elseif ttdif<=1
-        %par1 = 0.01;
+        %ZG.bin_days = 0.01;
     end
     
     
-    if par1>=1
-        tdiff = round(days(teb-t0b)/par1);
+    if ZG.bin_days>=1
+        tdiff = round(days(teb-t0b)/ZG.bin_days);
         %tdiff = round(teb - t0b);
     else
-        tdiff = (teb-t0b)/days(par1);
+        tdiff = (teb-t0b)/days(ZG.bin_days);
     end
     % set arrays to zero
-    cumu = 0:1:((teb-t0b)/days(par1))+2;
-    cumu2 = 0:1:((teb-t0b)/days(par1))-1;
+    cumu = 0:1:((teb-t0b)/days(ZG.bin_days))+2;
+    cumu2 = 0:1:((teb-t0b)/days(ZG.bin_days))-1;
     % calculate cumulative number versus time and bin it
     n = mycat.Count;
-    if par1 >=1
-        [cumu, xt] = histcounts(mycat.Date,(t0b:days(par1):teb));
+    if ZG.bin_days >=1
+        [cumu, xt] = histcounts(mycat.Date,(t0b:days(ZG.bin_days):teb));
     else
-        [cumu, xt] = histcounts((mycat.Date-mycat.Date(1)+days(par1))*365,(0:par1:(tdiff+2*par1)));
+        [cumu, xt] = histcounts((mycat.Date-mycat.Date(1)+days(ZG.bin_days))*365,(0:ZG.bin_days:(tdiff+2*ZG.bin_days)));
     end
     cumu2=cumsum(cumu);
     % plot time series
@@ -339,7 +339,7 @@ function timeplot(mycat, nosort)
     
     % plot big events on curve
     %
-    if par1>=1
+    if ZG.bin_days>=1
         if ~isempty(big)
             l = mycat.Magnitude > ZG.big_eq_minmag;
             f = find( l  == 1);
@@ -356,10 +356,10 @@ function timeplot(mycat, nosort)
         end
     end %if big
     
-    if par1>=1
+    if ZG.bin_days>=1
         xlabel(ax,'Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
     else
-        statime=mycat.Date(1) - days(par1);
+        statime=mycat.Date(1) - days(ZG.bin_days);
         xlabel(ax,['Time in days relative to ',char(statime)],...
             'FontWeight','bold','FontSize',ZG.fontsz.m)
     end

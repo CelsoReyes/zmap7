@@ -13,7 +13,7 @@ clear ZABO
 xsum = ZG.newcat.Count;
 t0b = ZG.newcat.Date(1)
 teb = ZG.newcat.Date(xsum)
-incx = days(par1);
+incx = days(ZG.bin_days);
 xt = t0b:incx:teb;
 bin0 = 1;
 bin1 = length(xt)
@@ -214,6 +214,6 @@ uimenu(op3,'Label','Invers gray',...
 uimenu(op3,'Label','Plus/minus display ',...
     'Callback','genbw');
 uimenu(op3,'Label','Get coordinates with cursor',...
-     'Callback','gi = ginput(1); disp([''Time: '' num2str(t0b +gi(2)*days(par1),6) ]); ')
+     'Callback','gi = ginput(1); disp([''Time: '' num2str(t0b +gi(2)*days(ZG.bin_days),6) ]); ')
 
 done

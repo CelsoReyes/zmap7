@@ -25,13 +25,6 @@ for tt = 1:ni/4:length(newt1)-ni
     [av bv stan ] =  bmemag(newt1(tt:tt+ni,:));
     av2 = [av2 ;   av  newt1(t+round(ni/2),7) stan bv];
 
-    % calculate b-value based on maximum likelihood
-
-    %n   = (max(newt1(t:t+ni,6)+0.05) - (min(newt1(t:t+ni,6))-0.05))/0.1;
-    %les = (mean(newt1(t:t+ni,6)) - (min(newt1(t:t+ni,6)+0.05)))/0.1;
-    %global n les
-    %so = fzero('sofu',1.0);
-    %bv = log(so)/(-2.3026*0.1);
 
 end
 

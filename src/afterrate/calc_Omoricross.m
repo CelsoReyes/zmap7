@@ -245,7 +245,7 @@ if sel == 'ca'
     t0b = min(newa.Date)  ;
     n = newa.Count;
     teb = max(newa.Date) ;
-    tdiff = round(days(teb-t0b)/par1)
+    tdiff = round(days(teb-t0b)/ZG.bin_days)
 
     % loop over  all points
     mCross = [];%NaN(length(newgri),20);
@@ -355,12 +355,12 @@ if sel == 'ca'
     gy = yvect;
 
     % Save the data to rcval_grid.mat
-    %save Omoricross.mat mCross gx gy dx dy par1 tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy wi lon1 lat1 lon2 lat2
+    %save Omoricross.mat mCross gx gy dx dy tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy wi lon1 lat1 lon2 lat2
     %disp('Saving data to Omoricross.mat in current directory')
     catSave3 =...
         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(hodi, ''eq_data'', ''*.mat''), ''Grid Datafile Name?'') ;',...
-        ' sapa2 = [''save '' path1 file1 '' mCross gx gy dx dy par1 tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy wi lon1 lat1 lon2 lat2 ''];',...
+        ' sapa2 = [''save '' path1 file1 '' mCross gx gy dx dy ZG.bin_days tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy wi lon1 lat1 lon2 lat2 ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
 
     close(wai)

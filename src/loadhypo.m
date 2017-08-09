@@ -46,7 +46,9 @@ if in == 'initf'
         hypo_de
     end
     if in2 == 2
-        da = 'eq';close; loadasci; return
+        close; 
+        loadasci('eq','of');
+        return
     end
 
     % set up the figure

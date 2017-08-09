@@ -12,7 +12,7 @@ b = ZG.newcat;
 l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
 big = ZG.newt2.subset(l);
 
-def = {num2str(iwl2),num2str(par1)};
+def = {num2str(iwl2),num2str(ZG.bin_days)};
 
 tit ='beta computation input parameters';
 prompt={ 'Compare window length (years)',...
@@ -23,10 +23,10 @@ ni2 = inputdlg(prompt,tit,1,def);
 l = ni2{1}; 
 iwl2= str2double(l);
 l = ni2{2}; 
-par1= str2double(l);
+ZG.bin_days= str2double(l);
 
 % for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.
-[cumu, xt] = histcounts(ZG.newt2.Date,min(ZG.newt2.Date): par1 : max(ZG.newt2.Date));%(t0b:days(par1):teb));
+[cumu, xt] = histcounts(ZG.newt2.Date,min(ZG.newt2.Date): ZG.bin_days : max(ZG.newt2.Date));%(t0b:days(ZG.bin_days):teb));
 xt = xt + (xt(2)-xt(1))/2; xt(end)=[]; % convert from edges to centers!
 cumu2=cumsum(cumu);
 
@@ -44,10 +44,10 @@ as = zeros(1,ncu)*nan;
 t0b = min(ZG.a.Date);
 n = ZG.a.Count;
 teb = max(ZG.a.Date);
-tdiff = round(days(teb - t0b)/par1); % in days/par1
+tdiff = round(days(teb - t0b)/ZG.bin_days); % in days/ZG.bin_days
 
 if sta == 'rub'
-    iwl = floor(iwl2/days(par1));
+    iwl = floor(iwl2/days(ZG.bin_days));
     for i = iwl:1:tdiff-iwl
         mean1 = mean(cumu(1:i));
         mean2 = mean(cumu(i+1:i+iwl));
@@ -58,7 +58,7 @@ if sta == 'rub'
 end % if sta = rub
 
 if sta == 'ast'
-    iwl = iwl2/days(par1);
+    iwl = iwl2/days(ZG.bin_days);
     for i = floor(iwl):floor(tdiff-iwl)
         mean1 = mean(cumu(1:i));
         mean2 = mean(cumu(i+1:ncu));
@@ -69,7 +69,7 @@ if sta == 'ast'
 end % if sta == ast
 
 if sta == 'lta'
-    iwl = floor(iwl2/days(par1));
+    iwl = floor(iwl2/days(ZG.bin_days));
     %for i = 1:tdiff-iwl-1
     for i = 1:length(cumu)-iwl
         cu = [cumu(1:i-1) cumu(i+iwl+1:ncu)];
@@ -90,7 +90,7 @@ if sta == 'bet'
     NumberEQs = Catalog.Count;
     TimeEnd = max(Catalog.Date);
 
-    iwl = floor(iwl2/days(par1));
+    iwl = floor(iwl2/days(ZG.bin_days));
     if (iwl2 >= TimeEnd-TimeBegin) | (iwl2 <= 0)
         errordlg('iwl is either too long or too short.');
         return;
@@ -200,7 +200,7 @@ hold on;
 %
 if ~isempty(big)
     %if ceil(big(:,3) -t0b) > 0
-    %f = cumu2(ceil((big(:,3) -t0b)/days(par1)));
+    %f = cumu2(ceil((big(:,3) -t0b)/days(ZG.bin_days)));
     l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
     f = find( l  == 1);
     bigplo = plot(big.Date,f,'hm');

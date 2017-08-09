@@ -4,7 +4,7 @@
 %
 % stefan wiemer 11/94
 %
-
+global iala
 
 % Input Rubberband
 %
@@ -16,7 +16,7 @@ clear abo;
 abo=[];
 
 % initial parameter
-iwl = floor(iwl2* 365/par1);
+iwl = floor(iwl2* 365/ZG.bin_days);
 [len, ncu] = size(cumuall); len = len-2;
 var1 = zeros(1,ncu);
 var2 = zeros(1,ncu);
@@ -33,7 +33,7 @@ n2 = [];
 % loop over all point for rubber band
 %
 wai = waitbar(0,' Please Wait ...  ');
-set(wai,'NumberTitle','off','Name','Allhist - Percent done');;
+set(wai,'NumberTitle','off','Name','Allhist - Percent done');
 pause(1)
 think
 drawnow
@@ -121,16 +121,21 @@ uicontrol('Units','normal',...
 matdraw
 
 abo2 = abo;
-iala = iwl2
-catSave3 =...
-    [ 'zmap_message_center.set_info(''Save Alarm Cube?'',''  '');',...
-    '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Save Alarm Cube Datafile?'',400,400);',...
-    ' sapa2 = [''save '' path1 file1 '' cumuall abo loc abo2 iala iwl2''];',...
-    ' if length(file1) > 1, eval(sapa2),end , done'];
-
-eval(catSave3)
-
+iala = iwl2;
+try
+    zmap_message_center.set_info('Save Alarm Cube?','  ');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
+    sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala iwl2'];
+    if length(file1) > 1
+        eval(sapa2);
+    end
+catch ME
+    warning(ME)
+end
 done
+
+
+done;
 % plot the cube
 plotala
 

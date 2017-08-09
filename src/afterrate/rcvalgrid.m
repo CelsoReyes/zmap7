@@ -331,7 +331,7 @@ if sel == 'ca'
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
     teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -436,12 +436,12 @@ if sel == 'ca'
     end  % for newgr
 
     % Save the data to rcval_grid.mat
-    save rcval_grid.mat mRcGrid gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
+    save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
     disp('Saving data to rcval_grid.mat in current directory')
     %     catSave3 =...
     %         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     %             '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
-    %             ' sapa2 = [''save '' path1 file1 '' mRcGrid gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll''];',...
+    %             ' sapa2 = [''save '' path1 file1 '' mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll''];',...
     %             ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
 
     close(wai)

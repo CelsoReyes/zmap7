@@ -5,7 +5,7 @@
 % define size of the plot etc.
 %
 
-if ~exist('Prmap')
+if ~exist('Prmap','var')
     Prmap = re3*nan;
 end
 if isempty(Prmap) >  0
@@ -13,7 +13,7 @@ if isempty(Prmap) >  0
 end
 
 if isempty(name) >  0
-    name = '  '
+    name = '  ';
 end
 think
 report_this_filefun(mfilename('fullpath'));
@@ -67,7 +67,7 @@ if newbmapWindowFlag
 
     add_display_menu(1)
 
-    tresh = nan; re4 = re3;
+    re4 = re3;
 
     colormap(jet)
     tresh = nan; minpe = nan; Mmin = nan;
@@ -140,7 +140,7 @@ hold on
 overlay_
 
 hold on
-plq = quiver(newgri(:,1),newgri(:,2),-cos(sor(:,SA*2)*pi/180),sin(sor(:,SA*2)*pi/180),0.8,'.')
+plq = quiver(newgri(:,1),newgri(:,2),-cos(sor(:,SA*2)*pi/180),sin(sor(:,SA*2)*pi/180),0.8,'.');
 set(plq,'LineWidth',1,'Color','k')
 hold on
 

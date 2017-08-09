@@ -60,10 +60,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     n = length(x);
     l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
     les = (mean(b(l,6)) - M1b(1))/dm1;
-    %so = fzero('y = les - ( x/(1-x) - n*x^n/(1-x^n) ); ',1);
-    %so = fzero('sofu',1.0);
-    %fplot('sofu',[-10 10])
-    %me2 = log(so)/(-2.3026*0.1);
+    
 
     av=p(1,2);
     p=-p(1,1);

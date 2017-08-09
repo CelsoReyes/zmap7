@@ -24,7 +24,7 @@ function cltipval(var1)
 
 
     global file1             
-    global mess ccum bgevent equi  clust original cluslength newclcat
+    global mess ccum bgevent clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
     global xt par3 cumu cumu2

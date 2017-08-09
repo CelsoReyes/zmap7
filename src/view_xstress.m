@@ -6,7 +6,7 @@
 % last modified: J. Woessner, 02.2004
 
 if isempty(name) >  0
-    name = '  '
+    name = '  ';
 end
 think
 report_this_filefun(mfilename('fullpath'));
@@ -75,7 +75,7 @@ if newstressmapWindowFlag
     % Menu Display
     add_display_menu(1);
     
-    tresh = nan; re4 = re3;
+    re4 = re3;
     
     colormap(jet)
     tresh = nan; minpe = nan; Mmin = nan;
@@ -87,7 +87,11 @@ figure_w_normalized_uicontrolunits(stressmap)
 delete(gca)
 delete(gca)
 delete(gca)
-dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+try
+    delete(sizmap)
+catch ME
+    warning(ME)
+end
 reset(gca)
 cla
 hold off
@@ -172,12 +176,9 @@ axes('position',rect)
 axis('off')
 %  Text Object Creation
 txt1 = text(...
-    'Color',[ 0 0 0 ],...
-    'EraseMode','normal',...
     'Units','normalized',...
     'Position',[ 0.33 0.21 0 ],...
     'HorizontalAlignment','right',...
-    'Rotation',[ 0 ],...
     'FontSize',ZmapGlobal.Data.fontsz.s,....
     'FontWeight','bold',...
     'String',lab1);

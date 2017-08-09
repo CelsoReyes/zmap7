@@ -57,7 +57,7 @@ function startmen(parent_fig)
     
 end
 
-function think_and_do(s, e, f_handle, varargin)
+function think_and_do(~, ~, f_handle, varargin)
     think;
     if ischar(f_handle) && nargin==3
         evalin('base',f_handle); %use evalin??

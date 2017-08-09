@@ -6,10 +6,10 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-xt_backg = t1p(1):days(par1):t2p(1);
-xt_foreg = t3p(1):days(par1):t4p(1);
-tbckg = length(t1p(1):days(par1):t2p(1));
-tforg = length(t3p(1):days(par1):t4p(1));
+xt_backg = t1p(1):days(ZG.bin_days):t2p(1);
+xt_foreg = t3p(1):days(ZG.bin_days):t4p(1);
+tbckg = length(t1p(1):days(ZG.bin_days):t2p(1));
+tforg = length(t3p(1):days(ZG.bin_days):t4p(1));
 magsis = min(ZG.newcat.Magnitude)
 magis = min(ZG.newcat.Magnitude)
 

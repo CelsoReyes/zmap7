@@ -21,7 +21,7 @@ for i = minmag2:0.1:maxmag
     l =  b.Date > t1p(1) & b.Date < t3p(1) & b.Magnitude < i;
     junk = b(l,:);
     if ~isempty(junk)
-        [cumunew, xt] = hist(junk(:,3),t1p(1):days(par1):t3p(1));
+        [cumunew, xt] = hist(junk(:,3),t1p(1):days(ZG.bin_days):t3p(1));
 
         n2 = length(cumunew) - tmid;
 
@@ -46,7 +46,7 @@ for i = minmag2:0.1:maxmag
     l =  b.Date > t1p(1) & b.Date < t3p(1) & b.Magnitude > i;
     junk = b(l,:);
     if ~isempty(junk)
-        [cumunew2, xt] = hist(junk(:,3),t1p(1):days(par1):t3p(1));
+        [cumunew2, xt] = hist(junk(:,3),t1p(1):days(ZG.bin_days):t3p(1));
 
         mean1a = mean(cumunew2(1:tmid));
         mean2a = mean(cumunew2(tmid:length(cumunew2)));

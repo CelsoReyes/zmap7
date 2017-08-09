@@ -40,7 +40,7 @@ if in2 ~= 'calma'
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'String','Please input time of cut in years (e.g. 86.5):');
 
-    if in == 'rub' | in == 'lta'
+    if in == 'rub' || in == 'lta'
 
         txt3 = text(...
             'Color',[0 0 0 ],...
@@ -76,8 +76,10 @@ else     % if in2 ~=calma
 
     % check if time are with limits
     %
-    if ~exist('it', 'var') ; it = t0b + (teb-t0b)/2; end
-    if it + iwl2 > teb | it < t0b
+    if ~exist('it', 'var') 
+        it = t0b + (teb-t0b)/2;
+    end
+    if it + iwl2 > teb || it < t0b
         errordlg('Time out of limits')
         in2 = 'nocal';
         show_map
@@ -85,7 +87,7 @@ else     % if in2 ~=calma
 
 
     % initial parameter
-    iwl = floor(iwl2* 365/par1); ti = floor((it -t0b)/days(par1));
+    iwl = floor(iwl2* 365/ZG.bin_days); ti = floor((it -t0b)/days(ZG.bin_days));
     [len, ncu] = size(cumuall); len = len-2;
     var1 = zeros(1,ncu);
     var2 = zeros(1,ncu);
@@ -107,7 +109,7 @@ else     % if in2 ~=calma
         as = -((mean1-mean2)./mean1)*100;
 
         strib = 'Change in Percent';
-        stri2 = ['ti=' num2str(ti*days(par1) + t0b)  ];
+        stri2 = ['ti=' num2str(ti*days(ZG.bin_days) + t0b)  ];
 
     end  % if in = = per
 

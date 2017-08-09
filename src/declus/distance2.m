@@ -52,9 +52,6 @@ function [dist1, dist2] = distance(i,bgevent,ac)
         z(tmp2)=zeros(length(tmp2),1);
     end
     r=sqrt(z.^2+r.^2);                   %hypocenter distance
-    %alpha=atan2(z,r);
-    %ca =cos(alpha);
-    %sa =sin(alpha);
     dist1=r(:,1);           %distance between eqs
     dist2=r(:,2);
 

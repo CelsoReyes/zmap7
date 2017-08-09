@@ -35,8 +35,8 @@ zmap_message_center.clear_message();;think
 t0b = min(ZG.a.Date)  ;
 n = ZG.a.Count;
 teb = ZG.a.Date(n) ;
-tdiff = round(days(teb-t0b)/par1);
-cumu = zeros(length(t0b:days(par1):teb)+2);
+tdiff = round(days(teb-t0b)/ZG.bin_days);
+cumu = zeros(length(t0b:days(ZG.bin_days):teb)+2);
 ncu = length(cumu);
 cumuall = zeros(ncu,length(newgri(:,1)));
 loc = zeros(3,length(newgri(:,1)));
@@ -71,7 +71,7 @@ for i= 1:length(newgri(:,1))
     cumu = cumu * 0;
     % time (bin) calculation
     n = b.Count;
-    cumu = histogram(b(1:n,3),t0b:days(par1):teb);
+    cumu = histogram(b(1:n,3),t0b:days(ZG.bin_days):teb);
     cumu2 = cumsum(cumu);
     %calcsimp
     %cvg = [cvg ; cv rcv];
@@ -91,12 +91,12 @@ end  % for x0
 %  set(txt1,'String', 'Saving data...')
 close(wai)
 drawnow
-%save cumugrid.mat cumuall par1 ni dx dy gx gy tdiff t0b teb loc
+%save cumugrid.mat cumuall ZG.bin_days ni dx dy gx gy tdiff t0b teb loc
 
 catSave3 =...
     [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
     ' [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile'',400,400);',...
-    ' sapa2 = [''save '' path1 file1 '' x y tmpgri newgri xvect yvect ll cumuall par1 ni dx dy gx gy tdiff t0b teb loc a main faults mainfault coastline''];',...
+    ' sapa2 = [''save '' path1 file1 '' x y tmpgri newgri xvect yvect ll cumuall ZG.bin_days ni dx dy gx gy tdiff t0b teb loc a main faults mainfault coastline''];',...
     ' if length(file1) > 1, eval(sapa2),end , done'];
 
 eval(catSave3)

@@ -273,7 +273,7 @@ if sel == 'ca'
     t0b = min(newa.Date)  ;
     n = newa.Count;
     teb = newa.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -404,13 +404,13 @@ if sel == 'ca'
     catSave3 =...
         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile([ ''*.mat''], ''Grid Datafile Name?'') ;',...
-        'sapa2=[''save '' path1 file1 '' ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg xvect yvect gx gy dx dd par1 newa maex maey maix maiy ''];',...
+        'sapa2=[''save '' path1 file1 '' ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg xvect yvect gx gy dx dd ZG.bin_days newa maex maey maix maiy ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
 
     close(wai)
     watchoff
 
-    save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg ra xvect yvect gx gy dx dd par1 newa ;
+    save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg ra xvect yvect gx gy dx dd ZG.bin_days newa ;
 
 
     % reshape a few matrices

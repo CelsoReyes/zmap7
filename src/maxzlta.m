@@ -3,7 +3,7 @@
 %
 report_this_filefun(mfilename('fullpath'));
 
-iwl = iwl3* 365/par1;
+iwl = iwl3* 365/ZG.bin_days;
 
 [len, ncu] = size(cumuall);       % redefine ncu
 len = len -2;

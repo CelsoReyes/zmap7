@@ -13,7 +13,7 @@ hlpStr1= ...
     ' This window displays all z-values displayed in '
     ' the z-value map, therefore all the z-values at '
     ' this specific cut in time for the applied      '
-    'stastitical function.                           ']
+    'stastitical function.                           '];
 
 think
 watchon

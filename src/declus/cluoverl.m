@@ -3,9 +3,11 @@ function cluoverl(var1)
     %orption to display equivalent events or biggest events or clear cluster events
     %
 
-    global bgevent plot1_h plot2_h  equi cluscat backequi newclcat a
+    global bgevent plot1_h plot2_h  
+    global equi %[IN]
+    global cluscat backequi newclcat a
     global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3
-    global par1 file1 clu h5
+    global  file1 clu h5
     global ty stri2 strib
     global after_h fore_h main_h ttcat after_button fore_button
     global foresh aftersh mainsh calll66
@@ -78,7 +80,7 @@ function cluoverl(var1)
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
         teb = ZG.a.Date(n) ;
-        tdiff = round(teb - t0b)/days(par1);
+        tdiff = round(teb - t0b)/days(ZG.bin_days);
 
 
         n = ZG.a.Count;
@@ -156,7 +158,7 @@ function cluoverl(var1)
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
         teb = ZG.a.Date(n) ;
-        tdiff = round(teb - t0b)/days(par1);
+        tdiff = round(teb - t0b)/days(ZG.bin_days);
         %define fore and aftershocks
         %
         tmp = find(ZG.a.Magnitude==max(ZG.a.Magnitude));     %index in a of first mainshock

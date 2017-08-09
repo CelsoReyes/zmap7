@@ -57,9 +57,7 @@ function  th = signature(name,logo,pos,fontsize,offset)
 
     % Make an invisible axes ..........
     ah = axes('units','normal','pos',[0 0 1 1]);
-    col = get(gcf,'color');
     set(ah,'xlim',[0 1],'ylim',[0 1])
-    %set(ah,'xcolor',col,'ycolor',col)
     set(ah,'xtick',[], 'ytick',[])
 
     th = text(pos(1,1),pos(1,2),string);  % The first text
@@ -68,9 +66,10 @@ function  th = signature(name,logo,pos,fontsize,offset)
     ext = get(th,'extent');
     if size(pos,1)<2
         pos(2) = pos(2)-offset*ext(4);
-    else, pos = pos(2,:);
+    else
+        pos = pos(2,:);
     end
-    if logo~=[]                           % If "logo" is added
+    if ~isempty(logo)                           % If "logo" is added
         th(2) = text(pos(1),pos(2),logo);
         set(th(2),'fontsize',fontsize(2),'fontname',ftname,'color',color)
     end

@@ -85,13 +85,13 @@ function setUpDefaultValues(A)
     t0b = min(A.Date);
     teb = max(A.Date);
     tdiff = (teb - t0b)*365;
-    if ~exist('par1','var')
+    if ~exist('ZG.bin_days','var')
         if tdiff>10                 %select bin length respective to time in catalog
-            par1 = ceil(tdiff/100);
+            ZG.bin_days = ceil(tdiff/100);
         elseif tdiff<=10  &&  tdiff>1
-            par1 = 0.1;
+            ZG.bin_days = 0.1;
         elseif tdiff<=1
-            par1 = 0.01;
+            ZG.bin_days = 0.01;
         end
     end
     ZG.big_eq_minmag = max(A.Magnitude) -0.2;

@@ -134,7 +134,7 @@ function [str,msg] = unitstra(str0)
         case 'rad',          str = 'radians';   return
         case 'dm',           str = str0;        return
         case 'dms',          str = str0;        return
-        otherwise,
+        otherwise
             units = ['degrees'; 'dm     '; 'dms    '; 'radians'];
             strindx = strmatch(str0,units);
     end

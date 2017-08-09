@@ -1,92 +1,95 @@
-function clpickp(but)
-    %clpickp.m                          A.Allmann
+function clpickp(choice)
     %subroutine for clkeysel.m to pick the data-points(locations)
     %and build new catalog whith earthquakes of clusters which equivalent events
     %are inside the selection area
     %original clustercatalog is in backcat,you can choose selection areas inside
-    %older selection ares but if you hit back your working catalog becomes
+    %older selection ares choice if you hit back your working catalog becomes
     %the original clustercatalog again
     %
-    %
-
-    global clu newclcat mess equi_button backcat clu1 mapp
-    global n x y xcordinate ycordinate equi bgevent backequi par1
-    global dep1 dep2 dep3 ty1 ty2 ty3 name
-    global color_bg
+    %clpickp.m                          A.Allmann
+    
+    global clu newclcat equi_button backcat clu1 mapp
+    global n x y xcordinate ycordinate
+    global equi %[IN/OUT]
+    global bgevent backequi
     global backbgevent original plot1_h plot2_h clust file1
-    global ttcat tt1cat foresh aftersh mainsh clsel sys decc
-ZG=ZmapGlobal.Data;
+    global ttcat tt1cat clsel decc
+    
+    proceed=false;
+    
+    ZG=ZmapGlobal.Data;
     if decc~=0
         if isempty(ttcat)
-            figure_w_normalized_uicontrolunits(clu);
+            figure(clu);
         else
-            figure_w_normalized_uicontrolunits(clu1);
+            figure(clu1);
         end
     elseif decc==0
-        figure_w_normalized_uicontrolunits(mapp)
+        figure(mapp)
     end
-    if but == 1               %more option
-        xi=xcordinate;
-        yi=ycordinate;
-
-        mark1 =    plot(xi,yi,'wo','era','back'); % doesn't matter what erase mode is
-        % used so long as its not NORMAL
-        set(mark1,'MarkerSize',10,'LineWidth',2.0)
-        n = n + 1;
-        % mark2 =     text(xi,yi,[' ' int2str(n)],'era','back');
-        % set(mark2,'FontSize',15,'FontWeight','bold')
-
-        x = [x; xi];
-        y = [y; yi];
-    elseif but==2               %last input of cordinates
-        xi=xcordinate;
-        yi=ycordinate;
-        mark1 = plot(xi,yi,'wo','era','back');
-        set(mark1,'MarkerSize',10,'LineWidth',2.0)
-        n = n+1;
-        x = [x; xi];
-        y = [y; yi];
-        but=5;
-    elseif but==3
-        [file2,path2] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'),'Cluster Datafile');
-
-        load([path2 file2]);
-        x=polcordinates(:,1);
-        y=polcordinates(:,2);
-        polcordinates
-        n=length(x);
-        for i=1:length(polcordinates(:,1))
-            mark1 = plot(x(i),y(i),'wo','era','back');
-            set(mark1,'MarkerSize',10,'LineWidth',2.0)
-        end %for
-        but=5;
-    elseif but==4
-        echo on
-        % ___________________________________________________________
-        %  Please use the left mouse button or the cursor to select
-        %  the polygon vertexes.
-        %
-        %  Use the right mouse button to select the final point.
-        %_____________________________________________________________
-        echo off
-        te = text(0.01,0.90,'\newline \newlineTo select events inside a polygon. \newlinePlease use the LEFT mouse button or the cursor to select \newline the polygon vertexes. Use the RIGHT mouse button\newline for the final point.\newline \newline Operates on the original catalogue producing a reduced \newlinesubset which in turn the other routines operate on.');
-        set(te,'FontSize',12);
-        click = 1;
-        while click == 1
-            [xi,yi,click] = ginput(1);
-            check1=xi
-            check2=yi
-            mark1 =    plot(xi,yi,'ko','era','back'); % doesn't matter what erase mode is
+    switch choice
+        case 'MORE'
+            xi=xcordinate;
+            yi=ycordinate;
+            
+            mark1 =    plot(xi,yi,'wo','era','back'); % doesn't matter what erase mode is
             % used so long as its not NORMAL
             set(mark1,'MarkerSize',10,'LineWidth',2.0)
             n = n + 1;
+            
             x = [x; xi];
             y = [y; yi];
-        end  %while
-        but=5;
-    end  %if
-
-    if but==5
+        case 'LAST'               %last input of cordinates
+            xi=xcordinate;
+            yi=ycordinate;
+            mark1 = plot(xi,yi,'wo','era','back');
+            set(mark1,'MarkerSize',10,'LineWidth',2.0)
+            n = n+1;
+            x = [x; xi];
+            y = [y; yi];
+            proceed=true;
+        case 'LOAD'
+            [file2,path2] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'),'Cluster Datafile');
+            
+            load([path2 file2]);
+            x=polcordinates(:,1);
+            y=polcordinates(:,2);
+            polcordinates
+            n=length(x);
+            for i=1:length(polcordinates(:,1))
+                mark1 = plot(x(i),y(i),'wo','era','back');
+                set(mark1,'MarkerSize',10,'LineWidth',2.0)
+            end
+            proceed=true;
+        case 'MOUSE'
+            echo on
+            % ___________________________________________________________
+            %  Please use the left mouse button or the cursor to select
+            %  the polygon vertexes.
+            %
+            %  Use the right mouse button to select the final point.
+            %_____________________________________________________________
+            echo off
+            te = text(0.01,0.90,'\newline \newlineTo select events inside a polygon. \newlinePlease use the LEFT mouse button or the cursor to select \newline the polygon vertexes. Use the RIGHT mouse button\newline for the final point.\newline \newline Operates on the original catalogue producing a reduced \newlinesubset which in turn the other routines operate on.');
+            set(te,'FontSize',12);
+            click = 1;
+            while click == 1
+                [xi,yi,click] = ginput(1);
+                check1=xi
+                check2=yi
+                mark1 =    plot(xi,yi,'ko','era','back'); % doesn't matter what erase mode is
+                % used so long as its not NORMAL
+                set(mark1,'MarkerSize',10,'LineWidth',2.0)
+                n = n + 1;
+                x = [x; xi];
+                y = [y; yi];
+            end  %while
+            proceed=true;
+        otherwise
+            error('invalid choice')
+    end
+    
+    if proceed
         if isempty(newclcat)        %first area selection
             if isempty(backcat)         %no selection of special clusters before
                 backequi=equi;
@@ -100,7 +103,7 @@ ZG=ZmapGlobal.Data;
             end
         end
         disp('End of data entry')
-
+        
         disp('Data is being processed - please wait...  ')
         if decc~=0
             if isempty(ttcat)
@@ -113,7 +116,7 @@ ZG=ZmapGlobal.Data;
         end
         x = [x ; x(1)];
         y = [y ; y(1)];      %  closes polygon
-
+        
         if decc~=0
             if isempty(ttcat)
                 figure_w_normalized_uicontrolunits(clu)
@@ -127,10 +130,10 @@ ZG=ZmapGlobal.Data;
         sum3 = 0.;
         pause(0.3)
         % calculate points with a polygon
-
+        
         XI = ZG.a.Longitude;          % this substitution just to make equation below simple
         YI = ZG.a.Latitude;
-    ll = polygon_filter(x,y, XI, YI, 'inside');
+        ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
             if isempty(ttcat)
                 equi = ZG.a.subset(ll);       %all equievents inside selection area
@@ -174,4 +177,4 @@ ZG=ZmapGlobal.Data;
         n=0;
         zmap_message_center();
     end
-
+end

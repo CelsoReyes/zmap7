@@ -75,8 +75,8 @@ if sel == 'in'
 
     freq_field6B=uicontrol('Style','edit',...
         'Position',[.60 .20 .22 .10],...
-        'Units','normalized','String',num2str(par1),...
-        'Callback','par1=str2double(freq_field6B.String);');
+        'Units','normalized','String',num2str(ZG.bin_days),...
+        'Callback','ZG.bin_days=str2double(freq_field6B.String);');
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
@@ -198,8 +198,8 @@ if sel == 'ca'
     t0b = min(newa.Date)  ;
     n = newa.Count;
     teb = newa.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
-    cumu = zeros(length(t0b:days(par1):teb)+2);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    cumu = zeros(length(t0b:days(ZG.bin_days):teb)+2);
     ncu = length(cumu);
     cumuall = zeros(ncu,length(newgri(:,1)))*nan;
     loc = zeros(3,length(newgri(:,1)));
@@ -240,7 +240,7 @@ if sel == 'ca'
                 cumu = cumu * 0;
                 % time (bin) calculation
                 n = b.Count;
-                cumu = histogram(b(1:n,3),t0b:days(par1):teb);
+                cumu = histogram(b(1:n,3),t0b:days(ZG.bin_days):teb);
                 l = sort(l);
                 cumuall(:,allcount) = [cumu';  x; rd];
                 loc(:,allcount) = [x ; y; rd];
@@ -254,7 +254,7 @@ if sel == 'ca'
     catSave3 =...
         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
         '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'');',...
-        ' sapa2 = [''save '' path1 file1 '' cumuall pos gx gy ni dx dy par1 newa maex maix maey maiy tmpgri ll newgri xvect yvect ''];',...
+        ' sapa2 = [''save '' path1 file1 '' cumuall pos gx gy ni dx dy ZG.bin_days newa maex maix maey maiy tmpgri ll newgri xvect yvect ''];',...
         ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
     %corrected window positioning error
     close(wai)

@@ -1,7 +1,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-global ps1 ps2 plin pli slfig
+global ps1 ps2 plin pli
 
 switch(action)
     case 'start'

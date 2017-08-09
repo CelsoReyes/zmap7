@@ -170,7 +170,7 @@ end                            %for loop
 if ~find(clus~=0)
     return
 else
-   [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(mycat,bgevent,clus,mbg,k1,bg);  
+   [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(mycat,bgevent,clus,mbg,bg);  
    [declustered_cat,is_mainshock] = funBuildcat(mycat,clus,bg,bgevent);   %new catalog for main program
 
 end

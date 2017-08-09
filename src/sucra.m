@@ -1,8 +1,8 @@
 % This script evaluates the percentage of space time coevered by
 %alarms
 %
+global iala
 re = [];
-
 % Stefan Wiemer    4/95
 
 report_this_filefun(mfilename('fullpath'));
@@ -11,7 +11,7 @@ abo = abo2;
 
 for tre2 = min(abo(:,4)):0.1:max(abo(:,4)-0.1)
     abo = abo2;
-    abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
+    abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
     l = abo(:,4) >= tre2;
     abo = abo(l,:);
     l = abo(:,3) < tresh;

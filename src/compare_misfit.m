@@ -12,35 +12,35 @@ xt = dat(:,1);
 cumu2 = cumsum(cumu);
 
 hold on;
-par1 = 0.5;
+ZG.bin_days = 0.5;
 par2 = 1.0;
 choice = input('type 1 to select range with cursor, 2 to input event numbers  ');
 if choice == 1
     t1 = [];
     t1 = ginput(1);
     t1(1)=round(t1(1));
-    t1p = [  t1 ; t1(1) t1(2)-par1];
+    t1p = [  t1 ; t1(1) t1(2)-ZG.bin_days];
     plot(t1p(:,1),t1p(:,2),'r');
     text( t1(1),t1(2)-par2,['t1: ', num2str(t1p(1))] );
 
     t2 = [];
     t2 = ginput(1);
     t2(1)=round(t2(1));
-    t2p = [  t2 ; t2(1) t2(2)-par1];
+    t2p = [  t2 ; t2(1) t2(2)-ZG.bin_days];
     plot(t2p(:,1),t2p(:,2),'r');
     text( t2(1),t2(2)-par2,['t2: ', num2str(t2p(1))] );
 
     t3 = [];
     t3 = ginput(1);
     t3(1)=round(t3(1));
-    t3p = [  t3 ; t3(1) t3(2)+par1];
+    t3p = [  t3 ; t3(1) t3(2)+ZG.bin_days];
     plot(t3p(:,1),t3p(:,2),'r');
     text( t3(1),t3(2)+par2,['t3: ', num2str(t3p(1))] );
 
     t4 = [];
     t4 = ginput(1);
     t4(1)=round(t4(1));
-    t4p = [  t4 ; t4(1) t4(2)+par1];
+    t4p = [  t4 ; t4(1) t4(2)+ZG.bin_days];
     plot(t4p(:,1),t4p(:,2),'r');
     text( t4(1),t4(2)+par2,['t4: ', num2str(t4p(1))] );
 else

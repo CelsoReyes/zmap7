@@ -5,10 +5,10 @@
 %                                  Rev. 04/2001
 %uicontrol('Units','normal','Position',[.90 .10 .10 %.10],'String','Wait... ')
 report_this_filefun(mfilename('fullpath'));
-xt_backg = t1p(1):days(par1):t2p(1);
-xt_foreg = t3p(1):days(par1):t4p(1);
-tbckg = length(t1p(1):days(par1):t2p(1));
-tforg = length(t3p(1):days(par1):t4p(1));
+xt_backg = t1p(1):days(ZG.bin_days):t2p(1);
+xt_foreg = t3p(1):days(ZG.bin_days):t4p(1);
+tbckg = length(t1p(1):days(ZG.bin_days):t2p(1));
+tforg = length(t3p(1):days(ZG.bin_days):t4p(1));
 
 pause(0.1)
 mmin = min(ZG.newcat.Magnitude);

@@ -4,8 +4,8 @@ report_this_filefun(mfilename('fullpath'));
 
 if ~exist('tlen', 'var'); tlen = 30 ; end
 str = [];
-[newmatfile] = ['t1.sum'];
-[ newpath] = [hodi '/aspar/'];
+newmatfile = 't1.sum';
+newpath = [hodi '/aspar/'];
 
 do = [ ' cd ' newpath ];
 eval(do)
@@ -22,7 +22,7 @@ lom = (newt3(:,1)-floor(newt3(:,1)))*100*6/10;
 
 
 s = [floor(newt3(:,3:5))  newt3(:,8:9) floor(newt3(:,2)) lam  floor(abs((newt3(:,1))))  lom  newt3(:,7) newt3(:,6)];
-fid = fopen([newpath newmatfile],'w') ;;
+fid = fopen([newpath newmatfile],'w') ;
 
 fprintf(fid,'%7.3f  %7.3f %7f3\n',[min(newt3(:,6)) tmin1 tlen]);
 

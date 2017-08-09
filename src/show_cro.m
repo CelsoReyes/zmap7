@@ -40,7 +40,7 @@ if in2 ~= 'calma'
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'String','Please input time of cut in years (e.g. 86.5):');
 
-    if in == 'rub' | in == 'lta'
+    if in == 'rub' || in == 'lta'
 
         txt3 = text(...
             'Color',[0 0 0 ],...
@@ -75,14 +75,14 @@ else     % if in2 ~=calma
 
     % check if the times are with limits
     %
-    if it > teb | it < t0b
+    if it > teb || it < t0b
         errordlg('Time out of limits')
         in2 = 'nocal';
         % show_cro
         %return
     end
     % initial parameter
-    iwl = iwl2* 365/par1; ti = (it -t0b)/days(par1);
+    iwl = iwl2* 365/ZG.bin_days; ti = (it -t0b)/days(ZG.bin_days);
     [len, ncu] = size(cumuall); len = len-2;
     var1 = zeros(1,ncu);
     var2 = zeros(1,ncu);
@@ -104,7 +104,7 @@ else     % if in2 ~=calma
         as = -((mean1-mean2)./mean1)*100;
 
         strib = 'Change in Percent';
-        stri2 = ['ti=' num2str(ti*days(par1) + t0b)  ];
+        stri2 = ['ti=' num2str(ti*days(ZG.bin_days) + t0b)  ];
 
     end  % if in = = per
 
@@ -151,7 +151,7 @@ else     % if in2 ~=calma
         maxlta = zeros(1,ncu);
         maxlta = maxlta -5;
         mean1 = mean(cumuall(1:len,:));
-        wai = waitbar(0,'Please wait...')
+        wai = waitbar(0,'Please wait...');
         set(wai,'Color',[0.8 0.8 0.8],'NumberTitle','off','Name','Percent done');
 
         for i = 1:ncu

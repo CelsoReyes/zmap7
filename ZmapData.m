@@ -30,6 +30,7 @@ classdef ZmapData < handle
         catalog_working
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.
+        original % used with declustering
         
         %cluster catalogs 
         newccat % apparently main clustered catalog (csubcat, capara, clpickp)
@@ -77,6 +78,8 @@ classdef ZmapData < handle
         lock_aspect = 'off';
         mainmap_grid = 'on';
         mainmap_plotby = 'depth'; % was typele
+        
+        bin_days; %bin length, days
         
         % statistical stuff
         teb % time end earthquakes

@@ -96,7 +96,7 @@ grid
 % plot big events on curve
 %
 %if ~isempty(big)
-% f = cumu2((big(:,3) -t0b)/days(par1));
+% f = cumu2((big(:,3) -t0b)/days(ZG.bin_days));
 % bigplo = plot(big(:,3),f,'xb');
 % set(bigplo,'MarkerSize',10,'LineWidth',2.5)
 % stri2 = [];

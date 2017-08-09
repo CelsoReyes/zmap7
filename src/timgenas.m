@@ -36,9 +36,9 @@ if ic == 0
 
 else
 
-    stri = ['Map of mean Z at time T'];
-    it = (it -t0b)/days(par1);
-    stri2 = ['ti=' num2str(it*days(par1) + t0b)  ];
+    stri = 'Map of mean Z at time T';
+    it = (it -t0b)/days(ZG.bin_days);
+    stri2 = ['ti=' num2str(it*days(ZG.bin_days) + t0b)  ];
     meanZ_it = Zsumall(it,:);                         % pick meanZ at time it
 
     re3 = reshape(meanZ_it,length(gy),length(gx));

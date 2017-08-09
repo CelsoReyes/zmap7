@@ -41,8 +41,10 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     %declaration of global variables
     %
     global  clus rmain r1 eqtime              %catalogs
-    global k k1 bg mbg bgevent equi bgdiff          %indices
-    global clust clustnumbers cluslength
+    global k k1 bg mbg bgevent bgdiff          %indices
+    global equi %[OUT]
+    global clust clustnumbers
+    global cluslength %[OUT]
     global taumin taumax 
     global xk xmeff P
 
@@ -174,8 +176,8 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         zmap_message_center.set_info('Alert','No Cluster found')
         return
     else
-        [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg,k1,bg);%builds a matrix clust that stored clusters
-        equi=equevent(ZG.newcat, clus);               %calculates equivalent events
+        [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg,bg);%builds a matrix clust that stored clusters
+        equi=equevent(ZG.newcat, clus);               % calculates equivalent events
         if isempty(equi)
             disp('No clusters in the catalog with this input parameters');
             return;
@@ -183,11 +185,10 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         
         replaceMainCatalog(buildcat(1));        %new catalog for main program
-        original=ZG.newcat;       %save ZG.newcat in variable original
+        ZG.original=ZG.newcat;       %save ZG.newcat in variable original
         ZG.newcat=ZG.a;
         storedcat=original;
         cluscat=original.subset(clus(clus~=0));
-        %[dura,foretime,forepercent]=clusdura(clustnumbers);
         
         update(mainmap())
         hold on
@@ -207,7 +208,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         switch ans_
             case 'Yes please'
-                plotclust
+                plotclust()
             case 'No thank you'
                 
                 disp('Keep on going ...');
@@ -215,9 +216,6 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         end
         
         watchoff,done;
-        
-        % Plot the clusters
-        %  plotclust
         
     end
     

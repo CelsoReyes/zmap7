@@ -277,7 +277,7 @@ if sel == 'ca'
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
     teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -355,7 +355,7 @@ if sel == 'ca'
     end  % for newgr
 
     % Save the data to rcval_grid.mat
-    save  tcgrid.mat mResult gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra ZG.maepi fSplitTime
+    save  tcgrid.mat mResult gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra ZG.maepi fSplitTime
     disp('Saving data to tcgrid.mat in current directory')
 
     close(wai)

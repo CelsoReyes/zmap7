@@ -8,9 +8,6 @@ function varargout = topo(varargin)
     %    FIG = TOPO launch topo GUI.
     %    TOPO('callback_name', ...) invoke the named callback.
 
-    global psloc;
-
-    nargin
     if nargin == 8  % LAUNCH GUI
         cfig = openfig(mfilename,'reuse');
         set(cfig,'Name','Topo')

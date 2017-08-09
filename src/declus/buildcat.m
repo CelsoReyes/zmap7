@@ -4,7 +4,8 @@ function newt2=buildcat(var1)
     %
    
     % highly modified by Celso Reyes, 2017
-    global equi clus eqtime original backequi bgevent
+    global equi %[IN]
+    global clus eqtime original backequi bgevent
     ZG=ZmapGlobal.Data;
     
     tm1=find(clus==0);    %elements which are not related to a cluster

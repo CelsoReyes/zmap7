@@ -30,8 +30,7 @@ function [tt1,tt2]=timesel(var1)
         tt1 = M1b;
         plot(tt1,0,'o');
         seti.String = 'Select Time 2';
-        %pause(1)
-        M2b = [];
+        
         set(gcf,'Pointer','cross')
         [M2b, ~, ~] = ginput_datetime(ax,1);
         plot(M2b,0,'o')

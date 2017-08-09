@@ -2,8 +2,8 @@ report_this_filefun(mfilename('fullpath'));
 
 j = 0;
 it = 20
-minval = minval/days(par1);
-maxval = maxval/days(par1);
+minval = minval/days(ZG.bin_days);
+maxval = maxval/days(ZG.bin_days);
 [len, ncu] = size(cumuall);
 len = len -2;
 step = nustep;

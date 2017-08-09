@@ -11,7 +11,7 @@ l = isnan(tmap);
 tmap(l) = -300;
 
 
-if toflag == '3' | toflag == '1'
+if toflag == '3' || toflag == '1'
     [vlat , vlon] = meshgrat(tmap,tmapleg);
     vlat = vlat(:,1);
     vlon = vlon(1,:);
@@ -54,7 +54,7 @@ for i = 1:length(xsecx)
     if sm < 1; sm = 1; end
 
     co = ceil(newa(i,7)*facm)+1; if co > 63; co = 63; end
-    set(pl,'Markersize',sm,'markerfacecolor',[c(co,:)]);
+    set(pl,'Markersize',sm,'markerfacecolor',c(co,:));
 end
 
 set(gca,'Ylim',[ -max(newa(:,7)) 0]);
@@ -123,21 +123,3 @@ set(gcf,'color','w');
 uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...
     'position',[0.8 .95 .2 .05],'String','BW version',...
      'Callback','xsectopobw');
-
-return
-try
-    axes('pos',[0.02 0.78 0.2 0.2])
-    %pcolor(mx(1:n),my(1:m),tmap); shading flat
-    pcolor(xx,yy,tmap),shading flat;
-
-    hold on
-    axis off
-    axis image
-    plot([lon1 lon2],[lat1 lat2],'m','Linewidth',1);
-    brighten(0.3)
-    set(gca,'visible','on','LineWidth',0.5,...
-        'Box','on','TickDir','out','color',[  1 1  1],'XTicklabel',[ ],'YTicklabel',[ ])
-
-catch
-    delete(gca)
-end

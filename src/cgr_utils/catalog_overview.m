@@ -20,8 +20,8 @@ function mycat = catalog_overview(mycat)
     teb = max(mycat.Date);
     tdiff = (teb - t0b);
     
-    if ~exist('par1', 'var')   %select bin length respective to time in catalog
-        par1 = 30;
+    if ~exist('ZG.bin_days', 'var')   %select bin length respective to time in catalog
+        ZG.bin_days = 30;
     end
     
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
@@ -307,7 +307,7 @@ function mycat = catalog_overview(mycat)
         h = findall(myparent,'Tag','mapview_big_evt_field');
         ZG.big_eq_minmag = h.Value;
         %h = findall(myparent,'Tag','mapview_binlen_field');
-        %par1 = h.Value;
+        %ZG.bin_days = h.Value;
         if ~isa(mycat,'ZmapCatalog')
             mycat = ZmapCatalog(mycat);
         end
@@ -347,7 +347,7 @@ function mycat = catalog_overview(mycat)
         update(mainmap())
         
         close(main_dialog_figure('handle'));
-        % changes in bin length go to global par1
+        % changes in bin length go to global 
     end
 end
 

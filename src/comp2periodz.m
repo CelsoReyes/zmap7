@@ -202,7 +202,7 @@ if sel == 'ca'
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
     teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -244,11 +244,11 @@ if sel == 'ca'
 
         lt =  b.Date >= t1 &  b.Date < t2 ;
         tback = b(lt,:);
-        [cumu1, xt1] = hist(tback(:,3),(t1:days(par1):t2));
+        [cumu1, xt1] = hist(tback(:,3),(t1:days(ZG.bin_days):t2));
 
         lt =  b.Date >= t3 &  b.Date <= t4 ;
         tafter = b(lt,:);
-        [cumu2, xt2] = hist(tafter(:,3),(t3:days(par1):t4));
+        [cumu2, xt2] = hist(tafter(:,3),(t3:days(ZG.bin_days):t4));
 
         mean1 = mean(cumu1);        % mean seismicity rate in first interval
         mean2 = mean(cumu2);        % mean seismicity rate in second interval

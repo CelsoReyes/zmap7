@@ -70,7 +70,7 @@ if ic == 1 | ic == 0
 elseif ic == 2
 
     if isempty(ZG.newcat) ZG.newcat = a; end
-    %iwl = round(iwln* 365/par1);    % window length in years is converted to bins
+    %iwl = round(iwln* 365/ZG.bin_days);    % window length in years is converted to bins
     len = ZG.newcat.Count;
     xt2  = [ ];
     meand = [ ];

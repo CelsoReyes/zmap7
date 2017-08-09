@@ -38,6 +38,6 @@ function [A,B,err] = wls(x,y)
     A = p(2);
     B = p(1) ;
 
-    [y1,err] = polyval(p,x,S);
+    [~,err] = polyval(p,x,S);
     err = mean(err);
 

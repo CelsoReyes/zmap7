@@ -8,11 +8,11 @@ function cltiplot(var1)
     %
 
     global freq_field freq_slider
-    global mess ccum bgevent equi file1 clust original cluslength newclcat
+    global mess ccum bgevent file1 clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
     global clu1 pyy stri tiplo2 statime
-    global xt par1 cumu cumu2 iwl3
+    global xt  cumu cumu2 iwl3
     global close_ti_button mtpl
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo

@@ -301,7 +301,7 @@ if sel == 'ca'
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
     teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/par1);
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
 
     % Container
     mRcGrid =[];
@@ -393,7 +393,7 @@ if sel == 'ca'
     end  % for newgr
 
     % Save the data to rcval_grid.mat
-    % save rcval_grid.mat mRcGrid gx gy dx dy par1 tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
+    % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
     [sFilename, sPathname] = uiputfile('*.mat', 'Save MAT-file');
     sFileSave = [sPathname sFilename];
     save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','ZG.maepi');

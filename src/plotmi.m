@@ -1,4 +1,5 @@
 function plotmi(var1)
+%plot misfit (?)
 
     report_this_filefun(mfilename('fullpath'));
 

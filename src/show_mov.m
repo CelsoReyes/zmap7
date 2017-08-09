@@ -79,7 +79,7 @@ else     % if in2 ~=calma
 
 
     % initial parameter
-    iwl = iwl2* 365/par1; ti = (it -t0b)/days(par1);
+    iwl = iwl2* 365/ZG.bin_days; ti = (it -t0b)/days(ZG.bin_days);
     var1 = zeros(1,ncu);
     var2 = zeros(1,ncu);
     mean1 = zeros(1,ncu);
@@ -99,9 +99,8 @@ else     % if in2 ~=calma
     axes('position',rect1)
     axis('off')
     m = moviein(length(1:step:len-iwl));
-    for ti = iwl:step:len-iwl;
-        j = j+1
-
+    for ti = iwl:step:len-iwl
+        j = j+1;
         var1 = zeros(1,ncu);
         var2 = zeros(1,ncu);
         mean1 = zeros(1,ncu);
@@ -120,7 +119,7 @@ else     % if in2 ~=calma
             as = -((mean1-mean2)./mean1)*100;
 
             strib = 'Change in Percent';
-            stri2 = ['ti=' num2str(ti*days(par1) + t0b)  ];
+            stri2 = ['ti=' num2str(ti*days(ZG.bin_days) + t0b)  ];
 
 
 
@@ -193,17 +192,17 @@ else     % if in2 ~=calma
         hold on
         %overlay
         if in == 'ast'
-            tx2 = text(0.07,0.85 ,['AS; t=' num2str(ti*days(par1)+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['AS; t=' num2str(ti*days(ZG.bin_days)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 
         if in == 'lta'
-            tx2 = text(0.07,0.85 ,['LTA; t=' num2str(ti*days(par1)+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['LTA; t=' num2str(ti*days(ZG.bin_days)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 
         if in == 'rub'
-            tx2 = text(0.07,0.85 ,['RUB; t=' num2str(ti*days(par1)+t0b)  ] ,...
+            tx2 = text(0.07,0.85 ,['RUB; t=' num2str(ti*days(ZG.bin_days)+t0b)  ] ,...
                 'Units','Norm','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold');
         end
 

@@ -41,29 +41,23 @@ s12=reshape(normlap2,length(yvect),length(xvect));
 figure_w_normalized_uicontrolunits('visible','off')
 l_normal =  ste(:,1) > 52 &   ste(:,5) < 35 ;
 l_notnormal = l_normal < 1;
-% Check Matlab version
-sVersion = version;
-if (sVersion(1) == '7')
-    plq = quiver('v6',newgri(l_notnormal,1),newgri(l_notnormal,2),-cos(sor(l_notnormal,SA*2)*pi/180),sin(sor(l_notnormal,SA*2)*pi/180),0.6,'.')
-else
-    plq = quiver(newgri(l_notnormal,1),newgri(l_notnormal,2),-cos(sor(l_notnormal,SA*2)*pi/180),sin(sor(l_notnormal,SA*2)*pi/180),0.6,'.')
-end
+
+plq = quiver(newgri(l_notnormal,1),newgri(l_notnormal,2),-cos(sor(l_notnormal,SA*2)*pi/180),sin(sor(l_notnormal,SA*2)*pi/180),0.6,'.');
 set(plq,'LineWidth',0.5,'Color','k')
-px = get(plq,'Xdata'); py = get(plq,'Ydata');
+px = get(plq,'Xdata'); 
+py = get(plq,'Ydata');
 
 close
 
 
 figure_w_normalized_uicontrolunits('visible','off')
-% Check Matlab version
-if (sVersion(1) == '7')
-    plq_n = quiver('v6',newgri(l_normal,1),newgri(l_normal,2),-cos(sor(l_normal,SA2*2)*pi/180),sin(sor(l_normal,SA2*2)*pi/180),0.6,'.')
-else
-    plq_n = quiver(newgri(l_normal,1),newgri(l_normal,2),-cos(sor(l_normal,SA2*2)*pi/180),sin(sor(l_normal,SA2*2)*pi/180),0.6,'.')
-end
+
+plq_n = quiver(newgri(l_normal,1),newgri(l_normal,2),-cos(sor(l_normal,SA2*2)*pi/180),sin(sor(l_normal,SA2*2)*pi/180),0.6,'.');
 set(plq_n,'LineWidth',0.5,'Color','r')
+
 drawnow
-px_n = get(plq_n,'Xdata'); py_n = get(plq_n,'Ydata');
+px_n = get(plq_n,'Xdata'); 
+py_n = get(plq_n,'Ydata');
 close
 
 figure_w_normalized_uicontrolunits('Name','Faulting style map','pos',[100 100 860 600])

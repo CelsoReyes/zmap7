@@ -23,7 +23,7 @@ function clpval(var1)
 
 
     global file1             
-    global mess ccum bgevent equi  clust original cluslength newclcat
+    global mess ccum bgevent clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp

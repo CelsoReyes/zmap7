@@ -9,7 +9,7 @@ report_this_filefun(mfilename('fullpath'));
 report_this_filefun(mfilename('fullpath'));
 % This is the info window text
 %
-par1 = 28;
+ZG.bin_days = 28;
 ZG.big_eq_minmag = 6;
 titstr='The Data Input Window                        ';
 hlpStr= ...

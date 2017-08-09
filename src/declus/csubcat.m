@@ -3,7 +3,7 @@
 %  name map window
 %
 
-global newccat mapp decc par1 dep1 dep2 dep3 ZG.ms6 ty1 ty2 ty3
+global newccat mapp decc  dep1 dep2 dep3 ZG.ms6 ty1 ty2 ty3
 global  name minde maxde maxma2 minma2
 
 
@@ -99,7 +99,7 @@ if newMapWindowFlag
         'Callback','h1 = gca;ZG.newt2 = a; stri = ''Polygon'';decc=0;clkeysel');
 
     uimenu(options,'Label','Select EQ in Polygon ',...
-        'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf;decc=0;clpickp(4)');
+        'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf;decc=0;clpickp(''MOUSE'')');
 
     %    uimenu(options,'Label','Select EQ in Circle (Menu) ',...
     %          'Callback','h1 = gca;set(gcf,''Pointer'',''watch''); stri = ['' '']; stri1 = ['' ''];decc=0;incircle');
@@ -182,7 +182,7 @@ axes('position',rect)
 t0b = min(ZG.a.Date);
 n = ZG.a.Count;
 teb = ZG.a.Date(n) ;
-tdiff =round(teb - t0b)/days(par1);
+tdiff =round(teb - t0b)/days(ZG.bin_days);
 
 
 n = ZG.a.Count;

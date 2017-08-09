@@ -55,7 +55,7 @@ hlpStr2= ...
     ' number curve without statistics again.               '
     '                                                      '];
 
-global par1 pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
+global  pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
 global cplot mess tiplo2 cum statime maxde minde
 global maxma2 minma2
 ZG=ZmapGlobal.Data;
@@ -84,7 +84,7 @@ if newCumWindowFlag
 
     uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','ZG=ZmapGlobal.Data;ZG.newt2=catalog_overview(ZG.newt2);')
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
-    iwl = iwl2/days(par1);
+    iwl = iwl2/days(ZG.bin_days);
     uimenu(options,'Label','AS(t)function',...
          'Callback','set(gcf,''Pointer'',''watch'');sta = ''ast'';newsta')
     uimenu(options,'Label','Rubberband function',...
@@ -141,12 +141,12 @@ end
 %end;    if figure exist
 
 if ZmapGlobal.Data.hold_state
-    cumu = 0:1:(tdiff/days(par1))+2;
-    cumu2 = 0:1:(tdiff/days(par1))-1;
+    cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
+    cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
     cumu = cumu * 0;
     cumu2 = cumu2 * 0;
     n = ZG.newt2.Count;
-    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par1):teb));
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(ZG.bin_days):teb));
     cumu2 = cumsum(cumu);
 
 
@@ -182,34 +182,34 @@ big = ZG.newt2(l,:);
 %calculate start -end time of overall catalog
 %R
 statime=[];
-par2=par1;
+par2=ZG.bin_days;
 t0b = min(ZG.a.Date);
 n = ZG.newt2.Count;
 teb = max(ZG.a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
-    par1 = ceil(ttdif/300);
+    ZG.bin_days = ceil(ttdif/300);
 elseif ttdif<=10  &&  ttdif>1
-    par1 = 0.1;
+    ZG.bin_days = 0.1;
 elseif ttdif<=1
-    par1 = 0.01;
+    ZG.bin_days = 0.01;
 end
 
 
-if par1>=1
-    tdiff = round(days(teb-t0b)/par1);
+if ZG.bin_days>=1
+    tdiff = round(days(teb-t0b)/ZG.bin_days);
     %tdiff = round(teb - t0b);
 else
-    tdiff = (teb-t0b)/days(par1);
+    tdiff = (teb-t0b)/days(ZG.bin_days);
 end
 % set arrays to zero
 %
-%if par1>=1
-% cumu = 0:1:(tdiff/days(par1))+2;
-% cumu2 = 0:1:(tdiff/days(par1))-1;
+%if ZG.bin_days>=1
+% cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
+% cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
 %else
-%  cumu = 0:par1:tdiff+2*par1;
-%  cumu2 =  0:par1:tdiff-1;
+%  cumu = 0:ZG.bin_days:tdiff+2*ZG.bin_days;
+%  cumu2 =  0:ZG.bin_days:tdiff-1;
 %end
 % cumu = cumu * 0;
 % cumu2 = cumu2 * 0;
@@ -218,13 +218,13 @@ end
 % calculate cumulative number versus time and bin it
 %
 n = ZG.newt2.Count;
-if par1 >=1
-    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par1):teb));
+if ZG.bin_days >=1
+    [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(ZG.bin_days):teb));
 else
-    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+days(par1))*365,(0:par1:(tdiff+2*par1)));
+    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+days(ZG.bin_days))*365,(0:ZG.bin_days:(tdiff+2*ZG.bin_days)));
 end
 cumu2=cumsum(cumu);
-par1
+ZG.bin_days
 % plot time series
 %
 %orient tall
@@ -232,7 +232,7 @@ set(gcf,'PaperPosition',[0.5 0.5 6.5 9.5])
 rect = [0.25,  0.18, 0.60, 0.70];
 axes('position',rect)
 hold on
-%tiplo = plot(xt,cumu2,'ob');
+
 set(gca,'visible','off')
 tiplo2 = plot(xt,cumu2,'b');
 set(tiplo2,'LineWidth',2.5)
@@ -240,10 +240,10 @@ set(tiplo2,'LineWidth',2.5)
 
 % plot big events on curve
 %
-if par1>=1
+if ZG.bin_days>=1
     if ~isempty(big)
         if ceil(big(:,3) -t0b) > 0
-            f = cumu2(ceil((big(:,3) -t0b)/days(par1)));
+            f = cumu2(ceil((big(:,3) -t0b)/days(ZG.bin_days)));
             bigplo = plot(big(:,3),f,'xr');
             set(bigplo,'MarkerSize',10,'LineWidth',2.5)
             stri4 = [];
@@ -269,7 +269,7 @@ end %if big
 
 if exist('stri', 'var')
     v = axis;
-    %if par1>=1
+    %if ZG.bin_days>=1
     % axis([ v(1) ceil(teb) v(3) v(4)+0.05*v(4)]);
     %end
     tea = text(v(1)+0.5,v(4)*0.9,stri) ;
@@ -285,10 +285,10 @@ title(strib,'FontWeight','bold',...
     'Color','k')
 
 grid
-if par1>=1
+if ZG.bin_days>=1
     xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 else
-    statime=ZG.newt2(1,3)-days(par1);
+    statime=ZG.newt2(1,3)-days(ZG.bin_days);
     xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 end
 ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -309,6 +309,6 @@ set(cum,'Visible','on');
 watchoff(cum)
 watchoff(map)
 zmap_message_center.clear_message();
-par1=par2;
+ZG.bin_days=par2;
 done
 

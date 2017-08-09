@@ -16,7 +16,7 @@ plot(xh,yh,'-k',xv,yv,'-k');                     %plot green axes
 axis off;
 hold on;
 plot(cx,cy,'-k');                                %plot white circle
-psi = [0:pi/N:pi];
+psi = 0:pi/N:pi;
 for i = 1:8                                      %plot great circles
     rdip = i*(pi/18);                             %at 10 deg intervals
     radip = atan(tan(rdip)*sin(psi));
@@ -30,7 +30,7 @@ for i = 1:8                                     %plot small circles
     alpha = i*(pi/18);
     xlim = sin(alpha);
     ylim = cos(alpha);
-    x = [-xlim:0.01:xlim];
+    x = -xlim:0.01:xlim;
     d = 1/cos(alpha);
     rd = d*sin(alpha);
     y0 = sqrt(rd*rd - (x .* x));

@@ -5,7 +5,7 @@ function cllta(var1)
     %operates on ttcat
     %
     %
-    global ttcat par1 xt cumu cumu2 pyy
+    global ttcat  xt cumu cumu2 pyy
     global file1 freq_field freq_slider iwl3 par5
     ZG=ZmapGlobal.Data;
     replaceMainCatalog(ZG.newt2);
@@ -79,7 +79,7 @@ function cllta(var1)
     ncu=length(xt);
     lta=1:1:ncu;
     lta=lta*0;
-    iwl=round(iwl3/days(par1));
+    iwl=round(iwl3/days(ZG.bin_days));
     %
     %  calculated mean, var etc
     %

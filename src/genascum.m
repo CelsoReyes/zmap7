@@ -34,7 +34,7 @@ gx = x0:dx:x1;
 gy = y0:dy:y1;
 itotal = length(gx) * length(gy);
 clear global ztimes ztime1 ztime2
-incx = days(par1);
+incx = days(ZG.bin_days);
 maxmag = floor(max(ZG.newcat.Magnitude));
 minmg = floor(min(ZG.newcat.Magnitude)); %added the missing minmg similar to maxmag
 magstep = 0.5;                   %set the missing magstep to 0.5
@@ -42,7 +42,7 @@ evsum = ZG.newcat.Count;
 n = evsum;
 t0b = ZG.newcat.Date(1)
 teb = ZG.newcat.Date(evsum)
-tdiff = round(days(teb-t0b)/par1);
+tdiff = round(days(teb-t0b)/ZG.bin_days);
 xt = t0b:incx:teb;
 bin0 = 1;
 bin1 = length(xt)
@@ -292,7 +292,7 @@ min_meanZ = min(meanZ);
 re_1 = reshape(max_meanZ,length(gy),length(gx));
 re_2 = reshape(min_meanZ,length(gy),length(gx));
 % save data
-save cumgenas.mat Zsumall Zabsall re3 par1 ni dx dy gx gy tdiff t0b teb
+save cumgenas.mat Zsumall Zabsall re3 ZG.bin_days ni dx dy gx gy tdiff t0b teb
 
 te = text(0.01,0.90,'The cumulative no. curve was saved in\newline file cumgenas.mat\newline Please rename it if desired.');
 set(te,'FontSize',12);

@@ -3,7 +3,6 @@
 %
 % Stefan Wiemer    4/95
 
-global iala
 global abo
 
 report_this_filefun(mfilename('fullpath'));
@@ -11,7 +10,7 @@ report_this_filefun(mfilename('fullpath'));
 % Reset the alarms to the all alarms above the current threshold
 l = abo2(:,4) >= tre2;
 abo = abo2(l,:);
-abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
+abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
 
 
 j = 0;
@@ -21,7 +20,7 @@ figure_w_normalized_uicontrolunits(map)
 while length(abo) > 1
     j = j+1;
     [k,m] = findnei(1);
-    po = [k];
+    po = k;
     for i = 1:length(k)
         [k2,m2]  = findnei(k(i));
         po = [po ; k2];

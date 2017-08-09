@@ -33,12 +33,10 @@ l = ni2{2};
 is = str2double(l);
 
 
-global iala;
-
 for tre2 = max(abo(:,4))-0.1 : -is : zm
     tre2;
     abo = abo2;
-    abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
+    abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
     l = abo(:,4) >= tre2;
     abo = abo(l,:);
     l = abo(:,3) < tresh;
@@ -53,7 +51,7 @@ for tre2 = max(abo(:,4))-0.1 : -is : zm
     while length(abo) > 1
         j = j+1;
         [k,m] = findnei(1);
-        po = [k];
+        po = k;
         for i = 1:length(k)
             [k2,m2]  = findnei(k(i));
             po = [po ; k2];

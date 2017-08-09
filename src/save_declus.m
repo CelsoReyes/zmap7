@@ -1,4 +1,4 @@
-
+global cluslength %[OUT]
 %TOFIX: this is torn to shreds by the updated catalog format
 report_this_filefun(mfilename('fullpath'));
 storedcat=a;

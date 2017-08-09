@@ -80,9 +80,9 @@ ylabel('Number')
 
 pause(0.1)
 
-tm1 = round((t1p(1) - t0b)/days(par1));
-tm2 = round((t3p(1) - t0b)/days(par1));
-tmid = round((t2p(1) - t1p(1))/days(par1))
+tm1 = round((t1p(1) - t0b)/days(ZG.bin_days));
+tm2 = round((t3p(1) - t0b)/days(ZG.bin_days));
+tmid = round((t2p(1) - t1p(1))/days(ZG.bin_days))
 
 
 % masi2 =  1:1:maxmag*10;

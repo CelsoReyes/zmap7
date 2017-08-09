@@ -111,23 +111,6 @@ if exist('maix', 'var')
 end
 
 set(gcf,'color','w');
-return
-
-
-try
-    axes('pos',[0.02 0.78 0.2 0.2])
-    pcolor(mx(1:n),my(1:m),tmap); shading flat
-    hold on
-    axis off
-    axis image
-    plot([lon1 lon2],[lat1 lat2],'w','Linewidth',1);
-    brighten(0.3)
-    set(gca,'visible','on','LineWidth',0.5,...
-        'Box','on','TickDir','out','color',[  1 1  1],'XTicklabel',[ ],'YTicklabel',[ ])
-catch
-end
-
-%whitebg(gcf)
 
 
 

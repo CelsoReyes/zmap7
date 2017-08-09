@@ -9,7 +9,7 @@ report_this_filefun(mfilename('fullpath'));
 global iwl2 iwl3
 %global name strib stri2 infstri maix maiy
 %global tresh wi rotationangle fre
-%global co par1 
+%global co
 %global ca vi sha inb1 inb2 inda ra
 global ZG
 
@@ -91,7 +91,7 @@ inda = 1;
 ra = 5;
 
 co = 'w';
-par1 = 14; % bin length, days
+ZG.bin_days = 14; % bin length, days
 ZG.big_eq_minmag = 8; % minimum cutoff for "large" earthquakes
 
 %set the recursion slightly, to avoid error (specialy with ploop functions)

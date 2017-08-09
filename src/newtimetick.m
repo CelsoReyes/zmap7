@@ -34,7 +34,7 @@ set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
     'Box','on')
 
 hold on
-if par1>=1
+if ZG.bin_days>=1
     if ~isempty(big)
 
         l = ZG.newt2.Magnitude > ZG.big_eq_minmag;

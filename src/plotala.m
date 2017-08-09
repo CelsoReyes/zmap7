@@ -10,6 +10,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 global main mainfault faults coastline
+global iala
 watchon
 think
 ttlStr='The Alarm Cube Window                                ';
@@ -18,7 +19,7 @@ hlpStr1= ...
     ' corners with the mouse                         '];
 % Find out of figure already exists
 watchon
-if ~exist('iala') ; iala = iwl2; end
+if isempty(iala) ; iala = iwl2; end
 if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
 if isempty(abo2)  == 1 ; errordlg('No alarms with z >= Zmin detected!');return; end
 
@@ -103,7 +104,7 @@ rect= [0.2 0.2 0.6 0.6];
 axes('pos',rect)
 set(gca,'visible','off')
 abo = abo2;
-abo(:,5) = abo(:,5)* days(par1) + ZG.a.Date(1);
+abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
 l = abo(:,4) > tre2;
 abo = abo(l,:);
 if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end

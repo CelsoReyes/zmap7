@@ -4,7 +4,8 @@ function  buildclu
     % calculates also biggest event in a cluster (bg)
     % replaced by fnBuildClu
 
-    global bgevent clus mbg k1 clustnumbers cluslength
+    global bgevent clus mbg k1 clustnumbers
+    global cluslength %[OUT]
     global bg % bg seems to be an index, and is same as bgevent
     ZG=ZmapGlobal.Data;
     cluslength=[];
@@ -24,4 +25,4 @@ function  buildclu
     bgevent=ZG.newcat.subset(bg); %biggest event in a cluster(if more than one,take first)
 
     clustnumbers=(1:length(tmp));    %stores numbers of clusters
-
+end

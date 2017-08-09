@@ -1,28 +1,29 @@
-function[cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(mycat,bgevent,clus,mbg,k1,bg)
-% fnBuildclu                                 A.Allmann
+function[clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg,bg)
 % builds cluster out out of information stored in clus
-% calculates also biggest event in a cluster
+% mycat : catalog
+% clus: size of catalog, containing cluster index numbers
+% biggestEvent: size nClusters
+% mbg: size nClusters
+% bg : size nClusters
 %
     %  originally, "mycat" was "newcat"
-%modified by C Reyes 2017
+    % A.Allmann
+% modified by C Reyes 2017
 
-%global mycat clus mbg k1 clust clustnumbers cluslength 
+%global mycat clus mbg k1 clust clustnumbers 
 %global bgevent bg
-cluslength=[];
-n=0;
-k1=max(clus);
-for j=1:k1                         %for all clusters
-    cluslength(j)=length(find(clus==j));  %length of each clusters
-end
 
-tmp=find(cluslength);      %numbers of clusters that are not empty
+ % count # events in each cluster
+clusLengths = histcounts(clus,'BinLimits',[1 max(clus)], 'BinMethod','integers');
 
-%cluslength,bg,mbg only for events which are not zero
-cluslength=cluslength(tmp);
-bgevent=bgevent(tmp);
-mbg=mbg(tmp);
-bg=bgevent;
-bgevent=mycat.subset(bg); %biggest event in a cluster(if more than one,take first)
+% cull any clusters that don't have events
+empty_clusters = clusLengths == 0;      %numbers of clusters that are empty  eg. [1:9 2:0 3: 8 4:0] ->  [0 1 0 1]
+clusLengths(empty_clusters)=[];
+biggestEvent(empty_clusters)=[];
+mbg(empty_clusters)=[];
 
-clustnumbers=(1:length(tmp));    %stores numbers of clusters
+bg = biggestEvent;
+biggestEvent = mycat.subset(bg); %biggest event in a cluster(if more than one,take first)
+
+clustnumbers=(1:numel(clusLengths));    %stores numbers of clusters
 
