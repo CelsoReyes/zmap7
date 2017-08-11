@@ -388,7 +388,7 @@ if sel == 'ca'
     % old = re3;
 
     % View the b-value map
-    view_aValue
+    view_aValue([],re3);
 
 end   % if sel = na
 

@@ -1,3 +1,4 @@
+function view_pv2(lab1, re3)
 % This .m file "view_x
 % maxz.m" plots the maxz LTA values calculated
 % with maxzlta.m or other similar values as a color map
@@ -5,7 +6,7 @@
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -108,7 +109,7 @@ if newpmapcWindowFlag
 
 
     options = uimenu('Label',' Select-p ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_pv2')
+    uimenu(options,'Label','Refresh ', 'Callback','view_pv2(lab1,re3)')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
          'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=false;ic = 1;cicros2;')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
@@ -116,19 +117,19 @@ if newpmapcWindowFlag
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label',' 7 day aftyershock Probability  Map ',...
-         'Callback','lab1=''P(M>Mm-1, 7 days)''; re3 = Pv; view_pv2')
+         'Callback','lab1=''P(M>Mm-1, 7 days)''; re3 = Pv; view_pv2(lab1,re3)')
     uimenu(op1,'Label','b-value Map (weighted LS)',...
-         'Callback','lab1=''b-value''; re3 = bv; view_pv2')
+         'Callback','lab1=''b-value''; re3 = bv; view_pv2(lab1,re3)')
     uimenu(op1,'Label','p-value map',...
-         'Callback',' lab1=''p-value'';re3 = old; view_pv2')
+         'Callback',' lab1=''p-value'';re3 = old; view_pv2(lab1,re3)')
     uimenu(op1,'Label','Slip-value map',...
-         'Callback',' lab1=''slip-value'';re3 = sl2; view_pv2')
+         'Callback',' lab1=''slip-value'';re3 = sl2; view_pv2(lab1,re3)')
 
     uimenu(op1,'Label','recurrence time map ',...
-         'Callback','m = input(''Magnitude of projected mainshock? (e.g.6)'');lab1 = ''Tr in yrs. (only smallest values shown)'';re3 =(teb - t0b)./(10.^(avm-m*old)); view_pv2')
+         'Callback','m = input(''Magnitude of projected mainshock? (e.g.6)'');lab1 = ''Tr in yrs. (only smallest values shown)'';re3 =(teb - t0b)./(10.^(avm-m*old)); view_pv2(lab1,re3)')
 
     uimenu(op1,'Label','resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = r; view_pv2')
+         'Callback','lab1=''Radius in [km]'';re3 = r; view_pv2(lab1,re3)')
     uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
     add_display_menu(3);
@@ -156,7 +157,7 @@ if newpmapcWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.95 .93 .05 .05],'String','Go ',...
-         'Callback','think;pause(1);re4 =re3; view_pv2')
+         'Callback','think;pause(1);re4 =re3; view_pv2(lab1,re3)')
 
     colormap(jet)
 end   % This is the end of the figure setup

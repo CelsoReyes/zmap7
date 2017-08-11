@@ -1,4 +1,4 @@
-function view_bpva(gridstats)
+function view_bpva(lab1,re3)
 % This .m file, "view_bpva.m", plots the b and p values calculated
 % with bpvalgrid.m or other similar values as a color map.
 % needs re3, gx, gy, stri
@@ -111,42 +111,42 @@ if oldfig_button == false
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_bpva(gridstats) ')
+         'Callback','asel = ''mag''; adju2; view_bpva(lab1,re3) ')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_bpva(gridstats)')
+         'Callback','asel = ''rmax''; adju2; view_bpva(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_bpva(gridstats) ')
+         'Callback','asel = ''gofi''; adju2; view_bpva(lab1,re3) ')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_bpva(gridstats) ')
+         'Callback','asel = ''pstdc''; adju2; view_bpva(lab1,re3) ')
 
 
     uimenu(op1,'Label','b-value map (WLS)',...
-         'Callback','lab1 =''b-value''; re3 = old; view_bpva(gridstats)')
+         'Callback','lab1 =''b-value''; re3 = old; view_bpva(lab1,re3)')
     uimenu(op1,'Label','b(max likelihood) map',...
-         'Callback','lab1=''b-value''; re3 = meg; view_bpva(gridstats)')
+         'Callback','lab1=''b-value''; re3 = meg; view_bpva(lab1,re3)')
     uimenu(op1,'Label','Mag of completness map',...
-         'Callback','lab1 = ''Mcomp''; re3 = old1; view_bpva(gridstats)')
+         'Callback','lab1 = ''Mcomp''; re3 = old1; view_bpva(lab1,re3)')
     uimenu(op1,'Label','max magnitude map',...
-         'Callback',' lab1=''Mmax'';re3 = maxm; view_bpva(gridstats)')
+         'Callback',' lab1=''Mmax'';re3 = maxm; view_bpva(lab1,re3)')
     uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bpva(gridstats)')
+         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bpva(lab1,re3)')
 
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = pvalg; view_bpva(gridstats)')
+         'Callback',' lab1=''p-value'';re3 = pvalg; view_bpva(lab1,re3)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = pvstd; view_bpva(gridstats)')
+         'Callback',' lab1=''p-valstd'';re3 = pvstd; view_bpva(lab1,re3)')
 
     uimenu(op1,'Label','a-value map',...
-         'Callback','lab1=''a-value'';re3 = avm; view_bpva(gridstats)')
+         'Callback','lab1=''a-value'';re3 = avm; view_bpva(lab1,re3)')
     uimenu(op1,'Label','Standard error map',...
-         'Callback',' lab1=''Error in b'';re3 = pro; view_bpva(gridstats)')
+         'Callback',' lab1=''Error in b'';re3 = pro; view_bpva(lab1,re3)')
     uimenu(op1,'Label','(WLS-Max like) map',...
-         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bpva(gridstats)')
+         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bpva(lab1,re3)')
 
     uimenu(op1,'Label','Resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = rama; view_bpva(gridstats)')
+         'Callback','lab1=''Radius in [km]'';re3 = rama; view_bpva(lab1,re3)')
     uimenu(op1,'Label','c map',...
-         'Callback','lab1=''c in days'';re3 = cmap2; view_bpva(gridstats)')
+         'Callback','lab1=''c in days'';re3 = cmap2; view_bpva(lab1,re3)')
 
     uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
@@ -181,10 +181,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values greater tresh = nan
 %

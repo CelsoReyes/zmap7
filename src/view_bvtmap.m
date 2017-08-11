@@ -1,10 +1,11 @@
+function view_bvtmap(lab1,re3)
 % This .m file plots the differential b values calculated
 % with bvalmapt.m or other similar values as a color map
 % needs re3, gx, gy, stri
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -43,7 +44,7 @@ if newbmapWindowFlag
 
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_bvtmap')
+    uimenu(options,'Label','Refresh ', 'Callback','view_bvtmap(lab1,re3)')
     uimenu(options,'Label','Select EQ in Circle',...
          'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirbva;watchoff(bmap)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
@@ -61,28 +62,28 @@ if newbmapWindowFlag
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','Differential b-value map ',...
-         'Callback','lab1 =''b-value''; re3 = db12; view_bvtmap')
+         'Callback','lab1 =''b-value''; re3 = db12; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','b change in percent map  ',...
-         'Callback','lab1 =''b-value change''; re3 = dbperc; view_bvtmap')
+         'Callback','lab1 =''b-value change''; re3 = dbperc; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','b-value map first period',...
-         'Callback','lab1 =''b-value''; re3 = bm1; view_bvtmap')
+         'Callback','lab1 =''b-value''; re3 = bm1; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','b-value map second period',...
-         'Callback','lab1 =''b-value''; re3 = bm2; view_bvtmap')
+         'Callback','lab1 =''b-value''; re3 = bm2; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','Probability Map (Utsus test for b1 and b2) ',...
-         'Callback','lab1 =''P''; re3 = pro; view_bvtmap')
+         'Callback','lab1 =''P''; re3 = pro; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','Earthquake probability change map (M5) ',...
-         'Callback','lab1 =''dP''; re3 = log10(maxm); view_bvtmap')
+         'Callback','lab1 =''dP''; re3 = log10(maxm); view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','standard error map',...
-         'Callback',' lab1=''error in b'';re3 = stanm; view_bvtmap')
+         'Callback',' lab1=''error in b'';re3 = stanm; view_bvtmap(lab1,re3)')
 
     uimenu(op1,'Label','mag of completeness map - period 1',...
-         'Callback','lab1 = ''Mcomp1''; re3 = magco1; view_bvtmap')
+         'Callback','lab1 = ''Mcomp1''; re3 = magco1; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','mag of completeness map - period 2',...
-         'Callback','lab1 = ''Mcomp2''; re3 = magco2; view_bvtmap')
+         'Callback','lab1 = ''Mcomp2''; re3 = magco2; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','differential completeness map ',...
-         'Callback','lab1 = ''DMc''; re3 = dmag; view_bvtmap')
+         'Callback','lab1 = ''DMc''; re3 = dmag; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','resolution Map - number of events ',...
-         'Callback','lab1=''# of events'';re3 = r; view_bvtmap')
+         'Callback','lab1=''# of events'';re3 = r; view_bvtmap(lab1,re3)')
     uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
     add_display_menu(1)
@@ -98,7 +99,7 @@ if newbmapWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.95 .93 .05 .05],'String','Go ',...
-         'Callback','think;pause(1);re4 =re3; view_bvtmap')
+         'Callback','think;pause(1);re4 =re3; view_bvtmap(lab1,re3)')
 
     colormap(jet)
 
@@ -124,10 +125,10 @@ rect1 = rect;
 
 % find max and min of data for automatic scaling
 %
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values gretaer tresh = nan
 %

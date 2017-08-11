@@ -1,3 +1,4 @@
+function bcrossV2(sel)
 % tHis subroutine assigns creates a grid with
 % spacing dx,dy (in degreees). The size will
 % be selected interactiVELY. The bvalue in each
@@ -74,7 +75,7 @@ if sel == 'in'
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','inb1=hndl1.Value;inb2=hndl2.Value;close,sel =''ca'', bcrossV2',...
+        'Callback','inb1=hndl1.Value;inb2=hndl2.Value;close,sel =''ca'', bcrossV2(sel)',...
         'String','Go');
 
     text(...
@@ -290,7 +291,7 @@ ax = findobj('Tag','main_map_ax');
     old = re3;
 
     % View the b-value map
-    view_bv2
+    view_bv2([],re3)
 
 end   %  if sel = ca
 

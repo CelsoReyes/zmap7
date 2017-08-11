@@ -4,7 +4,7 @@
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -83,37 +83,7 @@ if newzmapWindowFlag
     % make menu bar
     matdraw
 
-
-    symbolmenu = uimenu('Label',' Symbol ');
-    SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
-    TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
-    ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
-
-    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal7)');
-    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal7)');
-    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal7)');
-    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal7)');
-    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal7)');
-    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal7)');
-    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal7)');
-
-    uimenu(TypeMenu,'Label','dot','Callback','ty =''.'';eval(cal7)');
-    uimenu(TypeMenu,'Label','+','Callback','ty=''+'';eval(cal7)');
-    uimenu(TypeMenu,'Label','o','Callback','ty=''o'';eval(cal7)');
-    uimenu(TypeMenu,'Label','x','Callback','ty=''x'';eval(cal7)');
-    uimenu(TypeMenu,'Label','*','Callback','ty=''*'';eval(cal7)');
-    uimenu(TypeMenu,'Label','none','Callback','vi=''off'';set(ploeq,''visible'',''off''); ');
-
-    uimenu(ColorMenu,'Label','black','Callback','co=''k'';eval(cal7)');
-    uimenu(ColorMenu,'Label','white','Callback','co=''w'';eval(cal7)');
-    uimenu(ColorMenu,'Label','white','Callback','co=''r'';eval(cal7)');
-    uimenu(ColorMenu,'Label','yellow','Callback','co=''y'';eval(cal7)');
-
-    cal7 = ...
-        [ 'vi=''on'';set(ploeq,''MarkerSize'',ZG.ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
-
-
-
+    % TODO Create Symbol Menu SIZE,TYPE,COLOR for ploeq
     uicontrol('Units','normal',...
         'Position',[.0 .93 .08 .06],'String','Print ',...
          'Callback','myprint')
@@ -128,14 +98,9 @@ if newzmapWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.0 .85 .08 .06],'String','Info ',...
-         'Callback','zmaphelp(ttlStr,hlpStr1zmap,hlpStr2zmap)')
-
-
-    options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_max')
-    uimenu(options,'Label','Select EQ in Circle', 'Callback','h1 = gca;circle;watchoff(zmap)')
-    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' stri = ''Polygon'';h1 = gca;cufi = gcf;selectp')
-
+         'Callback','zmaphelp(ttlStr,hlpStr1zmap,hlpStr2zmap)');
+    % TODO Create Select MENU - select eq in circle, polygon, refresh
+    
     op1 = uimenu('Label',' Tools ');
     uimenu(op1,'Label','ZMAP Menu', 'Callback','zmapmenu ')
     uimenu(op1,'Label','Plot Map in Lambert projection using m_map ', 'Callback','plotmap ')
@@ -182,7 +147,7 @@ if newzmapWindowFlag
     set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
-    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh))';
+    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh))');
     set(set_ni2,'units','norm','pos',[.85 .92 .08 .06],'min',0.01,'max',10000);
 
     uicontrol('Units','normal',...
@@ -213,10 +178,10 @@ rect1 = rect;
 
 % find max and min of data for automatic scaling
 %
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values gretaer tresh = nan
 %

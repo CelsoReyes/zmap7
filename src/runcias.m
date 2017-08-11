@@ -28,8 +28,8 @@ for it = iwl:step:len-iwl;
 end   % for i
 close(wai)
 
-maxc = max(max(ma));
-minc = min(min(mi));
+ZG.maxc = max(max(ma));
+ZG.minc = min(min(mi));
 
 %set up movie axes and frames (nessesary for the right frame size)
 %

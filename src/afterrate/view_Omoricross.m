@@ -1,10 +1,11 @@
+function view_Omoricross(lab1, re3)
 % Script: view_Omoriparams.m
 % Plot Modified Omori law / nested MOL parameters calculated with calc_Omoricross.m.
 %
 % j.woessner@sed.ethz.ch
 % last update: 20.10.04
 
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 
@@ -80,7 +81,7 @@ if oldfig_button == 0
 
     % Menus
     options = uimenu('Label',' Analyze ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_Omoricross')
+    uimenu(options,'Label','Refresh ', 'Callback','view_Omoricross(lab1,re3)')
     %    uimenu(options,'Label','Select EQ in Circle',...
     %        'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;cirpva;watchoff(hOmoricross)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
@@ -94,43 +95,43 @@ if oldfig_button == 0
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_Omoricross')
+         'Callback','asel = ''mag''; adju2; view_Omoricross(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_Omoricross')
+         'Callback','asel = ''rmax''; adju2; view_Omoricross(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_Omoricross ')
+         'Callback','asel = ''gofi''; adju2; view_Omoricross(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_Omoricross ')
+         'Callback','asel = ''pstdc''; adju2; view_Omoricross(lab1,re3)')
 
     % Maps
     uimenu(op1,'Label','Model',...
-         'Callback',' lab1=''Model'';re3 = mMod; view_Omoricross')
+         'Callback',' lab1=''Model'';re3 = mMod; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','KS-Test',...
-         'Callback',' lab1=''Rejection'';re3 = mKstestH; view_Omoricross')
+         'Callback',' lab1=''Rejection'';re3 = mKstestH; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','KS-Test Statistic',...
-         'Callback',' lab1=''KS distance'';re3 = mKsstat; view_Omoricross')
+         'Callback',' lab1=''KS distance'';re3 = mKsstat; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','KS-Test p-value',...
-         'Callback',' lab1=''KS-Test p-value'';re3 = mKsp; view_Omoricross')
+         'Callback',' lab1=''KS-Test p-value'';re3 = mKsp; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','RMS of fit',...
-         'Callback',' lab1=''RMS'';re3 = mRMS; view_Omoricross')
+         'Callback',' lab1=''RMS'';re3 = mRMS; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Number of events)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents; view_Omoricross')
+         'Callback','lab1=''Number of events'';re3 = mNumevents; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Radii)',...
-         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_Omoricross')
+         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = mPval; view_Omoricross')
+         'Callback',' lab1=''p-value'';re3 = mPval; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_Omoricross')
+         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','c-value',...
-         'Callback','lab1=''c-value'';re3 = mCval; view_Omoricross')
+         'Callback','lab1=''c-value'';re3 = mCval; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','c-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_Omoricross')
+         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','k-value',...
-         'Callback','lab1=''k-value'';re3 = mKval; view_Omoricross')
+         'Callback','lab1=''k-value'';re3 = mKval; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','k-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_Omoricross')
+         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_Omoricross(lab1,re3)')
     uimenu(op1,'Label','Magnitude of completness',...
-         'Callback','lab1=''Mc'';re3 = mMc; view_Omoricross')
+         'Callback','lab1=''Mc'';re3 = mMc; view_Omoricross(lab1,re3)')
 add_display_menu(1)
 
     %re3 = pvalg;
@@ -160,10 +161,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % plot image
 orient landscape

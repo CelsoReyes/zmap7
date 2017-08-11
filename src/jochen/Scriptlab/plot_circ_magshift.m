@@ -34,39 +34,17 @@ stri = stri1;
 pause(0.1)
 
 %  Calculate distance for each earthquake from center point
-%  and sort by distance l
-% Calculate distance from center point and sort with distance
-sFigName = get(gcf,'Name')
-% if sFigName == 'RC-Cross-section'
-%     % Cross section
-%     ZG.newt2 = newa;
-%     l = sqrt(((xsecx' - xa0)).^2 + (((xsecy+ya0))).^2) ;
-% else % Map view
-    ZG.newt2 = a;
-    l = sqrt(((ZG.newt2.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.newt2.Latitude-ya0)*111).^2) ;
-% end
-[s,is] = sort(l);
-ZG.newt2 = ZG.newt2(is(:,1),:) ;
-
-l =  sort(l);
-
 % Select data in radius ra
-l3 = l <= ra;
-ZG.newt2 = ZG.newt2(l3,:);
+[mask, furthest_event_km] = eventsInRadius(ZG.a, ya0, xa0, ra);
+ZG.newt2 = ZG.a.subset(mask);
 
-% Select radius in time
-% newt3=ZG.newt2;
-% vSel = (ZG.newt2.Date <= ZG.maepi.Date+days(time));
-% ZG.newt2 = ZG.newt2.subset(vSel);
-%R2 = l(ni);
-messtext = ['Number of selected events: ' num2str(length(ZG.newt2))  ];
+messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
 
 
 % Sort the catalog
-[st,ist] = sort(ZG.newt2);
-ZG.newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2.sort('Date');
 R2 = ra;
 
 % Plot selected earthquakes

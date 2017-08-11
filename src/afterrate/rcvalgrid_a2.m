@@ -501,7 +501,7 @@ if sel == 'ca'
     lab1 = 'Rate change';
 
     % View the map
-    view_rcva_a2
+    view_rcva_a2(lab1,re3)
 
 end   % if sel = na
 
@@ -610,7 +610,7 @@ if sel == 'lo'
 
         old = re3;
         % Plot
-        view_rcva_a2;
+        view_rcva_a2(lab1,re3);
     else
         return
     end

@@ -109,5 +109,4 @@ nu = [0.5 0 ; 3.0 0 ];
 plot(nu(:,1),nu(:,2),'-.g')
 
 uicontrol('Units','normal','Position',[.90 .10 .10 .10],'String','Done... ')
-uicontrol(,'Units','normal','Position',[.90 .51 .10 .05],'String','Print ', 'Callback','print ')
 uicontrol('Units','normal','Position',[.90 .71 .10 .05],'String','Save  ', 'Callback','save_ma')

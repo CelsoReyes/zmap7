@@ -38,13 +38,9 @@ if ic == 1 | ic == 0
 elseif ic == 2
     figure_w_normalized_uicontrolunits(map)
     axes(h1)
-    %  calculate distance for each earthquake from center point
-    %  and sort by distance
-    %
-    ll = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
-
-    l = ll < rad;
-    ZG.newt2 = ZG.a.subset(l);
+    
+    [mask, furthest_event_km] = eventsInRadius(ZG.a, ya0, xa0, rad);
+    ZG.newt2 = ZG.a.subset(mask);
     %
     % plot events on map as 'x':
 
@@ -57,9 +53,7 @@ elseif ic == 2
     %
     stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6) '; R = ' num2str(rad) ' km'];
     stri = stri1;
-
-    [s,is] = sort(ZG.newt2.Date);
-    ZG.newt2 = ZG.newt2(is(:,1),:) ;
+    ZG.newt2.sort('Date');
     ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     timeplot(ZG.newt2);
 
@@ -68,21 +62,14 @@ elseif ic == 2
 elseif ic == 3
     figure_w_normalized_uicontrolunits(map)
     axes(h1)
-    %  calculate distance for each earthquake from center point
-    %  and sort by distance
-    %
-    l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
-
-    [s,is] = sort(l);            % sort by distance
-    new = a(is(:,1),:) ;
-    l =  sort(l);
-    messtext = ['Radius of selected Circle: ' num2str(l(ni))  ' km' ];
+    %  calculate distance for each earthquake from center poin
+    [mask, max_km] = closestEvents(ZG.a, ya0, xa0, ni);
+    messtext = ['Radius of selected Circle: ' num2str(max_km)  ' km' ];
     disp(messtext)
 
 
-    newt = new(1:ni,:);          % take first ni and sort by time
-    [st,ist] = sort(newt);
-    ZG.newt2 = newt(ist(:,6),:);
+    newt = ZG.a.subset(mask);          % take first ni and sort by time
+    ZG.newt2.sort('Date')
     %
     % plot events on map as 'x':
 
@@ -90,7 +77,7 @@ elseif ic == 3
     plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','back');
     set(gcf,'Pointer','arrow')
 
-    ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
+    ZG.newcat = ZG.newt2;                   % resets ZG.newcat
 
     % Call program "timeplot to plot cumulative number
     %

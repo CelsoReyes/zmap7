@@ -33,33 +33,24 @@ stri1 = [ 'Circle: ' num2str(xa0,5) '; ' num2str(ya0,4)];
 stri = stri1;
 pause(0.1)
 %  calculate distance for each earthquake from center point
-%  and sort by distance
-%
-l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
-[s,is] = sort(l);
-ZG.newt2 = a(is(:,1),:) ;
-
-l =  sort(l);
-messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
+[mask, max_km] = closestEvents(ZG.a, ya0, xa0, ni);
+ZG.newt2 = zG.a.subset(mask); % keep only closest events
+messtext = ['Radius of selected Circle:' num2str(max_km)  ' km' ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
 %
-
-l3 = l <=ra;
-ZG.newt2 = ZG.newt2(l3,:);
-R2 = l(ni);
+R2 = max_km;
 global t1 t2 t3 t4
 
 lt =  ZG.newt2.Date >= t1 &  ZG.newt2.Date <t2 ;
-bdiff(ZG.newt2(lt,:));
+bdiff(ZG.newt2.subset(lt));
 ZG.hold_state=true;
 lt =  ZG.newt2.Date >= t3 &  ZG.newt2.Date <t4 ;
-bdiff(ZG.newt2(lt,:));
+bdiff(ZG.newt2.subset(lt));
 
 % end % <- A random END that either doesn't belong here or is meant to suppress the rest. -CGR
 [st,ist] = sort(ZG.newt2);
-ZG.newt2 = ZG.newt2(ist(:,3),:);
-R2 = ra;
+ZG.newt2.sort('Date'));
 
 %
 % plot Ni clostest events on map as 'x':
@@ -68,10 +59,9 @@ figure_w_normalized_uicontrolunits(bmap)
 hold on
 plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'ow','EraseMode','normal','markersize',3);
 
-% plot circle containing events as circle
+% plot circle containing events
 x = -pi-0.1:0.1:pi;
 plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k','era','normal')
-%plot(xa0+sin(x)*l(ni)/111, ya0+cos(x)*l(ni)/111,'w','era','normal')
 
 
 set(gcf,'Pointer','arrow')

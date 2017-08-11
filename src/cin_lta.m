@@ -50,7 +50,7 @@ orient landscape
 axes('position',rect)
 pco1 = pcolor(gx,gy,re4);
 shading interp
-caxis([minc maxc]);
+caxis([ZG.minc ZG.maxc]);
 colormap(jet)
 hold on
 % plot overlay

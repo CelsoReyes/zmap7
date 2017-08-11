@@ -1,6 +1,6 @@
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -31,11 +31,11 @@ if newbmapcWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_bv2')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 1;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(1);')
     uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 2;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(2);')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros(0);')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
          'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...

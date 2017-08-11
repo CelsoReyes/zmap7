@@ -94,6 +94,10 @@ classdef ZmapData < handle
         out_dir % was hodo
         data_dir % was hoda
         
+        % scaling params from view_ functions
+        minc
+        maxc
+        
         
     end
     properties(Dependent)

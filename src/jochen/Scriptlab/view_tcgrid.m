@@ -1,9 +1,10 @@
+function view_tcgrid(lab1, re3)
 % This .m file, "view_tcgrid.m", plots ratechanges calculated with tcgrid.m
 % needs re3, gx, gy
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -89,7 +90,7 @@ if oldfig_button == 0
 
 
     options = uimenu('Label',' Analyze ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_tcgrid')
+    uimenu(options,'Label','Refresh ', 'Callback','view_tcgrid(lab1,re3)')
     %    uimenu(options,'Label','Select EQ in Circle',...
     %        'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data;ZG.hold_state=false;cirpva;watchoff(rcmap)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
@@ -103,28 +104,28 @@ if oldfig_button == 0
     %Menu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_tcgrid ')
+         'Callback','asel = ''mag''; adju2; view_tcgrid(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_tcgrid')
+         'Callback','asel = ''rmax''; adju2; view_tcgrid(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_tcgrid ')
+         'Callback','asel = ''gofi''; adju2; view_tcgrid(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_tcgrid ')
+         'Callback','asel = ''pstdc''; adju2; view_tcgrid(lab1,re3)')
 
     % Menu MAPS
     uimenu(op1,'Label','Magnitude shift',...
-         'Callback',' lab1=''dM'';re3 = mMagShift; view_tcgrid')
+         'Callback',' lab1=''dM'';re3 = mMagShift; view_tcgrid(lab1,re3)')
     uimenu(op1,'Label','KS-Test result',...
-         'Callback','lab1=''H'';re3 = mHkstest; view_tcgrid')
+         'Callback','lab1=''H'';re3 = mHkstest; view_tcgrid(lab1,re3)')
     uimenu(op1,'Label','Magnitude shift validated',...
-         'Callback',' lab1=''dM'';re3 = mMagShift_valid; view_tcgrid')
+         'Callback',' lab1=''dM'';re3 = mMagShift_valid; view_tcgrid(lab1,re3)')
     uimenu(op1,'Label','Normalized \Delta_{FMD}',...
-         'Callback','lab1=''\Delta_{FMD}'';re3 = mChFMD; view_tcgrid')
+         'Callback','lab1=''\Delta_{FMD}'';re3 = mChFMD; view_tcgrid(lab1,re3)')
 
     uimenu(op1,'Label','Resolution Map (Number of events period 1)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents1; view_tcgrid')
+         'Callback','lab1=''Number of events'';re3 = mNumevents1; view_tcgrid(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Number of events period 2)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents2; view_tcgrid')
+         'Callback','lab1=''Number of events'';re3 = mNumevents2; view_tcgrid(lab1,re3)')
 
 
     % Menu DISPLAY
@@ -158,10 +159,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values greater tresh = nan
 %

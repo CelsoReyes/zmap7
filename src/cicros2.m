@@ -9,11 +9,10 @@ ZG=ZmapGlobal.Data;
 try
     delete(plos1)
 catch ME
-    error_handler(ME,@do_nothing);
+    warning(ME)
 end
 
 axes(h1)
-%zoom off
 
 titStr ='Selecting EQ in Circles                         ';
 messtext= ...
@@ -53,27 +52,11 @@ elseif  met == 'ra'
 end
 
 l =  sort(l);
-%messtext = ['Radius of selected Circle:' num2str(l(R2))  ' km' ];
-%disp(messtext)
-%zmap_message_center.set_message('Message',messtext)
-%
-% take first ni and sort by time
-%
-%[st,ist] = sort(ZG.newt2);
-%ZG.newt2 = ZG.newt2(ist(:,3),:);
-%
-% plot Ni clostest events on map as 'x':
 
 hold on
 [na,ma] = size(ZG.newt2);
-plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
+plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
 set(gcf,'Pointer','arrow')
-%
-% plot circle containing events as circle
-%x = -pi-0.1:0.1:pi;
-%plot(xa0+sin(x)*l(ni), ya0+cos(x)*l(ni),'w','era','back')
-
-
 
 %
 newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2

@@ -448,7 +448,7 @@ if strcmp('ca', sel)
     old = re3;
 
     % View the b-value map
-    view_bva
+    view_bva(lab1,re3)
 
 end   % if sel = na
 
@@ -503,7 +503,7 @@ if strcmp('lo', sel)
         re3 = mBvalue;
         old = re3;
 
-        view_bva
+        view_bva(lab1,re3)
 
     else
         return

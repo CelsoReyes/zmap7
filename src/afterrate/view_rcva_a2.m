@@ -1,10 +1,12 @@
+function view_rcva_a2(lab1,re3)
 % This .m file, "view_rcva.m", plots ratechanges and p values calculated
 % with rcvalgrid.m or other similar values as a color map.
 % needs re3, gx, gy
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+% TODO: recreate adju2 (?) to do a variety of cuts: mag, rmax, gofi, pstdc
+if isempty(name)
     name = '  '
 end
 think
@@ -83,7 +85,7 @@ if oldfig_button == 0
     add_symbol_menu('eq_plot');
 
     options = uimenu('Label',' Analyze ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_rcva_a2')
+    uimenu(options,'Label','Refresh ', 'Callback','view_rcva_a2(lab1,re3)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
          'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;plot_circbootfit_a2;watchoff(rcmap)')
     uimenu(options,'Label','Select EQ with const. number',...
@@ -95,55 +97,55 @@ if oldfig_button == 0
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_rcva_a2 ')
+         'Callback','asel = ''mag''; adju2; view_rcva_a2(lab1,re3) ')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_rcva_a2')
+         'Callback','asel = ''rmax''; adju2; view_rcva_a2(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_rcva_a2 ')
+         'Callback','asel = ''gofi''; adju2; view_rcva_a2(lab1,re3) ')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_rcva_a2 ')
+         'Callback','asel = ''pstdc''; adju2; view_rcva_a2(lab1,re3) ')
 
 
     uimenu(op1,'Label','Relative rate change (bootstrap)',...
-         'Callback',' lab1=''Sigma'';re3 = mRelchange; view_rcva_a2')
+         'Callback',' lab1=''Sigma'';re3 = mRelchange; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','Model',...
-         'Callback',' lab1=''Model'';re3 = mMod; view_rcva_a2')
+         'Callback',' lab1=''Model'';re3 = mMod; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','KS-Test',...
-         'Callback',' lab1=''Rejection'';re3 = mKstestH; view_rcva_a2')
+         'Callback',' lab1=''Rejection'';re3 = mKstestH; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','KS-Test Statistic',...
-         'Callback',' lab1=''KS distance'';re3 = mKsstat; view_rcva_a2')
+         'Callback',' lab1=''KS distance'';re3 = mKsstat; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','KS-Test p-value',...
-         'Callback',' lab1=''KS-Test p-value'';re3 = mKsp; view_rcva_a2')
+         'Callback',' lab1=''KS-Test p-value'';re3 = mKsp; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','RMS of fit',...
-         'Callback',' lab1=''RMS'';re3 = mRMS; view_rcva_a2')
+         'Callback',' lab1=''RMS'';re3 = mRMS; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Number of events)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents; view_rcva_a2')
+         'Callback','lab1=''Number of events'';re3 = mNumevents; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Radii)',...
-         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_rcva_a2')
+         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = mPval; view_rcva_a2')
+         'Callback',' lab1=''p-value'';re3 = mPval; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_rcva_a2')
+         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','c-value',...
-         'Callback','lab1=''c-value'';re3 = mCval; view_rcva_a2')
+         'Callback','lab1=''c-value'';re3 = mCval; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','c-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_rcva_a2')
+         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','k-value',...
-         'Callback','lab1=''k-value'';re3 = mKval; view_rcva_a2')
+         'Callback','lab1=''k-value'';re3 = mKval; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','k-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_rcva_a2')
+         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','p2-value',...
-         'Callback',' lab1=''p2-value'';re3 = mPval2; view_rcva_a2')
+         'Callback',' lab1=''p2-value'';re3 = mPval2; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd2; view_rcva_a2')
+         'Callback',' lab1=''p-valstd'';re3 = mPvalstd2; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','c2-value',...
-         'Callback','lab1=''c-value'';re3 = mCval2; view_rcva_a2')
+         'Callback','lab1=''c-value'';re3 = mCval2; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','c2-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd2; view_rcva_a2')
+         'Callback','lab1=''c-valuestd'';re3 = mCvalstd2; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','k2-value',...
-         'Callback','lab1=''k-value'';re3 = mKval2; view_rcva_a2')
+         'Callback','lab1=''k-value'';re3 = mKval2; view_rcva_a2(lab1,re3)')
     uimenu(op1,'Label','k2-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd2; view_rcva_a2')
+         'Callback','lab1=''k-valuestd'';re3 = mKvalstd2; view_rcva_a2(lab1,re3)')
     %    uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
     add_display_menu(2);
@@ -176,10 +178,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values greater tresh = nan
 %

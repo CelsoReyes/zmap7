@@ -165,7 +165,7 @@ function timeplot(mycat, nosort)
         
         
         op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false,selt = ''in'',; bdiff2')
+        uimenu(op4,'Label','automatic', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false,selt = ''in''; bdiff2')
         uimenu(op4,'label','Mc with time ', 'Callback','selt = ''in''; sPar = ''mc''; plot_McBwtime');
         uimenu(op4,'Label','b with depth', 'Callback','bwithde2')
         uimenu(op4,'label','b with magnitude', 'Callback','bwithmag');

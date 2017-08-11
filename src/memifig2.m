@@ -39,8 +39,8 @@ set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',
     'Box','on','SortMethod','childorder')
 
 %minimum and maximum of normlap2 for automatic scaling
-maxc = max(normlap2);
-minc = min(normlap2);
+ZG.maxc = max(normlap2);
+ZG.minc = min(normlap2);
 
 %construct a matrix for the color plot
 normlap1=ones(length(tmpgri(:,1)),1);

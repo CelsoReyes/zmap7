@@ -1,5 +1,4 @@
-% Script: calc_Omoricross.m
-%
+function calc_Omoricross(sel)
 % Calculate Omori parameters on cross section using different choices for Mc
 % Data is displayed with view_Omoricross.m
 %
@@ -133,7 +132,7 @@ if sel == 'in'
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized','Position', [.60 .05 .15 .12], ...
-        'Callback', 'tgl1=tgl1.Value;tgl2=tgl2.Value; bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_Omoricross',...
+        'Callback', 'tgl1=tgl1.Value;tgl2=tgl2.Value; bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_Omoricross(sel)',...
         'String', 'OK');
 
     % Labels
@@ -433,7 +432,7 @@ if sel == 'ca'
     lab1 = 'p-value';
 
     % View the map
-    view_Omoricross
+    view_Omoricross(lab1,re3)
 
 end   % if sel = ca
 
@@ -513,7 +512,7 @@ if sel == 'lo'
 
         old = re3;
         % Plot
-        view_Omoricross;
+        view_Omoricross(lab1,re3);
     else
         return
     end

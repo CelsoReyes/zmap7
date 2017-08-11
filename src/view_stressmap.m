@@ -112,14 +112,6 @@ for i = 1:3:length(px_n)-1
     end
 end
 
-
-%if isempty(l1) == 1; pl2 = plot(px(i),py(i),'kx','Linewidth',1.,'color','r'); l1 = pl2; set(l1,'visible','off'); end
-%if isempty(l2) == 1; pl2 = plot(px(i),py(i),'kx','Linewidth',1.,'color','m'); l2 = pl2; set(l2,'visible','off'); end
-%if isempty(l3) == 1; pl2 = plot(px(i),py(i),'kx','Linewidth',1.,'color',[0.2 0.8 0.2] ); l3 = pl2; set(l3,'visible','off'); end
-%if isempty(l4) == 1; pl2 = plot(px(i),py(i),'kx','Linewidth',1.,'color','c' ); l4 = pl2; set(l4,'visible','off'); end
-%if isempty(l5) == 1; pl2 = plot(px(i),py(i),'kx','Linewidth',1.,'color','b' ); l5 = pl2; set(l5,'visible','off'); end
-%if isempty(l0) == 1; l0 = plot(px(i),py(i),'kx','Linewidth',1.,'color',[0 0 0 ] );  set(l0,'visible','off'); end
-
 if isempty(l1) == 1; pl2 = plot(px,py,'kx','Linewidth',1.,'color','r'); l1 = pl2; set(l1,'visible','off'); end
 if isempty(l2) == 1; pl2 = plot(px,py,'kx','Linewidth',1.,'color','m'); l2 = pl2; set(l2,'visible','off'); end
 if isempty(l3) == 1; pl2 = plot(px,py,'kx','Linewidth',1.,'color',[0.2 0.8 0.2] ); l3 = pl2; set(l3,'visible','off'); end
@@ -154,4 +146,4 @@ watchoff;
 
 % View the variance map
 re3 = r;sha = 'in';
-view_varmap
+view_varmap([],re3);

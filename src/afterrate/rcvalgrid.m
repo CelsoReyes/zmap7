@@ -497,7 +497,7 @@ if sel == 'ca'
     lab1 = 'Rate change';
 
     % View the b-value and p-value map
-    view_rcva
+    view_rcva(lab1,re3)
 
 end   % if sel = na
 
@@ -566,7 +566,7 @@ if sel == 'lo'
 
         old = re3;
 
-        view_rcva;
+        view_rcva(lab1,re3);
     else
         return
     end

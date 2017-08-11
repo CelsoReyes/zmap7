@@ -1,7 +1,7 @@
 %Saving data into ASPAR type 5 format
 
 report_this_filefun(mfilename('fullpath'));
-
+ZG = ZmapGlobal.Data;
 if ~exist('tlen', 'var'); tlen = 30 ; end
 str = [];
 newmatfile = 't1.sum';

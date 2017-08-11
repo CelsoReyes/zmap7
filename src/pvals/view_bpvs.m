@@ -5,7 +5,7 @@
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -101,11 +101,11 @@ if newbpmapcsWindowFlag
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Refresh ', 'Callback','view_bpvs')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;ic = 1;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;cicros(1);')
     uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;ic = 2;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=false;cicros(2);')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=true;cicros;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data;ZG.hold_state=true;cicros(0);')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
          'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...
@@ -196,10 +196,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 
 % set values greater tresh = nan

@@ -3,7 +3,7 @@ function [tau] = funTaucalc(xk,mbg,k1,xmeff,bgdiff,P)
 %routine to claculate the look ahead time for clustered events
 %gives tau back
 
-% global ZG.newcat xk mbg xmeff k1 P
+% global ZG xk mbg xmeff k1 P
 % global top denom deltam bgdiff
 
 

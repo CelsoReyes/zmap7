@@ -376,6 +376,12 @@ classdef ZmapCatalog < handle
             disp(obj.summary('stats'));
         end
             
+        function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
+            % get epicentral (lat-lon) distance to another point
+            delta_lat = (obj.Latitude-to_lat) * 111;
+            delta_lon = (obj.Longitude - to_lat)*cosd(to_lon)*111;
+            dists_km = sqrt( delta_lon.^2 + delta_lat.^2 );
+        end
     end
     
 end

@@ -1,3 +1,4 @@
+
 % This is  the m file lammap2.m. It will display a map view of the
 % seismicity in Lambert projection and ask for two input
 % points select with the cursor. These input points are
@@ -78,19 +79,19 @@ options = uimenu('Label','Ztools');
 
 
 uimenu(options,'Label', 'differential b ',...
-     'Callback','sel = ''in''; h1=gca; bcrossVt2');
+     'Callback','sel = ''in''; h1=gca; bcrossVt2(sel)');
 
 uimenu(options,'Label','Fractal Dimension',...
-     'Callback','sel = ''in'';Dcross');
+     'Callback','sel = ''in'';Dcross(sel)');
 
 uimenu(options,'Label','Mean Depth',...
      'Callback','meandepx');
 
 uimenu(options,'Label','z-value grid',...
-     'Callback','sel = ''in'';magrcros');
+     'Callback','sel = ''in'';magrcros(sel)');
 
 uimenu(options,'Label','b and Mc grid ',...
-     'Callback','sel = ''in'';bcross');
+     'Callback','sel = ''in'';bcross(sel)');
 
 uimenu(options,'Label','Prob. forecast test',...
      'Callback','rContainer.fXSWidth = wi; rContainer.Lon1 = lon1; rContainer.Lat1 = lat1; rContainer.Lon2 = lon2; rContainer.Lat2 = lat2;pt_start(newa, xsec_fig, 0, rContainer, name);');
@@ -115,10 +116,10 @@ uimenu(options,'Label','Vert. Exaggeration',...
      'Callback','vexa');
 
 uimenu(options,'Label','Rate change grid',...
-     'Callback','sel = ''in'';rc_cross_a2');
+     'Callback','sel = ''in'';rc_cross_a2(sel)');
 
 uimenu(options,'Label','Omori parameter grid',...
-     'Callback','sel = ''in'';calc_Omoricross;'); % formerly pcross
+     'Callback','sel = ''in'';calc_Omoricross(sel);'); % formerly pcross
 
 figure_w_normalized_uicontrolunits(mapl)
 uic2 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...

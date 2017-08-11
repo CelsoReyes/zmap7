@@ -125,7 +125,7 @@ normlap2(ll)= cvg(:,1);
 re3=reshape(normlap2,length(yvect),length(xvect));
 Prmap = re3;
 old1 = re3;
-view_bva;
+view_bva(lab1,re3);
 
 
 

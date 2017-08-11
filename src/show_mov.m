@@ -187,7 +187,7 @@ else     % if in2 ~=calma
         axes('position',rect1)
         hold on
         pco1 = pcolor(gx,gy,re4);
-        caxis([minc maxc]);
+        caxis([ZG.minc ZG.maxc]);
         axis([ s2 s1 s4 s3])
         hold on
         %overlay

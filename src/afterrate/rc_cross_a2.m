@@ -1,4 +1,4 @@
-% Script: rc_cross_a2
+function rc_cross_a2(sel) 
 % Calculate relative rate changes and Omori_parameters on cross section.
 % This subroutine assigns creates a grid with spacing dx,dy (in degreees). The size will
 % be selected interactively or the entire area. The values are calculated for in each volume
@@ -155,7 +155,7 @@ if sel == 'in'
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.60 .05 .15 .12], ...
-        'Callback', 'tgl1=tgl1.Value;tgl2=tgl2.Value; bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', rc_cross_a2',...
+        'Callback', 'tgl1=tgl1.Value;tgl2=tgl2.Value; bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', rc_cross_a2(sel)',...
         'String', 'OK');
 
     % Labels
@@ -530,7 +530,7 @@ if sel == 'ca'
     lab1 = 'Rate change';
 
     % View the map
-    view_rccross_a2
+    view_rccross_a2(lab1,re3)
 
 end   % if sel = na
 
@@ -639,7 +639,7 @@ if sel == 'lo'
 
         old = re3;
         % Plot
-        view_rccross_a2;
+        view_rccross_a2(lab1,re3);
     else
         return
     end

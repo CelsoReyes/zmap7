@@ -55,28 +55,7 @@ if newMapWindowFlag
 
     % Make the menu to change symbol size and type
     %
-    symbolmenu = uimenu('Label',' Symbol ');
-    SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
-    TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
-    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal6)');
-    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal6)');
-    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal6)');
-    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal6)');
-    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal6)');
-    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal6)');
-    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal6)');
-
-    uimenu(TypeMenu,'Label','dot',...
-        'Callback','ty1=''.'';ty2=''.'';ty3=''.'';eval(cal6)');
-    uimenu(TypeMenu,'Label','red+ blue o green x',...
-        'Callback','ty1=''+'';ty2=''o'';ty3=''x'';eval(cal6)');
-    uimenu(TypeMenu,'Label','o','Callback',...
-        'ty1=''o'';ty2=''o'';ty3=''o'';eval(cal6)');
-    uimenu(TypeMenu,'Label','x','Callback',...
-        'ty1=''x'';ty2=''x'';ty3=''x'';eval(cal6)');
-    uimenu(TypeMenu,'Label','*',...
-        'Callback','ty1=''*'';ty2=''*'';ty3=''*'';eval(cal6)');
-    uimenu(TypeMenu,'Label','none','Callback','set(deplo1,''visible'',''off'');set(deplo2,''visible'',''off'');set(deplo3,''visible'',''off''); ');
+    add_symbol_menu([]); %TO FIX Figure out which target to affect
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
         'Callback','ZG=ZmapGlobal.Data;ZG.mainmap_plotby=''tim'';setleg');
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...

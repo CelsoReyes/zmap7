@@ -1,3 +1,4 @@
+function bcross(sel)
 % This subroutine  creates a grid with
 % spacing dx,dy (in degreees). The size will
 % be selected interactively or grids the entire cross section.
@@ -153,7 +154,7 @@ if sel == 'in'
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.60 .005 .15 .12], ...
-        'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value; bBst_button = get(chKBst_button, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', bcross',...
+        'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value; bBst_button = get(chKBst_button, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', bcross(sel)',...
         'String', 'OK');
 
     % Labels
@@ -326,7 +327,7 @@ if sel == 'ca'
     re3 = mBvalue;
     kll = ll;
     % View the b-value map
-    view_bv2
+    view_bv2([],re3)
     
 end   %  if sel = ca
 
@@ -365,7 +366,7 @@ if sel == 'lo'
         % Plot all grid points
         hold on
         plot(newgri(:,1),newgri(:,2),'+k','era','back')
-        view_bv2
+        view_bv2([],re3)
     else
         return
     end

@@ -1,3 +1,4 @@
+function view_bvt(lab1,re3)
 % This .m file "view_x
 % maxz.m" plots the maxz LTA values calculated
 % with maxzlta.m or other similar values as a color map
@@ -5,7 +6,7 @@
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -96,15 +97,15 @@ if newbmapcWindowFlag
 
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_bv2')
+    uimenu(options,'Label','Refresh ', 'Callback','view_bv2(lab1,re3)')
     uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 1;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(1);')
     uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 2;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(2);')
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros;')
+         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=true;cicros(0);')
     uimenu(options,'Label','Select EQ in Circle (const R - time split)',...
-         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;ic = 3;cicros;')
+         'Callback',' h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(3);')
     uimenu(options,'Label','Select Eqs in Polygon - new',...
          'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=false;polyb;');
     uimenu(options,'Label','Select Eqs in Polygon - hold',...
@@ -112,32 +113,32 @@ if newbmapcWindowFlag
 
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','b change in percent map  ',...
-         'Callback','lab1 =''b-value change''; re3 = dbperc; view_bvt')
+         'Callback','lab1 =''b-value change''; re3 = dbperc; view_bvt(lab1,re3)')
     uimenu(op1,'Label','b-value Map (weighted LS)',...
-         'Callback','lab1=''b-value''; re3 = old; view_bvt')
+         'Callback','lab1=''b-value''; re3 = old; view_bvt(lab1,re3)')
     uimenu(op1,'Label','b(max likelihood) map',...
-         'Callback',' lab1=''b-value'';re3 = meg; view_bvt')
+         'Callback',' lab1=''b-value'';re3 = meg; view_bvt(lab1,re3)')
     uimenu(op1,'Label','a-value map',...
-         'Callback',' lab1=''a-value'';re3 = avm; view_bvt')
+         'Callback',' lab1=''a-value'';re3 = avm; view_bvt(lab1,re3)')
     uimenu(op1,'Label','standard error map',...
-         'Callback',' lab1=''error in b'';re3 = stanm; view_bvt')
+         'Callback',' lab1=''error in b'';re3 = stanm; view_bvt(lab1,re3)')
     uimenu(op1,'Label','(WLS-Maxlike) map ',...
-         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bvt')
+         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bvt(lab1,re3)')
     uimenu(op1,'Label','max magnitude map',...
-         'Callback',' lab1=''Mmax'';re3 = maxm; view_bvt')
+         'Callback',' lab1=''Mmax'';re3 = maxm; view_bvt(lab1,re3)')
     uimenu(op1,'Label','magnitude range map (Mmax - Mcomp)',...
-         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bvt')
+         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bvt(lab1,re3)')
 
     uimenu(op1,'Label','recurrence time map ',...
-         'Callback','def = {''6''};m = inputdlg(''Magnitude of projected mainshock?'',''Input'',1,def);m1 = m{:}; m = str2num(m1);lab1 = ''Tr in yrs. (only smallest values shown)'';re3 =(teb - t0b)./(10.^(avm-m*old)); view_bvt')
+         'Callback','def = {''6''};m = inputdlg(''Magnitude of projected mainshock?'',''Input'',1,def);m1 = m{:}; m = str2num(m1);lab1 = ''Tr in yrs. (only smallest values shown)'';re3 =(teb - t0b)./(10.^(avm-m*old)); view_bvt(lab1,re3)')
 
 
     uimenu(op1,'Label','probability Map',...
-         'Callback','lab1=''Probability''; re3 = pro; view_bvt')
+         'Callback','lab1=''Probability''; re3 = pro; view_bvt(lab1,re3)')
     uimenu(op1,'Label','mag of completness map',...
-         'Callback','lab1=''Mcomp''; re3 = old1; view_bv2')
+         'Callback','lab1=''Mcomp''; re3 = old1; view_bv2(lab1,re3)')
     uimenu(op1,'Label','resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = r; view_bvt')
+         'Callback','lab1=''Radius in [km]'';re3 = r; view_bvt(lab1,re3)')
     uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
     add_display_menu(3);
@@ -165,7 +166,7 @@ if newbmapcWindowFlag
 
     uicontrol('Units','normal',...
         'Position',[.95 .93 .05 .05],'String','Go ',...
-         'Callback','think;pause(1);re4 =re3; view_bv2')
+         'Callback','think;pause(1);re4 =re3; view_bv2(lab1,re3)')
 
     colormap(jet)
 end   % This is the end of the figure setup

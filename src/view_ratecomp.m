@@ -1,10 +1,13 @@
+function view_ratecomp(det,re3)
 % This .m file "view_maxz.m" plots the maxz LTA values calculated
 % with maxzlta.m or other similar values as a color map
 % needs re3, gx, gy, stri
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+% INPUT VARIABLES: det, re3
+
+if isempty(name)
     name = '  '
 end
 think
@@ -32,41 +35,11 @@ if newzmapWindowFlag
         'backingstore','on',...
         'Visible','off', ...
         'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
-    % make menu bar
-    matdraw
-
-
-    symbolmenu = uimenu('Label',' Symbol ');
-    SizeMenu = uimenu(symbolmenu,'Label',' Symbol Size ');
-    TypeMenu = uimenu(symbolmenu,'Label',' Symbol Type ');
-    ColorMenu = uimenu(symbolmenu,'Label',' Symbol Color ');
-
-    uimenu(SizeMenu,'Label','3','Callback','ZG.ms6 =3;eval(cal7)');
-    uimenu(SizeMenu,'Label','6','Callback','ZG.ms6 =6;eval(cal7)');
-    uimenu(SizeMenu,'Label','9','Callback','ZG.ms6 =9;eval(cal7)');
-    uimenu(SizeMenu,'Label','12','Callback','ZG.ms6 =12;eval(cal7)');
-    uimenu(SizeMenu,'Label','14','Callback','ZG.ms6 =14;eval(cal7)');
-    uimenu(SizeMenu,'Label','18','Callback','ZG.ms6 =18;eval(cal7)');
-    uimenu(SizeMenu,'Label','24','Callback','ZG.ms6 =24;eval(cal7)');
-
-    uimenu(TypeMenu,'Label','dot','Callback','ty =''.'';eval(cal7)');
-    uimenu(TypeMenu,'Label','+','Callback','ty=''+'';eval(cal7)');
-    uimenu(TypeMenu,'Label','o','Callback','ty=''o'';eval(cal7)');
-    uimenu(TypeMenu,'Label','x','Callback','ty=''x'';eval(cal7)');
-    uimenu(TypeMenu,'Label','*','Callback','ty=''*'';eval(cal7)');
-    uimenu(TypeMenu,'Label','none','Callback','vi=''off'';set(ploeq,''visible'',''off''); ');
-
-    uimenu(ColorMenu,'Label','black','Callback','co=''k'';eval(cal7)');
-    uimenu(ColorMenu,'Label','white','Callback','co=''w'';eval(cal7)');
-    uimenu(ColorMenu,'Label','white','Callback','co=''r'';eval(cal7)');
-    uimenu(ColorMenu,'Label','yellow','Callback','co=''y'';eval(cal7)');
-
-    cal7 = ...
-        [ 'vi=''on'';set(ploeq,''MarkerSize'',ZG.ms6,''LineStyle'',ty,''Color'',co,''visible'',''on'')'];
-
+    
+    add_symbol_menu()
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_ratecomp')
+    uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_ratecomp(det,re3)')
     uimenu(options,'Label','Select EQ in Circle - const Ni', 'Callback','nosort = ''on''; h1 = gca;circle;watchoff(zmap)')
     uimenu(options,'Label','Select EQ in Circle - const R2', 'Callback','nosort = ''on''; h1 = gca;circle_constR;watchoff(zmap)')
 
@@ -77,17 +50,17 @@ if newzmapWindowFlag
 
 
     uimenu(op1,'Label','z-value map ',...
-         'Callback','det =''ast''; re3 = old; view_ratecomp')
+         'Callback','det =''ast''; re3 = old; view_ratecomp(det,re3)')
     uimenu(op1,'Label','Percent change map',...
-         'Callback','det=''per''; re3 = per; view_ratecomp')
+         'Callback','det=''per''; re3 = per; view_ratecomp(det,re3)')
     uimenu(op1,'Label','Beta value map',...
-         'Callback','det=''bet''; re3 = beta_map; view_ratecomp')
+         'Callback','det=''bet''; re3 = beta_map; view_ratecomp(det,re3)')
 
     uimenu(op1,'Label','Significance based on beta map',...
-         'Callback','det=''bet''; re3 = betamap; view_ratecomp')
+         'Callback','det=''bet''; re3 = betamap; view_ratecomp(det,re3)')
 
     uimenu(op1,'Label','Resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = reso; view_ratecomp')
+         'Callback','lab1=''Radius in [km]'';re3 = reso; view_ratecomp(det,re3)')
 
     op1 = uimenu('Label','  Display ');
     uimenu(op1,'Label','Plot Map in Lambert projection using m_map ', 'Callback','re4 = re3; plotmap ')
@@ -139,10 +112,10 @@ rect1 = rect;
 
 % find max and min of data for automatic scaling
 %
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 
 % plot image
@@ -227,3 +200,4 @@ figure_w_normalized_uicontrolunits(zmap);
 axes(h1)
 watchoff(zmap)
 done
+end

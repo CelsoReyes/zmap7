@@ -78,7 +78,7 @@ movie(m(:,1),1,30);
 
 rect = [0.15 0.90 0.50 0.05 ];
 axes('position',rect)
-pco2 = pcolor([minc:0.1:maxc ; minc:0.1:maxc]);
+pco2 = pcolor([ZG.minc:0.1:ZG.maxc ; ZG.minc:0.1:ZG.maxc]);
 set(gca,'visible','on')
 h4 = gca;
 set(h4,'YTick',[-10 10])
@@ -89,7 +89,7 @@ shading flat
 rect = [0.15 0.90 0.50 0.05 ];
 pco5 = axes('position',rect);
 h5 = gca;
-axis([ minc maxc 0 1  ])
+axis([ ZG.minc ZG.maxc 0 1  ])
 set(h5,'YTick',[-10 10])
 set(h5,'FontWeight','bold')
 

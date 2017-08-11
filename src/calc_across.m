@@ -1,3 +1,4 @@
+function calc_across(sel)
 % This subroutine assigns creates a grid with
 % spacing dx,dy (in degreees). The size will
 % be selected interactively.
@@ -154,7 +155,7 @@ if sel == 'in'
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.60 .05 .15 .10], ...
-        'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across',...
+        'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across(sel)',...
         'String', 'OK');
 
     % Labels

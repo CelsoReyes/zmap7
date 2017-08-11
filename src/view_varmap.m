@@ -1,3 +1,4 @@
+function view_varmap(lab1,re3)
 % This .m file "view_maxz.m" plots the maxz LTA values calculated
 % with maxzlta.m or other similar values as a color map
 % needs re3, gx, gy, stri
@@ -12,7 +13,7 @@ if isempty(Prmap) >  0
     Prmap = re3*nan;
 end
 
-if isempty(name) >  0
+if isempty(name)
     name = '  ';
 end
 think
@@ -36,14 +37,12 @@ if newbmapWindowFlag
         'backingstore','on',...
         'Visible','off', ...
         'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
-    % make menu bar
-    matdraw
 
     lab1 = 'b-value:';
 
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_varmap')
+    uimenu(options,'Label','Refresh ', 'Callback','view_varmap(lab1,[])')
     uimenu(options,'Label','Select EQ in Circle',...
          'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data; ZG.hold_state=false;circle;watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
@@ -55,9 +54,9 @@ if newbmapWindowFlag
     op1 = uimenu('Label',' Maps ');
 
     uimenu(op1,'Label','Variance map',...
-         'Callback','lab1 =''b-value''; re3 = r; view_varmap')
+         'Callback','lab1 =''b-value''; re3 = r; view_varmap(lab1,re3)')
     uimenu(op1,'Label','Resolution map',...
-         'Callback','lab1 =''Radius''; re3 = rama; view_varmap')
+         'Callback','lab1 =''Radius''; re3 = rama; view_varmap(lab1,re3)')
     uimenu(op1,'Label','Plot map on top of topography ',...
          'Callback','colback = 1; dramap_stress2')
 
@@ -94,10 +93,10 @@ rect1 = rect;
 
 % find max and min of data for automatic scaling
 %
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values gretaer tresh = nan
 %

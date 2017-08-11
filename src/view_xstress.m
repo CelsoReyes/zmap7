@@ -1,11 +1,11 @@
-% Script: view_xstress.m
+function view_xstress(lab1,re3)
 % Script to display results creates with cross_stress.m
 %
 % Needs re3, gx, gy, stri
 %
 % last modified: J. Woessner, 02.2004
-
-if isempty(name) >  0
+if isempty(lab1); lab1='';end; %CR
+if isempty(name)
     name = '  ';
 end
 think
@@ -34,42 +34,42 @@ if newstressmapWindowFlag
 
     % Menu Select
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','re3 = r;view_xstress')
+    uimenu(options,'Label','Refresh ', 'Callback','re3 = r; view_xstress(lab1,re3)')
     uimenu(options,'Label','Select N closest EQs',...
-        'Callback','h1 = gca;ic=1; ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(1);watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-        'Callback','h1 = gca;ic=2; ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(2);watchon;doinvers_michael;watchoff')
     uimenu(options,'Label','Select EQ in Polygon',...
-        'Callback','h1=gca;ic=3;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros;watchon;doinvers_michael;watchoff')
+        'Callback','h1=gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(3);watchon;doinvers_michael;watchoff')
     
     % Menu Maps
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','Variance',...
-        'Callback','lab1=''\sigma'';re3 = mVariance; view_xstress')
+        'Callback','lab1=''\sigma'';re3 = mVariance; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Phi',...
-        'Callback','lab1=''\Phi'';re3 = mPhi; view_xstress')
+        'Callback','lab1=''\Phi'';re3 = mPhi; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Trend S1',...
-        'Callback','lab1=''S1 trend [deg]'';re3 = mTS1; view_xstress')
+        'Callback','lab1=''S1 trend [deg]'';re3 = mTS1; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Plunge S1',...
-        'Callback','lab1=''S1 plunge [deg]'';re3 = mPS1; view_xstress')
+        'Callback','lab1=''S1 plunge [deg]'';re3 = mPS1; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Trend S2',...
-        'Callback','lab1=''S2 trend [deg]'';re3 = mTS2; view_xstress')
+        'Callback','lab1=''S2 trend [deg]'';re3 = mTS2; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Plunge S2',...
-        'Callback','lab1=''S2 plunge [deg]'';re3 = mPS2; view_xstress')
+        'Callback','lab1=''S2 plunge [deg]'';re3 = mPS2; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Trend S3',...
-        'Callback','lab1=''S3 trend [deg]'';re3 = mTS3; view_xstress')
+        'Callback','lab1=''S3 trend [deg]'';re3 = mTS3; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Plunge S3',...
-        'Callback','lab1=''S3 plunge [deg]'';re3 = mPS3; view_xstress')
+        'Callback','lab1=''S3 plunge [deg]'';re3 = mPS3; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Angular misfit',...
-        'Callback','lab1=''\beta [deg]'';re3 = mBeta; view_xstress')
+        'Callback','lab1=''\beta [deg]'';re3 = mBeta; view_xstress(lab1,re3)')
     uimenu(op1,'Label','\tau spread',...
-        'Callback','lab1=''\tau [deg]'';re3 = mTau; view_xstress')
+        'Callback','lab1=''\tau [deg]'';re3 = mTau; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Resolution map (const. Radius)',...
-        'Callback','lab1=''Radius in [km]'';re3 = mResolution; view_xstress')
+        'Callback','lab1=''Radius in [km]'';re3 = mResolution; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Resolution map',...
-        'Callback','lab1=''Number of events'';re3 = mNumber; view_xstress')
+        'Callback','lab1=''Number of events'';re3 = mNumber; view_xstress(lab1,re3)')
     uimenu(op1,'Label','Trend S1 relative to fault strike',...
-        'Callback','lab1=''S1 trend to strike [deg]'';re3 = mTS1Rel; view_xstress')
+        'Callback','lab1=''S1 trend to strike [deg]'';re3 = mTS1Rel; view_xstress(lab1,re3)')
     %uimenu(op1,'Label','Histogram ', 'Callback','zhist')
     
     % Menu Display
@@ -104,10 +104,10 @@ set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',
 rect = [0.18,  0.10, 0.7, 0.75];
 
 % Find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % Plot image
 orient landscape
@@ -193,3 +193,4 @@ figure_w_normalized_uicontrolunits(stressmap);
 axes(h1)
 watchoff(stressmap)
 done
+end

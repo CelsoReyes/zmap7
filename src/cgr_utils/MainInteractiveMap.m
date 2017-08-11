@@ -437,7 +437,7 @@ classdef MainInteractiveMap
             obj.create_decluster_menu(submenu);
             
             uimenu(submenu,'Label','Map stress tensor',...
-                'Callback','sel = ''in''; stressgrid');
+                'Callback','sel = ''in''; stressgrid(sel)');
             
             uimenu(submenu,'Label','Misfit calculation',...
                 'Callback','inmisfit;');
@@ -483,18 +483,18 @@ classdef MainInteractiveMap
         function create_mapping_rate_changes_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping rate changes');
             uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)',...
-                'Callback','sel= ''in''; comp2periodz')
+                'Callback','sel= ''in''; comp2periodz(sel)')
             
             uimenu(submenu,'Label','Calculate a z-value map',...
-                'Callback','sel= ''in''; inmakegr')
+                'Callback','sel= ''in''; inmakegr(sel)')
             uimenu(submenu,'Label','Calculate a z-value cross-section',...
                 'Callback','nlammap');
             uimenu(submenu,'Label','Calculate a 3D  z-value distribution',...
-                'Callback','sel = ''in''; zgrid3d');
+                'Callback','sel = ''in''; zgrid3d(sel)');
             uimenu(submenu,'Label','Load a z-value grid (map-view)',...
-                'Callback','sel= ''lo'';loadgrid')
+                'Callback','sel= ''lo'';loadgrid(sel)')
             uimenu(submenu,'Label','Load a z-value grid (cross-section-view)',...
-                'Callback','sel= ''lo'';magrcros')
+                'Callback','sel= ''lo'';magrcros(sel)')
             uimenu(submenu,'Label','Load a z-value movie (map-view)',...
                 'Callback','loadmovz')
         end
@@ -503,27 +503,27 @@ classdef MainInteractiveMap
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             uimenu(submenu,'Label','Calculate a Mc, a- and b-value map',...
-                'Callback','sel= ''in'';,bvalgrid')
+                'Callback','sel= ''in'';bvalgrid(sel)')
             uimenu(submenu,'Label','Calculate a differential b-value map (const R)',...
-                'Callback','sel= ''in'';,bvalmapt')
+                'Callback','sel= ''in'';bvalmapt(sel)')
             uimenu(submenu,'Label','Calculate a b-value cross-section',...
                 'Callback','nlammap');
             uimenu(submenu,'Label','Calculate a 3D  b-value distribution',...
-                'Callback','sel = ''i1''; bgrid3dB');
+                'Callback','sel = ''i1''; bgrid3dB(sel)');
             uimenu(submenu,'Label','Calculate a b-value depth ratio grid',...
-                'Callback','sel= ''in'';,bdepth_ratio')
+                'Callback','sel= ''in'';bdepth_ratio(sel)')
             uimenu(submenu,'Label','Load a b-value grid (map-view)',...
-                'Callback','sel= ''lo'';bvalgrid')
+                'Callback','sel= ''lo'';bvalgrid(sel)')
             %RZ
             uimenu(submenu,'Label','Load a differential b-value grid',...
                 'Callback','sel= ''lo'';bvalmapt')
             %RZ
             uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
-                'Callback','sel= ''lo'';bcross')
+                'Callback','sel= ''lo'';bcross(sel)')
             uimenu(submenu,'Label','Load a 3D b-value grid',...
-                'Callback','sel= ''no'';ac2 = ''load''; myslicer')
+                'Callback','sel= ''no'';ac2 = ''load''; myslicer(sel)')
             uimenu(submenu,'Label','Load a b-value depth ratio grid',...
-                'Callback','sel= ''lo'';,bdepth_ratio')
+                'Callback','sel= ''lo'';bdepth_ratio(sel)')
         end
         
         function create_map_p_menu(obj,parent)

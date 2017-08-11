@@ -9,7 +9,7 @@ if length(path1) > 1
     think
     load([path1 file1])
     abo2 = abo;
-    plotala
+    plotala()
 else
     return
 end

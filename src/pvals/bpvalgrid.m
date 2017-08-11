@@ -269,7 +269,7 @@ function [sel] = bpvalgrid(sel)
         lab1 = 'p-value';
         
         % View the b-value and p-value map
-        view_bpva(gridstats)
+        view_bpva(lab1,gridstats.re3)
         
     end   % if sel = na
     
@@ -279,7 +279,7 @@ function [sel] = bpvalgrid(sel)
         if length(path1) > 1
             think
             gridstats=load_existing_bgrid(fullfile(path1, file1));
-            view_bpva(gridstats)
+            view_bpva(lab1,gridstats.re3)
         else
             return
         end

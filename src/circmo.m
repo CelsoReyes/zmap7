@@ -33,38 +33,25 @@ axes(hmo)
 stri1 = [ 'Circle: ' num2str(xa0,5) '; ' num2str(ya0,4)];
 stri = stri1;
 pause(0.1)
-%  calculate distance for each earthquake from center point
-%  and sort by distance
-%
-l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
-[s,is] = sort(l);
-ZG.newt2 = a(is(:,1),:) ;
 
-l =  sort(l);
-messtext = ['Radius of selected Circle: ' num2str(l(ni))  ' km' ];
+[mask, max_km] = closest_events(ZG.a,ya0, xa0, ni);
+ZG.newt2 = ZG.a(mask);
+ZG.newt2.sort('Date')
+
+messtext = ['Radius of selected Circle: ' num2str(max_km)  ' km' ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
 %
 % take first ni and sort by time
-%
-ZG.newt2 = ZG.newt2(1:ni,:);
-[st,ist] = sort(ZG.newt2);
-ZG.newt2 = ZG.newt2(ist(:,3),:);
-%
+
+
 % plot Ni clostest events on map as 'x':
 
 hold on
 plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','normal');
 set(gcf,'Pointer','arrow')
 
-% plot circle containing events as circle
-x = -pi-0.1:0.1:pi;
-%plot(xa0+sin(x)*l(ni)/(cosd(ya0)*111), ya0+cos(x)*l(ni)/(cosd(ya0)*111),'k','era','normal')
+ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
-%
-newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
-
-% Call program "timeplot to plot cumulative number
-%
-clear l s is
+% plot cumulative number
 timeplot(ZG.newt2);

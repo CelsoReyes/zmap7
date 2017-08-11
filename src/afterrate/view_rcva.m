@@ -1,10 +1,11 @@
+function view_rcva(lab1,re3)
 % This .m file, "view_rcva.m", plots ratechanges and p values calculated
 % with rcvalgrid.m or other similar values as a color map.
 % needs re3, gx, gy
 %
 % define size of the plot etc.
 %
-if isempty(name) >  0
+if isempty(name)
     name = '  '
 end
 think
@@ -83,7 +84,7 @@ if oldfig_button == 0
     add_symbol_menu('eq_plot');
 
     options = uimenu('Label',' Analyze ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_rcva')
+    uimenu(options,'Label','Refresh ', 'Callback','view_rcva(lab1,re3)')
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
          'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;plot_circbootfitF;watchoff(rcmap)')
     uimenu(options,'Label','Select EQ with const. number',...
@@ -95,46 +96,46 @@ if oldfig_button == 0
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_rcva ')
+         'Callback','asel = ''mag''; adju2; view_rcva(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_rcva')
+         'Callback','asel = ''rmax''; adju2; view_rcva(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_rcva ')
+         'Callback','asel = ''gofi''; adju2; view_rcva(lab1,re3)')
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_rcva ')
+         'Callback','asel = ''pstdc''; adju2; view_rcva(lab1,re3)')
 
 
     %    uimenu(op1,'Label','b-value map (WLS)',...
-    %        'Callback','lab1 =''b-value''; re3 = old; view_rcva')
+    %        'Callback','lab1 =''b-value''; re3 = old; view_rcva(lab1,re3)')
     %    uimenu(op1,'Label','b(max likelihood) map',...
-    %        'Callback','lab1=''b-value''; re3 = meg; view_rcva')
+    %        'Callback','lab1=''b-value''; re3 = meg; view_rcva(lab1,re3)')
     %    uimenu(op1,'Label','Mag of completness map',...
-    %        'Callback','lab1 = ''Mcomp''; re3 = old1; view_rcva')
+    %        'Callback','lab1 = ''Mcomp''; re3 = old1; view_rcva(lab1,re3)')
     %    uimenu(op1,'Label','max magnitude map',...
-    %           'Callback',' lab1=''Mmax'';re3 = maxm; view_rcva')
+    %           'Callback',' lab1=''Mmax'';re3 = maxm; view_rcva(lab1,re3)')
     %    uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-    %           'Callback',' lab1=''dM '';re3 = maxm-magco; view_rcva')
+    %           'Callback',' lab1=''dM '';re3 = maxm-magco; view_rcva(lab1,re3)')
     %
     uimenu(op1,'Label','Relative rate change',...
-         'Callback',' lab1=''Sigma'';re3 = mRelchange; view_rcva')
+         'Callback',' lab1=''Sigma'';re3 = mRelchange; view_rcva(lab1,re3)')
     uimenu(op1,'Label','Relative rate change by boostrap',...
-         'Callback',' lab1=''Sigma'';re3 = vRcBst; view_rcva')
+         'Callback',' lab1=''Sigma'';re3 = vRcBst; view_rcva(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Number of events)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents; view_rcva')
+         'Callback','lab1=''Number of events'';re3 = mNumevents; view_rcva(lab1,re3)')
     uimenu(op1,'Label','Resolution Map (Radii)',...
-         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_rcva')
+         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_rcva(lab1,re3)')
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = mPval; view_rcva')
+         'Callback',' lab1=''p-value'';re3 = mPval; view_rcva(lab1,re3)')
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_rcva')
+         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_rcva(lab1,re3)')
     uimenu(op1,'Label','c-value',...
-         'Callback','lab1=''c-value'';re3 = mCval; view_rcva')
+         'Callback','lab1=''c-value'';re3 = mCval; view_rcva(lab1,re3)')
     uimenu(op1,'Label','c-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_rcva')
+         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_rcva(lab1,re3)')
     uimenu(op1,'Label','k-value',...
-         'Callback','lab1=''k-value'';re3 = mKval; view_rcva')
+         'Callback','lab1=''k-value'';re3 = mKval; view_rcva(lab1,re3)')
     uimenu(op1,'Label','k-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_rcva')
+         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_rcva(lab1,re3)')
     %    uimenu(op1,'Label','Histogram ', 'Callback','zhist')
 
     add_display_menu(1);
@@ -167,10 +168,10 @@ rect = [0.18,  0.10, 0.7, 0.75];
 rect1 = rect;
 
 % find max and min of data for automatic scaling
-maxc = max(max(re3));
-maxc = fix(maxc)+1;
-minc = min(min(re3));
-minc = fix(minc)-1;
+ZG.maxc = max(max(re3));
+ZG.maxc = fix(ZG.maxc)+1;
+ZG.minc = min(min(re3));
+ZG.minc = fix(ZG.minc)-1;
 
 % set values greater tresh = nan
 %
