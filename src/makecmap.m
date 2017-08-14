@@ -34,29 +34,29 @@ function makecmap(bins,fighandle)
     %
     %    Runs under Matlab 5
     %
-
+    
     % Note: the readcolormap option is not perfect. It works well if the
     % colormap contains straight lines like most matlab colormaps. You can play
     % with the tolerance. Also, the more nodes in an axes the slower the mouse
     % handler routines will run.
-
+    
     % Written by Colin Humphries, Salk Institute, March 1997
     %             colin@salk.edu
     %
-
+    
     %TODO fix confusing global situation -CGR
-
+    
     %report_this_filefun(mfilename('fullpath'));
-
+    
     nargs = nargin;
-
+    
     if nargs == 0
         bins = 64;
         nargs = 1;
     end
-
+    
     if ~ischar(bins)
-
+        
         if size(bins,2) == 3
             map = bins;
             bins = size(map,1);
@@ -75,7 +75,7 @@ function makecmap(bins,fighandle)
                 fighandle = [];
             end
         end
-
+        
         if isempty(map)
             red = [1 0;bins 1];       % default colormap
             green = [1 0;bins 1];
@@ -88,7 +88,7 @@ function makecmap(bins,fighandle)
             % occasion. If the colormap is nonlinear
             % in many places, a lot of nodes will be
             % assigned.
-
+            
             for j = 1:3           % cycle through each column
                 for i = 1:bins      % cycle through each row
                     if i == 1         % assign the first point as the first node
@@ -110,7 +110,7 @@ function makecmap(bins,fighandle)
                             % oldtempnode have the
                             % same slope.
                             % Tolerance is +/- 1%
-
+                            
                             oldtempnode = tempnode;    % if so then move oldtempnode
                         else
                             nodes = [nodes;oldtempnode]; % if not then assign a new
@@ -132,17 +132,17 @@ function makecmap(bins,fighandle)
                 end
             end
         end
-
+        
         mcmfighandle = figure_w_normalized_uicontrolunits('color','k');
-
+        
         if isempty(fighandle)
             fighandle = mcmfighandle;
         end
-
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Set up Colormap from nodes
         %   Converts each set of nodes into a discrete vector
-
+        
         for i = 1:size(red,1)-1
             W = linspace(red(i,2),red(i+1,2),red(i+1,1)-red(i,1)+1);
             mapred(red(i,1):red(i+1,1)-1) = W(1:red(i+1,1)-red(i,1))';
@@ -159,10 +159,10 @@ function makecmap(bins,fighandle)
         end
         mapblue(blue(i+1,1)) = blue(i+1,2);
         map = [mapred(:),mapgreen(:),mapblue(:)]; % get new colormap
-
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Set up Graphs
-
+        
         nodenum = size(red,1);
         subplot(3,2,1)                 % Red Graph
         hold on
@@ -177,7 +177,7 @@ function makecmap(bins,fighandle)
             'xcolor','w','ycolor','w','xgrid','on','ygrid','on',...
             'Ytick',(0:.2:1));
         ylabel('Red','FontSize',14)
-
+        
         subplot(3,2,3)                % Green Graph
         nodenum = size(green,1);
         hold on
@@ -192,7 +192,7 @@ function makecmap(bins,fighandle)
             'xcolor','w','ycolor','w','xgrid','on','ygrid','on',...
             'YTick',(0:.2:1));
         ylabel('Green','FontSize',14)
-
+        
         subplot(3,2,5)                % Blue Graph
         nodenum = size(blue,1);
         hold on
@@ -207,10 +207,10 @@ function makecmap(bins,fighandle)
             'xcolor','w','ycolor','w','xgrid','on','ygrid','on',...
             'YTick',(0:.2:1));
         ylabel('Blue','FontSIze',14)
-
+        
         colormap(map)                % Apply Colormap
         set(fighandle,'Colormap',map)
-
+        
         transax = axes('Position',[.578 .4056 .327 .2238]); % Transfer Graph
         hold on
         trans = [1 1;bins 1];
@@ -228,7 +228,7 @@ function makecmap(bins,fighandle)
             'xcolor','w','ycolor','w','xgrid','on','ygrid','on',...
             'YTick',(0:.2:1))
         set(mcmfighandle,'UserData',[map,trans(:)],'tag',int2str(fighandle))
-
+        
         cbax = axes('Position',[.578 .75 .327 .1072]);  % Colorbar Graph
         colorbar(cbax)
         set(cbax,'tag','cb','xcolor','w','ycolor','w',...
@@ -238,45 +238,45 @@ function makecmap(bins,fighandle)
             red;...
             green;...
             blue])
-
+        
         % Title axis
-
+        
         hdaxes = axes('Position',[.57 .93 .327 .05],'Visible','off',...
             'tag','hd','UserData',map);
         text(.5,0,'Colormap Editor','FontSize',16,'Color','w',...
             'HorizontalAlignment','center')
-
+        
         % Uicontrols
-
+        
         uicontrol('style','pushbutton','string','Reset',...
             'Units','Normalized',...
             'Position',[.55 .0929 .1071 .0595],...
-            'Callback','makecmap(''reset'');')
-
-
+            'callback',@callbackfun_001)
+        
+        
         uicontrol('style','pushbutton','string','Export',...
             'Units','Normalized',...
             'Position',[.675 .0929 .1071 .0595],...
-            'Callback','makecmap(''export'');')
-
+            'callback',@callbackfun_002)
+        
         uicontrol('style','pushbutton','string','Close',...
             'Units','Normalized',...
             'Position',[.80 .0929 .1071 .0595],...
-            'Callback','makecmap(''close'');')
-
-
+            'callback',@callbackfun_003)
+        
+        
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Set up callbacks
-
+        
         set(mcmfighandle,'WindowButtonDownFcn','makecmap(''down'');')
         set(mcmfighandle,'WindowButtonUpFcn','makecmap(''up'');')
         set(mcmfighandle,'WindowButtonMotionFcn','makecmap(''motion'');')
         set(mcmfighandle,'CloseRequestFcn','makecmap(''close'');')
-
+        
         % End of main function
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+        
     else
         if strcmp(bins,'down')           % Mouse Button Down Handler
             figh = gcbf;
@@ -297,7 +297,7 @@ function makecmap(bins,fighandle)
                     Y <= ylimits(1)-ylimits(2)*.07 || Y >= ylimits(2)*1.07
                 return    % if outside of axis limits then return
             end
-
+            
             if strcmp(button,'normal')    % left mouse button
                 global M_BUTTON_DOWN M_PNTS M_LINES M_TEXT
                 ii = find(X > nodes(:,1));  % find node above point
@@ -328,19 +328,19 @@ function makecmap(bins,fighandle)
                         [nodes(i,2),nodes(i+1,2)],'color',lcolor);
                 end
                 M_PNTS(i+1) = plot(nodes(nodenum,1),nodes(nodenum,2),'ow');
-
+                
                 M_TEXT = text(0,1.05,...
                     [' ',int2str(nodes(M_BUTTON_DOWN,1)),', ',...
                     num2str(nodes(M_BUTTON_DOWN,2),2)],...
                     'Color','w','clipping','off',...
                     'VerticalAlignment','bottom',...
                     'FontSize',10);
-
+                
                 axis([1 nodes(nodenum,1) 0 1])
-
+                
             elseif strcmp(button,'extend')     % Middle Mouse Button
                 %global M_BUTTON_DOWN M_PNTS M_LINES M_TEXT
-
+                
                 ii = find(X > nodes(:,1));       % find node below
                 minnode = max(ii);
                 ii = find(X < nodes(:,1));       % find node above
@@ -362,9 +362,9 @@ function makecmap(bins,fighandle)
                     'Color','w','clipping','off',...
                     'VerticalAlignment','bottom',...
                     'FontSize',10);
-
+                
                 axis([1 nodes(nodenum,1) 0 1])
-
+                
             elseif strcmp(button,'alt')          % Right Mouse Button
                 ii = find(X > nodes(:,1));         % find node below
                 minnode = max(ii);
@@ -389,9 +389,9 @@ function makecmap(bins,fighandle)
                 axis([1 nodes(nodenum,1) 0 1])
             end
             set(axhandle,'UserData',nodes)  % update nodes
-
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+            
         elseif strcmp(bins,'up')            % Mouse Button Up Handler
             figh = gcbf;
             %global M_TEXT
@@ -424,7 +424,7 @@ function makecmap(bins,fighandle)
             if fighandle ~= figh
                 set(fighandle,'Colormap',UserData(:,1:3).*(UserData(:,4)*ones(1,3)))
             end
-
+            
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         elseif strcmp(bins,'motion')      % Mouse Motion Handler
             %global M_BUTTON_DOWN M_LINES M_PNTS M_TEXT
@@ -445,7 +445,7 @@ function makecmap(bins,fighandle)
                     min(nodes(M_BUTTON_DOWN+1,1),round(X)));
                 nodes(M_BUTTON_DOWN,2) = max(min(Y,1),0);
             end
-
+            
             delete(M_PNTS(M_BUTTON_DOWN))
             M_PNTS(M_BUTTON_DOWN) = plot(nodes(M_BUTTON_DOWN,1),...
                 nodes(M_BUTTON_DOWN,2),'ow');
@@ -461,7 +461,7 @@ function makecmap(bins,fighandle)
                     nodes(M_BUTTON_DOWN+1,1)],...
                     [nodes(M_BUTTON_DOWN,2),nodes(M_BUTTON_DOWN+1,2)],'color',tagval);
             end
-
+            
             delete(M_TEXT)
             M_TEXT = text(0,1.05,...
                 [' ',int2str(nodes(M_BUTTON_DOWN,1)),', ',...
@@ -469,10 +469,10 @@ function makecmap(bins,fighandle)
                 'Color','w','clipping','off',...
                 'VerticalAlignment','bottom',...
                 'FontSize',10);
-
+            
             axis([1 nodes(nodenum,1) 0 1])
             set(axhandle,'UserData',nodes)
-
+            
         elseif strcmp(bins,'export')   % export colormap to desktop
             fig = gcbf;
             pos = get(fig,'Position');
@@ -484,18 +484,18 @@ function makecmap(bins,fighandle)
                 'Resize','off','CloseRequestFcn','','menubar','none',...
                 'numbertitle','off');
             uicolor = get(figh,'Color');
-
+            
             % text uicontrol
             uicontrol('Style','Text','Units','Pixels',...
                 'String','Output Colormap to Desktop Variable:',...
                 'Position',[20 figy-40 300 22],'HorizontalAlignment','left',...
                 'FontSize',14,'BackGroundColor',uicolor)
-
+            
             % edit uicontrol
             ui1 = uicontrol('Style','Edit','Units','Pixels',...
                 'String','cmap','FontSize',12,...
                 'Position',[120 figy-100 150 30]);
-
+            
             TIMESTRING = ['[OBJ1,FIGH1] = gcbo;',...
                 'OBJHAN = get(OBJ1,''UserData'');',...
                 'LAB1 = get(OBJHAN(1),''string'');',...
@@ -503,42 +503,42 @@ function makecmap(bins,fighandle)
                 'eval([LAB1,'' = DATA1;'']);',...
                 'delete(FIGH1);',...
                 'clear OBJ1 FIGH1 OBJHAN DATA1 LAB1'];
-
+            
             % OK Button
             uicontrol('Style','PushButton','Units','Pixels',...
                 'String','OK','FontSize',14,...
                 'Position',[figx/4-20 10 65 30],...
                 'UserData',[ui1 fig],'Callback',TIMESTRING)
-
+            
             TIMESTRING = ['[OBJ1,FIGH1] = gcbo;',...
                 'delete(FIGH1);',...
                 'clear OBJ1 FIGH1;'];
-
+            
             % Cancel Button
             uicontrol('Style','PushButton','Units','Pixels',...
                 'String','Cancel','FontSize',14,...
                 'Position',[3*figx/4-20 10 65 30],...
                 'Callback',TIMESTRING)
-
+            
         elseif strcmp(bins,'close')   % Close Request function
             figh = gcbf;
             clear global M_BUTTON_DOWN M_LINES M_PNTS M_TEXT % get rid of global vars
             delete(figh)
-
+            
         elseif strcmp(bins,'reset')   % reset Colormap to original values
             fighandle = gcbf;
             obj = findobj('tag','hd','parent',fighandle);
             map = get(obj,'UserData');  % get original colormap stored in hd axes
             set(fighandle,'Colormap',map,...
                 'UserData',[map , ones(size(map,1),1)])
-
+            
             obj = findobj('tag','cb','parent',fighandle);
             nodes = get(obj,'UserData');  % get node values stored in cb axes
             red = nodes(4:nodes(1,1)+3,:);
             green = nodes(nodes(1,1)+4:nodes(1,1)+nodes(2,1)+3,:);
             blue = nodes(nodes(1,1)+nodes(2,1)+4:nodes(1,1)+nodes(2,1)+...
                 nodes(3,1)+3,:);
-
+            
             obj = findobj('tag','r','parent',fighandle);
             axes(obj)                         % reset colormap graphs
             cla
@@ -549,7 +549,7 @@ function makecmap(bins,fighandle)
             end
             plot(red(nodenum,1),red(nodenum,2),'ow')
             set(obj,'UserData',red)
-
+            
             obj = findobj('tag','g','parent',fighandle);
             axes(obj)
             cla
@@ -560,7 +560,7 @@ function makecmap(bins,fighandle)
             end
             plot(green(nodenum,1),green(nodenum,2),'ow')
             set(obj,'UserData',green)
-
+            
             obj = findobj('tag','b','parent',fighandle);
             axes(obj)
             cla
@@ -571,7 +571,7 @@ function makecmap(bins,fighandle)
             end
             plot(blue(nodenum,1),blue(nodenum,2),'ow')
             set(obj,'UserData',blue)
-
+            
             obj = findobj('tag','y','parent',fighandle);
             axes(obj)
             cla
@@ -589,12 +589,23 @@ function makecmap(bins,fighandle)
             end
         end
     end
-
-
-
-
-
-
-
-
-
+    
+    
+    function callbackfun_001(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        makecmap('reset');
+    end
+    
+    function callbackfun_002(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        makecmap('export');
+    end
+    
+    function callbackfun_003(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        makecmap('close');
+    end
+end

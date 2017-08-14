@@ -6,7 +6,7 @@
 %
 %   Stefan Wiemer 1/95
 
-global no1 bo1 inb1 inb2 eq0p
+global inb2 eq0p
 
 % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
 % D = [x,y,z ]

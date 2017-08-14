@@ -10,3 +10,4 @@ function d = degrees(r)
     %
     % r = a number in radians
     d = 180*r/pi;
+

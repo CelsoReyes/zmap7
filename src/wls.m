@@ -41,3 +41,4 @@ function [A,B,err] = wls(x,y)
     [~,err] = polyval(p,x,S);
     err = mean(err);
 
+

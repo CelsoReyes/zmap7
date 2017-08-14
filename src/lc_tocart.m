@@ -89,3 +89,4 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
     % store the data in output variables
     x = scale * rho .* sin(theta);
     y = scale * (rho0 - (rho .* cos(theta)));
+

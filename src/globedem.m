@@ -249,3 +249,4 @@ function [map,maplegend] = globedemc(dname,scalefactor,latlim,lonlim)
 
 
 
+

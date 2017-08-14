@@ -7,3 +7,4 @@ function y = frac(x)
     report_this_filefun(mfilename('fullpath'));
 
     y = x - fix(x);
+

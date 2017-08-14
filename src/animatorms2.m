@@ -10,8 +10,8 @@ function animator2(action)
             point1 = get(gca,'CurrentPoint'); % button down detected
             ps1 = plot(point1(1,1),point1(1,2),'ws');
 
-            set(gcf,'WindowButtonMotionFcn',' animatorms2 move')
-            set(gcf,'WindowButtonUpFcn','animatorms2 stop')
+            set(gcf,'WindowButtonMotionFcn',@(~,~)animatorms2('move'));
+            set(gcf,'WindowButtonUpFcn',@(~,~)animatorms2('stop'));
 
             point2 = get(gca,'CurrentPoint');
             ps2 = plot(point2(1,1),point2(1,2),'w^','era','xor');
@@ -30,6 +30,6 @@ function animator2(action)
             set(gcbf,'WindowButtonMotionFcn','')
             set(gcbf,'WindowButtonUpFcn','')
             % ac2 = 'newslice', myslicer;
-
-
     end
+
+end

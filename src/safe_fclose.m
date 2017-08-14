@@ -6,3 +6,4 @@ function safe_fclose(fid)
     if any(open_files == fid)
         fclose(fid);
     end
+

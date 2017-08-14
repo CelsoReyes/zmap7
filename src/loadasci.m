@@ -293,14 +293,14 @@ function loadasci(da,sa)
     
     function close_callback(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'close_callback');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         setup();
     end
     
     function load_callback(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'load_callback');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci(da,'on');
     end
 end

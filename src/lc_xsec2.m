@@ -303,3 +303,4 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         %figure_w_normalized_uicontrolunits(map_fig)
 
     end
+

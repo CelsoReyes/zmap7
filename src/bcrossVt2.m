@@ -63,7 +63,7 @@ if sel == 'in'
         'Position',labelPos,...
         'Units','normalized',...
         'String',labelList2,...
-        'Callback','inb2=hndl2.Value; ');
+        'callback',@callbackfun_001);
 
 
 
@@ -74,33 +74,33 @@ if sel == 'in'
         'Position',labelPos,...
         'Units','normalized',...
         'String',labelList,...
-        'Callback','inb1=hndl1.Value; ');
+        'callback',@callbackfun_002);
 
     % creates a dialog box to input grid parameters
     %
     freq_field=uicontrol('Style','edit',...
         'Position',[.60 .50 .22 .10],...
         'Units','normalized','String',num2str(ra),...
-        'Callback','ra=str2double(freq_field.String); freq_field.String=num2str(ra);');
+        'callback',@callbackfun_003);
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.60 .40 .22 .10],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
+        'callback',@callbackfun_004);
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.60 .30 .22 .10],...
         'Units','normalized','String',num2str(dd),...
-        'Callback','dd=str2double(freq_field3.String); freq_field3.String=num2str(dd);');
+        'callback',@callbackfun_005);
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','Callback','close;done','String','Cancel');
+        'Units','normalized','callback',@callbackfun_006,'String','Cancel');
 
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','inb1=hndl1.Value;inb2=hndl2.Value;close,sel =''ca'', bcrossVt2(sel)',...
+        'callback',@callbackfun_007,...
         'String','Go');
 
     text(...
@@ -241,7 +241,8 @@ ax = findobj('Tag','main_map_ax');
 
     % overall b-value
     [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-    bo1 = bv; no1 = newa.Count;
+    bo1 = bv; 
+    no1 = newa.Count;
     %
     for i= 1:length(newgri(:,1))
         x = newgri(i,1);y = newgri(i,2);
@@ -263,7 +264,8 @@ ax = findobj('Tag','main_map_ax');
             lt =  b.Date >= t1 &  b.Date <t2 ;
             if  length(b(lt,1)) > Nmin/2;
                 [bv magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),inb1,inb2);
-                bo1 = bv; no1 = newa.Count;
+                bo1 = bv; 
+                no1 = newa.Count;
             else
                 bv = NaN; pr = 50;
             end
@@ -348,3 +350,57 @@ if sel == 'lo'
     load_existing_bgrid_version_A
 end
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  inb2=hndl2.Value;
+   ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  inb1=hndl1.Value;
+   ;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  ra=str2double(freq_field.String);
+   freq_field.String=num2str(ra);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  dx=str2double(freq_field2.String);
+   freq_field2.String=num2str(dx);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  dd=str2double(freq_field3.String);
+   freq_field3.String=num2str(dd);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+  done;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  inb1=hndl1.Value;
+  inb2=hndl2.Value;
+  close;
+  sel ='ca';
+   bcrossVt2(sel);
+end
+end
+ 

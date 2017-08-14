@@ -15,7 +15,7 @@ function bcross(sel)
 % bootstrapping
 report_this_filefun(mfilename('fullpath'));
 
-global no1 bo1 inb1 inb2
+global inb1 inb2
 
 % Do we have to create the dialogbox?
 if sel == 'in'
@@ -58,7 +58,7 @@ if sel == 'in'
         'Units','normalized','Position',[ 0.2 0.77  0.6  0.08],...
         'String',labelList2,...
         'BackgroundColor','w',...
-        'Callback','inb2=hndl2.Value; ');
+        'callback',@callbackfun_001);
 
     % Set selection to 'Best combination'
     set(hndl2,'value',1);
@@ -68,32 +68,32 @@ if sel == 'in'
         'Units','normalized','Position',[.30 .60 .12 .10],...
         'String',num2str(ni),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);tgl2.Value=0; tgl1.Value=1;');
+        'callback',@callbackfun_002);
 
     freq_field0=uicontrol('Style','edit',...
         'Units','normalized','Position',[.80 .60 .12 .10],...
         'String',num2str(ra),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','ra=str2double(freq_field0.String); freq_field0.String=num2str(ra); tgl2.Value=1; tgl1.Value=0;');
+        'callback',@callbackfun_003);
 
     freq_field2=uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .40 .12 .10],...
         'String',num2str(dx),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
+        'callback',@callbackfun_004);
 
     freq_field3=uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .30 .12 .10],...
         'String',num2str(dd),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','dd=str2double(freq_field3.String); freq_field3.String=num2str(dd);');
+        'callback',@callbackfun_005);
 
     tgl1 = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
         'Style','radiobutton',...
         'string','Number of events:',...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
-        'Units','normalized','Position',[.02 .6 .28 .10], 'Callback','tgl2.Value=0;');
+        'Units','normalized','Position',[.02 .6 .28 .10], 'callback',@callbackfun_006);
 
     % Set to constant number of events
     set(tgl1,'value',1);
@@ -103,7 +103,7 @@ if sel == 'in'
         'string','Constant radius [km]:',...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
-        'Units','normalized','Position',[.52 .60 .28 .10], 'Callback','tgl1.Value=0;');
+        'Units','normalized','Position',[.52 .60 .28 .10], 'callback',@callbackfun_007);
 
 
     chkGridEntireArea = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
@@ -122,31 +122,31 @@ if sel == 'in'
         'Units','normalized','Position',[.30 .20 .12 .10],...
         'Units','normalized','String',num2str(Nmin),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','Nmin=str2double(freq_field4.String); freq_field4.String=num2str(Nmin);');
+        'callback',@callbackfun_008);
 
     freq_field5 =  uicontrol('Style','edit',...
         'Units','normalized','Position',[.80 .30 .12 .10],...
         'String',num2str(nBstSample),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','nBstSample=str2double(freq_field5.String); freq_field5.String=num2str(nBstSample);');
+        'callback',@callbackfun_009);
 
     freq_field6 =  uicontrol('Style','edit',...
         'Units','normalized','Position',[.80 .40 .12 .10],...
         'String',num2str(fMccorr),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','fMccorr=str2double(freq_field6.String); freq_field6.String=num2str(fMccorr);');
+        'callback',@callbackfun_010);
 
     freq_field7 =  uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .50 .12 .10],...
         'String',num2str(fMcFix),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','fMcFix=str2double(freq_field7.String); freq_field7.String=num2str(fMcFix);');
+        'callback',@callbackfun_011);
 
     freq_field8 =  uicontrol('Style','edit',...
         'Units','normalized','Position',[.80 .50 .12 .10],...
         'String',num2str(fBinning),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','fBinning=str2double(freq_field8.String); freq_field8.String=num2str(fBinning);');
+        'callback',@callbackfun_012);
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.80 .005 .15 .12], ...
@@ -372,3 +372,91 @@ if sel == 'lo'
     end
 end
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  inb2=hndl2.Value;
+   ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  ni=str2double(freq_field.String);
+   freq_field.String=num2str(ni);
+  tgl2.Value=0;
+   tgl1.Value=1;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  ra=str2double(freq_field0.String);
+   freq_field0.String=num2str(ra);
+   tgl2.Value=1;
+   tgl1.Value=0;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  dx=str2double(freq_field2.String);
+   freq_field2.String=num2str(dx);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  dd=str2double(freq_field3.String);
+   freq_field3.String=num2str(dd);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  tgl2.Value=0;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  tgl1.Value=0;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  Nmin=str2double(freq_field4.String);
+   freq_field4.String=num2str(Nmin);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  nBstSample=str2double(freq_field5.String);
+   freq_field5.String=num2str(nBstSample);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  fMccorr=str2double(freq_field6.String);
+   freq_field6.String=num2str(fMccorr);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  fMcFix=str2double(freq_field7.String);
+   freq_field7.String=num2str(fMcFix);
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  fBinning=str2double(freq_field8.String);
+   freq_field8.String=num2str(fBinning);
+end
+ 
+end

@@ -33,3 +33,4 @@ function [decyr] = decyear(date)
         thisYear=datenum(date(:,1),1,1);
         decyr = (datenum(date) - thisYear) ./ (nextYear - thisYear) + date(:,1);
     end
+

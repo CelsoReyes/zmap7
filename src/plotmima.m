@@ -1,8 +1,8 @@
 function plotmima(var1)
-
     report_this_filefun(mfilename('fullpath'));
 
-    global  a mi mif2 mif1 hndl3
+    ZG=ZmapGlobal.Data;
+    global  mi  mif1 hndl3
 
     sc = get(hndl3,'Value');
     mi(:,2) = mi(:,2)+1;
@@ -17,7 +17,7 @@ function plotmima(var1)
     if var1 == 1
 
         for i = 1:ZG.a.Count
-            pl =  plotZG.a.Longitude(i),ZG.a.Latitude(i),'ro');
+            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'ro');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc)
         end
@@ -25,7 +25,7 @@ function plotmima(var1)
     elseif var1 == 2
 
         for i = 1:ZG.a.Count
-            pl =  plotZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
+            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc)
         end
@@ -33,7 +33,7 @@ function plotmima(var1)
     elseif var1 == 3
 
         for i = 1:ZG.a.Count
-            pl =  plotZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
+            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
             hold on
             c = mi(i,2)/max(mi(:,2));
             set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc,'Color',[ c c c ] )
@@ -49,7 +49,7 @@ function plotmima(var1)
 
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-    strib = [  'Misfit Map '];
+    strib = 'Misfit Map ';
     title(strib,'FontWeight','bold',...
         'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 
@@ -59,3 +59,4 @@ function plotmima(var1)
         'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
     mi(:,2) = mi(:,2)-1;
     watchoff
+

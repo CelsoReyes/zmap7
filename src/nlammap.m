@@ -171,19 +171,19 @@ wilabel = uicontrol('style','text','units','norm',...
  
 function info1_callback(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'info1_callback');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    web(['file:' hodi '/zmapwww/chp11.htm#996756']) ;
 end
  
 function info2_callback(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'info2_callback');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    web(['file:' hodi '/zmapwww/chap4.htm#997433']) ;
 end
  
     function callbackfun_003(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in2=uic.Value;
         switch in2
             case 2
@@ -202,13 +202,13 @@ end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   wi=str2double(get(set_width,'String'));
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   rotationangle=str2double(get(set_rotationangle,'String'));
 end
  

@@ -8,7 +8,7 @@ function [sel]=rcvalgrid_a2(sel)
 % J. Woessner
 % last update: 14.02.05
 
-global no1 bo1 inb1 inb2 valeg CO valm1
+global bo1 inb2 valeg CO valm1
 ZG=ZmapGlobal.Data;
 report_this_filefun(mfilename('fullpath'));
 

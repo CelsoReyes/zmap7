@@ -98,7 +98,9 @@ function anseiswa(action)
 
 
         case 'tipl2' %change sample size (?)
-            x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
+            x = get(xc2,'Xdata'); 
+            y = get(xc2,'Ydata'); 
+            z = ds;
             l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2 + (ZG.a.Depth-z).^2) ;
             [s,is] = sort(l);
             ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
@@ -144,5 +146,6 @@ function anseiswa(action)
             ZG.newt2 = ZG.newt2.subset(1:ni);
 
     end  % switch
+
 
 

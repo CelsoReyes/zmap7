@@ -85,3 +85,4 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
     arctan = atan((Re * psi ./ rho).^(1/sine_phi0));
     phi = ((2 * arctan) - (pi/2)) * todeg;
     lambda = ((theta / sine_phi0) + lambda0) * todeg;
+

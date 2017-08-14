@@ -822,3 +822,4 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
     maplegend = [abs(1/(dlat*scalefactor)) la1(1)-dlat/2 lo1(1)-dlon/2 ];
 
 
+

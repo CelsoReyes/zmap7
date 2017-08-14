@@ -75,3 +75,4 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
     else
         hold off
     end
+

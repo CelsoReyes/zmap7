@@ -340,3 +340,4 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     drawnow
     % Go back to map figure
     %figure_w_normalized_uicontrolunits(map_fig)
+

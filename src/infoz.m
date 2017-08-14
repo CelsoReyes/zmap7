@@ -38,3 +38,4 @@ function infoz(var1)
 
     % display the message
     zmaphelp(ttlStr,hlpStr1)
+

@@ -620,9 +620,9 @@ ZG=ZmapGlobal.Data;
 if (handles.data_provider.Value == 1)
     % no datacenter has been chosen
     beep;
-    handles.data_provider.BackgroundColor = [1.0 0.95 0.95];
-    zmap_message_center.set_warning('Importing FDSN data (problem)',...
-        'Import won''t work. You must first choose a data provider.');
+    h=errordlg('Incomplete Request: You must first choose a data provider.', ['Error:', get(get(gco,'Parent'),'Name')],'modal');
+    waitfor(h);
+    errorflash(handles.data_provider);
     return
 end
 queryset=handles.data_provider.String{handles.data_provider.Value};

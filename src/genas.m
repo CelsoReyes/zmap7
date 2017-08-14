@@ -92,3 +92,4 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
     %% plot(xt,as*10,'+m')
     %% plot(xt,as*10,'m')
     % %text(0.70,0.5,'+: AS * 10','sc')
+

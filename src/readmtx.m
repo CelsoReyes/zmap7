@@ -479,3 +479,4 @@ function [fieldlen,datatype] = fieldlength(precision,fid)
     end
 
 
+

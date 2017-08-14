@@ -48,14 +48,14 @@ function plotala()
         
         uicontrol('Units','normal',...
             'Position',[.0 .65 .12 .06],'String','Refresh ',...
-            'Callback','close,plotala()')
+            'callback',@callbackfun_001)
         
         
         
         tre2 = max(abo(:,4)) - 0.5;
         new = uicontrol('style','edit','value',iwl2,...
             'string',num2str(tre2,3), 'background','y',...
-            'Callback','tre2=str2num(new.String);''String'',num2str(tre2,3);',...
+            'callback',@callbackfun_002,...
             'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
         
         newlabel = uicontrol('style','text','units','norm','pos',[.40 .00 .40 .08]);
@@ -63,33 +63,33 @@ function plotala()
         
         mamo1 = uicontrol('Units','normal',...
             'Position',[.90 .01 .08 .06],'String','Go',...
-            'Callback','abo = abo2;plotala()');
+            'callback',@callbackfun_003);
         
         mamo = uicontrol('Units','normal',...
             'Position',[.02 .01 .27 .10],'String','Make Movie',...
-            'Callback','delete(mamo);delete(mamo1); delete(newlabel); mamovie ')
+            'callback',@callbackfun_004)
         
         nilabel2 = uicontrol('style','text','units','norm','pos',[.50 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh,3),...
             'background','y');
-        set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh,3))');
+        set(set_ni2,'callback',@callbackfun_005);
         set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
         
         
         uicontrol('Units','normal',...
             'Position',[.93 .93 .07 .05],'String','Go ',...
-            'Callback','think;pause(1); plotala()')
+            'callback',@callbackfun_006)
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Find Anomalie Groups  ',...
-            'Callback','agroup,cian');
+            'callback',@callbackfun_007);
         uimenu(op3,'Label','Display one Anomalie Group ',...
-            'Callback','cian2');
+            'callback',@callbackfun_008);
         uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
-            'Callback','sucra');
+            'callback',@callbackfun_009);
         uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
-            'Callback','agz');
+            'callback',@callbackfun_010);
         
         
         
@@ -369,3 +369,75 @@ function plotala()
     end
     
 end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+  plotala();
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  tre2=str2num(new.String);
+  'String';
+  num2str(tre2,3);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  abo = abo2;
+  plotala();
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  delete(mamo);
+  delete(mamo1);
+   delete(newlabel);
+   mamovie ;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  tresh=str2double(set_ni2.String);
+   set_ni2.String=num2str(tresh,3);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  think;
+  pause(1);
+   plotala();
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  agroup;
+  cian;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  cian2;
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  sucra;
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  agz;
+end
+ 

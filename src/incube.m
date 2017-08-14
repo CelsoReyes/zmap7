@@ -32,32 +32,32 @@ function incube()
     freq_field  =uicontrol('Style','edit',...
         'Position',[.60 .50 .22 .10],...
         'Units','normalized','String',num2str(step),...
-        'Callback','step=str2double(freq_field.String); freq_field.String=num2str(step);');
+        'callback',@callbackfun_001);
     
     freq_field2=uicontrol('Style','edit',...
         'Position',[.60 .40 .22 .10],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','iwl2=str2double(freq_field2.String); freq_field2.String=num2str(iwl2);');
+        'callback',@callbackfun_002);
     
     uicontrol('Units','normal',...
         'Position',[.1 .70 .20 .12] ,'String','Load Alarm',...
-        'Callback','close;loadala')
+        'callback',@callbackfun_003)
     
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.80 .05 .15 .12 ],...
-        'Units','normalized','Callback','close;done','String','Cancel');
+        'Units','normalized','callback',@callbackfun_004,'String','Cancel');
     
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.10 .05 .35 .12 ],...
         'Units','normalized',...
-        'Callback','close;  allhist(''rub'')',...
+        'callback',@callbackfun_005,...
         'String','Rubberband');
     
     go_button2=uicontrol('Style','Pushbutton',...
         'Position',[.50 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','close; allhist(''lta'')',...
+        'callback',@callbackfun_006,...
         'String','LTA');
     
     
@@ -220,12 +220,12 @@ function incube()
         
         uicontrol('Units','normal',...
             'Position',[.0 .93 .08 .06],'String','Print ',...
-            'Callback','myprint')
+            'callback',@callbackfun_007)
         
         
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
-            'Callback','f1=gcf; f2=gpf; set(f1,''Visible'',''off'');if f1~=f2, zmap_message_center();done; end')
+            'callback',@callbackfun_008)
         matdraw
         
         abo2 = abo;
@@ -272,3 +272,63 @@ function incube()
         
     end
 end
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  step=str2double(freq_field.String);
+   freq_field.String=num2str(step);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  iwl2=str2double(freq_field2.String);
+   freq_field2.String=num2str(iwl2);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+  loadala;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+  done;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+    allhist('rub');
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+   allhist('lta');
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  myprint;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  f1=gcf;
+   f2=gpf;
+   set(f1,'Visible','off');
+  if f1~=f2;
+   zmap_message_center();
+  done;
+   end;
+end
+ 

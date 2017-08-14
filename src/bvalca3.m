@@ -86,3 +86,4 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(b,inb1,inb2)
 
 
 
+

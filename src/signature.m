@@ -74,3 +74,4 @@ function  th = signature(name,logo,pos,fontsize,offset)
         set(th(2),'fontsize',fontsize(2),'fontname',ftname,'color',color)
     end
 
+

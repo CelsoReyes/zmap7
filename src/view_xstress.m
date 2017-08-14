@@ -34,43 +34,43 @@ if newstressmapWindowFlag
 
     % Menu Select
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','re3 = r; view_xstress(lab1,re3)')
+    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
     uimenu(options,'Label','Select N closest EQs',...
-        'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(1);watchon;doinvers_michael;watchoff')
+        'callback',@callbackfun_002)
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-        'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(2);watchon;doinvers_michael;watchoff')
+        'callback',@callbackfun_003)
     uimenu(options,'Label','Select EQ in Polygon',...
-        'Callback','h1=gca;ZG=ZmapGlobal.Data; ZG.hold_state=false;cicros(3);watchon;doinvers_michael;watchoff')
+        'callback',@callbackfun_004)
     
     % Menu Maps
     op1 = uimenu('Label',' Maps ');
     uimenu(op1,'Label','Variance',...
-        'Callback','lab1=''\sigma'';re3 = mVariance; view_xstress(lab1,re3)')
+        'callback',@callbackfun_005)
     uimenu(op1,'Label','Phi',...
-        'Callback','lab1=''\Phi'';re3 = mPhi; view_xstress(lab1,re3)')
+        'callback',@callbackfun_006)
     uimenu(op1,'Label','Trend S1',...
-        'Callback','lab1=''S1 trend [deg]'';re3 = mTS1; view_xstress(lab1,re3)')
+        'callback',@callbackfun_007)
     uimenu(op1,'Label','Plunge S1',...
-        'Callback','lab1=''S1 plunge [deg]'';re3 = mPS1; view_xstress(lab1,re3)')
+        'callback',@callbackfun_008)
     uimenu(op1,'Label','Trend S2',...
-        'Callback','lab1=''S2 trend [deg]'';re3 = mTS2; view_xstress(lab1,re3)')
+        'callback',@callbackfun_009)
     uimenu(op1,'Label','Plunge S2',...
-        'Callback','lab1=''S2 plunge [deg]'';re3 = mPS2; view_xstress(lab1,re3)')
+        'callback',@callbackfun_010)
     uimenu(op1,'Label','Trend S3',...
-        'Callback','lab1=''S3 trend [deg]'';re3 = mTS3; view_xstress(lab1,re3)')
+        'callback',@callbackfun_011)
     uimenu(op1,'Label','Plunge S3',...
-        'Callback','lab1=''S3 plunge [deg]'';re3 = mPS3; view_xstress(lab1,re3)')
+        'callback',@callbackfun_012)
     uimenu(op1,'Label','Angular misfit',...
-        'Callback','lab1=''\beta [deg]'';re3 = mBeta; view_xstress(lab1,re3)')
+        'callback',@callbackfun_013)
     uimenu(op1,'Label','\tau spread',...
-        'Callback','lab1=''\tau [deg]'';re3 = mTau; view_xstress(lab1,re3)')
+        'callback',@callbackfun_014)
     uimenu(op1,'Label','Resolution map (const. Radius)',...
-        'Callback','lab1=''Radius in [km]'';re3 = mResolution; view_xstress(lab1,re3)')
+        'callback',@callbackfun_015)
     uimenu(op1,'Label','Resolution map',...
-        'Callback','lab1=''Number of events'';re3 = mNumber; view_xstress(lab1,re3)')
+        'callback',@callbackfun_016)
     uimenu(op1,'Label','Trend S1 relative to fault strike',...
-        'Callback','lab1=''S1 trend to strike [deg]'';re3 = mTS1Rel; view_xstress(lab1,re3)')
-    %uimenu(op1,'Label','Histogram ', 'Callback','zhist')
+        'callback',@callbackfun_017)
+    %uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_018)
     
     % Menu Display
     add_display_menu(1);
@@ -194,3 +194,156 @@ axes(h1)
 watchoff(stressmap)
 done
 end
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  re3 = r;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  h1 = gca;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state=false;
+  cicros(1);
+  watchon;
+  doinvers_michael;
+  watchoff;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  h1 = gca;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state=false;
+  cicros(2);
+  watchon;
+  doinvers_michael;
+  watchoff;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  h1=gca;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state=false;
+  cicros(3);
+  watchon;
+  doinvers_michael;
+  watchoff;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='\sigma';
+  re3 = mVariance;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='\Phi';
+  re3 = mPhi;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S1 trend [deg]';
+  re3 = mTS1;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S1 plunge [deg]';
+  re3 = mPS1;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S2 trend [deg]';
+  re3 = mTS2;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S2 plunge [deg]';
+  re3 = mPS2;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S3 trend [deg]';
+  re3 = mTS3;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S3 plunge [deg]';
+  re3 = mPS3;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='\beta [deg]';
+  re3 = mBeta;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='\tau [deg]';
+  re3 = mTau;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='Radius in [km]';
+  re3 = mResolution;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='Number of events';
+  re3 = mNumber;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_017(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='S1 trend to strike [deg]';
+  re3 = mTS1Rel;
+   view_xstress(lab1,re3);
+end
+ 
+function callbackfun_018(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  zhist;
+end
+ 

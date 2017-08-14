@@ -38,3 +38,4 @@ function LC_borde(line_type,line_thick)
     [xbd, ybd] = lc_tocart(bdlat,bdlon);
 
     plot(xbd,ybd,line_type,'LineWidth',line_thick)
+

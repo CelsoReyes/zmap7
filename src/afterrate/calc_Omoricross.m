@@ -7,7 +7,7 @@ function calc_Omoricross(sel)
 
 report_this_filefun(mfilename('fullpath'));
 
-global no1 bo1 inb1
+global bo1
 
 % Do we have to create the dialogbox?
 if sel == 'in'

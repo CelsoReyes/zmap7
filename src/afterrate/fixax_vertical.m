@@ -94,7 +94,7 @@ function fixax_vertical(re3);
     function go_callback(mysrc,myevt)
         % automatically created callback function from text
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'go_callback');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fix2=inp3_field.Value;
         fix1=inp2_field.Value;
         zmap_message_center();

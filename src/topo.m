@@ -230,13 +230,13 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
     ploe=handles.ploe;
     figure_w_normalized_uicontrolunits(handles.plma);
     inp = get(handles.pop1,'Value');
-    if depq==1  &&  (inp==3 | inp==4)  &&  handles.maptype==1
+    if depq==1  &&  (inp==3 || inp==4)  &&  handles.maptype==1
         clear('depq');
         [lat,lon] = meshgrat(tmap,tmapleg);
         hw = waitbar(0,'Please wait...');
-        for i=1:size(A,1), % computation here %
+        for i=1:size(A,1) % computation here %
             waitbar(i/length(A));
-            depq(i) = interp2(lon,lat,tmap,A(i,1),A.(i,2));
+            depq(i) = interp2(lon,lat,tmap,A(i,1),A(i,2));
         end
         close(hw);
         depq=depq';
@@ -656,4 +656,5 @@ function varargout = vexag_Callback(h, eventdata, handles, varargin)
     fexavg=str2double(exavg);
     daspectm('m',fexavg);
     tightmap
+
 

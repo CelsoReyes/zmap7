@@ -45,19 +45,19 @@ function plot3d()
         
         uicontrol('Units','normal',...
             'Position',[.0 .93 .10 .06],'String','Print ',...
-            'Callback','myprint')
+            'callback',@callbackfun_001)
         
         uicontrol('Units','normal',...
             'Position',[.2 .93 .10 .06],'String','Close ',...
-            'Callback','close(map3); close(vie);zmap_message_center();')
+            'callback',@callbackfun_002)
         
         uicontrol('Units','normal',...
             'Position',[.4 .93 .10 .06],'String','Info ',...
-            'Callback','zmaphelp(ttlStr,hlpStr1)')
+            'callback',@callbackfun_003)
         
         uicontrol('Units','normal',...
             'Position',[.6 .93 .20 .06],'String','3D-Rotate',...
-            'Callback','rotate3d')
+            'callback',@callbackfun_004)
         
     end   % if exist newmap3
     
@@ -156,7 +156,7 @@ function plotQuakesByDepth(ax, mycat, divs)
     %   divisions is a vector of depths (up to 7)
     
     % magdivisions: magnitude split points
-    global event_marker_types ZG.ms6
+    global event_marker_types ZG
     if isempty(event_marker_types)
         event_marker_types='+++++++'; %each division gets next type.
     end
@@ -205,3 +205,30 @@ function plotQuakesByDepth(ax, mycat, divs)
     zlabel(ax,'Depth [km]');
     if ~washeld; hold(ax,'off'); end
 end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  myprint;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close(map3);
+   close(vie);
+  zmap_message_center();
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  zmaphelp(ttlStr,hlpStr1);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  rotate3d;
+end
+ 

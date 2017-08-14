@@ -1,5 +1,8 @@
-%function animator2(action)
+function animator2(action)
 %   global ps1 ps2 plin pli zvg gz ra
+ % turned into function by Celso G Reyes 2017
+ 
+ZG=ZmapGlobal.Data; % used by get_zmap_globals
 
 global ps1 ps2 plin pli %moved out of switche's "start" statement
 report_this_filefun(mfilename('fullpath'));
@@ -13,8 +16,8 @@ switch(action)
         point1 = get(gca,'CurrentPoint'); % button down detected
         ps1 = plot(point1(1,1),point1(1,2),'ws');
 
-        set(gcf,'WindowButtonMotionFcn',' animator2 move')
-        set(gcf,'WindowButtonUpFcn','animator2 stop')
+        set(gcf,'WindowButtonMotionFcn',@(~,~)animator2('move'));
+        set(gcf,'WindowButtonUpFcn',@(~,~)animator2('stop'));
 
         point2 = get(gca,'CurrentPoint');
         ps2 = plot(point2(1,1),point2(1,2),'w^','era','xor');
@@ -32,6 +35,8 @@ switch(action)
         set(gcf,'Pointer','arrow');
         set(gcbf,'WindowButtonMotionFcn','')
         set(gcbf,'WindowButtonUpFcn','')
-        slm = 'newslice';slicemap
+        slicemap('newslice');
+
+end
 
 end

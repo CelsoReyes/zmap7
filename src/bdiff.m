@@ -1,6 +1,6 @@
 function  bdiff(mycat, holdplot)
     %  This routine estimates the b-value of a curve automatically
-    %  The b-valkue curve is differenciated and the point
+    %  The b-value curve is differenciated and the point
     %  of maximum curvature marked. The b-value will be calculated
     %  using this point and the point half way toward the high
     %  magnitude end of the b-value curve.
@@ -17,7 +17,6 @@ function  bdiff(mycat, holdplot)
     end
 
     disp(ZmapGlobal.Data.hold_state)
-    %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
     %obsolate, replace
     %[existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
@@ -26,8 +25,6 @@ function  bdiff(mycat, holdplot)
     if ~isempty(figNumber)
         % figure_w_normalized_uicontrolunits(bfig);
         bfig = figNumber;
-        %delete(gca)
-        %set(bfig,'visible','off')
 
     else
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
@@ -39,15 +36,15 @@ function  bdiff(mycat, holdplot)
 
         %uicontrol('Units','normal',...
         %   'Position',[.0 .85 .08 .06],'String','Info ',...
-        %    'Callback','infoz(1)');
+        %    'callback',@callbackfun_001);
         matdraw
         
         add_menu_divider();
         options = uimenu('Label','ZTools');
-        uimenu(options,'Label','Estimate recurrence time/probability', 'Callback','plorem');
-        uimenu(options,'Label','Manual fit of b-value', 'Callback','bfitnew(mycat)');
-        uimenu(options,'Label','Plot time series', 'Callback','timeplot(mycat)');
-        uimenu(options,'Label','Do not show discrete', 'Callback','delete(pl1)');
+        uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@callbackfun_002);
+        uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
+        uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
+        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005);
         uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
 
 
@@ -70,8 +67,6 @@ function  bdiff(mycat, holdplot)
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-0.1:mima);
 
-
-    %backg_be = log10(bvalsum);
     backg_ab = log10(bvalsum3);
     orient tall
 
@@ -89,13 +84,8 @@ function  bdiff(mycat, holdplot)
     set(pl,'LineWidth',1.0,'MarkerSize',6,...
         'MarkerFaceColor','w','MarkerEdgeColor','k');
     hold on
-    %semilogy(xt3,bvalsum3,'om')
+    
     difb = [0 diff(bvalsum3) ];
-    %pl3 =semilogy(xt3,bval2,'^g');
-    %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
-    %'MarkerFaceColor','r','MarkerEdgeColor','k');
-    %semilogy(xt3,difb,'g')
-    %grid
 
     % Marks the point of maximum curvature
     %
@@ -121,12 +111,10 @@ function  bdiff(mycat, holdplot)
     M1b = [];
     M1b = [xt3(i) bvalsum3(i)];
     tt3=num2str(fix(100*M1b(1))/100);
-    %text( M1b(1),M1b(2),['|: M1=',tt3],'Fontweight','normal' )
 
     M2b = [];
     M2b =  [xt3(i2) bvalsum3(i2)];
     tt4=num2str(fix(100*M2b(1))/100);
-    %text( M2b(1),M2b(2),['|: M2=',tt4],'Fontweight','normal' )
 
     ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
     x = xt3(ll);
@@ -142,7 +130,7 @@ function  bdiff(mycat, holdplot)
     y = backg_ab(ll);
     [aw bw,  ew] = wls(x',y');
     p = [bw aw];
-    %[p,S] = polyfit(x,y,1)                    % fit a line to background
+    
     p2 = [bw+si aw];
     p3 = [bw-si aw];
     x2 = 1:0.1:6;
@@ -150,8 +138,7 @@ function  bdiff(mycat, holdplot)
     f2 = polyval(p2,x);
     f3 = polyval(p3,x);
     [f4,delta] = polyval(p,x,S);
-    %Tr  = (teb-t0b)/(10.^ polyval(p,mrt));
-    %disp(['Recurrence time Tr(M' num2str(mrt) ') = ' num2str(Tr) ' years']);
+    
     f = 10.^f;
     f2 = 10.^f2;
     f3 = 10.^f3;
@@ -165,15 +152,6 @@ function  bdiff(mycat, holdplot)
         set(ttm,'color','b')
     end
 
-
-    %ttm= semilogy(x,f2,'k');                         % plot linear fit to backg
-    %set(ttm,'LineWidth',1)
-    %ttm= semilogy(x,f3,'k');                         % plot linear fit to backg
-    %set(ttm,'LineWidth',1)
-    %ttm= semilogy(x,f4-delta,'k-.');                         % plot linear fit to backg
-    %set(ttm,'LineWidth',1)
-    %ttm= semilogy(x,f4+delta,'k-.');
-    %set(ttm,'LineWidth',1)
     set(gca,'XLim',[min(mycat.Magnitude)-0.5  max(mycat.Magnitude)+0.5])
     set(gca,'YLim',[1 (mycat.Count+20)*1.4]);
 
@@ -243,3 +221,35 @@ function  bdiff(mycat, holdplot)
 
     %whitebg(gcf,[0 0 0])
     %axes(cua)
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  infoz(1);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  plorem;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  bfitnew(mycat);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  timeplot(mycat);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  delete(pl1);
+end
+ 
+end

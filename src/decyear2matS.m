@@ -81,3 +81,4 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2matS(fDy)
     nHr(lep)=fix(nHr(lep));
     nSec(lep)=rem(nMin(lep),1)*60;
     nMin(lep)=fix(nMin(lep));
+

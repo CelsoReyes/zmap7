@@ -149,3 +149,4 @@ function hpol = polar(theta,rho,line_style)
     % reset hold state
     if ~hold_state, set(cax,'NextPlot',next); end
 
+

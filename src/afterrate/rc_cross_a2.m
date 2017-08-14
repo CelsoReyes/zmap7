@@ -8,7 +8,7 @@ function rc_cross_a2(sel)
 
 report_this_filefun(mfilename('fullpath'));
 
-global no1 bo1 inb1
+global bo1
 
 % Do we have to create the dialogbox?
 if sel == 'in'
@@ -317,11 +317,6 @@ if sel == 'ca'
     drawnow
     %
     % loop
-
-
-    %   % overall b-value
-    %   [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-    %   bo1 = bv; no1 = newa.Count;
     %
     for i= 1:length(newgri(:,1))
         x = newgri(i,1);y = newgri(i,2);

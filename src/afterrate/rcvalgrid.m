@@ -11,7 +11,7 @@
 report_this_filefun(mfilename('fullpath'));
 
 
-global no1 bo1 inb1 inb2 valeg CO valm1
+global bo1 inb1 inb2 valeg CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
 valm1 = min(ZG.a.Magnitude);
@@ -343,10 +343,6 @@ if sel == 'ca'
     wai = waitbar(0,' Please Wait ...  ');
     set(wai,'NumberTitle','off','Name','Rate change grid - percent done');
     drawnow
-    %
-    % overall b-value
-    %    [bv magco stan av me mer me2,  pr] =  bvalca3(a,inb1,inb2);
-    %    bo1 = bv; no1 = ZG.a.Count;
 
     % loop over all points
     for i= 1:length(newgri(:,1))

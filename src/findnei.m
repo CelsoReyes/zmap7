@@ -10,3 +10,4 @@ function [l,m] =  findnei(k)
     d = sqrt(((abo(k,1) - abo(:,1))*cosd(34)*111).^2 + ((abo(k,2) - abo(:,2))*111).^2);
     m = d < abo(:,3)+abo(k,3) &  abs(abo(:,5)-abo(k,5)) < iala;
     l = find(m == 1);
+

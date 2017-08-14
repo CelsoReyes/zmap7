@@ -37,18 +37,18 @@ function  bdiff_bdepth(mycat)
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...
-             'Callback','infoz(1)');
+             'callback',@callbackfun_001);
         uicontrol('Units','normal',...
             'Position',[.0 .45 .10 .06],'String','Manual ',...
-             'Callback','bfitnew(mycat)');
+             'callback',@callbackfun_002);
 
         uicontrol('Units','normal',...
             'Position',[.0 .35 .10 .06],'String','RecTime ',...
-             'Callback','plorem');
+             'callback',@callbackfun_003);
 
         uicontrol('Units','normal',...
             'Position',[.0 .25 .10 .06],'String','TimePlot ',...
-             'Callback','timeplot(mycat)');
+             'callback',@callbackfun_004);
 
         matdraw
 
@@ -275,3 +275,28 @@ function  bdiff_bdepth(mycat)
     hold off;
     %whitebg(gcf,[0 0 0])
     %axes(cua)
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  infoz(1);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  bfitnew(mycat);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  plorem;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  timeplot(mycat);
+end
+end

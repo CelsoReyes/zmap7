@@ -150,3 +150,4 @@ function plotmi(var1)
             set(te,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
         end
     end
+

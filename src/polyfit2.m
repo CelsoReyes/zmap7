@@ -67,3 +67,4 @@ function [p,S] = polyfit(x,y,n)
 
     df = length(y) - (n+1);
     S = [R; [df zeros(1,n)]; [norm(r) zeros(1,n)]];
+

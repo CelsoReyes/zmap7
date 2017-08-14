@@ -24,3 +24,4 @@ function [b_value_ma, a_value_ma, b_error_ma] = ma(mag,cumnum)
     r = ssxy/(sqrt(ssx.*ssy));
     b_error_ma = abs(b_value_ma)*sqrt((1-r^2)/length(X));
 
+

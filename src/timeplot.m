@@ -8,10 +8,6 @@ function timeplot(mycat, nosort)
     %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
     %                       - mycat if "Save as Newcat" button is pressed.
     %
-    %
-    %
-    % 
-    %
     
     
     % Updates:
@@ -19,7 +15,7 @@ function timeplot(mycat, nosort)
     
     report_this_filefun(mfilename('fullpath'));
     global  iwl2
-   global  cum statime 
+    global  cum statime
     global selt
     
     ZG = ZmapGlobal.Data;
@@ -31,8 +27,10 @@ function timeplot(mycat, nosort)
     end
     
     if isempty(ZG.bin_days) %binning
-        ZG.bin_days=1;
+        ZG.bin_days=days(1);
     end
+    bin_days = days(ZG.bin_days);
+    assert(isnumeric(bin_days));
     
     zmap_message_center.set_info(' ','Plotting cumulative number plot...');
     
@@ -126,20 +124,20 @@ function timeplot(mycat, nosort)
         uimenu(ztoolsmenu,'Label','Cuts in time, magnitude and depth',...
             'Callback',@cut_tmd_callback)
         uimenu(ztoolsmenu,'Label','Cut in Time (cursor) ',...
-          'Callback',@cursor_timecut_callback);
+            'Callback',@cursor_timecut_callback);
         uimenu(plotmenu,'Label','Date Ticks in different format',...
-            'Callback','newtimetick','Enable','off');
+            'callback',@callbackfun_001,'Enable','off');
         
         uimenu (analyzemenu,'Label','Decluster the catalog',...
-            'Callback','inpudenew;')
-        iwl = days(iwl2/ZG.bin_days);
+            'callback',@callbackfun_002)
+        iwl = days(iwl2/days(ZG.bin_days));
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
-            'Callback','ZG=ZmapGlobal.Data;ZG.hold_state2=true; ')
+            'callback',@callbackfun_003)
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
-            'Callback','dispma2')
+            'callback',@callbackfun_004)
         uimenu(ztoolsmenu,'Label','Compare two rates ( No fit)',...
-            'Callback','ic=0;dispma3')
-        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'Callback','daynigt')
+            'callback',@callbackfun_005)
+        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'callback',@callbackfun_006)
         
         op3D  =   uimenu(plotmenu,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
@@ -153,23 +151,23 @@ function timeplot(mycat, nosort)
         op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
         
         uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
-            'Callback', 'sta = ''bet'',newsta')
+            'Callback',{@callbackfun_newsta,'bet'});
         uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
-            'Callback', ';betatriangle')
+            'Callback', @(src,evt) betatriangle())
         uimenu(op4B,'Label','z-values: AS(t)function',...
-            'Callback','set(gcf,''Pointer'',''watch'');sta = ''ast'';newsta')
+            'callback',{@callbackfun_newsta,'ast'})
         uimenu(op4B,'Label','z-values: Rubberband function',...
-            'Callback','set(gcf,''Pointer'',''watch'');sta = ''rub'';newsta')
+            'callback',{@callbackfun_newsta,'rub'})
         uimenu(op4B,'Label','z-values: LTA(t) function ',...
-            'Callback','set(gcf,''Pointer'',''watch'');sta = ''lta'';newsta')
+            'callback',{@callbackfun_newsta,'lta'});
         
         
         op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false,selt = ''in''; bdiff2')
-        uimenu(op4,'label','Mc with time ', 'Callback','selt = ''in''; sPar = ''mc''; plot_McBwtime');
-        uimenu(op4,'Label','b with depth', 'Callback','bwithde2')
-        uimenu(op4,'label','b with magnitude', 'Callback','bwithmag');
-        uimenu(op4,'label','b with time', 'Callback','selt = ''in''; sPar = ''b''; plot_McBwtime');
+        uimenu(op4,'Label','automatic', 'callback',@callbackfun_010)
+        uimenu(op4,'label','Mc with time ', 'callback',@callbackfun_011);
+        uimenu(op4,'Label','b with depth', 'callback',@callbackfun_012)
+        uimenu(op4,'label','b with magnitude', 'callback',@callbackfun_013);
+        uimenu(op4,'label','b with time', 'callback',@callbackfun_014);
         
         
         pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl ttcat;ttcat=mycat;'];
@@ -180,39 +178,39 @@ function timeplot(mycat, nosort)
         
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog mycat).
-        uimenu(op5,'Label','Completeness in days after mainshock', 'Callback','mcwtidays')
-        uimenu(op5,'Label','Define mainshock', 'Callback','ZG=ZmapGlobal.Data;error(''not implemented: define mainshock.  Original input_main.m function broken');
-        uimenu(op5,'Label','Estimate p', 'Callback','ZG=ZmapGlobal.Data;ZG.hold_state=false;pvalcat');
+        uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@callbackfun_015)
+        uimenu(op5,'Label','Define mainshock', 'callback',@callbackfun_016);
+        uimenu(op5,'Label','Estimate p', 'callback',@callbackfun_017);
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
-        uimenu(op5,'Label','p as a function of time and magnitude', 'Callback','pvalcat2')
+        uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@callbackfun_018)
         uimenu(op5,'Label','Cut catalog at mainshock time',...
-            'Callback','l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));mycat = mycat(l+1:mycat.Count,:);timeplot(mycat) ')
+            'callback',@callbackfun_019)
         
         op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
-        uimenu(op6,'Label','Compute the fractal dimension D', 'Callback',' E = mycat; org = 2; startfd');
-        uimenu(op6,'Label','Compute D for random catalog', 'Callback',' org = 5; startfd;');
-        uimenu(op6,'Label','Compute D with time', 'Callback',' org = 6; startfd;');
-        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'Callback',' showweb(''fractal''); ')
+        uimenu(op6,'Label','Compute the fractal dimension D', 'callback',{@callbackfun_computefractal,2});
+        uimenu(op6,'Label','Compute D for random catalog', 'callback',{@callbackfun_computefractal,5});
+        uimenu(op6,'Label','Compute D with time', 'callback',{@callbackfun_computefractal,6});
+        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@callbackfun_023)
         
-        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'Callback','morel')
+        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@callbackfun_024)
         
         op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
-        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'Callback','doinvers_michael')
-        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'Callback','doinversgep_pc')
-        uimenu(op7,'Label','Stress tensor with time', 'Callback','stresswtime')
-        uimenu(op7,'Label','Stress tensor with depth', 'Callback','stresswdepth')
-        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'Callback','  showweb(''stress'') ')
+        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@callbackfun_025)
+        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'callback',@callbackfun_026)
+        uimenu(op7,'Label','Stress tensor with time', 'callback',@callbackfun_027)
+        uimenu(op7,'Label','Stress tensor with depth', 'callback',@callbackfun_028)
+        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'callback',@callbackfun_029)
         op5C = uimenu(plotmenu,'Label','Histograms');
         
         uimenu(op5C,'Label','Magnitude',...
-            'Callback','global histo;hisgra(mycat.Magnitude,''Magnitude '',mycat.Name);');
+            'callback',@callbackfun_030);
         uimenu(op5C,'Label','Depth',...
-            'Callback','global histo;hisgra(mycat.Depth,''Depth '',mycat.Name);');
+            'callback',@callbackfun_031);
         uimenu(op5C,'Label','Time',...
-            'Callback','global histo;hisgra(mycat.Date,''Time '',mycat.Name);');
+            'callback',@callbackfun_032);
         uimenu(op5C,'Label','Hr of the day',...
-            'Callback','global histo;hisgra(mycat.Date.Hour,''Hr '',mycat.Name);');
+            'callback',@callbackfun_033);
         
         
         uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
@@ -220,18 +218,18 @@ function timeplot(mycat, nosort)
             'Callback',{@calSave1, xt, cumu2});
         
         uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
-             'Callback',{@calSave7, xt, cumu2, as})
+            'Callback',{@calSave7, xt, cumu2, as})
         
         %
         
         uicontrol('Units','normal','Position',[.0 .0 .1 .05],...
-             'String','Reset',...
-             'Callback','nosort = ''of'';global ZG; error ZG.newcat = ZG.mycat; mycat = ZG.newcat; stri = ['' '']; stri1 = ['' '']; close(cum); timeplot(mycat,nosort)',...
+            'String','Reset',...
+            'callback',@callbackfun_034,...
             'tooltip','Resets the catalog to the original selection')
-
+        
         uicontrol('Units','normal','Position',[.70 .0 .3 .05],...
             'String','Keep as newcat',...
-            'Callback','global ZG; ZG.newcat = mycat; replaceMainCatalog(mycat) ;zmap_message_center.update_catalog();update(mainmap())',...
+            'callback',@callbackfun_035,...
             'tooltip','Plots this subset in the map window')
         
         ZG.hold_state2=false;
@@ -244,7 +242,6 @@ function timeplot(mycat, nosort)
         cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
         cumu = cumu * 0;
         cumu2 = cumu2 * 0;
-        n = mycat.Count;
         [cumu, xt] = hist(mycat.Date,(t0b:days(ZG.bin_days):teb));
         cumu2 = cumsum(cumu);
         
@@ -274,7 +271,7 @@ function timeplot(mycat, nosort)
         'SortMethod','childorder')
     
     if isempty(ZG.newcat)
-        ZG.newcat =ZG.a; 
+        ZG.newcat =ZG.a;
     end
     
     % select big events ( > ZG.big_eq_minmag)
@@ -283,35 +280,31 @@ function timeplot(mycat, nosort)
     big = mycat.subset(l);
     %calculate start -end time of overall catalog
     statime=[];
-    par2=ZG.bin_days;
+    par2=bin_days;
     t0b = min(ZG.a.Date);
-    n = mycat.Count;
     teb = max(ZG.a.Date);
     ttdif=(teb - t0b); % days
     if ttdif>10                 %select bin length respective to time in catalog
-        %ZG.bin_days = ceil(ttdif/300);
+        %bin_days = ceil(ttdif/300);
     elseif ttdif<=10  &&  ttdif>1
-        %ZG.bin_days = 0.1;
+        %bin_days = 0.1;
     elseif ttdif<=1
-        %ZG.bin_days = 0.01;
+        %bin_days = 0.01;
     end
     
     
-    if ZG.bin_days>=1
-        tdiff = round(days(teb-t0b)/ZG.bin_days);
+    if bin_days>=1
+        tdiff = round(days(teb-t0b)/bin_days);
         %tdiff = round(teb - t0b);
     else
-        tdiff = (teb-t0b)/days(ZG.bin_days);
+        tdiff = (teb-t0b)/bin_days;
     end
-    % set arrays to zero
-    cumu = 0:1:((teb-t0b)/days(ZG.bin_days))+2;
-    cumu2 = 0:1:((teb-t0b)/days(ZG.bin_days))-1;
+    
     % calculate cumulative number versus time and bin it
-    n = mycat.Count;
-    if ZG.bin_days >=1
-        [cumu, xt] = histcounts(mycat.Date,(t0b:days(ZG.bin_days):teb));
+    if bin_days >=1
+        [cumu, xt] = histcounts(mycat.Date,(t0b:days(bin_days):teb));
     else
-        [cumu, xt] = histcounts((mycat.Date-mycat.Date(1)+days(ZG.bin_days))*365,(0:ZG.bin_days:(tdiff+2*ZG.bin_days)));
+        [cumu, xt] = histcounts((mycat.Date-mycat.Date(1))+bin_days*365, (0:bin_days:(tdiff+2*bin_days)));
     end
     cumu2=cumsum(cumu);
     % plot time series
@@ -339,7 +332,7 @@ function timeplot(mycat, nosort)
     
     % plot big events on curve
     %
-    if ZG.bin_days>=1
+    if bin_days>=1
         if ~isempty(big)
             l = mycat.Magnitude > ZG.big_eq_minmag;
             f = find( l  == 1);
@@ -356,10 +349,10 @@ function timeplot(mycat, nosort)
         end
     end %if big
     
-    if ZG.bin_days>=1
+    if bin_days>=1
         xlabel(ax,'Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
     else
-        statime=mycat.Date(1) - days(ZG.bin_days);
+        statime=mycat.Date(1) - ZG.bin_days;
         xlabel(ax,['Time in days relative to ',char(statime)],...
             'FontWeight','bold','FontSize',ZG.fontsz.m)
     end
@@ -384,9 +377,9 @@ function timeplot(mycat, nosort)
         ZG.newt2 = catalog_overview(ZG.newt2);
         timeplot(ZG.newt2)
     end
-
+    
     function cursor_timecut_callback(~,~)
-    % will change ZG.newt2
+        % will change ZG.newt2
         ZG=ZmapGlobal.Data;
         [tt1,tt2]=timesel(4);
         ZG.newt2=ZG.newt2.subset(ZG.newt2.Date>=tt1&ZG.newt2.Date<=tt2);
@@ -394,3 +387,208 @@ function timeplot(mycat, nosort)
     end
     
 end
+function callbackfun_001(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    newtimetick;
+end
+
+function callbackfun_002(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    inpudenew;
+end
+
+function callbackfun_003(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
+    ZG.hold_state2=true;
+end
+
+function callbackfun_004(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    dispma2;
+end
+
+function callbackfun_005(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    ic=0;
+    dispma3;
+end
+
+function callbackfun_newsta(mysrc,myevt,sta)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    set(gcf,'Pointer','watch');
+    newsta(sta);
+end
+
+function callbackfun_010(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
+    ZG.hold_state=false;
+    selt = 'in';
+    bdiff2;
+end
+
+function callbackfun_011(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    selt = 'in';
+    sPar = 'mc';
+    plot_McBwtime;
+end
+
+function callbackfun_012(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    bwithde2;
+end
+
+function callbackfun_013(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    bwithmag;
+end
+
+function callbackfun_014(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    selt = 'in';
+    sPar = 'b';
+    plot_McBwtime;
+end
+
+function callbackfun_015(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    mcwtidays;
+end
+
+function callbackfun_016(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    error('not implemented: define mainshock.  Original input_main.m function broken;')
+end
+
+function callbackfun_017(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
+    ZG.hold_state=false;
+    pvalcat;
+end
+
+function callbackfun_018(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    pvalcat2;
+end
+
+function callbackfun_019(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
+    mycat = mycat(l+1:mycat.Count,:);
+    timeplot(mycat) ;
+end
+
+function callbackfun_computefractal(mysrc,myevt, org)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    if org==2;E = mycat; end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
+    startfd;
+end
+
+function callbackfun_023(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    showweb('fractal');
+end
+
+function callbackfun_024(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    morel;
+end
+
+function callbackfun_025(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    doinvers_michael;
+end
+
+function callbackfun_026(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    doinversgep_pc;
+end
+
+function callbackfun_027(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    stresswtime;
+end
+
+function callbackfun_028(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    stresswdepth;
+end
+
+function callbackfun_029(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    showweb('stress') ;
+end
+
+function callbackfun_030(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    hisgra(mycat.Magnitude,'Magnitude ',mycat.Name);
+end
+
+function callbackfun_031(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    hisgra(mycat.Depth,'Depth ',mycat.Name);
+end
+
+function callbackfun_032(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    hisgra(mycat.Date,'Time ',mycat.Name);
+end
+
+function callbackfun_033(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    hisgra(mycat.Date.Hour,'Hr ',mycat.Name);
+end
+
+function callbackfun_034(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    nosort = 'of';
+    error ZG.newcat = ZG.mycat;
+    mycat = ZG.newcat;
+    stri = [' '];
+    stri1 = [' '];
+    close(cum);
+    timeplot(mycat,nosort);
+end
+
+function callbackfun_035(mysrc,myevt)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    global ZG;
+    ZG.newcat = mycat;
+    replaceMainCatalog(mycat) ;
+    zmap_message_center.update_catalog();
+    update(mainmap());
+end
+

@@ -29,22 +29,22 @@ function bfitnew(mycat)
     figure_w_normalized_uicontrolunits(bfig);
     delete gca; delete(gca);delete(gca); hold on; axis off
     uicontrol('Style','Pushbutton',...
-        'Callback','myprint',...
+        'callback',@callbackfun_001,...
         'Units','normalized',...
         'String','Print','Position',[0.02 .93 .08 .05]);
 
     uicontrol('Style','Pushbutton',...
-        'Callback','close;zmap_message_center.set_info('' '','' '');done',...
+        'callback',@callbackfun_002,...
         'Units','normalized',...
         'String','Close','Position',[0.02 .73 .08 .05]);
     uicontrol('Style','Pushbutton',...
-        'Callback','clinfo(8)',...
+        'callback',@callbackfun_003,...
         'Units','normalized',...
         'String','Info','Position',[0.02 .83 .08 .05]);
 
     uicontrol('Units','normal',...
         'Position',[.0 .55 .10 .06],'String','Automatic',...
-         'Callback','bdiff(mycat)');
+         'callback',@callbackfun_004);
 
     maxmag = max(mycat.Magnitude);
     mima = min(mycat.Magnitude);
@@ -144,9 +144,42 @@ function bfitnew(mycat)
     set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
     uicontrol('Style','Pushbutton',...
-        'Callback','bfitnew(mycat)',...
+        'callback',@callbackfun_005,...
         'Units','normalized',...
         'String','Repeat','Position',[0.85 .02 .12 .08]);
 
     axes(hh)
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  myprint;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  close;
+  zmap_message_center.set_info(' ',' ');
+  done;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  clinfo(8);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  bdiff(mycat);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  bfitnew(mycat);
+end
+end

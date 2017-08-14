@@ -606,3 +606,4 @@ function [map,maplegend,Astruc] = usgsdemc(samplefactor,latlim,lonlim)
     % reset the warning state
     eval(['warning ',s])
     eval(['warning ',f])
+

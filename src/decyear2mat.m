@@ -52,3 +52,4 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2mat(fDy)
             nMin(i)=fix(nMin(i));
         end
     end
+

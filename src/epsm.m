@@ -36,3 +36,4 @@ function epsilon = epsm(units)
         if ~isempty(msg);   error(msg);   end
         epsilon = angledim(degepsilon,'degrees',units);
     end
+

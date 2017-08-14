@@ -144,3 +144,4 @@ function [map,maplegend] = tbase(scalefactor,latlim,lonlim)
     end
     cellsize = 1/(sf*dcell);
     maplegend = [cellsize maptop mapleft];
+

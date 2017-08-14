@@ -13,69 +13,14 @@ classdef MainInteractiveMap
     methods
         function obj = MainInteractiveMap()
             obj.Features=ZmapGlobal.Data.features;
-            %{
-            %% define the map features
-            % each MapFeature is something that can be overlain on the main map
-            %
-            disp('MainInteractiveMap construction');
-            obj.Features = MapFeature('coast', @load_coast_and_borders, [],...
-                struct('Tag','mainmap_coastline',...
-                'DisplayName', 'Coastline/Borders',...
-                'HitTest','off','PickableParts','none',...
-                'LineWidth',1.0,...
-                'Color',[0.1 0.1 0.1])...
-                );
             
-            obj.Features(2) = MapFeature('volcanoes', @load_volcanoes, [],...
-                struct('Tag','mainmap_volcanoes',...
-                'Marker','^',...
-                'DisplayName','Volcanoes',...
-                'LineWidth', 1.5,...
-                'MarkerSize', 6,...
-                'LineStyle','none',...
-                'MarkerFaceColor','w',...
-                'MarkerEdgeColor','r')...
-                );
+            k=obj.Features.keys;
+            for i=1:obj.Features.Count
+                f=obj.Features(k{i});
+                f.load();
+            end
+            obj.initial_setup()
             
-            obj.Features(3) = MapFeature('plates', @load_plates, [],...
-                struct('Tag','mainmap_plates',...
-                'DisplayName','plate boundaries',...
-                'LineWidth', 3.0,...
-                'Color',[.2 .2 .5])...
-                );
-            
-            obj.Features(4) = MapFeature('faults', @load_faults, [],...
-                struct('Tag','mainmap_faultlines',...
-                    'DisplayName','main faultine',...
-                    'LineWidth', 3.0,...
-                    'Color','b')...
-                );
-            
-            obj.Features(5) = MapFeature('wells', @load_wells, [],...
-                struct('Tag','mainmap_wells',...
-                    'DisplayName','Wells',...
-                    'Marker','d',...
-                    'LineWidth',1.5,...
-                    'MarkerSize',6,...
-                    'LineStyle','none',...
-                    'MarkerFaceColor','k',...
-                    'MarkerEdgeColor','k')...
-                );            
-            obj.Features(6) = MapFeature('minor_faults', @load_minorfaults, [],...
-                struct('Tag','mainmap_faults',...
-                    'DisplayName','faults',...
-                    'LineWidth',0.2,...
-                    'Color','k')...
-                );
-                
-                %}
-               k=obj.Features.keys;
-                for i=1:obj.Features.Count
-                    f=obj.Features(k{i});
-                    f.load();
-                end
-                obj.initial_setup()
-                
         end
         function update(obj)
             ZG=ZmapGlobal.Data; %handle to globals;
@@ -101,18 +46,18 @@ classdef MainInteractiveMap
             % bring selected events to front
             uistack(findobj('DisplayName','Selected Events'),'top');
             
-                tolegend=findobj(ax,'Type','line');
-                tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
-                legend(ax,tolegend,'Location','southeastoutside');
-                ax.Legend.Title.String='Seismicity Map';
+            tolegend=findobj(ax,'Type','line');
+            tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
+            legend(ax,tolegend,'Location','southeastoutside');
+            ax.Legend.Title.String='Seismicity Map';
             if strcmp(ZG.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
             grid(ax,ZG.mainmap_grid);
             
             align_supplimentary_legends(ax);
-    
-    
+            
+            
             % make sure we're back in a 2-d view
             title(ax,MainInteractiveMap.get_title(ZG.a),'Interpreter','none');
             view(ax,2); %reset to top-down view
@@ -193,27 +138,6 @@ classdef MainInteractiveMap
             watchoff; drawnow;
         end
         
-        %{
-        function show(obj, featurename)
-            idx = strcmp(featurename, {obj.Features.Name});
-            if any(idx)
-                % make the feature visible
-                set(obj.Feature(idx).handle,'Visible','on');
-            else
-                disp(['MainInteractiveMap: Feature "' featurename '" doesn''t exist']);
-            end
-        end
-        
-        function hide(obj, featurename)
-            idx = strcmp(featurename, {obj.Features.Name});
-            if any(idx)
-                % make the feature invisible
-                set(obj.Feature(idx).handle,'Visible','off');
-            else
-                disp(['MainInteractiveMap: Feature "' featurename '" doesn''t exist']);
-            end
-        end
-        %}
         function initial_setup(obj)
             
             h = figureHandle();
@@ -223,7 +147,7 @@ classdef MainInteractiveMap
                 obj.createFigure();
             end
         end
-            
+        
         %% create menus
         function create_all_menus(obj, force)
             % create menus for main zmap figure
@@ -277,41 +201,41 @@ classdef MainInteractiveMap
                     'Callback','selt = ''in'';  plotmymap;');
                 uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
                     'Callback','think; addcoast;done');
-                %}
-                uimenu(ovmenu,'Label','Plot stations + station names',...
-                    'Separator', 'on',...
-                    'Callback',@(~,~)plotstations(mainAxes()));
-                
-                lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
-                
-                uimenu(lemenu,'Label','Change legend breakpoints',...
-                    'Callback',@change_legend_breakpoints);
-                legend_types = {'Legend by time','tim';...
-                    'Legend by depth','depth';...
-                    'Legend by magnitudes','mag';...
-                    'Mag by size, Depth by color','mad' %;...
-                    % 'Symbol color by faulting type','fau'...
-                    };
-                    
-                for i=1:size(legend_types,1)
-                    wrapped_leg = ['''' legend_types{i,2} ''''];
-                    uimenu(lemenu,'Label',legend_types{i,1},...
-                        'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
-                end
-                clear legend_types
-                
-                uimenu(mapoptionmenu,'Label','Change font size ...',...
-                    'Callback',@change_map_fonts);
-                
-                uimenu(mapoptionmenu,'Label','Change background colors',...
-                    'Callback',@(~,~)setcol,'Enable','off'); %
-                
-                uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
-                    'Callback',@(s,e) plot_large_quakes);
-                uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-                    'callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
-                uimenu(mapoptionmenu,'Label','Toggle Grid',...
-                    'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
+            %}
+            uimenu(ovmenu,'Label','Plot stations + station names',...
+                'Separator', 'on',...
+                'Callback',@(~,~)plotstations(mainAxes()));
+            
+            lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
+            
+            uimenu(lemenu,'Label','Change legend breakpoints',...
+                'Callback',@change_legend_breakpoints);
+            legend_types = {'Legend by time','tim';...
+                'Legend by depth','depth';...
+                'Legend by magnitudes','mag';...
+                'Mag by size, Depth by color','mad' %;...
+                % 'Symbol color by faulting type','fau'...
+                };
+            
+            for i=1:size(legend_types,1)
+                wrapped_leg = ['''' legend_types{i,2} ''''];
+                uimenu(lemenu,'Label',legend_types{i,1},...
+                    'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
+            end
+            clear legend_types
+            
+            uimenu(mapoptionmenu,'Label','Change font size ...',...
+                'Callback',@change_map_fonts);
+            
+            uimenu(mapoptionmenu,'Label','Change background colors',...
+                'Callback',@(~,~)setcol,'Enable','off'); %
+            
+            uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
+                'Callback',@(s,e) plot_large_quakes);
+            uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
+                'callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
+            uimenu(mapoptionmenu,'Label','Toggle Grid',...
+                'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
         end
         
         function create_select_menu(obj,force)
@@ -372,38 +296,27 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Combine catalogs',...
                 'Separator','on',...
-                'Callback','think;comcat;done');
+                'Callback',@(~,~)comcat());
             
             uimenu(submenu,'Label','Compare catalogs - find identical events',...
                 'Callback','do = ''initial''; comp2cat');
             
+            uimenu(submenu,'Label','Save current catalog (ASCII)','Callback',@(~,~)save_ca());
+            uimenu(submenu,'Label','Save current catalog (.mat)','Callback','eval(catSave);');
+            uimenu(submenu,'Label','Info (Summary)',...
+                'Separator','on',...
+                'Callback',@(~,~)msgbox(ZG.a.summary('stats'),'Catalog Details'));
             
             catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
                 'Separator','on');
-
+            
             uimenu(submenu,'Label','Reload last catalog','Enable','off',...
                 'Callback','think; load(lopa); if length(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;ZG.a=catalog_overview(ZG.a);done');
             
-            uimenu(catmenu, ...
-                'Label','from *.mat file',...
-                'Callback', {@(s,e) load_zmapfile() });
+            uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
+            uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
+            uimenu(catmenu,'Label','from FDSN webservice','Callback', @get_fdsn_data_from_web_callback);
             
-            uimenu(catmenu, ...
-                'Label','from other formatted file',... %was Data ImportFilters
-                'Callback', 'think; zdataimport; done');
-            uimenu(catmenu, ...
-                'Label','from FDSN webservice',... %TODO
-                'Callback', @get_fdsn_data_from_web_callback);
-
-            uimenu(submenu,'Label','Save current catalog (ASCII)',...
-                'Callback','save_ca;');
-            
-            uimenu(submenu,'Label','Save current catalog (.mat)',...
-                'Callback','eval(catSave);');
-            
-            uimenu(submenu,'Label','Info (Summary)',...
-                'Separator','on',...
-                'Callback','msgbox(ZG.a.summary(''stats''),''Catalog Details'')');
         end
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
@@ -426,7 +339,7 @@ classdef MainInteractiveMap
             obj.create_random_data_simulations_menu(submenu);
             
             uimenu(submenu,'Label','Create cross-section',...
-                'Callback','nlammap');
+                'Callback',@(~,~)nlammap());
             
             
             obj.create_histogram_menu(submenu);
@@ -437,136 +350,98 @@ classdef MainInteractiveMap
             obj.create_decluster_menu(submenu);
             
             uimenu(submenu,'Label','Map stress tensor',...
-                'Callback','sel = ''in''; stressgrid(sel)');
+                'Callback',@(~,~)stressgrid('in'));
             
             uimenu(submenu,'Label','Misfit calculation',...
-                'Callback','inmisfit;');
+                'Callback',@(~,~)inmisfit());
             
         end
         function create_topo_map_menu(obj,parent)
             submenu   =  uimenu(parent,'Label','Plot topographic map  ');
-            
-            uimenu(submenu,'Label','Open DEM GUI',...
-                'Callback',' prepinp ');
-            
-            uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)',...
-                'Callback','plt = ''lo3'' ; pltopo;');
-            
-            uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)',...
-                'Callback','plt = ''lo1'' ; pltopo;');
-            
-            uimenu(submenu,'Label','30 arc sec resolution (GTOPO30)',...
-                'Callback','plt = ''lo30'' ; pltopo;');
-            
-            uimenu(submenu,'Label','2 deg resolution (ETOPO 2)',...
-                'Callback','plt = ''lo2'' ; pltopo;');
-            uimenu(submenu,'Label','5 deg resolution (ETOPO 5, Terrain Base)',...
-                'Callback','plt = ''lo5''; pltopo;');
-            uimenu(submenu,'Label','Your topography (mydem, mx, my must be defined)',...
-                'Callback','plt = ''yourdem''; pltopo;');
-            uimenu(submenu,'Label','Help on plotting topography',...
-                'Callback','plt = ''genhelp''; pltopo;');
+            uimenu(submenu,'Label','Open DEM GUI','Callback', @(~,~)prepinp());
+            uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)','Callback', @(~,~)pltopo('lo3'));
+            uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)','Callback', @(~,~)pltopo('lo1'));
+            uimenu(submenu,'Label','30 arc sec resolution (GTOPO30)','Callback', @(~,~)pltopo('lo30'));
+            uimenu(submenu,'Label','2 deg resolution (ETOPO 2)','Callback', @(~,~)pltopo('lo2'));
+            uimenu(submenu,'Label','5 deg resolution (ETOPO 5, Terrain Base)','Callback', @(~,~)pltopo('lo5'));
+            uimenu(submenu,'Label','Your topography (mydem, mx, my must be defined)','Callback', @(~,~)pltopo('yourdem'));
+            uimenu(submenu,'Label','Help on plotting topography','Callback', @(~,~)pltopo('genhelp'));
         end
+        
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations');
             uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global ZG; [ZG.a] = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
                 'Callback','global ZG; [ZG.a] = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             
-            uimenu(submenu,'Label','Evaluate significance of b- and a-values',...
-                'Callback','brand');
-            uimenu(submenu,'Label','Calculate a random b map and compare to observed data',...
-                'Callback','brand2');
-            uimenu(submenu,'Label','Info on synthetic catalogs',...
-                'Callback','web([''file:'' hodi ''/zmapwww/syntcat.htm''])');
+            uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
+            uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
+            uimenu(submenu,'Label','Info on synthetic catalogs','Callback',@(~,~)web(['file:' hodi '/zmapwww/syntcat.htm']));
         end
         function create_mapping_rate_changes_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping rate changes');
-            uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)',...
-                'Callback','sel= ''in''; comp2periodz(sel)')
+            uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz('in'));
             
-            uimenu(submenu,'Label','Calculate a z-value map',...
-                'Callback','sel= ''in''; inmakegr(sel)')
-            uimenu(submenu,'Label','Calculate a z-value cross-section',...
-                'Callback','nlammap');
-            uimenu(submenu,'Label','Calculate a 3D  z-value distribution',...
-                'Callback','sel = ''in''; zgrid3d(sel)');
-            uimenu(submenu,'Label','Load a z-value grid (map-view)',...
-                'Callback','sel= ''lo'';loadgrid(sel)')
-            uimenu(submenu,'Label','Load a z-value grid (cross-section-view)',...
-                'Callback','sel= ''lo'';magrcros(sel)')
-            uimenu(submenu,'Label','Load a z-value movie (map-view)',...
-                'Callback','loadmovz')
+            uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr('in'));
+            uimenu(submenu,'Label','Calculate a z-value cross-section','Callback',@(~,~)nlammap());
+            uimenu(submenu,'Label','Calculate a 3D  z-value distribution','Callback',@(~,~)zgrid3d('in'));
+            uimenu(submenu,'Label','Load a z-value grid (map-view)','Callback',@(~,~)loadgrid('lo'));
+            uimenu(submenu,'Label','Load a z-value grid (cross-section-view)','Callback',@(~,~)magrcros('lo'));
+            uimenu(submenu,'Label','Load a z-value movie (map-view)','Callback',@(~,~)loadmovz());
         end
         
         function create_map_ab_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
-            uimenu(submenu,'Label','Calculate a Mc, a- and b-value map',...
-                'Callback','sel= ''in'';bvalgrid(sel)')
-            uimenu(submenu,'Label','Calculate a differential b-value map (const R)',...
-                'Callback','sel= ''in'';bvalmapt(sel)')
-            uimenu(submenu,'Label','Calculate a b-value cross-section',...
-                'Callback','nlammap');
-            uimenu(submenu,'Label','Calculate a 3D  b-value distribution',...
-                'Callback','sel = ''i1''; bgrid3dB(sel)');
-            uimenu(submenu,'Label','Calculate a b-value depth ratio grid',...
-                'Callback','sel= ''in'';bdepth_ratio(sel)')
-            uimenu(submenu,'Label','Load a b-value grid (map-view)',...
-                'Callback','sel= ''lo'';bvalgrid(sel)')
+            uimenu(submenu,'Label','Calc a Mc, a- and b-value map',...
+                'Callback', @(~,~)bvalgrid('in'));
+            uimenu(submenu,'Label','Calc a differential b-value map (const R)',...
+                'Callback', @(~,~)bvalmapt('in'));
+            uimenu(submenu,'Label','Calc a b-value cross-section',...
+                'Callback', @(~,~)nlammap());
+            uimenu(submenu,'Label','Calc 3D  b-value distribution','Callback', @(~,~)bgrid3dB('i1'));
+            uimenu(submenu,'Label','Calc b-value depth ratio grid','Callback', @(~,~)bdepth_ratio('in'));
+            uimenu(submenu,'Label','Load a b-value grid (map-view)','Callback', @(~,~)bvalgrid('lo'));
             %RZ
-            uimenu(submenu,'Label','Load a differential b-value grid',...
-                'Callback','sel= ''lo'';bvalmapt')
+            uimenu(submenu,'Label','Load a differential b-value grid','Callback',@(~,~)bvalmapt('lo'))
             %RZ
-            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
-                'Callback','sel= ''lo'';bcross(sel)')
+            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)','Callback',@(~,~)bcross('lo'))
             uimenu(submenu,'Label','Load a 3D b-value grid',...
                 'Callback','sel= ''no'';ac2 = ''load''; myslicer(sel)')
-            uimenu(submenu,'Label','Load a b-value depth ratio grid',...
-                'Callback','sel= ''lo'';bdepth_ratio(sel)')
+            uimenu(submenu,'Label','Load a b-value depth ratio grid','Callback',@(~,~)bdepth_ratio('lo')')
         end
         
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
-            uimenu(submenu,'Label','Calculate p and b-value map',...
-                'Callback','bpvalgrid(''in'')');
-            uimenu(submenu,'Label','Load existing p and b-value map',...
-                'Callback','bpvalgrid(''lo'')');
-            uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)',...
-                'Callback','rcvalgrid_a2(''in'')');
-            uimenu(submenu,'Label','Load existing  Rate change, p-,c-,k-value map (MLE)',...
-                'Callback','rcvalgrid_a2(''lo'')');
+            uimenu(submenu,'Label','Calculate p and b-value map','Callback',@(~,~)bpvalgrid('in'));
+            uimenu(submenu,'Label','Load existing p and b-value map','Callback',@(~,~)bpvalgrid('lo'));
+            uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)','Callback',@(~,~)rcvalgrid_a2('in'));
+            uimenu(submenu,'Label','Load existing  Rate change, p-,c-,k-value map (MLE)','Callback',@(~,~)rcvalgrid_a2('lo'));
         end
         
         function create_quarry_detection_menu(obj,parent)
             submenu  = uimenu(parent,'Label','Detect quarry contamination');
-            uimenu(submenu,'Label','Map day/nighttime ration of events',...
-                'Callback','sel = ''in'';findquar;');
-            uimenu(submenu,'Label','Info on detecting quarries.',...
-                'Callback','web([''file:'' hodi ''/help/quarry.htm''])');
+            uimenu(submenu,'Label','Map day/nighttime ration of events','Callback',@(~,~)findquar('in'));
+            uimenu(submenu,'Label','Info on detecting quarries','Callback',@(~,~)web(['file:' hodi '/help/quarry.htm']));
         end
-
+        
         function create_histogram_menu(obj,parent)
             
             submenu = uimenu(parent,'Label','Histograms');
             
-            uimenu(submenu,'Label','Magnitude',...
-                'Callback','global histo;hisgra(ZG.a.Magnitude,''Magnitude '',ZG.a.Name);');
-            uimenu(submenu,'Label','Depth',...
-                'Callback','global histo;hisgra(ZG.a.Depth,''Depth '',ZG.a.Name);');
-            uimenu(submenu,'Label','Time',...
-                'Callback','global histo;hisgra(ZG.a.Date,''Time '',ZG.a.Name);');
-            uimenu(submenu,'Label','Hr of the day',...
-                'Callback','global histo;hisgra(ZG.a.Date.Hour,''Hr '',ZG.a.Name);');
+            uimenu(submenu,'Label','Magnitude','Callback',@(~,~)histo_callback('Magnitude'));
+            uimenu(submenu,'Label','Depth','Callback',@(~,~)histo_callback('Depth'));
+            uimenu(submenu,'Label','Time','Callback',@(~,~)histo_callback('Date'));
+            uimenu(submenu,'Label','Hr of the day','Callback',@(~,~)histo_callback('Hour'));
             % uimenu(submenu,'Label','Stress tensor quality',...
             %    'Callback','global histo;hisgra(a(:,13),''Quality '', ZG.a.Name);');
         end
+        
+        
         function create_decluster_menu(obj,parent)
             submenu = uimenu(parent,'Label','Decluster the catalog');
-            uimenu(submenu,'Label','Decluster using Reasenberg',...
-                'Callback','inpudenew;');
-            uimenu(submenu,'Label','Decluster using Gardner & Knopoff',...
-                'Callback','declus_inp;');
+            uimenu(submenu,'Label','Decluster using Reasenberg','Callback',@(~,~)inpudenew());
+            uimenu(submenu,'Label','Decluster using Gardner & Knopoff','Callback',@(~,~)declus_inp());
         end
         
         
@@ -576,7 +451,7 @@ classdef MainInteractiveMap
             h = findobj(0, 'Tag');
         end
         
-           
+        
         %% plot CATALOG layer
         function plotEarthquakes(catalog, divs)
             disp('MainInteractiveMap.plotEarthquakes(...)');
@@ -702,7 +577,7 @@ classdef MainInteractiveMap
                 'LineStyle','none',...
                 'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
-                h.ZData=-mycat.Depth(mask);
+            h.ZData=-mycat.Depth(mask);
             h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
             
             for i = 1 : numel(divs)
@@ -724,7 +599,7 @@ classdef MainInteractiveMap
         end
         
         function plotQuakesByMagAndDepth(mycat)
-            % colorized by depth, with size dictated by magnitude 
+            % colorized by depth, with size dictated by magnitude
             persistent colormapName
             
             ax = mainAxes();
@@ -910,7 +785,7 @@ classdef MainInteractiveMap
             % plot big earthquake epicenters labeled with the data/magnitude
             % DisplayName: Events > M [something]
             % Tag: 'mainmap_big_events'
-
+            
             % TODO: dump the global reference, and maybe make ZG.maepi a view into the catalog
             
             persistent big_events defaults textdefaults
@@ -1160,19 +1035,18 @@ function change_color(c)
         set(lines(n),'Color',c,'Visible','on');
     end
 end
-    
+
 
 function plot_large_quakes()
-    global maex maix maey maiy ZG
+    globalZG
     mycat=ZmapCatalog(ZG.a);
     def = {'6'};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
     l = ni2{:};
     ZG.big_eq_minmag = str2double(l);
     
-    clear maex maix maey maiy
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
-    update(mainmap())
+    update(mainmap()) %TOFIX changing magnitudes didn't chnge map output
 end
 function align_supplimentary_legends(ax)
     % reposition supplimentary legends, if they exist
@@ -1181,7 +1055,7 @@ function align_supplimentary_legends(ax)
     catch
         return
     end
-    if isempty(le) 
+    if isempty(le)
         return;
     end
     tags = {'mainmap_supplimentary_deplegend','mainmap_supplimentary_maglegend'};
@@ -1229,7 +1103,7 @@ function toggle_aspectratio(src, ~)
     
 end
 function hide_events()
-    set(findMapaxParts(),'visible','off'); 
+    set(findMapaxParts(),'visible','off');
 end
 function h=findMapaxParts(ax)
     if ~exist('ax','var'), ax=0; end
@@ -1240,7 +1114,7 @@ function h=findNoLegendParts(ax)
     if ~exist('ax','var'), ax=0; end
     h = findobj(ax,'-regexp','Tag','\<.*_nolegend.*\>');
 end
-    
+
 function change_legend_breakpoints(~, ~)
     % TODO fix this, breakpoints aren't changed
     switch ZmapGlobal.Data.mainmap_plotby
@@ -1257,9 +1131,9 @@ function change_legend_breakpoints(~, ~)
         otherwise
             error('unrecognized legend type');
             % donno
-                
-    end
             
+    end
+    
 end
 
 function change_map_fonts(~,~)
@@ -1298,4 +1172,14 @@ function set_3d_view(src,~)
     end
     watchoff
     drawnow;
+end
+
+
+function histo_callback(opt)
+    switch opt
+        case {'Magnitude','Depth','Date'}
+            hisgra(ZG.a.(opt), opt, ZG.a.Name);
+        case 'Hour'
+            hisgra(ZG.a.Date.Hour,'Hr',ZG.a.Name);
+    end
 end

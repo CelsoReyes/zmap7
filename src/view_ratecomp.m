@@ -39,53 +39,53 @@ if newzmapWindowFlag
     add_symbol_menu()
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','delete(gca);delete(gca);delete(gca);delete(gca); view_ratecomp(det,re3)')
-    uimenu(options,'Label','Select EQ in Circle - const Ni', 'Callback','nosort = ''on''; h1 = gca;circle;watchoff(zmap)')
-    uimenu(options,'Label','Select EQ in Circle - const R2', 'Callback','nosort = ''on''; h1 = gca;circle_constR;watchoff(zmap)')
+    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
+    uimenu(options,'Label','Select EQ in Circle - const Ni', 'callback',@callbackfun_002)
+    uimenu(options,'Label','Select EQ in Circle - const R2', 'callback',@callbackfun_003)
 
-    uimenu(options,'Label','Select EQ in Polygon ', 'Callback',' nosort = ''on'';stri = ''Polygon'';h1 = gca;cufi = gcf;selectp')
+    uimenu(options,'Label','Select EQ in Polygon ', 'callback',@callbackfun_004)
 
 
     op1 = uimenu('Label',' Maps ');
 
 
     uimenu(op1,'Label','z-value map ',...
-         'Callback','det =''ast''; re3 = old; view_ratecomp(det,re3)')
+         'callback',@callbackfun_005)
     uimenu(op1,'Label','Percent change map',...
-         'Callback','det=''per''; re3 = per; view_ratecomp(det,re3)')
+         'callback',@callbackfun_006)
     uimenu(op1,'Label','Beta value map',...
-         'Callback','det=''bet''; re3 = beta_map; view_ratecomp(det,re3)')
+         'callback',@callbackfun_007)
 
     uimenu(op1,'Label','Significance based on beta map',...
-         'Callback','det=''bet''; re3 = betamap; view_ratecomp(det,re3)')
+         'callback',@callbackfun_008)
 
     uimenu(op1,'Label','Resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = reso; view_ratecomp(det,re3)')
+         'callback',@callbackfun_009)
 
     op1 = uimenu('Label','  Display ');
-    uimenu(op1,'Label','Plot Map in Lambert projection using m_map ', 'Callback','re4 = re3; plotmap ')
-    uimenu(op1,'Label','Fix color (z) scale', 'Callback','fixax2 ')
+    uimenu(op1,'Label','Plot Map in Lambert projection using m_map ', 'callback',@callbackfun_010)
+    uimenu(op1,'Label','Fix color (z) scale', 'callback',@callbackfun_011)
     uimenu(op1,'Label','Plot map on top of topography (white background)',...
-         'Callback','colback = 1; dramap_z')
+         'callback',@callbackfun_012)
     uimenu(op1,'Label','Plot map on top of topography (black background)',...
-         'Callback','colback = 2; dramap_z')
-    uimenu(op1,'Label','Histogram of map-values', 'Callback','zhist')
-    uimenu(op1,'Label','Colormap InvertGray', 'Callback','g=gray; g = g(64:-1:1,:);colormap(g);brighten(.4)')
+         'callback',@callbackfun_013)
+    uimenu(op1,'Label','Histogram of map-values', 'callback',@callbackfun_014)
+    uimenu(op1,'Label','Colormap InvertGray', 'callback',@callbackfun_015)
     uimenu(op1,'Label','Colormap Invertjet',...
-         'Callback','g=jet; g = g(64:-1:1,:);colormap(g)')
+         'callback',@callbackfun_016)
 
     uimenu(op1,'Label','Show Grid ',...
-         'Callback',' plot(newgri(:,1),newgri(:,2),''+k'')')
-    uimenu(op1,'Label','shading flat', 'Callback','sha=''fl'';axes(hzma); shading flat')
+         'callback',@callbackfun_017)
+    uimenu(op1,'Label','shading flat', 'callback',@callbackfun_018)
     uimenu(op1,'Label','shading interpolated',...
-         'Callback','sha=''in'';axes(hzma); shading interp')
+         'callback',@callbackfun_019)
     uimenu(op1,'Label','Brigten +0.4',...
-         'Callback','axes(hzma); brighten(0.4)')
+         'callback',@callbackfun_020)
     uimenu(op1,'Label','Brigten -0.4',...
-         'Callback','axes(hzma); brighten(-0.4)')
+         'callback',@callbackfun_021)
 
     uimenu(op1,'Label','Redraw overlay',...
-         'Callback','hold on;overlay_')
+         'callback',@callbackfun_022)
 
 
     colormap(jet)
@@ -201,3 +201,174 @@ axes(h1)
 watchoff(zmap)
 done
 end
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  delete(gca);
+  delete(gca);
+  delete(gca);
+  delete(gca);
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  nosort = 'on';
+   h1 = gca;
+  circle;
+  watchoff(zmap);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  nosort = 'on';
+   h1 = gca;
+  circle_constR;
+  watchoff(zmap);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+   nosort = 'on';
+  stri = 'Polygon';
+  h1 = gca;
+  cufi = gcf;
+  selectp;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  det ='ast';
+   re3 = old;
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  det='per';
+   re3 = per;
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  det='bet';
+   re3 = beta_map;
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  det='bet';
+   re3 = betamap;
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  lab1='Radius in [km]';
+  re3 = reso;
+   view_ratecomp(det,re3);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  re4 = re3;
+   plotmap ;
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  fixax2 ;
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  colback = 1;
+   dramap_z;
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  colback = 2;
+   dramap_z;
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  zhist;
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  g=gray;
+   g = g(64:-1:1,:);
+  colormap(g);
+  brighten(.4);
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  g=jet;
+   g = g(64:-1:1,:);
+  colormap(g);
+end
+ 
+function callbackfun_017(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+   plot(newgri(:,1),newgri(:,2),'+k');
+end
+ 
+function callbackfun_018(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  sha='fl';
+  axes(hzma);
+   shading flat;
+end
+ 
+function callbackfun_019(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  sha='in';
+  axes(hzma);
+   shading interp;
+end
+ 
+function callbackfun_020(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  axes(hzma);
+   brighten(0.4);
+end
+ 
+function callbackfun_021(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  axes(hzma);
+   brighten(-0.4);
+end
+ 
+function callbackfun_022(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+  hold on;
+  overlay_;
+end
+ 

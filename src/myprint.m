@@ -25,17 +25,17 @@ function myprint(command,param1)
     %  Author :  Stefan Wiemer 12/94
     %  Mods.  :
     %
-
+    
     %  Copyright (c) 1994 by Patrick Marchand
     %       Permission is granted to modify and re-distribute this
     %	code in any manner as long as this notice is preserved.
     %	All standard disclaimers apply.
-
-
+    
+    
     if nargin == 0
         command = 'new';
     end
-
+    
     if ischar(command)
         if strcmpi(command,'initialize') || strcmpi(command,'new')
             command = 0;
@@ -51,7 +51,7 @@ function myprint(command,param1)
             command = 5;
         end
     end
-
+    
     if command ~= 0
         handle_list = get(gcf,'userdata');
         if ~isempty(handle_list)
@@ -63,8 +63,8 @@ function myprint(command,param1)
             txt1 = handle_list(6);
         end
     end
-
-
+    
+    
     if command == 0
         figp = gcf;
         ptt = figure_w_normalized_uicontrolunits('position',[200 200 250 350 ],...
@@ -75,11 +75,11 @@ function myprint(command,param1)
             'MenuBar','none',...
             'units','points');
         set(gca,'visible','off');
-
+        
         %  Uicontrol Object Creation
         h(1) = uicontrol(...
             'BackgroundColor',[ 0.7 0.7 0.7 ],...
-            'Callback','myprint(''h(1)'');',...
+            'callback',@callbackfun_001,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.25 0.44 0.4 0.05 ],...
             'String','Black and White Image',...
@@ -89,7 +89,7 @@ function myprint(command,param1)
             'UserData','h(1)');
         h(2) = uicontrol(...
             'BackgroundColor',[ 0.7 0.7 0.7 ],...
-            'Callback','myprint(''h(2)'');',...
+            'callback',@callbackfun_002,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.25 0.53 0.4 0.05 ],...
             'String','Color Image',...
@@ -99,7 +99,7 @@ function myprint(command,param1)
             'UserData','h(2)');
         h(3) = uicontrol(...
             'BackgroundColor',[ 0.7 0.7 0.7 ],...
-            'Callback','myprint(''h(3)'');',...
+            'callback',@callbackfun_003,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.15 0.6 0.60 0.06 ],...
             'String','Post-sript file',...
@@ -109,7 +109,7 @@ function myprint(command,param1)
             'UserData','h(3)');
         h(4) = uicontrol(...
             'BackgroundColor',[ 0.7 0.7 0.7 ],...
-            'Callback','myprint(''h(4)'');',...
+            'callback',@callbackfun_004,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.15 0.8 0.6 0.06 ],...
             'String','Printer',...
@@ -119,7 +119,7 @@ function myprint(command,param1)
             'UserData','h(4)');
         h(5) = uicontrol(...
             'BackgroundColor',[ 1 1 0 ],...
-            'Callback','myprint(''h(5)'');',...
+            'callback',@callbackfun_005,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.1 0.1 0.23 0.07 ],...
             'String','Print',...
@@ -129,7 +129,7 @@ function myprint(command,param1)
             'UserData','h(5)');
         uicontrol(...
             'BackgroundColor',[ 1 1  0 ],...
-            'Callback','close;done',...
+            'callback',@callbackfun_006,...
             'ForegroundColor',[ 0 0 0 ],...
             'Position',[ 0.7 0.1 0.23 0.07 ],...
             'String','Close',...
@@ -137,11 +137,11 @@ function myprint(command,param1)
             'Units','normalized',...
             'Visible','on',...
             'UserData','h(5)');
-
-
+        
+        
         handle_ui_list = [h(1) h(2) h(3) h(4) h(5) ];
-
-
+        
+        
         %  Text Object Creation
         txt1 = text(...
             'Color',[ 1 0 0 ],...
@@ -151,41 +151,41 @@ function myprint(command,param1)
             'FontWeight','bold',...
             'Rotation',[ 0 ],...
             'String','ZMAP Print-Tool');
-
+        
         handle_txt_list = [txt1 ];
-
-
+        
+        
         handle_list = [handle_ui_list handle_txt_list];
         set(gcf,'userdata',handle_list);
-
-
+        
+        
     elseif command == 1
         pri = 'print -dps  ';
         set(h(1),'Value',1)
         set(h(2),'Value',0)
-
+        
     elseif command == 2
         pri = 'print -dpsc  ' ;
         set(h(2),'Value',1)
         set(h(1),'Value',0)
         set(h(4),'Value',0)
         set(h(3),'Value',1)
-
+        
     elseif command == 3
         pri = 'print -dpsc  ' ;
         set(h(4),'Value',0)
         set(h(3),'Value',1)
         set(h(2),'Value',1)
         set(h(1),'Value',0)
-
+        
     elseif command == 4
         set(h(3),'Value',0)
         set(h(4),'Value',1)
         set(h(1),'Value',0)
         set(h(2),'Value',0)
-
+        
     elseif command == 5
-
+        
         % Print to printer
         if get(h(4),'Value')== 1
             drawnow('discard')
@@ -197,7 +197,7 @@ function myprint(command,param1)
             whitebg(gcf,'Color',color_fbg)
             set(gca,'Color',cuca)
         end
-
+        
         %Print to ps file
         if  get(h(3),'Value')== 1
             messtext=...
@@ -207,12 +207,12 @@ function myprint(command,param1)
                 'not printed.                         '];
             zmap_message_center.set_message('Print',messtext)
             [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir,'out','*.ps'),'PS  Filename');
-
+            
             messtext = ['Thank you! Printing in PS file...'];
             zmap_message_center.set_message('  ',messtext)
             watchon;
             drawnow
-
+            
             % Print the file
             drawnow('discard')
             figure_w_normalized_uicontrolunits(figp)
@@ -229,5 +229,43 @@ function myprint(command,param1)
         done
     else
         error('Error: myprint.m called with incorrect command.')
-
+        
     end
+    
+    function callbackfun_001(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint('h(1)');
+    end
+    
+    function callbackfun_002(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint('h(2)');
+    end
+    
+    function callbackfun_003(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint('h(3)');
+    end
+    
+    function callbackfun_004(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint('h(4)');
+    end
+    
+    function callbackfun_005(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint('h(5)');
+    end
+    
+    function callbackfun_006(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        close;
+        done;
+    end
+end

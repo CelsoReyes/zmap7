@@ -84,3 +84,4 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     else
         hold off
     end
+
