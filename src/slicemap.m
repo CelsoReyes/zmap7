@@ -9,7 +9,7 @@ report_this_filefun(mfilename('fullpath'));
 ZG=ZmapGlobal.Data;
 global  tiplo2 ax3 plb  tiplo1 xc1 xc2 plb2 plc1 plc2 teb1 teb2 ds
 global hndl2 tgl1 Rconst
-global ps1 ps2 plin pli xt3 bvalsum3 slfig
+global ps1 plin pli xt3 bvalsum3 slfig
 
 
 if ~exist('slm', 'var'); 
@@ -392,8 +392,7 @@ function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  ac2 = 'new';
-   myslicer;
+   myslicer('new');
 end
  
 function callbackfun_002(mysrc,myevt)
@@ -413,7 +412,7 @@ end
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-   animatorb('start');
+   animator('start', @slicemap);
 end
  
 function callbackfun_005(mysrc,myevt)
