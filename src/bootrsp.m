@@ -51,7 +51,7 @@ function[out]=bootrsp(in,B)
     else
         out=in(ceil(s(1)*s(2)*rand(s(1),s(2),B)));
     end
-
+end
 
 
 

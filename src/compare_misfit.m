@@ -16,7 +16,7 @@ xt = dat(:,1);
 cumu2 = cumsum(cumu);
 
 hold on;
-ZG.bin_days = 0.5;
+ZG.bin_days = days(0.5);
 par2 = 1.0;
 choice = input('type 1 to select range with cursor, 2 to input event numbers  ');
 if choice == 1

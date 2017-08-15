@@ -11,7 +11,7 @@ function cltiplot(var1)
     global mess ccum bgevent file1 clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
-    global clu1 pyy stri tiplo2 statime
+    global clu1 pyy stri statime
     global xt  cumu cumu2 iwl3
     global close_ti_button mtpl
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
@@ -114,7 +114,7 @@ function cltiplot(var1)
     l = ZG.newt2.Magnitude == bigmag;
     big = ZG.newt2(l,:);
     %calculate start -end time of overall catalog
-    t0b = ZG.newt2(1,3);
+    t0b = min(ZG.newt2.Date);
     n = ZG.newt2.Count;
     teb = ZG.newt2(n,3);
     tdiff = (teb - t0b)*365;
@@ -152,7 +152,7 @@ function cltiplot(var1)
     hold on
     tiplo = plot(xt,cumu2,'ob');
     set(gca,'visible','off')
-    tiplo2 = plot(xt,cumu2,'r');
+    plot(xt,cumu2,'r','Tag','tiplo2');
 
 
     % plot big events on curve

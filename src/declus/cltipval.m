@@ -56,10 +56,9 @@ function cltipval(var1)
         matdraw;
         ZG.newt2=ttcat;
         %calculate start -end time of overall catalog
-        t0b = ZG.newt2(1,3);
-        n = ZG.newt2.Count;
-        teb = ZG.newt2(n,3);
-        tdiff=(teb-t0b)*365;       %time difference in days
+        t0b = min(ZG.newt2.Date);
+        teb = max(ZG.newt2.Date);
+        tdiff=days(teb-t0b);       %time difference in days
         par3=tdiff/100;
         par5=par3;
         if par5>.5

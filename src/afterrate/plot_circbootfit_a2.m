@@ -39,12 +39,10 @@ if bMap == 0    % Cross section
     l = sqrt(((xsecx' - xa0)).^2 + (((xsecy+ya0))).^2) ;
 else % Map view
     ZG.newt2 = a;
-    l = sqrt(((ZG.newt2.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.newt2.Latitude-ya0)*111).^2) ;
+    l = ZG.newt2.epicentralDistanceTo(ya0,xa0);
 end
-[s,is] = sort(l);
-ZG.newt2 = ZG.newt2(is(:,1),:) ;
 
-l =  sort(l);
+ZG.newt2=ZG.newt2.subset(l); % reorder & copy
 
 % Select data in radius ra
 l3 = l <= ra;

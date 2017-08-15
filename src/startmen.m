@@ -10,12 +10,7 @@ function startmen(parent_fig)
     %  Create new figure
     % Find out of figure already exists
     %
-    
-    global my_dir
-    
-    % [existFlag, mainmenu]=figure_exists('ZMAP 6.0 - Menu');
-    my_dir = ' ';
-    
+
     % Set up the Seismicity Map window Enviroment
     %
     if nargin==1
@@ -36,11 +31,13 @@ function startmen(parent_fig)
             'Callback', {@think_and_do, 'setup'});
         uimenu(genmen, ...
             'Label', 'Current Dataset Info',...
-            'Callback',{@think_and_do,'datinf'});
+            'Enable','off',... % may no longer be relevent
+            'Callback', @(~,~)datinf());
         
         uimenu(genmen, ...
             'Label','Set working directory ',...
-            'Callback',{@think_and_do,'working_dir_in'});
+            'Enable','off',... % doesn't seem to be used anywhere
+            'Callback',@(~,~)working_dir_in);
         
         genmen = uimenu(parent_fig,'Label','Help');
         

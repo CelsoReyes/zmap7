@@ -4,12 +4,12 @@ function errorflash(h, n)
     % errorflash(handleForObject, numberOfFlashes), specify number of flashes
     % often, this is after an error message.
     % ex.
-    % 
+    %
     % h=errordlg('Incomplete Request: You must first do something important.', 'error','modal');
     % waitfor(h);  %pause execution until the error box is closed
     % errorflash(handles.data_provider);
-
-    flashcolor = [0.6 0.0 0.0] % medium-red
+    
+    flashcolor = [0.6 0.0 0.0]; % medium-red
     flashweight = 'bold';
     origweight=get(h,'FontWeight');
     origColor=get(h,'ForegroundColor');

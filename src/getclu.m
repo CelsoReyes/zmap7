@@ -44,7 +44,7 @@ function clustNum0 = getclu(gecl, clustNum0)
     end
     nu = (1:ZG.newt2.Count) ;
     nu = nu';
-    set(tiplo2,'Xdata',ZG.newt2.Date,'Ydata',nu);
+    set(findobj(0,'Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
     figure(cum);
     
     

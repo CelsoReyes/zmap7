@@ -33,7 +33,7 @@ function cllta(var1)
 
     t0b = min(ZG.a.Date);
     n = ZG.a.Count;
-    teb = ZG.a.Date(n);
+    teb = max(ZG.a.Date);
     tdiff = round((teb - t0b)/days(par5));
     iwl3 = iwl*days(par5);                 % iwl3 is window in years
 

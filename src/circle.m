@@ -38,7 +38,7 @@ stri1 = [ 'Circle: ' num2str(xa0,5) '; ' num2str(ya0,4)];
 stri = stri1;
 pause(0.1)
 
-[mask, max_km] = closestEvents(ZG.a, lat, lon, ni);
+[mask, max_km] = closestEvents(ZG.a, lat, lon, [], ni);
 ZG.newt2 = ZG.a.subset(mask);
 ZG.newt2.sort('Date');
 

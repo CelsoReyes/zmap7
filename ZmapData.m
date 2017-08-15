@@ -91,13 +91,16 @@ classdef ZmapData < handle
         hold_state3 % was hoc, contained 'hold' or 'noho'
         
         % directories
-        out_dir % was hodo
-        data_dir % was hoda
+        out_dir=fullfile(ZmapData.hodi,'out') % was hodo
+        data_dir=fullfile(ZmapData.hodi,'data') % was hoda
+        work_dir=fullfile(ZmapData.hodi,'working');
         
         % scaling params from view_ functions
         minc
         maxc
         
+        %unknown other entities
+        Rconst %used with the slicers
         
     end
     properties(Dependent)
@@ -119,6 +122,16 @@ classdef ZmapData < handle
         end
         function out=get.wely(obj)
             out=obj.welcome_len(2);
+        end
+        function set.bin_days(obj,val)
+            if isa(val,'duration')
+                obj.bin_days=val;
+            elseif isnumeric(val)
+                warning('expected bin_days to be a duration. converting and assuming it is days');
+                obj.bin_days=days(val);
+            else
+                error('only can convert durations and numerics to bin_days');
+            end
         end
     end
 end

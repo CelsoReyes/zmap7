@@ -5,7 +5,7 @@ function timeplot(mycat, nosort)
     % Time of events with a Magnitude greater than ZG.big_eq_minmag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
-    %                       - "a" if either "Back" button or "Close" button is         %                          pressed.
+    %                       - "a" if either "Back" button or "Close" button is pressed.
     %                       - mycat if "Save as Newcat" button is pressed.
     %
     
@@ -204,13 +204,13 @@ function timeplot(mycat, nosort)
         op5C = uimenu(plotmenu,'Label','Histograms');
         
         uimenu(op5C,'Label','Magnitude',...
-            'callback',@callbackfun_030);
+            'callback',{@callbackfun_histogram,'Magnitude'});
         uimenu(op5C,'Label','Depth',...
-            'callback',@callbackfun_031);
+            'callback',{@callbackfun_histogram,'Depth'});
         uimenu(op5C,'Label','Time',...
-            'callback',@callbackfun_032);
+            'callback',{@callbackfun_histogram,'Date'});
         uimenu(op5C,'Label','Hr of the day',...
-            'callback',@callbackfun_033);
+            'callback',{@callbackfun_histogram,'Hour'});
         
         
         uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
@@ -302,7 +302,7 @@ function timeplot(mycat, nosort)
     
     % calculate cumulative number versus time and bin it
     if bin_days >=1
-        [cumu, xt] = histcounts(mycat.Date,(t0b:days(bin_days):teb));
+        [cumu, xt] = histcounts(mycat.Date,t0b:days(bin_days):teb);
     else
         [cumu, xt] = histcounts((mycat.Date-mycat.Date(1))+bin_days*365, (0:bin_days:(tdiff+2*bin_days)));
     end
@@ -372,223 +372,200 @@ function timeplot(mycat, nosort)
     zmap_message_center.clear_message();
     done()
     
+    %% callback functions
+    
     function cut_tmd_callback(~,~)
-        ZG=ZmapGlobal.Data;
         ZG.newt2 = catalog_overview(ZG.newt2);
         timeplot(ZG.newt2)
     end
     
     function cursor_timecut_callback(~,~)
         % will change ZG.newt2
-        ZG=ZmapGlobal.Data;
         [tt1,tt2]=timesel(4);
         ZG.newt2=ZG.newt2.subset(ZG.newt2.Date>=tt1&ZG.newt2.Date<=tt2);
         timeplot(ZG.newt2);
     end
     
+    function callbackfun_001(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        newtimetick;
+    end
+    
+    function callbackfun_002(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        inpudenew;
+    end
+    
+    function callbackfun_003(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ZG.hold_state2=true;
+    end
+    
+    function callbackfun_004(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        dispma2;
+    end
+    
+    function callbackfun_005(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ic=0;
+        dispma3;
+    end
+    
+    function callbackfun_newsta(mysrc,myevt,sta)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        set(gcf,'Pointer','watch');
+        newsta(sta);
+    end
+    
+    function callbackfun_010(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ZG.hold_state=false;
+        selt = 'in';
+        bdiff2;
+    end
+    
+    function callbackfun_011(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        selt = 'in';
+        sPar = 'mc';
+        plot_McBwtime;
+    end
+    
+    function callbackfun_012(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        bwithde2;
+    end
+    
+    function callbackfun_013(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        bwithmag;
+    end
+    
+    function callbackfun_014(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        selt = 'in';
+        sPar = 'b';
+        plot_McBwtime;
+    end
+    
+    function callbackfun_015(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        mcwtidays;
+    end
+    
+    function callbackfun_016(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        error('not implemented: define mainshock.  Original input_main.m function broken;')
+    end
+    
+    function callbackfun_017(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ZG.hold_state=false;
+        pvalcat;
+    end
+    
+    function callbackfun_018(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        pvalcat2;
+    end
+    
+    function callbackfun_019(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
+        mycat = mycat(l+1:mycat.Count,:);
+        timeplot(mycat) ;
+    end
+    
+    function callbackfun_computefractal(mysrc,myevt, org)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        if org==2;E = mycat; end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
+        startfd;
+    end
+    
+    function callbackfun_023(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        showweb('fractal');
+    end
+    
+    function callbackfun_024(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        morel;
+    end
+    
+    function callbackfun_025(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        doinvers_michael;
+    end
+    
+    function callbackfun_026(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        doinversgep_pc;
+    end
+    
+    function callbackfun_027(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        stresswtime;
+    end
+    
+    function callbackfun_028(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        stresswdepth;
+    end
+    
+    function callbackfun_029(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        showweb('stress') ;
+    end
+    
+    function callbackfun_histogram(mysrc,myevt,hist_type)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        hisgra(mycat, hist_type);
+    end
+    
+    function callbackfun_034(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        nosort = 'of';
+        error ZG.newcat = ZG.mycat;
+        mycat = ZG.newcat;
+        stri = [' '];
+        stri1 = [' '];
+        close(cum);
+        timeplot(mycat,nosort);
+    end
+    
+    function callbackfun_035(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ZG.newcat = mycat;
+        replaceMainCatalog(mycat) ;
+        zmap_message_center.update_catalog();
+        update(mainmap());
+    end
 end
-function callbackfun_001(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    newtimetick;
-end
-
-function callbackfun_002(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    inpudenew;
-end
-
-function callbackfun_003(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    ZG=ZmapGlobal.Data;
-    ZG.hold_state2=true;
-end
-
-function callbackfun_004(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    dispma2;
-end
-
-function callbackfun_005(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    ic=0;
-    dispma3;
-end
-
-function callbackfun_newsta(mysrc,myevt,sta)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    set(gcf,'Pointer','watch');
-    newsta(sta);
-end
-
-function callbackfun_010(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    ZG=ZmapGlobal.Data;
-    ZG.hold_state=false;
-    selt = 'in';
-    bdiff2;
-end
-
-function callbackfun_011(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    selt = 'in';
-    sPar = 'mc';
-    plot_McBwtime;
-end
-
-function callbackfun_012(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    bwithde2;
-end
-
-function callbackfun_013(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    bwithmag;
-end
-
-function callbackfun_014(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    selt = 'in';
-    sPar = 'b';
-    plot_McBwtime;
-end
-
-function callbackfun_015(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    mcwtidays;
-end
-
-function callbackfun_016(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    error('not implemented: define mainshock.  Original input_main.m function broken;')
-end
-
-function callbackfun_017(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    ZG=ZmapGlobal.Data;
-    ZG.hold_state=false;
-    pvalcat;
-end
-
-function callbackfun_018(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    pvalcat2;
-end
-
-function callbackfun_019(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
-    mycat = mycat(l+1:mycat.Count,:);
-    timeplot(mycat) ;
-end
-
-function callbackfun_computefractal(mysrc,myevt, org)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    if org==2;E = mycat; end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
-    startfd;
-end
-
-function callbackfun_023(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    showweb('fractal');
-end
-
-function callbackfun_024(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    morel;
-end
-
-function callbackfun_025(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    doinvers_michael;
-end
-
-function callbackfun_026(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    doinversgep_pc;
-end
-
-function callbackfun_027(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    stresswtime;
-end
-
-function callbackfun_028(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    stresswdepth;
-end
-
-function callbackfun_029(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    showweb('stress') ;
-end
-
-function callbackfun_030(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    hisgra(mycat.Magnitude,'Magnitude ',mycat.Name);
-end
-
-function callbackfun_031(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    hisgra(mycat.Depth,'Depth ',mycat.Name);
-end
-
-function callbackfun_032(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    hisgra(mycat.Date,'Time ',mycat.Name);
-end
-
-function callbackfun_033(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    hisgra(mycat.Date.Hour,'Hr ',mycat.Name);
-end
-
-function callbackfun_034(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    nosort = 'of';
-    error ZG.newcat = ZG.mycat;
-    mycat = ZG.newcat;
-    stri = [' '];
-    stri1 = [' '];
-    close(cum);
-    timeplot(mycat,nosort);
-end
-
-function callbackfun_035(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    global ZG;
-    ZG.newcat = mycat;
-    replaceMainCatalog(mycat) ;
-    zmap_message_center.update_catalog();
-    update(mainmap());
-end
-

@@ -40,10 +40,9 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
         autop=1;
     end
     %calculate start -end time of overall catalog
-    t0b = ZG.newt2(1,3);
-    n = ZG.newt2.Count;
-    teb = ZG.newt2(n,3);
-    tdiff=(teb-t0b)*365;       %time difference in days
+    t0b = min(ZG.newt2.Date);
+    teb = max(ZG.newt2.Date);
+    tdiff=days(teb-t0b);       %time difference in days
 
     par3=tdiff/100;
 
@@ -74,15 +73,11 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
     tmp2=min(ttcat(:,6));
     tmp1=max(ttcat(:,6));
 
-    %tmp3=str2double(tt4);
     if tmp3 < 0
         tmp3=0;
     end
 
-    %  tmp4=str2double(tt5);
     tmp4=teb;
-
-    %  mypval(8);
 
     %%end
 

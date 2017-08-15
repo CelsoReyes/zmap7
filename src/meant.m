@@ -79,8 +79,8 @@ elseif ic == 2
     xt2  = [ ];
     meand = [ ];
     er = [];
-    t0b = ZG.newcat.Date(1);
-    teb = ZG.newcat.Date(len);
+    t0b = min(ZG.newcat.Date);
+    teb = max(ZG.newcat.Date);
 
     wai = waitbar(0,'Please wait...');
     set(wai,'NumberTitle','off','Name','Percent completed');

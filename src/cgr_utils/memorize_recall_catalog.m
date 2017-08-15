@@ -18,7 +18,7 @@ function memorize_recall_catalog()
     end
     switch todo
         case 'Memorize'
-            ZG.memorized_catalogs = a;
+            ZG.memorized_catalogs = ZG.a;
             msgbox(['Catalog ' ZG.a.Name ' has been Memorized.    '],'Memorize Catalog');
         case 'Recall'
             replaceMainCatalog(ZG.memorized_catalogs);

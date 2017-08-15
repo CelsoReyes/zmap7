@@ -79,7 +79,7 @@ function plotclust()
         'Units','normalized');
     
     function markclus_callback(src,~)
-        clustNum0 = markclus(clus, clustNum0, sl, te, tiplo2);
+        clustNum0 = markclus(clus, clustNum0, sl, te);
     end
         
     function getclu_callback(opt)

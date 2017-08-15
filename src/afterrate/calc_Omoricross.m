@@ -244,7 +244,7 @@ if sel == 'ca'
     t0b = min(newa.Date)  ;
     n = newa.Count;
     teb = max(newa.Date) ;
-    tdiff = round(days(teb-t0b)/ZG.bin_days)
+    tdiff = round((teb-t0b)/ZG.bin_days)
 
     % loop over  all points
     mCross = [];%NaN(length(newgri),20);

@@ -56,7 +56,7 @@ hlpStr2= ...
     '                                                      '];
 
 global  pplot tmp1 tmp2 tmp3 tmp4 difp loopcheck Info_p
-global cplot mess tiplo2 cum statime maxde minde
+global cplot mess cum statime maxde minde
 global maxma2 minma2
 ZG=ZmapGlobal.Data;
 
@@ -83,22 +83,20 @@ if newCumWindowFlag
     options = uimenu('Label','Tools ');
 
     uimenu(options,'Label','Cuts in magnitude and depth', 'Callback','ZG=ZmapGlobal.Data;ZG.newt2=catalog_overview(ZG.newt2);')
-    uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
+    uimenu (options,'Label','Decluster the catalog', 'Callback',@(~,~)inpudenew());
     iwl = iwl2/days(ZG.bin_days);
-    uimenu(options,'Label','AS(t)function',...
-         'Callback','set(gcf,''Pointer'',''watch'');sta = ''ast'';newsta')
-    uimenu(options,'Label','Rubberband function',...
-         'Callback','set(gcf,''Pointer'',''watch'');sta = ''rub'';newsta')
-    uimenu(options,'Label','LTA(t) function ',...
-         'Callback','set(gcf,''Pointer'',''watch'');sta = ''lta'';newsta')
+    uimenu(options,'Label','AS(t)function','Callback',@(~,~)newsta('ast'));
+    uimenu(options,'Label','Rubberband function','Callback',@(~,~)newsta('rub'));
+    uimenu(options,'Label','LTA(t) function ','Callback',@(~,~)newsta('lta'));
     uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ZG=ZmapGlobal.Data; ZG.hold_state=true; ')
-    uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
-    uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','dispma3')
+    uimenu(options,'Label','Compare two rates (fit)', 'Callback',@(~,~)dispma2())
+    uimenu(options,'Label','Compare two rates ( No fit)', 'Callback',@(~,~)dispma3())
+    
     op4 = uimenu(options,'Label','b-value estimation');
-    uimenu(op4,'Label','manual', 'Callback','bfitnew(ZG.newt2)')
-    uimenu(op4,'Label','automatic', 'Callback','bdiff(ZG.newt2)')
-    uimenu(op4,'Label','b with depth', 'Callback','bwithde')
-    uimenu(op4,'Label','b with time', 'Callback','bwithti')
+    uimenu(op4,'Label','manual', 'Callback',@(~,~)bfitnew(ZG.newt2))
+    uimenu(op4,'Label','automatic', 'Callback',@(~,~)bdiff(ZG.newt2))
+    uimenu(op4,'Label','b with depth', 'Callback',@(~,~)bwithde())
+    uimenu(op4,'Label','b with time', 'Callback',@(~,~)bwithti())
 
     op5 = uimenu(options,'Label','p-value estimation');
     uimenu(op5,'Label','manual', 'Callback','global hndl1;ttcat = ZG.newt2; clpval(1)')
@@ -152,8 +150,7 @@ if ZmapGlobal.Data.hold_state
 
     hold on
     axes(ht)
-    tiplo2 = plot(xt,cumu2,'r');
-    set(tiplo2,'LineWidth',2.5)
+    plot(xt,cumu2,'r','LineWidth',2.5,'Tag','tiplo2');
 
     ZG.hold_state=false
     return
@@ -182,22 +179,22 @@ big = ZG.newt2(l,:);
 %calculate start -end time of overall catalog
 %R
 statime=[];
-par2=ZG.bin_days;
+par2 = ZG.bin_days;
 t0b = min(ZG.a.Date);
 n = ZG.newt2.Count;
 teb = max(ZG.a.Date);
 ttdif=(teb - t0b)*365;
 if ttdif>10                 %select bin length respective to time in catalog
-    ZG.bin_days = ceil(ttdif/300);
+    ZG.bin_days = days(ceil(ttdif/300));
 elseif ttdif<=10  &&  ttdif>1
-    ZG.bin_days = 0.1;
+    ZG.bin_days = days(0.1);
 elseif ttdif<=1
-    ZG.bin_days = 0.01;
+    ZG.bin_days = days(0.01);
 end
 
 
 if ZG.bin_days>=1
-    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    tdiff = round((teb-t0b)/ZG.bin_days);
     %tdiff = round(teb - t0b);
 else
     tdiff = (teb-t0b)/days(ZG.bin_days);
@@ -234,8 +231,7 @@ axes('position',rect)
 hold on
 
 set(gca,'visible','off')
-tiplo2 = plot(xt,cumu2,'b');
-set(tiplo2,'LineWidth',2.5)
+plot(xt,cumu2,'b','LineWidth',2.5,'Tag','tiplo2');
 
 
 % plot big events on curve
@@ -309,6 +305,6 @@ set(cum,'Visible','on');
 watchoff(cum)
 watchoff(map)
 zmap_message_center.clear_message();
-ZG.bin_days=par2;
+ZG.bin_days = par2;
 done
 

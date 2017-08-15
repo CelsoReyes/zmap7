@@ -146,7 +146,7 @@ end
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ZG.bin_days=str2double(freq_field6.String);
+  ZG.bin_days = str2double(freq_field6.String);
    freq_field6.String=num2str(ZG.bin_days);
 end
  

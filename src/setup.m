@@ -9,7 +9,7 @@ function setup()
     %
     
     if ~exist('ZG.bin_days', 'var')
-        ZG.bin_days = 14;
+        ZG.bin_days = days(14);
     end
     
     % This is the info window text

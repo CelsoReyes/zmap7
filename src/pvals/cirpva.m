@@ -35,7 +35,7 @@ pause(0.1)
 
 if met == 'ni'
     % take first ni and sort by time
-    [mask, max_rad] = closestEvents(ZG.a, ya0, xa0, ni);
+    [mask, max_rad] = closestEvents(ZG.a, ya0, xa0, [], ni);
     ZG.newt2 = ZG.a.subset(mask);
     messtext = ['Radius of selected Circle:' num2str(maxrad)  ' km' ];
     disp(messtext)

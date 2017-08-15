@@ -62,4 +62,5 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     std_backg=fix(100*std_backg)/100;
     tt2=num2str(std_backg);
     tt1=num2str(p);
+end
 

@@ -300,8 +300,8 @@ if sel == 'ca'
     %
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
-    teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    teb = max(ZG.a.Date) ;
+    tdiff = round((teb-t0b)/ZG.bin_days);
 
     % Container
     mRcGrid =[];
@@ -319,7 +319,7 @@ if sel == 'ca'
         allcount = allcount + 1.;
 
         % calculate distance from center point and sort with distance
-        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
+        l=ZG.a.epicentralDistanceTo(x,y);
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 

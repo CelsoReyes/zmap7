@@ -1,4 +1,4 @@
-function clustNum0 = markclus(clus, clustNum0, sl, te, tiplo2)
+function clustNum0 = markclus(clus, clustNum0, sl, te)
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     %
@@ -29,7 +29,7 @@ function clustNum0 = markclus(clus, clustNum0, sl, te, tiplo2)
     nu = (1:ZG.newt2.Count) ;
     nu = nu';
     if length(nu) > 2
-        set(tiplo2,'Xdata',ZG.newt2.Date,'Ydata',nu);
+        set(findobj(0,'Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
         %figure(cum);
     end
     

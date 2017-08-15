@@ -79,7 +79,7 @@ function cluoverl(var1)
         %
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
-        teb = ZG.a.Date(n) ;
+        teb = max(ZG.a.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_days);
 
 
@@ -157,7 +157,7 @@ function cluoverl(var1)
         %
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
-        teb = ZG.a.Date(n) ;
+        teb = max(ZG.a.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_days);
         %define fore and aftershocks
         %

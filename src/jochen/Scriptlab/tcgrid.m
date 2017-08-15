@@ -53,17 +53,6 @@ if sel == 'in'
         'Visible','off', ...
         'Position',[ ZG.wex+200 ZG.wey-200 650 250]);
     axis off
-%     labelList2=[' Automatic Mcomp (max curvature) | Fixed Mc (Mc = Mmin) | Automatic Mcomp (90% probability) | Automatic Mcomp (95% probability) | Best (?) combination (Mc95 - Mc90 - max curvature) | Constant Mc'];
-%     labelPos = [0.2 0.8  0.6  0.08];
-%     hndl2=uicontrol(...
-%         'Style','popup',...
-%         'Position',labelPos,...
-%         'Units','normalized',...
-%         'String',labelList2,...
-%         'Callback','inb2=hndl2.Value; ');
-%
-%     set(hndl2,'value',5);
-
 
     % creates a dialog box to input grid parameters
     %
@@ -276,8 +265,8 @@ if sel == 'ca'
     %
     t0b = min(ZG.a.Date)  ;
     n = ZG.a.Count;
-    teb = ZG.a.Date(n) ;
-    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    teb = max(ZG.a.Date) ;
+    tdiff = round((teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points
@@ -299,7 +288,7 @@ if sel == 'ca'
 
 
         % calculate distance from center point and sort with distance
-        l = sqrt(((ZG.a.Longitude-x)*cosd(y)*111).^2 + ((ZG.a.Latitude-y)*111).^2) ;
+        l=ZG.a.epicentralDistanceTo(x,y);
         [s,is] = sort(l);
         mCat = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         % Use Radius to determine grid node catalogs

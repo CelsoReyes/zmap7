@@ -91,7 +91,7 @@ inda = 1;
 ra = 5;
 
 co = 'w';
-ZG.bin_days = 14; % bin length, days
+ZG.bin_days = days(14); % bin length, days
 ZG.big_eq_minmag = 8; % minimum cutoff for "large" earthquakes
 
 %set the recursion slightly, to avoid error (specialy with ploop functions)

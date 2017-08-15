@@ -37,7 +37,7 @@ stri1 = [ 'Circle: ' num2str(xa0,5) '; ' num2str(ya0,4)];
 stri = stri1;
 pause(0.1)
 %  calculate distance for each earthquake from center point
-[mask, max_km] = closestEvents(ZG.a, ya0, xa0, ni);
+[mask, max_km] = closestEvents(ZG.a, ya0, xa0, [], ni);
 ZG.newt2 = zG.a.subset(mask); % keep only closest events
 messtext = ['Radius of selected Circle:' num2str(max_km)  ' km' ];
 disp(messtext)

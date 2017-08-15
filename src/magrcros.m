@@ -201,8 +201,8 @@ if sel == 'ca'
     %
     t0b = min(newa.Date)  ;
     n = newa.Count;
-    teb = newa.Date(n) ;
-    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    teb = max(newa.Date) ;
+    tdiff = round((teb-t0b)/ZG.bin_days);
     cumu = zeros(length(t0b:days(ZG.bin_days):teb)+2);
     ncu = length(cumu);
     cumuall = zeros(ncu,length(newgri(:,1)))*nan;

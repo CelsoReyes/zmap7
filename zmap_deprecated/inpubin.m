@@ -1,27 +1,26 @@
-function inpubin(str)
-    %inpubin.m                              A.Allmann
+function inpubin(str, histo)
     %inputparameters for histogram plot
     %allows you to load a vector or are certain number of bins
     %str is variable from which the call comes
     %
-    %
+    %inpubin.m                              A.Allmann
     
     %FIXME: figure title, axes values style all change but probably should not
-    global mess histo freq_field hisvar strii1 strii2
-   global  sys clu te1
+    global freq_field hisvar strii1 strii2
+    global  sys clu te1
     figure_w_normalized_uicontrolunits(...
         'NumberTitle','off','Name','Histogram Input Parameters',...
         'visible','off',...
         'Units','Pixel',  'Position',[300 300 350 200'])
     set(gca,'visible','off');
-
+    
     %creates a dialog box to input parameter for histogram
     %
-
+    
     if str==1
         para1=10;
         text(0,0.65,'Number of bins:');
-
+        
         freq_field=uicontrol('Style','edit',...
             'Position',[.70 .6 .17 .10],...
             'Units','normalized','String',num2str(para1),...
@@ -34,25 +33,25 @@ function inpubin(str)
             'Units','normalized','String',num2str(para1),...
             'Callback','para1=freq_field.String;freq_field.String=num2str(para1);para1=eval(para1);');
     end
-
+    
     close_button=uicontrol('Style','Pushbutton',...
         'Units','normalized','Callback','close;done','String','Cancel');
-
+    
     set(gcf,'Visible','on')
-
+    
     if str==1
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.25 .05 .15 .15 ],...
             'Units','normalized',...
-            'Callback','para1=freq_field.String;para1=eval(para1);close,figure_w_normalized_uicontrolunits(histo);cla,delete(gca);histogram(hisvar,para1);xlabel(strii2);ylabel(''Number'');title([strii2,strii1]);',...
+            'Callback','para1=freq_field.String;para1=eval(para1);close,figure(histo);cla,delete(gca);histogram(hisvar,para1);xlabel(strii2);ylabel(''Number'');title([strii2,strii1]);',...
             'String','Go');
-
+        
     elseif str==2
-
+        
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.25 .05 .15 .15 ],...
             'Units','normalized',...
-            'Callback','close,figure_w_normalized_uicontrolunits(histo);cla; delete(gca);back=hisvar;hisvar=hisvar(find(hisvar>=para1(1)&hisvar<=para1(length(para1))));histogram(hisvar,para1);hisvar=back;xlabel(strii2);ylabel(''Number'');title([strii2,strii1]);',...
+            'Callback','close,figure(histo);cla; delete(gca);back=hisvar;hisvar=hisvar(find(hisvar>=para1(1)&hisvar<=para1(length(para1))));histogram(hisvar,para1);hisvar=back;xlabel(strii2);ylabel(''Number'');title([strii2,strii1]);',...
             'String','GO');
     end
     cancel_button=uicontrol('Style','Pushbutton',...
@@ -60,4 +59,4 @@ function inpubin(str)
         'units','normalized',...
         'String','Cancel',...
         'Callback','close,figure_w_normalized_uicontrolunits(histo);');
-
+    

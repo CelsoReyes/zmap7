@@ -10,9 +10,9 @@ end
 function setup_slideshow()
     hodi = ZmapGlobal.Data.hodi;
     file_extensions = {'jpg','png','bmp','gif'};
-    slides = dir(fullfile(hodi, 'slides', ['*.', file_extensions{1}]));
-    for n=2:numel(file_extensions)
-        slides = [slides; dir(fullfile(hodi, 'slides', ['*.', file_extensions{n}]))];  %#ok<AGROW>
+    slides = dir('this will be an empty anwser');
+    for n=1:numel(file_extensions)
+        slides = [slides; dir(fullfile(hodi, 'resources','slides', ['*.', file_extensions{n}]))];  %#ok<AGROW>
     end
     
     fn = fullfile(slides(1).folder,{slides.name});

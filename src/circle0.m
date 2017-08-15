@@ -67,7 +67,7 @@ elseif ic == 3
     figure_w_normalized_uicontrolunits(map)
     axes(h1)
     %  calculate distance for each earthquake from center poin
-    [mask, max_km] = closestEvents(ZG.a, ya0, xa0, ni);
+    [mask, max_km] = closestEvents(ZG.a, ya0, xa0, [], ni);
     messtext = ['Radius of selected Circle: ' num2str(max_km)  ' km' ];
     disp(messtext)
 

@@ -21,7 +21,7 @@ function mycat = catalog_overview(mycat)
     tdiff = (teb - t0b);
     
     if ~exist('ZG.bin_days', 'var')   %select bin length respective to time in catalog
-        ZG.bin_days = 30;
+        ZG.bin_days = days(30);
     end
     
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;

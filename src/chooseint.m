@@ -215,43 +215,37 @@ end
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'topo';
-   myslicer;
+   myslicer('topo');
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'topos';
-   myslicer;
+   myslicer('topos');
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'topos2';
-   myslicer;
+   myslicer('topos2');
 end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'equal';
-   myslicer;
+   myslicer('equal');
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'setr';
-   myslicer;
+   myslicer('setr');
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ac2 = 'setc';
-   myslicer;
+   myslicer('setc');
 end
  
 function callbackfun_007(mysrc,myevt)

@@ -15,13 +15,8 @@ report_this_filefun(mfilename('fullpath'));
 %  return
 %end
 
-newcat = a;
-global ptime lapf
+ZG.newcat = ZG.a;
 
-%if ~exist('/home/lu/stress/bin/fmsietab_matlab')
-%errordlg('Please contact stefan@giseis.alaska.edu for executable code for misfit calculation !');
-%return
-%end
 
 if size(a(1,:)) < 12
     errordlg('You need 12 columns of Input Data to calculate misfit!');

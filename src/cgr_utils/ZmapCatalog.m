@@ -66,7 +66,7 @@ classdef ZmapCatalog < handle
                 if nargin==2 && ischar(varargin{2})
                     obj.Name = varargin{2};
                 end
-       
+                
             elseif (nargin==0)
                 obj = ZmapCatalog;
             elseif isa(varargin{1},'ZmapCatalog')
@@ -153,9 +153,9 @@ classdef ZmapCatalog < handle
                     s = sprintf(fmtstr, obj.Name, obj.Count, ...
                         char(minti,'uuuu-MM-dd HH:mm:ss'),...
                         char(maxti,'uuuu-MM-dd HH:mm:ss'),...
-                        sprintf('mean interval: %s ±std %s , median int: %s',mean_int, std_int, median_int),... 
+                        sprintf('mean interval: %s ±std %s , median int: %s',mean_int, std_int, median_int),...
                         mindep, maxdep,...
-                        sprintf('mean: %.3f ±std %.3f , median: %.3f',mean(obj.Depth), std(obj.Depth), median(obj.Depth)),... 
+                        sprintf('mean: %.3f ±std %.3f , median: %.3f',mean(obj.Depth), std(obj.Depth), median(obj.Depth)),...
                         minma, maxma,...
                         sprintf('mean: %.2f ±std %.2f , median: %.2f',mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)));
                     
@@ -186,7 +186,7 @@ classdef ZmapCatalog < handle
         
         function cropToFilter(obj)
             % applies the filter to this ZmapCatalog
-            % 
+            %
             % see also addFilter, clearFilter
             
             if isempty(obj.Filter)
@@ -219,7 +219,7 @@ classdef ZmapCatalog < handle
             obj.Depth = existobj.Depth(existobj.Filter);
             obj.Magnitude = existobj.Magnitude(existobj.Filter);
             obj.MagnitudeType = existobj.MagnitudeType(existobj.Filter);
-            obj.Filter = existobj.Filter(existobj.Filter); 
+            obj.Filter = existobj.Filter(existobj.Filter);
         end
         
         function addFilter(obj, field, operation, value, varargin)
@@ -228,14 +228,14 @@ classdef ZmapCatalog < handle
             % addFilter(mask) AND's the mask with the existing filter
             %     where mask is a logical array of same length as ZmapCatalog.Count
             %
-            % 
+            %
             % addFilter(field, operation, value) compares the data from the field to the value using
             %     the specified operation.
             %     FIELD is a string containing the name of a valid ZmapCatalog field
             %     OPERATION is either a function handle or one of the following:
             %          '<','>','<=','≤','≥','>=','==','~='
             %     VALUE is what the field will be compared against.
-            % 
+            %
             % Example 1
             %     obj.addFilter('Depth','>=',3) % sets Filter to true wherever depth >= 3
             %     obj.addFilter('Depth','<', 23) % now Filter is true only where depth >=3 AND depth < 23
@@ -243,15 +243,15 @@ classdef ZmapCatalog < handle
             % Example 2
             %     odd_dates = @(x,~) mod(datenum(x),2) == 1;
             %     obj.addFilter('Date',@odd_dates,[]); %true where datenum is odd
-            %        
+            %
             %
             % see also clearFilter
-            % 
+            %
             if ~exist('operation','var') && islogical(field) && all(size(field)==size(obj.Longitude))
                 obj.Filter = field;
                 return
             end
-                
+            
             if ischar(operation)
                 switch operation
                     case '<'
@@ -291,7 +291,7 @@ classdef ZmapCatalog < handle
         function sort(obj, field, direction)
             % sort this object by the field specified
             % obj.sort(field), where field is a valid ZmapCatalog property
-            % 
+            %
             % obj.sort(field, direction), where direction is 'ascend' or 'descend'
             % ex.
             % obj.sort('Date')
@@ -315,7 +315,7 @@ classdef ZmapCatalog < handle
             end
             obj.Filter = obj.Filter(idx) ;
         end
-         
+        
         function obj = subset(existobj, range)
             % subset get a subset of this object
             % newobj = obj.subset(mask) where mask is a t/f array matching obj.Count
@@ -323,7 +323,7 @@ classdef ZmapCatalog < handle
             % newobj = obj.subset(range), where range evaluates to an integer array
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
-        
+            
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime
             obj.Longitude = existobj.Longitude(range) ;
@@ -332,7 +332,7 @@ classdef ZmapCatalog < handle
             obj.Magnitude = existobj.Magnitude(range) ;
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
             obj.Filter = existobj.Filter(range) ;
-        end   
+        end
         
         function obj = cat(objA, objB)
             % cat combines two catalogs
@@ -350,7 +350,7 @@ classdef ZmapCatalog < handle
         function obj = removeDuplicates(obj, tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
             % removeDuplicates removes events from catalog that are similar within tolerances
             % catalog = catalog.removeDuplicates(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
-
+            
             obj.sort('Date');
             orig_size = obj.Count;
             if ~exist('tolLat','var') || isempty(tolLat), tolLat = 0.0001; end
@@ -375,12 +375,19 @@ classdef ZmapCatalog < handle
         function disp(obj)
             disp(obj.summary('stats'));
         end
-            
+        
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             delta_lat = (obj.Latitude-to_lat) * 111;
             delta_lon = (obj.Longitude - to_lat)*cosd(to_lon)*111;
             dists_km = sqrt( delta_lon.^2 + delta_lat.^2 );
+        end
+        function dists_km = hypoentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
+            % get epicentral (lat-lon) distance to another point
+            delta_lat = (obj.Latitude-to_lat) * 111;
+            delta_lon = (obj.Longitude - to_lat)*cosd(to_lon)*111;
+            delta_dep = (obj.Depth - to_depth_km);
+            dists_km = sqrt( delta_lon.^2 + delta_lat.^2 + delta_dep.^2);
         end
     end
     

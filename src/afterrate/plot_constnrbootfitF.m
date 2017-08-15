@@ -35,7 +35,7 @@ pause(0.1)
 
 %  Calculate distance for each earthquake from center point
 %  and sort by distance l
-l = sqrt(((ZG.a.Longitude-xa0)*cosd(ya0)*111).^2 + ((ZG.a.Latitude-ya0)*111).^2) ;
+l = ZG.a.epicentralDistanceTo(ya0,xa0);
 [s,is] = sort(l);
 ZG.newt2 = a(is(:,1),:) ;
 

@@ -25,4 +25,4 @@ function [mean_m1, b1, sig1, av2] =  bmemag(b)
     %disp ([' standard dev b_val_1 = ' num2str(sig1) ]);
     av2 = log10(ZG.newcat.Count) + b1*min(ZG.newcat.Magnitude);
 
-
+end

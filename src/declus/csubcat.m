@@ -1,3 +1,4 @@
+function csubcat()
 %  This is the .m file "csubcat.m". It plots the eqs of the original catalog
 %  related with the loaded cluster. Most routines work similar like in the
 %  name map window
@@ -118,17 +119,17 @@ if newMapWindowFlag
          'Callback','ginput(1)');
 
     %calculate several histogramms
-    stt1='Magnitude ';stt2='Depth ';stt3='Duration ';st4='Foreshock Duration ';
-    st5='Foreshock Percent ';
+    stt1='Magnitude ';stt2='Depth';stt3='Duration';st4='Foreshock Duration';
+    st5='Foreshock Percent';
 
     op5 = uimenu(op3,'Label','Histograms');
 
     uimenu(op5,'Label','Magnitude',...
-        'Callback','global histo;hisgra(ZG.a.Magnitude,stt1);');
+        'Callback',{@callbackfun_histogram,'Magnitude'});
     uimenu(op5,'Label','Depth',...
-        'Callback','global histo;hisgra(ZG.a.Depth,stt2);');
+        'Callback',{@callbackfun_histogram,'Depth'});
     uimenu(op5,'Label','Time',...
-        'Callback','global histo;hisgra(ZG.a.Date,''Time '');');
+        'Callback',{@callbackfun_histogram,'Date'});
 end
 %end;    if figure exist
 
@@ -160,7 +161,7 @@ axes('position',rect)
 
 t0b = min(ZG.a.Date);
 n = ZG.a.Count;
-teb = ZG.a.Date(n) ;
+teb = max(ZG.a.Date) ;
 tdiff =round(teb - t0b)/days(ZG.bin_days);
 
 
@@ -232,3 +233,9 @@ axes(h1);
 watchoff(mapp)
 set(mapp,'Visible','on');
 done
+function callbackfun_histogram(mysrc,myevt,hist_type)
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    hisgra(ZG.a, hist_type);
+end
+end

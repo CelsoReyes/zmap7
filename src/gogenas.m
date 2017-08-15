@@ -15,8 +15,8 @@ clear ZBEL
 clear ZABO
 %    maxmg = floor(max(ZG.newcat.Magnitude));
 xsum = ZG.newcat.Count;
-t0b = ZG.newcat.Date(1)
-teb = ZG.newcat.Date(xsum)
+t0b = min(ZG.newcat.Date)
+teb = max(ZG.newcat.Date)
 incx = days(ZG.bin_days);
 xt = t0b:incx:teb;
 bin0 = 1;

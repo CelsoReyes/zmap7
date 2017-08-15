@@ -6,7 +6,7 @@
 %
 %   Stefan Wiemer 1/95
 
-global inb2 eq0p
+global eq0p
 
 % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
 % D = [x,y,z ]
@@ -221,8 +221,8 @@ if sel == 'ca'
     %
     t0b = min(newa.Date)  ;
     n = newa.Count;
-    teb = newa.Date(n) ;
-    tdiff = round(days(teb-t0b)/ZG.bin_days);
+    teb = max(newa.Date) ;
+    tdiff = round((teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points

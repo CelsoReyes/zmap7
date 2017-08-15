@@ -305,7 +305,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Save current catalog (.mat)','Callback','eval(catSave);');
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
-                'Callback',@(~,~)msgbox(ZG.a.summary('stats'),'Catalog Details'));
+                'Callback',@(~,~)msgbox(ZmapGlobal.Data.a.summary('stats'),'Catalog Details'));
             
             catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
                 'Separator','on');
@@ -407,8 +407,8 @@ classdef MainInteractiveMap
             %RZ
             uimenu(submenu,'Label','Load a b-value grid (cross-section-view)','Callback',@(~,~)bcross('lo'))
             uimenu(submenu,'Label','Load a 3D b-value grid',...
-                'Callback','sel= ''no'';ac2 = ''load''; myslicer(sel)')
-            uimenu(submenu,'Label','Load a b-value depth ratio grid','Callback',@(~,~)bdepth_ratio('lo')')
+                'Callback',@(~,~)myslicer('load')); %also had "sel='no'"
+            uimenu(submenu,'Label','Load a b-value depth ratio grid','Callback',@(~,~)bdepth_ratio('lo'))
         end
         
         function create_map_p_menu(obj,parent)
@@ -433,8 +433,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Depth','Callback',@(~,~)histo_callback('Depth'));
             uimenu(submenu,'Label','Time','Callback',@(~,~)histo_callback('Date'));
             uimenu(submenu,'Label','Hr of the day','Callback',@(~,~)histo_callback('Hour'));
-            % uimenu(submenu,'Label','Stress tensor quality',...
-            %    'Callback','global histo;hisgra(a(:,13),''Quality '', ZG.a.Name);');
+            % uimenu(submenu,'Label','Stress tensor quality','Callback',@(~,~)histo_callback('Quality '));
         end
         
         
@@ -561,9 +560,13 @@ classdef MainInteractiveMap
             
             assert(numel(divs) < 8); % else, too many for our colormap.
             
-            cmapcolors = colormap('lines');
-            cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
-            
+            cmapcolors = [ 0    0.4470    0.7410;
+                0.8500    0.3250    0.0980;
+                0.9290    0.6940    0.1250;
+                0.4940    0.1840    0.5560;
+                0.4660    0.6740    0.1880;
+                0.3010    0.7450    0.9330;
+                0.6350    0.0780    0.1840]; % from the lines colormap
             
             mask = mycat.Depth <= divs(1);
             
@@ -1009,16 +1012,16 @@ end
 function change_symbol(~, clrs, symbs)
     global ZG
     ax = findobj(0,'Tag','mainmap_ax');
-    lines = findMapaxParts(ax);
+    hlines = findMapaxParts(ax);
     %line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
-    for n=1:numel(lines)
+    for n=1:numel(hlines)
         if ~isempty(clrs)
-            set(lines(n),'MarkerSize',ZG.ms6,...
+            set(hlines(n),'MarkerSize',ZG.ms6,...
                 'Marker',symbs(n),...
                 'Color',clrs(n,:),...
                 'Visible','on');
         else
-            set(lines(n),'MarkerSize',ZG.ms6,...
+            set(hlines(n),'MarkerSize',ZG.ms6,...
                 'Marker',symbs(n),...
                 'Visible', 'on');
         end
@@ -1026,13 +1029,13 @@ function change_symbol(~, clrs, symbs)
 end
 
 function change_color(c)
-    lines = findMapaxParts();
+    hlines = findMapaxParts();
     n =listdlg('PromptString','Change color for which item?',...
         'SelectionMode','multiple',...
-        'ListString',{lines.DisplayName});
+        'ListString',{hlines.DisplayName});
     if ~isempty(n)
-        c = uisetcolor(lines(n(1)));
-        set(lines(n),'Color',c,'Visible','on');
+        c = uisetcolor(hlines(n(1)));
+        set(hlines(n),'Color',c,'Visible','on');
     end
 end
 
@@ -1175,11 +1178,7 @@ function set_3d_view(src,~)
 end
 
 
-function histo_callback(opt)
-    switch opt
-        case {'Magnitude','Depth','Date'}
-            hisgra(ZG.a.(opt), opt, ZG.a.Name);
-        case 'Hour'
-            hisgra(ZG.a.Date.Hour,'Hr',ZG.a.Name);
-    end
+function histo_callback(hist_type)
+    ZG=ZmapGlobal.Data;
+    hisgra(ZG.a, hist_type);
 end

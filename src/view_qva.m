@@ -256,8 +256,7 @@ function view_qva(lab1,re3)
         h1 = gca;
         circle;
         watchoff(qmap);
-        global histo;
-        hisgra(ZG.newt2.Date.Hour,'Hr ',ZG.newt2.Name);
+        hisgra(ZG.newt2.Date.Hour,'Hour',ZG.newt2.Name);
     end
     
     function callbackfun_004(mysrc,myevt)
@@ -267,8 +266,7 @@ function view_qva(lab1,re3)
         h1 = gca;
         cufi = gcf;
         selectp;
-        global histo;
-        hisgra(ZG.newt2.Date.Hour,'Hr ',ZG.newt2.Name);
+        hisgra(ZG.newt2,'Hour');
     end
     
     function callbackfun_005(mysrc,myevt)
