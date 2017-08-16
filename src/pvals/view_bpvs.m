@@ -76,9 +76,8 @@ if newbpmapcsWindowFlag
         'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
     % make menu bar
     
+    create_menu();
     lab1 = 'b-value';
-
-    add_symbol_menu('eqc_plot');
 
 
     uicontrol('Units','normal',...
@@ -100,67 +99,6 @@ if newbpmapcsWindowFlag
     uicontrol('Units','normal',...
         'Position',[.0 .02 .08 .06],'String','zoom ',...
          'callback',@callbackfun_004)
-
-
-    options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_005)
-    uimenu(options,'Label','Select EQ in Circle (const N)',...
-         'callback',@callbackfun_006)
-    uimenu(options,'Label','Select EQ in Circle (const R)',...
-         'callback',@callbackfun_007)
-    uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'callback',@callbackfun_008)
-    uimenu(options,'Label','Select Eqs in Polygon - new',...
-         'callback',@callbackfun_009);
-    uimenu(options,'Label','Select Eqs in Polygon - hold',...
-         'callback',@callbackfun_010);
-
-    op1 = uimenu('Label',' Maps ');
-
-    %Meniu for adjusting several parameters.
-    adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
-        uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'callback',@callbackfun_011)
-    uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'callback',@callbackfun_012)
-    uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'callback',@callbackfun_013)
-    uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'callback',@callbackfun_014)
-
-    uimenu(op1,'Label','b-value map (WLS)',...
-         'callback',@callbackfun_015)
-    uimenu(op1,'Label','b(max likelihood) map',...
-         'callback',@callbackfun_016)
-    uimenu(op1,'Label','mag of completness map',...
-         'callback',@callbackfun_017)
-    uimenu(op1,'Label','max magnitude map',...
-         'callback',@callbackfun_018)
-    uimenu(op1,'Label','magnitude range map (Mmax - Mcomp)',...
-         'callback',@callbackfun_019)
-
-    uimenu(op1,'Label','p-value',...
-         'callback',@callbackfun_020)
-    uimenu(op1,'Label','p-value standard deviation',...
-         'callback',@callbackfun_021)
-
-
-    uimenu(op1,'Label','Goodness of fit to power law map',...
-         'callback',@callbackfun_022)
-
-    uimenu(op1,'Label','a-value map',...
-         'callback',@callbackfun_023)
-    uimenu(op1,'Label','standard error map',...
-         'callback',@callbackfun_024)
-    uimenu(op1,'Label','(WLS-Max like) map',...
-         'callback',@callbackfun_025)
-
-
-    uimenu(op1,'Label','resolution Map',...
-         'callback',@callbackfun_026)
-    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_027)
-
-    add_display_menu(3)
 
     uicontrol('Units','normal',...
         'Position',[.92 .80 .08 .05],'String','set ni',...
@@ -317,6 +255,76 @@ figure_w_normalized_uicontrolunits(bpmapcs);
 %axes(h1);
 watchoff(bpmapcs);
 done
+
+%% ui functions
+function create_my_menu()
+	add_menu_divider();
+
+    add_symbol_menu('eqc_plot');
+
+    options = uimenu('Label',' Select ');
+    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_005)
+    uimenu(options,'Label','Select EQ in Circle (const N)',...
+         'callback',@callbackfun_006)
+    uimenu(options,'Label','Select EQ in Circle (const R)',...
+         'callback',@callbackfun_007)
+    uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
+         'callback',@callbackfun_008)
+    uimenu(options,'Label','Select Eqs in Polygon - new',...
+         'callback',@callbackfun_009);
+    uimenu(options,'Label','Select Eqs in Polygon - hold',...
+         'callback',@callbackfun_010);
+
+    op1 = uimenu('Label',' Maps ');
+
+    %Meniu for adjusting several parameters.
+    adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
+        uimenu(adjmenu,'Label','Adjust Mmin cut',...
+         'callback',@callbackfun_011)
+    uimenu(adjmenu,'Label','Adjust Rmax cut',...
+         'callback',@callbackfun_012)
+    uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
+         'callback',@callbackfun_013)
+    uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
+         'callback',@callbackfun_014)
+
+    uimenu(op1,'Label','b-value map (WLS)',...
+         'callback',@callbackfun_015)
+    uimenu(op1,'Label','b(max likelihood) map',...
+         'callback',@callbackfun_016)
+    uimenu(op1,'Label','mag of completness map',...
+         'callback',@callbackfun_017)
+    uimenu(op1,'Label','max magnitude map',...
+         'callback',@callbackfun_018)
+    uimenu(op1,'Label','magnitude range map (Mmax - Mcomp)',...
+         'callback',@callbackfun_019)
+
+    uimenu(op1,'Label','p-value',...
+         'callback',@callbackfun_020)
+    uimenu(op1,'Label','p-value standard deviation',...
+         'callback',@callbackfun_021)
+
+
+    uimenu(op1,'Label','Goodness of fit to power law map',...
+         'callback',@callbackfun_022)
+
+    uimenu(op1,'Label','a-value map',...
+         'callback',@callbackfun_023)
+    uimenu(op1,'Label','standard error map',...
+         'callback',@callbackfun_024)
+    uimenu(op1,'Label','(WLS-Max like) map',...
+         'callback',@callbackfun_025)
+
+
+    uimenu(op1,'Label','resolution Map',...
+         'callback',@callbackfun_026)
+    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_027)
+
+    add_display_menu(3)
+
+end
+
+%% callback functions
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
@@ -536,7 +544,6 @@ end
 function callbackfun_029(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_029');
-   ;
 end
  
 end

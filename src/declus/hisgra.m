@@ -33,7 +33,7 @@ function hisgra(mycat, opt)
             'NumberTitle','off','Name',stri1,...
             'NextPlot','new', ...
             'Visible','off');
-        
+        create_my_menu();
     end
     
     axis('off')
