@@ -275,7 +275,7 @@ classdef MainInteractiveMap
             submenu = uimenu('Label','Catalog','Tag','mainmap_menu_catalog');
             
             uimenu(submenu,'Label','Crop catalog to window',...
-                'Callback','ZG.a.setFilterToAxesLimits(findobj(0, ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
+                'Callback','ZG.a.setFilterToAxesLimits(findobj( ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
             
             uimenu(submenu,'Label','Edit Ranges...',...
                 'Callback','global ZG; replaceMainCatalog(catalog_overview(ZG.a));update(mainmap())');
@@ -447,7 +447,7 @@ classdef MainInteractiveMap
     end
     methods(Static)
         function h = borderHandle()
-            h = findobj(0, 'Tag');
+            h = findobj( 'Tag');
         end
         
         
@@ -885,10 +885,10 @@ classdef MainInteractiveMap
 end
 
 function h = figureHandle()
-    h = findobj(0, 'Tag','seismicity_map');
+    h = findobj( 'Tag','seismicity_map');
 end
 function h = mainAxes()
-    h = findobj(0, 'Tag','mainmap_ax');
+    h = findobj( 'Tag','mainmap_ax');
 end
 
 function xy_list = replace_xy_if_exists(xy_list, new_xy_list)
@@ -911,8 +911,8 @@ function xy_list = replace_xy_if_exists(xy_list, new_xy_list)
 end
 function clear_quake_plotinfo()
     delete(findMapaxParts());
-    delete(findobj(0,'Tag','mainmap_supplimentary_maglegend'));
-    delete(findobj(0,'Tag','mainmap_supplimentary_deplegend'));
+    delete(findobj('Tag','mainmap_supplimentary_maglegend'));
+    delete(findobj('Tag','mainmap_supplimentary_deplegend'));
 end
 
 function h=plot_helper(xy, defaults, reset)
@@ -1005,13 +1005,13 @@ end
 function change_markersize(val)
     global ZG
     ZG.ms6 = val;
-    ax = findobj(0,'Tag','mainmap_ax');
+    ax = findobj('Tag','mainmap_ax');
     set(findobj(ax,'Type','Line'),'MarkerSize',val);
 end
 
 function change_symbol(~, clrs, symbs)
     global ZG
-    ax = findobj(0,'Tag','mainmap_ax');
+    ax = findobj('Tag','mainmap_ax');
     hlines = findMapaxParts(ax);
     %line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
     for n=1:numel(hlines)
@@ -1063,7 +1063,7 @@ function align_supplimentary_legends(ax)
     end
     tags = {'mainmap_supplimentary_deplegend','mainmap_supplimentary_maglegend'};
     for i=1:numel(tags)
-        c=findobj(0,'Tag',tags{i});
+        c=findobj('Tag',tags{i});
         if ~isempty(c)
             c.Position([1]) = le.Position([1]); % scoot it over to match the legend
         end
@@ -1140,14 +1140,14 @@ function change_legend_breakpoints(~, ~)
 end
 
 function change_map_fonts(~,~)
-    ax = findobj(0,'Tag','mainmap_ax');
+    ax = findobj('Tag','mainmap_ax');
     f = uisetfont(ax,'Change Font Size');
     fontsz = ZmapGlobal.Data.fontsz;
     fontsz.base_size = f.FontSize;
     % TODO note, this does not change the font (maybe later)
     set(ax,'FontSize',f.FontSize);
     set(ax.Legend,'FontSize', f.FontSize);
-    axmag=findobj(0,'Tag','mainmap_supplimentary_maglegend');
+    axmag=findobj('Tag','mainmap_supplimentary_maglegend');
     set(axmag,'FontSize',f.FontSize);
 end
 

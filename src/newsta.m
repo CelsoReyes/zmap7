@@ -112,17 +112,16 @@ end
 %
 %  Plot the as(t)
 %
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('Cumulative Number Statistic',1);
-newCumWindowFlag=~existFlag;
+cum=findobj('Type','Figure','-and','Name','Cumulative Number Statistic');
+
 
 % Set up the Cumulative Number window
 
-
-figure_w_normalized_uicontrolunits(cum)
-delete(gca)
-delete(gca)
+assert(~isempty(cum))
+figure(cum);
+delete(findobj(cum,'Type','axes'));
 tet1 = '';
 try delete(sinewsta); catch ME; error_handler(ME, ' '); end
 try delete(te2); catch ME; error_handler(ME, ' '); end
@@ -188,7 +187,6 @@ tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(i),'uuuu-MM-dd hh:mm:ss'));
 
 vx = xlim;
 vy = ylim;
-%v = axis;
 xlim([vx(1), dateshift(teb,'end','Year') ]);
 ylim([vy(1),  vy(2)+0.05*vy(2)]);
 te2 = text(vx(1)+0.5, vy(2)*0.9,tet1);
@@ -203,8 +201,6 @@ hold on;
 % plot big events on curve
 %
 if ~isempty(big)
-    %if ceil(big(:,3) -t0b) > 0
-    %f = cumu2(ceil((big(:,3) -t0b)/days(ZG.bin_days)));
     l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
     f = find( l  == 1);
     bigplo = plot(big.Date,f,'hm');
@@ -215,17 +211,6 @@ if ~isempty(big)
         s = sprintf('  M=%3.1f',big.Magnitude(i));
         stri4 = [stri4 ; s];
     end   % for i
-
-    %te1 = text(big(:,3),f,stri4);
-    %set(te1,'FontWeight','normal','Color','k','FontSize',8)
-    %end
-
-    %option to plot the location of big events in the map
-    %
-    % figure_w_normalized_uicontrolunits(map)
-    % plog = plot(big(:,1),big(:,2),'or','EraseMode','xor');
-    %set(plog,'MarkerSize',ms10,'LineWidth',2.0)
-    %figure_w_normalized_uicontrolunits(cum)
 end %if big
 
 
@@ -250,7 +235,7 @@ end %% if stri
 strib = [name];
 
 set(cum,'Visible','on');
-figure_w_normalized_uicontrolunits(cum);
+figure(cum);
 watchoff
 watchoff(cum)
 done

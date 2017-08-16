@@ -59,7 +59,7 @@ for it = 1:step:len-iwl;
     cin_lta
     axes(has)
     m(:,j) = getframe(has);
-    figure_w_normalized_uicontrolunits(wai)
+    figure(wai);
     waitbar(it/len)
 end   % for i
 

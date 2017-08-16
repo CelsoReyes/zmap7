@@ -9,7 +9,7 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 
 report_this_filefun(mfilename('fullpath'));
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf ;
 set(mess,'Name','Messages');
 set(gca,'visible','off');

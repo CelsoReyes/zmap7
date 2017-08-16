@@ -35,16 +35,16 @@ if isempty(fipo)
 end
 report_this_filefun(mfilename('fullpath'));
 %
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('Seismicity Map (Lambert)',1);
-newMapLaWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Seismicity Map (Lambert)');
+
  
 global h2 xsec_fig newa lat1 leng lon1 lon2 lat2 wi
 rotationangle = 0;
 % Set up the Seismicity Map window Enviroment
 %
-if newMapLaWindowFlag
+if isempty(figNumber)
     mapl = figure_w_normalized_uicontrolunits( ...
         'Name','Seismicity Map (Lambert)',...
         'NumberTitle','off', ...
@@ -67,7 +67,7 @@ if newMapLaWindowFlag
  
 end % if figure exist
  
-figure_w_normalized_uicontrolunits(mapl)
+figure(mapl);
 if ~hoc ||  newMapLaWindowFlag == 1
     delete(gca)
     delete(gca)

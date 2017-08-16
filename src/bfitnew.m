@@ -8,7 +8,7 @@ function bfitnew(mycat)
     global ttcat xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
     
-    [existFlag,figNumber]=figure_exists('frequency-magnitude distribution - 2',1);
+    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution - 2');
     bfigWin=~existFlag;
     if bfigWin
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
@@ -25,7 +25,7 @@ function bfitnew(mycat)
         
     end
     
-    figure_w_normalized_uicontrolunits(bfig);
+    figure(bfig);
     delete gca; delete(gca);delete(gca); hold on; axis off
     uicontrol('Style','Pushbutton',...
         'callback',@callbackfun_001,...
@@ -89,7 +89,7 @@ function bfitnew(mycat)
     
     zmap_message_center.set_message('b-value fit',str)
     
-    figure_w_normalized_uicontrolunits(bfig)
+    figure(bfig);
     seti = uicontrol('Units','normal',...
         'Position',[.4 .01 .2 .05],'String','Select Mag1 ');
     

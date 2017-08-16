@@ -107,7 +107,7 @@ if length(masi) > length(masi2), masi2(length(masi)) = 0; end
 
 % plot Magnitude Signature
 %
-figure_w_normalized_uicontrolunits(bvfig)
+figure(bvfig);
 rect = [0.20, 0.07, 0.35, 0.25];
 axes('position',rect)
 min1 = min([masi masi2 ]);

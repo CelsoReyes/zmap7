@@ -18,7 +18,7 @@ ylabel('Slope', 'fontsize', 12);
 ri = find(r2 >= rad & r2 < ras);
 r5 = r2(ri(1:end-1));
 deriv5 = deriv(ri(1:end-1));
-figure_w_normalized_uicontrolunits(HfigS);
+figure(HfigS);
 hold on;
 semilogx(r5,deriv5(:,1), 'linewidth',3, 'color','r');
 axis([0.0005 10000 0 5]);
@@ -66,7 +66,7 @@ te3 = text(0.60, 0.85, str1, 'fontsize', 12);
 %rad = r2(deriv2(1))
 %ras = r2(deriv2(end))
 %
-%figure_w_normalized_uicontrolunits(HfigS);
+%figure(HfigS);
 %hold on;
 %rect = [0.15 0.10 0.7 0.30];
 %axes('position', rect, 'Xtick', [0.01 100], 'Ytick', [0 10]);
@@ -77,7 +77,7 @@ te3 = text(0.60, 0.85, str1, 'fontsize', 12);
 
 %r5 = r2(deriv2);
 %deriv5 = deriv(deriv2);
-%figure_w_normalized_uicontrolunits(HfigS);
+%figure(HfigS);
 %hold on;
 %semilogx(r5,deriv5(:,1), 'r');
 %clear deriv5 r5 nd nd1 moy vars deriv1 deriv2

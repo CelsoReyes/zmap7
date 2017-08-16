@@ -14,10 +14,10 @@ function view_bvt(lab1,re3)
     co = 'k';
     
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('b-value cross-section',1);
-    newbmapcWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','b-value cross-section');
+    
     
     % This is the info window text
     %
@@ -65,7 +65,7 @@ function view_bvt(lab1,re3)
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newbmapcWindowFlag
+    if isempty(figNumber)
         bmapc = figure_w_normalized_uicontrolunits( ...
             'Name','b-value cross-section',...
             'NumberTitle','off', ...
@@ -83,7 +83,7 @@ function view_bvt(lab1,re3)
         
         callbackStr= ...
             ['f1=gcf; f2=gpf; set(f1,''Visible'',''off'');close(bmapc);', ...
-            'if f1~=f2, figure_w_normalized_uicontrolunits(map);done; end'];
+            'if f1~=f2, figure(map);done; end'];
         
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
@@ -125,11 +125,11 @@ function view_bvt(lab1,re3)
     
     % Now lets plot the color-map of the z-value
     %
-    figure_w_normalized_uicontrolunits(bmapc)
+    figure(bmapc);
     delete(gca)
     delete(gca)
     delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    % delete(sizmap);
     reset(gca)
     cla
     hold off
@@ -233,7 +233,7 @@ function view_bvt(lab1,re3)
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    figure_w_normalized_uicontrolunits(bmapc);
+    figure(bmapc);
     watchoff(bmapc)
     done
     

@@ -36,7 +36,7 @@ re3 = reshape(as,length(gy),length(gx));
 %
 % define size of the plot etc.
 %
-figure_w_normalized_uicontrolunits(tmp)
+figure(tmp);
 
 clf reset
 rect = [0.10 0.30 0.55 0.50 ];

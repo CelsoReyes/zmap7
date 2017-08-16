@@ -17,7 +17,7 @@ if exist('plos1','var')
     clear plos1
 end
 new = a;
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf
 set(gca,'visible','off')
 
@@ -40,7 +40,7 @@ if ic == 1 | ic == 0
 
 
 elseif ic == 2
-    figure_w_normalized_uicontrolunits(map)
+    figure(map);
     axes(h1)
     
     [mask, furthest_event_km] = eventsInRadius(ZG.a, ya0, xa0, rad);
@@ -64,7 +64,7 @@ elseif ic == 2
     ic = 1;
 
 elseif ic == 3
-    figure_w_normalized_uicontrolunits(map)
+    figure(map);
     axes(h1)
     %  calculate distance for each earthquake from center poin
     [mask, max_km] = closestEvents(ZG.a, ya0, xa0, [], ni);

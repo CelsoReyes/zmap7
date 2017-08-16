@@ -8,7 +8,7 @@
 %
 % Keith Rogers 3/95
 set(gcf,'Pointer','watch');
-figure_w_normalized_uicontrolunits(gcf);
+figure(gcf);
 %mdprog;
 %eztools
 clear size

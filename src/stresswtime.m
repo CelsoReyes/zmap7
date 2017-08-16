@@ -88,10 +88,10 @@ end
 % Back to original directory
 cd(sPath);
 
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('stress-value with time',1);
-newdepWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','stress-value with time');
+
 bdep= figNumber;
 
 % Set up the window

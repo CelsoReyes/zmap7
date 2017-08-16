@@ -12,7 +12,7 @@ function clustNum0 = getclu(gecl, clustNum0)
         case 'mouse'
             disp('Click with the left mouse button #next to the equivalent event #of the cluster you want to examine');
             
-            clmap = findobj(0,'Name','Cluster Map');
+            clmap = findobj('Name','Cluster Map');
             if ~isempty(clmap);figure(clmap);end
 
             [x,y]=ginput(1);
@@ -44,10 +44,8 @@ function clustNum0 = getclu(gecl, clustNum0)
     end
     nu = (1:ZG.newt2.Count) ;
     nu = nu';
-    set(findobj(0,'Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
-    figure(cum);
-    
-    
+    set(findobj('Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
+    figure(findobj('Type','Figure','-and','Tag','cum'););
     clustNum0 = val;
 end
 

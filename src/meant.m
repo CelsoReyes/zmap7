@@ -96,14 +96,14 @@ elseif ic == 2
     end    % for it
     meand = -meand;
 
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Mean Depth',1);
-    newDepWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Mean Depth');
+    
 
     % Set up the Seismicity Map window Enviroment
     %
-    if newDepWindowFlag
+    if isempty(figNumber)
 
         figure_w_normalized_uicontrolunits(...
             'Name','Mean Depth',...
@@ -144,7 +144,7 @@ elseif ic == 2
 
     end  % if figure exist
 
-    figure_w_normalized_uicontrolunits(depfg)
+    figure(depfg);
     delete(gca);delete(gca);delete(gca);
     set(gca,'visible','off');
 

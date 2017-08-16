@@ -39,7 +39,7 @@ l = r > tresh;
 re4 = re3;
 re4(l) = zeros(1,length(find(l)))*nan;
 
-figure_w_normalized_uicontrolunits(tmp)
+figure(tmp);
 clf reset
 rect = [0.10 0.30 0.55 0.50 ];
 rect1 = rect;

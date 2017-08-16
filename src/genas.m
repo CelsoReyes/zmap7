@@ -55,11 +55,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
         %  find(ztimes)
 
         xsum = cumsum(cumu);
-        % xlabel('time (yrs)');
-        % ylabel('cum number of events');
 
-        % plot(xt,xsum,'r');
-        % hold on;
         t1(1) = xt(ixs);
         t1(2) = xsum(ixs);
         t1p = [  t1(1)  t1(2); t1(1)   t1(2)+par2 ];

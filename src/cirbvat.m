@@ -59,7 +59,7 @@ ZG.newt2.sort('Date');
 %
 % plot Ni clostest events on map as 'x':
 
-figure_w_normalized_uicontrolunits(bmap)
+figure(bmap);
 hold on
 plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'ow','EraseMode','normal','markersize',3);
 

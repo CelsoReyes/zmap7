@@ -4,7 +4,7 @@ function plotclust()
     report_this_filefun(mfilename('fullpath'));
     clustNum0=[];
     
-    close(findobj(0,'Name','Cluster Map'));
+    close(findobj('Name','Cluster Map'));
     
     figure_w_normalized_uicontrolunits( ...
         'Name','Cluster Map',...

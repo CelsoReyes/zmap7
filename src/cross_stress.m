@@ -192,7 +192,7 @@ end   % if sel == in
 
 if sel == 'ca'
 
-    figure_w_normalized_uicontrolunits(xsec_fig)
+    figure(xsec_fig);
     hold on
     if load_grid == 1
         [file1,path1] = uigetfile(['*.mat'],'previously saved grid');
@@ -295,7 +295,7 @@ if sel == 'ca'
 
     % Path to Stress Inversion program
     hodis = fullfile(ZG.hodi, 'external');
-    do = ['cd  ' hodis ]; eval(do)
+    cd(hodis)
 
 
     for i= 1:length(newgri(:,1))
@@ -401,7 +401,7 @@ if sel == 'ca'
     close(wai);
     watchoff
     % Back to original directory
-    do = ['cd  ' sPath ]; eval(do)
+    cd(sPath)
     % Compute equivalent angles for fTS1 relative to strike
     [vTS1Rel] = calc_Rel2Strike(fStrike,mResult(:,2));
 

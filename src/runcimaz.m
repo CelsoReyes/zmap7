@@ -34,7 +34,7 @@ for it = minval:step:maxval
     cin_maxz
     axes(h1)
     m(:,j) = getframe(h1);
-    figure_w_normalized_uicontrolunits(wai)
+    figure(wai);
     waitbar(it/len)
 end   % for i
 

@@ -20,7 +20,7 @@ ax = findobj('Tag','main_map_ax');
 [x,y, mouse_points_overlay] = select_polygon(ax);
 zmap_message_center.set_info('Message',' Thank you .... ')
 
-figure_w_normalized_uicontrolunits(map)
+figure(map);
 
 plos2 = plot(x,y,'b-');        % plot outline
 sum3 = 0.;
@@ -48,7 +48,7 @@ ll = polygon_filter(x,y, XI, YI, 'inside');
 newgri=tmpgri(ll,:);
 
 % plot the grid points
-figure_w_normalized_uicontrolunits(map)
+figure(map);
 pl = plot(newgri(:,1),newgri(:,2),'+k','era','normal');
 set(pl,'MarkerSize',8,'LineWidth',1)
 drawnow

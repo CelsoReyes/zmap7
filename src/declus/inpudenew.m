@@ -67,7 +67,7 @@ function inpudenew()
             'String', num2str(params{IDX_VAL}),...
             'Value', params{IDX_VAL},...
             'TooltipString', params{IDX_HELP},...
-            'Callback', @set_numeric,...
+            'Callback', @update_editfield_value,...
             'Tag',['edit_', params{IDX_TAG}]);
         
         % label the edit box
@@ -121,9 +121,6 @@ function inpudenew()
     done
     
 %% callbacks
-    function set_numeric(src,~)
-        src.Value = str2double(src.String);
-    end
     
     function matlab_decluster()
         taumin = h.taumin.Value;

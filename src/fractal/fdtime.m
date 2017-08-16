@@ -99,7 +99,7 @@ uicontrol('Units','normal','Position',[.01 .93 .15 .06],...
 %
 % Creates the figure with all of the correlation integral curves calculated.
 %
-figure_w_normalized_uicontrolunits(HCIfig);
+figure(HCIfig);
 cb = colorbar('horiz');
 set(cb, 'position', [0.32 0.08 0.4 0.03], 'XTickLabel', col);
 axes('pos',[0 0 1 1]); axis off; hold on;

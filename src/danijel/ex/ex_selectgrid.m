@@ -24,7 +24,7 @@ end
 
 try
   % Bring figure-window to front
-  figure_w_normalized_uicontrolunits(hFigure);
+  figure(hFigure);
   hold on;
 
   if bGridEntireArea % Use entire area for grid
@@ -55,7 +55,7 @@ try
   vY = [vY; vY(1)];
 
   % Plot outline
-  figure_w_normalized_uicontrolunits(hFigure);
+  figure(hFigure);
   plot(vX, vY, 'b-');
 
   % Create a rectangular grid
@@ -79,7 +79,7 @@ try
   mGrid = mGrid(vUsedNodes,:);
 
   % Plot the grid points finally
-  figure_w_normalized_uicontrolunits(hFigure)
+  figure(hFigure);
   plot(mGrid(:,1), mGrid(:,2), '+k', 'era', 'normal', 'MarkerSize', [8], 'LineWidth', [1]);
   drawnow;
 catch

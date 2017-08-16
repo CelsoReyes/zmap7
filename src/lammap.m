@@ -11,15 +11,15 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 global mapl
 report_this_filefun(mfilename('fullpath'));
 %
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('Seismicity Map (Lambert)',1);
-newMapLaWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Seismicity Map (Lambert)');
+
 
 global h2 xsec_fig newa
 % Set up the Seismicity Map window Enviroment
 %
-if newMapLaWindowFlag
+if isempty(figNumber)
     mapl = figure_w_normalized_uicontrolunits( ...
         'Name','Seismicity Map (Lambert)',...
         'NumberTitle','off', ...
@@ -31,7 +31,7 @@ if newMapLaWindowFlag
     drawnow
 end % if figure exist
 
-figure_w_normalized_uicontrolunits(mapl)
+figure(mapl);
 delete(gca)
 delete(gca)
 delete(gca)
@@ -101,7 +101,7 @@ uic5 = uicontrol('Units','normal',...
     'position',[.8 .48 .2 .1],'String','Select Eqs',...
      'callback',@callbackfun_003);
 
-figure_w_normalized_uicontrolunits(mapl)
+figure(mapl);
 uic2 = uicontrol('Units','normal',...
     'Position',[.70 .92 .30 .06],'String','New selection ?',...
      'callback',@callbackfun_004);

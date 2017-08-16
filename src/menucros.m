@@ -49,7 +49,7 @@ hlpStr2= ...
 % make the interface
 %
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 report_this_filefun(mfilename('fullpath'));
 clf
 in2 ='input';

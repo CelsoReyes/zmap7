@@ -18,9 +18,9 @@ axes('position',rect)
 watchon
 
 % check if cross-section exists
-[existFlag,figNumber]=figure_exists('Cross -Section',1);
-newMapWindowFlag=~existFlag;
-if newMapWindowFlag
+figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
+
+if isempty(figNumber)
     errordlg('Please create a cross-section first, then rerun the last selection');
     nlammap
     return

@@ -14,7 +14,7 @@ global xsec_fig h2 newa newa2
 report_this_filefun(mfilename('fullpath'));
 ZG=ZmapGlobal.Data;
 
-figure_w_normalized_uicontrolunits(gcf)
+figure(gcf);
 
 %loop to pick points
 %axes(h2)

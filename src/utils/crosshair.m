@@ -9,7 +9,7 @@ function crosshair(action)
     if nargin == 0
         xhr_plot=gcf;
         xhrx_axis=gca;
-        figure_w_normalized_uicontrolunits(gcf);
+        figure(gcf);
 
         %The GUI
         xhr_button_data=get(xhr_plot,'WindowButtonDownFcn');

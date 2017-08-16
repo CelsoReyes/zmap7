@@ -7,7 +7,7 @@ global cluslength %[OUT]
 report_this_filefun(mfilename('fullpath'));
 storedcat=a;
 hodis = fullfile(hodi, 'external');
-do = ['cd  ' hodis ]; eval(do)
+cd(hodis);
 
 str = [];
 

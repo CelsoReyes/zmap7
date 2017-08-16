@@ -126,7 +126,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         end
 
     elseif nargin == 9	% method 1: given lat & lon of the two end points
-        figure_w_normalized_uicontrolunits(mapl)
+        figure(mapl);
         [x1, y1] = lc_tocart(lat1,lon1);
         [x2, y2] = lc_tocart(lat2,lon2);
 
@@ -245,12 +245,12 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %map_fig = gcf;
     %xsec_fig = map_fig + 1;
 
-    [existFlag,figNumber]=figure_exists('Cross -Section',1);
-    newCrSeWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
+    
 
     % Set up the Map window Enviroment
     %
-    if newCrSeWindowFlag
+    if isempty(figNumber)
         xsec_fig = figure_w_normalized_uicontrolunits( ...
             'Name','Cross -Section',...
             'Tag','xsection',...
@@ -262,7 +262,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
 
     end
 
-    figure_w_normalized_uicontrolunits(xsec_fig)
+    figure(xsec_fig);
     hold on
     delete(gca);delete(gca);
     set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
@@ -338,5 +338,5 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     set(gcf,'visible','on')
     drawnow
     % Go back to map figure
-    %figure_w_normalized_uicontrolunits(map_fig)
+    %figure(map_fig);
 

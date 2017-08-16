@@ -60,15 +60,15 @@ function setup()
         ['The Clear button will remove existing data      '
         'or overlay symbols.                             '
         '                                                ' ];
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Import Data into ZMAP',1);
-    newMapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Import Data into ZMAP');
+    
     
     
     % Set up the setup window Enviroment
     %
-    if newMapWindowFlag
+    if isempty(figNumber)
         loda = figure_w_normalized_uicontrolunits( ...
             'Name','Import Data into ZMAP',...
             'NumberTitle','off', ...

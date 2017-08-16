@@ -7,13 +7,13 @@ function loadasci(da,sa)
     
     report_this_filefun(mfilename('fullpath'));
     
-    [existFlag,figNumber]=figure_exists('Load ASCII Data',1);
-    newMapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Load ASCII Data');
+    
     
     
     % Set up the setup window Enviroment
     %
-    if newMapWindowFlag
+    if isempty(figNumber)
         loasci = figure_w_normalized_uicontrolunits( ...
             'Name','Load ASCII Data',...
             'NumberTitle','off', ...
@@ -27,7 +27,7 @@ function loadasci(da,sa)
             'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
         
         set(loasci,'Visible','on');
-        figure_w_normalized_uicontrolunits(loasci)
+        figure(loasci);
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position',[.65 .13 .25 .10 ],...

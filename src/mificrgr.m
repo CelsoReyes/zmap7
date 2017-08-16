@@ -107,12 +107,12 @@ elseif var1==2           %area selection
     zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
 
-    [existFlag,figNumber]=figure_exists('Cross -Section',1);
-    newMapWindowFlag=~existFlag;
-    if newMapWindowFlag
+    figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
+    
+    if isempty(figNumber)
         nlammap
     else
-        figure_w_normalized_uicontrolunits(figNumber)
+        figure(figNumber);
     end
 
     hold on
@@ -185,13 +185,13 @@ elseif var1==2           %area selection
 
     close(wai)
     %make a color map
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Misfit-Map 2',1);
-    newlapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Misfit-Map 2');
+    
     % Set up the Seismicity Map window Enviroment
     %
-    if newlapWindowFlag
+    if isempty(figNumber)
         mifmap = figure_w_normalized_uicontrolunits( ...
             'Name','Misfit-Map 2',...
             'NumberTitle','off', ...
@@ -207,7 +207,7 @@ elseif var1==2           %area selection
     end
 
     [existFlag,mifmap]=figure_exists('Misfit-Map 2',1);
-    figure_w_normalized_uicontrolunits(mifmap)
+    figure(mifmap);
 
     delete(gca);delete(gca); delete(gca);delete(gca);
     delete(gca);delete(gca); delete(gca);delete(gca);

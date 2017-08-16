@@ -75,7 +75,7 @@ if isempty(fi) == 1
     figure_w_normalized_uicontrolunits('pos',[300 300 300 300],...
         'tag','mcfig2');
 else
-    figure_w_normalized_uicontrolunits(fi); delete(gca);delete(gca);
+    figure(fi); delete(gca);delete(gca);
 end
 
 

@@ -4,12 +4,16 @@ function view_rccross_a2(lab1,re3)
     % needs re3, gx, gy
     %
     % define size of the plot etc.
-    %
+    
     if isempty(name)
         name = '  '
     end
     think
     report_this_filefun(mfilename('fullpath'));
+
+    myFigName='RC-Cross-section';
+    myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
+
     %co = 'w';
     
     
@@ -59,18 +63,14 @@ function view_rccross_a2(lab1,re3)
     % Set up the Seismicity Map window Enviroment
     %
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('RC-Cross-section',1);
-    newhRccrossWindowFlag=~existFlag;
+    hRccross=myFigFinder();
     
-    if newhRccrossWindowFlag
-        oldfig_button = 0
-    end
     
-    if oldfig_button == 0
+    if isempty(hRccross)
         hRccross = figure_w_normalized_uicontrolunits( ...
-            'Name','RC-Cross-section',...
+            'Name',myFigName,...
             'NumberTitle','off', ...
             'NextPlot','new', ...
             'backingstore','on',...
@@ -82,25 +82,20 @@ function view_rccross_a2(lab1,re3)
         
         %re3 = pvalg;
         tresh = nan; re4 = re3;
-        oldfig_button = 1;
         
         colormap(jet)
         tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
-        
     end   % This is the end of the figure setup.
     
     % Now lets plot the color-map!
     %
-    figure_w_normalized_uicontrolunits(hRccross)
-    delete(gca)
-    delete(gca)
-    delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
-    reset(gca)
-    cla
-    hold off
+    figure(hRccross);
+    delete(findobj(hOmoricross,'Type','axes'))
+    %delete(sizmap)
+    ax=gca;
+    reset(ax) % automatically sets NextPlot to replace
     watchon;
-    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
+    set(ax,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','SortMethod','childorder')
     
@@ -113,23 +108,11 @@ function view_rccross_a2(lab1,re3)
     ZG.minc = min(min(re3));
     ZG.minc = fix(ZG.minc)-1;
     
-    % set values greater tresh = nan
-    %
-    re4 = re3;%mRelchange;%re3;
-    % l = r > tresh;
-    % re4(l) = NaN(1,length(find(l)));
-    % l = Prmap < minpe;
-    % re4(l) = NaN(1,length(find(l)));
-    % l = old1 <  Mmin;
-    % re4(l) = NaN(1,length(find(l)));
-    % l = pvstd >  minsd;
-    % re4(l) = NaN(1,length(find(l)));
+    re4 = re3;
     
     
     % plot image
-    %
     orient landscape
-    %set(gcf,'PaperPosition', [0.5 1 9.0 4.0])
     
     %Plots re4, which contains the filtered values.
     axes('position',rect)
@@ -205,12 +188,9 @@ function view_rccross_a2(lab1,re3)
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    figure_w_normalized_uicontrolunits(hRccross);
-    %sizmap = signatur('ZMAP','',[0.01 0.04]);
-    %set(sizmap,'Color','k')
+    figure(hRccross);
     axes(h1)
     watchoff(hRccross)
-    %whitebg(gcf,[ 0 0 0 ])
     done
     
     %% ui functions

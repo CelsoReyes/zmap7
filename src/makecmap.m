@@ -10,7 +10,7 @@ function makecmap(bins,fighandle)
     %
     %       bins - size of colormap (default - 64)
     %       map - rgb colormap (matrix)
-    %       fighandle - figure_w_normalized_uicontrolunits(s) to apply colormap (optional)
+    %       fighandle - figure(s); to apply colormap (optional)
     %	fighandle,'fig' - reads colormap from figure (fighandle)
     %
     %

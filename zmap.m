@@ -9,32 +9,6 @@ global sys ZG
 %system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 
-%{
-% read the welcome screen
-rng('shuffle');
-r = ceil(rand(1,1)*21);
-cd slides
-if r <10
-    str = [ 'Slide' num2str(r,1) '.JPG'];
-else
-    str = [ 'Slide' num2str(r,2) '.JPG'];
-end
-
-try
-    [x, imap] = imread(str);
-    figure_w_normalized_uicontrolunits('Menubar','none','NumberTitle','off');
-    fi0 = gcf;
-    axes('pos',[0 0 1 1]);axis off; axis ij
-    image(x)
-    drawnow
-    close
-catch ME
-    % do nothing
-end
-cd ..
-%}
-
-
 % set some of the paths
 set_zmap_paths();
 

@@ -19,7 +19,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     if nargin == 8	% method 2: given lat & lon of center point and angle
 
     elseif nargin == 9	% method 1: given lat & lon of the two end points
-        %figure_w_normalized_uicontrolunits(mapl)
+        %figure(mapl);
         [x1, y1] = lc_tocart(lat1,lon1);
         [x2, y2] = lc_tocart(lat2,lon2);
 

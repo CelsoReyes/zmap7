@@ -11,7 +11,7 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 report_this_filefun(mfilename('fullpath'));
 
 
-if ic == 1 | ic == 0
+if ic == 1 || ic == 0
     if isempty(ZG.newcat) ZG.newcat = a; end
     ZG.newcat = a;
     iwln = 100;
@@ -72,7 +72,6 @@ elseif ic == 2
 
     step = days(step);
     if isempty(ZG.newcat) ZG.newcat = a; end
-    %iwl = round(iwln* 365/ZG.bin_days);    % window length in years is converted to bins
     len = ZG.newcat.Count;
     xt2  = [ ];
     meand = [ ];
@@ -95,29 +94,16 @@ elseif ic == 2
         xt2(ind) = it;        % time is end of window
     end    % for it
 
-    % for it=1:step:len-iwln;
-    %ind = ind + 1;
-    %waitbar(it/(len-iwln));
-    %%        l = ZG.newcat.Date >= it & ZG.newcat.Date < it+iwln;  % for time window
-    %%        meand(ind) = mean(ZG.newcat.Depth(l));
-    %%        xt2(ind) = it + iwln/2.;
-    %meand(ind) = mean(ZG.newcat(it:it+iwln-1,7)) ;
-    %me = [me  ZG.newcat(it:it+iwln-1,7)];
-    %[m,n] = size(a);
-    %er(ind) = std(ZG.newcat(it:it+iwln-1,7)) ;
-    %xt2(ind) = ZG.newcat(it+iwln,3);        % time is end of window
-    %
-    %end    % for it
     meand = -meand;
 
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Mean Depth',1);
-    newDepWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Mean Depth');
+    
 
     % Set up the Seismicity Map window Enviroment
     %
-    if newDepWindowFlag
+    if isempty(figNumber)
 
         figure_w_normalized_uicontrolunits(...
             'Name','Mean Depth',...
@@ -134,11 +120,11 @@ elseif ic == 2
         uicontrol('Style','Pushbutton',...
             'Position',[.9 .80 .10 .05],...
             'Units','normalized',...
-            'callback',@callbackfun_005,'String','AS');
+            'callback',@(~,~)medispas1('ast'),'String','AS');
         uicontrol('Style','Pushbutton',...
             'Position',[.9 .70 .10 .05],...
             'Units','normalized',...
-            'callback',@callbackfun_006,'String','LTA');
+            'callback',@(~,~)medispas1('lta'),'String','LTA');
         uicontrol('Style','Pushbutton',...
             'Position',[.9 .90 .10 .05],...
             'Units','normalized',...
@@ -158,7 +144,7 @@ elseif ic == 2
 
     end  % if figure exist
 
-    figure_w_normalized_uicontrolunits(depfg)
+    figure(depfg);
     delete(gca);delete(gca);delete(gca);
     set(gca,'visible','off');
 
@@ -205,7 +191,6 @@ elseif ic == 2
         set(pl,'LineWidth',2.0)
     end
     axis([ v(1) v(2) -max(ZG.newcat.Depth)  -min(ZG.newcat.Depth)])
-    %xlabel('Time (years)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     ylabel('Depth (km)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     set(gca,'XTicklabels',[])
     stro = [' ' file1 '; wl = ' num2str(iwln) ' events, inc = ' num2str(step)];
@@ -256,39 +241,24 @@ function callbackfun_004(mysrc,myevt)
    meandpth;
 end
  
-function callbackfun_005(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  sta = 'ast';
-  medispas1;
-end
- 
-function callbackfun_006(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  sta = 'lta';
-  medispas1;
-end
- 
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  dispma4;
+  dispma4();
 end
  
 function callbackfun_008(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  iwl=str2num(new.String);
-  'String';
-  num2str(iwl);
-  medispas1;
+  update_editfield_value(mysrc,myevt);
+  iwl=mysrc.Value;
+  medispas1();
 end
  
 function callbackfun_009(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  medispas1;
+  medispas1();
 end
  
 end

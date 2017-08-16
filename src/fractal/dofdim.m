@@ -65,7 +65,7 @@ switch(dofd)
 
         Ha_Cax = gca;
         axis([0.00001 100 0.00001 10]);
-        figure_w_normalized_uicontrolunits(Hf_Fig);
+        figure(Hf_Fig);
         hold on;
         Hl_gr2a = loglog(r2(v), corint(v), 'r.');
         set(Hl_gr2a,'MarkerSize',20);
@@ -135,7 +135,7 @@ switch(dofd)
         end
 
 
-        figure_w_normalized_uicontrolunits(Hf_Fig);
+        figure(Hf_Fig);
         set(Hl_gr2a, 'Xdata', r2(v), 'Ydata', corint(v));
         set(Hl_gr2b, 'Xdata', r3, 'Ydata', 10.^line);
         set(Hl_gr2d, 'Xdata', r3, 'Ydata', 10.^line1);

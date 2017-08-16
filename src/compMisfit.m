@@ -7,13 +7,12 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 
 report_this_filefun(mfilename('fullpath'));
 
-global xNumber yMisfit cumuMisfit loopNumber obsNum StressPara
+persistent xNumber yMisfit cumuMisfit loopNumber obsNum StressPara
+mif99=findobj('Type','Figure','-and','Name','Compare Misfits of Different Stress Models');
 
-[existFlag,figNumber]=figure_exists('Compare Misfits of Different Stress Models',1);
 
-newWindowFlag=~existFlag;
 
-if newWindowFlag
+if isempty(mif99)
     mif99 = figure_w_normalized_uicontrolunits( ...
         'Name','Compare Misfits of Different Stress Models',...
         'NumberTitle','off', ...
@@ -35,10 +34,10 @@ if newWindowFlag
     xNumber = [1:length(mi2(:,1))]';
     obsNum = length(mi2);
 else
-    delete(pl);
-end %if newWindowFlag
+    delete(findobj(mif99,'Type','axes'));
+end
 
-figure_w_normalized_uicontrolunits(mif99)
+figure(mif99)
 
 hold on
 
@@ -48,20 +47,13 @@ cumuMisfit(:,loopNumber) = cumsum(yMisfit(:,loopNumber));
 
 % save the parameters of the stress model
 stressPara(loopNumber,:) = [sig,plu,az,R,phi];
-%
 
 increment = 100;  % offset between curves.
-
-%strtext = ['/',num2str(sig),'/',num2str(az),'/',num2str(plu),...
-%           '/',num2str(R),'/',num2str(phi)];
-%text(obsNum-offsetX, offsetY, '/Sig/Az/Plu/R/Phi/');
 
 if loopNumber == 1
     [lastRow,colI] = sort(cumuMisfit(obsNum,:));
     pl = plot(xNumber,cumuMisfit(:,colI( 1)) + increment * 0, 'ro');
     set(pl,'MarkerSize',[ 4]);
-    %  pl = plot(xNumber,cumuMisfit(:,loopNumber), 'ro');
-    %  set(pl,'LineWidth',2.0);
 
 elseif loopNumber == 2
     [lastRow,colI] = sort(cumuMisfit(obsNum,:));
@@ -201,11 +193,6 @@ elseif loopNumber == 10
 end %if loopNumber
 stress = stressPara.subset(colI);
 grid;
-
-
-%set(gca,'box','on',...
-%        'SortMethod','childorder','TickDir','out','FontWeight',...
-%        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2);
 
 xlabel('Number of Earthquake','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);
 ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);

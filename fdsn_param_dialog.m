@@ -172,14 +172,7 @@ function maxlatitude_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of maxlatitude as text
-%        str2double(get(hObject,'String')) returns contents of maxlatitude as a double
-
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(handles.minlatitude, hObject);
 
 
@@ -202,12 +195,7 @@ function minlatitude_Callback(hObject, eventdata, handles)
 % hObject    handle to minlatitude (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(hObject, handles.maxlatitude);
 
 % --- Executes during object creation, after setting all properties.
@@ -229,11 +217,7 @@ function minlongitude_Callback(hObject, eventdata, handles)
 % hObject    handle to minlongitude (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 if isnan(hObject.Value) || isempty(hObject.Value)
     set(hObject,'BackgroundColor',[1.0 1.0 1.0]);
 else
@@ -259,14 +243,8 @@ function maxlongitude_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of maxlongitude as text
-%        str2double(get(hObject,'String')) returns contents of maxlongitude as a double
 
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 if isnan(hObject.Value) || isempty(hObject.Value)
     set(hObject,'BackgroundColor',[1.0 1.0 1.0]);
 else
@@ -293,8 +271,6 @@ function starttime_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of starttime as text
-%        str2double(get(hObject,'String')) returns contents of starttime as a double
 try
     d = datetime(get(hObject,'String'));
     set(hObject,'backgroundcolor',[0.95 1.0 0.95]);
@@ -325,8 +301,6 @@ function endtime_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of endtime as text
-%        str2double(get(hObject,'String')) returns contents of endtime as a double
 try
     d = datetime(get(hObject,'String'));
     set(hObject,'backgroundcolor',[0.95 1.0 0.95]);
@@ -355,13 +329,7 @@ function mindepth_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of mindepth as text
-%        str2double(get(hObject,'String')) returns contents of mindepth as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(hObject, handles.maxdepth);
 
 % --- Executes during object creation, after setting all properties.
@@ -384,13 +352,7 @@ function maxdepth_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of maxdepth as text
-%        str2double(get(hObject,'String')) returns contents of maxdepth as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(handles.mindepth, hObject);
 
 % --- Executes during object creation, after setting all properties.
@@ -413,13 +375,7 @@ function minmagnitude_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of minmagnitude as text
-%        str2double(get(hObject,'String')) returns contents of minmagnitude as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(hObject, handles.maxmagnitude)
 
 % --- Executes during object creation, after setting all properties.
@@ -441,14 +397,7 @@ function maxmagnitude_Callback(hObject, eventdata, handles)
 % hObject    handle to maxmagnitude (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
-% Hints: get(hObject,'String') returns contents of maxmagnitude as text
-%        str2double(get(hObject,'String')) returns contents of maxmagnitude as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(handles.minmagnitude, hObject)
 
 % --- Executes during object creation, after setting all properties.
@@ -470,8 +419,6 @@ function magnitudetype_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of magnitudetype as text
-%        str2double(get(hObject,'String')) returns contents of magnitudetype as a double
 
 % --- Executes during object creation, after setting all properties.
 function magnitudetype_CreateFcn(hObject, eventdata, handles)
@@ -492,14 +439,7 @@ function latitude_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of latitude as text
-%        str2double(get(hObject,'String')) returns contents of latitude as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
-
+update_editfield_value(hObject);
 % --- Executes during object creation, after setting all properties.
 function latitude_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to latitude (see GCBO)
@@ -519,14 +459,7 @@ function longitude_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of longitude as text
-%        str2double(get(hObject,'String')) returns contents of longitude as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
-
+update_editfield_value(hObject);
 % --- Executes during object creation, after setting all properties.
 function longitude_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to longitude (see GCBO)
@@ -546,13 +479,7 @@ function minradius_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of minradius as text
-%        str2double(get(hObject,'String')) returns contents of minradius as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(hObject, handles.maxradius);
 
 % --- Executes during object creation, after setting all properties.
@@ -574,13 +501,7 @@ function maxradius_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of maxradius as text
-%        str2double(get(hObject,'String')) returns contents of maxradius as a double
-try
-    hObject.Value=str2double(get(hObject,'String'));
-catch
-    hObject.Value = nan;
-end
+update_editfield_value(hObject);
 enforce_gt_edit_relationship(handles.minradius, hObject);
 
 % --- Executes during object creation, after setting all properties.

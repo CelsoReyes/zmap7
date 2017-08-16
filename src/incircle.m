@@ -13,7 +13,7 @@ if isempty(ZG.newcat), ZG.newcat = a; end   % verify whether to start with
 % original catalogue
 % make the interface for input
 %
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf;
 cla;
 set(gcf,'Name','Circle-Map Control Panel');

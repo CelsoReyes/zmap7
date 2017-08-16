@@ -190,7 +190,7 @@ switch(ZmapGlobal.Data.hold_state);
         fd1 = coef(1,1);
         deltar1 = deltar;
 
-        figure_w_normalized_uicontrolunits(Hf_Fig);
+        figure(Hf_Fig);
         axes(Ha_Cax);
         hold on;
 

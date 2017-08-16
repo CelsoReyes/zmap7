@@ -55,7 +55,7 @@ set(Hf_child,'pointer','arrow');
 %
 % Plots the Taken estimator as a function of the logarithmic distance.
 %
-[existFlag,figNumber]=figure_exists('Taken Estimator (log2)',1);
+figNumber=findobj('Type','Figure','-and','Name','Taken Estimator (log2)');
 
 if existFlag == 1
 
@@ -86,7 +86,7 @@ switch(fig)
 
 end % switch
 
-%[existFlag,figNumber]=figure_exists('Taken Estimator (log10)',1);
+%figNumber=findobj('Type','Figure','-and','Name','Taken Estimator (log10)');
 
 
 %if existFlag == 1
@@ -113,7 +113,7 @@ end % switch
 
 %case 'addfig'
 
-%      figure_w_normalized_uicontrolunits(Htakes10);
+%      figure(Htakes10);
 %   hold on;
 %   plot(log10(taker(:,1)), takes(:,t));
 %   axis([-12.5 1.5 0 3.5]);

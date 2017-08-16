@@ -13,9 +13,9 @@ ZG=ZmapGlobal.Data;
 
 report_this_filefun(mfilename('fullpath'));
 
-[existFlag,figNumber]=figure_exists('Z-Value-Cross-section',1);
+figNumber=findobj('Type','Figure','-and','Name','Z-Value-Cross-section');
 
-figure_w_normalized_uicontrolunits(figNumber)
+figure(figNumber);
 
 %loop to pick points
 %axes(h2)

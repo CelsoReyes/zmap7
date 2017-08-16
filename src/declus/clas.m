@@ -6,7 +6,7 @@ function clas
     %
 
    global  sys clu te1 mess
-    global xt cumu ccum cumu2 pyy
+    global xt cumu cumu2 pyy
     % start and end time
     %
     think
@@ -35,7 +35,7 @@ function clas
     %
     %  Plot the as(t)
     %
-    figure_w_normalized_uicontrolunits(ccum);
+    ccum=figure(findobj('Tag','ccum','-and','Type','Figure');
     cla
     hold off
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
@@ -64,7 +64,7 @@ function clas
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
     set(ccum,'Visible','on');
-    figure_w_normalized_uicontrolunits(ccum);
+    figure(ccum);
     watchoff
     done
 

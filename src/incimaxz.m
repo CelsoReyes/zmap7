@@ -13,7 +13,7 @@ maxval = 4;
 nustep = 10;
 
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 
 set(gcf,'visible','off')
 clf

@@ -24,7 +24,7 @@ y = [];
 n = 0;
 
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 set(gcf,'visible','off')
 clf;
 cla;

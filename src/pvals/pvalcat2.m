@@ -106,10 +106,10 @@ for valm = valm1:valm3:valm2
 end
 
 close(wai)
-[existFlag,figNumber]=figure_exists('p-value map',1);
-newpmapWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','p-value map');
 
-if newpmapWindowFlag
+
+if isempty(figNumber)
     pmap = figure_w_normalized_uicontrolunits( ...
         'Name','p-value-map',...
         'NumberTitle','off', ...
@@ -120,7 +120,7 @@ if newpmapWindowFlag
 end
 
 hold on
-figure_w_normalized_uicontrolunits(pmap)
+figure(pmap);
 hold on
 delete(gca)
 delete(gca)

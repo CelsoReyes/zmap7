@@ -8,7 +8,7 @@ function startmen(parent_fig)
     %  Stefan Wiemer 12/94
     
     %  Create new figure
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
 
     % Set up the Seismicity Map window Enviroment

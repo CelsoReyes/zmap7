@@ -5,11 +5,15 @@ function csubcat()
     %
     
     error('This is broken. Needs to be majorly updated');
-    global newccat mapp decc  dep1 dep2 dep3 ty1 ty2 ty3
+    global newccat decc  dep1 dep2 dep3 ty1 ty2 ty3
     global  name minde maxde maxma2 minma2
     
     
     report_this_filefun(mfilename('fullpath'));
+    
+    myFigName='Seismicity Map (Cluster)';
+    myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
+    
     zmap_message_center.set_info('Message','Plotting Seismicity Map(Cluster) ....');
     ZG=ZmapGlobal.Data;
     storedcat=original;
@@ -27,40 +31,31 @@ function csubcat()
     minde=min(ZG.a.Depth);
     maxde=max(ZG.a.Depth);
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Seismicity Map (Cluster)',1);
-    newMapWindowFlag=~existFlag;
+    mapp=myFigFinder();
+    
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newMapWindowFlag
+    if isempty(mapp)
         mapp = figure_w_normalized_uicontrolunits( ...
-            'Name','Seismicity Map (Cluster)',...
+            'Name',myFigName,...
             'NumberTitle','off', ...
             'backingstore','on',...
             'NextPlot','add', ...
             'Visible','off', ...
+            'Tag','mapp',...
             'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
         
         stri1 = [file1];
-        
-        
-        %  call supplementary program to make menus at the top of the plot
-        %
-        
-        %
-        % show buttons  for various analyses programs:
-        
-        
-        
-        
     end
+    
     %end;    if figure exist
     
     % show the figure
     %
-    figure_w_normalized_uicontrolunits(mapp)
+    figure(mapp);
     reset(gca)
     cla
     dele = 'delete(si),delete(le)';er = 'disp('' '')'; eval(dele,er);
@@ -153,7 +148,7 @@ function csubcat()
     
     % Make the figure visible
     %
-    figure_w_normalized_uicontrolunits(mapp);
+    figure(mapp);
     axes(h1);
     watchoff(mapp)
     set(mapp,'Visible','on');

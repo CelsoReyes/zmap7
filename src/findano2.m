@@ -15,7 +15,7 @@ ni = 80;
 [i,j] = find(re3 > 5.5);
 X = reshape(loc(1,:),length(gy),length(gx));
 Y = reshape(loc(2,:),length(gy),length(gx));
-figure_w_normalized_uicontrolunits(map)
+figure(map);
 hold on
 for k = 1:length(i)
     xa0 = X(i(k),j(k));
@@ -37,7 +37,7 @@ end
 
 l = sort(l);
 ZG.newt2= (a(l,:));
-figure_w_normalized_uicontrolunits(map)
+figure(map);
 hold on
 plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'bo');
 

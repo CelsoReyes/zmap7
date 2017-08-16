@@ -19,8 +19,8 @@ function anseiswa(action, ds)
     global bvalsum3 xt3
     
     ZG=ZmapGlobal.Data;
-    xc1=findobj(0,'Tag','xc1');
-    xc2=findobj(0,'Tag','xc2');
+    xc1=findobj('Tag','xc1');
+    xc2=findobj('Tag','xc2');
     switch(action)
         case 'start1'
             axes(findobj(groot,'Tag','hs'))
@@ -62,21 +62,21 @@ function anseiswa(action, ds)
             end
             
             ZG.newt2.sort('Date');   % re-sort wrt time for cumulative count
-            set(findobj(0,'Tag','tiplo2'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
+            set(findobj('Tag','tiplo2'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
             set(xc1,'era','normal')
-            ax3=findobj(0,'Tag','ax3');
+            ax3=findobj('Tag','ax3');
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
             bv = bvalca3(ZG.newt2,1,1);
-            set(findobj(0,'Tag','plb'),'Xdata',xt3,'Ydata',bvalsum3);
+            set(findobj('Tag','plb'),'Xdata',xt3,'Ydata',bvalsum3);
             
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;
             xcir = x+sin(xx)*Rjma/(cosd(y)*111);
             ycir = y+cos(xx)*Rjma/(cosd(y)*111);
-            set(findobj(0,'Tag','plc1'),'Xdata',xcir,'Ydata',ycir);
-            set(findobj(0,'Tag','teb2'),'String',['b-value: ' num2str(bv,3)]);
+            set(findobj('Tag','plc1'),'Xdata',xcir,'Ydata',ycir);
+            set(findobj('Tag','teb2'),'String',['b-value: ' num2str(bv,3)]);
             
             
         case 'start2'
@@ -117,20 +117,20 @@ function anseiswa(action, ds)
             end
             [st,ist] = sort(ZG.newt2);   % re-sort wrt time for cumulative count
             ZG.newt2 = ZG.newt2(ist(:,3),:);
-            set(findobj(0,'Tag','tiplo1'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
+            set(findobj('Tag','tiplo1'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
             set(xc1,'era','normal')
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
             bv = bvalca3(ZG.newt2,1,1);
-            set(findobj(0,'Tag','plb2'),'Xdata',xt3,'Ydata',bvalsum3);
+            set(findobj('Tag','plb2'),'Xdata',xt3,'Ydata',bvalsum3);
             
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;
             xcir = x+sin(xx)*Rjma/(cosd(y)*111);
             ycir = y+cos(xx)*Rjma/(cosd(y)*111);
-            set(findobj(0,'Tag','plc2'),'Xdata',xcir,'Ydata',ycir);
-            set(findobj(0,'Tag','teb1'),'string',['b-value: ' num2str(bv,3)]);
+            set(findobj('Tag','plc2'),'Xdata',xcir,'Ydata',ycir);
+            set(findobj('Tag','teb1'),'string',['b-value: ' num2str(bv,3)]);
         case 'samp1' %V1
             
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;

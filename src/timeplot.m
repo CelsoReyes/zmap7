@@ -14,8 +14,11 @@ function timeplot(mycat, nosort)
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
     report_this_filefun(mfilename('fullpath'));
+    myFigName='Cumulative Number';
+    myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
+
     global  iwl2
-    global  cum statime
+    global statime
     global selt
     
     ZG = ZmapGlobal.Data;
@@ -96,21 +99,19 @@ function timeplot(mycat, nosort)
         '                                                      '];
     
     
-    % Find out of figure already exists
-    %
-    [existFlag,figNumber]=figure_exists('Cumulative Number',1);
-    newCumWindowFlag=~existFlag;
-    cum = figNumber;
+    % Find out if figure already exists
     
+    cum = myFigFinder();
     % Set up the Cumulative Number window
     
-    if newCumWindowFlag
+    if isempty(cum)
         cum = figure_w_normalized_uicontrolunits( ...
             'Name','Cumulative Number',...
             'NumberTitle','off', ...
             'NextPlot','replace', ...
             'backingstore','on',...
             'Visible','off', ...
+            'Tag','cum',...
             'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
         
         
@@ -135,7 +136,6 @@ function timeplot(mycat, nosort)
         ZG.hold_state2=false;
         
     end
-    %end;    if figure exist
     
     if ZG.hold_state2
         cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
@@ -156,7 +156,7 @@ function timeplot(mycat, nosort)
         return
     end
     
-    fig=figure_w_normalized_uicontrolunits(cum);
+    fig=figure(cum);
     delete(findobj(cum,'Type','Axes'));
     % delete(sicum)
     ax=axes(fig);
@@ -412,7 +412,7 @@ function timeplot(mycat, nosort)
     function callbackfun_004(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dispma2;
+        dispma2(ic);
     end
     
     function callbackfun_005(mysrc,myevt)

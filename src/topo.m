@@ -91,20 +91,17 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     set(handles.plma,'Visible','on');
 
-    switch(inp)
-
-        case 1
-
-        case 1
             lo1 = bor(1); lo2=bor(2);
             la1=bor(3); la2=bor(4);
             fac = 1;
-            if abs(la2-la1) > 10 | abs(lo2-lo1) > 10 
+                        if abs(la2-la1) > 10 | abs(lo2-lo1) > 10 
                 def = {'3'};
                 ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
                 l = ni2{:};
                 fac = str2double(l);
             end
+    switch(inp)
+        case 1
             gtopo30s([la1 la2],[lo1 lo2]);
             [tmap, tmapleg] = gtopo302(pgt30,fac,[la1 la2],[lo1 lo2]);
             cd (psloc); %Stao des Skriptes
@@ -112,37 +109,19 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
             [latlim,lonlim] = limitm(tmap,tmapleg);
 
         case 2
-            lo1 = bor(1); lo2=bor(2);
-            la1=bor(3); la2=bor(4);
-            fac = 1;
-            if abs(la2-la1) > 10 | abs(lo2-lo1) > 10 
-                def = {'3'};
-                ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
-                l = ni2{:};
-                fac = str2double(l);
-            end
-
-
             fname = globedems([la1 la2],[lo1 lo2]);
-            do = [' [tmap, tmapleg] = globedem(fname{1},fac,[la1 la2],[lo1 lo2]); '];
-            eval(do);
-            %globedems();
-            %[tmap,tmapleg] = globedem(pgdem,fac,[la1 la2],[lo1 lo2]);
-
+            try
+                [tmap, tmapleg] = globedem(fname{1},fac,[la1 la2],[lo1 lo2]);
+            catch ME
+                errordlg(ME.message,'ERROR:topo');
+                return
+            end
             cd (psloc); %Stao des Skriptes
             tmap(isnan(tmap)) = nan; %Replace the NaNs in the ocean with -1 to color them blue
             [latlim,lonlim] = limitm(tmap,tmapleg);
 
         case 3
-            lo1 = bor(1); lo2=bor(2);
-            la1=bor(3); la2=bor(4);
-            fac = 1;
-            if abs(la2-la1) > 10 | abs(lo2-lo1) > 10 
-                def = {'3'};
-                ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
-                l = ni2{:};
-                fac = str2double(l);
-            end
+
             [lat,lon, gtmap] =satbath(fac,[la1 la2],[lo1 lo2]); % general matrix map
             gtmap(isnan(gtmap)) = -1;
             latlim = [la1 la2];
@@ -153,23 +132,11 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
             tmap = imbedm(lat,lon,gtmap,map,maplegend);
             tmapleg=maplegend;
 
-
         case 4
-            lo1 = bor(1); lo2=bor(2);
-            la1=bor(3); la2=bor(4);
-            fac = 1;
-            if abs(la2-la1) > 10 | abs(lo2-lo1) > 10 
-                def = {'3'};
-                ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
-                l = ni2{:};
-                fac = str2double(l);
-            end
             region = [la1 la2 lo1 lo2];
             [tmap,tmapleg] = tbase(fac,[la1 la2 ],[lo1 lo2] );
             [latlim,lonlim] = limitm(tmap,tmapleg);
             tmap(isnan(tmap)) = -1; %Replace the NaNs in the ocean with -1 to color them blue
-
-
     end
 
     lai=abs((la2-la1)/4);

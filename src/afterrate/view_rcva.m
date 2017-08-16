@@ -10,7 +10,8 @@ function view_rcva(lab1,re3)
     end
     think
     report_this_filefun(mfilename('fullpath'));
-    %co = 'w';
+   myFigName='rc-value-map';
+myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
     
     
@@ -59,18 +60,13 @@ function view_rcva(lab1,re3)
     % Set up the Seismicity Map window Enviroment
     %
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('rc-value-map',1);
-    newrcmapWindowFlag=~existFlag;
+    rcmap=myFigFinder();
     
-    if newrcmapWindowFlag
-        oldfig_button = 0
-    end
-    
-    if oldfig_button == 0
+    if isempty(rcmap)
         rcmap = figure_w_normalized_uicontrolunits( ...
-            'Name','rc-value-map',...
+            'Name',myFigName,...
             'NumberTitle','off', ...
             'NextPlot','new', ...
             'backingstore','on',...
@@ -86,19 +82,15 @@ function view_rcva(lab1,re3)
         
         colormap(jet)
         tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
-        
     end   % This is the end of the figure setup.
     
     % Now lets plot the color-map!
     %
-    figure_w_normalized_uicontrolunits(rcmap)
-    delete(gca)
-    delete(gca)
-    delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    figure(rcmap);
+    delete(findobj(rcmap,'Type','axes'));
+    % delete(sizmap);
     reset(gca)
     cla
-    hold off
     watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -195,7 +187,7 @@ function view_rcva(lab1,re3)
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    figure_w_normalized_uicontrolunits(rcmap);
+    figure(rcmap);
     %sizmap = signatur('ZMAP','',[0.01 0.04]);
     %set(sizmap,'Color','k')
     axes(h1)

@@ -19,11 +19,11 @@ function  bdiff(mycat, holdplot)
     disp(ZmapGlobal.Data.hold_state)
     report_this_filefun(mfilename('fullpath'));
     %obsolate, replace
-    %[existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
-    figNumber=findobj('Name','frequency-magnitude distribution');
+    %figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
+    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
     
     if ~isempty(figNumber)
-        % figure_w_normalized_uicontrolunits(bfig);
+        % figure(bfig);
         bfig = figNumber;
         
     else
@@ -64,7 +64,7 @@ function  bdiff(mycat, holdplot)
         disp('hold on')
         hold on
     else
-        figure_w_normalized_uicontrolunits(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
+        figure(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
     end

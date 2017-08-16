@@ -17,7 +17,7 @@
 tit = 'Zoomed Region' ;
 
 % Move to correct figure
-figure_w_normalized_uicontrolunits(gcf) ;
+figure(gcf); ;
 
 % Disable any widowbutton down functions
 wbdnfcn=get(gcf,'windowbuttondownfcn');

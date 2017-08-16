@@ -19,7 +19,7 @@ if in2 ~= 'calma'
     nustep = 10;
     iwl3 = 1.5;
     it = t0b +1;
-    figure_w_normalized_uicontrolunits(mess)
+    figure(mess);
     clf
     set(gca,'visible','off')
     set(gcf,'Units','pixel','NumberTitle','off','Name','Input Parameters');

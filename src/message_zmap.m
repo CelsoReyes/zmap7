@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 % make the interface
 %
-% Find out of figure already exists
+% Find out if figure already exists
 %
 
 % Set up the Seismicity Map window Enviroment

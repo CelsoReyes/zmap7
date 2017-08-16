@@ -12,7 +12,7 @@ iwl3 = 1;
 nustep = 10;
 
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf
 set(gcf,'Name','Movie Parameter Input ');
 set(gca,'visible','off');

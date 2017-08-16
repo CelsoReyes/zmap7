@@ -10,13 +10,13 @@ report_this_filefun(mfilename('fullpath'));
 %default parameters
 
 %make a color map
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('Misfit-Map 2',1);
-newlapWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Misfit-Map 2');
+
 % Set up the Seismicity Map window Enviroment
 %
-if newlapWindowFlag
+if isempty(figNumber)
     mifmap = figure_w_normalized_uicontrolunits( ...
         'Name','Misfit-Map 2',...
         'NumberTitle','off', ...
@@ -32,7 +32,7 @@ if newlapWindowFlag
 end
 
 [existFlag,mifmap]=figure_exists('Misfit-Map 2',1);
-figure_w_normalized_uicontrolunits(mifmap)
+figure(mifmap);
 
 delete(gca);delete(gca); delete(gca);delete(gca);
 delete(gca);delete(gca); delete(gca);delete(gca);

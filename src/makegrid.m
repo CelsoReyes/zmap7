@@ -109,7 +109,7 @@ watchoff
 zmapmenu
 return
 
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf
 set(gca,'visible','off')
 

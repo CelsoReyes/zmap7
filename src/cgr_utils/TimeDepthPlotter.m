@@ -22,7 +22,7 @@ classdef TimeDepthPlotter
             % pl = plot(catalog)
             %
             tag = 'time_depth_plot';
-            ax = findobj(0,'Tag','time_depth_axis');
+            ax = findobj('Tag','time_depth_axis');
             if isempty(ax)
                 figure('Name','Time Depth',...
                     'NumberTitle','off', ...
@@ -50,7 +50,7 @@ classdef TimeDepthPlotter
         function pl2=addCatalog(catalog,color)
             % add another catalog to this plot
             tag= 'time_depth_plotA';
-            ax=findobj(0,'Tag','time_depth_axis');
+            ax=findobj('Tag','time_depth_axis');
             hold(ax,'on');
             pl2=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
         end
@@ -65,8 +65,8 @@ classdef TimeDepthPlotter
             %   The further East an event is, the more red.
             %   The further North, the more blue
             
-            pl = findobj(0,'Tag','time_depth_plot');
-            ax=findobj(0,'Tag','time_depth_axis');
+            pl = findobj('Tag','time_depth_plot');
+            ax=findobj('Tag','time_depth_axis');
             
             lonRange = range(catalog.Longitude);
             blue_val = catalog.Longitude/lonRange;
@@ -78,7 +78,7 @@ classdef TimeDepthPlotter
             pl.CData=[red_val .* 0.75 , zeros(size(red_val))+.2, blue_val .* 0.75];
             ypos = max(ax.YLim) - .05 * range(ax.YLim);
             xpos = min(ax.XLim) + .1 * range(ax.XLim);
-            if isempty(findobj(0,'Tag','timedepth_colortext'))
+            if isempty(findobj('Tag','timedepth_colortext'))
                 text(xpos, ypos, 'Colored by relative Position:East = blue, North = Red','Tag','timedepth_colortext');
             end
             
@@ -91,14 +91,14 @@ classdef TimeDepthPlotter
             if ~exist('color','var')
                 color=[0 0 .3];
             end
-            pl = findobj(0,'Tag','time_depth_plot');
+            pl = findobj('Tag','time_depth_plot');
             set(pl,'CData',color);
         end
         
         function ax = axes()
             % axes get axes for the time-depth plot
             %   ax = axes()
-            ax=findobj(0,'Tag','time_depth_axis');
+            ax=findobj('Tag','time_depth_axis');
         end
         function close()
             ax = TimeDepthPlotter.axes();

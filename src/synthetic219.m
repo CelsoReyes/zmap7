@@ -30,11 +30,11 @@ l = qq{3}; IM= str2double(l);
 l = qq{4}; inc= str2double(l);
 
 %  Create new figure
-% Find out of figure already exists
+% Find out if figure already exists
 %
 [existFlag,figNumber]=figure_exists('Synthetic Catalog');
-newsyntFlag=~existFlag;
-if newsyntFlag
+
+if isempty(figNumber)
     syntf=figure_w_normalized_uicontrolunits( ...
         'Name','Synthetic Catalog',...
         'NumberTitle','off', ...
@@ -46,12 +46,12 @@ if newsyntFlag
     %        'Position',[ 50 650 (ZmapGlobal.Data.map_len - [250 170]) ]);
     
 else
-    figure_w_normalized_uicontrolunits(syntf);
+    figure(syntf);
     delete(gcf);
     
 end
 hold on;
-figure_w_normalized_uicontrolunits(syntf);
+figure(syntf);
 delete(gca);
 delete(gca);
 reset(gca);
@@ -98,14 +98,14 @@ end
 %end;
 count
 TN
-figure_w_normalized_uicontrolunits(syntf);
+figure(syntf);
 axis off;
 text(.3,.5,'Please Wait ...');
 text(.3,.4,'Generating a Synthetic Catalog');
 
 PM=M(1:ct);
 PN=log10(N(1:ct));
-figure_w_normalized_uicontrolunits(syntf);
+figure(syntf);
 plot(PM,PN);
 xleb=xlabel('Magnitude');
 set(xleb,'FontSize',12);

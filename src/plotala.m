@@ -18,7 +18,7 @@ function plotala()
     hlpStr1= ...
         ['  To be implemented                             '
         ' corners with the mouse                         '];
-    % Find out of figure already exists
+    % Find out if figure already exists
     watchon
     if isempty(iala) ; iala = iwl2; end
     if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
@@ -27,12 +27,12 @@ function plotala()
     abo = abo2;
     
     
-    [existFlag,figNumber]=figure_exists('Alarm Display',1);
-    newCubeWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Alarm Display');
+    
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newCubeWindowFlag
+    if isempty(figNumber)
         cube = figure_w_normalized_uicontrolunits( ...
             'Name','Alarm Display',...
             'NumberTitle','off', ...
@@ -86,7 +86,7 @@ function plotala()
     
     report_this_filefun(mfilename('fullpath'));
     
-    figure_w_normalized_uicontrolunits(cube)
+    figure(cube);
     delete(gca)
     abo = abo2;
     if isempty(abo);zmap_message_center.set_info(' ','No data above threshold'); return; end
@@ -104,12 +104,12 @@ function plotala()
     hold on
     
     if isempty(abo) == 0
-        figure_w_normalized_uicontrolunits(map)
+        figure(map);
         update(mainmap())
         plot(abo(:,1),abo(:,2),'o',...
             'MarkerFaceColor','r','MarkerEdgeColor','y');
         
-        figure_w_normalized_uicontrolunits(cube)
+        figure(cube);
         plo  = plot3(abo(:,1),abo(:,2),abo(:,5),'ro');
         set(plo,'MarkerSize',6,'LineWidth',1.0)
         for i = 1:length(abo(:,1))
@@ -165,10 +165,10 @@ function plotala()
     viewer
     watchoff
     vie = gcf;
-    figure_w_normalized_uicontrolunits(cube)
+    figure(cube);
     watchoff
     done;
-    figure_w_normalized_uicontrolunits(cube)
+    figure(cube);
     
     rotate3d
     
@@ -190,7 +190,7 @@ function plotala()
         
         j = 0;
         tmp = abo;
-        figure_w_normalized_uicontrolunits(map)
+        figure(map);
         
         while length(abo) > 1
             j = j+1;
@@ -238,7 +238,7 @@ function plotala()
             ' calculated so far are stored in the variable re'];
         
         zmap_message_center.set_message(titStr,messtext);
-        figure_w_normalized_uicontrolunits(mess)
+        figure(mess);
         
         def = {'5','0.1'};
         tit ='Alarm Group Calculation';
@@ -339,7 +339,7 @@ function plotala()
     end
     
     function cian2()
-        % will display cum # curve for one anomaly group
+        % will display cumulative # curve for one anomaly group
         report_this_filefun(mfilename('fullpath'));
         
         def = {'1'};

@@ -38,12 +38,12 @@ hlpStr1mov= ...
     '                                                '];
 
 % find out if figure exists
-[existFlag,figNumber]=figure_exists('Movie Window',1);
-newmovWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Movie Window');
+
 
 % Set up the Movie window Enviroment
 %
-%if newmovWindowFlag
+%if isempty(figNumber)
 mov =   figure_w_normalized_uicontrolunits( ...
     'Name','Movie Window',...
     'NumberTitle','off', ...
@@ -53,7 +53,7 @@ mov =   figure_w_normalized_uicontrolunits( ...
 
 %end % if exist
 
-figure_w_normalized_uicontrolunits(mov)
+figure(mov);
 hold on
 mov = gcf;
 whitebg(color_fbg);

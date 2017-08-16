@@ -14,11 +14,11 @@ function view_xstress(lab1,re3)
     co = 'w';
     
     % Find out if figure already exists
-    [existFlag,figNumber]=figure_exists('Stress-section',1);
-    newstressmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Stress-section');
+    
     
     % Set up the Seismicity Map window Enviroment
-    if newstressmapWindowFlag
+    if isempty(figNumber)
         stressmap = figure_w_normalized_uicontrolunits( ...
             'Name','Stress-section',...
             'NumberTitle','off', ...
@@ -36,7 +36,7 @@ function view_xstress(lab1,re3)
     end   % This is the end of the figure setup
     
     % Now lets plot the color-maps
-    figure_w_normalized_uicontrolunits(stressmap)
+    figure(stressmap);
     delete(gca)
     delete(gca)
     delete(gca)
@@ -142,7 +142,7 @@ function view_xstress(lab1,re3)
         'Box','on','TickDir','out')
     % Print orientation
     orient portrait
-    figure_w_normalized_uicontrolunits(stressmap);
+    figure(stressmap);
     axes(h1)
     watchoff(stressmap)
     done

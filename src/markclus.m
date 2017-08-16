@@ -29,8 +29,7 @@ function clustNum0 = markclus(clus, clustNum0, sl, te)
     nu = (1:ZG.newt2.Count) ;
     nu = nu';
     if length(nu) > 2
-        set(findobj(0,'Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
-        %figure(cum);
+        set(findobj('Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
     end
     
     clustNum0 = val;

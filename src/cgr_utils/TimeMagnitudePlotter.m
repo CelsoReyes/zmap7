@@ -20,7 +20,7 @@ classdef TimeMagnitudePlotter
             % pl = plot(catalog)
             %
             tag = 'time_mag_plot';
-            ax = findobj(0,'Tag','time_mag_axis');
+            ax = findobj('Tag','time_mag_axis');
             if isempty(ax)
                 figure('Name','Time-Magnitude Plot',...
                     'NumberTitle','off', ...
@@ -61,7 +61,7 @@ classdef TimeMagnitudePlotter
         function pl2=addCatalog(catalog,color)
             % add another catalog to this plot
             tag= 'time_mag_plotA';
-            ax=findobj(0,'Tag','time_mag_axis');
+            ax=findobj('Tag','time_mag_axis');
             hold(ax,'on');
             pl2=scatter(ax, catalog.Date, catalog.Magnitude, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
         end
@@ -76,8 +76,8 @@ classdef TimeMagnitudePlotter
             %   The further East an event is, the more red.
             %   The further North, the more blue
             
-            pl = findobj(0,'Tag','time_mag_plot');
-            ax=findobj(0,'Tag','time_mag_axis');
+            pl = findobj('Tag','time_mag_plot');
+            ax=findobj('Tag','time_mag_axis');
             
             lonRange = range(catalog.Longitude);
             blue_val = catalog.Longitude/lonRange;
@@ -89,7 +89,7 @@ classdef TimeMagnitudePlotter
             pl.CData=[red_val .* 0.75 , zeros(size(red_val))+.2, blue_val .* 0.75];
             ypos = max(ax.YLim) - .05 * range(ax.YLim);
             xpos = min(ax.XLim) + .1 * range(ax.XLim);
-            if isempty(findobj(0,'Tag','timemag_colortext'))
+            if isempty(findobj('Tag','timemag_colortext'))
                 text(xpos, ypos, 'Colored by relative Position:East = blue, North = Red','Tag','timemag_colortext');
             end
             
@@ -102,14 +102,14 @@ classdef TimeMagnitudePlotter
             if ~exist('color','var')
                 color=[0 0 .3];
             end
-            pl = findobj(0,'Tag','time_mag_plot');
+            pl = findobj('Tag','time_mag_plot');
             set(pl,'CData',color);
         end
         
         function ax = axes()
             % axes get axes for the time-mag plot
             %   ax = axes()
-            ax=findobj(0,'Tag','time_mag_axis');
+            ax=findobj('Tag','time_mag_axis');
         end
         function close()
             ax = TimeMagnitudePlotter.axes();

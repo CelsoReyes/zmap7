@@ -79,7 +79,7 @@ function pvalcat()
     end
     
     %Find if the figure already exist.
-    pgraph=findobj(0,'Tag','p-value graph');
+    pgraph=findobj('Tag','p-value graph');
     
     %Make figure
     if isempty(pgraph)
@@ -101,7 +101,7 @@ function pvalcat()
         hold on
     else
         hold on
-        figure_w_normalized_uicontrolunits(pgraph)
+        figure(pgraph);
         hold on
         delete(gca)
         axis off

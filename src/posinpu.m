@@ -124,7 +124,7 @@ end
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  figure_w_normalized_uicontrolunits(mapl);
+  figure(mapl);
 end
  
 end

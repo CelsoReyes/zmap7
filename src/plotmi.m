@@ -6,8 +6,8 @@ function plotmi(var1)
     global  a mi mif2 mif1 newcat2
     global tmp cumu2 mi2
     newcat2 = a;
-    [existFlag,figNumber]=figure_exists('Misfit ',1);
-    figure_w_normalized_uicontrolunits(figNumber)
+    figNumber=findobj('Type','Figure','-and','Name','Misfit ');
+    figure(figNumber);
 
     delete(gca);delete(gca);
     delete(gca);delete(gca);

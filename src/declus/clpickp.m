@@ -8,7 +8,7 @@ function clpickp(choice)
     %
     %clpickp.m                          A.Allmann
     
-    global clu newclcat equi_button backcat clu1 mapp
+    global clu newclcat equi_button backcat clu1
     global n x y xcordinate ycordinate
     global equi %[IN/OUT]
     global bgevent backequi
@@ -25,7 +25,7 @@ function clpickp(choice)
             figure(clu1);
         end
     elseif decc==0
-        figure(mapp)
+        figure(findobj('Tag','mapp'))
     end
     switch choice
         case 'MORE'
@@ -119,12 +119,12 @@ function clpickp(choice)
         
         if decc~=0
             if isempty(ttcat)
-                figure_w_normalized_uicontrolunits(clu)
+                figure(clu);
             else
-                figure_w_normalized_uicontrolunits(clu1);
+                figure(clu1);
             end
         elseif decc==0
-            figure_w_normalized_uicontrolunits(mapp)
+            figure(findobj('Tag','mapp'));
         end
         plot(x,y,'b-','era','back');        % plot outline
         sum3 = 0.;

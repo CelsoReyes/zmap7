@@ -17,10 +17,10 @@ report_this_filefun(mfilename('fullpath'));
 %co = 'w';
 
 
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('b and p -value cross-section',1);
-newbpmapcsWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','b and p -value cross-section');
+
 
 % This is the info window text
 %
@@ -66,7 +66,7 @@ hlpStr2zmap= ...
 
 % Set up the Seismicity Map window Enviroment
 %
-if newbpmapcsWindowFlag
+if isempty(figNumber)
     bpmapcs = figure_w_normalized_uicontrolunits( ...
         'Name','b and p -value cross-section',...
         'NumberTitle','off', ...
@@ -85,7 +85,7 @@ if newbpmapcsWindowFlag
 
     callbackStr= ...
         ['f1=gcf; f2=gpf; set(f1,''Visible'',''off'');close(bpmapc);', ...
-        'if f1~=f2, figure_w_normalized_uicontrolunits(map);done; end'];
+        'if f1~=f2, figure(map);done; end'];
 
     uicontrol('Units','normal',...
         'Position',[.0 .75 .08 .06],'String','Close ',...
@@ -120,11 +120,11 @@ end   % This is the end of the figure setup
 
 % Now lets plot the color-map of the b and p -value.
 %
-figure_w_normalized_uicontrolunits(bpmapcs)
+figure(bpmapcs);
 delete(gca)
 delete(gca)
 delete(gca)
-dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+% delete(sizmap);
 reset(gca)
 cla
 hold off
@@ -250,7 +250,7 @@ set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',.
     'Box','on','TickDir','out')
 %whitebg(gcf,[0 0 0])
 %set(gcf,'Color',[ 0 0 0 ])
-figure_w_normalized_uicontrolunits(bpmapcs);
+figure(bpmapcs);
 %axes(h1);
 watchoff(bpmapcs);
 done

@@ -515,7 +515,7 @@ function uiprint(action)
         fi = gcf;
         if get(groot,'ScreenDepth') > 1;
             pafi = gpf;
-            figure_w_normalized_uicontrolunits(gpf)
+            figure(gpf);
             cu= get(gcf,'Color');
             cuca = get(gca,'Color');
             if cuca(:,1)  ~= 'n';set(gca,'Color',[1 1 1 ]); end

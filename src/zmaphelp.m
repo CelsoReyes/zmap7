@@ -15,10 +15,10 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     
     % First turn on the watch pointer in the old figure
     % If the Help Window has already been created, bring it to the front
-    [existFlag,figNumber]=figure_exists('ZMAP Info Window',1);
-    newHelpWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','ZMAP Info Window');
     
-    if newHelpWindowFlag
+    
+    if isempty(figNumber)
         position=get(groot,'DefaultFigurePosition');
         position(3:4)=[650 500];
         figNumber=figure_w_normalized_uicontrolunits( ...
@@ -155,7 +155,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     % Turn off the watch pointer in the old figure
     %watchoff(oldFigNumber);
     watchoff(gcf) %TOFIX Undefined function or variable 'gpf'.
-    figure_w_normalized_uicontrolunits(figNumber);
+    figure(figNumber);
     watchoff
     
     function callbackfun_001(mysrc,myevt)
@@ -174,7 +174,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
         f2=gpf;
         set(f1,'Visible','off');
         if f1~=f2
-            figure_w_normalized_uicontrolunits(f2);
+            figure(f2);
         end
     end
 end

@@ -59,11 +59,11 @@ xsecy = newa(:,7);
 % now lets plot the combined x-section
 % with origin at the larget event
 
-[existFlag,figNumber]=figure_exists('Cross -Section',1);
-newCrSeWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
 
 
-if newCrSeWindowFlag
+
+if isempty(figNumber)
     xsec_fig = figure_w_normalized_uicontrolunits( ...
         'Name','Cross -Section',...
         'NumberTitle','off', ...
@@ -74,7 +74,7 @@ if newCrSeWindowFlag
 
 end
 
-figure_w_normalized_uicontrolunits(xsec_fig)
+figure(xsec_fig);
 hold on
 delete(gca);delete(gca);
 set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
@@ -138,7 +138,7 @@ uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...
     'position',[.2 .9 .2 .05],'String','Time Plot ',...
      'callback',@callbackfun_008);
 
-figure_w_normalized_uicontrolunits(mapl)
+figure(mapl);
 uic2 = uicontrol('BackGroundColor',[0.9 0.9 0.9],'Units','normal',...
     'Position',[.80 .92 .20 .06],'String','Refresh ',...
      'callback',@callbackfun_009);

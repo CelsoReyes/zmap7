@@ -22,16 +22,16 @@ function plot3d()
         ' legend as a function of depth/time) in the map      '
         ' window and recreate the 3D view.                    '];
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     watchon
     
     
     [existFlag,map3]=figure_exists('3 D View',1);
-    newmap3WindowFlag=~existFlag;
+    
     
     % Set up the Seismicity Map 3 D window Enviroment
     %
-    if newmap3WindowFlag
+    if isempty(figNumber)
         map3 = figure_w_normalized_uicontrolunits( ...
             'Name','3 D View',...
             'NumberTitle','off', ...

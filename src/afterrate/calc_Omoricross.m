@@ -130,7 +130,7 @@ if sel == 'in'
 
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized','Position', [.60 .05 .15 .12], ...
-        'Callback', 'tgl1=tgl1.Value;tgl2=tgl2.Value; bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_Omoricross(sel)',...
+        'Callback',@callback_ok,...
         'String', 'OK');
 
     % Labels
@@ -167,11 +167,6 @@ if sel == 'in'
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Max. Radius /[km]:');
-
-    %     text('Color', [0 0 0], 'EraseMode', 'normal', 'Units', 'normalized', ...
-    %         'Position', [0.5 0.24 0], 'Rotation', 0, 'HorizontalAlignment', 'left', ...
-    %         'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Number of runs:');
-
     
     set(gcf,'visible','on');
     watchoff
@@ -180,7 +175,7 @@ end   % if sel == in
 
 if sel == 'ca'
 
-    figure_w_normalized_uicontrolunits(xsec_fig)
+    figure(xsec_fig);
     hold on
 
     if bGridEntireArea % Use entire area for grid
@@ -527,7 +522,8 @@ end
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ni=str2double(ni_field.String);
+  update_editfield_value(mysrc);
+  ni=mysrc.Value;
    tgl2.Value=0;
    tgl1.Value=1;
 end
@@ -535,7 +531,8 @@ end
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ra=str2double(ra_field.String);
+  update_editfield_value(mysrc);
+  ra=mysrc.Value;
    tgl2.Value=1;
    tgl1.Value=0;
 end
@@ -543,14 +540,15 @@ end
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  dx_field.Value=str2double(dx_field.String);
-  dx=dx_field.Value;
+  update_editfield_value(mysrc);
+  dx=mysrc.Value;
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  dd=str2double(dd_field.String);
+  update_editfield_value(mysrc);
+  dd=mysrc.Value;
 end
  
 function callbackfun_006(mysrc,myevt)
@@ -563,8 +561,8 @@ end
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  bootloops=str2double(bootloops_field.String);
-   ;
+  update_editfield_value(mysrc);
+  bootloops=mysrc.Value;
 end
  
 function callbackfun_008(mysrc,myevt)
@@ -588,6 +586,15 @@ end
 function callbackfun_011(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  Nmin=str2double(nmin_field.String);
+  update_editfield_value(mysrc);
+  Nmin=mysrc.Value;
 end
- 
+function callback_ok(mysrc,myevt)
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
+ tgl1=tgl1.Value;
+ tgl2=tgl2.Value;
+ bGridEntireArea = get(chkGridEntireArea, 'Value');
+ close
+ calc_Omoricross('ca')
+end
+end

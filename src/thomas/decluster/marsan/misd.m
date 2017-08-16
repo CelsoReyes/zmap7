@@ -58,7 +58,7 @@ cd ~/zmap/src/thomas/decluster/marsan
 tic
 unix('./misd inputmisd.in');
 toc
-eval(sprintf('cd %s',sPath));
+cd(sPath); % was: eval(sprintf('cd %s',sPath));
 % extract vector with 1 and 0's of events in declustered catalog
 % unix(['awk -f ~/zmap/src/thomas/decluster/reasen/clu2list.awk cluster.ano > v.dat ' ]);
 % import vector

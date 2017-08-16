@@ -106,7 +106,7 @@ elseif var1==2           %area selection
         'the final point.                      '];
     zmap_message_center.set_message('Select Polygon for a grid',messtext);
 
-    figure_w_normalized_uicontrolunits(map);
+    figure(map);
     hold on
     ax = findobj('Tag','main_map_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
@@ -177,13 +177,13 @@ elseif var1==2           %area selection
 
     close(wai)
     %make a color map
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Misfit-Map 2',1);
-    newlapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Misfit-Map 2');
+    
     % Set up the Seismicity Map window Enviroment
     %
-    if newlapWindowFlag
+    if isempty(figNumber)
         mifmap = figure_w_normalized_uicontrolunits( ...
             'Name','Misfit-Map 2',...
             'NumberTitle','off', ...

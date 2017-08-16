@@ -60,12 +60,12 @@ function view_bpva(lab1,re3)
     % Set up the Seismicity Map window Enviroment
     %
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('bp-value-map',1);
-    newbpmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','bp-value-map');
     
-    if newbpmapWindowFlag
+    
+    if isempty(figNumber)
         oldfig_button = false;
     end
     
@@ -100,7 +100,7 @@ function view_bpva(lab1,re3)
     
     % Now lets plot the color-map!
     %
-    figure_w_normalized_uicontrolunits(bpmap)
+    figure(bpmap);
     delete(gca)
     delete(gca)
     delete(gca)
@@ -212,7 +212,7 @@ function view_bpva(lab1,re3)
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    figure_w_normalized_uicontrolunits(bpmap);
+    figure(bpmap);
     axes(h1)
     watchoff(bpmap)
     done

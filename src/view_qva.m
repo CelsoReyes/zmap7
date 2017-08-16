@@ -13,10 +13,10 @@ function view_qva(lab1,re3)
     %co = 'w';
     
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('q-detect-map',1);
-    newbmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','q-detect-map');
+    
     
     % This is the info window text
     %
@@ -64,7 +64,7 @@ function view_qva(lab1,re3)
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newbmapWindowFlag
+    if isempty(figNumber)
         qmap = figure_w_normalized_uicontrolunits( ...
             'Name','q-detect-map',...
             'NumberTitle','off', ...
@@ -113,11 +113,11 @@ function view_qva(lab1,re3)
     
     % Now lets plot the color-map of the z-value
     %
-    figure_w_normalized_uicontrolunits(qmap)
+    figure(qmap);
     delete(gca)
     delete(gca)
     delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    % delete(sizmap);
     reset(gca)
     cla
     hold off
@@ -211,7 +211,7 @@ function view_qva(lab1,re3)
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    figure_w_normalized_uicontrolunits(qmap);
+    figure(qmap);
     axes(h1)
     watchoff(qmap)
     whitebg(gcf,[ 0 0 0 ])

@@ -7,7 +7,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 % make another dialog interface and
 %
-figure_w_normalized_uicontrolunits(mess)
+figure(mess);
 clf
 %initial values
 iwl3 = 1;

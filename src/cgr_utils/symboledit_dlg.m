@@ -10,7 +10,7 @@ function symboledit_dlg(ax,field)
     
     if ischar(ax)
         % ax was a Tag to an axis, but this requiers the handle
-        ax = findobj(0, 'Tag', ax);
+        ax = findobj( 'Tag', ax);
     end
     
     lines=findobj(ax,'Type','Line','-or','Type','Scatter');

@@ -21,14 +21,14 @@ function view_varmap(lab1,re3)
     %co = 'w';
     
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('variance-value-map',1);
-    newbmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','variance-value-map');
+    
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newbmapWindowFlag
+    if isempty(figNumber)
         bmap = figure_w_normalized_uicontrolunits( ...
             'Name','variance-value-map',...
             'NumberTitle','off', ...
@@ -50,11 +50,11 @@ function view_varmap(lab1,re3)
     
     % Now lets plot the color-map of the z-value
     %
-    figure_w_normalized_uicontrolunits(bmap)
+    figure(bmap);
     delete(gca)
     delete(gca)
     delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    % delete(sizmap);
     reset(gca)
     cla
     hold off
@@ -152,7 +152,7 @@ function view_varmap(lab1,re3)
         'FontWeight','normal','LineWidth',1.,...
         'Box','on','TickDir','out');
     set(gcf,'color','w');
-    figure_w_normalized_uicontrolunits(bmap);
+    figure(bmap);
     axes(h1)
     watchoff(bmap)
     %whitebg(gcf,[ 0 0 0 ])

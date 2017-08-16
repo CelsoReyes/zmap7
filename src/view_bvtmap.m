@@ -13,15 +13,15 @@ function view_bvtmap(lab1,re3)
     %co = 'w';
     
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('differential b-value-map',1);
-    newbmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','differential b-value-map');
+    
     
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newbmapWindowFlag
+    if isempty(figNumber)
         bmap = figure_w_normalized_uicontrolunits( ...
             'Name','differential b-value-map',...
             'NumberTitle','off', ...
@@ -60,11 +60,11 @@ function view_bvtmap(lab1,re3)
     
     % Now lets plot the color-map of the z-value
     %
-    figure_w_normalized_uicontrolunits(bmap)
+    figure(bmap)
     delete(gca)
     delete(gca)
     delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    % delete(sizmap);
     reset(gca)
     cla
     hold off
@@ -172,7 +172,7 @@ function view_bvtmap(lab1,re3)
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
         'FontWeight','normal','LineWidth',1.,...
         'Box','on','TickDir','out','Ticklength',[0.02 0.02])
-    figure_w_normalized_uicontrolunits(bmap);
+    figure(bmap);
     %sizmap = signatur('ZMAP','',[0.01 0.04]);
     %set(sizmap,'Color','k')
     axes(h1)

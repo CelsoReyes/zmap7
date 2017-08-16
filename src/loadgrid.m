@@ -17,7 +17,7 @@ if length(path1) > 1
     think
     load([path1 file1])
 
-    figure_w_normalized_uicontrolunits(map)
+    figure(map);
     d =  [min(gx) min(gy) ; min(gx) max(gy) ; max(gx) max(gy) ; max(gx) min(gy); min(gx) min(gy)];
 
     storedcat=a;

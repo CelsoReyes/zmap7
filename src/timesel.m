@@ -2,8 +2,6 @@ function [tt1,tt2]=timesel(var1)
     % timesel.m                       Alexander Allmann
     % function to select time intervalls for further examination
     
-    
-    global ccum cum
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
@@ -15,9 +13,9 @@ function [tt1,tt2]=timesel(var1)
             'sequence with the LEFT mouse button            '];
         zmap_message_center.set_message('Time Selection ',messtext);
         if var1==1
-            figure(ccum)
+            figure(figure(findobj('Tag','ccum','-and','Type','Figure');)
         else
-            figure(cum)
+            figure(figure(findobj('Tag','cum','-and','Type','Figure');)
         end
         ax = gca;
         hold on

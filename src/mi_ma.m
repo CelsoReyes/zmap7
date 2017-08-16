@@ -7,11 +7,11 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 
 report_this_filefun(mfilename('fullpath'));
 
-[existFlag,figNumber]=figure_exists('Misfit as a Function of Magnitude',1);
+figNumber=findobj('Type','Figure','-and','Name','Misfit as a Function of Magnitude');
 
-newWindowFlag=~existFlag;
 
-if newWindowFlag
+
+if isempty(figNumber)
     mif88 = figure_w_normalized_uicontrolunits( ...
         'Name','Misfit as a Function of Magnitude',...
         'NumberTitle','off', ...

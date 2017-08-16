@@ -23,7 +23,7 @@ function clpval(var1)
 
 
     global file1             
-    global mess ccum bgevent clust original newclcat
+    global mess bgevent clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
@@ -39,9 +39,9 @@ function clpval(var1)
     tmvar=[];
     %input of parameters(Magnitude,Time)
     if var1==1  | var1==3 | var1==4  | var1==5
-        [existFlag,figNumber]=figure_exists('P-Value Plot',1);
+        figNumber=findobj('Type','Figure','-and','Name','P-Value Plot');
         if existFlag
-            figure_w_normalized_uicontrolunits(pplot);
+            figure(pplot);
             clf
         else
             if var1==3 | var1==4
@@ -281,7 +281,7 @@ function clpval(var1)
                 'string',labelList,...
                 'callback',@callbackfun_007);
 
-            figure_w_normalized_uicontrolunits(mess);
+            figure(mess);
             clf;
             str =  ['\newline \newline \newlinePlease give in parameters in green fields\newlineThis parameters will be used as the threshold\newline for the P-Value.\newlineAfter input push GO to continue. '];
             te = text(0.01,0.9,str) ;
@@ -290,7 +290,7 @@ function clpval(var1)
             set(gca,'visible','off');
         end
         if autop==1
-            figure_w_normalized_uicontrolunits(pplot);
+            figure(pplot);
             Info_p = uicontrol('Style','Pushbutton',...
                 'String','Info ',...
                 'Position',[.3 .05 .10 .06],...
@@ -340,7 +340,7 @@ function clpval(var1)
             mains=find(ttcat(:,6)==max(ttcat(:,6)));
             mains=ttcat(mains(1),:);         %biggest shock in sequence
             if var1==7    %input of maintime of sequence(normally onset of high seismicity)
-                figure_w_normalized_uicontrolunits(pplot)
+                figure(pplot);
                 seti = uicontrol('Units','normal',...
                     'Position',[.4 .01 .2 .05],'String','Select Maintime');
 
@@ -408,7 +408,7 @@ function clpval(var1)
         ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
 
         if autop~=1
-            figure_w_normalized_uicontrolunits(pplot);
+            figure(pplot);
             delete(freq_field1);
             delete(freq_field2);
             delete(freq_field3);

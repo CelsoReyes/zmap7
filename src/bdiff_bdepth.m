@@ -16,9 +16,9 @@ function  bdiff_bdepth(mycat)
     %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
     
-    [existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
+    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
     if existFlag
-        % figure_w_normalized_uicontrolunits(bfig);
+        % figure(bfig);
         bfig = figNumber;
         %delete(gca)
         %set(bfig,'visible','off')
@@ -80,7 +80,7 @@ function  bdiff_bdepth(mycat)
         disp('hold on')
         hold on
     else
-        figure_w_normalized_uicontrolunits(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
+        figure(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
     end

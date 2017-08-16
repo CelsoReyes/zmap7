@@ -130,6 +130,7 @@ function h = create_message_figure()
     set(h,'NumberTitle','off',...
         'Name','Message Window',...
         'Units','pixel',...
+        'Menu','none',...
         'backingstore','off',...
         'tag','zmap_message_window',...
         'Resize','off',...
@@ -304,16 +305,16 @@ function do_selected_catalog_overview(s,~)
 end
 
 function set_mapbutton_enable(val)
-    h = findobj(0, 'Tag','zmap_curr_cat_mapbutton');
+    h = findobj( 'Tag','zmap_curr_cat_mapbutton');
     h.Enable = val;
 end
 function set_timeseriesbutton_enable(val)
-    h = findobj(0, 'Tag','zmap_curr_cat_tsbutton');
+    h = findobj( 'Tag','zmap_curr_cat_tsbutton');
     h.Enable = val;
 end
 
 function set_editbutton_enable(val)
-    h = findobj(0, 'Tag','zmap_curr_cat_editbutton');
+    h = findobj( 'Tag','zmap_curr_cat_editbutton');
     h.Enable = val;
 end
 

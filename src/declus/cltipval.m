@@ -24,7 +24,7 @@ function cltipval(var1)
 
 
     global file1             
-    global mess ccum bgevent clust original newclcat
+    global bgevent clust original newclcat
     global backcat ttcat cluscat
    global  sys clu te1
     global xt par3 cumu cumu2
@@ -41,7 +41,7 @@ function cltipval(var1)
     if var1==1 | var1==2              %magnitude or time estimate
         [existFlag,figNumber]=figure_exists('P-Value Estimate');
         if existFlag
-            figure_w_normalized_uicontrolunits(mtpl);
+            figure(mtpl);
             clf
         else
             mtpl=figure_w_normalized_uicontrolunits(...
@@ -259,7 +259,7 @@ function cltipval(var1)
             'position',labelPos,...
             'string', labelList,...
             'callback',@callbackfun_010);
-        figure_w_normalized_uicontrolunits(mess);
+        figure(mess);
         clf;
         str =  ['\newline \newline \newlinePlease give in parameters in green fields\newlineThis parameters will be used as the threshold\newline for the P-Value.\newlineAfter input push GO to continue. '];
         te = text(0.01,0.9,str) ;
@@ -304,7 +304,7 @@ function cltipval(var1)
             mains=ttcat(mains(1),:);         %biggest shock in sequence
             if var1==4  %input of maintime of sequence(normally onset of high seismicity)
                 if i==1
-                    figure_w_normalized_uicontrolunits(mtpl)
+                    figure(mtpl);
                     seti = uicontrol('Units','normal',...
                         'Position',[.4 .01 .2 .05],'String','Select Maintime');
                     XLim=get(ctiplo,'XLim');
@@ -321,7 +321,7 @@ function cltipval(var1)
                         tt4=tmp3;
                         disp('maintime was set to starttime of estimate')
                     end
-                    figure_w_normalized_uicontrolunits(wai)
+                    figure(wai);
                 end
             end                   %end of input maintime
 
@@ -435,7 +435,7 @@ function cltipval(var1)
             mains=ttcat(mains(1),:);         %biggest shock in sequence
             if var1==7  %input of maintime of sequence(normally onset of high seismicity)
                 if i==1
-                    figure_w_normalized_uicontrolunits(mtpl)
+                    figure(mtpl);
                     seti = uicontrol('Units','normal',...
                         'Position',[.4 .01 .2 .05],'String','Select Maintime');
                     XLim=get(ctiplo,'XLim');
@@ -451,7 +451,7 @@ function cltipval(var1)
                         tt4=tmp3;
                         disp('maintime was set to starttime of estimate')
                     end
-                    figure_w_normalized_uicontrolunits(wai);
+                    figure(wai);
                 end
             end                   %end of input maintime
 
@@ -534,7 +534,7 @@ function cltipval(var1)
         [existFlag,figNumber]=figure_exists('Omori-Parameters');
 
         if existFlag
-            figure_w_normalized_uicontrolunits(omori);
+            figure(omori);
             clf;
         else
             omori=figure_w_normalized_uicontrolunits(....

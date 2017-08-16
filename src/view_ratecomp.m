@@ -15,10 +15,10 @@ function view_ratecomp(det,re3)
     co = 'w';
     clear title;
     
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    [existFlag,figNumber]=figure_exists('Z-Value-Map',1);
-    newzmapWindowFlag=~existFlag;
+    figNumber=findobj('Type','Figure','-and','Name','Z-Value-Map');
+    
     
     % This is the info window text
     %
@@ -26,7 +26,7 @@ function view_ratecomp(det,re3)
     
     % Set up the Seismicity Map window Enviroment
     %
-    if newzmapWindowFlag
+    if isempty(figNumber)
         zmap = figure_w_normalized_uicontrolunits( ...
             'Name','Z-Value-Map',...
             'NumberTitle','off', ...
@@ -43,11 +43,11 @@ function view_ratecomp(det,re3)
     
     % Now lets plot the color-map of the z-value
     %
-    figure_w_normalized_uicontrolunits(zmap)
+    figure(zmap);
     delete(gca)
     delete(gca)
     delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')'; eval(dele,er);
+    % delete(sizmap);
     reset(gca)
     cla
     hold off
@@ -143,7 +143,7 @@ function view_ratecomp(det,re3)
         'Box','on','TickDir','out','Ticklength',[0.02 0.02])
     set(gcf,'color','w');
     
-    figure_w_normalized_uicontrolunits(zmap);
+    figure(zmap);
     %sizmap = signatur('ZMAP','',[0.01 0.04]);
     %set(sizmap,'Color','k')
     axes(h1)

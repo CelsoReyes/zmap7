@@ -151,15 +151,15 @@ end
 
 
 
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('stress-tensor with depth',1);
-newdepWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','stress-tensor with depth');
+
 bdep= figNumber;
 
 % Set up the window
 
-if newdepWindowFlag
+if isempty(figNumber)
     bdep = figure_w_normalized_uicontrolunits( ...
         'Name','stress-tensor with depth',...
         'NumberTitle','off', ...
@@ -171,7 +171,7 @@ if newdepWindowFlag
 end
 
 hold on
-figure_w_normalized_uicontrolunits(bdep)
+figure(bdep);
 hold on
 delete(gca)
 delete(gca)

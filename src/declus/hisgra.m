@@ -1,7 +1,7 @@
 function hisgra(mycat, opt)
-    %histogram.m                               A.Allmann
     %plots histogram in cumulative number window
     %vari1 depends on input parameter
+    %histogram.m                               A.Allmann
     
     %modified by Reyes 2017
     
@@ -14,7 +14,10 @@ function hisgra(mycat, opt)
         return;
     end
     
-    stri1='Histogram';
+    myFigName='Histogram';
+    myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
+    
+    stri1=myFigName;
     stri2=opt;
     strii1=stri1;
     strii2=stri2;
@@ -22,9 +25,9 @@ function hisgra(mycat, opt)
     stri4='Foreshock Duration ';
     hisvar=vari1;
     tm1=[];
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
-    histo = findobj(0,'Name','Histogram');
+    histo = myFigFinder();
     if  ~isempty(histo)
         figure(histo);
         delete(findobj(histo,'Type','Axes'));

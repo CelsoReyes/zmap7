@@ -8,7 +8,7 @@ function cltiplot(var1)
     %
     
     global freq_field freq_slider
-    global mess ccum bgevent file1 clust original newclcat
+    global bgevent file1 clust original newclcat
     global backcat ttcat cluscat
     global  sys clu te1
     global clu1 pyy stri statime
@@ -17,24 +17,26 @@ function cltiplot(var1)
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo
     
+    report_this_filefun(mfilename('fullpath'));
+    myFigName='Cumulative Number Plot (Cluster)';
     
     if ~isempty(pyy)
-        delete(ccum);
+        delete(findobj('Tag','ccum','-and','Type','Figure'));
     end
-    % Find out of figure already exists
+    % Find out if figure already exists
     %
     
-    [existFlag,figNumber]=figure_exists('Cumulative Number Plot (Cluster)',1);
-    newCumWindowFlag=~existFlag;
+    ccum=findobj('Type','Figure','-and','Name',myFigName);
     
     % Set up the Seismicity Map window
     
-    if newCumWindowFlag
+    if isempty(ccum)
         ccum = figure_w_normalized_uicontrolunits( ...
-            'Name','Cumulative Number Plot (Cluster)',...
+            'Name',myFigName,...
             'NumberTitle','off', ...
             'NextPlot','new', ...
             'Visible','off', ...
+            'Tag','ccum',...
             'Position',[ 100 100 (ZmapGlobal.Data.map_len - [60 40]) ]);
         
         set(ccum,'visible','off');
@@ -52,10 +54,8 @@ function cltiplot(var1)
             'Position',[.0 .93 .08 .06],'String','Print ',...
             'callback',@callbackfun_003)
         
-        
-        
     else
-        figure_w_normalized_uicontrolunits(ccum);
+        figure(ccum);
     end
     
     hold off
@@ -104,14 +104,6 @@ function cltiplot(var1)
     else
         par5=.02;
     end
-    % set arrays to zero
-    %
-    %cumu = 0:par5:tdiff+2*par5;
-    %cumu2 = 0:par5:tdiff-1;
-    %cumu = cumu * 0;
-    %cumu2 = cumu2 * 0;
-    
-    %
     % calculate cumulative number versus time and bin it
     %
     n = ZG.newt2.Count;
@@ -149,18 +141,6 @@ function cltiplot(var1)
         te1 = text(big(:,3),f,stri4);
         set(te1,'FontWeight','bold','Color','m','FontSize',ZmapGlobal.Data.fontsz.s)
         
-        
-        %option to plot the location of big events in the map
-        %
-        %if var1==1
-        % figure_w_normalized_uicontrolunits(clu)
-        %else
-        % figure_w_normalized_uicontrolunits(clu1);
-        %end
-        % plog = plot(big(:,1),big(:,2),'or','EraseMode','xor');
-        %set(plog,'MarkerSize',ms10,'LineWidth',2.0)
-        %figure_w_normalized_uicontrolunits(ccum)
-        
     end %if big
     
     if exist('stri', 'var')
@@ -190,7 +170,7 @@ function cltiplot(var1)
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
     set(ccum,'Visible','on');
-    figure_w_normalized_uicontrolunits(ccum);
+    figure(ccum);
     watchoff(ccum)
     watchoff
     
@@ -233,13 +213,12 @@ function cltiplot(var1)
         xt=[];
         cumu=[];
         cumu2=[];
-        if isempty(pyy);
+        if isempty(pyy)
             set(ccum,'visible','off');
-        else;
-            ;
+        else
             delete(ccum);
             pyy=[];
-        end;
+        end
     end
     
     function callbackfun_003(mysrc,myevt)

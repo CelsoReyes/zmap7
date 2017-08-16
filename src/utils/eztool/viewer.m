@@ -33,7 +33,7 @@ function viewer()
 
     viewerfig = findfig('3-D Viewer');
     if(viewerfig)
-        figure_w_normalized_uicontrolunits(viewerfig);
+        figure(viewerfig);
     else
         set(gcf,'units','normalized')
         pfig=get(gcf,'Position');

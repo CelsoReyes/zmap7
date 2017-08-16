@@ -13,7 +13,7 @@ global xsec_fig h2 newa newa2
 
 report_this_filefun(mfilename('fullpath'));
 
-figure_w_normalized_uicontrolunits(xsec_fig)
+figure(xsec_fig);
 
 %loop to pick points
 %axes(h2)

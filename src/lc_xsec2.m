@@ -245,7 +245,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         % Open another graphic window for the cross section
         map_fig = gcf;
         xsec_fig = map_fig + 1;
-        figure_w_normalized_uicontrolunits(xsec_fig)
+        figure(xsec_fig);
         set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
 
         %global Xwbz Ywbz
@@ -300,7 +300,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
             'Horizontal','right','Vertical','bottom','Units','norm');
 
         % Go back to map figure
-        %figure_w_normalized_uicontrolunits(map_fig)
+        %figure(map_fig);
 
     end
 

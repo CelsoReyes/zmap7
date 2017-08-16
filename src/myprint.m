@@ -188,7 +188,7 @@ function myprint(command,param1)
         % Print to printer
         if get(h(4),'Value')== 1
             drawnow('discard')
-            figure_w_normalized_uicontrolunits(figp)
+            figure(figp);
             whitebg(gcf,[1 1 1]);
             cuca = get(gca,'Color');
             set(gca,'Color','none');
@@ -214,7 +214,7 @@ function myprint(command,param1)
             
             % Print the file
             drawnow('discard')
-            figure_w_normalized_uicontrolunits(figp)
+            figure(figp);
             whitebg(gcf,[1 1 1]);
             cuca = get(gca,'Color');
             set(gca,'Color',[1 1 1 ]);

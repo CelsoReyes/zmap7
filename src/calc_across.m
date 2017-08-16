@@ -198,7 +198,7 @@ end   % if sel == in
 
 if sel == 'ca'
 
-    figure_w_normalized_uicontrolunits(xsec_fig)
+    figure(xsec_fig);
     hold on
 
     if bGridEntireArea % Use entire area for grid

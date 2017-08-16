@@ -23,15 +23,15 @@ for i = 1:ni/5:length(ZG.newt2)-ni
 
 end
 
-% Find out of figure already exists
+% Find out if figure already exists
 %
-[existFlag,figNumber]=figure_exists('Mc with time',1);
-newdepWindowFlag=~existFlag;
+figNumber=findobj('Type','Figure','-and','Name','Mc with time');
+
 bdep= figNumber;
 
 % Set up the window
 
-if newdepWindowFlag
+if isempty(figNumber)
     Mcfig = figure_w_normalized_uicontrolunits( ...
         'Name','Mc with time',...
         'NumberTitle','off', ...
@@ -43,7 +43,7 @@ if newdepWindowFlag
 end
 
 hold on
-figure_w_normalized_uicontrolunits(Mcfig)
+figure(Mcfig);
 hold on
 delete(gca)
 delete(gca)

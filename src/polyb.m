@@ -15,8 +15,8 @@ global bmapc h2 newa
 
 report_this_filefun(mfilename('fullpath'));
 
-[existFlag,figNumber]=figure_exists('b-value cross-section',1);
-figure_w_normalized_uicontrolunits(figNumber)
+figNumber=findobj('Type','Figure','-and','Name','b-value cross-section');
+figure(figNumber);
 
 %loop to pick points
 %axes(h2)

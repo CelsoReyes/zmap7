@@ -124,7 +124,7 @@ if length(masi_syn) > length(masi_syn2), masi_syn2(length(masi_syn)) = 0; end
 
 % plot Magnitude Signature
 %
-figure_w_normalized_uicontrolunits(bvfig)
+figure(bvfig);
 %rect = [0.55, 0.10, 0.35/2, 0.20];
 rect = [0.20, 0.07, 0.35, 0.25];
 axes('position',rect)

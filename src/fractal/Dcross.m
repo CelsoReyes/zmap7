@@ -140,7 +140,7 @@ end   % if sel == in
 
 if sel == 'ca'
 
-    figure_w_normalized_uicontrolunits(xsec_fig)
+    figure(xsec_fig);
     hold on
 
     messtext=...
@@ -291,7 +291,7 @@ if sel == 'ca'
 
     end  % for  newgri
 
-    figure_w_normalized_uicontrolunits(HCIfig);
+    figure(HCIfig);
     cb = colorbar('horiz');
     set(cb, 'position', [0.32 0.08 0.4 0.03], 'XTickLabel', col);
     axes('pos',[0 0 1 1]); axis off; hold on;

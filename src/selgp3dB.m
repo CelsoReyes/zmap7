@@ -7,7 +7,7 @@ report_this_filefun(mfilename('fullpath'));
 questdlg('Please selelct a polygon on the map', ...
     '3D grid selection', ...
     'OK','Cancel');
-figure_w_normalized_uicontrolunits(map);
+figure(map);
 
 hold on
 ax = findobj('Tag','main_map_ax');
@@ -58,7 +58,7 @@ l = t4(:,4) == 1;
 t5 = t4(l,:);
 
 % plot the grid points
-figure_w_normalized_uicontrolunits(map)
+figure(map);
 pl = plot(newgri(:,1),newgri(:,2),'+k','era','normal');
 set(pl,'MarkerSize',8,'LineWidth',1)
 drawnow
