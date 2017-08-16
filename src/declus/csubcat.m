@@ -250,7 +250,7 @@ function csubcat()
     
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG=ZmapGlobal.Data;
         ZG.mainmap_plotby='tim';
         setleg;
@@ -258,7 +258,7 @@ function csubcat()
     
     function callbackfun_002(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG=ZmapGlobal.Data;
         ZG.mainmap_plotby='depth';
         csubcat;
@@ -266,27 +266,27 @@ function csubcat()
     
     function callbackfun_003(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newccat=selclus('cur_cluster',ZG.newccat);
         csubcat;
     end
     
     function callbackfun_004(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newccat=selclus('expanded_cluster',ZG.newccat);
         csubcat;
     end
     
     function callbackfun_005(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newccat=cpara('interactive',ZG.newccat);
     end
     
     function callbackfun_006(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG.newt2 = a;
         stri = 'Polygon';
@@ -296,7 +296,7 @@ function csubcat()
     
     function callbackfun_007(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         stri = 'Polygon';
         cufi = gcf;
@@ -306,7 +306,7 @@ function csubcat()
     
     function callbackfun_008(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         set(gcf,'Pointer','watch');
         stri = [' '];
@@ -317,7 +317,7 @@ function csubcat()
     
     function callbackfun_009(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(gca);
         delete(gca);
         delete(gca);
@@ -327,7 +327,7 @@ function csubcat()
     
     function callbackfun_010(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         clear plos1 mark1 ;
         replaceMainCatalog(original);
@@ -338,14 +338,14 @@ function csubcat()
     
     function callbackfun_011(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         newccat=buildcat(2);
         csubcat;
     end
     
     function callbackfun_012(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         stri = 'Polygon';
         ZG.newt2 = a;
         ZG.newcat = a;
@@ -354,25 +354,25 @@ function csubcat()
     
     function callbackfun_013(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lammap;
     end
     
     function callbackfun_014(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plot3d;
     end
     
     function callbackfun_015(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         inpudenew;
     end
     
     function callbackfun_016(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ginput(1);
     end
 end

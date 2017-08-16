@@ -43,21 +43,21 @@ watchoff;
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   nev=str2double(input1.String);
    input1.String=num2str(nev);
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inc=str2double(input2.String);
    input2.String=num2str(inc);
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
   done;
@@ -65,7 +65,7 @@ end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   think;
    gobut = [2];

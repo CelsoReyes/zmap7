@@ -112,7 +112,7 @@ function cllta(var1)
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   iwl3=str2double(freq_field.String);
   delete(pyy);
    cllta(2);
@@ -120,7 +120,7 @@ end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   iwl3=freq_slider.Value;
   delete(pyy);
    cllta(2);
@@ -128,33 +128,33 @@ end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   pyy=[];
 end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   print;
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   sav_lta;
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    clf;
    cltiplot(3);
 end
  
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    clinfo(5);
 end
  

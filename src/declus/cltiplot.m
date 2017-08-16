@@ -223,13 +223,13 @@ function cltiplot(var1)
     %% callback functions
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         clinfo(4);
     end
     
     function callbackfun_002(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         xt=[];
         cumu=[];
         cumu2=[];
@@ -244,53 +244,53 @@ function cltiplot(var1)
     
     function callbackfun_003(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         myprint;
     end
     
     function callbackfun_004(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         set(gcf,'Pointer','watch');
         clas;
     end
     
     function callbackfun_005(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cllta(1);
     end
     
     function callbackfun_006(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         timeselect(1);
         cltiplot(3) ;
     end
     
     function callbackfun_007(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ttcat=ZG.newt2;
         clpval(1);
     end
     
     function callbackfun_008(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ttcat=ZG.newt2;
         clpval(3);
     end
     
     function callbackfun_009(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cltipval(2);
     end
     
     function callbackfun_010(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cltipval(1);
     end
 end

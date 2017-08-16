@@ -108,7 +108,7 @@ set(gcf, 'visible','on');
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Dvbtim;
 end
  

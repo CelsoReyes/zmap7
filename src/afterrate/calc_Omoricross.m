@@ -519,14 +519,14 @@ end
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inb2=hndl2.Value;
    ;
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ni=str2double(ni_field.String);
    tgl2.Value=0;
    tgl1.Value=1;
@@ -534,7 +534,7 @@ end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ra=str2double(ra_field.String);
    tgl2.Value=1;
    tgl1.Value=0;
@@ -542,52 +542,52 @@ end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dx_field.Value=str2double(dx_field.String);
   dx=dx_field.Value;
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dd=str2double(dd_field.String);
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   time_field.Value=str2double(time_field.String);
   time=days(time_field.Value);
 end
  
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   bootloops=str2double(bootloops_field.String);
    ;
 end
  
 function callbackfun_008(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   fMaxRadius=str2double(maxradius_field.String);
 end
  
 function callbackfun_009(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tgl2.Value=0;
 end
  
 function callbackfun_010(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tgl1.Value=0;
 end
  
 function callbackfun_011(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Nmin=str2double(nmin_field.String);
 end
  

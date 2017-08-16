@@ -217,19 +217,19 @@ done
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   zmaphelp(ttlStr,hlpStr1zmap,hlpStr2zmap);
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   view_Dv;
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    h1 = gca;
   ZG=ZmapGlobal.Data;
   ZG.hold_state=false;
@@ -240,7 +240,7 @@ end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    h1 = gca;
   ZG=ZmapGlobal.Data;
   ZG.hold_state=false;
@@ -251,7 +251,7 @@ end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   h1 = gca;
   ZG=ZmapGlobal.Data;
   ZG.hold_state=true;
@@ -262,7 +262,7 @@ end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   lab1='D-value';
    re3 = old;
    view_Dv;
@@ -270,7 +270,7 @@ end
  
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   lab1='%';
    re3 = Prmap;
    view_Dv;
@@ -278,7 +278,7 @@ end
  
 function callbackfun_008(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   lab1='b-value';
   re3 = BM;
    view_Dv;
@@ -286,7 +286,7 @@ end
  
 function callbackfun_009(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   lab1='Radius in [km]';
   re3 = reso;
    view_Dv;
@@ -294,25 +294,25 @@ end
  
 function callbackfun_010(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   zhist;
 end
  
 function callbackfun_011(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Dvbspat;
 end
  
 function callbackfun_012(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Dvresfig;
 end
  
 function callbackfun_013(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ni=str2num(set_nia.String);
   'String';
   num2str(ni);
@@ -320,20 +320,20 @@ end
  
 function callbackfun_014(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    ;
 end
  
 function callbackfun_015(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tresh=str2double(set_ni2.String);
    set_ni2.String=num2str(tresh));
 end
  
 function callbackfun_016(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   think;
   pause(1);
   re4 =re3;

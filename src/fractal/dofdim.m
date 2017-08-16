@@ -166,7 +166,7 @@ end
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   g = ginput(2);
   dofd = 'newrange';
    dofdim;
@@ -174,19 +174,19 @@ end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   slopetest;
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    taken;
 end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   g = ginput(2);
   dofd = 'newrange';
    dofdim;
@@ -194,13 +194,13 @@ end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   slopetest;
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    taken;
 end
  

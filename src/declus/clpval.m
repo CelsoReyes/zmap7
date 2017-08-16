@@ -603,47 +603,47 @@ function clpval(var1)
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp2=str2double(freq_field1.String);
       freq_field1.String=num2str(tmp2);
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp1=str2double(freq_field2.String);
      freq_field2.String=num2str(tmp1);
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp3=str2double(freq_field3.String);
     freq_field3.String=num2str(tmp3);
 end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp4=str2double(freq_field4.String);
    freq_field4.String=num2str(tmp4);
 end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   clinfo(1);
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   set(pplot,'visible','off');
 end
  
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   if ~isempty(tmvar);
    clpval(8);
    else;
@@ -654,25 +654,25 @@ end
  
 function callbackfun_008(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   clinfo(1);
 end
  
 function callbackfun_009(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   set(pplot,'visible','off');
 end
  
 function callbackfun_010(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   clinfo(2);
 end
  
 function callbackfun_011(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   clinfo(10);
 end
  

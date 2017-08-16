@@ -261,13 +261,13 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         view_rcva_a2(lab1,re3);
     end
     
     function callbackfun_002(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
         ZG=ZmapGlobal.Data;
@@ -278,7 +278,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_003(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state2=true;
@@ -290,7 +290,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_004(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
         view_rcva_a2(lab1,re3) ;
@@ -298,7 +298,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_005(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
         view_rcva_a2(lab1,re3);
@@ -306,7 +306,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_006(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
         view_rcva_a2(lab1,re3) ;
@@ -314,7 +314,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_007(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;
         view_rcva_a2(lab1,re3) ;
@@ -322,7 +322,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_008(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Sigma';
         re3 = mRelchange;
         view_rcva_a2(lab1,re3);
@@ -330,7 +330,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_009(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Model';
         re3 = mMod;
         view_rcva_a2(lab1,re3);
@@ -338,7 +338,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_010(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Rejection';
         re3 = mKstestH;
         view_rcva_a2(lab1,re3);
@@ -346,7 +346,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_011(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS distance';
         re3 = mKsstat;
         view_rcva_a2(lab1,re3);
@@ -354,7 +354,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_012(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS-Test p-value';
         re3 = mKsp;
         view_rcva_a2(lab1,re3);
@@ -362,7 +362,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_013(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='RMS';
         re3 = mRMS;
         view_rcva_a2(lab1,re3);
@@ -370,7 +370,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_014(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
         re3 = mNumevents;
         view_rcva_a2(lab1,re3);
@@ -378,7 +378,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_015(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius / [km]';
         re3 = vRadiusRes;
         view_rcva_a2(lab1,re3);
@@ -386,7 +386,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_016(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-value';
         re3 = mPval;
         view_rcva_a2(lab1,re3);
@@ -394,7 +394,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_017(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_017');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
         re3 = mPvalstd;
         view_rcva_a2(lab1,re3);
@@ -402,7 +402,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_018(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_018');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
         re3 = mCval;
         view_rcva_a2(lab1,re3);
@@ -410,7 +410,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_019(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_019');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
         re3 = mCvalstd;
         view_rcva_a2(lab1,re3);
@@ -418,7 +418,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_020(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_020');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
         re3 = mKval;
         view_rcva_a2(lab1,re3);
@@ -426,7 +426,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_021(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_021');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
         re3 = mKvalstd;
         view_rcva_a2(lab1,re3);
@@ -434,7 +434,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_022(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_022');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p2-value';
         re3 = mPval2;
         view_rcva_a2(lab1,re3);
@@ -442,7 +442,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_023(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_023');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
         re3 = mPvalstd2;
         view_rcva_a2(lab1,re3);
@@ -450,7 +450,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_024(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_024');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
         re3 = mCval2;
         view_rcva_a2(lab1,re3);
@@ -458,7 +458,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_025(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_025');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
         re3 = mCvalstd2;
         view_rcva_a2(lab1,re3);
@@ -466,7 +466,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_026(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_026');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
         re3 = mKval2;
         view_rcva_a2(lab1,re3);
@@ -474,7 +474,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_027(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_027');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
         re3 = mKvalstd2;
         view_rcva_a2(lab1,re3);
@@ -482,7 +482,7 @@ function view_rcva_a2(lab1,re3)
     
     function callbackfun_028(mysrc,myevt)
         % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_028');
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end
 end

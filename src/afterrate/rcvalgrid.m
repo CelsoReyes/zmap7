@@ -543,21 +543,21 @@ end
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inb2=hndl2.Value;
    ;
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inb2=hndl2.Value;
    ;
 end
  
 function callbackfun_003(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ni=str2double(freq_field.String);
    freq_field.String=num2str(ni);
   tgl2.Value=0;
@@ -566,7 +566,7 @@ end
  
 function callbackfun_004(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ra=str2double(freq_field0.String);
    freq_field0.String=num2str(ra);
    tgl2.Value=1;
@@ -575,96 +575,96 @@ end
  
 function callbackfun_005(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dx=str2double(freq_field2.String);
    freq_field2.String=num2str(dx);
 end
  
 function callbackfun_006(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dy=str2double(freq_field3.String);
    freq_field3.String=num2str(dy);
 end
  
 function callbackfun_007(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   time_field.Value=str2double(time_field.String);
   time=days(time_field.Value);
 end
  
 function callbackfun_008(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   timef=str2double(freq_field5.String);
    freq_field5.String=num2str(timef);
 end
  
 function callbackfun_009(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   bootloops=str2double(freq_field6.String);
    freq_field6.String=num2str(bootloops);
 end
  
 function callbackfun_010(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Nmin=str2double(freq_field7.String);
    freq_field7.String=num2str(Nmin);
 end
  
 function callbackfun_011(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   fMaxRadius=str2double(freq_field8.String);
    freq_field8.String=num2str(fMaxRadius);
 end
  
 function callbackfun_012(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tgl2.Value=0;
 end
  
 function callbackfun_013(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tgl1.Value=0;
 end
  
 function callbackfun_014(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   load_grid.Value=0;
    prev_grid.Value=0;
 end
  
 function callbackfun_015(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   load_grid.Value=0;
   create_grid.Value=0;
 end
  
 function callbackfun_016(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   prev_grid.Value=0;
   create_grid.Value=0;
 end
  
 function callbackfun_017(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_017');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   done;
 end
  
 function callbackfun_018(mysrc,myevt)
   % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_018');
+  callback_tracker(mysrc,myevt,mfilename('fullpath'));
    inb1=hndl2.Value;
   tgl1=tgl1.Value;
   tgl2=tgl2.Value;
