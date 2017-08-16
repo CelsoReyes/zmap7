@@ -68,35 +68,19 @@ function view_qva(lab1,re3)
         qmap = figure_w_normalized_uicontrolunits( ...
             'Name','q-detect-map',...
             'NumberTitle','off', ...
-            'MenuBar','none', ...
             'NextPlot','new', ...
             'backingstore','on',...
             'Visible','off', ...
             'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
-        % make menu bar
-        matdraw
         
         lab1 = 'day/night ratio';
+        create_my_menu();
         
-        add_symbol_menu('eq_plot');
         
         uicontrol('Units','normal',...
             'Position',[.0 .93 .08 .06],'String','Info ',...
             'callback',@callbackfun_001);
         
-        
-        
-        options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_002)
-        uimenu(options,'Label','Select EQ in Circle', 'callback',@callbackfun_003)
-        uimenu(options,'Label','Select EQ in Polygon ', 'callback',@callbackfun_004)
-        
-        op1 = uimenu('Label',' Maps ');
-        uimenu(op1,'Label','day/night value map',...
-            'callback',@callbackfun_005)
-        
-        
-        add_display_menu(1);
         
         uicontrol('Units','normal',...
             'Position',[.92 .80 .08 .05],'String','set ni',...
@@ -218,7 +202,6 @@ function view_qva(lab1,re3)
         'Units','normalized',...
         'Position',[ 0.33 0.07 0 ],...
         'HorizontalAlignment','right',...
-        'Rotation',[ 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.s,....
         'FontWeight','bold',...
         'String',lab1);
@@ -233,6 +216,27 @@ function view_qva(lab1,re3)
     watchoff(qmap)
     whitebg(gcf,[ 0 0 0 ])
     done
+    
+    %% ui functions
+    function create_my_menu()
+        add_menu_divider();
+        
+        add_symbol_menu('eq_plot');
+        
+        options = uimenu('Label',' Select ');
+        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_002)
+        uimenu(options,'Label','Select EQ in Circle', 'callback',@callbackfun_003)
+        uimenu(options,'Label','Select EQ in Polygon ', 'callback',@callbackfun_004)
+        
+        op1 = uimenu('Label',' Maps ');
+        uimenu(op1,'Label','day/night value map',...
+            'callback',@callbackfun_005)
+        
+        
+        add_display_menu(1);
+    end
+    
+    %% callback functions
     
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text

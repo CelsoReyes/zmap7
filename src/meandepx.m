@@ -69,7 +69,7 @@ pl = plot(MD(:,2),MD(:,1),'sk');
 axis([min(d) max(d) min(z) max(z)]);
 xlabel('Distance [km]')
 ylabel('Depth [km]');
-matdraw
+
 
 
 

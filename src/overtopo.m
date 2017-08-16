@@ -17,7 +17,7 @@ switch(ac3)
             'Visible','on', ...
             'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
-        matdraw
+        
 
 
         labelList=[' flat | interp | faceted '];

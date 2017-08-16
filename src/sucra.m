@@ -49,7 +49,7 @@ end   % for tre2
 
 figure
 
-matdraw
+
 axis off
 
 uicontrol('Units','normal',...

@@ -14,21 +14,12 @@ function plotclust()
         'Visible','on', ...
         'Position',[ (ZG.fipo(3:4) - [600 500]) ZG.map_len]);
     
-    % matdraw
+    % 
     
     uicontrol('Units','normal',...
         'Position',[.0 .93 .08 .06],'String','Info ',...
         'Callback',@(~,~) web(['file:' ZG.hodi '/help/declus']) );
-    
-    add_menu_divider();
-    
-    op4 = uimenu('Label','ZTools') ;
-    op6 =uimenu(op4,'Label','select clusters');
-    
-    uimenu(op6,'Label','Select by Mouse',...
-        'Callback',@(~,~)getclu_callback('mouse'));
-    uimenu(op6,'Label','Plot largest Cluster',...
-        'Callback',@(~,~)getclu_callback('large'));
+    create_my_menu();
     
     orient landscape
     set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
@@ -78,6 +69,21 @@ function plotclust()
         'Callback',@markclus_callback,'Sliderstep',[ 0.01 0.1],...
         'Units','normalized');
     
+%% ui functions
+function create_my_menu()
+	add_menu_divider();
+    
+    op4 = uimenu('Label','ZTools') ;
+    op6 =uimenu(op4,'Label','select clusters');
+    
+    uimenu(op6,'Label','Select by Mouse',...
+        'Callback',@(~,~)getclu_callback('mouse'));
+    uimenu(op6,'Label','Plot largest Cluster',...
+        'Callback',@(~,~)getclu_callback('large'));
+end
+
+%% callback functions
+
     function markclus_callback(src,~)
         clustNum0 = markclus(clus, clustNum0, sl, te);
     end

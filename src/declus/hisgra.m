@@ -34,12 +34,6 @@ function hisgra(mycat, opt)
             'NextPlot','new', ...
             'Visible','off');
         
-        %Menuline for options
-        add_menu_divider();
-        op1 = uimenu('Label','Display');
-        uimenu(op1,'Label','Bin Number','Callback',@callback_change_nBins);
-        uimenu(op1,'Label','Bin Vector','Callback',@callback_change_bVector);
-        uimenu(op1,'Label','Default','Callback',@callback_reset);
     end
     
     axis('off')
@@ -68,6 +62,17 @@ function hisgra(mycat, opt)
     ylabel('  Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     set(gcf,'Visible','on')
     
+    
+    %% ui functions
+    function create_my_menu()
+        add_menu_divider();
+        op1 = uimenu('Label','Display');
+        uimenu(op1,'Label','Bin Number','Callback',@callback_change_nBins);
+        uimenu(op1,'Label','Bin Vector','Callback',@callback_change_bVector);
+        uimenu(op1,'Label','Default','Callback',@callback_reset);
+    end
+    
+    %% callback functions
     function callback_change_nBins(~,~)
         h=findobj(histo,'Type','histogram');
         def = num2str(h.NumBins);
@@ -81,7 +86,7 @@ function hisgra(mycat, opt)
         def=[num2str(h.BinLimits(1)), ' : ',...
             num2str((h.BinLimits(2)-h.BinLimits(1))/(h.NumBins+1)),' : ',...
             num2str(h.BinLimits(2))];
-            %def = num2str(h.BinEdges);
+        %def = num2str(h.BinEdges);
         binsS = inputdlg('Vector of bin edges (e.g. 1:0.1:7)','Histogram Params',1,{def});
         h.BinEdges=str2num(binsS{1});
         figure(histo);

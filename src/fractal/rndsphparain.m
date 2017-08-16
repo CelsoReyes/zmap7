@@ -9,7 +9,7 @@
 % Creates the input window
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[150 100 350 350 ],'Name','Parameters for the sphere','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
+    'NumberTitle','off','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.70 .90 .22 .06],...

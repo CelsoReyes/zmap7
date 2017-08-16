@@ -12,7 +12,7 @@ report_this_filefun(mfilename('fullpath'));
 figure
 set(gcf,'PaperPosition',[2 1 5.5 7.5])
 
-matdraw
+
 
 %  Do the calculation
 c = cumsum( 10.^(1.5*ZG.newt2.Magnitude + 16.1));

@@ -3,7 +3,7 @@
 %
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[200 400 550 200 ],'Name','Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
+    'NumberTitle','off','Color',color_fbg,'NextPlot','new');
 axis off;
 
 

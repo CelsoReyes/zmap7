@@ -18,7 +18,7 @@ switch(ac3)
             'Visible','on', ...
             'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
-        matdraw
+        
 
 
         uicontrol('BackGroundColor',[0.8 0.8 0.8],'Units','normal',...

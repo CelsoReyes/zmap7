@@ -104,7 +104,7 @@ uicontrol('Units','normal',...
     'Position',[.0 .85 .08 .06],'String','Info ',...
      'callback',@callbackfun_001);
 
-matdraw
+
 
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text

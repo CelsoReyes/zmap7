@@ -8,7 +8,7 @@
 % Creates the input window
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[300 100 350 500 ],'Name','Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
+    'NumberTitle','off','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.70 .91 .22 .04],...

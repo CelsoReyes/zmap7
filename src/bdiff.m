@@ -27,25 +27,14 @@ function  bdiff(mycat, holdplot)
         bfig = figNumber;
         
     else
-        bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
+        bfig=figure_w_normalized_uicontrolunits(...   %build figure for plot
             'Units','normalized','NumberTitle','off',...
             'Name','frequency-magnitude distribution',...
             'visible','off',...
             'pos',[ 0.300  0.3 0.4 0.6]);
         ZG.hold_state=false;
         
-        %uicontrol('Units','normal',...
-        %   'Position',[.0 .85 .08 .06],'String','Info ',...
-        %    'callback',@callbackfun_001);
-        matdraw
-        
-        add_menu_divider();
-        options = uimenu('Label','ZTools');
-        uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@callbackfun_002);
-        uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
-        uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
-        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005);
-        uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
+        create_my_menu();
         
         
     end
@@ -221,6 +210,20 @@ function  bdiff(mycat, holdplot)
     %whitebg(gcf,[0 0 0])
     %axes(cua)
     
+
+    %% menu items
+    function create_my_menu()
+        add_menu_divider();
+        options = uimenu('Label','ZTools');
+        uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@callbackfun_002);
+        uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
+        uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
+        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005);
+        uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
+    end
+
+    %% callbacks
+
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

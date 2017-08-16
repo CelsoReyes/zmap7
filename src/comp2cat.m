@@ -210,7 +210,7 @@ switch(do)
         te1 = text(-0.4,yl*0.9,stri);
         set(te1,'FontSize',12,'FontWeight','bold')
         orient landscape
-        ; matdraw
+        ; 
 
         figure_w_normalized_uicontrolunits('pos',[100 100 1100 600])
         xa0 = jm(id(:,1),1);
@@ -245,7 +245,7 @@ switch(do)
 
         le2 = legend([p1, p2, p3 , p4 ],['Ident. in ' file1 ],['Ident. in ' file2],['Unique in ' file1 ],['Unique in ' file2], 'location', 'NorthEastOutside');
         set(le2,'FontSize',4);
-        , matdraw;
+        , 
 
         % evaluate depth dependecy
         figure_w_normalized_uicontrolunits('pos',[100 100 900 700]);
@@ -332,7 +332,7 @@ switch(do)
             'Box','on','SortMethod','childorder','TickDir','out')
         xlabel('Depth [km]')
         ylabel([file2 ' - ' file1 ' depth in [km]'])
-        ; matdraw
+        ; 
 
 
 end % switch

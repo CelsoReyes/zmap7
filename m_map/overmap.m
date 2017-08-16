@@ -13,7 +13,7 @@ case 'new'
         'Visible','on', ...
         'Position',[ (fipo(3:4) - [600 500]) ZmapGlobal.Data.map_len]);
 
-matdraw
+
 
 
 return

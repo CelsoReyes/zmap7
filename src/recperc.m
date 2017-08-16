@@ -33,6 +33,6 @@ set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',.
 xlabel('Tr [years]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Percentage (T >= Tr)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 
-; matdraw
+; 
 
 end

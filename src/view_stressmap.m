@@ -144,7 +144,7 @@ set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal'
     'FontWeight','normal','LineWidth',1.,...
     'Box','on','TickDir','out','Ticklength',[0.01 0.01])
 
-matdraw
+
 
 watchoff;
 

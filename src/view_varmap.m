@@ -32,7 +32,7 @@ function view_varmap(lab1,re3)
         bmap = figure_w_normalized_uicontrolunits( ...
             'Name','variance-value-map',...
             'NumberTitle','off', ...
-            'MenuBar','none', ...
+            ...
             'NextPlot','new', ...
             'backingstore','on',...
             'Visible','off', ...
@@ -40,31 +40,7 @@ function view_varmap(lab1,re3)
         
         lab1 = 'b-value:';
         
-        
-        options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
-        uimenu(options,'Label','Select EQ in Circle',...
-            'callback',@callbackfun_002)
-        uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'callback',@callbackfun_003)
-        
-        uimenu(options,'Label','Select EQ in Polygon -new ',...
-            'callback',@callbackfun_004)
-        
-        op1 = uimenu('Label',' Maps ');
-        
-        uimenu(op1,'Label','Variance map',...
-            'callback',@callbackfun_005)
-        uimenu(op1,'Label','Resolution map',...
-            'callback',@callbackfun_006)
-        uimenu(op1,'Label','Plot map on top of topography ',...
-            'callback',@callbackfun_007)
-        
-        
-        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_008)
-        
-        
-        add_display_menu(1)
+        create_my_menu();
         
         re4 = re3;
         
@@ -182,6 +158,36 @@ function view_varmap(lab1,re3)
     watchoff(bmap)
     %whitebg(gcf,[ 0 0 0 ])
     done
+    
+    %% ui functions
+    function create_my_menu()
+        add_menu_divider();
+        
+        options = uimenu('Label',' Select ');
+        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
+        uimenu(options,'Label','Select EQ in Circle',...
+            'callback',@callbackfun_002)
+        uimenu(options,'Label','Select EQ in Circle - Constant R',...
+            'callback',@callbackfun_003)
+        
+        uimenu(options,'Label','Select EQ in Polygon -new ',...
+            'callback',@callbackfun_004)
+        
+        op1 = uimenu('Label',' Maps ');
+        
+        uimenu(op1,'Label','Variance map',...
+            'callback',@callbackfun_005)
+        uimenu(op1,'Label','Resolution map',...
+            'callback',@callbackfun_006)
+        uimenu(op1,'Label','Plot map on top of topography ',...
+            'callback',@callbackfun_007)
+        
+        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_008)
+        
+        add_display_menu(1)
+    end
+    
+    %% callback functions
     
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text

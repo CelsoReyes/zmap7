@@ -3,7 +3,7 @@
 % factal dimension calculation.
 %
 figure_w_normalized_uicontrolunits('Units','pixel','pos',[200 400 550 150 ],'Name',' Time Parameters','visible','off',...
-    'NumberTitle','off','MenuBar','none','Color',color_fbg,'NextPlot','new');
+    'NumberTitle','off','Color',color_fbg,'NextPlot','new');
 axis off;
 
 input1 = uicontrol('Style','edit','Position',[.75 .80 .20 .12],...

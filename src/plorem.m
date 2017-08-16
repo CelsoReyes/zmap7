@@ -41,7 +41,7 @@ xlabel('Magnitude ')
 set(gcf,'color','w');set(gca,'color','w');
 
 
-matdraw
+
 
 
 figure
@@ -61,7 +61,7 @@ xlabel('Magnitude ')
 set(gca,'Yscale','log');
 ylabel('Annual Probability ')
 
-matdraw
+
 
 set(gcf,'color','w');set(gca,'color','w');
 

@@ -112,7 +112,7 @@ uicontrol(...
     'String','Sel EQ',...
     'callback',@callbackfun_002);
 
-matdraw
+
 
 watchoff
 
