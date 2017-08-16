@@ -29,3 +29,4 @@ function [fL] = bruteloglike(vValues,time_as)
     % Log likelihood
     nNumEvents = length(time_as);
     fL = -(nNumEvents*log(k)-p*sum(log(time_as+c))-k*fAcp);
+

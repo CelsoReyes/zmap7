@@ -87,23 +87,23 @@ if oldfig_button == false
 
     uicontrol('Units','normal',...
         'Position',[.0 .93 .08 .06],'String','Info ',...
-         'Callback',' web([''file:'' hodi ''/zmapwww/chp11.htm#996756'']) ');
+         'callback',@callbackfun_001);
 
 
 
     options = uimenu('Label',' Select ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_bpva')
+    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_002)
     uimenu(options,'Label','Select EQ in Circle',...
-         'Callback','h1 = gca;met = ''ni''; ZG=ZmapGlobal.Data;ZG.hold_state=false;cirpva;watchoff(bpmap)')
+         'callback',@callbackfun_003)
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data;ZG.hold_state=false;cirpva;watchoff(bpmap)')
+         'callback',@callbackfun_004)
     uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=true;ZG=ZmapGlobal.Data;ZG.hold_state=true;cirpva;watchoff(bpmap)')
+         'callback',@callbackfun_005)
 
     uimenu(options,'Label','Select EQ in Polygon -new ',...
-         'Callback','cufi = gcf;ZG=ZmapGlobal.Data;ZG.hold_state=false;selectp')
+         'callback',@callbackfun_006)
     uimenu(options,'Label','Select EQ in Polygon - hold ',...
-         'Callback','cufi = gcf;ZG=ZmapGlobal.Data;ZG.hold_state=true;selectp')
+         'callback',@callbackfun_007)
 
 
     op1 = uimenu('Label',' Maps ');
@@ -111,44 +111,44 @@ if oldfig_button == false
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_bpva(lab1,re3) ')
+         'callback',@callbackfun_008)
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_bpva(lab1,re3)')
+         'callback',@callbackfun_009)
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_bpva(lab1,re3) ')
+         'callback',@callbackfun_010)
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_bpva(lab1,re3) ')
+         'callback',@callbackfun_011)
 
 
     uimenu(op1,'Label','b-value map (WLS)',...
-         'Callback','lab1 =''b-value''; re3 = old; view_bpva(lab1,re3)')
+         'callback',@callbackfun_012)
     uimenu(op1,'Label','b(max likelihood) map',...
-         'Callback','lab1=''b-value''; re3 = meg; view_bpva(lab1,re3)')
+         'callback',@callbackfun_013)
     uimenu(op1,'Label','Mag of completness map',...
-         'Callback','lab1 = ''Mcomp''; re3 = old1; view_bpva(lab1,re3)')
+         'callback',@callbackfun_014)
     uimenu(op1,'Label','max magnitude map',...
-         'Callback',' lab1=''Mmax'';re3 = maxm; view_bpva(lab1,re3)')
+         'callback',@callbackfun_015)
     uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-         'Callback',' lab1=''dM '';re3 = maxm-magco; view_bpva(lab1,re3)')
+         'callback',@callbackfun_016)
 
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = pvalg; view_bpva(lab1,re3)')
+         'callback',@callbackfun_017)
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = pvstd; view_bpva(lab1,re3)')
+         'callback',@callbackfun_018)
 
     uimenu(op1,'Label','a-value map',...
-         'Callback','lab1=''a-value'';re3 = avm; view_bpva(lab1,re3)')
+         'callback',@callbackfun_019)
     uimenu(op1,'Label','Standard error map',...
-         'Callback',' lab1=''Error in b'';re3 = pro; view_bpva(lab1,re3)')
+         'callback',@callbackfun_020)
     uimenu(op1,'Label','(WLS-Max like) map',...
-         'Callback',' lab1=''difference in b'';re3 = old-meg; view_bpva(lab1,re3)')
+         'callback',@callbackfun_021)
 
     uimenu(op1,'Label','Resolution Map',...
-         'Callback','lab1=''Radius in [km]'';re3 = rama; view_bpva(lab1,re3)')
+         'callback',@callbackfun_022)
     uimenu(op1,'Label','c map',...
-         'Callback','lab1=''c in days'';re3 = cmap2; view_bpva(lab1,re3)')
+         'callback',@callbackfun_023)
 
-    uimenu(op1,'Label','Histogram ', 'Callback','zhist')
+    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_024)
 
     add_display_menu(1);
 
@@ -280,3 +280,202 @@ axes(h1)
 watchoff(bpmap)
 done
 end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+   web(['file:' hodi '/zmapwww/chp11.htm#996756']) ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  view_bpva;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  h1 = gca;
+  met = 'ni';
+   ZG=ZmapGlobal.Data;
+  ZG.hold_state=false;
+  cirpva;
+  watchoff(bpmap);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  h1 = gca;
+  met = 'ra';
+   ZG=ZmapGlobal.Data;
+  ZG.hold_state=false;
+  cirpva;
+  watchoff(bpmap);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  h1 = gca;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state2=true;
+  ZG=ZmapGlobal.Data;
+  ZG.hold_state=true;
+  cirpva;
+  watchoff(bpmap);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  cufi = gcf;
+  ZG=ZmapGlobal.Data;
+  ZG.hold_state=false;
+  selectp;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  cufi = gcf;
+  ZG=ZmapGlobal.Data;
+  ZG.hold_state=true;
+  selectp;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  asel = 'mag';
+   adju2;
+   view_bpva(lab1,re3) ;
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  asel = 'rmax';
+   adju2;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  asel = 'gofi';
+   adju2;
+   view_bpva(lab1,re3) ;
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  asel = 'pstdc';
+   adju2;
+   view_bpva(lab1,re3) ;
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  lab1 ='b-value';
+   re3 = old;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  lab1='b-value';
+   re3 = meg;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  lab1 = 'Mcomp';
+   re3 = old1;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+   lab1='Mmax';
+  re3 = maxm;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+   lab1='dM ';
+  re3 = maxm-magco;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_017(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_017');
+   lab1='p-value';
+  re3 = pvalg;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_018(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_018');
+   lab1='p-valstd';
+  re3 = pvstd;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_019(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_019');
+  lab1='a-value';
+  re3 = avm;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_020(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_020');
+   lab1='Error in b';
+  re3 = pro;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_021(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_021');
+   lab1='difference in b';
+  re3 = old-meg;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_022(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_022');
+  lab1='Radius in [km]';
+  re3 = rama;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_023(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_023');
+  lab1='c in days';
+  re3 = cmap2;
+   view_bpva(lab1,re3);
+end
+ 
+function callbackfun_024(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_024');
+  zhist;
+end
+ 

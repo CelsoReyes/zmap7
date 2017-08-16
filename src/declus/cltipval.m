@@ -155,13 +155,13 @@ function cltipval(var1)
         freq_field1= uicontrol('Style','edit',...
             'Position',[.43 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp2),...
-            'Callback','tmp2=str2double(freq_field1.String);     freq_field1.String=num2str(tmp2);');
+            'callback',@callbackfun_001);
 
         tmp1=max(ttcat(:,6));
         freq_field2=uicontrol('Style','edit',...
             'Position',[.76 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp1),...
-            'Callback','tmp1=str2double(freq_field2.String);   freq_field2.String=num2str(tmp1);');
+            'callback',@callbackfun_002);
         tmp3=str2double(tt4);
         if tmp3 < 0
             tmp3=0;
@@ -170,13 +170,13 @@ function cltipval(var1)
         freq_field3=uicontrol('Style','edit',...
             'Position',[.43 .28 .1 .04],...
             'Units','normalized','String',num2str(tmp3),...
-            'Callback','tmp3=str2double(freq_field3.String);  freq_field3.String=num2str(tmp3);');
+            'callback',@callbackfun_003);
 
         tmp4=str2double(tt5);
         freq_field4=uicontrol('Style','edit',...
             'Position',[.76 .28 .1 .04],...
             'Units','normalized','String',num2str(tmp4),...
-            'Callback','tmp4=str2double(freq_field4.String); freq_field4.String=num2str(tmp4);');
+            'callback',@callbackfun_004);
 
 
         txt1 = text(...
@@ -231,7 +231,7 @@ function cltipval(var1)
             freq_field5=uicontrol('Style','edit',...
                 'Position',[.55 .2 .2 .04],...
                 'Units','normalized','String',num2str(magn),...
-                'Callback','magn=freq_field5.String;magn=eval(magn);');
+                'callback',@callbackfun_005);
             set(freq_field5,'String',num2str(magn));
             tmm=0;
             text(0.54,0.17,'Vector (e.g. 1: 0.1: 3): ');
@@ -249,7 +249,7 @@ function cltipval(var1)
             freq_field5=uicontrol('Style','edit',...
                 'Position',[.55 .2 .2 .04],...
                 'Units','normalized','String',num2str(magn),...
-                'Callback','magn=freq_field5.String;magn=eval(magn);');
+                'callback',@callbackfun_006);
             set(freq_field5,'String',num2str(magn));
             tmm=3;
             text(0.54,0.17,'Vector (e.g. 1: 0.5: 7): ');
@@ -258,13 +258,13 @@ function cltipval(var1)
         Info_p = uicontrol('Style','Pushbutton',...
             'String','Info ',...
             'Position',[.3 .05 .10 .06],...
-            'Units','normalized','Callback','clinfo(18)');
+            'Units','normalized','callback',@callbackfun_007);
         if var1==2
-            set(Info_p, 'Callback','clinfo(19);');
+            set(Info_p, 'callback',@callbackfun_008);
         end
         close_p =uicontrol('Style','Pushbutton',...
             'Position', [.45 .05 .10 .06 ],...
-            'Units','normalized','Callback','set(mtpl,''visible'',''off'')',...
+            'Units','normalized','callback',@callbackfun_009,...
             'String','Close');
         print_p = uicontrol('Style','Pushbutton',...
             'Position',[.15 .05 .1 .06],...
@@ -277,7 +277,7 @@ function cltipval(var1)
             'units','normalized',...
             'position',labelPos,...
             'string', labelList,...
-            'Callback','in2=get(hpndl1,''Value'')+2+tmm;cltipval(in2);');
+            'callback',@callbackfun_010);
         figure_w_normalized_uicontrolunits(mess);
         clf;
         str =  ['\newline \newline \newlinePlease give in parameters in green fields\newlineThis parameters will be used as the threshold\newline for the P-Value.\newlineAfter input push GO to continue. '];
@@ -617,3 +617,71 @@ function cltipval(var1)
 
 end
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  tmp2=str2double(freq_field1.String);
+       freq_field1.String=num2str(tmp2);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  tmp1=str2double(freq_field2.String);
+     freq_field2.String=num2str(tmp1);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  tmp3=str2double(freq_field3.String);
+    freq_field3.String=num2str(tmp3);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  tmp4=str2double(freq_field4.String);
+   freq_field4.String=num2str(tmp4);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  magn=freq_field5.String;
+  magn=eval(magn);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  magn=freq_field5.String;
+  magn=eval(magn);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  clinfo(18);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  clinfo(19);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  set(mtpl,'visible','off');
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  in2=get(hpndl1,'Value')+2+tmm;
+  cltipval(in2);
+end
+ 

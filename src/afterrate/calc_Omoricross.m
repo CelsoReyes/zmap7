@@ -50,7 +50,7 @@ if sel == 'in'
         ...
         'String',labelList2,...
         'BackgroundColor','w',...
-        'Callback','inb2=hndl2.Value; ');
+        'callback',@callbackfun_001);
 
     % Set selection to 'Fix Mc'
     set(hndl2,'value',1);
@@ -60,47 +60,47 @@ if sel == 'in'
         'Units','normalized','Position',[.30 .70 .12 .08],...
         'String',num2str(ni),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','ni=str2double(ni_field.String); tgl2.Value=0; tgl1.Value=1;');
+        'callback',@callbackfun_002);
 
     ra_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .60 .12 .08],...
         'String',num2str(ra),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','ra=str2double(ra_field.String); tgl2.Value=1; tgl1.Value=0;');
+        'callback',@callbackfun_003);
 
     dx_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .40 .12 .08],...
         'String',num2str(dx),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','dx_field.Value=str2double(dx_field.String);dx=dx_field.Value;');
+        'callback',@callbackfun_004);
 
     dd_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .30 .12 .08],...
         'String',num2str(dd),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','dd=str2double(dd_field.String);');
+        'callback',@callbackfun_005);
 
     time_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.68 .40 .12 .080],...
         'String',num2str(time),...
-        'Callback','time_field.Value=str2double(time_field.String);time=days(time_field.Value);');
+        'callback',@callbackfun_006);
 
     bootloops_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.68 .60 .12 .080],...
         'String',num2str(bootloops),...
-        'Callback','bootloops=str2double(bootloops_field.String); ');
+        'callback',@callbackfun_007);
 
     maxradius_field=uicontrol('Style','edit',...
         'Units','normalized','Position',[.68 .70 .12 .080],...
         'String',num2str(fMaxRadius),...
-        'Callback','fMaxRadius=str2double(maxradius_field.String);');
+        'callback',@callbackfun_008);
 
     tgl1 = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
         'Style','radiobutton',...
         'string','Number of events:',...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
-        'Units','normalized','Position',[.02 .70 .28 .08], 'Callback','tgl2.Value=0;');
+        'Units','normalized','Position',[.02 .70 .28 .08], 'callback',@callbackfun_009);
 
     % Set to constant number of events
     set(tgl1,'value',1);
@@ -109,13 +109,13 @@ if sel == 'in'
         'string','Constant radius [km]:',...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
-        'Units','normalized','Position',[.02 .60 .28 .08], 'Callback','tgl1.Value=0;');
+        'Units','normalized','Position',[.02 .60 .28 .08], 'callback',@callbackfun_010);
 
     nmin_field =  uicontrol('Style','edit',...
         'Units','normalized','Position',[.30 .20 .12 .08],...
         'String',num2str(Nmin),...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'Callback','Nmin=str2double(nmin_field.String);');
+        'callback',@callbackfun_011);
 
     chkGridEntireArea = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
         'Style','checkbox',...
@@ -517,3 +517,78 @@ if sel == 'lo'
     end
 end
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  inb2=hndl2.Value;
+   ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  ni=str2double(ni_field.String);
+   tgl2.Value=0;
+   tgl1.Value=1;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  ra=str2double(ra_field.String);
+   tgl2.Value=1;
+   tgl1.Value=0;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  dx_field.Value=str2double(dx_field.String);
+  dx=dx_field.Value;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  dd=str2double(dd_field.String);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  time_field.Value=str2double(time_field.String);
+  time=days(time_field.Value);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  bootloops=str2double(bootloops_field.String);
+   ;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  fMaxRadius=str2double(maxradius_field.String);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  tgl2.Value=0;
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  tgl1.Value=0;
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  Nmin=str2double(nmin_field.String);
+end
+ 

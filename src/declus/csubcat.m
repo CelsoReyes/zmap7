@@ -168,9 +168,9 @@ function create_my_menu()
     %
     add_symbol_menu([]); %TO FIX Figure out which target to affect
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
-        'Callback','ZG=ZmapGlobal.Data;ZG.mainmap_plotby=''tim'';setleg');
+        'callback',@callbackfun_001);
     TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...
-        'Callback','ZG=ZmapGlobal.Data;ZG.mainmap_plotby=''depth'';csubcat');
+        'callback',@callbackfun_002);
 
     cal6 = ...
         [ 'set(deplo1,''MarkerSize'',ZG.ms6,''LineStyle'',ty1,''visible'',''on'');',...
@@ -180,28 +180,28 @@ function create_my_menu()
     cufi = gcf;
     options = uimenu('Label',' Select ');
     uimenu(options,'Label','Cluster Window Values',...
-        'Callback','ZG.newccat=selclus(''cur_cluster'',ZG.newccat);csubcat;');
+        'callback',@callbackfun_003);
     uimenu(options,'Label','Expanded Cluster Values ',...
-        'Callback','ZG.newccat=selclus(''expanded_cluster'',ZG.newccat);csubcat;');
+        'callback',@callbackfun_004);
     uimenu(options,'Label','Select new parameters',...
-        'Callback','ZG.newccat=cpara(''interactive'',ZG.newccat);');
+        'callback',@callbackfun_005);
     uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
-        'Callback','h1 = gca;ZG.newt2 = a; stri = ''Polygon'';decc=0;clkeysel');
+        'callback',@callbackfun_006);
 
     uimenu(options,'Label','Select EQ in Polygon ',...
-        'Callback','h1 = gca;stri = ''Polygon'';cufi = gcf;decc=0;clpickp(''MOUSE'')');
+        'callback',@callbackfun_007);
 
     %    uimenu(options,'Label','Select EQ in Circle (Menu) ',...
-    %          'Callback','h1 = gca;set(gcf,''Pointer'',''watch''); stri = ['' '']; stri1 = ['' ''];decc=0;incircle');
+    %          'callback',@callbackfun_008);
 
     op2 = uimenu('Label','Catalog');
     uimenu(op2,'Label','Refresh Window ',...
-        'Callback','delete(gca);delete(gca);delete(gca);delete(gca);csubcat');
+        'callback',@callbackfun_009);
 
     uimenu(op2,'Label','Reset Catalog ',...
-        'Callback','think;clear plos1 mark1 ; replaceMainCatalog(original); newccat = original; ZG.newt2= original;csubcat');
+        'callback',@callbackfun_010);
     uimenu(op2,'label','Declustered catalog',...
-         'Callback','newccat=buildcat(2);csubcat');
+         'callback',@callbackfun_011);
     catSave =...
         [ 'zmap_message_center.set_info(''Save Data'',''  '');think;',...
         '[file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Earthquake Datafile'');',...
@@ -213,20 +213,20 @@ function create_my_menu()
 
     op3 = uimenu('Label','Tools');
     uimenu(op3,'Label','Plot Cumulative Number ',...
-        'Callback','stri = ''Polygon''; ZG.newt2 = a; ZG.newcat = a; ctimeplot');
+        'callback',@callbackfun_012);
 
     uimenu(op3,'Label','Create Cross-section ',...
-        'Callback','lammap');
+        'callback',@callbackfun_013);
     uimenu(op3,'Label','3 D view ',...
-        'Callback','plot3d');
+        'callback',@callbackfun_014);
     uimenu(op3,'Label','Time Depth Plot ',...
         'Callback',@(~,~)TimeDepthPlotter.plot(ZG.newt2));
     uimenu(op3,'Label','Time magnitude Plot ',...
         'Callback',@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
     uimenu(op3,'Label','Decluster the catalog',...
-        'Callback','inpudenew;');
+        'callback',@callbackfun_015);
     uimenu(op3,'Label','get coordinates with Cursor',...
-         'Callback','ginput(1)');
+         'callback',@callbackfun_016);
 
     %calculate several histogramms
     stt1='Magnitude ';stt2='Depth';stt3='Duration';st4='Foreshock Duration';
@@ -249,3 +249,131 @@ function callbackfun_histogram(mysrc,myevt,hist_type)
     hisgra(ZG.a, hist_type);
 end
 end
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  ZG=ZmapGlobal.Data;
+  ZG.mainmap_plotby='tim';
+  setleg;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  ZG=ZmapGlobal.Data;
+  ZG.mainmap_plotby='depth';
+  csubcat;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  ZG.newccat=selclus('cur_cluster',ZG.newccat);
+  csubcat;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  ZG.newccat=selclus('expanded_cluster',ZG.newccat);
+  csubcat;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  ZG.newccat=cpara('interactive',ZG.newccat);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  h1 = gca;
+  ZG.newt2 = a;
+   stri = 'Polygon';
+  decc=0;
+  clkeysel;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  h1 = gca;
+  stri = 'Polygon';
+  cufi = gcf;
+  decc=0;
+  clpickp('MOUSE');
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  h1 = gca;
+  set(gcf,'Pointer','watch');
+   stri = [' '];
+   stri1 = [' '];
+  decc=0;
+  incircle;
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  delete(gca);
+  delete(gca);
+  delete(gca);
+  delete(gca);
+  csubcat;
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  think;
+  clear plos1 mark1 ;
+   replaceMainCatalog(original);
+   newccat = original;
+   ZG.newt2= original;
+  csubcat;
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  newccat=buildcat(2);
+  csubcat;
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  stri = 'Polygon';
+   ZG.newt2 = a;
+   ZG.newcat = a;
+   ctimeplot;
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  lammap;
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  plot3d;
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+  inpudenew;
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+  ginput(1);
+end
+ 

@@ -56,3 +56,4 @@ function clustercat = selclus(windowing, clustercat)
     if isempty(clustercat)
         disp('No earthquakes with the same limits found')
     end
+

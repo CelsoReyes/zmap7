@@ -12,3 +12,4 @@ function [rms] = bruteloop(vValues,time_as)
         cumnr_model = k*log(time_as(i)/c+1); % integrated form of MOL
     end
     rms = (sum((i-cumnr_model).^2)/length(i))^0.5; % RMS between observed data and MOL
+

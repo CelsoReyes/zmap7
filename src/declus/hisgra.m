@@ -127,3 +127,4 @@ function hisgra(mycat, opt)
         histogram(vari1,bins);
     end
 end
+

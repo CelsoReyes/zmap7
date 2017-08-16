@@ -52,24 +52,24 @@ function cllta(var1)
     freq_field=uicontrol('Style','edit',...
         'Position',[.40 .00 .12 .06],...
         'Units','normalized','String',num2str(iwl3),...
-        'Callback','iwl3=str2double(freq_field.String);delete(pyy); cllta(2);');
+        'callback',@callbackfun_001);
 
     freq_slider=uicontrol('BackGroundColor',[ 0.8 0.8 0.8],'Style','slider',...
         'Position',[.30 .10 .45 .06],...
         'Units','normalized','Value',iwl3,'Max',max_freq,'Min',min_freq,...
-        'Callback','iwl3=freq_slider.Value;delete(pyy); cllta(2);');
+        'callback',@callbackfun_002);
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.9 .30 .10 .05],...
-        'Units','normalized','Callback','close;pyy=[];','String','Close');
+        'Units','normalized','callback',@callbackfun_003,'String','Close');
 
-    %uicontrol('Units','normal','Position',[.9 .90 .10 .05],'String','Print ', 'Callback','print')
+    %uicontrol('Units','normal','Position',[.9 .90 .10 .05],'String','Print ', 'callback',@callbackfun_004)
 
-    %uicontrol('Units','normal','Position',[.9 .80 .10 .05],'String','Save', 'Callback','sav_lta')
+    %uicontrol('Units','normal','Position',[.9 .80 .10 .05],'String','Save', 'callback',@callbackfun_005)
 
-    uicontrol('Units','normal','Position',[.9 .70 .10 .05],'String','Back ', 'Callback',' clf; cltiplot(3);')
+    uicontrol('Units','normal','Position',[.9 .70 .10 .05],'String','Back ', 'callback',@callbackfun_006)
 
-    uicontrol('Units','normal','Position',[.9 .60 .10 .05],'String','Info ', 'Callback',' clinfo(5);')
+    uicontrol('Units','normal','Position',[.9 .60 .10 .05],'String','Info ', 'callback',@callbackfun_007)
 
 
 
@@ -109,3 +109,52 @@ function cllta(var1)
     drawnow;
 
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  iwl3=str2double(freq_field.String);
+  delete(pyy);
+   cllta(2);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  iwl3=freq_slider.Value;
+  delete(pyy);
+   cllta(2);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  close;
+  pyy=[];
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  print;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  sav_lta;
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+   clf;
+   cltiplot(3);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+   clinfo(5);
+end
+ 

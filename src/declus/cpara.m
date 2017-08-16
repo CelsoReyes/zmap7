@@ -35,43 +35,43 @@ function mycat=cpara(option, mycat)
         
         inp1=uicontrol('Style','edit','Position',[.47 .80 .22 .06],...
             'Units','normalized','String',num2str(tmp7),...
-            'Callback','tmp7=str2double(inp1.String); inp1.String=num2str(tmp7))');
+            'callback',@callbackfun_001);
         
         inp2=uicontrol('Style','edit','Position',[.72 .80 .22 .06],...
             'Units','normalized','String',num2str(tmp8),...
-            'Callback','tmp8=str2double(inp2.String); inp2.String=num2str(tmp8);');
+            'callback',@callbackfun_002);
         
         inp3=uicontrol('Style','edit','Position',[.47 .65 .22 .06],...
             'Units','normalized','String',num2str(tmp5),...
-            'Callback','tmp5=str2double(inp3.String); inp3.String=num2str(tmp5);');
+            'callback',@callbackfun_003);
         
         inp4=uicontrol('Style','edit','Position',[.72 .65 .22 .06],...
             'Units','normalized','String',num2str(tmp6),...
-            'Callback','tmp6=str2double(inp4.String); inp4.String=num2str(tmp6);');
+            'callback',@callbackfun_004);
         
         inp5=uicontrol('Style','edit','Position',[.47 .50 .22 .06],...
             'Units','normalized','String',num2str(tmp9),...
-            'Callback','tmp9=str2double(inp5.String); inp5.String=num2str(tmp9);');
+            'callback',@callbackfun_005);
         
         inp6=uicontrol('Style','edit','Position',[.72 .50 .22 .06],...
             'Units','normalized','String',num2str(tmp10),...
-            'Callback','tmp10=str2double(inp6.String); inp6.String=num2str(tmp10);');
+            'callback',@callbackfun_006);
         
         inp7=uicontrol('Style','edit','Position',[.47 .35 .22 .06],...
             'Units','normalized','String',num2str(tmp1),...
-            'Callback','tmp1=str2double(inp7.String); inp7.String=num2str(tmp1);');
+            'callback',@callbackfun_007);
         
         inp8=uicontrol('Style','edit','Position',[.72 .35 .22 .06],...
             'Units','normalized','String',num2str(tmp2),...
-            'Callback','tmp2=str2double(inp8.String); inp8.String=num2str(tmp2);');
+            'callback',@callbackfun_008);
         
         inp9=uicontrol('Style','edit','Position',[.47 .20 .22 .06],...
             'Units','normalized','String',num2str(tmp3),...
-            'Callback','tmp3=str2double(inp9.String); inp9.String=num2str(tmp3);');
+            'callback',@callbackfun_009);
         
         inp10=uicontrol('Style','edit','Position',[.72 .2 .22 .06],...
             'Units','normalized','String',num2str(tmp4),...
-            'Callback','tmp4=str2double(inp10.String); inp10.String=num2str(tmp4);');
+            'callback',@callbackfun_010);
         
         
         txt1= text(...
@@ -137,18 +137,18 @@ function mycat=cpara(option, mycat)
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position',[.75 .02 .20 .10 ],...
-            'Units','normalized','Callback','close;zmap_message_center.set_info('' '','' '');done','String','cancel');
+            'Units','normalized','callback',@callbackfun_011,'String','cancel');
         
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.45 .02 .20 .10 ],...
             'Units','normalized',...
-            'Callback','close,think, ZG.newccat=cpara(''use_existing'',ZG.newccat);csubcat;',...
+            'callback',@callbackfun_012,...
             'String','Go');
         
         info_button=uicontrol('Style','Pushbutton',...
             'Position',[.15 .02 .20 .10 ],...
             'Units','normalized',...
-            'Callback','clinfo(15);',...
+            'callback',@callbackfun_013,...
             'String','Info');
         
         
@@ -165,3 +165,97 @@ function mycat=cpara(option, mycat)
         mycat=mycat.subset(tmp11);
         
     end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  tmp7=str2double(inp1.String);
+   inp1.String=num2str(tmp7));
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  tmp8=str2double(inp2.String);
+   inp2.String=num2str(tmp8);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  tmp5=str2double(inp3.String);
+   inp3.String=num2str(tmp5);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  tmp6=str2double(inp4.String);
+   inp4.String=num2str(tmp6);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  tmp9=str2double(inp5.String);
+   inp5.String=num2str(tmp9);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  tmp10=str2double(inp6.String);
+   inp6.String=num2str(tmp10);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  tmp1=str2double(inp7.String);
+   inp7.String=num2str(tmp1);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  tmp2=str2double(inp8.String);
+   inp8.String=num2str(tmp2);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  tmp3=str2double(inp9.String);
+   inp9.String=num2str(tmp3);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  tmp4=str2double(inp10.String);
+   inp10.String=num2str(tmp4);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  close;
+  zmap_message_center.set_info(' ',' ');
+  done;
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  close;
+  think;
+   ZG.newccat=cpara('use_existing',ZG.newccat);
+  csubcat;
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  clinfo(15);
+end
+ 

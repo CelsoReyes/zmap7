@@ -26,3 +26,4 @@ function [Mcomp] = mcwithtime(eqcatalogue,tas,time)
     if isnan(Mcomp)
         Mcomp = 3; %???, calc_Mc fails mostly for high completeness, for the data sets used ~ 3
     end
+

@@ -354,3 +354,4 @@ function clinfo(var1)
             'The range has to be written as a vector in matlab. Input first'];
 
     end
+

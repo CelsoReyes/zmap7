@@ -216,3 +216,4 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     end  %if autop~=1
     tmvar=[];
     %end
+

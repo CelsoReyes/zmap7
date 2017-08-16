@@ -312,7 +312,7 @@ function createGui(dx, dy, ni, Nmin)
         'Position',labelPos,...
         'Units','normalized',...
         'String',labelList2,...
-        'Callback','inb2=hndl2.Value; ',...
+        'callback',@callbackfun_001,...
         'Tag','hndl2',...
         'Value',5);
     
@@ -332,23 +332,23 @@ function createGui(dx, dy, ni, Nmin)
     freq_field=uicontrol('Style','edit',...
         'Position',[.30 .60 .12 .08],...
         'Units','normalized','String',num2str(ni),...
-        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);tgl2.Value=0; tgl1.Value=1;');
+        'callback',@callbackfun_002);
     
     
     freq_field0=uicontrol('Style','edit',...
         'Position',[.30 .50 .12 .08],...
         'Units','normalized','String',num2str(ra),...
-        'Callback','ra=str2double(freq_field0.String); freq_field0.String=num2str(ra); tgl2.Value=1; tgl1.Value=0;');
+        'callback',@callbackfun_003);
     
     freq_field2=uicontrol('Style','edit',...
         'Position',[.30 .40 .12 .08],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
+        'callback',@callbackfun_004);
     
     freq_field3=uicontrol('Style','edit',...
         'Position',[.30 .30 .12 .080],...
         'Units','normalized','String',num2str(dy),...
-        'Callback','dy=str2double(freq_field3.String); freq_field3.String=num2str(dy);');
+        'callback',@callbackfun_005);
     
     rgroup1 = uibuttongroup('Title','event grouping','Position',[0.05 0.48 0.25 0.25]);
     rgroup2 = uibuttongroup('Title','grid source','Position',[.48 0.3 0.28 0.39]);
@@ -389,12 +389,12 @@ function createGui(dx, dy, ni, Nmin)
     uicontrol('Style','edit',...
         'Position',[.30 .20 .12 .080],...
         'Units','normalized','String',num2str(Nmin),...
-        'Callback','Nmin=str2double(freq_field4.String); freq_field4.String=num2str(Nmin);');
+        'callback',@callbackfun_006);
     
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','Callback','close;done','String','Cancel');
+        'Units','normalized','callback',@callbackfun_007,'String','Cancel');
     
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
@@ -490,3 +490,57 @@ function go_callback(src, ~)
     bpvalgrid(sel);
 end
 
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  inb2=hndl2.Value;
+   ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  ni=str2double(freq_field.String);
+   freq_field.String=num2str(ni);
+  tgl2.Value=0;
+   tgl1.Value=1;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  ra=str2double(freq_field0.String);
+   freq_field0.String=num2str(ra);
+   tgl2.Value=1;
+   tgl1.Value=0;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  dx=str2double(freq_field2.String);
+   freq_field2.String=num2str(dx);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  dy=str2double(freq_field3.String);
+   freq_field3.String=num2str(dy);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  Nmin=str2double(freq_field4.String);
+   freq_field4.String=num2str(Nmin);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  close;
+  done;
+end
+ 

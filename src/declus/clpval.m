@@ -199,13 +199,13 @@ function clpval(var1)
             freq_field1= uicontrol('Style','edit',...
                 'Position',[.70 .35 .1 .04],...
                 'Units','normalized','String',num2str(tmp2),...
-                'Callback','tmp2=str2double(freq_field1.String);    freq_field1.String=num2str(tmp2);');
+                'callback',@callbackfun_001);
 
             tmp1=max(ttcat(:,6));
             freq_field2=uicontrol('Style','edit',...
                 'Position',[.70 .28 .1 .04],...
                 'Units','normalized','String',num2str(tmp1),...
-                'Callback','tmp1=str2double(freq_field2.String);   freq_field2.String=num2str(tmp1);');
+                'callback',@callbackfun_002);
 
             if var1==1
                 tmp3=str2double(tt4);
@@ -216,13 +216,13 @@ function clpval(var1)
             freq_field3=uicontrol('Style','edit',...
                 'Position',[.70 .21 .1 .04],...
                 'Units','normalized','String',num2str(tmp3),...
-                'Callback','tmp3=str2double(freq_field3.String);  freq_field3.String=num2str(tmp3);');
+                'callback',@callbackfun_003);
 
             tmp4=str2double(tt5);
             freq_field4=uicontrol('Style','edit',...
                 'Position',[.70 .14 .1 .04],...
                 'Units','normalized','String',num2str(tmp4),...
-                'Callback','tmp4=str2double(freq_field4.String); freq_field4.String=num2str(tmp4);');
+                'callback',@callbackfun_004);
 
 
 
@@ -266,7 +266,7 @@ function clpval(var1)
             Info_p = uicontrol('Style','Pushbutton',...
                 'String','Info ',...
                 'Position',[.3 .05 .10 .06],...
-                'Units','normalized','Callback','clinfo(1)');
+                'Units','normalized','callback',@callbackfun_005);
 
 
 
@@ -275,7 +275,7 @@ function clpval(var1)
 
             close_p =uicontrol('Style','Pushbutton',...
                 'Position', [.45 .05 .10 .06 ],...
-                'Units','normalized','Callback','set(pplot,''visible'',''off'')',...
+                'Units','normalized','callback',@callbackfun_006,...
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
@@ -292,7 +292,7 @@ function clpval(var1)
                 'units','normalized',...
                 'position',labelPos,...
                 'string',labelList,...
-                'Callback','if ~isempty(tmvar), clpval(8); else, in2 = get(hndl1,''Value'')+5;clpval(in2);end;');
+                'callback',@callbackfun_007);
 
             figure_w_normalized_uicontrolunits(mess);
             clf;
@@ -307,11 +307,11 @@ function clpval(var1)
             Info_p = uicontrol('Style','Pushbutton',...
                 'String','Info ',...
                 'Position',[.3 .05 .10 .06],...
-                'Units','normalized','Callback','clinfo(1)');
+                'Units','normalized','callback',@callbackfun_008);
 
             close_p =uicontrol('Style','Pushbutton',...
                 'Position', [.45 .05 .10 .06 ],...
-                'Units','normalized','Callback','set(pplot,''visible'',''off'')',...
+                'Units','normalized','callback',@callbackfun_009,...
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
@@ -532,7 +532,7 @@ function clpval(var1)
                 'FontWeight','bold' ,...
                 'String',['B-value: ',tt1]);
 
-            set(Info_p, 'Callback','clinfo(2);');
+            set(Info_p, 'callback',@callbackfun_010);
 
             if autop~=1
                 tt1=num2str(tmp3);
@@ -557,7 +557,7 @@ function clpval(var1)
             str = ['\newline \newline \newlineThe P-Value evaluation leads to no stable result! \newlineTo avoid a segmentation fault the algorithm was shut down.\newlineFor more information hit the Info button.'];
             te = text(0.2,0.37,str) ;
             set(te,'FontSize',12);
-            set(Info_p, 'Callback','clinfo(10);');
+            set(Info_p, 'callback',@callbackfun_011);
         end
         if autop~=1
             if par3>=1
@@ -640,3 +640,79 @@ function clpval(var1)
             hndl1=[];
         end
     end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  tmp2=str2double(freq_field1.String);
+      freq_field1.String=num2str(tmp2);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  tmp1=str2double(freq_field2.String);
+     freq_field2.String=num2str(tmp1);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  tmp3=str2double(freq_field3.String);
+    freq_field3.String=num2str(tmp3);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  tmp4=str2double(freq_field4.String);
+   freq_field4.String=num2str(tmp4);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  clinfo(1);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  set(pplot,'visible','off');
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  if ~isempty(tmvar);
+   clpval(8);
+   else;
+   in2 = get(hndl1,'Value')+5;
+  clpval(in2);
+  end;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  clinfo(1);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  set(pplot,'visible','off');
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  clinfo(2);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  clinfo(10);
+end
+ 

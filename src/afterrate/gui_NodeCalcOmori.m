@@ -66,3 +66,4 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     result.nNumEvents = nY;
     % Log EQ density
     result.fLogEqdens = log10(nY/(params.fRadius^2*pi));
+

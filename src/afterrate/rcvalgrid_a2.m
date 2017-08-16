@@ -65,7 +65,7 @@ if sel == 'in'
     %         'Position',labelPos,...
     %         'Units','normalized',...
     %         'String',labelList2,...
-    %         'Callback','inb2=hndl2.Value; ');
+    %         'callback',@callbackfun_001);
     %
     %     set(hndl2,'value',5);
 
@@ -84,74 +84,74 @@ if sel == 'in'
     freq_field=uicontrol('Style','edit',...
         'Position',[.30 .60 .12 .08],...
         'Units','normalized','String',num2str(ni),...
-        'Callback','ni=str2double(freq_field.String); freq_field.String=num2str(ni);tgl2.Value=0; tgl1.Value=1;');
+        'callback',@callbackfun_002);
 
 
     freq_field0=uicontrol('Style','edit',...
         'Position',[.30 .50 .12 .08],...
         'Units','normalized','String',num2str(ra),...
-        'Callback','ra=str2double(freq_field0.String); freq_field0.String=num2str(ra); tgl2.Value=1; tgl1.Value=0;');
+        'callback',@callbackfun_003);
 
     freq_field2=uicontrol('Style','edit',...
         'Position',[.30 .40 .12 .08],...
         'Units','normalized','String',num2str(dx),...
-        'Callback','dx=str2double(freq_field2.String); freq_field2.String=num2str(dx);');
+        'callback',@callbackfun_004);
 
     freq_field3=uicontrol('Style','edit',...
         'Position',[.30 .30 .12 .080],...
         'Units','normalized','String',num2str(dy),...
-        'Callback','dy=str2double(freq_field3.String); freq_field3.String=num2str(dy);');
+        'callback',@callbackfun_005);
 
     freq_field4=uicontrol('Style','edit',...
         'Position',[.6 .30 .12 .080],...
         'Units','normalized','String',num2str(time),...
-        'Callback','time_field.Value=str2double(time_field.String);time=days(time_field.Value);');
+        'callback',@callbackfun_006);
     freq_field5=uicontrol('Style','edit',...
         'Position',[.6 .40 .12 .080],...
         'Units','normalized','String',num2str(timef),...
-        'Callback','timef=str2double(freq_field5.String); freq_field5.String=num2str(timef);');
+        'callback',@callbackfun_007);
 
     freq_field6=uicontrol('Style','edit',...
         'Position',[.6 .50 .12 .080],...
         'Units','normalized','String',num2str(bootloops),...
-        'Callback','bootloops=str2double(freq_field6.String); freq_field6.String=num2str(bootloops);');
+        'callback',@callbackfun_008);
 
     freq_field7=uicontrol('Style','edit',...
         'Position',[.30 .20 .12 .080],...
         'Units','normalized','String',num2str(Nmin),...
-        'Callback','Nmin=str2double(freq_field7.String); freq_field7.String=num2str(Nmin);');
+        'callback',@callbackfun_009);
 
     freq_field8=uicontrol('Style','edit',...
         'Position',[.6 .60 .12 .080],...
         'Units','normalized','String',num2str(fMaxRadius),...
-        'Callback','fMaxRadius=str2double(freq_field8.String); freq_field8.String=num2str(fMaxRadius);');
+        'callback',@callbackfun_010);
 
     tgl1 = uicontrol('Style','radiobutton',...
         'string','Number of Events:',...
-        'Position',[.05 .60 .2 .0800], 'Callback','tgl2.Value=0;',...
+        'Position',[.05 .60 .2 .0800], 'callback',@callbackfun_011,...
         'Units','normalized');
 
     set(tgl1,'value',0);
 
     tgl2 =  uicontrol('Style','radiobutton',...
         'string','OR: Constant Radius',...
-        'Position',[.05 .50 .2 .080], 'Callback','tgl1.Value=0;',...
+        'Position',[.05 .50 .2 .080], 'callback',@callbackfun_012,...
         'Units','normalized');
     set(tgl2,'value',1);
 
     create_grid =  uicontrol('Style','radiobutton',...
-        'string','Calculate a new grid', 'Callback','load_grid.Value=0; prev_grid.Value=0;','Position',[.78 .55 .2 .080],...
+        'string','Calculate a new grid', 'callback',@callbackfun_013,'Position',[.78 .55 .2 .080],...
         'Units','normalized');
 
     set(create_grid,'value',1);
 
     prev_grid =  uicontrol('Style','radiobutton',...
-        'string','Reuse the previous grid', 'Callback','load_grid.Value=0;create_grid.Value=0;','Position',[.78 .45 .2 .080],...
+        'string','Reuse the previous grid', 'callback',@callbackfun_014,'Position',[.78 .45 .2 .080],...
         'Units','normalized');
 
 
     load_grid =  uicontrol('Style','radiobutton',...
-        'string','Load a previously saved grid', 'Callback','prev_grid.Value=0;create_grid.Value=0;','Position',[.78 .35 .2 .080],...
+        'string','Load a previously saved grid', 'callback',@callbackfun_015,'Position',[.78 .35 .2 .080],...
         'Units','normalized');
 
     save_grid =  uicontrol('Style','checkbox',...
@@ -163,12 +163,12 @@ if sel == 'in'
 
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','Callback','close;done','String','Cancel');
+        'Units','normalized','callback',@callbackfun_016,'String','Cancel');
 
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'Callback','tgl1=tgl1.Value;tgl2=tgl2.Value;prev_grid=prev_grid.Value;create_grid=create_grid.Value; load_grid=load_grid.Value; save_grid=save_grid.Value; oldfig_button=oldfig_button.Value; close,rcvalgrid_a2(''ca'')',...
+        'callback',@callbackfun_017,...
         'String','Go');
 
     text(...
@@ -614,3 +614,132 @@ if sel == 'lo'
         return
     end
 end
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  inb2=hndl2.Value;
+   ;
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  ni=str2double(freq_field.String);
+   freq_field.String=num2str(ni);
+  tgl2.Value=0;
+   tgl1.Value=1;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  ra=str2double(freq_field0.String);
+   freq_field0.String=num2str(ra);
+   tgl2.Value=1;
+   tgl1.Value=0;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  dx=str2double(freq_field2.String);
+   freq_field2.String=num2str(dx);
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  dy=str2double(freq_field3.String);
+   freq_field3.String=num2str(dy);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  time_field.Value=str2double(time_field.String);
+  time=days(time_field.Value);
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  timef=str2double(freq_field5.String);
+   freq_field5.String=num2str(timef);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  bootloops=str2double(freq_field6.String);
+   freq_field6.String=num2str(bootloops);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  Nmin=str2double(freq_field7.String);
+   freq_field7.String=num2str(Nmin);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  fMaxRadius=str2double(freq_field8.String);
+   freq_field8.String=num2str(fMaxRadius);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+  tgl2.Value=0;
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+  tgl1.Value=0;
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+  load_grid.Value=0;
+   prev_grid.Value=0;
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  load_grid.Value=0;
+  create_grid.Value=0;
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+  prev_grid.Value=0;
+  create_grid.Value=0;
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+  close;
+  done;
+end
+ 
+function callbackfun_017(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_017');
+  tgl1=tgl1.Value;
+  tgl2=tgl2.Value;
+  prev_grid=prev_grid.Value;
+  create_grid=create_grid.Value;
+   load_grid=load_grid.Value;
+   save_grid=save_grid.Value;
+   oldfig_button=oldfig_button.Value;
+   close;
+  rcvalgrid_a2('ca');
+end
+ 

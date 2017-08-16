@@ -27,3 +27,4 @@ biggestEvent = mycat.subset(bg); %biggest event in a cluster(if more than one,ta
 
 clustnumbers=(1:numel(clusLengths));    %stores numbers of clusters
 
+

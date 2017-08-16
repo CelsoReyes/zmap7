@@ -38,3 +38,4 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest(time_as, pval, cval, kval)
     % Calculate RMS
     i=(1:1:length(time_as))';
     fRMS = (sum((i-cumnr_modelf).^2)/length(i))^0.5;
+

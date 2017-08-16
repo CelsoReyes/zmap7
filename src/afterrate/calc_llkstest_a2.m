@@ -70,3 +70,4 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     %     KSSTAT = nan;
     %     fRMS = nan;
     % end % END of isnan check
+

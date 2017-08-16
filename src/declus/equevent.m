@@ -48,3 +48,4 @@ function equi=equevent(mycat,clus)
     equi.Depth=edep(:);
 
 
+

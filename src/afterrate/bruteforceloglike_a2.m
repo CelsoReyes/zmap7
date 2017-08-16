@@ -93,3 +93,4 @@ function [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(tas, fT
     % corrected Akaike Information Criterion
     [fk,nX]=size(tas);
     fAIC = -2*(-fL)+2*fPar+2*fPar*(fPar+1)/(fk-fPar-1);
+

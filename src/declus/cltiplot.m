@@ -42,15 +42,15 @@ function cltiplot(var1)
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...
-            'Callback','clinfo(4);')
+            'callback',@callbackfun_001)
         
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
-            'Callback','xt=[];cumu=[];cumu2=[];if isempty(pyy),set(ccum,''visible'',''off'');else,;delete(ccum);pyy=[];end;');
+            'callback',@callbackfun_002);
         
         uicontrol('Units','normal',...
             'Position',[.0 .93 .08 .06],'String','Print ',...
-            'Callback','myprint')
+            'callback',@callbackfun_003)
         
         
         
@@ -199,26 +199,99 @@ function cltiplot(var1)
         add_menu_divider();
         op1=uimenu('Label','Tools');
         uimenu(op1,'label','AS',...
-            'Callback','set(gcf,''Pointer'',''watch'');clas;')
+            'callback',@callbackfun_004)
         
         uimenu(op1,'label','LTA',...
-            'Callback','cllta(1);')
+            'callback',@callbackfun_005)
         
         uimenu(op1,'label','Timecut',...
-            'Callback','timeselect(1);cltiplot(3) ;')
+            'callback',@callbackfun_006)
         
         uimenu(op1,'label','Back',...
             'Callback', 'if ~isempty(pyy),cltiplot(3);pyy=[];end');
         
         op2=uimenu(op1,'label','P-Value');
         uimenu(op2,'label','manual',...
-            'Callback','ttcat=ZG.newt2;clpval(1);');
+            'callback',@callbackfun_007);
         uimenu(op2,'label','automatic',...
-            'Callback','ttcat=ZG.newt2;clpval(3);');
-        uimenu(op2,'label','with time', 'Callback','cltipval(2);');
-        uimenu(op2,'label','with magnitude', 'Callback','cltipval(1);');
+            'callback',@callbackfun_008);
+        uimenu(op2,'label','with time', 'callback',@callbackfun_009);
+        uimenu(op2,'label','with magnitude', 'callback',@callbackfun_010);
         
     end
     
     %% callback functions
 end
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  clinfo(4);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  xt=[];
+  cumu=[];
+  cumu2=[];
+  if isempty(pyy);
+  set(ccum,'visible','off');
+  else;
+  ;
+  delete(ccum);
+  pyy=[];
+  end;
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  myprint;
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  set(gcf,'Pointer','watch');
+  clas;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  cllta(1);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  timeselect(1);
+  cltiplot(3) ;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  ttcat=ZG.newt2;
+  clpval(1);
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+  ttcat=ZG.newt2;
+  clpval(3);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+  cltipval(2);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+  cltipval(1);
+end
+ 

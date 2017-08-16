@@ -6,3 +6,4 @@ function [rmain,r1]= interact( mycat )
     rmain = 0.011*10.^(0.4* mycat.Magnitude); %interaction zone for mainshock
     r1 = rfact * rmain;                  %interaction zone if included in a cluster
 end
+

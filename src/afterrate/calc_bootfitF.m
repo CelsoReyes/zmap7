@@ -210,3 +210,4 @@ function [output] = calc_bootfitF(mycat,time,timef,bootloops,ZG.maepi)
     end
 
     output = [pval pstd cval cstd kval kstd sigma fStdBst fRc_Flaw fRc_Bst];
+

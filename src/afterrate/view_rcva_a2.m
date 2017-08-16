@@ -82,11 +82,11 @@ if oldfig_button == 0
     add_symbol_menu('eq_plot');
 
     options = uimenu('Label',' Analyze ');
-    uimenu(options,'Label','Refresh ', 'Callback','view_rcva_a2(lab1,re3)')
+    uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
     uimenu(options,'Label','Select EQ in Circle - Constant R',...
-         'Callback','h1 = gca;met = ''ra''; ZG=ZmapGlobal.Data; ZG.hold_state=false;plot_circbootfit_a2;watchoff(rcmap)')
+         'callback',@callbackfun_002)
     uimenu(options,'Label','Select EQ with const. number',...
-         'Callback','h1 = gca;ZG=ZmapGlobal.Data; ZG.hold_state2=true;ZG=ZmapGlobal.Data; ZG.hold_state=true;plot_constnrbootfit_a2;watchoff(rcmap)')
+         'callback',@callbackfun_003)
 
 
     op1 = uimenu('Label',' Maps ');
@@ -94,56 +94,56 @@ if oldfig_button == 0
     %Meniu for adjusting several parameters.
     adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-         'Callback','asel = ''mag''; adju2; view_rcva_a2(lab1,re3) ')
+         'callback',@callbackfun_004)
     uimenu(adjmenu,'Label','Adjust Rmax cut',...
-         'Callback','asel = ''rmax''; adju2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_005)
     uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-         'Callback','asel = ''gofi''; adju2; view_rcva_a2(lab1,re3) ')
+         'callback',@callbackfun_006)
     uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-         'Callback','asel = ''pstdc''; adju2; view_rcva_a2(lab1,re3) ')
+         'callback',@callbackfun_007)
 
 
     uimenu(op1,'Label','Relative rate change (bootstrap)',...
-         'Callback',' lab1=''Sigma'';re3 = mRelchange; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_008)
     uimenu(op1,'Label','Model',...
-         'Callback',' lab1=''Model'';re3 = mMod; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_009)
     uimenu(op1,'Label','KS-Test',...
-         'Callback',' lab1=''Rejection'';re3 = mKstestH; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_010)
     uimenu(op1,'Label','KS-Test Statistic',...
-         'Callback',' lab1=''KS distance'';re3 = mKsstat; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_011)
     uimenu(op1,'Label','KS-Test p-value',...
-         'Callback',' lab1=''KS-Test p-value'';re3 = mKsp; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_012)
     uimenu(op1,'Label','RMS of fit',...
-         'Callback',' lab1=''RMS'';re3 = mRMS; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_013)
     uimenu(op1,'Label','Resolution Map (Number of events)',...
-         'Callback','lab1=''Number of events'';re3 = mNumevents; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_014)
     uimenu(op1,'Label','Resolution Map (Radii)',...
-         'Callback','lab1=''Radius / [km]'';re3 = vRadiusRes; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_015)
     uimenu(op1,'Label','p-value',...
-         'Callback',' lab1=''p-value'';re3 = mPval; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_016)
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_017)
     uimenu(op1,'Label','c-value',...
-         'Callback','lab1=''c-value'';re3 = mCval; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_018)
     uimenu(op1,'Label','c-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_019)
     uimenu(op1,'Label','k-value',...
-         'Callback','lab1=''k-value'';re3 = mKval; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_020)
     uimenu(op1,'Label','k-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_021)
     uimenu(op1,'Label','p2-value',...
-         'Callback',' lab1=''p2-value'';re3 = mPval2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_022)
     uimenu(op1,'Label','p-value standard deviation',...
-         'Callback',' lab1=''p-valstd'';re3 = mPvalstd2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_023)
     uimenu(op1,'Label','c2-value',...
-         'Callback','lab1=''c-value'';re3 = mCval2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_024)
     uimenu(op1,'Label','c2-value standard deviation',...
-         'Callback','lab1=''c-valuestd'';re3 = mCvalstd2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_025)
     uimenu(op1,'Label','k2-value',...
-         'Callback','lab1=''k-value'';re3 = mKval2; view_rcva_a2(lab1,re3)')
+         'callback',@callbackfun_026)
     uimenu(op1,'Label','k2-value standard deviation',...
-         'Callback','lab1=''k-valuestd'';re3 = mKvalstd2; view_rcva_a2(lab1,re3)')
-    %    uimenu(op1,'Label','Histogram ', 'Callback','zhist')
+         'callback',@callbackfun_027)
+    %    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_028)
 
     add_display_menu(2);
 
@@ -282,3 +282,231 @@ axes(h1)
 watchoff(rcmap)
 %whitebg(gcf,[ 0 0 0 ])
 done
+
+function callbackfun_001(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_001');
+  view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_002(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_002');
+  h1 = gca;
+  met = 'ra';
+   ZG=ZmapGlobal.Data;
+   ZG.hold_state=false;
+  plot_circbootfit_a2;
+  watchoff(rcmap);
+end
+ 
+function callbackfun_003(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_003');
+  h1 = gca;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state2=true;
+  ZG=ZmapGlobal.Data;
+   ZG.hold_state=true;
+  plot_constnrbootfit_a2;
+  watchoff(rcmap);
+end
+ 
+function callbackfun_004(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_004');
+  asel = 'mag';
+   adju2;
+   view_rcva_a2(lab1,re3) ;
+end
+ 
+function callbackfun_005(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_005');
+  asel = 'rmax';
+   adju2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_006(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_006');
+  asel = 'gofi';
+   adju2;
+   view_rcva_a2(lab1,re3) ;
+end
+ 
+function callbackfun_007(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_007');
+  asel = 'pstdc';
+   adju2;
+   view_rcva_a2(lab1,re3) ;
+end
+ 
+function callbackfun_008(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_008');
+   lab1='Sigma';
+  re3 = mRelchange;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_009(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_009');
+   lab1='Model';
+  re3 = mMod;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_010(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_010');
+   lab1='Rejection';
+  re3 = mKstestH;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_011(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_011');
+   lab1='KS distance';
+  re3 = mKsstat;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_012(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_012');
+   lab1='KS-Test p-value';
+  re3 = mKsp;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_013(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_013');
+   lab1='RMS';
+  re3 = mRMS;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_014(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_014');
+  lab1='Number of events';
+  re3 = mNumevents;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_015(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_015');
+  lab1='Radius / [km]';
+  re3 = vRadiusRes;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_016(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_016');
+   lab1='p-value';
+  re3 = mPval;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_017(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_017');
+   lab1='p-valstd';
+  re3 = mPvalstd;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_018(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_018');
+  lab1='c-value';
+  re3 = mCval;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_019(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_019');
+  lab1='c-valuestd';
+  re3 = mCvalstd;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_020(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_020');
+  lab1='k-value';
+  re3 = mKval;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_021(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_021');
+  lab1='k-valuestd';
+  re3 = mKvalstd;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_022(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_022');
+   lab1='p2-value';
+  re3 = mPval2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_023(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_023');
+   lab1='p-valstd';
+  re3 = mPvalstd2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_024(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_024');
+  lab1='c-value';
+  re3 = mCval2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_025(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_025');
+  lab1='c-valuestd';
+  re3 = mCvalstd2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_026(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_026');
+  lab1='k-value';
+  re3 = mKval2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_027(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_027');
+  lab1='k-valuestd';
+  re3 = mKvalstd2;
+   view_rcva_a2(lab1,re3);
+end
+ 
+function callbackfun_028(mysrc,myevt)
+  % automatically created callback function from text
+  callback_tracker(mysrc,myevt,mfilename('fullpath'),'callbackfun_028');
+  zhist;
+end
+ 

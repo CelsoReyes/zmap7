@@ -71,3 +71,4 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,boot
     pv = loops(nMeanVal,1);
     cv = loops(nMeanVal,2);
     kv = loops(nMeanVal,3);
+

@@ -110,3 +110,4 @@ report_this_filefun(mfilename('fullpath'));
     mResult.cmean2 = mMeanModF(1,7); mResult.cmeanStd2 = mStdL(1,4);
     mResult.kmean1 = mMeanModF(1,9); mResult.kmeanStd1 = mStdL(1,5);
     mResult.kmean2 = mMeanModF(1,11); mResult.kmeanStd2 = mStdL(1,6);
+

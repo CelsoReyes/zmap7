@@ -167,3 +167,4 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
             '_Nmin_' num2str(params.nMinimumNumber) '_Nodes_' num2str(nNodeStart) '_' num2str(nNodeEnd) '.mat'], 'vResults');
     end
 
+

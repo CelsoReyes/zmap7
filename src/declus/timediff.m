@@ -45,3 +45,4 @@ function [tdiff, ac]  = timediff(j,ci,tau, clus, eqtimes)
     else                               
             ac = ci+1:j;
     end
+
