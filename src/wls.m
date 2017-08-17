@@ -2,9 +2,9 @@ function [A,B,err] = wls(x,y)
     %WEIGHTED LINEAR LEAST SQUARES REGRESSION
     %	WLS(x,y) finds the A and B coefficients of A log cumalative frequency
     %curve and the error.
-
+    
     %report_this_filefun(mfilename('fullpath'));
-
+    
     global S % output of POLYFIT used for error estimates
     mima = min(x);
     if any(size(x) ~= size(y))
@@ -22,14 +22,14 @@ function [A,B,err] = wls(x,y)
     end
     x = wx;
     y = log10(wy);
-
+    
     clear wx
     clear wy
     l = x  > mima;
-
+    
     %[B, A,err ] = ma(x',y');
     %b2 = -abs(B);
-
+    
     if length(x(l)) > 5
         [p,S] = polyfit(x(l),y(l),1);
     else
@@ -37,8 +37,8 @@ function [A,B,err] = wls(x,y)
     end
     A = p(2);
     B = p(1) ;
-
+    
     [~,err] = polyval(p,x,S);
     err = mean(err);
-
+end
 

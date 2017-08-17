@@ -99,7 +99,7 @@ function view_ratecomp(det,re3)
     
     % plot overlay
     %
-    overlay_
+    update(mainmap())
     %set(ploeq,'MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'visible',vi);
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
@@ -377,6 +377,6 @@ function view_ratecomp(det,re3)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         hold on;
-        overlay_;
+        update(mainmap());
     end
 end

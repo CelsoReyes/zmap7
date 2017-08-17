@@ -68,7 +68,7 @@ function add_display_menu(version)
             uimenu(op2e,'Label','Brigten -0.4',...
                 'Callback','axes(hzma); brighten(-0.4)');
             uimenu(op2e,'Label','Redraw Overlay',...
-                'Callback','hold on;overlay_'); % this is also different
+                'Callback','hold on;update(mainmap())'); % this is also different
         case 4
             op2e = uimenu('Label',' Display ');
             uimenu(op2e,'Label','Fix color (z) scale', 'Callback','fixax2 ')
@@ -114,6 +114,6 @@ function add_display_menu(version)
             uimenu(op2e,'Label','Brigten -0.4',...
                 'Callback','axes(hzma); brighten(-0.4)')
             uimenu(op2e,'Label','Redraw Overlay',...
-                'Callback','hold on;overlay_'); % this is different from case #1
+                'Callback','hold on;update(mainmap())'); % this is different from case #1
     end
 end

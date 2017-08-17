@@ -260,62 +260,62 @@ function incube()
     end
 end
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  step=str2double(freq_field.String);
-   freq_field.String=num2str(step);
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    step=str2double(freq_field.String);
+    freq_field.String=num2str(step);
 end
- 
+
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  iwl2=str2double(freq_field2.String);
-   freq_field2.String=num2str(iwl2);
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    iwl2=str2double(freq_field2.String);
+    freq_field2.String=num2str(iwl2);
 end
- 
+
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  close;
-  loadala;
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    close;
+    loadala;
 end
- 
+
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  close;
-  done;
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    close;
+    done;
 end
- 
+
 function callbackfun_005(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  close;
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    close;
     allhist('rub');
 end
- 
+
 function callbackfun_006(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  close;
-   allhist('lta');
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    close;
+    allhist('lta');
 end
- 
+
 function callbackfun_007(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  myprint;
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    myprint;
 end
- 
+
 function callbackfun_008(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  f1=gcf;
-   f2=gpf;
-   set(f1,'Visible','off');
-  if f1~=f2;
-   zmap_message_center();
-  done;
-   end;
+    % automatically created callback function from text
+    callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    f1=gcf;
+    f2=gpf;
+    set(f1,'Visible','off');
+    if f1~=f2;
+        zmap_message_center();
+        done;
+    end
 end
- 
+

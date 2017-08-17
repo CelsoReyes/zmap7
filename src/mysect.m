@@ -1,6 +1,6 @@
 function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         lat1,lon1,lat2,lon2)
-
+    
     %LC_XSECTION
     %
     %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
@@ -48,11 +48,11 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %	NOTE:
     %	It is assumed that LC_plot_map was used before using this function!
     %	This is neccessary to set global variables used by this function.
-
+    
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
-
+    
     report_this_filefun(mfilename('fullpath'));
-
+    
     global  torad Re scale
     global lat1 lon1 lat2 lon2 leng rbox box
     global sine_phi0 phi0 lambda0 phi1 phi2 pos sw eq1
@@ -63,33 +63,33 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     global eq0p eq1
     todeg = 180 / pi;
     eq1 =[];
-
+    
     if nargin < 9
-
+        
         if nargin == 8	% method 2: given lat & lon of center point and angle
-
+            
             lat0 = lat1;
             lon0 = lon1;
             [x0, y0] = lc_tocart(lat0,lon0);
             azimuth = lat2;
-
+            
             if azimuth >= 180, azimuth = azimuth - 180; end
             theta0 = ((lon0*torad - lambda0) * sine_phi0) * todeg;
             alpha = azimuth - theta0;
             beta = (90 - azimuth) + theta0;
-
+            
             x2 = ((length / 2) * cos(beta*torad));
             y2 = ((length / 2) * sin(beta*torad));
             x1 = x0 - x2;
             y1 = y0 - y2;
             x2 = x0 + x2;
             y2 = y0 + y2;
-
+            
             [lat1, lon1] = lc_froca(x1,y1);
             [lat2, lon2] = lc_froca(x2,y2);
-
+            
         elseif nargin == 4	% method 3: selection of the end points by mouse
-
+            
             limits = ginput(1);
             x1 = limits(1,1);
             y1 = limits(1,2);
@@ -98,38 +98,38 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
             limits = ginput(1);
             x2 = limits(1,1);
             y2 = limits(1,2);
-
+            
             if x1 > x2
                 xtemp = x1; ytemp = y1;
                 x1 = x2; y1 = y2;
                 x2 = xtemp; y2 = ytemp;
             end
-
+            
             [lat1, lon1] = lc_froca(x1,y1);
             [lat2, lon2] = lc_froca(x2,y2);
             lc_event(lat2,lon2,'rx',6,2)
-
+            
             x0 = (x1 + x2) / 2;
             y0 = (y1 + y2) / 2;
             [lat0, lon0] = lc_froca(x0,y0);
             dx = x2 - x1;
             dy = y2 - y1;
-
+            
             alpha = 90 - (atan(dy/dx)*todeg);
             length = sqrt(dx^2 + dy^2);
             leng = length;
-
+            
         else
             disp('ERROR: incompatible number of arguments')
             help lc_xsection
             return
         end
-
+        
     elseif nargin == 9	% method 1: given lat & lon of the two end points
         figure(mapl);
         [x1, y1] = lc_tocart(lat1,lon1);
         [x2, y2] = lc_tocart(lat2,lon2);
-
+        
         if x1 > x2
             xtemp = x1; ytemp = y1;
             x1 = x2; y1 = y2;
@@ -138,42 +138,42 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         else;
             sw = 'of'
         end
-
+        
         x0 = (x1 + x2) / 2;
         y0 = (y1 + y2) / 2;
         [lat0, lon0] = lc_froca(x0,y0);
         dx = x2 - x1;
         dy = y2 - y1;
-
+        
         alpha = 90 - (atan(dy/dx)*todeg);
         length = sqrt(dx^2 + dy^2);
-
+        
     else
-
+        
         disp('ERROR: incompatible number of arguments')
         help lc_xsection
         return
     end
-
+    
     % correction factor to correct for longitude away from the center meridian
     theta0 = ((lon0*torad - lambda0) * sine_phi0) * todeg;
-
+    
     % correct the XY azimuth of the Xsection line with the above factor to obtain
     % the true azimuth
     azimuth = alpha + theta0;
     if azimuth < 0, azimuth = azimuth + 180; end
-
+    
     % convert XY coordinate azimuth to a normal angle like we used to deal with
     sigma = 90 - alpha;
-
+    
     % transformation matrix to rotate the data coordinate w.r.t the Xsection line
     transf = [cos(sigma*torad) sin(sigma*torad)
         -sin(sigma*torad) cos(sigma*torad)];
-
+    
     % inverse transformation matrix to rotate the data coordinate back
     invtransf = [cos(-sigma*torad) sin(-sigma*torad)
         -sin(-sigma*torad) cos(-sigma*torad)];
-
+    
     % convert the map coordinate of the events to cartesian coordinates
     idx_map = find(minlatg < eqlat & eqlat < maxlatg & ...
         minlong < eqlon & eqlon < maxlong);
@@ -181,21 +181,21 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     % create new coordinate system at center of Xsection line
     eq0(1,:) = eq(1,:) - x0;
     eq0(2,:) = eq(2,:) - y0;
-
+    
     % rotate this last coordinate system so that X-axis correspond to Xsection line
     eq0p = transf * eq0;
     % project the event data to the Xsection line
     eq1(1,:) = eq0p(1,:);
     eq1(2,:) = eq0p(2,:) ;
-
+    
     % convert back to the original coordinate system
     eq1p = invtransf * eq1;
     eq2(1,:) = eq1p(1,:) + x0;
     eq2(2,:) = eq1p(2,:) + y0;
-
+    
     % plot the Xsection line on the map
     plot([x1 x2],[y1 y2],'--','LineWidth',1.5,'era','back')
-
+    
     % label the Xsection end points
     xlim = get(gca,'XLim');
     ylim = get(gca,'YLim');
@@ -214,7 +214,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         'Vertical','middle','Horizontal','center','FontWeight','bold','era','back');
     lbl2_h = text(label_pt(1,2),label_pt(2,2),label2,'FontSize',14,...
         'Vertical','middle','Horizontal','center','FontWeight','bold','era','back');
-
+    
     % create a box of width "width" around the Xsection line and plot it
     box(1,1) = -length/2; box(2,1) = width/2;
     box(1,2) = length/2; box(2,2) = width/2;
@@ -226,28 +226,28 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     rbox(1,:) = rbox(1,:) + x0;
     rbox(2,:) = rbox(2,:) + y0;
     plot(rbox(1,:),rbox(2,:),'-y','LineWidth',1.3,'era','back')
-
+    
     % check if symbol parameters global variables are set, if not --> defaults
     if isempty(symb_type), symb_type = '+r'; end
     if isempty(symb_size), symb_size = 3; end
     if isempty(symb_width), symb_width = [0.5]; end
-
+    
     % find index of all events which are within the given box width
     idx_box = find(abs(eq0p(2,:)) <= width/2 & abs(eq0p(1,:)) <= length/2);
     inde = idx_box;
-
+    
     % plot the events on the map
     plot(eq(1,idx_box),eq(2,idx_box),'mo','MarkerSize',symb_size,...
         'LineWidth',symb_width,'era','back')
-
-
+    
+    
     % Open another graphic window for the cross section
     %map_fig = gcf;
     %xsec_fig = map_fig + 1;
-
+    
     figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
     
-
+    
     % Set up the Map window Enviroment
     %
     if isempty(figNumber)
@@ -259,45 +259,45 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
             'Visible','on');
         
         
-
+        
     end
-
+    
     figure(xsec_fig);
     hold on
     delete(gca);delete(gca);
     set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
-
+    
     % Plot events on cross section figure
     xdist = eq1(1,idx_box) + (length / 2);
     %eq1(1,:) = eq1(1,:) + (length / 2);
-
+    
     global Xwbz Ywbz
     Xwbz = xdist;
     Ywbz = depth(idx_box);
-
+    
     xsecx = xdist;
     xsecy = depth(idx_box);
-
+    
     plot(xdist,-depth(idx_box),symb_type,'MarkerSize',symb_size,...
         'LineWidth',symb_width,'era','back');
-
+    
     set(gca,'Color',color_bg)
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
         'normal','FontSize',10,'Linewidth',1.,'Ticklength',[0.02 0.02])
-
+    
     if isempty(maxdepth)
         maxZ = max(depth(idx_box));
     else
         maxZ = maxdepth;
     end
-
+    
     if isempty(mindepth)
         minZ = min(depth(idx_box));
     else
         minZ = mindepth;
     end
-
+    
     if length > (maxZ - minZ)*11/8.5
         position = [.1 .1 .7 ((maxZ-minZ)/length)*0.7*11/8.5];
     else
@@ -310,7 +310,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     % Plot labels
     xlabel('Distance [km]');
     ylabel('Depth [km]');
-
+    
     %Xstring = [];
     %set(gca,'XLabel',text(0,0,Xstring),'YLabel',text(0,0,'Deupth (km)','Fontweight','normal'))
     label_base1 = 1 + .04;
@@ -324,7 +324,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         'Vertical','bottom','Units','norm','era','back');
     lbl6_h = text(0,label_base3+0.04,lon1_dm,'FontSize',10,'Horizontal','left',...
         'Vertical','bottom','Units','norm','era','back');
-
+    
     lbl4_h = text(1,label_base2,label2,'FontSize',12,'Horizontal','center',...
         'FontWeight','bold','Vertical','middle','Units','norm','era','back');
     lat2_dm = sprintf('%2.2i N %4.2f''    ',fix(lat2),(frac(lat2)*60));
@@ -333,10 +333,11 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
         'Horizontal','right','Vertical','bottom','Units','norm','era','back');
     lbl8_h = text(1,label_base3+0.04,lon2_dm,'FontSize',10,...
         'Horizontal','right','Vertical','bottom','Units','norm','era','back');
-
-
+    
+    
     set(gcf,'visible','on')
     drawnow
     % Go back to map figure
     %figure(map_fig);
-
+    
+end

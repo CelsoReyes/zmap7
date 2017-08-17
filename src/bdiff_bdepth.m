@@ -64,7 +64,7 @@ function  bdiff_bdepth(mycat)
     
     % number of mag units
     nmagu = (maxmag*10)+1;
-
+    
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);

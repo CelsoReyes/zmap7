@@ -75,26 +75,26 @@ function plot3d()
     end
     % plot earthquakes according to depth
     switch ZmapGlobal.Data.mainmap_plotby
-    case 'depth'
-        plotQuakesByDepth(ax, a, []);
-    
-    
-    %plot earthquakes according time
-    case 'tim'
-        timidx = ZG.a.Date<=tim2&ZG.a.Date>=tim1;
-        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'+b');
-        set(plo,'MarkerSize',6,'LineWidth',1.)
-        timidx = ZG.a.Date<=tim3&ZG.a.Date>tim2;
-        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'og');
-        set(plo,'MarkerSize',6,'LineWidth',1.)
-        timidx = ZG.a.Date<=tim4&ZG.a.Date>tim3;
-        plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'xr');
-        set(plo,'MarkerSize',6,'LineWidth',1.)
-        
-        ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
-        ls2 = sprintf('%3.1f < t < %3.1f ',tim2,tim3);
-        ls3 = sprintf('%3.1f < t < %3.1f ',tim3,tim4);
-        
+        case 'depth'
+            plotQuakesByDepth(ax, a, []);
+            
+            
+            %plot earthquakes according time
+        case 'tim'
+            timidx = ZG.a.Date<=tim2&ZG.a.Date>=tim1;
+            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'+b');
+            set(plo,'MarkerSize',6,'LineWidth',1.)
+            timidx = ZG.a.Date<=tim3&ZG.a.Date>tim2;
+            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'og');
+            set(plo,'MarkerSize',6,'LineWidth',1.)
+            timidx = ZG.a.Date<=tim4&ZG.a.Date>tim3;
+            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'xr');
+            set(plo,'MarkerSize',6,'LineWidth',1.)
+            
+            ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
+            ls2 = sprintf('%3.1f < t < %3.1f ',tim2,tim3);
+            ls3 = sprintf('%3.1f < t < %3.1f ',tim3,tim4);
+            
     end
     
     
@@ -147,87 +147,86 @@ function plot3d()
     done;
     
     
-end
-function plotQuakesByDepth(ax, mycat, divs)
-    % plotQuakesByDepth
-    % plotQuakesByDepth(catalog)
-    % plotQuakesByDepth(catalog, divisions)
-    %   divisions is a vector of depths (up to 7)
-    
-    % magdivisions: magnitude split points
-    global event_marker_types ZG
-    if isempty(event_marker_types)
-        event_marker_types='+++++++'; %each division gets next type.
-    end
-    
-    if isempty(divs)
-        divs = linspace(min(mycat.Depth),max(mycat.Depth),4);
-        divs([1 4])=[]; % no need for min, and no quakes greater than max...
-    end
-    
-    assert(numel(divs) < 8); % else, too many for our colormap.
-    
-    cmapcolors = colormap('lines');
-    cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
-    
-    
-    mask = mycat.Depth <= divs(1);
-    
-    %ax = mainAxes();
-    %clear_quake_plotinfo();
-    washeld = ishold(ax); hold(ax,'on')
-    
-    h = plot3(ax, mycat.Longitude(mask), mycat.Latitude(mask),-mycat.Depth(mask),...
-        'Marker',event_marker_types(1),...
-        'Color',cmapcolors(1,:),...
-        'LineStyle','none',...
-        'MarkerSize',ZG.ms6,...
-        'Tag','mapax_part0');
-    h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
-    
-    for i = 1 : numel(divs)
-        mask = mycat.Depth > divs(i);
-        if i < numel(divs)
-            mask = mask & mycat.Depth <= divs(i+1);
+    function plotQuakesByDepth(ax, mycat, divs)
+        % plotQuakesByDepth
+        % plotQuakesByDepth(catalog)
+        % plotQuakesByDepth(catalog, divisions)
+        %   divisions is a vector of depths (up to 7)
+        
+        % magdivisions: magnitude split points
+        global event_marker_types ZG
+        if isempty(event_marker_types)
+            event_marker_types='+++++++'; %each division gets next type.
         end
-        dispname = sprintf('Z > %.1f km', divs(i));
-        plot3(ax, mycat.Longitude(mask), mycat.Latitude(mask),-mycat.Depth(mask),...
-            'Marker',event_marker_types(i+1),...
-            'Color',cmapcolors(i+1,:),...
+        
+        if isempty(divs)
+            divs = linspace(min(mycat.Depth),max(mycat.Depth),4);
+            divs([1 4])=[]; % no need for min, and no quakes greater than max...
+        end
+        
+        assert(numel(divs) < 8); % else, too many for our colormap.
+        
+        cmapcolors = colormap('lines');
+        cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
+        
+        
+        mask = mycat.Depth <= divs(1);
+        
+        %ax = mainAxes();
+        %clear_quake_plotinfo();
+        washeld = ishold(ax); hold(ax,'on')
+        
+        h = plot3(ax, mycat.Longitude(mask), mycat.Latitude(mask),-mycat.Depth(mask),...
+            'Marker',event_marker_types(1),...
+            'Color',cmapcolors(1,:),...
             'LineStyle','none',...
             'MarkerSize',ZG.ms6,...
-            'Tag',['mapax_part' num2str(i)],...
-            'DisplayName',dispname);
+            'Tag','mapax_part0');
+        h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
+        
+        for i = 1 : numel(divs)
+            mask = mycat.Depth > divs(i);
+            if i < numel(divs)
+                mask = mask & mycat.Depth <= divs(i+1);
+            end
+            dispname = sprintf('Z > %.1f km', divs(i));
+            plot3(ax, mycat.Longitude(mask), mycat.Latitude(mask),-mycat.Depth(mask),...
+                'Marker',event_marker_types(i+1),...
+                'Color',cmapcolors(i+1,:),...
+                'LineStyle','none',...
+                'MarkerSize',ZG.ms6,...
+                'Tag',['mapax_part' num2str(i)],...
+                'DisplayName',dispname);
+        end
+        xlabel(ax,'Longitude');
+        ylabel(ax,'Latitude');
+        zlabel(ax,'Depth [km]');
+        if ~washeld; hold(ax,'off'); end
     end
-    xlabel(ax,'Longitude');
-    ylabel(ax,'Latitude');
-    zlabel(ax,'Depth [km]');
-    if ~washeld; hold(ax,'off'); end
+    
+    function callbackfun_001(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint;
+    end
+    
+    function callbackfun_002(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        close(map3);
+        close(vie);
+        zmap_message_center();
+    end
+    
+    function callbackfun_003(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        zmaphelp(ttlStr,hlpStr1);
+    end
+    
+    function callbackfun_004(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        rotate3d;
+    end
 end
-
-function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  myprint;
-end
- 
-function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  close(map3);
-   close(vie);
-  zmap_message_center();
-end
- 
-function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  zmaphelp(ttlStr,hlpStr1);
-end
- 
-function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
-  callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  rotate3d;
-end
- 

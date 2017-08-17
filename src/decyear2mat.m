@@ -21,14 +21,14 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2mat(fDy)
     %
     % Thomas van Stiphout
     % Mai 9, 2007
-
+    
     disp('~/zmap/src/decyear2mat.m')
-
+    
     % save year in decimal format
     fYr=fDy;
     % define leap years
     bLeapYr = rem(fix(fDy),4) == 0 & rem(fix(fDy),100) ~= 0 | rem(fix(fDy),400) == 0 ;
-
+    
     % loop over each date
     for i=1:size(bLeapYr,1)
         if bLeapYr(i) % for leap years
@@ -40,7 +40,7 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2mat(fDy)
             nHr(i)=fix(nHr(i)); % hours
             nSec(i)=rem(nMin(i),1).*60; % seconds
             nMin(i)=fix(nMin(i)); % minutes
-
+            
         else
             mDay= [0,31,59,90,120,151,181,212,243,273,304,334]';%cumulative days in one year
             nMn(i)=sum(mDay<rem(fDy(i),1)*365);
@@ -52,4 +52,4 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2mat(fDy)
             nMin(i)=fix(nMin(i));
         end
     end
-
+end

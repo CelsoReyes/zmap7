@@ -11,3 +11,4 @@ function CLim = newclim(BeginSlot,EndSlot,CDmin,CDmax,CmLength)
     NewCmax = CDmax + (1 - PEndSlot) * ClimRange;
     CLim = [NewCmin,NewCmax];
 
+end

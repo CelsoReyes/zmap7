@@ -145,7 +145,7 @@ function view_rcva_a2(lab1,re3)
     % plot overlay
     %
     hold on
-    overlay_
+    update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
     set(ploeq,'Tag','eq_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
     

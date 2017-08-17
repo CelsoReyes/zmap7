@@ -7,9 +7,9 @@ function setcol()
     %
     % To re-open this system, just type the name of the m-file at the MATLAB
     % prompt. The M-file and its associtated MAT-file must be on your path.
-
+    
     report_this_filefun(mfilename('fullpath'));
-
+    
     % load setcol %todo delete setcol data.
     resp=questdlg('Set Background Color','Which background do you wish to set?','Axes','Figure','neither','neither');
     switch resp
@@ -23,7 +23,7 @@ function setcol()
             ZmapGlobal.Data.color_fbg=[C(1) C(2) C(3)];
             close;
             try
-            whitebg(mainmap(),ZmapGlobal.Data.color_fbg);
+                whitebg(mainmap(),ZmapGlobal.Data.color_fbg);
             catch
                 warning('unable to change color. maybe map doesn''t exist');
             end
@@ -32,3 +32,4 @@ function setcol()
             
             % do nothing
     end
+end

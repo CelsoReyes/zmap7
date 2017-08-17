@@ -238,7 +238,7 @@ if sel == 'ca'
     avg = [];
     allcount = 0.;
     wai = waitbar(0,' Please Wait ...  ');
-    set(wai,'NumberTitle','off','Name','b-value grid - percent done');;
+    set(wai,'NumberTitle','off','Name','b-value grid - percent done');
     drawnow
 
 

@@ -21,7 +21,7 @@ function[out]=bootrsp(in,B)
     %   Example:
     %
     %   out=bootrsp(randn(10,1),10);
-
+    
     %  Created by A. M. Zoubir and D. R. Iskander
     %  May 1998
     %
@@ -38,10 +38,10 @@ function[out]=bootrsp(in,B)
     %  Zoubir, A.M. and Boashash, B. The Bootstrap and Its Application
     %               in Signal Processing. IEEE Signal Processing Magazine,
     %               Vol. 15, No. 1, pp. 55-76, 1998.
-
+    
     if ~exist('B','var'), B=1;  end
     if ~exist('in','var'), error('Provide input data'); end
-
+    
     s=size(in);
     if length(s)>2
         error('Input data can be a vector or a 2D matrix only');

@@ -356,94 +356,91 @@ function plotala()
         axes(h1)
         plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k','era','normal')
     end
+    %% ui functions
+    function create_my_menu()
+        add_menu_divider();
+        
+        op3 = uimenu('Label','Tools');
+        uimenu(op3,'Label','Find Anomalie Groups  ',...
+            'callback',@callbackfun_007);
+        uimenu(op3,'Label','Display one Anomalie Group ',...
+            'callback',@callbackfun_008);
+        uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
+            'callback',@callbackfun_009);
+        uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
+            'callback',@callbackfun_010);
+    end
     
-end
-
-%% ui functions
-function create_my_menu()
-    add_menu_divider();
+    %% callback functions
     
-    op3 = uimenu('Label','Tools');
-    uimenu(op3,'Label','Find Anomalie Groups  ',...
-        'callback',@callbackfun_007);
-    uimenu(op3,'Label','Display one Anomalie Group ',...
-        'callback',@callbackfun_008);
-    uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
-        'callback',@callbackfun_009);
-    uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
-        'callback',@callbackfun_010);
+    function callbackfun_001(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        close;
+        plotala();
+    end
+    
+    function callbackfun_002(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        tre2=str2num(new.String);
+        'String';
+        num2str(tre2,3);
+    end
+    
+    function callbackfun_003(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        abo = abo2;
+        plotala();
+    end
+    
+    function callbackfun_004(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        delete(mamo);
+        delete(mamo1);
+        delete(newlabel);
+        mamovie ;
+    end
+    
+    function callbackfun_005(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        tresh=str2double(set_ni2.String);
+        set_ni2.String=num2str(tresh,3);
+    end
+    
+    function callbackfun_006(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        think;
+        pause(1);
+        plotala();
+    end
+    
+    function callbackfun_007(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        agroup;
+        cian;
+    end
+    
+    function callbackfun_008(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        cian2;
+    end
+    
+    function callbackfun_009(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        sucra;
+    end
+    
+    function callbackfun_010(mysrc,myevt)
+        % automatically created callback function from text
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        agz;
+    end
 end
-
-%% callback functions
-
-function callbackfun_001(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    close;
-    plotala();
-end
-
-function callbackfun_002(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    tre2=str2num(new.String);
-    'String';
-    num2str(tre2,3);
-end
-
-function callbackfun_003(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    abo = abo2;
-    plotala();
-end
-
-function callbackfun_004(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    delete(mamo);
-    delete(mamo1);
-    delete(newlabel);
-    mamovie ;
-end
-
-function callbackfun_005(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    tresh=str2double(set_ni2.String);
-    set_ni2.String=num2str(tresh,3);
-end
-
-function callbackfun_006(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    think;
-    pause(1);
-    plotala();
-end
-
-function callbackfun_007(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    agroup;
-    cian;
-end
-
-function callbackfun_008(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    cian2;
-end
-
-function callbackfun_009(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    sucra;
-end
-
-function callbackfun_010(mysrc,myevt)
-    % automatically created callback function from text
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    agz;
-end
-

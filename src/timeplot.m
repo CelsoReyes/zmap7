@@ -16,7 +16,7 @@ function timeplot(mycat, nosort)
     report_this_filefun(mfilename('fullpath'));
     myFigName='Cumulative Number';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
-
+    
     global  iwl2
     global statime
     global selt

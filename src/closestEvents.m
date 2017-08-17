@@ -1,6 +1,6 @@
 function [mask, max_km] = closestEvents(catalog, lat, lon, depth, n)
     % closestEvents determine which N events are closest to a point (lat,lon, depth).
-    % for hypocentral distance, leave depth empty. 
+    % for hypocentral distance, leave depth empty.
     %  ex.  closestEvents(mycatalog, 82,-120,[],20);
     % the distance to the nth closest event
     if isempty(depth)

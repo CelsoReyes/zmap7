@@ -12,12 +12,12 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
     %  totbin is the total number of bins (including those with 0 z-values)
     %  ztimes is a vector with max-zvalues, its indexes give the bin number
     %  ------------------                                  R. Zuniga, 4/94
-
+    
     global ztimes
     global sumx
-
+    
     report_this_filefun(mfilename('fullpath'));
-
+    
     as = 1:1:totbin;
     as = as*0;
     % if ~exist('sumx', 'var'); sumx = sum(cumu); end
@@ -35,11 +35,11 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
             as(i) = (mean1 - mean2)/(sqrt(var1/(i-bin0+1)+var2/(bin1-i)));
         else
             as(i) = 0;
-
+            
         end     %if mean1
-
+        
     end     % for i
-
+    
     %   S = sprintf('bin0 %3d bin1 %3d i  %d',bin0, bin1, i);
     %   disp(S)
     %
@@ -50,30 +50,30 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
         zmax = as(ixs);
         as = as*0 ;
         as(ixs) = zmax;
-
+        
         ztimes(ixs) = as(ixs);      % form (vector) ztimes
         %  find(ztimes)
-
+        
         xsum = cumsum(cumu);
-
+        
         t1(1) = xt(ixs);
         t1(2) = xsum(ixs);
         t1p = [  t1(1)  t1(2); t1(1)   t1(2)+par2 ];
         plot(t1p(:,1),t1p(:,2),'k');
         hold on;
-
+        
         S = sprintf('bin0 %d sig-Z at %d bin1 %d ',bin0, ixs, bin1);
         disp(S)
-
+        
         ztimes = genas(cumu,xt,totbin,bin0,ixs);  %call genas again for both extremes
         ztimes = genas(cumu,xt,totbin,ixs,bin1);
-
+        
     end     %if abs
-
+    
     ztimes(1,totbin) = 0.;    %   pad the end of ztimes
     as = as*0;
     out_ztimes = ztimes; %return a version that isn't the global
-
+    
     %
     %  Plot the as(t)
     %
@@ -88,4 +88,4 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
     %% plot(xt,as*10,'+m')
     %% plot(xt,as*10,'m')
     % %text(0.70,0.5,'+: AS * 10','sc')
-
+end

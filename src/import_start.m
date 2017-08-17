@@ -1,20 +1,20 @@
 function [mCatalog] = import_start(sFilterDir,FilePath)
     %13.04.14: small fix allowing to pass in the filepath directly to avoid
     %GUI file handler (used for MapSeis)
-
+    
     if nargin<2
         FilePath=[];
     end
-
+    
     % Default return value
     mCatalog = nan;
-
+    
     % Check if filter directory ends with the appropriate directory separator
     sLastChar = sFilterDir(length(sFilterDir));
     if ~(sLastChar == filesep)
         sFilterDir = [sFilterDir filesep];
     end
-
+    
     % Get directory in filter directory
     vrDir = dir(sFilterDir);
     if isempty(vrDir)
@@ -24,12 +24,12 @@ function [mCatalog] = import_start(sFilterDir,FilePath)
         errordlg('Directory is empty. No Filters found.');
         return;
     end
-
+    
     % Initialize filter list
     cFilter = {};
     % Counter for detected filters
     nFilter = 1;
-
+    
     for nCnt = 1:length(vrDir)
         % Check for directories
         if ~((strcmp(vrDir(nCnt).name, '.')) | (strcmp(vrDir(nCnt).name, '..')))
@@ -55,14 +55,14 @@ function [mCatalog] = import_start(sFilterDir,FilePath)
             end
         end
     end
-
+    
     % Charmatrix with names of filters
     mFilterNames = char(cFilter{:,1});
     mFilterFiles = char(cFilter{:,2});
-
+    
     % Invoke the user interface
     hDialog = import_dialog(mFilterNames, mFilterFiles, sFilterDir);
-
+    
     % Analyze Output
     if ~ishandle(hDialog)
         answer = 0;
@@ -83,7 +83,7 @@ function [mCatalog] = import_start(sFilterDir,FilePath)
                 newpath =[pathstr,filesep];
                 newfile = [name,ext];
             end
-
+            
             % Cancel pressed?
             if ~(isequal(newfile, 0) | isequal(newpath, 0))
                 newfile = [newpath newfile];
@@ -97,5 +97,5 @@ function [mCatalog] = import_start(sFilterDir,FilePath)
             delete(hDialog);
         end
     end
-
-
+    
+end

@@ -112,3 +112,4 @@ function selectp(in_or_out)
     
     h=zmap_message_center;
     h.update_catalog();
+end

@@ -1,5 +1,5 @@
 function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
-
+    
     %LC_TO_CARTESIAN
     %
     %	[x,y] = LC_to_cartesian(phi,lambda,maxlat,minlat,maxlon,minlon)
@@ -26,17 +26,17 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
     %       Source: Equations taken from "Map Projections Used by the
     %               U.S. Geological Survey" by John P. Snyder
     %               Geological Survey Bulletin 1532, pg: 101-109.
-
+    
     global bDebug
     if bDebug
         report_this_filefun(mfilename('fullpath'));
     end
-
+    
     % set the global variables
     global torad Re scale
     global sine_phi0 phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
-
+    
     if nargin == 2
         %get data from global variables
         maxlat = maxlatg; minlat = minlatg;
@@ -45,10 +45,10 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
         % set the global variable for later use
         maxlatg = maxlat; minlatg = minlat;
         maxlong = maxlon; minlong = minlon;
-
+        
         % set some constants
         scale = 1;
-
+        
         % get the Standard Parallels and Center Coordinates
         phi2 = (minlat + ((maxlat - minlat) / 4)) * torad;
         phi1 = (maxlat - ((maxlat - minlat) / 4)) * torad;
@@ -59,34 +59,34 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
         help LC_to_cartesian
         return
     end
-
+    
     % convert phi & lambda from degrees to radians
     phi = phi * torad;
     lambda = lambda * torad;
-
+    
     % convert the data longitudes into differences in longitudes between the
     % center longitude, and the data longitudes
     d_lambda = (lambda - lambda0);
-
+    
     % compute the constant of the cone: sine_phi0
     tan1 = tan((pi/4) + (phi1/2));
     tan2 = tan((pi/4) + (phi2/2));
     sine_phi0 = log(cos(phi1)/cos(phi2)) / log(tan2/tan1);
-
+    
     % compute the polar angles: theta
     theta = d_lambda * sine_phi0;
-
+    
     % compute the auxiliary function: psi
     psi = cos(phi1) * (tan1^sine_phi0) / sine_phi0;
-
+    
     % compute the polar radius to the origin: rho0
     tan0 = tan((pi/4) + (phi0/2));
     rho0 = Re * psi / (tan0^sine_phi0);
-
+    
     % compute the polar radius to each latitude phi: rho
     rho = Re * psi ./ (tan((pi/4) + (phi/2)).^sine_phi0);
-
+    
     % store the data in output variables
     x = scale * rho .* sin(theta);
     y = scale * (rho0 - (rho .* cos(theta)));
-
+end

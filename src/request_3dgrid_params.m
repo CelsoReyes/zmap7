@@ -1,5 +1,5 @@
 function [dLon_deg,dLat_deg,dz_km,maxZ_km,minZ_km] = request_3dgrid_params(tit)
-    % prompt for grid spacing. 
+    % prompt for grid spacing.
     % uses catalog "a" for default depth limits
     
     dx = 0.1;

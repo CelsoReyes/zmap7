@@ -47,7 +47,7 @@ function load_zmapfile()%
         else
             errordlg('File could not be found');
         end
-            
+        
     end
     if isempty(ZG.a)
         ZG.a=ZmapCatalog();
@@ -127,7 +127,7 @@ end
 
 
 function   A=loadCatalog(path, file)
-    % 
+    %
     % by the time this is called, it should be already known that 'a' exists
     lopa = fullfile(path, file);
     show_loading_status()

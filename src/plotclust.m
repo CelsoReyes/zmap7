@@ -14,7 +14,7 @@ function plotclust()
         'Visible','on', ...
         'Position',[ (ZG.fipo(3:4) - [600 500]) ZG.map_len]);
     
-    % 
+    %
     
     uicontrol('Units','normal',...
         'Position',[.0 .93 .08 .06],'String','Info ',...
@@ -42,7 +42,7 @@ function plotclust()
         set(pl,'Color',col(i,:),'Markersize', 6, 'Linewidth',1, 'Marker',st(rs),'tag',num2str(i))
     end
     
-    overlay_
+    update(mainmap())
     
     axis image
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
@@ -69,25 +69,25 @@ function plotclust()
         'Callback',@markclus_callback,'Sliderstep',[ 0.01 0.1],...
         'Units','normalized');
     
-%% ui functions
-function create_my_menu()
-	add_menu_divider();
+    %% ui functions
+    function create_my_menu()
+        add_menu_divider();
+        
+        op4 = uimenu('Label','ZTools') ;
+        op6 =uimenu(op4,'Label','select clusters');
+        
+        uimenu(op6,'Label','Select by Mouse',...
+            'Callback',@(~,~)getclu_callback('mouse'));
+        uimenu(op6,'Label','Plot largest Cluster',...
+            'Callback',@(~,~)getclu_callback('large'));
+    end
     
-    op4 = uimenu('Label','ZTools') ;
-    op6 =uimenu(op4,'Label','select clusters');
+    %% callback functions
     
-    uimenu(op6,'Label','Select by Mouse',...
-        'Callback',@(~,~)getclu_callback('mouse'));
-    uimenu(op6,'Label','Plot largest Cluster',...
-        'Callback',@(~,~)getclu_callback('large'));
-end
-
-%% callback functions
-
     function markclus_callback(src,~)
         clustNum0 = markclus(clus, clustNum0, sl, te);
     end
-        
+    
     function getclu_callback(opt)
         getclu(opt,clustNum0);
     end

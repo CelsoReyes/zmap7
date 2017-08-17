@@ -238,13 +238,13 @@ function view_bvt(lab1,re3)
     done
     
     %% ui functions
-function create_my_menu()
-	add_menu_divider();
+    function create_my_menu()
+        add_menu_divider();
+        
+    end
     
-end
-
-%% callback functions
-
+    %% callback functions
+    
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

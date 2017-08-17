@@ -144,7 +144,7 @@ function csubcat()
     
     %
     %  Plots epicenters  and faults
-    overlay_
+    update(mainmap())
     
     % Make the figure visible
     %

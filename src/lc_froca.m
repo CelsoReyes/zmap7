@@ -1,5 +1,5 @@
 function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
-
+    
     %LC_FROM_CARTESIAN
     %
     %	[phi,lambda] = LC_from_cartesian(x,y,maxlat,minlat,maxlon,minlon)
@@ -27,19 +27,19 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
     %	Source: Equations taken from "Map Projections Used by the
     %	        U.S. Geological Survey" by John P. Snyder
     %	        Geological Survey Bulletin 1532, pg: 101-109.
-
+    
     global bDebug
     if bDebug
         report_this_filefun(mfilename('fullpath'));
     end
-
+    
     todeg = 180 / pi;
-
+    
     % set the global variables
     global torad Re scale
     global phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
-
+    
     if nargin == 2
         %get data from global variables
         maxlat = maxlatg; minlat = minlatg;
@@ -48,10 +48,10 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
         % set the global variable for later use
         maxlatg = maxlat; minlatg = minlat;
         maxlong = maxlon; minlong = minlon;
-
+        
         % set some constants
         scale = 1;
-
+        
         % get the Standard Parallels and Center Coordinates
         phi2 = (minlat + ((maxlat + minlat) / 4)) * torad;
         phi1 = (maxlat - ((maxlat + minlat) / 4)) * torad;
@@ -62,27 +62,27 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
         help LC_to_cartesian
         return
     end
-
+    
     % compute the constant of the cone: sine_phi0
     tan1 = tan((pi/4) + (phi1/2));
     tan2 = tan((pi/4) + (phi2/2));
     sine_phi0 = log(cos(phi1)/cos(phi2)) / log(tan2/tan1);
-
+    
     % compute the auxiliary function: psi
     psi = (cos(phi1) * (tan1^sine_phi0)) / sine_phi0;
-
+    
     % compute the polar radius to the origin: rho0
     tan0 = tan((pi/4) + (phi0/2));
     rho0 = (Re * psi) / (tan0^sine_phi0);
-
+    
     % compute the polar angles: theta
     theta = atan(x ./ (rho0 - y));
-
+    
     % compute rho (inverse)
     rho = sign(sine_phi0) * sqrt((x.^2) + (rho0 - y).^2);
-
+    
     % store the latitudes and longitudes in output variables
     arctan = atan((Re * psi ./ rho).^(1/sine_phi0));
     phi = ((2 * arctan) - (pi/2)) * todeg;
     lambda = ((theta / sine_phi0) + lambda0) * todeg;
-
+end

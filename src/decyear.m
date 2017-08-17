@@ -1,5 +1,5 @@
 function [decyr] = decyear(date)
-
+    
     % function [decyr] = decyear(date)
     %
     % This Matlab function converts dates in year,month,day into
@@ -14,7 +14,7 @@ function [decyr] = decyear(date)
     %  ------------------
     % inial mods by A.Allmann, Samuel Neukomm, 3/12/04
     % completely rewritten (simplified) by Celso G Reyes, 2017
-
+    
     if isa(date,'datetime')
         yrs=date.Year;
         decyr = (datenum(date)-datenum(yrs,1,1)) ./ (datenum(yrs+1,1,1) - datenum(yrs,1,1)) + yrs;
@@ -33,4 +33,4 @@ function [decyr] = decyear(date)
         thisYear=datenum(date(:,1),1,1);
         decyr = (datenum(date) - thisYear) ./ (nextYear - thisYear) + date(:,1);
     end
-
+end

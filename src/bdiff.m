@@ -210,7 +210,7 @@ function  bdiff(mycat, holdplot)
     %whitebg(gcf,[0 0 0])
     %axes(cua)
     
-
+    
     %% menu items
     function create_my_menu()
         add_menu_divider();
@@ -221,9 +221,9 @@ function  bdiff(mycat, holdplot)
         uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005);
         uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
     end
-
+    
     %% callbacks
-
+    
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

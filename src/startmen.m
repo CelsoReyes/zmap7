@@ -10,7 +10,7 @@ function startmen(parent_fig)
     %  Create new figure
     % Find out if figure already exists
     %
-
+    
     % Set up the Seismicity Map window Enviroment
     %
     if nargin==1

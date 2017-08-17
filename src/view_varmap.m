@@ -111,7 +111,7 @@ function view_varmap(lab1,re3)
     % plot overlay
     %
     hold on
-    overlay_
+    update(mainmap())
     
     hold on
     plq = quiver(newgri(:,1),newgri(:,2),-cos(sor(:,SA*2)*pi/180),sin(sor(:,SA*2)*pi/180),0.8,'.');

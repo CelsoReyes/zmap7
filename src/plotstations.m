@@ -4,7 +4,7 @@ function plotstations(ax, options)
     % plotstatiosn(ax) plots the default station list, cropped to the current window
     % to the axis AX.
     % to the specified axes. STATIONS is a structure or table
-    % with fields Network, Name, Latitude, Longitude, 
+    % with fields Network, Name, Latitude, Longitude,
     % additionally, it should have Elevation, StartTime, and EndTime.
     % by default, only plots stations active during main catalog dates.
     %
@@ -12,7 +12,7 @@ function plotstations(ax, options)
     % same fields.
     % options would be a struct with filtervalues
     %
-    % eg. 
+    % eg.
     %  options=struct('Network','CH'); % show only stations belonging to network CH
     %  options=struct('Network',{'CH','DK'}) % show only stations belonging either to CH or DK
     %  valid options are:
@@ -37,7 +37,7 @@ function plotstations(ax, options)
     if ~exist('options','var')
         options=struct();
     end
-
+    
     if ~isfield(options,'Marker'), options.Marker='s';end
     if ~isfield(options,'MarkerSize'), options.MarkerSize=6;end
     if ~isfield(options,'MarkerEdgeColor'), options.MarkerEdgeColor='gray';end
@@ -49,7 +49,7 @@ function plotstations(ax, options)
     if ~isfield(options,'EndAfter')
         options.EndTime=min(ZG.a.Date);
     end
-        stations=ZG.features('stations');
+    stations=ZG.features('stations');
     if isempty(stations)
         stations.load();
     end
@@ -59,9 +59,9 @@ function plotstations(ax, options)
     yl = ylim(ax);
     xl = xlim(ax);
     idx = stations.Latitude <= yl(2) & ...
-              stations.Latitude >= yl(1) & ...
-              stations.Longitude <= xl(2) & ...
-              stations.Longitude >= xl(1); %doesn't account for dateline
+        stations.Latitude >= yl(1) & ...
+        stations.Longitude <= xl(2) & ...
+        stations.Longitude >= xl(1); %doesn't account for dateline
     if isa(stations,'Table')
         if ismember('StartTime',stations.Properties.VariableNames) && ~isempty(options.StartBefore)
             idx=idx & stations.StartTime <= options.StartBefore;
@@ -92,7 +92,7 @@ function plotstations(ax, options)
     hold on
     dx = abs(s1-s2)/130;
     pl = plot(ax, stas.Longitude,stas.Latitude,options.Marker);
-            set(pl,'LineWidth',1.,options);
+    set(pl,'LineWidth',1.,options);
     if showNames
         te1 = text(stas.Longitude+dx,lastas.Latitudet,char(stas.Name),'clipping','on');
         set(te1,'FontWeight','bold','Color','k','FontSize',9);

@@ -28,3 +28,4 @@ function error_handler(ME, optional)
         % do nothing
     end
 
+end

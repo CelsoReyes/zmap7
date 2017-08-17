@@ -14,7 +14,7 @@ function clustNum0 = getclu(gecl, clustNum0)
             
             clmap = findobj('Name','Cluster Map');
             if ~isempty(clmap);figure(clmap);end
-
+            
             [x,y]=ginput(1);
             
             l=sqrt(((equi(:,1)-x)*cosd(y)*111).^2 + ((equi(:,2)-y)*111).^2) ;

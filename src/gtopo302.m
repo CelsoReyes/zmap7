@@ -1,9 +1,9 @@
 function [map,maplegend] = gtopo302(varargin)
-
+    
     % Modifikation von GTOPO30 aus der Matlab Map Toolbox
     % Unterschiede im Bezug auf den Aufbau der Pfadangaben
     % wird von pltopo benoetigt
-
+    
     %GTOPO30 30-Arc-Sec global digital elevation data extraction
     %
     % [map,maplegend] = GTOPO30(filename,scalefactor) reads the GTOPO30
@@ -38,16 +38,16 @@ function [map,maplegend] = gtopo302(varargin)
     % during transfer or decompression.
     %
     % See also: GTOPO30 GTOPO30S, GLOBEDEM, DTED, SATBATH, TBASE, USGSDEM
-
+    
     %  Copyright 1996-2000 Systems Planning and Analysis, Inc. and The MathWorks, Inc.
     %  $Revision: 1399 $ $Date: 2006-08-11 11:19:27 +0200 (Fr, 11 Aug 2006) $
     %  Written by:  A. Kim, W. Stumpf, L. Job
-
+    
     %  Ascii header file, binary
     %  Data arranged in W-E columns by N-S rows
     %  Elevation in meters
-
-
+    
+    
     global pgt30
     cd (pgt30)
     name = varargin{1};
@@ -64,41 +64,41 @@ function [map,maplegend] = gtopo302(varargin)
     else
         [map,maplegend] = gtopo30f(varargin{:});
     end
-
-
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    
 function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
-
+    
     %GTOPO30C read and concatenate GTOPO30 (30-arc-sec resolution) digital
     %  elevation files
-
-
+    
+    
     % error checking for input arguments
-
+    
     if nargin < 1; error('Incorrect number of input arguments'); end
     if nargin < 2; samplefactor = 1; end
     if nargin < 3; latlim = []; end
     if nargin < 4; lonlim = []; end
-
+    
     % get the warning state
     [s,f] = warning;
     warning off
-
+    
     fid = fopen('gtopo30s.dat','r');
     if fid==-1
         error('Couldn''t open gtopo30s.dat')
     end
-
+    
     % preallocate bounding rectangle data for speed
-
+    
     YMIN = zeros(1,33); YMAX = YMIN;
     XMIN = YMIN; XMAX = YMIN;
-
+    
     % read names and bounding rectangle limits
-
+    
     for n=1:33
         fnames{n,1} = upper(fscanf(fid,'%s',1));
         YMIN(n) = fscanf(fid,'%d',1);
@@ -107,7 +107,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
         XMAX(n) = fscanf(fid,'%d',1);
     end
     fclose(fid);
-
+    
     % case where dateline is not crossed
     if lonlim(1) <= lonlim(2)
         do = ...
@@ -127,7 +127,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             )...
             );
     end
-
+    
     % case where the dateline is crossed
     if lonlim(1) > lonlim(2)
         lmin = lonlim(1); lmax = lonlim(2);
@@ -172,19 +172,19 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
         % restore original values for lonlim
         lonlim(1) = lmin; lonlim(2) = lmax;
     end
-
+    
     if ~isempty(do)
         fname = fnames(do);
     else
         fname = [];
     end
-
+    
     % append root directory and check to see if required files exist
     for i = 1:length(do)
         %	ffname{i} = [rd,fname{i},filesep,fname{i}];
         ffname{i}=[rd,filesep,fname{i}];
     end
-
+    
     % assume files exist
     fileexist = 1;
     for i = 1:length(do)
@@ -193,11 +193,11 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             fileexist = 0;
         end
     end
-
+    
     if ~fileexist
         error('GTOPO30 file not found.')
     end
-
+    
     % sort order over which files will be read
     lon = []; lat = [];
     for i = 1:length(do)
@@ -216,21 +216,21 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
         end
         lat = [lat latv];
     end
-
+    
     % unique latitudes and longitudes
     uniquelons = sort(unique(lon));
     uniquelats = fliplr(sort(unique(lat)));
     antarc_chk = find(uniquelats == -60);
-
+    
     if lonlim(1) > lonlim(2)
         dateline = 1; % tiles  cross dateline
     else
         dateline = 0; % tile do not cross dateline
     end
-
+    
     %====Start==== Tiles do not include antartica, and do not cross dateline =========
     if isempty(antarc_chk)  &&  dateline == 0
-
+        
         for i = 1:length(uniquelats)
             for j = 1:length(uniquelons)
                 switch sign(uniquelons(j))
@@ -262,14 +262,14 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 %     nfile(i,j) = [rd,nfile{i,j}]
             end
         end
-
+        
         % single tile
-       if length(uniquelats) == 1  && length(uniquelons) == 1
+        if length(uniquelats) == 1  && length(uniquelons) == 1
             [map,maplegend] = gtopo302(nfile{1,1},samplefactor,latlim,lonlim);
         end
-
+        
         % single row
-       if length(uniquelats) == 1  && length(uniquelons) > 1
+        if length(uniquelats) == 1  && length(uniquelons) > 1
             tmap = [];
             [map,maplegend] = gtopo302(nfile{1,1},samplefactor,latlim,lonlim);
             tmap = [tmap map]; tmaplegend = maplegend;
@@ -280,9 +280,9 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = tmap; maplegend = tmaplegend;
         end
-
+        
         % single column
-       if length(uniquelats) > 1  && length(uniquelons) == 1
+        if length(uniquelats) > 1  && length(uniquelons) == 1
             tmap = [];
             for j = 1:length(uniquelats)
                 [map{j},maplegend{j}] = gtopo302(nfile{j,1},samplefactor,latlim,lonlim);
@@ -294,9 +294,9 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             % flip the matrix again to get the correct orientation
             map = flipud(tmap); maplegend = tmaplegend;
         end
-
+        
         % matrix
-       if length(uniquelats) > 1  && length(uniquelons) > 1
+        if length(uniquelats) > 1  && length(uniquelons) > 1
             [map,maplegend] = gtopo302(nfile{1,1},samplefactor,latlim,lonlim);
             tmaplegend = maplegend;
             tmapcolumn = [];
@@ -311,13 +311,13 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = flipud(tmapcolumn); maplegend = tmaplegend;
         end
-
+        
     end
     %====End====== Tiles do not include antartica, and do not cross dateline =========
-
+    
     %====Start === Tiles include antartica and do not cross dateline =================
     if ~isempty(antarc_chk)  &&  dateline == 0
-
+        
         antarc_latindx = find(uniquelats == -60);
         antarc_lonindx = find(uniquelons == -180 | ...
             uniquelons == -120 | ...
@@ -339,7 +339,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
         antarc_lon = uniquelons(antarc_lonindx);
         wld_lat = uniquelats(wld_latindx);
         wld_lon = uniquelons(wld_lonindx);
-
+        
         % antartica tiles
         for i = 1:length(antarc_lat)
             for j = 1:length(antarc_lon)
@@ -371,7 +371,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 antarcfile{i,j} = [rd,antarcfile{i,j},filesep,antarcfile{i,j}];
             end
         end
-
+        
         % world tiles
         if ~isempty(wld_lat)
             for i = 1:length(wld_lat)
@@ -405,12 +405,12 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 end
             end
         end
-
+        
         % single tile
         if isempty(wld_lat)  &&  size(antarcfile,1) == 1  &&  size(antarcfile,2) == 1
             [map,maplegend] = gtopo302(antarcfile{1,1},samplefactor,latlim,lonlim);
         end
-
+        
         % single row
         if isempty(wld_lat)  &&  size(antarcfile,1) == 1  &&  size(antarcfile,2) > 1
             tmap = [];
@@ -423,9 +423,9 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = tmap; maplegend = tmaplegend;
         end
-
+        
         % single column
-       if ~isempty(wld_lat)  && size(antarcfile,1) == 1  &&  size(antarcfile,2) == 1
+        if ~isempty(wld_lat)  && size(antarcfile,1) == 1  &&  size(antarcfile,2) == 1
             tmap = [];
             % read tiles from world section first
             for j = 1:size(wldfile,1)
@@ -442,9 +442,9 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             % flip the matrix again to get the correct orientation
             map = flipud(tmap); maplegend = tmaplegend;
         end
-
+        
         % matrix
-       if ~isempty(wld_lat)  && size(antarcfile,1) == 1  &&  size(antarcfile,2) > 1
+        if ~isempty(wld_lat)  && size(antarcfile,1) == 1  &&  size(antarcfile,2) > 1
             [map,maplegend] = gtopo302(wldfile{1,1},samplefactor,latlim,lonlim);
             tmaplegend = maplegend;
             tmapcolumn = [];
@@ -470,21 +470,21 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = flipud(tmapcolumn); maplegend = tmaplegend;
         end
-
-
+        
+        
     end
     %====End  === Tiles include antartica and do not cross dateline =================
-
+    
     %====Start=== Tiles cross dateline =================
     if dateline == 1
-
+        
         % redefine sort order for longitudes
         % Eastern Longitudes
         lon = []; lat = [];
-
+        
         Efile = fnames(doEAST);
         Wfile = fnames(doWEST);
-
+        
         for i = 1:length(doEAST)
             lond = Efile{i}(1);
             if lond == 'W'
@@ -494,10 +494,10 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             end
             lon = [lon lonv];
         end
-
+        
         % unique latitudes and longitudes
         uniqueElons = sort(unique(lon));
-
+        
         % Western Longitudes
         lon = []; lat = [];
         for i = 1:length(doWEST)
@@ -509,11 +509,11 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             end
             lon = [lon lonv];
         end
-
+        
         % unique longitudes
         uniqueWlons = sort(unique(lon));
         uniquelons = [uniqueElons uniqueWlons];
-
+        
         % indices for antartica tiles and world tiles
         antarc_latindx = find(uniquelats == -60);
         antarc_lonindx = find(uniquelons == -180 | ...
@@ -536,7 +536,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
         antarc_lon = uniquelons(antarc_lonindx);
         wld_lat = uniquelats(wld_latindx);
         wld_lon = uniquelons(wld_lonindx);
-
+        
         % antartica tiles
         if ~isempty(antarc_lat)
             for i = 1:length(antarc_lat)
@@ -573,7 +573,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 end
             end
         end
-
+        
         % world tiles
         if ~isempty(wld_lat)
             for i = 1:length(wld_lat)
@@ -610,7 +610,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 end
             end
         end
-
+        
         % single row - world tiles
         if ~isempty(wld_lat)  &&  isempty(antarc_lat)
             if length(wld_lat) == 1
@@ -625,7 +625,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 map = tmap; maplegend = tmaplegend;
             end
         end
-
+        
         % single row - antartica tiles
         if isempty(wld_lat)  &&  ~isempty(antarc_lat)
             tmap = [];
@@ -638,7 +638,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = tmap; maplegend = tmaplegend;
         end
-
+        
         % matrix world and antartica tiles
         if ~isempty(wld_lat)  &&  ~isempty(antarc_lat)
             [map,maplegend] = gtopo302(wldfile{1,1},samplefactor,latlim,wlonlims{1,1});
@@ -666,7 +666,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
             clear map maplegend
             map = flipud(tmapcolumn); maplegend = tmaplegend;
         end
-
+        
         % matrix world tiles only
         if ~isempty(wld_lat)  &&  isempty(antarc_lat)
             if length(wld_lat) > 1
@@ -687,35 +687,35 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
                 map = flipud(tmapcolumn); maplegend = tmaplegend;
             end
         end
-
+        
     end
     %====End  === Tiles cross dateline =================
-
+    
     % reset the warning state
     eval(['warning ',s])
     eval(['warning ',f])
-
-
+    
+    
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
     %GTOPO30F 30-Arc-Sec global digital elevation data extraction from file
-
-
-
+    
+    
+    
     if nargin < 1; fname = ''; end
     if nargin < 2; scalefactor = 20; end
     if nargin < 3; latlim = [-90 90]; end
     if nargin < 4; lonlim = [-180 180]; end
-
+    
     %  ---------- Header Information ----------
-
+    
     %  Open ascii header file and read information
-
+    
     filename = [fname '.HDR'];
     fid = fopen(filename,'r');
-
+    
     if fid==-1
         [filename, path] = uigetfile('*.HDR', 'select the GTOPO30 header file (*.HDR)');
         if filename == 0 ; return; end
@@ -723,7 +723,7 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
         fid = fopen(filename,'r');
         fname = filename(1:length(filename)-4);
     end
-
+    
     nrows = [];
     ncols = [];
     nodata = [];
@@ -731,7 +731,7 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
     ulymap = [];
     xdim = [];
     ydim = [];
-
+    
     eof = 0;
     while ~eof
         str = fscanf(fid,'%s',1);
@@ -748,10 +748,10 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
         end
     end
     fclose(fid);
-
+    
     % Some of the data we wanted wasn't in the hdr file.
     % Read the world file  to get it
-
+    
     if length([nrows ncols nodata ulxmap ulymap xdim ydim]) < 7
         filename = [fname '.BLW'];
         fid = fopen(filename,'r');
@@ -765,7 +765,7 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
                 fid = fopen(filename,'r');
             end
         end
-
+        
         xdim = fscanf(fid,'%f',1);
         fscanf(fid,'%f',1);
         fscanf(fid,'%f',1);
@@ -773,53 +773,53 @@ function [map,maplegend] = gtopo30f(fname,scalefactor,latlim,lonlim)
         ulxmap = fscanf(fid,'%f',1);
         ulymap = fscanf(fid,'%f',1);
     end
-
+    
     % Any information still missing?
-
+    
     if length([nrows ncols nodata ulxmap ulymap xdim ydim]) < 7
         error('Incomplete header file or change in header file format')
     end
-
+    
     % other information about the file
-
+    
     precision = 'int16';
     machineformat = 'ieee-be';
-
-
+    
+    
     % lato = yllcorner + nrows*cellsize;
     % lono = xllcorner;
     lato = ulymap;
     lono = ulxmap;
-
+    
     dlat = -ydim;
     dlon = xdim;
-
+    
     % convert lat and lonlim to column and row indices
-
+    
     [clim,rlim] = yx2rc(lonlim(:),latlim(:),lono,lato,dlon,dlat);
-
+    
     % ensure matrix coordinates are within limits
-
+    
     rlim = [max([1,min(rlim)]) min([max(rlim),nrows])];
     clim = [max([1,min(clim)]) min([max(clim),ncols])];
-
+    
     rlim = sort(flipud(rlim(:))');
-
+    
     readrows = rlim(1):scalefactor:rlim(2);
     readcols = clim(1):scalefactor:clim(2);
-
+    
     readcols = mod(readcols,ncols); readcols(readcols == 0) = ncols;
-
+    
     % extract the map matrix
     filename = [fname '.DEM'];
     map = readmtx(filename,nrows,ncols,precision,readrows,readcols,machineformat);
     map = flipud(map);
     map(map==nodata) = NaN;
-
+    
     % Construct the map legend.
     [la1,lo1] = rc2yx(rlim,clim,lato,lono,dlat,dlon);
-
+    
     maplegend = [abs(1/(dlat*scalefactor)) la1(1)-dlat/2 lo1(1)-dlon/2 ];
-
-
-
+    
+    
+    

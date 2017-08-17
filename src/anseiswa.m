@@ -43,8 +43,8 @@ function anseiswa(action, ds)
             
             
         case 'tipl' %change sample size (?)
-            x = get(xc1,'Xdata'); 
-            y = get(xc1,'Ydata'); 
+            x = get(xc1,'Xdata');
+            y = get(xc1,'Ydata');
             z = ds;
             l=ZG.a.hypocentralDistanceTo(x,y,z); %km
             [s,is] = sort(l);
