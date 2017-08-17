@@ -90,9 +90,7 @@ function stresswtime()
     
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','stress-value with time');
-    
-    bdep= figNumber;
+    bdep=findobj('Type','Figure','-and','Name','stress-value with time');
     
     % Set up the window
     

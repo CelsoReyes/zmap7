@@ -60,9 +60,9 @@ function view_Omoricross(lab1, re3)
     % Set up the Seismicity Map window Enviroment
     % Find out if figure already exists
     %
-    figNumber=myFigFinder();
+    hOmoricross=myFigFinder();
     
-    if ~isempty(figNumber)
+    if ~isempty(hOmoricross)
         hOmoricross = figure_w_normalized_uicontrolunits( ...
             'Name',myFigName,...
             'NumberTitle','off', ...
@@ -79,8 +79,6 @@ function view_Omoricross(lab1, re3)
 
         colormap(jet)
         tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
-    else
-        hOmoricross = figNumber;
     end   % This is the end of the figure setup.
     
     % Plot the cross section

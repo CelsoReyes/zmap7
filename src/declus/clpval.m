@@ -39,8 +39,8 @@ function clpval(var1)
     tmvar=[];
     %input of parameters(Magnitude,Time)
     if var1==1  | var1==3 | var1==4  | var1==5
-        figNumber=findobj('Type','Figure','-and','Name','P-Value Plot');
-        if existFlag
+        pplot=findobj('Type','Figure','-and','Name','P-Value Plot');
+        if ~isempty(pplot)
             figure(pplot);
             clf
         else

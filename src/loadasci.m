@@ -7,13 +7,13 @@ function loadasci(da,sa)
     
     report_this_filefun(mfilename('fullpath'));
     
-    figNumber=findobj('Type','Figure','-and','Name','Load ASCII Data');
+    loasci=findobj('Type','Figure','-and','Name','Load ASCII Data');
     
     
     
     % Set up the setup window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(loasci)
         loasci = figure_w_normalized_uicontrolunits( ...
             'Name','Load ASCII Data',...
             'NumberTitle','off', ...

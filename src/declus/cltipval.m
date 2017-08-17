@@ -39,8 +39,8 @@ function cltipval(var1)
 
 
     if var1==1 | var1==2              %magnitude or time estimate
-        [existFlag,figNumber]=figure_exists('P-Value Estimate');
-        if existFlag
+        mtpl = findobj('Type','Figure','Name','P-Value Estimate');
+        if ~isempty(mtpl)
             figure(mtpl);
             clf
         else
@@ -530,10 +530,9 @@ function cltipval(var1)
 
 
     elseif var1==9              %plot the results
+        omori=findobj('Name','Omori-Parameters','-and','Type','Figure');
 
-        [existFlag,figNumber]=figure_exists('Omori-Parameters');
-
-        if existFlag
+        if ~isempty(omori)
             figure(omori);
             clf;
         else

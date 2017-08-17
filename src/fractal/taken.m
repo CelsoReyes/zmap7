@@ -55,71 +55,28 @@ set(Hf_child,'pointer','arrow');
 %
 % Plots the Taken estimator as a function of the logarithmic distance.
 %
-figNumber=findobj('Type','Figure','-and','Name','Taken Estimator (log2)');
+Htakes2=findobj('Type','Figure','-and','Name','Taken Estimator (log2)');
 
-if existFlag == 1
-
-    fig = 'addfig';
-
-elseif existFlag == 0
-
-    fig = 'orifig';
+if ~isempty(Htakes2)
+    do_addfig();
+else
+    do_orifig();
 end
 
-switch(fig)
-
-    case 'orifig'
-
+    function do_orifig()
         Htakes2 = figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Taken Estimator (log2)');
         plot(log2(taker(:,1)), takes(:,t));
         axis([-8 6 0 6]);
         xlabel('log2(dist)');
         ylabel('Takens Estimator');
         box on;
+    end
 
-    case 'addfig'
-
+    function do_addfig()
         fig(Htakes2);
         hold on;
         plot(log2(taker(:,1)), takes(:,t));
         axis([-8 6 0 6]);
-
-end % switch
-
-%figNumber=findobj('Type','Figure','-and','Name','Taken Estimator (log10)');
-
-
-%if existFlag == 1
-
-%   fig = 'addfig';
-
-%elseif existFlag == 0
-
-%   fig = 'orifig';
-%end
-
-%switch(fig)
-
-%case 'orifig'
-
-%Htakes10 = figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Taken Estimator (log10)');
-%plot(log10(taker(:,1)), takes(:,1));
-%axis([-2.5 10.5 0 3.5]);
-%xlabel('log10(dist)');
-%ylabel('Takens Estimator');
-%box on
-%axes('pos',[0 0 1 1]);
-%axis off
-
-%case 'addfig'
-
-%      figure(Htakes10);
-%   hold on;
-%   plot(log10(taker(:,1)), takes(:,t));
-%   axis([-12.5 1.5 0 3.5]);
-
-%end % switch
-
-%end %for t
+    end
 
 end

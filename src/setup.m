@@ -62,13 +62,13 @@ function setup()
         '                                                ' ];
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','Import Data into ZMAP');
+    loda=findobj('Type','Figure','-and','Name','Import Data into ZMAP');
     
     
     
     % Set up the setup window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(loda)
         loda = figure_w_normalized_uicontrolunits( ...
             'Name','Import Data into ZMAP',...
             'NumberTitle','off', ...
