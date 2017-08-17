@@ -112,15 +112,15 @@ if selt == 'ca'
 
 
 
-    [existFlag,h1]=figure_exists('Lambert Map',1);
-
-    if existFlag == 0 
+    h1=findobj('Name','Lambert Map','-and','Type','Figure')
+    if isempty(h1) 
         ac3 = 'new'; 
-        overmap;  
+        overmap();  
     end
-    if existFlag == 1
+    h1=findobj('Name','Lambert Map','-and','Type','Figure')
+    if ~isempty(h1)
         h1 = figure(to1)
-        delete(gca); delete(gca);delete(gca)
+        delete(findobj(h1,'Type','axes'));
     end
 
     watchon

@@ -8,9 +8,8 @@ function bfitnew(mycat)
     global ttcat xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
     
-    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution - 2');
-    bfigWin=~existFlag;
-    if bfigWin
+    bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution - 2');
+    if ~bfig
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
             'Units','normalized','NumberTitle','off',...
             'Name','frequency-magnitude distribution - 1',...
@@ -26,7 +25,8 @@ function bfitnew(mycat)
     end
     
     figure(bfig);
-    delete gca; delete(gca);delete(gca); hold on; axis off
+    delete(findobj(bfig,'Type','axes'));
+    hold on; axis off
     uicontrol('Style','Pushbutton',...
         'callback',@callbackfun_001,...
         'Units','normalized',...

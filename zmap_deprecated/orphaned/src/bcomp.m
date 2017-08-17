@@ -15,11 +15,10 @@ function  bcomp(newcat,d1,d2,d3,d4)
     org = newcat;
 
 
-
-    [existFlag,figNumber]=figure_exists('b-value curve',1);
-    if existFlag
-        figure_w_normalized_uicontrolunits(bfig);
-        delete(gca);delete(gca)
+    bfig=findobj('Type','Figure','Name','b-value curve');
+    if ~isempty(bfig);
+        figure(bfig);
+        delete(findobj(bfig,'Type','axes'));
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
         set(gca,'Yscale','log')

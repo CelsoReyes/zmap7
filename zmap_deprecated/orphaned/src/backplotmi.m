@@ -5,11 +5,9 @@ function plotmi(var1)
     report_this_filefun(mfilename('fullpath'));
 
     newcat2 = a;
-    [existFlag,figNumber]=figure_exists('Misfit ',1);
-    figure_w_normalized_uicontrolunits(figNumber)
-
-    delete(gca);delete(gca);
-    delete(gca);delete(gca);
+    figNumber=findobj('Name','Misfit ','-and','Type','Figure'); %TODO make sure the space in the name is important
+    figure(figNumber)
+    delete(findobj(figNumber,'Type','axes'));
 
     rect = [0.15,  0.15, 0.75, 0.65];
     axes('position',rect)

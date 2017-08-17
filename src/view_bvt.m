@@ -16,7 +16,7 @@ function view_bvt(lab1,re3)
     
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','b-value cross-section');
+    bmapc=findobj('Type','Figure','-and','Name','b-value cross-section');
     
     
     % This is the info window text
@@ -65,7 +65,7 @@ function view_bvt(lab1,re3)
     
     % Set up the Seismicity Map window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(bmapc)
         bmapc = figure_w_normalized_uicontrolunits( ...
             'Name','b-value cross-section',...
             'NumberTitle','off', ...
@@ -126,9 +126,7 @@ function view_bvt(lab1,re3)
     % Now lets plot the color-map of the z-value
     %
     figure(bmapc);
-    delete(gca)
-    delete(gca)
-    delete(gca)
+    delete(findobj(bmapc,'Type','axes'));
     % delete(sizmap);
     reset(gca)
     cla

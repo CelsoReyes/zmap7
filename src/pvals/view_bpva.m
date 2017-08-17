@@ -62,10 +62,10 @@ function view_bpva(lab1,re3)
     
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','bp-value-map');
+    bmap=findobj('Type','Figure','-and','Name','bp-value-map');
     
     
-    if isempty(figNumber)
+    if isempty(bmap)
         oldfig_button = false;
     end
     
@@ -101,11 +101,8 @@ function view_bpva(lab1,re3)
     % Now lets plot the color-map!
     %
     figure(bpmap);
-    delete(gca)
-    delete(gca)
-    delete(gca)
-    dele = 'delete(sizmap)';er = 'disp('' '')';
-    eval(dele,er);
+    delete(findobj(bpmap,'Type,'axes'));
+    %delete(sizmap)
     reset(gca)
     cla
     hold off

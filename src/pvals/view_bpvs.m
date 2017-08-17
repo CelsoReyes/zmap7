@@ -14,13 +14,6 @@ if isempty(name)
 end
 think
 report_this_filefun(mfilename('fullpath'));
-%co = 'w';
-
-
-% Find out if figure already exists
-%
-figNumber=findobj('Type','Figure','-and','Name','b and p -value cross-section');
-
 
 % This is the info window text
 %
@@ -66,7 +59,10 @@ hlpStr2zmap= ...
 
 % Set up the Seismicity Map window Enviroment
 %
-if isempty(figNumber)
+
+bpmapcs=findobj('Type','Figure','-and','Name','b and p -value cross-section');
+
+if isempty(bpmapcs)
     bpmapcs = figure_w_normalized_uicontrolunits( ...
         'Name','b and p -value cross-section',...
         'NumberTitle','off', ...
@@ -121,9 +117,7 @@ end   % This is the end of the figure setup
 % Now lets plot the color-map of the b and p -value.
 %
 figure(bpmapcs);
-delete(gca)
-delete(gca)
-delete(gca)
+delete(findobj(bpmapcs,'Type,'axes'));
 % delete(sizmap);
 reset(gca)
 cla

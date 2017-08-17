@@ -27,12 +27,12 @@ function plotala()
     abo = abo2;
     
     
-    figNumber=findobj('Type','Figure','-and','Name','Alarm Display');
+    cube=findobj('Type','Figure','-and','Name','Alarm Display');
     
     
     % Set up the Seismicity Map window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(cube)
         cube = figure_w_normalized_uicontrolunits( ...
             'Name','Alarm Display',...
             'NumberTitle','off', ...

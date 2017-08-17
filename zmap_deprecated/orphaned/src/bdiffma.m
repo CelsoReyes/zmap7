@@ -17,8 +17,6 @@ function  bdiffma(newcat)
     if existFlag
         % figure_w_normalized_uicontrolunits(bfig);
         bfig = figNumber;
-        %delete(gca)
-        %set(bfig,'visible','off')
     else
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
             'Units','normalized','NumberTitle','off',...

@@ -14,11 +14,11 @@ function view_xstress(lab1,re3)
     co = 'w';
     
     % Find out if figure already exists
-    figNumber=findobj('Type','Figure','-and','Name','Stress-section');
+    stressmap=findobj('Type','Figure','-and','Name','Stress-section');
     
     
     % Set up the Seismicity Map window Enviroment
-    if isempty(figNumber)
+    if isempty(stressmap)
         stressmap = figure_w_normalized_uicontrolunits( ...
             'Name','Stress-section',...
             'NumberTitle','off', ...
@@ -37,14 +37,7 @@ function view_xstress(lab1,re3)
     
     % Now lets plot the color-maps
     figure(stressmap);
-    delete(gca)
-    delete(gca)
-    delete(gca)
-    try
-        delete(sizmap)
-    catch ME
-        warning(ME)
-    end
+    delete(findobj(stressmap,'Type','axes'));
     reset(gca)
     cla
     hold off

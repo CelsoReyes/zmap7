@@ -13,16 +13,10 @@ function  bdiff_bdepth(mycat)
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
     think
-    %zmap_message_center.set_info('  ','Calculating b-value...')
     report_this_filefun(mfilename('fullpath'));
     
-    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
-    if existFlag
-        % figure(bfig);
-        bfig = figNumber;
-        %delete(gca)
-        %set(bfig,'visible','off')
-        
+    bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
+    if ~isempty(bfig)
         if dloop == 2
             ZG.hold_state=true;
         end
@@ -49,13 +43,9 @@ function  bdiff_bdepth(mycat)
             'Position',[.0 .25 .10 .06],'String','TimePlot ',...
             'callback',@callbackfun_004);
         
-        
-        
         uicontrol('Units','normal',...
             'Position',[.0 .65 .08 .06],'String','Save ',...
-            'Callback',{@calSave9,xt3, bvalsum3})
-        
-        
+            'Callback',{@calSave9,xt3, bvalsum3});
     end
     
     maxmag = ceil(10*max(mycat.Magnitude))/10;
@@ -80,7 +70,7 @@ function  bdiff_bdepth(mycat)
         disp('hold on')
         hold on
     else
-        figure(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
+        figure(bfig);delete(findobj(bfig,'Type','axes'));
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
     end
@@ -89,20 +79,12 @@ function  bdiff_bdepth(mycat)
     set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
         'MarkerFaceColor','r','MarkerEdgeColor','b');
     hold on
-    %semilogy(xt3,bvalsum3,'om')
     difb = [0 diff(bvalsum3) ];
-    %pl3 =semilogy(xt3,bval2,'^g');
-    %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
-    %'MarkerFaceColor','r','MarkerEdgeColor','k');
-    %semilogy(xt3,difb,'g')
-    %grid
     
     % Marks the point of maximum curvature
     %
     i = find(difb == max(difb));
     i = max(i);
-    %te = semilogy(xt3(i),difb(i),'xk');
-    %set(te,'LineWidth',2,'MarkerSize',ms10)
     te = semilogy(xt3(i),bvalsum3(i),'xk');
     set(te,'LineWidth',1.5,'MarkerSize',ms10)
     
@@ -129,12 +111,10 @@ function  bdiff_bdepth(mycat)
     M1b = [];
     M1b = [xt3(i) bvalsum3(i)];
     tt3=num2str(fix(100*M1b(1))/100);
-    %text( M1b(1),M1b(2),['|: M1=',tt3],'Fontweight','normal' )
     
     M2b = [];
     M2b =  [xt3(i2) bvalsum3(i2)];
     tt4=num2str(fix(100*M2b(1))/100);
-    %text( M2b(1),M2b(2),['|: M2=',tt4],'Fontweight','normal' )
     
     ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
     x = xt3(ll);
@@ -203,8 +183,6 @@ function  bdiff_bdepth(mycat)
         set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','y','MarkerEdgeColor','g','Marker','o');
         set(cua,'Ylim',[ 1   ni ] );
-        %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
-        %'MarkerFaceColor','c','MarkerEdgeColor','m','Marker','s');
         
         txt1=text(.10, .08,['Bottom Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
@@ -264,8 +242,6 @@ function  bdiff_bdepth(mycat)
     dr = 1/dp;
     
     hold off;
-    %whitebg(gcf,[0 0 0])
-    %axes(cua)
     
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text

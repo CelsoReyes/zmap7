@@ -20,13 +20,9 @@ function  bdiff(mycat, holdplot)
     report_this_filefun(mfilename('fullpath'));
     %obsolate, replace
     %figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
-    figNumber=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
+    bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
     
-    if ~isempty(figNumber)
-        % figure(bfig);
-        bfig = figNumber;
-        
-    else
+    if isempty(bfig)
         bfig=figure_w_normalized_uicontrolunits(...   %build figure for plot
             'Units','normalized','NumberTitle','off',...
             'Name','frequency-magnitude distribution',...
@@ -35,8 +31,6 @@ function  bdiff(mycat, holdplot)
         ZG.hold_state=false;
         
         create_my_menu();
-        
-        
     end
     
     maxmag = ceil(10*max(mycat.Magnitude))/10;
@@ -64,7 +58,8 @@ function  bdiff(mycat, holdplot)
         disp('hold on')
         hold on
     else
-        figure(bfig);delete(gca);delete(gca); delete(gca); delete(gca)
+        figure(bfig);
+        delete(findobj(bfig,'Type','axes'));
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
     end

@@ -26,12 +26,11 @@ function plot3d()
     watchon
     
     
-    [existFlag,map3]=figure_exists('3 D View',1);
-    
+    map3=findobj('Type','Figure','-and','Name','3 D View');
     
     % Set up the Seismicity Map 3 D window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(map3)
         map3 = figure_w_normalized_uicontrolunits( ...
             'Name','3 D View',...
             'NumberTitle','off', ...

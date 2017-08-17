@@ -313,10 +313,7 @@ function csubcat()
     function callbackfun_009(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        delete(gca);
-        delete(gca);
-        delete(gca);
-        delete(gca);
+        delete(findobj(mapp,'Type','axes'));
         csubcat;
     end
     

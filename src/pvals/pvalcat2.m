@@ -106,10 +106,10 @@ for valm = valm1:valm3:valm2
 end
 
 close(wai)
-figNumber=findobj('Type','Figure','-and','Name','p-value map');
+pmap=findobj('Type','Figure','-and','Name','p-value map');
 
 
-if isempty(figNumber)
+if isempty(pmap)
     pmap = figure_w_normalized_uicontrolunits( ...
         'Name','p-value-map',...
         'NumberTitle','off', ...
@@ -119,11 +119,9 @@ if isempty(figNumber)
         'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
 end
 
-hold on
 figure(pmap);
-hold on
-delete(gca)
-delete(gca)
+delete(findobj(pmap,'Type,'axes'));
+hold on;
 axis off
 
 

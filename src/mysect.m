@@ -245,12 +245,12 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %map_fig = gcf;
     %xsec_fig = map_fig + 1;
     
-    figNumber=findobj('Type','Figure','-and','Name','Cross -Section');
+    xsec_fig=findobj('Type','Figure','-and','Name','Cross -Section');
     
     
     % Set up the Map window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(xsec_fig)
         xsec_fig = figure_w_normalized_uicontrolunits( ...
             'Name','Cross -Section',...
             'Tag','xsection',...
@@ -263,8 +263,8 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     end
     
     figure(xsec_fig);
-    hold on
-    delete(gca);delete(gca);
+
+    delete(findobj(xsec_fig,'Type','axes'));
     set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
     
     % Plot events on cross section figure
@@ -311,8 +311,6 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     xlabel('Distance [km]');
     ylabel('Depth [km]');
     
-    %Xstring = [];
-    %set(gca,'XLabel',text(0,0,Xstring),'YLabel',text(0,0,'Deupth (km)','Fontweight','normal'))
     label_base1 = 1 + .04;
     label_base2 = 1 + .08;
     label_base3 = 1 + .12;

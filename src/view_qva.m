@@ -15,7 +15,7 @@ function view_qva(lab1,re3)
     
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','q-detect-map');
+    qmap=findobj('Type','Figure','-and','Name','q-detect-map');
     
     
     % This is the info window text
@@ -64,7 +64,7 @@ function view_qva(lab1,re3)
     
     % Set up the Seismicity Map window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(qmap)
         qmap = figure_w_normalized_uicontrolunits( ...
             'Name','q-detect-map',...
             'NumberTitle','off', ...
@@ -114,9 +114,7 @@ function view_qva(lab1,re3)
     % Now lets plot the color-map of the z-value
     %
     figure(qmap);
-    delete(gca)
-    delete(gca)
-    delete(gca)
+    delete(findobj(qmap,'Type','axes'));
     % delete(sizmap);
     reset(gca)
     cla
@@ -177,8 +175,6 @@ function view_qva(lab1,re3)
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
-    
-    
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -247,10 +243,7 @@ function view_qva(lab1,re3)
     function callbackfun_002(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        delete(gca);
-        delete(gca);
-        delete(gca);
-        delete(gca);
+        delete(findobj(qmap,'Type','axes'));
         view_qva(lab1,re3);
     end
     

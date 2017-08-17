@@ -6,9 +6,8 @@ function plotmima(var1)
     
     sc = get(hndl3,'Value');
     mi(:,2) = mi(:,2)+1;
-    figure_w_normalized_uicontrolunits(mif1)
-    
-    delete(gca);delete(gca);
+    figure(mif1) %TODO figure out where mif1 comes from
+    delete(findobj(mif1,'Type','axes'));
     rect = [0.15,  0.20, 0.75, 0.65];
     axes('position',rect)
     watchon

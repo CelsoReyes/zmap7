@@ -7,7 +7,7 @@ function view_bva(lab1, re3)
     %
     
     if ~exist('Prmap') || isempty(Prmap)
-        Prmap = re3*nan;
+        Prmap = nan(size(re3));
     end
     
     if isempty(name)
@@ -20,12 +20,12 @@ function view_bva(lab1, re3)
     
     % Find out if figure already exists
     %
-    figNumber=findobj('Type','Figure','-and','Name','b-value-map');
+    bmap=findobj('Type','Figure','-and','Name','b-value-map');
     
     
     % Set up the Seismicity Map window Enviroment
     %
-    if isempty(figNumber)
+    if isempty(bmap)
         bmap = figure_w_normalized_uicontrolunits( ...
             'Name','b-value-map',...
             'NumberTitle','off', ...
@@ -49,9 +49,7 @@ function view_bva(lab1, re3)
     % Now lets plot the color-map of the z-value
     %
     figure(bmap);
-    delete(gca)
-    delete(gca)
-    delete(gca)
+    delete(findobj(bmap,'Type','axes'));
     % delete(sizmap);
     reset(gca)
     cla
