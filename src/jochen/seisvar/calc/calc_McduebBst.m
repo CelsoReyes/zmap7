@@ -74,7 +74,7 @@ for fMag=fMinMag:fBinning:fMaxMag
     % Check for Nan and create output for [16 84]-percentile
     vSel = isnan(mBvalue_bst(:,1));
     mBvalue_bst_tmp = mBvalue_bst(~vSel,:);
-    if (~isempty(mBvalue_bst_tmp(:,1)) & length(mBvalue_bst_tmp(:,1)) > 1)
+    if (~isempty(isempty(mBvalue_bst_tmp(:,1))) &&  length(mBvalue_bst_tmp(:,1)) > 1)
         vSigma = prctile(mBvalue_bst_tmp(:,1),[16 84]);
     elseif (~isempty(mBvalue_bst_tmp(:,1))  &&  length(mBvalue_bst_tmp(:,1)) == 1)
         vSigma = prctile(mBvalue_bst_tmp(:,1),[16 84]);

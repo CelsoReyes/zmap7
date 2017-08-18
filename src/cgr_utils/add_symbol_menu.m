@@ -17,7 +17,7 @@ function add_symbol_menu(target, parent, label)
     
     % cgr 2017
     
-    if ~exist('label','var') || isempty('label')
+    if ~exist('label','var') || isempty(label)
         label = 'Symbol';
     end
     

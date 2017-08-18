@@ -438,7 +438,7 @@ function makecmap(bins,fighandle)
             X = P(1,1);
             Y = P(1,2);
             nodenum = size(nodes,1);
-            if M_BUTTON_DOWN == 1 | M_BUTTON_DOWN == nodenum; % move selected node to
+            if M_BUTTON_DOWN == 1 | M_BUTTON_DOWN == nodenum % move selected node to
                 nodes(M_BUTTON_DOWN,2) = max(min(Y,1),0);       % new mouse position
             else
                 nodes(M_BUTTON_DOWN,1) = max(nodes(M_BUTTON_DOWN-1,1), ...

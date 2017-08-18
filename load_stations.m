@@ -35,7 +35,7 @@ function out=load_stations(filename, force)
     
     if ~exist('filename','var')
         filename = 'features/stations_irisall_20170714.mat';
-    elseif isempty('filename')
+    elseif isempty(filename)
         % do the UI stuff to get the station file
     end
     

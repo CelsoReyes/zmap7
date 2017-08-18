@@ -11,7 +11,7 @@ function plot3d()
     global a faults mainfault main
     report_this_filefun(mfilename('fullpath'))
     
-ZG=ZmapGlobal.Data; % get zmap globals;
+    ZG=ZmapGlobal.Data; % get zmap globals;
     tag='mainmap3_ax';
     watchon
     think
@@ -109,21 +109,21 @@ ZG=ZmapGlobal.Data; % get zmap globals;
     grid
     hold on
     
-    %if isempty(coastline) == 0
+    %if ~isempty(coastline)
     %l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf;
     %pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*0,'k');
     %end
-    if isempty(faults) == 0
+    if ~isempty(faults)
         l = faults(:,1) < s1  & faults(:,1) > s2 & faults(:,2) < s3 & faults(:,2) > s4| faults(:,1) == inf;
         pl1 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*0,'k');
     end
-    if isempty(mainfault) ==0
+    if ~isempty(mainfault)
         pl2 =plot3(mainfault(:,1),mainfault(:,2),ones(length(mainfault(:,1)),1)*0,'m');
         pl2b =plot3(mainfault(:,1),mainfault(:,2),ones(length(mainfault(:,1)),1)*0,'m');
         set(pl2,'LineWidth',3.0)
         set(pl2b,'LineWidth',3.0)
     end
-    if isempty(main) ==0
+    if ~isempty(main)
         pl3 =plot3(main(:,1),main(:,2),ones(length(main(:,1)),1)*0,'xk');
         pl3b =plot3(main(:,1),main(:,2),ones(length(main(:,1)),1)*0,'xk');
         set(pl3,'LineWidth',3.0)

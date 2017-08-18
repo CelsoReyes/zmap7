@@ -45,7 +45,7 @@ end
 
 % vResolution give the radius (for nGriddingMode = 0) and no. of events
 % (for nGriddingMode = 1)
-vResolution_(:,1)=ones(nNumberNodes_,1)*nan;
+vResolution_(:,1)=nan(nNumberNodes_,1)
 
 % Loop over all points of the polygon
 for nNode_ = 1:nNumberNodes_

@@ -20,11 +20,11 @@ set(c,'LineStyle','none');
 
 hold on
 
-if isempty(coastline) ==  0
+if ~isempty(coastline)
   lico = m_line(coastline(:,1),coastline(:,2),'color','k');
 end
 
-if isempty(faults) == 0
+if ~isempty(faults)
   lifa = m_line(faults(:,1),faults(:,2),'color','k');
 end
 

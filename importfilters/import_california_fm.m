@@ -88,7 +88,7 @@ elseif nFunction == 1 % Import and return catalog
       uOutput(i,3) = decyear([uOutput(i,3) uOutput(i,4) uOutput(i,5) uOutput(i,8) uOutput(i,9) uOutput(i,10)]);
     catch
       disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
-      uOutput(i,:) = uOutput(i,:) * nan;
+      uOutput(i,:) = nan;
     end
   end
   % Delete all invalidated events from catalog

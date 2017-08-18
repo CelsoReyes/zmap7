@@ -454,7 +454,7 @@ function gridstats = array2gridstats(pbvg, ll)
         'maxm',13;
         'cmap2',14};
     
-    normlap2=ones(length(tmpgri(:,1)),1) * nan;
+    normlap2=nan(length(tmpgri(:,1)),1);
     
     reshaper = @(x) reshape(x,length(yvect),length(xvect));
     

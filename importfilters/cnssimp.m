@@ -48,7 +48,7 @@ elseif nFunction == 1
             %uOutput(i,:);
         catch
             disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
-            uOutput(i,:) = uOutput(i,:)*nan;
+            uOutput(i,:)=nan;
         end
     end
     l = isnan(uOutput(:,1));

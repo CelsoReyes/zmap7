@@ -519,7 +519,7 @@ function varargout = exportfig(varargin)
         if (~isempty(opts.renderer))
             args = {args{:}, ['-' opts.renderer]};
         end
-        if (~isempty(opts.resolution)) | ~strncmp(opts.format,'eps',3)
+        if (~isempty(isempty(opts.resolution))) ||  ~strncmp(opts.format,'eps',3)
             if isempty(opts.resolution)
                 opts.resolution = 0;
             end
@@ -758,7 +758,7 @@ function cellArray = LocalGetAsCell(fig,prop,allowemptycell)
     if nargin < 3
         allowemptycell = 0;
     end
-    if ~iscell(cellArray)  &&  (allowemptycell | ~isempty(cellArray))
+    if ~iscell(cellArray)  &&  (allowemptycell || ~isempty(cellArray))
         cellArray = {cellArray};
     end
 
@@ -819,7 +819,7 @@ function newArray = LocalMapColorToStyle(inArray)
     nstyles = length(styles);
     for k=1:n
         gray = LocalMapToGray1(inArray{k});
-        if isempty(gray) | ischar(gray)  ||  gray < .05
+        if isempty(isempty(gray)) ||  ischar(gray)  ||  gray < .05
             newArray{k} = '-';
         else
             if ~isempty(uniques)  &&  any(gray == uniques)

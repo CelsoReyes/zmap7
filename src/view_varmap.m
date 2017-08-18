@@ -6,11 +6,8 @@ function view_varmap(lab1,re3)
     % define size of the plot etc.
     %
     
-    if ~exist('Prmap','var')
-        Prmap = re3*nan;
-    end
-    if isempty(Prmap) >  0
-        Prmap = re3*nan;
+    if ~exist('Prmap','var') || isempty(Prmap)
+        Prmap = nan(size(re3);
     end
     
     if isempty(name)

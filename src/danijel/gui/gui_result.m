@@ -74,7 +74,7 @@ try
 
   % Create new values for plotting
   nIdx = get(handles.lstMaps, 'Value');
-  vTmp = ones(length(handles.vResult.vX) * length(handles.vResult.vY), 1) * nan;
+  vTmp = nan(length(handles.vResult.vX) * length(handles.vResult.vY), 1);
   vTmp(handles.vResult.vUsedNodes) = handles.vResult.mValueGrid(:,nIdx);
   handles.mPlotValues = reshape(vTmp, length(handles.vResult.vY), length(handles.vResult.vX));
 

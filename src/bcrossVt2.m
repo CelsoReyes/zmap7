@@ -242,7 +242,7 @@ function bcrossVt2(sel)
             l = l <= ra;
             b = newa.subset(l);      % new data per grid point (b) is sorted in distance
             
-            if isempty(b) == 1; b = newa.subset(1); end
+            if isempty(b); b = newa.subset(1); end
             if b.Count >= Nmin;
                 % call the b-value function
                 lt =  b.Date >= t1 &  b.Date <t2 ;
@@ -288,7 +288,7 @@ function bcrossVt2(sel)
         
         % reshape a few matrices
         %
-        normlap2=ones(length(tmpgri(:,1)),1)*nan;
+        normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= bvg(:,1);
         re3=reshape(normlap2,length(yvect),length(xvect));
         

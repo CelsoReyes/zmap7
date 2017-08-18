@@ -117,7 +117,7 @@ b(:,11)= 1:length(b)'; %introduce column 13 with row number
 
 for i = 1:b.Count
     vSel=find(b(:,12)==i);
-    if isempty(vSel) ~=1
+    if ~isempty(vSel)
         nMin =min(find(b(vSel,6)== max(b(vSel,6))));
         b(vSel(nMin),13)=clusterno; %label first largest event with clusterno
         b(vSel,12)=clusterno; %label all events of the cluster with clusterno

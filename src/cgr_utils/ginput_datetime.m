@@ -14,7 +14,7 @@ function [X, Y, B] = ginput_datetime(ax, varargin)
     % Celso G Reyes, 2017
     
     selector = '';
-    if ~isempty('varargin') && ischar(varargin{end}) && startsWith(varargin{end},'nearest_')
+    if ~isempty(varargin) && ischar(varargin{end}) && startsWith(varargin{end},'nearest_')
         selector = varargin{end};
         varargin(end) = [];
     end

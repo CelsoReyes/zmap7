@@ -21,8 +21,10 @@ function plotala()
     % Find out if figure already exists
     watchon
     if isempty(iala) ; iala = ZG.compare_window_yrs; end
-    if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
-    if isempty(abo2)  == 1 ; errordlg('No alarms with z >= Zmin detected!');return; end
+    if ~exist('abo2') || isempty(abo2); 
+        errordlg('No alarms with z >= Zmin detected!');
+        return; 
+    end
     
     abo = abo2;
     
@@ -103,7 +105,7 @@ function plotala()
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
     hold on
     
-    if isempty(abo) == 0
+    if ~isempty(abo)
         figure(map);
         update(mainmap())
         plot(abo(:,1),abo(:,2),'o',...
@@ -122,23 +124,23 @@ function plotala()
     grid
     hold on
     
-    if isempty(coastline) == 0
+    if ~isempty(coastline)
         l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf | coastline(: ,1) == -inf;
         pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*t0b,'k');
         pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*teb,'k');
     end
-    if isempty(faults) == 0
+    if ~isempty(faults)
         l = faults(:,1) < s1  & faults(:,1) > s2 & faults(:,2) < s3 & faults(:,2) > s4| faults(:,1) == inf;
         pl1 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*t0b,'k');
         pl4 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*teb,'k');
     end
-    if isempty(mainfault) ==0
+    if ~isempty(mainfault)
         pl2 = plot3(mainfault(:,1),mainfault(:,2),ones(length(mainfault),1)*t0b,'m');
         pl2b =plot3(mainfault(:,1),mainfault(:,2),ones(length(mainfault),1)*teb,'m');
         set(pl2,'LineWidth',3.0)
         set(pl2b,'LineWidth',3.0)
     end
-    if isempty(main) == 0
+    if ~isempty(main)
         pl3 =plot3(main(:,1),main(:,2),ones(length(main)-1,1)*teb,'xk');
         pl3b =plot3(main(:,1),main(:,2),ones(length(main)-1,1)*t0b,'xk');
         set(pl3,'LineWidth',3.0)
@@ -146,7 +148,7 @@ function plotala()
     end
     % end
     
-    if isempty(ZG.maepi) ==0
+    if ~isempty(ZG.maepi)
         pl8 =plot3(ZG.maepi.Longitude,ZG.maepi.Latitude,ZG.maepi.Date,'*k');
         set(pl8,'LineWidth',2.0,'MarkerSize',10)
     end

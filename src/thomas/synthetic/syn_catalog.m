@@ -43,7 +43,7 @@ mNewCatalog=nan(nNumberEvents,14);
 fHypoShift=5;
 if nSynMode == 0
 %     % Create empty catalog
-%     mNewCatalog = ones(nNumberEvents, 10) * nan;
+%     mNewCatalog = nan(nNumberEvents, 10);
 
     % Create magnitudes
     [mNewCatalog] = syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);

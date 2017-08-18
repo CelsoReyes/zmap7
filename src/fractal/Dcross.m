@@ -316,7 +316,7 @@ if sel == 'ca'
     %
     % reshape a few matrices
     %
-    normlap2=ones(length(tmpgri(:,1)),1)*nan;
+    normlap2=nan(length(tmpgri(:,1)),1)
     normlap2(ll)= bvg(:,1);
     re3=reshape(normlap2,length(yvect),length(xvect));
 
@@ -345,7 +345,7 @@ if sel == 'lo'
         xvect = gx; yvect = gy;
         tmpgri=zeros((length(xvect)*length(yvect)),2);
 
-        normlap2=ones(length(tmpgri(:,1)),1)*nan;
+        normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= bvg(:,1);
         re3=reshape(normlap2,length(yvect),length(xvect));
 

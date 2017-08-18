@@ -4,7 +4,7 @@ function boolean  = isobj(handle,currobj)
     % 		valid handles and 0's where they are not.
     %
     % Keith Rogers 11/30/93
-    if isempty('handle') == 0 ; currobj = 0; boolean = 0;return; end
+    if ~isempty(handle) ; currobj = 0; boolean = 0;return; end
     if nargin == 1
         currobj = 0;
     end

@@ -78,9 +78,9 @@ end
 
 % ?????
 j =  min(find(mData(:,2) < 10 ));
-if isempty(j) == 1; j =  min(find(mData(:,2) < 15 )); end
-if isempty(j) == 1; j =  min(find(mData(:,2) < 20 )); end
-if isempty(j) == 1; j =  min(find(mData(:,2) < 25 )); end
+if isempty(j); j =  min(find(mData(:,2) < 15 )); end
+if isempty(j); j =  min(find(mData(:,2) < 20 )); end
+if isempty(j); j =  min(find(mData(:,2) < 25 )); end
 %j2 =  min(find(dat(:,2) == min(dat(:,2)) ));
 
 fMc = mData(j,1);

@@ -101,7 +101,7 @@ function out = zoom(varargin)
 
     zoomCommand=lower(zoomCommand);
 
-    if ~isempty(ax) & any(get(ax,'view')~=[0 90])  &&  ...
+    if ~isempty(isempty(ax)) &&  any(get(ax,'view')~=[0 90])  &&  ...
             ~(strcmp(zoomCommand,'scale') | strcmp(zoomCommand,'fill'))
         return % Do nothing
     end

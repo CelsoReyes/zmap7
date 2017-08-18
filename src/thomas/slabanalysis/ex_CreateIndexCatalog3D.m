@@ -46,7 +46,7 @@ end
 
 % vResolution give the radius (for nGriddingMode = 4) and no. of events
 % (for nGriddingMode = 3)
-vResolution_(:,1)=ones(nNumberNodes_,1)*nan;
+vResolution_(:,1)=nan(nNumberNodes_,1)
 if ((nGriddingMode == 3) || (nGriddingMode ==4)) clear vResolution_; end
 
 

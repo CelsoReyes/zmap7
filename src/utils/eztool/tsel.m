@@ -18,7 +18,7 @@ function tsel(command)
 
 
     global oldtextobj;
-    if isempty('oldtextobj') == 0; return; end
+    if ~isempty(oldtextobj); return; end
     if(nargin == 0)
         if(oldtextobj ~= gco & isobj(oldtextobj))
             set(oldtextobj,'Selected','off');

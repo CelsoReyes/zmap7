@@ -19,7 +19,7 @@ function cluoverl(var1)
     if var1==1                            %hide biggest events
         set(plot1_h,'Visible','off')
     elseif var1==2                         %plot biggest evens
-        if isempty(plot1_h)>0                 %first time
+        if isempty(plot1_h)                 %first time
             plot1_h=plot(bgevent(:,1),bgevent(:,2),'xm');
             set(plot1_h,'MarkerSize',5)
             set(plot1_h,'LineWidth',2)
@@ -27,7 +27,7 @@ function cluoverl(var1)
             set(plot1_h,'Visible','on')     %show plot that already exists(biggest events)
         end
     elseif var1==3                    %plot equivalent events
-        if isempty(plot2_h)>0
+        if isempty(plot2_h)
             plot2_h=plot(equi(:,1),equi(:,2),'xg');
             set(plot2_h,'MarkerSize',5)
             set(plot2_h,'LineWidth',2)

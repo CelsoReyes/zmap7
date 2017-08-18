@@ -64,7 +64,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);
                 befehl=['a = ',tr,';'];
                 eval(befehl);
@@ -115,7 +115,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);
                 befehl=['a = ',tr,';'];
                 eval(befehl);
@@ -175,7 +175,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);
                 befehl=['faults = ',tr,';'];
                 eval(befehl);
@@ -209,7 +209,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
                 eval(befehl);
                 %  clear(tr)
@@ -243,7 +243,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);
                 befehl=['main = ',tr,';'];
                 eval(befehl);
@@ -277,7 +277,7 @@ function loadasci(da,sa)
                 think;drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
-                if isempty(do) == 1; do = length(file1)+1;end
+                if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);
                 befehl=['coastline = ',tr,';'];
                 eval(befehl);

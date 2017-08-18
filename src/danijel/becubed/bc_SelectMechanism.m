@@ -25,7 +25,7 @@ if ~exist('nRake1', 'var')
 end
 
 % If column of rake 2 is given select events based on both rakes
-if exist('nRake2', 'var') & ~isempty(nRake2)
+if exist('nRake2', 'var') && ~isempty(nRake2)
   [vSel1] = CreateSelectionVector(mCatalog, nType, fAngle, nRake1);
   [vSel2] = CreateSelectionVector(mCatalog, nType, fAngle, nRake2);
   vSel = vSel1 & vSel2;

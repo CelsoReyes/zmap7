@@ -5,6 +5,45 @@ function view_qva(lab1,re3)
     %
     % define size of the plot etc.
     %
+%     The Z-Value Map Window      
+%
+%                                                          
+%           This window displays seismicity rate changes    
+%           as z-values using a color code. Negative        
+%           z-values indicate an increase in the seismicity
+%           rate, positive values a decrease.               
+%           Some of the menu-bar options are                
+%           described below:                                
+%                                                           
+%           Threshold: You can set the maximum size that    
+%             a volume is allowed to have in order to be    
+%             displayed in the map. Therefore, areas with   
+%             a low seismicity rate are not displayed.      
+%             edit the size (in km) and click the mouse     
+%             outside the edit window.                      
+%         'FixAx: You can chose the minimum and maximum     
+%                  values of the color-legend used.         
+%         'Polygon: You can select earthquakes in a         
+%           polygon either by entering the coordinates or   
+%           defining the corners with the mouse             
+%
+%         'Circle: Select earthquakes in a circular volume:
+%                Ni, the number of selected earthquakes can
+%                be edited in the upper right corner of the
+%                window.                                    
+%           Refresh Window: Redraws the figure, erases      
+%                 selected events.                          
+%         
+%           zoom: Selecting Axis -> zoom on allows you to   
+%                 zoom into a region. Click and drag with   
+%                 the left mouse button. type <help zoom>   
+%                 for details.                              
+%           Aspect: select one of the aspect ratio options 
+%           Text: You can select text items by clicking. The
+%                 selected text can be rotated, moved, you 
+%                 can change the font size etc.             
+%                 Double click on text allows editing it.   
+        
     if isempty(name)
         name = '  '
     end
@@ -17,50 +56,6 @@ function view_qva(lab1,re3)
     %
     qmap=findobj('Type','Figure','-and','Name','q-detect-map');
     
-    
-    % This is the info window text
-    %
-    ttlStr='The Z-Value Map Window                        ';
-    hlpStr1zmap= ...
-        ['                                                '
-        ' This window displays seismicity rate changes   '
-        ' as z-values using a color code. Negative       '
-        ' z-values indicate an increase in the seismicity'
-        ' rate, positive values a decrease.              '
-        ' Some of the menu-bar options are               '
-        ' described below:                               '
-        '                                                '
-        ' Threshold: You can set the maximum size that   '
-        '   a volume is allowed to have in order to be   '
-        '   displayed in the map. Therefore, areas with  '
-        '   a low seismicity rate are not displayed.     '
-        '   edit the size (in km) and click the mouse    '
-        '   outside the edit window.                     '
-        'FixAx: You can chose the minimum and maximum    '
-        '        values of the color-legend used.        '
-        'Polygon: You can select earthquakes in a        '
-        ' polygon either by entering the coordinates or  '
-        ' defining the corners with the mouse            '];
-    hlpStr2zmap= ...
-        ['                                                '
-        'Circle: Select earthquakes in a circular volume:'
-        '      Ni, the number of selected earthquakes can'
-        '      be edited in the upper right corner of the'
-        '      window.                                   '
-        ' Refresh Window: Redraws the figure, erases     '
-        '       selected events.                         '
-        
-        ' zoom: Selecting Axis -> zoom on allows you to  '
-        '       zoom into a region. Click and drag with  '
-        '       the left mouse button. type <help zoom>  '
-        '       for details.                             '
-        ' Aspect: select one of the aspect ratio options '
-        ' Text: You can select text items by clicking.The'
-        '       selected text can be rotated, moved, you '
-        '       can change the font size etc.            '
-        '       Double click on text allows editing it.  '
-        '                                                '
-        '                                                '];
     
     % Set up the Seismicity Map window Enviroment
     %
@@ -138,7 +133,7 @@ function view_qva(lab1,re3)
     %
     re4 = re3;
     l = r > tresh;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     
     % plot image
     %

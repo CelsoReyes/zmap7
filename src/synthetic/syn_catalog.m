@@ -33,7 +33,7 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
     end
 
     % Create empty catalog
-    mNewCatalog = ones(nNumberEvents, 10) * nan;
+    mNewCatalog = nan(nNumberEvents,10);
 
     % Create magnitudes
     [mNewCatalog] = syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);

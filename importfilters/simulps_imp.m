@@ -56,7 +56,7 @@ elseif nFunction == 1 % Import and return catalog
         vOutput(3) = decyear([vOutput(3) vOutput(4) vOutput(5) vOutput(8) vOutput(9)]);
       catch
         disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
-        vOutput(:) = vOutput(:) * nan;
+        vOutput(:) = nan;
       end
       % Add vector to catalog
       uOutput = [uOutput; vOutput];

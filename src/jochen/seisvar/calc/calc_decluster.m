@@ -119,7 +119,7 @@ for nEvent=1:length(mCatalog.Magnitude)
             % Second: Check if it's a mainshock
             % Third: Keep the former cluster indice;
             while nI <= length(vIndice)
-                if (~isempty(vTmpCluster(vIndice(nI))) & length(vTmpCluster(vIndice,:)) > 1 & vCluster(vIndice(nI)) == 0)
+                if (~isempty(isempty(vTmpCluster(vIndice(nI)))) &&  length(vTmpCluster(vIndice,:)) > 1 & vCluster(vIndice(nI)) == 0)
                     vCluster(vIndice(nI)) = vTmpCluster(vIndice(nI));
                     %vEventnr(vIndice,:) = nEvent;
                 elseif  (~isempty(vTmpCluster(vIndice(nI)))  &&  length(vTmpCluster(vIndice,:)) == 1  &&  vCluster(vIndice(nI)) == 0)

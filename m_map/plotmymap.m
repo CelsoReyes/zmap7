@@ -170,7 +170,7 @@ if selt == 'ca'
     end
 
 
-    if isempty(faults) ~= 1 ; lifa = m_line(faults(:,1),faults(:,2),'color','r'); end
+    if ~isempty(faults) ; lifa = m_line(faults(:,1),faults(:,2),'color','r'); end
 
     hold on
 
@@ -179,7 +179,7 @@ if selt == 'ca'
     set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ZG.ms6,'color',co)
 
     if exist('vo', 'var')
-        if isempty(vo) ==  0
+        if ~isempty(vo)
             li = m_plot(vo.Longitude,vo.Latitude);
             set(li,'Linestyle','none','Marker','^','MarkerSize',6,'markeredgecolor','r','markerfacecolor','w')
         end

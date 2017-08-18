@@ -123,13 +123,13 @@ function view_bpva(lab1,re3)
     %
     re4 = re3;
     l = r > tresh;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     l = Prmap < minpe;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     l = old1 <  Mmin;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     l = pvstd >  minsd;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     
     
     % plot image

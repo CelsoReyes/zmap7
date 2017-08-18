@@ -38,7 +38,7 @@ elseif nFunction == 1 % Import and return catalog
                     end
                 end
                 disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
-                uOutput(i,:) = uOutput(i,:)*nan;
+                uOutput(i,:)=nan;
             end
         end
 

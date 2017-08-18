@@ -1,6 +1,5 @@
 function view_bvt(lab1,re3)
-    % This .m file "view_x
-    % maxz.m" plots the maxz LTA values calculated
+    % plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
     % needs re3, gx, gy, stri
     %
@@ -143,18 +142,10 @@ function view_bvt(lab1,re3)
     l = r > tresh;
     re4(l) = NaN(1,length(find(l)));
     
-    %l = re4 > min(bvgr(:,1)) &  re4 < max(bvgr(:,1)) ;
-    %l = re4 > mean(bvgr(:,1))-2*std(bvgr(:,1)) &  re4 <  mean(bvgr(:,1))+2*std(bvgr(:,1));
-    %re4(l) = NaN(1,length(find(l)));
-    %re4(l) = zeros(1,length(find(l)))+ mean(bvgr(:,1));
-    
     % plot image
     %
     orient portrait
     set(gcf,'PaperPosition', [2. 1 7.0 5.0])
-    %col = [hot(64) ; cool(64)];
-    %col = col(128:-1:1,:);
-    %load /home/2ken/stefan/after_figs/moslip.mat
     
     hold on
     pco1 = pcolor(gx,gy,db12);
@@ -172,10 +163,6 @@ function view_bvt(lab1,re3)
         'FontWeight','normal','LineWidth',1.5,...
         'Box','on','TickDir','out')
     hold on
-    %  cs =contour(-gxd,gyd,sl/100,[0 0.2 0.4 0.6 0.8  1] ,'k');
-    %set(gca,'YTick',[ -10 -5 0 ])
-    %set(gca,'YTickLabels',[10 5 0 ])
-    
     
     % plot overlay
     %
@@ -258,7 +245,7 @@ function view_bvt(lab1,re3)
     function callbackfun_003(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zmaphelp(ttlStr,hlpStr1zmap,hlpStr2zmap);
+        helpdlg(help('view_bvt'),'Help for view_bvt')
     end
     
     function callbackfun_004(mysrc,myevt)
@@ -429,14 +416,12 @@ function view_bvt(lab1,re3)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni=str2num(set_nia.String);
-        'String';
         num2str(ni);
     end
     
     function callbackfun_025(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ;
     end
     
     function callbackfun_026(mysrc,myevt)

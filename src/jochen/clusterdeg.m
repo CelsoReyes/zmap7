@@ -38,7 +38,7 @@ else
         vSkm = deg2km(s,almanac('earth','radius','km','grs80'));
         vSel = (vSkm <= fRadius);
         mCatClose = mCatClose(vSel,:);
-        if (isempty(mCatClose) | length(mCatClose(:,1)) < nMinEvents )
+        if (isempty(isempty(mCatClose)) ||  length(mCatClose(:,1)) < nMinEvents )
             mCatClose = NaN;
         elseif length(mCatClose(:,1)) > nNumberEvents
             mCatClose = mCatClose(1:nNumberEvents,:);

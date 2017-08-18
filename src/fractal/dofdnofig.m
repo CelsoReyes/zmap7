@@ -18,7 +18,7 @@ r2 = r(1:(end-1));											% Forward difference approximation: deriv has one e
 % distances of depopulation "rd" and of saturation "rs".
 %
 %
-if isempty(radm)& isempty(rasm);
+if isempty(radm) && isempty(rasm);
 
     rad = (rmax*(1/size(E,1))^(1/d))/3;		% 2rmax= linear size of the hypercube encompassing a given dataset
     ras = rmax/(2*(d+1));

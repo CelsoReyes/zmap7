@@ -280,7 +280,7 @@ function calc_across(sel)
         %
         i2 = 0.;
         i1 = 0.;
-        avg = zeros(length(newgri),10)*nan;
+        avg = nan(length(newgri),10);
         allcount = 0.;
         wai = waitbar(0,' Please Wait ...  ');
         set(wai,'NumberTitle','off','Name','a-value grid - percent done');;
@@ -387,7 +387,8 @@ function calc_across(sel)
                 b = [NaN NaN NaN NaN NaN NaN NaN NaN NaN];
                 nX = NaN;
             end
-            mab = max(b.Magnitude) ; if isempty(mab)  == 1; mab = NaN; end
+            mab = max(b.Magnitude) ; 
+            if isempty(mab); mab = NaN; end
             avg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan faValue ];
             waitbar(allcount/itotal)
         end  % for  newgri
@@ -416,7 +417,7 @@ function calc_across(sel)
         % reshape a few matrices
         %
         
-        normlap2=ones(length(tmpgri(:,1)),1)*nan;
+        normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= avg(:,1);
         bls=reshape(normlap2,length(yvect),length(xvect));
         
@@ -460,7 +461,7 @@ function calc_across(sel)
             xvect = gx; yvect = gy;
             tmpgri=zeros((length(xvect)*length(yvect)),2);
             
-            normlap2=ones(length(tmpgri(:,1)),1)*nan;
+            normlap2=nan(length(tmpgri(:,1)),1)
             normlap2(ll)= avg(:,1);
             bls=reshape(normlap2,length(yvect),length(xvect));
             

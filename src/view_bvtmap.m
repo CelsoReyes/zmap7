@@ -81,7 +81,7 @@ function view_bvtmap(lab1,re3)
     %
     re4 = re3;
     l = pro < tresh;
-    re4(l) = zeros(1,length(find(l)))*nan;
+    re4(l) = nan(1,length(find(l)));
     
     % plot image
     %

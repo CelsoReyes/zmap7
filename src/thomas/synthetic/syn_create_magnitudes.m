@@ -14,7 +14,7 @@ vMagnitudes = [fMc:fInc:10];
 vNumbers = 10.^(log10(nNumberEvents) - fBValue*(vMagnitudes-fMc));
 vNumbers = round(vNumbers);
 
-new = ones(nNumberEvents,1)*nan;
+new = nan(nNumberEvents,1)
 
 ct1=1;
 while vNumbers(ct1+1)~=0;

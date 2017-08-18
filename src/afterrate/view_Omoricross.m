@@ -2,8 +2,43 @@ function view_Omoricross(lab1, re3)
     % Script: view_Omoriparams.m
     % Plot Modified Omori law / nested MOL parameters calculated with calc_Omoricross.m.
     %
-    % j.woessner@sed.ethz.ch
-    % last update: 20.10.04
+%     The b and p -Value Map Window               
+%
+%           This window displays b-values and p-values      
+%           using a color code.                             
+%           Some of the menu-bar options are                
+%           described below:                                
+%                                                           
+%           Threshold: You can set the maximum size that    
+%             a volume is allowed to have in order to be    
+%             displayed in the map. Therefore, areas with   
+%             a low seismicity rate are not displayed.      
+%             edit the size (in km) and click the mouse     
+%             outside the edit window.                      
+%          FixAx: You can chose the minimum and maximum     
+%                  values of the color-legend used.         
+%          Polygon: You can select earthquakes in a         
+%           polygon either by entering the coordinates or   
+%           defining the corners with the mouse            
+%
+%          Circle: Select earthquakes in a circular volume:
+%                Ni, the number of selected earthquakes can
+%                be edited in the upper right corner of the
+%                window.                                    
+%           Refresh Window: Redraws the figure, erases      
+%                 selected events.                          
+%         
+%           zoom: Selecting Axis -> zoom on allows you to   
+%                 zoom into a region. Click and drag with   
+%                 the left mouse button. type <help zoom>   
+%                 for details.                              
+%           Aspect: select one of the aspect ratio options 
+%           Text: You can select text items by clicking.The
+%                 selected text can be rotated, moved, you 
+%                 can change the font size etc.             
+%                 Double click on text allows editing it.   
+
+% j.woessner@sed.ethz.ch
     
     myFigName='Omoricros-section';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
@@ -14,48 +49,6 @@ function view_Omoricross(lab1, re3)
     
     think
     report_this_filefun(mfilename('fullpath'));
-    
-    % This is the info window text
-    %
-    ttlStr='The b and p -Value Map Window                 ';
-    hlpStr1zmap= ...
-        ['                                                '
-        ' This window displays b-values and p-values     '
-        ' using a color code.                            '
-        ' Some of the menu-bar options are               '
-        ' described below:                               '
-        '                                                '
-        ' Threshold: You can set the maximum size that   '
-        '   a volume is allowed to have in order to be   '
-        '   displayed in the map. Therefore, areas with  '
-        '   a low seismicity rate are not displayed.     '
-        '   edit the size (in km) and click the mouse    '
-        '   outside the edit window.                     '
-        'FixAx: You can chose the minimum and maximum    '
-        '        values of the color-legend used.        '
-        'Polygon: You can select earthquakes in a        '
-        ' polygon either by entering the coordinates or  '
-        ' defining the corners with the mouse            '];
-    hlpStr2zmap= ...
-        ['                                                '
-        'Circle: Select earthquakes in a circular volume:'
-        '      Ni, the number of selected earthquakes can'
-        '      be edited in the upper right corner of the'
-        '      window.                                   '
-        ' Refresh Window: Redraws the figure, erases     '
-        '       selected events.                         '
-        
-        ' zoom: Selecting Axis -> zoom on allows you to  '
-        '       zoom into a region. Click and drag with  '
-        '       the left mouse button. type <help zoom>  '
-        '       for details.                             '
-        ' Aspect: select one of the aspect ratio options '
-        ' Text: You can select text items by clicking.The'
-        '       selected text can be rotated, moved, you '
-        '       can change the font size etc.            '
-        '       Double click on text allows editing it.  '
-        '                                                '
-        '                                                '];
     
     % Set up the Seismicity Map window Enviroment
     % Find out if figure already exists
