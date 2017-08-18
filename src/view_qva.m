@@ -1,5 +1,5 @@
 function view_qva(lab1,re3)
-    % This .m file "view_maxz.m" plots the maxz LTA values calculated
+    % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
     % needs re3, gx, gy, stri
     %

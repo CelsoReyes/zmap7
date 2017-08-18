@@ -11,7 +11,7 @@ function cluoverl(var1)
     global ty stri2 strib
     global after_h fore_h main_h ttcat after_button fore_button
     global foresh aftersh mainsh calll66
-    global mainfault main faults clus_button coastline ZG.maepi
+    global mainfault main faults clus_button coastline
     global SizMenu TypMenu new
     ZG=ZmapGlobal.Data;
 

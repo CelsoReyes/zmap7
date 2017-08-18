@@ -6,7 +6,7 @@ report_this_filefun(mfilename('fullpath'));
 %global ty ty1 ty2 ty3
 %global lth1 lth15 lth2
 %global rad xa0 ic ya0 step ni
-global iwl2 iwl3
+global iwl3
 %global name strib stri2 infstri maix maiy
 %global tresh wi rotationangle fre
 %global co
@@ -49,7 +49,7 @@ ic = 0;
 ya0 = 0.;
 xa0 = 0.;
 iwl3 = 1.;
-iwl2 = 1.5;
+ZG.compare_window_yrs = 1.5;
 step = 3;
 ni = 100;
 

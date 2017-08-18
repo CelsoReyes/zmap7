@@ -1,5 +1,5 @@
 function view_rcva_a2(lab1,re3)
-    % This .m file, "view_rcva.m", plots ratechanges and p values calculated
+    % view_rcva_a2 plots ratechanges and p values calculated
     % with rcvalgrid.m or other similar values as a color map.
     % needs re3, gx, gy
     %

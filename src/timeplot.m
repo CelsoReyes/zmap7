@@ -17,7 +17,6 @@ function timeplot(mycat, nosort)
     myFigName='Cumulative Number';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
-    global  iwl2
     global statime
     global selt
     
@@ -276,7 +275,6 @@ function timeplot(mycat, nosort)
     %% ui functions
     function create_my_menu()
         add_menu_divider();
-        uimenu('Label','|','Enable','off')
         ztoolsmenu = uimenu('Label','ZTools');
         analyzemenu=uimenu('Label','Analyze');
         plotmenu=uimenu('Label','Plot');
@@ -290,7 +288,7 @@ function timeplot(mycat, nosort)
         
         uimenu (analyzemenu,'Label','Decluster the catalog',...
             'callback',@callbackfun_002)
-        iwl = days(iwl2/days(ZG.bin_days));
+        iwl = days(ZG.compare_window_yrs/days(ZG.bin_days));
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
             'callback',@callbackfun_003)
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
@@ -302,7 +300,7 @@ function timeplot(mycat, nosort)
         op3D  =   uimenu(plotmenu,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
             'Callback',@(~,~)TimeDepthPlotter.plot(mycat));
-        uimenu(op3D,'Label','Time magnitude plot ',...
+        uimenu(op3D,'Label','Time-magnitude plot ',...
             'Callback',@(~,~)TimeMagnitudePlotter.plot(mycat));
         
         

@@ -5,7 +5,7 @@
 %  Stefan Wiemer  12/94
 %  Modified by Celso Reyes Spring/Summer 2017
 
-global sys ZG
+global sys
 %system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 

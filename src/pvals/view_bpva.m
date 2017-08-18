@@ -1,6 +1,5 @@
 function view_bpva(lab1,re3)
-    % This .m file, "view_bpva.m", plots the b and p values calculated
-    % with bpvalgrid.m or other similar values as a color map.
+    % view_bpva plots the b and p values calculated with bpvalgrid.m or other similar values as a color map.
     % needs re3, gx, gy, stri
     %
     % define size of the plot etc.

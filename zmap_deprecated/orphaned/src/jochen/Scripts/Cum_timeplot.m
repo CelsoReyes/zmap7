@@ -119,7 +119,7 @@ if newCumWindowFlag
     uimenu(options,'Label','Date Ticks in different format', 'Callback','newtimetick');
 
     uimenu (options,'Label','Decluster the catalog', 'Callback','inpudenew;')
-    iwl = iwl2*365/par1;
+    iwl = ZG.compare_window_yrs*365/par1;
     uimenu(options,'Label','Overlay another curve (hold)', 'Callback','ho2=true; ')
     uimenu(options,'Label','Compare two rates (fit)', 'Callback','dispma2')
     uimenu(options,'Label','Compare two rates ( No fit)', 'Callback','ic=0;dispma3')

@@ -20,7 +20,7 @@ function plotala()
         ' corners with the mouse                         '];
     % Find out if figure already exists
     watchon
-    if isempty(iala) ; iala = iwl2; end
+    if isempty(iala) ; iala = ZG.compare_window_yrs; end
     if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
     if isempty(abo2)  == 1 ; errordlg('No alarms with z >= Zmin detected!');return; end
     
@@ -52,7 +52,7 @@ function plotala()
         
         
         tre2 = max(abo(:,4)) - 0.5;
-        new = uicontrol('style','edit','value',iwl2,...
+        new = uicontrol('style','edit','value',ZG.compare_window_yrs,...
             'string',num2str(tre2,3), 'background','y',...
             'callback',@callbackfun_002,...
             'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
@@ -152,7 +152,7 @@ function plotala()
     end
     
     axis([ s2-0.1 s1+0.1 s4-0.1 s3+0.1 t0b teb+1  ])
-    strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(iwl2,3) '; Zcut = ' num2str(tre2,3)  ];
+    strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(ZG.compare_window_yrs,3) '; Zcut = ' num2str(tre2,3)  ];
     title(strib4,'FontWeight','bold',...
         'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     

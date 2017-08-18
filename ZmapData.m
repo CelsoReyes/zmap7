@@ -101,6 +101,8 @@ classdef ZmapData < handle
         
         %unknown other entities
         Rconst %used with the slicers
+        ra % max sphere radius
+        compare_window_yrs % Compare window length (years)
         
     end
     properties(Dependent)

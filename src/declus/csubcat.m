@@ -1,7 +1,6 @@
 function csubcat()
-    %  This is the .m file "csubcat.m". It plots the eqs of the original catalog
-    %  related with the loaded cluster. Most routines work similar like in the
-    %  name map window
+    % csubcat plots the eqs of the original catalogrelated with the loaded cluster.
+    % Most routines work similar like in the name map window
     %
     
     error('This is broken. Needs to be majorly updated');

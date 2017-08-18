@@ -1,6 +1,5 @@
 function setup()
-    %  This subroutine "setup.m" allows the user to setup
-    %  the earthquake datafile, overlaying faults, mainshocks
+    %  setup allows the user to setup the earthquake datafile, overlaying faults, mainshocks
     % turned into function by Celso G Reyes 2017
     
     report_this_filefun(mfilename('fullpath'));

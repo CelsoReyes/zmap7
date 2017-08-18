@@ -130,14 +130,9 @@ clear meanval std;
 
 
 
-% switch value2trans
-% case 'beta'
-%     Pbeta = normcdf(BetaValues,IsFitted(1,1),IsFitted(1,2));
-%     l = Pbeta == 0; Pbeta(l) = nan;
-% case 'z'
+
     Pbeta = normcdf(zValues,IsFitted(2,1),IsFitted(2,2));
     l = Pbeta == 0; Pbeta(l) = nan;
-% end
 tmporaer=ceil(params.fTminCat):params.fBinning:floor(params.fTmaxCat-params.fTwLength)-params.fBinning % 1:1:length(zValues)
 % plot the resuts
 figure

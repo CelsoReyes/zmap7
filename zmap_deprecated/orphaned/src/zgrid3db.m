@@ -37,7 +37,7 @@ if sel == 'in'
     ni2 = inputdlg(prompt,tit,1,def);
 
     l = ni2{1}; ti  = str2double(l);
-    l = ni2{2}; iwl2= str2double(l);
+    l = ni2{2}; ZG.compare_window_yrs= str2double(l);
     l = ni2{3}; ni= str2double(l);
     l = ni2{4}; dx= str2double(l);
     l = ni2{5}; dy= str2double(l);
@@ -84,7 +84,7 @@ if sel == 'ca'
     %
     %
     tl = teb - t0b;
-    iwl = floor(iwl2*365/par1);
+    iwl = floor(ZG.compare_window_yrs*365/par1);
     t = floor((ti-t0b)*365/par1);
 
 

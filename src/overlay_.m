@@ -1,10 +1,8 @@
 function overlay_()
-    % DELETE ME, function is now in MainInteractiveMap
-    %TODO Delete this
-    % This subroutine "overlay.m" is called from varios
-    % program (view_*.m, subcata.m). It plots an overlay
-    % of coastlines, faults, earthquakes etc on a map.
+    % overlay_ plots an overlay of coastlines, faults, earthquakes etc on a map.
     % This file should be customized for each region
+
+    % TODO DELETE ME, function is now in MainInteractiveMap
     %  Stefan Wiemer   11/94
     
     report_this_filefun(mfilename('fullpath'));

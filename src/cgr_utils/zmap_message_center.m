@@ -290,15 +290,16 @@ function h = create_message_figure()
 end
 
 function do_catalog_overview(s,~)
-    global ZG
+    ZG=ZmapGlobal.Data; % get zmap globals
     replaceMainCatalog(catalog_overview(ZG.a));
     zmap_message_center.update_catalog();
     %update_current_catalog_pane(s);
 end
 
 function do_selected_catalog_overview(s,~)
-    global ZG
-    ZG.newcat = catalog_overview(ZG.newcat);
+    
+ZG=ZmapGlobal.Data; % get zmap globals
+ZG.newcat = catalog_overview(ZG.newcat);
     zmap_message_center.update_catalog();
     %update_current_catalog_pane(s);
     %update_selected_catalog_pane(s);
@@ -319,9 +320,8 @@ function set_editbutton_enable(val)
 end
 
 function update_current_catalog_pane(~,~)
-    global ZG
     
-    
+ZG=ZmapGlobal.Data; % get zmap globals
     if ~isempty(ZG.a)
         if isa(ZG.a,'ZmapCatalog')
             mycat = ZG.a;
@@ -354,8 +354,8 @@ function update_current_catalog_pane(~,~)
 end
 
 function update_selected_catalog_pane(~,~)
-    global ZG
-    
+
+ZG=ZmapGlobal.Data; % get zmap globals
     
     if ~isempty(ZG.newcat)
         if ~isa(ZG.newcat,'ZmapCatalog')

@@ -9,7 +9,9 @@ function plot3d()
     % This is the info window text
     %
     global a faults mainfault main
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun(mfilename('fullpath'))
+    
+ZG=ZmapGlobal.Data; % get zmap globals;
     tag='mainmap3_ax';
     watchon
     think
@@ -153,7 +155,7 @@ function plot3d()
         %   divisions is a vector of depths (up to 7)
         
         % magdivisions: magnitude split points
-        global event_marker_types ZG
+        global event_marker_types
         if isempty(event_marker_types)
             event_marker_types='+++++++'; %each division gets next type.
         end

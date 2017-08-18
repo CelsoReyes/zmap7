@@ -12,7 +12,7 @@ function mycat = catalog_overview(mycat)
         mycat = ZmapCatalog(mycat);
     end
     
-    %global file1 tim1 tim2 minma2 maxma2 minde maxde ZG.maepi
+    %global file1 tim1 tim2 minma2 maxma2 minde maxde 
     %global maxdep maxma mindep minti maxti
     
     %  default values

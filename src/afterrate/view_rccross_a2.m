@@ -1,5 +1,5 @@
 function view_rccross_a2(lab1,re3)
-    % This .m file, "view_rccross_a2.m", plots ratechanges and p values calculated
+    % view_rccross_a2 plots ratechanges and p values calculated
     % derived with rc_cross_a2.m or other similar values as a color map.
     % needs re3, gx, gy
     %

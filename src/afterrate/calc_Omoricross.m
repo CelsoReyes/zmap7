@@ -516,7 +516,6 @@ function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inb2=hndl2.Value;
-   ;
 end
  
 function callbackfun_002(mysrc,myevt)

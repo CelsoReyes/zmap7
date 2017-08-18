@@ -6,7 +6,7 @@
 %
 % xt        beginning times of bins, calculated in \src\timeplot.m
 % par1      binlength in days, default defined in \src\load_zmapfile.m
-% iwl2      default set in \src\ini_zmap.m
+% ZG.compare_window_yrs      default set in \src\ini_zmap.m
 % cumu      number of earthquakes in each bin, calculated in \src\timeplot.m
 % cum       figure handle
 % newcat
@@ -26,7 +26,7 @@
 
 report_this_filefun(mfilename('fullpath'));
 
-def = {num2str(iwl2),num2str(par1)};
+def = {num2str(ZG.compare_window_yrs),num2str(par1)};
 
 tit ='beta computation input parameters';
 prompt={ 'LTA window length (years)',...
@@ -34,7 +34,7 @@ prompt={ 'LTA window length (years)',...
     };
 ni2 = inputdlg(prompt,tit,1,def);
 
-l = ni2{1}; iwl2= str2double(l);
+l = ni2{1}; ZG.compare_window_yrs= str2double(l);
 l = ni2{2}; par1= str2double(l);
 
 [cumu, xt] = hist(newt2.Date,(t0b:par1/365:teb));
@@ -47,8 +47,8 @@ TimeBegin = Catalog(1,3);
 NumberEQs = length(Catalog(:,1));
 TimeEnd = max(Catalog(:,3));
 
-iwl = floor(iwl2*365/par1);
-if (iwl2 >= TimeEnd-TimeBegin) | (iwl2 <= 0)
+iwl = floor(ZG.compare_window_yrs*365/par1);
+if (ZG.compare_window_yrs >= TimeEnd-TimeBegin) | (ZG.compare_window_yrs <= 0)
     errordlg('iwl is either too long or too short.');
     return;
 end
@@ -109,7 +109,7 @@ set(ax2,'LineWidth',0.5,'Color','r')
 xlabel('Time in years ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Cumulative Number ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
 
-title2(['LTA(t) Function; \beta-values; wl = ' num2str(iwl2)],'FontWeight','bold',...
+title2(['LTA(t) Function; \beta-values; wl = ' num2str(ZG.compare_window_yrs)],'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
 
 
@@ -154,11 +154,11 @@ end %if big
 % go button
 uicontrol('Units','normal',...
     'Position',[.25 .0 .08 .05],'String','New',...
-     'Callback','betasta')
+     'Callback',@(~,~)betasta);
 
 uicontrol('Units','normal',...
     'Position',[.35 .0 .3 .05],'String','Translate into probabilities',...
-     'Callback',' assignin(''base'', ''value2trans'', ''beta''); translating;')
+     'Callback',@(~,~)translating('beta'));
 
 
 

@@ -17,7 +17,7 @@ hlpStr1= ...
     ' corners with the mouse                         '];
 % Find out of figure already exists
 watchon
-if ~exist('iala') ; iala = iwl2; end
+if ~exist('iala') ; iala = ZG.compare_window_yrs; end
 if ~exist('abo2') ; errordlg('No alarms with z >= Zmin detected!');return; end
 if isempty(abo2)  == 1 ; errordlg('No alarms with z >= Zmin detected!');return; end
 
@@ -50,7 +50,7 @@ if newCubeWindowFlag
 
 
     tre2 = max(abo(:,4)) - 0.5;
-    new = uicontrol('style','edit','value',iwl2,...
+    new = uicontrol('style','edit','value',ZG.compare_window_yrs,...
         'string',num2str(tre2,3), 'background','y',...
         'Callback','tre2=str2num(get(new,''String''));''String'',num2str(tre2,3);',...
         'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
@@ -139,7 +139,7 @@ grid
 hold on
 %end
 
-strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(iwl2,3) '; Zcut = ' num2str(tre2,3)  ];
+strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(ZG.compare_window_yrs,3) '; Zcut = ' num2str(tre2,3)  ];
 title2(strib4,'FontWeight','bold',...
     'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
 

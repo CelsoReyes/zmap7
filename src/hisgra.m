@@ -70,8 +70,8 @@ function hisgra(mycat, opt)
     function create_my_menu()
         add_menu_divider();
         op1 = uimenu('Label','Display');
-        uimenu(op1,'Label','Bin Number','Callback',@callback_change_nBins);
-        uimenu(op1,'Label','Bin Vector','Callback',@callback_change_bVector);
+        uimenu(op1,'Label','Change Number of Bins...','Callback',@callback_change_nBins);
+        uimenu(op1,'Label','Change Bin Edges...','Callback',@callback_change_bVector);
         uimenu(op1,'Label','Default','Callback',@callback_reset);
     end
     

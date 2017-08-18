@@ -5,7 +5,7 @@ function incube()
     % For each one of the grid points, Ni events are counted.
     %
     
-    global step iwl2
+    global step
     report_this_filefun(mfilename('fullpath'));
     
     % initial values
@@ -111,7 +111,7 @@ function incube()
         abo=[];
         
         % initial parameter
-        iwl = floor(iwl2* 365/ZG.bin_days);
+        iwl = floor(ZG.compare_window_yrs* 365/ZG.bin_days);
         [len, ncu] = size(cumuall); len = len-2;
         var1 = zeros(1,ncu);
         var2 = zeros(1,ncu);
@@ -216,11 +216,11 @@ function incube()
         
         
         abo2 = abo;
-        iala = iwl2;
+        iala = ZG.compare_window_yrs;
         try
             zmap_message_center.set_info('Save Alarm Cube?','  ');
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
-            sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala iwl2'];
+            sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala ZG.compare_window_yrs'];
             if length(file1) > 1
                 eval(sapa2);
             end
@@ -269,8 +269,8 @@ end
 function callbackfun_002(mysrc,myevt)
     % automatically created callback function from text
     callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    iwl2=str2double(freq_field2.String);
-    freq_field2.String=num2str(iwl2);
+    ZG.compare_window_yrs=str2double(freq_field2.String);
+    freq_field2.String=num2str(ZG.compare_window_yrs);
 end
 
 function callbackfun_003(mysrc,myevt)
