@@ -8,7 +8,7 @@ function fixax_vertical(re3);
     report_this_filefun(mfilename('fullpath'));
     
     % Initialize
-    fre = 0;
+    ZG.freeze_colorbar = false;
     
     % Figure setup
     f = figure_w_normalized_uicontrolunits();
@@ -105,6 +105,6 @@ function fixax_vertical(re3);
     end
     function freeze_colorbar_callback(mysrc,~)
         % automatically created callback function from text
-        fre = mysrc.Value;
+        ZG.freeze_colorbar = logical(mysrc.Value);
     end
 end

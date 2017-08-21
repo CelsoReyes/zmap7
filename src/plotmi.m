@@ -57,7 +57,7 @@ function plotmi(var1)
     
     
     function plot_by_lon()
-        [s,is] = sort(newcat2(:,1));
+        [~,is] = sort(newcat2.Longitude);
         newcat2 = newcat2(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));
@@ -66,7 +66,7 @@ function plotmi(var1)
     end
     
     function plot_by_lat()
-        [s,is] = sort(newcat2(:,var1));
+        [~,is] = sort(newcat2.Latitude);
         newcat2 = newcat2(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));
@@ -75,7 +75,7 @@ function plotmi(var1)
     end
     
     function plot_by_time()
-        [s,is] = sort(newcat2(:,3));
+        [~,is] = sort(newcat2.Date);
         newcat2 = newcat2(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));
@@ -84,7 +84,7 @@ function plotmi(var1)
     end
     
     function plot_by_mag()
-        [s,is] = sort(newcat2(:,6));
+        [~,is] = sort(newcat2.Magnitude);
         newcat2 = newcat2(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));
@@ -94,7 +94,7 @@ function plotmi(var1)
     end
     
     function plot_by_depth()
-        [s,is] = sort(newcat2(:,7));
+        [~,is] = sort(newcat2.Depth);
         newcat2 = newcat2(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));
@@ -104,8 +104,8 @@ function plotmi(var1)
     end
     
     function plot_by_strike()
-        % [s,is] = sort(newcat2(:,15));
-        [s,is] = sort(newa(:, length(newa(1,:)) ));
+        % [~,is] = sort(newcat2(:,15));
+        [~,is] = sort(newa(:, length(newa(1,:)) ));
         newa2 = newa(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));

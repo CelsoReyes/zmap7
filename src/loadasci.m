@@ -43,7 +43,8 @@ function loadasci(da,sa)
     
     % load earthquake data
     %
-    if da == 'eq'
+    switch da
+    case 'earthquakes'
         
         te = text(0.03,0.96,'Please setup an ascii file (e.g., data.dat) in the following format:');
         
@@ -89,12 +90,11 @@ function loadasci(da,sa)
                 setup
             else
                 close, setup
-            end % if
-        end   %if sa
-    end   % if da == eq
+            end 
+        end
     
     %load focal mechanism data
-    if da == 'fo'
+    case 'focal'
         
         te = text(0.03,0.96,'Please setup an ascii file (e.g., data.dat) in the following format (12 or 13 colums):');
         
@@ -149,13 +149,12 @@ function loadasci(da,sa)
                 setup
             end % if
         end   %if sa
-    end   % if da == eq
     
     
     
     % load faults data
     %
-    if da == 'fa'
+    case 'faults'
         
         te = text(0.03,0.96,'Please setup an ascii file in the following format:');
         t2 = text(0.03,0.82,'lon        lat ') ;
@@ -185,11 +184,10 @@ function loadasci(da,sa)
                 close, setup
             end % if
         end   %if sa
-    end   % if da == fa
     
     % load main faults data
     %
-    if da == 'mf'
+    case 'mainfaults'
         
         te = text(0.03,0.96,'Please setup an ascii file in the following format:');
         t2 = text(0.03,0.82,'lon        lat ') ;
@@ -217,12 +215,11 @@ function loadasci(da,sa)
             else
                 close, setup
             end % if
-        end   %if sa
-    end   % if da == mf
+        end   %if sa 
     
     % load mainshock data
     %
-    if da == 'ma'
+    case 'mainshock'
         
         te = text(0.03,0.96,'Please setup an ascii file in the following format:');
         t2 = text(0.03,0.82,'lon        lat ') ;
@@ -257,7 +254,7 @@ function loadasci(da,sa)
     
     % load coastline data
     %
-    if da == 'co'
+    if da == 'coastline'
         
         te = text(0.03,0.96,'Please setup an ascii file in the following format:');
         t2 = text(0.03,0.82,'lon        lat ') ;
@@ -287,7 +284,7 @@ function loadasci(da,sa)
                 close, setup
             end % if
         end   %if sa
-    end   % if da == co
+    end
     
     
     function close_callback(mysrc,myevt)

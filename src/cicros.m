@@ -51,8 +51,7 @@ function cicros(opt)
             % take first ni and sort by time
             %
             ZG.newt2 = ZG.newt2(1:ni,:);
-            [st,ist] = sort(ZG.newt2);
-            ZG.newt2 = ZG.newt2(ist(:,3),:);
+            ZG.newt2.sort('Date');
             %
             % plot Ni clostest events on map as 'x':
             
@@ -85,8 +84,7 @@ function cicros(opt)
             % take first ni and sort by time
             %
             ZG.newt2 = ZG.newt2(ll,:);
-            [st,ist] = sort(ZG.newt2);
-            ZG.newt2 = ZG.newt2(ist(:,3),:);
+            ZG.newt2.sort('Date');
             %
             % plot Ni clostest events on map as 'x':
             

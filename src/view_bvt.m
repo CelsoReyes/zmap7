@@ -5,12 +5,10 @@ function view_bvt(lab1,re3)
     %
     % define size of the plot etc.
     %
-    if isempty(name)
-        name = '  '
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
-    co = 'k';
+    ZG.someColor = 'k';
     
     
     % Find out if figure already exists
@@ -103,12 +101,10 @@ function view_bvt(lab1,re3)
         nilabel = uicontrol('style','text','units','norm','pos',[.90 .85 .04 .05]);
         set(nilabel,'string','ni:','background',[.7 .7 .7]);
         
-        % tx = text(0.07,0.95,[name],'Units','Norm','FontSize',18,'Color','k','FontWeight','bold');
-        
-        tresh = max(max(r)); re4 = re3;
+        ZG.tresh_km = max(max(r)); re4 = re3;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
-        set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
+        set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
             'background','y');
         set(set_ni2,'callback',@callbackfun_026)
         set(set_ni2,'units','norm','pos',[.85 .92 .08 .06],'min',0.01,'max',10000);
@@ -136,10 +132,10 @@ function view_bvt(lab1,re3)
         'Box','on','SortMethod','childorder')
     
     
-    % set values greater tresh = nan
+    % set values greater ZG.tresh_km = nan
     %
     re4 = re3;
-    l = r > tresh;
+    l = r > ZG.tresh_km;
     re4(l) = NaN(1,length(find(l)));
     
     % plot image
@@ -167,7 +163,7 @@ function view_bvt(lab1,re3)
     % plot overlay
     %
     ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
-    set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     if exist('vox', 'var')
         plovo = plot(vox,voy,'*b');
@@ -427,8 +423,8 @@ function view_bvt(lab1,re3)
     function callbackfun_026(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tresh=str2double(set_ni2.String);
-        set_ni2.String=num2str(tresh);
+        ZG.tresh_km=str2double(set_ni2.String);
+        set_ni2.String=num2str(ZG.tresh_km);
     end
     
     function callbackfun_027(mysrc,myevt)

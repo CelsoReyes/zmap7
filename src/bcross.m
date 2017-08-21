@@ -15,8 +15,6 @@ function bcross(sel)
     % bootstrapping
     report_this_filefun(mfilename('fullpath'));
     
-    global inb1 inb2
-    
     % Do we have to create the dialogbox?
     if sel == 'in'
         % Set the grid parameter
@@ -153,7 +151,7 @@ function bcross(sel)
         
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.60 .005 .15 .12], ...
-            'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value; bBst_button = get(chKBst_button, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', bcross(sel)',...
+            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value; bBst_button = get(chKBst_button, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', bcross(sel)',...
             'String', 'OK');
         
         % Labels
@@ -189,7 +187,7 @@ function bcross(sel)
         
         set(gcf,'visible','on');
         watchoff
-    end   % if sel == in
+    end
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -253,7 +251,7 @@ function bcross(sel)
             if length(b) >= Nmin  % enough events?
                 % Added to obtain goodness-of-fit to powerlaw value
                 mcperc_ca3;
-                [fMc] = calc_Mc(b, inb1, fBinning, fMccorr);
+                [fMc] = calc_Mc(b, ZG.inb1, fBinning, fMccorr);
                 l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
                     [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
@@ -267,7 +265,7 @@ function bcross(sel)
                     % Check Mc from original catalog
                     l = b.Magnitude >= fMc-(fBinning/2);
                     if length(b(l,:)) >= Nmin
-                        [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(b, fBinning, nBstSample, inb1);
+                        [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(b, fBinning, nBstSample, ZG.inb1);
                     else
                         %fMc = NaN;
                         %fStd_Mc = NaN;
@@ -299,11 +297,7 @@ function bcross(sel)
         drawnow
         gx = xvect;gy = yvect;
         
-        catSave3 =...
-            [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-            '[file1,path1] = uiputfile([ ''*.mat''], ''Grid Datafile Name?'') ;',...
-            'sapa2=[''save '' path1 file1 '' ll a newgri lat1 lon1 lat2 lon2 wi  bvg xvect yvect gx gy dx dd ZG.bin_days newa maex maey maix maiy ''];',...
-            ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
+        catsave3('bcross');
         %corrected window positioning error
         close(wai)
         watchoff
@@ -328,7 +322,7 @@ function bcross(sel)
         % View the b-value map
         view_bv2([],re3)
         
-    end   %  if sel = ca
+    end
     
     % Load exist b-grid
     if sel == 'lo'
@@ -361,7 +355,7 @@ function bcross(sel)
             re3 = mBvalue;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             plot(newgri(:,1),newgri(:,2),'+k','era','back')
@@ -375,7 +369,7 @@ function bcross(sel)
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inb2=hndl2.Value;
+        ZG.inb2=hndl2.Value;
         ;
     end
     

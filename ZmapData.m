@@ -79,16 +79,16 @@ classdef ZmapData < handle
         mainmap_grid = 'on';
         mainmap_plotby = 'depth'; % was typele
         
-        bin_days; %bin length, days
+        bin_days = 14; %bin length, days
         
         % statistical stuff
         teb % time end earthquakes
         t0b % time begin earthquakes
         
         % likely to be completely removed stuff
-        hold_state % was ho, contained 'hold' or 'noho'
-        hold_state2 % was ho2, contained 'hold' or 'noho'
-        hold_state3 % was hoc, contained 'hold' or 'noho'
+        hold_state = false% was ho, contained 'hold' or 'noho'
+        hold_state2 = false % was ho2, contained 'hold' or 'noho'
+        hold_state3 = false % was hoc, contained 'hold' or 'noho'
         
         % directories
         out_dir=fullfile(ZmapData.hodi,'out') % was hodo
@@ -101,9 +101,23 @@ classdef ZmapData < handle
         
         %unknown other entities
         Rconst %used with the slicers
-        ra % max sphere radius
-        compare_window_yrs % Compare window length (years)
+        ra=5% max sphere radius
+        compare_window_yrs =1.5 % Compare window length (years)
+        compare_window_yrs_v3=1.0% Compare window length, alternate version
         
+        % cross section stuff, perhaps
+        tresh_km = 50 % radius below which blocks zmap's (?) will be plotted
+        xsec_width_km = 10 % not entirely sure units are km
+        xsec_rotation_deg = 10 % rotation angle for cross sections
+        
+        freeze_colorbar = false;
+        shading_style = 'flat';
+        someColor='w';
+        
+        % b-value related
+        inb1=1; % choice for b value calculation (?)
+        inb2=1; % maximum curvature method(?)
+        bo1=nan; % original b value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
     end
     properties(Dependent)
         wex %welcome window x (welcome_pos(1))

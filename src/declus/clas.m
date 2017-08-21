@@ -12,9 +12,9 @@ function clas
     think
 
     %
-    %  iwl is the cutoff at the beginning and end of the analyses
+    %  winlen_days is the cutoff at the beginning and end of the analyses
     %  to afoid spikes at the end
-    iwl = 10;
+    winlen_days = 10;
 
     %
     % calculate mean and z value
@@ -23,7 +23,7 @@ function clas
     as = zeros(1,ncu);
 
 
-    for i = iwl:ncu-iwl
+    for i = winlen_days:ncu-winlen_days
         mean1 = mean(cumu(1:i));
         mean2 = mean(cumu(i+1:ncu));
         var1 = cov(cumu(1:i));

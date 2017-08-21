@@ -1,7 +1,7 @@
 function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         lat1,lon1,lat2,lon2)
     
-    %LC_XSECTION
+    %LC_XSECTION make a cross section of data points on a map
     %
     %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
     %                                        lat1,lon1,lat2,lon2)        (1)

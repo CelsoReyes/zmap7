@@ -65,13 +65,12 @@ classdef MainInteractiveMap
             zlabel(ax,'Depth [km]');
             rotate3d(ax,'off'); %activate rotation tool
             set(findobj(figureHandle(),'Label','2-D view'),'Label','3-D view');
-            
+            figure(figureHandle());
             watchoff;
             drawnow;
         end
         function createFigure(obj)
             % will delete figure if it exist
-            global ZG % primary event catalog
             disp('MainInterativeMap.createFigure()');
             h=figureHandle();
             if ~isempty(h)
@@ -249,7 +248,7 @@ classdef MainInteractiveMap
             end
             submenu = uimenu('Label','Select ','Tag','mainmap_menu_select');
             uimenu(submenu,'Label','Select EQ in Polygon (Menu)',...
-                'Callback','global noh1 ZG;noh1 = gca;ZG.newt2 = ZG.a; stri = ''Polygon''; keyselect');
+                'Callback',@mycb01);
             
             uimenu(submenu,'Label','Select EQ inside Polygon',...
                 'Callback',@(~,~) selectp('inside'));
@@ -258,10 +257,33 @@ classdef MainInteractiveMap
                 'Callback',@(~,~) selectp('outside'));
             
             uimenu(submenu,'Label','Select EQ in Circle (fixed ni)',...
-                'Callback',' h1 = gca;set(gcf,''Pointer'',''watch''); stri = [''  '']; stri1 = ['' ''];circle');
+                'Callback',@mycb02);
             
             uimenu(submenu,'Label','Select EQ in Circle (Menu)',...
-                'Callback','h1 = gca;set(gcf,''Pointer'',''watch''); stri = ['' '']; stri1 = ['' '']; incircle');
+                'Callback',@mycb03);
+            
+            function mycb01(mysrc,~)
+                global noh1;
+                noh1 = gca;
+                ZG.newt2 = ZG.a;
+                stri = 'Polygon';
+                keyselect
+            end
+            
+            function mycb02(mysrc,~)
+                h1 = gca;set(gcf,'Pointer','watch');
+                stri = ' ';
+                stri1 = ' ';
+                circle
+            end
+            
+            function mycb03(mysrc,~)
+                h1 = gca;
+                set(gcf,'Pointer','watch');
+                stri =' ';
+                stri1 = ' ';
+                incircle
+            end
         end
         
         function create_catalog_menu(obj,force)
@@ -278,10 +300,10 @@ classdef MainInteractiveMap
                 'Callback','ZG.a.setFilterToAxesLimits(findobj( ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
             
             uimenu(submenu,'Label','Edit Ranges...',...
-                'Callback','global ZG; replaceMainCatalog(catalog_overview(ZG.a));update(mainmap())');
+                'Callback','replaceMainCatalog(catalog_overview(ZG.a));update(mainmap())');
             
             uimenu(submenu,'Label','Rename...',...
-                'Callback','global ZG; nm=inputdlg(''Catalog Name:'',''Rename'',1,{ZG.a.Name});if ~isempty(nm),ZG.a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
+                'Callback','nm=inputdlg(''Catalog Name:'',''Rename'',1,{ZG.a.Name});if ~isempty(nm),ZG.a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
             
             uimenu(submenu,'Label','Memorize/Recall Catalog',...
                 'Separator','on',...
@@ -333,7 +355,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
-                'Callback','global ZG; stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot(ZG.newt2)');
+                'Callback','stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot(ZG.newt2)');
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
@@ -350,14 +372,15 @@ classdef MainInteractiveMap
             obj.create_decluster_menu(submenu);
             
             uimenu(submenu,'Label','Map stress tensor',...
-                'Callback',@(~,~)stressgrid('in'));
+                'Callback',@(~,~)stressgrid());
             
             uimenu(submenu,'Label','Misfit calculation',...
                 'Callback',@(~,~)inmisfit());
             
         end
         function create_topo_map_menu(obj,parent)
-            submenu   =  uimenu(parent,'Label','Plot topographic map  ');
+            submenu   =  uimenu(parent,'Label','Plot topographic map',...
+                'Enable','off');
             uimenu(submenu,'Label','Open DEM GUI','Callback', @(~,~)prepinp());
             uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)','Callback', @(~,~)pltopo('lo3'));
             uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)','Callback', @(~,~)pltopo('lo1'));
@@ -369,17 +392,19 @@ classdef MainInteractiveMap
         end
         
         function create_random_data_simulations_menu(obj,parent)
-            submenu  =   uimenu(parent,'Label','Random data simulations');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','global ZG; [ZG.a] = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
+            submenu  =   uimenu(parent,'Label','Random data simulations',...
+                'Enable','off');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.a = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','global ZG; [ZG.a] = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
+                'Callback','ZG.a = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
             uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
             uimenu(submenu,'Label','Info on synthetic catalogs','Callback',@(~,~)web(['file:' hodi '/zmapwww/syntcat.htm']));
         end
         function create_mapping_rate_changes_menu(obj,parent)
-            submenu  =   uimenu(parent,'Label','Mapping rate changes');
+            submenu  =   uimenu(parent,'Label','Mapping rate changes',...
+                'Enable','off');
             uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz('in'));
             
             uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr('in'));
@@ -393,30 +418,51 @@ classdef MainInteractiveMap
         function create_map_ab_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
-            uimenu(submenu,'Label','Calc a Mc, a- and b-value map',...
-                'Callback', @(~,~)bvalgrid('in'));
-            uimenu(submenu,'Label','Calc a differential b-value map (const R)',...
-                'Callback', @(~,~)bvalmapt('in'));
+            
+            tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
+            uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback', @(~,~)bvalgrid('lo')); %map-view
+            
+            tmp=uimenu(submenu,'Label','differential b-value map (const R)');
+            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bvalmapt());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback', @(~,~)bvalmapt('lo'));
+            
             uimenu(submenu,'Label','Calc a b-value cross-section',...
                 'Callback', @(~,~)nlammap());
-            uimenu(submenu,'Label','Calc 3D  b-value distribution','Callback', @(~,~)bgrid3dB('i1'));
-            uimenu(submenu,'Label','Calc b-value depth ratio grid','Callback', @(~,~)bdepth_ratio('in'));
-            uimenu(submenu,'Label','Load a b-value grid (map-view)','Callback', @(~,~)bvalgrid('lo'));
-            %RZ
-            uimenu(submenu,'Label','Load a differential b-value grid','Callback',@(~,~)bvalmapt('lo'))
-            %RZ
-            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)','Callback',@(~,~)bcross('lo'))
+            
+            tmp=uimenu(submenu,'Label','b-value depth ratio grid');
+            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bdepth_ratio());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback', @(~,~)bdepth_ratio('lo'));
+            
+            uimenu(submenu,'Label','Calc 3D b-value distribution','Callback', @(~,~)bgrid3dB());
+            
+            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
+                'Enable','off',...
+                'Callback',@(~,~)bcross('lo'));
             uimenu(submenu,'Label','Load a 3D b-value grid',...
-                'Callback',@(~,~)myslicer('load')); %also had "sel='no'"
-            uimenu(submenu,'Label','Load a b-value depth ratio grid','Callback',@(~,~)bdepth_ratio('lo'))
+                'Enable','off',...
+                'Callback',@(~,~)myslicer('load')); %also had "sel = 'no'"
         end
         
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
-            uimenu(submenu,'Label','Calculate p and b-value map','Callback',@(~,~)bpvalgrid('in'));
-            uimenu(submenu,'Label','Load existing p and b-value map','Callback',@(~,~)bpvalgrid('lo'));
-            uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)','Callback',@(~,~)rcvalgrid_a2('in'));
-            uimenu(submenu,'Label','Load existing  Rate change, p-,c-,k-value map (MLE)','Callback',@(~,~)rcvalgrid_a2('lo'));
+            tmp=uimenu(submenu,'Label','p- and b-value map');
+            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...'
+                'Callback', @(~,~)bpvalgrid('lo'));
+            
+            tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
+            uimenu(tmp,'Label','Calculate','Callback',  @(~,~)rcvalgrid_a2());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback',  @(~,~)rcvalgrid_a2('lo'));
         end
         
         function create_quarry_detection_menu(obj,parent)
@@ -438,7 +484,8 @@ classdef MainInteractiveMap
         
         
         function create_decluster_menu(obj,parent)
-            submenu = uimenu(parent,'Label','Decluster the catalog');
+            submenu = uimenu(parent,'Label','Decluster the catalog',...
+                'Enable','off');
             uimenu(submenu,'Label','Decluster using Reasenberg','Callback',@(~,~)inpudenew());
             uimenu(submenu,'Label','Decluster using Gardner & Knopoff','Callback',@(~,~)declus_inp());
         end
@@ -789,7 +836,7 @@ classdef MainInteractiveMap
             % DisplayName: Events > M [something]
             % Tag: 'mainmap_big_events'
             
-            % TODO: dump the global reference, and maybe make ZG.maepi a view into the catalog
+            % TODO: maybe make ZG.maepi a view into the catalog
             
             persistent big_events defaults textdefaults
             ZG=ZmapGlobal.Data;

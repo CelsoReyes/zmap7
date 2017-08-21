@@ -6,13 +6,10 @@ function view_ratecomp(det,re3)
     % define size of the plot etc.
     %
     % INPUT VARIABLES: det, re3
-    
-    if isempty(name)
-        name = '  '
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
-    co = 'w';
+    ZG.someColor = 'w';
     clear title;
     
     % Find out if figure already exists
@@ -69,13 +66,10 @@ function view_ratecomp(det,re3)
     hold on
     pco1 = pcolor(gx,gy,re3);
     axis([ s2 s1 s4 s3])
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
     
-    if fre == 1
+    shading(ZG.shading_style);
+    
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -94,7 +88,7 @@ function view_ratecomp(det,re3)
     % plot overlay
     %
     update(mainmap())
-    %set(ploeq,'MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'visible',vi);
+    %set(ploeq,'MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'visible','on');
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -337,7 +331,7 @@ function view_ratecomp(det,re3)
     function callbackfun_018(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        sha='fl';
+        ZG.shading_style='flat';
         axes(hzma);
         shading flat;
     end
@@ -345,7 +339,7 @@ function view_ratecomp(det,re3)
     function callbackfun_019(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        sha='in';
+        ZG.shading_style='interp';
         axes(hzma);
         shading interp;
     end

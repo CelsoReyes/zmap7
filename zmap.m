@@ -5,7 +5,7 @@
 %  Stefan Wiemer  12/94
 %  Modified by Celso Reyes Spring/Summer 2017
 
-global sys
+global sys ZG
 %system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 
@@ -35,7 +35,7 @@ end
 % set some initial variables
 ini_zmap
 
-
+%{
 %Create the 5 data categories
 main = [];
 mainfault = [];
@@ -43,6 +43,7 @@ coastline = [];
 well = [];
 stat = [];
 faults = [];
+%}
 
 %{
 % Almost all zmap routine's calls to th uicontrol do so in the following order:

@@ -75,10 +75,8 @@ length(newt2_forecast)
 messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
-% Sort by time
-[st,ist] = sort(ZG.newt2);
-ZG.newt2 = ZG.newt2(ist(:,3),:);
 
+ZG.newt2.sort('Date');
 % Set limiting radius to plot
 R2 = fMaxDist;
 

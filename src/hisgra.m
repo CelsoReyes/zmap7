@@ -6,7 +6,6 @@ function hisgra(mycat, opt)
     %modified by Reyes 2017
     
     global histo hisvar strii1 strii2
-    catname=mycat.Name;
     
     try
         [vari1, bins] = get_histparams(opt);
@@ -50,7 +49,7 @@ function hisgra(mycat, opt)
     histogram(vari1, bins);
     h=findobj(histo,'Type','histogram');
     
-    titlestr = [stri2, stri1, ' : ', catname];
+    titlestr = [stri2, stri1, ' : ', mycat.Name];
     
     th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
     th.Interpreter='none';

@@ -42,10 +42,6 @@ function view_Omoricross(lab1, re3)
     
     myFigName='Omoricros-section';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
-
-    if isempty(name)
-        name = '  '
-    end
     
     think
     report_this_filefun(mfilename('fullpath'));
@@ -68,10 +64,10 @@ function view_Omoricross(lab1, re3)
         create_my_menu();
         
         %re3 = pvalg;
-        tresh = nan;
+        ZG.tresh_km = nan;
 
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
     end   % This is the end of the figure setup.
     
     % Plot the cross section
@@ -107,15 +103,10 @@ function view_Omoricross(lab1, re3)
     axis image
     hold on
     
-    % Shading
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    shading(ZG.shading_style)
     
     %If the colorbar is freezed.
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -131,7 +122,7 @@ function view_Omoricross(lab1, re3)
     hold on
     [nYnewa,nXnewa] = size(newa);
     ploeq = plot(newa(:,nXnewa),-newa(:,7),'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
@@ -264,7 +255,6 @@ function view_Omoricross(lab1, re3)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state2=true;
-        ZG=ZmapGlobal.Data;
         ZG.hold_state=true;
         plot_constnrbootfit_a2;
         watchoff(hOmoricross);

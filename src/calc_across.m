@@ -22,8 +22,6 @@ function calc_across(sel)
     
     report_this_filefun(mfilename('fullpath'));
     
-    global no1 bo1 inb1 inb2
-    
     % Do we have to create the dialogbox?
     if sel == 'in'
         % Set the grid parameter
@@ -154,7 +152,7 @@ function calc_across(sel)
         
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.60 .05 .15 .10], ...
-            'Callback', 'inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across(sel)',...
+            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across(sel)',...
             'String', 'OK');
         
         % Labels
@@ -189,7 +187,7 @@ function calc_across(sel)
         
         set(gcf,'visible','on');
         watchoff
-    end   % if sel == in
+    end
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -290,8 +288,8 @@ function calc_across(sel)
         
         
         % overall b-value
-        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-        bo1 = bv; no1 = newa.Count;
+        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,ZG.inb1);
+        ZG.bo1 = bv; no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
             x = newgri(i,1);y = newgri(i,2);
@@ -325,7 +323,7 @@ function calc_across(sel)
             
             if length(b) >= Nmin  % enough events?
                 
-                if inb1 == 1;   % Calculation ofa-value by const b-value, and Mc
+                if ZG.inb1 == 1;   % Calculation ofa-value by const b-value, and Mc
                     bv2 = fFixbValue;           % read fixed bValue to the bv2
                     magco=calc_Mc(b, 1, 0.1);
                     l = b.Magnitude >= magco-0.05;
@@ -339,8 +337,8 @@ function calc_across(sel)
                     end
                     
                     % a(0) for Mc(MAxCurv) + Mc(Corr)
-                elseif inb1 == 2
-                    [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
+                elseif ZG.inb1 == 2
+                    [bv magco stan av me mer me2,  pr] =  bvalca3(b,1);
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin
@@ -349,7 +347,7 @@ function calc_across(sel)
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end
                     
-                elseif inb1 == 3; % a(0) for Mc(EMR)
+                elseif ZG.inb1 == 3; % a(0) for Mc(EMR)
                     [magco, bv2, faValue, stan2, stan] = calc_McEMR(b, 0.1);
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin
@@ -358,10 +356,10 @@ function calc_across(sel)
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end
                     
-                elseif inb1 == 4
+                elseif ZG.inb1 == 4
                     % a(0) by r1 and Mc by r2
                     if length(b) >= Nmin
-                        [bv magco stan av me mer me2,  pr] =  bvalca3(b,1,1);
+                        [bv magco stan av me mer me2,  pr] =  bvalca3(b,1);
                         magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                         bv2 = fFixbValue;
                         l = bri(:,6) >= magco-0.05;
@@ -402,16 +400,11 @@ function calc_across(sel)
         drawnow
         gx = xvect;gy = yvect;
         
-        catSave3 =...
-            [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-            '[file1,path1] = uiputfile([ ''*.mat''], ''Grid Datafile Name?'') ;',...
-            'sapa2=[''save '' path1 file1 '' ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg xvect yvect gx gy dx dd ZG.bin_days newa maex maey maix maiy ''];',...
-            ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
-        
+        catsave3('calc_across');
         close(wai)
         watchoff
         
-        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  avg ra xvect yvect gx gy dx dd ZG.bin_days newa ;
+        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 ZG.xsec_width_km  avg ra xvect yvect gx gy dx dd ZG.bin_days newa ;
         
         
         % reshape a few matrices
@@ -448,7 +441,7 @@ function calc_across(sel)
         % View thea-value map
         view_av2
         
-    end   %  if sel = ca
+    end
     
     % Load exist b-grid
     if sel == 'lo'
@@ -490,7 +483,7 @@ function calc_across(sel)
             re3 = aValueMap;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             plot(newgri(:,1),newgri(:,2),'+k','era','back')
@@ -504,7 +497,7 @@ function calc_across(sel)
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inb2=hndl2.Value;
+        ZG.inb2=hndl2.Value;
         ;
     end
     

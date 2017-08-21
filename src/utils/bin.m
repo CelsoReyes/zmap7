@@ -31,8 +31,6 @@ function [i, nnbins] = bin(x, dx, x0, x1)
     end
     nbins = round((x1 - x0)/dx) + 1;
     i = round((x - x0)/dx) + 1;
-    %in = (i >= 1) & (i <= nbins); % Indices are within range [1, nbins].
-    %i = i(in);
 
     if nargout > 1
         nnbins = nbins;

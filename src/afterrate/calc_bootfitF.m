@@ -1,5 +1,5 @@
-function [output] = calc_bootfitF(mycat,time,timef,bootloops,ZG.maepi)
-    % function [output] = calc_bootfitF(mycat,time,timef,bootloops,ZG.maepi);
+function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
+    % function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi);
     % --------------------------------------------------
     % Plots Ncum observed vs. Ncum modeled for specified time windows
     %

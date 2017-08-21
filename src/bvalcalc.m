@@ -31,13 +31,8 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     i2 = round(i/3);
     i = i ;
     magco = max(xt3(i));
-    
-    par2 = 0.1 * max(bvalsum3);
-    par3 = 0.12 * max(bvalsum3);
-    M1b = [];
+
     M1b = [xt3(i) bvalsum3(i)];
-    
-    M2b = [];
     M2b =  [xt3(i2) bvalsum3(i2)];
     
     l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);

@@ -5,18 +5,11 @@ function view_rccross_a2(lab1,re3)
     %
     % define size of the plot etc.
     
-    if isempty(name)
-        name = '  '
-    end
     think
     report_this_filefun(mfilename('fullpath'));
 
     myFigName='RC-Cross-section';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
-
-    %co = 'w';
-    
-    
     
     % This is the info window text
     %
@@ -81,10 +74,10 @@ function view_rccross_a2(lab1,re3)
         create_my_menu();
         
         %re3 = pvalg;
-        tresh = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = re3;
         
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
     end   % This is the end of the figure setup.
     
     % Now lets plot the color-map!
@@ -122,11 +115,8 @@ function view_rccross_a2(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    shading(ZG.shading_style);
+    
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
         l = isnan(re3);
@@ -136,7 +126,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     %If the colorbar is freezed.
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -152,9 +142,7 @@ function view_rccross_a2(lab1,re3)
     hold on
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
-    
-    
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...

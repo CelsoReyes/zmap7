@@ -8,9 +8,7 @@ function bcrossVt2(sel)
     %   Stefan Wiemer 1/95
     
     report_this_filefun(mfilename('fullpath'));
-    
-    global no1 bo1 inb1 inb2
-    
+
     if sel == 'in'
         % get the grid parameter
         % initial values
@@ -133,8 +131,7 @@ function bcrossVt2(sel)
         
         set(gcf,'visible','on');
         watchoff
-        
-    end   % if sel == in
+    end
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -224,8 +221,8 @@ function bcrossVt2(sel)
         
         
         % overall b-value
-        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,inb1,inb2);
-        bo1 = bv;
+        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,ZG.inb1);
+        ZG.bo1 = bv;
         no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
@@ -247,15 +244,15 @@ function bcrossVt2(sel)
                 % call the b-value function
                 lt =  b.Date >= t1 &  b.Date <t2 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),inb1,inb2);
-                    bo1 = bv;
+                    [bv magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),ZG.inb1);
+                    ZG.bo1 = bv;
                     no1 = newa.Count;
                 else
                     bv = NaN; pr = 50;
                 end
                 lt = b.Date >= t3 &  b.Date < t4 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv2 magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),inb1,inb2);
+                    [bv2 magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),ZG.inb1);
                 else
                     bv2 = NaN; pr = 50;
                 end
@@ -277,11 +274,7 @@ function bcrossVt2(sel)
         drawnow
         gx = xvect;gy = yvect;
         
-        catSave3 =...
-            [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-            '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
-            ' sapa2 = [''save '' path1 file1 '' ll tmpgri bvg xvect yvect gx gy ni dx dd ZG.bin_days ni newa maex maey maix maiy ''];',...
-            ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
+        catsave3('bcrossVt2');
         %corrected window postioning error
         close(wai)
         watchoff
@@ -327,7 +320,7 @@ function bcrossVt2(sel)
         % View the b-value map
         view_bvt([],re3)
         
-    end   %  if sel = ca
+    end
     
     % Load exist b-grid
     if sel == 'lo'
@@ -338,13 +331,13 @@ function bcrossVt2(sel)
     function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inb2=hndl2.Value;
+        ZG.inb2=hndl2.Value;
     end
     
     function callbackfun_002(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inb1=hndl1.Value;
+        ZG.inb1=hndl1.Value;
     end
     
     function callbackfun_003(mysrc,myevt)
@@ -378,8 +371,8 @@ function bcrossVt2(sel)
     function callbackfun_007(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inb1=hndl1.Value;
-        inb2=hndl2.Value;
+        ZG.inb1=hndl1.Value;
+        ZG.inb2=hndl2.Value;
         close;
         sel ='ca';
         bcrossVt2(sel);

@@ -5,13 +5,11 @@ function view_xstress(lab1,re3)
     %
     % last modified: J. Woessner, 02.2004
     if isempty(lab1); lab1='';end; %CR
-    if isempty(name)
-        name = '  ';
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
     % Color shortcut
-    co = 'w';
+    ZG.someColor = 'w';
     
     % Find out if figure already exists
     stressmap=findobj('Type','Figure','-and','Name','Stress-section');
@@ -29,9 +27,9 @@ function view_xstress(lab1,re3)
         create_my_menu();
         
         re4 = re3;
-        
+
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan;
         
     end   % This is the end of the figure setup
     
@@ -65,27 +63,20 @@ function view_xstress(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+
+    shading(ZG.shading_style);
     
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
-    
-    
-    % title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
-    %     'Color','r','FontWeight','bold')
-    
+
     xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
     % plot overlay
     %
     ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
-    set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     if exist('vox', 'var')
         plovo = plot(vox,voy,'*b');

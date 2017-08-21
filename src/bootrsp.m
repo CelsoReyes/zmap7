@@ -1,10 +1,10 @@
-function[out]=bootrsp(in,B)
-    %   out=bootrsp(in,B)
+function[out]=bootrsp(indata,B)
+    %   out=bootrsp(indata,B)
     %
     %   Bootstrap  resampling  procedure.
     %
     %     Inputs:
-    %        in - input data
+    %        indata - input data
     %         B - number of bootstrap resamples (default B=1)
     %     Outputs:
     %       out - B bootstrap resamples of the input data
@@ -36,20 +36,20 @@ function[out]=bootrsp(in,B)
     %               mentations. pp. 216-235, San Diego, July  1993.
     %
     %  Zoubir, A.M. and Boashash, B. The Bootstrap and Its Application
-    %               in Signal Processing. IEEE Signal Processing Magazine,
+    %               indata Signal Processing. IEEE Signal Processing Magazine,
     %               Vol. 15, No. 1, pp. 55-76, 1998.
     
     if ~exist('B','var'), B=1;  end
-    if ~exist('in','var'), error('Provide input data'); end
+    if ~exist('indata','var'), error('Provide input data'); end
     
-    s=size(in);
+    s=size(indata);
     if length(s)>2
         error('Input data can be a vector or a 2D matrix only');
     end
     if min(s)==1
-        out=in(ceil(max(s)*rand(max(s),B)));
+        out=indata(ceil(max(s)*rand(max(s),B)));
     else
-        out=in(ceil(s(1)*s(2)*rand(s(1),s(2),B)));
+        out=indata(ceil(s(1)*s(2)*rand(s(1),s(2),B)));
     end
 end
 

@@ -50,8 +50,7 @@ if ic == 1 % select N closest events
     % take first ni and sort by time
     %
     ZG.newt2 = ZG.newt2(1:ni,:);
-    [st,ist] = sort(ZG.newt2);
-    ZG.newt2 = ZG.newt2(ist(:,3),:);
+    ZG.newt2.sort('Date');
     %
     % plot Ni closest events on map as 'x':
 
@@ -93,8 +92,7 @@ if ic == 2 % select events within ra
     % take first ni and sort by time
     %
     ZG.newt2 = ZG.newt2(ll,:);
-    [st,ist] = sort(ZG.newt2);
-    ZG.newt2 = ZG.newt2(ist(:,3),:);
+    ZG.newt2.sort('Date');
     %
     % plot Ni closest events on map as 'x':
 
@@ -136,8 +134,7 @@ if ic == 3 % select N closest events
     % take first ni and sort by time
     %
     ZG.newt2 = ZG.newt2(1:ni,:);
-    %[st,ist] = sort(ZG.newt2);
-    %ZG.newt2 = ZG.newt2(ist(:,3),:);
+    %ZG.newt2.sort('Date');
     %
     % plot Ni clostest events on map as 'x':
 

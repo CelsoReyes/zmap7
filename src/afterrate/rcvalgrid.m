@@ -15,7 +15,7 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 report_this_filefun(mfilename('fullpath'));
 
 
-global bo1 inb1 inb2 valeg CO valm1
+global valeg CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
 valm1 = min(ZG.a.Magnitude);
@@ -405,13 +405,8 @@ if sel == 'ca'
     end  % for newgr
 
     % Save the data to rcval_grid.mat
-    save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll ra time timef bootloops ZG.maepi
     disp('Saving data to rcval_grid.mat in current directory')
-    %     catSave3 =...
-    %         [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-    %             '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
-    %             ' sapa2 = [''save '' path1 file1 '' mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll bo1 newgri gll''];',...
-    %             ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
+    save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll ra time timef bootloops ZG.maepi
 
     close(wai)
     watchoff
@@ -468,7 +463,7 @@ if sel == 'ca'
     % View the b-value and p-value map
     view_rcva(lab1,re3)
 
-end   % if sel = na
+end
 
 % Load exist b-grid
 if sel == 'lo'
@@ -544,14 +539,14 @@ end
 function callbackfun_001(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  inb2=hndl2.Value;
+  ZG.inb2=hndl2.Value;
    ;
 end
  
 function callbackfun_002(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  inb2=hndl2.Value;
+  ZG.inb2=hndl2.Value;
    ;
 end
  
@@ -665,7 +660,7 @@ end
 function callbackfun_018(mysrc,myevt)
   % automatically created callback function from text
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-   inb1=hndl2.Value;
+   ZG.inb1=hndl2.Value;
   tgl1=tgl1.Value;
   tgl2=tgl2.Value;
   prev_grid=prev_grid.Value;

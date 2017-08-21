@@ -118,8 +118,8 @@ function [zzgrid, xxvec, yyvec] = ffgrid(x, y, z, dx, dy, xyz0)
     inx = (ix >= 1) & (ix <= nx);
     iny = (iy >= 1) & (iy <= ny);
     inz = (z >= z0) & (z <= z1);
-    in = (inx & iny & inz);
-    ix = ix(in); iy = iy(in); z = z(in);
+    idx = (inx & iny & inz);
+    ix = ix(idx); iy = iy(idx); z = z(idx);
     N = length(ix); % how many datapoints are left now?
 
     ngrid = zeros(nx, ny); % no of obs per grid cell

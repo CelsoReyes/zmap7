@@ -9,14 +9,9 @@ function view_varmap(lab1,re3)
     if ~exist('Prmap','var') || isempty(Prmap)
         Prmap = nan(size(re3);
     end
-    
-    if isempty(name)
-        name = '  ';
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
-    %co = 'w';
-    
     
     % Find out if figure already exists
     %
@@ -41,7 +36,7 @@ function view_varmap(lab1,re3)
         re4 = re3;
         
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan;
         
     end   % This is the end of the figure setup
     
@@ -68,7 +63,7 @@ function view_varmap(lab1,re3)
     ZG.minc = min(min(re3));
     ZG.minc = fix(ZG.minc)-1;
     
-    % set values gretaer tresh = nan
+    % set values gretaer ZG.tresh_km = nan
     %
     re4 = re3;
     
@@ -85,14 +80,12 @@ function view_varmap(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    
+    shading(ZG.shading_style);
+
     % make the scaling for the recurrence time map reasonable
     
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     

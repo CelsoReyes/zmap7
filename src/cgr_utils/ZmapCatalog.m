@@ -289,13 +289,15 @@ classdef ZmapCatalog < handle
         end
         
         function sort(obj, field, direction)
-            % sort this object by the field specified
+            % sort this object by the field specified (IN PLACE)
             % obj.sort(field), where field is a valid ZmapCatalog property
             %
             % obj.sort(field, direction), where direction is 'ascend' or 'descend'
             % ex.
             % obj.sort('Date')
             % sortBy (fieldname)
+            %
+            % modifies original
             if ~isprop(obj, field)
                 error('%s is not a valid property of a ZmapCatalog',field);
             end
@@ -316,6 +318,51 @@ classdef ZmapCatalog < handle
             obj.Filter = obj.Filter(idx) ;
         end
         
+        function other=sortedByDistanceTo(obj, lat, lon, depth)
+            % ans=obj.sortedByDistanceTo(lat, lon) % epicentral sort
+            % ans=obj.sortedBYDistanceTo(lat, lon) % hypocentral sort to surface
+            % 
+            % does NOT modify original
+            if ~exist('depth','var')
+                dists= obj.epicentralDistanceTo(lat, lon);
+            else
+                dists= obj.hypocentralDistanceTo(lat, lon, depth);
+            end
+            [~,idx]=sort(dists);
+            other=obj.subset(idx);
+        end
+        
+        function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
+            % closestEvents determine which N events are closest to a point (lat,lon, depth).
+            % for hypocentral distance, leave depth empty.
+            %  ex.  closestEvents(mycatalog, 82,-120,[],20);
+            % the distance to the nth closest event
+            %
+            if isempty(depth)
+                dists_km = obj.epicentralDistanceTo(lat, lon);
+            else
+                dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
+            end
+            
+            % find nth closest by grabbing from the sorted distances
+            sorted_dists = sort(dists_km);
+            n = min(n, numel(sorted_dists));
+            max_km = sorted_dists(n);
+            mask = dists_km <= max_km;
+            other = obj.subset(mask);
+        end
+        
+        function other = selectRadius(obj, lat, lon, dist_km)
+            % select subset catalog to an epicentral radius from a point. sortorder is preserved
+            % catalog = obj.selectRadius(lat, lon, dist_km)
+            
+            dists_km = catalog.epicentralDistanceTo(lat, lon);
+            mask = dists_km <= radius_km;
+            % furthest_event_km = max(dists_km(mask));
+            other = obj.subset(mask);
+        end
+        
+        
         function obj = subset(existobj, range)
             % subset get a subset of this object
             % newobj = obj.subset(mask) where mask is a t/f array matching obj.Count
@@ -323,6 +370,7 @@ classdef ZmapCatalog < handle
             % newobj = obj.subset(range), where range evaluates to an integer array
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
+            
             
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime

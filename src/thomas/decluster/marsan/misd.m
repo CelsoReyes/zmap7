@@ -48,10 +48,10 @@ calc_misdMcorr(mCat,'CORRECT.DAT');
 % save ~/zmap/src/thomas/decluster/marsan/misd_input.dat mCat -ascii
 
 % write input file (input.cmn)
-% in=fopen('input.cmn','w');
-% fprintf(in,'CA.hypo71\n4\n%2s\n%2s\n%3.1f\n%06.3f\n%08.3f\n%010.2f\n%010.2f\n%05.2f\n%05.2f',...
+% infile=fopen('input.cmn','w');
+% fprintf(infile,'CA.hypo71\n4\n%2s\n%2s\n%3.1f\n%06.3f\n%08.3f\n%010.2f\n%010.2f\n%05.2f\n%05.2f',...
 %     sYr1,sYr2,fXmeff,fRfact,fTau0,fTaumin,fTaumax,fP1,fXk);
-% fclose(in);
+% fclose(infile);
 % run misd algorithm of Marsan2007
 sPath=pwd;
 cd ~/zmap/src/thomas/decluster/marsan

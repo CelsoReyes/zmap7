@@ -131,7 +131,7 @@ if sel == 'in'
     set(gcf,'visible','on');
     watchoff
 
-end   % if sel == in
+end
 
 % get the grid-size interactively and
 % calculate the b-value in the grid by sorting
@@ -262,7 +262,7 @@ if sel == 'ca'
         if length(b) >= ni  % enough events?
 
             dtokm = 0;
-            [bv magco0 stan av me mer me2,  pr] =  bvalca3(b,1,1);
+            [bv magco0 stan av me mer me2,  pr] =  bvalca3(b,1);
 
 
             if range == 1 | range == 2
@@ -304,11 +304,7 @@ if sel == 'ca'
     drawnow
     gx = xvect;gy = yvect;
 
-    catSave3 =...
-        [ 'zmap_message_center.set_info(''Save Grid'',''  '');think;',...
-        '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Grid Datafile Name?'') ;',...
-        'sapa2=[''save '' path1 file1 '' ll a tmpgri newgri lat1 lon1 lat2 lon2 wi  bvg xvect yvect gx gy dx dd ZG.bin_days newa maex maey maix maiy''];',...
-        ' if length(file1) > 1, eval(sapa2),end , done']; eval(catSave3)
+    catsave3('Dcross');
     %corrected the window positioning error
     close(wai)
     watchoff
@@ -332,7 +328,7 @@ if sel == 'ca'
     % View the b-value map
     view_Dv
 
-end   %  if sel = ca
+end
 
 % Load exist D-grid
 if sel == 'lo'
@@ -356,7 +352,7 @@ if sel == 'lo'
         old = re3;
 
         nlammap
-        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,wi,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
         plot(newgri(:,1),newgri(:,2),'+k','era','back')

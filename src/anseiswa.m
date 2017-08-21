@@ -68,7 +68,7 @@ function anseiswa(action, ds)
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
-            bv = bvalca3(ZG.newt2,1,1);
+            bv = bvalca3(ZG.newt2,1);
             set(findobj('Tag','plb'),'Xdata',xt3,'Ydata',bvalsum3);
             
             % set circle containing events as circle
@@ -115,14 +115,13 @@ function anseiswa(action, ds)
                 ZG.newt2 = ZG.newt2(1:ni,:);      % new data per grid point (b) is sorted in distance
                 l2 = sort(l); Rjma = l2(ni);
             end
-            [st,ist] = sort(ZG.newt2);   % re-sort wrt time for cumulative count
-            ZG.newt2 = ZG.newt2(ist(:,3),:);
+            ZG.newt2.sort('Date');
             set(findobj('Tag','tiplo1'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
             set(xc1,'era','normal')
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
-            bv = bvalca3(ZG.newt2,1,1);
+            bv = bvalca3(ZG.newt2,1);
             set(findobj('Tag','plb2'),'Xdata',xt3,'Ydata',bvalsum3);
             
             % set circle containing events as circle
@@ -131,21 +130,14 @@ function anseiswa(action, ds)
             ycir = y+cos(xx)*Rjma/(cosd(y)*111);
             set(findobj('Tag','plc2'),'Xdata',xcir,'Ydata',ycir);
             set(findobj('Tag','teb1'),'string',['b-value: ' num2str(bv,3)]);
-        case 'samp1' %V1
             
+        case 'samp1' %V1
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            l=ZG.a.hypocentralDistanceTo(x,y,z); %km
-            [~,is] = sort(l);
-            ZG.newt2 = ZG.a.subset(is) ;       % re-orders matrix to agree row-wise
-            ZG.newt2 = ZG.newt2.subset(1:ni);
+            ZG.newt2 = ZG.a.selectClosestEvents(y,x,z,ni);
             
         case 'samp2'
-            
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            l=ZG.a.hypocentralDistanceTo(x,y,z); %km
-            [~,is] = sort(l);
-            ZG.newt2 = ZG.a.subset(is) ;       % re-orders matrix to agree row-wise
-            ZG.newt2 = ZG.newt2.subset(1:ni);
+            ZG.newt2 = ZG.a.selectClosestEvents(y,x,z,ni);
             
     end  % switch
 end

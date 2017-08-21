@@ -95,8 +95,6 @@ function bfitnew(mycat)
     
     pause(1)
     
-    par2 = 0.1 * max(bvalsum3);
-    par3 = 0.12 * max(bvalsum3);
     M1b = [];
     M1b = ginput(1);
     tt3=num2str(fix(100*M1b(1))/100);

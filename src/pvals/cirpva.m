@@ -39,17 +39,13 @@ pause(0.1)
 
 if met == 'ni'
     % take first ni and sort by time
-    [mask, max_rad] = closestEvents(ZG.a, ya0, xa0, [], ni);
-    ZG.newt2 = ZG.a.subset(mask);
+    [ZG.newt2, max_rad] = ZG.a.selectClosestEvents(ya0, xa0, [], ni);
     messtext = ['Radius of selected Circle:' num2str(maxrad)  ' km' ];
     disp(messtext)
-    zmap_message_center.set_message('Message',messtext)
 elseif  met == 'ra'
-    mask = eventsInRadius(ZG.a, ya0, xa0, ra);
-    ZG.newt2 = ZG.a.subset(mask);
+    ZG.newt2 = ZG.a.selectRadius(ya0, xa0, ra);
     messtext = ['Number of selected events: ' num2str(ZG.newt2.Count())  ];
     disp(messtext)
-    zmap_message_center.set_message('Message',messtext)
 elseif met == 'ti'
     global t1 t2 t3 t4
     ZG.newt2 = ZG.a;

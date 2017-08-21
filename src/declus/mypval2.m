@@ -27,7 +27,7 @@ function [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(var1, mati)
     global backcat ttcat cluscat
    global  sys clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
-    global xt par3 cumu cumu2
+    global xt cumu cumu2
     global close_p_button pplot
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global h2 cplot Info_p close_p print_p

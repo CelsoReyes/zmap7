@@ -5,9 +5,7 @@ function view_bvtmap(lab1,re3)
     %
     % define size of the plot etc.
     %
-    if isempty(name)
-        name = '  '
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
     
@@ -38,10 +36,10 @@ function view_bvtmap(lab1,re3)
         create_my_menu();
         
         
-        tresh = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = re3;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .04],'backgroundcolor','w');
         set(nilabel2,'string','Min Probability:');
-        set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
+        set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
             'background','y');
         set(set_ni2,'callback',@callbackfun_021)
         set(set_ni2,'units','norm','pos',[.85 .92 .08 .04],'min',0.01,'max',10000);
@@ -77,10 +75,10 @@ function view_bvtmap(lab1,re3)
     ZG.minc = min(min(re3));
     ZG.minc = fix(ZG.minc)-1;
     
-    % set values gretaer tresh = nan
+    % set values gretaer ZG.tresh_km = nan
     %
     re4 = re3;
-    l = pro < tresh;
+    l = pro < ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     
     % plot image
@@ -95,11 +93,9 @@ function view_bvtmap(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    
+    shading(ZG.shading_style);
+
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
         l = isnan(re3);
@@ -107,7 +103,7 @@ function view_bvtmap(lab1,re3)
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -123,7 +119,7 @@ function view_bvtmap(lab1,re3)
     hold on
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     
     
@@ -397,8 +393,8 @@ function view_bvtmap(lab1,re3)
     function callbackfun_021(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tresh=str2double(set_ni2.String);
-        set_ni2.String=num2str(tresh);
+        ZG.tresh_km=str2double(set_ni2.String);
+        set_ni2.String=num2str(ZG.tresh_km);
     end
     
     function callbackfun_022(mysrc,myevt)

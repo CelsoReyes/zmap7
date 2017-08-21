@@ -6,10 +6,7 @@ function view_bpva(lab1,re3)
     %
     
     %TODO fix this, it broke when turned into a function.
-    
-    if isempty(name)
-        name = '  ';
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
     
@@ -89,11 +86,11 @@ function view_bpva(lab1,re3)
         
         
         %re3 = pvalg;
-        tresh = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = re3;
         oldfig_button = true;
         
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan; minsd = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
         
     end   % This is the end of the figure setup.
     
@@ -119,10 +116,10 @@ function view_bpva(lab1,re3)
     ZG.minc = min(min(re3));
     ZG.minc = fix(ZG.minc)-1;
     
-    % set values greater tresh = nan
+    % set values greater ZG.tresh_km = nan
     %
     re4 = re3;
-    l = r > tresh;
+    l = r > ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     l = Prmap < minpe;
     re4(l) = nan(1,length(find(l)));
@@ -145,11 +142,9 @@ function view_bpva(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    
+    shading(ZG.shading_style);
+
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
         l = isnan(re3);
@@ -159,7 +154,7 @@ function view_bpva(lab1,re3)
     end
     
     %If the colorbar is freezed.
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -175,7 +170,7 @@ function view_bpva(lab1,re3)
     hold on
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     
     

@@ -72,7 +72,7 @@ function incube()
         'Position',[0. 0.42 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
-        'String','Time length of iwl in years');
+        'String','Time length of winlen_days in years');
     
     txt6 = text(...
         'Position',[0. 0.20 0 ],...
@@ -111,7 +111,7 @@ function incube()
         abo=[];
         
         % initial parameter
-        iwl = floor(ZG.compare_window_yrs* 365/ZG.bin_days);
+        winlen_days = floor(ZG.compare_window_yrs* 365/ZG.bin_days);
         [len, ncu] = size(cumuall); len = len-2;
         var1 = zeros(1,ncu);
         var2 = zeros(1,ncu);
@@ -136,19 +136,19 @@ function incube()
         n2 = zeros(1,length(-15:0.1:15));
         if sta == 'lta'
             
-            for ti = iwl:step:len-iwl
-                cu = [cumuall(1:ti-1,:) ; cumuall(ti+iwl+1:len,:)];
+            for ti = winlen_days:step:len-winlen_days
+                cu = [cumuall(1:ti-1,:) ; cumuall(ti+winlen_days+1:len,:)];
                 mean1 = mean(cu);
-                mean2 = mean(cumuall(ti:ti+iwl,:));
+                mean2 = mean(cumuall(ti:ti+winlen_days,:));
                 for i = 1:ncu
                     var1(i) = cov(cu(:,i));
-                    var2(i) = cov(cumuall(ti:ti+iwl,i));
+                    var2(i) = cov(cumuall(ti:ti+winlen_days,i));
                 end     % for i
-                as = (mean1 - mean2)./(sqrt(var1/(len-iwl)+var2/iwl));
+                as = (mean1 - mean2)./(sqrt(var1/(len-winlen_days)+var2/winlen_days));
                 [m,n] = size(as);
                 reall = reshape(as,1,m*n);
                 
-                % set values gretaer tresh = nan
+                % set values gretaer ZG.tresh_km = nan
                 %
                 %s = cumuall(len,:);
                 %r = reshape(as,length(gy),length(gx));
@@ -158,25 +158,25 @@ function incube()
                 abo = [abo ;  s];
                 [n,x] =histogram(reall,(-15:0.10:15));
                 n2 = n2 + n;
-                waitbar((ti-iwl)/(len-2*iwl))
+                waitbar((ti-winlen_days)/(len-2*winlen_days))
             end   % for ti
         end % if lta
         
         if sta == 'rub'
-            for ti = iwl:step:len-iwl
+            for ti = winlen_days:step:len-winlen_days
                 for i = 1:ncu
                     mean1(i) = mean(cumuall(1:ti,i));
-                    mean2(i) = mean(cumuall(ti+1:ti+iwl,i));
+                    mean2(i) = mean(cumuall(ti+1:ti+winlen_days,i));
                     var1(i) = cov(cumuall(1:ti,i));
-                    var2(i) = cov(cumuall(ti+1:ti+iwl,i));
+                    var2(i) = cov(cumuall(ti+1:ti+winlen_days,i));
                 end %  for i ;
-                as = (mean1 - mean2)./(sqrt(var1/ti+var2/iwl));
+                as = (mean1 - mean2)./(sqrt(var1/ti+var2/winlen_days));
                 
                 
                 [m,n] = size(as);
                 reall = reshape(as,1,m*n);
                 
-                % set values gretaer tresh = nan
+                % set values gretaer ZG.tresh_km = nan
                 %
                 s = cumuall(len,:);
                 %r = reshape(s,length(gy),length(gx));
@@ -187,7 +187,7 @@ function incube()
                 
                 [n,x] =histogram(reall,(-15:0.10:15));
                 n2 = n2 + n;
-                waitbar((ti-iwl)/(len-2*iwl))
+                waitbar((ti-winlen_days)/(len-2*winlen_days))
             end   % for ti
         end   % if riub
         

@@ -9,13 +9,10 @@ function view_bva(lab1, re3)
     if ~exist('Prmap') || isempty(Prmap)
         Prmap = nan(size(re3));
     end
-    
-    if isempty(name)
-        name = '  '
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
-    co = 'w';
+    ZG.someColor = 'w';
     
     
     % Find out if figure already exists
@@ -39,10 +36,10 @@ function view_bva(lab1, re3)
         lab1 = 'b-value:';
         create_my_menu();
         
-        tresh = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = re3;
         
         colormap(jet)
-        tresh = nan; minpe = nan; Mmin = nan;
+        ZG.tresh_km = nan; minpe = nan; Mmin = nan;
         
     end   % This is the end of the figure setup
     
@@ -81,11 +78,9 @@ function view_bva(lab1, re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     set(gca,'dataaspect',[1 cosd(nanmean(ZG.a.Latitude)) 1]);
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
+    
+    shading(ZG.shading_style);
+
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
         l = isnan(re3);
@@ -93,7 +88,7 @@ function view_bva(lab1, re3)
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
-    if fre == 1
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -108,7 +103,7 @@ function view_bva(lab1, re3)
     hold on
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
@@ -164,7 +159,7 @@ function view_bva(lab1, re3)
         answer=inputdlg(prompt,dlgTitle,lineNo,def);
         re4 = re3;
         l = answer{1,1}; Mmin = str2double(l) ;
-        l = answer{2,1}; tresh = str2double(l) ;
+        l = answer{2,1}; ZG.tresh_km = str2double(l) ;
         l = answer{3,1}; minpe = str2double(l) ;
     end
     

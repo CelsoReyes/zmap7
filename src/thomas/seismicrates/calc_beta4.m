@@ -48,8 +48,8 @@ nEq1=sum(vR1);  % no of eq in the 1st period
 nEq2=sum(vR2);  % no of eq in the 2nd period
 nBin1=size(vR1,1); % no of bins in 1st period
 % nBin2=size(vR2,1); % no of bins in 2nd period
-iwl=fTw/days(nTbin);
-fNormInvalLength=iwl/nBin1; % normalized interval length
+winlen_days=fTw/days(nTbin);
+fNormInvalLength=winlen_days/nBin1; % normalized interval length
 
 % mBeta
 mBeta=(nEq2 - nEq1.*fNormInvalLength )./sqrt(nEq1.*fNormInvalLength.*(1-fNormInvalLength));

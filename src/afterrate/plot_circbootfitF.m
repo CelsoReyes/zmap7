@@ -24,7 +24,7 @@ messtext= ...
     ['                                                '
     '  Please use the LEFT mouse button              '
     ' to select the center point.                    '
-    ' The "ni" events nearest to this point          '
+    ' Events within radius "ra"                      '
     ' will be selected and displayed in the map.     '];
 
 zmap_message_center.set_message(titStr,messtext);
@@ -37,21 +37,14 @@ stri1 = [ 'Circle: ' num2str(xa0,5) '; ' num2str(ya0,4)];
 stri = stri1;
 pause(0.1)
 
-%  Calculate distance for each earthquake from center point
-%  and sort by distance l
-l = ZG.a.epicentralDistanceTo(ya0,xa0);
-
-ZG.newt2=ZG.a.subset(l); % reorder & copy
-
-% Select data in radius ra
-l3 = l <=ra;
-ZG.newt2 = ZG.newt2.subset(l3);
+% Select data in radius ra from lat/lon point (ya0, xa0)
+ZG.newt2 = ZG.a.selectRadius(ya0, xa0, rad);
 
 % Select radius in time
 newt3=ZG.newt2;
 vSel = (ZG.newt2.Date <= ZG.maepi.Date+days(time));
 ZG.newt2 = ZG.newt2.subset(vSel);
-R2 = l(ni);
+R2 = ZG.newt2.Count(); 
 messtext = ['Number of selected events: ' num2str(length(ZG.newt2))  ];
 disp(messtext)
 zmap_message_center.set_message('Message',messtext)
@@ -59,8 +52,7 @@ zmap_message_center.set_message('Message',messtext)
 
 
 % Sort the catalog
-[st,ist] = sort(ZG.newt2);
-ZG.newt2 = ZG.newt2(ist(:,3),:);
+ZG.newt2.sort('Date');
 R2 = ra;
 
 % Plot selected earthquakes
@@ -76,7 +68,7 @@ calc_bootfitF(newt3,time,timef,bootloops,ZG.maepi)
 
 set(gcf,'Pointer','arrow')
 %
-newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
+ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 
 % Call program "timeplot to plot cumulative number
 clear l s is

@@ -26,7 +26,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
 
     global backcat ttcat
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
-    global xt par3 cumu cumu2
+    global xt cumu cumu2
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
     global cstep pstep tmpcat ts tend eps1 eps2
     global sdc sdk sdp  aa bb pcheck loopcheck

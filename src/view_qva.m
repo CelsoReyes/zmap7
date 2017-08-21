@@ -43,14 +43,9 @@ function view_qva(lab1,re3)
 %                 selected text can be rotated, moved, you 
 %                 can change the font size etc.             
 %                 Double click on text allows editing it.   
-        
-    if isempty(name)
-        name = '  '
-    end
+
     think
     report_this_filefun(mfilename('fullpath'));
-    %co = 'w';
-    
     
     % Find out if figure already exists
     %
@@ -88,12 +83,12 @@ function view_qva(lab1,re3)
         nilabel = uicontrol('style','text','units','norm','pos',[.90 .85 .04 .05]);
         set(nilabel,'string','ni:','background',[.7 .7 .7]);
         
-        % tx = text(0.07,0.95,[name],'Units','Norm','FontSize',18,'Color','k','FontWeight','bold');
+
         
-        tresh = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = re3;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
-        set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
+        set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
             'background','y');
         set(set_ni2,'callback',@callbackfun_008);
         set(set_ni2,'units','norm','pos',[.85 .92 .08 .06],'min',0.01,'max',10000);
@@ -129,10 +124,10 @@ function view_qva(lab1,re3)
     ZG.minc = min(min(re3));
     ZG.minc = fix(ZG.minc)-1;
     
-    % set values gretaer tresh = nan
+    % set values gretaer ZG.tresh_km = nan
     %
     re4 = re3;
-    l = r > tresh;
+    l = r > ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     
     % plot image
@@ -147,13 +142,10 @@ function view_qva(lab1,re3)
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
-    if sha == 'fl'
-        shading flat
-    else
-        shading interp
-    end
     
-    if fre == 1
+    shading(ZG.shading_style);
+    
+    if ZG.freeze_colorbar
         caxis([fix1 fix2])
     end
     
@@ -169,7 +161,7 @@ function view_qva(lab1,re3)
     hold on
     update(mainmap())
     ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
+    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -286,8 +278,8 @@ function view_qva(lab1,re3)
     function callbackfun_008(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tresh=str2double(set_ni2.String);
-        set_ni2.String=num2str(tresh);
+        ZG.tresh_km=str2double(set_ni2.String);
+        set_ni2.String=num2str(ZG.tresh_km);
     end
     
     function callbackfun_009(mysrc,myevt)

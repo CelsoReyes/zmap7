@@ -44,10 +44,10 @@ export2hypo71(mCat,'tmp');
 % remove NaN from exported catalog
 unix(['sed ''s/NaN/   /'' tmp > CA.hypo71']);
 % write input file (input.cmn)
-in=fopen('input.cmn','w');
-fprintf(in,'CA.hypo71\n4\n%2s\n%2s\n%3.1f\n%06.3f\n%08.3f\n%010.2f\n%010.2f\n%05.2f\n%05.2f',...
+infile=fopen('input.cmn','w');
+fprintf(infile,'CA.hypo71\n4\n%2s\n%2s\n%3.1f\n%06.3f\n%08.3f\n%010.2f\n%010.2f\n%05.2f\n%05.2f',...
     sYr1,sYr2,fXmeff,fRfact,fTau0,fTaumin,fTaumax,fP1,fXk);
-fclose(in);
+fclose(infile);
 % run declustering algorithm of f reasenberg cluster200x
 unix('~/zmap/src/thomas/decluster/reasen/cluster200x > tmp');
 % extract vector with 1 and 0's of events in declustered catalog

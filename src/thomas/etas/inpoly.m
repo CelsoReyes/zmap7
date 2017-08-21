@@ -42,12 +42,12 @@ function [in,bnd] = inpoly(p,node,cnect)
 % be taken on boundaries and at the polygon vertices.
 %
 % This code gains efficiency by partitioning the test into a series of
-% stages. The xy co-ordinates of each point is first checked against the
+% stages. The xy coordinates of each point is first checked against the
 % bounding box for each wall so the expensive line intersection checking
 % need only be done for points that are close to the boundaries.
 %
 % Additional efficiency is also gained by initially partitioning the walls
-% into two groups, upper and lower, depending on their y co-ordinate. This
+% into two groups, upper and lower, depending on their y coordinate. This
 % means that, in general, only half the walls need to be checked for each
 % point.
 %

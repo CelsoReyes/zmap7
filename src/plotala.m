@@ -44,7 +44,7 @@ function plotala()
         
         
         ter2 = 7.5;
-        tresh = max(loc(:,3));
+        ZG.tresh_km = max(loc(:,3));
         
         
         uicontrol('Units','normal',...
@@ -72,7 +72,7 @@ function plotala()
         
         nilabel2 = uicontrol('style','text','units','norm','pos',[.50 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
-        set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh,3),...
+        set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km,3),...
             'background','y');
         set(set_ni2,'callback',@callbackfun_005);
         set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
@@ -100,7 +100,7 @@ function plotala()
     l = abo(:,4) > tre2;
     abo = abo(l,:);
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
-    l = abo(:,3) < tresh;
+    l = abo(:,3) < ZG.tresh_km;
     abo = abo(l,:);
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
     hold on
@@ -259,7 +259,7 @@ function plotala()
             abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
             l = abo(:,4) >= tre2;
             abo = abo(l,:);
-            l = abo(:,3) < tresh;
+            l = abo(:,3) < ZG.tresh_km;
             abo = abo(l,:);
             disp([' Current Alarm threshold:  ' num2str(tre2) ])
             disp(['Number of alarms:  ' num2str(length(abo(:,1))) ])
@@ -409,8 +409,8 @@ function plotala()
     function callbackfun_005(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tresh=str2double(set_ni2.String);
-        set_ni2.String=num2str(tresh,3);
+        ZG.tresh_km=str2double(set_ni2.String);
+        set_ni2.String=num2str(ZG.tresh_km,3);
     end
     
     function callbackfun_006(mysrc,myevt)

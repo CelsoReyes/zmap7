@@ -1,6 +1,6 @@
 function LC_event(lat,lon,symb,symb_size,symb_thick)
     
-    %LC_PLOT_EVENTS
+    %LC_PLOT_EVENTS plot earthquakes on a Lambert Conformal map (via LC_plot_map)
     %
     %	LC_plot_events(lat,lon,symb,symb_size,symb_thick)
     %
@@ -9,7 +9,7 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
     %
     %	where * lat & lon: array of latitudes and longitudes of earthquakes
     %	      * symb: symbol to be used for earthquakes (use single quotes!)
-    %	      * symb_size: symbol size in points (1 point = 1/72 in)
+    %	      * symb_size: symbol size in points (1 point = 1/72 inch)
     %	      * symb_thick: symbol line thickness in points (min = [0.01])
     %
     %	SYMB, SYMB_SIZE, SYMB_THICK don't need to be set, but if you set

@@ -98,8 +98,8 @@ function [rrho, xxvec, yyvec] = density(x, y, dx, dy, xy0)
 
     inx = (ix >= 1) & (ix <= nx);
     iny = (iy >= 1) & (iy <= ny);
-    in = (inx & iny);
-    ix = ix(in); iy = iy(in);
+    inxy = (inx & iny);
+    ix = ix(inxy); iy = iy(inxy);
     N = length(ix); % how many datapoints are left now?
 
     rho = zeros(length(xvec), length(yvec)) + eps;
