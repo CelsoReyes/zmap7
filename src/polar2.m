@@ -94,7 +94,7 @@ function hpol = polar(theta,rho,line_style)
         
         rinc = (rmax-rmin)/rticks;
         for i=(rmin+rinc):rinc:rmax
-            plot(xunit*i,yunit*i,'-','color',tc,'linewidth',1);
+            plot(xunit*i,yunit*i,'-','color',tc,'LineWidth',1);
             %	text(0,i+rinc/20,['  ' num2str(i)],'verticalalignment','bottom' );
         end
         
@@ -103,7 +103,7 @@ function hpol = polar(theta,rho,line_style)
         cst = cos(th); snt = sin(th);
         cs = [-cst; cst];
         sn = [-snt; snt];
-        plot(rmax*cs,rmax*sn,'-','color',tc,'linewidth',1);
+        plot(rmax*cs,rmax*sn,'-','color',tc,'LineWidth',1);
         
         % annotate spokes in degrees
         rt = 1.1*rmax;

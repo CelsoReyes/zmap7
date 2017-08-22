@@ -194,7 +194,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     eq2(2,:) = eq1p(2,:) + y0;
     
     % plot the Xsection line on the map
-    plot([x1 x2],[y1 y2],'--','LineWidth',1.5,'era','back')
+    plot([x1 x2],[y1 y2],'--','LineWidth',1.5)
     
     % label the Xsection end points
     xlim = get(gca,'XLim');
@@ -211,9 +211,9 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     if isempty(label2), label2 = 'B'; end
     label1 = 'A'; label2 = 'B';
     lbl1_h = text(label_pt(1,1),label_pt(2,1),label1,'FontSize',14,...
-        'Vertical','middle','Horizontal','center','FontWeight','bold','era','back');
+        'Vertical','middle','Horizontal','center','FontWeight','bold');
     lbl2_h = text(label_pt(1,2),label_pt(2,2),label2,'FontSize',14,...
-        'Vertical','middle','Horizontal','center','FontWeight','bold','era','back');
+        'Vertical','middle','Horizontal','center','FontWeight','bold');
     
     % create a box of width "width" around the Xsection line and plot it
     box(1,1) = -length/2; box(2,1) = width/2;
@@ -225,7 +225,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     rbox = invtransf * [xbox ; ybox];
     rbox(1,:) = rbox(1,:) + x0;
     rbox(2,:) = rbox(2,:) + y0;
-    plot(rbox(1,:),rbox(2,:),'-y','LineWidth',1.3,'era','back')
+    plot(rbox(1,:),rbox(2,:),'-y','LineWidth',1.3)
     
     % check if symbol parameters global variables are set, if not --> defaults
     if isempty(symb_type), symb_type = '+r'; end
@@ -238,7 +238,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     
     % plot the events on the map
     plot(eq(1,idx_box),eq(2,idx_box),'mo','MarkerSize',symb_size,...
-        'LineWidth',symb_width,'era','back')
+        'LineWidth',symb_width)
     
     
     % Open another graphic window for the cross section
@@ -279,7 +279,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     xsecy = depth(idx_box);
     
     plot(xdist,-depth(idx_box),symb_type,'MarkerSize',symb_size,...
-        'LineWidth',symb_width,'era','back');
+        'LineWidth',symb_width);
     
     set(gca,'Color',color_bg)
     set(gca,'box','on',...
@@ -315,22 +315,22 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     label_base2 = 1 + .08;
     label_base3 = 1 + .12;
     lbl3_h = text(0,label_base2,label1,'FontSize',12,'Horizontal','center',...
-        'FontWeight','bold','Vertical','middle','Units','norm','era','back');
+        'FontWeight','bold','Vertical','middle','Units','norm');
     lat1_dm = sprintf('    %2.2i N %4.2f''',fix(lat1),(frac(lat1)*60));
     lon1_dm = sprintf('   %3.3i W %4.2f''',abs(fix(lon1)),abs(frac(lon1)*60));
     lbl5_h = text(0,label_base1+0.00,lat1_dm,'FontSize',10,'Horizontal','left',...
-        'Vertical','bottom','Units','norm','era','back');
+        'Vertical','bottom','Units','norm');
     lbl6_h = text(0,label_base3+0.04,lon1_dm,'FontSize',10,'Horizontal','left',...
-        'Vertical','bottom','Units','norm','era','back');
+        'Vertical','bottom','Units','norm');
     
     lbl4_h = text(1,label_base2,label2,'FontSize',12,'Horizontal','center',...
-        'FontWeight','bold','Vertical','middle','Units','norm','era','back');
+        'FontWeight','bold','Vertical','middle','Units','norm');
     lat2_dm = sprintf('%2.2i N %4.2f''    ',fix(lat2),(frac(lat2)*60));
     lon2_dm = sprintf('%3.3i W %4.2f''    ',abs(fix(lon2)),abs(frac(lon2)*60));
     lbl7_h = text(1,label_base1+0.0,lat2_dm,'FontSize',10,...
-        'Horizontal','right','Vertical','bottom','Units','norm','era','back');
+        'Horizontal','right','Vertical','bottom','Units','norm');
     lbl8_h = text(1,label_base3+0.04,lon2_dm,'FontSize',10,...
-        'Horizontal','right','Vertical','bottom','Units','norm','era','back');
+        'Horizontal','right','Vertical','bottom','Units','norm');
     
     
     set(gcf,'visible','on')

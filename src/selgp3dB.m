@@ -14,7 +14,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     [x,y, mouse_points_overlay] = select_polygon(ax);
     zmap_message_center.set_info('Message',' Thank you .... ')
     
-    plos2 = plot(x,y,'b-','era','xor');        % plot outline
+    plos2 = plot(x,y,'b-');        % plot outline
     sum3 = 0.;
     pause(0.3)
     
@@ -59,7 +59,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     
     % plot the grid points
     figure(map);
-    pl = plot(newgri(:,1),newgri(:,2),'+k','era','normal');
+    pl = plot(newgri(:,1),newgri(:,2),'+k');
     set(pl,'MarkerSize',8,'LineWidth',1)
     drawnow
     

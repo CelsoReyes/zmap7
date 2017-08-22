@@ -63,7 +63,6 @@ function anseiswa(action, ds)
             
             ZG.newt2.sort('Date');   % re-sort wrt time for cumulative count
             set(findobj('Tag','tiplo2'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
-            set(xc1,'era','normal')
             ax3=findobj('Tag','ax3');
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
@@ -83,7 +82,7 @@ function anseiswa(action, ds)
             axes(findobj(groot,'Tag','hs'))
             axis manual; hold on
             point1 = get(gca,'CurrentPoint'); % button down detected
-            set(xc2,'era','back','Xdata',point1(1,1),'Ydata',point1(1,2))
+            set(xc2,'Xdata',point1(1,1),'Ydata',point1(1,2))
             
             set(gcf,'WindowButtonMotionFcn',@(~,~) anseiswa('move2',ds))
             set(gcf,'WindowButtonUpFcn',@(~,~) anseiswa('stop2',ds))
@@ -117,7 +116,6 @@ function anseiswa(action, ds)
             end
             ZG.newt2.sort('Date');
             set(findobj('Tag','tiplo1'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
-            set(xc1,'era','normal')
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.a.Date)) (max(ZG.a.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             

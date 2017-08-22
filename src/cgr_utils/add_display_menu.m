@@ -121,4 +121,5 @@ function add_display_menu(version)
         axes(gca);
         ZG.shading_style=style;
         shading(ZG.shading_style);
+    end
 end

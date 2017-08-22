@@ -30,10 +30,8 @@ try
   if bGridEntireArea % Use entire area for grid
     vXLim = get(gca, 'XLim');
     vYLim = get(gca, 'YLim');
-    vX = [vXLim(1); vXLim(1); vXLim(2); vXLim(2)];
-    vY = [vYLim(2); vYLim(1); vYLim(1); vYLim(2)];
-    x = [x ; x(1)];
-    y = [y ; y(1)];     %  closes polygon
+    vX = [vXLim(1); vXLim(1); vXLim(2); vXLim(2); vXLim(1)];
+    vY = [vYLim(2); vYLim(1); vYLim(1); vYLim(2); vYLim(2)];
   else
     % Prepare variables
     vX = [];
@@ -41,18 +39,18 @@ try
     nButton = 1;
 
     % Let the user click for defining grid polygon (right click closes the polygon)
-    while (nButton == 1) | (nButton == 112)
+    while (nButton == 1) || (nButton == 112)
       [fX, fY, nButton] = ginput(1);
-      hMarker = plot(fX, fY, '+k', 'era', 'normal');
+      hMarker = plot(fX, fY, '+k');
       set(hMarker, 'MarkerSize', [6], 'LineWidth', [1.0]);
       vX = [vX; fX];
       vY = [vY; fY];
     end
+      % Closes the polygon
+      vX = [vX; vX(1)];
+      vY = [vY; vY(1)];
   end % of if bGridEntireArea
 
-  % Closes the polygon
-  vX = [vX; vX(1)];
-  vY = [vY; vY(1)];
 
   % Plot outline
   figure(hFigure);
@@ -61,28 +59,22 @@ try
   % Create a rectangular grid
   vXVector = [min(vX):fSpacingX:max(vX)];
   vYVector = [min(vY):fSpacingY:max(vY)];
-  mGrid = zeros((length(vXVector) * length(vYVector)), 2);
-  nTotal = 0;
-  for i = 1:length(vXVector)
-    for j = 1:length(vYVector)
-      nTotal = nTotal + 1;
-      mGrid(nTotal,:) = [vXVector(i) vYVector(j)];
-    end
-  end
-
+  [A,B]=meshgrid(vXVector,vYVector);
+  mGrid=[A(:),B(:)];
   % Extract all gridpoints in chosen polygon
   XI=mGrid(:,1);
   YI=mGrid(:,2);
 
-    vUsedNodes = polygon_filter(x,y, XI, YI, 'inside');
+    vUsedNodes = polygon_filter(vX,vY, XI, YI, 'inside');
   %grid points in polygon
   mGrid = mGrid(vUsedNodes,:);
 
   % Plot the grid points finally
   figure(hFigure);
-  plot(mGrid(:,1), mGrid(:,2), '+k', 'era', 'normal', 'MarkerSize', [8], 'LineWidth', [1]);
+  plot(mGrid(:,1), mGrid(:,2), '+k',  'MarkerSize', [8], 'LineWidth', [1]);
   drawnow;
-catch
+catch ME
+    warning(ME.message)
   mGrid = [];
   vXVector = [];
   vYVector = [];

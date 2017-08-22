@@ -160,7 +160,7 @@ function bcrossVt2(sel)
         [x,y, mouse_points_overlay] = select_polygon(ax);
         zmap_message_center.set_info('Message',' Thank you .... ')
         
-        plos2 = plot(x,y,'b-','era','xor');        % plot outline
+        plos2 = plot(x,y,'b-');        % plot outline
         sum3 = 0.;
         pause(0.3)
         

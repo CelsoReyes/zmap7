@@ -95,11 +95,11 @@ function csubcat()
     switch (xxxxxxxx) %TOFIX no idea what this is supposed to be swithicng on. does it work at all? has it worked (ever)?
         case 'depth'
             deplo1 =plot(a(ZG.a.Depth<=dep1,1),a(ZG.a.Depth<=dep1,2),'.b');
-            set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1,'era','normal')
+            set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
             deplo2 =plot(a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,1),a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,2),'.g');
-            set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2,'era','normal');
+            set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
             deplo3 =plot(a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,1),a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,2),'.r');
-            set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3,'era','normal')
+            set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3)
             ls1 = sprintf('Depth < %3.1f km',dep1);
             ls2 = sprintf('Depth < %3.1f km',dep2);
             ls3 = sprintf('Depth < %3.1f km',dep3);
@@ -107,7 +107,7 @@ function csubcat()
             %plot earthquakes according time
         case  'tim'
             deplo1 =plot(a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,1),a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,2),'.b');
-            set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1,'era','normal')
+            set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
             deplo2 =plot(a(ZG.a.Date<=tim3&ZG.a.Date>tim2,1),a(ZG.a.Date<=tim3&ZG.a.Date>tim2,2),'.g');
             set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
             deplo3 =plot(a(ZG.a.Date<=tim4&ZG.a.Date>tim3,1),a(ZG.a.Date<=tim4&ZG.a.Date>tim3,2),'.r');

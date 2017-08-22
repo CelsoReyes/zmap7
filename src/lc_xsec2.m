@@ -201,7 +201,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         
     else
         % plot the Xsection line on the map
-        plot([x1 x2],[y1 y2],'--','LineWidth',1.5,'era','back')
+        plot([x1 x2],[y1 y2],'--','LineWidth',1.5)
         
         % label the Xsection end points
         xlim = get(gca,'XLim');
@@ -231,7 +231,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         rbox = invtransf * [xbox ; ybox];
         rbox(1,:) = rbox(1,:) + x0;
         rbox(2,:) = rbox(2,:) + y0;
-        plot(rbox(1,:),rbox(2,:),'-.','LineWidth',0.8,'era,','back')
+        plot(rbox(1,:),rbox(2,:),'-.','LineWidth',0.8)
         
         % check if symbol parameters global variables are set, if not --> defaults
         if isempty(symb_type), symb_type = '+'; end
@@ -240,7 +240,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         
         % plot the events on the map
         plot(eq(1,idx_map),eq(2,idx_map),symb_type,'MarkerSize',symb_size,...
-            'LineWidth',symb_width,'era','back')
+            'LineWidth',symb_width)
         
         % Open another graphic window for the cross section
         map_fig = gcf;
@@ -253,7 +253,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         %Ywbz = depth(idx_box);
         
         plot(xdist,-depth(idx_box),symb_type,'MarkerSize',symb_size,...
-            'LineWidth',symb_width,'era','back')
+            'LineWidth',symb_width)
         
         if isempty(maxdepth)
             maxZ = max(depth(idx_box));

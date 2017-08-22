@@ -264,7 +264,7 @@ function [sel]=rcvalgrid_a2()
         % Waitbar counting
         itotal = length(newgri(:,1));
         % Plot all grid points
-        plot(newgri(:,1),newgri(:,2),'+k','era','back')
+        plot(newgri(:,1),newgri(:,2),'+k')
         drawnow
         zmap_message_center.set_info(' ','Running... ');think
         %  make grid, calculate start- endtime etc.  ...

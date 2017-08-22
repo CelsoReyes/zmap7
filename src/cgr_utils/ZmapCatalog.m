@@ -82,9 +82,10 @@ classdef ZmapCatalog < handle
             % rake = a(:,12)
         end
         
-        function s =  summary(obj, verbosity)
+        function s =  summary(obj, verbosity,useTex)
             % return a summary of this catalog
             % valid verbosity values: 'simple', 'stats'
+            % if useTex is given, then format is wrapped in tex-style markup (not implemented)
             
             % add additional ways to look at catalog if it makes sense
             if ~exist('verbosity','var')
@@ -104,19 +105,34 @@ classdef ZmapCatalog < handle
                     maxma = max(obj.Magnitude);
                     mindep = min(obj.Depth);
                     maxdep = max(obj.Depth);
-                    
+                    %{ 
+                    if exist('useTex','var') && useTex
+                        fmtstr = [...
+                        '{\\bf Catalog} "%s" with %d events\n',...
+                        '{\\bf Start Date:} %s\n',...
+                        '{\\bf End Date:}   %s\n',...
+                        '{\\bf Depths:}     %4.2f km ≤ Z ≤ %4.2f km\n',...
+                        '{\\bf Magnitudes:} %2.1f ≤ M ≤ %2.1f'];
+                    nm=strrep(obj.Name,'_','\_');
+                    s = sprintf(fmtstr, nm, obj.Count, ...
+                        char(minti,'uuuu-MM-dd HH:mm:ss'),...
+                        char(maxti,'uuuu-MM-dd HH:mm:ss'),...
+                        mindep, maxdep,...
+                        minma, maxma);
+                    else
+                    %}
                     fmtstr = [...
                         'Catalog "%s" with %d events\n',...
                         'Start Date: %s\n',...
                         'End Date:   %s\n',...
                         'Depths:     %4.2f km ≤ Z ≤ %4.2f km\n',...
                         'Magnitudes: %2.1f ≤ M ≤ %2.1f'];
-                    
                     s = sprintf(fmtstr, obj.Name, obj.Count, ...
                         char(minti,'uuuu-MM-dd HH:mm:ss'),...
                         char(maxti,'uuuu-MM-dd HH:mm:ss'),...
                         mindep, maxdep,...
                         minma, maxma);
+                    %end %useTex
                 case 'stats'
                     minti = min( obj.Date );
                     maxti  = max( obj.Date );
@@ -333,9 +349,10 @@ classdef ZmapCatalog < handle
         end
         
         function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
-            % closestEvents determine which N events are closest to a point (lat,lon, depth).
+            % selectClosestEvents determine which N events are closest to a point (lat,lon, depth).
+            % [otherCat, max_km] = obj.selectClosestEvents(lat,lon, depth, nEvents)
             % for hypocentral distance, leave depth empty.
-            %  ex.  closestEvents(mycatalog, 82,-120,[],20);
+            %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
             %
             if isempty(depth)
@@ -352,11 +369,11 @@ classdef ZmapCatalog < handle
             other = obj.subset(mask);
         end
         
-        function other = selectRadius(obj, lat, lon, dist_km)
-            % select subset catalog to an epicentral radius from a point. sortorder is preserved
+        function other = selectRadius(obj, lat, lon, radius_km)
+            %selectRadius  select subset catalog to an epicentral radius from a point. sortorder is preserved
             % catalog = obj.selectRadius(lat, lon, dist_km)
             
-            dists_km = catalog.epicentralDistanceTo(lat, lon);
+            dists_km = obj.epicentralDistanceTo(lat, lon);
             mask = dists_km <= radius_km;
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);

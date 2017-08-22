@@ -71,11 +71,11 @@ R2 = ra;
 % Plot selected earthquakes
 hold on;
 
-plos1 = plot(ZG.(wCat).Longitude,ZG.(wCat).Latitude,'xk','EraseMode','normal');
+plos1 = plot(ZG.(wCat).Longitude,ZG.(wCat).Latitude,'xk');
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;
-pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k','era','normal')
+pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k')
 
 % Compute and Plot the forecast
 %calc_bootfitF(newt3,time,timef,bootloops,ZG.maepi)

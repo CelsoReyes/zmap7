@@ -356,7 +356,7 @@ function plotala()
         timeplot(ZG.newt2)
         update(mainmap())
         axes(h1)
-        plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k','era','normal')
+        plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k')
     end
     %% ui functions
     function create_my_menu()

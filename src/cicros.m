@@ -57,12 +57,12 @@ function cicros(opt)
             
             hold on
             [na,ma] = size(ZG.newt2);
-            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
+            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk');
             set(gcf,'Pointer','arrow')
             %
             % plot circle containing events as circle
             x = -pi-0.1:0.1:pi;
-            plot(xa0+sin(x)*l(ni), ya0+cos(x)*l(ni),'w','era','back')
+            plot(xa0+sin(x)*l(ni), ya0+cos(x)*l(ni),'w')
             l(ni)
             
             %
@@ -90,12 +90,12 @@ function cicros(opt)
             
             hold on
             [na,ma] = size(ZG.newt2);
-            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','EraseMode','back');
+            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk');
             set(gcf,'Pointer','arrow')
             %
             % plot circle containing events as circle
             x = -pi-0.1:0.1:pi;
-            plot(xa0+sin(x)*ra, ya0+cos(x)*ra,'w','era','back')
+            plot(xa0+sin(x)*ra, ya0+cos(x)*ra,'w')
             l(ni)
             
             %
@@ -110,7 +110,7 @@ function cicros(opt)
             
             ax = findobj('Tag','main_map_ax');
             [x,y, mouse_points_overlay] = select_polygon(ax);
-            plot(x,y,'b-','era','xor');
+            plot(x,y,'b-');
             YI = -newa(:,7);          % this substitution just to make equation below simple
             XI = newa(:,length(newa(1,:)));
             ll = polygon_filter(x,y, XI, YI, 'inside');

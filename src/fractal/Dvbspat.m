@@ -17,7 +17,7 @@ clear ord;
 Dvb=figure_w_normalized_uicontrolunits('Numbertitle','off','Name','D versus b');
 plot(bvg(:,5),bvg(:,1),'ko', 'Markersize', 10);
 hold on;
-plot(bx, Dy, 'b-','linewidth', 1);
+plot(bx, Dy, 'b-','LineWidth', 1);
 xlabel('b-value', 'fontsize',12);
 ylabel('D-value', 'fontsize',12);
 title('D-value versus b-value (blue line: D = 2b)', 'fontsize',14);

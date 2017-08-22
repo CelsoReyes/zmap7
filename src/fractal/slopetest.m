@@ -20,7 +20,7 @@ r5 = r2(ri(1:end-1));
 deriv5 = deriv(ri(1:end-1));
 figure(HfigS);
 hold on;
-semilogx(r5,deriv5(:,1), 'linewidth',3, 'color','r');
+semilogx(r5,deriv5(:,1), 'LineWidth',3, 'color','r');
 axis([0.0005 10000 0 5]);
 axes('pos',[0 0 1 1]); axis off; hold on;
 str1 = ['D-value = ' sprintf('%.2f',coef(1,1)) ' +/- ' sprintf('%.2f', deltar)];

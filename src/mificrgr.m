@@ -118,7 +118,7 @@ function my_areaselect()
         
         figure(xsec_fig)
         
-        plos2 = plot(x,y,'b-','era','xor');        % plot outline
+        plos2 = plot(x,y,'b-');        % plot outline
         sum3 = 0.;
         pause(0.3)
         

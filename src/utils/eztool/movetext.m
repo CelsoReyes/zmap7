@@ -31,7 +31,7 @@ function movetext(command)
         if(strcmp(get(gco,'Type'),'text'))
             set(gco,'Selected','on');
             oldtextobj = gco;
-            set(gco,'EraseMode','xor','Selected','on');
+            set(gco,'Selected','on');
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             % Set up functions for a text move
@@ -75,7 +75,7 @@ function movetext(command)
                         &  currpos(2) > ext(2) & currpos(2) < ext(2)+ext(4))
                     set(gcf,'WindowButtonMotionFcn','movetext(5)',...
                         'WindowButtonUpFcn','movetext(6)');
-                    set(gco,'erasemode','xor');
+                    set(gco);
                 end
             end
         end
@@ -94,7 +94,7 @@ function movetext(command)
         %%%%%%%%%%%%%%%%%%%%
 
     elseif(command == 6)
-        set(gco,'erasemode','normal');
+        set(gco);
         set(gcf,'WindowButtonMotionFcn','');
         set(gcf,'WindowButtonUpFcn','');
 

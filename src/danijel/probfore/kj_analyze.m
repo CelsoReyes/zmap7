@@ -85,7 +85,7 @@ if get(handles.radEntireTime, 'Value') == 1
   [vDummy, vIndices] = sort(mPlotCatalog(:,3));
   mSortedCatalog = mPlotCatalog(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
-  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-','era','xor');
+  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-');
 else
   % Split the catalog
   fFirst = str2double(get(handles.txtFirst, 'String'));
@@ -153,13 +153,13 @@ else
   [vDummy, vIndices] = sort(mFirst(:,3));
   mSortedCatalog = mFirst(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
-  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-','era','xor');
+  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-');
   % Plot the cumulative number for the second period
   [vDummy, vIndices] = sort(mSecond(:,3));
   mSortedCatalog = mSecond(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
   set(handles.axsTimePlot, 'NextPlot', 'add');
-  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'r:','era','xor');
+  plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'r:');
 end
 
 % --------------------------------------------------------------------

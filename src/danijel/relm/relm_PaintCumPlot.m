@@ -40,7 +40,7 @@ axes(hAxes);
 vIndex = [1:rRelmTest.nNumberSimulation]/rRelmTest.nNumberSimulation;
 vObservedX = [rRelmTest.fObservedData, rRelmTest.fObservedData];
 vObservedY = [0,1];
-plot(rRelmTest.vSimValues_H, vIndex, 'g', rRelmTest.vSimValues_N, vIndex, 'r', vObservedX, vObservedY, 'k', 'linewidth', 1);
+plot(rRelmTest.vSimValues_H, vIndex, 'g', rRelmTest.vSimValues_N, vIndex, 'r', vObservedX, vObservedY, 'k', 'LineWidth', 1);
 
 % Add the patches
 set(hAxes, 'NextPlot', 'add');

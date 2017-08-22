@@ -32,7 +32,7 @@ function clpickp(choice)
             xi=xcordinate;
             yi=ycordinate;
             
-            mark1 =    plot(xi,yi,'wo','era','back'); % doesn't matter what erase mode is
+            mark1 =    plot(xi,yi,'wo'); % doesn't matter what erase mode is
             % used so long as its not NORMAL
             set(mark1,'MarkerSize',10,'LineWidth',2.0)
             n = n + 1;
@@ -42,7 +42,7 @@ function clpickp(choice)
         case 'LAST'               %last input of cordinates
             xi=xcordinate;
             yi=ycordinate;
-            mark1 = plot(xi,yi,'wo','era','back');
+            mark1 = plot(xi,yi,'wo');
             set(mark1,'MarkerSize',10,'LineWidth',2.0)
             n = n+1;
             x = [x; xi];
@@ -57,7 +57,7 @@ function clpickp(choice)
             polcordinates
             n=length(x);
             for i=1:length(polcordinates(:,1))
-                mark1 = plot(x(i),y(i),'wo','era','back');
+                mark1 = plot(x(i),y(i),'wo');
                 set(mark1,'MarkerSize',10,'LineWidth',2.0)
             end
             proceed=true;
@@ -77,7 +77,7 @@ function clpickp(choice)
                 [xi,yi,click] = ginput(1);
                 check1=xi
                 check2=yi
-                mark1 =    plot(xi,yi,'ko','era','back'); % doesn't matter what erase mode is
+                mark1 =    plot(xi,yi,'ko'); % doesn't matter what erase mode is
                 % used so long as its not NORMAL
                 set(mark1,'MarkerSize',10,'LineWidth',2.0)
                 n = n + 1;
@@ -126,7 +126,7 @@ function clpickp(choice)
         elseif decc==0
             figure(findobj('Tag','mapp'));
         end
-        plot(x,y,'b-','era','back');        % plot outline
+        plot(x,y,'b-');        % plot outline
         sum3 = 0.;
         pause(0.3)
         % calculate points with a polygon

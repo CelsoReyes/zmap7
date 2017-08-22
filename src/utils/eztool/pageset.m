@@ -226,10 +226,10 @@ function pageset(command,subcommand,comnum)
             PaperPosition(1)+PaperPosition(3) PaperPosition(2)+PaperPosition(4);
             PaperPosition(1) PaperPosition(2)+PaperPosition(4)];
 
-        set(PatchObj,'EraseMode','Xor',...
+        set(PatchObj,...
             'XData',PlotRect(:,1),...
             'YData',PlotRect(:,2));
-        set(PatchObj,'EraseMode','Normal');
+        set(PatchObj);
         axis(axis);
         hold on;
     elseif(strcmp(command,'Resize'))
@@ -267,7 +267,7 @@ function pageset(command,subcommand,comnum)
                 set(gca,'UserData',cp);
                 set(gcf,'WindowButtonMotionFcn','pageset(''Resize'',''Move'')');
             end
-            set(PatchObj,'erasemode','xor');
+            set(PatchObj);
             set(gcf,'WindowButtonUpFcn','pageset(''Resize'',''Up'')');
         elseif(strcmp(subcommand,'Corner'))
             cp = get(gca,'CurrentPoint');
@@ -310,7 +310,7 @@ function pageset(command,subcommand,comnum)
             set(gca,'UserData',cp);
         else
             PaperSize = get(gcf,'PaperSize');
-            set(PatchObj,'EraseMode','normal');
+            set(PatchObj);
             set(gcf,'WindowButtonMotionFcn','',...
                 'WindowButtonUpFcn','');
             XData = get(PatchObj,'XData');

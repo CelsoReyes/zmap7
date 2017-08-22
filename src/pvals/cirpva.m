@@ -62,11 +62,11 @@ R2 = ra;
 % plot Ni clostest events on map as 'x':
 
 hold on
-plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','EraseMode','normal');
+plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk');
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;
-pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k','era','normal')
+pl = plot(xa0+sin(x)*R2/(cosd(ya0)*111), ya0+cos(x)*R2/(cosd(ya0)*111),'k')
 
 
 set(gcf,'Pointer','arrow')

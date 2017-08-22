@@ -166,7 +166,7 @@ if sel == 'ca'
 
     zmap_message_center.set_info('Message',' Thank you .... ')
 
-    plos2 = plot(x,y,'b-','era','xor', 'Color', 'r');        % plot outline
+    plos2 = plot(x,y,'b-', 'Color', 'r');        % plot outline
     sum3 = 0.;
     pause(0.3)
 
@@ -193,7 +193,7 @@ if sel == 'ca'
     newgri=tmpgri(ll,:);
 
     % Plot all grid points
-    plot(newgri(:,1),newgri(:,2),'+k','era','back')
+    plot(newgri(:,1),newgri(:,2),'+k')
 
     if length(xvect) < 2  ||  length(yvect) < 2
         errordlg('Selection too small! (not a matrix)');
@@ -355,7 +355,7 @@ if sel == 'lo'
         [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
-        plot(newgri(:,1),newgri(:,2),'+k','era','back')
+        plot(newgri(:,1),newgri(:,2),'+k')
         view_Dv
     else
         return

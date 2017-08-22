@@ -70,6 +70,7 @@ classdef MainInteractiveMap
             drawnow;
         end
         function createFigure(obj)
+            ZG=ZmapGlobal.Data;
             % will delete figure if it exist
             disp('MainInterativeMap.createFigure()');
             h=figureHandle();
@@ -125,7 +126,6 @@ classdef MainInteractiveMap
                 disp(ax.Children);
                 rethrow(ME);
             end
-            ZG = ZmapGlobal.Data; % handle to "globals"
             if strcmp(ZG.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
@@ -264,6 +264,7 @@ classdef MainInteractiveMap
             
             function mycb01(mysrc,~)
                 global noh1;
+                ZG=ZmapGlobal.Data;
                 noh1 = gca;
                 ZG.newt2 = ZG.a;
                 stri = 'Polygon';
@@ -327,7 +328,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Save current catalog (.mat)','Callback','eval(catSave);');
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
-                'Callback',@(~,~)msgbox(ZmapGlobal.Data.a.summary('stats'),'Catalog Details'));
+                'Callback',@(~,~)info_summary_callback(ZmapGlobal.Data.a.summary('stats')));
             
             catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
                 'Separator','on');
@@ -338,8 +339,11 @@ classdef MainInteractiveMap
             uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
             uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
             uimenu(catmenu,'Label','from FDSN webservice','Callback', @get_fdsn_data_from_web_callback);
-            
-        end
+
+
+
+        end            
+
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
             if ~isempty(h) && exist('force','var') && force
@@ -1228,4 +1232,15 @@ end
 function histo_callback(hist_type)
     ZG=ZmapGlobal.Data;
     hisgra(ZG.a, hist_type);
+end
+
+function info_summary_callback(summarytext)
+    f=msgbox(summarytext,'Catalog Details');
+    f.Visible='off';
+    f.Children(2).Children.FontName='FixedWidth';
+    p=f.Position;
+    p(3)=p(3)+95;
+    p(4)=p(4)+10;
+    f.Position=p;
+    f.Visible='on';
 end

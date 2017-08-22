@@ -67,7 +67,7 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
         hold off
     end
     
-    plot(x,y,symb,'MarkerSize',symb_size,'LineWidth',symb_thick,'era','normal')
+    plot(x,y,symb,'MarkerSize',symb_size,'LineWidth',symb_thick)
     
     % put HOLD back the way it was before this function was called
     if hold_flag
