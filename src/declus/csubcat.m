@@ -62,13 +62,11 @@ function csubcat()
     set(gca,'visible','off','SortMethod','childorder')
     hold off
     
-    %set(set_ni3,'String',num2str(ni));
     % find min and Maximum axes points
     s1 = max(ZG.a.Longitude);
     s2 = min(ZG.a.Longitude);
     s3 = max(ZG.a.Latitude);
     s4 = min(ZG.a.Latitude);
-    %ni = 100;
     orient landscape
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     rect = [0.15,  0.20, 0.75, 0.65];

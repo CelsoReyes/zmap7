@@ -12,6 +12,9 @@ classdef ZmapCatalog < handle
         Magnitude
         MagnitudeType
         Filter
+        Dip 
+        DipDirection
+        Rake
     end
     
     properties(Dependent)

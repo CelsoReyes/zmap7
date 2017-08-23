@@ -18,7 +18,6 @@ function [sel] = bpvalgrid()
     
     valeg = 1;
     valm1 = min(ZG.a.Magnitude);
-    prf = nan;
     
     % get the grid parameter
     % initial values
@@ -41,7 +40,7 @@ function [sel] = bpvalgrid()
     Nmin = 100;
     
     %The definitions in the following line were present in the initial bvalgrid.m file.
-    %stan2 = nan; stan = nan; prf = nan; av = nan;
+    %stan2 = nan; stan = nan; av = nan;
     
     % make the interface
     createGui(dx, dy, ni, Nmin)
@@ -221,7 +220,7 @@ function [sel] = bpvalgrid()
             end
             
             if return_nans
-                [bv, bv2, magco, av, av2, stan2, stan, pv, pstd, maxmg, prf, pr, cv, cstd, kv, mmav, mbv, kstd] = deal(nan);
+                [bv, bv2, magco, av, av2, stan2, stan, pv, pstd, maxmg, pr, cv, cstd, kv, mmav, mbv, kstd] = deal(nan);
             end
             
             bpvg = [bpvg ; bv magco x y rd bv2 stan2 av stan prf pv pstd maxmg cv tgl1 mmav kv mbv num_atnode];

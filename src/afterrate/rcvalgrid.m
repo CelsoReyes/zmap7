@@ -34,13 +34,8 @@ if sel == 'in'
     fMaxRadius = 5;
 
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1);
-    ZG.a=ZG.a.subset(l);
-
-    % cat at selecte magnitude threshold
-    l = ZG.a.Magnitude < valm1;
-    a(l,:) = [];
-    ZG.newt2 = ZG.a;
+    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude >= valm1;
+    ZG.newt2=ZG.a.subset(l);
 
     ZG.hold_state2=true;
     timeplot(ZG.newt2)

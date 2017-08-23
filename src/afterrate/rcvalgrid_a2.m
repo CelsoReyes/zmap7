@@ -8,13 +8,12 @@ function [sel]=rcvalgrid_a2()
     % J. Woessner
     % last update: 14.02.05
     
-    global valeg CO valm1
+    global valeg valm1
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
     valeg = 1;
     valm1 = min(ZG.a.Magnitude);
-    prf = NaN;
     
     % Set the grid parameter
     % Initial values
@@ -29,15 +28,13 @@ function [sel]=rcvalgrid_a2()
     fMaxRadius = 5;  % Max. radius [km] in case of constant number
     bMap = 1; % Map view
     bGridEntireArea = 0; % Grid area, interactive or entire map
+    useEventsInRadius=false; % required for variable scoping.
+    load_grid=false; % required for variable scoping.
+    prev_grid=false; % required for variable scoping.
     
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1);
-    ZG.a=ZG.a.subset(l);
-    
-    % cat at selecte magnitude threshold
-    l = ZG.a.Magnitude < valm1;
-    a(l,:) = [];
-    ZG.newt2 = a;
+    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude > valm1;
+    ZG.newt2=ZG.a.subset(l);
     
     ZG.hold_state2=true;
     timeplot(ZG.newt2)
@@ -45,18 +42,18 @@ function [sel]=rcvalgrid_a2()
     
     
     %The definitions in the following line were present in the initial bvalgrid.m file.
-    %stan2 = NaN; stan = NaN; prf = NaN; av = NaN;
+    %stan2 = NaN; stan = NaN;  av = NaN;
     
     % make the interface
     % creates a dialog box to input grid parameters
     %
-    figure_w_normalized_uicontrolunits(...
+    fig=figure_w_normalized_uicontrolunits(...
         'Name','Grid Input Parameter',...
         'NumberTitle','off', ...
         'NextPlot','new', ...
         'units','points',...
         'Visible','off', ...
-        'Position',[ ZG.wex+200 ZG.wey-200 650 250]);
+        'Position',[ ZG.wex+200 ZG.wey-200 700 250]);
     axis off
     %     labelList2=[' Automatic Mcomp (max curvature) | Fixed Mc (Mc = Mmin) | Automatic Mcomp (90% probability) | Automatic Mcomp (95% probability) | Best (?) combination (Mc95 - Mc90 - max curvature) | Constant Mc'];
     %     labelPos = [0.2 0.8  0.6  0.08];
@@ -72,7 +69,8 @@ function [sel]=rcvalgrid_a2()
     
     % creates a dialog box to input grid parameters
     %
-    
+    gridOpt=GridParameterChoice(fig,[],{dx,'lon'},{dy,'lon'});
+    selOpt=EventSelectionChoice(fig,[],ni,ra);
     oldfig_button = uicontrol('BackGroundColor',[.60 .92 .84], ...
         'Style','checkbox','string','Plot in Current Figure',...
         'Position',[.78 .7 .20 .08],...
@@ -80,95 +78,38 @@ function [sel]=rcvalgrid_a2()
     
     set(oldfig_button,'value',1);
     
-    
-    freq_field=uicontrol('Style','edit',...
-        'Position',[.30 .60 .12 .08],...
-        'Units','normalized','String',num2str(ni),...
-        'callback',@callbackfun_002);
-    
-    
-    freq_field0=uicontrol('Style','edit',...
-        'Position',[.30 .50 .12 .08],...
-        'Units','normalized','String',num2str(ra),...
-        'callback',@callbackfun_003);
-    
-    freq_field2=uicontrol('Style','edit',...
-        'Position',[.30 .40 .12 .08],...
-        'Units','normalized','String',num2str(dx),...
-        'callback',@callbackfun_004);
-    
-    freq_field3=uicontrol('Style','edit',...
-        'Position',[.30 .30 .12 .080],...
-        'Units','normalized','String',num2str(dy),...
-        'callback',@callbackfun_005);
-    
-    freq_field4=uicontrol('Style','edit',...
+    uicontrol('Style','edit',...
         'Position',[.6 .30 .12 .080],...
         'Units','normalized','String',num2str(time),...
         'callback',@callbackfun_006);
-    freq_field5=uicontrol('Style','edit',...
+    uicontrol('Style','edit',...
         'Position',[.6 .40 .12 .080],...
         'Units','normalized','String',num2str(timef),...
         'callback',@callbackfun_007);
     
-    freq_field6=uicontrol('Style','edit',...
+    uicontrol('Style','edit',...
         'Position',[.6 .50 .12 .080],...
         'Units','normalized','String',num2str(bootloops),...
         'callback',@callbackfun_008);
     
-    freq_field7=uicontrol('Style','edit',...
+    uicontrol('Style','edit',...
         'Position',[.30 .20 .12 .080],...
         'Units','normalized','String',num2str(Nmin),...
         'callback',@callbackfun_009);
     
-    freq_field8=uicontrol('Style','edit',...
+    uicontrol('Style','edit',...
         'Position',[.6 .60 .12 .080],...
         'Units','normalized','String',num2str(fMaxRadius),...
         'callback',@callbackfun_010);
     
-    tgl1 = uicontrol('Style','radiobutton',...
-        'string','Number of Events:',...
-        'Position',[.05 .60 .2 .0800], 'callback',@callbackfun_011,...
-        'Units','normalized');
-    
-    set(tgl1,'value',0);
-    
-    tgl2 =  uicontrol('Style','radiobutton',...
-        'string','OR: Constant Radius',...
-        'Position',[.05 .50 .2 .080], 'callback',@callbackfun_012,...
-        'Units','normalized');
-    set(tgl2,'value',1);
-    
-    create_grid =  uicontrol('Style','radiobutton',...
-        'string','Calculate a new grid', 'callback',@callbackfun_013,'Position',[.78 .55 .2 .080],...
-        'Units','normalized');
-    
-    set(create_grid,'value',1);
-    
-    prev_grid =  uicontrol('Style','radiobutton',...
-        'string','Reuse the previous grid', 'callback',@callbackfun_014,'Position',[.78 .45 .2 .080],...
-        'Units','normalized');
-    
-    
-    load_grid =  uicontrol('Style','radiobutton',...
-        'string','Load a previously saved grid', 'callback',@callbackfun_015,'Position',[.78 .35 .2 .080],...
-        'Units','normalized');
-    
-    save_grid =  uicontrol('Style','checkbox',...
-        'string','Save selected grid to file',...
-        'Position',[.78 .22 .2 .080],...
-        'Units','normalized');
-    
-    
-    
-    close_button=uicontrol('Style','Pushbutton',...
+    uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','callback',@callbackfun_016,'String','Cancel');
+        'Units','normalized','callback',@callbackfun_cancel,'String','Cancel');
     
-    go_button1=uicontrol('Style','Pushbutton',...
+    uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'callback',@callbackfun_017,...
+        'callback',@callbackfun_go,...
         'String','Go');
     
     text(...
@@ -176,62 +117,51 @@ function [sel]=rcvalgrid_a2()
         'FontSize',ZmapGlobal.Data.fontsz.l ,...
         'FontWeight','bold',...
         'String','Please choose an Mc estimation option   ');
-    txt3 = text(...
+    text(...
         'Position',[0.30 0.75 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.l ,...
         'FontWeight','bold',...
         'String',' Grid Parameter');
-    txt5 = text(...
-        'Position',[-0.1 0.4 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Spacing in x (dx) in deg:');
     
-    txt6 = text(...
-        'Position',[-0.1 0.3 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Spacing in y (dy) in deg:');
-    
-    txt7 = text(...
+    text(...
         'Position',[-0.1 0.18 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.m ,...
         'FontWeight','bold',...
         'String','Min. No. of events > Mc:');
     
-    txt8 = text(...
+    text(...
         'Position',[0.42 0.4 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Forecast period:');
-    txt9 = text(...
+    text(...
         'Position',[0.42 0.28 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Learning period:');
     
-    txt10 = text(...
+    text(...
         'Position',[0.42 0.51 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Bootstrap samples:');
-    
+    %{
     txt11 = text(...
         'Position',[0.42 0.62 0 ],...
         'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Max. Radius /[km]:');
-    
-    set(gcf,'visible','on');
-    watchoff
-    
-    
-    % get the grid-size interactively and
-    % calculate the b-value in the grid by sorting
-    % thge seimicity and selectiong the ni neighbors
-    % to each grid point
-    
+        %}
+        set(gcf,'visible','on');
+        watchoff
+        
+        
+        
     function my_calculate() % 'ca'
+        % get the grid-size interactively and
+        % calculate the b-value in the grid by sorting
+        % thge seimicity and selectiong the ni neighbors
+        % to each grid point
         %In the following line, the program .m is called, which creates a rectangular grid from which then selects,
         %on the basis of the vector ll, the points within the selected poligon.
         hWindow =  findobj('Name','Coulomb-map');
@@ -242,7 +172,7 @@ function [sel]=rcvalgrid_a2()
         end
         
         % Select grid
-        if load_grid == 1
+        if load_grid
             [file1,path1] = uigetfile(['*.mat'],'previously saved grid');
             if length(path1) > 1
                 think
@@ -251,12 +181,12 @@ function [sel]=rcvalgrid_a2()
                 gy = yvect;
             end
             plot(newgri(:,1),newgri(:,2),'k+')
-        elseif load_grid ==0  &&  prev_grid == 0
+        elseif ~load_grid &&  ~prev_grid
             % Create new grid
             [newgri, xvect, yvect, ll] = ex_selectgrid(map, dx, dy, bGridEntireArea);
             gx = xvect;
             gy = yvect;
-        elseif prev_grid == 1
+        elseif prev_grid
             plot(newgri(:,1),newgri(:,2),'k+')
         end
         %   end
@@ -289,58 +219,44 @@ function [sel]=rcvalgrid_a2()
             x = newgri(i,1);y = newgri(i,2);
             allcount = allcount + 1.;
             
-            % calculate distance from center point and sort with distance
-            l=ZG.a.epicentralDistanceTo(x,y);
-            [s,is] = sort(l);
-            b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
-            
             % Choose between constant radius or constant number of events with maximum radius
-            if tgl1 == 0   % take point within r
-                % Use Radius to determine grid node catalogs
-                l3 = l <= ra;
-                b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
-                rd = ra;
-                vDist = sort(l(l3));
-                fMaxDist = max(vDist);
+            if useEventsInRadius   % take point within r
+                b = ZG.a.selectRadius(y,x,ra);
+                fMaxDist = max(b.epicentralDistanceTo(y,x));
                 % Calculate number of events per gridnode in learning period time
                 vSel = b.Date <= ZG.maepi.Date(1)+days(time);
-                mb_tmp = b(vSel,:);
+                mb_tmp = b.subset(vSel);
             else
                 % Determine ni number of events in learning period
                 % Set minimum number to constant number
                 Nmin = ni;
                 % Select events in learning time period
                 vSel = (b.Date <= ZG.maepi.Date(1)+days(time));
-                b_learn = b(vSel,:);
+                b_learn = b.subset(vSel);
+                
                 vSel2 = (b.Date > ZG.maepi.Date(1)+days(time) & b.Date <= ZG.maepi.Date(1)+(time+timef)/365);
-                b_forecast = b(vSel2,:);
+                b_forecast = b.subset(vSel2);
                 
                 % Distance from grid node for learning period and forecast period
-                vDist = sort(l(vSel));
-                vDist_forecast = sort(l(vSel2));
-                
-                % Select constant number
-                b_learn = b_learn(1:ni,:);
-                % Maximum distance of events in learning period
-                fMaxDist = vDist(ni);
+                [b_learn, fMaxDist] = b_learn.selectClosestEvents(ni);
                 
                 if fMaxDist <= fMaxRadius
-                    vSel3 = vDist_forecast <= fMaxDist;
-                    b_forecast = b_forecast(vSel3,:);
-                    b = [b_learn; b_forecast];
+                    vSel3 = b_forecast.epicentralDistanceTo(y,x) <= fMaxDist;
+                    b_forecast = b_forecast.subset(vSel3);
+                    b = [b_learn; b_forecast]; %TOFIX I'm sure this isn't concatenating properly
                 else
-                    vSel4 = (l < fMaxRadius & b.Date <= ZG.maepi.Date(1)+days(time));
-                    b = b(vSel4,:);
+                    vSel4 = (b.epicentralDistanceTo(y,x) < fMaxRadius & b.Date <= ZG.maepi.Date(1)+days(time));
+                    b = b.subset(vSel4);
                     b_learn = b;
                 end
-                length(b_learn)
-                length(b_forecast)
-                length(b)
+                b_learn.Count
+                b_forecast.Count
+                b.Count
                 mb_tmp = b_learn;
-            end % End If on tgl1
+            end
             
             % Calculate the relative rate change, p, c, k, resolution
-            if length(mb_tmp(:,1)) >= Nmin  % enough events?
+            if mb_tmp.Count >= Nmin  % enough events?
                 [mRc] = calc_rcloglike_a2(b,time,timef,bootloops, ZG.maepi);
                 % Relative rate change normalized to sigma of bootstrap
                 if mRc.fStdBst~=0
@@ -585,130 +501,68 @@ function [sel]=rcvalgrid_a2()
             return
         end
     end
-    
-    function callbackfun_001(mysrc,myevt)
+    %{
+function callbackfun_001(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.inb2=hndl2.Value;
         ;
     end
+    %}
     
-    function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ni=str2double(freq_field.String);
-        freq_field.String=num2str(ni);
-        tgl2.Value=0;
-        tgl1.Value=1;
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ra=str2double(freq_field0.String);
-        freq_field0.String=num2str(ra);
-        tgl2.Value=1;
-        tgl1.Value=0;
-    end
-    
-    function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dx=str2double(freq_field2.String);
-        freq_field2.String=num2str(dx);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dy=str2double(freq_field3.String);
-        freq_field3.String=num2str(dy);
-    end
     
     function callbackfun_006(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        time_field.Value=str2double(time_field.String);
-        time=days(time_field.Value);
+        mysrc.Value=str2double(mysrc.String);
+        time=days(mysrc.Value);
     end
     
     function callbackfun_007(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timef=str2double(freq_field5.String);
-        freq_field5.String=num2str(timef);
+        timef=str2double(mysrc.String);
     end
     
     function callbackfun_008(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bootloops=str2double(freq_field6.String);
-        freq_field6.String=num2str(bootloops);
+        bootloops=str2double(mysrc.String);
     end
     
     function callbackfun_009(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        Nmin=str2double(freq_field7.String);
-        freq_field7.String=num2str(Nmin);
+        Nmin=str2double(mysrc.String);
     end
     
     function callbackfun_010(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fMaxRadius=str2double(freq_field8.String);
-        freq_field8.String=num2str(fMaxRadius);
+        fMaxRadius=str2double(mysrc.String);
     end
     
-    function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl2.Value=0;
-    end
-    
-    function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl1.Value=0;
-    end
-    
-    function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        load_grid.Value=0;
-        prev_grid.Value=0;
-    end
-    
-    function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        load_grid.Value=0;
-        create_grid.Value=0;
-    end
-    
-    function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        prev_grid.Value=0;
-        create_grid.Value=0;
-    end
-    
-    function callbackfun_016(mysrc,myevt)
+    function callbackfun_cancel(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         done;
     end
     
-    function callbackfun_017(mysrc,myevt)
+    function callbackfun_go(mysrc,myevt)
         % automatically created callback function from text
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl1=tgl1.Value;
-        tgl2=tgl2.Value;
+        useEventsInRadius=selOpt.UseEventsInRadius;
+        ni=selOpt.ni;
+        ra=selOpt.ra;
+        dx=gridOpt.dx;
+        dy=gridOpt.dy;
+        bGridEntireArea=gridOpt.GridEntireArea;
+        
         prev_grid=prev_grid.Value;
         create_grid=create_grid.Value;
-        load_grid=load_grid.Value;
-        save_grid=save_grid.Value;
+        load_grid=gridOpt.LoadGrid;
+        save_grid=gridOpt.SaveGrid;
         oldfig_button=oldfig_button.Value;
         close;
         my_calculate();

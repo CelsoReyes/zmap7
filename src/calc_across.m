@@ -281,7 +281,7 @@ function calc_across(sel)
         avg = nan(length(newgri),10);
         allcount = 0.;
         wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name','a-value grid - percent done');;
+        set(wai,'NumberTitle','off','Name','a-value grid - percent done');
         drawnow
         %
         % loop

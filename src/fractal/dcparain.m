@@ -79,7 +79,7 @@ function callbackfun_002(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   range=(get(input2,'Value'));
    input2.Value=range;
-   actrange;
+   actrange(range);
 end
  
 function callbackfun_003(mysrc,myevt)
@@ -117,7 +117,7 @@ function callbackfun_007(mysrc,myevt)
   close;
   think;
    sel = 'ca';
-   Dcross;
+   Dcross('ca');
 end
  
 end

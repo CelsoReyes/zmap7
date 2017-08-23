@@ -1,4 +1,4 @@
-function bcrossVt2(sel)
+function bcrossVt2()
     % tHis subroutine assigns creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactiVELY. The bvalue in each
@@ -8,8 +8,8 @@ function bcrossVt2(sel)
     %   Stefan Wiemer 1/95
     
     report_this_filefun(mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
 
-    if sel == 'in'
         % get the grid parameter
         % initial values
         %
@@ -19,7 +19,8 @@ function bcrossVt2(sel)
         ra = 5;
         
         % get the time periods of interest
-        
+        t0b=ZG.t0b;
+        teb=ZG.teb;
         t1 = t0b;
         t4 = teb;
         t2 = t0b + (teb-t0b)/2;
@@ -131,14 +132,13 @@ function bcrossVt2(sel)
         
         set(gcf,'visible','on');
         watchoff
-    end
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
     % thge seimicity and selectiong the ni neighbors
     % to each grid point
     
-    if sel == 'ca'
+    function my_calculate()
         
         figure(xsec_fig);
         hold on
@@ -321,9 +321,9 @@ function bcrossVt2(sel)
         view_bvt([],re3)
         
     end
-    
+
     % Load exist b-grid
-    if sel == 'lo'
+    function my_load()
         load_existing_bgrid_version_A
     end
     
@@ -374,8 +374,7 @@ function bcrossVt2(sel)
         ZG.inb1=hndl1.Value;
         ZG.inb2=hndl2.Value;
         close;
-        sel ='ca';
-        bcrossVt2(sel);
+        my_calculate();
     end
 end
 

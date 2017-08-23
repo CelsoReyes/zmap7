@@ -18,7 +18,7 @@ switch (org)
         range = 1;
         radm = [];
         rasm = [];
-        fdparain;
+        fdparain();
 
 
     case 2	% Call from fdparain.m

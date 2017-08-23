@@ -20,10 +20,14 @@ classdef GridParameterChoice < handle
     %
     
     properties
-        dx % horzontal (longitudinal) grid spacing, degrees
-        dy % vertical (latitudinal) grid spacing, degrees
-        dz % depth spacing (not functional)
+        dx=[] % horzontal (longitudinal) grid spacing, degrees
+        dx_units=''
+        dy=[] % vertical (latitudinal) grid spacing, degrees
+        dy_units=''
+        dz=[] % depth spacing (not functional)
+        dz_units=''
         GridEntireArea
+        SaveGrid=false; % TODO: move to dependent and add ui widget
     end
     properties(Dependent)
         LoadGrid
@@ -35,6 +39,9 @@ classdef GridParameterChoice < handle
         ubg2
         hDeltaX
         hDeltaY
+        hDeltaZ
+        RequestZ=false;
+        equalXY=false;
     end
     
     methods
@@ -44,27 +51,32 @@ classdef GridParameterChoice < handle
         function out=get.CreateGrid(obj)
             out = obj.ubg2.SelectedObject==obj.hCreateGrid;
         end
-        %{
-        function set.dx(obj,val)
-            warning('should not set dx outside figure')
-            obj.hDeltaX.String=num2str(val);
-        end
-        function set.dy(obj,val)
-            warning('should not set dy outside figure')
-            obj.hDeltaY.String=num2str(val);
-        end
-        %}
         
         
-        function obj=GridParameterChoice(fig,lowerCornerPosition, dx,dy, dz)
+        function obj=GridParameterChoice(fig,lowerCornerPosition, A,B, C)
             % choose_grid adds controls to describe how to choose a grid.
-            
+            % GridParameterChoice(fig, lowerCornerPosition, {dx,'deg'},{dy,'deg'},{dz,'km'})
+            %  Parameters A, B, and C are cells containing defualt vaules and units
+            %    corresponding to E-W, N-S, and vertical.
             % Grid options
             
             % Create, Load, or use Previous grid choice
-            obj.dx=dx;
-            obj.dy=dy;
-            obj.dz=[]; %unused
+            obj.dx=A{1}; obj.dx_units=A{2};
+            
+            if ~isempty(B)
+                obj.dy=B{1}; obj.dy_units=B{2};
+                obj.equalXY=isempty(obj.dy);
+            else
+                obj.equalXY=true;
+            end
+            
+            if exist('C','var') && ~isempty(C)
+                obj.dz=C{1}; obj.dz_units=C{2};
+                obj.RequestZ=~isempty(obj.dz);
+            else
+                obj.RequestZ=false;
+            end
+            
             obj.GridEntireArea=true;
             if isempty(lowerCornerPosition)
                 X0 = 351;
@@ -73,6 +85,8 @@ classdef GridParameterChoice < handle
                 X0 = lowerCornerPosition(1);
                 Y0 = lowerCornerPosition(2);
             end
+            
+            deltaRowSpacing=[40,20];
             
             obj.ubg2=uibuttongroup(fig,'Title','Grid options', 'units','pixels','Position',[X0 Y0 315 137]);
             obj.hCreateGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
@@ -83,31 +97,69 @@ classdef GridParameterChoice < handle
                 'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Load grid','Units','pixels','Position',[172  90 280  24]);
             
-            
+            ypos=40;
+            if obj.equalXY
+                spacing=sprintf('Grid Spacing : ∆x==∆y: [%s],   ∆z:[%s]',obj.dx_units, obj.dz_units);
+                xTip=sprintf('East-West grid spacing [%s]',obj.dx_units);
+            else
+                if requestZ
+                    spacing=sprintf('Grid Spacing : ∆x:[%s], ∆y:[%s], ∆z:[%s]',obj.dx_units, obj.dy_units, obj.dz_units);
+                else
+                    spacing=sprintf('Grid Spacing : ∆x:[%s], ∆y:[%s]',obj.dx_units, obj.dy_units);
+                end
+                    
+                xTip=sprintf('grid spacing [%s]',obj.dx_units);
+            end
+            FLD1_PIX=31;
+            FLD2_PIX=62;
+            xpos=17;
             uicontrol(obj.ubg2,'Style','text',...
-                'Units','pixels','Position',[ 17  56  93  24],...
+                'Units','pixels','Position',[ xpos  56  300  24],...
                 'HorizontalAlignment','left',...
-                'String','Spacing (degrees)');
-            
+                'String',spacing);
+            % DeltaX
             uicontrol(obj.ubg2,'Style','text',...
-                'Units','pixels','Position',[110  56  28  24],...
+                'Units','pixels','Position',[xpos  ypos  28  24],...110
                 'HorizontalAlignment','right',...
                 'String','∆x:');
-            
+            xpos=xpos+FLD1_PIX;
             obj.hDeltaX=uicontrol(obj.ubg2,'Style','edit',...
-                'Units','pixels','Position',[141  56  56  24],'String',num2str(dx,'%.2f'),...
-                'callback',@callbackfun_dx, 'ToolTipString','grid spacing (x)');
+                'Units','pixels','Position',[xpos  ypos  56  24],...141
+                'String',num2str(obj.dx,'%.2f'),...
+                'callback',@callbackfun_dx, ...
+                'ToolTipString',xTip);
+            xpos=xpos+FLD2_PIX;
+            %DeltaY
+            if ~obj.equalXY
+                uicontrol(obj.ubg2,'Style','text',...
+                    'Units','pixels','Position',[xpos  ypos  28  24],...
+                    'HorizontalAlignment','right',...
+                    'String','∆y:');
+                xpos=xpos+FLD1_PIX;
+                obj.hDeltaY=uicontrol(obj.ubg2,'Style','edit',...
+                    'Units','pixels','Position',[xpos  ypos  56  24],...
+                    'String',num2str(obj.dy,'%.2f'),...
+                    'callback',@callbackfun_dy,...
+                    'ToolTipString',sprintf('North-South grid spacing [%s]',obj.dy_units));
+                xpos=xpos+FLD2_PIX;
+            end
             
-            uicontrol(obj.ubg2,'Style','text',...
-                'Units','pixels','Position',[203  56  28  24],...
-                'HorizontalAlignment','right',...
-                'String','∆y:');
-            
-            obj.hDeltaY=uicontrol(obj.ubg2,'Style','edit',...
-                'Units','pixels','Position',[234  56  56  24],'String',num2str(dy,'%.2f'),...
-                'callback',@callbackfun_dy,'ToolTipString','grid spacing (y)');
+            %DeltaZ
+            if obj.RequestZ
+                uicontrol(obj.ubg2,'Style','text',...
+                    'Units','pixels','Position',[xpos  ypos  28  24],...
+                    'HorizontalAlignment','right',...
+                    'String','∆z:');
+                xpos=xpos+FLD1_PIX;
+                obj.hDeltaZ=uicontrol(obj.ubg2,'Style','edit',...
+                    'Units','pixels','Position',[xpos  ypos  56  24],...
+                    'String',num2str(obj.dz,'%.2f'),...
+                    'callback',@callbackfun_dz,...
+                    'ToolTipString', sprintf('Depth grid spacing (z) [%s]',obj.dz_units));
+            end
             
             % prev_grid =  uicontrol('Style','radiobutton','string','Reuse the previous grid','Position',[.65 .55 .2 .080]);
+            
             % save_grid =  uicontrol('Style','checkbox','string','Save selected grid to file','Position',[.65 .35 .2 .080]);
             
             uicontrol(obj.ubg2,'Style','checkbox','Units','pixels','Position',[ 17  13 187  18],...
@@ -129,11 +181,20 @@ classdef GridParameterChoice < handle
                 obj.dy=str2double(mysrc.String);
             end
             
+            function callbackfun_dz(mysrc,~)
+                obj.dz=str2double(mysrc.String);
+            end
+            
             function callback_gridcontrol(mysrc,~)
-                if mysrc.SelectedObject == obj.hCreateGrid
-                    set([obj.hDeltaX,obj.hDeltaY],'Enable','on');
+                if obj.RequestZ
+                    fldlist = [obj.hDeltaX,obj.hDeltaY, obj.hDeltaZ];
                 else
-                    set([obj.hDeltaX,obj.hDeltaY],'Enable','off');
+                    fldlist = [obj.hDeltaX,obj.hDeltaY];
+                end
+                if mysrc.SelectedObject == obj.hCreateGrid
+                    set(fldlist,'Enable','on');
+                else
+                    set(fldlist,'Enable','off');
                 end
             end
             

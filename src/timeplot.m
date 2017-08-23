@@ -29,7 +29,7 @@ function timeplot(mycat, nosort)
     end
     
     if isempty(ZG.bin_days) %binning
-        ZG.bin_days=days(1);
+        ZG.bin_days = days(1);
     end
     bin_days = days(ZG.bin_days);
     assert(isnumeric(bin_days));
@@ -137,11 +137,12 @@ function timeplot(mycat, nosort)
     end
     
     if ZG.hold_state2
+        tdiff=max(mycat.Date) - min(mycat.Date); % added by CR
         cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
         cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
         cumu = cumu * 0;
         cumu2 = cumu2 * 0;
-        [cumu, xt] = hist(mycat.Date,(t0b:days(ZG.bin_days):teb));
+        [cumu, xt] = hist(mycat.Date,(ZG.t0b:days(ZG.bin_days):ZG.teb));
         cumu2 = cumsum(cumu);
         
         
@@ -215,7 +216,7 @@ function timeplot(mycat, nosort)
     set(ax,'visible','off')
     
     nu = (1:mycat.Count);
-    nu(mycat.Count) = mycat.Count;
+    %nu(mycat.Count) = mycat.Count;  %crash if the count is zero
     
     tiplot2 = plot(ax, mycat.Date, nu, 'b', 'LineWidth', 2.0);
     

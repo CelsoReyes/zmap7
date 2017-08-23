@@ -293,7 +293,7 @@ function mycat = catalog_overview(mycat)
         h = findall(myparent,'Tag','catalog_name_field');
         mycat.Name = h.String;
         %h = findall(myparent,'Tag','mapview_binlen_field');
-        %ZG.bin_days = h.Value;
+        %ZG.bin_days = days(h.Value);
         if ~isa(mycat,'ZmapCatalog')
             mycat = ZmapCatalog(mycat);
         end

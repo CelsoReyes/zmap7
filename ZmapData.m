@@ -98,6 +98,7 @@ classdef ZmapData < handle
         %unknown other entities
         Rconst %used with the slicers
         ra=5% max sphere radius
+        ni=100 %number of nearby events for grid calculations
         compare_window_yrs =1.5 % Compare window length (years)
         compare_window_yrs_v3=1.0% Compare window length, alternate version
         

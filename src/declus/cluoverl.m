@@ -70,7 +70,7 @@ function cluoverl(var1)
         s2 = min(ZG.a.Longitude);
         s3 = max(ZG.a.Latitude);
         s4 = min(ZG.a.Latitude);
-        ni = 100;
+        ni = ZG.ni;
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
         axes('position',rect)
