@@ -6,6 +6,12 @@ function view_bva(lab1, re3,gx,gy)
     % define size of the plot etc.
     %
     
+    %% function steps
+    %   - create a figure if it doesn't exist   Name: b-value-map
+    %      * should it overlay on the Main Map, instead? If so, it would need
+    
+    %%
+    
     if ~exist('Prmap') || isempty(Prmap)
         Prmap = nan(size(re3));
     end
@@ -82,7 +88,7 @@ function view_bva(lab1, re3,gx,gy)
     shading(ZG.shading_style);
 
     % make the scaling for the recurrence time map reasonable
-    if lab1(1) =='T'
+    if ~isempty(lab1)&& lab1(1) =='T'
         l = isnan(re3);
         re = re3;
         re(l) = [];
@@ -92,8 +98,8 @@ function view_bva(lab1, re3,gx,gy)
         caxis([fix1 fix2])
     end
     
-    title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
-        'Color','r','FontWeight','normal')
+    title([ZG.a.Name ';  '   num2str(ZG.t0b) ' to ' num2str(ZG.teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
+        'Color','r','FontWeight','normal','Interpreter','none')
     
     xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
     ylabel('Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)

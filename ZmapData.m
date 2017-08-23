@@ -81,10 +81,6 @@ classdef ZmapData < handle
         
         bin_days = 14; %bin length, days
         
-        % statistical stuff
-        teb % time end earthquakes
-        t0b % time begin earthquakes
-        
         % likely to be completely removed stuff
         hold_state = false% was ho, contained 'hold' or 'noho'
         hold_state2 = false % was ho2, contained 'hold' or 'noho'
@@ -125,8 +121,17 @@ classdef ZmapData < handle
         wey %welcome window y (welcome_pos(2))
         welx %welcome window x length
         wely %welcome window y length
+        
+        t0b % start time for earthquakes in primary catalog
+        teb % end time for earthquakes in primary catalog
     end
     methods
+        function out=get.teb(obj)
+            out=max(obj.a.Date);
+        end
+        function out=get.t0b(obj)
+            out=min(obj.a.Date);
+        end
         function out=get.wex(obj)
             out=obj.welcome_pos(1);
         end
