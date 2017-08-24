@@ -116,6 +116,7 @@ classdef ZmapData < handle
         inb2=1; % maximum curvature method(?)
         bo1=nan; % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[]; % b-value grid
+        calcgrid; % grid used for calculations
     end
     properties(Dependent)
         wex %welcome window x (welcome_pos(1))
