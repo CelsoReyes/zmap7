@@ -8,6 +8,10 @@ function calc_Omoricross()
     report_this_filefun(mfilename('fullpath'));
     wCat='a'; % working catalog name
     
+    myvalues=table;
+    myvalues.Properties.Description('Omori cross-section parameters');
+    mygrid=ZG.calcgrid;
+    
     % Set the grid parameter
     % initial values
     %
@@ -168,7 +172,7 @@ function calc_Omoricross()
     set(gcf,'visible','on');
     watchoff
     
-    function my_calculation() % 'ca'
+    function my_calculate() % 'ca'
         figure(xsec_fig);
         hold on
         
@@ -185,7 +189,7 @@ function calc_Omoricross()
                 ['To select a polygon for a grid.       '
                 'Please use the LEFT mouse button of   '
                 'or the cursor to the select the poly- '
-                'gon. Use the RIGTH mouse button for   '
+                'gon. Use the RIGHT mouse button for   '
                 'the final point.                      '
                 'Mac Users: Use the keyboard "p" more  '
                 'point to select, "l" last point.      '
@@ -198,48 +202,32 @@ function calc_Omoricross()
             zmap_message_center.set_info('Message',' Thank you .... ')
         end % of if bGridEntireArea
         
+        % CREATE THE GRID (NEW WAY)
+        mygrid = ZmapGrid('omoricross',min(x),dx,max(x),min(y),dy,max(y),'km');
+        mygrid = mygrid.MaskWithPolygon(x,y);
+        mygrid.plot();
+        ll=mygrid.ActivePoints; % holdover.
         
-        %create a rectangular grid
-        xvect=[min(x):dx:max(x)];
-        yvect=[min(y):dd:max(y)];
-        gx = xvect;
-        gy = yvect;
-        tmpgri=zeros((length(xvect)*length(yvect)),2);
-        n=0;
-        for i=1:length(xvect)
-            for j=1:length(yvect)
-                n=n+1;
-                tmpgri(n,:)=[xvect(i) yvect(j)];
-            end
+        if tgl1
+            % get ni closest events
+            gridcats = mygrid.associateWithEvents(ZG.newa,fMaxRadius,ni,min(ZG.maepi.Date),[]);
+        else
+            % get events within ra
+            gridcats = mygrid.associateWithEvents(ZG.newa,ra,[],min(ZG.maepi.Date),[]);
         end
-        %extract all gridpoints in chosen polygon
-        XI=tmpgri(:,1);
-        YI=tmpgri(:,2);
-        %grid points in polygon
-        ll = polygon_filter(x,y,XI,YI,'inside');
-        newgri=tmpgri(ll,:);
-        
-        % Plot all grid points
-        plot(newgri(:,1),newgri(:,2),'+k')
         
         % Set itotal for waitbar
-        itotal = length(newgri(:,1));
+        itotal = length(mygrid);
         
-        zmap_message_center.set_info(' ','Running... ');think
-        %  make grid, calculate start- endtime etc.  ...
-        %
-        t0b = min(newa.Date)  ;
-        n = newa.Count;
-        teb = max(newa.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days)
         
         % loop over  all points
-        mCross = [];%NaN(length(newgri),20);
+        mCross = []; % NaN(length(newgri),20);
         allcount = 0.;
         wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name','Omori grid - percent done');;
+        set(wai,'NumberTitle','off','Name','Omori grid - percent done');
         drawnow
         
+        % if fixed magnitude of completeness, request from user
         if ZG.inb2 == 1
             def = {'1.5'};
             lines = 1;
@@ -249,25 +237,13 @@ function calc_Omoricross()
             fMcFix = str2double(answer{1});
         end
         
+        mCross=nan(numel(gridcats),20);
         % Loop over grid nodes
-        for i= 1:length(newgri(:,1))
+        for i= 1:numel(gridcats)
             % Grid coordinates
-            x = newgri(i,1);
-            y = newgri(i,2);
             allcount = allcount + 1.;
             
-            
-            % Select subcatalog
-            % Calculate distance from center point and sort with distance
-            l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
-            [s,is] = sort(l);
-            b = newa.subset(is) ;
-            vDist = l(is(:,1),:);
-            
-            % Cut to time period
-            vSel =  b.Date <= ZG.maepi.Date+ days(time);
-            b = b.subset(vSel);
-            vDist = vDist(vSel,:);
+            b = gridcats(i);  %already subset by date and radius/number events
             
             if ZG.inb2 == 1
                 fMc = fMcFix;
@@ -275,46 +251,22 @@ function calc_Omoricross()
                 nMethod = 1;
             else % ZG.inb2 == 3 % EMR method
                 nMethod = 6;
+                [fMc] = calc_Mc(b, nMethod, fBinning); % if this fails, once defaulted to nan.. but it shouldn't fail. right?
             end % END if ZG.inb2
             
-            % Choose between constant radius or constant number of events with maximum radius
-            if tgl1 == 0   % take point within r
-                % Use Radius to determine grid node catalog
-                l3 = vDist <= ra;
-                b = b(l3,:);
-                vDist = vDist(l3,:);
-                % Check for global Mc or individual, cut catalog at Mc
-                if ZG.inb2 ~= 1
-                    try
-                        [fMc] = calc_Mc(b, nMethod, fBinning);
-                    catch
-                        fMc = NaN;
-                    end
-                end
-                vSel = b.Magnitude >= fMc;
-                b = b(vSel,:);
-                vDist = vDist(vSel,:);
-                % Maximum Distance
-                fMaxDist = max(vDist);
-            else
-                % Determine ni number of events in learning period
-                % Set minimum number to constant number
-                Nmin = ni;
-                % Select constant number
-                b = b(1:ni,:);
-                % Maximum distance of events in learning period
-                fMaxDist = vDist(ni);
-                % Check for maximum distance
-                if fMaxDist > fMaxRadius
-                    vSel4 = (vDist(1:b.Count,:) < fMaxRadius);
-                    b = b(vSel4,:);
-                end
-            end % End If on tgl1
+            
+            % for some reason this was only associatdd with radius
+            if ~isnan(fMc)
+                b=b.subset(b.Magnitude >= fMc);
+            end
+            
+            
+            fMaxDist = max(b.epicentralDistanceTo(mygrid.X(i),mygrid.Y(i)));
             
             %Set catalog after selection
-            ZG.newt2 = b;
+            ZG.newt2 = b; %WHY? probably delete this
             % Number of events per gridnode
-            [nY,nX]=size(b);
+            nY=b.Count;
             
             
             % Calculate the relative rate change, p, c, k, resolution
@@ -323,7 +275,7 @@ function calc_Omoricross()
                 [mResult] = calc_Omoriparams(b,time,timef,bootloops,ZG.maepi,nMod);
                 
                 % Result matrix
-                mCross = [mCross; mResult.pval1 mResult.pmeanStd1 mResult.cval1 mResult.cmeanStd1...
+                mCross(i,:) = [mResult.pval1 mResult.pmeanStd1 mResult.cval1 mResult.cmeanStd1...
                     mResult.kval1 mResult.kmeanStd1 mResult.nMod nY fMaxDist...
                     mResult.pval2 mResult.pmeanStd2 mResult.cval2 mResult.cmeanStd2 mResult.kval2 mResult.kmeanStd2 mResult.H...
                     mResult.KSSTAT mResult.P mResult.fRMS fMc];
@@ -331,99 +283,75 @@ function calc_Omoricross()
                 if isempty(fMaxDist)
                     fMaxDist = NaN;
                 end
-                mCross = [mCross; NaN NaN NaN NaN NaN NaN NaN nY fMaxDist NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN fMc];
+                mCross(i,:) = [NaN NaN NaN NaN NaN NaN NaN nY fMaxDist NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN fMc];
             end
             waitbar(allcount/itotal)
         end  % for newgr
         
         drawnow
-        gx = xvect;
-        gy = yvect;
         
-        % Save the data to rcval_grid.mat
-        %save Omoricross.mat mCross gx gy dx dy tdiff t0b teb newa a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy ZG.xsec_width_km lon1 lat1 lon2 lat2
-        %disp('Saving data to Omoricross.mat in current directory')
         catsave3('calc_Omoricross')
         
         close(wai)
         watchoff
         
+        myvalues = array2table(mCross,'VariableNames',...
+            {'p-value',... mPval, p-Value
+            'p-value std',... mPvalstd, p-value standard deviation
+            'c-value',... mCval, c-value 
+            'c-value std',...mCvalstd, c-value standard deviation
+            'k-value',... mKval, k-value
+            'k-value std',... mKvalstd, k-value standard deviation
+            'model',... mMod, Chosen fitting model
+            'Number of Events',...mNumevents, Number of events per grid node
+            'Radius [km]',... vRadiusRes,  Radii of chosen events, Resolution
+            'p-value2',... mPval, p-Value2 UNUSED(?)
+            'p-value2 std',... mPvalstd, p-value2 standard deviation UNUSED(?)
+            'c-value2',... mCval, c-value2  UNUSED(?)
+            'c-value2 std',...mCvalstd, c-value2 standard deviation UNUSED(?)
+            'k-value2',... mKval, k-value UNUSED(?)
+            'k-value2 std',... mKvalstd, k-value standard deviation UNUSED(?)
+            'KS-Test H',... mKstestH, KS-Test (H-value) binary rejection criterion at 95% confidence level
+            'KS-Test stat',... mKsstat, KS-Test statistic for goodness of fit
+            'KS-Test P-value', ...  mKsp, KS-Test p-value
+            'RMS', ... mRMS, RMS value for goodness of fit
+            'Mc value' ... mMc, Mc value
+            });
+        
+        
+        % could also add myvalues.Properties.Description
+        % and myvalues.Properties.VariableUnits
+        
+        
+        
+        %{
         % Prepare plotting
-        normlap2=NaN(length(tmpgri(:,1)),1);
+        normlap2=NaN(length(mygrid),1);
         
         %%% p,c,k- values for period before large aftershock or just modified Omori law
         % p-value
         normlap2(ll)= mCross(:,1);
         mPval=reshape(normlap2,length(yvect),length(xvect));
         
-        % p-value standard deviation
-        normlap2(ll)= mCross(:,2);
-        mPvalstd = reshape(normlap2,length(yvect),length(xvect));
-        
-        % c-value
-        normlap2(ll)= mCross(:,3);
-        mCval = reshape(normlap2,length(yvect),length(xvect));
-        
-        % c-value standard deviation
-        normlap2(ll)= mCross(:,4);
-        mCvalstd = reshape(normlap2,length(yvect),length(xvect));
-        
-        % k-value
-        normlap2(ll)= mCross(:,5);
-        mKval = reshape(normlap2,length(yvect),length(xvect));
-        
-        % k-value standard deviation
-        normlap2(ll)= mCross(:,6);
-        mKvalstd = reshape(normlap2,length(yvect),length(xvect));
-        
-        %%% Resolution parameters
-        % Number of events per grid node
-        normlap2(ll)= mCross(:,8);
-        mNumevents = reshape(normlap2,length(yvect),length(xvect));
-        
-        % Radii of chosen events, Resolution
-        normlap2(ll)= mCross(:,9);
-        vRadiusRes = reshape(normlap2,length(yvect),length(xvect));
-        
-        % Chosen fitting model
-        normlap2(ll)= mCross(:,7);
-        mMod = reshape(normlap2,length(yvect),length(xvect));
-        
-        
-        % KS-Test (H-value) binary rejection criterion at 95% confidence level
-        normlap2(ll)= mCross(:,16);
-        mKstestH = reshape(normlap2,length(yvect),length(xvect));
-        
-        %  KS-Test statistic for goodness of fit
-        normlap2(ll)= mCross(:,17);
-        mKsstat = reshape(normlap2,length(yvect),length(xvect));
-        
-        %  KS-Test p-value
-        normlap2(ll)= mCross(:,18);
-        mKsp = reshape(normlap2,length(yvect),length(xvect));
-        
-        % RMS value for goodness of fit
-        normlap2(ll)= mCross(:,19);
-        mRMS = reshape(normlap2,length(yvect),length(xvect));
-        
-        % Mc value
-        normlap2(ll)= mCross(:,20);
-        mMc = reshape(normlap2,length(yvect),length(xvect));
-        
-        % Data to plot first map
-        re3 = mPval;
-        lab1 = 'p-value';
-        
+            % and so on... and so on... 
+        %}
         % View the map
-        view_Omoricross(lab1,re3)
+        view_Omoricross(myvalues, mygrid, 'p-value');
+        
+    end
+    
+    function my_save()
+        % save myvalues,mygrid,  maybe the catalog, too.
         
     end
     
     % Load existing cross section
-    function myload() % 'lo'
+    function my_load() % 'lo'
         [file1,path1] = uigetfile(['*.mat'],'Omori parameter cross section');
         if length(path1) > 1
-            think
+            
+            %{ 
+             ... was
             load([path1 file1])
             
             normlap2=NaN(length(tmpgri(:,1)),1);
@@ -431,71 +359,23 @@ function calc_Omoricross()
             % p-value
             normlap2(ll)= mCross(:,1);
             mPval=reshape(normlap2,length(yvect),length(xvect));
+            ... etc
+            %}
+            tmp=load(fullfile(path1, file1));
+            myvalues=tmp.myvalues;
+            mygrid=tmp.mygrid;
+            clear tmp
             
-            % p-value standard deviation
-            normlap2(ll)= mCross(:,2);
-            mPvalstd = reshape(normlap2,length(yvect),length(xvect));
-            
-            % c-value
-            normlap2(ll)= mCross(:,3);
-            mCval = reshape(normlap2,length(yvect),length(xvect));
-            
-            % c-value standard deviation
-            normlap2(ll)= mCross(:,4);
-            mCvalstd = reshape(normlap2,length(yvect),length(xvect));
-            
-            % k-value
-            normlap2(ll)= mCross(:,5);
-            mKval = reshape(normlap2,length(yvect),length(xvect));
-            
-            % k-value standard deviation
-            normlap2(ll)= mCross(:,6);
-            mKvalstd = reshape(normlap2,length(yvect),length(xvect));
-            
-            %%% Resolution parameters
-            % Number of events per grid node
-            normlap2(ll)= mCross(:,8);
-            mNumevents = reshape(normlap2,length(yvect),length(xvect));
-            
-            % Radii of chosen events, Resolution
-            normlap2(ll)= mCross(:,9);
-            vRadiusRes = reshape(normlap2,length(yvect),length(xvect));
-            
-            % Chosen fitting model
-            normlap2(ll)= mCross(:,7);
-            mMod = reshape(normlap2,length(yvect),length(xvect));
-            
-            
-            % KS-Test (H-value) binary rejection criterion at 95% confidence level
-            normlap2(ll)= mCross(:,16);
-            mKstestH = reshape(normlap2,length(yvect),length(xvect));
-            
-            %  KS-Test statistic for goodness of fit
-            normlap2(ll)= mCross(:,17);
-            mKsstat = reshape(normlap2,length(yvect),length(xvect));
-            
-            %  KS-Test p-value
-            normlap2(ll)= mCross(:,18);
-            mKsp = reshape(normlap2,length(yvect),length(xvect));
-            
-            % RMS value for goodness of fit
-            normlap2(ll)= mCross(:,19);
-            mRMS = reshape(normlap2,length(yvect),length(xvect));
-            
-            % Mc value
-            normlap2(ll)= mCross(:,20);
-            mMc = reshape(normlap2,length(yvect),length(xvect));
+            ... old stuff follows again
             % Initial map set to relative rate change
             re3 = mPval;
-            lab1 = 'p-value';
             nlammap
             [xsecx, xsecy inde] =mysect(ZG.(wCat).Latitude',ZG.(wCat).Longitude',ZG.(wCat).Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             
-            old = re3;
             % Plot
-            view_Omoricross(lab1,re3);
+            view_Omoricross(myvalues, mygrid, 'p-value');
         else
             return
         end
@@ -584,6 +464,6 @@ function calc_Omoricross()
         tgl2=tgl2.Value;
         bGridEntireArea = get(chkGridEntireArea, 'Value');
         close
-        my_calculation();
+        my_calculate();
     end
 end

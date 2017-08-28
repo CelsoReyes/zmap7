@@ -6,15 +6,23 @@
 %  Modified by Celso Reyes Spring/Summer 2017
 
 global sys ZG
-%system_dependent(14,'on')
 disp('This is zmap.m - version 7.0')
 
-% set some of the paths
-set_zmap_paths();
+% set up paths
 
-ZG=ZmapGlobal.Data; % get zmap globals
+% ZG (ZmapGlobal) provides access to all ZMAP's global variables
+% When variables are accessed direclty via ZmapGlobal.Data.variablename, they
+% should not modify the original.
+% However, assigning ZmapGlobal.Data to a variable provides direct access to the variables.
+% This allows assignment.  
+%
+%       ZmapGlobal.Data.ra = 100; % value is effectively ignored!
+%       ZG=ZmapGlobal.Data; %provide read/write access to global data.
+%       ZG.ra = 23  % changes ra globally
+set_zmap_paths;
+ZG=ZmapGlobal.Data;
 
-% Set up the different compuer systems
+% Set up the different computer systems
 sys = computer;
 
 if verLessThan('matlab',ZG.min_matlab_version)
@@ -32,7 +40,7 @@ if ~ismember( sys(1:3), tested_systems)
 end
 
 
-% set some initial variables
+% set system dpendent initial variables
 ini_zmap
 
 %{
@@ -44,30 +52,6 @@ well = [];
 stat = [];
 faults = [];
 %}
-
-%{
-% Almost all zmap routine's calls to th uicontrol do so in the following order:
-%   uicontrol(...,'Position',[0. ... ], 'Units', 'normalized')
-%   however, the program may have a different default, like 'Pixel', and so the previous
-%   command incorrectly places the controls.  This can be fixed by changing the order to
-%   uicontrol(...,'Units','normalized',Position',[0. ... ])
-%
-%   But there are thousands of uicontrol calls with differing formats making this a chore
-%   one solution, is to change the defaultuicontrolunits to 'normalized'. The problem,
-%   however, is that this breaks the default dialogs which count on (for some reason) the
-%   default units being "pixels".
-%
-% current solution? always call 'figure_w_normalized_uicontrolunits' instead of 'figure'
-% this adapter will change the default units for all children of that figure.  This routine,
-% or others like it, would allow us to control figure behavior across the entire codebase.
-%
-% SO... if something doesn't have buttons, but should, then maybe it was assuming "pixels".
-%}
-
-set(0,'DefaultAxesFontName','Arial');
-set(0,'DefaultTextFontName','Arial');
-set(0,'DefaultAxesTickLength',[0.01 0.01]);
-set(0,'DefaultFigurePaperPositionMode','auto');
 
 % open message window
 zmap_message_center;

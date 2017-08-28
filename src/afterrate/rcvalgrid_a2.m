@@ -274,7 +274,7 @@ function [sel]=rcvalgrid_a2()
                     mRc.kval1 mRc.kmedStd1 mRc.fStdBst mRc.nMod mRc.nY mRc.fMaxDist mRc.fRcBst...
                     mRc.pval2 mRc.pmedStd2 mRc.cval2 mRc.cmedStd2 mRc.kval2 mRc.kmedStd2 mRc.H mRc.KSSTAT mRc.P mRc.fRMS mRc.fTBigAf];
             else
-                mRcGrid = [mRcGrid; NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN NaN];
+                mRcGrid = [mRcGrid; nan(1,26)];
             end
             waitbar(allcount/itotal)
         end  % for newgr

@@ -97,8 +97,8 @@ classdef ZmapData < handle
         
         %unknown other entities
         Rconst %used with the slicers
-        ra=5% max sphere radius
-        ni=100 %number of nearby events for grid calculations
+        ra=5% default max sphere radius
+        ni=100 %default number of nearby events for grid calculations
         compare_window_yrs =1.5 % Compare window length (years)
         compare_window_yrs_v3=1.0% Compare window length, alternate version
         
@@ -117,6 +117,7 @@ classdef ZmapData < handle
         bo1=nan; % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[]; % b-value grid
         calcgrid; % grid used for calculations
+        selection_shape=ShapeSelection();
     end
     properties(Dependent)
         wex %welcome window x (welcome_pos(1))

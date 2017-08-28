@@ -3,6 +3,8 @@ function [mask, max_km] = closestEvents(catalog, lat, lon, depth, n)
     % for hypocentral distance, leave depth empty.
     %  ex.  closestEvents(mycatalog, 82,-120,[],20);
     % the distance to the nth closest event
+    %
+    % see also eventsInRadius
     if isempty(depth)
         dists_km = catalog.epicentralDistanceTo(lat, lon);
     else

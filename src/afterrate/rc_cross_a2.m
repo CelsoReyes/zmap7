@@ -196,7 +196,7 @@ function rc_cross_a2()
     % the seimicity and selecting the ni neighbors
     % to each grid point
     
-    function my_calculation()
+    function my_calculate()
         %
         % TOFIX needs xsecx and xsecy
         figure(xsec_fig);
@@ -606,7 +606,7 @@ function rc_cross_a2()
         tgl2=tgl2.Value;
         bGridEntireArea = get(chkGridEntireArea, 'Value');
         close,
-        my_calculation()
+        my_calculate()
     end
     
     function callbackfun_001(mysrc,myevt)

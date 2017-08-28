@@ -69,7 +69,7 @@ function selectp(in_or_out)
             'DisplayName','Selected Events');
         
         %change the polygon characteristics
-        set(mouse_points_overlay,'LineStyle',':','LineWidth',1.5,'Color',[.5 .5 .5],'Marker','none');
+        set(mouse_points_overlay,'LineStyle','--','LineWidth',2,'Color',[.5 .5 .5],'Marker','none');
         if ~washeld; hold(ax,'off');end
     end
     % ask for a name for this new catalog

@@ -94,6 +94,10 @@ classdef ZmapCatalog < handle
             if ~exist('verbosity','var')
                 verbosity='';
             end
+            if numel(obj) > 1
+                s = sprintf('%d Catalogs',numel(obj));
+                return
+            end
             
             if obj.Count==0
                 s = sprintf('Empty Catalog, named "%s"',obj.Name);
@@ -446,16 +450,13 @@ classdef ZmapCatalog < handle
         
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
-            delta_lat = (obj.Latitude-to_lat) * 111;
-            delta_lon = (obj.Longitude - to_lat)*cosd(to_lon)*111;
-            dists_km = sqrt( delta_lon.^2 + delta_lat.^2 );
+            dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
         end
         function dists_km = hypoentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
             % get epicentral (lat-lon) distance to another point
-            delta_lat = (obj.Latitude-to_lat) * 111;
-            delta_lon = (obj.Longitude - to_lat)*cosd(to_lon)*111;
+            dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
             delta_dep = (obj.Depth - to_depth_km);
-            dists_km = sqrt( delta_lon.^2 + delta_lat.^2 + delta_dep.^2);
+            dists_km = sqrt( dists_km^2 + delta_dep ^2);
         end
     end
     

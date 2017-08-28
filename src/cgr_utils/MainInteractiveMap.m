@@ -27,7 +27,7 @@ classdef MainInteractiveMap
             watchon; drawnow;
             disp('MainInteractiveMap.update()');
             %h=figureHandle();
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             if isempty(ax)
                 % we have to redraw the whole thing, instead.
                 obj.createFigure()
@@ -98,7 +98,7 @@ classdef MainInteractiveMap
             title(ax, MainInteractiveMap.get_title(ZG.a),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k','Interpreter','none');
-            if ~isempty(mainAxes())
+            if ~isempty(MainInteractiveMap.mainAxes())
                 % create the main earthquake axis
             end
             disp('setting up main map:');
@@ -203,7 +203,7 @@ classdef MainInteractiveMap
             %}
             uimenu(ovmenu,'Label','Plot stations + station names',...
                 'Separator', 'on',...
-                'Callback',@(~,~)plotstations(mainAxes()));
+                'Callback',@(~,~)plotstations(MainInteractiveMap.mainAxes()));
             
             lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
             
@@ -502,6 +502,10 @@ classdef MainInteractiveMap
         end
         
         
+        function h = mainAxes()
+            h = findobj( 'Tag','mainmap_ax');
+        end
+        
         %% plot CATALOG layer
         function plotEarthquakes(catalog, divs)
             disp('MainInteractiveMap.plotEarthquakes(...)');
@@ -526,7 +530,7 @@ classdef MainInteractiveMap
                     error('unanticipated legend type');
             end
             
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             %set aspect ratio
             ZG = ZmapGlobal.Data; % handle to "globals"
             if strcmp(ZG.lock_aspect,'on')
@@ -558,7 +562,7 @@ classdef MainInteractiveMap
             
             mask = mycat.Magnitude <= divs(1);
             
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             clear_quake_plotinfo();
             washeld = ishold(ax); hold(ax,'on');
             h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
@@ -621,7 +625,7 @@ classdef MainInteractiveMap
             
             mask = mycat.Depth <= divs(1);
             
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             clear_quake_plotinfo();
             washeld = ishold(ax); hold(ax,'on')
             
@@ -656,7 +660,7 @@ classdef MainInteractiveMap
             % colorized by depth, with size dictated by magnitude
             persistent colormapName
             
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             hquakes = findobj(ax,'DisplayName','Events by Mag & Depth');
             if isempty(hquakes)
                 clear_quake_plotinfo();
@@ -784,7 +788,7 @@ classdef MainInteractiveMap
             cmapcolors = colormap('lines');
             cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
             
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             clear_quake_plotinfo();
             washeld=ishold(ax); hold(ax,'on');
             for i=1:numel(divs)-1
@@ -821,7 +825,7 @@ classdef MainInteractiveMap
             %  this allows the plotting of a variety of clusters.
             % if varargin includes the pair {'DisplayName',..}
             % then that is how this would be represented in the legend
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             if isempty(idx), idx=0;end
             thisTag = ['mapax_other' num2str(idx)];
             h = findobj(ax,'Tag',thisTag);
@@ -878,7 +882,7 @@ classdef MainInteractiveMap
                 h = plot_helper(big_events,defaults,exist('reset','var')&&reset);
                 
                 evlabels = event_labels(ZG.maepi);
-                ax = mainAxes();
+                ax = MainInteractiveMap.mainAxes();
                 te1 = text(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,evlabels);
                 set(te1,textdefaults);
                 set(h,'Visible','on');
@@ -938,9 +942,6 @@ end
 function h = figureHandle()
     h = findobj( 'Tag','seismicity_map');
 end
-function h = mainAxes()
-    h = findobj( 'Tag','mainmap_ax');
-end
 
 function xy_list = replace_xy_if_exists(xy_list, new_xy_list)
     % replaces list of [lon,lat] with new list, if it exist.
@@ -973,7 +974,7 @@ function h=plot_helper(xy, defaults, reset)
     % Defaults contain all the plotting defaults necessary
     % reset - if true, then all default values are re-applied
     
-    ax = mainAxes();
+    ax = MainInteractiveMap.mainAxes();
     h = findobj(ax,'Tag',defaults.Tag);
     if ~isempty(h)
         isEmptyNumeric = (isnumeric(xy) && (isempty(xy) || all(isnan(xy(:)))));
@@ -1123,10 +1124,10 @@ end
 
 
 function toggle_grid(src, ~)
-    ax = mainAxes();
+    ax = MainInteractiveMap.mainAxes();
     switch src.Checked
         case 'off'
-            ax = mainAxes();
+            ax = MainInteractiveMap.mainAxes();
             src.Checked = 'on';
             grid(ax,'on');
         case 'on'
@@ -1142,7 +1143,7 @@ function toggle_grid(src, ~)
 end
 
 function toggle_aspectratio(src, ~)
-    ax = mainAxes();
+    ax = MainInteractiveMap.mainAxes();
     switch src.Checked
         case 'off'
             src.Checked = 'on';
@@ -1207,7 +1208,7 @@ function set_3d_view(src,~)
     drawnow;
     switch src.Label
         case '3-D view'
-            ax=mainAxes();
+            ax=MainInteractiveMap.mainAxes();
             hold on
             view(ax,3);
             grid(ax,'on');
@@ -1218,7 +1219,7 @@ function set_3d_view(src,~)
             hold off
             src.Label = '2-D view';
         otherwise
-            ax=mainAxes();
+            ax=MainInteractiveMap.mainAxes();
             view(ax,2);
             grid(ax,'on');
             rotate3d(ax,'off'); %activate rotation tool

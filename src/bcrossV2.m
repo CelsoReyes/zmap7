@@ -320,6 +320,6 @@ function bcrossV2(sel)
         ZG.inb1=hndl1.Value;
         ZG.inb2=hndl2.Value;
         close;
-        my_calculation();
+        my_calculate();
     end
 end
