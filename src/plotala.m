@@ -376,14 +376,14 @@ function plotala()
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         plotala();
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         tre2=str2num(new.String);
         'String';
@@ -391,14 +391,14 @@ function plotala()
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         abo = abo2;
         plotala();
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(mamo);
         delete(mamo1);
@@ -407,14 +407,14 @@ function plotala()
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.tresh_km=str2double(set_ni2.String);
         set_ni2.String=num2str(ZG.tresh_km,3);
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         pause(1);
@@ -422,26 +422,26 @@ function plotala()
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         agroup;
         cian;
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cian2;
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         sucra;
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         agz;
     end

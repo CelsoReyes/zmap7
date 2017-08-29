@@ -9,7 +9,7 @@ function  bdiff_bdepth(mycat)
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
-    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
+    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
     think
@@ -117,7 +117,7 @@ function  bdiff_bdepth(mycat)
     x = xt3(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ me, bv, si, av] = bmemag(mycat.subset(l2)) ;
+    [ me, bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
     
     bv = -bv;
     
@@ -128,8 +128,8 @@ function  bdiff_bdepth(mycat)
     [aw bw,  ew] = wls(x',y');
     p = [bw aw];
     %[p,S] = polyfit(x,y,1)                    % fit a line to background
-    p2 = [bw+si aw];
-    p3 = [bw-si aw];
+    p2 = [bw+onesigma aw];
+    p3 = [bw-onesigma aw];
     x2 = 1:0.1:6;
     f = polyval(p,x);
     f2 = polyval(p2,x);
@@ -167,7 +167,7 @@ function  bdiff_bdepth(mycat)
     tt1=num2str(bw,3);
     tt2=num2str(std_backg);
     tt4=num2str(bv,3);
-    tt5=num2str(si,2);
+    tt5=num2str(onesigma,2);
     
     
     
@@ -241,25 +241,25 @@ function  bdiff_bdepth(mycat)
     hold off;
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         infoz(1);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         bfitnew(mycat);
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem;
+        plorem(onesigma, aw, bw);
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         timeplot(mycat);
     end

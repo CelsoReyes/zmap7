@@ -42,21 +42,21 @@ set(gcf,'visible','on');
 watchoff;
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   nev=str2double(input1.String);
    input1.String=num2str(nev);
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   inc=str2double(input2.String);
    input2.String=num2str(inc);
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
@@ -64,7 +64,7 @@ function callbackfun_003(mysrc,myevt)
 end
  
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   think;

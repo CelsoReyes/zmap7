@@ -592,19 +592,19 @@ function makecmap(bins,fighandle)
     
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         makecmap('reset');
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         makecmap('export');
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         makecmap('close');
     end

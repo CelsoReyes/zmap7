@@ -503,7 +503,7 @@ function [sel]=rcvalgrid_a2()
     end
     %{
 function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.inb2=hndl2.Value;
         ;
@@ -512,45 +512,45 @@ function callbackfun_001(mysrc,myevt)
     
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         mysrc.Value=str2double(mysrc.String);
         time=days(mysrc.Value);
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         timef=str2double(mysrc.String);
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         bootloops=str2double(mysrc.String);
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         Nmin=str2double(mysrc.String);
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fMaxRadius=str2double(mysrc.String);
     end
     
     function callbackfun_cancel(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         done;
     end
     
     function callbackfun_go(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         useEventsInRadius=selOpt.UseEventsInRadius;
         ni=selOpt.ni;

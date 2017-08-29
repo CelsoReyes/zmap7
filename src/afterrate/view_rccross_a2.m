@@ -252,13 +252,13 @@ function view_rccross_a2(lab1,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         view_rccross_a2(lab1,re3);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
@@ -269,7 +269,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
@@ -281,7 +281,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
@@ -289,7 +289,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
@@ -297,7 +297,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
@@ -305,7 +305,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;
@@ -313,7 +313,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Sigma';
         re3 = mRelchange;
@@ -321,7 +321,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Model';
         re3 = mMod;
@@ -329,7 +329,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Rejection';
         re3 = mKstestH;
@@ -337,7 +337,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS distance';
         re3 = mKsstat;
@@ -345,7 +345,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS-Test p-value';
         re3 = mKsp;
@@ -353,7 +353,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='RMS';
         re3 = mRMS;
@@ -361,7 +361,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
         re3 = mNumevents;
@@ -369,7 +369,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius / [km]';
         re3 = vRadiusRes;
@@ -377,7 +377,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_016(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-value';
         re3 = mPval;
@@ -385,7 +385,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_017(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
         re3 = mPvalstd;
@@ -393,7 +393,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_018(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
         re3 = mCval;
@@ -401,7 +401,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_019(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
         re3 = mCvalstd;
@@ -409,7 +409,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_020(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
         re3 = mKval;
@@ -417,7 +417,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_021(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
         re3 = mKvalstd;
@@ -425,7 +425,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_022(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p2-value';
         re3 = mPval2;
@@ -433,7 +433,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_023(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
         re3 = mPvalstd2;
@@ -441,7 +441,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_024(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
         re3 = mCval2;
@@ -449,7 +449,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_025(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
         re3 = mCvalstd2;
@@ -457,7 +457,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_026(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
         re3 = mKval2;
@@ -465,7 +465,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_027(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
         re3 = mKvalstd2;
@@ -473,7 +473,7 @@ function view_rccross_a2(lab1,re3)
     end
     
     function callbackfun_028(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end

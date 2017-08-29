@@ -474,14 +474,14 @@ function [sel] = bpvalgrid()
     
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.inb2=hndl2.Value;
         ;
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni=str2double(freq_field.String);
         freq_field.String=num2str(ni);
@@ -490,7 +490,7 @@ function [sel] = bpvalgrid()
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ra=str2double(freq_field0.String);
         freq_field0.String=num2str(ra);
@@ -499,28 +499,28 @@ function [sel] = bpvalgrid()
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         dx=str2double(freq_field2.String);
         freq_field2.String=num2str(dx);
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         dy=str2double(freq_field3.String);
         freq_field3.String=num2str(dy);
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         Nmin=str2double(freq_field4.String);
         freq_field4.String=num2str(Nmin);
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         done;

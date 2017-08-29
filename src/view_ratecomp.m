@@ -196,14 +196,14 @@ function view_ratecomp(det,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(findobj(xmsp,'Type','axes'));
         view_ratecomp(det,re3);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         nosort = 'on';
         h1 = gca;
@@ -212,7 +212,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         nosort = 'on';
         h1 = gca;
@@ -221,7 +221,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         nosort = 'on';
         stri = 'Polygon';
@@ -231,7 +231,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det ='ast';
         re3 = old;
@@ -239,7 +239,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='per';
         re3 = per;
@@ -247,7 +247,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='bet';
         re3 = beta_map;
@@ -255,7 +255,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='bet';
         re3 = betamap;
@@ -263,7 +263,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
         re3 = reso;
@@ -271,40 +271,40 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         re4 = re3;
         plotmap ;
     end
     
     function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fixax2 ;
     end
     
     function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         colback = 1;
         dramap_z;
     end
     
     function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         colback = 2;
         dramap_z;
     end
     
     function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end
     
     function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         g=gray;
         g = g(64:-1:1,:);
@@ -313,7 +313,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_016(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         g=jet;
         g = g(64:-1:1,:);
@@ -321,13 +321,13 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_017(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plot(newgri(:,1),newgri(:,2),'+k');
     end
     
     function callbackfun_018(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.shading_style='flat';
         axes(hzma);
@@ -335,7 +335,7 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_019(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.shading_style='interp';
         axes(hzma);
@@ -343,21 +343,21 @@ function view_ratecomp(det,re3)
     end
     
     function callbackfun_020(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         axes(hzma);
         brighten(0.4);
     end
     
     function callbackfun_021(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         axes(hzma);
         brighten(-0.4);
     end
     
     function callbackfun_022(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         hold on;
         update(mainmap());

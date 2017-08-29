@@ -146,77 +146,77 @@ function mycat=cpara(option, mycat)
     end
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp7=str2double(inp1.String);
    inp1.String=num2str(tmp7));
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp8=str2double(inp2.String);
    inp2.String=num2str(tmp8);
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp5=str2double(inp3.String);
    inp3.String=num2str(tmp5);
 end
  
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp6=str2double(inp4.String);
    inp4.String=num2str(tmp6);
 end
  
 function callbackfun_005(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp9=str2double(inp5.String);
    inp5.String=num2str(tmp9);
 end
  
 function callbackfun_006(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp10=str2double(inp6.String);
    inp6.String=num2str(tmp10);
 end
  
 function callbackfun_007(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp1=str2double(inp7.String);
    inp7.String=num2str(tmp1);
 end
  
 function callbackfun_008(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp2=str2double(inp8.String);
    inp8.String=num2str(tmp2);
 end
  
 function callbackfun_009(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp3=str2double(inp9.String);
    inp9.String=num2str(tmp3);
 end
  
 function callbackfun_010(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tmp4=str2double(inp10.String);
    inp10.String=num2str(tmp4);
 end
  
 function callbackfun_011(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
@@ -224,7 +224,7 @@ function callbackfun_011(mysrc,myevt)
 end
  
 function callbackfun_012(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   think;
@@ -233,7 +233,7 @@ function callbackfun_012(mysrc,myevt)
 end
  
 function callbackfun_013(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   clinfo(15);
 end

@@ -185,14 +185,14 @@ function view_xstress(lab1,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         re3 = r;
         view_xstress(lab1,re3);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
@@ -204,7 +204,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
@@ -216,7 +216,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1=gca;
         ZG=ZmapGlobal.Data;
@@ -228,7 +228,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\sigma';
         re3 = mVariance;
@@ -236,7 +236,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\Phi';
         re3 = mPhi;
@@ -244,7 +244,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend [deg]';
         re3 = mTS1;
@@ -252,7 +252,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 plunge [deg]';
         re3 = mPS1;
@@ -260,7 +260,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 trend [deg]';
         re3 = mTS2;
@@ -268,7 +268,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 plunge [deg]';
         re3 = mPS2;
@@ -276,7 +276,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 trend [deg]';
         re3 = mTS3;
@@ -284,7 +284,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 plunge [deg]';
         re3 = mPS3;
@@ -292,7 +292,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\beta [deg]';
         re3 = mBeta;
@@ -300,7 +300,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\tau [deg]';
         re3 = mTau;
@@ -308,7 +308,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
         re3 = mResolution;
@@ -316,7 +316,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_016(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
         re3 = mNumber;
@@ -324,7 +324,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_017(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend to strike [deg]';
         re3 = mTS1Rel;
@@ -332,7 +332,7 @@ function view_xstress(lab1,re3)
     end
     
     function callbackfun_018(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end

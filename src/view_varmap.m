@@ -174,13 +174,13 @@ function view_varmap(lab1,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         view_varmap(lab1,[]);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ni';
@@ -193,7 +193,7 @@ function view_varmap(lab1,re3)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
@@ -206,7 +206,7 @@ function view_varmap(lab1,re3)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
         ZG=ZmapGlobal.Data;
@@ -218,7 +218,7 @@ function view_varmap(lab1,re3)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
         re3 = r;
@@ -226,7 +226,7 @@ function view_varmap(lab1,re3)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='Radius';
         re3 = rama;
@@ -234,14 +234,14 @@ function view_varmap(lab1,re3)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         colback = 1;
         dramap_stress2;
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end

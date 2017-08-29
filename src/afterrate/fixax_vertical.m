@@ -72,21 +72,21 @@ function fixax_vertical(re3);
     
     set(f,'visible','on');watchoff
     function min_callback(mysrc,~)
-        % automatically created callback function from text
+
         mysrc.Value = str2double(mysrc.String);
     end
     
     function max_callback(mysrc,~)
-        % automatically created callback function from text
+
         mysrc.Value = str2double(mysrc.String);
     end
     
     function close_callback(mysrc, ~)
-        % automatically created callback function from text
+
         zmap_message_center();
     end
     function go_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fix2=inp3_field.Value;
@@ -104,7 +104,7 @@ function fixax_vertical(re3);
         watchoff;
     end
     function freeze_colorbar_callback(mysrc,~)
-        % automatically created callback function from text
+
         ZG.freeze_colorbar = logical(mysrc.Value);
     end
 end

@@ -220,20 +220,20 @@ function view_qva(lab1,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         web(['file:' hodi '/help/quarry.htm']) ;
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(findobj(qmap,'Type','axes'));
         view_qva(lab1,re3);
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         circle;
@@ -242,7 +242,7 @@ function view_qva(lab1,re3)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         stri = 'Polygon';
         h1 = gca;
@@ -252,7 +252,7 @@ function view_qva(lab1,re3)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='day/night ratio';
         re3 = old;
@@ -260,7 +260,7 @@ function view_qva(lab1,re3)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni=str2num(set_nia.String);
         'String';
@@ -268,20 +268,20 @@ function view_qva(lab1,re3)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         %TOFIX callback does nothing
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.tresh_km=str2double(set_ni2.String);
         set_ni2.String=num2str(ZG.tresh_km);
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         pause(1);

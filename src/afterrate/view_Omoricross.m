@@ -230,13 +230,13 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         my_plot(field_name);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ni';
@@ -247,7 +247,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
@@ -258,7 +258,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
@@ -269,7 +269,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
@@ -277,7 +277,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
@@ -285,7 +285,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
@@ -293,7 +293,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;

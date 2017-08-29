@@ -419,14 +419,12 @@ function timeplot(mycat, nosort)
     function cb_010(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;
-        selt = 'in';
-        bdiff2;
+        bdiff2();
     end
     
     function plotwithtime(mysrc,myevt,sPar)
         %sPar tells what to plot.  'mc', 'b'
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        selt = 'in';
         plot_McBwtime(sPar);
     end
     

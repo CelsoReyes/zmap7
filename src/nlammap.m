@@ -168,19 +168,19 @@ p2=ginput(1);
     
     
     function info1_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         web(['file:' hodi '/zmapwww/chp11.htm#996756']) ;
     end
     
     function info2_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         web(['file:' hodi '/zmapwww/chap4.htm#997433']) ;
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in2=uic.Value;
         switch in2
@@ -199,13 +199,13 @@ p2=ginput(1);
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.xsec_width_km=str2double(get(set_width,'String'));
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.xsec_rotation_deg=str2double(get(set_rotationangle,'String'));
     end

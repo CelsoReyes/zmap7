@@ -107,7 +107,7 @@ te= text('string','D-value','pos',[0.49,0.02], 'fontsize',12);
 set(gcf, 'visible','on');
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   Dvbtim;
 end

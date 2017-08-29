@@ -159,7 +159,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     watchoff
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         txtHndl=get(gco,'UserData');
         hndlList=get(gcf,'UserData');
@@ -168,7 +168,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         f1=gcf;
         f2=gpf;

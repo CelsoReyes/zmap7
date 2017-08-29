@@ -84,21 +84,21 @@ txt2 = text(...
 set(mess,'visible','on')
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   xcordinate=str2double(inp1_field.String);
   inp1_field.String=num2str(xcordinate);
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ycordinate=str2double(inp2_field.String);
   inp2_field.String=num2str(ycordinate);
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   set(mouse_button,'visible','off');
   set(load_button,'visible','off');
@@ -106,7 +106,7 @@ function callbackfun_003(mysrc,myevt)
 end
  
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   zmap_message_center();
   done;

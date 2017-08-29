@@ -9,7 +9,7 @@ function  bdiff(mycat, holdplot)
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4
-    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew si  S mrt bvalsumhold
+    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
     ZG=ZmapGlobal.Data;
     think
     if nargin==2
@@ -52,7 +52,7 @@ function  bdiff(mycat, holdplot)
     backg_ab = log10(bvalsum3);
     orient tall
     
-    if ZmapGlobal.Data.hold_state
+    if ZG.hold_state
         axes(cua)
         disp('hold on')
         hold on
@@ -100,7 +100,7 @@ function  bdiff(mycat, holdplot)
     x = xt3(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ me, bv, si, av] = bmemag(mycat.subset(l2)) ;
+    [ me, bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
     
     bv = -bv;
     
@@ -111,8 +111,8 @@ function  bdiff(mycat, holdplot)
     [aw bw,  ew] = wls(x',y');
     p = [bw aw];
     
-    p2 = [bw+si aw];
-    p3 = [bw-si aw];
+    p2 = [bw+onesigma aw];
+    p3 = [bw-onesigma aw];
     x2 = 1:0.1:6;
     f = polyval(p,x);
     f2 = polyval(p2,x);
@@ -128,7 +128,7 @@ function  bdiff(mycat, holdplot)
     ttm= semilogy(x,f,'r');                         % plot linear fit to backg
     set(ttm,'LineWidth',1)
     
-    if hold_state
+    if ishold
         set(ttm,'color','b')
     end
     
@@ -149,7 +149,7 @@ function  bdiff(mycat, holdplot)
     tt1=num2str(bw,3);
     tt2=num2str(std_backg);
     tt4=num2str(bv,3);
-    tt5=num2str(si,2);
+    tt5=num2str(onesigma,2);
     
     
     
@@ -157,17 +157,17 @@ function  bdiff(mycat, holdplot)
     h2=axes('position',rect);
     set(h2,'visible','off');
     
-    if hold_state
+    if ZG.hold_state
         set(pl,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','k','MarkerEdgeColor','k','Marker','o');
         %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
         %'MarkerFaceColor','c','MarkerEdgeColor','m','Marker','s');
-        txt1=text(.16, .06,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
+        txt1=text(.16, .06,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ± ', tt2 ',  a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
     else
-        txt1=text(.16, .14,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
+        txt1=text(.16, .14,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ±', tt2, ',  a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' ± ', tt5,',   a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
     end
@@ -176,7 +176,7 @@ function  bdiff(mycat, holdplot)
     zmap_message_center.set_info('  ','Done')
     done
     
-    if hold_state
+    if ZG.hold_state
         % calculate the probability that the two distributins are differnt
         %l = mycat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
@@ -209,38 +209,38 @@ function  bdiff(mycat, holdplot)
         uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@callbackfun_002);
         uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
         uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
-        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005);
-        uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3});
+        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005); %TOFIX make checkmark, and make it work.
+        uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3}); %TOFIX decide what actually gets saved
     end
     
     %% callbacks
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         infoz(1);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem;
+        plorem(onesigma, aw, bw);
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         bfitnew(mycat);
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         timeplot(mycat);
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(pl1);
     end

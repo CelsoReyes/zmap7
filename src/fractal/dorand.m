@@ -279,7 +279,7 @@ switch(butto)
 end  %switch (butto)
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   E = ran;
     gobut = 1;
@@ -289,7 +289,7 @@ function callbackfun_001(mysrc,myevt)
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
    close;
    E = a;
@@ -297,7 +297,7 @@ function callbackfun_002(mysrc,myevt)
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   E = ran;
    ao=a;

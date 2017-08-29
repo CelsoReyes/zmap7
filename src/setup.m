@@ -179,7 +179,7 @@ function setup()
     set(loda,'Visible','on');
     
     function loaddb_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in = 'noini';
         in2 = 1;
@@ -187,79 +187,79 @@ function setup()
     end
     
     function loaddb_focal_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('focal','of');
     end
     
     function clearevents_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         a = [];
         update(mainmap());
     end
     
     function loadmainshocks_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('mainshock','of');
     end
     
     function clearmainshocks_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         main  = [];
         update(mainmap());
     end
     
     function loadfaults_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('faults','of');
     end
     
     function clearfaults_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         faults  = [];
         update(mainmap());
     end
     
     function load_mainrupt_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('mainfaults','of');
     end
     
     function clear_mainrupt_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         mainfault  = [];
         update(mainmap());
     end
     
     function loadcoast_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('coastline','of');
     end
     
     function clearcoast_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         coastline  = [];
         update(mainmap());
     end
     
     function close_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         zmap_message_center();
     end
     
     function save_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zmap_message_center.set_info('Save Data','  ');
         think;
@@ -272,7 +272,7 @@ function setup()
     end
     
     function info_callback(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zmaphelp(ttlStr,hlpStr1,hlpStr2,hlpStr3);
     end

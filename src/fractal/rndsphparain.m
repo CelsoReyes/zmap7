@@ -77,49 +77,49 @@ set(gcf,'visible','on');
 watchoff;
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   radiusx = str2double(input1.String);
    input1.String=num2str(radiusx);
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   radiusy = str2double(input2.String);
    input2.String=num2str(radiusy);
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   radiusz = str2double(input3.String);
    input3.String=num2str(radiusz);
 end
  
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   centerx = str2double(input4.String);
    input4.String=num2str(centerx);
 end
  
 function callbackfun_005(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   centery=str2double(input5.String);
    input5.String=num2str(centery);
 end
  
 function callbackfun_006(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   centerz=str2double(input6.String);
    input6.String=num2str(centerz);
 end
  
 function callbackfun_007(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
@@ -127,7 +127,7 @@ function callbackfun_007(mysrc,myevt)
 end
  
 function callbackfun_008(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   think;

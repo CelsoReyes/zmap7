@@ -7,9 +7,10 @@ function bfitnew(mycat)
     global  cluscat mess bfig backcat
     global ttcat xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
+    ZG = ZmapGlobal.Data;
     
     bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution - 2');
-    if ~bfig
+    if isempty(bfig)
         bfig=figure_w_normalized_uicontrolunits(...                  %build figure for plot
             'Units','normalized','NumberTitle','off',...
             'Name','frequency-magnitude distribution - 1',...
@@ -37,13 +38,13 @@ function bfitnew(mycat)
         'Units','normalized',...
         'String','Close','Position',[0.02 .73 .08 .05]);
     uicontrol('Style','Pushbutton',...
-        'callback',@callbackfun_003,...
+        'callback',@(~,~)clinfo(8),...
         'Units','normalized',...
         'String','Info','Position',[0.02 .83 .08 .05]);
     
     uicontrol('Units','normal',...
         'Position',[.0 .55 .10 .06],'String','Automatic',...
-        'callback',@callbackfun_004);
+        'callback',@(~,~)bdiff(mycat));
     
     maxmag = max(mycat.Magnitude);
     mima = min(mycat.Magnitude);
@@ -74,7 +75,7 @@ function bfitnew(mycat)
     grid
     xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-    set(gca,'Color',color_bg)
+    set(gca,'Color',ZG.color_bg)
     set(gca,'XLim',[min(mycat.Magnitude)-0.5  max(mycat.Magnitude)+0.3])
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -82,16 +83,13 @@ function bfitnew(mycat)
     
     set(gcf,'visible','on');
     
-    str=['Please select two magnitudes    '
-        ' for a the straight line fit.   '
-        ' Wait until after the selection '
-        ' before pressing Info or Close. '];
+    str=['Please select two magnitudes for a the straight line fit.',...
+        ' Wait until after the selection before pressing Info or Close. '];
     
-    zmap_message_center.set_message('b-value fit',str)
     
     figure(bfig);
-    seti = uicontrol('Units','normal',...
-        'Position',[.4 .01 .2 .05],'String','Select Mag1 ');
+    seti = uicontrol('Style','text','Units','normal',...
+        'Position',[.4 .01 .3 .05],'String','Select First Magnitude ');
     
     pause(1)
     
@@ -99,7 +97,7 @@ function bfitnew(mycat)
     M1b = ginput(1);
     tt3=num2str(fix(100*M1b(1))/100);
     text( M1b(1),M1b(2),['|: M1=',tt3] )
-    set(seti,'String','Select Mag2');
+    set(seti,'String','Select Second Magnitude');
     
     pause(0.1)
     
@@ -141,42 +139,27 @@ function bfitnew(mycat)
     set(txt1,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
     uicontrol('Style','Pushbutton',...
-        'callback',@callbackfun_005,...
+        'callback',@(~,~)bfitnew(mycat),...
         'Units','normalized',...
         'String','Repeat','Position',[0.85 .02 .12 .08]);
     
     axes(hh)
-    
+    disp('B-value fit instructions')
+    disp(str)
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         myprint;
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         zmap_message_center.set_info(' ',' ');
         done;
     end
     
-    function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(8);
-    end
     
-    function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bdiff(mycat);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bfitnew(mycat);
-    end
 end

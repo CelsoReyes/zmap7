@@ -368,7 +368,7 @@ end
 
 
 function callbackfun_001(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ni=str2double(freq_field.String);
    freq_field.String=num2str(ni);
@@ -377,7 +377,7 @@ function callbackfun_001(mysrc,myevt)
 end
  
 function callbackfun_002(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   ra=str2double(freq_field0.String);
    freq_field0.String=num2str(ra);
@@ -386,49 +386,49 @@ function callbackfun_002(mysrc,myevt)
 end
  
 function callbackfun_003(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dx=str2double(freq_field2.String);
    freq_field2.String=num2str(dx);
 end
  
 function callbackfun_004(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   dd=str2double(freq_field3.String);
    freq_field3.String=num2str(dd);
 end
  
 function callbackfun_005(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   set(tgl2,'Value',0, 'ForegroundColor', 'w');
    set(tgl1, 'ForegroundColor', 'k');
 end
  
 function callbackfun_006(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   set(tgl1,'Value',0,'ForegroundColor', 'w');
    set(tgl2, 'ForegroundColor', 'k');
 end
  
 function callbackfun_007(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   done;
 end
  
 function callbackfun_008(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   done;
 end
  
 function callbackfun_009(mysrc,myevt)
-  % automatically created callback function from text
+
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   tgl1=tgl1.Value;
   tgl2=tgl2.Value;

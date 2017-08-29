@@ -249,13 +249,13 @@ function view_bva(lab1, re3,gx,gy)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         view_bva(lab1,re3);
     end
     
     function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ni';
@@ -266,7 +266,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
@@ -277,7 +277,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
@@ -287,7 +287,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
         ZG=ZmapGlobal.Data;
@@ -296,7 +296,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_006(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
         ZG=ZmapGlobal.Data;
@@ -305,7 +305,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_007(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju();
@@ -313,7 +313,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_008(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju();
@@ -321,7 +321,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_009(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju();
@@ -329,7 +329,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
         re3 = mBvalue;
@@ -337,7 +337,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='SdtDev b-Value';
         re3 = mStdB;
@@ -345,7 +345,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
         re3 = mMc;
@@ -353,7 +353,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
         re3 = mStdMc;
@@ -361,7 +361,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = ' % ';
         re3 = Prmap;
@@ -369,7 +369,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
         re3 = r;
@@ -377,7 +377,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_016(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='log(EQ per km^2)';
         re3 = log10(mNumEq./(r.^2*pi));
@@ -385,7 +385,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_017(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='a-value';
         re3 = mAvalue;
@@ -393,7 +393,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_018(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of b-value';
         re3 = mStdDevB;
@@ -401,7 +401,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_019(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of Mc';
         re3 = mStdDevMc;
@@ -409,7 +409,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_020(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
         re3 = mBvalue;
@@ -418,7 +418,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_021(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         def = {'6'};
         m = inputdlg('Magnitude of projected mainshock?','Input',1,def);
@@ -431,7 +431,7 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_022(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         def = {'6'};
         m = inputdlg('Magnitude of projected mainshock?','Input',1,def);
@@ -445,25 +445,25 @@ function view_bva(lab1, re3,gx,gy)
     end
     
     function callbackfun_023(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         recperc;
     end
     
     function callbackfun_024(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zhist;
     end
     
     function callbackfun_025(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         rechist;
     end
     
     function callbackfun_026(mysrc,myevt)
-        % automatically created callback function from text
+
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         savemap;
     end
