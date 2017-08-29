@@ -46,7 +46,7 @@ function view_qva(lab1,re3)
 
     think
     report_this_filefun(mfilename('fullpath'));
-    
+    ZG=ZmapGlobal.Data;
     % Find out if figure already exists
     %
     qmap=findobj('Type','Figure','-and','Name','q-detect-map');
@@ -61,7 +61,7 @@ function view_qva(lab1,re3)
             'NextPlot','new', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
+            'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         
         lab1 = 'day/night ratio';
         create_my_menu();

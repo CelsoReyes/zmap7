@@ -172,7 +172,7 @@ function [sel] = bpvalgrid()
                         return_nans = false;
                         
                     case 3
-                        mcperc_ca3;
+                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
                         maxcat = b.subset(b.Magnitude >= Mc90-0.05)
                         magco = Mc90;
                         if maxcat.Count()  >= Nmin
@@ -184,7 +184,7 @@ function [sel] = bpvalgrid()
                         end
                         
                     case 4
-                        mcperc_ca3;
+                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
                         maxcat= b.subset(b.Magnitude >= Mc95-0.05);
                         magco = Mc95;
                         if maxcat.Count() >= Nmin
@@ -195,7 +195,7 @@ function [sel] = bpvalgrid()
                             return_nans = false;
                         end
                     case 5
-                        mcperc_ca3;
+                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
                         if ~isnan(Mc95)
                             magco = Mc95;
                         elseif ~isnan(Mc90)

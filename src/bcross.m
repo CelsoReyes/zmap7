@@ -250,7 +250,7 @@ function bcross(sel)
             
             if length(b) >= Nmin  % enough events?
                 % Added to obtain goodness-of-fit to powerlaw value
-                mcperc_ca3;
+                [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
                 [fMc] = calc_Mc(b, ZG.inb1, fBinning, fMccorr);
                 l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin

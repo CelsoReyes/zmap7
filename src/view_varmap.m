@@ -5,7 +5,7 @@ function view_varmap(lab1,re3)
     %
     % define size of the plot etc.
     %
-    
+    ZG=ZmapGlobal.Data;
     if ~exist('Prmap','var') || isempty(Prmap)
         Prmap = nan(size(re3);
     end
@@ -27,7 +27,7 @@ function view_varmap(lab1,re3)
             'NextPlot','new', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
+            'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         
         lab1 = 'b-value:';
         

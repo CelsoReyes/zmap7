@@ -160,7 +160,8 @@ classdef MainInteractiveMap
                 add_menu_divider('mainmap_menu_divider');
             end
             obj.create_overlay_menu(force);
-            obj.create_select_menu(force);
+            ShapeSelection.AddMenu(gcf);
+            %obj.create_select_menu(force);
             obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
         end
@@ -236,57 +237,7 @@ classdef MainInteractiveMap
             uimenu(mapoptionmenu,'Label','Toggle Grid',...
                 'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
         end
-        
-        function create_select_menu(obj,force)
-            
-            h = findobj(figureHandle(),'Tag','mainmap_menu_select');
-            if ~isempty(h) && exist('force','var') && force
-                delete(h); h=[];
-            end
-            if ~isempty(h)
-                return
-            end
-            submenu = uimenu('Label','Select ','Tag','mainmap_menu_select');
-            uimenu(submenu,'Label','Select EQ in Polygon (Menu)',...
-                'Callback',@mycb01);
-            
-            uimenu(submenu,'Label','Select EQ inside Polygon',...
-                'Callback',@(~,~) selectp('inside'));
-            
-            uimenu(submenu,'Label','Select EQ outside Polygon',...
-                'Callback',@(~,~) selectp('outside'));
-            
-            uimenu(submenu,'Label','Select EQ in Circle (fixed ni)',...
-                'Callback',@mycb02);
-            
-            uimenu(submenu,'Label','Select EQ in Circle (Menu)',...
-                'Callback',@mycb03);
-            
-            function mycb01(mysrc,~)
-                global noh1;
-                ZG=ZmapGlobal.Data;
-                noh1 = gca;
-                ZG.newt2 = ZG.a;
-                stri = 'Polygon';
-                keyselect
-            end
-            
-            function mycb02(mysrc,~)
-                h1 = gca;set(gcf,'Pointer','watch');
-                stri = ' ';
-                stri1 = ' ';
-                circle
-            end
-            
-            function mycb03(mysrc,~)
-                h1 = gca;
-                set(gcf,'Pointer','watch');
-                stri =' ';
-                stri1 = ' ';
-                incircle
-            end
-        end
-        
+
         function create_catalog_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_catalog');
             if ~isempty(h) && exist('force','var') && force

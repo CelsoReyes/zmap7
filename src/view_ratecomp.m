@@ -9,6 +9,7 @@ function view_ratecomp(det,re3)
 
     think
     report_this_filefun(mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
     ZG.someColor = 'w';
     clear title;
     
@@ -26,7 +27,7 @@ function view_ratecomp(det,re3)
             'NextPlot','replace', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
+            'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         create_my_menu();
         
         

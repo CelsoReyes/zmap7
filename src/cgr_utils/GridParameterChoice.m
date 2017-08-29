@@ -102,7 +102,7 @@ classdef GridParameterChoice < handle
                 spacing=sprintf('Grid Spacing : ∆x==∆y: [%s],   ∆z:[%s]',obj.dx_units, obj.dz_units);
                 xTip=sprintf('East-West grid spacing [%s]',obj.dx_units);
             else
-                if requestZ
+                if obj.RequestZ
                     spacing=sprintf('Grid Spacing : ∆x:[%s], ∆y:[%s], ∆z:[%s]',obj.dx_units, obj.dy_units, obj.dz_units);
                 else
                     spacing=sprintf('Grid Spacing : ∆x:[%s], ∆y:[%s]',obj.dx_units, obj.dy_units);

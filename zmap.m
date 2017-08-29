@@ -21,6 +21,9 @@ disp('This is zmap.m - version 7.0')
 %       ZG.ra = 23  % changes ra globally
 set_zmap_paths;
 ZG=ZmapGlobal.Data;
+% set some of the paths
+ZG.out_dir = fullfile(hodi,'out');
+ZG.data_dir = fullfile(hodi, 'eq_data');
 
 % Set up the different computer systems
 sys = computer;

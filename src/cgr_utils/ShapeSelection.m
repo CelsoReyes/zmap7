@@ -40,15 +40,13 @@ classdef ShapeSelection
     methods
         function obj=ShapeSelection(type, varargin)
             % ShapeSelection create a shape
-            % type is one of 'circle', 'axes', 'box', 'polygon', 'rectangle'
+            % type is one of 'circle', 'axes', 'box', 'polygon'}
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             % AXES: use current main map axes as a box
             % BOX: define using two corners
-            % (UNIMPLEMENTED)RECTANGLE: Define using 3 corners. used for rotated rectangle
             % POLYGON: define with lots of clicks. anything except
             
             % UNASSIGNED: clear shape
-            ZG=ZmapGlobal.Data;
             
             report_this_filefun(mfilename('fullpath'));
             if nargin==0
@@ -69,6 +67,7 @@ classdef ShapeSelection
                 case 'circle'
                     d=circle_select_dlg();
                     uiwait(d);
+                    ZG=ZmapGlobal.Data;
                     obj=ZG.selection_shape;
                     %obj=obj.select_circle(obj,varargin{:})
                 case 'axes' % ShapeSelection('axes' [, axeshandle])
@@ -98,11 +97,8 @@ classdef ShapeSelection
                     else
                         obj=select_polygon(obj);
                     end
-                case 'rectangle'
-                    error('unimplemented');
                 case 'unassigned'
-                    obj.Points='';
-                    obj.Radius=[];
+                    obj.Points=[nan nan];
             end
         end
         
@@ -136,6 +132,7 @@ classdef ShapeSelection
         
         function plot(obj,ax, catalog, in_or_out, varargin)
             % plot the selection
+            % will default to plotting on main map
             if ~exist('ax','var')||isempty(ax)
                 mm=mainmap();
                 ax=mm.mainAxes;
@@ -186,6 +183,7 @@ classdef ShapeSelection
             end
         end
         function clearplot(obj,ax)
+            %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
                 mm=mainmap();
                 ax=mm.mainAxes;
@@ -304,6 +302,7 @@ classdef ShapeSelection
         
         function AddMenu(fig,ax)
             ZG=ZmapGlobal.Data;
+            ZGshape=ZG.selection_shape; %convenience name
             % this works with the ZG polygon
             figure(fig);
             if ~exist('ax','var')
@@ -319,15 +318,25 @@ classdef ShapeSelection
             delete(submenu.Children);
             
             
-            uimenu(submenu,'Label',['Current Shape:' ZG.selection_shape.Type],'Tag','shapetype','Enable','off');
+            uimenu(submenu,'Label',['Current Shape:' ZGshape.Type],'Tag','shapetype','Enable','off');
             uimenu(submenu,'Label','summary goes here','Tag','shapesummary','Enable','off'); %modify this
             
-            
+          
             uimenu(submenu,'Label','Display Shape Outline','Checked','on','Callback',@cb_outlinetoggle);
-            uimenu(submenu,'separator','on','Label','crop Main Catalog (keep INSIDE)','Callback',{@cb_crop,'inside'})
-            uimenu(submenu,'Label','crop Main Catalog (keep OUTSIDE)','Callback',{@cb_crop,'outside'})
             
-            isvis= ~ismember(ZG.selection_shape.Type, {'unassigned','circle'});
+            % % menu items that change the main catalog % %
+            if strcmp(ZGshape.Type,'unassigned')
+                isenabled='off';
+            else
+                isenabled='on';
+            end
+            uimenu(submenu,'separator','on',...
+                'Enable',isenabled,...
+                'Label','crop Main Catalog (keep INSIDE)','Callback',{@cb_crop,'inside'})
+            uimenu(submenu,'Enable',isenabled,...
+                'Label','crop Main Catalog (keep OUTSIDE)','Callback',{@cb_crop,'outside'})
+            
+            isvis= ~ismember(ZGshape.Type, {'unassigned','circle'});
             if isvis
                 vis='on';
             else
@@ -341,7 +350,7 @@ classdef ShapeSelection
             uimenu(submenu,'Label','Analyze EQ outside Shape (timeplot)','Visible',vis,...
                 'Callback',@(~,~) selectp('outside'));
             
-            isvis=strcmp(ZG.selection_shape.Type, 'unassigned');
+            isvis=strcmp(ZGshape.Type, 'unassigned');
             if isvis
                 vis='on';
             else
@@ -350,41 +359,39 @@ classdef ShapeSelection
             uimenu(submenu,'separator','on','Enable','off','Visible',vis,'Label','[cannot select earthquakes, no active shape]');
             
             
-            isvis= strcmp(ZG.selection_shape.Type, 'circle');
+            isvis= strcmp(ZGshape.Type, 'circle');
             if isvis
                 vis='on';
             else
                 vis='off';
             end
             % only active when choosing a circle
-            uimenu(submenu,'Label',sprintf('Select EQ in Radius %f',ZG.selection_shape.Radius),...
+            uimenu(submenu,'Label',sprintf('Select EQ in Radius %.3f km',ZGshape.Radius),...
                 'separator','on',...
                 'Visible',vis,'Callback',@mycb02);
             uimenu(submenu,'Label',...
-                sprintf('Select EQ in Circle (closest %d events)',ZG.selection_shape.NEventsToEnclose),'Visible',vis,'Callback',@mycb02);
-            uimenu(submenu,'Label',sprintf('Select EQ in Circle (closest %d events) ',ZG.selection_shape.NEventsToEnclose),'Visible',vis,'Callback',@mycb02);
+                sprintf('Select EQ : closest %d events to (%.3f , %.3f)',ZGshape.NEventsToEnclose,ZGshape.Y0, ZGshape.X0),...
+                'Visible',vis,'Callback',@mycb02);
+            uimenu(submenu,'Label',...
+                sprintf('Select EQ :closest %d events and within %.3f km ',ZGshape.NEventsToEnclose,ZGshape.Radius),'Visible',vis,'Callback',@mycb02);
             
             
             % options for choosing a shape
             polymenu=uimenu(submenu,'Separator','on','Label','Use polygon');
-            uimenu(polymenu,'Label','Set Polygon: Box...','Callback',{@cb_createshape,'box'},...
-                'Separator','on');
+            uimenu(polymenu,'Label','Set Polygon: Box...','Callback',{@cb_createshape,'box'});
             uimenu(polymenu,'Label','Set Polygon: Current Axes','Callback',{@cb_createshape,'axes'});
             uimenu(polymenu,'Label','Set Polygon: Irregular shape...','Callback',{@cb_createshape,'polygon'});
             usecirc=uimenu(submenu,'Label','Use Circle...','Callback',{@cb_createshape,'circle'});
-            switch ZG.selection_shape.Type
+            switch ZGshape.Type
                 case 'circle'
                     usecirc.Checked='on';
                 case {'polygon','axes','box'}
                     polymenu.Checked='on';
             end
-            
             % only active otherwise
             
             
             % uimenu(shmenu,'Label','Select EQ in Circle (Menu)','Callback',@mycb03);
-            
-            %uimenu(submenu,'Label','Select EQ in Polygon (Menu)','Callback',@mycb01);
             %uimenu(submenu,'Label','Select EQ inside Polygon','Callback',@(~,~) selectp('inside'));
             %uimenu(submenu,'Label','Select EQ outside Polygon','Callback',@(~,~) selectp('outside'));
             
@@ -393,15 +400,9 @@ classdef ShapeSelection
             uimenu(submenu,'Label','Save shape','Callback',@cb_save);
             uimenu(submenu,'Label','Clear shape','Callback',@cb_clear);
             
+            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeSelection.AddMenu(gcf),'Visible',ZG.debug);
             
-            function mycb01(mysrc,~)
-                global noh1;
-                ZG=ZmapGlobal.Data;
-                noh1 = gca;
-                ZG.newt2 = ZG.a;
-                stri = 'Polygon';
-                keyselect
-            end
+
             
             function mycb02(mysrc,~)
                 h1 = gca;set(gcf,'Pointer','watch');
@@ -479,22 +480,34 @@ function cb_createshape(src,~,type)
         ZG.selection_shape=ShapeSelection(type);
         
         % clear any checkmark for a previous shape
-        allmenus=findobj(src.Parent','Type','uimenu');
-        shapeMenus=startsWith({allmenus.Label},'Use');
+        parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
+        allmenus=findobj(parent,'Type','uimenu');
+        shapeMenus=startsWith({allmenus.Label},'Set Polygon');
+        shapeMenus=startsWith({allmenus.Label},'Use Circle') | shapeMenus;
         checkedMenus=strcmp({allmenus.Checked},'on');
         set(allmenus(shapeMenus&checkedMenus),'Checked','off');
-        
+        %activate crop menu items
+        cropMenus=startsWith({allmenus.Label},'crop ');
+        set(allmenus(cropMenus),'Enable','on');
         % set this one on
         src.Checked='on';
     catch ME
         errordlg(ME.message);
     end
+    ShapeSelection.AddMenu(gcf)
+    %{
+    %activate analyze menu items
+    cropMenus=startsWith({allmenus.Label},'Analyze EQ ');
+    set(allmenus(cropMenus),'Enable','on');
+        
     curshapeh = findobj(gcf,'Tag','shapetype');
     set(curshapeh,'Label',['Current Shape:',upper(type)]);
     ZG.selection_shape.clearplot();
     if strcmp(get(findobj(allmenus,'Label','Display Shape Outline'),'Checked'),'on')
         ZG.selection_shape.plot();
     end
+    Analyze EQ
+    %}
 end
 
 function cb_load(src,~)
@@ -513,5 +526,13 @@ end
 
 function cb_clear(src,~)
     ZG=ZmapGlobal.Data;
-    ZG.selection_shape=ShapeSelection('unassigned');
+    type='unassigned';
+    ZG.selection_shape=ShapeSelection(type);
+    % deactivate crop menu items
+    parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
+    allmenus=findobj(parent,'Type','uimenu');
+    cropMenus=startsWith({allmenus.Label},'crop ');
+    set(allmenus(cropMenus),'Enable','off');
+    curshapeh = findobj(gcf,'Tag','shapetype');
+    set(curshapeh,'Label',['Current Shape:',upper(type)]);
 end

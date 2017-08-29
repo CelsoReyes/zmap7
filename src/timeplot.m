@@ -124,12 +124,12 @@ function timeplot(mycat, nosort)
         
         uicontrol('Units','normal','Position',[.0 .0 .1 .05],...
             'String','Reset',...
-            'callback',@callbackfun_034,...
+            'callback',@cb_resetcat,...
             'tooltip','Resets the catalog to the original selection')
         
         uicontrol('Units','normal','Position',[.70 .0 .3 .05],...
             'String','Keep as newcat',...
-            'callback',@callbackfun_035,...
+            'callback',@cb_keep,...
             'tooltip','Plots this subset in the map window')
         
         ZG.hold_state2=false;
@@ -285,18 +285,18 @@ function timeplot(mycat, nosort)
         uimenu(ztoolsmenu,'Label','Cut in Time (cursor) ',...
             'Callback',@cursor_timecut_callback);
         uimenu(plotmenu,'Label','Date Ticks in different format',...
-            'callback',@callbackfun_001,'Enable','off');
+            'callback',@(~,~)newtimetick,'Enable','off');
         
         uimenu (analyzemenu,'Label','Decluster the catalog',...
-            'callback',@callbackfun_002)
+            'callback',@(~,~)inpudenew())
         winlen_days = days(ZG.compare_window_yrs/days(ZG.bin_days));
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
-            'callback',@callbackfun_003)
+            'callback',@cb_hold)
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
-            'callback',@callbackfun_004)
+            'callback',@cb_comparerates_fit)
         uimenu(ztoolsmenu,'Label','Compare two rates ( No fit)',...
-            'callback',@callbackfun_005)
-        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'callback',@callbackfun_006)
+            'callback',@cb_comparerates_nofit)
+        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'callback',@cb_006)
         
         op3D  =   uimenu(plotmenu,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
@@ -310,61 +310,61 @@ function timeplot(mycat, nosort)
         op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
         
         uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
-            'Callback',{@callbackfun_newsta,'bet'});
+            'Callback',{@cb_z_beta_ratechanges,'bet'});
         uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
             'Callback', @(src,evt) betatriangle())
         uimenu(op4B,'Label','z-values: AS(t)function',...
-            'callback',{@callbackfun_newsta,'ast'})
+            'callback',{@cb_z_beta_ratechanges,'ast'})
         uimenu(op4B,'Label','z-values: Rubberband function',...
-            'callback',{@callbackfun_newsta,'rub'})
+            'callback',{@cb_z_beta_ratechanges,'rub'})
         uimenu(op4B,'Label','z-values: LTA(t) function ',...
-            'callback',{@callbackfun_newsta,'lta'});
+            'callback',{@cb_z_beta_ratechanges,'lta'});
         
         
         op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'callback',@callbackfun_010)
-        uimenu(op4,'label','Mc with time ', 'callback',@callbackfun_011);
-        uimenu(op4,'Label','b with depth', 'callback',@callbackfun_012)
-        uimenu(op4,'label','b with magnitude', 'callback',@callbackfun_013);
-        uimenu(op4,'label','b with time', 'callback',@callbackfun_014);
+        uimenu(op4,'Label','automatic', 'callback',@cb_010)
+        uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
+        uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2())
+        uimenu(op4,'label','b with magnitude', 'callback',@(~,~)bwithmag);
+        uimenu(op4,'label','b with time', 'callback',{@plotwithtime,'b'});
         
         op5 = uimenu(analyzemenu,'Label','p-value estimation');
         
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog mycat).
-        uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@callbackfun_015)
-        uimenu(op5,'Label','Define mainshock', 'callback',@callbackfun_016);
-        uimenu(op5,'Label','Estimate p', 'callback',@callbackfun_017);
+        uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@(~,~)mcwtidays)
+        uimenu(op5,'Label','Define mainshock', 'callback',@cb_016);
+        uimenu(op5,'Label','Estimate p', 'callback',@cb_pestimate);
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
-        uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@callbackfun_018)
+        uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@(~,~)pvalcat2())
         uimenu(op5,'Label','Cut catalog at mainshock time',...
-            'callback',@callbackfun_019)
+            'callback',@cb_cut_mainshock)
         
         op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
-        uimenu(op6,'Label','Compute the fractal dimension D', 'callback',{@callbackfun_computefractal,2});
-        uimenu(op6,'Label','Compute D for random catalog', 'callback',{@callbackfun_computefractal,5});
-        uimenu(op6,'Label','Compute D with time', 'callback',{@callbackfun_computefractal,6});
-        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@callbackfun_023)
+        uimenu(op6,'Label','Compute the fractal dimension D', 'callback',{@cb_computefractal,2});
+        uimenu(op6,'Label','Compute D for random catalog', 'callback',{@cb_computefractal,5});
+        uimenu(op6,'Label','Compute D with time', 'callback',{@cb_computefractal,6});
+        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@(~,~)showweb('fractal'))
         
-        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@callbackfun_024)
+        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@(~,~)morel())
         
         op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
-        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@callbackfun_025)
-        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'callback',@callbackfun_026)
-        uimenu(op7,'Label','Stress tensor with time', 'callback',@callbackfun_027)
-        uimenu(op7,'Label','Stress tensor with depth', 'callback',@callbackfun_028)
-        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'callback',@callbackfun_029)
+        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@(~,~)doinverse_michael())
+        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'callback',@(~,~)doinversgep_pc())
+        uimenu(op7,'Label','Stress tensor with time', 'callback',@(~,~)stresswtime())
+        uimenu(op7,'Label','Stress tensor with depth', 'callback',@(~,~)stresswdepth())
+        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'callback',@(~,~)showweb('stress'))
         op5C = uimenu(plotmenu,'Label','Histograms');
         
         uimenu(op5C,'Label','Magnitude',...
-            'callback',{@callbackfun_histogram,'Magnitude'});
+            'callback',{@cb_histogram,'Magnitude'});
         uimenu(op5C,'Label','Depth',...
-            'callback',{@callbackfun_histogram,'Depth'});
+            'callback',{@cb_histogram,'Depth'});
         uimenu(op5C,'Label','Time',...
-            'callback',{@callbackfun_histogram,'Date'});
+            'callback',{@cb_histogram,'Date'});
         uimenu(op5C,'Label','Hr of the day',...
-            'callback',{@callbackfun_histogram,'Hour'});
+            'callback',{@cb_histogram,'Hour'});
         
         
         uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
@@ -390,170 +390,80 @@ function timeplot(mycat, nosort)
         timeplot(ZG.newt2);
     end
     
-    function callbackfun_001(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        newtimetick;
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        inpudenew;
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_hold(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state2=true;
     end
     
-    function callbackfun_004(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_comparerates_fit(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         dispma2(ic);
     end
     
-    function callbackfun_005(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_comparerates_nofit(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ic=0;
         dispma3;
     end
     
-    function callbackfun_newsta(mysrc,myevt,sta)
-        % automatically created callback function from text
+    function cb_z_beta_ratechanges(mysrc,myevt,sta)
+        % beta values:
+        %   'bet' : LTA(t) function
+        %   'ast' : AS(t) function
+        %   'rub' : Rubberband function
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         set(gcf,'Pointer','watch');
         newsta(sta);
     end
     
-    function callbackfun_010(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_010(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;
         selt = 'in';
         bdiff2;
     end
     
-    function callbackfun_011(mysrc,myevt)
-        % automatically created callback function from text
+    function plotwithtime(mysrc,myevt,sPar)
+        %sPar tells what to plot.  'mc', 'b'
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         selt = 'in';
-        sPar = 'mc';
-        plot_McBwtime;
+        plot_McBwtime(sPar);
     end
     
-    function callbackfun_012(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bwithde2;
-    end
     
-    function callbackfun_013(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bwithmag;
-    end
-    
-    function callbackfun_014(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        selt = 'in';
-        sPar = 'b';
-        plot_McBwtime;
-    end
-    
-    function callbackfun_015(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        mcwtidays;
-    end
-    
-    function callbackfun_016(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_016(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         error('not implemented: define mainshock.  Original input_main.m function broken;')
     end
     
-    function callbackfun_017(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_pestimate(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;
         pvalcat;
     end
     
-    function callbackfun_018(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        pvalcat2;
-    end
-    
-    function callbackfun_019(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_cut_mainshock(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
         mycat = mycat(l+1:mycat.Count,:);
         timeplot(mycat) ;
     end
     
-    function callbackfun_computefractal(mysrc,myevt, org)
-        % automatically created callback function from text
+    function cb_computefractal(mysrc,myevt, org)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        if org==2;E = mycat; end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
+        if org==2
+            E = mycat; 
+        end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
         startfd;
     end
     
-    function callbackfun_023(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        showweb('fractal');
-    end
-    
-    function callbackfun_024(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        morel;
-    end
-    
-    function callbackfun_025(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        doinvers_michael;
-    end
-    
-    function callbackfun_026(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        doinversgep_pc;
-    end
-    
-    function callbackfun_027(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        stresswtime;
-    end
-    
-    function callbackfun_028(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        stresswdepth;
-    end
-    
-    function callbackfun_029(mysrc,myevt)
-        % automatically created callback function from text
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        showweb('stress') ;
-    end
-    
-    function callbackfun_histogram(mysrc,myevt,hist_type)
-        % automatically created callback function from text
+    function cb_histogram(mysrc,myevt,hist_type)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         hisgra(mycat, hist_type);
     end
     
-    function callbackfun_034(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_resetcat(mysrc,myevt)
+        % Resets the catalog to the original selection
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         nosort = 'of';
         error ZG.newcat = ZG.mycat;
@@ -564,8 +474,8 @@ function timeplot(mycat, nosort)
         timeplot(mycat,nosort);
     end
     
-    function callbackfun_035(mysrc,myevt)
-        % automatically created callback function from text
+    function cb_keep(mysrc,myevt)
+        % Plots this subset in the map window
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;

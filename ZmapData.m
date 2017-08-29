@@ -118,6 +118,7 @@ classdef ZmapData < handle
         bvg=[]; % b-value grid
         calcgrid; % grid used for calculations
         selection_shape=ShapeSelection();
+        debug='on'; % makes special menus visible
     end
     properties(Dependent)
         wex %welcome window x (welcome_pos(1))

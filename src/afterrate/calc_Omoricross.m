@@ -4,12 +4,12 @@ function calc_Omoricross()
     %
     % J. Woessner
     % last update: 20.10.04
-    
+    ZG=ZmapGlobal
     report_this_filefun(mfilename('fullpath'));
     wCat='a'; % working catalog name
     
     myvalues=table;
-    myvalues.Properties.Description('Omori cross-section parameters');
+    myvalues.Properties.Description='Omori cross-section parameters';
     mygrid=ZG.calcgrid;
     
     % Set the grid parameter

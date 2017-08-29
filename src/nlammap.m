@@ -71,7 +71,7 @@ p2=ginput(1);
     
     figure(mapl);
     if ~hoc ||  newMapLaWindowFlag == 1 %TODO I don't know about the logic here
-        delete(findobj(mapl,'Type,'axes'));
+        delete(findobj(mapl,'Type','axes'));
         if isempty(coastline)
             coastline = [ZG.a.Longitude(1) ZG.a.Latitude(1)];
         end

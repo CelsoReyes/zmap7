@@ -59,7 +59,6 @@ function [mResult] = calc_McBwtime(mCatalog, nSampleSize, nOverlap, nMethod, nBs
     
     % Initialze
     mResult = [];
-    
     % Set fix values
     fMinMag = min(mCatalog.Magnitude);
     fMaxMag = max(mCatalog.Magnitude);

@@ -8,6 +8,7 @@ function view_bvt(lab1,re3)
 
     think
     report_this_filefun(mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
     ZG.someColor = 'k';
     
     
@@ -68,7 +69,7 @@ function view_bvt(lab1,re3)
             'NumberTitle','off', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
+            'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         % make menu bar
         
         lab1 = 'b-value';

@@ -1,5 +1,5 @@
-function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(mCatalog, fBinning)
-% function  [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(mCatalog, fBinning);
+function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
+% function  [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning);
 % -----------------------------------------------------------------------------------------------------
 % Determine Mc using EMR-method. Calculates also a- and b-value.
 % Fitting non-cumulative frequency magnitude distribution above and below Mc:
@@ -7,13 +7,13 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(mCatalog, fBinning)
 % above: Gutenberg-Richter law
 %
 % Incoming variables:
-% mCatalog   : EQ catalog
+% catalog   : EQ catalog
 % fBinning   : Binning interval, usually 0.1
 %
 % Outgoing variables:
 % fMc        : Best estimated magnitude of completeness
 % fBvalue    : b-value
-% fAvalue    :a-value
+% fAvalue    : a-value
 % fMu        : mu-value of the normal CDF
 % fSigma     : sigma-values of the normal CDF
 %
@@ -22,7 +22,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(mCatalog, fBinning)
 
 % Check input
 if nargin == 0, error('No catalog input'); end
-if nargin == 1, fBinning = 0.1; disp('Default Bin size: 0.1');end;
+if nargin == 1, fBinning = 0.1; disp('Default Bin size: 0.1');end
 if nargin > 2, disp('Too many arguments!'), return; end
 
 % Initialize
@@ -30,7 +30,6 @@ vProbability = [];
 vMc = [];
 vABValue =[];
 mFitRes = [];
-vX_res = [];
 vNCumTmp = [];
 mDataPred = [];
 vPredBest = [];
@@ -41,13 +40,13 @@ mResult=[];
 mDatPredBest = [];
 
 % Determine exact time period
-fPeriod1 = max(mCatalog.Date) - min(mCatalog.Date);
+fPeriod1 = years(max(catalog.Date) - min(catalog.Date)); % guessing it should be years
 
 % Determine max. and min. magnitude
-fMaxMag = ceil(10 * max(mCatalog.Magnitude)) / 10;
+maxMag = ceil(10 * max(catalog.Magnitude)) / 10;
 
 % Set starting value for Mc loop and LSQ fitting procedure
-fMcTry= calc_Mc(mCatalog,1);
+fMcTry= calc_Mc(catalog,1);
 fSmu = abs(fMcTry/2);
 fSSigma = abs(fMcTry/4);
 if (fSmu > 1)
@@ -57,7 +56,7 @@ end
 fMcBound = fMcTry;
 
 % Calculate FMD for original catalog
-[vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog);
+[vFMDorg, vNonCFMDorg] = calc_FMD(catalog);
 fMinMag = min(vNonCFMDorg(1,:));
 
 % %% Shift to positive values
@@ -65,22 +64,23 @@ fMinMag = min(vNonCFMDorg(1,:));
 %     fMcBound = fMcTry-fMinMag;
 % end
 % Loop over Mc-values
-for fMc = fMcBound-0.4:0.1:fMcBound+0.4
-    fMc = round(fMc, -1);
+for fMc = round(fMcBound-0.4:0.1:fMcBound+0.4 , -1)
     vFMD = vFMDorg;
     vNonCFMD = vNonCFMDorg;
     vNonCFMD = fliplr(vNonCFMD);
     % Calculate a and b-value for GR-law and distribution vNCum
-    [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
-    if (length(mCatalog.Longitude(vSel)) >= 20)
-        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+    %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(catalog, vFMD, fMc);
+    [~, ~, vSel, ~] = fMagToFitBValue(catalog, vFMD, fMc);
+    if (length(catalog.Longitude(vSel)) >= 20)
+        %[fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
+        [~, fBValue, ~, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed
         % Compute quantity of earthquakes by power law
         fMaxMagFMD = max(vNonCFMD(1,:));
         fMinMagFMD = min(vNonCFMD(1,:));
-        vMstep = [fMinMagFMD:0.1:fMaxMagFMD];
+        vMstep = fMinMagFMD:0.1:fMaxMagFMD;
         vNCum = 10.^(fAValue-fBValue.*vMstep); % Cumulative number
 
         % Compute non-cumulative numbers vN
@@ -95,14 +95,13 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
         mData = [vN' vNonCFMD'];
         vSel = (mData(:,2) >= fMc);
         mDataTest = mData(~vSel,:);
-        mDataTmp = mData.subset(vSel);
+        mDataTmp = mData(vSel,:);
         % Check for zeros in observed data
         vSelCheck = (mDataTest(:,3) == 0);
         mDataTest = mDataTest(~vSelCheck,:);
         % Choices of normalization
         fNmax = mDataTmp(1,3); % Frequency of events in Mc bin
-        %fNmax = max(mDataTest(:,3));  % Use maximum frequency of events in bins below Mc
-        %fNmax = mDataTest(length(mDataTest(:,1)),3); % Use frequency of events at bin Mc-0.1 -> best fit
+        
         if (~isempty(isempty(fNmax)) &&  ~isnan(fNmax) & fNmax ~= 0 & length(mDataTest(:,1)) > 4)
             mDataTest(:,3) = mDataTest(:,3)/fNmax; % Normalize datavalues for fitting with CDF
             % Move to M=0 to fit with lsq-algorithm
@@ -110,7 +109,6 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
             mDataTest(:,2) = mDataTest(:,2)-fMinMagTmp;
             % Curve fitting: Non cumulative part below Mc
             options = optimset;
-            %options = optimset('Display','off','Tolfun',1e-7,'TolX',0.0001,'MaxFunEvals', 100000,'MaxIter',10000);
             options = optimset('Display','off','Tolfun',1e-5,'TolX',0.001,'MaxFunEvals', 1000,'MaxIter',1000);
             [vX, resnorm, resid, exitflag, output, lambda, jacobian]=lsqcurvefit(@calc_normalCDF,[fSmu  fSSigma], mDataTest(:,2), mDataTest(:,3),[],[],options);
             mDataTest(:,1) = normcdf(mDataTest(:,2), vX(1), vX(2))*fNmax;
@@ -122,7 +120,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
             else
                 vPred = NaN;
                 delta = NaN;
-            end; % END: This section is due for errors produced with datasets less long than amount of parameters in vX
+            end % END: This section is due for errors produced with datasets less long than amount of parameters in vX
             % Results of fitting procedure
             mFitRes = [mFitRes; vX resnorm exitflag];
             % Move back to original magnitudes
@@ -175,8 +173,8 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
 %             vPredBest = [vPredBest; NaN NaN NaN];
             vNmaxBest = [vNmaxBest; fNmax];
             vABValue = [vABValue; fAValue fBValue];
-        end; % END of IF fNmax
-    end; % END of IF length(mCatalog.Longitude(vSel))
+        end % END of IF fNmax
+    end % END of IF length(catalog.Longitude(vSel))
 
 
     % Clear variables
@@ -186,7 +184,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
     vSel = [];
     mDataTest = [];
     mDataPred = [];
-end; % END of FOR fMc
+end % END of FOR fMc
 % Result matrix
 mResult = [mResult; vProbability vMc vX_res vNmaxBest vABValue];
 

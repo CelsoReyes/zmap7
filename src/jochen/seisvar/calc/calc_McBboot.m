@@ -60,8 +60,7 @@ if nRow >= nMinNum
         vSel = mCatalog.Magnitude >= fMc-fBinning/2;
         mCat = mCatalog.subset(vSel);
         % Check static for length of catalog
-        [nY, nX] = size(mCat);
-        if nY >= nMinNum
+        if mCat.Count >= nMinNum
             [fMeanMag, fBvalue, fStdDev, fAvalue] =  calc_bmemag(mCat, fBinning);
         else
             fMeanMag = NaN;
