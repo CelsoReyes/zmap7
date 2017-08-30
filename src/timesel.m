@@ -13,9 +13,9 @@ function [tt1,tt2]=timesel(var1)
             'sequence with the LEFT mouse button            '];
         zmap_message_center.set_message('Time Selection ',messtext);
         if var1==1
-            figure(figure(findobj('Tag','ccum','-and','Type','Figure');)
+            figure(findobj('Tag','ccum','-and','Type','Figure'));
         else
-            figure(figure(findobj('Tag','cum','-and','Type','Figure');)
+            figure(findobj('Tag','cum','-and','Type','Figure'));
         end
         ax = gca;
         hold on

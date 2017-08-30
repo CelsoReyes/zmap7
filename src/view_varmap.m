@@ -7,7 +7,7 @@ function view_varmap(lab1,re3)
     %
     ZG=ZmapGlobal.Data;
     if ~exist('Prmap','var') || isempty(Prmap)
-        Prmap = nan(size(re3);
+        Prmap = nan(size(re3));
     end
 
     think

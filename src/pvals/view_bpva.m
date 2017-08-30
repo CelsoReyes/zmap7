@@ -97,7 +97,7 @@ function view_bpva(lab1,re3)
     % Now lets plot the color-map!
     %
     figure(bpmap);
-    delete(findobj(bpmap,'Type,'axes'));
+    delete(findobj(bpmap,'Type','axes'));
     %delete(sizmap)
     reset(gca)
     cla

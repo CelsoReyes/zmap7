@@ -120,7 +120,7 @@ if isempty(pmap)
 end
 
 figure(pmap);
-delete(findobj(pmap,'Type,'axes'));
+delete(findobj(pmap,'Type','axes'));
 hold on;
 axis off
 

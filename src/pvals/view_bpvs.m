@@ -113,7 +113,7 @@ end   % This is the end of the figure setup
 % Now lets plot the color-map of the b and p -value.
 %
 figure(bpmapcs);
-delete(findobj(bpmapcs,'Type,'axes'));
+delete(findobj(bpmapcs,'Type','axes'));
 % delete(sizmap);
 reset(gca)
 cla
