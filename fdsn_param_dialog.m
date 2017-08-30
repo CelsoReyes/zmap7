@@ -575,6 +575,17 @@ end
     else
         ZG.a=tmp;
     end
+    % name it
+    
+    provider_details=handles.data_provider.UserData(handles.data_provider.Value);
+    if isempty(ZG.a.Name) %TODO move this functionality into import_fdsn_event
+        ZG.a.Name = [provider_details.name,'_fdsn'];
+    end
+    nm=inputdlg('Provide a catalog name (used in plots, files)','Name Catalog',1,{ZG.a.Name});
+    if ~isempty(nm)
+        ZG.a.Name=nm{1};
+    end
+    
     clear tmp
     h=zmap_message_center();
     h.update_catalog()%;

@@ -43,7 +43,7 @@ ZG.newt2 = Da(is(:,1),:) ;
 if ic == 1 % select N closest events
 
     l = s;
-    messtext = ['Number of events in the sphere :' num2str(length(ZG.newt2(ll,1))) ];
+    messtext = ['Number of events in the sphere :' num2str(sum(ll)) ];
     disp(messtext);
     zmap_message_center.set_message('Message',messtext)
     %
@@ -91,7 +91,7 @@ if ic == 2 % select events within ra
     %
     % take first ni and sort by time
     %
-    ZG.newt2 = ZG.newt2(ll,:);
+    ZG.newt2 = ZG.newt2.subset(ll);
     ZG.newt2.sort('Date');
     %
     % plot Ni closest events on map as 'x':

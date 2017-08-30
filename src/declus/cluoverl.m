@@ -89,11 +89,17 @@ function cluoverl(var1)
         % defined in "startzmap"
         %
         hold on
-        dplo1_h =plot(a(ZG.a.Depth<=dep1,1),a(ZG.a.Depth<=dep1,2),'.b');
+        dplo1_h =plot(...
+            a.Longitude(ZG.a.Depth<=dep1),...
+            a.Latitude(ZG.a.Depth<=dep1),'.b');
         set(dplo1_h,'MarkerSize',ZG.ms6,'Marker',ty)
-        dplo2_h =plot(a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,1),a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,2),'.y');
+        dplo2_h =plot(...
+            a.Longitude(ZG.a.Depth<=dep2&ZG.a.Depth>dep1),...
+            a.Latitude(ZG.a.Depth<=dep2&ZG.a.Depth>dep1),'.y');
         set(dplo2_h,'MarkerSize',ZG.ms6,'Marker',ty);
-        dplo3_h =plot(a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,1),a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,2),'.r');
+        dplo3_h =plot(...
+            a.Longitude(ZG.a.Depth<=dep3&ZG.a.Depth>dep2),...
+            a.Latitude(ZG.a.Depth<=dep3&ZG.a.Depth>dep2),'.r');
         set(dplo3_h,'MarkerSize',ZG.ms6,'Marker',ty)
 
         axis([ s2 s1 s4 s3])
@@ -170,9 +176,9 @@ function cluoverl(var1)
         %
         hold on
         if tmp-1>=1
-            fore_h=plot(a(1:tmp-1,1),a(1:tmp-1,2),'.b');
+            fore_h=plot(a.Longitude(1:tmp-1),a.Latitude(1:tmp-1),'.b');
             if isempty(aftersh)                           %only at first call
-                foresh=a(1:tmp-1,:);
+                foresh=a.subset(1:tmp-1);
             end
         else
             if exist('fore_h')
@@ -184,9 +190,9 @@ function cluoverl(var1)
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);
         if tmp+1<=n
-            after_h=plot(a(tmp+1:n,1),a(tmp+1:n,2),'.r');
+            after_h=plot(a.Longitude(tmp+1:n),a.Latitude(tmp+1:n),'.r');
             if isempty(aftersh)
-                aftersh=a(tmp+1:n,:);
+                aftersh=a.subset(tmp+1:n);
             end
         else
             if exist('after_h')

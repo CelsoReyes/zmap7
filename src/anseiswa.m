@@ -53,7 +53,7 @@ function anseiswa(action, ds)
             
             if tgl1 == 0   % take point within r
                 l3 = l <= ZG.Rconst;
-                ZG.newt2 = ZG.newt2(l3,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2.subset(l3);      % new data per grid point (b) is sorted in distance
                 Rjma = ZG.Rconst;
             else
                 % take first ni points
@@ -107,7 +107,7 @@ function anseiswa(action, ds)
             ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             if tgl1 == 0   % take point within r
                 l3 = l <= ZG.Rconst;
-                ZG.newt2 = ZG.newt2(l3,:);      % new data per grid point (b) is sorted in distance
+                ZG.newt2 = ZG.newt2.subset(l3);      % new data per grid point (b) is sorted in distance
                 Rjma = ZG.Rconst;
             else
                 % take first ni points

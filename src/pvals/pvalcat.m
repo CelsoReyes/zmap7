@@ -1,17 +1,21 @@
 function pvalcat()
     %This program is called from timeplot.m and displays the values
     % of p, c and k from Omori law, together with their errors.
+    %
+    %
     %Modified May: 2001. B. Enescu
     % sets newt2
     
     global valeg  % used for choosing some options in mypval2m.m.
     global valeg2 %  decides if c is fixed or not.
-    global cua2a % axes associated with this  (should be persistent instead)
+    persistent cua2a % axes associated with this  (should be persistent instead)
     global CO % c-value (initial?)
     global valm1 % min magnitude
+    
+    report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     
-    disp('This is pvalcat');
+    
     valeg = 2; % signal for mypval2.m, telling it where it was called from and what to do
     nn2 = ZG.newt2;
     
@@ -29,8 +33,8 @@ function pvalcat()
     answer = inputdlg(prompt,title,lines,def);
     
     valm1=str2double(answer{1});
-    minDaysAfterMainshock = str2num(answer{2});
-    valeg2 = str2num(answer{3});
+    minDaysAfterMainshock = str2double(answer{2});
+    valeg2 = str2double(answer{3});
     
     % cut catalog at mainshock time:
     l = ZG.newt2.Date > ZG.maepi.Date(1);
@@ -58,7 +62,7 @@ function pvalcat()
     paramc1 = ZG.newt2.Magnitude >= valm1;
     pcat = ZG.newt2.subset(paramc1);
     
-    lt = pcat.Date >= minDaysAfterMainshock;
+    lt = pcat.Date >= ZG.maepi.Date(1)+days(minDaysAfterMainshock);
     bpcat = pcat.subset(lt);
     
     [timpa] = timabs(pcat);
@@ -74,7 +78,7 @@ function pvalcat()
     
     if ~isnan(pv)
         dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,pcat,tmin,tmax,valm1);
-    end
+    else
         dispGeneral(pcat,tmin,tmax,valm1);
     end
     
@@ -182,7 +186,7 @@ function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,valm1)
     end
     disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
     disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-    events_used = sum(ZG.newt2(paramc1,3) > ZG.maepi.Date + days(cv));
+    events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date + days(cv));
     disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
     disp(['tmin = ' num2str(tmin)]);
     disp(['tmax = ' num2str(tmax)]);

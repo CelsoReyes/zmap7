@@ -335,7 +335,7 @@ function plotala()
             m = sort(m);
             m2 = [0 ; m(1:length(m)-1)];
             l = find(m-m2 > 0);
-            do = ['anB' num2str(i) ' = a(m(l),:);' ];
+            do = ['anB' num2str(i) ' = ZG.a.subset(m(l));' ]; %TOFIX don't do this this way.
             eval(do)
         end
     end

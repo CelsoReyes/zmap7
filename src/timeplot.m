@@ -312,7 +312,7 @@ function timeplot(mycat, nosort)
         uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
             'Callback',{@cb_z_beta_ratechanges,'bet'});
         uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
-            'Callback', @(src,evt) betatriangle())
+            'Callback', {@cb_betaTriangle,'newcat'})
         uimenu(op4B,'Label','z-values: AS(t)function',...
             'callback',{@cb_z_beta_ratechanges,'ast'})
         uimenu(op4B,'Label','z-values: Rubberband function',...
@@ -333,7 +333,8 @@ function timeplot(mycat, nosort)
         %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
         %displayed (the catalog mycat).
         uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@(~,~)mcwtidays)
-        uimenu(op5,'Label','Define mainshock', 'callback',@cb_016);
+        uimenu(op5,'Label','Define mainshock',...
+            'Enable','off', 'callback',@cb_016);
         uimenu(op5,'Label','Estimate p', 'callback',@cb_pestimate);
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
@@ -416,6 +417,9 @@ function timeplot(mycat, nosort)
         newsta(sta);
     end
     
+    function cb_betaTriangle(mysrc, myevt, catname)
+        betatriangle(ZG.(catname),t0b:ZG.bin_days:teb);
+    end
     function cb_010(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;

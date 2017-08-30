@@ -47,7 +47,7 @@ l =  sort(l);
 vSel = (ZG.newt2.Date <= ZG.maepi.Date(1)+days(time));
 newt2_learn = ZG.newt2.subset(vSel);
 vSel2 = (ZG.newt2.Date > ZG.maepi.Date(1)+days(time) & ZG.newt2.Date <= ZG.maepi.Date(1)+(time+timef)/365);
-newt2_forecast = ZG.newt2(vSel2,:);
+newt2_forecast = ZG.newt2.subset(vSel2);
 
 % Distance from grid node for learning period and forecast period
 vDist = sort(l(vSel));
@@ -64,7 +64,7 @@ if fMaxDist <= fMaxRadius
     ZG.newt2 = [newt2_learn; newt2_forecast];
 else
     vSel4 = (l < fMaxRadius & ZG.newt2.Date <= ZG.maepi.Date(1)+days(time));
-    ZG.newt2 = ZG.newt2(vSel4,:);
+    ZG.newt2 = ZG.newt2.subset(vSel4);
     newt2_learn = ZG.newt2;
     fMaxDist = fMaxRadius;
 end

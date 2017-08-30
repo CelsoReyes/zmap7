@@ -285,7 +285,7 @@ classdef MainInteractiveMap
                 'Separator','on');
             
             uimenu(submenu,'Label','Reload last catalog','Enable','off',...
-                'Callback','think; load(lopa); if length(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;ZG.a=catalog_overview(ZG.a);done');
+                'Callback','error(''create this function from scratch!'');think; load(lopa); if ZG.a.Countlength(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;ZG.a=catalog_overview(ZG.a);done');
             
             uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
             uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
@@ -348,7 +348,7 @@ classdef MainInteractiveMap
         
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations',...
-                'Enable','off');
+            'Enable','off');
             uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.a = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
                 'Callback','ZG.a = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');

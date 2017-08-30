@@ -52,7 +52,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     
     n = length(x);
     l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
-    les = (mean(b(l,6)) - M1b(1))/dm1;
+    les = (mean(b.Magnitude(l)) - M1b(1))/dm1;
     
     av=p(1,2);
     p=-p(1,1);

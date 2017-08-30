@@ -84,18 +84,18 @@ function cltiplot(var1)
         ZG.newt2=ttcat;
     end
     [ii,i]=sort(ZG.newt2.Date);
-    ZG.newt2=ZG.newt2(i,:);
+    ZG.newt2=ZG.newt2.subset(i);
     statime=[];
     bigmag=max(ZG.newt2.Magnitude);
     % select big events ( > bigmag)
     %
     l = ZG.newt2.Magnitude == bigmag;
-    big = ZG.newt2(l,:);
+    big = ZG.newt2.subset(l);
     %calculate start -end time of overall catalog
     t0b = min(ZG.newt2.Date);
     n = ZG.newt2.Count;
-    teb = ZG.newt2(n,3);
-    tdiff = (teb - t0b)*365;
+    teb = ZG.newt2.Date(n);
+    tdiff = days(teb - t0b);
     par5=tdiff/100;         %bin length is 1/100 of timedifference(in days)
     if par5>1
         par5=round(par5);
@@ -110,7 +110,7 @@ function cltiplot(var1)
     if par5 >=1
         [cumu, xt] = hist(ZG.newt2.Date,(t0b-days(par5):days(par5):teb+days(par5)));
     else
-        [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3)+days(par5))*365,(0:par5:(tdiff+2*par5)));
+        [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2.Date(1)+days(par5))*365,(0:par5:(tdiff+2*par5)));
     end
     cumu2=cumsum(cumu);
     
@@ -159,7 +159,7 @@ function cltiplot(var1)
     if par5>=1
         xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     else
-        statime=ZG.newt2(1,3)-days(par5);
+        statime=ZG.newt2.Date(1)-days(par5);
         xlabel(['Time in days relative to ',num2str(statime)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

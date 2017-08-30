@@ -210,7 +210,7 @@ function  bdiff(mycat, holdplot)
         uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
         uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
         uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005); %TOFIX make checkmark, and make it work.
-        uimenu(options,'Label','Save values to file', 'Callback',{@calSave9,xt3, bvalsum3}); %TOFIX decide what actually gets saved
+        uimenu(options,'Label','Save values to file', 'Enable','off','Callback',{@calSave9,xt3, bvalsum3}); %TOFIX decide what actually gets saved
     end
     
     %% callbacks
@@ -242,6 +242,6 @@ function  bdiff(mycat, holdplot)
     function callbackfun_005(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        delete(pl1);
+        delete(pl);
     end
 end

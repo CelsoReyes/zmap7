@@ -59,11 +59,11 @@ valtm3 = str2num(answer{6});
 
 % cut catalog at mainshock time:
 l = ZG.newt2.Date > ZG.maepi.Date(1);
-ZG.newt2 = ZG.newt2(l,:);
+ZG.newt2 = ZG.newt2.subset(l);
 
 % cat at selecte magnitude threshold
 l = ZG.newt2.Magnitude < valm1;
-ZG.newt2(l,:) = [];
+ZG.newt2.subset(l) = [];
 
 ZG.hold_state2=true;
 timeplot(ZG.newt2);
@@ -78,7 +78,7 @@ drawnow
 
 for valm = valm1:valm3:valm2
     paramc1 = (ZG.newt2.Magnitude >= valm);
-    pcat = ZG.newt2(paramc1,:);
+    pcat = ZG.newt2.subset(paramc1);
     [timpa] = timabs(pcat);
     [timpar] = timabs(ZG.maepi);
     tmpar = timpar(1);

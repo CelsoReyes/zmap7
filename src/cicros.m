@@ -77,13 +77,13 @@ function cicros(opt)
             
             l =  sort(l);
             ll = l <=ra;
-            messtext = ['Number of events in Circle :' num2str(length(ZG.newt2(ll,1))) ];
+            messtext = ['Number of events in Circle :' num2str(sum(ll)) ];
             disp(messtext)
             zmap_message_center.set_message('Message',messtext)
             %
             % take first ni and sort by time
             %
-            ZG.newt2 = ZG.newt2(ll,:);
+            ZG.newt2 = ZG.newt2.subset(ll);
             ZG.newt2.sort('Date');
             %
             % plot Ni clostest events on map as 'x':

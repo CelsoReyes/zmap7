@@ -27,18 +27,18 @@ m = 0;
 
 for l = 1:inc:size(ZG.newt2,1)-nev %TOFIX incorrect referencing throughout
 
-    E = ZG.newt2(l:(l + nev),:);
+    E = ZG.newt2.subset(l:(l + nev));
 
     dtokm = [1];
     pdc3nofig(E);
     fdallfig;
 
-    fdtim3 = [fdtim3 ; coef(1,1) ZG.newt2(l,3) ; coef(1,1) ZG.newt2(l+nev-1,3) ; inf inf];
-    fdtim2 = [fdtim2 ; coef(1,1) ZG.newt2(l+nev,3) deltar];
+    fdtim3 = [fdtim3 ; coef(1,1) ZG.newt2.Date(l) ; coef(1,1) ZG.newt2.Date(l+nev-1) ; inf inf];
+    fdtim2 = [fdtim2 ; coef(1,1) ZG.newt2.Date(l+nev) deltar];
 
     [bv magco stan ] =  bvalca2(ZG.newt2(l:l+nev,:));
-    bv3 = [bv3 ; bv ZG.newt2(l,3) ; bv ZG.newt2(l+nev-1,3) ; inf inf];
-    bv2 = [bv2 ; bv ZG.newt2(l+nev,3) stan];
+    bv3 = [bv3 ; bv ZG.newt2.Date(l) ; bv ZG.newt2.Date(l+nev-1) ; inf inf];
+    bv2 = [bv2 ; bv ZG.newt2.Date(l+nev) stan];
 
     waitbar(1/((size(ZG.newt2,1)-nev)/inc)*m, Ho_Wb);
     m = m + 1;

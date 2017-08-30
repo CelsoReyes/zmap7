@@ -53,9 +53,9 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, aa_, bb_]=mypval2(var1, mati)
 
     % calculate cumulative number versus time and bin it
     %
-    n = ZG.newt2.Count;
+    n = ZG.newt2.Count; 
     [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par3):teb));
-    [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
+    [cumu, xt] = hist(days(ZG.newt2.Date-ZG.newt2.Date(1)),(0:par5:tdiff)); %WHY BOTH?
     difp= [0 diff(cumu)];
     cumu2 = cumsum(cumu);
 

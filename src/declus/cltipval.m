@@ -70,7 +70,7 @@ function cltipval(var1)
         if par3>=1
             [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par3):teb));
         else
-            [cumu, xt] = hist((ZG.newt2.Date-ZG.newt2(1,3))*365,(0:par5:tdiff));
+            [cumu, xt] = hist(ZG.newt2.Date-ZG.newt2.Date(1),(0:par5:tdiff));
         end
         cumu2 = cumsum(cumu);
 
