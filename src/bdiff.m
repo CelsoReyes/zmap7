@@ -9,7 +9,7 @@ function  bdiff(mycat, holdplot)
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4
-    global  ttcat les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
+    global les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
     ZG=ZmapGlobal.Data;
     think
     if nargin==2

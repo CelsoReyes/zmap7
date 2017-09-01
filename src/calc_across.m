@@ -271,7 +271,7 @@ function calc_across(sel)
         t0b = min(newa.Date)  ;
         n = newa.Count;
         teb = max(newa.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days);
+        tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
         % loop over  all points
@@ -404,7 +404,7 @@ function calc_across(sel)
         close(wai)
         watchoff
         
-        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 ZG.xsec_width_km  avg ra xvect yvect gx gy dx dd ZG.bin_days newa ;
+        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 ZG.xsec_width_km  avg ra xvect yvect gx gy dx dd ZG.bin_dur newa ;
         
         
         % reshape a few matrices

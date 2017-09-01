@@ -5,7 +5,7 @@ function bfitnew(mycat)
     %   Calculates Freq-Mag functions (b-value) for a catalog
     %  originally, "mycat" was "newcat"
     global  cluscat mess bfig backcat
-    global ttcat xt3 bvalsum3
+    global xt3 bvalsum3
     report_this_filefun(mfilename('fullpath'));
     ZG = ZmapGlobal.Data;
     

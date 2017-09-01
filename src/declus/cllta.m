@@ -2,11 +2,11 @@ function cllta(var1)
     %cllta.m                             A.Allmann
     %function to calculate the LTA-function of a givenn graph
     %calculates a z-value useing a given window length winlen_days
-    %operates on ttcat
+    %operates on ZG.ttcat
     %
     %
-    global ttcat  xt cumu cumu2 pyy
-    global file1 freq_field freq_slider ZG.compare_window_yrs_v3 par5
+    global xt cumu cumu2 pyy
+    global file1 freq_field freq_slider par5
     ZG=ZmapGlobal.Data;
     replaceMainCatalog(ZG.newt2);
 
@@ -18,7 +18,7 @@ function cllta(var1)
         winlen_days = 13*par5            % for bin of 28 days, winlen_days = 13 is about 1 year
 
     elseif var1==2
-        winlen_days = round(ZG.compare_window_yrs_v3/days(par5));
+        winlen_days = round(ZG.compare_window_dur_v3/days(par5));
 
         if (winlen_days<min_freq)
             winlen_days=min_freq;
@@ -27,15 +27,15 @@ function cllta(var1)
             winlen_days=max_freq;
         end
         pause(0.1)
-        set(freq_field,'String',num2str(ZG.compare_window_yrs_v3));
-        set(freq_slider,'Value',ZG.compare_window_yrs_v3);
+        set(freq_field,'String',num2str(years(ZG.compare_window_dur_v3)));
+        set(freq_slider,'Value',years(ZG.compare_window_dur_v3));
     end
 
     t0b = min(ZG.a.Date);
     n = ZG.a.Count;
     teb = max(ZG.a.Date);
     tdiff = round((teb - t0b)/days(par5));
-    ZG.compare_window_yrs_v3 = winlen_days*days(par5);                 % ZG.compare_window_yrs_v3 is window in years
+    ZG.compare_window_dur_v3 = days(winlen_days*days(par5));  
 
     pause(0.1)
     %
@@ -51,12 +51,12 @@ function cllta(var1)
 
     freq_field=uicontrol('Style','edit',...
         'Position',[.40 .00 .12 .06],...
-        'Units','normalized','String',num2str(ZG.compare_window_yrs_v3),...
+        'Units','normalized','String',num2str(years(ZG.compare_window_dur_v3),...
         'callback',@callbackfun_001);
 
     freq_slider=uicontrol('BackGroundColor',[ 0.8 0.8 0.8],'Style','slider',...
         'Position',[.30 .10 .45 .06],...
-        'Units','normalized','Value',ZG.compare_window_yrs_v3,'Max',max_freq,'Min',min_freq,...
+        'Units','normalized','Value',years(ZG.compare_window_dur_v3),'Max',max_freq,'Min',min_freq,...
         'callback',@callbackfun_002);
 
     close_button=uicontrol('Style','Pushbutton',...
@@ -79,7 +79,7 @@ function cllta(var1)
     ncu=length(xt);
     lta=1:1:ncu;
     lta=lta*0;
-    winlen_days=round(ZG.compare_window_yrs_v3/days(ZG.bin_days));
+    winlen_days=round(ZG.compare_window_dur_v3/ZG.bin_dur);
     %
     %  calculated mean, var etc
     %
@@ -113,7 +113,7 @@ function cllta(var1)
 function callbackfun_001(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ZG.compare_window_yrs_v3=str2double(freq_field.String);
+  ZG.compare_window_dur_v3=years(str2double(mysrc.String));
   delete(pyy);
    cllta(2);
 end
@@ -121,7 +121,7 @@ end
 function callbackfun_002(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ZG.compare_window_yrs_v3=freq_slider.Value;
+  ZG.compare_window_dur_v3=years(mysrc.Value);
   delete(pyy);
    cllta(2);
 end

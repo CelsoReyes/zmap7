@@ -9,15 +9,13 @@ function [sel] = bpvalgrid()
     %For the execution of this program, the "Cumulative Window" should have been opened before.
     %Otherwise the matrix "ZG.maepi", used by this program, does not exist.
     
-    global valeg valeg2 CO valm1
+    global minThreshMag
     
     % TOFIX ll isn't guaranteed to be here. it is the index of the events within the polygon
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
-    
-    
-    valeg = 1;
-    valm1 = min(ZG.a.Magnitude);
+
+    minThreshMag = min(ZG.a.Magnitude);
     
     % get the grid parameter
     % initial values
@@ -27,7 +25,7 @@ function [sel] = bpvalgrid()
     ZG.newt2 = ZG.a.subset(l);
     
     % cut cat at selected magnitude threshold
-    l = ZG.newt2.Magnitude >= valm1;
+    l = ZG.newt2.Magnitude >= minThreshMag;
     ZG.newt2 = ZG.newt2.subset(l);
     
     ZG.hold_state2=true;
@@ -112,7 +110,7 @@ function [sel] = bpvalgrid()
         t0b = min(ZG.a.Date)  ;
         n = ZG.a.Count;
         teb = max(ZG.a.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days);
+        tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
         % loop over  all points
@@ -159,7 +157,7 @@ function [sel] = bpvalgrid()
                         if maxcat.Count()  >= Nmin
                             [magnm, bv2, stan2,  av2] =  bmemag(maxcat);
                             maxmg = max(maxcat.Magnitude);
-                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat);
+                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                             return_nans = false;
                         end
                         
@@ -168,7 +166,7 @@ function [sel] = bpvalgrid()
                         [magnm, bv2, stan2,  av2] =  bmemag(b);
                         maxcat = b(l,:); % TOFIX there is no l here.
                         maxmg = max(maxcat(:,6));
-                        [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(b(l,:));
+                        [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(b.subset(l),'days',valeg2,CO,minThreshMag);
                         return_nans = false;
                         
                     case 3
@@ -179,7 +177,7 @@ function [sel] = bpvalgrid()
                             [bv, magco0, stan, av, me, mer, me2,  pr] =  bvalca3(maxcat,2);
                             [magnm, bv2, stan2,  av2] =  bmemag(maxcat);
                             maxmg = max(maxcat.Magnitude);
-                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat);
+                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                             return_nans = false;
                         end
                         
@@ -191,7 +189,7 @@ function [sel] = bpvalgrid()
                             [bv, magco0, stan, av, me, mer, me2,  pr] =  bvalca3(maxcat,2);
                             [magnm, bv2, stan2,  av2] =  bmemag(maxcat);
                             maxmg = max(maxcat.Magnitude);
-                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat);
+                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                             return_nans = false;
                         end
                     case 5
@@ -208,7 +206,7 @@ function [sel] = bpvalgrid()
                             [bv, magco0, stan, av, me, mer, me2,  pr] =  bvalca3(maxcat,2);
                             maxmg = max(maxcat.Magnitude);
                             [magnm, bv2, stan2,  av2] =  bmemag(maxcat);
-                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat);
+                            [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                             return_nans = false;
                         end
                     otherwise
@@ -236,7 +234,7 @@ function [sel] = bpvalgrid()
             zmap_message_center.set_info('Save Grid','  ');
             think;
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Grid Datafile Name?') ;
-            sapa2 = ['save ' path1 file1 ' bpvg gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll'];
+            sapa2 = ['save ' path1 file1 ' bpvg gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll'];
             if length(file1) > 1
                 eval(sapa2)
             end
@@ -276,6 +274,18 @@ function [sel] = bpvalgrid()
         
         % creates a dialog box to input grid parameters
         %
+        %% UI Parts
+        % ComputationMethod (popup)
+        % plot in current figure (checkbox)
+        % use:number of events (radio)
+        %     number of events (edit)
+        % use: radius (radio)
+        %     redius (edit)
+        %
+        % load grid (button)
+        % save grid (button)
+        %
+        
         figure_w_normalized_uicontrolunits(...
             'Name','Grid Input Parameter',...
             'NumberTitle','off', ...
@@ -284,6 +294,9 @@ function [sel] = bpvalgrid()
             'Visible','off', ...
             'Position',[ ZG.wex+200 ZG.wey-200 650 250]);
         axis off
+        
+        
+        
         labelList2={'Automatic Mcomp (max curvature)',...
             'Fixed Mc (Mc = Mmin)',...
             'Automatic Mcomp (90% probability)',...
@@ -291,6 +304,12 @@ function [sel] = bpvalgrid()
             'Best (?) combination (Mc95 - Mc90 - max curvature)',...
             'Constant Mc'};
         labelPos = [0.2 0.8  0.6  0.08];
+        
+        text(...
+            'Position',[0.10 0.98 0 ],...
+            'FontSize',ZmapGlobal.Data.fontsz.l ,...
+            'FontWeight','bold',...
+            'String','Please choose an Mc estimation option   ');
         
         uicontrol('Style','popup',...
             'Position',labelPos,...
@@ -302,10 +321,9 @@ function [sel] = bpvalgrid()
         
         
         % creates a dialog box to input grid parameters
-        %
         
-        oldfig_button = uicontrol('BackGroundColor',[.60 .92 .84], ...
-            'Style','checkbox','string','Plot in Current Figure',...
+        oldfig_button = uicontrol('Style','checkbox','string','Plot in Current Figure',...
+            'BackGroundColor',[.60 .92 .84], ...
             'Position',[.78 .52 .20 .08],...
             'Units','normalized',...
             'Tag','oldfig_button');
@@ -313,25 +331,25 @@ function [sel] = bpvalgrid()
         set(oldfig_button,'Value',1);
         
         
-        freq_field=uicontrol('Style','edit',...
+        freq_field=uicontrol('Style','edit','String',num2str(ni),...
             'Position',[.30 .60 .12 .08],...
-            'Units','normalized','String',num2str(ni),...
+            'Units','normalized',...
             'callback',@callbackfun_002);
         
         
-        freq_field0=uicontrol('Style','edit',...
+        freq_field0=uicontrol('Style','edit','String',num2str(ra),...
             'Position',[.30 .50 .12 .08],...
-            'Units','normalized','String',num2str(ra),...
+            'Units','normalized',...
             'callback',@callbackfun_003);
         
-        freq_field2=uicontrol('Style','edit',...
+        freq_field2=uicontrol('Style','edit','String',num2str(dx),...
             'Position',[.30 .40 .12 .08],...
-            'Units','normalized','String',num2str(dx),...
+            'Units','normalized',...
             'callback',@callbackfun_004);
         
-        freq_field3=uicontrol('Style','edit',...
+        freq_field3=uicontrol('Style','edit','String',num2str(dy),...
             'Position',[.30 .30 .12 .080],...
-            'Units','normalized','String',num2str(dy),...
+            'Units','normalized',...
             'callback',@callbackfun_005);
         
         rgroup1 = uibuttongroup('Title','event grouping','Position',[0.05 0.48 0.25 0.25]);
@@ -344,75 +362,62 @@ function [sel] = bpvalgrid()
         
         set(tgl1,'Value',1);
         
-        tgl2 =  uicontrol(rgroup1,'Style','radiobutton',...
-            'string','Constant Radius:',...
+        tgl2 =  uicontrol(rgroup1,'Style','radiobutton','string','Constant Radius:',...
             'Position',[0.08 0.1 .9 .35],...
             ...'Position',[.05 .50 .2 .080],...
             'Units','normalized', 'Tag', 'tgl2');
         
-        create_grid =  uicontrol(rgroup2,'Style','radiobutton',...
-            'string','Calculate a new grid','Position',[.05 .7 .8 .25],...[.55 .55 .2 .080],...
+        create_grid =  uicontrol(rgroup2,'Style','radiobutton','string','Calculate a new grid',...
+            'Position',[.05 .7 .8 .25],...[.55 .55 .2 .080],...
             'Units','normalized', 'Tag', 'create_grid');
         
         set(create_grid,'value',1);
         
-        prev_grid =  uicontrol(rgroup2,'Style','radiobutton',...
-            'string','Reuse the previous grid','Position',[.05 .4 .8 .25],...[.55 .45 .2 .080],...
+        prev_grid =  uicontrol(rgroup2,'Style','radiobutton','string','Reuse the previous grid',...
+            'Position',[.05 .4 .8 .25],...[.55 .45 .2 .080],...
             'Units','normalized', 'Tag', 'prev_grid');
         
         
-        load_grid =  uicontrol(rgroup2,'Style','radiobutton',...
-            'string','Load a previously saved grid','Position',[.05 .1 .8 .25],...[.55 .35 .2 .080],...
+        load_grid =  uicontrol(rgroup2,'Style','radiobutton','string','Load a saved grid',...
+            'Position',[.05 .1 .8 .25],...[.55 .35 .2 .080],...
             'Units','normalized', 'Tag', 'load_grid');
         
-        save_grid =  uicontrol('Style','checkbox',...
-            'string','Save selected grid to file',...
+        save_grid =  uicontrol('Style','checkbox','string','Save selected grid to file',...
             'Position',[.55 .22 .2 .080],...
             'Units','normalized', 'Tag', 'save_grid');
         
-        uicontrol('Style','edit',...
+        uicontrol('Style','edit','String',num2str(Nmin),...
             'Position',[.30 .20 .12 .080],...
-            'Units','normalized','String',num2str(Nmin),...
+            'Units','normalized',...
             'callback',@callbackfun_006);
         
         
-        close_button=uicontrol('Style','Pushbutton',...
+        close_button=uicontrol('Style','Pushbutton','String','Cancel',...
             'Position',[.60 .05 .15 .12 ],...
-            'Units','normalized','callback',@callbackfun_007,'String','Cancel');
+            'Units','normalized','callback',@callbackfun_007);
         
-        go_button1=uicontrol('Style','Pushbutton',...
+        go_button1=uicontrol('Style','Pushbutton','String','Go',...
             'Position',[.20 .05 .15 .12 ],...
             'Units','normalized',...
-            'Callback',@go_callback,...
-            'String','Go');
+            'Callback',@go_callback);
         
-        text(...
-            'Position',[0.10 0.98 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.l ,...
-            'FontWeight','bold',...
-            'String','Please choose an Mc estimation option   ');
-        text(...
+        text('String',' Grid Parameter',...
             'Position',[0.30 0.75 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.l ,...
-            'FontWeight','bold',...
-            'String',' Grid Parameter');
+            'FontSize',ZmapGlobal.Data.fontsz.l);
         text(...
             'Position',[-0.1 0.4 0 ],...
             'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
             'String','Spacing in x (dx) in deg:');
         
         text(...
             'Position',[-0.1 0.3 0 ],...
             'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
             'String','Spacing in y (dy) in deg:');
         
         text(...
             'Color',[0 0 0 ],...
             'Position',[-0.1 0.18 0 ],...
             'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
             'String','Min. No. of events > Mc:');
         
         %
@@ -474,14 +479,11 @@ function [sel] = bpvalgrid()
     
     
     function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-        ;
+        ZG.inb2=mysrc.Value;
     end
     
     function callbackfun_002(mysrc,myevt)
-
+        % toggle number of events
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni=str2double(freq_field.String);
         freq_field.String=num2str(ni);
@@ -490,7 +492,7 @@ function [sel] = bpvalgrid()
     end
     
     function callbackfun_003(mysrc,myevt)
-
+        %toggle radius
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ra=str2double(freq_field0.String);
         freq_field0.String=num2str(ra);
@@ -499,24 +501,16 @@ function [sel] = bpvalgrid()
     end
     
     function callbackfun_004(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dx=str2double(freq_field2.String);
-        freq_field2.String=num2str(dx);
+        dx=str2double(mysrc.String);
     end
     
     function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dy=str2double(freq_field3.String);
-        freq_field3.String=num2str(dy);
+        dy=str2double(mysrc.String);
     end
     
     function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        Nmin=str2double(freq_field4.String);
-        freq_field4.String=num2str(Nmin);
+        Nmin=str2double(mysrc.String);
     end
     
     function callbackfun_007(mysrc,myevt)

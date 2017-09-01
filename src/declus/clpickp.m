@@ -13,13 +13,13 @@ function clpickp(choice)
     global equi %[IN/OUT]
     global bgevent backequi
     global backbgevent original plot1_h plot2_h clust file1
-    global ttcat tt1cat clsel decc
+    global tt1cat clsel decc
     
     proceed=false;
     
     ZG=ZmapGlobal.Data;
     if decc~=0
-        if isempty(ttcat)
+        if isempty(ZG.ttcat)
             figure(clu);
         else
             figure(clu1);
@@ -96,20 +96,20 @@ function clpickp(choice)
                 backbgevent=bgevent;
             end
         end
-        if ~isempty(ttcat)
+        if ~isempty(ZG.ttcat)
             clsel=1;
             if isempty(tt1cat)
-                tt1cat=ttcat;
+                tt1cat=ZG.ttcat;
             end
         end
         disp('End of data entry')
         
         disp('Data is being processed - please wait...  ')
         if decc~=0
-            if isempty(ttcat)
+            if isempty(ZG.ttcat)
                 replaceMainCatalog(equi);
             else
-                replaceMainCatalog(ttcat);
+                replaceMainCatalog(ZG.ttcat);
             end
         elseif decc==0
             replaceMainCatalog(ZG.newccat);
@@ -118,7 +118,7 @@ function clpickp(choice)
         y = [y ; y(1)];      %  closes polygon
         
         if decc~=0
-            if isempty(ttcat)
+            if isempty(ZG.ttcat)
                 figure(clu);
             else
                 figure(clu1);
@@ -135,7 +135,7 @@ function clpickp(choice)
         YI = ZG.a.Latitude;
         ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
-            if isempty(ttcat)
+            if isempty(ZG.ttcat)
                 equi = ZG.a.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
@@ -145,7 +145,7 @@ function clpickp(choice)
         save polcordinates.mat polcordinates
         disp(' The selected polygon was save in the file polcordinates.dat')
         if decc~=0
-            if isempty(ttcat)
+            if isempty(ZG.ttcat)
                 set(equi_button,'value',1)
                 st1=get(equi_button,'Callback');
                 eval(st1);
@@ -157,7 +157,7 @@ function clpickp(choice)
                 bgevent=backbgevent(tmp',:);
                 cluoverl(7);
             else
-                ttcat=ZG.a.subset(ll);
+                ZG.ttcat=ZG.a.subset(ll);
                 cluoverl(8);
             end
         elseif decc==0
@@ -168,7 +168,7 @@ function clpickp(choice)
         title(strib,'FontWeight','bold',...
             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         if decc~=0
-            if isempty(ttcat)
+            if isempty(ZG.ttcat)
                 eval(st1);
             end
         end

@@ -9,7 +9,7 @@ function cluoverl(var1)
     global dplo1_h dplo2_h dplo3_h dep1 dep2 dep3
     global  file1 clu h5
     global ty stri2 strib
-    global after_h fore_h main_h ttcat after_button fore_button
+    global after_h fore_h main_h after_button fore_button
     global foresh aftersh mainsh calll66
     global mainfault main faults clus_button coastline
     global SizMenu TypMenu new
@@ -80,7 +80,7 @@ function cluoverl(var1)
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
         teb = max(ZG.a.Date) ;
-        tdiff = round(teb - t0b)/days(ZG.bin_days);
+        tdiff = round(teb - t0b)/days(ZG.bin_dur);
 
 
         n = ZG.a.Count;
@@ -139,7 +139,7 @@ function cluoverl(var1)
         % Make the figure visible
         %
     elseif var1==8
-        replaceMainCatalog(ttcat);
+        replaceMainCatalog(ZG.ttcat);
         cla
         set(gca,'visible','off')
         hold off
@@ -164,7 +164,7 @@ function cluoverl(var1)
         t0b = min(ZG.a.Date);
         n = ZG.a.Count;
         teb = max(ZG.a.Date) ;
-        tdiff = round(teb - t0b)/days(ZG.bin_days);
+        tdiff = round(teb - t0b)/days(ZG.bin_dur);
         %define fore and aftershocks
         %
         tmp = find(ZG.a.Magnitude==max(ZG.a.Magnitude));     %index in a of first mainshock

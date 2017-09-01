@@ -9,10 +9,10 @@ function cltiplot(var1)
     
     global freq_field freq_slider
     global bgevent file1 clust original newclcat
-    global backcat ttcat cluscat
+    global backcat cluscat
     global  sys clu te1
     global clu1 pyy stri statime
-    global xt  cumu cumu2 ZG.compare_window_yrs_v3
+    global xt  cumu cumu2
     global close_ti_button mtpl
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo
@@ -81,7 +81,7 @@ function cltiplot(var1)
             ZG.newt2=cluscat;
         end
     elseif var1==2
-        ZG.newt2=ttcat;
+        ZG.newt2=ZG.ttcat;
     end
     [ii,i]=sort(ZG.newt2.Date);
     ZG.newt2=ZG.newt2.subset(i);
@@ -250,14 +250,14 @@ function cltiplot(var1)
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ttcat=ZG.newt2;
+        ZG.ttcat=ZG.newt2;
         clpval(1);
     end
     
     function callbackfun_008(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ttcat=ZG.newt2;
+        ZG.ttcat=ZG.newt2;
         clpval(3);
     end
     

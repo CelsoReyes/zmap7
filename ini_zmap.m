@@ -32,8 +32,8 @@ sel  = 'in';
 %ic = 0;
 %ya0 = 0.;
 %xa0 = 0.;
-%ZG.compare_window_yrs_v3 = 1.;
-%ZG.compare_window_yrs = 1.5;
+%ZG.compare_window_dur_v3 = years(1);
+%ZG.compare_window_dur = years(1.5);
 %step = 3;
 %ni = 100;
 
@@ -71,7 +71,7 @@ ZG.freeze_colorbar = false;
     ZG.ra = 5;
     
     ZG.someColor = 'w';
-    ZG.bin_days = days(14); % bin length, days
+    ZG.bin_dur = days(14); % bin length, days
     ZG.big_eq_minmag = 8; % minimum cutoff for "large" earthquakes
     
     %set the recursion slightly, to avoid error (specialy with ploop functions)

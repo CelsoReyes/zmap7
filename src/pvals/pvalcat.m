@@ -6,33 +6,27 @@ function pvalcat()
     %Modified May: 2001. B. Enescu
     % sets newt2
     
-    global valeg  % used for choosing some options in mypval2m.m.
-    global valeg2 %  decides if c is fixed or not.
     persistent cua2a % axes associated with this  (should be persistent instead)
-    global CO % c-value (initial?)
-    global valm1 % min magnitude
     
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
-    
-    
-    valeg = 2; % signal for mypval2.m, telling it where it was called from and what to do
+
     nn2 = ZG.newt2;
     
     prompt = {'Minimum magnitude',...
         'Min. time after mainshock (in days)',...
-        'Enter a negative value if you wish a fix c'};
+        'Enter a negative value if you wish to fix c'};
     title = 'You can change the following parameters:';
     lines = 1;
-    valm1 = min(ZG.newt2.Magnitude);
+    minThreshMag = min(ZG.newt2.Magnitude);
     minDaysAfterMainshock = 0;
-    valeg2 = 0;
+    valeg2 = 0; %  decides if c is fixed or not.
     
     
-    def = {num2str(valm1), num2str(minDaysAfterMainshock) , num2str(valeg2)};
+    def = {num2str(minThreshMag), num2str(minDaysAfterMainshock) , num2str(valeg2)};
     answer = inputdlg(prompt,title,lines,def);
     
-    valm1=str2double(answer{1});
+    minThreshMag=str2double(answer{1});
     minDaysAfterMainshock = str2double(answer{2});
     valeg2 = str2double(answer{3});
     
@@ -41,25 +35,24 @@ function pvalcat()
     ZG.newt2 = ZG.newt2.subset(l); %keep events AFTER mainshock
     
     % cat at selected magnitude threshold
-    l = ZG.newt2.Magnitude >= valm1;
+    l = ZG.newt2.Magnitude >= minThreshMag;
     ZG.newt2 = ZG.newt2.subset(l); %keep big-enough events
     
     ZG.hold_state2=true;
     timeplot(ZG.newt2)
     ZG.hold_state2=false;
     
-    
+    CO = 0.01; % c-value (initial?)
     if (valeg2 < 0)
         prompt = {'c-value'}; % time delay before the onset of the power-law aftershock decay rate
         title = 'c-value:';
         lines = 1;
-        CO = 0.01;
         def = {num2str(CO)};
         answer = inputdlg(prompt,title,lines,def);
         CO = str2double(answer{1});
     end
     
-    paramc1 = ZG.newt2.Magnitude >= valm1;
+    paramc1 = ZG.newt2.Magnitude >= minThreshMag;
     pcat = ZG.newt2.subset(paramc1);
     
     lt = pcat.Date >= ZG.maepi.Date(1)+days(minDaysAfterMainshock);
@@ -68,18 +61,19 @@ function pvalcat()
     [timpa] = timabs(pcat);
     [timpar] = timabs(ZG.maepi);
     tmpar = timpar(1);
-    pcat = (timpa-tmpar)/1440;
-    paramc2 = (pcat >= minDaysAfterMainshock);
-    pcat = pcat(paramc2,:);
-    tmin = min(pcat); tmax = max(pcat);
+    pcatd = (timpa-tmpar)/1440;
+    paramc2 = (pcatd >= minDaysAfterMainshock);
+    pcat = pcat.subset(paramc2);
+    tmin = min(pcat.Date); 
+    tmax = max(pcat.Date);
     tint = [tmin tmax];
     
-    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(pcat);
+    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(pcat,'date',valeg2,CO,minThreshMag);
     
     if ~isnan(pv)
-        dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,pcat,tmin,tmax,valm1);
+        dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,pcat,tmin,tmax,minThreshMag);
     else
-        dispGeneral(pcat,tmin,tmax,valm1);
+        dispGeneral(pcat,tmin,tmax,minThreshMag);
     end
     
     %Find if the figure already exist.
@@ -172,7 +166,7 @@ function labelPlot(ax, pv, pstd, cv, cstd, kv, kstd, show_cstd)
     text(ax,0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bold','FontSize',12,'units','norm');
 end
 
-function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,valm1)
+function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,minThreshMag)
     ZG=ZmapGlobal.Data;
     disp('');
     disp('Parameters :');
@@ -190,10 +184,10 @@ function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,valm1)
     disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
     disp(['tmin = ' num2str(tmin)]);
     disp(['tmax = ' num2str(tmax)]);
-    disp(['Mmin = ' num2str(valm1)]);
+    disp(['Mmin = ' num2str(minThreshMag)]);
 end
 
-function dispGeneral(pcat,tmin,tmax,valm1)
+function dispGeneral(pcat,tmin,tmax,minThreshMag)
     % dispGeneral shows parameters
     disp([]);
     disp('Parameters :');
@@ -201,5 +195,5 @@ function dispGeneral(pcat,tmin,tmax,valm1)
     disp(['Number of Earthquakes = ' num2str(length(pcat))]);
     disp(['tmin = ' num2str(tmin)]);
     disp(['tmax = ' num2str(tmax)]);
-    disp(['Mmin = ' num2str(valm1)]);
+    disp(['Mmin = ' num2str(minThreshMag)]);
 end

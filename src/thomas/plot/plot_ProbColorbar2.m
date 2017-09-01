@@ -22,9 +22,7 @@ function plot_ProbColorbar2(pmin,pmax)
 % 1-10^-4 0.9999    4.0000    1.0000
 
 % testing colorbar
-% aa=10.^[-1:-0.01:-4]';
-% bb=1-flipud(aa);
-% cc=[bb; aa];
+
 % figure;pcolor(repmat(calc_ProbColorbar2Value(cc),1,100));
 colormap(abs((gui_Colormap_ReadPovRay('SRCProb.pov'))))
 set(gca,'CLim',[pmin pmax]);

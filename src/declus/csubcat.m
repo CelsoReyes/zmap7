@@ -79,7 +79,7 @@ function csubcat()
     t0b = min(ZG.a.Date);
     n = ZG.a.Count;
     teb = max(ZG.a.Date) ;
-    tdiff =round(teb - t0b)/days(ZG.bin_days);
+    tdiff =round(teb - t0b)/days(ZG.bin_dur);
     
     
     n = ZG.a.Count;

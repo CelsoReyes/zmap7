@@ -85,12 +85,12 @@ function setUpDefaultValues(A)
     t0b = min(A.Date);
     teb = max(A.Date);
     ttdif = days(teb - t0b);
-    if ~exist('bin_days','var')
-        ZG.bin_days = days(ceil(ttdif/100));
+    if ~exist('bin_dur','var')
+        ZG.bin_dur = days(ceil(ttdif/100));
     elseif ttdif<=10  &&  ttdif>1
-        ZG.bin_days = days(0.1);
+        ZG.bin_dur = days(0.1);
     elseif ttdif<=1
-        ZG.bin_days = days(0.01);
+        ZG.bin_dur = days(0.01);
     end
     ZG.big_eq_minmag = max(A.Magnitude) -0.2;
     dep1 = 0.3*max(A.Depth);

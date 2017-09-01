@@ -20,7 +20,9 @@ function plotala()
         ' corners with the mouse                         '];
     % Find out if figure already exists
     watchon
-    if isempty(iala) ; iala = ZG.compare_window_yrs; end
+    if isempty(iala) ; 
+        iala = ZG.compare_window_dur; 
+    end
     if ~exist('abo2') || isempty(abo2); 
         errordlg('No alarms with z >= Zmin detected!');
         return; 
@@ -54,7 +56,7 @@ function plotala()
         
         
         tre2 = max(abo(:,4)) - 0.5;
-        new = uicontrol('style','edit','value',ZG.compare_window_yrs,...
+        new = uicontrol('style','edit','value',years(ZG.compare_window_dur),...
             'string',num2str(tre2,3), 'background','y',...
             'callback',@callbackfun_002,...
             'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
@@ -96,7 +98,7 @@ function plotala()
     axes('pos',rect)
     set(gca,'visible','off')
     abo = abo2;
-    abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
+    abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
     l = abo(:,4) > tre2;
     abo = abo(l,:);
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
@@ -154,7 +156,7 @@ function plotala()
     end
     
     axis([ s2-0.1 s1+0.1 s4-0.1 s3+0.1 t0b teb+1  ])
-    strib4 = [  ' Alarm Cube of '  name '; wl =  '  num2str(ZG.compare_window_yrs,3) '; Zcut = ' num2str(tre2,3)  ];
+    strib4 = [  ' Alarm Cube of '  name '; wl =  '  char(ZG.compare_window_dur) '; Zcut = ' num2str(tre2,3)  ];
     title(strib4,'FontWeight','bold',...
         'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')
     
@@ -187,7 +189,7 @@ function plotala()
         % Reset the alarms to the all alarms above the current threshold
         l = abo2(:,4) >= tre2;
         abo = abo2(l,:);
-        abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
+        abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
         
         
         j = 0;
@@ -256,7 +258,7 @@ function plotala()
         for tre2 = max(abo(:,4))-0.1 : -is : zm
             tre2;
             abo = abo2;
-            abo(:,5) = abo(:,5)* days(ZG.bin_days) + ZG.a.Date(1);
+            abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
             l = abo(:,4) >= tre2;
             abo = abo(l,:);
             l = abo(:,3) < ZG.tresh_km;

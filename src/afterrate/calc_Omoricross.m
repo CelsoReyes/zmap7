@@ -33,7 +33,7 @@ function calc_Omoricross()
     l = ZG.(wCat).Date > ZG.maepi.Date(1);
     ZG.(wCat)=ZG.(wCat).subset(l);
     
-    % Create the dialog box
+    %% Create the dialog box
     figure_w_normalized_uicontrolunits(...
         'Name','Grid Input Parameter',...
         'NumberTitle','off', ...
@@ -43,6 +43,8 @@ function calc_Omoricross()
         'Color', [0.8 0.8 0.8]);
     axis off
     
+    
+
     % Dropdown list
     labelList2=[' Fixed Mc (Mc = Mmin) | Automatic Mc (max curvature) | EMR-method'];
     hndl2=uicontrol(...

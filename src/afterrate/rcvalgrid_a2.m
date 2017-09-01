@@ -8,12 +8,10 @@ function [sel]=rcvalgrid_a2()
     % J. Woessner
     % last update: 14.02.05
     
-    global valeg valm1
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
-    
-    valeg = 1;
-    valm1 = min(ZG.a.Magnitude);
+
+    minThreshMag = min(ZG.a.Magnitude);
     
     % Set the grid parameter
     % Initial values
@@ -33,7 +31,7 @@ function [sel]=rcvalgrid_a2()
     prev_grid=false; % required for variable scoping.
     
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude > valm1;
+    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude > minThreshMag;
     ZG.newt2=ZG.a.subset(l);
     
     ZG.hold_state2=true;
@@ -202,7 +200,7 @@ function [sel]=rcvalgrid_a2()
         t0b = min(ZG.a.Date)  ;
         n = ZG.a.Count;
         teb = max(ZG.a.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days);
+        tdiff = round((teb-t0b)/ZG.bin_dur);
         
         % Container
         mRcGrid =[];
@@ -280,7 +278,7 @@ function [sel]=rcvalgrid_a2()
         end  % for newgr
         
         % Save the data to rcval_grid.mat
-        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll ra time timef bootloops ZG.maepi
+        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll ra time timef bootloops ZG.maepi
         [sFilename, sPathname] = uiputfile('*.mat', 'Save MAT-file');
         sFileSave = [sPathname sFilename];
         save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','ZG.maepi');

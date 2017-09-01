@@ -59,7 +59,7 @@ classdef ZmapData < handle
         %lakes
         %borders % national borders
         main
-        maepi % large earthquakes, determined by user cutoff
+        maepi=ZmapCatalog('big events'); % large earthquakes, determined by user cutoff
         
         % divisions
         divisions_depth
@@ -79,10 +79,10 @@ classdef ZmapData < handle
         mainmap_grid = 'on';
         mainmap_plotby = 'depth'; % was typele
         
-        bin_days = 14; %bin length, days
+        bin_dur = days(14); %bin length
         
         % likely to be completely removed stuff
-        hold_state = false% was ho, contained 'hold' or 'noho'
+        hold_state = false % was ho, contained 'hold' or 'noho'
         hold_state2 = false % was ho2, contained 'hold' or 'noho'
         hold_state3 = false % was hoc, contained 'hold' or 'noho'
         
@@ -99,8 +99,8 @@ classdef ZmapData < handle
         Rconst %used with the slicers
         ra=5% default max sphere radius
         ni=100 %default number of nearby events for grid calculations
-        compare_window_yrs =1.5 % Compare window length (years)
-        compare_window_yrs_v3=1.0% Compare window length, alternate version
+        compare_window_dur=years(1.5) % Compare window length (years)
+        compare_window_dur_v3=years(1.0) % Compare window length, alternate version
         
         % cross section stuff, perhaps
         tresh_km = 50 % radius below which blocks zmap's (?) will be plotted
@@ -149,14 +149,14 @@ classdef ZmapData < handle
         function out=get.wely(obj)
             out=obj.welcome_len(2);
         end
-        function set.bin_days(obj,val)
+        function set.bin_dur(obj,val)
             if isa(val,'duration')
-                obj.bin_days=val;
+                obj.bin_dur=val;
             elseif isnumeric(val)
-                warning('expected bin_days to be a duration. converting and assuming it is days');
-                obj.bin_days=days(val);
+                warning('expected bin_dur to be a duration. converting and assuming it is days');
+                obj.bin_dur=days(val);
             else
-                error('only can convert durations and numerics to bin_days');
+                error('only can convert durations and numerics to bin_dur');
             end
         end
     end

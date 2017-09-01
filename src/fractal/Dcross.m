@@ -217,7 +217,7 @@ functin my_calculate()
     t0b = min(newa.Date)  ;
     n = newa.Count;
     teb = max(newa.Date) ;
-    tdiff = round((teb-t0b)/ZG.bin_days);
+    tdiff = round((teb-t0b)/ZG.bin_dur);
     loc = zeros(3, length(gx)*length(gy));
 
     % loop over  all points

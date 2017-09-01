@@ -270,7 +270,7 @@ function rc_cross_a2()
         t0b = min(newa.Date)  ;
         n = newa.Count;
         teb = max(newa.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days);
+        tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
         % loop over  all points
@@ -384,7 +384,6 @@ function rc_cross_a2()
         gx = xvect;gy = yvect;
         
         % Save the data to rcval_grid.mat
-        save rcval_grid.mat mRcCross gx gy dx dy ZG.bin_days tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri ra time timef bootloops ZG.maepi xsecx xsecy
         
         close(wai)
         watchoff

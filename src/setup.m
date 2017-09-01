@@ -7,8 +7,8 @@ function setup()
     % make the interface
     %
     
-    if ~exist('ZG.bin_days', 'var')
-        ZG.bin_days = days(14);
+    if ~exist('ZG.bin_dur', 'var')
+        ZG.bin_dur = days(14);
     end
     
     % This is the info window text

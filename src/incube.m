@@ -111,7 +111,7 @@ function incube()
         abo=[];
         
         % initial parameter
-        winlen_days = floor(ZG.compare_window_yrs* 365/ZG.bin_days);
+        winlen_days = floor(ZG.compare_window_dur/ZG.bin_dur);
         [len, ncu] = size(cumuall); len = len-2;
         var1 = zeros(1,ncu);
         var2 = zeros(1,ncu);
@@ -216,11 +216,11 @@ function incube()
         
         
         abo2 = abo;
-        iala = ZG.compare_window_yrs;
+        iala = ZG.compare_window_dur;
         try
             zmap_message_center.set_info('Save Alarm Cube?','  ');
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
-            sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala ZG.compare_window_yrs'];
+            sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala winlen_years'];
             if length(file1) > 1
                 eval(sapa2);
             end
@@ -269,8 +269,7 @@ end
 function callbackfun_002(mysrc,myevt)
 
     callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    ZG.compare_window_yrs=str2double(freq_field2.String);
-    freq_field2.String=num2str(ZG.compare_window_yrs);
+    ZG.compare_window_dur=years(str2double(mysrc.String));
 end
 
 function callbackfun_003(mysrc,myevt)

@@ -44,6 +44,10 @@ classdef ZmapCatalog < handle
                 %donothing
                 return
             end
+            if nargin==1 && ischar(varargin{1})
+                obj.Name=varargin{1};
+                return;
+            end
             if isnumeric(varargin{1})
                 % import Catalog from Array
                 obj.Longitude = varargin{1}(:,1);

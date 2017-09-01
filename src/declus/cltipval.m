@@ -25,13 +25,13 @@ function cltipval(var1)
 
     global file1             
     global bgevent clust original newclcat
-    global backcat ttcat cluscat
+    global backcat cluscat
    global  sys clu te1
     global xt cumu cumu2
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
     global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk sdp qp aa bb pcheck loopcheck
+    global sdc sdk sdp qp bb pcheck loopcheck
     global callcheck mtpl tmm
     global freq_field5
     global magn mp mc mk msdk msdp msdc ctiplo
@@ -53,7 +53,7 @@ function cltipval(var1)
                 'Position',[ 0.435  0.8 0.5 0.8]);
         end
         
-        ZG.newt2=ttcat;
+        ZG.newt2=ZG.ttcat;
         %calculate start -end time of overall catalog
         t0b = min(ZG.newt2.Date);
         teb = max(ZG.newt2.Date);
@@ -150,13 +150,13 @@ function cltipval(var1)
 
         set(te,'visible','off');
 
-        tmp2=min(ttcat(:,6));
+        tmp2=min(ZG.ttcat(:,6));
         freq_field1= uicontrol('Style','edit',...
             'Position',[.43 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp2),...
             'callback',@callbackfun_001);
 
-        tmp1=max(ttcat(:,6));
+        tmp1=max(ZG.ttcat(:,6));
         freq_field2=uicontrol('Style','edit',...
             'Position',[.76 .35 .1 .04],...
             'Units','normalized','String',num2str(tmp1),...
@@ -300,8 +300,8 @@ function cltipval(var1)
 
             %Build timecatalog
 
-            mains=find(ttcat(:,6)==max(ttcat(:,6)));
-            mains=ttcat(mains(1),:);         %biggest shock in sequence
+            mains=find(ZG.ttcat(:,6)==max(ZG.ttcat(:,6)));
+            mains=ZG.ttcat(mains(1),:);         %biggest shock in sequence
             if var1==4  %input of maintime of sequence(normally onset of high seismicity)
                 if i==1
                     figure(mtpl);
@@ -328,21 +328,21 @@ function cltipval(var1)
             if par3<1             %if cumulative number curve is in days
 
                 if var1==4        %first event in sequence is mainevent if maininput
-                    mains=find(ttcat(:,3)>(days(tt4)+ttcat(1,3)));
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>(days(tt4)+ZG.ttcat(1,3)));
+                    mains=ZG.ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=days(tmp4)+ttcat(1,3)),:);
-                tmp6=days(tmp3)+ttcat(1,3);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=days(tmp3)+ZG.ttcat(1,3) &    ZG.ttcat(:,3)<=days(tmp4)+ZG.ttcat(1,3)),:);
+                tmp6=days(tmp3)+ZG.ttcat(1,3);
 
             else                 %cumulative number curve is in  years
 
                 if var1==4           %first event in sequence in mainevent if maininput
-                    mains=find(ttcat(:,3)>tt4);
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>tt4);
+                    mains=ZG.ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=tmp3 & ttcat(:,3)<=tmp4),:);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=tmp3 & ZG.ttcat(:,3)<=tmp4),:);
                 tmp6=tmp3;
             end
             tmp2=magn(i);
@@ -365,14 +365,13 @@ function cltipval(var1)
             %Loop begins here
             nn=length(tmeqtime);
             loop=0;
-            loopcheck=0;
             tt=tmeqtime(nn);
             t=tmeqtime;
 
             MIN_CSTEP = 0.000001;
             MIN_PSTEP = 0.00001;
     
-            ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');  % call of function who calculates parameters
+            loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');  % call of function who calculates parameters
 
             if loopcheck<499
                 mp(i)=p;              %storage of p,k,c +standard deviations
@@ -431,8 +430,8 @@ function cltipval(var1)
 
             %Build timecatalog
 
-            mains=find(ttcat(:,6)==max(ttcat(:,6)));
-            mains=ttcat(mains(1),:);         %biggest shock in sequence
+            mains=find(ZG.ttcat(:,6)==max(ZG.ttcat(:,6)));
+            mains=ZG.ttcat(mains(1),:);         %biggest shock in sequence
             if var1==7  %input of maintime of sequence(normally onset of high seismicity)
                 if i==1
                     figure(mtpl);
@@ -458,21 +457,21 @@ function cltipval(var1)
             if par3<1             %if cumulative number curve is in days
 
                 if var1==7        %first event in sequence is mainevent if maininput
-                    mains=find(ttcat(:,3)>(days(tt4)+ttcat(1,3)));
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>(days(tt4)+ZG.ttcat(1,3)));
+                    mains=ZG.ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=magn(i)/365+ttcat(1,3)),:);
-                tmp6=days(tmp3)+ttcat(1,3);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=days(tmp3)+ZG.ttcat(1,3) &    ZG.ttcat(:,3)<=magn(i)/365+ZG.ttcat(1,3)),:);
+                tmp6=days(tmp3)+ZG.ttcat(1,3);
 
             else                 %cumulative number curve is in  years
 
                 if var1==7           %first event in sequence in mainevent if maininput
-                    mains=find(ttcat(:,3)>tt4);
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>tt4);
+                    mains=ZG.ttcat(mains(1),:);
                 end
 
-                tmpcat=ttcat(find(ttcat(:,3)>=tmp3 & ttcat(:,3)<=magn(i)),:);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=tmp3 & ZG.ttcat(:,3)<=magn(i)),:);
                 tmp6=tmp3;
             end
             tmpcat=tmpcat(find(tmpcat(:,6)>=tmp2 & tmpcat(:,6)<=tmp1),:);
@@ -494,13 +493,12 @@ function cltipval(var1)
             %Loop begins here
             nn=length(tmeqtime);
             loop=0;
-            loopcheck=0;
             tt=tmeqtime(nn);
             t=tmeqtime;
             
             MIN_CSTEP = 0.000001;
             MIN_PSTEP = 0.00001;
-            ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+            loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
 
             if loopcheck<499
                 mp(i)=p;              %storage of p,k,c +standard deviations

@@ -9,4 +9,4 @@ function update_aa_bb_for_unknown_reasons(tt, ts, p, c)
     f=(tt+c)^(1-p)-(ts+c)^(1-p);
     bb=(log10(f*dk/(1-p)))/(tmp1-tmp2);
     aa=bb*tmp1;
-    end
+end

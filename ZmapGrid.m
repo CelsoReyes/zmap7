@@ -1,6 +1,20 @@
 classdef ZmapGrid
     %ZmapGrid grid for use in zmap's various calculation routines
     %
+    % ZmapGrid
+    %
+    % length
+    % isempty
+    % MaskWithPolygon
+    % plot
+    % setGlobal
+    % save
+    % process
+    % associateWithEvents
+    %
+    % Static Methods:
+    % AutoCreateDeg
+    % load
     
     properties
         Name
@@ -21,7 +35,7 @@ classdef ZmapGrid
     end
     
     methods
-        function obj=ZmapGrid(name, varargin)
+        function obj = ZmapGrid(name, varargin)
             % create a ZmapGrid
             % obj=ZmapGrid(name, all_points, units)
             % obj=ZmapGrid(name, all_x, all_y, units)
@@ -82,19 +96,18 @@ classdef ZmapGrid
         end
         
         % masked access routines
-        function x=get.Xactive(obj)
+        function x = get.Xactive(obj)
             x=obj.GridXY(obj.ActivePoints,1);
         end
         
-        function y=get.Yactive(obj)
+        function y = get.Yactive(obj)
             y=obj.GridXY(obj.ActivePoints,2);
         end
         
-        function xy=get.ActiveGrid(obj)
+        function xy = get.ActiveGrid(obj)
             xy=obj.GridXY(obj.ActivePoints,:);
         end
-        
-        
+              
         function obj = set.ActivePoints(obj, values)
             assert(isempty(values) || isequal(numel(values), length(obj.GridXY))); %#ok<MCSUP>
             obj.ActivePoints = logical(values);
@@ -108,7 +121,7 @@ classdef ZmapGrid
             val = isempty(obj.GridXY);
         end
         
-        function obj=MaskWithPolygon(obj,polyX, polyY)
+        function obj = MaskWithPolygon(obj,polyX, polyY)
             if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
                 warning('polygon isn not closed. adding a point to close it.')
                 polyX(end+1)=polyX(1);

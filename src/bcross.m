@@ -209,7 +209,7 @@ function bcross(sel)
         t0b = min(newa.Date)  ;
         n = newa.Count;
         teb = max(newa.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_days);
+        tdiff = round((teb-t0b)/ZG.bin_dur);
         
         % loop over  all points
         % Set size for output matrix

@@ -24,7 +24,7 @@ function clpval(var1)
 
     global file1             
     global mess bgevent clust original newclcat
-    global backcat ttcat cluscat
+    global backcat cluscat
    global  sys clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
     global xt cumu cumu2
@@ -59,7 +59,7 @@ function clpval(var1)
 
         axis off
         
-        ZG.newt2=ttcat;              %function operates with single cluster
+        ZG.newt2=ZG.ttcat;              %function operates with single cluster
         autop=0;
         if var1==4
             autop=1;
@@ -80,9 +80,9 @@ function clpval(var1)
         %
         n = ZG.newt2.Count;
         if par3>=1
-            [cumu, xt] = hist(ZG.newt2.Date,(t0b:days(par3):teb));
+            [cumu, xt] = hist(ZG.newt2.Date, t0b:days(par3):teb);
         else
-            [cumu, xt] = hist((ZG.newt2.Date-min(ZG.newt2.Date),(0:par5:tdiff));
+            [cumu, xt] = hist(ZG.newt2.Date-min(ZG.newt2.Date), 0:par5:tdiff);
         end
         if var1==3 | var1==4
             difp= [0 diff(cumu)];
@@ -194,13 +194,13 @@ function clpval(var1)
 
             set(te,'visible','off');
 
-            tmp2=min(ttcat(:,6));
+            tmp2=min(ZG.ttcat(:,6));
             freq_field1= uicontrol('Style','edit',...
                 'Position',[.70 .35 .1 .04],...
                 'Units','normalized','String',num2str(tmp2),...
                 'callback',@callbackfun_001);
 
-            tmp1=max(ttcat(:,6));
+            tmp1=max(ZG.ttcat(:,6));
             freq_field2=uicontrol('Style','edit',...
                 'Position',[.70 .28 .1 .04],...
                 'Units','normalized','String',num2str(tmp1),...
@@ -337,8 +337,8 @@ function clpval(var1)
 
             %Build timecatalog
 
-            mains=find(ttcat(:,6)==max(ttcat(:,6)));
-            mains=ttcat(mains(1),:);         %biggest shock in sequence
+            mains=find(ZG.ttcat(:,6)==max(ZG.ttcat(:,6)));
+            mains=ZG.ttcat(mains(1),:);         %biggest shock in sequence
             if var1==7    %input of maintime of sequence(normally onset of high seismicity)
                 figure(pplot);
                 seti = uicontrol('Units','normal',...
@@ -359,17 +359,17 @@ function clpval(var1)
             end
             if par3<1
                 if var1==7
-                    mains=find(ttcat(:,3)>(days(tt4)+ttcat(1,3)));
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>(days(tt4)+ZG.ttcat(1,3)));
+                    mains=ZG.ttcat(mains(1),:);
                 end
-                tmpcat=ttcat(find(ttcat(:,3)>=days(tmp3)+ttcat(1,3) &    ttcat(:,3)<=days(tmp4)+ttcat(1,3)),:);
-                tmp6=days(tmp3)+ttcat(1,3);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=days(tmp3)+ZG.ttcat(1,3) &    ZG.ttcat(:,3)<=days(tmp4)+ZG.ttcat(1,3)),:);
+                tmp6=days(tmp3)+ZG.ttcat(1,3);
             else
                 if var1==7
-                    mains=find(ttcat(:,3)>tt4);
-                    mains=ttcat(mains(1),:);
+                    mains=find(ZG.ttcat(:,3)>tt4);
+                    mains=ZG.ttcat(mains(1),:);
                 end
-                tmpcat=ttcat(find(ttcat(:,3)>=tmp3 & ttcat(:,3)<=tmp4),:);
+                tmpcat=ZG.ttcat(find(ZG.ttcat(:,3)>=tmp3 & ZG.ttcat(:,3)<=tmp4),:);
                 tmp6=tmp3;
             end
             tmpcat=tmpcat(find(tmpcat(:,6)>=tmp2 & tmpcat(:,6)<=tmp1),:);
@@ -388,7 +388,7 @@ function clpval(var1)
 
             %automatic estimate works with whole sequence
         else
-            tmeqtime=clustime(ttcat);
+            tmeqtime=clustime(ZG.ttcat);
             tmeqtime=tmeqtime-tmeqtime(1);
             tmeqtime=tmeqtime(2:length(tmeqtime));
 
@@ -399,13 +399,12 @@ function clpval(var1)
         %Loop begins here
         nn=length(tmeqtime);
         loop=0;
-        loopcheck=0;
         tt=tmeqtime(nn);
         t=tmeqtime;
         
         MIN_CSTEP = 0.000001;
         MIN_PSTEP = 0.00001;
-        ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+        loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
 
         if autop~=1
             figure(pplot);
@@ -502,8 +501,8 @@ function clpval(var1)
             else
                 tt1=num2str(tmeqtime(1));
                 tt2=num2str(tend);
-                tt3=num2str(min(ttcat(:,6)));
-                tt4=num2str(max(ttcat(:,6)));
+                tt3=num2str(min(ZG.ttcat(:,6)));
+                tt4=num2str(max(ZG.ttcat(:,6)));
             end
             tt5=[tt1,'<=t<=',tt2];
             tt6=[tt3,'<=mag<=',tt4];

@@ -19,7 +19,8 @@ function timeplot(mycat, nosort)
     
     global statime
     global selt
-    
+    t0b=min(mycat.Date);
+    teb=max(mycat.Date);
     ZG = ZmapGlobal.Data;
     if ~exist('xt','var')
         xt=[]; % time series that will be used
@@ -28,11 +29,9 @@ function timeplot(mycat, nosort)
         as=[]; % z values, maybe? used by the save callback.
     end
     
-    if isempty(ZG.bin_days) %binning
-        ZG.bin_days = days(1);
+    if isempty(ZG.bin_dur) %binning
+        ZG.bin_dur = days(1);
     end
-    bin_days = days(ZG.bin_days);
-    assert(isnumeric(bin_days));
     
     zmap_message_center.set_info(' ','Plotting cumulative number plot...');
     
@@ -118,7 +117,7 @@ function timeplot(mycat, nosort)
         selt='in';
         create_my_menu();
         
-        pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl ttcat;ttcat=mycat;'];
+        pstring=['global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5 tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo mtpl;ZG.ttcat=mycat;'];
         ptstring=[pstring ' cltipval(2);'];
         pmstring=[pstring ' cltipval(1);'];
         
@@ -135,20 +134,22 @@ function timeplot(mycat, nosort)
         ZG.hold_state2=false;
         
     end
-    
+    figure(cum);
+    ht=gca;
     if ZG.hold_state2
         tdiff=max(mycat.Date) - min(mycat.Date); % added by CR
-        cumu = 0:1:(tdiff/days(ZG.bin_days))+2;
-        cumu2 = 0:1:(tdiff/days(ZG.bin_days))-1;
+        cumu = 0:1:(tdiff/days(ZG.bin_dur))+2;
+        cumu2 = 0:1:(tdiff/days(ZG.bin_dur))-1;
         cumu = cumu * 0;
-        cumu2 = cumu2 * 0;
-        [cumu, xt] = hist(mycat.Date,(ZG.t0b:days(ZG.bin_days):ZG.teb));
+        cumu2 = cumu2 * 0;    
+        [cumu, xt] = histcounts(mycat.Date, t0b: ZG.bin_dur :teb);
+        %xt = xt + (xt(2)-xt(1))/2; xt(end)=[]; % convert from edges to centers!
         cumu2 = cumsum(cumu);
         
         
         hold on
         axes(ht)
-        tiplot2 = plot(mycat.Date,(1:mycat.Count),'r');
+        tiplot2 = plot(ht,mycat.Date,(1:mycat.Count),'r');
         set(tiplot2,'LineWidth',2.0)
         
         
@@ -180,31 +181,23 @@ function timeplot(mycat, nosort)
     big = mycat.subset(l);
     %calculate start -end time of overall catalog
     statime=[];
-    par2=bin_days;
+    par2=ZG.bin_dur;
     t0b = min(ZG.a.Date);
     teb = max(ZG.a.Date);
-    ttdif=(teb - t0b); % days
-    if ttdif>10                 %select bin length respective to time in catalog
-        %bin_days = ceil(ttdif/300);
-    elseif ttdif<=10  &&  ttdif>1
-        %bin_days = 0.1;
-    elseif ttdif<=1
-        %bin_days = 0.01;
-    end
+
+    tdiff = (teb-t0b)/ZG.bin_dur;
     
-    
-    if bin_days>=1
-        tdiff = round(days(teb-t0b)/bin_days);
-        %tdiff = round(teb - t0b);
-    else
-        tdiff = (teb-t0b)/bin_days;
+    if ZG.bin_dur >= days(1)
+        tdiff = round(tdiff);
     end
     
     % calculate cumulative number versus time and bin it
-    if bin_days >=1
-        [cumu, xt] = histcounts(mycat.Date,t0b:days(bin_days):teb);
+    if ZG.bin_dur >=days(1)
+        [cumu, xt] = histcounts(mycat.Date, t0b:ZG.bin_dur:teb);
     else
-        [cumu, xt] = histcounts((mycat.Date-mycat.Date(1))+bin_days*365, (0:bin_days:(tdiff+2*bin_days)));
+        [cumu, xt] = histcounts(...
+            (mycat.Date-min(mycat.Date)) + ZG.bin_dur,...
+            (0: ZG.bin_dur :(tdiff + 2*ZG.bin_dur)));
     end
     cumu2=cumsum(cumu);
     % plot time series
@@ -232,7 +225,7 @@ function timeplot(mycat, nosort)
     
     % plot big events on curve
     %
-    if bin_days>=1
+    if ZG.bin_dur>=days(1)
         if ~isempty(big)
             l = mycat.Magnitude > ZG.big_eq_minmag;
             f = find( l  == 1);
@@ -249,10 +242,10 @@ function timeplot(mycat, nosort)
         end
     end %if big
     
-    if bin_days>=1
+    if ZG.bin_dur>=days(1)
         xlabel(ax,'Time in years ','FontSize',ZmapGlobal.Data.fontsz.s)
     else
-        statime=mycat.Date(1) - ZG.bin_days;
+        statime=mycat.Date(1) - ZG.bin_dur;
         xlabel(ax,['Time in days relative to ',char(statime)],...
             'FontWeight','bold','FontSize',ZG.fontsz.m)
     end
@@ -289,7 +282,7 @@ function timeplot(mycat, nosort)
         
         uimenu (analyzemenu,'Label','Decluster the catalog',...
             'callback',@(~,~)inpudenew())
-        winlen_days = days(ZG.compare_window_yrs/days(ZG.bin_days));
+        winlen_days = days(ZG.compare_window_dur / ZG.bin_dur);
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
             'callback',@cb_hold)
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
@@ -336,6 +329,7 @@ function timeplot(mycat, nosort)
         uimenu(op5,'Label','Define mainshock',...
             'Enable','off', 'callback',@cb_016);
         uimenu(op5,'Label','Estimate p', 'callback',@cb_pestimate);
+        
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
         uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@(~,~)pvalcat2())
@@ -418,7 +412,7 @@ function timeplot(mycat, nosort)
     end
     
     function cb_betaTriangle(mysrc, myevt, catname)
-        betatriangle(ZG.(catname),t0b:ZG.bin_days:teb);
+        betatriangle(ZG.(catname),t0b:ZG.bin_dur:teb);
     end
     function cb_010(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
@@ -441,7 +435,7 @@ function timeplot(mycat, nosort)
     function cb_pestimate(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;
-        pvalcat;
+        pvalcat();
     end
     
     function cb_cut_mainshock(mysrc,myevt)
