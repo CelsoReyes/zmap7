@@ -58,7 +58,7 @@ function inpudenew()
         };
     
     
-    for i=1:numel(ctrl_params)
+    for i=1:size(ctrl_params,1) %for each row
         params=ctrl_params(i,:);
         % create the edit box
         h.(params{IDX_TAG}) =  uicontrol('Style','edit',...

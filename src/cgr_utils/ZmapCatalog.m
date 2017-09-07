@@ -420,6 +420,12 @@ classdef ZmapCatalog < handle
             objA.Depth = [objA.Depth; objB.Depth];
             objA.Magnitude = [objA.Magnitude; objB.Magnitude];
             objA.MagnitudeType = [objA.MagnitudeType; objB.MagnitudeType];
+            objA.Dip = [objA.Dip; objB.Dip];
+            objA.DipDirection = [objA.DipDirection; objB.DipDirection];
+            objA.Rake = [objA.Rake; objB.Rake];
+            ...
+                %add additional fields here!
+            ...
             objA.clearFilter();
         end
         

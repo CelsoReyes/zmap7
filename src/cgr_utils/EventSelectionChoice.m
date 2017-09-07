@@ -22,6 +22,11 @@ classdef EventSelectionChoice < handle
         
     end
     
+    properties(Constant)
+        GROUPWIDTH=315
+        GROUPHEIGHT=77;
+    end
+    
     methods
         function out=get.UseNumNearbyEvents(obj)
             out = obj.ubg1.SelectedObject==obj.hUseNevents;
@@ -30,8 +35,14 @@ classdef EventSelectionChoice < handle
             out = obj.ubg1.SelectedObject==obj.hUseRadius;
         end
         
+        function out=toStruct(obj)
+            out.numNearbyEvents=obj.ni;
+            out.radius_km=obj.ra;
+            out.useNumNearbyEvents=obj.UseNumNearbyEvents;
+            out.useEventsInRadius=obj.UseEventsInRadius;
+        end
         
-        function obj=EventSelectionChoice(fig,lowerCornerPosition, ni,ra)
+        function obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra)
             % choose_grid adds controls to describe how to choose a grid.
             
             % Grid options
@@ -51,7 +62,7 @@ classdef EventSelectionChoice < handle
             enable_ra = ~isempty(ra);
             enable_ni = ~isempty(ni);
             obj.ubg1=uibuttongroup(fig,'Title','Event Selection',...
-                'Units','pixels','Position',[X0 Y0 315 77]);
+                'Units','pixels','Position',[X0 Y0 315 77], 'Tag',tag);
             
             obj.hUseNevents = uicontrol(obj.ubg1,'Style','radiobutton',...
                 'Units','pixels','Position',[17 38 280 22],...

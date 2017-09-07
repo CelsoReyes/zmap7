@@ -13,6 +13,7 @@ path_list = [
     fullfile(hodi, 'resources', {'features';'sample'});
     fullfile(hodi, 'src',{'afterrate';
     'cgr_utils';
+    'as_class';
     'declus';
     'fractal';
     'pvals';

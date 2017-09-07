@@ -9,6 +9,14 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
     % all these options exist because that is how they were
     % implemented by the ploop functions
     
+    % modified omori law:
+    % n(t) = K /(t+c)^p
+    % n(t) : frequency of aftershocks per unit time interval, 
+    % K : the productivity of the sequence,
+    % c : adjusts for missing earthquakes in the catalog 
+    % p : how quickly the activity falls off to the constant background intensity. 
+    % typically normaized to days
+    %
     % ploop parts attributed to A.Allmann and B. Enescu
     % routines deconstructed & merged by C. Reyes 2017
     
@@ -21,7 +29,6 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
     global cstep pstep
     global ts eps1 eps2
     global pcheck
-    %global loopcheck
     global sdk sdp sdc
     
     loopcheck=0;
@@ -56,6 +63,8 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
         nit=nit+1;
         
         qp=1-pp;
+        
+        
         pk=(qp*nn)/((tt+pc)^qp-(ts+pc)^qp);
         
         update_cof_and_cog(pk, qp, ts, pc)

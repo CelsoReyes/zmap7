@@ -10,7 +10,7 @@ function pvalcat()
     
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
-
+    
     nn2 = ZG.newt2;
     
     prompt = {'Minimum magnitude',...
@@ -64,8 +64,9 @@ function pvalcat()
     pcatd = (timpa-tmpar)/1440;
     paramc2 = (pcatd >= minDaysAfterMainshock);
     pcat = pcat.subset(paramc2);
-    tmin = min(pcat.Date); 
-    tmax = max(pcat.Date);
+    tmin = days(min(pcat.Date) - ZG.maepi.Date(1));
+    tmax = days(max(pcat.Date) - ZG.maepi.Date(1));
+    %tint = days([tmin tmax];
     tint = [tmin tmax];
     
     [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(pcat,'date',valeg2,CO,minThreshMag);
@@ -87,13 +88,13 @@ function pvalcat()
             'NextPlot','new', ...
             'backingstore','on',...
             'Visible','off', ...
-            'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len],...
+            ...'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len],...
             'Tag','p-value graph');
         %     ...
     end
     
     %If a new graph is overlayed or not
-    if hold_state
+    if ZG.hold_state
         axes(cua2a);
         disp('Hold');
         hold on
@@ -107,8 +108,9 @@ function pvalcat()
     ax=gca;
     
     powers = -12:0.5:12;
-    sir2 = 2 .^ (1:numel(powers));
-    sir2(sir2<=tmin | sir2 >=tmax) = 0;
+    sir2 = 2 .^ (1:numel(powers)); % remarked out because it just didn't make sense if powers wasn't used anywhere else -CGR
+    %sir2 = 2 .^ powers;
+    sir2(sir2<=tmin | sir2 >=tmax) = 0; %guessing whether it is days or years
     
     limit1 = (sir2 > 0);
     sir2(~limit1)=[];
@@ -116,6 +118,7 @@ function pvalcat()
     lung = length(sir2);
     dursir = diff(sir2);
     tavg = (sir2(2:end).*sir2(1:end-1)).^(0.5);
+    numv=[];
     for j = 1 : numel(sir2)-1
         num = sum(sir2(j) < pcat) & (pcat <= sir2(j+1)); % count events between sir2's
         numv = [numv, num];
@@ -124,7 +127,7 @@ function pvalcat()
     ratac = numv ./ dursir;
     
     frf = kv ./ ((tavg + cv).^pv);
-    frf2 = kv ./ ((tint(1:2) + cv).^pv);
+    frf2 = kv ./ ((tint + cv).^pv);
     
     frfr = [frf2(1) frf frf2(2)];
     tavgr = [tint(1) tavg tint(2)];
@@ -134,7 +137,7 @@ function pvalcat()
     hold on
     loglog(tavgr, frfr, '-k','LineWidth',2.0);
     
-    if hold_state
+    if ZG.hold_state
         llh1.Marker='+';
     else
         llh1.Marker='o';
@@ -153,47 +156,47 @@ function pvalcat()
     % reset ZG.newt2;
     
     ZG.newt2 = nn2;
-end
-
-function labelPlot(ax, pv, pstd, cv, cstd, kv, kstd, show_cstd)
     
-    text(ax,0.05, 0.2,['p = ' num2str(pv)  ' +/- ' num2str(pstd)],'FontWeight','Bold','FontSize',12,'units','norm');
-    if show_cstd >= 0
-        text(ax,0.05, 0.15,['c = ' num2str(cv)  ' +/- ' num2str(cstd)],'FontWeight','Bold','FontSize',12,'units','norm');
-    else
-        text(ax,0.05, 0.15,['c = ' num2str(cv)],'FontWeight','Bold','FontSize',12,'units','norm');
+    function labelPlot(ax, pv, pstd, cv, cstd, kv, kstd, show_cstd)
+        
+        text(ax,0.05, 0.2,['p = ' num2str(pv)  ' +/- ' num2str(pstd)],'FontWeight','Bold','FontSize',12,'units','norm');
+        if show_cstd >= 0
+            text(ax,0.05, 0.15,['c = ' num2str(cv)  ' +/- ' num2str(cstd)],'FontWeight','Bold','FontSize',12,'units','norm');
+        else
+            text(ax,0.05, 0.15,['c = ' num2str(cv)],'FontWeight','Bold','FontSize',12,'units','norm');
+        end
+        text(ax,0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bold','FontSize',12,'units','norm');
     end
-    text(ax,0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bold','FontSize',12,'units','norm');
-end
-
-function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,minThreshMag)
-    ZG=ZmapGlobal.Data;
-    disp('');
-    disp('Parameters :');
-    disp(['p = ' num2str(pv)  ' +/- ' num2str(pstd)]);
-    disp(['a = ' num2str(min(rja))  ' +/- ' num2str(pstd)]);
-    disp(['b = ' num2str(min(rjb))  ' +/- ' num2str(pstd)]);
-    if valeg2 >= 0
-        disp(['c = ' num2str(cv)  ' +/- ' num2str(cstd)]);
-    else
-        disp(['c = ' num2str(cv)]);
+    
+    function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,minThreshMag)
+        ZG=ZmapGlobal.Data;
+        disp('');
+        disp('Parameters :');
+        disp(['p = ' num2str(pv)  ' +/- ' num2str(pstd)]);
+        disp(['a = ' num2str(min(rja))  ' +/- ' num2str(pstd)]);
+        disp(['b = ' num2str(min(rjb))  ' +/- ' num2str(pstd)]);
+        if valeg2 >= 0
+            disp(['c = ' num2str(cv)  ' +/- ' num2str(cstd)]);
+        else
+            disp(['c = ' num2str(cv)]);
+        end
+        disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
+        disp(['Number of Earthquakes = ' num2str(length(pcat))]);
+        events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date + days(cv));
+        disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
+        disp(['tmin = ' char(tmin)]);
+        disp(['tmax = ' char(tmax)]);
+        disp(['Mmin = ' num2str(minThreshMag)]);
     end
-    disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
-    disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-    events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date + days(cv));
-    disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
-    disp(['tmin = ' num2str(tmin)]);
-    disp(['tmax = ' num2str(tmax)]);
-    disp(['Mmin = ' num2str(minThreshMag)]);
-end
-
-function dispGeneral(pcat,tmin,tmax,minThreshMag)
-    % dispGeneral shows parameters
-    disp([]);
-    disp('Parameters :');
-    disp('No result');
-    disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-    disp(['tmin = ' num2str(tmin)]);
-    disp(['tmax = ' num2str(tmax)]);
-    disp(['Mmin = ' num2str(minThreshMag)]);
+    
+    function dispGeneral(pcat,tmin,tmax,minThreshMag)
+        % dispGeneral shows parameters
+        disp([]);
+        disp('Parameters :');
+        disp('No result');
+        disp(['Number of Earthquakes = ' num2str(length(pcat))]);
+        disp(['tmin = ' num2str(tmin)]);
+        disp(['tmax = ' num2str(tmax)]);
+        disp(['Mmin = ' num2str(minThreshMag)]);
+    end
 end

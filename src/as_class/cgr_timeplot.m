@@ -1,3 +1,251 @@
+classdef cgr_timeplot < ZmapFigureFunction
+    % description of this function
+    %
+    % in the function that generates the figure where this function can be called:
+    %
+    %     % create some menu items... 
+    %     h=sample_ZmapFunction.AddMenuItem(hMenu) %create subordinate to menu item with handle hMenu
+    %     % create the rest of the menu items...
+    %
+    %  once the menu item is clicked, then sample_ZmapFunction.interative_setup(true,true) is called
+    %  meaning that the user will be provided with a dialog to set up the parameters,
+    %  and the results will be automatically calculated & plotted once they hit the "GO" button
+    %
+    
+    error(not implemented)
+    
+    properties
+        % Required Properties
+        OperatingCatalog={'a','maepi'}; % catalog(s) containing raw data.
+        ModifiedCatalog=''; % catalog to be modified after all calculations are done
+ 
+        % my properties
+        mycat=ZmapCatalog();
+    end
+    
+    properties(Constant)
+        FigTag = 'cum';
+        PlotTag='myplot';
+    end
+    
+    properties
+        % declare all the variables that need to be shared in this program/function, but that the end user
+        % won't care about.
+    end
+    
+    methods
+        function obj=cgr_timeplot(varargin) %CONSTRUCTOR
+            % usage:
+            %   cgr_timeplot(catalog)
+            obj.FigureDetails={...
+                'Name','Cumulative Number',...
+                'NumberTitle','off', ...
+                'NextPlot','replace', ...
+                'backingstore','on',...
+                'Visible','off', ...
+                'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]};
+            
+            
+            % depending on whether parameters were provided, either run automatically, or
+            % request input from the user.
+            if nargin==0
+                % create dialog box, then exit.
+                obj.InteractiveSetup();
+                
+            else
+                mycat=varargin{1};
+                %run this function without human interaction
+                
+            end
+        end
+        
+        function InteractiveSetup(obj)
+            % create a dialog that allows user to select parameters neccessary for the calculation
+            
+            
+            zdlg=ZmapFunctionDlg(...
+                obj,...  pass it a handle that it can change when the OK button is pressed.
+                @obj.doIt...  if OK is pressed, then this function will be executed.
+                );
+            
+            %----------------------------
+            % The dialog box is a vertically oriented series of controls
+            % that allow you to choose parameters
+            %
+            %  every procedure takes a tag parameter. This is the name of the class variable
+            %  where results will be stored for that field.  Results will be of the same type
+            %  as the provided values.  That is, if I initialize a field with a datetime, then
+            %  the result will be converted back to a datetime. etc.
+            %
+            % add items ex.  :
+            %  zdlg.AddBasicHeader  : add line of bold text to separate areas
+            %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
+            %  zdlg.AddGridParameters : add section that returns grid defining params
+            %  zdlg.AddBasicCheckbox : add checkbox that returns state, 
+            %                          and may affect other control's enable states
+            %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
+            %  zdlg.AddEventSelectionParameters : add section that returns how grid points
+            %                                     may be evaluated
+           
+            zdlg.Create('my dialog title')
+            % The dialog runs. if:
+            %  OK is pressed -> assigns 
+        end
+        
+        function CheckPreconditions(obj)
+            % check to make sure any inportant conditions are met. 
+            % for example, 
+            % - catalogs have what are expected.
+            % - required variables exist or have valid values
+            assert(true==true,'laws of logic are broken.');
+        end
+        
+        function Calculate(obj)
+            % once the properties have been set, either by the constructor or by interactive_setup
+            %
+            % results of the calculation should be stored in fields belonging to obj.Result
+            obj.Result.Data=[];
+        end
+        
+        
+function CreateMenu(obj)
+        add_menu_divider();
+        ztoolsmenu = uimenu('Label','ZTools');
+        analyzemenu=uimenu('Label','Analyze');
+        plotmenu=uimenu('Label','Plot');
+        catmenu=uimenu('Label','Catalog');
+        
+        
+        winlen_days = days(ZG.compare_window_dur / ZG.bin_dur);
+        
+        uimenu(catmenu,'Label','Rename Catalog (this subset)','callback',@cb_rename_cat);
+        uimenu(catmenu,'Label','Set as main catalog','callback',@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
+        uimenu(catmenu,'Separator','on','Label','Reset','callback',@cb_resetcat); % Resets the catalog to the original selection
+        
+        uimenu(ztoolsmenu,'Label','Cuts in time, magnitude and depth','Callback',@cut_tmd_callback)
+        uimenu(ztoolsmenu,'Label','Cut in Time (cursor) ','Callback',@cursor_timecut_callback);
+        uimenu(ztoolsmenu,'Label','Compare two rates (fit)','callback',@cb_comparerates_fit);
+        uimenu(ztoolsmenu,'Label','Compare two rates ( No fit)','callback',@cb_comparerates_nofit);
+        
+        uimenu(plotmenu,'Label','Date Ticks in different format','callback',@(~,~)newtimetick,...
+            'Enable','off');
+        uimenu(plotmenu,'Label','Overlay another curve (hold)','callback',@cb_hold)
+        
+        uimenu (analyzemenu,'Label','Decluster the catalog','callback',@(~,~)inpudenew())
+        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'callback',@cb_006)
+        
+        op3D  =   uimenu(plotmenu,'Label','Time series ');
+        uimenu(op3D,'Label','Time-depth plot ','Callback',@(~,~)TimeDepthPlotter.plot(mycat));
+        uimenu(op3D,'Label','Time-magnitude plot ','Callback',@(~,~)TimeMagnitudePlotter.plot(mycat));
+        
+        op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
+        uimenu(op4B, 'Label', 'beta values: LTA(t) function','Callback',{@cb_z_beta_ratechanges,'bet'});
+        uimenu(op4B, 'Label', 'beta values: "Triangle" Plot','Callback', {@cb_betaTriangle,'newcat'})
+        uimenu(op4B,'Label','z-values: AS(t)function','callback',{@cb_z_beta_ratechanges,'ast'})
+        uimenu(op4B,'Label','z-values: Rubberband function','callback',{@cb_z_beta_ratechanges,'rub'})
+        uimenu(op4B,'Label','z-values: LTA(t) function ','callback',{@cb_z_beta_ratechanges,'lta'});
+        
+        
+        op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
+        uimenu(op4,'Label','automatic', 'callback',@cb_010)
+        uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
+        uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2())
+        uimenu(op4,'label','b with magnitude', 'callback',@(~,~)bwithmag);
+        uimenu(op4,'label','b with time', 'callback',{@plotwithtime,'b'});
+        
+        op5 = uimenu(analyzemenu,'Label','p-value estimation');
+        
+        %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
+        %displayed (the catalog mycat).
+        uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@(~,~)mcwtidays)
+        uimenu(op5,'Label','Define mainshock','callback',@cb_016,...
+            'Enable','off');
+        uimenu(op5,'Label','Estimate p','callback',@cb_pestimate);
+        
+        %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
+        %initial time.
+        uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@(~,~)pvalcat2())
+        uimenu(op5,'Label','Cut catalog at mainshock time',...
+            'callback',@cb_cut_mainshock)
+        
+        op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
+        uimenu(op6,'Label','Compute the fractal dimension D', 'callback',{@cb_computefractal,2});
+        uimenu(op6,'Label','Compute D for random catalog', 'callback',{@cb_computefractal,5});
+        uimenu(op6,'Label','Compute D with time', 'callback',{@cb_computefractal,6});
+        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@(~,~)showweb('fractal'))
+        
+        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@(~,~)morel())
+        
+        op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
+        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@(~,~)doinverse_michael())
+        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'callback',@(~,~)doinversgep_pc())
+        uimenu(op7,'Label','Stress tensor with time', 'callback',@(~,~)stresswtime())
+        uimenu(op7,'Label','Stress tensor with depth', 'callback',@(~,~)stresswdepth())
+        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'callback',@(~,~)showweb('stress'))
+        op5C = uimenu(plotmenu,'Label','Histograms');
+        
+        uimenu(op5C,'Label','Magnitude','callback',{@cb_histogram,'Magnitude'});
+        uimenu(op5C,'Label','Depth','callback',{@cb_histogram,'Depth'});
+        uimenu(op5C,'Label','Time','callback',{@cb_histogram,'Date'});
+        uimenu(op5C,'Label','Hr of the day','callback',{@cb_histogram,'Hour'});
+        
+        
+        uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
+            'Separator','on',...
+            'Callback',{@calSave1, xt, cumu2});
+        
+        uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
+            'Callback',{@calSave7, xt, cumu2, as})
+    end
+        
+        function ClearFigure(obj)
+        end
+            
+        function plot(obj,varargin)
+            % plots the results somewhere
+            
+            f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
+            if isempty(f)
+                f=figure('Tag',obj.PlotTag);
+            end
+            
+            % clear(reset) my axes if I already exist
+            figure(f)
+            delete(findobj(f,'Type','axes'));
+            obj.ax=axes;
+            
+            % do the plotting
+            obj.hPlot=plot(obj.ax,obj.Result.x,obj.Result.y, obj.lstyle, varargin{:});
+ 
+            % do the labeling
+            xlabel(obj.ax,['zmapFunction plot: ', obj.plotlabel]);
+        end
+        
+        function ModifyGlobals(obj)
+            % change the ZmapGlobal variable, if appropriate
+           % obj.ZG.SOMETHING = obj.Results.SOMETHING
+        end
+        
+    end %methods
+    
+    methods(Static)
+        function h=AddMenuItem(parent)
+            % create a menu item that will be used to call this function/class
+            
+            h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME
+                'Callback', @(~,~)cgr_timeplot()... CHANGE THIS TO YOUR CALLBACK
+                );
+        end
+        
+    end % static methods
+    
+end %classdef
+
+%% Callbacks
+
+% All callbacks should set values within the same field. Leave
+% the gathering of values to the SetValuesFromDialog button.
+
 function timeplot(mycat, nosort)
     % timeplot plots selected events as cummulative # over time
     %
@@ -266,119 +514,7 @@ function timeplot(mycat, nosort)
     
     
     %% ui functions
-    function create_my_menu()
-        add_menu_divider();
-        ztoolsmenu = uimenu('Label','ZTools');
-        analyzemenu=uimenu('Label','Analyze');
-        plotmenu=uimenu('Label','Plot');
-        catmenu=uimenu('Label','Catalog');
-        
-        
-        uimenu(catmenu,'Label','Rename Catalog (this subset)',...
-            'callback',@cb_rename_cat);
-        
-        uimenu(catmenu,'Label','Set as main catalog',...
-            'callback',@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
-        uimenu(catmenu,'Separator','on','Label','Reset',...
-            'callback',@cb_resetcat); % Resets the catalog to the original selection
-        
-        uimenu(ztoolsmenu,'Label','Cuts in time, magnitude and depth',...
-            'Callback',@cut_tmd_callback)
-        uimenu(ztoolsmenu,'Label','Cut in Time (cursor) ',...
-            'Callback',@cursor_timecut_callback);
-        uimenu(plotmenu,'Label','Date Ticks in different format',...
-            'callback',@(~,~)newtimetick,'Enable','off');
-        
-        uimenu (analyzemenu,'Label','Decluster the catalog',...
-            'callback',@(~,~)inpudenew())
-        winlen_days = days(ZG.compare_window_dur / ZG.bin_dur);
-        uimenu(plotmenu,'Label','Overlay another curve (hold)',...
-            'Checked',check2onoff(ZG.hold_state2),...
-            'callback',@cb_hold)
-        uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
-            'callback',@cb_comparerates_fit)
-        uimenu(ztoolsmenu,'Label','Compare two rates ( No fit)',...
-            'callback',@cb_comparerates_nofit)
-        %uimenu(ztoolsmenu,'Label','Day/Night split ', 'callback',@cb_006)
-        
-        op3D  =   uimenu(plotmenu,'Label','Time series ');
-        uimenu(op3D,'Label','Time-depth plot ',...
-            'Callback',@(~,~)TimeDepthPlotter.plot(mycat));
-        uimenu(op3D,'Label','Time-magnitude plot ',...
-            'Callback',@(~,~)TimeMagnitudePlotter.plot(mycat));
-        
-        
-        
-        
-        op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
-        
-        uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
-            'Callback',{@cb_z_beta_ratechanges,'bet'});
-        uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
-            'Callback', {@cb_betaTriangle,'newcat'})
-        uimenu(op4B,'Label','z-values: AS(t)function',...
-            'callback',{@cb_z_beta_ratechanges,'ast'})
-        uimenu(op4B,'Label','z-values: Rubberband function',...
-            'callback',{@cb_z_beta_ratechanges,'rub'})
-        uimenu(op4B,'Label','z-values: LTA(t) function ',...
-            'callback',{@cb_z_beta_ratechanges,'lta'});
-        
-        
-        op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-        uimenu(op4,'Label','automatic', 'callback',@cb_010)
-        uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
-        uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2())
-        uimenu(op4,'label','b with magnitude', 'callback',@(~,~)bwithmag);
-        uimenu(op4,'label','b with time', 'callback',{@plotwithtime,'b'});
-        
-        op5 = uimenu(analyzemenu,'Label','p-value estimation');
-        
-        %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
-        %displayed (the catalog mycat).
-        uimenu(op5,'Label','Completeness in days after mainshock', 'callback',@(~,~)mcwtidays)
-        uimenu(op5,'Label','Define mainshock',...
-            'Enable','off', 'callback',@cb_016);
-        uimenu(op5,'Label','Estimate p', 'callback',@cb_pestimate);
-        
-        %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
-        %initial time.
-        uimenu(op5,'Label','p as a function of time and magnitude', 'callback',@(~,~)pvalcat2())
-        uimenu(op5,'Label','Cut catalog at mainshock time',...
-            'callback',@cb_cut_mainshock)
-        
-        op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
-        uimenu(op6,'Label','Compute the fractal dimension D', 'callback',{@cb_computefractal,2});
-        uimenu(op6,'Label','Compute D for random catalog', 'callback',{@cb_computefractal,5});
-        uimenu(op6,'Label','Compute D with time', 'callback',{@cb_computefractal,6});
-        uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@(~,~)showweb('fractal'))
-        
-        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@(~,~)morel())
-        
-        op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
-        uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@(~,~)doinverse_michael())
-        uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ', 'callback',@(~,~)doinversgep_pc())
-        uimenu(op7,'Label','Stress tensor with time', 'callback',@(~,~)stresswtime())
-        uimenu(op7,'Label','Stress tensor with depth', 'callback',@(~,~)stresswdepth())
-        uimenu(op7,'Label',' Help/Info on  stress tensor inversions', 'callback',@(~,~)showweb('stress'))
-        op5C = uimenu(plotmenu,'Label','Histograms');
-        
-        uimenu(op5C,'Label','Magnitude',...
-            'callback',{@cb_histogram,'Magnitude'});
-        uimenu(op5C,'Label','Depth',...
-            'callback',{@cb_histogram,'Depth'});
-        uimenu(op5C,'Label','Time',...
-            'callback',{@cb_histogram,'Date'});
-        uimenu(op5C,'Label','Hr of the day',...
-            'callback',{@cb_histogram,'Hour'});
-        
-        
-        uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
-            'Separator','on',...
-            'Callback',{@calSave1, xt, cumu2});
-        
-        uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
-            'Callback',{@calSave7, xt, cumu2, as})
-    end
+    
     
     %% callback functions
     
@@ -397,24 +533,8 @@ function timeplot(mycat, nosort)
     
     function cb_hold(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        if ZG.hold_state2
-            ZG.hold_state2=false;
-            mysrc.Checked='off';
-        else
-            ZG.hold_state2=true;
-            mysrc.Checked='on';
-        end
+        ZG.hold_state2=true;
     end
-    function ans=check2onoff(var)
-        if var
-            ans='on';
-        else
-            ans='off';
-        end
-    end
-            
-            
-        
     
     function cb_comparerates_fit(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
@@ -502,6 +622,7 @@ function timeplot(mycat, nosort)
         zmap_message_center.update_catalog();
         update(mainmap());
     end
+    
     function cb_rename_cat(~,~)
         nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
         if ~isempty(nm)

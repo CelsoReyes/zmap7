@@ -9,6 +9,9 @@ classdef MainInteractiveMap
     properties
         Features
     end
+    properties(Constant)
+        axTag='mainmap_ax';
+    end
     
     methods
         function obj = MainInteractiveMap()
@@ -87,7 +90,7 @@ classdef MainInteractiveMap
                 'Position',[10 10 900 650]);
             watchon; drawnow;
             ax = axes('Parent',h,'Position',[.09 .09 .85 .85],...
-                'Tag','mainmap_ax',...
+                'Tag',MainInteractiveMap.axTag,...
                 'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'FontWeight','normal',...
                 'Ticklength',[0.01 0.01],'LineWidth',1.0,...
@@ -180,12 +183,12 @@ classdef MainInteractiveMap
             mapoptionmenu = uimenu('Label','Map Options','Tag','mainmap_menu_overlay');
             
             uimenu(mapoptionmenu,'Label','Refresh map window',...
-                'Callback','update(mainmap())');
+                'Callback',@(~,~)update(mainmap()));
             
             uimenu(mapoptionmenu,'Label','3-D view',...
                 'Callback',@set_3d_view); % callback was plot3d
             %TODO use add_symbol_menu(...) instead of creating all these menus
-            add_symbol_menu('mainmap_ax', mapoptionmenu, 'Map Symbols');
+            add_symbol_menu(MainInteractiveMap.axTag, mapoptionmenu, 'Map Symbols');
             
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
             k=obj.Features.keys;
@@ -249,13 +252,13 @@ classdef MainInteractiveMap
             submenu = uimenu('Label','Catalog','Tag','mainmap_menu_catalog');
             
             uimenu(submenu,'Label','Crop catalog to window',...
-                'Callback','ZG.a.setFilterToAxesLimits(findobj( ''Tag'',''mainmap_ax''));ZG.a.cropToFilter();update(mainmap())');
+                'Callback',@cb_crop);
             
             uimenu(submenu,'Label','Edit Ranges...',...
-                'Callback','replaceMainCatalog(catalog_overview(ZG.a));update(mainmap())');
+                'Callback',@cb_editrange);
             
             uimenu(submenu,'Label','Rename...',...
-                'Callback','nm=inputdlg(''Catalog Name:'',''Rename'',1,{ZG.a.Name});if ~isempty(nm),ZG.a.Name=nm{1};end;zmap_message_center.update_catalog();update(mainmap())');
+                'Callback',@cb_rename);
             
             uimenu(submenu,'Label','Memorize/Recall Catalog',...
                 'Separator','on',...
@@ -263,20 +266,17 @@ classdef MainInteractiveMap
                 'Callback',@(~,~) memorize_recall_catalog); %' storedcat=a; '
             
             uimenu(submenu,'Label','Clear Memorized Catalog',...
-                'Callback',['ZG=ZmapGlobal.Data;'...
-                'if isempty(ZG.memorized_catalogs),msg=''No catalogs are currently memorized     '';'...
-                'else, msg=''The memorized catalog has been cleared.      ''; end;'...
-                'ZG.memorized_catalogs=[];msgbox(msg,''Clear Memorized'')']);
+                'Callback',@cb_clearmemorized);
             
             uimenu(submenu,'Label','Combine catalogs',...
                 'Separator','on',...
-                'Callback',@(~,~)comcat());
+                'Callback',@cb_combinecatalogs);
             
             uimenu(submenu,'Label','Compare catalogs - find identical events',...
-                'Callback','do = ''initial''; comp2cat');
+                'Callback',@(~,~)comp2cat);
             
             uimenu(submenu,'Label','Save current catalog (ASCII)','Callback',@(~,~)save_ca());
-            uimenu(submenu,'Label','Save current catalog (.mat)','Callback','eval(catSave);');
+            uimenu(submenu,'Label','Save current catalog (.mat)','Callback',@(~,~)catSave());
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
                 'Callback',@(~,~)info_summary_callback(ZmapGlobal.Data.a.summary('stats')));
@@ -285,14 +285,62 @@ classdef MainInteractiveMap
                 'Separator','on');
             
             uimenu(submenu,'Label','Reload last catalog','Enable','off',...
-                'Callback','error(''create this function from scratch!'');think; load(lopa); if ZG.a.Countlength(ZG.a(1,:))== 7,ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day));elseif length(ZG.a(1,:))>=9,ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));end;ZG.a=catalog_overview(ZG.a);done');
+                'Callback',@cb_reloadlast);
             
             uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
             uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
             uimenu(catmenu,'Label','from FDSN webservice','Callback', @get_fdsn_data_from_web_callback);
 
+            function cb_crop(~,~)
+                ZG=ZmapGlobal.Data;
+                ZG.a.setFilterToAxesLimits(findobj( 'Tag',MainInteractiveMap.axTag));
+                ZG.a.cropToFilter();
+                update(mainmap());
+            end
 
-
+            function cb_editrange(~,~)
+                ZG=ZmapGlobal.Data;
+                replaceMainCatalog(catalog_overview(ZG.a));
+                update(mainmap());
+            end
+            
+            function cb_rename(~,~)
+                ZG=ZmapGlobal.Data;
+                nm=inputdlg('Catalog Name:','Rename',1,{ZG.a.Name});
+                if ~isempty(nm)
+                    ZG.a.Name=nm{1};
+                end
+                zmap_message_center.update_catalog();
+                update(mainmap());
+            end
+            
+            function cb_clearmemorized(~,~)
+                ZG=ZmapGlobal.Data;
+                if isempty(ZG.memorized_catalogs)
+                    msg='No catalogs are currently memorized';
+                else
+                    msg='The memorized catalog has been cleared.'; 
+                end
+                ZG.memorized_catalogs=[];
+                msgbox(msg,'Clear Memorized');
+            end
+            
+            function cb_reloadlast(~,~)
+                error('create this function from scratch!');
+                ZG=ZmapGlobal.Data;
+                load(lopa);
+                if ZG.a.Countlength(ZG.a(1,:))== 7
+                    ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day);
+                elseif length(ZG.a(1,:))>=9
+                    ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));
+                end
+                ZG.a=catalog_overview(ZG.a);
+            end
+            function cb_combinecatalogs(~,~)
+                ZG=ZmapGlobal.Data;
+                ZG.newcat=comcat(ZG.a);
+                timeplot(ZG.newcat);
+            end
         end            
 
         function create_ztools_menu(obj,force)
@@ -374,8 +422,10 @@ classdef MainInteractiveMap
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
+            cgr_bvalgrid.AddMenuItem(submenu);
             tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
-            uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
+            %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
+            %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
             uimenu(tmp,'Label','Load...',...
                 'Enable','off',...
                 'Callback', @(~,~)bvalgrid('lo')); %map-view
@@ -454,7 +504,7 @@ classdef MainInteractiveMap
         
         
         function h = mainAxes()
-            h = findobj( 'Tag','mainmap_ax');
+            h = findobj( 'Tag',MainInteractiveMap.axTag);
         end
         
         %% plot CATALOG layer
@@ -976,7 +1026,7 @@ function choice = colormapdialog()
     uicontrol('Parent',d,...
         'Position',[89 20 70 25],...
         'String','Close',...
-        'Callback','delete(gcf)');
+        'Callback',@(~,~)delete(gcf));
     uiwait(d);
     choice = colormap_choice;
     
@@ -1008,13 +1058,13 @@ end
 function change_markersize(val)
     global ZG
     ZG.ms6 = val;
-    ax = findobj('Tag','mainmap_ax');
+    ax = findobj('Tag',MainInteractiveMap.axTag);
     set(findobj(ax,'Type','Line'),'MarkerSize',val);
 end
 
 function change_symbol(~, clrs, symbs)
     global ZG
-    ax = findobj('Tag','mainmap_ax');
+    ax = findobj('Tag',MainInteractiveMap.axTag);
     hlines = findMapaxParts(ax);
     %line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
     for n=1:numel(hlines)
@@ -1044,12 +1094,11 @@ end
 
 
 function plot_large_quakes()
-    globalZG
+    ZG=ZmapGlobal.Data;
     mycat=ZmapCatalog(ZG.a);
-    def = {'6'};
+    def = {num2str(ZG.big_eq_minmag)};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
-    l = ni2{:};
-    ZG.big_eq_minmag = str2double(l);
+    ZG.big_eq_minmag = str2double(ni2{1});
     
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
     update(mainmap()) %TOFIX changing magnitudes didn't chnge map output
@@ -1143,7 +1192,7 @@ function change_legend_breakpoints(~, ~)
 end
 
 function change_map_fonts(~,~)
-    ax = findobj('Tag','mainmap_ax');
+    ax = findobj('Tag',MainInteractiveMap.axTag);
     f = uisetfont(ax,'Change Font Size');
     fontsz = ZmapGlobal.Data.fontsz;
     fontsz.base_size = f.FontSize;

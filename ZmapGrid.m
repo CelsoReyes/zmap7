@@ -43,10 +43,17 @@ classdef ZmapGrid
             obj.Name = name;
             switch nargin
                 case 2
+                    if isnumeric(varargin{2})
                     % name, all_points
                     assert(size(varargin{1},2)==2);
                     obj.GridXY = varargin{1};
                     obj.Units='unk';
+                    elseif isstruct(varargin{2})
+                        v=varargin{2};
+                        obj=ZmapGrid(name, v.
+                    else
+                        error('unknown');
+                    end
                 case 3
                     % name, all_points, units
                     assert(size(varargin{1},2)==2);

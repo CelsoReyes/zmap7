@@ -67,8 +67,8 @@ function [sel]=rcvalgrid_a2()
     
     % creates a dialog box to input grid parameters
     %
-    gridOpt=GridParameterChoice(fig,[],{dx,'lon'},{dy,'lon'});
-    selOpt=EventSelectionChoice(fig,[],ni,ra);
+    gridOpt=GridParameterChoice(fig,'grid',[],{dx,'lon'},{dy,'lon'});
+    selOpt=EventSelectionChoice(fig,'evsel',[],ni,ra);
     oldfig_button = uicontrol('BackGroundColor',[.60 .92 .84], ...
         'Style','checkbox','string','Plot in Current Figure',...
         'Position',[.78 .7 .20 .08],...
