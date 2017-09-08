@@ -66,6 +66,7 @@ classdef(Abstract) ZmapFunction < handle
         ZG=ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
+        FunctionCall='%unknown function call';% text representation of the function call.
     end
     
     properties(Abstract)
@@ -81,6 +82,29 @@ classdef(Abstract) ZmapFunction < handle
     end
     
     methods
+        function set.FunctionCall(obj, varargin)
+            if numel(varargin)==1 && iscell(varargin)
+                varargin=varargin{:};
+            end
+            try
+                % provides probable function call for CURRENT STATE of object
+                fcall=[class(obj),'('];
+                for i=1:numel(varargin)
+                    fcall=[fcall char(string(obj.(varargin{i}))) ','];
+                end
+                if ~isempty(varargin)
+                    fcall(end)=''; % replaces comma
+                end
+                fcall(end+1)=')';
+            catch ME
+                warning(ME.message)
+                fcall=['% could not describe call. next comment is up to parse error, then generic call' linebreak...
+                    '% ' fcall linebreak...
+                    class(obj),'()'];
+            end
+            obj.FunctionCall=fcall;
+        end
+            
         function c=getCat(obj,n)
             % get (one of) the input "global" catalogs
             if ~exist('n','var') || isempty(n)
@@ -115,8 +139,63 @@ classdef(Abstract) ZmapFunction < handle
             obj.Calculate();
             obj.plot();
             obj.ModifyGlobals();
+            obj.saveToDesktop();
+        end
+        
+        function saveToDesktop(obj)
+            vname=[class(obj),'_result'];
+            assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
+            obj.Result.FunctionCall=obj.FunctionCall;
+            assignin('base',vname,obj.Result);
+            fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));
+            fprintf('%% results in: %s\n',vname);
+        end
+        
+        function SetFunctionCall(obj, varargin)
+            try
+                % provides probable function call for CURRENT STATE of object
+                fcall=[class(obj),'('];
+                for i=1:numel(varargin)
+                    fcall=[fcall char(string(obj.(varargin{i}))) ','];
+                end
+                if ~isempty(varargin)
+                    fcall(end)=''; % replaces comma
+                end
+                fcall(end+1)=')';
+            catch ME
+                warning(ME.message)
+                fcall=['% could not describe call. next comment is up to parse error, then generic call' linebreak...
+                    '% ' fcall linebreak...
+                    class(obj),'()'];
+            end
+            obj.FunctionCall=fcall;
         end
             
+        function f=Figure(obj,option)
+            % finds my figure, and will create if necessary
+            % sets obj.ax to any/all axes in figure
+            % option:
+            %    'deleteaxes' : all axes for this figure be deleted
+            if ~exist('behavior','var')
+                option='';
+            end
+            
+            
+            f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
+            if isempty(f)
+                f=figure('Tag',obj.PlotTag);
+            end
+            
+            figure(f);
+            obj.ax=findobj(f,'Type','axes');
+            switch option
+                case 'deleteaxes'
+                    delete(obj.ax);
+                case ''
+                otherwise
+                    error('unknown');
+            end
+        end
     end
     
     methods(Abstract)
@@ -129,13 +208,21 @@ classdef(Abstract) ZmapFunction < handle
         Results=Calculate(obj); % perform calculations, store results in obj.Result
         
         plot(obj,varargin); % plot 
-        ModifyGlobals(obj); %modify zmapglobals, if desired
+        ModifyGlobals(obj); % modify zmapglobals, if desired
         
     end
     
     methods(Static, Abstract)
         % THIS NEEDS TO BE CREATED IN THE DERRIVED CLASSES' STATIC METHODS SECTION
         AddMenuItem(parent)
-        % menu_callback(src,evt)
+        %{ 
+        sample implementaion here:
+        function h=AddMenuItem(parent)
+            % create a menu item that will be used to call this function/class
+            h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME
+                'Callback', @(~,~)blank_ZmapFunction()... CHANGE THIS TO YOUR CALLBACK
+                );
+        end
+        %}
     end
 end

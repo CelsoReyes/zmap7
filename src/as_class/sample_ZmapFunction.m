@@ -40,7 +40,7 @@ classdef sample_ZmapFunction < ZmapFunction
     end
     
     methods
-        function obj=sample_ZmapFunction(radius)
+        function obj=sample_ZmapFunction(radius, noiselevel,beclever)
             % create a sample_ZmapFunction
             
             % depending on whether parameters were provided, either run automatically, or
@@ -53,10 +53,13 @@ classdef sample_ZmapFunction < ZmapFunction
             else
                 % run this function without human interaction
                 
+                % set my variables from the argument list
                 obj.radius=radius;
-                obj.CheckCatalogPreconditions();
-                obj.Calculate();
-                obj.plot();
+                obj.usenoise=noiselevel ~= 0;
+                obj.noiselevel = noiselevel;
+                obj.cleverness = beclever;
+                
+                obj.doIt();
             end
         end
         
@@ -79,12 +82,12 @@ classdef sample_ZmapFunction < ZmapFunction
             %                                     may be evaluated
             %%%%%%%%%%%%%%%
             zdlg.AddBasicHeader('Say something for each thing');
-            zdlg.AddBasicPopup('lifechoice','life choice',obj.choices,2);
+            zdlg.AddBasicPopup('lifechoice','life choice',obj.choices,2,'youer choice. your life.');
             zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
-            zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'});
-            zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel);
+            zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},'use noise levels?');
+            zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel,'noise levels');
             zdlg.AddEventSelectionParameters('evsel',obj.ZG.ni, obj.ZG.ra);
-            zdlg.AddBasicCheckbox('cleverness','be clever', false);
+            zdlg.AddBasicCheckbox('cleverness','be clever', false,[],'never be clever');
             
             zdlg.Create('my dialog title')
             
@@ -106,6 +109,7 @@ classdef sample_ZmapFunction < ZmapFunction
         
         function Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
+            obj.FunctionCall={'radius','noiselevel','cleverness'};
             disp('sample.Calculate')
             steps=0:.1:2*pi;
             noise=obj.noiselevel*randn(1,length(steps));
@@ -120,13 +124,10 @@ classdef sample_ZmapFunction < ZmapFunction
             if obj.cleverness
                 obj.lstyle='^-';
             end
-            f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
-            if isempty(f)
-                f=figure('Tag',obj.PlotTag);
-            end
-            figure(f)
-            delete(findobj(f,'Type','axes'));
-            obj.ax=axes;
+            
+            f=obj.Figure('deleteaxes');
+            
+            obj.ax=axes(f);
             disp('sample.Plot')
             obj.hPlot=plot(obj.ax,obj.Result.x,obj.Result.y, obj.lstyle, varargin{:});
             xlabel(obj.ax,['zmapFunction plot: ', obj.plotlabel]);
@@ -145,7 +146,7 @@ classdef sample_ZmapFunction < ZmapFunction
             h=uimenu(parent,'Label','testmenuitem',...
                 'Callback', @(~,~)sample_ZmapFunction()); %
         end
-    end % static methodas
+    end % static methods
     
 end %classdef
 

@@ -44,10 +44,7 @@ classdef blank_ZmapFunction < ZmapFunction
                 ...
                 
                 % run the rest of the program
-                obj.CheckCatalogPreconditions();
-                obj.Calculate();
-                obj.plot();
-                obj.ModifyGlobals();
+                obj.doIt();
             end
         end
         
@@ -94,29 +91,35 @@ classdef blank_ZmapFunction < ZmapFunction
         
         function Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
+            
+            % create the function call that someone could use to recreate this calculation.
             %
+            % for example, if one would call this function with:
+            %      myfun('bob',23,false);
+            % with values that get assigned the variables:
+            %     obj.name, obj.age, obj.runreport
+            % then the next line should be:
+            %      obj.FunctionCall={'name','age','runreport'};
+            
+            obj.FunctionCall={};
+            
             % results of the calculation should be stored in fields belonging to obj.Result
+            
             obj.Result.Data=[];
+            
         end
         
         function plot(obj,varargin)
             % plots the results somewhere
+            f=obj.Figure('deleteaxes'); % nothing or 'deleteaxes'
             
-            f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
-            if isempty(f)
-                f=figure('Tag',obj.PlotTag);
-            end
-            
-            % clear(reset) my axes if I already exist
-            figure(f)
-            delete(findobj(f,'Type','axes'));
-            obj.ax=axes;
+            obj.ax=axes(f);
             
             % do the plotting
-            obj.hPlot=plot(obj.ax,obj.Result.x,obj.Result.y, obj.lstyle, varargin{:});
+            % obj.hPlot=plot(obj.ax, obj.Result.x,obj.Result.y, obj.lstyle, varargin{:});
  
             % do the labeling
-            xlabel(obj.ax,['zmapFunction plot: ', obj.plotlabel]);
+            % xlabel(obj.ax,['zmapFunction plot: ', obj.plotlabel]);
         end
         
         function ModifyGlobals(obj)
