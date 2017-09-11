@@ -149,7 +149,7 @@ try
     elseif isinf(fLimMin) % Set to the lowest non-inf value
       mSelection = ~isinf(handles.mPlotValues);
       mNoInfValues = handles.mPlotValues(mSelection);
-      fLimMin = min(min(mNoInfValues));
+      fLimMin = min(mNoInfValues(:));
     end
     set(handles.txtMin, 'String', num2str(fLimMin, 3));
   end
@@ -161,7 +161,7 @@ try
     elseif isinf(fLimMax) % Set to the highest non-inf value
       mSelection = ~isinf(handles.mPlotValues);
       mNoInfValues = handles.mPlotValues(mSelection);
-      fLimMax = max(max(mNoInfValues));
+      fLimMax = max(mNoInfValues(:));
     end
     set(handles.txtMax, 'String', num2str(fLimMax, 3));
   end

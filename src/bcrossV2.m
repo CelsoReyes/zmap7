@@ -242,7 +242,7 @@ function bcrossV2(sel)
         %
         normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= bvg(:,1);
-        re3=reshape(normlap2,length(yvect),length(xvect));
+        valueMap=reshape(normlap2,length(yvect),length(xvect));
         
         normlap2(ll)= bvg(:,5);
         r=reshape(normlap2,length(yvect),length(xvect));
@@ -265,10 +265,10 @@ function bcrossV2(sel)
         normlap2(ll)= bvg(:,10);
         maxm=reshape(normlap2,length(yvect),length(xvect));
         
-        old = re3;
+        old = valueMap;
         
         % View the b-value map
-        view_bv2([],re3)
+        view_bv2([],valueMap)
         
     end
     

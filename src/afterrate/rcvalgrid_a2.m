@@ -382,11 +382,11 @@ function [sel]=rcvalgrid_a2()
             disp('Values not calculated')
         end
         % Data to plot first map
-        re3 = mRelchange;
+        valueMap = mRelchange;
         lab1 = 'Rate change';
         
         % View the map
-        view_rcva_a2(lab1,re3)
+        view_rcva_a2(lab1,valueMap)
         
     end
     function my_load() %'lo'
@@ -489,12 +489,12 @@ function [sel]=rcvalgrid_a2()
             end
             
             % Initial map set to relative rate change
-            re3 = mRelchange;
+            valueMap = mRelchange;
             lab1 = 'Rate change';
             
-            old = re3;
+            old = valueMap;
             % Plot
-            view_rcva_a2(lab1,re3);
+            view_rcva_a2(lab1,valueMap);
         else
             return
         end

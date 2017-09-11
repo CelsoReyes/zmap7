@@ -481,11 +481,11 @@ function rc_cross_a2()
             disp('Values not calculated')
         end
         % Data to plot first map
-        re3 = mRelchange;
+        valueMap = mRelchange;
         lab1 = 'Rate change';
         
         % View the map
-        view_rccross_a2(lab1,re3)
+        view_rccross_a2(lab1,valueMap)
         
     end
     
@@ -585,16 +585,16 @@ function rc_cross_a2()
             end
             
             % Initial map set to relative rate change
-            re3 = mRelchange;
+            valueMap = mRelchange;
             lab1 = 'Rate change';
             nlammap
             [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             
-            old = re3;
+            old = valueMap;
             % Plot
-            view_rccross_a2(lab1,re3);
+            view_rccross_a2(lab1,valueMap);
         else
             return
         end

@@ -1,7 +1,7 @@
-function view_bvt(lab1,re3)
+function view_bvt(lab1,valueMap)
     % plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
@@ -102,7 +102,7 @@ function view_bvt(lab1,re3)
         nilabel = uicontrol('style','text','units','norm','pos',[.90 .85 .04 .05]);
         set(nilabel,'string','ni:','background',[.7 .7 .7]);
         
-        ZG.tresh_km = max(max(r)); re4 = re3;
+        ZG.tresh_km = max(r(:)); re4 = valueMap;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
@@ -124,7 +124,7 @@ function view_bvt(lab1,re3)
     figure(bmapc);
     delete(findobj(bmapc,'Type','axes'));
     % delete(sizmap);
-    reset(gca)
+    reset(gca);
     cla
     hold off
     watchon;
@@ -135,7 +135,7 @@ function view_bvt(lab1,re3)
     
     % set values greater ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     l = r > ZG.tresh_km;
     re4(l) = NaN(1,length(find(l)));
     
@@ -245,7 +245,7 @@ function view_bvt(lab1,re3)
     function callbackfun_004(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_bv2(lab1,re3);
+        view_bv2(lab1,valueMap);
     end
     
     function callbackfun_005(mysrc,myevt)
@@ -304,64 +304,64 @@ function view_bvt(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value change';
-        re3 = dbperc;
-        view_bvt(lab1,re3);
+        valueMap = dbperc;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
-        re3 = old;
-        view_bvt(lab1,re3);
+        valueMap = old;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
-        re3 = meg;
-        view_bvt(lab1,re3);
+        valueMap = meg;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='a-value';
-        re3 = avm;
-        view_bvt(lab1,re3);
+        valueMap = avm;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='error in b';
-        re3 = stanm;
-        view_bvt(lab1,re3);
+        valueMap = stanm;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='difference in b';
-        re3 = old-meg;
-        view_bvt(lab1,re3);
+        valueMap = old-meg;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Mmax';
-        re3 = maxm;
-        view_bvt(lab1,re3);
+        valueMap = maxm;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_018(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='dM ';
-        re3 = maxm-magco;
-        view_bvt(lab1,re3);
+        valueMap = maxm-magco;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_019(mysrc,myevt)
@@ -372,38 +372,32 @@ function view_bvt(lab1,re3)
         m1 = m{:};
         m = str2num(m1);
         lab1 = 'Tr in yrs. (only smallest values shown)';
-        re3 =(teb - t0b)./(10.^(avm-m*old));
-        view_bvt(lab1,re3);
+        valueMap =(teb - t0b)./(10.^(avm-m*old));
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_020(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Probability';
-        re3 = pro;
-        view_bvt(lab1,re3);
+        valueMap = pro;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_021(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Mcomp';
-        re3 = old1;
-        view_bv2(lab1,re3);
+        valueMap = old1;
+        view_bv2(lab1,valueMap);
     end
     
     function callbackfun_022(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
-        re3 = r;
-        view_bvt(lab1,re3);
-    end
-    
-    function callbackfun_023(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
+        valueMap = r;
+        view_bvt(lab1,valueMap);
     end
     
     function callbackfun_024(mysrc,myevt)
@@ -430,7 +424,7 @@ function view_bvt(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         pause(1);
-        re4 =re3;
-        view_bv2(lab1,re3);
+        re4 =valueMap;
+        view_bv2(lab1,valueMap);
     end
 end

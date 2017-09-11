@@ -1,13 +1,13 @@
-function view_varmap(lab1,re3)
+function view_varmap(lab1,valueMap)
     % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
     ZG=ZmapGlobal.Data;
     if ~exist('Prmap','var') || isempty(Prmap)
-        Prmap = nan(size(re3));
+        Prmap = nan(size(valueMap));
     end
 
     think
@@ -33,7 +33,7 @@ function view_varmap(lab1,re3)
         
         create_my_menu();
         
-        re4 = re3;
+        re4 = valueMap;
         
         colormap(jet)
         ZG.tresh_km = nan; minpe = nan; Mmin = nan;
@@ -58,14 +58,14 @@ function view_varmap(lab1,re3)
     
     % find max and min of data for automatic scaling
     %
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values gretaer ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     
     
     % plot image
@@ -84,10 +84,8 @@ function view_varmap(lab1,re3)
     shading(ZG.shading_style);
 
     % make the scaling for the recurrence time map reasonable
-    
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -166,7 +164,7 @@ function view_varmap(lab1,re3)
         uimenu(op1,'Label','Plot map on top of topography ',...
             'callback',@callbackfun_007)
         
-        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_008)
+        uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
         add_display_menu(1)
     end
@@ -221,16 +219,16 @@ function view_varmap(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = r;
-        view_varmap(lab1,re3);
+        valueMap = r;
+        view_varmap(lab1,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='Radius';
-        re3 = rama;
-        view_varmap(lab1,re3);
+        valueMap = rama;
+        view_varmap(lab1,valueMap);
     end
     
     function callbackfun_007(mysrc,myevt)
@@ -239,10 +237,5 @@ function view_varmap(lab1,re3)
         colback = 1;
         dramap_stress2;
     end
-    
-    function callbackfun_008(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
 end

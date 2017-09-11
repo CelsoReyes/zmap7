@@ -1,7 +1,7 @@
-function view_bvtmap(lab1,re3)
+function view_bvtmap(lab1,valueMap)
     % This .m file plots the differential b values calculated
     % with bvalmapt.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
@@ -36,7 +36,7 @@ function view_bvtmap(lab1,re3)
         create_my_menu();
         
         
-        ZG.tresh_km = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = valueMap;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .04],'backgroundcolor','w');
         set(nilabel2,'string','Min Probability:');
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
@@ -70,14 +70,14 @@ function view_bvtmap(lab1,re3)
     
     % find max and min of data for automatic scaling
     %
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values gretaer ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     l = pro < ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     
@@ -98,14 +98,12 @@ function view_bvtmap(lab1,re3)
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(re3);
-        re = re3;
+        l = isnan(valueMap);
+        re = valueMap;
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -213,7 +211,7 @@ function view_bvtmap(lab1,re3)
             'callback',@callbackfun_018)
         uimenu(op1,'Label','resolution Map - number of events ',...
             'callback',@callbackfun_019)
-        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_020)
+        uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
         add_display_menu(1)
     end
@@ -229,7 +227,7 @@ function view_bvtmap(lab1,re3)
     function callbackfun_002(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_bvtmap(lab1,re3);
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_003(mysrc,myevt)
@@ -297,95 +295,90 @@ function view_bvtmap(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = db12;
-        view_bvtmap(lab1,re3);
+        valueMap = db12;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value change';
-        re3 = dbperc;
-        view_bvtmap(lab1,re3);
+        valueMap = dbperc;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = bm1;
-        view_bvtmap(lab1,re3);
+        valueMap = bm1;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = bm2;
-        view_bvtmap(lab1,re3);
+        valueMap = bm2;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='P';
-        re3 = pro;
-        view_bvtmap(lab1,re3);
+        valueMap = pro;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='dP';
-        re3 = log10(maxm);
-        view_bvtmap(lab1,re3);
+        valueMap = log10(maxm);
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='error in b';
-        re3 = stanm;
-        view_bvtmap(lab1,re3);
+        valueMap = stanm;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp1';
-        re3 = magco1;
-        view_bvtmap(lab1,re3);
+        valueMap = magco1;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp2';
-        re3 = magco2;
-        view_bvtmap(lab1,re3);
+        valueMap = magco2;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_018(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'DMc';
-        re3 = dmag;
-        view_bvtmap(lab1,re3);
+        valueMap = dmag;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_019(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='# of events';
-        re3 = r;
-        view_bvtmap(lab1,re3);
+        valueMap = r;
+        view_bvtmap(lab1,valueMap);
     end
-    
-    function callbackfun_020(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
     
     function callbackfun_021(mysrc,myevt)
 
@@ -399,8 +392,8 @@ function view_bvtmap(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         pause(1);
-        re4 =re3;
-        view_bvtmap(lab1,re3);
+        re4 =valueMap;
+        view_bvtmap(lab1,valueMap);
     end
     
     function callbackfun_023(mysrc,myevt)

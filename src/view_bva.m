@@ -1,7 +1,7 @@
-function view_bva(lab1, re3,gx,gy)
+function view_bva(lab1, valueMap,gx,gy)
     % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
@@ -13,7 +13,7 @@ function view_bva(lab1, re3,gx,gy)
     %%
     
     if ~exist('Prmap') || isempty(Prmap)
-        Prmap = nan(size(re3));
+        Prmap = nan(size(valueMap));
     end
     ZG=ZmapGlobal.Data;
     think
@@ -42,7 +42,7 @@ function view_bva(lab1, re3,gx,gy)
         lab1 = 'b-value:';
         create_my_menu();
         
-        ZG.tresh_km = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = valueMap;
         
         colormap(jet)
         ZG.tresh_km = nan; minpe = nan; Mmin = nan;
@@ -67,9 +67,9 @@ function view_bva(lab1, re3,gx,gy)
     
     % find max and min of data for automatic scaling
     %
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % plot image
@@ -79,7 +79,7 @@ function view_bva(lab1, re3,gx,gy)
     
     axes('position',rect)
     hold on
-    pco1 = pcolor(gx,gy,re3);
+    pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     set(gca,'dataaspect',[1 cosd(nanmean(ZG.a.Latitude)) 1]);
@@ -89,14 +89,13 @@ function view_bva(lab1, re3,gx,gy)
 
     % make the scaling for the recurrence time map reasonable
     if ~isempty(lab1)&& lab1(1) =='T'
-        l = isnan(re3);
-        re = re3;
+        l = isnan(valueMap);
+        re = valueMap;
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     title([ZG.a.Name ';  '   num2str(ZG.t0b) ' to ' num2str(ZG.teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
         'Color','r','FontWeight','normal','Interpreter','none')
@@ -160,7 +159,7 @@ function view_bva(lab1, re3,gx,gy)
         dlgTitle='Input Map subselection Criteria';
         lineNo=1;
         answer=inputdlg(prompt,dlgTitle,lineNo,def);
-        re4 = re3;
+        re4 = valueMap;
         l = answer{1,1}; Mmin = str2double(l) ;
         l = answer{2,1}; ZG.tresh_km = str2double(l) ;
         l = answer{3,1}; minpe = str2double(l) ;
@@ -239,7 +238,7 @@ function view_bva(lab1, re3,gx,gy)
         
         
         
-        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_024)
+        uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         uimenu(op1,'Label','Reccurrence Time Histogram ', 'callback',@callbackfun_025)
         uimenu(op1,'Label','Save map to ASCII file ', 'callback',@callbackfun_026)
         
@@ -251,7 +250,7 @@ function view_bva(lab1, re3,gx,gy)
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_bva(lab1,re3);
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -309,7 +308,7 @@ function view_bva(lab1, re3,gx,gy)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju();
-        view_bva(lab1,re3) ;
+        view_bva(lab1,valueMap) ;
     end
     
     function callbackfun_008(mysrc,myevt)
@@ -317,7 +316,7 @@ function view_bva(lab1, re3,gx,gy)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju();
-        view_bva(lab1,re3);
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_009(mysrc,myevt)
@@ -325,96 +324,96 @@ function view_bva(lab1, re3,gx,gy)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju();
-        view_bva(lab1,re3) ;
+        view_bva(lab1,valueMap) ;
     end
     
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = mBvalue;
-        view_bva(lab1,re3);
+        valueMap = mBvalue;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='SdtDev b-Value';
-        re3 = mStdB;
-        view_bva(lab1,re3);
+        valueMap = mStdB;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
-        re3 = mMc;
-        view_bva(lab1,re3);
+        valueMap = mMc;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
-        re3 = mStdMc;
-        view_bva(lab1,re3);
+        valueMap = mStdMc;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = ' % ';
-        re3 = Prmap;
-        view_bva(lab1,re3);
+        valueMap = Prmap;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
-        re3 = r;
-        view_bva(lab1,re3);
+        valueMap = r;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='log(EQ per km^2)';
-        re3 = log10(mNumEq./(r.^2*pi));
-        view_bva(lab1,re3);
+        valueMap = log10(mNumEq./(r.^2*pi));
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='a-value';
-        re3 = mAvalue;
-        view_bva(lab1,re3);
+        valueMap = mAvalue;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_018(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of b-value';
-        re3 = mStdDevB;
-        view_bva(lab1,re3);
+        valueMap = mStdDevB;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_019(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of Mc';
-        re3 = mStdDevMc;
-        view_bva(lab1,re3);
+        valueMap = mStdDevMc;
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_020(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
-        re3 = mBvalue;
+        valueMap = mBvalue;
         bOverlayTransparentStdDev = 1;
-        view_bva(lab1,re3);
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_021(mysrc,myevt)
@@ -425,9 +424,9 @@ function view_bva(lab1, re3,gx,gy)
         m1 = m{:};
         m = str2num(m1);
         lab1 = 'Tr (yrs) (sm. values only)';
-        re3 =(teb - t0b)./(10.^(mAvalue-m*mBvalue));
+        valueMap =(teb - t0b)./(10.^(mAvalue-m*mBvalue));
         mrt = m;
-        view_bva(lab1,re3);
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_022(mysrc,myevt)
@@ -438,22 +437,16 @@ function view_bva(lab1, re3,gx,gy)
         m1 = m{:};
         m = str2num(m1);
         lab1 = '1/Tr/area ';
-        re3 =(teb - t0b)./(10.^(mAvalue-m*mBvalue));
-        re3 = 1./re3/(2*pi*ra*ra);
+        valueMap =(teb - t0b)./(10.^(mAvalue-m*mBvalue));
+        valueMap = 1./valueMap/(2*pi*ra*ra);
         mrt = m;
-        view_bva(lab1,re3);
+        view_bva(lab1,valueMap);
     end
     
     function callbackfun_023(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         recperc;
-    end
-    
-    function callbackfun_024(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
     end
     
     function callbackfun_025(mysrc,myevt)

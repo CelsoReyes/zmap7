@@ -1,11 +1,11 @@
-function view_ratecomp(det,re3)
+function view_ratecomp(det,valueMap)
     % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
-    % INPUT VARIABLES: det, re3
+    % INPUT VARIABLES: det, valueMap
 
     think
     report_this_filefun(mfilename('fullpath'));
@@ -53,9 +53,9 @@ function view_ratecomp(det,re3)
     
     % find max and min of data for automatic scaling
     %
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     
@@ -65,14 +65,12 @@ function view_ratecomp(det,re3)
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     axes('position',rect)
     hold on
-    pco1 = pcolor(gx,gy,re3);
+    pco1 = pcolor(gx,gy,valueMap);
     axis([ s2 s1 s4 s3])
     
     shading(ZG.shading_style);
-    
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     if  det == 'per'
         coma = jet;
@@ -174,7 +172,7 @@ function view_ratecomp(det,re3)
             'callback',@callbackfun_012)
         uimenu(op1,'Label','Plot map on top of topography (black background)',...
             'callback',@callbackfun_013)
-        uimenu(op1,'Label','Histogram of map-values', 'callback',@callbackfun_014)
+        uimenu(op1,'Label','Histogram of map-values', 'callback',@(~,~)zhist())
         uimenu(op1,'Label','Colormap InvertGray', 'callback',@callbackfun_015)
         uimenu(op1,'Label','Colormap Invertjet',...
             'callback',@callbackfun_016)
@@ -199,7 +197,7 @@ function view_ratecomp(det,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(findobj(xmsp,'Type','axes'));
-        view_ratecomp(det,re3);
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -234,53 +232,53 @@ function view_ratecomp(det,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det ='ast';
-        re3 = old;
-        view_ratecomp(det,re3);
+        valueMap = old;
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='per';
-        re3 = per;
-        view_ratecomp(det,re3);
+        valueMap = per;
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='bet';
-        re3 = beta_map;
-        view_ratecomp(det,re3);
+        valueMap = beta_map;
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_008(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         det='bet';
-        re3 = betamap;
-        view_ratecomp(det,re3);
+        valueMap = betamap;
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_009(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
-        re3 = reso;
-        view_ratecomp(det,re3);
+        valueMap = reso;
+        view_ratecomp(det,valueMap);
     end
     
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        re4 = re3;
+        re4 = valueMap;
         plotmap ;
     end
     
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fixax2 ;
+        fix_caxis(ZGvalueMap,'horz') ;
     end
     
     function callbackfun_012(mysrc,myevt)
@@ -296,13 +294,7 @@ function view_ratecomp(det,re3)
         colback = 2;
         dramap_z;
     end
-    
-    function callbackfun_014(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
-    
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

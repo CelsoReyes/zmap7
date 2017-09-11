@@ -10,21 +10,21 @@ function add_display_menu(version)
     switch version
         case 1
             circlefun=@plotci2;
-            fixscalefun=@fixax2;
+            fixscalefun=@(data)fix_caxis(data,'horiz');
             uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ');
             %overlayfun=@overlay;
         case 2
             circlefun=@plotci2;
-            fixscalefun=@fixax_vertical;
+            fixscalefun=@(data)fix_caxis(data,'');
             uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ');
             %overlayfun=@overlay;
         case 3
             circlefun=@plotci3;
-            fixscalefun=@fixax2;
+            fixscalefun=@(data)fix_caxis(data,'horiz');
             %overlayfun=@()update(mainmap());
         case 4
             circlefun=@plotci2;
-            fixscalefun=@fixax2;
+            fixscalefun=@(data)fix_caxis(data,'horiz');
             uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ')
             uimenu(op2e,'Label','Plot map on top of topography (white background)',...
                 'Callback','colback = 1; dramap2_z'); % this is different from case #1
@@ -33,14 +33,14 @@ function add_display_menu(version)
             %overlayfun=@overlay;
         case 5
             circlefun=@plotci2;
-            fixscalefun=@fixax2;
+            fixscalefun=@(data)fix_caxis(data,'horiz');
             add_colormap_section(op2e);
             add_shading_section(op2e);
             add_brighten_section(op2e);
             %overlayfun=@overlay;
     end
     
-    uimenu(op2e,'Label','Fix color (z) scale', 'Callback',@(~,~)fixscalefun);
+    uimenu(op2e,'Label','Fix color (z) scale', 'Callback',@(~,~)fixscalefun(ZGvalueMap));
     uimenu(op2e,'Label','Show Grid', 'Callback',@callback_showgrid);
     uimenu(op2e,'Label','Show Circles', 'Callback',@(~,~)circlefun);
     add_colormap_section(op2e);

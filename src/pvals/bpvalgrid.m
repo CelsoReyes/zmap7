@@ -246,14 +246,14 @@ function [sel] = bpvalgrid()
         watchoff
         
         % plot the results
-        % old and re3 (initially ) is the b-value matrix
+        % old and valueMap (initially ) is the b-value matrix
         %
         gridstats = array2gridstats(pbvg, ll);
-        gridstats.re3 = gridstats.pvalg;
+        gridstats.valueMap = gridstats.pvalg;
         lab1 = 'p-value';
         
         % View the b-value and p-value map
-        view_bpva(lab1,gridstats.re3)
+        view_bpva(lab1,gridstats.valueMap)
         
     end
     
@@ -263,7 +263,7 @@ function [sel] = bpvalgrid()
         if length(path1) > 1
             think
             gridstats=load_existing_bgrid(fullfile(path1, file1));
-            view_bpva(lab1,gridstats.re3)
+            view_bpva(lab1,gridstats.valueMap)
         else
             return
         end
@@ -431,7 +431,7 @@ function [sel] = bpvalgrid()
         % ll is some sort of mask/index (points within the polygon)
         
         % pbvg columns
-        fields_and_representations = {'re3', 1;
+        fields_and_representations = {'valueMap', 1;
             'old1', 2;
             'r',5;
             'meg', 6;
@@ -456,7 +456,7 @@ function [sel] = bpvalgrid()
             
         end
         
-        gridstats.old = gridstats.re3;
+        gridstats.old = gridstats.valueMap;
     end
     
     function gridstats = load_existing_bgrid(fn)

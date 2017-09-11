@@ -1,10 +1,10 @@
-function [fSigmaDistance, fMu, fSigma] = pt_CalcDeltaSig(mValues, fTestValue)
-% function [fSignificanceLevel, fMu, fSigma] = pt_CalcDeltaSig(mValues, fTestValue)
+function [fSigmaDistance, fMu, fSigma] = pt_CalcDeltaSig(values, fTestValue)
+% function [fSignificanceLevel, fMu, fSigma] = pt_CalcDeltaSig(values, fTestValue)
 % ---------------------------------------------------------------------------------
 % Calculates the Delta_sigma measure of significance of fTestValue
 %
 % Input parameters:
-%   mValues               Value distribution (assumed to be a normal distribution)
+%   values               Value distribution (assumed to be a normal distribution)
 %   fTestValue            Value to be tested
 %
 % Output parameter:
@@ -21,8 +21,8 @@ if bDebug
 end
 
 % Select all non-NaN values of the distribution
-vSelection = ~isnan(mValues);
-mNoNanValues = mValues(vSelection);
+vSelection = ~isnan(values);
+mNoNanValues = values(vSelection);
 
 % Compute the mean and standard deviation of the non-parameterized distribution
 fMu = mean(mNoNanValues);

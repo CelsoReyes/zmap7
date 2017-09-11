@@ -1,7 +1,7 @@
-function view_qva(lab1,re3)
+function view_qva(lab1,valueMap)
     % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
@@ -85,7 +85,7 @@ function view_qva(lab1,re3)
         
 
         
-        ZG.tresh_km = nan; re4 = re3;
+        ZG.tresh_km = nan; re4 = valueMap;
         nilabel2 = uicontrol('style','text','units','norm','pos',[.60 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
@@ -119,14 +119,14 @@ function view_qva(lab1,re3)
     
     % find max and min of data for automatic scaling
     %
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values gretaer ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     l = r > ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     
@@ -144,10 +144,8 @@ function view_qva(lab1,re3)
     hold on
     
     shading(ZG.shading_style);
-    
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -229,7 +227,7 @@ function view_qva(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(findobj(qmap,'Type','axes'));
-        view_qva(lab1,re3);
+        view_qva(lab1,valueMap);
     end
     
     function callbackfun_003(mysrc,myevt)
@@ -255,8 +253,8 @@ function view_qva(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='day/night ratio';
-        re3 = old;
-        view_qva(lab1,re3);
+        valueMap = old;
+        view_qva(lab1,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
@@ -285,7 +283,7 @@ function view_qva(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         think;
         pause(1);
-        re4 =re3;
-        view_bva(lab1,re3);
+        re4 =valueMap;
+        view_bva(lab1,valueMap);
     end
 end

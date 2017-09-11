@@ -1,6 +1,6 @@
-function view_bpva(lab1,re3)
+function view_bpva(lab1,valueMap)
     % view_bpva plots the b and p values calculated with bpvalgrid.m or other similar values as a color map.
-    % needs re3, gx, gy, stri
+    % needs valueMap, gx, gy, stri
     %
     % define size of the plot etc.
     %
@@ -85,8 +85,8 @@ function view_bpva(lab1,re3)
         
         
         
-        %re3 = pvalg;
-        ZG.tresh_km = nan; re4 = re3;
+        %valueMap = pvalg;
+        ZG.tresh_km = nan; re4 = valueMap;
         oldfig_button = true;
         
         colormap(jet)
@@ -111,14 +111,14 @@ function view_bpva(lab1,re3)
     rect1 = rect;
     
     % find max and min of data for automatic scaling
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values greater ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     l = r > ZG.tresh_km;
     re4(l) = nan(1,length(find(l)));
     l = Prmap < minpe;
@@ -147,16 +147,14 @@ function view_bpva(lab1,re3)
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(re3);
-        re = re3;
+        l = isnan(valueMap);
+        re = valueMap;
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
     
-    %If the colorbar is freezed.
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -268,7 +266,7 @@ function view_bpva(lab1,re3)
         uimenu(op1,'Label','c map',...
             'callback',@callbackfun_023)
         
-        uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_024)
+        uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
         add_display_menu(1);
     end
@@ -344,7 +342,7 @@ function view_bpva(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
-        view_bpva(lab1,re3) ;
+        view_bpva(lab1,valueMap) ;
     end
     
     function callbackfun_009(mysrc,myevt)
@@ -352,7 +350,7 @@ function view_bpva(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
-        view_bpva(lab1,re3);
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_010(mysrc,myevt)
@@ -360,7 +358,7 @@ function view_bpva(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
-        view_bpva(lab1,re3) ;
+        view_bpva(lab1,valueMap) ;
     end
     
     function callbackfun_011(mysrc,myevt)
@@ -368,108 +366,103 @@ function view_bpva(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;
-        view_bpva(lab1,re3) ;
+        view_bpva(lab1,valueMap) ;
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
-        re3 = old;
-        view_bpva(lab1,re3);
+        valueMap = old;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
-        re3 = meg;
-        view_bpva(lab1,re3);
+        valueMap = meg;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
-        re3 = old1;
-        view_bpva(lab1,re3);
+        valueMap = old1;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Mmax';
-        re3 = maxm;
-        view_bpva(lab1,re3);
+        valueMap = maxm;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='dM ';
-        re3 = maxm-magco;
-        view_bpva(lab1,re3);
+        valueMap = maxm-magco;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-value';
-        re3 = pvalg;
-        view_bpva(lab1,re3);
+        valueMap = pvalg;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_018(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
-        re3 = pvstd;
-        view_bpva(lab1,re3);
+        valueMap = pvstd;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_019(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='a-value';
-        re3 = avm;
-        view_bpva(lab1,re3);
+        valueMap = avm;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_020(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Error in b';
-        re3 = pro;
-        view_bpva(lab1,re3);
+        valueMap = pro;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_021(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='difference in b';
-        re3 = old-meg;
-        view_bpva(lab1,re3);
+        valueMap = old-meg;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_022(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
-        re3 = rama;
-        view_bpva(lab1,re3);
+        valueMap = rama;
+        view_bpva(lab1,valueMap);
     end
     
     function callbackfun_023(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c in days';
-        re3 = cmap2;
-        view_bpva(lab1,re3);
+        valueMap = cmap2;
+        view_bpva(lab1,valueMap);
     end
     
-    function callbackfun_024(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
 end

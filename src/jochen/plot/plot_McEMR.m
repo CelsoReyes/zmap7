@@ -251,7 +251,7 @@ plot(vPredBest(:,1),vPredBest(:,2)-vPredBest(:,3),'--','Color',[0.2 0.2 0.2],'Li
 xlabel('Magnitude','FontSize',14,'FontWeight','bold');
 ylabel('Number of events','FontSize',14,'FontWeight','bold');
 xlim = ([min(mDatPredBest(:,2)) max(mDatPredBest(:,2))]);
-ylim = ([0 max(max(mDatPredBest))]);
+ylim = ([0 max(mDatPredBest(:))]);
 hl1=legend([p1,p2,p3,p4],'Noncum. FMD','Noncum. model FMD ','Model','Model uncertainty');
 set(hl1,'FontWeight','bold','FontSize',12')
 set(gca,'visible','on','FontSize',12,'FontWeight','bold','LineWidth',2,'Box','on');

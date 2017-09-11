@@ -36,6 +36,8 @@ classdef EventSelectionChoice < handle
         end
         
         function out=toStruct(obj)
+            % creates a structure with fields
+            %  numNearbyEvents, radius_km, useNumNearbyEvents, useEventsInRadius
             out.numNearbyEvents=obj.ni;
             out.radius_km=obj.ra;
             out.useNumNearbyEvents=obj.UseNumNearbyEvents;

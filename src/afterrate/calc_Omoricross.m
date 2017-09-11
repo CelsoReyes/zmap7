@@ -370,7 +370,7 @@ function calc_Omoricross()
             
             ... old stuff follows again
             % Initial map set to relative rate change
-            re3 = mPval;
+            valueMap = mPval;
             nlammap
             [xsecx, xsecy inde] =mysect(ZG.(wCat).Latitude',ZG.(wCat).Longitude',ZG.(wCat).Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points

@@ -65,7 +65,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         create_my_menu();
         
-        %re3 = pvalg;
+        %valueMap = pvalg;
         ZG.tresh_km = nan;
         
         colormap(jet)
@@ -119,10 +119,8 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         shading(ZG.shading_style)
         
-        %If the colorbar is freezed.
-        if ZG.freeze_colorbar
-            caxis([fix1 fix2])
-        end
+
+        fix_caxis.ApplyIfFrozen(gca); 
         
         % Labeling
         title([name ';  '   num2str(ZG.t0b) ' to ' num2str(ZG.teb) ],'FontSize',ZG.fontsz.s,...
@@ -273,7 +271,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
-        view_Omoricross(field_name,re3);
+        view_Omoricross(field_name,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
@@ -281,7 +279,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
-        view_Omoricross(field_name,re3);
+        view_Omoricross(field_name,valueMap);
     end
     
     function callbackfun_007(mysrc,myevt)
@@ -289,7 +287,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
-        view_Omoricross(field_name,re3);
+        view_Omoricross(field_name,valueMap);
     end
     
     function callbackfun_008(mysrc,myevt)
@@ -297,7 +295,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;
-        view_Omoricross(field_name,re3);
+        view_Omoricross(field_name,valueMap);
     end
     
 end

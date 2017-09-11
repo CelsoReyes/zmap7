@@ -1,7 +1,7 @@
-function view_rcva_a2(lab1,re3)
+function view_rcva_a2(lab1,valueMap)
     % view_rcva_a2 plots ratechanges and p values calculated with rcvalgrid_a2
     % or other similar values as a color map.
-    % needs re3, gx, gy
+    % needs valueMap, gx, gy
     %
     % define size of the plot etc.
     %
@@ -73,8 +73,8 @@ function view_rcva_a2(lab1,re3)
         %lab1 = 'p-value:';
         create_my_menu();
         
-        %re3 = pvalg;
-        ZG.tresh_km = nan; re4 = re3;
+        %valueMap = pvalg;
+        ZG.tresh_km = nan; re4 = valueMap;
         
         colormap(jet)
         ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
@@ -96,14 +96,14 @@ function view_rcva_a2(lab1,re3)
     rect1 = rect;
     
     % find max and min of data for automatic scaling
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values greater ZG.tresh_km = nan
     %
-    re4 = re3;
+    re4 = valueMap;
     % plot image
     %
     orient landscape
@@ -122,16 +122,13 @@ function view_rcva_a2(lab1,re3)
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(re3);
-        re = re3;
+        l = isnan(valueMap);
+        re = valueMap;
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
-    
-    %If the colorbar is frozen.
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
@@ -237,7 +234,7 @@ function view_rcva_a2(lab1,re3)
             'callback',@callbackfun_026)
         uimenu(op1,'Label','k2-value standard deviation',...
             'callback',@callbackfun_027)
-        %    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_028)
+        %    uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
         add_display_menu(2);
     end
@@ -247,7 +244,7 @@ function view_rcva_a2(lab1,re3)
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_rcva_a2(lab1,re3);
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -278,7 +275,7 @@ function view_rcva_a2(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
         adju2;
-        view_rcva_a2(lab1,re3) ;
+        view_rcva_a2(lab1,valueMap) ;
     end
     
     function callbackfun_005(mysrc,myevt)
@@ -286,7 +283,7 @@ function view_rcva_a2(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
         adju2;
-        view_rcva_a2(lab1,re3);
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
@@ -294,7 +291,7 @@ function view_rcva_a2(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
         adju2;
-        view_rcva_a2(lab1,re3) ;
+        view_rcva_a2(lab1,valueMap) ;
     end
     
     function callbackfun_007(mysrc,myevt)
@@ -302,172 +299,167 @@ function view_rcva_a2(lab1,re3)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'pstdc';
         adju2;
-        view_rcva_a2(lab1,re3) ;
+        view_rcva_a2(lab1,valueMap) ;
     end
     
     function callbackfun_008(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Sigma';
-        re3 = mRelchange;
-        view_rcva_a2(lab1,re3);
+        valueMap = mRelchange;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_009(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Model';
-        re3 = mMod;
-        view_rcva_a2(lab1,re3);
+        valueMap = mMod;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Rejection';
-        re3 = mKstestH;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKstestH;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS distance';
-        re3 = mKsstat;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKsstat;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='KS-Test p-value';
-        re3 = mKsp;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKsp;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='RMS';
-        re3 = mRMS;
-        view_rcva_a2(lab1,re3);
+        valueMap = mRMS;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
-        re3 = mNumevents;
-        view_rcva_a2(lab1,re3);
+        valueMap = mNumevents;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius / [km]';
-        re3 = vRadiusRes;
-        view_rcva_a2(lab1,re3);
+        valueMap = vRadiusRes;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-value';
-        re3 = mPval;
-        view_rcva_a2(lab1,re3);
+        valueMap = mPval;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
-        re3 = mPvalstd;
-        view_rcva_a2(lab1,re3);
+        valueMap = mPvalstd;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_018(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
-        re3 = mCval;
-        view_rcva_a2(lab1,re3);
+        valueMap = mCval;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_019(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
-        re3 = mCvalstd;
-        view_rcva_a2(lab1,re3);
+        valueMap = mCvalstd;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_020(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
-        re3 = mKval;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKval;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_021(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
-        re3 = mKvalstd;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKvalstd;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_022(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p2-value';
-        re3 = mPval2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mPval2;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_023(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='p-valstd';
-        re3 = mPvalstd2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mPvalstd2;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_024(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-value';
-        re3 = mCval2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mCval2;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_025(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='c-valuestd';
-        re3 = mCvalstd2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mCvalstd2;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_026(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-value';
-        re3 = mKval2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKval2;
+        view_rcva_a2(lab1,valueMap);
     end
     
     function callbackfun_027(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='k-valuestd';
-        re3 = mKvalstd2;
-        view_rcva_a2(lab1,re3);
+        valueMap = mKvalstd2;
+        view_rcva_a2(lab1,valueMap);
     end
-    
-    function callbackfun_028(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
 end

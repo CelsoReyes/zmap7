@@ -54,7 +54,6 @@ maiy = [];
 ZG.tresh_km = 50; %radius below which blocks in the zmap's will be plotted
 ZG.xsec_width_km = 10 ;   % initial width of crossections
 ZG.xsec_rotation_deg = 10; % initial rotation angle in cross-section window
-ZG.freeze_colorbar = false;
     % Set the Background color for the plot
     % default \: light yellow 1 1 0.6
     ZG.color_bg = [1.0 1.0 1.0];

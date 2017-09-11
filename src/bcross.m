@@ -317,10 +317,10 @@ function bcross(sel)
         ro(ll) = bvg(:,11);          % Whatever this is
         mNumEq(ll) = bvg(:,12);     % number of events
         
-        re3 = mBvalue;
+        valueMap = mBvalue;
         kll = ll;
         % View the b-value map
-        view_bv2([],re3)
+        view_bv2([],valueMap)
         
     end
     
@@ -352,14 +352,14 @@ function bcross(sel)
             ro(ll) = bvg(:,11);          % Whatever this is
             mNumEq(ll) = bvg(:,12);     % number of events
             
-            re3 = mBvalue;
+            valueMap = mBvalue;
             
             nlammap
             [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             plot(newgri(:,1),newgri(:,2),'+k')
-            view_bv2([],re3)
+            view_bv2([],valueMap)
         else
             return
         end

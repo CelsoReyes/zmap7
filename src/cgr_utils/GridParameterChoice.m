@@ -56,6 +56,10 @@ classdef GridParameterChoice < handle
             out = obj.ubg2.SelectedObject==obj.hCreateGrid;
         end
         function out = toStruct(obj)
+            % returns structure with fields:
+            % dx, dy, dz, dx_units, dy_units, dz_units,
+            % gridEntireArea, SaveGrid, LoadGrid, CreateGrid
+            
             out=struct(...
                 'dx',obj.dx,...
                 'dy',obj.dy,...

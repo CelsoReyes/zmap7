@@ -283,7 +283,7 @@ function bcrossVt2()
         %
         normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= bvg(:,1);
-        re3=reshape(normlap2,length(yvect),length(xvect));
+        valueMap=reshape(normlap2,length(yvect),length(xvect));
         
         normlap2(ll)= bvg(:,5);
         r=reshape(normlap2,length(yvect),length(xvect));
@@ -314,11 +314,11 @@ function bcrossVt2()
         dbperc=reshape(normlap2,length(yvect),length(xvect));
         
         
-        re3 = db12;
-        old = re3;
+        valueMap = db12;
+        old = valueMap;
         
         % View the b-value map
-        view_bvt([],re3)
+        view_bvt([],valueMap)
         
     end
 

@@ -1,7 +1,7 @@
-function view_rccross_a2(lab1,re3)
+function view_rccross_a2(lab1,valueMap)
     % view_rccross_a2 plots ratechanges and p values calculated
     % derived with rc_cross_a2.m or other similar values as a color map.
-    % needs re3, gx, gy
+    % needs valueMap, gx, gy
     %
     % define size of the plot etc.
     
@@ -73,8 +73,8 @@ function view_rccross_a2(lab1,re3)
         %lab1 = 'p-value:';
         create_my_menu();
         
-        %re3 = pvalg;
-        ZG.tresh_km = nan; re4 = re3;
+        %valueMap = pvalg;
+        ZG.tresh_km = nan; re4 = valueMap;
         
         colormap(jet)
         ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
@@ -96,12 +96,12 @@ function view_rccross_a2(lab1,re3)
     rect1 = rect;
     
     % find max and min of data for automatic scaling
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
-    re4 = re3;
+    re4 = valueMap;
     
     
     % plot image
@@ -119,16 +119,14 @@ function view_rccross_a2(lab1,re3)
     
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(re3);
-        re = re3;
+        l = isnan(valueMap);
+        re = valueMap;
         re(l) = [];
         caxis([min(re) 5*min(re)]);
     end
     
-    %If the colorbar is freezed.
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
     
     
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -195,56 +193,55 @@ function view_rccross_a2(lab1,re3)
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'callback',@callbackfun_004)
+            'callback',{@cb_viewagain,'mag'})
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'callback',@callbackfun_005)
+            'callback',{@cb_viewagain,'rmax'})
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'callback',@callbackfun_006)
+            'callback',{@cb_viewagain,'gofi'})
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            'callback',@callbackfun_007)
+            'callback',{@cb_viewagain,'pstdc'})
         
         
         uimenu(op1,'Label','Relative rate change (bootstrap)',...
-            'callback',@callbackfun_008)
+            'callback',{@cb_viewagainOtherdata,'Sigma'})
         uimenu(op1,'Label','Model',...
-            'callback',@callbackfun_009)
+            'callback',{@cb_viewagainOtherdata,'Model'})
         uimenu(op1,'Label','KS-Test',...
-            'callback',@callbackfun_010)
+            'callback',{@cb_viewagainOtherdata,'Rejection'})
         uimenu(op1,'Label','KS-Test Statistic',...
-            'callback',@callbackfun_011)
+            'callback',{@cb_viewagainOtherdata,'KS distance'})
         uimenu(op1,'Label','KS-Test p-value',...
-            'callback',@callbackfun_012)
+            'callback',{@cb_viewagainOtherdata,'KS-Test p-value'})
         uimenu(op1,'Label','RMS of fit',...
-            'callback',@callbackfun_013)
+            'callback',{@cb_viewagainOtherdata,'RMS'})
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            'callback',@callbackfun_014)
+            'callback',{@cb_viewagainOtherdata,'Number of events'})
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            'callback',@callbackfun_015)
+            'callback',{@cb_viewagainOtherdata,'Radius / [km]'})
         uimenu(op1,'Label','p-value',...
-            'callback',@callbackfun_016)
+            'callback',{@cb_viewagainOtherdata,'p-value'})
         uimenu(op1,'Label','p-value standard deviation',...
-            'callback',@callbackfun_017)
+            'callback',{@cb_viewagainOtherdata,'p-valstd'})
         uimenu(op1,'Label','c-value',...
-            'callback',@callbackfun_018)
+            'callback',{@cb_viewagainOtherdata,'c-value'})
         uimenu(op1,'Label','c-value standard deviation',...
-            'callback',@callbackfun_019)
+            'callback',{@cb_viewagainOtherdata,'c-valuestd'})
         uimenu(op1,'Label','k-value',...
-            'callback',@callbackfun_020)
+            'callback',{@cb_viewagainOtherdata,'k-value'})
         uimenu(op1,'Label','k-value standard deviation',...
-            'callback',@callbackfun_021)
+            'callback',{@cb_viewagainOtherdata,'k-valuestd'})
         uimenu(op1,'Label','p2-value',...
-            'callback',@callbackfun_022)
+            'callback',{@cb_viewagainOtherdata,'p2-value'})
         uimenu(op1,'Label','p-value standard deviation',...
-            'callback',@callbackfun_023)
+            'callback',{@cb_viewagainOtherdata,'p2-valuestd'})
         uimenu(op1,'Label','c2-value',...
-            'callback',@callbackfun_024)
+            'callback',{@cb_viewagainOtherdata,'c2-value'})
         uimenu(op1,'Label','c2-value standard deviation',...
-            'callback',@callbackfun_025)
+            'callback',{@cb_viewagainOtherdata,'c2-valuestd'})
         uimenu(op1,'Label','k2-value',...
-            'callback',@callbackfun_026)
+            'callback',{@cb_viewagainOtherdata,'k2-value'})
         uimenu(op1,'Label','k2-value standard deviation',...
-            'callback',@callbackfun_027)
-        %    uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_028)
+            'callback',{@cb_viewagainOtherdata,'k2-valuestd'})
         
         add_display_menu(1);
     end
@@ -252,13 +249,10 @@ function view_rccross_a2(lab1,re3)
     %% callback functions
     
     function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_rccross_a2(lab1,re3);
+        view_rccross_a2(lab1,valueMap);
     end
     
     function callbackfun_002(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         met = 'ra';
@@ -280,202 +274,65 @@ function view_rccross_a2(lab1,re3)
         watchoff(hRccross);
     end
     
-    function callbackfun_004(mysrc,myevt)
-
+    function cb_viewagain(mysrc,myevt,asel)
+        % set asel, adju2, then view
+        ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'mag';
         adju2;
-        view_rccross_a2(lab1,re3);
+        view_rccross_a2(lab1,ZG.valueMap);
     end
     
-    function callbackfun_005(mysrc,myevt)
-
+    function cb_viewagainOtherdata(mysrc,myevt, label)
+        % set asel, adju2, then view
+        ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'rmax';
-        adju2;
-        view_rccross_a2(lab1,re3);
+        switch label
+            case 'Sigma'
+                valueMap=mRelchange; %8
+            case 'Model'
+                valueMap=mMod; %9
+            case 'Rejection'
+                valueMap=mKstestH; %10
+            case 'KS distance'
+                valueMap=mKsstat; %11
+            case 'KS-Test p-value'
+                valueMap=mKsp; %12
+            case 'RMS'
+                valueMap=mRMS; %13
+            case 'Number of events'
+                valueMap=mNumevents; %14
+            case 'Radius / [km]'
+                valueMap=vRadiusRes; %15
+            case 'p-value'
+                valueMap=mPval;
+            case 'p-valstd'
+                valueMap=mPvalstd;
+            case 'c-value'
+                valueMap=mCval;
+            case 'c-valstd'
+                valueMap=mCvalstd;
+            case 'k-value'
+                valueMap=mKval;
+            case 'k-valstd'
+                valueMap=mKvalstd;
+            case 'p2-value'
+                valueMap=mPval2;
+            case 'p2-valstd'
+                valueMap=mPvalstd2;
+            case 'c2-value'
+                valueMap=mCval2;
+            case 'c2-valstd'
+                valueMap=mCvalstd2;
+            case 'k2-value'
+                valueMap=mKval2;
+            case 'k2-valstd'
+                valueMap=mKvalstd2;
+            otherwise
+                error('unknown choice');
+        end
+        ZG.valueMap=valueMap;
+        view_rccross_a2(label,ZG.valueMap);
     end
-    
-    function callbackfun_006(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'gofi';
-        adju2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_007(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'pstdc';
-        adju2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_008(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Sigma';
-        re3 = mRelchange;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Model';
-        re3 = mMod;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Rejection';
-        re3 = mKstestH;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='KS distance';
-        re3 = mKsstat;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='KS-Test p-value';
-        re3 = mKsp;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_013(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='RMS';
-        re3 = mRMS;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_014(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Number of events';
-        re3 = mNumevents;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_015(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Radius / [km]';
-        re3 = vRadiusRes;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_016(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p-value';
-        re3 = mPval;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_017(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p-valstd';
-        re3 = mPvalstd;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_018(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='c-value';
-        re3 = mCval;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_019(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='c-valuestd';
-        re3 = mCvalstd;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_020(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='k-value';
-        re3 = mKval;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_021(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='k-valuestd';
-        re3 = mKvalstd;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_022(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p2-value';
-        re3 = mPval2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_023(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p-valstd';
-        re3 = mPvalstd2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_024(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='c-value';
-        re3 = mCval2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_025(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='c-valuestd';
-        re3 = mCvalstd2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_026(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='k-value';
-        re3 = mKval2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_027(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='k-valuestd';
-        re3 = mKvalstd2;
-        view_rccross_a2(lab1,re3);
-    end
-    
-    function callbackfun_028(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
 end
 

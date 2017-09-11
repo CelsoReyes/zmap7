@@ -1,12 +1,11 @@
-function view_xstress(lab1,re3)
+function view_xstress(lab1,valueMap)
     % Script to display results creates with cross_stress.m
     %
-    % Needs re3, gx, gy, stri
+    % Needs valueMap, gx, gy, stri
     %
     % last modified: J. Woessner, 02.2004
     if isempty(lab1); lab1='';end; %CR
-
-    think
+    ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     % Color shortcut
     ZG.someColor = 'w';
@@ -26,7 +25,7 @@ function view_xstress(lab1,re3)
             'Position',[ (fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         create_my_menu();
         
-        re4 = re3;
+        re4 = valueMap;
 
         colormap(jet)
         ZG.tresh_km = nan; minpe = nan; Mmin = nan;
@@ -48,9 +47,9 @@ function view_xstress(lab1,re3)
     rect = [0.18,  0.10, 0.7, 0.75];
     
     % Find max and min of data for automatic scaling
-    ZG.maxc = max(max(re3));
+    ZG.maxc = max(valueMap(:));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(min(re3));
+    ZG.minc = min(valueMap(:));
     ZG.minc = fix(ZG.minc)-1;
     
     % Plot image
@@ -58,17 +57,15 @@ function view_xstress(lab1,re3)
     
     axes('position',rect)
     hold on
-    pco1 = pcolor(gx,gy,re3);
+    pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     hold on
 
     shading(ZG.shading_style);
-    
-    if ZG.freeze_colorbar
-        caxis([fix1 fix2])
-    end
+
+    fix_caxis.ApplyIfFrozen(gca); 
 
     xlabel('Distance in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Depth in [km]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -176,7 +173,7 @@ function view_xstress(lab1,re3)
             'callback',@callbackfun_016)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
             'callback',@callbackfun_017)
-        %uimenu(op1,'Label','Histogram ', 'callback',@callbackfun_018)
+        %uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
         % Menu Display
         add_display_menu(1);
@@ -187,8 +184,8 @@ function view_xstress(lab1,re3)
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        re3 = r;
-        view_xstress(lab1,re3);
+        valueMap = r;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -231,109 +228,104 @@ function view_xstress(lab1,re3)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\sigma';
-        re3 = mVariance;
-        view_xstress(lab1,re3);
+        valueMap = mVariance;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_006(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\Phi';
-        re3 = mPhi;
-        view_xstress(lab1,re3);
+        valueMap = mPhi;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend [deg]';
-        re3 = mTS1;
-        view_xstress(lab1,re3);
+        valueMap = mTS1;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_008(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 plunge [deg]';
-        re3 = mPS1;
-        view_xstress(lab1,re3);
+        valueMap = mPS1;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_009(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 trend [deg]';
-        re3 = mTS2;
-        view_xstress(lab1,re3);
+        valueMap = mTS2;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 plunge [deg]';
-        re3 = mPS2;
-        view_xstress(lab1,re3);
+        valueMap = mPS2;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 trend [deg]';
-        re3 = mTS3;
-        view_xstress(lab1,re3);
+        valueMap = mTS3;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_012(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 plunge [deg]';
-        re3 = mPS3;
-        view_xstress(lab1,re3);
+        valueMap = mPS3;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_013(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\beta [deg]';
-        re3 = mBeta;
-        view_xstress(lab1,re3);
+        valueMap = mBeta;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_014(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\tau [deg]';
-        re3 = mTau;
-        view_xstress(lab1,re3);
+        valueMap = mTau;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
-        re3 = mResolution;
-        view_xstress(lab1,re3);
+        valueMap = mResolution;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_016(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
-        re3 = mNumber;
-        view_xstress(lab1,re3);
+        valueMap = mNumber;
+        view_xstress(lab1,valueMap);
     end
     
     function callbackfun_017(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend to strike [deg]';
-        re3 = mTS1Rel;
-        view_xstress(lab1,re3);
+        valueMap = mTS1Rel;
+        view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_018(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zhist;
-    end
 end

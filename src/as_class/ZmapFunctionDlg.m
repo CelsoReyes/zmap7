@@ -182,6 +182,8 @@ classdef ZmapFunctionDlg < handle
         %% methods to declare uicontrols
         
         function AddBasicHeader(obj, String)
+            % add a simple header to the dialog box
+            % AddBasicHeader(text)
             details=struct(...
                 'Style','header',...
                 'Tag','',...
@@ -190,6 +192,8 @@ classdef ZmapFunctionDlg < handle
         end
         
         function AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+            %AddBasicPopup represents a pop-up menu
+            % AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
             details=struct(...
                 'Style','popupmenu',...
                 'Tag',tag,...
@@ -202,7 +206,9 @@ classdef ZmapFunctionDlg < handle
         end
         
         function AddBasicEdit(obj,tag, label, value,tooltip)
-            % c=basicEdit(tag, label, value)
+            % AddBasicEdit adds an edit-box & text label combo
+            % AddBasicEdit(obj,tag, label, value,tooltip)
+            %
             % callback is determined by the value's type
             if isnumeric(value)
                 % put num2str(value) into String
@@ -230,6 +236,9 @@ classdef ZmapFunctionDlg < handle
         end
         
         function AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
+            % AddBasicCheckbox adds a checkbox to the dialog box
+            % AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
+            %
             % dependentTags will be enabled/disabled based on the value of this checkbox
             %convert to type, tag, label, defaultString, defaultValue, callback
             
@@ -248,7 +257,23 @@ classdef ZmapFunctionDlg < handle
             obj.parts(end+1)={details};
         end
         
-        function AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
+        function AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
+            % Add a grid parameter widget to the box.
+            % AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
+            % retrieved values will be found in a structure
+            % tag.dx
+            % tag.dy
+            % tag.dz
+            % tag.dx_units
+            % tag.dy_units
+            % tag.dz_units,
+            % tag.gridEntireArea
+            % tag.SaveGrid
+            % tag.LoadGrid
+            % tag.CreateGrid
+            %
+            % see also GridParameterChoice
+            
             details=struct(...
                 'Style','gridparameterbox',...
                 'Tag',tag,...
@@ -256,10 +281,22 @@ classdef ZmapFunctionDlg < handle
                 'dy',{{dy, dyunits}},...
                 'dz',{{dz, dzunits}});
             obj.parts(end+1)={details};
+            
         end
         
         function AddEventSelectionParameters(obj, tag, ni, ra)
+            %AddEventSelectionParameters Choose between events in a radius, or closest N events
+            %AddEventSelectionParameters(obj, tag, ni, ra)
             % used to define how each grid point will select events
+            %
+            % returns structure
+            % tag.numNearbyEvent
+            % tag.radius_km
+            % tag.useNumNearbyEvent
+            % tag.useEventsInRadius
+            %
+            % see also EventSelectionChoice
+            
             details=struct(...
                 'Style','eventselectparameterbox',...
                 'Tag',tag,...
@@ -380,6 +417,9 @@ function [userData, mystr] = value2String(className, label, value)
             end
         otherwise
             mystr=string(value);
+            if ismissing(mystr)
+                mystr='';
+            end
     end
 end
 

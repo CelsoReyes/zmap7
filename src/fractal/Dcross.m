@@ -317,17 +317,19 @@ functin my_calculate()
     % reshape a few matrices
     %
     normlap2=nan(length(tmpgri(:,1)),1)
+
+    reshaper=@(v)reshape(v,length(yvect),length(xvect));
     normlap2(ll)= bvg(:,1);
-    re3=reshape(normlap2,length(yvect),length(xvect));
+    valueMap=reshaper(normlap2);
 
     normlap2(ll)= bvg(:,4);
-    reso = reshape(normlap2,length(yvect),length(xvect));
+    reso = reshaper(normlap2);
 
     normlap2(ll)= bvg(:,5);
-    BM=reshape(normlap2,length(yvect),length(xvect));
+    BM=reshaper(normlap2);
 
 
-    old = re3;
+    old = valueMap;
 
     % View the b-value map
     view_Dv
@@ -347,13 +349,13 @@ function my_load()
 
         normlap2=nan(length(tmpgri(:,1)),1)
         normlap2(ll)= bvg(:,1);
-        re3=reshape(normlap2,length(yvect),length(xvect));
+        valueMap=reshape(normlap2,length(yvect),length(xvect));
 
         normlap2(ll)= bvg(:,4);
         r=reshape(normlap2,length(yvect),length(xvect));
 
 
-        old = re3;
+        old = valueMap;
 
         nlammap
         [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
@@ -436,7 +438,6 @@ function callbackfun_009(mysrc,myevt)
    gobut = 3;
    org = 1;
    startfd;
-   ;
 end
  
 end

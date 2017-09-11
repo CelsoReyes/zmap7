@@ -76,14 +76,14 @@ function BEZ = betatriangle(catalog, xt)
     title('Contour Plot of \beta-Values (Matthews&Reasenberg, 1988)', 'FontSize', 12);
     
     xc=min(beX(1,:));
-    yc=0.95*(max(max(beY)));
+    yc=0.95*(max(beY(:)));
     explanation=['  Calculations done with a bin length of ', num2str(days(TimeEnd-TimeBegin)/NumberBins), ' days'];
     text(xc, yc, {explanation}, 'FontSize', 10);
-    yc=0.85*(max(max(beY)));
+    yc=0.85*(max(beY(:)));
     text(xc, yc, '  -4 dotted, -2 solid (i.e. lower seismicity rates)',  'Color', 'red', 'FontSize', 10);
-    yc=0.8*(max(max(beY)));
+    yc=0.8*(max(beY(:)));
     text(xc, yc, '  0 solid', 'Color', 'black', 'FontSize', 10');
-    yc=0.75*(max(max(beY)));
+    yc=0.75*(max(beY(:)));
     text(xc, yc, '  2 solid, 4 dotted (i.e. higher seismicity rates)', 'Color', 'blue', 'FontSize', 10);
     clear xc yc;
     

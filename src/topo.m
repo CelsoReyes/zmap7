@@ -147,7 +147,7 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
     meshm(tmap,tmapleg,size(tmap),tmap);demcmap(tmap);
     setm(handles.axm,'maplatlimit',latlim,'maplonlimit',lonlim);
     
-    if min(min(tmap)) > 0
+    if min(tmap(:)) > 0
         demcmap(tmap,100,[0 0.3 1],[]);
         daspectm('m',05);
     else
@@ -213,14 +213,14 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
         ploe=plotm(A.Latitude,A.Longitude,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',2,...
             'MarkerFaceColor','w','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
     end
     
     if inp == 2
         ploe=plotm(A.Latitude,A.Longitude,'ro');
         set(ploe,'LineWidth',0.1,'MarkerSize',3,...
             'MarkerFaceColor','w','MarkerEdgeColor','k');
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
     end
     
     if inp == 3  &&  handles.maptype==1
@@ -268,7 +268,7 @@ function varargout = popfau_Callback(h, eventdata, handles, varargin)
     
     if inp == 1
         plof = plotm(faults(:,2),faults(:,1),'m','Linewidth',2);
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
     end
     if inp == 2 ; plof = plot3m(faults(:,2),faults(:,1),depf+25,'m','Linewidth',2);end
     if inp == 3 ; delete(plof) ; end
@@ -312,13 +312,13 @@ function varargout = popspec_Callback(h, eventdata, handles, varargin)
         plos=plotm(s(:,1),s(:,2),'*');
         set(plos,'LineWidth',0.1,'MarkerSize',3,...
             'MarkerFaceColor','w','Marker','*','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap))); end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:))); end
         
     elseif inp == 2
         plos=plotm(s(:,1),s(:,2),'v');
         set(plos,'LineWidth',0.1,'MarkerSize',3,...
             'MarkerFaceColor','w','Marker','v','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
         
     elseif inp == 3   &&  handles.maptype==1
         plos=plot3m(s(:,1),s(:,2),desp+25,'*');
@@ -365,7 +365,7 @@ function varargout = ploli_Callback(h, eventdata, handles, varargin)
     end
     if inp == 1
         ploli = plotm(s(:,2),s(:,1),'m','Linewidth',2)
-        if handles.maptype==1;zdatam(handlem('allline'),max(max(tmap)));end
+        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
     end
     if inp == 2 & handles.maptype==1; ploli = plot3m(s(:,2),s(:,1),depl+25,'m','Linewidth',2);end
     if inp == 3 ; delete(ploli) ; end
@@ -381,7 +381,7 @@ function varargout = colorsty_Callback(h, eventdata, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     inp =get(handles.pop5,'Value');
     if inp == 3
-        if min(min(tmap)) > 0
+        if min(tmap(:)) > 0
             demcmap(tmap,100,[0 0.3 1],[]);
             daspectm('m',05);
         else
@@ -462,11 +462,11 @@ function varargout = draw_Callback(h, eventdata, handles, varargin)
         [lat,lon] = meshgrat(tmap,tmapleg);
         [X , Y]  = meshgrid(gx,gy);
         ren = interp2(X,Y,ren,lon,lat);
-        cmin=min(min(ren));
-        cmax=max(max(ren));
+        cmin=min(ren(:));
+        cmax=max(ren(:));
         cmin=min(min(resu(inp).data));
         cmax=max(max(resu(inp).data));
-        mi = min(min(ren));
+        mi = min(ren(:));
         l =  isnan(ren);
         ren(l) = mi-20;
         ll = tmap < 0 & ren < 0;

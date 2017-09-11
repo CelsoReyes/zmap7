@@ -107,7 +107,7 @@ classdef ZmapData < handle
         xsec_width_km = 10 % not entirely sure units are km
         xsec_rotation_deg = 10 % rotation angle for cross sections
         
-        freeze_colorbar = false;
+        freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false);
         shading_style = 'flat';
         someColor='w';
         

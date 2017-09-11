@@ -436,7 +436,7 @@ function calc_across(sel)
         aValueMap=reshape(normlap2,length(yvect),length(xvect));
         
         
-        re3 = aValueMap;
+        valueMap = aValueMap;
         kll = ll;
         % View thea-value map
         view_av2
@@ -480,7 +480,7 @@ function calc_across(sel)
             aValueMap=reshape(normlap2,length(yvect),length(xvect));
             
             
-            re3 = aValueMap;
+            valueMap = aValueMap;
             
             nlammap
             [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
