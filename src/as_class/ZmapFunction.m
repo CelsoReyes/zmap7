@@ -98,8 +98,8 @@ classdef(Abstract) ZmapFunction < handle
                 fcall(end+1)=')';
             catch ME
                 warning(ME.message)
-                fcall=['% could not describe call. next comment is up to parse error, then generic call' linebreak...
-                    '% ' fcall linebreak...
+                fcall=['% could not describe call. next comment is up to parse error, then generic call' newline...
+                    '% ' fcall, newline...
                     class(obj),'()'];
             end
             obj.FunctionCall=fcall;
@@ -171,12 +171,15 @@ classdef(Abstract) ZmapFunction < handle
             obj.FunctionCall=fcall;
         end
             
-        function f=Figure(obj,option)
+        function f=Figure(obj,option, menufun)
             % finds my figure, and will create if necessary
             % sets obj.ax to any/all axes in figure
             % option:
             %    'deleteaxes' : all axes for this figure be deleted
-            if ~exist('behavior','var')
+            %
+            % if figure needs to be created, then menufun is called
+            % menufun is a function handle
+            if ~exist('option','var')
                 option='';
             end
             
@@ -184,6 +187,9 @@ classdef(Abstract) ZmapFunction < handle
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
+                if exist('menufun','var') && isa(menufun, 'function_handle')
+                    menufun();
+                end
             end
             
             figure(f);

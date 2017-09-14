@@ -165,7 +165,7 @@ functin my_calculate()
     ylabel('Depth in [km]')
 
     hold on
-    ax = findobj('Tag','main_map_ax');
+    ax = findobj('Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
 
     zmap_message_center.set_info('Message',' Thank you .... ')

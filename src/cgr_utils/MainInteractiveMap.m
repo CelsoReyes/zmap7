@@ -472,7 +472,7 @@ classdef MainInteractiveMap
         
         function create_quarry_detection_menu(obj,parent)
             submenu  = uimenu(parent,'Label','Detect quarry contamination');
-            uimenu(submenu,'Label','Map day/nighttime ration of events','Callback',@(~,~)findquar('in'));
+            uimenu(submenu,'Label','Map day/nighttime ration of events','Callback',@(~,~)findquar());
             uimenu(submenu,'Label','Info on detecting quarries','Callback',@(~,~)web(['file:' hodi '/help/quarry.htm']));
         end
         

@@ -366,7 +366,7 @@ classdef ZmapCatalog < handle
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
             %
-            if isempty(depth)
+            if isempty(depth) || isnan(depth)
                 dists_km = obj.epicentralDistanceTo(lat, lon);
             else
                 dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
@@ -375,19 +375,28 @@ classdef ZmapCatalog < handle
             % find nth closest by grabbing from the sorted distances
             sorted_dists = sort(dists_km);
             n = min(n, numel(sorted_dists));
-            max_km = sorted_dists(n);
+            if n>0
+                max_km = sorted_dists(n);
+            else
+                max_km=0;
+            end
             mask = dists_km <= max_km;
             other = obj.subset(mask);
         end
         
-        function other = selectRadius(obj, lat, lon, radius_km)
+        function [other,max_km] = selectRadius(obj, lat, lon, radius_km)
             %selectRadius  select subset catalog to an epicentral radius from a point. sortorder is preserved
-            % catalog = obj.selectRadius(lat, lon, dist_km)
+            % [catalog,max_km] = obj.selectRadius(lat, lon, dist_km)
             
             dists_km = obj.epicentralDistanceTo(lat, lon);
             mask = dists_km <= radius_km;
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);
+            if ~any(mask)
+                max_km=0;
+            else
+                max_km= max(dists_km(mask));
+            end
         end
         
         

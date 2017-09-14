@@ -10,7 +10,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     figure(map);
     
     hold on
-    ax = findobj('Tag','main_map_ax');
+    ax = findobj('Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     zmap_message_center.set_info('Message',' Thank you .... ')
     

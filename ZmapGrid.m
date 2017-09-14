@@ -17,14 +17,14 @@ classdef ZmapGrid
     % load
     
     properties
-        Name
+        Name % name of this grid
         GridXY  % [X1,Y1 ; ... ; Xn,Yn] matrix of positions
         Units % degrees or kilometers
         ActivePoints    % logical mask
         Xvector % vector for column positions (unique points)
         Yvector % vector for row positions (unique points)
-        Dx
-        Dy
+        Dx % delta-X
+        Dy % delta-Y
     end
     properties(Dependent)
         X % all X positions (points will repeat, since they represent matrix nodes)
@@ -36,21 +36,32 @@ classdef ZmapGrid
     
     methods
         function obj = ZmapGrid(name, varargin)
-            % create a ZmapGrid
+            % create a ZmapGridStruc
+            % obj=ZmapGrid(name, gpc_struct) where gpc_struct has fields dx,dy, dx_units
             % obj=ZmapGrid(name, all_points, units)
             % obj=ZmapGrid(name, all_x, all_y, units)
             % obj=ZmapGrid(name, x_start, dx, x_end, y_start, dy, y_end, units)
             obj.Name = name;
             switch nargin
                 case 2
-                    if isnumeric(varargin{2})
-                    % name, all_points
-                    assert(size(varargin{1},2)==2);
-                    obj.GridXY = varargin{1};
-                    obj.Units='unk';
-                    elseif isstruct(varargin{2})
-                        v=varargin{2};
-                        obj=ZmapGrid(name, v.
+                    if isnumeric(varargin{1})
+                        % name, all_points
+                        assert(size(varargin{1},2)==2);
+                        obj.GridXY = varargin{1};
+                        obj.Units='unk';
+                    elseif isstruct(varargin{1})
+                        % assume it came from GridParameterChoice
+                        g=varargin{1};
+                        ax=gca;
+                        obj.Dx=g.dx;
+                        obj.Dy=g.dy;
+                        obj.Units=g.dx_units;
+                        axlims=axis(ax);
+                        obj.Xvector=axlims(1) : obj.Dx : axlims(2);
+                        obj.Yvector=axlims(3) : obj.Dy : axlims(4);
+                        [x,y]=meshgrid(obj.Xvector, obj.Yvector);
+                        obj.GridXY=[x(:),y(:)];
+                        %obj=ZmapGrid(name, v. '
                     else
                         error('unknown');
                     end
@@ -83,6 +94,7 @@ classdef ZmapGrid
                 otherwise
                     error('incorrect number of arguments');
             end
+            obj.ActivePoints=true(length(obj.GridXY),1);
         end
         
         % basic access routines
@@ -114,7 +126,7 @@ classdef ZmapGrid
         function xy = get.ActiveGrid(obj)
             xy=obj.GridXY(obj.ActivePoints,:);
         end
-              
+        
         function obj = set.ActivePoints(obj, values)
             assert(isempty(values) || isequal(numel(values), length(obj.GridXY))); %#ok<MCSUP>
             obj.ActivePoints = logical(values);
@@ -129,10 +141,27 @@ classdef ZmapGrid
         end
         
         function obj = MaskWithPolygon(obj,polyX, polyY)
-            if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
-                warning('polygon isn not closed. adding a point to close it.')
-                polyX(end+1)=polyX(1);
-                polyY(end+1)=polyY(1);
+            % MaskWithPolygon sets the mask according to a polygon
+            % obj = obj.MaskWithPolygon() user selects polygon from gca
+            % obj = obj.MaskWithPolygon(ax) user selects polygon from axis ax
+            % obj = obj.MaskWithPolygon(polyX, polyY) where polyX and polyY define the polygon
+            narginchk(1,3);
+            switch nargin
+                case 1
+                    [polyX, polyY, mouse_points_overlay] = select_polygon(gca);
+                    pause(1);
+                    delete(mouse_points_overlay);
+                case 2
+                    ax=polyX; % this param is actually an axis, not x values
+                    [polyX, polyY, mouse_points_overlay] = select_polygon(ax);
+                    pause(1);
+                    delete(mouse_points_overlay);
+                otherwise
+                    if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
+                        warning('polygon is not closed. adding a point to close it.')
+                        polyX(end+1)=polyX(1);
+                        polyY(end+1)=polyY(1);
+                    end
             end
             obj.ActivePoints = polygon_filter(polyX,polyY, obj.X, obj.Y, 'inside');
         end
@@ -215,11 +244,11 @@ classdef ZmapGrid
             % returns one catalog per grid-node containing the associated events
             %
             % cats = obj.associateWithEvents(catalog, maxradius, maxnearest, firstlastdate, minmaxmag)
-            %      
+            %
             %    CATALOG: a ZmapCatalog containing events that will be divided up between grid points
             %             note: depending on criteria, events might be associated with multiple grid
             %                   points
-            %    
+            %
             %    MAXRADIUS: All events within maxradius kilometers will be associated with the grid point
             %       example - get events within 5km of each grid point
             %       cats = mygrid.associateWithEvents(mycat, 5, [],[],[],[]);
@@ -239,7 +268,7 @@ classdef ZmapGrid
             %
             %    MINMAXMAG: magnitude values used to limit the catalog.  They can be either a single
             %      value MINMAG, or a 1x2 vector of values [MINMAG MAXMAG]
-            %  
+            %
             % so that:
             %
             %    catPerGridPt = mygrid.associateWithEvents(catalog, maxradius, maxcount, firstlastdate, minmaxmag)

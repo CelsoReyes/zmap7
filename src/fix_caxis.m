@@ -1,16 +1,5 @@
 classdef fix_caxis < ZmapFunction
-    % description of this function
-    %
-    % in the function that generates the figure where this function can be called:
-    %
-    %     % create some menu items...
-    %     h=sample_ZmapFunction.AddMenuItem(hMenu) %create subordinate to menu item with handle hMenu
-    %     % create the rest of the menu items...
-    %
-    %  once the menu item is clicked, then sample_ZmapFunction.interative_setup(true,true) is called
-    %  meaning that the user will be provided with a dialog to set up the parameters,
-    %  and the results will be automatically calculated & plotted once they hit the "GO" button
-    %
+    % fix_caxis sets the colorbar and sets min/max values
     
     properties
         OperatingCatalog={}; % catalog(s) containing raw data.
@@ -22,7 +11,7 @@ classdef fix_caxis < ZmapFunction
     end
     
     properties(Constant)
-        PlotTag='myplot';
+        PlotTag='fixcaxis';
         Orientations={'do not draw','vert','horiz'}
         
     end
@@ -41,9 +30,9 @@ classdef fix_caxis < ZmapFunction
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
             
-                ZG=ZmapGlobal.Data;
+            ZG=ZmapGlobal.Data;
                 
-            if nargin >= 2
+            if ~exist('orientation','var')
                 orientation='do not draw';
             end
             if isempty(valueMap)
@@ -141,10 +130,13 @@ classdef fix_caxis < ZmapFunction
         function plot(obj,varargin)
             % plots the results somewhere
             cbOrient=obj.Orientations{obj.orientation};
-            f=obj.Figure(); % nothing or 'deleteaxes'
+            f=gcf;
             
             obj.ax=findobj(f,'Type','axes');
-            caxis(ax,[obj.minval obj.maxval]);
+            if ~isempty(obj.ax)
+                caxis(obj.ax,[obj.minval obj.maxval]);
+                return
+            end
             if ismember(cbOrient, {'horiz','vert'})
                 h5=findobj(f,'Type','ColorBar');
                 delete(h5);
@@ -179,9 +171,9 @@ classdef fix_caxis < ZmapFunction
                 );
         end
         function ApplyIfFrozen(ax)
-            ZG=ZmapGlboal.Data;
-            if ZG.freeze_colobar.freeze
-                caxis(ax,[ZG.freeze_colobar.minval, ZG.freeze_colobar.maxval]);
+            ZG=ZmapGlobal.Data;
+            if ZG.freeze_colorbar.freeze
+                caxis(ax,[ZG.freeze_colorbar.minval, ZG.freeze_colorbar.maxval]);
             end
         end
         

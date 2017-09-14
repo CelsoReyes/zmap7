@@ -25,8 +25,6 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
         mouse_points_overlay.YData=y;
     end
     
-    zmap_message_center.set_info('Message',' Thank you .... ')
-    think
     x = [x ; x(1)];
     y = [y ; y(1)];      %  closes polygon
     mouse_points_overlay.XData=x;

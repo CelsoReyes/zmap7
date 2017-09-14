@@ -2,7 +2,7 @@ classdef GridParameterChoice < handle
     % GridParameterChoice adds control to figure that describes how to choose a grid.
     %
     % Example usage:
-    %   obj = GridParameterChoice(parentFigure, dx, dy[, dz]);   %dz currently unused
+    %   obj =  GridParameterChoice(fig, lowerCornerPosition, {dx,'deg'},{dy,'deg'},{dz,'km'})   %dz currently unused
     %     ... mess with controls...
     %   dx=obj.dx
     %   dy=obj.dy
