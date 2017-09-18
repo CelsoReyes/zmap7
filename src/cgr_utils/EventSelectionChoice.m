@@ -113,6 +113,21 @@ classdef EventSelectionChoice < handle
             end
         end
     end
+    
+    methods(Static)
+        function quickshow()
+            %quickly test  the ZmapFunctionDlg
+            f=figure('Name','EventSelectionChoice example',...
+                'Menubar','none',...
+                'InnerPosition',[0 0 EventSelectionChoice.GROUPWIDTH+5, EventSelectionChoice.GROUPHEIGHT+50],...
+                'Numbertitle','off'...
+                );
+            t='esc'; lcp=[5 50]; ni=50; ra=5;
+            esc=EventSelectionChoice(f,t,lcp,ni, ra);
+            uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(esc.toStruct()));
+        end
+        
+    end
 end
 
 function out=isempty2OnOff(val)

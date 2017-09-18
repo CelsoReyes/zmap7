@@ -1,9 +1,109 @@
-# MapSeis Readme
+# Zmap version 7.0 Readme
 
-Currently this is an internal only developer release. I will add more details when it will be public.
+## About
+Summary
 
-# ZmapInABox
-## modification notes
+## Getting Started
+When you start Zmap...
+
+### Work flow
+1. import data
+1. (OPTIONAL) select a subset of data to work with
+1. Select a Grid and a Grid sampling method
+1. 
+
+
+### Loading data
+
+### Saving data
+
+
+## The Main interfaces
+
+### Main Map Screen
+
+#### Map Features
+
+### Cummulative plots
+
+### 
+
+## Concepts
+
+### Object Oriented design
+Internally, Zmap has changed from a collection of scripts to
+functions and classes.  Here, super briefly, is what these changes mean:
+* __functions__ vs __scripts__: 
+  * _scripts_ work on variables in the main workspace.  Everything one does may
+  affect (intentionally or not) values used by other scripts.  Once the script
+  is run, then the workspace is left in an altered state.  _#very script behaves
+  as though the user was typing at the MATLAB command prompt_
+  * _functions_ are routines that are self contained. They may take a list of
+  arguments (input variables), create and modify a bunch of variables internally, and then return one or more results.  The behavior is well defined at the top
+  of each function
+* __classes__ : a class is a package of interrelated _functions_ (called _methods_)and _variables_ (called _properties_).  A good class will either represent one
+thing, or accomplish one major goal.
+
+### major classes
+One can get more information about each class through the matlab help
+system.  Using one of the help functions, such as  `help`, `doc`, `methods`
+
+For example: 
+```matlab
+>> doc ZmapCatalog
+```
+
+This brings up an interactive browser where you can look at the classes'
+properties (variables) and methods (functions).
+
+#### ZmapCatalog
+#### ZmapData
+#### ZmapGlobal
+#### ZmapGrid
+#### MapFeature
+MapFeatures are stored in ZmapGlobal.Data.features and can be looked up by name
+```matlab
+feat = ZmagGlobal.Data.features('borders');
+f
+feat.plot(ax);
+```
+#### ZmapFunction
+#### ZmapFunctionDialog
+
+
+#### testing
+
+
+# modification notes for ZmapInABox
+
+## (Super abbreviated) Summary of major changes from earlier versions of Zmap
+
+* __Scripts are now Functions__: Previously, all routines were scripts that 
+worked by modifying variables in the general workspace. Some of these were 
+global.
+* __Catalogs are no longer arrays__: Catalogs are now of type `ZmapCatalog`.
+  * Catalogs now have named fields, such as _Longitude_, _Latitude_, _Date_,
+  _Depth_,and _Magnitude_. This makes working with catalogs more intuitive, so in the code, for example, all depths can be accessed as `catalog.depth` instead of `catalog(:,7)`
+  * Catalogs can now hold other types of data, such as `datetime`, `string`, and `cell` arrays as needs dictate.
+* __dates__: Zmap now uses `datetime` instead of its older decimalyear format.
+  * _decimal year_ would mean that time would compress or extend depending upon
+  leap years. The conversions were complicated, and repeated throughout the code.
+  * _datetime_ allows the use of more sophisticated (and more importantly, 
+  matlab-handled) time representations.  The difference between two `datetime` 
+  values is a `duration` value. These are excellent because units are built-in.
+  There is no need to guess whether a value is in years, seconds, etc.
+* __workspace variables__: The results of calculations are specifically 
+written to the workspace, whereas previously every value regardless of significance
+was written to the workspace.
+* __global variables__: Some values are accessed throughout the Zmap program.
+These are all kept in an object (variable) named ZmapGlobals. This:
+  * keeps them in a coherently named space, 
+  * allows the values to be saved together
+* __Data import__: imported values will now be of type `ZmapCatalog`.
+  * Data can now be imported over the web via FDSN services
+* Data export
+* __user interface__: the user interfacer has been overhauled in countless
+ways.
 
 ### UI Controls not showing up
 For `uicontrol` items, the `units` must be set to `normalized` prior to setting the `Position`, otherwise they will not show.  ex. `working_dir_in`

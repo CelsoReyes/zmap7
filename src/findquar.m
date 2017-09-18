@@ -344,8 +344,8 @@ classdef findquar < ZmapFunction
             function cb_select_circle(mysrc,myevt)
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
                 h1 = gca;
-                circle;
-                watchoff(qmap);
+                
+                % circle;
                 hisgra(ZG.newt2.Date.Hour,'Hour',ZG.newt2.Name);
             end
             

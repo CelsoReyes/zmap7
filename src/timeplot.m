@@ -5,52 +5,7 @@ function timeplot(mycat, nosort)
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
     %                       - "a" if either "Back" button or "Close" button is pressed.
-    %                       - mycat if "Save as Newcat" button is pressed.
-    %
     %  
-    %
-%     ttlStr='The Cumulative Number Window                  ';
-%     hlpStr1= ...
-%         ['                                                     '
-%         ' This window displays the seismicity in the sel-     '
-%         ' ected area as a cumulative number plot.             '
-%         ' Options from the Tools menu:                        '
-%         ' Cuts in magnitude and  depth: Opens input para-     '
-%         '    meter window                                     '
-%         ' Decluster the catalog: Will ask for declustering    '
-%         '     input parameter and decluster the catalog.      '
-%         ' AS(t): Evaluates significance of seismicity rate    '
-%         '      changes using the AS(t) function. See the      '
-%         '      Users Guide for details                        '
-%         ' LTA(t), Rubberband: ditto                            '
-%         ' Overlay another curve (hold): Allows you to plot    '
-%         '       one or several more curves in the same plot.  '
-%         '       select "Overlay..." and then selext a new     '
-%         '       subset of data in the map window              '
-%         ' Compare two rates: start a comparison and moddeling '
-%         '       of two seimicity rates based on the assumption'
-%         '       of a constant b-value. Will calculate         '
-%         '       Magnitude Signature. Will ask you for four    '
-%         '       times.                                        '
-%         '                                                     '];
-%     hlpStr2= ...
-%         ['                                                      '
-%         ' b-value estimation:    just that                     '
-%         ' p-value plot: Lets you estimate the p-value of an    '
-%         ' aftershock sequence.                                 '
-%         ' Save cumulative number cure: Will save the curve in  '
-%         '        an ASCII file                                 '
-%         '                                                      '
-%         ' The "Keep as newcat" button in the lower right corner'
-%         ' will make the currently selected subset of eartquakes'
-%         ' in space, magnitude and depth the current one. This  '
-%         ' will also redraw the Map window!                     '
-%         '                                                      '
-%         ' The "Back" button will plot the original cumulative  '
-%         ' number curve without statistics again.               '
-%         '                                                      '];
-    
-    
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
@@ -120,8 +75,8 @@ function timeplot(mycat, nosort)
             'callback',@cb_resetcat,...
             'tooltip','Resets the catalog to the original selection')
         
-        uicontrol('Units','normal','Position',[.70 .0 .3 .05],...
-            'String','Keep as newcat',...
+        uicontrol('Units','normal','Position',[.65 .0 .35 .05],...
+            'String','Set as main catalog',...
             'callback',@cb_keep,...
             'tooltip','Plots this subset in the map window')
         

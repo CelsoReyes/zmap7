@@ -25,7 +25,7 @@ classdef ShapeSelection
         Radius=5; % active radius km (if circle) -- updated if ni
         CircleBehavior='radius' % one of {'radius', 'nevents', 'both'}
         NEventsToEnclose=100; % radius is defined by the minimum radius that encloses this many events
-        
+        ApplyGrid=true; %apply grid options to the selected shape.
     end
     
     properties(Dependent)
@@ -63,12 +63,14 @@ classdef ShapeSelection
             end
             axes(ax); % bring up axes of interest.  should be the map, with lat/lon
             obj.Type=lower(type);
+            ZG=ZmapGlobal.Data;
             switch obj.Type
                 case 'circle'
                     d=circle_select_dlg();
                     uiwait(d);
-                    ZG=ZmapGlobal.Data;
+                    pause(1);
                     obj=ZG.selection_shape;
+                    obj.plot(ax);
                     %obj=obj.select_circle(obj,varargin{:})
                 case 'axes' % ShapeSelection('axes' [, axeshandle])
                     if ~isempty(varargin)
@@ -80,6 +82,8 @@ classdef ShapeSelection
                         lrbt(2),lrbt(4);lrbt(1),lrbt(4);...
                         lrbt(1),lrbt(3)];
                     obj.Type='polygon'; % axes isn't really a type. it's a convenience method for creation
+                    ZG.selection_shape=obj;
+                    cb_crop([],[],'inside');
                 case 'box' % ShapeSelection('box' [, [minX maxX minY maxY]])
                     if ~isempty(varargin)
                         lrbt=varargin{1};
@@ -90,6 +94,8 @@ classdef ShapeSelection
                         obj=obj.select_box(obj);
                     end
                     obj.Type='polygon'; % box isn't really a type. it's a convenience method for creation
+                    ZG.selection_shape=obj;
+                    cb_crop([],[],'inside');
                 case 'polygon' % ShapeSelection('polygon', [x1,y1;...;xn,yn]);
                     if ~isempty(varargin)
                         obj.Points=varargin{1};
@@ -97,16 +103,19 @@ classdef ShapeSelection
                     else
                         obj=select_polygon(obj);
                     end
+                    ZG.selection_shape=obj;
+                    cb_crop([],[],'inside');
                 case 'unassigned'
                     obj.Points=[nan nan];
             end
+            zmap_message_center.update_catalog()
         end
         
         function val=get.Lat(obj)
-            val= obj(:,1);
+            val= obj.Points(:,2);
         end
         function val=get.Lon(obj)
-            val=obj(:,2);
+            val=obj.Points(:,1);
         end
         function [mask]=InsideEvents(obj,catalog)
             % INSIDEEVENTS return a logical index for a catalog, true for events inside polygon
@@ -146,9 +155,15 @@ classdef ShapeSelection
             end
             axes(ax);
             hold on
+            
+            delete(findobj(gcf,'Tag','shapeoutline'));
+            delete(findobj(gcf,'Tag','selectedevents'));
+            
             switch obj.Type
                 case 'polygon'
-                    h(1)=plot(obj.Lon,obj.Lat,'k','LineWidth',2.0,'Tag','shapeoutline');
+                    h(1)=plot(obj.Lon,obj.Lat,'k','LineWidth',2.0,...
+                        'Tag','shapeoutline',...
+                        'DisplayName','Selection Outline');
                     switch in_or_out
                         case 'outside'
                             msk=obj.InsideEvents(catalog);
@@ -156,7 +171,9 @@ classdef ShapeSelection
                             msk=obj.InsideEvents(catalog);
                     end
                     if exist('catalog','var')
-                        h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents');
+                        h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+',...
+                            'Tag','selectedevents',...
+                            'DisplayName','selected events');
                     end
                 case 'circle'
                     switch obj.CircleBehavior
@@ -177,9 +194,12 @@ classdef ShapeSelection
                         km=obj.Radius;
                     end
                     [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(km),(0:.25:360)');
-                    h(1)=plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline');
-                    h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents');
-
+                    
+                    h(1)=plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline',...
+                        'DisplayName','Selection Outline');
+                    h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents',...
+                            'DisplayName','selected events');
+                    
             end
         end
         function clearplot(obj,ax)
@@ -300,7 +320,9 @@ classdef ShapeSelection
     
     methods(Static)
         
-        function AddMenu(fig,ax)
+        function submenu=AddMenu(fig,ax)
+            %
+            % should write changes to ZG.selection_shape (?)
             ZG=ZmapGlobal.Data;
             ZGshape=ZG.selection_shape; %convenience name
             % this works with the ZG polygon
@@ -321,9 +343,10 @@ classdef ShapeSelection
             uimenu(submenu,'Label',['Current Shape:' ZGshape.Type],'Tag','shapetype','Enable','off');
             uimenu(submenu,'Label','summary goes here','Tag','shapesummary','Enable','off'); %modify this
             
-          
-            uimenu(submenu,'Label','Display Shape Outline','Checked','on','Callback',@cb_outlinetoggle);
             
+            uimenu(submenu,'Label','Display Shape Outline','Checked','on','Callback',@cb_outlinetoggle);
+            uimenu(submenu,'Label','Apply grid','Callback',@cb_applygrid);
+            uimenu(submenu,'Label','Change grid parameters','Callback',@(~,~) error('unimplemented'));
             % % menu items that change the main catalog % %
             if strcmp(ZGshape.Type,'unassigned')
                 isenabled='off';
@@ -368,12 +391,13 @@ classdef ShapeSelection
             % only active when choosing a circle
             uimenu(submenu,'Label',sprintf('Select EQ in Radius %.3f km',ZGshape.Radius),...
                 'separator','on',...
-                'Visible',vis,'Callback',@mycb02);
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'radius'));
             uimenu(submenu,'Label',...
                 sprintf('Select EQ : closest %d events to (%.3f , %.3f)',ZGshape.NEventsToEnclose,ZGshape.Y0, ZGshape.X0),...
-                'Visible',vis,'Callback',@mycb02);
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'nevents'));
             uimenu(submenu,'Label',...
-                sprintf('Select EQ :closest %d events and within %.3f km ',ZGshape.NEventsToEnclose,ZGshape.Radius),'Visible',vis,'Callback',@mycb02);
+                sprintf('Select EQ :closest %d events up to %.3f km distance',ZGshape.NEventsToEnclose,ZGshape.Radius),...
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'both'));
             
             
             % options for choosing a shape
@@ -388,12 +412,6 @@ classdef ShapeSelection
                 case {'polygon','axes','box'}
                     polymenu.Checked='on';
             end
-            % only active otherwise
-            
-            
-            % uimenu(shmenu,'Label','Select EQ in Circle (Menu)','Callback',@mycb03);
-            %uimenu(submenu,'Label','Select EQ inside Polygon','Callback',@(~,~) selectp('inside'));
-            %uimenu(submenu,'Label','Select EQ outside Polygon','Callback',@(~,~) selectp('outside'));
             
             uimenu(submenu,'Separator','on',...
                 'Label','Load shape','Callback',@cb_load);
@@ -402,28 +420,27 @@ classdef ShapeSelection
             
             uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeSelection.AddMenu(gcf),'Visible',ZG.debug);
             
-
             
-            function mycb02(mysrc,~)
-                h1 = gca;set(gcf,'Pointer','watch');
-                stri = ' ';
-                stri1 = ' ';
-                circle
-            end
-            
-            function mycb03(mysrc,~)
-                h1 = gca;
-                set(gcf,'Pointer','watch');
-                stri =' ';
-                stri1 = ' ';
-                incircle
-            end
         end
+        
     end
     
     methods(Access=private)
         
-        
+        function select_circle_events(obj, catalog, behavior)
+            obj.CircleBehavior=behavior;
+            selcrit=struct('numNearbyEvents',obj.NEventsToEnclose,...
+                'radius_km',obj.Radius,...
+                'useEventsInRadius',ismember(behavior,{'radius','both'}),...
+                'useNumNearbyEvents',ismember(behavior,{'nevents','both'}));
+            ZG=ZmapGlobal.Data;
+            obj.plot()
+            ZG.newt2 = catalog.selectCircle(selcrit,obj.X0,obj.Y0,[]);
+            ZG.newcat=ZG.newt2;
+            timeplot(ZG.newt2)
+            %circle
+        end
+
         
         function obj=select_box(obj,varargin)
             
@@ -455,6 +472,23 @@ classdef ShapeSelection
     
 end
 
+function cb_outlinetoggle(src,~)
+    sh=findobj(gcf,'Tag','shapeoutline');
+    ev=findobj(gcf,'Tag','selectedevents');
+    curstat=src.Checked;
+    if ~strcmpi(curstat,'on')
+        v='on';
+        src.Checked='on';
+    else
+        v='off';
+        src.Checked='off';
+    end
+    
+    set([sh ev],'Visible',v);
+    %delete(findobj(gcf,'Tag','shapeoutline'));
+    %delete(findobj(gcf,'Tag','selectedevents'));
+end
+
 function cb_crop(src,~,in_or_out)
     ZG=ZmapGlobal.Data;
     switch in_or_out
@@ -465,15 +499,17 @@ function cb_crop(src,~,in_or_out)
         otherwise
             mask=true(ZG.a.Count,1);
     end
+    ZG.newt2=ZG.a.subset(mask);
+    ZG.newcat=ZG.newt2;
 end
-
+%{
 function cb_analyze(src,~)
     ZG=ZmapGlobal.Data;
     ZG.newt2 = ZG.a;
     ZG.newcat = ZG.a;
     timeplot(ZG.newt2);
 end
-
+%}
 function cb_createshape(src,~,type)
     ZG=ZmapGlobal.Data;
     try
@@ -494,7 +530,8 @@ function cb_createshape(src,~,type)
     catch ME
         errordlg(ME.message);
     end
-    ShapeSelection.AddMenu(gcf)
+    ShapeSelection.AddMenu(gcf); %also refreshes menu
+    ZG.selection_shape.plot()
     %{
     %activate analyze menu items
     cropMenus=startsWith({allmenus.Label},'Analyze EQ ');
@@ -510,6 +547,7 @@ function cb_createshape(src,~,type)
     %}
 end
 
+
 function cb_load(src,~)
     ZG=ZmapGlobal.Data;
     [f,p]=uigetfile('*.mat','Load Zmap Shape file',fullfile(ZG.data_dir, 'zmap_shape.mat'));
@@ -520,11 +558,13 @@ function cb_load(src,~)
 end
 
 function cb_save(src,~)
+    % 
     ZG=ZmapGlobal.Data;
     ZG.selection_shape.save();
 end
 
 function cb_clear(src,~)
+    % callback to clear the plot and reset the menus
     ZG=ZmapGlobal.Data;
     type='unassigned';
     ZG.selection_shape=ShapeSelection(type);
@@ -535,4 +575,32 @@ function cb_clear(src,~)
     set(allmenus(cropMenus),'Enable','off');
     curshapeh = findobj(gcf,'Tag','shapetype');
     set(curshapeh,'Label',['Current Shape:',upper(type)]);
+    ZG.selection_shape.clearplot();
 end
+
+function cb_applygrid(src,~)
+    % cb_applygrid sets the grid according to the selected shape
+    ZG=ZmapGlobal.Data;
+    obj=ZG.selection_shape;
+    gopt=ZG.gridopt; %get grid options
+    if gopt.GridEntireArea || (isempty(obj.Lon)||isnan(obj.Lon(1)))% use catalog
+        xmin=min(ZG.a.Longitude);
+        xmax=max(ZG.a.Longitude);
+        ymin=min(ZG.a.Latitude);
+        ymax=max(ZG.a.Latitude);
+    else %use shape
+        xmin=min(obj.Lon);
+        xmax=max(obj.Lon);
+        ymin=min(obj.Lat);
+        ymax=max(obj.Lat);
+    end
+    ZG.Grid=ZmapGrid('grid',...
+        xmin, gopt.dx, xmax,...
+        ymin, gopt.dy, ymax,...
+        gopt.dx_units);
+    if ~isempty(obj.Lon) && ~isnan(obj.Lon(1)) && ~gopt.GridEntireArea
+        ZG.Grid=ZG.Grid.MaskWithPolygon(obj.Lon, obj.Lat);
+    end
+    ZG.Grid.plot();
+end
+    

@@ -22,7 +22,7 @@ function varargout = circle_select_dlg(varargin)
     
     % Edit the above text to modify the response to help circle_select_dlg
     
-    % Last Modified by GUIDE v2.5 27-Aug-2017 22:00:04
+    % Last Modified by GUIDE v2.5 15-Sep-2017 15:30:27
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -182,7 +182,7 @@ end
 
 
 function nclosest_edit_Callback(hObject, ~, handles)
-    hObject.String=hObject.Parent.UserData.X0;
+    hObject.String=handles.figure1.UserData.X0;
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -192,7 +192,22 @@ function nclosest_edit_CreateFcn(hObject, ~, handles)
     end
 end
 
+function rb_closest_Callback(hObject,~,handles)
+    %
+end
+function rb_maxradius_Callback(hObject,~,handles)
+    %
+end
 % --- Executes on button press in pushbutton2.
 function pushbutton2_Callback(hObject, ~, handles)
     disp('found pushbutton 2!');
+end
+
+
+% --- Executes when selected object is changed in uibuttongroup1.
+function uibuttongroup1_SelectionChangedFcn(hObject, eventdata, handles)
+    % hObject    handle to the selected object in uibuttongroup1
+    % eventdata  reserved - to be defined in a future version of MATLAB
+    % handles    structure with handles and user data (see GUIDATA)
+    handles.figure1.UserData.CircleBehavior=hObject.UserData;
 end

@@ -18,6 +18,7 @@ classdef GridParameterChoice < handle
     %       % create the grid
     %   end
     %
+    % see also EventSelectionChoice
     properties(Constant)
         GROUPWIDTH=315;
         GROUPHEIGHT=137;
@@ -82,6 +83,23 @@ classdef GridParameterChoice < handle
             % Grid options
             
             % Create, Load, or use Previous grid choice
+            if nargin==0
+                % load from the global data.
+                ZG=ZmapGlobal.Data;
+                
+                obj.dx=ZG.gridopt.dx;
+                obj.dy=ZG.gridopt.dy;
+                obj.dz=ZG.gridopt.dz;
+                obj.dx_units=ZG.gridopt.dx_units;
+                obj.dy_units=ZG.gridopt.dy_units;
+                obj.dz_units=ZG.gridopt.dz_units;
+                obj.GridEntireArea=ZG.gridopt.GridEntireArea;
+                obj.SaveGrid=ZG.gridopt.SaveGrid;
+                obj.LoadGrid=ZG.gridopt.LoadGrid;
+                obj.CreateGrid=ZG.gridopt.SaveGrid;
+                return
+                
+            end
             obj.dx=A{1}; obj.dx_units=A{2};
             
             if ~isempty(B)
@@ -225,5 +243,21 @@ classdef GridParameterChoice < handle
                 obj.GridEntireArea= ~mysrc.Value;
             end
         end
+    end
+    methods(Static)
+        function quickshow()
+            %quickly test  the ZmapFunctionDlg
+            f=figure('Name','GridParameterChoice example',...
+                'Menubar','none',...
+                'InnerPosition',[0 0 GridParameterChoice.GROUPWIDTH+5, GridParameterChoice.GROUPHEIGHT+50],...
+                'Numbertitle','off'...
+                );
+            t='gpc'; lcp=[5 50]; A={2.3,'deg'}; B={-1.5,'deg'}; Z={.1,'km'};
+            gpc=GridParameterChoice(f,t,lcp,A,B,Z);
+            uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(gpc.toStruct()));
+        end
+        
+        
+        
     end
 end

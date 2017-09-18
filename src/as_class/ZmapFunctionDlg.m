@@ -53,6 +53,9 @@ classdef ZmapFunctionDlg < handle
             % once the OK button is pressed. if the OK button is not pressed, no changes are made
             % okevent (a function handle) will be executed if OK is pressed
             obj.hCaller=hCaller;
+            if isempty(hCaller)
+                warning('values cannot be saved to the calling function. they''l be written to base');
+            end
             obj.callerOKFunction=okevent;
         end
         

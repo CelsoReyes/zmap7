@@ -71,26 +71,6 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
     end
     assert(isa(catalog,'ZmapCatalog'),'CATALOG should be a ZmapCatalog');
     assert(isa(zgrid,'ZmapGrid'),'Grid should be ZmapGrid');
-    assert(isstruct(selcrit),'SELCRIT should be a structure');
-    
-    % make sure the required selection fields exist
-    if ~isfield(selcrit,'useNumNearbyEvents')
-        selcrit.useNumNearbyEvents=isfield(s,'numNearbyEvents');
-    end
-    if ~isfield(selcrit,'useEventsInRadius')
-        selcrit.useEventsInRadius=isfield(selcrit,'radius_km');
-    end
-    if selcrit.useEventsInRadius
-        assert(isfield(selcrit,'radius_km'),'Error: useEventsInRadius was true, but no radius [radius_km] was specified');
-    end
-    if selcrit.useNumNearbyEvents
-        assert(isfield(selcrit,'numNearbyEvents'),'Error: useNumNearbyEvents was true, but no number [numNearbyEvents] was specified');
-    end
-    if ~isfield(selcrit,'minNumEvents')
-        selcrit.minNumEvents=0;
-    end
-    
-    assert( selcrit.useEventsInRadius || selcrit.useNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
     
     usemask=any(~zgrid.ActivePoints);
     if usemask
@@ -127,19 +107,7 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
         end
         x=Xs(i);
         y=Ys(i);
-        %if hasZ
-        %    z=Zs(i);
-        %else
-            z=[];
-        %end
-        if selcrit.useEventsInRadius
-            [minicat,maxd]=catalog.selectRadius(y,x, selcrit.radius_km);
-            if selcrit.useNumNearbyEvents
-                [minicat,maxd]=minicat.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
-            end
-        elseif selcrit.useNumNearbyEvents
-            [minicat,maxd]=catalog.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
-        end
+        [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
         
         if countEvents
             nEvents(i)=minicat.Count;

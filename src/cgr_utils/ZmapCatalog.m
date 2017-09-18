@@ -12,7 +12,7 @@ classdef ZmapCatalog < handle
         Magnitude
         MagnitudeType
         Filter
-        Dip 
+        Dip
         DipDirection
         Rake
     end
@@ -116,7 +116,7 @@ classdef ZmapCatalog < handle
                     maxma = max(obj.Magnitude);
                     mindep = min(obj.Depth);
                     maxdep = max(obj.Depth);
-                    %{ 
+                    %{
                     if exist('useTex','var') && useTex
                         fmtstr = [...
                         '{\\bf Catalog} "%s" with %d events\n',...
@@ -132,17 +132,19 @@ classdef ZmapCatalog < handle
                         minma, maxma);
                     else
                     %}
+                    mtypes=cat2mtypestring();
                     fmtstr = [...
                         'Catalog "%s" with %d events\n',...
                         'Start Date: %s\n',...
                         'End Date:   %s\n',...
                         'Depths:     %4.2f km ≤ Z ≤ %4.2f km\n',...
-                        'Magnitudes: %2.1f ≤ M ≤ %2.1f'];
+                        'Magnitudes: %2.1f ≤ M ≤ %2.1f\n',...
+                        'MagnitudeTypes: %s'];
                     s = sprintf(fmtstr, obj.Name, obj.Count, ...
                         char(minti,'uuuu-MM-dd HH:mm:ss'),...
                         char(maxti,'uuuu-MM-dd HH:mm:ss'),...
                         mindep, maxdep,...
-                        minma, maxma);
+                        minma, maxma,mtypes);
                     %end %useTex
                 case 'stats'
                     minti = min( obj.Date );
@@ -160,7 +162,8 @@ classdef ZmapCatalog < handle
                         'Depths:     %4.2f km ≤ Z ≤ %4.2f km\n',...
                         '  %s\n',...
                         'Magnitudes: %2.1f ≤ M ≤ %2.1f\n',...
-                        '  %s'];
+                        '  %s\n',...
+                        'Magnitude Types: %s'];
                     
                     mean_int = mean(diff(obj.Date));
                     median_int = median(diff(obj.Date));
@@ -184,10 +187,19 @@ classdef ZmapCatalog < handle
                         mindep, maxdep,...
                         sprintf('mean: %.3f ±std %.3f , median: %.3f',mean(obj.Depth), std(obj.Depth), median(obj.Depth)),...
                         minma, maxma,...
-                        sprintf('mean: %.2f ±std %.2f , median: %.2f',mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)));
+                        sprintf('mean: %.2f ±std %.2f , median: %.2f',mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)),...
+                        cat2mtypestring());
                     
                 otherwise
                     s = sprintf('Catalog "%s", containing %d events', obj.Name, obj.Count);
+            end
+            function mtypes=cat2mtypestring()
+                mtypes=strcat(unique(obj.MagnitudeType)',',');
+                mtypes=strcat(mtypes{:});
+                mtypes(end)=[];
+                if isempty(mtypes)
+                    mtypes='-none-';
+                end
             end
         end
         
@@ -348,7 +360,7 @@ classdef ZmapCatalog < handle
         function other=sortedByDistanceTo(obj, lat, lon, depth)
             % ans=obj.sortedByDistanceTo(lat, lon) % epicentral sort
             % ans=obj.sortedBYDistanceTo(lat, lon) % hypocentral sort to surface
-            % 
+            %
             % does NOT modify original
             if ~exist('depth','var')
                 dists= obj.epicentralDistanceTo(lat, lon);
@@ -366,6 +378,7 @@ classdef ZmapCatalog < handle
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
             %
+            % see also selectCircle, selectRadius
             if isempty(depth) || isnan(depth)
                 dists_km = obj.epicentralDistanceTo(lat, lon);
             else
@@ -387,7 +400,8 @@ classdef ZmapCatalog < handle
         function [other,max_km] = selectRadius(obj, lat, lon, radius_km)
             %selectRadius  select subset catalog to an epicentral radius from a point. sortorder is preserved
             % [catalog,max_km] = obj.selectRadius(lat, lon, dist_km)
-            
+            %
+            % see also selectClosestEvents, selectCircle
             dists_km = obj.epicentralDistanceTo(lat, lon);
             mask = dists_km <= radius_km;
             % furthest_event_km = max(dists_km(mask));
@@ -399,6 +413,52 @@ classdef ZmapCatalog < handle
             end
         end
         
+        function [ minicat, max_km ] = selectCircle(obj, selcrit, x,y,z )
+            %select_circle Select events in a circle defined by either distance or number of events or both
+            % [ minicat, maxd ] = catalog.select_circle(selcrit, x,y,z )
+            %
+            %  SELCRIT is a structure containing one of the following set of fields:
+            %    * numNearbyEvents (by itself) : runs function against this many closest events.
+            %    * radius_km  (by itself) : runs function against all events in this radius
+            %    * useNumNearbyEvents, useEventsInRadius, numNearbyEvents, radius_km (ALL of the above):
+            %      uses the useNumNearbyEvents and useEventsInRadius to determine its behavior.  If
+            %      both of these fields are true, then the closest events are evaluated up to the distance
+            %      radius_km.
+            %   X, Y, Z : coordinates of a point.  Z may be empty [].
+            %
+            % see also selectClosestEvents, selectRadius
+            assert(isstruct(selcrit),'SELCRIT should be a structure');
+            
+            % make sure the required selection fields exist
+            if ~isfield(selcrit,'useNumNearbyEvents')
+                selcrit.useNumNearbyEvents=isfield(s,'numNearbyEvents');
+            end
+            if ~isfield(selcrit,'useEventsInRadius')
+                selcrit.useEventsInRadius=isfield(selcrit,'radius_km');
+            end
+            if selcrit.useEventsInRadius
+                assert(isfield(selcrit,'radius_km'),'Error: useEventsInRadius was true, but no radius [radius_km] was specified');
+            end
+            if selcrit.useNumNearbyEvents
+                assert(isfield(selcrit,'numNearbyEvents'),'Error: useNumNearbyEvents was true, but no number [numNearbyEvents] was specified');
+            end
+            if ~isfield(selcrit,'minNumEvents')
+                selcrit.minNumEvents=0;
+            end
+            
+            assert( selcrit.useEventsInRadius || selcrit.useNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
+            
+            if selcrit.useEventsInRadius
+                [minicat,max_km]=obj.selectRadius(y,x, selcrit.radius_km);
+                if selcrit.useNumNearbyEvents
+                    [minicat,max_km]=minicat.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
+                end
+            elseif selcrit.useNumNearbyEvents
+                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
+            end
+        end
+        
+        
         
         function obj = subset(existobj, range)
             % subset get a subset of this object
@@ -408,7 +468,6 @@ classdef ZmapCatalog < handle
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
             
-            
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime
             obj.Longitude = existobj.Longitude(range) ;
@@ -416,7 +475,9 @@ classdef ZmapCatalog < handle
             obj.Depth =  existobj.Depth(range) ;      % km
             obj.Magnitude = existobj.Magnitude(range) ;
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
+            if ~isempty(obj.Filter)
             obj.Filter = existobj.Filter(range) ;
+            end
         end
         
         function obj = cat(objA, objB)
@@ -435,7 +496,7 @@ classdef ZmapCatalog < handle
             ...
                 %add additional fields here!
             ...
-            objA.clearFilter();
+                objA.clearFilter();
         end
         
         function obj = removeDuplicates(obj, tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
@@ -467,6 +528,76 @@ classdef ZmapCatalog < handle
             disp(obj.summary('stats'));
         end
         
+        function h=plot(obj, ax, varargin)
+            % plot this catalog. It will plot on
+            %
+            % see also refreshPlot
+
+            if has_toolbox('Mapping Toolbox') && ismap(ax)
+                h=obj.plotm(ax,varargin{:});
+                return
+            end
+            
+            hastag=find(strcmp('Tag',varargin),1,'last');
+            
+            if ~isempty(hastag)
+                mytag=varargin{hastag+1};
+            else
+                mytag=['catalog_',obj.Name];
+                varargin(end+1:end+2)={'Tag',mytag};
+            end
+            
+            fprintf('plotting catalog with %d eventsand tag:%s\n',obj.Count,mytag);
+            % clear the existing layer
+            h = findobj(ax,'Tag',mytag);
+            if ~isempty(h)
+                delete(h);
+            end
+            
+            holdstatus = ishold(ax); 
+            hold(ax,'on');
+            
+            % val = obj.getTrimmedData();
+            h=plot(ax,obj.Longitude, obj.Latitude, 'x',varargin{:}); % if Tag is in varargin, it will override default tag
+            h.ZData = obj.Depth;
+            
+            if ~holdstatus; hold(ax,'off'); end
+            
+        end
+        function h=plotm(obj,ax, varargin)
+            % plot this layer onto a map (Requires mapping toolbox)
+            % will delete layer if it exists
+            % note features will only plot the subset of features within the
+            % currently visible axes
+            %
+            % see also refreshPlot
+            
+            
+            if isempty(ax) || ~isvalid(ax) || ~ismap(ax)
+                error('Feature "%s" ->plot has no associated axis or is not a map',obj.Name);
+            end
+            
+            hastag=find(strcmp('Tag',varargin));
+            if ~isempty(hastag)
+                mytag=varargin{hastag}+1;
+            else
+                mytag=['catalog_',obj.Name];
+                varargin(end+1:end+2)={'Tag',mytag};
+            end
+            
+            h = findobj(ax,'Tag',mytag);
+            if ~isempty(h)
+                delete(h);
+            end
+            
+            holdstatus = ishold(ax); hold(ax,'on');
+            h=plotm(obj.Longitude, obj.Latitude, '.',varargin{:});
+            set(h, 'ZData',obj.Depth);
+            set(ax,'ZDir','reverse');
+            daspectm('km');
+            if ~holdstatus; hold(ax,'off'); end
+            
+        end
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));

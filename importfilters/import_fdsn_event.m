@@ -183,7 +183,9 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         uOutput(:,8)=mData{midx('time')}.Hour;
         uOutput(:,9)=mData{midx('time')}.Minute;
         uOutput(:,10)=mData{midx('time')}.Second;
-        
+        zc=ZmapCatalog(uOutput);
+        zc.MagnitudeType=mData{midx('magtype')};
+        uOutput=zc;
         %%
         
     end

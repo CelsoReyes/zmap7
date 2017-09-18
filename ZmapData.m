@@ -38,26 +38,8 @@ classdef ZmapData < handle
         cluscat %  some sort of clustered catalog? selclust
         newclcat %   some sort of clustered catalog? selclust
         
-        %{
-        % layers
-        features=struct('volcanoes',load_volcanoes(),...
-            'plates',load_plates(),...
-            'coastline',load_coast('i'),...
-            'faults',load_faults(),...
-            'borders',load_borders('i'),...
-            'rivers',load_rivers('i'),...
-            'lakes',load_lakes('i'));
-        %}
-        %volcanoes % was vo
-        %coastline %
-        features = get_features('h');
-        %mainfault % fault locations
-        %faults % fault locations
+        features = get_features('h'); % map features that can be looked up by name. ex. ZG.features('volcanoes')
         well % well locations
-        %plates % plate locations
-        %rivers
-        %lakes
-        %borders % national borders
         main
         maepi=ZmapCatalog('big events'); % large earthquakes, determined by user cutoff
         
@@ -84,7 +66,6 @@ classdef ZmapData < handle
         % likely to be completely removed stuff
         hold_state = false % was ho, contained 'hold' or 'noho'
         hold_state2 = false % was ho2, contained 'hold' or 'noho'
-        hold_state3 = false % was hoc, contained 'hold' or 'noho'
         
         % directories
         out_dir=fullfile(ZmapData.hodi,'out') % was hodo
@@ -116,7 +97,12 @@ classdef ZmapData < handle
         inb2=1; % maximum curvature method(?)
         bo1=nan; % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[]; % b-value grid
-        calcgrid; % grid used for calculations
+        Grid; % grid used for calculations
+        gridopt=struct('dx',.5,'dx_units','deg',...
+            'dy',.5,'dy_units','deg',...
+            'dz',1,'dz_units','km',...
+            'GridEntireArea',false,...
+            'SaveGrid',false,'LoadGrid',false,'CreateGrid',true); % options used for creating a grid
         selection_shape=ShapeSelection();
         debug='on'; % makes special menus visible
     end
@@ -163,7 +149,7 @@ classdef ZmapData < handle
 end
 
 function out = get_features(level)
-    % imports the various features that can be
+    % imports the various features that can be plotted on maps
     out = containers.Map;
     
     
@@ -231,7 +217,7 @@ function out = get_features(level)
         'MarkerSize',6)...
         );
     %{
-            obj.Features(5) = MapFeature('wells', @load_wells, [],...
+            obj.Features('wells') = MapFeature('wells', @load_wells, [],...
                 struct('Tag','mainmap_wells',...
                     'DisplayName','Wells',...
                     'Marker','d',...
@@ -241,7 +227,7 @@ function out = get_features(level)
                     'MarkerFaceColor','k',...
                     'MarkerEdgeColor','k')...
                 );
-            obj.Features(6) = MapFeature('minor_faults', @load_minorfaults, [],...
+            obj.Features('minor_faults') = MapFeature('minor_faults', @load_minorfaults, [],...
                 struct('Tag','mainmap_faults',...
                     'DisplayName','faults',...
                     'LineWidth',0.2,...

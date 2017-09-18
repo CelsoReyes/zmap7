@@ -4,7 +4,7 @@ function h=gridpcolor(ax,xs, ys, values, mask)
     % h=gridpcolor(ax,xs, ys, values, mask)
     %
     % Pcolor typically uses the points as edges, and ignores the last values.
-    % this
+    % 
     if isempty(ax)
         ax=gca;
     end

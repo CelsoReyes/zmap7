@@ -2,7 +2,15 @@ function cicros(opt)
     %   This subroutine "circle"  selects the Ni closest earthquakes
     %   around a interactively selected point.  Resets ZG.newcat and ZG.newt2
     %   Operates on "a".
-    
+    %
+    % axis: h1
+    % plots to: plos1 as xk
+    % inCatalog: a
+    % outCatalog: newt2, newcat, newa, newa2
+    % mouse controlled
+    % closest events OR radius
+    % calls: bdiff
+    %
     %  Input Ni:
     %
     persistent ic

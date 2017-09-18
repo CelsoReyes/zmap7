@@ -1,20 +1,5 @@
 classdef ZmapGrid
     %ZmapGrid grid for use in zmap's various calculation routines
-    %
-    % ZmapGrid
-    %
-    % length
-    % isempty
-    % MaskWithPolygon
-    % plot
-    % setGlobal
-    % save
-    % process
-    % associateWithEvents
-    %
-    % Static Methods:
-    % AutoCreateDeg
-    % load
     
     properties
         Name % name of this grid
@@ -31,24 +16,27 @@ classdef ZmapGrid
         Y % all Y positions (points will repeat, since they represent matrix nodes)
         Xactive % all X positions for active points
         Yactive % all Y positions for active points
-        ActiveGrid
+        ActiveGrid % [X Y;...] for active points
     end
     
     methods
         function obj = ZmapGrid(name, varargin)
             % create a ZmapGridStruc
             % obj=ZmapGrid(name, gpc_struct) where gpc_struct has fields dx,dy, dx_units
-            % obj=ZmapGrid(name, all_points, units)
-            % obj=ZmapGrid(name, all_x, all_y, units)
+            % obj=ZmapGrid(name, all_points, units); % NOT RECOMMENDED
+            % obj=ZmapGrid(name, all_x, all_y, units); 
             % obj=ZmapGrid(name, x_start, dx, x_end, y_start, dy, y_end, units)
             obj.Name = name;
             switch nargin
                 case 2
                     if isnumeric(varargin{1})
                         % name, all_points
+                        warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                         assert(size(varargin{1},2)==2);
                         obj.GridXY = varargin{1};
                         obj.Units='unk';
+                        obj.Xvector=[];
+                        obj.Yvector=[];
                     elseif isstruct(varargin{1})
                         % assume it came from GridParameterChoice
                         g=varargin{1};
@@ -67,8 +55,11 @@ classdef ZmapGrid
                     end
                 case 3
                     % name, all_points, units
+                    warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                     assert(size(varargin{1},2)==2);
                     obj.GridXY = varargin{1};
+                    obj.Xvector=[];
+                    obj.Yvector=[];
                     assert(ischar(varargin{2}));
                     obj.Units = varargin{2};
                 case 4
@@ -94,7 +85,13 @@ classdef ZmapGrid
                 otherwise
                     error('incorrect number of arguments');
             end
-            obj.ActivePoints=true(length(obj.GridXY),1);
+            if ~isempty(obj.Xvector)
+                % ActivePoints is an X x Y array
+                obj.ActivePoints=true(numel(obj.Xvector),numel(obj.Yvector));
+            else
+                % all points are simply in a line
+                obj.ActivePoints=true(length(obj.GridXY),1);
+            end
         end
         
         % basic access routines
@@ -211,33 +208,59 @@ classdef ZmapGrid
             end
         end
         
+        function h=pcolor(obj, ax, values)
+            % pcolor create a pcolor plot where each point of the grid
+            % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
+            % each grid point is contained within a color cell. the cells are divided halfway 
+            % between each point in the vector            
+            %  where :
+            %    AX is the axis of choice (empty for gca)
+            %    VALUES is a matrix of values that matches the grid in size.
+            %
+            %
+            % h is a handle to the pcolor object
+            % 
+            % see also gridpcolor
+            assert(isequal(size(values),[length(obj.Xvector),length(obj.Yvector)]),...
+                'expect values to match Xvector & Yvector in size');
+             h=gridpcolor(ax,obj.Xvector, obj.Yvector, values, obj.ActivePoints);
+        end
+        
         function setGlobal(obj)
             % set the globally used grid to this one.
             ZG=ZmapGlobal.Data;
             ZG.grid=obj;
         end
         
-        function save(zmapgrid, filename, pathname)
+        function save(obj, filename, pathname)
             ZG=ZmapGlobal.Data;
             if ~exist('filename','var')
-                filename = fullfile(pathname,['zmapgrid_',zmapgrid.Name,'.m']);
+                filename = fullfile(pathname,['zmapgrid_',obj.Name,'.m']);
                 uisave('zmapgrid',filename)
             elseif ~exist('path','var')
-                filename = fullfile(ZG.data_dir,['zmapgrid_',zmapgrid.Name,'.m']);
+                filename = fullfile(ZG.data_dir,['zmapgrid_',obj.Name,'.m']);
                 uisave('zmapgrid',filename)
             else
                 uisave('zmapgrid',fullfile(pathname,filename));
             end
         end
         
-        function results = process(obj, routine, outputvarlist, varargin)
+        function [results, nEvents, maxDist] = process(obj, routine, catalog, selcrit)
             % apply a process to every grid point, return the results
-            % results = obj.process(@routine, {outputvarlist},[additional parameters...])
+            % [results, nEvents, maxDist] = process(obj, routine, catalog, selcrit, varargin)
+            % where:
+            %    ROUTINE is a function handle that takes a ZmapCatalog and returns a single value
+            %    CATALOG is a ZmapCatalog to process
+            %    SELCRIT is a structure as returned by EventSelectionChoice.toStruct
+            % 
+            % Output:
+            %    results: an array of values, the same size as this grid
             %
-            % routine must have signature:
-            %  values = routine(x,y, ...)
+            % this is a convenience wrapper for gridfun. see that function for more details
             %
-            error('unimplemented');
+            % see also gridfun, EventSelectionChoice
+            
+            [ results, nEvents, maxDist ] = gridfun( routine, catalog, obj, selcrit);
         end
         
         function catPerNode = associateWithEvents(obj, catalog, maxradius, maxnearest, firstlastdate, minmaxmag)

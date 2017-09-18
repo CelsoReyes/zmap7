@@ -1,6 +1,5 @@
 classdef MapFeature < handle
-    %MapFeature used to trak and plot features on a map (works in 3d)
-    %
+    %MapFeature used to track and plot features on a map (works in 3d)
     %
     %   sample usage:
     %       load_fn = @get_earthquakes;
@@ -18,14 +17,34 @@ classdef MapFeature < handle
     %
     %       f.refreshPlot();
     %
-    %   global variables can be accessed & refreshed by wrapping them in a function:
     %
-    %       function myValue = load_something()
-    %           % load_something retrieves catalog data from global variable a
-    %           global a
-    %           myValue = a;  % simplistic case!
-    %       exit
-    
+    %
+    % lakes = ZG.features('lakes')
+    %
+    % % COMPARING PLOT and PLOTM in same figure
+    % fig=figure;
+    %
+    % % PLOT FEATURE ON "NORMAL" PLOT AXES
+    % % - SET UP THE AXES
+    % ax1=subplot(1,2,1);
+    % ylim(ax1,[min(ZG.a.Latitude) max(ZG.a.Latitude)])
+    % xlim(ax1,[min(ZG.a.Longitude) max(ZG.a.Longitude)])
+    % title(ax1,'normal plot')
+    %
+    % % PLOT FEATURE ON "MAP" PLOT AXES
+    % % - SET UP THE AXES
+    % ax2=subplot(1,2,2);
+    % ax2m=axesm('lambert','MapLatLimit',[min(ZG.a.Latitude) max(ZG.a.Latitude)],'MapLonLimit',[min(ZG.a.Longitude) max(ZG.a.Longitude)]);
+    % setm(ax2m,'MLineLocation',.25, 'PLineLocation',.25); % degrees for grid lines
+    % setm(ax2m,'Grid','on')
+    % setm(ax2m,'MeridianLabel','on','ParallelLabel','on')
+    % setm(ax2m,'PLabelLocation',.5,'MLabelLocation',.5)  % degrees for labeling
+    % setm(ax2m,'LabelFormat','signed','LabelUnits','dms') % display as +7˚ 00' 00"
+    % title(ax2m,'lambert plot')
+    %
+    % lakes.plot(ax2m) % plot into map
+    % lakes.plot(ax1) % plot onto "normal" axes
+
     properties
         Name                % name of this feature
         Loadfn              % function used to load/import this feature's data
@@ -154,7 +173,7 @@ classdef MapFeature < handle
             depths = obj.Value.Depth;
         end
         
-        function plot(obj,ax)
+        function layer=plot(obj,ax)
             % plot this layer
             % will delete layer if it exists
             % note features will only plot the subset of features within the
@@ -171,7 +190,10 @@ classdef MapFeature < handle
             if isempty(ax) || ~isvalid(ax)
                 error('Feature "%s" ->plot has no associated axis',obj.Name);
             end
-            
+            if has_toolbox('Mapping Toolbox') && ismap(ax)
+                obj.plotm(ax);
+                return
+            end
             % clear the existing layer
             h = obj.Handle;
             if ~isempty(h)
@@ -192,8 +214,9 @@ classdef MapFeature < handle
             % set properties for this layer
             set(layer, obj.PlottingDefaults);
         end
-        function mplot(obj,ax)
-            % plot this layer
+        
+        function layer=plotm(obj,ax)
+            % plot this layer onto a map (Requires mapping toolbox)
             % will delete layer if it exists
             % note features will only plot the subset of features within the
             % currently visible axes
@@ -224,12 +247,12 @@ classdef MapFeature < handle
             
             val = obj.getTrimmedData();
             layer=plotm(val.Latitude, val.Longitude); %not allowed to specify axes
-            % layer.ZData = val.Depth;
-            
+            zdatam(layer, val.Depth);
+            daspectm('km');
             if ~holdstatus; hold(ax,'off'); end
             
             % set properties for this layer
-            set(layer, obj.PlottingDefaults);
+            setm(layer, obj.PlottingDefaults);
         end
         
         function refreshPlot(obj)
@@ -333,8 +356,16 @@ classdef MapFeature < handle
             % they shouldn't.
             
             ax = obj.ParentAxis;
-            idx  = obj.Value.Longitude >= min(xlim(ax)) & obj.Value.Longitude <= max(xlim(ax));
-            idx = idx & obj.Value.Latitude >= min(ylim(ax)) & obj.Value.Latitude <= max(ylim(ax));
+            if ismap(ax)
+                trimLat=getm(ax,'maplatlimit');
+                trimLon=getm(ax,'maplonlimit');
+            else
+                trimLat=ylim(ax);
+                trimLon=xlim(ax);
+            end
+            idx  = obj.Value.Longitude >= trimLon(1) & obj.Value.Longitude <= trimLon(2);
+            idx = idx & obj.Value.Latitude >= trimLat(1) & obj.Value.Latitude <= trimLat(2);
+
             val=obj.Value;
             
             % index used to delete any nan's after the first (per gap)

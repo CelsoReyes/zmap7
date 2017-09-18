@@ -46,6 +46,7 @@ classdef MainInteractiveMap
                 ftr=obj.Features(k{i});
                 ftr.refreshPlot();
             end
+            obj.plotBigEarthquakes();
             % bring selected events to front
             uistack(findobj('DisplayName','Selected Events'),'top');
             
@@ -118,7 +119,7 @@ classdef MainInteractiveMap
             end
             MainInteractiveMap.plotMainshocks(ZG.main);
             disp('     "      "big" earthquakes');
-            MainInteractiveMap.plotBigEarthquakes(ZG.maepi);
+            MainInteractiveMap.plotBigEarthquakes();
             try
                 % to keep lines out of the legend, append a '_nolegend' to the item's Tag
                 tolegend=findobj(ax,'Type','line');
@@ -566,21 +567,32 @@ classdef MainInteractiveMap
             ax = MainInteractiveMap.mainAxes();
             clear_quake_plotinfo();
             washeld = ishold(ax); hold(ax,'on');
-            h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
+            
+            %
+            h = mycat.subset(mask).plot(ax,...
                 'Marker',event_marker_types(1),...
                 'Color',cmapcolors(1,:),...
                 'LineStyle','none',...
                 'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
             h.DisplayName = sprintf('M ≤ %3.1f', divs(1));
-            h.ZData=-mycat.Depth(mask);
             
             for i = 1 : numel(divs)
                 mask = mycat.Magnitude > divs(i);
                 if i < numel(divs)
                     mask = mask & mycat.Magnitude <= divs(i+1);
                 end
+                
                 dispname = sprintf('M > %3.1f', divs(i));
+                h=mycat.subset(mask).plot(ax,...
+                    'Marker',event_marker_types(i+1),...
+                    'Color',cmapcolors(i+1,:),...
+                    'LineStyle','none',...
+                    'MarkerSize',ZG.ms6*(i+1),...
+                    'Tag',['mapax_part' num2str(i)],...
+                    'DisplayName',dispname);
+                
+                %{
                 h=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
@@ -589,6 +601,7 @@ classdef MainInteractiveMap
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
                 h.ZData=-mycat.Depth(mask);
+                %}
             end
             if ~washeld; hold(ax,'off');end
         end
@@ -629,7 +642,13 @@ classdef MainInteractiveMap
             ax = MainInteractiveMap.mainAxes();
             clear_quake_plotinfo();
             washeld = ishold(ax); hold(ax,'on')
-            
+            h = mycat.subset(mask).plot(ax,...
+                'Marker',event_marker_types(1),...
+                'Color',cmapcolors(1,:),...
+                'LineStyle','none',...
+                'MarkerSize',ZG.ms6,...
+                'Tag','mapax_part0');
+            %{
             h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                 'Marker',event_marker_types(1),...
                 'Color',cmapcolors(1,:),...
@@ -637,6 +656,7 @@ classdef MainInteractiveMap
                 'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
             h.ZData=-mycat.Depth(mask);
+                %}
             h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
             
             for i = 1 : numel(divs)
@@ -645,6 +665,14 @@ classdef MainInteractiveMap
                     mask = mask & mycat.Depth <= divs(i+1);
                 end
                 dispname = sprintf('Z > %.1f km', divs(i));
+                myline=mycat.subset(mask).plot(ax,...
+                    'Marker',event_marker_types(i+1),...
+                    'Color',cmapcolors(i+1,:),...
+                    'LineStyle','none',...
+                    'MarkerSize',ZG.ms6,...
+                    'Tag',['mapax_part' num2str(i)],...
+                    'DisplayName',dispname);
+                %{
                 myline=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
                     'Marker',event_marker_types(i+1),...
                     'Color',cmapcolors(i+1,:),...
@@ -653,6 +681,7 @@ classdef MainInteractiveMap
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
                 myline.ZData=-mycat.Depth(mask);
+                %}
             end
             if ~washeld; hold(ax,'off'); end
         end
@@ -806,9 +835,9 @@ classdef MainInteractiveMap
                         char(divs(i),'uuuu-MM-dd hh:mm'),...
                         char(divs(i+1),'uuuu-MM-dd hh:mm'));
                 end
-                h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
+                h = mycat.subset(mask).plot(ax,...
                     'Tag',['mapax_part' num2str(i)]);
-                h.ZData=-mycat.Depth(mask);
+                %h.ZData=-mycat.Depth(mask);
                 set(h,'Marker',event_marker_types(i),...
                     'MarkerSize',ZG.ms6,...
                     'Color',cmapcolors(i,:),...
@@ -833,14 +862,14 @@ classdef MainInteractiveMap
             delete(h);
             
             washeld=ishold(ax); hold(ax,'on');
-            h=plot(catalog.Longitude, catalog.Latitude, varargin{:});
+            h=catalog.plot(ax, varargin{:});
             
             h.ZData=-catalog.Depth;
             h.Tag = thisTag;
             if ~washeld, hold(ax,'off'),end
         end
         
-        function plotBigEarthquakes(maepi, reset)
+        function plotBigEarthquakes(reset)
             % plot big earthquake epicenters labeled with the data/magnitude
             % DisplayName: Events > M [something]
             % Tag: 'mainmap_big_events'
@@ -868,9 +897,7 @@ classdef MainInteractiveMap
                     'Clipping','on');
             end
             
-            if nargin
                 big_events = ZG.maepi;
-            end
             
             if isempty(big_events)
                 big_events = ZmapCatalog();
@@ -884,7 +911,8 @@ classdef MainInteractiveMap
                 
                 evlabels = event_labels(ZG.maepi);
                 ax = MainInteractiveMap.mainAxes();
-                te1 = text(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,evlabels);
+                delete(findobj(ax,'Tag','bigeventlabel'));
+                te1 = text(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,evlabels,'Tag','bigeventlabel');
                 set(te1,textdefaults);
                 set(h,'Visible','on');
             end
@@ -902,7 +930,7 @@ classdef MainInteractiveMap
                     end
                     ev_labels(idx)={sprintf(' %4d-%03d %5s %s=%3.1f',...
                         year(catalog.Date(idx)),doy(idx),...
-                        char(catalog.Date(idx),'hh:mm'), mag)};
+                        char(catalog.Date(idx),'hh:mm'), mag,catalog.Magnitude(idx))};
                 end
             end
         end

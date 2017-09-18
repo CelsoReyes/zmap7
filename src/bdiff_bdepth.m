@@ -65,7 +65,7 @@ function  bdiff_bdepth(mycat)
     backg_ab = log10(bvalsum3);
     orient tall
     
-    if hold_state
+    if ZG.hold_state
         axes(cua)
         disp('hold on')
         hold on
@@ -175,7 +175,7 @@ function  bdiff_bdepth(mycat)
     h2=axes('position',rect);
     set(h2,'visible','off');
     
-    %if hold_state
+    %if ZG.hold_state
     if dloop == 2
         set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','y','MarkerEdgeColor','g','Marker','o');
@@ -215,7 +215,7 @@ function  bdiff_bdepth(mycat)
     zmap_message_center.set_info('  ','Done')
     done
     
-    if hold_state
+    if ZG.hold_state
         % calculate the probability that the two distributins are differnt
         l = mycat.Magnitude >=  M1b(1);
         b2 = str2double(tt1); n2 = M1b(2);
