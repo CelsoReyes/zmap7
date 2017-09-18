@@ -272,6 +272,9 @@ look at:
 Focal Mechanisms:
 https://ch.mathworks.com/matlabcentral/fileexchange/61227-focalmech-fm--centerx--centery--diam--varargin-
 
+Moment tensors can be retrieved from places like:
+http://www.isc.ac.uk/cgi-bin/web-db-v4?event_id=610635717&out_format=IMS1.0&request=COMPREHENSIVE
+
 # uncertainties, EVENT data
 
 # completeness maps precalculated on the web

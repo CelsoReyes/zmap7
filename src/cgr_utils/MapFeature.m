@@ -252,7 +252,7 @@ classdef MapFeature < handle
             if ~holdstatus; hold(ax,'off'); end
             
             % set properties for this layer
-            setm(layer, obj.PlottingDefaults);
+            set(layer, obj.PlottingDefaults);
         end
         
         function refreshPlot(obj)

@@ -91,10 +91,14 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     provider = datacenter_details(strcmp({datacenter_details.name},code));
     
     baseurl = provider.serviceURLs.eventService;
-    options = weboptions('timeout',120); %seconds
+    hf = matlab.net.http.HeaderField('Content-Encoding','gzip');
+    %options = weboptions('timeout',120); %seconds
+    options = weboptions('timeout',120,'HeaderFields',hf); %seconds
+
     disp(['sending request to:' baseurl 'query  with options'])
     disp(varargin)
     data = webread([baseurl 'query'], varargin{:},'format','text',options);
+    %data = webread([baseurl 'query'], varargin{:},'format','xml',options);
     uOutput = convert_from_fdsn_text(data);
     
     function uOutput = convert_from_fdsn_text(data)

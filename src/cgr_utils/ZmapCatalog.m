@@ -15,6 +15,7 @@ classdef ZmapCatalog < handle
         Dip
         DipDirection
         Rake
+        MomentTensor % (mrr, mtt, mff, mrt, mrf, mtf)
     end
     
     properties(Dependent)
@@ -591,11 +592,32 @@ classdef ZmapCatalog < handle
             end
             
             holdstatus = ishold(ax); hold(ax,'on');
-            h=plotm(obj.Longitude, obj.Latitude, '.',varargin{:});
+            h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
             set(h, 'ZData',obj.Depth);
             set(ax,'ZDir','reverse');
             daspectm('km');
             if ~holdstatus; hold(ax,'off'); end
+            
+        end
+       
+        function plotBeachballs(obj,ax,color)
+            pbar=pbaspect(ax);
+            pbar=daspect(ax);
+            asp=pbar(1)/pbar(2);
+            if isempty(obj.MomentTensor)
+                warning('no moment tensors to plot');
+            end
+            axes(ax)
+            set(findobj(gcf,'Type','Legend'),'AutoUpdate','off')
+            for i=1:obj.Count
+                mt = obj.MomentTensor(i,:);
+                if ~any(isnan(mt))
+                    focalmech(mt,obj.Longitude(i),obj.Latitude(i),.05*obj.Magnitude(i),asp,color);
+                    %TODO set the tag
+                    
+                end
+            end
+            set(findobj(gcf,'Type','Legend'),'AutoUpdate','on')
             
         end
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)

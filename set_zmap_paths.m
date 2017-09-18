@@ -10,7 +10,7 @@ path_list = [
     'm_map';
     'resources';
     });
-    fullfile(hodi, 'resources', {'features';'sample'});
+    fullfile(hodi, 'resources', {'features';'sample';'focalmech'});
     fullfile(hodi, 'src',{'afterrate';
     'cgr_utils';
     'as_class';

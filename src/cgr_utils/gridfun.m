@@ -72,7 +72,7 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
     assert(isa(catalog,'ZmapCatalog'),'CATALOG should be a ZmapCatalog');
     assert(isa(zgrid,'ZmapGrid'),'Grid should be ZmapGrid');
     
-    usemask=any(~zgrid.ActivePoints);
+    usemask=any(~zgrid.ActivePoints(:));
     if usemask
         values=nan(size(zgrid.ActivePoints));
     else
