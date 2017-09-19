@@ -3,19 +3,21 @@ classdef ZmapCatalog < handle
     %   Detailed explanation goes here
     
     properties
-        Name
+        name   % name of this catalog. Used when labeling plots
         Date        % datetime
         % Nanosecond  % additional precision, if needed
-        Longitude
-        Latitude
-        Depth       % km
-        Magnitude
-        MagnitudeType
-        Filter
-        Dip
+        Longitude   % Longitude (Deg) of each event
+        Latitude    % Latitude (Deg) of each event
+        Depth       % Depth (km) of events 
+        Magnitude   % Magnitude of each event
+        MagnitudeType % Magnitude Type of each event 
+        filter      % logical filter used for getting a subset of events
+        Dip         %
         DipDirection
         Rake
-        MomentTensor % (mrr, mtt, mff, mrt, mrf, mtf)
+        MomentTensor=table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
+        % additions to this table need to be also added to a bunch of functions: 
+        %    summary (?), cropToFilter, getCropped, addFilter(?), sort, subset, 
     end
     
     properties(Dependent)
@@ -38,6 +40,11 @@ classdef ZmapCatalog < handle
             propval = fix(datenum(obj)) - datenum(obj.Date.Year - 1, 12 , 31);
         end
         
+        function set.MomentTensor(obj, value)
+            assert(size(value,2)==6,'expect moment tensors to have 6 columns: mrr, mtt, mff, mrt, mrf, mtf');
+            % assert(size(value,1)==obj.Count,'# of moment tensors must match catalog size.');
+            obj.MomentTensor=array2table(value,'VariableNames',{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'});
+        end
         function obj = ZmapCatalog(varargin)
             % ZmapCatalog create a ZmapCatalog object
             obj.Name = '';
@@ -63,6 +70,9 @@ classdef ZmapCatalog < handle
                 obj.Magnitude = varargin{1}(:,6);
                 
                 obj.MagnitudeType = cell(size(obj.Magnitude));
+                obj.Dip = nan(obj.Count,1);
+                obj.DipDirection = nan(obj.Count,1);
+                obj.Rake = nan(obj.Count,1);
                 
                 for i=1:numel(obj.MagnitudeType)
                     if isempty(obj.MagnitudeType{i})
@@ -240,7 +250,11 @@ classdef ZmapCatalog < handle
             obj.Depth =  obj.Depth(obj.Filter) ;      % km
             obj.Magnitude = obj.Magnitude(obj.Filter) ;
             obj.MagnitudeType = obj.MagnitudeType(obj.Filter) ;
-            obj.Filter = obj.Filter(obj.Filter) ;
+            obj.Filter = obj.Filter(obj.Filter);
+            obj.Dip = obj.Dip(obj.Filter);
+            obj.DipDirection = obj.DipDirection(obj.Filter);
+            obj.Rake = obj.Rake(obj.Filter);
+            obj.MomentTensor = obj.MomentTensor(obj.Filter,:);
         end
         
         function obj = getCropped(existobj)
@@ -259,7 +273,14 @@ classdef ZmapCatalog < handle
             obj.Depth = existobj.Depth(existobj.Filter);
             obj.Magnitude = existobj.Magnitude(existobj.Filter);
             obj.MagnitudeType = existobj.MagnitudeType(existobj.Filter);
-            obj.Filter = existobj.Filter(existobj.Filter);
+            obj.Dip = existobj.Dip(existobj.Filter);
+            obj.DipDirection = existobj.DipDirection(existobj.Filter);
+            obj.Rake = existobj.Rake(existobj.Filter);
+            obj.Filter=existobj.Filter(existobj.Filter);
+            if ~isempty(obj.MomentTensor)
+                obj.MomentTensor=existobj.MomentTensor(existobj.Filter,:);
+            end
+            
         end
         
         function addFilter(obj, field, operation, value, varargin)
@@ -352,6 +373,12 @@ classdef ZmapCatalog < handle
             obj.Depth =  obj.Depth(idx) ;      % km
             obj.Magnitude = obj.Magnitude(idx) ;
             obj.MagnitudeType = obj.MagnitudeType(idx) ;
+            obj.Dip=obj.Dip(idx);
+            obj.DipDirection=obj.DipDirection(idx);
+            obj.Rake=obj.Rake(idx);
+            if ~isempty(obj.MomentTensor)
+                obj.MomentTensor=obj.MomentTensor(idx,:);
+            end
             if isempty(obj.Filter)
                 obj.clearFilter();
             end
@@ -477,7 +504,13 @@ classdef ZmapCatalog < handle
             obj.Magnitude = existobj.Magnitude(range) ;
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
             if ~isempty(obj.Filter)
-            obj.Filter = existobj.Filter(range) ;
+                obj.Filter = existobj.Filter(range) ;
+            end
+            obj.Dip = existobj.Dip(range);
+            obj.DipDirection=existobj.DipDirection(range);
+            obj.Rake=existobj.Rake(range);
+            if ~isempty(existobj.MomentTensor)
+                obj.MomentTensor=existobj.MomentTensor(range,:);
             end
         end
         
@@ -494,6 +527,7 @@ classdef ZmapCatalog < handle
             objA.Dip = [objA.Dip; objB.Dip];
             objA.DipDirection = [objA.DipDirection; objB.DipDirection];
             objA.Rake = [objA.Rake; objB.Rake];
+            objA.MomentTensor=[objA.MomentTensor;objB.MomentTensor];
             ...
                 %add additional fields here!
             ...
@@ -515,6 +549,7 @@ classdef ZmapCatalog < handle
             fprintf('  Time (s): %.2f\nLat: %f\nLon: %f\nDepth (m): %f\nMag:%.3f\n',...
                 tolTime_sec, tolLat, tolLon, tolDepth_m, tolMag);
             
+            % Dip, DipDirection, Rake, MomentTensor are not included in calculation
             isSame = abs(diff(obj.Date)) <= seconds(tolTime_sec) & ...
                 abs(diff(obj.Latitude)) <= tolLat & ...
                 abs(diff(obj.Longitude)) <= tolLon & ...
@@ -600,7 +635,9 @@ classdef ZmapCatalog < handle
             
         end
        
-        function plotBeachballs(obj,ax,color)
+        function plotFocalMechanisms(obj,ax,color)
+            % plot the focal mechanisms of a catalog (if they exist)
+            
             pbar=pbaspect(ax);
             pbar=daspect(ax);
             asp=pbar(1)/pbar(2);
@@ -608,18 +645,26 @@ classdef ZmapCatalog < handle
                 warning('no moment tensors to plot');
             end
             axes(ax)
-            set(findobj(gcf,'Type','Legend'),'AutoUpdate','off')
+            hold on;
+            set(findobj(gcf,'Type','Legend'),'AutoUpdate','off'); %
             for i=1:obj.Count
-                mt = obj.MomentTensor(i,:);
+                mt = obj.MomentTensor{i,:};
+                if istable(mt)
+                    mt=mt{:,:};
+                end
+                
                 if ~any(isnan(mt))
-                    focalmech(mt,obj.Longitude(i),obj.Latitude(i),.05*obj.Magnitude(i),asp,color);
+                    h(i)=focalmech(mt,obj.Longitude(i),obj.Latitude(i),.05*obj.Magnitude(i),asp,color);
+                    set([h(i).circle(:);h(i).fill(:);h(i).text],'Tag','focalmech_');
+                    drawnow
                     %TODO set the tag
-                    
+                else
+                    disp('nan present in moment tensor')
                 end
             end
             set(findobj(gcf,'Type','Legend'),'AutoUpdate','on')
-            
         end
+        
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));

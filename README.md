@@ -274,6 +274,9 @@ https://ch.mathworks.com/matlabcentral/fileexchange/61227-focalmech-fm--centerx-
 
 Moment tensors can be retrieved from places like:
 http://www.isc.ac.uk/cgi-bin/web-db-v4?event_id=610635717&out_format=IMS1.0&request=COMPREHENSIVE
+http://www.isc.ac.uk/iscbulletin/search/webservices/
+and IRIS's SPUD
+http://www.isc.ac.uk/iscbulletin/search/webservices/
 
 # uncertainties, EVENT data
 
