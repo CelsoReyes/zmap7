@@ -57,7 +57,7 @@ function [sel] = bpvalgrid()
         if load_grid
             [file1,path1] = uigetfile('*.mat','previously saved grid');
             if length(path1) > 1
-                think
+                
                 load([path1 file1])
             end
             plot(newgri(:,1),newgri(:,2),'k+')
@@ -75,13 +75,13 @@ function [sel] = bpvalgrid()
         
         if save_grid
             zmap_message_center.set_info('Saving Grid','  ');
-            think;
+            
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Grid File Name?') ;
             gs = ['save ' path1 file1 ' newgri dx dy gx gy xvect yvect newgri ll'];
             if length(file1) > 1
                 eval(gs);
             end
-            done;
+            
         end
         
         %   selgp
@@ -104,7 +104,7 @@ function [sel] = bpvalgrid()
             answer = inputdlg(prompt,title,lines,def);
             CO=str2double(answer{1});
         end
-        zmap_message_center.set_info(' ','Running... ');think
+        
         %  make grid, calculate start- endtime etc.  ...
         %
         t0b = min(ZG.a.Date)  ;
@@ -232,13 +232,13 @@ function [sel] = bpvalgrid()
         %
         try
             zmap_message_center.set_info('Save Grid','  ');
-            think;
+            
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Grid Datafile Name?') ;
             sapa2 = ['save ' path1 file1 ' bpvg gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll'];
             if length(file1) > 1
                 eval(sapa2)
             end
-            done;
+            
         catch
             error('problem saving bgrid')
         end
@@ -261,7 +261,7 @@ function [sel] = bpvalgrid()
         % Load exist b-grid
         [file1,path1] = uigetfile('*.mat','b-value gridfile');
         if length(path1) > 1
-            think
+            
             gridstats=load_existing_bgrid(fullfile(path1, file1));
             view_bpva(lab1,gridstats.valueMap)
         else
@@ -517,6 +517,6 @@ function [sel] = bpvalgrid()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        done;
+        
     end
 end

@@ -204,7 +204,7 @@ classdef MainInteractiveMap
                 'Separator','on',...
                     'Callback','selt = ''in'';  plotmymap;');
                 uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
-                    'Callback','think; addcoast;done');
+                    'Callback',' addcoast;done');
             %}
             uimenu(ovmenu,'Label','Plot stations + station names',...
                 'Separator', 'on',...
@@ -1070,14 +1070,14 @@ end
 function catSave()
     zmap_message_center.set_message('Save Data', ' ');
     try
-        think;
+        
         [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             wholePath=[path1 file1];
             error('not implemented')
             %save('WholePath', 'ZG.a', 'faults','main','mainfault','coastline','infstri','well');
         end
-        done
+        
     catch ME
         warning(ME)
     end

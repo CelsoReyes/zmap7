@@ -220,14 +220,14 @@ function callbackfun_011(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
-  done;
+  
 end
  
 function callbackfun_012(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  think;
+  
    ZG.newccat=cpara('use_existing',ZG.newccat);
   csubcat;
 end

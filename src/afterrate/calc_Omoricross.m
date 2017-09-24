@@ -4,7 +4,7 @@ function calc_Omoricross()
     %
     % J. Woessner
     % last update: 20.10.04
-    ZG=ZmapGlobal
+    ZG=ZmapGlobal;
     report_this_filefun(mfilename('fullpath'));
     wCat='a'; % working catalog name
     
@@ -129,7 +129,7 @@ function calc_Omoricross()
     % Buttons
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized','Position', [.80 .05 .15 .12], ...
-        'Callback', 'close;done', 'String', 'Cancel');
+        'Callback', 'close;', 'String', 'Cancel');
     
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized','Position', [.60 .05 .15 .12], ...
@@ -187,21 +187,8 @@ function calc_Omoricross()
             y = [y ; y(1)];     %  closes polygon
             clear vXLim vYLim;
         else
-            messtext=...
-                ['To select a polygon for a grid.       '
-                'Please use the LEFT mouse button of   '
-                'or the cursor to the select the poly- '
-                'gon. Use the RIGHT mouse button for   '
-                'the final point.                      '
-                'Mac Users: Use the keyboard "p" more  '
-                'point to select, "l" last point.      '
-                '                                      '];
-            zmap_message_center.set_message('Select Polygon for a grid',messtext);
-            
-            
             ax = findobj('Tag','mainmap_ax');
             [x,y, mouse_points_overlay] = select_polygon(ax);
-            zmap_message_center.set_info('Message',' Thank you .... ')
         end % of if bGridEntireArea
         
         % CREATE THE GRID (NEW WAY)

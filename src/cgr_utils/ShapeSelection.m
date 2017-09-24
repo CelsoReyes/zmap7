@@ -45,8 +45,10 @@ classdef ShapeSelection
             % AXES: use current main map axes as a box
             % BOX: define using two corners
             % POLYGON: define with lots of clicks. anything except
-            
+            %
             % UNASSIGNED: clear shape
+            %
+            % results are stored in ZG.selection_shape
             
             report_this_filefun(mfilename('fullpath'));
             if nargin==0
@@ -197,8 +199,10 @@ classdef ShapeSelection
                     
                     h(1)=plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline',...
                         'DisplayName','Selection Outline');
-                    h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents',...
-                            'DisplayName','selected events');
+                    if ~isempty(msk)
+                        h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents',...
+                                'DisplayName','selected events');
+                    end
                     
             end
         end
@@ -311,6 +315,23 @@ classdef ShapeSelection
             end
         end
         
+        function s=toStruct(obj)
+            s=struct(obj);
+            s.numNearbyEvents=s.NEventsToEnclose;
+            s.radius_km = s.Radius;
+            switch obj.CircleBehavior
+                case 'radius'
+                    s.useNumNearbyEvents=true;
+                    s.useEventsInRadius=false;
+                case 'nevents'
+                    s.useNumNearbyEvents=false;
+                    s.useEventsInRadius=true;
+                case 'both'
+                    s.useNumNearbyEvents=true;
+                    s.useEventsInRadius=true;
+            end
+            s=rmfield(s,{'Radius','NEventsToEnclose','CircleBehavior'});
+        end
         function save(obj)
             ZG=ZmapGlobal.Data;
             zmap_shape=obj;

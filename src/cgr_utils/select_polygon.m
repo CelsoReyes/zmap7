@@ -6,12 +6,16 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
     %
     % lineobject has tag 'mouse_points_overlay'
     axes(ax);
+    holdstate=ishold(ax);
     hold on
     mouse_points_overlay = plot(ax,0,0,'o-k',...
         'MarkerSize',5,'LineWidth',2.0,...
         'Tag','mouse_points_overlay',...
         'DisplayName','polygon outline');
-    hold off
+    
+    hold(ax,getonoff(holdstate));
+    
+    ZmapMessagebar('Define Polygon for Grid: (LEFT button): add point, (other key/button) last point');
     
     but=1;
     x=[]; 
@@ -25,6 +29,7 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
         mouse_points_overlay.YData=y;
     end
     
+    ZmapMessagebar();
     x = [x ; x(1)];
     y = [y ; y(1)];      %  closes polygon
     mouse_points_overlay.XData=x;

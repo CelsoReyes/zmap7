@@ -145,20 +145,6 @@ end
 functin my_calculate()
 
     figure(xsec_fig);
-    hold on
-
-    messtext=...
-        ['To select a polygon for a grid.       '
-        'Please use the LEFT mouse button of   '
-        'or the cursor to the select the poly- '
-        'gon. Use the RIGTH mouse button for   '
-        'the final point.                      '
-        'Mac Users: Use the keyboard "p" more  '
-        'point to select, "l" last point.      '
-        '                                      '];
-
-    zmap_message_center.set_message('Select Polygon for a grid',messtext);
-
     figure;
     ax = plot(Da(:,1),-Da(:,7),'o');
     xlabel('Distance in [km]')
@@ -168,7 +154,7 @@ functin my_calculate()
     ax = findobj('Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
 
-    zmap_message_center.set_info('Message',' Thank you .... ')
+    
 
     plos2 = plot(x,y,'b-', 'Color', 'r');        % plot outline
     sum3 = 0.;
@@ -211,7 +197,7 @@ functin my_calculate()
     end
 
 
-    zmap_message_center.set_info(' ','Running... ');think
+    
     %  make grid, calculate start- endtime etc.  ...
     %
     t0b = min(newa.Date)  ;
@@ -340,7 +326,7 @@ end
 function my_load()
     [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
     if length(path1) > 1
-        think
+        
         load([path1 file1])
         xsecx = newa(:,length(newa(1,:)))';
         xsecy = newa(:,7);
@@ -419,14 +405,14 @@ function callbackfun_007(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  done;
+  
 end
  
 function callbackfun_008(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  done;
+  
 end
  
 function callbackfun_009(mysrc,myevt)

@@ -29,7 +29,7 @@ if n < 9
         'catalog                '];
     zmap_message_center.set_message('Error!  Alert!',errdisp)
     warndlg(errdisp)
-    done;return
+    return
 end
 
 % Make the interface

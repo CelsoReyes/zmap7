@@ -366,7 +366,7 @@ classdef findquar < ZmapFunction
             function callbackfun_bva_go(mysrc,myevt)
                 
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                think;
+                
                 pause(1);
                 re4 =valueMap;
                 view_bva(valueMap);

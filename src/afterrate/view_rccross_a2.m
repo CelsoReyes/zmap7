@@ -5,7 +5,7 @@ function view_rccross_a2(lab1,valueMap)
     %
     % define size of the plot etc.
     
-    think
+    
     report_this_filefun(mfilename('fullpath'));
 
     myFigName='RC-Cross-section';
@@ -174,7 +174,7 @@ function view_rccross_a2(lab1,valueMap)
     figure(hRccross);
     axes(h1)
     watchoff(hRccross)
-    done
+    
     
     %% ui functions
     function create_my_menu()

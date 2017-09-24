@@ -123,14 +123,14 @@ function callbackfun_007(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
-  done;
+  
 end
  
 function callbackfun_008(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  think;
+  
    rndsph = 'distr3b';
    dorand;
 end

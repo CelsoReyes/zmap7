@@ -126,7 +126,7 @@ function view_xstress(lab1,valueMap)
     figure(stressmap);
     axes(h1)
     watchoff(stressmap)
-    done
+    
     
     
     %% ui functions

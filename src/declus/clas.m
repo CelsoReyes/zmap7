@@ -9,7 +9,7 @@ function clas
     global xt cumu cumu2 pyy
     % start and end time
     %
-    think
+    
 
     %
     %  winlen_days is the cutoff at the beginning and end of the analyses
@@ -66,6 +66,6 @@ function clas
     set(ccum,'Visible','on');
     figure(ccum);
     watchoff
-    done
+    
 
 

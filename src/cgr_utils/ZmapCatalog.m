@@ -3,7 +3,7 @@ classdef ZmapCatalog < handle
     %   Detailed explanation goes here
     
     properties
-        name   % name of this catalog. Used when labeling plots
+        Name   % name of this catalog. Used when labeling plots
         Date        % datetime
         % Nanosecond  % additional precision, if needed
         Longitude   % Longitude (Deg) of each event
@@ -443,7 +443,8 @@ classdef ZmapCatalog < handle
         
         function [ minicat, max_km ] = selectCircle(obj, selcrit, x,y,z )
             %select_circle Select events in a circle defined by either distance or number of events or both
-            % [ minicat, maxd ] = catalog.select_circle(selcrit, x,y,z )
+            % [ minicat, maxd ] = catalog.select_circle(selcrit);
+            % [ minicat, maxd ] = catalog.select_circle(selcrit, x,y,z ) %specify th
             %
             %  SELCRIT is a structure containing one of the following set of fields:
             %    * numNearbyEvents (by itself) : runs function against this many closest events.
@@ -453,6 +454,8 @@ classdef ZmapCatalog < handle
             %      both of these fields are true, then the closest events are evaluated up to the distance
             %      radius_km.
             %   X, Y, Z : coordinates of a point.  Z may be empty [].
+            %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
+            %               
             %
             % see also selectClosestEvents, selectRadius
             assert(isstruct(selcrit),'SELCRIT should be a structure');
@@ -474,6 +477,16 @@ classdef ZmapCatalog < handle
                 selcrit.minNumEvents=0;
             end
             
+            if ~exist('x','var')||isempty('x')
+                x = selcrit.X0;
+            end
+            if ~exist('y','var')||isempty('y')
+                y = selcrit.Y0;
+            end
+            if ~exist('z','var') || isempty('z')
+                z = []; % not a member of selcrit.
+            end
+                
             assert( selcrit.useEventsInRadius || selcrit.useNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
             
             if selcrit.useEventsInRadius

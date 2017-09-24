@@ -34,7 +34,7 @@ function load_zmapfile()%
     
     if length(path1) < 2 % cancelled
         zmap_message_center.clear_message();
-        done
+        
         return
     else
         if exist(fullfile(path1,file1),'file')

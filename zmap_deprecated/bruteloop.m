@@ -1,5 +1,4 @@
 function [rms] = bruteloop(vValues,time_as)
-    % this is the function used in bruteforce.m
 
     p = vValues(1);
     c = vValues(2);

@@ -195,14 +195,14 @@ function callbackfun_012(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
-  done;
+  
 end
  
 function callbackfun_013(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  think;
+  
    if distr == [6];
    rndsph = 'distr3a';
    dorand;

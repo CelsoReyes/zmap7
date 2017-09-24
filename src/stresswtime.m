@@ -23,7 +23,7 @@ function stresswtime()
     
     cd(hodis);
     
-    think
+    
     
     for i = 1:nStep:ZG.newt2.Count-ni
         % Check for data in catalog

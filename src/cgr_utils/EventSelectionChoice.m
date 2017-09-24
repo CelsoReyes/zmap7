@@ -115,16 +115,37 @@ classdef EventSelectionChoice < handle
     end
     
     methods(Static)
-        function quickshow()
-            %quickly test  the ZmapFunctionDlg
+        function evsel=quickshow(writeToGlobal,ni,ra)
+            %quickhow will produce a simple ZmapFunctionDlg, writing
+            % selcrit = evsel.quickshow() get parameters into the output
+            % evsel.quickshow(true) writes results back to ZmapGlobal
             f=figure('Name','EventSelectionChoice example',...
                 'Menubar','none',...
                 'InnerPosition',[0 0 EventSelectionChoice.GROUPWIDTH+5, EventSelectionChoice.GROUPHEIGHT+50],...
                 'Numbertitle','off'...
                 );
-            t='esc'; lcp=[5 50]; ni=50; ra=5;
+            t='esc'; lcp=[5 50]; 
+            if ~exist('ni','var')
+                ZG=ZmapGlobal.Data;
+                ni=ZG.ni; 
+            end
+            if ~exist('ra','var')
+                ZG=ZmapGlobal.Data;
+                ra=ZG.ra;
+            end
             esc=EventSelectionChoice(f,t,lcp,ni, ra);
-            uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(esc.toStruct()));
+            evsel=esc.toStruct;
+            uicontrol('style','pushbutton','string','OK','callback',@cb);
+            uiwait(f);
+            if exist('writeToGlobal','var') && writeToGlobal
+                ZG.ni=evsel.numNearbyEvents;
+                ZG.ra=evsel.radius_km;
+            end
+            % TODO set another global saying which method to use?
+            function cb(src,~)
+                evsel=esc.toStruct;
+                delete(f)
+            end
         end
         
     end

@@ -7,7 +7,7 @@ function view_bpva(lab1,valueMap)
     
     %TODO fix this, it broke when turned into a function.
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     
     
@@ -204,7 +204,7 @@ function view_bpva(lab1,valueMap)
     figure(bpmap);
     axes(h1)
     watchoff(bpmap)
-    done
+    
     
     %% ui functions
     function create_my_menu()

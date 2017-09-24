@@ -150,7 +150,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
                 
                 if length(path1) > 1
-                    think
+                    
                     my_load([path1 file1])
                 end
             end

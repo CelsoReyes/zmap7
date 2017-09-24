@@ -24,19 +24,19 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        a %
-        newcat
-        newt2
-        catalog_working
+        a=ZmapCatalog('default empty catalog'); %
+        newcat=ZmapCatalog('default empty catalog'); 
+        newt2=ZmapCatalog('default empty catalog'); 
+        catalog_working=ZmapCatalog('default empty catalog'); 
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.
-        original % used with declustering
+        original=ZmapCatalog('default empty catalog');  % used with declustering
         
         %cluster catalogs 
-        newccat % apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat  %  some sort of clustered catalog? selclust
-        cluscat %  some sort of clustered catalog? selclust
-        newclcat %   some sort of clustered catalog? selclust
+        newccat=ZmapCatalog('default empty catalog');  % apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat=ZmapCatalog('default empty catalog');   %  some sort of clustered catalog? selclust
+        cluscat=ZmapCatalog('default empty catalog');  %  some sort of clustered catalog? selclust
+        newclcat=ZmapCatalog('default empty catalog');  %   some sort of clustered catalog? selclust
         
         features = get_features('h'); % map features that can be looked up by name. ex. ZG.features('volcanoes')
         well % well locations

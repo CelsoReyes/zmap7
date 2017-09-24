@@ -10,7 +10,7 @@ function view_varmap(lab1,valueMap)
         Prmap = nan(size(valueMap));
     end
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     
     % Find out if figure already exists
@@ -139,7 +139,7 @@ function view_varmap(lab1,valueMap)
     axes(h1)
     watchoff(bmap)
     %whitebg(gcf,[ 0 0 0 ])
-    done
+    
     
     %% ui functions
     function create_my_menu()

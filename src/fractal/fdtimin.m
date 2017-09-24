@@ -60,14 +60,14 @@ function callbackfun_003(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
-  done;
+  
 end
  
 function callbackfun_004(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  think;
+  
    gobut = [2];
    org = [1];
    startfd;

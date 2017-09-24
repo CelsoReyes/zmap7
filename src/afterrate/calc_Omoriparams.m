@@ -1,8 +1,7 @@
-function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod)
-    % function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod);
-    % ----------------------------------------------------------------
-    % Determines Omori law parameter for one specific model and uncertainties using the bootstrap method
+function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
+    % calc_Omoriparams Determines Omori law parameter for one specific model and uncertainties using the bootstrap method
     %
+    % [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod);
     % Input parameters:
     %   mycat           earthquake catalog
     %   time_as     delay times (days)
@@ -28,7 +27,7 @@ report_this_filefun(mfilename('fullpath'));
     end
 
     % Warning off for fmincon
-    warning off;
+    % warning off;
 
     % Initialize
     mResult = [];
@@ -40,7 +39,7 @@ report_this_filefun(mfilename('fullpath'));
 
     % Select biggest aftershock earliest in time, but more than 1 day after mainshock
     fDay = days(1);% Time not considered to find biggest aftershock
-    vSel = (mycat.Date > ZG.maepi.Date+fDay & mycat.Date<= ZG.maepi.Date+days(time);
+    vSel = (mycat.Date > ZG.maepi.Date+fDay) & mycat.Date<= ZG.maepi.Date+days(time);
     mCat = mycat.subset(vSel);
     
     if isempty(mCat)

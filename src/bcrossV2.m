@@ -113,27 +113,14 @@ function bcrossV2(sel)
     % thge seimicity and selectiong the ni neighbors
     % to each grid point
     
-    function my_caluclation() % 'ca'
+    function my_calculation() % 'ca'
         
         figure(xsec_fig);
         hold on
         
-        messtext=...
-            ['To select a polygon for a grid.       '
-            'Please use the LEFT mouse button of   '
-            'or the cursor to the select the poly- '
-            'gon. Use the RIGTH mouse button for   '
-            'the final point.                      '
-            'Mac Users: Use the keyboard "p" more  '
-            'point to select, "l" last point.      '
-            '                                      '];
-        
-        zmap_message_center.set_message('Select Polygon for a grid',messtext);
-        
-        hold on
         ax = findobj('Tag','mainmap_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
-        zmap_message_center.set_info('Message',' Thank you .... ')
+        
         
         plos2 = plot(x,y,'b-');        % plot outline
         sum3 = 0.;
@@ -169,7 +156,7 @@ function bcrossV2(sel)
         
         itotal = length(newgri(:,1));
         
-        zmap_message_center.set_info(' ','Running... ');think
+        
         %  make grid, calculate start- endtime etc.  ...
         %
         t0b = min(newa.Date)  ;
@@ -311,7 +298,7 @@ function bcrossV2(sel)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        done;
+        
     end
     
     function callbackfun_007(mysrc,myevt)

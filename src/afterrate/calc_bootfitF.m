@@ -1,7 +1,7 @@
 function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
-    % function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi);
-    % --------------------------------------------------
-    % Plots Ncum observed vs. Ncum modeled for specified time windows
+    % calc_bootfitF Plots Ncum observed vs. Ncum modeled for specified time windows
+    %
+    % [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi);
     %
     % Input variables:
     % mycat     : earthquake catalog
@@ -15,7 +15,7 @@ function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
     % S.Neukomm / S.Wiemer / J.Woessner
 
     % Surpress warnings from fmincon
-    %warning off;
+    % warning off;
     report_this_filefun(mfilename('fullpath'));
 
     date_matlab = datenum(mycat.Date);

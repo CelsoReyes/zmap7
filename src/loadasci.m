@@ -62,7 +62,7 @@ function loadasci(da,sa)
             str = []; sa = 'of';
             [file1, newpath] = uigetfile('*', 'Load EQ Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
@@ -85,7 +85,7 @@ function loadasci(da,sa)
                 a = a(is(:,1),:) ;
                 ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
                 
-                close;done;
+                close;
                 ZG.a=catalog_overview(ZG.a);
                 setup
             else
@@ -112,7 +112,7 @@ function loadasci(da,sa)
             str = []; sa = 'of';
             [file1, newpath] = uigetfile('*.m', 'Load EQ Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
@@ -141,7 +141,7 @@ function loadasci(da,sa)
                 %prepfocal
                 
                 close;
-                done;
+                
                 ZG.a=catalog_overview(ZG.a);
                 setup
             else
@@ -171,7 +171,7 @@ function loadasci(da,sa)
             str = []; sa = 'of';
             [file1, newpath] = uigetfile('*.m', 'Load Faults Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
@@ -179,7 +179,7 @@ function loadasci(da,sa)
                 befehl=['faults = ',tr,';'];
                 eval(befehl);
                 %    clear(tr)
-                close;done;update(mainmap()); setup
+                close;update(mainmap()); setup
             else
                 close, setup
             end % if
@@ -204,14 +204,14 @@ function loadasci(da,sa)
             str = []; sa = 'of';
             [file1, newpath] = uigetfile('*.m', 'Load main Faults Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
                 tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
                 eval(befehl);
                 %  clear(tr)
-                close;done;update(mainmap()); setup
+                close;update(mainmap()); setup
             else
                 close, setup
             end % if
@@ -237,7 +237,7 @@ function loadasci(da,sa)
             str = []; sa = 'of';
             [file1, newpath] = uigetfile('*.m', 'Load Mainshock Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
@@ -245,7 +245,7 @@ function loadasci(da,sa)
                 befehl=['main = ',tr,';'];
                 eval(befehl);
                 %  clear(tr)
-                close;done; update(mainmap());setup
+                close; update(mainmap());setup
             else
                 close, setup
             end % if
@@ -271,7 +271,7 @@ function loadasci(da,sa)
             str = []; sa = 'co';
             [file1, newpath] = uigetfile('*.m', 'Load Coastline Data File');
             if length(newpath) >  1
-                think;drawnow
+                drawnow
                 load  ([newpath file1])
                 do = find(file1 == '.');
                 if isempty(do); do = length(file1)+1;end
@@ -279,7 +279,7 @@ function loadasci(da,sa)
                 befehl=['coastline = ',tr,';'];
                 eval(befehl);
                 %clear(tr)
-                close;done; update(mainmap());setup
+                close; update(mainmap());setup
             else
                 close, setup
             end % if

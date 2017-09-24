@@ -16,7 +16,7 @@ function view_bva(lab1, valueMap,gx,gy)
         Prmap = nan(size(valueMap));
     end
     ZG=ZmapGlobal.Data;
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     ZG.someColor = 'w';
     
@@ -148,7 +148,7 @@ function view_bva(lab1, valueMap,gx,gy)
     set(gcf,'color','w');
     watchoff(bmap)
     %whitebg(gcf,[ 0 0 0 ])
-    done
+    
     
     function adju()
         report_this_filefun(mfilename('fullpath'));

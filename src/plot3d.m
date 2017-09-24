@@ -14,7 +14,7 @@ function plot3d()
     ZG=ZmapGlobal.Data; % get zmap globals;
     tag='mainmap3_ax';
     watchon
-    think
+    
     ttlStr='3 D seismicity view                                  ';
     hlpStr1= ...
         [' This plot is a 3 dimensional view of the seismicity '
@@ -145,7 +145,7 @@ function plot3d()
     vie = gcf;
     figure(map3)
     watchoff
-    done;
+    
     
     
     function plotQuakesByDepth(ax, mycat, divs)

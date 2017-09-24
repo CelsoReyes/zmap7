@@ -97,14 +97,14 @@ function callbackfun_005(mysrc,myevt)
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
   zmap_message_center.set_info(' ',' ');
-  done;
+  
 end
  
 function callbackfun_006(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  think;
+  
    circlefd;
 end
  

@@ -1,8 +1,7 @@
 function [Mcomp] = mcwithtime(eqcatalogue,tas,time)
-    % function [Mcomp] = mcwithtime(eqcatalogue,tas,time);
-    % --------------------------------------------
-    % Determines magnitude of completeness of aftershocks
-    % which occurred up to time
+    % mcwithtime Determines magnitude of completeness of aftershocks which occurred up to time
+    %
+    % [Mcomp] = mcwithtime(eqcatalogue,tas,time);
     %
     % Input parameters:
     %   eqcatalogue earthquake catalog (ZMAP format)

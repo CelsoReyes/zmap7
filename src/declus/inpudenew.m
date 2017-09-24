@@ -18,7 +18,7 @@ function inpudenew()
     
     
     %  default values
-    think
+    
     taumin = 1;
     taumax = 10;
     P = 0.95;
@@ -118,7 +118,7 @@ function inpudenew()
  
     set(gcf,'visible','on')
     watchoff
-    done
+    
     
 %% callbacks
     
@@ -132,14 +132,14 @@ function inpudenew()
         err = h.err.Value;
         derr = h.derr.Value;
         close;
-        think;
+        
         declus()
         %declus(taumin,taumax,xk,xmeff,P,rfact,err,derr);
     end
     
     function close_callback(~,~)
         close;
-        done;
+        
     end
     
     function info_callback(~,~)

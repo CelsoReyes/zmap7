@@ -28,25 +28,11 @@ function selectp(in_or_out)
     delete(findobj('Tag','mouse_points_overlay'));
     delete(findobj('Tag','poly_selected_events'));
     
-    messtext=...
-        ['To select events inside a polygon.        '
-        'Please use the LEFT mouse button or the   '
-        'character P to select the polygon vertexes'
-        'Use the RIGHT mouse button for the final  '
-        'point.  Mac Users: use the keybord:       '
-        ' p: more points, l: lst point             '
-        'Operates on the original catalogue        '
-        'producing a reduced  subset which in turn '
-        'the other routines operate on.            '];
-    
-    zmap_message_center.set_message('Select EQ in Polygon',messtext);
-    
-    
     % pick polygon points,
     ax = findobj('Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     
-    zmap_message_center.set_info('Message',' Thank you .... ')
+    
     if ~exist('in_or_out','var')
         in_or_out = 'inside';
     end

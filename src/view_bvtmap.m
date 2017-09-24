@@ -6,7 +6,7 @@ function view_bvtmap(lab1,valueMap)
     % define size of the plot etc.
     %
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     % Find out if figure already exists
@@ -164,7 +164,7 @@ function view_bvtmap(lab1,valueMap)
     watchoff(bmap)
     %whitebg(gcf,[ 0 0 0 ])
     set(gcf,'Color','w')
-    done
+    
     
     %% ui functions
     function create_my_menu()
@@ -390,7 +390,7 @@ function view_bvtmap(lab1,valueMap)
     function callbackfun_022(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        
         pause(1);
         re4 =valueMap;
         view_bvtmap(lab1,valueMap);
@@ -399,7 +399,7 @@ function view_bvtmap(lab1,valueMap)
     function callbackfun_023(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        
         clear plos1 mark1 conca ;
         replaceMainCatalog(storedcat);
         ZG.newcat=storedcat;

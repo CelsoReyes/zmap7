@@ -12,7 +12,7 @@ function  bdiff_bdepth(mycat)
     global les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     
     bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
@@ -210,10 +210,6 @@ function  bdiff_bdepth(mycat)
         legend([leg1,leg2],'Top depth zone','Bottom depth zone');
     end
     set(gcf,'visible','on');
-    
-    
-    zmap_message_center.set_info('  ','Done')
-    done
     
     if ZG.hold_state
         % calculate the probability that the two distributins are differnt

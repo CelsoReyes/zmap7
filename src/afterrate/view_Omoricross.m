@@ -1,6 +1,5 @@
 function view_Omoricross(src_table, mygrid, field_name)
-    % Script: view_Omoriparams.m
-    % Plot Modified Omori law / nested MOL parameters calculated with calc_Omoricross.m.
+    % view_Omoricross Plot Modified Omori law / nested MOL parameters calculated with calc_Omoricross.m.
     %
     %     The b and p -Value Map Window
     %

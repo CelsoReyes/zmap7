@@ -173,7 +173,7 @@ function [sel]=rcvalgrid_a2()
         if load_grid
             [file1,path1] = uigetfile(['*.mat'],'previously saved grid');
             if length(path1) > 1
-                think
+                
                 load([path1 file1])
                 gx = xvect;
                 gy = yvect;
@@ -194,7 +194,7 @@ function [sel]=rcvalgrid_a2()
         % Plot all grid points
         plot(newgri(:,1),newgri(:,2),'+k')
         drawnow
-        zmap_message_center.set_info(' ','Running... ');think
+        
         %  make grid, calculate start- endtime etc.  ...
         %
         t0b = min(ZG.a.Date)  ;
@@ -393,7 +393,7 @@ function [sel]=rcvalgrid_a2()
         % Load exist b-grid
         [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
         if length(path1) > 1
-            think
+            
             load([path1 file1])
             
             normlap2=NaN(length(ll),1);
@@ -544,7 +544,7 @@ function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        done;
+        
     end
     
     function callbackfun_go(mysrc,myevt)

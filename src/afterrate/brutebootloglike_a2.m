@@ -1,9 +1,10 @@
 function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, bootloops,fT1, nMod)
-    % function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, bootloops,fT1, nMod);
-    % -------------------------------------------------------------------------------
-    % Bootstrap analysis of Omori parameters calculated by bruteforce.m
+    % brutebootloglike_a2 Bootstrap analysis of Omori parameters calculated by brute force
     % (p1,p2,c1,c2,k1,k2)-pair is mean of the bootstrap values by determining the mean cumulative number modeled a end of the learning period
     % Standard deviations are calculated as the 2nd moment, not to rely fully on normal distributions
+    %
+    % [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, bootloops,fT1, nMod);
+    % -------------------------------------------------------------------------------
     %
     % Input parameters:
     %   time_as     Delay times [days] of learning period
@@ -44,7 +45,7 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
         i = (1:n)';
         newtas(i,:) = time_as(randnr(i),:); % bootstrap sample
         newtas = sort(newtas);
-        [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(newtas, fT1, nMod); % bruteforce.m is called
+        [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(newtas, fT1, nMod);
         loopout = [loopout; pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL];
         %    waitbar(j/bootloops)
     end

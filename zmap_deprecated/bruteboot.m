@@ -28,9 +28,14 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = bruteboot(time_as)
         loopout = [loopout; pval cval kval];
     end
 
-    pv = round(100*mean(loopout(:,1)))/100; pstd = round(100*std(loopout(:,1)))/100;
-    cv = round(100*mean(loopout(:,2)))/100; cstd = round(100*std(loopout(:,2)))/100;
-    kv = round(10*mean(loopout(:,3)))/10; kstd = round(10*std(loopout(:,3)))/10;
+    pv = round(100*mean(loopout(:,1)))/100; 
+    pstd = round(100*std(loopout(:,1)))/100;
+    
+    cv = round(100*mean(loopout(:,2)))/100; 
+    cstd = round(100*std(loopout(:,2)))/100;
+    
+    kv = round(10*mean(loopout(:,3)))/10; 
+    kstd = round(10*std(loopout(:,3)))/10;
 
     % unreasonable parameter values -> no result
     if pv < 0.6 | pv > 2.3 | cv < 0.01 | cv > 3 | cv < cstd | pv < pstd | kv < kstd
@@ -38,4 +43,5 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = bruteboot(time_as)
         cv = nan; cstd = nan;
         kv = nan; kstd = nan;
     end
+end
 

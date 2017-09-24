@@ -130,7 +130,7 @@ function incube()
         wai = waitbar(0,' Please Wait ...  ');
         set(wai,'NumberTitle','off','Name','Allhist - Percent done');
         pause(1)
-        think
+        
         drawnow
         
         n2 = zeros(1,length(-15:0.1:15));
@@ -227,10 +227,10 @@ function incube()
         catch ME
             warning(ME)
         end
-        done
         
         
-        done;
+        
+        
         % plot the cube
         plotala()
     end
@@ -283,7 +283,7 @@ function callbackfun_004(mysrc,myevt)
 
     callback_tracker(mysrc,myevt,mfilename('fullpath'));
     close;
-    done;
+    
 end
 
 function callbackfun_005(mysrc,myevt)
@@ -314,7 +314,7 @@ function callbackfun_008(mysrc,myevt)
     set(f1,'Visible','off');
     if f1~=f2;
         zmap_message_center();
-        done;
+        
     end
 end
 

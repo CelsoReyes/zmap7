@@ -1,8 +1,8 @@
 function [fL] = bruteloglike(vValues,time_as)
-    % function [fL] = bruteloglike(vValues,time_as);
+    % bruteloglike calculates the log likelihood function for the modeled aftershock sequence and the maximum likelihood estimate for k, c and p
+    %
+    % [fL] = bruteloglike(vValues,time_as);
     % -------------------------------------------------------------
-    % This function calculates the log likelihood
-    % function for the modeled aftershock sequence and the maximum likelihood estimate for k, c and p
     % Reference: Ogata, Estimation of the parameters in the modified Omori formula
     % for aftershock sequences by  the maximum likelihood procedure, J. Phys. Earth, 1983
     % (Formula 6)

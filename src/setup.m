@@ -262,13 +262,13 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zmap_message_center.set_info('Save Data','  ');
-        think;
+        
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Filename?');
         save(fullfile(path1, file1),'a','faults','mainfault','coastline','main','infstri');
         eval(sapa) ;
         close(loda);
         update(mainmap());
-        done
+        
     end
     
     function info_callback(mysrc,myevt)

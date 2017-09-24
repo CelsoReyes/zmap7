@@ -149,7 +149,7 @@ function csubcat()
     axes(h1);
     watchoff(mapp)
     set(mapp,'Visible','on');
-    done
+    
     
     %% ui functions
     function create_my_menu()
@@ -194,10 +194,10 @@ function csubcat()
         uimenu(op2,'label','Declustered catalog',...
             'callback',@callbackfun_011);
         catSave =...
-            [ 'zmap_message_center.set_info(''Save Data'',''  '');think;',...
+            [ 'zmap_message_center.set_info(''Save Data'',''  '');',...
             '[file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, ''*.mat''), ''Earthquake Datafile'');',...
             'if length(file1) > 1 , sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri ''],',...
-            'eval(sapa2) ,end, done'];
+            'eval(sapa2) ,end, '];
         
         
         
@@ -317,7 +317,7 @@ function csubcat()
     function callbackfun_010(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        
         clear plos1 mark1 ;
         replaceMainCatalog(original);
         newccat = original;

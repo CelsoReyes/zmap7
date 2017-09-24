@@ -1,7 +1,8 @@
 function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,bootloops)
-    % function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as, bootloops);
+    % brutebootloglike Bootstrap analysis of Omori parameters calculated by bruteforceloglike
+    %
+    % [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as, bootloops);
     % ----------------------------------------------------------------------
-    % Bootstrap analysis of Omori parameters calculated by bruteforce.m
     % (p,c,k)-pair is mean of the bootstrap values by determining the mean cumulative number modeled a end of the learning period
     % Standard deviations are calculated as the 2nd moment, not to rely fully on normal distributions
     %
@@ -28,7 +29,7 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,boot
         randnr = ceil(rand(n,1)*n);
         i = (1:n)';
         newtas(i,:) = time_as(randnr(i),:); % bootstrap sample
-        [pval, cval, kval] = bruteforceloglike(sort(newtas)); % bruteforce.m is called
+        [pval, cval, kval] = bruteforceloglike(sort(newtas));
         loopout = [loopout; pval cval kval];
         % waitbar(j/bootloops)
     end

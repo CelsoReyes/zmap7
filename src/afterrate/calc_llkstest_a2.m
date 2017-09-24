@@ -1,7 +1,7 @@
 function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, cval2, kval1, kval2, nMod)
+    % calc_llkstest_a2 Calculate KS-Test as goodness-of fit test and RMS of the fit in the learning period
+    %
     % [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, cval2, kval1, kval2, nMod)
-    % ------------------------------------------------------------------------------------------------
-    % Calculate KS-Test as goodness-of fit test and RMS of the fit in the learning period
     %
     % Input variables:
     % time_as      : Times of aftershocks in days after mainshock

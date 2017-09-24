@@ -137,7 +137,7 @@ function rc_cross_a2()
     % Buttons
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.80 .05 .15 .12], ...
-        'Callback', 'close;done', 'String', 'Cancel');
+        'Callback', 'close;', 'String', 'Cancel');
     
     uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
         'Units', 'normalized', 'Position', [.60 .05 .15 .12], ...
@@ -211,21 +211,8 @@ function rc_cross_a2()
             y = [y ; y(1)];     %  closes polygon
             clear vXLim vYLim;
         else
-            messtext=...
-                ['To select a polygon for a grid.       '
-                'Please use the LEFT mouse button of   '
-                'or the cursor to the select the poly- '
-                'gon. Use the RIGTH mouse button for   '
-                'the final point.                      '
-                'Mac Users: Use the keyboard "p" more  '
-                'point to select, "l" last point.      '
-                '                                      '];
-            zmap_message_center.set_message('Select Polygon for a grid',messtext);
-            
             ax = findobj('Tag','mainmap_ax');
             [x,y, mouse_points_overlay] = select_polygon(ax);
-            
-            zmap_message_center.set_info('Message',' Thank you .... ')
         end % of if bGridEntireArea
         
         plos2 = plot(x,y,'b-');        % plot outline
@@ -493,7 +480,7 @@ function rc_cross_a2()
     function my_load()
         [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
         if length(path1) > 1
-            think
+            
             load([path1 file1])
             
             normlap2=NaN(length(tmpgri(:,1)),1);

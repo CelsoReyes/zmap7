@@ -147,7 +147,7 @@ function bcross(sel)
         
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.80 .005 .15 .12], ...
-            'Callback', 'close;done', 'String', 'Cancel');
+            'Callback', 'close;', 'String', 'Cancel');
         
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.60 .005 .15 .12], ...
@@ -202,8 +202,6 @@ function bcross(sel)
         % Plot all grid points
         plot(newgri(:,1),newgri(:,2),'+k')
         
-        
-        zmap_message_center.set_info(' ','Running... ');think
         %  make grid, calculate start- endtime etc.  ...
         %
         t0b = min(newa.Date)  ;
@@ -328,7 +326,7 @@ function bcross(sel)
     if sel == 'lo'
         [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
         if length(path1) > 1
-            think
+            
             load([path1 file1])
             xsecx = newa(:,length(newa(1,:)))';
             xsecy = newa(:,7);

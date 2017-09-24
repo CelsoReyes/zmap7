@@ -6,7 +6,7 @@ function view_bvt(lab1,valueMap)
     % define size of the plot etc.
     %
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     ZG.someColor = 'k';
@@ -81,7 +81,7 @@ function view_bvt(lab1,valueMap)
         
         callbackStr= ...
             ['f1=gcf; f2=gpf; set(f1,''Visible'',''off'');close(bmapc);', ...
-            'if f1~=f2, figure(map);done; end'];
+            'if f1~=f2, figure(map); end'];
         
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
@@ -214,7 +214,7 @@ function view_bvt(lab1,valueMap)
         'Box','on','TickDir','out')
     figure(bmapc);
     watchoff(bmapc)
-    done
+    
     
     %% ui functions
     function create_my_menu()
@@ -422,7 +422,7 @@ function view_bvt(lab1,valueMap)
     function callbackfun_027(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        
         pause(1);
         re4 =valueMap;
         view_bv2(lab1,valueMap);

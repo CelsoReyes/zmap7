@@ -1,10 +1,10 @@
-function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
-    % function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
-    % ----------------------------------------------------------------
-    % Determines ratechanges within aftershock sequences for defined time window using log likelihood estimation
+function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,maepi)
+    % calc_rcloglike_a2 Determines ratechanges within aftershock sequences for defined time window using log likelihood estimation
     % procedures; defines the best model using the corrected AIC and calculates uncertainties for the fitted
     % parameters
     %
+    % function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
+    % ----------------------------------------------------------------
     % Input parameters:
     %   mycat       earthquake catalog
     %   time_as     delay times (days)
@@ -21,7 +21,7 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
 
 report_this_filefun(mfilename('fullpath'));
     % Warning off for fmincon
-    %warning off;
+    % warning off;
 
     % Initialize
     rc = [];
@@ -49,7 +49,7 @@ report_this_filefun(mfilename('fullpath'));
     % mainshock and in learning period
     mAfLearnCat = eqcatalogue(l,:);
     fDay = 1; %days
-    vSel = (mAfLearnCat.Date > ZG.maepi.Date + days(fDay) & mAfLearnCat.Date<= ZG.maepi.Date+days(time);
+    vSel = (mAfLearnCat.Date > ZG.maepi.Date + days(fDay)) & mAfLearnCat.Date<= ZG.maepi.Date+days(time);
     mCat = mAfLearnCat.subset(vSel);
     vSel = mCat.Magnitude == max(mCat.Magnitude);
     vBigAf = mCat(vSel,:);

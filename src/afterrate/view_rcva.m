@@ -1,12 +1,12 @@
 function view_rcva(lab1,valueMap)
-    % view_rcva_a2 plots ratechanges and p values calculated with rcvalgrid_a2
+    % view_rcva plots ratechanges and p values calculated with rcvalgrid_a2
     % or other similar values as a color map.
     % needs valueMap, gx, gy
     %
     % define size of the plot etc.
     %
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
    myFigName='rc-value-map';
 myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
@@ -185,7 +185,7 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     axes(h1)
     watchoff(rcmap)
     %whitebg(gcf,[ 0 0 0 ])
-    done
+    
     
     %% ui functions
     function create_my_menu()

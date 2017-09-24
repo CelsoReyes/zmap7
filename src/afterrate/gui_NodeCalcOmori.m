@@ -1,7 +1,8 @@
 function [result]=gui_NodeCalcOmori(params,mCatalog)
-    % function [result]=gui_NodeCalcOmori(params,mCatalog)
+    % gui_NodeCalcOmori  calculate Omori parameters and further informative parameters
+    %
+    % [result]=gui_NodeCalcOmori(params,mCatalog)
     % --------------------------------------------------------
-    % Function to calculate Omori parameters and further informative parameters
     %
     % Incoming variables:
     % mCatalog     : current earthquake catalog

@@ -1,7 +1,8 @@
 function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
-    % function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd);
+    % gui_CalcOmori Calculate Omori parameters, here setting up the data
+    %
+    % [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd);
     % ----------------------------------------------------------------
-    % Calculate Omori parameters, here setting up the data
     %
     % Input parameters:
     %   params.mCatalog           Earthquake catalog

@@ -1,5 +1,5 @@
 function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootF(time_as,bootloops)
-    % function [pv, pstd, cv, cstd, kv, kstd, loopout] = bruteboot(time_as, bootloops);
+    % function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootF(time_as, bootloops);
     % ----------------------------------------------------------------------
     % Bootstrap analysis of Omori parameters calculated by bruteforce.m
     % (p,c,k)-pair is mean of the bootstrap values by determining the mean cumulative number modeled a end of the learning period

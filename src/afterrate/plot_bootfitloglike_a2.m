@@ -1,4 +1,4 @@
-function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
+function plot_bootfitloglike_a2(mycat,time,timef,bootloops,maepi)
     % function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
     % --------------------------------------------------
     % Plots Ncum observed vs. Ncum modeled for specified time windows
@@ -15,7 +15,7 @@ function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi)
 %TOFIX mCat ZG.maepi still treated as arrays
 report_this_filefun(mfilename('fullpath'));
     % Surpress warnings from fmincon
-    warning off;
+    % warning off;
 
     %[m_main, main] = max(mycat.Magnitude);
     date_matlab = datenum(mycat.Date);
@@ -24,7 +24,7 @@ report_this_filefun(mfilename('fullpath'));
 
 % Select biggest aftershock earliest in time, but more than 1 day after mainshock
     fDay = 1; %days
-    vSel = (mycat.Date > ZG.maepi.Date + days(fDay) & mycat.Date<= ZG.maepi.Date+days(time);
+    vSel = (mycat.Date > ZG.maepi.Date + days(fDay)) & mycat.Date<= ZG.maepi.Date+days(time);
     mCat = mycat.subset(vSel);
     vSel = mCat.Magnitude == max(mCat.Magnitude);
     vBigAf = mCat(vSel,:);
@@ -58,19 +58,18 @@ report_this_filefun(mfilename('fullpath'));
     % answer  = inputdlg(prompt,title,lines,def);
     % nMod = str2double(answer{1});
     % Calculate fits of different models
+
+    % model 1 :  MOL with secondary aftershock (pck)
+    % model 2 :  MOL with secondary aftershock (pckk)
+    % model 3 : MOL with secondary aftershock (ppckk)
+    % model 4 : MOL with secondary aftershock (ppcckk)
     mRes = [];
     % Modified Omori law (pck)
-    nMod = 1; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-    % MOL with secondary aftershock (pckk)
-    nMod = 2; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-    % MOL with secondary aftershock (ppckk)
-    nMod = 3; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-    % MOL with secondary aftershock (ppcckk)
-    nMod = 4; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+
+    for nMod=1:4; % do this for each model
+        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    end
 
     % Select best fitting model by AIC
     vSel = (mRes(:,8)==min(mRes(:,8)));
@@ -96,18 +95,6 @@ report_this_filefun(mfilename('fullpath'));
     cmed2 = mMedModF(1,7);
     kmed1 = mMedModF(1,9);
     kmed2 = mMedModF(1,11);
-
-
-    % % Compute model according to model choice
-    % if nMod == 1
-    %     [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    % elseif nMod == 2
-    %     [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    % elseif nMod == 3
-    %     [pval1, pval2, cval1, cval2, kval1, kval2 , fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    % else
-    %     [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    % end
 
     % Start plotting
     if (isnan(pval1) == 0 & isnan(pval2) == 0)

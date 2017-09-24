@@ -85,7 +85,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
     
     % get the warning state
     [s,f] = warning;
-    warning off
+    % warning off
     
     fid = fopen('gtopo30s.dat','r');
     if fid==-1

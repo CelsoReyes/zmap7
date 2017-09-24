@@ -7,7 +7,7 @@ function view_ratecomp(det,valueMap)
     %
     % INPUT VARIABLES: det, valueMap
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     ZG.someColor = 'w';
@@ -132,7 +132,7 @@ function view_ratecomp(det,valueMap)
     %set(sizmap,'Color','k')
     axes(h1)
     watchoff(zmap)
-    done
+    
     
     
     %% ui functions

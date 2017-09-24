@@ -29,8 +29,6 @@ function timeplot(mycat, nosort)
         ZG.bin_dur = days(1);
     end
     
-    zmap_message_center.set_info(' ','Plotting cumulative number plot...');
-    
     if ~exist('nosort','var')
         nosort = 'of'  ;
     end
@@ -47,7 +45,7 @@ function timeplot(mycat, nosort)
     
     cumu2=[]; %predeclare this thing for the callback function
     
-    think
+    
 
     
     % Find out if figure already exists
@@ -215,9 +213,8 @@ function timeplot(mycat, nosort)
     figure(cum);
     axes(ax);
     set(cum,'Visible','on');
-    watchoff(cum)
-    zmap_message_center.clear_message();
-    done()
+    watchoff(cum);
+    
     
     
     %% ui functions

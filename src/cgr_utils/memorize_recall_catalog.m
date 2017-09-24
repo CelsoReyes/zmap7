@@ -23,11 +23,11 @@ function memorize_recall_catalog()
         case 'Recall'
             replaceMainCatalog(ZG.memorized_catalogs);
             msgbox(['Catalog ' ZG.a.Name ' has been Recalled.     '],'Recall Catalog');
-            think;
+            
             ZG.newcat = ZG.memorized_catalogs; 
             ZG.newt2= ZG.memorized_catalogs;
             update(mainmap());
             zmap_message_center.update_catalog();
-            done;
+            
     end
 end

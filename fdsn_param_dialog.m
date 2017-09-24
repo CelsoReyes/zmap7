@@ -90,11 +90,11 @@ set(handles.provider_details,'String',...
     currprovider.serviceURLs.eventService));
 if hObject.Value==1
     hObject.BackgroundColor = [1.0 0.95 0.95];    
-    zmap_message_center.set_info('Importing FDSN data','First choose a data provider...');
+    ZmapMessagebar('Importing FDSN data - First choose a data provider...');
 
 else
     hObject.BackgroundColor = [0.95 1.0 0.95];    
-    zmap_message_center.set_info('Importing FDSN data','Choose the desired catalog constraints (time, magnitude, etc..)');
+    ZmapMessagebar('Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
 
 end
 
@@ -568,8 +568,9 @@ end
     queryset = add_numeric(handles, queryset, 'mindepth');
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
-    think('Importing FDSN data','Importing FDSN data from the web. This might take a minute');
+    ZmapMessagebar('Importing FDSN data from the web. This might take a minute');
     tmp=import_fdsn_event(1, queryset{:});
+    ZmapMessagebar('Converting to a ZmapCatalog');
     if ~isa(tmp,'ZmapCatalog')
         ZG.a=ZmapCatalog(tmp);
     else
@@ -590,9 +591,7 @@ end
     h=zmap_message_center();
     h.update_catalog()%;
     update(mainmap());
-    %ZG.a=catalog_overview(a); % further modify
-    %assignin('base','a',a);
-    done();
+    ZmapMessagebar();
     set(hObject.Parent,'Visible','off');
     % close(hObject.Parent); % or set Visibility to 'off' ?
     % TODO: close this window

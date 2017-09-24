@@ -13,7 +13,7 @@ function plotala()
     global main mainfault faults coastline
     global iala
     watchon
-    think
+    
     ttlStr='The Alarm Cube Window                                ';
     hlpStr1= ...
         ['  To be implemented                             '
@@ -171,7 +171,7 @@ function plotala()
     vie = gcf;
     figure(cube);
     watchoff
-    done;
+    
     figure(cube);
     
     rotate3d
@@ -418,7 +418,7 @@ function plotala()
     function callbackfun_006(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        
         pause(1);
         plotala();
     end

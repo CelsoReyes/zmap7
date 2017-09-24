@@ -44,7 +44,7 @@ function view_qva(lab1,valueMap)
 %                 can change the font size etc.             
 %                 Double click on text allows editing it.   
 
-    think
+    
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     % Find out if figure already exists
@@ -194,7 +194,7 @@ function view_qva(lab1,valueMap)
     axes(h1)
     watchoff(qmap)
     whitebg(gcf,[ 0 0 0 ])
-    done
+    
     
     %% ui functions
     function create_my_menu()
@@ -281,7 +281,7 @@ function view_qva(lab1,valueMap)
     function callbackfun_009(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        think;
+        ;
         pause(1);
         re4 =valueMap;
         view_bva(lab1,valueMap);

@@ -1,8 +1,8 @@
 function [fTafshock] = calc_Afseqlength(fPval1,fCval1,fKval1,fBgrate,fTlength,bPlot)
     % calc_Afseqlength Compute length of aftershock sequence as intersection point between modified Omori law and fixed background rate
+    %
     % fTafshock = calc_Afseqlength(fPval1,fCval1,fKval1,fBgrate,fTlength,bPlot)
-    % ------------------------------------------------------------------------
-    % Compute length of aftershock sequence as intersection point between modified Omori law and fixed background rate
+    % 
     % fPval1,fCval1,fKval1 can also be vectors!
     % Background rate is for a dataset above a fixed Mc
     %
@@ -30,7 +30,7 @@ function [fTafshock] = calc_Afseqlength(fPval1,fCval1,fKval1,fBgrate,fTlength,bP
     fTafshock = 10.^fLogTime-fCval1;
 
     if exist('bPlot','var')
-        vT = [0:0.01:fTlength];
+        vT = 0 : 0.01 : fTlength;
         vT = vT';
         vKval = ones(length(vT),1)*fKval1;
         vCval = ones(length(vT),1)*fCval1;

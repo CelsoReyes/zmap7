@@ -222,7 +222,7 @@ function myprint(command,param1)
         end
         close(ptt)
         zmap_message_center.clear_message();
-        done
+        
     else
         error('Error: myprint.m called with incorrect command.')
         
@@ -262,6 +262,6 @@ function myprint(command,param1)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        done;
+        
     end
 end

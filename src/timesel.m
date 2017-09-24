@@ -7,16 +7,12 @@ function [tt1,tt2]=timesel(var1)
     
     %timeselection with mouse in cumulative number plot
     if var1==1 || var1==4
-        messtext=...
-            ['To select a time window for further examination'
-            'Please select the start- and endtime of the    '
-            'sequence with the LEFT mouse button            '];
-        zmap_message_center.set_message('Time Selection ',messtext);
         if var1==1
-            figure(findobj('Tag','ccum','-and','Type','Figure'));
+            tagn='ccum'
         else
-            figure(findobj('Tag','cum','-and','Type','Figure'));
+            tagn='cum'
         end
+        figure(findobj('Tag',tagn,'-and','Type','Figure'));
         ax = gca;
         hold on
         seti = uicontrol('Style','text','Units','normal',...
@@ -24,10 +20,18 @@ function [tt1,tt2]=timesel(var1)
             'String','Select Time 1 ','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold', 'ForegroundColor',[.2 0 .8]);
         % XLim=get(tiplot2,'Xdata');
         
+        ZmapMessagebar(sprintf('[%20s to %20s]   %s',...
+            'CLICK ON PLOT',...
+            ' ------------------ ',...
+            ' Choose the STARTING date using the mouse'));
+
         [M1b, ~, ~] = ginput_datetime(ax,1);
         tt1 = M1b;
-        plot(tt1,0,'o');
-        seti.String = 'Select Time 2';
+        plot(tt1,0,'o');        
+        ZmapMessagebar(sprintf('[%20s to %20s]   %s',...
+            char(M1b,'uuuu-MM-dd hh:mm:ss'),...
+            'CLICK ON PLOT',...
+            ' Choose the ENDING date using the mouse');
         
         set(gcf,'Pointer','cross')
         [M2b, ~, ~] = ginput_datetime(ax,1);
@@ -38,7 +42,11 @@ function [tt1,tt2]=timesel(var1)
             tmp=tt2;
             tt2=tt1;
             tt1=tmp;
-        end
+        endZmapMessagebar(sprintf('[%20s to %20s] was Chosen',...
+            char(M1b,'uuuu-MM-dd hh:mm:ss'),...
+            char(M2b,'uuuu-MM-dd hh:mm:ss'));
+
+        ZmapMessagebar();
         ZG.hold_state=false;
     end
 end
