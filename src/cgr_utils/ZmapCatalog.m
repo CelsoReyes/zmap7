@@ -11,7 +11,7 @@ classdef ZmapCatalog < handle
         Depth       % Depth (km) of events 
         Magnitude   % Magnitude of each event
         MagnitudeType % Magnitude Type of each event 
-        filter      % logical filter used for getting a subset of events
+        Filter      % logical Filter used for getting a subset of events
         Dip         %
         DipDirection
         Rake
@@ -215,7 +215,7 @@ classdef ZmapCatalog < handle
         end
         
         function clearFilter(obj)
-            % clearFilter sets all items in filter to true
+            % clearFilter sets all items in Filter to true
             obj.Filter = true(size(obj.Longitude));
         end
         
@@ -235,7 +235,7 @@ classdef ZmapCatalog < handle
         end
         
         function cropToFilter(obj)
-            % applies the filter to this ZmapCatalog
+            % applies the Filter to this ZmapCatalog
             %
             % see also addFilter, clearFilter
             
@@ -254,7 +254,9 @@ classdef ZmapCatalog < handle
             obj.Dip = obj.Dip(obj.Filter);
             obj.DipDirection = obj.DipDirection(obj.Filter);
             obj.Rake = obj.Rake(obj.Filter);
-            obj.MomentTensor = obj.MomentTensor(obj.Filter,:);
+            if ~isempty(obj.MomentTensor)
+                obj.MomentTensor = obj.MomentTensor(obj.Filter,:);
+            end
         end
         
         function obj = getCropped(existobj)
@@ -286,7 +288,7 @@ classdef ZmapCatalog < handle
         function addFilter(obj, field, operation, value, varargin)
             % addFilter allows subsets of data to be specified
             %
-            % addFilter(mask) AND's the mask with the existing filter
+            % addFilter(mask) AND's the mask with the existing Filter
             %     where mask is a logical array of same length as ZmapCatalog.Count
             %
             %
