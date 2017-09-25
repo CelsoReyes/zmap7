@@ -65,7 +65,7 @@ function cicros(opt)
             
             hold on
             [na,ma] = size(ZG.newt2);
-            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk');
+            plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','Tag','plos1');
             set(gcf,'Pointer','arrow')
             %
             % plot circle containing events as circle
@@ -98,7 +98,7 @@ function cicros(opt)
             
             hold on
             [na,ma] = size(ZG.newt2);
-            plos1 = plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk');
+            plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','Tag','plos1');
             set(gcf,'Pointer','arrow')
             %
             % plot circle containing events as circle

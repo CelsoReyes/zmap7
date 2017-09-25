@@ -5,8 +5,8 @@ function plot_bootfitloglike_a2(mycat,time,timef,bootloops,maepi)
     % with choosing the model for the learning period
     % Input variables:
     % mycat         : earthquake catalog
-    % time      : learning period fo fit Omori parameters
-    % timef     : forecast period
+    % time      : learning period fo fit Omori parameters [days]
+    % timef     : forecast period [days]
     % bootloops : Number of bootstraps
     % ZG.maepi     : mainshock
     %

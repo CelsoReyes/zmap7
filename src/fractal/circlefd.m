@@ -56,7 +56,7 @@ if ic == 1 % select N closest events
 
     hold on
     %[na,ma] = size(ZG.newt2);
-    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5);
+    plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5,'Tag','plos1');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -98,7 +98,7 @@ if ic == 2 % select events within ra
 
     hold on
     %[na,ma] = size(ZG.newt2);
-    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 1);
+    plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 1,'Tag','plos1');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle
@@ -140,7 +140,7 @@ if ic == 3 % select N closest events
 
     hold on
     %[na,ma] = size(ZG.newt2);
-    plos1 = plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5);
+    plot(ZG.newt2.Longitude,-ZG.newt2.Depth,'k.','MarkerSize', 0.5,'Tag','plos1');
     set(gcf,'Pointer','arrow')
     %
     % plot circle containing events as circle

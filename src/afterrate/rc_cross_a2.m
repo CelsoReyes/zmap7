@@ -25,7 +25,7 @@ function rc_cross_a2()
     nRandomRuns = 1000;
     bGridEntireArea = 0;
     time = 47;
-    timef= 20;
+    timef= days(20);
     bootloops = 50;
     ra = 5;
     fMaxRadius = 5;

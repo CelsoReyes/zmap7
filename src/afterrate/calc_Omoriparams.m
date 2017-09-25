@@ -1,13 +1,13 @@
 function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     % calc_Omoriparams Determines Omori law parameter for one specific model and uncertainties using the bootstrap method
     %
-    % [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,ZG.maepi,nMod);
+    % [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod);
     % Input parameters:
     %   mycat           earthquake catalog
     %   time_as     delay times (days)
     %   step        number of quakes to determine forecast period
-    %   time        learning period days
-    %   timef       forecast period: Set timef=0, anyway it is forced to 0
+    %   time        learning period [days as duration]
+    %   timef       forecast period: Set timef=0, anyway it is forced to 0 [days]
     %   bootloops   Number of bootstraps
     %   ZG.maepi       Mainshock values
     %   nMod        Model for aftershock sequence
@@ -19,12 +19,9 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     % last update: 11.03.04
     % 2017 Celso Reyes
 
-%TODO fix the time periods from decyear to days or dates
-report_this_filefun(mfilename('fullpath'));
-    % Set timef=0;
-    if timef ~= 0
-        timef = 0; % This is needed since no forecast is calculated here!! JW
-    end
+    %TODO fix the time periods from decyear to days or dates
+    report_this_filefun(mfilename('fullpath'));
+    timef = days(0); % This is needed since no forecast is calculated here!! JW
 
     % Warning off for fmincon
     % warning off;

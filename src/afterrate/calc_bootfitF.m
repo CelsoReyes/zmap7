@@ -1,66 +1,82 @@
-function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
+function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
     % calc_bootfitF Plots Ncum observed vs. Ncum modeled for specified time windows
     %
-    % [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi);
+    % [output] = calc_bootfitF(catTimes,time,timef,bootloops,maepi);
     %
     % Input variables:
-    % mycat     : earthquake catalog
-    % time      : learning period fo fit Omori parameters
-    % timef     : forecast period
+    % catTimes     : earthquake catalog times  [datetime vector]
+    % time      : learning period fo fit Omori parameters [duration or days]
+    % timef     : forecast period [duration or days]
     % bootloops : Number of bootstraps
-    % ZG.maepi     : mainshock
+    % mainshockTime : mainshock time [datetime]
     % Output variables:
     % output    : [pval pstd cval cstd kval kstd sigma fStdBst fRc_Flaw fRc_Bst]
-
+    %
     % S.Neukomm / S.Wiemer / J.Woessner
 
     % Surpress warnings from fmincon
     % warning off;
     report_this_filefun(mfilename('fullpath'));
-
-    date_matlab = datenum(mycat.Date);
-    date_main = datenum(ZG.maepi.Date);
-    time_aftershock = date_matlab-date_main;
-
-    l = time_aftershock(:) > 0;
-    tas = time_aftershock(l);
-    eqcatalogue = mycat.subset(l);
-
-    l = tas <= time;
-    time_as=tas(l);
+    asset(mainshockTime.Count == 1, 'Expected a single aftershock, not %d events', mainshockTime.Count);
+    if ~isduration(timef), timef=days(timef);end
+    if ~isduration(time), time=days(time);end
+    timeAfterShock = catTimes - mainshockTime;
+    timeAfterShock = sort(timeAfterShock); % all following times will be sorted
+    
+    isAfter = catTimes > mainshockTime;
+    tas = timeAfterShock(isAfter);
+    duringLearnPeriod = tas <= time;
+    learningEventTimes=tas(duringLearnPeriod);
 
 
     % Calculate uncertainties and mean values of p,c,and k
-    [pval, pstd, cval, cstd, kval, kstd, loopout] = brutebootloglike(tas(l),bootloops);
+    [pval, pstd, cval, cstd, kval, kstd, loopout] = brutebootloglike(learningEventTimes,bootloops);
+    
     % Calculate p,c,k for real dataset
-    [pval, cval, kval] = bruteforceloglike(sort(time_as));
-    pval = round(100*pval)/100;
-    cval = round(100*cval)/100;
-    kval = round(10*kval)/10;
+    [pval, cval, kval] = bruteforceloglike(learningEventTimes);
+    pval = round(pval,2);
+    cval = round(cval,2);
+    kval = round(kval,1);
 
-    if isnan(pval) == 0
+    if ~isnan(pval)
 
         figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Forecast aftershock occurence')
-        loopout = [loopout , loopout(:,1)*0];
+        loopout(:,end+1) = 0;  % add a column of zeros to the end
 
         % Times up to the forecast time
-        lf = tas <= time+timef ;
-        time_asf= [tas(lf) ];
-        time_asf=sort(time_asf);
+        time_asf= tas(tas <= time+timef);
+        time_asf=time_asf;
 
+        %% vectorized version. asssumes everything in columns
+        pvalb = loopout(:,1);
+        cvalb = loopout(:,2);
+        kvalb = loopout(:,3);
+        tic
+        
+        %% define the functions that will be used in all the following loops
+        if pval==1
+            modfun=@(~,c,k,t) k.*log(days(t')./c+1);
+        else
+            modfun=@(p,c,k,t) k./(p-1).*(c.^(1-p)-(days(t')+c).^(1-p));
+        end
+        
+        conf_lims = modfun(pvalb,cvalb,kvalb,time_asf); %kvalb./(pvalb-1).*(cvalb.^(1-pvalb)-(days(time_asf')+cvalb).^(1-pvalb));
+        loopout(:,4)=max(conf_lims,[],2);
+        
+        plot(time_asf, conf_lims, 'color',[0.8 0.8 0.8]);
+        hold on
+        toc
+        %% old double-loop version, to be replaced
         % Compute the confidence limits
-        for j = 1:length(loopout(:,1))
-
-            cumnr = (1:length(time_asf))'; cumnr_model = [];
+        tic
+        for j = 1:size(loopout,1) % loop through each row
+            cumnr_model = [];
             pvalb = loopout(j,1);
             cvalb = loopout(j,2);
             kvalb = loopout(j,3);
+            
             for i=1:length(time_asf)
-                if pval ~= 1
-                    cm = kvalb/(pvalb-1)*(cvalb^(1-pvalb)-(time_asf(i)+cvalb)^(1-pvalb));
-                else
-                    cm = kvalb*log(time_asf(i)/cvalb+1);
-                end
+                cm=modfun(pvalb,cvalb,kvalb,time_asf);
                 cumnr_model = [cumnr_model; cm];
             end
             plot(time_asf,cumnr_model,'color',[0.8 0.8 0.8]);
@@ -68,91 +84,67 @@ function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
             hold on
             %drawnow
         end
+        toc
+        
+        %% temp test.  Remove and then comment out the above loops once it is shown to work!
+        assert(isequal(loopout(:,4),conf_lims));
+        % end temp test.
+        
+        
+        %% done with the above replacemtns
         % 2nd moment of bootstrap number of forecasted number of events
         fStdBst = calc_StdDev(loopout(:,4));
 
-        % now plot the forecast ...
-        cumnrf = (1:length(time_asf))'; cumnr_modelf = [];
+        % now calculate the forecast ...        
+        %% this is the vectorized version ...
+        
+        cumnr_modelf = modfun(pval,cval,kval,time_asf);
+        
+        %% which replaces this...
+        cumnrf = (1:length(time_asf))'; 
+        cumnr_modelf = [];
         for i=1:length(time_asf)
-            if pval ~= 1
-                cm = kval/(pval-1)*(cval^(1-pval)-(time_asf(i)+cval)^(1-pval));
-            else
-                cm = kval*log(time_asf(i)/cval+1);
-            end
+            cm = modfun(pval,cval,kval,time_asf(i));
             cumnr_modelf = [cumnr_modelf; cm];
         end
-        pf1 =  plot(time_asf,cumnr_modelf,'g-.','Linewidth',2);
-        hold on
-        pf2 =  plot(time_asf,cumnrf, 'b-','Linewidth',2);
-
+        
+        %%
         % plot the best fit
-        cumnr = (1:length(time_as))'; cumnr_model = [];
-        for i=1:length(time_as)
-            if pval ~= 1
-                cm = kval/(pval-1)*(cval^(1-pval)-(time_as(i)+cval)^(1-pval));
-            else
-                cm = kval*log(time_as(i)/cval+1);
-            end
+        nLearnEvents = length(learningEventTimes);
+        
+        %% this can be vectorized
+        cumnr_model = modfun(pval,cval,kval,learningEventTimes);
+        %{
+        cumnr_model = [];
+        for i=1:nLearnEvents
+            cm = modfun(pval,cval,kval,learningEventTimes(i));  % note this is NOT time_asf
             cumnr_model = [cumnr_model; cm];
         end
-        time_as=sort(time_as);
+        %}
         cumnr_model=sort(cumnr_model);
-        p1 = plot(time_as,cumnr_model,'r','Linewidth',2);
+
+        % to Plot observed events in forecast period from endpoint of modeled events in learning period
+        isAfterLearning = time_asf >= max(learningEventTimes);
+        vCumnr_forecast = cumnrf(isAfterLearning,:);
+        vTime_forecast = time_asf(isAfterLearning,:);
+        
+        % Difference of modelled and observed number of events at learningEventTimes
+        fDiff_timeas = cumnr_modelf(nLearnEvents)-cumnrf(nLearnEvents);
+        vCumnr_forecast = vCumnr_forecast + fDiff_timeas;
+        
+        %% plot stuff
+        
+        pf1 =  plot(time_asf, cumnr_modelf,'g-.','Linewidth',2);
+        hold on
+        pf2 =  plot(time_asf, cumnrf, 'b-','Linewidth',2);
+
+        
+        p1 = plot(learningEventTimes,cumnr_model,'r','Linewidth',2);
         hold on
 
-        p2 = plot(time_as,cumnr,'b','Linewidth',2);
-
-        % Plot observed events in forecast period from endpoint of modeled events in learning period
-        vSel = time_asf >= max(time_as);
-        vCumnr_forecast = cumnrf(vSel,:);
-        vTime_forecast = time_asf(vSel,:);
-        % Difference of modelled and observed number of events at time_as
-        fDiff_timeas = cumnr_modelf(length(time_as))-cumnrf(length(time_as));
-        vCumnr_forecast = vCumnr_forecast+fDiff_timeas;
-        pf3 = plot(vTime_forecast, vCumnr_forecast,'m-.','Linewidth',2);
-
-
-        %     [Y, in] = sort(loopout(:,4));
-        %     %n5Conf = round(0.05*length(loopout))
-        %     %Y = find(in == n5Conf);
-        %     %Y = find(in == 5);
-        %     loops = loopout(in,:);
-        %     n5Conf = floor(min((find(round(loops(:,4))==round(prctile(loops(:,4),5))))));
-        %     %n5Conf = round(0.05*length(loops));
-        %     pvalb = loops(n5Conf,1);
-        %     cvalb = loops(n5Conf,2);
-        %     kvalb = loops(n5Conf,3);
-        %
-        %     cumnr = (1:length(time_as))'; cumnr_model = [];
-        %     for i=1:length(time_as)
-        %         if pval ~= 1
-        %             cm = kvalb/(pvalb-1)*(cvalb^(1-pvalb)-(time_as(i)+cvalb)^(1-pvalb));
-        %         else
-        %             cm = kvalb*log(time_as(i)/cvalb+1);
-        %         end
-        %         cumnr_model = [cumnr_model; cm];
-        %     end
-        %
-        %     %plot(time_as,cumnr_model,'k--','Linewidth',1);
-        %
-        %     %n95Conf = round(0.95*length(loopout));
-        %     %Y = find(in == n95Conf);
-        %     %loops = loopout(in,:);
-        %     n95Conf = ceil(max(find(round(loops(:,4))==round(prctile(loops(:,4),95)))));
-        %     %n95Conf = round(0.95*length(loops));
-        %     pvalb = loops(n95Conf,1);
-        %     cvalb = loops(n95Conf,2);
-        %     kvalb = loops(n95Conf,3);
-        %     cumnr = (1:length(time_as))'; cumnr_model = [];
-        %     for i=1:length(time_as)
-        %         if pval ~= 1
-        %             cm = kvalb/(pvalb-1)*(cvalb^(1-pvalb)-(time_as(i)+cvalb)^(1-pvalb));
-        %         else
-        %             cm = kvalb*log(time_as(i)/cvalb+1);
-        %         end
-        %         cumnr_model = [cumnr_model; cm];
-        %     end
-        %     %pc = plot(time_as,cumnr_model,'k--','Linewidth',1);
+        p2 = plot(learningEventTimes, 1:nLearnEvents ,'b','Linewidth',2);
+        
+        pf3 = plot(vTime_forecast, vCumnr_forecast ,'m-.','Linewidth',2);
 
         xlabel('Time [days]')
         ylabel('Cumulative number of aftershocks')
@@ -185,15 +177,15 @@ function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
         % Title
         % Rate change from error propagation law
         % Find amount of events in forecast period for modeled data
-        nummod = max(cumnr_modelf)-cumnr_modelf(length(time_as));
+        nummod = max(cumnr_modelf)-cumnr_modelf(nLearnEvents);
         % Find amount of  events in forecast period for observed data
         l = time_asf <=time+timef & time_asf > time;
         numreal = sum(l); % observed number of aftershocks
         fRc_Flaw = (numreal-nummod)/sigma;
         fRc_Bst = (numreal-nummod)/fStdBst;
-        pstdstring = num2str(round(100*pstd)/100);
-        cstdstring = num2str(round(100*cstd)/100);
-        kstdstring = num2str(round(10*kstd)/10);
+        pstdstring = num2str(round(pstd,2));
+        cstdstring = num2str(round(cstd,2));
+        kstdstring = num2str(round(kstd,1));
         string=['p = ' num2str(pval) '+-' pstdstring '; c = ' num2str(cval) '+-' cstdstring '; k = ' num2str(kval) '+-' kstdstring];
         title(string)
         yy = get(gca,'ylim');
@@ -204,7 +196,7 @@ function [output] = calc_bootfitF(mycat,time,timef,bootloops,maepi)
         text(xx(2)/10,yy(2)/16,string)
         % Set line for learning period
         yy = get(gca,'ylim');
-        plot([max(time_as) max(time_as)],[0 yy(2)],'k-.')
+        plot([max(learningEventTimes) max(learningEventTimes)],[0 yy(2)],'k-.')
     else
         disp('no result')
     end

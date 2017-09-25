@@ -18,8 +18,7 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     % Create catalog after split time (aftershock sequence)
     vSel = (params.fTstart <= mCatalog.Date & mCatalog.Date < params.fTstart+params.fTimePeriodDays);
     mCatAf = mCatalog.subset(vSel);
-    % Set timef=0, this is used for rate change calculations
-    timef = 0;
+    timef = 0; % this is used for rate change calculations
     nMod = 1; % Omori law computation
     % Compute Omori law
     fTime = params.fTimePeriodDays;

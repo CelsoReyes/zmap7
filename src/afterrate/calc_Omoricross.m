@@ -22,8 +22,8 @@ function calc_Omoricross()
     bv2 = NaN;
     Nmin = 50;  % Minimum number of events
     bGridEntireArea = 0;
-    time = 100; % days
-    timef= 0; % No forecast done, but needed for functions
+    time = days(100); % days
+    timef= days(0); % No forecast done, but needed for functions
     bootloops = 50;
     ra = 5;
     fMaxRadius = 5;

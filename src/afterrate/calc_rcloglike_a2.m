@@ -9,8 +9,8 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,maepi)
     %   mycat       earthquake catalog
     %   time_as     delay times (days)
     %   step        number of quakes to determine forecast period
-    %   time        learning period
-    %   timeF       forecast period
+    %   time        learning period [days]
+    %   timeF       forecast period [days]
     %   bootloops   Number of bootstraps
     %   ZG.maepi       Mainsock values
     %

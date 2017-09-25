@@ -10,11 +10,8 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 %
 report_this_filefun(mfilename('fullpath'));
 ZG=ZmapGlobal.Data;
-try
-    delete(plos1)
-catch
-    disp(' ');
-end
+
+delete(findobj('Tag','plos1'));
 
 axes(h1)
 %zoom off
@@ -62,7 +59,7 @@ R2 = ra;
 % plot Ni clostest events on map as 'x':
 
 hold on
-plos1 = plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk');
+plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','Tag','plos1');
 
 % plot circle containing events as circle
 x = -pi-0.1:0.1:pi;

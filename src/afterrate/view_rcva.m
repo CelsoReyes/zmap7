@@ -195,9 +195,9 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         options = uimenu('Label',' Analyze ');
         uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'callback',@callbackfun_002)
+            'callback',@cb_constR)
         uimenu(options,'Label','Select EQ with const. number',...
-            'callback',@callbackfun_003)
+            'callback',@cb_constN)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -259,7 +259,7 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         view_rcva(lab1,valueMap);
     end
     
-    function callbackfun_002(mysrc,myevt)
+    function cb_constR(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -270,13 +270,12 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         watchoff(rcmap);
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_constN(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state2=true;
-        ZG=ZmapGlobal.Data;
         ZG.hold_state=true;
         plot_constnrbootfitF;
         watchoff(rcmap);
