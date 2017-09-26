@@ -41,31 +41,26 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
     if ~isnan(pval)
 
         figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Forecast aftershock occurence')
-        loopout(:,end+1) = 0;  % add a column of zeros to the end
-
         % Times up to the forecast time
         time_asf= tas(tas <= time+timef);
         time_asf=time_asf;
 
         %% vectorized version. asssumes everything in columns
-        pvalb = loopout(:,1);
-        cvalb = loopout(:,2);
-        kvalb = loopout(:,3);
+        pvalb = loopout.pval;
+        cvalb = loopout.cval;
+        kvalb = loopout.kval;
         tic
         
         %% define the functions that will be used in all the following loops
-        if pval==1
-            modfun=@(~,c,k,t) k.*log(days(t')./c+1);
-        else
-            modfun=@(p,c,k,t) k./(p-1).*(c.^(1-p)-(days(t')+c).^(1-p));
-        end
+        modfun=get_confidence_function(pval);
         
-        conf_lims = modfun(pvalb,cvalb,kvalb,time_asf); %kvalb./(pvalb-1).*(cvalb.^(1-pvalb)-(days(time_asf')+cvalb).^(1-pvalb));
-        loopout(:,4)=max(conf_lims,[],2);
+        conf_lims = modfun(pvalb,cvalb,kvalb,time_asf);
+        loopout.maxes=max(conf_lims,[],2);
         
         plot(time_asf, conf_lims, 'color',[0.8 0.8 0.8]);
         hold on
         toc
+        %{
         %% old double-loop version, to be replaced
         % Compute the confidence limits
         tic
@@ -85,15 +80,14 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
             %drawnow
         end
         toc
-        
         %% temp test.  Remove and then comment out the above loops once it is shown to work!
         assert(isequal(loopout(:,4),conf_lims));
         % end temp test.
-        
+        %}
         
         %% done with the above replacemtns
         % 2nd moment of bootstrap number of forecasted number of events
-        fStdBst = calc_StdDev(loopout(:,4));
+        fStdBst = calc_StdDev(loopout.maxes);
 
         % now calculate the forecast ...        
         %% this is the vectorized version ...

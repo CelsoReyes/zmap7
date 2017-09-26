@@ -1,4 +1,4 @@
-function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,bootloops)
+function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,n_boots)
     % brutebootloglike Bootstrap analysis of Omori parameters calculated by bruteforceloglike
     %
     % [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as, bootloops);
@@ -8,68 +8,47 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,boot
     %
     % Input parameters:
     %   time_as     Delay times [days]
-    %   bootloops   Number of bootstraps
+    %   n_boots   Number of bootstraps
     %
     % Output parameters:
-    %   pv / pstd   p value / standard deviation
-    %   cv / cstd   c value / standard deviation
-    %   kv / kstd   k value / standard deviation
-    %   loopout     contains all results
+    %   pv / pstd   p value [median] / standard deviation
+    %   cv / cstd   c value [median] / standard deviation
+    %   kv / kstd   k value [median] / standard deviation
+    %   loopout     struct containing all results with fields pval, cval, kval
     %
     % Samuel Neukomm / S. Wiemer / J. Woessner
     % last update: 17.07.03
 
+    % figure parameters from bootstraps
     time_as = sort(time_as);
     n = length(time_as);
-    loopout = [];
-    % hWaitbar1 = waitbar(0,'Bootstrapping...');
-    % set(hWaitbar1,'Numbertitle','off','Name','Bootstrap Omori parameters')
-    for j = 1:bootloops
-        clear newtas
-        randnr = ceil(rand(n,1)*n);
-        i = (1:n)';
-        newtas(i,:) = time_as(randnr(i),:); % bootstrap sample
-        [pval, cval, kval] = bruteforceloglike(sort(newtas));
-        loopout = [loopout; pval cval kval];
-        % waitbar(j/bootloops)
+    randnr = ciel(rand(n,n_boots)*n); % n x n_boots
+    loopout=struct(...
+        'pval',nan(n_boots,1),...
+        'cval',nan(n_boots,1),...
+        'kval',nan(n_boots,1));
+    
+    for j = 1:n_boots
+        newtas = time_as(randnr(:,j)); % jth bootstrap sample (n x j)
+        [loopout.pval(j), loopout.cval(j), loopout.kval(j)] = bruteforceloglike(sort(newtas));
     end
-    % close(hWaitbar1)
 
     % New version: Choose mean (p,c,k)-variables by modelling the cumulative number at end of
     % the learning period
 
     % 2nd moment i.e. Standard deviations
-    [pstd] = calc_StdDev(loopout(:,1));
-    [cstd] = calc_StdDev(loopout(:,2));
-    [kstd] = calc_StdDev(loopout(:,3));
-
-    % pstd = round(100*pstd)/100;
-    % cstd = round(100*cstd)/100;
-    % kstd = round(10*kstd)/10;
+    [pstd] = calc_StdDev(loopout.pval);
+    [cstd] = calc_StdDev(loopout.cval);
+    [kstd] = calc_StdDev(loopout.kval);
+    % in some implementations, pstd and cstd are rounded to 2 decimals, kstd to one.
 
     % Compute best fitting pair of variates
-    loopout = [loopout , loopout(:,1)*0];
-    for j = 1:length(loopout(:,1))
-
-        cumnr = (1:length(time_as))'; cumnr_model = [];
-        pvalb = loopout(j,1);
-        cvalb = loopout(j,2);
-        kvalb = loopout(j,3);
-        for i=1:length(time_as)
-            if pval ~= 1
-                cm = kvalb/(pvalb-1)*(cvalb^(1-pvalb)-(time_as(i)+cvalb)^(1-pvalb));
-            else
-                cm = kvalb*log(time_as(i)/cvalb+1);
-            end
-            cumnr_model = [cumnr_model; cm];
-        end
-        loopout(j,4) = max(cumnr_model);
-    end
-
-    [Y, in] = sort(loopout(:,4));
-    loops = loopout(in,:);
-    nMeanVal = round(length(loops(:,1))/2);
-    pv = loops(nMeanVal,1);
-    cv = loops(nMeanVal,2);
-    kv = loops(nMeanVal,3);
+    
+    conf_fun = get_confidence_function(pval(end));
+    conf_lims = conf_fun(loopout.pval, loopout.cval, loopout.kval, time_as);
+    loopout.maxes = max(conf_lims,[],2);
+    
+    pv = median(loopout.pval);
+    cv = median(loopout.cval);
+    kv = median(loopout.kval);
 

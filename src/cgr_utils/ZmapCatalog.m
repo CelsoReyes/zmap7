@@ -93,6 +93,11 @@ classdef ZmapCatalog < handle
             
         end
         
+        function TF=isempty(obj)
+            % isempty is true when there are no events in the catalog
+            TF = obj.Count == 0;
+        end
+        
         function outval = ZmapArray(obj)
             % create a zmap array from this catalog
             outval = [obj.Longitude, obj.Latitude, obj.DecimalYear, obj.Date.Month, obj.Date.Day,...

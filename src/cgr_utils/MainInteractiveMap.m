@@ -98,7 +98,11 @@ classdef MainInteractiveMap
                 'Box','on','TickDir','out');
             xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
-            %strib = [  ' Map of '  ZG.a.Name '; '  char(min(ZG.a.Date),'uuuu-MM-dd HH:mm:ss') ' to ' char(max(ZG.a.Date),'uuuu-MM-dd HH:mm:ss') ];
+            if isempty(ZG.a)
+                errordlg('No data exists in the currenty catalog')
+                title(ax, sprintf('No Events in Catalog :"%s"',ZG.a.Name),'Interpreter','none');
+                return
+            end
             title(ax, MainInteractiveMap.get_title(ZG.a),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k','Interpreter','none');

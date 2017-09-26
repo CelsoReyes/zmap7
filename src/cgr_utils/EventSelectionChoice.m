@@ -69,12 +69,12 @@ classdef EventSelectionChoice < handle
             obj.hUseNevents = uicontrol(obj.ubg1,'Style','radiobutton',...
                 'Units','pixels','Position',[17 38 280 22],...
                 'String','Number of Nearest Events',...
-                'Enable',logical2OnOff(enable_ni));
+                'Enable',logical2onoff(enable_ni));
             
             obj.hUseRadius =  uicontrol(obj.ubg1,'Style','radiobutton',...
                 'Units','pixels','Position',[17 7 280 22],...
                 'String','Events within Constant Radius (km)',...
-                'Enable',logical2OnOff(enable_ra));
+                'Enable',logical2onoff(enable_ra));
             
             obj.hNi=uicontrol(obj.ubg1,'Style','edit',...
                 'Units','pixels','Position',[234 38 72 22],...
@@ -151,7 +151,7 @@ classdef EventSelectionChoice < handle
     end
 end
 
-function out=isempty2OnOff(val)
+function out=isempty2onoff(val)
     % returns 'off' for empty values and 'on' otherwise
     if isempty(val)
         out= 'off';
@@ -159,10 +159,5 @@ function out=isempty2OnOff(val)
         out= 'on';
     end
 end
-function out = logical2OnOff(val)
-    if val
-        out = 'on';
-    else
-        out = 'off';
-    end
+
 end

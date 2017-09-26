@@ -22,7 +22,7 @@ function varargout = circle_select_dlg(varargin)
     
     % Edit the above text to modify the response to help circle_select_dlg
     
-    % Last Modified by GUIDE v2.5 15-Sep-2017 15:30:27
+    % Last Modified by GUIDE v2.5 26-Sep-2017 16:30:55
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -211,3 +211,21 @@ function uibuttongroup1_SelectionChangedFcn(hObject, eventdata, handles)
     % handles    structure with handles and user data (see GUIDATA)
     handles.figure1.UserData.CircleBehavior=hObject.UserData;
 end
+
+
+% --- Executes on button press in show_cumplot.
+function show_cumplot_Callback(hObject, eventdata, handles)
+% hObject    handle to show_cumplot (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of show_cumplot
+
+
+% --- Executes on button press in immediateplot_afterclick.
+function immediateplot_afterclick_Callback(hObject, eventdata, handles)
+% hObject    handle to immediateplot_afterclick (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of immediateplot_afterclick

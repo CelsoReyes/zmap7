@@ -38,58 +38,35 @@ classdef zmap_message_center < handle
                 zmap_message_center();
             end
         end
-        function set_message(messageTitle, messageText, messageColor)
+        function set_message(messageTitle, messageText)
             % set_message displays a message to the user
             %
             % usage:
             %    msgcenter.set_message(title, text)
-            %
-            % see also set_warning, set_error, set_info, clear_message
-            zmap_message_center.create();
-            titleh = findall(0,'tag','zmap_message_title');
-            % TODO see if control still exists
-            titleh.String = messageTitle;
-            texth = findall(0,'tag','zmap_message_text');
-            texth.String = messageText;
-            if exist('messageColor','var')
-                titleh.ForegroundColor = messageColor;
-            end
+            fprintf('\n---<strong> ZMAP MESSAGE: %s </strong>---\n%s\n\n',messageTitle,messageText);
         end
         
         function set_warning(messageTitle, messageText)
-            % set_warning displays a message to the user in orange
-            zmap_message_center.set_message(messageTitle, messageText, [.8 .2 .2]);
+            % set_warning displays a message to the user
+            fprintf('\n+++<strong> ZMAP WARNING: %s </strong>+++\n%s\n\n',messageTitle,messageText);
+            warndlg(messageText,messageTitle);
         end
         
         function set_error(messageTitle, messageText)
-            % set_error displays a message to the user in red
-            zmap_message_center.set_message(messageTitle, messageText, [.8 0 0]);
+            % set_error displays a message to the user
+            fprintf('\n>>><strong> ZMAP ERROR: %s </strong><<<\n%s\n\n',messageTitle,messageText);
+            errordlg(messageText,messageTitle);
         end
         
         function set_info(messageTitle, messageText)
-            % set_info displays a messaget ot the user in blue
-            zmap_message_center.set_message(messageTitle, messageText, [0 0 0.8]);
+            % set_info displays a message to the use
+            fprintf('\n---<strong> ZMAP INFO: %s </strong>---\n%s\n\n',messageTitle,messageText);
+            helpdlg(messageText,messageTitle);
         end
         
         function clear_message()
-            % clear_message will return the message center to neutral state
-            %
-            %  usage:
-            %      msgcenter.clear_message()
-            zmap_message_center.create();
-            titleh = findall(0,'tag','zmap_message_title');
-            % TODO see if control still exists
-            if ~isempty(titleh)
-                titleh.String = 'Messages';
-                titleh.ForegroundColor = 'k';
-            end
-            texth = findall(0,'tag','zmap_message_text');
-            % TODO see if control still exists
-            if ~isempty(texth)
-                texth.String = '';
-            end
-            zmap_message_center.update_catalog();
             
+            % DO NOTHING
         end
         
         function update_catalog()
@@ -115,8 +92,6 @@ function h = create_message_figure()
     %   TAG                 FUNCTION
     %   quit_button         leave matlab(?)
     %   welcome_text        welcome to zmap v whatever
-    %   zmap_message_title  title of message
-    %   zmap_message_text   text of message
     
     hilighted_color = [0.8 0 0];
     
@@ -128,73 +103,33 @@ function h = create_message_figure()
     rng('shuffle');
     
     set(h,'NumberTitle','off',...
-        'Name','Message Window',...
+        'Name','Zmap Info Center',...
         'Units','pixel',...
         'Menu','none',...
         'backingstore','off',...
         'tag','zmap_message_window',...
         'Resize','off',...
-        'pos',[23 212 340 585]);
+        'pos',[23 212 340 485]);
     %h.Units = 'normalized';
-    ax = axes('units','normalized','Position',[0 0 1 1]);;
+    ax = axes('units','normalized','Position',[0 0 1 1]);
     ax.Units = 'pixel';
     %ax.Units = 'normalized';
     ax.Visible = 'off';
-    te1 = text(.05,.975, welcome_text);
-    set(te1,'FontSize',ZmapGlobal.Data.fontsz.l,'Color','k','FontWeight','bold','Tag','welcome_text');
-    
-    te2 = text(0.05,0.94,'   ') ;
-    set(te2,'FontSize',ZmapGlobal.Data.fontsz.s,'Color','k','FontWeight','bold','Tag','te2');
+    uicontrol('Style','text',...
+        'Units','pixel',...
+        'Position',[0 430 300 35],...
+        'FontSize',ZmapGlobal.Data.fontsz.l,...
+        'FontWeight','bold',...
+        'String', welcome_text,...
+        'Tag','welcome_text');
     
     % quit button
     uicontrol('Style','Pushbutton',...
-        'Position', [235 555 85 30],...
+        'Position', [235 15 85 30],...
         'Callback','qui', ...
         'String','Quit', ...
         'Visible','on',...
         'Tag', 'quit_button');
-    
-    
-    % Display the message text
-    %
-    top=0.55;
-    left=0.05;
-    right=0.95;
-    bottom=0.05;
-    labelHt=0.050;
-    spacing=0.05;
-    
-    % First, the Text Window frame
-    frmBorder=0.02;
-    frmPos=[left-frmBorder bottom-frmBorder ...
-        (right-left)+2*frmBorder (top-bottom)+2*frmBorder];
-    uicontrol( ...
-        'Style','frame', ...
-        'Position',[10 360 320 180], ...
-        'BackgroundColor',[0.6 0.6 0.6]);
-    
-    % Then the text label
-    labelPos=[left top-labelHt (right-left) labelHt];
-    
-    uicontrol( ...
-        'Style','text', ...
-        'Position',[20 500 300 30], ...
-        'ForegroundColor',hilighted_color, ...
-        'FontWeight','bold',...
-        'FontSize',ZmapGlobal.Data.fontsz.l,...
-        'Tag', 'zmap_message_title', ...
-        'String',titStr);
-    
-    txtPos=[left bottom (right-left) top-bottom-labelHt-spacing];
-    txtHndlList=uicontrol( ...
-        'Style','edit', ...
-        'Max',20, ...
-        'String',messtext, ...
-        'BackgroundColor',[1 1 1], ...
-        'Visible','off', ...
-        'Tag', 'zmap_message_text', ...
-        'Position',[20 373 300 125]);
-    set(txtHndlList,'Visible','on');
     
     %%  add catalog details
     
@@ -202,7 +137,7 @@ function h = create_message_figure()
     % create panel to hold catalog details
     cat1panel = uipanel(h,'Title','Main Catalog Summary',...
         'Units','pixels',...
-        'Position',[15 190 315 160],...
+        'Position',[15 240 315 160],...
         'Tag', 'zmap_curr_cat_pane');
     
     
@@ -214,7 +149,7 @@ function h = create_message_figure()
         'FontName','FixedWidth',...
         'FontSize',10,...
         'FontWeight','bold',...
-        'Tag','zmap_curr_cat_summary');
+        'Tag','cat_summary');
     
     %% BUTTONS
     % edit catalog
@@ -223,7 +158,7 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.05 0.05 .3 .3],...
         'Callback',@do_catalog_overview,...
-        'Tag','zmap_curr_cat_editbutton');
+        'Tag','editbutton');
     
     % show map for this catalog
     uicontrol('Parent',cat1panel,'Style','Pushbutton', ...
@@ -231,7 +166,7 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.65 0.05 .3 .3],...
         'Callback',@(s,e) update(mainmap()),...
-        'Tag','zmap_curr_cat_mapbutton');
+        'Tag','useandmapbutton');
     
     % show timeseries for this catalog
     uicontrol('Parent',cat1panel,'Style','Pushbutton', ...
@@ -239,13 +174,13 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .3],...
         'Callback','timeplot(ZG.a)',... change to bring up timeseries
-        'Tag','zmap_curr_cat_tsbutton');
+        'Tag','tsbutton');
     
     %% selected catalog panel
     % create panel to hold details for selected part of catalog
     cat2panel = uipanel(h,'Title','Selected Catalog Summary',...
         'Units','pixels',...
-        'Position',[15,10, 315, 160],...
+        'Position',[15,60, 315, 160],...
         'Tag', 'zmap_sel_cat_pane');
     
     
@@ -257,7 +192,7 @@ function h = create_message_figure()
         'FontName','FixedWidth',...
         'FontSize',10,...
         'FontWeight','bold',...
-        'Tag','zmap_sel_cat_summary');
+        'Tag','cat_summary');
     %% BUTTONS
     % update catalog
     uicontrol('Parent',cat2panel,'Style','Pushbutton', ...
@@ -265,7 +200,7 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.05 0.05 .3 .3],...
         'Callback',@do_selected_catalog_overview,...
-        'Tag','zmap_sel_cat_editbutton');
+        'Tag','editbutton');
     
     % use this catalog, and show map
     uicontrol('Parent',cat2panel,'Style','Pushbutton', ...
@@ -274,7 +209,7 @@ function h = create_message_figure()
         'Position',[0.65 0.05 .3 .3],...
         'Callback','ZG=ZmapGlobal.Data; replaceMainCatalog(ZG.newcat);zmap_message_center.update_catalog();update(mainmap())',...
         'TooltipString','Makes this catalog the active catalog',...
-        'Tag','zmap_sel_cat_usebutton');
+        'Tag','useandmapbutton');
     
     % show timeseries for this catalog
     uicontrol('Parent',cat2panel,'Style','Pushbutton', ...
@@ -282,7 +217,7 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .3],...
         'Callback','timeplot(ZG.newcat)',... change to bring up timeseries
-        'Tag','zmap_sel_cat_tsbutton');
+        'Tag','tsbutton');
     
     update_current_catalog_pane();
     update_selected_catalog_pane();
@@ -293,7 +228,6 @@ function do_catalog_overview(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
     replaceMainCatalog(catalog_overview(ZG.a));
     zmap_message_center.update_catalog();
-    %update_current_catalog_pane(s);
 end
 
 function do_selected_catalog_overview(s,~)
@@ -301,72 +235,55 @@ function do_selected_catalog_overview(s,~)
 ZG=ZmapGlobal.Data; % get zmap globals
 ZG.newcat = catalog_overview(ZG.newcat);
     zmap_message_center.update_catalog();
-    %update_current_catalog_pane(s);
-    %update_selected_catalog_pane(s);
-end
-
-function set_mapbutton_enable(val)
-    h = findobj( 'Tag','zmap_curr_cat_mapbutton');
-    h.Enable = val;
-end
-function set_timeseriesbutton_enable(val)
-    h = findobj( 'Tag','zmap_curr_cat_tsbutton');
-    h.Enable = val;
-end
-
-function set_editbutton_enable(val)
-    h = findobj( 'Tag','zmap_curr_cat_editbutton');
-    h.Enable = val;
 end
 
 function update_current_catalog_pane(~,~)
     
-ZG=ZmapGlobal.Data; % get zmap globals
-    if ~isempty(ZG.a)
-        if isa(ZG.a,'ZmapCatalog')
-            mycat = ZG.a;
-        elseif isnumeric(ZG.a) && size(ZG.a,2)>=9
-            % old style zmap array
-            mycat=ZmapCatalog(ZG.a,'a');
-        else
-            % no map loaded, apparently
-            warning('current catalog doesn''t seem to contain the right kind of data');
-            h = findall(0,'tag','zmap_curr_cat_summary');
-            h.String = 'No catalog loaded';
-            set_mapbutton_enable('off');
-            set_timeseriesbutton_enable('off');
-            set_editbutton_enable('off');
-            return
-        end
-        h = findall(0,'tag','zmap_curr_cat_summary');
-        h.String = mycat.summary('simple');
-        set_mapbutton_enable('on');
-        set_timeseriesbutton_enable('on');
-        set_editbutton_enable('on');
-        return
-    else
-        h = findall(0,'tag','zmap_curr_cat_summary');
-        h.String = 'No catalog loaded';
-        set_mapbutton_enable('off');
-        set_timeseriesbutton_enable('off');
-        set_editbutton_enable('off');
-    end
+    ZG=ZmapGlobal.Data; % get zmap globals
+    
+    % TODO (maybe) make sure it is a catalog, if not convert.
+    nocat_message='No catalog loaded';
+    summary_depth='simple';
+    update_catalog_pane('zmap_curr_cat_pane',ZG.a,summary_depth, nocat_message);
 end
 
 function update_selected_catalog_pane(~,~)
 
-ZG=ZmapGlobal.Data; % get zmap globals
+    ZG=ZmapGlobal.Data; % get zmap globals
     
-    if ~isempty(ZG.newcat)
-        if ~isa(ZG.newcat,'ZmapCatalog')
-            ZG.newcat=ZmapCatalog(ZG.newcat,'ZG.newcat');
-        end
-        h = findall(0,'tag','zmap_sel_cat_summary');
-        h.String = ZG.newcat.summary('simple');
-    else
-        h = findall(0,'tag','zmap_sel_cat_summary');
-        h.String = 'No subset selected';
-    end
+    % TODO (maybe) make sure it is a catalog, if not convert.
+    nocat_message='No subset selected';
+    summary_depth='simple';
+    update_catalog_pane('zmap_sel_cat_pane',ZG.newcat,summary_depth, nocat_message);
+    
 end
 
-
+function update_catalog_pane(pane, mycat, summary_depth, nocat_message)
+    %update_catalog_pane updates the ui controls in the summary panes
+    %
+    % update_catalog_pane(pane, mycat, summary_depth, nocat_message)
+    %  pane : either handle or tag for the uipanel containing controls
+    % mycat: catalog of interest
+    % nocat_message: message to show when catalog is empty
+    
+    if ishandle(pane)
+        src=pane;
+    else
+        src=findobj('Tag',pane); 
+    end
+    
+    state=logical2onoff(~isempty(mycat));
+    affected={'tsbutton','useandmapbutton','editbutton'};
+    for i=1:numel(affected)
+        set(findobj(src,'Tag',affected{i}),'Enable',state);
+    end
+    if ~isempty(mycat)
+        s = mycat.summary(summary_depth);
+    else
+        s= nocat_message;
+    end
+    set(findobj(src,'Tag','cat_summary'), 'String', s);
+    drawnow
+end
+    
+    
