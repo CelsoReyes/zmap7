@@ -572,19 +572,19 @@ end
     tmp=import_fdsn_event(1, queryset{:});
     ZmapMessagebar('Converting to a ZmapCatalog');
     if ~isa(tmp,'ZmapCatalog')
-        ZG.a=ZmapCatalog(tmp);
+        ZG.primeCatalog=ZmapCatalog(tmp);
     else
-        ZG.a=tmp;
+        ZG.primeCatalog=tmp;
     end
     % name it
     
     provider_details=handles.data_provider.UserData(handles.data_provider.Value);
-    if isempty(ZG.a.Name) %TODO move this functionality into import_fdsn_event
-        ZG.a.Name = [provider_details.name,'_fdsn'];
+    if isempty(ZG.primeCatalog.Name) %TODO move this functionality into import_fdsn_event
+        ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
     end
-    nm=inputdlg('Provide a catalog name (used in plots, files)','Name Catalog',1,{ZG.a.Name});
+    nm=inputdlg('Provide a catalog name (used in plots, files)','Name Catalog',1,{ZG.primeCatalog.Name});
     if ~isempty(nm)
-        ZG.a.Name=nm{1};
+        ZG.primeCatalog.Name=nm{1};
     end
     
     clear tmp

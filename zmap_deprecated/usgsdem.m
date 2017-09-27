@@ -292,7 +292,7 @@ function A = Adescription
 
 
 
-    for i=1:ZG.a.Count;
+    for i=1:ZG.primeCatalog.Count;
         if isempty(A(i).type)
             A(i).type = 'char';
         end

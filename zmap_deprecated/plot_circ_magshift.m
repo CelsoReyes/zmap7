@@ -35,8 +35,8 @@ pause(0.1)
 
 %  Calculate distance for each earthquake from center point
 % Select data in radius ra
-[mask, furthest_event_km] = eventsInRadius(ZG.a, ya0, xa0, ra);
-ZG.newt2 = ZG.a.subset(mask);
+[mask, furthest_event_km] = eventsInRadius(ZG.primeCatalog, ya0, xa0, ra);
+ZG.newt2 = ZG.primeCatalog.subset(mask);
 
 messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
 disp(messtext)

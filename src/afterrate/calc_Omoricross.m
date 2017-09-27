@@ -6,7 +6,7 @@ function calc_Omoricross()
     % last update: 20.10.04
     ZG=ZmapGlobal;
     report_this_filefun(mfilename('fullpath'));
-    wCat='a'; % working catalog name
+    wCat='primeCatalog'; % working catalog name
     
     myvalues=table;
     myvalues.Properties.Description='Omori cross-section parameters';

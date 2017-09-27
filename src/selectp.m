@@ -1,8 +1,8 @@
 function selectp(in_or_out)
     %  This .m file selects the earthquakes within a polygon
-    %  and plots them. Sets "a" equal to the catalogue produced after the
-    %  general parameter selection. Operates on "storedcat", replaces "a"
-    %  with new data and makes "a" equal to ZG.newcat
+    %  and plots them. Sets "primeCatalog" equal to the catalogue produced after the
+    %  general parameter selection. Operates on "storedcat", replaces "primeCatalog"
+    %  with new data and makes "primeCatalog" equal to ZG.newcat
     %
     %   operates on main map window
     % plot tags:
@@ -23,7 +23,7 @@ function selectp(in_or_out)
     ZG.newt2 = [ ];           % reset catalogue variables
     %a=storedcat;              % uses the catalogue with the pre-selected main
     % general parameters
-    ZG.newcat = ZG.a;
+    ZG.newcat = ZG.primeCatalog;
     
     delete(findobj('Tag','mouse_points_overlay'));
     delete(findobj('Tag','poly_selected_events'));
@@ -36,13 +36,13 @@ function selectp(in_or_out)
     if ~exist('in_or_out','var')
         in_or_out = 'inside';
     end
-    if isnumeric(ZG.a)
+    if isnumeric(ZG.primeCatalog)
         error('old catalog');
     else
-        mask = polygon_filter(x,y, ZG.a.Longitude, ZG.a.Latitude, in_or_out);
-        ZG.a.addFilter(mask);
-        ZG.newt2 = ZG.a.getCropped();
-        ZG.a.clearFilter();
+        mask = polygon_filter(x,y, ZG.primeCatalog.Longitude, ZG.primeCatalog.Latitude, in_or_out);
+        ZG.primeCatalog.addFilter(mask);
+        ZG.newt2 = ZG.primeCatalog.getCropped();
+        ZG.primeCatalog.clearFilter();
         
         % Plot of new catalog
         washeld=ishold(ax); hold(ax,'on');
@@ -88,7 +88,7 @@ function selectp(in_or_out)
     %
     %   The new catalog (ZG.newcat) with points only within the
     %   selected Polygon is created and resets the original
-    %   "a" .
+    %   "primeCatalog" .
     %
     %++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     

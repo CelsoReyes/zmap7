@@ -31,8 +31,8 @@ function rc_cross_a2()
     fMaxRadius = 5;
     
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1);
-    ZG.a=ZG.a.subset(l);
+    l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
+    ZG.primeCatalog=ZG.primeCatalog.subset(l);
     
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -297,7 +297,7 @@ function rc_cross_a2()
             if tgl1 == 0   % take point within r
                 % Use Radius to determine grid node catalogs
                 l3 = l <= ra;
-                b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
+                b = ZG.primeCatalog.subset(l3);      % new data per grid point (b) is sorted in distance
                 rd = ra;
                 vDist = sort(l(l3));
                 fMaxDist = max(vDist);
@@ -575,7 +575,7 @@ function rc_cross_a2()
             valueMap = mRelchange;
             lab1 = 'Rate change';
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             

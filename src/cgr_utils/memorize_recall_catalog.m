@@ -8,21 +8,21 @@ function memorize_recall_catalog()
     
     if hasMemorized
         % ask to memorize new catalog, or recall existing catalog
-        todo=questdlg(['Memorize "',ZG.a.Name ,'"or  Recall "',ZG.memorized_catalogs.Name,'"?',...
+        todo=questdlg(['Memorize "',ZG.primeCatalog.Name ,'"or  Recall "',ZG.memorized_catalogs.Name,'"?',...
             newline, newline, 'RECALL will replace all active catalogs with', newline,...
             ZG.memorized_catalogs.summary('simple'), newline, newline...
             'MEMORIZE will replace currently memorized catalog with', newline,...
-            ZG.a.summary('simple') ],'Memorize/Recall Catalog','Memorize','Recall','Cancel','Cancel');
+            ZG.primeCatalog.summary('simple') ],'Memorize/Recall Catalog','Memorize','Recall','Cancel','Cancel');
     else
         todo='Memorize';
     end
     switch todo
         case 'Memorize'
-            ZG.memorized_catalogs = ZG.a;
-            msgbox(['Catalog ' ZG.a.Name ' has been Memorized.    '],'Memorize Catalog');
+            ZG.memorized_catalogs = ZG.primeCatalog;
+            msgbox(['Catalog ' ZG.primeCatalog.Name ' has been Memorized.    '],'Memorize Catalog');
         case 'Recall'
             replaceMainCatalog(ZG.memorized_catalogs);
-            msgbox(['Catalog ' ZG.a.Name ' has been Recalled.     '],'Recall Catalog');
+            msgbox(['Catalog ' ZG.primeCatalog.Name ' has been Recalled.     '],'Recall Catalog');
             
             ZG.newcat = ZG.memorized_catalogs; 
             ZG.newt2= ZG.memorized_catalogs;

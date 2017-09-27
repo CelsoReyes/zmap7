@@ -44,10 +44,10 @@ function plotstations(ax, options)
     if ~isfield(options,'MarkerFaceColor'), options.MarkerFaceColor='gray';end
     if ~isfield(options,'StartBefore')
         %     w   [x   y ]  z   want stations that start some time before y and end some time after x
-        options.StartTime=max(ZG.a.Date);
+        options.StartTime=max(ZG.primeCatalog.Date);
     end
     if ~isfield(options,'EndAfter')
-        options.EndTime=min(ZG.a.Date);
+        options.EndTime=min(ZG.primeCatalog.Date);
     end
     stations=ZG.features('stations');
     if isempty(stations)

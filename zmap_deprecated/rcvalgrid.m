@@ -18,7 +18,7 @@ report_this_filefun(mfilename('fullpath'));
 global valeg CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
-valm1 = min(ZG.a.Magnitude);
+valm1 = min(ZG.primeCatalog.Magnitude);
 prf = NaN;
 if sel == 'in'
     % Set the grid parameter
@@ -34,8 +34,8 @@ if sel == 'in'
     fMaxRadius = 5;
 
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude >= valm1;
-    ZG.newt2=ZG.a.subset(l);
+    l = ZG.primeCatalog.Date > ZG.maepi.Date(1) & ZG.primeCatalog.Magnitude >= valm1;
+    ZG.newt2=ZG.primeCatalog.subset(l);
 
     ZG.hold_state2=true;
     timeplot(ZG.newt2)
@@ -296,9 +296,9 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(ZG.a.Date)  ;
-    n = ZG.a.Count;
-    teb = max(ZG.a.Date) ;
+    t0b = min(ZG.primeCatalog.Date)  ;
+    n = ZG.primeCatalog.Count;
+    teb = max(ZG.primeCatalog.Date) ;
     tdiff = round((teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
@@ -321,7 +321,7 @@ if sel == 'ca'
         i2 = i2+1;
 
         % calculate distance from center point and sort with distance
-        l=ZG.a.epicentralDistanceTo(x,y);
+        l=ZG.primeCatalog.epicentralDistanceTo(x,y);
         [s,is] = sort(l);
         b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
 
@@ -329,7 +329,7 @@ if sel == 'ca'
         if tgl1 == 0   % take point within r
             % Use Radius to determine grid node catalogs
             l3 = l <= ra;
-            b = ZG.a.subset(l3);      % new data per grid point (b) is sorted in distance
+            b = ZG.primeCatalog.subset(l3);      % new data per grid point (b) is sorted in distance
             rd = ra;
             vDist = sort(l(l3));
             fMaxDist = max(vDist);

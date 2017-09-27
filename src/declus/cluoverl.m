@@ -56,7 +56,7 @@ function cluoverl(var1)
         set(gca,'Visible','off')
         hold off
         minde = 0.;
-        maxde = max(ZG.a.Depth);
+        maxde = max(ZG.primeCatalog.Depth);
 
         dep1 = round(0.333*maxde);
         dep2 = round(0.666*maxde);
@@ -66,40 +66,40 @@ function cluoverl(var1)
 
 
         % find min and Maximum axes points
-        s1 = max(ZG.a.Longitude);
-        s2 = min(ZG.a.Longitude);
-        s3 = max(ZG.a.Latitude);
-        s4 = min(ZG.a.Latitude);
+        s1 = max(ZG.primeCatalog.Longitude);
+        s2 = min(ZG.primeCatalog.Longitude);
+        s3 = max(ZG.primeCatalog.Latitude);
+        s4 = min(ZG.primeCatalog.Latitude);
         ni = ZG.ni;
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
         axes('position',rect)
         %
-        % find start and end time of catalogue "a"
+        % find start and end time of catalogue "primeCatalog"
         %
-        t0b = min(ZG.a.Date);
-        n = ZG.a.Count;
-        teb = max(ZG.a.Date) ;
+        t0b = min(ZG.primeCatalog.Date);
+        n = ZG.primeCatalog.Count;
+        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_dur);
 
 
-        n = ZG.a.Count;
+        n = ZG.primeCatalog.Count;
 
         % plot earthquakes (differnt colors for varous depth layers) as
         % defined in "startzmap"
         %
         hold on
         dplo1_h =plot(...
-            a.Longitude(ZG.a.Depth<=dep1),...
-            a.Latitude(ZG.a.Depth<=dep1),'.b');
+            ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep1),...
+            ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep1),'.b');
         set(dplo1_h,'MarkerSize',ZG.ms6,'Marker',ty)
         dplo2_h =plot(...
-            a.Longitude(ZG.a.Depth<=dep2&ZG.a.Depth>dep1),...
-            a.Latitude(ZG.a.Depth<=dep2&ZG.a.Depth>dep1),'.y');
+            ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1),...
+            ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1),'.y');
         set(dplo2_h,'MarkerSize',ZG.ms6,'Marker',ty);
         dplo3_h =plot(...
-            a.Longitude(ZG.a.Depth<=dep3&ZG.a.Depth>dep2),...
-            a.Latitude(ZG.a.Depth<=dep3&ZG.a.Depth>dep2),'.r');
+            ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2),...
+            ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2),'.r');
         set(dplo3_h,'MarkerSize',ZG.ms6,'Marker',ty)
 
         axis([ s2 s1 s4 s3])
@@ -143,10 +143,10 @@ function cluoverl(var1)
         cla
         set(gca,'visible','off')
         hold off
-        s1 = max(ZG.a.Longitude);       %limits for area plot
-        s2 = min(ZG.a.Longitude);
-        s3 = max(ZG.a.Latitude);
-        s4 = min(ZG.a.Latitude);
+        s1 = max(ZG.primeCatalog.Longitude);       %limits for area plot
+        s2 = min(ZG.primeCatalog.Longitude);
+        s3 = max(ZG.primeCatalog.Latitude);
+        s4 = min(ZG.primeCatalog.Latitude);
         if s1==s2                %to avoid error when all earthquakes have
             s1=s1+0.05;              %same longitude and/or latitude
             s2=s2-0.05;
@@ -159,15 +159,15 @@ function cluoverl(var1)
         rect = [0.15,  0.12, 0.75, 0.75];
         axes('position',rect)
         %
-        % find start and end time of catalogue "a"
+        % find start and end time of catalogue "primeCatalog"
         %
-        t0b = min(ZG.a.Date);
-        n = ZG.a.Count;
-        teb = max(ZG.a.Date) ;
+        t0b = min(ZG.primeCatalog.Date);
+        n = ZG.primeCatalog.Count;
+        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_dur);
         %define fore and aftershocks
         %
-        tmp = find(ZG.a.Magnitude==max(ZG.a.Magnitude));     %index in a of first mainshock
+        tmp = find(ZG.primeCatalog.Magnitude==max(ZG.primeCatalog.Magnitude));     %index in a of first mainshock
         if length(tmp)>1
             tmp=tmp(1,1);
         end
@@ -176,23 +176,23 @@ function cluoverl(var1)
         %
         hold on
         if tmp-1>=1
-            fore_h=plot(a.Longitude(1:tmp-1),a.Latitude(1:tmp-1),'.b');
+            fore_h=plot(ZG.primeCatalogLongitude(1:tmp-1),ZG.primeCatalog.Latitude(1:tmp-1),'.b');
             if isempty(aftersh)                           %only at first call
-                foresh=a.subset(1:tmp-1);
+                foresh=aZG.primeCatalog.subset(1:tmp-1);
             end
         else
             if exist('fore_h')
                 fore_h=[];
             end
         end
-        main_h=plotZG.a.Longitude(tmp),ZG.a.Latitude(tmp),'xm');
-        mainsh=ZG.a.subset(tmp);
+        main_h=plotZG.primeCatalog.Longitude(tmp),ZG.primeCatalog.Latitude(tmp),'xm');
+        mainsh=ZG.primeCatalog.subset(tmp);
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);
         if tmp+1<=n
-            after_h=plot(a.Longitude(tmp+1:n),a.Latitude(tmp+1:n),'.r');
+            after_h=plot(ZG.primeCatalog.Longitude(tmp+1:n),ZG.primeCatalog.Latitude(tmp+1:n),'.r');
             if isempty(aftersh)
-                aftersh=a.subset(tmp+1:n);
+                aftersh=ZG.primeCatalog.subset(tmp+1:n);
             end
         else
             if exist('after_h')

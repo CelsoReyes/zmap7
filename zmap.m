@@ -38,13 +38,17 @@ end
 tested_systems = {'MAC'};
 prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
 if ~ismember( sys(1:3), tested_systems)
-    errordlg(' Warning: ZMAP has not been tested on this computer type.','Warning!')
+    warndlg(' Warning: ZMAP has not been tested on this computer type.','Warning!')
     pause(5)
 end
 
+% set system dependent initial variables
+sys_initializer = str2func(['ini_zmap_', computer]);
+sys_initializer();
 
-% set system dpendent initial variables
+% set local preference variables
 ini_zmap
+
 
 %{
 %Create the 5 data categories

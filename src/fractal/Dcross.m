@@ -14,7 +14,7 @@ global eq0p
 
 % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
 % D = [x,y,z ]
-Da = [eq0p(1,:)' eq0p(2,:)' ZG.a.Date ZG.a.Date.Month ZG.a.Date.Day ZG.a.Magnitude ZG.a.Depth];
+Da = [eq0p(1,:)' eq0p(2,:)' ZG.primeCatalog.Date ZG.primeCatalog.Date.Month ZG.primeCatalog.Date.Day ZG.primeCatalog.Magnitude ZG.primeCatalog.Depth];
 Da0 = find(Da(:,7) > -2.99);
 Da = Da.subset(Da0);
 clear Da0;
@@ -344,7 +344,7 @@ function my_load()
         old = valueMap;
 
         nlammap
-        [xsecx xsecy,  inde] =mysect(ZG.a.Latitude',ZG.a.Longitude',ZG.a.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         hold on
         plot(newgri(:,1),newgri(:,2),'+k')

@@ -13,7 +13,7 @@ function inpudenew()
     %routine works on ZG.newcat
     %
     if isempty(ZG.newcat)
-        ZG.newcat=ZG.a;
+        ZG.newcat=ZG.primeCatalog;
     end
     
     

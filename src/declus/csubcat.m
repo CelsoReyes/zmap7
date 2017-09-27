@@ -25,10 +25,10 @@ function csubcat()
     end
     
     % For time and magnitude cut window
-    minma2=min(ZG.a.Magnitude);
-    maxma2=max(ZG.a.Magnitude);
-    minde=min(ZG.a.Depth);
-    maxde=max(ZG.a.Depth);
+    minma2=min(ZG.primeCatalog.Magnitude);
+    maxma2=max(ZG.primeCatalog.Magnitude);
+    minde=min(ZG.primeCatalog.Depth);
+    maxde=max(ZG.primeCatalog.Depth);
     
     % Find out if figure already exists
     %
@@ -63,26 +63,26 @@ function csubcat()
     hold off
     
     % find min and Maximum axes points
-    s1 = max(ZG.a.Longitude);
-    s2 = min(ZG.a.Longitude);
-    s3 = max(ZG.a.Latitude);
-    s4 = min(ZG.a.Latitude);
+    s1 = max(ZG.primeCatalog.Longitude);
+    s2 = min(ZG.primeCatalog.Longitude);
+    s3 = max(ZG.primeCatalog.Latitude);
+    s4 = min(ZG.primeCatalog.Latitude);
     orient landscape
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     rect = [0.15,  0.20, 0.75, 0.65];
     axes('position',rect)
     %
-    % find start and end time of catalogue "a"
+    % find start and end time of catalogue "primeCatalog"
     %
     
     
-    t0b = min(ZG.a.Date);
-    n = ZG.a.Count;
-    teb = max(ZG.a.Date) ;
+    t0b = min(ZG.primeCatalog.Date);
+    n = ZG.primeCatalog.Count;
+    teb = max(ZG.primeCatalog.Date) ;
     tdiff =round(teb - t0b)/days(ZG.bin_dur);
     
     
-    n = ZG.a.Count;
+    n = ZG.primeCatalog.Count;
     
     % plot earthquakes (differnt colors for varous depth layers) as
     % defined in "startzmap"
@@ -92,11 +92,11 @@ function csubcat()
     %plot earthquakes according to depth
     switch (xxxxxxxx) %TOFIX no idea what this is supposed to be swithicng on. does it work at all? has it worked (ever)?
         case 'depth'
-            deplo1 =plot(a(ZG.a.Depth<=dep1,1),a(ZG.a.Depth<=dep1,2),'.b');
+            deplo1 =plot(a(ZG.primeCatalog.Depth<=dep1,1),a(ZG.primeCatalog.Depth<=dep1,2),'.b');
             set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
-            deplo2 =plot(a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,1),a(ZG.a.Depth<=dep2&ZG.a.Depth>dep1,2),'.g');
+            deplo2 =plot(a(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1,1),a(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1,2),'.g');
             set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
-            deplo3 =plot(a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,1),a(ZG.a.Depth<=dep3&ZG.a.Depth>dep2,2),'.r');
+            deplo3 =plot(a(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2,1),a(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2,2),'.r');
             set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3)
             ls1 = sprintf('Depth < %3.1f km',dep1);
             ls2 = sprintf('Depth < %3.1f km',dep2);
@@ -104,11 +104,11 @@ function csubcat()
             
             %plot earthquakes according time
         case  'tim'
-            deplo1 =plot(a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,1),a(ZG.a.Date<=tim2&ZG.a.Date>=tim1,2),'.b');
+            deplo1 =plot(a(ZG.primeCatalog.Date<=tim2&ZG.primeCatalog.Date>=tim1,1),a(ZG.primeCatalog.Date<=tim2&ZG.primeCatalog.Date>=tim1,2),'.b');
             set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
-            deplo2 =plot(a(ZG.a.Date<=tim3&ZG.a.Date>tim2,1),a(ZG.a.Date<=tim3&ZG.a.Date>tim2,2),'.g');
+            deplo2 =plot(a(ZG.primeCatalog.Date<=tim3&ZG.primeCatalog.Date>tim2,1),a(ZG.primeCatalog.Date<=tim3&ZG.primeCatalog.Date>tim2,2),'.g');
             set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
-            deplo3 =plot(a(ZG.a.Date<=tim4&ZG.a.Date>tim3,1),a(ZG.a.Date<=tim4&ZG.a.Date>tim3,2),'.r');
+            deplo3 =plot(a(ZG.primeCatalog.Date<=tim4&ZG.primeCatalog.Date>tim3,1),a(ZG.primeCatalog.Date<=tim4&ZG.primeCatalog.Date>tim3,2),'.r');
             set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3)
             
             ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -237,7 +237,7 @@ function csubcat()
     function callbackfun_histogram(mysrc,myevt,hist_type)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        hisgra(ZG.a, hist_type);
+        hisgra(ZG.primeCatalog, hist_type);
     end
     
     function callbackfun_001(mysrc,myevt)

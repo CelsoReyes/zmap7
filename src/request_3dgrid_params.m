@@ -1,13 +1,13 @@
 function [dLon_deg,dLat_deg,dz_km,maxZ_km,minZ_km] = request_3dgrid_params(tit)
     % prompt for grid spacing.
-    % uses catalog "a" for default depth limits
+    % uses catalog "primeCatalog" for default depth limits
     
     dx = 0.1;
     dy = 0.1 ;
     dz = 5.00 ;
     ZG=ZmapGlobal.Data;
     
-    def= {dx, dy, dz, max(ZG.a.Depth), min(ZG.a.Depth)}; % as numbers
+    def= {dx, dy, dz, max(ZG.primeCatalog.Depth), min(ZG.primeCatalog.Depth)}; % as numbers
     defstr = cellfun(@num2str,def,'UniformOutput',false); % converted to strings
     
     if ~exist('tit','var') || isempty(tit)

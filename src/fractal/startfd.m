@@ -36,12 +36,12 @@ switch (org)
         stdx = 0.5;
         stdy = 0.5;
         stdz = 1;
-        long1 = min(ZG.a.Longitude);
-        long2 = max(ZG.a.Longitude);
-        lati1 = min(ZG.a.Latitude);
-        lati2 = max(ZG.a.Latitude);
-        dept1 = min(abs(ZG.a.Depth));
-        dept2 = max(abs(ZG.a.Depth));
+        long1 = min(ZG.primeCatalog.Longitude);
+        long2 = max(ZG.primeCatalog.Longitude);
+        lati1 = min(ZG.primeCatalog.Latitude);
+        lati2 = max(ZG.primeCatalog.Latitude);
+        dept1 = min(abs(ZG.primeCatalog.Depth));
+        dept2 = max(abs(ZG.primeCatalog.Depth));
 
         E = a;
         randomcat;

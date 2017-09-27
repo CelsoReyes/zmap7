@@ -15,31 +15,31 @@ function plotmima(var1)
     
     if var1 == 1
         
-        for i = 1:ZG.a.Count
-            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'ro');
+        for i = 1:ZG.primeCatalog.Count
+            pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'ro');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc)
         end
         
     elseif var1 == 2
         
-        for i = 1:ZG.a.Count
-            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
+        for i = 1:ZG.primeCatalog.Count
+            pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'bx');
             hold on
             set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc)
         end
         
     elseif var1 == 3
         
-        for i = 1:ZG.a.Count
-            pl =  plot(ZG.a.Longitude(i),ZG.a.Latitude(i),'bx');
+        for i = 1:ZG.primeCatalog.Count
+            pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'bx');
             hold on
             c = mi(i,2)/max(mi(:,2));
             set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc,'Color',[ c c c ] )
         end
         
     elseif var1 == 4
-        pl =  plot(ZG.a.Longitude,ZG.a.Latitude,'bx');
+        pl =  plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'bx');
     end
     
     hold on

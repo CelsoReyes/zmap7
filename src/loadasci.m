@@ -71,22 +71,22 @@ function loadasci(da,sa)
                 eval(befehl);
                 clear(tr)
                 %check for 0 in day or month - set to 1
-                l = ZG.a.Date.Day == 0; a(l,5) = 1;
-                l = ZG.a.Date.Month == 0; a(l,4) = 1;
+                l = ZG.primeCatalog.Date.Day == 0; a(l,5) = 1;
+                l = ZG.primeCatalog.Date.Month == 0; a(l,4) = 1;
                 
                 if length(a(1,:))== 7
-                    ZG.a.Date = decyear(a(:,3:5));
+                    ZG.primeCatalog.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    ZG.a.Date = decyear(a(:,[3:5 8 9]));
+                    ZG.primeCatalog.Date = decyear(a(:,[3:5 8 9]));
                 end
                 
                 % Sort the catalog in time just to make sure ...
-                [s,is] = sort(ZG.a.Date);
+                [s,is] = sort(ZG.primeCatalog.Date);
                 a = a(is(:,1),:) ;
-                ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
+                ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 
                 close;
-                ZG.a=catalog_overview(ZG.a);
+                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
                 setup
             else
                 close, setup
@@ -121,28 +121,28 @@ function loadasci(da,sa)
                 eval(befehl);
                 clear(tr)
                 %check for 0 in day or month - set to 1
-                l = ZG.a.Date.Day == 0; a(l,5) = 1;
-                l = ZG.a.Date.Month == 0; a(l,4) = 1;
+                l = ZG.primeCatalog.Date.Day == 0; a(l,5) = 1;
+                l = ZG.primeCatalog.Date.Month == 0; a(l,4) = 1;
                 
                 if length(a(1,:))== 7
-                    ZG.a.Date = decyear(a(:,3:5));
+                    ZG.primeCatalog.Date = decyear(a(:,3:5));
                 elseif length(a(1,:))>=9       %if catalog includes hr and minutes
-                    ZG.a.Date = decyear(a(:,[3:5 8 9]));
+                    ZG.primeCatalog.Date = decyear(a(:,[3:5 8 9]));
                 end
                 % create a 13 column if none exists and set it to zero
                 
                 if length(a(1,:))< 13 ; a = [a ; a(:,12)*0]; end
                 
                 % Sort the catalog in time just to make sure ...
-                [s,is] = sort(ZG.a.Date);
+                [s,is] = sort(ZG.primeCatalog.Date);
                 a = a(is(:,1),:) ;
-                ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;       %  as a default
+                ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 % set up the focal mechanism data
                 %prepfocal
                 
                 close;
                 
-                ZG.a=catalog_overview(ZG.a);
+                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
                 setup
             else
                 close

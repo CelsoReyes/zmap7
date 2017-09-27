@@ -13,7 +13,7 @@ classdef sample_ZmapFunction < ZmapFunction
     %
     
     properties
-        OperatingCatalog={'a','maepi'}; % catalog(s) containing raw data.
+        OperatingCatalog={'primeCatalog','maepi'}; % catalog(s) containing raw data.
         ModifiedCatalog='newt2'; % catalog to be modified after all calculations are done
     end
     

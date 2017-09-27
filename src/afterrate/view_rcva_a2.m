@@ -138,7 +138,7 @@ function view_rcva_a2(lab1,valueMap)
     %
     hold on
     update(mainmap())
-    ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
+    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     set(ploeq,'Tag','eq_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     

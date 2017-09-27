@@ -36,9 +36,9 @@ classdef MainInteractiveMap
                 obj.createFigure()
                 return
             end
-            MainInteractiveMap.plotEarthquakes(ZG.a)
-            xlim(ax,[min(ZG.a.Longitude) max(ZG.a.Longitude)])
-            ylim(ax,[min(ZG.a.Latitude) max(ZG.a.Latitude)]);
+            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
+            xlim(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)])
+            ylim(ax,[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)]);
             ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
             k=obj.Features.keys;
@@ -63,7 +63,7 @@ classdef MainInteractiveMap
             
             
             % make sure we're back in a 2-d view
-            title(ax,MainInteractiveMap.get_title(ZG.a),'Interpreter','none');
+            title(ax,MainInteractiveMap.get_title(ZG.primeCatalog),'Interpreter','none');
             view(ax,2); %reset to top-down view
             grid(ax,'on');
             zlabel(ax,'Depth [km]');
@@ -98,12 +98,12 @@ classdef MainInteractiveMap
                 'Box','on','TickDir','out');
             xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
-            if isempty(ZG.a)
+            if isempty(ZG.primeCatalog)
                 errordlg('No data exists in the currenty catalog')
-                title(ax, sprintf('No Events in Catalog :"%s"',ZG.a.Name),'Interpreter','none');
+                title(ax, sprintf('No Events in Catalog :"%s"',ZG.primeCatalog.Name),'Interpreter','none');
                 return
             end
-            title(ax, MainInteractiveMap.get_title(ZG.a),'FontWeight','normal',...
+            title(ax, MainInteractiveMap.get_title(ZG.primeCatalog),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k','Interpreter','none');
             if ~isempty(MainInteractiveMap.mainAxes())
@@ -111,7 +111,7 @@ classdef MainInteractiveMap
             end
             disp('setting up main map:');
             disp('preplotting catalog');
-            MainInteractiveMap.plotEarthquakes(ZG.a)
+            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
             xlim(ax,'auto')
             ylim(ax,'auto');
             axis(ax,'manual');
@@ -284,7 +284,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Save current catalog (.mat)','Callback',@(~,~)catSave());
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
-                'Callback',@(~,~)info_summary_callback(ZmapGlobal.Data.a.summary('stats')));
+                'Callback',@(~,~)info_summary_callback(ZmapGlobal.Data.primeCatalog.summary('stats')));
             
             catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
                 'Separator','on');
@@ -298,22 +298,22 @@ classdef MainInteractiveMap
 
             function cb_crop(~,~)
                 ZG=ZmapGlobal.Data;
-                ZG.a.setFilterToAxesLimits(findobj( 'Tag',MainInteractiveMap.axTag));
-                ZG.a.cropToFilter();
+                ZG.primeCatalog.setFilterToAxesLimits(findobj( 'Tag',MainInteractiveMap.axTag));
+                ZG.primeCatalog.cropToFilter();
                 update(mainmap());
             end
 
             function cb_editrange(~,~)
                 ZG=ZmapGlobal.Data;
-                replaceMainCatalog(catalog_overview(ZG.a));
+                replaceMainCatalog(catalog_overview(ZG.primeCatalog));
                 update(mainmap());
             end
             
             function cb_rename(~,~)
                 ZG=ZmapGlobal.Data;
-                nm=inputdlg('Catalog Name:','Rename',1,{ZG.a.Name});
+                nm=inputdlg('Catalog Name:','Rename',1,{ZG.primeCatalog.Name});
                 if ~isempty(nm)
-                    ZG.a.Name=nm{1};
+                    ZG.primeCatalog.Name=nm{1};
                 end
                 zmap_message_center.update_catalog();
                 update(mainmap());
@@ -334,16 +334,16 @@ classdef MainInteractiveMap
                 error('create this function from scratch!');
                 ZG=ZmapGlobal.Data;
                 load(lopa);
-                if ZG.a.Countlength(ZG.a(1,:))== 7
-                    ZG.a.Date = datetime(ZG.a.Year,ZG.a.Month,ZG.a.Day);
-                elseif length(ZG.a(1,:))>=9
-                    ZG.a(:,decyr_idx) = decyear(ZG.a(:,[3:5 8 9]));
+                if ZG.primeCatalog.Countlength(ZG.primeCatalog(1,:))== 7
+                    ZG.primeCatalog.Date = datetime(ZG.primeCatalog.Year,ZG.primeCatalog.Month,ZG.primeCatalog.Day);
+                elseif length(ZG.primeCatalog(1,:))>=9
+                    ZG.primeCatalog(:,decyr_idx) = decyear(ZG.primeCatalog(:,[3:5 8 9]));
                 end
-                ZG.a=catalog_overview(ZG.a);
+                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
             end
             function cb_combinecatalogs(~,~)
                 ZG=ZmapGlobal.Data;
-                ZG.newcat=comcat(ZG.a);
+                ZG.newcat=comcat(ZG.primeCatalog);
                 timeplot(ZG.newcat);
             end
         end            
@@ -363,7 +363,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
-                'Callback','stri = ''Polygon''; ZG.newt2 = ZG.a; ZG.newcat = ZG.a; timeplot(ZG.newt2)');
+                'Callback','stri = ''Polygon''; ZG.newt2 = ZG.primeCatalog; ZG.newcat = ZG.primeCatalog; timeplot(ZG.newt2)');
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
@@ -402,9 +402,9 @@ classdef MainInteractiveMap
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations',...
             'Enable','off');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.a = syn_invoke_random_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.primeCatalog); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','ZG.a = syn_invoke_dialog(ZG.a); ZG.newt2 = ZG.a; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.a); revertcat');
+                'Callback','ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.primeCatalog); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
             uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
@@ -579,7 +579,7 @@ classdef MainInteractiveMap
                 'LineStyle','none',...
                 'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
-            h.DisplayName = sprintf('M ≤ %3.1f', divs(1));
+            h.DisplayName = sprintf('M <= %3.1f', divs(1));
             
             for i = 1 : numel(divs)
                 mask = mycat.Magnitude > divs(i);
@@ -661,7 +661,7 @@ classdef MainInteractiveMap
                 'Tag','mapax_part0');
             h.ZData=-mycat.Depth(mask);
                 %}
-            h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
+            h.DisplayName = sprintf('Z <= %.1f km', divs(1));
             
             for i = 1 : numel(divs)
                 mask = mycat.Depth > divs(i);
@@ -829,13 +829,13 @@ classdef MainInteractiveMap
                 if i == numel(divs)-1
                     % inclusive of last value
                     mask = divs(i) <= mycat.Date & mycat.Date <= divs(i+1);
-                    dispname = sprintf('%s ≤ t ≤ %s ',...
+                    dispname = sprintf('%s <= t <= %s ',...
                         char(divs(i),'uuuu-MM-dd hh:mm'),...
                         char(divs(i+1),'uuuu-MM-dd hh:mm'));
                 else
                     % exclusive of last value
                     mask = divs(i) <= mycat.Date & mycat.Date < divs(i+1);
-                    dispname = sprintf('%s ≤ t < %s ',...
+                    dispname = sprintf('%s <= t < %s ',...
                         char(divs(i),'uuuu-MM-dd hh:mm'),...
                         char(divs(i+1),'uuuu-MM-dd hh:mm'));
                 end
@@ -1079,7 +1079,7 @@ function catSave()
         if length(file1) > 1
             wholePath=[path1 file1];
             error('not implemented')
-            %save('WholePath', 'ZG.a', 'faults','main','mainfault','coastline','infstri','well');
+            %save('WholePath', 'ZG.primeCatalog', 'faults','main','mainfault','coastline','infstri','well');
         end
         
     catch ME
@@ -1127,7 +1127,7 @@ end
 
 function plot_large_quakes()
     ZG=ZmapGlobal.Data;
-    mycat=ZmapCatalog(ZG.a);
+    mycat=ZmapCatalog(ZG.primeCatalog);
     def = {num2str(ZG.big_eq_minmag)};
     ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
     ZG.big_eq_minmag = str2double(ni2{1});
@@ -1264,7 +1264,7 @@ end
 
 function histo_callback(hist_type)
     ZG=ZmapGlobal.Data;
-    hisgra(ZG.a, hist_type);
+    hisgra(ZG.primeCatalog, hist_type);
 end
 
 function info_summary_callback(summarytext)

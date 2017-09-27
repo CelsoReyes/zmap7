@@ -98,7 +98,7 @@ function plotala()
     axes('pos',rect)
     set(gca,'visible','off')
     abo = abo2;
-    abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
+    abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.primeCatalog.Date(1);
     l = abo(:,4) > tre2;
     abo = abo(l,:);
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
@@ -189,7 +189,7 @@ function plotala()
         % Reset the alarms to the all alarms above the current threshold
         l = abo2(:,4) >= tre2;
         abo = abo2(l,:);
-        abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
+        abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.primeCatalog.Date(1);
         
         
         j = 0;
@@ -258,7 +258,7 @@ function plotala()
         for tre2 = max(abo(:,4))-0.1 : -is : zm
             tre2;
             abo = abo2;
-            abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.a.Date(1);
+            abo(:,5) = abo(:,5)* days(ZG.bin_dur) + ZG.primeCatalog.Date(1);
             l = abo(:,4) >= tre2;
             abo = abo(l,:);
             l = abo(:,3) < ZG.tresh_km;
@@ -330,14 +330,14 @@ function plotala()
             m = [];
             for t = 1:length(tmp(:,1) )
                 xa0 = tmp(t,1);ya0 = tmp(t,2);
-                l = ZG.a.epicentralDistanceTo(ya0,xa0);
+                l = ZG.primeCatalog.epicentralDistanceTo(ya0,xa0);
                 [s,is] = sort(l);
                 m = [m ; is(1:ni,1)];
             end  % for t
             m = sort(m);
             m2 = [0 ; m(1:length(m)-1)];
             l = find(m-m2 > 0);
-            do = ['anB' num2str(i) ' = ZG.a.subset(m(l));' ]; %TOFIX don't do this this way.
+            do = ['anB' num2str(i) ' = ZG.primeCatalog.subset(m(l));' ]; %TOFIX don't do this this way.
             eval(do)
         end
     end

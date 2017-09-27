@@ -32,7 +32,7 @@ end
 hold on
 shading flat
 
-%li = m_line(ZG.a.Longitude,ZG.a.Latitude);
+%li = m_line(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude);
 %set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ZG.ms6,'color',co)
 set(gcf,'Color','w')
 

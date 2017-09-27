@@ -16,7 +16,7 @@ classdef cgr_timeplot < ZmapFigureFunction
     
     properties
         % Required Properties
-        OperatingCatalog={'a','maepi'}; % catalog(s) containing raw data.
+        OperatingCatalog={'primeCatalog','maepi'}; % catalog(s) containing raw data.
         ModifiedCatalog=''; % catalog to be modified after all calculations are done
  
         % my properties
@@ -252,7 +252,7 @@ function timeplot(mycat, nosort)
     % Time of events with a Magnitude greater than ZG.big_eq_minmag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
-    %                       - "a" if either "Back" button or "Close" button is pressed.
+    %                       - "primeCatalog" if either "Back" button or "Close" button is pressed.
     %                       - mycat if "Save as Newcat" button is pressed.
     %
     %  
@@ -416,7 +416,7 @@ function timeplot(mycat, nosort)
         'SortMethod','childorder')
     
     if isempty(ZG.newcat)
-        ZG.newcat =ZG.a;
+        ZG.newcat =ZG.primeCatalog;
     end
     
     % select big events ( > ZG.big_eq_minmag)
@@ -426,8 +426,8 @@ function timeplot(mycat, nosort)
     %calculate start -end time of overall catalog
     statime=[];
     par2=ZG.bin_dur;
-    t0b = min(ZG.a.Date);
-    teb = max(ZG.a.Date);
+    t0b = min(ZG.primeCatalog.Date);
+    teb = max(ZG.primeCatalog.Date);
     
     tdiff = (teb-t0b)/ZG.bin_dur;
     

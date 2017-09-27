@@ -24,7 +24,7 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        a=ZmapCatalog('default empty catalog'); %
+        primeCatalog=ZmapCatalog('default empty catalog'); %
         newcat=ZmapCatalog('default empty catalog'); 
         newt2=ZmapCatalog('default empty catalog'); 
         catalog_working=ZmapCatalog('default empty catalog'); 
@@ -91,7 +91,7 @@ classdef ZmapData < handle
         freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false);
         shading_style = 'flat';
         someColor='w';
-        
+       
         % b-value related
         inb1=1; % choice for b-value calculation (?)
         inb2=1; % maximum curvature method(?)
@@ -117,10 +117,10 @@ classdef ZmapData < handle
     end
     methods
         function out=get.teb(obj)
-            out=max(obj.a.Date);
+            out=max(obj.primeCatalog.Date);
         end
         function out=get.t0b(obj)
-            out=min(obj.a.Date);
+            out=min(obj.primeCatalog.Date);
         end
         function out=get.wex(obj)
             out=obj.welcome_pos(1);

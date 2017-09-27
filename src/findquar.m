@@ -13,7 +13,7 @@ classdef findquar < ZmapFunction
     %
     
     properties
-        OperatingCatalog={'a'}; % catalog(s) containing raw data.
+        OperatingCatalog={'primeCatalog'}; % catalog(s) containing raw data.
         ModifiedCatalog=''; % catalog to be modified after all calculations are done
         
         EvtSel

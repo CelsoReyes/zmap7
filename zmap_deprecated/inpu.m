@@ -8,8 +8,8 @@
 report_this_filefun(mfilename('fullpath'));
 
 %  default values
-t0b = min(ZG.a.Date);
-teb = max(ZG.a.Date);
+t0b = min(ZG.primeCatalog.Date);
+teb = max(ZG.primeCatalog.Date);
 tdiff = (teb - t0b)*365;
 
 if ~exist('par1', 'var')
@@ -23,16 +23,16 @@ if ~exist('par1', 'var')
     par1 = 30;
 end
 
-ZG.big_eq_minmag = max(ZG.a.Magnitude) -0.2;
-dep1 = 0.3*max(ZG.a.Depth);
-dep2 = 0.6*max(ZG.a.Depth);
-dep3 = max(ZG.a.Depth);
-minti = min(ZG.a.Date);
-maxti  = max(ZG.a.Date);
-minma = min(ZG.a.Magnitude);
-maxma = max(ZG.a.Magnitude);
-mindep = min(ZG.a.Depth);
-maxdep = max(ZG.a.Depth);
+ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;
+dep1 = 0.3*max(ZG.primeCatalog.Depth);
+dep2 = 0.6*max(ZG.primeCatalog.Depth);
+dep3 = max(ZG.primeCatalog.Depth);
+minti = min(ZG.primeCatalog.Date);
+maxti  = max(ZG.primeCatalog.Date);
+minma = min(ZG.primeCatalog.Magnitude);
+maxma = max(ZG.primeCatalog.Magnitude);
+mindep = min(ZG.primeCatalog.Depth);
+maxdep = max(ZG.primeCatalog.Depth);
 
 %
 % make the interface
@@ -47,8 +47,8 @@ figure_w_normalized_uicontrolunits(...
 axis off
 
 inp1B=uicontrol('Style','edit','Position',[.70 .90 .22 .05],...
-    'Units','normalized','String',num2str(ZG.a.Count),...
-    'Callback','nueq=str2double(inp1B.String); inp1B.String=num2str(ZG.a.Count);');
+    'Units','normalized','String',num2str(ZG.primeCatalog.Count),...
+    'Callback','nueq=str2double(inp1B.String); inp1B.String=num2str(ZG.primeCatalog.Count);');
 
 inp1=uicontrol('Style','edit','Position',[.70 .80 .22 .05],...
     'Units','normalized','String',num2str(ZG.big_eq_minmag),...

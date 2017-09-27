@@ -29,7 +29,7 @@ function plotclust()
     axes('position',rect);
     
     % plot catalog
-    plot(ZG.a.Longitude,ZG.a.Latitude,'k.','Markersize',2)
+    plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.','Markersize',2)
     hold on
     
     st = 'ox+*sdv^<>ph^'; % available markers

@@ -11,7 +11,7 @@ function [sel]=rcvalgrid_a2()
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
 
-    minThreshMag = min(ZG.a.Magnitude);
+    minThreshMag = min(ZG.primeCatalog.Magnitude);
     
     % Set the grid parameter
     % Initial values
@@ -31,8 +31,8 @@ function [sel]=rcvalgrid_a2()
     prev_grid=false; % required for variable scoping.
     
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1) & ZG.a.Magnitude > minThreshMag;
-    ZG.newt2=ZG.a.subset(l);
+    l = ZG.primeCatalog.Date > ZG.maepi.Date(1) & ZG.primeCatalog.Magnitude > minThreshMag;
+    ZG.newt2=ZG.primeCatalog.subset(l);
     
     ZG.hold_state2=true;
     timeplot(ZG.newt2)
@@ -197,9 +197,9 @@ function [sel]=rcvalgrid_a2()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        t0b = min(ZG.a.Date)  ;
-        n = ZG.a.Count;
-        teb = max(ZG.a.Date) ;
+        t0b = min(ZG.primeCatalog.Date)  ;
+        n = ZG.primeCatalog.Count;
+        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         
         % Container
@@ -219,7 +219,7 @@ function [sel]=rcvalgrid_a2()
             
             % Choose between constant radius or constant number of events with maximum radius
             if useEventsInRadius   % take point within r
-                b = ZG.a.selectRadius(y,x,ra);
+                b = ZG.primeCatalog.selectRadius(y,x,ra);
                 fMaxDist = max(b.epicentralDistanceTo(y,x));
                 % Calculate number of events per gridnode in learning period time
                 vSel = b.Date <= ZG.maepi.Date(1)+days(time);

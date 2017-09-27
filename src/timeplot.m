@@ -4,7 +4,7 @@ function timeplot(mycat, nosort)
     % Time of events with a Magnitude greater than ZG.big_eq_minmag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
-    %                       - "a" if either "Back" button or "Close" button is pressed.
+    %                       - "primeCatalog" if either "Back" button or "Close" button is pressed.
     %  
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
@@ -123,7 +123,7 @@ function timeplot(mycat, nosort)
         'SortMethod','childorder')
     
     if isempty(ZG.newcat)
-        ZG.newcat =ZG.a;
+        ZG.newcat =ZG.primeCatalog;
     end
     
     % select big events ( > ZG.big_eq_minmag)
@@ -133,8 +133,8 @@ function timeplot(mycat, nosort)
     %calculate start -end time of overall catalog
     statime=[];
     par2=ZG.bin_dur;
-    t0b = min(ZG.a.Date);
-    teb = max(ZG.a.Date);
+    t0b = min(ZG.primeCatalog.Date);
+    teb = max(ZG.primeCatalog.Date);
     
     tdiff = (teb-t0b)/ZG.bin_dur;
     

@@ -82,14 +82,14 @@ function plot3d()
             
             %plot earthquakes according time
         case 'tim'
-            timidx = ZG.a.Date<=tim2&ZG.a.Date>=tim1;
-            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'+b');
+            timidx = ZG.primeCatalog.Date<=tim2&ZG.primeCatalog.Date>=tim1;
+            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'+b');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.a.Date<=tim3&ZG.a.Date>tim2;
-            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'og');
+            timidx = ZG.primeCatalog.Date<=tim3&ZG.primeCatalog.Date>tim2;
+            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'og');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.a.Date<=tim4&ZG.a.Date>tim3;
-            plo =plot3(ZG.a.Longitude(timidx),ZG.a.Latitude(timidx),-ZG.a.Depth(timidx),'xr');
+            timidx = ZG.primeCatalog.Date<=tim4&ZG.primeCatalog.Date>tim3;
+            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'xr');
             set(plo,'MarkerSize',6,'LineWidth',1.)
             
             ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -130,7 +130,7 @@ function plot3d()
         set(pl3b,'LineWidth',3.0)
     end
     
-    axis([ min(ZG.a.Longitude) max(ZG.a.Longitude) min(ZG.a.Latitude) max(ZG.a.Latitude) min(-ZG.a.Depth) max(-ZG.a.Depth)  ])
+    axis([ min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude) min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude) min(-ZG.primeCatalog.Depth) max(-ZG.primeCatalog.Depth)  ])
     orient tall
     
     set(gca,'box','on',...
@@ -183,7 +183,7 @@ function plot3d()
             'LineStyle','none',...
             'MarkerSize',ZG.ms6,...
             'Tag','mapax_part0');
-        h.DisplayName = sprintf('Z ≤ %.1f km', divs(1));
+        h.DisplayName = sprintf('Z <= %.1f km', divs(1));
         
         for i = 1 : numel(divs)
             mask = mycat.Depth > divs(i);

@@ -346,10 +346,10 @@ classdef ZmapGrid
                 case 0
                     name='unnamed';
                     ax=findobj(0,'Tag','mainmap_ax');
-                    catalog=ZG.a;
+                    catalog=ZG.primeCatalog;
                 case 1
                     ax=findobj(0,'Tag','mainmap_ax');
-                    catalog=ZG.a;
+                    catalog=ZG.primeCatalog;
                 case 3
                     assert(isa(catalog,'ZmapCatalog'));
                     assert(isvalid(ax));

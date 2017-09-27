@@ -11,7 +11,7 @@ report_this_filefun(mfilename('fullpath'));
 global bo1 inb2 valeg CO valm1
 ZG=ZmapGlobal.Data;
 valeg = 1;
-valm1 = min(ZG.a.Magnitude);
+valm1 = min(ZG.primeCatalog.Magnitude);
 prf = NaN;
 if sel == 'in'
     % Set the grid parameter
@@ -25,11 +25,11 @@ if sel == 'in'
     fSplitTime = 2000.4;
 
     % cut catalog at mainshock time:
-%     l = ZG.a.Date > ZG.maepi.Date(1);
-%     ZG.a=ZG.a.subset(l);
+%     l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
+%     ZG.primeCatalog=ZG.primeCatalog.subset(l);
 
     % cat at selecte magnitude threshold
-    l = ZG.a.Magnitude < valm1;
+    l = ZG.primeCatalog.Magnitude < valm1;
     a(l,:) = [];
     ZG.newt2 = a;
 
@@ -263,9 +263,9 @@ if sel == 'ca'
     zmap_message_center.set_info(' ','Running... ');think
     %  make grid, calculate start- endtime etc.  ...
     %
-    t0b = min(ZG.a.Date)  ;
-    n = ZG.a.Count;
-    teb = max(ZG.a.Date) ;
+    t0b = min(ZG.primeCatalog.Date)  ;
+    n = ZG.primeCatalog.Count;
+    teb = max(ZG.primeCatalog.Date) ;
     tdiff = round((teb-t0b)/ZG.bin_days);
     loc = zeros(3, length(gx)*length(gy));
 
@@ -288,21 +288,21 @@ if sel == 'ca'
 
 
         % calculate distance from center point and sort with distance
-        l=ZG.a.epicentralDistanceTo(x,y);
+        l=ZG.primeCatalog.epicentralDistanceTo(x,y);
         [s,is] = sort(l);
         mCat = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         % Use Radius to determine grid node catalogs
         l3 = l <= ra;
-        mCat = ZG.a.subset(l3);      % new data per grid point (mCat) is sorted in distance
+        mCat = ZG.primeCatalog.subset(l3);      % new data per grid point (mCat) is sorted in distance
 
 
         %         % Select earthquakes in non-overlapping rectangles
-        %         vSel = (ZG.a.Longitude >= (newgri(i,1)-dx/2)) & (ZG.a.Longitude < (newgri(i,1)+dx/2)) &...
-        %             (ZG.a.Latitude >= (newgri(i,2)-dy/2)) & (ZG.a.Latitude < (newgri(i,2)+dy/2));
+        %         vSel = (ZG.primeCatalog.Longitude >= (newgri(i,1)-dx/2)) & (ZG.primeCatalog.Longitude < (newgri(i,1)+dx/2)) &...
+        %             (ZG.primeCatalog.Latitude >= (newgri(i,2)-dy/2)) & (ZG.primeCatalog.Latitude < (newgri(i,2)+dy/2));
         %         % Select earthquakes in overlapping rectangles
-        %         vSel = (ZG.a.Longitude >= (newgri(i,1)-dx)) & (ZG.a.Longitude < (newgri(i,1)+dx)) &...
-        %             (ZG.a.Latitude >= (newgri(i,2)-dy)) & (ZG.a.Latitude < (newgri(i,2)+dy));
-        %         mCat = ZG.a.subset(vSel);
+        %         vSel = (ZG.primeCatalog.Longitude >= (newgri(i,1)-dx)) & (ZG.primeCatalog.Longitude < (newgri(i,1)+dx)) &...
+        %             (ZG.primeCatalog.Latitude >= (newgri(i,2)-dy)) & (ZG.primeCatalog.Latitude < (newgri(i,2)+dy));
+        %         mCat = ZG.primeCatalog.subset(vSel);
 
         % Initialize
         fMinTime = min(mCat(:,3));

@@ -16,7 +16,7 @@ function load_zmapfile()%
     %
     %
     % Any catalog is generally loaded once as an unformatted ascii file
-    % and then saved as variable "a" in  <name>_cata.mat .
+    % and then saved as variable "primeCatalog" in  <name>_cata.mat .
     %
     %   Matlab scriptfile written by Stefan Wiemer
     %
@@ -38,29 +38,29 @@ function load_zmapfile()%
         return
     else
         if exist(fullfile(path1,file1),'file')
-            S=whos('-file',fullfile(path1,file1),'a'); % get info about "a"
+            S=whos('-file',fullfile(path1,file1),'a'); % get info about "primeCatalog"
             if ~isempty(S) %a exists
-                ZG.a=loadCatalog(path1, file1);
+                ZG.primeCatalog=loadCatalog(path1, file1);
             else
-                errordlg('File did not contain variable "a" - Nothing was loaded');
+                errordlg('File did not contain variable "primeCatalog" - Nothing was loaded');
             end
         else
             errordlg('File could not be found');
         end
         
     end
-    if isempty(ZG.a)
-        ZG.a=ZmapCatalog();
-        ZG.a.Name='no catalog';
+    if isempty(ZG.primeCatalog)
+        ZG.primeCatalog=ZmapCatalog();
+        ZG.primeCatalog.Name='no catalog';
     end
     
-    if max(ZG.a.Magnitude) > 10
+    if max(ZG.primeCatalog.Magnitude) > 10
         errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
         warndlg(errdisp)
     end   % if
     
     % Sort the catalog in time just to make sure ...
-    ZG.a.sort('Date');
+    ZG.primeCatalog.sort('Date');
     
     % org = a;                         %  org is to remain unchanged
     
@@ -70,10 +70,10 @@ function load_zmapfile()%
     clear s is
     ZG.mainmap_plotby='depth';
     
-    setUpDefaultValues(ZG.a);
+    setUpDefaultValues(ZG.primeCatalog);
     
     zmap_message_center.update_catalog();
-    replaceMainCatalog(catalog_overview(ZG.a));
+    replaceMainCatalog(catalog_overview(ZG.primeCatalog));
     
 end
 
@@ -143,11 +143,15 @@ function   A=loadCatalog(path, file)
     end
     
     
-    if ~isfield(tmp,'a') || isempty(tmp.a)
+    if (~isfield(tmp,'a') || isempty(tmp.a)) &&(~isfield(tmp,'primeCatalog') || isempty(tmp.primeCatalog)) 
         errordlg(' Error - No catalog data loaded !');
         return;
     end
-    A=tmp.a;
+    if isfield(tmp,'primeCatalog')
+        A=tmp.primeCatalog;
+    else
+        A=tmp.a;
+    end
     clear tmp
     if isnumeric(A)
         % convert to a ZmapCatalog

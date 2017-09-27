@@ -131,12 +131,12 @@ function clpickp(choice)
         pause(0.3)
         % calculate points with a polygon
         
-        XI = ZG.a.Longitude;          % this substitution just to make equation below simple
-        YI = ZG.a.Latitude;
+        XI = ZG.primeCatalog.Longitude;          % this substitution just to make equation below simple
+        YI = ZG.primeCatalog.Latitude;
         ll = polygon_filter(x,y, XI, YI, 'inside');
         if decc~=0
             if isempty(ZG.ttcat)
-                equi = ZG.a.subset(ll);       %all equievents inside selection area
+                equi = ZG.primeCatalog.subset(ll);       %all equievents inside selection area
             end
         elseif decc==0
             ZG.newccat=ZG.newccat.subset(ll);
@@ -157,7 +157,7 @@ function clpickp(choice)
                 bgevent=backbgevent(tmp',:);
                 cluoverl(7);
             else
-                ZG.ttcat=ZG.a.subset(ll);
+                ZG.ttcat=ZG.primeCatalog.subset(ll);
                 cluoverl(8);
             end
         elseif decc==0

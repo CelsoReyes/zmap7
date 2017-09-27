@@ -6,7 +6,7 @@ classdef(Abstract) ZmapFunction < handle
     %  the following:
     %   PROPERTIES:
     %     OperatingCatalog - this are the catalog(s) that contain the raw data needed by this function
-    %         ex.    OperatingCatalog={'a'}; %must be cell
+    %         ex.    OperatingCatalog={'primeCatalog'}; %must be cell
     %     ModifiedCatalog - this contains the catalogs (if any) that are modified by this routine.
     %
     %     define variables here that would be used in calculation

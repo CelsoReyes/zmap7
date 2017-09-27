@@ -209,7 +209,7 @@ ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
 %
 hold on
 overlay_
-ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
+ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
 set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',co,'Visible',vi)
 
 

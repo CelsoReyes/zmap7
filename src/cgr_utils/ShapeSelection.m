@@ -153,7 +153,7 @@ classdef ShapeSelection
             end
             if ~exist('catalog','var')
                 ZG=ZmapGlobal.Data;
-                catalog=ZG.a;
+                catalog=ZG.primeCatalog;
             end
             axes(ax);
             hold on
@@ -412,13 +412,13 @@ classdef ShapeSelection
             % only active when choosing a circle
             uimenu(submenu,'Label',sprintf('Select EQ in Radius %.3f km',ZGshape.Radius),...
                 'separator','on',...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'radius'));
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'radius'));
             uimenu(submenu,'Label',...
                 sprintf('Select EQ : closest %d events to (%.3f , %.3f)',ZGshape.NEventsToEnclose,ZGshape.Y0, ZGshape.X0),...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'nevents'));
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'nevents'));
             uimenu(submenu,'Label',...
                 sprintf('Select EQ :closest %d events up to %.3f km distance',ZGshape.NEventsToEnclose,ZGshape.Radius),...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.a,'both'));
+                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'both'));
             
             
             % options for choosing a shape
@@ -514,20 +514,20 @@ function cb_crop(src,~,in_or_out)
     ZG=ZmapGlobal.Data;
     switch in_or_out
         case 'inside'
-            mask=ZG.selection_shape.InsideEvents(ZG.a);
+            mask=ZG.selection_shape.InsideEvents(ZG.primeCatalog);
         case 'outside'
-            mask=ZG.selection_shape.OutsideEvents(ZG.a);
+            mask=ZG.selection_shape.OutsideEvents(ZG.primeCatalog);
         otherwise
-            mask=true(ZG.a.Count,1);
+            mask=true(ZG.primeCatalog.Count,1);
     end
-    ZG.newt2=ZG.a.subset(mask);
+    ZG.newt2=ZG.primeCatalog.subset(mask);
     ZG.newcat=ZG.newt2;
 end
 %{
 function cb_analyze(src,~)
     ZG=ZmapGlobal.Data;
-    ZG.newt2 = ZG.a;
-    ZG.newcat = ZG.a;
+    ZG.newt2 = ZG.primeCatalog;
+    ZG.newcat = ZG.primeCatalog;
     timeplot(ZG.newt2);
 end
 %}
@@ -605,10 +605,10 @@ function cb_applygrid(src,~)
     obj=ZG.selection_shape;
     gopt=ZG.gridopt; %get grid options
     if gopt.GridEntireArea || (isempty(obj.Lon)||isnan(obj.Lon(1)))% use catalog
-        xmin=min(ZG.a.Longitude);
-        xmax=max(ZG.a.Longitude);
-        ymin=min(ZG.a.Latitude);
-        ymax=max(ZG.a.Latitude);
+        xmin=min(ZG.primeCatalog.Longitude);
+        xmax=max(ZG.primeCatalog.Longitude);
+        ymin=min(ZG.primeCatalog.Latitude);
+        ymax=max(ZG.primeCatalog.Latitude);
     else %use shape
         xmin=min(obj.Lon);
         xmax=max(obj.Lon);

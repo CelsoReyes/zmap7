@@ -82,7 +82,7 @@ function view_bva(lab1, valueMap,gx,gy)
     pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
-    set(gca,'dataaspect',[1 cosd(nanmean(ZG.a.Latitude)) 1]);
+    set(gca,'dataaspect',[1 cosd(nanmean(ZG.primeCatalog.Latitude)) 1]);
     hold on
     
     shading(ZG.shading_style);
@@ -97,7 +97,7 @@ function view_bva(lab1, valueMap,gx,gy)
 
     fix_caxis.ApplyIfFrozen(gca); 
     
-    title([ZG.a.Name ';  '   num2str(ZG.t0b) ' to ' num2str(ZG.teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
+    title([ZG.primeCatalog.Name ';  '   num2str(ZG.t0b) ' to ' num2str(ZG.teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
         'Color','r','FontWeight','normal','Interpreter','none')
     
     xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
@@ -107,7 +107,7 @@ function view_bva(lab1, valueMap,gx,gy)
     %
     hold on
     update(mainmap())
-    ploeq = plot(ZG.a.Longitude,ZG.a.Latitude,'k.');
+    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     

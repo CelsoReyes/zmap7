@@ -1,7 +1,7 @@
 classdef plotmymap < ZmapFunction
     % plotmymap Plots a map using m_map
     properties
-        OperatingCatalog={'a'}; % catalog(s) containing raw data.
+        OperatingCatalog={'primeCatalog'}; % catalog(s) containing raw data.
         ModifiedCatalog=''; % catalog to be modified after all calculations are done
         Projections={'Lambert Projection','Miller Projection','Mollweide Projection','Oblique Mercator'};
         Resolutions={' Crude resolution','Low Resolution','Intermediate Resolution (slow)','High Resolution (slower)'};
@@ -165,7 +165,7 @@ classdef plotmymap < ZmapFunction
             if co == 'w'
                 co = 'k'; 
             end
-            li = m_plot(ZG.a.Longitude,ZG.a.Latitude);
+            li = m_plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude);
             set(li,'Linestyle','none','Marker',ty1,'MarkerSize',ZG.ms6,'color',co)
             
             if exist('vo', 'var')

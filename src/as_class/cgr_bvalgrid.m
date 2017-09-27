@@ -15,7 +15,7 @@ classdef cgr_bvalgrid < ZmapFunction
     %
     
     properties
-        OperatingCatalog={'a'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
+        OperatingCatalog={'primeCatalog'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
         ModifiedCatalog='newt2'; %name of catalog changed by this function
         
         dx = 1.00;

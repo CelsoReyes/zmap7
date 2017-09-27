@@ -15,14 +15,14 @@ function [sel] = bpvalgrid()
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
 
-    minThreshMag = min(ZG.a.Magnitude);
+    minThreshMag = min(ZG.primeCatalog.Magnitude);
     
     % get the grid parameter
     % initial values
     
     % cut catalog at mainshock time:
-    l = ZG.a.Date > ZG.maepi.Date(1);
-    ZG.newt2 = ZG.a.subset(l);
+    l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
+    ZG.newt2 = ZG.primeCatalog.subset(l);
     
     % cut cat at selected magnitude threshold
     l = ZG.newt2.Magnitude >= minThreshMag;
@@ -107,9 +107,9 @@ function [sel] = bpvalgrid()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        t0b = min(ZG.a.Date)  ;
-        n = ZG.a.Count;
-        teb = max(ZG.a.Date) ;
+        t0b = min(ZG.primeCatalog.Date)  ;
+        n = ZG.primeCatalog.Count;
+        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
@@ -124,9 +124,9 @@ function [sel] = bpvalgrid()
         drawnow
         %
         % overall b-value
-        [bv, magco, stan, av, me, mer, me2, pr] =  bvalca3(ZG.a,ZG.inb1);
+        [bv, magco, stan, av, me, mer, me2, pr] =  bvalca3(ZG.primeCatalog,ZG.inb1);
         ZG.bo1 = bv;
-        no1 = ZG.a.Count;
+        no1 = ZG.primeCatalog.Count;
         
         % loop over all points
         for i= 1:length(newgri(:,1))
