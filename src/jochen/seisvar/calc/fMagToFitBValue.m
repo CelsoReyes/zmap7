@@ -16,7 +16,7 @@ function [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD,
 % vMagnitude : Magnitudes accordsing to selection vector
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 17.07.02
+% updated: 17.07.02
 
 nIndexLo = find((vFMD(1,:) < fMc + 0.05) & (vFMD(1,:) > fMc - 0.05));
 fMagHi = vFMD(1,1);

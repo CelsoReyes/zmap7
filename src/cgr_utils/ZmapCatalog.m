@@ -460,6 +460,7 @@ classdef ZmapCatalog < handle
             %      uses the useNumNearbyEvents and useEventsInRadius to determine its behavior.  If
             %      both of these fields are true, then the closest events are evaluated up to the distance
             %      radius_km.
+            %    * maxRadiusKm
             %   X, Y, Z : coordinates of a point.  Z may be empty [].
             %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
             %               
@@ -480,8 +481,15 @@ classdef ZmapCatalog < handle
             if selcrit.useNumNearbyEvents
                 assert(isfield(selcrit,'numNearbyEvents'),'Error: useNumNearbyEvents was true, but no number [numNearbyEvents] was specified');
             end
+            
+            assert(selcrit.useNumNearbyEvents ~= selcrit.useEventsInRadius,...
+                'Error. Cannot select both numnearby and events in radius.');
+            
             if ~isfield(selcrit,'minNumEvents')
                 selcrit.minNumEvents=0;
+            end
+            if selcrit.useNumNearbyEvents && ~isfield(selcrit,'maxRadiusKm')
+                selcrit.maxRadiusKm=inf;
             end
             
             if ~exist('x','var')||isempty('x')
@@ -498,11 +506,11 @@ classdef ZmapCatalog < handle
             
             if selcrit.useEventsInRadius
                 [minicat,max_km]=obj.selectRadius(y,x, selcrit.radius_km);
-                if selcrit.useNumNearbyEvents
-                    [minicat,max_km]=minicat.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
-                end
             elseif selcrit.useNumNearbyEvents
                 [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
+                if max_km > selcrit.maxRadiusKm
+                    [minicat, max_km]=obj.selectRadius(y,x, selcrit.maxRadiusKm);
+                end
             end
         end
         

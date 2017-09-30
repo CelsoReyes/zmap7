@@ -229,7 +229,7 @@ else
       %       % Determine the overall magnitude of completeness and overall b-value
       %       params.fMcOverall = calc_Mc(params.mCatalog, params.nCalculateMC);
       %       vSel = params.mCatalog.Magnitude >= params.fMcOverall;
-      %       [vDummy params.fBValueOverall params.fStdDevOverall vDummy] =  bmemag(params.mCatalog.subset(vSel));
+      %       [params.fBValueOverall params.fStdDevOverall] =  bmemag(params.mCatalog.subset(vSel));
 
       %       % Determine the overall standard deviation of the b-value for the bayesian approach (if used)
       %       if params.nTestMethod == 3

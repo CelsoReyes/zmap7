@@ -24,7 +24,7 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAv
 % fBvalue        : b-value
 %
 % J. Woessner: woessner@seismo.ifg.ethz.ch
-% last update: 03.11.03
+% updated: 03.11.03
 
 
 % Initialize
@@ -75,7 +75,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.4
     % Calculate a and b-value for GR-law and distribution vNCum
     [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
     if (length(mCatalog.Longitude(vSel)) >= 20)
-        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

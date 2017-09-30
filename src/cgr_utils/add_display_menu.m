@@ -21,7 +21,7 @@ function add_display_menu(version)
         case 3
             circlefun=@plotci3;
             fixscalefun=@(data)fix_caxis(data,'horiz');
-            %overlayfun=@()update(mainmap());
+            %overlayfun=@()zmap_update_displays();
         case 4
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'horiz');
@@ -47,7 +47,7 @@ function add_display_menu(version)
     add_shading_section(op2e);
     add_brighten_section(op2e);
     uimenu(op2e,'Label','Redraw Overlay',...
-        'Callback','hold on;update(mainmap())'); % this is different from case #1
+        'Callback','hold on;zmap_update_displays();'); % this is different from case #1
     
     function callback_shader(style)
         % set default shading style and apply to current axes

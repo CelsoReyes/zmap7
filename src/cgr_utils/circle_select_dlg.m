@@ -86,6 +86,12 @@ function okbutton_Callback(hObject, ~, handles)
     % hObject    handle to okbutton (see GCBO)
     % eventdata  reserved - to be defined in a future version of MATLAB
     % handles    structure with handles and user data (see GUIDATA)
+    
+    if any(isnan(handles.figure1.UserData.Points))
+        zmap_message_center.set_error('Circle: No Center','Circle center is not yet defined. Choose a center, then click "ok".');
+        return
+    end
+    
     ZG = ZmapGlobal.Data;
     handles.figure1.UserData.Type='circle';
     ZG.selection_shape=handles.figure1.UserData;
@@ -105,7 +111,7 @@ function x_field_Callback(hObject, ~, handles)
     
     % Hints: get(hObject,'String') returns contents of x_field as text
     %        str2double(get(hObject,'String')) returns contents of x_field as a double
-    hObject.Parent.UserData.Points(1,1) = str2double(hObject.String);
+    handles.figure1.UserData.Points(1,1) = str2double(hObject.String);
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -119,12 +125,18 @@ function x_field_CreateFcn(hObject, ~, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
-    %hObject.String=hObject.Parent.UserData.X0;
+    sr=ZmapGlobal.Data.selection_shape.X0;
+    hObject.String=num2str(sr);%handles.figure1.UserData.X0;
+    if isempty(sr)
+        hObject.Val=nan;
+    else
+        hObject.Value=sr;
+    end
 end
 
 
 function y_field_Callback(hObject, ~, handles)
-    hObject.Parent.UserData.Points(1,2) = str2double(hObject.String);
+    handles.figure1.UserData.Points(1,2) = str2double(hObject.String);
 end
 
 % --- Executes during object creation, after setting all properties.
@@ -132,7 +144,13 @@ function y_field_CreateFcn(hObject, ~, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
-    %hObject.String=hObject.Parent.UserData.Y0;
+    sr=ZmapGlobal.Data.selection_shape.Y0;
+    hObject.String=num2str(sr);%handles.figure1.UserData.X0;
+    if isempty(sr)
+        hObject.Val=nan;
+    else
+        hObject.Value=sr;
+    end
 end
 
 % --- Executes on button press in mouse_center_select.
@@ -220,7 +238,7 @@ function show_cumplot_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of show_cumplot
-
+end
 
 % --- Executes on button press in immediateplot_afterclick.
 function immediateplot_afterclick_Callback(hObject, eventdata, handles)
@@ -229,3 +247,4 @@ function immediateplot_afterclick_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of immediateplot_afterclick
+end

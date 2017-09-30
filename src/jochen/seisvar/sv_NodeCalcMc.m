@@ -24,7 +24,7 @@ function [result]=sv_NodeCalcMc(params,mCatalog)
 %
 % Author: J. Woessner
 % woessner@seismo.ifg.ethz.ch
-% last update: 10.06.03
+% updated: 10.06.03
 
 % Init variable
 result=[];

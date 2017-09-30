@@ -18,7 +18,7 @@ function [mMaxRadCatalog] = ex_CheckMaxRadius(mCatalog, mPolygon, nNode, caNodeI
 % mMaxRadCatalog  : Earthquake catalog for one node with constant number of events
 %
 % J. Woessner; woessner@seismo.ifg.ethz.ch
-% last update: 11.06.03
+% updated: 11.06.03
 
 global bDebug;
 if bDebug

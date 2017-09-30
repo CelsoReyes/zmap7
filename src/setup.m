@@ -196,7 +196,7 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         a = [];
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function loadmainshocks_callback(mysrc,myevt)
@@ -209,7 +209,7 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         main  = [];
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function loadfaults_callback(mysrc,myevt)
@@ -222,7 +222,7 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         faults  = [];
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function load_mainrupt_callback(mysrc,myevt)
@@ -235,7 +235,7 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         mainfault  = [];
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function loadcoast_callback(mysrc,myevt)
@@ -248,7 +248,7 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         coastline  = [];
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function close_callback(mysrc,myevt)
@@ -267,7 +267,7 @@ function setup()
         save(fullfile(path1, file1),'a','faults','mainfault','coastline','main','infstri');
         eval(sapa) ;
         close(loda);
-        update(mainmap());
+        zmap_update_displays();
         
     end
     

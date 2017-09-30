@@ -26,7 +26,7 @@ function memorize_recall_catalog()
             
             ZG.newcat = ZG.memorized_catalogs; 
             ZG.newt2= ZG.memorized_catalogs;
-            update(mainmap());
+            zmap_update_displays();
             zmap_message_center.update_catalog();
             
     end

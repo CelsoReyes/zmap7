@@ -44,7 +44,7 @@ for nRuns = 1:nNumberRuns
   % If enough events remain, compute b-value
   if length(mLoopCatalog(:,1)) >= nMinNum
     % Calculate b-value from bootstrapped catalog
-    [v1, fBValue, v2, v3] =  calc_bmemag(mLoopCatalog, fBinning);
+    [fBValue] =  calc_bmemag(mLoopCatalog, fBinning);
   else
     % Not enough events available
     fBValue = nan;
@@ -58,8 +58,8 @@ fMc = nanmean(mResult(:,2));
 % Compute the standard deviation of Mc as the second moment of the Mc distribution
 vSel = ~isnan(mResult(:,2));
 vDist = mResult(vSel,2);
-fStdDevMc = calc_StdDev(vDist);
+fStdDevMc = std(vDist,1,'omitnan');
 % Compute the standard deviation of b as the second moment of the b distribution
 vSel = ~isnan(mResult(:,1));
 vBValues = mResult(vSel,1);
-fStdDevB = calc_StdDev(vBValues);
+fStdDevB = std(vBValues,1,'omitnan');

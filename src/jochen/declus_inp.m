@@ -5,7 +5,7 @@
 % technique by Gardner & Knopoff.
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% Last update: 02.09.02
+% updated: 02.09.02
 
 report_this_filefun(mfilename('fullpath'));
 

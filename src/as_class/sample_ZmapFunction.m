@@ -36,7 +36,7 @@ classdef sample_ZmapFunction < ZmapFunction
         usenoise=false
         cleverness=false
         evsel=[];
-        
+        nMin=1; % minimum number of events
     end
     
     methods
@@ -86,7 +86,7 @@ classdef sample_ZmapFunction < ZmapFunction
             zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
             zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},'use noise levels?');
             zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel,'noise levels');
-            zdlg.AddEventSelectionParameters('evsel',obj.ZG.ni, obj.ZG.ra);
+            zdlg.AddEventSelectionParameters('evsel',obj.ZG.ni, obj.ZG.ra,obj.nMin);
             zdlg.AddBasicCheckbox('cleverness','be clever', false,[],'never be clever');
             
             zdlg.Create('my dialog title')

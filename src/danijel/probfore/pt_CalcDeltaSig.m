@@ -26,7 +26,7 @@ mNoNanValues = values(vSelection);
 
 % Compute the mean and standard deviation of the non-parameterized distribution
 fMu = mean(mNoNanValues);
-fSigma = calc_StdDev(mNoNanValues);
+fSigma = std(mNoNanValues,1,'omitnan');
 
 % Return the Delta_sigma measure of the testvalue (+: test hypothesis wins)
 fSigmaDistance = (fMu - fTestValue)/fSigma;

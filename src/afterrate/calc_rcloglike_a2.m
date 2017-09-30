@@ -196,7 +196,7 @@ report_this_filefun(mfilename('fullpath'));
             end % End of if on nMod
         end
         % 2nd moment of bootstrap number of forecasted number of events
-        fStdBst = calc_StdDev(loopout(:,9));
+        fStdBst = std(loopout(:,9),1,'omitnan');
 
         % Results
         rc.time = time; rc.absdiff = absdiff;

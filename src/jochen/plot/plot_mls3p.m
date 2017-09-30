@@ -14,7 +14,7 @@ function plot_mls3p(vPar1, vPar2, vPar3, vMlsprob)
 % See also plot_mls1p, plot_mls2p
 %
 % Author: J. Woessner, woessner@seismo.ifg,.ethz.ch
-% last update: 28.10.02
+% updated: 28.10.02
 
 % Determine where to plot
 if exist('mls_fig','var') &  ishandle(mls_fig)

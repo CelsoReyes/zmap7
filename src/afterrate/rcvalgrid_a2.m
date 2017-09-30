@@ -6,7 +6,7 @@ function [sel]=rcvalgrid_a2()
     % Otherwise the matrix "ZG.maepi", used by this program, does not exist.
     %
     % J. Woessner
-    % last update: 14.02.05
+    % updated: 14.02.05
     
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));

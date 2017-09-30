@@ -6,7 +6,7 @@ function overlay_()
     %  Stefan Wiemer   11/94
     
     report_this_filefun(mfilename('fullpath'));
-    errordlg('Use update(mainmap()) instead');
+    errordlg('Use zmap_update_displays(); instead');
     return
     
     hold on

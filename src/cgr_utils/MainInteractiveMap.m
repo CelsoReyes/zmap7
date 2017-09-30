@@ -25,10 +25,14 @@ classdef MainInteractiveMap
             obj.initial_setup()
             
         end
-        function update(obj)
+        
+        function update(obj, opt)
+            % update will update the map window. 
+            % obj.update() updates the map window
+            % obj.update('show') will bring the map window to front, too
+            
             ZG=ZmapGlobal.Data; %handle to globals;
-            watchon; drawnow;
-            disp('MainInteractiveMap.update()');
+            watchon;
             %h=figureHandle();
             ax = MainInteractiveMap.mainAxes();
             if isempty(ax)
@@ -69,8 +73,17 @@ classdef MainInteractiveMap
             zlabel(ax,'Depth [km]');
             rotate3d(ax,'off'); %activate rotation tool
             set(findobj(figureHandle(),'Label','2-D view'),'Label','3-D view');
-            figure(figureHandle());
             watchoff;
+            if exist('opt','var')
+                switch opt
+                    case 'show'
+                        figure(figureHandle());
+                    case ''
+                        % do nothing
+                    otherwise
+                        zmap_message_center.set_error('unknown map update option');
+                end
+            end
             drawnow;
         end
         function createFigure(obj)
@@ -188,7 +201,7 @@ classdef MainInteractiveMap
             mapoptionmenu = uimenu('Label','Map Options','Tag','mainmap_menu_overlay');
             
             uimenu(mapoptionmenu,'Label','Refresh map window',...
-                'Callback',@(~,~)update(mainmap()));
+                'Callback',@(~,~)zmap_update_displays());
             
             uimenu(mapoptionmenu,'Label','3-D view',...
                 'Callback',@set_3d_view); % callback was plot3d
@@ -228,7 +241,7 @@ classdef MainInteractiveMap
             for i=1:size(legend_types,1)
                 wrapped_leg = ['''' legend_types{i,2} ''''];
                 uimenu(lemenu,'Label',legend_types{i,1},...
-                    'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';update(mainmap());']);
+                    'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';zmap_update_displays();']);
             end
             clear legend_types
             
@@ -300,13 +313,13 @@ classdef MainInteractiveMap
                 ZG=ZmapGlobal.Data;
                 ZG.primeCatalog.setFilterToAxesLimits(findobj( 'Tag',MainInteractiveMap.axTag));
                 ZG.primeCatalog.cropToFilter();
-                update(mainmap());
+                zmap_update_displays();
             end
 
             function cb_editrange(~,~)
                 ZG=ZmapGlobal.Data;
                 replaceMainCatalog(catalog_overview(ZG.primeCatalog));
-                update(mainmap());
+                zmap_update_displays();
             end
             
             function cb_rename(~,~)
@@ -316,7 +329,7 @@ classdef MainInteractiveMap
                     ZG.primeCatalog.Name=nm{1};
                 end
                 zmap_message_center.update_catalog();
-                update(mainmap());
+                zmap_update_displays();
             end
             
             function cb_clearmemorized(~,~)
@@ -402,9 +415,9 @@ classdef MainInteractiveMap
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations',...
             'Enable','off');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.primeCatalog); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); zmap_update_displays(); bdiff(ZG.primeCatalog); revertcat');
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); update(mainmap()); bdiff(ZG.primeCatalog); revertcat');
+                'Callback','ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); zmap_update_displays(); bdiff(ZG.primeCatalog); revertcat');
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
             uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
@@ -525,7 +538,6 @@ classdef MainInteractiveMap
                     MainInteractiveMap.plotQuakesByTime(catalog,divs);
                 case {'dep','depth'}
                     %delete(extralegends);
-                    size(divs)
                     MainInteractiveMap.plotQuakesByDepth(catalog,divs);
                 case {'mad','magdepth'}
                     MainInteractiveMap.plotQuakesByMagAndDepth(catalog);
@@ -1133,7 +1145,7 @@ function plot_large_quakes()
     ZG.big_eq_minmag = str2double(ni2{1});
     
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
-    update(mainmap()) %TOFIX changing magnitudes didn't chnge map output
+    zmap_update_displays(); %TOFIX changing magnitudes didn't chnge map output
 end
 function align_supplimentary_legends(ax)
     % reposition supplimentary legends, if they exist

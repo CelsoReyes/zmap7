@@ -31,7 +31,7 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAv
 % fKsstat        : KS-Test Statistic
 %
 % J. Woessner: woessner@seismo.ifg.ethz.ch
-% last update: 09.02.04
+% updated: 09.02.04
 
 
 % Initialize
@@ -83,7 +83,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     % Select magnitudes to calculate b- anda-value
     vSel = mCatalog.Magnitude > fMc-fBinning/2;
     if (length(mCatalog.Longitude(vSel)) >= 20)
-        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

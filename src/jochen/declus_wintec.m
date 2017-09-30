@@ -7,7 +7,7 @@
 % nMethod  : Number describing the window used for declustering
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% Last update: 14.08.02
+% updated: 14.08.02
 report_this_filefun(mfilename('fullpath'));
 
 %%% Decluster catalog using window technique
@@ -20,7 +20,7 @@ mCluster = mCatalog.subset(vSel);
 
 %%% Plot seismicity map, clusters and mainshocks
 replaceMainCatalog(mCatDecluster);
-update(mainmap());
+zmap_update_displays();
 plot(mCluster(:,1),mCluster(:,2),'m+');
 
 %%% Calculate moment release

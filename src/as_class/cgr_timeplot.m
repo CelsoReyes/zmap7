@@ -618,7 +618,7 @@ function timeplot(mycat, nosort)
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;
         zmap_message_center.update_catalog();
-        update(mainmap());
+        zmap_update_displays();
     end
     
     function cb_rename_cat(~,~)

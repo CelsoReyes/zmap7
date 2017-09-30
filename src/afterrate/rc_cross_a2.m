@@ -4,7 +4,7 @@ function rc_cross_a2()
     % be selected interactively or the entire area. The values are calculated for in each volume
     % around a grid point containing ni earthquakes
     % J. Woessner
-    % last update: 31.08.03
+    % updated: 31.08.03
     
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;

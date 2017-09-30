@@ -330,7 +330,7 @@ function mycat = catalog_overview(mycat)
         mycat.sort('Date');
        
         zmap_message_center.update_catalog();
-        update(mainmap())
+        zmap_update_displays();
         
         close(main_dialog_figure('handle'));
         % changes in bin length go to global 

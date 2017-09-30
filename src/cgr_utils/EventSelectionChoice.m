@@ -1,12 +1,28 @@
 classdef EventSelectionChoice < handle
-    % GridParameterChoice adds control to figure that describes how to choose a grid.
+    % EventSelectionChoice widget allowing user to determine how samples are selected
     %
-    % Example usage:
+    % options this can control:
+    %   1. Select all events within Radius R of a point?
+    %       useEventsInRadius = true
+    %       radius_km = [some value]
     %
-    
+    %   2. Select the closest N events to a point, up to a max radius?
+    %       useNumNearbyEvents =  true
+    %       numNearbyEvents = [some value]
+    %       maxRadiusKm = [some value] 
+    %       
+    %   5. Minumum number of points for meaningful measurement?
+    %        requiredNumEvents = [some value] (0 if unused)
+    %
+    %   6. Include only events within shape?
+    %        limitCatalogToShape = logical
+    %
+    %
     properties
         ni % number of nearby events to consider
-        ra % radius in km
+        max_ra % maximum radius when sampling specific number of events
+        ra % radius in km for RADIUS sampling
+        minValid% minimum number of selected events to consider point measureable
         ubg1
     end
     properties(Dependent)
@@ -19,12 +35,14 @@ classdef EventSelectionChoice < handle
         hUseRadius
         hNi
         hRa
+        hMin
+        hMaxRa
         
     end
     
     properties(Constant)
         GROUPWIDTH=315
-        GROUPHEIGHT=77;
+        GROUPHEIGHT=170;
     end
     
     methods
@@ -42,9 +60,15 @@ classdef EventSelectionChoice < handle
             out.radius_km=obj.ra;
             out.useNumNearbyEvents=obj.UseNumNearbyEvents;
             out.useEventsInRadius=obj.UseEventsInRadius;
+            if obj.UseNumNearbyEvents
+                out.maxRadiusKm = obj.max_ra;
+            else
+                out.maxRadiusKm = obj.ra;
+            end
+            out.requiredNumEvents = obj.minValid;
         end
         
-        function obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra)
+        function obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra, min_valid)
             % choose_grid adds controls to describe how to choose a grid.
             
             % Grid options
@@ -52,10 +76,12 @@ classdef EventSelectionChoice < handle
             % Create, Load, or use Previous grid choice
             obj.ni=ni;
             obj.ra=ra;
+            obj.max_ra = ra;
+            obj.minValid=min_valid;
             
             if isempty(lowerCornerPosition)
-                X0 = 22;
-                Y0 = 144;
+                X0 = 5;
+                Y0 = 50;
             else
                 X0 = lowerCornerPosition(1);
                 Y0 = lowerCornerPosition(2);
@@ -64,31 +90,75 @@ classdef EventSelectionChoice < handle
             enable_ra = ~isempty(ra);
             enable_ni = ~isempty(ni);
             obj.ubg1=uibuttongroup(fig,'Title','Event Selection',...
-                'Units','pixels','Position',[X0 Y0 315 77], 'Tag',tag);
+                'Units','pixels','Position',[X0 Y0 obj.GROUPWIDTH obj.GROUPHEIGHT], 'Tag',tag);
             
+            % N EVENTS
             obj.hUseNevents = uicontrol(obj.ubg1,'Style','radiobutton',...
-                'Units','pixels','Position',[17 38 280 22],...
+                'Units','pixels',...
+                'Position',[17 obj.GROUPHEIGHT-40 280 22],...
                 'String','Number of Nearest Events',...
                 'Enable',logical2onoff(enable_ni));
             
+            obj.hNi=uicontrol(obj.ubg1,'Style','edit',...
+                'Units','pixels',...
+                'Position',[234 obj.GROUPHEIGHT-40 72 22],...
+                'String',num2str(obj.ni),...
+                'callback',@callbackfun_ni,...
+                'ToolTipString','# closest events to include');
+            
+            
+            % SAMPLE DISTANCE
+            uicontrol(obj.ubg1,'Style','text',...
+                'Units','pixels','Position',[17 obj.GROUPHEIGHT-70 160 22],...
+                'String','...up to max radius (km)',...
+                'HorizontalAlignment','right');
+            
+            obj.hMaxRa=uicontrol(obj.ubg1,'Style','edit',...
+                'Units','pixels','Position',[190 obj.GROUPHEIGHT-70 72 22],...
+                'String',num2str(obj.max_ra),...
+                'callback',@callbackfun_maxra, ...
+                'ToolTipString','Limit sample distance for events');
+                
+            % CONSTANT RADIUS
             obj.hUseRadius =  uicontrol(obj.ubg1,'Style','radiobutton',...
-                'Units','pixels','Position',[17 7 280 22],...
+                'Units','pixels',...
+                'Position',[17 obj.GROUPHEIGHT-105 280 22],...
                 'String','Events within Constant Radius (km)',...
                 'Enable',logical2onoff(enable_ra));
             
-            obj.hNi=uicontrol(obj.ubg1,'Style','edit',...
-                'Units','pixels','Position',[234 38 72 22],...
-                'String',num2str(ni),'callback',@callbackfun_ni, 'ToolTipString','# closest events to include');
             obj.hRa=uicontrol(obj.ubg1,'Style','edit',...
-                'Units','pixels','Position',[234 7 72 22],...
-                'String',num2str(ra),'callback',@callbackfun_ra, 'ToolTipString','event selection radius');
+                'Units','pixels',...
+                'Position',[234 obj.GROUPHEIGHT-105 72 22],...
+                'String',num2str(obj.ra),...
+                'callback',@callbackfun_ra,...
+                'ToolTipString','event selection radius');
                 
+            
+            %
+             uibuttongroup(obj.ubg1,...
+                'Units','pixels','Position',[10 50 obj.GROUPWIDTH-20 2], 'Tag',tag);
+            
+            
+            %
+            uicontrol(obj.ubg1,'Style','text',...
+                'Units','pixels','Position',[17 10 200 22],...
+                'String','Minimum valid sample size',...
+                'HorizontalAlignment','right');
+            
+            obj.hMin=uicontrol(obj.ubg1,'Style','edit',...
+                'Units','pixels','Position',[234 10 72 22],...
+                'String',num2str(obj.minValid),...
+                'callback',@callbackfun_minval, ...
+                'ToolTipString','Number of events that must be selected for this to be a valid measurement');
+                
+            
             % deactivate one or the other input fields depending on what is allowed
             if enable_ni
                 obj.hRa.Enable='off';
                 obj.ubg1.SelectedObject=obj.hUseNevents;
             else
                 obj.hNi.Enable='off';
+                obj.hMaxRa.Enable='off';
                 obj.ubg1.SelectedObject=obj.hUseRadius;
             end
             obj.ubg1.SelectionChangedFcn=@callback_selectioncontrol;
@@ -97,9 +167,9 @@ classdef EventSelectionChoice < handle
             function callback_selectioncontrol(mysrc,~)
                 if mysrc.SelectedObject == obj.hUseNevents
                     set([obj.hRa],'Enable','off');
-                    set([obj.hNi],'Enable','on');
+                    set([obj.hNi, obj.hMaxRa],'Enable','on');
                 else
-                    set([obj.hNi],'Enable','off');
+                    set([obj.hNi, obj.hMaxRa],'Enable','off');
                     set([obj.hRa],'Enable','on');
                 end
             end
@@ -111,11 +181,17 @@ classdef EventSelectionChoice < handle
             function callbackfun_ra(mysrc,~)
                 obj.ra=str2double(mysrc.String);
             end
+            function callbackfun_maxra(mysrc,~)
+                obj.max_ra=str2double(mysrc.String);
+            end
+            function callbackfun_minval(mysrc,~)
+                obj.minValid = str2double(mysrc.String);
+            end
         end
     end
     
     methods(Static)
-        function evsel=quickshow(writeToGlobal,ni,ra)
+        function evsel=quickshow(writeToGlobal,ni,ra,min_valid)
             %quickhow will produce a simple ZmapFunctionDlg, writing
             % selcrit = evsel.quickshow() get parameters into the output
             % evsel.quickshow(true) writes results back to ZmapGlobal
@@ -133,7 +209,10 @@ classdef EventSelectionChoice < handle
                 ZG=ZmapGlobal.Data;
                 ra=ZG.ra;
             end
-            esc=EventSelectionChoice(f,t,lcp,ni, ra);
+            if ~exist('min_valid','var')
+                min_valid=1;
+            end
+            esc=EventSelectionChoice(f,t,lcp,ni, ra, min_valid);
             evsel=esc.toStruct;
             uicontrol('style','pushbutton','string','OK','callback',@cb);
             uiwait(f);
@@ -149,15 +228,5 @@ classdef EventSelectionChoice < handle
         end
         
     end
-end
-
-function out=isempty2onoff(val)
-    % returns 'off' for empty values and 'on' otherwise
-    if isempty(val)
-        out= 'off';
-    else
-        out= 'on';
-    end
-end
 
 end

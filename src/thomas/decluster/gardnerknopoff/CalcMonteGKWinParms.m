@@ -12,7 +12,7 @@ function [fSpace, fTime] = CalcMonteGKWinParms(fMagnitude)
 % fTime  : Window length in time [dec. years]
 %
 % van Stiphout, Thomas, vanstiphout@sed.ethz.ch
-% last update: 25.01.2008
+% updated: 25.01.2008
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

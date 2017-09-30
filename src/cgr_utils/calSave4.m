@@ -8,6 +8,6 @@ function calSave4(~, ~, catalog, faults, mainfault, coastline, main, infstri)
     [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Filename?');
     save([path1, file21], 'catalog', 'faults', 'mainfault', 'coastline', 'main', 'infstri');
     close(loda);
-    update(mainmap());
+    zmap_update_displays();
     
 end

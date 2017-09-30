@@ -8,7 +8,7 @@ function aux_1FMD(params, hParentFigure)
 % hParentFigure : Handle of the parent figure
 %
 % J.Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 19.08.02
+% updated: 19.08.02
 
 
 % Get the axes handle of the plotwindow
@@ -66,7 +66,7 @@ fMc = params.mValueGrid(nNodeGridPoint,3);
 % First period
 [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mNodeCatalog_, vFMD, fMc);
 % Calculate the b-value etc. for M > Mc
-[fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mNodeCatalog_(vSel,:),0.1);
+[ fBValue, fStdDev, fAValue] =  calc_bmemag(mNodeCatalog_(vSel,:),0.1);
 % Plot the 'x'-marker
 sColor = 'b';
 hPlot = semilogy(vFMD(1,nIndexLo), vFMD(2,nIndexLo),'xb');

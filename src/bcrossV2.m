@@ -207,7 +207,7 @@ function bcrossV2(sel)
                     l = b.Magnitude >= magco;
                     b2 = b(l,:);
                 end
-                [av2 bv2 stan2 ] =  bmemag(b2);
+                [bv2] =  bmemag(b2);
                 bvg = [bvg ; bv magco x y b.Count bv2 pr av stan  max(b.Magnitude)];
             else
                 bvg = [bvg ; NaN NaN x y NaN NaN NaN NaN NaN  NaN];

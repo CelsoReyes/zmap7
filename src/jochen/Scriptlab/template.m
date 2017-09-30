@@ -2,7 +2,7 @@
 % Script
 % Author: J. Woessner
 % woessner@seismo.ifg.ethz.ch
-% last update:
+% updated:
 
 report_this_filefun(mfilename('fullpath'));
 

@@ -49,19 +49,31 @@ classdef zmap_message_center < handle
         function set_warning(messageTitle, messageText)
             % set_warning displays a message to the user
             fprintf('\n+++<strong> ZMAP WARNING: %s </strong>+++\n%s\n\n',messageTitle,messageText);
-            warndlg(messageText,messageTitle);
+            f=warndlg(messageText,messageTitle,'modal');
+            t = timer('TimerFcn', {@closeit f}, 'StartDelay', 10);
+            start(t)
+            if strcmp(t.Running, 'on')
+                stop(t);
+            end
+            delete(t);
         end
         
         function set_error(messageTitle, messageText)
             % set_error displays a message to the user
             fprintf('\n>>><strong> ZMAP ERROR: %s </strong><<<\n%s\n\n',messageTitle,messageText);
-            errordlg(messageText,messageTitle);
+            errordlg(messageText,messageTitle,'modal');
         end
         
         function set_info(messageTitle, messageText)
             % set_info displays a message to the use
             fprintf('\n---<strong> ZMAP INFO: %s </strong>---\n%s\n\n',messageTitle,messageText);
-            helpdlg(messageText,messageTitle);
+            f=helpdlg(messageText,messageTitle);
+            t = timer('TimerFcn', {@closeit f}, 'StartDelay', 5);
+            start(t)
+            if strcmp(t.Running, 'on')
+                stop(t);
+            end
+            delete(t);
         end
         
         function clear_message()
@@ -86,6 +98,13 @@ classdef zmap_message_center < handle
         end
     end
 end
+
+function closeit(src,~,f)
+    if ishandle(f)
+        close(f)
+    end
+end
+
 
 function h = create_message_figure()
     % creates figure with following uicontrols
@@ -165,7 +184,7 @@ function h = create_message_figure()
         'String','Map',...
         'Units','normalized',...
         'Position',[0.65 0.05 .3 .25],...
-        'Callback',@(s,e) update(mainmap()),...
+        'Callback',@(s,e) zmap_update_displays('showmap'),...
         'Tag','useandmapbutton');
     
     % show timeseries for this catalog
@@ -207,7 +226,7 @@ function h = create_message_figure()
         'String','USE (and map)',...
         'Units','normalized',...
         'Position',[0.65 0.05 .3 .25],...
-        'Callback','ZG=ZmapGlobal.Data; replaceMainCatalog(ZG.newcat);zmap_message_center.update_catalog();update(mainmap())',...
+        'Callback','ZG=ZmapGlobal.Data; replaceMainCatalog(ZG.newcat);zmap_update_displays(''showmap'');',...
         'TooltipString','Makes this catalog the active catalog',...
         'Tag','useandmapbutton');
     
@@ -232,9 +251,9 @@ end
 
 function do_selected_catalog_overview(s,~)
     
-ZG=ZmapGlobal.Data; % get zmap globals
-ZG.newcat = catalog_overview(ZG.newcat);
-    zmap_message_center.update_catalog();
+    ZG=ZmapGlobal.Data; % get zmap globals
+    ZG.newcat = catalog_overview(ZG.newcat);
+     zmap_message_center.update_catalog();
 end
 
 function update_current_catalog_pane(~,~)
@@ -283,7 +302,7 @@ function update_catalog_pane(pane, mycat, summary_depth, nocat_message)
         s= nocat_message;
     end
     set(findobj(src,'Tag','cat_summary'), 'String', s);
-    drawnow
+    % drawnow
 end
     
     

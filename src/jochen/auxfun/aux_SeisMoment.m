@@ -8,7 +8,7 @@ function aux_SeisMoment(params, hParentFigure)
 % hParentFigure : Handle of the parent figure
 %
 % J.Woessner, jowoe@gps.caltech.edu
-% last update: 09.11.05
+% updated: 09.11.05
 
 
 % Get the axes handle of the plotwindow

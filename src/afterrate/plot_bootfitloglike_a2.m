@@ -147,7 +147,7 @@ report_this_filefun(mfilename('fullpath'));
             %drawnow
         end
         % 2nd moment of bootstrap number of forecasted number of events
-        fStdBst = calc_StdDev(loopout(:,9));
+        fStdBst = std(loopout(:,9),1,'omitnan');
         %
         % Plot the forecast ...
         cumnrf = (1:length(time_asf))';

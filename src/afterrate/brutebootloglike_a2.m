@@ -29,7 +29,7 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
     %  loopout     contains all results
     %
     % Samuel Neukomm / S. Wiemer / J. Woessner
-    % last update: 05.08.03
+    % updated: 05.08.03
 
     time_as = sort(time_as);
     %bootloops = 50; % number of bootstrap samples
@@ -55,12 +55,12 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
     % the learning period
 
     % 2nd moment i.e. Standard deviations
-    [pstd1] = calc_StdDev(loopout(:,1));
-    [pstd2] = calc_StdDev(loopout(:,2));
-    [cstd1] = calc_StdDev(loopout(:,3));
-    [cstd2] = calc_StdDev(loopout(:,4));
-    [kstd1] = calc_StdDev(loopout(:,5));
-    [kstd2] = calc_StdDev(loopout(:,6));
+    [pstd1] = std(loopout(:,1),1,'omitnan');
+    [pstd2] = std(loopout(:,2),1,'omitnan');
+    [cstd1] = std(loopout(:,3),1,'omitnan');
+    [cstd2] = std(loopout(:,4),1,'omitnan');
+    [kstd1] = std(loopout(:,5),1,'omitnan');
+    [kstd2] = std(loopout(:,6),1,'omitnan');
 
     % Uncertainties of fit
     mStdL = [pstd1 pstd2 cstd1 cstd2 kstd1 kstd2];

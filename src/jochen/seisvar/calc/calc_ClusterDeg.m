@@ -11,7 +11,7 @@ function [fClusterDeg] = calc_ClusterDeg(mCatalog, vCluster)
 % fClusterDeg : Percentage of clustering
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 19.08.02
+% updated: 19.08.02
 
 
 global bDebug;

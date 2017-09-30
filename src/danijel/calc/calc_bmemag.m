@@ -1,5 +1,5 @@
-function [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
-% function [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
+function [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
+% function [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
 % ---------------------------------------------------------------------------------
 % Calculates the mean magnitute, the b-value based
 % on the maximum likelihood estimation, thea-value and the
@@ -10,7 +10,6 @@ function [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning
 %   fBinning        Binning of the earthquake magnitudes (default 0.1)
 %
 % Output parameters:
-%   fMeanMag        Mean magnitude
 %   fBValue         b-value
 %   fStdDev         Standard deviation of b-value
 %   fAValue        a-value
@@ -39,7 +38,7 @@ end
 
 
 % Set the default value if not passed to the function
-if ~exist('fBinning')
+if ~exist('fBinning','var')
   fBinning = 0.1;
 end
 

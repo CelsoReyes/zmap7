@@ -17,7 +17,7 @@ function setcol()
             C = uisetcolor;
             ZmapGlobal.Data.color_bg =[C(1) C(2) C(3)];
             close;
-            update(mainmap());
+            zmap_update_displays();
         case 'Figure'
             C = uisetcolor;
             ZmapGlobal.Data.color_fbg=[C(1) C(2) C(3)];

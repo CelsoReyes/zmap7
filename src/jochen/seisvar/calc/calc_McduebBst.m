@@ -24,7 +24,7 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
 % mBave            : Result matrix for plotting (average values)
 % mBvalue          : Result matrix for plotting
 % Author: J. Woessner
-% last update: 04.06.03
+% updated: 04.06.03
 
 % Check input
 if nargin == 0, error('No catalog input'); end
@@ -61,7 +61,7 @@ for fMag=fMinMag:fBinning:fMaxMag
         % Check for minimum number of events
         if length(mCat(:,1)) >= nMinNumberEvents
             try
-                [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
+                [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
                 mBvalue_bst = [mBvalue_bst; fBValue fStdDev fAValue fMag];
             catch
                 mBvalue_bst = [mBvalue_bst; NaN NaN NaN fMag];
@@ -84,7 +84,7 @@ for fMag=fMinMag:fBinning:fMaxMag
     end
     % Calculate 2nd moment
     if ~isempty(mBvalue_bst_tmp(:,1))
-        fStdBst = calc_StdDev(mBvalue_bst_tmp(:,1));
+        fStdBst = std(mBvalue_bst_tmp(:,1),1,'omitnan');
     else
         fStdBst = NaN;
     end

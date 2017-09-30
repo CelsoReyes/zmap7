@@ -12,7 +12,7 @@ function [fResult] = calc_log10poisspdf2(nX, fLambda)
 %   fResult     Logarithm to the basis of 10 of the Poisson probability density
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 03.12.2002
+% updated: 03.12.2002
 
 % Create emtpy matrix for results
 fResult = zeros(size(nX));

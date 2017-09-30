@@ -89,7 +89,7 @@ try
   mCatalog = mCatalog.subset(vSel_);
   nNumberQuakes = mCatalog.Count;
   if nNumberQuakes >= nMinimumNumber
-    [vDummy, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning);
+    [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning);
   end
   if isempty(fMc)
     fMc = nan;

@@ -18,7 +18,7 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     % fRMS    : RMS of the fit
     %
     % J.Woessner, S. Wiemer
-    % last update: 13.08.03
+    % updated: 13.08.03
 
     % % Check values
     % if (isnan(pval1) == 0 & isnan(pval2) == 0)

@@ -13,7 +13,7 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     %
     % Author: J. Woessner
     % j.woessner@sed.ethz.ch
-    % last update: 16.02.2005
+    % updated: 16.02.2005
 
     % Create catalog after split time (aftershock sequence)
     vSel = (params.fTstart <= mCatalog.Date & mCatalog.Date < params.fTstart+params.fTimePeriodDays);

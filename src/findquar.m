@@ -76,7 +76,7 @@ classdef findquar < ZmapFunction
             %                                     may be evaluated
             
             zdlg.AddGridParameters('Grid',1.0,'deg',1.0,'deg',[],[]);
-            zdlg.AddEventSelectionParameters('EvtSel',100,[]);
+            zdlg.AddEventSelectionParameters('EvtSel',100,[],1);
             % get the grid parameter
             
             zdlg.Create('Define Grid and Selection Parameters')
@@ -278,7 +278,7 @@ classdef findquar < ZmapFunction
             % plot overlay
             %
             hold on
-            %update(mainmap())
+            %zmap_update_displays();
             ploeq = plot(obj.ax,mycat.Longitude,mycat.Latitude,'k.');
             set(ploeq,'Tag','eq_plot','MarkerSize',obj.ZG.ms6,'Marker','.','Color',obj.ZG.someColor,'Visible','on')
             

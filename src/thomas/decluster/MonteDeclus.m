@@ -33,7 +33,7 @@ function [declusCat, mNumDeclus] = MonteDeclus(mCatalog_,nSimul_,nMode_,mReasenP
 % [declusCat,params.mNumDeclus] = MonteDeclus(mCatalog_,nSimul_,1);
 %
 % Th. van Stiphout; vanstiphout@sed.ethz.ch
-% last update: 14.08.2006
+% updated: 14.08.2006
 
 % set variables
 fFactor_=0.9;

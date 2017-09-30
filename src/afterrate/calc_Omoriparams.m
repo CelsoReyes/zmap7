@@ -16,7 +16,7 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     %   mResult    Structure containing p-, c-, and k-values, mean bootstrap p,c,k-values and their uncertainties
     %
     % J. Woessner
-    % last update: 11.03.04
+    % updated: 11.03.04
     % 2017 Celso Reyes
 
     %TODO fix the time periods from decyear to days or dates

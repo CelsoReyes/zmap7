@@ -318,7 +318,6 @@ function calc_across(sel)
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin   % calculation of thea-value according to determined Mc (magco)
                         faValue = calc_MaxLikelihoodA(b, bv2);
-                        mea = NaN;
                         stan2 = NaN;
                         bv = NaN;
                     else
@@ -331,7 +330,7 @@ function calc_across(sel)
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin
-                        [mea bv2 stan2,  faValue] =  bmemag(b(l,:));
+                        [bv2, stan2,  faValue] =  bmemag(b(l,:));
                     else
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end

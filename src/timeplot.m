@@ -214,7 +214,7 @@ function timeplot(mycat, nosort)
     axes(ax);
     set(cum,'Visible','on');
     watchoff(cum);
-    
+    zmap_update_displays();
     
     
     %% ui functions
@@ -245,7 +245,7 @@ function timeplot(mycat, nosort)
             'callback',@(~,~)inpudenew())
         winlen_days = days(ZG.compare_window_dur / ZG.bin_dur);
         uimenu(plotmenu,'Label','Overlay another curve (hold)',...
-            'Checked',check2onoff(ZG.hold_state2),...
+            'Checked',logical2onoff(ZG.hold_state2),...
             'callback',@cb_hold)
         uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
             'callback',@cb_comparerates_fit)
@@ -349,23 +349,9 @@ function timeplot(mycat, nosort)
     
     function cb_hold(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        if ZG.hold_state2
-            ZG.hold_state2=false;
-            mysrc.Checked='off';
-        else
-            ZG.hold_state2=true;
-            mysrc.Checked='on';
-        end
+        ZG.hold_state2 = ~ZG.hold_state2;
+        mysrc.Checked=(logical2onoff(ZG.hold_state2));
     end
-    function ans=check2onoff(var)
-        if var
-            ans='on';
-        else
-            ans='off';
-        end
-    end
-            
-            
         
     
     function cb_comparerates_fit(mysrc,myevt)
@@ -444,6 +430,7 @@ function timeplot(mycat, nosort)
         mycat = ZG.newcat;
         close(cum);
         timeplot(mycat,nosort);
+        zmap_update_displays();
     end
     
     function cb_keep(mysrc,myevt)
@@ -451,13 +438,13 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;
-        zmap_message_center.update_catalog();
-        update(mainmap());
+        zmap_update_displays(); 
     end
     function cb_rename_cat(~,~)
         nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
         if ~isempty(nm)
             mycat.Name=nm{1};
         end
+        zmap_update_displays();
     end
 end

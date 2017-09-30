@@ -8,7 +8,7 @@ function bcross(sel)
     % If not, both options can be assigned by the additional run assignment.
     % Standard deviation of b-value in non-bootstrapping case is calculated from Aki-formula!
     % Org: Stefan Wiemer 1/95
-    % last update: J. Woessner, 02.04.2005
+    % updated: J. Woessner, 02.04.2005
     
     % JW: Removed Additional random runs for uncertainty determination since
     % this is incorporated in new functions to determine Mc and B with
@@ -252,7 +252,7 @@ function bcross(sel)
                 [fMc] = calc_Mc(b, ZG.inb1, fBinning, fMccorr);
                 l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
-                    [fMeanMag, fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
+                    [ fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
                 else
                     %fMc = NaN;
                     fBValue = NaN; fStd_B = NaN; fAValue= NaN;

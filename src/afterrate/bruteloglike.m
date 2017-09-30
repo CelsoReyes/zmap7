@@ -8,7 +8,7 @@ function [fL] = bruteloglike(vValues,time_as)
     % (Formula 6)
     %
     % J. Woessner
-    % last update: 29.07.03
+    % updated: 29.07.03
 
     p = vValues(1);
     c = vValues(2);

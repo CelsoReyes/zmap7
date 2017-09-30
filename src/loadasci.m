@@ -179,7 +179,7 @@ function loadasci(da,sa)
                 befehl=['faults = ',tr,';'];
                 eval(befehl);
                 %    clear(tr)
-                close;update(mainmap()); setup
+                close;zmap_update_displays(); setup
             else
                 close, setup
             end % if
@@ -211,7 +211,7 @@ function loadasci(da,sa)
                 tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
                 eval(befehl);
                 %  clear(tr)
-                close;update(mainmap()); setup
+                close;zmap_update_displays(); setup
             else
                 close, setup
             end % if
@@ -245,7 +245,7 @@ function loadasci(da,sa)
                 befehl=['main = ',tr,';'];
                 eval(befehl);
                 %  clear(tr)
-                close; update(mainmap());setup
+                close; zmap_update_displays();setup
             else
                 close, setup
             end % if
@@ -279,7 +279,7 @@ function loadasci(da,sa)
                 befehl=['coastline = ',tr,';'];
                 eval(befehl);
                 %clear(tr)
-                close; update(mainmap());setup
+                close; zmap_update_displays();setup
             else
                 close, setup
             end % if

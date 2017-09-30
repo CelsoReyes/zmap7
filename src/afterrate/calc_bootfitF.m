@@ -87,7 +87,7 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         
         %% done with the above replacemtns
         % 2nd moment of bootstrap number of forecasted number of events
-        fStdBst = calc_StdDev(loopout.maxes);
+        fStdBst = std(loopout.maxes,1,'omitnan');
 
         % now calculate the forecast ...        
         %% this is the vectorized version ...

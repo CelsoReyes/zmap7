@@ -8,7 +8,7 @@ function aux_McEMR(params, hParentFigure)
 % hParentFigure : Handle of the parent figure
 %
 % J.Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 29.09.04
+% updated: 29.09.04
 
 % Get the axes handle of the plotwindow
 axes(sv_result('GetAxesHandle', hParentFigure, [], guidata(hParentFigure)));

@@ -19,7 +19,7 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, fBinning, nMi
 % fAvalue          :a-value
 %
 % Author: J. Woessner
-% last update: 04.06.03
+% updated: 04.06.03
 
 % Check input
 if nargin == 0, error('No catalog input'); end

@@ -31,7 +31,7 @@ function [fMls, fMc, fStd_Mc, fMu, fSigma, fBvalue, fStd_B, fAvalue, fStd_A, bH,
 % fKsstat        : Test statistic of the Kolmogorov-Smirnov-Test
 %
 % J. Woessner: woessner@seismo.ifg.ethz.ch
-% last update: 11.02.04
+% updated: 11.02.04
 
 
 % Initialize
@@ -79,7 +79,7 @@ vNonCFMD = fliplr(vNonCFMD);
 % Calculate a and b-value for GR-law and distribution vNCum
 [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
 if (length(mCatalog.Longitude(vSel)) >= 20)
-    [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
     % Normalize to time period
     vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
     vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

@@ -77,7 +77,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
                 zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
-                zdlg.AddEventSelectionParameters('selOpts',obj.ni, obj.ra);
+                zdlg.AddEventSelectionParameters('selOpts',obj.ni, obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
                 zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...
@@ -180,6 +180,8 @@ classdef cgr_bvalgrid < ZmapFunction
                 y = obj.mygrid(i,2);
                 allcount = allcount + 1.;
                 
+                % select events
+                %{
                 if obj.selOpts.useEventsInRadius   % take point within r
                     b = mycat.selectRadius(y,x,obj.selOpts.radius_km);      % new data per grid point (b) is sorted in distanc
                     rd = obj.selOpts.radius_km;
@@ -190,10 +192,14 @@ classdef cgr_bvalgrid < ZmapFunction
                 % Number of earthquakes per node
                 nX = b.Count;
                 
+                %}
+                
                 % Estimate the completeness and b-value
                 obj.ZG.(obj.ModifiedCatalog) = b;
                 
                 if nX >= obj.Nmin  % enough events?
+                    % if enough events, do calculation
+                    %{
                     % Added to obtain goodness-of-fit to powerlaw value
                     [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
                     %[~, ~, ~, ~, prf]=mcperc_ca3();
@@ -201,7 +207,7 @@ classdef cgr_bvalgrid < ZmapFunction
                     [fMc] = calc_Mc(b, obj.ZG.inb1, obj.fBinning, obj.fMccorr);
                     l = b.Magnitude >= fMc-(obj.fBinning/2);
                     if sum(l) >= obj.Nmin
-                        [~, fBValue, fStd_B, fAValue] =  calc_bmemag(b.subset(l), obj.fBinning);
+                        [fBValue, fStd_B, fAValue] =  calc_bmemag(b.subset(l), obj.fBinning);
                     else
                         [fBValue, fStd_B, fAValue] = deal(nan);
                     end
@@ -220,7 +226,7 @@ classdef cgr_bvalgrid < ZmapFunction
                         % Set standard deviation ofa-value to NaN;
                         fStd_A= NaN; fStd_Mc = NaN;
                     end
-                    
+                    %}
                     
                 else
                     [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, fStdDevB, fStdDevMc,prf, nX] = deal(nan);
@@ -260,6 +266,67 @@ classdef cgr_bvalgrid < ZmapFunction
                 results=myvalues;
             end
             obj.ZG.bvg=myvalues;
+            
+             function out=calculation_function(catalog)
+                % calulate values at a single point
+            
+                out=struct(...
+                'Mc_value',NaN, ... mMc, Mc value'p-value',... mPval, p-Value
+                'Mc_std', NaN,  ... mStdMc, Standard deviation Mc
+                ...'x',NaN, ... UNKNOWABLE from gridfun
+                ...'y',NaN, ... UNKNOWABLE from gridfun
+                ...'Radius_km',NaN,  ... vRadiusRes,  Radii of chosen events, Resolution UNKNOWABLE from gridfun
+                'b_value',NaN, ... mBvalue, b-value
+                'b_value_std',NaN, ... mStdB, b-value standard deviation
+                'a_value',NaN, ... mAvalue, a-value
+                'a_value_std',NaN, ... mStdA, a-value standard deviation
+                'power_fit',NaN,  ... Prmap, Goodness of fit to power-law map
+                'max_mag',NaN,  ... ro, maximum magnitude for node
+                'Additional_Runs_b_std',NaN, ... mStdDevB
+                'Additional_Runs_Mc_std',NaN, ... mStdDevMc
+                'Number_of_Events',NaN ...mNumEq, Number of earthquakes
+                ); %[fMc fStd_Mc x y rd fBValue fStd_B fAValue fStd_A prf mab fStdDevB fStdDevMc nX];
+            
+                % Added to obtain goodness-of-fit to powerlaw value
+                % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
+                [~, ~, ~, ~, prf]=mcperc_ca3();
+                
+                [Mc_value] = calc_Mc(catalog, obj.ZG.inb1, obj.fBinning, obj.fMccorr);
+                l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
+                
+                if sum(l) >= obj.Nmin
+                    [b_value, b_value_std, a_value] =  calc_bmemag(catalog.subset(l), obj.fBinning);
+                    % otherwise, they should be NaN
+                end
+                
+                % Bootstrap uncertainties FOR EACH CELL
+                if obj.useBootstrap
+                    % Check Mc from original catalog
+                    if sum(l) >= obj.Nmin
+                        % following line has only b, but maybe should be catalog.subset(l)
+                        [Mc_value, Mc_std, ...
+                            b_value, b_value_std, ...
+                            a_value, a_value_std, ...
+                            Additional_Runs_b_std, Additional_Runs_Mc_std] = ...
+                            calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.ZG.inb1);
+                    else
+                        Mc_value = NaN;
+                        %fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
+                    end
+                else
+                    % Set standard deviation ofa-value to NaN;
+                    a_value_std= NaN; 
+                    Mc_std = NaN;
+                end
+
+                mab = max(catalog.Magnitude) ;
+                if isempty(mab); mab = NaN; end
+
+                % Result matrix
+                %bvg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan prf  mab av2 fStdDevB fStdDevMc nX];
+                out  = [Mc_value Mc_std x y rd b_value b_value_std a_value a_value_std prf mab Additional_Runs_b_std Additional_Runs_Mc_std nX];
+            
+            end
         end
         
         function plot(obj,varargin)

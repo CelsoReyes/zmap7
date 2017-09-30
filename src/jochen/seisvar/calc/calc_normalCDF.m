@@ -10,7 +10,7 @@ function F = calc_normalCDF(vX, vXdata)
 %
 % Author: J. Woessner
 % woessner@seismo.ifg.ethz.ch
-% last update: 11.06.04
+% updated: 11.06.04
 
 F = normcdf(vXdata,vX(1),vX(2));
 % Check F on NAN

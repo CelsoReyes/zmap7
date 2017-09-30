@@ -15,7 +15,7 @@ function [fL] = bruteloglike_pck2(vValues,tas,fT1)
     % fL  : Log likelihood function value
     %
     % J. Woessner
-    % last update: 05.08.03
+    % updated: 05.08.03
 
     p = vValues(1);
     c = vValues(2);

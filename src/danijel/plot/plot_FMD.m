@@ -97,7 +97,7 @@ if exist('bPlotB')
 
     % Calculate the b-value etc. for M > Mc
     vSel = mCatalog.Magnitude >= fMc-(fBinning/2);
-    [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
 
     % Plot the line representing the b-value
     vPoly = [-1*fBValue fAValue];

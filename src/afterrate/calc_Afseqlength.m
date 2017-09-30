@@ -17,7 +17,7 @@ function [fTafshock] = calc_Afseqlength(fPval1,fCval1,fKval1,fBgrate,fTlength,bP
     % Outgoing:
     % fTafshock : Length of aftershock sequence in years
     %
-    % last update: 08.07.04
+    % updated: 08.07.04
     % jochen.woessner@sed.ethz.ch
 
     if ~exist('bPlot','var')

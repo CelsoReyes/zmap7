@@ -302,7 +302,7 @@ function callbackfun_003(mysrc,myevt)
   E = ran;
    ao=a;
    replaceMainCatalog(ran);
-   update(mainmap());
+   zmap_update_displays();
 end
  
 end

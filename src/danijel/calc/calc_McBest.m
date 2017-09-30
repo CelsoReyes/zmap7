@@ -23,7 +23,7 @@ for nCnt = (fMcStart - 0.9):fBinning:(fMcStart + 1.5)
   %vSel = mCatalog.Magnitude >= nCnt - 0.0499;
   nNumberEvents = sum(vSel);
   if nNumberEvents >= 25
-    [fDummy fBValue fDummy,  fDummy] =  bmemag(mCatalog.subset(vSel));
+    fBValue =  bmemag(mCatalog.subset(vSel));
 
     fStartMag = nCnt; % Starting magnitude (hypothetical Mc)
 

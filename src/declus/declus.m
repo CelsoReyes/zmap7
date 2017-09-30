@@ -190,7 +190,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         storedcat=original;
         cluscat=original.subset(clus(clus~=0));
         
-        update(mainmap())
+        zmap_update_displays();
         hold on
         plot(cluscat.Longitude, cluscat.Latitude,'m+');
         

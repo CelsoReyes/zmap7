@@ -14,7 +14,7 @@ function [vMags, vClusTime, vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMet
 % vClusTime : Vector of length of cluster
 % vDist     : Vector of cluster distances
 % J. Woessner
-% last update: 14.08.02
+% updated: 14.08.02
 
 % 28.08.02: Changed distance determination using distance now
 

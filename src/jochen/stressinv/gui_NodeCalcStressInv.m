@@ -12,7 +12,7 @@ function [result]=gui_NodeCalcStressInv(params,mCatalog)
 %
 % Author: J. Woessner
 % j.woessner@sed.ethz.ch
-% last update: 16.02.2005
+% updated: 16.02.2005
 
 % Init variable path has to be changed
 result=[];

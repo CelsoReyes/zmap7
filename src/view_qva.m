@@ -157,7 +157,7 @@ function view_qva(lab1,valueMap)
     % plot overlay
     %
     hold on
-    update(mainmap())
+    zmap_update_displays();
     ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     

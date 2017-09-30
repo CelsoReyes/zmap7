@@ -7,7 +7,7 @@ function [ params ]= sr_startZ
 %
 %
 % Th. van Stiphout; vanstiphout@sed.ethz.ch
-% last update: 17.08.2005
+% updated: 17.08.2005
 
 % global bDebug;
 % if bDebug

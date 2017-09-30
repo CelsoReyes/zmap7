@@ -12,7 +12,7 @@ function [fL] = bruteloglike_p2c2k2(vValues,tas,fT1)
     % fL  : Log likelihood function value
     %
     % J. Woessner
-    % last update: 05.08.03
+    % updated: 05.08.03
 
     p1 = vValues(1);
     p2 = vValues(2);

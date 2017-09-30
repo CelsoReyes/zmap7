@@ -36,7 +36,7 @@ function [params] = sv_calcMc(params)
 %   Check sv_NodeCalcMc.m for a list of variables!!
 %
 % J. Woessner; woessner@seismo.ifg.ethz.ch
-% last update: 11.06.03
+% updated: 11.06.03
 
 global bDebug;
 if bDebug

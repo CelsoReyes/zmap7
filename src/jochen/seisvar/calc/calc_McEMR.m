@@ -18,7 +18,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
 % fSigma     : sigma-values of the normal CDF
 %
 % J. Woessner: woessner@seismo.ifg.ethz.ch
-% last update: 03.11.03
+% updated: 03.11.03
 
 % Check input
 if nargin == 0, error('No catalog input'); end
@@ -72,8 +72,8 @@ for fMc = round(fMcBound-0.4:0.1:fMcBound+0.4 , -1)
     %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(catalog, vFMD, fMc);
     [~, ~, vSel, ~] = fMagToFitBValue(catalog, vFMD, fMc);
     if (length(catalog.Longitude(vSel)) >= 20)
-        %[fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
-        [~, fBValue, ~, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
+        %[ fBValue, fStdDev, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
+        [fBValue, ~, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

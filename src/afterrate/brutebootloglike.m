@@ -17,7 +17,7 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,n_bo
     %   loopout     struct containing all results with fields pval, cval, kval
     %
     % Samuel Neukomm / S. Wiemer / J. Woessner
-    % last update: 17.07.03
+    % updated: 17.07.03
 
     % figure parameters from bootstraps
     time_as = sort(time_as);
@@ -37,9 +37,9 @@ function [pv, pstd, cv, cstd, kv, kstd, loopout] = brutebootloglike(time_as,n_bo
     % the learning period
 
     % 2nd moment i.e. Standard deviations
-    [pstd] = calc_StdDev(loopout.pval);
-    [cstd] = calc_StdDev(loopout.cval);
-    [kstd] = calc_StdDev(loopout.kval);
+    [pstd] = std(loopout.pval,1,'omitnan');
+    [cstd] = std(loopout.cval,1,'omitnan');
+    [kstd] = std(loopout.kval,1,'omitnan');
     % in some implementations, pstd and cstd are rounded to 2 decimals, kstd to one.
 
     % Compute best fitting pair of variates

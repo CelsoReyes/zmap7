@@ -1,6 +1,5 @@
 classdef ZmapFunctionDlg < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+    % ZmapFunctionDlg Helper, used to generate dialog boxes while keeping code clean
     %
     % EXAMPLE USAGE IN A CLASS
     % classdef myclass < ZmapFunction
@@ -113,7 +112,7 @@ classdef ZmapFunctionDlg < handle
                         didEvSel=true;
                         obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
                             [labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10],...
-                            details.maxnum, details.maxrad);
+                            details.maxnum, details.maxrad, details.minvalid);
                         
                     case 'header'
                         obj.parts{i}.handle=uicontrol('Style','text',...
@@ -287,9 +286,9 @@ classdef ZmapFunctionDlg < handle
             
         end
         
-        function AddEventSelectionParameters(obj, tag, ni, ra)
+        function AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
             %AddEventSelectionParameters Choose between events in a radius, or closest N events
-            %AddEventSelectionParameters(obj, tag, ni, ra)
+            %AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
             % used to define how each grid point will select events
             %
             % returns structure
@@ -297,14 +296,17 @@ classdef ZmapFunctionDlg < handle
             % tag.radius_km
             % tag.useNumNearbyEvent
             % tag.useEventsInRadius
+            % tag.requiredNumEvents
+            % tag.maxRadiusKm
             %
-            % see also EventSelectionChoice
+            % see also EventSelectionChoice, EventSelectionChoice.toStruct
             
             details=struct(...
                 'Style','eventselectparameterbox',...
                 'Tag',tag,...
                 'maxnum',ni,...
-                'maxrad',ra);
+                'maxrad',ra,...
+                'minvalid',minvalid);
             obj.parts(end+1)={details};
         end
         
@@ -440,18 +442,20 @@ end
 function cb_str2duration(src,~)
     % value encodes the original type
     % 1 year, 3 day, 4 hour, 5 minute, 6 second
-    switch value
-        case 1
-        src.UserData=years(str2double(src.String));
-        case 3
-        src.UserData=days(str2double(src.String));
-        case 4
-        src.UserData=hours(str2double(src.String));
-        case 5
-        src.UserData=minutes(str2double(src.String));
-        case 6
-        src.UserData=seconds(str2double(src.String));
+    % (
+    persistent getduration
+    if isempty(getduration)
+        getduration = {... to be indexed by type
+            @(s) years(str2double(s.String)); ...   1 : years
+            @(s) error('not a known function');...  2 : months (not applicable
+            @(s) days(str2double(s.String));...     3 : days
+            @(s) hours(str2double(s.String));...    4 : hours
+            @(s) minutes(str2double(s.String));...  5 : minutes
+            @(s) seconds(str2double(s.String)) ...  6 : seconds
+            };
     end
+    
+    src.UserData = getduration{src.Value}(src);
 end
 
 function cb_str2str(src,~)

@@ -40,7 +40,7 @@ for fMag=fMinMag:fBinning:fMaxMag
     % Check for minimum number of events
     if length(mCat(:,1)) >= nMinNumberevents
         try
-            [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
+            [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
             mBvalue = [mBvalue; fBValue fStdDev fAValue fMag nRow];
         catch
             mBvalue = [mBvalue; NaN NaN NaN fMag nRow];

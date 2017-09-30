@@ -6,7 +6,7 @@
 % vCluster: Vector with cluster numbers
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 27.08.02
+% updated: 27.08.02
 
 % Check for declustered catalog
 

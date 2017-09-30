@@ -100,7 +100,7 @@ function  bdiff(mycat, holdplot)
     x = xt3(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ me, bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
+    [ bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
     
     bv = -bv;
     

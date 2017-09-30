@@ -141,7 +141,7 @@ function csubcat()
     
     %
     %  Plots epicenters  and faults
-    update(mainmap())
+    zmap_update_displays();
     
     % Make the figure visible
     %

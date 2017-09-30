@@ -5,7 +5,7 @@ function [] = plot_cluster_win()
 % in one figure
 %
 % J Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 12.08.02
+% updated: 12.08.02
 
 %% Magntiude areas
 vMagnitude = (0:0.1:10);

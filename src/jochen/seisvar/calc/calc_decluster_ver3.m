@@ -22,7 +22,7 @@ function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluste
 % vMainCluster  : Vector indicating mainshocks of clusters using a cluster number
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 13.08.02
+% updated: 13.08.02
 
 %% Added:
 % 31.07.02 Correction for problem of mainshocks with a cluster number as aftershocks belong to two sequences

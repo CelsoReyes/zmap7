@@ -15,7 +15,7 @@ function [fCumMoment, vCumMoment, vMoment] = calc_moment(mCatalog)
 % vCumMoment : Vector of the cumulative moment release [Nm]
 % vMoment    : Vector of single event moment release [Nm]
 % J. Woessner, j.woessner@sed.ethz.ch
-% last update: 09.11.05
+% updated: 09.11.05
 
 
 nXSize = mCatalog.Count;

@@ -17,7 +17,7 @@ function [fSpace, fTime] = calc_windows(fMagnitude, nMethod)
 % fTime  : Window length in time [dec. years]
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 22.07.02
+% updated: 22.07.02
 
 %%% Further possibilites, but not used %%%%%%%%%%%%%%%
 %              4 = Gruenthal, 1985 (from Figure)

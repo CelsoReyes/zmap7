@@ -109,7 +109,7 @@ function plotala()
     
     if ~isempty(abo)
         figure(map);
-        update(mainmap())
+        zmap_update_displays();
         plot(abo(:,1),abo(:,2),'o',...
             'MarkerFaceColor','r','MarkerEdgeColor','y');
         
@@ -356,7 +356,7 @@ function plotala()
         do = ['ZG.newcat = anB' num2str(n) ';' ];
         eval(do)
         timeplot(ZG.newt2)
-        update(mainmap())
+        zmap_update_displays();
         axes(h1)
         plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k')
     end

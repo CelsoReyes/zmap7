@@ -22,7 +22,7 @@ function [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(tas, fT
     %   fL          Maximum likelihood estunation
     %
     % J. Woessner / S. Neukomm
-    % last update: 20.04.04
+    % updated: 20.04.04
 
     options = optimset('Display','none','MaxFunEvals',400,'TolFun',1e-04,'MaxIter',500,'MaxSQPIter',500);
 

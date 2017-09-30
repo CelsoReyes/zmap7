@@ -15,7 +15,7 @@ function [fXGridNode, fYGridNode, nNodeGridPoint] = calc_ClosestGridNode(mPolygo
 % nNodeGridPoint : Grid node indice
 %
 % J. Woessner, woessner@seismo.ifg.ethz.ch
-% last update: 19.08.02
+% updated: 19.08.02
 
 %%%% Determine next grid point  %%%%%%%%%%%%
 mPos = [fX fY];

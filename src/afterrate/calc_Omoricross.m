@@ -3,7 +3,7 @@ function calc_Omoricross()
     % Data is displayed with view_Omoricross.m
     %
     % J. Woessner
-    % last update: 20.10.04
+    % updated: 20.10.04
     ZG=ZmapGlobal;
     report_this_filefun(mfilename('fullpath'));
     wCat='primeCatalog'; % working catalog name

@@ -20,7 +20,7 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest] = plot_McEMR
 % vPredBest      : Matrix of non-cumulative FMD below Mc [magnitude, prediction, uncertainty of prediction]
 %
 % J. Woessner: jochen.woessner@sed.ethz.ch
-% last update: 29.09.04
+% updated: 29.09.04
 
 % Initialize
 vProbability = [];
@@ -71,7 +71,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     % Select magnitudes to calculate b- anda-value
     vSel = mCatalog.Magnitude > fMc-fBinning/2;
     if sum(vSel) >= 20
-        [fMeanMag, fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

@@ -42,7 +42,7 @@ function plotclust()
         set(pl,'Color',col(i,:),'Markersize', 6, 'Linewidth',1, 'Marker',st(rs),'tag',num2str(i))
     end
     
-    update(mainmap())
+    zmap_update_displays();
     
     axis image
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...

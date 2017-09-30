@@ -15,7 +15,7 @@ function plot_mls1p(vPar, vMlsprob, nType)
 % See also plot_mls2p, plot_mls3p
 %
 % Author: J. Woessner, woessner@seismo.ifg,.ethz.ch
-% last update: 28.10.02
+% updated: 28.10.02
 
 switch nType
 case 1

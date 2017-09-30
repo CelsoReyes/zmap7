@@ -163,7 +163,7 @@ classdef ShapeSelection
             
             switch obj.Type
                 case 'polygon'
-                    h(1)=plot(obj.Lon,obj.Lat,'k','LineWidth',2.0,...
+                    plot(obj.Lon,obj.Lat,'k','LineWidth',2.0,...
                         'Tag','shapeoutline',...
                         'DisplayName','Selection Outline');
                     switch in_or_out
@@ -173,11 +173,13 @@ classdef ShapeSelection
                             msk=obj.InsideEvents(catalog);
                     end
                     if exist('catalog','var')
-                        h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+',...
+                        plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+',...
                             'Tag','selectedevents',...
                             'DisplayName','selected events');
                     end
                 case 'circle'
+                    [ minicat, max_km ] = catalog.selectCircle(obj.toStruct(), obj.X0, obj.Y0,[] );
+                    %{
                     switch obj.CircleBehavior
                         case 'radius'
                             [msk, km]=eventsInRadius(catalog, obj.Y0, obj.X0, obj.Radius); %lat,lon,radius
@@ -195,14 +197,14 @@ classdef ShapeSelection
                     if isempty(km)
                         km=obj.Radius;
                     end
-                    [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(km),(0:.25:360)');
+                %}
+                    [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(max_km),(0:.25:360)');
                     
-                    h(1)=plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline',...
+                    plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline',...
                         'DisplayName','Selection Outline');
-                    if ~isempty(msk)
-                        h(2)=plot(catalog.Longitude(msk), catalog.Latitude(msk),'g+','Tag','selectedevents',...
-                                'DisplayName','selected events');
-                    end
+                    plot(minicat.Longitude, minicat.Latitude,'g+',...
+                        'Tag','selectedevents',...
+                        'DisplayName','selected events');
                     
             end
         end
@@ -218,7 +220,7 @@ classdef ShapeSelection
         
         
         function coords = get.Center(obj)
-            coords = (max(obj.Points)+min(obj.Points))/2;
+            coords = (max(obj.Points,[],1)+min(obj.Points,[],1))./2;
         end
         function  x0 = get.X0(obj)
             x0=max((obj.Points(:,1))+min(obj.Points(:,1)))/2;
@@ -316,21 +318,28 @@ classdef ShapeSelection
         end
         
         function s=toStruct(obj)
-            s=struct(obj);
-            s.numNearbyEvents=s.NEventsToEnclose;
-            s.radius_km = s.Radius;
+            s.Points=obj.Points;
+            s.Type=obj.Type;
+            s.ApplyGrid=obj.ApplyGrid;
+            s.Center=obj.Center;
+            s.X0=obj.X0;
+            s.Y0=obj.Y0;
+            x.Lat=obj.Lat;
+            x.Lon=obj.Lon;
+            % s=struct(obj);
+            s.numNearbyEvents=obj.NEventsToEnclose;
+            s.radius_km = obj.Radius;
             switch obj.CircleBehavior
                 case 'radius'
-                    s.useNumNearbyEvents=true;
-                    s.useEventsInRadius=false;
-                case 'nevents'
                     s.useNumNearbyEvents=false;
                     s.useEventsInRadius=true;
+                case 'nevents'
+                    s.useNumNearbyEvents=true;
+                    s.useEventsInRadius=false;
                 case 'both'
                     s.useNumNearbyEvents=true;
                     s.useEventsInRadius=true;
             end
-            s=rmfield(s,{'Radius','NEventsToEnclose','CircleBehavior'});
         end
         function save(obj)
             ZG=ZmapGlobal.Data;

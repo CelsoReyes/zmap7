@@ -35,7 +35,7 @@ function [params] = gui_CalcStressInv(params,nNodeStart, nNodeEnd)
 %   Check gui_NodeCalcStressInv.m for a list of variables!!
 %
 % J. Woessner; j.woessner@sed.ethz.ch
-% last update: 16.02.2006
+% updated: 16.02.2006
 
 global bDebug;
 if bDebug
