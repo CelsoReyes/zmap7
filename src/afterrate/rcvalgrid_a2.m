@@ -39,7 +39,7 @@ function [sel]=rcvalgrid_a2()
     ZG.hold_state2=false;
     
     
-    %The definitions in the following line were present in the initial bvalgrid.m file.
+    %The definitions in the following line were present in the initial file.
     %stan2 = NaN; stan = NaN;  av = NaN;
     
     % make the interface

@@ -14,7 +14,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
     if ~exist('no1','var')
         no1=bcat.Count; % added by CGR because no1 appears to not be initialized
     end
-    try % if an error occures, set values to NaN
+    %try % if an error occures, set values to NaN
         
         % number of mag units
         % nmagu = (maxmag*10)+1;
@@ -60,7 +60,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
         std_backg = ew;
         
         l = bcat.Magnitude >= M1b(1) & bcat.Magnitude <= M2b(1);
-        les = (mean(bcat(l,6)) - M1b(1))/dm1;
+        les = (mean(bcat.Magnitude(l)) - M1b(1))/dm1;
         
         av=p(1,2);
         p=-p(1,1);
@@ -72,8 +72,8 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
         n = no1+n2;
         da = -2*n*log(n) + 2*no1*log(no1+n2*ZG.bo1/b2) + 2*n2*log(no1*b2/ZG.bo1+n2) -2;
         pr = (1  -  exp(-da/2-2))*100;
-    catch ME
-        warning(ME.message)
-        disp('Error while evaluating bvalca3 - set to NaN');
-    end
+    %catch ME
+    %    warning(ME.message)
+    %    disp('Error while evaluating bvalca3 - set to NaN');
+    %end
 end

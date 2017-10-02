@@ -11,13 +11,14 @@ function h=gridpcolor(ax,xs, ys, values, mask)
     
     INCLUDENUMBERS=false;
     INCLUDECOORDS=false;
-    
+    xs=xs(:);
+    ys=ys(:);
     dx=diff(xs);
     dy=diff(ys);
-    dx=[dx dx(end)];
-    dy=[dy dy(end)];
-    xlist= [xs-(dx/2) xs(end)+dx(end)/2];
-    ylist= [ys-(dy/2) ys(end)+dy(end)/2];
+    dx=[dx; dx(end)];
+    dy=[dy; dy(end)];
+    xlist= [xs-(dx/2); xs(end)+dx(end)/2];
+    ylist= [ys-(dy/2); ys(end)+dy(end)/2];
     if exist('mask','var')
         values(~mask)=nan;
     else

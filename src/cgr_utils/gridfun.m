@@ -1,4 +1,4 @@
-function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, varargin )
+function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgrid, selcrit, answidth )
     %gridfun Applies a function to each grid point using events determined by selection criteria
     %
     %  VALUES = gridfun( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
@@ -23,7 +23,7 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
     %    * requiredNumEvents - calculations are only performed for selections (catalogs) that
     %           contain at least this many events.
     %
-    %  VALUES will be an Nx1 vector of values determined by the FUN.
+    %  VALUES will be an Nx1 or NxANSWIDTH vector of values determined by the FUN.
     %
     %  if the ZmapGrid has the active points, then this will will only evaluate the active grid 
     %  points. inactive values will be set to NaN.
@@ -77,15 +77,22 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
     
     usemask=any(~zgrid.ActivePoints(:));
     
-    values = initialize_from_grid();
+    
+    if ~exist('answidth','var')
+        answidth=1;
+    end
+    
+    values = initialize_from_grid(answidth);
     
     if countEvents
-        nEvents=zeros(size(values));
+        nEvents=zeros(size(values,1),1);
     end
     
     if getMaxDist
-        maxDist=nan(size(values));
+        maxDist=nan(size(values,1),1);
     end
+    
+    wasEvaluated=false(length(zgrid),1);
     
     Xs=zgrid.X;
     Ys=zgrid.Y;
@@ -97,9 +104,6 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
         Zs=zgrid(:,3);
     end
     %}
-    
-    reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
-    values=reshaper(values);
     
     for i=1:length(zgrid)
         % is this point of interest?
@@ -127,13 +131,16 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
         end
         
         if ~multifun
-            values(i)=fun(minicat);
+            returned_vals = fun(minicat);
+            values(i,1:numel(returned_vals))=returned_vals;
         else
             % assign to a matrix for now, because of possible parfor issues
             for j=1:size(fun,1)
-                tmpval(i,j)=fun{j,1}(minicat);
+                returned_vals=fun{j,1}(minicat);
+                tmpval(i,j)=returned_vals;
             end
         end
+        wasEvaluated(i)=true;
     end
     
     
@@ -146,6 +153,10 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
     
     fprintf('gridfun:skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents);
     
+    if answidth==1
+        reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
+        values=reshaper(values);
+    end
     
     % helper functions
     function check_provided_functions(multifun)
@@ -181,12 +192,9 @@ function [ values, nEvents, maxDist ] = gridfun( fun, catalog, zgrid, selcrit, v
         end
     end
     
-    function values = initialize_from_grid()
-        if usemask
-            values=nan(size(zgrid.ActivePoints));
-        else
-            values=nan(length(zgrid),1);
-        end
+    function values = initialize_from_grid(answidth)
+            %[if usemask: values=nan(size(zgrid.ActivePoints));
+            values=nan(length(zgrid),answidth);
     end
     
 end

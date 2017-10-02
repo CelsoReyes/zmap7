@@ -18,8 +18,8 @@ classdef cgr_bvalgrid < ZmapFunction
         OperatingCatalog={'primeCatalog'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
         ModifiedCatalog='newt2'; %name of catalog changed by this function
         
-        dx = 1.00;
-        dy = 1.00 ;
+        dx = .2 %1.00;
+        dy = .5 % 1.00 ;
         ni = 100;
         ra = ZmapGlobal.Data.ra;
         Nmin = 50;
@@ -28,20 +28,36 @@ classdef cgr_bvalgrid < ZmapFunction
         useBootstrap;
         fMccorr = 0.2;
         fBinning = 0.1;
-        selOpts=[];
-        gridOpts=[];
+        selOpts;
+        gridOpts;
         bGridEntireArea = false;
         bCreateGrid = true;
         bLoadGrid = false;
-        bUseNiEvents= true;
+        %bUseNiEvents= true;
         mc_choice
         mygrid % actual grid[X Y;...], created from gridOpts
-        xvect %valid x values for grid
-        yvect %valid y values for grid
+        %xvect %valid x values for grid
+        %yvect %valid y values for grid
     end
     
     properties(Constant)
         PlotTag='myplot';
+        ReturnFields = {
+                'Mc_value', ... mMc, Mc value'p-value',... mPval, p-Value
+                'Mc_std', ... mStdMc, Standard deviation Mc
+                'x',...
+                'y',...
+                'Radius_km', ... vRadiusRes,  Radii of chosen events, Resolution
+                'b_value',... mBvalue, b-value
+                'b_value_std',... mStdB, b-value standard deviation
+                'a_value',... mAvalue, a-value
+                'a_value_std',... mStdA, a-value standard deviation
+                'power_fit', ... Prmap, Goodness of fit to power-law map
+                'max_mag', ... ro, maximum magnitude for node
+                'Additional_Runs_b_std',... mStdDevB
+                'Additional_Runs_Mc_std',... mStdDevMc
+                'Number_of_Events'...mNumEq, Number of earthquakes
+                };
     end
     
     methods
@@ -50,7 +66,6 @@ classdef cgr_bvalgrid < ZmapFunction
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            disp('sample.constructor');
             if nargin==0
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
@@ -71,13 +86,14 @@ classdef cgr_bvalgrid < ZmapFunction
             % if autoPlot, then plot results immediately after calculation
             
             %% make the interface
-            zdlg = ZmapFunctionDlg(obj, @obj.doIt);
+            zdlg = ZmapFunctionDlg();
+            %zdlg = ZmapFunctionDlg(obj, @obj.doIt);
             
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
                 zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
-                zdlg.AddEventSelectionParameters('selOpts',obj.ni, obj.ra,obj.Nmin);
+                zdlg.AddEventSelectionParameters('selOpts',[], obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
                 zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...
@@ -88,31 +104,24 @@ classdef cgr_bvalgrid < ZmapFunction
                 zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',obj.fMccorr,...
                     'Correction term to be added to Mc');
             
-            zdlg.Create('b-Value Grid Parameters')
+            [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
         end
         
-        function SetValuesFromDialog(obj)
+        function SetValuesFromDialog(obj, res)
             % called when the dialog's OK button is pressed
             
-            
-            obj.Nmin=get(obj.findDlgTag('nmin'),'Value');
-            % obj.fMcFix=get(obj.findDlgTag('fmcfix'),'Value');
-            obj.nBstSample=get(obj.findDlgTag('nbstsample'),'Value');
-            obj.fMccorr=get(obj.findDlgTag('fmccorr'),'Value');
-            
-            % The following are from the old version
-            obj.ZG.inb1=get(obj.findDlgTag('mc_choice'),'Value');
-            
-            obj.dx=obj.gridOpts.dx;
-            obj.dy=obj.gridOpts.dy;
-            obj.bGridEntireArea=obj.gridOpts.GridEntireArea;
-            obj.bCreateGrid=obj.gridOpts.CreateGrid;
-            obj.bLoadGrid=obj.gridOpts.LoadGrid;
-            
-            obj.bUseNiEvents=obj.selOpts.UseNumNearbyEvents;
-            obj.ni=obj.selOpts.ni;
-            obj.ra=obj.selOpts.ra;
-            
+            obj.Nmin=res.Nmin;
+            obj.nBstSample=res.nBstSample;
+            obj.fMccorr=res.fMccorr;
+            obj.ZG.inb1=res.mc_choice;
+            obj.selOpts=res.selOpts;
+            obj.gridOpts=res.gridOpts;
+            obj.useBootstrap=res.useBootstrap;
         end
         
         function CheckPreconditions(obj)
@@ -137,43 +146,29 @@ classdef cgr_bvalgrid < ZmapFunction
             if obj.gridOpts.CreateGrid
                 % Select and create grid
                 pause(0.5)
-                [obj.mygrid, obj.xvect, obj.yvect, ll] = ex_selectgrid(map, obj.gridOpts.dx, obj.gridOpts.dy, obj.gridOpts.GridEntireArea);
-                gx = obj.xvect;
-                gy = obj.yvect;
+                obj.mygrid = ZmapGrid('bvalgrid',obj.gridOpts);
             end
-            
-            
-            if obj.bLoadGrid
-                %load file
-                
-                pause(0.5) %the pause is needed there, because sometimes load was ignored
-                [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
-                
-                if length(path1) > 1
-                    
-                    my_load([path1 file1])
-                end
-            end
-            
-            
-            %  make grid, calculate start- endtime etc.  ...
-            %
-            
-            % loop over  all points
-            allcount = 0.;
-            wai = waitbar(0,' Please Wait ...  ');
-            set(wai,'NumberTitle','off','Name','b-value grid - percent done');
-            drawnow
             
             % Overall b-value
             bv =  bvalca3(mycat, obj.ZG.inb1); %ignore all the other outputs of bvalca3
             
-            itotal = length(obj.mygrid(:,1));
-            bvg = nan(itotal,14);
+            %itotal = length(obj.mygrid(:,1));
+            %bvg = nan(itotal,14);
             obj.ZG.bo1 = bv;
-            no1 = mycat.Count;
+            % no1 = mycat.Count;
             
+            
+            [bvg,nEvents,maxDists,ll]=gridfun(@calculation_function,mycat,obj.mygrid, obj.selOpts, numel(obj.ReturnFields));
+            bvg(:,strcmp('x',obj.ReturnFields))=obj.mygrid.X;
+            bvg(:,strcmp('y',obj.ReturnFields))=obj.mygrid.Y;
+            bvg(:,strcmp('Number_of_Events',obj.ReturnFields))=nEvents;
+            bvg(:,strcmp('Radius_km',obj.ReturnFields))=maxDists;
+            % adjust to match expectations
+            
+            
+     
             % loop over all points
+            %{
             for i= 1:length(obj.mygrid(:,1))
                 [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, fStdDevB, fStdDevMc,prf, nX] = deal(nan);
                 x = obj.mygrid(i,1);
@@ -236,60 +231,25 @@ classdef cgr_bvalgrid < ZmapFunction
                 if isempty(mab); mab = NaN; end
                 
                 % Result matrix
-                %bvg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan prf  mab av2 fStdDevB fStdDevMc nX];
                 bvg(allcount,:)  = [fMc fStd_Mc x y rd fBValue fStd_B fAValue fStd_A prf mab fStdDevB fStdDevMc nX];
                 waitbar(allcount/itotal)
             end  % for  obj.mygrid
+            %}
             
-            
-            myvalues = array2table(bvg,'VariableNames',...
-                {
-                'Mc_value', ... mMc, Mc value'p-value',... mPval, p-Value
-                'Mc_std', ... mStdMc, Standard deviation Mc
-                'x',...
-                'y',...
-                'Radius_km', ... vRadiusRes,  Radii of chosen events, Resolution
-                'b_value',... mBvalue, b-value
-                'b_value_std',... mStdB, b-value standard deviation
-                'a_value',... mAvalue, a-value
-                'a_value_std',... mStdA, a-value standard deviation
-                'power_fit', ... Prmap, Goodness of fit to power-law map
-                'max_mag', ... ro, maximum magnitude for node
-                'Additional_Runs_b_std',... mStdDevB
-                'Additional_Runs_Mc_std',... mStdDevMc
-                'Number_of_Events'...mNumEq, Number of earthquakes
-                });
+            myvalues = array2table(bvg,'VariableNames', obj.ReturnFields);
             
             kll = ll;
             obj.Result.values=myvalues;
             if nargout
                 results=myvalues;
             end
-            obj.ZG.bvg=myvalues;
             
              function out=calculation_function(catalog)
                 % calulate values at a single point
-            
-                out=struct(...
-                'Mc_value',NaN, ... mMc, Mc value'p-value',... mPval, p-Value
-                'Mc_std', NaN,  ... mStdMc, Standard deviation Mc
-                ...'x',NaN, ... UNKNOWABLE from gridfun
-                ...'y',NaN, ... UNKNOWABLE from gridfun
-                ...'Radius_km',NaN,  ... vRadiusRes,  Radii of chosen events, Resolution UNKNOWABLE from gridfun
-                'b_value',NaN, ... mBvalue, b-value
-                'b_value_std',NaN, ... mStdB, b-value standard deviation
-                'a_value',NaN, ... mAvalue, a-value
-                'a_value_std',NaN, ... mStdA, a-value standard deviation
-                'power_fit',NaN,  ... Prmap, Goodness of fit to power-law map
-                'max_mag',NaN,  ... ro, maximum magnitude for node
-                'Additional_Runs_b_std',NaN, ... mStdDevB
-                'Additional_Runs_Mc_std',NaN, ... mStdDevMc
-                'Number_of_Events',NaN ...mNumEq, Number of earthquakes
-                ); %[fMc fStd_Mc x y rd fBValue fStd_B fAValue fStd_A prf mab fStdDevB fStdDevMc nX];
-            
+
                 % Added to obtain goodness-of-fit to powerlaw value
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                [~, ~, ~, ~, prf]=mcperc_ca3();
+                [~, ~, ~, ~, prf]=mcperc_ca3(catalog);
                 
                 [Mc_value] = calc_Mc(catalog, obj.ZG.inb1, obj.fBinning, obj.fMccorr);
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
@@ -297,6 +257,8 @@ classdef cgr_bvalgrid < ZmapFunction
                 if sum(l) >= obj.Nmin
                     [b_value, b_value_std, a_value] =  calc_bmemag(catalog.subset(l), obj.fBinning);
                     % otherwise, they should be NaN
+                else
+                    [b_value, b_value_std, a_value] = deal(nan);
                 end
                 
                 % Bootstrap uncertainties FOR EACH CELL
@@ -317,14 +279,17 @@ classdef cgr_bvalgrid < ZmapFunction
                     % Set standard deviation ofa-value to NaN;
                     a_value_std= NaN; 
                     Mc_std = NaN;
+                    Additional_Runs_b_std=NaN;
+                    Additional_Runs_Mc_std=NaN;
                 end
 
                 mab = max(catalog.Magnitude) ;
                 if isempty(mab); mab = NaN; end
 
                 % Result matrix
-                %bvg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan prf  mab av2 fStdDevB fStdDevMc nX];
-                out  = [Mc_value Mc_std x y rd b_value b_value_std a_value a_value_std prf mab Additional_Runs_b_std Additional_Runs_Mc_std nX];
+                out  = [Mc_value Mc_std nan nan, ... nan's were x and y
+                    nan b_value b_value_std a_value a_value_std,... was rd
+                    prf mab Additional_Runs_b_std Additional_Runs_Mc_std nan]; % nan was nX
             
             end
         end
@@ -337,15 +302,35 @@ classdef cgr_bvalgrid < ZmapFunction
                 f=figure('Tag',obj.PlotTag);
             end
             figure(f)
+            set(f,'name','B-values')
             delete(findobj(f,'Type','axes'));
             
-            % Plot all grid points
-            plot(obj.mygrid(:,1),obj.mygrid(:,2),'+k')
-            % plot here
+            obj.mygrid.pcolor([],obj.Result.values.b_value);
+            hold on
+            obj.mygrid.plot();
+            ft=obj.ZG.features('borders');
+            ft.plot(gca);
+            colorbar
+            
+            %{
+            figure('name','X - testing')
+            %obj.mygrid.plot();
+            obj.mygrid.pcolor([],obj.Result.values.x);
+            figure('name','Y - testing')
+            %obj.mygrid.plot();
+            obj.mygrid.pcolor([],obj.Result.values.y);
+            figure('name','nevents - testing')
+            %obj.mygrid.plot();
+            obj.mygrid.pcolor([],obj.Result.values.Number_of_Events);
+            %}
+            
+            
+           % plot here
             
         end
         
         function ModifyGlobals(obj)
+            obj.ZG.bvg=obj.Result.values;
         end
     end %methods
     

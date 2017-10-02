@@ -37,7 +37,7 @@ function [sel] = bpvalgrid()
     ni = 150;
     Nmin = 100;
     
-    %The definitions in the following line were present in the initial bvalgrid.m file.
+    %The definitions in the following line were present in the initial file.
     %stan2 = nan; stan = nan; av = nan;
     
     % make the interface

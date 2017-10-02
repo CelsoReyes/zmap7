@@ -1,6 +1,34 @@
 classdef ZmapFunctionDlg < handle
     % ZmapFunctionDlg Helper, used to generate dialog boxes while keeping code clean
     %
+    % can be called in 2 ways.
+    % EXAMPLE USAGE IN A SCRIPT
+    %     zdlg = ZmapFunctionDlg();
+    %     zdlg.AddBasicHeader('Say something for each thing');
+    %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
+    %         'Choose what is most important to you');
+    %     zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
+    %     zdlg.AddBasicEdit('noiselevel','Noise level', 1,...
+    %         'how much noise should?');
+    %     zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
+    %         'Should noise be applied to the data?');
+    %     zdlg.AddBasicCheckbox('cleverness','be clever', false,[],...
+    %         'if checked, then plot is cleverly drawn');
+    %     zdlg.AddEventSelectionParameters('evtparams', 100, 5)
+    %     myans = zdlg.Create('my example')
+    %
+    %         myans = 
+    % 
+    %       struct with fields:
+    % 
+    %         lifechoice: 2
+    %               grid: [1×1 struct]
+    %         noiselevel: 1
+    %           usenoise: 0
+    %         cleverness: 0
+    %          evtparams: [1×1 struct]
+    %
+    %
     % EXAMPLE USAGE IN A CLASS
     % classdef myclass < ZmapFunction
     %   properties
@@ -43,6 +71,7 @@ classdef ZmapFunctionDlg < handle
         callerOKFunction=[]; % to be run once values are copied back to caller and dialog disappears
         hDialog; % handle to the dialog box
         parts={}; % ui details go here
+        okPressed=false;
     end
     
     methods
@@ -51,16 +80,26 @@ classdef ZmapFunctionDlg < handle
             % output values are returned to hCaller.(tag) for each uicontrol
             % once the OK button is pressed. if the OK button is not pressed, no changes are made
             % okevent (a function handle) will be executed if OK is pressed
-            obj.hCaller=hCaller;
-            if isempty(hCaller)
-                warning('values cannot be saved to the calling function. they''l be written to base');
+            if ~exist('hCaller','var') || isempty(hCaller)
+                obj.hCaller=struct();
+            else
+                obj.hCaller=hCaller;
             end
-            obj.callerOKFunction=okevent;
+            %if isempty(hCaller)
+            %    warning('values cannot be saved to the calling function. they''l be written to base');
+            %end
+            if exist('okevent','var')
+                obj.callerOKFunction=okevent;
+            else
+                if ishandle(obj.hCaller)
+                    obj.callerOKFunction=@(src,~) fprintf('ZmapFunctionDialog: no OK function was specified for the %s object, so it will not be notified\n',class(obj.hCaller));
+                end
+            end
         end
         
-        function Create(obj, dlgTitle)
+        function [results,okPressed]=Create(obj, dlgTitle)
             % creates a dialog box based on a cell description of types within.
-
+            obj.okPressed=false;
             assert(~isempty(obj.parts),'Dialog cannot be created unless there are parts to add to it');
             hasGrid=false;
             hasEvSel=false;
@@ -179,6 +218,17 @@ classdef ZmapFunctionDlg < handle
                 src=obj.findDlgTag(setOnCompletion{n});
                 src.Callback(src,[]);
             end
+            
+            results=[];
+            
+            % if we are expecting an answer, wait until dialog is finished.
+            if nargout > 0
+                uiwait(obj.hDialog)
+                if isstruct(obj.hCaller)
+                    results=obj.hCaller;
+                end
+            end
+            okPressed = obj.okPressed;
         end
         
         %% methods to declare uicontrols
@@ -300,7 +350,9 @@ classdef ZmapFunctionDlg < handle
             % tag.maxRadiusKm
             %
             % see also EventSelectionChoice, EventSelectionChoice.toStruct
-            
+            if ~exist('minvalid','var')
+                minvalid=0;
+            end
             details=struct(...
                 'Style','eventselectparameterbox',...
                 'Tag',tag,...
@@ -350,6 +402,7 @@ classdef ZmapFunctionDlg < handle
             % close the dialog box (without making any changes)
             % this should be the callback for the cancel/clear buttons for
             % the interactive dialog boxes
+            obj.okPressed=false;
             close(obj.hDialog);
             obj.hDialog=[];
         end
@@ -357,10 +410,11 @@ classdef ZmapFunctionDlg < handle
                 
         function okDlg(obj)
             % copy values back to caller hCaller, using tags as reference.
+            obj.okPressed=true;
             for n=1:numel(obj.parts)
                 tag=obj.parts{n}.Tag;
                 h = obj.parts{n}.handle;
-                if ~isempty(tag) && ~isprop(obj.hCaller,tag)
+                if ~isempty(tag) && (~isprop(obj.hCaller,tag) && ~isstruct(obj.hCaller))
                     warning('unable to assign value back to caller because the property %s does not exist',tag);
                 end
                 switch obj.parts{n}.Style
