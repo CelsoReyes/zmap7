@@ -45,7 +45,10 @@ function equi=equevent(mycat,clus)
     equi.Date=mycat.Date(bg); % why is this dissimilar?
     assert(isequal(size(equi.Date),size(equi.Longitude)))
     equi.Magnitude=emag(:);
+    equi.MagnitudeType=repmat({''},size(equi.Date));
     equi.Depth=edep(:);
+    [equi.Dip equi.DipDirection, equi.Rake]=deal(repmat(nan,size(equi.Date)));
+    
 
 
 

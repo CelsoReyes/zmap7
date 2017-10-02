@@ -5,7 +5,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
     %
     global n les xt3 bvalsum3
     
-    report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun(mfilename('fullpath'));
     ZG = ZmapGlobal.Data;
     dm1 = 0.1;
     [pr, me2, mer, av, me, std_backg, magco, bv] = deal(nan);

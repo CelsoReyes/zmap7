@@ -49,13 +49,13 @@ classdef zmap_message_center < handle
         function set_warning(messageTitle, messageText)
             % set_warning displays a message to the user
             fprintf('\n+++<strong> ZMAP WARNING: %s </strong>+++\n%s\n\n',messageTitle,messageText);
-            f=warndlg(messageText,messageTitle,'modal');
-            t = timer('TimerFcn', {@closeit f}, 'StartDelay', 10);
-            start(t)
-            if strcmp(t.Running, 'on')
-                stop(t);
-            end
-            delete(t);
+            %f=warndlg(messageText,messageTitle,'modal');
+            %t = timer('TimerFcn', {@closeit f}, 'StartDelay', 10);
+            %start(t)
+            %if strcmp(t.Running, 'on')
+            %    stop(t);
+            %end
+            %delete(t);
         end
         
         function set_error(messageTitle, messageText)
@@ -67,13 +67,13 @@ classdef zmap_message_center < handle
         function set_info(messageTitle, messageText)
             % set_info displays a message to the use
             fprintf('\n---<strong> ZMAP INFO: %s </strong>---\n%s\n\n',messageTitle,messageText);
-            f=helpdlg(messageText,messageTitle);
-            t = timer('TimerFcn', {@closeit f}, 'StartDelay', 5);
-            start(t)
-            if strcmp(t.Running, 'on')
-                stop(t);
-            end
-            delete(t);
+            %f=helpdlg(messageText,messageTitle);
+            %t = timer('TimerFcn', {@closeit f}, 'StartDelay', 5);
+            %start(t)
+            %if strcmp(t.Running, 'on')
+            %    stop(t);
+            %end
+            %delete(t);
         end
         
         function clear_message()

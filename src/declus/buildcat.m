@@ -12,9 +12,9 @@ function newt2=buildcat(var1)
     
     if var1==1
         
-        ans_ = questdlg('  ',...
+        ans_ = questdlg('Replace mainshocks with equivalent events?',...
             'Replace mainshocks with equivalent events?',...
-            'Yes please','No thank you','No' );
+            'Yes please','No thank you','No thank you' );
         
         switch ans_
             case 'Yes please'

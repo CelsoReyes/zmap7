@@ -63,7 +63,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
         case 'date'
             t = pcat.Date; %DATE
         case 'days'
-            t = days(pcat.Date - ZG.maepi.subset(1)) + datetime(0,0,0); % forced to be a datetime
+            t = days(pcat.Date - ZG.maepi.Date(1)) + datetime(0,0,0); % forced to be a datetime
         otherwise
             error('invalid numerical choice.')
     end

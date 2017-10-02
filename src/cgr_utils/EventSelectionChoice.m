@@ -70,13 +70,17 @@ classdef EventSelectionChoice < handle
         
         function obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra, min_valid)
             % choose_grid adds controls to describe how to choose a grid.
-            
+            % obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra, min_valid)
             % Grid options
             
             % Create, Load, or use Previous grid choice
             obj.ni=ni;
             obj.ra=ra;
             obj.max_ra = ra;
+            if ~exist('min_valid','var')
+                min_valid=0;
+                zmap_message_center.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
+            end
             obj.minValid=min_valid;
             
             if isempty(lowerCornerPosition)

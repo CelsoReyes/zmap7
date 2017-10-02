@@ -19,8 +19,8 @@ function [sel]=rcvalgrid_a2()
     dy = 0.02; % Grid size longitude [deg]
     ni = 150;  % Minimum number
     Nmin = 100; % Minimum number
-    time = 47;  % Learning period [days]
-    timef= 20;  % Forecast period [days]
+    time = days(47);  % Learning period [days]
+    timef= days(20);  % Forecast period [days]
     bootloops = 100; % Bootstrap
     ra = 5;          % Radius [km]
     fMaxRadius = 5;  % Max. radius [km] in case of constant number
@@ -29,14 +29,17 @@ function [sel]=rcvalgrid_a2()
     useEventsInRadius=false; % required for variable scoping.
     load_grid=false; % required for variable scoping.
     prev_grid=false; % required for variable scoping.
+    Grid=[];
+    EventSelector=[];
     
     % cut catalog at mainshock time:
     l = ZG.primeCatalog.Date > ZG.maepi.Date(1) & ZG.primeCatalog.Magnitude > minThreshMag;
     ZG.newt2=ZG.primeCatalog.subset(l);
-    
-    ZG.hold_state2=true;
-    timeplot(ZG.newt2)
-    ZG.hold_state2=false;
+    ff=gcf;
+    %ZG.hold_state2=true;
+    %timeplot(ZG.newt2)
+    %ZG.hold_state2=false;
+    figure(ff);
     
     
     %The definitions in the following line were present in the initial file.
@@ -67,8 +70,45 @@ function [sel]=rcvalgrid_a2()
     
     % creates a dialog box to input grid parameters
     %
-    gridOpt=GridParameterChoice(fig,'grid',[],{dx,'lon'},{dy,'lon'});
-    selOpt=EventSelectionChoice(fig,'evsel',[],ni,ra);
+    
+    
+        zdlg = ZmapFunctionDlg();
+        
+        
+        McMethods={'Automatic Mcomp (max curvature)',...
+            'Fixed Mc (Mc = Mmin)',...
+            'Automatic Mcomp (90% probability)',...
+            'Automatic Mcomp (95% probability)',...
+            'Best (?) combination (Mc95 - Mc90 - max curvature)',...
+            'Constant Mc'};
+        
+        zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
+            'Please choose an Mc estimation option');
+        
+        zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
+        % add fMaxRadius
+        zdlg.AddEventSelectionParameters('EventSelector', ni, ra, Nmin) %selOpt
+        zdlg.AddBasicEdit('boot_samp','# boot loops', bootloops,' number of bootstraps');
+        zdlg.AddBasicEdit('forec_period','forecast period [days]', timef, 'forecast period [days]');
+        zdlg.AddBasicEdit('learn_period','learn period [days]', time, 'learning period [days]');
+        zdlg.AddBasicCheckbox('addtofig','plot in current figure', true,[],'plot in the current figure');
+        % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+        % TOFIX min number of events should be the number > Mc
+        
+        [res, okpressed]=zdlg.Create('relative rate change map');
+        if ~okpressed
+            return
+        end
+        disp(res)
+        Grid=ZmapGrid('rcvalgrid',res.Grid);
+        EventSelector=res.EventSelector;
+        
+        error('This feature hasn''t been completely implemented yet.')
+        %{
+        figure
+        % addtofig -> oldfig_button
+        
+    selOpt=[];%EventSelectionChoice(fig,'evsel',[],ni,ra);
     oldfig_button = uicontrol('BackGroundColor',[.60 .92 .84], ...
         'Style','checkbox','string','Plot in Current Figure',...
         'Position',[.78 .7 .20 .08],...
@@ -78,11 +118,11 @@ function [sel]=rcvalgrid_a2()
     
     uicontrol('Style','edit',...
         'Position',[.6 .30 .12 .080],...
-        'Units','normalized','String',num2str(time),...
+        'Units','normalized','String',string(days(time)),...
         'callback',@callbackfun_006);
     uicontrol('Style','edit',...
         'Position',[.6 .40 .12 .080],...
-        'Units','normalized','String',num2str(timef),...
+        'Units','normalized','String',string(days(timef)),...
         'callback',@callbackfun_007);
     
     uicontrol('Style','edit',...
@@ -153,7 +193,7 @@ function [sel]=rcvalgrid_a2()
         set(gcf,'visible','on');
         watchoff
         
-        
+        %}
         
     function my_calculate() % 'ca'
         % get the grid-size interactively and

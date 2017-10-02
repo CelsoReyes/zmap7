@@ -1,4 +1,4 @@
-function view_bpva(lab1,valueMap)
+function view_bpva(res, idx)
     % view_bpva plots the b and p values calculated with bpvalgrid.m or other similar values as a color map.
     % needs valueMap, gx, gy, stri
     %
@@ -58,13 +58,22 @@ function view_bpva(lab1,valueMap)
     
     % Find out if figure already exists
     %
-    bmap=findobj('Type','Figure','-and','Name','bp-value-map');
+    ZG=ZmapGlobal.Data;
+    bpmap=findobj('Type','Figure','-and','Name','bp-value-map');   
+    delete(bpmap);
+    curval = res.values(:,idx);
     
-    
-    if isempty(bmap)
+    if isempty(bpmap)
         oldfig_button = false;
+    else
+        oldfig_button = true;
     end
-    
+    if ~exist('Mmin','var')
+        Mmin = nan;
+    end
+    if ~exist('minsd','var')
+        minsd = nan;
+    end
     if oldfig_button == false
         bpmap = figure_w_normalized_uicontrolunits( ...
             'Name','bp-value-map',...
@@ -86,23 +95,22 @@ function view_bpva(lab1,valueMap)
         
         
         %valueMap = pvalg;
-        ZG.tresh_km = nan; re4 = valueMap;
+        ZG.tresh_km = nan; 
+        re4 = curval;
         oldfig_button = true;
         
         colormap(jet)
-        ZG.tresh_km = nan; minpe = nan; Mmin = nan; minsd = nan;
-        
+        ZG.tresh_km = nan; 
+       %  minpe = nan; 
+        Mmin = nan;
+        minsd = nan;
     end   % This is the end of the figure setup.
     
-    % Now lets plot the color-map!
+    assert(istable(res.values))
+    
+    
+    % Now plot the color-map!
     %
-    figure(bpmap);
-    delete(findobj(bpmap,'Type','axes'));
-    %delete(sizmap)
-    reset(gca)
-    cla
-    hold off
-    watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','SortMethod','childorder')
@@ -110,30 +118,50 @@ function view_bpva(lab1,valueMap)
     rect = [0.18,  0.10, 0.7, 0.75];
     rect1 = rect;
     
+    
+    lab1 = res.values.Properties.VariableDescriptions{idx};
+    fn = res.values.Properties.VariableNames{idx};
+    
     % find max and min of data for automatic scaling
-    ZG.maxc = max(valueMap(:));
+    ZG.maxc = max(res.values.(fn));
     ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(valueMap(:));
+    ZG.minc = min(res.values.(fn));
     ZG.minc = fix(ZG.minc)-1;
     
     % set values greater ZG.tresh_km = nan
     %
-    re4 = valueMap;
-    l = r > ZG.tresh_km;
-    re4(l) = nan(1,length(find(l)));
-    l = Prmap < minpe;
-    re4(l) = nan(1,length(find(l)));
-    l = old1 <  Mmin;
-    re4(l) = nan(1,length(find(l)));
-    l = pvstd >  minsd;
-    re4(l) = nan(1,length(find(l)));
+    re4 = curval;
     
+    %THIS might actually stay.
+    invalid_idx =  res.values.rd > ZG.tresh_km | ...
+        res.values.prf < res.minpe |...
+        res.values.magco < Mmin | ...
+        res.values.pstd < minsd;
+    
+    re4{invalid_idx,1}=nan;
     
     % plot image
     %
     orient landscape
     %set(gcf,'PaperPosition', [0.5 1 9.0 4.0])
     
+    
+    figure(bpmap)
+    set(bpmap,'name','p-values')
+    delete(findobj(bpmap,'Type','axes'));
+    colormap('jet')
+    res.Grid.pcolor([],re4{:,1},lab1);
+    shading(ZG.shading_style)
+    hold on
+    res.Grid.plot()
+    ft=ZG.features('borders');
+    ft.plot(gca);
+    colorbar
+    title(lab1)
+    xlabel('Longitude')
+    ylabel('Latitude')
+    
+    %{
     %Plots re4, which contains the filtered values.
     axes('position',rect)
     hold on
@@ -144,7 +172,7 @@ function view_bpva(lab1,valueMap)
     hold on
     
     shading(ZG.shading_style);
-
+%}
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
         l = isnan(valueMap);
@@ -156,30 +184,31 @@ function view_bpva(lab1,valueMap)
 
     fix_caxis.ApplyIfFrozen(gca); 
     
-    
+%{    
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
         'Color','r','FontWeight','bold')
     
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
     ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
-    
+    %}
     % plot overlay
     %
     hold on
     zmap_update_displays();
     ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
-    set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
+    %set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Color',ZG.someColor,'Visible','on')
     
     
     
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
-        'FontWeight','bold','LineWidth',1.5,...
-        'Box','on','TickDir','out')
-    h1 = gca;
+    %set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
+    %    'FontWeight','bold','LineWidth',1.5,...
+    %    'Box','on','TickDir','out')
+    %h1 = gca;
     hzma = gca;
     
     % Create a colorbar
     %
+    %{
     h5 = colorbar('horiz');
     set(h5,'Pos',[0.35 0.05 0.4 0.02],...
         'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s,'TickDir','out')
@@ -204,8 +233,8 @@ function view_bpva(lab1,valueMap)
     figure(bpmap);
     axes(h1)
     watchoff(bpmap)
-    
-    
+    %}
+    colormap('jet')
     %% ui functions
     function create_my_menu()
         add_menu_divider();
@@ -213,58 +242,67 @@ function view_bpva(lab1,valueMap)
         options = uimenu('Label',' Select ');
         uimenu(options,'Label','Refresh ', 'callback',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle',...
+            'enable','off',...
             'callback',@callbackfun_003)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
+            'enable','off',...
             'callback',@callbackfun_004)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
+            'enable','off',...
             'callback',@callbackfun_005)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            'callback',@callbackfun_006)
+            'enable','off',...
+            'callback',{@select_polygon,false})
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
-            'callback',@callbackfun_007)
+            'enable','off',...
+            'callback',{@select_polygon,true})
         
         op1 = uimenu('Label',' Maps ');
         
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'callback',@callbackfun_008)
+            'enable','off',...
+            'callback',{@cb_adjust,'mag'}); %8
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'callback',@callbackfun_009)
+            'enable','off',...
+            'callback',{@cb_adjust,'rmax'}); %9
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'callback',@callbackfun_010)
+            'enable','off',...
+            'callback',{@cb_adjust,'gofi'}); %10
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            'callback',@callbackfun_011)
+            'enable','off',...
+            'callback',{@cb_adjust,'pstdc'}); %11
         
         
-        uimenu(op1,'Label','b-value map (WLS)',...
-            'callback',@callbackfun_012)
-        uimenu(op1,'Label','b(max likelihood) map',...
-            'callback',@callbackfun_013)
-        uimenu(op1,'Label','Mag of completness map',...
-            'callback',@callbackfun_014)
-        uimenu(op1,'Label','max magnitude map',...
-            'callback',@callbackfun_015)
-        uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-            'callback',@callbackfun_016)
+        uimenu(op1,'Label','b-value map (WLS)',... % b-value / old
+            'callback',{@cb_changeIdx,1})  %12
+        uimenu(op1,'Label','b(max likelihood) map',... % b-value / meg
+            'callback',{@cb_changeIdx,6}) %13
+        uimenu(op1,'Label','Mag of completness map',...% Mcomp / old1
+            'callback',{@cb_changeIdx,2}) %14
+        uimenu(op1,'Label','max magnitude map',... %Mmax / maxm
+            'callback',{@cb_changeIdx,13}) %15
+        uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',... % dM / maxm-magco
+            'callback',@cb_magrange) %16
         
         uimenu(op1,'Label','p-value',...
-            'callback',@callbackfun_017)
+            'callback',{@cb_changeIdx,11})    % 17
         uimenu(op1,'Label','p-value standard deviation',...
-            'callback',@callbackfun_018)
+            'callback',{@cb_changeIdx,12}) %18
         
         uimenu(op1,'Label','a-value map',...
-            'callback',@callbackfun_019)
+            'callback',{@cb_changeIdx,8}) %19
         uimenu(op1,'Label','Standard error map',...
-            'callback',@callbackfun_020)
+            'callback',{@cb_changeIdx,7}) %20
         uimenu(op1,'Label','(WLS-Max like) map',...
-            'callback',@callbackfun_021)
+            'callback',@cb_deltaB)
         
         uimenu(op1,'Label','Resolution Map',...
-            'callback',@callbackfun_022)
+            'callback',{@cb_changeIdx,5})
         uimenu(op1,'Label','c map',...
-            'callback',@callbackfun_023)
+            'callback',{@cb_changeIdx,14})
         
         uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
         
@@ -272,6 +310,16 @@ function view_bpva(lab1,valueMap)
     end
     
     %% callback functions
+    
+    function cb_changeIdx(mysrc,~,idx)
+        view_bpva(res,idx)
+    end
+    
+    function cb_adjust(mysrc,~,name)
+        asel=name
+        adju2
+        view_bpva(res,idx);
+    end
     
     function callbackfun_001(mysrc,myevt)
 
@@ -319,150 +367,36 @@ function view_bpva(lab1,valueMap)
         watchoff(bpmap);
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function select_polygon(mysrc,myevt, newstate)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
         ZG=ZmapGlobal.Data;
-        ZG.hold_state=false;
+        ZG.hold_state=newstate;
         selectp;
     end
+   
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_magrange(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        cufi = gcf;
-        ZG=ZmapGlobal.Data;
-        ZG.hold_state=true;
-        selectp;
+        %lab1='dM ';
+        %valueMap = maxm-magco;
+        res.values.dM=res.values.maxmg - res.values.magco;
+        idx=find(strcmp(res.values.Propertes.VariableNames,'dM'));
+        res.values.Properties.VariableDescriptions(idx)='Magnitude range(Mmax - Mcomp)';
+        view_bpva(res,idx);
     end
     
-    function callbackfun_008(mysrc,myevt)
+    function cb_deltaB(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'mag';
-        adju2;
-        view_bpva(lab1,valueMap) ;
-    end
-    
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'rmax';
-        adju2;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'gofi';
-        adju2;
-        view_bpva(lab1,valueMap) ;
-    end
-    
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        asel = 'pstdc';
-        adju2;
-        view_bpva(lab1,valueMap) ;
-    end
-    
-    function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1 ='b-value';
-        valueMap = old;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_013(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='b-value';
-        valueMap = meg;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_014(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1 = 'Mcomp';
-        valueMap = old1;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_015(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Mmax';
-        valueMap = maxm;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_016(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='dM ';
-        valueMap = maxm-magco;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_017(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p-value';
-        valueMap = pvalg;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_018(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='p-valstd';
-        valueMap = pvstd;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_019(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='a-value';
-        valueMap = avm;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_020(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Error in b';
-        valueMap = pro;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_021(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='difference in b';
-        valueMap = old-meg;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_022(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Radius in [km]';
-        valueMap = rama;
-        view_bpva(lab1,valueMap);
-    end
-    
-    function callbackfun_023(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='c in days';
-        valueMap = cmap2;
-        view_bpva(lab1,valueMap);
+        %lab1='difference in b';
+        %valueMap = old-meg;
+        res.values.deltaB=res.values.bv - res.values.bv2;
+        idx=find(strcmp(res.values.Propertes.VariableNames,'deltaB'));
+        res.values.Properties.VariableDescriptions(idx)='difference in b';
+        view_bpva(res,idx);
     end
     
 end

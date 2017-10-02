@@ -1,4 +1,4 @@
-function h=gridpcolor(ax,xs, ys, values, mask)
+function h=gridpcolor(ax,xs, ys, values, mask, name)
     % plots values, sampled at the intersection of xcenters and ycenters
     %
     % h=gridpcolor(ax,xs, ys, values, mask)
@@ -8,7 +8,10 @@ function h=gridpcolor(ax,xs, ys, values, mask)
     if isempty(ax)
         ax=gca;
     end
-    
+    if ~exist('name','var')
+        name='';
+    end
+    name(name=='_')=' ';
     INCLUDENUMBERS=false;
     INCLUDECOORDS=false;
     xs=xs(:);
@@ -27,7 +30,11 @@ function h=gridpcolor(ax,xs, ys, values, mask)
     values(end+1,:)=nan;
     values(:,end+1)=nan;
     whos xlist ylist values
+    hold(ax,'on')
     h=pcolor(ax,xlist, ylist, values);
+    %if ~isempty('name')
+    set(h,'DisplayName',name)
+    %end
     if INCLUDENUMBERS
         for m=1:numel(ys) %row
             for n=1:numel(xs) %col

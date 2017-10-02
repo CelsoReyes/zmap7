@@ -187,17 +187,17 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         replaceMainCatalog(buildcat(1));        %new catalog for main program
         ZG.original=ZG.newcat;       %save ZG.newcat in variable original
         ZG.newcat=ZG.primeCatalog;
-        storedcat=original;
-        cluscat=original.subset(clus(clus~=0));
+        ZG.storedcat=ZG.original;
+        ZG.cluscat=ZG.original.subset(clus(clus~=0));
         
         zmap_update_displays();
         hold on
-        plot(cluscat.Longitude, cluscat.Latitude,'m+');
+        plot(MainInteractiveMap.mainAxes,ZG.cluscat.Longitude, ZG.cluscat.Latitude,'m+');
         
         st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...
             ' events (out of %d). The map window now display the declustered catalog containing %d events.'...
             'The individual clusters are displayed as magenta o in the  map.' ] ...
-            , length(bgevent(:,1)), cluscat.Count, original.Count , ZG.primeCatalog.Count);
+            , length(bgevent(:,1)), ZG.cluscat.Count, ZG.original.Count , ZG.primeCatalog.Count);
 
         msgbox(st1,'Declustering Information')
         
@@ -215,7 +215,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                 
         end
         
-        watchoff,
+        watchoff
         
     end
     

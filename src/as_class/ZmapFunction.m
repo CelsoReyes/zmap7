@@ -58,7 +58,7 @@ classdef(Abstract) ZmapFunction < handle
     %    that still need to be created.
     %
     %
-    % see also ZmapFunctionDlg, sample_ZmapFunction, blank_ZmapFunction
+    % see also ZmapFunctionDlg, sample_ZmapFunction, blank_ZmapFunction, ZmapQuickResultPcolor
     
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
@@ -146,6 +146,14 @@ classdef(Abstract) ZmapFunction < handle
             vname=[class(obj),'_result'];
             assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
             obj.Result.FunctionCall=obj.FunctionCall;
+            if isprop(obj,'Grid')
+                obj.Result.Grid = obj.Grid;
+            end
+            if isprop(obj,'EventSelector')
+                obj.Result.EventSelector = obj.EventSelector;
+            end
+            obj.Result.InCatalogName=obj.OperatingCatalog;
+            obj.Result.OutCatalogName=obj.ModifiedCatalog;
             assignin('base',vname,obj.Result);
             fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));
             fprintf('%% results in: %s\n',vname);

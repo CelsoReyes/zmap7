@@ -382,6 +382,7 @@ classdef MainInteractiveMap
             obj.create_random_data_simulations_menu(submenu);
             
             uimenu(submenu,'Label','Create cross-section',...
+                'enable','off',...
                 'Callback',@(~,~)nlammap());
             
             
@@ -396,7 +397,8 @@ classdef MainInteractiveMap
                 'Callback',@(~,~)stressgrid());
             
             uimenu(submenu,'Label','Misfit calculation',...
-                'Callback',@(~,~)inmisfit());
+                'Callback',@(~,~)inmisfit(),...
+                'Enable','off'); %TOFIX: misfitcalclulation poorly documented, not sure what it is comparing.
             
         end
         function create_topo_map_menu(obj,parent)
@@ -429,7 +431,9 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz('in'));
             
             uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr('in'));
-            uimenu(submenu,'Label','Calculate a z-value cross-section','Callback',@(~,~)nlammap());
+            uimenu(submenu,'Label','Calculate a z-value cross-section',...
+                'enable','off',...
+                'Callback',@(~,~)nlammap());
             uimenu(submenu,'Label','Calculate a 3D  z-value distribution','Callback',@(~,~)zgrid3d('in'));
             uimenu(submenu,'Label','Load a z-value grid (map-view)','Callback',@(~,~)loadgrid('lo'));
             uimenu(submenu,'Label','Load a z-value grid (cross-section-view)','Callback',@(~,~)magrcros('lo'));
@@ -441,12 +445,12 @@ classdef MainInteractiveMap
             % TODO have these act upon already selected polygons (as much as possible?)
             
             cgr_bvalgrid.AddMenuItem(submenu);
-            tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
+            %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
             %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
             %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
-            uimenu(tmp,'Label','Load...',...
-                'Enable','off',...
-                'Callback', @(~,~)bvalgrid('lo')); %map-view
+            %uimenu(tmp,'Label','Load...',...
+            %    'Enable','off',...
+             %   'Callback', @(~,~)bvalgrid('lo')); %map-view
             
             tmp=uimenu(submenu,'Label','differential b-value map (const R)');
             uimenu(tmp,'Label','Calculate','Callback', @(~,~)bvalmapt());
@@ -455,13 +459,10 @@ classdef MainInteractiveMap
                 'Callback', @(~,~)bvalmapt('lo'));
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
+                'enable','off',...
                 'Callback', @(~,~)nlammap());
             
-            tmp=uimenu(submenu,'Label','b-value depth ratio grid');
-            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bdepth_ratio());
-            uimenu(tmp,'Label','Load...',...
-                'Enable','off',...
-                'Callback', @(~,~)bdepth_ratio('lo'));
+            tmp=uimenu(submenu,'Label','b-value depth ratio grid', 'Callback', @(~,~)bdepth_ratio());
             
             uimenu(submenu,'Label','Calc 3D b-value distribution','Callback', @(~,~)bgrid3dB());
             
@@ -475,11 +476,11 @@ classdef MainInteractiveMap
         
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
-            tmp=uimenu(submenu,'Label','p- and b-value map');
-            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
-            uimenu(tmp,'Label','Load...',...
-                'Enable','off',...'
-                'Callback', @(~,~)bpvalgrid('lo'));
+            tmp=uimenu(submenu,'Label','p- and b-value map','Callback', @(~,~)bpvalgrid());
+            %uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
+            %uimenu(tmp,'Label','Load...',...
+            %    'Enable','off',...'
+            %    'Callback', @(~,~)bpvalgrid('lo'));
             
             tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
             uimenu(tmp,'Label','Calculate','Callback',  @(~,~)rcvalgrid_a2());
@@ -507,10 +508,13 @@ classdef MainInteractiveMap
         
         
         function create_decluster_menu(obj,parent)
-            submenu = uimenu(parent,'Label','Decluster the catalog',...
-                'Enable','off');
+            submenu = uimenu(parent,'Label','Decluster the catalog'...,...
+                ...'Enable','off'...
+                );
             uimenu(submenu,'Label','Decluster using Reasenberg','Callback',@(~,~)inpudenew());
-            uimenu(submenu,'Label','Decluster using Gardner & Knopoff','Callback',@(~,~)declus_inp());
+            uimenu(submenu,'Label','Decluster using Gardner & Knopoff',...
+                'Enable','off',... %TODO this needs to be turned into a function
+                'Callback',@(~,~)declus_inp());
         end
         
         

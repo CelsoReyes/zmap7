@@ -1,4 +1,4 @@
-function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgrid, selcrit, answidth )
+function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fun, catalog, zgrid, selcrit, answidth )
     %gridfun Applies a function to each grid point using events determined by selection criteria
     %
     %  VALUES = gridfun( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
@@ -84,13 +84,11 @@ function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgr
     
     values = initialize_from_grid(answidth);
     
-    if countEvents
-        nEvents=zeros(size(values,1),1);
-    end
+    nEvents=zeros(size(values,1),1);
     
-    if getMaxDist
-        maxDist=nan(size(values,1),1);
-    end
+    maxDist=nan(size(values,1),1);
+    
+    maxMag=nan(size(values,1),1);
     
     wasEvaluated=false(length(zgrid),1);
     
@@ -104,7 +102,11 @@ function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgr
         Zs=zgrid(:,3);
     end
     %}
-    
+    watchon
+    drawnow
+    mytic = tic;        
+    wai = waitbar(0,' Please Wait ...  ');
+    set(wai,'NumberTitle','off','Name',[zgrid.Name ' - percent done']);
     for i=1:length(zgrid)
         % is this point of interest?
         if usemask && ~mask(i)
@@ -116,14 +118,11 @@ function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgr
         
         [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
         
-        if countEvents
-            nEvents(i)=minicat.Count;
+        nEvents(i)=minicat.Count;
+        maxDist(i)=maxd;
+        if ~isempty(minicat)
+            maxMag(i)=max(minicat.Magnitude);
         end
-        
-        if getMaxDist
-            maxDist(i)=maxd;
-        end
-        
         % are there enough events to do the calculation?
         if minicat.Count < selcrit.requiredNumEvents
             nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
@@ -141,8 +140,15 @@ function [ values, nEvents, maxDist, wasEvaluated ] = gridfun( fun, catalog, zgr
             end
         end
         wasEvaluated(i)=true;
+        waitbar(i/length(zgrid))
+        if ~mod(i,ceil(length(zgrid)/50))
+            drawnow
+        end
     end
-    
+    toc(mytic)
+    close(wai)
+    watchoff
+    drawnow
     
     if multifun
         % put tmpval into a struct

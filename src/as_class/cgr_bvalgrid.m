@@ -23,19 +23,16 @@ classdef cgr_bvalgrid < ZmapFunction
         ni = 100;
         ra = ZmapGlobal.Data.ra;
         Nmin = 50;
-        fMcFix=2.2;
+        fMcFix=1.0; %2.2
         nBstSample=100;
-        useBootstrap;
-        fMccorr = 0.2;
-        fBinning = 0.1;
-        selOpts;
+        useBootstrap; % perform bootstrapping?
+        fMccorr = 0.2; % magnitude correction
+        fBinning = 0.1; % magnitude bins
+        EventSelector;
         gridOpts;
-        bGridEntireArea = false;
-        bCreateGrid = true;
-        bLoadGrid = false;
         %bUseNiEvents= true;
         mc_choice
-        mygrid % actual grid[X Y;...], created from gridOpts
+        Grid % actual grid[X Y;...], created from gridOpts
         %xvect %valid x values for grid
         %yvect %valid y values for grid
     end
@@ -93,7 +90,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
                 zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
-                zdlg.AddEventSelectionParameters('selOpts',[], obj.ra,obj.Nmin);
+                zdlg.AddEventSelectionParameters('EventSelector',[], obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
                 zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...
@@ -119,7 +116,7 @@ classdef cgr_bvalgrid < ZmapFunction
             obj.nBstSample=res.nBstSample;
             obj.fMccorr=res.fMccorr;
             obj.ZG.inb1=res.mc_choice;
-            obj.selOpts=res.selOpts;
+            obj.EventSelector=res.EventSelector;
             obj.gridOpts=res.gridOpts;
             obj.useBootstrap=res.useBootstrap;
         end
@@ -146,95 +143,26 @@ classdef cgr_bvalgrid < ZmapFunction
             if obj.gridOpts.CreateGrid
                 % Select and create grid
                 pause(0.5)
-                obj.mygrid = ZmapGrid('bvalgrid',obj.gridOpts);
+                obj.Grid = ZmapGrid('bvalgrid',obj.gridOpts);
             end
             
             % Overall b-value
             bv =  bvalca3(mycat, obj.ZG.inb1); %ignore all the other outputs of bvalca3
             
-            %itotal = length(obj.mygrid(:,1));
+            %itotal = length(obj.Grid(:,1));
             %bvg = nan(itotal,14);
             obj.ZG.bo1 = bv;
             % no1 = mycat.Count;
             
             
-            [bvg,nEvents,maxDists,ll]=gridfun(@calculation_function,mycat,obj.mygrid, obj.selOpts, numel(obj.ReturnFields));
-            bvg(:,strcmp('x',obj.ReturnFields))=obj.mygrid.X;
-            bvg(:,strcmp('y',obj.ReturnFields))=obj.mygrid.Y;
+            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(obj.ReturnFields));
+            bvg(:,strcmp('x',obj.ReturnFields))=obj.Grid.X;
+            bvg(:,strcmp('y',obj.ReturnFields))=obj.Grid.Y;
             bvg(:,strcmp('Number_of_Events',obj.ReturnFields))=nEvents;
             bvg(:,strcmp('Radius_km',obj.ReturnFields))=maxDists;
+            bvg(:,strcmp('max_mag',obj.ReturnFields))=maxMag;
             % adjust to match expectations
             
-            
-     
-            % loop over all points
-            %{
-            for i= 1:length(obj.mygrid(:,1))
-                [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, fStdDevB, fStdDevMc,prf, nX] = deal(nan);
-                x = obj.mygrid(i,1);
-                y = obj.mygrid(i,2);
-                allcount = allcount + 1.;
-                
-                % select events
-                %{
-                if obj.selOpts.useEventsInRadius   % take point within r
-                    b = mycat.selectRadius(y,x,obj.selOpts.radius_km);      % new data per grid point (b) is sorted in distanc
-                    rd = obj.selOpts.radius_km;
-                else
-                    [b,rd] = mycat.selectClosestEvents(y,x,[],obj.selOpts.numNearbyEvents);      % new data per grid point (b) is sorted in distance
-                end
-                
-                % Number of earthquakes per node
-                nX = b.Count;
-                
-                %}
-                
-                % Estimate the completeness and b-value
-                obj.ZG.(obj.ModifiedCatalog) = b;
-                
-                if nX >= obj.Nmin  % enough events?
-                    % if enough events, do calculation
-                    %{
-                    % Added to obtain goodness-of-fit to powerlaw value
-                    [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                    %[~, ~, ~, ~, prf]=mcperc_ca3();
-                    
-                    [fMc] = calc_Mc(b, obj.ZG.inb1, obj.fBinning, obj.fMccorr);
-                    l = b.Magnitude >= fMc-(obj.fBinning/2);
-                    if sum(l) >= obj.Nmin
-                        [fBValue, fStd_B, fAValue] =  calc_bmemag(b.subset(l), obj.fBinning);
-                    else
-                        [fBValue, fStd_B, fAValue] = deal(nan);
-                    end
-                    
-                    % Bootstrap uncertainties
-                    if obj.useBootstrap
-                        % Check Mc from original catalog
-                        if sum(l) >= obj.Nmin
-                            % following line has only b, but maybe should be b.subset(l)
-                            [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, fStdDevB, fStdDevMc] = calc_McBboot(b, obj.fBinning, obj.nBstSample, obj.ZG.inb1);
-                        else
-                            fMc = NaN;
-                            %fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
-                        end
-                    else
-                        % Set standard deviation ofa-value to NaN;
-                        fStd_A= NaN; fStd_Mc = NaN;
-                    end
-                    %}
-                    
-                else
-                    [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, fStdDevB, fStdDevMc,prf, nX] = deal(nan);
-                    b = b.subset([]);
-                end
-                mab = max(b.Magnitude) ;
-                if isempty(mab); mab = NaN; end
-                
-                % Result matrix
-                bvg(allcount,:)  = [fMc fStd_Mc x y rd fBValue fStd_B fAValue fStd_A prf mab fStdDevB fStdDevMc nX];
-                waitbar(allcount/itotal)
-            end  % for  obj.mygrid
-            %}
             
             myvalues = array2table(bvg,'VariableNames', obj.ReturnFields);
             
@@ -305,25 +233,19 @@ classdef cgr_bvalgrid < ZmapFunction
             set(f,'name','B-values')
             delete(findobj(f,'Type','axes'));
             
-            obj.mygrid.pcolor([],obj.Result.values.b_value);
+            obj.Grid.pcolor([],obj.Result.values.b_value,'B-values');
+            shading(obj.ZG.shading_style)
             hold on
-            obj.mygrid.plot();
+            obj.Grid.plot()
             ft=obj.ZG.features('borders');
             ft.plot(gca);
             colorbar
+            title('B-values')
+            xlabel('Longitude')
+            ylabel('Latitude')
             
-            %{
-            figure('name','X - testing')
-            %obj.mygrid.plot();
-            obj.mygrid.pcolor([],obj.Result.values.x);
-            figure('name','Y - testing')
-            %obj.mygrid.plot();
-            obj.mygrid.pcolor([],obj.Result.values.y);
-            figure('name','nevents - testing')
-            %obj.mygrid.plot();
-            obj.mygrid.pcolor([],obj.Result.values.Number_of_Events);
-            %}
-            
+            %TODO add shading menu
+            %TODO add plotAnyValue menu that 
             
            % plot here
             
@@ -331,6 +253,7 @@ classdef cgr_bvalgrid < ZmapFunction
         
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
+            obj.ZG.Grid = obj.Grid;
         end
     end %methods
     
