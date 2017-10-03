@@ -541,7 +541,8 @@ ZG=ZmapGlobal.Data;
 if (handles.data_provider.Value == 1)
     % no datacenter has been chosen
     beep;
-    h=errordlg('Incomplete Request: You must first choose a data provider.', ['Error:', get(get(gco,'Parent'),'Name')],'modal');
+    h=errordlg('Incomplete Request: You must first choose a data provider.', ...
+        ['Error:', get(get(gco,'Parent'),'Name')],'modal');
     waitfor(h);
     errorflash(handles.data_provider);
     return
@@ -572,11 +573,11 @@ end
     zmap_message_center.set_info('FDSN Fetch','Importing FDSN data from the web. This might take a minute');
     
     set(handles.fdsn_import_dialog,'Visible','off');
-    drawnow
+    drawnow;
     % FETCH THE DATA
-    watchon
+    watchon;
     tmp=import_fdsn_event(1, queryset{:});
-    watchoff
+    watchoff;
     
     % CONVERT
     zmap_message_center.set_info('FDSN Fetch','Converting to a ZmapCatalog');
@@ -602,7 +603,7 @@ end
     h=zmap_message_center();
     h.update_catalog()%;
     zmap_update_displays();
-    memorize_recall_catalog()
+    memorize_recall_catalog();
     % close(hObject.Parent); % or set Visibility to 'off' ?
 
 function [val] = getvalue(handles, label)

@@ -9,6 +9,8 @@ function timeplot(mycat, nosort)
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
+    %TOFIX this is affecting the primaryCatalog, instead of the other catalogs.
+    
     report_this_filefun(mfilename('fullpath'));
     myFigName='Cumulative Number';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
@@ -214,7 +216,7 @@ function timeplot(mycat, nosort)
     axes(ax);
     set(cum,'Visible','on');
     watchoff(cum);
-    zmap_update_displays();
+    %zmap_update_displays();
     
     
     %% ui functions
@@ -440,6 +442,7 @@ function timeplot(mycat, nosort)
         replaceMainCatalog(mycat) ;
         zmap_update_displays(); 
     end
+    
     function cb_rename_cat(~,~)
         nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
         if ~isempty(nm)

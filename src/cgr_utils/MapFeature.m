@@ -208,6 +208,7 @@ classdef MapFeature < handle
             val = obj.getTrimmedData();
             layer=plot(ax,val.Longitude, val.Latitude);
             layer.ZData = val.Depth;
+            %stackorder_menu(layer)
             
             if ~holdstatus; hold(ax,'off'); end
             
@@ -370,7 +371,9 @@ classdef MapFeature < handle
             
             % index used to delete any nan's after the first (per gap)
             todel = [false; ~idx(1:end-1)] & [false; ~idx(2:end)];
-            
+            if ~isfield(val,'Depth')
+                val.Depth=zeros(size(val.Latitude));
+            end
             % replace out-of-bounds values with NaN
             val.Longitude(~idx) = nan;
             val.Latitude(~idx) = nan;

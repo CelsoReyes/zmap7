@@ -40,8 +40,8 @@ classdef MainInteractiveMap
                 obj.createFigure()
                 return
             end
-            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
-            xlim(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)])
+            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog);
+            xlim(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)]);
             ylim(ax,[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)]);
             ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
@@ -85,6 +85,11 @@ classdef MainInteractiveMap
                 end
             end
             drawnow;
+            
+            % change some ordering
+            bigobj=findobj(figureHandle(),'Tag','mainmap_big_events');
+            uistack(bigobj,'top');
+            
         end
         function createFigure(obj)
             ZG=ZmapGlobal.Data;
@@ -102,12 +107,18 @@ classdef MainInteractiveMap
                 'Visible','on', ...
                 'Tag','seismicity_map',...
                 'Position',[10 10 900 650]);
+            
+            % get the datacursor tool
+            dcm_obj = datacursormode(h);
+            dcm_obj.UpdateFcn = @event_datacursor_txt;
+            
             watchon; drawnow;
             ax = axes('Parent',h,'Position',[.09 .09 .85 .85],...
                 'Tag',MainInteractiveMap.axTag,...
                 'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'FontWeight','normal',...
                 'Ticklength',[0.01 0.01],'LineWidth',1.0,...
+                'SortMethod','childorder',...
                 'Box','on','TickDir','out');
             xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -644,6 +655,7 @@ classdef MainInteractiveMap
             
             if isempty(divs)
                 divs = linspace(min(mycat.Depth),max(mycat.Depth),4);
+                divs=round(divs,2);
                 divs([1 4])=[]; % no need for min, andno quakes greater than max...
             end
             

@@ -66,6 +66,10 @@ classdef ShapeSelection
             axes(ax); % bring up axes of interest.  should be the map, with lat/lon
             obj.Type=lower(type);
             ZG=ZmapGlobal.Data;
+            
+            % hide any existing events
+            obj.deemphasizeplot(ax);
+            % make existing shape less obvious
             switch obj.Type
                 case 'circle'
                     d=circle_select_dlg();
@@ -216,6 +220,17 @@ classdef ShapeSelection
             end
             delete(findobj(ax,'Tag','shapeoutline'));
             delete(findobj(ax,'Tag','selectedevents'));
+        end
+        
+        function deemphasizeplot(obj,ax)
+            %clear the shape from the plot
+            if ~exist('ax','var') || isempty(ax)
+                mm=mainmap();
+                ax=mm.mainAxes;
+            end
+            shout = findobj(ax,'Tag','shapeoutline');
+            set(shout,'color',[.8 .8 .8],'linestyle',':');
+            set(findobj(ax,'Tag','selectedevents'),'Visible','off');
         end
         
         

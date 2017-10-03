@@ -617,7 +617,7 @@ classdef ZmapCatalog < handle
                 varargin(end+1:end+2)={'Tag',mytag};
             end
             
-            fprintf('plotting catalog with %d eventsand tag:%s\n',obj.Count,mytag);
+            % fprintf('plotting catalog with %d events and tag:%s\n',obj.Count,mytag);
             % clear the existing layer
             h = findobj(ax,'Tag',mytag);
             if ~isempty(h)
@@ -628,8 +628,10 @@ classdef ZmapCatalog < handle
             hold(ax,'on');
             
             % val = obj.getTrimmedData();
-            h=plot(ax,obj.Longitude, obj.Latitude, 'x',varargin{:}); % if Tag is in varargin, it will override default tag
-            h.ZData = obj.Depth;
+            h=plot(ax,nan,nan,'x');
+            set(h,'XData',obj.Longitude,'YData', obj.Latitude, 'ZData',obj.Depth);
+            set(h,varargin{:}); % if Tag is in varargin, it will override default tag
+            %h.ZData = obj.Depth;
             
             if ~holdstatus; hold(ax,'off'); end
             
