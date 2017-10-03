@@ -17,6 +17,9 @@ report_this_filefun(mfilename('fullpath'));
     % Surpress warnings from fmincon
     % warning off;
 
+    if ~ensure_mainshock()
+        return
+    end
     %[m_main, main] = max(mycat.Magnitude);
     date_matlab = datenum(mycat.Date);
     date_main = datenum(ZG.maepi.Date);

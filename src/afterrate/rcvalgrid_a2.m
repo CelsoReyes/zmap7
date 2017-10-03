@@ -32,6 +32,9 @@ function [sel]=rcvalgrid_a2()
     Grid=[];
     EventSelector=[];
     
+    if ~ensure_mainshock()
+        return
+    end
     % cut catalog at mainshock time:
     l = ZG.primeCatalog.Date > ZG.maepi.Date(1) & ZG.primeCatalog.Magnitude > minThreshMag;
     ZG.newt2=ZG.primeCatalog.subset(l);

@@ -29,6 +29,9 @@ report_this_filefun(mfilename('fullpath'));
 
     % Define aftershock times
     date_matlab = datenum(mycat.Date);
+    if ~ensure_mainshock()
+        return
+    end
     date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;
 

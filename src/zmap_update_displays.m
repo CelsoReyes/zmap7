@@ -15,7 +15,9 @@ function zmap_update_displays(opt)
         if strcmp(opt,'showmap')
             m.update('show');
         else
-            m.update();
+            f=gcf;
+            m.update('show');
+            figure(f)
         end
     end
         

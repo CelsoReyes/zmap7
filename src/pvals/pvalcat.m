@@ -23,6 +23,9 @@ function pvalcat()
     valeg2 = 0; %  decides if c is fixed or not.
     
     
+    if ~ensure_mainshock()
+        return
+    end
     def = {num2str(minThreshMag), num2str(minDaysAfterMainshock) , num2str(valeg2)};
     answer = inputdlg(prompt,title,lines,def);
     

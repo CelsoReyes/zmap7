@@ -23,7 +23,9 @@ function [sel] = bpvalgrid()
     
     % get the grid parameter
     % initial values
-    
+    if ~ensure_mainshock()
+        return
+    end
     % cut catalog at mainshock time:
     l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
     ZG.newt2 = ZG.primeCatalog.subset(l);

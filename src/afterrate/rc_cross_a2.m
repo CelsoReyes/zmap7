@@ -30,6 +30,9 @@ function rc_cross_a2()
     ra = 5;
     fMaxRadius = 5;
     
+    if ~ensure_mainshock()
+        return
+    end
     % cut catalog at mainshock time:
     l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
     ZG.primeCatalog=ZG.primeCatalog.subset(l);

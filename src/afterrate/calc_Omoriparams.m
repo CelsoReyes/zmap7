@@ -29,6 +29,9 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     % Initialize
     mResult = [];
 
+    if ~ensure_mainshock()
+        return
+    end
     % Define aftershock times
     date_matlab = mycat.Date;
     date_main = ZG.maepi.Date;

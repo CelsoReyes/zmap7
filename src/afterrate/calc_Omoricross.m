@@ -30,6 +30,11 @@ function calc_Omoricross()
     fBinning = 0.1;
     
     % cut catalog at mainshock time:
+
+    if ~ensure_mainshock()
+        return
+    end
+    
     l = ZG.(wCat).Date > ZG.maepi.Date(1);
     ZG.(wCat)=ZG.(wCat).subset(l);
     
