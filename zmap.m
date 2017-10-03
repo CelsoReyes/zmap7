@@ -42,12 +42,11 @@ if ~ismember( sys(1:3), tested_systems)
     pause(5)
 end
 
-% set system dependent initial variables
-sys_initializer = str2func(['ini_zmap_', computer]);
-sys_initializer();
-
 % set local preference variables
 ini_zmap
+
+% set system dependent initial variables
+ini_zmap_sys
 
 
 %{

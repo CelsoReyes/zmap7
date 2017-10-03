@@ -90,11 +90,11 @@ set(handles.provider_details,'String',...
     currprovider.serviceURLs.eventService));
 if hObject.Value==1
     hObject.BackgroundColor = [1.0 0.95 0.95];    
-    ZmapMessagebar('Importing FDSN data - First choose a data provider...');
+    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data - First choose a data provider...');
 
 else
     hObject.BackgroundColor = [0.95 1.0 0.95];    
-    ZmapMessagebar('Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
+    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
 
 end
 
@@ -568,9 +568,18 @@ end
     queryset = add_numeric(handles, queryset, 'mindepth');
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
-    ZmapMessagebar('Importing FDSN data from the web. This might take a minute');
+    
+    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data from the web. This might take a minute');
+    
+    set(handles.fdsn_import_dialog,'Visible','off');
+    drawnow
+    % FETCH THE DATA
+    watchon
     tmp=import_fdsn_event(1, queryset{:});
-    ZmapMessagebar('Converting to a ZmapCatalog');
+    watchoff
+    
+    % CONVERT
+    zmap_message_center.set_info('FDSN Fetch','Converting to a ZmapCatalog');
     if ~isa(tmp,'ZmapCatalog')
         ZG.primeCatalog=ZmapCatalog(tmp);
     else
@@ -582,7 +591,9 @@ end
     if isempty(ZG.primeCatalog.Name) %TODO move this functionality into import_fdsn_event
         ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
     end
+    pause(.1)
     nm=inputdlg('Provide a catalog name (used in plots, files)','Name Catalog',1,{ZG.primeCatalog.Name});
+    pause(.1)
     if ~isempty(nm)
         ZG.primeCatalog.Name=nm{1};
     end
@@ -590,12 +601,9 @@ end
     clear tmp
     h=zmap_message_center();
     h.update_catalog()%;
-    update(mainmap());
-    ZmapMessagebar();
-    set(hObject.Parent,'Visible','off');
+    zmap_update_displays();
+    memorize_recall_catalog()
     % close(hObject.Parent); % or set Visibility to 'off' ?
-    % TODO: close this window
-    % 
 
 function [val] = getvalue(handles, label)
     val = get(handles.(label),'Value');

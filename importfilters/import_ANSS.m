@@ -4,7 +4,7 @@ function [uOutput] = import_ANSS(nFunction, sFilename)
 % Importfilter for ANSS readable format catalog
 % (http://quake.geo.berkeley.edu/anss/catalog-search.html)
 %
-% Last update: 18.08.2005, D. Schorlemmer
+% updated: 18.08.2005, D. Schorlemmer
 
 if nFunction == 0
   uOutput = 'ANSS readable format';

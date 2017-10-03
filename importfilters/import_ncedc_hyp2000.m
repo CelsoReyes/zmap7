@@ -3,7 +3,7 @@ function [uOutput,Error_lines] = import_ncedc_hyp2000(nFunction, sFilename)
 % ----------------------------------------------------------------
 % Function to import catalog data from the NCEDC (http://quake.geo.berkeley.edu) in HYPO2000 format
 %
-% last update: 06.06.2005, D. Schorlemmer
+% updated: 06.06.2005, D. Schorlemmer
 %
 % Authors: J. Woessner (jochen.woessner@sed.ethz.ch)
 %          D. Schorlemmer (danijel@sed.ethz.ch)

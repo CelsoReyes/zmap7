@@ -7,7 +7,7 @@ function [uOutput] = import_california_fm(nFunction, sFilename)
 % http://quake.geo.berkeley.edu
 % http://www.data.scec.org/ftp/catalogs/hauksson/Socal_focal/
 %
-% last update: 17.05.2005, Danijel Schorlemmer
+% updated: 17.05.2005, Danijel Schorlemmer
 % schorlemmer@sed.ethz.ch
 
 % Counter for double events

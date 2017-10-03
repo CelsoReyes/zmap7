@@ -3,17 +3,16 @@ Inversion data
 COORDINATES ARE EAST,NORTH,UP.
 stress tensor is:
 nan  nan  nan  
-nan  inf  inf  
-nan  inf  nan  
+nan  nan  nan  
+nan  nan  nan  
 eigenvalue   vector: E,N,UP,direction,plunge
 nan  nan  nan  nan  nan  nan
 nan  nan  nan  nan  nan  nan
 nan  nan  nan  nan  nan  nan
-variance= nan
+variance= -0
 phi value= nan
 
 dip direction, dip, rake, fit angle, mag tau
-  347.0     77.0      2.0      nan     nan
 fit angle mean= nan standard deviation= nan
 for f=0.8 I= nan , std. dev.= nan D norm= nan
 avg tau= nan , std. dev.= nan

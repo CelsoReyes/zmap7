@@ -22,7 +22,7 @@ function [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilena
 %            assumption of the method
 % fStdTau  : Standard deviation of fAvgTau
 %
-% last update: J. Woessner, 02.03.04
+% updated: J. Woessner, 02.03.04
 
 % Open file
 hFile = fopen(sFilename, 'r');

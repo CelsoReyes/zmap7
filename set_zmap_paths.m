@@ -18,7 +18,8 @@ path_list = [
     'fractal';
     'pvals';
     'synthetic';
-    'utils'});
+    'utils';
+    fullfile('system_dependent',computer)});
     {fullfile(hodi, 'src', 'danijel')};
     fullfile(hodi, 'src', 'danijel', {'calc';
     'ex';

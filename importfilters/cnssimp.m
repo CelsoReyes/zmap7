@@ -4,7 +4,7 @@ function [uOutput] = cnssimp(nFunction, sFilename)
 % Function to import data of the ANSS/CNSS raw format catalog (http://quake.geo.berkeley.edu/ncedc/documents.html#catalog_formats)
 % Description of the parameters can be found at http://quake.geo.berkeley.edu/ftp/pub/doc/cat5/cnss.catalog.5
 %
-% last update: 15.09.03, J. Woessner
+% updated: 15.09.03, J. Woessner
 
 if nFunction == 0
     uOutput = 'ANSS/CNSS format (string conversion)';

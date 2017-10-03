@@ -49,6 +49,16 @@ classdef ZmapGrid
                         obj.Yvector=axlims(3) : obj.Dy : axlims(4);
                         [x,y]=meshgrid(obj.Xvector, obj.Yvector);
                         obj.GridXY=[x(:),y(:)];
+                        if isfield(g,'GridEntireArea') && ~g.GridEntireArea
+                            myshape=ZmapGlobal.Data.selection_shape;
+                            if isnan(myshape.Points(1))
+                                zmap_message_center.set_warning('Polygon not defined',...
+                                    'Requested that grid is limited by the polygon, but no polygon is defined.');
+                                myshape=myshape.select_polygon();
+                            end
+                            obj.MaskWithPolygon(myshape.Points)
+                            % choose polygon
+                        end 
                         %obj=ZmapGrid(name, v. '
                     else
                         error('unknown');
@@ -92,6 +102,7 @@ classdef ZmapGrid
                 % all points are simply in a line
                 obj.ActivePoints=true(length(obj.GridXY),1);
             end
+            
         end
         
         % basic access routines
@@ -149,8 +160,8 @@ classdef ZmapGrid
                     pause(1);
                     delete(mouse_points_overlay);
                 case 2
-                    ax=polyX; % this param is actually an axis, not x values
-                    [polyX, polyY, mouse_points_overlay] = select_polygon(ax);
+                    %ax=polyX; % this param is actually an axis, not x values
+                    [polyX, polyY, mouse_points_overlay] = select_polygon(gca);
                     pause(1);
                     delete(mouse_points_overlay);
                 otherwise
@@ -179,7 +190,8 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            
+            def_opts={'color',[.7 .7 .7],'displayname','grid points','markersize',3,'marker','.'};
+            varargin=[def_opts,varargin];
             useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)
                 varargin{end}=[];
@@ -208,7 +220,7 @@ classdef ZmapGrid
             end
         end
         
-        function h=pcolor(obj, ax, values)
+        function h=pcolor(obj, ax, values, name)
             % pcolor create a pcolor plot where each point of the grid
             % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
             % each grid point is contained within a color cell. the cells are divided halfway 
@@ -221,9 +233,14 @@ classdef ZmapGrid
             % h is a handle to the pcolor object
             % 
             % see also gridpcolor
-            assert(isequal(size(values),[length(obj.Xvector),length(obj.Yvector)]),...
-                'expect values to match Xvector & Yvector in size');
-             h=gridpcolor(ax,obj.Xvector, obj.Yvector, values, obj.ActivePoints);
+            if ~exist('name','var')
+                name = '';
+            end
+            assert(numel(values)== length(obj.Xvector) * length(obj.Yvector),'expect same number of values');
+            if ~isequal(size(values),[length(obj.Xvector),length(obj.Yvector)])
+                values = reshape(values,length(obj.Yvector),length(obj.Xvector));
+            end
+             h=gridpcolor(ax,obj.Xvector, obj.Yvector, values, obj.ActivePoints,name);
         end
         
         function setGlobal(obj)
@@ -329,6 +346,8 @@ classdef ZmapGrid
                 end
             end
         end
+     
+            
     end
     
     methods(Static)

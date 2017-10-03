@@ -9,7 +9,7 @@ function [uOutput] = harvardcmt_imp(nFunction, sFilename)
 % 2. Use Data import filter tool to import Ascii-file
 %
 % J. Woessner; woessner@seismo.ifg.ethz.ch
-% last update: 10.03.02
+% updated: 10.03.02
 
 % Filter function switchyard
 if nFunction == 0     % Return info about filter

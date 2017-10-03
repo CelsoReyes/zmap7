@@ -5,7 +5,7 @@ function [uOutput,Error_lines] = import_scedc_reloc_shearer_ver102(nFunction, sF
 % Get data http://www.data.scec.org/ftp/catalogs/SHLK/
 % Version 1.02
 %
-% last update: 04.02.2006, J. Woessner
+% updated: 04.02.2006, J. Woessner
 % jowoe@gps.caltech.edu
 
 % Filter function switchyard
