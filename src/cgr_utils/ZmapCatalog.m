@@ -41,10 +41,16 @@ classdef ZmapCatalog < handle
         end
         
         function set.MomentTensor(obj, value)
-            assert(size(value,2)==6,'expect moment tensors to have 6 columns: mrr, mtt, mff, mrt, mrf, mtf');
-            % assert(size(value,1)==obj.Count,'# of moment tensors must match catalog size.');
-            obj.MomentTensor=array2table(value,'VariableNames',{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'});
+            if istable(value)
+                assert(isequal(value.Properties.VariableNames,{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'}));
+                obj.MomentTensor=value;
+            elseif isnumeric(value)
+                assert(size(value,2)==6,'expect moment tensors to have 6 columns: mrr, mtt, mff, mrt, mrf, mtf');
+                % assert(size(value,1)==obj.Count,'# of moment tensors must match catalog size.');
+                obj.MomentTensor=array2table(value,'VariableNames',{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'});
+            end
         end
+        
         function obj = ZmapCatalog(varargin)
             % ZmapCatalog create a ZmapCatalog object
             obj.Name = '';

@@ -238,7 +238,8 @@ classdef cgr_bvalgrid < ZmapFunction
             hold on
             obj.Grid.plot()
             ft=obj.ZG.features('borders');
-            ft.plot(gca);
+            newft=copyobj(ft,gca)
+            %ft.plot(gca);
             colorbar
             title('B-values')
             xlabel('Longitude')

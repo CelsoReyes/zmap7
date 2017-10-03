@@ -109,11 +109,11 @@ end
 
 function show_load_instructions()
     messtext=...
-        ['Please select an earthquake datafile.'
-        'This file needs to be in matlab *.mat'
-        'Format. If you do not have a *.mat   '
-        'file use <create *.mat Datafile> in  '
-        'the menu                             '];
+        ['Please select an earthquake datafile.',...
+        'This file needs to be in matlab *.mat ',...
+        'Format. If you do not have a *.mat ',...
+        'file use <create *.mat Datafile> in ',...
+        'the menu '];
     zmap_message_center.set_message('Load Data',messtext);
 end
 

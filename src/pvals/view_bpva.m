@@ -61,6 +61,7 @@ function view_bpva(res, idx)
     ZG=ZmapGlobal.Data;
     bpmap=findobj('Type','Figure','-and','Name','bp-value-map');   
     delete(bpmap);
+    res=res.Result; %TOFIX
     curval = res.values(:,idx);
     
     if isempty(bpmap)
@@ -155,7 +156,8 @@ function view_bpva(res, idx)
     hold on
     res.Grid.plot()
     ft=ZG.features('borders');
-    ft.plot(gca);
+    %newft=copyobj(ft,gca)
+    ft.plot(gca); %TOFIX
     colorbar
     title(lab1)
     xlabel('Longitude')

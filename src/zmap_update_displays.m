@@ -1,10 +1,10 @@
 function zmap_update_displays(opt)
     % zmap_update updates the various likely open dialogs & figures
 
-    %    persistent ZG
-%    if isempty(ZG)
-%        ZG=ZmapGlobal.Data;
-%    end
+    persistent ZG
+    if isempty(ZG)
+        ZG=ZmapGlobal.Data;
+    end
     if ~exist('opt','var')
         opt='';
     end
@@ -15,10 +15,10 @@ function zmap_update_displays(opt)
         if strcmp(opt,'showmap')
             m.update('show');
         else
-            f=gcf;
-            m.update('show');
-            figure(f)
+            m.update();
         end
     end
+    
+    ZG.selection_shape.plot(MainInteractiveMap.mainAxes)
         
 end

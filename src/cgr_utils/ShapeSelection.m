@@ -398,10 +398,10 @@ classdef ShapeSelection
             uimenu(submenu,'Label','Analyze EQ inside Shape (timeplot)',...
                 'separator','on',...
                 'Visible',vis,...
-                'Callback',@(~,~) selectp('inside')); %@cb_analyze
+                'Callback',{@cb_selectp,'inside'}); %@cb_analyze
             
             uimenu(submenu,'Label','Analyze EQ outside Shape (timeplot)','Visible',vis,...
-                'Callback',@(~,~) selectp('outside'));
+                'Callback',{@cb_selectp,'outside'});
             
             isvis=strcmp(ZGshape.Type, 'unassigned');
             if isvis
@@ -632,5 +632,20 @@ function cb_applygrid(src,~)
         ZG.Grid=ZG.Grid.MaskWithPolygon(obj.Lon, obj.Lat);
     end
     ZG.Grid.plot();
+end
+function cb_selectp(src,~,in_or_out)    
+    ZG=ZmapGlobal.Data;
+    switch in_or_out
+        case 'inside'
+            mask=ZG.selection_shape.InsideEvents(ZG.primeCatalog);
+        case 'outside'
+            mask=ZG.selection_shape.OutsideEvents(ZG.primeCatalog);
+        otherwise
+            mask=true(ZG.primeCatalog.Count,1);
+    end
+    ZG.newt2=ZG.primeCatalog.subset(mask);
+    ZG.newcat=ZG.newt2;
+    timeplot(ZG.newt2);
+    
 end
     
