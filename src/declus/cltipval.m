@@ -55,8 +55,7 @@ function cltipval(var1)
         
         ZG.newt2=ZG.ttcat;
         %calculate start -end time of overall catalog
-        t0b = min(ZG.newt2.Date);
-        teb = max(ZG.newt2.Date);
+        [t0b, teb] = ZG.newt2.DateRange() ;
         tdiff=days(teb-t0b);       %time difference in days
         par3=tdiff/100;
         par5=par3;

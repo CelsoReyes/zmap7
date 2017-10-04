@@ -257,10 +257,9 @@ function rc_cross_a2()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        t0b = min(newa.Date)  ;
+        [t0b, teb] = newa.DateRange();
         n = newa.Count;
-        teb = max(newa.Date) ;
-        tdiff = round((teb-t0b)/ZG.bin_dur);
+        tdiff = round(newa.DateSpan/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
         % loop over  all points

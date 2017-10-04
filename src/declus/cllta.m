@@ -31,9 +31,8 @@ function cllta(var1)
         set(freq_slider,'Value',years(ZG.compare_window_dur_v3));
     end
 
-    t0b = min(ZG.primeCatalog.Date);
+    [t0b, teb] = ZG.primeCatalog.DateRange() ;
     n = ZG.primeCatalog.Count;
-    teb = max(ZG.primeCatalog.Date);
     tdiff = round((teb - t0b)/days(par5));
     ZG.compare_window_dur_v3 = days(winlen_days*days(par5));  
 

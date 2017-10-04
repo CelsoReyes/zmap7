@@ -16,8 +16,7 @@ function mycat = catalog_overview(mycat)
     %global maxdep maxma mindep minti maxti
     
     %  default values
-    t0b = min(mycat.Date);
-    teb = max(mycat.Date);
+    [t0b, teb] = mycat.DateRange() ;
     tdiff = (teb - t0b);
     
     if ~exist('ZG.bin_dur', 'var')   %select bin length respective to time in catalog

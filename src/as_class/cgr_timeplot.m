@@ -307,9 +307,7 @@ function timeplot(mycat, nosort)
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
     global statime
-    global selt
-    t0b=min(mycat.Date);
-    teb=max(mycat.Date);
+    [t0b, teb] = mycat.DateRange() ;
     ZG = ZmapGlobal.Data;
     if ~exist('xt','var')
         xt=[]; % time series that will be used
@@ -358,7 +356,6 @@ function timeplot(mycat, nosort)
         
         
         
-        selt='in';
         create_my_menu();
             
         uicontrol('Units','normal','Position',[.0 .0 .1 .05],...
@@ -426,8 +423,7 @@ function timeplot(mycat, nosort)
     %calculate start -end time of overall catalog
     statime=[];
     par2=ZG.bin_dur;
-    t0b = min(ZG.primeCatalog.Date);
-    teb = max(ZG.primeCatalog.Date);
+    [t0b, teb] = ZG.primeCatalog.DateRange() ;
     
     tdiff = (teb-t0b)/ZG.bin_dur;
     

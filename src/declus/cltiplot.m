@@ -92,9 +92,8 @@ function cltiplot(var1)
     l = ZG.newt2.Magnitude == bigmag;
     big = ZG.newt2.subset(l);
     %calculate start -end time of overall catalog
-    t0b = min(ZG.newt2.Date);
+    [t0b, teb] = ZG.newt2.DateRange() ;
     n = ZG.newt2.Count;
-    teb = ZG.newt2.Date(n);
     tdiff = days(teb - t0b);
     par5=tdiff/100;         %bin length is 1/100 of timedifference(in days)
     if par5>1

@@ -12,10 +12,32 @@ function txt = event_datacursor_txt(~,event_obj)
     % redefine data cursor Updatefcn
     % set(dcm_obj, 'UpdateFcn',@myupdatefcn)
     %ZG=ZmapGlobal.Data;
+    event_obj.Target
+    event_obj.Position
     
-    latTol = .001;
-    lonTol = .001;
-    depthTol = 1;
+    switch lower(event_obj.Target.DisplayName)
+        case {'stations'}
+            txt=parse_stations(event_obj);
+        case {'volcanoes'}
+            txt=parse_volcanoes(event_obj);
+        case {'main faultline'}
+            txt=parse_faults(event_obj);
+        case {'plate boundaries'}
+            txt=parse_plates(event_obj);
+            
+        otherwise
+            
+            txt=parse_quakes(event_obj);
+    end
+end
+
+%% These parsing routines should probably be assigned to the features themselves.
+
+function txt = parse_quakes(event_obj)
+    disp(event_obj.Target)
+    latTol = 0.001;
+    lonTol = 0.001;
+    depthTol = 0.1;
     OUTPUT_NAME='datacursor_catalog';
     
     assignin('base','clickedevent',event_obj)
@@ -45,17 +67,10 @@ function txt = event_datacursor_txt(~,event_obj)
                      txt = [txt, {sprintf('  ... skipping %d events ...',minicat.Count-5)}];
                      continue
                  end
-                 if evpos(2)>0
-                     lattxt=[num2str(minicat.Latitude(i)) ' N'];
-                 else
-                     lattxt=[num2str(-minicat.Latitude(i)) ' S'];
-                 end
                  
-                 if evpos(1)>0
-                     lontxt=[num2str(minicat.Longitude(i)) ' E'];
-                 else
-                     lontxt=[num2str(-minicat.Longitude(i)) ' W'];
-                 end
+                 lattxt=lat_text(event_obj,minicat,i);
+                 lontxt=lon_text(event_obj,minicat,i);
+                 
                  mt = minicat.MagnitudeType{i};
                  if isempty(mt)
                      mt='magnitude';
@@ -74,17 +89,8 @@ function txt = event_datacursor_txt(~,event_obj)
      else
          try
              for i =1:minicat.Count
-                 if evpos(2)>0
-                     lattxt=[num2str(minicat.Latitude(i)) ' N'];
-                 else
-                     lattxt=[num2str(minicat.Latitude(i)) ' S'];
-                 end
-                 
-                 if evpos(1)>0
-                     lontxt=[num2str(minicat.Longitude(i)) ' E'];
-                 else
-                     lontxt=[num2str(minicat.Longitude(i)) ' W'];
-                 end
+                 lattxt=lat_text(event_obj,minicat,i);
+                 lontxt=lon_text(event_obj,minicat,i);
                  mt = minicat.MagnitudeType{i};
                  if isempty(mt)
                      mt='magnitude';
@@ -92,7 +98,7 @@ function txt = event_datacursor_txt(~,event_obj)
                  txt=[txt,{sprintf('- Event # %d -',evNum(i)),...
                      sprintf('%s',char(minicat.Date(i),'uuuu-MM-dd hh:mm:ss')),...
                      sprintf('( %s , %s )',lattxt,lontxt),...
-                     sprintf(' %.2f km depth',evpos(3)),...
+                     sprintf(' %.2f km depth',minicat.Depth(i)),...
                      sprintf('%s : %.1f',mt, minicat.Magnitude(i))};
                      ];
                  if i < minicat.Count
@@ -104,4 +110,82 @@ function txt = event_datacursor_txt(~,event_obj)
              warning(ME.message)
          end
      end
+end
+
+function txt = parse_stations(event_obj)
+    % get table information
+    
+    latTol = 0.01;
+    lonTol = 0.01;
+    
+    ZG=ZmapGlobal.Data;
+    f=ZG.features('stations');
+    evpos=event_obj.Position;
+    idx=find(...
+        abs(evpos(2) - f.Latitude) < latTol &...
+        abs(evpos(1) - f.Longitude) < lonTol);
+    txt={sprintf('%d station(s):',numel(idx))};
+    for i=1:numel(idx)
+        lattxt=lat_text(event_obj,f,i);
+        lontxt=lon_text(event_obj,f,i);
+        
+        txt=[txt,f.Names(idx(i)),...
+            sprintf('( %s , %s )',lattxt,lontxt),...
+            sprintf(' %.2f km elev',-f.Depth(i))];
+    end
+end
+
+function txt = parse_faults(event_obj)
+    txt='fault'
+    %f=ZG.features('faults');
+end
+function txt = parse_plates(event_obj)
+    txt='plate boundary'
+    %f=ZG.features('plates');
+end
+
+function txt = parse_volcanoes(event_obj)    % get table information
+    latTol = 0.001;
+    lonTol = 0.001;
+    
+    ZG=ZmapGlobal.Data;
+    f=ZG.features('volcanoes');
+    evpos=event_obj.Position;
+    idx=find(...
+        abs(evpos(2) - f.Latitude) < latTol &...
+        abs(evpos(1) - f.Longitude) < lonTol)
+    txt={sprintf('%d volcanic feature(s):',numel(idx))};
+    for i=1:numel(idx)
+        lattxt=lat_text(event_obj,f,i);
+        lontxt=lon_text(event_obj,f,i);
+        
+        txt=[txt,f.Names(idx(i)),...
+            sprintf('( %s , %s )',lattxt,lontxt),...
+            sprintf(' %.2f km elev',-f.Depth(i))];
+    end
+    
+end
+
+function lattxt=lat_text(event_obj,obj,idx)
+    if ~exist('idx','var')
+        idx=1;
+    end
+    evpos=event_obj.Position;
+    if evpos(1)>0
+        lattxt=[num2str(obj.Latitude(idx)) ' N'];
+    else
+        lattxt=[num2str(obj.Latitude(idx)) ' S'];
+    end
+end
+
+function lontxt=lon_text(event_obj,obj,idx)
+    if ~exist('idx','var')
+        idx=1;
+    end
+    evpos=event_obj.Position;
+    if evpos(1)>0
+        lontxt=[num2str(obj.Longitude(idx)) ' E'];
+    else
+        lontxt=[num2str(obj.Longitude(idx)) ' W'];
+    end
 end

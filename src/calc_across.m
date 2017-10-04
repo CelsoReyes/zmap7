@@ -257,9 +257,8 @@ function calc_across(sel)
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        t0b = min(newa.Date)  ;
+        [t0b, teb] = newa.DateRange() ;
         n = newa.Count;
-        teb = max(newa.Date) ;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         

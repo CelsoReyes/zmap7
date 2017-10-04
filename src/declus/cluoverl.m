@@ -77,9 +77,8 @@ function cluoverl(var1)
         %
         % find start and end time of catalogue "primeCatalog"
         %
-        t0b = min(ZG.primeCatalog.Date);
+        [t0b, teb] = ZG.primeCatalog.DateRange() ;
         n = ZG.primeCatalog.Count;
-        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_dur);
 
 
@@ -161,9 +160,8 @@ function cluoverl(var1)
         %
         % find start and end time of catalogue "primeCatalog"
         %
-        t0b = min(ZG.primeCatalog.Date);
+        [t0b, teb] = ZG.primeCatalog.DateRange() ;
         n = ZG.primeCatalog.Count;
-        teb = max(ZG.primeCatalog.Date) ;
         tdiff = round(teb - t0b)/days(ZG.bin_dur);
         %define fore and aftershocks
         %

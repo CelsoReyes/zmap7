@@ -59,6 +59,7 @@ classdef MapFeature < handle
         Longitude           % vector of Longitudes [deg] (to be plotted on X)
         Latitude            % vector of Latitudes [deg] (to be plotted on Y)
         Depth               % vector of Depths [km] (to be plotted on -Z)
+        Names
     end
     
     methods
@@ -92,6 +93,7 @@ classdef MapFeature < handle
         
         function set.Value(obj, data)
             % set.Value does the painful work of importing data form a variety of data types
+            % result will have Latitude, Longitude, probably Depth, and possibly Names
             switch class(data)
                 case 'ZmapCatalog'
                     obj.Value = data;  %sets Latitude, Longitude, and Depth
@@ -114,12 +116,38 @@ classdef MapFeature < handle
                     lon_field=data.Properties.VariableNames{x};
                     lat_field=data.Properties.VariableNames{y};
                     
-                    obj.Value = struct('Longitude',data.(lon_field)(:) , 'Latitude', data.(lat_field)(:));
+                    d=startsWith(data.Properties.VariableNames,'Depth','IgnoreCase',true);
+                    el = startsWith(data.Properties.VariableNames,'Elev','IgnoreCase',true);
+                    
+                    if any(d)
+                        dep_field=data.Properties.VariableNames{d}; %prefer depth
+                        obj.Value = struct('Longitude',data.(lon_field)(:) , ...
+                            'Latitude', data.(lat_field)(:),...
+                            'Depth',data.(dep_field)(:));
+                    elseif any(el)
+                        dep_field= data.Properties.VariableNames{el}; %settle for eleveation
+                        obj.Value = struct('Longitude',data.(lon_field)(:) , ...
+                            'Latitude', data.(lat_field)(:),...
+                            'Depth',-data.(dep_field)(:));
+                    else
+                        obj.Value = struct('Longitude',data.(lon_field)(:) , ... or zeros
+                            'Latitude', data.(lat_field)(:),...
+                            'Depth',zeros(size(data.(lon_field)(:))));
+                    end
+                    
+                    nm=startsWith(data.Properties.VariableNames,'Name','IgnoreCase',true);
+                    if any(nm)
+                        nmfield=data.Properties.VariableNames{nm};
+                        obj.Value.Names=data.(nmfield)(:);
+                    end
+                    
                 case {'struct'}
                     fn = fieldnames(data);
                     x=startsWith(fn,'Longitude','IgnoreCase',true);
                     y=startsWith(fn,'Latitude','IgnoreCase',true);
-                    
+                    d=startsWith(fn,'Depth','IgnoreCase',true);
+                    el=startsWith(fn,'Elev','IgnoreCase',true);
+                    nm=startsWith(fn,'Name','IgnoreCase',true);
                     % assume parallel structure between x & y, so check x only and treat y accordingly
                     if numel(find(x))==1
                         %all ok
@@ -138,6 +166,21 @@ classdef MapFeature < handle
                     obj.Value = struct('Longitude',[data.(lon_field)] , 'Latitude', [data.(lat_field)]);
                     obj.Value.Longitude=obj.Value.Longitude(:);
                     obj.Value.Latitude=obj.Value.Latitude(:);
+                    
+                    if any(d)
+                        dep_field=fn{d};
+                        obj.Value.Depth = [data.(dep_field)];
+                        obj.Value.Depth=obj.Value.Depth(:);
+                    elseif ~isempty(el)
+                        dep_field=fn{el};
+                        obj.Value.Depth = -[data.(dep_field)];
+                        obj.Value.Depth=obj.Value.Depth(:);
+                    end
+                    if any(nm)
+                        obj.Value.Names={data.(fn{nm})};
+                        obj.Value.Names=obj.Value.Names(:);
+                    end
+                    
                 otherwise
                     obj.Value=struct('Longitude',[],'Latitude',[]);
                     if isnumeric(data)
@@ -171,6 +214,14 @@ classdef MapFeature < handle
         end
         function depths = get.Depth(obj)
             depths = obj.Value.Depth;
+        end
+        
+        function names = get.Names(obj)
+            try
+                names = obj.Value.Names;
+            catch ME
+                names = {'no name'};
+            end
         end
         
         function layer=plot(obj,ax)
@@ -208,6 +259,7 @@ classdef MapFeature < handle
             val = obj.getTrimmedData();
             layer=plot(ax,val.Longitude, val.Latitude);
             layer.ZData = val.Depth;
+            ax.ZDir='reverse';
             %stackorder_menu(layer)
             
             if ~holdstatus; hold(ax,'off'); end

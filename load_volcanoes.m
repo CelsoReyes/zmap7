@@ -38,6 +38,7 @@ function out = load_volcanoes(filename, vname)
     fn = fieldnames(out);
     if ~all(ismember({'VolcanoName','Latitude','Longitude','Elevationm','LastKnownEruption'}, fn))
         warning('loaded volcano file, but it doesn''t appear to have all the required fields');
-     end
+    end
+    out.Name=out.VolcanoName;
 
 end

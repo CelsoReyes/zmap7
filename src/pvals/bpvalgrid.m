@@ -123,10 +123,8 @@ function [sel] = bpvalgrid()
         end
         %}
         %  make grid, calculate start- endtime etc.  ...
-        %
-        %t0b = min(ZG.primeCatalog.Date)  ;
+        %[t0b, teb] = ZG.primeCatalog.DateRange() ;
         %n = ZG.primeCatalog.Count;
-        %teb = max(ZG.primeCatalog.Date) ;
         %tdiff = round((teb-t0b)/ZG.bin_dur);
         %loc = zeros(3, length(gx)*length(gy));
         

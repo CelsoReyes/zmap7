@@ -82,8 +82,7 @@ function setUpDefaultValues(A)
     ZG=ZmapGlobal.Data; % get zmap globals
     
     %  default values
-    t0b = min(A.Date);
-    teb = max(A.Date);
+    [t0b, teb] = A.DateRange() ;
     ttdif = days(teb - t0b);
     if ~exist('bin_dur','var')
         ZG.bin_dur = days(ceil(ttdif/100));

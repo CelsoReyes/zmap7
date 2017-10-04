@@ -24,6 +24,7 @@ classdef ZmapCatalog < handle
         DecimalYear
         DayOfYear
         Count
+        DateSpan % duration
     end
     
     methods
@@ -32,6 +33,14 @@ classdef ZmapCatalog < handle
             propval = numel(obj.Longitude);
         end
         
+        
+        function out = get.DateSpan(obj)
+            % dspan = obj.DateSpan  returns difference between min & max dates
+            out=max(obj.Date) - min(obj.Date);
+            if days(out)>5
+                out.Format = 'd';
+            end
+        end
         function propval = get.DecimalYear(obj)
             propval = decyear(obj.Date);
         end
@@ -51,6 +60,31 @@ classdef ZmapCatalog < handle
             end
         end
         
+        function [a, b] = DateRange(obj)
+            % get min and max dates from catalog
+            % A = obj.DateRange() will return a 1x2 vector [minDate, maxDate]
+            % [minDate, maxDate] = obj.DateRange()
+            switch nargout
+                case 2
+                    a = min(obj.Date);
+                    b = max(obj.Date);
+                otherwise
+                    a = [min(obj.Date), max(obj.Date)];
+            end
+        end
+        
+        function [a, b] = MagnitudeRange(obj)
+            % get min and max magnitudes from catalog
+            % A = obj.MagnitudeRange() will return a 1x2 vector [minMag, maxMag]
+            % [minmag, maxmag] obj.MagnitudeRange()
+            switch nargout
+                case 2
+                    a = min(obj.Magnitude);
+                    b = max(obj.Magnitude);
+                otherwise
+                    a = [min(obj.Magnitude), max(obj.Magnitude)];
+            end
+        end
         function obj = ZmapCatalog(varargin)
             % ZmapCatalog create a ZmapCatalog object
             obj.Name = '';

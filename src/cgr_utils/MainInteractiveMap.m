@@ -225,15 +225,7 @@ classdef MainInteractiveMap
                 ftr=obj.Features(k{i});
                 ftr.addToggleMenu(ovmenu);
             end
-            %{
-            % Calls GSHHS data already accessed in resources/features
-            % TODO: create option to control Resolution
-                uimenu(ovmenu,'Label','Load a coastline  from GSHHS database',...
-                'Separator','on',...
-                    'Callback','selt = ''in'';  plotmymap;');
-                uimenu(ovmenu,'Label','Add coastline/faults from existing *.mat file',...
-                    'Callback',' addcoast;done');
-            %}
+
             uimenu(ovmenu,'Label','Plot stations + station names',...
                 'Separator', 'on',...
                 'Callback',@(~,~)plotstations(MainInteractiveMap.mainAxes()));
@@ -542,7 +534,7 @@ classdef MainInteractiveMap
         
         %% plot CATALOG layer
         function plotEarthquakes(catalog, divs)
-            disp('MainInteractiveMap.plotEarthquakes(...)');
+            disp(['MainInteractiveMap.plotEarthquakes :',ZmapGlobal.Data.mainmap_plotby]);
             if ~exist('divs','var')
                 divs=[];
             end
@@ -572,6 +564,7 @@ classdef MainInteractiveMap
             align_supplimentary_legends(ax);
             % TODO show subset also
         end
+        
         function plotQuakesByMagnitude(mycat, divs)
             % magdivisions: magnitude split points
             
@@ -623,16 +616,6 @@ classdef MainInteractiveMap
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
                 
-                %{
-                h=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
-                    'Marker',event_marker_types(i+1),...
-                    'Color',cmapcolors(i+1,:),...
-                    'LineStyle','none',...
-                    'MarkerSize',ZG.ms6*(i+1),...
-                    'Tag',['mapax_part' num2str(i)],...
-                    'DisplayName',dispname);
-                h.ZData=-mycat.Depth(mask);
-                %}
             end
             if ~washeld; hold(ax,'off');end
         end
@@ -648,10 +631,6 @@ classdef MainInteractiveMap
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
-            
-            % eg. cat mags -0.5 to 5.2 ; magdiv= [1];
-            %  M <= 1 and M >1
-            % eq > 1
             
             if isempty(divs)
                 divs = linspace(min(mycat.Depth),max(mycat.Depth),4);
@@ -680,15 +659,6 @@ classdef MainInteractiveMap
                 'LineStyle','none',...
                 'MarkerSize',ZG.ms6,...
                 'Tag','mapax_part0');
-            %{
-            h = plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
-                'Marker',event_marker_types(1),...
-                'Color',cmapcolors(1,:),...
-                'LineStyle','none',...
-                'MarkerSize',ZG.ms6,...
-                'Tag','mapax_part0');
-            h.ZData=-mycat.Depth(mask);
-                %}
             h.DisplayName = sprintf('Z <= %.1f km', divs(1));
             
             for i = 1 : numel(divs)
@@ -704,16 +674,6 @@ classdef MainInteractiveMap
                     'MarkerSize',ZG.ms6,...
                     'Tag',['mapax_part' num2str(i)],...
                     'DisplayName',dispname);
-                %{
-                myline=plot(ax, mycat.Longitude(mask), mycat.Latitude(mask),...
-                    'Marker',event_marker_types(i+1),...
-                    'Color',cmapcolors(i+1,:),...
-                    'LineStyle','none',...
-                    'MarkerSize',ZG.ms6,...
-                    'Tag',['mapax_part' num2str(i)],...
-                    'DisplayName',dispname);
-                myline.ZData=-mycat.Depth(mask);
-                %}
             end
             if ~washeld; hold(ax,'off'); end
         end
@@ -869,7 +829,6 @@ classdef MainInteractiveMap
                 end
                 h = mycat.subset(mask).plot(ax,...
                     'Tag',['mapax_part' num2str(i)]);
-                %h.ZData=-mycat.Depth(mask);
                 set(h,'Marker',event_marker_types(i),...
                     'MarkerSize',ZG.ms6,...
                     'Color',cmapcolors(i,:),...
@@ -1275,6 +1234,7 @@ function set_3d_view(src,~)
             zlim(ax,'auto');
             %axis(ax,'tight');
             zlabel(ax,'Depth [km]');
+            ax.ZDir='reverse';
             rotate3d(ax,'on'); %activate rotation tool
             hold off
             src.Label = '2-D view';
