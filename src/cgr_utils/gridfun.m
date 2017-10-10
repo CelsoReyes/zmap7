@@ -1,4 +1,4 @@
-function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fun, catalog, zgrid, selcrit, answidth )
+function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, catalog, zgrid, selcrit, answidth )
     %gridfun Applies a function to each grid point using events determined by selection criteria
     %
     %  VALUES = gridfun( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
@@ -63,7 +63,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fun, cata
     %
     
     % set flags for how to treat this data
-    multifun=iscell(fun);
+    multifun=iscell(infun);
     countEvents=nargout>1;
     getMaxDist=nargout>2;
     
@@ -102,82 +102,155 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fun, cata
         Zs=zgrid(:,3);
     end
     %}
+    drawnow
+    mytic = tic;    
+    
+    %wai = waitbar(0,' Please Wait ...  ');
+    %set(wai,'NumberTitle','off','Name',[zgrid.Name ' - percent done']);
+    
+    gridmsg = sprintf('Computing values across grid.            %d Total points', length(zgrid));
+    if ~iscell(infun)
+        gridttl = sprintf('Zmap: %s', func2str(infun));
+    else
+        gridttl = sprintf('Zmap: [%d functions]', numel(infun));
+    end
+    
+    h=msgbox({ 'Please wait.' , gridmsg },gridttl);
+    h.Tag='gridmessage';
+    set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
     watchon
     drawnow
-    mytic = tic;        
-    wai = waitbar(0,' Please Wait ...  ');
-    set(wai,'NumberTitle','off','Name',[zgrid.Name ' - percent done']);
-    for i=1:length(zgrid)
-        % is this point of interest?
-        if usemask && ~mask(i)
-            continue
-        end
         
-        x=Xs(i);
-        y=Ys(i);
-        
-        [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
-        
-        nEvents(i)=minicat.Count;
-        maxDist(i)=maxd;
-        if ~isempty(minicat)
-            maxMag(i)=max(minicat.Magnitude);
-        end
-        % are there enough events to do the calculation?
-        if minicat.Count < selcrit.requiredNumEvents
-            nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
-            continue 
-        end
-        
-        if ~multifun
-            returned_vals = fun(minicat);
-            values(i,1:numel(returned_vals))=returned_vals;
-        else
-            % assign to a matrix for now, because of possible parfor issues
-            for j=1:size(fun,1)
-                returned_vals=fun{j,1}(minicat);
-                tmpval(i,j)=returned_vals;
+    if multifun
+        watchoff
+        close(h)
+        error('cannot yet do Multifun');
+        %doMultifun(infun)
+    else
+        doSinglefun(infun)
+    end
+    
+    watchoff
+    if isvalid(h)
+        set(findobj(h,'Style','pushbutton'),'Visible','on');
+        set(findobj(h,'Tag','MessageBox'),'String',...
+        {'Calculation Complete.',...
+        sprintf('skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents)});
+    
+        % close the window after a while. this is probably a kludge.
+        for t=1:10
+            pause(.5);
+            if ~isvalid(h)
+                break;
             end
         end
-        wasEvaluated(i)=true;
-        waitbar(i/length(zgrid))
-        if ~mod(i,ceil(length(zgrid)/50))
-            drawnow
+        if isvalid(h)
+            close(h);
         end
     end
-    toc(mytic)
-    close(wai)
-    watchoff
-    drawnow
-    
-    if multifun
-        % put tmpval into a struct
-        for j=1:size(fun,1)
-            values.(fun{j,2})=reshaper(tmpval(:,j));
-        end
-    end
-    
-    fprintf('gridfun:skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents);
-    
     if answidth==1
         reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
         values=reshaper(values);
+    end
+    %{
+    function doMultifun()
+        parfor i=1:length(zgrid)
+            % is this point of interest?
+            if usemask && ~mask(i)
+                continue
+            end
+            
+            x=Xs(i);
+            y=Ys(i);
+            
+            [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+            
+            nEvents(i)=minicat.Count;
+            maxDist(i)=maxd;
+            if ~isempty(minicat)
+                maxMag(i)=max(minicat.Magnitude);
+            end
+            % are there enough events to do the calculation?
+            if minicat.Count < selcrit.requiredNumEvents
+                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                continue
+            end
+            
+            % assign to a matrix for now, because of possible parfor issues
+            for j=1:size(infun,1)
+                returned_vals=infun{j,1}(minicat);
+                tmpval(i,j)=returned_vals;
+            end
+            
+            wasEvaluated(i)=true;
+            %waitbar(i/length(zgrid))
+            if ~mod(i,ceil(length(zgrid)/50))
+                drawnow
+            end
+        end
+        toc(mytic)
+        %close(wai)
+        watchoff
+        drawnow
+        
+        % put tmpval into a struct
+        for j=1:size(infun,1)
+            values.(infun{j,2})=reshaper(tmpval(:,j));
+        end
+        
+    end %doMultifun
+    %}
+    function doSinglefun(myfun)
+        parfor i=1:length(zgrid)
+            fun=myfun; % local copy of function
+            % is this point of interest?
+            if usemask && ~mask(i)
+                continue
+            end
+            
+            x=Xs(i);
+            y=Ys(i);
+            
+            [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+            
+            nEvents(i)=minicat.Count;
+            maxDist(i)=maxd;
+            if ~isempty(minicat)
+                maxMag(i)=max(minicat.Magnitude);
+            end
+            % are there enough events to do the calculation?
+            if minicat.Count < selcrit.requiredNumEvents
+                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                continue
+            end
+            
+            returned_vals = fun(minicat);
+            values(i,:)=returned_vals;
+                
+            wasEvaluated(i)=true;
+            %waitbar(i/length(zgrid))
+            if ~mod(i,ceil(length(zgrid)/50))
+                drawnow
+            end
+        end
+        toc(mytic)
+        %close(wai)
     end
     
     % helper functions
     function check_provided_functions(multifun)
         
         if multifun
-            assert(size(fun,2)==2,...
+            assert(size(infun,2)==2,...
                 'if FUN is a cell, it should be Nx2, like {@fun1, ''field1'';...;@funN, ''fieldN''}');
-            for q=1:size(fun,1)
-                assert(isa(fun{q,1},'function_handle'),'element %d,1 of FUN isn''t a function handle',q);
-                assert(ischar(fun{q,2}),'element %d,2 of FUN isn''t a string',q);
+            for q=1:size(infun,1)
+                assert(isa(infun{q,1},'function_handle'),'element %d,1 of FUN isn''t a function handle',q);
+                assert(ischar(infun{q,2}),'element %d,2 of FUN isn''t a string',q);
             end
         else
-            assert(isa(fun,'function_handle'),...
+            assert(isa(infun,'function_handle'),...
                 'FUN should be a function handle that accepts a catalog and returns a value');
-            assert(nargin(fun)==1, 'FUN should take one input: a catalog')
+            assert(nargin(infun)==1, 'FUN should take one input: a catalog')
         end
     end
     

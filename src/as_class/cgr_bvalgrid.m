@@ -229,7 +229,7 @@ classdef cgr_bvalgrid < ZmapFunction
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
             end
-            figure(f)
+            figure(f);
             set(f,'name','B-values')
             delete(findobj(f,'Type','axes'));
             
@@ -238,7 +238,7 @@ classdef cgr_bvalgrid < ZmapFunction
             hold on
             obj.Grid.plot()
             ft=obj.ZG.features('borders');
-            newft=copyobj(ft,gca)
+            %newft=copyobj(ft,gca)
             %ft.plot(gca);
             colorbar
             title('B-values')

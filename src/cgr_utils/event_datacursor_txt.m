@@ -29,6 +29,7 @@ function txt = event_datacursor_txt(~,event_obj)
             
             txt=parse_quakes(event_obj);
     end
+    
 end
 
 %% These parsing routines should probably be assigned to the features themselves.

@@ -86,7 +86,7 @@ classdef(Abstract) ZmapFunction < handle
             if numel(varargin)==1 && iscell(varargin)
                 varargin=varargin{:};
             end
-            try
+            %try
                 % provides probable function call for CURRENT STATE of object
                 fcall=[class(obj),'('];
                 for i=1:numel(varargin)
@@ -96,12 +96,12 @@ classdef(Abstract) ZmapFunction < handle
                     fcall(end)=''; % replaces comma
                 end
                 fcall(end+1)=')';
-            catch ME
-                warning(ME.message)
-                fcall=['% could not describe call. next comment is up to parse error, then generic call' newline...
-                    '% ' fcall, newline...
-                    class(obj),'()'];
-            end
+            %catch ME
+                %warning(ME.message)
+                %fcall=['% could not describe call. next comment is up to parse error, then generic call' newline...
+                %    '% ' fcall, newline...
+                 %   class(obj),'()'];
+            %end
             obj.FunctionCall=fcall;
         end
             

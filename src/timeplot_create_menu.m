@@ -1,4 +1,4 @@
-function timeplot_create_menu()
+function timeplot_create_menu(mycat)
     ZG=ZmapGlobal.Data;
     add_menu_divider();
     ztoolsmenu = uimenu('Label','ZTools');
@@ -8,7 +8,7 @@ function timeplot_create_menu()
     
     
     uimenu(catmenu,'Label','Rename Catalog (this subset)',...
-        'callback',@cb_rename_cat);
+        'callback',{@cb_rename_cat,mycatName});
     
     uimenu(catmenu,'Label','Set as main catalog',...
         'callback',@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
@@ -220,10 +220,23 @@ function cb_keep(mysrc,myevt)
     zmap_update_displays();
 end
 
-function cb_rename_cat(~,~)
-    nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
-    if ~isempty(nm)
-        mycat.Name=nm{1};
-    end
+function cb_rename_cat(~,~,mycatName)
+    ZG=ZmapGlobal.Data;
+    isGlobalCat = isprop(ZG,mycatName);
+    if isGlobalCat
+        myname=ZG.(mycatName).Name;
+        nm=inputdlg('Catalog Name:','Rename',1,{myname});
+        if ~isempty(nm)
+            ZG.(mycatName).Name=nm{1};
     zmap_update_displays();
+        end
+    else
+        nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
+        if ~isempty(nm)
+            mycat.Name=nm{1};
+    zmap_update_displays();
+        end
+    end
+        
+        
 end
