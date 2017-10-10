@@ -103,6 +103,23 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     %}
     drawnow
+    
+    % start parallel pool if necessary, but warn user!
+    try
+        p=gcp('nocreate');
+        if isempty(p)
+            h=msgbox('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
+            set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
+            drawnow;
+            parpool();
+            close(h);
+        end
+    catch
+        if isvalid(h)
+            close(h)
+        end
+    end
+    
     mytic = tic;    
     
     %wai = waitbar(0,' Please Wait ...  ');
@@ -117,20 +134,20 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     h=msgbox({ 'Please wait.' , gridmsg },gridttl);
     h.Tag='gridmessage';
-    set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
-    watchon
-    drawnow
+    watchon;
+    drawnow;
         
     if multifun
-        watchoff
-        close(h)
-        error('cannot yet do Multifun');
+        watchoff;
+        close(h);
+        error('Unimplmeneted. Cannot yet do Multifun');
         %doMultifun(infun)
     else
-        doSinglefun(infun)
+        doSinglefun(infun);
     end
     
-    watchoff
+    toc(mytic)
+    watchoff;
     if isvalid(h)
         set(findobj(h,'Style','pushbutton'),'Visible','on');
         set(findobj(h,'Tag','MessageBox'),'String',...
@@ -147,6 +164,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         if isvalid(h)
             close(h);
         end
+        
     end
     if answidth==1
         reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
@@ -233,7 +251,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 drawnow
             end
         end
-        toc(mytic)
         %close(wai)
     end
     

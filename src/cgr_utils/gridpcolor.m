@@ -29,11 +29,11 @@ function h=gridpcolor(ax,xs, ys, values, mask, name)
     end
     values(end+1,:)=nan;
     values(:,end+1)=nan;
-    whos xlist ylist values
-    hold(ax,'on')
+    % whos xlist ylist values
+    hold(ax,'on');
     h=pcolor(ax,xlist, ylist, values);
     %if ~isempty('name')
-    set(h,'DisplayName',name)
+    set(h,'DisplayName',name);
     %end
     if INCLUDENUMBERS
         for m=1:numel(ys) %row
