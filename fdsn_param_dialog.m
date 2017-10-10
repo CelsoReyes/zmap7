@@ -276,6 +276,14 @@ try
     set(hObject,'backgroundcolor',[0.95 1.0 0.95]);
     set(hObject,'Value',datenum(d));
 catch
+    d = str2double(get(hObject,'String'));
+    if d >= 1800 && d < 3000
+        %treat as year
+        set(hObject,'String',[get(hObject,'String'), '-01-01']);
+        starttime_Callback(hObject, eventdata, handles);
+        return
+    end
+    
     set(hObject,'backgroundcolor',[1.0 0.95 0.95]);
     set(hObject,'Value',nan);
 end
@@ -306,6 +314,13 @@ try
     set(hObject,'backgroundcolor',[0.95 1.0 0.95]);
     set(hObject,'Value',datenum(d));
 catch
+    d = str2double(get(hObject,'String'));
+    if d >= 1800 && d < 3000
+        %treat as year
+        set(hObject,'String',[get(hObject,'String'), '-01-01']);
+        endtime_Callback(hObject, eventdata, handles);
+        return
+    end
     set(hObject,'backgroundcolor',[1.0 0.95 0.95]);
     set(hObject,'Value',nan);
 end
@@ -631,7 +646,7 @@ function [optlist] = add_datetime(handles, optlist, label)
     val = get(handles.(label),'Value');
     if ~isempty(val) && ~isnan(val)
         val=datestr(val,'yyyy-mm-dd hh:MM:SS');
-        val(val==' ') = 'T'
+        val(val==' ') = 'T';
         optlist = [optlist, {label, val}];
     end
     
