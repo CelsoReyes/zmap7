@@ -131,7 +131,6 @@ datacenter_details(1).serviceURLs.eventService = '';
 hObject.UserData = datacenter_details;
 currprovider = datacenter_details(hObject.Value);
 set(hObject,'string',{datacenter_details.name});    
-zmap_message_center.set_info('Importing FDSN data','First choose a data provider, then specify the desired constraints.');
 
     
 
@@ -302,8 +301,30 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 hObject.Value = nan;
+hObject.ButtonDownFcn=@cal_callback
 
+function cal_callback(hObject, eventdata)
+    try 
+        if ~isempty(hObject.String)
+            d=datenum(hObject.String);
+        else
+            d=now;
+        end
+    catch
+        d=now;
+    end
+    hObject.Value=d;
+    uicalendar('DestinationUI', {hObject, 'String'},...
+        'WindowStyle','Modal',...
+        'OutputDateFormat','yyyy-mm-dd','InitDate',d);
+    if ~isempty(hObject.String)
+        hObject.Value=datenum(hObject.String,'yyyy-mm-dd');
+    else
+        hObject.Value=d;
+        hObject.String=datestr(d,'yyyy-mm-dd');
+    end
 
+    
 function endtime_Callback(hObject, eventdata, handles)
 % hObject    handle to endtime (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -325,6 +346,7 @@ catch
     set(hObject,'Value',nan);
 end
 
+    
 % --- Executes during object creation, after setting all properties.
 function endtime_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to endtime (see GCBO)
@@ -337,6 +359,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
  hObject.Value = nan;
+hObject.ButtonDownFcn=@cal_callback
 
 
 function mindepth_Callback(hObject, eventdata, handles)
@@ -590,7 +613,15 @@ end
     set(handles.fdsn_import_dialog,'Visible','off');
     drawnow;
     % FETCH THE DATA
+    if ~iscell(queryset)
+        h=errordlg('Incomplete Request: You must first choose some filter constraints', ...
+        ['Error:', get(get(gco,'Parent'),'Name')],'modal');
+        waitfor(h)
+        set(handles.fdsn_import_dialog,'Visible','on');
+        return
+    end
     watchon;
+    whos queryset
     tmp=import_fdsn_event(1, queryset{:});
     watchoff;
     
@@ -618,7 +649,11 @@ end
     h=zmap_message_center();
     h.update_catalog()%;
     zmap_update_displays();
-    memorize_recall_catalog();
+    
+    if isempty(ZG.memorized_catalogs)
+        memorize_recall_catalog();
+    end
+    
     % close(hObject.Parent); % or set Visibility to 'off' ?
 
 function [val] = getvalue(handles, label)

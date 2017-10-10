@@ -77,7 +77,7 @@ classdef zmap_message_center < handle
         end
         
         function clear_message()
-            
+            close(findall(0,'Tag','msginfo'));
             % DO NOTHING
         end
         
