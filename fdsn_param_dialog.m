@@ -301,7 +301,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 hObject.Value = nan;
-hObject.ButtonDownFcn=@cal_callback
+%hObject.ButtonDownFcn=@cal_callback
 
 function cal_callback(hObject, eventdata)
     try 
@@ -359,7 +359,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
  hObject.Value = nan;
-hObject.ButtonDownFcn=@cal_callback
+% hObject.ButtonDownFcn=@cal_callback
 
 
 function mindepth_Callback(hObject, eventdata, handles)
