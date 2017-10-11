@@ -147,9 +147,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     else
         doSinglefun(infun);
     end
-    
     toc(mytic)
-    watchoff;
+    watchoff(h);
     if isvalid(h)
         set(findobj(h,'Style','pushbutton'),'Visible','on');
         set(findobj(h,'Tag','MessageBox'),'String',...
