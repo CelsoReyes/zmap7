@@ -1,16 +1,14 @@
-function mycat = catalog_overview(mycat)
+function catalog_overview(catname)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
     
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
     
+    ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
-    
-    if ~isa(mycat,'ZmapCatalog')
-        warning('catalog_overview should be passed a catalog')
-        mycat = ZmapCatalog(mycat);
-    end
+
+    mycat=ZG.(catname);
     
     %global file1 tim1 tim2 minma2 maxma2 minde maxde 
     %global maxdep maxma mindep minti maxti
@@ -45,7 +43,7 @@ function mycat = catalog_overview(mycat)
     zmap_message_center.set_message('Message',str);
     figure(fignum);
     
-    %uiwait(fignum)
+    uiwait(fignum)
     
     function fignum = create_dialog()
         % create_dialog - creates the dialog box
@@ -272,6 +270,7 @@ function mycat = catalog_overview(mycat)
     function go_callback(src, ~)
         %TODO remove all the side-effects.  store relevent data somewhere specific
         %filter the catalog, then return
+        disp(mycat)
         ZG = ZmapGlobal.Data;
         myparent=get(src,'Parent');
         
@@ -293,9 +292,6 @@ function mycat = catalog_overview(mycat)
         mycat.Name = h.String;
         %h = findall(myparent,'Tag','mapview_binlen_field');
         %ZG.bin_dur = days(h.Value);
-        if ~isa(mycat,'ZmapCatalog')
-            mycat = ZmapCatalog(mycat);
-        end
         
         % following code originally from sele_sub.m
         %    Create  reduced (in time and magnitude) catalogues "primeCatalog" and "newcat"
@@ -327,15 +323,16 @@ function mycat = catalog_overview(mycat)
         ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
         
         mycat.sort('Date');
-       
+        ZG.(catname)=mycat;
         zmap_message_center.update_catalog();
-        zmap_update_displays();
+        %zmap_update_displays();
         
         close(main_dialog_figure('handle'));
         % changes in bin length go to global 
     end
     
 function callback_update_catalog_name(src,~)
+    disp('in name callback')
     % if field should respond somehow to changes, do it here
 end
 

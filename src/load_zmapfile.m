@@ -73,7 +73,7 @@ function load_zmapfile()%
     setUpDefaultValues(ZG.primeCatalog);
     
     zmap_message_center.update_catalog();
-    replaceMainCatalog(catalog_overview(ZG.primeCatalog));
+    catalog_overview('primeCatalog');
 
     if isempty(ZG.memorized_catalogs)
         memorize_recall_catalog();

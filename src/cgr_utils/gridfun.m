@@ -34,6 +34,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     %  [VALUES, NEVENTS] = gridfun(...) will also return the number of events used for each point.
     %  Not-evaluated points would have a value of zero.
     %
+    %  [VALUES, NEVENTS, MAXDIST, MAXMAG, WASEVALUATED ] = gridfun(...)
+    %
     %
     %  FUN can also be a cell of {funHandle, fieldname;...} in which case each function in the cell
     %  will be run against the selection of events, with the results returned as a single struct. 
@@ -140,7 +142,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     if multifun
         watchoff;
         close(h);
-        error('Unimplmeneted. Cannot yet do Multifun');
+        error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
     else
         doSinglefun(infun);

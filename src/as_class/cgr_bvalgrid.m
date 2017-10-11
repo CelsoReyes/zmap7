@@ -18,8 +18,8 @@ classdef cgr_bvalgrid < ZmapFunction
         OperatingCatalog={'primeCatalog'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
         ModifiedCatalog='newt2'; %name of catalog changed by this function
         
-        dx = .2 %1.00;
-        dy = .5 % 1.00 ;
+        dx = ZmapGlobal.Data.gridopt.dx;
+        dy = ZmapGlobal.Data.gridopt.dy;
         ni = 100;
         ra = ZmapGlobal.Data.ra;
         Nmin = 50;
@@ -234,12 +234,11 @@ classdef cgr_bvalgrid < ZmapFunction
             delete(findobj(f,'Type','axes'));
             
             obj.Grid.pcolor([],obj.Result.values.b_value,'B-values');
-            shading(obj.ZG.shading_style)
+            shading(obj.ZG.shading_style);
             hold on
-            obj.Grid.plot()
+            obj.Grid.plot();
             ft=obj.ZG.features('borders');
-            %newft=copyobj(ft,gca)
-            %ft.plot(gca);
+            copyobj(ft,gca);
             colorbar
             title('B-values')
             xlabel('Longitude')

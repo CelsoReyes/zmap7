@@ -103,6 +103,7 @@ classdef ZmapData < handle
             'dz',1,'dz_units','km',...
             'GridEntireArea',false,...
             'SaveGrid',false,'LoadGrid',false,'CreateGrid',true); % options used for creating a grid
+        GridSelector;% criteria used to select events at a grid point
         selection_shape=ShapeSelection();
         debug='on'; % makes special menus visible
     end

@@ -391,7 +391,9 @@ classdef ShapeSelection
             
             uimenu(submenu,'Label','Display Shape Outline','Checked','on','Callback',@cb_outlinetoggle);
             uimenu(submenu,'Label','Apply grid','Callback',@cb_applygrid);
-            uimenu(submenu,'Label','Change grid parameters','Callback',@(~,~) error('unimplemented'));
+            uimenu(submenu,'Label','Change grid parameters','Callback',@(~,~)cb_changegridopts);
+            uimenu(submenu,'Label','Create Auto-Grid','Callback',@(~,~)cb_autogrid);
+            uimenu(submenu,'Label','Create Auto-Radius','Callback',@(~,~)cb_autoradius);
             % % menu items that change the main catalog % %
             if strcmp(ZGshape.Type,'unassigned')
                 isenabled='off';
@@ -663,4 +665,37 @@ function cb_selectp(src,~,in_or_out)
     timeplot(ZG.newt2);
     
 end
+function cb_autogrid(~,~)
+    ZG=ZmapGlobal.Data;
+    [ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);
+end
+
+function cb_autoradius(~,~)
+    ZG=ZmapGlobal.Data;
+    minNum=ZG.ni;
+    reach=1.5;
+    pct=75; 
+    prompt={'Required Number of Events:', ...
+        'Percentile:',...
+        'reach:'};
+    defans={num2str(minNum), num2str(pct), num2str(reach)};
+    nn= inputdlg(prompt,'automatic radius' ,1,defans);
+    if isempty(nn)
+        beep;
+        return
+    end
+    minNum=str2double(defans{1});
+    pct=str2double(defans{2});
+    reach=str2double(defans{3});
     
+    [r, evselch] = autoradius(ZG.primeCatalog, ZG.Grid, minNum, pct, reach);
+    ZG.ra=r;
+    ZG.ni=minNum;
+    ZG.GridSelector=evselch;
+end
+
+function cb_changegridopts(~,~)
+    error('unimplemented')
+    ZG=ZmapGlobal.Data;
+    GridParameterChoice();
+end

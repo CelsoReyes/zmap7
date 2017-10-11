@@ -32,7 +32,9 @@ classdef ZmapCatalog < handle
             % number of events
             propval = numel(obj.Longitude);
         end
-        
+        %function set.Name(obj,value)
+        %    obj.Name=value; %only here for debugging
+        %end
         
         function out = get.DateSpan(obj)
             % dspan = obj.DateSpan  returns difference between min & max dates
@@ -510,7 +512,7 @@ classdef ZmapCatalog < handle
             
             % make sure the required selection fields exist
             if ~isfield(selcrit,'useNumNearbyEvents')
-                selcrit.useNumNearbyEvents=isfield(s,'numNearbyEvents');
+                selcrit.useNumNearbyEvents=isfield(selcrit,'numNearbyEvents');
             end
             if ~isfield(selcrit,'useEventsInRadius')
                 selcrit.useEventsInRadius=isfield(selcrit,'radius_km');

@@ -86,7 +86,7 @@ function loadasci(da,sa)
                 ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 
                 close;
-                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
+                catalog_overview('primeCatalog');
                 setup
             else
                 close, setup
@@ -142,7 +142,7 @@ function loadasci(da,sa)
                 
                 close;
                 
-                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
+                catalog_overview('primeCatalog');
                 setup
             else
                 close

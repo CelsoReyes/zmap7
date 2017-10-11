@@ -301,28 +301,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 hObject.Value = nan;
-%hObject.ButtonDownFcn=@cal_callback
-
-function cal_callback(hObject, eventdata)
-    try 
-        if ~isempty(hObject.String)
-            d=datenum(hObject.String);
-        else
-            d=now;
-        end
-    catch
-        d=now;
-    end
-    hObject.Value=d;
-    uicalendar('DestinationUI', {hObject, 'String'},...
-        'WindowStyle','Modal',...
-        'OutputDateFormat','yyyy-mm-dd','InitDate',d);
-    if ~isempty(hObject.String)
-        hObject.Value=datenum(hObject.String,'yyyy-mm-dd');
-    else
-        hObject.Value=d;
-        hObject.String=datestr(d,'yyyy-mm-dd');
-    end
 
     
 function endtime_Callback(hObject, eventdata, handles)
@@ -359,7 +337,6 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
  hObject.Value = nan;
-% hObject.ButtonDownFcn=@cal_callback
 
 
 function mindepth_Callback(hObject, eventdata, handles)
@@ -632,6 +609,7 @@ end
     else
         ZG.primeCatalog=tmp;
     end
+    ZG.primeCatalog.sort('Date')
     % name it
     
     provider_details=handles.data_provider.UserData(handles.data_provider.Value);

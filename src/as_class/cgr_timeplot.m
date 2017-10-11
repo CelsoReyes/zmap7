@@ -514,13 +514,13 @@ function timeplot(mycat, nosort)
     
     
     function cut_tmd_callback(~,~)
-        ZG.newt2 = catalog_overview(ZG.newt2);
+        catalog_overview('newt2');
         timeplot(ZG.newt2)
     end
     
     function cursor_timecut_callback(~,~)
         % will change ZG.newt2
-        [tt1,tt2]=timesel(4);
+        [tt1,tt2]=timesel('cum');
         ZG.newt2=ZG.newt2.subset(ZG.newt2.Date>=tt1&ZG.newt2.Date<=tt2);
         timeplot(ZG.newt2);
     end

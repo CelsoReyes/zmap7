@@ -321,7 +321,7 @@ classdef MainInteractiveMap
 
             function cb_editrange(~,~)
                 ZG=ZmapGlobal.Data;
-                replaceMainCatalog(catalog_overview(ZG.primeCatalog));
+                catalog_overview('primeCatalog');
                 zmap_update_displays();
             end
             
@@ -355,7 +355,7 @@ classdef MainInteractiveMap
                 elseif length(ZG.primeCatalog(1,:))>=9
                     ZG.primeCatalog(:,decyr_idx) = decyear(ZG.primeCatalog(:,[3:5 8 9]));
                 end
-                ZG.primeCatalog=catalog_overview(ZG.primeCatalog);
+                catalog_overview('primeCatalog');
             end
             function cb_combinecatalogs(~,~)
                 ZG=ZmapGlobal.Data;
@@ -379,7 +379,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
-                'Callback','stri = ''Polygon''; ZG.newt2 = ZG.primeCatalog; ZG.newcat = ZG.primeCatalog; timeplot(ZG.newt2)');
+                'Callback',@(s,e)analyze_time_series_cb);
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
@@ -1264,4 +1264,12 @@ function info_summary_callback(summarytext)
     p(4)=p(4)+10;
     f.Position=p;
     f.Visible='on';
+end
+
+function analyze_time_series_cb(s,e)
+    %stri = 'Polygon';
+    ZG=ZmapGlobal.Data;
+    ZG.newt2 = ZG.primeCatalog; 
+    ZG.newcat = ZG.primeCatalog; 
+    timeplot('newt2');
 end

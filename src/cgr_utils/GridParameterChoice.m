@@ -53,6 +53,7 @@ classdef GridParameterChoice < handle
         function out=get.LoadGrid(obj)
             out = obj.ubg2.SelectedObject==obj.hLoadGrid;
         end
+
         function out=get.CreateGrid(obj)
             out = obj.ubg2.SelectedObject==obj.hCreateGrid;
         end

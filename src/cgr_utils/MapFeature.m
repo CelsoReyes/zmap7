@@ -73,6 +73,17 @@ classdef MapFeature < handle
             %obj.Value = load_fn();
         end
         
+        function obj=copyobj(orig,AX)
+            % copyobj copies a feature into a specified axes
+            % feature.copyobj(AX) where AX is the destination axes
+            %
+            % obj=feature.copyobj(...) returns a handle to the copied Mapfeature.
+            %
+            % see also copyobj
+            obj=MapFeature(orig.Name,orig.Loadfn,orig.Savefn,orig.PlottingDefaults);
+            obj.Value=orig.Value;
+            obj.plot(AX);
+        end
         function h =get.Handle(obj)
             % get.Handle get the handle to this feature's layer
             % if this layer hasn't been plotted yet, or has been deleted, then
@@ -177,7 +188,11 @@ classdef MapFeature < handle
                         obj.Value.Depth=obj.Value.Depth(:);
                     end
                     if any(nm)
-                        obj.Value.Names={data.(fn{nm})};
+                        if iscell(data.(fn{nm}))
+                            obj.Value.Names=data.(fn{nm});
+                        else
+                            obj.Value.Names={data.(fn{nm})};
+                        end
                         obj.Value.Names=obj.Value.Names(:);
                     end
                     
