@@ -19,6 +19,7 @@ function [r, evsel] = autoradius(catalog, zgrid, minNum, pct, reach)
     % see also ZmapGrid, ShapeSelection
     
     % TODO: this could be tweaked to return answers based on overlap, too
+   
     
     assert(isa(zgrid,'ZmapGrid'),'zgrid must be a ZmapGrid');
     assert(isa(catalog,'ZmapCatalog'),'catalog must be a ZmapCatalog');

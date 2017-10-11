@@ -674,7 +674,7 @@ function cb_autoradius(~,~)
     ZG=ZmapGlobal.Data;
     minNum=ZG.ni;
     reach=1.5;
-    pct=75; 
+    pct=50; 
     prompt={'Required Number of Events:', ...
         'Percentile:',...
         'reach:'};
@@ -684,9 +684,9 @@ function cb_autoradius(~,~)
         beep;
         return
     end
-    minNum=str2double(defans{1});
-    pct=str2double(defans{2});
-    reach=str2double(defans{3});
+    minNum=str2double(nn{1});
+    pct=str2double(nn{2});
+    reach=str2double(nn{3});
     
     [r, evselch] = autoradius(ZG.primeCatalog, ZG.Grid, minNum, pct, reach);
     ZG.ra=r;

@@ -20,7 +20,7 @@ classdef cgr_bvalgrid < ZmapFunction
         
         dx = ZmapGlobal.Data.gridopt.dx;
         dy = ZmapGlobal.Data.gridopt.dy;
-        ni = 100;
+        ni = ZmapGlobal.Data.ni;
         ra = ZmapGlobal.Data.ra;
         Nmin = 50;
         fMcFix=1.0; %2.2
@@ -29,10 +29,10 @@ classdef cgr_bvalgrid < ZmapFunction
         fMccorr = 0.2; % magnitude correction
         fBinning = 0.1; % magnitude bins
         EventSelector;
-        gridOpts;
+        gridOpts=ZmapGlobal.Data.gridopt;
         %bUseNiEvents= true;
         mc_choice
-        Grid % actual grid[X Y;...], created from gridOpts
+        Grid=ZmapGlobal.Data.Grid % actual grid[X Y;...], created from gridOpts
         %xvect %valid x values for grid
         %yvect %valid y values for grid
     end
@@ -89,7 +89,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
-                zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
+                %zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
                 zdlg.AddEventSelectionParameters('EventSelector',[], obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
@@ -117,7 +117,7 @@ classdef cgr_bvalgrid < ZmapFunction
             obj.fMccorr=res.fMccorr;
             obj.ZG.inb1=res.mc_choice;
             obj.EventSelector=res.EventSelector;
-            obj.gridOpts=res.gridOpts;
+            %obj.gridOpts=res.gridOpts;
             obj.useBootstrap=res.useBootstrap;
         end
         

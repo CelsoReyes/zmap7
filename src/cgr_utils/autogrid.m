@@ -2,12 +2,12 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     % AUTOGRID automatically define grid parameters based on catalog
     % returns a ZmapGrid, 
     %
-    % zmg = AUTOGRID(catalog) calculate a ZmapGrid from a ZmapCatalog
+    % zgrid = AUTOGRID(catalog) calculate a ZmapGrid from a ZmapCatalog
     %
-    % [zmg, gpc] = AUTOGRID(...) additionally, provide a GridParameterChoice
+    % [zgrid, gpc] = AUTOGRID(...) additionally, provide a GridParameterChoice
     % styled struct.
     %
-    % [zmg, gpc] = AUTOGRID(catalog, dohist, plotOnMap) show a 2-d histogram of
+    % [zgrid, gpc] = AUTOGRID(catalog, dohist, plotOnMap) show a 2-d histogram of
     % events if dohist is true, and plot the grid dots on the main map if plotOnMap
     % is true.
     %
@@ -21,15 +21,46 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
    
     % use 2-d histogram to automatically determine an appropriate grid coverage
     % for the catalog
-    [~,XEDGES,YEDGES] = histcounts2(...
-        catalog.Longitude,...
-        catalog.Latitude,...
-        'BinMethod','fd'); % using freedman-Diaconis rule to determine bins
-    
-    % create a grid (on bin centers!)
-    zmg=ZmapGrid('autogrid',XEDGES(1:end-1)-diff(XEDGES(1:2))/2,...
-        YEDGES(1:end-1)-diff(YEDGES(1:2))/2,'deg');
-    
+        [N,XEDGES,YEDGES] = histcounts2(...
+            catalog.Longitude,...
+            catalog.Latitude,...
+            'BinMethod','fd'); % using freedman-Diaconis rule to determine bins
+        
+        MAGICX=50;
+        MAGICY=50;
+        DOAGAIN=median(max(N,[],1))>MAGICX || median(Max(N,[],2))>MAGICY;
+        prevNx=numel(XEDGES);
+        prevNy=numel(YEDGES);
+        while DOAGAIN
+            DOAGAIN=false;
+            medmaxNx=median(max(N,[],1))
+            medmaxNy=median(max(N,[],2))
+            if medmaxNx>MAGICX || medmaxNy>MAGICY
+                prevNx=numel(XEDGES);
+                nxEDGES=ceil(prevNx*1.5)
+                XEDGES=linspace(XEDGES(1),XEDGES(end),nxEDGES);
+                prevNy=numel(YEDGES);
+                nyEDGES=ceil(prevNy*1.5)
+                YEDGES=linspace(YEDGES(1),YEDGES(end),nyEDGES);
+                DOAGAIN=true;
+            end
+            if ~DOAGAIN
+                break
+            end
+            [N,XEDGES,YEDGES] = histcounts2(...
+                catalog.Longitude,...
+                catalog.Latitude,...
+                XEDGES,YEDGES); % using freedman-Diaconis rule to determine bins
+        end
+        XEDGES=linspace(XEDGES(1),XEDGES(end),prevNx);
+        YEDGES=linspace(YEDGES(1),YEDGES(end),prevNy);
+        % create a grid (on bin centers!)
+        zgrid=ZmapGrid('autogrid',XEDGES(1:end-1)-diff(XEDGES(1:2))/2,...
+            YEDGES(1:end-1)-diff(YEDGES(1:2))/2,'deg');
+        zgrid.Dx=zgrid.Xvector(2)-zgrid.Xvector(1);
+        zgrid.Dy=zgrid.Yvector(2)-zgrid.Yvector(1);
+        
+        
     % create a structure equivelent to GridParameterChoice.toStruct()
     gpc=struct('dx',diff(XEDGES(1:2))/2,...
         'dy',diff(YEDGES(1:2))/2,...
@@ -43,7 +74,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         'CreateGrid',false); %should be done in conj. with GridParameterChoice
     
     
-    if exist('doplot','var') && dohist
+    if exist('dohist','var') && dohist
         figure('Name','Automatic Grid');
         histogram2(catalog.Longitude,catalog.Latitude,XEDGES,YEDGES);
         title('Event distribution')
@@ -52,6 +83,6 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         zlabel('# events')
     end
     if exist('plotOnMap','var') && plotOnMap
-        zmg.plot(MainInteractiveMap.mainAxes);
+        zgrid.plot(MainInteractiveMap.mainAxes);
     end
 end

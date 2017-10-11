@@ -188,7 +188,7 @@ classdef MapFeature < handle
                         obj.Value.Depth=obj.Value.Depth(:);
                     end
                     if any(nm)
-                        if iscell(data.(fn{nm}))
+                        if iscell([data.(fn{nm})])
                             obj.Value.Names=data.(fn{nm});
                         else
                             obj.Value.Names={data.(fn{nm})};
