@@ -412,7 +412,7 @@ classdef MapFeature < handle
             watchoff
             drawnow;
         end
-    end
+    end % methods
     
     methods(Access=protected)
         function val = getTrimmedData(obj)
@@ -452,8 +452,27 @@ classdef MapFeature < handle
             val.Depth(todel)=[];
         end
         
-    end
+    end %protected methods
     
+    methods(Static)
+        function foreach(features,funcname,varargin)
+            %REFERESHEACH run "refreshPlot" on a Map or array full of MapFeature
+            % REFRESHEACH(features) where features is either a map or array of MapFeature
+            if isa(features,'containers.Map')
+                k=features.keys;
+                for i=1:numel(k)
+                    ftr=features(k{i});
+                    ftr.(funcname)(varargin{:});
+                end
+            else
+                % treat as an array
+                for i=1:numel(features)
+                    ftr=features(i);
+                    ftr.(funcname)(varargin{:});
+                end
+            end
+        end
+    end %static methods
 end
 
 

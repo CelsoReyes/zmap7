@@ -169,6 +169,26 @@ Often the newer functions have different signatures, and shadowning produces som
   Depending on the paramters, it could show the error, do nothing, or show some alternate text.
 
 `figure_exists` provides a replacement for `figflag`
+*the above is severely outdated*
+
+## catalog / catalog views
+you load data into a `ZmapCatalog`.  This is kept in `ZmapData.primeCatalog` (used to be 'a')
+You filter it via `catalog_overview` , which yields `ZmapData.Views.primary` containing a `ZmapCatalogView`.   The `ZmapCatalogView` is the go-between between the catalog and the maps.  Changing the view ranges will leave the primary catalog intact.
+
+A `ZmapCatalogView` can be attached either to a globally accessible `ZmapCatalog` or `ZmapCatalogView`.  
+
+Layers within the plotting map are actually an array of `ZmapCatalogViews`, located in 
+`ZmapData.Views.Layers`.  Ranges in these views can be changed, and they will affect
+the data being displayed.  I would have liked to use `linkdata` to automatically update
+the maps, but it appears to get bogged down very quickly as it is used.
+
+When a polygon is created (circle or other shape), it can be used to further filter the
+`ZmapCatalogView`.  the working catalog (either newt2 or newcat, I don't remember which)
+is the current polygon applied to `ZmapData.Views.primary`
+
+To get a `ZmapCatalog` from a `ZmapCatalogView` using the `ZmapCatalogView.Catalog` function.
+
+## selections and grids
 
 # other general things to tackle project-wide
 * `lasterr` not recommended (88 results, 64 files) since 2009b

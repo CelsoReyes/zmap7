@@ -11,7 +11,7 @@ classdef ZmapCatalogView
     %
     % ex
     %   zcv = ZmapCatalogView('primeCatalog') % creates a view into ZmapGlobal.Data.primeCatalog
-    %   zcv.linkedplot(gca); %  plot onto current axis
+    %   zcv.linkedplot(gca,'zcv'); %  plot onto current axis
     %   zcv.MagnitudeRange=[2 3]; %set filter to show mags >=2 and <=3.  map updates automatically*
     %
     %   minicat = zcv.Catalog(); %get the catalog that matches the filters
@@ -33,6 +33,7 @@ classdef ZmapCatalogView
     
     properties
         name % name of catalog variable, as seen in ZmapData
+        ViewName; % name given to this view for plotting
         DateRange % [mindate maxdate] as dateime
         MagnitudeRange % [minmag maxmag]
         LatitudeRange % [minlat maxlat]
@@ -50,6 +51,7 @@ classdef ZmapCatalogView
         ValidProps = {'Marker';'MarkerSize';'MarkerFaceColor';'MarkerEdgeColor';'DisplayName';'Tag'};
     end
     properties(Dependent)
+        Name % catalog name, (augmented by view?)
         Date % Date for each event in this view
         Latitude % Latitude for each event in this view
         Longitude % Longitude for each event in this view
@@ -67,8 +69,22 @@ classdef ZmapCatalogView
     end
     
     methods
+        function n=get.Name(obj)
+            n=obj.ViewName;
+        end
+        function obj=set.Name(obj, name)
+            obj.ViewName=name;
+        end
         function c= get.mycat(obj)
-            c= ZmapGlobal.Data.(obj.name);
+            names=strsplit(obj.name,'.');
+            
+            c= ZmapGlobal.Data.(names{1});
+            names(1)=[];
+            while ~isempty(names)
+                c=c.(names{1});
+                names(1)=[];
+            end
+            %c= ZmapGlobal.Data.(obj.name);
         end
         
         function obj=ZmapCatalogView(catname,varargin)
@@ -78,7 +94,9 @@ classdef ZmapCatalogView
             %
             % see properties for valid arguments
             obj.name=catname;
+            obj.ViewName=obj.mycat.Name;
             obj=obj.reset();
+            
             
             %these are allowed to be created with the view
             while ~isempty(varargin)
@@ -102,7 +120,7 @@ classdef ZmapCatalogView
             obj.LatitudeRange=[min(obj.mycat.Latitude) max(obj.mycat.Latitude)];
             obj.LongitudeRange=[min(obj.mycat.Longitude) max(obj.mycat.Longitude)];
             obj.DepthRange=[min(obj.mycat.Depth) max(obj.mycat.Depth)];
-            obj=obj.RemovePolygon();
+            obj=obj.PolygonRemove();
         end
         
         function f = get.filter(obj)
@@ -218,15 +236,22 @@ classdef ZmapCatalogView
             % return number of events represented by this view
             cnt=sum(obj.filter);
         end
-        function linkedplot(obj,ax, varargin)
-            % plot this on an axes, linking the data so that range changes are reflected on the plot
+        
+        %% plotting routines
+        function linkedplot(obj,ax, mysource, varargin)
+            % LINKEDPLOT plot this on an axes, linking the data so that range changes are reflected on the plot
+            % linkedplot(obj,ax, mysource, varargin)
+            % ax is the valid axis, and will be held before plotting
+            % mysource is a string that evaluates into this object for linking
+            % vararign are additional aprameters passed tot he set plot
             %
+            % data is NOT automatically linked. use linkdata on to turn on the linking
             % see also linkdata
             
             % build up additional features
             v={};
-            s=inputname(1);
-            for i=1:numel(obj.ValidProps)
+            s=mysource;
+            for i=1:numel([obj.ValidProps])
                 prop = obj.ValidProps{i};
                 val = obj.(prop);
                 if ~isempty(val)
@@ -245,8 +270,105 @@ classdef ZmapCatalogView
                 'ZDataSource',[s '.Depth'], v{:}, varargin{:});
             hold(ax,logical2onoff(h));
             axes(ax)
-            linkdata on
+            %linkdata on
         end
+        
+        function h=plot(obj, ax, varargin)
+            % PLOT this catalog. It will plot on
+            % h=plot (obj,ax, varargin)
+            %
+            % see also refreshPlot
+
+            % build up additional features
+            v={};
+            for i=1:numel([obj.ValidProps])
+                prop = obj.ValidProps{i};
+                val = obj.(prop);
+                if ~isempty(val)
+                    v=[v,{prop,val}]; %#ok<AGROW>
+                end
+            end
+            %h=ishold(ax);
+            %hold(ax,'on');
+            p=plot(ax,0,0,'o');
+            set(p,...
+                'YData',obj.Latitude, ...
+                'XData',obj.Longitude,...
+                'Zdata', obj.Depth, ...
+                v{:}, varargin{:});
+            %hold(ax,logical2onoff(h));
+            axes(ax)
+            %linkdata on
+            %{
+            if has_toolbox('Mapping Toolbox') && ismap(ax)
+                h=obj.plotm(ax,varargin{:});
+                return
+            end
+            
+            hastag=find(strcmp('Tag',varargin),1,'last');
+            
+            if ~isempty(hastag)
+                mytag=varargin{hastag+1};
+            else
+                mytag=['catalog_',obj.mycat.Name];
+                varargin(end+1:end+2)={'Tag',mytag};
+            end
+            
+            % clear the existing layer
+            h = findobj(ax,'Tag',mytag);
+            if ~isempty(h)
+                delete(h);
+            end
+            
+            holdstatus = ishold(ax); 
+            hold(ax,'on');
+            
+            % val = obj.getTrimmedData();
+            h=plot(ax,nan,nan,'x');
+            set(h,'XData',obj.Longitude,'YData', obj.Latitude, 'ZData',obj.Depth);
+            set(h,varargin{:}); % if Tag is in varargin, it will override default tag
+            %h.ZData = obj.Depth;
+            hold(ax,logical2onoff(holdstatus));
+            %}
+        end
+        
+        
+        function h=plotm(obj,ax, varargin)
+            % plot this layer onto a map (Requires mapping toolbox)
+            % will delete layer if it exists
+            % note features will only plot the subset of features within the
+            % currently visible axes
+            %
+            % see also refreshPlot
+            
+            
+            if isempty(ax) || ~isvalid(ax) || ~ismap(ax)
+                error('Feature "%s" ->plot has no associated axis or is not a map',obj.mycat.Name);
+            end
+            
+            hastag=find(strcmp('Tag',varargin));
+            if ~isempty(hastag)
+                mytag=varargin{hastag}+1;
+            else
+                mytag=['catalog_',obj.mycat.Name];
+                varargin(end+1:end+2)={'Tag',mytag};
+            end
+            
+            h = findobj(ax,'Tag',mytag);
+            if ~isempty(h)
+                delete(h);
+            end
+            
+            holdstatus = ishold(ax); hold(ax,'on');
+            h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
+            set(h, 'ZData',obj.Depth);
+            set(ax,'ZDir','reverse');
+            daspectm('km');
+            hold(ax,logical2onoff(holdstatus));
+            
+        end
+       
+        %% in-out routines
         function c=get.Catalog(obj)
             % get the subset catalog represented by this view
             c=obj.mycat.subset(obj.filter);
@@ -259,10 +381,15 @@ classdef ZmapCatalogView
         end
         
         function disp(obj)
+            fprintf('  View Name: %s  [Cat Name: %s]',obj.Name, obj.mycat.Name);
+            % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
+            
             fprintf('      Count: %d events\n',obj.Count);
             fprintf('      Dates: %s to %s\n', char(obj.DateRange(1),'uuuu-MM-dd hh:mm:ss'),...
                  char(obj.DateRange(2),'uuuu-MM-dd hh:mm:ss'));
              magtypes =strjoin(unique(obj.mycat.MagnitudeType(obj.filter)),',');
+            disp('Filter ranges for this catalog view are set to:');
+            % actual catalog will have ranges inside and out
             fprintf(' Magnitudes: %.4f to %.4f  [%s]\n',...
                 obj.MagnitudeRange, magtypes);
             
@@ -274,6 +401,7 @@ classdef ZmapCatalogView
                 disp('     Polygon filtering in effect');
             end
         end
+        
         function tf = isempty(obj)
             tf=obj.Count==0;
         end

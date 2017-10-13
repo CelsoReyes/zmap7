@@ -52,7 +52,7 @@ classdef ZmapData < handle
         fontsz = FontSizeTracker;
         depth_divisions % plot each division with a different color/symbol
         magnitude_divisions % plot each division with a different color/symbol
-        time_divisions % plot each division with a different color/symbol
+        date_divisions % plot each division with a different color/symbol
         color_bg = [1 1 1] % was [cb1 cb2 cb3] axis background
         color_fg = [.9 .9 .9]% was [c1 c2 c3] figure backgorund
         ms6 = 6 % standard markersize %TODO change to a markersize class
@@ -106,6 +106,8 @@ classdef ZmapData < handle
         GridSelector;% criteria used to select events at a grid point
         selection_shape=ShapeSelection();
         debug='on'; % makes special menus visible
+        
+        Views=struct('primary',[],'selected',[],'layers',[]); % catalog views
     end
     properties(Dependent)
         wex %welcome window x (welcome_pos(1))

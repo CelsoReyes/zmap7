@@ -633,7 +633,10 @@ classdef ZmapCatalog < handle
         function disp(obj)
             disp(obj.summary('stats'));
         end
-        
+        function h=plot(obj,varargin)
+            error('use a ZmapCatalogView instead');
+        end
+        %{
         function h=plot(obj, ax, varargin)
             % plot this catalog. It will plot on
             %
@@ -672,6 +675,11 @@ classdef ZmapCatalog < handle
             if ~holdstatus; hold(ax,'off'); end
             
         end
+        %}
+        function h=plotm(obj,varargin)
+            error('use a ZmapCatalogView instead');
+        end
+        %{
         function h=plotm(obj,ax, varargin)
             % plot this layer onto a map (Requires mapping toolbox)
             % will delete layer if it exists
@@ -706,7 +714,7 @@ classdef ZmapCatalog < handle
             if ~holdstatus; hold(ax,'off'); end
             
         end
-       
+       %}
         function plotFocalMechanisms(obj,ax,color)
             % plot the focal mechanisms of a catalog (if they exist)
             

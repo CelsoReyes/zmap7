@@ -297,7 +297,7 @@ end
 
 function do_catalog_overview(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
-    catalog_overview('primeCatalog');
+    catalog_overview('primary');
     zmap_message_center.update_catalog();
 end
 

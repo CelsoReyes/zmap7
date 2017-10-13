@@ -11,19 +11,14 @@ classdef MainInteractiveMap
     end
     properties(Constant)
         axTag='mainmap_ax';
+        catview='prime';
     end
     
     methods
         function obj = MainInteractiveMap()
             obj.Features=ZmapGlobal.Data.features;
-            
-            k=obj.Features.keys;
-            for i=1:obj.Features.Count
-                f=obj.Features(k{i});
-                f.load();
-            end
+            MapFeature.foreach(obj.Features,'load');
             obj.initial_setup()
-            
         end
         
         function update(obj, opt)
@@ -33,26 +28,23 @@ classdef MainInteractiveMap
             
             ZG=ZmapGlobal.Data; %handle to globals;
             watchon;
-            %h=figureHandle();
             ax = MainInteractiveMap.mainAxes();
             if isempty(ax)
                 % we have to redraw the whole thing, instead.
                 obj.createFigure()
                 return
             end
-            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog);
-            xlim(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)]);
-            ylim(ax,[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)]);
+            MainInteractiveMap.plotEarthquakes(ZG.Views.primary);
+            xlim(ax , ZG.Views.primary.LongitudeRange);
+            ylim(ax , ZG.Views.primary.LatitudeRange);
             ax.FontSize=ZmapGlobal.Data.fontsz.s;
             axis(ax,'manual');
-            k=obj.Features.keys;
-            for i=1:numel(k)
-                ftr=obj.Features(k{i});
-                ftr.refreshPlot();
-            end
+            MapFeature.foreach(obj.Features,'refreshPlot');
+            
             obj.plotBigEarthquakes();
+            
             % bring selected events to front
-            uistack(findobj('DisplayName','Selected Events'),'top');
+            %uistack(findobj('DisplayName','Selected Events'),'top');
             
             tolegend=findobj(ax,'Type','line');
             tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
@@ -67,7 +59,7 @@ classdef MainInteractiveMap
             
             
             % make sure we're back in a 2-d view
-            title(ax,MainInteractiveMap.get_title(ZG.primeCatalog),'Interpreter','none');
+            title(ax,MainInteractiveMap.get_title(ZG.Views.primary),'Interpreter','none');
             view(ax,2); %reset to top-down view
             grid(ax,'on');
             zlabel(ax,'Depth [km]');
@@ -127,24 +119,23 @@ classdef MainInteractiveMap
                 title(ax, sprintf('No Events in Catalog :"%s"',ZG.primeCatalog.Name),'Interpreter','none');
                 return
             end
-            title(ax, MainInteractiveMap.get_title(ZG.primeCatalog),'FontWeight','normal',...
+            title(ax, MainInteractiveMap.get_title(ZG.Views.primary),'FontWeight','normal',...
                 ...%'FontSize',ZmapGlobal.Data.fontsz.m,...
                 'Color','k','Interpreter','none');
             if ~isempty(MainInteractiveMap.mainAxes())
                 % create the main earthquake axis
             end
-            disp('setting up main map:');
-            disp('preplotting catalog');
-            MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
+            if isempty(ZG.Views.primary)
+                ZG.Views.primary=ZmapCatalogView('primeCatalog');
+            end
+            %MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
+            MainInteractiveMap.plotEarthquakes(ZG.Views.primary)
             xlim(ax,'auto')
             ylim(ax,'auto');
             axis(ax,'manual');
             disp('     "      features');
-            k=obj.Features.keys;
-            for i=1:numel(k)
-                ftr=obj.Features(k{i});
-                ftr.plot(ax);
-            end
+            MapFeature.foreach(obj.Features,'plot',ax);
+            
             MainInteractiveMap.plotMainshocks(ZG.main);
             disp('     "      "big" earthquakes');
             MainInteractiveMap.plotBigEarthquakes();
@@ -158,14 +149,13 @@ classdef MainInteractiveMap
                 disp(ax.Children);
                 rethrow(ME);
             end
-            if strcmp(ZG.lock_aspect,'on')
+            if isOn(ZG.lock_aspect)
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
             grid(ax,ZG.mainmap_grid);
             align_supplimentary_legends(ax);
             disp('adding menus to main map')
             obj.create_all_menus(true);
-            disp('done')
             watchoff; drawnow;
         end
         
@@ -220,12 +210,8 @@ classdef MainInteractiveMap
             add_symbol_menu(MainInteractiveMap.axTag, mapoptionmenu, 'Map Symbols');
             
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
-            k=obj.Features.keys;
-            for i=1:numel(k)
-                ftr=obj.Features(k{i});
-                ftr.addToggleMenu(ovmenu);
-            end
-
+            MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu)
+            
             uimenu(ovmenu,'Label','Plot stations + station names',...
                 'Separator', 'on',...
                 'Callback',@(~,~)plotstations(MainInteractiveMap.mainAxes()));
@@ -243,8 +229,11 @@ classdef MainInteractiveMap
             
             for i=1:size(legend_types,1)
                 wrapped_leg = ['''' legend_types{i,2} ''''];
-                uimenu(lemenu,'Label',legend_types{i,1},...
+                m=uimenu(lemenu,'Label',legend_types{i,1},...
                     'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';zmap_update_displays();']);
+                if i==1
+                    m.Separator='on';
+                end
             end
             clear legend_types
             
@@ -321,7 +310,7 @@ classdef MainInteractiveMap
 
             function cb_editrange(~,~)
                 ZG=ZmapGlobal.Data;
-                catalog_overview('primeCatalog');
+                catalog_overview('primary');
                 zmap_update_displays();
             end
             
@@ -347,16 +336,9 @@ classdef MainInteractiveMap
             end
             
             function cb_reloadlast(~,~)
-                error('create this function from scratch!');
-                ZG=ZmapGlobal.Data;
-                load(lopa);
-                if ZG.primeCatalog.Countlength(ZG.primeCatalog(1,:))== 7
-                    ZG.primeCatalog.Date = datetime(ZG.primeCatalog.Year,ZG.primeCatalog.Month,ZG.primeCatalog.Day);
-                elseif length(ZG.primeCatalog(1,:))>=9
-                    ZG.primeCatalog(:,decyr_idx) = decyear(ZG.primeCatalog(:,[3:5 8 9]));
-                end
-                catalog_overview('primeCatalog');
+                error('Unimplemented create this function from scratch!');
             end
+            
             function cb_combinecatalogs(~,~)
                 ZG=ZmapGlobal.Data;
                 ZG.newcat=comcat(ZG.primeCatalog);
@@ -387,7 +369,6 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Create cross-section',...
                 'enable','off',...
                 'Callback',@(~,~)nlammap());
-            
             
             obj.create_histogram_menu(submenu);
             obj.create_mapping_rate_changes_menu(submenu);
@@ -533,28 +514,34 @@ classdef MainInteractiveMap
         end
         
         %% plot CATALOG layer
-        function plotEarthquakes(catalog, divs)
+        function plotEarthquakes(catview)
             disp(['MainInteractiveMap.plotEarthquakes :',ZmapGlobal.Data.mainmap_plotby]);
-            if ~exist('divs','var')
-                divs=[];
-            end
+            %linkdata off
+            set(MainInteractiveMap.mainAxes,'ColorOrderIndex',1);
             switch ZmapGlobal.Data.mainmap_plotby
                 
+                case {'date'}
+                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                    MainInteractiveMap.plotQuakesBySomething(catview,@(x)dateshift(x,'start','Day','nearest'),'Date');
+                    %MainInteractiveMap.plotQuakesByTime(catview,divs);
                 case {'tim','time'}
-                    %delete(extralegends);
-                    MainInteractiveMap.plotQuakesByTime(catalog,divs);
+                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                    MainInteractiveMap.plotQuakesBySomething(catview,@(x)dateshift(x,'start','Second','nearest'),'Date');
+                    %MainInteractiveMap.plotQuakesByTime(catview,divs);
                 case {'dep','depth'}
-                    %delete(extralegends);
-                    MainInteractiveMap.plotQuakesByDepth(catalog,divs);
+                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                    %MainInteractiveMap.plotQuakesByDepth(catview,divs);
+                    MainInteractiveMap.plotQuakesBySomething(catview,@(x)round(x,1),'Depth');
                 case {'mad','magdepth'}
-                    MainInteractiveMap.plotQuakesByMagAndDepth(catalog);
+                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                    MainInteractiveMap.plotQuakesByMagAndDepth(catview);
                 case {'mag','magnitude'}
-                    %delete(extralegends)
-                    MainInteractiveMap.plotQuakesByMagnitude(catalog,divs);
+                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                    %MainInteractiveMap.plotQuakesByMagnitude(catview,divs);
+                    MainInteractiveMap.plotQuakesBySomething(catview,@(x)round(x,1),'Magnitude');
                 otherwise
                     error('unanticipated legend type');
             end
-            
             ax = MainInteractiveMap.mainAxes();
             %set aspect ratio
             ZG = ZmapGlobal.Data; % handle to "globals"
@@ -563,120 +550,36 @@ classdef MainInteractiveMap
             end
             align_supplimentary_legends(ax);
             % TODO show subset also
+            %linkdata on;
         end
         
-        function plotQuakesByMagnitude(mycat, divs)
+        function plotQuakesBySomething(mycat, roundingfun, something)
             % magdivisions: magnitude split points
-            
-            % deletes existing event plots from the current axis
-            
-            global event_marker_types ZG
-            if isempty(event_marker_types)
-                event_marker_types='ooooooo'; %each division gets next type.
-            end
-            
-            if isempty(divs)
-                divs = linspace(min(mycat.Magnitude),max(mycat.Magnitude),4);
-                divs([1 4])=[]; % no need for min, no quakes greater than max...
-            end
-            
-            assert(numel(divs) < 8); % else, too many for our colormap.
-            
-            cmapcolors = colormap('lines');
-            cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
-            
-            
-            mask = mycat.Magnitude <= divs(1);
-            
-            ax = MainInteractiveMap.mainAxes();
-            clear_quake_plotinfo();
-            washeld = ishold(ax); hold(ax,'on');
-            
-            %
-            h = mycat.subset(mask).plot(ax,...
-                'Marker',event_marker_types(1),...
-                'Color',cmapcolors(1,:),...
-                'LineStyle','none',...
-                'MarkerSize',ZG.ms6,...
-                'Tag','mapax_part0');
-            h.DisplayName = sprintf('M <= %3.1f', divs(1));
-            
-            for i = 1 : numel(divs)
-                mask = mycat.Magnitude > divs(i);
-                if i < numel(divs)
-                    mask = mask & mycat.Magnitude <= divs(i+1);
-                end
-                
-                dispname = sprintf('M > %3.1f', divs(i));
-                h=mycat.subset(mask).plot(ax,...
-                    'Marker',event_marker_types(i+1),...
-                    'Color',cmapcolors(i+1,:),...
-                    'LineStyle','none',...
-                    'MarkerSize',ZG.ms6*(i+1),...
-                    'Tag',['mapax_part' num2str(i)],...
-                    'DisplayName',dispname);
-                
-            end
-            if ~washeld; hold(ax,'off');end
-        end
-        
-        function plotQuakesByDepth(mycat, divs)
-            % plotQuakesByDepth
-            % plotQuakesByDepth(catalog)
-            % plotQuakesByDepth(catalog, divisions)
-            %   divisions is a vector of depths (up to 7)
-            
-            % magdivisions: magnitude split points
-            global event_marker_types ZG
+            global event_marker_types
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
-            
+            ZG=ZmapGlobal.Data;
+            subviews=ZmapCatalogView('Views.primary');
+            divs=ZG.([lower(something) '_divisions']);
             if isempty(divs)
-                divs = linspace(min(mycat.Depth),max(mycat.Depth),4);
-                divs=round(divs,2);
-                divs([1 4])=[]; % no need for min, andno quakes greater than max...
+                divs = autosplit(mycat,  something, 'linear', 2, roundingfun); %could be count or linear
+                ZG.([lower(something) '_divisions'])=divs;
             end
-            
-            assert(numel(divs) < 8); % else, too many for our colormap.
-            
-            cmapcolors = [ 0    0.4470    0.7410;
-                0.8500    0.3250    0.0980;
-                0.9290    0.6940    0.1250;
-                0.4940    0.1840    0.5560;
-                0.4660    0.6740    0.1880;
-                0.3010    0.7450    0.9330;
-                0.6350    0.0780    0.1840]; % from the lines colormap
-            
-            mask = mycat.Depth <= divs(1);
-            
+            zViews=split_views(mycat , something, divs, 'mapax_part');
+            ZG.Views.layers=zViews;
             ax = MainInteractiveMap.mainAxes();
-            clear_quake_plotinfo();
-            washeld = ishold(ax); hold(ax,'on')
-            h = mycat.subset(mask).plot(ax,...
-                'Marker',event_marker_types(1),...
-                'Color',cmapcolors(1,:),...
-                'LineStyle','none',...
-                'MarkerSize',ZG.ms6,...
-                'Tag','mapax_part0');
-            h.DisplayName = sprintf('Z <= %.1f km', divs(1));
-            
-            for i = 1 : numel(divs)
-                mask = mycat.Depth > divs(i);
-                if i < numel(divs)
-                    mask = mask & mycat.Depth <= divs(i+1);
-                end
-                dispname = sprintf('Z > %.1f km', divs(i));
-                myline=mycat.subset(mask).plot(ax,...
-                    'Marker',event_marker_types(i+1),...
-                    'Color',cmapcolors(i+1,:),...
-                    'LineStyle','none',...
-                    'MarkerSize',ZG.ms6,...
-                    'Tag',['mapax_part' num2str(i)],...
-                    'DisplayName',dispname);
+            holdstate=HoldStatus(ax,'on');
+            for i=1:numel(zViews)
+                %myvarname=sprintf('ZmapGlobal.Data.Views.layers(%d)',i);
+                %ZmapGlobal.Data.Views.layers(i).linkedplot(ax,myvarname)
+                ZmapGlobal.Data.Views.layers(i).plot(ax,...
+                    'Marker',event_marker_types(i),...
+                    'MarkerSize',ZG.ms6);
             end
-            if ~washeld; hold(ax,'off'); end
+            holdstate.Undo();
         end
+        
         
         function plotQuakesByMagAndDepth(mycat)
             % colorized by depth, with size dictated by magnitude
@@ -703,8 +606,7 @@ classdef MainInteractiveMap
             
             % set all sizes by mag
             sm = mag2dotsize(mycat.Magnitude);
-            
-            washeld = ishold(ax); hold(ax,'on')
+            holdstate=HoldStatus(ax,'on');
             if isvalid(hquakes)
                 plund=findobj('Tag','mapax_part1_bg_nolegend');
                 set(plund, 'XData',mycat.Longitude,'YData',mycat.Latitude,'SizeData',sm*1.2);
@@ -725,8 +627,7 @@ classdef MainInteractiveMap
                 pl.DisplayName='Events by Mag & Depth';
                 pl.MarkerEdgeColor = 'flat';
             end
-            if ~washeld; hold(ax,'off'); end
-            %set(ax,'pos',[0.13 0.08 0.65 0.85]) %why?
+            holdstate.Undo();
             drawnow
             watchon;
             
@@ -775,68 +676,8 @@ classdef MainInteractiveMap
             end
             align_supplimentary_legends(ax);
             hold(magleg_ax,'off');
-            
         end
         
-        function plotQuakesByTime(mycat, divs)
-            global event_marker_types ZG
-            if isempty(event_marker_types)
-                event_marker_types='+++++++'; %each division gets next type.
-            end
-            if isnumeric(divs) && ~isempty(divs)
-                divs = linspace(min(mycat.Date),max(mycat.Date),divs);
-            elseif isa(divs,'datetime')
-                % do nothing...
-            elseif isa(divs,'duration')
-                %plot at intervals
-                divs = min(mycat.Date):divs:max(mycat.Date);
-            elseif isempty(divs)
-                divs = linspace(min(mycat.Date),max(mycat.Date),4);
-                divs([1])=[]; % no need for min, andno quakes greater than max...
-            end
-            
-            
-            % make sure the ends are accounted for
-            if any(mycat.Date < divs(1))
-                % first category is DD < timedivisions(1)
-                divs = [min(mycat.Date); divs(:)];
-            end
-            if any(mycat.Date > divs(end))
-                divs = [divs(:); max(mycat.Date)];
-            end
-            
-            assert(numel(divs) < 8); % else, too many for our colormap.
-            
-            cmapcolors = colormap('lines');
-            cmapcolors=cmapcolors(1:7,:); %after 7 it starts repeating
-            
-            ax = MainInteractiveMap.mainAxes();
-            clear_quake_plotinfo();
-            washeld=ishold(ax); hold(ax,'on');
-            for i=1:numel(divs)-1
-                if i == numel(divs)-1
-                    % inclusive of last value
-                    mask = divs(i) <= mycat.Date & mycat.Date <= divs(i+1);
-                    dispname = sprintf('%s <= t <= %s ',...
-                        char(divs(i),'uuuu-MM-dd hh:mm'),...
-                        char(divs(i+1),'uuuu-MM-dd hh:mm'));
-                else
-                    % exclusive of last value
-                    mask = divs(i) <= mycat.Date & mycat.Date < divs(i+1);
-                    dispname = sprintf('%s <= t < %s ',...
-                        char(divs(i),'uuuu-MM-dd hh:mm'),...
-                        char(divs(i+1),'uuuu-MM-dd hh:mm'));
-                end
-                h = mycat.subset(mask).plot(ax,...
-                    'Tag',['mapax_part' num2str(i)]);
-                set(h,'Marker',event_marker_types(i),...
-                    'MarkerSize',ZG.ms6,...
-                    'Color',cmapcolors(i,:),...
-                    'LineStyle','none',...
-                    'DisplayName', dispname);
-            end
-            if ~washeld, hold(ax,'off');end
-        end
         
         %% plot NON-catalog layers
         function plotOtherEvents(catalog, idx, varargin)
@@ -851,13 +692,12 @@ classdef MainInteractiveMap
             thisTag = ['mapax_other' num2str(idx)];
             h = findobj(ax,'Tag',thisTag);
             delete(h);
-            
-            washeld=ishold(ax); hold(ax,'on');
+            holdstate=HoldStatus(ax,'on');
             h=catalog.plot(ax, varargin{:});
             
             h.ZData=-catalog.Depth;
             h.Tag = thisTag;
-            if ~washeld, hold(ax,'off'),end
+            holdstate.Undo();
         end
         
         function plotBigEarthquakes(reset)
@@ -867,28 +707,10 @@ classdef MainInteractiveMap
             
             % TODO: maybe make ZG.maepi a view into the catalog
             
-            persistent big_events defaults textdefaults
             ZG=ZmapGlobal.Data;
-            if isempty(defaults)
-                defaults = struct('Tag','mainmap_big_events',...
-                    'DisplayName',sprintf('Events > M%2.1f',ZG.big_eq_minmag),...
-                    'Marker','h',...
-                    'Color','m',...
-                    'LineWidth',1.5,...
-                    'MarkerSize',12,...
-                    'LineStyle','none',...
-                    'MarkerFaceColor','y',...
-                    'MarkerEdgeColor','k');
-            end
-            
-            if isempty(textdefaults)
-                textdefaults = struct('FontWeight','bold',...
-                    'Color','k',...
-                    'FontSize',9,...
-                    'Clipping','on');
-            end
-            
-                big_events = ZG.maepi;
+            defaults=getPlotDefaults('bigquake');
+            textdefaults=getPlotDefaults('bigquake_text');
+            big_events = ZG.maepi;
             
             if isempty(big_events)
                 big_events = ZmapCatalog();
@@ -930,25 +752,14 @@ classdef MainInteractiveMap
             % plot mainshock(s)
             % DisplayName: 'mainshocks'
             % Tag: 'mainmap_mainshocks'
-            persistent xydata defaults
-            
-            if isempty(defaults)
-                defaults=struct('Tag','mainmap_mainshocks',...
-                    'Marker','*',...
-                    'DisplayName','mainshocks',...
-                    'LineStyle','none',...
-                    'LineWidth', 2.0,...
-                    'MarkerSize', 12,...
-                    'MarkerEdgeColor','k');
-            end
+            persistent xydata
             
             if nargin
                 xydata = replace_xy_if_exists(xydata, xycoords);
             end
             
             reset = exist('reset','var') && reset;
-            plot_helper(xydata, defaults, reset);
-            
+            plot_helper(xydata, getPlotDefaults('mainshock'), reset);
         end
         
     end
@@ -1005,13 +816,13 @@ function h=plot_helper(xy, defaults, reset)
         end
     end
     if isempty(h)
-        hold(ax,'on');
+        holdstate=HoldStatus(ax,'on');
         if isa(xy,'ZmapCatalog')|| istable(xy) || isstruct(xy)
             h=plot(ax, xy.Longitude, xy.Latitude, defaults);
         else
             h=plot(ax, xy(:,1), xy(:,2), defaults);
         end
-        hold(ax,'off');
+        holdstate.Undo();
     else
         %simply change the data
         if isa(xy,'ZmapCatalog')
@@ -1074,44 +885,6 @@ function catSave()
     end
 end
 
-function change_markersize(val)
-    global ZG
-    ZG.ms6 = val;
-    ax = findobj('Tag',MainInteractiveMap.axTag);
-    set(findobj(ax,'Type','Line'),'MarkerSize',val);
-end
-
-function change_symbol(~, clrs, symbs)
-    global ZG
-    ax = findobj('Tag',MainInteractiveMap.axTag);
-    hlines = findMapaxParts(ax);
-    %line_tags = {'mapax_part1','mapax_part2','mapax_part3'};
-    for n=1:numel(hlines)
-        if ~isempty(clrs)
-            set(hlines(n),'MarkerSize',ZG.ms6,...
-                'Marker',symbs(n),...
-                'Color',clrs(n,:),...
-                'Visible','on');
-        else
-            set(hlines(n),'MarkerSize',ZG.ms6,...
-                'Marker',symbs(n),...
-                'Visible', 'on');
-        end
-    end
-end
-
-function change_color(c)
-    hlines = findMapaxParts();
-    n =listdlg('PromptString','Change color for which item?',...
-        'SelectionMode','multiple',...
-        'ListString',{hlines.DisplayName});
-    if ~isempty(n)
-        c = uisetcolor(hlines(n(1)));
-        set(hlines(n),'Color',c,'Visible','on');
-    end
-end
-
-
 function plot_large_quakes()
     ZG=ZmapGlobal.Data;
     mycat=ZmapCatalog(ZG.primeCatalog);
@@ -1122,6 +895,7 @@ function plot_large_quakes()
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
     zmap_update_displays(); %TOFIX changing magnitudes didn't chnge map output
 end
+
 function align_supplimentary_legends(ax)
     % reposition supplimentary legends, if they exist
     try
@@ -1136,39 +910,29 @@ function align_supplimentary_legends(ax)
     for i=1:numel(tags)
         c=findobj('Tag',tags{i});
         if ~isempty(c)
-            c.Position([1]) = le.Position([1]); % scoot it over to match the legend
+            c.Position(1) = le.Position(1); % scoot it over to match the legend
         end
     end
 end
 
 
 function toggle_grid(src, ~)
+    src.Checked=toggleOnOff(src.Checked);
     ax = MainInteractiveMap.mainAxes();
-    switch src.Checked
-        case 'off'
-            ax = MainInteractiveMap.mainAxes();
-            src.Checked = 'on';
-            grid(ax,'on');
-        case 'on'
-            src.Checked = 'off';
-            grid(ax,'off');
-    end
+    grid(ax,src.Checked);
     ZG = ZmapGlobal.Data;
     ZG.lock_aspect = src.Checked;
-    drawnow
     align_supplimentary_legends();
     drawnow
-    
 end
 
 function toggle_aspectratio(src, ~)
+    src.Checked=toggleOnOff(src.Checked);
     ax = MainInteractiveMap.mainAxes();
     switch src.Checked
-        case 'off'
-            src.Checked = 'on';
-            daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
         case 'on'
-            src.Checked = 'off';
+            daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+        case 'off'
             daspect(ax,'auto');
     end
     ZG = ZmapGlobal.Data;
@@ -1176,9 +940,7 @@ function toggle_aspectratio(src, ~)
     align_supplimentary_legends();
     
 end
-function hide_events()
-    set(findMapaxParts(),'visible','off');
-end
+
 function h=findMapaxParts(ax)
     if ~exist('ax','var'), ax=0; end
     h = findobj(ax,'-regexp','Tag','\<mapax_part[0-9].*\>');
@@ -1191,15 +953,71 @@ end
 
 function change_legend_breakpoints(~, ~)
     % TODO fix this, breakpoints aren't changed
+    ZG=ZmapGlobal.Data;
+    dlg_title='Change Breakpoints';
+    num_lines=1;
     switch ZmapGlobal.Data.mainmap_plotby
         case {'tim','time'}
-            setleg;
+            div=ZG.date_divisions;
+            prompt='Specify date divisionss or "--". ex.  "datetime(2000,1,1):years(3):datetime(2015,1,1)" or "datetime([2010;2012;2015],1,1)"';
+            def_ans={char(strjoin(['datetime({''', strjoin(string(div,'uuuu-MM-dd'),''','''), '''})'],''))};
+            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            if ~isempty(myans)
+                if ~strcmp(myans{1},'--')
+                    div=myans{1}; % NO divisions
+                else
+                    div=eval(myans{1});
+                end
+                if isa(div,'datetime') || isempty(div) || strcmp(div,'--')
+                    ZG.date_divisions=div;
+                end
+                zmap_update_displays()
+            end
+            %setleg;
         case {'dep','depth'}
-            setlegm;
+            div=ZG.depth_divisions;
+            prompt='Specify depth divisions or "--". ex.  "5:10:50" or "[5 15 25]';
+            def_ans={mat2str(div)};
+            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            if ~isempty(myans)
+                if strcmp(myans{1},'--')
+                    div=myans{1}; % NO divisions
+                else
+                    try
+                    div=eval(myans{1});
+                    catch
+                        div=eval(['[' myans{1} ']']);
+                    end
+                end
+                if isnumeric(div) || isempty(div) || strcmp(div,'--')
+                    ZG.depth_divisions=div;
+                end
+                zmap_update_displays()
+            end
+            %setlegm;
         case {'mad'}
             % pick new color?
         case {'mag'}
-            setlegm;
+            div=ZG.magnitude_divisions;
+            prompt='Specify magnitude divisions or "--". ex.  "[1 5 7]';
+            def_ans={mat2str(div)};
+            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            if ~isempty(myans)
+                if strcmp(myans{1},'--')
+                    div=myans{1}; % NO divisions
+                else
+                    try
+                    div=eval(myans{1});
+                    catch
+                        div=eval(['[' myans{1} ']']);
+                    end
+                end
+                if isnumeric(div) || isempty(div) || strcmp(div,'--')
+                    ZG.magnitude_divisions=div;
+                end
+                zmap_update_displays()
+            end
+            %setlegm;
         case {'fau'}
             % donno
         otherwise
@@ -1266,10 +1084,150 @@ function info_summary_callback(summarytext)
     f.Visible='on';
 end
 
-function analyze_time_series_cb(s,e)
-    %stri = 'Polygon';
+function analyze_time_series_cb(~,~)
     ZG=ZmapGlobal.Data;
     ZG.newt2 = ZG.primeCatalog; 
     ZG.newcat = ZG.primeCatalog; 
     timeplot('newt2');
+end
+
+function A = toggleOnOff(A)
+    if strcmp(A,'on')
+        A='off';
+    else
+        A='on';
+    end
+end
+
+function tf=isOn(A)
+    tf=strcmp(A,'on');
+end
+
+function splitpoints = autosplit(c,  prop, method, nPoints, roundingfn)
+    % splitpoints = autosplit(c, prop, method, nPoints, roundingfn)
+    % c is a catalog (or view)
+    % prop is the valid catalog property
+    % method : 'linear',  'count'
+    %    linear: linearly splits catalog
+    %    count : splits catalog into even chunks (#s of events)
+    % nPoints is the number of split points  (1 = devide catalog in half
+    %
+    % see also split_views
+    myrange=[min(c.(prop)) max(c.(prop))];
+    switch method
+        case 'linear'
+            sp = linspace(myrange(1),myrange(2),nPoints+2); % begin pt1 pt2 ... ptN, end
+            splitpoints=sp(2:end-1);
+        case 'count'
+            idx=round(linspace(1,c.Count, nPoints+2));
+            idx=idx(2:end-1);
+            splitpoints=c.(prop)(idx);
+        otherwise
+            error('no splitting method chosen')
+    end
+            
+    if exist('roundingfn','var') && isa(roundingfn,'function_handle')
+        splitpoints=roundingfn(splitpoints);
+    end
+end
+
+function zmvs = split_views(zmv , prop, splitpoints, tagbase)
+    % divides the catalog into a bunch of views
+    % should preserve any polygon selections
+    % split_views(zmv , prop, splitpoints, tagbase)
+    % zmv is a ZmapCatalogView
+    % prop is the name of a valid catalog property
+    % splitpoints : the divisions along which to split.   
+    % tagbase : text prepended to an index number, used for finding graphical objects
+    %
+    % see also autosplit
+    if isempty(splitpoints)
+        zmvs = zmv;
+        return
+    end
+    switch prop
+        case {'Date'}
+            fmtfn=@(x) char(x,'uuuu-MM-dd'); %
+            label='t';
+            units='';
+            tinydelta=seconds(0.01); % used so that bins are N<=X<M instead of  N<=x<=M
+        case {'Time'}
+            fmtfn=@(x) char(x,'uuuu-MM-dd hh:mm:ss'); %
+            label='t';
+            units='';
+            tinydelta=seconds(0.01); % used so that bins are N<=X<M instead of  N<=x<=M
+        case {'Latitude','Longitude'}
+            fmtfn=@(x) num2str(x,4);
+            label=lower(prop(1:3));
+            units='deg';
+            tinydelta=0.00001;
+        case {'Depth'}
+            fmtfn=@(x) num2str(x,2);
+            label='Z';
+            units='km';
+            tinydelta=0.0001;
+        case {'Magnitude'}
+            fmtfn=@(x) num2str(x,1);
+            label='mag';
+            units='';
+            tinydelta=0.01;
+            
+        otherwise
+            error('unanticipated property')
+    end
+    
+    % prop is something like Depth, but the range is DepthRange
+    propRange=[prop, 'Range'];
+    zmvs=zmv;
+    zmvs.(propRange)=[]; % start with the entire catalog
+    zmvs=repmat(zmvs,numel(splitpoints)+1,1); % preallocate
+    
+    % beginning to splitpoint1
+    zmvs(1).(propRange) = [min(zmvs(1).(prop)), splitpoints(1)-tinydelta]; % grab slice
+    zmvs(1).DisplayName=[label ' < ' fmtfn(splitpoints(1)) ' ' units]; % for legend
+    zmvs(1).Tag=[tagbase, num2str(1)]; % for finding, once plotted, via findobj/findall
+    
+    
+    % from splitpoint 1 to last splitpoint
+    for n=2:numel(splitpoints)
+        zmvs(n).(propRange) = [splitpoints(n-1), splitpoints(n)-tinydelta];
+        zmvs(n).DisplayName=[fmtfn(splitpoints(n-1)) ' <= ', label ' < ' fmtfn(splitpoints(n)) ' ' units];
+        zmvs(n).Tag=[tagbase, num2str(n)];
+    end
+    
+    % last splitpoint to end
+    zmvs(end).(propRange) = [splitpoints(end), max(zmvs(end).(prop))];
+    zmvs(end).DisplayName=[label ' >= ' fmtfn(splitpoints(end)) ' ' units];
+    zmvs(end).Tag=[tagbase, num2str(n)];
+end
+
+function pd = getPlotDefaults(name)
+    persistent defaults
+    if isempty(defaults)
+        ZG=ZmapGlobal.Data;
+        defaults=containers.Map;
+        defaults('mainshock') = struct('Tag','mainmap_mainshocks',...
+            'Marker','*',...
+            'DisplayName','mainshocks',...
+            'LineStyle','none',...
+            'LineWidth', 2.0,...
+            'MarkerSize', 12,...
+            'MarkerEdgeColor','k');
+        
+        defaults('bigquake') = struct('Tag','mainmap_big_events',...
+            'DisplayName',sprintf('Events > M%2.1f',ZG.big_eq_minmag),...
+            'Marker','h',...
+            'Color','m',...
+            'LineWidth',1.5,...
+            'MarkerSize',12,...
+            'LineStyle','none',...
+            'MarkerFaceColor','y',...
+            'MarkerEdgeColor','k');
+        defaults('bigquake_text')=struct('FontWeight','bold',...
+            'Color','k',...
+            'FontSize',9,...
+            'Clipping','on');
+        
+    end
+    pd=defaults(name);
 end

@@ -1,40 +1,32 @@
 function catalog_overview(catname)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
-    
+    % catname should be a ZmapCatalogView
+    %
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
-    
+   
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
 
-    mycat=ZG.(catname);
-    
-    %global file1 tim1 tim2 minma2 maxma2 minde maxde 
-    %global maxdep maxma mindep minti maxti
+    mycat=ZG.Views.(catname);
     
     %  default values
-    [t0b, teb] = mycat.DateRange() ;
-    tdiff = (teb - t0b);
     
     if ~exist('ZG.bin_dur', 'var')   %select bin length respective to time in catalog
         ZG.bin_dur = days(30);
     end
     
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
-    %{
-    %% these shouldn't be set here, they should be set at plot time, or in plot menu
-    big_evt_minmag = max(mycat.Magnitude) -0.2;
-    dep1 = 0.3*max(mycat.Depth);
-    dep2 = 0.6*max(mycat.Depth);
-    dep3 = max(mycat.Depth);
-    %}
-    minti = min(mycat.Date);
-    maxti  = max(mycat.Date);
-    minma = min(mycat.Magnitude);
-    maxma = max(mycat.Magnitude);
-    mindep = min(mycat.Depth);
-    maxdep = max(mycat.Depth);
+    daterange = mycat.DateRange;
+    minti = daterange(1);
+    maxti  = daterange(2);
+    magrange = mycat.MagnitudeRange;
+    minma = magrange(1);
+    maxma = magrange(2);
+    depthrange= mycat.DepthRange;
+    mindep = depthrange(1);
+    maxdep = depthrange(2);
     
     fignum = create_dialog();
     
@@ -294,40 +286,24 @@ function catalog_overview(catname)
         %ZG.bin_dur = days(h.Value);
         
         % following code originally from sele_sub.m
-        %    Create  reduced (in time and magnitude) catalogues "primeCatalog" and "newcat"
+        %    Create  reduced (in time and magnitude) catalogs "primeCatalog" and "newcat"
         %
-        mycat.addFilter('Magnitude','>=', minma);
-        mycat.addFilter('Magnitude','<=', maxma);
-        mycat.addFilter('Date','>=',minti);
-        mycat.addFilter('Date','<=',maxti);
-        mycat.addFilter('Depth','>=',mindep);
-        mycat.addFilter('Depth','<=',maxdep);
-        mycat.cropToFilter();
-        % not changed unless a new set of general parameters is entered
-        % TOFIX: ZG.newcat and new2 used to be set HERE, they need to be set elsewhere. maybe a replaceMainCatalog function?
-        % ZG.newcat = ZmapCatalog;     % ZG.newcat is created to store the last subset data
-        % ZG.newt2 = ZmapCatalog;      %  ZG.newt2 is a subset to be changed during analysis
-        
-        tim1 = minti;
-        tim2 = maxti;
-        minma2 = minma;
-        maxma2 = maxma;
-        minde = min(mycat.Depth);
-        maxde = max(mycat.Depth);
-        
-        % OTHER VARIABLES existsed here too, but didn't seem relevant
+        mycat.DepthRange=[mindep, maxdep];
+        mycat.DateRange=[minti, maxti];
+        mycat.MagnitudeRange=[minma, maxma];
         
         %create catalog of "big events" if not merged with the original one:
         %
-        mycat.clearFilter();
         ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
         
-        mycat.sort('Date');
-        ZG.(catname)=mycat;
+        %mycat.sort('Date');
+        ZG.Views.(catname)=mycat;
         zmap_message_center.update_catalog();
         %zmap_update_displays();
         
         close(main_dialog_figure('handle'));
+        disp('changed to...')
+        disp(mycat);
         % changes in bin length go to global 
     end
     
@@ -344,26 +320,6 @@ function cancel_callback(~, ~)
     %h=zmap_message_center();
     %h.update_catalog();
     close(main_dialog_figure('handle'));
-end
-
-function info_callback(~,~)
-    
-    titstr = 'General Parameters';
-    hlpStr = ...
-        ['This window allows you to select earthquakes '
-        'from a catalog. You can select a subset in   '
-        'time, magnitude and depth.                   '
-        '                                             '
-        'The top frame displays the number of         '
-        'earthquakes in the catalog - no selection is '
-        'possible.                                    '
-        '                                             '
-        'Two more parameters can be adjusted: The Bin '
-        'length in days that is used to sample the    '
-        'seismicity and the minimum magnitude of      '
-        'quakes displayed with a larger symbol in the '
-        'map.                                         '];
-    zmaphelp(titstr,hlpStr)
 end
 
 function distro_callback(src,~,mycat)
