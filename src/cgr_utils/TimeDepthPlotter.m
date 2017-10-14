@@ -44,6 +44,7 @@ classdef TimeDepthPlotter
             xlabel('Date');
             ylabel('Depth [km]');
             grid
+            TimeDepthPlotter.overlayBigEvents();
             ax.Visible = 'on';
         end
         %{
@@ -55,7 +56,14 @@ classdef TimeDepthPlotter
             pl2=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
         end
         %}
-        function overlayBigEvents(catalog)
+        function overlayBigEvents()
+            ZG=ZmapGlobal.Data;
+            bigcat=ZG.maepi;
+            tag = 'time_depth_plot';
+            ax = findobj('Tag','time_depth_axis');
+            holdstate=HoldStatus(ax,'on');
+            scatter(ax,ZG.maepi.Date,ZG.maepi.Depth, mag2dotsize(ZG.maepi.Magnitude),'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y');
+            holdstate.Undo();
         end
             
         function colorByLatLon(catalog)

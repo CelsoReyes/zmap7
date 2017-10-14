@@ -48,17 +48,18 @@ classdef TimeMagnitudePlotter
             pl.Marker='+';
             
             set(ax,'box','on',...
-        'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',14,'Linewidth',1.2);
+                'SortMethod','childorder','TickDir','out','FontWeight',...
+                'bold','FontSize',14,'Linewidth',1.2);
             ax.Tag='time_mag_axis';
             title(['Time Magnitude Plot for "' catalog.Name '"'],'Interpreter','none');
             xlabel('Date');
             ylabel('Magnitude');
             grid
+            TimeMagnitudePlotter.overlayBigEvents();
             ax.Visible = 'on';
         end
         %{
-        function pl2=addCatalog(catalog,color)
+function pl2=addCatalog(catalog,color)
             % add another catalog to this plot
             tag= 'time_mag_plotA';
             ax=findobj('Tag','time_mag_axis');
@@ -66,9 +67,19 @@ classdef TimeMagnitudePlotter
             pl2=scatter(ax, catalog.Date, catalog.Magnitude, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
         end
         %}
-        function overlayBigEvents(catalog)
+        function overlayBigEvents()
+            %overlayBigEvents plots large events as a different marker
+            ZG=ZmapGlobal.Data;
+            bigcat=ZG.maepi;
+            tag = 'time_mag_axis';
+            ax = findobj('Tag',tag);
+            holdstate=HoldStatus(ax,'on');
+            scatter(ax,ZG.maepi.Date,ZG.maepi.Magnitude,'h',...
+                'MarkerEdgeColor','k','MarkerFaceColor','y',...
+                'DisplayName','Large Events');
+            holdstate.Undo();
         end
-            
+        
         function colorByLatLon(catalog)
             % colorByLatLon - color the values by their relative lat-lon position
             %
@@ -117,8 +128,8 @@ classdef TimeMagnitudePlotter
                 close([ax.Parent]);
             end
         end
-            
-            
+        
+        
         
     end
 end
