@@ -5,8 +5,12 @@ classdef ZmapData < handle
     % h = ZmapGlobal.Data;          % get pointer to all the global data
     %
     % catalogcopy = h.catalog;      % get a particlar item
-    % h.catalog = modified_catalog; % set the item, changes visible EVERYWHERE
-    %
+    % h.catalog = modified_catalog; % set the item, with changes visible EVERYWHERE
+    % 
+    %  several of these variables exist as carryovers from previous version of Zmap
+    % 
+    % for details about globally accessible variables, see the ZmapData Reference page 
+    
     properties(Constant)
         zmap_version = '7.0'
         min_matlab_version = '9.2';
@@ -44,15 +48,13 @@ classdef ZmapData < handle
         maepi=ZmapCatalog('big events'); % large earthquakes, determined by user cutoff
         
         % divisions
-        divisions_depth
-        divisions_time
-        divisions_magnitude
-        
-        % niceties
-        fontsz = FontSizeTracker;
         depth_divisions % plot each division with a different color/symbol
         magnitude_divisions % plot each division with a different color/symbol
         date_divisions % plot each division with a different color/symbol
+        
+        % niceties
+        fontsz = FontSizeTracker;
+        
         color_bg = [1 1 1] % was [cb1 cb2 cb3] axis background
         color_fg = [.9 .9 .9]% was [c1 c2 c3] figure backgorund
         ms6 = 6 % standard markersize %TODO change to a markersize class

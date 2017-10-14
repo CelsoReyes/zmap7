@@ -90,11 +90,11 @@ set(handles.provider_details,'String',...
     currprovider.serviceURLs.eventService));
 if hObject.Value==1
     hObject.BackgroundColor = [1.0 0.95 0.95];    
-    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data - First choose a data provider...');
+    ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data - First choose a data provider...');
 
 else
     hObject.BackgroundColor = [0.95 1.0 0.95];    
-    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
+    ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
 
 end
 
@@ -585,7 +585,7 @@ end
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
     
-    zmap_message_center.set_info('FDSN Fetch','Importing FDSN data from the web. This might take a minute');
+    ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data from the web. This might take a minute');
     
     set(handles.fdsn_import_dialog,'Visible','off');
     drawnow;
@@ -603,7 +603,7 @@ end
     watchoff;
     
     % CONVERT
-    zmap_message_center.set_info('FDSN Fetch','Converting to a ZmapCatalog');
+    ZmapMessageCenter.set_info('FDSN Fetch','Converting to a ZmapCatalog');
     if ~isa(tmp,'ZmapCatalog')
         ZG.primeCatalog=ZmapCatalog(tmp);
     else
@@ -624,7 +624,7 @@ end
     end
     
     clear tmp
-    h=zmap_message_center();
+    h=ZmapMessageCenter();
     h.update_catalog()%;
     zmap_update_displays();
     

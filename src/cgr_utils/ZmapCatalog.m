@@ -1,7 +1,75 @@
 classdef ZmapCatalog < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
-    
+    % ZmapCatalog represents an event catalog
+    %
+    % ZmapCatalog properties:
+    %   Name - name of catalog, used when labeling plots
+    %   Date - catalog event times
+    %
+    %   Longitude - Longitude (Deg) of each event
+    %   Latitude - Latitude (Deg) of each event
+    %   Depth -  Depth (km) of events 
+    %
+    %   Magnitude - Magnitude of each event
+    %   MagnitudeType - Magnitude[unit of each event
+    % 
+    %   MomentTensor - as mrr, mtt, mff, mrt, mrf, mtf
+    %
+    %   DecimalYear - date as a decimal year (for backward compatibility, not recommended)
+    %   DayOfYear - day of the year for each event
+    %   Count - number of events in catalog
+    %   DateSpan - duration between first and last events in catalog
+    %
+    % ZmapCatalog methods:
+    %   
+    %   ZmapCatalog -  create an empty ZmapCatalog, or from an array
+    %
+    %   isempty - returns true if catalog contains no events
+    %
+    %   cat - concatenate catalogs
+    %   removeDuplicates - remove duplicate events, based on tolerance values
+    %   subset - get a subset of the catalog, based on an index (numeric, or logical)
+    %
+    %   Range methods:
+    %
+    %   DateRange - get the min and max date for this catalog
+    %   DepthRange - get the min and max depth for this catalog
+    %   MagnitudeRange - get the min and max magnitude for this catalog
+    %
+    %   Output Methods:
+    %
+    %   disp - display simple details for catalog
+    %   summary - get text that describe this catalog
+    %   plot - plot the catalog
+    %   plotm - plot the catalog on a map
+    %   plotFocalMechanisms - plot the focal mechanisms
+    %
+    %   Export Methods:
+    %
+    %   ZmapArray - get an array in the style of older Zmap versions
+    %
+    %   Filtering Methods:
+    %
+    %   * Filtering methods have been outsourced into the ZmapCatalogView class.
+    %
+    %   addFilter - add a filter associated with a single property
+    %   clearFilter - resets the filter
+    %   invertFilter - swap which events meet filter criteria
+    %   setFilterToAxesLimits - set Longitude and Latitude filters to current X- and Y-axis limits
+    %   cropToFilter - apply filters to this ZmapCatalog, resulting in smaller catalog
+    %   getCropped - apply filters to get a NEW smaller ZmapCatalog
+    % 
+    %   Sorting Methods:
+    %
+    %   sort - sort the catalog according to a field, either ascending or descending
+    %   sortedByDistanceTo - sort catalog according to event distance to a point
+    %
+    %   Spatial Methods:
+    %
+    %   epicentralDistanceTo - get distance (km) to a point, considering only Lat/Lon. 
+    %   hypocentralDistanceTo - get distance (km) to a point, taking depth into consideration
+    %   selectClosestEvents - return a catalog containing only N closest events
+    %   selectRadius - return a catalog containing only events within a radius
+    %
     properties
         Name   % name of this catalog. Used when labeling plots
         Date        % datetime
@@ -10,21 +78,21 @@ classdef ZmapCatalog < handle
         Latitude    % Latitude (Deg) of each event
         Depth       % Depth (km) of events 
         Magnitude   % Magnitude of each event
-        MagnitudeType % Magnitude Type of each event 
+        MagnitudeType % Magnitude units, such as M, ML, MW, etc. 
         Filter      % logical Filter used for getting a subset of events
-        Dip         %
-        DipDirection
-        Rake
+        Dip         % unused?
+        DipDirection % unused?
+        Rake % unused?
         MomentTensor=table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
         % additions to this table need to be also added to a bunch of functions: 
         %    summary (?), cropToFilter, getCropped, addFilter(?), sort, subset, 
     end
     
     properties(Dependent)
-        DecimalYear
-        DayOfYear
-        Count
-        DateSpan % duration
+        DecimalYear % read-only
+        DayOfYear % read-only
+        Count % read-only number of events in catalog
+        DateSpan % read-only duration 
     end
     
     methods
@@ -556,8 +624,6 @@ classdef ZmapCatalog < handle
             end
         end
         
-        
-        
         function obj = subset(existobj, range)
             % subset get a subset of this object
             % newobj = obj.subset(mask) where mask is a t/f array matching obj.Count
@@ -749,7 +815,7 @@ classdef ZmapCatalog < handle
             % get epicentral (lat-lon) distance to another point
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
         end
-        function dists_km = hypoentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
+        function dists_km = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
             % get epicentral (lat-lon) distance to another point
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
             delta_dep = (obj.Depth - to_depth_km);

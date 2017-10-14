@@ -173,7 +173,7 @@ function declus%(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     close(wai);
     
     if ~any(clus)
-        zmap_message_center.set_info('Alert','No Cluster found')
+        ZmapMessageCenter.set_info('Alert','No Cluster found')
         return
     else
         [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg,bg);%builds a matrix clust that stored clusters

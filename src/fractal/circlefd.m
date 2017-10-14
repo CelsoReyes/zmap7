@@ -21,7 +21,7 @@ messtext= ...
     ' The "ni" events nearest to this point          '
     ' will be selected and displayed in the map.     '];
 
-zmap_message_center.set_message(titStr,messtext);
+ZmapMessageCenter.set_message(titStr,messtext);
 
 % Input center of circle with mouse
 %
@@ -45,7 +45,7 @@ if ic == 1 % select N closest events
     l = s;
     messtext = ['Number of events in the sphere :' num2str(sum(ll)) ];
     disp(messtext);
-    zmap_message_center.set_message('Message',messtext)
+    ZmapMessageCenter.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -87,7 +87,7 @@ if ic == 2 % select events within ra
     ll = l <= ra;
     messtext = ['Radius of selected sphere:' num2str(l(ni))  ' km' ];
     disp(messtext)
-    zmap_message_center.set_message('Message',messtext)
+    ZmapMessageCenter.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %
@@ -129,7 +129,7 @@ if ic == 3 % select N closest events
     l = s;
     messtext = ['Radius of selected sphere:' num2str(l(ni))  ' km' ];
     disp(messtext);
-    zmap_message_center.set_message('Message',messtext)
+    ZmapMessageCenter.set_message('Message',messtext)
     %
     % take first ni and sort by time
     %

@@ -32,7 +32,7 @@ function catalog_overview(catname)
     
     watchoff
     str = 'Please Select a subset of earthquakes and press "Go"';
-    zmap_message_center.set_message('Message',str);
+    ZmapMessageCenter.set_message('Message',str);
     figure(fignum);
     
     uiwait(fignum)
@@ -298,7 +298,7 @@ function catalog_overview(catname)
         
         %mycat.sort('Date');
         ZG.Views.(catname)=mycat;
-        zmap_message_center.update_catalog();
+        ZmapMessageCenter.update_catalog();
         %zmap_update_displays();
         
         close(main_dialog_figure('handle'));
@@ -316,8 +316,8 @@ end
 
 function cancel_callback(~, ~)
     % return without making changes to catalog
-    zmap_message_center.update_catalog();
-    %h=zmap_message_center();
+    ZmapMessageCenter.update_catalog();
+    %h=ZmapMessageCenter();
     %h.update_catalog();
     close(main_dialog_figure('handle'));
 end

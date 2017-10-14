@@ -1,7 +1,7 @@
 function myprint(command,param1)
     % Symple print_tool to print to the
     % printer or to a ps file
-    global  sys pri figp ptt
+    global  pri figp ptt
     %printdlg
     uiprint
     return
@@ -201,11 +201,9 @@ function myprint(command,param1)
                 'The current window will be printed   '
                 'as a postscript file. Buttons etc are'
                 'not printed.                         '];
-            zmap_message_center.set_message('Print',messtext)
             [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir,'out','*.ps'),'PS  Filename');
             
             messtext = ['Thank you! Printing in PS file...'];
-            zmap_message_center.set_message('  ',messtext)
             watchon;
             drawnow
             
@@ -221,7 +219,6 @@ function myprint(command,param1)
             set(gca,'Color',cuca)
         end
         close(ptt)
-        zmap_message_center.clear_message();
         
     else
         error('Error: myprint.m called with incorrect command.')

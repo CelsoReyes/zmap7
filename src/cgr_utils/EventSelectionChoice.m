@@ -79,7 +79,7 @@ classdef EventSelectionChoice < handle
             obj.max_ra = ra;
             if ~exist('min_valid','var')
                 min_valid=0;
-                zmap_message_center.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
+                ZmapMessageCenter.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
             end
             obj.minValid=min_valid;
             

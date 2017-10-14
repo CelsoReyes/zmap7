@@ -1,5 +1,5 @@
 classdef ZmapCatalogView
-    % ZMAPCATALOGVIEW provides a way to interact with one of the global catalogs without copying it
+    % ZmapCatalogView provides a way to interact with one of the global catalogs without copying it
     % filters can be applied, and it can be plotted
     % if filters are changed, the plot automatically changes, too.
     % other than changing the filters and a few plotting properties, the view is read-only,
@@ -29,11 +29,71 @@ classdef ZmapCatalogView
     % ZmapCatalogView.PolygonRemove : removes the polygon filter
     % ZmapCatalogView.PolygonInvert : Inverts the polygon filter
     %
+    % ZmapCatalogView properties:
     %
+    %     sourcename - name of catalog's global variable, for example 'primeCatalog'
+    %     ViewName - name given to this view for plotting
+    %     DateRange - [mindate maxdate] as dateime
+    %     MagnitudeRange - [minmag maxmag]
+    %     LatitudeRange - [minlat maxlat]
+    %     LongitudeRange - [minlon maxlon] % doesn't take dateline into account
+    %     DepthRange - [mindepth maxdepth]
+    %     Marker - default marker used when plotting this view
+    %     MarkerSize - default marker size for plotting
+    %     MarkerFaceColor - default marker fill for plotting
+    %     MarkerEdgeColor - default marker outline for plotting
+    %     DisplayName - name used in the legend for this view
+    %     Tag - tag used for finding plotted versions of this view via findobj
+    %
+    %     Name - catalog's Name
+    %     Date - Date for each event in this view [read-only]
+    %     Latitude - Latitude for each event in this view [read-only]
+    %     Longitude - Longitude for each event in this view [read-only]
+    %     Depth - Depth for each event in this view, km [read-only]
+    %     Count - Count for each event in this view [read-only]
+    %     Magnitude - Magnitude for each event in this view [read-only]
+    %     MagnitudeType - Magnitude for each event in this view [read-only]
+    %
+    %     Catalog - get a ZmapCatalog created from this view
+    %
+    % ZmapCatalogView protected properties:
+    %
+    %   mycat - provides access to the underlying catalog [read only]
+    %   filter - logical mask, true where events meet all range & polygon criteria
+    %   polymask - logical mask, true where events are within(†) polygon
+    %   polygon - [Nx2] containing polygon.Latitude & polygon.Longitude
+    %
+    %   (†) - OR outside polygon, depending on PolygonInvert
+    % ZmapCatalogView methods:
+    %
+    %   ZmapCatalogView - create a view from either global catalog or another view
+    %
+    %   reset - reset all the ranges to their original values
+    %   isempty - returns true if this view contains no events
+    %
+    %   Plotting Routines:
+    %   linkedplot - plot this view, but plot will autoupdate when view changes
+    %   plot - plot this view (catalog)
+    %   plotm - plot this view (catalog) on a map
+    % 
+    %   disp - display this view
+    %   
+    %   subset - get a catalog that is a subset of this view (catalog) via logical/numeric indexing
+    % 
+    %   ZmapCatalogView polygon routines:
+    %   PolygonApply - further masks the view with a polygon. Events must be inside/outside polygon
+    %   PolygonRemove - clears the polygon, so that 
+    %   PolygonInvert - changes whether events must be inside or outside polygon
+    %
+    % see also ZmapCatalog
+    
     
     properties
-        name % name of catalog variable, as seen in ZmapData
-        ViewName; % name given to this view for plotting
+        % sourcename - name of catalog's global variable, for example 'primeCatalog', 
+        % which means the original catalog can be found in ZmapData.primeCatalog
+        sourcename
+        
+        ViewName % name given to this view for plotting
         DateRange % [mindate maxdate] as dateime
         MagnitudeRange % [minmag maxmag]
         LatitudeRange % [minlat maxlat]
@@ -59,7 +119,7 @@ classdef ZmapCatalogView
         Count % Count for each event in this view
         Magnitude % Magnitude for each event in this view
         MagnitudeType % Magnitude for each event in this view
-        Catalog % get a ZmapCatalog created from this view
+        Catalog % the ZmapCatalog created from this view
     end
     properties(Access=protected)
         mycat
@@ -76,7 +136,7 @@ classdef ZmapCatalogView
             obj.ViewName=name;
         end
         function c= get.mycat(obj)
-            names=strsplit(obj.name,'.');
+            names=strsplit(obj.sourcename,'.');
             
             c= ZmapGlobal.Data.(names{1});
             names(1)=[];
@@ -84,7 +144,7 @@ classdef ZmapCatalogView
                 c=c.(names{1});
                 names(1)=[];
             end
-            %c= ZmapGlobal.Data.(obj.name);
+            %c= ZmapGlobal.Data.(obj.sourcename);
         end
         
         function obj=ZmapCatalogView(catname,varargin)
@@ -93,7 +153,7 @@ classdef ZmapCatalogView
             % obj=ZmapCatalogView(catname,Name1,Property1,...)
             %
             % see properties for valid arguments
-            obj.name=catname;
+            obj.sourcename=catname;
             obj.ViewName=obj.mycat.Name;
             obj=obj.reset();
             
@@ -114,7 +174,7 @@ classdef ZmapCatalogView
         end
         
         function obj=reset(obj)
-            % reset all the ranges to their oriinal values
+            % reset all the ranges to their original values
             obj.DateRange=obj.mycat.DateRange;
             obj.MagnitudeRange=obj.mycat.MagnitudeRange;
             obj.LatitudeRange=[min(obj.mycat.Latitude) max(obj.mycat.Latitude)];
@@ -408,6 +468,7 @@ classdef ZmapCatalogView
         
         function obj=PolygonApply(obj,polygon)
             %ApplyPolygon applies a polygon mask to the catalog, further filtering results
+            % events must be within polygon AND meet the range criteria
             % assumes polygon is either [lat,lon;...;latN,lonN] or struct with fields
             % 'Latitude' and 'Longitude'
             %

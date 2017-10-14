@@ -10,7 +10,7 @@ function cltiplot(var1)
     global freq_field freq_slider
     global bgevent file1 clust original newclcat
     global backcat cluscat
-    global  sys clu te1
+    global  clu te1
     global clu1 pyy stri statime
     global xt  cumu cumu2
     global close_ti_button mtpl

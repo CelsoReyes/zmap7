@@ -1,15 +1,29 @@
-classdef zmap_message_center < handle
-    % zmap_message_center is the main control window for zmap.
+classdef ZmapMessageCenter < handle
+    % ZmapMessageCenter is the main control window for zmap.
     % it provides feedback on what operations zmap is performing, as well as help for
     % this replaces the existing mess (welcome) window.
     % it is more robust, and is self-contained.
+    %
+    % A single instance is created, and reused where possible. 
+    %
+    % ZmapMessageCenter methods:
+    %
+    %  ZmapMessageCenter - get handle to existing ZmapMessageCenter, else create one
+    %
+    % Messaging methods:
+    %   set_message - send a message to the console
+    %   set_warning - send a warning to the console & dialog box
+    %   set_error -  create error dialog box
+    %   set_info - send a message to a dialog box
+    %
+    %   update_catalog - refresh the catalog information
     
     properties
     end
     
     methods
-        function obj = zmap_message_center()
-            % zmap_message_center provides handle used to access zmap message center functionality
+        function obj = ZmapMessageCenter()
+            % ZmapMessageCenter provides handle used to access zmap message center functionality
             % the message center will be created if it doesn't exist, otherwise it will be made the
             % active figure
             
@@ -18,12 +32,11 @@ classdef zmap_message_center < handle
                 h = create_message_figure();
                 startmen(h);
                 dvmen = uimenu('Label','Developer');
-                uimenu(dvmen,'Label','Refresh catalog summary','Callback','zmap_message_center.update_catalog()');
-                zmap_message_center.set_message('To get started...',...
+                uimenu(dvmen,'Label','Refresh catalog summary','Callback','ZmapMessageCenter.update_catalog()');
+                ZmapMessageCenter.set_message('To get started...',...
                     ['Choose an import option from the "Data" menu', newline,...
                     'data can be imported from .MAT files, from  ', newline,...
                     'formatted text files, or from the web       ']);
-                obj.end_action( );
             else
                 % put it in focus
                 figure(h)
@@ -32,12 +45,7 @@ classdef zmap_message_center < handle
         
     end
     methods(Static)
-        function create()
-            h = findall(0,'tag','zmap_message_title');
-            if isempty(h)
-                zmap_message_center();
-            end
-        end
+
         function set_message(messageTitle, messageText)
             % set_message displays a message to the user
             %
@@ -49,13 +57,6 @@ classdef zmap_message_center < handle
         function set_warning(messageTitle, messageText)
             % set_warning displays a message to the user
             fprintf('\n+++<strong> ZMAP WARNING: %s </strong>+++\n%s\n\n',messageTitle,messageText);
-            %f=warndlg(messageText,messageTitle,'modal');
-            %t = timer('TimerFcn', {@closeit f}, 'StartDelay', 10);
-            %start(t)
-            %if strcmp(t.Running, 'on')
-            %    stop(t);
-            %end
-            %delete(t);
         end
         
         function set_error(messageTitle, messageText)
@@ -67,13 +68,6 @@ classdef zmap_message_center < handle
         function set_info(messageTitle, messageText)
             % set_info displays a message to the use
             fprintf('\n---<strong> ZMAP INFO: %s </strong>---\n%s\n\n',messageTitle,messageText);
-            %f=helpdlg(messageText,messageTitle);
-            %t = timer('TimerFcn', {@closeit f}, 'StartDelay', 5);
-            %start(t)
-            %if strcmp(t.Running, 'on')
-            %    stop(t);
-            %end
-            %delete(t);
         end
         
         function clear_message()
@@ -82,30 +76,14 @@ classdef zmap_message_center < handle
         end
         
         function update_catalog()
-            %obj = zmap_message_center();
+            %obj = ZmapMessageCenter();
             update_current_catalog_pane();
             update_selected_catalog_pane();
             update_other_catalog_pane();
         end
         
-        function start_action(action_name)
-            % start_action sets the text for the action button, and sets the spinner
-            watchon();
-        end
-        
-        function end_action()
-            % end_action sets the text button to idling, and unsets the spinner
-            watchoff();
-        end
     end
 end
-
-function closeit(src,~,f)
-    if ishandle(f)
-        close(f)
-    end
-end
-
 
 function h = create_message_figure()
     % creates figure with following uicontrols
@@ -298,21 +276,21 @@ end
 function do_catalog_overview(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
     catalog_overview('primary');
-    zmap_message_center.update_catalog();
+    ZmapMessageCenter.update_catalog();
 end
 
 function do_selected_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
     catalog_overview('newcat');
-     zmap_message_center.update_catalog();
+     ZmapMessageCenter.update_catalog();
 end
 
 function do_other_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
     catalog_overview('newt2');
-    zmap_message_center.update_catalog();
+    ZmapMessageCenter.update_catalog();
 end
 
 function update_other_catalog_pane(~,~)

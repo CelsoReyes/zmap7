@@ -27,7 +27,7 @@ function timeplot(catname)
     end
     
     if isempty(mycat)
-        zmap_message_center.set_error('No Catalog','timeplot was passed an empty catalog');
+        ZmapMessageCenter.set_error('No Catalog','timeplot was passed an empty catalog');
         return
     end
     [t0b, teb] = mycat.DateRange() ;
@@ -314,7 +314,7 @@ function timeplot(catname)
         % will change ZG.newt2
         [tt1,tt2]=timesel('cum');
         ZG.newt2=ZG.(catname).subset(ZG.(catname).Date>=tt1&ZG.(catname).Date<=tt2);
-        zmap_message_center.update_catalog()
+        ZmapMessageCenter.update_catalog()
         timeplot('newt2');
     end
     

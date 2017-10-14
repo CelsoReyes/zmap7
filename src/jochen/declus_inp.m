@@ -27,7 +27,7 @@ if n < 9
         'contain hour and minute'
         'data. Please reload the'
         'catalog                '];
-    zmap_message_center.set_message('Error!  Alert!',errdisp)
+    ZmapMessageCenter.set_message('Error!  Alert!',errdisp)
     warndlg(errdisp)
     return
 end

@@ -13,6 +13,8 @@ classdef ZmapGlobal
     % - more explicit, no confusing with local variables
     % - ability to control/modify/verify values at set-time
     % - one-stop shopping
+    %
+    % see also ZmapData
     
     properties (Constant)
         Data = ZmapData % handle-based class containing global variables & constants

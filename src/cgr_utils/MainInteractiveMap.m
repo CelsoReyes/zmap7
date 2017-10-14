@@ -73,7 +73,7 @@ classdef MainInteractiveMap
                     case ''
                         % do nothing
                     otherwise
-                        zmap_message_center.set_error('unknown map update option');
+                        ZmapMessageCenter.set_error('unknown map update option');
                 end
             end
             drawnow;
@@ -320,7 +320,7 @@ classdef MainInteractiveMap
                 if ~isempty(nm)
                     ZG.primeCatalog.Name=nm{1};
                 end
-                zmap_message_center.update_catalog();
+                ZmapMessageCenter.update_catalog();
                 zmap_update_displays();
             end
             
@@ -357,7 +357,7 @@ classdef MainInteractiveMap
             submenu = uimenu('Label','ZTools','Tag','mainmap_menu_ztools');
             
             uimenu(submenu,'Label','Show main message window',...
-                'Callback', @(s,e)zmap_message_center());
+                'Callback', @(s,e)ZmapMessageCenter());
             
             uimenu(submenu,'Label','Analyse time series ...',...
                 'Separator','on',...
@@ -870,7 +870,7 @@ end
 
 %% % % % callbacks
 function catSave()
-    zmap_message_center.set_message('Save Data', ' ');
+    ZmapMessageCenter.set_message('Save Data', ' ');
     try
         
         [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Earthquake Datafile');

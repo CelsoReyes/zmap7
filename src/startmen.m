@@ -61,6 +61,6 @@ function think_and_do(~, ~, f_handle, varargin)
     else
         f_handle(varargin{:});
     end
-    zmap_message_center.update_catalog();
+    ZmapMessageCenter.update_catalog();
 end
 

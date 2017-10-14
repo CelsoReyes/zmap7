@@ -114,7 +114,7 @@ classdef ShapeSelection
                 case 'unassigned'
                     obj.Points=[nan nan];
             end
-            zmap_message_center.update_catalog()
+            ZmapMessageCenter.update_catalog()
         end
         
         function val=get.Lat(obj)

@@ -32,7 +32,7 @@ function cicros(opt)
         ' The "ni" events nearest to this point          '
         ' will be selected and displayed in the map.     '];
     
-    zmap_message_center.set_message(titStr,messtext);
+    ZmapMessageCenter.set_message(titStr,messtext);
     
     % Input center of circle with mouse
     %
@@ -54,7 +54,7 @@ function cicros(opt)
             l =  sort(l);
             messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
             disp(messtext)
-            zmap_message_center.set_message('Message',messtext)
+            ZmapMessageCenter.set_message('Message',messtext)
             %
             % take first ni and sort by time
             %
@@ -87,7 +87,7 @@ function cicros(opt)
             ll = l <=ra;
             messtext = ['Number of events in Circle :' num2str(sum(ll)) ];
             disp(messtext)
-            zmap_message_center.set_message('Message',messtext)
+            ZmapMessageCenter.set_message('Message',messtext)
             %
             % take first ni and sort by time
             %

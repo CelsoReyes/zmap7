@@ -26,7 +26,7 @@ function cltipval(var1)
     global file1             
     global bgevent clust original newclcat
     global backcat cluscat
-   global  sys clu te1
+   global  clu te1
     global xt cumu cumu2
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag

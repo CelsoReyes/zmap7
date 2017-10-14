@@ -96,6 +96,6 @@ function selectp(in_or_out)
     
     timeplot(ZG.newt2)
     
-    h=zmap_message_center;
+    h=ZmapMessageCenter;
     h.update_catalog();
 end

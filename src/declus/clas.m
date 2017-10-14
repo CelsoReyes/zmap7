@@ -5,7 +5,7 @@ function clas
     %
     %
 
-   global  sys clu te1 mess
+   global  clu te1 mess
     global xt cumu cumu2 pyy
     % start and end time
     %

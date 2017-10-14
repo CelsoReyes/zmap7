@@ -1,6 +1,59 @@
 classdef ZmapGrid
-    %ZmapGrid grid for use in zmap's various calculation routines
-    
+    % ZmapGrid grid for use in zmap's various calculation routines
+    %
+    % this is designed with the idea that dx and dy are constant
+    %
+    % to calculate a value for all grid points, where the input is some subset of
+    % the ZmapCatalog, use the gridfun function.
+    %
+    % ZmapGrid properties:
+    %
+    %     Name - name of this grid
+    %
+    %     GridXY  - [X1,Y1 ; ... ; Xn,Yn] matrix of positions
+    %     X - all X positions (points will repeat, since they represent matrix nodes) [read-only] 
+    %     Y - all Y positions (points will repeat, since they represent matrix nodes)[read-only]
+    %
+    %     Xvector - vector for column positions (unique points)
+    %     Yvector - vector for row positions (unique points)
+    %
+    %     Dx - diference between x positions
+    %     Dy - delta-Y
+    %
+    %     Units - degrees or kilometers
+    %     ActivePoints - logical mask
+    % 
+    %     ActiveGrid - [X Y; ..;Yn Yn] for active points [read-only]
+    %     Xactive - X positions for active points [read-only]
+    %     Yactive - Y positions for active points [read-only]
+    %
+    % ZmapGrid methods:
+    %
+    %     Creation methods:
+    %
+    %     ZmapGrid - create a ZmapGrid
+    %     AutoCreateDeg -create ZDataGrid based on current Map extent/Catalog extent, whichever is smaller
+    %
+    %     Plotting methods:
+    % 
+    %     plot - plot the points in this grid
+    %     pcolor - create a pcolor plot where each point of the grid is center of cell
+    %
+    %     Misc. methods:
+    %     
+    %     process - apply a function to every grid point (convenience wrapper for gridfun) 
+    %     length - number of grid points
+    %     isempty - true if no grid is defined
+    %     MaskWithPolygon - set the logicalmask to true where points are in polygon, false elsewhere
+    %
+    %     load - load grid from a .mat file [static method]
+    %     save - save this grid to a .mat file
+    %
+    %     setGlobal - copy this grid into the globally used grid
+    %
+    %
+    % see also gridfun, EventSelectionChoice
+
     properties
         Name % name of this grid
         GridXY  % [X1,Y1 ; ... ; Xn,Yn] matrix of positions
@@ -52,7 +105,7 @@ classdef ZmapGrid
                         if isfield(g,'GridEntireArea') && ~g.GridEntireArea
                             myshape=ZmapGlobal.Data.selection_shape;
                             if isnan(myshape.Points(1))
-                                zmap_message_center.set_warning('Polygon not defined',...
+                                ZmapMessageCenter.set_warning('Polygon not defined',...
                                     'Requested that grid is limited by the polygon, but no polygon is defined.');
                                 myshape=myshape.select_polygon();
                             end
@@ -221,7 +274,7 @@ classdef ZmapGrid
         end
         
         function h=pcolor(obj, ax, values, name)
-            % pcolor create a pcolor plot where each point of the grid
+            % pcolor create a pcolor plot where each point of the grid is center of cell
             % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
             % each grid point is contained within a color cell. the cells are divided halfway 
             % between each point in the vector            
@@ -250,6 +303,7 @@ classdef ZmapGrid
         end
         
         function save(obj, filename, pathname)
+            % save grid to .mat file
             ZG=ZmapGlobal.Data;
             if ~exist('filename','var')
                 filename = fullfile(pathname,['zmapgrid_',obj.Name,'.m']);
@@ -279,74 +333,6 @@ classdef ZmapGrid
             
             [ results, nEvents, maxDist ] = gridfun( routine, catalog, obj, selcrit);
         end
-        
-        function catPerNode = associateWithEvents(obj, catalog, maxradius, maxnearest, firstlastdate, minmaxmag)
-            % returns one catalog per grid-node containing the associated events
-            %
-            % cats = obj.associateWithEvents(catalog, maxradius, maxnearest, firstlastdate, minmaxmag)
-            %
-            %    CATALOG: a ZmapCatalog containing events that will be divided up between grid points
-            %             note: depending on criteria, events might be associated with multiple grid
-            %                   points
-            %
-            %    MAXRADIUS: All events within maxradius kilometers will be associated with the grid point
-            %       example - get events within 5km of each grid point
-            %       cats = mygrid.associateWithEvents(mycat, 5, [],[],[],[]);
-            %
-            %    MAXNEAREST: associate this many closest events with the grid point.
-            %       example - get the nearest 50 events to each grid point
-            %       cats = mygrid.associateWithEvents(mycat, [], 50,[],[],[]);
-            %
-            %    If both are used, then both are applied.
-            %
-            %
-            %    The following options limit the catalog under consideration, but are independent
-            %    of the grid points.
-            %
-            %    FIRSTLASTDATE: datetime values that are used to limit the catalog. This can be
-            %       either a single value FIRST, or a 1x2 vector of values [FIRST LAST].
-            %
-            %    MINMAXMAG: magnitude values used to limit the catalog.  They can be either a single
-            %      value MINMAG, or a 1x2 vector of values [MINMAG MAXMAG]
-            %
-            % so that:
-            %
-            %    catPerGridPt = mygrid.associateWithEvents(catalog, maxradius, maxcount, firstlastdate, minmaxmag)
-            %    for gridPt=1:length(mygrid)
-            %       process(mygrid, catPerGridPt(gridPt));
-            %       ... processs grid point
-            %    end
-            %
-            
-            % first, do general cuts to catalog that reduce its size overall.
-            catPerNode=true(catalog.Count, length(obj));
-            if numel(firstlastdate)==1
-                catalog = catalog.subset(catalog.Date >= firstlastdate);
-            elseif numel(firstlastdate==2)
-                catalog = catalog.subset(catalog.Date >= firstlastdate(1) && catalog.Date <= catalog.firstlastdate(2));
-            end
-            
-            if numel(minmaxmag)==1
-                catalog = catalog.subset(catalog.Magnitude >= minmaxmag);
-            elseif numel(minmaxmag==2)
-                catalog = catalog.subset(catalog.Magnitude >= minmaxmag(1) && catalog.Magnitude <= catalog.minmaxmag(2));
-            end
-            
-            assert(~isempty(maxnearest) || ~isempty(maxradius));
-            % now, either get the nearest by distance, or nearest by max #
-            if ~isempty(maxnearest)
-                for i=1:length(obj)
-                    catPerNode(i)=catalog.selectClosestEvents(obj.GridXY(i,1) , obj.GridXY(i,2), maxnearest);
-                end
-            end
-            if ~isempty(maxradius)
-                for i=1:length(obj)
-                    % TOFIX beware! grid points must be in degrees, radius in kilometers
-                    catPerNode(i)=catalog.selectRadius(obj.GridXY(i,1) , obj.GridXY(i,2), maxradius);
-                end
-            end
-        end
-     
             
     end
     

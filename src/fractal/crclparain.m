@@ -96,7 +96,7 @@ function callbackfun_005(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
   close;
-  zmap_message_center.set_info(' ',' ');
+  ZmapMessageCenter.set_info(' ',' ');
   
 end
  

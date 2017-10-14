@@ -25,7 +25,7 @@ function clpval(var1)
     global file1             
     global mess bgevent clust original newclcat
     global backcat cluscat
-   global  sys clu te1
+   global  clu te1
     global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
     global xt cumu cumu2
     global close_p_button pplot
@@ -591,7 +591,7 @@ function clpval(var1)
                 'FontWeight','bold','LineWidth',1.5,...
                 'Box','on')
         end;  %if autop~=1
-        zmap_message_center();
+        ZmapMessageCenter();
         tmvar=[];
         if ~isempty(hndl1)
             delete(hndl1);

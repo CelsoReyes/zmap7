@@ -8,7 +8,7 @@ function zmap_update_displays(opt)
     if ~exist('opt','var')
         opt='';
     end
-    zmap_message_center.update_catalog();
+    ZmapMessageCenter.update_catalog();
     m = mainmap();
     
     if ~isempty(m)

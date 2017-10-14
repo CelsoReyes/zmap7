@@ -255,13 +255,13 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        zmap_message_center();
+        ZmapMessageCenter();
     end
     
     function save_callback(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        zmap_message_center.set_info('Save Data','  ');
+        ZmapMessageCenter.set_info('Save Data','  ');
         
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Filename?');
         save(fullfile(path1, file1),'a','faults','mainfault','coastline','main','infstri');

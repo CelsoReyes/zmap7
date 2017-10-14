@@ -28,12 +28,10 @@ function load_zmapfile()%
     ZG=ZmapGlobal.Data; % get zmap globals
     
     % start program and load data:
-    show_load_instructions();
     
     [file1,path1] = uigetfile('*.mat',' Earthquake Datafile');
     
     if length(path1) < 2 % cancelled
-        zmap_message_center.clear_message();
         
         return
     else
@@ -72,7 +70,7 @@ function load_zmapfile()%
     
     setUpDefaultValues(ZG.primeCatalog);
     
-    zmap_message_center.update_catalog();
+    ZmapMessageCenter.update_catalog();
     ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
     catalog_overview('primary');
 
@@ -111,30 +109,10 @@ function setUpDefaultValues(A)
     met = 'ni';
 end
 
-function show_load_instructions()
-    messtext=...
-        ['Please select an earthquake datafile.',...
-        'This file needs to be in matlab *.mat ',...
-        'Format. If you do not have a *.mat ',...
-        'file use <create *.mat Datafile> in ',...
-        'the menu '];
-    zmap_message_center.set_message('Load Data',messtext);
-end
-
-function show_loading_status()
-    
-    messtext=...
-        ['Thank you! Now loading data'
-        'Hang on...                 '];
-    zmap_message_center.set_message('  ',messtext)
-end
-
-
 function   A=loadCatalog(path, file)
     %
     % by the time this is called, it should be already known that 'a' exists
     lopa = fullfile(path, file);
-    show_loading_status()
     
     watchon;
     drawnow
@@ -162,6 +140,5 @@ function   A=loadCatalog(path, file)
         A=ZmapCatalog(A);
     end
     A.Name = file;
-    zmap_message_center.clear_message();
     
 end

@@ -503,7 +503,6 @@ function timeplot(mycat, nosort)
     axes(ax);
     set(cum,'Visible','on');
     watchoff(cum)
-    zmap_message_center.clear_message();
     
     
     
@@ -613,7 +612,7 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;
-        zmap_message_center.update_catalog();
+        ZmapMessageCenter.update_catalog();
         zmap_update_displays();
     end
     

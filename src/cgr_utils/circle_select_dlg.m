@@ -88,7 +88,7 @@ function okbutton_Callback(hObject, ~, handles)
     % handles    structure with handles and user data (see GUIDATA)
     
     if any(isnan(handles.figure1.UserData.Points))
-        zmap_message_center.set_error('Circle: No Center','Circle center is not yet defined. Choose a center, then click "ok".');
+        ZmapMessageCenter.set_error('Circle: No Center','Circle center is not yet defined. Choose a center, then click "ok".');
         return
     end
     

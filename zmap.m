@@ -1,19 +1,44 @@
+
+%% ZMAP Version 7.0
+%
 % This files start up ZMAP.
 %
-% The matlab searchpathes are updated, existing windows closed.
+% MAJOR CHANGES to ZMAP from v 6.0:
+%  - event catalog is now a ZmapCatalog instead of a variable-sized array
+%  - dates/times are handled by MATLAB's built-in datetime and duration data types
+%  - duplicated code has been removed or consolidated
+%  - scripts have been turned into functions and classes (allowing zmap functions to be run programmatically)
+%  - GUI elements have been consolidated, updated
+%  - unreachable code (& scripts not appearing in any menus) have been removed
+%  - ability to import catalogs from FDSN web services.
+%  - global variables have been minimized. Data sharing occurs through one class.
+%  - only result variables should appear in the base workspace.
+%  - requires minimum of matlab v 2017a,
+%
+%
+%  see README.md and the help for individual parts of ZMAP for other change details
+%
+% ADDING CUSTOM FUNCTIONS to ZMAP:
+% -
+%
+
+% The matlab searchpaths are updated, existing windows closed.
 %
 %  Stefan Wiemer  12/94
-%  Modified by Celso Reyes Spring/Summer 2017
+%  Modified by Celso Reyes Spring-Fall 2017
+%
+% see also: ZmapCatalog, ZmapCatalogView, MainInteractiveMap, ZmapMessageCenter
 
-global sys ZG
+global ZG
 disp('This is zmap.m - version 7.0')
 
 % set up paths
 
 % ZG (ZmapGlobal) provides access to all ZMAP's global variables
-% When variables are accessed direclty via ZmapGlobal.Data.variablename, they
+% When variables are accessed directly via ZmapGlobal.Data.variablename, they
 % should not modify the original.
-% However, assigning ZmapGlobal.Data to a variable provides direct access to the variables.
+% However, assigning ZmapGlobal.Data to a variable first, provides direct [read/write] access to
+% the variables.
 % This allows assignment.  
 %
 %       ZmapGlobal.Data.ra = 100; % value is effectively ignored!
@@ -48,16 +73,5 @@ ini_zmap
 % set system dependent initial variables
 ini_zmap_sys
 
-
-%{
-%Create the 5 data categories
-main = [];
-mainfault = [];
-coastline = [];
-well = [];
-stat = [];
-faults = [];
-%}
-
 % open message window
-zmap_message_center;
+ZmapMessageCenter;

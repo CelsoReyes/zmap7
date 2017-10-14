@@ -4,18 +4,19 @@ classdef(Abstract) ZmapFunction < handle
     %
     %  To use, first create a class that inherits from ZmapFunction and provides
     %  the following:
-    %   PROPERTIES:
+    %
+    %   ZmapFunction Properties:
     %     OperatingCatalog - this are the catalog(s) that contain the raw data needed by this function
     %         ex.    OperatingCatalog={'primeCatalog'}; %must be cell
     %     ModifiedCatalog - this contains the catalogs (if any) that are modified by this routine.
     %
     %     define variables here that would be used in calculation
     %
-    %   PROPERTIES(Constant)
+    %   ZmapFunction Properties(Constant):
     %      PlotTag - string name used to access all items from the plot this creates. 
     % 
     %
-    %   METHODS
+    %   ZmapFunction Methods:
     %       The following methods MUST BE DEFINED.  however, they do not necessarily
     %       have to "do" anything.  But they should.  They are defined to provide a
     %       coherent framework for this function's behaviors and to make it easy to
