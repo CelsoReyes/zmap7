@@ -1,6 +1,35 @@
 classdef ZmapFunctionDlg < handle
     % ZmapFunctionDlg Helper, used to generate dialog boxes while keeping code clean
     %
+    % ZmapFunctionDlg properties:
+    %
+    %   hCaller - handle to the caller. Values are written to hCaller.(tag) upon OK
+    %   callerOKFunction - to be run once values are copied back to caller and dialog disappears
+    %   hDialog - handle to the dialog box
+    %   parts - ui details go here
+    %   okPressed - true when the dialog box's OK button was pressed
+    %
+    % ZmapFunctionDlg methods:
+    %
+    %   ZmapFunctionDlg - initialize a ZmapFunctionDlg
+    %   Create - creates a dialog box based on a cell description of types within.
+    %
+    %   AddBasicHeader - add a simple header to the dialog box
+    %   AddBasicPopup - add a popup menu to the dialog box
+    %   AddBasicEdit - add an edit bow with text label
+    %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
+    %   AddGridParameters - add a grid parameter widget to the box
+    %   AddEventSelectionParameters - add widget to choose between events in a radius, or closest events
+    %
+    %   addOKButton - (added automatically)
+    %   addCancelButton - (added automatically)
+    %
+    %   cb_enableDependents - enables/disables fields based on checkbox
+    %   clearDlg - callback for Cancel button
+    %   okDlg - callback for OK button
+    %   findDialogTag - returns handles for this object's dialog box that have a specific tag
+    %
+    %
     % can be called in 2 ways.
     % EXAMPLE USAGE IN A SCRIPT
     %     zdlg = ZmapFunctionDlg();
@@ -76,6 +105,7 @@ classdef ZmapFunctionDlg < handle
     
     methods
         function obj=ZmapFunctionDlg(hCaller,okevent)
+            % initialize a ZmapFunctionDlg
             % hCaller is the handle to the calling Function.
             % output values are returned to hCaller.(tag) for each uicontrol
             % once the OK button is pressed. if the OK button is not pressed, no changes are made
@@ -98,7 +128,7 @@ classdef ZmapFunctionDlg < handle
         end
         
         function [results,okPressed]=Create(obj, dlgTitle)
-            % creates a dialog box based on a cell description of types within.
+            % Crete creates a dialog box based on a cell description of types within.
             obj.okPressed=false;
             assert(~isempty(obj.parts),'Dialog cannot be created unless there are parts to add to it');
             hasGrid=false;
@@ -397,11 +427,7 @@ classdef ZmapFunctionDlg < handle
         function cb_enableDependents(obj,src,tags)
             % enables/disables fields with listed tags based on the value of this checkbox
             % tags must be a cell of strings, but can be empty cell
-            if src.Value==1
-                setting='on';
-            else
-                setting='off';
-            end
+            setting=logical2onoff(src.Value);
             for n=1:numel(tags)
                 set(findDlgTag(obj,tags{n}),'Enable',setting);
             end

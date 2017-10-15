@@ -28,28 +28,16 @@ classdef(Abstract) ZmapFunction < handle
     %           % if varargin is empty, then do the interactive setup.
     %           % otherwise, check pronditions, calculate values, plot, and then modify globals.
     %
-    %       function CheckPreconditions(obj)
-    %           % do any checks to ensure that the incoming data & parameters meet 
-    %           % requirements of the Calculate() method.  
+    %       CheckPreconditions - do checks to ensure incoming data & parameters meet requirements of the Calculate() method. 
+    %       InteractiveSetup - create a ZmapFunctionDlg that provides the user a way to manipulate parameters used by the Calculate() method.
+    %       Calculate - do the calculations, and put all important results into fields of the obj.Results variable.
+    %         optionally return the Results so that the caller can directly manipulate them
     %
-    %       function InteractiveSetup(obj)
-    %           % create a ZmapFunctionDlg that provides the user a way to manipulate
-    %           % parameters used by the Calculate() method.
-    %
-    %       function Results=Calculate(obj)
-    %           % do the calculations, and put all important results into fields of
-    %           % the obj.Results variable.
-    %           % optionally return the Results so that the caller can directly manipulate them
-    %
-    %       function plot(obj,varargin)
-    %           % plot the results of this function
-    %
-    %       function ModifyGlobals(obj)
-    %           % change ZmapGlobal.Data items here. If possible: ONLY here.
+    %       plot - plot the results of this function
+    %       ModifyGlobals - change ZmapGlobal.Data items here. If possible: ONLY here.
     %    
     %  METHODS(Static)
-    %       function AddMenuItem(parent)
-    %           % car
+    %       AddMenuItem - create a menu item that calls the constructor
     %
     %
     % TROUBLESHOOTING HELP.

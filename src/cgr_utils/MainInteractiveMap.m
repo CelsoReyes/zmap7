@@ -228,9 +228,8 @@ classdef MainInteractiveMap
                 };
             
             for i=1:size(legend_types,1)
-                wrapped_leg = ['''' legend_types{i,2} ''''];
                 m=uimenu(lemenu,'Label',legend_types{i,1},...
-                    'Callback', ['ZG=ZmapGlobal.Data;ZG.mainmap_plotby=' wrapped_leg ';zmap_update_displays();']);
+                    'Callback', {@cb_plotby,legend_types{i,2}});
                 if i==1
                     m.Separator='on';
                 end
@@ -249,6 +248,14 @@ classdef MainInteractiveMap
                 'callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
             uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
                 'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
+
+            function cb_plotby(~,~, s)
+                ZG=ZmapGlobal.Data;
+                ZG.mainmap_plotby=s;
+                watchon;
+                zmap_update_displays();
+                watchoff;
+            end
         end
 
         function create_catalog_menu(obj,force)
@@ -401,9 +408,9 @@ classdef MainInteractiveMap
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations',...
             'Enable','off');
-            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback','ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); zmap_update_displays(); bdiff(ZG.primeCatalog); revertcat');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',@cb_create_permutated);
             uimenu(submenu,'label','Create synthetic catalog...',...
-                'Callback','ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); ZG.newt2 = ZG.primeCatalog; timeplot(ZG.newt2); zmap_update_displays(); bdiff(ZG.primeCatalog); revertcat');
+                'Callback',@cb_create_syhthetic_cat);
             
             uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
             uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
@@ -612,7 +619,7 @@ classdef MainInteractiveMap
                 set(plund, 'XData',mycat.Longitude,'YData',mycat.Latitude,'SizeData',sm*1.2);
             else
                 plund = scatter(ax, mycat.Longitude, mycat.Latitude, sm*1.2,'o','MarkerEdgeColor','k');
-                plund.ZData=-mycat.Depth;
+                plund.ZData=mycat.Depth;
                 plund.Tag='mapax_part1_bg_nolegend';
                 plund.DisplayName='';
                 plund.LineWidth=2;
@@ -622,11 +629,12 @@ classdef MainInteractiveMap
                     'CData',mycat.Depth);
             else
                 pl = scatter(ax, mycat.Longitude, mycat.Latitude, sm, mycat.Depth,'o','filled');
-                pl.ZData=-mycat.Depth;
+                pl.ZData=mycat.Depth;
                 pl.Tag='mapax_part0';
                 pl.DisplayName='Events by Mag & Depth';
                 pl.MarkerEdgeColor = 'flat';
             end
+            ax.ZLimMode='auto';
             holdstate.Undo();
             drawnow
             watchon;
@@ -1060,6 +1068,7 @@ function set_3d_view(src,~)
             ax=MainInteractiveMap.mainAxes();
             view(ax,2);
             grid(ax,'on');
+            zlim(ax,'auto');
             rotate3d(ax,'off'); %activate rotation tool
             src.Label = '3-D view';
     end
@@ -1089,6 +1098,26 @@ function analyze_time_series_cb(~,~)
     ZG.newt2 = ZG.primeCatalog; 
     ZG.newcat = ZG.primeCatalog; 
     timeplot('newt2');
+end
+
+function cb_create_permutated(src,~)
+    ZG=ZmapGlobal.Data;
+    ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog);
+    ZG.newt2 = ZG.primeCatalog; 
+    timeplot(ZG.newt2); 
+    zmap_update_displays(); 
+    bdiff(ZG.primeCatalog); 
+    revertcat
+end
+
+function cb_create_syhthetic_cat(src,~)
+    ZG=ZmapGlobal.Data;
+    ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); 
+    ZG.newt2 = ZG.primeCatalog; 
+    timeplot(ZG.newt2); 
+    zmap_update_displays(); 
+    bdiff(ZG.primeCatalog); 
+    revertcat
 end
 
 function A = toggleOnOff(A)

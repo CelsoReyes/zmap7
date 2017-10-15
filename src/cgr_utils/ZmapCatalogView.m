@@ -94,11 +94,14 @@ classdef ZmapCatalogView
         sourcename
         
         ViewName % name given to this view for plotting
+        
         DateRange % [mindate maxdate] as dateime
         MagnitudeRange % [minmag maxmag]
         LatitudeRange % [minlat maxlat]
         LongitudeRange % [minlon maxlon] % doesn't take dateline into account
         DepthRange % [mindepth maxdepth]
+        
+        sortby=[];
         Marker=''
         MarkerSize=[]
         MarkerFaceColor=[]
@@ -197,8 +200,25 @@ classdef ZmapCatalogView
             if ~isempty(obj.polymask)
                 f=f & obj.polymask;
             end
+            if ~isempty(obj.sortby)
+                [~,idx]=sort(obj.mycat.(sortby));
+                % f(idx) is the t/f value for the sorted index
+                f=idx(f(idx)); % returns numeric index of sorted values
+            end
+                
+                
         end
         
+        function obj = sort(obj,field)
+            if isempty(field)
+                obj.sortby=[];
+            elseif isprop(obj,field)
+                obj.sortby=field;
+            else
+                error('cannot sort by :',field);
+            end
+                
+         end
         function lat=get.Latitude(obj)
             lat=obj.mycat.Latitude(obj.filter);
         end
@@ -459,6 +479,9 @@ classdef ZmapCatalogView
             fprintf('     Symbol: marker ''%s'', size: %.1f\n', obj.Marker, obj.MarkerSize);
             if ~isempty(obj.polymask)
                 disp('     Polygon filtering in effect');
+            end
+            if ~isempty(obj.sortby)
+                disp(['  sorted by: ' obj.sortby]);
             end
         end
         
