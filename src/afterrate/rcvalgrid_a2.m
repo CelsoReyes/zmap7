@@ -40,7 +40,7 @@ function [sel]=rcvalgrid_a2()
     ZG.newt2=ZG.primeCatalog.subset(l);
     ff=gcf;
     %ZG.hold_state2=true;
-    %timeplot(ZG.newt2)
+    %timeplot()
     %ZG.hold_state2=false;
     figure(ff);
     

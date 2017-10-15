@@ -6,6 +6,9 @@ function replaceMainCatalog(otherCatalog)
     if isempty(otherCatalog)
         otherCatalog=ZmapCatalog();
     end
+    if isa(otherCatalog,'ZmapCatalogView')
+        otherCatalog=otherCatalog.Catalog();
+    end
     assert(isa(otherCatalog,'ZmapCatalog'));
     
     ZG = ZmapGlobal.Data;

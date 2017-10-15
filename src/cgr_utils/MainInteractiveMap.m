@@ -348,8 +348,8 @@ classdef MainInteractiveMap
             
             function cb_combinecatalogs(~,~)
                 ZG=ZmapGlobal.Data;
-                ZG.newcat=comcat(ZG.primeCatalog);
-                timeplot(ZG.newcat);
+                ZG.newcat=comcat(ZG.Views.primary);
+                timeplot('newcat');
             end
         end            
 
@@ -467,14 +467,14 @@ classdef MainInteractiveMap
         
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
-            tmp=uimenu(submenu,'Label','p- and b-value map','Callback', @(~,~)bpvalgrid());
+            tmp=uimenu(submenu,'Label','p- and b-value map','Callback',@(~,~)bpvalgrid());
             %uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
             %uimenu(tmp,'Label','Load...',...
             %    'Enable','off',...'
             %    'Callback', @(~,~)bpvalgrid('lo'));
             
             tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
-            uimenu(tmp,'Label','Calculate','Callback',  @(~,~)rcvalgrid_a2());
+            uimenu(tmp,'Label','Calculate','Callback',@(~,~)rcvalgrid_a2());
             uimenu(tmp,'Label','Load...',...
                 'Enable','off',...
                 'Callback',  @(~,~)rcvalgrid_a2('lo'));
@@ -525,39 +525,33 @@ classdef MainInteractiveMap
             disp(['MainInteractiveMap.plotEarthquakes :',ZmapGlobal.Data.mainmap_plotby]);
             %linkdata off
             set(MainInteractiveMap.mainAxes,'ColorOrderIndex',1);
+            if ~any(strcmp(ZmapGlobal.Data.mainmap_plotby,{'magdepth','mad'}))
+                delete(findobj(groot,'Tag','mainmap_supplimentary_maglegend'));
+                delete(findobj(groot,'Tag','mainmap_supplimentary_deplegend'));
+            end
+            delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
+                   
             switch ZmapGlobal.Data.mainmap_plotby
-                
                 case {'date'}
-                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
                     MainInteractiveMap.plotQuakesBySomething(catview,@(x)dateshift(x,'start','Day','nearest'),'Date');
-                    %MainInteractiveMap.plotQuakesByTime(catview,divs);
                 case {'tim','time'}
-                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
                     MainInteractiveMap.plotQuakesBySomething(catview,@(x)dateshift(x,'start','Second','nearest'),'Date');
-                    %MainInteractiveMap.plotQuakesByTime(catview,divs);
                 case {'dep','depth'}
-                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
-                    %MainInteractiveMap.plotQuakesByDepth(catview,divs);
                     MainInteractiveMap.plotQuakesBySomething(catview,@(x)round(x,1),'Depth');
                 case {'mad','magdepth'}
-                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
                     MainInteractiveMap.plotQuakesByMagAndDepth(catview);
                 case {'mag','magnitude'}
-                    delete(findobj(MainInteractiveMap.mainAxes,'-regexp','Tag','mapax_part[0-9]+'));
-                    %MainInteractiveMap.plotQuakesByMagnitude(catview,divs);
                     MainInteractiveMap.plotQuakesBySomething(catview,@(x)round(x,1),'Magnitude');
                 otherwise
                     error('unanticipated legend type');
             end
             ax = MainInteractiveMap.mainAxes();
             %set aspect ratio
-            ZG = ZmapGlobal.Data; % handle to "globals"
-            if strcmp(ZG.lock_aspect,'on')
+            if strcmp(ZmapGlobal.Data.lock_aspect,'on')
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
             align_supplimentary_legends(ax);
             % TODO show subset also
-            %linkdata on;
         end
         
         function plotQuakesBySomething(mycat, roundingfun, something)
@@ -1079,7 +1073,7 @@ end
 
 function histo_callback(hist_type)
     ZG=ZmapGlobal.Data;
-    hisgra(ZG.primeCatalog, hist_type);
+    hisgra(ZG.Views.primary.Catalog(), hist_type);
 end
 
 function info_summary_callback(summarytext)
@@ -1094,27 +1088,30 @@ function info_summary_callback(summarytext)
 end
 
 function analyze_time_series_cb(~,~)
+    % analyze time series for current catalog view
     ZG=ZmapGlobal.Data;
-    ZG.newt2 = ZG.primeCatalog; 
-    ZG.newcat = ZG.primeCatalog; 
-    timeplot('newt2');
+    ZG.newt2 = ZG.Views.primary.Catalog();
+    %ZG.newcat = ZG.primeCatalog; 
+    timeplot();
 end
 
 function cb_create_permutated(src,~)
+    % will replace existing primary catalog
     ZG=ZmapGlobal.Data;
     ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog);
     ZG.newt2 = ZG.primeCatalog; 
-    timeplot(ZG.newt2); 
+    timeplot(); 
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
     revertcat
 end
 
 function cb_create_syhthetic_cat(src,~)
+    % will replace existing primary catalog
     ZG=ZmapGlobal.Data;
     ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); 
     ZG.newt2 = ZG.primeCatalog; 
-    timeplot(ZG.newt2); 
+    timeplot(); 
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
     revertcat

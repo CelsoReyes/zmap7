@@ -2,7 +2,7 @@ function catalog_overview(catname)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
     % catname should be a ZmapCatalogView
     %
-    %  This scriptfile ask for several input parameters that can be setup
+    %  ask for several input parameters that can be set up
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
    

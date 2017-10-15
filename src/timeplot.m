@@ -1,5 +1,13 @@
-function timeplot(catname)
+function timeplot()
     % timeplot plots selected events as cummulative # over time
+    %
+    % operates on catalog newt2 which is set by incomming routine
+    % tracks its view using ZG.Views.timeplot
+    %
+    % original view, when figure first called, is stored in figure's UserData
+    % 
+    %
+    %
     %
     % Time of events with a Magnitude greater than ZG.big_eq_minmag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
@@ -9,28 +17,60 @@ function timeplot(catname)
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
+    
+    % when timeplot is first called (no figure)
+    % - set newt2 to desired catalog
+    % - creates view, attached to newt2 catalog
+    %
+    % when primary catalog is replaced from here:
+    % [cannot assume catalog matches, so
+    % - set primeCatalog to newt2
+    % - set primary view to newt2, but change catalog to 'primary'
+    %
     %TOFIX this is affecting the primaryCatalog, instead of the other catalogs.
     
     global statime
     
+    ZG = ZmapGlobal.Data;
+    
+    catname='newt2';
     report_this_filefun(mfilename('fullpath'));
     
     
-    ZG = ZmapGlobal.Data;
-    
-    
     myFigName='Cumulative Number';
-    if isa(catname,'ZmapCatalog')
-        mycat=catname;
-    else
-        mycat=ZG.(catname);
+    myfig = findobj('Type','Figure','-and','Name',myFigName);
+     % Set up the Cumulative Number window
+    
+    if isempty(myfig)
+        myfig = figure_w_normalized_uicontrolunits( ...
+            'Name',myFigName,...
+            'NumberTitle','off', ...
+            'NextPlot','replace', ...
+            'backingstore','on',...
+            ...'Visible','off', ...
+            'Tag','cum',...
+            'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
+        
+        timeplot_create_menu();
+        ZG.hold_state2=false;
+        % myfig.UserData=ZG.Views.primary; % local copy of the main view.
+        
+        % set a local view copy when the figure is created
+        myfig.UserData=ZmapCatalogView('newt2'); %maybe copy from primary view?
+        % and set the global view
+        ZG.Views.timeplot=myfig.UserData;
+        
     end
+    fig=figure(myfig);
+    
+    mycat=ZG.Views.timeplot; % should be a view into catalog
     
     if isempty(mycat)
         ZmapMessageCenter.set_error('No Catalog','timeplot was passed an empty catalog');
         return
     end
-    [t0b, teb] = mycat.DateRange() ;
+    t0b = mycat.DateRange(1);
+    teb = mycat.DateRange(2);
     
     xt=[]; % time series that will be used
     as=[]; % z values, maybe? used by the save callback.
@@ -45,23 +85,8 @@ function timeplot(catname)
     % Find out if figure already exists
     
     myfig = findobj('Type','Figure','-and','Name',myFigName);
-    % Set up the Cumulative Number window
     
-    if isempty(myfig)
-        myfig = figure_w_normalized_uicontrolunits( ...
-            'Name',myFigName,...
-            'NumberTitle','off', ...
-            'NextPlot','replace', ...
-            'backingstore','on',...
-            ...'Visible','off', ...
-            'Tag','cum',...
-            'Position',[ 100 100 (ZmapGlobal.Data.map_len - [100 20]) ]);
-        
-        timeplot_create_menu();
-        ZG.hold_state2=false;
-        
-    end
-    fig=figure(myfig);
+   
     
     if ZG.hold_state2
         ht=gca;
@@ -102,7 +127,6 @@ function timeplot(catname)
     
     %calculate start -end time of overall catalog
     statime=[];
-    %[t0b, teb] = ZG.primeCatalog.DateRange() ; % by commenting out , now using passed catalog
     
     tdiff = (teb-t0b)/ZG.bin_dur;
     
@@ -115,7 +139,7 @@ function timeplot(catname)
         [cumu, xt] = histcounts(mycat.Date, t0b:ZG.bin_dur:teb);
     else
         [cumu, xt] = histcounts(...
-            (mycat.Date-min(mycat.Date)) + ZG.bin_dur,...
+            (mycat.Date-t0b) + ZG.bin_dur,...
             (0: ZG.bin_dur :(tdiff + 2*ZG.bin_dur)));
     end
     cumu2=cumsum(cumu);
@@ -137,7 +161,7 @@ function timeplot(catname)
     set(pl,'LineWidth',1.0,'MarkerSize',4,...
         'MarkerFaceColor','w','MarkerEdgeColor','r');
     
-    pl = plot(ax,[max(mycat.Date),teb],[mycat.Count, mycat.Count],'k:');
+    pl = plot(ax,[t0b,teb],[mycat.Count, mycat.Count],'k:');
     set(pl,'LineWidth',2.0);
     set(ax,'Ylim',[0 mycat.Count*1.05]);
     
@@ -225,9 +249,9 @@ function timeplot(catname)
         
         op3D  =   uimenu(plotmenu,'Label','Time series ');
         uimenu(op3D,'Label','Time-depth plot ',...
-            'Callback',@(~,~)TimeDepthPlotter.plot(mycat));
+            'Callback',@(~,~)TimeDepthPlotter.plot(ZG.Views.timeplot));
         uimenu(op3D,'Label','Time-magnitude plot ',...
-            'Callback',@(~,~)TimeMagnitudePlotter.plot(mycat));
+            'Callback',@(~,~)TimeMagnitudePlotter.plot(ZG.Views.timeplot));
         
         
         
@@ -274,7 +298,7 @@ function timeplot(catname)
         uimenu(op6,'Label','Compute D with time', 'callback',{@cb_computefractal,6});
         uimenu(op6,'Label',' Help/Info on  fractal dimension', 'callback',@(~,~)showweb('fractal'))
         
-        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ', 'callback',@(~,~)morel())
+        uimenu(ztoolsmenu,'Label','Cumulative Moment Release ', 'callback',@(~,~)morel(ZG.Views.timeplot))
         
         op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
         uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ', 'callback',@(~,~)doinverse_michael())
@@ -306,16 +330,16 @@ function timeplot(catname)
     
     
     function cut_tmd_callback(~,~)
-        catalog_overview('newt2');
-        timeplot(ZG.newt2)
+        catalog_overview('timeplot');
+        timeplot()
     end
     
     function cursor_timecut_callback(~,~)
         % will change ZG.newt2
         [tt1,tt2]=timesel('cum');
-        ZG.newt2=ZG.(catname).subset(ZG.(catname).Date>=tt1&ZG.(catname).Date<=tt2);
+        ZG.Views.timeplot.DateRange=[tt1, tt2];
         ZmapMessageCenter.update_catalog()
-        timeplot('newt2');
+        timeplot();
     end
     
     function cb_hold(mysrc,myevt)
@@ -375,9 +399,12 @@ function timeplot(catname)
     
     function cb_cut_mainshock(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
-        mycat = mycat(l+1:mycat.Count,:);
-        timeplot(mycat) ;
+        
+        idx = find( mycat.Magnitude == max(mycat.Magnitude),1,'first' );
+        mainshockdate=ZG.View.timeplot.Date(idx);
+        
+        ZG.View.timeplot.DateRange=[mainshockdate, ZG.View.timeplot.DateRange(2)];
+        timeplot();
     end
     
     function cb_computefractal(mysrc,myevt, org)
@@ -394,19 +421,27 @@ function timeplot(catname)
     end
     
     function cb_resetcat(mysrc,myevt)
-        % Resets the catalog to the original selection
+        % Resets the catalog to the original selection (view)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        
+        ZG.Views.timeplot=myfig.UserData;
         mycat = ZG.newcat;
-        close(cum);
-        timeplot(mycat);
-        zmap_update_displays();
+        close(gcf); % since callback, assume it is the right figure!
+        timeplot();
     end
     
     function cb_keep(mysrc,myevt)
         % Plots this subset in the map window
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.newcat = mycat;
-        replaceMainCatalog(mycat) ;
+        
+        % replace the main catalog and its view.
+        ZG.primeCatalog=ZG.Views.timeplot.Catalog();
+        ZG.Views.primary=ZG.Views.timeplot;
+        ZG.newt2 = ZG.primeCatalog;
+        ZG.Views.primary.sourcename = 'primeCatalog';
+        
+        myfig.UserData=ZG.Views.timeplot;
+        ZG.newcat = ZG.primeCatalog;
         zmap_update_displays();
     end
     

@@ -41,7 +41,7 @@ function  bdiff_bdepth(mycat)
         
         uicontrol('Units','normal',...
             'Position',[.0 .25 .10 .06],'String','TimePlot ',...
-            'callback',@callbackfun_004);
+            'callback',@cb_timeplot);
         
         uicontrol('Units','normal',...
             'Position',[.0 .65 .08 .06],'String','Save ',...
@@ -254,9 +254,10 @@ function  bdiff_bdepth(mycat)
         plorem(onesigma, aw, bw);
     end
     
-    function callbackfun_004(mysrc,myevt)
-
+    function cb_timeplot(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timeplot(mycat);
+        ZG=ZmapGlobal.Data;
+        ZG.newt2 = mycat;
+        timeplot();
     end
 end

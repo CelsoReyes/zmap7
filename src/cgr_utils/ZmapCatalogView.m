@@ -54,7 +54,6 @@ classdef ZmapCatalogView
     %     Magnitude - Magnitude for each event in this view [read-only]
     %     MagnitudeType - Magnitude for each event in this view [read-only]
     %
-    %     Catalog - get a ZmapCatalog created from this view
     %
     % ZmapCatalogView protected properties:
     %
@@ -67,6 +66,9 @@ classdef ZmapCatalogView
     % ZmapCatalogView methods:
     %
     %   ZmapCatalogView - create a view from either global catalog or another view
+    %
+    %   Catalog - get a ZmapCatalog created from this view
+    %   cat - combine catalogs or catalog views (returns a catalog, not a view)
     %
     %   reset - reset all the ranges to their original values
     %   isempty - returns true if this view contains no events
@@ -122,7 +124,6 @@ classdef ZmapCatalogView
         Count % Count for each event in this view
         Magnitude % Magnitude for each event in this view
         MagnitudeType % Magnitude for each event in this view
-        Catalog % the ZmapCatalog created from this view
     end
     properties(Access=protected)
         mycat
@@ -449,7 +450,7 @@ classdef ZmapCatalogView
         end
        
         %% in-out routines
-        function c=get.Catalog(obj)
+        function c=Catalog(obj)
             % get the subset catalog represented by this view
             c=obj.mycat.subset(obj.filter);
         end
@@ -460,8 +461,20 @@ classdef ZmapCatalogView
             c=c.subset(idx);
         end
         
+        function c=cat(obj, otherobj)
+            % combine catalogs or catalog views
+            if isa(obj,'ZmapCatalogView')
+                if isa(otherobj,'ZmapCatalogView')
+                    c=cat(obj.Catalog(),otherobj.Catalog());
+                else
+                    c=cat(obj.Catalog(),otherobj);
+                end
+            else
+                c=cat(obj,otherobj.Catalog());
+            end
+        end
         function disp(obj)
-            fprintf('  View Name: %s  [Cat Name: %s]',obj.Name, obj.mycat.Name);
+            fprintf('  View Name: %s  [Cat Name: %s]\n',obj.Name, obj.mycat.Name);
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
             fprintf('      Count: %d events\n',obj.Count);

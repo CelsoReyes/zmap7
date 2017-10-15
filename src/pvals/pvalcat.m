@@ -42,7 +42,7 @@ function pvalcat()
     ZG.newt2 = ZG.newt2.subset(l); %keep big-enough events
     
     ZG.hold_state2=true;
-    timeplot(ZG.newt2)
+    timeplot()
     ZG.hold_state2=false;
     
     CO = 0.01; % c-value (initial?)

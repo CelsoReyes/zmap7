@@ -35,7 +35,7 @@ function [sel] = bpvalgrid()
     ZG.newt2 = ZG.newt2.subset(l);
     ff=gcf
     ZG.hold_state2=true;
-    timeplot(ZG.newt2)
+    timeplot()
     ZG.hold_state2=false;
     figure(ff)
     dx = 0.025;

@@ -172,7 +172,7 @@ function h = create_message_figure()
         'String','Cum. Timeplot',...
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .25],...
-        'Callback','timeplot(''primeCatalog'')',... change to bring up cum timeplot
+        'Callback',{@do_timeplot,'primeCatalog'},... change to bring up cum timeplot
         'Tag','tsbutton');
     
     
@@ -219,7 +219,7 @@ function h = create_message_figure()
         'String','Cum. Timeplot',...
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .25],...
-        'Callback','timeplot(''newt2'')',... change to bring up cum timeplot
+        'Callback',{@do_timeplot,'newt2'}',... change to bring up cum timeplot
         'Tag','tsbutton');
     
     
@@ -264,13 +264,19 @@ function h = create_message_figure()
         'String','Cum. Timeplot',...
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .25],...
-        'Callback','timeplot(''newcat'')',... change to bring up cum timeplot
+        'Callback',{@do_timeplot,'newcat'},... change to bring up cum timeplot
         'Tag','tsbutton');
     
     update_current_catalog_pane();
     update_other_catalog_pane();
     update_selected_catalog_pane();
     
+end
+
+function do_timeplot(s,~, catName)
+    ZG=ZmapGlobal.Data;
+    ZG.newt2=ZG.(catName);
+    timeplot();
 end
 
 function do_catalog_overview(s,~)

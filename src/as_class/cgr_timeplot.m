@@ -514,14 +514,14 @@ function timeplot(mycat, nosort)
     
     function cut_tmd_callback(~,~)
         catalog_overview('newt2');
-        timeplot(ZG.newt2)
+        timeplot()
     end
     
     function cursor_timecut_callback(~,~)
         % will change ZG.newt2
         [tt1,tt2]=timesel('cum');
         ZG.newt2=ZG.newt2.subset(ZG.newt2.Date>=tt1&ZG.newt2.Date<=tt2);
-        timeplot(ZG.newt2);
+        timeplot();
     end
     
     function cb_hold(mysrc,myevt)
@@ -581,7 +581,8 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
         mycat = mycat(l+1:mycat.Count,:);
-        timeplot(mycat) ;
+        z
+        timeplot() ;
     end
     
     function cb_computefractal(mysrc,myevt, org)

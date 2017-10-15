@@ -484,7 +484,7 @@ classdef ShapeSelection
             obj.plot()
             ZG.newt2 = catalog.selectCircle(selcrit,obj.X0,obj.Y0,[]);
             ZG.newcat=ZG.newt2;
-            timeplot(ZG.newt2)
+            timeplot()
             %circle
         end
 
@@ -554,7 +554,7 @@ function cb_analyze(src,~)
     ZG=ZmapGlobal.Data;
     ZG.newt2 = ZG.primeCatalog;
     ZG.newcat = ZG.primeCatalog;
-    timeplot(ZG.newt2);
+    timeplot();
 end
 %}
 function cb_createshape(src,~,type)
@@ -662,7 +662,7 @@ function cb_selectp(src,~,in_or_out)
     end
     ZG.newt2=ZG.primeCatalog.subset(mask);
     ZG.newcat=ZG.newt2;
-    timeplot(ZG.newt2);
+    timeplot();
     
 end
 function cb_autogrid(~,~)

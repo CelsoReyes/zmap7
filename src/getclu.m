@@ -40,7 +40,7 @@ function clustNum0 = getclu(gecl, clustNum0)
     ZG.newt2 = ZG.original.subset(clus == val);
     
     if ~exist('tiplo', 'var')
-        timeplot(ZG.newt2);
+        timeplot();
     end
     nu = (1:ZG.newt2.Count) ;
     nu = nu';

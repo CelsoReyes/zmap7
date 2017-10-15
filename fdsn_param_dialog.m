@@ -622,7 +622,7 @@ end
     if ~isempty(nm)
         ZG.primeCatalog.Name=nm{1};
     end
-    
+    ZG.Views.primary=ZmapCatalogView('primeCatalog');
     clear tmp
     h=ZmapMessageCenter();
     h.update_catalog()%;
