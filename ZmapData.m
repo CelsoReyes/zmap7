@@ -21,8 +21,8 @@ classdef ZmapData < handle
         
         % positional
         fipo = get(groot,'ScreenSize') - [ 0 0 0 150];
-        welcome_pos = [80, ZmapData.fipo(4) - 380]; %wex wey
-        welcome_len = [340 300]; %welx, wely
+        welcome_pos = [80, ZmapData.fipo(4) - 380]; % wex wey
+        welcome_len = [340 300]; % welx, wely
         map_len = [750 650]; % winx winy
     end
     
@@ -56,9 +56,9 @@ classdef ZmapData < handle
         fontsz = FontSizeTracker;
         
         color_bg = [1 1 1] % was [cb1 cb2 cb3] axis background
-        color_fg = [.9 .9 .9]% was [c1 c2 c3] figure backgorund
+        color_fg = [.9 .9 .9] % was [c1 c2 c3] figure backgorund
         ms6 = 6 % standard markersize %TODO change to a markersize class
-        big_eq_minmag = 8  % events of this magnitude or higher are plotted & labeled
+        big_eq_minmag = 8 % events of this magnitude or higher are plotted & labeled
         lock_aspect = 'off';
         mainmap_grid = 'on';
         mainmap_plotby = 'depth'; % was typele
@@ -78,10 +78,10 @@ classdef ZmapData < handle
         minc
         maxc
         
-        %unknown other entities
-        Rconst %used with the slicers
-        ra=5% default max sphere radius
-        ni=100 %default number of nearby events for grid calculations
+        % unknown other entities
+        Rconst % used with the slicers
+        ra=5 % default max sphere radius
+        ni=100 % default number of nearby events for grid calculations
         compare_window_dur=years(1.5) % Compare window length (years)
         compare_window_dur_v3=years(1.0) % Compare window length, alternate version
         
@@ -106,16 +106,16 @@ classdef ZmapData < handle
             'GridEntireArea',false,...
             'SaveGrid',false,'LoadGrid',false,'CreateGrid',true); % options used for creating a grid
         GridSelector;% criteria used to select events at a grid point
-        selection_shape=ShapeSelection();
+        selection_shape=ShapeGeneral();
         debug='on'; % makes special menus visible
         
-        Views=struct('primary',[],'selected',[],'layers',[]); % catalog views
+        Views=struct('primary',[],'layers',[]); % catalog views
     end
     properties(Dependent)
-        wex %welcome window x (welcome_pos(1))
-        wey %welcome window y (welcome_pos(2))
-        welx %welcome window x length
-        wely %welcome window y length
+        wex % welcome window x (welcome_pos(1))
+        wey % welcome window y (welcome_pos(2))
+        welx % welcome window x length
+        wely % welcome window y length
         
         t0b % start time for earthquakes in primary catalog
         teb % end time for earthquakes in primary catalog

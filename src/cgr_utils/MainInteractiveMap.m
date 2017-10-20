@@ -3,7 +3,7 @@ classdef MainInteractiveMap
     %  plotting of all features, overlays, and events happens through
     %  class.
     %
-    %
+    % 
     
     % TODO: add menu option to delete layers from the map.
     properties
@@ -21,6 +21,10 @@ classdef MainInteractiveMap
             obj.initial_setup()
         end
         
+        function v = View(obj)
+            % always deals with the primary view
+            v=ZG.Views.primary;
+        end
         function update(obj, opt)
             % update will update the map window. 
             % obj.update() updates the map window
@@ -104,7 +108,8 @@ classdef MainInteractiveMap
             dcm_obj = datacursormode(h);
             dcm_obj.UpdateFcn = @event_datacursor_txt;
             
-            watchon; drawnow;
+            watchon; 
+            drawnow;
             ax = axes('Parent',h,'Position',[.09 .09 .85 .85],...
                 'Tag',MainInteractiveMap.axTag,...
                 'FontSize',ZmapGlobal.Data.fontsz.s,...
@@ -127,6 +132,9 @@ classdef MainInteractiveMap
             end
             if isempty(ZG.Views.primary)
                 ZG.Views.primary=ZmapCatalogView('primeCatalog');
+            else
+                disp('Reusing view:');
+                disp(ZG.Views.primary);
             end
             %MainInteractiveMap.plotEarthquakes(ZG.primeCatalog)
             MainInteractiveMap.plotEarthquakes(ZG.Views.primary)
@@ -182,7 +190,7 @@ classdef MainInteractiveMap
                 add_menu_divider('mainmap_menu_divider');
             end
             obj.create_overlay_menu(force);
-            ShapeSelection.AddMenu(gcf);
+            ShapeGeneral.AddMenu(gcf);
             %obj.create_select_menu(force);
             obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
@@ -323,10 +331,8 @@ classdef MainInteractiveMap
             
             function cb_rename(~,~)
                 ZG=ZmapGlobal.Data;
-                nm=inputdlg('Catalog Name:','Rename',1,{ZG.primeCatalog.Name});
-                if ~isempty(nm)
-                    ZG.primeCatalog.Name=nm{1};
-                end
+                [~,~,Zg.primeCatalog.Name]=smart_inputdlg('Rename',...
+                    struct('prompt','Catalog Name:','value',ZG.primeCatalog.Name));
                 ZmapMessageCenter.update_catalog();
                 zmap_update_displays();
             end
@@ -391,6 +397,12 @@ classdef MainInteractiveMap
                 'Callback',@(~,~)inmisfit(),...
                 'Enable','off'); %TOFIX: misfitcalclulation poorly documented, not sure what it is comparing.
             
+            function analyze_time_series_cb(~,~)
+                % analyze time series for current catalog view
+                ZG=ZmapGlobal.Data;
+                ZG.newt2 = obj.Catalog();
+                timeplot();
+            end
         end
         function create_topo_map_menu(obj,parent)
             submenu   =  uimenu(parent,'Label','Plot topographic map',...
@@ -497,7 +509,6 @@ classdef MainInteractiveMap
             % uimenu(submenu,'Label','Stress tensor quality','Callback',@(~,~)histo_callback('Quality '));
         end
         
-        
         function create_decluster_menu(obj,parent)
             submenu = uimenu(parent,'Label','Decluster the catalog'...,...
                 ...'Enable','off'...
@@ -508,6 +519,19 @@ classdef MainInteractiveMap
                 'Callback',@(~,~)declus_inp());
         end
         
+        function working_catalog = Catalog(obj)
+            % return the current catalog represented in this map, filtered by area selection
+            ZG=ZmapGlobal.Data;
+            tmpview = ZG.Views.primary;
+            if isempty(tmpview)
+                ZmapMessageCenter.set_info('No catalog view', 'The catalog view hasn''t been initialized yet')
+                working_catalog=ZG.primeCatalog;
+                return
+            end
+            tmpview = tmpview.PolygonApply(ZG.selection_shape);
+            working_catalog=tmpview.Catalog();
+        end
+            
         
     end
     methods(Static)
@@ -890,9 +914,9 @@ end
 function plot_large_quakes()
     ZG=ZmapGlobal.Data;
     mycat=ZmapCatalog(ZG.primeCatalog);
-    def = {num2str(ZG.big_eq_minmag)};
-    ni2 = inputdlg('Mark events with M > ? ','Choose magnitude threshold',1,def);
-    ZG.big_eq_minmag = str2double(ni2{1});
+
+    [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
+        struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
     
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
     zmap_update_displays(); %TOFIX changing magnitudes didn't chnge map output
@@ -1085,14 +1109,6 @@ function info_summary_callback(summarytext)
     p(4)=p(4)+10;
     f.Position=p;
     f.Visible='on';
-end
-
-function analyze_time_series_cb(~,~)
-    % analyze time series for current catalog view
-    ZG=ZmapGlobal.Data;
-    ZG.newt2 = ZG.Views.primary.Catalog();
-    %ZG.newcat = ZG.primeCatalog; 
-    timeplot();
 end
 
 function cb_create_permutated(src,~)

@@ -79,6 +79,8 @@ classdef ZmapCatalogView
     %   plotm - plot this view (catalog) on a map
     % 
     %   disp - display this view
+    %   trace - trace shows this and all Catalogs / Views from which this is descended
+    %   parent - return the object upon which this is based
     %   
     %   subset - get a catalog that is a subset of this view (catalog) via logical/numeric indexing
     % 
@@ -128,8 +130,8 @@ classdef ZmapCatalogView
     properties(Access=protected)
         mycat
         filter
-        polymask; % logical mask
-        polygon; % polygon.Latitude & polygon.Longitude
+        polymask = []; % logical mask
+        polygon=struct('Latitude',[],'Longitude',[]); % polygon.Latitude & polygon.Longitude
     end
     
     methods
@@ -199,7 +201,12 @@ classdef ZmapCatalogView
                 obj.mycat.Date >= obj.DateRange(1) & ...
                 obj.mycat.Date <= obj.DateRange(2);
             if ~isempty(obj.polymask)
-                f=f & obj.polymask;
+                if numel(f) ~= numel(obj.polymask)
+                    warning('mask and events out of sync. loosing polygon mask')
+                    obj=obj.PolygonRemove();
+                else
+                    f=f & obj.polymask;
+                end
             end
             if ~isempty(obj.sortby)
                 [~,idx]=sort(obj.mycat.(sortby));
@@ -475,6 +482,7 @@ classdef ZmapCatalogView
         end
         function disp(obj)
             fprintf('  View Name: %s  [Cat Name: %s]\n',obj.Name, obj.mycat.Name);
+            fprintf('     source: %s\n',obj.sourcename);
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
             fprintf('      Count: %d events\n',obj.Count);
@@ -514,13 +522,16 @@ classdef ZmapCatalogView
                 if isnumeric(polygon)
                     obj.polygon.Latitude=polygon(:,2);
                     obj.polygon.Longitude=polygon(:,1);
+                elseif isa(polygon,'ShapeGeneral')
+                    oln=polygon.Outline;
+                    obj.polygon.Latitude=oln(:,2);
+                    obj.polygon.Longitude=oln(:,1);
                 else
-                    obj.polygon.Latitude=polygon.Latitude;
-                    obj.polygon.Longitude=polygon.Longitude;
+                    error('unanticipated polygon input')
                 end
             end
-            if isempty(obj.polygon.Latitude)
-                % nothing to do
+            if isempty(obj.polygon.Latitude) || all(isnan(obj.polygon.Latitude))
+                    obj=obj.PolygonRemove();
                 return
             end
             obj.polymask = polygon_filter(obj.polygon.Longitude, obj.polygon.Latitude,...
@@ -530,9 +541,14 @@ classdef ZmapCatalogView
         
         function obj=PolygonRemove(obj)
             nargoutchk(1,1) % to avoid confusion, don't let this NOT be assigned
-            obj.polymask=[];
-            obj.polygon=struct('Lat',[],'Lon',[]);
-            refreshdata;
+            if ~isempty(obj.polymask) ||...
+                    ~isempty(obj.polygon.Latitude) ||...
+                    ~isempty(obj.polygon.Longitude)
+                obj.polymask=[];
+                obj.polygon.Latitude=[];
+                obj.polygon.Longitude=[];
+                refreshdata;
+            end
         end
         
         function obj=PolygonInvert(obj)
@@ -540,5 +556,17 @@ classdef ZmapCatalogView
             obj.polymask=~obj.polymask;
         end
             
+        function trace(obj)
+            % trace shows this and all Catalogs / Views from which this is descended
+            disp(obj)
+            disp(['- - - - from:' obj.sourcename]);
+            disp('v v v v');
+            disp(ZmapGlobal.Data.(obj.sourcename));
+        end
+        
+        function p=parent(obj)
+            % return the object upon which this is based
+            p=ZmapGlobal.Data.(obj.sourcename);
+        end
     end
 end

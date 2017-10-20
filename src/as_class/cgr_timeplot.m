@@ -618,9 +618,7 @@ function timeplot(mycat, nosort)
     end
     
     function cb_rename_cat(~,~)
-        nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
-        if ~isempty(nm)
-            mycat.Name=nm{1};
-        end
+        s.prompt='Catalog Name:'; s.value=mycat.Name;
+        [~,~, mycat.Name]=smart_inputdlg('Rename',s);
     end
 end

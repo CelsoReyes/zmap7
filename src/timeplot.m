@@ -4,7 +4,7 @@ function timeplot()
     % operates on catalog newt2 which is set by incomming routine
     % tracks its view using ZG.Views.timeplot
     %
-    % original view, when figure first called, is stored in figure's UserData
+    % original view, when figure first called, is stored in figure's UserData as UserData.View
     % 
     %
     %
@@ -53,13 +53,17 @@ function timeplot()
         
         timeplot_create_menu();
         ZG.hold_state2=false;
-        % myfig.UserData=ZG.Views.primary; % local copy of the main view.
+        % myfig.UserData.View=ZG.Views.primary; % local copy of the main view.
         
         % set a local view copy when the figure is created
-        myfig.UserData=ZmapCatalogView('newt2'); %maybe copy from primary view?
+        myfig.UserData.View=ZmapCatalogView('newt2'); %maybe copy from primary view?
         % and set the global view
-        ZG.Views.timeplot=myfig.UserData;
+        ZG.Views.timeplot=myfig.UserData.View;
         
+    else
+        % refresh
+        myfig.UserData.View=ZmapCatalogView('newt2'); %maybe copy from primary view?
+        ZG.Views.timeplot=myfig.UserData.View;
     end
     fig=figure(myfig);
     
@@ -424,7 +428,7 @@ function timeplot()
         % Resets the catalog to the original selection (view)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         
-        ZG.Views.timeplot=myfig.UserData;
+        ZG.Views.timeplot=myfig.UserData.View;
         mycat = ZG.newcat;
         close(gcf); % since callback, assume it is the right figure!
         timeplot();
@@ -440,7 +444,7 @@ function timeplot()
         ZG.newt2 = ZG.primeCatalog;
         ZG.Views.primary.sourcename = 'primeCatalog';
         
-        myfig.UserData=ZG.Views.timeplot;
+        myfig.UserData.View=ZG.Views.timeplot;
         ZG.newcat = ZG.primeCatalog;
         zmap_update_displays();
     end

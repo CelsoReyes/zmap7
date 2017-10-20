@@ -1,12 +1,14 @@
-function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
-    global  backcat n les teb t0b
+function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
+    % bvalca2
+    %  [bv, magco, std_backg, av, ~, ~ , ~, ~] = bvalca2(catalog)
+    
+    global  n les
     
     %report_this_filefun(mfilename('fullpath'));
     
-    ZG.newcat = b;
     dm1 = 0.1;
-    maxmag = max(ZG.newcat.Magnitude);
-    mima = min(ZG.newcat.Magnitude);
+    maxmag = max(mycat.Magnitude);
+    mima = min(mycat.Magnitude);
     if mima > 0 ; mima = 0 ; end
     
     % number of mag units
@@ -16,7 +18,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
     
-    [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:dm1:maxmag));
+    [bval,xt2] = hist(mycat.Magnitude,(mima:dm1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-dm1:mima);
@@ -26,7 +28,6 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     %
     i = find(difb == max(difb));
     i = max(i);
-    %i = length(xt3)-10*min(ZG.newcat.Magnitude);
     i2 = 1;
     magco = max(xt3(i));
     
@@ -51,8 +52,8 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     std_backg = ew;
     
     n = length(x);
-    l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
-    les = (mean(b.Magnitude(l)) - M1b(1))/dm1;
+    l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
+    les = (mean(mycat.Magnitude(l)) - M1b(1))/dm1;
     
     av=p(1,2);
     p=-p(1,1);

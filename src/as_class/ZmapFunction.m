@@ -59,7 +59,7 @@ classdef(Abstract) ZmapFunction < handle
     end
     
     properties(Abstract)
-        %THESE NEED TO BE DEFINED IN THE DERRIVED CLASSES' PROPERTEIS SECTION
+        %THESE NEED TO BE DEFINED IN THE DERRIVED CLASSES' PROPERTIES SECTION
         % these properties MUST be defined in every class derived from ZmapFunction
         OperatingCatalog % cell containing variable names of catalog(s) containing raw data. (from ZmapGlobal)
         ModifiedCatalog % variable name of catalog that is modified (if not empty). 

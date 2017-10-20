@@ -1,22 +1,20 @@
-function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
-    global  backcat n les teb t0b
+function [bv, magco, std_backg, av, me, mer , me2, rt] = bvalcalc(mycat)
+    % bvalcalc
+    %  [bv, magco, std_backg, av, me, mer , ~, rt] = bvalcalc(catalog)
+    
+    global n les
     
     report_this_filefun(mfilename('fullpath'));
     
-    ZG.newcat = b;
-    maxmag = max(ZG.newcat.Magnitude);
+    maxmag = max(mycat.Magnitude);
     dm1 = 0.1;
-    mima = min(ZG.newcat.Magnitude);
+    mima = min(mycat.Magnitude);
     if mima > 0 ; mima = 0 ; end
     
     % number of mag units
     nmagu = (maxmag*10)+1;
     
-    bval = zeros(1,nmagu);
-    bvalsum = zeros(1,nmagu);
-    bvalsum3 = zeros(1,nmagu);
-    
-    [bval,xt2] = hist(ZG.newcat.Magnitude,(mima:dm1:maxmag));
+    [bval,xt2] = hist(mycat.Magnitude,(mima:dm1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
     xt3 = (maxmag:-dm1:mima);
@@ -27,7 +25,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     %
     i = find(difb == max(difb));
     i = max(i);
-    %i = length(xt3)-10*min(ZG.newcat.Magnitude);
+    %i = length(xt3)-10*min(mycat.Magnitude);
     i2 = round(i/3);
     i = i ;
     magco = max(xt3(i));
@@ -35,7 +33,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     M1b = [xt3(i) bvalsum3(i)];
     M2b =  [xt3(i2) bvalsum3(i2)];
     
-    l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
+    l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
     so = log10(bval(10*M1b(1)+2)) - log10(bval(10*M2b(1)));
     me= so/( M2b(1)-0.2- M1b(1));
     mer = dm1;
@@ -47,14 +45,14 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalcalc(b)
     [p,s] = polyfit2(x,y,1);                   % fit a line to background
     f = polyval(p,x);
     f = 10.^f;
-    rt = (teb - t0b)/(10.^(polyval(p,7.0)));
+    rt = mycat.DateSpan() / (10.^(polyval(p,7.0)));
     r = corrcoef(x,y);
     r = r(1,2);
     std_backg = std(y - polyval(p,x));      % standard deviation of fit
     
     n = length(x);
-    l = b.Magnitude >= M1b(1) & b.Magnitude <= M2b(1);
-    les = (mean(b(l,6)) - M1b(1))/dm1;
+    l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
+    les = (mean(mycat.Magnitude(l)) - M1b(1))/dm1;
     
     
     av=p(1,2);

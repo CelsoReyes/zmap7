@@ -1,5 +1,6 @@
 function uiprint(action)
     %  function uiprint(action)
+    error('this version of uiprint no longer supported')
     %  A graphical user interface for printing a figure from matlab
     %  which sets up the printing options as menu options and builds
     %  the print command.

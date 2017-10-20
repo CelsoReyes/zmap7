@@ -1,39 +1,36 @@
-function stresswtime()
-    % Script: stresswtime.m
-    % Calculates stress tensor inversion using the approach by Michael (1987)
-    ZG=ZmapGlobal.Data;
+function stresswtime(mycat)
+    % stresswtime Calculates stress tensor inversion using the approach by Michael (1987)
+    % stresswtime(catalog)
+
+    dirbase= ZmapGlobal.Data.hodi;
     report_this_filefun(mfilename('fullpath'));
     
     mResStress = [];
-    def = {'50','10'};
-    sPrompt = {'Number of events in window','Step size'};
-    sdlgTitle = 'Window specifications'
-    answer = inputdlg(sPrompt,sdlgTitle,1,def);
-    l = answer{1};
-    ni = str2double(l);
-    nStep = str2double(answer{2});
+    sdlg.prompt='Number of events in window'; sdlg.value=50;
+    sdlg(2).prompt='Step size'; sdlg(2).value=10;
+    [~,~,ni,nStep] = smart_inputdlg('Window specifications', sdlg);
     
     % Path
     sPath = pwd;
     % Path to stress tensor inversion program
-    hodis = fullfile(ZG.hodi, 'external');
+    hodis = fullfile(dirbase, 'external');
     fs=filesep;
     % Select  fault plane solution
-    tmpi = [ZG.newt2(:,10:12) ];
+    tmpi = [mycat.Dip , mycat.DipDirection , mycat.Rake]; % was columns 10-12, perhaps.
     
     cd(hodis);
     
     
     
-    for i = 1:nStep:ZG.newt2.Count-ni
+    for i = 1:nStep:mycat.Count-ni
         % Check for data in catalog
         nCnt = i+ni;
-        if nCnt < ZG.newt2.Count-1
-            tmpi = [ZG.newt2(i:i+ni,10:12)];
-            fMeanTime = mean(ZG.newt2(i:i+ni,3));
+        if nCnt < mycat.Count-1
+            tmpi = [mycat.Dip(i:i+ni) , mycat.DipDirection(i:i+ni) , mycat.Rake(i:i+ni)]; % was columns 10-12, perhaps.
+            fMeanTime = mean(mycat.Date(i:i+ni));
         else
-            tmpi = [ZG.newt2(i:end,10:12)];
-            fMeanTime = mean(ZG.newt2(i:end,3));
+            tmpi = [mycat.Dip(i:end) , mycat.DipDirection(i:end) , mycat.Rake(i:end)]; % was columns 10-12, perhaps.
+            fMeanTime = mean(mycat.Date(i:end));
         end
         % Create data file for inversion
         fid = fopen('data2','w');
@@ -46,15 +43,15 @@ function stresswtime()
         % Michael(1987): creates data2.oput
         switch(computer)
             case 'GLNX86'
-                unix(['"' ZG.hodi fs 'external/slick_linux" data2 ']);
+                unix(['"' dirbase fs 'external/slick_linux" data2 ']);
             case 'MAC'
-                unix(['"' ZG.hodi fs 'external/slick_macppc" data2 ']);
+                unix(['"' dirbase fs 'external/slick_macppc" data2 ']);
             case 'MACI'
-                unix(['"' ZG.hodi fs 'external/slick_maci" data2 ']);
+                unix(['"' dirbase fs 'external/slick_maci" data2 ']);
             case 'MACI64'
-                unix(['"' ZG.hodi fs 'external/slick_maci" data2 ']);
+                unix(['"' dirbase fs 'external/slick_maci" data2 ']);
             otherwise
-                dos(['"' ZG.hodi fs 'external\slick.exe" data2 ']);
+                dos(['"' dirbase fs 'external\slick.exe" data2 ']);
         end
         % Get data from data2.oput
         sFilename = ['data2.oput'];
@@ -66,15 +63,15 @@ function stresswtime()
         %unix([hodi fs 'external/slfast data2 ']);
         switch(computer)
             case 'GLNX86'
-                unix(['"' ZG.hodi fs 'external/slfast_linux" data2 ']);
+                unix(['"' dirbase fs 'external/slfast_linux" data2 ']);
             case 'MAC'
-                unix(['"' ZG.hodi fs 'external/slfast_macpcc" data2 ']);
+                unix(['"' dirbase fs 'external/slfast_macpcc" data2 ']);
             case 'MACI'
-                unix(['"' ZG.hodi fs 'external/slfast_maci" data2 ']);
+                unix(['"' dirbase fs 'external/slfast_maci" data2 ']);
             case 'MACI64'
-                unix(['"' ZG.hodi fs 'external/slfast_maci" data2 ']);
+                unix(['"' dirbase fs 'external/slfast_maci" data2 ']);
             otherwise
-                dos(['"' ZG.hodi fs 'external\slfast.exe" data2 ']);
+                dos(['"' dirbase fs 'external\slfast.exe" data2 ']);
         end
         
         load data2.slboot

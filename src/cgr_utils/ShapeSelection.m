@@ -20,11 +20,9 @@ classdef ShapeSelection
     %
     
     properties
-        Points=[nan nan] % points within polygon [X1,Y1;...;Xn,Yn]
+        Points=[nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
         Type='unassigned' % shape type
-        Radius=5; % active radius km (if circle) -- updated if ni
-        CircleBehavior='radius' % one of {'radius', 'nevents', 'both'}
-        NEventsToEnclose=100; % radius is defined by the minimum radius that encloses this many events
+        Radius=5; % active radius km (if circle)
         ApplyGrid=true; %apply grid options to the selected shape.
     end
     
@@ -35,6 +33,7 @@ classdef ShapeSelection
         Lat
         Lon
         Area %area of shape. not available if shape is defined by # of events it encloses
+        Outline % get shape outline. like Points, except guaranteed to give outline instead of centerpoints
     end
     
     methods
@@ -123,26 +122,23 @@ classdef ShapeSelection
         function val=get.Lon(obj)
             val=obj.Points(:,1);
         end
-        function [mask]=InsideEvents(obj,catalog)
-            % INSIDEEVENTS return a logical index for a catalog, true for events inside polygon
+        function val=get.Outline(obj)
             switch obj.Type
                 case 'circle'
-                    % find by distance
-                    error('unimplemented');
+                    [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:.25:360)');
+                    val=[lon, lat];
                 otherwise
-                    mask = polygon_filter(obj.Points(:,1), obj.Points(:,2), catalog.Longitude, catalog.Latitude, 'inside');
+                    val = obj.Points;
             end
+        end
+        function [mask]=InsideEvents(obj,catalog)
+            % INSIDEEVENTS return a logical index for a catalog, true for events inside polygon
+            mask = polygon_filter(obj.Outline(:,1), obj.Outline(:,2), catalog.Longitude, catalog.Latitude, 'inside');
         end
         
         function mask=OutsideEvents(obj,catalog)
             % OUTSIDEENVENTS return a logical index for a catalog, true for events outside polygon
-            switch obj.Type
-                case 'circle'
-                    % find by distance
-                    error('unimplemented');
-                otherwise
-                    mask = polygon_filter(obj.Points(:,1), obj.Points(:,2), catalog.Longitude, catalog.Latitude, 'outside');
-            end
+            mask = polygon_filter(obj.Outline(:,1), obj.Outline(:,2), catalog.Longitude, catalog.Latitude, 'outside');
         end
         
         function plot(obj,ax, catalog, in_or_out, varargin)
@@ -183,25 +179,6 @@ classdef ShapeSelection
                     end
                 case 'circle'
                     [ minicat, max_km ] = catalog.selectCircle(obj.toStruct(), obj.X0, obj.Y0,[] );
-                    %{
-                    switch obj.CircleBehavior
-                        case 'radius'
-                            [msk, km]=eventsInRadius(catalog, obj.Y0, obj.X0, obj.Radius); %lat,lon,radius
-                        case 'nevents'
-                            [msk, km]=closestEvents(catalog,obj.Y0, obj.X0, [],obj.NEventsToEnclose);%lat,lon,depth,radius
-                        case 'both'
-                            [msk, km]=closestEvents(catalog,obj.Y0, obj.X0, [],obj.NEventsToEnclose);%lat,lon,depth,radius
-                            if km > obj.Radius
-                                [msk2, km]=eventsInRadius(catalog,obj.Y0, obj.X0, obj.Radius); %lat,lon,radius
-                                msk=msk & msk2;
-                            end
-                        otherwise
-                            error('undefined circle behavior')
-                    end
-                    if isempty(km)
-                        km=obj.Radius;
-                    end
-                %}
                     [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(max_km),(0:.25:360)');
                     
                     plot(lon,lat,'k','LineWidth',2.0,'Tag','shapeoutline',...
@@ -331,7 +308,9 @@ classdef ShapeSelection
                 end
             end
         end
-        
+        function tf=isempty(obj)
+            tf=isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
+        end
         function s=toStruct(obj)
             s.Points=obj.Points;
             s.Type=obj.Type;
@@ -342,20 +321,11 @@ classdef ShapeSelection
             x.Lat=obj.Lat;
             x.Lon=obj.Lon;
             % s=struct(obj);
-            s.numNearbyEvents=obj.NEventsToEnclose;
             s.radius_km = obj.Radius;
-            switch obj.CircleBehavior
-                case 'radius'
-                    s.useNumNearbyEvents=false;
-                    s.useEventsInRadius=true;
-                case 'nevents'
-                    s.useNumNearbyEvents=true;
-                    s.useEventsInRadius=false;
-                case 'both'
-                    s.useNumNearbyEvents=true;
-                    s.useEventsInRadius=true;
-            end
+            s.useNumNearbyEvents=false;
+            s.useEventsInRadius=true;
         end
+        
         function save(obj)
             ZG=ZmapGlobal.Data;
             zmap_shape=obj;
@@ -438,27 +408,27 @@ classdef ShapeSelection
             % only active when choosing a circle
             uimenu(submenu,'Label',sprintf('Select EQ in Radius %.3f km',ZGshape.Radius),...
                 'separator','on',...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'radius'));
-            uimenu(submenu,'Label',...
-                sprintf('Select EQ : closest %d events to (%.3f , %.3f)',ZGshape.NEventsToEnclose,ZGshape.Y0, ZGshape.X0),...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'nevents'));
-            uimenu(submenu,'Label',...
-                sprintf('Select EQ :closest %d events up to %.3f km distance',ZGshape.NEventsToEnclose,ZGshape.Radius),...
-                'Visible',vis,'Callback',@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'both'));
+                'Visible',vis,'Callback',{@cb_selectp,'inside'});%@(~,~)ZGshape.select_circle_events(ZG.primeCatalog,'radius'));
             
-            
+            uimenu(submenu,'Label',sprintf('Select EQ beyond Radius %.3f km',ZGshape.Radius),...
+                'Visible',vis,'Callback',{@cb_selectp,'outside'});
             % options for choosing a shape
-            polymenu=uimenu(submenu,'Separator','on','Label','Use polygon');
-            uimenu(polymenu,'Label','Set Polygon: Box...','Callback',{@cb_createshape,'box'});
-            uimenu(polymenu,'Label','Set Polygon: Current Axes','Callback',{@cb_createshape,'axes'});
-            uimenu(polymenu,'Label','Set Polygon: Irregular shape...','Callback',{@cb_createshape,'polygon'});
+            usebox=uimenu(submenu,'Separator','on','Label','Set Polygon: Box...','Callback',{@cb_createshape,'box'});
+            useaxes=uimenu(submenu,'Label','Set Polygon: Current Axes','Callback',{@cb_createshape,'axes'});
+            usepoly=uimenu(submenu,'Label','Set Polygon: Irregular shape...','Callback',{@cb_createshape,'polygon'});
             usecirc=uimenu(submenu,'Label','Use Circle...','Callback',{@cb_createshape,'circle'});
-            switch ZGshape.Type
-                case 'circle'
-                    usecirc.Checked='on';
-                case {'polygon','axes','box'}
-                    polymenu.Checked='on';
-            end
+            usecirc=uimenu(submenu,'Label','Set Circle: mouse click','Callback',@cb_select_c_and_r);
+            %usecirc=uimenu(submenu,'Label','Use Circle...','Callback',{@cb_createshape,'circle'});
+            %switch ZGshape.Type
+            %    case 'circle'
+             %       usecirc.Checked='on';
+             %   case 'polygon'
+             %       usepoly.Checked='on';
+             %   case 'axes'
+             %       useaxes.Checked='on';
+             %   case 'box'
+             %       usebox.Checked='on';
+            %end
             
             uimenu(submenu,'Separator','on',...
                 'Label','Load shape','Callback',@cb_load);
@@ -469,17 +439,13 @@ classdef ShapeSelection
             
             
         end
-        
     end
     
     methods(Access=private)
         
-        function select_circle_events(obj, catalog, behavior)
-            obj.CircleBehavior=behavior;
-            selcrit=struct('numNearbyEvents',obj.NEventsToEnclose,...
-                'radius_km',obj.Radius,...
-                'useEventsInRadius',ismember(behavior,{'radius','both'}),...
-                'useNumNearbyEvents',ismember(behavior,{'nevents','both'}));
+        function select_circle_events(obj, catalog)
+            selcrit=struct('radius_km',obj.Radius,...
+                'useEventsInRadius',true);
             ZG=ZmapGlobal.Data;
             obj.plot()
             ZG.newt2 = catalog.selectCircle(selcrit,obj.X0,obj.Y0,[]);
@@ -537,7 +503,15 @@ function cb_outlinetoggle(src,~)
 end
 
 function cb_crop(src,~,in_or_out)
+    cb_selectp(src,[],in_or_out)
+    curfig=gcf;
+    tmpcat= curfig.UserData.View.Catalog();
+    if isempty(tmpcat) || ~isa(tmpcat,'ZmapCatalog')
+        error('could not crop. this figure''s catalog (view) is empty');
+    end
     ZG=ZmapGlobal.Data;
+    ZG.primeCatalog=tmpcat;
+    
     switch in_or_out
         case 'inside'
             mask=ZG.selection_shape.InsideEvents(ZG.primeCatalog);
@@ -559,11 +533,16 @@ end
 %}
 function cb_createshape(src,~,type)
     ZG=ZmapGlobal.Data;
-    try
+    %try
+        f=gcf;
         ZG.selection_shape=ShapeSelection(type);
         
         % clear any checkmark for a previous shape
-        parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
+        parent=findobj(f,'Type','uimenu','-and','Label','Selection');
+        if isempty(parent)
+            warning('wrong figure')
+            return
+        end
         allmenus=findobj(parent,'Type','uimenu');
         shapeMenus=startsWith({allmenus.Label},'Set Polygon');
         shapeMenus=startsWith({allmenus.Label},'Use Circle') | shapeMenus;
@@ -574,9 +553,9 @@ function cb_createshape(src,~,type)
         set(allmenus(cropMenus),'Enable','on');
         % set this one on
         src.Checked='on';
-    catch ME
-        errordlg(ME.message);
-    end
+    %catch ME
+    %    errordlg(ME.message);
+    %end
     ShapeSelection.AddMenu(gcf); %also refreshes menu
     ZG.selection_shape.plot()
     %{
@@ -594,6 +573,12 @@ function cb_createshape(src,~,type)
     %}
 end
 
+function cb_select_c_and_r(src,~)
+    ZG=ZmapGlobal.Data;
+    ZG.selection_shape=ZG.selection_shape.select_circle();
+    ZG.selection_shape.Type='circle';
+    ZG.selection_shape.plot();
+end
 
 function cb_load(src,~)
     ZG=ZmapGlobal.Data;
@@ -650,21 +635,29 @@ function cb_applygrid(src,~)
     end
     ZG.Grid.plot();
 end
-function cb_selectp(src,~,in_or_out)    
+
+function cb_selectp(src,~,in_or_out)  
+    % works from view in current figure
+    thisfig=gcf;
     ZG=ZmapGlobal.Data;
-    switch in_or_out
-        case 'inside'
-            mask=ZG.selection_shape.InsideEvents(ZG.primeCatalog);
-        case 'outside'
-            mask=ZG.selection_shape.OutsideEvents(ZG.primeCatalog);
-        otherwise
-            mask=true(ZG.primeCatalog.Count,1);
+    try
+    myview=thisfig.UserData.View;
+    catch
+        warning('figure doesn''t have UserData.View ')
+        myview=ZG.Views.primary; %
     end
-    ZG.newt2=ZG.primeCatalog.subset(mask);
+    
+    myview=myview.PolygonApply(ZG.selection_shape.Outline);
+    if strcmp(in_or_out,'outside')
+        myview=myview.PolygonInvert;
+    end
+    thisfig.UserData.View=myview;
+    ZG.newt2=thisfig.UserData.View.Catalog; %ZG.primeCatalog.subset(mask);
     ZG.newcat=ZG.newt2;
     timeplot();
     
 end
+
 function cb_autogrid(~,~)
     ZG=ZmapGlobal.Data;
     [ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);
@@ -679,15 +672,14 @@ function cb_autoradius(~,~)
         'Percentile:',...
         'reach:'};
     defans={num2str(minNum), num2str(pct), num2str(reach)};
-    nn= inputdlg(prompt,'automatic radius' ,1,defans);
-    if isempty(nn)
-        beep;
+    sdlg.prompt='Required Number of Events:';sdlg.value=minNum;
+    sdlg(2).prompt='Percentile:';sdlg(2).value=pct;
+    sdlg(3).prompt='reach:';sdlg(3).value=reach;
+    [~,cancelled,minNum,pct,reach]=smart_inputdlg('automatic radius',sdlg);
+    if cancelled
+        beep
         return
     end
-    minNum=str2double(nn{1});
-    pct=str2double(nn{2});
-    reach=str2double(nn{3});
-    
     [r, evselch] = autoradius(ZG.primeCatalog, ZG.Grid, minNum, pct, reach);
     ZG.ra=r;
     ZG.ni=minNum;

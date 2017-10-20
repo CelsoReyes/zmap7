@@ -224,12 +224,8 @@ function calc_Omoricross()
         
         % if fixed magnitude of completeness, request from user
         if ZG.inb2 == 1
-            def = {'1.5'};
-            lines = 1;
-            title = ['Fixed Mc input'];
-            prompt = {'Enter Mc: '};
-            answer  = inputdlg(prompt,title,lines,def);
-            fMcFix = str2double(answer{1});
+            [~,~,fMcFix] = smart_inputdlg('Fixed Mc input',...
+            struct('prompt','Enter Mc:', 'value', 1.5));
         end
         
         mCross=nan(numel(gridcats),20);

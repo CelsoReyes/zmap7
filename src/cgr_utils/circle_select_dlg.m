@@ -63,7 +63,6 @@ function circle_select_dlg_OpeningFcn(hObject, eventdata, handles, varargin)
     handles.x_field.String=num2str(hObject.UserData.X0);
     handles.y_field.String=num2str(hObject.UserData.Y0);
     handles.radius_edit.String=num2str(hObject.UserData.Radius);
-    handles.nclosest_edit.String=num2str(hObject.UserData.NEventsToEnclose);
     % set something thanks to radial buttons
     
     % UIWAIT makes circle_select_dlg wait for user response (see UIRESUME)

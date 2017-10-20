@@ -617,12 +617,13 @@ end
         ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
     end
     pause(.1)
-    nm=inputdlg('Provide a catalog name (used in plots, files)','Name Catalog',1,{ZG.primeCatalog.Name});
-    pause(.1)
-    if ~isempty(nm)
-        ZG.primeCatalog.Name=nm{1};
-    end
+    
+    %name catalog
+    sdlg.prompt='Provide a catalog name (used in plots, files)';
+    sdlg.value=ZG.primeCatalog.Name;
+    [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
     ZG.Views.primary=ZmapCatalogView('primeCatalog');
+
     clear tmp
     h=ZmapMessageCenter();
     h.update_catalog()%;
