@@ -35,8 +35,18 @@ function add_grid_menu(parent)
     end
     
     function cb_autogrid(~,~)
+        % following assumes grid from main map
         ZG=ZmapGlobal.Data;
-        [ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);
+        m=mainmap;
+        [ZG.Grid,ZG.gridopt]=autogrid(m.Catalog(),true,true);
+        if ~isempty(ZG.selection_shape)
+            ZG.Grid = ZG.Grid.MaskWithPolygon(ZG.selection_shape.Lon,ZG.selection_shape.Lat);
+        end
+        ZG.Grid.plot(m.mainAxes,'markersize',30,'ActiveOnly')
+        % following assumes global 
+        %ZG=ZmapGlobal.Data;
+        %[ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);
+        %[ZG.Grid,ZG.gridopt]=autogrid(ZG.Views.primary,true,true);
     end
     
     function cb_autoradius(~,~)

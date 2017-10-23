@@ -522,8 +522,6 @@ enforce_gt_edit_relationship(handles.minradius, hObject);
 % --- Executes during object creation, after setting all properties.
 function maxradius_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to maxradius (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
@@ -535,8 +533,6 @@ end
 % --- Executes on button press in ignore_geo.
 function ignore_geo_Callback(hObject, eventdata, handles)
 % hObject    handle to ignore_geo (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of ignore_geo
 set([handles.minlatitude, handles.maxlatitude, ...
@@ -548,8 +544,6 @@ set([handles.latitude,handles.longitude,...
 % --- Executes on button press in Fetch.
 function Fetch_Callback(hObject, eventdata, handles)
 % hObject    handle to Fetch (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 % assemble the actual query
 % TODO: do this
 ZG=ZmapGlobal.Data;
@@ -599,7 +593,22 @@ end
     end
     watchon;
     whos queryset
+    
+    m=msgbox('Please wait while requested data is downloaded','Downloading');
+    mybutton=findobj(m,'Style','pushbutton');
+    mybutton.String='wait';mybutton.Enable='off';
+    drawnow
+    %% do the import
     tmp=import_fdsn_event(1, queryset{:});
+    
+    %%
+    % make it OK to close dialog box.
+    if isvalid(m)
+        m.Name='Done';
+        set(findobj(m,'Tag','MessageBox'),'String',...
+            sprintf('Done Downloading. Found %d events',tmp.Count));
+        set(mybutton,'Enable','on','String','OK');
+    end
     watchoff;
     
     % CONVERT
@@ -610,8 +619,6 @@ end
         ZG.primeCatalog=tmp;
     end
     ZG.primeCatalog.sort('Date')
-    % name it
-    
     provider_details=handles.data_provider.UserData(handles.data_provider.Value);
     if isempty(ZG.primeCatalog.Name) %TODO move this functionality into import_fdsn_event
         ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
@@ -623,7 +630,10 @@ end
     sdlg.value=ZG.primeCatalog.Name;
     [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
     ZG.Views.primary=ZmapCatalogView('primeCatalog');
-
+    
+    if isvalid(m)
+        close(m)
+    end
     clear tmp
     h=ZmapMessageCenter();
     h.update_catalog()%;

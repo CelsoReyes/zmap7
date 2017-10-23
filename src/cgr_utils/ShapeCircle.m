@@ -1,23 +1,7 @@
 classdef ShapeCircle < ShapeGeneral
-    %ShapeGeneral represents a geographical selection of events
+    %ShapeCircle represents a circular geographical selection of events
     %
-    %
-    % obj=ShapeGeneral() no shape. initialization
-    %
-    % ShapeGeneral.AddMenu(fig , ax) creates a selection menu on specified figure that provides
-    % methods to:
-    %     A. specify the shape.
-    %     B. Apply shape to catalog
-    %
-    %     C. load / save shape
-    % If the selection menu already exists, the submenu will be deleted and recreated.
-    %
-    % replaces selectp and perhaps ex_select and (?)
-    %
-    %
-    %  pg = ShapeGeneral(ax,'box')
-    %  % user is prompted for two points
-    %
+    % see also ShapeGeneral, ShapePolygon
     
     properties
         Radius=5; % active radius km (if circle)
@@ -38,7 +22,7 @@ classdef ShapeCircle < ShapeGeneral
             
             mm=mainmap;
             ax=mm.mainAxes();
-            axes(ax); % bring up axes of interest.  should be the map, with lat/lon
+            axes(ax); % should be the map, with lon/lat
             obj.Type='circle';
             ZG=ZmapGlobal.Data;
             try
@@ -58,11 +42,8 @@ classdef ShapeCircle < ShapeGeneral
                     return
                 end
                 ZG.selection_shape=obj;
-                %d=circle_select_dlg();
-                %uiwait(d);
-                %pause(1);
             else
-                obj=ShapeCircle.select_circle();
+                obj=ShapeCircle.select();
                 ZG.selection_shape=obj;
             end
             
@@ -101,9 +82,13 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=select_circle(varargin)
-            % also ShapeGeneral('circle', radius) OR ('circle', [x,y], radius)
-            % OR ShapeGeneral('circle', catalog [,radius])
+        function obj=select(varargin)
+            % ShapeCircle.select()
+            % ShapeCircle.select()
+            % ShapeCircle.select(radius)
+            % ShapeCircle.select('circle', [x,y], radius)
+            % ShapeCircle.select(catalog [,radius])
+            
             obj=ShapeCircle;
             % select center point, if it isn't provided
             if numel(varargin)==2
@@ -153,7 +138,6 @@ classdef ShapeCircle < ShapeGeneral
             
             % get rid of the menu if it already exists,but keep position
             
-            vis=logical2onoff(strcmp(ZGshape.Type, 'circle'));
             menuItems={'circleCreateDlg',...
                 'circleCreateMouse'};
             for j=1:numel(menuItems)

@@ -17,7 +17,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     %
     % see also autoradius, ZmapGrid, GridParameterChoice
     
-    assert(isa(catalog,'ZmapCatalog'), 'catalog must be a zmap catalog')
+    % assert(isa(catalog,'ZmapCatalog'), 'catalog must be a zmap catalog')
    
     % use 2-d histogram to automatically determine an appropriate grid coverage
     % for the catalog
@@ -28,7 +28,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         
         MAGICX=50;
         MAGICY=50;
-        DOAGAIN=median(max(N,[],1))>MAGICX || median(Max(N,[],2))>MAGICY;
+        DOAGAIN=median(max(N,[],1))>MAGICX || median(max(N,[],2))>MAGICY;
         prevNx=numel(XEDGES);
         prevNy=numel(YEDGES);
         while DOAGAIN
@@ -55,8 +55,8 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         XEDGES=linspace(XEDGES(1),XEDGES(end),prevNx);
         YEDGES=linspace(YEDGES(1),YEDGES(end),prevNy);
         % create a grid (on bin centers!)
-        zgrid=ZmapGrid('autogrid',XEDGES(1:end-1)-diff(XEDGES(1:2))/2,...
-            YEDGES(1:end-1)-diff(YEDGES(1:2))/2,'deg');
+        zgrid=ZmapGrid('autogrid',XEDGES(2:end)-diff(XEDGES(1:2))/2,...
+            YEDGES(2:end)-diff(YEDGES(1:2))/2,'deg');
         zgrid.Dx=zgrid.Xvector(2)-zgrid.Xvector(1);
         zgrid.Dy=zgrid.Yvector(2)-zgrid.Yvector(1);
         

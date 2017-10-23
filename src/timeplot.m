@@ -214,6 +214,9 @@ function timeplot()
         title(ax,['"', mycat.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
         
     end
+    function s = titleText()
+        s=['"', mycat.Name, '": Cumulative Earthquakes over time ' newline];
+    end
     
     function timeplot_create_menu()
         ZG=ZmapGlobal.Data;
@@ -342,6 +345,9 @@ function timeplot()
         % will change ZG.newt2
         [tt1,tt2]=timesel('cum');
         ZG.Views.timeplot.DateRange=[tt1, tt2];
+        ZG.newt2=ZG.Views.timeplot.Catalog();
+        f=gcf;
+        f.UserData.View=ZG.Views.timeplot;
         ZmapMessageCenter.update_catalog()
         timeplot();
     end
@@ -440,13 +446,10 @@ function timeplot()
         
         % replace the main catalog and its view.
         ZG.primeCatalog=ZG.Views.timeplot.Catalog();
-        ZG.Views.primary=ZG.Views.timeplot;
+        ZG.Views.primary.Name=ZG.primeCatalog.Name;
         ZG.newt2 = ZG.primeCatalog;
-        ZG.Views.primary.sourcename = 'primeCatalog';
-        
-        myfig.UserData.View=ZG.Views.timeplot;
-        ZG.newcat = ZG.primeCatalog;
         zmap_update_displays();
+        timeplot()
     end
     
     function cb_rename_cat(~,~)
@@ -457,15 +460,23 @@ function timeplot()
             nm=inputdlg('Catalog Name:','Rename',1,{myname});
             if ~isempty(nm)
                 ZG.(catname).Name=nm{1};
-                zmap_update_displays();
+                mycat.Name=nm{1};
+                set(get(gca,'title'),'String',titleText());
+                %zmap_update_displays();
             end
         else
             nm=inputdlg('Catalog Name:','Rename',1,{mycat.Name});
             if ~isempty(nm)
                 mycat.Name=nm{1};
-                zmap_update_displays();
+                set(get(gca,'title'),'String',titleText());
+                %zmap_update_displays();
+                
             end
         end
+        ZG.Views.timeplot.ViewName=mycat.Name;
+        ZG.Views.timeplot.Name=mycat.Name;
+        gcf.UserData.View.ViewName=ZG.Views.timeplot;
+        
         
         
     end

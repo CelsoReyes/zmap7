@@ -22,7 +22,8 @@ classdef MainInteractiveMap
         end
         
         function v = View(obj)
-            % always deals with the primary view
+            ZG=ZmapGlobal.Data;
+            % get view, always deals with the primary view
             v=ZG.Views.primary;
         end
         function update(obj, opt)
@@ -121,7 +122,7 @@ classdef MainInteractiveMap
             ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
             if isempty(ZG.primeCatalog)
                 errordlg('No data exists in the currenty catalog')
-                title(ax, sprintf('No Events in Catalog :"%s"',ZG.primeCatalog.Name),'Interpreter','none');
+                title(ax, sprintf('No Events in Catalog :"%s"',ZG.Views.primary),'Interpreter','none');
                 return
             end
             title(ax, MainInteractiveMap.get_title(ZG.Views.primary),'FontWeight','normal',...
@@ -194,6 +195,14 @@ classdef MainInteractiveMap
             %obj.create_select_menu(force);
             obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
+            
+            % add quit menu to main file menu
+            hQuit=findall(gcf,'Label','QuitZmap');
+            if isempty(hQuit)
+                mainfile=findall(gcf,'Tag','figMenuFile');
+                uimenu(mainfile,'Label','Quit Zmap','Separator','on',...
+                'Callback',@(~,~)restartZmap);
+            end
         end
         
         function create_overlay_menu(obj,force)
@@ -981,13 +990,18 @@ function change_legend_breakpoints(~, ~)
     % TODO fix this, breakpoints aren't changed
     ZG=ZmapGlobal.Data;
     dlg_title='Change Breakpoints';
+    options.Resize='on';
     num_lines=1;
     switch ZmapGlobal.Data.mainmap_plotby
         case {'tim','time'}
             div=ZG.date_divisions;
-            prompt='Specify date divisionss or "--". ex.  "datetime(2000,1,1):years(3):datetime(2015,1,1)" or "datetime([2010;2012;2015],1,1)"';
+            prompt={'Specify date divisions or "--".',...
+                ' ex. ',...
+                '  datetime(2000,1,1):years(3):datetime(2015,1,1)',...
+                'or ',...
+                '  datetime([2010;2012;2015],1,1)',' '};
             def_ans={char(strjoin(['datetime({''', strjoin(string(div,'uuuu-MM-dd'),''','''), '''})'],''))};
-            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            myans=inputdlg(strjoin(prompt,'\n'),dlg_title,3,def_ans,options);
             if ~isempty(myans)
                 if ~strcmp(myans{1},'--')
                     div=myans{1}; % NO divisions
@@ -1004,7 +1018,7 @@ function change_legend_breakpoints(~, ~)
             div=ZG.depth_divisions;
             prompt='Specify depth divisions or "--". ex.  "5:10:50" or "[5 15 25]';
             def_ans={mat2str(div)};
-            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
             if ~isempty(myans)
                 if strcmp(myans{1},'--')
                     div=myans{1}; % NO divisions
@@ -1027,7 +1041,7 @@ function change_legend_breakpoints(~, ~)
             div=ZG.magnitude_divisions;
             prompt='Specify magnitude divisions or "--". ex.  "[1 5 7]';
             def_ans={mat2str(div)};
-            myans=inputdlg(prompt,dlg_title,num_lines,def_ans);
+            myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
             if ~isempty(myans)
                 if strcmp(myans{1},'--')
                     div=myans{1}; % NO divisions

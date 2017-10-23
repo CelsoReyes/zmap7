@@ -460,6 +460,7 @@ classdef ZmapCatalogView
         function c=Catalog(obj)
             % get the subset catalog represented by this view
             c=obj.mycat.subset(obj.filter);
+            c.Name=obj.ViewName;
         end
         
         function c=subset(obj,idx)
@@ -504,6 +505,32 @@ classdef ZmapCatalogView
             if ~isempty(obj.sortby)
                 disp(['  sorted by: ' obj.sortby]);
             end
+        end
+        function blurb(obj, leadingspaces)
+            if ~exist('leadingspaces','var')
+                leadingspaces=0;
+            end
+            if numel(obj)>1
+                fprintf('multiple views  size:%s\n',mat2str(size(obj)));
+                for i=1:numel(obj)
+                    blurb(obj(i),leadingspaces+20);
+                end
+                return
+            end
+            s=repmat(' ',1,leadingspaces);
+            % one line summary
+            fprintf('%s ZmapCatalogView "%s" -> %s',s, obj.Name, obj.sourcename);
+            
+            % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
+            
+            fprintf(' {%d/%d events}',obj.Count,ZmapGlobal.Data.(obj.sourcename).Count);
+            if ~isempty(obj.polymask)
+                fprintf('(POLY)');
+            end
+            if ~isempty(obj.sortby)
+                fprintf('(SORT:%s)',obj.sortby);
+            end
+            fprintf('\n');
         end
         
         function tf = isempty(obj)

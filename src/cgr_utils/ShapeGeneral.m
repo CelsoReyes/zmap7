@@ -108,7 +108,6 @@ classdef ShapeGeneral
             ax=mm.mainAxes();
             axes(ax); % bring up axes of interest.  should be the map, with lat/lon
             obj.Type=lower(type);
-            ZG=ZmapGlobal.Data;
             
             if ~exist('type','var')
                 obj.Type='unassigned';

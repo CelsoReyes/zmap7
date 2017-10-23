@@ -73,7 +73,8 @@ classdef ZmapCatalog < handle
     %   hypocentralDistanceTo - get distance (km) to a point, taking depth into consideration
     %   selectClosestEvents - return a catalog containing only N closest events
     %   selectRadius - return a catalog containing only events within a radius
-    %
+    
+    % TODO consider using matlab.mixin.CustomDisplay
     properties
         Name   % name of this catalog. Used when labeling plots
         Date        % datetime
@@ -575,9 +576,9 @@ classdef ZmapCatalog < handle
         end
         
         function [ minicat, max_km ] = selectCircle(obj, selcrit, x,y,z )
-            %select_circle Select events in a circle defined by either distance or number of events or both
-            % [ minicat, maxd ] = catalog.select_circle(selcrit);
-            % [ minicat, maxd ] = catalog.select_circle(selcrit, x,y,z ) %specify th
+            %selectCircle Select events in a circle defined by either distance or number of events or both
+            % [ minicat, maxd ] = catalog.selectCircle(selcrit);
+            % [ minicat, maxd ] = catalog.selectCircle(selcrit, x,y,z ) %specify th
             %
             %  SELCRIT is a structure containing one of the following set of fields:
             %    * numNearbyEvents (by itself) : runs function against this many closest events.
@@ -713,7 +714,12 @@ classdef ZmapCatalog < handle
         end
         
         function disp(obj)
-            disp(obj.summary('stats'));
+            if obj.Count > 0
+                fprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count());
+            else
+                disp('empty ZmapCatalog');
+            end
+            % disp(obj.summary('stats'));
         end
         function h=plot(obj,varargin)
             error('use a ZmapCatalogView instead');

@@ -150,6 +150,34 @@ classdef ZmapData < handle
                 error('only can convert durations and numerics to bin_dur');
             end
         end
+        
+        function disp_catalogs(obj)
+            p=properties(obj);
+            for n=1:numel(p)
+                cl=class(obj.(p{n}));
+                switch cl
+                    case 'ZmapCatalog'
+                        fprintf('%20s : ',p{n})
+                        disp(obj.(p{n}));
+                end
+            end
+        end
+        
+        function disp_views(obj)
+            f=fields(obj.Views);
+            for n=1:numel(f)
+                cl=class(obj.Views.(f{n}));
+                switch cl
+                    case 'ZmapCatalogView'
+                        fprintf('%20s : ',f{n})
+                        try
+                            blurb(obj.Views.(f{n}));
+                        catch
+                            disp(' unable to show');
+                        end
+                end
+            end
+        end
     end
 end
 

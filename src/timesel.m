@@ -1,5 +1,5 @@
 function [tt1,tt2]=timesel(tagn)
-    % function to select time intervalls for further examination
+    % function to select time intervals for further examination
     % when selecting time, pressing the y,m,d,h keys will shift the
     % date to the beginning of the nearest break.
     %
@@ -21,7 +21,9 @@ function [tt1,tt2]=timesel(tagn)
     hold on
     seti = uicontrol('Style','text','Units','normal',...
         'Position',[.4 .01 .2 .05],...
-        'String','Select Time 1 ','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold', 'ForegroundColor',[.2 0 .8]);
+        'String','Select Time 1',...
+        'FontSize',ZmapGlobal.Data.fontsz.m,...
+        'FontWeight','bold', 'ForegroundColor',[.2 0 .8]);
     % XLim=get(tiplot2,'Xdata');
     
     ZmapMessageCenter.set_info('Choose start date',sprintf('[%20s to %20s]   %s',...
@@ -38,7 +40,9 @@ function [tt1,tt2]=timesel(tagn)
             char(M1b,'uuuu-MM-dd hh:mm:ss'),...
             'CLICK ON PLOT',...
             ' Choose the ENDING date using the mouse (or y m d h keys)'));
-    
+    seti.String ='Select Time 2';
+    seti.ForegroundColor=[.8 .4 .4];
+    drawnow
     set(gcf,'Pointer','cross')
     [M2b, ~, ymdh] = ginput_datetime(ax,1);
     M2b = shiftDateByKey(M2b,ymdh);

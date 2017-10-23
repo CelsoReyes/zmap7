@@ -1,23 +1,7 @@
 classdef ShapePolygon < ShapeGeneral
-    %ShapeGeneral represents a geographical selection of events
+    %ShapePolygon represents a geographical selection of events
     %
-    %
-    % obj=ShapeGeneral() no shape. initialization
-    %
-    % ShapeGeneral.AddMenu(fig , ax) creates a selection menu on specified figure that provides
-    % methods to:
-    %     A. specify the shape.
-    %     B. Apply shape to catalog
-    %
-    %     C. load / save shape
-    % If the selection menu already exists, the submenu will be deleted and recreated.
-    %
-    % replaces selectp and perhaps ex_select and (?)
-    %
-    %
-    %  pg = ShapeGeneral(ax,'box')
-    %  % user is prompted for two points
-    %
+    % see also ShapeGeneral, ShapeCircle
     
     
     methods
@@ -90,6 +74,7 @@ classdef ShapePolygon < ShapeGeneral
             obj.setVisibility('on');
         end
      
+        %TODO decide where select_polygon and select_box really belong.
         function [obj] = select_polygon(obj)
             % select_polygon plots a polygon interactively using the mouse on selected axis
             % usage [ x, y, mask, mouse_overlay] = select_polygon(ax)
