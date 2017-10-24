@@ -20,16 +20,14 @@ function [X, Y, B] = ginput_datetime(ax, varargin)
     end
         
     axes(ax);
-    xlims = ax.XLim;
-    ylims = ax.YLim;
     [X, Y, B] = ginput(varargin{:});
     
-    if isa(xlims,'datetime')
-        X = min(xlims) + days(X);
+    X = num2ruler(X, ax.XAxis);
+    Y = num2ruler(Y, ax.YAxis);
+    if isa(X,'datetime')
         X = round_time(X,selector);
     end
-    if isa(ylims,'datetime')
-        Y = min(ylims) + days(Y);
+    if isa(Y,'datetime')
         Y = round_time(Y,selector);
     end
         

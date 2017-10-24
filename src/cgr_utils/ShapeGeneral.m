@@ -196,7 +196,8 @@ classdef ShapeGeneral
             tf=isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
         end
         function s=toStr(obj)
-            s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1));
+            % return 1 less point, since last & first points are the same
+            s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1)-1);
             %Extent: Lon: [ %s to %s ], Lat: [ %s to %s]'
         end
         function s=toStruct(obj)
@@ -255,8 +256,10 @@ classdef ShapeGeneral
             uimenu(submenu,'Label','Display Shape Outline','Checked','on',...
                 'Tag','shapeoutlinetoggle','Callback',@ShapeGeneral.cb_outlinetoggle);
             
+            % options for choosing a shape
+            ShapePolygon.AddPolyMenu(submenu,ZGshape);
+            ShapeCircle.AddCircleMenu(submenu, ZGshape);
             
-            add_grid_menu(submenu)
             % % menu items that change the main catalog % %
             isenabled = logical2onoff( ~strcmp(ZGshape.Type,'unassigned') );
             
@@ -279,10 +282,6 @@ classdef ShapeGeneral
                 'Enable','off','Visible',vis,...
                 'Label','[cannot select earthquakes, no active shape]');
             
-            
-            % options for choosing a shape
-            ShapePolygon.AddPolyMenu(submenu,ZGshape);
-            ShapeCircle.AddCircleMenu(submenu, ZGshape);
             
             uimenu(submenu,'Separator','on',...
                 'Label','Load shape','Callback',@ShapeGeneral.cb_load);

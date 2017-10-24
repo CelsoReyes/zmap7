@@ -843,6 +843,23 @@ classdef ZmapCatalog < handle
             delta_dep = (obj.Depth - to_depth_km);
             dists_km = sqrt( dists_km^2 + delta_dep ^2);
         end
+        
+        function rt = relativeTimes(obj, other)
+            % relativeTimes
+            % rt = obj.relativeTimes() get times relative to start
+            % rt = obj.relativeTimes(other) get times relative to another time
+        
+            if ~exist('other','var')
+                rt = obj.Date - min(obj.Date);
+                return
+            end
+            switch class(other)
+                case 'datetime'
+                    rt = obj.Date - datetime;
+                otherwise
+                    error('do not know how to compare to a .. try giving a specific date');
+            end
+        end
     end
     
 end

@@ -3,7 +3,7 @@ function stackorder_menu(parent)
     
     %TOFIX doesn't seem to attach to all items
     c=uicontextmenu;
-    set(parent,'UIContextMen',c);
+    set(parent,'UIContextMenu',c);
     uimenu(c,'Label','top','Callback',{@setstack,'top'});
     uimenu(c,'Label','up','Callback',{@setstack,'up'});
     uimenu(c,'Label','down','Callback',{@setstack,'down'});

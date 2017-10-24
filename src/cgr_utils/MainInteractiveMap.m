@@ -192,6 +192,7 @@ classdef MainInteractiveMap
             end
             obj.create_overlay_menu(force);
             ShapeGeneral.AddMenu(gcf);
+            add_grid_menu(uimenu('Label','Grid'));
             %obj.create_select_menu(force);
             obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);

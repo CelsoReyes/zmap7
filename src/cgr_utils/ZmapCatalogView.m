@@ -361,6 +361,23 @@ classdef ZmapCatalogView
             %linkdata on
         end
         
+        function rt = relativeTimes(obj, other)
+            % relativeTimes
+            % rt = obj.relativeTimes() get times relative to start
+            % rt = obj.relativeTimes(other) get times relative to another time
+        
+            if ~exist('other','var')
+                rt = obj.Date - min(obj.Date);
+                return
+            end
+            switch class(other)
+                case 'datetime'
+                    rt = obj.Date - datetime;
+                otherwise
+                    error('do not know how to compare to a .. try giving a specific date');
+            end
+        end
+        
         function h=plot(obj, ax, varargin)
             % PLOT this catalog. It will plot on
             % h=plot (obj,ax, varargin)
