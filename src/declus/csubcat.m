@@ -1,5 +1,5 @@
 function csubcat()
-    % csubcat plots the eqs of the original catalogrelated with the loaded cluster.
+    % csubcat plots the eqs of the original catalog related with the loaded cluster.
     % Most routines work similar like in the name map window
     %
     
@@ -327,7 +327,7 @@ function csubcat()
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        newccat=buildcat(2);
+        newccat=buildcat('original');
         csubcat;
     end
     

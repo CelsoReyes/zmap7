@@ -128,7 +128,8 @@ classdef ZmapFunctionDlg < handle
         end
         
         function [results,okPressed]=Create(obj, dlgTitle)
-            % Crete creates a dialog box based on a cell description of types within.
+            % Create creates a dialog box based on a cell description of types within.
+            % [results,okPressed]=Create(obj, dlgTitle)
             obj.okPressed=false;
             assert(~isempty(obj.parts),'Dialog cannot be created unless there are parts to add to it');
             hasGrid=false;
@@ -221,7 +222,9 @@ classdef ZmapFunctionDlg < handle
                             'Tag',[details.Tag '_label']);
                         
                         % this handles special cases, such as durations and datetime
+                        
                         [userData, mystr] = value2String(details.ClassName, details.Label, details.Value);
+                        
                         try
                         obj.parts{i}.handle=uicontrol('Style','edit',...
                             'Value',details.Value,...
@@ -240,6 +243,9 @@ classdef ZmapFunctionDlg < handle
                             'UserData',userData,...
                             'ToolTipString',details.ToolTipString,...
                             'Position',[editX labelY(i,didGrid,didEvSel) editW rowH-10]);
+                        end
+                        if isempty(userData)
+                            details.Callback(obj.parts{i}.handle);
                         end
                         
                     otherwise
@@ -308,7 +314,7 @@ classdef ZmapFunctionDlg < handle
                 
             elseif isduration(value)
                 callback=@cb_str2duration;
-            elseif isdatetime
+            elseif isdatetime(value)
                 callback=@cb_str2datetime;
             elseif ischar(value)
                 callback=@cb_str2str;

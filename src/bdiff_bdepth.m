@@ -8,8 +8,9 @@ function  bdiff_bdepth(mycat)
     %  originally, "mycat" was "newcat"
     %  Stefan Wiemer 1/95
     %
-    global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
-    global les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
+    global cluscat mess bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
+    global les n teb t0b cua  ew onesigma  S mrt bvalsumhold
+    global gBdiff % contains b1, n1, b2, n2
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
     
@@ -45,7 +46,7 @@ function  bdiff_bdepth(mycat)
         
         uicontrol('Units','normal',...
             'Position',[.0 .65 .08 .06],'String','Save ',...
-            'Callback',{@calSave9,xt3, bvalsum3});
+            'Callback',{@calSave9,magsteps_desc, bvalsum3});
     end
     
     maxmag = ceil(10*max(mycat.Magnitude))/10;
@@ -59,7 +60,7 @@ function  bdiff_bdepth(mycat)
     bvalsum = cumsum(bval); % N for M <=
     bval2 = bval(length(bval):-1:1);
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
-    xt3 = (maxmag:-0.1:mima);
+    magsteps_desc = (maxmag:-0.1:mima);
     
     
     backg_ab = log10(bvalsum3);
@@ -75,7 +76,7 @@ function  bdiff_bdepth(mycat)
         axes('position',rect);
     end
     
-    pldepth =semilogy(xt3,bvalsum3,'sb');
+    pldepth =semilogy(magsteps_desc,bvalsum3,'sb');
     set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
         'MarkerFaceColor','r','MarkerEdgeColor','b');
     hold on
@@ -85,15 +86,15 @@ function  bdiff_bdepth(mycat)
     %
     i = find(difb == max(difb));
     i = max(i);
-    te = semilogy(xt3(i),bvalsum3(i),'xk');
+    te = semilogy(magsteps_desc(i),bvalsum3(i),'xk');
     set(te,'LineWidth',1.5,'MarkerSize',ms10)
     
     % Estimate the b-value
     %
     i2 = 1 ;
-    te = semilogy(xt3(i2),difb(i2),'xk');
+    te = semilogy(magsteps_desc(i2),difb(i2),'xk');
     set(te,'LineWidth',1.5,'MarkerSize',ms10)
-    te = semilogy(xt3(i2),bvalsum3(i2),'xk');
+    te = semilogy(magsteps_desc(i2),bvalsum3(i2),'xk');
     set(te,'LineWidth',1.5,'MarkerSize',ms10)
     
     xlabel('Magnitude','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
@@ -106,15 +107,15 @@ function  bdiff_bdepth(mycat)
     cua = gca;
     
     M1b = [];
-    M1b = [xt3(i) bvalsum3(i)];
+    M1b = [magsteps_desc(i) bvalsum3(i)];
     tt3=num2str(fix(100*M1b(1))/100);
     
     M2b = [];
-    M2b =  [xt3(i2) bvalsum3(i2)];
+    M2b =  [magsteps_desc(i2) bvalsum3(i2)];
     tt4=num2str(fix(100*M2b(1))/100);
     
-    ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
-    x = xt3(ll);
+    ll = magsteps_desc >= M1b(1)-0.05  & magsteps_desc <= M2b(1) +0.05;
+    x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
     [ me, bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
@@ -214,17 +215,17 @@ function  bdiff_bdepth(mycat)
     if ZG.hold_state
         % calculate the probability that the two distributins are differnt
         l = mycat.Magnitude >=  M1b(1);
-        b2 = str2double(tt1); n2 = M1b(2);
-        n = n1+n2;
-        da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;
+        gBdiff.b2 = str2double(tt1); gBdiff.n2 = M1b(2);
+        n = gBdiff.n1+gBdiff.n2;
+        da = -2*n*log(n) + 2*gBdiff.n1*log(gBdiff.n1+gBdiff.n2*gBdiff.b1/gBdiff.b2) + 2*gBdiff.n2*log(gBdiff.n1*gBdiff.b2/gBdiff.b1+gBdiff.n2) -2;
         pr = exp(-da/2-2);
         disp(['Probability: ',  num2str(pr)]);
         txt1=text(.60, .75,['p=  ', num2str(pr,2)],'Units','normalized');
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.60, .70,[ 'n1: ' num2str(n1) ', n2: '  num2str(n2) ', b1: ' num2str(b1)  ', b2: ' num2str(b2)]);
+        txt1=text(.60, .70,[ 'gBdiff.n1: ' num2str(gBdiff.n1) ', gBdiff.n2: '  num2str(gBdiff.n2) ', gBdiff.b1: ' num2str(gBdiff.b1)  ', gBdiff.b2: ' num2str(gBdiff.b2)]);
         set(txt1,'FontSize',8,'Units','normalized')
     else
-        b1 = str2double(tt1); n1 = M1b(2);
+        gBdiff.b1 = str2double(tt1); gBdiff.n1 = M1b(2);
     end
     
     

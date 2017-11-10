@@ -203,7 +203,10 @@ classdef ZmapCatalog < handle
             elseif (nargin==0)
                 obj = ZmapCatalog;
             elseif isa(varargin{1},'ZmapCatalog')
-                obj = varargin{1};
+                % force a copy
+                idx=true(varargin{1}.Count,1);
+                obj = varargin{1}.subset(idx);
+                obj.Name=varargin{1}.Name;
             end
             
         end
@@ -232,6 +235,16 @@ classdef ZmapCatalog < handle
             % obj.Rake % position 12 of 12
         end
         
+        function tbl = table(obj)
+            % write catalog as a table.
+            st=struct(obj);
+            flds=fieldnames(st);
+            % to  convert to a table, all fields must be of same length
+            % but some fields aren't individual to events.
+            todelete=structfun(@(x)numel(x)~=st.Count , st);
+            st=rmfield(st,flds(todelete));
+            tbl = struct2table(st);
+        end
         function s =  summary(obj, verbosity,useTex)
             % return a summary of this catalog
             % valid verbosity values: 'simple', 'stats'
@@ -360,10 +373,17 @@ classdef ZmapCatalog < handle
             if ~isvalid(ax)
                 return
             end
-            obj.addFilter('Longitude','>=',min(ax.XLim));
-            obj.addFilter('Latitude','>=',min(ax.YLim));
-            obj.addFilter('Longitude','<=',max(ax.XLim));
-            obj.addFilter('Latitude','<=',max(ax.YLim));
+            filter_to_fieldunit(ax.XLabel, ax.XLim);
+            filter_to_fieldunit(ax.YLabel, ax.YLim);
+            filter_to_fieldunit(ax.ZLabel, ax.ZLim);
+            
+            function filter_to_fieldunit(label, lims)
+                myunit = get(label,'UserData');
+                if isa(myunit,'field_unit')
+                    obj.addFilter(myunit.fieldn,'>=',min(lims));
+                    obj.addFilter(myunit.fieldn,'<=',max(lims));
+                end
+            end
         end
         
         function cropToFilter(obj)
@@ -648,7 +668,6 @@ classdef ZmapCatalog < handle
             % newobj = obj.subset(range), where range evaluates to an integer array
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
-            
             obj = ZmapCatalog();
             obj.Date = existobj.Date(range);       % datetime
             obj.Longitude = existobj.Longitude(range) ;
@@ -713,14 +732,18 @@ classdef ZmapCatalog < handle
             fprintf('Removed %d duplicates\n', orig_size - obj.Count);
         end
         
-        function disp(obj)
+        function s= blurb(obj)
             if obj.Count > 0
-                fprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count());
+                s=sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count());
             else
-                disp('empty ZmapCatalog');
+                s='empty ZmapCatalog';
             end
-            % disp(obj.summary('stats'));
         end
+        
+        function disp(obj)
+            disp(obj.blurb);
+        end
+        
         function h=plot(obj,varargin)
             error('use a ZmapCatalogView instead');
         end
@@ -860,6 +883,10 @@ classdef ZmapCatalog < handle
                     error('do not know how to compare to a .. try giving a specific date');
             end
         end
+    end
+    
+    methods (Static)
+        
     end
     
 end

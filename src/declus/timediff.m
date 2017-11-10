@@ -1,24 +1,23 @@
 function [tdiff, ac]  = timediff(j,ci,tau, clus, eqtimes)
-    % timediff.m                                         A.Allmann
-    % calculates the time difference between the ith and jth event
-    % works with variable eqtime from function clustime.m
+    % TIMEDIFF calculates the time difference between the ith and jth event
+    % works with variable eqtime from function clustime
     % gives the indices ac of the eqs not already related to cluster k1
     
     % j : offset in eqtimes
     % ci : ith cluster
     % tau : look-ahead time
     % clus: clusters (length of catalog)
-    % eqtimes: datetimes for eevent catalog (newcat)
+    % eqtimes: datetimes for event catalog (newcat)
     
     tdiff=0;
-    n=1;    %tdiff index
+    n=1;    % tdiff index
     ac=[];
     
     comparetime = eqtimes(ci);
     
-    tooearly = eqtimes < comparetime;
-    toolate = eqtimes > (comparetime + tau);
-    tocompare = eqtimes(~tooearly & ~toolate);
+    tooearly = eqtimes < comparetime;         %  [110000]
+    toolate = eqtimes > (comparetime + tau);  %  [000011]
+    tocompare = eqtimes(~tooearly & ~toolate);%  [001100]
     tdiff = tocompare - comparetime;
     
     while tdiff(n) < tau       %while timedifference smaller than look ahead time

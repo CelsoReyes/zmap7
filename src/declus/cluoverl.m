@@ -1,6 +1,7 @@
 function cluoverl(var1)
-    %cluoverl.m                             A.Allmann
-    %orption to display equivalent events or biggest events or clear cluster events
+    %cluoverl option to display equivalent events or biggest events or clear cluster events
+    %                           A.Allmann
+    
     %
 
     global bgevent plot1_h plot2_h  

@@ -1,7 +1,16 @@
 function [tau] = funTaucalc(xk,mbg,k1,xmeff,bgdiff,P)
-%tauclac.m                                         A.Allmann
-%routine to claculate the look ahead time for clustered events
-%gives tau back
+% FUNTAUCALC calculate look ahead time for clustered events
+%
+% [tau] = FUNTAUCALC( xk,mbg,k1,xmeff,bgdiff,P)
+%   xk  : factor used for xmeff
+%   mbg : biggest magnitude in each cluster
+%   k1  :
+%   xmeff :
+%   bgdiff
+%   P : 
+%
+% A.Allmann
+
 
 % global xk mbg xmeff k1 P
 % global top denom deltam bgdiff

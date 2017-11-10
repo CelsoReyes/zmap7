@@ -2,7 +2,7 @@ function equi=equevent(mycat,clus)
 % equevent calc equivalent event to cluster
 % equi = equevent(catalog, cluster, bg)
 %   catalog : earthquake catalog
-%   cluster
+%   cluster :
 %   bg : index of a big event (?)
     %  equevent.m                        A.Allmann
     % calculates equivalent event to a cluster
@@ -23,7 +23,7 @@ function equi=equevent(mycat,clus)
     eqmoment=10.^(mycat.Magnitude.*1.2);
 
     for n=1:max(clus)
-        l = clus == n;
+        l = clus==n;
         if max(l) > 0
             j = j + 1;
             emoment=sum(eqmoment(l));         %moment

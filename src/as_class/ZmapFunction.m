@@ -219,7 +219,7 @@ classdef(Abstract) ZmapFunction < handle
         % THIS NEEDS TO BE CREATED IN THE DERRIVED CLASSES' STATIC METHODS SECTION
         AddMenuItem(parent)
         %{ 
-        sample implementaion here:
+        sample implementation here:
         function h=AddMenuItem(parent)
             % create a menu item that will be used to call this function/class
             h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME

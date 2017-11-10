@@ -118,8 +118,8 @@ classdef MainInteractiveMap
                 'Ticklength',[0.01 0.01],'LineWidth',1.0,...
                 'SortMethod','childorder',...
                 'Box','on','TickDir','out');
-            xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
-            ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
+            xlabel(ax,'Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m,'UserData',field_unit.Longitude)
+            ylabel(ax,'Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m,'UserData',field_unit.Latitude)
             if isempty(ZG.primeCatalog)
                 errordlg('No data exists in the currenty catalog')
                 title(ax, sprintf('No Events in Catalog :"%s"',ZG.Views.primary),'Interpreter','none');
@@ -194,7 +194,8 @@ classdef MainInteractiveMap
             ShapeGeneral.AddMenu(gcf);
             add_grid_menu(uimenu('Label','Grid'));
             %obj.create_select_menu(force);
-            obj.create_catalog_menu(force);
+            add_menu_catalog('primeCatalog','primary',force,gcf);
+            %obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
             
             % add quit menu to main file menu
@@ -275,7 +276,7 @@ classdef MainInteractiveMap
                 watchoff;
             end
         end
-
+%{
         function create_catalog_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_catalog');
             if ~isempty(h) && exist('force','var') && force
@@ -310,7 +311,7 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Compare catalogs - find identical events',...
                 'Callback',@(~,~)comp2cat);
             
-            uimenu(submenu,'Label','Save current catalog (ASCII)','Callback',@(~,~)save_ca());
+            uimenu(submenu,'Label','Save current catalog (ASCII)','Callback',@(~,~)save_zmapcatalog());
             uimenu(submenu,'Label','Save current catalog (.mat)','Callback',@(~,~)catSave());
             uimenu(submenu,'Label','Info (Summary)',...
                 'Separator','on',...
@@ -368,7 +369,7 @@ classdef MainInteractiveMap
                 timeplot('newcat');
             end
         end            
-
+%}
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
             if ~isempty(h) && exist('force','var') && force
@@ -1092,7 +1093,7 @@ function set_3d_view(src,~)
             grid(ax,'on');
             zlim(ax,'auto');
             %axis(ax,'tight');
-            zlabel(ax,'Depth [km]');
+            zlabel(ax,'Depth [km]','UserData',field_unit.Depth);
             ax.ZDir='reverse';
             rotate3d(ax,'on'); %activate rotation tool
             hold off
@@ -1114,7 +1115,7 @@ function histo_callback(hist_type)
     ZG=ZmapGlobal.Data;
     hisgra(ZG.Views.primary.Catalog(), hist_type);
 end
-
+%{
 function info_summary_callback(summarytext)
     f=msgbox(summarytext,'Catalog Details');
     f.Visible='off';
@@ -1125,12 +1126,12 @@ function info_summary_callback(summarytext)
     f.Position=p;
     f.Visible='on';
 end
-
+%}
 function cb_create_permutated(src,~)
     % will replace existing primary catalog
     ZG=ZmapGlobal.Data;
-    ZG.primeCatalog = syn_invoke_random_dialog(ZG.primeCatalog);
-    ZG.newt2 = ZG.primeCatalog; 
+    ZG.primeCatalog=syn_invoke_random_dialog(ZG.primeCatalog);
+    ZG.newt2 = ZmapCatalog(ZG.primeCatalog); 
     timeplot(); 
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
@@ -1140,7 +1141,7 @@ end
 function cb_create_syhthetic_cat(src,~)
     % will replace existing primary catalog
     ZG=ZmapGlobal.Data;
-    ZG.primeCatalog = syn_invoke_dialog(ZG.primeCatalog); 
+    ZG.primeCatalog=syn_invoke_dialog(ZG.primeCatalog); 
     ZG.newt2 = ZG.primeCatalog; 
     timeplot(); 
     zmap_update_displays(); 

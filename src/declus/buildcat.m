@@ -1,26 +1,26 @@
-function newt2=buildcat(var1)
-    %buildcat.m                                A.Allmann
+function newt2=buildcat(from_where)
     %builds declustered catalog with equivalent events
+    %buildcat.m                                A.Allmann
     %
    
     % highly modified by Celso Reyes, 2017
     global equi %[IN]
-    global clus eqtime original backequi bgevent
+    global clus original backequi bgevent
     ZG=ZmapGlobal.Data;
     
-    tm1=find(clus==0);    %elements which are not related to a cluster
+    eq_noclus=find(clus==0);    %elements which are not related to a cluster
     
-    if var1==1
+    if strcmp(from_where,'interactive')
         
         ans_ = questdlg('Replace mainshocks with equivalent events?',...
             'Replace mainshocks with equivalent events?',...
-            'Yes please','No thank you','No thank you' );
+            'Replace','No','No' );
         
         switch ans_
-            case 'Yes please'
-                tmpcat=cat(ZG.newcat.subset(tm1), ZmapCatalog(equi));  %new catalog, but not sorted
-            case 'No thank you'
-                tmpcat=cat(ZG.newcat.subset(tm1),bgevent); % builds catalog with biggest events instead
+            case 'Replace'
+                tmpcat=cat(ZG.newcat.subset(eq_noclus), ZmapCatalog(equi));  %new catalog, but not sorted
+            case 'No'
+                tmpcat=cat(ZG.newcat.subset(eq_noclus),bgevent); % builds catalog with biggest events instead
                 
                 disp('Original mainshocks kept');
                 
@@ -30,13 +30,16 @@ function newt2=buildcat(var1)
         %equivalent event
         tmpcat.sort('Date')
         
-    elseif var1==2
+    elseif strcmp(from_where,'original')
         if isempty(backequi)
-            tmpcat=cat(original.subset(tm1),ZmapCatalog(equi));
+            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(equi));
         else
-            tmpcat=cat(original.subset(tm1),ZmapCatalog(backequi));
+            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(backequi));
         end
+    else
+        error('unknown option for buildcat "%s"',from_where);
     end
+    
     if exist('tmpcat','var')
         tmpcat.sort('Date')
         newt2 = tmpcat;

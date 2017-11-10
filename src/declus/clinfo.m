@@ -4,14 +4,14 @@ function clinfo(var1)
     %
     %
     global cinfo p1
-
-
+    
+    
     if var1==1               %first call in P-Value window
-
+        
         % This is the info window text
         %
         ttlStr='The p-value Window                                 ';
-
+        
         hlpStr1=...
             ['The minimum magnitude is the smallest magnitude used for the '
             'p-value estimate. All eqs with a smaller magnitude will be   '
@@ -29,10 +29,10 @@ function clinfo(var1)
             '3)Sequence  :The main event is the first event in your chosen'
             '             eq-sequence.                                    '];
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==2          %second call in P-Value window
         ttlStr='The p-value window                                 ';
-
+        
         hlpStr1=...
             ['The P-Value and the two constants c and k, are calculated '
             ' using the modified Omori Law n(t)=k/(t+c)^-p             '
@@ -41,13 +41,13 @@ function clinfo(var1)
             ' log(n) = A +b*M                                          '
             'based on the constant k. The selected time and magnituide '
             '  parameter are shown inside the cumulative number plot   '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==3          %call in cluster window
         ttlStr='The cluster window                                 ';
-
-
+        
+        
         hlpStr1=...
             ['Aftershocks are displayed in red, foreshocks in blue.         '
             'The pink cross is  the location of the biggest EQ in the      '
@@ -58,13 +58,13 @@ function clinfo(var1)
             'can be made at any time. All functions work on the current    '
             'catalog. Hit "Back" to go to the original Cluster window.     '
             'To go back to Cluster Menu, select "Close" from the workspace.'];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
-
+        
+        
     elseif var1==4             %call in cumulative number window
         ttlStr='The cumulative number  window                         ';
-
+        
         hlpStr1=...
             ['This window shows the cumulative number of EQs versus time    '
             'It operates on the current catalog of the window where you    '
@@ -78,15 +78,15 @@ function clinfo(var1)
             'window interactivly with the mouse. After hitting "Timcut"    '
             'you only have to pick to times in the Cumulative Number Plot  '
             'with the LEFT mouse button                                    '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
-
+        
+        
     elseif var1==5            %Call out of LTA from Cumulative number
         ttlStr='                          ';
-
-
-
+        
+        
+        
         hlpStr1=...
             ['This window displays the cumulative number of eqs versus   '
             'time and the LTA-function to recognize rate changes. The   '
@@ -97,13 +97,13 @@ function clinfo(var1)
             'threshold. Back returns to the original cumulative number  '
             'plot. Close removes the window.                            '];
         zmaphelp(ttlStr,hlpStr1)
-
-
+        
+        
     elseif var1==6            %call from main Cluster Menu
-
+        
         ttlStr='                          ';
-
-
+        
+        
         hlpStr1=...
             ['Map view of clusters. Select offers you the choice of    '
             'area  selections. Cuts allows cuts in magnitude, depth,  '
@@ -121,13 +121,13 @@ function clinfo(var1)
             'display of all EQs (blue dot), equivalent events (green  '
             'crosses) and biggest events of a  cluster (pink crosses) '
             'respectively.                                            '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
-
+        
+        
     elseif var1==7              %call from histogram
         ttlStr='                          ';
-
+        
         hlpStr1=...
             ['Histogram of  the parameter you selected. If the call '
             'comes from CLUSTER MENU, the histogram is displayed   '
@@ -142,12 +142,12 @@ function clinfo(var1)
             'creates a input window for a vector. (e.g. 0:1:15)    '
             'After data input hit " GO".                           '];
         zmaphelp(ttlStr,hlpStr1)
-
-
+        
+        
     elseif var1==8              %call from b-value plot
         ttlStr='                          ';
-
-
+        
+        
         hlpStr1=...
             ['b-value evaluation. Choose magnitude one as the        '
             'smaller magnitude at the beginning of the slope and    '
@@ -157,14 +157,14 @@ function clinfo(var1)
             'to the curve, the slope of this line  is the           '
             'b-value that will be shown printed in the graph with   '
             'standard deviation.                                    '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==9
         ttlStr=' Declustering an earthquake catalog ';
-
-
-
+        
+        
+        
         hlpStr1=...
             ['The declustering is based on an algorithm by Reasenberg        '
             '(1985) which separates the dependent and independent seismicity'
@@ -183,12 +183,12 @@ function clinfo(var1)
             'areas. We recommend to consult                                 '
             'cumulative number plots after the declustering, to evaluate the'
             'performance of the declustering.                               '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==10
         ttlStr=' Unstable P-Value Evaluation ';
-
+        
         hlpStr1=...
             ['The algorithm was shut down to avoid a segmentation fault     '
             'The program could not find a stable solution for the p-value  '
@@ -201,12 +201,12 @@ function clinfo(var1)
             'Another reason for an unstable result migth be, that the      '
             'chosen eathquake sequence does not have enough events to      '
             'calculate a reliable p-value.                                 '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==11
         ttlStr=' Time Selection';
-
+        
         hlpStr1=...
             ['Select starttime and endtime in the green fields or use the   '
             'option "Mouse".                                               '
@@ -215,21 +215,21 @@ function clinfo(var1)
             'interest.                                                     '
             'All earthquakes will be selected which are in a cluster whose '
             'equivalent event is in the chosen time window                 '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==12
         ttlStr=' Time Selection';
-
+        
         hlpStr1=...
             ['Select the minimum and maximum timedifference relative to the '
             'starttime.                                                    '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==13
         ttlStr=' Seislap ';
-
+        
         hlpStr1=...
             ['Seislap is based on a method by Jochen Zschau from Potsdam    '
             'It estimates the relative quiesence and plots it as a function'
@@ -255,12 +255,12 @@ function clinfo(var1)
             '       times you calculate the relative quiescence            '
             '       A short binlength causes longer computation times but  '
             '       more accurate results. The default is 1 day.           ' ];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==14
         ttlStr='Seislap Plot';
-
+        
         hlpStr1=...
             ['Plot of the relative quiescence for a chosen point of interest.'
             'You can adjust three basic parameters in the green fields and  '
@@ -276,12 +276,12 @@ function clinfo(var1)
             'the input parameters to expand your space-time window.         '
             'The black cross shows the location of the biggest event in the '
             'examined sequence.                                             '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==15               %parameter selection map window
         ttlStr='Select parameters';
-
+        
         hlpStr1=...
             ['The default values in the yellow input fields are the limits   '
             'of the recent catalog.                                         '
@@ -289,22 +289,22 @@ function clinfo(var1)
             'a new catalog.                                                 '
             'If you want to return  to the original catalog you have to hit '
             'the option "Reset catalog" in the main map window.             '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==16               %parameter selection map window
         ttlStr='Misfit Calculation';
-
+        
         hlpStr1=...
             ['Needed to be fixede yellow input fields are the limits         '
             '  .........                                                    '
             '                      ...............                          '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==17               %input window b with magnitude
         ttlStr='b-value with magnitude';
-
+        
         hlpStr1=...
             ['This routine calculates the b-value of a given sequence based'
             ' on weighted LS and on the maximum liklelihood method for    '
@@ -321,12 +321,12 @@ function clinfo(var1)
             ' A bigger step size can speed up the program considerable if '
             ' the sequence contains many events and your interest lays in '
             ' a general trend                                             '];
-
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==18                %input window p-value with magnitude
         ttStr='p-value with magnitude';
-
+        
         hlpStr1=...
             ['Everything works as in the "info" of the normal p-value esti-'
             'mate. In addition you can input a range for the used minimum '
@@ -341,17 +341,17 @@ function clinfo(var1)
             'vicinity of the magnitude of completness. The stability of   '
             'the p-value adjacent to that magnitude gives you some means  '
             ' to judge the reliability of the whole estimate              '];
-
-
+        
+        
         zmaphelp(ttlStr,hlpStr1)
-
+        
     elseif var1==19              %input window p-value with time
         ttlStr='p-value with time';
-
+        
         hlpStr1=...
             ['Everything works as in the "info" of the normal p-value esti- '
             'mate. In addition you can input a range for the used end time '
             'The range has to be written as a vector in matlab. Input first'];
-
+        
     end
-
+end

@@ -20,6 +20,7 @@ path_list = [
     'synthetic';
     'utils';
     fullfile('system_dependent',computer)});
+    fullfile(hodi,'src','cgr_utils',{'grids';'gui';'selections'});
     {fullfile(hodi, 'src', 'danijel')};
     fullfile(hodi, 'src', 'danijel', {'calc';
     'ex';
@@ -40,6 +41,7 @@ path_list = [
     'slabanalysis';
     'seismicrates';
     });
+    fullfile(hodi, 'src','thessa');
     fullfile(hodi, 'src', 'thomas', 'decluster', 'reasen');
     ];
 addpath(path_list{:});

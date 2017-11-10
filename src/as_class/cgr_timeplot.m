@@ -529,11 +529,6 @@ function timeplot(mycat, nosort)
         ZG.hold_state2=true;
     end
     
-    function cb_comparerates_fit(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dispma2(ic);
-    end
-    
     function cb_comparerates_nofit(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ic=0;

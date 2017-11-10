@@ -106,6 +106,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 return
             end
             obj.SetValuesFromDialog(res);
+            obj.Grid = ZmapGlobal.Data.Grid;
             obj.doIt()
         end
         
@@ -128,6 +129,10 @@ classdef cgr_bvalgrid < ZmapFunction
             % - required variables exist or have valid values
             assert(~isempty(obj.getCat()) , 'Catalog is not empty');
             assert(isa(obj.getCat(),'ZmapCatalog'), 'Catalog is a ZmapCatalog');
+            if isempty(obj.ZG.Grid)
+                obj.ZG.Grid = ZmapGrid('BvalGrid',obj.ZG.gridopt);
+            end
+            assert(~isempty(obj.ZG.Grid), 'No grid exists. please create one first');
         end
         
         function results=Calculate(obj)
@@ -140,11 +145,13 @@ classdef cgr_bvalgrid < ZmapFunction
             map = findobj('Name','Seismicity Map');
             mycat=obj.getCat();
             
+            %{
             if obj.gridOpts.CreateGrid
                 % Select and create grid
                 pause(0.5)
                 obj.Grid = ZmapGrid('bvalgrid',obj.gridOpts);
             end
+            %}
             
             % Overall b-value
             bv =  bvalca3(mycat, obj.ZG.inb1); %ignore all the other outputs of bvalca3

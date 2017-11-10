@@ -356,8 +356,8 @@ classdef ZmapCatalogView
                 'YDataSource',[s '.Latitude'],...
                 'XDataSource',[s '.Longitude'],...
                 'ZDataSource',[s '.Depth'], v{:}, varargin{:});
+            
             hold(ax,logical2onoff(h));
-            axes(ax)
             %linkdata on
         end
         

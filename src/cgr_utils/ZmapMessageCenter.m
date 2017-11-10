@@ -275,7 +275,7 @@ end
 
 function do_timeplot(s,~, catName)
     ZG=ZmapGlobal.Data;
-    ZG.newt2=ZG.(catName);
+    ZG.newt2=ZmapCatalog(ZG.(catName));
     timeplot();
 end
 

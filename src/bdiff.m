@@ -8,8 +8,9 @@ function  bdiff(mycat, holdplot)
     %  originally, "mycat" was "newcat"
     %  Stefan Wiemer 1/95
     %
-    global cluscat mess bfig backcat xt3 bvalsum3  bval aw bw t1 t2 t3 t4
-    global les n teb t0b cua b1 n1 b2 n2  ew onesigma  S mrt bvalsumhold
+    global bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4
+    global  cua ew onesigma S bvalsumhold
+    global gBdiff % bdiff globals containing b1, b2, n1, n2
     ZG=ZmapGlobal.Data;
     
     if nargin==2
@@ -39,15 +40,13 @@ function  bdiff(mycat, holdplot)
     % number of mag units
     nmagu = (maxmag*10)+1;
     
-    bval = zeros(1,nmagu);
-    bvalsum = zeros(1,nmagu);
     bvalsum3 = zeros(1,nmagu);
     
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
-    bval2 = bval(length(bval):-1:1);
-    bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
-    xt3 = (maxmag:-0.1:mima);
+    bval2 = fliplr(bval); %reverse order
+    bvalsum3 = cumsum(bval2);    % N for M >= (counted backwards)
+    magsteps_desc = (maxmag:-0.1:mima);
     
     backg_ab = log10(bvalsum3);
     orient tall
@@ -63,9 +62,11 @@ function  bdiff(mycat, holdplot)
         axes('position',rect);
     end
     
-    pl =semilogy(xt3,bvalsum3,'sb');
-    set(pl,'LineWidth',1.0,'MarkerSize',6,...
-        'MarkerFaceColor','w','MarkerEdgeColor','k');
+    pl =semilogy(magsteps_desc,bvalsum3,'sb',...
+        'LineWidth',1.0,'MarkerSize',6,...
+        'MarkerFaceColor','w',...
+        'MarkerEdgeColor','k',...
+        'DisplayName','M >= ');
     hold on
     
     difb = [0 diff(bvalsum3) ];
@@ -89,15 +90,15 @@ function  bdiff(mycat, holdplot)
     cua = gca;
     
     M1b = [];
-    M1b = [xt3(i) bvalsum3(i)];
+    M1b = [magsteps_desc(i) bvalsum3(i)];
     tt3=num2str(fix(100*M1b(1))/100);
     
     M2b = [];
-    M2b =  [xt3(i2) bvalsum3(i2)];
+    M2b =  [magsteps_desc(i2) bvalsum3(i2)];
     tt4=num2str(fix(100*M2b(1))/100);
     
-    ll = xt3 >= M1b(1)-0.05  & xt3 <= M2b(1) +0.05;
-    x = xt3(ll);
+    ll = magsteps_desc >= M1b(1)-0.05  & magsteps_desc <= M2b(1) +0.05;
+    x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
     [ bv, onesigma, av] = bmemag(mycat.subset(l2)) ;
@@ -125,7 +126,7 @@ function  bdiff(mycat, holdplot)
     f4 = 10.^f4;
     delta = 10.^delta;
     hold on
-    ttm= semilogy(x,f,'r');                         % plot linear fit to backg
+    ttm= semilogy(x,f,'r','DisplayName','linear fit to background');  % plot linear fit to backg
     set(ttm,'LineWidth',1)
     
     if ishold
@@ -157,18 +158,19 @@ function  bdiff(mycat, holdplot)
     h2=axes('position',rect);
     set(h2,'visible','off');
     
+    bvalue_wls_str = ['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ± ', tt2 ',  a-value = ' , num2str(aw) ];
+    
     if ZG.hold_state
         set(pl,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','k','MarkerEdgeColor','k','Marker','o');
-        %set(pl3,'LineWidth',1.0,'MarkerSize',6,...
-        %'MarkerFaceColor','c','MarkerEdgeColor','m','Marker','s');
-        txt1=text(.16, .06,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ± ', tt2 ',  a-value = ' , num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
+        
+        text(.16, .06, bvalue_wls_str,...
+            'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
     else
-        txt1=text(.16, .14,['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ±', tt2, ',  a-value = ' , num2str(aw) ]);
-        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.16, .10,['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' ± ', tt5,',   a-value = ' , num2str(av)]);
-        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+        text(.16, .14, bvalue_wls_str,...
+            'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+        bvalue_maxlik_str = ['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' ± ', tt5,',   a-value = ' , num2str(av)];
+        text(.16, .10,bvalue_maxlik_str,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
     end
     
@@ -177,26 +179,33 @@ function  bdiff(mycat, holdplot)
     
     
     if ZG.hold_state
-        % calculate the probability that the two distributins are differnt
+
+        % calculate the probability that the two distributions are different
+        
         %l = mycat.Magnitude >=  M1b(1);
-        b2 = str2double(tt1); n2 = M1b(2);
-        n = n1+n2;
-        da = -2*n*log(n) + 2*n1*log(n1+n2*b1/b2) + 2*n2*log(n1*b2/b1+n2) -2;
+        gBdiff.b2 = str2double(tt1); 
+        gBdiff.n2 = M1b(2);
+        n = gBdiff.n1+gBdiff.n2;
+        da = -2*n*log(n) + 2*gBdiff.n1*log(gBdiff.n1+gBdiff.n2*gBdiff.b1/gBdiff.b2) + 2*gBdiff.n2*log(gBdiff.n1*gBdiff.b2/gBdiff.b1+gBdiff.n2) -2;
         pr = exp(-da/2-2);
+
         disp(['Probability: ',  num2str(pr)]);
-        txt1=text(.60, .85,['p=  ', num2str(pr,2)],'Units','normalized');
-        set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.60, .80,[ 'n1: ' num2str(n1) ', n2: '  num2str(n2) ', b1: ' num2str(b1)  ', b2: ' num2str(b2)]);
+        tx1=['p=  ', num2str(pr,2)];
+        tx2=[ 'n1: ' num2str(gBdiff.n1) ', n2: '  num2str(gBdiff.n2) ', b1: ' num2str(gBdiff.b1)  ', b2: ' num2str(gBdiff.b2)];
+        txt1=text(.60, .85,tx1);%['p=  ', num2str(pr,2)],'Units','normalized');
+        set(txt1,'Units','normalized','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+        txt1=text(.60, .80,tx2);
         set(txt1,'FontSize',8,'Units','normalized')
     else
-        b1 = str2double(tt1); n1 = M1b(2);
+        gBdiff.b1 = str2double(tt1); 
+        gBdiff.n1 = M1b(2);
     end
     
     bvalsumhold = bvalsum3;
-    da = 10^(aw+bw*6.5);
-    db = 10^(aw+bw*6.5)*(-6.5);
-    dp = sqrt(da^2*ew^2+db^2*0.05^2);
-    dr = 1/dp;
+    %da = 10^(aw+bw*6.5);
+    %db = 10^(aw+bw*6.5)*(-6.5);
+    %dp = sqrt(da^2*ew^2+db^2*0.05^2);
+    %dr = 1/dp;
     
     %whitebg(gcf,[0 0 0])
     %axes(cua)
@@ -206,42 +215,45 @@ function  bdiff(mycat, holdplot)
     function create_my_menu()
         add_menu_divider();
         options = uimenu('Label','ZTools');
-        uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@callbackfun_002);
-        uimenu(options,'Label','Manual fit of b-value', 'callback',@callbackfun_003);
-        uimenu(options,'Label','Plot time series', 'callback',@callbackfun_004);
-        uimenu(options,'Label','Do not show discrete', 'callback',@callbackfun_005); %TOFIX make checkmark, and make it work.
-        uimenu(options,'Label','Save values to file', 'Enable','off','Callback',{@calSave9,xt3, bvalsum3}); %TOFIX decide what actually gets saved
+        uimenu(options,'Label','Estimate recurrence time/probability', 'callback',@cb_est_recurr);
+        uimenu(options,'Label','Plot time series', 'callback',@cb_plot_ts);
+        uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)','Callback',@cb_nonlin_optimize);
+        uimenu(options,'Label','Examine Nonlinearity (Keep Mc)','Callback',@cb_nonlin_keepmc);
+        uimenu(options,'Label','Do not show discrete', 'callback',@cb_nodiscrete);
+        uimenu(options,'Label','Save values to file', 'Enable','off','Callback',{@calSave9,magsteps_desc, bvalsum3}); %TOFIX decide what actually gets saved
+        
     end
     
     %% callbacks
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        infoz(1);
-    end
-    
-    function callbackfun_002(mysrc,myevt)
+    function cb_est_recurr(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plorem(onesigma, aw, bw);
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_plot_ts(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bfitnew(mycat);
+        ZG.newt2=mycat;
+        timeplot();
     end
     
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timeplot(mycat);
+    function cb_nonlin_optimize(mysrc, myevt)
+        [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(ZG.newt2, M1b(1), 'OptimizeMc');
+        Results.functioncall = sprintf('nonlinearity_index(ZG.newt2,%.1f,''OptimizeMc'')',M1b(1));
+        assignin('base','Results_NonlinearityAnalysis',Results);
+    end
+    function cb_nonlin_keepmc(mysrc, myevt)
+        [Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(ZG.newt2, M1b(1), 'PreDefinedMc');
+        Results.functioncall = sprintf('nonlinearity_index(ZG.newt2,%.1f,''PreDefinedMc'')',M1b(1));
+        assignin('base','Results_NonlinearityAnalysis',Results);
     end
     
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        delete(pl);
+    function cb_nodiscrete(mysrc,~)
+        isChecked = strcmp(mysrc.Checked,'on');
+        mysrc.Checked = logical2onoff(~isChecked);
+        pl.Visible = logical2onoff(isChecked);
     end
+    
 end

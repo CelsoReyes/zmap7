@@ -1,6 +1,7 @@
 function[declustered_cat, is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmeff,P,rfact,err,derr,mycat)
-% declus.m                                A.Allmann
-% main decluster algorithm
+% ReasenbergDeclus main decluster algorithm
+%                                A.Allmann
+% 
 % modified version, uses two different circles for already related events
 % works on mycat
 % different clusters stored with respective numbers in clus
@@ -22,7 +23,7 @@ function[declustered_cat, is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmef
 
 %basic variables used in the program
 %
-% rmain  interaction zone for not clustered events
+% rmain_km  interaction zone for not clustered events
 % r1     interaction zone for clustered events
 % rtest  radius in which the program looks for clusters
 % tau    look ahead time
@@ -39,7 +40,7 @@ report_this_filefun(mfilename('fullpath'));
 
 %declaration of global variables
 %
-% global mycat clus rmain r1 eqtime              %catalogs
+% global mycat clus rmain_km r1 eqtime              %catalogs
 % global  a                                       %catalogs
 % global k k1 bg mbg bgevent equi bgdiff          %indices
 % global ltn                                      %variable to shorten code
@@ -49,12 +50,14 @@ report_this_filefun(mfilename('fullpath'));
 % global err derr ijma 
 
 bg=[];k=[];k1=[];mbg=[];bgevent=[];equi=[];bgdiff=[];clust=[];clustnumbers=[];
-cluslength=[];rmain=[];r1=[];
+cluslength=[];
+rmain_km=[];
+r1=[];
 
 
 man =[taumin;taumax;xk;xmeff;P;rfact;err;derr];
 
-[rmain,r1]=funInteract(mycat,rfact);                     %calculation of interaction radii
+[rmain_km,r1]=funInteract(mycat,rfact);                     %calculation of interaction radii
 
 %calculation of the eq-time relative to 1902
 eqtime=clustime(mycat);
@@ -114,7 +117,7 @@ for i = 1:ltn
          rtest2=0;
       else
          rtest1=r1(i);
-         rtest2=rmain(bgevent(k1));
+         rtest2=rmain_km(bgevent(k1));
       end
 
       %calculate distances from the epicenter of biggest and most recent eq

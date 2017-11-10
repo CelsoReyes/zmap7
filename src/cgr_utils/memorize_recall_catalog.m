@@ -2,6 +2,7 @@ function memorize_recall_catalog()
     % memorize_recall_catalog manages access to a temporarily stored version of the catalog
     %
     % recalling a catalog replaces all the active catalogs
+    % see also uimemorize_catalog
     
     ZG = ZmapGlobal.Data;
     hasMemorized = ~isempty(ZG.memorized_catalogs);

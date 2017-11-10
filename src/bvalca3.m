@@ -3,7 +3,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
     % bvalca3(catalog, McompEstimationMethod) maybe
     % used to assign the catalog to ZG.newcat
     %
-    global n les xt3 bvalsum3
+    global n les magsteps_desc bvalsum3
     
     %report_this_filefun(mfilename('fullpath'));
     ZG = ZmapGlobal.Data;
@@ -22,7 +22,7 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
         [bval,xt2] = hist(bcat.Magnitude,(mima:dm1:maxmag));
         % bvalsum = cumsum(bval);                        % N for M <=
         bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
-        xt3 = (maxmag:-dm1:mima);
+        magsteps_desc = (maxmag:-dm1:mima);
         
         backg_ab = log10(bvalsum3);
         difb = [0 diff(bvalsum3) ];
@@ -33,17 +33,17 @@ function [bv, magco, std_backg, av, me, mer , me2, pr] =  bvalca3(bcat,inb1)
 
         % if no automatic estimate of Mcomp
         if inb1 == 2
-            i = length(xt3)-10*min(bcat.Magnitude);
-            if i > length(xt3)
-                i = length(xt3)-1 ; 
+            i = length(magsteps_desc)-10*min(bcat.Magnitude);
+            if i > length(magsteps_desc)
+                i = length(magsteps_desc)-1 ; 
             end
         end
         
-        M1b = [xt3(i) bvalsum3(i)];
-        M2b =  [xt3(1) bvalsum3(1)];
+        M1b = [magsteps_desc(i) bvalsum3(i)];
+        M2b =  [magsteps_desc(1) bvalsum3(1)];
         
-        ll = xt3 >= M1b(1) & xt3 <= M2b(1);
-        x = xt3(ll);
+        ll = magsteps_desc >= M1b(1) & magsteps_desc <= M2b(1);
+        x = magsteps_desc(ll);
         y = backg_ab(ll);
         %[p,s] = polyfit2(x,y,1);                   % fit a line to background
         [aw, bw, ew] = wls(x',y');

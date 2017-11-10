@@ -639,9 +639,7 @@ end
     h.update_catalog()%;
     zmap_update_displays();
     
-    if isempty(ZG.memorized_catalogs)
-        memorize_recall_catalog();
-    end
+    uimemorize_catalog();
     
     % close(hObject.Parent); % or set Visibility to 'off' ?
 

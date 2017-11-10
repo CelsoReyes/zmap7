@@ -6,8 +6,10 @@ function rc_cross_a2()
     % J. Woessner
     % updated: 31.08.03
     
+    
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
+    catalog = ZG.primeCatalog.sorted('Date');
 
     % Do we have to create the dialogbox?
     % Set the grid parameter
@@ -34,8 +36,8 @@ function rc_cross_a2()
         return
     end
     % cut catalog at mainshock time:
-    l = ZG.primeCatalog.Date > ZG.maepi.Date(1);
-    ZG.primeCatalog=ZG.primeCatalog.subset(l);
+    l = catalog.Date > ZG.maepi.Date(1);
+    catalog=catalog.subset(l);
     
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
@@ -299,7 +301,7 @@ function rc_cross_a2()
             if tgl1 == 0   % take point within r
                 % Use Radius to determine grid node catalogs
                 l3 = l <= ra;
-                b = ZG.primeCatalog.subset(l3);      % new data per grid point (b) is sorted in distance
+                b = catalog.subset(l3);      % new data per grid point (b) is sorted in distance
                 rd = ra;
                 vDist = sort(l(l3));
                 fMaxDist = max(vDist);
@@ -577,7 +579,7 @@ function rc_cross_a2()
             valueMap = mRelchange;
             lab1 = 'Rate change';
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(catalog.Latitude',catalog.Longitude',catalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             hold on
             

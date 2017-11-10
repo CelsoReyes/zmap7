@@ -32,55 +32,49 @@ function load_zmapfile()%
     [file1,path1] = uigetfile('*.mat',' Earthquake Datafile');
     
     if length(path1) < 2 % cancelled
-        
         return
-    else
-        if exist(fullfile(path1,file1),'file')
-            S=whos('-file',fullfile(path1,file1),'a'); % get info about "primeCatalog"
-            if ~isempty(S) %a exists
-                ZG.primeCatalog=loadCatalog(path1, file1);
-            else
-                errordlg('File did not contain variable "primeCatalog" - Nothing was loaded');
-            end
-        else
-            errordlg('File could not be found');
-        end
+    end
+    
+    myfile = fullfile(path1,file1);
+    
+    if ~exist(myfile,'file')
+        errordlg('File could not be found');
+        return
+    end
+    
+    % find and load the ZmapCatalog variable from the file
+    S=whos('-file',myfile);
+    S=S(startsWith({S.class},'ZmapCatalog'));
+    if ~isempty(S)
+        ZG.primeCatalog=loadCatalog(path1, file1, S);
+        return
+    end
         
+    % ZmapCatalog didn't exist in the file. Perhaps it is an old version?
+    % If so, then catalog would have been saved in "a" as a matrix
+    S=whos('-file',myfile,'a');
+    if ~isempty(S)
+        ZG.primeCatalog=loadCatalog(path1, file1, S);
+    else
+        errordlg('File did not contain a catalog variable - Nothing was loaded');
     end
-    if isempty(ZG.primeCatalog)
-        ZG.primeCatalog=ZmapCatalog();
-        ZG.primeCatalog.Name='no catalog';
-    end
-    
-    if max(ZG.primeCatalog.Magnitude) > 10
-        errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
-        warndlg(errdisp)
-    end   % if
-    
-    % Sort the catalog in time just to make sure ...
-    ZG.primeCatalog.sort('Date');
-    
-    % org = a;                         %  org is to remain unchanged
     
     %  ask for input parameters
     %
     watchoff
-    clear s is
     ZG.mainmap_plotby='depth';
     
-    setUpDefaultValues(ZG.primeCatalog);
+    setDefaultValues(ZG.primeCatalog);
     
     ZmapMessageCenter.update_catalog();
     ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
     catalog_overview('primary');
 
-    if isempty(ZG.memorized_catalogs)
-        memorize_recall_catalog();
-    end
+    uimemorize_catalog();
     
 end
 
-function setUpDefaultValues(A)
+function setDefaultValues(A)
     
     ZG=ZmapGlobal.Data; % get zmap globals
     
@@ -95,6 +89,7 @@ function setUpDefaultValues(A)
         ZG.bin_dur = days(0.01);
     end
     ZG.big_eq_minmag = max(A.Magnitude) -0.2;
+    %{
     dep1 = 0.3*max(A.Depth);
     dep2 = 0.6*max(A.Depth);
     dep3 = max(A.Depth);
@@ -107,38 +102,63 @@ function setUpDefaultValues(A)
     ra = 5;
     mrt = 6;
     met = 'ni';
+    %}
 end
 
-function   A=loadCatalog(path, file)
-    %
+function   A=loadCatalog(path, file, S)
+    % loadCatalog retrieves a ZmapCatalog from a .mat file, sorted by Date
+    % if file contains
     % by the time this is called, it should be already known that 'a' exists
+    %
     lopa = fullfile(path, file);
+    A=ZmapCatalog;
     
-    watchon;
-    drawnow
+    varName=ensureSingleVariable(S);
     
     try
-        A=[];
-        tmp = load(lopa,'a');
+        tmp=load(lopa,varName);
     catch ME
         error_handler(ME, 'Error loading data! Are they in the right *.mat format?');
     end
     
-    
-    if (~isfield(tmp,'a') || isempty(tmp.a)) &&(~isfield(tmp,'primeCatalog') || isempty(tmp.primeCatalog)) 
-        errordlg(' Error - No catalog data loaded !');
-        return;
-    end
-    if isfield(tmp,'primeCatalog')
-        A=tmp.primeCatalog;
-    else
-        A=tmp.a;
-    end
+    A=tmp.(varName);
+
     clear tmp
     if isnumeric(A)
         % convert to a ZmapCatalog
         A=ZmapCatalog(A);
+        
+        if max(A.Magnitude) > 10
+            errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
+            warndlg(errdisp)
+        end 
     end
-    A.Name = file;
-    
+    if isempty(A.Name)
+        A.Name = file;
+    end
+    A.sort('Date')
+end
+
+function varName = ensureSingleVariable(S)
+    % chooseFromMultipleVariables user interactive determinination of which to
+    % input "S" is the struct returned from whos()
+    % returns '' if aborted.
+    varName='';
+    if numel(S)>1
+        str={S.name};
+        descr=S.name
+        [s,v]=listdlg('PromptString','Select Variable to load:',...
+            'SelectionMode','single',...
+            'ListString',str);
+        if ~v
+            warndlg(' Error - No catalog data loaded !');
+            return
+        end
+    elseif numel(S)==0
+        warndlg(' Error - No catalog data found in file!');
+        return
+    else
+        s=1;
+    end
+    varName = S(s).name;
 end

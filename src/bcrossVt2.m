@@ -31,7 +31,7 @@ function bcrossVt2()
         sdlg(3).prompt='T3 = '; sdlg(3).value=t3;
         sdlg(4).prompt='T4 = '; sdlg(4).value=t4;
         sdlg(5).prompt='Nmin'; sdlg(5).value=100;
-        [~,~,t1,t2,t3,t4,Nmin]=smart_dlg('differential b-value map', sdlg);
+        [~,~,t1,t2,t3,t4,Nmin]=smart_inputdlg('differential b-value map', sdlg);
         
         % make the interface
         %

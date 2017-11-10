@@ -21,7 +21,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
     [bval,xt2] = hist(mycat.Magnitude,(mima:dm1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
-    xt3 = (maxmag:-dm1:mima);
+    magsteps_desc = (maxmag:-dm1:mima);
     
     backg_ab = log10(bvalsum3);
     difb = [0 diff(bvalsum3) ];
@@ -29,16 +29,16 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
     i = find(difb == max(difb));
     i = max(i);
     i2 = 1;
-    magco = max(xt3(i));
+    magco = max(magsteps_desc(i));
     
     M1b = [];
-    M1b = [xt3(i) bvalsum3(i)];
+    M1b = [magsteps_desc(i) bvalsum3(i)];
     
     M2b = [];
-    M2b =  [xt3(i2) bvalsum3(i2)];
+    M2b =  [magsteps_desc(i2) bvalsum3(i2)];
     
-    ll = xt3 >= M1b(1) & xt3 <= M2b(1);
-    x = xt3(ll);
+    ll = magsteps_desc >= M1b(1) & magsteps_desc <= M2b(1);
+    x = magsteps_desc(ll);
     y = backg_ab(ll);
     %[p,s] = polyfit2(x,y,1);                   % fit a line to background
     [aw bw,  ew] = wls(x',y');

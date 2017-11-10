@@ -6,69 +6,78 @@ function plotclust()
     
     close(findobj('Name','Cluster Map'));
     
-    figure_w_normalized_uicontrolunits( ...
+    f=figure_w_normalized_uicontrolunits( ...
         'Name','Cluster Map',...
         'NumberTitle','off', ...
         'backingstore','on',...
         'NextPlot','add', ...
-        'Visible','on', ...
-        'Position',[ (ZG.fipo(3:4) - [600 500]) ZG.map_len]);
+        'Visible','on');
     
-    %
-    
-    uicontrol('Units','normal',...
-        'Position',[.0 .93 .08 .06],'String','Info ',...
-        'Callback',@(~,~) web(['file:' ZG.hodi '/help/declus']) );
     create_my_menu();
     
     orient landscape
-    set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
+    set(f,'PaperPosition',[ 1.0 1.0 8 6])
     axis off
     
     rect = [0.1,  0.20, 0.75, 0.65];
-    axes('position',rect);
+    ax = axes(f,'position',rect);
     
     % plot catalog
-    plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.','Markersize',2)
+    plot(ax, ZG.original.Longitude,ZG.original.Latitude,'k.',...
+        'Markersize',2,...
+        'DisplayName','catalog')
     hold on
     
     st = 'ox+*sdv^<>ph^'; % available markers
     col = hsv(max(clus));
     
     for i = 1:max(clus)
-        l = clus == i;
+        l = clus==i;
+        if sum(l)== 0
+            fprintf('cluster # %d was empty!\n',i);
+        end
         rs = ceil(rand(1,1)*13); % choose a marker randomly
-        pl = plot(ZG.original.Longitude(l),ZG.original.Latitude(l),'o');
-        set(pl,'Color',col(i,:),'Markersize', 6, 'Linewidth',1, 'Marker',st(rs),'tag',num2str(i))
+        plot(ax, ZG.original.Longitude(l),ZG.original.Latitude(l),'o',...
+            'Color',col(i,:),'Markersize', 6,...
+            'Linewidth',1, 'Marker', st(rs),...
+            'tag',num2str(i));
+        
     end
     
-    zmap_update_displays();
+    plot(ax, nan,nan,'ko',...
+        'tag','clus_shadow');
     
-    axis image
-    set(gca,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
+    axis(ax, 'image')
+    set(ax,'FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
         'FontWeight','bold','LineWidth',3.0,...
         'Box','on','SortMethod','childorder','TickDir','out')
     
-    axis([s2 s1 s4 s3])
-    xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
-    ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
-    strib = [  ' Clusters in   '  name '; '  num2str(t0b,5) ' to ' num2str(teb,5) ];
-    title(strib,'FontWeight','bold',...
+    axis(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude) min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)])
+    xlabel(ax,'Longitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
+    ylabel(ax,'Latitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
+    strib = [  ' Clusters in '  ZG.primeCatalog.Name ': '  char(min(ZG.primeCatalog.Date),'uuuu-MM-dd hh:mm') ' to ' char(max(ZG.primeCatalog.Date),'uuuu-MM-dd hh:mm') ];
+    title(ax, strib,'FontWeight','bold',...
         'FontSize',ZG.fontsz.m,'Color','k')
     
-    ga = gca;
+    ga = ax;
     
     
-    axes('pos',[0 0 1 1]); axis off; hold on
+    ax2=axes(f,'pos',[0 0 1 1]);
+    axis(ax2,'off');
+    hold(ax2,'on');
     str = ['Cluster # 1'];
-    text(0.8,0.9,str,'Fontweight','bold','FontSize',12);
+    te = text(ax2, 0.8,0.9,str,'Fontweight','bold','FontSize',12);
     
-    axes(ga)
-    sl =   uicontrol('Style','slider',...
+    %axes(ax2)
+    sl =   uicontrol(f,'Style','slider',...
         'Position',[.85 0.15 0.05 0.6 ],...
-        'Callback',@markclus_callback,'Sliderstep',[ 0.01 0.1],...
+        'Min',1,'Max',max(clus),'Value',1,...
+        'Callback',@markclus_callback,'Sliderstep',[1/max(clus) 1/(ceil(max(clus)/20))],...
         'Units','normalized');
     
+    zmap_update_displays();
+    axes(ax);
+    markclus_callback(); % activate a cluster
     %% ui functions
     function create_my_menu()
         add_menu_divider();
@@ -85,10 +94,12 @@ function plotclust()
     %% callback functions
     
     function markclus_callback(src,~)
+        sl.Value=round(sl.Value);
+        fprintf('slider value: %s\n',num2str(sl.Value));
         clustNum0 = markclus(clus, clustNum0, sl, te);
     end
     
     function getclu_callback(opt)
-        getclu(opt,clustNum0);
+        clustNum0 = getclu(opt, clus, sl, te);
     end
 end

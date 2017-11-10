@@ -1,4 +1,8 @@
 function[] =loadDecRes(numSim)
+%
+
+% TOFIX this depends on long gone files. REWRITE entirely
+error('Not implemented');
 
 resFileIn = '/home/matt/mProjects/MonteDeclus/Results/DeclusResFixP.mat';
 parmFileIn = '/home/matt/mProjects/MonteDeclus/Results/DeclusParmsFixP.mat';

@@ -5,7 +5,7 @@ function bfitnew(mycat)
     %   Calculates Freq-Mag functions (b-value) for a catalog
     %  originally, "mycat" was "newcat"
     global  cluscat mess bfig backcat
-    global xt3 bvalsum3
+    global magsteps_desc bvalsum3
     report_this_filefun(mfilename('fullpath'));
     ZG = ZmapGlobal.Data;
     
@@ -19,7 +19,7 @@ function bfitnew(mycat)
         
         uicontrol('Units','normal',...
             'Position',[.0 .65 .08 .06],'String','Save ',...
-            'Callback',{@calSave9,xt3, bvalsum3})
+            'Callback',{@calSave9,magsteps_desc, bvalsum3})
         
         
         
@@ -60,7 +60,7 @@ function bfitnew(mycat)
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
-    xt3 = (maxmag:-0.1:mima);
+    magsteps_desc = (maxmag:-0.1:mima);
     
     
     backg_be = log10(bvalsum);
@@ -69,9 +69,9 @@ function bfitnew(mycat)
     rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
     axes('position',rect);
     
-    semilogy(xt3,bvalsum3,'-.m')
+    semilogy(magsteps_desc,bvalsum3,'-.m')
     hold on
-    semilogy(xt3,bvalsum3,'om')
+    semilogy(magsteps_desc,bvalsum3,'om')
     grid
     xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Cumulative Number','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -109,8 +109,8 @@ function bfitnew(mycat)
     pause(0.1)
     delete(seti)
     
-    ll = xt3 > M1b(1) & xt3 < M2b(1);
-    x = xt3(ll);
+    ll = magsteps_desc > M1b(1) & magsteps_desc < M2b(1);
+    x = magsteps_desc(ll);
     y = backg_ab(ll);
     [p,s] = polyfit(x,y,1);                   % fit a line to background
     f = polyval(p,x);

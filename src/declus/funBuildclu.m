@@ -1,9 +1,9 @@
-function[clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg,bg)
-% builds cluster out out of information stored in clus
+function[clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg)
+% funBuildclu builds cluster out out of information stored in clus
 % mycat : catalog
 % clus: size of catalog, containing cluster index numbers
 % biggestEvent: size nClusters
-% mbg: size nClusters
+% mbg: max mag in cluster
 % bg : size nClusters
 %
     %  originally, "mycat" was "newcat"
@@ -25,6 +25,6 @@ mbg(empty_clusters)=[];
 bg = biggestEvent;
 biggestEvent = mycat.subset(bg); %biggest event in a cluster(if more than one,take first)
 
-clustnumbers=(1:numel(clusLengths));    %stores numbers of clusters
+clustnumbers=(1:numel(clusLengths));    % stores numbers of clusters
 
 

@@ -1,10 +1,5 @@
 classdef ZmapGrid
-    % ZmapGrid grid for use in zmap's various calculation routines
-    %
-    % this is designed with the idea that dx and dy are constant
-    %
-    % to calculate a value for all grid points, where the input is some subset of
-    % the ZmapCatalog, use the gridfun function.
+    % ZMAPGRID evenly-spaced X,Y grid with ability to be masked
     %
     % ZmapGrid properties:
     %
@@ -18,7 +13,7 @@ classdef ZmapGrid
     %     Yvector - vector for row positions (unique points)
     %
     %     Dx - diference between x positions
-    %     Dy - delta-Y
+    %     Dy - diference between y positions
     %
     %     Units - degrees or kilometers
     %     ActivePoints - logical mask
@@ -41,7 +36,6 @@ classdef ZmapGrid
     %
     %     Misc. methods:
     %     
-    %     process - apply a function to every grid point (convenience wrapper for gridfun) 
     %     length - number of grid points
     %     isempty - true if no grid is defined
     %     MaskWithPolygon - set the logicalmask to true where points are in polygon, false elsewhere
@@ -52,7 +46,7 @@ classdef ZmapGrid
     %     setGlobal - copy this grid into the globally used grid
     %
     %
-    % see also gridfun, EventSelectionChoice
+    % see also gridfun, EventSelectionChoice, autogrid
 
     properties
         Name % name of this grid
@@ -74,16 +68,22 @@ classdef ZmapGrid
     
     methods
         function obj = ZmapGrid(name, varargin)
-            % create a ZmapGridStruc
-            % obj=ZmapGrid(name, gpc_struct) where gpc_struct has fields dx,dy, dx_units
-            % obj=ZmapGrid(name, all_points, units); % NOT RECOMMENDED
-            % obj=ZmapGrid(name, all_x, all_y, units); 
-            % obj=ZmapGrid(name, x_start, dx, x_end, y_start, dy, y_end, units)
+            %ZMAPGRID create a ZmapGridStruc
+            %   OBJ = ZMAPGRID(NAME, GPC_STRUCT) where gpc_struct has fields dx,dy, dx_units.
+            %
+            %   ZMAPGRID(NAME, ALL_X, ALL_Y,UNITS) testing this, testing that
+            %   testing the other
+            %
+            %   ZMAPGRID(NAME,X_START, DX, X_END, Y_START, DY, Y_END, UNITS) will do something
+            %   and something else
+            %
+            %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
+            
             obj.Name = name;
             switch nargin
                 case 2
                     if isnumeric(varargin{1})
-                        % name, all_points
+                        % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
                         warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                         assert(size(varargin{1},2)==2);
                         obj.GridXY = varargin{1};
@@ -104,20 +104,27 @@ classdef ZmapGrid
                         obj.GridXY=[x(:),y(:)];
                         if isfield(g,'GridEntireArea') && ~g.GridEntireArea
                             myshape=ZmapGlobal.Data.selection_shape;
-                            if isnan(myshape.Points(1))
+                            if isempty(myshape)
                                 ZmapMessageCenter.set_warning('Polygon not defined',...
                                     'Requested that grid is limited by the polygon, but no polygon is defined.');
-                                myshape=myshape.select_polygon();
+                                switch questdlg('Choose a shape to define:','Polygon Not defined','polygon','circle','none','none')
+                                    case 'circle'
+                                        myshape=ShapeCircle();
+                                        myshape = myshape.select();
+                                    case 'polygon'
+                                        myshape=ShapePolygon();
+                                        myshape=myshape.select_polygon();
+                                    otherwise
+                                        % do nothing
+                                end
                             end
                             obj.MaskWithPolygon(myshape.Points)
-                            % choose polygon
                         end 
-                        %obj=ZmapGrid(name, v. '
                     else
                         error('unknown');
                     end
                 case 3
-                    % name, all_points, units
+                    % ZMAPGRID( name, all_points, units)
                     warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                     assert(size(varargin{1},2)==2);
                     obj.GridXY = varargin{1};
@@ -126,7 +133,7 @@ classdef ZmapGrid
                     assert(ischar(varargin{2}));
                     obj.Units = varargin{2};
                 case 4
-                    % name, Xvector, Yvector, units
+                    % ZMAPGRID( name, Xvector, Yvector, units)
                     obj.Xvector=varargin{1};
                     obj.Yvector=varargin{2};
                     [x,y]=meshgrid(obj.Xvector, obj.Yvector);
@@ -136,7 +143,7 @@ classdef ZmapGrid
                     obj.Dx = obj.GridXY(2,1) - obj.GridXY(1,1);
                     obj.Dy = obj.GridXY(2,2) - obj.GridXY(2,2);
                 case 8
-                    % name, x_start, dx, x_end, y_start, dy, y_end, units
+                    % ZMAPGRID( name, x_start, dx, x_end, y_start, dy, y_end, units)
                     obj.Dx = varargin{2};
                     obj.Dy = varargin{5};
                     obj.Xvector = varargin{1} : obj.Dx : varargin{3};
@@ -155,6 +162,7 @@ classdef ZmapGrid
                 % all points are simply in a line
                 obj.ActivePoints=true(length(obj.GridXY),1);
             end
+            
             
         end
         
@@ -315,25 +323,6 @@ classdef ZmapGrid
                 uisave('zmapgrid',fullfile(pathname,filename));
             end
         end
-        
-        function [results, nEvents, maxDist] = process(obj, routine, catalog, selcrit)
-            % apply a process to every grid point, return the results
-            % [results, nEvents, maxDist] = process(obj, routine, catalog, selcrit, varargin)
-            % where:
-            %    ROUTINE is a function handle that takes a ZmapCatalog and returns a single value
-            %    CATALOG is a ZmapCatalog to process
-            %    SELCRIT is a structure as returned by EventSelectionChoice.toStruct
-            % 
-            % Output:
-            %    results: an array of values, the same size as this grid
-            %
-            % this is a convenience wrapper for gridfun. see that function for more details
-            %
-            % see also gridfun, EventSelectionChoice
-            
-            [ results, nEvents, maxDist ] = gridfun( routine, catalog, obj, selcrit);
-        end
-            
     end
     
     methods(Static)

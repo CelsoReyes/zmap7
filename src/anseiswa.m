@@ -16,7 +16,7 @@ function anseiswa(action, ds)
     
     global currPt ni teb
     global tgl1
-    global bvalsum3 xt3
+    global bvalsum3 magsteps_desc
     
     ZG=ZmapGlobal.Data;
     xc1=findobj('Tag','xc1');
@@ -68,7 +68,7 @@ function anseiswa(action, ds)
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
             bv = bvalca3(ZG.newt2,1);
-            set(findobj('Tag','plb'),'Xdata',xt3,'Ydata',bvalsum3);
+            set(findobj('Tag','plb'),'Xdata',magsteps_desc,'Ydata',bvalsum3);
             
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;
@@ -120,7 +120,7 @@ function anseiswa(action, ds)
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
             bv = bvalca3(ZG.newt2,1);
-            set(findobj('Tag','plb2'),'Xdata',xt3,'Ydata',bvalsum3);
+            set(findobj('Tag','plb2'),'Xdata',magsteps_desc,'Ydata',bvalsum3);
             
             % set circle containing events as circle
             xx = -pi-0.1:0.1:pi;

@@ -25,10 +25,13 @@ When you start Zmap...
 #### Map Features
 
 ### Cummulative plots
+when labeling plots containing catalog data, and you expect to do catalog cutting based on axes limits
+then assign the `field_units` class to the label's UserData.
 
 ### 
 
 ## Concepts
+
 
 ### Object Oriented design
 Internally, Zmap has changed from a collection of scripts to

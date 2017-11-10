@@ -1,12 +1,15 @@
-function clustNum0 = getclu(gecl, clustNum0)
+function selected_cluster_num = getclu(gecl, clus, slider_obj, text_obj)
     % get the selected cluster
-    % TOFIX this program spits out several variables including new, clustNum0
+    % selected_cluster_num = getclu(gecl, clus, slider_obj, text_obj)
+    %
+    % see also markclus
     
     global cluslength % [IN]
-    global equi %[IN]
+    global equi %[IN] reference events in cluster
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     
+    prev_cluster_num = round(slider_obj.Value);
     switch  gecl
         
         case 'mouse'
@@ -17,27 +20,29 @@ function clustNum0 = getclu(gecl, clustNum0)
             
             [x,y]=ginput(1);
             
-            l=sqrt(((equi(:,1)-x)*cosd(y)*111).^2 + ((equi(:,2)-y)*111).^2) ;
+            l=sqrt(((equi.Longitude-x)*cosd(y)*111).^2 + ((equi.Latitude-y)*111).^2) ;
             [~,sort_idx] = sort(l);            % sort by distance
             % new = equi(is(1),:);  % seems to not be used anywhere
             
-            disp(['selected: Cluster # ' num2str(sort_idx(1)) ]);
+            selected_cluster_num = sort_idx(1);
             
-            if isempty(clustNum0)
-                clustNum0 = 1;
-            end
-            set(findobj('tag',num2str(clustNum0)),'MarkerSize',6,'Linewidth',1.0);
+            disp(['selected: Cluster # ' num2str(selected_cluster_num) ]);
             
-            val = sort_idx(1);
-            
-            set(findobj('tag',num2str(val)),'MarkerSize',22,'Linewidth',4);
+            slider_obj.Value=selected_cluster_num;
+            %set(findobj('tag',num2str(prev_cluster_num)),'MarkerSize',6,'Linewidth',1.0);
+            %set(findobj('tag',num2str(selected_cluster_num)),'MarkerSize',22,'Linewidth',4);
             
             
         case 'large'
-            val = find(cluslength == max(cluslength));
+            selected_cluster_num = find(cluslength == max(cluslength));
     end
     
-    ZG.newt2 = ZG.original.subset(clus == val);
+    assert( markclus(clus,prev_cluster_num,slider_obj, text_obj) == selected_cluster_num,...
+        'expected cluster %d, got %d', selected_cluster_num,...
+        markclus(clus,prev_cluster_num,slider_obj, text_obj))
+    
+    ZG.newt2 = ZG.original.subset(clus==selected_cluster_num);
+    ZG.newt2.Name=sprintf('%s : cluster %d',ZG.newt2.Name, selected_cluster_num);
     
     if ~exist('tiplo', 'var')
         timeplot();
@@ -46,6 +51,6 @@ function clustNum0 = getclu(gecl, clustNum0)
     nu = nu';
     set(findobj('Tag','tiplo2'),'Xdata',ZG.newt2.Date,'Ydata',nu);
     figure(findobj('Type','Figure','-and','Tag','cum'));
-    clustNum0 = val;
+    % prev_cluster_num = selected_cluster_num;
 end
 

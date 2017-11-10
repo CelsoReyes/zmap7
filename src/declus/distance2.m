@@ -1,4 +1,4 @@
-function [dist1, dist2] = distance(i,bgevent,ac)
+function [dist1, dist2] = distance2(i,bgevent,ac)
     % calculates the distance in [km] between two eqs
     % precise version based on Raesenbergs Program
     % the calculation is done simultaniously for the biggest event in the
