@@ -1,5 +1,6 @@
 function setup()
     %  setup allows the user to setup the earthquake datafile, overlaying faults, mainshocks
+
     % turned into function by Celso G Reyes 2017
     
     report_this_filefun(mfilename('fullpath'));
@@ -179,34 +180,27 @@ function setup()
     set(loda,'Visible','on');
     
     function loaddb_callback(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        in = 'noini';
-        in2 = 1;
-        dataimpo;
+        dataimpo('noini',1);
     end
     
     function loaddb_focal_callback(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('focal','of');
     end
     
     function clearevents_callback(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         a = [];
         zmap_update_displays();
     end
     
     function loadmainshocks_callback(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         loadasci('mainshock','of');
     end
     
     function clearmainshocks_callback(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         main  = [];
         zmap_update_displays();

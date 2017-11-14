@@ -391,7 +391,6 @@ classdef MainInteractiveMap
             obj.create_random_data_simulations_menu(submenu);
             
             uimenu(submenu,'Label','Create cross-section',...
-                'enable','off',...
                 'Callback',@(~,~)nlammap());
             
             obj.create_histogram_menu(submenu);
@@ -446,7 +445,6 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr('in'));
             uimenu(submenu,'Label','Calculate a z-value cross-section',...
-                'enable','off',...
                 'Callback',@(~,~)nlammap());
             uimenu(submenu,'Label','Calculate a 3D  z-value distribution','Callback',@(~,~)zgrid3d('in'));
             uimenu(submenu,'Label','Load a z-value grid (map-view)','Callback',@(~,~)loadgrid('lo'));
@@ -473,7 +471,6 @@ classdef MainInteractiveMap
                 'Callback', @(~,~)bvalmapt('lo'));
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
-                'enable','off',...
                 'Callback', @(~,~)nlammap());
             
             tmp=uimenu(submenu,'Label','b-value depth ratio grid', 'Callback', @(~,~)bdepth_ratio());
@@ -549,7 +546,6 @@ classdef MainInteractiveMap
         function h = borderHandle()
             h = findobj( 'Tag');
         end
-        
         
         function h = mainAxes()
             h = findobj( 'Tag',MainInteractiveMap.axTag);

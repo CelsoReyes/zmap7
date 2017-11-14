@@ -5,16 +5,11 @@ function ini_zmap()
     % system-specific initialization happens in the following
     % see also ini_zmap_GLXNA64, ini_zmap_PCWIN64, ini_zmap_MACI64
     
-    %global ty ty1 ty2 ty3        % marker types '.+ox' respectively
-    % xa0, ya0  %center of circle
-    %global rad ic step ni
-    %global strib stri2 infstri maix maiy
-    
     report_this_filefun(mfilename('fullpath'));
     
     ZG=ZmapGlobal.Data;
     
-    % Marker type
+    % When the main map first shows, it will default to this view:
     ZG.mainmap_plotby='depth';
     
     infstri = ' Please enter information about the | current dataset here';

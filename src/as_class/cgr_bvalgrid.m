@@ -1,4 +1,4 @@
-classdef cgr_bvalgrid < ZmapFunction
+classdef cgr_bvalgrid < ZmapGridFunction
     % description of this function
     %
     %
@@ -21,7 +21,7 @@ classdef cgr_bvalgrid < ZmapFunction
         dx = ZmapGlobal.Data.gridopt.dx;
         dy = ZmapGlobal.Data.gridopt.dy;
         ni = ZmapGlobal.Data.ni;
-        ra = ZmapGlobal.Data.ra;
+        ra = 25%ZmapGlobal.Data.ra;
         Nmin = 50;
         fMcFix=1.0; %2.2
         nBstSample=100;
@@ -39,28 +39,62 @@ classdef cgr_bvalgrid < ZmapFunction
     
     properties(Constant)
         PlotTag='myplot';
+        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+            'Mc_value', 'Magnitude of Completion (Mc)', '';...
+            'Mc_std', 'Std. of Magnitude of Completion', '';...
+            'x', 'Longitude', 'deg';...
+            'y', 'Latitude', 'deg';...
+            'Radius_km', 'Radius of chosen events (Resolution) [km]', 'km';...
+            'b_value', 'b-value', '';...
+            'b_value_std', 'Std. of b-value', '';...
+            'a_value', 'a-value', '';...
+            'a_value_std', 'Std. of a-value', '';...
+            'power_fit', 'Goodness of fit to power-law', '';...
+            'max_mag', 'Maximum magnitude at node', 'mag';...
+            'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
+            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
+            'Number_of_Events', 'Number of events in node', ''...
+            };
+            %{
         ReturnFields = {
-                'Mc_value', ... mMc, Mc value'p-value',... mPval, p-Value
-                'Mc_std', ... mStdMc, Standard deviation Mc
-                'x',...
-                'y',...
-                'Radius_km', ... vRadiusRes,  Radii of chosen events, Resolution
-                'b_value',... mBvalue, b-value
-                'b_value_std',... mStdB, b-value standard deviation
-                'a_value',... mAvalue, a-value
-                'a_value_std',... mStdA, a-value standard deviation
-                'power_fit', ... Prmap, Goodness of fit to power-law map
-                'max_mag', ... ro, maximum magnitude for node
-                'Additional_Runs_b_std',... mStdDevB
-                'Additional_Runs_Mc_std',... mStdDevMc
-                'Number_of_Events'...mNumEq, Number of earthquakes
-                };
+            'Mc_value', ... mMc, Mc value'p-value',... mPval, p-Value
+            'Mc_std', ... mStdMc, Standard deviation Mc
+            'x',...
+            'y',...
+            'Radius_km', ... vRadiusRes,  Radii of chosen events, Resolution
+            'b_value',... mBvalue, b-value
+            'b_value_std',... mStdB, b-value standard deviation
+            'a_value',... mAvalue, a-value
+            'a_value_std',... mStdA, a-value standard deviation
+            'power_fit', ... Prmap, Goodness of fit to power-law map
+            'max_mag', ... ro, maximum magnitude for node
+            'Additional_Runs_b_std',... mStdDevB
+            'Additional_Runs_Mc_std',... mStdDevMc
+            'Number_of_Events'...mNumEq, Number of earthquakes
+            };
+        ReturnNameDetails = {...
+            'Magnitude of Completion (Mc)',...
+            'Std. of Magnitude of Completion',...
+            'Longitude',...
+            'Latitude',...
+            'Radius of chosen events (Resolution) [km]',...
+            'b-value',...
+            'Std. of b-value',...
+            'a-value',...
+            'Std. of a-value',...
+            'Goodness of fit to power-law',...
+            'Maximum magnitude at node',...
+            'Additional runs: Std b-value',...
+            'Additional runs: Std of Mc',...
+            'Number of events in node'
+            };
+            %}
     end
     
     methods
         function obj=cgr_bvalgrid(varargin)
             % create bvalgrid
-            
+            obj.plotcolumn='b_value';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
             if nargin==0
@@ -69,11 +103,11 @@ classdef cgr_bvalgrid < ZmapFunction
                 
             else
                 % run this function without human interaction
-                
-                obj.CheckCatalogPreconditions();
-                obj.Calculate();
-                obj.plot();
-                obj.ModifyGlobals();
+                obj.doIt();
+                %obj.CheckCatalogPreconditions();
+                %obj.Calculate();
+                %obj.plot();
+                %obj.ModifyGlobals();
             end
         end
         
@@ -89,7 +123,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
-                %zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lon',[],'');
+                zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lat',[],'');
                 zdlg.AddEventSelectionParameters('EventSelector',[], obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
@@ -106,7 +140,7 @@ classdef cgr_bvalgrid < ZmapFunction
                 return
             end
             obj.SetValuesFromDialog(res);
-            obj.Grid = ZmapGlobal.Data.Grid;
+            %obj.Grid = obj.ZG.Grid;
             obj.doIt()
         end
         
@@ -118,7 +152,7 @@ classdef cgr_bvalgrid < ZmapFunction
             obj.fMccorr=res.fMccorr;
             obj.ZG.inb1=res.mc_choice;
             obj.EventSelector=res.EventSelector;
-            %obj.gridOpts=res.gridOpts;
+            obj.gridOpts=res.gridOpts;
             obj.useBootstrap=res.useBootstrap;
         end
         
@@ -129,10 +163,10 @@ classdef cgr_bvalgrid < ZmapFunction
             % - required variables exist or have valid values
             assert(~isempty(obj.getCat()) , 'Catalog is not empty');
             assert(isa(obj.getCat(),'ZmapCatalog'), 'Catalog is a ZmapCatalog');
-            if isempty(obj.ZG.Grid)
-                obj.ZG.Grid = ZmapGrid('BvalGrid',obj.ZG.gridopt);
-            end
-            assert(~isempty(obj.ZG.Grid), 'No grid exists. please create one first');
+            %if isempty(obj.Grid)
+                obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
+            %end
+            assert(~isempty(obj.Grid), 'No grid exists. please create one first');
         end
         
         function results=Calculate(obj)
@@ -161,17 +195,21 @@ classdef cgr_bvalgrid < ZmapFunction
             obj.ZG.bo1 = bv;
             % no1 = mycat.Count;
             
-            
-            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(obj.ReturnFields));
-            bvg(:,strcmp('x',obj.ReturnFields))=obj.Grid.X;
-            bvg(:,strcmp('y',obj.ReturnFields))=obj.Grid.Y;
-            bvg(:,strcmp('Number_of_Events',obj.ReturnFields))=nEvents;
-            bvg(:,strcmp('Radius_km',obj.ReturnFields))=maxDists;
-            bvg(:,strcmp('max_mag',obj.ReturnFields))=maxMag;
+            returnFields = obj.ReturnDetails(:,1);
+            returnDesc = obj.ReturnDetails(:,2);
+            returnUnits = obj.ReturnDetails(:,3);
+            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(returnFields));
+            bvg(:,strcmp('x',returnFields))=obj.Grid.X;
+            bvg(:,strcmp('y',returnFields))=obj.Grid.Y;
+            bvg(:,strcmp('Number_of_Events',returnFields))=nEvents;
+            bvg(:,strcmp('Radius_km',returnFields))=maxDists;
+            bvg(:,strcmp('max_mag',returnFields))=maxMag;
             % adjust to match expectations
             
             
-            myvalues = array2table(bvg,'VariableNames', obj.ReturnFields);
+            myvalues = array2table(bvg,'VariableNames', returnFields);
+            myvalues.Properties.VariableDescriptions = returnDesc;
+            myvalues.Properties.VariableUnits = returnUnits;
             
             kll = ll;
             obj.Result.values=myvalues;
@@ -228,36 +266,100 @@ classdef cgr_bvalgrid < ZmapFunction
             
             end
         end
-        
-        function plot(obj,varargin)
+        %{
+        function plot(obj,choice, varargin)
             % plots the results on the provided axes.
-            
+            if ~exist('choice','var')
+                choice=obj.plotcolumn;
+            end
+            if ~isnumeric(choice)
+                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
+            end
+                
+            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
+            myname = obj.Result.values.Properties.VariableNames{choice};
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
             end
             figure(f);
-            set(f,'name','B-values')
+            set(f,'name',['results from bvalgrid : ', myname])
             delete(findobj(f,'Type','axes'));
             
-            obj.Grid.pcolor([],obj.Result.values.b_value,'B-values');
+            obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
             shading(obj.ZG.shading_style);
             hold on
             obj.Grid.plot();
             ft=obj.ZG.features('borders');
             copyobj(ft,gca);
             colorbar
-            title('B-values')
+            title(mydesc)
             xlabel('Longitude')
             ylabel('Latitude')
             
-            %TODO add shading menu
-            %TODO add plotAnyValue menu that 
+            if isempty(findobj(gcf,'Tag','lookmenu'))
+                lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
+                shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
+                uimenu(shademenu,'Label','interpolated','Callback',@(~,~)shading('interp'));
+                uimenu(shademenu,'Label','flat','Callback',@(~,~)shading('flat'));
+                uimenu(lookmenu,'Label','Plot Contours','Callback',@(src,~)contour_cb(src,choice));
+                uimenu(lookmenu,'Label','Plot filled Contours','Callback',@(src,~)contourf_cb(src,choice));
+                uimenu(lookmenu,'Label','change contour interval','Enable','off',...
+                    'callback',@(src,~)changecontours_cb(src));
+            end
+            if isempty(findobj(gcf,'Tag','layermenu'))
+                layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
+                for i=1:width(obj.Result.values)
+                    tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
+                    tmpname=obj.Result.values.Properties.VariableNames{i};
+                    uimenu(layermenu,'Label',tmpdesc,'Tag',tmpname,...
+                        'Enable',logical2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
+                        'callback',@(~,~)plot_cb(tmpname));
+                end
+            end
+            % make sure the correct option is checked
+            layermenu=findobj(gcf,'Tag','layermenu');
+            set(findobj(layermenu,'Tag',myname),'checked','on');
             
            % plot here
+            function plot_cb(name)
+                set(findobj(layermenu,'type','uimenu'),'Checked','off');
+                obj.plot(name);
+            end
+            
+            function contour_cb(src,name)
+                % like plot, except with contours!
+            end
+            function contourf_cb(src,name)
+                % like plot, except with contours!
+            end
+            
+            
+            function changecontours_cb(src)
+                dlgtitle='Contour interval';
+                s.prompt='Enter interval';
+                contr= findobj(gca,'Type','Contour');
+                s.value=get(contr,'LevelList');
+                if all(abs(diff(s.value)-diff(s.value(1:2))<=eps))
+                    s.toChar = @(x)[num2str(x(1)),':',num2str(diff(x(1:2))),':',num2str(x(end))];
+                end
+                s.toValue = @mystr2vec;
+                answer = smart_inputdlg(dlgtitle,s);
+                set(contr,'LevelList',answer.value);
+                
+                function x=mystr2vec(x)
+                    % ensures only valid charaters for the upcoming eval statement
+                    if ~all(ismember(x,'(),:[]01234567890.- '))
+                        x = str2num(x); %#ok<ST2NM>
+                    else
+                        x = eval(x);
+                    end
+                end
+            end
+                
             
         end
-        
+        %}
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
             obj.ZG.Grid = obj.Grid;
@@ -271,8 +373,7 @@ classdef cgr_bvalgrid < ZmapFunction
             if ~exist('label','var')
                 label='Mc, a- and b- value map';
             end
-            h=uimenu(parent,'Label',label,...
-                'Callback', @(~,~)cgr_bvalgrid);
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid);
         end
         
     end % static methods

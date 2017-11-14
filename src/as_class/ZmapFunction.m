@@ -17,24 +17,27 @@ classdef(Abstract) ZmapFunction < handle
     % 
     %
     %   ZmapFunction Methods:
-    %       The following methods MUST BE DEFINED.  however, they do not necessarily
-    %       have to "do" anything.  But they should.  They are defined to provide a
+    %
+    %       The following methods are RECOMMENDED, but do not need to be defined in your derrived 
+    %       class:
+    %
+    %       CheckPreconditions - do checks to ensure incoming data & parameters meet requirements of the Calculate() method. 
+    %       ModifyGlobals - change ZmapGlobal.Data items here. If possible: ONLY here.
+    %
+    %       The following methods MUST BE DEFINED.  They provide a
     %       coherent framework for this function's behaviors and to make it easy to
     %       control when this routine does things (IO, for example) 
     %      
-    %
     %       function obj=<name of this class/function>(varargin)
     %           % this is your function constructor that should behave so:
     %           % if varargin is empty, then do the interactive setup.
     %           % otherwise, check pronditions, calculate values, plot, and then modify globals.
     %
-    %       CheckPreconditions - do checks to ensure incoming data & parameters meet requirements of the Calculate() method. 
     %       InteractiveSetup - create a ZmapFunctionDlg that provides the user a way to manipulate parameters used by the Calculate() method.
     %       Calculate - do the calculations, and put all important results into fields of the obj.Results variable.
     %         optionally return the Results so that the caller can directly manipulate them
     %
     %       plot - plot the results of this function
-    %       ModifyGlobals - change ZmapGlobal.Data items here. If possible: ONLY here.
     %    
     %  METHODS(Static)
     %       AddMenuItem - create a menu item that calls the constructor
@@ -51,7 +54,9 @@ classdef(Abstract) ZmapFunction < handle
     
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
+        
         Result % results of the calculation, stored in a struct
+        
         ZG=ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
@@ -131,6 +136,19 @@ classdef(Abstract) ZmapFunction < handle
             obj.saveToDesktop();
         end
         
+        function CheckPreconditions(obj)
+            % ensure catalog(s) meets pre-conditions
+            % THIS WOULD BE CREATED IN THE DERRIVED CLASSES' METHODS SECTION
+            do_nothing(obj)
+        end
+        
+        function  ModifyGlobals(obj)
+            % modify zmapglobals, if desired
+            % THIS WOULD BE CREATED IN THE DERRIVED CLASSES' METHODS SECTION
+            % do any changing of zmap globals here
+            do_nothing(obj)
+        end
+        
         function saveToDesktop(obj)
             vname=[class(obj),'_result'];
             assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
@@ -203,15 +221,11 @@ classdef(Abstract) ZmapFunction < handle
     
     methods(Abstract)
         % THESE NEED TO BE CREATED IN THE DERRIVED CLASSES' METHODS SECTION
-        CheckPreconditions(obj); %ensure catalog(s) meets pre-conditions
         
         % these functions MUST be defined in every class derived from ZmapFunction
         InteractiveSetup(obj, autoCalculate, autoPlot);
-        
         Results=Calculate(obj); % perform calculations, store results in obj.Result
-        
         plot(obj,varargin); % plot 
-        ModifyGlobals(obj); % modify zmapglobals, if desired
         
     end
     

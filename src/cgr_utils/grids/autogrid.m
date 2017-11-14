@@ -57,8 +57,6 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         % create a grid (on bin centers!)
         zgrid=ZmapGrid('autogrid',XEDGES(2:end)-diff(XEDGES(1:2))/2,...
             YEDGES(2:end)-diff(YEDGES(1:2))/2,'deg');
-        zgrid.Dx=zgrid.Xvector(2)-zgrid.Xvector(1);
-        zgrid.Dy=zgrid.Yvector(2)-zgrid.Yvector(1);
         
         
     % create a structure equivelent to GridParameterChoice.toStruct()

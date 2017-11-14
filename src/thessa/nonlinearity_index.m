@@ -127,8 +127,8 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
     % round magnitudes to 0.1 binning and cut at Mcmin
     
     % zCat.Magnitude=0.1*round(10*zCat.Magnitude);
-    % ll=zCat.Magnitude>=Mcmin;
-    % zCat=zCat.subset(ll);
+    zCat=zCat.subset(zCat.Magnitude>=Mcmin);
+    
     
     if zCat.Count<Nmin
         

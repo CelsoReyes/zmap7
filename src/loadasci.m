@@ -1,5 +1,5 @@
 function loadasci(da,sa)
-    % turned into function by Celso G Reyes 2017
+
     % TOFIX this doesn't load data into the globals.
     ZG=ZmapGlobal.Data;
     

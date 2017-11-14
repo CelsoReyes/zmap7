@@ -30,10 +30,6 @@
 % see also: ZmapCatalog, ZmapCatalogView, MainInteractiveMap, ZmapMessageCenter
 
 global ZG
-disp('This is zmap.m - version 7.0')
-
-% set up paths
-
 % ZG (ZmapGlobal) provides access to all ZMAP's global variables
 % When variables are accessed directly via ZmapGlobal.Data.variablename, they
 % should not modify the original.
@@ -44,9 +40,13 @@ disp('This is zmap.m - version 7.0')
 %       ZmapGlobal.Data.ra = 100; % value is effectively ignored!
 %       ZG=ZmapGlobal.Data; %provide read/write access to global data.
 %       ZG.ra = 23  % changes ra globally
+
+
+disp('This is zmap.m - version 7.0')
+
+% advise matlab where it can find everything zmap
 set_zmap_paths;
-ZG=ZmapGlobal.Data;
-% set some of the paths
+ZG = ZmapGlobal.Data;
 ZG.out_dir = fullfile(hodi,'out');
 ZG.data_dir = fullfile(hodi, 'eq_data');
 
@@ -58,6 +58,7 @@ if verLessThan('matlab',ZG.min_matlab_version)
     messtext = sprintf(baseMsg, ZG.min_matlab_release, ZG.zmap_version, ZG.min_matlab_version);
     errordlg(messtext,'Warning!')
     pause(5)
+    exit
 end
 
 tested_systems = {'MAC'};

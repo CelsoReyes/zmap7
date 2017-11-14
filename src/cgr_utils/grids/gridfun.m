@@ -69,6 +69,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     countEvents=nargout>1;
     getMaxDist=nargout>2;
     
+    MIN_POINTS_FOR_PARALLEL = 500;
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     
@@ -135,6 +136,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     
     h=msgbox({ 'Please wait.' , gridmsg },gridttl);
+    set(findobj(h,'Tag','OKButton'),'visible','off')
     h.Tag='gridmessage';
     watchon;
     drawnow;
@@ -157,7 +159,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
         % close the window after a while. this is probably a kludge.
         for t=1:10
-            pause(.5);
+            pause(.2);
             if ~isvalid(h)
                 break;
             end
@@ -220,36 +222,71 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end %doMultifun
     %}
     function doSinglefun(myfun)
-        parfor i=1:length(zgrid)
-            fun=myfun; % local copy of function
-            % is this point of interest?
-            if usemask && ~mask(i)
-                continue
-            end
-            
-            x=Xs(i);
-            y=Ys(i);
-            
-            [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
-            
-            nEvents(i)=minicat.Count;
-            maxDist(i)=maxd;
-            if ~isempty(minicat)
-                maxMag(i)=max(minicat.Magnitude);
-            end
-            % are there enough events to do the calculation?
-            if minicat.Count < selcrit.requiredNumEvents
-                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
-                continue
-            end
-            
-            returned_vals = fun(minicat);
-            values(i,:)=returned_vals;
+        if length(zgrid)<MIN_POINTS_FOR_PARALLEL
+            for i=1:length(zgrid)
+                fun=myfun; % local copy of function
+                % is this point of interest?
+                if usemask && ~mask(i)
+                    continue
+                end
                 
-            wasEvaluated(i)=true;
-            %waitbar(i/length(zgrid))
-            if ~mod(i,ceil(length(zgrid)/50))
-                drawnow
+                x=Xs(i);
+                y=Ys(i);
+                
+                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                
+                nEvents(i)=minicat.Count;
+                maxDist(i)=maxd;
+                if ~isempty(minicat)
+                    maxMag(i)=max(minicat.Magnitude);
+                end
+                % are there enough events to do the calculation?
+                if minicat.Count < selcrit.requiredNumEvents
+                    nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                    continue
+                end
+                
+                returned_vals = fun(minicat);
+                values(i,:)=returned_vals;
+                
+                wasEvaluated(i)=true;
+                %waitbar(i/length(zgrid))
+                if ~mod(i,ceil(length(zgrid)/50))
+                    drawnow
+                end
+            end
+        else
+            parfor i=1:length(zgrid)
+                fun=myfun; % local copy of function
+                % is this point of interest?
+                if usemask && ~mask(i)
+                    continue
+                end
+                
+                x=Xs(i);
+                y=Ys(i);
+                
+                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                
+                nEvents(i)=minicat.Count;
+                maxDist(i)=maxd;
+                if ~isempty(minicat)
+                    maxMag(i)=max(minicat.Magnitude);
+                end
+                % are there enough events to do the calculation?
+                if minicat.Count < selcrit.requiredNumEvents
+                    nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                    continue
+                end
+                
+                returned_vals = fun(minicat);
+                values(i,:)=returned_vals;
+                
+                wasEvaluated(i)=true;
+                %waitbar(i/length(zgrid))
+                if ~mod(i,ceil(length(zgrid)/50))
+                    drawnow
+                end
             end
         end
         %close(wai)
