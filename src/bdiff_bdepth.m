@@ -9,7 +9,7 @@ function  bdiff_bdepth(mycat)
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
-    global les n teb t0b cua  ew onesigma  S mrt bvalsumhold
+    global les teb t0b cua  ew onesigma mrt bvalsumhold
     global gBdiff % contains b1, n1, b2, n2
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
@@ -126,7 +126,7 @@ function  bdiff_bdepth(mycat)
     pause(0.1)
     
     y = backg_ab(ll);
-    [aw bw,  ew] = wls(x',y');
+    [aw bw,  S, ew] = wls(x',y');
     p = [bw aw];
     %[p,S] = polyfit(x,y,1)                    % fit a line to background
     p2 = [bw+onesigma aw];

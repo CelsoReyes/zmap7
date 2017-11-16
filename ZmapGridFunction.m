@@ -2,7 +2,8 @@ classdef ZmapGridFunction < ZmapFunction
     % ZMAPGRIDFUNCTION is a ZmapFunction that produces a grid of 1 or more results as output
     properties
         plotfeatures='borders';
-        plotcolumn % 
+        plotcolumn %
+        showgridcenters=true
     end
     
     methods
@@ -15,7 +16,7 @@ classdef ZmapGridFunction < ZmapFunction
             if ~isnumeric(choice)
                 choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
             end
-                
+            
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
@@ -43,8 +44,10 @@ classdef ZmapGridFunction < ZmapFunction
             shading(obj.ZG.shading_style);
             hold on
             
+            % show grid centers, but don't make them clickable
             gph=obj.Grid.plot();
             gph.PickableParts='none';
+            gph.Visible=logical2onoff(obj.showgridcenters);
             
             ft=obj.ZG.features(obj.plotfeatures);
             copyobj(ft,gca);
@@ -72,6 +75,8 @@ classdef ZmapGridFunction < ZmapFunction
                     'Callback',@(src,~)contourf_cb(choice));
                 uimenu(lookmenu,'Label','change contour interval','Enable','off',...
                     'callback',@(src,~)changecontours_cb(src));
+                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',logical2onoff(obj.showgridcenters),...
+                    'callback',@togglegrid_cb);
             end
             if isempty(findobj(gcf,'Tag','layermenu'))
                 layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
@@ -87,7 +92,7 @@ classdef ZmapGridFunction < ZmapFunction
             layermenu=findobj(gcf,'Tag','layermenu');
             set(findobj(layermenu,'Tag',myname),'checked','on');
             
-           % plot here
+            % plot here
             function plot_cb(name)
                 set(findobj(layermenu,'type','uimenu'),'Checked','off');
                 obj.plot(name);
@@ -104,7 +109,18 @@ classdef ZmapGridFunction < ZmapFunction
                 clabel(C,h)
             end
             
-            
+            function togglegrid_cb(src,~)
+                switch src.Checked
+                    case 'on'
+                        src.Checked='off';
+                        gph.Visible='off';
+                        obj.showgridcenters=false;
+                    case 'off'
+                        src.Checked='on';
+                        gph.Visible='on';
+                        obj.showgridcenters=true;
+                end
+            end
             function changecontours_cb()
                 dlgtitle='Contour interval';
                 s.prompt='Enter interval';
@@ -126,7 +142,7 @@ classdef ZmapGridFunction < ZmapFunction
                     end
                 end
             end
-                
+            
             
         end
         function contour(obj,choice,intervals)
@@ -145,24 +161,35 @@ classdef ZmapGridFunction < ZmapFunction
             [C,h]=contourf(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
             clabel(C,h)
         end
-            
-            
+        
+        
     end
     methods(Access=protected, Static)
         function txt = mydatacursor(~,event_obj)
             try
-            pos=get(event_obj,'Position');
-            
-            im=event_obj.Target;
-            details=im.UserData.vals(abs(im.UserData.vals.x - pos(1))<=.0001 & abs(im.UserData.vals.y-pos(2))<=.0001,:)
+                % wrapped in Try-Catch because the datacursor routines fail relatively quietly on
+                % errors. They simply mention that they couldn't update the datatip.
+                
+                pos=get(event_obj,'Position');
+                
+                im=event_obj.Target;
+                details=im.UserData.vals(abs(im.UserData.vals.x - pos(1))<=.0001 & abs(im.UserData.vals.y-pos(2))<=.0001,:)
             catch ME
+                
                 disp(ME.message)
                 ME
             end
             try
                 mymapval=details.(im.UserData.myname);
+                if isnumeric(mymapval)
+                    trans=@(x)num2str(mymapval);
+                elseif isa('datetime','val') || isa('duration','val')
+                    trans=@(x)char(mymapval);
+                else
+                    trans=@(x)x;
+                end
                 txt={sprintf('Map Value [%s] : %s %s\n%s\n-------------',...
-                    im.UserData.myname, num2str(mymapval), im.UserData.myunit, im.UserData.mydesc)};
+                    im.UserData.myname, trans(mymapval), im.UserData.myunit, im.UserData.mydesc)};
                 for n=1:width(details)
                     fld=details.Properties.VariableNames{n};
                     val=details.(fld);

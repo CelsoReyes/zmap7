@@ -196,7 +196,7 @@ function bcrossVt2()
         
         
         % overall b-value
-        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
         ZG.bo1 = bv;
         no1 = newa.Count;
         %
@@ -219,7 +219,7 @@ function bcrossVt2()
                 % call the b-value function
                 lt =  b.Date >= t1 &  b.Date <t2 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),ZG.inb1);
+                    [bv magco stan av pr] =  bvalca3(b(lt,:),ZG.inb1);
                     ZG.bo1 = bv;
                     no1 = newa.Count;
                 else
@@ -227,7 +227,7 @@ function bcrossVt2()
                 end
                 lt = b.Date >= t3 &  b.Date < t4 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv2 magco stan av me mer me2,  pr] =  bvalca3(b(lt,:),ZG.inb1);
+                    [bv2 magco stan av pr] =  bvalca3(b(lt,:),ZG.inb1);
                 else
                     bv2 = NaN; pr = 50;
                 end

@@ -1,8 +1,9 @@
-function [bv, magco, std_backg, av, me, mer , me2, rt] = bvalcalc(mycat)
+function [bv, magco, std_backg, av, me,  rt] = bvalcalc(mycat)
     % bvalcalc
-    %  [bv, magco, std_backg, av, me, mer , ~, rt] = bvalcalc(catalog)
+    %  [bv, magco, std_backg, av, me, ~, rt] = bvalcalc(catalog)
     
-    global n les
+    global les
+    %global n
     
     report_this_filefun(mfilename('fullpath'));
     
@@ -36,7 +37,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] = bvalcalc(mycat)
     l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
     so = log10(bval(10*M1b(1)+2)) - log10(bval(10*M2b(1)));
     me= so/( M2b(1)-0.2- M1b(1));
-    mer = dm1;
+    %mer = dm1;
     
     
     ll = magsteps_desc >= M1b(1) & magsteps_desc <= M2b(1);
@@ -50,7 +51,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] = bvalcalc(mycat)
     r = r(1,2);
     std_backg = std(y - polyval(p,x));      % standard deviation of fit
     
-    n = length(x);
+    %n = length(x);
     l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
     les = (mean(mycat.Magnitude(l)) - M1b(1))/dm1;
     

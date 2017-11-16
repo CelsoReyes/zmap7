@@ -1,8 +1,8 @@
-function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
+function [bv, magco, std_backg, av, rt] =  bvalca2(mycat)
     % bvalca2
     %  [bv, magco, std_backg, av, ~, ~ , ~, ~] = bvalca2(catalog)
     
-    global  n les
+    global  les
     
     %report_this_filefun(mfilename('fullpath'));
     
@@ -41,7 +41,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
     x = magsteps_desc(ll);
     y = backg_ab(ll);
     %[p,s] = polyfit2(x,y,1);                   % fit a line to background
-    [aw bw,  ew] = wls(x',y');
+    [aw bw, ~, ew] = wls(x',y');
     p = [bw aw];
     f = polyval(p,x);
     f = 10.^f;
@@ -51,7 +51,7 @@ function [bv, magco, std_backg, av, me, mer , me2, rt] =  bvalca2(mycat)
     %std_backg = std(y - polyval(p,x));      % standard deviation of fit
     std_backg = ew;
     
-    n = length(x);
+    %n = length(x);
     l = mycat.Magnitude >= M1b(1) & mycat.Magnitude <= M2b(1);
     les = (mean(mycat.Magnitude(l)) - M1b(1))/dm1;
     

@@ -276,7 +276,7 @@ function calc_across(sel)
         
         
         % overall b-value
-        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
         ZG.bo1 = bv; no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
@@ -325,7 +325,7 @@ function calc_across(sel)
                     
                     % a(0) for Mc(MAxCurv) + Mc(Corr)
                 elseif ZG.inb1 == 2
-                    [bv magco stan av me mer me2,  pr] =  bvalca3(b,1);
+                    [bv magco stan av pr] =  bvalca3(b,1);
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin
@@ -346,7 +346,7 @@ function calc_across(sel)
                 elseif ZG.inb1 == 4
                     % a(0) by r1 and Mc by r2
                     if length(b) >= Nmin
-                        [bv magco stan av me mer me2,  pr] =  bvalca3(b,1);
+                        [bv magco stan av pr] =  bvalca3(b,1);
                         magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                         bv2 = fFixbValue;
                         l = bri(:,6) >= magco-0.05;

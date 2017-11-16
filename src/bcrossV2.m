@@ -178,7 +178,7 @@ function bcrossV2(sel)
         
         
         % overall b-value
-        [bv magco stan av me mer me2,  pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
         ZG.bo1 = bv;
         no1 = newa.Count;
         %
@@ -199,7 +199,7 @@ function bcrossV2(sel)
             if isempty(b); b = newa.subset(1); end
             if b.Count >= 50;
                 % call the b-value function
-                [bv magco stan av me mer me2,  pr] =  bvalca3(b,ZG.inb1);
+                [bv magco stan av pr] =  bvalca3(b,ZG.inb1);
                 l2 = sort(l);
                 b2 = b;
                 if ZG.inb2 ==  1

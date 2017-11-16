@@ -71,6 +71,7 @@ f
 feat.plot(ax);
 ```
 #### ZmapFunction
+#### ZmapGridFunction < ZmapFunction
 #### ZmapFunctionDialog
 
 

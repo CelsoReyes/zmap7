@@ -9,7 +9,7 @@ function  bdiff(mycat, holdplot)
     %  Stefan Wiemer 1/95
     %
     global bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4
-    global  cua ew onesigma S bvalsumhold
+    global  cua ew onesigma bvalsumhold
     global gBdiff % bdiff globals containing b1, b2, n1, n2
     ZG=ZmapGlobal.Data;
     
@@ -109,7 +109,7 @@ function  bdiff(mycat, holdplot)
     pause(0.1)
     
     y = backg_ab(ll);
-    [aw bw,  ew] = wls(x',y');
+    [aw bw,  S, ew] = wls(x',y');
     p = [bw aw];
     
     p2 = [bw+onesigma aw];

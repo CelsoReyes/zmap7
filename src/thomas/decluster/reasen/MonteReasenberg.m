@@ -6,7 +6,7 @@ function [declusCat,mNumDeclus] = MonteReasenberg(numSim,Cat)
 %%
 
 % if ~exist('FileOut','var')
-%     disp(['You must give me the output results filename!'])
+%     disp(['You must provide the output results filename!'])
 %     return
 % end
 

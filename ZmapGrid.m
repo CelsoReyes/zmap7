@@ -5,7 +5,7 @@ classdef ZmapGrid
     %
     %     Name - name of this grid
     %
-    %     GridXY  - [X1,Y1 ; ... ; Xn,Yn] matrix of positions
+    %     GridPoints  - [X1,Y1 ; ... ; Xn,Yn] matrix of positions
     %     X - all X positions (points will repeat, since they represent matrix nodes) [read-only] 
     %     Y - all Y positions (points will repeat, since they represent matrix nodes)[read-only]
     %
@@ -15,7 +15,6 @@ classdef ZmapGrid
     %     Units - degrees or kilometers
     %     ActivePoints - logical mask
     % 
-    %     ActiveGrid - [X Y; ..;Yn Yn] for active points [read-only]
     %     Xactive - X positions for active points [read-only]
     %     Yactive - Y positions for active points [read-only]
     %
@@ -33,6 +32,7 @@ classdef ZmapGrid
     %
     %     Misc. methods:
     %     
+    %     ActiveGrid - [X Y; ..;Yn Yn] for active points [read-only]
     %     length - number of grid points
     %     isempty - true if no grid is defined
     %     MeshSize - [number of X, number of Y[, number of Z]]
@@ -45,10 +45,10 @@ classdef ZmapGrid
     %
     %
     % see also gridfun, EventSelectionChoice, autogrid
-
+    %
     properties
         Name % name of this grid
-        GridXY  % [X1,Y1 ; ... ; Xn,Yn] matrix of positions
+        GridPoints  % [X1,Y1 ; ... ; Xn,Yn] matrix of positions
         Units % degrees or kilometers
         ActivePoints    % logical mask
         Xvector % vector for column positions (unique points)
@@ -59,7 +59,9 @@ classdef ZmapGrid
         Y % all Y positions (points will repeat, since they represent matrix nodes)
         Xactive % all X positions for active points
         Yactive % all Y positions for active points
-        ActiveGrid % [X Y;...] for active points
+    end
+    properties(Constant,Hidden)
+        POSSIBLY_TOO_MANY_POINTS = 1000 * 1000;
     end
     
     methods
@@ -80,7 +82,7 @@ classdef ZmapGrid
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
                         warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                         assert(size(varargin{1},2)==2);
-                        obj.GridXY = varargin{1};
+                        obj.GridPoints = varargin{1};
                         obj.Units='unk';
                         obj.Xvector=[];
                         obj.Yvector=[];
@@ -92,8 +94,12 @@ classdef ZmapGrid
                         axlims=axis(ax);
                         obj.Xvector=axlims(1) : g.dx : axlims(2);
                         obj.Yvector=axlims(3) : g.dy : axlims(4);
+                        totpoints=numel(obj.Xvector)*numel(obj.Yvector);
+                        if totpoints > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
+                            ZmapMessageCenter.set_warning(sprintf('Possibly too many points: %d',totpoints'));
+                        end
                         [x,y]=meshgrid(obj.Xvector, obj.Yvector);
-                        obj.GridXY=[x(:),y(:)];
+                        obj.GridPoints=[x(:),y(:)];
                         if isfield(g,'GridEntireArea') && ~g.GridEntireArea
                             myshape=ZmapGlobal.Data.selection_shape;
                             if isempty(myshape)
@@ -110,7 +116,7 @@ classdef ZmapGrid
                                     case 'polygon'
                                         myshape=ShapePolygon();
                                         myshape=myshape.select_polygon();
-                                        obj=obj.MaskWithPolygon(myshape.Points);
+                                        obj=obj.MaskWithPolygon(myshape.Lon,myshape.Lat);
                                     otherwise
                                         % do nothing
                                 end
@@ -125,7 +131,7 @@ classdef ZmapGrid
                     % ZMAPGRID( name, all_points, units)
                     warning('ZmapGrid works best when provided with Xvector and Yvector of points');
                     assert(size(varargin{1},2)==2);
-                    obj.GridXY = varargin{1};
+                    obj.GridPoints = varargin{1};
                     obj.Xvector=[];
                     obj.Yvector=[];
                     assert(ischar(varargin{2}));
@@ -135,7 +141,7 @@ classdef ZmapGrid
                     obj.Xvector=varargin{1};
                     obj.Yvector=varargin{2};
                     [x,y]=meshgrid(obj.Xvector, obj.Yvector);
-                    obj.GridXY=[x(:),y(:)];
+                    obj.GridPoints=[x(:),y(:)];
                     assert(ischar(varargin{3}));
                     obj.Units = varargin{3};
                     
@@ -148,7 +154,7 @@ classdef ZmapGrid
                     obj.ActivePoints=true(numel(obj.Xvector),numel(obj.Yvector));
                 else
                     % all points are simply in a line
-                    obj.ActivePoints=true(length(obj.GridXY),1);
+                    obj.ActivePoints=true(length(obj.GridPoints),1);
                 end
             end
             
@@ -157,7 +163,7 @@ classdef ZmapGrid
         % basic access routines
         function x = get.X(obj)
             if ~isempty(obj)
-                x=obj.GridXY(:,1);
+                x=obj.GridPoints(:,1);
             else
                 x = [];
             end
@@ -165,7 +171,7 @@ classdef ZmapGrid
         
         function y = get.Y(obj)
             if ~isempty(obj)
-                y=obj.GridXY(:,2);
+                y=obj.GridPoints(:,2);
             else
                 y = [];
             end
@@ -173,28 +179,28 @@ classdef ZmapGrid
         
         % masked access routines
         function x = get.Xactive(obj)
-            x=obj.GridXY(obj.ActivePoints,1);
+            x=obj.GridPoints(obj.ActivePoints,1);
         end
         
         function y = get.Yactive(obj)
-            y=obj.GridXY(obj.ActivePoints,2);
+            y=obj.GridPoints(obj.ActivePoints,2);
         end
         
-        function xy = get.ActiveGrid(obj)
-            xy=obj.GridXY(obj.ActivePoints,:);
+        function points = ActiveGrid(obj)
+            points=obj.GridPoints(obj.ActivePoints,:);
         end
         
         function obj = set.ActivePoints(obj, values)
-            assert(isempty(values) || isequal(numel(values), length(obj.GridXY))); %#ok<MCSUP>
+            assert(isempty(values) || isequal(numel(values), length(obj.GridPoints))); %#ok<MCSUP>
             obj.ActivePoints = logical(values);
         end
         
         function val = length(obj)
-            val = length(obj.GridXY);
+            val = length(obj.GridPoints);
         end
         
         function val = isempty(obj)
-            val = isempty(obj.GridXY);
+            val = isempty(obj.GridPoints);
         end
         
         function val = MeshSize(obj)
@@ -207,6 +213,7 @@ classdef ZmapGrid
             % obj = obj.MaskWithPolygon() user selects polygon from gca
             % obj = obj.MaskWithPolygon(ax) user selects polygon from axis ax
             % obj = obj.MaskWithPolygon(polyX, polyY) where polyX and polyY define the polygon
+            report_this_filefun(mfilename('fullpath'));
             narginchk(1,3);
             nargoutchk(1,1);
             switch nargin
