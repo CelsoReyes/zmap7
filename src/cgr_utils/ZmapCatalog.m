@@ -556,7 +556,7 @@ classdef ZmapCatalog < handle
         function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
             % selectClosestEvents determine which N events are closest to a point (lat,lon, depth).
             % [otherCat, max_km] = obj.selectClosestEvents(lat,lon, depth, nEvents)
-            % for hypocentral distance, leave depth empty.
+            % for epicentral distance, leave depth empty.
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
             %
@@ -579,12 +579,21 @@ classdef ZmapCatalog < handle
             other = obj.subset(mask);
         end
         
-        function [other,max_km] = selectRadius(obj, lat, lon, radius_km)
-            %selectRadius  select subset catalog to an epicentral radius from a point. sortorder is preserved
-            % [catalog,max_km] = obj.selectRadius(lat, lon, dist_km)
+        function [other,max_km] = selectRadius(obj, lat, lon, depth, radius_km)
+            %selectRadius  select subset catalog to a radius from a point 
+            % [catalog,max_km] = obj.selectRadius(lat, lon, dist_km) epicentral radius from a point. sortorder is preserved
+            % [catalog,max_km] = obj.selectRadius(lat, lon, depth, dist_km) hypocentral radius from a point. sortorder is preserved
             %
             % see also selectClosestEvents, selectCircle
-            dists_km = obj.epicentralDistanceTo(lat, lon);
+            if ~exist('radius_km','var')
+                radius_km=depth;
+                depth=[];
+            end
+            if isempty(depth)
+                dists_km = obj.epicentralDistanceTo(lat, lon);
+            else
+                dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
+            end
             mask = dists_km <= radius_km;
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);
@@ -652,11 +661,11 @@ classdef ZmapCatalog < handle
             assert( selcrit.useEventsInRadius || selcrit.useNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
             
             if selcrit.useEventsInRadius
-                [minicat,max_km]=obj.selectRadius(y,x, selcrit.radius_km);
+                [minicat,max_km]=obj.selectRadius(y,x, z, selcrit.radius_km);
             elseif selcrit.useNumNearbyEvents
-                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.numNearbyEvents);
+                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.numNearbyEvents); %works with sphere
                 if max_km > selcrit.maxRadiusKm
-                    [minicat, max_km]=obj.selectRadius(y,x, selcrit.maxRadiusKm);
+                    [minicat, max_km]=obj.selectRadius(y,x, z, selcrit.maxRadiusKm);
                 end
             end
         end

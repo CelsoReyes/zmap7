@@ -26,10 +26,10 @@ classdef GridParameterChoice < handle
     
     properties
         dx=[] % horzontal (longitudinal) grid spacing, degrees
-        dx_units=''
         dy=[] % vertical (latitudinal) grid spacing, degrees
-        dy_units=''
         dz=[] % depth spacing (not functional)
+        dy_units=''
+        dx_units=''
         dz_units=''
         GridEntireArea
         SaveGrid=false; % TODO: move to dependent and add ui widget
@@ -37,25 +37,35 @@ classdef GridParameterChoice < handle
     properties(Dependent)
         LoadGrid
         CreateGrid
+        %UseGlobalGrid
     end
     properties(Access=private)
         hLoadGrid %handle to the load_grid button
         hCreateGrid % handle to the create_grid button
-        ubg2
+        ubg2 % ui button group containing radio buttons
         hDeltaX
         hDeltaY
         hDeltaZ
+        hUseGlobalGrid
         RequestZ=false;
         equalXY=false;
     end
     
     methods
         function out=get.LoadGrid(obj)
-            out = obj.ubg2.SelectedObject==obj.hLoadGrid;
+            if ~isstruct(obj.ubg2)
+                out=false; % using ZG
+            else
+                out = obj.ubg2.SelectedObject==obj.hLoadGrid;
+            end
         end
 
         function out=get.CreateGrid(obj)
-            out = obj.ubg2.SelectedObject==obj.hCreateGrid;
+            if ~isstruct(obj.ubg2)
+                out=true; % using ZG
+            else
+                out = obj.ubg2.SelectedObject==obj.hCreateGrid;
+            end
         end
         function out = toStruct(obj)
             % returns structure with fields:
@@ -84,22 +94,10 @@ classdef GridParameterChoice < handle
             % Grid options
             
             % Create, Load, or use Previous grid choice
-            if nargin==0
-                % load from the global data.
                 ZG=ZmapGlobal.Data;
-                
-                obj.dx=ZG.gridopt.dx;
-                obj.dy=ZG.gridopt.dy;
-                obj.dz=ZG.gridopt.dz;
-                obj.dx_units=ZG.gridopt.dx_units;
-                obj.dy_units=ZG.gridopt.dy_units;
-                obj.dz_units=ZG.gridopt.dz_units;
-                obj.GridEntireArea=ZG.gridopt.GridEntireArea;
-                obj.SaveGrid=ZG.gridopt.SaveGrid;
-                obj.LoadGrid=ZG.gridopt.LoadGrid;
-                obj.CreateGrid=ZG.gridopt.SaveGrid;
+            if nargin==0
+                obj=from_global(obj);
                 return
-                
             end
             obj.dx=A{1}; obj.dx_units=A{2};
             
@@ -135,9 +133,13 @@ classdef GridParameterChoice < handle
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Create grid','Units','pixels','Position',[ 17  90 280  24]);
             
+            obj.hUseGlobalGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
+                ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
+                'string','Use Existing grid','Units','pixels','Position',[105  90 280  24],...
+                'Enable',logical2onoff(~isa(ZG.Grid,'ZmapGrid')));
             obj.hLoadGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
-                'string','Load grid','Units','pixels','Position',[172  90 280  24]);
+                'string','Load grid','Units','pixels','Position',[220  90 280  24]);
             
             ypos=40;
             if obj.equalXY
@@ -204,7 +206,7 @@ classdef GridParameterChoice < handle
             
             % save_grid =  uicontrol('Style','checkbox','string','Save selected grid to file','Position',[.65 .35 .2 .080]);
             
-            uicontrol(obj.ubg2,'Style','checkbox','Units','pixels','Position',[ 17  13 187  18],...
+            hGridarea=uicontrol(obj.ubg2,'Style','checkbox','Units','pixels','Position',[ 17  13 150  18],...
                 'HorizontalAlignment','left','String','Select area',...
                 'Callback',@callback_gridarea,...
                 'FontSize',ZmapGlobal.Data.fontsz.m ,...
@@ -214,6 +216,29 @@ classdef GridParameterChoice < handle
             obj.ubg2.SelectedObject=obj.hCreateGrid;
             obj.ubg2.SelectionChangedFcn=@callback_gridcontrol;
             
+            uicontrol(obj.ubg2,'Style','pushbutton',...
+            'Units','pixels','Position',[ 180  10 120  20],...
+            'String','Reset (to global)',...
+            'callback',@cb_set_to_global);
+            
+            
+            function cb_set_to_global(mysrc,~)
+                obj=from_global(obj);
+                obj.hDeltaX.String=num2str(ZG.gridopt.dx);
+                obj.hDeltaX.Callback(obj.hDeltaX,[]);
+                if ~obj.equalXY
+                    obj.hDeltaY.String=num2str(ZG.gridopt.dy);
+                    %cb=obj.hDeltaY.Callback;
+                    obj.hDeltaY.Callback(obj.hDeltaY,[]);
+                end
+                
+                if obj.RequestZ
+                    obj.hDeltaZ.String=num2str(ZG.gridopt.dz);
+                    obj.hDeltaZ.Callback(obj.hDeltaZ,[]);
+                end
+                hGridarea.Value=~ZG.gridopt.GridEntireArea;
+                hGridarea.Callback(hGridarea,[]);
+            end
             
             function callbackfun_dx(mysrc,~)
                 obj.dx=str2double(mysrc.String);
@@ -243,8 +268,28 @@ classdef GridParameterChoice < handle
             function callback_gridarea(mysrc,~)
                 obj.GridEntireArea= ~mysrc.Value;
             end
+            
+            function obj=from_global(obj)
+                %ZG=ZmapGlobal.Data;
+                % fill parameters from ZG
+                obj.dx=ZG.gridopt.dx;
+                obj.dy=ZG.gridopt.dy;
+                obj.dz=ZG.gridopt.dz;
+                obj.dx_units=ZG.gridopt.dx_units;
+                obj.dy_units=ZG.gridopt.dy_units;
+                obj.dz_units=ZG.gridopt.dz_units;
+                obj.GridEntireArea=ZG.gridopt.GridEntireArea;
+                obj.SaveGrid=ZG.gridopt.SaveGrid;
+            end
         end
     end
+    %{
+    methods(Access=protected)
+        function obj = set.LoadGrid(obj,tf)
+            obj.LoadGrid
+        end
+    end
+    %}
     methods(Static)
         function quickshow()
             %quickly test  the ZmapFunctionDlg

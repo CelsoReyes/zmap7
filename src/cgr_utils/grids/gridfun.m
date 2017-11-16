@@ -97,6 +97,10 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     Xs=zgrid.X;
     Ys=zgrid.Y;
+    doZ=isa(zgrid,'ZmapGrid3');
+    if doZ
+        Zs=zgrid.Z;
+    end
     mask=zgrid.ActivePoints;
     
     %{
@@ -232,8 +236,13 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 
                 x=Xs(i);
                 y=Ys(i);
+                if doZ
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,Zs(i));
+                else
+                    
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                end
                 
-                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
                 
                 nEvents(i)=minicat.Count;
                 maxDist(i)=maxd;
@@ -265,8 +274,11 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 
                 x=Xs(i);
                 y=Ys(i);
-                
-                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                if doZ
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,Zs(i));
+                else
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                end
                 
                 nEvents(i)=minicat.Count;
                 maxDist(i)=maxd;
@@ -291,7 +303,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         end
         %close(wai)
     end
-    
+
     % helper functions
     function check_provided_functions(multifun)
         
