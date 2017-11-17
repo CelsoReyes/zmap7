@@ -59,6 +59,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     %Build timecatalog
     assert(isa(pcat,'ZmapCatalog'));
     assert(isa(pcat.Date,'datetime'))
+    assert(~isempty(pcat),'Pcat cannot be empty');
     switch datestyle
         case 'date'
             t = pcat.Date; %DATE
@@ -114,8 +115,8 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
         amag = sum(magz) / numel(magz);
         
         rjb = .4343/(amag-minThreshMag+.05);
-        rja = log10(dk) - rjb * (ZG.maepi.Magnitude - min(ZG.newt2.Magnitude));
-        
+        % NOTE, uses first maepi value
+        rja = log10(dk) - rjb * (ZG.maepi.Magnitude(1) - min(ZG.newt2.Magnitude));
         dk=round(dk, -2);
         sdk= round(sdk, -2);
     else

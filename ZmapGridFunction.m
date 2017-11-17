@@ -46,6 +46,7 @@ classdef ZmapGridFunction < ZmapFunction
             
             % show grid centers, but don't make them clickable
             gph=obj.Grid.plot();
+            gph.Tag='pointgrid';
             gph.PickableParts='none';
             gph.Visible=logical2onoff(obj.showgridcenters);
             
@@ -77,6 +78,8 @@ classdef ZmapGridFunction < ZmapFunction
                     'callback',@(src,~)changecontours_cb(src));
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',logical2onoff(obj.showgridcenters),...
                     'callback',@togglegrid_cb);
+                uimenu(lookmenu,'Label',['Show ', obj.getCat(1).Name, 'catalog'],...
+                    'callback',{@addquakes_cb,obj.getCat(1)});
             end
             if isempty(findobj(gcf,'Tag','layermenu'))
                 layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
@@ -98,6 +101,23 @@ classdef ZmapGridFunction < ZmapFunction
                 obj.plot(name);
             end
             
+            function addquakes_cb(src,~,catalog)
+                qtag=findobj(gcf,'tag','quakes');
+                if isempty(qtag)
+                    hold on
+                    plot(catalog.Longitude, catalog.Latitude, 'o',...
+                        'markersize',3,...
+                        'markeredgecolor',[.2 .2 .2],...
+                        'tag','quakes');
+                    hold off
+                else
+                    ison=strcmp(qtag.Visible,'on');
+                    qtag.Visible=logical2onoff(~ison);
+                    src.Checked=logical2onoff(~ison);
+                    drawnow
+                end
+            end
+            
             function contour_cb(obj,name)
                 % like plot, except with contours!
                 [C,h]=contour(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
@@ -110,6 +130,13 @@ classdef ZmapGridFunction < ZmapFunction
             end
             
             function togglegrid_cb(src,~)
+                gph=findobj(gcf,'tag','pointgrid');
+                if isempty(gph)
+                    gph=obj.Grid.plot();
+                    gph.Tag='pointgrid';
+                    gph.PickableParts='none';
+                    gph.Visible=logical2onoff(obj.showgridcenters);
+                end
                 switch src.Checked
                     case 'on'
                         src.Checked='off';

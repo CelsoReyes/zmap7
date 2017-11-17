@@ -61,7 +61,10 @@ function view_bpva(res, idx)
     ZG=ZmapGlobal.Data;
     bpmap=findobj('Type','Figure','-and','Name','bp-value-map');   
     delete(bpmap);
+    try
     res=res.Result; %TOFIX
+    catch
+    end
     curval = res.values(:,idx);
     
     if isempty(bpmap)
@@ -385,7 +388,7 @@ function view_bpva(res, idx)
         %lab1='dM ';
         %valueMap = maxm-magco;
         res.values.dM=res.values.maxmg - res.values.magco;
-        idx=find(strcmp(res.values.Propertes.VariableNames,'dM'));
+        idx=find(strcmp(res.values.Properties.VariableNames,'dM'));
         res.values.Properties.VariableDescriptions(idx)='Magnitude range(Mmax - Mcomp)';
         view_bpva(res,idx);
     end

@@ -69,7 +69,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     countEvents=nargout>1;
     getMaxDist=nargout>2;
     
-    MIN_POINTS_FOR_PARALLEL = 500;
+    MIN_POINTS_FOR_PARALLEL = 50000;
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     
@@ -97,6 +97,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     Xs=zgrid.X;
     Ys=zgrid.Y;
+    Zs=nan(size(Ys));
     doZ=isa(zgrid,'ZmapGrid3');
     if doZ
         Zs=zgrid.Z;

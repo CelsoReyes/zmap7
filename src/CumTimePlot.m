@@ -143,7 +143,11 @@ classdef (Sealed) CumTimePlot < handle
                     stri4 = [stri4 ; s];
                 end
                 t=text(obj.AxH,bigCat.Date,bigIdx,stri4);
-                t.UIContextMenu=menu_cumtimeseries();
+                try
+                    t.UIContextMenu=menu_cumtimeseries();
+                catch ME
+                    warning(ME.message)
+                end
                 hold(obj.AxH,'off');
             end
         end
