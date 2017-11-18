@@ -69,7 +69,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     countEvents=nargout>1;
     getMaxDist=nargout>2;
     
-    MIN_POINTS_FOR_PARALLEL = 50000;
+    MIN_POINTS_FOR_PARALLEL = 1000000;
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     
@@ -178,54 +178,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
         values=reshaper(values);
     end
-    %{
-    function doMultifun()
-        parfor i=1:length(zgrid)
-            % is this point of interest?
-            if usemask && ~mask(i)
-                continue
-            end
-            
-            x=Xs(i);
-            y=Ys(i);
-            
-            [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
-            
-            nEvents(i)=minicat.Count;
-            maxDist(i)=maxd;
-            if ~isempty(minicat)
-                maxMag(i)=max(minicat.Magnitude);
-            end
-            % are there enough events to do the calculation?
-            if minicat.Count < selcrit.requiredNumEvents
-                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
-                continue
-            end
-            
-            % assign to a matrix for now, because of possible parfor issues
-            for j=1:size(infun,1)
-                returned_vals=infun{j,1}(minicat);
-                tmpval(i,j)=returned_vals;
-            end
-            
-            wasEvaluated(i)=true;
-            %waitbar(i/length(zgrid))
-            if ~mod(i,ceil(length(zgrid)/50))
-                drawnow
-            end
-        end
-        toc(mytic)
-        %close(wai)
-        watchoff
-        drawnow
-        
-        % put tmpval into a struct
-        for j=1:size(infun,1)
-            values.(infun{j,2})=reshaper(tmpval(:,j));
-        end
-        
-    end %doMultifun
-    %}
+ 
     function doSinglefun(myfun)
         if length(zgrid)<MIN_POINTS_FOR_PARALLEL
             for i=1:length(zgrid)
@@ -266,6 +219,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 end
             end
         else
+            error('disabled parallel processing')
+            %{
             parfor i=1:length(zgrid)
                 fun=myfun; % local copy of function
                 % is this point of interest?
@@ -301,6 +256,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                     drawnow
                 end
             end
+            %}
         end
         %close(wai)
     end

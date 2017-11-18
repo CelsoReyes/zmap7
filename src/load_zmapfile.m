@@ -71,6 +71,7 @@ function load_zmapfile()%
     catalog_overview('primary');
 
     uimemorize_catalog();
+    ZmapMessageCenter.update_catalog();
     
 end
 

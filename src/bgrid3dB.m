@@ -16,7 +16,32 @@ classdef bgrid3dB < ZmapGridFunction
         ni = ZG.ni;
         Nmin = 50;
         mc_choice
-        
+    end
+    
+    properties(Constant)
+        PlotTag='myplot';
+        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
+            'bv2','bv2: b-value from bmemmag', '';...bv2 (?) b-value from bmemag() ->bvg
+            'b_value', 'b-value', '';... bv ->bvg_wls
+            'Radius_km', 'Radius of chosen events (Resolution) [km]', 'km';... rd ->ram
+            'power_fit', 'Goodness of fit to power-law', '';... prf
+            'a_value', 'a-value', '';... av
+            'av2','av2: a-value from bmemmag', '';...av2 (?) a-value from bmemag() ->avm
+            'Mc_value', 'Magnitude of Completion (Mc)', '';... magco ->mcma
+            'b_value_std', 'Std. of b-value', '';...stan
+            'stan2','stan2: b-value std from bmemag','';... stan2 (?) bvalue std from bmemag()
+            ...'Mc_std', 'Std. of Magnitude of Completion', '';...
+            ...'a_value_std', 'Std. of a-value', '';...
+            ...'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
+            ...'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
+            'max_mag', 'Maximum magnitude at node', 'mag';...
+            'Number_of_Events', 'Number of events in node', '';...
+            'x', 'Longitude', 'deg';...
+            'y', 'Latitude', 'deg';...
+            'z', 'Depth', 'km'...
+            ... av2 (?) a-value from bmemag() ->avm
+            ... bv2 (?) b-value from bmemag() ->bvg
+            };
     end
     methods
         function obj=bgrid3dB()
@@ -56,7 +81,7 @@ classdef bgrid3dB < ZmapGridFunction
             z1=res.minz;
             z2=res.maxz;
             
-            my_calculate();
+            obj.Calculate();
             
         end
         
@@ -65,7 +90,7 @@ classdef bgrid3dB < ZmapGridFunction
         % thge seimicity and selectiong the ni neighbors
         % to each grid point
         
-        function my_calculate()
+        function results=Calculate(obj)
             zg3=ZmapGrid3('bgid3dBGrid',res.gridopt,[res.minz res.maxz]); % create 3d grid
             vol_dimensions=zg3.mesh_size();
             %[t5, gx, gy, gz]=selgp3dB(dx, dy, dz, z1, z2);
@@ -92,8 +117,25 @@ classdef bgrid3dB < ZmapGridFunction
             
             z0 = 0; x0 = 0; y0 = 0; dt = 1;
             % loop over all points
-            my_ans = gridfun(@calculation_function,ZG.primeCatalog, zg3, res.evsel);
+            [bvg,nEvents,maxDists,maxMag, ll]= gridfun(@calculation_function,ZG.primeCatalog, zg3, res.evsel);
+            %modify answer
+            bvg(:,strcmp('x',returnFields))=obj.Grid.X;
+            bvg(:,strcmp('y',returnFields))=obj.Grid.Y;
+            bvg(:,strcmp('Number_of_Events',returnFields))=nEvents;
+            bvg(:,strcmp('Radius_km',returnFields))=maxDists;
+            bvg(:,strcmp('max_mag',returnFields))=maxMag;
+              
+            myvalues = array2table(bvg,'VariableNames', returnFields);
+            myvalues.Properties.VariableDescriptions = returnDesc;
+            myvalues.Properties.VariableUnits = returnUnits;
             
+            kll = ll;
+            obj.Result.values=myvalues;
+            if nargout
+                results=myvalues;
+            end
+            
+            %{
             for il =1:length(zg3)
                 
                 x = t5(il,1);
@@ -118,79 +160,8 @@ classdef bgrid3dB < ZmapGridFunction
                     rd = l2(ni);
                     
                 end
-                out=calculation_function(b)
-                %{
-                %estimate the completeness and b-value
-                ZG.newt2 = b;
-                if length(b) >= Nmin  % enough events?
-                    
-                    if ZG.inb1 == 3
-                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                        l = b.Magnitude >= Mc90-0.05;
-                        magco = Mc90;
-                        if length(b(l,:)) >= Nmin
-                            [bv magco0 stan av pr] =  bvalca3(b(l,:),2);
-                            [bv2 stan2 av2 ] =  bmemag(b(l,:));
-                        else
-                            bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
-                        end
-                        
-                    elseif ZG.inb1 == 4
-                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                        l = b.Magnitude >= Mc95-0.05;
-                        magco = Mc95;
-                        if length(b(l,:)) >= Nmin
-                            [bv magco0 stan av pr] =  bvalca3(b(l,:),2);
-                            [bv2 stan2 av2 ] =  bmemag(b(l,:));
-                        else
-                            bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
-                        end
-                    elseif ZG.inb1 == 5
-                        [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                        if isnan(Mc95) == 0
-                            magco = Mc95;
-                        elseif isnan(Mc90) == 0
-                            magco = Mc90;
-                        else
-                            [bv magco stan av pr] =  bvalca3(b,1);
-                        end
-                        l = b.Magnitude >= magco-0.05;
-                        if length(b(l,:)) >= Nmin
-                            [bv magco0 stan av pr] =  bvalca3(b(l,:),2);
-                            [bv2 stan2,  av2] =  bmemag(b(l,:));
-                        else
-                            bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan; dP = 0;
-                        end
-                        
-                    elseif ZG.inb1 == 1
-                        [bv magco stan av pr] =  bvalca3(b,1);
-                        l = b.Magnitude >= magco-0.05;
-                        if length(b(l,:)) >= Nmin
-                            [bv2 stan2,  av2] =  bmemag(b(l,:));
-                        else
-                            bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
-                        end
-                        
-                    elseif ZG.inb1 == 2
-                        [bv magco stan av pr] =  bvalca3(b,2);
-                        [bv2 stan2 av2 ] =  bmemag(b);
-                    end
-                    ZG.newt2 = b;
-                    %  predi_ca
-                    
-                else
-                    bv = nan; bv2 = nan; magco = nan; av = nan; av2 = nan; prf = nan; dP = 0;
-                end
-                
-                
-                bvg(t5(il,5),t5(il,6),t5(il,7)) = bv2;
-                bvg_wls(t5(il,5),t5(il,6),t5(il,7)) = bv;
-                
-                ram(t5(il,5),t5(il,6),t5(il,7)) = rd;
-                %go(t5(il,5),t5(il,6),t5(il,7)) = prf;
-                avm(t5(il,5),t5(il,6),t5(il,7)) = av2;
-                mcma(t5(il,5),t5(il,6),t5(il,7)) = magco;
-                %}
+                out=calculation_function(b);
+            %}
             end
             
             % save data
@@ -201,7 +172,6 @@ classdef bgrid3dB < ZmapGridFunction
             
             catsave3('bgrid3dB');
             
-            close(wai)
             watchoff
             
             sel = 'no';
@@ -271,7 +241,7 @@ classdef bgrid3dB < ZmapGridFunction
                         l = catalog.Magnitude >= magco-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
-                            [bv, magco0, stan, av, Z`,   pr] =  bvalca3(minicat,2);
+                            [bv, magco0, stan, av, pr] =  bvalca3(minicat,2);
                             [bv2, stan2,  av2] =  bmemag(minicat);
                         else
                             [bv, bv2, magco, av, av2] = deal(nan);

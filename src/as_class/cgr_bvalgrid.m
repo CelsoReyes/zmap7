@@ -198,7 +198,9 @@ classdef cgr_bvalgrid < ZmapGridFunction
             returnFields = obj.ReturnDetails(:,1);
             returnDesc = obj.ReturnDetails(:,2);
             returnUnits = obj.ReturnDetails(:,3);
+            
             [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(returnFields));
+            
             bvg(:,strcmp('x',returnFields))=obj.Grid.X;
             bvg(:,strcmp('y',returnFields))=obj.Grid.Y;
             bvg(:,strcmp('Number_of_Events',returnFields))=nEvents;

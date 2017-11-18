@@ -1,6 +1,6 @@
 function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
-    % bvalca3
-    % bvalca3(catalog, McompEstimationMethod) maybe
+    % BVALCA3
+    % [bv, magco, std_backg, av, pr] =  BVALCA3(catalog, mc_method)
     %
     % INPUT parameters
     % bcat     : zmap catalog
@@ -8,11 +8,11 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
     %        2 : not automatic estimate of Mcomp 
     %
     % OUTPUT
-    %    bv
-    %    magco
+    %    bv : b-value
+    %    magco : magnitude of completion
     %    std_backg: standard deviation of prediction
-    %    av
-    %    pr : probability
+    %    av : a-value
+    %    pr : probability [OF WHAT?]
     
     global les magsteps_desc bvalsum3
     
@@ -78,11 +78,11 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
     bv=fix(100*p)/100;
     std_backg=fix(100*std_backg)/100;
     
-    % calculate probability
+    % calculate probability [OF WHAT?]
     b2 = p; n2 =  M1b(2);
     n = no1+n2;
     da = -2*n*log(n) + 2*no1*log(no1+n2*ZG.bo1/b2) + 2*n2*log(no1*b2/ZG.bo1+n2) -2;
-    pr = (1  -  exp(-da/2-2))*100; % probablility
+    pr = (1  -  exp(-da/2-2))*100; % probability
     %catch ME
     %    warning(ME.message)
     %    disp('Error while evaluating bvalca3 - set to NaN');
