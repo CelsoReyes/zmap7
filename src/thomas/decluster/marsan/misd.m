@@ -31,7 +31,7 @@ function [vSel, vM]=misd(mCat)
 %
 % % does catalog contain 12 columns?
 % if (size(mCat,2)<12)
-%     mTmp=ones(size(mCat,1),(12-size(mCat,2)))*NaN;
+%     mTmp=nan(size(mCat,1),(12-size(mCat,2)));
 %     mCat=[mCat mTmp];
 % end
 !rm ~/zmap/src/thomas/decluster/marsan/*.out

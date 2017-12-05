@@ -22,6 +22,7 @@ classdef MainInteractiveMap
         end
         
         function v = View(obj)
+            % VIEW return primary view
             ZG=ZmapGlobal.Data;
             % get view, always deals with the primary view
             v=ZG.Views.primary;
@@ -276,100 +277,7 @@ classdef MainInteractiveMap
                 watchoff;
             end
         end
-%{
-        function create_catalog_menu(obj,force)
-            h = findobj(figureHandle(),'Tag','mainmap_menu_catalog');
-            if ~isempty(h) && exist('force','var') && force
-                delete(h); h=[];
-            end
-            if ~isempty(h)
-                return
-            end
-            submenu = uimenu('Label','Catalog','Tag','mainmap_menu_catalog');
-            
-            uimenu(submenu,'Label','Crop catalog to window',...
-                'Callback',@cb_crop);
-            
-            uimenu(submenu,'Label','Edit Ranges...',...
-                'Callback',@cb_editrange);
-            
-            uimenu(submenu,'Label','Rename...',...
-                'Callback',@cb_rename);
-            
-            uimenu(submenu,'Label','Memorize/Recall Catalog',...
-                'Separator','on',...
-                ... % was "keep catalog in memory (use reset below to recall)"
-                'Callback',@(~,~) memorize_recall_catalog); %' storedcat=a; '
-            
-            uimenu(submenu,'Label','Clear Memorized Catalog',...
-                'Callback',@cb_clearmemorized);
-            
-            uimenu(submenu,'Label','Combine catalogs',...
-                'Separator','on',...
-                'Callback',@cb_combinecatalogs);
-            
-            uimenu(submenu,'Label','Compare catalogs - find identical events',...
-                'Callback',@(~,~)comp2cat);
-            
-            uimenu(submenu,'Label','Save current catalog (ASCII)','Callback',@(~,~)save_zmapcatalog());
-            uimenu(submenu,'Label','Save current catalog (.mat)','Callback',@(~,~)catSave());
-            uimenu(submenu,'Label','Info (Summary)',...
-                'Separator','on',...
-                'Callback',@(~,~)info_summary_callback(ZmapGlobal.Data.primeCatalog.summary('stats')));
-            
-            catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
-                'Separator','on');
-            
-            uimenu(submenu,'Label','Reload last catalog','Enable','off',...
-                'Callback',@cb_reloadlast);
-            
-            uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
-            uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
-            uimenu(catmenu,'Label','from FDSN webservice','Callback', @get_fdsn_data_from_web_callback);
 
-            function cb_crop(~,~)
-                ZG=ZmapGlobal.Data;
-                ZG.primeCatalog.setFilterToAxesLimits(findobj( 'Tag',MainInteractiveMap.axTag));
-                ZG.primeCatalog.cropToFilter();
-                zmap_update_displays();
-            end
-
-            function cb_editrange(~,~)
-                ZG=ZmapGlobal.Data;
-                catalog_overview('primary');
-                zmap_update_displays();
-            end
-            
-            function cb_rename(~,~)
-                ZG=ZmapGlobal.Data;
-                [~,~,Zg.primeCatalog.Name]=smart_inputdlg('Rename',...
-                    struct('prompt','Catalog Name:','value',ZG.primeCatalog.Name));
-                ZmapMessageCenter.update_catalog();
-                zmap_update_displays();
-            end
-            
-            function cb_clearmemorized(~,~)
-                ZG=ZmapGlobal.Data;
-                if isempty(ZG.memorized_catalogs)
-                    msg='No catalogs are currently memorized';
-                else
-                    msg='The memorized catalog has been cleared.'; 
-                end
-                ZG.memorized_catalogs=[];
-                msgbox(msg,'Clear Memorized');
-            end
-            
-            function cb_reloadlast(~,~)
-                error('Unimplemented create this function from scratch!');
-            end
-            
-            function cb_combinecatalogs(~,~)
-                ZG=ZmapGlobal.Data;
-                ZG.newcat=comcat(ZG.Views.primary);
-                timeplot('newcat');
-            end
-        end            
-%}
         function create_ztools_menu(obj,force)
             h = findobj(figureHandle(),'Tag','mainmap_menu_ztools');
             if ~isempty(h) && exist('force','var') && force
@@ -535,7 +443,7 @@ classdef MainInteractiveMap
         end
         
         function working_catalog = Catalog(obj)
-            % return the current catalog represented in this map, filtered by area selection
+            % CATALOG returns the catalog represented in this map, filtered by area selection
             ZG=ZmapGlobal.Data;
             tmpview = ZG.Views.primary;
             if isempty(tmpview)
@@ -598,14 +506,15 @@ classdef MainInteractiveMap
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
-            ZG=ZmapGlobal.Data;
             subviews=ZmapCatalogView('Views.primary');
-            divs=ZG.([lower(something) '_divisions']);
+            divfn = str2func(['MainInteractiveMap.' lower(something) '_divs']);
+            divs = divfn();
             if isempty(divs)
                 divs = autosplit(mycat,  something, 'linear', 2, roundingfun); %could be count or linear
-                ZG.([lower(something) '_divisions'])=divs;
+                divfn(divs);
             end
             zViews=split_views(mycat , something, divs, 'mapax_part');
+            ZG=ZmapGlobal.Data;
             ZG.Views.layers=zViews;
             ax = MainInteractiveMap.mainAxes();
             holdstate=HoldStatus(ax,'on');
@@ -802,6 +711,32 @@ classdef MainInteractiveMap
             plot_helper(xydata, getPlotDefaults('mainshock'), reset);
         end
         
+        
+        function ddivs=date_divs(val)
+            persistent date_divisions
+            if exist('val','var')
+                date_divisions=val;
+            end
+            ddivs = date_divisions;
+        end
+
+        function ddivs=depth_divs(val)
+            persistent depth_divisions
+            if exist('val','var')
+                depth_divisions=val;
+            end
+            ddivs = depth_divisions;
+        end
+
+        function mdivs=magnitude_divs(val)
+            persistent magnitude_divisions
+            if exist('val','var')
+                magnitude_divisions=val;
+            end
+            mdivs = magnitude_divisions;
+        end
+
+        
     end
     methods(Static, Access=protected)
         function strib = get_title(mycat)
@@ -993,13 +928,12 @@ end
 
 function change_legend_breakpoints(~, ~)
     % TODO fix this, breakpoints aren't changed
-    ZG=ZmapGlobal.Data;
     dlg_title='Change Breakpoints';
     options.Resize='on';
     num_lines=1;
     switch ZmapGlobal.Data.mainmap_plotby
         case {'tim','time'}
-            div=ZG.date_divisions;
+            div=MainInteractiveMap.date_divs;
             prompt={'Specify date divisions or "--".',...
                 ' ex. ',...
                 '  datetime(2000,1,1):years(3):datetime(2015,1,1)',...
@@ -1014,13 +948,13 @@ function change_legend_breakpoints(~, ~)
                     div=eval(myans{1});
                 end
                 if isa(div,'datetime') || isempty(div) || strcmp(div,'--')
-                    ZG.date_divisions=div;
+                    MainInteractiveMap.date_divs(div);
                 end
                 zmap_update_displays()
             end
             %setleg;
         case {'dep','depth'}
-            div=ZG.depth_divisions;
+            div=MainInteractiveMap.depth_divs();
             prompt='Specify depth divisions or "--". ex.  "5:10:50" or "[5 15 25]';
             def_ans={mat2str(div)};
             myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
@@ -1035,7 +969,7 @@ function change_legend_breakpoints(~, ~)
                     end
                 end
                 if isnumeric(div) || isempty(div) || strcmp(div,'--')
-                    ZG.depth_divisions=div;
+                    MainInteractiveMap.depth_divs(div);
                 end
                 zmap_update_displays()
             end
@@ -1043,7 +977,7 @@ function change_legend_breakpoints(~, ~)
         case {'mad'}
             % pick new color?
         case {'mag'}
-            div=ZG.magnitude_divisions;
+            div=MainInteractiveMap.magnitude_divs();
             prompt='Specify magnitude divisions or "--". ex.  "[1 5 7]';
             def_ans={mat2str(div)};
             myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
@@ -1058,7 +992,7 @@ function change_legend_breakpoints(~, ~)
                     end
                 end
                 if isnumeric(div) || isempty(div) || strcmp(div,'--')
-                    ZG.magnitude_divisions=div;
+                    MainInteractiveMap.magnitude_divs(div);
                 end
                 zmap_update_displays()
             end
@@ -1118,18 +1052,7 @@ function histo_callback(hist_type)
     ZG=ZmapGlobal.Data;
     hisgra(ZG.Views.primary.Catalog(), hist_type);
 end
-%{
-function info_summary_callback(summarytext)
-    f=msgbox(summarytext,'Catalog Details');
-    f.Visible='off';
-    f.Children(2).Children.FontName='FixedWidth';
-    p=f.Position;
-    p(3)=p(3)+95;
-    p(4)=p(4)+10;
-    f.Position=p;
-    f.Visible='on';
-end
-%}
+
 function cb_create_permutated(src,~)
     % will replace existing primary catalog
     ZG=ZmapGlobal.Data;
@@ -1218,17 +1141,17 @@ function zmvs = split_views(zmv , prop, splitpoints, tagbase)
             units='';
             tinydelta=seconds(0.01); % used so that bins are N<=X<M instead of  N<=x<=M
         case {'Latitude','Longitude'}
-            fmtfn=@(x) num2str(x,4);
+            fmtfn=@(x) num2str(x,-4);
             label=lower(prop(1:3));
             units='deg';
             tinydelta=0.00001;
         case {'Depth'}
-            fmtfn=@(x) num2str(x,2);
+            fmtfn=@(x) num2str(x,-2);
             label='Z';
             units='km';
             tinydelta=0.0001;
         case {'Magnitude'}
-            fmtfn=@(x) num2str(x,1);
+            fmtfn=@(x) num2str(x,-1);
             label='mag';
             units='';
             tinydelta=0.01;

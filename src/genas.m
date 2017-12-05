@@ -17,9 +17,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
     global sumx
     
     report_this_filefun(mfilename('fullpath'));
-    
-    as = 1:1:totbin;
-    as = as*0;
+    as=zeros(1,totbin);
     % if ~exist('sumx', 'var'); sumx = sum(cumu); end
     sumx = [sumx; sum(cumu)];
     sumx = max(sumx);
@@ -70,7 +68,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
         
     end     %if abs
     
-    ztimes(1,totbin) = 0.;    %   pad the end of ztimes
+    ztimes(1,totbin) = 0;    %   pad the end of ztimes
     as = as*0;
     out_ztimes = ztimes; %return a version that isn't the global
     

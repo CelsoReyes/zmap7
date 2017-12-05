@@ -47,11 +47,6 @@ classdef ZmapData < handle
         main
         maepi=ZmapCatalog('big events'); % large earthquakes, determined by user cutoff
         
-        % divisions
-        depth_divisions % plot each division with a different color/symbol
-        magnitude_divisions % plot each division with a different color/symbol
-        date_divisions % plot each division with a different color/symbol
-        
         % niceties
         fontsz = FontSizeTracker;
         

@@ -166,7 +166,7 @@ for i=1:size(mVar,1)
     end
 
     % prepare matrices for subset of catalog
-    gSelD02=ones(size(dSelD02))*NaN;
+    gSelD02=nan(size(dSelD02));
     mCat00=gSelD02; % whole catalog
     mCat10=gSelD02; % 1st period
     mCat20=gSelD02; % 2nd period
@@ -250,7 +250,7 @@ for i=1:size(mVar,1)
     end
     % preallocation of mResult_
     if i==1
-        mResult_=ones(size(params.mPolygon,1),5,params.nMCS).*NaN;
+        mResult_=nan(size(params.mPolygon,1),5,params.nMCS);
     end
     mResult_(:,:,i)=[mLTA mLTAprob mBeta mBetaprob double(mResolution)];
 

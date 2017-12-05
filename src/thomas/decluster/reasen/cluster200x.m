@@ -35,7 +35,7 @@ sYr2=num2str(ceil(max(mCat(:,3))));
 
 % does catalog contain 12 columns?
 if (size(mCat,2)<12)
-    mTmp=ones(size(mCat,1),(12-size(mCat,2)))*NaN;
+    mTmp=nan(size(mCat,1),(12-size(mCat,2)));
     mCat=[mCat mTmp];
 end
 !rm tmp cluster.* input.cmn tmp v.dat CA.hypo71

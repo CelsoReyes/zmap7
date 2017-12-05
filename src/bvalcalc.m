@@ -17,7 +17,7 @@ function [bv, magco, std_backg, av, me,  rt] = bvalcalc(mycat)
     
     [bval,xt2] = hist(mycat.Magnitude,(mima:dm1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
-    bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
+    bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
     magsteps_desc = (maxmag:-dm1:mima);
     
     %backg_be = log10(bvalsum);

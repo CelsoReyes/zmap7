@@ -513,7 +513,8 @@ function timeplot(mycat, nosort)
     
     
     function cut_tmd_callback(~,~)
-        catalog_overview('newt2');
+        [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('newt2'), ZG.big_eq_minmag);
+        ZG.newt2=tmpcat.Catalog();
         timeplot()
     end
     

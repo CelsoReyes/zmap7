@@ -194,7 +194,7 @@ for jj=1:nJ
     end
     % prelocate mResult*
     if jj==1
-        mResult1=ones(size(params.mPolygon,1),5,params.nMCS).*NaN;
+        mResult1=nan(size(params.mPolygon,1),5,params.nMCS);
         mResult2=mResult1;
         mResult3=mResult1;
         mResult4=mResult1;

@@ -1,21 +1,22 @@
-function catalog_overview(catname)
+function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
-    % catname should be a ZmapCatalogView
+    % mycat should be a ZmapCatalogView
     %
     %  ask for several input parameters that can be set up
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
+    %
+    % bigEventMag typically comes from ZG.big_eq_minmag
    
-    ZG=ZmapGlobal.Data;
+    %ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
-
-    mycat=ZG.Views.(catname);
+     % mycat=ZG.Views.(mycatview);
     
     %  default values
     
-    if ~exist('ZG.bin_dur', 'var')   %select bin length respective to time in catalog
-        ZG.bin_dur = days(30);
-    end
+    %if ~exist('ZG.bin_dur', 'var')   %select bin length respective to time in catalog
+    %    ZG.bin_dur = days(30);
+    %end
     
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
     daterange = mycat.DateRange;
@@ -294,11 +295,12 @@ function catalog_overview(catname)
         
         %create catalog of "big events" if not merged with the original one:
         %
-        ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
+        bigEventCat = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
         
         %mycat.sort('Date');
-        ZG.Views.(catname)=mycat;
-        ZmapMessageCenter.update_catalog();
+        % ZG.Views.(mycatview)=mycat;
+        
+        % ZmapMessageCenter.update_catalog();
         %zmap_update_displays();
         
         close(main_dialog_figure('handle'));

@@ -5,7 +5,7 @@ m=mCatalog_(:,6);
 mCatalog_(:,3)=mCatalog_(:,3).*365;
 t=mCatalog_(:,3);
 
-mc=m*0;
+mc=zeros(size(m));
 
 I=find(m>=7);
 for n=1:length(I)

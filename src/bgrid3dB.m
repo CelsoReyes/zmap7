@@ -161,8 +161,9 @@ classdef bgrid3dB < ZmapGridFunction
                     
                 end
                 out=calculation_function(b);
-            %}
             end
+            
+            %}
             
             % save data
             %

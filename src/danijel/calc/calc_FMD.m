@@ -34,8 +34,8 @@ end
 
 % Do the calculation
 [vNumberEvents] = hist(mCatalog.Magnitude, (fMinMagnitude:0.1:fMaxMagnitude));
-vNumberEventsR  = vNumberEvents(length(vNumberEvents):-1:1);
-vNumberEventsCR = cumsum(vNumberEvents(length(vNumberEvents):-1:1));
+vNumberEventsR  = vNumberEvents(end:-1:1);
+vNumberEventsCR = cumsum(vNumberEvents(end:-1:1));
 
 % Create the x-axis values
 vXAxis = (fMaxMagnitude:-0.1:fMinMagnitude);

@@ -86,7 +86,9 @@ function loadasci(da,sa)
                 ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 
                 close;
-                catalog_overview('primary');
+                [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+                %ZmapMessageCenter.update_catalog();
+                %zmap_update_displays();
                 setup
             else
                 close, setup
@@ -142,7 +144,9 @@ function loadasci(da,sa)
                 
                 close;
                 
-                catalog_overview('primary');
+                [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+                %ZmapMessageCenter.update_catalog();
+                %zmap_update_displays();
                 setup
             else
                 close

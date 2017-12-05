@@ -67,8 +67,8 @@ function load_zmapfile()%
     setDefaultValues(ZG.primeCatalog);
     
     ZmapMessageCenter.update_catalog();
-    ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
-    catalog_overview('primary');
+    %ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
+    [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('primeCatalog'), ZG.big_eq_minmag);
 
     uimemorize_catalog();
     ZmapMessageCenter.update_catalog();

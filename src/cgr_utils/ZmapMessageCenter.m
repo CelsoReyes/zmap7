@@ -274,6 +274,7 @@ function h = create_message_figure()
 end
 
 function do_timeplot(s,~, catName)
+    disp(['ZmapMessageCenter.do_timeplot ', catName])
     ZG=ZmapGlobal.Data;
     ZG.newt2=ZmapCatalog(ZG.(catName));
     timeplot();
@@ -281,21 +282,24 @@ end
 
 function do_catalog_overview(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
-    catalog_overview('primary');
+    [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+    %zmap_update_displays();
     ZmapMessageCenter.update_catalog();
 end
 
 function do_selected_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    catalog_overview('newcat');
+    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('newcat'), ZG.big_eq_minmag);
+    ZG.newcat=tmpcat.Catalog();
      ZmapMessageCenter.update_catalog();
 end
 
 function do_other_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    catalog_overview('newt2');
+    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('newt2'), ZG.big_eq_minmag);
+    ZG.newt2=tmpcat.Catalog();
     ZmapMessageCenter.update_catalog();
 end
 

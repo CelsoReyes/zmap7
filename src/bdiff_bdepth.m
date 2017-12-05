@@ -58,8 +58,8 @@ function  bdiff_bdepth(mycat)
     
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
-    bval2 = bval(length(bval):-1:1);
-    bvalsum3 = cumsum(bval(length(bval):-1:1));    % N for M >= (counted backwards)
+    bval2 = bval(end:-1:1);
+    bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
     magsteps_desc = (maxmag:-0.1:mima);
     
     

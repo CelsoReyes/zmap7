@@ -35,8 +35,8 @@ classdef ZmapCatalog < handle
     %
     %   Range methods:
     %
+    %   getRange - get the min and max range for specified field
     %   DateRange - get the min and max date for this catalog
-    %   DepthRange - get the min and max depth for this catalog
     %   MagnitudeRange - get the min and max magnitude for this catalog
     %
     %   Output Methods:
@@ -135,10 +135,19 @@ classdef ZmapCatalog < handle
             end
         end
         
+        function [a, b] = getRange(obj,fieldname)
+            switch nargout
+                case 2
+                    a = min(obj.(fieldname));
+                    b = max(obj.(fieldname));
+                otherwise
+                    a = [min(obj.(fieldname)), max(obj.(fieldname))];
+            end
+        end
         function [a, b] = DateRange(obj)
-            % get min and max dates from catalog
-            % A = obj.DateRange() will return a 1x2 vector [minDate, maxDate]
-            % [minDate, maxDate] = obj.DateRange()
+            % DATERANGE get min and max dates from catalog
+            % A = catalog.DATERANGE() will return a 1x2 vector [minDate, maxDate]
+            % [minDate, maxDate] = catalog.DATERANGE()
             switch nargout
                 case 2
                     a = min(obj.Date);
@@ -149,9 +158,9 @@ classdef ZmapCatalog < handle
         end
         
         function [a, b] = MagnitudeRange(obj)
-            % get min and max magnitudes from catalog
-            % A = obj.MagnitudeRange() will return a 1x2 vector [minMag, maxMag]
-            % [minmag, maxmag] obj.MagnitudeRange()
+            % MAGNITUDERANGE get min and max magnitudes from catalog
+            % A = catalog.MAGNITUDERANGE() will return a 1x2 vector [minMag, maxMag]
+            % [minmag, maxmag] obj.MAGNITUDERANGE()
             switch nargout
                 case 2
                     a = min(obj.Magnitude);
@@ -160,8 +169,17 @@ classdef ZmapCatalog < handle
                     a = [min(obj.Magnitude), max(obj.Magnitude)];
             end
         end
+        
         function obj = ZmapCatalog(varargin)
-            % ZmapCatalog create a ZmapCatalog object
+            % ZMAPCATALOG create a ZmapCatalog object
+            %
+            % catalog = ZMAPCATALOG() get an empty catalog
+            % catalog = ZMAPCATALOG(name) get an empty catalog, but set the name
+            % catalog = ZMAPCATALOG(otherCatalog) get a copy of a catalog
+            % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
+            %   [longitude, latitude, decyear, month, day, magnitude, depth, hour, minute, second]
+            
+            
             obj.Name = '';
             if nargin==0
                 %donothing
@@ -212,21 +230,24 @@ classdef ZmapCatalog < handle
         end
         
         function TF=isempty(obj)
-            % isempty is true when there are no events in the catalog
+            % ISEMPTY is true when there are no events in the catalog
+            % tf = ISEMPTY(catalog)
             TF = obj.Count == 0;
         end
         
         function outval = ZmapArray(obj)
-            % create a zmap array from this catalog
-            outval = [obj.Longitude, ...
-                obj.Latitude, ...
-                obj.DecimalYear, ...
-                obj.Date.Month, ...
-                obj.Date.Day,...
-                obj.Depth, ...
-                obj.Magnitude, ...
-                obj.Date.Hour,...
-                obj.Date.Minute, ...
+            % ZMAPARRAY create a zmap array from this catalog
+            % zmarr = catalog.ZMAPARRAY()
+            outval = [...
+                obj.Longitude, ...   % 1
+                obj.Latitude, ...    % 2
+                obj.DecimalYear, ... % 3
+                obj.Date.Month, ...  % 4
+                obj.Date.Day,...     % 5
+                obj.Magnitude, ...   % 6
+                obj.Depth, ...       % 7
+                obj.Date.Hour,...    % 8
+                obj.Date.Minute, ... % 9
                 obj.Date.Second]; % position 10 of 10
             
             % ZmapArry that had 12 values is like above, except...
@@ -236,7 +257,8 @@ classdef ZmapCatalog < handle
         end
         
         function tbl = table(obj)
-            % write catalog as a table.
+            % TABLE write catalog as a table.
+            %
             st=struct(obj);
             flds=fieldnames(st);
             % to  convert to a table, all fields must be of same length
@@ -245,10 +267,10 @@ classdef ZmapCatalog < handle
             st=rmfield(st,flds(todelete));
             tbl = struct2table(st);
         end
-        function s =  summary(obj, verbosity,useTex)
-            % return a summary of this catalog
+        
+        function s =  summary(obj, verbosity)
+            % SUMMARY return a summary of this catalog
             % valid verbosity values: 'simple', 'stats'
-            % if useTex is given, then format is wrapped in tex-style markup (not implemented)
             
             % add additional ways to look at catalog if it makes sense
             if ~exist('verbosity','var')
@@ -272,22 +294,6 @@ classdef ZmapCatalog < handle
                     maxma = max(obj.Magnitude);
                     mindep = min(obj.Depth);
                     maxdep = max(obj.Depth);
-                    %{
-                    if exist('useTex','var') && useTex
-                        fmtstr = [...
-                        '{\\bf Catalog} "%s" with %d events\n',...
-                        '{\\bf Start Date:} %s\n',...
-                        '{\\bf End Date:}   %s\n',...
-                        '{\\bf Depths:}     %4.2f km <= Z <= %4.2f km\n',...
-                        '{\\bf Magnitudes:} %2.1f <= M <= %2.1f'];
-                    nm=strrep(obj.Name,'_','\_');
-                    s = sprintf(fmtstr, nm, obj.Count, ...
-                        char(minti,'uuuu-MM-dd HH:mm:ss'),...
-                        char(maxti,'uuuu-MM-dd HH:mm:ss'),...
-                        mindep, maxdep,...
-                        minma, maxma);
-                    else
-                    %}
                     mtypes=cat2mtypestring();
                     fmtstr = [...
                         'Catalog "%s" with %d events\n',...
@@ -301,7 +307,6 @@ classdef ZmapCatalog < handle
                         char(maxti,'uuuu-MM-dd HH:mm:ss'),...
                         mindep, maxdep,...
                         minma, maxma,mtypes);
-                    %end %useTex
                 case 'stats'
                     minti = min( obj.Date );
                     maxti  = max( obj.Date );
@@ -350,6 +355,8 @@ classdef ZmapCatalog < handle
                     s = sprintf('Catalog "%s", containing %d events', obj.Name, obj.Count);
             end
             function mtypes=cat2mtypestring()
+                % CAT2MTYPESTRING returns a string representation of the catalog type
+                % mtypes = CAT2MTYPESTRING()
                 mtypes=strcat(unique(obj.MagnitudeType)',',');
                 mtypes=strcat(mtypes{:});
                 mtypes(end)=[];
@@ -360,16 +367,20 @@ classdef ZmapCatalog < handle
         end
         
         function clearFilter(obj)
-            % clearFilter sets all items in Filter to true
+            % CLEARFILTER sets all items in Filter to true
+            % catalog.CLEARFILTER
             obj.Filter = true(size(obj.Longitude));
         end
         
         function invertFilter(obj)
-            % invertFilter flips all true to false and vice-versa
+            % INVERTFILTER flips all true to false and vice-versa
+            % catalog.INVERTFILTER()
             obj.Filter = ~obj.Filter;
         end
         
         function setFilterToAxesLimits(obj, ax)
+            % SETFILTERTOAXESLIMITS
+            % catalog.SETFILTERTOAXESLIMITS(ax)
             if ~isvalid(ax)
                 return
             end
@@ -387,7 +398,9 @@ classdef ZmapCatalog < handle
         end
         
         function cropToFilter(obj)
-            % applies the Filter to this ZmapCatalog
+            % CROPTOFILTER applies the Filter to this ZmapCatalog
+            %
+            % catalog.CROPTOFILTER()
             %
             % see also addFilter, clearFilter
             
@@ -412,8 +425,8 @@ classdef ZmapCatalog < handle
         end
         
         function obj = getCropped(existobj)
-            % get a new, cropped ZmapCatalog from this one
-            % reasoning: requires less memory
+            % GETCROPPED get a new, cropped ZmapCatalog from this one
+            %
             
             if isempty(existobj.Filter)
                 obj = existobj;
@@ -438,13 +451,13 @@ classdef ZmapCatalog < handle
         end
         
         function addFilter(obj, field, operation, value, varargin)
-            % addFilter allows subsets of data to be specified
+            % ADDFILTER allows subsets of data to be specified
             %
-            % addFilter(mask) AND's the mask with the existing Filter
+            % catalog.ADDFILTER(mask) AND's the mask with the existing Filter
             %     where mask is a logical array of same length as ZmapCatalog.Count
             %
             %
-            % addFilter(field, operation, value) compares the data from the field to the value using
+            % catalog.ADDFILTER(field, operation, value) compares the data from the field to the value using
             %     the specified operation.
             %     FIELD is a string containing the name of a valid ZmapCatalog field
             %     OPERATION is either a function handle or one of the following:
@@ -452,15 +465,15 @@ classdef ZmapCatalog < handle
             %     VALUE is what the field will be compared against.
             %
             % Example 1
-            %     obj.addFilter('Depth','>=',3) % sets Filter to true wherever depth >= 3
-            %     obj.addFilter('Depth','<', 23) % now Filter is true only where depth >=3 AND depth < 23
+            %     catalog.addFilter('Depth','>=',3) % sets Filter to true wherever depth >= 3
+            %     catalog.addFilter('Depth','<', 23) % now Filter is true only where depth >=3 AND depth < 23
             %
             % Example 2
             %     odd_dates = @(x,~) mod(datenum(x),2) == 1;
-            %     obj.addFilter('Date',@odd_dates,[]); %true where datenum is odd
+            %     catalog.addFilter('Date',@odd_dates,[]); %true where datenum is odd
             %
             %
-            % see also clearFilter
+            % see also CLEARFILTER
             %
             if ~exist('operation','var') && islogical(field) && all(size(field)==size(obj.Longitude))
                 obj.Filter = field;
@@ -504,15 +517,15 @@ classdef ZmapCatalog < handle
         end
         
         function sort(obj, field, direction)
-            % sort this object by the field specified (IN PLACE)
-            % obj.sort(field), where field is a valid ZmapCatalog property
+            % SORT this catalog by the specified field (IN PLACE)
+            % catalog.SORT(field), where field is a valid ZmapCatalog property
             %
-            % obj.sort(field, direction), where direction is 'ascend' or 'descend'
+            % catalog.SORT(field, direction), where direction is 'ascend' or 'descend'
             % ex.
-            % obj.sort('Date')
-            % sortBy (fieldname)
+            % catalog.sort('Date','ascend')
             %
-            % modifies original
+            % NOTE: modifies original
+            % see also catalog.sortedByDistanceTo
             if ~isprop(obj, field)
                 error('%s is not a valid property of a ZmapCatalog',field);
             end
@@ -540,8 +553,9 @@ classdef ZmapCatalog < handle
         end
         
         function other=sortedByDistanceTo(obj, lat, lon, depth)
-            % ans=obj.sortedByDistanceTo(lat, lon) % epicentral sort
-            % ans=obj.sortedBYDistanceTo(lat, lon) % hypocentral sort to surface
+            % SORTEDBYDISTANCE returns a catalog that has been sorted by distance to a point
+            % ans=catalog.SORTEDBYDISTANCE(lat, lon) % epicentral sort
+            % ans=catalog.SORTEDBYDISTANCE(lat, lon, depth) % hypocentral sort to surface
             %
             % does NOT modify original
             if ~exist('depth','var')
@@ -554,8 +568,8 @@ classdef ZmapCatalog < handle
         end
         
         function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
-            % selectClosestEvents determine which N events are closest to a point (lat,lon, depth).
-            % [otherCat, max_km] = obj.selectClosestEvents(lat,lon, depth, nEvents)
+            % SELECTCLOSESTEVENTS determine which N events are closest to a point (lat,lon, depth).
+            % [otherCat, max_km] = catalog.SELECTCLOSESTEVENTS(lat,lon, depth, nEvents)
             % for epicentral distance, leave depth empty.
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
@@ -580,9 +594,9 @@ classdef ZmapCatalog < handle
         end
         
         function [other,max_km] = selectRadius(obj, lat, lon, depth, radius_km)
-            %selectRadius  select subset catalog to a radius from a point 
-            % [catalog,max_km] = obj.selectRadius(lat, lon, dist_km) epicentral radius from a point. sortorder is preserved
-            % [catalog,max_km] = obj.selectRadius(lat, lon, depth, dist_km) hypocentral radius from a point. sortorder is preserved
+            %SELECTRADIUS  select subset catalog to a radius from a point 
+            % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, dist_km) epicentral radius from a point. sortorder is preserved
+            % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, depth, dist_km) hypocentral radius from a point. sortorder is preserved
             %
             % see also selectClosestEvents, selectCircle
             if ~exist('radius_km','var')
@@ -606,8 +620,8 @@ classdef ZmapCatalog < handle
         
         function [ minicat, max_km ] = selectCircle(obj, selcrit, x,y,z )
             %selectCircle Select events in a circle defined by either distance or number of events or both
-            % [ minicat, maxd ] = catalog.selectCircle(selcrit);
-            % [ minicat, maxd ] = catalog.selectCircle(selcrit, x,y,z ) %specify th
+            % [ minicat, maxd ] = catalog.SELECTCIRCLE(selcrit);
+            % [ minicat, maxd ] = catalog.SELECTCIRCLE(selcrit, x,y,z ) %specify th
             %
             %  SELCRIT is a structure containing one of the following set of fields:
             %    * numNearbyEvents (by itself) : runs function against this many closest events.
@@ -671,10 +685,10 @@ classdef ZmapCatalog < handle
         end
         
         function obj = subset(existobj, range)
-            % subset get a subset of this object
-            % newobj = obj.subset(mask) where mask is a t/f array matching obj.Count
+            % SUBSET get a subset of this object
+            % newcatalog = catalog.SUBSET(mask) where mask is a t/f array matching obj.Count
             %    will keep all "true" events
-            % newobj = obj.subset(range), where range evaluates to an integer array
+            % newcatalog = catalog.SUBSET(range), where range evaluates to an integer array
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
             obj = ZmapCatalog();
@@ -696,8 +710,9 @@ classdef ZmapCatalog < handle
         end
         
         function obj = cat(objA, objB)
-            % cat combines two catalogs
-            % duplicates are not looked for
+            % CAT combines two catalogs
+            % combinedCatalog = cat(catalogA, catalogB)
+            % duplicates are not removed
             obj = objA;
             objA.Date = [objA.Date; objB.Date];
             objA.Longitude = [objA.Longitude; objB.Longitude];
@@ -716,8 +731,8 @@ classdef ZmapCatalog < handle
         end
         
         function obj = removeDuplicates(obj, tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
-            % removeDuplicates removes events from catalog that are similar within tolerances
-            % catalog = catalog.removeDuplicates(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
+            % REMOVEDUPLICATES removes events from catalog that are similar within tolerances
+            % catalog = catalog.REMOVEDUPLICATES(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
             
             obj.sort('Date');
             orig_size = obj.Count;
@@ -742,6 +757,8 @@ classdef ZmapCatalog < handle
         end
         
         function s= blurb(obj)
+            % BLURB get simple statement about catalog
+            % s = catalog.blurb();
             if obj.Count > 0
                 s=sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count());
             else
@@ -836,7 +853,8 @@ classdef ZmapCatalog < handle
         end
        %}
         function plotFocalMechanisms(obj,ax,color)
-            % plot the focal mechanisms of a catalog (if they exist)
+            % PLOTFOCALMECHANISMS plot the focal mechanisms of a catalog (if they exist)
+            % plotFocalMechanisms(catalog, ax, color)
             
             pbar=pbaspect(ax);
             pbar=daspect(ax);
@@ -867,10 +885,12 @@ classdef ZmapCatalog < handle
         
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
+            % dists_km = catalog.EPICENTRALDISTANCETO(to_lat, to_lon)
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
         end
         function dists_km = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
-            % get epicentral (lat-lon) distance to another point
+            % get HYPOCENTRALDISTANCETO (lat,lon,z) distance to another point
+            % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
             delta_dep = (obj.Depth - to_depth_km);
             dists_km = sqrt( dists_km^2 + delta_dep ^2);
@@ -878,8 +898,8 @@ classdef ZmapCatalog < handle
         
         function rt = relativeTimes(obj, other)
             % relativeTimes
-            % rt = obj.relativeTimes() get times relative to start
-            % rt = obj.relativeTimes(other) get times relative to another time
+            % rt = catalog.RELATIVETIMES() get times relative to start
+            % rt = catalog.RELATIVETIMES(other) get times relative to another time
         
             if ~exist('other','var')
                 rt = obj.Date - min(obj.Date);

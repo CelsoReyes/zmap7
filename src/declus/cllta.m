@@ -76,8 +76,7 @@ function cllta(var1)
     % calculate the lta value
     %
     ncu=length(xt);
-    lta=1:1:ncu;
-    lta=lta*0;
+    lta=zeros(1,ncu);
     winlen_days=round(ZG.compare_window_dur_v3/ZG.bin_dur);
     %
     %  calculated mean, var etc
