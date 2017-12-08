@@ -10,7 +10,7 @@ function overlay_()
     return
     
     hold on
-    ax = findobj('Tag','mainmap_ax');
+    ax = mainmap('axes');
     
     if isempty(coastline)
         if exist ('gadm28_adm0.shp','file')

@@ -37,7 +37,7 @@ function add_grid_menu(parent)
     function cb_autogrid(~,~)
         % following assumes grid from main map
         ZG=ZmapGlobal.Data;
-        m=mainmap;
+        m=mainmap();
         [ZG.Grid,ZG.gridopt]=autogrid(m.Catalog(),true,true);
         if ~isempty(ZG.selection_shape)
             ZG.Grid = ZG.Grid.MaskWithPolygon(ZG.selection_shape.Lon,ZG.selection_shape.Lat);

@@ -27,7 +27,7 @@ function setcol()
             catch
                 warning('unable to change color. maybe map doesn''t exist');
             end
-            update(mainmap);
+            update(mainmap());
         otherwise
             
             % do nothing

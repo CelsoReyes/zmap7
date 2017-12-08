@@ -209,7 +209,7 @@ classdef ZmapCatalogView
                 end
             end
             if ~isempty(obj.sortby)
-                [~,idx]=sort(obj.mycat.(sortby));
+                [~,idx]=sort(obj.mycat.(obj.sortby));
                 % f(idx) is the t/f value for the sorted index
                 f=idx(f(idx)); % returns numeric index of sorted values
             end
@@ -223,7 +223,7 @@ classdef ZmapCatalogView
             elseif isprop(obj,field)
                 obj.sortby=field;
             else
-                error('cannot sort by :',field);
+                error('cannot sort by : %s',field);
             end
                 
          end
@@ -243,7 +243,7 @@ classdef ZmapCatalogView
             end
             if ~isequal(val,obj.LatitudeRange)
                 obj.LatitudeRange=val;
-                refreshdata;
+                %refreshdata;
             end
         end
         
@@ -259,7 +259,7 @@ classdef ZmapCatalogView
             end
             if ~isequal(val,obj.LongitudeRange)
                 obj.LongitudeRange=val;
-                refreshdata;
+                %refreshdata;
             end
         end
         
@@ -277,7 +277,7 @@ classdef ZmapCatalogView
             end
             if ~isequal(val,obj.MagnitudeRange)
                 obj.MagnitudeRange=val;
-                refreshdata;
+                %refreshdata;
             end
         end
         
@@ -292,7 +292,7 @@ classdef ZmapCatalogView
             
             if ~isa(obj.DateRange,'datetime') || isempty(val)
                 obj.DateRange=obj.mycat.DateRange;
-                refreshdata;
+                %refreshdata;
                 return
             end
             if ~isa(val,'datetime')
@@ -302,7 +302,7 @@ classdef ZmapCatalogView
                 val=obj.mycat.DateRange;
             end
             obj.DateRange=val;
-            refreshdata;
+            %refreshdata;
         end
         
         function d=get.Depth(obj)
@@ -316,7 +316,7 @@ classdef ZmapCatalogView
             end
             if ~isequal(val,obj.DepthRange)
                 obj.DepthRange=val;
-                refreshdata;
+                %refreshdata;
             end
         end
         
@@ -395,8 +395,8 @@ classdef ZmapCatalogView
             end
             %h=ishold(ax);
             %hold(ax,'on');
-            p=plot(ax,0,0,'o');
-            set(p,...
+            h=plot(ax,0,0,'o'); % was p
+            set(h,...
                 'YData',obj.Latitude, ...
                 'XData',obj.Longitude,...
                 'Zdata', obj.Depth, ...
@@ -580,7 +580,7 @@ classdef ZmapCatalogView
             end
             obj.polymask = polygon_filter(obj.polygon.Longitude, obj.polygon.Latitude,...
                 obj.mycat.Longitude, obj.mycat.Latitude, 'inside');
-            refreshdata;
+            %refreshdata;
         end
         
         function obj=PolygonRemove(obj)
@@ -591,7 +591,7 @@ classdef ZmapCatalogView
                 obj.polymask=[];
                 obj.polygon.Latitude=[];
                 obj.polygon.Longitude=[];
-                refreshdata;
+                %refreshdata;
             end
         end
         

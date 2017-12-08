@@ -315,7 +315,7 @@ classdef MapFeature < handle
             
             val = obj.getTrimmedData();
             layer=plotm(val.Latitude, val.Longitude); %not allowed to specify axes
-            zdatam(layer, val.Depth);
+            zdatam(layer, val.Depth(:)');
             daspectm('km');
             if ~holdstatus; hold(ax,'off'); end
             
@@ -456,8 +456,9 @@ classdef MapFeature < handle
     
     methods(Static)
         function foreach(features,funcname,varargin)
-            %REFERESHEACH run "refreshPlot" on a Map or array full of MapFeature
-            % REFRESHEACH(features) where features is either a map or array of MapFeature
+            %FOREACH run a function on a Map or array full of MapFeature
+            % FOREACH(features) where features is either a map or array of MapFeature
+            % FOREACH(features,arg1,...) arguments to pass to the function
             if isa(features,'containers.Map')
                 k=features.keys;
                 for i=1:numel(k)

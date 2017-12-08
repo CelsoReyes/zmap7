@@ -57,8 +57,7 @@ classdef ShapeSelection
             if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
                 error('unknown polygon type')
             end
-            mm=mainmap;
-            ax=mm.mainAxes();
+            ax=mainmap('axes')
             if ~exist('type','var')
                 obj.Type='unassigned';
             end
@@ -145,8 +144,7 @@ classdef ShapeSelection
             % plot the selection
             % will default to plotting on main map
             if ~exist('ax','var')||isempty(ax)
-                mm=mainmap();
-                ax=mm.mainAxes;
+                ax=mainmap('axes');
             end
             if ~exist('in_or_out','var') || isempty(in_or_out)
                 in_or_out='inside';
@@ -192,8 +190,7 @@ classdef ShapeSelection
         function clearplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                mm=mainmap();
-                ax=mm.mainAxes;
+                ax=mainmap('axes');
             end
             delete(findobj(ax,'Tag','shapeoutline'));
             delete(findobj(ax,'Tag','selectedevents'));
@@ -202,8 +199,7 @@ classdef ShapeSelection
         function deemphasizeplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                mm=mainmap();
-                ax=mm.mainAxes;
+                ax=mainmap('axes')
             end
             shout = findobj(ax,'Tag','shapeoutline');
             set(shout,'color',[.8 .8 .8],'linestyle',':');

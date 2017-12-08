@@ -25,8 +25,7 @@ classdef ShapePolygon < ShapeGeneral
             if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
                 error('unknown polygon type')
             end
-            mm=mainmap;
-            ax=mm.mainAxes();
+            ax=mainmap('axes');
             if ~exist('type','var')
                 obj.Type='unassigned';
             end

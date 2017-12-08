@@ -18,7 +18,6 @@ function zmap_update_displays(opt)
             m.update();
         end
     end
-    
-    ZG.selection_shape.plot(MainInteractiveMap.mainAxes)
+    ZG.selection_shape.plot(mainmap('axes'));
         
 end

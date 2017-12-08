@@ -29,7 +29,7 @@ function selectp(in_or_out)
     delete(findobj('Tag','poly_selected_events'));
     
     % pick polygon points,
-    ax = findobj('Tag','mainmap_ax');
+    ax = mainmap('axes');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     
     
@@ -46,7 +46,8 @@ function selectp(in_or_out)
         
         % Plot of new catalog
         washeld=ishold(ax); hold(ax,'on');
-        MainInteractiveMap.plotOtherEvents(ZG.newt2,0,...
+        hMap=mainmap();
+        hMap.plotOtherEvents(ZG.newt2,0,...
             'Marker','.',...
             'LineStyle','none',...
             'MarkerEdgeColor','g',...

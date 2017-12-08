@@ -192,7 +192,7 @@ function calc_Omoricross()
             y = [y ; y(1)];     %  closes polygon
             clear vXLim vYLim;
         else
-            ax = findobj('Tag','mainmap_ax');
+            ax = mainmap('axes');
             [x,y, mouse_points_overlay] = select_polygon(ax);
         end % of if bGridEntireArea
         

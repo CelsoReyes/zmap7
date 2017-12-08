@@ -20,9 +20,7 @@ classdef ShapeCircle < ShapeGeneral
             
             report_this_filefun(mfilename('fullpath'));
             
-            mm=mainmap;
-            ax=mm.mainAxes();
-            axes(ax); % should be the map, with lon/lat
+            axes(mainmap('axes')); % should be the map, with lon/lat
             obj.Type='circle';
             ZG=ZmapGlobal.Data;
             try

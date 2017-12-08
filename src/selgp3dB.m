@@ -20,7 +20,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     figure(mapfig);
     
     hold on
-    ax = findobj('Tag','mainmap_ax');
+    ax = mainmap('axes');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     
     

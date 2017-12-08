@@ -104,9 +104,7 @@ classdef ShapeGeneral
             %if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
             %    error('unknown polygon type')
             %end
-            mm=mainmap;
-            ax=mm.mainAxes();
-            axes(ax); % bring up axes of interest.  should be the map, with lat/lon
+            axes(mainmap('axes')); % bring up axes of interest.  should be the map, with lat/lon
             obj.Type=lower(type);
             
             if ~exist('type','var')
@@ -172,8 +170,7 @@ classdef ShapeGeneral
         function clearplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                mm=mainmap();
-                ax=mm.mainAxes;
+                ax=mainmap('axes');
             end
             delete(findobj(ax,'Tag','shapeoutline'));
         end
@@ -181,8 +178,7 @@ classdef ShapeGeneral
         function deemphasizeplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                mm=mainmap();
-                ax=mm.mainAxes;
+                ax=mainmap('axes');
             end
             shout = findobj(ax,'Tag','shapeoutline');
             set(shout,'color',[.8 .8 .8],'linestyle',':');

@@ -116,7 +116,7 @@ function cicros(opt)
             
         case 3 % select  events within ra
             
-            ax = findobj('Tag','mainmap_ax');
+            ax = mainmap('axes');
             [x,y, mouse_points_overlay] = select_polygon(ax);
             plot(x,y,'b-');
             YI = -newa(:,7);          % this substitution just to make equation below simple

@@ -81,6 +81,6 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         zlabel('# events')
     end
     if exist('plotOnMap','var') && plotOnMap
-        zgrid.plot(MainInteractiveMap.mainAxes);
+        zgrid.plot(mainmap('axes'));
     end
 end

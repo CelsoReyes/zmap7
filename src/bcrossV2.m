@@ -118,7 +118,7 @@ function bcrossV2(sel)
         figure(xsec_fig);
         hold on
         
-        ax = findobj('Tag','mainmap_ax');
+        ax = mainmap('axes');
         [x,y, mouse_points_overlay] = select_polygon(ax);
         
         

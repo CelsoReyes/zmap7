@@ -24,24 +24,26 @@ function symboledit_dlg(ax,field)
         end
     end
         
-    options.Resize='on';
     toshow=get(lines,'DisplayName');
     symbs = get(lines,field);
-    usenumbers = isnumeric(symbs{1});
-    if usenumbers
-        symbs = cellfun(@num2str,symbs,'UniformOutput',false);
-    end
         
-    % TODO (wishlist)  change font size for input dialog.  This is fixed by MATLAB unfortunately
-    answer=inputdlg(strcat(field, ' for :',toshow),['Choose ' field], 1, symbs,options);
+    zdlg = ZmapFunctionDlg([]);
+    zdlg.AddBasicHeader(['Change ' field]);
+    for n=1:numel(lines)
+        zdlg.AddBasicEdit(['field' num2str(n)],toshow{n},symbs{n},'');
+    end
+    [answer,pressedOk]=zdlg.Create(['Change ' field]);
+    if ~pressedOk
+        return
+    end
+    
     if isempty(answer)
         return
     end
-    if usenumbers
-        answer = cellfun(@str2num,answer,'UniformOutput',false); %forces into cells
-    end
+    
     for ii=1:numel(lines)
-        set(lines(ii),field,answer{ii});
+        myfield = ['field', num2str(ii)];
+        set(lines(ii),field,answer.(myfield));
     end
         
 end
