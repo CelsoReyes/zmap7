@@ -10,8 +10,11 @@ classdef ShapeCircle < ShapeGeneral
     
     methods
         function obj=ShapeCircle(varargin)
-            % ShapeGeneral create a shape
-            % type is one of 'circle', 'axes', 'box', 'polygon'}
+            % SHAPECIRCLE create a circular shape
+            %
+            % ShapeCircle() :
+            % ShapeCircle('dlg') create via a dialg box
+            % ?
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             
             % UNASSIGNED: clear shape

@@ -347,8 +347,9 @@ classdef MainInteractiveMap
             uimenu(submenu,'Label','Info on synthetic catalogs','Callback',@(~,~)web(['file:' hodi '/zmapwww/syntcat.htm']));
         end
         function create_mapping_rate_changes_menu(obj,parent)
-            submenu  =   uimenu(parent,'Label','Mapping rate changes',...
-                'Enable','off');
+            submenu  =   uimenu(parent,'Label','Mapping rate changes'...,...
+                ...'Enable','off'
+                );
             uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz('in'));
             
             uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr('in'));
@@ -380,7 +381,7 @@ classdef MainInteractiveMap
                 'Callback', @(~,~)bvalmapt('lo'));
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
-                'Enable','off',...
+                ...'Enable','off',...
                 'Callback', @(~,~)nlammap());
             
             tmp=uimenu(submenu,'Label','b-value depth ratio grid',...

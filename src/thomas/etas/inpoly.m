@@ -73,6 +73,8 @@ function [in,bnd] = inpoly(p,node,cnect)
 % the nodes are in consecutive order.
 %
 % Many thanks to Urs Schwarz and John D'Errico.
+%
+% see also inpolygon, polygon_filter
 
 % I/O checking
 if (nargin<2) || (nargin>3)

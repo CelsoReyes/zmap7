@@ -18,7 +18,7 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
     %	      * minlon: minimum longitude limit of the map
     %	               (remember: West longitude is < 0!)
     %
-    %	If the LC_plot_map function has been called before this function
+    %	If the LC_MAP function has been called before this function
     %	AND the same map limits are used, then it is not neccessary to
     %	enter the last 4 arguments:
     %
@@ -36,9 +36,12 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
     todeg = 180 / pi;
     
     % set the global variables
-    global torad Re scale
+    global scale
     global phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
+    ZG = ZmapGlobal.Data;
+    torad = ZG.torad;
+    Re = ZG.Re;
     
     if nargin == 2
         %get data from global variables
@@ -69,11 +72,11 @@ function [phi,lambda] = LC_froca(x,y,maxlat,minlat,maxlon,minlon)
     sine_phi0 = log(cos(phi1)/cos(phi2)) / log(tan2/tan1);
     
     % compute the auxiliary function: psi
-    psi = (cos(phi1) * (tan1^sine_phi0)) / sine_phi0;
+    psi = (cos(phi1) * (tan1.^sine_phi0)) / sine_phi0;
     
     % compute the polar radius to the origin: rho0
     tan0 = tan((pi/4) + (phi0/2));
-    rho0 = (Re * psi) / (tan0^sine_phi0);
+    rho0 = (Re * psi) / (tan0.^sine_phi0);
     
     % compute the polar angles: theta
     theta = atan(x ./ (rho0 - y));

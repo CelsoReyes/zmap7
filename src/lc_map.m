@@ -1,8 +1,8 @@
 function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     
-    %LC_PLOT_MAP
+    %LC_MAP
     %
-    %    LC_plot_map(lat,lon,maxlat,minlat,maxlon,minlon)
+    %    LC_MAP(lat,lon,maxlat,minlat,maxlon,minlon)
     %
     %    Function to plot a map using a Lambert Conformal projection
     %    with two standard parallels which are chosen to be 1/4 of the
@@ -22,10 +22,15 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     
     report_this_filefun(mfilename('fullpath'));
     
-    global torad Re scale
+    global scale
     global phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
     global line_type line_width
+    
+    ZG = ZmapGlobal.Data;
+    % grab globals
+    torad = ZG.torad;
+    
     
     maxlatg = maxlat; minlatg = minlat;
     maxlong = maxlon; minlong = minlon;

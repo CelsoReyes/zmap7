@@ -60,16 +60,19 @@ p2=ginput(1);
         
         
     end % if figure exist
-    
-    figure(mapl);
-    delete(findobj(mapl,'Type','axes'));
+    %figure(mapl);
+    %delete(findobj(mapl,'Type','axes'));
+    plotmap(mapl);
+    %{
     if isempty(coastline)
         coastline = [ZG.primeCatalog.Longitude(1) ZG.primeCatalog.Latitude(1)];
     end
+    %}
     hold on
     % Added try-catch to prevent failure if no coastline is inside
     % cross-section box, JW
     %try
+    %{
     if length(coastline) > 1 %TODO what is coastline?
         lc_map(coastline(:,2),coastline(:,1),s3,s4,s1,s2)
         g = get(gca,'Children');
@@ -88,7 +91,6 @@ p2=ginput(1);
     if ~isempty(mainfault)
         lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
     end
-    
     at_dep1 = ZG.primeCatalog.Depth<=dep1;
     at_dep2 = ZG.primeCatalog.Depth<=dep2 & ZG.primeCatalog.Depth>dep1;
     at_dep3 = ZG.primeCatalog.Depth<=dep3 & ZG.primeCatalog.Depth>dep2;
@@ -116,7 +118,7 @@ p2=ginput(1);
     if ~isempty(well)
         lc_event(well(:,2),well(:,1),'dk')
     end
-    
+    %}
     labelList={'Select an option',...
         'Select Endpoints by Mouse',...
         'Coordinate Input',...
@@ -129,7 +131,7 @@ p2=ginput(1);
     
     
     % dialog box for parameters
-    zdlg=ZmapFunctionDlg();
+    zdlg=ZmapFunctionDlg([]);
     %zdlg.AddBasicEdit(tag,label,value,tooltip);
     zdlg.AddBasicEdit('xsec_width_km','Cross section width [km]',ZG.xsec_width_km,'cross section width, km');
     zdlg.AddBasicPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');
@@ -139,6 +141,10 @@ p2=ginput(1);
     if ~okPressed
         return
     end
+    ZG.xsec_width_km = result.xsec_width_km;
+    ZG.xsec_rotation_deg = result.xsec_rotation_deg;
+    
+    select_xsection();
     
     %{
     uic = uicontrol(...
@@ -171,9 +177,10 @@ p2=ginput(1);
     %}
     
     
-    function select_xsection(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        in2=uic.Value;
+    function select_xsection()%(mysrc,myevt)
+        
+        in2=result.uic;
+        %in2=uic.Value;
         switch in2
             case 2
                 [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_width_km);
@@ -187,14 +194,6 @@ p2=ginput(1);
             otherwise
                 error('unknown option');
         end
-    end
-    
-    function select_xc_width(mysrc,myevt)
-        ZG.xsec_width_km=str2double(mysrc.String);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-        ZG.xsec_rotation_deg=str2double(mysrc.String);
     end
     
 end

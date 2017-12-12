@@ -12,7 +12,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width)         (3)
     %
     %	Function to make a cross section of data points on a map
-    %	created by LC_plot_map (Lambert Conformal).
+    %	created by LC_MAP (Lambert Conformal).
     %	The WIDTH of the zone from which the data points is given
     %	in "km" and represent the total width (1/2 on one side, 1/2 on
     %	the other side).
@@ -46,7 +46,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %	data point as the maximum depth.
     %
     %	NOTE:
-    %	It is assumed that LC_plot_map was used before using this function!
+    %	It is assumed that LC_MAP was used before using this function!
     %	This is neccessary to set global variables used by this function.
 
     report_this_filefun(mfilename('fullpath'));

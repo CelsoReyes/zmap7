@@ -17,7 +17,7 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
     %	      * minlon: minimum longitude limit of the map
     %	               (remember: West longitude is < 0!)
     %
-    %	If the LC_plot_map function has been called before this function
+    %	If the LC_MAP function has been called before this function
     %	AND the same map limits are used, then it is not neccessary to
     %	enter the last 4 arguments:
     %

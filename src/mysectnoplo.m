@@ -1,16 +1,15 @@
-function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
+function [xsecx,xsecy, inde] = mysectnoplo(eqlat,eqlon,depth,width,length,...
         lat1,lon1,lat2,lon2)
+% mysectnoplo
+% [probably] based off of LC_XSECTION [LC_xsect]
+
     report_this_filefun(mfilename('fullpath'));
     
     
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
-    global  torad Re scale
-    global lat1 lon1 lat2 lon2 leng rbox box
-    global sine_phi0 phi0 lambda0 phi1 phi2 pos sw eq1
+    global  torad
+    global sine_phi0 lambda0  sw eq1
     global maxlatg minlatg maxlong minlong
-    global symb_type symb_size symb_width
-    global label1 label2 mapl
-    global mindepth maxdepth xsec_fig h2
     global eq0p
     todeg = 180 / pi;
     eq1 =[];
@@ -28,7 +27,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
             x1 = x2; y1 = y2;
             x2 = xtemp; y2 = ytemp;
             sw = 'on';
-        else;
+        else
             sw = 'of';
         end
         
@@ -44,7 +43,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
     else
         
         disp('ERROR: incompatible number of arguments')
-        help lc_xsection
+        help LC_XSECTION
         return
         
     end

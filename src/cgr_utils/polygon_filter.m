@@ -15,6 +15,8 @@ function [mask] = polygon_filter(x, y, XI, YI, in_or_out)
     %               default is 'inside'
     %
     %    I don't know about edge cases.
+    %
+    % see also inpolygon, inpoly
     
     
     assert(length(XI) == length(YI));

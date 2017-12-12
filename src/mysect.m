@@ -1,18 +1,19 @@
-function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,lat1,lon1,lat2,lon2)
+function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,lat2,lon2)
     % MYSECT to make a cross section of data points on a map
+    % Based off of LC_XSECTION
     %
-    %LC_XSECTION
+    %LC_XSECT
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
+    %	[xsecx, xsecy] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %                                        lat1,lon1,lat2,lon2)        (1)
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
+    %	[xsecx, xsecy] = LC_xsect(eqlat,eqlon,depth,width,length,...
     %                                        lat0,lon0,azimuth)          (2)
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width)         (3)
+    %	[xsecx, xsecy] = LC_xsect(eqlat,eqlon,depth,width)         (3)
     %
     %	Function to make a cross section of data points on a map
-    %	created by LC_plot_map (Lambert Conformal).
+    %	created by LC_MAP (Lambert Conformal).
     %	The WIDTH of the zone from which the data points is given
     %	in "km" and represent the total width (1/2 on one side, 1/2 on
     %	the other side).
@@ -46,7 +47,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,lat1,lon1
     %	data point as the maximum depth.
     %
     %	NOTE:
-    %	It is assumed that LC_plot_map was used before using this function!
+    %	It is assumed that LC_MAP was used before using this function!
     %	This is neccessary to set global variables used by this function.
     
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
@@ -121,7 +122,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,lat1,lon1
             
         else
             disp('ERROR: incompatible number of arguments')
-            help lc_xsection
+            help mysect
             return
         end
         
@@ -151,7 +152,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,lat1,lon1
     else
         
         disp('ERROR: incompatible number of arguments')
-        help lc_xsection
+        help mysect
         return
     end
     

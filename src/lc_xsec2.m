@@ -1,18 +1,19 @@
-function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
+function [xsecx,xsecy] = lc_xsec2(eqlat,eqlon,depth,width,length,...
         lat1,lon1,lat2,lon2)
     
-    %LC_XSECTION make a cross section of data points on a map
+    %LC_XSEC2 make a cross section of data points on a map
+    % Based off of LC_XSECTION
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
+    %	[xsecx, xsecy] = LC_xsec2(eqlat,eqlon,depth,width,length,...
     %                                        lat1,lon1,lat2,lon2)        (1)
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
+    %	[xsecx, xsecy] = LC_xsec2(eqlat,eqlon,depth,width,length,...
     %                                        lat0,lon0,azimuth)          (2)
     %
-    %	[xsecx, xsecy] = LC_xsection(eqlat,eqlon,depth,width)         (3)
+    %	[xsecx, xsecy] = LC_xsec2(eqlat,eqlon,depth,width)         (3)
     %
     %	Function to make a cross section of data points on a map
-    %	created by LC_plot_map (Lambert Conformal).
+    %	created by LC_MAP (Lambert Conformal).
     %	The WIDTH of the zone from which the data points is given
     %	in "km" and represent the total width (1/2 on one side, 1/2 on
     %	the other side).
@@ -46,7 +47,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
     %	data point as the maximum depth.
     %
     %	NOTE:
-    %	It is assumed that LC_plot_map was used before using this function!
+    %	It is assumed that LC_MAP was used before using this function!
     %	This is neccessary to set global variables used by this function.
     
     global bDebug
@@ -54,14 +55,15 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
         report_this_filefun(mfilename('fullpath'));
     end
     
-    global torad Re scale
-    global sine_phi0 phi0 lambda0 phi1 phi2
+    global sine_phi0 lambda0
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
     global label1 label2
     global mindepth maxdepth
     
+    ZG = ZmapGlobal.Data;
     todeg = 180 / pi;
+    torad = ZG.torad;
     
     if nargin < 9
         
@@ -115,7 +117,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
             
         else
             disp('ERROR: incompatible number of arguments')
-            help lc_xsection
+            help lc_xsec2
             return
         end
         
@@ -142,7 +144,7 @@ function [xsecx,xsecy] = LC_xsection(eqlat,eqlon,depth,width,length,...
     else
         
         disp('ERROR: incompatible number of arguments')
-        help lc_xsection
+        help lc_xsec2
         return
     end
     
