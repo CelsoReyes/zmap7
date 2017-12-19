@@ -24,7 +24,7 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
         report_this_filefun(mfilename('fullpath'));
     end
     
-    global torad Re scale
+    global torad scale
     global phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
     

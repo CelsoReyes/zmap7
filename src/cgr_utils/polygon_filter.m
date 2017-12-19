@@ -1,5 +1,7 @@
 function [mask] = polygon_filter(x, y, XI, YI, in_or_out)
-    % polygon_filter used Analytic Geometry to select points inside or outside polygon
+    % POLYGON_FILTER used Analytic Geometry to select points inside or outside polygon
+    %
+    % [mask] = POLYGON_FILTER(x, y, XI, YI, in_or_out)
     % 
     % input params:
     %    x, y : polygon vertices, with x(1)==x(end) and y(1)==y(end)

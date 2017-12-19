@@ -14,7 +14,9 @@ function bcross(sel)
     % this is incorporated in new functions to determine Mc and B with
     % bootstrapping
     report_this_filefun(mfilename('fullpath'));
-    
+    if ~exist('sel','var')
+        sel = 'in';
+    end
     % Do we have to create the dialogbox?
     if sel == 'in'
         % Set the grid parameter

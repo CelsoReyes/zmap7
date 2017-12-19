@@ -296,9 +296,9 @@ classdef MainInteractiveMap
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
-            
+            uimenu(submenu,'Label','Create [simple] cross-section','Callback',@cb_xsect);
             uimenu(submenu,'Label','Create cross-section',...
-                'Enable','off',...
+                ...'Enable','off',...
                 'Callback',@(~,~)nlammap());
             
             obj.create_histogram_menu(submenu);
@@ -1072,6 +1072,29 @@ function cb_create_syhthetic_cat(src,~)
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
     revertcat
+end
+
+function cb_xsect(src,~)
+    ZG=ZmapGlobal.Data;
+    catalog=ZG.primeCatalog;
+    zdlg=ZmapFunctionDlg([]);
+    zdlg.AddBasicEdit('slicewidth_km','Width of slice [km]',20,'width of slice, km');
+    zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,'no choice');
+    zans=zdlg.Create();
+    disp('click on start and end points for cross section');
+    [lon, lat] = ginput(2);
+    [c2,mindist,mask,gcDist]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km,0.1);
+    figure
+    subplot(3,1,[1 2])
+    scatter3(c2.Longitude,c2.Latitude,-c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
+    hold on
+    plot(catalog.Longitude,catalog.Latitude,'k.')
+    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),-c2.Depth,3,mindist)
+    hold off
+    subplot(3,1,3)
+    histogram(gcDist);
+    ylabel('# events');
+    xlabel('Distance along strike (km)');
 end
 
 function A = toggleOnOff(A)

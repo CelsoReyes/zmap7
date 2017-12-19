@@ -20,7 +20,6 @@ report_this_filefun(mfilename('fullpath'));
     if ~ensure_mainshock()
         return
     end
-    %[m_main, main] = max(mycat.Magnitude);
     date_matlab = datenum(mycat.Date);
     date_main = datenum(ZG.maepi.Date);
     time_aftershock = date_matlab-date_main;

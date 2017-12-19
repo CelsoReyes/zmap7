@@ -166,7 +166,7 @@ function view_ratecomp(det,valueMap)
             'callback',@callbackfun_009)
         
         op1 = uimenu('Label','  Display ');
-        uimenu(op1,'Label','Plot Map in Lambert projection using m_map ', 'callback',@callbackfun_010)
+        uimenu(op1,'Label','Plot Map in Lambert projection', 'callback',@callbackfun_010)
         uimenu(op1,'Label','Fix color (z) scale', 'callback',@callbackfun_011)
         uimenu(op1,'Label','Plot map on top of topography (white background)',...
             'callback',@callbackfun_012)

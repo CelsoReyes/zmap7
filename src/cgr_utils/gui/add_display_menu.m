@@ -11,12 +11,12 @@ function add_display_menu(version)
         case 1
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'horiz');
-            uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ');
+            uimenu(op2e,'Label','Plot Map in lambert projection', 'Callback','plotmap ');
             %overlayfun=@overlay;
         case 2
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'');
-            uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ');
+            uimenu(op2e,'Label','Plot Map in lambert projection', 'Callback','plotmap ');
             %overlayfun=@overlay;
         case 3
             circlefun=@plotci3;
@@ -25,7 +25,7 @@ function add_display_menu(version)
         case 4
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'horiz');
-            uimenu(op2e,'Label','Plot Map in lambert projection using m_map ', 'Callback','plotmap ')
+            uimenu(op2e,'Label','Plot Map in lambert projection', 'Callback','plotmap ')
             uimenu(op2e,'Label','Plot map on top of topography (white background)',...
                 'Callback','colback = 1; dramap2_z'); % this is different from case #1
             uimenu(op2e,'Label','Plot map on top of topography (black background)',...

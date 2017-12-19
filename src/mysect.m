@@ -54,14 +54,15 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     
     report_this_filefun(mfilename('fullpath'));
     
-    global  torad Re scale
-    global lat1 lon1 lat2 lon2 leng rbox box
+    global  torad
+    % global lat1 lon1 lat2 lon2 
+    global leng rbox box
     global sine_phi0 phi0 lambda0 phi1 phi2 pos sw eq1
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
     global label1 label2 mapl
     global mindepth maxdepth xsec_fig h2
-    global eq0p eq1
+    global eq0p
     todeg = 180 / pi;
     eq1 =[];
     
@@ -90,7 +91,17 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             [lat2, lon2] = lc_froca(x2,y2);
             
         elseif nargin == 4	% method 3: selection of the end points by mouse
+            [lat1, lon1] = inputm(1);
+            h=plotm(lat1, lon1,'rx','markersize',6,'linewidth',2);
+            [lat2, lon2] = inputm(1);
             
+            delete(h)
+            h=plotm([lat1 lat2],[lon1 lon2],'rx:','markersize',6,'linewidth',2);
+            
+            [arclen,azimuth] = distance([lat1, lon1] , [lat2, lon2]);
+            leng=deg2km(arclen);
+            alpha=0;
+            %{
             limits = ginput(1);
             x1 = limits(1,1);
             y1 = limits(1,2);
@@ -119,6 +130,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             alpha = 90 - (atan(dy/dx)*todeg);
             length = sqrt(dx^2 + dy^2);
             leng = length;
+            %}
             
         else
             disp('ERROR: incompatible number of arguments')
@@ -136,7 +148,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             x1 = x2; y1 = y2;
             x2 = xtemp; y2 = ytemp;
             sw = 'on'
-        else;
+        else
             sw = 'of'
         end
         

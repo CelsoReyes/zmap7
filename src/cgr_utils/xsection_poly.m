@@ -4,13 +4,22 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
     % ... XSECTION_POLY(..., true) will extend the polygon to the radius around the end points
     % endpointA is [lat, lon]
     % endpointB is [lat,lon]
+    % resulting LATS and LONS are columns, and represent a clockwise traverse of the enclosing area
+    % starting to left of endpointA (as facing endpointB)
+    %
+    % This calculates waypoints along the great circle, and uses that to handle curvature.
+    %
+    % For cross-sections where the earthquakes are projected onto the plane, do not use the rounded
+    % ends.
+    %
     %                            circleB
     %               <-2*r->         ___   
     %                              /   \    
-    %     x         *--x--*     P3*  B  *P4
+    %     x         *--x--*       *  B  *
     %     |         |  :  |       |  :  |
+    %     |         |  :  |       *  +  *
     %     |         |  :  |       |  :  |
-    %     x         *--x--*     P2*  A  * P1
+    %     x         *--x--*       *  A  * 
     %                              \___/
     %                             
     %                             circleA
@@ -20,6 +29,7 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
     %
     %  of course, the orientation can be arbitrary.
     %
+    % see also reckon, azimuth
     % NOT THREAD SAFE
     
     persistent prevParams
@@ -35,28 +45,60 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
         return;
     end
     prevParams = params;
+    degr = km2deg(r);
+    % get points along the great circle path
+    tdist_km = deg2km(distance(endpointA,endpointB));
+    npoints = round(tdist_km/(r)); % choose a number of points based on length/width ratio
+    if npoints
+        [gclats, gclons] = gcwaypts(endpointA(1),endpointA(2),endpointB(1),endpointB(2), npoints);
+    else
+        gclats = [endpointA(1);endpointB(1)];
+        gclons = [endpointA(2);endpointB(2)];
+    end
     
-    % find the trend of the given line
-    AZ= azimuth(endpointA,endpointB);
+    lats=[];
+    lons=[];
     
-    % find the arclength of r
-    r = km2deg(r);
+    % calculate going up the left
+    for n = 1 : numel(gclats)-1
+        AZ= azimuth(gclats(n),gclons(n),gclats(n+1),gclons(n+1));
+        [lats(end+1,1),lons(end+1,1)]=reckon(gclats(n),gclons(n),degr,AZ-90);
+    end
     
-    [p1.lat , p1.lon] = reckon(endpointA(1),endpointA(2),r,AZ+90);
-    [p2.lat , p2.lon] = reckon(endpointA(1),endpointA(2),r,AZ-90);
-    
-    [p3.lat , p3.lon] = reckon(endpointB(1),endpointB(2),r,AZ-90);
-    [p4.lat , p4.lon] = reckon(endpointB(1),endpointB(2),r,AZ+90);
+    % calculate left of last point, but using backazimuth
+    AZ = azimuth(gclats(end),gclons(end),gclats(end-1),gclons(end-1)); %backazimuth
+    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(end),gclons(end),degr,AZ+90);
     
     if roundTips
-        [circAlat,circAlon]=reckon(endpointA(1),endpointA(2),r,AZ+90+(.25:.25:179.75)');
-        [circBlat,circBlon]=reckon(endpointB(1),endpointB(2),r,AZ-90+(.25:.25:179.75)');
-        lats = [p1.lat; circAlat(:); p2.lat; p3.lat; circBlat(:); p4.lat; p1.lat];
-        lons = [p1.lon; circAlon(:); p2.lon; p3.lon; circBlon(:); p4.lon; p1.lon];
-    else
-        lats = [p1.lat; p2.lat; p3.lat; p4.lat; p1.lat];
-        lons = [p1.lon; p2.lon; p3.lon; p4.lon; p1.lon];
+        [circlat,circlon]=reckon(endpointB(1),endpointB(2),degr,AZ+90+(.25:.25:179.75)');
+        lats=[lats;circlat(:)];
+        lons=[lons;circlon(:)];
     end
+    
+    % calculate going down the right
+    for n = numel(gclats): -1 : 2
+        AZ= azimuth(gclats(n),gclons(n),gclats(n-1),gclons(n-1));
+        [lats(end+1,1),lons(end+1,1)]=reckon(gclats(n),gclons(n),degr,AZ-90);
+    end
+    
+    % calculate right of first point, but using backazimuth
+    AZ = azimuth(gclats(1),gclons(1),gclats(2),gclons(2)); %backazimuth
+    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(1),gclons(1),degr,AZ+90);
+    
+    if roundTips
+        [circBlat,circBlon]=reckon(endpointA(1),endpointA(2),degr,AZ+90+(.25:.25:179.75)');
+        lats=[lats;circBlat(:)];
+        lons=[lons;circBlon(:)];
+    end
+    lats(end+1)=lats(1);lons(end+1)=lons(1);
+    
     prevPoly=struct('lats',lats,'lons',lons);
-    return
 end
+
+%{
+%% some scripts that can be used to test:
+A=[35,70],B=[40,78];
+[las,los]=xsection_poly([35,70], [40,78],100,true);
+figure;plot(A(2),A(1),'*r');hold on;plot(B(2),B(1),'*g');plot(los',las',':.');
+%}
+

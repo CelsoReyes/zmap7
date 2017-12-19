@@ -9,7 +9,8 @@ function rc_cross_a2()
     
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
-    catalog = ZG.primeCatalog.sorted('Date');
+    catalog = ZG.primeCatalog;
+    catalog.sort('Date')
 
     % Do we have to create the dialogbox?
     % Set the grid parameter
@@ -26,7 +27,7 @@ function rc_cross_a2()
     av = NaN;
     nRandomRuns = 1000;
     bGridEntireArea = 0;
-    time = 47;
+    time = days(47);
     timef= days(20);
     bootloops = 50;
     ra = 5;
@@ -38,7 +39,7 @@ function rc_cross_a2()
     % cut catalog at mainshock time:
     l = catalog.Date > ZG.maepi.Date(1);
     catalog=catalog.subset(l);
-    
+    %{
     % Create the dialog box
     figure_w_normalized_uicontrolunits(...
         'Name','Grid Input Parameter',...
@@ -49,7 +50,7 @@ function rc_cross_a2()
         'Position',[ ZG.wex+200 ZG.wey-200 550 300], ...
         'Color', [0.8 0.8 0.8]);
     axis off
-    
+    %}
     %     % Dropdown list
     %     labelList2=[' Automatic Mc (max curvature) | Fixed Mc (Mc = Mmin) | Automatic Mc (90% probability) | Automatic Mc (95% probability) | Best combination (Mc95 - Mc90 - max curvature)'];
     %     hndl2=uicontrol(...
@@ -63,138 +64,34 @@ function rc_cross_a2()
     %     % Set selection to 'Best combination'
     %     set(hndl2,'value',5);
     
-    % Edit fields, radiobuttons, and checkbox
-    freq_field=uicontrol('Style','edit',...
-        'Position',[.30 .70 .12 .08],...
-        'Units','normalized','String',num2str(ni),...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'callback',@callbackfun_002);
+    zdlg = ZmapFunctionDlg([]);
+    zdlg.AddEventSelectionParameters('evsel',ni,ra,Nmin);
+    zdlg.AddGridParameters('gridparam',dx,'km',[],[],dd,'km'); %gridparam.dx->dx %gridparam.dz ->dd
+    zdlg.AddBasicEdit('time','learning period (days)',time,'learning period');
+    zdlg.AddBasicEdit('timef','forecast period (days)',timef,'forecast period');
+    zdlg.AddBasicEdit('bootloops','bootstrap samples',bootloops,'Bootstrap samples');
     
-    freq_field0=uicontrol('Style','edit',...
-        'Position',[.30 .60 .12 .08],...
-        'Units','normalized','String',num2str(ra),...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'callback',@callbackfun_003);
+    [res,okPressed]=zdlg.Create('Grid Parameters');
     
-    freq_field2=uicontrol('Style','edit',...
-        'Position',[.30 .40 .12 .08],...
-        'Units','normalized','String',num2str(dx),...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'callback',@callbackfun_004);
+    % put response values back into variables expected by program
+    ni=res.evsel.numNearbyEvents;
+    ra=res.evsel.radius_km;
+    tgl1=res.evsel.useNumNearbyEvents;
+    tgl2=~tgl1;
+    Nmin=res.evsel.requiredNumEvents;
+    if ~isduration(res.time)
+        time=days(res.time);
+    else
+        time=res.time;
+    end
+    if ~isduration(res.timef)
+        timef=days(res.timef);
+    else
+        timef=res.timef;
+    end
+    bootloops=res.bootloops;
     
-    freq_field3=uicontrol('Style','edit',...
-        'Position',[.30 .30 .12 .08],...
-        'Units','normalized','String',num2str(dd),...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'callback',@callbackfun_005);
-    
-    freq_field7=uicontrol('Style','edit',...
-        'Position',[.68 .40 .12 .080],...
-        'Units','normalized','String',num2str(time),...
-        'callback',@callbackfun_006);
-    
-    freq_field5=uicontrol('Style','edit',...
-        'Position',[.68 .50 .12 .080],...
-        'Units','normalized','String',num2str(timef),...
-        'callback',@callbackfun_007);
-    
-    freq_field6=uicontrol('Style','edit',...
-        'Position',[.68 .60 .12 .080],...
-        'Units','normalized','String',num2str(bootloops),...
-        'callback',@callbackfun_008);
-    
-    freq_field8=uicontrol('Style','edit',...
-        'Position',[.68 .70 .12 .080],...
-        'Units','normalized','String',num2str(fMaxRadius),...
-        'callback',@callbackfun_009);
-    
-    tgl1 = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
-        'Style','radiobutton',...
-        'string','Number of events:',...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'Position',[.02 .70 .28 .08], 'callback',@callbackfun_010,...
-        'Units','normalized');
-    
-    % Set to constant number of events
-    set(tgl1,'value',1);
-    
-    tgl2 =  uicontrol('BackGroundColor',[0.8 0.8 0.8],'Style','radiobutton',...
-        'string','Constant radius [km]:',...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'Position',[.02 .60 .28 .08], 'callback',@callbackfun_011,...
-        'Units','normalized');
-    
-    freq_field4 =  uicontrol('Style','edit',...
-        'Position',[.30 .20 .12 .08],...
-        'Units','normalized','String',num2str(Nmin),...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'callback',@callbackfun_013);
-    
-    chkGridEntireArea = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
-        'Style','checkbox',...
-        'string','Create grid over entire area',...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'Position',[.02 .06 .40 .08], 'Units','normalized', 'Value', 0);
-    
-    % Buttons
-    uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
-        'Units', 'normalized', 'Position', [.80 .05 .15 .12], ...
-        'Callback', 'close;', 'String', 'Cancel');
-    
-    uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
-        'Units', 'normalized', 'Position', [.60 .05 .15 .12], ...
-        'Callback',@callbackfun_myca,...
-        'String', 'OK');
-    
-    % Labels
-    %     text('Units', 'normalized', ...
-    %         'Position', [0.2 1 0], 'HorizontalAlignment', 'left',  ...
-    %         'FontSize', fontsz.l, 'FontWeight', 'bold', 'String', 'Please select a Mc estimation option');
-    %
-    text('Units', 'normalized', ...
-        'Position', [0.3 0.95 0], 'HorizontalAlignment', 'left',  ...
-        'FontSize', ZmapGlobal.Data.fontsz.l, 'FontWeight', 'bold', 'String', 'Grid parameters');
-    
-    text('Units', 'normalized', ...
-        'Position', [-.14 .42 0], 'HorizontalAlignment', 'left',  ...
-        'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String','Horizontal spacing [km]:');
-    
-    text('Units', 'normalized', ...
-        'Position', [-0.14 0.30 0],  'HorizontalAlignment', 'left', ...
-        'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Depth spacing [km]:');
-    
-    text('Units', 'normalized', ...
-        'Position', [-0.14 0.18 0],  'HorizontalAlignment', 'left', ...
-        'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Min. number of events:');
-    
-    txt8 = text(...
-        'Position',[0.42 0.55 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Forecast period:');
-    txt9 = text(...
-        'Position',[0.42 0.43 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Learning period:');
-    
-    txt10 = text(...
-        'Position',[0.42 0.66 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Bootstrap samples:');
-    
-    txt11 = text(...
-        'Position',[0.42 0.78 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Max. Radius /[km]:');
-    
-    set(gcf,'visible','on');
-    watchoff
+    my_calculate();
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -590,99 +487,11 @@ function rc_cross_a2()
             return
         end
     end
-    
-    function callbackfun_myca(mysrc,myevt)
-        tgl1=tgl1.Value;
-        tgl2=tgl2.Value;
-        bGridEntireArea = get(chkGridEntireArea, 'Value');
-        close,
-        my_calculate()
-    end
+   
     
     function callbackfun_001(mysrc,myevt)
-
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.inb2=hndl2.Value;
-        
     end
     
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ni=str2double(freq_field.String);
-        freq_field.String=num2str(ni);
-        tgl2.Value=0;
-        tgl1.Value=1;
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ra=str2double(freq_field0.String);
-        freq_field0.String=num2str(ra);
-        tgl2.Value=1;
-        tgl1.Value=0;
-    end
-    
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dx=str2double(freq_field2.String);
-        freq_field2.String=num2str(dx);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dd=str2double(freq_field3.String);
-        freq_field3.String=num2str(dd);
-    end
-    
-    function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        time_field.Value=str2double(time_field.String);
-        time=days(time_field.Value);
-    end
-    
-    function callbackfun_007(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timef=str2double(freq_field5.String);
-        freq_field5.String=num2str(timef);
-    end
-    
-    function callbackfun_008(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bootloops=str2double(freq_field6.String);
-        freq_field6.String=num2str(bootloops);
-    end
-    
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fMaxRadius=str2double(freq_field8.String);
-        freq_field8.String=num2str(fMaxRadius);
-    end
-    
-    function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl2.Value=0;
-    end
-    
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl1.Value=0;
-    end
-    
-    
-    function callbackfun_013(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        Nmin=str2double(freq_field4.String);
-        freq_field4.String=num2str(Nmin);
-    end
 end
