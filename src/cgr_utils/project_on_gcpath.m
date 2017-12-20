@@ -1,6 +1,7 @@
 function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, maxdist_km, dx_km)
     %PROJECT_TO_GCPATH returns a catalog, with all events projected into the lat/lon defined by curve
-    % catalog = PROJECT_TO_GCPATH( PT1, PT2, catalog, dx_km)
+    % catalog = PROJECT_TO_GCPATH( PT1, PT2, catalog, dx_km) where PT1 and PT2 are [lat, lon]. dx_km
+    % is the distance from xsection. SO, width is actually dx_km *2;
     %
     % [catalog, dist2curve] = PROJECT_TO_GCPATH(...) also returns distance to curve
     %
@@ -10,7 +11,7 @@ function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, m
     % [catalog, dist2curve, mask, gcDist] = PROJECT_TO_GCPATH(...) return the distance along the
     %  great circle (along strike), (distance in km from pt1)
     %
-    
+    % see also gcwaypts
     if nargin==1 && strcmp(pt1,'test')
         [projectedcat,mindist,mask,gcDist]=test_this;
         return

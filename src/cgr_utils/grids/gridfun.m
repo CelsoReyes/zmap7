@@ -113,7 +113,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     drawnow
     
     % start parallel pool if necessary, but warn user!
-    ZG = ZmapGrid.Data;
+    ZG = ZmapGlobal.Data;
     try
         p=gcp('nocreate');
         if isempty(p) &&  ZG.useParallel
