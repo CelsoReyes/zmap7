@@ -15,6 +15,7 @@ function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, m
         [projectedcat,mindist,mask,gcDist]=test_this;
         return
     end
+    gcDist=[];
     tdist_km = deg2km(distance(pt1,pt2));
     nlegs = ceil(tdist_km / dx_km) .*2;
     % limit the catalog to the appropriate distance from the curve
@@ -51,7 +52,7 @@ function [c2,mindist,mask,gcDist]=test_this()
     subplot(3,1,[1 2])
     scatter3(c2.Longitude,c2.Latitude,-c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
     hold on
-    plot(catalog.Longitude,catalog.Latitude,'k.')
+    plot(catalog.Longitude,catalog.Latitude,'k.','MarkerSize',1)
     scatter3(catalog.Longitude(mask),catalog.Latitude(mask),-c2.Depth,3,mindist)
     hold off
     subplot(3,1,3)

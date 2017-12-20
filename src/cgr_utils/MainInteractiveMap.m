@@ -1079,22 +1079,53 @@ function cb_xsect(src,~)
     catalog=ZG.primeCatalog;
     zdlg=ZmapFunctionDlg([]);
     zdlg.AddBasicEdit('slicewidth_km','Width of slice [km]',20,'width of slice, km');
+    zdlg.AddBasicEdit('startlabel','start label','A','start label for map');
+    zdlg.AddBasicEdit('endlabel','end label','A''','start label for map');
     zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,'no choice');
-    zans=zdlg.Create();
+    zans=zdlg.Create('slicer');
     disp('click on start and end points for cross section');
-    [lon, lat] = ginput(2);
+    % pick first point
+    [lon, lat] = ginput(1);
+    hold on; 
+    xs_endpts=plot(lon,lat,'rx','markersize',5);
+    % pick second point
+    [lon(2), lat(2)] = ginput(1);
+    xs_endpts.XData=lon; 
+    xs_endpts.YData=lat;
+    
+    [curvelats,curvelons]=gcwaypts(lat(1),lon(1),lat(2),lon(2),100); %lat/lon
+    % plot great-circle path
+    xs_line=plot(curvelons,curvelats,'r-.','linewidth',1.5);
+    
+    %label it
+    %isup=lat(2)-lat(1)>0;
+    %isright=lon(2)-lon(1)>0;
+    hOffset=@(x,polarity) x+(1/75).*diff(xlim) * sign(lon(2)-lon(1)) * polarity;
+    vOffset=@(x,polarity) x+(1/75).*diff(ylim) * sign(lat(2)-lat(1)) * polarity;
+    slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'color',[.5 0 0], 'fontweight','bold');
+    elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'color',[.5 0 0], 'fontweight','bold');
+
     [c2,mindist,mask,gcDist]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km,0.1);
-    figure
-    subplot(3,1,[1 2])
+    figure('Name','cross-section',...
+        'DeleteFcn',@(~,~)delete([xs_endpts,xs_line,slabel,elabel])... autodelete xsection line when figure is closed
+        );
+    subplot(3,3,[1 5])
     scatter3(c2.Longitude,c2.Latitude,-c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
     hold on
     plot(catalog.Longitude,catalog.Latitude,'k.')
     scatter3(catalog.Longitude(mask),catalog.Latitude(mask),-c2.Depth,3,mindist)
     hold off
-    subplot(3,1,3)
-    histogram(gcDist);
+    subplot(3,3,[7 8])
+    h=histogram(gcDist);
+    h.Parent.XTickLabel{1}=zans.startlabel;
+    h.Parent.XTickLabel{end}=zans.endlabel;
     ylabel('# events');
     xlabel('Distance along strike (km)');
+    subplot(3,3,[3 6])
+    histogram(c2.Depth,'Orientation','horizontal');
+    set(gca, 'YDir','reverse')
+    xlabel('# events');
+    ylabel('Distance Depth Profile (km)');
 end
 
 function A = toggleOnOff(A)

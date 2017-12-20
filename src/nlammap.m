@@ -45,7 +45,6 @@ p2=ginput(1);
             'Visible','off', ...
             'Position',[ (ZG.fipo(3:4) - [600 400]) ZmapGlobal.Data.map_len]);
         
-        
         drawnow
         info2=@(s,ev)web(['file:' ZG.hodi '/zmapwww/chap4.htm#997433']);
         info1=@(s,ev)web(['file:' ZG.hodi '/zmapwww/chp11.htm#996756']) ;
