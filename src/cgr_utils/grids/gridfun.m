@@ -113,9 +113,10 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     drawnow
     
     % start parallel pool if necessary, but warn user!
+    ZG = ZmapGrid.Data;
     try
         p=gcp('nocreate');
-        if isempty(p)
+        if isempty(p) &&  ZG.useParallel
             h=msgbox('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
             set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
             drawnow;
@@ -180,7 +181,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
  
     function doSinglefun(myfun)
-        if length(zgrid)<MIN_POINTS_FOR_PARALLEL
+        if length(zgrid)<MIN_POINTS_FOR_PARALLEL || ~ZG.useParallel
             for i=1:length(zgrid)
                 fun=myfun; % local copy of function
                 % is this point of interest?

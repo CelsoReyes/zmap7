@@ -105,6 +105,8 @@ classdef ZmapData < handle
         debug='on'; % makes special menus visible
         
         Views=struct('primary',[],'layers',[]); % catalog views
+        
+        useParallel=false; % use parallel pool when available
     end
     properties(Dependent)
         wex % welcome window x (welcome_pos(1))
