@@ -1086,7 +1086,7 @@ function cb_xsect(src,~)
     catalog=ZG.primeCatalog;
     
     % dialog box to choose cross-section
-    zdlg=ZmapFunctionDlg([]);
+    zdlg=ZmapDialog([]);
     zdlg.AddBasicEdit('slicewidth_km','Width of slice [km]',20,'distance from slice for which to select events. 1/2 distance in either direction');
     zdlg.AddBasicEdit('startlabel','start label','A','start label for map');
     zdlg.AddBasicEdit('endlabel','end label','A''','start label for map');

@@ -51,7 +51,7 @@ classdef findquar < ZmapFunction
         function InteractiveSetup(obj)
             % allow user to determin grid and selection paramters
             
-            zdlg=ZmapFunctionDlg(...
+            zdlg=ZmapDialog(...
                 obj,...  pass it a handle that it can change when the OK button is pressed.
                 @obj.InteractiveSetup_part2...  if OK is pressed, then this function will be executed.
                 );

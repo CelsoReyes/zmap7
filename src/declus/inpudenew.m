@@ -57,7 +57,7 @@ function inpudenew()
         'derr', 'Depth-Error:', derr, 'Depth error'
         };
     
-    zdlg = ZmapFunctionDlg([],@do_nothing);
+    zdlg = ZmapDialog([],@do_nothing);
     zdlg.AddBasicHeader('Declustering parameters');
     for i=1:size(ctrl_params,1)
         params=ctrl_params(i,:);

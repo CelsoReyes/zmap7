@@ -33,7 +33,7 @@ classdef(Abstract) ZmapFunction < handle
     %           % if varargin is empty, then do the interactive setup.
     %           % otherwise, check pronditions, calculate values, plot, and then modify globals.
     %
-    %       InteractiveSetup - create a ZmapFunctionDlg that provides the user a way to manipulate parameters used by the Calculate() method.
+    %       InteractiveSetup - create a ZmapDialog that provides the user a way to manipulate parameters used by the Calculate() method.
     %       Calculate - do the calculations, and put all important results into fields of the obj.Results variable.
     %         optionally return the Results so that the caller can directly manipulate them
     %
@@ -50,7 +50,7 @@ classdef(Abstract) ZmapFunction < handle
     %    that still need to be created.
     %
     %
-    % see also ZmapFunctionDlg, sample_ZmapFunction, blank_ZmapFunction, ZmapQuickResultPcolor
+    % see also ZmapDialog, sample_ZmapFunction, blank_ZmapFunction, ZmapQuickResultPcolor
     
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES

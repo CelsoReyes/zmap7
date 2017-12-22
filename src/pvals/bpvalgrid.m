@@ -270,7 +270,7 @@ function [sel] = bpvalgrid()
     function [res,okpressed] = createGui(dx, dy, ni, Nmin)
         % make the interface
         
-        zdlg = ZmapFunctionDlg();
+        zdlg = ZmapDialog();
         
         
         McMethods={'Automatic Mcomp (max curvature)',...

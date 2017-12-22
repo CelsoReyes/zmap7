@@ -130,7 +130,7 @@ p2=ginput(1);
     
     
     % dialog box for parameters
-    zdlg=ZmapFunctionDlg([]);
+    zdlg=ZmapDialog([]);
     %zdlg.AddBasicEdit(tag,label,value,tooltip);
     zdlg.AddBasicEdit('xsec_width_km','Cross section width [km]',ZG.xsec_width_km,'cross section width, km');
     zdlg.AddBasicPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');

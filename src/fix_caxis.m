@@ -63,7 +63,7 @@ classdef fix_caxis < ZmapFunction
             % create a dialog that allows user to select parameters neccessary for the calculation
             
             
-            zdlg=ZmapFunctionDlg(...
+            zdlg=ZmapDialog(...
                 obj,...  pass it a handle that it can change when the OK button is pressed.
                 @obj.doIt...  if OK is pressed, then this function will be executed.
                 );

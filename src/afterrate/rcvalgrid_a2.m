@@ -75,7 +75,7 @@ function [sel]=rcvalgrid_a2()
     %
     
     
-        zdlg = ZmapFunctionDlg();
+        zdlg = ZmapDialog();
         
         
         McMethods={'Automatic Mcomp (max curvature)',...

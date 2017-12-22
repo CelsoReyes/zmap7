@@ -27,7 +27,7 @@ function symboledit_dlg(ax,field)
     toshow=get(lines,'DisplayName');
     symbs = get(lines,field);
         
-    zdlg = ZmapFunctionDlg([]);
+    zdlg = ZmapDialog([]);
     zdlg.AddBasicHeader(['Change ' field]);
     for n=1:numel(lines)
         zdlg.AddBasicEdit(['field' num2str(n)],toshow{n},symbs{n},'');

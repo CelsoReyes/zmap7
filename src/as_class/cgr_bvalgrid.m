@@ -117,8 +117,8 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % if autoPlot, then plot results immediately after calculation
             
             %% make the interface
-            zdlg = ZmapFunctionDlg();
-            %zdlg = ZmapFunctionDlg(obj, @obj.doIt);
+            zdlg = ZmapDialog();
+            %zdlg = ZmapDialog(obj, @obj.doIt);
             
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...

@@ -196,7 +196,7 @@ classdef EventSelectionChoice < handle
     
     methods(Static)
         function evsel=quickshow(writeToGlobal,ni,ra,min_valid)
-            %quickhow will produce a simple ZmapFunctionDlg, writing
+            %quickhow will produce a simple ZmapDialog, writing
             % selcrit = evsel.quickshow() get parameters into the output
             % evsel.quickshow(true) writes results back to ZmapGlobal
             f=figure('Name','EventSelectionChoice example',...

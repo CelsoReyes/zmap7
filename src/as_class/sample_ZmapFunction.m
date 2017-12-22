@@ -68,7 +68,7 @@ classdef sample_ZmapFunction < ZmapFunction
 
             disp('sample.InteractiveSetup')
             
-            zdlg=ZmapFunctionDlg(obj, @obj.doIt);
+            zdlg=ZmapDialog(obj, @obj.doIt);
             
             %%%%%%%%%%%%%%%
             % add items ex.  :

@@ -58,7 +58,7 @@ classdef bgrid3dB < ZmapGridFunction
                 'Automatic Mcomp (95% probability)' ;...
                 'Best (?) combination (Mc95 - Mc90 - max curvature)'};
             
-            zdlg=ZmapFunctionDlg(); %h, okevent
+            zdlg=ZmapDialog(); %h, okevent
             zdlg.AddBasicHeader('Grid Input Parameters');
             zdlg.AddBasicPopup('mc_choice','Mc Estimation Option:',labelList2,5,'Magnitude of completion option')
             zdlg.AddEventSelectionParameters('evsel',ni,R,50);

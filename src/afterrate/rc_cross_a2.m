@@ -64,7 +64,7 @@ function rc_cross_a2()
     %     % Set selection to 'Best combination'
     %     set(hndl2,'value',5);
     
-    zdlg = ZmapFunctionDlg([]);
+    zdlg = ZmapDialog([]);
     zdlg.AddEventSelectionParameters('evsel',ni,ra,Nmin);
     zdlg.AddGridParameters('gridparam',dx,'km',[],[],dd,'km'); %gridparam.dx->dx %gridparam.dz ->dd
     zdlg.AddBasicEdit('time','learning period (days)',time,'learning period');

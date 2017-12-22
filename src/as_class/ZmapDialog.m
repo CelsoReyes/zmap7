@@ -1,7 +1,7 @@
-classdef ZmapFunctionDlg < handle
-    % ZmapFunctionDlg Helper, used to generate dialog boxes while keeping code clean
+classdef ZmapDialog < handle
+    % ZmapDialog Helper, used to generate dialog boxes while keeping code clean
     %
-    % ZmapFunctionDlg properties:
+    % ZmapDialog properties:
     %
     %   hCaller - handle to the caller. Values are written to hCaller.(tag) upon OK
     %   callerOKFunction - to be run once values are copied back to caller and dialog disappears
@@ -9,9 +9,9 @@ classdef ZmapFunctionDlg < handle
     %   parts - ui details go here
     %   okPressed - true when the dialog box's OK button was pressed
     %
-    % ZmapFunctionDlg methods:
+    % ZmapDialog methods:
     %
-    %   ZmapFunctionDlg - initialize a ZmapFunctionDlg
+    %   ZmapDialog - initialize a ZmapDialog
     %   Create - creates a dialog box based on a cell description of types within.
     %
     %   AddBasicHeader - add a simple header to the dialog box
@@ -32,7 +32,7 @@ classdef ZmapFunctionDlg < handle
     %
     % can be called in 2 ways.
     % EXAMPLE USAGE IN A SCRIPT
-    %     zdlg = ZmapFunctionDlg();
+    %     zdlg = ZmapDialog();
     %     zdlg.AddBasicHeader('Say something for each thing');
     %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
     %         'Choose what is most important to you');
@@ -71,7 +71,7 @@ classdef ZmapFunctionDlg < handle
     %   methods
     %     ...
     %   function interact(obj)
-    %     zdlg = ZmapFunctionDlg(obj, @doit)
+    %     zdlg = ZmapDialog(obj, @doit)
     %
     %     zdlg.AddBasicHeader('Say something for each thing');
     %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
@@ -104,8 +104,8 @@ classdef ZmapFunctionDlg < handle
     end
     
     methods
-        function obj=ZmapFunctionDlg(hCaller,okevent)
-            % initialize a ZmapFunctionDlg
+        function obj=ZmapDialog(hCaller,okevent)
+            % initialize a ZmapDialog
             % hCaller is the handle to the calling Function.
             % output values are returned to hCaller.(tag) for each uicontrol
             % once the OK button is pressed. if the OK button is not pressed, no changes are made
@@ -189,7 +189,21 @@ classdef ZmapFunctionDlg < handle
                             'String',[details.String, ' : '],...
                             'FontWeight','bold',...
                             'Position',[labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10]);
+                    case 'radiogroup'
                         
+                        %details={'Style','Tag','Label','RadioLabels','SelectedNumber','tooltips'};
+                        obj.parts{i}.handle=uibuttongroup(details.GroupLabel);
+                        for k=1:numel(details.RadioLablels)
+                            hh(k)=uicontrol('Style','Radio',...
+                                'String',details.RadioLabels{k},...
+                                'pos',[10 350 100 30],...
+                                'parent',obj.parts{i}.handle,...
+                                'ToolTipString',details.tooltips{k},...
+                                'HandleVisibility','off');
+                        end
+                        %obj.parts{i}.handle.SelectionChangeFcn = 'disp selectionChanged';
+                        obj.parts{i}.handle.SelectedObject = hh(details.SelectedNumber);
+                        obj.parts{i}.handle.Visible = 'on';
                     case 'checkbox'
                         obj.parts{i}.handle=uicontrol('Style','checkbox',...
                             'Value',details.Value,...
@@ -279,6 +293,19 @@ classdef ZmapFunctionDlg < handle
         
         %% methods to declare uicontrols
         
+        function AddRadioGroup(obj, tag, grouplabel, radiolabels, default, tooltips)
+            % AddRadioGroup
+            % AddRadioGroup(obj, tag, grouplabel, radiolabels, tooltips)
+            
+            details=struct(...
+                'Style','radiogroup',...
+                'Tag',tag,...
+                'Label',grouplabel,...
+                'RadioLabels',radiolabels,...
+                'SelectedNumber',default,...
+                'tooltips',tooltips);
+                
+        end
         function AddBasicHeader(obj, String)
             % add a simple header to the dialog box
             % AddBasicHeader(text)

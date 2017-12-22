@@ -1,5 +1,5 @@
-function comp2periodz(sel)
-    % This subroutine compares seismicity rates for two time periods. 
+function comp2periodz()
+    % This subroutine compares seismicity rates for two time periods.
     % The differences are as z- and beta-values and as percent change.
     %   Stefan Wiemer 1/95
     %   Rev. R.Z. 4/2001
@@ -8,47 +8,45 @@ function comp2periodz(sel)
     
     report_this_filefun(mfilename('fullpath'));
     
-    if ~exist('sel','var') || sel == 'in'
-        % get the grid parameter
-        % initial values
-        %
-        dx = 1.00;
-        dy = 1.00 ;
-        ra = 5 ;
-        
-        t1 = ZG.t0b;
-        t4 = ZG.teb;
-        t2 = ZG.t0b + (ZG.teb-ZG.t0b)/2;
-        t3 = t2+0.01;
-        
-        % get two time periods, along with grid and event parameters
-        zdlg=ZmapFunctionDlg([]);
-        zdlg.AddBasicHeader('Please define two time periods to compare');
-        zdlg.AddBasicEdit('t1','start period 1',t1,'start time for period 1');
-        zdlg.AddBasicEdit('t2','end period 1',t2,'end time for period 1');
-        zdlg.AddBasicEdit('t3','start period 2',t3,'start time for period 2');
-        zdlg.AddBasicEdit('t4','end period 2',t4,'end time for period 2');
-        zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, minvalid)
-        zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
-        [zans,okPressed]=zdlg.Create('Please choose rate change estimation option');
-        if ~okPressed
-            return
-        end
-        t1=zans.t1; t2=zans.t2; t3=zans.t3; t4=zans.t4;
-        
-        %TODO: pluck variables out of zans; tgl1:nEvents, tgl2:maxRadius
-        
-        
-        % GO
-         tgl1=tgl1.Value;
-        tgl2=tgl2.Value;
-        prev_grid=prev_grid.Value;
-        create_grid=create_grid.Value;
-        load_grid=load_grid.Value;
-        save_grid=save_grid.Value;
-        my_calculate()
-        
-    end   % if nargin ==0
+    % get the grid parameter
+    % initial values
+    %
+    dx = 1.00;
+    dy = 1.00 ;
+    ra = 5 ;
+    
+    t1 = ZG.t0b;
+    t4 = ZG.teb;
+    t2 = ZG.t0b + (ZG.teb-ZG.t0b)/2;
+    t3 = t2+0.01;
+    
+    % get two time periods, along with grid and event parameters
+    zdlg=ZmapDialog([]);
+    zdlg.AddBasicHeader('Please define two time periods to compare');
+    zdlg.AddBasicEdit('t1','start period 1',t1,'start time for period 1');
+    zdlg.AddBasicEdit('t2','end period 1',t2,'end time for period 1');
+    zdlg.AddBasicEdit('t3','start period 2',t3,'start time for period 2');
+    zdlg.AddBasicEdit('t4','end period 2',t4,'end time for period 2');
+    zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, minvalid)
+    zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
+    [zans,okPressed]=zdlg.Create('Please choose rate change estimation option');
+    if ~okPressed
+        return
+    end
+    t1=zans.t1; t2=zans.t2; t3=zans.t3; t4=zans.t4;
+    
+    %TODO: pluck variables out of zans; tgl1:nEvents, tgl2:maxRadius
+    
+    
+    % GO
+    tgl1=tgl1.Value;
+    tgl2=tgl2.Value;
+    prev_grid=prev_grid.Value;
+    create_grid=create_grid.Value;
+    load_grid=load_grid.Value;
+    save_grid=save_grid.Value;
+    my_calculate()
+    
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -175,6 +173,5 @@ function comp2periodz(sel)
         storedcat=a;
         replaceMainCatalog(aa_);
         view_ratecomp
-        
     end
 end
