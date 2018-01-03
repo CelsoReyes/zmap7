@@ -66,13 +66,13 @@ function crosshair(action)
 
         if(ptr_fig == xhr_plot)
             if keydown
-                char = get(xhr_plot, 'CurrentCharacter');
-                button = abs(get(xhr_plot, 'CurrentCharacter'));
+                char = xhr_plot.CurrentCharacter;
+                button = abs(xhr_plot.CurrentCharacter);
                 scrn_pt = get(groot, 'PointerLocation');
-                set(xhr_plot,'units','pixels')
-                loc = get(xhr_plot, 'Position');
+                xhr_plot.units='pixels';
+                loc = xhr_plot.Position;
                 pt = [scrn_pt(1) - loc(1), scrn_pt(2) - loc(2)];
-                set(xhr_plot,'CurrentPoint',pt);
+                xhr_plot.CurrentPoint=pt);
 
 
             end
@@ -106,11 +106,11 @@ function crosshair(action)
         delete(closer);
 
         %uirestore(state);
-        set(xhr_plot,'units',fig_units);
-        set(xhr_plot,'pointer', 'arrow');
-        set(xhr_plot,'WindowButtonUpFcn','');
-        set(xhr_plot,'WindowButtonMotionFcn','');
-        set(xhr_plot,'WindowButtonDownFcn',xhr_button_data);
+        xhr_plot.units = fig_units;
+        xhr_plot.pointer = 'arrow';
+        xhr_plot.WindowButtonUpFcn='';
+        xhr_plot.WindowButtonMotionFcn='';
+        xhr_plot.WindowButtonDownFcn=xhr_button_data;
         refresh(xhr_plot)
         clear xhr_plot  xhr_plot_data xhr_button_data
     end
