@@ -63,6 +63,8 @@ classdef ZmapGridFunction < ZmapFunction
                 add_menu_divider();
                 lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
                 shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
+                exploremenu=uimenu(gcf,'label','explore');
+                uimenu(exploremenu,'label','explore','Callback',@(src,ev)mapdata_viewer(obj.Result,gcf));
                 uimenu(shademenu,'Label','interpolated','Callback',@(~,~)shading('interp'));
                 uimenu(shademenu,'Label','flat','Callback',@(~,~)shading('flat'));
                 plottype=uimenu(lookmenu,'Label','plot type');
