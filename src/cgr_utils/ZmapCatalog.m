@@ -191,6 +191,9 @@ classdef ZmapCatalog < handle
             end
             if isnumeric(varargin{1})
                 % import Catalog from Array
+                nCols = size(varargin{1},2);
+                fprintf(['importing from old catalog array with %d columns and %d events:\n'...
+                    '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(varargin{1},1));
                 obj.Longitude = varargin{1}(:,1);
                 obj.Latitude = varargin{1}(:,2);
                 if all(varargin{1}(:,3) < 100)
@@ -350,7 +353,17 @@ classdef ZmapCatalog < handle
                         minma, maxma,...
                         sprintf('mean: %.2f ±std %.2f , median: %.2f',mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)),...
                         cat2mtypestring());
-                    
+                case 'list'
+                    fprintf('Catalog "%s" with %d events\n',obj.Name, obj.Count);
+                    fprintf('Date                      Lat       Lon   Dep(km)    Mag  MagType\n');
+                    for n=1:obj.Count
+                        fmtstr = '%s  %8.4f  %9.4f   %6.2f   %4.1f   %s\n';
+                        mt =obj.MagnitudeType{n};
+                        if isempty(mt), mt='-'; end
+                        fprintf( fmtstr, char(obj.Date(n),'uuuu-MM-dd HH:mm:ss'),...
+                            obj.Latitude(n), obj.Longitude(n),...
+                            obj.Depth(n), obj.Magnitude(n), mt);
+                    end
                 otherwise
                     s = sprintf('Catalog "%s", containing %d events', obj.Name, obj.Count);
             end

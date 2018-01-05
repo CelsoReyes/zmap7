@@ -55,40 +55,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
             'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
             'Number_of_Events', 'Number of events in node', ''...
             };
-            %{
-        ReturnFields = {
-            'Mc_value', ... mMc, Mc value'p-value',... mPval, p-Value
-            'Mc_std', ... mStdMc, Standard deviation Mc
-            'x',...
-            'y',...
-            'Radius_km', ... vRadiusRes,  Radii of chosen events, Resolution
-            'b_value',... mBvalue, b-value
-            'b_value_std',... mStdB, b-value standard deviation
-            'a_value',... mAvalue, a-value
-            'a_value_std',... mStdA, a-value standard deviation
-            'power_fit', ... Prmap, Goodness of fit to power-law map
-            'max_mag', ... ro, maximum magnitude for node
-            'Additional_Runs_b_std',... mStdDevB
-            'Additional_Runs_Mc_std',... mStdDevMc
-            'Number_of_Events'...mNumEq, Number of earthquakes
-            };
-        ReturnNameDetails = {...
-            'Magnitude of Completion (Mc)',...
-            'Std. of Magnitude of Completion',...
-            'Longitude',...
-            'Latitude',...
-            'Radius of chosen events (Resolution) [km]',...
-            'b-value',...
-            'Std. of b-value',...
-            'a-value',...
-            'Std. of a-value',...
-            'Goodness of fit to power-law',...
-            'Maximum magnitude at node',...
-            'Additional runs: Std b-value',...
-            'Additional runs: Std of Mc',...
-            'Number of events in node'
-            };
-            %}
     end
     
     methods
@@ -190,10 +156,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % Overall b-value
             bv =  bvalca3(mycat, obj.ZG.inb1); %ignore all the other outputs of bvalca3
             
-            %itotal = length(obj.Grid(:,1));
-            %bvg = nan(itotal,14);
             obj.ZG.bo1 = bv;
-            % no1 = mycat.Count;
             
             returnFields = obj.ReturnDetails(:,1);
             returnDesc = obj.ReturnDetails(:,2);
@@ -258,7 +221,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
                     Additional_Runs_Mc_std=NaN;
                 end
 
-                mab = max(catalog.Magnitude) ;
+                mab = max(catalog.Magnitude);
                 if isempty(mab); mab = NaN; end
 
                 % Result matrix
