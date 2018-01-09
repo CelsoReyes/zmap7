@@ -20,7 +20,7 @@ function mapdata_viewer(res,resfig)
     % Maybe TO add:
     %
     % - polar plots: show # events in radius
-    % - radius plots: show # events as functiuon of radius
+    % - radius plots: show # events as function of radius
     % - 3d depth plots of selection
     %
     % RES is the results table
