@@ -1,10 +1,12 @@
-function [gr,zgr] = create_grid(pts)
+function [gr,zgr,pgr] = create_grid(pts)
     % Interactively define a grid
     %
     % [GR, ZGR] = CREATE_GRID(PTS)
     %     PTS is a polygon. only grid points with PTS will be shown
     %  GR is all data points, as [lon,lat; ...]
     %  ZGR is a ZmapGrid. This is only filled in if IGNORE_EFFECT_OF_LAT is true;
+    %
+    %  set creates PGR, which is a grid suitable for use in pcolor, but not for ZmapGrid
     %
     % Choose an origin point
     % Choose a point to define initial spacing
@@ -20,7 +22,7 @@ function [gr,zgr] = create_grid(pts)
     % TODO: add edit fields that allow grid to be further modified
     % TODO: add SAVE and LOAD buttons
     
-    IGNORE_EFFECT_OF_LAT = true;
+    IGNORE_EFFECT_OF_LAT = false;
     name='grid';
     changed=false;
     pts =[... % SAMPLE POLYGON, FOR TESTING
@@ -118,6 +120,7 @@ function [gr,zgr] = create_grid(pts)
             ZG.Grid=zgr;
         end
         changed=false;
+        assignin('base','pgr',pgr);
     end
     
     function update_plot()
@@ -142,6 +145,43 @@ function [gr,zgr] = create_grid(pts)
         else
             zgr=[]; % ZMAPGRID has to have matrix of points, not point cloud
         end
+        
+        % assign pgrid
+        ugy=unique(gy); % lats in matrix
+        nrows=numel(ugy); % number of latitudes in matrix
+        rowWithMost=min(abs(gy)); % latitude closest to equator will have most number of lons in matrix
+        base_lon_idx=find(gx(gy==y)==x); % longitudes that must line up
+        ncols=sum(abs(gy-rowWithMost)<0.001); % most number of lons in matrix
+        ys=repmat(ugy(:),1,ncols);
+        xs=nan(nrows,ncols);
+        for n=1:nrows
+            n
+            thislat=ugy(n); % lat for this row
+            idx_lons=(gy==thislat); % mask of lons in this row
+            these_lons=gx(idx_lons); % lons in this row
+            row_length=numel(these_lons) % number of lons in this row
+            
+            main_lon_idx=find(these_lons==x) % offset of X in this row
+            %delta=main_lon_idx - base_lon_idx % offset of X in this row compared to standard row
+            
+            for i=1:row_length
+                idx=i;%+delta;
+                xs(n,idx)=these_lons(i);
+            end
+        end
+        pgr.xs=xs;
+        pgr.ys=ys;
+        if exist('pts','var')
+            ll=polygon_filter(pts(:,1),pts(:,2),pgr.xs,pgr.ys,'inside');
+            pgr.xs(~ll)=nan;
+            pgr.ys(~ll)=nan;
+        end
+        
+        
+        
+        
+        
+        
         tp.String=sprintf('N Points: %d',sum(ll));
     end
     
