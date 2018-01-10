@@ -17,17 +17,17 @@ function [gr,zgr,pgr] = create_grid(pts)
     %  create_grid('testpoly')
     %  create_grid('testworld');
     %
-    % If IGNORE_EFFECT_OF_LAT is true, then grid gets smaller as pole is approached.
+    % If FOLLOW_PARALLELS is true, then grid gets smaller as pole is approached.
     % Unfortunately, routines like pcolor this is necessary for pcolor, when Y axis is a lon.
     % This could be avoided if coordinate system was transformed into X-Y.
     %
-    % When IGNORE_EFFECT_OF_LAT is false, then longitudes drift in order to keep consistent sized boxes.
+    % When FOLLOW_PARALLELS is false, then longitudes drift in order to keep consistent sized boxes.
     
     % TODO: add edit fields that allow grid to be further modified
     % TODO: add SAVE and LOAD buttons
     
     
-    IGNORE_EFFECT_OF_LAT = false;
+    FOLLOW_PARALLELS = false;
     name='grid';
     changed=false;
     
@@ -153,7 +153,7 @@ function [gr,zgr,pgr] = create_grid(pts)
         
         gr=[gpts_h2.XData(:), gpts_h2.YData(:)];
         
-        if IGNORE_EFFECT_OF_LAT
+        if FOLLOW_PARALLELS
             zgr=ZmapGrid(ned.String,unique(gx),unique(gy),'deg');
             zgr.ActivePoints(:)=ll;
         else
@@ -165,20 +165,17 @@ function [gr,zgr,pgr] = create_grid(pts)
         nrows=numel(ugy); % number of latitudes in matrix
         [~,example]=min(abs(gy)); % latitude closest to equator will have most number of lons in matrix
         mostCommonY=gy(example); % account fort the abs possibly flipping signs
-        %rowWithMost=find(ugy==mostCommonY);
         base_lon_idx=find(gx(gy==mostCommonY)==x); % longitudes that must line up
         ncols=sum(gy==mostCommonY); % most number of lons in matrix
         ys=repmat(ugy(:),1,ncols);
         xs=nan(nrows,ncols);
         for n=1:nrows
-            n
-            thislat=ugy(n) % lat for this row
-            idx_lons=(gy==thislat) % mask of lons in this row
-            these_lons=gx(idx_lons) % lons in this row
-            row_length=numel(these_lons) % number of lons in this row
+            thislat=ugy(n); % lat for this row
+            idx_lons=(gy==thislat); % mask of lons in this row
+            these_lons=gx(idx_lons); % lons in this row
+            row_length=numel(these_lons); % number of lons in this row
             
-            main_lon_idx=find(these_lons==x) % offset of X in this row
-            %delta=main_lon_idx - base_lon_idx % offset of X in this row compared to standard row
+            main_lon_idx=find(these_lons==x); % offset of X in this row
             offset=base_lon_idx - main_lon_idx;
             xs(n,[1:row_length]+offset)=these_lons;
         end
@@ -190,10 +187,7 @@ function [gr,zgr,pgr] = create_grid(pts)
             pgr.ys(~ll)=nan;
         end
         
-        
-        
-        
-        
+        pgr=trim_nans(pgr);
         
         tp.String=sprintf('N Points: %d',sum(ll));
     end
@@ -208,7 +202,7 @@ function [gr,zgr,pgr] = create_grid(pts)
         ytk = unique([y0 : -dd : yl(1) , y0: dd : yl(2)]);
         gridx=[];
         gridy=[];
-        if IGNORE_EFFECT_OF_LAT
+        if FOLLOW_PARALLELS
             [~,dx]=reckon('rh',y0,0,dd,90); % find longitudinal distance at this latitude
             xtk = unique([x0 : -dx : xl(1) , x0 : dx :xl(2)]);
             [gridx,gridy]=meshgrid(xtk,ytk);
@@ -282,4 +276,22 @@ function instruction_end(h)
     pause(.3);
     h.String='';
     h.ForegroundColor='k';
+end
+
+function pgr=trim_nans(pgr)
+        % REMOVE GRID POINTS BEYOND POLYGON (rows & cols of all nans)
+        nanrows=all(isnan(pgr.xs),2);
+        nancols=all(isnan(pgr.xs),1);
+        pgr.xs(nanrows,:)=[];pgr.xs(:,nancols)=[];
+        pgr.ys(nanrows,:)=[];pgr.ys(:,nancols)=[];
+end
+
+
+function c=mycontext()
+    c=uicontextmenu
+    
+    uimenu(c,'Label','Select Rectangle');
+    uimenu(c,'Label','Select Circle');
+    uimenu(c,'Label','Select Polygon');
+    uimenu(c,'Separator','on','Label','Create Polygon');
 end

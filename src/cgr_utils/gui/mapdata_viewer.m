@@ -32,8 +32,17 @@ function mapdata_viewer(res,resfig)
     %keyBindings.delete = 127; %del
     keyBindings.quit = 27; %escape
     
-    bvalBinEdges=-1.15:.1:8.05;
-    binCenters=-1.1:.1:8;
+    magsteps = .1;
+    magrange=ZG.(res.InCatalogName{1}).MagnitudeRange;
+    binCenters= min(magrange) : magsteps : max(magrange);
+    bvalBinEdges=[binCenters-(magsteps/2), binCenters(end)+(magsteps/2)];
+    
+    
+    deprange=[floor(min(ZG.(res.InCatalogName{1}).Depth)) ceil(max(ZG.(res.InCatalogName{1}).Depth))]
+    depBinEdges=[deprange(1):5:deprange(2) + 4.9];
+    depBinCenters=depBinEdges(1:end-1) + 2.5;
+    %bvalBinEdges=-1.15:.1:8.05; % magnitudes
+    %binCenters=-1.1:.1:8; % magnitudes
     
     try
         if isvalid(f),close(f),end
@@ -41,7 +50,7 @@ function mapdata_viewer(res,resfig)
     
     f=figure('Name','Data View');
     f.Units='pixels';
-    f.Position = [60 60 1200 700];
+    f.Position = [60 60 1300 700];
     f.Resize='off';
     %f.KeyPressFcn=@(src,ev)disp(ev);
     
@@ -51,12 +60,12 @@ function mapdata_viewer(res,resfig)
         mapax=copyobj(findobj(resfig,'Type','axes'),f);
         set(findobj(mapax,'Tag','pointgrid'),'visible','off');
         mapax.Units='pixels';
-        mapax.Position=[50 150 700 500];
+        mapax.Position=[50 150 650 500];
         mapax.Tag = 'dvMap';
         grid on
     else
         % main axes, with map-view of data
-        mapax=axes(f,'units','pixels','Position',[50 150 700 500]);
+        mapax=axes(f,'units','pixels','Position',[50 150 650 500]);
         mapax.Tag = 'dvMap';
         grid on
         %f.KeyReleaseFcn = @(src,ev)disp(mapax.CurrentPoint);
@@ -67,25 +76,44 @@ function mapdata_viewer(res,resfig)
         mapax.XLim=[5.75 8.75];
     end
     colorbar(mapax);
+    mapax.UIContextMenu=mapcontext();
     
-    
+   
     
     % b-value axes, showing b-value rates
-    bvalax=axes(f,'units','pixels','Position',[850 375 300 275]);
+    %bvalax=axes(f,'units','pixels','Position',[850 375 300 275]);
+    bvalax=axes(f,'units','pixels','Position',[750 400 225 250]);
     bvalax.Tag = 'dvBval';
     bvalax.YScale='log';
     bvalax.YLim=[0 10000];
-    bvalax.XLim=[-2 7];
+    bvalax.XLim=[floor(min(bvalBinEdges)), ceil(max(bvalBinEdges))];
     title(bvalax,'B-Value')
     xlabel('Magnitude')
     ylabel('# Events')
     
     % cumulative event axes
-    rateax=axes(f,'units','pixels','Position',[850 50 300 275]);
+    rateax=axes(f,'units','pixels','Position',[750 100 225 250]);
     rateax.Tag = 'dvCumrate';
     title(rateax,'Cumulative Rate');
     xlabel('Time')
     ylabel('Cumulative Events')
+    
+    % event with depth axes
+    evdepax=axes(f,'units','pixels','Position',[1025 400 225 250]);
+    evdepax.Tag = 'dvEventsWidthDepth';
+    evdepax.YDir='reverse';
+    evdepax.YLim=[min(ZG.(res.InCatalogName{1}).Depth) max(ZG.(res.InCatalogName{1}).Depth)];
+    title(evdepax,'Depth Profile')
+    xlabel('Number of events')
+    ylabel('Depth');
+    
+    % moment release axes
+    momentax=axes(f,'units','pixels','Position',[1025 100 225 250]);
+    momentax.Tag = 'dvMoment';
+    title(momentax,'Cum Moment Release');
+    xlabel('time')
+    ylabel('Cumulative Moment [nm]'); %units as per calc_moment
+    
     
     
     %%
@@ -141,7 +169,7 @@ function mapdata_viewer(res,resfig)
                     %curChar=curChar;
                 case 'alt'
                     disp('MOUSE:right button')
-                    curChar=keyBindings.delete;
+                    %curChar=keyBindings.delete;
                 case 'extend'
                     disp('MOUSE:center button');
                     % curChar=keyBindings.quit;
@@ -183,6 +211,7 @@ function mapdata_viewer(res,resfig)
                     delete(selections.(myfn).m2)
                     delete(selections.(myfn).m3)
                     delete(selections.(myfn).cr1)
+                    delete(selections.(myfn).cm1)
                     delete(selections.(myfn).bv1)
                     delete(selections.(myfn).bv3)
                     selections=rmfield(selections,myfn);
@@ -211,7 +240,7 @@ function mapdata_viewer(res,resfig)
             
             % plot marker in actual location
             selections.(field).m2=plot(mapax,tb.x(i),tb.y(i),curChar,'MarkerSize',12,'MarkerFaceColor','k','linewidth',2);
-            
+            selections.(field).m2.UIContextMenu=pointcontext();
             % plot selected event circle
             selections.(field).m3=plot(mapax, lon, lat, '-.','color',[.75 .75 .75],'linewidth',2);
             hold(mapax, 'off')
@@ -248,6 +277,38 @@ function mapdata_viewer(res,resfig)
         end
         selections.(field).cr1.Color=thiscolor;
         
+        %% modify cum moment
+        [~, vCumMoment, ~] = calc_moment(theseEvents);
+        if createNewField
+            hold(momentax,'on');
+            selections.(field).cm1=plot(momentax, ...
+                theseEvents.Date, vCumMoment,...
+                'marker',curChar);
+            hold(momentax,'off');
+            momentax.XLimMode='auto';
+            momentax.YLimMode='auto';
+        else
+            selections.(field).cm1.XData=theseEvents.Date;
+            selections.(field).cm1.YData=vCumMoment;
+        end
+        selections.(field).cm1.Color=thiscolor;
+        
+        %% modify event with depth
+        
+        if createNewField
+            hold(evdepax,'on');
+            tmpdeph=histcounts(theseEvents.Depth,depBinEdges)
+            selections.(field).ed=plot(evdepax, ...
+                tmpdeph,depBinCenters,...
+                'marker',curChar);
+            hold(evdepax,'off');
+            evdepax.XLimMode='auto';
+            evdepax.YLimMode='auto';
+        else
+            selections.(field).ed.XData=theseEvents.Date;
+            selections.(field).ed.YData=1:theseEvents.Count;
+        end
+        selections.(field).ed.Color=thiscolor;
         
         %% modify b-val
         cs=cumsum(histcounts(theseEvents.Magnitude,bvalBinEdges),'reverse');
@@ -282,4 +343,25 @@ function mapdata_viewer(res,resfig)
         selection.(field).bv3.MarkerEdgeColor=thiscolor;
     end
     set(f,'Pointer','arrow');
+end
+
+
+function c=mapcontext()
+    c=uicontextmenu;
+    
+    uimenu(c,'Label','Select Rectangle');
+    uimenu(c,'Label','Select Circle');
+    uimenu(c,'Label','Select Polygon');
+end
+
+function c=pointcontext()
+    c=uicontextmenu;
+    uimenu(c,'Label','Change Symbol');
+    uimenu(c,'Label','Change Color');
+    uimenu(c,'Label','Remove','callback',@showcb);
+end
+function showcb(src,ev)
+    disp('------');
+    disp(src)
+    disp(ev)
 end
