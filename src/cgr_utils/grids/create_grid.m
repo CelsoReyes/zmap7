@@ -12,7 +12,11 @@ function [gr,zgr,pgr] = create_grid(pts)
     % Choose a point to define initial spacing
     % Use scroll Wheel to change spacing
     % Drag Point to change origin
-    
+    %
+    % tests:
+    %  create_grid('testpoly')
+    %  create_grid('testworld');
+    %
     % If IGNORE_EFFECT_OF_LAT is true, then grid gets smaller as pole is approached.
     % Unfortunately, routines like pcolor this is necessary for pcolor, when Y axis is a lon.
     % This could be avoided if coordinate system was transformed into X-Y.
@@ -22,34 +26,44 @@ function [gr,zgr,pgr] = create_grid(pts)
     % TODO: add edit fields that allow grid to be further modified
     % TODO: add SAVE and LOAD buttons
     
+    
     IGNORE_EFFECT_OF_LAT = false;
     name='grid';
     changed=false;
-    pts =[... % SAMPLE POLYGON, FOR TESTING
-    7.3500   47.8007;...
-    8.3187   47.5009;...
-    8.8392   46.6736;...
-    8.4633   46.0321;...
-    7.4801   45.7263;...
-    6.5548   46.7095;...
-    7.3500   47.8007...
-    ];
+    
     if ~exist('ZG','var') || isempty('ZG')
         ZG=ZmapGlobal.Data;
     end
-    %clear pts
-    % DISPLAY EVENTS
     
     f=figure('Name','Grid Selection','Units','pixels','Position',[200 75 730 700]);
+    
+    % DISPLAY EVENTS
     ax=subplot(4,4,[1,11]);
     ax.Units='points';
     ax.Position=fix(ax.Position);
-    quake_dots=plot(ax,ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'.',...
+    plot(ax,ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'.',...
         'color',[.75 .75 .8],'DisplayName','events');
-    %axis([0 90 0 90])
     xlabel('longitude')
     ylabel('latitude')
     hold on;
+    
+    if exist('pts','var')
+        switch pts
+            case 'testpoly'
+                pts =[... % SAMPLE POLYGON, FOR TESTING
+                    7.3500   47.8007;...
+                    8.3187   47.5009;...
+                    8.8392   46.6736;...
+                    8.4633   46.0321;...
+                    7.4801   45.7263;...
+                    6.5548   46.7095;...
+                    7.3500   47.8007...
+                    ];
+            case 'testworld'
+                clear pts
+                axis([0 90 -20 80])
+        end
+    end
     
     %DISPLAY SURFACE FEATURES
     copyobj(ZG.features('borders'),ax);
@@ -94,9 +108,9 @@ function [gr,zgr,pgr] = create_grid(pts)
     update_plot();
     
     f.WindowScrollWheelFcn=@adjust_grid;
-    f.WindowButtonDownFcn=@md;
-    f.WindowButtonUpFcn=@mu;
-    f.DeleteFcn=@check_for_save
+    f.WindowButtonDownFcn=@mouse_down;
+    f.WindowButtonUpFcn=@mouse_up;
+    f.DeleteFcn=@check_for_save;
     
     write_string(t,'Scroll the mouse wheel to scale')
     %waitfor(f)
@@ -149,25 +163,24 @@ function [gr,zgr,pgr] = create_grid(pts)
         % assign pgrid
         ugy=unique(gy); % lats in matrix
         nrows=numel(ugy); % number of latitudes in matrix
-        rowWithMost=min(abs(gy)); % latitude closest to equator will have most number of lons in matrix
-        base_lon_idx=find(gx(gy==y)==x); % longitudes that must line up
-        ncols=sum(abs(gy-rowWithMost)<0.001); % most number of lons in matrix
+        [~,example]=min(abs(gy)); % latitude closest to equator will have most number of lons in matrix
+        mostCommonY=gy(example); % account fort the abs possibly flipping signs
+        %rowWithMost=find(ugy==mostCommonY);
+        base_lon_idx=find(gx(gy==mostCommonY)==x); % longitudes that must line up
+        ncols=sum(gy==mostCommonY); % most number of lons in matrix
         ys=repmat(ugy(:),1,ncols);
         xs=nan(nrows,ncols);
         for n=1:nrows
             n
-            thislat=ugy(n); % lat for this row
-            idx_lons=(gy==thislat); % mask of lons in this row
-            these_lons=gx(idx_lons); % lons in this row
+            thislat=ugy(n) % lat for this row
+            idx_lons=(gy==thislat) % mask of lons in this row
+            these_lons=gx(idx_lons) % lons in this row
             row_length=numel(these_lons) % number of lons in this row
             
             main_lon_idx=find(these_lons==x) % offset of X in this row
             %delta=main_lon_idx - base_lon_idx % offset of X in this row compared to standard row
-            
-            for i=1:row_length
-                idx=i;%+delta;
-                xs(n,idx)=these_lons(i);
-            end
+            offset=base_lon_idx - main_lon_idx;
+            xs(n,[1:row_length]+offset)=these_lons;
         end
         pgr.xs=xs;
         pgr.ys=ys;
@@ -187,7 +200,7 @@ function [gr,zgr,pgr] = create_grid(pts)
     
     function [gridx,gridy] = get_eq_grid(x0,y0,dx,dy)
         dd = max([distance(y0,x0,y0,x0+dx,'degrees'), distance(y0,x0,y0+dy,x0,'degrees')]);
-        d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dd,deg2km(dd));    
+        d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dd,deg2km(dd));
         yl = ylim(ax);
         xl = xlim(ax);
         
@@ -220,15 +233,16 @@ function [gr,zgr,pgr] = create_grid(pts)
         [gridx,gridy]=meshgrid(xtk,ytk);
     end
     
-    function md(src,~)
+    function mouse_down(src,~)
         %mouse down, so make origin follow mouse around
         %disp(ev)
         %disp(ax.CurrentPoint)
-        src.WindowButtonMotionFcn=@mv;
+        src.WindowButtonMotionFcn=@mouse_move;
         %disp('  ');
         src.Pointer='cross';
     end
-    function mu(src,~)
+    
+    function mouse_up(src,~)
         %mouse up, so ignore position
         %disp(ev)
         %disp(ax.CurrentPoint);
@@ -237,7 +251,7 @@ function [gr,zgr,pgr] = create_grid(pts)
         update_plot()
         src.Pointer='arrow';
     end
-    function mv(~,~)
+    function mouse_move(~,~)
         x=ax.CurrentPoint(1,1);
         y=ax.CurrentPoint(1,2);
         fp.XData=x;
@@ -251,7 +265,7 @@ function [gr,zgr,pgr] = create_grid(pts)
             end
         end
     end
-
+    
 end
 
 
@@ -262,6 +276,7 @@ function write_string(h,str)
     end
     h.String=str;
 end
+
 function instruction_end(h)
     h.ForegroundColor=[0 .5 0];
     pause(.3);
