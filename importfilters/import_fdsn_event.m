@@ -38,6 +38,20 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
                 i=i+1;
             end
         end
+        if exist('fdsnservices.json','file')
+            try
+                % this is the datacenter_details structure, saved as a json file in the resources directory
+                jj=jsondecode(fileread('fdsnservices.json')); % get additional services
+                for i=1:numel(jj)
+                    % only include datacenters that are not already retrieved by the querying fedcatalog
+                    if ~ismember(jj.name,{datacenter_details.name})
+                        datacenter_details(end+1)=jj(i);
+                    end
+                end
+            catch ME
+                disp(['unable to access additional datacenter information: ', ME.message]);
+            end
+        end
     end
     
     % Filter function switchyard

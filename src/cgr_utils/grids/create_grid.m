@@ -25,6 +25,7 @@ function [gr,zgr,pgr] = create_grid(pts)
     
     % TODO: add edit fields that allow grid to be further modified
     % TODO: add SAVE and LOAD buttons
+    % TODO: make this work with gridfun
     
     
     FOLLOW_PARALLELS = false;

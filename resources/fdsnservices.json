@@ -1,0 +1,1 @@
+{"name":"KNMI","description":"Koninkijk Nederlands Meteorologisch Instituut","website":"http://rdsa.knmi.nl","location":"De Bilt, Nederlands","lastUpdate":"Jan 12, 2018 10:00:00 AM","serviceURLs":{"dataselectService":"http://rdsa.knmi.nl/fdsnws/dataselect/1/","stationService":"http://rdsa.knmi.nl/fdsnws/station/1/","eventService":"http://rdsa.knmi.nl/fdsnws/event/1/"}}

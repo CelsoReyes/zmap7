@@ -1,4 +1,4 @@
-function make_editable(f,ax, p)
+function returnstate = make_editable(f,ax, p)
     % makeEditable
     % create a figure with a line that allows one to add, move, and delete points, as well as translate line
     % and scale.
@@ -10,6 +10,17 @@ function make_editable(f,ax, p)
     % To move the entire line : drag a segment using the left mouse button.
     %
     % this will modify the figure, axes, and line/scatter callback functions
+    %
+    %
+    % example usage:
+    % f=figure
+    % ax=axes
+    % plot(-10:.5:10,-10:.5:10,'.','color',[.5 .5 .5])
+    % hold on
+    % p=plot([3;4],[2;3],'-*')
+    % make_editable(f,ax,p);
+    %  now, scale, translate, add, remove points.
+    
     
     dragging=false;
     lastIntersect=[];
@@ -24,7 +35,6 @@ function make_editable(f,ax, p)
     %f.WindowButtonUpFcn=@mouseup;
     
     function bdown(src,ev)
-        disp(ev)
         
         activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <0.001 &...
             abs(src.YData-ev.IntersectionPoint(2))<0.001);
@@ -83,12 +93,10 @@ function make_editable(f,ax, p)
         if ~isempty(target) && dragging
             if isempty(activepoint)
                 % move entire line
-                disp('moving line!')
                 %target.XData=target.XData - (lastIntersect(1) - cp(1,1));
                 %target.YData=target.YData - (lastIntersect(2) - cp(1,2));
             else
                 
-            disp('dragging')
             cp=ax.CurrentPoint;
             target.XData(activepoint)=cp(1,1);
             target.YData(activepoint)=cp(1,2);
@@ -144,10 +152,9 @@ function make_editable(f,ax, p)
     end
     
     
-    function scale(src,ev,targ)
+    function scale(~,ev,targ)
         extent=[min(targ.XData) max(targ.XData) min(targ.YData) max(targ.XData)];
         center=[mean(extent(1:2)), mean(extent(3:4))];
-        disp('scale')
         relX=targ.XData-center(1);
         relY=targ.YData-center(2);
         factor=1.1;
@@ -162,14 +169,16 @@ function make_editable(f,ax, p)
         targ.XData=relX+center(1);
         targ.YData=relY+center(2);
         axis(prevax);
-        %disp(src)
-        %disp(ev)
     end
         
     function c=pointcontext(p)
         c=uicontextmenu;
         uimenu(c,'Label','delete point', 'callback',{@delpoint,p});
         uimenu(c,'Label','add point', 'callback',{@addpoint,p});
+    end
+    
+    function return_state(WBMF)
+        % put all the callbacks back!
     end
 end
         
