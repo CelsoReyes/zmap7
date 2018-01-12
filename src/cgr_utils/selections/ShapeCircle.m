@@ -167,6 +167,9 @@ classdef ShapeCircle < ShapeGeneral
             end
             
         end
+        function [obj] = interactive_edit(obj,src,ev)
+            disp('not yet implemented. see ShapePolygon')
+        end
     end
     
     methods(Access=protected)
