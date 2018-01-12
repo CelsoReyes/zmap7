@@ -1,7 +1,12 @@
-function returnstate = make_editable(f,ax, p)
-    % makeEditable
-    % create a figure with a line that allows one to add, move, and delete points, as well as translate line
-    % and scale.
+function returnstate = make_editable(p)
+    % MAKE_EDITABLE embues a plot with the ability to add, move, and delete points, as well as translate and scale.
+    % 
+    % RETURNSTATE = MAKE_EDITABLE(PLT) will make the plot PLT (usually a Line object) interactive. 
+    % the plot can have points moved, added, or removed. It can be translated or scaled.
+    %   
+    % RETURNSTATE is a function handle that will put all the callbacks back the way they were found, and
+    % should be called once the plot is done being edited.
+    %
     %
     % To scale: use mouse wheel
     % To delete a vertex : right click on vertex, and choose "delete point"
@@ -9,7 +14,9 @@ function returnstate = make_editable(f,ax, p)
     % To move a vertex : drag the vertex using the left mouse button
     % To move the entire line : drag a segment using the left mouse button.
     %
-    % this will modify the figure, axes, and line/scatter callback functions
+    % this will modify the figure and line/scatter callback functions. to put them back, call the function returned
+    % by MAKE_EDITABLE.
+    %  
     %
     %
     % example usage:
@@ -17,35 +24,57 @@ function returnstate = make_editable(f,ax, p)
     % ax=axes
     % plot(-10:.5:10,-10:.5:10,'.','color',[.5 .5 .5])
     % hold on
-    % p=plot([3;4],[2;3],'-*')
-    % make_editable(f,ax,p);
-    %  now, scale, translate, add, remove points.
+    % p=plot([3;2.5;4],[2;1;3],'-*')
+    % putback = make_editable(f,ax,p);
+    %
+    % now you can, scale, translate, add, remove points.
+    %
+    % when done, run the result, which will restore the callbacks to original state. in this case:
+    %
+    % putback()
     
     
     dragging=false;
     lastIntersect=[];
-    %f=figure;
-    %ax=axes;
-    %x=[0;1];
-    %y=[0;1];
-    %p=plot(x,y,'*-');
+    
+    item=p;
+    while ~isempty(item.Parent) 
+        item = item.Parent;
+        if isa(item,'matlab.ui.Figure')
+            f=item;
+        elseif isa(item,'matlab.graphics.axis.Axes')
+            ax=item;
+        end
+    end
+           
+    returnstate=return_state(f,p); % used to put things back the way they were
+    
     p.ButtonDownFcn=@bdown;
     p.UIContextMenu=pointcontext(p);
     f.WindowScrollWheelFcn={@scale,p};
-    %f.WindowButtonUpFcn=@mouseup;
     
     function bdown(src,ev)
+        % when mouse button is pressed
+        % LEFT
+        %   on line:  start dragging entire object
+        %   on vertex : start dragging this point
+        % RIGHT
+        %   on line: allow new point
+        %   on vertex : allow deletion of point
         
-        activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <0.001 &...
-            abs(src.YData-ev.IntersectionPoint(2))<0.001);
+        XTOL=0.001;
+        YTOL=0.001;
+        activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <XTOL &...
+            abs(src.YData-ev.IntersectionPoint(2))<YTOL);
         
-        f.WindowButtonUpFcn={@mouseup,src,activepoint}; %attach mouseup function to THIS item
+        %f.WindowButtonUpFcn={@mouseup,src,activepoint}; %attach mouseup function to THIS item
         
-        if ev.Button==1
+        if ev.Button==1 % LEFT CLICK
             dragging=true;
             if ~isempty(activepoint)
                 % drag one point
                 f.WindowButtonMotionFcn={@updatePoint,src,activepoint};
+                f.WindowButtonUpFcn={@mouseup,src,activepoint}; %attach mouseup function to THIS item
             else
                 % drag entire series
                 xs=[ev.IntersectionPoint(1);ev.IntersectionPoint(1)];
@@ -59,7 +88,7 @@ function returnstate = make_editable(f,ax, p)
             lastIntersect=ev.IntersectionPoint;
         end
         
-        if ev.Button==3 %RIGHT CLICK / CONTEXT
+        if ev.Button==3 % RIGHT CLICK / CONTEXT
             if ~isempty(activepoint)
                 % clicked on actual point
                 dph=findobj(src.UIContextMenu,'Label','delete point');
@@ -76,8 +105,8 @@ function returnstate = make_editable(f,ax, p)
     end
     
     function updatePoint(~,~,target,activepoint)
-        cp=ax.CurrentPoint;
         % move this one point
+        cp=ax.CurrentPoint;
         target.XData(activepoint)=cp(1,1);
         target.YData(activepoint)=cp(1,2);
     end
@@ -90,39 +119,41 @@ function returnstate = make_editable(f,ax, p)
     end
     
     function mouseup(~,~,target,activepoint)
+        % 
         if ~isempty(target) && dragging
             if isempty(activepoint)
-                % move entire line
-                %target.XData=target.XData - (lastIntersect(1) - cp(1,1));
-                %target.YData=target.YData - (lastIntersect(2) - cp(1,2));
+                assert('empty? I think not. translateSeries should be called');
             else
                 
-            cp=ax.CurrentPoint;
-            target.XData(activepoint)=cp(1,1);
-            target.YData(activepoint)=cp(1,2);
-            dragging=false;
-            %activepoint=[];
-            f.WindowButtonMotionFcn='';
+                cp=ax.CurrentPoint;
+                target.XData(activepoint)=cp(1,1);
+                target.YData(activepoint)=cp(1,2);
+                dragging=false;
+                %activepoint=[];
+                f.WindowButtonMotionFcn='';
             end
         end
     end
     
     function endTranslation(~,~,target,h)
+        % MOUSEUP at PLOT level
         prevax=axis;
         target.XData=target.XData + (diff(h.XData));
         target.YData=target.YData + (diff(h.YData));
         delete(h);
         axis(prevax)
         f.WindowButtonMotionFcn='';
-        f.WindowButtonUpFcn='';%{@endTranslation,target,h}; %attach mouseup function to THIS item
+        f.WindowButtonUpFcn='';
     end
     
     function delpoint(~,~, target, activepoint)
+        % controlled by RT CLICK choice at PLOT level
         target.XData(activepoint)=[];
         target.YData(activepoint)=[];
     end
     
     function addpoint(~,~,target,activepoint)
+        % controlled by RT CLICK choice at PLOT level
         if ~exist('activepoint','var') || isempty(activepoint)
             ds=@(A,B) sqrt((A(:,1)-B(:,1)).^2 + (A(:,2) - B(:,2)).^2);
             isOnLine=@(A,C) abs(ds(A(1:end-1,:),C) + ds(A(2:end,:),C) - ds(A(1:end-1,:),A(2:end,:)))<.001;
@@ -143,7 +174,7 @@ function returnstate = make_editable(f,ax, p)
             else
                 disp('didn''t find it')
             end
-                
+            
         else
             warning('To add a point, click on a line segment, not a node.')
         end
@@ -153,7 +184,8 @@ function returnstate = make_editable(f,ax, p)
     
     
     function scale(~,ev,targ)
-        extent=[min(targ.XData) max(targ.XData) min(targ.YData) max(targ.XData)];
+        % SCALE controlled by scroll wheel at the FIGURE level
+        extent=[min(targ.XData) max(targ.XData) min(targ.YData) max(targ.YData)];
         center=[mean(extent(1:2)), mean(extent(3:4))];
         relX=targ.XData-center(1);
         relY=targ.YData-center(2);
@@ -169,16 +201,40 @@ function returnstate = make_editable(f,ax, p)
         targ.XData=relX+center(1);
         targ.YData=relY+center(2);
         axis(prevax);
-    end
         
+        
+    end
+    
     function c=pointcontext(p)
         c=uicontextmenu;
         uimenu(c,'Label','delete point', 'callback',{@delpoint,p});
         uimenu(c,'Label','add point', 'callback',{@addpoint,p});
     end
     
-    function return_state(WBMF)
+    function rs = return_state(f,p)
         % put all the callbacks back!
+        % rs is a function, that when called, will set the states back to their original form
+        
+        % 'WindowButtonDownFcn'
+        wbuf=f.WindowButtonUpFcn;
+        wbmf=f.WindowButtonMotionFcn;
+        wscwf=f.WindowScrollWheelFcn;
+        pbdf=p.ButtonDownFcn;
+        puicm=p.UIContextMenu;
+        
+        %hard-wire the original functions
+        rs = @()resetfns(f,p,wbuf, wbmf, wscwf, pbdf,puicm);
+        function resetfns(f,p,wbuf, wbmf, wscwf, pbdf,puicm)
+            %
+            if isvalid(f)
+                f.WindowButtonUpFcn=wbuf;
+                f.WindowButtonMotionFcn=wbmf;
+                f.WindowScrollWheelFcn=wscwf;
+            end
+            if isvalid(p)
+                p.ButtonDownFcn=pbdf;
+                p.UIContextMenu=puicm;
+            end
+        end
     end
 end
-        
