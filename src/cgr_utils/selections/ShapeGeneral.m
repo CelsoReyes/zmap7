@@ -154,16 +154,23 @@ classdef ShapeGeneral
             assert(numel(shout)<2,'should only have one shape outline')
             if isempty(shout)
                 hold on;
-                plot(ax, obj.Lon,obj.Lat,'k','LineWidth',2.0,...
+                p=plot(ax, obj.Lon,obj.Lat,'k','LineWidth',2.0,...
                     'LineStyle','-',...
                     'Color','k',...
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
+                p.UIContextMenu=makeuicontext();
                 hold off;
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
                     'Color','k');
+            end
+            function c=makeuicontext()
+                c=uicontextmenu;
+                uimenu(c,...
+                    'Label','edit interactively',...
+                    'Callback',@(src,ev)obj.interactive_edit(src,ev));
             end
         end
         
@@ -230,6 +237,9 @@ classdef ShapeGeneral
             isVisible=set(findobj('Tag','shapeoutlinetoggle'),'Checked',val);
             sh=findobj(gcf,'Tag','shapeoutline');
             set(sh,'Visible',val);
+        end
+        
+        function [obj] = interactive_edit(obj,ax)
         end
     end
     

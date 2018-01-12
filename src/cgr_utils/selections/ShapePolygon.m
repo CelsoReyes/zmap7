@@ -107,6 +107,15 @@ classdef ShapePolygon < ShapeGeneral
 
         end
 
+        function [obj] = interactive_edit(obj,src,ev)
+            %disp(src.Parent)
+            %disp(ev)
+            shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
+            make_editable(shout,@()update_shape);
+            function update_shape()
+                obj.Points=[shout.XData(:),shout.YData(:)];
+            end
+        end
     end
     
     methods(Static)

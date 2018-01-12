@@ -1,4 +1,4 @@
-function returnstate = make_editable(p)
+function returnstate = make_editable(p, updateFn)
     % MAKE_EDITABLE embues a plot with the ability to add, move, and delete points, as well as translate and scale.
     % 
     % RETURNSTATE = MAKE_EDITABLE(PLT) will make the plot PLT (usually a Line object) interactive. 
@@ -32,10 +32,18 @@ function returnstate = make_editable(p)
     % when done, run the result, which will restore the callbacks to original state. in this case:
     %
     % putback()
-    
+    %
+    % returnstate is called when 'Finished' context menu is activated.
+    % returnstate also calls 'updateFn'. Use this to update something with the new values
+    if ~exist('updateFn','var')
+        updateFn=@()[];
+    end
     
     dragging=false;
     lastIntersect=[];
+    
+    pOrigMarker=p.Marker;
+    changeMaker(p,'s');
     
     item=p;
     while ~isempty(item.Parent) 
@@ -48,7 +56,6 @@ function returnstate = make_editable(p)
     end
            
     returnstate=return_state(f,p); % used to put things back the way they were
-    
     p.ButtonDownFcn=@bdown;
     p.UIContextMenu=pointcontext(p);
     f.WindowScrollWheelFcn={@scale,p};
@@ -109,6 +116,7 @@ function returnstate = make_editable(p)
         cp=ax.CurrentPoint;
         target.XData(activepoint)=cp(1,1);
         target.YData(activepoint)=cp(1,2);
+        changeMaker(p,pOrigMarker);
     end
     
     function translateSeries(~,~,h)
@@ -209,6 +217,13 @@ function returnstate = make_editable(p)
         c=uicontextmenu;
         uimenu(c,'Label','delete point', 'callback',{@delpoint,p});
         uimenu(c,'Label','add point', 'callback',{@addpoint,p});
+        uimenu(c,'Label','Finished', 'Separator','on','callback',@(~,~)returnstate());
+    end
+    
+    function changeMaker(p,newmarker)
+        if strcmpi(p.Marker,'none')
+            p.Marker=newmarker;
+        end
     end
     
     function rs = return_state(f,p)
@@ -223,8 +238,8 @@ function returnstate = make_editable(p)
         puicm=p.UIContextMenu;
         
         %hard-wire the original functions
-        rs = @()resetfns(f,p,wbuf, wbmf, wscwf, pbdf,puicm);
-        function resetfns(f,p,wbuf, wbmf, wscwf, pbdf,puicm)
+        rs = @() resetfns(f,p,wbuf, wbmf, wscwf, pbdf, puicm, pOrigMarker,updateFn);
+        function resetfns(f,p, wbuf, wbmf, wscwf, pbdf, puicm, pmark, ufn)
             %
             if isvalid(f)
                 f.WindowButtonUpFcn=wbuf;
@@ -234,7 +249,10 @@ function returnstate = make_editable(p)
             if isvalid(p)
                 p.ButtonDownFcn=pbdf;
                 p.UIContextMenu=puicm;
+                p.Marker=pmark;
             end
+            ufn()
         end
     end
+    
 end
