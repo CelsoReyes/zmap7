@@ -79,6 +79,28 @@ classdef ShapeCircle < ShapeGeneral
                 num2str(abs(obj.Y0)), NS,...
                 num2str(abs(obj.X0)), EW);
         end
+        
+        function [obj] = interactive_edit(obj,src,ev)
+            shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
+            
+            if obj.AUTO_UPDATE_TIMEPLOT
+                make_editable(shout,@()update_shape,@()update_shape,'nopoint');
+            else
+                make_editable(shout,@()update_shape,[],'nopoint');
+            end
+            
+            function update_shape()
+                obj.Points=[shout.XData(:),shout.YData(:)];
+                ZG=ZmapGlobal.Data;
+                ZG.selection_shape=obj;
+                
+                if obj.AUTO_UPDATE_TIMEPLOT
+                    ShapeGeneral.cb_selectp(src,ev,'inside');
+                end
+                    
+                
+            end
+        end
     end
     
     methods(Static)
@@ -166,9 +188,6 @@ classdef ShapeCircle < ShapeGeneral
                 end
             end
             
-        end
-        function [obj] = interactive_edit(obj,src,ev)
-            disp('not yet implemented. see ShapePolygon')
         end
     end
     

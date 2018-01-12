@@ -74,6 +74,10 @@ classdef ShapeGeneral
         Area % approximate area of shape (km^2)
     end
     
+    properties(Constant)
+        AUTO_UPDATE_TIMEPLOT=true % automatically updates when shape is changed
+    end
+    
     methods
         function val=Outline(obj,col)
             % get shape outline. like Points, except guaranteed to give outline instead of centerpoints
@@ -104,7 +108,8 @@ classdef ShapeGeneral
             %if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
             %    error('unknown polygon type')
             %end
-            axes(mainmap('axes')); % bring up axes of interest.  should be the map, with lat/lon
+            ax=mainmap('axes');
+            axes(ax); % bring up axes of interest.  should be the map, with lat/lon
             obj.Type=lower(type);
             
             if ~exist('type','var')
@@ -165,12 +170,28 @@ classdef ShapeGeneral
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
                     'Color','k');
+                shout.UIContextMenu=makeuicontext();
             end
             function c=makeuicontext()
                 c=uicontextmenu;
+                uimenu(c,'Label','Analyze EQ inside Shape (timeplot)',...
+                    'Callback',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
+                uimenu(c,'Label','Analyze EQ outside Shape (timeplot)',...
+                    'Callback',{@ShapeGeneral.cb_selectp,'outside'});
+                uimenu(c,'Label','Compare Inside vs Outside (timeplot)',...
+                    'Callback',@compare_in_out);
                 uimenu(c,...
-                    'Label','edit interactively',...
-                    'Callback',@(src,ev)obj.interactive_edit(src,ev));
+                    'Label','edit shape (mouse)',...
+                    'separator','on',...
+                    'Callback',@(src,ev) obj.interactive_edit(src,ev));
+                
+                function compare_in_out(src,ev)
+                    beep;
+                    error('not implemented');
+                    %ShapeGeneral.cb_selectp(src,ev,'inside')
+                    %ShapeGeneral.cb_selectp(src,ev,'outside')
+                end
+            
             end
         end
         

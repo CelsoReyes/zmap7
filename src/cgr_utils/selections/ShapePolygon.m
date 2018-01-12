@@ -111,9 +111,24 @@ classdef ShapePolygon < ShapeGeneral
             %disp(src.Parent)
             %disp(ev)
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            make_editable(shout,@()update_shape);
+            
+            if obj.AUTO_UPDATE_TIMEPLOT
+                make_editable(shout,@()update_shape,@()update_shape);
+            else
+                make_editable(shout,@()update_shape,[],'normal');
+            end
+            
+            %make_editable(shout,@()update_shape);
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
+                ZG=ZmapGlobal.Data;
+                ZG.selection_shape=obj;
+                
+                if obj.AUTO_UPDATE_TIMEPLOT
+                    ShapeGeneral.cb_selectp(src,ev,'inside');
+                end
+                    
+                
             end
         end
     end

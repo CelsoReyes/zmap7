@@ -1,7 +1,7 @@
-function returnstate = make_editable(p, updateFn)
+function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIOR)
     % MAKE_EDITABLE embues a plot with the ability to add, move, and delete points, as well as translate and scale.
     % 
-    % RETURNSTATE = MAKE_EDITABLE(PLT) will make the plot PLT (usually a Line object) interactive. 
+    % RETURNSTATE = MAKE_EDITABLE(PLT,finalUpdateFn, intermedUpdateFn, BEHAVIOR)) will make the plot PLT (usually a Line object) interactive. 
     % the plot can have points moved, added, or removed. It can be translated or scaled.
     %   
     % RETURNSTATE is a function handle that will put all the callbacks back the way they were found, and
@@ -17,7 +17,8 @@ function returnstate = make_editable(p, updateFn)
     % this will modify the figure and line/scatter callback functions. to put them back, call the function returned
     % by MAKE_EDITABLE.
     %  
-    %
+    % BEHAVIOR: 'normal':
+    %           'nopoints': disables point clicking
     %
     % example usage:
     % f=figure
@@ -35,12 +36,34 @@ function returnstate = make_editable(p, updateFn)
     %
     % returnstate is called when 'Finished' context menu is activated.
     % returnstate also calls 'updateFn'. Use this to update something with the new values
-    if ~exist('updateFn','var')
-        updateFn=@()[];
+    if ~exist('finalUpdateFn','var') || isempty(finalUpdateFn)
+        finalUpdateFn=@()[];
     end
     
+    if ~exist('intermedUpdateFn','var') || isempty(intermedUpdateFn)
+        intermedUpdateFn=@()[];
+    end
     dragging=false;
     lastIntersect=[];
+    
+    
+        XTOL=0.001;
+        YTOL=0.001;
+        
+        
+    if ~exist('BEHAVIOR','var')
+        BEHAVIOR='normal';
+    end
+    switch BEHAVIOR
+        case 'nopoint'
+            
+            getactivepoint=@(src,ev)[];
+            
+        otherwise
+            % assume 'normal'
+        getactivepoint=@(src,ev)find(abs(src.XData-ev.IntersectionPoint(1)) <XTOL &...
+            abs(src.YData-ev.IntersectionPoint(2))<YTOL);
+    end
     
     pOrigMarker=p.Marker;
     changeMaker(p,'s');
@@ -71,8 +94,9 @@ function returnstate = make_editable(p, updateFn)
         
         XTOL=0.001;
         YTOL=0.001;
-        activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <XTOL &...
-            abs(src.YData-ev.IntersectionPoint(2))<YTOL);
+        %activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <XTOL &...
+        %    abs(src.YData-ev.IntersectionPoint(2))<YTOL);
+        activepoint=getactivepoint(src,ev);
         
         %f.WindowButtonUpFcn={@mouseup,src,activepoint}; %attach mouseup function to THIS item
         
@@ -139,6 +163,7 @@ function returnstate = make_editable(p, updateFn)
                 dragging=false;
                 %activepoint=[];
                 f.WindowButtonMotionFcn='';
+                intermedUpdateFn();
             end
         end
     end
@@ -152,12 +177,32 @@ function returnstate = make_editable(p, updateFn)
         axis(prevax)
         f.WindowButtonMotionFcn='';
         f.WindowButtonUpFcn='';
+        intermedUpdateFn();
     end
     
     function delpoint(~,~, target, activepoint)
         % controlled by RT CLICK choice at PLOT level
-        target.XData(activepoint)=[];
-        target.YData(activepoint)=[];
+        isEndpoint = activepoint(1)==1 || activepoint(1)==length(target.XData);
+        closedLoop = target.XData(1)==target.XData(end) && target.YData(1)==target.YData(end);
+        if closedLoop && length(target.XData)<=4
+            warning('Cannot delete a closed shape down to less than 3 points')
+            return
+        else
+            fprintf('%d points before deleting\n',length(target.XData));
+            
+        end
+            
+        if isEndpoint && closedLoop
+            % keep loop closed.
+            target.XData(1)=[];
+            target.YData(1)=[];
+            target.XData(end)=target.XData(1);
+            target.YData(end)=target.YData(1);
+        else
+            target.XData(activepoint)=[];
+            target.YData(activepoint)=[];
+        end
+        intermedUpdateFn()
     end
     
     function addpoint(~,~,target,activepoint)
@@ -205,19 +250,25 @@ function returnstate = make_editable(p, updateFn)
             relX=relX ./ factor;
             relY=relY ./ factor;
         end
-        prevax=axis;
+        prevax.x=xlim;
+        prevax.y=ylim;
         targ.XData=relX+center(1);
         targ.YData=relY+center(2);
-        axis(prevax);
-        
+        xlim(prevax.x);
+        ylim(prevax.y);
+        intermedUpdateFn()
         
     end
     
     function c=pointcontext(p)
         c=uicontextmenu;
-        uimenu(c,'Label','delete point', 'callback',{@delpoint,p});
-        uimenu(c,'Label','add point', 'callback',{@addpoint,p});
-        uimenu(c,'Label','Finished', 'Separator','on','callback',@(~,~)returnstate());
+        if ~strcmp(BEHAVIOR,'nopoint')
+            uimenu(c,'Label','delete point', 'callback',{@delpoint,p});
+            uimenu(c,'Label','add point', 'callback',{@addpoint,p});
+            uimenu(c,'Label','Finished', 'Separator','on','callback',@(~,~)returnstate());
+        else
+            uimenu(c,'Label','Finished', 'callback',@(~,~)returnstate());
+        end
     end
     
     function changeMaker(p,newmarker)
@@ -238,7 +289,7 @@ function returnstate = make_editable(p, updateFn)
         puicm=p.UIContextMenu;
         
         %hard-wire the original functions
-        rs = @() resetfns(f,p,wbuf, wbmf, wscwf, pbdf, puicm, pOrigMarker,updateFn);
+        rs = @() resetfns(f,p,wbuf, wbmf, wscwf, pbdf, puicm, pOrigMarker,finalUpdateFn);
         function resetfns(f,p, wbuf, wbmf, wscwf, pbdf, puicm, pmark, ufn)
             %
             if isvalid(f)
