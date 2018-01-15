@@ -1,4 +1,4 @@
-classdef ShapeGeneral
+classdef ShapeGeneral<handle
     %ShapeGeneral represents a geographical selection of events
     %
     %
@@ -75,7 +75,7 @@ classdef ShapeGeneral
     end
     
     properties(Constant)
-        AUTO_UPDATE_TIMEPLOT=true % automatically updates when shape is changed
+        AUTO_UPDATE_TIMEPLOT=false % automatically updates when shape is changed (can be tempermental)
     end
     
     methods
@@ -172,9 +172,14 @@ classdef ShapeGeneral
                     'Color','k');
                 shout.UIContextMenu=makeuicontext();
             end
+            
             function c=makeuicontext()
                 c=uicontextmenu;
+                uimenu(c,...
+                    'Label','info...',...
+                    'Callback',@(src,ev) obj.summary());
                 uimenu(c,'Label','Analyze EQ inside Shape (timeplot)',...
+                    'separator','on',...
                     'Callback',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
                 uimenu(c,'Label','Analyze EQ outside Shape (timeplot)',...
                     'Callback',{@ShapeGeneral.cb_selectp,'outside'});
@@ -184,6 +189,7 @@ classdef ShapeGeneral
                     'Label','edit shape (mouse)',...
                     'separator','on',...
                     'Callback',@(src,ev) obj.interactive_edit(src,ev));
+                obj.add_shape_specific_context(c,ax);
                 
                 function compare_in_out(src,ev)
                     beep;
@@ -194,7 +200,9 @@ classdef ShapeGeneral
             
             end
         end
-        
+        function add_shape_specific_context(obj,c,ax)
+            % would add additional menu items here
+        end
         function clearplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
@@ -258,6 +266,10 @@ classdef ShapeGeneral
             isVisible=set(findobj('Tag','shapeoutlinetoggle'),'Checked',val);
             sh=findobj(gcf,'Tag','shapeoutline');
             set(sh,'Visible',val);
+        end
+        
+        function summary(obj)
+            helpdlg('no shape','Unassigned shape');
         end
         
         function [obj] = interactive_edit(obj,ax)

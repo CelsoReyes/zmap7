@@ -73,6 +73,17 @@ classdef ShapePolygon < ShapeGeneral
             obj.setVisibility('on');
         end
      
+        function summary(obj)
+            line1= sprintf('Polygon with %d points',size(obj.Outline,1));
+            line2= sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
+            line3= sprintf('Area is approximately %.2f km^2',obj.Area);
+            helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
+        end
+        
+        function add_shape_specific_context(obj,c,ax)
+            % would add additional menu items here
+        end
+        
         %TODO decide where select_polygon and select_box really belong.
         function [obj] = select_polygon(obj)
             % select_polygon plots a polygon interactively using the mouse on selected axis
@@ -176,6 +187,9 @@ classdef ShapePolygon < ShapeGeneral
         function obj=select_box(obj,varargin)
             
             disp('enter first corner, or click on desired center and press "S" for square. ESC aborts');
+            % MOUSEDOWN: select first corner
+            % DRAG: extend rectangle
+            
             [x,y,b] = ginput(1);
             if b==27 %escape
                 error('ESCAPE pressed. aborting polygon creation'); %catch me!
