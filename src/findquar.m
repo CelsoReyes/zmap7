@@ -255,9 +255,9 @@ classdef findquar < ZmapFunction
             %axes('position',[0.18,  0.10, 0.7, 0.75])
             set(obj.ax,'position',[0.18,  0.10, 0.7, 0.75]);
             hold on
-            pco1 = gridpcolor(obj.ax, obj.Grid.Xvector, obj.Grid.Yvector, re4');
+            pco1 = gridpcolor(obj.ax, obj.Grid.X, obj.Grid.Y, re4');
             
-            axis(obj.ax, [ min(obj.Grid.Xvector) max(obj.Grid.Xvector) min(obj.Grid.Yvector) max(obj.Grid.Yvector)])
+            axis(obj.ax, [ min(obj.Grid.X(:)) max(obj.Grid.X(:)) min(obj.Grid.Y(:)) max(obj.Grid.Y(:))])
             axis(obj.ax, 'image');
             hold(obj.ax, 'on');
             

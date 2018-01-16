@@ -24,9 +24,9 @@ function add_grid_menu(parent)
             ymin=min(obj.Lat);
             ymax=max(obj.Lat);
         end
-        ZG.Grid=ZmapGrid('grid',...
-            xmin, gopt.dx, xmax,...
-            ymin, gopt.dy, ymax,...
+        ZG.Grid=ZmapGrid.FromVectors('grid',...
+            xmin:gopt.dx:xmax,...
+            ymin:gopt.dy:ymax,...
             gopt.dx_units);
         if ~isempty(obj.Lon) && ~isnan(obj.Lon(1)) && ~gopt.GridEntireArea
             ZG.Grid=ZG.Grid.MaskWithPolygon(obj.Lon, obj.Lat);
@@ -42,7 +42,7 @@ function add_grid_menu(parent)
         if ~isempty(ZG.selection_shape)
             ZG.Grid = ZG.Grid.MaskWithPolygon(ZG.selection_shape.Lon,ZG.selection_shape.Lat);
         end
-        ZG.Grid.plot(m.mainAxes,'markersize',30,'ActiveOnly')
+        ZG.Grid.plot(m.mainAxes,'markersize',20,'ActiveOnly')
         % following assumes global 
         %ZG=ZmapGlobal.Data;
         %[ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);

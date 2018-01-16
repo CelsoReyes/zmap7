@@ -56,7 +56,7 @@ classdef ZmapGrid3 < ZmapGrid
                     z=repmat(obj.Zvector(:),1,nOrigPts); % [z1 z1...;z2 z2...]
                     z=z'; % [z1 z2...; z1 z2...]
                     obj.GridPoints(:,3)=z(:);
-                    obj.ActivePoints=true(numel(obj.Xvector),numel(obj.Yvector),numel(obj.Zvector));
+                    obj.ActivePoints=true(size(obj.X),numel(obj.Zvector));
                     
                 case 4
                     % ZMAPGRID3(name, xyz, xyUnits, zUnits)
@@ -82,7 +82,7 @@ classdef ZmapGrid3 < ZmapGrid
                     
                     [x,y,z]=meshgrid(x,y,z);
                     obj.GridPoints=[x(:),y(:),z(:)];
-                    obj.ActivePoints=true(numel(obj.Xvector),numel(obj.Yvector),numel(obj.Zvector));
+                    obj.ActivePoints=true(size(obj.X),numel(obj.Zvector));
             end
         end
         
@@ -136,7 +136,7 @@ classdef ZmapGrid3 < ZmapGrid
         end
         
         function val=mesh_size(obj)
-            val=[numel(obj.Xvector), numel(obj.Yvector), numel(obj.Zvector)];
+            val=[size(obj.X), numel(obj.Zvector)];
         end
         
         function z=get.Zactive(obj)

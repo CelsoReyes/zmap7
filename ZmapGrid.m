@@ -5,16 +5,13 @@ classdef ZmapGrid
     %
     %     Name - name of this grid
     %
-    %     GridPoints  - [X1,Y1 ; ... ; Xn,Yn] matrix of positions
-    %     X - all X positions (points will repeat, since they represent matrix nodes) [read-only] 
-    %     Y - all Y positions (points will repeat, since they represent matrix nodes)[read-only]
-    %
-    %     Xvector - vector for column positions (unique points)
-    %     Yvector - vector for row positions (unique points)
+    %     GridPoints  - [X1,Y1 ; ... ; Xn,Yn] Nx2 matrix of positions
+    %     X - all X positions (points will repeat, since they represent matrix nodes)
+    %     Y - all Y positions (points will repeat, since they represent matrix nodes)
     %
     %     Units - degrees or kilometers
     %     ActivePoints - logical mask
-    % 
+    %
     %     Xactive - X positions for active points [read-only]
     %     Yactive - Y positions for active points [read-only]
     %
@@ -26,12 +23,12 @@ classdef ZmapGrid
     %     AutoCreateDeg -create ZDataGrid based on current Map extent/Catalog extent, whichever is smaller
     %
     %     Plotting methods:
-    % 
+    %
     %     plot - plot the points in this grid
     %     pcolor - create a pcolor plot where each point of the grid is center of cell
     %
     %     Misc. methods:
-    %     
+    %
     %     ActiveGrid - [X Y; ..;Yn Yn] for active points [read-only]
     %     length - number of grid points
     %     isempty - true if no grid is defined
@@ -48,17 +45,15 @@ classdef ZmapGrid
     %
     properties
         Name % name of this grid
-        GridPoints  % [X1,Y1 ; ... ; Xn,Yn] matrix of positions
         Units % degrees or kilometers
         ActivePoints    % logical mask
-        Xvector % vector for column positions (unique points)
-        Yvector % vector for row positions (unique points)
+        X % all X positions in matrix (points will repeat, since they represent matrix nodes)
+        Y % all Y positions in matrix (points will repeat, since they represent matrix nodes)
     end
     properties(Dependent)
-        X % all X positions (points will repeat, since they represent matrix nodes)
-        Y % all Y positions (points will repeat, since they represent matrix nodes)
         Xactive % all X positions for active points
         Yactive % all Y positions for active points
+        GridPoints % Nx2 vector of all grid points [X1,Y1 ; X2,Y2 ; ...]
     end
     properties(Constant,Hidden)
         POSSIBLY_TOO_MANY_POINTS = 1000 * 1000;
@@ -69,7 +64,7 @@ classdef ZmapGrid
             %ZMAPGRID create a ZmapGridStruc
             %   OBJ = ZMAPGRID(NAME, GPC_STRUCT) where gpc_struct has fields dx,dy, dx_units.
             %
-            %   ZMAPGRID(NAME, ALL_X, ALL_Y, UNITS) create a grid, where the X is the provided ALL_X 
+            %   ZMAPGRID(NAME, ALL_X, ALL_Y, UNITS) create a grid, where the X is the provided ALL_X
             %   Y is the provided ALL_Y.  This creates a grid [X1 Y1; X1 Y2; ... Xn Ym
             %
             %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
@@ -80,26 +75,24 @@ classdef ZmapGrid
                 case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
-                        warning('ZmapGrid works best when provided with Xvector and Yvector of points');
+                        warning('ZmapGrid works best when provided with X and Y matrices of points');
                         assert(size(varargin{1},2)==2);
-                        obj.GridPoints = varargin{1};
                         obj.Units='unk';
-                        obj.Xvector=[];
-                        obj.Yvector=[];
+                        obj.X=varargin{1}(:,1);
+                        obj.Y=varargin{1}(:,2);
                     elseif isstruct(varargin{1})
                         % assume it came from GridParameterChoice
                         g=varargin{1};
                         ax=gca;
                         obj.Units=g.dx_units;
                         axlims=axis(ax);
-                        obj.Xvector=axlims(1) : g.dx : axlims(2);
-                        obj.Yvector=axlims(3) : g.dy : axlims(4);
-                        totpoints=numel(obj.Xvector)*numel(obj.Yvector);
+                        xvector=axlims(1) : g.dx : axlims(2);
+                        yvector=axlims(3) : g.dy : axlims(4);
+                        totpoints=numel(xvector)*numel(yvector);
                         if totpoints > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
                             ZmapMessageCenter.set_warning(sprintf('Possibly too many points: %d',totpoints'));
                         end
-                        [x,y]=meshgrid(obj.Xvector, obj.Yvector);
-                        obj.GridPoints=[x(:),y(:)];
+                        [obj.X, obj.Y]=meshgrid(xvector, yvector);
                         if isfield(g,'GridEntireArea') && ~g.GridEntireArea
                             myshape=ZmapGlobal.Data.selection_shape;
                             if isempty(myshape)
@@ -107,15 +100,14 @@ classdef ZmapGrid
                                     'Requested that grid is limited by the polygon, but no polygon is defined.');
                                 switch questdlg('Choose a shape to define:','Polygon Not defined','polygon','circle','none','none')
                                     case 'circle'
-                                        myshape=ShapeCircle();
-                                        myshape = myshape.select();
+                                        myshape = ShapeCircle.selectUsingMouse();
                                         myshape.plot(gca)
                                         pause(2);
                                         obj=obj.MaskWithPolygon(myshape.Lon,myshape.Lat);
                                         myshape.clearplot;
                                     case 'polygon'
                                         myshape=ShapePolygon();
-                                        myshape=myshape.select_polygon();
+                                        myshape.select_polygon();
                                         obj=obj.MaskWithPolygon(myshape.Lon,myshape.Lat);
                                     otherwise
                                         % do nothing
@@ -123,67 +115,52 @@ classdef ZmapGrid
                             else
                                 obj=obj.MaskWithPolygon(myshape.Points);
                             end
-                        end 
+                        end
                     else
                         error('unknown');
                     end
                 case 3
                     % ZMAPGRID( name, all_points, units)
-                    warning('ZmapGrid works best when provided with Xvector and Yvector of points');
+                    warning('ZmapGrid works best when provided with X and Y matrices of points');
                     assert(size(varargin{1},2)==2);
-                    obj.GridPoints = varargin{1};
-                    obj.Xvector=[];
-                    obj.Yvector=[];
+                    obj.X=varargin{1}(:,1);
+                    obj.Y=varargin{1}(:,2);
                     assert(ischar(varargin{2}));
                     obj.Units = varargin{2};
                 case 4
-                    % ZMAPGRID( name, Xvector, Yvector, units)
-                    obj.Xvector=varargin{1};
-                    obj.Yvector=varargin{2};
-                    [x,y]=meshgrid(obj.Xvector, obj.Yvector);
-                    obj.GridPoints=[x(:),y(:)];
+                    % ZMAPGRID( name, Xmatrix, Ymatrix, units)
+                    assert(isequal(size(varargin{1}),size(varargin{2})),'X and Y should be the same size');
+                    obj.X=varargin{1};
+                    obj.Y=varargin{2};
                     assert(ischar(varargin{3}));
                     obj.Units = varargin{3};
                     
                 otherwise
-                    error('incorrect number of arguments');
+                    error('incorrect number of arguments %d', nargin);
             end
+            
             if isempty(obj.ActivePoints)
-                if ~isempty(obj.Xvector)
-                    % ActivePoints is an X x Y array
-                    obj.ActivePoints=true(numel(obj.Xvector),numel(obj.Yvector));
-                else
-                    % all points are simply in a line
-                    obj.ActivePoints=true(length(obj.GridPoints),1);
-                end
+                obj.ActivePoints=true(size(obj.X));
             end
             
         end
         
         % basic access routines
-        function x = get.X(obj)
+        function gp = get.GridPoints(obj)
             if ~isempty(obj)
-                x=obj.GridPoints(:,1);
+                gp=[obj.X(:), obj.Y(:)];
             else
-                x = [];
-            end
-        end
-        
-        function y = get.Y(obj)
-            if ~isempty(obj)
-                y=obj.GridPoints(:,2);
-            else
-                y = [];
+                gp = [];
             end
         end
         
         % masked access routines
         function x = get.Xactive(obj)
-            x=obj.GridPoints(obj.ActivePoints,1);
+            x=obj.X(obj.ActivePoints);
         end
         
         function y = get.Yactive(obj)
-            y=obj.GridPoints(obj.ActivePoints,2);
+            y=obj.Y(obj.ActivePoints);
         end
         
         function points = ActiveGrid(obj)
@@ -196,18 +173,13 @@ classdef ZmapGrid
         end
         
         function val = length(obj)
-            val = length(obj.GridPoints);
+            val = numel(obj.X);
         end
         
         function val = isempty(obj)
-            val = isempty(obj.GridPoints);
+            val = isempty(obj.X);
         end
         
-        function val = MeshSize(obj)
-            val = [numel(obj.Xvector), numel(obj.Yvector)];
-        end
-        
-            
         function obj = MaskWithPolygon(obj,polyX, polyY)
             % MaskWithPolygon sets the mask according to a polygon
             % obj = obj.MaskWithPolygon() user selects polygon from gca
@@ -268,12 +240,12 @@ classdef ZmapGrid
             end
             prev_grid = findobj(ax,'Tag',['grid_' obj.Name]);
             if ~isempty(prev_grid)
-                prev_grid.XData=obj.(x);
-                prev_grid.YData=obj.(y);
+                prev_grid.XData=obj.(x)(:);
+                prev_grid.YData=obj.(y)(:);
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=plot(ax,obj.(x),obj.(y),'+k','Tag',['grid_' obj.Name]);
+                prev_grid=plot(ax,obj.(x)(:),obj.(y)(:),'+k','Tag',['grid_' obj.Name]);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end
@@ -285,50 +257,46 @@ classdef ZmapGrid
         function h=pcolor(obj, ax, values, name)
             % pcolor create a pcolor plot where each point of the grid is center of cell
             % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
-            % each grid point is contained within a color cell. the cells are divided halfway 
-            % between each point in the vector            
+            % each grid point is contained within a color cell. the cells are divided halfway
+            % between each point in the vector
             %  where :
             %    AX is the axis of choice (empty for gca)
             %    VALUES is a matrix of values that matches the grid in size.
             %
             %
             % h is a handle to the pcolor object
-            % 
+            %
             % see also gridpcolor
             if ~exist('name','var')
                 name = '';
             end
-            assert(numel(values)== length(obj.Xvector) * length(obj.Yvector),'expect same number of values');
-            if ~isequal(size(values),[length(obj.Xvector),length(obj.Yvector)])
-                values = reshape(values,length(obj.Yvector),length(obj.Xvector));
-            end
-             h=gridpcolor(ax,obj.Xvector, obj.Yvector, values, obj.ActivePoints,name);
+            h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
         
         function h=imagesc(obj, ax, values, name)
             % imagesc create a imagesc plot where each point of the grid is center of cell
-            % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
-            % each grid point is contained within a color cell. the cells are divided halfway 
-            % between each point in the vector            
+            % h = obj.pcolor(ax, values) plots the values as a pcolor plot, where
+            % each grid point is contained within a color cell. the cells are divided halfway
+            % between each point in the vector
             %  where :
             %    AX is the axis of choice (empty for gca)
             %    VALUES is a matrix of values that matches the grid in size.
             %
             %
             % h is a handle to the pcolor object
-            % 
+            %
             % see also gridpcolor
             if ~exist('name','var')
                 name = '';
             end
-            assert(numel(values)== length(obj.Xvector) * length(obj.Yvector),'expect same number of values');
-            if ~isequal(size(values),[length(obj.Xvector),length(obj.Yvector)])
-                values = reshape(values,length(obj.Yvector),length(obj.Xvector));
+            assert(numel(values)==numel(obj.X),'expect same number of values');
+            if ~isequal(size(values),size(obj.X))
+                values = reshape(values,size(obj.X));
             end
-            dx=obj.Xvector(2)-obj.Xvector(1);
-            dy=obj.Yvector(2)-obj.Yvector(1);
-            x = [obj.Xvector(1) obj.Xvector(end)];% + ([-dx dx]/2);
-            y = [obj.Yvector(1) obj.Yvector(end)];% + ([-dy dy]/2);
+            
+            % corners for image
+            x = [min(obj.X) max(obj.X)];
+            y = [min(obj.Y) max(obj.Y)];
             values(~obj.ActivePoints)=nan;
             %axes ax
             imAlpha=ones(size(values));
@@ -337,6 +305,7 @@ classdef ZmapGrid
             h=imagesc(x, y, values,'AlphaData',imAlpha);%, obj.ActivePoints,name);
             set(gca,'YDir','normal');
         end
+        
         function setGlobal(obj)
             % set the globally used grid to this one.
             ZG=ZmapGlobal.Data;
@@ -397,6 +366,14 @@ classdef ZmapGrid
             %TODO make spacing more intelligent. maybe.
             %TOFIX map units and this unit might be out of whack.
             obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'deg');
+        end
+        
+        function obj=FromVectors(name, x,y, units)
+            % ZMAPGRID.FROMVECTORS creates a meshgrid from X and Y vectors
+            % obj=FromVectors(name, x,y, units)
+            
+            [X, Y] =  meshgrid(x, y);
+            obj=ZmapGrid(name,X,Y,units);
         end
         
         function obj=load(filename, pathname)

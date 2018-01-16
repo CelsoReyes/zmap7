@@ -322,7 +322,7 @@ function [sel] = bpvalgrid()
         
         normlap2=nan(length(Grid.X),1);
         
-        reshaper = @(x) reshape(x,length(Grid.Xvector),length(Grid.Yvector));
+        reshaper = @(x) reshape(x,size(Grid.X));
         
         for i=1:length(fields_and_representations)
             fldnum = fields_and_representations{i,2};

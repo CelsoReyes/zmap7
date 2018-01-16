@@ -84,13 +84,15 @@ classdef ShapeCircle < ShapeGeneral
             helpdlg(obj.toStr,'Circle');
         end
         
-        function [obj] = interactive_edit(obj,src,ev)
+        function interactive_edit(obj,src,ev)
+            % INTERACTIVE_EDIT callback
+            % obj.INTERACTIVE_EDIT(src,ev)
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
             
             if obj.AUTO_UPDATE_TIMEPLOT
-                make_editable(shout,@()update_shape,@()update_shape,'nopoint');
+                make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
             else
-                make_editable(shout,@()update_shape,[],'nopoint');
+                make_editable(shout,@()update_shape,[],'nopoint',obj.ScaleWithLatitude);
             end
             
             function update_shape()

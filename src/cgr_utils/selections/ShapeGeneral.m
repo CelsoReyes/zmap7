@@ -1,4 +1,4 @@
-classdef ShapeGeneral<handle
+classdef ShapeGeneral < handle
     %ShapeGeneral represents a geographical selection of events
     %
     %
@@ -26,8 +26,8 @@ classdef ShapeGeneral<handle
     %     Center - geographic center of shape
     %     X0 - center X coordinate (center of shape extent)
     %     Y0 - center Y coordinate (center of shape extent)
-    %     Lat -
-    %     Lon -
+    %     Lat - Y coordinate for the shape outline
+    %     Lon - X coordinate for the shape outline
     %     Area - approximate area of shape (km^2)
     %
     %  ShapeGeneral methods:
@@ -63,6 +63,7 @@ classdef ShapeGeneral<handle
         Points=[nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
         Type='unassigned' % shape type
         ApplyGrid=true; %apply grid options to the selected shape.
+        ScaleWithLatitude=false;
     end
     
     properties(Dependent)
@@ -188,7 +189,10 @@ classdef ShapeGeneral<handle
                 uimenu(c,...
                     'Label','edit shape (mouse)',...
                     'separator','on',...
-                    'Callback',@(src,ev) obj.interactive_edit(src,ev));
+                    'Callback',@obj.interactive_edit);
+                uimenu(c,...
+                    'Label','Change shape with latitude?',...
+                    'Callback',@latscale);
                 obj.add_shape_specific_context(c,ax);
                 
                 function compare_in_out(src,ev)
@@ -197,7 +201,13 @@ classdef ShapeGeneral<handle
                     %ShapeGeneral.cb_selectp(src,ev,'inside')
                     %ShapeGeneral.cb_selectp(src,ev,'outside')
                 end
-            
+                
+                function autogrid(src,ev)
+                end
+                function latscale(src,ev)
+                    obj.ScaleWithLatitude=~obj.ScaleWithLatitude;
+                    src.Checked=logical2onoff(obj.ScaleWithLatitude);
+                end
             end
         end
         function add_shape_specific_context(obj,c,ax)
@@ -272,7 +282,7 @@ classdef ShapeGeneral<handle
             helpdlg('no shape','Unassigned shape');
         end
         
-        function [obj] = interactive_edit(obj,ax)
+        function interactive_edit(obj,ax)
         end
     end
     

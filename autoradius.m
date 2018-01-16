@@ -26,15 +26,14 @@ function [r, evsel] = autoradius(catalog, zgrid, minNum, pct, reach)
     
     % determine the probable distance between grid points horizontally (E-W) and vertically (N-S)
     %
-    nX=floor(numel(zgrid.Xvector)/2);
-    nY=floor(numel(zgrid.Yvector)/2);
+    [nX,nY]=floor(size(zgrid.X)/2);
     if nX ~=0
-        xdist=deg2km(distance(zgrid.Xvector(nX),zgrid.Yvector(nY),zgrid.Xvector(nX+1),zgrid.Yvector(nY)));
+        xdist=deg2km(distance(zgrid.X(nX),zgrid.Y(nY),zgrid.X(nX+1),zgrid.Y(nY)));
     else
         xdist=0;
     end
     if nY ~=0
-        ydist=deg2km(distance(zgrid.Xvector(nX),zgrid.Yvector(nY),zgrid.Xvector(nX),zgrid.Yvector(nY+1)));
+        ydist=deg2km(distance(zgrid.X(nX),zgrid.Y(nY),zgrid.X(nX),zgrid.Y(nY+1)));
     else
         ydist=0;
     end

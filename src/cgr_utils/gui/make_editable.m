@@ -1,7 +1,7 @@
-function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIOR)
+function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIOR, LATLON_AWARE)
     % MAKE_EDITABLE embues a plot with the ability to add, move, and delete points, as well as translate and scale.
     % 
-    % RETURNSTATE = MAKE_EDITABLE(PLT,finalUpdateFn, intermedUpdateFn, BEHAVIOR)) will make the plot PLT (usually a Line object) interactive. 
+    % RETURNSTATE = MAKE_EDITABLE(PLT,finalUpdateFn, intermedUpdateFn, BEHAVIOR,LATLON_AWARE) will make the plot PLT (usually a Line object) interactive. 
     % the plot can have points moved, added, or removed. It can be translated or scaled.
     %   
     % RETURNSTATE is a function handle that will put all the callbacks back the way they were found, and
@@ -49,9 +49,12 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     
         XTOL=0.001;
         YTOL=0.001;
+    
+    if ~exist('LATLON_AWARE','var')
+        LATLON_AWARE=false;
+    end
         
-        
-    if ~exist('BEHAVIOR','var')
+    if ~exist('BEHAVIOR','var')||isempty('BEHAVIOR')
         BEHAVIOR='normal';
     end
     switch BEHAVIOR
@@ -170,9 +173,27 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     
     function endTranslation(~,~,target,h)
         % MOUSEUP at PLOT level
+        
         prevax=axis;
-        target.XData=target.XData + (diff(h.XData));
-        target.YData=target.YData + (diff(h.YData));
+        
+        if LATLON_AWARE
+            % to keep same shape, have to use distances & reckoning
+            % MOUSEUP at PLOT level
+            midX = (min(target.XData) + max(target.XData)) / 2;
+            midY = (min(target.YData) + max(target.YData)) / 2;
+            
+            % find position of all points relative to center
+            [ARCLEN, AZ] = distance([midY,midX],[target.YData(:),target.XData(:)]);
+            
+            %move center, then recalculate all points.
+            [target.YData, target.XData] = reckon(midY+diff(h.YData), midX+diff(h.XData),ARCLEN, AZ);
+            
+        else
+            % simply move points around  by constant
+            target.XData=target.XData + (diff(h.XData));
+            target.YData=target.YData + (diff(h.YData));
+        end
+        
         delete(h);
         axis(prevax)
         f.WindowButtonMotionFcn='';
@@ -237,23 +258,40 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     
     
     function scale(~,ev,targ)
-        % SCALE controlled by scroll wheel at the FIGURE level
+        
         extent=[min(targ.XData) max(targ.XData) min(targ.YData) max(targ.YData)];
-        center=[mean(extent(1:2)), mean(extent(3:4))];
-        relX=targ.XData-center(1);
-        relY=targ.YData-center(2);
+        %center=[mean(extent(1:2)), mean(extent(3:4))];j
+        center.X=mean(extent(1:2));
+        center.Y=mean(extent(3:4));
+        
         factor=1.1;
-        if ev.VerticalScrollCount>0
-            relX=relX .* factor;
-            relY=relY .* factor;
-        else
-            relX=relX ./ factor;
-            relY=relY ./ factor;
-        end
+        
         prevax.x=xlim;
         prevax.y=ylim;
-        targ.XData=relX+center(1);
-        targ.YData=relY+center(2);
+        
+        if ev.VerticalScrollCount<0
+            factor = 1/factor;
+        end
+         if LATLON_AWARE
+            % to keep same shape, have to use distances & reckoning
+            
+            % find position of all points relative to center
+            [ARCLEN, AZ] = distance([center.Y,center.X],[targ.YData(:),targ.XData(:)]);
+            
+            %move center, then recalculate all points.
+            [targ.YData, targ.XData] = reckon(center.Y,center.X, ARCLEN .* factor, AZ);
+            
+        else
+            % simply move points around  by constant
+            % SCALE controlled by scroll wheel at the FIGURE level
+            relX=(targ.XData-center.X) .* factor;
+            relY=(targ.YData-center.Y) .* factor;
+            
+            targ.XData=relX+center.X;
+            targ.YData=relY+center.Y;
+            
+         end
+        
         xlim(prevax.x);
         ylim(prevax.y);
         intermedUpdateFn()

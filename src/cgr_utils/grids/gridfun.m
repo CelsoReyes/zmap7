@@ -176,7 +176,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         
     end
     if answidth==1
-        reshaper=@(x) reshape(x, length(zgrid.Xvector),length(zgrid.Yvector));
+        reshaper=@(x) reshape(x, size(zgrid.X));
         values=reshaper(values);
     end
  

@@ -85,13 +85,9 @@ classdef ShapePolygon < ShapeGeneral
         end
         
         %TODO decide where select_polygon and select_box really belong.
-        function [obj] = select_polygon(obj)
+        function select_polygon(obj)
             % select_polygon plots a polygon interactively using the mouse on selected axis
-            % usage [ x, y, mask, mouse_overlay] = select_polygon(ax)
-            %
-            % returns [x, y, lineobject]
-            %
-            % lineobject has tag 'mouse_points_overlay'
+            % usage obj.select_polygon()
             hold on
             mouse_points_overlay = plot(gca,0,0,'o-k',...
                 'MarkerSize',5,'LineWidth',2.0,...
@@ -118,15 +114,16 @@ classdef ShapePolygon < ShapeGeneral
 
         end
 
-        function [obj] = interactive_edit(obj,src,ev)
-            %disp(src.Parent)
-            %disp(ev)
+        function interactive_edit(obj,src,ev)
+            % INTERACTIVE_EDIT callback
+            % obj.INTERACTIVE_EDIT(src,ev)
+            
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
             
             if obj.AUTO_UPDATE_TIMEPLOT
-                make_editable(shout,@()update_shape,@()update_shape);
+                make_editable(shout,@()update_shape,@()update_shape,'normal',obj.ScaleWithLatitude);
             else
-                make_editable(shout,@()update_shape,[],'normal');
+                make_editable(shout,@()update_shape,[],'normal',obj.ScaleWithLatitude);
             end
             
             %make_editable(shout,@()update_shape);
@@ -149,8 +146,7 @@ classdef ShapePolygon < ShapeGeneral
         function submenu=AddPolyMenu(submenu,ZGshape)
             %
             % should write changes to ZG.selection_shape (?)
-            polygonTypes={'axes','box','rectangle','polygon'};
-            vis=logical2onoff(ismember(ZGshape.Type, polygonTypes));
+            %polygonTypes={'axes','box','rectangle','polygon'};
             menuItems={'polyCreateBox',...
                 'polyCreateIrregular'};
             
