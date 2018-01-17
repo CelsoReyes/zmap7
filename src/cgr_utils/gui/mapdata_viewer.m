@@ -155,7 +155,11 @@ function mapdata_viewer(res,resfig)
     
     
     while true % ESC
-        keydown = waitforbuttonpress;
+        try
+            keydown = waitforbuttonpress;
+        catch
+            break
+        end
         prevChar=curChar;
         if (keydown == 0)
             axx = mapax.CurrentPoint(1,1);
@@ -343,7 +347,9 @@ function mapdata_viewer(res,resfig)
         selection.(field).bv3.Color=thiscolor;
         selection.(field).bv3.MarkerEdgeColor=thiscolor;
     end
-    set(f,'Pointer','arrow');
+    try
+        set(f,'Pointer','arrow');
+    end
 end
 
 
