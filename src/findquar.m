@@ -172,7 +172,7 @@ classdef findquar < ZmapFunction
             
             mygrid=ZmapGrid('quarry', obj.Grid);
             if ~obj.Grid.GridEntireArea
-                mygrid=mygrid.MaskWithPolygon(mainmap('axes'));
+                mygrid=mygrid.MaskWithShape(ZG.selection_shape);
             end
             %  make grid, calculate start- endtime etc.  ...
             %

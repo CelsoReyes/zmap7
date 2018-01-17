@@ -1,19 +1,18 @@
 function add_grid_menu(parent)
     % add grid menu for modifying global ZmapGrid
-    
-    uimenu(parent,'Label','Change grid parameters',...
-        'Separator','on',...
-        'Callback',@(~,~)cb_changegridopts);
-    uimenu(parent,'Label','Create Auto-Grid','Callback',@(~,~)cb_autogrid);
-    uimenu(parent,'Label','Create Auto-Radius','Callback',@(~,~)cb_autoradius);
-    uimenu(parent,'Label','Apply grid','Callback',@cb_applygrid);
+    GRIDPOINT.Marker='.';
+    GRIDPOINT.MarkerSize=15;
+    uimenu(parent,'Label','Create Auto-Grid','Callback',@cb_autogrid);
+    uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
+    uimenu(parent,'Label','Create Auto-Radius','Callback',@cb_autoradius);
+    uimenu(parent,'Label','Refresh','Callback',@cb_refresh)
+    %uimenu(parent,'Label','Apply grid','Callback',@cb_applygrid);
      
     function cb_applygrid(~,~)
-        % cb_applygrid sets the grid according to the selected shape
+        % CB_APPLYGRID sets the grid according to the selected shape
         ZG=ZmapGlobal.Data;
         obj=ZG.selection_shape;
-        gopt=ZG.gridopt; %get grid options
-        if gopt.GridEntireArea || (isempty(obj.Lon)||isnan(obj.Lon(1)))% use catalog
+        if (isempty(obj.Lon)||isnan(obj.Lon(1)))% use catalog
             xmin=min(ZG.primeCatalog.Longitude);
             xmax=max(ZG.primeCatalog.Longitude);
             ymin=min(ZG.primeCatalog.Latitude);
@@ -28,10 +27,19 @@ function add_grid_menu(parent)
             xmin:gopt.dx:xmax,...
             ymin:gopt.dy:ymax,...
             gopt.dx_units);
-        if ~isempty(obj.Lon) && ~isnan(obj.Lon(1)) && ~gopt.GridEntireArea
-            ZG.Grid=ZG.Grid.MaskWithPolygon(obj.Lon, obj.Lat);
+        if ~gopt.GridEntireArea
+            ZG.Grid=ZG.Grid.MaskWithShape(ZG.selection_shape);
         end
         ZG.Grid.plot();
+    end
+    
+    function cb_creategrid(~,~)
+        %CB_CREATEGRID interactively create a grid
+        ZG=ZmapGlobal.Data;
+        [~] = create_grid(ZG.selection_shape.Points); % getting result forces program to pause until selection is complete
+        ax=mainmap('axes');
+        ZG.Grid.plot(ax,'markersize',15,'ActiveOnly')
+        cb_refresh()
     end
     
     function cb_autogrid(~,~)
@@ -39,14 +47,8 @@ function add_grid_menu(parent)
         ZG=ZmapGlobal.Data;
         m=mainmap();
         [ZG.Grid,ZG.gridopt]=autogrid(m.Catalog(),true,true);
-        if ~isempty(ZG.selection_shape)
-            ZG.Grid = ZG.Grid.MaskWithPolygon(ZG.selection_shape.Lon,ZG.selection_shape.Lat);
-        end
-        ZG.Grid.plot(m.mainAxes,'markersize',20,'ActiveOnly')
-        % following assumes global 
-        %ZG=ZmapGlobal.Data;
-        %[ZG.Grid,ZG.gridopt]=autogrid(ZG.primeCatalog,true,true);
-        %[ZG.Grid,ZG.gridopt]=autogrid(ZG.Views.primary,true,true);
+        ZG.Grid = ZG.Grid.MaskWithShape(ZG.selection_shape);
+        ZG.Grid.plot(m.mainAxes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
     end
     
     function cb_autoradius(~,~)
@@ -65,8 +67,12 @@ function add_grid_menu(parent)
         ZG.GridSelector=evselch;
     end
     
-    function cb_changegridopts(~,~)
-        error('unimplemented')
-        GridParameterChoice();
+    function cb_refresh(~,~)
+        ZG=ZmapGlobal.Data;
+        ax=mainmap('axes');
+        delete(findobj(gcf,'Tag',['grid_',ZG.Grid.Name]))
+        ZG.Grid=ZG.Grid.MaskWithShape(ZG.selection_shape);
+        ZG.Grid.plot(ax,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
     end
+        
 end

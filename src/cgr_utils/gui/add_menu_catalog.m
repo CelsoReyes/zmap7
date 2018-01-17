@@ -40,7 +40,16 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
     
     submenu = uimenu('Label','Catalog','Tag','menu_catalog');
     
-    uimenu(submenu,'Label','Crop catalog to window','Callback',@cb_crop);
+    switch figureHandle.Name
+        case 'Seismicity Map'
+            uimenu(submenu,'Label','Crop main catalog to window axes','Callback',@cb_crop);
+            uimenu(submenu,'Label','Crop main catalog to shape','Callback',@cb_shapecrop);
+            
+        case 'Cumulative Number'
+            uimenu(submenu,'Label','Replace main catalog','Callback',@cb_replace_main);
+            uimenu(submenu,'Label','Crop main catalog to shape','Callback',@cb_shapecrop);
+    end
+        
     
     uimenu(submenu,'Label','Edit Ranges...','Callback',@cb_editrange);
     
@@ -94,6 +103,21 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
         zmap_update_displays();
     end
     
+    function cb_replace_main(~,~)
+        ZG.primeCatalog=ZG.(mycatalog);
+        zmap_update_displays();
+    end
+    
+    function cb_shapecrop(~,~)
+        if isempty(ZG.selection_shape) || isnan(ZG.selection_shape.Points(1))
+            errordlg('No shape exists. Create one from the selection menu first','Cannot crop to shape');
+            return
+        end
+        events_in_shape = ZG.selection_shape.isInside(ZG.(mycatalog).Longitude, ZG.(mycatalog).Latitude);
+        ZG.(mycatalog)=ZG.(mycatalog).subset(events_in_shape);
+        zmap_update_displays();
+    end
+    
     function cb_editrange(~,~)
         [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(mycatalog), ZG.big_eq_minmag);
         ZG.Views.(myview)=tmpcat;
@@ -141,9 +165,9 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
         
         [tt1,tt2]=timesel('cum');
         %ZG.Views.(myview).DateRange=[tt1, tt2];
-        ZG.(mycatalog).Name=ZG.Views.(myview).Catalog;
-        zmap_update_displays();
-        timeplot(mycatalog);
+        ZG.(mycatalog)=ZG.(mycatalog).subset(ZG.(mycatalog).Date>=tt1 & ZG.(mycatalog).Date<=tt2);
+        pl=CumTimePlot.getInstance()
+        pl.reset()
     end
 
 end

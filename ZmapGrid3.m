@@ -155,12 +155,9 @@ classdef ZmapGrid3 < ZmapGrid
             xyz=obj.GridPoints(obj.ActivePoints,:);
         end
         
-        function obj = MaskWithPolygon(obj,polyX, polyY,minDepth,maxDepth)
-            % MaskWithPolygon sets the mask according to a polygon
-            % obj = obj.MaskWithPolygon() user selects polygon from gca
-            % obj = obj.MaskWithPolygon(ax) user selects polygon from axis ax
-            % obj = obj.MaskWithPolygon(polyX, polyY) where polyX and polyY define the polygon
-            obj=MaskWithPolygon@ZmapGrid(obj,polyX,polyY);
+        function obj = MaskWithShape(obj,myshape,minDepth,maxDepth)
+            % MaskWithShape sets the mask according to a polygon
+            obj=MaskWithShape@ZmapGrid(obj,myshape);
             obj.ActivePoints(obj.Z>maxDepth)=false;
             obj.ActivePoints(obj.Z<minDepth)=false;
         end

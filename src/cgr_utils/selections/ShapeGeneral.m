@@ -64,6 +64,7 @@ classdef ShapeGeneral < handle
         Type='unassigned' % shape type
         ApplyGrid=true; %apply grid options to the selected shape.
         ScaleWithLatitude=false;
+        Units = 'degrees'; % either 'degrees' or 'kilometers'
     end
     
     properties(Dependent)
@@ -147,7 +148,8 @@ classdef ShapeGeneral < handle
         end
         
         function [mask]=isInside(obj,otherLon, otherLat)
-            if isempty(SG)
+            % [mask]=isInside(obj,otherLon, otherLat)
+            if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon

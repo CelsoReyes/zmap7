@@ -33,7 +33,7 @@ classdef ZmapGrid
     %     length - number of grid points
     %     isempty - true if no grid is defined
     %     MeshSize - [number of X, number of Y[, number of Z]]
-    %     MaskWithPolygon - set the logicalmask to true where points are in polygon, false elsewhere
+    %     MaskWithShape - set the logicalmask to true where points are in polygon, false elsewhere
     %
     %     load - load grid from a .mat file [static method]
     %     save - save this grid to a .mat file
@@ -103,17 +103,17 @@ classdef ZmapGrid
                                         myshape = ShapeCircle.selectUsingMouse();
                                         myshape.plot(gca)
                                         pause(2);
-                                        obj=obj.MaskWithPolygon(myshape.Lon,myshape.Lat);
+                                        obj=obj.MaskWithShape(myshape.Lon,myshape.Lat);
                                         myshape.clearplot;
                                     case 'polygon'
                                         myshape=ShapePolygon();
                                         myshape.select_polygon();
-                                        obj=obj.MaskWithPolygon(myshape.Lon,myshape.Lat);
+                                        obj=obj.MaskWithShape(myshape.Lon,myshape.Lat);
                                     otherwise
                                         % do nothing
                                 end
                             else
-                                obj=obj.MaskWithPolygon(myshape.Points);
+                                obj=obj.MaskWithShape(myshape.Points);
                             end
                         end
                     else
@@ -180,25 +180,28 @@ classdef ZmapGrid
             val = isempty(obj.X);
         end
         
-        function obj = MaskWithPolygon(obj,polyX, polyY)
-            % MaskWithPolygon sets the mask according to a polygon
-            % obj = obj.MaskWithPolygon() user selects polygon from gca
-            % obj = obj.MaskWithPolygon(ax) user selects polygon from axis ax
-            % obj = obj.MaskWithPolygon(polyX, polyY) where polyX and polyY define the polygon
+        function obj = MaskWithShape(obj,polyX, polyY)
+            % MaskWithShape sets the mask according to a polygon
+            % obj = obj.MaskWithShape() user selects polygon from gca
+            % obj = obj.MaskWithShape(shape)
+            % obj = obj.MaskWithShape(polyX, polyY) where polyX and polyY define the polygon
             report_this_filefun(mfilename('fullpath'));
             narginchk(1,3);
             nargoutchk(1,1);
             switch nargin
-                case 1
-                    [polyX, polyY, mouse_points_overlay] = select_polygon(gca);
-                    pause(1);
-                    delete(mouse_points_overlay);
                 case 2
-                    %ax=polyX; % this param is actually an axis, not x values
-                    [polyX, polyY, mouse_points_overlay] = select_polygon(gca);
-                    pause(1);
-                    delete(mouse_points_overlay);
-                otherwise
+                    if isa(polyX,'ShapeGeneral')
+                        polyY=polyX.Lat;
+                        polyX=polyX.Lon; 
+                    end
+                    
+                case 1
+                    ZG=ZmapGlobal.Data;
+                    if ~isempty(ZG.selection_shape) && ~isnan(ZG.selection_shape.Points(1))
+                        polyX=ZG.selection_shape.Lon; 
+                        polyY=ZG.selection_shape.Lat;
+                    end
+                case 3
                     if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
                         warning('polygon is not closed. adding a point to close it.')
                         polyX(end+1)=polyX(1);

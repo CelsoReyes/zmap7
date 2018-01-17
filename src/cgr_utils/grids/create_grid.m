@@ -1,12 +1,14 @@
-function [gr,zgr,pgr] = create_grid(pts)
+function [pgr] = create_grid(pts, follow_parallels)
     % Interactively define a grid
     %
-    % [GR, ZGR] = CREATE_GRID(PTS)
-    %     PTS is a polygon. only grid points with PTS will be shown
-    %  GR is all data points, as [lon,lat; ...]
-    %  ZGR is a ZmapGrid. This is only filled in if IGNORE_EFFECT_OF_LAT is true;
+    % CREATE_GRID will create a ZmapGrid interactively. Upon closing the window or choosing "Set"
+    % the global ZmapData.Grid will be updated.
     %
-    %  set creates PGR, which is a grid suitable for use in pcolor, but not for ZmapGrid
+    % CREATE_GRID(PTS) PTS is a polygon. only grid points with PTS will be shown
+    %  GR is all data points, as [lon,lat; ...]
+    %  ZGR is a ZmapGrid.
+    % CREATE_GRID(PTS, FOLLOW_PARALLELS) if FOLLOW_PARALLELS is false, then distances are constant.
+    % if FOLLOW_PARALLELS is TRUE, then degrees of longitude are constant.
     %
     % Choose an origin point
     % Choose a point to define initial spacing
@@ -28,13 +30,12 @@ function [gr,zgr,pgr] = create_grid(pts)
     % TODO: make this work with gridfun
     
     
-    FOLLOW_PARALLELS = false;
+    FOLLOW_PARALLELS = exist('follow_parallels','var') && follow_parallels;
+    USEPOLY=exist('pts','var') && ~isempty(pts) && ~isnan(pts(1));
     name='grid';
     changed=false;
     
-    if ~exist('ZG','var') || isempty('ZG')
         ZG=ZmapGlobal.Data;
-    end
     
     f=figure('Name','Grid Selection','Units','pixels','Position',[200 75 730 700]);
     
@@ -48,7 +49,7 @@ function [gr,zgr,pgr] = create_grid(pts)
     ylabel('latitude')
     hold on;
     
-    if exist('pts','var')
+    if exist('pts','var') && ischar(pts)
         switch pts
             case 'testpoly'
                 pts =[... % SAMPLE POLYGON, FOR TESTING
@@ -70,7 +71,7 @@ function [gr,zgr,pgr] = create_grid(pts)
     copyobj(ZG.features('borders'),ax);
     
     % DISPLAY POLYGON
-    if exist('pts','var')
+    if USEPOLY
         plot(ax, pts(:,1),pts(:,2),'k:','linewidth',2,'DisplayName','polygon');
     end
     
@@ -86,6 +87,8 @@ function [gr,zgr,pgr] = create_grid(pts)
     % ADDITIONAL CONTROLS
     uicontrol('style','pushbutton','Units','pixels','Position',[310 30 50 20],'String','SET','Callback',@set_grid);
     ned = uicontrol('style','edit','Units','pixels','Position',[310 70 50 20],'String',name,'Callback',@(~,~)update_plot());
+    
+    uicontrol('style','checkbox','Units','pixels','Position',[310 30 80 20],'String','Follow Parallels? (adjusts for lat)','Callback',@toggle_parallels);
     % SELECT FIXED POINT
     write_string(t,'Enter a fixed point for the grid');
     [x,y]=ginput(1);
@@ -114,7 +117,9 @@ function [gr,zgr,pgr] = create_grid(pts)
     f.DeleteFcn=@check_for_save;
     
     write_string(t,'Scroll the mouse wheel to scale')
-    %waitfor(f)
+    if nargout > 0 
+        waitfor(f)
+    end
     
     function adjust_grid(~,ev)
         % adjust grid spacing when mouse wheel is scrolled
@@ -131,11 +136,13 @@ function [gr,zgr,pgr] = create_grid(pts)
     end
     
     function set_grid(~,~)
-        if ~isempty(zgr)
-            ZG.Grid=zgr;
-        end
+        ZG.Grid=ZmapGrid(name,pgr.xs,pgr.ys,'deg');
         changed=false;
-        assignin('base','pgr',pgr);
+    end
+    
+    function toggle_parallels(src,~)
+        FOLLOW_PARALLELS=src.Value==1;
+        update_plot();
     end
     
     function update_plot()
@@ -144,7 +151,7 @@ function [gr,zgr,pgr] = create_grid(pts)
         %gpts_h.YData=gy(:);
         changed=true;
         [gx,gy]=get_eq_grid(x,y,dx,dy);
-        if exist('pts','var')
+        if USEPOLY
             ll=polygon_filter(pts(:,1),pts(:,2),gx(:),gy(:),'inside');
         else
             ll=true(size(gx(:)));
@@ -154,20 +161,13 @@ function [gr,zgr,pgr] = create_grid(pts)
         
         gr=[gpts_h2.XData(:), gpts_h2.YData(:)];
         
-        if FOLLOW_PARALLELS
-            zgr=ZmapGrid(ned.String,unique(gx),unique(gy),'deg');
-            zgr.ActivePoints(:)=ll;
-        else
-            zgr=[]; % ZMAPGRID has to have matrix of points, not point cloud
-        end
-        
         % assign pgrid
         ugy=unique(gy); % lats in matrix
         nrows=numel(ugy); % number of latitudes in matrix
-        [~,example]=min(abs(gy)); % latitude closest to equator will have most number of lons in matrix
-        mostCommonY=gy(example); % account fort the abs possibly flipping signs
+        [~,example]=min(abs(gy(:))); % latitude closest to equator will have most number of lons in matrix
+        mostCommonY=gy(example); % account for the abs possibly flipping signs
         base_lon_idx=find(gx(gy==mostCommonY)==x); % longitudes that must line up
-        ncols=sum(gy==mostCommonY); % most number of lons in matrix
+        ncols=sum(gy(:)==mostCommonY); % most number of lons in matrix
         ys=repmat(ugy(:),1,ncols);
         xs=nan(nrows,ncols);
         for n=1:nrows
@@ -182,7 +182,7 @@ function [gr,zgr,pgr] = create_grid(pts)
         end
         pgr.xs=xs;
         pgr.ys=ys;
-        if exist('pts','var')
+        if USEPOLY
             ll=polygon_filter(pts(:,1),pts(:,2),pgr.xs,pgr.ys,'inside');
             pgr.xs(~ll)=nan;
             pgr.ys(~ll)=nan;
@@ -246,12 +246,14 @@ function [gr,zgr,pgr] = create_grid(pts)
         update_plot()
         src.Pointer='arrow';
     end
+    
     function mouse_move(~,~)
         x=ax.CurrentPoint(1,1);
         y=ax.CurrentPoint(1,2);
         fp.XData=x;
         fp.YData=y;
     end
+    
     function check_for_save(src,ev)
         if changed
             dosave=questdlg('Save Changes?','Grid Creation','Yes','No','Yes');

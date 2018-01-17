@@ -104,12 +104,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     mask=zgrid.ActivePoints;
     
-    %{
-    hasZ=size(zgrid,2)==3;
-    if hasZ
-        Zs=zgrid(:,3);
-    end
-    %}
     drawnow
     
     % start parallel pool if necessary, but warn user!
@@ -130,9 +124,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     
     mytic = tic;    
-    
-    %wai = waitbar(0,' Please Wait ...  ');
-    %set(wai,'NumberTitle','off','Name',[zgrid.Name ' - percent done']);
     
     gridmsg = sprintf('Computing values across grid.            %d Total points', length(zgrid));
     if ~iscell(infun)
@@ -221,45 +212,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             end
         else
             error('disabled parallel processing')
-            %{
-            parfor i=1:length(zgrid)
-                fun=myfun; % local copy of function
-                % is this point of interest?
-                if usemask && ~mask(i)
-                    continue
-                end
-                
-                x=Xs(i);
-                y=Ys(i);
-                if doZ
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,Zs(i));
-                else
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
-                end
-                
-                nEvents(i)=minicat.Count;
-                maxDist(i)=maxd;
-                if ~isempty(minicat)
-                    maxMag(i)=max(minicat.Magnitude);
-                end
-                % are there enough events to do the calculation?
-                if minicat.Count < selcrit.requiredNumEvents
-                    nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
-                    continue
-                end
-                
-                returned_vals = fun(minicat);
-                values(i,:)=returned_vals;
-                
-                wasEvaluated(i)=true;
-                %waitbar(i/length(zgrid))
-                if ~mod(i,ceil(length(zgrid)/50))
-                    drawnow
-                end
-            end
-            %}
         end
-        %close(wai)
     end
 
     % helper functions

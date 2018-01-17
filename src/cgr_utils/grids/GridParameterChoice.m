@@ -33,11 +33,12 @@ classdef GridParameterChoice < handle
         dz_units=''
         GridEntireArea
         SaveGrid=false; % TODO: move to dependent and add ui widget
+        UseExisting=true;
     end
     properties(Dependent)
         LoadGrid
         CreateGrid
-        %UseGlobalGrid
+        UseGlobalGrid
     end
     properties(Access=private)
         hLoadGrid %handle to the load_grid button
@@ -59,10 +60,17 @@ classdef GridParameterChoice < handle
                 out = obj.ubg2.SelectedObject==obj.hLoadGrid;
             end
         end
+        function out=get.UseGlobalGrid(obj)
+            if ~isstruct(obj.ubg2)
+                out=true; % using ZG
+            else
+                out = obj.ubg2.SelectedObject==obj.hUseGlobalGrid;
+            end
+        end
 
         function out=get.CreateGrid(obj)
             if ~isstruct(obj.ubg2)
-                out=true; % using ZG
+                out=false; % using ZG
             else
                 out = obj.ubg2.SelectedObject==obj.hCreateGrid;
             end
@@ -82,6 +90,7 @@ classdef GridParameterChoice < handle
                 'GridEntireArea',obj.GridEntireArea,...
                 'SaveGrid',obj.SaveGrid,...
                 'LoadGrid',obj.LoadGrid,...
+                'UseGlobalGrid',obj.UseGlobalGrid,...
                 'CreateGrid',obj.CreateGrid);
         end
         
@@ -136,7 +145,7 @@ classdef GridParameterChoice < handle
             obj.hUseGlobalGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Use Existing grid','Units','pixels','Position',[105  90 280  24],...
-                'Enable',logical2onoff(~isa(ZG.Grid,'ZmapGrid')));
+                'Enable',logical2onoff(isa(ZG.Grid,'ZmapGrid')));
             obj.hLoadGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Load grid','Units','pixels','Position',[220  90 280  24]);
@@ -213,7 +222,12 @@ classdef GridParameterChoice < handle
                 'Value',~obj.GridEntireArea,...
                 'ToolTipString','Either Select Polygon or grid entire area');
             
-            obj.ubg2.SelectedObject=obj.hCreateGrid;
+            % if a grid exists, use it
+            if ~isempty(ZG.Grid)
+                obj.ubg2.SelectedObject=obj.hUseGlobalGrid;
+            else
+                obj.ubg2.SelectedObject=obj.hCreateGrid;
+            end
             obj.ubg2.SelectionChangedFcn=@callback_gridcontrol;
             
             uicontrol(obj.ubg2,'Style','pushbutton',...
@@ -283,13 +297,7 @@ classdef GridParameterChoice < handle
             end
         end
     end
-    %{
-    methods(Access=protected)
-        function obj = set.LoadGrid(obj,tf)
-            obj.LoadGrid
-        end
-    end
-    %}
+    
     methods(Static)
         function quickshow()
             %quickly test  the ZmapDialog

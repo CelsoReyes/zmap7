@@ -191,14 +191,11 @@ function calc_Omoricross()
             x = [x ; x(1)];
             y = [y ; y(1)];     %  closes polygon
             clear vXLim vYLim;
-        else
-            ax = mainmap('axes');
-            [x,y, mouse_points_overlay] = select_polygon(ax);
         end % of if bGridEntireArea
         
         % CREATE THE GRID (NEW WAY)
         mygrid = ZmapGrid('omoricross', min(x):dx:max(x), min(y):dy:max(y), 'km');
-        mygrid = mygrid.MaskWithPolygon(x,y);
+        mygrid = mygrid.MaskWithShape(ZG.shape_selection);
         mygrid.plot();
         ll=mygrid.ActivePoints; % holdover.
         

@@ -64,7 +64,7 @@ classdef ShapePolygon < ShapeGeneral
                         obj.Points=varargin{1};
                         %TODO check integerity, and make sure last point matches first
                     else
-                        obj=select_polygon(obj);
+                        obj.select_polygon();
                     end
                     ZG.selection_shape=obj;
             end
