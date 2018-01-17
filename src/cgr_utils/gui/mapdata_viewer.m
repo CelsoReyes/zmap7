@@ -295,9 +295,10 @@ function mapdata_viewer(res,resfig)
         
         %% modify event with depth
         
+        tmpdeph=histcounts(theseEvents.Depth,depBinEdges);
         if createNewField
             hold(evdepax,'on');
-            tmpdeph=histcounts(theseEvents.Depth,depBinEdges)
+            %tmpdeph=histcounts(theseEvents.Depth,depBinEdges)
             selections.(field).ed=plot(evdepax, ...
                 tmpdeph,depBinCenters,...
                 'marker',curChar);
@@ -305,8 +306,8 @@ function mapdata_viewer(res,resfig)
             evdepax.XLimMode='auto';
             evdepax.YLimMode='auto';
         else
-            selections.(field).ed.XData=theseEvents.Date;
-            selections.(field).ed.YData=1:theseEvents.Count;
+            selections.(field).ed.XData=tmpdeph;
+            %selections.(field).ed.YData=1:theseEvents.dep;
         end
         selections.(field).ed.Color=thiscolor;
         

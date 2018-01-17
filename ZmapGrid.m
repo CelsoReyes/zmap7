@@ -273,6 +273,10 @@ classdef ZmapGrid
             if ~exist('name','var')
                 name = '';
             end
+            assert(numel(obj.X)==numel(values),'Number of values doesn''t match number of points')
+            if isvector(values) && ~isvector(obj.X)
+                values=reshape(values,size(obj.X));
+            end
             h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
         
