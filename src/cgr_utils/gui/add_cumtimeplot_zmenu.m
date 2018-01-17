@@ -83,7 +83,11 @@ function add_cumtimeplot_zmenu(obj, parent)
     %uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
     %    'Callback',@(~,~)errordlg('unimplemented','unimplemented');
     
-    
+    function plotwithtime(mysrc,myevt,sPar)
+        %sPar tells what to plot.  'mc', 'b'
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        plot_McBwtime(sPar);
+    end
     
     function cb_hold(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

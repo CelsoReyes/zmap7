@@ -297,9 +297,7 @@ classdef MainInteractiveMap
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
             uimenu(submenu,'Label','Create [simple] cross-section','Callback',@cb_xsect);
-            uimenu(submenu,'Label','Create cross-section',...
-                ...'Enable','off',...
-                'Callback',@(~,~)nlammap());
+            uimenu(submenu,'Label','Create cross-section','Enable','off','Callback',@(~,~)nlammap());
             
             obj.create_histogram_menu(submenu);
             obj.create_mapping_rate_changes_menu(submenu);
@@ -1075,6 +1073,8 @@ function cb_create_syhthetic_cat(src,~)
 end
 
 function cb_xsect(src,~)
+    plot_cross_section_from_mainmap();
+    return
     %CB_XSECT create a cross-section from the map.
     % you can choose section width, start & end labels, and color.
     %
@@ -1132,7 +1132,8 @@ function cb_xsect(src,~)
     figure('Name',['cross-section ' zans.startlabel '-' zans.endlabel],...
         'DeleteFcn',@(~,~)delete([xs_endpts,xs_line,slabel,elabel, xspoly])... autodelete xsection when figure is closed
         );
-    % plot events and
+    
+    % plot events
     ax=subplot(3,3,[1 5])
     scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
     hold on

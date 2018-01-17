@@ -55,7 +55,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     report_this_filefun(mfilename('fullpath'));
     
     global  torad
-    % global lat1 lon1 lat2 lon2 
+    % global lat1 lon1 lat2 lon2
     global leng rbox box
     global sine_phi0 phi0 lambda0 phi1 phi2 pos sw eq1
     global maxlatg minlatg maxlong minlong
@@ -66,9 +66,8 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     todeg = 180 / pi;
     eq1 =[];
     
-    if nargin < 9
-        
-        if nargin == 8	% method 2: given lat & lon of center point and angle
+    switch nargin
+        case 8 % method 2: given lat & lon of center point and angle
             
             lat0 = lat1;
             lon0 = lon1;
@@ -90,7 +89,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             [lat1, lon1] = lc_froca(x1,y1);
             [lat2, lon2] = lc_froca(x2,y2);
             
-        elseif nargin == 4	% method 3: selection of the end points by mouse
+        case 4	% method 3: selection of the end points by mouse
             [lat1, lon1] = inputm(1);
             h=plotm(lat1, lon1,'rx','markersize',6,'linewidth',2);
             [lat2, lon2] = inputm(1);
@@ -132,40 +131,34 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             leng = length;
             %}
             
-        else
+        case 9	% method 1: given lat & lon of the two end points
+            figure(mapl);
+            [x1, y1] = lc_tocart(lat1,lon1);
+            [x2, y2] = lc_tocart(lat2,lon2);
+            
+            if x1 > x2
+                xtemp = x1; ytemp = y1;
+                x1 = x2; y1 = y2;
+                x2 = xtemp; y2 = ytemp;
+                sw = 'on'
+            else
+                sw = 'of'
+            end
+            
+            x0 = (x1 + x2) / 2;
+            y0 = (y1 + y2) / 2;
+            [lat0, lon0] = lc_froca(x0,y0);
+            dx = x2 - x1;
+            dy = y2 - y1;
+            
+            alpha = 90 - (atan(dy/dx)*todeg);
+            length = sqrt(dx^2 + dy^2);
+            
+        otherwise
+            
             disp('ERROR: incompatible number of arguments')
             help mysect
             return
-        end
-        
-    elseif nargin == 9	% method 1: given lat & lon of the two end points
-        figure(mapl);
-        [x1, y1] = lc_tocart(lat1,lon1);
-        [x2, y2] = lc_tocart(lat2,lon2);
-        
-        if x1 > x2
-            xtemp = x1; ytemp = y1;
-            x1 = x2; y1 = y2;
-            x2 = xtemp; y2 = ytemp;
-            sw = 'on'
-        else
-            sw = 'of'
-        end
-        
-        x0 = (x1 + x2) / 2;
-        y0 = (y1 + y2) / 2;
-        [lat0, lon0] = lc_froca(x0,y0);
-        dx = x2 - x1;
-        dy = y2 - y1;
-        
-        alpha = 90 - (atan(dy/dx)*todeg);
-        length = sqrt(dx^2 + dy^2);
-        
-    else
-        
-        disp('ERROR: incompatible number of arguments')
-        help mysect
-        return
     end
     
     % correction factor to correct for longitude away from the center meridian
@@ -276,7 +269,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     end
     
     figure(xsec_fig);
-
+    
     delete(findobj(xsec_fig,'Type','axes'));
     set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
     

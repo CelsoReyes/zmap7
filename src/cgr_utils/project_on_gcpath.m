@@ -12,6 +12,7 @@ function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, m
     %  great circle (along strike), (distance in km from pt1)
     %
     % see also gcwaypts
+    
     if nargin==1 && strcmp(pt1,'test')
         [projectedcat,mindist,mask,gcDist]=test_this;
         return

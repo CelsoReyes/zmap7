@@ -64,6 +64,7 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
             % Check static for length of catalog
             if mCat.Count >= nMinNum
                 [ fBvalue, fStdDev, fAvalue] =  calc_bmemag(mCat, fBinning);
+                fMeanMag=mean(mCat.Magnitude);
             else
                 fMeanMag = NaN;
                 fBvalue = NaN;
