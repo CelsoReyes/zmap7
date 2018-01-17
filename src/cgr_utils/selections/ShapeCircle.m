@@ -108,18 +108,30 @@ classdef ShapeCircle < ShapeGeneral
             end
         end
         function add_shape_specific_context(obj,c,ax)
+            uimenu(c,'label','Choose Radius','Callback',@chooseRadius)
             uimenu(c,'label','Snap To N Events','Callback',@snapToEvents)
             
             function snapToEvents(~,~)
                 ZG=ZmapGlobal.Data;
-                nc=inputdlg('Number of events to enclose','Snap Circle',1,{num2str(ZG.ni)});
-                nc=round(str2num(nc{1}));
+                nc=inputdlg('Number of events to enclose','Edit Circle',1,{num2str(ZG.ni)});
+                nc=round(str2double(nc{1}));
                 if ~isempty(nc) && ~isnan(nc)
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
                     obj.plot(ax); % replot
                     ZG.selection_shape=obj;
                 end
+            end
+            function chooseRadius(~,~)
+                ZG=ZmapGlobal.Data;
+                nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
+                nc=str2double(nc{1});
+                if ~isempty(nc) && ~isnan(nc)
+                    obj.Radius=nc;
+                    obj.plot(ax); % replot
+                    ZG.selection_shape=obj;
+                end
+                
             end
         end
         

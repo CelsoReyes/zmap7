@@ -115,7 +115,13 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
         end
         events_in_shape = ZG.selection_shape.isInside(ZG.(mycatalog).Longitude, ZG.(mycatalog).Latitude);
         ZG.(mycatalog)=ZG.(mycatalog).subset(events_in_shape);
+            
         zmap_update_displays();
+        
+        % adjust the size of the main map if the current figure IS the main map
+        set(findobj(gcf,'Tag','mainmap_ax'),...
+            'XLim',[min(ZG.(mycatalog).Longitude),max(ZG.(mycatalog).Longitude)],...
+            'YLim',[min(ZG.(mycatalog).Latitude),max(ZG.(mycatalog).Latitude)]);
     end
     
     function cb_editrange(~,~)
