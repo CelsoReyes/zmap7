@@ -273,7 +273,7 @@ return
                 if org==2
                     E = mycat;
                 end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
-                startfd;
+                startfd(2);
             end
             
             function cb_resetcat(mysrc,myevt)

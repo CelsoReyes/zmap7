@@ -586,7 +586,7 @@ function timeplot(mycat, nosort)
         if org==2
             E = mycat;
         end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
-        startfd;
+        startfd(org);
     end
     
     function cb_histogram(mysrc,myevt,hist_type)

@@ -70,7 +70,7 @@ function callbackfun_004(mysrc,myevt)
   
    gobut = [2];
    org = [1];
-   startfd;
+   startfd(1,gobut);
 end
  
 end

@@ -15,46 +15,45 @@ function meandepx(catalog, dist_km)
     switch button
         case 'Constant number steps'
             
-            
-            def = {'50','10'};
-            ni2 = inputdlg({'Average over how many events in each step?','Move window by how many events?'},'Mean depth computation',1,def);
-            l = ni2{1};
-            xstep = str2double(l);
-            l = ni2{2};
-            movew = str2double(l);
-            
+            [xstep, movew] = constnumstepdialog(50,10);
+            [d,idx] = sort(dist_km);
+            z = -catalog.Depth(idx);
+            %{
             col = length(catalog(1,:));
-            [s,is] = sort(catalog(:,col));
+            [s,is] = sort(catalog(:,col)); % last column (?)
             catalog = catalog(is(:,1),:) ;
             
             d= catalog(:,col);
             z =-catalog.Depth;
-            
-            MD = [];
-            for i= 1:movew:length(d)-xstep
-                MD = [MD ; mean(z(i:i+xstep)) mean(d(i:i+xstep)) std(z(i:i+xstep))];
+            %}
+            stepvalues = 1 : movew : length(d)-xstep; 
+            MD = nan(numel(stepvalues),3);
+            for i= 1:numel(stepvalues)
+                thisrange = stepvalues(i) : stepvalues(i)+xstep;
+                meanz=mean(z(thisrange)); 
+                meand=mean(d(thisrange));
+                stdz=std(z(thisrange));
+                MD(i,:) = [meanz, meand, stdz];
             end
             
         case 'Constant km steps'
-            
-            def = {'50','10'};
-            ni2 = inputdlg({'Step width in km?','step size in [km]'},'Mean depth computation',1,def);
-            l = ni2{1};
-            xstep = str2double(l);
-            l = ni2{2};
-            movew = str2double(l);
-            
+            [xstep, movew] = constkmstepdialog(50,10);
+            [d,idx] = sort(dist_km);
+            z = -catalog.Depth(idx);
+            %{
             [s,is] = sort(catalog(:,10));
             catalog = catalog(is(:,1),:) ;
             
             col = length(catalog(1,:));
             d= catalog(:,col);
             z =-catalog(:,7);
-            
-            MD = [];
-            for i= 0:movew:max(d)-xstep
+            %}
+            stepvalues = 0 : movew : max(d)-xstep;
+            MD = nan(numel(stepvalues),3);
+            for n= 1:numel(stepvalues)
+                i=stepvalues(n);
                 l = d >= i & d < i+xstep;
-                MD = [MD ; mean(z(l)) mean(d(l)) std(z(l))];
+                MD(n,:) = [mean(z(l)) mean(d(l)) std(z(l))];
             end
             
     end % switch
@@ -70,4 +69,22 @@ function meandepx(catalog, dist_km)
     axis([min(d) max(d) min(z) max(z)]);
     xlabel('Distance [km]')
     ylabel('Depth [km]');
+end
+
+function [xstep, movew] = constnumstepdialog(xstep,movew)
+    def = {num2str(xstep),num2str(movew)};
+    ni2 = inputdlg({'Average over how many events in each step?','Move window by how many events?'},'Mean depth computation',1,def);
+    l = ni2{1};
+    xstep = str2double(l);
+    l = ni2{2};
+    movew = str2double(l);
+end
+
+function [xstep, movew] = constkmstepdialog(xstep,movew)
+    def = {num2str(xstep),num2str(movew)};
+    ni2 = inputdlg({'Step width in km?','step size in [km]'},'Mean depth computation',1,def);
+    l = ni2{1};
+    xstep = str2double(l);
+    l = ni2{2};
+    movew = str2double(l);
 end

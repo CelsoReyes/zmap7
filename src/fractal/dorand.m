@@ -284,7 +284,7 @@ function callbackfun_001(mysrc,myevt)
   E = ran;
     gobut = 1;
    org = 1;
-   startfd;
+   startfd(org,gobut);
    end;
 end
  

@@ -86,6 +86,6 @@ E = sphere;
 
 %org = [9];
 org = [1];
-startfd;
+startfd(1);
 
 end

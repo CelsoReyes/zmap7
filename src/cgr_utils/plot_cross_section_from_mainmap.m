@@ -135,7 +135,7 @@ function create_my_menu(c2,dist_along_strike_km)
             'callback',@cb_fractaldim);
         
         uimenu(options,'Label','Mean Depth',...
-            'callback',{@cb_meandepth,c2});
+            'callback',{@cb_meandepth,c2, dist_along_strike_km});
         
         uimenu(options,'Label','z-value grid',...
             'callback',@cb_zvaluegrid);
@@ -197,10 +197,10 @@ function create_my_menu(c2,dist_along_strike_km)
         Dcross();
     end
     
-    function cb_meandepth(mysrc,myevt,mycat)
+    function cb_meandepth(mysrc,myevt,mycat, dist_km)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        meandepx(mycat);
+        meandepx(mycat, dist_km);
     end
     
     function cb_zvaluegrid(mysrc,myevt)

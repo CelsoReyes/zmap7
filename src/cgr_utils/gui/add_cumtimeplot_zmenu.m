@@ -120,5 +120,26 @@ function add_cumtimeplot_zmenu(obj, parent)
         obj.hold_state=false;
         bdiff2();
     end
+
+    function cb_cut_mainshock(mysrc,myevt)
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        l = min(find( ZG.(obj.catname).Magnitude == max(ZG.(obj.catname).Magnitude) ));
+        ZG.(obj.catname) = ZG.(obj.catname).subset(l:ZG.(obj.catname).Count);
+        timeplot() ;
+    end
+    
+    function cb_pestimate(mysrc,myevt)
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        ZG.hold_state=false;
+        pvalcat();
+    end
+    
+      function cb_computefractal(mysrc,myevt, org)
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        if org==2
+            E = mycat;
+        end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
+        startfd(org);
+    end
     
 end

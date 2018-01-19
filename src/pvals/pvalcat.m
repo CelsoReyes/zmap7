@@ -119,27 +119,28 @@ function pvalcat()
     tavg = (sir2(2:end).*sir2(1:end-1)).^(0.5);
     numv=[];
     for j = 1 : numel(sir2)-1
-        num = sum(sir2(j) < eqDates) & (eqDates <= sir2(j+1)); % count events between sir2's
+        num = sum(sir2(j) < timeSinceMainshock) & (timeSinceMainshock <= sir2(j+1)); % count events between sir2's
         numv = [numv, num];
     end
     
     ratac = numv ./ dursir;
     
     frf = kv ./ ((tavg + cv).^pv);
-    frf2 = kv ./ ((tint + cv).^pv);
+    frf2 = kv ./ ((days(tint) + cv).^pv);
     
     frfr = [frf2(1) frf frf2(2)];
-    tavgr = [tint(1) tavg tint(2)];
+    tavgr = [tint(1) days(tavg) tint(2)];
     
+    %TOFIX: this works, but seems to plot incorrectly
     
     llh1=loglog(tavg, ratac, '-k','LineStyle', 'none', 'Marker', '+','MarkerSize',9);
     hold on
-    loglog(tavgr, frfr, '-k','LineWidth',2.0);
+    loglog(days(tavgr), frfr, '-k','LineWidth',2.0);
     
     if ZG.hold_state
-        llh1.Marker='+';
+        set(llh1,'Marker','+');
     else
-        llh1.Marker='o';
+        set(llh1,'Marker','o');
         xlabel(ax,'Time from Mainshock (days)','FontWeight','bold','FontSize',14);
         ylabel(ax,'No. of Earthquakes / Day','FontWeight','bold','FontSize',14);
     end
@@ -181,7 +182,8 @@ function pvalcat()
         end
         disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
         disp(['Number of Earthquakes = ' num2str(length(eqDates))]);
-        events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date(1) + days(cv));
+        %events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date(1) + days(cv));
+        events_used = sum(eqDates > ZG.maepi.Date(1) + days(cv));
         disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
         disp(['tmin = ' char(tmin)]);
         disp(['tmax = ' char(tmax)]);
