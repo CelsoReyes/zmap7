@@ -100,7 +100,7 @@ function rc_cross_a2()
     
     function my_calculate()
         %
-        % TOFIX needs xsecx and xsecy
+        % FIXME needs xsecx and xsecy
      
         figure(xsec_fig());
         hold on

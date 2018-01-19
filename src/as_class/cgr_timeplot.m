@@ -492,7 +492,7 @@ function timeplot(mycat, nosort)
     end
     ylabel(ax,'Cumulative Number ','FontSize',ZG.fontsz.s)
     
-    title(ax,['"', mycat.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
+    title(ax,['"', mycat.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %FIXME I shouldn't need to use a newline here
     
     % Make the figure visible
     %
@@ -585,7 +585,7 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         if org==2
             E = mycat;
-        end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
+        end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
         startfd;
     end
     

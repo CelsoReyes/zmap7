@@ -25,7 +25,7 @@ set(Hf_child,'pointer','watch','papertype','A4');
 
 m = 0;
 
-for l = 1:inc:size(ZG.newt2,1)-nev %TOFIX incorrect referencing throughout
+for l = 1:inc:size(ZG.newt2,1)-nev %FIXME incorrect referencing throughout
 
     E = ZG.newt2.subset(l:(l + nev));
 

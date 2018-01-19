@@ -401,7 +401,8 @@ function clpval(var1)
         
         MIN_CSTEP = 0.000001;
         MIN_PSTEP = 0.00001;
-        loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+        [loopcheck, c, p, dk, sdc, sdp, sdk]=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+        % loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
         
         if autop~=1
             figure(pplot);

@@ -200,7 +200,7 @@ function calc_Omoricross()
         mygrid.plot();
         ll=mygrid.ActivePoints; % holdover.
         
-        %TOFIX create EventSelectionChoice and use gridfun (mygrid.associateWithEvents no longer exists)
+        %FIXME create EventSelectionChoice and use gridfun (mygrid.associateWithEvents no longer exists)
         if tgl1
             % get ni closest events
             gridcats = mygrid.associateWithEvents(ZG.newa,fMaxRadius,ni,min(ZG.maepi.Date),[]);

@@ -27,7 +27,7 @@ function pl = timeplot
     % - set primeCatalog to newt2
     % - set primary view to newt2, but change catalog to 'primary'
     %
-    %TOFIX this is affecting the primaryCatalog, instead of the other catalogs.
+    %FIXME this is affecting the primaryCatalog, instead of the other catalogs.
     
     pl=CumTimePlot.getInstance()
     pl.reset()
@@ -175,7 +175,7 @@ return
                 end
                 ylabel(ax,'Cumulative Number ','FontSize',ZG.fontsz.s)
                 
-                title(ax,['"', mycat.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %TOFIX I shouldn't need to use a newline here
+                title(ax,['"', mycat.Name, '": Cumulative Earthquakes over time ' newline],'Interpreter','none'); %FIXME I shouldn't need to use a newline here
                 
             end
             function s = titleText()
@@ -272,7 +272,7 @@ return
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
                 if org==2
                     E = mycat;
-                end % TOFIX this is probably unneccessary, but would need to be traced in startfd before deleted
+                end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
                 startfd;
             end
             

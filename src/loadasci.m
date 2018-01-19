@@ -1,6 +1,6 @@
 function loadasci(da,sa)
 
-    % TOFIX this doesn't load data into the globals.
+    % FIXME this doesn't load data into the globals.
     ZG=ZmapGlobal.Data;
     
     % make the interface

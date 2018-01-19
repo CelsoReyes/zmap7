@@ -19,22 +19,23 @@ function pvalcat()
     title = 'You can change the following parameters:';
     lines = 1;
     minThreshMag = min(ZG.newt2.Magnitude);
-    minDaysAfterMainshock = 0;
+    minDaysAfterMainshock = days(0); % 
+    mainshockDate = ZG.maepi.Date(1);
     valeg2 = 0; %  decides if c is fixed or not.
     
     
     if ~ensure_mainshock()
         return
     end
-    def = {num2str(minThreshMag), num2str(minDaysAfterMainshock) , num2str(valeg2)};
+    def = {num2str(minThreshMag), num2str(minDaysAfterMainshock/days()) , num2str(valeg2)};
     answer = inputdlg(prompt,title,lines,def);
     
     minThreshMag=str2double(answer{1});
-    minDaysAfterMainshock = str2double(answer{2});
+    minDaysAfterMainshock = days(str2double(answer{2}));
     valeg2 = str2double(answer{3});
     
     % cut catalog at mainshock time:
-    l = ZG.newt2.Date > ZG.maepi.Date(1);
+    l = ZG.newt2.Date > mainshockDate;
     ZG.newt2 = ZG.newt2.subset(l); %keep events AFTER mainshock
     
     % cat at selected magnitude threshold
@@ -55,29 +56,24 @@ function pvalcat()
         CO = str2double(answer{1});
     end
     
-    paramc1 = ZG.newt2.Magnitude >= minThreshMag;
-    pcat = ZG.newt2.subset(paramc1);
+    eqDates = ZG.newt2.Date;
+    timeSinceMainshock = eqDates - mainshockDate;
+    assert(all(timeSinceMainshock>0));
     
-    lt = pcat.Date >= ZG.maepi.Date(1)+days(minDaysAfterMainshock);
-    bpcat = pcat.subset(lt);
+    paramc2 = timeSinceMainshock >= minDaysAfterMainshock;
+    eqDates = eqDates(paramc2);
     
-    [timpa] = timabs(pcat);
-    [timpar] = timabs(ZG.maepi);
-    tmpar = timpar(1);
-    pcatd = (timpa-tmpar)/1440;
-    paramc2 = (pcatd >= minDaysAfterMainshock);
-    pcat = pcat.subset(paramc2);
-    tmin = days(min(pcat.Date) - ZG.maepi.Date(1));
-    tmax = days(max(pcat.Date) - ZG.maepi.Date(1));
-    %tint = days([tmin tmax];
+    tmin = min(timeSinceMainshock);
+    tmax = max(timeSinceMainshock);
+    
     tint = [tmin tmax];
     
-    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(pcat,'date',valeg2,CO,minThreshMag);
+    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(eqDates,'date',valeg2,CO,minThreshMag);
     
     if ~isnan(pv)
-        dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,pcat,tmin,tmax,minThreshMag);
+        dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,eqDates,tmin,tmax,minThreshMag);
     else
-        dispGeneral(pcat,tmin,tmax,minThreshMag);
+        dispGeneral(eqDates,tmin,tmax,minThreshMag);
     end
     
     %Find if the figure already exist.
@@ -113,7 +109,7 @@ function pvalcat()
     powers = -12:0.5:12;
     sir2 = 2 .^ (1:numel(powers)); % remarked out because it just didn't make sense if powers wasn't used anywhere else -CGR
     %sir2 = 2 .^ powers;
-    sir2(sir2<=tmin | sir2 >=tmax) = 0; %guessing whether it is days or years
+    sir2(sir2<=tmin | sir2 >=tmax) = 0;
     
     limit1 = (sir2 > 0);
     sir2(~limit1)=[];
@@ -123,7 +119,7 @@ function pvalcat()
     tavg = (sir2(2:end).*sir2(1:end-1)).^(0.5);
     numv=[];
     for j = 1 : numel(sir2)-1
-        num = sum(sir2(j) < pcat) & (pcat <= sir2(j+1)); % count events between sir2's
+        num = sum(sir2(j) < eqDates) & (eqDates <= sir2(j+1)); % count events between sir2's
         numv = [numv, num];
     end
     
@@ -171,7 +167,7 @@ function pvalcat()
         text(ax,0.05, 0.1,['k = ' num2str(kv)  ' +/- ' num2str(kstd)],'FontWeight','Bold','FontSize',12,'units','norm');
     end
     
-    function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, pcat,tmin,tmax,minThreshMag)
+    function dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb, eqDates,tmin,tmax,minThreshMag)
         ZG=ZmapGlobal.Data;
         disp('');
         disp('Parameters :');
@@ -184,22 +180,22 @@ function pvalcat()
             disp(['c = ' num2str(cv)]);
         end
         disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
-        disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-        events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date + days(cv));
+        disp(['Number of Earthquakes = ' num2str(length(eqDates))]);
+        events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date(1) + days(cv));
         disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
         disp(['tmin = ' char(tmin)]);
         disp(['tmax = ' char(tmax)]);
         disp(['Mmin = ' num2str(minThreshMag)]);
     end
     
-    function dispGeneral(pcat,tmin,tmax,minThreshMag)
+    function dispGeneral(eqDates,tmin,tmax,minThreshMag)
         % dispGeneral shows parameters
         disp([]);
         disp('Parameters :');
         disp('No result');
-        disp(['Number of Earthquakes = ' num2str(length(pcat))]);
-        disp(['tmin = ' num2str(tmin)]);
-        disp(['tmax = ' num2str(tmax)]);
+        disp(['Number of Earthquakes = ' num2str(length(eqDates))]);
+        disp(['tmin = ' char(tmin)]);
+        disp(['tmax = ' char(tmax)]);
         disp(['Mmin = ' num2str(minThreshMag)]);
     end
 end

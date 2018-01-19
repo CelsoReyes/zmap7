@@ -48,7 +48,7 @@ function h=ZmapQuickResultPcolor(ax, res, choice, features)
             try
                 ft=ZG.features(features{j});
                 % newft=copyobj(ft,ax)
-                ft.plot(ax); %TOFIX
+                ft.plot(ax); %FIXME
             catch ME
                 warning('couldn''t plot %s\n%s',features{j},ME.message);
             end

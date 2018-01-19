@@ -222,7 +222,7 @@ function plotala()
     function agz()
         % This script evaluates the percentage of space time coevered by
         %alarms
-        % TOFIX apparently this could take a long time and run out of memory
+        % FIXME apparently this could take a long time and run out of memory
         re = [];
         
         % Stefan Wiemer    4/95
@@ -337,7 +337,7 @@ function plotala()
             m = sort(m);
             m2 = [0 ; m(1:length(m)-1)];
             l = find(m-m2 > 0);
-            do = ['anB' num2str(i) ' = ZG.primeCatalog.subset(m(l));' ]; %TOFIX don't do this this way.
+            do = ['anB' num2str(i) ' = ZG.primeCatalog.subset(m(l));' ]; %FIXME don't do this this way.
             eval(do)
         end
     end

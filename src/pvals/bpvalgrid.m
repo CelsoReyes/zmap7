@@ -15,7 +15,7 @@ function [sel] = bpvalgrid()
     OutCatalogName='newt2';
     Grid=[];
     EventSelector=[];
-    % TOFIX ll isn't guaranteed to be here. it is the index of the events within the polygon
+    % FIXME ll isn't guaranteed to be here. it is the index of the events within the polygon
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     
@@ -194,7 +194,7 @@ function [sel] = bpvalgrid()
         function bpvg = calcguts_opt2(b)
             [bv, magco, stan, av,   pr] =  bvalca3(b.Magnitude,2);
             [bv2, stan2,  av2] =  bmemag(b.Magnitude);
-            maxcat = b(l); % TOFIX there is no l here.
+            maxcat = b(l); % FIXME there is no l here.
             maxmg = max(maxcat.Magnitude);
             [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(b.subset(l),'days',valeg2,CO,minThreshMag);
             
@@ -290,7 +290,7 @@ function [sel] = bpvalgrid()
         zdlg.AddBasicEdit('const_c','omori c parameter', valeg2, 'C-parameter parameter (fixed)');
         zdlg.AddBasicEdit('minpe','min goodness %', nan, 'Minimum goodness of fit (percentage)');
         % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
-        % TOFIX min number of events should be the number > Mc
+        % FIXME min number of events should be the number > Mc
         
         [res, okpressed]=zdlg.Create('B P val grid');
         if ~okpressed

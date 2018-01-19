@@ -220,7 +220,7 @@ function  bdiff(mycat, holdplot)
         uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)','Callback',@cb_nonlin_optimize);
         uimenu(options,'Label','Examine Nonlinearity (Keep Mc)','Callback',@cb_nonlin_keepmc);
         uimenu(options,'Label','Do not show discrete', 'callback',@cb_nodiscrete);
-        uimenu(options,'Label','Save values to file', 'Enable','off','Callback',{@calSave9,magsteps_desc, bvalsum3}); %TOFIX decide what actually gets saved
+        uimenu(options,'Label','Save values to file', 'Enable','off','Callback',{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
         
     end
     

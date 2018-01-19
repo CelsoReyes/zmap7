@@ -1,4 +1,4 @@
-function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevcall)
+function [loopcheck, pc_, pp_, pk_, sdc, sdp, sdk] = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevcall)
     % loop for calculating c and p values
     % if cstep is empty, then neither cstep or err1 will be calculated
     % sdevcall will contain 'kpc', 'kp', or 'kp~' to determine how kcp_stdevs behaves
@@ -20,16 +20,18 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
     % ploop parts attributed to A.Allmann and B. Enescu
     % routines deconstructed & merged by C. Reyes 2017
     
-    global p tt pc loop nn pp
+    % TODO: get rid of all these globals!!@!!Q#RQR@!#R$@!
+    global pc pp pk 
+    global tt loop nn
     global nit t
     global err1x err2x  % previous errors
     global ieflag isflag %error small enough, step small enough
-    global pk qp
+    global qp
     global err1 err2
     global cstep pstep
     global ts eps1 eps2
     global pcheck
-    global sdk sdp sdc
+    %global sdk sdp sdc
     
     loopcheck=0;
     
@@ -41,12 +43,12 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
     % t  = time of each event (a vector)
     while loopcheck < 500
         if ~isnumeric(t)
-            fprintf('t is a %s',class(t));
+            %fprintf('t is a %s',class(t));
             % normalize all times to days after first event
             t = days(t - ts);
             tt = days(tt - ts);
             ts = days(ts - ts);
-            fprintf(' now t is a %s\n',class(t) );
+            %fprintf(' now t is a %s\n',class(t) );
         end
         
         % preverr was never assigned anywhere
@@ -106,7 +108,11 @@ function loopcheck = ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, trackLoop, stdevc
         err2x=err2;
         
     end
-    p= pp;
+    %p= pp;
+    pp_=pp;
+    pc_=pc;
+    pk_=pk;
+    
 end
 
 %%
@@ -126,5 +132,140 @@ function perr = p_err(t, pc, pk, qp, tt, ts)
     perr=esumln;
 end
 
+function [cstep, pc, loop] = take_cstep(MIN_CSTEP, cstep, preverr, ts, pc, nit, err1, loop)
+    if isempty(MIN_CSTEP); return; end
+    
+    STEP_REDUCTIONFACTOR = 0.9;
+    
+    if nit>1
+        %if error has changed sign,reduce the step size
+        if ~same_sign(preverr,err1)  &&  cstep >= MIN_CSTEP
+            cstep=cstep * STEP_REDUCTIONFACTOR;
+        end
+    end
+    
+    pc = pc - cstep * sign(err1); % move closer to zero
+    
+    dt=ts+pc;
+    if dt <= 0
+        pc=ts+cstep;
+    end
+    if ~isempty(loop) && loop == 30
+        cstep=cstep * STEP_REDUCTIONFACTOR;
+        loop=0;
+    end
+    
+end
+
+function [pstep, pp] = take_pstep(MIN_PSTEP, pp, pstep, preverr, nit, err2)
+    %function to calculate the parameters of p-value
+    if isempty(MIN_PSTEP); return; end
+    STEP_REDUCTIONFACTOR = 0.9;
+    
+    if nit>1
+        %if error has changed sign,reduce the step size
+        if ~same_sign(preverr,err2) &&  pstep>= MIN_PSTEP
+            pstep=pstep * STEP_REDUCTIONFACTOR;
+        end
+    end
+    
+    pp = pp - pstep * sign(err2); % move closer to zero
+end
 
 
+function [sdk, sdp, sdc] = kcp_stdevs()
+    % calculate standard deviations for k, c, and p values
+    %kcp_stdevs.m                          A.Allmann
+    %
+    %function to calculat the parameters of p-value
+    %calls itself with different parameters for different loops in programm
+    
+    % TODO: get rid of all these globals!!@!!Q#RQR@!#R$@!
+    
+    global p c tt pc pp 
+    global pk ts dk 
+    
+    te=tt;
+    p=pp;
+    c=pc;
+    dk=pk;
+    
+    %case1
+    f1=((te+c)^(-p+1))/(-p+1);
+    h1=((ts+c)^(-p+1))/(-p+1);
+    s(1)=(1/dk)*(f1-h1);
+    
+    %case2
+    f2=((te+c)^(-p));
+    h2=((ts+c)^(-p));
+    s(2)=f2-h2;
+    
+    %case3
+    
+    
+    f3=(-(te+c)^(-p+1))*(((log(te+c))/(-p+1))-(1/((-p+1)^2)));
+    h3=(-(ts+c)^(-p+1))*(((log(ts+c))/(-p+1))-(1/((-p+1)^2))); 
+    s(3)=f3-h3;
+    
+    %case4
+    
+    s(4)=s(2);
+    
+    %case5
+    
+    f5=((te+c)^(-p-1))/(p+1);
+    h5=((ts+c)^(-p-1))/(p+1);
+    s(5)=(-dk)*(p^2)*(f5-h5);
+    
+    %case6
+    
+    
+    f6=((te+c)^(-p))*(((log(te+c))/(-p))-(1/(p^2)));
+    h6=((ts+c)^(-p))*(((log(ts+c))/(-p))-(1/(p^2)));
+    s(6)=(dk*p)*(f6-h6);
+    
+    %case7
+    
+    s(7)=s(3);
+    
+    %case8
+    
+    s(8)=s(6);
+    
+    %case9
+    
+    f10=((te+c)^(-p+1))*((log(te+c))^2)/(-p+1);
+    f11=(2*((te+c)^(-p+1)))/((-p+1)^2);
+    f12=(log(te+c))-(1/(-p+1));
+    f9=f10-(f11*f12);
+    
+    h10=((ts+c)^(-p+1))*((log(ts+c))^2)/(-p+1);
+    h11=(2*((ts+c)^(-p+1)))/((-p+1)^2);
+    h12=(log(ts+c))-(1/(-p+1));
+    h9=h10-(h11*h12);
+    s(9)=(dk)*(f9-h9);
+    
+    
+    %assign the values of s to the matrix A(i,j)
+    %invert the matrix to calculate the standard deviation
+    %for k,c,p .
+    
+    if nargout == 3
+        A=[s(1) s(2) s(3); s(4) s(5) s(6); s(7) s(8) s(9)];
+
+        A=inv(A);
+
+        sdk=sqrt(A(1,1));
+        sdc=sqrt(A(2,2));
+        sdp=sqrt(A(3,3));
+        
+    elseif nargout == 2
+        A=[s(1) s(3); s(3) s(9)];
+        A=inv(A);
+        sdk=sqrt(A(1,1));
+        sdp=sqrt(A(2,2));
+    else
+        error('wrong number of output arguments');
+    end
+    
+end

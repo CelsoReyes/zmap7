@@ -35,7 +35,7 @@ function musec()
     end
     
     % now feed the endpoints one by one to mysect
-    newa=[]; %TOFIX this is now suposed to be a ZmapCatalog
+    newa=[]; %FIXME this is now suposed to be a ZmapCatalog
     po = length(a(1,:))+1;
     for i=1:length(x)-1
         lat1 = y(i);lat2 = y(i+1);lon1 = x(i);lon2=x(i+1);

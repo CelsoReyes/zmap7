@@ -368,7 +368,7 @@ function myslicer(ac2)
     end
     
     function general_topo_endpart(tmap,spacing)
-        % TOFIX ax comes from elsewhere
+        % FIXME ax comes from elsewhere
         axis([ax]); axis ij
         ax2 = gca; box on ; grid off
         

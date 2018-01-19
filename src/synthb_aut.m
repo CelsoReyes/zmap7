@@ -14,7 +14,7 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep) % autogener
     % turned into function by Celso G Reyes 2017
     % rewritten by Celso G Reyes 2017
     
-    %TOFIX this entire program. we'll have loops in loops, probably super slow.
+    %FIXME this entire program. we'll have loops in loops, probably super slow.
     % - why ZG.newt2?
     
     %report_this_filefun(mfilename('fullpath'));

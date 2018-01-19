@@ -268,7 +268,7 @@ function view_qva(lab1,valueMap)
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        %TOFIX callback does nothing
+        %FIXME callback does nothing
     end
     
     function callbackfun_008(mysrc,myevt)

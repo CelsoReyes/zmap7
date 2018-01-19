@@ -62,7 +62,7 @@ function view_bpva(res, idx)
     bpmap=findobj('Type','Figure','-and','Name','bp-value-map');   
     delete(bpmap);
     try
-    res=res.Result; %TOFIX
+    res=res.Result; %FIXME
     catch
     end
     curval = res.values(:,idx);
@@ -160,7 +160,7 @@ function view_bpva(res, idx)
     res.Grid.plot()
     ft=ZG.features('borders');
     %newft=copyobj(ft,gca)
-    ft.plot(gca); %TOFIX
+    ft.plot(gca); %FIXME
     colorbar
     title(lab1)
     xlabel('Longitude')

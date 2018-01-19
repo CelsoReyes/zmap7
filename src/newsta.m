@@ -276,7 +276,7 @@ function newsta(sta)
         end
         NuRep=str2double(myans{1});
         
-        BinLength=1/length(xt); %TOFIX where does xt come from/go
+        BinLength=1/length(xt); %FIXME where does xt come from/go
         NuBins=length(xt);
         
         % produce Big catalog

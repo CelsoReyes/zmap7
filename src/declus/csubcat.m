@@ -89,7 +89,7 @@ function csubcat()
     hold on
     
     %plot earthquakes according to depth
-    switch (xxxxxxxx) %TOFIX no idea what this is supposed to be swithicng on. does it work at all? has it worked (ever)?
+    switch (xxxxxxxx) %FIXME no idea what this is supposed to be swithicng on. does it work at all? has it worked (ever)?
         case 'depth'
             deplo1 =plot(a(ZG.primeCatalog.Depth<=dep1,1),a(ZG.primeCatalog.Depth<=dep1,2),'.b');
             set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
@@ -156,7 +156,7 @@ function csubcat()
         
         % Make the menu to change symbol size and type
         %
-        add_symbol_menu([]); %TO FIX Figure out which target to affect
+        add_symbol_menu([]); %FIXME Figure out which target to affect
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
             'callback',@callbackfun_001);
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...

@@ -101,7 +101,7 @@ classdef ShapeGeneral < handle
             %
             % results are stored in ZG.selection_shape
             %
-            %TOFIX this should dispatch, or there should be a factory
+            %FIXME this should dispatch, or there should be a factory
             report_this_filefun(mfilename('fullpath'));
             if nargin==0
                 return

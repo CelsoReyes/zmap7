@@ -37,7 +37,7 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     
     report_this_filefun(mfilename('fullpath'));
     
-    % TOFIX this apparently can return empty clusters (?)
+    % FIXME this apparently can return empty clusters (?)
     
     %declaration of global variables
     %

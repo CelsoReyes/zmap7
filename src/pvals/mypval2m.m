@@ -1,6 +1,6 @@
-function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, valeg2, CO, minThreshMag)
+function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates, datestyle, valeg2, CO, minThreshMag)
     
-    % mypval2m  calculate the parameters of the modified Omori Law
+    % MYPVAL2M  calculate the parameters of the modified Omori Law
     %
     %
     % this function is a modification of a program by Paul Raesenberg
@@ -10,7 +10,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
     %
-    % Input: Earthquake Catalog of an Aftershock Sequence
+    % Input: Dates from Earthquake Catalog of an Aftershock Sequence
     %        datestyle : 'date' or 'days'
     %           'date' : uses absolute dates
     %           'days' : uses days since big event
@@ -33,7 +33,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     global loopcheck
     global p sdp c sdc dk sdk
     
-    report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
     %set some errors
     eps1=.001;
@@ -57,14 +57,15 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     pcheck=false;
     
     %Build timecatalog
-    assert(isa(pcat,'ZmapCatalog'),'Expected ZmapCatalog, got a [%s]',class(pcat));
-    assert(isa(pcat.Date,'datetime'))
-    assert(~isempty(pcat),'Pcat cannot be empty');
+    
+    assert(isa(eqDates,'datetime'))
+    assert(~isempty(eqDates),'Pcat cannot be empty');
+    
     switch datestyle
         case 'date'
-            t = pcat.Date; %DATE
+            t = eqDates; %DATE
         case 'days'
-            t = days(pcat.Date - ZG.maepi.Date(1)) + datetime(0,0,0); % forced to be a datetime
+            t = days(eqDates - ZG.maepi.Date(1)) + datetime(0,0,0); % forced to be a datetime
         otherwise
             error('invalid numerical choice.')
     end
@@ -82,10 +83,10 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     if (valeg2 >= 0)
         MIN_CSTEP = 0.0001; 
         MIN_PSTEP = 0.0001;
-        loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, false,'kpc');
+        [loopcheck, c, p, dk, sdc, sdp, sdk]=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, false,'kpc');
     else
         MIN_PSTEP = 0.0001;
-        loopcheck=ploop_c_and_p_calcs([], MIN_PSTEP, false, 'kp');
+        [loopcheck, c, p, dk, sdc, sdp, sdk]=ploop_c_and_p_calcs([], MIN_PSTEP, false, 'kp');
     end
     
     %loopcheck

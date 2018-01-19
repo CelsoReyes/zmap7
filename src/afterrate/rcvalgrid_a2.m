@@ -96,7 +96,7 @@ function [sel]=rcvalgrid_a2()
         zdlg.AddBasicEdit('learn_period','learn period [days]', time, 'learning period [days]');
         zdlg.AddBasicCheckbox('addtofig','plot in current figure', true,[],'plot in the current figure');
         % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
-        % TOFIX min number of events should be the number > Mc
+        % FIXME min number of events should be the number > Mc
         
         [res, okpressed]=zdlg.Create('relative rate change map');
         if ~okpressed
@@ -283,7 +283,7 @@ function [sel]=rcvalgrid_a2()
                 if fMaxDist <= fMaxRadius
                     vSel3 = b_forecast.epicentralDistanceTo(y,x) <= fMaxDist;
                     b_forecast = b_forecast.subset(vSel3);
-                    b = [b_learn; b_forecast]; %TOFIX I'm sure this isn't concatenating properly
+                    b = [b_learn; b_forecast]; %FIXME I'm sure this isn't concatenating properly
                 else
                     vSel4 = (b.epicentralDistanceTo(y,x) < fMaxRadius & b.Date <= ZG.maepi.Date(1)+days(time));
                     b = b.subset(vSel4);

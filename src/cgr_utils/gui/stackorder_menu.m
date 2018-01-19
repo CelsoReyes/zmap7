@@ -1,7 +1,7 @@
 function stackorder_menu(parent)
     % stackorder_menu context menu for sort order
     
-    %TOFIX doesn't seem to attach to all items
+    %FIXME doesn't seem to attach to all items
     c=uicontextmenu;
     set(parent,'UIContextMenu',c);
     uimenu(c,'Label','top','Callback',{@setstack,'top'});

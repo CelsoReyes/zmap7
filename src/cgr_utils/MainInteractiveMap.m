@@ -311,7 +311,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Misfit calculation',...
                 'Callback',@(~,~)inmisfit(),...
-                'Enable','off'); %TOFIX: misfitcalclulation poorly documented, not sure what it is comparing.
+                'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
             
             function analyze_time_series_cb(~,~)
                 % analyze time series for current catalog view
@@ -865,7 +865,7 @@ function plot_large_quakes()
         struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
     
     ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
-    zmap_update_displays(); %TOFIX changing magnitudes didn't chnge map output
+    zmap_update_displays(); %FIXME changing magnitudes didn't chnge map output
 end
 
 function align_supplimentary_legends(ax)

@@ -19,7 +19,7 @@ function showweb(action)
             
             
         case 'data'
-            %TOFIX data no longer exists here.
+            %FIXME data no longer exists here.
             file_to_manually_open = 'help/onlinedata.htm';
             page_location = ' http://seismo.ethz.ch/staff/stefan/zmap6/help/onlinedata.htm ';
             

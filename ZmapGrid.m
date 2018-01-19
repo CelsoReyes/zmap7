@@ -371,7 +371,7 @@ classdef ZmapGrid
             dy= (y_end - y_start)/YBINS;
             %dz =  (z_end - z_start)/ZBINS;
             %TODO make spacing more intelligent. maybe.
-            %TOFIX map units and this unit might be out of whack.
+            %FIXME map units and this unit might be out of whack.
             obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'deg');
         end
         
