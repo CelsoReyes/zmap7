@@ -61,7 +61,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
     global label1 label2 mapl
-    global mindepth maxdepth xsec_fig h2
+    global mindepth maxdepth h2
     global eq0p
     todeg = 180 / pi;
     eq1 =[];
@@ -248,16 +248,14 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     
     
     % Open another graphic window for the cross section
-    %map_fig = gcf;
-    %xsec_fig = map_fig + 1;
     
-    xsec_fig=findobj('Type','Figure','-and','Name','Cross -Section');
+    xsec_fig_h=findobj('Type','Figure','-and','Name','Cross -Section');
     
     
     % Set up the Map window Enviroment
     %
-    if isempty(xsec_fig)
-        xsec_fig = figure_w_normalized_uicontrolunits( ...
+    if isempty(xsec_fig_h)
+        xsec_fig_h = figure_w_normalized_uicontrolunits( ...
             'Name','Cross -Section',...
             'Tag','xsection',...
             'NumberTitle','off', ...
@@ -268,10 +266,10 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
         
     end
     
-    figure(xsec_fig);
+    figure(xsec_fig_h);
     
-    delete(findobj(xsec_fig,'Type','axes'));
-    set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
+    delete(findobj(xsec_fig_h,'Type','axes'));
+    set(xsec_fig_h,'PaperPosition',[1 .5 9 6.9545])
     
     % Plot events on cross section figure
     xdist = eq1(1,idx_box) + (length / 2);

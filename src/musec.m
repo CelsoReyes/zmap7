@@ -70,21 +70,21 @@ function musec()
     % now lets plot the combined x-section
     % with origin at the larget event
     
-    xsec_fig=findobj('Type','Figure','-and','Name','Cross -Section');
+    xsec_fig_h=findobj('Type','Figure','-and','Name','Cross -Section');
     
     
     
-    if isempty(xsec_fig)
-        xsec_fig = figure_w_normalized_uicontrolunits( ...
+    if isempty(xsec_fig_h)
+        xsec_fig_h = figure_w_normalized_uicontrolunits( ...
             'Name','Cross -Section',...
             'NumberTitle','off', ...
             'backingstore','on',...
             'Visible','on');
     end
     
-    figure(xsec_fig);
-    delete(findobj(xsec_fig,'Type','axes'));
-    set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
+    figure(xsec_fig_h);
+    delete(findobj(xsec_fig_h,'Type','axes'));
+    set(xsec_fig_h,'PaperPosition',[1 .5 9 6.9545])
     
     pl =plot(newa(:,po),-newa(:,7),'rx');
     set(pl,'Linewidth',1.5,'MarkerSize',6)
@@ -176,7 +176,7 @@ function musec()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(uic2);
 
-        delete(findobj(xsec_fig,'Type','axes'));
+        delete(findobj(xsec_fig_h,'Type','axes'));
         nlammap;
     end
     

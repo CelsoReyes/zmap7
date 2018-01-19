@@ -13,193 +13,100 @@ function bcross(sel)
     % JW: Removed Additional random runs for uncertainty determination since
     % this is incorporated in new functions to determine Mc and B with
     % bootstrapping
+    
+    ZG=ZmapGlobal.Data
     report_this_filefun(mfilename('fullpath'));
-    if ~exist('sel','var')
-        sel = 'in';
+    error('Update this file to the new catalog')
+    if ~exist('sel','var'), sel='in',end
+    
+    
+    switch sel
+        case 'load'
+            myload()
+            return
     end
+    
+    
     % Do we have to create the dialogbox?
-    if sel == 'in'
-        % Set the grid parameter
-        % initial values
-        %
-        dd = 1.00;
-        dx = 1.00 ;
-        ni = 100;
-        bv2 = NaN;
-        Nmin = 50;
-        stan2 = NaN;
-        stan = NaN;
-        prf = NaN;
-        av = NaN;
-        %nRandomRuns = 1000;
-        bGridEntireArea = 0;
-        nBstSample = 100;
-        fMccorr = 0;
-        fBinning = 0.1;
-        bBst_button = 0;
-        fMcFix = 1.5;
-        
-        % Get list of Mc computation possibilities
-        [labelList2] = calc_Mc;
-        % Create the dialog box
-        figure_w_normalized_uicontrolunits(...
-            'Name','Grid Input Parameter',...
-            'NumberTitle','off', ...
-            'units','points',...
-            'Visible','on', ...
-            'Units','normalized','Position',[ ZG.wex+200 ZG.wey-200 550 300], ...
-            'Color', [0.8 0.8 0.8]);
-        axis off
-        
-        % Dropdown list
-        hndl2=uicontrol(...
-            'Style','popup',...
-            'Units','normalized','Position',[ 0.2 0.77  0.6  0.08],...
-            'String',labelList2,...
-            'BackgroundColor','w',...
-            'callback',@callbackfun_001);
-        
-        % Set selection to 'Best combination'
-        set(hndl2,'value',1);
-        
-        % Edit fields, radiobuttons, and checkbox
-        freq_field=uicontrol('Style','edit',...
-            'Units','normalized','Position',[.30 .60 .12 .10],...
-            'String',num2str(ni),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_002);
-        
-        freq_field0=uicontrol('Style','edit',...
-            'Units','normalized','Position',[.80 .60 .12 .10],...
-            'String',num2str(ra),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_003);
-        
-        freq_field2=uicontrol('Style','edit',...
-            'Units','normalized','Position',[.30 .40 .12 .10],...
-            'String',num2str(dx),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_004);
-        
-        freq_field3=uicontrol('Style','edit',...
-            'Units','normalized','Position',[.30 .30 .12 .10],...
-            'String',num2str(dd),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_005);
-        
-        tgl1 = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
-            'Style','radiobutton',...
-            'string','Number of events:',...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
-            'Units','normalized','Position',[.02 .6 .28 .10], 'callback',@callbackfun_006);
-        
-        % Set to constant number of events
-        set(tgl1,'value',1);
-        
-        % Checkbox and radiobuttons
-        tgl2 =  uicontrol('BackGroundColor',[0.8 0.8 0.8],'Style','radiobutton',...
-            'string','Constant radius [km]:',...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
-            'Units','normalized','Position',[.52 .60 .28 .10], 'callback',@callbackfun_007);
-        
-        
-        chkGridEntireArea = uicontrol('BackGroundColor', [0.8 0.8 0.8], ...
-            'Style','checkbox',...
-            'string','Create grid over entire area',...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
-            'Units','normalized','Position',[.02 .005 .40 .10], 'Value', 0);
-        
-        chKBst_button = uicontrol('BackGroundColor', [0.8 0.8 0.8],'Style','checkbox',...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,'FontWeight','bold','string','Bootstraps:',...
-            'Units','normalized','Position',[.52 .3 .28 .10], 'Value', 0);
-        
-        % Editable fields
-        freq_field4 =  uicontrol('Style','edit',...
-            'Units','normalized','Position',[.30 .20 .12 .10],...
-            'Units','normalized','String',num2str(Nmin),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_008);
-        
-        freq_field5 =  uicontrol('Style','edit',...
-            'Units','normalized','Position',[.80 .30 .12 .10],...
-            'String',num2str(nBstSample),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_009);
-        
-        freq_field6 =  uicontrol('Style','edit',...
-            'Units','normalized','Position',[.80 .40 .12 .10],...
-            'String',num2str(fMccorr),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_010);
-        
-        freq_field7 =  uicontrol('Style','edit',...
-            'Units','normalized','Position',[.30 .50 .12 .10],...
-            'String',num2str(fMcFix),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_011);
-        
-        freq_field8 =  uicontrol('Style','edit',...
-            'Units','normalized','Position',[.80 .50 .12 .10],...
-            'String',num2str(fBinning),...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'callback',@callbackfun_012);
-        
-        uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
-            'Units', 'normalized', 'Position', [.80 .005 .15 .12], ...
-            'Callback', 'close;', 'String', 'Cancel');
-        
-        uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
-            'Units', 'normalized', 'Position', [.60 .005 .15 .12], ...
-            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value; bBst_button = get(chKBst_button, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', bcross(sel)',...
-            'String', 'OK');
-        
-        % Labels
-        text('Color', [0 0 0], 'Units', 'normalized', ...
-            'Position', [0.2 1 0], 'HorizontalAlignment', 'left',  ...
-            'FontSize', fontsz.l, 'FontWeight', 'bold', 'String', 'Please select a Mc estimation option');
-        
-        text('Color',[0 0 0], 'Units', 'normalized', ...
-            'Position', [-.14 .54 0], 'HorizontalAlignment', 'left',  ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String','Fixed Mc:');
-        
-        text('Color',[0 0 0], 'Units', 'normalized', ...
-            'Position', [-.14 .42 0], 'HorizontalAlignment', 'left',  ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String','Horizontal spacing [km]:');
-        
-        text('Color', [0 0 0], 'Units', 'normalized', ...
-            'Position', [-0.14 0.30 0],  'HorizontalAlignment', 'left', ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Depth spacing [km]:');
-        
-        text('Color', [0 0 0], 'Units', 'normalized', ...
-            'Position', [-0.14 0.18 0],  'HorizontalAlignment', 'left', ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Min. number of events:');
-        
-        text('Color', [0 0 0], 'Units', 'normalized', ...
-            'Position', [0.52 0.42 0],  'HorizontalAlignment', 'left', ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Mc correction:');
-        
-        
-        text('Color', [0 0 0], 'Units', 'normalized', ...
-            'Position', [0.52 0.535 0],  'HorizontalAlignment', 'left', ...
-            'FontSize',ZmapGlobal.Data.fontsz.m, 'FontWeight', 'bold', 'String', 'Magnitude binning:');
-        
-        
-        set(gcf,'visible','on');
-        watchoff
+    % Set the grid parameter
+    % initial values
+    %
+    dd = 1.00;
+    dx = 1.00 ;
+    ni = 100;
+    bv2 = NaN;
+    Nmin = 50;
+    stan2 = NaN;
+    stan = NaN;
+    prf = NaN;
+    av = NaN;
+    %nRandomRuns = 1000;
+    bGridEntireArea = 0;
+    nBstSample = 100;
+    fMccorr = 0;
+    fBinning = 0.1;
+    bBst_button = 0;
+    fMcFix = 1.5;
+    
+    
+    
+    %% make the interface
+    zdlg = ZmapDialog();
+    %zdlg = ZmapDialog(obj, @obj.doIt);
+    
+    zdlg.AddBasicHeader('Choose stuff');
+    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
+        'Choose the calculation method for Mc');
+    zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
+    zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);
+    
+    zdlg.AddBasicEdit('fBinning','Magnitude binning', fBinning,...
+        'Bins for magnitudes');
+    zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
+        're takes longer, but provides more accurate results');
+    zdlg.AddBasicEdit('nBstSample','Number of bootstraps', nBstSample,...
+        'Number of bootstraps to determine Mc');
+    zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', Nmin,...
+        'Min # events greater than magnitude of completeness (Mc)');
+    zdlg.AddBasicEdit('fMcFix', 'Fixed Mc',fMcFix,...
+        'fixed magnitude of completeness (Mc)');
+    zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',fMccorr,...
+        'Correction term to be added to Mc');
+    
+    [res,okPressed] = zdlg.Create('b-Value X-section Grid Parameters');
+            
+    if ~okPressed
+        return
     end
+    
+    hndl2=res.mc_choice;
+    dx = res.gridOpts.dx;
+    dd = res.gridOpts.dz;
+    tgl1 = res.eventSelector.useNumNearbyEvents;
+    tgl2 = ~tgl1;
+    ni = res.eventSelector.numNearbyEvents;
+    ra = res.eventSelector.radius_km;
+    Nmin = res.eventSelector.requiredNumEvents;
+    bGridEntireArea = res.gridOpts.GridEntireArea;
+    bBst_button = res.useBootstrap;
+    nBstSample = res.nBstSample;
+    fMccorr = res.fMccorr;
+    fBinning = res.fBinning;
+    
+        mycalculate();
+    
+    %tgl1 : use Number of Events
+    %tgl2 : use Constant Radius
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
     % the seimicity and selecting the ni neighbors
     % to each grid point
     
-    if sel == 'ca'
-        
-        % Select and reate grid
-        [newgri, xvect, yvect, ll] = ex_selectgrid(xsec_fig, dx, dd, bGridEntireArea);
+    function mycalculate()
+    
+        % Select and create grid
+        [newgri, xvect, yvect, ll] = ex_selectgrid(xsec_fig(), dx, dd, bGridEntireArea);
         
         % Plot all grid points
         plot(newgri(:,1),newgri(:,2),'+k')
@@ -249,7 +156,7 @@ function bcross(sel)
             
             if length(b) >= Nmin  % enough events?
                 % Added to obtain goodness-of-fit to powerlaw value
-                [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
+                [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b..Magnitude);
                 [fMc] = calc_Mc(b, ZG.inb1, fBinning, fMccorr);
                 l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
@@ -324,7 +231,7 @@ function bcross(sel)
     end
     
     % Load exist b-grid
-    if sel == 'lo'
+    function myload()
         [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
         if length(path1) > 1
             
@@ -362,93 +269,6 @@ function bcross(sel)
         else
             return
         end
-    end
-    
-    
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-        ;
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ni=str2double(freq_field.String);
-        freq_field.String=num2str(ni);
-        tgl2.Value=0;
-        tgl1.Value=1;
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ra=str2double(freq_field0.String);
-        freq_field0.String=num2str(ra);
-        tgl2.Value=1;
-        tgl1.Value=0;
-    end
-    
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dx=str2double(freq_field2.String);
-        freq_field2.String=num2str(dx);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dd=str2double(freq_field3.String);
-        freq_field3.String=num2str(dd);
-    end
-    
-    function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl2.Value=0;
-    end
-    
-    function callbackfun_007(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tgl1.Value=0;
-    end
-    
-    function callbackfun_008(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        Nmin=str2double(freq_field4.String);
-        freq_field4.String=num2str(Nmin);
-    end
-    
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        nBstSample=str2double(freq_field5.String);
-        freq_field5.String=num2str(nBstSample);
-    end
-    
-    function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fMccorr=str2double(freq_field6.String);
-        freq_field6.String=num2str(fMccorr);
-    end
-    
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fMcFix=str2double(freq_field7.String);
-        freq_field7.String=num2str(fMcFix);
-    end
-    
-    function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fBinning=str2double(freq_field8.String);
-        freq_field8.String=num2str(fBinning);
     end
     
 end

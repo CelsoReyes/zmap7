@@ -245,9 +245,7 @@ function [xsecx,xsecy] = lc_xsec2(eqlat,eqlon,depth,width,length,...
             'LineWidth',symb_width)
         
         % Open another graphic window for the cross section
-        map_fig = gcf;
-        xsec_fig = map_fig + 1;
-        figure(xsec_fig);
+        figure(xsec_fig());
         set(xsec_fig,'PaperPosition',[1 .5 9 6.9545])
         
         %global Xwbz Ywbz

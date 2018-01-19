@@ -44,83 +44,40 @@ function bcrossVt2()
         axis off
         
         labelList2=['Weighted LS - automatic Mcomp | Weighted LS - no automatic Mcomp '];
-        labelPos = [0.2 0.7  0.6  0.08];
-        hndl2=uicontrol(...
-            'Style','popup',...
-            'Position',labelPos,...
-            'Units','normalized',...
-            'String',labelList2,...
-            'callback',@callbackfun_001);
+
         
         
         
         labelList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
-        labelPos = [0.2 0.8  0.6  0.08];
-        hndl1=uicontrol(...
-            'Style','popup',...
-            'Position',labelPos,...
-            'Units','normalized',...
-            'String',labelList,...
-            'callback',@callbackfun_002);
         
-        % creates a dialog box to input grid parameters
-        %
-        freq_field=uicontrol('Style','edit',...
-            'Position',[.60 .50 .22 .10],...
-            'Units','normalized','String',num2str(ra),...
-            'callback',@callbackfun_003);
+        %% make the interface
+    zdlg = ZmapDialog();
+    %zdlg = ZmapDialog(obj, @obj.doIt);
+    
+    zdlg.AddBasicHeader('Automatically estimate magnitude of completeness?');
+    zdlg.AddBasicPopup('mc_choice', 'Mc method:',labelList,1,...
+        'Choose the calculation method for Mc');
+    zdlg.AddBasicPopup('mc_weights', 'Weighting:',labelList2,1,...
+        'Choose the calculation method for Mc');
+    zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
+    zdlg.AddEventSelectionParameters('eventSelector',ni, ra,Nmin);
+    
+    [res,okPressed] = zdlg.Create('differential b-value map X-section Grid Parameters');
+      
+    if ~okPressed
+        return
+    end
+    
+    ZG.inb1=res.mc_choice;
+    ZG.inb2=res.mc_weights;
+    dx=res.gridOpts.dx;
+    dd=res.gridOpts.dz;
+    ni = res.eventSelector.numNearbyEvents;
+    ra = res.eventSelector.radius_km;
+    Nmin = res.eventSelector.requiredNumEvents;
+
+        my_calculate();
         
-        freq_field2=uicontrol('Style','edit',...
-            'Position',[.60 .40 .22 .10],...
-            'Units','normalized','String',num2str(dx),...
-            'callback',@callbackfun_004);
-        
-        freq_field3=uicontrol('Style','edit',...
-            'Position',[.60 .30 .22 .10],...
-            'Units','normalized','String',num2str(dd),...
-            'callback',@callbackfun_005);
-        
-        close_button=uicontrol('Style','Pushbutton',...
-            'Position',[.60 .05 .15 .12 ],...
-            'Units','normalized','callback',@callbackfun_006,'String','Cancel');
-        
-        go_button1=uicontrol('Style','Pushbutton',...
-            'Position',[.20 .05 .15 .12 ],...
-            'Units','normalized',...
-            'callback',@callbackfun_007,...
-            'String','Go');
-        
-        text(...
-            'Position',[0.20 1.0 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.l ,...
-            'FontWeight','bold',...
-            'String','Automatically estimate magn. of completeness?   ');
-        
-        txt3 = text(...
-            'Position',[0.30 0.65 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.l ,...
-            'FontWeight','bold',...
-            'String',' Grid Parameter');
-        txt5 = text(...
-            'Position',[0. 0.42 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
-            'String','Spacing along projection [km]');
-        
-        txt6 = text(...
-            'Position',[0. 0.32 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.m ,...
-            'FontWeight','bold',...
-            'String','Spacing in depth in km:');
-        
-        txt1 = text(...
-            'Position',[0. 0.53 0 ],...
-            'FontSize',ZmapGlobal.Data.fontsz.m,...
-            'FontWeight','bold',...
-            'String','Radius in km');
-        
-        set(gcf,'visible','on');
-        watchoff
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
@@ -128,8 +85,7 @@ function bcrossVt2()
     % to each grid point
     
     function my_calculate()
-        
-        figure(xsec_fig);
+        figure(xsec_fig());
         hold on
         
         ax = mainmap('axes');
@@ -196,7 +152,7 @@ function bcrossVt2()
         
         
         % overall b-value
-        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa.Magnitude,ZG.inb1);
         ZG.bo1 = bv;
         no1 = newa.Count;
         %
@@ -219,7 +175,7 @@ function bcrossVt2()
                 % call the b-value function
                 lt =  b.Date >= t1 &  b.Date <t2 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv magco stan av pr] =  bvalca3(b(lt,:),ZG.inb1);
+                    [bv magco stan av pr] =  bvalca3(b.Magnitude(lt),ZG.inb1);
                     ZG.bo1 = bv;
                     no1 = newa.Count;
                 else
@@ -227,7 +183,7 @@ function bcrossVt2()
                 end
                 lt = b.Date >= t3 &  b.Date < t4 ;
                 if  length(b(lt,1)) > Nmin/2;
-                    [bv2 magco stan av pr] =  bvalca3(b(lt,:),ZG.inb1);
+                    [bv2 magco stan av pr] =  bvalca3(b.Magnitude(lt),ZG.inb1);
                 else
                     bv2 = NaN; pr = 50;
                 end
@@ -303,53 +259,5 @@ function bcrossVt2()
     end
     
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value;
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ra=str2double(freq_field.String);
-        freq_field.String=num2str(ra);
-    end
-    
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dx=str2double(freq_field2.String);
-        freq_field2.String=num2str(dx);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        dd=str2double(freq_field3.String);
-        freq_field3.String=num2str(dd);
-    end
-    
-    function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        close;
-        
-    end
-    
-    function callbackfun_007(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value;
-        ZG.inb2=hndl2.Value;
-        close;
-        my_calculate();
-    end
 end
 

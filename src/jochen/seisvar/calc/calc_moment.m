@@ -34,5 +34,5 @@ end
 vCumMoment = cumsum(10.^(1.5*vMagnitude + 9.05));
 fCumMoment = vCumMoment(length(vCumMoment),1);
 
-% Moment releaste per event
+% Moment released per event
 vMoment = 10.^(1.5*vMagnitude + 9.05);

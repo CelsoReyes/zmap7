@@ -154,7 +154,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
             %}
             
             % Overall b-value
-            bv =  bvalca3(mycat, obj.ZG.inb1); %ignore all the other outputs of bvalca3
+            bv =  bvalca3(mycat.Magnitude, obj.ZG.inb1); %ignore all the other outputs of bvalca3
             
             obj.ZG.bo1 = bv;
             
@@ -186,8 +186,8 @@ classdef cgr_bvalgrid < ZmapGridFunction
                 % calulate values at a single point
 
                 % Added to obtain goodness-of-fit to powerlaw value
-                % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
-                [~, ~, ~, ~, prf]=mcperc_ca3(catalog);
+                % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
+                [~, ~, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
                 
                 [Mc_value] = calc_Mc(catalog, obj.ZG.inb1, obj.fBinning, obj.fMccorr);
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);

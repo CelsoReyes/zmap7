@@ -114,8 +114,7 @@ function bcrossV2(sel)
     % to each grid point
     
     function my_calculation() % 'ca'
-        
-        figure(xsec_fig);
+        figure(xsec_fig());
         hold on
         
         ax = mainmap('axes');
@@ -178,7 +177,7 @@ function bcrossV2(sel)
         
         
         % overall b-value
-        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa.Magnitude,ZG.inb1);
         ZG.bo1 = bv;
         no1 = newa.Count;
         %
@@ -199,14 +198,14 @@ function bcrossV2(sel)
             if isempty(b); b = newa.subset(1); end
             if b.Count >= 50;
                 % call the b-value function
-                [bv magco stan av pr] =  bvalca3(b,ZG.inb1);
+                [bv magco stan av pr] =  bvalca3(b.Magnitude,ZG.inb1);
                 l2 = sort(l);
                 b2 = b;
                 if ZG.inb2 ==  1
                     l = b.Magnitude >= magco;
                     b2 = b(l,:);
                 end
-                [bv2] =  bmemag(b2);
+                [bv2] =  bmemag(b2.Magnitude);
                 bvg = [bvg ; bv magco x y b.Count bv2 pr av stan  max(b.Magnitude)];
             else
                 bvg = [bvg ; NaN NaN x y NaN NaN NaN NaN NaN  NaN];

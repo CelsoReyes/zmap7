@@ -149,7 +149,7 @@ function CreateMenu(obj)
         op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
         uimenu(op4,'Label','automatic', 'callback',@cb_010)
         uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
-        uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2())
+        uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2('newt2'))
         uimenu(op4,'label','b with magnitude', 'callback',@(~,~)bwithmag);
         uimenu(op4,'label','b with time', 'callback',{@plotwithtime,'b'});
         

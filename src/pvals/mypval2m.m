@@ -57,7 +57,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(pcat, datestyle, v
     pcheck=false;
     
     %Build timecatalog
-    assert(isa(pcat,'ZmapCatalog'));
+    assert(isa(pcat,'ZmapCatalog'),'Expected ZmapCatalog, got a [%s]',class(pcat));
     assert(isa(pcat.Date,'datetime'))
     assert(~isempty(pcat),'Pcat cannot be empty');
     switch datestyle

@@ -135,7 +135,7 @@ function [sel] = bpvalgrid()
         %bpvg = [];
         %
         % overall b-value
-        [bv, magco, stan, av,  pr] =  bvalca3(ZG.primeCatalog,ZG.inb1);
+        [bv, magco, stan, av,  pr] =  bvalca3(ZG.primeCatalog.Magnitude,ZG.inb1);
         ZG.bo1 = bv;
         
         
@@ -178,10 +178,10 @@ function [sel] = bpvalgrid()
         
         
         function bpvg = calcguts_opt1(b)
-            [bv, magco, stan, av,   pr] =  bvalca3(b,1);
+            [bv, magco, stan, av,   pr] =  bvalca3(b.Magnitude,1);
             maxcat = b.subset(b.Magnitude >= magco-0.05);
             if maxcat.Count()  >= Nmin
-                [bv2, stan2,  av2] =  bmemag(maxcat);
+                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 
@@ -192,8 +192,8 @@ function [sel] = bpvalgrid()
         end
         
         function bpvg = calcguts_opt2(b)
-            [bv, magco, stan, av,   pr] =  bvalca3(b,2);
-            [bv2, stan2,  av2] =  bmemag(b);
+            [bv, magco, stan, av,   pr] =  bvalca3(b.Magnitude,2);
+            [bv2, stan2,  av2] =  bmemag(b.Magnitude);
             maxcat = b(l); % TOFIX there is no l here.
             maxmg = max(maxcat.Magnitude);
             [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(b.subset(l),'days',valeg2,CO,minThreshMag);
@@ -202,12 +202,12 @@ function [sel] = bpvalgrid()
         end
         
         function bpvg = calcguts_opt3(b)
-            [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
+            [Mc, Mc90, Mc95, magco, prf]=b.Magnitude;
             maxcat = b.subset(b.Magnitude >= Mc90-0.05)
             magco = Mc90;
             if maxcat.Count()  >= Nmin
-                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat,2);
-                [bv2, stan2,  av2] =  bmemag(maxcat);
+                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
+                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 bpvg = [bv magco nan nan nan bv2 stan2 av stan prf pv pstd maxmg cv tgl1 mmav kv mbv nan];
@@ -217,12 +217,12 @@ function [sel] = bpvalgrid()
         end
         
         function bpvg = calcguts_opt4(b)
-            [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
+            [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
             maxcat= b.subset(b.Magnitude >= Mc95-0.05);
             magco = Mc95;
             if maxcat.Count() >= Nmin
-                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat,2);
-                [bv2, stan2,  av2] =  bmemag(maxcat);
+                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
+                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 
@@ -233,19 +233,19 @@ function [sel] = bpvalgrid()
         end
         
         function bpvg = calcguts_opt5(b)
-            [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3();
+            [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
             if ~isnan(Mc95)
                 magco = Mc95;
             elseif ~isnan(Mc90)
                 magco = Mc90;
             else
-                [bv, magco, stan, av,  pr] =  bvalca3(b,1);
+                [bv, magco, stan, av,  pr] =  bvalca3(b.Magnitude,1);
             end
             maxcat= b.subset(b.Magnitude >= magco-0.05);
             if maxcat.Count()  >= Nmin
-                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat,2);
+                [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
                 maxmg = max(maxcat.Magnitude);
-                [bv2, stan2,  av2] =  bmemag(maxcat);
+                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 bpvg = [bv magco nan nan nan bv2 stan2 av stan prf pv pstd maxmg cv tgl1 mmav kv mbv nan];
             else

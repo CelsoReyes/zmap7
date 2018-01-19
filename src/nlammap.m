@@ -10,7 +10,7 @@ function nlammap()
     %global a
     %global main mainfault faults coastline vo s1 s2 s3 s4
     %global mapl fipo
-    %global h2 xsec_fig newa lat1 leng lon1 lon2 lat2
+    %global h2 newa lat1 leng lon1 lon2 lat2
     
     %{
 %% This is how you do it with the mapping toolbox -CGR
@@ -26,6 +26,11 @@ p2=ginput(1);
 
     
     %}
+    
+    
+    [c2, gcDist, zans] = plot_cross_section_from_mainmap; %was select_xsection();
+    disp(c2)
+    return
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
     %

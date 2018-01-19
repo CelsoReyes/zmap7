@@ -101,7 +101,8 @@ function rc_cross_a2()
     function my_calculate()
         %
         % TOFIX needs xsecx and xsecy
-        figure(xsec_fig);
+     
+        figure(xsec_fig());
         hold on
         
         if bGridEntireArea % Use entire area for grid

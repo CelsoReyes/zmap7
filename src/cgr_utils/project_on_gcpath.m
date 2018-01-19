@@ -1,4 +1,4 @@
-function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, maxdist_km, dx_km)
+function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog, maxdist_km, dx_km)
     %PROJECT_TO_GCPATH returns a catalog, with all events projected into the lat/lon defined by curve
     % catalog = PROJECT_TO_GCPATH( PT1, PT2, catalog, dx_km) where PT1 and PT2 are [lat, lon]. dx_km
     % is the distance from xsection. SO, width is actually dx_km *2;
@@ -14,10 +14,10 @@ function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, m
     % see also gcwaypts
     
     if nargin==1 && strcmp(pt1,'test')
-        [projectedcat,mindist,mask,gcDist]=test_this;
+        [projectedcat,mindist,mask,gcDist_km]=test_this;
         return
     end
-    gcDist=[];
+    gcDist_km=[];
     tdist_km = deg2km(distance(pt1,pt2));
     nlegs = ceil(tdist_km / dx_km) .*2;
     % limit the catalog to the appropriate distance from the curve
@@ -37,7 +37,7 @@ function [projectedcat,mindist,mask,gcDist]=project_on_gcpath(pt1,pt2,catalog, m
     for n=1:projectedcat.Count
         dists_km=deg2km(distance(curvelats, curvelons, eqLats(n), eqLons(n)));
         [mindist(n),I]=min(dists_km);
-        gcDist(n)=gcDistances(I);
+        gcDist_km(n)=gcDistances(I);
         projectedcat.Longitude(n)=curvelons(I);
         projectedcat.Latitude(n)=curvelats(I);
     end

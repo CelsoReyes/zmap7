@@ -211,55 +211,55 @@ classdef bgrid3dB < ZmapGridFunction
                 switch obj.mc_choice
                     
                     case 3 % Automatic Mcomp (90% probability)
-                        [~, Mc90, ~, ~, prf]=mcperc_ca3();
+                        [~, Mc90, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         l = catalog.Magnitude >= Mc90-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
                             magco = Mc90;
-                            [bv magco0 stan av pr] =  bvalca3(minicat,2);
-                            [bv2 stan2 av2 ] =  bmemag(minicat);
+                            [bv magco0 stan av pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv2 stan2 av2 ] =  bmemag(minicat.Magnitude);
                         end
                         
                     case 4 % Automatic Mcomp (95% probability)
-                        [~, ~, Mc95, ~, prf]=mcperc_ca3();
+                        [~, ~, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         l = catalog.Magnitude >= Mc95-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
                             magco = Mc95;
-                            [bv, magco0, stan, av,   pr] =  bvalca3(minicat,2);
-                            [bv2, stan2, av2 ] =  bmemag(minicat);
+                            [bv, magco0, stan, av,   pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv2, stan2, av2 ] =  bmemag(minicat.Magnitude);
                         end
                         
                     case 5% Best (?) combination (Mc95 - Mc90 - max curvature)
-                        [~, Mc90, Mc95, ~, prf]=mcperc_ca3();
+                        [~, Mc90, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         if ~isnan(Mc95)
                             magco = Mc95;
                         elseif ~isnan(Mc90)
                             magco = Mc90;
                         else
-                            [~, magco, ~, ~, ~, ~, ~,  ~] =  bvalca3(catalog,1);
+                            [~, magco, ~, ~, ~, ~, ~,  ~] =  bvalca3(catalog.Magnitude,1);
                         end
                         l = catalog.Magnitude >= magco-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
-                            [bv, magco0, stan, av, pr] =  bvalca3(minicat,2);
-                            [bv2, stan2,  av2] =  bmemag(minicat);
+                            [bv, magco0, stan, av, pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv2, stan2,  av2] =  bmemag(minicat.Magnitude);
                         else
                             [bv, bv2, magco, av, av2] = deal(nan);
                         end
                         
                     case 1 % Automatic Mcomp (max curvature)
-                        [bv magco, stan, av,   pr] =  bvalca3(catalog,1);
+                        [bv magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,1);
                         l = catalog.Magnitude >= magco-0.05;
                         if  sum(l) >= Nmin
-                            [bv2 stan2,  av2] =  bmemag(catalog.subset(l));
+                            [bv2 stan2,  av2] =  bmemag(catalog.Magnitude(l));
                         else
                             bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
                         end
                         
                     case 2 % Fixed Mc (Mc = Mmin)
-                        [bv, magco, stan, av,   pr] =  bvalca3(catalog,2);
-                        [bv2, stan2, av2 ] =  bmemag(catalog);
+                        [bv, magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,2);
+                        [bv2, stan2, av2 ] =  bmemag(catalog.Magnitude);
                         
                     otherwise
                         error('unanticipated choice')

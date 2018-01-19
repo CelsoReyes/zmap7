@@ -1,9 +1,21 @@
 function BEZ = betatriangle(catalog, xt)
-    % produces triangle plot of beta values in the way Matthews & Reasenberg 1988 have done it
+    % BETATRIANGLE produces triangle plot of beta values according to Matthews & Reasenberg 1988
+    % BEZ = BETATRIANGLE(catalog)
+    %
+    % BEZ = BETATRIANGLE(catalog, bins)
     %
     % db, 05/25/01, denise@etha.net
     
     report_this_filefun(mfilename('fullpath'));
+    ZG=ZmapGlobal.Data;
+    if isempty(catalog)
+        errordlg('Catalog is empty, cannot produce a betatriangle plot','Beta Triangle');
+        return
+    end
+    if ~exist('xt')
+        xt=min(catalog.Date):ZG.bin_dur:max(catalog.Date);
+    end
+    
     NumberBins = length(xt);
     BetaValues = nan(NumberBins+1,NumberBins+1);
     TimeBegin = min(catalog.Date);
@@ -55,16 +67,11 @@ function BEZ = betatriangle(catalog, xt)
     nultime=datetime(0,0,0);
     beX=years(beX-nultime); %must be duration before can be converted
     beY=years(beY); %
-    %beX=beX*years(( (TimeEnd-TimeBegin)+TimeBegin) - nultime);  %X is end time ~ 2000 to 2017
-    %beY=beY*years(TimeEnd-TimeBegin); %Y is duration ~ 0 to 10 years
     contour(beX, beY, beZ, [-4 -4], 'r:');
     hold on;
     contour(beX, beY, beZ, [-2 -2], 'r');
-    hold on;
     contour(beX, beY, beZ, [0 0], 'k');
-    hold on;
     contour(beX, beY, beZ, [2 2], 'b');
-    hold on;
     contour(beX, beY, beZ, [4 4], 'b:');
     
     axis equal;

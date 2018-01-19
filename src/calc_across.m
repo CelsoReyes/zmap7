@@ -195,8 +195,7 @@ function calc_across(sel)
     % to each grid point
     
     if sel == 'ca'
-        
-        figure(xsec_fig);
+        figure(xsec_fig());
         hold on
         
         if bGridEntireArea % Use entire area for grid
@@ -276,7 +275,7 @@ function calc_across(sel)
         
         
         % overall b-value
-        [bv magco stan av pr] =  bvalca3(newa,ZG.inb1);
+        [bv magco stan av pr] =  bvalca3(newa.Magnitude,ZG.inb1);
         ZG.bo1 = bv; no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
@@ -325,11 +324,11 @@ function calc_across(sel)
                     
                     % a(0) for Mc(MAxCurv) + Mc(Corr)
                 elseif ZG.inb1 == 2
-                    [bv magco stan av pr] =  bvalca3(b,1);
+                    [bv magco stan av pr] =  bvalca3(b.Magnitude,1);
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
-                    if length(b(l,:)) >= Nmin
-                        [bv2, stan2,  faValue] =  bmemag(b(l,:));
+                    if sum(l) >= Nmin
+                        [bv2, stan2,  faValue] =  bmemag(b.Magnitude(l));
                     else
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end
@@ -346,7 +345,7 @@ function calc_across(sel)
                 elseif ZG.inb1 == 4
                     % a(0) by r1 and Mc by r2
                     if length(b) >= Nmin
-                        [bv magco stan av pr] =  bvalca3(b,1);
+                        [bv magco stan av pr] =  bvalca3(b.Magnitude,1);
                         magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                         bv2 = fFixbValue;
                         l = bri(:,6) >= magco-0.05;

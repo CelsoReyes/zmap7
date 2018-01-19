@@ -180,7 +180,8 @@ function calc_Omoricross()
     watchoff
     
     function my_calculate() % 'ca'
-        figure(xsec_fig);
+    
+        figure(xsec_fig());
         hold on
         
         if bGridEntireArea % Use entire area for grid

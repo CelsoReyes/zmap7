@@ -28,11 +28,11 @@ function add_cumtimeplot_zmenu(obj, parent)
     uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
         'Callback',{@cb_z_beta_ratechanges,'bet'});
     uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
-        'Callback', {@cb_betaTriangle,'newcat'})
+        'Callback', {@cb_betaTriangle,'newt2'}); % wasnewcat
     uimenu(op4B,'Label','z-values: AS(t)function',...
-        'callback',{@cb_z_beta_ratechanges,'ast'})
+        'callback',{@cb_z_beta_ratechanges,'ast'});
     uimenu(op4B,'Label','z-values: Rubberband function',...
-        'callback',{@cb_z_beta_ratechanges,'rub'})
+        'callback',{@cb_z_beta_ratechanges,'rub'});
     uimenu(op4B,'Label','z-values: LTA(t) function ',...
         'callback',{@cb_z_beta_ratechanges,'lta'});
     
@@ -40,7 +40,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
     uimenu(op4,'Label','automatic', 'callback',@cb_auto_mc_b_estimation)
     uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
-    uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2())
+    uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2('newt2'))
     uimenu(op4,'label','b with magnitude', 'callback',@(~,~)bwithmag);
     uimenu(op4,'label','b with time', 'callback',{@plotwithtime,'b'});
     
@@ -112,7 +112,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     end
     
     function cb_betaTriangle(~, ~, catname)
-        betatriangle(ZG.(catname),t0b:ZG.bin_dur:teb);
+        betatriangle(ZG.(catname));
     end
     
     function cb_auto_mc_b_estimation(mysrc,myevt)

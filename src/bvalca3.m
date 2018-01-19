@@ -1,9 +1,9 @@
-function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
+function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method)
     % BVALCA3
-    % [bv, magco, std_backg, av, pr] =  BVALCA3(catalog, mc_method)
+    % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method)
     %
     % INPUT parameters
-    % bcat     : zmap catalog
+    % magnitudes     : Magnitude values
     % mc_method - 1 : automatic estimate of Mcomp
     %        2 : not automatic estimate of Mcomp 
     %
@@ -20,17 +20,17 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
     ZG = ZmapGlobal.Data;
     dm1 = 0.1;
     [pr,  av, std_backg, magco, bv] = deal(nan);
-    maxmag = max(bcat.Magnitude);
-    mima = min( min(bcat.Magnitude) , 0);
+    maxmag = max(magnitudes);
+    mima = min( min(magnitudes) , 0);
     if ~exist('no1','var')
-        no1=bcat.Count; % added by CGR because no1 appears to not be initialized
+        no1=numel(magnitudes); % added by CGR because no1 appears to not be initialized
     end
     %try % if an error occures, set values to NaN
     
     % number of mag units
     % nmagu = (maxmag*10)+1;
     
-    [bval,xt2] = hist(bcat.Magnitude,(mima:dm1:maxmag));
+    [bval,xt2] = hist(magnitudes,(mima:dm1:maxmag));
     % bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
     magsteps_desc = (maxmag:-dm1:mima);
@@ -44,7 +44,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
     
     % if no automatic estimate of Mcomp
     if mc_method == 2
-        i = length(magsteps_desc)-10*min(bcat.Magnitude);
+        i = length(magsteps_desc)-10*min(magnitudes);
         if i > length(magsteps_desc)
             i = length(magsteps_desc)-1 ;
         end
@@ -70,8 +70,8 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(bcat,mc_method)
     %std_backg = std(y - polyval(p,x));      % standard deviation of fit
     std_backg = ew;
     
-    l = bcat.Magnitude >= M1b(1) & bcat.Magnitude <= M2b(1);
-    les = (mean(bcat.Magnitude(l)) - M1b(1))/dm1;
+    l = magnitudes >= M1b(1) & magnitudes <= M2b(1);
+    les = (mean(magnitudes(l)) - M1b(1))/dm1;
     
     av=p(1,2);
     p=-p(1,1);

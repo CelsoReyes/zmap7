@@ -67,7 +67,7 @@ function anseiswa(action, ds)
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.primeCatalog.Date)) (max(ZG.primeCatalog.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
-            bv = bvalca3(ZG.newt2,1);
+            bv = bvalca3(ZG.newt2.Magnitude,1);
             set(findobj('Tag','plb'),'Xdata',magsteps_desc,'Ydata',bvalsum3);
             
             % set circle containing events as circle
@@ -119,7 +119,7 @@ function anseiswa(action, ds)
             set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.primeCatalog.Date)) (max(ZG.primeCatalog.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
-            bv = bvalca3(ZG.newt2,1);
+            bv = bvalca3(ZG.newt2.Magnitude,1);
             set(findobj('Tag','plb2'),'Xdata',magsteps_desc,'Ydata',bvalsum3);
             
             % set circle containing events as circle
