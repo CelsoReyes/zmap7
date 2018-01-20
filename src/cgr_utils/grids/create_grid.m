@@ -199,10 +199,10 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         tp.String=sprintf('N Points: %d',sum(ll));
     end
     
-    function [lonCol,latCol] = get_eq_grid(lon0,lat0,dLon,dLat)
+    function [lonMat,latMat] = get_eq_grid(lon0,lat0,dLon,dLat)
         % GET_EQ_GRID
         % input is the origin point and arclength between points
-        % output is 2 vectors (lon, lat)
+        % output is 2 matrices (lon, lat)
         
         % base grid on a single distance, so that instead of separate dx & dy, we use dd
         dist_arc = max([...
@@ -217,8 +217,8 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         
         % pick out latitude spacing. Our grid will have this many rows.
         lats = vector_including_origin(lat0, dist_arc, ylims_deg);
-        lonCol=[];
-        latCol=[];
+        lonMat=[];
+        latMat=[];
         
         if FOLLOW_PARALLELS
             % when following the meridian lines, the longitude span covered by
@@ -230,7 +230,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
             lonValues = vector_including_origin(lon0, dLon, xlims_deg);
             
             %creates a meshgrid of size numel(lonValues) x numel(lats)
-            [lonCol,latCol]=meshgrid(lonValues,lats); 
+            [lonMat,latMat]=meshgrid(lonValues,lats); 
             
             
             %lonCol=lonCol(:);
@@ -244,11 +244,11 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
             
             for n=1:numel(lats)
                 theseLonValues = vector_including_origin(lon0, dLon_per_lat(n), xlims_deg);
-                lonCol=[lonCol;theseLonValues(:)]; %#ok<AGROW>
-                latCol=[latCol;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
+                lonMat=[lonMat;theseLonValues(:)]; %#ok<AGROW>
+                latMat=[latMat;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
             end
             
-            [lonCol,latCol] = cols2matrix(lonCol,latCol);
+            [lonMat,latMat] = cols2matrix(lonMat,latMat);
             % each gridx & gridy are vectors.
         end
     end

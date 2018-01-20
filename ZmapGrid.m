@@ -47,13 +47,16 @@ classdef ZmapGrid
         Name % name of this grid
         Units % degrees or kilometers
         ActivePoints    % logical mask
-        X % all X positions in matrix (points will repeat, since they represent matrix nodes)
-        Y % all Y positions in matrix (points will repeat, since they represent matrix nodes)
+        X % all X positions in matrix
+        Y % all Y positions in matrix
+        Z % all Y positions in matrix.
+        Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
     end
     properties(Dependent)
         Xactive % all X positions for active points
         Yactive % all Y positions for active points
-        GridPoints % Nx2 vector of all grid points [X1,Y1 ; X2,Y2 ; ...]
+        Zactive % all Z positions for active points
+        GridVector % Nx2 or Nx3 of all grid points [X1,Y1; X2,Y2;...] or [X1,Y1,Z1; X2,Y2,Z2; ...]
     end
     properties(Constant,Hidden)
         POSSIBLY_TOO_MANY_POINTS = 1000 * 1000;
@@ -81,40 +84,45 @@ classdef ZmapGrid
                         obj.X=varargin{1}(:,1);
                         obj.Y=varargin{1}(:,2);
                     elseif isstruct(varargin{1})
+                        % ZMAPGRID( NAME, GRIDOPTIONS)
+                        
                         % assume it came from GridParameterChoice
-                        g=varargin{1};
-                        ax=gca;
-                        obj.Units=g.dx_units;
-                        axlims=axis(ax);
-                        xvector=axlims(1) : g.dx : axlims(2);
-                        yvector=axlims(3) : g.dy : axlims(4);
-                        totpoints=numel(xvector)*numel(yvector);
-                        if totpoints > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
-                            ZmapMessageCenter.set_warning(sprintf('Possibly too many points: %d',totpoints'));
-                        end
-                        [obj.X, obj.Y]=meshgrid(xvector, yvector);
-                        if isfield(g,'GridEntireArea') && ~g.GridEntireArea
-                            myshape=ZmapGlobal.Data.selection_shape;
-                            if isempty(myshape)
+                        ZG=ZmapGrid.Data;
+                        gridopt=varargin{1};
+                        use_shape=isfield(gridopt,'GridEntireArea') &&...
+                            ~gridopt.GridEntireArea;
+                        
+                        if use_shape
+                            myshape=ZG.selection_shape;
+                            use_shape = ~isempty(myshape); % no shape to use. cancel that order.
+                            if ~use_shape
                                 ZmapMessageCenter.set_warning('Polygon not defined',...
-                                    'Requested that grid is limited by the polygon, but no polygon is defined.');
-                                switch questdlg('Choose a shape to define:','Polygon Not defined','polygon','circle','none','none')
-                                    case 'circle'
-                                        myshape = ShapeCircle.selectUsingMouse();
-                                        myshape.plot(gca)
-                                        pause(2);
-                                        obj=obj.MaskWithShape(myshape.Lon,myshape.Lat);
-                                        myshape.clearplot;
-                                    case 'polygon'
-                                        myshape=ShapePolygon();
-                                        myshape.select_polygon();
-                                        obj=obj.MaskWithShape(myshape.Lon,myshape.Lat);
-                                    otherwise
-                                        % do nothing
-                                end
-                            else
-                                obj=obj.MaskWithShape(myshape.Points);
+                                'Requested that grid conforms to shape, but no shape is defined.');
                             end
+                        end
+                        
+                        % also, assume it is requesting a 2d gid
+                        
+                        % 1st: FIGURE OUT ORIGIN POINT OF GRID
+                        if use_shape
+                            lonLatZ0=[myshape.X0 myshape.Y0];
+                        else
+                            lonLatZ0=[mean(xlim(gca)), mean(ylim(gca))];
+                        end
+                            
+                        % 2nd: FIGURE OUT DELTAS
+                        deltasLonLatZ=[gridopt.dx,gridopt.dy];
+                        
+                        
+                        % 3rd: FIGURE OUT LIMITS
+                        limsLonLatZ=[xlim(gca),ylim(gca)];
+                        
+                        follow_meridians=strcmp(dx_units,'deg');
+                        
+                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ, limsLonLatZ, follow_meridians)
+                        
+                        if use_shape
+                            obj=obj.MaskWithShape(myshape.Points);
                         end
                     else
                         error('unknown');
@@ -146,9 +154,13 @@ classdef ZmapGrid
         end
         
         % basic access routines
-        function gp = get.GridPoints(obj)
+        function gp = get.GridVector(obj)
             if ~isempty(obj)
-                gp=[obj.X(:), obj.Y(:)];
+                if isempty(obj.Z)
+                    gp=[obj.X(:), obj.Y(:)];
+                else
+                    gp=[obj.X(:), obj.Y(:), obj.Z(:)];
+                end
             else
                 gp = [];
             end
@@ -182,6 +194,7 @@ classdef ZmapGrid
         
         function obj = MaskWithShape(obj,polyX, polyY)
             % MaskWithShape sets the mask according to a polygon
+            % does not change the actual grid!
             % obj = obj.MaskWithShape() user selects polygon from gca
             % obj = obj.MaskWithShape(shape)
             % obj = obj.MaskWithShape(polyX, polyY) where polyX and polyY define the polygon
@@ -192,13 +205,13 @@ classdef ZmapGrid
                 case 2
                     if isa(polyX,'ShapeGeneral')
                         polyY=polyX.Lat;
-                        polyX=polyX.Lon; 
+                        polyX=polyX.Lon;
                     end
                     
                 case 1
                     ZG=ZmapGlobal.Data;
                     if ~isempty(ZG.selection_shape) && ~isnan(ZG.selection_shape.Points(1))
-                        polyX=ZG.selection_shape.Lon; 
+                        polyX=ZG.selection_shape.Lon;
                         polyY=ZG.selection_shape.Lat;
                     end
                 case 3
@@ -334,6 +347,39 @@ classdef ZmapGrid
         end
     end
     
+    methods(Static, Access=protected)
+        function [xs, ys] = cols2matrix(lonCol,latCol, lon0)
+            % COLS2MATRIX convert columns of lats & lons into a matrix.
+            %
+            % [XS,YS]=cols2matrix(lonCol,latCol,lon0)
+            %    LONCOL: column of longitudes, non-unique
+            %    LATCOL: column of latitudes, non-unique
+            %       Together, all points in grid would be included in [LONCOL, LATCOL]
+            %    LON0: longitudes that are supposed to line up. this should be a longitude that
+            %          exists at every latitude.
+            
+            ugy=unique(latCol); % lats in matrix
+            nrows=numel(ugy); % number of latitudes in matrix
+            [~,example]=min(abs(latCol(:))); % latitude closest to equator will have most number of lons in matrix
+            mostCommonY=latCol(example); % account for the abs possibly flipping signs
+            base_lon_idx=find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
+            ncols=sum(latCol(:)==mostCommonY); % most number of lons in matrix
+            ys=repmat(ugy(:),1,ncols);
+            xs=nan(nrows,ncols);
+            for n=1:nrows
+                thislat=ugy(n); % lat for this row
+                idx_lons=(latCol==thislat); % mask of lons in this row
+                these_lons=lonCol(idx_lons); % lons in this row
+                row_length=numel(these_lons); % number of lons in this row
+                
+                main_lon_idx=find(these_lons==lon0); % offset of X in this row
+                offset=base_lon_idx - main_lon_idx;
+                xs(n,(1:row_length)+offset)=these_lons;
+            end
+            
+        end
+    end
+    
     methods(Static)
         function obj=AutoCreateDeg(name, ax, catalog)
             % creates a ZDataGrid based on current Map extent/Catalog extent, whichever is smaller.
@@ -375,14 +421,141 @@ classdef ZmapGrid
             obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'deg');
         end
         
-        function obj=FromVectors(name, x,y, units)
-            % ZMAPGRID.FROMVECTORS creates a meshgrid from X and Y vectors
-            % obj=FromVectors(name, x,y, units)
+        function [lonMat,latMat,zMat] = get_grid(lonLatZ0,deltasLonLatZ, limsLonLatZ, FOLLOW_MERIDIANS)
+            % GET_GRID given an origin point and dlon, dlat, returns a grid as 2 matrices
+            %
+            %[lonMat,latMat] = ZMAPGRID.GET_GRID(lon0,lat0,dLon,dLat, FOLLOW_MERIDIANS)
+            % input is the origin point and arclength between points
+            %    If FOLLOW_MERIDIANS, then x distances converge toward poles. otherwise
+            %    they remain (relatiely) constant
+            %
+            % output is 2 matrices (lon, lat)
+            %
+            % limits can be retrieved from an axes
+            %
+            % use the axes limits (assumed degrees) to control size of grid
+            % limsLonLatZ=[xlim;(x)ylim(ax);zlim(ax);
+            %ylims_deg = ylim(ax);
+            %xlims_deg = xlim(ax);
             
+            % base grid on a single distance, so that instead of separate dx & dy, we use dd
+            %dist_arc = max([...
+            %    distance(lat0,lon0,lat0,lon0+dLon,'degrees'),...
+            %    distance(lat0,lon0,lat0+dLat,lon0,'degrees')]);
+            
+            %d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dist_arc,deg2km(dist_arc));
+            zMat=[];
+            % origin point
+            lon0=lonlat0(1);
+            lat0=lonLat0(2);
+            
+            %
+            % deltas
+            switch(numel(deltasLonLatZ))
+                case 0
+                    % get from Zmap Global
+                    ZG=ZmapGloba.Data; 
+                    assert(~isempty(ZG.gridopt),...
+                        'Grid options haven''t been defined. Define them or specify delta values for this functin');
+                    switch ZG.gridopt.dx_units
+                        case 'deg'
+                           dLon=ZG.gridopt.dx;
+                           if ~exist('FOLLOW_MERIDIANS','var')
+                               % assumed intent with deg is to keep longitudes constant.
+                               FOLLOW_MERIDIANS=true;
+                           end
+                        case 'km'
+                            dLon=km2deg(ZG.gridopt.dx);
+                           if ~exist('FOLLOW_MERIDIANS','var')
+                               % assumed intent with km is to keep distance constant
+                               FOLLOW_MERIDIANS=false;
+                           end
+                    end
+                    switch ZG.gridopt.dy_units
+                        case 'deg'
+                            dLat=ZG.gridopt.dy;
+                        case 'km'
+                            dLon=Zkm2deg(ZG.gridopt.dy);
+                    end
+                case 1
+                    dLat = deltasLonLatZ;
+                    dLon = deltasLonLatZ;
+                case 2
+                    dLat = deltasLonLatZ(2);
+                    dLon = deltasLonLatZ(1);
+                case 3
+                    dLat = deltasLonLatZ(2);
+                    dLon = deltasLonLatZ(1);
+                    dZ = deltasLonLatZ(3);
+            end
+            
+            xlims_deg=limsLonLatZ(1,:);
+            ylims_deg=limsLonLatZ(2,:);
+            % pick out latitude spacing. Our grid will have this many rows.
+            lats = ZmapGrid.vector_including_origin(lat0, dLat, ylims_deg);
+            lonMat=[];
+            latMat=[];
+            
+            if FOLLOW_MERIDIANS
+                % when following the meridian lines, the longitude span covered by
+                % the arc-distance at lat0 (along the rhumb!) remains constant.
+                % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
+                [~,dLon]=reckon('rh',lat0,0,dLon,90);
+                
+                % resulting in a rectangular matrix where, on a globe lines will converge, but on a graph
+                lonValues = ZmapGrid.vector_including_origin(lon0, dLon, xlims_deg);
+                
+                %creates a meshgrid of size numel(lonValues) x numel(lats)
+                [lonMat,latMat]=meshgrid(lonValues,lats);
+                
+            else
+                % when ignoring meridian lines, and aiming for an approximately constant distance,
+                % the dLon at each latitude will differ.
+                
+                % number of degrees longitude covered by the arclength at each latitude
+                [~,dLon_per_lat]=reckon('rh',lats,0,dLon,90);
+                
+                for n=1:numel(lats)
+                    theseLonValues = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), xlims_deg);
+                    lonMat=[lonMat;theseLonValues(:)]; %#ok<AGROW>
+                    latMat=[latMat;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
+                end
+                
+                [lonMat,latMat] = cols2matrix(lonMat,latMat);
+                % each gridx & gridy are vectors.
+            end
+            if numel(deltasLonLatZ)==3
+                zlims_km=limsLonLatZ(3,:);
+                zs=vector_including_origin(lonLatZ0, deltasLonLatZ(3), zlims_km);
+                lonMat=repmat(lonMat,1,1,numel(zs));
+                latMat=repmat(latMat,1,1,numel(zs));
+                zMat=ones(size(lonMat));
+                for n=1:numel(zs)
+                    zMat(:,:,n)=zs(n);
+                end
+                assert(isequal(size(lonMat),size(zMat)));
+            end
+        end
+        
+        function v = vector_including_origin(orig_deg, delta_deg, lims_deg)
+            % VECTOR_INCLUDING_ORIGIN returns values in a range, gaurenteed to contain the origin value
+            %
+            % ZMAPGRID.VECTOR_INCLUDING_ORIGIN(orig_deg, delta_deg, lims_deg)
+            v = unique([orig_deg : -delta_deg : min(lims_deg) , orig_deg : delta_deg :max(lims_deg)]);
+            v(v>max(lims_deg)| v<min(lims_deg))=[];
+        end
+        
+        %{
+        function obj=FromVectors(name, x,y, z, units)
+            % ZMAPGRID.FROMVECTORS creates a meshgrid from X and Y vectors
+            % does not take actual distances into account, so that x spacing is
+            % tighter toward the poles
+            % obj=FromVectors(name, x,y, units)
+            if isempty(z)
             [X, Y] =  meshgrid(x, y);
             obj=ZmapGrid(name,X,Y,units);
         end
-        
+        %}
         function obj=load(filename, pathname)
             % mygrid = ZmapGrid.load() prompts user for a zmap grid file
             %
