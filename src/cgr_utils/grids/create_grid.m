@@ -1,4 +1,4 @@
-function [pgr] = create_grid(pts, follow_parallels)
+function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     % Interactively define a grid
     %
     % CREATE_GRID will create a ZmapGrid interactively. Upon closing the window or choosing "Set"
@@ -30,7 +30,7 @@ function [pgr] = create_grid(pts, follow_parallels)
     % TODO: make this work with gridfun
     
     
-    FOLLOW_PARALLELS = exist('follow_parallels','var') && follow_parallels;
+    FOLLOW_PARALLELS = exist('follow_parallels','var') && follow_meridians;
     USEPOLY=exist('pts','var') && ~isempty(pts) && ~isnan(pts(1));
     name='grid';
     changed=false;
@@ -62,6 +62,7 @@ function [pgr] = create_grid(pts, follow_parallels)
                     7.3500   47.8007...
                     ];
             case 'testworld'
+                USEPOLY=false
                 clear pts
                 axis([0 90 -20 80])
         end
@@ -86,14 +87,15 @@ function [pgr] = create_grid(pts, follow_parallels)
     
     % ADDITIONAL CONTROLS
     uicontrol('style','pushbutton','Units','pixels','Position',[310 30 50 20],'String','SET','Callback',@set_grid);
-    ned = uicontrol('style','edit','Units','pixels','Position',[310 70 50 20],'String',name,'Callback',@(~,~)update_plot());
+    uicontrol('style','edit','Units','pixels','Position',[310 70 50 20],...
+        'String',name,'Callback',@(~,~)update_plot());
     
-    uicontrol('style','checkbox','Units','pixels','Position',[310 30 80 20],'String','Follow Parallels? (adjusts for lat)','Callback',@toggle_parallels);
+    uicontrol('style','checkbox','Units','pixels','Position',[310 100 80 20],'String','Follow Meridians? (adjusts for lat)','Callback',@toggle_parallels);
     % SELECT FIXED POINT
     write_string(t,'Enter a fixed point for the grid');
-    [x,y]=ginput(1);
-    fp=plot(ax,x,y,'b+','linewidth',2,'DisplayName','Origin');
-    instruction_end(t)
+    [fixed_x,fixed_y]=ginput(1);
+    fp=plot(ax,fixed_x,fixed_y,'b+','linewidth',2,'DisplayName','Origin');
+    instruction_end(t);
     
     % SELECT OTHER POINT
     write_string(t,'Click at a distance that will define a grid');
@@ -101,8 +103,8 @@ function [pgr] = create_grid(pts, follow_parallels)
     %tmph=plot(ax,x2,y2,'bo','linewidth',2)
     instruction_end(t);
     
-    dx = abs(x2-x);
-    dy = abs(y2-y);
+    dx = abs(x2-fixed_x);
+    dy = abs(y2-fixed_y);
     
     % SELECT INITIAL GRID
     %[gridx,gridy]=get_grid(x,y,dx,dy);
@@ -118,7 +120,7 @@ function [pgr] = create_grid(pts, follow_parallels)
     
     write_string(t,'Scroll the mouse wheel to scale')
     if nargout > 0 
-        waitfor(f)
+        waitfor(f);
     end
     
     function adjust_grid(~,ev)
@@ -146,27 +148,25 @@ function [pgr] = create_grid(pts, follow_parallels)
     end
     
     function update_plot()
-        %[gx,gy]=get_grid(x,y,dx,dy);
-        %gpts_h.XData=gx(:);
-        %gpts_h.YData=gy(:);
         changed=true;
-        [gx,gy]=get_eq_grid(x,y,dx,dy);
+        [gx,gy]=get_eq_grid(fixed_x,fixed_y,dx,dy);
         if USEPOLY
             ll=polygon_filter(pts(:,1),pts(:,2),gx(:),gy(:),'inside');
         else
             ll=true(size(gx(:)));
         end
+        % plot points inside polygon, but grid still covers entire map.
         gpts_h2.XData=gx(ll);
         gpts_h2.YData=gy(ll);
         
-        gr=[gpts_h2.XData(:), gpts_h2.YData(:)];
-        
+        %gr=[gpts_h2.XData(:), gpts_h2.YData(:)];
+        %{
         % assign pgrid
         ugy=unique(gy); % lats in matrix
         nrows=numel(ugy); % number of latitudes in matrix
         [~,example]=min(abs(gy(:))); % latitude closest to equator will have most number of lons in matrix
         mostCommonY=gy(example); % account for the abs possibly flipping signs
-        base_lon_idx=find(gx(gy==mostCommonY)==x); % longitudes that must line up
+        base_lon_idx=find(gx(gy==mostCommonY)==fixed_x); % longitudes that must line up
         ncols=sum(gy(:)==mostCommonY); % most number of lons in matrix
         ys=repmat(ugy(:),1,ncols);
         xs=nan(nrows,ncols);
@@ -176,13 +176,19 @@ function [pgr] = create_grid(pts, follow_parallels)
             these_lons=gx(idx_lons); % lons in this row
             row_length=numel(these_lons); % number of lons in this row
             
-            main_lon_idx=find(these_lons==x); % offset of X in this row
+            main_lon_idx=find(these_lons==fixed_x); % offset of X in this row
             offset=base_lon_idx - main_lon_idx;
             xs(n,[1:row_length]+offset)=these_lons;
         end
         pgr.xs=xs;
         pgr.ys=ys;
-        if USEPOLY
+        %}
+        pgr.xs=gx;
+        pgr.ys=gy;
+        disp(pgr)
+        
+        % trim pgr to polygon before returning. Maybe I shouldn't!
+        if USEPOLY&&exist('trim_final_grid_to_shape','var')&&trim_final_grid_to_shape
             ll=polygon_filter(pts(:,1),pts(:,2),pgr.xs,pgr.ys,'inside');
             pgr.xs(~ll)=nan;
             pgr.ys(~ll)=nan;
@@ -193,31 +199,92 @@ function [pgr] = create_grid(pts, follow_parallels)
         tp.String=sprintf('N Points: %d',sum(ll));
     end
     
-    function [gridx,gridy] = get_eq_grid(x0,y0,dx,dy)
-        dd = max([distance(y0,x0,y0,x0+dx,'degrees'), distance(y0,x0,y0+dy,x0,'degrees')]);
-        d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dd,deg2km(dd));
-        yl = ylim(ax);
-        xl = xlim(ax);
+    function [lonCol,latCol] = get_eq_grid(lon0,lat0,dLon,dLat)
+        % GET_EQ_GRID
+        % input is the origin point and arclength between points
+        % output is 2 vectors (lon, lat)
         
-        % pick out y spacing
-        ytk = unique([y0 : -dd : yl(1) , y0: dd : yl(2)]);
-        gridx=[];
-        gridy=[];
+        % base grid on a single distance, so that instead of separate dx & dy, we use dd
+        dist_arc = max([...
+            distance(lat0,lon0,lat0,lon0+dLon,'degrees'),...
+            distance(lat0,lon0,lat0+dLat,lon0,'degrees')]);
+        
+        d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dist_arc,deg2km(dist_arc));
+        
+        % use the axes limits (assumed degrees) to control size of grid
+        ylims_deg = ylim(ax);
+        xlims_deg = xlim(ax);
+        
+        % pick out latitude spacing. Our grid will have this many rows.
+        lats = vector_including_origin(lat0, dist_arc, ylims_deg);
+        lonCol=[];
+        latCol=[];
+        
         if FOLLOW_PARALLELS
-            [~,dx]=reckon('rh',y0,0,dd,90); % find longitudinal distance at this latitude
-            xtk = unique([x0 : -dx : xl(1) , x0 : dx :xl(2)]);
-            [gridx,gridy]=meshgrid(xtk,ytk);
+            % when following the meridian lines, the longitude span covered by
+            % the arc-distance at lat0 (along the rhumb!) remains constant.
+            % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
+            [~,dLon]=reckon('rh',lat0,0,dist_arc,90); 
+            
+            % resulting in a rectangular matrix where, on a globe lines will converge, but on a graph
+            lonValues = vector_including_origin(lon0, dLon, xlims_deg);
+            
+            %creates a meshgrid of size numel(lonValues) x numel(lats)
+            [lonCol,latCol]=meshgrid(lonValues,lats); 
+            
+            
+            %lonCol=lonCol(:);
+            %latCol=latCol(:);
         else
-            [~,dxs]=reckon('rh',ytk,0,dd,90);
-            for n=1:numel(ytk)
-                xtk = unique([x0 : -dxs(n) : xl(1) , x0 : dxs(n) :xl(2)]);
-                gridx=[gridx;xtk(:)];
-                gridy=[gridy;repmat(ytk(n),size(xtk(:)))];
+            % when ignoring meridian lines, and aiming for an approximately constant distance,
+            % the dLon at each latitude will differ.
+            
+            % number of degrees longitude covered by the arclength at each latitude
+            [~,dLon_per_lat]=reckon('rh',lats,0,dist_arc,90);
+            
+            for n=1:numel(lats)
+                theseLonValues = vector_including_origin(lon0, dLon_per_lat(n), xlims_deg);
+                lonCol=[lonCol;theseLonValues(:)]; %#ok<AGROW>
+                latCol=[latCol;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
             end
+            
+            [lonCol,latCol] = cols2matrix(lonCol,latCol);
+            % each gridx & gridy are vectors.
+        end
+    end
+    
+    function v = vector_including_origin(orig_deg, delta_deg, lims_deg)
+        v = unique([orig_deg : -delta_deg : min(lims_deg) , orig_deg : delta_deg :max(lims_deg)]);
+    end
+    
+    
+    function [xs, ys] = cols2matrix(lonCol,latCol)
+        % COLS2MATRIX convert columns of lats & lons into a matrix.
+        % this takes lots of stuff into account
+        %
+        
+        % assign pgrid
+        ugy=unique(latCol); % lats in matrix
+        nrows=numel(ugy); % number of latitudes in matrix
+        [~,example]=min(abs(latCol(:))); % latitude closest to equator will have most number of lons in matrix
+        mostCommonY=latCol(example); % account for the abs possibly flipping signs
+        base_lon_idx=find(lonCol(latCol==mostCommonY)==fixed_x); % longitudes that must line up
+        ncols=sum(latCol(:)==mostCommonY); % most number of lons in matrix
+        ys=repmat(ugy(:),1,ncols);
+        xs=nan(nrows,ncols);
+        for n=1:nrows
+            thislat=ugy(n); % lat for this row
+            idx_lons=(latCol==thislat); % mask of lons in this row
+            these_lons=lonCol(idx_lons); % lons in this row
+            row_length=numel(these_lons); % number of lons in this row
+            
+            main_lon_idx=find(these_lons==fixed_x); % offset of X in this row
+            offset=base_lon_idx - main_lon_idx;
+            xs(n,(1:row_length)+offset)=these_lons;
         end
         
     end
-    
+    %{
     function [gridx,gridy] = get_grid(x0,y0,dx,dy)
         xl = xlim(ax);
         xtk = unique([x0 : -dx : xl(1) , x0 : dx :xl(2)]);
@@ -227,7 +294,7 @@ function [pgr] = create_grid(pts, follow_parallels)
         
         [gridx,gridy]=meshgrid(xtk,ytk);
     end
-    
+    %}
     function mouse_down(src,~)
         %mouse down, so make origin follow mouse around
         %disp(ev)
@@ -248,13 +315,13 @@ function [pgr] = create_grid(pts, follow_parallels)
     end
     
     function mouse_move(~,~)
-        x=ax.CurrentPoint(1,1);
-        y=ax.CurrentPoint(1,2);
-        fp.XData=x;
-        fp.YData=y;
+        fixed_x=ax.CurrentPoint(1,1);
+        fixed_y=ax.CurrentPoint(1,2);
+        fp.XData=fixed_x;
+        fp.YData=fixed_y;
     end
     
-    function check_for_save(src,ev)
+    function check_for_save(~,~)
         if changed
             dosave=questdlg('Save Changes?','Grid Creation','Yes','No','Yes');
             if strcmpi(dosave,'Yes')
@@ -289,7 +356,7 @@ function pgr=trim_nans(pgr)
         pgr.ys(nanrows,:)=[];pgr.ys(:,nancols)=[];
 end
 
-
+%{
 function c=mycontext()
     c=uicontextmenu
     
@@ -298,3 +365,4 @@ function c=mycontext()
     uimenu(c,'Label','Select Polygon');
     uimenu(c,'Separator','on','Label','Create Polygon');
 end
+%}
