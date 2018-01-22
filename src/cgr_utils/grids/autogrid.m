@@ -55,8 +55,8 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         XEDGES=linspace(XEDGES(1),XEDGES(end),prevNx);
         YEDGES=linspace(YEDGES(1),YEDGES(end),prevNy);
         % create a grid (on bin centers!)
-        zgrid=ZmapGrid.FromVectors('autogrid',XEDGES(2:end)-diff(XEDGES(1:2))/2,...
-            YEDGES(2:end)-diff(YEDGES(1:2))/2,'deg');
+        %zgrid=ZmapGrid.FromVectors('autogrid',XEDGES(2:end)-diff(XEDGES(1:2))/2,...
+        %    YEDGES(2:end)-diff(YEDGES(1:2))/2,'deg');
         
         
     % create a structure equivelent to GridParameterChoice.toStruct()
@@ -71,6 +71,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         'LoadGrid',false,...
         'CreateGrid',false); %should be done in conj. with GridParameterChoice
     
+    zgrid=ZmapGrid('autogrid',gpc)
     
     if exist('dohist','var') && dohist
         figure('Name','Automatic Grid');

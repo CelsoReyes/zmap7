@@ -44,7 +44,7 @@ classdef MapFeature < handle
     %
     % lakes.plot(ax2m) % plot into map
     % lakes.plot(ax1) % plot onto "normal" axes
-
+    
     properties
         Name                % name of this feature
         Loadfn              % function used to load/import this feature's data
@@ -433,7 +433,7 @@ classdef MapFeature < handle
             end
             idx  = obj.Value.Longitude >= trimLon(1) & obj.Value.Longitude <= trimLon(2);
             idx = idx & obj.Value.Latitude >= trimLat(1) & obj.Value.Latitude <= trimLat(2);
-
+            
             val=obj.Value;
             
             % index used to delete any nan's after the first (per gap)
@@ -473,6 +473,34 @@ classdef MapFeature < handle
                 end
             end
         end
+        
+        function foreach_waitbar(features,funcname,varargin)
+            %FOREACH run a function on a Map or array full of MapFeature
+            % FOREACH(features) where features is either a map or array of MapFeature
+            % FOREACH(features,arg1,...) arguments to pass to the function
+            
+            
+            h=waitbar(0,'Calculating features for map...');
+            if isa(features,'containers.Map')
+                k=features.keys;
+                for i=1:numel(k)
+                    h.Name=[funcname ' : ', k{i}];
+                    ftr=features(k{i});
+                    ftr.(funcname)(varargin{:});
+                    waitbar(i/numel(k),h);
+                end
+            else
+                % treat as an array
+                for i=1:numel(features)
+                    h.Name=[funcname ' : ', features(i).Name];
+                    ftr=features(i);
+                    ftr.(funcname)(varargin{:});
+                    waitbar(i/k,h);
+                end
+            end
+            delete(h)
+        end
+        
     end %static methods
 end
 

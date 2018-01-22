@@ -18,8 +18,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
         OperatingCatalog={'primeCatalog'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
         ModifiedCatalog='newt2'; %name of catalog changed by this function
         
-        dx = ZmapGlobal.Data.gridopt.dx;
-        dy = ZmapGlobal.Data.gridopt.dy;
         ni = ZmapGlobal.Data.ni;
         ra = 25%ZmapGlobal.Data.ra;
         Nmin = 50;
@@ -89,7 +87,8 @@ classdef cgr_bvalgrid < ZmapGridFunction
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
-                zdlg.AddGridParameters('gridOpts',obj.dx,'lon',obj.dy,'lat',[],'');
+                gop=obj.ZG.gridopt;
+                zdlg.AddGridParameters('gridOpts',gop.dx,gop.dx_units,gop.dy,gop.dy_units,[],'');
                 zdlg.AddEventSelectionParameters('EventSelector',ceil(obj.Nmin*1.5), obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                     're takes longer, but provides more accurate results');
@@ -129,9 +128,9 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % - required variables exist or have valid values
             assert(~isempty(obj.getCat()) , 'Catalog is not empty');
             assert(isa(obj.getCat(),'ZmapCatalog'), 'Catalog is a ZmapCatalog');
-            %if isempty(obj.Grid)
-                obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
-            %end
+            if isempty(obj.Grid) || obj.gridOpts.CreateGrid
+               obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
+            end
             assert(~isempty(obj.Grid), 'No grid exists. please create one first');
         end
         
@@ -234,14 +233,13 @@ classdef cgr_bvalgrid < ZmapGridFunction
        
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
-            obj.ZG.Grid = obj.Grid;
+            obj.ZG.Grid = obj.Grid; %TODO do we really write back the grid?
         end
     end %methods
     
     methods(Static)
         function h=AddMenuItem(parent, label)
             % create a menu item
-            disp('MenuItem in sample');
             if ~exist('label','var')
                 label='Mc, a- and b- value map';
             end

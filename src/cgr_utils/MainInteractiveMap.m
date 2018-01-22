@@ -16,9 +16,19 @@ classdef MainInteractiveMap
     
     methods
         function obj = MainInteractiveMap()
+            persistent lock
+            
+            h=findobj('Tag','seismicity_map');
             obj.Features=ZmapGlobal.Data.features;
-            MapFeature.foreach(obj.Features,'load');
-            obj.initial_setup()
+            
+            % the lock avoids loading features multiple times when MainInteractiveMap is called
+            % TODO find more elegent solution where MainInteractiveMap isn't called twice.
+            if isempty(lock)
+                lock=1;
+                MapFeature.foreach_waitbar(obj.Features,'load');
+                obj.initial_setup()
+                lock=[];
+            end
         end
         
         function v = View(obj)

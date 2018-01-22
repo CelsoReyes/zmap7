@@ -21,9 +21,9 @@ function [mask] = polygon_filter(x, y, XI, YI, in_or_out)
     % see also inpolygon, inpoly
     
     
-    assert(length(XI) == length(YI));
-    assert(length(x) == length(y));
-    assert(numel(x) > 3);
+    assert(length(XI) == length(YI), 'test-points should have equal numbers of x and y' );
+    assert(length(x) == length(y), 'number of polygon x should equal polygon y');
+    assert(numel(x) > 3,'not enough points to be a polygon');
     
     m = length(x)-1;      %  number of coordinates of polygon
     l = zeros(size(XI));

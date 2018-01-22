@@ -5,33 +5,7 @@ function add_grid_menu(parent)
     uimenu(parent,'Label','Create Auto-Grid','Callback',@cb_autogrid);
     uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
     uimenu(parent,'Label','Create Auto-Radius','Callback',@cb_autoradius);
-    uimenu(parent,'Label','Refresh','Callback',@cb_refresh)
-    %uimenu(parent,'Label','Apply grid','Callback',@cb_applygrid);
-     
-    function cb_applygrid(~,~)
-        % CB_APPLYGRID sets the grid according to the selected shape
-        ZG=ZmapGlobal.Data;
-        obj=ZG.selection_shape;
-        if (isempty(obj.Lon)||isnan(obj.Lon(1)))% use catalog
-            xmin=min(ZG.primeCatalog.Longitude);
-            xmax=max(ZG.primeCatalog.Longitude);
-            ymin=min(ZG.primeCatalog.Latitude);
-            ymax=max(ZG.primeCatalog.Latitude);
-        else %use shape
-            xmin=min(obj.Lon);
-            xmax=max(obj.Lon);
-            ymin=min(obj.Lat);
-            ymax=max(obj.Lat);
-        end
-        ZG.Grid=ZmapGrid.FromVectors('grid',...
-            xmin:gopt.dx:xmax,...
-            ymin:gopt.dy:ymax,...
-            gopt.dx_units);
-        if ~gopt.GridEntireArea
-            ZG.Grid=ZG.Grid.MaskWithShape(ZG.selection_shape);
-        end
-        ZG.Grid.plot();
-    end
+    uimenu(parent,'Label','Refresh','Callback',@cb_refresh);
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid
@@ -47,7 +21,9 @@ function add_grid_menu(parent)
         ZG=ZmapGlobal.Data;
         m=mainmap();
         [ZG.Grid,ZG.gridopt]=autogrid(m.Catalog(),true,true);
-        ZG.Grid = ZG.Grid.MaskWithShape(ZG.selection_shape);
+        if ~isempty(ZG.selection_shape)
+            ZG.Grid = ZG.Grid.MaskWithShape(ZG.selection_shape);
+        end
         ZG.Grid.plot(m.mainAxes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
     end
     

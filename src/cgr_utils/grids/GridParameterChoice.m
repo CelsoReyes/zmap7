@@ -98,7 +98,7 @@ classdef GridParameterChoice < handle
         function obj=GridParameterChoice(fig,tag,lowerCornerPosition, A, B, C)
             % choose_grid adds controls to describe how to choose a grid.
             % GridParameterChoice(fig, lowerCornerPosition, {dx,'deg'},{dy,'deg'},{dz,'km'})
-            %  Parameters A, B, and C are cells containing defualt vaules and units
+            %  Parameters A, B, and C are cells containing default vaules and units
             %    corresponding to E-W, N-S, and vertical.
             % Grid options
             
@@ -311,7 +311,104 @@ classdef GridParameterChoice < handle
             uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(gpc.toStruct()));
         end
         
+        function h=helper(parent, position, defaultsXYZ, units)
+            x=position(1);
+            y=position(2);
+            
+            unitnames.km={'dx','dy'};
+            unitnames.deg={'dLon','dLat'};
+            unitlookup=fieldnames(unitnames);
+            
+            switch numel(defaultsXYZ)
+                case 0
+                    % donno.
+                case 1
+                    hInitial=defaultsXYZ;
+                    vInitial=defaultsXYZ;
+                    zInitial=[];
+                case 2
+                    hInitial=defaultsXYZ(1);
+                    vInitial=defaultsXYZ(2);
+                    zInitial=[];
+                case 3
+                    hInitial=defaultsXYZ(1);
+                    vInitial=defaultsXYZ(2);
+                    zInitial=defaultsXYZ(3);
+            end
+                    
+            % conversion routines
+            hUnits=@(u)unitnames.(u){1}; %  km or deg -> dx or dlon
+            vUnits=@(u)unitnames.(u){2}; %  km or deg -> dy or dlat
+            fn=@(u)unitlookup{u}; % # -> km or deg
+            uname = @(u) find(strcmpi(unitlookup,u)) % km or deg -> #
+            
+            
+            LabelWidth=30;
+            EditWidth=45;
+            PopupXYWidth=70;
+            PopupZWidth=90;
+            Hspacing=3;
+            
+            txX=uicontrol(parent,'Style','text',...
+                'String',vUnits(units),...
+                'Units','pixels','Position',[x,y,LabelWidth,60]);
+            
+            ex=txX.Extent;
+            exV=ex(4);
+            txX.Position(4)=exV;
+            
+            uicontrol(parent,'Style','edit',...
+                'String',num2str(hInitial),...
+                'Position',[x+LabelWidth+Hspacing, y, EditWidth,exV]);
+            
+            txY=uicontrol(parent,'Style','text',...
+                'String',hUnits(units),...
+                'Units','pixels','Position',[x,exV+y+5,LabelWidth,exV]);
+            
+            uicontrol(parent,'Style','edit',...
+                'String',num2str(vInitial),...
+                'Position',[x+LabelWidth+Hspacing, y+exV+5, EditWidth,exV]);
+            
+            uicontrol(parent,'Style','popupmenu',...
+                'String',unitlookup,'Value',uname(units),...
+                'Units','pixels','Position',[x+LabelWidth+EditWidth+2*Hspacing,y+(exV/2),PopupXYWidth,exV],...
+                'Callback',@unitchange);
+            
+            
+            
+            % dz
+            posY=y+(exV/2);
+            usingZ=~isempty(zInitial);
+            x = x + LabelWidth + EditWidth + 3*Hspacing + PopupXYWidth;
+            
+            txZ=uicontrol(parent,'Style','text','String','dz',...
+                'Units','pixels','Position',[x,posY,LabelWidth,exV],...
+                'Enable',logical2onoff(usingZ));
+            
+            edZ=uicontrol(parent,'Style','edit','String',num2str(zInitial),...
+                'Position',[x+LabelWidth+Hspacing, posY, EditWidth,exV]);
+            
+            uicontrol(parent,'Style','popupmenu',...
+                'String',{'unused','km'},'Value',usingZ+1,...
+                'Units','pixels','Position',[x+LabelWidth+EditWidth+2*Hspacing,posY,PopupZWidth,exV],...
+                'Callback',@zunit);
+            
+            
+            function unitchange(src,~)
+                newUnits=src.String{src.Value};
+                txX.String=hUnits(newUnits);
+                txY.String=vUnits(newUnits);
+            end
+            
+            function zunit(src,~)
+                shouldBeEnabled = logical2onoff(src.Value-1);
+                txZ.Enable=shouldBeEnabled;
+                edZ.Enable=shouldBeEnabled;
+            end
+            
+        end
         
         
     end
 end
+

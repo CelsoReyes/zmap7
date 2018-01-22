@@ -1,7 +1,10 @@
 classdef ZmapGrid
     % ZMAPGRID evenly-spaced X,Y grid with ability to be masked
     %
-    % ZmapGrid properties:
+    % OBJ = ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) 
+    % OBJ = ZMAPGRID(NAME, GPC_STRUCT)
+    %
+    % ZMAPGRID properties:
     %
     %     Name - name of this grid
     %
@@ -15,7 +18,7 @@ classdef ZmapGrid
     %     Xactive - X positions for active points [read-only]
     %     Yactive - Y positions for active points [read-only]
     %
-    % ZmapGrid methods:
+    % ZMAPGRID methods:
     %
     %     Creation methods:
     %
@@ -64,8 +67,15 @@ classdef ZmapGrid
     
     methods
         function obj = ZmapGrid(name, varargin)
-            %ZMAPGRID create a ZmapGridStruc
-            %   OBJ = ZMAPGRID(NAME, GPC_STRUCT) where gpc_struct has fields dx,dy, dx_units.
+            %ZMAPGRID create a grid of points
+            %   OBJ = ZMAPGRID(NAME, GPC_STRUCT) where gpc_struct has fields dx, dy, [dz,] dx_units, GridEntireArea.
+            %
+            % ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) where
+            %   origin_degs is (Lon, Lat) or (Lon, Lat, Z_km). 
+            %   delta_degs is [dLon, dLat] or [dLon, dLat, dZ_km]
+            %   limits_degs is [lonMin lonMax ; latMin LatMax] or
+            %      [lonMin lonMax ; latMin LatMax ; depthMin_km depthMax_km]
+            %   follow_meridians is true or false.
             %
             %   ZMAPGRID(NAME, ALL_X, ALL_Y, UNITS) create a grid, where the X is the provided ALL_X
             %   Y is the provided ALL_Y.  This creates a grid [X1 Y1; X1 Y2; ... Xn Ym
@@ -87,7 +97,7 @@ classdef ZmapGrid
                         % ZMAPGRID( NAME, GRIDOPTIONS)
                         
                         % assume it came from GridParameterChoice
-                        ZG=ZmapGrid.Data;
+                        ZG=ZmapGlobal.Data;
                         gridopt=varargin{1};
                         use_shape=isfield(gridopt,'GridEntireArea') &&...
                             ~gridopt.GridEntireArea;
@@ -115,11 +125,13 @@ classdef ZmapGrid
                         
                         
                         % 3rd: FIGURE OUT LIMITS
-                        limsLonLatZ=[xlim(gca),ylim(gca)];
+                        limsLonLatZ=[xlim(gca);ylim(gca)];
                         
-                        follow_meridians=strcmp(dx_units,'deg');
+                        follow_meridians=strcmp(gridopt.dx_units,'deg');
+                        obj.Units = gridopt.dx_units;
                         
-                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ, limsLonLatZ, follow_meridians)
+                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,...
+                                                                limsLonLatZ, follow_meridians);
                         
                         if use_shape
                             obj=obj.MaskWithShape(myshape.Points);
@@ -142,6 +154,15 @@ classdef ZmapGrid
                     obj.Y=varargin{2};
                     assert(ischar(varargin{3}));
                     obj.Units = varargin{3};
+                case 5
+                    %ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) 
+                    lonLatZ0=varargin{1};
+                    deltasLonLatZ = varargin{2};
+                    limsLonLatZ = varargin{3};
+                    follow_meridians = varargin{4};
+                    obj.Units='degrees';
+                    [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,...
+                                                            limsLonLatZ, follow_meridians);
                     
                 otherwise
                     error('incorrect number of arguments %d', nargin);
@@ -180,7 +201,7 @@ classdef ZmapGrid
         end
         
         function obj = set.ActivePoints(obj, values)
-            assert(isempty(values) || isequal(numel(values), length(obj.GridPoints))); %#ok<MCSUP>
+            assert(isempty(values) || isequal(numel(values), numel(obj.X))); %#ok<MCSUP>
             obj.ActivePoints = logical(values);
         end
         
@@ -195,44 +216,53 @@ classdef ZmapGrid
         function obj = MaskWithShape(obj,polyX, polyY)
             % MaskWithShape sets the mask according to a polygon
             % does not change the actual grid!
-            % obj = obj.MaskWithShape() user selects polygon from gca
-            % obj = obj.MaskWithShape(shape)
-            % obj = obj.MaskWithShape(polyX, polyY) where polyX and polyY define the polygon
+            % obj = obj.MASKWITHSHAPE() user selects polygon from gca
+            % obj = obj.MASKWITHSHAPE(shape)
+            % obj = obj.MASKWITHSHAPE(polyX, polyY) where polyX and polyY define the polygon
             report_this_filefun(mfilename('fullpath'));
             narginchk(1,3);
             nargoutchk(1,1);
             switch nargin
-                case 2
+                case 2 % OBJ, POLYX
                     if isa(polyX,'ShapeGeneral')
                         polyY=polyX.Lat;
                         polyX=polyX.Lon;
+                    else
+                        assert(size(polyX,2)==2, 'expecting [lon1, lat1 ; ...]');
+                        polyY=polyX(:,2);
+                        polyX(:,2)=[];
                     end
                     
-                case 1
+                case 1 % OBJ only
                     ZG=ZmapGlobal.Data;
                     if ~isempty(ZG.selection_shape) && ~isnan(ZG.selection_shape.Points(1))
                         polyX=ZG.selection_shape.Lon;
                         polyY=ZG.selection_shape.Lat;
                     end
-                case 3
+                case 3 % OBJ, POLYX, POLYY
                     if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
                         warning('polygon is not closed. adding a point to close it.')
                         polyX(end+1)=polyX(1);
                         polyY(end+1)=polyY(1);
                     end
             end
-            obj.ActivePoints = polygon_filter(polyX,polyY, obj.X, obj.Y, 'inside');
+            if ~isempty(polyX) && ~isnan(polyX(1))
+                obj.ActivePoints = polygon_filter(polyX,polyY, obj.X, obj.Y, 'inside');
+            else
+                obj.ActivePoints = true(size(obj.X));
+                disp('not filtering polygon, since no polygon provided');
+            end
         end
         
         function prev_grid=plot(obj, ax,varargin)
             % plot the current grid over axes(ax)
-            % obj.plot() plots on the current axes
-            %  obj.plot(ax) plots on the specified axes. if ax is empty, then the current axes will
+            % obj.PLOT() plots on the current axes
+            %  obj.PLOT(ax) plots on the specified axes. if ax is empty, then the current axes will
             %     be used
             %
-            %  obj.plot(ax,'name',value,...) sets the grid's properties after plotting/updating
+            %  obj.PLOT(ax,'name',value,...) sets the grid's properties after plotting/updating
             %
-            %  obj.plot(..., 'ActiveOnly') will only plot the active points. This is useful when
+            %  obj.PLOT(..., 'ActiveOnly') will only plot the active points. This is useful when
             %   displaying the vertices within a polygon, for example.
             %
             %  if this figure already has a grid with this name, then it will be modified.
@@ -240,7 +270,7 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',[.7 .7 .7],'displayname','grid points','markersize',5,'marker','.'};
+            def_opts={'color',[.7 .7 .7],'displayname','grid points','markersize',4,'marker','.'};
             varargin=[def_opts,varargin];
             useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)
@@ -254,25 +284,30 @@ classdef ZmapGrid
             if ~all(ishandle(ax))
                 error('invalid axes provided. If not specifying axes, but are providing additional options, lead with "[]". ex. obj.plot([],''color'',[ 1 1 0])');
             end
-            prev_grid = findobj(ax,'Tag',['grid_' obj.Name]);
+            grid_tag = ['grid_' obj.Name];
+            prev_grid = findobj(ax,'Tag',grid_tag);
             if ~isempty(prev_grid)
                 prev_grid.XData=obj.(x)(:);
                 prev_grid.YData=obj.(y)(:);
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=plot(ax,obj.(x)(:),obj.(y)(:),'+k','Tag',['grid_' obj.Name]);
+                prev_grid=plot(ax,obj.(x)(:),obj.(y)(:),'+k','Tag',grid_tag);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end
+            % make sure that grid is on the bottom layer
+            chh=ax.Children;
+            ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
+             
             if numel(varargin)>1
                 set(prev_grid,varargin{:});
             end
         end
         
         function h=pcolor(obj, ax, values, name)
-            % pcolor create a pcolor plot where each point of the grid is center of cell
-            % h = obj.pcolor(ax, values) plos the values as a pcolor plot, where
+            % PCOLOR create a pcolor plot where each point of the grid is center of cell
+            % h = obj.PCOLOR(ax, values) plos the values as a pcolor plot, where
             % each grid point is contained within a color cell. the cells are divided halfway
             % between each point in the vector
             %  where :
@@ -383,10 +418,9 @@ classdef ZmapGrid
     methods(Static)
         function obj=AutoCreateDeg(name, ax, catalog)
             % creates a ZDataGrid based on current Map extent/Catalog extent, whichever is smaller.
-            % obj = ZmapGrid.AutoCreate() greates a catalog based on mainmap and primary catalog
-            % obj = ZmapGrid.Autocreate(ax, catalog) specifies a map axis handle and a catalog to use.
+            % obj = ZMAPGRID.AUTOCREATEDEG() greates a catalog based on mainmap and primary catalog
+            % obj = ZMAPGRID.AUTOCREATEDEG(ax, catalog) specifies a map axis handle and a catalog to use.
             
-            % obj=ZmapGrid(name, x_start, dx, x_end, y_start, dy, y_end, units)
             XBINS=20;
             YBINS=20;
             %ZBINS=5;
@@ -446,8 +480,8 @@ classdef ZmapGrid
             %d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dist_arc,deg2km(dist_arc));
             zMat=[];
             % origin point
-            lon0=lonlat0(1);
-            lat0=lonLat0(2);
+            lon0=lonLatZ0(1);
+            lat0=lonLatZ0(2);
             
             %
             % deltas
@@ -521,7 +555,7 @@ classdef ZmapGrid
                     latMat=[latMat;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
                 end
                 
-                [lonMat,latMat] = cols2matrix(lonMat,latMat);
+                [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
                 % each gridx & gridy are vectors.
             end
             if numel(deltasLonLatZ)==3
@@ -557,12 +591,12 @@ classdef ZmapGrid
         end
         %}
         function obj=load(filename, pathname)
-            % mygrid = ZmapGrid.load() prompts user for a zmap grid file
+            % mygrid = ZMAPGRID.LOAD() prompts user for a zmap grid file
             %
-            % mygrid = ZmapGrid.load('grid1') -> attempts to load 'grid1' or 'zmapgrid_grid1.m' from
+            % mygrid = ZMAPGRID.LOAD('grid1') -> attempts to load 'grid1' or 'zmapgrid_grid1.m' from
             % the data directory, and then anywhere the matlab path.
             %
-            % mygrid = ZmapGrid.load('grid1', 'mydir') - attempts to load 'grid1' or
+            % mygrid = ZMAPGRID.LOAD('grid1', 'mydir') - attempts to load 'grid1' or
             % 'zmapgrid_grid1.m' from the mydir directory.
             %
             % the grid must be contained in a variable named 'zmapgrid' and of type ZmapGrid

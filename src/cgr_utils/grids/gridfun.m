@@ -1,7 +1,8 @@
 function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, catalog, zgrid, selcrit, answidth )
-    %gridfun Applies a function to each grid point using events determined by selection criteria
+    %GRIDFUN Applies a function to each grid point using events determined by selection criteria
     %
-    %  VALUES = gridfun( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
+    %
+    %  VALUES = GRIDFUN( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
     %  in GRID, by choosing appropriate events from CATALOG using the selection criteria SELCRIT.
     %  FUN is a function handle that takes a ZmapCatalog as input, and returns a number.
     %  GRID is a ZmapGrid.
@@ -78,8 +79,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     check_grid();
     check_selection(); % may modify selcrit
     
-    usemask=any(~zgrid.ActivePoints(:));
-    
     
     if ~exist('answidth','var')
         answidth=1;
@@ -94,15 +93,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     maxMag=nan(size(values,1),1);
     
     wasEvaluated=false(length(zgrid),1);
-    
-    Xs=zgrid.X;
-    Ys=zgrid.Y;
-    Zs=nan(size(Ys));
-    doZ=isa(zgrid,'ZmapGrid3');
-    if doZ
-        Zs=zgrid.Z;
-    end
-    mask=zgrid.ActivePoints;
     
     drawnow
     
@@ -173,27 +163,31 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
  
     function doSinglefun(myfun)
         if length(zgrid)<MIN_POINTS_FOR_PARALLEL || ~ZG.useParallel
-            for i=1:length(zgrid)
+            
+            gridpoints = zgrid.GridVector;
+            gridpoints=gridpoints(zgrid.ActivePoints,:);
+            
+            % where to put the value back into the matrix
+            activeidx = find(zgrid.ActivePoints);
+            doZ=~isempty(zgrid.Z);
+            
+            for i=1:numel(activeidx)
                 fun=myfun; % local copy of function
                 % is this point of interest?
-                if usemask && ~mask(i)
-                    continue
-                end
-                
-                x=Xs(i);
-                y=Ys(i);
+                write_idx = activeidx(i);
+                x=gridpoints(i,1);
+                y=gridpoints(i,2);
                 if doZ
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,Zs(i));
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
                 else
                     
                     [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
                 end
                 
-                
-                nEvents(i)=minicat.Count;
-                maxDist(i)=maxd;
+                nEvents(write_idx)=minicat.Count;
+                maxDist(write_idx)=maxd;
                 if ~isempty(minicat)
-                    maxMag(i)=max(minicat.Magnitude);
+                    maxMag(write_idx)=max(minicat.Magnitude);
                 end
                 % are there enough events to do the calculation?
                 if minicat.Count < selcrit.requiredNumEvents
@@ -202,9 +196,9 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 end
                 
                 returned_vals = fun(minicat);
-                values(i,:)=returned_vals;
+                values(write_idx,:)=returned_vals;
                 
-                wasEvaluated(i)=true;
+                wasEvaluated(write_idx)=true;
                 %waitbar(i/length(zgrid))
                 if ~mod(i,ceil(length(zgrid)/50))
                     drawnow
@@ -250,7 +244,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     
     function values = initialize_from_grid(answidth)
-            %[if usemask: values=nan(size(zgrid.ActivePoints));
             values=nan(length(zgrid),answidth);
     end
     

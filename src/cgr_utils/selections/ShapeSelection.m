@@ -622,7 +622,8 @@ function cb_applygrid(src,~)
         ymin=min(obj.Lat);
         ymax=max(obj.Lat);
     end
-    ZG.Grid=ZmapGrid.FromVectors('grid',xmin:gopt.dx:xmax, ymin:gopt.dy:ymax, gopt.dx_units);
+    ZG.Grid = ZmapGrid('grid',gopt);
+    %ZG.Grid=ZmapGrid.FromVectors('grid',xmin:gopt.dx:xmax, ymin:gopt.dy:ymax, gopt.dx_units);
     ZG.Grid=ZG.Grid.MaskWithShape(obj);
     ZG.Grid.plot();
 end
