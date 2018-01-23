@@ -420,47 +420,17 @@ classdef ZmapCatalog < handle
             if isempty(obj.Filter)
                 return
             end
-            
-            obj.Date = obj.Date(obj.Filter);       % datetime
-            % Nanosecond  % additional precision, if needed
-            obj.Longitude = obj.Longitude(obj.Filter) ;
-            obj.Latitude = obj.Latitude(obj.Filter);
-            obj.Depth =  obj.Depth(obj.Filter) ;      % km
-            obj.Magnitude = obj.Magnitude(obj.Filter) ;
-            obj.MagnitudeType = obj.MagnitudeType(obj.Filter) ;
-            obj.Filter = obj.Filter(obj.Filter);
-            obj.Dip = obj.Dip(obj.Filter);
-            obj.DipDirection = obj.DipDirection(obj.Filter);
-            obj.Rake = obj.Rake(obj.Filter);
-            if ~isempty(obj.MomentTensor)
-                obj.MomentTensor = obj.MomentTensor(obj.Filter,:);
-            end
+            obj = obj.subset(obj.Filter);
         end
         
         function obj = getCropped(existobj)
             % GETCROPPED get a new, cropped ZmapCatalog from this one
-            %
             
             if isempty(existobj.Filter)
                 obj = existobj;
-                return
+            else
+                obj = existobj.subset(existobj.Filter);
             end
-            % get a subset of an existing catalog
-            obj = ZmapCatalog();
-            obj.Longitude = existobj.Longitude(existobj.Filter);
-            obj.Latitude = existobj.Latitude(existobj.Filter);
-            obj.Date = existobj.Date(existobj.Filter);
-            obj.Depth = existobj.Depth(existobj.Filter);
-            obj.Magnitude = existobj.Magnitude(existobj.Filter);
-            obj.MagnitudeType = existobj.MagnitudeType(existobj.Filter);
-            obj.Dip = existobj.Dip(existobj.Filter);
-            obj.DipDirection = existobj.DipDirection(existobj.Filter);
-            obj.Rake = existobj.Rake(existobj.Filter);
-            obj.Filter=existobj.Filter(existobj.Filter);
-            if ~isempty(obj.MomentTensor)
-                obj.MomentTensor=existobj.MomentTensor(existobj.Filter,:);
-            end
-            
         end
         
         function addFilter(obj, field, operation, value, varargin)
@@ -546,23 +516,10 @@ classdef ZmapCatalog < handle
                 direction = 'ascend';
             end
             [~,idx] = sort(obj.(field),direction);
-            
-            obj.Date = obj.Date(idx);       % datetime
-            obj.Longitude = obj.Longitude(idx) ;
-            obj.Latitude = obj.Latitude(idx);
-            obj.Depth =  obj.Depth(idx) ;      % km
-            obj.Magnitude = obj.Magnitude(idx) ;
-            obj.MagnitudeType = obj.MagnitudeType(idx) ;
-            obj.Dip=obj.Dip(idx);
-            obj.DipDirection=obj.DipDirection(idx);
-            obj.Rake=obj.Rake(idx);
-            if ~isempty(obj.MomentTensor)
-                obj.MomentTensor=obj.MomentTensor(idx,:);
-            end
+            obj = obj.subset(idx);
             if isempty(obj.Filter)
                 obj.clearFilter();
             end
-            obj.Filter = obj.Filter(idx) ;
         end
         
         function other=sortedByDistanceTo(obj, lat, lon, depth)
@@ -697,6 +654,11 @@ classdef ZmapCatalog < handle
             end
         end
         
+        function obj = blank(obj2)
+            % allows subclass-aware use of empty objects
+            obj=ZmapCatalog();
+        end
+        
         function obj = subset(existobj, range)
             % SUBSET get a subset of this object
             % newcatalog = catalog.SUBSET(mask) where mask is a t/f array matching obj.Count
@@ -704,7 +666,11 @@ classdef ZmapCatalog < handle
             % newcatalog = catalog.SUBSET(range), where range evaluates to an integer array
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
-            obj = ZmapCatalog();
+            
+            % changed this to make subset usable by subclassed catalogs. 
+            obj = existobj.blank(); 
+            obj.Name = existobj.Name;
+            
             obj.Date = existobj.Date(range);       % datetime
             obj.Longitude = existobj.Longitude(range) ;
             obj.Latitude = existobj.Latitude(range);
