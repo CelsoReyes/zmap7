@@ -1,8 +1,9 @@
-classdef ZmapGridFunction < ZmapFunction
-    % ZMAPGRIDFUNCTION is a ZmapFunction that produces a grid of 1 or more results as output
-    % and can be plotted on a map
+classdef ZmapSliceFunction < ZmapFunction
+    % ZMAPGRIDFUNCTION is a ZmapFunction that produces a vertical grid of 1 or more results as output
+    % and is capable of plotting the results as vertical slices.
+    
     properties
-        features='borders'; % features to show on the map, such as 'borders','lakes','coast',etc.
+        % features='borders'; % features to show on the map, such as 'borders','lakes','coast',etc.
         active_col='';  % the name of the column of the results to be plotted
         showgridcenters=true; % toggle the grid points on and off.
     end
@@ -11,6 +12,9 @@ classdef ZmapGridFunction < ZmapFunction
         
         function plot(obj,choice, varargin)
             % plots the results on the provided axes.
+            error('unimplemented');
+            %{
+            % TODO THIS COMES FROM ZMAPGRIDFUNCTION and needs to be replaced
             if ~exist('choice','var')
                 choice=obj.active_col;
             end
@@ -180,11 +184,12 @@ classdef ZmapGridFunction < ZmapFunction
                     end
                 end
             end
-            
+            %}
             
         end
         function contour(obj,choice,intervals)
             % like plot, except with contours!
+            error('unimplemented');
             if ~exist('intervals','var')
                 intervals=[floor(min(zz)):.1:ceil(max(zz))];
             end
@@ -193,6 +198,7 @@ classdef ZmapGridFunction < ZmapFunction
         end
         function contourf(obj,choice,intervals)
             % like plot, except with contours!
+            error('unimplemented');
             if ~exist('intervals','var')
                 intervals=[floor(min(zz)):.1:ceil(max(zz))];
             end
@@ -213,7 +219,6 @@ classdef ZmapGridFunction < ZmapFunction
                 im=event_obj.Target;
                 details=im.UserData.vals(abs(im.UserData.vals.x - pos(1))<=.0001 & abs(im.UserData.vals.y-pos(2))<=.0001,:)
             catch ME
-                
                 disp(ME.message)
                 ME
             end
@@ -243,7 +248,6 @@ classdef ZmapGridFunction < ZmapFunction
                 end
                 
             catch ME
-                ME
                 disp(ME.message)
             end
         end

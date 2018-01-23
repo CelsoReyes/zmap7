@@ -48,6 +48,7 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     % PLOT X-SECTION IN NEW FIGURE
     f=create_cross_section_figure(zans,catalog, c2,mindist,mask,gcDist_km);
     f.DeleteFcn = @(~,~)delete([xs_endpts,xs_line,slabel,elabel, xspoly]); % autodelete xsection when figure is closed
+    ZG.newcat=c2;
 end
 
 function [lon, lat,h] = get_endpoints(ax,C)
@@ -70,7 +71,7 @@ function f=create_cross_section_figure(zans,catalog, c2,mindist,mask,gcDist_km)
         f=figure('Name',['cross-section ' zans.startlabel '-' zans.endlabel]);
     disp('in create figure...');
     % plot events
-    ax=subplot(3,3,[1 5]);
+    ax=subplot(3,3,9);
     plot3_events(ax, c2, catalog, mindist,mask);
     plot_events_along_strike(subplot(3,3,[7 8]),zans,gcDist_km);
     plot_depth_profile(subplot(3,3,[3 6]), c2.Depth);

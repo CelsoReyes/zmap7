@@ -1,4 +1,4 @@
-function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method)
+function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     % BVALCA3
     % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method)
     %
@@ -6,6 +6,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method)
     % magnitudes     : Magnitude values
     % mc_method - 1 : automatic estimate of Mcomp
     %        2 : not automatic estimate of Mcomp 
+    % bo1: overall b-value (maybe? used in probability calculation)
     %
     % OUTPUT
     %    bv : b-value

@@ -1,7 +1,8 @@
 function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog, maxdist_km, dx_km)
     %PROJECT_TO_GCPATH returns a catalog, with all events projected into the lat/lon defined by curve
-    % catalog = PROJECT_TO_GCPATH( PT1, PT2, catalog, dx_km) where PT1 and PT2 are [lat, lon]. dx_km
-    % is the distance from xsection. SO, width is actually dx_km *2;
+    % catalog = PROJECT_TO_GCPATH( PT1, PT2, catalog, maxdist_km, dx_km) where PT1 and PT2 are [lat, lon]. dx_km
+    % is the distance from xsection. SO, width is actually maxdist_km*2.  dx_km is resolution used
+    % to project the catalog onto the curve;
     %
     % [catalog, dist2curve] = PROJECT_TO_GCPATH(...) also returns distance to curve
     %
@@ -19,7 +20,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     end
     gcDist_km=[];
     tdist_km = deg2km(distance(pt1,pt2));
-    nlegs = ceil(tdist_km / dx_km) .*2;
+    nlegs = ceil(tdist_km / dx_km); % was doubled.
     % limit the catalog to the appropriate distance from the curve
     [las,los]=xsection_poly(pt1,pt2,maxdist_km,false);
     mask=polygon_filter(los,las,catalog.Longitude,catalog.Latitude,'inside');

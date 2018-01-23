@@ -15,22 +15,22 @@ classdef cgr_bvalgrid < ZmapGridFunction
     %
     
     properties
-        OperatingCatalog={'primeCatalog'}; % name of catalog containing raw data. eg. 'a', 'newt2', etc.
-        ModifiedCatalog='newt2'; %name of catalog changed by this function
+        OperatingCatalog={'primeCatalog'} % name of catalog containing raw data. eg. 'a', 'newt2', etc.
+        ModifiedCatalog='newt2' % name of catalog changed by this function
         
-        ni = ZmapGlobal.Data.ni;
-        ra = 25%ZmapGlobal.Data.ra;
-        Nmin = 50;
-        fMcFix=1.0; %2.2
-        nBstSample=100;
-        useBootstrap; % perform bootstrapping?
-        fMccorr = 0.2; % magnitude correction
-        fBinning = 0.1; % magnitude bins
-        EventSelector;
-        gridOpts=ZmapGlobal.Data.gridopt;
+        ni = ZmapGlobal.Data.ni 
+        ra = 25 % ZmapGlobal.Data.ra;
+        Nmin = 50 
+        fMcFix=1.0  %2.2
+        nBstSample=100 
+        useBootstrap  % perform bootstrapping?
+        fMccorr = 0.2  % magnitude correction
+        fBinning = 0.1  % magnitude bins
+        EventSelector 
+        gridOpts = ZmapGlobal.Data.gridopt 
         %bUseNiEvents= true;
         mc_choice
-        Grid=ZmapGlobal.Data.Grid % actual grid[X Y;...], created from gridOpts
+        Grid = ZmapGlobal.Data.Grid % actual grid[X Y;...], created from gridOpts
         %xvect %valid x values for grid
         %yvect %valid y values for grid
     end
@@ -58,7 +58,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
     methods
         function obj=cgr_bvalgrid(varargin)
             % create bvalgrid
-            obj.plotcolumn='b_value';
+            obj.active_col='b_value';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
             if nargin==0
