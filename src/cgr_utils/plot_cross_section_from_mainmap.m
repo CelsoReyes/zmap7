@@ -43,10 +43,15 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'Color',C.*0.8, 'fontweight','bold');
     elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'fontweight','bold');
 
-    [c2,mindist,mask,gcDist_km]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km/2,0.1);
+    % mask so that we can plot original quakes in original positions
+    mask=polygon_filter(plon,plat,catalog.Longitude,catalog.Latitude,'inside');
+    
+    c2=ZmapXsectionCatalog(catalog, [lat(1),lon(1)],[lat(2),lon(2)], zans.slicewidth_km);
+    
+    %[c2,mindist,mask,gcDist_km]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km/2,0.1);
     
     % PLOT X-SECTION IN NEW FIGURE
-    f=create_cross_section_figure(zans,catalog, c2,mindist,mask,gcDist_km);
+    f=create_cross_section_figure(zans, catalog, c2, mask);
     f.DeleteFcn = @(~,~)delete([xs_endpts,xs_line,slabel,elabel, xspoly]); % autodelete xsection when figure is closed
     ZG.newcat=c2;
 end
@@ -67,27 +72,49 @@ function [lon, lat,h] = get_endpoints(ax,C)
     h.YData=lat;
 end
 
-function f=create_cross_section_figure(zans,catalog, c2,mindist,mask,gcDist_km)
-        f=figure('Name',['cross-section ' zans.startlabel '-' zans.endlabel]);
+function f=create_cross_section_figure(zans,catalog, c2, mask)
+        f=figure('Name',['cross-section ' zans.startlabel '-' zans.endlabel],...
+            'Position',[40 60 1000 700]);
     disp('in create figure...');
     % plot events
     ax=subplot(3,3,9);
-    plot3_events(ax, c2, catalog, mindist,mask);
-    plot_events_along_strike(subplot(3,3,[7 8]),zans,gcDist_km);
+    plot3_events(ax, c2, catalog, mask);
+    plot_events_along_strike(subplot(3,3,[1 5]),c2,zans)
+    
+    plot_events_along_strike_hist(subplot(3,3,[7 8]),zans, c2.dist_along_strike_km);
     plot_depth_profile(subplot(3,3,[3 6]), c2.Depth);
-    create_my_menu(c2,gcDist_km)
+    create_my_menu(c2)
 end
 
-function plot3_events(ax,c2, catalog,mindist, mask,featurelist)
+function plot_events_along_strike(ax,c2,zans)
+    scatter(ax, c2.dist_along_strike_km, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
+    ax.YDir='reverse';
+    ax.XLim=[0 c2.curvelength_km];
+    ax.XTickLabel{1}=zans.startlabel;
+    if ax.XTick(end) ~= c2.curvelength_km
+        ax.XTick(end+1)=c2.curvelength_km;
+        ax.XTickLabel{end+1}=zans.endlabel;
+    else
+        ax.XTickLabel{end}=zans.endlabel;
+    end
+        
+        
+    grid(ax,'on');
+    xlabel('Distance along strike [km]');
+    ylabel('Depth');
+    title(sprintf('Profile: %s to %s',zans.startlabel,zans.endlabel));
+end
+
+function plot3_events(ax,c2, catalog, mask, featurelist)
     % create a 3-d plot of this cross section, with overlaid map
     
     % plot relevant events (at depth)
-    scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
+    scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,mag2dotsize(c2.Magnitude),c2.dist_along_strike_km,'+')
     
     hold on
     % plot all events as gray on surface
     plot(ax,catalog.Longitude,catalog.Latitude,'.','Color',[.75 .75 .75],'MarkerSize',1);
-    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,mindist)
+    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,c2.displacement_km)
     ax.ZDir='reverse'; % Depths are + down
     
     
@@ -102,7 +129,7 @@ function plot3_events(ax,c2, catalog,mindist, mask,featurelist)
     hold off
 end
 
-function h=plot_events_along_strike(ax, zans, gcDist)
+function h=plot_events_along_strike_hist(ax, zans, gcDist)
     h=histogram(ax,gcDist);
     h.Parent.XTickLabel{1}=zans.startlabel;
     h.Parent.XTickLabel{end}=zans.endlabel;
@@ -120,7 +147,7 @@ end
 
 
 
-function create_my_menu(c2,dist_along_strike_km)
+function create_my_menu(c2)
         add_menu_divider();
         options = uimenu('Label','Select');
         %uimenu(options,'Label','Select EQ inside Polygon ','callback',@cb_select_eq_inside_poly);
@@ -136,7 +163,7 @@ function create_my_menu(c2,dist_along_strike_km)
             'callback',@cb_fractaldim);
         
         uimenu(options,'Label','Mean Depth',...
-            'callback',{@cb_meandepth,c2, dist_along_strike_km});
+            'callback',{@cb_meandepth,c2});
         
         uimenu(options,'Label','z-value grid',...
             'callback',@cb_zvaluegrid);
@@ -158,7 +185,7 @@ function create_my_menu(c2,dist_along_strike_km)
         
         
         uimenu(options,'Label','Time Plot ',...
-            'Callback',{@cb_timeplot, c2, dist_along_strike_km});
+            'Callback',{@cb_timeplot, c2});
         
         uimenu(options,'Label',' X + topo ',...
             'callback',@cb_xplustopo);
@@ -198,10 +225,10 @@ function create_my_menu(c2,dist_along_strike_km)
         Dcross();
     end
     
-    function cb_meandepth(mysrc,myevt,mycat, dist_km)
+    function cb_meandepth(mysrc,myevt,mycat)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        meandepx(mycat, dist_km);
+        meandepx(mycat, mycat.displacement_along_strike);
     end
     
     function cb_zvaluegrid(mysrc,myevt)
@@ -257,9 +284,9 @@ function create_my_menu(c2,dist_along_strike_km)
         cross_stress();
     end
     
-    function cb_timeplot(mysrc,myevt, c2, dist_along_strike_km)
+    function cb_timeplot(mysrc,myevt, c2)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timcplo(c2,dist_along_strike_km);
+        timcplo(c2,c2.dist_along_strikek_km);
     end
     
     function cb_xplustopo(mysrc,myevt)
