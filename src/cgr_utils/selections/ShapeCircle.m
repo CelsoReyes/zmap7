@@ -56,7 +56,7 @@ classdef ShapeCircle < ShapeGeneral
         end
         
         function val=Outline(obj,col)
-            [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:.25:360)');
+            [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:.1:360)');
             val=[lon, lat];
             if exist('col','var')
                 val=val(:,col);
@@ -118,6 +118,7 @@ classdef ShapeCircle < ShapeGeneral
                 if ~isempty(nc) && ~isnan(nc)
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
+                    obj.Radius=obj.Radius+0.005;
                     obj.plot(ax); % replot
                     ZG.selection_shape=obj;
                 end

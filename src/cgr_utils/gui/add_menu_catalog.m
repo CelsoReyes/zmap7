@@ -84,9 +84,12 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
     uimenu(submenu,'Label','Reload last catalog','Callback',@cb_reloadlast,...
         'Enable','off');
     
-    uimenu(catmenu,'Label','from *.mat file','Callback', {@(s,e) load_zmapfile() });
-    uimenu(catmenu,'Label','from other formatted file','Callback', @(~,~)zdataimport());
-    uimenu(catmenu,'Label','from FDSN webservice','Callback', @get_fdsn_data_from_web_callback);
+    uimenu(catmenu,'Label','from *.mat file',...
+        'Callback', @(~,~) ZmapImportManager(@load_zmapfile));
+    uimenu(catmenu,'Label','from other formatted file',...
+        'Callback', @(~,~)ZmapImportManager(@zdataimport));
+    uimenu(catmenu,'Label','from FDSN webservice',...
+        'Callback', @(~,~)ZmapImportManager(@get_fdsn_data_from_web_callback));
     
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
@@ -98,8 +101,42 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
         'callback',@(~,~)inpudenew())
     
     function cb_crop(~,~)
-        ZG.(mycatalog).setFilterToAxesLimits(findobj(figureHandle, 'Type','Axes'))
-        ZG.(mycatalog).cropToFilter();
+        ax = findobj(figureHandle, 'Type','Axes');
+        all_ax=[ax.Xaxis, ax.Yaxis, ax.Zaxis];
+        v=ax.View;
+        switch ax.Tag
+            case 'mainmap_ax'
+                fields={'Longitude','Latitude','Depth'};
+            case 'cumtimeplot_ax'
+                fields={'Date','',''};
+            otherwise
+                fields={'','',''};
+                warning('Do not know how to crop catalog to these axes');
+        end
+
+        if isequal(v , [0 90]) % XY view
+            style='XY';
+        elseif isequal(v,[0 0]) % XZ view
+            style='XZ';
+        elseif isequal(v,[90 0]) % YZ view
+            style='YZ';
+        else % all three views
+            style='XYZ';
+        end
+        mask=true(ZG.(mycatalog).Count,1);
+        if contains(style,'X') && ~isempty(fields{1})
+            mask=mask & ZG.(mycatalog).(fields{1}) >= ax.XLim(1) &...
+                ZG.(mycatalog).(fields{1}) <= ax.XLim(2);
+        end
+        if contains(style,'Y') && ~isempty(fields{2})
+            mask=mask & ZG.(mycatalog).(fields{2}) >= ax.YLim(1) &...
+                ZG.(mycatalog).(fields{2}) <= ax.YLim(2);
+        end
+        if contains(style,'Z') && ~isempty(fields{3})
+            mask=mask & ZG.(mycatalog).(fields{3}) >= ax.YLim(1) &...
+                ZG.(mycatalog).(fields{3}) <= ax.YLim(2);
+        end
+        ZG.(mycatalog).subset_in_place(mask);
         zmap_update_displays();
     end
     

@@ -633,6 +633,7 @@ function Fetch_Callback(hObject, eventdata, handles)
         ZG.primeCatalog=tmp;
     end
     ZG.primeCatalog.sort('Date')
+    assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
     provider_details=handles.data_provider.UserData(handles.data_provider.Value);
     if isempty(ZG.primeCatalog.Name) %TODO move this functionality into import_fdsn_event
         ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
@@ -644,6 +645,7 @@ function Fetch_Callback(hObject, eventdata, handles)
     sdlg.value=ZG.primeCatalog.Name;
     [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
     ZG.Views.primary=ZmapCatalogView('primeCatalog');
+    assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
     
     if isvalid(m)
         close(m)

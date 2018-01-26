@@ -19,6 +19,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     %end
     
     big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
+    bigEventCat = mycat.subset(mycat.Magnitude > big_evt_minmag);
     daterange = mycat.DateRange;
     minti = daterange(1);
     maxti  = daterange(2);

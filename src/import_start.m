@@ -32,7 +32,7 @@ function [mCatalog] = import_start(sFilterDir,FilePath)
     
     for nCnt = 1:length(vrDir)
         % Check for directories
-        if ~((strcmp(vrDir(nCnt).name, '.')) | (strcmp(vrDir(nCnt).name, '..')))
+        if ~((strcmp(vrDir(nCnt).name, '.')) || (strcmp(vrDir(nCnt).name, '..')))
             % Get name of file
             sName = vrDir(nCnt).name;
             nPos = strfind(sName, '.m');

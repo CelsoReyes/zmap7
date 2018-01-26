@@ -5,21 +5,27 @@ function c=menu_cumtimeseries(parent)
     c=uicontextmenu;
     
     uimenu(c, 'Label', 'filter',...
+        'Enable','off',...
         'Callback',@(~,~)msgbox('Unimplemented','Unimplemented'));
     uimenu(c, 'Label', 'also plot main catalog',...
+        'Enable','off',...
         'Callback',@(~,~)msgbox('Unimplemented','Unimplemented'));
     uimenu(c, 'separator','on','Label', 'start here','Callback',@start_here);
     uimenu(c, 'Label', 'end here','Callback',@end_here);
     uimenu(c, 'Label', 'trim to largest event','Callback',@trim_to_largest);
     uimenu(c, 'Label', 'show in map (keeping all)','Callback',@show_in_map,'Enable','off');
-    uimenu(c, 'separator','on','Label', '- * t b a * -','Callback',@(~,~)msgbox('Unimplemented','Unimplemented'));
+    uimenu(c, 'separator','on','Label', '- * t b a * -',...
+        'Enable','off',...
+        'Callback',@(~,~)msgbox('Unimplemented','Unimplemented'));
     
-    function trim_to_largest(src,ev)
+    function trim_to_largest(~,~)
         disp('trim to largest')
         pl=CumTimePlot.getInstance;
         biggests = pl.catalog.Magnitude == max(pl.catalog.Magnitude);
         idx=find(biggests,1,'first');
         pl.catalog.DateRange(1)=pl.catalog.Date(idx);
+        ZG=ZmapGlobal.Data;
+        ZG.newt2 = pl.catalog.Catalog;
         pl.plot()
         %pl.update()
     end
@@ -28,19 +34,20 @@ function c=menu_cumtimeseries(parent)
         disp('start here')
         disp(src)
         disp(ev)
-        [x,y]=click_to_datetime(gca)
+        [x,~]=click_to_datetime(gca)
         pl=CumTimePlot.getInstance;
         pl.catalog.DateRange(1)=x;
+        ZG=ZmapGlobal.Data;
+        ZG.newt2 = pl.catalog.Catalog;
         pl.plot()
     end
     
     function end_here(src,ev)
-        disp('end here')
-        disp(src)
-        disp(ev)
-        [x,y]=click_to_datetime(gca)
+        [x,~]=click_to_datetime(gca)
         pl=CumTimePlot.getInstance;
         pl.catalog.DateRange(2)=x;
+        ZG=ZmapGlobal.Data;
+        ZG.newt2 = pl.catalog.Catalog;
         pl.plot()
     end
     

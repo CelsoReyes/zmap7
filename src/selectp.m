@@ -40,9 +40,7 @@ function selectp(in_or_out)
         error('old catalog');
     else
         mask = polygon_filter(x,y, ZG.primeCatalog.Longitude, ZG.primeCatalog.Latitude, in_or_out);
-        ZG.primeCatalog.addFilter(mask);
-        ZG.newt2 = ZG.primeCatalog.getCropped();
-        ZG.primeCatalog.clearFilter();
+        ZG.newt2 = ZG.primeCatalog.subset(mask);
         
         % Plot of new catalog
         washeld=ishold(ax); hold(ax,'on');

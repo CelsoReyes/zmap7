@@ -12,8 +12,8 @@ function [h] = figure(varargin)
     % - Celso G Reyes, 2017
     %
     % see also figure
-    disp('creating figure with following arguments:')
-    disp(varargin)
+    %disp('creating figure with following arguments:')
+    %disp(varargin)
     h = figure(varargin{:});
     set(h,'DefaultUiControlunits','normalized');
 end

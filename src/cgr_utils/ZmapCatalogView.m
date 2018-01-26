@@ -105,7 +105,7 @@ classdef ZmapCatalogView
         LongitudeRange % [minlon maxlon] % doesn't take dateline into account
         DepthRange % [mindepth maxdepth]
         
-        sortby=[];
+        sortby='';
         Marker=''
         MarkerSize=[]
         MarkerFaceColor=[]
@@ -117,6 +117,7 @@ classdef ZmapCatalogView
     properties(Constant)
         ValidProps = {'Marker';'MarkerSize';'MarkerFaceColor';'MarkerEdgeColor';'DisplayName';'Tag'};
     end
+    
     properties(Dependent)
         Name % catalog name, (augmented by view?)
         Date % Date for each event in this view
@@ -127,8 +128,9 @@ classdef ZmapCatalogView
         Magnitude % Magnitude for each event in this view
         MagnitudeType % Magnitude for each event in this view
     end
+    
     properties(Access=protected)
-        mycat
+        mycat % the actual catalog. [read only]
         filter
         polymask = []; % logical mask
         polygon=struct('Latitude',[],'Longitude',[]); % polygon.Latitude & polygon.Longitude
@@ -219,7 +221,7 @@ classdef ZmapCatalogView
         
         function obj = sort(obj,field)
             if isempty(field)
-                obj.sortby=[];
+                obj.sortby='';
             elseif isprop(obj,field)
                 obj.sortby=field;
             else
@@ -562,6 +564,10 @@ classdef ZmapCatalogView
             %
             %in_or_out is one of 'inside', 'outside'
             nargoutchk(1,1) % to avoid confusion, don't let this NOT be assigned
+            if isempty(polygon)
+                return
+            end
+            disp('Applying shape to catalog')
             if exist('polygon','var')
                 if isnumeric(polygon)
                     obj.polygon.Latitude=polygon(:,2);

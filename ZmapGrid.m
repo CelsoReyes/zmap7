@@ -83,8 +83,14 @@ classdef ZmapGrid
             %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
             %
             % see also: MESHGRID
+            if ~exist('name','var')
+                name='';
+            end
             obj.Name = name;
             switch nargin
+                case 0
+                    % don't do much of anything.
+                    obj.Units='unk'
                 case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
@@ -252,6 +258,14 @@ classdef ZmapGrid
                 obj.ActivePoints = true(size(obj.X));
                 disp('not filtering polygon, since no polygon provided');
             end
+        end
+        
+        function obj=delete(obj)
+            % remove current grid entirely
+            grid_tag = ['grid_' obj.Name];
+            prev_grid = findobj('Tag',grid_tag);
+            delete(prev_grid);
+            obj=ZmapGrid();
         end
         
         function prev_grid=plot(obj, ax,varargin)

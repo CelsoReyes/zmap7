@@ -6,6 +6,7 @@ function add_grid_menu(parent)
     uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
     uimenu(parent,'Label','Create Auto-Radius','Callback',@cb_autoradius);
     uimenu(parent,'Label','Refresh','Callback',@cb_refresh);
+    uimenu(parent,'Label','Clear(Delete)','Callback',@cb_clear);
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid
@@ -49,6 +50,14 @@ function add_grid_menu(parent)
         delete(findobj(gcf,'Tag',['grid_',ZG.Grid.Name]))
         ZG.Grid=ZG.Grid.MaskWithShape(ZG.selection_shape);
         ZG.Grid.plot(ax,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
+    end
+    function cb_clear(~,~)
+        ZG=ZmapGlobal.Data;
+        try
+            ZG.Grid.delete();
+        catch ME
+            warning(ME.message)
+        end
     end
         
 end

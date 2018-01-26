@@ -1,5 +1,12 @@
-function load_zmapfile()%
-    % load_zmapfile
+function [catalog, OK] = load_zmapfile(myfile)%
+    % LOAD_ZMAPFILE import a zmap file from disk
+    %
+    % [catalog, OK] = LOAD_ZMAPFILE() loads interactively.
+    %
+    % ... = LOAD_ZMAPFILE(filename) attempts to load catalog from the file filename
+    %
+    % If the catalog couldn't be loaded, this function returns a blank catalog, and OK will be false.
+    % 
     %
     % load_zmapfile file will ask you for an input file name. The data
     % format is at this point:
@@ -14,6 +21,7 @@ function load_zmapfile()%
     %     10     51
     %    hour   min
     %
+    %  [optional] Column 10 : second
     %
     % Any catalog is generally loaded once as an unformatted ascii file
     % and then saved as variable "primeCatalog" in  <name>_cata.mat .
@@ -21,12 +29,12 @@ function load_zmapfile()%
     %   Matlab scriptfile written by Stefan Wiemer
     %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    OK=false;
+    catalog=ZmapCatalog();
     
     report_this_filefun(mfilename('fullpath'));
     
-    format short
-    ZG=ZmapGlobal.Data; % get zmap globals
-    
+    if ~exist('myfile','var') || isempty(myfile)
     % start program and load data:
     
     [file1,path1] = uigetfile('*.mat',' Earthquake Datafile');
@@ -36,7 +44,7 @@ function load_zmapfile()%
     end
     
     myfile = fullfile(path1,file1);
-    
+    end
     if ~exist(myfile,'file')
         errordlg('File could not be found');
         return
@@ -46,7 +54,8 @@ function load_zmapfile()%
     S=whos('-file',myfile);
     S=S(startsWith({S.class},'ZmapCatalog'));
     if ~isempty(S)
-        ZG.primeCatalog=loadCatalog(path1, file1, S);
+        catalog=loadCatalog(path1, file1, S);
+        OK=~isempty(catalog);
         return
     end
         
@@ -54,56 +63,12 @@ function load_zmapfile()%
     % If so, then catalog would have been saved in "a" as a matrix
     S=whos('-file',myfile,'a');
     if ~isempty(S)
-        ZG.primeCatalog=loadCatalog(path1, file1, S);
+        catalog=loadCatalog(path1, file1, S);
+        OK=~isempty(catalog);
     else
         errordlg('File did not contain a catalog variable - Nothing was loaded');
     end
     
-    %  ask for input parameters
-    %
-    watchoff
-    ZG.mainmap_plotby='depth';
-    
-    setDefaultValues(ZG.primeCatalog);
-    
-    ZmapMessageCenter.update_catalog();
-    %ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
-    [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('primeCatalog'), ZG.big_eq_minmag);
-
-    uimemorize_catalog();
-    ZmapMessageCenter.update_catalog();
-    
-end
-
-function setDefaultValues(A)
-    
-    ZG=ZmapGlobal.Data; % get zmap globals
-    
-    %  default values
-    [t0b, teb] = A.DateRange() ;
-    ttdif = days(teb - t0b);
-    if ~exist('bin_dur','var')
-        ZG.bin_dur = days(ceil(ttdif/100));
-    elseif ttdif<=10  &&  ttdif>1
-        ZG.bin_dur = days(0.1);
-    elseif ttdif<=1
-        ZG.bin_dur = days(0.01);
-    end
-    ZG.big_eq_minmag = max(A.Magnitude) -0.2;
-    %{
-    dep1 = 0.3*max(A.Depth);
-    dep2 = 0.6*max(A.Depth);
-    dep3 = max(A.Depth);
-    minti = min(A.Date);
-    maxti  = max(A.Date);
-    minma = min(A.Magnitude);
-    maxma = max(A.Magnitude);
-    mindep = min(A.Depth);
-    maxdep = max(A.Depth);
-    ra = 5;
-    mrt = 6;
-    met = 'ni';
-    %}
 end
 
 function   A=loadCatalog(path, file, S)
@@ -112,17 +77,18 @@ function   A=loadCatalog(path, file, S)
     % by the time this is called, it should be already known that 'a' exists
     %
     lopa = fullfile(path, file);
-    A=ZmapCatalog;
+    A=ZmapCatalog();
     
     varName=ensureSingleVariable(S);
     
     try
         tmp=load(lopa,varName);
+        A=tmp.(varName);
     catch ME
+        
         error_handler(ME, 'Error loading data! Are they in the right *.mat format?');
     end
     
-    A=tmp.(varName);
 
     clear tmp
     if isnumeric(A)
@@ -147,7 +113,6 @@ function varName = ensureSingleVariable(S)
     varName='';
     if numel(S)>1
         str={S.name};
-        descr=S.name
         [s,v]=listdlg('PromptString','Select Variable to load:',...
             'SelectionMode','single',...
             'ListString',str);

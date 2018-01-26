@@ -55,11 +55,6 @@ classdef ZmapCatalog < handle
     %
     %   * Filtering methods have been outsourced into the ZmapCatalogView class.
     %
-    %   addFilter - add a filter associated with a single property
-    %   clearFilter - resets the filter
-    %   invertFilter - swap which events meet filter criteria
-    %   setFilterToAxesLimits - set Longitude and Latitude filters to current X- and Y-axis limits
-    %   cropToFilter - apply filters to this ZmapCatalog, resulting in smaller catalog
     %   getCropped - apply filters to get a NEW smaller ZmapCatalog
     % 
     %   Sorting Methods:
@@ -76,7 +71,6 @@ classdef ZmapCatalog < handle
     
     % TODO consider using matlab.mixin.CustomDisplay
     properties
-        Name   % name of this catalog. Used when labeling plots
         Date        % datetime
         % Nanosecond  % additional precision, if needed
         Longitude   % Longitude (Deg) of each event
@@ -84,13 +78,19 @@ classdef ZmapCatalog < handle
         Depth       % Depth (km) of events 
         Magnitude   % Magnitude of each event
         MagnitudeType % Magnitude units, such as M, ML, MW, etc. 
-        Filter      % logical Filter used for getting a subset of events
         Dip         % unused?
         DipDirection % unused?
         Rake % unused?
         MomentTensor=table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
         % additions to this table need to be also added to a bunch of functions: 
-        %    summary (?), cropToFilter, getCropped, addFilter(?), sort, subset, 
+        %    summary (?), getCropped, sort, subset, 
+    end
+    
+    properties(SetObservable)
+        Name        % name of this catalog. Used when labeling plots
+        Filter      % logical Filter used for getting a subset of events
+        IsSortedBy=''; % describes sort order
+        SortDirection=''; %describes sorting direction
     end
     
     properties(Dependent)
@@ -221,14 +221,13 @@ classdef ZmapCatalog < handle
                     obj.Name = varargin{2};
                 end
                 
-            elseif (nargin==0)
-                obj = ZmapCatalog;
             elseif isa(varargin{1},'ZmapCatalog')
                 % force a copy
                 idx=true(varargin{1}.Count,1);
                 obj = varargin{1}.subset(idx);
                 obj.Name=varargin{1}.Name;
             end
+            obj.Filter=true(size(obj.Longitude));
             
         end
         
@@ -385,44 +384,6 @@ classdef ZmapCatalog < handle
             obj.Filter = true(size(obj.Longitude));
         end
         
-        function invertFilter(obj)
-            % INVERTFILTER flips all true to false and vice-versa
-            % catalog.INVERTFILTER()
-            obj.Filter = ~obj.Filter;
-        end
-        
-        function setFilterToAxesLimits(obj, ax)
-            % SETFILTERTOAXESLIMITS
-            % catalog.SETFILTERTOAXESLIMITS(ax)
-            if ~isvalid(ax)
-                return
-            end
-            filter_to_fieldunit(ax.XLabel, ax.XLim);
-            filter_to_fieldunit(ax.YLabel, ax.YLim);
-            filter_to_fieldunit(ax.ZLabel, ax.ZLim);
-            
-            function filter_to_fieldunit(label, lims)
-                myunit = get(label,'UserData');
-                if isa(myunit,'field_unit')
-                    obj.addFilter(myunit.fieldn,'>=',min(lims));
-                    obj.addFilter(myunit.fieldn,'<=',max(lims));
-                end
-            end
-        end
-        
-        function cropToFilter(obj)
-            % CROPTOFILTER applies the Filter to this ZmapCatalog
-            %
-            % catalog.CROPTOFILTER()
-            %
-            % see also addFilter, clearFilter
-            
-            if isempty(obj.Filter)
-                return
-            end
-            obj = obj.subset(obj.Filter);
-        end
-        
         function obj = getCropped(existobj)
             % GETCROPPED get a new, cropped ZmapCatalog from this one
             
@@ -433,71 +394,6 @@ classdef ZmapCatalog < handle
             end
         end
         
-        function addFilter(obj, field, operation, value, varargin)
-            % ADDFILTER allows subsets of data to be specified
-            %
-            % catalog.ADDFILTER(mask) AND's the mask with the existing Filter
-            %     where mask is a logical array of same length as ZmapCatalog.Count
-            %
-            %
-            % catalog.ADDFILTER(field, operation, value) compares the data from the field to the value using
-            %     the specified operation.
-            %     FIELD is a string containing the name of a valid ZmapCatalog field
-            %     OPERATION is either a function handle or one of the following:
-            %          '<','>','<=','<=','>=','>=','==','~='
-            %     VALUE is what the field will be compared against.
-            %
-            % Example 1
-            %     catalog.addFilter('Depth','>=',3) % sets Filter to true wherever depth >= 3
-            %     catalog.addFilter('Depth','<', 23) % now Filter is true only where depth >=3 AND depth < 23
-            %
-            % Example 2
-            %     odd_dates = @(x,~) mod(datenum(x),2) == 1;
-            %     catalog.addFilter('Date',@odd_dates,[]); %true where datenum is odd
-            %
-            %
-            % see also CLEARFILTER
-            %
-            if ~exist('operation','var') && islogical(field) && all(size(field)==size(obj.Longitude))
-                obj.Filter = field;
-                return
-            end
-            
-            if ischar(operation)
-                switch operation
-                    case '<'
-                        operation=@lt;
-                    case '>'
-                        operation=@gt;
-                    case {'<='}
-                        operation = @le;
-                    case {'>='}
-                        operation = @ge;
-                    case '=='
-                        operation = @eq;
-                    case '~='
-                        operation = @ne;
-                    otherwise
-                        operation = str2func(operation);
-                end
-            end
-            if ~isprop(obj, field)
-                error('%s is not a valid property of a ZmapCatalog',field);
-            end
-            if isa(operation,'function_handle')
-                if isempty(obj.Filter)
-                    obj.clearFilter();
-                end
-                obj.Filter = obj.Filter & operation(obj.(field), value);
-                if ~isempty(varargin)
-                    obj.addFilter(varargin{:});
-                end
-                
-            else
-                error('don''t know how to handle a %s',class(operation));
-            end
-            %
-        end
         
         function sort(obj, field, direction)
             % SORT this catalog by the specified field (IN PLACE)
@@ -516,10 +412,12 @@ classdef ZmapCatalog < handle
                 direction = 'ascend';
             end
             [~,idx] = sort(obj.(field),direction);
-            obj = obj.subset(idx);
+            obj.subset_in_place(idx);
             if isempty(obj.Filter)
                 obj.clearFilter();
             end
+            obj.IsSortedBy=field;
+            obj.SortDirection=direction;
         end
         
         function other=sortedByDistanceTo(obj, lat, lon, depth)
@@ -535,6 +433,8 @@ classdef ZmapCatalog < handle
             end
             [~,idx]=sort(dists);
             other=obj.subset(idx);
+            other.IsSortedBy='distance';
+            other.SortDirection='ascending';
         end
         
         function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
@@ -659,6 +559,29 @@ classdef ZmapCatalog < handle
             obj=ZmapCatalog();
         end
         
+        function subset_in_place(obj,range)
+            %SUBSET_IN_PLACE modifies this object, not a copy of it.
+            obj.Date = obj.Date(range);
+            
+            obj.Longitude = obj.Longitude(range) ;
+            obj.Latitude = obj.Latitude(range);
+            obj.Depth =  obj.Depth(range) ;
+            
+            obj.Magnitude = obj.Magnitude(range) ;
+            obj.MagnitudeType = obj.MagnitudeType(range) ;
+            
+            if ~isempty(obj.Filter)
+                obj.Filter = obj.Filter(range) ;
+            end
+            
+            obj.Dip = obj.Dip(range);
+            obj.DipDirection=obj.DipDirection(range);
+            obj.Rake=obj.Rake(range);
+            
+            if ~isempty(obj.MomentTensor)
+                obj.MomentTensor=obj.MomentTensor(range,:);
+            end
+        end
         function obj = subset(existobj, range)
             % SUBSET get a subset of this object
             % newcatalog = catalog.SUBSET(mask) where mask is a t/f array matching obj.Count

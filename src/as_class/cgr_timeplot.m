@@ -146,7 +146,7 @@ function CreateMenu(obj)
         uimenu(op4B,'Label','z-values: LTA(t) function ','callback',{@cb_z_beta_ratechanges,'lta'});
         
         
-        op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
+        op4 = uimenu(plotmenu,'Label','Mc and b-value estimation');
         uimenu(op4,'Label','automatic', 'callback',@cb_010)
         uimenu(op4,'label','Mc with time ', 'callback',{@plotwithtime,'mc'});
         uimenu(op4,'Label','b with depth', 'callback',@(~,~)bwithde2('newt2'))

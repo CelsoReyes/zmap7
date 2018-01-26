@@ -286,7 +286,7 @@ function create_my_menu(c2)
     
     function cb_timeplot(mysrc,myevt, c2)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timcplo(c2,c2.dist_along_strikek_km);
+        timcplo(c2);
     end
     
     function cb_xplustopo(mysrc,myevt)

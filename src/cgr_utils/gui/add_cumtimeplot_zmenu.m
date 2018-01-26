@@ -1,7 +1,7 @@
 function add_cumtimeplot_zmenu(obj, parent)
     ZG = ZmapGlobal.Data;
     
-    analyzemenu=uimenu(parent,'Label','analyze');
+    analyzemenu=parent;%uimenu(parent,'Label','analyze');
     ztoolsmenu=uimenu(parent,'Label','ztools');
     
     
