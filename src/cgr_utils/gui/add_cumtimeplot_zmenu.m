@@ -8,7 +8,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     % uimenu(ztoolsmenu,'Label','Date Ticks in different format','callback',@(~,~)newtimetick,'Enable','off');
     
     uimenu(ztoolsmenu,'Label','Overlay another curve (hold)',...
-        'Checked',logical2onoff(ZG.hold_state2),...
+        'Checked',tf2onoff(ZG.hold_state2),...
         'callback',@cb_hold)
     % uimenu(ztoolsmenu,'Label','Compare two rates (fit)', 'callback',@cb_comparerates_fit); %DELETE ME
     uimenu(ztoolsmenu,'Label','Compare two rates (no fit)', 'callback',@cb_comparerates_nofit);
@@ -92,7 +92,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     function cb_hold(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         obj.hold_state = ~obj.hold_state;
-        mysrc.Checked=(logical2onoff(obj.hold_state));
+        mysrc.Checked=(tf2onoff(obj.hold_state));
     end
     
     function cb_comparerates_nofit(mysrc,myevt)

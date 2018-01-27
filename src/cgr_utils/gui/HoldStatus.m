@@ -19,7 +19,7 @@ classdef HoldStatus
                 error('tried to undo empty axis. This shouldn''t be')
             end
             if isvalid(obj.ax)
-                hold(obj.ax,logical2onoff(obj.wasHeld));
+                hold(obj.ax,tf2onoff(obj.wasHeld));
             end
         end
     end
