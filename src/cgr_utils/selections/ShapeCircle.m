@@ -118,7 +118,7 @@ classdef ShapeCircle < ShapeGeneral
                 if ~isempty(nc) && ~isnan(nc)
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
-                    obj.Radius=obj.Radius+0.005;
+                    obj.Radius=obj.Radius;%+0.005;
                     obj.plot(ax); % replot
                     ZG.selection_shape=obj;
                 end
@@ -133,6 +133,22 @@ classdef ShapeCircle < ShapeGeneral
                     ZG.selection_shape=obj;
                 end
                 
+            end
+            
+        end
+        
+        function [mask]=isInside(obj,otherLon, otherLat)
+            % ISINSIDE true if value is within this circle's radius of center. Radius inclusive.
+            %
+            % overridden because using polygon approximation is too inaccurate for circles
+            %
+            % [mask]=obj.ISINSIDE(otherLon, otherLat)
+            if isempty(obj.Points)||isnan(obj.Points(1))
+                mask = ones(size(otherLon));
+            else
+                % return a vector of size otherLon that is true where item is inside polygon
+                dists=distance(obj.Y0, obj.X0, otherLat, otherLon);
+                mask=deg2km(dists) <= obj.Radius;
             end
         end
         
