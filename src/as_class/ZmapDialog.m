@@ -460,7 +460,7 @@ classdef ZmapDialog < handle
         function cb_enableDependents(obj,src,tags)
             % enables/disables fields with listed tags based on the value of this checkbox
             % tags must be a cell of strings, but can be empty cell
-            setting=logical2onoff(src.Value);
+            setting=tf2onoff(src.Value);
             for n=1:numel(tags)
                 set(findDlgTag(obj,tags{n}),'Enable',setting);
             end

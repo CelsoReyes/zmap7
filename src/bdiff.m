@@ -252,8 +252,8 @@ function  bdiff(mycat, holdplot)
     
     function cb_nodiscrete(mysrc,~)
         isChecked = strcmp(mysrc.Checked,'on');
-        mysrc.Checked = logical2onoff(~isChecked);
-        pl.Visible = logical2onoff(isChecked);
+        mysrc.Checked = tf2onoff(~isChecked);
+        pl.Visible = tf2onoff(isChecked);
     end
     
 end

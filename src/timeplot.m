@@ -206,7 +206,7 @@ return
             function cb_hold(mysrc,myevt)
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
                 ZG.hold_state2 = ~ZG.hold_state2;
-                mysrc.Checked=(logical2onoff(ZG.hold_state2));
+                mysrc.Checked=(tf2onoff(ZG.hold_state2));
             end
             
             
@@ -381,7 +381,7 @@ return
             uimenu (analyzemenu,'Label','Decluster the catalog',...
                 'callback',@(~,~)inpudenew())
             uimenu(plotmenu,'Label','Overlay another curve (hold)',...
-                'Checked',logical2onoff(ZG.hold_state2),...
+                'Checked',tf2onoff(ZG.hold_state2),...
                 'callback',@cb_hold)
             uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
                 'callback',@cb_comparerates_fit)

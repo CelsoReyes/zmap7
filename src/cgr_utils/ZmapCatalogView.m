@@ -359,7 +359,7 @@ classdef ZmapCatalogView
                 'XDataSource',[s '.Longitude'],...
                 'ZDataSource',[s '.Depth'], v{:}, varargin{:});
             
-            hold(ax,logical2onoff(h));
+            hold(ax,tf2onoff(h));
             %linkdata on
         end
         
@@ -403,7 +403,7 @@ classdef ZmapCatalogView
                 'XData',obj.Longitude,...
                 'Zdata', obj.Depth, ...
                 v{:}, varargin{:});
-            %hold(ax,logical2onoff(h));
+            %hold(ax,tf2onoff(h));
             axes(ax)
             %linkdata on
             %{
@@ -435,7 +435,7 @@ classdef ZmapCatalogView
             set(h,'XData',obj.Longitude,'YData', obj.Latitude, 'ZData',obj.Depth);
             set(h,varargin{:}); % if Tag is in varargin, it will override default tag
             %h.ZData = obj.Depth;
-            hold(ax,logical2onoff(holdstatus));
+            hold(ax,tf2onoff(holdstatus));
             %}
         end
         
@@ -471,7 +471,7 @@ classdef ZmapCatalogView
             set(h, 'ZData',obj.Depth);
             set(ax,'ZDir','reverse');
             daspectm('km');
-            hold(ax,logical2onoff(holdstatus));
+            hold(ax,tf2onoff(holdstatus));
             
         end
        

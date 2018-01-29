@@ -51,7 +51,7 @@ classdef ZmapGridFunction < ZmapFunction
             gph=obj.Grid.plot();
             gph.Tag='pointgrid';
             gph.PickableParts='none';
-            gph.Visible=logical2onoff(obj.showgridcenters);
+            gph.Visible=tf2onoff(obj.showgridcenters);
             
             ft=obj.ZG.features(obj.features);
             copyobj(ft,gca);
@@ -81,7 +81,7 @@ classdef ZmapGridFunction < ZmapFunction
                     'Callback',@(src,~)contourf_cb(choice));
                 uimenu(lookmenu,'Label','change contour interval','Enable','off',...
                     'callback',@(src,~)changecontours_cb(src));
-                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',logical2onoff(obj.showgridcenters),...
+                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',tf2onoff(obj.showgridcenters),...
                     'callback',@togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.getCat(1).Name, ' events'],...
                     'callback',{@addquakes_cb,obj.getCat(1)});
@@ -98,7 +98,7 @@ classdef ZmapGridFunction < ZmapFunction
                     tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
                     tmpname=obj.Result.values.Properties.VariableNames{i};
                     uimenu(layermenu,'Label',tmpdesc,'Tag',tmpname,...
-                        'Enable',logical2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
+                        'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
                         'callback',@(~,~)plot_cb(tmpname));
                 end
             end
@@ -123,8 +123,8 @@ classdef ZmapGridFunction < ZmapFunction
                     hold off
                 else
                     ison=strcmp(qtag.Visible,'on');
-                    qtag.Visible=logical2onoff(~ison);
-                    src.Checked=logical2onoff(~ison);
+                    qtag.Visible=tf2onoff(~ison);
+                    src.Checked=tf2onoff(~ison);
                     drawnow
                 end
             end
@@ -146,7 +146,7 @@ classdef ZmapGridFunction < ZmapFunction
                     gph=obj.Grid.plot();
                     gph.Tag='pointgrid';
                     gph.PickableParts='none';
-                    gph.Visible=logical2onoff(obj.showgridcenters);
+                    gph.Visible=tf2onoff(obj.showgridcenters);
                 end
                 switch src.Checked
                     case 'on'

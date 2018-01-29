@@ -145,7 +145,7 @@ classdef GridParameterChoice < handle
             obj.hUseGlobalGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Use Existing grid','Units','pixels','Position',[105  90 280  24],...
-                'Enable',logical2onoff(isa(ZG.Grid,'ZmapGrid')));
+                'Enable',tf2onoff(isa(ZG.Grid,'ZmapGrid')));
             obj.hLoadGrid =  uicontrol(obj.ubg2,'Style','radiobutton',...
                 ...'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'string','Load grid','Units','pixels','Position',[220  90 280  24]);
@@ -383,7 +383,7 @@ classdef GridParameterChoice < handle
             
             txZ=uicontrol(parent,'Style','text','String','dz',...
                 'Units','pixels','Position',[x,posY,LabelWidth,exV],...
-                'Enable',logical2onoff(usingZ));
+                'Enable',tf2onoff(usingZ));
             
             edZ=uicontrol(parent,'Style','edit','String',num2str(zInitial),...
                 'Position',[x+LabelWidth+Hspacing, posY, EditWidth,exV]);
@@ -401,7 +401,7 @@ classdef GridParameterChoice < handle
             end
             
             function zunit(src,~)
-                shouldBeEnabled = logical2onoff(src.Value-1);
+                shouldBeEnabled = tf2onoff(src.Value-1);
                 txZ.Enable=shouldBeEnabled;
                 edZ.Enable=shouldBeEnabled;
             end

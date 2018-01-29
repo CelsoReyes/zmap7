@@ -39,7 +39,7 @@ classdef ZmapResult
             %TODO add plotAnyValue menu that 
             
            % plot here
-            
+        end
     end
     
 end

@@ -208,7 +208,7 @@ classdef ShapeGeneral < handle
                 end
                 function latscale(src,ev)
                     obj.ScaleWithLatitude=~obj.ScaleWithLatitude;
-                    src.Checked=logical2onoff(obj.ScaleWithLatitude);
+                    src.Checked=tf2onoff(obj.ScaleWithLatitude);
                 end
             end
         end
@@ -271,7 +271,7 @@ classdef ShapeGeneral < handle
             % hide or show shape based on menu item
             isVisible=get(findobj('Tag','shapeoutlinetoggle'),'Checked');
             sh=findobj(gcf,'Tag','shapeoutline');
-            set(sh,'Visible',logical2onoff(isVisible));
+            set(sh,'Visible',tf2onoff(isVisible));
         end
         function setVisibility(obj,val)
             % set the visibility of this shape
@@ -318,7 +318,7 @@ classdef ShapeGeneral < handle
             ShapeCircle.AddCircleMenu(submenu, ZGshape);
             
             % % menu items that change the main catalog % %
-            isenabled = logical2onoff( ~strcmp(ZGshape.Type,'unassigned') );
+            isenabled = tf2onoff( ~strcmp(ZGshape.Type,'unassigned') );
             
             
             uimenu(submenu,'separator','on',...
@@ -334,7 +334,7 @@ classdef ShapeGeneral < handle
             uimenu(submenu,'Label','Analyze EQ outside Shape (timeplot)',...
                 'Callback',{@ShapeGeneral.cb_selectp,'outside'});
             
-            vis= logical2onoff( strcmp(ZGshape.Type, 'unassigned') );
+            vis= tf2onoff( strcmp(ZGshape.Type, 'unassigned') );
             uimenu(submenu,'separator','on',...
                 'Enable','off','Visible',vis,...
                 'Label','[cannot select earthquakes, no active shape]');
