@@ -35,7 +35,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     name='grid';
     changed=false;
     
-        ZG=ZmapGlobal.Data;
+    ZG=ZmapGlobal.Data;
     
     f=figure('Name','Grid Selection','Units','pixels','Position',[200 75 730 700]);
     
@@ -107,8 +107,6 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     dy = abs(y2-fixed_y);
     
     % SELECT INITIAL GRID
-    %[gridx,gridy]=get_grid(x,y,dx,dy);
-    %gpts_h=plot(gridx(:),gridy(:),'r+');
     gpts_h2=plot(nan,nan,'gx','DisplayName','grid');
     
     update_plot();
@@ -119,7 +117,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     f.DeleteFcn=@check_for_save;
     
     write_string(t,'Scroll the mouse wheel to scale')
-    if nargout > 0 
+    if nargout > 0
         waitfor(f);
     end
     
@@ -139,6 +137,13 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     
     function set_grid(~,~)
         ZG.Grid=ZmapGrid(name,pgr.xs,pgr.ys,'deg');
+        if FOLLOW_PARALLELS
+            ZG.gridopt = struct('dx',deg2km(dx),'dy',deg2km(dy),'dx_units','deg','dy_units','deg',...
+                'dz',[],'dz_units','km');
+        else
+            ZG.gridopt = struct('dx',dx,'dy',dy,'dx_units','km','dy_units','km',...
+                'dz',[],'dz_units','km');
+        end
         changed=false;
     end
     
@@ -159,30 +164,6 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         gpts_h2.XData=gx(ll);
         gpts_h2.YData=gy(ll);
         
-        %gr=[gpts_h2.XData(:), gpts_h2.YData(:)];
-        %{
-        % assign pgrid
-        ugy=unique(gy); % lats in matrix
-        nrows=numel(ugy); % number of latitudes in matrix
-        [~,example]=min(abs(gy(:))); % latitude closest to equator will have most number of lons in matrix
-        mostCommonY=gy(example); % account for the abs possibly flipping signs
-        base_lon_idx=find(gx(gy==mostCommonY)==fixed_x); % longitudes that must line up
-        ncols=sum(gy(:)==mostCommonY); % most number of lons in matrix
-        ys=repmat(ugy(:),1,ncols);
-        xs=nan(nrows,ncols);
-        for n=1:nrows
-            thislat=ugy(n); % lat for this row
-            idx_lons=(gy==thislat); % mask of lons in this row
-            these_lons=gx(idx_lons); % lons in this row
-            row_length=numel(these_lons); % number of lons in this row
-            
-            main_lon_idx=find(these_lons==fixed_x); % offset of X in this row
-            offset=base_lon_idx - main_lon_idx;
-            xs(n,[1:row_length]+offset)=these_lons;
-        end
-        pgr.xs=xs;
-        pgr.ys=ys;
-        %}
         pgr.xs=gx;
         pgr.ys=gy;
         disp(pgr)
@@ -224,13 +205,13 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
             % when following the meridian lines, the longitude span covered by
             % the arc-distance at lat0 (along the rhumb!) remains constant.
             % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
-            [~,dLon]=reckon('rh',lat0,0,dist_arc,90); 
+            [~,dLon]=reckon('rh',lat0,0,dist_arc,90);
             
             % resulting in a rectangular matrix where, on a globe lines will converge, but on a graph
             lonValues = vector_including_origin(lon0, dLon, xlims_deg);
             
             %creates a meshgrid of size numel(lonValues) x numel(lats)
-            [lonMat,latMat]=meshgrid(lonValues,lats); 
+            [lonMat,latMat]=meshgrid(lonValues,lats);
             
             
             %lonCol=lonCol(:);
@@ -284,17 +265,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         end
         
     end
-    %{
-    function [gridx,gridy] = get_grid(x0,y0,dx,dy)
-        xl = xlim(ax);
-        xtk = unique([x0 : -dx : xl(1) , x0 : dx :xl(2)]);
-        
-        yl = ylim(ax);
-        ytk = unique([y0 : -dy : yl(1) , y0: dy : yl(2)]);
-        
-        [gridx,gridy]=meshgrid(xtk,ytk);
-    end
-    %}
+   
     function mouse_down(src,~)
         %mouse down, so make origin follow mouse around
         %disp(ev)
@@ -349,11 +320,11 @@ function instruction_end(h)
 end
 
 function pgr=trim_nans(pgr)
-        % REMOVE GRID POINTS BEYOND POLYGON (rows & cols of all nans)
-        nanrows=all(isnan(pgr.xs),2);
-        nancols=all(isnan(pgr.xs),1);
-        pgr.xs(nanrows,:)=[];pgr.xs(:,nancols)=[];
-        pgr.ys(nanrows,:)=[];pgr.ys(:,nancols)=[];
+    % REMOVE GRID POINTS BEYOND POLYGON (rows & cols of all nans)
+    nanrows=all(isnan(pgr.xs),2);
+    nancols=all(isnan(pgr.xs),1);
+    pgr.xs(nanrows,:)=[];pgr.xs(:,nancols)=[];
+    pgr.ys(nanrows,:)=[];pgr.ys(:,nancols)=[];
 end
 
 %{

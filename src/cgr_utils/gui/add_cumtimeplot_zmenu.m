@@ -137,7 +137,7 @@ function add_cumtimeplot_zmenu(obj, parent)
       function cb_computefractal(mysrc,myevt, org)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         if org==2
-            E = mycat;
+            E = ZG.newt2;
         end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
         startfd(org);
     end

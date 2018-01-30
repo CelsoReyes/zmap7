@@ -33,14 +33,14 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         prevNy=numel(YEDGES);
         while DOAGAIN
             DOAGAIN=false;
-            medmaxNx=median(max(N,[],1))
-            medmaxNy=median(max(N,[],2))
+            medmaxNx=median(max(N,[],1));
+            medmaxNy=median(max(N,[],2));
             if medmaxNx>MAGICX || medmaxNy>MAGICY
                 prevNx=numel(XEDGES);
-                nxEDGES=ceil(prevNx*1.5)
+                nxEDGES=ceil(prevNx*1.5);
                 XEDGES=linspace(XEDGES(1),XEDGES(end),nxEDGES);
                 prevNy=numel(YEDGES);
-                nyEDGES=ceil(prevNy*1.5)
+                nyEDGES=ceil(prevNy*1.5);
                 YEDGES=linspace(YEDGES(1),YEDGES(end),nyEDGES);
                 DOAGAIN=true;
             end
@@ -71,7 +71,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         'LoadGrid',false,...
         'CreateGrid',false); %should be done in conj. with GridParameterChoice
     
-    zgrid=ZmapGrid('autogrid',gpc)
+    zgrid=ZmapGrid('autogrid',gpc);
     
     if exist('dohist','var') && dohist
         figure('Name','Automatic Grid');

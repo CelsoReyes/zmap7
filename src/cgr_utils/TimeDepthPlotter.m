@@ -16,35 +16,36 @@ classdef TimeDepthPlotter
     end
     
     methods (Static)
-        function pl=plot(catalog)
+        function pl=plot(catalog,ax)
             % plot plot a time-depth series for this catalog, with symbol sizes representing
             % event size
             % pl = plot(catalog)
             %
             tag = 'time_depth_plot';
-            ax = findobj('Tag','time_depth_axis');
-            if isempty(ax)
-                figure('Name','Time Depth',...
+            
+            if ~exist('ax','var')
+                f=figure('Name','Time Depth',...
                     'NumberTitle','off', ...
                     ......
                     'Tag','time_depth_figure');
+                ax=axes(f);
+                ax.Tag=tag;
             else
-                delete(ax);
+                if isempty(ax.Tag)
+                    ax.Tag=tag;
+                end
             end
-            ax=axes;
             ax.Visible = 'off';
             pl=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),'Tag',tag,...
-                'DisplayName','Events');
-            set(ax,'box','on',...
-        'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',14,'Linewidth',1.2);
+                'DisplayName','Events','MarkerEdgeColor',[0.05 0.05 0.2],'Marker','s');
+            set(ax,'box','on','TickDir','out');
             ax.YDir='reverse';
             ax.Tag='time_depth_axis';
-            title(['Time Depth Plot for "' catalog.Name '"'],'Interpreter','none');
+             title(['Time Depth Plot for "' catalog.Name '"'],'Interpreter','none');
             xlabel('Date');
             ylabel('Depth [km]');
             grid
-            TimeDepthPlotter.overlayBigEvents();
+            TimeDepthPlotter.overlayBigEvents(ax);
             ax.Visible = 'on';
         end
         %{
@@ -56,13 +57,15 @@ classdef TimeDepthPlotter
             pl2=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
         end
         %}
-        function overlayBigEvents()
+        function overlayBigEvents(ax)
             ZG=ZmapGlobal.Data;
             bigcat=ZG.maepi;
-            tag = 'time_depth_plot';
-            ax = findobj('Tag','time_depth_axis');
+            %tag = 'time_depth_plot';
+            %ax = findobj('Tag','time_depth_axis');
             holdstate=HoldStatus(ax,'on');
-            scatter(ax,ZG.maepi.Date,ZG.maepi.Depth, mag2dotsize(ZG.maepi.Magnitude),'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y');
+            scatter(ax,ZG.maepi.Date,ZG.maepi.Depth, mag2dotsize(ZG.maepi.Magnitude),...
+                'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+                'Tag','big events');
             holdstate.Undo();
         end
             
