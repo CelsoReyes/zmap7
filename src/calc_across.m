@@ -328,7 +328,7 @@ function calc_across(sel)
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if sum(l) >= Nmin
-                        [bv2, stan2,  faValue] =  bmemag(b.Magnitude(l));
+                        [bv2, stan2,  faValue] = calc_bmemag(b.Magnitude(l));
                     else
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end

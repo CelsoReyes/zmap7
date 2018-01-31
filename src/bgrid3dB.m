@@ -21,15 +21,15 @@ classdef bgrid3dB < ZmapGridFunction
     properties(Constant)
         PlotTag='myplot';
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
-            'bv2','bv2: b-value from bmemmag', '';...bv2 (?) b-value from bmemag() ->bvg
+            'bv2','bv2: b-value from bmemmag', '';...bv2 (?) b-value from calc_bmemag() ->bvg
             'b_value', 'b-value', '';... bv ->bvg_wls
             'Radius_km', 'Radius of chosen events (Resolution) [km]', 'km';... rd ->ram
             'power_fit', 'Goodness of fit to power-law', '';... prf
             'a_value', 'a-value', '';... av
-            'av2','av2: a-value from bmemmag', '';...av2 (?) a-value from bmemag() ->avm
+            'av2','av2: a-value from bmemmag', '';...av2 (?) a-value from calc_bmemag() ->avm
             'Mc_value', 'Magnitude of Completion (Mc)', '';... magco ->mcma
             'b_value_std', 'Std. of b-value', '';...stan
-            'stan2','stan2: b-value std from bmemag','';... stan2 (?) bvalue std from bmemag()
+            'stan2','stan2: b-value std from calc_bmemag','';... stan2 (?) bvalue std from calc_bmemag()
             ...'Mc_std', 'Std. of Magnitude of Completion', '';...
             ...'a_value_std', 'Std. of a-value', '';...
             ...'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
@@ -39,8 +39,8 @@ classdef bgrid3dB < ZmapGridFunction
             'x', 'Longitude', 'deg';...
             'y', 'Latitude', 'deg';...
             'z', 'Depth', 'km'...
-            ... av2 (?) a-value from bmemag() ->avm
-            ... bv2 (?) b-value from bmemag() ->bvg
+            ... av2 (?) a-value from calc_bmemag() ->avm
+            ... bv2 (?) b-value from calc_bmemag() ->bvg
             };
     end
     methods
@@ -217,7 +217,7 @@ classdef bgrid3dB < ZmapGridFunction
                             minicat=catalog.subset(l);
                             magco = Mc90;
                             [bv magco0 stan av pr] =  bvalca3(minicat.Magnitude,2);
-                            [bv2 stan2 av2 ] =  bmemag(minicat.Magnitude);
+                            [bv2 stan2 av2 ] = calc_bmemag(minicat.Magnitude);
                         end
                         
                     case 4 % Automatic Mcomp (95% probability)
@@ -227,7 +227,7 @@ classdef bgrid3dB < ZmapGridFunction
                             minicat=catalog.subset(l);
                             magco = Mc95;
                             [bv, magco0, stan, av,   pr] =  bvalca3(minicat.Magnitude,2);
-                            [bv2, stan2, av2 ] =  bmemag(minicat.Magnitude);
+                            [bv2, stan2, av2 ] = calc_bmemag(minicat.Magnitude);
                         end
                         
                     case 5% Best (?) combination (Mc95 - Mc90 - max curvature)
@@ -243,7 +243,7 @@ classdef bgrid3dB < ZmapGridFunction
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
                             [bv, magco0, stan, av, pr] =  bvalca3(minicat.Magnitude,2);
-                            [bv2, stan2,  av2] =  bmemag(minicat.Magnitude);
+                            [bv2, stan2,  av2] = calc_bmemag(minicat.Magnitude);
                         else
                             [bv, bv2, magco, av, av2] = deal(nan);
                         end
@@ -252,14 +252,14 @@ classdef bgrid3dB < ZmapGridFunction
                         [bv magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,1);
                         l = catalog.Magnitude >= magco-0.05;
                         if  sum(l) >= Nmin
-                            [bv2 stan2,  av2] =  bmemag(catalog.Magnitude(l));
+                            [bv2 stan2,  av2] = calc_bmemag(catalog.Magnitude(l));
                         else
                             bv = nan; bv2 = nan, magco = nan; av = nan; av2 = nan;
                         end
                         
                     case 2 % Fixed Mc (Mc = Mmin)
                         [bv, magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,2);
-                        [bv2, stan2, av2 ] =  bmemag(catalog.Magnitude);
+                        [bv2, stan2, av2 ] = calc_bmemag(catalog.Magnitude);
                         
                     otherwise
                         error('unanticipated choice')

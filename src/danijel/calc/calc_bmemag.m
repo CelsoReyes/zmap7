@@ -2,11 +2,11 @@ function [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
 % function [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
 % ---------------------------------------------------------------------------------
 % Calculates the mean magnitute, the b-value based
-% on the maximum likelihood estimation, thea-value and the
+% on the maximum likelihood estimation, the a-value and the
 % standard deviation of the b-value
 %
 % Input parameters:
-%   mCatalog        Earthquake catalog
+%   mCatalog        vector of magnitudes
 %   fBinning        Binning of the earthquake magnitudes (default 0.1)
 %
 % Output parameters:
@@ -14,7 +14,8 @@ function [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning)
 %   fStdDev         Standard deviation of b-value
 %   fAValue        a-value
 %
-% Copyright (C) 2003 by Danijel Schorlemmer
+% Copyright (C) 2003 by Danijel Schorlemmer based on Stefan Wiemer's code, then 
+% now modified by CGReyes
 %
 % This program is free software; you can redistribute it and/or modify
 % it under the terms of the GNU General Public License as published by
@@ -42,14 +43,15 @@ if ~exist('fBinning','var')
   fBinning = 0.1;
 end
 
-% Check input
-nX = mCatalog.Count;
-
-if (~isempty(mCatalog) && nX == 1)
-    vMag = mCatalog;
-elseif (~isempty(mCatalog)  &&  nX > 1)
+if isa(mCatalog,'ZmapCatalog')
     vMag = mCatalog.Magnitude;
+elseif isnumeric(mCatalog)
+    vMag = mCatalog;
 else
+    error('do not recognize mCatalog as vector of magnitudes or  as a ZmapCatalog');
+end
+
+if isempty(vMag)
     disp('No magnitude data available!');
     return
 end

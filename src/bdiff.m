@@ -5,10 +5,9 @@ function  bdiff(mycat, holdplot)
     %  using this point and the point half way toward the high
     %  magnitude end of the b-value curve.
     
-    %  originally, "mycat" was "newcat"
     %  Stefan Wiemer 1/95
     %
-    global bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4
+    global bfig  magsteps_desc bvalsum3  bval aw bw
     global  cua ew onesigma bvalsumhold
     global gBdiff % bdiff globals containing b1, b2, n1, n2
     ZG=ZmapGlobal.Data;
@@ -80,10 +79,10 @@ function  bdiff(mycat, holdplot)
     %
     i2 = 1 ;
     
-    xlabel('Magnitude','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-    ylabel('Cumulative Number','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+    xlabel('Magnitude','FontWeight','normal','FontSize',ZG.fontsz.s)
+    ylabel('Cumulative Number','FontWeight','normal','FontSize',ZG.fontsz.s)
     %set(gca,'Color',color_bg)
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
+    set(gca,'visible','on','FontSize',ZG.fontsz.s,'FontWeight','normal',...
         'FontWeight','normal','LineWidth',1.0,...
         'Box','on','Tag','cufi')
     
@@ -101,7 +100,7 @@ function  bdiff(mycat, holdplot)
     x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ bv, onesigma, av] = bmemag(mycat.Magnitude(l2)) ;
+    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2)) ;
     
     bv = -bv;
     
@@ -109,22 +108,22 @@ function  bdiff(mycat, holdplot)
     pause(0.1)
     
     y = backg_ab(ll);
-    [aw bw,  S, ew] = wls(x',y');
+    [aw, bw,  S, ew] = wls(x',y');
     p = [bw aw];
     
-    p2 = [bw+onesigma aw];
-    p3 = [bw-onesigma aw];
-    x2 = 1:0.1:6;
+    %p2 = [bw+onesigma aw];
+    %p3 = [bw-onesigma aw];
+    %x2 = 1:0.1:6;
     f = polyval(p,x);
-    f2 = polyval(p2,x);
-    f3 = polyval(p3,x);
-    [f4,delta] = polyval(p,x,S);
+    %f2 = polyval(p2,x);
+    %f3 = polyval(p3,x);
+    %[f4,delta] = polyval(p,x,S);
     
     f = 10.^f;
-    f2 = 10.^f2;
-    f3 = 10.^f3;
-    f4 = 10.^f4;
-    delta = 10.^delta;
+    %f2 = 10.^f2;
+    %f3 = 10.^f3;
+    %f4 = 10.^f4;
+    %delta = 10.^delta;
     hold on
     ttm= semilogy(x,f,'r','DisplayName','linear fit to background');  % plot linear fit to backg
     set(ttm,'LineWidth',1)

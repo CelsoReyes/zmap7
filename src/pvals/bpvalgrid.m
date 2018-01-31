@@ -181,7 +181,7 @@ function [sel] = bpvalgrid()
             [bv, magco, stan, av,   pr] =  bvalca3(b.Magnitude,1);
             maxcat = b.subset(b.Magnitude >= magco-0.05);
             if maxcat.Count()  >= Nmin
-                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
+                [bv2, stan2,  av2] = calc_bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 
@@ -193,7 +193,7 @@ function [sel] = bpvalgrid()
         
         function bpvg = calcguts_opt2(b)
             [bv, magco, stan, av,   pr] =  bvalca3(b.Magnitude,2);
-            [bv2, stan2,  av2] =  bmemag(b.Magnitude);
+            [bv2, stan2,  av2] = calc_bmemag(b.Magnitude);
             maxcat = b(l); % FIXME there is no l here.
             maxmg = max(maxcat.Magnitude);
             [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(b.subset(l),'days',valeg2,CO,minThreshMag);
@@ -207,7 +207,7 @@ function [sel] = bpvalgrid()
             magco = Mc90;
             if maxcat.Count()  >= Nmin
                 [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
-                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
+                [bv2, stan2,  av2] = calc_bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 bpvg = [bv magco nan nan nan bv2 stan2 av stan prf pv pstd maxmg cv tgl1 mmav kv mbv nan];
@@ -222,7 +222,7 @@ function [sel] = bpvalgrid()
             magco = Mc95;
             if maxcat.Count() >= Nmin
                 [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
-                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
+                [bv2, stan2,  av2] = calc_bmemag(maxcat.Magnitude);
                 maxmg = max(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 
@@ -245,7 +245,7 @@ function [sel] = bpvalgrid()
             if maxcat.Count()  >= Nmin
                 [bv, magco0, stan, av,   pr] =  bvalca3(maxcat.Magnitude,2);
                 maxmg = max(maxcat.Magnitude);
-                [bv2, stan2,  av2] =  bmemag(maxcat.Magnitude);
+                [bv2, stan2,  av2] = calc_bmemag(maxcat.Magnitude);
                 [pv, pstd, cv, cstd, kv, kstd, mmav,  mbv] = mypval2m(maxcat,'days',valeg2,CO,minThreshMag);
                 bpvg = [bv magco nan nan nan bv2 stan2 av stan prf pv pstd maxmg cv tgl1 mmav kv mbv nan];
             else

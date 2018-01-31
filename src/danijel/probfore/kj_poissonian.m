@@ -71,7 +71,7 @@ function [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, f
         else
             if ((nTestMethod == 1) || (nTestMethod == 2))
                 if length(mLearningCatalog(:,1)) > nMinimumNumber
-                    [fBValueO fStdDevO] = bmemag(mLearningCatalog.Magnitude);
+                    [fBValueO fStdDevO] = calc_bmemag(mLearningCatalog.Magnitude);
                     % Prevent from non calculated nodes
                     if isnan(fBValueO)
                         if nTestMethod == 1
@@ -96,7 +96,7 @@ function [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, f
             else % nTestMethod == 3
                 if length(mLearningCatalog(:,1)) > nMinimumNumber
                     % Get the b-value
-                    [fBValueO fStdDevO] =  bmemag(mLearningCatalog.Magnitude);
+                    [fBValueO fStdDevO] = calc_bmemag(mLearningCatalog.Magnitude);
                     % Determine the b-value of our model using the bayesian approach
                     fWeightK = fStdDevK / (fStdDevK + fStdDevO);
                     fWeightO = fStdDevO / (fStdDevK + fStdDevO);

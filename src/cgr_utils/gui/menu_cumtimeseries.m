@@ -1,8 +1,10 @@
-function c=menu_cumtimeseries(parent)
+function c=menu_cumtimeseries(c)
     % menu_cumtimeseries add a context menu to the cumulative timeseries
     % plot(x,x,....,'UIContextMenu',menu_cumtimeseries);
     
+    if ~exist('c','var')
     c=uicontextmenu;
+    end
     
     uimenu(c, 'Label', 'filter',...
         'Enable','off',...
@@ -51,36 +53,6 @@ function c=menu_cumtimeseries(parent)
         pl.plot()
     end
     
-    function [X,Y] = click_to_datetime(ax)
-        %TODO move to external function
-        %
-        % see also num2ruler
-        selector='';
-        xyz=get(ax,'CurrentPoint');
-        X=xyz(1);
-        Y=xyz(2);
-        X = num2ruler(X, ax.XAxis);
-        Y = num2ruler(Y, ax.YAxis);
-        if isa(X,'datetime')
-            X = round_time(X,selector);
-        end
-        if isa(Y,'datetime')
-            Y = round_time(Y,selector);
-        end
-    end
-    
-    function dates = round_time(dates, selector)
-        % TODO move to external function
-        switch selector
-            case 'nearest_day'
-                dates = datetime(dates.Year, dates.Month, dates.Day + round(dates.Hour ./ 24));
-            case 'nearest_hour'
-                dates = datetime(dates.Year, dates.Month, dates.Day, dates.Hour + round(dates.Minute/60),0,0);
-            otherwise
-                dates.Format='uuuu-MM-dd hh:mm:ss';
-                % do nothing
-        end
-    end
     function show_in_map()
         ZmapMessageCenter.set_info('Unimplemented. now there would be some green marks on the main map, too');
     end

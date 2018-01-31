@@ -118,7 +118,7 @@ function  bdiff_bdepth(mycat)
     x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ bv, onesigma, av] = bmemag(mycat.Magnitude(l2)) ;
+    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2)) ;
     
     bv = -bv;
     
