@@ -8,6 +8,8 @@ classdef Stack < handle
     % PUSH - add the thing to the top of the stack. If stack is full, items fall off the back side.
     % POP - pull an item from top of the stack. If stack is empty, will error
     % ISEMPTY - return whether items exist on the stack
+    %
+    % PEEK - look at most recent item
     
     properties
         items={}; % contains items on the stack
@@ -42,6 +44,14 @@ classdef Stack < handle
         function tf = isempty(obj)
             % ISEMPTY returns true if there are items on the stack
             tf = isempty(obj.items);
+        end
+        function item = peek(obj)
+            % PEEK retrieve last item without popping it
+            if ~isempty(obj)
+                item = obj.items{end};
+            else
+                item=[];
+            end
         end
     end
     

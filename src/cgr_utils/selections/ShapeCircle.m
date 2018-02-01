@@ -87,8 +87,10 @@ classdef ShapeCircle < ShapeGeneral
         function interactive_edit(obj,src,ev)
             % INTERACTIVE_EDIT callback
             % obj.INTERACTIVE_EDIT(src,ev)
-            shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            
+            shout=findobj(gcf,'Tag','shapeoutline');
+            if numel(shout)>1
+                disp(shout);
+            end
             if obj.AUTO_UPDATE_TIMEPLOT
                 make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
             else

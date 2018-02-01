@@ -1,57 +1,79 @@
-function f=ZmapMainWindow(f)
-    if exist('f','var')
-        delete(f);
+function fig=ZmapMainWindow(fig)
+    %TOFIX filtering of Dates are not preserved when "REDRAW" is clicked
+    if exist('fig','var')
+        delete(fig);
     end
-    f=figure('Position',[100 80 1200 650],'Name','Zmap Main Window');
+    fig=figure('Position',[100 80 1200 650],'Name','Zmap Main Window');
     mycat=catalog();
-    s=Stack(5) % remember last 5 catalogs
-    undohandle=uimenu(f,'label','Undo','Callback',@cb_undo,'Enable','off');
-    % TODO: undo could also stash grid options & grids
+    
     ZG=ZmapGlobal.Data;
-        
+    
+    shp=ZG.selection_shape;
+    s=Stack(5); % remember last 5 catalogs
+    undohandle=uimenu(fig,'label','Undo','Callback',@cb_undo,'Enable','off');
+    undohandle=uimenu(fig,'label','Redraw','Callback',@cb_redraw);
+    % TODO: undo could also stash grid options & grids
+    
     
     TabLocation = 'top'; % 'top','bottom','left','right'
     tg=uitabgroup('Units','pixels','Position',[790 330 380 310],'TabLocation',TabLocation);
     tg2=uitabgroup('Units','pixels','Position',[790 20 380 310],'TabLocation',TabLocation);
     
-        t1=uitab(tg,'title','Magnitude');
-        
-        t2=uitab(tg,'title','Depth');
-        t3=uitab(tg,'title','Time');
-        t4=uitab(tg,'title','Hour');
-        t5=uitab(tg,'title','FMD');
-        
-        t21=uitab(tg2,'title','cumplot');
-        t22=uitab(tg2,'title','Time-Mag');
-        t23=uitab(tg2,'title','Time-Depth');
-        
+    t1=uitab(tg,'title','Magnitude');
+    
+    t2=uitab(tg,'title','Depth');
+    t3=uitab(tg,'title','Time');
+    t4=uitab(tg,'title','Hour');
+    t5=uitab(tg,'title','FMD');
+    
+    t21=uitab(tg2,'title','cumplot');
+    t22=uitab(tg2,'title','Time-Mag');
+    t23=uitab(tg2,'title','Time-Depth');
+    
     replot_all()
     
     function replot_all()
-        figure(f)
+        figure(fig)
         % set up main map window
-        ax=axes('Units','pixels','Position',[100 100 600 500]);
-        ax.Tag = 'mainmap_ax';
-        ax.TickDir='out';
-        ax.Box='on';
-        primecat=ZG.primeCatalog;
-        alleq=plot(ax,primecat.Longitude,primecat.Latitude,'.','color',[.76 .75 .8]);
-        alleq.ZData=primecat.Depth;
-        hold on;
-        eq=scatter(ax, mycat.Longitude, mycat.Latitude,mag2dotsize(mycat.Magnitude),datenum(mycat.Date));
-        eq.ZData=mycat.Depth;
-        eq.Marker='s';
-        ax.ZDir='reverse';
-        grid(ax,'on');
-        shp=ZG.selection_shape;
-        if ~isempty(shp)
-            shp.plot(gca)
+        axm=findobj(fig,'Tag','mainmap_ax');
+        if isempty(axm)
+            axm=axes('Units','pixels','Position',[100 100 600 500]);
+            primecat=ZG.primeCatalog;
+            alleq=plot(axm,primecat.Longitude,primecat.Latitude,'.','color',[.76 .75 .8],'Tag','all events');
+            alleq.ZData=primecat.Depth;
+            axm.Tag = 'mainmap_ax';
+            axm.TickDir='out';
+            axm.Box='on';
+            hold on;
+            eq=scatter(axm, mycat.Longitude, mycat.Latitude,mag2dotsize(mycat.Magnitude),datenum(mycat.Date),'Tag','active quakes');
+            eq.ZData=mycat.Depth;
+            eq.Marker='s';
+            axm.ZDir='reverse';
+        else
+            %alleq=findobj(axm,'Tag','all events');
+            eq=findobj(axm, 'Tag','active quakes')
+            eq.XData=mycat.Longitude;
+            eq.YData=mycat.Latitude;
+            eq.ZData=mycat.Depth;
+            eq.SizeData=mag2dotsize(mycat.Magnitude);
+            eq.CData=datenum(mycat.Date);
         end
+        hold on;
+        grid(axm,'on');
+        newshape=ZG.selection_shape
+        if ~isequal(newshape,shp)
+            disp ('shape changed');
+            shp=newshape;
+        end
+        if ~isempty(shp)
+            shp.plot(axm)
+        end
+        assert(strcmp(axm.Tag,'mainmap_ax'))
         
         %ZmapCatalogView('primeCatalog').plot(ax)
-        title(ax,'Catalog Name and Date')
-        xlabel('Longitude')
-        ylabel('Latitude');
+        title(axm,'Catalog Name and Date')
+        xlabel(axm,'Longitude')
+        ylabel(axm,'Latitude');
         
         % Each tab group will have a "SelectionChanghedFcn", "CreateFcn", "DeleteFcn", "UIContextMenu"
         %TabLocation = 'top'; % 'top','bottom','left','right'
@@ -100,7 +122,12 @@ function f=ZmapMainWindow(f)
         delete(t5.Children);
         ax=axes(t5);
         ylabel(ax,'Cum # events');xlabel(ax,'Magnitude');
+        
+        mainax=findobj(fig,'Tag','mainmap_ax');
         bdiff2(mycat,false,ax);
+        
+        mainax2=findobj(fig,'Tag','mainmap_ax');
+        assert(mainax==mainax2);
         
         % Cumulative Event Plot
         %tg2=uitabgroup('Units','pixels','Position',[790 20 380 310],'TabLocation',TabLocation);
@@ -110,7 +137,7 @@ function f=ZmapMainWindow(f)
         ax.TickDir='out';
         p=plot(ax,mycat.Date,1:mycat.Count,'r','linewidth',2);
         ylabel(ax,'Cummulative Number of events');xlabel(ax,'Time');
-        c=uicontextmenu
+        c=uicontextmenu;
         uimenu(c,'Label','start here','Callback',@(~,~)cb_starthere(ax));
         uimenu(c,'Label','end here','Callback',@(~,~)cb_endhere(ax));
         uimenu(c, 'Label', 'trim to largest event','Callback',@cb_trim_to_largest);
@@ -170,6 +197,23 @@ function f=ZmapMainWindow(f)
             errordlg('can''t undo');
             return
         end
+        replot_all();
+    end
+    function cb_redraw(~,~)
+        % REDRAW if things have changed, then also push the new state
+        item=s.peek;
+        do_stash=true;
+        if ~isempty(item)
+            class(item{1})
+            class(mycat)
+            do_stash = ~strcmp(item{1}.summary('stats'),mycat.summary('stats')) ||...
+                isequal(ZG.selection_shape,item{2});
+        end
+        if do_stash
+            disp('pushing')
+            pushState();
+        end
+        mycat=catalog();
         replot_all();
     end
     

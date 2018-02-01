@@ -347,11 +347,4 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         
 end
 
-function [x,y]=get_bounding_box(p)
-    x=[min(p.XData) max(p.XData)];
-    x=x([1 2 2 1 1]);
-    y=[min(p.YData) max(p.YData)];
-    y=y([1 1 2 2 1]);
-end
-
         
