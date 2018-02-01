@@ -43,10 +43,26 @@ classdef TimeDepthPlotter
             ax.Tag='time_depth_axis';
              title(['Time Depth Plot for "' catalog.Name '"'],'Interpreter','none');
             xlabel('Date');
-            ylabel('Depth [km]');
+            
+            yl=ylabel('Depth [km]');
+            c=uicontextmenu;
+            uimenu(c,'Label','Use Log Scale','Callback',@logtoggle);
+            yl.UIContextMenu=c;
+            
             grid
             TimeDepthPlotter.overlayBigEvents(ax);
             ax.Visible = 'on';
+            
+            function logtoggle(src,~)
+                switch src.Label
+                    case 'Use Log Scale'
+                        src.Label='Use Linear Scale';
+                        ax.YScale='log';
+                    otherwise
+                        src.Label='Use Log Scale';
+                        ax.YScale='linear';
+                end
+            end
         end
         %{
         function pl2=addCatalog(catalog,color)

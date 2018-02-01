@@ -61,10 +61,25 @@ classdef TimeMagnitudePlotter
             ax.Tag='time_mag_axis';
             title(['Time Magnitude Plot for "' catalog.Name '"'],'Interpreter','none');
             xlabel('Date');
-            ylabel('Magnitude');
+            
+            yl=ylabel('Magnitude');
+            c=uicontextmenu;
+            uimenu(c,'Label','Use Log Scale','Callback',@logtoggle);
+            yl.UIContextMenu=c;
+            
             grid on
             TimeMagnitudePlotter.overlayBigEvents(ax);
             ax.Visible = 'on';
+            function logtoggle(src,~)
+                switch src.Label
+                    case 'Use Log Scale'
+                        src.Label='Use Linear Scale';
+                        ax.YScale='log';
+                    otherwise
+                        src.Label='Use Log Scale';
+                        ax.YScale='linear';
+                end
+            end
         end
         %{
 function pl2=addCatalog(catalog,color)

@@ -47,8 +47,8 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     lastIntersect=[];
     
     
-        XTOL=0.001;
-        YTOL=0.001;
+        XTOL=0.01;
+        YTOL=0.01;
     
     if ~exist('LATLON_AWARE','var')
         LATLON_AWARE=false;
@@ -80,7 +80,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
             ax=item;
         end
     end
-           
+    f.Pointer='circle';
     returnstate=return_state(f,p); % used to put things back the way they were
     p.ButtonDownFcn=@bdown;
     p.UIContextMenu=pointcontext(p);
@@ -95,8 +95,8 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         %   on line: allow new point
         %   on vertex : allow deletion of point
         
-        XTOL=0.001;
-        YTOL=0.001;
+        XTOL=0.005;
+        YTOL=0.005;
         %activepoint=find(abs(src.XData-ev.IntersectionPoint(1)) <XTOL &...
         %    abs(src.YData-ev.IntersectionPoint(2))<YTOL);
         activepoint=getactivepoint(src,ev);
@@ -312,6 +312,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     function changeMaker(p,newmarker)
         if strcmpi(p.Marker,'none')
             p.Marker=newmarker;
+            p.MarkerFaceColor='k';
         end
     end
     
@@ -341,6 +342,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
                 p.Marker=pmark;
             end
             ufn()
+            f.Pointer='arrow';
         end
     end
     

@@ -1,4 +1,4 @@
-classdef ShapeGeneral < handle
+classdef ShapeGeneral < matlab.mixin.Copyable
     %ShapeGeneral represents a geographical selection of events
     %
     %

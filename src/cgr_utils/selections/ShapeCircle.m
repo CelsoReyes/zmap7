@@ -99,6 +99,7 @@ classdef ShapeCircle < ShapeGeneral
             
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
+                obj.Radius= deg2km(shout.YData(1) - obj.Center(2));
                 ZG=ZmapGlobal.Data;
                 ZG.selection_shape=obj;
                 

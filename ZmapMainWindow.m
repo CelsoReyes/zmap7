@@ -1,5 +1,7 @@
 function fig=ZmapMainWindow(fig)
     %TOFIX filtering of Dates are not preserved when "REDRAW" is clicked
+    %TOFIX shape lags behind
+    
     if exist('fig','var')
         delete(fig);
     end
@@ -10,8 +12,11 @@ function fig=ZmapMainWindow(fig)
     
     shp=ZG.selection_shape;
     s=Stack(5); % remember last 5 catalogs
-    undohandle=uimenu(fig,'label','Undo','Callback',@cb_undo,'Enable','off');
-    undohandle=uimenu(fig,'label','Redraw','Callback',@cb_redraw);
+    pushState();
+    add_menu_divider()
+    emm = uimenu(fig,'label','Edit!');
+    undohandle=uimenu(emm,'label','Undo','Callback',@cb_undo,'Enable','off');
+    redrawhandle=uimenu(emm,'label','Redraw','Callback',@cb_redraw);
     % TODO: undo could also stash grid options & grids
     
     
@@ -34,6 +39,7 @@ function fig=ZmapMainWindow(fig)
     
     function replot_all()
         figure(fig)
+        shp=ZG.selection_shape;
         % set up main map window
         axm=findobj(fig,'Tag','mainmap_ax');
         if isempty(axm)
@@ -60,11 +66,11 @@ function fig=ZmapMainWindow(fig)
         end
         hold on;
         grid(axm,'on');
-        newshape=ZG.selection_shape
-        if ~isequal(newshape,shp)
-            disp ('shape changed');
-            shp=newshape;
-        end
+        %newshape=ZG.selection_shape
+        %if ~isequal(newshape,shp)
+        %    disp ('shape changed');
+        %    shp=newshape;
+        %end
         if ~isempty(shp)
             shp.plot(axm)
         end
@@ -151,7 +157,6 @@ function fig=ZmapMainWindow(fig)
         %t22=uitab(tg2,'title','Time-Mag');
         delete(t22.Children);
         ax=axes(t22);
-        ylabel(ax,'Magnitude');xlabel(ax,'Time');
         TimeMagnitudePlotter.plot(mycat,ax);
         ax.Title=[];
         c=uicontextmenu;
@@ -161,7 +166,7 @@ function fig=ZmapMainWindow(fig)
         %t23=uitab(tg2,'title','Time-Depth');
         delete(t23.Children);
         ax=axes(t23);cla(ax);
-        ylabel(ax,'Depth');xlabel(ax,'Time');
+        %ylabel(ax,'Depth');xlabel(ax,'Time');
         TimeDepthPlotter.plot(mycat,ax);
         ax.Title=[];
         c=uicontextmenu;
@@ -191,45 +196,55 @@ function fig=ZmapMainWindow(fig)
         end
     end
     function cb_undo(~,~)
-        try
+        %try
             popState()
-        catch ME
-            errordlg('can''t undo');
-            return
-        end
+        %catch ME
+        %    errordlg('can''t undo');
+        %    return
+        %end
         replot_all();
     end
     function cb_redraw(~,~)
         % REDRAW if things have changed, then also push the new state
-        item=s.peek;
+        watchon
+        item=s.peek();
         do_stash=true;
         if ~isempty(item)
-            class(item{1})
-            class(mycat)
             do_stash = ~strcmp(item{1}.summary('stats'),mycat.summary('stats')) ||...
-                isequal(ZG.selection_shape,item{2});
+                ~isequal(ZG.selection_shape,item{2});
         end
+        shp=ZG.selection_shape;
         if do_stash
             disp('pushing')
             pushState();
         end
         mycat=catalog();
+        shp=ZG.selection_shape;
         replot_all();
+        watchoff
     end
     
     %% push and pop state
     function pushState()
-        s.push({mycat, ZG.selection_shape});
+        s.push({mycat, copy(shp)});%ZG.selection_shape
         undohandle.Enable='on';
     end
     
     function popState()
+        fig.Pointer='watch';
+        pause(0.01);
         items = s.pop();
-        ZG.selection_shape = items{2};
+        shp=copy(items{2});
+        ZG.selection_shape = shp;
+        if ~isempty(shp)
+            shp.plot(findobj(fig,'Tag','mainmap_ax'))
+        end
         mycat = items{1};
         if isempty(s)
             undohandle.Enable='off';
         end
+        fig.Pointer='arrow';
+        pause(0.01);
     end
 end
 
