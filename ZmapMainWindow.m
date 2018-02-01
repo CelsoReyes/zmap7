@@ -4,7 +4,9 @@ function f=ZmapMainWindow(f)
     end
     f=figure('Position',[100 80 1200 650],'Name','Zmap Main Window');
     mycat=catalog();
-    
+    s=Stack(5) % remember last 5 catalogs
+    undohandle=uimenu(f,'label','Undo','Callback',@cb_undo,'Enable','off');
+    % TODO: undo could also stash grid options & grids
     ZG=ZmapGlobal.Data;
         
     
@@ -141,12 +143,14 @@ function f=ZmapMainWindow(f)
         
         function cb_starthere(ax)
             [x,~]=click_to_datetime(ax);
+            pushState();
             mycat=mycat.subset(mycat.Date>=x);
             replot_all();
         end
         
         function cb_endhere(ax)
             [x,~]=click_to_datetime(ax);
+            pushState();
             mycat=mycat.subset(mycat.Date<=x);
             replot_all();
         end
@@ -154,11 +158,35 @@ function f=ZmapMainWindow(f)
         function cb_trim_to_largest(~,~)
             biggests = mycat.Magnitude == max(mycat.Magnitude);
             idx=find(biggests,1,'first');
+            pushState();
             mycat = mycat.subset(mycat.Date>=mycat.Date(idx));
             replot_all()
         end
     end
+    function cb_undo(~,~)
+        try
+            popState()
+        catch ME
+            errordlg('can''t undo');
+            return
+        end
+        replot_all();
+    end
     
+    %% push and pop state
+    function pushState()
+        s.push({mycat, ZG.selection_shape});
+        undohandle.Enable='on';
+    end
+    
+    function popState()
+        items = s.pop();
+        ZG.selection_shape = items{2};
+        mycat = items{1};
+        if isempty(s)
+            undohandle.Enable='off';
+        end
+    end
 end
 
 function c=catalog()
@@ -169,5 +197,3 @@ function c=catalog()
         c=c.subset(sh.isInside(c.Longitude,c.Latitude));
     end
 end
-
-
