@@ -92,8 +92,8 @@ function hisgra(mycat, opt, ax)
             stri2='Foreshock Duration in days';
         end
         xlabel(ax,stri2)
-        yl = ylabel(ax,'Number')
-        c=uicontextmenu;
+        yl = ylabel(ax,'Number');
+        c=uicontextmenu('Tag',['histogram ' opt]);
         uimenu(c,'Label','Change Number of Bins...','Callback',@callback_change_nBins);
         uimenu(c,'Label','Change Bin Edges...','Callback',@callback_change_bVector);
         uimenu(c,'Label','Default','Callback',@callback_reset);
@@ -102,7 +102,7 @@ function hisgra(mycat, opt, ax)
         ax.UIContextMenu=c;
         
         
-        c=uicontextmenu;
+        c=uicontextmenu('Tag',['histogram ' opt ' scale']);
         uimenu(c,'Label','Use Log Scale','Callback',@logtoggle);
         yl.UIContextMenu=c;
         
