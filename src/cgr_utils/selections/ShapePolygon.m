@@ -114,12 +114,12 @@ classdef ShapePolygon < ShapeGeneral
 
         end
 
-        function interactive_edit(obj,src,ev)
+        function interactive_edit(obj,src,ev,changedFcn)
             % INTERACTIVE_EDIT callback
             % obj.INTERACTIVE_EDIT(src,ev)
             
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            
+            initialShape=copy(obj);
             if obj.AUTO_UPDATE_TIMEPLOT
                 make_editable(shout,@()update_shape,@()update_shape,'normal',obj.ScaleWithLatitude);
             else
@@ -137,6 +137,9 @@ classdef ShapePolygon < ShapeGeneral
                 end
                     
                 
+                if ~isequal(initialShape,obj)
+                    changedFcn(initialShape,obj.copy());
+                end
             end
         end
     end

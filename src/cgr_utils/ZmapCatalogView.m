@@ -137,24 +137,6 @@ classdef ZmapCatalogView
     end
     
     methods
-        function n=get.Name(obj)
-            n=obj.ViewName;
-        end
-        function obj=set.Name(obj, name)
-            obj.ViewName=name;
-        end
-        function c= get.mycat(obj)
-            names=strsplit(obj.sourcename,'.');
-            
-            c= ZmapGlobal.Data.(names{1});
-            names(1)=[];
-            while ~isempty(names)
-                c=c.(names{1});
-                names(1)=[];
-            end
-            %c= ZmapGlobal.Data.(obj.sourcename);
-        end
-        
         function obj=ZmapCatalogView(catname,varargin)
             %
             % obj=ZmapCatalogView(catname)
@@ -180,6 +162,25 @@ classdef ZmapCatalogView
                 varargin(1:2)=[];
             end    
         end
+        
+        function n=get.Name(obj)
+            n=obj.ViewName;
+        end
+        function obj=set.Name(obj, name)
+            obj.ViewName=name;
+        end
+        function c= get.mycat(obj)
+            names=strsplit(obj.sourcename,'.');
+            
+            c= ZmapGlobal.Data.(names{1});
+            names(1)=[];
+            while ~isempty(names)
+                c=c.(names{1});
+                names(1)=[];
+            end
+            %c= ZmapGlobal.Data.(obj.sourcename);
+        end
+        
         
         function obj=reset(obj)
             % reset all the ranges to their original values
@@ -395,8 +396,6 @@ classdef ZmapCatalogView
                     v=[v,{prop,val}]; %#ok<AGROW>
                 end
             end
-            %h=ishold(ax);
-            %hold(ax,'on');
             h=plot(ax,0,0,'o'); % was p
             set(h,...
                 'YData',obj.Latitude, ...
@@ -405,38 +404,6 @@ classdef ZmapCatalogView
                 v{:}, varargin{:});
             %hold(ax,tf2onoff(h));
             axes(ax)
-            %linkdata on
-            %{
-            if has_toolbox('Mapping Toolbox') && ismap(ax)
-                h=obj.plotm(ax,varargin{:});
-                return
-            end
-            
-            hastag=find(strcmp('Tag',varargin),1,'last');
-            
-            if ~isempty(hastag)
-                mytag=varargin{hastag+1};
-            else
-                mytag=['catalog_',obj.mycat.Name];
-                varargin(end+1:end+2)={'Tag',mytag};
-            end
-            
-            % clear the existing layer
-            h = findobj(ax,'Tag',mytag);
-            if ~isempty(h)
-                delete(h);
-            end
-            
-            holdstatus = ishold(ax); 
-            hold(ax,'on');
-            
-            % val = obj.getTrimmedData();
-            h=plot(ax,nan,nan,'x');
-            set(h,'XData',obj.Longitude,'YData', obj.Latitude, 'ZData',obj.Depth);
-            set(h,varargin{:}); % if Tag is in varargin, it will override default tag
-            %h.ZData = obj.Depth;
-            hold(ax,tf2onoff(holdstatus));
-            %}
         end
         
         

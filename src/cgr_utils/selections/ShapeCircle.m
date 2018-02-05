@@ -84,13 +84,14 @@ classdef ShapeCircle < ShapeGeneral
             helpdlg(obj.toStr,'Circle');
         end
         
-        function interactive_edit(obj,src,ev)
+        function interactive_edit(obj,src,ev,changedFcn)
             % INTERACTIVE_EDIT callback
             % obj.INTERACTIVE_EDIT(src,ev)
             shout=findobj(gcf,'Tag','shapeoutline');
             if numel(shout)>1
                 disp(shout);
             end
+            initialShape = obj.copy();
             if obj.AUTO_UPDATE_TIMEPLOT
                 make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
             else
@@ -106,11 +107,14 @@ classdef ShapeCircle < ShapeGeneral
                 if obj.AUTO_UPDATE_TIMEPLOT
                     ShapeGeneral.cb_selectp(src,ev,'inside');
                 end
+                if ~isequal(initialShape,obj)
+                    changedFcn(initialShape, obj.copy());
+                end
                     
                 
             end
         end
-        function add_shape_specific_context(obj,c,ax)
+        function add_shape_specific_context(obj,c,ax, changedFcn)
             uimenu(c,'label','Choose Radius','Callback',@chooseRadius)
             uimenu(c,'label','Snap To N Events','Callback',@snapToEvents)
             
@@ -119,11 +123,13 @@ classdef ShapeCircle < ShapeGeneral
                 nc=inputdlg('Number of events to enclose','Edit Circle',1,{num2str(ZG.ni)});
                 nc=round(str2double(nc{1}));
                 if ~isempty(nc) && ~isnan(nc)
+                    initialShape=obj.copy();
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
                     obj.Radius=obj.Radius;%+0.005;
                     obj.plot(ax); % replot
                     ZG.selection_shape=obj;
+                    changedFcn(initialShape, obj.copy());
                 end
             end
             function chooseRadius(~,~)
@@ -131,9 +137,11 @@ classdef ShapeCircle < ShapeGeneral
                 nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
                 nc=str2double(nc{1});
                 if ~isempty(nc) && ~isnan(nc)
+                    initialShape=obj.copy();
                     obj.Radius=nc;
                     obj.plot(ax); % replot
                     ZG.selection_shape=obj;
+                    changedFcn(initialShape, obj.copy());
                 end
                 
             end

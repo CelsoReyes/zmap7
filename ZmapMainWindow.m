@@ -5,7 +5,7 @@ classdef ZmapMainWindow < handle
         catalog % event catalog
         rawcatalog;
         shape % used to subset catalog by selected area
-        views % used to subset the catalog with date/latlon/depth/mag ranges
+        daterange % used to subset the catalog with date ranges
         Grid % grid that covers entire catalog area
         gridopts % used to define the grid
         fig % figure handle
@@ -13,8 +13,19 @@ classdef ZmapMainWindow < handle
         xs_tabs;
         prev_states=Stack(5);
         undohandle;
+        Features;
     end
-    
+    methods (Static)
+        function feat=features()
+            persistent feats
+            ZG=ZmapGlobal.Data;
+            if isempty(feats)
+                feats=ZG.features;
+                MapFeature.foreach_waitbar(feats,'load');
+            end
+            feat=feats;
+        end
+    end
     methods
         function obj=ZmapMainWindow(fig,catalog)
             %TOFIX filtering of Dates are not preserved when "REDRAW" is clicked
@@ -26,35 +37,28 @@ classdef ZmapMainWindow < handle
                 'pixels','Tag','Zmap Main Window','NumberTitle','off');
             
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
-            axm=findobj(obj.fig,'Tag','mainmap_ax');
-            if isempty(axm)
-                axm=axes('Units','pixels','Position',[70 270 680 450]);
-            end
+
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
                 ZG=ZmapGlobal.Data;
                 obj.rawcatalog=ZG.primeCatalog;
             end
-            alleq=plot(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','color',[.76 .75 .8],'Tag','all events');
-            alleq.ZData=obj.rawcatalog.Depth;
-            
-            axm.Tag = 'mainmap_ax';
-            axm.TickDir='out';
-            axm.Box='on';
-            axm.ZDir='reverse';
-            xlabel(axm,'Longitude')
-            ylabel(axm,'Latitude');
-            
+            obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             
             % initialize from the existing globals
             ZG=ZmapGlobal.Data;
-            
+            obj.Features=ZG.features;
             
             obj.shape=ZG.selection_shape;
             obj.catalog=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopts= ZG.gridopt;
+            
+            obj.Features=ZmapMainWindow.features();
+            %MapFeature.foreach_waitbar(obj.Features,'load');
+            
+            obj.plot_base_events();
             
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();
@@ -78,6 +82,8 @@ classdef ZmapMainWindow < handle
         end
         
         function replot_all(obj)
+            obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
+            obj.catalog=obj.filtered_catalog();
             figure(obj.fig)
             obj.plotmainmap();
             % Each tab group will have a "SelectionChanghedFcn", "CreateFcn", "DeleteFcn", "UIContextMenu"
@@ -90,14 +96,50 @@ classdef ZmapMainWindow < handle
             obj.fmdplot('UR plots');
            
             obj.cumplot('LR plots');
+            obj.cummomentplot('LR plots');
             obj.time_vs_something_plot('Time-Mag',TimeMagnitudePlotter,'LR plots');
             obj.time_vs_something_plot('Time-Depth',TimeDepthPlotter, 'LR plots');
         end
         
+        function plot_base_events(obj)
+            % plot all events from catalog as dots before it gets filtered by shapes, etc.
+            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            if isempty(axm)
+                axm=axes('Units','pixels','Position',[70 270 680 450]);
+            end
+            
+            alleq = findobj(obj.fig,'Tag','all events');
+            if isempty(alleq)
+                alleq=plot(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','color',[.76 .75 .8],'Tag','all events');
+                alleq.ZData=obj.rawcatalog.Depth;
+            end
+            
+            axm.Tag = 'mainmap_ax';
+            axm.TickDir='out';
+            axm.Box='on';
+            axm.ZDir='reverse';
+            xlabel(axm,'Longitude')
+            ylabel(axm,'Latitude');
+            
+            MapFeature.foreach(obj.Features,'plot',axm);
+        end
+        
         function plotmainmap(obj)
              % set up main map window
+             
             axm=findobj(obj.fig,'Tag','mainmap_ax');
+            
+            
+            
+            % initialize from the existing globals
+            %ZG=ZmapGlobal.Data;
+            %obj.Features=ZG.features;
+            %MapFeature.foreach_waitbar(obj.Features,'load');
+           % MapFeature.foreach(obj.Features,'plot',axm);
+            
+            
             eq=findobj(axm,'Tag','active quakes');
+            
             
             if isempty(eq)
                 hold(axm,'on');
@@ -117,7 +159,7 @@ classdef ZmapMainWindow < handle
             
             hold(axm,'on');
             if ~isempty(obj.shape)
-                obj.shape.plot(axm)
+                obj.shape.plot(axm,@obj.shapeChangedFcn)
             end
             hold(axm,'off');
         end
@@ -174,9 +216,9 @@ classdef ZmapMainWindow < handle
             p=plot(ax,obj.catalog.Date,1:obj.catalog.Count,'r','linewidth',2);
             ylabel(ax,'Cummulative Number of events');xlabel(ax,'Time');
             c=uicontextmenu('tag','CumPlot line contextmenu');
-            uimenu(c,'Label','start here','Callback',@(~,~)cb_starthere(ax));
-            uimenu(c,'Label','end here','Callback',@(~,~)cb_endhere(ax));
-            uimenu(c, 'Label', 'trim to largest event','Callback',@cb_trim_to_largest);
+            uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));
+            uimenu(c,'Label','end here','Callback',@(~,~)obj.cb_endhere(ax));
+            uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
             p.UIContextMenu=c;
             
             uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)timeplot());
@@ -184,27 +226,53 @@ classdef ZmapMainWindow < handle
             ax.UIContextMenu=c;
             uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
             
-            function cb_starthere(ax)
+        end
+        
+            function cb_starthere(obj,ax)
+                disp(ax)
                 [x,~]=click_to_datetime(ax);
                 obj.pushState();
-                obj.catalog=obj.catalog.subset(obj.catalog.Date>=x);
+                obj.daterange(1)=x;
+                %obj.catalog=obj.catalog.subset(obj.catalog.Date>=x);
                 obj.replot_all();
             end
             
-            function cb_endhere(ax)
+            function cb_endhere(obj,ax)
                 [x,~]=click_to_datetime(ax);
                 obj.pushState();
-                obj.catalog=obj.catalog.subset(obj.catalog.Date<=x);
+                obj.daterange(2)=x;
+                %obj.catalog=obj.catalog.subset(obj.catalog.Date<=x);
                 obj.replot_all();
             end
             
-            function cb_trim_to_largest(~,~)
+            function cb_trim_to_largest(obj,~,~)
                 biggests = obj.catalog.Magnitude == max(obj.catalog.Magnitude);
                 idx=find(biggests,1,'first');
                 obj.pushState();
-                obj.catalog = obj.catalog.subset(obj.catalog.Date>=obj.catalog.Date(idx));
+                obj.daterange(1)=obj.catalog.Date(idx);
+                %obj.catalog = obj.catalog.subset(obj.catalog.Date>=obj.catalog.Date(idx));
                 obj.replot_all()
             end
+            
+        function cummomentplot(obj,tabgrouptag)
+            myTab = obj.findOrCreateTab(tabgrouptag, 'Moment');
+            delete(myTab.Children);
+            ax=axes(myTab);
+            [fCumMoment, vCumMoment, vMoment] = calc_moment(obj.catalog);
+            p=plot(ax,obj.catalog.Date,vCumMoment,'b','linewidth',2);
+            ylabel(ax,'Cummulative Moment');
+            xlabel(ax,'Time');
+            c=uicontextmenu('tag','CumMom line contextmenu');
+            uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));
+            uimenu(c,'Label','end here','Callback',@(~,~)obj.cb_endhere(ax));
+            uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
+            p.UIContextMenu=c;
+            
+            uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)timeplot());
+            c=uicontextmenu('tag','CumMom bg contextmenu');
+            ax.UIContextMenu=c;
+            uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
+            
         end
         
         function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
@@ -223,7 +291,11 @@ classdef ZmapMainWindow < handle
             ax.UIContextMenu=c;
         end
         
-        function cb_undo(obj,s,~)
+        function shapeChangedFcn(obj,oldshapecopy,newshapecopy)
+            obj.prev_states.push({obj.catalog, oldshapecopy, obj.daterange});
+            obj.replot_all();
+        end
+        function cb_undo(obj,~,~)
             obj.popState()
             obj.replot_all();
         end
@@ -248,7 +320,7 @@ classdef ZmapMainWindow < handle
         
         %% push and pop state
         function pushState(obj)
-            obj.prev_states.push({obj.catalog, copy(obj.shape)});
+            obj.prev_states.push({obj.catalog, copy(obj.shape), obj.daterange});
             obj.undohandle.Enable='on';
         end
         
@@ -264,12 +336,14 @@ classdef ZmapMainWindow < handle
             if isempty(obj.prev_states)
                 obj.undohandle.Enable='off';
             end
+            obj.daterange=items{3};
             obj.fig.Pointer='arrow';
             pause(0.01);
         end
         
         function c=filtered_catalog(obj)
             c=obj.rawcatalog;
+            c=c.subset(c.Date>=obj.daterange(1) & c.Date<=obj.daterange(2));
             if ~isempty(obj.shape)
                 c=c.subset(obj.shape.isInside(c.Longitude,c.Latitude));
             end

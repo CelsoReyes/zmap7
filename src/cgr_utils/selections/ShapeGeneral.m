@@ -157,7 +157,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function plot(obj,ax)
+        function plot(obj,ax,changedFcn)
+            % changedFcn is called with (oldshape, newshape) when the shape is changed.
+            if ~exist('changedFcn','var') || isempty(changedFcn)
+                changedFcn=@(~,~)[];
+            end
             shout=findobj(ax,'Tag','shapeoutline');
             assert(numel(shout)<2,'should only have one shape outline')
             if isempty(shout)
@@ -167,16 +171,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Color','k',...
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
-                p.UIContextMenu=makeuicontext();
+                p.UIContextMenu=makeuicontext(changedFcn);
                 hold off;
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
                     'Color','k');
-                shout.UIContextMenu=makeuicontext();
+                shout.UIContextMenu=makeuicontext(changedFcn);
             end
             
-            function c=makeuicontext()
+            function c=makeuicontext(changedFcn)
                 c=uicontextmenu;
                 uimenu(c,...
                     'Label','info...',...
@@ -191,11 +195,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 uimenu(c,...
                     'Label','edit shape (mouse)',...
                     'separator','on',...
-                    'Callback',@obj.interactive_edit);
+                    'Callback',{@obj.interactive_edit,changedFcn});
                 uimenu(c,...
                     'Label','Change shape with latitude?',...
                     'Callback',@latscale);
-                obj.add_shape_specific_context(c,ax);
+                obj.add_shape_specific_context(c,ax, changedFcn);
                 
                 function compare_in_out(src,ev)
                     beep;
