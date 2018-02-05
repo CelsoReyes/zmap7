@@ -228,7 +228,7 @@ function create_my_menu(c2)
     function cb_meandepth(mysrc,myevt,mycat)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        meandepx(mycat, mycat.displacement_along_strike);
+        meandepx(mycat, mycat.dist_along_strike_km);
     end
     
     function cb_zvaluegrid(mysrc,myevt)

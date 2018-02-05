@@ -38,6 +38,7 @@ classdef ZmapMainWindow < handle
             
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
 
+            add_menu_divider()
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
@@ -45,7 +46,8 @@ classdef ZmapMainWindow < handle
                 obj.rawcatalog=ZG.primeCatalog;
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
-            
+            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
+                char(max(obj.catalog.Date)));
             % initialize from the existing globals
             ZG=ZmapGlobal.Data;
             obj.Features=ZG.features;
@@ -62,7 +64,7 @@ classdef ZmapMainWindow < handle
             
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();
-            add_menu_divider()
+            
             emm = uimenu(obj.fig,'label','Edit!');
             obj.undohandle=uimenu(emm,'label','Undo','Callback',@(s,v)obj.cb_undo(s,v),'Enable','off');
             uimenu(emm,'label','Redraw','Callback',@(s,v)obj.cb_redraw(s,v));
@@ -85,6 +87,8 @@ classdef ZmapMainWindow < handle
         function replot_all(obj)
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             obj.catalog=obj.filtered_catalog();
+            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
+                char(max(obj.catalog.Date)));
             figure(obj.fig)
             obj.plotmainmap();
             % Each tab group will have a "SelectionChanghedFcn", "CreateFcn", "DeleteFcn", "UIContextMenu"
@@ -124,7 +128,6 @@ classdef ZmapMainWindow < handle
             ylabel(axm,'Latitude');
             
             MapFeature.foreach(obj.Features,'plot',axm);
-            
             c=uicontextmenu(obj.fig,'Tag','mainmap context');
             % options for choosing a shape
             ShapePolygon.AddPolyMenu(c,obj.shape);
@@ -135,20 +138,56 @@ classdef ZmapMainWindow < handle
                 end
             end
             uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
-            %uimenu(c,'label','Define Circle','Callback',@(~,~)warning('unimplemented'));
-            %uimenu(c,'label','Define Polygon','Callback',@(~,~)warning('unimplemented'));
-            uimenu(c,'label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
+            uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
             axm.UIContextMenu=c;
+            
+            mapoptionmenu=uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
+            uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
+                'callback',@toggle_aspectratio,...
+                'checked',ZmapGlobal.Data.lock_aspect);
+            if strcmp(ZmapGlobal.Data.lock_aspect,'on')
+                daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
+            end
+            
+            uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
+                'callback',@toggle_grid,...
+                'checked',ZmapGlobal.Data.mainmap_grid);
+            if strcmp(ZmapGlobal.Data.mainmap_grid,'on')
+                grid(axm,'on');
+            end
             
             function updatewrapper(s,v,f)
                 f(s,v);
                 obj.shape=copy(ZmapGlobal.Data.selection_shape);
                 obj.cb_redraw();
             end
+            
             function cb_shapeclear
                 ZG=ZmapGlobal.Data;
                 ZG.selection_shape=ShapeGeneral('unassigned');
                 ZG.selection_shape.clearplot();
+            end
+            
+            function toggle_aspectratio(src, ~)
+                src.Checked=toggleOnOff(src.Checked);
+                switch src.Checked
+                    case 'on'
+                        daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
+                    case 'off'
+                        daspect(axm,'auto');
+                end
+                ZG = ZmapGlobal.Data;
+                ZG.lock_aspect = src.Checked;
+                %align_supplimentary_legends();
+            end
+            
+            function toggle_grid(src, ~)
+                src.Checked=toggleOnOff(src.Checked);
+                grid(axm,src.Checked);
+                %ZG = ZmapGlobal.Data;
+                %ZG.lock_aspect = src.Checked;
+                %align_supplimentary_legends();
+                drawnow
             end
         end
         
@@ -366,8 +405,13 @@ classdef ZmapMainWindow < handle
             
             p = findobj(obj.fig,'Tag',xsTabGroup.Tag);
             mytab=uitab(p, 'Title',mytitle,'ForegroundColor',zans.color,'DeleteFcn',zans.DeleteFcn);
+            
             c=uicontextmenu(obj.fig);
-            uimenu(c,'Label','Delete','callback',@(~,~)delete(mytab));
+            uimenu(c,'Label','Info','Callback',@(~,~) msgbox(c2.info(),mytitle));
+            uimenu(c,'Separator','on',...
+                'Label','Delete',...
+                'Callback',@(~,~)delete(mytab));
+            
             mytab.UIContextMenu=c;
             
             ax=axes(mytab,'Units','pixels','Position',[40 35 680 125],'YDir','reverse');
@@ -425,3 +469,10 @@ classdef ZmapMainWindow < handle
     end % METHODS
 end % CLASSDEF
 
+function A = toggleOnOff(A)
+    if strcmp(A,'on')
+        A='off';
+    else
+        A='on';
+    end
+end

@@ -63,6 +63,14 @@ classdef ZmapXsectionCatalog < ZmapCatalog
                 num2str(obj.curvelength_km));
         end
 
+        function s=info(obj)
+            s=sprintf('cross-section catalog with %d events\n',obj.Count);
+            sp=obj.startPoint; ep=obj.endPoint;
+            s=[s,sprintf('From (%s,%s) to (%s,%s) [%s km]\n',...
+                num2str(sp(1)),num2str(sp(2)),num2str(ep(1)),num2str(ep(2)),...
+                num2str(obj.curvelength_km))];
+        end
+        
         function obj = subset(existobj, range)
             obj=subset@ZmapCatalog(existobj,range);
             
