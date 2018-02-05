@@ -66,6 +66,7 @@ classdef ZmapMainWindow < handle
             emm = uimenu(obj.fig,'label','Edit!');
             obj.undohandle=uimenu(emm,'label','Undo','Callback',@(s,v)obj.cb_undo(s,v),'Enable','off');
             uimenu(emm,'label','Redraw','Callback',@(s,v)obj.cb_redraw(s,v));
+            uimenu(emm,'label','xsection','Callback',@(s,v)obj.cb_xsection);
             % TODO: undo could also stash grid options & grids
             
             
@@ -74,9 +75,9 @@ classdef ZmapMainWindow < handle
             uitabgroup('Units','pixels','Position',[800 10 390 360],'TabLocation',TabLocation,'Tag','LR plots');
             
             obj.xsgroup=uitabgroup('Units','pixels','Position',[15 10 760 215],'TabLocation',TabLocation,'Tag','xsections');
-            obj.xs_tabs=uitab(obj.xsgroup,'title','A - A'''); % tabs for cross-sections created as cross-sections are defined.
-            a=axes(obj.xs_tabs(1),'Units','pixels','Position',[40 35 680 125],'YDir','reverse');
-            xlabel(a,'Distance along profile [km]'); ylabel(a,'Depth')
+            %obj.xs_tabs=uitab(obj.xsgroup,'title','A - A'''); % tabs for cross-sections created as cross-sections are defined.
+            %a=axes(obj.xs_tabs(1),'Units','pixels','Position',[40 35 680 125],'YDir','reverse');
+            %xlabel(a,'Distance along profile [km]'); ylabel(a,'Depth')
             
             obj.replot_all()
         end
@@ -103,6 +104,7 @@ classdef ZmapMainWindow < handle
         
         function plot_base_events(obj)
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
+            % call once at beginning
             axm=findobj(obj.fig,'Tag','mainmap_ax');
             if isempty(axm)
                 axm=axes('Units','pixels','Position',[70 270 680 450]);
@@ -122,6 +124,32 @@ classdef ZmapMainWindow < handle
             ylabel(axm,'Latitude');
             
             MapFeature.foreach(obj.Features,'plot',axm);
+            
+            c=uicontextmenu(obj.fig,'Tag','mainmap context');
+            % options for choosing a shape
+            ShapePolygon.AddPolyMenu(c,obj.shape);
+            ShapeCircle.AddCircleMenu(c, obj.shape);
+            for j=1:numel(c.Children)
+                if startsWith(c.Children(j).Tag,{'circle','poly'})
+                    c.Children(j).Callback={@updatewrapper,c.Children(j).Callback};
+                end
+            end
+            uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
+            %uimenu(c,'label','Define Circle','Callback',@(~,~)warning('unimplemented'));
+            %uimenu(c,'label','Define Polygon','Callback',@(~,~)warning('unimplemented'));
+            uimenu(c,'label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
+            axm.UIContextMenu=c;
+            
+            function updatewrapper(s,v,f)
+                f(s,v);
+                obj.shape=copy(ZmapGlobal.Data.selection_shape);
+                obj.cb_redraw();
+            end
+            function cb_shapeclear
+                ZG=ZmapGlobal.Data;
+                ZG.selection_shape=ShapeGeneral('unassigned');
+                ZG.selection_shape.clearplot();
+            end
         end
         
         function plotmainmap(obj)
@@ -166,9 +194,11 @@ classdef ZmapMainWindow < handle
         
         function myTab = findOrCreateTab(obj, parent, title)
             % FINDORCREATETAB if tab doesn't exist yet, create it
+            %    parent : 
             myTab=findobj(obj.fig,'Title',title,'-and','Type','uitab');
             if isempty(myTab)
-                myTab=uitab(findobj(obj.fig,'Tag',parent), 'Title',title);
+                p = findobj(obj.fig,'Tag',parent);
+                myTab=uitab(p, 'Title',title);
             end
         end
         
@@ -318,6 +348,50 @@ classdef ZmapMainWindow < handle
             watchoff
         end
         
+        function cb_xsection(obj)
+            % main map axes, where the cross section outline will be plotted
+            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            axes(axm);
+            
+            [c2, zans] = plot_cross_section(obj.catalog);
+            mytitle=[zans.startlabel ' - ' zans.endlabel];
+            
+            xsTabGroup = findobj(obj.fig,'Tag','xsections','-and','Type','uitabgroup');
+            % mytab=obj.findOrCreateTab(xsTabGroup.Tag, mytitle);
+            
+            mytab=findobj(obj.fig,'Title',mytitle,'-and','Type','uitab');
+            if ~isempty(mytab)
+                delete(mytab);
+            end
+            
+            p = findobj(obj.fig,'Tag',xsTabGroup.Tag);
+            mytab=uitab(p, 'Title',mytitle,'ForegroundColor',zans.color,'DeleteFcn',zans.DeleteFcn);
+            c=uicontextmenu(obj.fig);
+            uimenu(c,'Label','Delete','callback',@(~,~)delete(mytab));
+            mytab.UIContextMenu=c;
+            
+            ax=axes(mytab,'Units','pixels','Position',[40 35 680 125],'YDir','reverse');
+            plot_events_along_strike(ax,c2,zans);
+            
+            function plot_events_along_strike(ax,c2,zans)
+                scatter(ax, c2.dist_along_strike_km, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
+                ax.YDir='reverse';
+                ax.XLim=[0 c2.curvelength_km];
+                ax.XTickLabel{1}=zans.startlabel;
+                if ax.XTick(end) ~= c2.curvelength_km
+                    ax.XTick(end+1)=c2.curvelength_km;
+                    ax.XTickLabel{end+1}=zans.endlabel;
+                else
+                    ax.XTickLabel{end}=zans.endlabel;
+                end
+                
+                
+                grid(ax,'on');
+                xlabel('Distance along strike [km]');
+                ylabel('Depth');
+                %title(sprintf('Profile: %s to %s',zans.startlabel,zans.endlabel));
+            end
+        end
         %% push and pop state
         function pushState(obj)
             obj.prev_states.push({obj.catalog, copy(obj.shape), obj.daterange});

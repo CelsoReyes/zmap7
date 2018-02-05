@@ -200,6 +200,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Label','Change shape with latitude?',...
                     'Callback',@latscale);
                 obj.add_shape_specific_context(c,ax, changedFcn);
+                uimenu(c,...
+                    'Label','Clear shape','separator','on', 'Callback',@(~,~)ShapeGeneral.cb_clear);
                 
                 function compare_in_out(src,ev)
                     beep;
@@ -216,7 +218,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 end
             end
         end
-        function add_shape_specific_context(obj,c,ax)
+        function add_shape_specific_context(obj,c,ax,changedFcn)
             % would add additional menu items here
         end
         function clearplot(obj,ax)
@@ -454,7 +456,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % deactivate crop menu items
             parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
             allmenus=findobj(parent,'Type','uimenu');
-            cropMenus=startsWith({allmenus.Label},'crop ');
+            cropMenus=startsWith({get(allmenus,'Label')},'crop ');
             set(allmenus(cropMenus),'Enable','off');
             curshapeh = findobj(gcf,'Tag','shapetype');
             set(curshapeh,'Label',['Current Shape:',upper(type)]);

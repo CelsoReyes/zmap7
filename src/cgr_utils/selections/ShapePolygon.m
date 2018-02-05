@@ -80,7 +80,7 @@ classdef ShapePolygon < ShapeGeneral
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
-        function add_shape_specific_context(obj,c,ax)
+        function add_shape_specific_context(obj,c,ax,changedFcn)
             % would add additional menu items here
         end
         
