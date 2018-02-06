@@ -30,6 +30,7 @@ function plot_base_events(obj)
         end
     end
     uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     
@@ -58,6 +59,12 @@ function plot_base_events(obj)
         ZG=ZmapGlobal.Data;
         ZG.selection_shape=ShapeGeneral('unassigned');
         ZG.selection_shape.clearplot();
+    end
+    function cb_zoom(~,~)
+        xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
+        yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
+        axm.XLim=xl;
+        axm.YLim=yl;
     end
     
     function toggle_aspectratio(src, ~)
