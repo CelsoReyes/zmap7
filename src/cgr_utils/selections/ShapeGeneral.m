@@ -456,8 +456,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % deactivate crop menu items
             parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
             allmenus=findobj(parent,'Type','uimenu');
-            cropMenus=startsWith({get(allmenus,'Label')},'crop ');
-            set(allmenus(cropMenus),'Enable','off');
+            if ~isempty(allmenus)
+                cropMenus=startsWith({get(allmenus,'Label')},'crop ');
+                set(allmenus(cropMenus),'Enable','off');
+            end
             curshapeh = findobj(gcf,'Tag','shapetype');
             set(curshapeh,'Label',['Current Shape:',upper(type)]);
             ZG.selection_shape.clearplot();

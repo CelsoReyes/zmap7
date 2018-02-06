@@ -103,19 +103,9 @@ function hisgra(mycat, opt, ax)
         
         
         c=uicontextmenu('Tag',['histogram ' opt ' scale']);
-        uimenu(c,'Label','Use Log Scale','Callback',@logtoggle);
+        uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
         yl.UIContextMenu=c;
         
-        function logtoggle(src,~)
-            switch src.Label
-                case 'Use Log Scale'
-                    src.Label='Use Linear Scale';
-                    ax.YScale='log';
-                otherwise
-                    src.Label='Use Log Scale';
-                    ax.YScale='linear';
-            end
-        end
     end
     
     %% callback functions
