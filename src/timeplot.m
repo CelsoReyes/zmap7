@@ -43,7 +43,8 @@ return
             
             myfig = obj.FigH; % will automatically create if it doesn't exist
             
-            myfig.UserData.View=ZmapCatalogView('newt2'); %maybe copy from primary view?
+            cf=@()ZG.newt2;
+            myfig.UserData.View=ZmapCatalogView(cf); %maybe copy from primary view?
             ZG.Views.timeplot=myfig.UserData.View;
             figure(myfig);
             

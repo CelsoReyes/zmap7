@@ -290,7 +290,8 @@ end
 function do_selected_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('newcat'), ZG.big_eq_minmag);
+    cf=@()ZG.newcat;
+    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
     ZG.newcat=tmpcat.Catalog();
      ZmapMessageCenter.update_catalog();
 end
@@ -298,7 +299,8 @@ end
 function do_other_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView('newt2'), ZG.big_eq_minmag);
+    cf=@()ZG.newt2;
+    [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
     ZG.newt2=tmpcat.Catalog();
     ZmapMessageCenter.update_catalog();
 end

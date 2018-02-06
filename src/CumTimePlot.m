@@ -31,7 +31,7 @@ classdef (Sealed) CumTimePlot < handle
     % 
     
     properties
-        catalog%= ZmapCatalogView('newt2') % catalog
+        catalog%= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
         fontsz = ZmapGlobal.Data.fontsz;
         hold_state = false;
         AxH % axes handle (may move to dependent)
@@ -51,8 +51,9 @@ classdef (Sealed) CumTimePlot < handle
         function obj = CumTimePlot
             % CUMTIMEPLOT creates a new Cumulative Time Plot figure
             report_this_filefun(mfilename('fullpath'));
-            obj.catalog = ZmapCatalogView(obj.catname);
-            %obj.BigView = ZmapCatalogView(obj.catalog); % major event(s)
+            cf=@()ZmapGlobal.Data.(obj.catname);
+            obj.catalog = ZmapCatalogView(cf);
+            %obj.BigView = ZmapCatalogView(@()obj.catalog); % major event(s)
             obj.plot()
         end
         function add_xlabel(obj)
@@ -170,7 +171,7 @@ classdef (Sealed) CumTimePlot < handle
         end
         function reset(obj)
             % reset resets the catalog to the global-version, then replots
-            obj.catalog = ZmapCatalogView(obj.catname);
+            obj.catalog = ZmapCatalogView(@()ZmapGlobal.Data.(obj.catname));
             obj.plot();
         end
         function c = Catalog(obj,n)

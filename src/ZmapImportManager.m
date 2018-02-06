@@ -46,8 +46,8 @@ function catalog = ZmapImportManager(fun, funArguments, varargin)
         % ZG.mainmap_plotby='depth';
         
         setDefaultValues(ZG.primeCatalog);
-        
-        ZG.Views.primary=ZmapCatalogView('primeCatalog'); % repeat for other loads?
+        cf=@()ZG.primeCatalog;
+        ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
         [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
         
         % OPTIONALLY CLEAR SHAPE

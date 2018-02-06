@@ -644,7 +644,8 @@ function Fetch_Callback(hObject, eventdata, handles)
     sdlg.prompt='Provide a catalog name (used in plots, files)';
     sdlg.value=ZG.primeCatalog.Name;
     [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
-    ZG.Views.primary=ZmapCatalogView('primeCatalog');
+    cf=@()ZG.primeCatalog;
+    ZG.Views.primary=ZmapCatalogView(cf);
     assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
     
     if isvalid(m)

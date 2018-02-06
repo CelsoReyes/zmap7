@@ -162,7 +162,8 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
     end
     
     function cb_editrange(~,~)
-        [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(mycatalog), ZG.big_eq_minmag);
+        cf=@()ZG.(mycatalog)
+        [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
         ZG.Views.(myview)=tmpcat;
         ZG.(mycatalog)=tmpcat.Catalog();
         zmap_update_displays();

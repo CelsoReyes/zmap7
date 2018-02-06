@@ -46,8 +46,6 @@ classdef ZmapMainWindow < handle
                 obj.rawcatalog=ZG.primeCatalog;
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
-            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
-                char(max(obj.catalog.Date)));
             % initialize from the existing globals
             ZG=ZmapGlobal.Data;
             obj.Features=ZG.features;
@@ -56,6 +54,9 @@ classdef ZmapMainWindow < handle
             obj.catalog=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopts= ZG.gridopt;
+            
+            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
+                char(max(obj.catalog.Date)));
             
             obj.Features=ZmapMainWindow.features();
             %MapFeature.foreach_waitbar(obj.Features,'load');
@@ -290,11 +291,16 @@ classdef ZmapMainWindow < handle
             uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
             p.UIContextMenu=c;
             
-            uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)timeplot());
+            uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
             c=uicontextmenu('tag','CumPlot bg contextmenu');
             ax.UIContextMenu=c;
-            uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
+            uimenu(c,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
             
+        end
+        function cb_timeplot(obj)
+            ZG=ZmapGlobal.Data;
+            ZG.newt2=obj.catalog;
+            timeplot();
         end
         
             function cb_starthere(obj,ax)

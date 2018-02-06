@@ -1,4 +1,4 @@
-classdef ZmapCatalog < handle
+classdef ZmapCatalog < matlab.mixin.Copyable
     % ZmapCatalog represents an event catalog
     %
     % ZmapCatalog properties:

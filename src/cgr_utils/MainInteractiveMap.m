@@ -143,7 +143,8 @@ classdef MainInteractiveMap
                 % create the main earthquake axis
             end
             if isempty(ZG.Views.primary)
-                ZG.Views.primary=ZmapCatalogView('primeCatalog');
+                cf=@()ZG.primeCatalog;
+                ZG.Views.primary=ZmapCatalogView(cf);
             else
                 disp('Reusing view:');
                 disp(ZG.Views.primary);
@@ -514,7 +515,9 @@ classdef MainInteractiveMap
             if isempty(event_marker_types)
                 event_marker_types='+++++++'; %each division gets next type.
             end
-            subviews=ZmapCatalogView('Views.primary');
+            ZG=ZmapGlobal.Data;
+            cf=@()ZG.Views.primary;
+            subviews=ZmapCatalogView(cf);
             divfn = str2func(['MainInteractiveMap.' lower(something) '_divs']);
             divs = divfn();
             if isempty(divs)
@@ -522,7 +525,6 @@ classdef MainInteractiveMap
                 divfn(divs);
             end
             zViews=split_views(mycat , something, divs, 'mapax_part');
-            ZG=ZmapGlobal.Data;
             ZG.Views.layers=zViews;
             ax = mainmap('axes');
             holdstate=HoldStatus(ax,'on');

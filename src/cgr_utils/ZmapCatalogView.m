@@ -5,12 +5,12 @@ classdef ZmapCatalogView
     % other than changing the filters and a few plotting properties, the view is read-only,
     % and depends entirely upon the global catalog upon which it is based
     %
-    % obj=ZmapCatalogView(catname)
-    % obj=ZmapCatalogView(catname,Name1,Property1,...), where vald property names can be seen with
+    % obj=ZmapCatalogView(cataccessfn)
+    % obj=ZmapCatalogView(cataccessfn,Name1,Property1,...), where vald property names can be seen with
     %    ZmapCatalogView.ValidProps.  Properties are case sensitive.
     %
     % ex
-    %   zcv = ZmapCatalogView('primeCatalog') % creates a view into ZmapGlobal.Data.primeCatalog
+    %   zcv = ZmapCatalogView(@()ZmapGlobal.Data.primeCatalog) % creates a view into ZmapGlobal.Data.primeCatalog
     %   zcv.linkedplot(gca,'zcv'); %  plot onto current axis
     %   zcv.MagnitudeRange=[2 3]; %set filter to show mags >=2 and <=3.  map updates automatically*
     %
@@ -31,7 +31,7 @@ classdef ZmapCatalogView
     %
     % ZmapCatalogView properties:
     %
-    %     sourcename - name of catalog's global variable, for example 'primeCatalog'
+    %     source - function that when called returns the desired catalog
     %     ViewName - name given to this view for plotting
     %     DateRange - [mindate maxdate] as dateime
     %     MagnitudeRange - [minmag maxmag]
@@ -80,7 +80,6 @@ classdef ZmapCatalogView
     % 
     %   disp - display this view
     %   trace - trace shows this and all Catalogs / Views from which this is descended
-    %   parent - return the object upon which this is based
     %   
     %   subset - get a catalog that is a subset of this view (catalog) via logical/numeric indexing
     % 
@@ -93,9 +92,9 @@ classdef ZmapCatalogView
     
     
     properties
-        % sourcename - name of catalog's global variable, for example 'primeCatalog', 
+        % source - name of catalog's global variable, for example 'primeCatalog', 
         % which means the original catalog can be found in ZmapData.primeCatalog
-        sourcename
+        source % function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
         
         ViewName % name given to this view for plotting
         
@@ -137,13 +136,16 @@ classdef ZmapCatalogView
     end
     
     methods
-        function obj=ZmapCatalogView(catname,varargin)
+        function obj=ZmapCatalogView(sourcefn,varargin)
             %
-            % obj=ZmapCatalogView(catname)
-            % obj=ZmapCatalogView(catname,Name1,Property1,...)
+            % sourcefn is a function handle, that when called returns the desired catalog . 
+            %     ex.
+            %        sourcefn=@()ZmapGlobal.Data.primeCatalog
+            %        obj=ZmapCatalogView(sourcefn);
+            % obj=ZmapCatalogView(sourcefn ,Name1,Property1,...)
             %
             % see properties for valid arguments
-            obj.sourcename=catname;
+            obj.source=sourcefn;
             obj.ViewName=obj.mycat.Name;
             obj=obj.reset();
             
@@ -170,15 +172,8 @@ classdef ZmapCatalogView
             obj.ViewName=name;
         end
         function c= get.mycat(obj)
-            names=strsplit(obj.sourcename,'.');
-            
-            c= ZmapGlobal.Data.(names{1});
-            names(1)=[];
-            while ~isempty(names)
-                c=c.(names{1});
-                names(1)=[];
-            end
-            %c= ZmapGlobal.Data.(obj.sourcename);
+            % MYCAT get the catalog using the provided function
+            c=obj.source();
         end
         
         
@@ -469,7 +464,7 @@ classdef ZmapCatalogView
         end
         function disp(obj)
             fprintf('  View Name: %s  [Cat Name: %s]\n',obj.Name, obj.mycat.Name);
-            fprintf('     source: %s\n',obj.sourcename);
+            fprintf('  source fn: %s\n',char(obj.source));
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
             fprintf('      Count: %d events\n',obj.Count);
@@ -505,11 +500,11 @@ classdef ZmapCatalogView
             end
             s=repmat(' ',1,leadingspaces);
             % one line summary
-            fprintf('%s ZmapCatalogView "%s" -> %s',s, obj.Name, obj.sourcename);
+            fprintf('%s ZmapCatalogView "%s" -> %s [%s]',s, obj.Name, char(obj.source), obj.mycat.Name);
             
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
-            fprintf(' {%d/%d events}',obj.Count,ZmapGlobal.Data.(obj.sourcename).Count);
+            fprintf(' {%d/%d events}',obj.Count,ZmapGlobal.Data.(obj.source).Count);
             if ~isempty(obj.polymask)
                 fprintf('(POLY)');
             end
@@ -576,14 +571,14 @@ classdef ZmapCatalogView
         function trace(obj)
             % trace shows this and all Catalogs / Views from which this is descended
             disp(obj)
-            disp(['- - - - from:' obj.sourcename]);
+            disp(['- - - - from:' char(obj.source)]);
             disp('v v v v');
-            disp(ZmapGlobal.Data.(obj.sourcename));
+            try
+                disp(trace(obj.mycat));
+            catch
+                disp(obj.mycat);
+            end
         end
         
-        function p=parent(obj)
-            % return the object upon which this is based
-            p=ZmapGlobal.Data.(obj.sourcename);
-        end
     end
 end
