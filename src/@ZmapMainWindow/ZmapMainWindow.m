@@ -257,13 +257,319 @@ classdef ZmapMainWindow < handle
             end
         end
         
+        
+        %% menu items.        %% create menus
+        function create_all_menus(obj, force)
+            % create menus for main zmap figure
+            % create_all_menus() - will create all menus, if they don't exist
+            % create_all_menus(force) - will delete and recreate menus if force is true
+            h = findobj(obj.fig,'Tag','mainmap_menu_divider');
+            if ~exist('force','var')
+                force=false;
+            end
+            if ~isempty(h) && exist('force','var') && force
+                delete(h); h=[];
+            end
+            if isempty(h)
+                add_menu_divider('mainmap_menu_divider');
+            end
+            obj.create_overlay_menu(force);
+            %ShapeGeneral.AddMenu(gcf);
+            %add_grid_menu(uimenu('Label','Grid'));
+            % %obj.create_select_menu(force);
+            % add_menu_catalog(obj,force);
+            % %obj.create_catalog_menu(force);
+            obj.create_ztools_menu(force);
+            
+            % add quit menu to main file menu
+            hQuit=findall(gcf,'Label','QuitZmap');
+            if isempty(hQuit)
+                mainfile=findall(gcf,'Tag','figMenuFile');
+                uimenu(mainfile,'Label','Quit Zmap','Separator','on',...
+                'Callback',@(~,~)restartZmap);
+            end
+        end
+        
+        function create_overlay_menu(obj,force)
+            h = findobj(obj.fig,'Tag','mainmap_menu_overlay');
+            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            if ~isempty(h) && exist('force','var') && force
+                delete(h); h=[];
+            end
+            if ~isempty(h)
+                return
+            end
+            
+            % Make the menu to change symbol size and type
+            %
+            mapoptionmenu = uimenu('Label','Map Options','Tag','mainmap_menu_overlay');
+            
+            uimenu(mapoptionmenu,'Label','3-D view',...
+                'Callback',@obj.set_3d_view); % callback was plot3d
+            add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
+            ovmenu = uimenu(mapoptionmenu,'Label','Layers');
+            try
+                MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu)
+            catch ME
+                warning(ME.message)
+            end
+            
+            uimenu(ovmenu,'Label','Plot stations + station names',...
+                'Separator', 'on',...
+                'Callback',@(~,~)plotstations(axm));
+            
+            lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
+            
+            uimenu(lemenu,'Label','Change legend breakpoints',...
+                'Callback',@change_legend_breakpoints);
+            legend_types = {'Legend by time','tim';...
+                'Legend by depth','depth';...
+                'Legend by magnitudes','mag';...
+                'Mag by size, Depth by color','mad' %;...
+                % 'Symbol color by faulting type','fau'...
+                };
+            
+            for i=1:size(legend_types,1)
+                m=uimenu(lemenu,'Label',legend_types{i,1},...
+                    'Callback', {@cb_plotby,legend_types{i,2}});
+                if i==1
+                    m.Separator='on';
+                end
+            end
+            clear legend_types
+            
+            uimenu(mapoptionmenu,'Label','Change font size ...',...
+                'Callback',@change_map_fonts);
+            
+            uimenu(mapoptionmenu,'Label','Change background colors',...
+                'Callback',@(~,~)setcol,'Enable','off'); %
+            
+            uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
+                'Callback',@(s,e) plot_large_quakes);
+            
+            % following are handled in plot_base_events
+            %uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude','callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
+            %uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid','callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
+
+            function cb_plotby(~,~, s)
+                ZG=ZmapGlobal.Data;
+                ZG.mainmap_plotby=s;
+                watchon;
+                % zmap_update_displays();
+                watchoff;
+            end
+        end
+
+        function create_ztools_menu(obj,force)
+            h = findobj(obj.fig,'Tag','mainmap_menu_ztools');
+            if ~isempty(h) && exist('force','var') && force
+                delete(h); h=[];
+            end
+            if ~isempty(h)
+                return
+            end
+            submenu = uimenu('Label','ZTools','Tag','mainmap_menu_ztools');
+            
+            uimenu(submenu,'Label','Show main message window',...
+                'Callback', @(s,e)ZmapMessageCenter());
+            
+            uimenu(submenu,'Label','Analyze time series ...',...
+                'Separator','on',...
+                'Callback',@(s,e)analyze_time_series_cb);
+            
+            obj.create_topo_map_menu(submenu);
+            obj.create_random_data_simulations_menu(submenu);
+            uimenu(submenu,'Label','Create [simple] cross-section','Callback',@cb_xsect);
+            uimenu(submenu,'Label','Create cross-section','Enable','off','Callback',@(~,~)nlammap());
+            
+            obj.create_histogram_menu(submenu);
+            obj.create_mapping_rate_changes_menu(submenu);
+            obj.create_map_ab_menu(submenu);
+            obj.create_map_p_menu(submenu);
+            obj.create_quarry_detection_menu(submenu);
+            obj.create_decluster_menu(submenu);
+            
+            uimenu(submenu,'Label','Map stress tensor',...
+                'Callback',@(~,~)stressgrid());
+            
+            uimenu(submenu,'Label','Misfit calculation',...
+                'Callback',@(~,~)inmisfit(),...
+                'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
+            
+            function analyze_time_series_cb(~,~)
+                % analyze time series for current catalog view
+                ZG=ZmapGlobal.Data;
+                ZG.newt2 = obj.catalog;
+                timeplot();
+            end
+        end
+        function create_topo_map_menu(obj,parent)
+            submenu   =  uimenu(parent,'Label','Plot topographic map',...
+                'Enable','off');
+            uimenu(submenu,'Label','Open DEM GUI','Callback', @(~,~)prepinp());
+            uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)','Callback', @(~,~)pltopo('lo3'));
+            uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)','Callback', @(~,~)pltopo('lo1'));
+            uimenu(submenu,'Label','30 arc sec resolution (GTOPO30)','Callback', @(~,~)pltopo('lo30'));
+            uimenu(submenu,'Label','2 deg resolution (ETOPO 2)','Callback', @(~,~)pltopo('lo2'));
+            uimenu(submenu,'Label','5 deg resolution (ETOPO 5, Terrain Base)','Callback', @(~,~)pltopo('lo5'));
+            uimenu(submenu,'Label','Your topography (mydem, mx, my must be defined)','Callback', @(~,~)pltopo('yourdem'));
+            uimenu(submenu,'Label','Help on plotting topography','Callback', @(~,~)pltopo('genhelp'));
+        end
+        
+        function create_random_data_simulations_menu(obj,parent)
+            submenu  =   uimenu(parent,'Label','Random data simulations',...
+            'Enable','off');
+            uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',@cb_create_permutated);
+            uimenu(submenu,'label','Create synthetic catalog...',...
+                'Callback',@cb_create_syhthetic_cat);
+            
+            uimenu(submenu,'Label','Evaluate significance of b- and a-values','Callback',@(~,~)brand());
+            uimenu(submenu,'Label','Calculate a random b map and compare to observed data','Callback',@(~,~)brand2());
+            uimenu(submenu,'Label','Info on synthetic catalogs','Callback',@(~,~)web(['file:' hodi '/zmapwww/syntcat.htm']));
+        end
+        function create_mapping_rate_changes_menu(obj,parent)
+            submenu  =   uimenu(parent,'Label','Mapping rate changes'...,...
+                ...'Enable','off'
+                );
+            uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz(obj.catalog));
+            
+            uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr(obj.catalog));
+            % uimenu(submenu,'Label','Calculate a z-value cross-section','Callback',@(~,~)nlammap());
+            uimenu(submenu,'Label','Calculate a 3D  z-value distribution','Callback',@(~,~)zgrid3d('in',obj.catalog));
+            %uimenu(submenu,'Label','Load a z-value grid (map-view)','Callback',@(~,~)loadgrid('lo'));
+            %uimenu(submenu,'Label','Load a z-value grid (cross-section-view)','Callback',@(~,~)magrcros('lo'));
+            %uimenu(submenu,'Label','Load a z-value movie (map-view)','Callback',@(~,~)loadmovz());
+        end
+        
+        function create_map_ab_menu(obj,parent)
+            submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
+            % TODO have these act upon already selected polygons (as much as possible?)
+            
+            cgr_bvalgrid.AddMenuItem(submenu); %TOFIX make these operate with passed-in catalogs
+            %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
+            %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
+            %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
+            %uimenu(tmp,'Label','Load...',...
+            %    'Enable','off',...
+             %   'Callback', @(~,~)bvalgrid('lo')); %map-view
+            
+            tmp=uimenu(submenu,'Label','differential b-value map (const R)',...
+                'Enable','off');
+            uimenu(tmp,'Label','Calculate','Callback', @(~,~)bvalmapt());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback', @(~,~)bvalmapt('lo'));
+            
+            uimenu(submenu,'Label','Calc a b-value cross-section',...
+                ...'Enable','off',...
+                'Callback', @(~,~)nlammap());
+            
+            tmp=uimenu(submenu,'Label','b-value depth ratio grid',...
+                'Enable','off',... 
+                'Callback', @(~,~)bdepth_ratio());
+            
+            uimenu(submenu,'Label','Calc 3D b-value distribution',...
+                'Enable','off',... 
+                'Callback', @(~,~)bgrid3dB());
+            
+            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
+                'Enable','off',...
+                'Callback',@(~,~)bcross('lo'));
+            uimenu(submenu,'Label','Load a 3D b-value grid',...
+                'Enable','off',...
+                'Callback',@(~,~)myslicer('load')); %also had "sel = 'no'"
+        end
+        
+        function create_map_p_menu(obj,parent)
+            submenu  =   uimenu(parent,'Label','Mapping p-values');
+            tmp=uimenu(submenu,'Label','p- and b-value map','Callback',@(~,~)bpvalgrid());
+            %uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
+            %uimenu(tmp,'Label','Load...',...
+            %    'Enable','off',...'
+            %    'Callback', @(~,~)bpvalgrid('lo'));
+            
+            tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
+            uimenu(tmp,'Label','Calculate','Callback',@(~,~)rcvalgrid_a2());
+            uimenu(tmp,'Label','Load...',...
+                'Enable','off',...
+                'Callback',  @(~,~)rcvalgrid_a2('lo'));
+        end
+        
+        function create_quarry_detection_menu(obj,parent)
+            submenu  = uimenu(parent,'Label','Detect quarry contamination');
+            uimenu(submenu,'Label','Map day/nighttime ration of events','Callback',@(~,~)findquar());
+            uimenu(submenu,'Label','Info on detecting quarries','Callback',@(~,~)web(['file:' hodi '/help/quarry.htm']));
+        end
+        
+        function create_histogram_menu(obj,parent)
+            
+            submenu = uimenu(parent,'Label','Histograms');
+            
+            uimenu(submenu,'Label','Magnitude','Callback',@(~,~)histo_callback('Magnitude'));
+            uimenu(submenu,'Label','Depth','Callback',@(~,~)histo_callback('Depth'));
+            uimenu(submenu,'Label','Time','Callback',@(~,~)histo_callback('Date'));
+            uimenu(submenu,'Label','Hr of the day','Callback',@(~,~)histo_callback('Hour'));
+            % uimenu(submenu,'Label','Stress tensor quality','Callback',@(~,~)histo_callback('Quality '));
+            
+            function histo_callback(hist_type)
+                hisgra(obj.catalog, hist_type);
+            end
+
+        end
+        
+        function create_decluster_menu(obj,parent)
+            submenu = uimenu(parent,'Label','Decluster the catalog'...,...
+                ...'Enable','off'...
+                );
+            uimenu(submenu,'Label','Decluster using Reasenberg','Callback',@(~,~)inpudenew());
+            uimenu(submenu,'Label','Decluster using Gardner & Knopoff',...
+                'Enable','off',... %TODO this needs to be turned into a function
+                'Callback',@(~,~)declus_inp());
+        end
+        
+        
         %% METHODS DEFINED IN DIRECTORY
         
         % push and pop state
         pushState(obj)
         popState(obj)
         
+        add_menu_catalog(obj,force)
+        
         [c,m]=filtered_catalog(obj)
 
+        
+        
+        
+        function set_3d_view(obj, src,~)
+            watchon
+            drawnow;
+            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            switch src.Label
+                case '3-D view'
+                    hold(axm,'on');
+                    view(axm,3);
+                    grid(axm,'on');
+                    zlim(axm,'auto');
+                    %axis(ax,'tight');
+                    zlabel(axm,'Depth [km]','UserData',field_unit.Depth);
+                    axm.ZDir='reverse';
+                    rotate3d(axm,'on'); %activate rotation tool
+                    hold(axm,'off');
+                    src.Label = '2-D view';
+                otherwise
+                    view(axm,2);
+                    grid(axm,'on');
+                    zlim(axm,'auto');
+                    rotate3d(axm,'off'); %activate rotation tool
+                    src.Label = '3-D view';
+            end
+            watchoff
+            drawnow;
+        end
+        
     end % METHODS
 end % CLASSDEF
+
+
+

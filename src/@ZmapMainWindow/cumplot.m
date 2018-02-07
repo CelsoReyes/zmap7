@@ -8,8 +8,8 @@ function cumplot(obj, tabgrouptag)
     delete(findobj(obj.fig,'Tag','CumPlot Yscaling'))
     ax=axes(myTab);
     ax.TickDir='out';
-    p=plot(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2,'DisplayName','catalog');
-    
+    p=plot(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2.5,'DisplayName','catalog','color','k');
+    grid(ax,'on');
     
     % plot crosss sections, too
     k=obj.xsections.keys;

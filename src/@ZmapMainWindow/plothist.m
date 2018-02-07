@@ -10,6 +10,7 @@ function plothist(obj, name, values, tabgrouptag)
         hisgra(obj.catalog,name,ax)
         h=findobj(ax,'Type','histogram');
         h.DisplayName='catalog';
+        ax.YGrid='on';
         hold on
         
     else

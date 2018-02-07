@@ -7,8 +7,8 @@ function cummomentplot(obj,tabgrouptag)
     delete(findobj(obj.fig,'Tag','CumMom Yscaling'))
     ax=axes(myTab);
     [~, vCumMoment, ~] = calc_moment(obj.catalog);
-    p=plot(ax,obj.catalog.Date,vCumMoment,'linewidth',2,'DisplayName','catalog');
-    
+    p=plot(ax,obj.catalog.Date,vCumMoment,'linewidth',2.5,'DisplayName','catalog','color','k');
+    grid(ax,'on');
     % plot cross sections, too
     k=obj.xsections.keys;
     for j=1:obj.xsections.Count

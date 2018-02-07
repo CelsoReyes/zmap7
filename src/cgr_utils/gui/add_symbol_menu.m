@@ -46,6 +46,7 @@ function add_symbol_menu(target, parent, label)
 
     function change_color()
         lines = findobj('-regexp','Tag','\<mapax_part[0-9].*\>');
+        if isempty(lines);disp('nothing to change');return;end
         n =listdlg('PromptString','Change color for which item?',...
             'SelectionMode','multiple',...
             'ListString',{lines.DisplayName});

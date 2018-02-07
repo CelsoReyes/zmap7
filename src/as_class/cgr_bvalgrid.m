@@ -238,12 +238,10 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, label)
+        function h=AddMenuItem(parent, label,catalogfn)
             % create a menu item
-            if ~exist('label','var')
                 label='Mc, a- and b- value map';
-            end
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid);
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(catalogfn()));
         end
         
     end % static methods

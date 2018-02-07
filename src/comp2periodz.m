@@ -1,4 +1,4 @@
-function comp2periodz()
+function comp2periodz(catalog)
     % This subroutine compares seismicity rates for two time periods.
     % The differences are as z- and beta-values and as percent change.
     %   Stefan Wiemer 1/95
@@ -15,10 +15,12 @@ function comp2periodz()
     dy = 1.00 ;
     ra = 5 ;
     
-    t1 = ZG.t0b;
-    t4 = ZG.teb;
-    t2 = ZG.t0b + (ZG.teb-ZG.t0b)/2;
-    t3 = t2+0.01;
+    t0b = min(catalog.Date);
+    teb = max(catalog.Date);
+    t1 = t0b;
+    t4 = teb;
+    t2 = t0b + (teb-t0b)/2;
+    t3 = t2+minutes(0.01);
     
     % get two time periods, along with grid and event parameters
     zdlg=ZmapDialog([]);
@@ -74,8 +76,8 @@ function comp2periodz()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = ZG.primeCatalog.DateRange() ;
-        n = ZG.primeCatalog.Count;
+        [t0b, teb] = catalog.DateRange() ;
+        n = catalog.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
         
@@ -90,8 +92,8 @@ function comp2periodz()
         drawnow
         %
         bvg = nan(length(newgri(:,1)),4);
-        lt =  ZG.primeCatalog.Date >= t1 &  ZG.primeCatalog.Date < t2  | ZG.primeCatalog.Date >= t3 &  ZG.primeCatalog.Date <= t4;
-        aa_ = ZG.primeCatalog.subset(lt);
+        lt =  catalog.Date >= t1 &  catalog.Date < t2  | catalog.Date >= t3 &  catalog.Date <= t4;
+        aa_ = catalog.subset(lt);
         
         % loop over all points
         for i= 1:length(newgri(:,1))
