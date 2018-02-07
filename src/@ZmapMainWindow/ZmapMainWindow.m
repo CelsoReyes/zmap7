@@ -10,8 +10,10 @@ classdef ZmapMainWindow < handle
         gridopts % used to define the grid
         fig % figure handle
         xsgroup;
+        xsections;
+        xscats;
         xs_tabs;
-        prev_states=Stack(5);
+        prev_states=Stack(10);
         undohandle;
         Features;
     end
@@ -63,6 +65,8 @@ classdef ZmapMainWindow < handle
             obj.catalog=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopts= ZG.gridopt;
+            obj.xsections=containers.Map();
+            obj.xscats=containers.Map();
             
             obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
                 char(max(obj.catalog.Date)));
@@ -180,6 +184,7 @@ classdef ZmapMainWindow < handle
             xsec = XSection.initialize_with_dialog(axm,20);
             % zans = plot_cross_section(obj.catalog);
             mytitle=[xsec.startlabel ' - ' xsec.endlabel];
+            obj.xsections(mytitle)=xsec;
             
             xsTabGroup = findobj(obj.fig,'Tag','xsections','-and','Type','uitabgroup');
             % mytab=findOrCreateTab(obj.fig, xsTabGroup.Tag, mytitle);
@@ -194,8 +199,8 @@ classdef ZmapMainWindow < handle
             obj.xsgroup.Visible = 'on';
             set(findobj(obj.fig,'Tag','mainmap_ax'),'Position',obj.MapPos_S);
             mytab=uitab(p, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
-            
-            c=uicontextmenu(obj.fig);
+            delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
+            c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
             uimenu(c,'Label','Info','Callback',@(~,~) msgbox(xsec.project(obj.catalog).info(),mytitle));
             uimenu(c,'Label','Change Width','Callback',@(~,~)cb_chwidth);
             uimenu(c,'Label','Examine This Area','Callback',@(~,~)cb_cropToXS);
@@ -211,6 +216,8 @@ classdef ZmapMainWindow < handle
             
             % make this the active tab
             mytab.Parent.SelectedTab=mytab;
+            obj.replot_all();
+            
             function cb_chwidth()
                 % change width of a cross-section
                 prompt={'Enter the New Width:'};
@@ -223,15 +230,20 @@ classdef ZmapMainWindow < handle
                 end
                 xsec.plot_events_along_strike(ax,obj.catalog);
                 ax.Title=[];
+                obj.replot_all();
             end
             function cb_cropToXS()
                 oldshape=copy(obj.shape)
                 obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
                 obj.shapeChangedFcn(oldshape, obj.shape);
+                obj.replot_all();
             end
             function deltab(s,v)
                 xsec.DeleteFcn();
+                xsec.DeleteFcn='';
                 delete(mytab);
+                obj.xsections.remove(mytitle);
+                obj.xscats.remove(mytitle);
                 obj.replot_all();
             end
         end

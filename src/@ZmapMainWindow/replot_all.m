@@ -1,5 +1,15 @@
 function replot_all(obj)
     % REPLOT all the windows
+    
+    % reevaluate cross section catalogs
+    k=obj.xsections.keys;
+    for j=1:obj.xsections.Count
+        hold on
+        xs=obj.xsections(k{j});
+        obj.xscats(k{j})=xs.project(obj.catalog);
+    end
+    
+    
     obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
     obj.catalog=obj.filtered_catalog();
     obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...

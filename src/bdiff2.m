@@ -90,7 +90,12 @@ classdef bdiff2
             end
             
             % add context menu equivelent to ztools menu
-            c = uicontextmenu;
+            f=ax;
+            while (~strcmp(f.Type ,'figure'))
+                f=f.Parent;
+            end
+            delete(findobj(f,'Tag','bdiff context','-and','Type','uicontextmenu'));
+            c = uicontextmenu('Tag','bdiff context');
             obj.create_my_menu(c,catalog);
             ax.UIContextMenu=c;
             uimenu(ax.UIContextMenu,'Label','Open as new figure','callback',@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
@@ -298,7 +303,7 @@ classdef bdiff2
                 ax=axes('position',rect);
                 
                 % add context menu equivelent to ztools menu
-                c = uicontextmenu;
+                c = uicontextmenu('Tag','blalbabla');
                 obj.create_my_menu(c,catalog);
                 ax.UIContextMenu=c;
             end
@@ -361,11 +366,12 @@ classdef bdiff2
                 text(ax,.16,.14,tx);
             end
             
-            set(gcf,'visible','on');
+            set(bfig,'visible','on');
             
             % created here too, for when figure is created from inset figure
             if isempty(ax.UIContextMenu)
-                c = uicontextmenu;
+                delete(findobj(bfig,'Tag','bdiff_from_inset context'))
+                c = uicontextmenu('Tag','bdiff_from_inset context');
                 obj.create_my_menu(c,catalog);
                 ax.UIContextMenu=c;
             end

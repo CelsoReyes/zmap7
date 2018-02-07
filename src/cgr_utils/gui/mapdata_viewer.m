@@ -354,7 +354,7 @@ end
 
 
 function c=mapcontext()
-    c=uicontextmenu;
+    c=uicontextmenu('Tag','MapViewerMapContext');
     
     uimenu(c,'Label','Select Rectangle');
     uimenu(c,'Label','Select Circle');
@@ -362,7 +362,7 @@ function c=mapcontext()
 end
 
 function c=pointcontext()
-    c=uicontextmenu;
+    c=uicontextmenu('Tag','MapViewerPointContext');
     uimenu(c,'Label','Change Symbol');
     uimenu(c,'Label','Change Color');
     uimenu(c,'Label','Remove','callback',@showcb);

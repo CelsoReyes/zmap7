@@ -3,7 +3,7 @@ function c=menu_cumtimeseries(c)
     % plot(x,x,....,'UIContextMenu',menu_cumtimeseries);
     
     if ~exist('c','var')
-    c=uicontextmenu;
+        c=uicontextmenu('Tag','CumTimeSeriesContext');
     end
     
     uimenu(c, 'Label', 'filter',...

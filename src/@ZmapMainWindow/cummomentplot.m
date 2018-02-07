@@ -2,10 +2,29 @@ function cummomentplot(obj,tabgrouptag)
     %CUMMOMENTPLOT plot the Cumulative Moment into the specifed tab group
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'Moment');
     delete(myTab.Children);
+    delete(findobj(obj.fig,'Tag','CumMom bg contextmenu'))
+    delete(findobj(obj.fig,'Tag','CumMom line contextmenu'))
+    delete(findobj(obj.fig,'Tag','CumMom Yscaling'))
     ax=axes(myTab);
-    [fCumMoment, vCumMoment, vMoment] = calc_moment(obj.catalog);
-    p=plot(ax,obj.catalog.Date,vCumMoment,'b','linewidth',2);
-    ylabel(ax,'Cummulative Moment');
+    [~, vCumMoment, ~] = calc_moment(obj.catalog);
+    p=plot(ax,obj.catalog.Date,vCumMoment,'linewidth',2,'DisplayName','catalog');
+    
+    % plot cross sections, too
+    k=obj.xsections.keys;
+    for j=1:obj.xsections.Count
+        hold on
+        xs=obj.xsections(k{j});
+        xscat = obj.xscats(k{j});
+        if isempty(xscat); continue; end
+        [~, vCumMoment, ~] = calc_moment(xscat);
+        plot(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color);
+    end
+        
+    yl=ylabel(ax,'Cummulative Moment');
+    c=uicontextmenu('Tag','CumMom Yscaling');
+    uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
+    yl.UIContextMenu=c;
+    
     xlabel(ax,'Time');
     c=uicontextmenu('tag','CumMom line contextmenu');
     uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));

@@ -164,6 +164,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             shout=findobj(ax,'Tag','shapeoutline');
             assert(numel(shout)<2,'should only have one shape outline')
+
+            f=ax;
+            while(~strcmp(f.Type,'figure'));f=f.Parent;end
+            delete(findobj(f,'Tag','ShapeGenContext'));
+            
             if isempty(shout)
                 hold on;
                 p=plot(ax, obj.Lon,obj.Lat,'k','LineWidth',2.0,...
@@ -181,7 +186,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             function c=makeuicontext(changedFcn)
-                c=uicontextmenu;
+                c=uicontextmenu('Tag','ShapeGenContext');
                 uimenu(c,...
                     'Label','info...',...
                     'Callback',@(src,ev) obj.summary());

@@ -45,7 +45,12 @@ classdef TimeDepthPlotter
             xlabel('Date');
             
             yl=ylabel('Depth [km]');
-            c=uicontextmenu;
+            f=ax;
+            while(~strcmp(f.Type,'figure'))
+                f=f.Parent;
+            end
+            delete(findobj(f,'Tag','TimeDepthContext'));
+            c=uicontextmenu('Tag','TimeDepthContext');
             uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
             yl.UIContextMenu=c;
             

@@ -329,7 +329,7 @@ end
 
 %{
 function c=mycontext()
-    c=uicontextmenu
+    c=uicontextmenu('Tag','GridContext')
     
     uimenu(c,'Label','Select Rectangle');
     uimenu(c,'Label','Select Circle');

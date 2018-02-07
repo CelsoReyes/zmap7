@@ -93,13 +93,18 @@ function hisgra(mycat, opt, ax)
         end
         xlabel(ax,stri2)
         yl = ylabel(ax,'Number');
-        c=uicontextmenu('Tag',['histogram ' opt]);
-        uimenu(c,'Label','Change Number of Bins...','Callback',@callback_change_nBins);
-        uimenu(c,'Label','Change Bin Edges...','Callback',@callback_change_bVector);
-        uimenu(c,'Label','Default','Callback',@callback_reset);
-        uimenu(c,'Label','Open as new figure','Callback',@open_as_new_fig); %TOFIX
-        addcontext(opt,c);
-        ax.UIContextMenu=c;
+        mycontextmenu=findobj(gcf,'uicontextmenu','-and','Tag',['histogram ' opt]);
+        if isempty(mycontextmenu)
+            c=uicontextmenu('Tag',['histogram ' opt]);
+            uimenu(c,'Label','Change Number of Bins...','Callback',@callback_change_nBins);
+            uimenu(c,'Label','Change Bin Edges...','Callback',@callback_change_bVector);
+            uimenu(c,'Label','Default','Callback',@callback_reset);
+            uimenu(c,'Label','Open as new figure','Callback',@open_as_new_fig); %TOFIX
+            addcontext(opt,c);
+            ax.UIContextMenu=c;
+        else
+            ax.UIContextMenu=mycontextmenu;
+        end
         
         
         c=uicontextmenu('Tag',['histogram ' opt ' scale']);
