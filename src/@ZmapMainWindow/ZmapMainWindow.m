@@ -17,8 +17,8 @@ classdef ZmapMainWindow < handle
     end
     
     properties(Constant)
-        WinPos=[50 50 1200 750];
-        URPos=[800 380 390 360];
+        WinPos=position_in_current_monitor(1200,750)% [50 50 1200 750]; % position of main window
+        URPos=[800 380 390 360]; %
         LRPos=[800 10 390 360];
         MapPos_S=[70 270 680 450];
         MapPos_L=[70 50 680 450+220]; %260
