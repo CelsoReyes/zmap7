@@ -11,7 +11,12 @@ function replot_all(obj)
     
     
     obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
-    obj.catalog=obj.filtered_catalog();
+    [obj.catalog,m]=obj.filtered_catalog();
+    
+    evs=findobj(obj.fig,'Tag','all events');
+    evs.XData(m)=nan;
+    evs.XData(~m)=obj.rawcatalog.Longitude(~m);
+
     obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
         char(max(obj.catalog.Date)));
     figure(obj.fig)

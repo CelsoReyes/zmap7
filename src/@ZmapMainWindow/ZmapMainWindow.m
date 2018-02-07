@@ -203,6 +203,7 @@ classdef ZmapMainWindow < handle
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
             uimenu(c,'Label','Info','Callback',@(~,~) msgbox(xsec.project(obj.catalog).info(),mytitle));
             uimenu(c,'Label','Change Width','Callback',@(~,~)cb_chwidth);
+            uimenu(c,'Label','Change Color','Callback',@(~,~)cb_chcolor);
             uimenu(c,'Label','Examine This Area','Callback',@(~,~)cb_cropToXS);
             uimenu(c,'Separator','on',...
                 'Label','Delete',...
@@ -227,9 +228,17 @@ classdef ZmapMainWindow < handle
                 answer=inputdlg(prompt,name,numlines,defaultanswer);
                 if ~isempty(answer)
                     xsec=xsec.change_width(str2double(answer),axm);
+                    obj.xsections(mytitle)=xsec;
                 end
                 xsec.plot_events_along_strike(ax,obj.catalog);
                 ax.Title=[];
+                obj.replot_all();
+            end
+            function cb_chcolor()
+                color=uisetcolor(xsec.color,['Color for ' xsec.startlabel '-' xsec.endlabel]);
+                xsec=xsec.change_color(color,axm);
+                mytab.ForegroundColor = xsec.color;
+                obj.xsections(mytitle)=xsec;
                 obj.replot_all();
             end
             function cb_cropToXS()
@@ -254,7 +263,7 @@ classdef ZmapMainWindow < handle
         pushState(obj)
         popState(obj)
         
-        c=filtered_catalog(obj)
+        [c,m]=filtered_catalog(obj)
 
     end % METHODS
 end % CLASSDEF

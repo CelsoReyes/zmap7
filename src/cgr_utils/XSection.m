@@ -83,7 +83,13 @@ classdef XSection
             
         end
             
-        
+        function obj = change_color(obj, color, ax)
+            obj.color = color;
+            obj.DeleteFcn();
+            % mask so that we can plot original quakes in original positions
+           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax);
+            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
+        end
         
         function mask = inside(obj, catalog)
             mask=polygon_filter(obj.polylons,obj.polylats,catalog.Longitude,catalog.Latitude,'inside');
@@ -156,13 +162,16 @@ classdef XSection
                 'Color',obj.color,...
                 'LineWidth',obj.linewidth * 0.75,...
                 'Tag','Xsection Area','DisplayName','');
-            
             %label it: put labels offset and outside the great-circle line.
-            hOffset=@(x,polarity) x+(1/75).*diff(xlim) * sign(obj.endpt(2)-obj.startpt(2)) * polarity;
-            vOffset=@(x,polarity) x+(1/75).*diff(ylim) * sign(obj.endpt(1)-obj.endpt(1)) * polarity;
-            xs_slabel = text(ax,hOffset(obj.startpt(2),-1),vOffset(obj.startpt(1),-1),obj.startlabel,...
+            hOffset=@(x,polarity) x+(1/75).*diff(xlim(ax)) * sign(obj.endpt(2)-obj.startpt(2)) * polarity;
+            vOffset=@(x,polarity) x+(1/75).*diff(ylim(ax)) * sign(obj.endpt(1)-obj.endpt(1)) * polarity;
+            textStartX = hOffset(obj.startpt(2),-1);
+            textStartY = vOffset(obj.startpt(1),-1);
+            xs_slabel = text(ax,textStartX,textStartY,obj.startlabel,...
                 'Color',obj.color.*0.8, 'fontweight','bold');
-            xs_elabel = text(ax,hOffset(obj.endpt(2),1),vOffset(obj.endpt(1),1),obj.endlabel,...
+            textEndX = hOffset(obj.endpt(2),1);
+            textEndY = vOffset(obj.endpt(1),1);
+            xs_elabel = text(ax,textEndX,textEndY,obj.endlabel,...
                 'Color',obj.color.*0.8, 'fontweight','bold');
         end
         
@@ -209,11 +218,18 @@ classdef XSection
             %obj=initialize_with_dialog(ax, catalog, default_width)
             
             persistent lastletter
+            persistent colororders
+            persistent coloridx
             if isempty(lastletter)
                 lastletter='A';
             end
             if ~exist('default_width','var')
                 default_width=20;
+            end
+            
+            if isempty(colororders)
+                colororders=get(gca,'ColorOrder');
+                coloridx=1;
             end
             prime='''';
             % dialog box to choose cross-section
@@ -224,7 +240,7 @@ classdef XSection
                 'start label for map');
             zdlg.AddBasicEdit('endlabel','end label', [lastletter prime],...
                 'end label for map');
-            zdlg.AddBasicCheckbox('choosecolor','choose cross-section color [red]', false,{},...
+            zdlg.AddBasicCheckbox('choosecolor','choose cross-section color', false,{},...
                 'When checked, a color selection dialog will allow you to choose a different cross-section color');
             zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
                 'no choice');
@@ -234,10 +250,12 @@ classdef XSection
                 obj=[];
                 return
             end
-            
-            C = [1 0 0]; % color for cross-section
+            cidx=mod(coloridx-1,size(colororders,1))+1;
+            C = colororders(cidx,:); % color for cross section
             if zans.choosecolor
                 C=uisetcolor(C,['Color for ' zans.startlabel '-' zans.endlabel]);
+            else
+                coloridx=coloridx+1;
             end
             zans.color=C;
             obj=XSection(ax, zans);
