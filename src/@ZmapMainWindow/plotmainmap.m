@@ -2,7 +2,7 @@ function plotmainmap(obj)
     % PLOTMAINMAP set up main map window
     
     axm=findobj(obj.fig,'Tag','mainmap_ax');
-    
+    assert(~isempty(axm),'Somehow lost track of main map');
     eq=findobj(axm,'Tag','active quakes');
     
     

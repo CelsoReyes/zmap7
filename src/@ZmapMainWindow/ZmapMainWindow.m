@@ -230,6 +230,7 @@ classdef ZmapMainWindow < handle
                 obj.shapeChangedFcn(oldshape, obj.shape);
             end
             function deltab(s,v)
+                xsec.DeleteFcn();
                 delete(mytab);
                 obj.replot_all();
             end
