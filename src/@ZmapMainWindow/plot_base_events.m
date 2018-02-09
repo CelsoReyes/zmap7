@@ -33,6 +33,9 @@ function plot_base_events(obj)
         end
     end
     uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Zoom to shape','Callback',@cb_zoom_shape);
+    uimenu(c,'Label','Crop to selection','Callback',@cb_crop_to_selection);
+
     uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
@@ -68,6 +71,29 @@ function plot_base_events(obj)
         yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
         axm.XLim=xl;
         axm.YLim=yl;
+    end
+
+    function cb_zoom_shape(~,~)
+        if isempty(obj.shape)
+            warning('No shape selected');
+            return
+        end
+        ol=obj.shape.Outline; % as [X, Y]
+        xl = [min(ol(:,1)) max(ol(:,1))];
+        yl = [min(ol(:,2)) max(ol(:,2))];
+        axm.XLim=xl;
+        axm.YLim=yl;
+    end
+    
+
+    function cb_crop_to_selection(~,~)
+        if isempty(obj.shape)
+            warning('No shape selected');
+            return
+        end
+        obj.rawcatalog=obj.catalog;
+        axm.YLim=[min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
+        axm.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
     function toggle_aspectratio(src, ~)

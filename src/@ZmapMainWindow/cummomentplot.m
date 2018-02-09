@@ -5,6 +5,7 @@ function cummomentplot(obj,tabgrouptag)
     delete(findobj(obj.fig,'Tag','CumMom bg contextmenu'))
     delete(findobj(obj.fig,'Tag','CumMom line contextmenu'))
     delete(findobj(obj.fig,'Tag','CumMom Yscaling'))
+    delete(findobj(obj.fig,'Tag','CumMom xs contextmenu'))
     ax=axes(myTab);
     [~, vCumMoment, ~] = calc_moment(obj.catalog);
     p=plot(ax,obj.catalog.Date,vCumMoment,'linewidth',2.5,'DisplayName','catalog','color','k');
@@ -17,7 +18,10 @@ function cummomentplot(obj,tabgrouptag)
         xscat = obj.xscats(k{j});
         if isempty(xscat); continue; end
         [~, vCumMoment, ~] = calc_moment(xscat);
-        plot(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color);
+        c=uicontextmenu('tag','CumPlot xs contextmenu');
+        uimenu(c,'Label','Open in new window','Callback',{@cb_xstimeplot,xs});
+        plot(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color,...
+            'UIContextMenu',c);
     end
         
     yl=ylabel(ax,'Cummulative Moment');
@@ -37,4 +41,10 @@ function cummomentplot(obj,tabgrouptag)
     ax.UIContextMenu=c;
     uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
     
+    function cb_xstimeplot(~,~,xs)
+        ZG=ZmapGlobal.Data;
+        ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog))
+        ZG.newt2.Name=sprintf('Events within %g km of %s - %s',xs.width_km,xs.startlabel,xs.endlabel);
+        timeplot();
+    end
 end

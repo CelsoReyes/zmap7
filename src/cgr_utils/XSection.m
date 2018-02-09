@@ -63,7 +63,7 @@ classdef XSection
             [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
             
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax);
+           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
@@ -78,7 +78,7 @@ classdef XSection
             [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
             obj.DeleteFcn();
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax);
+           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
         end
@@ -87,7 +87,7 @@ classdef XSection
             obj.color = color;
             obj.DeleteFcn();
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax);
+           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
         
@@ -141,10 +141,10 @@ classdef XSection
             
         end
         
-        function [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax)
+        function [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % PLOT_MAPVIEW shows cross section with endpoints and width on the specified ax
             % plot great-circle path
-            %   [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview_(obj,ax)
+            %   [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % these items might pollute the legend. consider turning off the Legend's autoupdate
             % function to avoid this
             

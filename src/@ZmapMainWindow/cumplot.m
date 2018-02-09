@@ -5,19 +5,34 @@ function cumplot(obj, tabgrouptag)
     delete(myTab.Children);
     delete(findobj(obj.fig,'Tag','CumPlot bg contextmenu'))
     delete(findobj(obj.fig,'Tag','CumPlot line contextmenu'))
+    delete(findobj(obj.fig,'Tag','CumPlot xs contextmenu'))
     delete(findobj(obj.fig,'Tag','CumPlot Yscaling'))
     ax=axes(myTab);
     ax.TickDir='out';
+    
+    c=uicontextmenu('tag','CumPlot line contextmenu');
+    uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));
+    uimenu(c,'Label','end here','Callback',@(~,~)obj.cb_endhere(ax));
+    uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
+    uimenu(c,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
+    
     p=plot(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2.5,'DisplayName','catalog','color','k');
+    p.UIContextMenu=c;
     grid(ax,'on');
+    
+    
     
     % plot crosss sections, too
     k=obj.xsections.keys;
     for j=1:obj.xsections.Count
         hold on
-        xs=obj.xsections(k{j});
-        xscat = obj.xscats(k{j});
-        plot(ax,xscat.Date, 1:xscat.Count,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color);
+        tit=k{j};
+        xs=obj.xsections(tit);
+        xscat = obj.xscats(tit);
+    c=uicontextmenu('tag','CumPlot xs contextmenu');
+    uimenu(c,'Label','Open in new window','Callback',{@cb_xstimeplot,xs});
+        plot(ax,xscat.Date, 1:xscat.Count,'linewidth',1.5,'DisplayName',tit,'Color',xs.color,...
+            'UIContextMenu',c);
     end
     
     yl=ylabel(ax,'Cummulative Number of events');
@@ -26,15 +41,17 @@ function cumplot(obj, tabgrouptag)
     yl.UIContextMenu=c;
     
     xlabel(ax,'Time');
-    c=uicontextmenu('tag','CumPlot line contextmenu');
-    uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));
-    uimenu(c,'Label','end here','Callback',@(~,~)obj.cb_endhere(ax));
-    uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
-    p.UIContextMenu=c;
     
-    uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
+    
     c=uicontextmenu('tag','CumPlot bg contextmenu');
     ax.UIContextMenu=c;
     uimenu(c,'Label','Toggle Legend','Callback',@(~,~)legend(ax,'toggle'));
     uimenu(c,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
+    
+    function cb_xstimeplot(~,~,xs)
+            ZG=ZmapGlobal.Data;
+            ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog))
+            ZG.newt2.Name=sprintf('Events within %g km of %s - %s',xs.width_km,xs.startlabel,xs.endlabel);
+            timeplot();
+    end
 end
