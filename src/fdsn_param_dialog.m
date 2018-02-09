@@ -652,9 +652,9 @@ function Fetch_Callback(hObject, eventdata, handles)
         close(m)
     end
     clear tmp
-    h=ZmapMessageCenter();
-    h.update_catalog()%;
-    zmap_update_displays();
+%    h=ZmapMessageCenter();
+%    h.update_catalog()%;
+%    zmap_update_displays();
     
     uimemorize_catalog();
     

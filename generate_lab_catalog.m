@@ -1,5 +1,5 @@
 % Generate detail for events on tiny scale (Lab)
-n=1000000;
+n=50000;
 b=1.9; a=-4;
 
 mmX =randi(10000,n,1) / 100; 

@@ -9,6 +9,7 @@ function [c,ok] = get_fdsn_data_from_web_callback()
     h = findall(0,'Tag','fdsn_import_dialog');
     if isempty(h)
         fdsn_param_dialog(); % create
+        h = findall(0,'Tag','fdsn_import_dialog');
     else
         h.Visible = 'on'; % show existing
     end
@@ -17,9 +18,5 @@ function [c,ok] = get_fdsn_data_from_web_callback()
     new_cat_stats = ZG.primeCatalog.summary('stats');
     
     ok = ~isequal(cur_cat_stats, new_cat_stats);
-    if ok
-        c = ZG.primeCatalog;
-    else
-        c=ZmapCatalog();
-    end
+    c = ZG.primeCatalog;
 end

@@ -78,15 +78,15 @@ function add_menu_catalog(obj, force)
         'Enable','off');
     
     uimenu(catmenu,'Label','from *.mat file',...
-        'Callback', @(~,~) ZmapImportManager(@load_zmapfile));
+        'Callback', {@cb_importer,@load_zmapfile});
     uimenu(catmenu,'Label','from other formatted file',...
-        'Callback', @(~,~)ZmapImportManager(@zdataimport));
+        'Callback', {@cb_importer,@zdataimport});
     uimenu(catmenu,'Label','from FDSN webservice',...
-        'Callback', @(~,~)ZmapImportManager(@get_fdsn_data_from_web_callback));
+        'Callback', {@cb_importer,@get_fdsn_data_from_web_callback});
     
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
-        'callback',@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
+        'callback',@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
     uimenu(catmenu,'Separator','on','Label','Reset',...
         'callback',@cb_resetcat); % Resets the catalog to the original selection
     
@@ -133,9 +133,10 @@ function add_menu_catalog(obj, force)
         zmap_update_displays();
     end
     
+
     function cb_replace_main(~,~)
         ZG.primeCatalog=obj.catalog;
-        zmap_update_displays();
+        obj.replot_all();
     end
     
     function cb_shapecrop(~,~)
@@ -185,6 +186,16 @@ function add_menu_catalog(obj, force)
         timeplot('newcat');
     end
     
+    function cb_importer(src, ev, fun)
+        c=ZmapImportManager(fun);
+        if ~isempty(c)
+            delete(obj.fig);
+            ZmapMainWindow();
+            delete(obj)
+        else
+            warndlg('Did not load a catalog');
+        end
+    end
 end
 
 function exportToWorkspace(catalog)

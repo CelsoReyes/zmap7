@@ -137,8 +137,7 @@ function h = create_message_figure()
         'Units','pixels',...
         'Position',[15 240 365 170]+ [0 180 0 0],...
         'Tag', 'zmap_curr_cat_pane');
-    
-    
+   
     uicontrol('Parent',cat1panel,'Style','text', ...
         'String','No Catalog Loaded!',...
         'Units','normalized',...
@@ -151,7 +150,7 @@ function h = create_message_figure()
         'Tag','cat_summary');
     
     %% BUTTONS
-    % edit catalog
+    
     uicontrol('Parent',cat1panel,'Style','Pushbutton', ...
         'String','Edit Ranges',...
         'Units','normalized',...
@@ -161,10 +160,10 @@ function h = create_message_figure()
     
     % show map for this catalog
     uicontrol('Parent',cat1panel,'Style','Pushbutton', ...
-        'String','Map',...
+        'String','Explore',...
         'Units','normalized',...
         'Position',[0.65 0.05 .3 .25],...
-        'Callback',@(s,e) zmap_update_displays('showmap'),...
+        'Callback',@(s,e) ZmapMainWindow,...zmap_update_displays('showmap'),...
         'Tag','useandmapbutton');
     
     % show cum timeplot for this catalog
@@ -173,10 +172,15 @@ function h = create_message_figure()
         'Units','normalized',...
         'Position',[0.35 0.05 .3 .25],...
         'Callback',{@do_timeplot,'primeCatalog'},... change to bring up cum timeplot
-        'Tag','tsbutton');
+        'Tag','tsbutton','Visible','off');
     
+        rgb=imread('sedcoffee.jpg');
+    ax=axes('Position',[0.05 0.1 0.9 .43]);
+    image(ax,rgb);
+    axis(ax,'equal')
+    ax.Visible='off';
     
-    
+    %{
     
     %% create panel to hold catalog details
     cat3panel = uipanel(h,'Title','Catalog Summary [newt2]',...
@@ -266,10 +270,12 @@ function h = create_message_figure()
         'Position',[0.35 0.05 .3 .25],...
         'Callback',{@do_timeplot,'newcat'},... change to bring up cum timeplot
         'Tag','tsbutton');
-    
+    %}
     update_current_catalog_pane();
+        %{
     update_other_catalog_pane();
     update_selected_catalog_pane();
+    %}
     
 end
 
@@ -306,7 +312,7 @@ function do_other_catalog_overview(s,~)
 end
 
 function update_other_catalog_pane(~,~)
-    
+    return
     ZG=ZmapGlobal.Data; % get zmap globals
     
     % TODO (maybe) make sure it is a catalog, if not convert.
@@ -326,7 +332,7 @@ function update_current_catalog_pane(~,~)
 end
 
 function update_selected_catalog_pane(~,~)
-
+    return;
     ZG=ZmapGlobal.Data; % get zmap globals
     
     % TODO (maybe) make sure it is a catalog, if not convert.

@@ -29,6 +29,7 @@ classdef ZmapMainWindow < handle
         XSPos=[15 10 760 215];
     end
     methods (Static)
+        
         function feat=features()
             persistent feats
             ZG=ZmapGlobal.Data;
@@ -38,6 +39,7 @@ classdef ZmapMainWindow < handle
             end
             feat=feats;
         end
+        
     end
     methods
         function obj=ZmapMainWindow(fig,catalog)
@@ -46,21 +48,20 @@ classdef ZmapMainWindow < handle
             if exist('fig','var')
                 delete(fig);
             end
+            h=msgbox('drawing the main window. Please wait');
             obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
                 'pixels','Tag','Zmap Main Window','NumberTitle','off','visible','off');
-            h=msgbox('drawing the main window. Please wait')
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
             
             add_menu_divider()
+                ZG=ZmapGlobal.Data;
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
-                ZG=ZmapGlobal.Data;
                 obj.rawcatalog=ZG.primeCatalog;
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             % initialize from the existing globals
-            ZG=ZmapGlobal.Data;
             obj.Features=ZG.features;
             
             obj.shape=ZG.selection_shape;
@@ -106,10 +107,10 @@ classdef ZmapMainWindow < handle
             if isvalid(h)
                 delete(h)
             end
-            
+            obj.create_all_menus(true);
         end
         
-        %% functions in directory
+        %% METHODS DEFINED IN DIRECTORY
         replot_all(obj,status)
         plot_base_events(obj)
         plotmainmap(obj)
@@ -120,7 +121,13 @@ classdef ZmapMainWindow < handle
         cummomentplot(obj,tabgrouptag)
         time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
         cumplot(obj, tabgrouptag)
-        
+                
+        % push and pop state
+        pushState(obj)
+        popState(obj)
+        catalog_menu(obj,force)
+        [c,m]=filtered_catalog(obj)
+
         %%
         
         function myTab = findOrCreateTab(obj, parent, title)
@@ -304,7 +311,7 @@ classdef ZmapMainWindow < handle
             %ShapeGeneral.AddMenu(gcf);
             %add_grid_menu(uimenu('Label','Grid'));
             % %obj.create_select_menu(force);
-            % add_menu_catalog(obj,force);
+            obj.catalog_menu(force);
             % %obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
             
@@ -345,7 +352,7 @@ classdef ZmapMainWindow < handle
                 'Separator', 'on',...
                 'Callback',@(~,~)plotstations(axm));
             
-            lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ');
+            lemenu = uimenu(mapoptionmenu,'Label','Legend by ...  ','Enable','off');
             
             uimenu(lemenu,'Label','Change legend breakpoints',...
                 'Callback',@change_legend_breakpoints);
@@ -365,14 +372,15 @@ classdef ZmapMainWindow < handle
             end
             clear legend_types
             
-            uimenu(mapoptionmenu,'Label','Change font size ...',...
+            uimenu(mapoptionmenu,'Label','Change font size ...','Enable','off',...
                 'Callback',@change_map_fonts);
             
             uimenu(mapoptionmenu,'Label','Change background colors',...
                 'Callback',@(~,~)setcol,'Enable','off'); %
             
-            uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
-                'Callback',@(s,e) plot_large_quakes);
+            uimenu(mapoptionmenu,...
+                'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.big_eq_minmag)],...
+                'Callback',@cb_plot_large_quakes);
             
             % following are handled in plot_base_events
             %uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude','callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
@@ -385,6 +393,17 @@ classdef ZmapMainWindow < handle
                 % zmap_update_displays();
                 watchoff;
             end
+            
+
+            function cb_plot_large_quakes(src,~)
+                ZG=ZmapGlobal.Data;
+                [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
+                    struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
+                src.Label=['Mark large event with M > ' num2str(ZG.big_eq_minmag)];
+                ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
+                obj.replot_all();
+            end
+
         end
 
         function create_ztools_menu(obj,force)
@@ -406,8 +425,7 @@ classdef ZmapMainWindow < handle
             
             obj.create_topo_map_menu(submenu);
             obj.create_random_data_simulations_menu(submenu);
-            uimenu(submenu,'Label','Create [simple] cross-section','Callback',@cb_xsect);
-            uimenu(submenu,'Label','Create cross-section','Enable','off','Callback',@(~,~)nlammap());
+            uimenu(submenu,'Label','Create [simple] cross-section','Callback',@(~,~)obj.cb_xsection);
             
             obj.create_histogram_menu(submenu);
             obj.create_mapping_rate_changes_menu(submenu);
@@ -554,16 +572,6 @@ classdef ZmapMainWindow < handle
                 'Callback',@(~,~)declus_inp());
         end
         
-        
-        %% METHODS DEFINED IN DIRECTORY
-        
-        % push and pop state
-        pushState(obj)
-        popState(obj)
-        
-        add_menu_catalog(obj,force)
-        
-        [c,m]=filtered_catalog(obj)
 
         
         

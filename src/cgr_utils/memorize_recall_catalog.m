@@ -23,10 +23,14 @@ function memorize_recall_catalog(catalog)
     switch todo
         case 'Memorize'
             ZG.memorized_catalogs = copy(catalog);
-            msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            h=msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            pause(1)
+            if isvalid(h),delete(h),end
         case 'Recall'
             replaceMainCatalog(ZG.memorized_catalogs);
-            msgbox(['Catalog ' catalog.Name ' has been Recalled.     '],'Recall Catalog');
+            h=msgbox(['Catalog ' catalog.Name ' has been Recalled.     '],'Recall Catalog');
+            pause(2)
+            if isvalid(h),delete(h),end
             
             ZG.newcat = ZG.memorized_catalogs; 
             ZG.newt2= ZG.memorized_catalogs;

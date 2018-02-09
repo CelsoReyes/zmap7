@@ -19,13 +19,13 @@ function startmen(parent_fig)
         
         uimenu(genmen, ...
             'Label','Load Catalog (*.mat file)',...
-            'Callback', @(~,~)ZmapImportManager(@load_zmapfile));
+            'Callback', @(~,~)cb_load_file);%ZmapImportManager(@load_zmapfile));
         uimenu(genmen, ...
             'Label','Import Catalog from other formatted file',... %was Data ImportFilters
             'Callback', @(~,~)ZmapImportManager(@zdataimport));
         uimenu(genmen, ...
             'Label','FDSN web fetch',... %TODO
-            'Callback', @(~,~)ZmapImportManager(@get_fdsn_data_from_web_callback));
+            'Callback', @(~,~)cb_load_web);%ZmapImportManager(@get_fdsn_data_from_web_callback));
         uimenu(genmen, ...
             'Label', 'Create or Modify *.mat datafile',...
             'Callback', {@think_and_do, 'setup'});
@@ -51,7 +51,22 @@ function startmen(parent_fig)
             'Callback',@(s,e) slshow());
         
     end
-    
+    function cb_load_file
+        ZmapImportManager(@load_zmapfile);
+        try
+            ZmapMainWindow();
+        catch ME
+            errordlg(ME.message);
+        end
+    end
+    function cb_load_web
+        ZmapImportManager(@get_fdsn_data_from_web_callback);
+        try
+            ZmapMainWindow();
+        catch ME
+            errordlg(ME.message);
+        end
+    end
 end
 
 function think_and_do(~, ~, f_handle, varargin)

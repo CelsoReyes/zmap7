@@ -17,6 +17,7 @@ function plot_base_events(obj)
     axm.TickDir='out';
     axm.Box='on';
     axm.ZDir='reverse';
+    
     xlabel(axm,'Longitude')
     ylabel(axm,'Latitude');
     
@@ -24,6 +25,7 @@ function plot_base_events(obj)
     axm.XLimMode='manual';
     axm.YLimMode='manual';
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
+    
     % options for choosing a shape
     ShapePolygon.AddPolyMenu(c,obj.shape);
     ShapeCircle.AddCircleMenu(c, obj.shape);
@@ -32,10 +34,10 @@ function plot_base_events(obj)
             c.Children(j).Callback={@updatewrapper,c.Children(j).Callback};
         end
     end
+    
     uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
     uimenu(c,'Label','Zoom to shape','Callback',@cb_zoom_shape);
     uimenu(c,'Label','Crop to selection','Callback',@cb_crop_to_selection);
-
     uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
@@ -112,9 +114,6 @@ function plot_base_events(obj)
     function toggle_grid(src, ~)
         src.Checked=toggleOnOff(src.Checked);
         grid(axm,src.Checked);
-        %ZG = ZmapGlobal.Data;
-        %ZG.lock_aspect = src.Checked;
-        %align_supplimentary_legends();
         drawnow
     end
 end

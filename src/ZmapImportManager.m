@@ -71,14 +71,17 @@ function catalog = ZmapImportManager(fun, funArguments, varargin)
             end
         end
         
-        ZG.newt2=ZG.Views.primary.Catalog();
-        timeplot();
+        %ZG.newt2=ZG.Views.primary.Catalog();
+        %timeplot();
         
         ZmapMessageCenter.update_catalog();
         
         uimemorize_catalog();
         
-        zmap_update_displays();
+        %zmap_update_displays();
+        %try
+        %    ZmapMainWindow();
+        %end
     end
     
 end

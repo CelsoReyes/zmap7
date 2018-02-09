@@ -21,6 +21,8 @@ function uimemorize_catalog(catalog)
     switch todo
         case 'Memorize'
             ZG.memorized_catalogs = catalog;
-            msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            h=msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            pause(1)
+            if isvalid(h),delete(h),end
     end
 end

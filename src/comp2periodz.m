@@ -29,7 +29,7 @@ function comp2periodz(catalog)
     zdlg.AddBasicEdit('t2','end period 1',t2,'end time for period 1');
     zdlg.AddBasicEdit('t3','start period 2',t3,'start time for period 2');
     zdlg.AddBasicEdit('t4','end period 2',t4,'end time for period 2');
-    zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, minvalid)
+    zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, 50)
     zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
     [zans,okPressed]=zdlg.Create('Please choose rate change estimation option');
     if ~okPressed

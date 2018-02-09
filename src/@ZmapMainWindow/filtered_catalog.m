@@ -10,4 +10,5 @@ function [c,m]=filtered_catalog(obj)
     %    c=c.subset(obj.shape.isInside(c.Longitude,c.Latitude));
     %end
     disp('updated catalog');
+    
 end
