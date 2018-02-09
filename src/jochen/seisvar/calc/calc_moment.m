@@ -18,7 +18,7 @@ function [fCumMoment, vCumMoment, vMoment] = calc_moment(mCatalog)
 % updated: 09.11.05
 
 
-if mCatalog.Count > 1
+if isa(mCatalog,'ZmapCatalog') && mCatalog.Count > 1
     % Sort the catalog according to time
     mCatalog.sort('Date');
     %[s,is] = sort(mCatalog.Date);

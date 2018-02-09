@@ -370,7 +370,11 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 % CAT2MTYPESTRING returns a string representation of the catalog type
                 % mtypes = CAT2MTYPESTRING()
                 mtypes=strcat(unique(obj.MagnitudeType)',',');
-                mtypes=strcat(mtypes{:});
+                if iscell(mtypes)
+                    mtypes=strcat(mtypes{:});
+                else
+                    mtypes=strcat([mtypes]);
+                end
                 mtypes(end)=[];
                 if isempty(mtypes)
                     mtypes='-none-';

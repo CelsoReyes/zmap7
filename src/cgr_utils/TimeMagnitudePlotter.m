@@ -10,7 +10,10 @@ classdef TimeMagnitudePlotter
     %   TimeMagnitudePlotter.clear();
     
     %TODO add ability to plot "big" events
-    properties
+
+    properties (Constant)
+        MAX_FOR_STEM=100000
+        MARKER='s'
     end
     
     methods (Static)
@@ -49,11 +52,24 @@ classdef TimeMagnitudePlotter
             %pl=scatter(ax, catalog.Date, catalog.Magnitude,12,'Tag',tag,...
             %    'DisplayName','Events','MarkerEdgeColor',[0.05 0.05 0.2],'Marker','+');
             
-            pl=stem(ax, catalog.Date, catalog.Magnitude,'s');
+            % plotting from ZERO magnitude is arbitrary, and stemplot becomes unusable if all magnitudes
+            % are below zero. Therefore, make sure stems are always going up
+            minMag= min(catalog.Magnitude);
+            if minMag>0
+                BaseValue=0;
+            else
+                BaseValue=floor(minMag);
+            end
+            if catalog.Count > TimeMagnitudePlotter.MAX_FOR_STEM
+                pl=scatter(ax, catalog.Date, catalog.Magnitude,'.');
+                pl.CData=[.6 .6 .7];
+            else
+                pl=stem(ax, catalog.Date, catalog.Magnitude,TimeMagnitudePlotter.MARKER,'BaseValue',BaseValue);
+                pl.Color=[.6 .6 .7];
+            end
             pl.Tag = tag;
             pl.DisplayName='Events';
             pl.MarkerEdgeColor=[0.05 0.05 0.2];
-            pl.Color=[.6 .6 .7];
             set(ax,'box','on', 'TickDir','out');
             %set(ax,'box','on',...
             %    'SortMethod','childorder','TickDir','out','FontWeight',...

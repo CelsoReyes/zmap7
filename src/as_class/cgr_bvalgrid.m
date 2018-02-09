@@ -65,6 +65,11 @@ classdef cgr_bvalgrid < ZmapGridFunction
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
+                
+            elseif nargin==1
+                
+                
+                
             else
                 % run this function without human interaction
                 obj.doIt();
@@ -238,9 +243,9 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, label,catalogfn)
+        function h=AddMenuItem(parent, catalogfn)
             % create a menu item
-                label='Mc, a- and b- value map';
+            label='Mc, a- and b- value map';
             h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(catalogfn()));
         end
         

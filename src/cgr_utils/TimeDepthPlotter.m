@@ -12,7 +12,9 @@ classdef TimeDepthPlotter
     
     %TODO add ability to plot "big" events
     
-    properties
+    properties (Constant)
+        MAX_FOR_MARKER=100000
+        MARKER='s'
     end
     
     methods (Static)
@@ -36,8 +38,13 @@ classdef TimeDepthPlotter
                 end
             end
             ax.Visible = 'off';
+            if catalog.Count > TimeDepthPlotter.MAX_FOR_MARKER
+                myMarker='.';
+            else
+                myMarker=TimeDepthPlotter.MARKER;
+            end
             pl=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),'Tag',tag,...
-                'DisplayName','Events','MarkerEdgeColor',[0.05 0.05 0.2],'Marker','s');
+                'DisplayName','Events','MarkerEdgeColor',[0.05 0.05 0.2],'Marker',myMarker);
             set(ax,'box','on','TickDir','out');
             ax.YDir='reverse';
             ax.Tag='time_depth_axis';

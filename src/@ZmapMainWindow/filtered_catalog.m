@@ -9,4 +9,5 @@ function [c,m]=filtered_catalog(obj)
     %if ~isempty(obj.shape)
     %    c=c.subset(obj.shape.isInside(c.Longitude,c.Latitude));
     %end
+    disp('updated catalog');
 end

@@ -8,8 +8,9 @@ function plot_base_events(obj)
     
     alleq = findobj(obj.fig,'Tag','all events');
     if isempty(alleq)
-        alleq=plot(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','color',[.76 .75 .8],'Tag','all events');
+        alleq=scatter(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','CData',[.76 .75 .8],'Tag','all events');
         alleq.ZData=obj.rawcatalog.Depth;
+        alleq.HitTest='off';
     end
     
     axm.Tag = 'mainmap_ax';
@@ -20,6 +21,8 @@ function plot_base_events(obj)
     ylabel(axm,'Latitude');
     
     MapFeature.foreach(obj.Features,'plot',axm);
+    axm.XLimMode='manual';
+    axm.YLimMode='manual';
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
     % options for choosing a shape
     ShapePolygon.AddPolyMenu(c,obj.shape);

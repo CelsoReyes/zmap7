@@ -107,6 +107,10 @@ classdef XSection
             
             if exist('ax','var')
                 % pick first point
+                ptdetails = selectSegmentUsingMouse(ax, obj.color);
+                obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
+                obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
+                %{
                 [lon, lat] = ginput(1);
                 obj.startpt=[lat, lon];
                 hold(ax,'on');
@@ -120,7 +124,7 @@ classdef XSection
                 pause(.1);
                 delete(h);
                 obj.endpt=[lat(2), lon(2)];
-                
+                %}
             else
                 error('expecting axes to be able to choose endpoints');
                 % get endpoints via dialog box
@@ -145,6 +149,10 @@ classdef XSection
             % function to avoid this
             
             hold(ax,'on')
+            prev_xlimmode=ax.XLimMode;
+            ax.XLimMode='manual';
+            prev_ylimmode=ax.YLimMode;
+            ax.YLimMode='manual';
             xs_line=plot(ax,obj.curvelons,obj.curvelats,'--',...
                 'linewidth',obj.linewidth,...
                 'Color',obj.color,...
@@ -173,17 +181,32 @@ classdef XSection
             textEndY = vOffset(obj.endpt(1),1);
             xs_elabel = text(ax,textEndX,textEndY,obj.endlabel,...
                 'Color',obj.color.*0.8, 'fontweight','bold');
+            ax.XLimMode=prev_xlimmode;
+            ax.YLimMode=prev_ylimmode;
         end
         
-        function h=plot_events_along_strike(obj,ax, catalog)
-            mycat = obj.project(catalog);
+        function h=plot_events_along_strike(obj,ax, catalog, noproject)
+            %h=plot_events_along_strike(obj,ax, catalog, noproject)
+            if exist('noproject','var') && isa(catalog,'ZmapXsectionCatalog') && noproject
+                mycat=catalog;
+            else
+                mycat = obj.project(catalog);
+            end
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
+            h=findobj(ax,'Tag','ev_along_strike_plot')
+            if isempty(h)
             h=scatter(ax,...
                 mycat.dist_along_strike_km,... X
                 mycat.Depth,... Y
                 mag2dotsize(mycat.Magnitude),... SIZE
-                years(mycat.Date - min(mycat.Date))... COLOR
-                );
+                years(mycat.Date - min(mycat.Date)),... COLOR
+                'Tag','ev_along_strike_plot');
+            else
+                set(h,'XData',mycat.dist_along_strike_km,...
+                    'YData',mycat.Depth,...
+                    'SizeData',mag2dotsize(mycat.Magnitude),...
+                    'CData',years(mycat.Date - min(mycat.Date)));
+            end
             ax.YDir='reverse';
             ax.XLim=[0 mycat.curvelength_km];
             ax.XTickLabel{1}=obj.startlabel;

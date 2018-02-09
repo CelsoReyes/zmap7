@@ -343,6 +343,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
             end
             ufn()
             f.Pointer='arrow';
+            delete(findobj(f,'Tag','PointEditableContext'));
         end
     end
     

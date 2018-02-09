@@ -231,7 +231,7 @@ classdef(Abstract) ZmapFunction < handle
     
     methods(Static, Abstract)
         % THIS NEEDS TO BE CREATED IN THE DERRIVED CLASSES' STATIC METHODS SECTION
-        AddMenuItem(parent)
+        AddMenuItem(parent, catalogfn)
         %{ 
         sample implementation here:
         function h=AddMenuItem(parent)

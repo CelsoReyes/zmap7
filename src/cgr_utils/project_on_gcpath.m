@@ -21,6 +21,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     gcDist_km=[];
     tdist_km = deg2km(distance(pt1,pt2));
     nlegs = ceil(tdist_km / dx_km); % was doubled.
+    
     % limit the catalog to the appropriate distance from the curve
     [las,los]=xsection_poly(pt1,pt2,maxdist_km,false);
     mask=polygon_filter(los,las,catalog.Longitude,catalog.Latitude,'inside');
@@ -34,15 +35,48 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     eqLats=projectedcat.Latitude;
     eqLons=projectedcat.Longitude;
     mindist=nan(size(eqLats));
-    % it would be nice to loop through curve, not catalog. oh well.
-    for n=1:projectedcat.Count
-        dists_km=deg2km(distance(curvelats, curvelons, eqLats(n), eqLons(n)));
-        [mindist(n),I]=min(dists_km);
-        gcDist_km(n)=gcDistances(I);
-        projectedcat.Longitude(n)=curvelons(I);
-        projectedcat.Latitude(n)=curvelats(I);
-    end
+    
+    [projectedcat2, mindist2, arcpos] = tryit(projectedcat, curvelats, curvelons);
+    gcDist_km=arcpos.*max(gcDistances); % where along line is it
 end
+
+
+function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
+    % assumptions
+    % simple curve, so events are only closest to 1 point
+    % distance grows 
+    refEllipse = wgs84Ellipsoid; % defaults to legth unit of meters
+    lat0 = median(curvelats);
+    lon0 = median(curvelons);
+    [xEast,yNorth, zUp] = geodetic2enu(catalog.Latitude, catalog.Longitude, -catalog.Depth*1000,...
+        lat0, lon0, 0, refEllipse);
+    [xCurveEast, yCurveNorth] = geodetic2enu(curvelats, curvelons, 0, median(curvelats), median(curvelons), 0, refEllipse);
+    
+    [xy,dist,t]=distance2curve([xCurveEast(:) yCurveNorth(:)], [xEast, yNorth]);
+    [catalog.Latitude, catalog.Longitude]= enu2geodetic(xy(:,1), xy(:,2), zUp, lat0, lon0, 0, wgs84Ellipsoid); 
+end
+
+function [ProjPoint, length_q] = ProjectPoint(vector, q)
+    % Use this function at small scales where we don't have to take curvature into consideration
+% write function that projects the  point (q = X,Y) on a vector
+% which is composed of two points - vector = [p0x p0y; p1x p1y]. 
+% i.e. vector is the line between point p0 and p1. 
+%
+% The result is a point qp = [x y] and the length [length_q] of the vector drawn 
+% between the point q and qp . This resulting vector between q and qp 
+% will be orthogonal to the original vector between p0 and p1. 
+% 
+% This uses the maths found in the webpage:
+% http://cs.nyu.edu/~yap/classes/visual/03s/hw/h2/math.pdf
+% FROM https://ch.mathworks.com/matlabcentral/answers/26464-projecting-a-point-onto-a-line
+      p0 = vector(1,:);
+      p1 = vector(2,:);
+      length_q = 1; %ignore for now
+      a = [p1(1) - p0(1), p1(2) - p0(2); p0(2) - p1(2), p1(1) - p0(1)];
+      b = [q(1)*(p1(1) - p0(1)) + q(2)*(p1(2) - p0(2)); ...
+          p0(2)*(p1(1) - p0(1)) - p0(1)*(p1(2) - p0(2))] ;
+      ProjPoint = a\b;
+  end
 
 function [c2,mindist,mask,gcDist]=test_this()
     disp('testing... this test expects that you are currently looking at the map')

@@ -19,6 +19,7 @@ path_list = [
     'pvals';
     'synthetic';
     'utils';
+    'distance2curve';
     fullfile('system_dependent',computer)});
     fullfile(hodi,'src','cgr_utils',{'grids';'gui';'selections'});
     {fullfile(hodi, 'src', 'danijel')};

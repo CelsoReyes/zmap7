@@ -6,6 +6,8 @@ function [axis_x, axis_y] = screenpix2axes(ax, x,y)
     %
     % for use with waitforbuttonpress, since CurrentPointer isn't updated when a key is pressed
     % instead of a mouse button being pressed.
+    %
+    % see also num2ruler, ruler2num
     
     % TODO: handle logarithmic scales
     
