@@ -155,7 +155,7 @@ function h = create_message_figure()
         'String','Edit Ranges',...
         'Units','normalized',...
         'Position',[0.05 0.05 .3 .25],...
-        'Callback',@do_catalog_overview,...
+        'Callback',@edit_catalog_range,...
         'Tag','editbutton');
     
     % show map for this catalog
@@ -163,7 +163,7 @@ function h = create_message_figure()
         'String','Explore',...
         'Units','normalized',...
         'Position',[0.65 0.05 .3 .25],...
-        'Callback',@(s,e) ZmapMainWindow,...zmap_update_displays('showmap'),...
+        'Callback',@(s,e) ZmapMainWindow(findobj('Tag','Zmap Main Window'),ZG.Views.primary.Catalog()),...zmap_update_displays('showmap'),...
         'Tag','useandmapbutton');
     
     % show cum timeplot for this catalog
@@ -286,11 +286,12 @@ function do_timeplot(s,~, catName)
     timeplot();
 end
 
-function do_catalog_overview(s,~)
+function edit_catalog_range(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
     [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
     %zmap_update_displays();
     ZmapMessageCenter.update_catalog();
+    
 end
 
 function do_selected_catalog_overview(s,~)
@@ -328,7 +329,7 @@ function update_current_catalog_pane(~,~)
     % TODO (maybe) make sure it is a catalog, if not convert.
     nocat_message='No catalog loaded';
     summary_depth='simple';
-    update_catalog_pane('zmap_curr_cat_pane',ZG.primeCatalog,summary_depth, nocat_message);
+    update_catalog_pane('zmap_curr_cat_pane',ZG.Views.primary.Catalog(),summary_depth, nocat_message);
 end
 
 function update_selected_catalog_pane(~,~)

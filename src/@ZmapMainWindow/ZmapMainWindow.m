@@ -45,7 +45,7 @@ classdef ZmapMainWindow < handle
         function obj=ZmapMainWindow(fig,catalog)
             %TOFIX filtering of Dates are not preserved when "REDRAW" is clicked
             %TOFIX shape lags behind
-            if exist('fig','var')
+            if exist('fig','var') && ~isempty(fig)
                 delete(fig);
             end
             h=msgbox('drawing the main window. Please wait');
@@ -58,7 +58,7 @@ classdef ZmapMainWindow < handle
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
-                obj.rawcatalog=ZG.primeCatalog;
+                obj.rawcatalog=ZG.Views.primary;
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             % initialize from the existing globals
