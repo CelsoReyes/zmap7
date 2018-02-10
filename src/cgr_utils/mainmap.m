@@ -26,16 +26,21 @@ function h = mainmap(target)
             return
         end
     end
-    h = main_interactive_map_instance;
     if exist('target','var')
         switch target
             case 'axes'
-                h = h.mainAxes;
+                h=findobj(gcf,'Tag','mainmap_ax');
+                if isempty(h)
+                    h = main_interactive_map_instance;
+                    h = h.mainAxes;
+                end
             case 'figure'
+                h = main_interactive_map_instance;
                 h = h.mainAxes;
                 h = h.Parent;
                 assert(isa(h,'matlab.ui.Figure') || isempty(h))
             case 'legend'
+                h = main_interactive_map_instance;
                 h=h.mainAxes;
                 h=h.Legend;
             case 'reset'
