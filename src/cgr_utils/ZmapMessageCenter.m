@@ -288,7 +288,12 @@ end
 
 function edit_catalog_range(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
+    if ~isempty(ZG.Views.primary)
     [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+    else
+        beep;
+        warndlg('No catalog loaded','Zmap');
+    end
     %zmap_update_displays();
     ZmapMessageCenter.update_catalog();
     
@@ -329,7 +334,11 @@ function update_current_catalog_pane(~,~)
     % TODO (maybe) make sure it is a catalog, if not convert.
     nocat_message='No catalog loaded';
     summary_depth='simple';
-    update_catalog_pane('zmap_curr_cat_pane',ZG.Views.primary.Catalog(),summary_depth, nocat_message);
+    toupdate=  [];
+    if ~isempty(ZG.Views.primary)
+        toupdate=ZG.Views.primary.Catalog();
+    end
+    update_catalog_pane('zmap_curr_cat_pane',toupdate,summary_depth, nocat_message);
 end
 
 function update_selected_catalog_pane(~,~)
