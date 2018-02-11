@@ -17,30 +17,21 @@ function h = mainmap(target)
     
    
     persistent main_interactive_map_instance
-    if isempty(main_interactive_map_instance) 
-        if ~isempty(ZmapGlobal.Data.primeCatalog)
-            disp('creating an instance of MainInteractiveMap');
-            main_interactive_map_instance = MainInteractiveMap();
-        else
-            h=[];
-            return
-        end
-    end
     if exist('target','var')
         switch target
             case 'axes'
                 h=findobj(gcf,'Tag','mainmap_ax');
                 if isempty(h)
-                    h = main_interactive_map_instance;
+                    h = fill_instance;
                     h = h.mainAxes;
                 end
             case 'figure'
-                h = main_interactive_map_instance;
+                h = fill_instance;
                 h = h.mainAxes;
                 h = h.Parent;
                 assert(isa(h,'matlab.ui.Figure') || isempty(h))
             case 'legend'
-                h = main_interactive_map_instance;
+                h = fill_instance;
                 h=h.mainAxes;
                 h=h.Legend;
             case 'reset'
@@ -48,4 +39,16 @@ function h = mainmap(target)
                 h=mainmap();
         end
     end
+    function h=fill_instance()
+        if isempty(main_interactive_map_instance)
+            if ~isempty(ZmapGlobal.Data.primeCatalog)
+                disp('creating an instance of MainInteractiveMap');
+                main_interactive_map_instance = MainInteractiveMap();
+            else
+                h=[];
+                return
+            end
+        end
+    end
+        
 end

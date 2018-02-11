@@ -41,7 +41,7 @@ function plot_base_events(obj)
     uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
-    
+    %{
     mapoptionmenu=uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
     uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
         'callback',@toggle_aspectratio,...
@@ -56,6 +56,7 @@ function plot_base_events(obj)
     if strcmp(ZmapGlobal.Data.mainmap_grid,'on')
         grid(axm,'on');
     end
+    %}
     
     function updatewrapper(s,v,f)
         f(s,v);
@@ -98,6 +99,7 @@ function plot_base_events(obj)
         axm.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
+    %{
     function toggle_aspectratio(src, ~)
         src.Checked=toggleOnOff(src.Checked);
         switch src.Checked
@@ -116,4 +118,5 @@ function plot_base_events(obj)
         grid(axm,src.Checked);
         drawnow
     end
+    %}
 end

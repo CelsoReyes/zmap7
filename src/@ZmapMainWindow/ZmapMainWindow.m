@@ -54,7 +54,7 @@ classdef ZmapMainWindow < handle
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
             
             add_menu_divider()
-                ZG=ZmapGlobal.Data;
+            ZG=ZmapGlobal.Data;
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
@@ -101,7 +101,7 @@ classdef ZmapMainWindow < handle
             obj.xsgroup=uitabgroup('Units','pixels','Position',obj.XSPos,...
                 'TabLocation',TabLocation,'Tag','xsections',...
                 'SelectionChangedFcn',@cb_selectionChanged,'Visible','off');
-          
+            
             obj.replot_all();
             obj.fig.Visible='on';
             if isvalid(h)
@@ -121,13 +121,13 @@ classdef ZmapMainWindow < handle
         cummomentplot(obj,tabgrouptag)
         time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
         cumplot(obj, tabgrouptag)
-                
+        
         % push and pop state
         pushState(obj)
         popState(obj)
         catalog_menu(obj,force)
         [c,m]=filtered_catalog(obj)
-
+        
         %%
         
         function myTab = findOrCreateTab(obj, parent, title)
@@ -141,7 +141,7 @@ classdef ZmapMainWindow < handle
         end
         
         
-            
+        
         function cb_timeplot(obj)
             ZG=ZmapGlobal.Data;
             ZG.newt2=obj.catalog;
@@ -320,7 +320,7 @@ classdef ZmapMainWindow < handle
             if isempty(hQuit)
                 mainfile=findall(gcf,'Tag','figMenuFile');
                 uimenu(mainfile,'Label','Quit Zmap','Separator','on',...
-                'Callback',@(~,~)restartZmap);
+                    'Callback',@(~,~)restartZmap);
             end
         end
         
@@ -340,6 +340,23 @@ classdef ZmapMainWindow < handle
             
             uimenu(mapoptionmenu,'Label','3-D view',...
                 'Callback',@obj.set_3d_view); % callback was plot3d
+            
+            % mapoptionmenu=uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
+            uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
+                'callback',@toggle_aspectratio,...
+                'checked',ZmapGlobal.Data.lock_aspect);
+            if strcmp(ZmapGlobal.Data.lock_aspect,'on')
+                daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
+            end
+            
+            uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
+                'callback',@toggle_grid,...
+                'checked',ZmapGlobal.Data.mainmap_grid);
+            if strcmp(ZmapGlobal.Data.mainmap_grid,'on')
+                grid(axm,'on');
+            end
+            
+            
             add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
             try
@@ -385,7 +402,7 @@ classdef ZmapMainWindow < handle
             % following are handled in plot_base_events
             %uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude','callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
             %uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid','callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
-
+            
             function cb_plotby(~,~, s)
                 ZG=ZmapGlobal.Data;
                 ZG.mainmap_plotby=s;
@@ -394,7 +411,7 @@ classdef ZmapMainWindow < handle
                 watchoff;
             end
             
-
+            
             function cb_plot_large_quakes(src,~)
                 ZG=ZmapGlobal.Data;
                 [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
@@ -403,9 +420,29 @@ classdef ZmapMainWindow < handle
                 ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
                 obj.replot_all();
             end
-
+            
+            
+            function toggle_aspectratio(src, ~)
+                src.Checked=toggleOnOff(src.Checked);
+                switch src.Checked
+                    case 'on'
+                        daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
+                    case 'off'
+                        daspect(axm,'auto');
+                end
+                ZG = ZmapGlobal.Data;
+                ZG.lock_aspect = src.Checked;
+                %align_supplimentary_legends();
+            end
+            
+            function toggle_grid(src, ~)
+                src.Checked=toggleOnOff(src.Checked);
+                grid(axm,src.Checked);
+                drawnow
+            end
+            
         end
-
+        
         function create_ztools_menu(obj,force)
             h = findobj(obj.fig,'Tag','mainmap_menu_ztools');
             if ~isempty(h) && exist('force','var') && force
@@ -463,7 +500,7 @@ classdef ZmapMainWindow < handle
         
         function create_random_data_simulations_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Random data simulations',...
-            'Enable','off');
+                'Enable','off');
             uimenu(submenu,'label','Create permutated catalog (also new b-value)...', 'Callback',@cb_create_permutated);
             uimenu(submenu,'label','Create synthetic catalog...',...
                 'Callback',@cb_create_syhthetic_cat);
@@ -490,13 +527,13 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
-            cgr_bvalgrid.AddMenuItem(submenu, @()obj.catalog); %TOFIX make these operate with passed-in catalogs    
+            cgr_bvalgrid.AddMenuItem(submenu, @()obj.catalog); %TOFIX make these operate with passed-in catalogs
             %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
             %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
             %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
             %uimenu(tmp,'Label','Load...',...
             %    'Enable','off',...
-             %   'Callback', @(~,~)bvalgrid('lo')); %map-view
+            %   'Callback', @(~,~)bvalgrid('lo')); %map-view
             
             tmp=uimenu(submenu,'Label','differential b-value map (const R)',...
                 'Enable','off');
@@ -510,11 +547,11 @@ classdef ZmapMainWindow < handle
                 'Callback', @(~,~)nlammap());
             
             tmp=uimenu(submenu,'Label','b-value depth ratio grid',...
-                'Enable','off',... 
+                'Enable','off',...
                 'Callback', @(~,~)bdepth_ratio());
             
             uimenu(submenu,'Label','Calc 3D b-value distribution',...
-                'Enable','off',... 
+                'Enable','off',...
                 'Callback', @(~,~)bgrid3dB());
             
             uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
@@ -559,7 +596,7 @@ classdef ZmapMainWindow < handle
             function histo_callback(hist_type)
                 hisgra(obj.catalog, hist_type);
             end
-
+            
         end
         
         function create_decluster_menu(obj,parent)
@@ -572,7 +609,7 @@ classdef ZmapMainWindow < handle
                 'Callback',@(~,~)declus_inp());
         end
         
-
+        
         
         
         
