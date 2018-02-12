@@ -5,7 +5,7 @@ function popState(obj)
     items = obj.prev_states.pop();
     obj.shape=copy(items{2});
     if ~isempty(obj.shape)
-        obj.shape.plot(findobj(obj.fig,'Tag','mainmap_ax'))
+        obj.shape.plot(obj.map_axes);
     end
     obj.catalog = items{1};
     if isempty(obj.prev_states)

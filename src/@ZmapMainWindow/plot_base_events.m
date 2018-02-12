@@ -1,7 +1,7 @@
 function plot_base_events(obj)
     % PLOT_BASE_EVENTS plot all events from catalog as dots before it gets filtered by shapes, etc.
     % call once at beginning
-    axm=findobj(obj.fig,'Tag','mainmap_ax');
+    axm=obj.map_axes;
     if isempty(axm)
         axm=axes('Units','pixels','Position',obj.MapPos_L);
     end

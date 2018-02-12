@@ -1,7 +1,7 @@
 function plotmainmap(obj)
     % PLOTMAINMAP set up main map window
     MAX_FOR_MARKER = 100000; %more than this number of earthquakes will be plotted with a "."
-    axm=findobj(obj.fig,'Tag','mainmap_ax');
+    axm=obj.map_axes;
     axm.Visible='off';
     assert(~isempty(axm),'Somehow lost track of main map');
     eq=findobj(axm,'Tag','active quakes');

@@ -76,7 +76,7 @@ function replot_all(obj,status)
     obj.time_vs_something_plot('Time-Depth',TimeDepthPlotter, 'LR plots');
     if isempty(obj.xsgroup.Children)
         obj.xsgroup.Visible='off';
-        set(findobj(obj.fig,'Tag','mainmap_ax'),'Position',obj.MapPos_L);
+        set(obj.map_axes,'Position',obj.MapPos_L);
     end
     obj.replotting=false;
     lrTabGroup.Visible='on';

@@ -1,18 +1,34 @@
 classdef XSection
-    % XSECTION create and manage cross-sections
+    % XSECTION create and manage cross-sections. Location, labels, plotting attributes.
     %
+    %   XSECTION 
+    %
+    % Example:
+    %   % create a cross section, selecting from the current axes, with a default width of 50 km.
     %   obj=XSection.initialize_with_dialog(gca,50)
-    %   c2 = obj.project(ZG.primeCatalog) % project the catalog onto the xsection, and store as c2
-    %   figure;ax=axes;obj.plot_events_along_strike(ax,ZG.primeCatalog)
+    %
+    %   % project the catalog onto the xsection, and store as c2
+    %   c2 = obj.project(ZG.primeCatalog) 
+    %
+    %   figure;
+    %   ax=axes;
+    %   
+    %   % plot the projection of a catalog (distalong projection vs depth)
+    %   % sized by magnitude, colored by date.
+    %
+    %   obj.plot_events_along_strike(ax,ZG.primeCatalog); 
+    %   %... OR ... instead...
+    %   obj.plot_events_along_strike(ax,c2, true); %plot a ZmapXsectionCatalog without projecting
+    
     properties
-        width_km
-        startpt % [lat lon]
-        endpt % [lat lon]
-        color
-        linewidth=2.0
-        startlabel
-        endlabel
-        curvelons
+        width_km % width of cross section, in kilometers
+        startpt % [lat lon] start point for cross section
+        endpt % [lat lon] end point for cross section
+        color % color used when plotting cross section
+        linewidth=2.0 % line width for cross section
+        startlabel % label for start point
+        endlabel % label for end point
+        curvelons %
         curvelats
         polylats
         polylons
@@ -186,21 +202,28 @@ classdef XSection
         end
         
         function h=plot_events_along_strike(obj,ax, catalog, noproject)
-            %h=plot_events_along_strike(obj,ax, catalog, noproject)
+            % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
+            %h=obj.plot_events_along_strike(ax, catalog, noproject)
             if exist('noproject','var') && isa(catalog,'ZmapXsectionCatalog') && noproject
                 mycat=catalog;
             else
                 mycat = obj.project(catalog);
             end
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
-            h=findobj(ax,'Tag','ev_along_strike_plot')
+            h=findobj(ax,'Tag','ev_along_strike_plot');
+            cep=CatalogExplorationPlot(ax,@()mycat);
+            cep.y_by='Depth'; 
+            cep.x_by='dist_along_strike_km';
+            cep.scatter();
+            ax.YDir='reverse';
+            %{
             if isempty(h)
-            h=scatter(ax,...
-                mycat.dist_along_strike_km,... X
-                mycat.Depth,... Y
-                mag2dotsize(mycat.Magnitude),... SIZE
-                years(mycat.Date - min(mycat.Date)),... COLOR
-                'Tag','ev_along_strike_plot');
+                h=scatter(ax,...
+                    mycat.dist_along_strike_km,... X
+                    mycat.Depth,... Y
+                    mag2dotsize(mycat.Magnitude),... SIZE
+                    years(mycat.Date - min(mycat.Date)),... COLOR
+                    'Tag','ev_along_strike_plot');
             else
                 set(h,'XData',mycat.dist_along_strike_km,...
                     'YData',mycat.Depth,...
@@ -220,6 +243,7 @@ classdef XSection
             grid(ax,'on');
             xlabel(ax,'Distance along strike [km]');
             ylabel(ax,'Depth [km]');
+            %}
             title(ax,sprintf('Profile: %s to %s',obj.startlabel,obj.endlabel));
         end
         

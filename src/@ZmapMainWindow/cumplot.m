@@ -7,6 +7,7 @@ function cumplot(obj, tabgrouptag)
     delete(findobj(obj.fig,'Tag','CumPlot line contextmenu'))
     delete(findobj(obj.fig,'Tag','CumPlot xs contextmenu'))
     delete(findobj(obj.fig,'Tag','CumPlot Yscaling'))
+    delete(findobj(obj.fig,'Tag','CumPlot Xscaling'))
     ax=axes(myTab);
     ax.TickDir='out';
     
@@ -40,7 +41,12 @@ function cumplot(obj, tabgrouptag)
     uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
     yl.UIContextMenu=c;
     
-    xlabel(ax,'Time');
+    xl=xlabel(ax,'Time');
+    c=uicontextmenu('Tag','CumPlot Xscaling');
+    uimenu(c,'Label','Split View on largest event(s)','Callback',{@splittimeslargest,ax,'X'});
+    uimenu(c,'Label','Split View (Fixed Durations)','Callback',{@splittimesduration,ax,'X'});
+    xl.UIContextMenu=c;
+    
     
     
     c=uicontextmenu('tag','CumPlot bg contextmenu');

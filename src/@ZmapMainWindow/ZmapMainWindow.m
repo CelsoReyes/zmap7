@@ -10,8 +10,8 @@ classdef ZmapMainWindow < handle
         gridopts % used to define the grid
         fig % figure handle
         xsgroup;
-        xsections;
-        xscats;
+        xsections; % contains XSection 
+        xscats; % ZmapXsectionCatalogs corresponding to each cross section
         xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
         xs_tabs;
         prev_states=Stack(10);
@@ -28,6 +28,10 @@ classdef ZmapMainWindow < handle
         MapPos_L=[70 50 680 450+220]; %260
         XSPos=[15 10 760 215];
     end
+    properties(Dependent)
+        map_axes % main map axes handle
+    end
+    
     methods (Static)
         
         function feat=features()
@@ -43,8 +47,6 @@ classdef ZmapMainWindow < handle
     end
     methods
         function obj=ZmapMainWindow(fig,catalog)
-            %TOFIX filtering of Dates are not preserved when "REDRAW" is clicked
-            %TOFIX shape lags behind
             if exist('fig','var') && ~isempty(fig)
                 delete(fig);
             end
@@ -114,7 +116,7 @@ classdef ZmapMainWindow < handle
         replot_all(obj,status)
         plot_base_events(obj)
         plotmainmap(obj)
-        
+        c=context_menus(obj, tag,createmode, varargin) % manage context menus used in figure
         plothist(obj, name, values, tabgrouptag)
         fmdplot(obj, tabgrouptag)
         
@@ -129,6 +131,10 @@ classdef ZmapMainWindow < handle
         [c,m]=filtered_catalog(obj)
         
         %%
+        function ax=get.map_axes(obj)
+            % get mainmap axes
+            ax=findobj(obj.fig,'Tag','mainmap_ax');
+        end
         
         function myTab = findOrCreateTab(obj, parent, title)
             % FINDORCREATETAB if tab doesn't exist yet, create it
@@ -202,7 +208,7 @@ classdef ZmapMainWindow < handle
         
         function cb_xsection(obj)
             % main map axes, where the cross section outline will be plotted
-            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            axm=obj.map_axes;
             axes(axm);
             xsec = XSection.initialize_with_dialog(axm,20);
             % zans = plot_cross_section(obj.catalog);
@@ -226,7 +232,7 @@ classdef ZmapMainWindow < handle
             p = findobj(obj.fig,'Tag',xsTabGroup.Tag);
             
             obj.xsgroup.Visible = 'on';
-            set(findobj(obj.fig,'Tag','mainmap_ax'),'Position',obj.MapPos_S);
+            set(obj.map_axes,'Position',obj.MapPos_S);
             mytab=uitab(p, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
             delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
@@ -284,9 +290,7 @@ classdef ZmapMainWindow < handle
                 xsec.DeleteFcn();
                 xsec.DeleteFcn='';
                 delete(mytab);
-                obj.xsections.remove(mytitle);
-                obj.xscats.remove(mytitle);
-                obj.xscatinfo.remove(mytitle);
+                obj.xsec_remove(mytitle);
                 obj.replot_all('CatalogUnchanged');
             end
         end
@@ -326,7 +330,7 @@ classdef ZmapMainWindow < handle
         
         function create_overlay_menu(obj,force)
             h = findobj(obj.fig,'Tag','mainmap_menu_overlay');
-            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            axm=obj.map_axes;
             if ~isempty(h) && exist('force','var') && force
                 delete(h); h=[];
             end
@@ -616,7 +620,7 @@ classdef ZmapMainWindow < handle
         function set_3d_view(obj, src,~)
             watchon
             drawnow;
-            axm=findobj(obj.fig,'Tag','mainmap_ax');
+            axm=obj.map_axes;
             switch src.Label
                 case '3-D view'
                     hold(axm,'on');
@@ -641,6 +645,25 @@ classdef ZmapMainWindow < handle
         end
         
     end % METHODS
+    methods(Access=protected) % HELPER METHODS
+        
+        %% CROSS SECTION HELPERS
+        
+        function xsec_remove(obj, key)
+            % XSEC_REMOVE completely removes cross section from object
+            obj.xsections.remove(key);
+            obj.xscats.remove(key);
+            obj.xscatinfo.remove(key);
+        end
+        
+        function xsec_add(obj, key, xsec)
+            %XSEC_ADD add/replace cross section from object
+            obj.xsections(key)=xsec;
+            obj.xscats(key)= xsec.project(obj.catalog);
+            obj.xscatinfo(key)=obj.catalog.summary('stats');
+        end
+            
+    end
 end % CLASSDEF
 
 %% helper functions

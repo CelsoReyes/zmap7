@@ -7,9 +7,9 @@ function fmdplot(obj, tabgrouptag)
     ylabel(ax,'Cum # events');
     xlabel(ax,'Magnitude');
     
-    %mainax=findobj(obj.fig,'Tag','mainmap_ax');
+    %mainax=obj.map_axes;
     bdiff2(obj.catalog,false,ax);
     
-    %mainax2=findobj(obj.fig,'Tag','mainmap_ax');
+    %mainax2=obj.map_axes;
     %assert(mainax==mainax2);
 end
