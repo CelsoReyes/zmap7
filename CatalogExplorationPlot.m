@@ -76,7 +76,13 @@ classdef CatalogExplorationPlot < handle
                     case 'size_by'
                         set(obj.myscatter,'SizeData',obj.sizeFcn(c.(obj.size_by)));
                     case 'color_by'
-                        set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
+                    switch obj.color_by
+                        case 'Single Color' 
+                            set(obj.myscatter,'CData',obj.colorFcn(1));    
+                        otherwise
+                            set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
+                    end
+                        
                 end
             end
             
@@ -88,10 +94,10 @@ classdef CatalogExplorationPlot < handle
                 axisH = obj.ax.(axAx);
                 DateTimeRulerClass='matlab.graphics.axis.decorator.DatetimeRuler';
                 DurationRulerClass='matlab.graphics.axis.decorator.DurationRuler';
-                NumericRulerClass='matlab.graphics.axis.decorator.NumericRuler';
+               % NumericRulerClass='matlab.graphics.axis.decorator.NumericRuler';
                 
-                curlabel_name = axisH.Label.String;
-                curlabel_context = axisH.Label.UIContextMenu;
+                cur_name = axisH.Label.String;
+                cur_context = axisH.Label.UIContextMenu;
                 
                 if isa(c.(fld), 'datetime') && ~isa(axisH,DateTimeRulerClass)
                     obj.myscatter.(where) = years(c.(fld) - datetime(0,0,0,0,0,0,0));
@@ -111,20 +117,15 @@ classdef CatalogExplorationPlot < handle
                     end
                 elseif islogical(c.(fld))
                     obj.myscatter.(where) = double(c.(fld));
-                %if (isa(c.(fld), 'datetime') && ~isa(axisH,DateTimeRulerClass)) ||...
-                %        (isa(c.(fld), 'duration') && ~isa(axisH,DurationRulerClass)) ||...
-                %        (isnumeric(c.(fld)) && ~isa(axisH, NumericRulerClass)) ||...
-                %        islogical(c.(fld))
-                %    obj.scatter(); %replot it
                 else
                     obj.myscatter.(where) = c.(fld);
                     switch(where(1))
                         case 'X'
-                            xlabel(obj.ax, curlabel_name, 'uicontextmenu', curlabel_context,'interpreter','none');
+                            xlabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
                         case 'Y'
-                            ylabel(obj.ax, curlabel_name, 'uicontextmenu', curlabel_context,'interpreter','none');
+                            ylabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
                         case 'Z'
-                            zlabel(obj.ax, curlabel_name, 'uicontextmenu', curlabel_context,'interpreter','none');
+                            zlabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
                     end
                end
             end
@@ -208,7 +209,7 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'Callback',{@obj.changeSize,'size_by',sc});
+                    'Callback',{@obj.changeSize,sc});
             end
             
             
@@ -219,8 +220,10 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'Callback',{@obj.changeColor,'color_by',sc});
+                    'Callback',{@obj.changeColor,sc});
             end
+            uimenu(h,'Separator','on','Label','Single Color',...
+                'Callback',{@obj.changeColor,sc});
         end
         
         function add_axes_toggles(obj,h,letter)
@@ -262,7 +265,7 @@ classdef CatalogExplorationPlot < handle
             %replot
             obj.update(whatby);
         end
-        function changeSize(obj,src,~, whatby, sc)
+        function changeSize(obj,src,~, sc)
             % whatby is x_by, y_by, etc...
             
             % remove checkmarks
@@ -285,7 +288,7 @@ classdef CatalogExplorationPlot < handle
                     obj.sizeFcn=@(x) normalize(x,2,8,@(x)x.^2);
             end
             %replot
-            obj.update(whatby);
+            obj.update('size_by');
             
             function x=normalize(x, minval, scalar, modifier)
                 if isa(x,'datetime')
@@ -299,14 +302,14 @@ classdef CatalogExplorationPlot < handle
             end
             
         end
-        function changeColor(obj,src,~,whatby,sc)
+        function changeColor(obj,src,~,sc)
             % whatby is x_by, y_by, etc...
             
             % remove checkmarks
             set(src.Parent.Children,'Checked','off');
             
             % change the plotting value
-            obj.(whatby) = src.Label;
+            obj.color_by = src.Label;
             
             % add new checkmark
             src.Checked='on';
@@ -315,9 +318,12 @@ classdef CatalogExplorationPlot < handle
             sc.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
             %h.String=src.Label;
             
-            switch(obj.size_by)
+            switch(obj.color_by)
                 case 'Date'
                     obj.colorFcn=@datenum;
+                case 'Single Color'
+                    val=uisetcolor();
+                    obj.colorFcn=@(x)val;
                 otherwise
                     obj.colorFcn=@(x) normalize(x, 0, 1,@(x)x);
             end
@@ -333,7 +339,7 @@ classdef CatalogExplorationPlot < handle
                 x = modifier(x.* scalar + minval);
             end
             %replot
-            obj.update(whatby);
+            obj.update('color_by');
         end
     end % HIDDEN methods
 end
