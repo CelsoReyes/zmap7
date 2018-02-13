@@ -8,7 +8,6 @@ classdef(Abstract) ZmapFunction < handle
     %   ZmapFunction Properties:
     %     OperatingCatalog - this are the catalog(s) that contain the raw data needed by this function
     %         ex.    OperatingCatalog={'primeCatalog'}; %must be cell
-    %     ModifiedCatalog - this contains the catalogs (if any) that are modified by this routine.
     %
     %     define variables here that would be used in calculation
     %
@@ -54,20 +53,13 @@ classdef(Abstract) ZmapFunction < handle
     
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
-        
+        RawCatalog % holds complete catalog to be analyzed
         Result % results of the calculation, stored in a struct
         
         ZG=ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
-        FunctionCall='%unknown function call';% text representation of the function call.
-    end
-    
-    properties(Abstract)
-        %THESE NEED TO BE DEFINED IN THE DERRIVED CLASSES' PROPERTIES SECTION
-        % these properties MUST be defined in every class derived from ZmapFunction
-        OperatingCatalog % cell containing variable names of catalog(s) containing raw data. (from ZmapGlobal)
-        ModifiedCatalog % variable name of catalog that is modified (if not empty). 
+        FunctionCall='%unknown function call'; % text representation of the function call.
     end
     
     properties(Constant,Abstract)
@@ -99,27 +91,6 @@ classdef(Abstract) ZmapFunction < handle
             obj.FunctionCall=fcall;
         end
             
-        function c=getCat(obj,n)
-            % get (one of) the input "global" catalogs
-            if ~exist('n','var') || isempty(n)
-                n=1;
-            end
-            if ~isempty(obj.OperatingCatalog)
-                 c=obj.ZG.(obj.OperatingCatalog{n});
-            else
-                error('No operating catalog specified');
-            end
-        end
-        
-        function setCat(obj,mycat)
-            % modify a "global" catalog
-            if ~isempty(obj.ModifiedCatalog)
-                obj.ZG.(obj.ModifiedCatalog)=mycat;
-            else
-                % no ModifiedCatalog was specifed
-            end
-        end
-        
         function clearPlot(obj)
             % remove all plot items added by this function
             delete(obj.hPlot);
@@ -159,8 +130,7 @@ classdef(Abstract) ZmapFunction < handle
             if isprop(obj,'EventSelector')
                 obj.Result.EventSelector = obj.EventSelector;
             end
-            obj.Result.InCatalogName=obj.OperatingCatalog;
-            obj.Result.OutCatalogName=obj.ModifiedCatalog;
+            obj.Result.InCatalogName=obj.RawCatalog.Name; %was OperatingCatalog
             assignin('base',vname,obj.Result);
             fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));
             fprintf('%% results in: %s\n',vname);
@@ -217,7 +187,7 @@ classdef(Abstract) ZmapFunction < handle
                     error('unknown');
             end
         end
-    end
+    end % PUBLIC METHODS
     
     methods(Abstract)
         % THESE NEED TO BE CREATED IN THE DERRIVED CLASSES' METHODS SECTION
@@ -227,19 +197,27 @@ classdef(Abstract) ZmapFunction < handle
         Results=Calculate(obj); % perform calculations, store results in obj.Result
         plot(obj,varargin); % plot 
         
-    end
+    end %ABSTRACT METHODS
     
     methods(Static, Abstract)
         % THIS NEEDS TO BE CREATED IN THE DERRIVED CLASSES' STATIC METHODS SECTION
         AddMenuItem(parent, catalogfn)
         %{ 
         sample implementation here:
-        function h=AddMenuItem(parent)
+        function h=AddMenuItem(parent,catalogfn)
             % create a menu item that will be used to call this function/class
             h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME
-                'Callback', @(~,~)blank_ZmapFunction()... CHANGE THIS TO YOUR CALLBACK
+                'Callback', @(~,~)blank_ZmapFunction(catalogfn())... CHANGE THIS TO YOUR CALLBACK
                 );
         end
         %}
-    end
+    end % STATIC ABSTRACT METHODS
+    
+    methods(Static, Access=protected)
+        function verify_catalog(c)
+            % VERIFY_CATALOG makes sure the catalog is valid and has events
+            assert(~isempty(c),'Catalog is empty');
+            assert(isa(c,'ZmapCatalog'),'Please provide a ZmapCatalog, not a ',class(c));
+        end
+    end %STATIC PROTECTED METHODS
 end

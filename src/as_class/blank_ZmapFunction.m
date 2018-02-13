@@ -4,7 +4,7 @@ classdef blank_ZmapFunction < ZmapFunction
     % in the function that generates the figure where this function can be called:
     %
     %     % create some menu items... 
-    %     h=sample_ZmapFunction.AddMenuItem(hMenu) %create subordinate to menu item with handle hMenu
+    %     h=sample_ZmapFunction.AddMenuItem(hMenu,@()mycat) %create subordinate to menu item with handle hMenu
     %     % create the rest of the menu items...
     %
     %  once the menu item is clicked, then sample_ZmapFunction.interative_setup(true,true) is called
@@ -12,10 +12,6 @@ classdef blank_ZmapFunction < ZmapFunction
     %  and the results will be automatically calculated & plotted once they hit the "GO" button
     %
     
-    properties
-        OperatingCatalog={'primeCatalog'}; % catalog(s) containing raw data.
-        ModifiedCatalog=''; % catalog to be modified after all calculations are done
-    end
     
     properties(Constant)
         PlotTag='myplot';
@@ -130,11 +126,11 @@ classdef blank_ZmapFunction < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent)
+        function h=AddMenuItem(parent,catalogfn)
             % create a menu item that will be used to call this function/class
             
             h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME
-                'Callback', @(~,~)blank_ZmapFunction()... CHANGE THIS TO YOUR CALLBACK
+                'Callback', @(~,~)blank_ZmapFunction(catalogfn())... CHANGE THIS TO YOUR CALLBACK
                 );
         end
         

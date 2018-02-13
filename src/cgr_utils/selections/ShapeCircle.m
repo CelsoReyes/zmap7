@@ -108,7 +108,8 @@ classdef ShapeCircle < ShapeGeneral
                     ShapeGeneral.cb_selectp(src,ev,'inside');
                 end
                 if ~isequal(initialShape,obj)
-                    changedFcn(initialShape, obj.copy());
+                    % changedFcn(initialShape, obj.copy());
+                    changedFcn(obj.copy());
                 end
                     
                 

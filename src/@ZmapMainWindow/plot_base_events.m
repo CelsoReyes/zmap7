@@ -44,22 +44,6 @@ function plot_base_events(obj)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
-    %{
-    mapoptionmenu=uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
-    uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-        'callback',@toggle_aspectratio,...
-        'checked',ZmapGlobal.Data.lock_aspect);
-    if strcmp(ZmapGlobal.Data.lock_aspect,'on')
-        daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
-    end
-    
-    uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
-        'callback',@toggle_grid,...
-        'checked',ZmapGlobal.Data.mainmap_grid);
-    if strcmp(ZmapGlobal.Data.mainmap_grid,'on')
-        grid(axm,'on');
-    end
-    %}
     
     function updatewrapper(s,v,f)
         f(s,v);
@@ -102,24 +86,4 @@ function plot_base_events(obj)
         axm.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
-    %{
-    function toggle_aspectratio(src, ~)
-        src.Checked=toggleOnOff(src.Checked);
-        switch src.Checked
-            case 'on'
-                daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
-            case 'off'
-                daspect(axm,'auto');
-        end
-        ZG = ZmapGlobal.Data;
-        ZG.lock_aspect = src.Checked;
-        %align_supplimentary_legends();
-    end
-    
-    function toggle_grid(src, ~)
-        src.Checked=toggleOnOff(src.Checked);
-        grid(axm,src.Checked);
-        drawnow
-    end
-    %}
 end

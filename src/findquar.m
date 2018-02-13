@@ -4,7 +4,7 @@ classdef findquar < ZmapFunction
     % in the function that generates the figure where this function can be called:
     %
     %     % create some menu items...
-    %     h=sample_ZmapFunction.AddMenuItem(hMenu) %create subordinate to menu item with handle hMenu
+    %     h=sample_ZmapFunction.AddMenuItem(hMenu,@catfn) %create subordinate to menu item with handle hMenu
     %     % create the rest of the menu items...
     %
     %  once the menu item is clicked, then sample_ZmapFunction.interative_setup(true,true) is called
@@ -13,8 +13,6 @@ classdef findquar < ZmapFunction
     %
     
     properties
-        OperatingCatalog={'primeCatalog'}; % catalog(s) containing raw data.
-        ModifiedCatalog=''; % catalog to be modified after all calculations are done
         
         EvtSel
         Grid
@@ -27,12 +25,16 @@ classdef findquar < ZmapFunction
     end
     
     methods
-        function obj=findquar(varargin) %CONSTRUCTOR
+        function obj=findquar(catalog,varargin) %CONSTRUCTOR
             % create a [...]
+            
+            narginchk(1,inf); 
+            ZmapFunction.verify_catalog(catalog);
+            obj.RawCatalog=catalog;
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            if nargin==0
+            if nargin<2
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
@@ -102,10 +104,9 @@ classdef findquar < ZmapFunction
             figure(fifhr);
             hold on
             axes(fifhr,'pos',[0.1 0.2 0.6 0.6]);
-            mycat=obj.getCat();
-            histogram(mycat.Date.Hour,-0.5:1:24.5);
-            [X,N] = histcounts(mycat.Date.Hour,-0.5:1:24.5);
-            %[X,~] = hist(mycat.Date.Hour,-0.5:1:24.5);
+            histogram(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
+            [X,N] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
+            %[X,~] = hist(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
             
             xlabel('Hr of the day')
             ylabel('Number of events per hour')
@@ -188,7 +189,7 @@ classdef findquar < ZmapFunction
             
             % loop over all points in polygon. Evaluated for earthquakes that may extend outside
             % the points.
-            [valueMap,nEv,r]=gridfun(@calculate_day_night_ratio, obj.getCat(), mygrid, obj.EvtSel);
+            [valueMap,nEv,r]=gridfun(@calculate_day_night_ratio, obj.RawCatalog, mygrid, obj.EvtSel);
             bvg=[valueMap(mygrid.ActivePoints), mygrid.ActiveGrid, r(mygrid.ActivePoints)];
             
             % plot the results
@@ -266,8 +267,7 @@ classdef findquar < ZmapFunction
             fix_caxis(re4,'horiz',minc,maxc,false);
             fix_caxis.ApplyIfFrozen(obj.ax);
             
-            mycat=obj.getCat();
-            title(obj.ax,[mycat.Name ';  '   char(min(mycat.Date)) ' to ' char(max(mycat.Date)) ],...
+            title(obj.ax,[obj.RawCatalog.Name ';  '   char(min(obj.RawCatalog.Date)) ' to ' char(max(obj.RawCatalog.Date)) ],...
                 'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'Interpreter','none','FontWeight','bold')
             
@@ -278,7 +278,7 @@ classdef findquar < ZmapFunction
             %
             hold on
             %zmap_update_displays();
-            ploeq = plot(obj.ax,mycat.Longitude,mycat.Latitude,'k.');
+            ploeq = plot(obj.ax,obj.RawCatalog.Longitude,obj.RawCatalog.Latitude,'k.');
             set(ploeq,'Tag','eq_plot','MarkerSize',obj.ZG.ms6,'Marker','.','Color',obj.ZG.someColor,'Visible','on')
             
             set(obj.ax,'visible','on','FontSize',obj.ZG.fontsz.s,'FontWeight','bold',...
@@ -381,11 +381,11 @@ classdef findquar < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent)
+        function h=AddMenuItem(parent, catalogfn)
             % create a menu item that will be used to call this function/class
             
-            h=uimenu(parent,'Label','Find Quarry Events',...    CHANGE THIS TO YOUR MENUNAME
-                'Callback', @(~,~)findquar()... CHANGE THIS TO YOUR CALLBACK
+            h=uimenu(parent,'Label','Find Quarry Events',...
+                'Callback', @(~,~)findquar(catalogfn())...
                 );
         end
         

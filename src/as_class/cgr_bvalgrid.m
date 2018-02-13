@@ -15,9 +15,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
     %
     
     properties
-        OperatingCatalog={'primeCatalog'} % name of catalog containing raw data. eg. 'a', 'newt2', etc.
-        ModifiedCatalog='newt2' % name of catalog changed by this function
-        
         ni = ZmapGlobal.Data.ni 
         ra = 25 % ZmapGlobal.Data.ra;
         Nmin = 50 
@@ -56,19 +53,19 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end
     
     methods
-        function obj=cgr_bvalgrid(varargin)
+        function obj=cgr_bvalgrid(catalog, varargin)
+            
+            narginchk(1,inf); 
+            ZmapFunction.verify_catalog(catalog);
+            obj.RawCatalog=catalog;
+            
             % create bvalgrid
             obj.active_col='b_value';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            if nargin==0
+            if nargin<2
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
-                
-                
-            elseif nargin==1
-                
-                
                 
             else
                 % run this function without human interaction
@@ -131,8 +128,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % for example,
             % - catalogs have what are expected.
             % - required variables exist or have valid values
-            assert(~isempty(obj.getCat()) , 'Catalog is not empty');
-            assert(isa(obj.getCat(),'ZmapCatalog'), 'Catalog is a ZmapCatalog');
             if isempty(obj.Grid) || obj.gridOpts.CreateGrid
                obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
             end
@@ -147,7 +142,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % thge seimicity and selectiong the ni neighbors
             % to each grid point
             map = findobj('Name','Seismicity Map');
-            mycat=obj.getCat();
             
             %{
             if obj.gridOpts.CreateGrid
@@ -158,7 +152,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
             %}
             
             % Overall b-value
-            bv =  bvalca3(mycat.Magnitude, obj.ZG.inb1); %ignore all the other outputs of bvalca3
+            bv =  bvalca3(obj.RawCatalog.Magnitude, obj.ZG.inb1); %ignore all the other outputs of bvalca3
             
             obj.ZG.bo1 = bv;
             
@@ -166,7 +160,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
             returnDesc = obj.ReturnDetails(:,2);
             returnUnits = obj.ReturnDetails(:,3);
             
-            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(returnFields));
+            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,obj.RawCatalog,obj.Grid, obj.EventSelector, numel(returnFields));
             
             bvg(:,strcmp('x',returnFields))=obj.Grid.X(:);
             bvg(:,strcmp('y',returnFields))=obj.Grid.Y(:);

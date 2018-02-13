@@ -7,8 +7,6 @@ classdef bcrossVt2 < ZmapSliceFunction
     % of completness
     %   Stefan Wiemer 1/95
     properties
-        OperatingCatalog={'newcat'}; %maybe should be 'newa'
-        ModifiedCatalog='';
         
         ni = 100;
         ra = ZmapGlobal.Data.ra;
@@ -82,12 +80,17 @@ classdef bcrossVt2 < ZmapSliceFunction
     end
     
     methods
-        function obj=bcrossVt2(varargin)
+        function obj=bcrossVt2(catalog, varargin)
+            
+            narginchk(1,inf); 
+            ZmapFunction.verify_catalog(catalog);
+            obj.RawCatalog=catalog;
+            
             % create bcrossVt2 object (or do the calculation)
             obj.active_col='d_b';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            if nargin==0
+            if nargin<2
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
@@ -204,8 +207,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             
             %  make grid, calculate start- endtime etc.  ...
             %
-            mycat = obj.getCat();
-            n = mycat.Count;
+            n = obj.RawCatalog.Count;
             
             % set mainshock magnitude to  ZG.big_eq_minmag
             % f = find(newa(:,6) == max(newa(:,6)))
@@ -213,7 +215,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             
             
             % overall b-value
-            bv =  bvalca3(mycat.Magnitude,obj.ZG.inb1);
+            bv =  bvalca3(obj.RawCatalog.Magnitude,obj.ZG.inb1);
             obj.ZG.bo1 = bv;
             %
             
@@ -221,7 +223,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             returnDesc = obj.ReturnDetails(:,2);
             returnUnits = obj.ReturnDetails(:,3);
             
-            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,mycat,obj.Grid, obj.EventSelector, numel(returnFields));
+            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,obj.RawCatalog,obj.Grid, obj.EventSelector, numel(returnFields));
             
             
             bvg(:,strcmp('delta_bval',returnFields))=bvg(:,strcmp('b_value_2',returnFields)) - bvg(:,strcmp('b_value_1',returnFields));
@@ -358,12 +360,12 @@ classdef bcrossVt2 < ZmapSliceFunction
         end
     end
     methods(Static)
-        function h=AddMenuItem(parent, label)
+        function h=AddMenuItem(parent, catalogfn, label)
             % create a menu item
             if ~exist('label','var')
                 label='differential b';
             end
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)bcrossVt2);
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)bcrossVt2(catalogfn()));
         end
         
     end % static method

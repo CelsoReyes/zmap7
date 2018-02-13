@@ -1,5 +1,5 @@
 classdef ZmapGrid
-    % ZMAPGRID evenly-spaced X,Y grid with ability to be masked
+    % ZMAPGRID evenly-spaced X,Y [Z] grid with ability to be masked
     %
     % OBJ = ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) 
     % OBJ = ZMAPGRID(NAME, GPC_STRUCT)
@@ -120,10 +120,11 @@ classdef ZmapGrid
                         % also, assume it is requesting a 2d gid
                         
                         % 1st: FIGURE OUT ORIGIN POINT OF GRID
+                        ax=findobj(gcf,'Tag','mainmap_ax');
                         if use_shape
                             lonLatZ0=[myshape.X0 myshape.Y0];
                         else
-                            lonLatZ0=[mean(xlim(gca)), mean(ylim(gca))];
+                            lonLatZ0=[mean(xlim(ax)), mean(ylim(ax))];
                         end
                             
                         % 2nd: FIGURE OUT DELTAS
@@ -131,7 +132,7 @@ classdef ZmapGrid
                         
                         
                         % 3rd: FIGURE OUT LIMITS
-                        limsLonLatZ=[xlim(gca);ylim(gca)];
+                        limsLonLatZ=[xlim(ax);ylim(ax)];
                         
                         follow_meridians=strcmp(gridopt.dx_units,'deg');
                         obj.Units = gridopt.dx_units;

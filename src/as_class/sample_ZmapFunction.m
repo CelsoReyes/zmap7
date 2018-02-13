@@ -4,7 +4,7 @@ classdef sample_ZmapFunction < ZmapFunction
     % in the function that generates the figure where this function can be called:
     %
     %     % create some menu items...
-    %     h=sample_ZmapFunction.AddMenuItem(hMenu) %c reate subordinate to menu item with handle hMenu
+    %     h=sample_ZmapFunction.AddMenuItem(hMenu,@catfn) %c reate subordinate to menu item with handle hMenu
     %     % create the rest of the menu items...
     %
     %  once the menu item is clicked, then sample_ZmapFunction.interative_setup(true,true) is called
@@ -14,7 +14,6 @@ classdef sample_ZmapFunction < ZmapFunction
     
     properties
         OperatingCatalog={'primeCatalog','maepi'}; % catalog(s) containing raw data.
-        ModifiedCatalog='newt2'; % catalog to be modified after all calculations are done
     end
     
     properties(Constant)
@@ -40,13 +39,18 @@ classdef sample_ZmapFunction < ZmapFunction
     end
     
     methods
-        function obj=sample_ZmapFunction(radius, noiselevel,beclever)
+        function obj=sample_ZmapFunction(catalog, radius, noiselevel,beclever)
             % create a sample_ZmapFunction
+            
+            narginchk(1,inf); 
+            ZmapFunction.verify_catalog(catalog);
+            obj.RawCatalog=catalog;
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
             disp('sample.constructor');
-            if nargin==0
+            
+            if nargin<2
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
@@ -98,8 +102,6 @@ classdef sample_ZmapFunction < ZmapFunction
         function CheckPreconditions(obj)
             % check to make sure input catalogs meet this function's criteria
             disp('sample.CheckCatalogPreconditions')
-            obj.allEqCat=obj.getCat(1);
-            obj.mainShock=obj.getCat(2);
             
             assert(true==true, 'the laws of logic no longer apply.');
             % some random requirement examples.
@@ -140,11 +142,11 @@ classdef sample_ZmapFunction < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent)
+        function h=AddMenuItem(parent,catalogfn)
             % create a menu item
             disp('MenuItem in sample');
             h=uimenu(parent,'Label','testmenuitem',...
-                'Callback', @(~,~)sample_ZmapFunction()); %
+                'Callback', @(~,~)sample_ZmapFunction(catalogfn())); 
         end
     end % static methods
     

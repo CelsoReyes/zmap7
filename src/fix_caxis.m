@@ -2,8 +2,6 @@ classdef fix_caxis < ZmapFunction
     % fix_caxis sets the colorbar and sets min/max values
     
     properties
-        OperatingCatalog={}; % catalog(s) containing raw data.
-        ModifiedCatalog=''; % catalog to be modified after all calculations are done
         orientation; % index of the Orientations
         maxval;
         minval;
@@ -163,11 +161,11 @@ classdef fix_caxis < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent)
+        function h=AddMenuItem(parent,catalogfn)
             % create a menu item that will be used to call this function/class
             
             h=uimenu(parent,'Label','fix c-axes',...    CHANGE THIS TO YOUR MENUNAME
-                'Callback', @(~,~)fix_caxis()... CHANGE THIS TO YOUR CALLBACK
+                'Callback', @(~,~)fix_caxis(catalogfn())... CHANGE THIS TO YOUR CALLBACK
                 );
         end
         function ApplyIfFrozen(ax)

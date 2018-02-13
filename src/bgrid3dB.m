@@ -9,8 +9,6 @@ classdef bgrid3dB < ZmapGridFunction
     % turned into function by Celso G Reyes 2017
     
     properties
-        OperatingCatalog={'primeCatalog'};
-        ModifiedCatalog='newt2';
         
         R = 5;
         ni = ZG.ni;
