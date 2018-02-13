@@ -7,7 +7,10 @@ function plot_base_events(obj)
     end
     alleq = findobj(obj.fig,'Tag','all events');
     if isempty(alleq)
-        alleq=scatter(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','CData',[.76 .75 .8],'Tag','all events');
+        alleq=scatter(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.',...
+            'CData',[.76 .75 .8],...
+            'DisplayName','unselected events',...
+            'Tag','all events');
         alleq.ZData=obj.rawcatalog.Depth;
         alleq.HitTest='off';
     end

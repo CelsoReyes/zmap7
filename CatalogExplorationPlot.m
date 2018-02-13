@@ -38,9 +38,11 @@ classdef CatalogExplorationPlot < handle
             cl=c.(obj.color_by);
             cl=obj.colorFcn(cl);
             obj.ax
-            obj.myscatter=scatter3(obj.ax,[], [], [], [], []);
-            drawnow
+            %obj.myscatter=scatter3(obj.ax,[], [], [], [], []);
+            hold off;
+            %drawnow
             obj.myscatter=scatter3(obj.ax,x, y, z, s, cl);
+            obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
             if isempty(obj.curview)
                 view(obj.ax,2);
             else
@@ -78,14 +80,19 @@ classdef CatalogExplorationPlot < handle
                     case 'z_by'
                         doit('ZAxis','ZData', obj.z_by);
                     case 'size_by'
-                        set(obj.myscatter,'SizeData',obj.sizeFcn(c.(obj.size_by)));
+                        switch obj.size_by
+                            case 'Single Size'
+                                set(obj.myscatter,'SizeData',obj.sizeFcn(1));
+                            otherwise
+                                set(obj.myscatter,'SizeData',obj.sizeFcn(c.(obj.size_by)));
+                        end
                     case 'color_by'
-                    switch obj.color_by
-                        case 'Single Color' 
-                            set(obj.myscatter,'CData',obj.colorFcn(1));    
-                        otherwise
-                            set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
-                    end
+                        switch obj.color_by
+                            case 'Single Color'
+                                set(obj.myscatter,'CData',obj.colorFcn(1));
+                            otherwise
+                                set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
+                        end
                         
                 end
             end
@@ -119,9 +126,12 @@ classdef CatalogExplorationPlot < handle
                     else
                         obj.myscatter.(where) = seconds(c.(fld));
                     end
+                    enforce_linear_scale_if_necessary();
                 elseif islogical(c.(fld))
                     obj.myscatter.(where) = double(c.(fld));
                 else
+                    % if any value is less than 0, cannot use a log scale plot.
+                    enforce_linear_scale_if_necessary();
                     obj.myscatter.(where) = c.(fld);
                     switch(where(1))
                         case 'X'
@@ -131,8 +141,15 @@ classdef CatalogExplorationPlot < handle
                         case 'Z'
                             zlabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
                     end
-               end
-            end
+                end
+                function enforce_linear_scale_if_necessary()
+                    if any(c.(fld)<=0) && strcmp(obj.ax.([where(1) 'Scale']),'log')
+                        beep;
+                        disp(['enforcing linear ' where(1) 'Scale because of negative values']);
+                        obj.ax.([where(1) 'Scale'])='linear';
+                    end
+                end
+            end % DOIT
         end
     end
     methods(Hidden)
@@ -215,12 +232,13 @@ classdef CatalogExplorationPlot < handle
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
                     'Callback',{@obj.changeSize,sc});
             end
-            
+            uimenu(h,'Separator','on','Label','Single Size',...
+                'Callback',{@obj.changeSize,sc});
             
         end
         
         function colorContextMenu(obj,h,sc)
-            checkmask = strcmp(obj.axes_choices, obj.size_by);
+            checkmask = strcmp(obj.axes_choices, obj.color_by);
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
@@ -246,8 +264,17 @@ classdef CatalogExplorationPlot < handle
             function cb_axisscale(letter)
                 scales={'linear','log'};
                 prop=[letter 'Scale'];
+                
                 scales(strcmp(obj.ax.(prop),scales))=[];
-                obj.ax.(prop) = scales{1};
+                
+                % if any data is non-positive, axes must remain linear
+                if any(obj.myscatter.([letter 'Data']) <=0) && strcmp(scales{1},'log')
+                    beep
+                    disp(['enforcing linear ' prop ' because of negative values'])
+                    obj.ax.(prop) = 'linear'; 
+                else
+                    obj.ax.(prop) = scales{1};
+                end
             end
         end
         function change(obj,src,~,whatby)
@@ -288,6 +315,12 @@ classdef CatalogExplorationPlot < handle
                     obj.sizeFcn=@(x) normalize(x,2,8,@(x)x.^2 );
                 case 'Magnitude'
                     obj.sizeFcn=@mag2dotsize;
+                case 'Single Size'
+                    sz=num2str(round(mode(obj.myscatter.SizeData)));
+                    val = str2double(inputdlg('Choose Marker Size','',1,{sz}));
+                    if ~isempty(val) && ~isnan(val)
+                        obj.sizeFcn=@(x)val;
+                    end
                 otherwise
                     obj.sizeFcn=@(x) normalize(x,2,8,@(x)x.^2);
             end
