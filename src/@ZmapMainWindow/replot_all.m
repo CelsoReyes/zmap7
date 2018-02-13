@@ -12,7 +12,7 @@ function replot_all(obj,status)
     end
     
     obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
-    [obj.catalog,m]=obj.filtered_catalog();
+    [obj.catalog,md,ms,mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape
     
     %catChanged = ~strcmp(status,'CatalogUnchanged'); %only partially implemented
     %if catChanged
@@ -25,8 +25,9 @@ function replot_all(obj,status)
             % only reproject if the catalog is changed since memorizing
             if ~isequal(currcatsummary,obj.xscatinfo(k{j}))
                 
-                % store the projected catalog. only events within the strip and shape are stored
-                obj.xscats(k{j})=xs.project(obj.catalog);
+                % store the projected catalog. only events within the strip [ignoring shape] are stored
+                %
+                obj.xscats(k{j})=xs.project(obj.rawcatalog.subset(md));
                 %disp(obj.xscats(k{j}));
                 
                 % store the information about the current catalog used to project
@@ -43,11 +44,11 @@ function replot_all(obj,status)
     %end
     
     evs=findobj(obj.fig,'Tag','all events');
-    if all(m) 
+    if all(mall) 
         evs.Visible='off';
     else
-        evs.XData(m)=nan;
-        evs.XData(~m)=obj.rawcatalog.Longitude(~m);
+        evs.XData(mall)=nan;
+        evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
         evs.Visible='on';
     end
     %drawnow

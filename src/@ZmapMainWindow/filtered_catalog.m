@@ -1,10 +1,14 @@
-function [c,m]=filtered_catalog(obj)
+function [c, mdate, mshape, mall]=filtered_catalog(obj)
     % FILTERED_CATALOG apply range and area subsets to the catalog, returning result
-    m=obj.rawcatalog.Date>=obj.daterange(1) & obj.rawcatalog.Date<=obj.daterange(2);
+    % [c, mdate, mshape, mall]=filtered_catalog(obj)
+    mdate=obj.rawcatalog.Date>=obj.daterange(1) & obj.rawcatalog.Date<=obj.daterange(2);
     if ~isempty(obj.shape)
-        m=m & obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude);
+        mshape = obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude);
+    else
+        mshape=true(size(mdate));
     end
-    c=obj.rawcatalog.subset(m);
+    mall = mdate & mshape;
+    c=obj.rawcatalog.subset(mall);
     %c=c.subset(c.Date>=obj.daterange(1) & c.Date<=obj.daterange(2));
     %if ~isempty(obj.shape)
     %    c=c.subset(obj.shape.isInside(c.Longitude,c.Latitude));

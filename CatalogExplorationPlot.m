@@ -20,6 +20,7 @@ classdef CatalogExplorationPlot < handle
         
         function obj=CatalogExplorationPlot(ax, catalogFcn)
             % creates a plot with arbitrarily modifiable axes
+            % obj=CATALOGEXPLORATIONPLOT(ax, catalogFcn)
             obj.catalogFcn=catalogFcn;
             obj.set_valid_axes_choices();
             obj.set_conversions();

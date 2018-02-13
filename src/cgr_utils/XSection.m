@@ -84,7 +84,9 @@ classdef XSection
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
         end
-        
+        function ln = get.length_km(obj)
+            ln=deg2km(distance(obj.startpt,obj.endpt));
+        end
         function obj = change_width(obj, w, ax)
             obj.width_km=w;
             % get waypoints along the great-circle curve
@@ -201,6 +203,7 @@ classdef XSection
             ax.YLimMode=prev_ylimmode;
         end
         
+        % TODO add method to toggle between shape and not
         function h=plot_events_along_strike(obj,ax, catalog, noproject)
             % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
             %h=obj.plot_events_along_strike(ax, catalog, noproject)
