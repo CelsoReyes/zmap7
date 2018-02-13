@@ -15,5 +15,6 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     ax.Title=[];
     c=uicontextmenu('Tag',contextTag);
     uimenu(c,'Label','Open in new window','Callback',@(~,~)whichplotter.plot(obj.catalog));
+    addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
     ax.UIContextMenu=c;
 end

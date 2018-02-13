@@ -5,7 +5,6 @@ function plot_base_events(obj)
     if isempty(axm)
         axm=axes('Units','pixels','Position',obj.MapPos_L);
     end
-    
     alleq = findobj(obj.fig,'Tag','all events');
     if isempty(alleq)
         alleq=scatter(axm, obj.rawcatalog.Longitude, obj.rawcatalog.Latitude,'.','CData',[.76 .75 .8],'Tag','all events');
@@ -41,6 +40,7 @@ function plot_base_events(obj)
     uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
+    addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
     %{
     mapoptionmenu=uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
     uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...

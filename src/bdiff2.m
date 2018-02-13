@@ -323,12 +323,15 @@ classdef bdiff2
             
             pl =semilogy(obj.magsteps_desc,obj.bvalsum3,'sb');
             set(pl,'LineWidth',1.0,'MarkerSize',6,...
-                'MarkerFaceColor','w','MarkerEdgeColor','k','Tag','total events at or above magnitude');
+                'MarkerFaceColor','w','MarkerEdgeColor','k',...
+                'Tag','total events at or above magnitude',...
+                'DisplayName','Tot events > M(x)');
             hold on
             
             % plot discrete values
             semilogy(obj.magsteps_desc,obj.bval2,'^b','LineWidth',1.0,'MarkerSize',4,...
-                'MarkerFaceColor',[0.7 0.7 .7],'MarkerEdgeColor','k','Tag','DiscreteValuePlot');
+                'MarkerFaceColor',[0.7 0.7 .7],'MarkerEdgeColor','k',...
+                'Tag','DiscreteValuePlot','DisplayName','Discrete');
             
             
             % CALCULATE the diff in cum sum from the previous bin
@@ -344,13 +347,19 @@ classdef bdiff2
             
             % Marks the point of Mc
             
-            semilogy(obj.magsteps_desc(obj.index_low),obj.bvalsum3(obj.index_low)*1.5,'vb','LineWidth',1.0,'MarkerSize',7,'Tag','Mangitude of Completeness')
+            semilogy(obj.magsteps_desc(obj.index_low),...
+                obj.bvalsum3(obj.index_low)*1.5,...
+                'vb','LineWidth',1.0,'MarkerSize',7,...
+                'Tag','Mangitude of Completeness',...
+                'DisplayName','M_{comp}')
             
             text(obj.magsteps_desc(obj.index_low)+0.2,obj.bvalsum3(obj.index_low)*1.5,'Mc','FontWeight','bold','FontSize',ZG.fontsz.s,'Color','b')
             
             % plot line corresponding to B value
             
-            semilogy(obj.mag_zone,obj.f,'r','LineWidth',1 , 'Tag', 'linear fit');   % plot linear fit to backg
+            semilogy(obj.mag_zone,obj.f,'r','LineWidth',1 ,...
+                'Tag', 'linear fit',...
+                'DisplayName',sprintf('b-val fit: %g',obj.bw));   % plot linear fit to backg
             
             %pdf_calc;
             set(ax,'XLim',obj.myXLim);

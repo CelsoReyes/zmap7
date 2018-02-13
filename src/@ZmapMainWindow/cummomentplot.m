@@ -39,11 +39,12 @@ function cummomentplot(obj,tabgrouptag)
     uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)timeplot());
     c=uicontextmenu('tag','CumMom bg contextmenu');
     ax.UIContextMenu=c;
+    addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
     uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
     
     function cb_xstimeplot(~,~,xs)
         ZG=ZmapGlobal.Data;
-        ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog))
+        ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog));
         ZG.newt2.Name=sprintf('Events within %g km of %s - %s',xs.width_km,xs.startlabel,xs.endlabel);
         timeplot();
     end

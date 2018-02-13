@@ -24,7 +24,6 @@ classdef CatalogExplorationPlot < handle
             obj.set_valid_axes_choices();
             obj.set_conversions();
             obj.ax=ax;
-            addLegendToggleContextMenuItem(ax,ax,[],'top','below')
             
         end
         function scatter(obj, varargin)

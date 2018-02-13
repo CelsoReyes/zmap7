@@ -10,6 +10,7 @@ function fmdplot(obj, tabgrouptag)
     %mainax=obj.map_axes;
     bdiff2(obj.catalog,false,ax);
     
+    addLegendToggleContextMenuItem(ax,ax,[],'bottom','above')
     %mainax2=obj.map_axes;
     %assert(mainax==mainax2);
 end

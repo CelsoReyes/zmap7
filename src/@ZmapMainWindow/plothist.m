@@ -12,6 +12,7 @@ function plothist(obj, name, values, tabgrouptag)
         h.DisplayName='catalog';
         ax.YGrid='on';
         hold on
+        addLegendToggleContextMenuItem(ax,ax,[],'bottom','above');
         
     else
         h=findobj(ax,'Type','histogram');

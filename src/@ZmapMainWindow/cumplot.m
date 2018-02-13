@@ -51,7 +51,7 @@ function cumplot(obj, tabgrouptag)
     
     c=uicontextmenu('tag','CumPlot bg contextmenu');
     ax.UIContextMenu=c;
-    uimenu(c,'Label','Toggle Legend','Callback',@(~,~)legend(ax,'toggle'));
+    addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
     uimenu(c,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
     
     function cb_xstimeplot(~,~,xs)
