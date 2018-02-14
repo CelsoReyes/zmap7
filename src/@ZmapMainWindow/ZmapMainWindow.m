@@ -204,7 +204,7 @@ classdef ZmapMainWindow < handle
                 disp('pushing')
                 obj.pushState();
             end
-            [obj.catalog,obj.mdate,obj.mshape]=obj.filtered_catalog();
+            %[obj.catalog,obj.mdate,obj.mshape]=obj.filtered_catalog();
             obj.replot_all();
             watchoff
         end

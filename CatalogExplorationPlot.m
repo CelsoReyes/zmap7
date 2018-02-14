@@ -28,7 +28,7 @@ classdef CatalogExplorationPlot < handle
             addLegendToggleContextMenuItem(ax,ax,[],'top','below')
             
         end
-        function scatter(obj, varargin)
+        function scatter(obj, tag, varargin)
             c=obj.catalogFcn();
             x=c.(obj.x_by);
             y=c.(obj.y_by);
@@ -39,9 +39,10 @@ classdef CatalogExplorationPlot < handle
             cl=obj.colorFcn(cl);
             obj.ax
             %obj.myscatter=scatter3(obj.ax,[], [], [], [], []);
-            hold off;
+            %hold off;
             %drawnow
-            obj.myscatter=scatter3(obj.ax,x, y, z, s, cl);
+            delete(findobj(obj.ax,'Tag',tag));
+            obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Tag',tag);
             obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
             if isempty(obj.curview)
                 view(obj.ax,2);
@@ -107,40 +108,28 @@ classdef CatalogExplorationPlot < handle
                 DurationRulerClass='matlab.graphics.axis.decorator.DurationRuler';
                % NumericRulerClass='matlab.graphics.axis.decorator.NumericRuler';
                 
-                cur_name = axisH.Label.String;
-                cur_context = axisH.Label.UIContextMenu;
+                %cur_name = axisH.Label.String;
+                %cur_context = axisH.Label.UIContextMenu;
                 
                 if isa(c.(fld), 'datetime') && ~isa(axisH,DateTimeRulerClass)
+                    
                     obj.myscatter.(where) = years(c.(fld) - datetime(0,0,0,0,0,0,0));
+                    
                 elseif isa(c.(fld), 'duration') && ~isa(axisH,DurationRulerClass)
-                    if max(c.(fld)) > years(4)
-                    obj.myscatter.(where) = years(c.(fld));
-                    elseif max(c.(fld)) >= months(6)
-                    obj.myscatter.(where) = months(c.(fld));
-                    elseif max(c.(fld)) >= days(5)
-                        obj.myscatter.(where) = days(c.(fld));
-                    elseif max(c.(fld)) >= hours(3)
-                        obj.myscatter.(where) = hours(c.(fld));
-                    elseif max(c.(fld)) >= minutes(2)
-                        obj.myscatter.(where) = minutes(c.(fld));
-                    else
-                        obj.myscatter.(where) = seconds(c.(fld));
-                    end
+                    % convert durations to a numbers depending on max duration
+                    [obj.myscatter.(where), axisH.Label.String] = duration2numbers(c.(fld));
                     enforce_linear_scale_if_necessary();
+                    
                 elseif islogical(c.(fld))
+                    % plot as 1 and 0
                     obj.myscatter.(where) = double(c.(fld));
+                    
                 else
+                    
                     % if any value is less than 0, cannot use a log scale plot.
                     enforce_linear_scale_if_necessary();
                     obj.myscatter.(where) = c.(fld);
-                    switch(where(1))
-                        case 'X'
-                            xlabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
-                        case 'Y'
-                            ylabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
-                        case 'Z'
-                            zlabel(obj.ax, cur_name, 'uicontextmenu', cur_context,'interpreter','none');
-                    end
+                    
                 end
                 function enforce_linear_scale_if_necessary()
                     if any(c.(fld)<=0) && strcmp(obj.ax.([where(1) 'Scale']),'log')
@@ -149,6 +138,35 @@ classdef CatalogExplorationPlot < handle
                         obj.ax.([where(1) 'Scale'])='linear';
                     end
                 end
+                
+                function [n, scalename] = duration2numbers(d)
+                    % put the duration on a reasonable scale
+                    persistent logic
+                    if isempty(logicparts)
+                        % do change how durations are displayed, change this table
+                        logictable={... scalename , converterFcn , minValue
+                            'years', @years, years(4);
+                            'months',@months, months(6);
+                            'days',  @days, days(5);
+                            'hours', @hours, hours(3);
+                            'minutes', @minutes, minutes(2);
+                            'seconds', @seconds, seconds(-inf)};
+                        
+                        logic = cell2struct(logictable,{'name','fn','minval'},2);
+                    end
+                    idx = 1;
+                    mymax = max(d);
+                    
+                    % min_dur gives us the minimum duration value based on the index
+                    
+                    while mymax < logic(idx).minval
+                        idx = idx + 1;
+                    end
+                    
+                    scalename = logic(idx).name;
+                    n = logic(idx).fn(d);
+                end
+                
             end % DOIT
         end
     end

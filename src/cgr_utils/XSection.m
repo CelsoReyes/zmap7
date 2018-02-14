@@ -217,7 +217,7 @@ classdef XSection
             cep=CatalogExplorationPlot(ax,@()mycat);
             cep.y_by='Depth'; 
             cep.x_by='dist_along_strike_km';
-            cep.scatter();
+            cep.scatter('xsec_plot');
             ax.YDir='reverse';
             %{
             if isempty(h)
