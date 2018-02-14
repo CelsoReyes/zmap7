@@ -289,7 +289,7 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',[.7 .7 .7],'displayname','grid points','markersize',4,'marker','.'};
+            def_opts={'color',[.5 .5 .5],'displayname','grid points','markersize',4,'marker','+'};
             varargin=[def_opts,varargin];
             useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)

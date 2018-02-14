@@ -1,7 +1,5 @@
 function add_grid_menu(obj)
     % add grid menu for modifying ggrid in a ZmapMainWindow
-    GRIDPOINT.Marker='.';
-    GRIDPOINT.MarkerSize=15;
     parent = uimenu(obj.fig,'Label','Grid');
     uimenu(parent,'Label','Create Auto-Grid','Callback',@cb_autogrid);
     uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
@@ -11,19 +9,41 @@ function add_grid_menu(obj)
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid
-        obj=ZmapGlobal.Data;
-        [~] = create_grid(obj.shape.Points); % getting result forces program to pause until selection is complete
-        obj.Grid.plot(obj.map_axes,'markersize',15,'ActiveOnly')
+        %obj=ZmapGlobal.Data;
+        
+        if ~isempty(obj.Grid)
+            todel=findobj(obj.map_axes,'Tag',['grid_', obj.Grid.Name]);
+        else
+            todel=[];
+        end
+        delete(todel);
+        
+        obj.Grid = create_grid(...
+            obj.shape.Outline,...
+            false,... % do not follow meridians (km)
+            false... % do not trim to the shape
+            ); % getting result forces program to pause until selection is complete
+        obj.Grid.plot(obj.map_axes,'ActiveOnly')
         cb_refresh()
     end
     
     function cb_autogrid(~,~)
         % following assumes grid from main map
-        [obj.Grid,obj.gridopt]=autogrid(obj.catalog,true,true);
-        if ~isempty(obj.shape)
-            obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+        
+        if ~isempty(obj.Grid)
+            todel=findobj(obj.map_axes,'Tag',['grid_', obj.Grid.Name]);
+        else
+            todel=[];
         end
-        obj.Grid.plot(obj.map_axes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
+        delete(todel);
+        
+        [obj.Grid,obj.gridopt]=autogrid(obj.catalog,...
+            false,... % plot histogram
+            true... % put on map
+            );
+        obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+        obj.Grid.plot(obj.map_axes,'ActiveOnly');
+
     end
     
     function cb_autoradius(~,~)
@@ -45,7 +65,7 @@ function add_grid_menu(obj)
     function cb_refresh(~,~)
         delete(findobj(obj.fig,'Tag',['grid_',obj.Grid.Name]))
         obj.Grid=obj.Grid.MaskWithShape(obj.shape);
-        obj.Grid.plot(obj.map_axes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
+        obj.Grid.plot(obj.map_axes,'ActiveOnly')
     end
     
     function cb_clear(~,~)

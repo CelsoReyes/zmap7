@@ -14,7 +14,7 @@ function plotmainmap(obj)
             'Tag','active quakes','HitTest','off');
         eq.ZData=obj.catalog.Depth;
         if obj.catalog.Count > MAX_FOR_MARKER
-            eq.Marker='.'
+            eq.Marker='.';
         else
             eq.Marker='o';
         end
@@ -32,5 +32,9 @@ function plotmainmap(obj)
         obj.shape.plot(axm,@obj.shapeChangedFcn)
     end
     hold(axm,'off');
+    if ~isempty(obj.Grid)
+        obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+        obj.Grid.plot(obj.map_axes,'ActiveOnly');
+    end
     axm.Visible='on';
 end

@@ -194,7 +194,7 @@ classdef ShapeCircle < ShapeGeneral
             
             % set center using ginput, which reads the button down
             [x1,y1,b] = ginput(1);
-            sel_start=tic
+            sel_start=tic;
             
             
             
@@ -239,7 +239,7 @@ classdef ShapeCircle < ShapeGeneral
                 h(1).YData(2)=y2;
                 obj.Radius=deg2km(distance(y1,x1,y2,x2)); % assuming degrees.
                 h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
-                h(2).String=['Radius:' num2str(obj.Radius,4) ' km']
+                h(2).String=['Radius:' num2str(obj.Radius,4) ' km'];
                 %update the outline
                 [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:3:359)');
                 h(3).XData=lon;
@@ -247,16 +247,16 @@ classdef ShapeCircle < ShapeGeneral
             end
             function startCircle(~,ev)
                 disp('start circle!');
-                sel_start=tic
+                sel_start=tic;
             end
             function endCircle(~,ev)
                 cp=get(gca,'CurrentPoint');
-                sel_elapse=toc(sel_start);
-                disp(sel_elapse)
+                 sel_elapse=toc(sel_start);
+                % disp(sel_elapse)
                 if sel_elapse >=1 % prevent accidental click.
                     selected=true;
                 end
-                disp(ev)
+                % disp(ev)
             end
             
         end

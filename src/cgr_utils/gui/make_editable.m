@@ -294,7 +294,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         
         xlim(prevax.x);
         ylim(prevax.y);
-        intermedUpdateFn()
+        intermedUpdateFn();
         
     end
     

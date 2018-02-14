@@ -119,7 +119,9 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     write_string(t,'Scroll the mouse wheel to scale')
     if nargout > 0
         waitfor(f);
+        pgr =ZG.Grid;
     end
+    
     
     function adjust_grid(~,ev)
         % adjust grid spacing when mouse wheel is scrolled
@@ -136,7 +138,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     end
     
     function set_grid(~,~)
-        ZG.Grid=ZmapGrid(name,pgr.xs,pgr.ys,'deg');
+        ZG.Grid=ZmapGrid(name,pgr.xs, pgr.ys, 'deg');
         if FOLLOW_PARALLELS
             ZG.gridopt = struct('dx',deg2km(dx),'dy',deg2km(dy),'dx_units','deg','dy_units','deg',...
                 'dz',[],'dz_units','km');
@@ -169,7 +171,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         disp(pgr)
         
         % trim pgr to polygon before returning. Maybe I shouldn't!
-        if USEPOLY&&exist('trim_final_grid_to_shape','var')&&trim_final_grid_to_shape
+        if USEPOLY && exist('trim_final_grid_to_shape','var') && trim_final_grid_to_shape
             ll=polygon_filter(pts(:,1),pts(:,2),pgr.xs,pgr.ys,'inside');
             pgr.xs(~ll)=nan;
             pgr.ys(~ll)=nan;
@@ -213,9 +215,6 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
             %creates a meshgrid of size numel(lonValues) x numel(lats)
             [lonMat,latMat]=meshgrid(lonValues,lats);
             
-            
-            %lonCol=lonCol(:);
-            %latCol=latCol(:);
         else
             % when ignoring meridian lines, and aiming for an approximately constant distance,
             % the dLon at each latitude will differ.
