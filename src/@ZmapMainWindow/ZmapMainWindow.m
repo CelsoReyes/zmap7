@@ -7,7 +7,7 @@ classdef ZmapMainWindow < handle
         shape % used to subset catalog by selected area
         daterange % used to subset the catalog with date ranges
         Grid % grid that covers entire catalog area
-        gridopts % used to define the grid
+        gridopt % used to define the grid
         fig % figure handle
         xsgroup;
         xsections; % contains XSection 
@@ -65,6 +65,11 @@ classdef ZmapMainWindow < handle
             else
                 obj.rawcatalog=ZG.Views.primary;
             end
+            if isempty(obj.rawcatalog)
+                errordlg(sprintf('Cannot open the ZmapMainWindow: No catalog is loaded.\nFirst load a catalog into Zmap, then try again.'),'ZMap');
+                if isvalid(h),delete(h),end
+                error('No catalog is loaded');
+            end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             % initialize from the existing globals
             obj.Features=ZG.features;
@@ -72,7 +77,7 @@ classdef ZmapMainWindow < handle
             obj.shape=ZG.selection_shape;
             [obj.catalog,obj.mdate, obj.mshape]=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
-            obj.gridopts= ZG.gridopt;
+            obj.gridopt= ZG.gridopt;
             obj.xsections=containers.Map();
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
@@ -113,6 +118,7 @@ classdef ZmapMainWindow < handle
                 delete(h)
             end
             obj.create_all_menus(true);
+            add_grid_menu(obj);
         end
         
         %% METHODS DEFINED IN DIRECTORY
@@ -218,25 +224,26 @@ classdef ZmapMainWindow < handle
             
             obj.xsec_add(mytitle, xsec);
             
-            xsTabGroup = findobj(obj.fig,'Tag','xsections','-and','Type','uitabgroup');
-            
             mytab=findobj(obj.fig,'Title',mytitle,'-and','Type','uitab');
             if ~isempty(mytab)
                 delete(mytab);
             end
             
-            p = findobj(obj.fig,'Tag',xsTabGroup.Tag);
-            
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes,'Position',obj.MapPos_S);
-            mytab=uitab(p, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
+            mytab=uitab(obj.xsgroup, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
             
+            % keep tabs alphabetized
+            [~,idx]=sort({obj.xsgroup.Children.Title});
+            obj.xsgroup.Children=obj.xsgroup.Children(idx);
+           
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
             uimenu(c,'Label','Info','Callback',@(~,~) cb_info);
             uimenu(c,'Label','Change Width','Callback',@(~,~)cb_chwidth);
             uimenu(c,'Label','Change Color','Callback',@(~,~)cb_chcolor);
+            % uimenu(c,'Label','Swap Ends','Callback',@(~,~)cb_swapends); doesn't work(?)
             uimenu(c,'Label','Examine This Area','Callback',@(~,~)cb_cropToXS);
             uimenu(c,'Separator','on',...
                 'Label','Delete',...
@@ -278,6 +285,12 @@ classdef ZmapMainWindow < handle
                 xsec.plot_events_along_strike(ax,obj.xscats(mytitle),true);
                 ax.Title=[];
                 obj.replot_all('CatalogUnchanged');
+            end
+            
+            function cb_swapends()
+                xsec = xsec.swap_ends(axm);
+                obj.xsec_add(mytitle,xsec);
+                obj.replot_all();
             end
             
             function cb_chcolor()

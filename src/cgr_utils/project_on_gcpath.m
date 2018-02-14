@@ -30,14 +30,14 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     % create the curve
     [curvelats,curvelons]=gcwaypts(pt1(1),pt1(2),pt2(1),pt2(2),nlegs);
     gcDistances=deg2km(distance(pt1(1),pt1(2),curvelats,curvelons));
-    
     % find closest point for each event
     eqLats=projectedcat.Latitude;
     eqLons=projectedcat.Longitude;
     mindist=nan(size(eqLats));
     
     [projectedcat2, mindist2, arcpos] = tryit(projectedcat, curvelats, curvelons);
-    gcDist_km=arcpos.*max(gcDistances); % where along line is it
+    
+    gcDist_km=arcpos .* max(gcDistances); % where along line is it
 end
 
 

@@ -90,15 +90,19 @@ classdef ZmapGrid
             switch nargin
                 case 0
                     % don't do much of anything.
-                    obj.Units='unk'
+                    obj.Units='unk';
                 case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
                         warning('ZmapGrid works best when provided with X and Y matrices of points');
-                        assert(size(varargin{1},2)==2);
+                        
+                        assert(size(varargin{1},2) >= 2 && size(varargin{1},2) <=3);
                         obj.Units='unk';
                         obj.X=varargin{1}(:,1);
                         obj.Y=varargin{1}(:,2);
+                        if size(varargin{1},2)==3
+                            obj.Z = varargin{1}(:,3);
+                        end
                     elseif isstruct(varargin{1})
                         % ZMAPGRID( NAME, GRIDOPTIONS)
                         

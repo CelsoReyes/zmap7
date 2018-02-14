@@ -28,16 +28,16 @@ classdef XSection
         linewidth=2.0 % line width for cross section
         startlabel % label for start point
         endlabel % label for end point
-        curvelons %
-        curvelats
-        polylats
-        polylons
-        DeleteFcn
+        curvelons % longitudes that define the cross-section curve
+        curvelats % latitudes that define the cross-section curve
+        polylats % latitudes that define the polygon containing points within width of curve
+        polylons % longitudes that define the polygon containing points within width of curve
+        DeleteFcn % function that will remove the plotted polygon from the map
         
     end
     properties(Dependent)
-        length_km
-        azimuth
+        length_km % length of cross section [read only]
+        azimuth % direction 
     end
     
     methods
@@ -84,17 +84,25 @@ classdef XSection
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
         end
+        
         function ln = get.length_km(obj)
             ln=deg2km(distance(obj.startpt,obj.endpt));
         end
+        
         function obj = change_width(obj, w, ax)
+            % CHANGE_COLOR changes the width for the cross section and area outline
+            %
+            % obj = obj.CHANGE_WIDTH( WIDTH_KM, AZ)
+            
             obj.width_km=w;
+            
             % get waypoints along the great-circle curve
             [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
             
             % get width polygon
             [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
             obj.DeleteFcn();
+            
             % mask so that we can plot original quakes in original positions
            [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
@@ -102,6 +110,10 @@ classdef XSection
         end
             
         function obj = change_color(obj, color, ax)
+            % CHANGE_COLOR changes the color for the cross section and area outline
+            %
+            % obj = obj.CHANGE_COLOR(color, ax)
+            
             obj.color = color;
             obj.DeleteFcn();
             % mask so that we can plot original quakes in original positions
@@ -109,17 +121,44 @@ classdef XSection
             obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
         
+        function obj = swap_ends(obj, ax)
+            % SWAP_ENDS reverses the direction of the cross section
+            xxx = obj.startpt;
+            obj.startpt = obj.endpt;
+            obj.endpt = xxx;
+            
+            % get waypoints along the great-circle curve
+            [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
+            
+            % get width polygon
+            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
+            
+            obj.DeleteFcn();
+            % mask so that we can plot original quakes in original positions
+           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
+        end
+            
         function mask = inside(obj, catalog)
+            % INSIDE get a T/F vector, telling which events are within defined distance of xsection
+            %
+            % mask = obj.INSIDE(catalog)
+            
             mask=polygon_filter(obj.polylons,obj.polylats,catalog.Longitude,catalog.Latitude,'inside');
         end
         
         function c2 = project(obj,catalog)
             % PROJECT get a catalog with included events projected onto the cross section
+            % 
+            % projectedCat = obj.PROJECT(catalog)
+            
             c2=ZmapXsectionCatalog(catalog, obj.startpt, obj.endpt, obj.width_km);
         end
         
         function obj = set_endpoints(obj,ax)
-            % returns lat, lon where each is [start,end] along with handle used to pick endpoints
+            % SET_ENDPOINTS select beginning and ending point for cross section
+            %
+            % obj = obj.set_endpoints(AX) select segments with a mouse
             
             disp('click on start and end points for cross section');
             
@@ -128,21 +167,6 @@ classdef XSection
                 ptdetails = selectSegmentUsingMouse(ax, obj.color);
                 obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
                 obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
-                %{
-                [lon, lat] = ginput(1);
-                obj.startpt=[lat, lon];
-                hold(ax,'on');
-                h=plot(ax,lon,lat,'x-','linewidth',2,'MarkerSize',6,'Color',obj.color);
-                
-                % pick second point
-                [lon(2), lat(2)] = ginput(1);
-                
-                h.XData=lon;
-                h.YData=lat;
-                pause(.1);
-                delete(h);
-                obj.endpt=[lat(2), lon(2)];
-                %}
             else
                 error('expecting axes to be able to choose endpoints');
                 % get endpoints via dialog box
@@ -218,54 +242,48 @@ classdef XSection
             cep.y_by='Depth'; 
             cep.x_by='dist_along_strike_km';
             cep.scatter('xsec_plot');
+            ax.XLabel.String='Dist along strike [km]';
+            ax.XLim=[0 obj.length_km];
             ax.YDir='reverse';
-            %{
-            if isempty(h)
-                h=scatter(ax,...
-                    mycat.dist_along_strike_km,... X
-                    mycat.Depth,... Y
-                    mag2dotsize(mycat.Magnitude),... SIZE
-                    years(mycat.Date - min(mycat.Date)),... COLOR
-                    'Tag','ev_along_strike_plot');
-            else
-                set(h,'XData',mycat.dist_along_strike_km,...
-                    'YData',mycat.Depth,...
-                    'SizeData',mag2dotsize(mycat.Magnitude),...
-                    'CData',years(mycat.Date - min(mycat.Date)));
-            end
-            ax.YDir='reverse';
-            ax.XLim=[0 mycat.curvelength_km];
-            ax.XTickLabel{1}=obj.startlabel;
-            if ax.XTick(end) ~= mycat.curvelength_km
-                ax.XTick(end+1)=mycat.curvelength_km;
-                ax.XTickLabel{end+1}=obj.endlabel;
-            else
-                ax.XTickLabel{end}=obj.endlabel;
-            end
-            
-            grid(ax,'on');
-            xlabel(ax,'Distance along strike [km]');
-            ylabel(ax,'Depth [km]');
-            %}
             title(ax,sprintf('Profile: %s to %s',obj.startlabel,obj.endlabel));
         end
         
-        
-        function c = menu(obj,parent)
-            % DELETE
-            % CHANGE COLOR
-            % CHANGE WIDTH
-            % INFO
-            % PLOT ELSEWHERE
+        function gr = getGrid(obj, x_km, zs_km)
+            
+            if numel(x_km) == 1
+                % x_km is the delta spacing in km
+                % keep x_km/2 away from both edges to avoid edge effects
+                xDists_deg = km2deg( (x_km/2) : xSpacing_km : (obj.width_km - x_km/2));
+            else
+                xDists_deg = km2deg(x_km);
+            end
+            
+            [latout, lonout]=reckon(...
+                obj.startpt(1),obj.startpt(2),...
+                xDists_deg,...
+                azimuth(obj.startpt, obj.endpt)...
+                ); %#ok<CPROPLC>
+            
+            nPts = numel(latout(:));
+            nZs = numel(zs_km);
+            laloz=[latout(:), lonout(:), zeros(nPts,1)];
+            laloz=repmat(laloz,nZs,1);
+            for n=1:nZs
+                st = (n - 1) * nPts + 1;
+                ed = st + nPts;
+                laloz( st : ed , 3) = zs_km(n);
+            end
+            name=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
+            gr=ZmapGrid(name,laloz);
         end
-        
     end % METHODS
     
     methods(Static)
         
         function obj=initialize_with_dialog(ax, default_width)
-            %INITIALIZE_WITH_DIALOG
-            %obj=initialize_with_dialog(ax, catalog, default_width)
+            %INITIALIZE_WITH_DIALOG get a XSECTION, where parameters are determined via dialog box
+            %
+            %obj=XSECTION.INITIALIZE_WITH_DIALOG(ax, default_width)
             
             persistent lastletter
             persistent colororders

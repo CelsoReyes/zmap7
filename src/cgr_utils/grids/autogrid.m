@@ -72,7 +72,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         'CreateGrid',false); %should be done in conj. with GridParameterChoice
     
     zgrid=ZmapGrid('autogrid',gpc);
-    
+    f=gcf;
     if exist('dohist','var') && dohist
         figure('Name','Automatic Grid');
         histogram2(catalog.Longitude,catalog.Latitude,XEDGES,YEDGES);
@@ -81,6 +81,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         ylabel('Latitude')
         zlabel('# events')
     end
+    figure(f);
     if exist('plotOnMap','var') && plotOnMap
         zgrid.plot(mainmap('axes'));
     end

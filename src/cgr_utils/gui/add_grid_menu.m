@@ -1,7 +1,8 @@
-function add_grid_menu(parent)
-    % add grid menu for modifying global ZmapGrid
+function add_grid_menu(obj)
+    % add grid menu for modifying ggrid in a ZmapMainWindow
     GRIDPOINT.Marker='.';
     GRIDPOINT.MarkerSize=15;
+    parent = uimenu(obj.fig,'Label','Grid');
     uimenu(parent,'Label','Create Auto-Grid','Callback',@cb_autogrid);
     uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
     uimenu(parent,'Label','Create Auto-Radius','Callback',@cb_autoradius);
@@ -10,22 +11,19 @@ function add_grid_menu(parent)
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid
-        ZG=ZmapGlobal.Data;
-        [~] = create_grid(ZG.selection_shape.Points); % getting result forces program to pause until selection is complete
-        ax=mainmap('axes');
-        ZG.Grid.plot(ax,'markersize',15,'ActiveOnly')
+        obj=ZmapGlobal.Data;
+        [~] = create_grid(obj.shape.Points); % getting result forces program to pause until selection is complete
+        obj.Grid.plot(obj.map_axes,'markersize',15,'ActiveOnly')
         cb_refresh()
     end
     
     function cb_autogrid(~,~)
         % following assumes grid from main map
-        ZG=ZmapGlobal.Data;
-        m=mainmap();
-        [ZG.Grid,ZG.gridopt]=autogrid(m.Catalog(),true,true);
-        if ~isempty(ZG.selection_shape)
-            ZG.Grid = ZG.Grid.MaskWithShape(ZG.selection_shape);
+        [obj.Grid,obj.gridopt]=autogrid(obj.catalog,true,true);
+        if ~isempty(obj.shape)
+            obj.Grid = obj.Grid.MaskWithShape(obj.shape);
         end
-        ZG.Grid.plot(m.mainAxes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
+        obj.Grid.plot(obj.map_axes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
     end
     
     function cb_autoradius(~,~)
@@ -38,23 +36,21 @@ function add_grid_menu(parent)
             beep
             return
         end
-        [r, evselch] = autoradius(ZG.primeCatalog, ZG.Grid, minNum, pct, reach);
+        [r, evselch] = autoradius(obj.catalog, obj.Grid, minNum, pct, reach);
         ZG.ra=r;
         ZG.ni=minNum;
         ZG.GridSelector=evselch;
     end
     
     function cb_refresh(~,~)
-        ZG=ZmapGlobal.Data;
-        ax=mainmap('axes');
-        delete(findobj(gcf,'Tag',['grid_',ZG.Grid.Name]))
-        ZG.Grid=ZG.Grid.MaskWithShape(ZG.selection_shape);
-        ZG.Grid.plot(ax,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
+        delete(findobj(obj.fig,'Tag',['grid_',obj.Grid.Name]))
+        obj.Grid=obj.Grid.MaskWithShape(obj.shape);
+        obj.Grid.plot(obj.map_axes,'markersize',GRIDPOINT.MarkerSize,'ActiveOnly')
     end
+    
     function cb_clear(~,~)
-        ZG=ZmapGlobal.Data;
         try
-            ZG.Grid.delete();
+            obj.Grid = obj.Grid.delete();
         catch ME
             warning(ME.message)
         end
