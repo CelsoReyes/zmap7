@@ -38,7 +38,7 @@ function [xs, ys, values]=centers2edges(xs, ys, values)
         assert(nargout==nargin, 'Each input should have a corresponding output');
         % expand grid in each direction so that xs and ys are in the centers
         half_dx = diff(xs,[],2) ./ 2;
-        assert(all(half_dx(:)>0),'X vector should be in ascending order') 
+        assert(all(half_dx(~isnan(half_dx))>0),'X vector should be in ascending order') 
         half_dx = [-half_dx(:,1) , half_dx , half_dx(:,end)];
         xs=[xs(:,1), xs] + half_dx;
         xs(end+1,:)=xs(end,:);

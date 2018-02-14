@@ -53,17 +53,22 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end
     
     methods
-        function obj=cgr_bvalgrid(catalog, varargin)
+        function obj=cgr_bvalgrid(caller, catalog, varargin)
             
             narginchk(1,inf); 
             ZmapFunction.verify_catalog(catalog);
             obj.RawCatalog=catalog;
             
+            if ~isempty(caller)
+                obj.Grid = caller.Grid;
+                obj.gridOpts = caller.gridopt;
+            end
+                
             % create bvalgrid
             obj.active_col='b_value';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            if nargin<2
+            if nargin<3
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
@@ -89,7 +94,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
                 zdlg.AddBasicHeader('Choose stuff');
                 zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
                                     'Choose the calculation method for Mc');
-                gop=obj.ZG.gridopt;
+                gop=obj.gridOpts;
                 zdlg.AddGridParameters('gridOpts',gop.dx,gop.dx_units,gop.dy,gop.dy_units,[],'');
                 zdlg.AddEventSelectionParameters('EventSelector',ceil(obj.Nmin*1.5), obj.ra,obj.Nmin);
                 zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
@@ -121,10 +126,13 @@ classdef cgr_bvalgrid < ZmapGridFunction
             obj.EventSelector=res.EventSelector;
             obj.gridOpts=res.gridOpts;
             obj.useBootstrap=res.useBootstrap;
+            if isempty(obj.Grid) || obj.gridOpts.CreateGrid
+               obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
+            end
         end
         
         function CheckPreconditions(obj)
-            % check to make sure any inportant conditions are met.
+            % check to make sure any important conditions are met.
             % for example,
             % - catalogs have what are expected.
             % - required variables exist or have valid values
@@ -237,10 +245,10 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, catalogfn)
+        function h=AddMenuItem(parent, caller, catalogfn)
             % create a menu item
             label='Mc, a- and b- value map';
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(catalogfn()));
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(caller, catalogfn()));
         end
         
     end % static methods
