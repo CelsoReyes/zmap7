@@ -1,6 +1,5 @@
 classdef CatalogExplorationPlot < handle
-    % CATALOGEXPLORATIONPLOT create a plot where x,y,z,color, and size are
-    % modifiable
+    % CATALOGEXPLORATIONPLOT create a plot where x,y,z,color, and size are modifiable
     properties
         x_by='Latitude';
         y_by='Longitude';
@@ -123,7 +122,9 @@ classdef CatalogExplorationPlot < handle
                 elseif islogical(c.(fld))
                     % plot as 1 and 0
                     obj.myscatter.(where) = double(c.(fld));
-                    
+                elseif iscell(c.(fld))
+                    warndlg(['These data [' fld '] are stored in cells, and are therefore not plottable']);
+                    obj.myscatter.(where) = nan(size(c.(fld)));
                 else
                     
                     % if any value is less than 0, cannot use a log scale plot.
@@ -132,10 +133,14 @@ classdef CatalogExplorationPlot < handle
                     
                 end
                 function enforce_linear_scale_if_necessary()
-                    if any(c.(fld)<=0) && strcmp(obj.ax.([where(1) 'Scale']),'log')
+                    xyzscale=[where(1) 'Scale'];
+                    if iscell(c.(fld))
                         beep;
-                        disp(['enforcing linear ' where(1) 'Scale because of negative values']);
-                        obj.ax.([where(1) 'Scale'])='linear';
+                        obj.ax.(xyzscale)='linear';
+                    elseif any(c.(fld)<=0) && strcmp(obj.ax.(xyzscale),'log')
+                        beep;
+                        disp(['enforcing linear ' xyzscale ' because of negative values']);
+                        obj.ax.(xyzscale)='linear';
                     end
                 end
                 
