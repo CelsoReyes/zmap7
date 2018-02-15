@@ -15,21 +15,18 @@ classdef cgr_bvalgrid < ZmapGridFunction
     %
     
     properties
-        ni = ZmapGlobal.Data.ni 
-        ra = 25 % ZmapGlobal.Data.ra;
-        Nmin = 50 
+        % ni = ZmapGlobal.Data.ni
+        % ra = 25 % ZmapGlobal.Data.ra;
+        Nmin = 50
         fMcFix=1.0  %2.2
-        nBstSample=100 
+        nBstSample=100
         useBootstrap  % perform bootstrapping?
         fMccorr = 0.2  % magnitude correction
         fBinning = 0.1  % magnitude bins
-        EventSelector 
-        gridOpts = ZmapGlobal.Data.gridopt 
-        %bUseNiEvents= true;
+        EventSelector
         mc_choice
-        Grid = ZmapGlobal.Data.Grid % actual grid[X Y;...], created from gridOpts
-        %xvect %valid x values for grid
-        %yvect %valid y values for grid
+        Grid % actual grid[X Y;...], created from gridOpts
+        Shape
     end
     
     properties(Constant)
@@ -53,22 +50,29 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end
     
     methods
-        function obj=cgr_bvalgrid(caller, catalog, varargin)
+        function obj=cgr_bvalgrid(zap, varargin)
+            % CGR_BVALGRID 
+            % obj = CGR_BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            %
+            % obj = CGR_BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
             
-            narginchk(1,inf); 
-            ZmapFunction.verify_catalog(catalog);
-            obj.RawCatalog=catalog;
-            
-            if ~isempty(caller)
-                obj.Grid = caller.Grid;
-                obj.gridOpts = caller.gridopt;
+            if ~exist('zap','var') || isempty(zap)
+                zap = ZmapAnalysisPkg.fromGlobal();
             end
-                
+            
+            ZmapFunction.verify_catalog(zap.Catalog);
+            
+            obj.EventSelector = zap.EventSel;
+            obj.RawCatalog = zap.Catalog;
+            obj.Grid = zap.Grid;
+            size(obj.Grid.ActiveGrid)
+            obj.Shape = zap.Shape;
+            
             % create bvalgrid
             obj.active_col='b_value';
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
-            if nargin<3
+            if nargin<2
                 % create dialog box, then exit.
                 obj.InteractiveSetup();
                 
@@ -89,30 +93,24 @@ classdef cgr_bvalgrid < ZmapGridFunction
             
             %% make the interface
             zdlg = ZmapDialog();
-            %zdlg = ZmapDialog(obj, @obj.doIt);
             
-                zdlg.AddBasicHeader('Choose stuff');
-                zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
-                                    'Choose the calculation method for Mc');
-                gop=obj.gridOpts;
-                zdlg.AddGridParameters('gridOpts',gop.dx,gop.dx_units,gop.dy,gop.dy_units,[],'');
-                zdlg.AddEventSelectionParameters('EventSelector',ceil(obj.Nmin*1.5), obj.ra,obj.Nmin);
-                zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
-                    're takes longer, but provides more accurate results');
-                zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...
-                    'Number of bootstraps to determine Mc');
-                zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
-                    'Min # events greater than magnitude of completeness (Mc)');
-                ... obj.basicEdit('fMcFix', 'Fixed Mc (affects only "Fixed Mc")',obj.fMcFix); %'ToolTipString','fixed magnitude of completeness (Mc)'
-                zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',obj.fMccorr,...
-                    'Correction term to be added to Mc');
+            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
+                'Choose the calculation method for Mc');
+            zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
+                're takes longer, but provides more accurate results');
+            zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...
+                'Number of bootstraps to determine Mc');
+            zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
+                'Min # events greater than magnitude of completeness (Mc)');
+            zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',obj.fMccorr,...
+                'Correction term to be added to Mc');
             
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
             if ~okPressed
                 return
             end
             obj.SetValuesFromDialog(res);
-            %obj.Grid = obj.ZG.Grid;
             obj.doIt()
         end
         
@@ -123,12 +121,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
             obj.nBstSample=res.nBstSample;
             obj.fMccorr=res.fMccorr;
             obj.ZG.inb1=res.mc_choice;
-            obj.EventSelector=res.EventSelector;
-            obj.gridOpts=res.gridOpts;
             obj.useBootstrap=res.useBootstrap;
-            if isempty(obj.Grid) || obj.gridOpts.CreateGrid
-               obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
-            end
         end
         
         function CheckPreconditions(obj)
@@ -136,28 +129,15 @@ classdef cgr_bvalgrid < ZmapGridFunction
             % for example,
             % - catalogs have what are expected.
             % - required variables exist or have valid values
-            if isempty(obj.Grid) || obj.gridOpts.CreateGrid
-               obj.Grid = ZmapGrid('BvalGrid',obj.gridOpts);
-            end
+            
             assert(~isempty(obj.Grid), 'No grid exists. please create one first');
         end
         
         function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
-            
-            % get the grid-size interactively and
-            % calculate the b-value in the grid by sorting
-            % thge seimicity and selectiong the ni neighbors
-            % to each grid point
+            % get the grid-size interactively and calculate the b-value in the grid by sorting the 
+            % seimicity and selectiong the ni neighbors to each grid point
             map = findobj('Name','Seismicity Map');
-            
-            %{
-            if obj.gridOpts.CreateGrid
-                % Select and create grid
-                pause(0.5)
-                obj.Grid = ZmapGrid('bvalgrid',obj.gridOpts);
-            end
-            %}
             
             % Overall b-value
             bv =  bvalca3(obj.RawCatalog.Magnitude, obj.ZG.inb1); %ignore all the other outputs of bvalca3
@@ -188,9 +168,9 @@ classdef cgr_bvalgrid < ZmapGridFunction
                 results=myvalues;
             end
             
-             function out=calculation_function(catalog)
+            function out=calculation_function(catalog)
                 % calulate values at a single point
-
+                
                 % Added to obtain goodness-of-fit to powerlaw value
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
                 [~, ~, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
@@ -215,29 +195,34 @@ classdef cgr_bvalgrid < ZmapGridFunction
                             a_value, a_value_std, ...
                             Additional_Runs_b_std, Additional_Runs_Mc_std] = ...
                             calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.ZG.inb1);
+                        % where Additiona_Runs_Mc_std = nBoot x [fMeanMag fBvalue fStdDev fAvalue];
                     else
+                        Mc_std=NaN;
                         Mc_value = NaN;
+                        a_value_std=NaN;
+                        Additional_Runs_b_std=NaN;
+                        Additional_Runs_Mc_std=NaN;
                         %fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
                     end
                 else
                     % Set standard deviation ofa-value to NaN;
-                    a_value_std= NaN; 
+                    a_value_std= NaN;
                     Mc_std = NaN;
                     Additional_Runs_b_std=NaN;
                     Additional_Runs_Mc_std=NaN;
                 end
-
+                
                 mab = max(catalog.Magnitude);
                 if isempty(mab); mab = NaN; end
-
+                
                 % Result matrix
                 out  = [Mc_value Mc_std nan nan, ... nan's were x and y
                     nan b_value b_value_std a_value a_value_std,... was rd
-                    prf mab Additional_Runs_b_std Additional_Runs_Mc_std nan]; % nan was nX
-            
+                    prf mab std(Additional_Runs_b_std) std(Additional_Runs_Mc_std(:,1)) nan]; % nan was nX
+                
             end
         end
-       
+        
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
             obj.ZG.Grid = obj.Grid; %TODO do we really write back the grid?
@@ -245,10 +230,10 @@ classdef cgr_bvalgrid < ZmapGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, caller, catalogfn)
+        function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Mc, a- and b- value map';
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(caller, catalogfn()));
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)cgr_bvalgrid(zapFcn()));
         end
         
     end % static methods

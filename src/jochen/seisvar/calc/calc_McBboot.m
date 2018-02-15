@@ -18,7 +18,7 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
     % fStd_Mc : 2nd moment of Mc distribution
     % fBvalue : Mean b-value of the bootstrap
     % fStd_B  : 2nd moment of b-value distribution
-    % fAvalue : Meana-value of the bootstrap
+    % fAvalue : Mean a-value of the bootstrap
     % fStd_A  : 2nd moment of a-value distribution
     % vMc     : Vector of Mc-values
     % mBvalue : Matrix of [fMeanMag fBvalue fStdDev fAvalue]

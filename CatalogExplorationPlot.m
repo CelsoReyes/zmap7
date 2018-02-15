@@ -27,7 +27,9 @@ classdef CatalogExplorationPlot < handle
             addLegendToggleContextMenuItem(ax,ax,[],'top','below')
             
         end
+        
         function scatter(obj, tag, varargin)
+            % scatter plot with interactive axes
             c=obj.catalogFcn();
             x=c.(obj.x_by);
             y=c.(obj.y_by);
@@ -61,8 +63,15 @@ classdef CatalogExplorationPlot < handle
         end
         
         function update(obj, specific)
+            % UPDATE updates the scatter plot, optionally changing only one axis (or color or size)
+            %
+            % obj.update() update all aspects of the scatter plot
+            % 
+            % obj.update( SPECIFIC ) updates only thes specific part of the plot, where SPECIFIC can
+            % be 'x_by', 'y_by', 'z_by', 'size_by', 'sin
+            % 
             c=obj.catalogFcn();
-            [obj.curview(1) obj.curview(2)] = view(obj.ax);
+            [obj.curview(1), obj.curview(2)] = view(obj.ax);
             if ~exist('specific','var')
                 set( obj.myscatter,...
                     'XData',c.(obj.x_by),...

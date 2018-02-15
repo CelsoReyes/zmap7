@@ -48,7 +48,7 @@ classdef ZmapGridFunction < ZmapFunction
             hold on
             
             % show grid centers, but don't make them clickable
-            gph=obj.Grid.plot();
+            gph=obj.Grid.plot(gca,'ActiveOnly');
             gph.Tag='pointgrid';
             gph.PickableParts='none';
             gph.Visible=tf2onoff(obj.showgridcenters);

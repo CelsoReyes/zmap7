@@ -208,7 +208,7 @@ classdef ZmapGrid
         end
         
         function points = ActiveGrid(obj)
-            points=obj.GridPoints(obj.ActivePoints,:);
+            points = obj.GridVector(obj.ActivePoints,:);
         end
         
         function obj = set.ActivePoints(obj, values)

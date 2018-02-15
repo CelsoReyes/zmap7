@@ -13,7 +13,6 @@ classdef ZmapMainWindow < handle
         xsections; % contains XSection 
         xscats; % ZmapXsectionCatalogs corresponding to each cross section
         xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
-        xs_tabs;
         prev_states=Stack(10);
         undohandle;
         Features;
@@ -50,15 +49,25 @@ classdef ZmapMainWindow < handle
     end
     methods
         function obj=ZmapMainWindow(fig,catalog)
+            if exist('fig','var') && isa(fig,'ZmapMainWindow') && ~isvalid(fig.fig)
+                % recreate the figure (?)
+                errordlg('unimplemented');
+                return
+            end
             if exist('fig','var') && ~isempty(fig)
                 delete(fig);
             end
+            
+            % set up figure
             h=msgbox('drawing the main window. Please wait');
+            
             obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
                 'pixels','Tag','Zmap Main Window','NumberTitle','off','visible','off');
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
             
             add_menu_divider()
+            
+            
             ZG=ZmapGlobal.Data;
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
@@ -144,6 +153,69 @@ classdef ZmapMainWindow < handle
             % get mainmap axes
             ax=findobj(obj.fig,'Tag','mainmap_ax');
         end
+        
+        function zp = map_zap(obj)
+            % MAP_ZAP create a ZmapAnalysis Pkg for the main window
+            % the ZmapAnalysisPkg can be used as inputs to the various processing routines
+            %
+            % zp = obj.MAP_ZAP()
+            %
+            % see also ZMAPANALYSISPKG
+            
+            evsel = EventSelectionChoice.quickshow();
+            zp = ZmapAnalysisPkg( [], obj.catalog,evsel,obj.Grid, obj.shape);
+        end
+        
+        function zp = xsec_zap(obj, xsTitle)
+            % XSEC_ZAP create a ZmapAnalysis Pkg from a cross section
+            % the ZmapAnalysisPkg can be used as inputs to the various processing routines
+            %
+            % zp = obj.XSEC_ZAP() create a Z.A.P. but use the currently active cross section as a guide
+            % zp = obj.XSEC_ZAP(xsTitle)
+            %
+            % see also ZMAPANALYSISPKG
+            
+            
+            % first, make sure a cross section exists!
+            if isempty(obj.xsections)
+                errordlg('There is no cross section to analyze. Aborting.');
+                zp=[];
+                return
+            end
+            
+            ZG=ZmapGlobal.Data;
+            
+            z_min = floor(min([0 min(obj.catalog.Depth)]));
+            z_max = round(max(obj.catalog.Depth) + 4.9999 , -1);
+            
+            zdlg = ZmapDialog([]);
+            if ~exist('xsTitle','var')
+                xsTitle=obj.xsgroup.SelectedTab.Title;
+            else
+                if ~any(strcmp(obj.xsections.keys,xsTitle))
+                    warndlg(sprintf('The requested cross section [%s] does not exist. Using selected tab.',xsTitle));
+                    xsTitle=obj.xsgroup.SelectedTab.Title;
+                end
+            end
+            xsIndex = find(strcmp(obj.xsections.keys,xsTitle));
+            zdlg.AddBasicPopup('xsTitle', 'Cross Section:', obj.xsections.keys, xsIndex, 'Choose the cross section');
+            zdlg.AddEventSelectionParameters('evsel', ZG.ni, ZG.ra, 1);
+            zdlg.AddBasicEdit('x_km','Horiz Spacing [km]', 5,'Distance along strike, in kilometers');
+            zdlg.AddBasicEdit('z_min','min Z [km]', z_min,'Shallowest gridpoint');
+            zdlg.AddBasicEdit('z_max','max Z [km]', z_max,'Deepest grid point, in kilometers');
+            zdlg.AddBasicEdit('z_delta','number of layers', round(z_max-z_min)+1,'Number of horizontal layers ');
+            [zans, okPressed] = zdlg.Create('Cross Section Sample parameters');
+            if ~okPressed
+                zp = [];
+                return
+            end
+            
+            zs_km = linspace(zans.z_min, zans.z_max, zans.z_delta);
+            gr = obj.xsections(xsTitle).getGrid(zans.x_km, zs_km);
+            zp = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
+            
+        end
+            
         
         function myTab = findOrCreateTab(obj, parent, title)
             % FINDORCREATETAB if tab doesn't exist yet, create it
@@ -546,7 +618,7 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
-            cgr_bvalgrid.AddMenuItem(submenu, obj, @()obj.catalog); %TOFIX make these operate with passed-in catalogs
+            cgr_bvalgrid.AddMenuItem(submenu, @()obj.map_zap); %TOFIX make these operate with passed-in catalogs
             %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
             %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
             %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
@@ -563,7 +635,7 @@ classdef ZmapMainWindow < handle
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
                 ...'Enable','off',...
-                'Callback', @(~,~)nlammap());
+                'Callback', @(~,~)nlammap(@()obj.xsec_zap));
             
             tmp=uimenu(submenu,'Label','b-value depth ratio grid',...
                 'Enable','off',...

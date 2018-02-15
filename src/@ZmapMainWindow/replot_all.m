@@ -5,6 +5,11 @@ function replot_all(obj,status)
     % if something changes the layout, but catalog is unchanged
     % then, set status to 'CatalogUnchanged'
     
+    if ~isvalid(obj.fig)
+        errordlg('Figure associated with this ZmapMainWindow has been deleted!');
+        return
+    end
+    
     obj.replotting=true;
     % reevaluate cross section catalogs
     if ~exist('status','var')
@@ -83,4 +88,16 @@ function replot_all(obj,status)
     lrTabGroup.Visible='on';
     urTabGroup.Visible='on';
     drawnow
+    
+    % rearrange main axes items into specific order
+    ch=obj.map_axes.Children;
+    items.map = startsWith(get(ch,'Tag'),'mainmap_');
+    items.grid = startsWith(get(ch,'Tag'),'grid_');
+    items.shape = startsWith(get(ch,'Tag'),'shape');
+    items.bgevents = strcmp(get(ch,'Tag'),'all events');
+    items.fgevents = strcmp(get(ch,'Tag'),'active quakes');
+    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents);
+    %obj.map_axes.Children = [ ch(items.grid); ch(items.map); ch(items.bgevents); ch(items.other); ch(items.fgevents); ch(items.shape)];
+    obj.map_axes.Children = [  ch(items.shape); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];
+    
 end

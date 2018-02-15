@@ -230,7 +230,6 @@ classdef XSection
         % TODO add method to toggle between shape and not
         function h=plot_events_along_strike(obj,ax, catalog, noproject)
             % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
-            %h=obj.plot_events_along_strike(ax, catalog, noproject)
             if exist('noproject','var') && isa(catalog,'ZmapXsectionCatalog') && noproject
                 mycat=catalog;
             else
@@ -238,18 +237,8 @@ classdef XSection
             end
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
             h=findobj(ax,'Tag','ev_along_strike_plot');
-            %cep=CatalogExplorationPlot(ax,@()mycat);
             cep=XSectionExplorationPlot(ax,@()mycat,obj);
-            %cep.y_by='Depth'; 
-            %cep.x_by='dist_along_strike_km';
             cep.scatter('xsec_plot');
-            %{
-            % make the plot pretty.
-            ax.XLabel.String='Dist along strike [km]';
-            ax.XLim=[0 obj.length_km];
-            ax.YDir='reverse';
-            title(ax,sprintf('Profile: %s to %s',obj.startlabel,obj.endlabel));
-            %}
         end
         
         function gr = getGrid(obj, x_km, zs_km)
