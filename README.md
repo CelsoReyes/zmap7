@@ -45,6 +45,9 @@ This is where most of the work will happen.  The screen is divided into several 
 
 The plots on the right side of the screen will reflect statistics for the entire catalog.
 
+#### map features
+Several features are plotted on the map along with the earthquakes. Which ones are shown can be controlled from the `Map Options` menu.  From here, you an also choose whether to view the map in 3D or toggle its aspect ratio to more-or-less match the geographic region.
+
 ### Selecting data of interest
 
 #### Select a region
@@ -61,7 +64,6 @@ While defining a circle, you'll see the radius.  This circle is an oval because 
 
 Once a shape is defined, then all other events fade into the background.
 ![Define a Circle - done](resources/img/circleselected.png)
-
 
 
 #### Working with a region
@@ -82,7 +84,7 @@ a *circle* has:
 
 ### Cross Sections
 
-#### Selecting a cross section
+#### Selecting cross sections
 
 One or more cross sections can be created. Cross sections are defined along
 great-circle arcs, and therefore may not appear as straight lines on the map.
@@ -101,11 +103,19 @@ The option `Examine this area` will change the shape to encompass the cross sect
 
 Right-Clicking on the axes labels will allow the axes to be changed to any of the available data fields associated with a catalog.  Additionally, Right-clicking on the data will allow you to change the coloring and size schemes.
 
-#### Map Features
+### Histogram Plots
+The binning for these plots can be changed through the axes' context menu.
+
+* `FMD` : frequency magnitude distribution plot. This plot reflects only the data within the selected region, and does not include cross-section specific details. Information contained in here can be further analyzed via the context menu.
 
 ### Cummulative plots
-when labeling plots containing catalog data, and you expect to do catalog cutting based on axes limits
-then assign the `field_units` class to the label's UserData.
+* `Cumplot` : show cumulative event count through time
+* `Moment` : show cumulative moment through time
+* `Time-Mag` : plot of magnitudes through time. (does not reflect cross-sections)
+* `Time-Depth` : plot of depths through time (does not reflect cross-sections)
+
+These plots can all be opened in another window, available for further analysis. To do so, right click on the data line of interest.  Additionally, the axes scaling for many plots can be toggled between linear and logarithmic.
+
 
 # Other stuff
 
