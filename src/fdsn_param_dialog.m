@@ -621,7 +621,9 @@ function Fetch_Callback(hObject, eventdata, handles)
         m.Name='Done';
         set(findobj(m,'Tag','MessageBox'),'String',...
             sprintf('Done Downloading. Found %d events',tmp.Count));
-        set(mybutton,'Enable','on','String','OK');
+        pause(.5);
+        delete(m);
+        %set(mybutton,'Enable','on','String','OK');
     end
     watchoff;
     
@@ -641,7 +643,8 @@ function Fetch_Callback(hObject, eventdata, handles)
     pause(.1)
     
     %name catalog
-    sdlg.prompt='Provide a catalog name (used in plots, files)';
+    %sdlg.prompt='Provide a catalog name (used in plots, files)';
+    sdlg.prompt=sprintf('Provide a catalog name for these %d events. ',tmp.Count);
     sdlg.value=ZG.primeCatalog.Name;
     [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
     cf=@()ZG.primeCatalog;

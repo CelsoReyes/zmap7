@@ -1,10 +1,14 @@
 # Zmap version 7.0 Readme
 
 ## About
-Summary
+Zmap version 7.0 represents a major rework of Zmap.
 
 ## Getting Started
-When you start Zmap...
+When you start Zmap you are presented with a welcome screen...
+![WelcomeScreen](resources/img/welcome_2018216.png)
+From here, you will first load a catalog (`data` menu), and then explore it.  Once a catalog is loaded, a summary of its contents will appear, and the buttons for `Edit Ranges` and `Explore` will become active.
+
+* `Edit Ranges` will bring up a screen that allows you to specify which part of the catalog will be analyzed [see Loading Data](#Loading)
 
 ### Work flow
 1. import data
@@ -14,13 +18,46 @@ When you start Zmap...
 
 
 ### Loading data
+From the welcome screen, choose the `data` menu, where you will be presented with several options including:
+* `Load Catalog (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resources/sample
 
-### Saving data
+* `FDSN web fetch` : retrieve a catalog from an FDSN web service
+
+* `Import Catalog from other formatted file` : this contains mostly unmaintained functions to import from other sources.
+
+Catalogs can also be imported from the `Catalog` menu on the main map interface.
+
+Upon importing data you may be presented with another dialog box that allows you to further constrain your data.
+ex.
+![Catalog Overview](resources/img/catalog_overview_20180216.png)
+
+Clicking on the `see distributions` button will show a few histograms that may help you decide where to set your parameters
+![Catalog Overview With Distributions](resources/img/catoverview_dist_20180216.png)
+
+### Selecting data of interest
+
+#### Select a region
+Regions can be selected in a few ways. Start by right-clicking in the map. Several options will be presented including :
+* `Set Polygon: Box` : select a rectangular region by clicking on two corners to define a box.
+* `Set Polygon: Irregular Shape`: select a region by creating a polygon with the mouse.  Anything other than a "normal" click will close the polygon.
+* `Set Circle` : Click and drag from the center of the circle out to some radius of interest.
+
+When any of the above choices have been made, only the events within the region (or _shape_) will be colored. The plots to the right will also change to reflect your selection.
+
+#### Changing your selection
+
+### Selectd a cross section
+
+Additionally, 
+* `Define X-section`: 
+![Circle]
 
 
 ## The Main interfaces
 
 ### Main Map Screen
+![MainMapScreen](resources/img/ZmapMainWindow_20180216.png)
+This is where most of the work will happen.  The screen is divided into several sections.  When first presented, 
 
 #### Map Features
 

@@ -48,7 +48,8 @@ function catalog = ZmapImportManager(fun, funArguments, varargin)
         setDefaultValues(ZG.primeCatalog);
         cf=@()ZG.primeCatalog;
         ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
-        [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+        ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.big_eq_minmag);
+        %[ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
         
         % OPTIONALLY CLEAR SHAPE
         if ~isempty(ZG.selection_shape)
