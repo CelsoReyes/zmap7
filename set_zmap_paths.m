@@ -7,7 +7,6 @@ path_list = [
     'dem';
     'zmapwww';
     'importfilters';
-    ...'m_map';
     'resources';
     });
     fullfile(hodi, 'resources', {'features';'sample';'focalmech'});

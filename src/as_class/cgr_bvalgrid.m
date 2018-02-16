@@ -136,7 +136,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
         function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             % get the grid-size interactively and calculate the b-value in the grid by sorting the 
-            % seimicity and selectiong the ni neighbors to each grid point
+            % seimicity and selecting the ni neighbors to each grid point
             map = findobj('Name','Seismicity Map');
             
             % Overall b-value

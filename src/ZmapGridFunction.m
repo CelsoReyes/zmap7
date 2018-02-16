@@ -1,6 +1,9 @@
 classdef ZmapGridFunction < ZmapFunction
     % ZMAPGRIDFUNCTION is a ZmapFunction that produces a grid of 1 or more results as output
     % and can be plotted on a map
+    %
+    % see also ZMAPFUNCTION
+    
     properties
         features='borders'; % features to show on the map, such as 'borders','lakes','coast',etc.
         active_col='';  % the name of the column of the results to be plotted
