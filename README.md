@@ -28,36 +28,78 @@ From the welcome screen, choose the `data` menu, where you will be presented wit
 Catalogs can also be imported from the `Catalog` menu on the main map interface.
 
 Upon importing data you may be presented with another dialog box that allows you to further constrain your data.
-ex.
+
 ![Catalog Overview](resources/img/catalog_overview_20180216.png)
 
 Clicking on the `see distributions` button will show a few histograms that may help you decide where to set your parameters
 ![Catalog Overview With Distributions](resources/img/catoverview_dist_20180216.png)
 
-### Selecting data of interest
-
-#### Select a region
-Regions can be selected in a few ways. Start by right-clicking in the map. Several options will be presented including :
-* `Set Polygon: Box` : select a rectangular region by clicking on two corners to define a box.
-* `Set Polygon: Irregular Shape`: select a region by creating a polygon with the mouse.  Anything other than a "normal" click will close the polygon.
-* `Set Circle` : Click and drag from the center of the circle out to some radius of interest.
-
-When any of the above choices have been made, only the events within the region (or _shape_) will be colored. The plots to the right will also change to reflect your selection.
-
-#### Changing your selection
-
-### Selectd a cross section
-
-Additionally, 
-* `Define X-section`: 
-![Circle]
 
 
 ## The Main interfaces
 
 ### Main Map Screen
+Once a catalog is loaded, you will be presented with the Main Window.
 ![MainMapScreen](resources/img/ZmapMainWindow_20180216.png)
-This is where most of the work will happen.  The screen is divided into several sections.  When first presented, 
+This is where most of the work will happen.  The screen is divided into several sections.  When first presented, all events will be hilighted, and the main map will take up the entirety of the left side of the window.
+
+The plots on the right side of the screen will reflect statistics for the entire catalog.
+
+### Selecting data of interest
+
+#### Select a region
+Regions can be selected in a few ways. Start by right-clicking in the map. Several options related to regions will be presented including :
+* `Set Polygon: Box` : select a rectangular region by clicking on two corners to define a box.
+* `Set Polygon: Irregular Shape`: select a region by creating a polygon with the mouse.  Anything other than a "normal" click will close the polygon.
+* `Set Circle` : Click and drag from the center of the circle out to some radius of interest.
+* `Clear Shape` : deletes the shape. all events are once again active.
+
+When any of the above choices have been made, only the events within the region (or _shape_) will be colored. All other events become grey dots.  The plots to the right will also change to reflect your selection.
+
+While defining a circle, you'll see the radius.  This circle is an oval because the map is distorted at this latitude.
+![Define a Circle - in progress](resources/img/circle_inprogress.png)
+
+Once a shape is defined, then all other events fade into the background.
+![Define a Circle - done](resources/img/circleselected.png)
+
+
+
+#### Working with a region
+Regions can be modified : scaled, dragged, points added, etc. by right-clicking on the shape itself.  Here are a list of current options (as of Feb 2017):
+* `info...` provide basic information about this region and the shape that defines it.
+
+* `Analyze EQ inside Shape`,  `Analyze EQ outside Shape`, and 
+`Compare Inside vs Outside` : all bring up a cumulative time plot window, from
+where further analysis is possible.
+
+* `edit shape` : activates the shape, allowing it to be dragged, resized (via scrollwheel), and, for some shapes, have individual points added, moved, or removed.
+Once you are done with the shape manipulations, select `Finished` from the same context menu. The changes will then be reflected in all the accompanying plots.
+
+* additional options may appear, depending upon the chosen shape. For example,
+a *circle* has:
+  * `Choose Radius` : allowing you to define a specific radius by typing.
+  * `Snap to N Events` : resizes the circle to encompass a specified number of events.
+
+### Cross Sections
+
+#### Selecting a cross section
+
+One or more cross sections can be created. Cross sections are defined along
+great-circle arcs, and therefore may not appear as straight lines on the map.
+To create a cross section, choose `Define X-section` from the map's context menu (that is, right click on the map). A dialog box will appear to allow the user to choose a width, specify cross-section labels, or override the color. Simple Labels are automatically generated.
+![Map with Cross Sections](resources/img/map_with_2p5xsec.png)
+
+The primary map will then shrink to accomodate a cross-section plot that will
+appear beneath the map.  In the above image, two cross sections were already made, and the third `C-C'` is in progress. 
+
+Notice, information about these cross sections appear on the plots to the right, with colors that match the cross section.
+
+#### Interacting with cross sections
+Both the tabs and the cross-section plots are fully interactive.
+Clicking on the tab for a cross-section provides the opportunity to see information about the cross section, or to change its width and color. 
+The option `Examine this area` will change the shape to encompass the cross section.  Deleting the cross section from this menu will also remove it from the map.
+
+Right-Clicking on the axes labels will allow the axes to be changed to any of the available data fields associated with a catalog.  Additionally, Right-clicking on the data will allow you to change the coloring and size schemes.
 
 #### Map Features
 
@@ -65,7 +107,7 @@ This is where most of the work will happen.  The screen is divided into several 
 when labeling plots containing catalog data, and you expect to do catalog cutting based on axes limits
 then assign the `field_units` class to the label's UserData.
 
-### 
+# Other stuff
 
 ## Concepts
 
