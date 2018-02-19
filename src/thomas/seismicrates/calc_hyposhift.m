@@ -31,7 +31,7 @@ if nDim
 end
 
 % reset random number generator
-rand('state',sum(100*clock));
+rng('shuffle');
 % create randomly uniform distributed errors within given errorbounds
 % mHyposhift=(randn(size(mCat,1),3).*2-1).*mDelta;
 % create hypocenters with normal distributed error

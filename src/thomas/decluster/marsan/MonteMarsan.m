@@ -51,7 +51,7 @@ mNumDeclus=[];
 Cat(:,10) = 0;
 
 % set the rand number generator state
-rand('state',sum(100*clock));
+rng('shuffle');
 
 % simulate parameter values and run the delcustering code
 for simNum = 1:numSim

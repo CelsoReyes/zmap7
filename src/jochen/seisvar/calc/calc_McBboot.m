@@ -49,7 +49,7 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
         % Get magnitudes
         vMags = mCatalog.Magnitude;
         % Reset randomizer
-        rand('state',sum(100*clock));
+        rng('shuffle');
         % Create bootstrap samples using bootstrap matlab toolbox
         %mMag_bstsamp = bootrsp(vMags,nSample);
         % Determine Mc uncertainty

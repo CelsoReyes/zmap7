@@ -205,8 +205,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Label','Change shape with latitude?',...
                     'Callback',@latscale);
                 obj.add_shape_specific_context(c,ax, changedFcn);
-                uimenu(c,...
-                    'Label','Clear shape','separator','on', 'Callback',@(~,~)ShapeGeneral.cb_clear);
+                %uimenu(c,'Label','Clear shape','separator','on', 'Callback',@(~,~)ShapeGeneral.cb_clear);
                 
                 function compare_in_out(src,ev)
                     beep;
@@ -354,7 +353,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             uimenu(submenu,'Separator','on',...
                 'Label','Load shape','Callback',@ShapeGeneral.cb_load);
             uimenu(submenu,'Label','Save shape','Callback',@ShapeGeneral.cb_save);
-            uimenu(submenu,'Label','Clear shape','Callback',@ShapeGeneral.cb_clear);
+            %uimenu(submenu,'Label','Clear shape','Callback',@ShapeGeneral.cb_clear);
             
             uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',ZG.debug);
             

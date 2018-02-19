@@ -37,9 +37,8 @@ function [A,B, S, err] = wls(x,y)
     %[B, A,err ] = ma(x',y');
     %b2 = -abs(B);
     
-    if sum(l) > 5
-        [p,S] = polyfit(wx(l),log10(wy(l)),1);
-    else
+    [p,S] = polyfit(wx(l),log10(wy(l)),1);
+    if sum(l) <= 5
         p = [NaN NaN] ;
     end
     A = p(2);

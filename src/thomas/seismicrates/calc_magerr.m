@@ -24,7 +24,7 @@ function [mCatNew, mMagShift] =calc_magerr(mCat,mDeltaMag)
 % end
 
 % reset random number generator
-rand('state',sum(100*clock));
+rng('shuffle');
 % create randomly distributed errors within given errorbounds
 mMagShift=roundn((rand(size(mCat,1),1)*2-1).*mDeltaMag,-1);
 

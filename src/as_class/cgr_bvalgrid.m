@@ -23,10 +23,7 @@ classdef cgr_bvalgrid < ZmapGridFunction
         useBootstrap  % perform bootstrapping?
         fMccorr = 0.2  % magnitude correction
         fBinning = 0.1  % magnitude bins
-        EventSelector
         mc_choice
-        Grid % actual grid[X Y;...], created from gridOpts
-        Shape
     end
     
     properties(Constant)

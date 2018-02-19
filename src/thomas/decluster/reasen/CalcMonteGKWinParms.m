@@ -1,6 +1,6 @@
 function [fSpace, fTime] = CalcMonteGKWinParms(fMagnitude)
 
-rand('state',sum(100*clock));
+rng('shuffle');
 mRndFactors_=rand(2,1);
 %disp('Using Gruenthal, pers. communication')
 fSpace1 = 10.^(0.1238*fMagnitude+0.983);

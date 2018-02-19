@@ -59,6 +59,9 @@ classdef(Abstract) ZmapFunction < handle
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
         FunctionCall='%unknown function call'; % text representation of the function call.
+        Grid % ZmapGrid
+        EventSelector % how to choose events for the grid points
+        Shape % shape to be used 
     end
     
     properties(Constant,Abstract)

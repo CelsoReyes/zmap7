@@ -1,6 +1,6 @@
 function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     % BVALCA3
-    % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method)
+    % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method, bo1)
     %
     % INPUT parameters
     % magnitudes     : Magnitude values
@@ -79,11 +79,20 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     bv=fix(100*p)/100;
     std_backg=fix(100*std_backg)/100;
     
-    % calculate probability [OF WHAT?]
-    b2 = p; n2 =  M1b(2);
-    n = no1+n2;
-    da = -2*n*log(n) + 2*no1*log(no1+n2*ZG.bo1/b2) + 2*n2*log(no1*b2/ZG.bo1+n2) -2;
-    pr = (1  -  exp(-da/2-2))*100; % probability
+    if nargout >=5
+        % calculate probability [OF WHAT?]
+        
+        if ~exist('bo1','var')
+            warning('provide bo1, which is overall bvalue to bvalca3 needed to calc pr');
+            bo1=ZG.bo1;
+        end
+    
+        b2 = p;
+        n2 =  M1b(2);
+        n = no1+n2;
+        da = -2*n*log(n) + 2*no1*log(no1+n2*bo1/b2) + 2*n2*log(no1*b2/bo1+n2) -2;
+        pr = (1  -  exp(-da/2-2))*100; % probability
+    end
     %catch ME
     %    warning(ME.message)
     %    disp('Error while evaluating bvalca3 - set to NaN');

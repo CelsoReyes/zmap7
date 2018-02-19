@@ -63,7 +63,7 @@ end
 
 % create synthetic catalogs to extimate significance level
 % reset random number generator
-rand('state',sum(100*clock));
+rng('shuffle');
 % rand('seed');
 if bSyn
     vPos=ceil(rand(nN,5000).*size(mCat0,1));

@@ -57,7 +57,7 @@ errDiff = raErr(2) - raErr(1);
 derrDiff = raDerr(2) - raDerr(1);
 
 % set the rand number generator state
-rand('state',sum(100*clock));
+rng('shuffle');
 
 P_Sim = .8:.01:1;
 numP = length(P_Sim);

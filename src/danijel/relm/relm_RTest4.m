@@ -65,7 +65,7 @@ if ~exist('bNormalized')
 end
 
 % Randomize
-rand('state',sum(100*clock));
+rng('shuffle');
 
 % Get the necessary data from the rate matrices and weight them properly
 [vLambdaH, vLambdaN, vNumberQuake] = relm_PrepareData(vRatesH, vRatesN, fMagThreshold);
