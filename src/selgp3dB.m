@@ -8,7 +8,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     ok_cancel=questdlg('Please selelct a polygon on the map', ...
         '3D grid selection', ...
         'OK','Cancel');
-    if isempty(ok_cancel) || strcmp(ok_cancel,'cancel')
+    if isempty(ok_cancel) || strcmp(ok_cancel,'Cancel')
         % calculate based on map outline?
         return
     end

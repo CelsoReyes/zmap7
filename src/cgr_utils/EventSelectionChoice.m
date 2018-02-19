@@ -195,7 +195,7 @@ classdef EventSelectionChoice < handle
     end
     
     methods(Static)
-        function evsel=quickshow(writeToGlobal,ni,ra,min_valid)
+        function [evsel, okPressed]=quickshow(writeToGlobal,ni,ra,min_valid)
             %quickhow will produce a simple ZmapDialog, writing
             % selcrit = evsel.quickshow() get parameters into the output
             % evsel.quickshow(true) writes results back to ZmapGlobal
@@ -218,16 +218,25 @@ classdef EventSelectionChoice < handle
             end
             esc=EventSelectionChoice(f,t,lcp,ni, ra, min_valid);
             evsel=esc.toStruct;
-            uicontrol('style','pushbutton','string','OK','callback',@cb);
+            inwidth=f.Position(3);
+            uicontrol('style','pushbutton','string','OK','callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
+            
+            uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
             uiwait(f);
             if exist('writeToGlobal','var') && writeToGlobal
                 ZG.ni=evsel.numNearbyEvents;
                 ZG.ra=evsel.radius_km;
             end
             % TODO set another global saying which method to use?
-            function cb(src,~)
+            
+            function ok_cb(src,~)
                 evsel=esc.toStruct;
+                okPressed=true;
                 delete(f)
+            end
+            function cancel_cb(src,~)
+                okPressed=false;
+                delete(f);
             end
         end
         

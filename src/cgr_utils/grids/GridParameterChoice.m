@@ -299,7 +299,7 @@ classdef GridParameterChoice < handle
     end
     
     methods(Static)
-        function quickshow()
+        function [gpc_out, okPressed] = quickshow()
             %quickly test  the ZmapDialog
             f=figure('Name','GridParameterChoice example',...
                 'Menubar','none',...
@@ -308,7 +308,27 @@ classdef GridParameterChoice < handle
                 );
             t='gpc'; lcp=[5 50]; A={2.3,'deg'}; B={-1.5,'deg'}; Z={.1,'km'};
             gpc=GridParameterChoice(f,t,lcp,A,B,Z);
-            uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(gpc.toStruct()));
+            
+            inwidth=f.Position(3);
+            uicontrol('style','pushbutton','string','OK','callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
+            
+            uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
+            uiwait(f);
+            
+            %uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(gpc.toStruct()));
+            
+            function ok_cb(src,~)
+                gpc_out=gpc;
+                %disp(gpc.toStruct);
+                okPressed=true;
+                delete(f)
+            end
+            
+            function cancel_cb(src,~)
+                okPressed=false;
+                delete(f);
+            end
+            
         end
         
         function h=helper(parent, position, defaultsXYZ, units)

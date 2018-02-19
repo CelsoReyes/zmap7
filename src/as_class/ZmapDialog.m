@@ -267,8 +267,8 @@ classdef ZmapDialog < handle
                 end
             end
             
-            obj.addCancelButton([dlgW-200 10 70 buttonSpace/2]);
-            obj.addOKButton([dlgW-90 10 70 buttonSpace/2]);
+            obj.addCancelButton([dlgW-80 10 70 buttonSpace/2]);
+            obj.addOKButton([dlgW-160 10 70 buttonSpace/2]);
             
             % checkboxes may have callbacks that affect other uicontrols' Enable status.
             % now that all uicontrols have been created, disable/enable as dictated by the
@@ -442,7 +442,7 @@ classdef ZmapDialog < handle
         
         function addOKButton(obj,position) % add it to Dialog
             % create "go" button -> modifies properties, closes figure, does calculation
-            uicontrol('style','pushbutton','String','go',...
+            uicontrol('style','pushbutton','String','OK',...
                 'Position',position,...
                 'Callback',@(src,~)obj.okDlg());
         end
@@ -450,7 +450,7 @@ classdef ZmapDialog < handle
         function addCancelButton(obj,position) %add it to Dialog
             % create "cancel" button -> leaves properties unchanged, closes figure
             
-            uicontrol('style','pushbutton','String','cancel',...
+            uicontrol('style','pushbutton','String','Cancel',...
                 'Position',position,...
                 'Callback',@(src,~)obj.clearDlg());
         end

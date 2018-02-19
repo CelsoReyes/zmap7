@@ -30,7 +30,6 @@ if nargin > 3, disp('Too many arguments!'), return; end
 % Initialize
 fMc = nan;
 fBvalue = nan;
-mBave = [];
 mMcBA = [];
 
 % Calculate b-with magnitude
