@@ -418,6 +418,7 @@ classdef bdiff2
             uimenu(c,'Label','Examine Nonlinearity (Keep Mc)','Callback',{@cb_nonlin_keepmc,catalog});
             uimenu(c,'Label','Show discrete curve', 'callback',@callbackfun_nodiscrete,'Checked','on');
             uimenu(c,'Label','Save values to file', 'Callback',{@calSave9,obj.magsteps_desc, obj.bvalsum3});
+            addAboutMenuItem();
             
             function callbackfun_recurrence(~,~)
                 global onesigma

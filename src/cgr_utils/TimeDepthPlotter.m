@@ -30,6 +30,7 @@ classdef TimeDepthPlotter
                     'NumberTitle','off', ...
                     ......
                     'Tag','time_depth_figure');
+                addAboutMenuItem();
                 ax=axes(f);
                 ax.Tag=tag;
             else

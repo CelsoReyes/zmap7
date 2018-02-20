@@ -12,8 +12,6 @@ classdef cgr_timeplot < ZmapFigureFunction
     %  and the results will be automatically calculated & plotted once they hit the "GO" button
     %
     
-   % error(not implemented)
-    
     properties
         % my properties
         mycat=ZmapCatalog();
@@ -42,7 +40,7 @@ classdef cgr_timeplot < ZmapFigureFunction
                 'NextPlot','replace', ...
                 'backingstore','on',...
                 'Visible','off', ...
-                'Position',position_in_current_monitor(ZG.map_len(1)-100, ZG.map_len(2)-20)) ]};
+                'Position',position_in_current_monitor(ZG.map_len(1)-100, ZG.map_len(2)-20)};
             
             
             % depending on whether parameters were provided, either run automatically, or

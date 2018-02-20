@@ -120,6 +120,7 @@ classdef (Sealed) CumTimePlot < handle
             
             add_menu_catalog(obj.catname,obj.viewname,false,gcf);
             add_cumtimeplot_zmenu(obj, mm)
+            addAboutMenuItem();
         end
         function plot_big_events(obj)
             % plot big events on curve

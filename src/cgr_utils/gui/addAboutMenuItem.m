@@ -3,6 +3,11 @@ function addAboutMenuItem()
     hAbout = findall(gcf,'Label','About ZMAP');
     if ~isempty(hAbout)
         delete(hAbout);
+        hAbout=[];
+    end
+    hAbout2 = findall(gcf,'Label','Report a ZMAP Issue');
+    if ~isempty(hAbout2)
+        delete(hAbout2);
     end
     if isempty(hAbout)
         mainhelp=findall(gcf,'Tag','figMenuHelp');
@@ -26,6 +31,7 @@ function reportIssue()
         errordlg('Need to determine where to report issues');
     end
 end
+
 function aboutZmapDialog()
     contributors = fileread('ZmapContributorList.txt');
     H = 400; W = 600;
@@ -45,7 +51,12 @@ function aboutZmapDialog()
     uicontrol(fig,'Style','Text',...
         'Units','pixels','Position',[B1 H-70 W-2*B1 20 ],...
         'FontSize',14,...
-        'String',sprintf('Min. MATLAB vers : %s - R%s',ZG.min_matlab_version, ZG.min_matlab_release));
+        'String',sprintf('%s %s',char(169),'1993 - 2018'));
+    
+    uicontrol(fig,'Style','Text',...
+        'Units','pixels','Position',[B1 285 250 20 ],...
+        'FontSize',12,...
+        'String',sprintf('Minimum MATLAB vers : %s - R%s',ZG.min_matlab_version, ZG.min_matlab_release));
     
     % contributors
     uicontrol(fig,'Style','Text',...

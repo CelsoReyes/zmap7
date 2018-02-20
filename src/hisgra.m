@@ -48,6 +48,7 @@ function hisgra(mycat, opt, ax)
             uimenu(op1,'Label','Change Number of Bins...','Callback',@callback_change_nBins);
             uimenu(op1,'Label','Change Bin Edges...','Callback',@callback_change_bVector);
             uimenu(op1,'Label','Default','Callback',@callback_reset);
+            addAboutMenuItem();
         end
         
         histogram(vari1, bins);

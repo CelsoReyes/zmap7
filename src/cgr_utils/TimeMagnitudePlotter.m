@@ -29,6 +29,7 @@ classdef TimeMagnitudePlotter
                     'NumberTitle','off', ...
                     ......
                     'Tag','time_mag_figure');
+                addAboutMenuItem();
                 ax=axes(f);
                 ax.Tag=tag;
             else
