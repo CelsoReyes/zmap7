@@ -37,6 +37,7 @@ classdef ZmapMessageCenter < handle
                     ['Choose an import option from the "Data" menu', newline,...
                     'data can be imported from .MAT files, from  ', newline,...
                     'formatted text files, or from the web       ']);
+                addAboutMenuItem();
             else
                 % put it in focus
                 figure(h)

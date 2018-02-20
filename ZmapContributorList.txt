@@ -1,0 +1,55 @@
+<html><u>Initial Author (from 1993 onward):</u>
+<html><b>Stefan Wiemer</b> 
+
+<html><u>2017-2018 Overhaul of entire ZMAP program:</u>
+<html><b>Celso Reyes</b>
+
+<html><u>Module and method Contributions by:</u>
+<html><i>in order of name frequency</i>
+Danijel Schorlemmer ~ca 2003
+Jochen Woessner
+Matt McDonnell mapseis
+David Eberhard mapseis (after Matt?)
+Carlos Adrian Vargas Aguillera - cm_and_cb_utilities
+Peter J. Acklam
+Denis Gilbert
+Morris Maynard
+Anders Brun
+Elmar Tarajan
+Deidre Byrne
+Michael W Mann
+Thomas van Stiphout
+Elvis Chen
+cpouillo
+Jiancang Zhuang
+Joaquim Luis - wrote Mirone?
+R. A. Baker '98
+Jan Simon [matlab]
+Joseph Kirk
+R Pawlowicz
+D. L. Hallman
+Bob Hamans
+R Cobb 11/94
+Quan Quach 12/12/07
+A Kim
+W Strumpf
+E Byrns
+L Job
+E Brown
+Annemarie
+M Hendrix - calendar2.m see matlab central
+D. Kroon
+Doug Harriman
+Brandon Kuczenski
+Colin Humphries
+Dave Mellinger
+Gerry Middleton '95
+T Debole
+Takeshi Ikuma
+Karaen Felzer 2007
+Ramon Zuñiga
+Alexander Allmann
+Guiseppe Cardillo
+Dahua Lin 2008
+A. M. Zoubir 1998
+D R Iskander 1998

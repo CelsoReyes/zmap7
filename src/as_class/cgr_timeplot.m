@@ -195,6 +195,7 @@ function CreateMenu(obj)
         
         uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
             'Callback',{@calSave7, xt, cumu2, as})
+        addAboutMenuItem();
     end
         
         function ClearFigure(obj)

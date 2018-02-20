@@ -228,7 +228,6 @@ classdef ZmapMainWindow < handle
         end
         
         
-        
         function cb_timeplot(obj)
             ZG=ZmapGlobal.Data;
             ZG.newt2=obj.catalog;
@@ -394,7 +393,7 @@ classdef ZmapMainWindow < handle
             if ~exist('force','var')
                 force=false;
             end
-            if ~isempty(h) && exist('force','var') && force
+            if ~isempty(h) && force
                 delete(h); h=[];
             end
             if isempty(h)
@@ -403,18 +402,12 @@ classdef ZmapMainWindow < handle
             obj.create_overlay_menu(force);
             %ShapeGeneral.AddMenu(gcf);
             %add_grid_menu(uimenu('Label','Grid'));
-            % %obj.create_select_menu(force);
             obj.catalog_menu(force);
-            % %obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
             
-            % add quit menu to main file menu
-            hQuit=findall(gcf,'Label','QuitZmap');
-            if isempty(hQuit)
-                mainfile=findall(gcf,'Tag','figMenuFile');
-                uimenu(mainfile,'Label','Quit Zmap','Separator','on',...
-                    'Callback',@(~,~)restartZmap);
-            end
+            addQuitMenuItem();
+            addAboutMenuItem();
+            
         end
         
         function create_overlay_menu(obj,force)
@@ -631,21 +624,14 @@ classdef ZmapMainWindow < handle
                 'Callback', @(~,~)bgrid3dB());
             
             uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
-                'Enable','off', 'Visible','off',...
-                'Callback',@(~,~)bcross('lo'));
+                'Enable','off', 'Visible','off', 'Callback',@(~,~)bcross('lo'));
             uimenu(submenu,'Label','Load a 3D b-value grid',...
-                'Enable','off', 'Visible','off',...
-                'Callback',@(~,~)myslicer('load')); %also had "sel = 'no'"
+                'Enable','off', 'Visible','off','Callback',@(~,~)myslicer('load')); %also had "sel = 'no'"
         end
         
         function create_map_p_menu(obj,parent)
             submenu  =   uimenu(parent,'Label','Mapping p-values');
             tmp=uimenu(submenu,'Label','p- and b-value map','Callback',@(~,~)bpvalgrid());
-            %uimenu(tmp,'Label','Calculate','Callback', @(~,~)bpvalgrid());
-            %uimenu(tmp,'Label','Load...',...
-            %    'Enable','off',...'
-            %    'Callback', @(~,~)bpvalgrid('lo'));
-            
             tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
             uimenu(tmp,'Label','Calculate','Callback',@(~,~)rcvalgrid_a2());
             uimenu(tmp,'Label','Load...',...
