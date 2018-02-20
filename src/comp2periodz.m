@@ -1,179 +1,213 @@
-function comp2periodz(catalog)
-    % This subroutine compares seismicity rates for two time periods.
+classdef comp2periodz < ZmapGridFunction
+    % COMP2PERIODZ compares seismicity rates for two time periods
     % The differences are as z- and beta-values and as percent change.
-    %   Stefan Wiemer 1/95
-    %   Rev. R.Z. 4/2001
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    
-    report_this_filefun(mfilename('fullpath'));
-    
-    % get the grid parameter
-    % initial values
-    %
-    dx = 1.00;
-    dy = 1.00 ;
-    ra = 5 ;
-    
-    t0b = min(catalog.Date);
-    teb = max(catalog.Date);
-    t1 = t0b;
-    t4 = teb;
-    t2 = t0b + (teb-t0b)/2;
-    t3 = t2+minutes(0.01);
-    
-    % get two time periods, along with grid and event parameters
-    zdlg=ZmapDialog([]);
-    zdlg.AddBasicHeader('Please define two time periods to compare');
-    zdlg.AddBasicEdit('t1','start period 1',t1,'start time for period 1');
-    zdlg.AddBasicEdit('t2','end period 1',t2,'end time for period 1');
-    zdlg.AddBasicEdit('t3','start period 2',t3,'start time for period 2');
-    zdlg.AddBasicEdit('t4','end period 2',t4,'end time for period 2');
-    zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, 50)
-    zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
-    [zans,okPressed]=zdlg.Create('Please choose rate change estimation option');
-    if ~okPressed
-        return
+    properties
+        t1 % start time for period 1
+        t2 % end time for period 1
+        t3 % start time for period 2
+        t4 % end time for period 2
+        binsize = ZmapGlobal.Data.bin_dur;
     end
-    t1=zans.t1; t2=zans.t2; t3=zans.t3; t4=zans.t4;
     
-    %TODO: pluck variables out of zans; tgl1:nEvents, tgl2:maxRadius
+    properties(Constant)
+        PlotTag='myplot';
+        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+            ...
+            ... % these are returned by the calculation function
+            'z_value','z-value', '';... #1 'valueMap'
+            'pct_change', 'percent change', 'pct';... #2  'per'
+            'beta_value', 'Beta value map','';... #3 'beta_map'
+            'Number_of_Events_1', 'Number of events in first period', '';... #4
+            'Number_of_Events_2', 'Number of events in second period', '';... #5
+            ...
+            ... % these are provided by the gridfun
+            'Radius_km','Radius','km';...# 'reso'
+            'x', 'Longitude', 'deg';...
+            'y', 'Latitude', 'deg';...
+            'max_mag', 'Maximum magnitude at node', 'mag';...
+            'Number_of_Events', 'Number of events in node', ''...
+            };
+    end
     
-    
-    % GO
-    tgl1=tgl1.Value;
-    tgl2=tgl2.Value;
-    prev_grid=prev_grid.Value;
-    create_grid=create_grid.Value;
-    load_grid=load_grid.Value;
-    save_grid=save_grid.Value;
-    my_calculate()
-    
-    
-    % get the grid-size interactively and
-    % calculate the b-value in the grid by sorting
-    % thge seimicity and selectiong the ni neighbors
-    % to each grid point
-    function my_calculate()
-        
-        %get new grid if needed
-        if load_grid == 1
-            [file1,path1] = uigetfile(['*.mat'],'previously saved grid');
-            if length(path1) > 1
-                
-                load([path1 file1])
-                plot(newgri(:,1),newgri(:,2),'k+')
+    methods
+        function obj=comp2periodz(zap, varargin)
+            % This subroutine compares seismicity rates for two time periods.
+            % The differences are as z- and beta-values and as percent change.
+            %   Stefan Wiemer 1/95
+            %   Rev. R.Z. 4/2001
+            
+            report_this_filefun(mfilename('fullpath'));
+            
+            if ~exist('zap','var') || isempty(zap)
+                zap = ZmapAnalysisPkg.fromGlobal();
             end
-        elseif load_grid ==0  &&  prev_grid == 0
-            selgp
-            if length(gx) < 4  ||  length(gy) < 4
-                errordlg('Selection too small! (Dx and Dy are in degreees! ');
-                return
+            
+            ZmapFunction.verify_catalog(zap.Catalog);
+            
+            obj.EventSelector = zap.EventSel;
+            obj.RawCatalog = zap.Catalog;
+            obj.Grid = zap.Grid;
+            obj.Shape = zap.Shape;
+            
+            obj.active_col = 'z_value';
+            
+            if nargin <2
+                % create dialog box, then exit.
+                obj.InteractiveSetup();
+            else
+                % run this function without human intervention
+                obj.doIt();
             end
+            
         end
         
-        itotal = length(newgri(:,1));
-        
-        %  make grid, calculate start- endtime etc.  ...
-        %
-        [t0b, teb] = catalog.DateRange() ;
-        n = catalog.Count;
-        tdiff = round((teb-t0b)/ZG.bin_dur);
-        loc = zeros(3, length(gx)*length(gy));
-        
-        % loop over  all points
-        %
-        i2 = 0.;
-        i1 = 0.;
-        bvg = [];
-        allcount = 0.;
-        wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name','rate grid - percent done');;
-        drawnow
-        %
-        bvg = nan(length(newgri(:,1)),4);
-        lt =  catalog.Date >= t1 &  catalog.Date < t2  | catalog.Date >= t3 &  catalog.Date <= t4;
-        aa_ = catalog.subset(lt);
-        
-        % loop over all points
-        for i= 1:length(newgri(:,1))
-            x = newgri(i,1);y = newgri(i,2);
-            allcount = allcount + 1.;
-            i2 = i2+1;
-            % calculate distance from center point and sort wrt distance
-            l = sqrt(((aa_(:,1)-x)*cosd(y)*111).^2 + ((aa_(:,2)-y)*111).^2 ) ;
-            [s,is] = sort(l);
-            b = aa_(is(:,1),:) ;       % re-orders matrix to agree row-wise
+        function InteractiveSetup(obj)
             
-            if tgl1 == 0   % take point within r
-                l3 = l <= ra;
-                b = b(l3,:);      % new data per grid point (b) is sorted in distanc
-                rd = ra;
-            else
-                % take first ni points
-                b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
-                l2 = sort(l); rd = l2(ni);
+            t0b = min(obj.RawCatalog.Date);
+            teb = max(obj.RawCatalog.Date);
+            obj.t1 = t0b;
+            obj.t4 = teb;
+            obj.t2 = t0b + (teb-t0b)/2;
+            obj.t3 = obj.t2+minutes(0.01);
+            
+            % get two time periods, along with grid and event parameters
+            zdlg=ZmapDialog([]);
+            zdlg.AddBasicHeader('Please define two time periods to compare');
+            zdlg.AddBasicEdit('t1','start period 1',obj.t1,'start time for period 1');
+            zdlg.AddBasicEdit('t2','end period 1',obj.t2,'end time for period 1');
+            zdlg.AddBasicEdit('t3','start period 2',obj.t3,'start time for period 2');
+            zdlg.AddBasicEdit('t4','end period 2',obj.t4,'end time for period 2');
+            zdlg.AddBasicEdit('binsize','Bin Size (days)',obj.binsize,'number of days in each bin');
+            %zdlg.AddEventSelectionParameters('eventsel', ZG.ni, ra, 50)
+            %zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
+            [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
+            if ~okPressed
+                return
+            end
+            
+            obj.SetValuesFromDialog(res)
+            
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj, res)
+            obj.t1=res.t1;
+            obj.t2=res.t2;
+            obj.t3=res.t3;
+            obj.t4=res.t4;
+            obj.binsize=res.binsize;
+        end
+        
+        function CheckPreConditions(obj)
+            assert(obj.t1 < obj.t2,'Period 1 starts before it ends');
+            assert(obj.t3 < obj.t4,'Period 2 starts before it ends');
+            assert(isa(obj.binsize,'duration'),'bin size should be a duration in days');
+        end
+        
+        % get the grid-size interactively and
+        % calculate the b-value in the grid by sorting
+        % the seimicity and selectiong the ni neighbors
+        % to each grid point
+        function results=Calculate(obj)
+            
+            %  make grid, calculate start- endtime etc.  ...
+            
+            lt =  (obj.RawCatalog.Date >= obj.t1 &  obj.RawCatalog.Date < obj.t2) ...
+                | (obj.RawCatalog.Date >= obj.t3 &  obj.RawCatalog.Date <= obj.t4);
+            obj.RawCatalog = obj.RawCatalog.subset(lt);
+            
+            
+            returnFields = obj.ReturnDetails(:,1);
+            returnDesc = obj.ReturnDetails(:,2);
+            returnUnits = obj.ReturnDetails(:,3);
+            
+            interval1_bins = obj.t1 : obj.binsize : obj.t2; % starts
+            interval2_bins = obj.t3 : obj.binsize : obj.t4; % starts
+            interval1_edges = [interval1_bins, interval1_bins(end)+obj.binsize];
+            interval2_edges = [interval2_bins, interval2_bins(end)+obj.binsize];
+            
+            
+            % loop over all points
+            
+            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,...
+                obj.RawCatalog, obj.Grid, obj.EventSelector, 5);
+            % bvg will contain : [z_value, pct_change beta_value nEvents1 nEvents2] 
+            
+            
+            
+            bvg(:,strcmp('x',returnFields))=obj.Grid.X(:);
+            bvg(:,strcmp('y',returnFields))=obj.Grid.Y(:);
+            bvg(:,strcmp('Number_of_Events',returnFields))=nEvents;
+            bvg(:,strcmp('Radius_km',returnFields))=maxDists;
+            bvg(:,strcmp('max_mag',returnFields))=maxMag;
+            
+            
+            myvalues = array2table(bvg,'VariableNames', returnFields);
+            myvalues.Properties.VariableDescriptions = returnDesc;
+            myvalues.Properties.VariableUnits = returnUnits;
+            
+            obj.Result.values=myvalues;
+            
+            obj.Result.period1.dateRange=[obj.t1 obj.t2];
+            obj.Result.period2.dateRange=[obj.t3 obj.t4];
+            
+            if nargout
+                results=myvalues;
+            end
+            % save data
+            
+            % plot the results
+            % old and valueMap (initially ) is the z-value matrix
+           
+            
+            %det =  'ast'; 
+            %ZG.shading_style = 'interp';
+            % View the b-value map
+            % view_ratecomp
+            
+            function out=calculation_function(b)
+                % calulate values at a single point 
+                % calculate distance from center point and sort wrt distance
+
+                idx_back =  b.Date >= obj.t1 &  b.Date < obj.t2 ;
+                [cumu1, ~] = histcounts(b.Date(idx_back),interval1_edges);
+                
+                idx_after =  b.Date >= obj.t3 &  b.Date <= obj.t4 ;
+                [cumu2, ~] = histcounts(b.Date(idx_after),interval2_edges);
+                
+                mean1 = mean(cumu1);        % mean seismicity rate in first interval
+                mean2 = mean(cumu2);        % mean seismicity rate in second interval
+                sum1 = sum(cumu1);          % number of earthquakes in the first interval
+                sum2 = sum(cumu2);          % number of earthquakes in the second interval
+                var1 = cov(cumu1);          % variance of cumu1
+                var2 = cov(cumu2);          % variance of cumu2
+                % remark (db): cov and var calculate the same value when applied to a vector
+                ncu1 = length(interval1_bins);         % number of bins in first interval
+                ncu2 = length(interval2_bins);         % number of bins in second interval
+                
+                as = (mean1 - mean2)/(sqrt(var1/ncu1 +var2/ncu2));
+                per = -((mean1-mean2)./mean1)*100;
+                
+                % beta nach reasenberg & simpson 1992, time of second interval normalised by time of first interval
+                bet = (sum2-sum1*ncu2/ncu1)/sqrt(sum1*(ncu2/ncu1));
+                
+                out = [as  per bet sum1 sum2];
                 
             end
-            [s,is] = sort(b.Date);
-            b = b(is(:,1),:) ;
-            
-            lt =  b.Date >= t1 &  b.Date < t2 ;
-            tback = b(lt,:);
-            [cumu1, xt1] = hist(tback(:,3),(t1:days(ZG.bin_dur):t2));
-            
-            lt =  b.Date >= t3 &  b.Date <= t4 ;
-            tafter = b(lt,:);
-            [cumu2, xt2] = hist(tafter(:,3),(t3:days(ZG.bin_dur):t4));
-            
-            mean1 = mean(cumu1);        % mean seismicity rate in first interval
-            mean2 = mean(cumu2);        % mean seismicity rate in second interval
-            sum1 = sum(cumu1);          % number of earthquakes in the first interval
-            sum2 = sum(cumu2);          % number of earthquakes in the second interval
-            var1 = cov(cumu1);          % variance of cumu1
-            var2 = cov(cumu2);          % variance of cumu2
-            % remark (db): cov and var calculate the same value when applied to a vector
-            ncu1 = length(xt1);         % number of bins in first interval
-            ncu2 = length(xt2);         % number of bins in second interval
-            
-            as = (mean1 - mean2)/(sqrt(var1/ncu1 +var2/ncu2));
-            per = -((mean1-mean2)./mean1)*100;
-            
-            % beta nach reasenberg & simpson 1992, time of second interval normalised by time of first interval
-            bet = (sum2-sum1*ncu2/ncu1)/sqrt(sum1*(ncu2/ncu1));
-            
-            bvg(allcount,:) = [as  per rd bet ];
-            waitbar(allcount/itotal)
-        end  % for newgr
+        end
+        function ModifyGlobals(obj)
+            obj.ZG.bvg = obj.Result.values;
+        end
+    end %methods
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='Compare two periods (z, beta, probabilty)';
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)comp2periodz(zapFcn()));
+        end
+    end % static methods
+end % classdef
+    
         
-        % save data
-        %
-        close(wai)
-        watchoff
-        
-        % plot the results
-        % old and valueMap (initially ) is the z-value matrix
-        %
-        normlap2=nan(length(tmpgri(:,1)),1)
-        normlap2(ll)= bvg(:,1);
-        valueMap=reshape(normlap2,length(yvect),length(xvect));
-        
-        normlap2(ll)= bvg(:,2);
-        per=reshape(normlap2,length(yvect),length(xvect));
-        
-        normlap2(ll)= bvg(:,3);
-        reso=reshape(normlap2,length(yvect),length(xvect));
-        
-        normlap2(ll)= bvg(:,4);
-        beta_map=reshape(normlap2,length(yvect),length(xvect));
-        
-        
-        
-        old = valueMap;
-        det =  'ast'; ZG.shading_style = 'interp';
-        % View the b-value map
-        storedcat=a;
-        replaceMainCatalog(aa_);
-        view_ratecomp
-    end
-end

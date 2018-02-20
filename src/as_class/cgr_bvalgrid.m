@@ -1,18 +1,5 @@
 classdef cgr_bvalgrid < ZmapGridFunction
-    % description of this function
-    %
-    %
-    % in the function that generates the figure where this function can be called:
-    %
-    %     % create some menu items...
-    %     h=cgr_bvalgrid.MenuItem(hMenu, ax) %c reate subordinate to menu item with handle hMenu
-    %     % create the rest of the menu items...
-    %
-    %  once the menu item is clicked, then cgr_bvalgrid.interative_setup(true,true) is called
-    %  meaning that the user will be provided with a dialog to set up the parameters,
-    %  and the results will be automatically calculated & plotted once they hit the "GO" button
-    %
-    %
+    % CGR_BVALGRID Generate a B-value grid
     
     properties
         % ni = ZmapGlobal.Data.ni
@@ -62,7 +49,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
             obj.EventSelector = zap.EventSel;
             obj.RawCatalog = zap.Catalog;
             obj.Grid = zap.Grid;
-            size(obj.Grid.ActiveGrid)
             obj.Shape = zap.Shape;
             
             % create bvalgrid
@@ -76,10 +62,6 @@ classdef cgr_bvalgrid < ZmapGridFunction
             else
                 % run this function without human interaction
                 obj.doIt();
-                %obj.CheckCatalogPreconditions();
-                %obj.Calculate();
-                %obj.plot();
-                %obj.ModifyGlobals();
             end
         end
         

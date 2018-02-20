@@ -594,7 +594,8 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping rate changes'...,...
                 ...'Enable','off'
                 );
-            uimenu(submenu,'Label','Compare two periods (z, beta, probabilty)','Callback',@(~,~)comp2periodz(obj.catalog));
+            
+            comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
             
             uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr(obj.catalog));
             % uimenu(submenu,'Label','Calculate a z-value cross-section','Callback',@(~,~)nlammap());

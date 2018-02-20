@@ -153,17 +153,17 @@ function view_ratecomp(det,valueMap)
         
         
         uimenu(op1,'Label','z-value map ',...
-            'callback',@callbackfun_005)
+            'callback',@callbackfun_005) % ('z value',old) 'ast'
         uimenu(op1,'Label','Percent change map',...
-            'callback',@callbackfun_006)
+            'callback',@callbackfun_006) % ('% change',per)
         uimenu(op1,'Label','Beta value map',...
-            'callback',@callbackfun_007)
+            'callback',@callbackfun_007) % ('beta',beta_map) [sic]
         
         uimenu(op1,'Label','Significance based on beta map',...
-            'callback',@callbackfun_008)
+            'callback',@callbackfun_008) %('beta',betamap) [sic]
         
         uimenu(op1,'Label','Resolution Map',...
-            'callback',@callbackfun_009)
+            'callback',@callbackfun_009) %('Radius [km]',reso);
         
         op1 = uimenu('Label','  Display ');
         uimenu(op1,'Label','Plot Map in Lambert projection', 'callback',@callbackfun_010)

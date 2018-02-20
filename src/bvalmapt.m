@@ -179,6 +179,9 @@ classdef bvalmapt < ZmapGridFunction
             myvalues.Properties.VariableUnits = returnUnits;
             
             obj.Result.values=myvalues;
+            
+            obj.Result.period1.dateRange=[obj.t1 obj.t2];
+            obj.Result.period2.dateRange=[obj.t3 obj.t4];
             if nargout
                 results=myvalues;
             end

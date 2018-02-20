@@ -37,7 +37,8 @@ E Byrns
 L Job
 E Brown
 Annemarie
-M Hendrix - calendar2.m see matlab central
+Thessa Tormann 2017
+M Hendrix - calendar2.m see MATLAB central
 D. Kroon
 Doug Harriman
 Brandon Kuczenski
