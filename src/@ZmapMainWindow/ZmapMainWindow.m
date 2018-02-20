@@ -591,15 +591,17 @@ classdef ZmapMainWindow < handle
             uimenu(submenu,'Label','Info on synthetic catalogs','Callback',@(~,~)web(['file:' hodi '/zmapwww/syntcat.htm']));
         end
         function create_mapping_rate_changes_menu(obj,parent)
-            submenu  =   uimenu(parent,'Label','Mapping rate changes'...,...
-                ...'Enable','off'
-                );
+            submenu  =   uimenu(parent,'Label','Mapping rate changes');
             
             comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
             
-            uimenu(submenu,'Label','Calculate a z-value map','Callback',@(~,~)inmakegr(obj.catalog));
+            uimenu(submenu,'Label','Calculate a z-value map',...
+                'Enable','off',...
+                'Callback',@(~,~)inmakegr(obj.catalog));
             % uimenu(submenu,'Label','Calculate a z-value cross-section','Callback',@(~,~)nlammap());
-            uimenu(submenu,'Label','Calculate a 3D  z-value distribution','Callback',@(~,~)zgrid3d('in',obj.catalog));
+            uimenu(submenu,'Label','Calculate a 3D  z-value distribution',...
+                'Enable','off',...
+                'Callback',@(~,~)zgrid3d('in',obj.catalog));
             %uimenu(submenu,'Label','Load a z-value grid (map-view)','Callback',@(~,~)loadgrid('lo'));
             %uimenu(submenu,'Label','Load a z-value grid (cross-section-view)','Callback',@(~,~)magrcros('lo'));
             %uimenu(submenu,'Label','Load a z-value movie (map-view)','Callback',@(~,~)loadmovz());
