@@ -349,9 +349,6 @@ classdef ZmapMainWindow < handle
                 if ~isempty(answer)
                     xsec=xsec.change_width(str2double(answer),axm);
                     obj.xsec_add(mytitle,xsec);
-                    %obj.xsections(mytitle)=xsec;
-                    %obj.xscats(mytitle)= xsec.project(obj.catalog);
-                    %obj.xscatinfo(mytitle)=obj.catalog.summary('stats');
                     
                 end
                 xsec.plot_events_along_strike(ax,obj.xscats(mytitle),true);
@@ -618,18 +615,8 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
-            cgr_bvalgrid.AddMenuItem(submenu, @()obj.map_zap); %TOFIX make these operate with passed-in catalogs
-            %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
-            %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
-            %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
-            %uimenu(tmp,'Label','Load...',...
-            %    'Enable','off',...
-            %   'Callback', @(~,~)bvalgrid('lo')); %map-view
-            
-            bvalmapt.AddMenuItem(submenu, @()obj.map_zap); %TOFIX make these operate with passed-in catalogs
-            %uimenu(submenu,'Label','differential b-value map (const R)',...
-                %'Callback', @(~,~)bvalmapt());
-            % uimenu('Label','Load differential b-value map (const R)', 'Callback', @(~,~)bvalmapt('lo'));
+            cgr_bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+            bvalmapt.AddMenuItem(submenu, @()obj.map_zap); 
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
                 ...'Enable','off',...
@@ -644,10 +631,10 @@ classdef ZmapMainWindow < handle
                 'Callback', @(~,~)bgrid3dB());
             
             uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',...
-                'Enable','off',...
+                'Enable','off', 'Visible','off',...
                 'Callback',@(~,~)bcross('lo'));
             uimenu(submenu,'Label','Load a 3D b-value grid',...
-                'Enable','off',...
+                'Enable','off', 'Visible','off',...
                 'Callback',@(~,~)myslicer('load')); %also had "sel = 'no'"
         end
         

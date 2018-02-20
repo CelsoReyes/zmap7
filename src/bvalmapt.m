@@ -1,12 +1,11 @@
 classdef bvalmapt < ZmapGridFunction
     properties
-        ra % radius
         t1 % start of timeperiod 1
         t2 % end of timeperiod 1
         t3 % start of timeperiod 2
         t4 % end of timeperiod 2
         minnu % minimum number of events/node/timeperiod
-        mc_choice % magnitude of completion method
+        useAutoMcomp=true;
     end
     properties(Access=private)
         duration_A
@@ -74,7 +73,12 @@ classdef bvalmapt < ZmapGridFunction
             ZmapFunction.verify_catalog(zap.Catalog);
             
             obj.EventSelector = zap.EventSel;
-            obj.ra = obj.EventSelector.radius_km;
+            if obj.EventSelector.useNumNearbyEvents
+                disp('This is designed to use events in constant radius instead of # of events.')
+                obj.EventSelector.useNumNearbyEvents=false;
+                obj.EventSelector.useEventsInRadius=true;
+            end
+            %obj.ra = obj.EventSelector.radius_km;
             obj.RawCatalog = zap.Catalog;
             obj.Grid = zap.Grid;
             obj.Shape = zap.Shape;
@@ -89,11 +93,11 @@ classdef bvalmapt < ZmapGridFunction
             t0b=min(obj.RawCatalog.Date());
             teb=max(obj.RawCatalog.Date());
             
-            t1 = t0b;
-            t4 = teb;
-            t2 = t0b + (teb-t0b)/2;
-            t3 = t2+0.01;
-            
+            obj.t1 = t0b;
+            obj.t4 = teb;
+            obj.t2 = t0b + (teb-t0b)/2;
+            obj.t3 = obj.t2+seconds(0.001);
+            %{
             sdlg.prompt='Start Time A : T1 = '; sdlg.value=t1;
             sdlg(2).prompt='End Time A : T2 = '; sdlg(2).value=t2;
             sdlg(3).prompt='Start Time B: T3 = '; sdlg(3).value=t3;
@@ -102,19 +106,28 @@ classdef bvalmapt < ZmapGridFunction
             [~,~,obj.t1,obj.t2,...
                 obj.t3,obj.t4,...
                 obj.minnu] = smart_inputdlg('differential b-value map', sdlg);
-            obj.duration_A = obj.t2-obj.t1;
-            obj.duration_B = obj.t4 - obj.t3;
+            %}
             
             %% make the interface
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
-                'Choose the calculation method for Mc');
+            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,'Choose the calculation method for Mc');
+            
+            zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
+                obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');
             %zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
             %    'Min # events greater than magnitude of completeness (Mc)');
-            zdlg.AddBasicEdit('ra', 'Constant radius [km]',obj.ra,...
-                'Correction term to be added to Mc');
+            
+            zdlg.AddBasicEdit('t1','Start Time A : ', obj.t1, 'Start time for first period');
+            zdlg.AddBasicEdit('t2','End Time A : ', obj.t2, 'End time for first period');
+            zdlg.AddBasicEdit('t3','Start Time B : ', obj.t3, 'Start time for Second period');
+            zdlg.AddBasicEdit('t4','End Time B :', obj.t4, 'Start time for Second period');
+            
+            zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.radius_km,...
+                'Radus used in calculation');
+            zdlg.AddBasicEdit('minnu', 'Minimum number of events in each period:', ...
+                obj.EventSelector.requiredNumEvents,'');
             
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
             if ~okPressed
@@ -126,10 +139,15 @@ classdef bvalmapt < ZmapGridFunction
         
         function SetValuesFromDialog(obj,res)
             %obj.ZG.inb2=res.useAutoMcomp;
-            %obj.useAutoMcomp=res.useAutoMcomp;
-            obj.ZG.inb1=res.mc_choice;
-            obj.mc_choice=res.mc_choice;
-            obj.ra=res.ra;
+            obj.useAutoMcomp=res.useAutoMcomp;
+            obj.EventSelector.radius_km=res.ra;
+            obj.t1 = res.t1;
+            obj.t2 = res.t2;
+            obj.t3 = res.t3;
+            obj.t4 = res.t4;
+            obj.minnu = res.minnu;
+            obj.duration_A = obj.t2 - obj.t1;
+            obj.duration_B = obj.t4 - obj.t3;
             % note, dx & dy were originally in degrees
         end
         
@@ -139,13 +157,12 @@ classdef bvalmapt < ZmapGridFunction
             % thge seimicity and selectiong the radius neighbors
             % to each grid point
             
-            
             returnFields = obj.ReturnDetails(:,1);
             returnDesc = obj.ReturnDetails(:,2);
             returnUnits = obj.ReturnDetails(:,3);
             
             % overall b-value
-            [bv, magco, ~   , av_unused,  ~] =  bvalca3(obj.RawCatalog.Magnitude,obj.mc_choice);
+            [bv, magco, ~   , av_unused,  ~] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);
             %ZG.bo1 = bv; 
             %no1 = obj.RawCatalog.Count;
             
@@ -190,18 +207,18 @@ classdef bvalmapt < ZmapGridFunction
                 
                 if  enough_1
                     % calculate magnitudes, bvalues, etc for events during this time frame
-                    [bv_1, magco_1, ~, av_1,  ~] =  bvalca3(catalog.Magnitude(idx_1), obj.mc_choice, bv);
+                    [bv_1, magco_1, ~, av_1,  ~] =  bvalca3(catalog.Magnitude(idx_1), obj.useAutoMcomp, bv);
                     
                 else
                     % calculate magnitudes, bvalues, etc forr *ALL* events, regardless of time
-                    [bv_1, magco_1, ~, ~,  ~] =  bvalca3(catalog.Magnitude, obj.mc_choice, bv);
+                    [bv_1, magco_1, ~, ~,  ~] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv);
                     av_1=NaN;
                     % pr = 50; % completely controlled by the 2nd time period, for some reason.
                 end
                 
                 if  enough_2
                     % calculate magnitudes, bvalues, etc for events during this time frame
-                    [bv_2, magco_2, ~, av_2,  pr] =  bvalca3(catalog.Magnitude(idx_2),obj.mc_choice,bv_1);
+                    [bv_2, magco_2, ~, av_2,  pr] =  bvalca3(catalog.Magnitude(idx_2), obj.useAutoMcomp,bv_1);
                     
                 else
                     av_2=NaN;
@@ -211,7 +228,7 @@ classdef bvalmapt < ZmapGridFunction
                         magco_2 = maco_1;
                     else
                         % calculate magnitudes, bvalues, etc forr *ALL* events, regardless of time
-                        [bv_2, magco_2, ~, ~, ~] =  bvalca3(catalog.Magnitude,obj.mc_choice, bv_1);
+                        [bv_2, magco_2, ~, ~, ~] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv_1);
                     end
                     pr = 50;
                 end
@@ -263,7 +280,7 @@ classdef bvalmapt < ZmapGridFunction
                 
                 % replace av values for grid points where there are not enough events.
                 tmp_av(~idx) = log10(idxVals(~idx,'nEvents_1')) + idxVals(~idx,'bval_1') .* idxVals(~idx,'magco_1');
-                rslt(:,rField('P6b'))=10.^(tmp_av - rVals('bval_1').* rfactor) ./ years(obj.duration_B);
+                rslt(:,rField('P6b'))=10.^(tmp_av - rVals('bval_1').* rfactor) ./ years(obj.duration_A);
                 rslt(~idx, rField('bval_1')) = NaN;
                 
                 % deal with this mysterious P6a
