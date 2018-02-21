@@ -619,7 +619,6 @@ classdef ZmapMainWindow < handle
                 'Callback', @(~,~)nlammap(@()obj.xsec_zap));
             
             bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
-            % uimenu(submenu,'Label','b-value depth ratio grid','Callback', @(~,~)bdepth_ratio());
             
             uimenu(submenu,'Label','Calc 3D b-value distribution',...
                 'Enable','off',...

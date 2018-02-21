@@ -1,4 +1,4 @@
-function mapdata_viewer(res,resfig)
+function mapdata_viewer(res,catalog,resfig)
     % MAPDATA_VIEWER (PROTOTYPE) explore map data
     % interactive data map, based on results in the table from a ZmapFunction
     % put mouse in DataMap, and choose a symbol key (such as o+v^shp*. )
@@ -25,7 +25,6 @@ function mapdata_viewer(res,resfig)
     %
     % RES is the results table
     % AX is 
-    ZG=ZmapGlobal.Data;
     tb = res.values; % perhaps get sample data from running an Mc, a- and b- calcualtion from the main map
     
     keyBindings.delete = 8; %backspace
@@ -33,12 +32,12 @@ function mapdata_viewer(res,resfig)
     keyBindings.quit = 27; %escape
     
     magsteps = .1;
-    magrange=ZG.(res.InCatalogName{1}).MagnitudeRange;
+    magrange=catalog.MagnitudeRange;
     binCenters= min(magrange) : magsteps : max(magrange);
     bvalBinEdges=[binCenters-(magsteps/2), binCenters(end)+(magsteps/2)];
     
     
-    deprange=[floor(min(ZG.(res.InCatalogName{1}).Depth)) ceil(max(ZG.(res.InCatalogName{1}).Depth))]
+    deprange=[floor(min(catalog.Depth)) ceil(max(catalog.Depth))];
     depBinEdges=[deprange(1):5:deprange(2) + 4.9];
     depBinCenters=depBinEdges(1:end-1) + 2.5;
     %bvalBinEdges=-1.15:.1:8.05; % magnitudes
@@ -102,7 +101,7 @@ function mapdata_viewer(res,resfig)
     evdepax=axes(f,'units','pixels','Position',[1025 400 225 250]);
     evdepax.Tag = 'dvEventsWidthDepth';
     evdepax.YDir='reverse';
-    evdepax.YLim=[min(ZG.(res.InCatalogName{1}).Depth) max(ZG.(res.InCatalogName{1}).Depth)];
+    evdepax.YLim=[min(catalog.Depth) max(catalog.Depth)];
     title(evdepax,'Depth Profile')
     xlabel('Number of events')
     ylabel('Depth');
@@ -265,7 +264,7 @@ function mapdata_viewer(res,resfig)
         % plot circle of radius showing events
         
         %% modify cum rate
-        theseEvents = ZG.(res.InCatalogName{1}).selectCircle(res.EventSelector,tb.x(i),tb.y(i));
+        theseEvents = catalog.selectCircle(res.EventSelector,tb.x(i),tb.y(i));
         
         if createNewField
             hold(rateax,'on');
@@ -332,7 +331,7 @@ function mapdata_viewer(res,resfig)
                 'Color', thiscolor,'MarkerFaceColor',thiscolor);
             
             hold(bvalax,'off');
-            bvalax.XLim=[min(ZG.(res.InCatalogName{1}).Magnitude) max(ZG.(res.InCatalogName{1}).Magnitude)+.1];
+            bvalax.XLim=[min(catalog.Magnitude) max(catalog.Magnitude)+.1];
             bvalax.YLim=[-inf inf];
         else
             selections.(field).bv1.YData=cs;  % X data remains the same, based on main catalog
