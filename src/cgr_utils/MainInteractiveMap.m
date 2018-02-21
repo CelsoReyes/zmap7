@@ -374,13 +374,8 @@ classdef MainInteractiveMap
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
-            cgr_bvalgrid.AddMenuItem(submenu,@()ZmapGlobal.Data.primeCatalog);
+            bvalgrid.AddMenuItem(submenu,@()ZmapGlobal.Data.primeCatalog);
             %tmp=uimenu(submenu,'Label','Mc, a- and b-value map');
-            %uimenu(tmp,'Label','Calculate','Callback',@(~,~)bvalgrid());
-            %uimenu(tmp,'Label','*Calculate','Callback',@(~,~)cgr_bvalgrid());
-            %uimenu(tmp,'Label','Load...',...
-            %    'Enable','off',...
-             %   'Callback', @(~,~)bvalgrid('lo')); %map-view
             
             tmp=uimenu(submenu,'Label','differential b-value map (const R)',...
                 'Enable','off');

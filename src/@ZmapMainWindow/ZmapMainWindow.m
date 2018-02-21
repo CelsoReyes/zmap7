@@ -611,16 +611,15 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping a- and b-values');
             % TODO have these act upon already selected polygons (as much as possible?)
             
-            cgr_bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+            bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
             bvalmapt.AddMenuItem(submenu, @()obj.map_zap); 
             
             uimenu(submenu,'Label','Calc a b-value cross-section',...
                 ...'Enable','off',...
                 'Callback', @(~,~)nlammap(@()obj.xsec_zap));
             
-            tmp=uimenu(submenu,'Label','b-value depth ratio grid',...
-                'Enable','off',...
-                'Callback', @(~,~)bdepth_ratio());
+            bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
+            % uimenu(submenu,'Label','b-value depth ratio grid','Callback', @(~,~)bdepth_ratio());
             
             uimenu(submenu,'Label','Calc 3D b-value distribution',...
                 'Enable','off',...
@@ -665,9 +664,7 @@ classdef ZmapMainWindow < handle
         end
         
         function create_decluster_menu(obj,parent)
-            submenu = uimenu(parent,'Label','Decluster the catalog'...,...
-                ...'Enable','off'...
-                );
+            submenu = uimenu(parent,'Label','Decluster the catalog');
             uimenu(submenu,'Label','Decluster using Reasenberg','Callback',@(~,~)inpudenew());
             uimenu(submenu,'Label','Decluster using Gardner & Knopoff',...
                 'Enable','off',... %TODO this needs to be turned into a function

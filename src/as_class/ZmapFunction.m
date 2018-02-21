@@ -59,9 +59,8 @@ classdef(Abstract) ZmapFunction < handle
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
         FunctionCall='%unknown function call'; % text representation of the function call.
-        Grid % ZmapGrid
-        EventSelector % how to choose events for the grid points
-        Shape % shape to be used 
+        
+        % Grid, EventSelector, and Shape have been moved into the ZmapGridFunction
     end
     
     properties(Constant,Abstract)
@@ -129,12 +128,7 @@ classdef(Abstract) ZmapFunction < handle
             vname=[class(obj),'_result'];
             assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
             obj.Result.FunctionCall=obj.FunctionCall;
-            if isprop(obj,'Grid')
-                obj.Result.Grid = obj.Grid;
-            end
-            if isprop(obj,'EventSelector')
-                obj.Result.EventSelector = obj.EventSelector;
-            end
+           
             obj.Result.InCatalogName=obj.RawCatalog.Name; %was OperatingCatalog
             assignin('base',vname,obj.Result);
             fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));

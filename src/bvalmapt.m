@@ -1,4 +1,7 @@
 classdef bvalmapt < ZmapGridFunction
+    % BVALMAPT creates a differential bvalue map for two time periods. 
+    % The difference in both b and Mc can be displayed.
+            
     properties
         t1 % start of timeperiod 1
         t2 % end of timeperiod 1
@@ -41,7 +44,7 @@ classdef bvalmapt < ZmapGridFunction
             'y', 'Latitude', 'deg';... #4[outside]
             
             ...%'r','resolution Map - number of events',''... #5 [ actually, number of events & outside]
-            'nEvents', 'Number of events in node', ''... # was #5 'r' ['Resolution map']
+            'Number_of_Events', 'Number of events in node', ''... # was #5 'r' ['Resolution map']
             };
         % the viewplotting methods also had call to zhist,
         %
@@ -56,32 +59,21 @@ classdef bvalmapt < ZmapGridFunction
     
     methods
         function obj=bvalmapt(zap, varargin)
-            % This subroutine creates a differential bvalue map
-            % for two time periods. The difference in
-            % both b and Mc can be displayed.
+            % BVALMAPT creates a differential bvalue map for two time periods. 
+            % The difference in both b and Mc can be displayed.
             %   Stefan Wiemer 1/95
             %   Rev. R.Z. 4/2001
             % turned into function by Celso G Reyes 2017
             
-            
             report_this_filefun(mfilename('fullpath'));
-            obj.active_col='db12';
-            if ~exist('zap','var') || isempty(zap)
-                zap = ZmapAnalysisPkg.fromGlobal();
-            end
             
-            ZmapFunction.verify_catalog(zap.Catalog);
+            obj@ZmapGridFunction(zap, 'db12');
             
-            obj.EventSelector = zap.EventSel;
             if obj.EventSelector.useNumNearbyEvents
                 disp('This is designed to use events in constant radius instead of # of events.')
                 obj.EventSelector.useNumNearbyEvents=false;
                 obj.EventSelector.useEventsInRadius=true;
             end
-            %obj.ra = obj.EventSelector.radius_km;
-            obj.RawCatalog = zap.Catalog;
-            obj.Grid = zap.Grid;
-            obj.Shape = zap.Shape;
             
             obj.InteractiveSetup();
             
@@ -139,7 +131,7 @@ classdef bvalmapt < ZmapGridFunction
         
         function SetValuesFromDialog(obj,res)
             %obj.ZG.inb2=res.useAutoMcomp;
-            obj.useAutoMcomp=res.useAutoMcomp;
+            obj.useAutoMcomp=logical(res.useAutoMcomp);
             obj.EventSelector.radius_km=res.ra;
             obj.t1 = res.t1;
             obj.t2 = res.t2;
@@ -152,38 +144,18 @@ classdef bvalmapt < ZmapGridFunction
         end
         
         function results=Calculate(obj)
-            % get the grid-size interactively and
-            % calculate the b-value in the grid by sorting
-            % thge seimicity and selectiong the radius neighbors
-            % to each grid point
-            
-            returnFields = obj.ReturnDetails(:,1);
-            returnDesc = obj.ReturnDetails(:,2);
-            returnUnits = obj.ReturnDetails(:,3);
             
             % overall b-value
             [bv, magco, ~   , av_unused,  ~] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);
-            %ZG.bo1 = bv; 
-            %no1 = obj.RawCatalog.Count;
             
-            % loop over all points
-            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,...
-                obj.RawCatalog, ...
-                obj.Grid, obj.EventSelector,...
-                9);
             
-            bvg= modify_raw_results(bvg);
-            
-            myvalues = array2table(bvg,'VariableNames', returnFields);
-            myvalues.Properties.VariableDescriptions = returnDesc;
-            myvalues.Properties.VariableUnits = returnUnits;
-            
-            obj.Result.values=myvalues;
+            obj.gridCalculations(@calculation_function, 9, @modify_raw_results);
             
             obj.Result.period1.dateRange=[obj.t1 obj.t2];
             obj.Result.period2.dateRange=[obj.t3 obj.t4];
+            
             if nargout
-                results=myvalues;
+                results=obj.Result.values;
             end
             
             %catsave3('bvalmapt');
@@ -250,9 +222,8 @@ classdef bvalmapt < ZmapGridFunction
             function rslt=modify_raw_results(rslt)
                 % do any calculations that can be performed after-the-fact and aren't grid dependent
                 
+                returnFields = obj.ReturnDetails(:,1);
                 rField=@(s) strcmp(s,returnFields);
-                %rVals=@(s) rslt(:,rField(s)); % good for right-hand side calculations only
-                %idxVals=@(n,s) rslt(n,rField(s));
                 
                 
                 % fields returned [in order] by gridfun:
@@ -265,13 +236,6 @@ classdef bvalmapt < ZmapGridFunction
                 % aval_2
                 % magco_2
                 % pro
-                
-                % add fields created by gridfun
-                rslt(:,rField('nEvents'))=nEvents; % last field, makes sure rslt is big enough
-                rslt(:,rField('x'))=obj.Grid.X(:);
-                rslt(:,rField('y'))=obj.Grid.Y(:);
-                rslt(:,rField('Radius_km'))=maxDists;
-                rslt(:,rField('max_mag'))=maxMag;
                 
                 
                 % deal with this mysterious P6b 
@@ -305,6 +269,7 @@ classdef bvalmapt < ZmapGridFunction
                 rslt(:,rField('dmag'))=rVals('magco_1')-rVals('magco_2');
                 rslt(:,rField('eqprobchange'))=log10(rVals('max_mag'));
                 rslt(:,rField('db12'))=rVals('bval_1') - rVals('bval_2');
+                
                 function x=rVals(s)
                     x=rslt(:,rField(s)); % good for right-hand side calculations only
                 end

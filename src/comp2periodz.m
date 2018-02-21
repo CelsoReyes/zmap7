@@ -32,25 +32,14 @@ classdef comp2periodz < ZmapGridFunction
     
     methods
         function obj=comp2periodz(zap, varargin)
-            % This subroutine compares seismicity rates for two time periods.
+            % COMP2PERIODZ compares seismicity rates for two time periods.
             % The differences are as z- and beta-values and as percent change.
             %   Stefan Wiemer 1/95
             %   Rev. R.Z. 4/2001
             
             report_this_filefun(mfilename('fullpath'));
             
-            if ~exist('zap','var') || isempty(zap)
-                zap = ZmapAnalysisPkg.fromGlobal();
-            end
-            
-            ZmapFunction.verify_catalog(zap.Catalog);
-            
-            obj.EventSelector = zap.EventSel;
-            obj.RawCatalog = zap.Catalog;
-            obj.Grid = zap.Grid;
-            obj.Shape = zap.Shape;
-            
-            obj.active_col = 'z_value';
+            obj@ZmapGridFunction(zap, 'z_value');
             
             if nargin <2
                 % create dialog box, then exit.
@@ -105,10 +94,7 @@ classdef comp2periodz < ZmapGridFunction
             assert(isa(obj.binsize,'duration'),'bin size should be a duration in days');
         end
         
-        % get the grid-size interactively and
-        % calculate the b-value in the grid by sorting
-        % the seimicity and selectiong the ni neighbors
-        % to each grid point
+        
         function results=Calculate(obj)
             
             %  make grid, calculate start- endtime etc.  ...
@@ -118,42 +104,19 @@ classdef comp2periodz < ZmapGridFunction
             obj.RawCatalog = obj.RawCatalog.subset(lt);
             
             
-            returnFields = obj.ReturnDetails(:,1);
-            returnDesc = obj.ReturnDetails(:,2);
-            returnUnits = obj.ReturnDetails(:,3);
-            
             interval1_bins = obj.t1 : obj.binsize : obj.t2; % starts
             interval2_bins = obj.t3 : obj.binsize : obj.t4; % starts
             interval1_edges = [interval1_bins, interval1_bins(end)+obj.binsize];
             interval2_edges = [interval2_bins, interval2_bins(end)+obj.binsize];
             
             
-            % loop over all points
-            
-            [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,...
-                obj.RawCatalog, obj.Grid, obj.EventSelector, 5);
-            % bvg will contain : [z_value, pct_change beta_value nEvents1 nEvents2] 
-            
-            
-            
-            bvg(:,strcmp('x',returnFields))=obj.Grid.X(:);
-            bvg(:,strcmp('y',returnFields))=obj.Grid.Y(:);
-            bvg(:,strcmp('Number_of_Events',returnFields))=nEvents;
-            bvg(:,strcmp('Radius_km',returnFields))=maxDists;
-            bvg(:,strcmp('max_mag',returnFields))=maxMag;
-            
-            
-            myvalues = array2table(bvg,'VariableNames', returnFields);
-            myvalues.Properties.VariableDescriptions = returnDesc;
-            myvalues.Properties.VariableUnits = returnUnits;
-            
-            obj.Result.values=myvalues;
-            
+            obj.gridCalculations(@calculation_function, 5);
+           
             obj.Result.period1.dateRange=[obj.t1 obj.t2];
             obj.Result.period2.dateRange=[obj.t3 obj.t4];
             
             if nargout
-                results=myvalues;
+                results=obj.Result.values;
             end
             % save data
             
@@ -163,8 +126,10 @@ classdef comp2periodz < ZmapGridFunction
             
             %det =  'ast'; 
             %ZG.shading_style = 'interp';
-            % View the b-value map
-            % view_ratecomp
+            % View the b-value map: view_ratecomp.m
+            %    which could create a topography overlay ala dramap_z.m
+            %
+            % 
             
             function out=calculation_function(b)
                 % calulate values at a single point 

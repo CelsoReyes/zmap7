@@ -8,9 +8,43 @@ classdef ZmapGridFunction < ZmapFunction
         features='borders'; % features to show on the map, such as 'borders','lakes','coast',etc.
         active_col='';  % the name of the column of the results to be plotted
         showgridcenters=true; % toggle the grid points on and off.
+        Grid % ZmapGrid
+        EventSelector % how to choose events for the grid points
+        Shape % shape to be used 
+    end
+    properties(Constant,Abstract)
+        % array of {VariableNames, VariableDescriptions, VariableUnits}
+        % that must contain the VariableNames: 'x', 'y', 'Radius_km', 'Number_of_Events'
+        ReturnDetails; 
     end
     
     methods
+        function obj=ZmapGridFunction(zap, active_col)
+            % ZMAPGRIDFUNCTION constructor  assigns grid, event, catalog, and shape properties
+            if isempty(zap)
+                zap = ZmapAnalysisPkg.fromGlobal();
+            end
+            
+            ZmapFunction.verify_catalog(zap.Catalog);
+            
+            obj.EventSelector = zap.EventSel;
+            obj.RawCatalog = zap.Catalog;
+            obj.Grid = zap.Grid;
+            obj.Shape = zap.Shape;
+            
+            obj.active_col=active_col;
+        end
+        
+        function saveToDesktop(obj)
+            % SAVETODESKTOP saves the grid, eventselector and shape before calling superclass
+            obj.Result.Grid = obj.Grid;
+            obj.Result.EventSelector = obj.EventSelector;
+            obj.Result.Shape = obj.Shape;
+            
+            % super must be called last, since it does the actual writing
+            saveToDesktop@ZmapFunction(obj) 
+        end
+        
         
         function plot(obj,choice, varargin)
             % plots the results on the provided axes.
@@ -132,12 +166,12 @@ classdef ZmapGridFunction < ZmapFunction
                 end
             end
             
-            function contour_cb(obj,name)
+            function contour_cb(~,~)
                 % like plot, except with contours!
                 [C,h]=contour(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
                 clabel(C,h)
             end
-            function contourf_cb(obj,name)
+            function contourf_cb(~,~)
                 % like plot, except with contours!
                 [C,h]=contourf(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
                 clabel(C,h)
@@ -205,7 +239,42 @@ classdef ZmapGridFunction < ZmapFunction
         
         
     end
+    methods(Access=protected)
+        function gridCalculations(obj, calculationFcn, nReturnValuesPerPoint, modificationFcn)
+            % GRIDCALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
+            % GRIDCALCULATIONS(obj, calculationFcn, nReturnValuesPerPoint)
+            %calculate values at all points
+             [vals,nEvents,maxDists,maxMag, ll]=gridfun(calculationFcn,...
+                obj.RawCatalog, ...
+                obj.Grid, ...
+                obj.EventSelector,...
+                nReturnValuesPerPoint);
+            
+            
+            returnFields = obj.ReturnDetails(:,1);
+            returnDesc = obj.ReturnDetails(:,2);
+            returnUnits = obj.ReturnDetails(:,3);
+            
+            
+            vals(:,strcmp('x',returnFields))=obj.Grid.X(:);
+            vals(:,strcmp('y',returnFields))=obj.Grid.Y(:);
+            vals(:,strcmp('Number_of_Events',returnFields))=nEvents;
+            vals(:,strcmp('Radius_km',returnFields))=maxDists;
+            vals(:,strcmp('max_mag',returnFields))=maxMag;
+            
+            if exist('modificationFcn','var')
+                vals= modificationFcn(vals);
+            end
+            
+            myvalues = array2table(vals,'VariableNames', returnFields);
+            myvalues.Properties.VariableDescriptions = returnDesc;
+            myvalues.Properties.VariableUnits = returnUnits;
+            
+            obj.Result.values=myvalues;
+        end
+    end
     methods(Access=protected, Static)
+        
         function txt = mydatacursor(~,event_obj)
             try
                 % wrapped in Try-Catch because the datacursor routines fail relatively quietly on

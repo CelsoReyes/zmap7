@@ -4,8 +4,8 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     %
     % INPUT parameters
     % magnitudes     : Magnitude values
-    % mc_method - 1 : automatic estimate of Mcomp
-    %        2 : not automatic estimate of Mcomp 
+    % mc_method - 1 : automatic estimate of Mcomp [or mc_method is true] DEFAULT
+    %        2 : not automatic estimate of Mcomp  [or mc_method is false]
     % bo1: overall b-value (maybe? used in probability calculation)
     %
     % OUTPUT
@@ -23,6 +23,13 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     [pr,  av, std_backg, magco, bv] = deal(nan);
     maxmag = max(magnitudes);
     mima = min( min(magnitudes) , 0);
+    if exist('mc_method','var')
+        if ~islogical(mc_method)
+            mc_method = mc_method==1;
+        end
+    else
+        mc_method=true;
+    end
     if ~exist('no1','var')
         no1=numel(magnitudes); % added by CGR because no1 appears to not be initialized
     end
@@ -44,7 +51,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     magco = max(xt2(i2));
     
     % if no automatic estimate of Mcomp
-    if mc_method == 2
+    if ~mc_method
         i = length(magsteps_desc)-10*min(magnitudes);
         if i > length(magsteps_desc)
             i = length(magsteps_desc)-1 ;

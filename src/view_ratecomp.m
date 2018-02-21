@@ -6,7 +6,11 @@ function view_ratecomp(det,valueMap)
     % define size of the plot etc.
     %
     % INPUT VARIABLES: det, valueMap
-
+    
+    %%
+    % TODO: delete this file, it is no longer neccessary
+    %%
+    
     
     report_this_filefun(mfilename('fullpath'));
     ZG=ZmapGlobal.Data;
@@ -44,12 +48,11 @@ function view_ratecomp(det,valueMap)
     cla
     hold off
     watchon;
-    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','normal',...
+    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,...
         'FontWeight','bold','LineWidth',1.,...
         'Box','on','SortMethod','childorder')
     
     rect = [0.18,  0.10, 0.7, 0.75];
-    rect1 = rect;
     
     % find max and min of data for automatic scaling
     %
@@ -65,7 +68,7 @@ function view_ratecomp(det,valueMap)
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     axes('position',rect)
     hold on
-    pco1 = pcolor(gx,gy,valueMap);
+    pcolor(gx,gy,valueMap);
     axis([ s2 s1 s4 s3])
     
     shading(ZG.shading_style);
@@ -81,15 +84,15 @@ function view_ratecomp(det,valueMap)
     title([  num2str(t1,6) ' - ' num2str(t2,6) ' - compared with ' num2str(t3,6) ' - ' num2str(t4,6) ],'FontSize',ZmapGlobal.Data.fontsz.m,...
         'Color','k','FontWeight','normal')
     
-    xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
-    ylabel('Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+    xlabel('Longitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
+    ylabel('Latitude [deg]','FontSize',ZmapGlobal.Data.fontsz.m)
     
     % plot overlay
     %
     zmap_update_displays();
     %set(ploeq,'MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'visible','on');
     
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
+    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
     h1 = gca;
@@ -99,14 +102,13 @@ function view_ratecomp(det,valueMap)
     %
     h5 = colorbar('horiz');
     set(h5,'Pos',[0.35 0.05 0.4 0.02],...
-        'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m,'TickDir','out')
+        'FontSize',ZmapGlobal.Data.fontsz.m,'TickDir','out')
     
     %  Text Object Creation
     txt1 = text(...
         'Units','normalized',...
         'Position',[ 0.05 -0.27 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m,....
-        'FontWeight','normal',...
+        'FontSize',ZmapGlobal.Data.fontsz.m,...
         'String','z-value ');
     if det =='per'
         set(txt1,'String','% change')
@@ -151,44 +153,33 @@ function view_ratecomp(det,valueMap)
         
         op1 = uimenu('Label',' Maps ');
         
+        uimenu(op1,'Label','z-value map ','callback',@callbackfun_005) % ('z value',old) 'ast'
+        uimenu(op1,'Label','Percent change map','callback',@callbackfun_006) % ('% change',per)
+        uimenu(op1,'Label','Beta value map','callback',@callbackfun_007) % ('beta',beta_map) [sic]
         
-        uimenu(op1,'Label','z-value map ',...
-            'callback',@callbackfun_005) % ('z value',old) 'ast'
-        uimenu(op1,'Label','Percent change map',...
-            'callback',@callbackfun_006) % ('% change',per)
-        uimenu(op1,'Label','Beta value map',...
-            'callback',@callbackfun_007) % ('beta',beta_map) [sic]
-        
-        uimenu(op1,'Label','Significance based on beta map',...
-            'callback',@callbackfun_008) %('beta',betamap) [sic]
+        uimenu(op1,'Label','Significance based on beta map','callback',@callbackfun_008) %('beta',betamap) [sic]
         
         uimenu(op1,'Label','Resolution Map',...
             'callback',@callbackfun_009) %('Radius [km]',reso);
         
         op1 = uimenu('Label','  Display ');
         uimenu(op1,'Label','Plot Map in Lambert projection', 'callback',@callbackfun_010)
-        uimenu(op1,'Label','Fix color (z) scale', 'callback',@callbackfun_011)
+        uimenu(op1,'Label','Fix color (z) scale', 'callback',@(~,~)fix_caxis(ZGvalueMap,'horz') )
         uimenu(op1,'Label','Plot map on top of topography (white background)',...
-            'callback',@callbackfun_012)
+            'callback',@(~,~)dramap_z(1,valueMap))
         uimenu(op1,'Label','Plot map on top of topography (black background)',...
-            'callback',@callbackfun_013)
+            'callback',@(~,~)dramap_z(2,valueMap))
         uimenu(op1,'Label','Histogram of map-values', 'callback',@(~,~)zhist())
         uimenu(op1,'Label','Colormap InvertGray', 'callback',@callbackfun_015)
         uimenu(op1,'Label','Colormap Invertjet',...
             'callback',@callbackfun_016)
         
-        uimenu(op1,'Label','Show Grid ',...
-            'callback',@callbackfun_017)
-        uimenu(op1,'Label','shading flat', 'callback',@callbackfun_018)
-        uimenu(op1,'Label','shading interpolated',...
-            'callback',@callbackfun_019)
-        uimenu(op1,'Label','Brigten +0.4',...
-            'callback',@callbackfun_020)
-        uimenu(op1,'Label','Brigten -0.4',...
-            'callback',@callbackfun_021)
+        uimenu(op1,'Label','shading flat', 'callback',{@cb_shading,'flat'})
+        uimenu(op1,'Label','shading interpolated','callback',{@cb_shading,'interp'})
+        uimenu(op1,'Label','Brigten +0.4','callback', {@cb_brighten, 0.4})
+        uimenu(op1,'Label','Brigten -0.4','callback', {@cb_brighten, -0.4})
         
-        uimenu(op1,'Label','Redraw overlay',...
-            'callback',@callbackfun_022)
+        uimenu(op1,'Label','Redraw overlay','callback',@callbackfun_022)
     end
     
     %% callback functions
@@ -275,25 +266,6 @@ function view_ratecomp(det,valueMap)
         plotmap ;
     end
     
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        fix_caxis(ZGvalueMap,'horz') ;
-    end
-    
-    function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        colback = 1;
-        dramap_z;
-    end
-    
-    function callbackfun_013(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        colback = 2;
-        dramap_z;
-    end
 
     function callbackfun_015(mysrc,myevt)
 
@@ -312,41 +284,21 @@ function view_ratecomp(det,valueMap)
         colormap(g);
     end
     
-    function callbackfun_017(mysrc,myevt)
+    function cb_shading(mysrc,myevt,shading_style)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plot(newgri(:,1),newgri(:,2),'+k');
-    end
-    
-    function callbackfun_018(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.shading_style='flat';
+        ZG.shading_style=shading_style;
         axes(hzma);
-        shading flat;
+        shading(shading_style);
     end
     
-    function callbackfun_019(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.shading_style='interp';
-        axes(hzma);
-        shading interp;
-    end
-    
-    function callbackfun_020(mysrc,myevt)
+    function cb_brighten(mysrc,myevt,val)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         axes(hzma);
-        brighten(0.4);
+        brighten(val);
     end
     
-    function callbackfun_021(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        axes(hzma);
-        brighten(-0.4);
-    end
     
     function callbackfun_022(mysrc,myevt)
 

@@ -61,12 +61,12 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     end
     
     % Magnitude binning
-    if ~exist('fBinning', 'var')
+    if ~exist('fBinning', 'var') || isempty(fBinning)
         fBinning = 0.1;
     end
     
     % Correction
-    if ~exist('fMcCorrection', 'var')
+    if ~exist('fMcCorrection', 'var') || isempty(fMcCorrection)
         fMcCorrection = 0;
     end
     
