@@ -1,4 +1,4 @@
-classdef bvalgrid < ZmapGridFunction
+classdef bvalgrid < ZmapHGridFunction
     % CGR_BVALGRID Generate a B-value grid
     
     properties
@@ -40,7 +40,7 @@ classdef bvalgrid < ZmapGridFunction
             
             report_this_filefun(mfilename('fullpath'));
             
-            obj@ZmapGridFunction(zap, 'b_value');
+            obj@ZmapHGridFunction(zap, 'b_value');
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.

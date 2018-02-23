@@ -1,4 +1,4 @@
-classdef comp2periodz < ZmapGridFunction
+classdef comp2periodz < ZmapHGridFunction
     % COMP2PERIODZ compares seismicity rates for two time periods
     % The differences are as z- and beta-values and as percent change.
     
@@ -39,7 +39,7 @@ classdef comp2periodz < ZmapGridFunction
             
             report_this_filefun(mfilename('fullpath'));
             
-            obj@ZmapGridFunction(zap, 'z_value');
+            obj@ZmapHGridFunction(zap, 'z_value');
             
             if nargin <2
                 % create dialog box, then exit.
@@ -131,15 +131,15 @@ classdef comp2periodz < ZmapGridFunction
             %
             % 
             
-            function out=calculation_function(b)
+            function out=calculation_function(catalog)
                 % calulate values at a single point 
                 % calculate distance from center point and sort wrt distance
 
-                idx_back =  b.Date >= obj.t1 &  b.Date < obj.t2 ;
-                [cumu1, ~] = histcounts(b.Date(idx_back),interval1_edges);
+                idx_back =  catalog.Date >= obj.t1 &  catalog.Date < obj.t2 ;
+                [cumu1, ~] = histcounts(catalog.Date(idx_back),interval1_edges);
                 
-                idx_after =  b.Date >= obj.t3 &  b.Date <= obj.t4 ;
-                [cumu2, ~] = histcounts(b.Date(idx_after),interval2_edges);
+                idx_after =  catalog.Date >= obj.t3 &  catalog.Date <= obj.t4 ;
+                [cumu2, ~] = histcounts(catalog.Date(idx_after),interval2_edges);
                 
                 mean1 = mean(cumu1);        % mean seismicity rate in first interval
                 mean2 = mean(cumu2);        % mean seismicity rate in second interval
@@ -151,7 +151,10 @@ classdef comp2periodz < ZmapGridFunction
                 ncu1 = length(interval1_bins);         % number of bins in first interval
                 ncu2 = length(interval2_bins);         % number of bins in second interval
                 
-                as = (mean1 - mean2)/(sqrt(var1/ncu1 +var2/ncu2));
+                % compute the z value "as":
+                as = (mean1 - mean2)/ sqrt(var1/ncu1 +var2/ncu2);
+                
+                % calculate the percentage
                 per = -((mean1-mean2)./mean1)*100;
                 
                 % beta nach reasenberg & simpson 1992, time of second interval normalised by time of first interval

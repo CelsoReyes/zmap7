@@ -1,4 +1,4 @@
-classdef bvalmapt < ZmapGridFunction
+classdef bvalmapt < ZmapHGridFunction
     % BVALMAPT creates a differential bvalue map for two time periods. 
     % The difference in both b and Mc can be displayed.
             
@@ -67,7 +67,7 @@ classdef bvalmapt < ZmapGridFunction
             
             report_this_filefun(mfilename('fullpath'));
             
-            obj@ZmapGridFunction(zap, 'db12');
+            obj@ZmapHGridFunction(zap, 'db12');
             
             if obj.EventSelector.useNumNearbyEvents
                 disp('This is designed to use events in constant radius instead of # of events.')

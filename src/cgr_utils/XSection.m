@@ -242,7 +242,7 @@ classdef XSection
         end
         
         function gr = getGrid(obj, x_km, zs_km)
-            
+            % GETGRID get a grid fom this cross section
             if numel(x_km) == 1
                 % x_km is the delta spacing in km
                 % keep x_km/2 away from both edges to avoid edge effects

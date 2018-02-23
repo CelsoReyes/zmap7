@@ -1,4 +1,4 @@
-classdef bdepth_ratio < ZmapGridFunction
+classdef bdepth_ratio < ZmapHGridFunction
 % BDEPTH_RATIO compare b values at two different depths
 % Stefan Wiemer 1/95
     
@@ -45,7 +45,7 @@ classdef bdepth_ratio < ZmapGridFunction
             
             report_this_filefun(mfilename('fullpath'));
             
-            obj@ZmapGridFunction(zap, 'bv_ratio');
+            obj@ZmapHGridFunction(zap, 'bv_ratio');
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
