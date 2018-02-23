@@ -33,6 +33,15 @@ function reportIssue()
 end
 
 function aboutZmapDialog()
+    
+    citationText = ['Wiemer, S., 2001. ', ...
+        'A software package to analyze seismicity: ZMAP. ',...
+        'Seismological Research Letters, 72(3), pp.373-382.'];
+    
+    citationDOI = 'https://doi.org/10.1785/gssrl.72.3.373';
+    
+    copyrightMessage = sprintf('%s %s SED at ETH',char(169),'1993 - 2018');
+    
     contributors = fileread('ZmapContributorList.txt');
     H = 400; W = 600;
     B1 = 10;
@@ -51,12 +60,27 @@ function aboutZmapDialog()
     uicontrol(fig,'Style','Text',...
         'Units','pixels','Position',[B1 H-70 W-2*B1 20 ],...
         'FontSize',14,...
-        'String',sprintf('%s %s',char(169),'1993 - 2018'));
+        'String',copyrightMessage);
     
     uicontrol(fig,'Style','Text',...
         'Units','pixels','Position',[B1 285 250 20 ],...
         'FontSize',12,...
         'String',sprintf('Minimum MATLAB vers : %s - R%s',ZG.min_matlab_version, ZG.min_matlab_release));
+    
+    %citation
+    h=uipanel(fig,'Units','pixels','position',[10 179 265 70],'Tag','citation')
+    h.Title='CITATION';
+    % clicking on it will copy
+    %h.ButtonDownFcn=@(~,~)clipboard('copy',citationText);
+    t=uicontrol(h,'Style','Text','Units','Pixels','Position',[1 1 265 50])
+    t.String=citationText;
+    
+    c = uicontextmenu;
+    uimenu(c,'Label','view original document','Callback',@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
+    uimenu(c,'Label','copy to clipboard','Callback',@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
+    h.UIContextMenu=c;
+    t.UIContextMenu=c;
+    t.TooltipString = ['<html><b>' strrep(citationText, '. ' , '.<br>') '</b><br><br>Left-click for copy options'];
     
     % contributors
     uicontrol(fig,'Style','Text',...
