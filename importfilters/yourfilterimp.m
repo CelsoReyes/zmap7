@@ -8,7 +8,7 @@ if nFunction == 0     % Return info about filter
     uOutput = 'Your data format - adjust the file yourfilterimp.m';
 elseif nFunction == 1 % Import and return catalog
     % Read formated data
-    mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
+    mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', ''); % USE TEXTSCAN INSTEAD OF TEXTREAD
     % Create empty catalog
     uOutput = zeros(length(mData), 15);
     % Loop thru all lines of catalog and convert them

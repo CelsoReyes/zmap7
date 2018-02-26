@@ -29,7 +29,7 @@ dates= datetime(2010,1,1,12,0,0)+seconds(cumsum(abs(dt)));
 subplot(3,1,2);plot(dates , 1:n); xlabel('Day'); ylabel('n');
 
 subplot(3,1,3);
-scatter(dates , mag);
+line(dates , mag);
 title(sprintf('Mags [min:%.2f  max:%.2f]', min(mag),max(mag)));
 C=ZmapCatalog;
 C.Latitude=km2deg(mmY/1000);C.Longitude=km2deg(mmX/1000);C.Depth=km2deg(mmZ/1000);

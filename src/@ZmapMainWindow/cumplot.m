@@ -17,13 +17,15 @@ function cumplot(obj, tabgrouptag)
     uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
     uimenu(c,'Label','Open in new window','Callback',@(~,~)obj.cb_timeplot());
     
-    p=plot(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2.5,'DisplayName','catalog','color','k');
+    p=line(ax,obj.catalog.Date,1:obj.catalog.Count,...
+        'linewidth',2.5,'DisplayName','catalog',...
+        'color','k');
     p.UIContextMenu=c;
     grid(ax,'on');
     
     
     
-    % plot crosss sections, too
+    % plot cross sections, too
     k=obj.xsections.keys;
     for j=1:obj.xsections.Count
         hold on
@@ -32,7 +34,8 @@ function cumplot(obj, tabgrouptag)
         xscat = obj.xscats(tit);
     c=uicontextmenu('tag','CumPlot xs contextmenu');
     uimenu(c,'Label','Open in new window','Callback',{@cb_xstimeplot,xs});
-        plot(ax,xscat.Date, 1:xscat.Count,'linewidth',1.5,'DisplayName',tit,'Color',xs.color,...
+        line(ax,xscat.Date, 1:xscat.Count,...
+            'linewidth',1.5,'DisplayName',tit,'Color',xs.color,...
             'UIContextMenu',c);
     end
     

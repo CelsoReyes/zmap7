@@ -110,8 +110,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             %if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
             %    error('unknown polygon type')
             %end
+            
             ax=mainmap('axes');
-            axes(ax); % bring up axes of interest.  should be the map, with lat/lon
+            % assumption: we the current figure contains the axes of interest
+            set(gcf,'CurrentAxes',ax) % bring up axes of interest.  should be the map, with lat/lon
+
             obj.Type=lower(type);
             
             if ~exist('type','var')
@@ -171,7 +174,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             if isempty(shout)
                 hold on;
-                p=plot(ax, obj.Lon,obj.Lat,'k','LineWidth',2.0,...
+                p=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
                     'LineStyle','-',...
                     'Color','k',...
                     'Tag','shapeoutline',...

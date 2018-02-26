@@ -572,16 +572,22 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.Depth =  obj.Depth(range) ;
             
             obj.Magnitude = obj.Magnitude(range) ;
-            obj.MagnitudeType = obj.MagnitudeType(range) ;
+            if ~isempty(obj.MagnitudeType)
+                obj.MagnitudeType = obj.MagnitudeType(range) ;
+            end
             
             if ~isempty(obj.Filter)
                 obj.Filter = obj.Filter(range) ;
             end
-            
-            obj.Dip = obj.Dip(range);
-            obj.DipDirection=obj.DipDirection(range);
-            obj.Rake=obj.Rake(range);
-            
+            if ~isempty(obj.Dip)
+                obj.Dip = obj.Dip(range);
+            end
+            if ~isempty(obj.DipDirection)
+                obj.DipDirection=obj.DipDirection(range);
+            end
+            if ~isempty(obj.Rake)
+                obj.Rake=obj.Rake(range);
+            end
             if ~isempty(obj.MomentTensor)
                 obj.MomentTensor=obj.MomentTensor(range,:);
             end
@@ -602,14 +608,22 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.Longitude = existobj.Longitude(range) ;
             obj.Latitude = existobj.Latitude(range);
             obj.Depth =  existobj.Depth(range) ;      % km
-            obj.Magnitude = existobj.Magnitude(range) ;
+            obj.Magnitude = existobj.Magnitude(range);
+            if ~isempty(existobj.MagnitudeType)
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
+            end
             if ~isempty(obj.Filter)
                 obj.Filter = existobj.Filter(range) ;
             end
-            obj.Dip = existobj.Dip(range);
-            obj.DipDirection=existobj.DipDirection(range);
-            obj.Rake=existobj.Rake(range);
+            if ~isempty(existobj.Dip)
+                obj.Dip = existobj.Dip(range);
+            end
+            if ~isempty(existobj.DipDirection)
+                obj.DipDirection=existobj.DipDirection(range);
+            end
+            if ~isempty(existobj.Rake)
+                obj.Rake=existobj.Rake(range);
+            end
             if ~isempty(existobj.MomentTensor)
                 obj.MomentTensor=existobj.MomentTensor(range,:);
             end

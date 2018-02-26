@@ -272,8 +272,7 @@ classdef MapFeature < handle
             holdstatus = ishold(ax); hold(ax,'on');
             
             val = obj.getTrimmedData();
-            layer=plot(ax,val.Longitude, val.Latitude);
-            layer.ZData = val.Depth;
+            layer=line(ax,'XData',val.Longitude, 'YData',val.Latitude,'ZData',val.Depth');
             ax.ZDir='reverse';
             %stackorder_menu(layer)
             

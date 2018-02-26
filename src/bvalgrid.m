@@ -177,7 +177,7 @@ classdef bvalgrid < ZmapHGridFunction
             obj.ZG.bvg=obj.Result.values;
             obj.ZG.Grid = obj.Grid; %TODO do we really write back the grid?
         end
-    end %methods
+    end % methods
     
     methods(Static)
         function h=AddMenuItem(parent,zapFcn)

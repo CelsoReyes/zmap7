@@ -239,13 +239,13 @@ function mapdata_viewer(res,catalog,resfig)
             hold(mapax,'on')
             
             % plot click location
-            selections.(field).m1=plot(mapax,[axx ; tb.x(i)] , [axy;tb.y(i)],'--', 'Marker',curChar,'Color',[.75 .75 .75],'linewidth',1.5);
+            selections.(field).m1=line(mapax,[axx ; tb.x(i)] , [axy;tb.y(i)],'LineStyle','--', 'Marker',curChar,'Color',[.75 .75 .75],'LineWidth',1.5);
             
             % plot marker in actual location
-            selections.(field).m2=plot(mapax,tb.x(i),tb.y(i),curChar,'MarkerSize',12,'MarkerFaceColor','k','linewidth',2);
+            selections.(field).m2=line(mapax,tb.x(i),tb.y(i),'Marker',curChar,'MarkerSize',12,'MarkerFaceColor','k','LineWidth',2);
             selections.(field).m2.UIContextMenu=pointcontext();
             % plot selected event circle
-            selections.(field).m3=plot(mapax, lon, lat, '-.','color',[.75 .75 .75],'linewidth',2);
+            selections.(field).m3=line(mapax, lon, lat, 'LineStyle','-.','Color',[.75 .75 .75],'LineWidth',2);
             hold(mapax, 'off')
         else
             disp('modifying field')
@@ -268,7 +268,7 @@ function mapdata_viewer(res,catalog,resfig)
         
         if createNewField
             hold(rateax,'on');
-            selections.(field).cr1=plot(rateax, ...
+            selections.(field).cr1=line(rateax, ...
                 theseEvents.Date, 1:theseEvents.Count,...
                 'marker',curChar);
             hold(rateax,'off');
@@ -284,7 +284,7 @@ function mapdata_viewer(res,catalog,resfig)
         [~, vCumMoment, ~] = calc_moment(theseEvents);
         if createNewField
             hold(momentax,'on');
-            selections.(field).cm1=plot(momentax, ...
+            selections.(field).cm1=line(momentax, ...
                 theseEvents.Date, vCumMoment,...
                 'marker',curChar);
             hold(momentax,'off');
@@ -302,7 +302,7 @@ function mapdata_viewer(res,catalog,resfig)
         if createNewField
             hold(evdepax,'on');
             %tmpdeph=histcounts(theseEvents.Depth,depBinEdges)
-            selections.(field).ed=plot(evdepax, ...
+            selections.(field).ed=line(evdepax, ...
                 tmpdeph,depBinCenters,...
                 'marker',curChar);
             hold(evdepax,'off');
@@ -322,11 +322,12 @@ function mapdata_viewer(res,catalog,resfig)
         b_line = 10.^(tb.a_value(i) - tb.b_value(i) .* minmaxmag);
         if createNewField
             hold(bvalax,'on');
+            bvalax.YScale='log';
             % plot cumulative magnitudes
-            selections.(field).bv1=semilogy(bvalax,binCenters,cs,curChar,'Color',thiscolor);
+            selections.(field).bv1=line(bvalax,binCenters,cs,'Marker',curChar,'Color',thiscolor);
             
             %plot slope
-            selections.(field).bv3=semilogy(bvalax, minmaxmag, b_line,...
+            selections.(field).bv3=line(bvalax, minmaxmag, b_line,...
                 'Marker',curChar,...
                 'Color', thiscolor,'MarkerFaceColor',thiscolor);
             

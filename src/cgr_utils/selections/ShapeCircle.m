@@ -210,12 +210,14 @@ classdef ShapeCircle < ShapeGeneral
             %% mouse should still be pressed.
             
             % draw line from origin to edge of circle
-            h=plot([x1;x1],[y1;y1],'k+:','markersize',10,'linewidth',2);
+            h=line([x1;x1],[y1;y1],...
+                'Color','k','Marker','+',...
+                'LineStyle',':','markersize',10,'linewidth',2);
             % h(3)=plot([x1,x2],[y1,y2],'-o','markersize',10,'linewidth',2,'color',[.4 .4 .4]);
             
             % write the text
             h(2)=text((x1+x2)/2,(y1+y2)/2,['Radius:' num2str(obj.Radius,4) ' km'],'fontsize',12,'Fontweight','bold');
-            h(3)=plot(nan,nan,'k.','DisplayName','Rough Outline');
+            h(3)=line(nan,nan,'Color','k','Marker','.','DisplayName','Rough Outline');
             hold off;
             
             obj.Points=[x1,y1];

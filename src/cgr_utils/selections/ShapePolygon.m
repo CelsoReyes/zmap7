@@ -29,7 +29,10 @@ classdef ShapePolygon < ShapeGeneral
             if ~exist('type','var')
                 obj.Type='unassigned';
             end
-            axes(ax); % bring up axes of interest.  should be the map, with lat/lon
+
+            % assume we are looking at the right figure already
+            set(gcf,'CurrentAxes',ax); % bring up axes of interest.  should be the map, with lat/lon
+            
             obj.Type=lower(type);
             ZG=ZmapGlobal.Data;
             
@@ -89,7 +92,8 @@ classdef ShapePolygon < ShapeGeneral
             % select_polygon plots a polygon interactively using the mouse on selected axis
             % usage obj.select_polygon()
             hold on
-            mouse_points_overlay = plot(gca,0,0,'o-k',...
+            mouse_points_overlay = line(gca,0,0,'Marker','o','LineStyle','-',...
+                'Color','k',...
                 'MarkerSize',5,'LineWidth',2.0,...
                 'Tag','mouse_points_overlay',...
                 'DisplayName','polygon outline');
@@ -194,8 +198,11 @@ classdef ShapePolygon < ShapeGeneral
                 error('ESCAPE pressed. aborting polygon creation'); %catch me!
             else
                 hold on
-                mpo=plot(gca,[x, x, nan, xlim],[ylim,nan,y,y],'--','color',[.6 .6 .6],'LineWidth',2.0);
-                pt1=plot(gca,x,y,'ko','markersize',2');
+                mpo=line(gca,[x, x, nan, xlim],[ylim,nan,y,y],...
+                    'LineStyle','--','Color',[.6 .6 .6],'LineWidth',2.0);
+                pt1=line(gca,x,y,'Color','k',...
+                    'Marker','o','LineStyle','none',...
+                    'MarkerSize',2');
                 disp('enter second corner. ESC aborts')
                 [x2,y2,b]=ginput(1);
                 if b==27 %escape

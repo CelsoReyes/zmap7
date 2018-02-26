@@ -431,7 +431,7 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
                 
                 if bestmc-Mrange(1)>=sigMcDif
                     disp(blurb);
-                    blurb=['Optimized Mc [',num2str(bestmc),'] significantly higher than suggested Mc [', num2str(Mrange(1)), ']'];
+                    blurb=sprintf('Optimized Mc [%g] significantly higher than suggested Mc [%g]',bestmc, Mrange(1));
                     result_flag=4;
                 end
                 

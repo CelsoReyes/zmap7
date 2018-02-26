@@ -59,17 +59,15 @@ classdef ZmapXsectionCatalog < ZmapCatalog
         function disp(obj)
             fprintf('cross-section catalog with %d events\n',obj.Count);
             sp=obj.startPoint; ep=obj.endPoint;
-            fprintf('From (%s,%s) to (%s,%s) [%s km]\n',...
-                num2str(sp(1)),num2str(sp(2)),num2str(ep(1)),num2str(ep(2)),...
-                num2str(obj.curvelength_km));
+            fprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
+                sp(1),sp(2), ep(1),ep(2), obj.curvelength_km);
         end
 
         function s=info(obj)
             s=sprintf('cross-section catalog with %d events\n',obj.Count);
             sp=obj.startPoint; ep=obj.endPoint;
-            s=[s,sprintf('From (%s,%s) to (%s,%s) [%s km]\n',...
-                num2str(sp(1)),num2str(sp(2)),num2str(ep(1)),num2str(ep(2)),...
-                num2str(obj.curvelength_km))];
+            s=[s,sprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
+                sp(1),sp(2), ep(1),ep(2), obj.curvelength_km)];
         end
         
         function obj = subset(existobj, range)
@@ -96,14 +94,14 @@ classdef ZmapXsectionCatalog < ZmapCatalog
     
     methods(Static)
         function [lon, lat,h] = create_endpoints(ax,C)
-            % get_endpointsreturns lat, lon where each is [start,end] along with handle used to pick endpoints
+            % create_endpoints returns lat, lon where each is [start,end] along with handle used to pick endpoints
             
             disp('click on start and end points for cross section');
             
             % pick first point
             [lon, lat] = ginput(1);
             hold on;
-            h=plot(ax,lon,lat,'x','linewidth',2,'MarkerSize',5,'Color',C);
+            h=scatter(ax,lon,lat,'Marker','x','LineWidth',2,'MarkerSize',5,'Color',C);
             
             % pick second point
             [lon(2), lat(2)] = ginput(1);

@@ -311,7 +311,7 @@ classdef ZmapGrid
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=plot(ax,obj.(x)(:),obj.(y)(:),'+k','Tag',grid_tag);
+                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Marker','+','Color','k','Tag',grid_tag);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end
@@ -377,7 +377,7 @@ classdef ZmapGrid
             imAlpha(isnan(values))=0;
             %imAlpha=~obj.ActivePoints;
             h=imagesc(x, y, values,'AlphaData',imAlpha);%, obj.ActivePoints,name);
-            set(gca,'YDir','normal');
+            set(ax,'YDir','normal');
         end
         
         function setGlobal(obj)

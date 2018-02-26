@@ -8,7 +8,7 @@ function cummomentplot(obj,tabgrouptag)
     delete(findobj(obj.fig,'Tag','CumMom xs contextmenu'))
     ax=axes(myTab);
     [~, vCumMoment, ~] = calc_moment(obj.catalog);
-    p=plot(ax,obj.catalog.Date,vCumMoment,'linewidth',2.5,'DisplayName','catalog','color','k');
+    p=line(ax,obj.catalog.Date,vCumMoment,'linewidth',2.5,'DisplayName','catalog','color','k');
     grid(ax,'on');
     % plot cross sections, too
     k=obj.xsections.keys;
@@ -20,7 +20,7 @@ function cummomentplot(obj,tabgrouptag)
         [~, vCumMoment, ~] = calc_moment(xscat);
         c=uicontextmenu('tag','CumPlot xs contextmenu');
         uimenu(c,'Label','Open in new window','Callback',{@cb_xstimeplot,xs});
-        plot(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color,...
+        line(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color,...
             'UIContextMenu',c);
     end
         

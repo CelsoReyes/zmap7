@@ -79,9 +79,9 @@ classdef XSection
             [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
             
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             
-            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
         end
         
@@ -104,8 +104,8 @@ classdef XSection
             obj.DeleteFcn();
             
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
+           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
             
         end
             
@@ -117,8 +117,8 @@ classdef XSection
             obj.color = color;
             obj.DeleteFcn();
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
+           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
         
         function obj = swap_ends(obj, ax)
@@ -135,8 +135,8 @@ classdef XSection
             
             obj.DeleteFcn();
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_endpts, xs_line, xs_slabel, xs_elabel, xs_poly]); 
+           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
             
         function mask = inside(obj, catalog)
@@ -183,10 +183,10 @@ classdef XSection
             
         end
         
-        function [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
+        function [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % PLOT_MAPVIEW shows cross section with endpoints and width on the specified ax
             % plot great-circle path
-            %   [xs_line, xs_endpts, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
+            %   [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % these items might pollute the legend. consider turning off the Legend's autoupdate
             % function to avoid this
             
@@ -195,20 +195,14 @@ classdef XSection
             ax.XLimMode='manual';
             prev_ylimmode=ax.YLimMode;
             ax.YLimMode='manual';
-            xs_line=plot(ax,obj.curvelons,obj.curvelats,'--',...
+            xs_line=line(ax,obj.curvelons,obj.curvelats,'LineStyle','--',...
                 'linewidth',obj.linewidth,...
                 'Color',obj.color,...
+                'MarkerIndices',[1 numel(obj.curvelons)],'Marker','x',...
                 'Tag','Xsection Line','DisplayName',['Xsection ' obj.startlabel]);
             
-            xs_endpts = plot(ax,...
-                [obj.startpt(2),obj.endpt(2)], [obj.startpt(1),obj.endpt(1)],'Marker','x',...
-                'Color',obj.color,...
-                'lineStyle','none',...
-                'MarkerSize',8,...
-                'Tag','Xsection Endpoints','DisplayName','');
-            
             % plot width polygon
-            xs_poly=plot(ax,obj.polylons,obj.polylats,'-.',...
+            xs_poly=line(ax,obj.polylons,obj.polylats,'LineStyle','-.',...
                 'Color',obj.color,...
                 'LineWidth',obj.linewidth * 0.75,...
                 'Tag','Xsection Area','DisplayName','');

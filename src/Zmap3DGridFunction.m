@@ -176,7 +176,7 @@ function changecontours_cb()
     contr= findobj(gca,'Type','Contour');
     s.value=get(contr,'LevelList');
     if all(abs(diff(s.value)-diff(s.value(1:2))<=eps)) % eps is floating-point number spacing
-        s.toChar = @(x)[num2str(x(1)),':',num2str(diff(x(1:2))),':',num2str(x(end))];
+        s.toChar = @(x)sprintf('%g:%g:%g',x(1),diff(x(1:2)),x(end));
     end
     s.toValue = @mystr2vec;
     answer = smart_inputdlg(dlgtitle,s);

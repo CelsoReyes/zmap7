@@ -17,7 +17,7 @@ function plothist(obj, name, values, tabgrouptag)
     else
         h=findobj(ax,'Type','histogram');
         h.Data=values; %TODO move into hisgra
-        delete(findobj(ax,'Type','scatter'));
+        delete(findobj(ax,'Type','line'));
         if ~isempty(obj.xscats)
             doit(ax)
         end
@@ -38,7 +38,10 @@ function plothist(obj, name, values, tabgrouptag)
                 otherwise
                     n=histcounts(obj.xscats(k).(name),edges);
             end
-            scatter(ax,middles,n,[],obj.xsections(k).color,'DisplayName',k,'Marker','.');
+            line(ax,middles,n,'MarkerEdgeColor',obj.xsections(k).color,...
+                'LineStyle','none',...
+                'DisplayName',k,...
+                'Marker','.');
         end
         hold(ax,'off')
     end
