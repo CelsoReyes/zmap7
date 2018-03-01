@@ -236,7 +236,7 @@ function bcross(sel)
         if length(path1) > 1
             
             load([path1 file1])
-            xsecx = newa(:,length(newa(1,:)))';
+            xsecx = newa(:,end)';
             xsecy = newa(:,7);
             xvect = gx; yvect = gy;
             tmpgri=zeros((length(xvect)*length(yvect)),2);

@@ -46,7 +46,8 @@ classdef ZmapVGridFunction < ZmapGridFunction
             obj.add_grid_centers();
             
             ft=obj.ZG.features(obj.features);
-            copyobj(ft,gca);
+            ax=gca;
+            copyobj(ft,ax);
             
             colorbar
             title(mydesc)
@@ -92,9 +93,9 @@ classdef ZmapVGridFunction < ZmapGridFunction
                 
                 uimenu(lookmenu,'Separator','on',...
                     'Label','brighten',...
-                    'Callback',@(~,~)brighten(0.4));
+                    'Callback',@(~,~)colormap(ax,brighten(colormap,0.4)));
                 uimenu(lookmenu,'Label','darken',...
-                    'Callback',@(~,~)brighten(-0.4));
+                    'Callback',@(~,~)colormap(ax,brighten(colormap,-0.4)));
                 
             end
             

@@ -1,7 +1,21 @@
 classdef magrcros < ZmapVGridFunction
+    % TODO document this
+    % TODO make this the first x-section function
+    
+    
     properties
-        
+        useOnlyCompleteBins = true;
+        bin_edges
+        cutoff % time of cut
+        window_duration = ZmapGlobal.Data.compare_window_dur;
+        bin_duration = ZmapGlobalData.bin_dur;
+        binsBeforeCutoff
+        binsAfterCutoff
+        binsInWindow
+        binsAfterWindow
+        bins_per_window;
     end
+    
     properties(Constant)
         PlotTag='myplot';
         ReturnDetails = { ... TODO update this. it hasn't been really done.
@@ -23,306 +37,266 @@ classdef magrcros < ZmapVGridFunction
             'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
             'Number_of_Events', 'Number of events in node', ''...
             };
+        
+        %Negative z-values indicate an increase in the seismicity rate, positive values a decrease.
+            unit_options = {'seconds','hours','days','years'};
+            unit_functions = {@seconds, @hours, @days, @years};
     end
     methods
         function obj=magrcros(zap,varargin)
             obj@ZmapVGridFunction(zap,'z_value');
             
+            obj.InteractiveSetup();
+            obj.Caclulate();
+            % magrcros_orig(sel,obj);
+            
+            
+            % consider this for future: uimenu(op1,'Label','Show Circles ', 'callback',@(~,~)plotcirc)
         end
+        
+        function InteractiveSetup(obj)
+            % get the grid parameter
+            
+            
+            % these are provided by the eventselection
+            %ni = 100;
+            %ra = ZG.ra;
+            
+            if isempty(obj.Cutoff)
+                % set the default cutoff to the time of the biggest event in catalog. 
+                % selects first event if multiple events are same size
+                biggest=find(obj.RawCatalog.Magnitude==max(obj.RawCatalog.Magnitude) , 1);
+                obj.cutoff = obj.RawCatalog.Date(biggest);
+            end
+            % make the interface
+            %
+            zdlg = ZmapDialog([]);
+            % zdlg.AddEventSelectionParameters('evtparams', ni, ra);
+            if ~isempty(obj.shape)
+                zdlg.AddBasicCheckbox('useGridFromShape', 'Limit grid to shape', true,[],...
+                    'Only evaluate for gridpoints within the shape region. Does not restrict the catalog');
+                zdlg.AddBasicCheckbox('useCatFromShape', 'Limit catalog to shape', false,[],...
+                    'Only evaluate for events within the shape region. Does not restrict the grid');
+                
+            end
+            
+            % these provided by the grid
+            %dd = 1.00;
+            %dx = 1.00 ;
+            %zdlg.AddBasicEdit('dx_km','Spacing along strike [km]',dx,'spacing in horizontal plane');
+            %zdlg.AddBasicEdit('dd_km','Spacing in depth [km]',dd,'spacing in vertical plane');
+            
+            %zdlg.AddBasicEdit('bin_dur','Time steps in days',ZG.bin_dur,'time steps in days');
+            
+            default_unit = find(strcmp(obj.unit_options,'days'));
+            unitizer = obj.unit_functions{default_unit};
+            
+            zdlg.AddBasicEdit('cutoff','Please enter time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
+            
+            zdlg.AddBasicEdit('win_dur','Window Size',unitizer(obj.window_duration),...
+                'window size in specified units');
+            
+            zdlg.AddBasicPopup('win_dur_unit','Window Size Units:',obj.unit_options, default_unit,...
+                'Chooose units for window duration');
+            
+            zdlg.AddBasicEdit('bins_per_window','Number of bins in window [integer is best]',...
+                obj.window_duration/obj.bin_duration,...
+                'Number of bins in window. If not an integer value, partial values are tossed.');
+            
+            zdlg.AddBasicCheckbox('useOnlyCompleteBins', 'Discard incomplete bins', obj.useOnlyCompleteBins,[],...
+                'Bins are measured timesteps from the cutoff. If FALSE, then partial bins at beginning and end of periods are included.');
+            [zparam,okPressed]=zdlg.Create('Z-value xsection input parameters');
+            if ~okPressed
+                return
+            end
+            
+            %dd=zparam.dd_km;
+            %dx=zparam.dx_km;
+            
+            if zparam.useCatFromShape
+                errordlg('not yet implemented: use catalog from shape. First limit catalog by shape, THEN call this function');
+                return
+            end
+            
+        end  % function InteractiveSetup
+        
+        function SetValuesFromDialog(obj, res)
+            obj.bin_duration = res.bin_dur;
+            unitizer = obj.unit_functions{res.win_dur_unit};
+            obj.window_duration = unitizer(res.win_dur);
+            obj.bin_duration = obj.window_duration / res.bins_per_window;
+            obj.useOnlyCompleteBins = res.useOnlyCompleteBins;
+            obj.cutoff = res.cutoff;
+            
+            if zparam.useGridFromShape
+                obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+            end
+        end
+        
+        function CheckPreConditions(obj)
+            t0b = min(obj.RawCatalog.Date);
+            teb = max(obj.RawCatalog.Date);
+            assert(obj.cutoff > t0b && obj.cutoff < teb,...
+                'Cutoff date should be some time after %s and before %s', char(t0b), char(teb));
+            if obj.bins_per_window ~=round(obj.bins_per_window)
+                warning('Bins per window is not an integer. This means that window boundaries will not be exact');
+            end
+        end
+        
+        function Calculate(obj)
+            
+            % this is how to get a xsection grid from ZmapMainWindow (aa is handle to window)
+            % xsz  = aa.xsec_zap('A - A''')
+            % gr = xsz.Grid.MaskWithShape(aa.shape)
+            % and the above should already be pulled into the object.
+      
+            [t0b, teb] = obj.RawCatalog.DateRange() ;
+            
+            timestep=obj.bin_duration;
+            % create bins so that the cutoff is a bin edge. 
+            % the first events or last events are excluded if the time period is incomplete.
+            obj.bin_edges = unique([obj.cutoff : -timestep : t0b , obj.cutoff: timestep:teb]);
+            edges = obj.bin_edges;
+            if ~obj.useOnlyCompleteBins
+                % make sure ALL earthquakes are included, even if bin is too small.
+                obj.bin_edges=unique([t0b, obj.bin_edges, teb]);
+               
+            end
+            
+            edgeidx2valindex=@(edges)edges(1:end-1) & edges(2:end);
+            
+            obj.binsBeforeCutoff = obj.bin_edges <= obj.cutoff;
+            idxBeforeCutoff = edgeidx2valindex(obj.binsBeforeCutoff);
+            obj.binsAfterCutoff = obj.bin_edges >= obj.cutoff;
+            idxAfterCutoff = edgeidx2valindex(obj.binsAfterCutoff);
+            obj.binsInWindow = obj.BinsAfter & obj.bin_edges <= (obj.cutoff + obj.window_duration);
+            idxInWindow = edgeidx2valindex(obj.binsInWindow);
+            obj.binsAfterWindow = obj.bin_edges >= (obj.cutoff + obj.window_duration);
+            idxAfterWindow = edgeidx2valindex(obj.binsAfterWindow);
+            
+            idxNotInWindow = idxBeforeCutoff & idxAfterWindow;
+            
+            nBinsBeforeCutoff = sum(idxBeforeCutoff);
+            nBinsAfterCutoff = sum(idxAfterCutoff);
+            nBinsInWindow = sum(idxInWindow);
+            nBinsNotInWindow = sum(idxNotInWindow);
+            
+            obj.gridCalculations(@calculation_function, 4);
+            
+            % post calculations
+            
+            function out=calc_probability(old)
+                %calculate probabliity, where old is one of the zmaps.
+                % salvaged from vi_cucro
+                valueMap = old;
+                l = valueMap < 2.57;
+                valueMap(l) = ones(1,length(find(l)))*2.65;
+                pr = 0.0024 + 0.03*(valueMap - 2.57).^2;
+                pr = (1-1./(exp(pr)));
+                out = pr;
+            end
+            
+            catsave3('magrcros');
+            
+            % Plot the results
+            %
+            
+            %det = 'nop'
+            %in2 = 'nocal'
+            %menucros() -> which was at one point hooked up to incube, but not while I've been manipulating it. CGR
+            
+            
+            function out=calculation_function(catalog)
+                if n <= catalog.Count
+                    out = [ nan nan nan nan];
+                    return
+                end
+                
+                %% do prelim calculations, so that they are only done ONCE per grid point
+                
+                % get one overarching histogram...
+                nAll = histcounts(catalog.Date, edges); %was cumu
+                
+                % ... and access it via existing indices
+                nBeforeCutoff = nAll(idxBeforeCutoff);
+                nAfterCutoff = nAll(idxAfterCutoff);
+                nInWindow = nAll(idxInWindow);
+                nNotInWindow = nAll(idxNotInWindow);
+                
+                meanBeforeCutoff = mean(nBeforeCutoff);
+                meanAfterCutoff  = mean(nAfterCutoff);
+                meanInWindow = mean(nInWindow);
+                meanNotInWindow = mean(nNotInWindow);
+                
+                covBeforeCutoff = cov(nBeforeCutoff);
+                covAfterCutoff = cov(nAfterCutoff);
+                covInWindow = cov(nInWindow);
+                covNotInWindow = cov(nNotInWindow);
+                
+                out = [calc_ast() calc_lta() calc_rubberband() calc_percent()];
+                
+                % now comes the actual caclulations for 
+                function out=calc_percent()
+                    % loop over all grid points for percent
+                    
+                    out =  -((meanBeforeCutoff-meanAfterCutoff)./meanBeforeCutoff)*100;
+                end
+                
+                function out=calc_rubberband()
+                    % loop over all point for rubber band : compare window to before cutoff
+                    term1 = covBeforeCutoff / nBinsBeforeCutoff;
+                    term2 = covInWindow / nBinsInWindow;
+                    out =  (meanBeforeCutoff - meanInWindow) ./ (sqrt(term1 + term2));
+                end
+                
+                function out=calc_ast()
+                    % make the AST function map : compare before and after cutoff
+                    term1 =covBeforeCutoff / nBinsBeforeCutoff;
+                    term2 = covAfterCutoff / nBinsAfterCutoff;
+                    out = (meanBeforeCutoff - meanAfterCutoff) ./ (sqrt(term1 + term2));
+                end
+                
+                function out=calc_lta()
+                    % Calculate LTA: compare window to everything else
+                    term1 = covNotInWindow / nBinsNotInWindow;
+                    term2 = covInWindow  / nBinsInWindow;
+                    out =  (meanNotInWindow - meanInWindow)./(sqrt(term1+term2));
+                end
+                
+                % removed something that calculated 'maz', since it was never referenced elsewhere, and
+                % the original code was seriously convoluted. -CGR
+
+                
+            end % function calculation_function
+        end %function Calculate
+        
+        
+
     end % methods
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn) %xsec_zap
+        function h=AddMenuItem(parent,zap_Fcn) %xsec_zap
             % create a menu item
             label='Z-value section map';
             h=uimenu(parent,'Label',label,'Callback', @(~,~)magrcros(zap_Fcn()));
         end
+            
+        %{
+        %% UNMODIFIED/UNIMPLEMENTED BY CGR
+        function obj=my_load()
+            % Load exist z-grid
+            [file1,path1] = uigetfile(['*.mat'],'z-value gridfile');
+            if length(path1) > 1
+
+                load([path1 file1])
+                det = 'nop'
+                in2 = 'nocal'
+                menucros
+            else
+                return
+            end
+        end
+        %}
+        
     end % static methods
     
-end
-function magrcros_orig(sel)
-    % MAGRCROS z-value with depth
-    %
-    % This subroutine assigns creates a grid with
-    % spacing dx,dy (in degrees). The size will
-    % be selected interactiVELY. The bvalue in each
-    % volume around a grid point containing ni earthquakes
-    % will be calculated as well as the magnitude
-    % of completness
-    %   Stefan Wiemer 1/95
-    % turned into function by Celso G Reyes 2017
-    
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    
-    report_this_filefun(mfilename('fullpath'));
-    
-    global maex maey maix maiy
-    
-    if exist('sel','var')
-        switch sel
-            case 'lo'
-                my_load();
-            case 'ca'
-                my_calculate();
-            case 'in'
-                % fall through
-            otherwise
-                warning ('unexpected selection option');
-        end
-    end
-    
-    % get the grid parameter
-    % initial values
-    %
-    dd = 1.00;
-    dx = 1.00 ;
-    ni = 100;
-    ra = ZG.ra;
-    
-    % make the interface
-    %
-    zdlg = ZmapDialog([]);
-    zdlg.AddEventSelectionParameters('evtparams', ni, ra);
-    %zdlg.AddGridParameters('gridparams',dx,'km',[],[],dd,'km');
-    zdlg.AddBasicEdit('dx_km','Spacing along strike [km]',dx,'spacing in horizontal plane');
-    zdlg.AddBasicEdit('dd_km','Spacing in depth [km]',dd,'spacing in vertical plane');
-    zdlg.AddBasicEdit('bin_dur','Time steps in days',ZG.bin_dur,'time steps in days');
-    [zparam,okPressed]=zdlg.Create('Z-value xsection input parameters');
-    if ~okPressed
-        return
-    end
-    dd=zparam.dd_km;
-    dx=zparam.dx_km;
-    bin_dur = zparam.bin_dur;
-    evtsel = zparam.evtparams;
-    
-    my_calculate();
-    %{
-    figure_w_normalized_uicontrolunits(...
-        'Name','Grid Input Parameter',...
-        'NumberTitle','off', ...
-        'NextPlot','new', ...
-        'units','points',...
-        'Visible','off', ...
-        'Position',[ ZG.wex+200 ZG.wey-200 600 250]);
-    axis off
-    
-    % creates a dialog box to input grid parameters
-    %
-    freq_field=uicontrol('Style','edit',...
-        'Position',[.30 .50 .12 .10],...
-        'Units','normalized','String',num2str(ni),...
-        'callback',@callbackfun_001);
-    
-    
-    freq_field0=uicontrol('Style','edit',...
-        'Position',[.70 .50 .12 .10],...
-        'Units','normalized','String',num2str(ra),...
-        'callback',@callbackfun_002);
-    
-    tgl1 = uicontrol('Style','checkbox',...
-        'string','Number of Events:',...
-        'Position',[.05 .50 .2 .10], 'callback',@callbackfun_003,...
-        'Units','normalized');
-    
-    set(tgl1,'value',1);
-    
-    tgl2 =  uicontrol('Style','checkbox',...
-        'string','OR: Constant Radius',...
-        'Position',[.47 .50 .2 .10], 'callback',@callbackfun_004,...
-        'Units','normalized');
-    
-    
-    
-    % freq_field=uicontrol('Style','edit',...
-    %         'Position',[.60 .50 .22 .10],...
-    %        'Units','normalized','String',num2str(ni),...
-    %        'callback',@callbackfun_005);
-    
-    freq_field2=uicontrol('Style','edit',...
-        'Position',[.60 .40 .22 .10],...
-        'Units','normalized','String',num2str(dd),...
-        'callback',@callbackfun_006);
-    
-    freq_field3=uicontrol('Style','edit',...
-        'Position',[.60 .30 .22 .10],...
-        'Units','normalized','String',num2str(dx),...
-        'callback',@callbackfun_007);
-    
-    freq_field6B=uicontrol('Style','edit',...
-        'Position',[.60 .20 .22 .10],...
-        'Units','normalized','String',num2str(days(ZG.bin_dur)),...
-        'callback',@callbackfun_008);
-    
-    close_button=uicontrol('Style','Pushbutton',...
-        'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','callback',@callbackfun_cancel,'String','Cancel');
-    
-    go_button1=uicontrol('Style','Pushbutton',...
-        'Position',[.20 .05 .15 .12 ],...
-        'Units','normalized',...
-        'callback',@callbackfun_go,...
-        'String','Go');
-    
-    text(...
-        'Position',[0. 0.20 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Time steps in days:');
-    
-    
-    txt3 = text(...
-        'Position',[0.30 0.84 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.l ,...
-        'FontWeight','bold',...
-        'String',' Grid Parameter');
-    txt5 = text(...
-        'Position',[0. 0.42 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Spacing along strike in km');
-    
-    txt6 = text(...
-        'Position',[0. 0.32 0 ],...
-        'FontSize',ZmapGlobal.Data.fontsz.m ,...
-        'FontWeight','bold',...
-        'String','Spacing in depth in km:');
-    
-    
-    set(gcf,'visible','on');
-    watchoff
-    %}
-    
-    % get the grid-size interactively and
-    % calculate the b-value in the grid by sorting
-    % thge seimicity and selectiong the ni neighbors
-    % to each grid point
-    
-    function my_calculate()
-        
-        figure(xsec_fig());
-        hold on
-        ax = mainmap('axes');
-        [x,y, mouse_points_overlay] = select_polygon(ax);
-        
-        
-        plos2 = plot(x,y,'b-');        % plot outline
-        sum3 = 0.;
-        pause(0.3)
-        
-        %create a rectangular grid
-        xvect=[min(x):dx:max(x)];
-        yvect=[min(y):dd:max(y)];
-        gx = xvect;gy = yvect;
-        tmpgri=zeros((length(xvect)*length(yvect)),2);
-        n=0;
-        for i=1:length(xvect)
-            for j=1:length(yvect)
-                n=n+1;
-                tmpgri(n,:)=[xvect(i) yvect(j)];
-            end
-            
-        end
-        %extract all gridpoints in chosen polygon
-        XI=tmpgri(:,1);
-        YI=tmpgri(:,2);
-        
-        ll = polygon_filter(x,y, XI, YI, 'inside');
-        %grid points in polygon
-        newgri=tmpgri(ll,:);
-        
-        % Plot all grid points
-        plot(newgri(:,1),newgri(:,2),'+k')
-        
-        if length(xvect) < 2  ||  length(yvect) < 2
-            errordlg('Selection too small! (not a matrix)');
-            return
-        end
-        itotal = length(newgri(:,1));
-        
-        
-        
-        %  make grid, calculate start- endtime etc.  ...
-        %
-        [t0b, teb] = newa.DateRange() ;
-        n = newa.Count;
-        tdiff = round((teb-t0b)/ZG.bin_dur);
-        cumu = zeros(length(t0b:days(ZG.bin_dur):teb)+2);
-        ncu = length(cumu);
-        cumuall = nan(ncu,length(newgri(:,1)));
-        loc = zeros(3,length(newgri(:,1)));
-        
-        % loop over  all points
-        %
-        i2 = 0.;
-        i1 = 0.;
-        bvg = [];
-        allcount = 0.;
-        wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name',' grid - percent done');
-        drawnow
-        %
-        % longitude  loop
-        %
-        for i= 1:length(newgri(:,1))
-            x = newgri(i,1);y = newgri(i,2);
-            allcount = allcount + 1.;
-            % calculate distance from center point and sort wrt distance
-            l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
-            
-            if tgl1 == 0   % take point within r
-                l3 = l <= ra;
-                b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
-                rd = b.Count;
-            else
-                % take first ni points
-                [s,is] = sort(l);
-                b = newa(is(:,1),:) ;       % re-orders matrix to agree row-wise
-                b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
-                l2 = sort(l); rd = l2(ni);
-            end
-            if ~isempty(b)
-                if b.Count > 4
-                    [st,ist] = sort(b);   % re-sort wrt time for cumulative count
-                    b = b(ist(:,3),:);
-                    cumu = cumu * 0;
-                    % time (bin) calculation
-                    n = b.Count;
-                    cumu = histogram(b(1:n,3),t0b:days(ZG.bin_dur):teb);
-                    l = sort(l);
-                    cumuall(:,allcount) = [cumu';  x; rd];
-                    loc(:,allcount) = [x ; y; rd];
-                    waitbar(allcount/itotal)
-                end
-            end
-        end  % for newgr
-        
-        
-        catsave3('magrcros');
-        %corrected window positioning error
-        close(wai)
-        watchoff
-        
-        % Plot the results
-        %
-        
-        det = 'nop'
-        in2 = 'nocal'
-        menucros
-    end
-    
-    % Load exist z-grid
-    function my_load()
-        [file1,path1] = uigetfile(['*.mat'],'z-value gridfile');
-        if length(path1) > 1
-            
-            load([path1 file1])
-            det = 'nop'
-            in2 = 'nocal'
-            menucros
-        else
-            return
-        end
-    end
-    
-
 end

@@ -94,7 +94,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     wasEvaluated=false(length(zgrid),1);
     
-    drawnow
+    drawnow nocallbacks
     
     % start parallel pool if necessary, but warn user!
     ZG = ZmapGlobal.Data;
@@ -103,7 +103,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         if isempty(p) &&  ZG.useParallel
             h=msgbox('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
             set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
-            drawnow;
+            drawnow nocallbacks;
             parpool();
             close(h);
         end
@@ -126,7 +126,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     set(findobj(h,'Tag','OKButton'),'visible','off')
     h.Tag='gridmessage';
     watchon;
-    drawnow;
+    drawnow nocallbacks;
         
     if multifun
         watchoff;
@@ -201,7 +201,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 wasEvaluated(write_idx)=true;
                 %waitbar(i/length(zgrid))
                 if ~mod(i,ceil(length(zgrid)/50))
-                    drawnow
+                    drawnow limitrate nocallbacks
                 end
             end
         else

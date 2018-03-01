@@ -288,7 +288,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     set(gca,'Color',color_bg)
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
-        'normal','FontSize',10,'Linewidth',1.,'Ticklength',[0.02 0.02])
+        'normal','FontSize',10,'Linewidth',1,'Ticklength',[0.02 0.02])
     
     if isempty(maxdepth)
         maxZ = max(depth(idx_box));

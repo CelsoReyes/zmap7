@@ -235,7 +235,7 @@ classdef bgrid3dB < ZmapGridFunction
                         elseif ~isnan(Mc90)
                             magco = Mc90;
                         else
-                            [~, magco, ~, ~, ~, ~, ~,  ~] =  bvalca3(catalog.Magnitude,1);
+                            [~, magco] =  bvalca3(catalog.Magnitude,1);
                         end
                         l = catalog.Magnitude >= magco-0.05;
                         if sum(l) >= Nmin

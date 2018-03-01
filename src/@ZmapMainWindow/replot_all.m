@@ -56,7 +56,6 @@ function replot_all(obj,status)
         evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
         evs.Visible='on';
     end
-    %drawnow
 
     obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
         char(max(obj.catalog.Date)));

@@ -108,22 +108,12 @@ function  bdiff(mycat, holdplot)
     pause(0.1)
     
     y = backg_ab(ll);
-    [aw, bw,  S, ew] = wls(x',y');
+    [aw, bw,  ~, ew] = wls(x',y');
     p = [bw aw];
     
-    %p2 = [bw+onesigma aw];
-    %p3 = [bw-onesigma aw];
-    %x2 = 1:0.1:6;
     f = polyval(p,x);
-    %f2 = polyval(p2,x);
-    %f3 = polyval(p3,x);
-    %[f4,delta] = polyval(p,x,S);
     
     f = 10.^f;
-    %f2 = 10.^f2;
-    %f3 = 10.^f3;
-    %f4 = 10.^f4;
-    %delta = 10.^delta;
     hold on
     ttm= semilogy(x,f,'r','DisplayName','linear fit to background');  % plot linear fit to backg
     set(ttm,'LineWidth',1)
@@ -136,7 +126,7 @@ function  bdiff(mycat, holdplot)
     set(gca,'YLim',[1 (mycat.Count+20)*1.4]);
     
     set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
-        'LineWidth',1.,'TickDir','out','Ticklength',[0.02 0.02])
+        'LineWidth',1,'TickDir','out','Ticklength',[0.02 0.02])
     
     r = corrcoef(x,y);
     r = r(1,2);

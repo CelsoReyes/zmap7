@@ -72,7 +72,7 @@ function view_xstress(lab1,valueMap)
     
     % plot overlay
     %
-    ploeqc = plot(newa(:,length(newa(1,:))),-newa(:,7),'.k');
+    ploeqc = plot(newa(:,end),-newa(:,7),'.k');
     set(ploeqc,'Tag','eqc_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     if exist('vox', 'var')

@@ -11,6 +11,10 @@ function [A,B, S, err] = wls(x,y)
     
 %    global S % output of POLYFIT used for error estimates
     %mima = min(x);
+    
+    S=[];
+    err=inf;
+    
     if any(size(x) ~= size(y))
         error('X and Y vectors must be the same size.')
     end
@@ -37,15 +41,18 @@ function [A,B, S, err] = wls(x,y)
     %[B, A,err ] = ma(x',y');
     %b2 = -abs(B);
     
-    [p,S] = polyfit(wx(l),log10(wy(l)),1);
     if sum(l) <= 5
-        p = [NaN NaN] ;
+        p = [NaN NaN] ; 
+    elseif nargout > 2
+        [p,S] = polyfit(wx(l),log10(wy(l)),1);
+        if nargout==4 && S.df > 0
+            [~,err] = polyval(p,wx,S);
+            err = mean(err);
+        end
+    else
+        p = polyfit(wx(l),log10(wy(l)),1);
     end
     A = p(2);
     B = p(1) ;
-    if nargout==4
-        [~,err] = polyval(p,wx,S);
-        err = mean(err);
-    end
 end
 

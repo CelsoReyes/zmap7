@@ -39,9 +39,7 @@ classdef CatalogExplorationPlot < handle
             cl=c.(obj.color_by);
             cl=obj.colorFcn(cl);
             obj.ax
-            %obj.myscatter=scatter3(obj.ax,[], [], [], [], []);
-            %hold off;
-            %drawnow
+            
             delete(findobj(obj.ax,'Tag',tag));
             obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Tag',tag);
             obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);

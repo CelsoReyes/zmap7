@@ -240,7 +240,7 @@ classdef XSection
             if numel(x_km) == 1
                 % x_km is the delta spacing in km
                 % keep x_km/2 away from both edges to avoid edge effects
-                xDists_deg = km2deg( (x_km/2) : xSpacing_km : (obj.width_km - x_km/2));
+                xDists_deg = km2deg( (x_km/2) : x_km : (obj.length_km - x_km/2));
             else
                 xDists_deg = km2deg(x_km);
             end
@@ -253,15 +253,15 @@ classdef XSection
             
             nPts = numel(latout(:));
             nZs = numel(zs_km);
-            laloz=[latout(:), lonout(:), zeros(nPts,1)];
-            laloz=repmat(laloz,nZs,1);
+            lolaz=[ lonout(:), latout(:), zeros(nPts,1)];
+            lolaz=repmat(lolaz,nZs,1);
             for n=1:nZs
                 st = (n - 1) * nPts + 1;
                 ed = st + nPts;
-                laloz( st : ed , 3) = zs_km(n);
+                lolaz( st : ed , 3) = zs_km(n);
             end
             name=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
-            gr=ZmapGrid(name,laloz);
+            gr=ZmapGrid(name,lolaz);
         end
     end % METHODS
     

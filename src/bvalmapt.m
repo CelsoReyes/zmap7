@@ -146,7 +146,7 @@ classdef bvalmapt < ZmapHGridFunction
         function results=Calculate(obj)
             
             % overall b-value
-            [bv, magco, ~   , av_unused,  ~] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);
+            [bv] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);
             
             
             obj.gridCalculations(@calculation_function, 9, @modify_raw_results);
@@ -182,11 +182,11 @@ classdef bvalmapt < ZmapHGridFunction
                 
                 if  enough_1
                     % calculate magnitudes, bvalues, etc for events during this time frame
-                    [bv_1, magco_1, ~, av_1,  ~] =  bvalca3(catalog.Magnitude(idx_1), obj.useAutoMcomp, bv);
+                    [bv_1, magco_1, ~, av_1] =  bvalca3(catalog.Magnitude(idx_1), obj.useAutoMcomp, bv);
                     
                 else
                     % calculate magnitudes, bvalues, etc forr *ALL* events, regardless of time
-                    [bv_1, magco_1, ~, ~,  ~] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv);
+                    [bv_1, magco_1] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv);
                     av_1=NaN;
                     % pr = 50; % completely controlled by the 2nd time period, for some reason.
                 end
@@ -203,7 +203,7 @@ classdef bvalmapt < ZmapHGridFunction
                         magco_2 = maco_1;
                     else
                         % calculate magnitudes, bvalues, etc forr *ALL* events, regardless of time
-                        [bv_2, magco_2, ~, ~, ~] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv_1);
+                        [bv_2, magco_2] =  bvalca3(catalog.Magnitude, obj.useAutoMcomp, bv_1);
                     end
                     pr = 50;
                 end

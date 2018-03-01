@@ -105,7 +105,7 @@ function plotmi(var1)
     
     function plot_by_strike()
         % [~,is] = sort(newcat2(:,15));
-        [~,is] = sort(newa(:, length(newa(1,:)) ));
+        [~,is] = sort(newa(:,end));
         newa2 = newa(is(:,1),:) ;
         mi2 = mi(is(:,1),:) ;
         cumu2=cumsum(mi2(:,2));

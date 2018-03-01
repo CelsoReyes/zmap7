@@ -207,6 +207,9 @@ classdef ZmapGrid
             y=obj.Y(obj.ActivePoints);
         end
         
+        function z = get.Zactive(obj)
+            z=obj.Z(obj.ActivePoints);
+        end
         function points = ActiveGrid(obj)
             points = obj.GridVector(obj.ActivePoints,:);
         end
@@ -311,7 +314,7 @@ classdef ZmapGrid
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Marker','+','Color','k','Tag',grid_tag);
+                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Marker','+','Color','k','LineStyle','none','Tag',grid_tag);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end

@@ -119,8 +119,8 @@ classdef bdepth_ratio < ZmapHGridFunction
             
             
             % overall b-value
-            [tbo1, ~] =  bvalca3(top_zone.Magnitude,obj.useAutoMcomp);
-            [bbo1, ~] =  bvalca3(bot_zone.Magnitude,obj.useAutoMcomp);
+            [tbo1] =  bvalca3(top_zone.Magnitude,obj.useAutoMcomp);
+            [bbo1] =  bvalca3(bot_zone.Magnitude,obj.useAutoMcomp);
             
             depth_ratio = tbo1/bbo1;
             disp(depth_ratio);

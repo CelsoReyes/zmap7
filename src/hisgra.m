@@ -59,7 +59,7 @@ function hisgra(mycat, opt, ax)
         th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
         th.Interpreter='none';
         set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
-            'FontWeight','bold','TickDir','out','Ticklength',[ 0.01 0.01],'LineWidth',1.,'Box','on');
+            'FontWeight','bold','TickDir','out','Ticklength',[ 0.01 0.01],'LineWidth',1,'Box','on');
         if strcmp(stri2,stri3)
             stri2='Duration in days';
         elseif strcmp(stri2,stri4)
@@ -86,7 +86,7 @@ function hisgra(mycat, opt, ax)
         %th= title(ax,titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
         %th.Interpreter='none';
         set(ax,'visible','on',...
-            'TickDir','out','Ticklength',[ 0.01 0.01],'LineWidth',1.,'Box','on');
+            'TickDir','out','Ticklength',[ 0.01 0.01],'LineWidth',1,'Box','on');
         if strcmp(stri2,stri3)
             stri2='Duration in days';
         elseif strcmp(stri2,stri4)

@@ -92,7 +92,7 @@ function plotstations(ax, options)
     hold on
     dx = abs(s1-s2)/130;
     pl = plot(ax, stas.Longitude,stas.Latitude,options.Marker);
-    set(pl,'LineWidth',1.,options);
+    set(pl,'LineWidth',1,options);
     if showNames
         te1 = text(stas.Longitude+dx,lastas.Latitudet,char(stas.Name),'clipping','on');
         set(te1,'FontWeight','bold','Color','k','FontSize',9);
