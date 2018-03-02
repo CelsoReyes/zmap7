@@ -45,8 +45,8 @@ classdef findquar < ZmapFunction
                 
                 ...
                     
-            % run the rest of the program
-            obj.doIt();
+                % run the rest of the program
+                obj.doIt();
             end
         end
         

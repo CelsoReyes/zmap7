@@ -395,3 +395,6 @@ http://www.isc.ac.uk/iscbulletin/search/webservices/
 
 # completeness maps precalculated on the web
 completenessweb.org
+
+## ADDING FUNCTIONALITY
+[Adding Functionality](ADDING_FUNCTIONALITY.md)

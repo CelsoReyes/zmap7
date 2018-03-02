@@ -10,21 +10,22 @@ classdef magrcros < ZmapVGridFunction
         use_fixed_end = false;
         teb % windows end time [where post-window data ends]
         window_duration = ZmapGlobal.Data.compare_window_dur;
+        bin_dur
     end
     
     properties(Constant)
         PlotTag='zsection';
         ReturnDetails = { ... TODO update this. it hasn't been really done.
             ... VariableNames, VariableDescriptions, VariableUnits
-            'AST','Z-value comparing rate before to rate after cutoff','',...
-            'LTA','Z-value comparing rate outside window to inside window','',...
-            'RUB','Z-value comparing rate before cutoff [before window] to rate inside window','',...
-            'PCT','Compare ','',...
-            'nBeforeCutoff','','',...
-            'nAfterCutoff','','',...
-            'nInWindow','','',...
-            'nNotInWindow','','',...
-            'dist_along_strike','Distance along strike','km';...
+            'AST','Z-value comparing rate before to rate after cutoff','';...
+            'LTA','Z-value comparing rate outside window to inside window','';...
+            'RUB','Z-value comparing rate before cutoff [before window] to rate inside window','';...
+            'PCT','Compare ','';...
+            'nBeforeCutoff','','';...
+            'nAfterCutoff','','';...
+            'nInWindow','','';...
+            'nNotInWindow','','';...
+            'dist_along_strike','Distance along strike','km'...
             };
         CalcFields = {'AST','LTA','RUB','PCT',...
             'nBeforeCutoff','nAfterCutoff','nInWindow','nNotInWindow'}
@@ -35,11 +36,10 @@ classdef magrcros < ZmapVGridFunction
     end
     methods
         function obj=magrcros(zap,varargin)
-            obj@ZmapVGridFunction(zap,'z_value');
+            obj@ZmapVGridFunction(zap,'AST');
             obj.t0b = min(obj.RawCatalog.Date);
             obj.teb = max(obj.RawCatalog.Date);
             obj.InteractiveSetup();
-            obj.Caclulate();
             % magrcros_orig(sel,obj);
             
             
@@ -54,7 +54,7 @@ classdef magrcros < ZmapVGridFunction
             %ni = 100;
             %ra = ZG.ra;
             
-            if isempty(obj.Cutoff)
+            if isempty(obj.cutoff)
                 % set the default cutoff to the time of the biggest event in catalog. 
                 % selects first event if multiple events are same size
                 biggest=find(obj.RawCatalog.Magnitude==max(obj.RawCatalog.Magnitude) , 1);
@@ -64,7 +64,7 @@ classdef magrcros < ZmapVGridFunction
             %
             zdlg = ZmapDialog([]);
             % zdlg.AddEventSelectionParameters('evtparams', ni, ra);
-            if ~isempty(obj.shape)
+            if ~isempty(obj.Shape)
                 zdlg.AddBasicCheckbox('useGridFromShape', 'Limit grid to shape', true,[],...
                     'Only evaluate for gridpoints within the shape region. Does not restrict the catalog');
                 zdlg.AddBasicCheckbox('useCatFromShape', 'Limit catalog to shape', false,[],...
@@ -86,14 +86,14 @@ classdef magrcros < ZmapVGridFunction
             zdlg.AddBasicCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end,'fixed_start',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddBasicEdit('fixed_start','Use Start time',obj.t0b,...
+            zdlg.AddBasicEdit('fixed_start','Start time',obj.t0b,...
                 'window size in specified units');
+           
             
-            
-            zdlg.AddBasicCheckbox('use_fixed_end', 'Fix StartTime', obj.use_fixed_start,'fixed_end',...
+            zdlg.AddBasicCheckbox('use_fixed_end', 'Fix EndTime', obj.use_fixed_start,'fixed_end',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddBasicEdit('fixed_end','Use Start time',obj.teb,...
+            zdlg.AddBasicEdit('fixed_end','End time',obj.teb,...
                 'window size in specified units');
             
             zdlg.AddBasicEdit('cutoff','Please enter date & time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
@@ -115,7 +115,7 @@ classdef magrcros < ZmapVGridFunction
             %dd=zparam.dd_km;
             %dx=zparam.dx_km;
             
-            if zparam.useCatFromShape
+            if isfield(zparam,'useCatFromShape') && zparam.useCatFromShape
                 errordlg('not yet implemented: use catalog from shape. First limit catalog by shape, THEN call this function');
                 return
             end
@@ -142,8 +142,8 @@ classdef magrcros < ZmapVGridFunction
             obj.bin_dur = obj.window_duration/res.n_bins_in_window;
             obj.cutoff = res.cutoff;
             
-            if zparam.useGridFromShape
-                obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+            if isfield(res,'useGridFromShape') && res.useGridFromShape
+                obj.Grid = obj.Grid.MaskWithShape(obj.Shape);
             end
         end
         
@@ -162,16 +162,13 @@ classdef magrcros < ZmapVGridFunction
             % gr = xsz.Grid.MaskWithShape(aa.shape)
             % and the above should already be pulled into the object.
       
-            edges_for_cov = unique([obj.cutoff : - bj.bin_dur : obj.t0b, obj.cutoff : obj.bin_dur : obj.teb]);
+            edges_for_cov = unique([obj.cutoff : - obj.bin_dur : obj.t0b, obj.cutoff : obj.bin_dur : obj.teb]);
             
             obj.gridCalculations(@calculation_function);
             obj.Result.t0b = obj.t0b;
             obj.Result.teb = obj.teb;
             obj.Result.cutoff = obj.cutoff;
             obj.Result.bin_dur = obj.bin_dur;
-            
-             {'AST','LTA','RUB','PCT','nBeforeCutoff','nAfterCutoff','nInWindow','nNotInWIndow'}
-            % post calculations
             
             function out=calc_probability(old)
                 %calculate probabliity, where old is one of the zmaps.
@@ -184,20 +181,17 @@ classdef magrcros < ZmapVGridFunction
                 out = pr;
             end
             
-            catsave3('magrcros');
+            % catsave3('magrcros');
             
             % Plot the results
-            %
-            
             %det = 'nop'
             %in2 = 'nocal'
             %menucros() -> which was at one point hooked up to incube, but not while I've been manipulating it. CGR
             
             
             function out=calculation_function(catalog)
-                if n <= catalog.Count
-                    out = [ nan nan nan nan ...
-                        nan nan nan nan];
+                if catalog.Count <= 4
+                    out = nan(size(obj.CalcFields));
                     return
                 end
                 
@@ -234,32 +228,36 @@ classdef magrcros < ZmapVGridFunction
                 meanNotInWindow = mean(nNotInWindow);
                 
                 out = [calc_ast() calc_lta() calc_rubberband() calc_percent(),...
-                    nBeforeCutoff, nAfterCutoff, nInWindow, nNotInWindow];
+                    sum(nBeforeCutoff), sum(nAfterCutoff), sum(nInWindow), sum(nNotInWindow)];
                 
                 % now comes the actual calculations for 
                 function out=calc_percent()
                     out =  -((meanBeforeCutoff-meanAfterCutoff)./meanBeforeCutoff)*100;
+                    assert(numel(out)==1)
                 end
                 
                 function out=calc_rubberband()
                     % loop over all point for rubber band : compare window to before cutoff
-                    term1 = covBeforeCutoff / durBeforeCutoff;
-                    term2 = covInWindow / durInWindow;
+                    term1 = covBeforeCutoff / days(durBeforeCutoff);
+                    term2 = covInWindow / days(durInWindow);
                     out =  (meanBeforeCutoff - meanInWindow) ./ (sqrt(term1 + term2));
+                    assert(numel(out)==1)
                 end
                 
                 function out=calc_ast()
                     % make the AST function map : compare before and after cutoff
-                    term1 =covBeforeCutoff / durBeforeCutoff;
-                    term2 = covAfterCutoff / durAfterCutoff;
+                    term1 =covBeforeCutoff / days(durBeforeCutoff);
+                    term2 = covAfterCutoff / days(durAfterCutoff);
                     out = (meanBeforeCutoff - meanAfterCutoff) ./ (sqrt(term1 + term2));
+                    assert(numel(out)==1)
                 end
                 
                 function out=calc_lta()
                     % Calculate LTA: compare window to everything else
-                    term1 = covNotInWindow / durNotInWindow;
-                    term2 = covInWindow  / durInWindow;
+                    term1 = covNotInWindow / days(durNotInWindow);
+                    term2 = covInWindow  / days(durInWindow);
                     out =  (meanNotInWindow - meanInWindow)./(sqrt(term1+term2));
+                    assert(numel(out)==1)
                 end
                 
                 % removed something that calculated 'maz', since it was never referenced elsewhere, and

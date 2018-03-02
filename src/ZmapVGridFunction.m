@@ -21,10 +21,14 @@ classdef ZmapVGridFunction < ZmapGridFunction
             if ~isnumeric(choice)
                 choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
             end
-            
+            try
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
-            
+            catch
+                warning('did not find expected field %s',obj.active_col);
+                mydesc = obj.Result.values.Properties.VariableDescriptions{1};
+                myname = obj.Result.values.Properties.VariableNames{1};
+            end
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
@@ -45,9 +49,9 @@ classdef ZmapVGridFunction < ZmapGridFunction
             
             obj.add_grid_centers();
             
-            ft=obj.ZG.features(obj.features);
+            %ft=obj.ZG.features(obj.features);
             ax=gca;
-            copyobj(ft,ax);
+            %copyobj(ft,ax);
             
             colorbar
             title(mydesc)
