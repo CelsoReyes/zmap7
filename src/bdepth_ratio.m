@@ -30,13 +30,10 @@ classdef bdepth_ratio < ZmapHGridFunction
             'Number_of_Events_top', 'Number of events in TOP zone', '';... #10
             'Number_of_Events_bot', 'Number of events in BOTTOM zone', '';... #11
             ...
-            ... % these are provided by the gridfun
-            'Radius_km','resolution map (Radius)','km';...# 'reso'
-            'x', 'Longitude', 'deg';...
-            'y', 'Latitude', 'deg';...
-            'max_mag', 'Maximum magnitude at node', 'mag';...
-            'Number_of_Events', 'Number of events in node', ''...
             };
+        CalcFields = {'bv_ratio','magco','bv2','av','Prmap',...
+            'top_b','bottom_b','per_top','per_bot',...
+            'Number_of_Events_top','Number_of_Events_bot'};
     end
     
     methods
@@ -127,7 +124,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             
             
             % loop over all points
-            obj.gridCalculations(@calculation_function, 11);
+            obj.gridCalculations(@calculation_function);
             
             obj.Result.top.depthrange_km=[obj.topzone_ceiling obj.topzone_floor];
             obj.Result.bottom.depthrange_km=[obj.bottomzone_ceiling obj.bottomzone_floor];

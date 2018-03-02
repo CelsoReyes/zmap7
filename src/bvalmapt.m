@@ -27,11 +27,11 @@ classdef bvalmapt < ZmapHGridFunction
             'bval_2','b-value map second period','';...#6 'b-value'
             'aval_2', 'a-value for period 2', '';... #8 avm
             'magco_2','mag of completeness map - period 2','mag';... #12 'Momp2'
-            
+            ...
             'pro','Probability Map (Utsus test for b1 and b2)','';... #7 'P'
-            
-            'max_mag', 'Maximum magnitude at node', 'mag';... #13 [maxm] [outside]
-            'Radius_km', 'Radius of chosen events (Resolution) [km]', 'km';...
+            ... 
+            ... % these are added after the fact
+            ...
             'db12','Differential B-value','';... #11[outside] 'b-value'
             'dbperc','b change in percent','pct';...[outside]#14 'b-value change'
             'eqprobchange','Earthquake probability change map (M5)',''; ... [log10(#13)]'dP'
@@ -40,12 +40,10 @@ classdef bvalmapt < ZmapHGridFunction
             'P6a','P6 for period 2','per year';...
             'P6b','P6 for period 1','per year';...
             'P6a_over_P6b','ratio of P6  (period1/period2)','ratio';...
-            'x', 'Longitude', 'deg';... #3[outside]
-            'y', 'Latitude', 'deg';... #4[outside]
             
-            ...%'r','resolution Map - number of events',''... #5 [ actually, number of events & outside]
-            'Number_of_Events', 'Number of events in node', ''... # was #5 'r' ['Resolution map']
             };
+        CalcFields={'nEvents_1','bval_1','aval_1','magco_1',...
+                    'nEvents_2','bval_2','aval_2','magco_2','pro'};
         % the viewplotting methods also had call to zhist,
         %
         % various select eq in polygons (new/hold) [selectp with various hold_state],
@@ -89,16 +87,6 @@ classdef bvalmapt < ZmapHGridFunction
             obj.t4 = teb;
             obj.t2 = t0b + (teb-t0b)/2;
             obj.t3 = obj.t2+seconds(0.001);
-            %{
-            sdlg.prompt='Start Time A : T1 = '; sdlg.value=t1;
-            sdlg(2).prompt='End Time A : T2 = '; sdlg(2).value=t2;
-            sdlg(3).prompt='Start Time B: T3 = '; sdlg(3).value=t3;
-            sdlg(4).prompt='End Time B: T4 = '; sdlg(4).value=t4;
-            sdlg(5).prompt='Min # of events in each period?'; sdlg(5).value=50;
-            [~,~,obj.t1,obj.t2,...
-                obj.t3,obj.t4,...
-                obj.minnu] = smart_inputdlg('differential b-value map', sdlg);
-            %}
             
             %% make the interface
             zdlg = ZmapDialog();
@@ -149,7 +137,7 @@ classdef bvalmapt < ZmapHGridFunction
             [bv] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);
             
             
-            obj.gridCalculations(@calculation_function, 9, @modify_raw_results);
+            obj.gridCalculations(@calculation_function, @calc_additional_results);
             
             obj.Result.period1.dateRange=[obj.t1 obj.t2];
             obj.Result.period2.dateRange=[obj.t3 obj.t4];
@@ -219,63 +207,40 @@ classdef bvalmapt < ZmapHGridFunction
                 end
             end %calculation_function
             
-            function rslt=modify_raw_results(rslt)
+            function rslt=calc_additional_results(rslt)
                 % do any calculations that can be performed after-the-fact and aren't grid dependent
                 
-                returnFields = obj.ReturnDetails(:,1);
-                rField=@(s) strcmp(s,returnFields);
-                
-                
-                % fields returned [in order] by gridfun:
-                % nEvents1
-                % bval_1
-                % aval_1
-                % magco_1
-                % nEvents_2
-                % bval_2
-                % aval_2
-                % magco_2
-                % pro
-                
-                
                 % deal with this mysterious P6b 
-                idx = rVals('nEvents_1') >= obj.minnu;
+                idx = rslt.nEvents_1 > obj.minnu;
                 rfactor=zeros(size(idx));
                 rfactor(idx)=6.5;
                 rfactor(~idx)=5.0;
-                tmp_av = rVals('aval_1');
+                tmp_av = rslt.aval_1;
                 
                 % replace av values for grid points where there are not enough events.
-                tmp_av(~idx) = log10(idxVals(~idx,'nEvents_1')) + idxVals(~idx,'bval_1') .* idxVals(~idx,'magco_1');
-                rslt(:,rField('P6b'))=10.^(tmp_av - rVals('bval_1').* rfactor) ./ years(obj.duration_A);
-                rslt(~idx, rField('bval_1')) = NaN;
+                tmp_av(~idx) = log10( rslt.nEvents_1(~idx) + rslt.bval_1(~idx) .* rslt.magco_1(~idx) );
+                rslt.P6b = 10.^(tmp_av-rslt.bval_1 .* rfactor) ./ years(obj.duration_A);
+                rslt.bval_1(~idx) = NaN;
                 
                 % deal with this mysterious P6a
-                idx = rVals('nEvents_2') >= obj.minnu;
+                idx = rslt.nEvents_2 >= obj.minnu;
                 rfactor=zeros(size(idx));
                 rfactor(idx)=6.5;
                 rfactor(~idx)=5.0;
-                tmp_av = rVals('aval_2');
+                tmp_av = rslt.aval_2;
                 
                 % replace av values for grid points where there are not enough events.
-                tmp_av(~idx)= log10(idxVals(~idx,'nEvents_2')) + idxVals(~idx,'bval_2') .* idxVals(~idx,'magco_2');
-                rslt(:,rField('P6a'))=10.^(tmp_av - rVals('bval_2').* rfactor) ./ years(obj.duration_B);
-                rslt(~idx, rField('bval_2')) = NaN;
+                tmp_av(~idx)= log10(rslt.nEvents_2(~idx)) + rslt.bval_2(~idx) .* rslt.magco_2(~idx);
+                rslt.P6a=10.^(tmp_av - rslt.bval_2.* rfactor) ./ years(obj.duration_B);
+                rslt.bval_2(~idx) = NaN;
                 
-                rslt(:,rField('P6a_over_P6b'))=rVals('P6a') ./ rVals('P6b');
+                rslt.P6a_over_P6b=rslt.P6a ./ rslt.P6b;
                 
-                rslt(:,rField('stanm'))=rVals('P6a')-rVals('pro');
-                rslt(:,rField('dbperc'))=rVals('bval_1')./rVals('bval_2') .* 100 - 100; % bv2/bv*100-100
-                rslt(:,rField('dmag'))=rVals('magco_1')-rVals('magco_2');
-                rslt(:,rField('eqprobchange'))=log10(rVals('max_mag'));
-                rslt(:,rField('db12'))=rVals('bval_1') - rVals('bval_2');
-                
-                function x=rVals(s)
-                    x=rslt(:,rField(s)); % good for right-hand side calculations only
-                end
-                function x=idxVals(n,s)
-                    x=rslt(n,rField(s));
-                end
+                rslt.stanm=rslt.P6a-rslt.pro;
+                rslt.dbperc=rslt.bval_1./rslt.bval_2 .* 100 - 100; % bv2/bv*100-100
+                rslt.dmag=rslt.magco_1-rslt.magco_2;
+                rslt.eqprobchange=log10(rslt.max_mag);
+                rslt.db12=rslt.bval_1 - rslt.bval_2;
             end
         end % Calculate
         

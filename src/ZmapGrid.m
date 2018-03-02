@@ -374,7 +374,12 @@ classdef ZmapGrid
             % corners for image
             x = [min(obj.X) max(obj.X)];
             y = [min(obj.Y) max(obj.Y)];
-            values(~obj.ActivePoints)=nan;
+            try
+                values(~obj.ActivePoints)=nan;
+            catch
+                values=double(values);
+                values(~obj.ActivePoints)=nan;
+            end
             %axes ax
             imAlpha=ones(size(values));
             imAlpha(isnan(values))=0;

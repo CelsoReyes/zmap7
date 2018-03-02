@@ -21,13 +21,10 @@ classdef comp2periodz < ZmapHGridFunction
             'Number_of_Events_1', 'Number of events in first period', '';... #4
             'Number_of_Events_2', 'Number of events in second period', '';... #5
             ...
-            ... % these are provided by the gridfun
-            'Radius_km','Radius','km';...# 'reso'
-            'x', 'Longitude', 'deg';...
-            'y', 'Latitude', 'deg';...
-            'max_mag', 'Maximum magnitude at node', 'mag';...
-            'Number_of_Events', 'Number of events in node', ''...
             };
+
+        CalcFields={'z_value','pct_change','beta_value',...
+            'Number_of_Events_1','Number_of_Events_2'}
     end
     
     methods
@@ -110,7 +107,7 @@ classdef comp2periodz < ZmapHGridFunction
             interval2_edges = [interval2_bins, interval2_bins(end)+obj.binsize];
             
             
-            obj.gridCalculations(@calculation_function, 5);
+            obj.gridCalculations(@calculation_function);
            
             obj.Result.period1.dateRange=[obj.t1 obj.t2];
             obj.Result.period2.dateRange=[obj.t3 obj.t4];

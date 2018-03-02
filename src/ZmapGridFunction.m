@@ -12,9 +12,14 @@ classdef ZmapGridFunction < ZmapFunction
         Shape % shape to be used 
     end
     properties(Constant,Abstract)
+        
         % array of {VariableNames, VariableDescriptions, VariableUnits}
         % that must contain the VariableNames: 'x', 'y', 'Radius_km', 'Number_of_Events'
         ReturnDetails; 
+        
+        % cell of VariableNames (chosen from first row of ReturnDetails) that
+        % describe the data returned from the calculation function. [in order]
+        CalcFields;
     end
     
     methods
@@ -47,44 +52,89 @@ classdef ZmapGridFunction < ZmapFunction
 
     end
     methods(Access=protected)
-        function gridCalculations(obj, calculationFcn, nReturnValuesPerPoint, modificationFcn)
+        
+        function allvalues=putInMatrix(obj, allvalues, fieldname, thesevalues)
+            % put values into matrix based on position in ReturnDetails array
+            %
+            % PUTINMATRIX(obj,allvalues, fieldname, thesevalues)
+            
+            % returnFields = obj.ReturnDetails(:,1);
+            % returnDesc = obj.ReturnDetails(:,2);
+            % returnUnits = obj.ReturnDetails(:,3);
+            
+            allvalues(:,strcmp(fieldname,obj.ReturnDetails(:,1))) = thesevalues;
+            
+        end
+            
+        function gridCalculations(obj, calculationFcn, modificationFcn)
             % GRIDCALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
-            % GRIDCALCULATIONS(obj, calculationFcn, nReturnValuesPerPoint)
+            % GRIDCALCULATIONS(obj, calculationFcn, modificationfcn)
             %calculate values at all points
-             [vals,nEvents,maxDists,maxMag, ll]=gridfun(calculationFcn,...
-                obj.RawCatalog, ...
-                obj.Grid, ...
-                obj.EventSelector,...
-                nReturnValuesPerPoint);
+            %
+            assert(isa(obj,'ZmapGridFunction'));
+            [...
+                vals, ...
+                nEvents, ...
+                maxDists, ...
+                maxMag, ...
+                wasEvaluated...
+                ] = gridfun( calculationFcn, obj.RawCatalog, obj.Grid, obj.EventSelector, numel(obj.CalcFields) );
             
             
-            returnFields = obj.ReturnDetails(:,1);
-            returnDesc = obj.ReturnDetails(:,2);
-            returnUnits = obj.ReturnDetails(:,3);
+            mytable = array2table(vals,'VariableNames', obj.CalcFields);
             
-            
-            vals(:,strcmp('x',returnFields))=obj.Grid.X(:);
-            vals(:,strcmp('y',returnFields))=obj.Grid.Y(:);
-            if ~isempty(obj.Grid.Z)
-                vals(:,strcmp('z',returnFields))=obj.Grid.Z(:);
+            useZ = ~isempty(obj.Grid.Z);
+            whichdetails = ismember(obj.ReturnDetails(:,1),obj.CalcFields);
+            if ~useZ
+                descs=[obj.ReturnDetails(whichdetails,2)',...
+                    {'Radius','Longitude','Latitude','Maximum magnitude at node',...
+                    'Number of events in node','was evaluated'}];
+                units = [obj.ReturnDetails(whichdetails,3)',{'km','deg','deg','mag','','logical'}];
+                
+            else
+                descs=[obj.ReturnDetails(whichdetails,2)',...
+                    {'Radius','Longitude','Latitude','Depth','Maximum magnitude at node',...
+                    'Number of events in node','was evaluated'}];
+                
+                units = [obj.ReturnDetails(whichdetails,3)', {'km','deg','deg','km','mag','','logical'}];
             end
             
-            vals(:,strcmp('Number_of_Events',returnFields))=nEvents;
-            vals(:,strcmp('Radius_km',returnFields))=maxDists;
-            vals(:,strcmp('max_mag',returnFields))=maxMag;
+            mytable.Radius_km = maxDists;
+            mytable.x=obj.Grid.X(:);
+            mytable.y=obj.Grid.Y(:);
+            if useZ
+                mytable.z=obj.Grid.Z(:);
+            end
+            mytable.max_mag = maxMag;
+            mytable.Number_of_Events = nEvents;
+            mytable.was_evaluated = wasEvaluated;
+            
+            mytable.Properties.VariableDescriptions = descs;
+            mytable.Properties.VariableUnits = units;
             
             if exist('modificationFcn','var')
-                vals= modificationFcn(vals);
+                mytable= modificationFcn(mytable);
+                
+                % now tweak descriptions & units
+                descriptions = mytable.Properties.VariableDescriptions;
+                idxEmptyDesc=find(isempty(descriptions));
+                
+                for j=idxEmptyDesc % for each empty description field
+                    row=strcmp(obj.ReturnDetails(:,1),mytable.Properties.VariableNames{j});
+                    if ~any(row)
+                        warning('Could not find matching description for %s',...
+                            mytable.Properties.VariableNames{j});
+                    end
+                    mytable.Properties.VariableDescriptions(j)=obj.ReturnDetails(row,2);
+                    mytable.Properteis.VariableUnits(j)=obj.ReturnDetails(row,3);
+                end
+                    
+                    
             end
-            
-            myvalues = array2table(vals,'VariableNames', returnFields);
-            myvalues.Properties.VariableDescriptions = returnDesc;
-            myvalues.Properties.VariableUnits = returnUnits;
-            
-            obj.Result.values=myvalues;
+            obj.Result.values=mytable;
         end
         
-        function togglegrid_cb(src,~)
+        function togglegrid_cb(obj,src,~)
             gph=findobj(gcf,'tag','pointgrid');
             if isempty(gph)
                 gph=obj.Grid.plot();

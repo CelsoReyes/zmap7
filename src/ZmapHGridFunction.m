@@ -34,7 +34,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
             delete(findobj(f,'Type','axes'));
             
             % this is to show the data
-            obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
+            if islogical(obj.Result.values.(myname)(1))
+                p=double(obj.Result.values.(myname));
+                p(p==0)=nan;
+                obj.Grid.pcolor([],p, mydesc);
+            else
+                obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
+            end
             hold on;
             
             % the imagesc exists is to enable data cursor browsing.
@@ -87,7 +93,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 % display overlay menu items
                 
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',tf2onoff(obj.showgridcenters),...
-                    'callback',@togglegrid_cb);
+                    'callback',@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
                     'callback',{@addquakes_cb,obj.RawCatalog});
                 

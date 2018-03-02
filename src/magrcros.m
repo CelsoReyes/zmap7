@@ -4,39 +4,30 @@ classdef magrcros < ZmapVGridFunction
     
     
     properties
-        useOnlyCompleteBins = true;
-        bin_edges
         cutoff % time of cut
+        use_fixed_start = false;
+        t0b % windows start time [where pre-window data starts]
+        use_fixed_end = false;
+        teb % windows end time [where post-window data ends]
         window_duration = ZmapGlobal.Data.compare_window_dur;
-        bin_duration = ZmapGlobalData.bin_dur;
-        binsBeforeCutoff
-        binsAfterCutoff
-        binsInWindow
-        binsAfterWindow
-        bins_per_window;
     end
     
     properties(Constant)
-        PlotTag='myplot';
+        PlotTag='zsection';
         ReturnDetails = { ... TODO update this. it hasn't been really done.
             ... VariableNames, VariableDescriptions, VariableUnits
-            'Mc_value', 'Magnitude of Completion (Mc)', '';...
-            'Mc_std', 'Std. of Magnitude of Completion', '';...
-            'x', 'Longitude', 'deg';...
-            'y', 'Latitude', 'deg';...
-            'z', 'Depth','km';...
+            'AST','Z-value comparing rate before to rate after cutoff','',...
+            'LTA','Z-value comparing rate outside window to inside window','',...
+            'RUB','Z-value comparing rate before cutoff [before window] to rate inside window','',...
+            'PCT','Compare ','',...
+            'nBeforeCutoff','','',...
+            'nAfterCutoff','','',...
+            'nInWindow','','',...
+            'nNotInWindow','','',...
             'dist_along_strike','Distance along strike','km';...
-            'Radius_km', 'Radius of chosen events (Resolution) [km]', 'km';...
-            'b_value', 'b-value', '';...
-            'b_value_std', 'Std. of b-value', '';...
-            'a_value', 'a-value', '';...
-            'a_value_std', 'Std. of a-value', '';...
-            'power_fit', 'Goodness of fit to power-law', '';...
-            'max_mag', 'Maximum magnitude at node', 'mag';...
-            'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
-            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
-            'Number_of_Events', 'Number of events in node', ''...
             };
+        CalcFields = {'AST','LTA','RUB','PCT',...
+            'nBeforeCutoff','nAfterCutoff','nInWindow','nNotInWindow'}
         
         %Negative z-values indicate an increase in the seismicity rate, positive values a decrease.
             unit_options = {'seconds','hours','days','years'};
@@ -45,7 +36,8 @@ classdef magrcros < ZmapVGridFunction
     methods
         function obj=magrcros(zap,varargin)
             obj@ZmapVGridFunction(zap,'z_value');
-            
+            obj.t0b = min(obj.RawCatalog.Date);
+            obj.teb = max(obj.RawCatalog.Date);
             obj.InteractiveSetup();
             obj.Caclulate();
             % magrcros_orig(sel,obj);
@@ -91,20 +83,30 @@ classdef magrcros < ZmapVGridFunction
             default_unit = find(strcmp(obj.unit_options,'days'));
             unitizer = obj.unit_functions{default_unit};
             
-            zdlg.AddBasicEdit('cutoff','Please enter time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
+            zdlg.AddBasicCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end,'fixed_start',...
+                'Otherwise, the StartTime will depend on the catalog');
+            
+            zdlg.AddBasicEdit('fixed_start','Use Start time',obj.t0b,...
+                'window size in specified units');
+            
+            
+            zdlg.AddBasicCheckbox('use_fixed_end', 'Fix StartTime', obj.use_fixed_start,'fixed_end',...
+                'Otherwise, the StartTime will depend on the catalog');
+            
+            zdlg.AddBasicEdit('fixed_end','Use Start time',obj.teb,...
+                'window size in specified units');
+            
+            zdlg.AddBasicEdit('cutoff','Please enter date & time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
             
             zdlg.AddBasicEdit('win_dur','Window Size',unitizer(obj.window_duration),...
                 'window size in specified units');
             
             zdlg.AddBasicPopup('win_dur_unit','Window Size Units:',obj.unit_options, default_unit,...
                 'Chooose units for window duration');
+            zdlg.AddBasicEdit('n_bins_in_window','Number of bins within window',...
+                round(obj.window_duration/obj.ZG.bin_dur),...
+                'Number of windows used to divide up the window [INTEGER]. this determines the bin size');
             
-            zdlg.AddBasicEdit('bins_per_window','Number of bins in window [integer is best]',...
-                obj.window_duration/obj.bin_duration,...
-                'Number of bins in window. If not an integer value, partial values are tossed.');
-            
-            zdlg.AddBasicCheckbox('useOnlyCompleteBins', 'Discard incomplete bins', obj.useOnlyCompleteBins,[],...
-                'Bins are measured timesteps from the cutoff. If FALSE, then partial bins at beginning and end of periods are included.');
             [zparam,okPressed]=zdlg.Create('Z-value xsection input parameters');
             if ~okPressed
                 return
@@ -118,14 +120,26 @@ classdef magrcros < ZmapVGridFunction
                 return
             end
             
+            SetValuesFromDialog(obj,zparam);
+            obj.doIt();
+            
         end  % function InteractiveSetup
         
         function SetValuesFromDialog(obj, res)
-            obj.bin_duration = res.bin_dur;
+            if res.use_fixed_start
+                obj.t0b = min(obj.RawCatalog.Date);
+            else
+                obj.t0b = res.fixed_start;
+            end
+            
+            if res.use_fixed_end
+                obj.teb = max(obj.RawCatalog.Date);
+            else
+                obj.teb = res.fixed_end;
+            end
             unitizer = obj.unit_functions{res.win_dur_unit};
             obj.window_duration = unitizer(res.win_dur);
-            obj.bin_duration = obj.window_duration / res.bins_per_window;
-            obj.useOnlyCompleteBins = res.useOnlyCompleteBins;
+            obj.bin_dur = obj.window_duration/res.n_bins_in_window;
             obj.cutoff = res.cutoff;
             
             if zparam.useGridFromShape
@@ -134,13 +148,11 @@ classdef magrcros < ZmapVGridFunction
         end
         
         function CheckPreConditions(obj)
-            t0b = min(obj.RawCatalog.Date);
-            teb = max(obj.RawCatalog.Date);
-            assert(obj.cutoff > t0b && obj.cutoff < teb,...
-                'Cutoff date should be some time after %s and before %s', char(t0b), char(teb));
-            if obj.bins_per_window ~=round(obj.bins_per_window)
-                warning('Bins per window is not an integer. This means that window boundaries will not be exact');
-            end
+            assert(obj.cutoff > obj.t0b && obj.cutoff < obj.teb,...
+                'Cutoff date should be some time after %s and before %s', char(obj.t0b), char(obj.teb));
+            assert(obj.t0b < obj.teb,'Invalid dates: Start date is after End date');
+            assert (obj.cutoff + obj.window_duration > obj.teb,...
+                'window extends past end date. Manually set end date or change window');
         end
         
         function Calculate(obj)
@@ -150,39 +162,15 @@ classdef magrcros < ZmapVGridFunction
             % gr = xsz.Grid.MaskWithShape(aa.shape)
             % and the above should already be pulled into the object.
       
-            [t0b, teb] = obj.RawCatalog.DateRange() ;
+            edges_for_cov = unique([obj.cutoff : - bj.bin_dur : obj.t0b, obj.cutoff : obj.bin_dur : obj.teb]);
             
-            timestep=obj.bin_duration;
-            % create bins so that the cutoff is a bin edge. 
-            % the first events or last events are excluded if the time period is incomplete.
-            obj.bin_edges = unique([obj.cutoff : -timestep : t0b , obj.cutoff: timestep:teb]);
-            edges = obj.bin_edges;
-            if ~obj.useOnlyCompleteBins
-                % make sure ALL earthquakes are included, even if bin is too small.
-                obj.bin_edges=unique([t0b, obj.bin_edges, teb]);
-               
-            end
+            obj.gridCalculations(@calculation_function);
+            obj.Result.t0b = obj.t0b;
+            obj.Result.teb = obj.teb;
+            obj.Result.cutoff = obj.cutoff;
+            obj.Result.bin_dur = obj.bin_dur;
             
-            edgeidx2valindex=@(edges)edges(1:end-1) & edges(2:end);
-            
-            obj.binsBeforeCutoff = obj.bin_edges <= obj.cutoff;
-            idxBeforeCutoff = edgeidx2valindex(obj.binsBeforeCutoff);
-            obj.binsAfterCutoff = obj.bin_edges >= obj.cutoff;
-            idxAfterCutoff = edgeidx2valindex(obj.binsAfterCutoff);
-            obj.binsInWindow = obj.BinsAfter & obj.bin_edges <= (obj.cutoff + obj.window_duration);
-            idxInWindow = edgeidx2valindex(obj.binsInWindow);
-            obj.binsAfterWindow = obj.bin_edges >= (obj.cutoff + obj.window_duration);
-            idxAfterWindow = edgeidx2valindex(obj.binsAfterWindow);
-            
-            idxNotInWindow = idxBeforeCutoff & idxAfterWindow;
-            
-            nBinsBeforeCutoff = sum(idxBeforeCutoff);
-            nBinsAfterCutoff = sum(idxAfterCutoff);
-            nBinsInWindow = sum(idxInWindow);
-            nBinsNotInWindow = sum(idxNotInWindow);
-            
-            obj.gridCalculations(@calculation_function, 4);
-            
+             {'AST','LTA','RUB','PCT','nBeforeCutoff','nAfterCutoff','nInWindow','nNotInWIndow'}
             % post calculations
             
             function out=calc_probability(old)
@@ -208,58 +196,69 @@ classdef magrcros < ZmapVGridFunction
             
             function out=calculation_function(catalog)
                 if n <= catalog.Count
-                    out = [ nan nan nan nan];
+                    out = [ nan nan nan nan ...
+                        nan nan nan nan];
                     return
                 end
                 
                 %% do prelim calculations, so that they are only done ONCE per grid point
                 
-                % get one overarching histogram...
-                nAll = histcounts(catalog.Date, edges); %was cumu
+                % this had all been done with histogram and bins, but makes much more sense
+                % to let the time periods dictate duration
                 
-                % ... and access it via existing indices
-                nBeforeCutoff = nAll(idxBeforeCutoff);
-                nAfterCutoff = nAll(idxAfterCutoff);
-                nInWindow = nAll(idxInWindow);
-                nNotInWindow = nAll(idxNotInWindow);
+                nPerBin = histcounts(catalog.Date,edges_for_cov);
+                idxBeforeCutoff = edges_for_cov(2:end) <= obj.cutoff;
+                idxAfterCutoff = ~idxBeforeCutoff;
+                idxInWindow = idxAfterCutoff  & edges_for_cov(2:end) <= obj.cutoff + obj.window_duration;
+                idxNotInWindow = ~idxInWindow;
+                
+                
+                nBeforeCutoff = nPerBin(idxBeforeCutoff); 
+                nInWindow = nPerBin(idxInWindow); % NALL(2) : # IN window
+                nAfterCutoff = nPerBin(idxAfterCutoff); 
+                nNotInWindow = nPerBin(idxNotInWindow);
+                
+                covBeforeCutoff = cov(nPerBin(idxBeforeCutoff));
+                covAfterCutoff = cov(nPerBin(idxAfterCutoff));
+                covInWindow = cov(nPerBin(idxInWindow));
+                covNotInWindow = cov(nPerBin(idxNotInWindow));
+                
+                durBeforeCutoff = sum(idxBeforeCutoff) * obj.bin_dur;
+                durAfterCutoff = sum(idxAfterCutoff) * obj.bin_dur;
+                durInWindow = sum(idxInWindow) * obj.bin_dur;
+                durNotInWindow = sum(idxNotInWindow) * obj.bin_dur;
                 
                 meanBeforeCutoff = mean(nBeforeCutoff);
                 meanAfterCutoff  = mean(nAfterCutoff);
                 meanInWindow = mean(nInWindow);
                 meanNotInWindow = mean(nNotInWindow);
                 
-                covBeforeCutoff = cov(nBeforeCutoff);
-                covAfterCutoff = cov(nAfterCutoff);
-                covInWindow = cov(nInWindow);
-                covNotInWindow = cov(nNotInWindow);
+                out = [calc_ast() calc_lta() calc_rubberband() calc_percent(),...
+                    nBeforeCutoff, nAfterCutoff, nInWindow, nNotInWindow];
                 
-                out = [calc_ast() calc_lta() calc_rubberband() calc_percent()];
-                
-                % now comes the actual caclulations for 
+                % now comes the actual calculations for 
                 function out=calc_percent()
-                    % loop over all grid points for percent
-                    
                     out =  -((meanBeforeCutoff-meanAfterCutoff)./meanBeforeCutoff)*100;
                 end
                 
                 function out=calc_rubberband()
                     % loop over all point for rubber band : compare window to before cutoff
-                    term1 = covBeforeCutoff / nBinsBeforeCutoff;
-                    term2 = covInWindow / nBinsInWindow;
+                    term1 = covBeforeCutoff / durBeforeCutoff;
+                    term2 = covInWindow / durInWindow;
                     out =  (meanBeforeCutoff - meanInWindow) ./ (sqrt(term1 + term2));
                 end
                 
                 function out=calc_ast()
                     % make the AST function map : compare before and after cutoff
-                    term1 =covBeforeCutoff / nBinsBeforeCutoff;
-                    term2 = covAfterCutoff / nBinsAfterCutoff;
+                    term1 =covBeforeCutoff / durBeforeCutoff;
+                    term2 = covAfterCutoff / durAfterCutoff;
                     out = (meanBeforeCutoff - meanAfterCutoff) ./ (sqrt(term1 + term2));
                 end
                 
                 function out=calc_lta()
                     % Calculate LTA: compare window to everything else
-                    term1 = covNotInWindow / nBinsNotInWindow;
-                    term2 = covInWindow  / nBinsInWindow;
+                    term1 = covNotInWindow / durNotInWindow;
+                    term2 = covInWindow  / durInWindow;
                     out =  (meanNotInWindow - meanInWindow)./(sqrt(term1+term2));
                 end
                 

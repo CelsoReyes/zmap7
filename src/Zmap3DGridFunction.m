@@ -88,7 +88,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                 % display overlay menu items
                 
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',tf2onoff(obj.showgridcenters),...
-                    'callback',@togglegrid_cb);
+                    'callback',@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
                     'callback',{@addquakes_cb,obj.RawCatalog});
                 
