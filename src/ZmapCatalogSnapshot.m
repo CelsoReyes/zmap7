@@ -1,10 +1,10 @@
 classdef ZmapCatalogSnapshot
     properties
-        name
-        catalog_name
-        active_events
-        sortfield
-        sortdir
+        name char
+        catalog_name char
+        active_events logical
+        sortfield char
+        sortdir char
     end
         
     methods

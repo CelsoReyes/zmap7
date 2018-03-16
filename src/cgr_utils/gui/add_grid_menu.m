@@ -1,11 +1,12 @@
 function add_grid_menu(obj)
-    % add grid menu for modifying ggrid in a ZmapMainWindow
+    % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Grid');
     uimenu(parent,'Label','Create Auto-Grid','Callback',@cb_autogrid);
     uimenu(parent,'Label','Create Grid (interactive)','Callback',@cb_creategrid);
-    uimenu(parent,'Label','Create Auto-Radius','Callback',@cb_autoradius);
-    uimenu(parent,'Label','Refresh','Callback',@cb_refresh);
-    uimenu(parent,'Label','Clear(Delete)','Callback',@cb_clear);
+    uimenu(parent,'Label','Refresh Grid','Callback',@cb_refresh);
+    uimenu(parent,'Label','Clear Grid (Delete)','Callback',@cb_clear);
+    uimenu(parent,'Separator','on','Label','Create Auto Sample Radius','Callback',@cb_autoradius);
+    uimenu(parent,'Label','Choose Sample Radius','Callback',@cb_manualradius);
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid
@@ -60,9 +61,29 @@ function add_grid_menu(obj)
         ZG.ra=r;
         ZG.ni=minNum;
         ZG.GridSelector=evselch;
+        obj.set_event_selection(evselch);
+        
     end
-    
+    function cb_manualradius(~,~)
+        ev = obj.get_event_selection;
+        if isempty(ev)
+            [evselch, okpressed] = EventSelectionChoice.quickshow(true);
+        else
+            [evselch, okpressed] = EventSelectionChoice.quickshow(false,ev.numNearbyEvents,ev.maxRadiusKm,ev.requiredNumEvents);
+        end
+        if okpressed
+            obj.set_event_selection(evselch);
+        end
+        
+        % send message that global grid changed
+    end
+
     function cb_refresh(~,~)
+        if isempty(obj.Grid)
+            warning('no grid exists to refresh')
+            warndlg('no grid exists to refresh')
+            return
+        end
         delete(findobj(obj.fig,'Tag',['grid_',obj.Grid.Name]))
         obj.Grid=obj.Grid.MaskWithShape(obj.shape);
         obj.Grid.plot(obj.map_axes,'ActiveOnly')

@@ -1,5 +1,5 @@
 classdef bcrossVt2 < ZmapSliceFunction
-    % tHis subroutine assigns creates a grid with
+    % BCROSSVT2 tHis subroutine assigns creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactiVELY. The bvalue in each
     % volume around a grid point containing ni earthquakes

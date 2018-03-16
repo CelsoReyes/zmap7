@@ -19,11 +19,11 @@ classdef EventSelectionChoice < handle
     %
     %
     properties
-        ni % number of nearby events to consider
-        max_ra % maximum radius when sampling specific number of events
-        ra % radius in km for RADIUS sampling
-        minValid% minimum number of selected events to consider point measureable
-        ubg1
+        ni (1,1) double % number of nearby events to consider
+        max_ra (1,1) double % maximum radius when sampling specific number of events
+        ra (1,1) double % radius in km for RADIUS sampling
+        minValid (1,1) double % minimum number of selected events to consider point measureable
+        ubg1 matlab.ui.container.ButtonGroup
     end
     properties(Dependent)
         UseNumNearbyEvents
@@ -68,31 +68,55 @@ classdef EventSelectionChoice < handle
             out.requiredNumEvents = obj.minValid;
         end
         
-        function obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra, min_valid)
+        function obj=EventSelectionChoice(fig, tag, lowerCornerPosition, ni,ra, min_valid)
             % choose_grid adds controls to describe how to choose a grid.
             % obj=EventSelectionChoice(fig,tag, lowerCornerPosition, ni,ra, min_valid)
+            % obj=EventSelectionChoice(fig,tag, lowerCornerPosition, evsel)
             % Grid options
-            
-            % Create, Load, or use Previous grid choice
-            obj.ni=ni;
-            obj.ra=ra;
-            obj.max_ra = ra;
-            if ~exist('min_valid','var')
-                min_valid=0;
-                ZmapMessageCenter.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
-            end
-            obj.minValid=min_valid;
-            
-            if isempty(lowerCornerPosition)
-                X0 = 5;
-                Y0 = 50;
+            if nargin==4 && isstruct(ni)
+                ev=ni; % name correctly for readability below
+                % use the evsel fields
+                     % Create, Load, or use Previous grid choice
+                obj.ni=ev.numNearbyEvents;
+                obj.ra=ev.radius_km;
+                obj.max_ra = ev.maxRadiusKm;
+                obj.minValid = ev.requiredNumEvents;
+                
+                if isempty(lowerCornerPosition)
+                    X0 = 5;
+                    Y0 = 50;
+                else
+                    X0 = lowerCornerPosition(1);
+                    Y0 = lowerCornerPosition(2);
+                end
+                enable_ra = true;
+                enable_ni = true;
+                default_is_ni = isfield(ev,'useEventsInRadius') && ev.useEventsInRadius;
             else
-                X0 = lowerCornerPosition(1);
-                Y0 = lowerCornerPosition(2);
+                % Create, Load, or use Previous grid choice
+                obj.ni=ni;
+                obj.ra=ra;
+                obj.max_ra = ra;
+                if ~exist('min_valid','var')
+                    min_valid=0;
+                    ZmapMessageCenter.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
+                end
+                obj.minValid=min_valid;
+                
+                if isempty(lowerCornerPosition)
+                    X0 = 5;
+                    Y0 = 50;
+                else
+                    X0 = lowerCornerPosition(1);
+                    Y0 = lowerCornerPosition(2);
+                end
+                
+                enable_ra = ~isempty(ra);
+                enable_ni = ~isempty(ni);
+                default_is_ni = enable_ni;
             end
             
-            enable_ra = ~isempty(ra);
-            enable_ni = ~isempty(ni);
+            
             obj.ubg1=uibuttongroup(fig,'Title','Event Selection',...
                 'Units','pixels','Position',[X0 Y0 obj.GROUPWIDTH obj.GROUPHEIGHT], 'Tag',tag);
             
@@ -157,7 +181,7 @@ classdef EventSelectionChoice < handle
                 
             
             % deactivate one or the other input fields depending on what is allowed
-            if enable_ni
+            if ~default_is_ni
                 obj.hRa.Enable='off';
                 obj.ubg1.SelectedObject=obj.hUseNevents;
             else
@@ -167,6 +191,13 @@ classdef EventSelectionChoice < handle
             end
             obj.ubg1.SelectionChangedFcn=@callback_selectioncontrol;
             
+            if exist('ev','var') 
+                if isfield(ev,'useNumNearbyEvents') && ev.useNumNearbyEvents
+                    obj.ubg1.SelectedObject=obj.hUseNevents;
+                else
+                    obj.ubg1.SelectedObject=obj.hUseRadius;
+                end
+            end
             
             function callback_selectioncontrol(mysrc,~)
                 if mysrc.SelectedObject == obj.hUseNevents
@@ -196,50 +227,96 @@ classdef EventSelectionChoice < handle
     
     methods(Static)
         function [evsel, okPressed]=quickshow(writeToGlobal,ni,ra,min_valid)
-            %quickhow will produce a simple ZmapDialog, writing
+            %QUICKSHOW will produce a simple ZmapDialog, writing
             % selcrit = evsel.quickshow() get parameters into the output
-            % evsel.quickshow(true) writes results back to ZmapGlobal
+            % evsel.QUICKSHOW(true) writes results back to ZmapGlobal
+            % QUICKSHOW(writeToGlobal,ni,ra,min_valid)
+            % QUICKSHOW(writeToGlobal,evenSelectionStruct)
+            
             f=figure('Name','EventSelectionChoice example',...
                 'Menubar','none',...
                 'InnerPosition',position_in_current_monitor( EventSelectionChoice.GROUPWIDTH+5, EventSelectionChoice.GROUPHEIGHT+50),...
                 'Numbertitle','off'...
                 );
             t='esc'; lcp=[5 50]; 
-            if ~exist('ni','var')
-                ZG=ZmapGlobal.Data;
-                ni=ZG.ni; 
+            ZG=ZmapGlobal.Data;
+            if nargin==2 && isstruct(ni)
+                
+                % ni is actually an eventselection-style struct
+                esc=EventSelectionChoice(f,t,lcp,ni);
+            elseif nargin<2 && ~isempty(ZG.GridSelector) && isstruct(ZG.GridSelector)
+                
+                % no struct or other options provided, but default exists, so use that
+                esc=EventSelectionChoice(f,t,lcp, ZG.GridSelector);
+            else
+                
+                if ~exist('ni','var')
+                    ni=ZG.ni;
+                end
+                if ~exist('ra','var')
+                    ra=ZG.ra;
+                end
+                if ~exist('min_valid','var')
+                    min_valid=1;
+                end
+                esc=EventSelectionChoice(f,t,lcp,ni, ra, min_valid);
             end
-            if ~exist('ra','var')
-                ZG=ZmapGlobal.Data;
-                ra=ZG.ra;
-            end
-            if ~exist('min_valid','var')
-                min_valid=1;
-            end
-            esc=EventSelectionChoice(f,t,lcp,ni, ra, min_valid);
+            
             evsel=esc.toStruct;
             inwidth=f.Position(3);
-            uicontrol('style','pushbutton','string','OK','callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
+            writeToGlobal = exist('writeToGlobal','var') && writeToGlobal;
+            
+            uicontrol('style','checkbox','string','Keep as default',...
+                'callback',@keep_cb,... %modifies writeToGlobal
+                'Value',writeToGlobal,'Position',[15 15 100 25]);
+            
+            uicontrol('style','pushbutton','string','OK','Callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
             
             uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
             uiwait(f);
-            if exist('writeToGlobal','var') && writeToGlobal
+            if writeToGlobal && okPressed
+                assert(~isempty(evsel.numNearbyEvents));
                 ZG.ni=evsel.numNearbyEvents;
+                assert(~isempty(evsel.radius_km));
                 ZG.ra=evsel.radius_km;
+                ZG.GridSelector = evsel;
             end
             % TODO set another global saying which method to use?
             
-            function ok_cb(src,~)
+            function ok_cb(~,~)
                 evsel=esc.toStruct;
                 okPressed=true;
-                delete(f)
+                close(f)
             end
-            function cancel_cb(src,~)
+            function cancel_cb(~,~)
                 okPressed=false;
-                delete(f);
+                close(f);
+            end
+            function keep_cb(src,~)
+                writeToGlobal=src.Value;
             end
         end
         
+        function tf=isValidSelector(ev)
+            tf = true;
+            % if  using nearby events, make sure the number is specified
+            if isfield(ev,'useNumNearbyEvents') && ev.useNumNearbyEvents
+                tf = tf && (isfield(ev,'numNearbyEvents') && ev.numNearbyEvents > 0);
+            end
+            
+            % if using events in radius, make sure the radius is specified
+            if isfield(ev,'useEventsInRadius') && ev.useEventsInRadius
+                tf = tf && (isfield(ev,'radius_km') && ev.radius_km >=0);
+            end
+            
+            % make sure that in any case, either the number of events or the radius is specified
+            tf = tf && (isfield(ev,'numNearbyEvents') || isfield(ev,'radius_km'));
+            
+        end
+        
+        function mustBeEventSelector(ev)
+            assert(EventSelectionChoice.isValidSelector(ev),'Value does not look like a valid Event Selector');
+        end
     end
 
 end

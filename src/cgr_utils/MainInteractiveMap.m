@@ -66,10 +66,10 @@ classdef MainInteractiveMap
             tolegend=tolegend(~ismember(tolegend,findNoLegendParts(ax)));
             legend(ax,tolegend,'Location','southeastoutside');
             ax.Legend.Title.String='Seismicity Map';
-            if strcmp(ZG.lock_aspect,'on')
+            if ZG.lock_aspect
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
-            grid(ax,ZG.mainmap_grid);
+            grid(ax , char(ZG.mainmap_grid));
             
             align_supplimentary_legends(ax);
             
@@ -170,10 +170,10 @@ classdef MainInteractiveMap
                 disp(ax.Children);
                 rethrow(ME);
             end
-            if isOn(ZG.lock_aspect)
+            if ZG.lock_aspect
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
-            grid(ax,ZG.mainmap_grid);
+            grid(ax, char(ZG.mainmap_grid));
             align_supplimentary_legends(ax);
             disp('adding menus to main map')
             obj.create_all_menus(true);
@@ -275,9 +275,11 @@ classdef MainInteractiveMap
             uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
                 'Callback',@(s,e) plot_large_quakes);
             uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-                'callback',@toggle_aspectratio,'checked',ZmapGlobal.Data.lock_aspect);
+                'callback',@toggle_aspectratio,...
+                'Checked',char(ZmapGlobal.Data.lock_aspect));
             uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
-                'callback',@toggle_grid,'checked',ZmapGlobal.Data.mainmap_grid);
+                'callback',@toggle_grid,...
+                'Checked',char(ZmapGlobal.Data.mainmap_grid));
 
             function cb_plotby(~,~, s)
                 ZG=ZmapGlobal.Data;
@@ -497,7 +499,7 @@ classdef MainInteractiveMap
             end
             ax = MainInteractiveMap.mainAxes();
             %set aspect ratio
-            if strcmp(ZmapGlobal.Data.lock_aspect,'on')
+            if ZmapGlobal.Data.lock_aspect
                 daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
             end
             align_supplimentary_legends(ax);
@@ -900,7 +902,7 @@ function toggle_grid(src, ~)
     ax = MainInteractiveMap.mainAxes();
     grid(ax,src.Checked);
     ZG = ZmapGlobal.Data;
-    ZG.lock_aspect = src.Checked;
+    ZG.lock_aspect = matlab.lang.OnOffSwitchState(src.Checked);
     align_supplimentary_legends();
     drawnow
 end
@@ -915,7 +917,7 @@ function toggle_aspectratio(src, ~)
             daspect(ax,'auto');
     end
     ZG = ZmapGlobal.Data;
-    ZG.lock_aspect = src.Checked;
+    ZG.lock_aspect = matlab.lang.OnOffSwitchState(src.Checked);
     align_supplimentary_legends();
     
 end
@@ -1174,9 +1176,6 @@ function A = toggleOnOff(A)
     end
 end
 
-function tf=isOn(A)
-    tf=strcmp(A,'on');
-end
 
 function splitpoints = autosplit(c,  prop, method, nPoints, roundingfn)
     % splitpoints = autosplit(c, prop, method, nPoints, roundingfn)

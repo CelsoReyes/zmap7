@@ -5,11 +5,11 @@ classdef ZmapGridFunction < ZmapFunction
     % see also ZMAPFUNCTION
     
     properties
-        active_col='';  % the name of the column of the results to be plotted
-        showgridcenters=true; % toggle the grid points on and off.
-        Grid % ZmapGrid
-        EventSelector % how to choose events for the grid points
-        Shape % shape to be used 
+        active_col char = '';  % the name of the column of the results to be plotted
+        showgridcenters matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.on; % toggle the grid points on and off.
+        Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % ZmapGrid
+        EventSelector {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector% how to choose events for the grid points
+        Shape {mustBeShape} = ShapeGeneral % shape to be used 
     end
     properties(Constant,Abstract)
         
@@ -140,17 +140,17 @@ classdef ZmapGridFunction < ZmapFunction
                 gph=obj.Grid.plot();
                 gph.Tag='pointgrid';
                 gph.PickableParts='none';
-                gph.Visible=tf2onoff(obj.showgridcenters);
+                gph.Visible=char(obj.showgridcenters);
             end
             switch src.Checked
                 case 'on'
                     src.Checked='off';
                     gph.Visible='off';
-                    obj.showgridcenters=false;
+                    obj.showgridcenters = matlab.lang.OnOffSwitchState.off;
                 case 'off'
                     src.Checked='on';
                     gph.Visible='on';
-                    obj.showgridcenters=true;
+                    obj.showgridcenters = matlab.lang.OnOffSwitchState.on;
             end
         end
         

@@ -1,6 +1,6 @@
 classdef simple_ZmapHGridFunction < ZmapHGridFunction
     properties
-        depth_km = 5 % default depth
+        depth_km (1,1) double = 5 % default depth
     end
     
     properties(Constant)

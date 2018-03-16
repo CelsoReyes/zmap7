@@ -52,13 +52,13 @@ classdef(Abstract) ZmapFunction < handle
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
         
-        RawCatalog % holds complete catalog to be analyzed
+        RawCatalog ZmapCatalog % holds complete catalog to be analyzed
         Result % results of the calculation, stored in a struct
         
         ZG=ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
-        FunctionCall='%unknown function call'; % text representation of the function call.
+        FunctionCall char = '%unknown function call'; % text representation of the function call.
         
         % Grid, EventSelector, and Shape have been moved into the ZmapGridFunction
     end

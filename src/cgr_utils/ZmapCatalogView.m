@@ -94,15 +94,15 @@ classdef ZmapCatalogView
     properties
         % source - name of catalog's global variable, for example 'primeCatalog', 
         % which means the original catalog can be found in ZmapData.primeCatalog
-        source % function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
+        source function_handle % function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
         
-        ViewName % name given to this view for plotting
+        ViewName (1,:) char % name given to this view for plotting
         
-        DateRange % [mindate maxdate] as dateime
-        MagnitudeRange % [minmag maxmag]
-        LatitudeRange % [minlat maxlat]
-        LongitudeRange % [minlon maxlon] % doesn't take dateline into account
-        DepthRange % [mindepth maxdepth]
+        DateRange (2,1) datetime % [mindate maxdate] as dateime
+        MagnitudeRange (2,1) double % [minmag maxmag]
+        LatitudeRange (2,1) double % [minlat maxlat]
+        LongitudeRange (2,1) double % [minlon maxlon] % doesn't take dateline into account
+        DepthRange (2,1) double % [mindepth maxdepth]
         
         sortby='';
         Marker=''

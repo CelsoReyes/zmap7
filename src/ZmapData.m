@@ -13,61 +13,61 @@ classdef ZmapData < handle
     
     properties(Constant)
         zmap_version = '7.0'
-        min_matlab_version = '9.2';
-        min_matlab_release = '2017a';
-        hodi = fileparts(which('zmap')); % zmap home directory
-        torad  = pi / 180;
-        Re = 6378.137; % radius of earth, km
+        min_matlab_version = '9.2'
+        min_matlab_release = '2017a'
+        hodi = fileparts(which('zmap')) % zmap home directory
+        torad  = pi / 180
+        Re = 6378.137 % radius of earth, km
         
         % positional
-        fipo = get(groot,'ScreenSize') - [ 0 0 0 150];
-        welcome_pos = [80, ZmapData.fipo(4) - 380]; % wex wey
-        welcome_len = [340 300]; % welx, wely
-        map_len = [750 650]; % winx winy
+        fipo = get(groot,'ScreenSize') - [ 0 0 0 150]
+        welcome_pos = [80, ZmapData.fipo(4) - 380] % wex wey
+        welcome_len = [340 300] % welx, wely
+        map_len = [750 650] % winx winy
     end
     
     properties
         % catalogs
-        primeCatalog=ZmapCatalog('default empty catalog'); %
-        newcat=ZmapCatalog('default empty catalog'); 
-        newt2=ZmapCatalog('default empty catalog'); 
-        catalog_working=ZmapCatalog('default empty catalog'); 
+        primeCatalog ZmapCatalog = ZmapCatalog('default empty catalog')
+        newcat ZmapCatalog = ZmapCatalog('default empty catalog')
+        newt2 ZmapCatalog = ZmapCatalog('default empty catalog')
+        catalog_working ZmapCatalog = ZmapCatalog('default empty catalog') 
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.
-        original=ZmapCatalog('default empty catalog');  % used with declustering
+        original ZmapCatalog = ZmapCatalog('default empty catalog')  % used with declustering
         
         %cluster catalogs 
-        newccat=ZmapCatalog('default empty catalog');  % apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat=ZmapCatalog('default empty catalog');   %  some sort of clustered catalog? selclust
-        cluscat=ZmapCatalog('default empty catalog');  %  some sort of clustered catalog? selclust
-        newclcat=ZmapCatalog('default empty catalog');  %   some sort of clustered catalog? selclust
+        newccat ZmapCatalog = ZmapCatalog('default empty catalog')  % apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat ZmapCatalog = ZmapCatalog('default empty catalog')   %  some sort of clustered catalog? selclust
+        cluscat ZmapCatalog = ZmapCatalog('default empty catalog')  %  some sort of clustered catalog? selclust
+        newclcat ZmapCatalog = ZmapCatalog('default empty catalog')  %   some sort of clustered catalog? selclust
         
-        features = get_features('h'); % map features that can be looked up by name. ex. ZG.features('volcanoes')
+        features containers.Map = get_features('h') % map features that can be looked up by name. ex. ZG.features('volcanoes')
         well % well locations
         main
-        maepi=ZmapCatalog('big events'); % large earthquakes, determined by user cutoff
+        maepi ZmapCatalog = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
         
         % niceties
-        fontsz = FontSizeTracker;
+        fontsz FontSizeTracker = FontSizeTracker
         
-        color_bg = [1 1 1] % was [cb1 cb2 cb3] axis background
-        color_fg = [.9 .9 .9] % was [c1 c2 c3] figure backgorund
-        ms6 = 6 % standard markersize %TODO change to a markersize class
-        big_eq_minmag = 8 % events of this magnitude or higher are plotted & labeled
-        lock_aspect = 'off';
-        mainmap_grid = 'on';
-        mainmap_plotby = 'depth'; % was typele
+        color_bg (1,3) {mustBeNonnegative, mustBeLessThanOrEqual(color_bg,1)} = [1 1 1] % was [cb1 cb2 cb3] axis background
+        color_fg (1,3) {mustBeNonnegative, mustBeLessThanOrEqual(color_fg,1)}  = [.9 .9 .9] % was [c1 c2 c3] figure backgorund
+        ms6 (1,1) double {mustBePositive} = 6 % standard markersize %TODO change to a markersize class
+        big_eq_minmag (1,1) double = 8 % events of this magnitude or higher are plotted & labeled
+        lock_aspect matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.off
+        mainmap_grid matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.on
+        mainmap_plotby (1,:) char = 'depth' % was typele
         
-        bin_dur = days(14); %bin length
+        bin_dur duration = days(14) %bin length
         
         % likely to be completely removed stuff
-        hold_state = false % was ho, contained 'hold' or 'noho'
-        hold_state2 = false % was ho2, contained 'hold' or 'noho'
+        hold_state logical = false % was ho, contained 'hold' or 'noho'
+        hold_state2 logical = false % was ho2, contained 'hold' or 'noho'
         
         % directories
-        out_dir=fullfile(ZmapData.hodi,'out') % was hodo
-        data_dir=fullfile(ZmapData.hodi,'data') % was hoda
-        work_dir=fullfile(ZmapData.hodi,'working');
+        out_dir (1,:) char = fullfile(ZmapData.hodi,'out') % was hodo
+        data_dir (1,:) char = fullfile(ZmapData.hodi,'data') % was hoda
+        work_dir (1,:) char = fullfile(ZmapData.hodi,'working')
         
         % scaling params from view_ functions
         minc
@@ -75,38 +75,41 @@ classdef ZmapData < handle
         
         % unknown other entities
         Rconst % used with the slicers
-        ra=5 % default max sphere radius
-        ni=100 % default number of nearby events for grid calculations
-        compare_window_dur=years(1.5) % Compare window length (years)
-        compare_window_dur_v3=years(1.0) % Compare window length, alternate version
+        ra (1,1) double {mustBeNonnegative} = 5 % default max sphere radius
+        ni (1,1) double {mustBeNonnegative} = 100 % default number of nearby events for grid calculations
+        compare_window_dur (1,1) duration = years(1.5) % Compare window length (years)
+        compare_window_dur_v3 (1,1) duration = years(1.0) % Compare window length, alternate version
         
         % cross section stuff, perhaps
-        tresh_km = 50 % radius below which blocks zmap's (?) will be plotted
-        xsec_width_km = 10 % not entirely sure units are km
-        xsec_rotation_deg = 10 % rotation angle for cross sections
+        tresh_km (1,1) double {mustBeNonnegative} = 50 % radius below which blocks zmap's (?) will be plotted
+        xsec_width_km (1,1) double {mustBeNonnegative} = 10 % not entirely sure units are km
+        xsec_rotation_deg (1,1) double = 10 % rotation angle for cross sections
         
-        freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false);
-        shading_style = 'flat';
-        someColor='w';
+        freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
+        shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'
+        someColor (1,1) char = 'w'
        
         % b-value related
-        inb1=1; % choice for b-value calculation (?)
-        inb2=1; % maximum curvature method(?)
-        bo1=nan; % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
-        bvg=[]; % b-value grid
-        Grid; % grid used for calculations
+        inb1 {mustBeNonnegative, mustBeInteger} = 1 % choice for b-value calculation (?)
+        inb2 {mustBeNonnegative, mustBeInteger} = 1 % maximum curvature method(?)
+        bo1 (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
+        bvg=[] % b-value grid
+        Grid {mustBeZmapGrid} = ZmapGrid() % grid used for calculations
         gridopt=struct('dx',.5,'dx_units','deg',...
             'dy',.5,'dy_units','deg',...
             'dz',1,'dz_units','km',...
             'GridEntireArea',false,...
-            'SaveGrid',false,'LoadGrid',false,'CreateGrid',true); % options used for creating a grid
-        GridSelector;% criteria used to select events at a grid point
-        selection_shape=ShapeGeneral();
-        debug='on'; % makes special menus visible
+            'SaveGrid',false,'LoadGrid',false,'CreateGrid',true) % options used for creating a grid
+        GridSelector {EventSelectionChoice.mustBeEventSelector} = ...
+            struct('useEventsInRadius',true,'radius_km',5,...
+            'useNumNearbyEvents',false,'numNearbyEvents',100,...
+            'maxRadiusKm',5,'requiredNumEvents',1) % criteria used to select events at a grid point
+        selection_shape {mustBeShape} = ShapeGeneral()
+        debug matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.on % makes special menus visible
         
-        Views=struct('primary',[],'layers',[]); % catalog views
+        Views struct = struct('primary',[],'layers',[]) % catalog views
         
-        useParallel=false; % use parallel pool when available
+        useParallel logical = false % use parallel pool when available
     end
     properties(Dependent)
         wex % welcome window x (welcome_pos(1))
@@ -137,6 +140,7 @@ classdef ZmapData < handle
         function out=get.wely(obj)
             out=obj.welcome_len(2);
         end
+        %{
         function set.bin_dur(obj,val)
             if isa(val,'duration')
                 obj.bin_dur=val;
@@ -147,7 +151,7 @@ classdef ZmapData < handle
                 error('only can convert durations and numerics to bin_dur');
             end
         end
-        
+        %}
         function disp_catalogs(obj)
             p=properties(obj);
             for n=1:numel(p)
@@ -266,3 +270,4 @@ function out = get_features(level)
                 
         %}
 end
+    

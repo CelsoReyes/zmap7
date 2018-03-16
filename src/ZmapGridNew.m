@@ -7,11 +7,11 @@ classdef ZmapGridNew
     %    obj=create_deg_spacing(name, dlat, dlon, dz_km) follows lat/lon parallels/meridians
     
     properties
-        Name % name of this grid
-        XYUnits % 'degrees' or 'kilometers'
-        DX
-        DY
-        DZ
+        Name (1,:) char % name of this grid
+        XYUnits (1,:) char % 'degrees' or 'kilometers'
+        DX double
+        DY double
+        DZ double
     end
     
     properties(Constant,Hidden)

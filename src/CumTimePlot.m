@@ -31,7 +31,7 @@ classdef (Sealed) CumTimePlot < handle
     % 
     
     properties
-        catalog%= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
+        catalog ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
         fontsz = ZmapGlobal.Data.fontsz;
         hold_state = false;
         AxH % axes handle (may move to dependent)

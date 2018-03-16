@@ -21,18 +21,18 @@ classdef XSection
     %   obj.plot_events_along_strike(ax,c2, true); %plot a ZmapXsectionCatalog without projecting
     
     properties
-        width_km % width of cross section, in kilometers
-        startpt % [lat lon] start point for cross section
-        endpt % [lat lon] end point for cross section
+        width_km (1,1) double % width of cross section, in kilometers
+        startpt (1,2) double % [lat lon] start point for cross section
+        endpt (1,2) double % [lat lon] end point for cross section
         color % color used when plotting cross section
-        linewidth=2.0 % line width for cross section
-        startlabel % label for start point
-        endlabel % label for end point
-        curvelons % longitudes that define the cross-section curve
-        curvelats % latitudes that define the cross-section curve
-        polylats % latitudes that define the polygon containing points within width of curve
-        polylons % longitudes that define the polygon containing points within width of curve
-        DeleteFcn % function that will remove the plotted polygon from the map
+        linewidth (1,1) {mustBePositive} = 2.0 % line width for cross section
+        startlabel char % label for start point
+        endlabel char % label for end point
+        curvelons (:,1) double % longitudes that define the cross-section curve
+        curvelats (:,1) double % latitudes that define the cross-section curve
+        polylats (:,1) double % latitudes that define the polygon containing points within width of curve
+        polylons (:,1) double % longitudes that define the polygon containing points within width of curve
+        DeleteFcn function_handle % function that will remove the plotted polygon from the map
         
     end
     properties(Dependent)

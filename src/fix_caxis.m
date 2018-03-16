@@ -34,7 +34,7 @@ classdef fix_caxis < ZmapFunction
                 orientation='do not draw';
             end
             if isempty(valueMap)
-                valueMap=ZGvalueMap;
+                valueMap=ZG.valueMap;
             end
             [~,obj.orientation] = ismember(orientation,obj.Orientations);
             

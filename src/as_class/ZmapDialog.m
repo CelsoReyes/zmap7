@@ -100,7 +100,7 @@ classdef ZmapDialog < handle
         callerOKFunction=[]; % to be run once values are copied back to caller and dialog disappears
         hDialog; % handle to the dialog box
         parts={}; % ui details go here
-        okPressed=false;
+        okPressed logical = false;
     end
     
     methods

@@ -4,7 +4,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
     % see also ZMAPGRIDFUNCTION
     
     properties
-        features='borders'; % features to show on the map, such as 'borders','lakes','coast',etc.
+        features={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
     end
     
     methods
@@ -46,9 +46,11 @@ classdef Zmap3DGridFunction < ZmapGridFunction
             
             obj.add_grid_centers();
             
-            ft=obj.ZG.features(obj.features);
             ax=gca;
-            copyobj(ft,ax);
+            for n=1:numel(obj.features)
+                ft=obj.ZG.features(obj.features{n});
+                copyobj(ft,ax);
+            end
             
             colorbar
             title(mydesc)
@@ -87,7 +89,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                 
                 % display overlay menu items
                 
-                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',tf2onoff(obj.showgridcenters),...
+                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
                     'callback',@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
                     'callback',{@addquakes_cb,obj.RawCatalog});
@@ -164,7 +166,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
             gph=obj.Grid.plot(gca,'ActiveOnly');
             gph.Tag='pointgrid';
             gph.PickableParts='none';
-            gph.Visible=tf2onoff(obj.showgridcenters);
+            gph.Visible=char(obj.showgridcenters);
         end
         
     end % Protected methods

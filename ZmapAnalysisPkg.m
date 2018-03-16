@@ -53,11 +53,6 @@ classdef ZmapAnalysisPkg
                 obj.Shape = s.(shapeinfo);
             end
             
-            assert(isa(obj.Catalog,'ZmapCatalog'),'Catalog is "%s", but expected relative of ZmapCatalog',class(obj.Catalog));
-            assert(isstruct(obj.EventSel),'Event Selection is "%s", but expected struct',class(obj.EventSel));
-            assert(isa(obj.Grid,'ZmapGrid'),'Grid is "%s", but expected ZmapGrid',class(obj.Grid));
-            assert(isa(obj.Shape,'ShapeGeneral'),'shape is "%s", but expected relative of ShapeGeneral',class(obj.Shape));
-            
         end
     end
     

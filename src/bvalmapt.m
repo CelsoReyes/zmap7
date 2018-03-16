@@ -3,16 +3,16 @@ classdef bvalmapt < ZmapHGridFunction
     % The difference in both b and Mc can be displayed.
             
     properties
-        t1 % start of timeperiod 1
-        t2 % end of timeperiod 1
-        t3 % start of timeperiod 2
-        t4 % end of timeperiod 2
-        minnu % minimum number of events/node/timeperiod
-        useAutoMcomp=true;
+        t1 datetime % start of timeperiod 1
+        t2 datetime % end of timeperiod 1
+        t3 datetime % start of timeperiod 2
+        t4 datetime % end of timeperiod 2
+        minnu {mustBeNonnegative, mustBeInteger} % minimum number of events/node/timeperiod
+        useAutoMcomp = true;
     end
     properties(Access=private)
-        duration_A
-        duration_B
+        duration_A duration
+        duration_B duration
     end
     
     properties(Constant)
@@ -103,9 +103,8 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg.AddBasicEdit('t2','End Time A : ', obj.t2, 'End time for first period');
             zdlg.AddBasicEdit('t3','Start Time B : ', obj.t3, 'Start time for Second period');
             zdlg.AddBasicEdit('t4','End Time B :', obj.t4, 'Start time for Second period');
-            
             zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.radius_km,...
-                'Radus used in calculation');
+                'Radius used in calculation');
             zdlg.AddBasicEdit('minnu', 'Minimum number of events in each period:', ...
                 obj.EventSelector.requiredNumEvents,'');
             

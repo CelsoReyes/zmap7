@@ -60,10 +60,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %     cb_selectp - analyze EQ inside/outside shape works from view in current figure
     
     properties
-        Points=[nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
-        Type='unassigned' % shape type
-        ApplyGrid=true; %apply grid options to the selected shape.
-        ScaleWithLatitude=false;
+        Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
+        Type (1,:) char = 'unassigned' % shape type
+        ApplyGrid logical = true %apply grid options to the selected shape.
+        ScaleWithLatitude logical = false
         Units = 'degrees'; % either 'degrees' or 'kilometers'
     end
     
@@ -358,7 +358,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             uimenu(submenu,'Label','Save shape','Callback',@ShapeGeneral.cb_save);
             %uimenu(submenu,'Label','Clear shape','Callback',@ShapeGeneral.cb_clear);
             
-            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',ZG.debug);
+            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',char(ZG.debug));
             
             
         end

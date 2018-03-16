@@ -18,6 +18,8 @@ classdef ShapeSelection
     %  pg = ShapeSelection(ax,'box')
     %  % user is prompted for two points
     %
+
+    % TODO: see if this is no longer necessary and remove
     
     properties
         Points=[nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
@@ -431,7 +433,7 @@ classdef ShapeSelection
             uimenu(submenu,'Label','Save shape','Callback',@cb_save);
             uimenu(submenu,'Label','Clear shape','Callback',@cb_clear);
             
-            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeSelection.AddMenu(gcf),'Visible',ZG.debug);
+            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeSelection.AddMenu(gcf),'Visible',char(ZG.debug));
             
             
         end

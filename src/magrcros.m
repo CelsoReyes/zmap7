@@ -4,13 +4,13 @@ classdef magrcros < ZmapVGridFunction
     
     
     properties
-        cutoff % time of cut
-        use_fixed_start = false;
-        t0b % windows start time [where pre-window data starts]
-        use_fixed_end = false;
-        teb % windows end time [where post-window data ends]
-        window_duration = ZmapGlobal.Data.compare_window_dur;
-        bin_dur
+        cutoff datetime % time of cut
+        use_fixed_start logical = false;
+        t0b datetime % windows start time [where pre-window data starts]
+        use_fixed_end logical = false;
+        teb datetime % windows end time [where post-window data ends]
+        window_duration duration  = ZmapGlobal.Data.compare_window_dur;
+        bin_dur duration
     end
     
     properties(Constant)

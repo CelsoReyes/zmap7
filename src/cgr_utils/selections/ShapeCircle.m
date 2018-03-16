@@ -4,7 +4,7 @@ classdef ShapeCircle < ShapeGeneral
     % see also ShapeGeneral, ShapePolygon
     
     properties
-        Radius=5; % active radius km (if circle)
+        Radius (1,1) double = 5; % active radius km (if circle)
     end
     
     

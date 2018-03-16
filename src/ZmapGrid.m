@@ -47,12 +47,12 @@ classdef ZmapGrid
     % see also gridfun, EventSelectionChoice, autogrid
     %
     properties
-        Name % name of this grid
-        Units % degrees or kilometers
-        ActivePoints    % logical mask
-        X % all X positions in matrix
-        Y % all Y positions in matrix
-        Z % all Y positions in matrix.
+        Name (1,:) char = '' % name of this grid
+        Units (1,:) char = 'unk' % degrees or kilometers
+        ActivePoints logical    % logical mask
+        X double % all X positions in matrix
+        Y double % all Y positions in matrix
+        Z double % all Y positions in matrix.
         Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
     end
     properties(Dependent)
@@ -83,21 +83,18 @@ classdef ZmapGrid
             %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
             %
             % see also: MESHGRID
-            if ~exist('name','var')
-                name='';
+            if exist('name','var')
+                obj.Name = name;
             end
-            obj.Name = name;
             switch nargin
                 case 0
                     % don't do much of anything.
-                    obj.Units='unk';
                 case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
                         warning('ZmapGrid works best when provided with X and Y matrices of points');
                         
                         assert(size(varargin{1},2) >= 2 && size(varargin{1},2) <=3);
-                        obj.Units='unk';
                         obj.X=varargin{1}(:,1);
                         obj.Y=varargin{1}(:,2);
                         if size(varargin{1},2)==3

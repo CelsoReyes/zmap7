@@ -14,10 +14,10 @@ classdef findquar < ZmapFunction
     
     properties
         
-        EvtSel
-        Grid
+        EvtSel {EventSelectionChoice.mustBeEventSelector}
+        Grid {mustBeZmapGrid}
         oldratios
-        inDaytime=false(24,1);
+        inDaytime (24,1) logical =false(24,1);
     end
     
     properties(Constant)

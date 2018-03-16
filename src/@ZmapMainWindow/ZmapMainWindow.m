@@ -2,18 +2,19 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW
     
     properties
-        catalog % event catalog
-        rawcatalog;
-        shape % used to subset catalog by selected area
-        daterange % used to subset the catalog with date ranges
-        Grid % grid that covers entire catalog area
+        catalog ZmapCatalog % event catalog
+        rawcatalog ZmapCatalog;
+        shape {mustBeShape} = ShapeGeneral % used to subset catalog by selected area
+        daterange datetime % used to subset the catalog with date ranges
+        Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         gridopt % used to define the grid
+        evsel {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector % how events are chosen
         fig % figure handle
         xsgroup;
         xsections; % contains XSection 
         xscats; % ZmapXsectionCatalogs corresponding to each cross section
         xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
-        prev_states=Stack(10);
+        prev_states Stack = Stack(10);
         undohandle;
         Features;
         replotting=false
@@ -72,7 +73,7 @@ classdef ZmapMainWindow < handle
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
-                obj.rawcatalog=ZG.Views.primary;
+                obj.rawcatalog=ZG.Views.primary.Catalog;
             end
             if isempty(obj.rawcatalog)
                 errordlg(sprintf('Cannot open the ZmapMainWindow: No catalog is loaded.\nFirst load a catalog into Zmap, then try again.'),'ZMap');
@@ -87,6 +88,7 @@ classdef ZmapMainWindow < handle
             [obj.catalog,obj.mdate, obj.mshape]=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopt= ZG.gridopt;
+            obj.evsel = ZG.GridSelector;
             obj.xsections=containers.Map();
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
@@ -161,9 +163,19 @@ classdef ZmapMainWindow < handle
             % zp = obj.MAP_ZAP()
             %
             % see also ZMAPANALYSISPKG
-            
-            evsel = EventSelectionChoice.quickshow();
-            zp = ZmapAnalysisPkg( [], obj.catalog,evsel,obj.Grid, obj.shape);
+            if isempty(obj.evsel)
+                obj.evsel = EventSelectionChoice.quickshow();
+            else
+                fprintf('Using existing event selection:\n%s\n',...
+                    matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
+            end
+            if isempty(obj.Grid)
+                gridopts= GridParameterChoice.quickshow();
+                obj.Grid = ZmapGrid('grid',gridopts.toStruct);
+            else
+                fprintf('Using existing grid:\n');
+            end
+            zp = ZmapAnalysisPkg( [], obj.catalog,obj.evsel,obj.Grid, obj.shape);
         end
         
         function zp = xsec_zap(obj, xsTitle)
@@ -429,17 +441,15 @@ classdef ZmapMainWindow < handle
             
             uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
                 'callback',@toggle_aspectratio,...
-                'checked',ZmapGlobal.Data.lock_aspect);
-            if strcmp(ZmapGlobal.Data.lock_aspect,'on')
+                'Checked',char(ZmapGlobal.Data.lock_aspect));
+            if ZmapGlobal.Data.lock_aspect
                 daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
             end
             
             uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
                 'callback',@toggle_grid,...
-                'checked',ZmapGlobal.Data.mainmap_grid);
-            if strcmp(ZmapGlobal.Data.mainmap_grid,'on')
-                grid(axm,'on');
-            end
+                'checked',char(ZmapGlobal.Data.mainmap_grid));
+            grid(axm,char(ZmapGlobal.Data.mainmap_grid));
             
             
             add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
@@ -512,7 +522,7 @@ classdef ZmapMainWindow < handle
                         daspect(axm,'auto');
                 end
                 ZG = ZmapGlobal.Data;
-                ZG.lock_aspect = src.Checked;
+                ZG.lock_aspect = matlab.lang.OnOffSwitchState(src.Checked);
                 %align_supplimentary_legends();
             end
             
@@ -697,6 +707,26 @@ classdef ZmapMainWindow < handle
             end
             watchoff
             drawnow;
+        end
+        
+        function set_event_selection(obj,val)
+            % SET_EVENT_SELECTION changes the event selection criteria (radius, # events)
+            %  obj.SET_EVENT_SELECTION() sets it to the global version
+            %  obj.SET_EVENT_SELECTION(val) changes it to val, where val is a struct with fields
+            %  similar to what is returned via EventelectionChoice.quickshow
+            
+            if ~isempty(val)
+                assert(isstruct(val)); % could do more detailed checking of fields
+                obj.evsel = val;
+            elseif isempty(ZmapGlobal.Data.GridSelector)
+                obj.evsel = EventSelectionChoice.quickshow();
+            else
+                ZG=ZmapGlobal;
+                obj.evsel = ZG.GridSelector;
+            end
+        end
+        function ev = get_event_selection(obj)
+            ev = obj.evsel;
         end
         
     end % METHODS

@@ -53,11 +53,12 @@ function startmen(parent_fig)
     end
     function cb_load_file
         ZmapImportManager(@load_zmapfile);
-        try
+        %try
             ZmapMainWindow();
-        catch ME
-            errordlg(ME.message);
-        end
+        %catch ME
+            % errordlg(ME.message);
+        %    rethrow(ME)
+        %end
     end
     function cb_load_web
         ZmapImportManager(@get_fdsn_data_from_web_callback);
@@ -65,6 +66,7 @@ function startmen(parent_fig)
             ZmapMainWindow();
         catch ME
             errordlg(ME.message);
+            rethrow(ME)
         end
     end
 end

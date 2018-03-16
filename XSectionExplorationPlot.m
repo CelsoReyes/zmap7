@@ -3,7 +3,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
     %
     % see also CatalogExplorationPlot
     properties
-        xsec
+        xsec XSection
     end
     methods
         function obj=XSectionExplorationPlot(ax,catalogFcn,xsec)

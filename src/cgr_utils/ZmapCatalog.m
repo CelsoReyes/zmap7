@@ -71,26 +71,26 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     
     % TODO consider using matlab.mixin.CustomDisplay
     properties
-        Date        % datetime
+        Date datetime        % datetime
         % Nanosecond  % additional precision, if needed
-        Longitude   % Longitude (Deg) of each event
-        Latitude    % Latitude (Deg) of each event
-        Depth       % Depth (km) of events 
-        Magnitude   % Magnitude of each event
+        Longitude double   % Longitude (Deg) of each event
+        Latitude  double   % Latitude (Deg) of each event
+        Depth double      % Depth (km) of events 
+        Magnitude double  % Magnitude of each event
         MagnitudeType % Magnitude units, such as M, ML, MW, etc. 
         Dip         % unused?
         DipDirection % unused?
         Rake % unused?
-        MomentTensor=table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
+        MomentTensor table = table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
         % additions to this table need to be also added to a bunch of functions: 
         %    summary (?), getCropped, sort, subset, 
     end
     
     properties(SetObservable)
-        Name        % name of this catalog. Used when labeling plots
-        Filter      % logical Filter used for getting a subset of events
-        IsSortedBy=''; % describes sort order
-        SortDirection=''; %describes sorting direction
+        Name (1,:) char        % name of this catalog. Used when labeling plots
+        Filter logical     % logical Filter used for getting a subset of events
+        IsSortedBy char = '' % describes sort order
+        SortDirection char = '' %describes sorting direction
     end
     
     properties(Dependent)

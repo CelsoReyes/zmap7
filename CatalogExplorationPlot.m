@@ -1,17 +1,17 @@
 classdef CatalogExplorationPlot < handle
     % CATALOGEXPLORATIONPLOT create a plot where x,y,z,color, and size are modifiable
     properties
-        x_by='Latitude';
-        y_by='Longitude';
-        z_by='Depth';
-        color_by='Date';
-        size_by='Magnitude';
-        colorFcn=@datenum;
-        sizeFcn=@mag2dotsize
-        catalogFcn;
-        axes_choices={};
-        myscatter;
-        ax;
+        x_by (1,:) char ='Latitude'
+        y_by (1,:) char ='Longitude'
+        z_by (1,:) char ='Depth'
+        color_by (1,:) char ='Date'
+        size_by (1,:) char ='Magnitude'
+        colorFcn function_handle = @datenum
+        sizeFcn function_handle = @mag2dotsize
+        catalogFcn function_handle;
+        axes_choices cell = {};
+        myscatter matlab.graphics.chart.primitive.Scatter;
+        ax matlab.graphics.axis.Axes;
         conversions;
         curview;
     end

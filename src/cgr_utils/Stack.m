@@ -12,13 +12,12 @@ classdef Stack < handle
     % PEEK - look at most recent item
     
     properties
-        items={}; % contains items on the stack
-        maxsize = inf; % maximum size of stack
+        items cell; % contains items on the stack
+        maxsize {mustBePositive} = inf; % maximum size of stack
     end
     methods
         function obj = Stack(maxsize)
             if nargin > 0
-                assert(maxsize > 0,'maximum Stack size must be greater than zero')
                 obj.maxsize=maxsize;
             end
         end
