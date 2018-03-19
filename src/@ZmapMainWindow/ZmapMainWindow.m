@@ -613,7 +613,7 @@ classdef ZmapMainWindow < handle
             submenu  =   uimenu(parent,'Label','Mapping rate changes');
             
             comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
-            magrcros.AddMenuItem(submenu, @()obj.map_zap);
+            magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
             
             uimenu(submenu,'Label','Calculate a z-value map',...
                 'Enable','off',...

@@ -89,6 +89,8 @@ classdef ZmapGrid
             switch nargin
                 case 0
                     % don't do much of anything.
+                case 1
+                    % don't do much of anything.
                 case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )

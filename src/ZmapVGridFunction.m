@@ -55,9 +55,12 @@ classdef ZmapVGridFunction < ZmapGridFunction
             
             colorbar
             title(mydesc)
-            xlabel('Longitude')
-            ylabel('Latitude')
-            
+            xlabel('Distance along Strike (km)')
+            ylabel('Depth');
+            ax.YDir='reverse';
+            xlim(ax,[0 obj.RawCatalog.curvelength_km]);
+            ylim(ax,[max(0,min(obj.Grid.Z)) max(obj.Grid.Z)]);
+
             dcm_obj=datacursormode(gcf);
             dcm_obj.Updatefcn=@ZmapGridFunction.mydatacursor;
             if isempty(findobj(gcf,'Tag','lookmenu'))
@@ -93,7 +96,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
                     'callback',@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                    'callback',{@addquakes_cb,obj.RawCatalog});
+                    'callback',{@obj.addquakes_cb, obj.RawCatalog});
                 
                 uimenu(lookmenu,'Separator','on',...
                     'Label','brighten',...
@@ -122,13 +125,14 @@ classdef ZmapVGridFunction < ZmapGridFunction
         end
         
         
-        function addquakes_cb(src,~,catalog)
+        function addquakes_cb(obj,src,~,catalog)
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
                 hold on
-                line(catalog.Longitude, catalog.Latitude, 'Marker','o',...
+                line(catalog.dist_along_strike_km, catalog.Depth, 'Marker','o',...
                     'MarkerSize',3,...
                     'MarkerEdgeColor',[.2 .2 .2],...
+                    'LineStyle','none',...
                     'Tag','quakes');
                 hold off
             else

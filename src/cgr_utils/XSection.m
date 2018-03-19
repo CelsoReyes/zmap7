@@ -261,7 +261,7 @@ classdef XSection
                 lolaz( st : ed , 3) = zs_km(n);
             end
             name=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
-            gr=ZmapGrid(name,lolaz);
+            gr=ZmapVGrid(name,lolaz);
         end
     end % METHODS
     

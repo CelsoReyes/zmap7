@@ -19,6 +19,7 @@ function h=gridpcolor(ax,xs, ys, values, mask, name)
     
     
     if exist('mask','var')
+        if islogical(values),values=double(values);end
         values(~mask)=nan;
     else
         mask=true(size(xs)+[1,1]);

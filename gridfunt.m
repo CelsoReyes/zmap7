@@ -1,5 +1,8 @@
 function [mytable, wasEvaluated]=gridfunt(obj, calculationFcn, modificationFcn)
-    %
+    % [mytable, wasEvaluated]=GRIDFUNT(obj, calculationFcn, modificationFcn)
+    
+    %TODO delete me
+    error('this is something that would be a member of ZmapGridFunction')
     assert(isa(obj,'ZmapGridFunction'));
     [...
         vals, ...

@@ -813,7 +813,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
             delta_dep = (obj.Depth - to_depth_km);
-            dists_km = sqrt( dists_km^2 + delta_dep ^2);
+            dists_km = sqrt( dists_km .^ 2 + delta_dep .^ 2);
         end
         
         function rt = relativeTimes(obj, other)
