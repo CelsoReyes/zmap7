@@ -280,10 +280,14 @@ classdef ZmapMainWindow < handle
         end
         
         
-        function shapeChangedFcn(obj,oldshapecopy)
+        function shapeChangedFcn(obj,oldshapecopy,varargin)
+            if ~isempty(varargin)
+                disp(varargin)
+            end
             obj.prev_states.push({obj.catalog, oldshapecopy, obj.daterange});
             obj.replot_all();
         end
+        
         function cb_undo(obj,~,~)
             obj.popState()
             obj.replot_all();

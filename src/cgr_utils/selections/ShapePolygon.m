@@ -142,7 +142,7 @@ classdef ShapePolygon < ShapeGeneral
                     
                 
                 if ~isequal(initialShape,obj)
-                    changedFcn(initialShape,obj.copy());
+                    changedFcn(initialShape);
                 end
             end
         end
