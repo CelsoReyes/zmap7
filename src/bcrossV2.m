@@ -117,7 +117,7 @@ function bcrossV2(sel)
         figure(xsec_fig());
         hold on
         
-        ax = mainmap('axes');
+        ax=findobj(gcf,'Tag','mainmap_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
         
         
@@ -170,7 +170,7 @@ function bcrossV2(sel)
         bvg = [];
         allcount = 0.;
         wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name','b-value grid - percent done');;
+        set(wai,'NumberTitle','off','Name','b-value grid - percent done');
         drawnow
         %
         % loop

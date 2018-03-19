@@ -155,7 +155,7 @@ end
 % --- Executes on button press in mouse_center_select.
 function mouse_center_select_Callback(hObject, ~, handles)
     % choose figure
-    axes(mainmap('axes'));
+    axes(findobj(gcf,'Tag','mainmap_ax'));
     try
         handles.figure1.UserData=handles.figure1.UserData.select_circle(handles.figure1.UserData.Radius);
     catch ME
@@ -168,7 +168,7 @@ end
 
 % --- Executes on button press in mouse_center_radius_select.
 function mouse_center_radius_select_Callback(hObject, ~, handles)
-    axes(mainmap('axes'));
+    axes(findobj(gcf,'Tag','mainmap_ax'));
     try
         handles.figure1.UserData=handles.figure1.UserData.select_circle();
     catch ME

@@ -17,36 +17,33 @@ function replot_all(obj,status)
     end
     
     obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
-    [obj.catalog,md,ms,mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape
+    [obj.catalog, md, ms, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape
     
-    %catChanged = ~strcmp(status,'CatalogUnchanged'); %only partially implemented
-    %if catChanged
-        k=obj.xsections.keys;
-        currcatsummary = obj.catalog.summary('stats');
-        for j=1:obj.xsections.Count
-            hold on
-            xs=obj.xsections(k{j});
+    k=obj.xsections.keys;
+    currcatsummary = obj.catalog.summary('stats');
+    for j=1:obj.xsections.Count
+        hold on
+        xs=obj.xsections(k{j});
+        
+        % only reproject if the catalog is changed since memorizing
+        if ~isequal(currcatsummary,obj.xscatinfo(k{j}))
             
-            % only reproject if the catalog is changed since memorizing
-            if ~isequal(currcatsummary,obj.xscatinfo(k{j}))
-                
-                % store the projected catalog. only events within the strip [ignoring shape] are stored
-                %
-                obj.xscats(k{j})=xs.project(obj.rawcatalog.subset(md));
-                %disp(obj.xscats(k{j}));
-                
-                % store the information about the current catalog used to project
-                obj.xscatinfo(k{j})=currcatsummary;
-                
-                % plot
-                mytab=findobj(obj.fig,'Title',k{j},'-and','Type','uitab');
-                myax=findobj(mytab,'Type','axes');
-                obj.xscats(k{j}).Count
-                xs.plot_events_along_strike(myax,obj.xscats(k{j}),false);
-                myax.Title=[];
-            end
+            % store the projected catalog. only events within the strip [ignoring shape] are stored
+            %
+            obj.xscats(k{j})=xs.project(obj.rawcatalog.subset(md));
+            %disp(obj.xscats(k{j}));
+            
+            % store the information about the current catalog used to project
+            obj.xscatinfo(k{j})=currcatsummary;
+            
+            % plot
+            mytab=findobj(obj.fig,'Title',k{j},'-and','Type','uitab');
+            myax=findobj(mytab,'Type','axes');
+            obj.xscats(k{j}).Count
+            xs.plot_events_along_strike(myax,obj.xscats(k{j}),false);
+            myax.Title=[];
         end
-    %end
+    end
     
     evs=findobj(obj.fig,'Tag','all events');
     if all(mall) 
@@ -59,8 +56,8 @@ function replot_all(obj,status)
 
     obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
         char(max(obj.catalog.Date)));
-    %figure(obj.fig)
     obj.plotmainmap();
+    
     % Each tab group will have a "SelectionChanghedFcn", "CreateFcn", "DeleteFcn", "UIContextMenu"
     
     lrTabGroup = findobj(obj.fig,'Type','uitabgroup','-and','Tag','LR plots');

@@ -4,7 +4,7 @@ classdef ShapeCircle < ShapeGeneral
     % see also ShapeGeneral, ShapePolygon
     
     properties
-        Radius (1,1) double = 5; % active radius km (if circle)
+        Radius (1,1) double = 5 % active radius km (if circle)
     end
     
     
@@ -23,7 +23,7 @@ classdef ShapeCircle < ShapeGeneral
             
             report_this_filefun(mfilename('fullpath'));
             
-            axes(mainmap('axes')); % should be the map, with lon/lat
+            axes(findobj(gcf,'Tag','mainmap_ax')); % should be the map, with lon/lat
             obj.Type='circle';
             ZG=ZmapGlobal.Data;
             try

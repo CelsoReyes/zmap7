@@ -209,7 +209,7 @@ function calc_across(sel)
         else
            
             hold on
-            ax = mainmap('axes');
+            ax=findobj(gcf,'Tag','mainmap_ax');
             [x,y, mouse_points_overlay] = select_polygon(ax);
         end % of if bGridEntireArea
         

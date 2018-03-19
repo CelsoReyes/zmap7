@@ -52,10 +52,11 @@ classdef(Abstract) ZmapFunction < handle
     properties
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
         
-        RawCatalog ZmapCatalog % holds complete catalog to be analyzed
+         % holds complete catalog to be analyzed. defaults to the primary catalog
+        RawCatalog ZmapCatalog {ZmapFunction.verify_catalog} = ZmapGlobal.Data.primeCatalog
         Result % results of the calculation, stored in a struct
         
-        ZG=ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
+        ZG = ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
         hPlot % tracks the plot(s) for each function
         ax=[]; % axis where plotting will go
         FunctionCall char = '%unknown function call'; % text representation of the function call.
@@ -68,6 +69,9 @@ classdef(Abstract) ZmapFunction < handle
     end
     
     methods
+        function obj=ZmapFunction(catalog)
+            obj.RawCatalog=catalog;
+        end
         function set.FunctionCall(obj, varargin)
             % FUNCTIONCALL provides probable function call for CURRENT STATE of object
             % obj.SETFUNCTIONCALL(varargin)

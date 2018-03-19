@@ -28,11 +28,10 @@ classdef ZmapGridFunction < ZmapFunction
             if isempty(zap)
                 zap = ZmapAnalysisPkg.fromGlobal();
             end
-            
-            ZmapFunction.verify_catalog(zap.Catalog);
+            obj@ZmapFunction(zap.Catalog);
             
             obj.EventSelector = zap.EventSel;
-            obj.RawCatalog = zap.Catalog;
+            %obj.RawCatalog = zap.Catalog;
             obj.Grid = zap.Grid;
             obj.Shape = zap.Shape;
             

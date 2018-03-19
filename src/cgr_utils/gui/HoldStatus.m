@@ -1,8 +1,8 @@
 classdef HoldStatus
 
     properties
-        wasHeld
-        ax
+        wasHeld logical
+        ax matlab.graphics.axis.Axes
     end
     methods
         function obj=HoldStatus(ax,newstate)

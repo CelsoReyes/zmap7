@@ -25,7 +25,7 @@ classdef ShapePolygon < ShapeGeneral
             if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
                 error('unknown polygon type')
             end
-            ax=mainmap('axes');
+            ax=findobj(gcf,'Tag','mainmap_ax');
             if ~exist('type','var')
                 obj.Type='unassigned';
             end

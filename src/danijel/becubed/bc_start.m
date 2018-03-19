@@ -51,7 +51,7 @@ else
     elseif get(handles.radRadius, 'Value') == 1
       rOptions.nGriddingMode = 1;
       rOptions.nNumberEvents = 0;
-      rOptions.fRadius = str2double(get(handles.txtRadius, 'String'));;
+      rOptions.fRadius = str2double(get(handles.txtRadius, 'String'));
       rOptions.fSizeRectX = 0;
       rOptions.fSizeRectY = 0;
       rOptions.nMinimumNumber = str2double(get(handles.txtMinimumNumber, 'String'));

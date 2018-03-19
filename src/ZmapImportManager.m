@@ -1,20 +1,23 @@
-function catalog = ZmapImportManager(fun, funArguments, varargin)
+function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     % ZMAPIMPORTMANAGER - handles the import of zmap catalogs.
     %
-    % ZMAPIMPORTMANAGER( FUN ) provide the import function as a parameter. Catalog will replace
-    % the primary catalog in ZmapGlobal.Data
+    % OK = ZMAPIMPORTMANAGER( FUN ) provide the import function as a parameter. Catalog will replace
+    % the primary catalog in ZmapGlobal.Data.  OK indicates whether a catalog was successfully
+    % loaded
     %
-    % CATALOG = ZMAPIMPORTMANAGER( FUN ) return the catalog as output INSTEAD of updating the primary
-    % catalog.
+    % [OK, CATALOG] = ZMAPIMPORTMANAGER( FUN ) return the catalog as output INSTEAD of updating the
+    % primary catalog.
     %
     % ZMAPIMPORTMANAGER( FUN , ARGS ) ARGS is a cell of arguments that will be passed to the import
     % function FUN
     %
-    % The ZMAPIMPORTMANAGER exists to do cleanup and shutdown as necessary of other catalogs in memory.
-    % this includes the creation of maps and timeplots.
+    % The ZMAPIMPORTMANAGER exists to do cleanup and shutdown as necessary of other catalogs in
+    % memory. this includes the creation of maps and timeplots.
     %
     % catalogs imported throught he ZmapImportManager will be sorted in ascending Date order
     
+    % yes, the argument fun expects the return arguments in reverse order from the ZmapImportManager
+    % this is purely practical.
     assert(nargout(fun)==2,'import function must have two output arguments : [catalog, ok]');
     if exist('funArguments','var')
         assert(iscell(funArguments),...
@@ -25,7 +28,8 @@ function catalog = ZmapImportManager(fun, funArguments, varargin)
     end
     sort(catalog,'Date','ascend')
     
-    if nargout ~= 0
+    returnTheCatalog = nargout==2;
+    if returnTheCatalog
         % do not assume we are modifying the primary catalog. This might be some other load
         if ~ok
             catalog = ZmapCatalog();
@@ -72,17 +76,10 @@ function catalog = ZmapImportManager(fun, funArguments, varargin)
             end
         end
         
-        %ZG.newt2=ZG.Views.primary.Catalog();
-        %timeplot();
-        
         ZmapMessageCenter.update_catalog();
         
         uimemorize_catalog();
         
-        %zmap_update_displays();
-        %try
-        %    ZmapMainWindow();
-        %end
     end
     
 end

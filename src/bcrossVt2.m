@@ -163,7 +163,7 @@ classdef bcrossVt2 < ZmapSliceFunction
         figure(xsec_fig());
         hold on
         
-        ax = mainmap('axes');
+        ax=findobj(gcf,'Tag','mainmap_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);
         
         

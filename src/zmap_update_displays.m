@@ -9,7 +9,7 @@ function zmap_update_displays(opt)
         opt='';
     end
     ZmapMessageCenter.update_catalog();
-    m = mainmap();
+    m=findobj(gcf,'Tag','mainmap_ax');
     
     if ~isempty(m)
         if strcmp(opt,'showmap')
@@ -18,6 +18,6 @@ function zmap_update_displays(opt)
             m.update();
         end
     end
-    ZG.selection_shape.plot(mainmap('axes'));
+    ZG.selection_shape.plot(findobj(gcf,'Tag','mainmap_ax'));
         
 end

@@ -29,7 +29,7 @@ function selectp(in_or_out)
     delete(findobj('Tag','poly_selected_events'));
     
     % pick polygon points,
-    ax = mainmap('axes');
+    ax=findobj(gcf,'Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     
     

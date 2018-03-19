@@ -1,13 +1,4 @@
-function setcol()
-    % This is the machine-generated representation of a MATLAB object
-    % and its children.  Note that handle values may change when these
-    % objects are re-created. This may cause problems with some callbacks.
-    % The command syntax may be supported in the future, but is currently
-    % incomplete and subject to change.
-    %
-    % To re-open this system, just type the name of the m-file at the MATLAB
-    % prompt. The M-file and its associtated MAT-file must be on your path.
-    
+function setcol(fig)
     report_this_filefun(mfilename('fullpath'));
     
     % load setcol %todo delete setcol data.
@@ -16,18 +7,16 @@ function setcol()
         case 'Axes'
             C = uisetcolor;
             ZmapGlobal.Data.color_bg =[C(1) C(2) C(3)];
-            close;
             zmap_update_displays();
         case 'Figure'
             C = uisetcolor;
             ZmapGlobal.Data.color_fbg=[C(1) C(2) C(3)];
-            close;
             try
-                whitebg(mainmap(),ZmapGlobal.Data.color_fbg);
+                whitebg(fig,ZmapGlobal.Data.color_fbg);
             catch
                 warning('unable to change color. maybe map doesn''t exist');
             end
-            update(mainmap());
+            update(fig);
         otherwise
             
             % do nothing

@@ -83,6 +83,6 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     end
     figure(f);
     if exist('plotOnMap','var') && plotOnMap
-        zgrid.plot(mainmap('axes'));
+        zgrid.plot(findobj(gcf,'Tag','mainmap_ax'));
     end
 end

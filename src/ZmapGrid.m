@@ -452,10 +452,10 @@ classdef ZmapGrid
             switch nargin
                 case 0
                     name='unnamed';
-                    ax=mainmap('axes');
+                    ax=findobj(gcf,'Tag','mainmap_ax');
                     catalog=ZG.primeCatalog;
                 case 1
-                    ax=mainmap('axes');
+                    ax=findobj(gcf,'Tag','mainmap_ax');
                     catalog=ZG.primeCatalog;
                 case 3
                     assert(isa(catalog,'ZmapCatalog'));

@@ -234,7 +234,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function TF=isempty(obj)
             % ISEMPTY is true when there are no events in the catalog
             % tf = ISEMPTY(catalog)
-            TF = obj.Count == 0;
+            TF = numel(obj)==0 || obj.Count == 0;
         end
         
         function outval = ZmapArray(obj)

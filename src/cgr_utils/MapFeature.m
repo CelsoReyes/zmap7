@@ -47,12 +47,13 @@ classdef MapFeature < handle
     
     properties
         Name (1,:) char        % name of this feature
-        Loadfn function_handle % function used to load/import this feature's data
-        Savefn function_handle % function used to save/export this feature's data
+        Loadfn function_handle = @do_nothing % function used to load/import this feature's data
+        Savefn function_handle = @do_nothing % function used to save/export this feature's data
         PlottingDefaults struct  % properties used on this layer
         Value struct           % raw values to plot, as struct, class, or Table containing a "Longitude" and "Latitude" field
         ParentAxis matlab.graphics.axis.Axes % handle to a parent axis. assigned when this is plotted
         MenuToggle matlab.ui.container.Menu % handle to the uimenu used to show/hide this layer
+        WasLoaded logical = false;
     end
     properties(Dependent)
         Handle              % handle to this layer
@@ -65,33 +66,36 @@ classdef MapFeature < handle
     methods
         function obj= MapFeature(name, load_fn, save_fn, plot_defaults)
             % create a MapFeature
+            % obj= MAPFEATURE(name, load_fn, save_fn, plot_defaults)
+            
             assert(isfield(plot_defaults,'Tag'));
             obj.Name = name;
-            if isempty(load_fn)
-                load_fn = @do_nothing;
+            if ~isempty(load_fn)
+                obj.Loadfn = load_fn;
             end
-            obj.Loadfn = load_fn;
-            if isempty(save_fn)
-                save_fn = @do_nothing;
+            
+            if ~isempty(save_fn)
+                obj.Savefn = save_fn;
             end
-            obj.Savefn = save_fn;
+            
             obj.PlottingDefaults = plot_defaults;
-            %obj.Value = load_fn();
         end
         
         function obj=copyobj(orig,AX)
-            % copyobj copies a feature into a specified axes
-            % feature.copyobj(AX) where AX is the destination axes
+            % COPYOBJ copies a feature into a specified axes
+            % feature.COPYOBJ(AX) where AX is the destination axes
             %
-            % obj=feature.copyobj(...) returns a handle to the copied Mapfeature.
+            % obj=feature.COPYOBJ(...) returns a handle to the copied Mapfeature.
             %
             % see also copyobj
-            obj=MapFeature(orig.Name,orig.Loadfn,orig.Savefn,orig.PlottingDefaults);
+            obj=MapFeature(orig.Name, orig.Loadfn, orig.Savefn, orig.PlottingDefaults);
             obj.Value=orig.Value;
+            obj.WasLoaded=orig.WasLoaded;
             obj.plot(AX);
         end
+        
         function h =get.Handle(obj)
-            % get.Handle get the handle to this feature's layer
+            % get.HANDLE get the handle to this feature's layer
             % if this layer hasn't been plotted yet, or has been deleted, then
             % this returns []
             
@@ -134,6 +138,8 @@ classdef MapFeature < handle
             %
             % see also refreshPlot
             
+            assert(obj.WasLoaded,'load before plotting!')
+            
             if ~exist('ax','var')
                 ax = obj.ParentAxis;
             else
@@ -143,6 +149,8 @@ classdef MapFeature < handle
             if isempty(ax) || ~isvalid(ax)
                 error('Feature "%s" ->plot has no associated axis',obj.Name);
             end
+            
+                
             if has_toolbox('Mapping Toolbox') && ismap(ax)
                 obj.plotm(ax);
                 return
@@ -238,6 +246,7 @@ classdef MapFeature < handle
             % 'Latitude', 'Longitude', and 'Depth' (things with ELEVATION would have negative depth)
             item = obj.Loadfn(varargin{:});
             obj.Value = toValueStruct(item);
+            obj.WasLoaded = true;
         end
         
         function save(obj)
@@ -256,7 +265,7 @@ classdef MapFeature < handle
         end
         
         
-        function addToggleMenu(obj, parentH)
+        function addToggleMenu(obj, parentH, ax)
             % addToggleMenu add menu that hides/shows this Feature
             % addToggleMenu(parent) adds a toggle menu subordinate to the parent uimenu
             
@@ -266,9 +275,9 @@ classdef MapFeature < handle
             
             obj.MenuToggle = uimenu(parentH,...
                 'Label',['Hide ' obj.Name],...
-                'Callback',@(src,ev) obj.toggle_showhide_menu(src,ev));
+                'Callback',{@obj.toggle_showhide_menu, ax});
         end
-        function toggle_showhide_menu(obj, src, ~, contingencyFunction)
+        function toggle_showhide_menu(obj, src, ~, ax, contingencyFunction)
             % switch the show/hide menu between the "Show" and "Hide" stat
             % obj.toggle_showhide_menu(src, ~, contingencyFunction
             %   this is intended to be the Callback for the addToggleMenu.
@@ -283,7 +292,7 @@ classdef MapFeature < handle
                 if exist('contingencyFunction','var')
                     contingencyFunction();
                 end
-                h=findobj(parentFigure(src),'Tag', obj.PlottingDefaults.Tag);
+                h=findobj(ax,'Tag', obj.PlottingDefaults.Tag);
                 errordlg('missing a layer %s', obj.PlottingDefaults.Tag);
             end
             axis(obj.ParentAxis,'manual')
@@ -378,7 +387,8 @@ classdef MapFeature < handle
                 end
             else
                 % treat as an array
-                for i=1:numel(features)
+                k = numel(features);
+                for i=1:k
                     h.Name=[funcname ' : ', features(i).Name];
                     ftr=features(i);
                     ftr.(funcname)(varargin{:});

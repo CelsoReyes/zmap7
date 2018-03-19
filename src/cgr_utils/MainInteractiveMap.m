@@ -270,7 +270,7 @@ classdef MainInteractiveMap
                 'Callback',@change_map_fonts);
             
             uimenu(mapoptionmenu,'Label','Change background colors',...
-                'Callback',@(~,~)setcol,'Enable','off'); %
+                'Callback',@(~,~)setcol(gcf),'Enable','off'); %
             
             uimenu(mapoptionmenu,'Label','Mark large event with M > ??',...
                 'Callback',@(s,e) plot_large_quakes);
@@ -476,7 +476,7 @@ classdef MainInteractiveMap
         function plotEarthquakes(catview)
             disp(['MainInteractiveMap.plotEarthquakes :',ZmapGlobal.Data.mainmap_plotby]);
             %linkdata off
-            set(mainmap('axes'),'ColorOrderIndex',1);
+            set(findobj(gcf,'Tag','mainmap_ax'),'ColorOrderIndex',1);
             if ~any(strcmp(ZmapGlobal.Data.mainmap_plotby,{'magdepth','mad'}))
                 delete(findobj(groot,'Tag','mainmap_supplimentary_maglegend'));
                 delete(findobj(groot,'Tag','mainmap_supplimentary_deplegend'));
@@ -523,7 +523,7 @@ classdef MainInteractiveMap
             end
             zViews=split_views(mycat , something, divs, 'mapax_part');
             ZG.Views.layers=zViews;
-            ax = mainmap('axes');
+            ax=findobj(gcf,'Tag','mainmap_ax');
             holdstate=HoldStatus(ax,'on');
             for i=1:numel(zViews)
                 %myvarname=sprintf('ZmapGlobal.Data.Views.layers(%d)',i);
@@ -539,7 +539,7 @@ classdef MainInteractiveMap
         function plotQuakesByMagAndDepth(mycat)
             % colorized by depth, with size dictated by magnitude
             persistent colormapName
-            ax = mainmap('axes');
+            ax=findobj(gcf,'Tag','mainmap_ax');
             hquakes = findobj(ax,'DisplayName','Events by Mag & Depth');
             if isempty(hquakes)
                 clear_quake_plotinfo();

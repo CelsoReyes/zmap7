@@ -16,7 +16,7 @@ classdef ZmapMainWindow < handle
         xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
         prev_states Stack = Stack(10);
         undohandle;
-        Features;
+        Features = containers.Map();
         replotting=false
         mdate
         mshape
@@ -24,12 +24,14 @@ classdef ZmapMainWindow < handle
     
     properties(Constant)
         WinPos=position_in_current_monitor(1200,750)% [50 50 1200 750]; % position of main window
-        URPos=[800 380 390 360]; %
-        LRPos=[800 10 390 360];
-        MapPos_S=[70 270 680 450];
-        MapPos_L=[70 50 680 450+220]; %260
-        XSPos=[15 10 760 215];
-        XSAxPos=[45 40 675 120];
+        URPos=[800 380 390 360] %
+        LRPos=[800 10 390 360]
+        MapPos_S=[70 270 680 450]
+        MapPos_L=[70 50 680 450+220] %260
+        XSPos=[15 10 760 215]
+        XSAxPos=[45 40 675 120]
+        FeaturesToPlot = {'borders','coastline',...
+            'faults','lakes','plates','rivers','stations','volcanoes'}
     end
     properties(Dependent)
         map_axes % main map axes handle
@@ -50,11 +52,15 @@ classdef ZmapMainWindow < handle
     end
     methods
         function obj=ZmapMainWindow(fig,catalog)
-            if exist('fig','var') && isa(fig,'ZmapMainWindow') && ~isvalid(fig.fig)
+            if exist('fig','var') &&... specifed a figure, perhaps.
+                    isa(fig,'ZmapMainWindow') &&... actually, specified a ZmapMainWindow object, instead
+                    ~isvalid(fig.fig) % but that object's figure isn't valid. (?)
                 % recreate the figure (?)
                 errordlg('unimplemented');
                 return
             end
+            
+            %if the figure was specified, but wasn't empty, then delete it.
             if exist('fig','var') && ~isempty(fig)
                 delete(fig);
             end
@@ -73,7 +79,10 @@ classdef ZmapMainWindow < handle
             if exist('catalog','var')
                 obj.rawcatalog=catalog;
             else
-                obj.rawcatalog=ZG.Views.primary.Catalog;
+                rawview = ZG.Views.primary;
+                if ~isempty(rawview)
+                    obj.rawcatalog=ZG.Views.primary.Catalog;
+                end
             end
             if isempty(obj.rawcatalog)
                 errordlg(sprintf('Cannot open the ZmapMainWindow: No catalog is loaded.\nFirst load a catalog into Zmap, then try again.'),'ZMap');
@@ -82,7 +91,7 @@ classdef ZmapMainWindow < handle
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             % initialize from the existing globals
-            obj.Features=ZG.features;
+            % obj.Features=ZG.features;
             
             obj.shape=ZG.selection_shape;
             [obj.catalog,obj.mdate, obj.mshape]=obj.filtered_catalog();
@@ -96,10 +105,10 @@ classdef ZmapMainWindow < handle
             obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
                 char(max(obj.catalog.Date)));
             
-            obj.Features=ZmapMainWindow.features();
-            %MapFeature.foreach_waitbar(obj.Features,'load');
+            % obj.Features=ZmapMainWindow.features();
+            % MapFeature.foreach_waitbar(obj.Features,'load');
             
-            obj.plot_base_events();
+            obj.plot_base_events(ZG.features.keys);
             
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();
@@ -128,13 +137,13 @@ classdef ZmapMainWindow < handle
             if isvalid(h)
                 delete(h)
             end
-            obj.create_all_menus(true);
+            obj.create_all_menus(true); % plot_base_events(...) must have already been called, ino order to load the features from ZG
             add_grid_menu(obj);
         end
         
         %% METHODS DEFINED IN DIRECTORY
         replot_all(obj,status)
-        plot_base_events(obj)
+        plot_base_events(obj, featurelist)
         plotmainmap(obj)
         c=context_menus(obj, tag,createmode, varargin) % manage context menus used in figure
         plothist(obj, name, values, tabgrouptag)
@@ -434,7 +443,7 @@ classdef ZmapMainWindow < handle
             
             % Make the menu to change symbol size and type
             %
-            mapoptionmenu = uimenu('Label','Map Options','Tag','mainmap_menu_overlay');
+            mapoptionmenu = uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
             
             uimenu(mapoptionmenu,'Label','3-D view',...
                 'Callback',@obj.set_3d_view); % callback was plot3d
@@ -455,7 +464,7 @@ classdef ZmapMainWindow < handle
             add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
             ovmenu = uimenu(mapoptionmenu,'Label','Layers');
             try
-                MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu)
+                MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu,axm)
             catch ME
                 warning(ME.message)
             end

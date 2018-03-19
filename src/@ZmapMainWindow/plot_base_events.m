@@ -1,6 +1,10 @@
-function plot_base_events(obj)
+function plot_base_events(obj, featurelist)
     % PLOT_BASE_EVENTS plot all events from catalog as dots before it gets filtered by shapes, etc.
     % call once at beginning
+    % obj.PLOT_BASE_EVENTS(featurelist) where featurelist is a cell array of feature names, such as
+    % {'borders', 'coastline'}
+    if ~exist('featurelist','var'), featurelist={}; end
+        
     axm=obj.map_axes;
     if isempty(axm)
         axm=axes('Units','pixels','Position',obj.MapPos_L);
@@ -22,8 +26,22 @@ function plot_base_events(obj)
     
     xlabel(axm,'Longitude')
     ylabel(axm,'Latitude');
+    ZG=ZmapGlobal.Data;
     
-    MapFeature.foreach(obj.Features,'plot',axm);
+    
+    wereLoaded = cellfun(@(x) ZG.features(x).WasLoaded , featurelist);
+    if ~all(wereLoaded)
+        Farray = cellfun(@(x) ZG.features(x), featurelist);
+        MapFeature.foreach_waitbar(Farray(~wereLoaded),'load');
+    end
+    for i=1:numel(featurelist)
+        feat_key = featurelist{i};
+        obj.Features(featurelist{i})=copyobj(ZG.features(feat_key),axm);
+    end
+    
+    %    obj.Features(feat_key) = copyobj(ZG.features(feat_key), axm);
+    
+    % MapFeature.foreach(obj.Features,'plot',axm);
     axm.XLimMode='manual';
     axm.YLimMode='manual';
     c=uicontextmenu(obj.fig,'Tag','mainmap context');

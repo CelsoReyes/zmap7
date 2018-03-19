@@ -52,21 +52,17 @@ function startmen(parent_fig)
         
     end
     function cb_load_file
-        ZmapImportManager(@load_zmapfile);
-        %try
-            ZmapMainWindow();
-        %catch ME
-            % errordlg(ME.message);
-        %    rethrow(ME)
-        %end
+        ok=ZmapImportManager(@load_zmapfile);
+        if ok
+            ZG= ZmapGlobal.Data;
+            ZmapMainWindow([],ZG.primeCatalog);
+        end
     end
     function cb_load_web
-        ZmapImportManager(@get_fdsn_data_from_web_callback);
-        try
-            ZmapMainWindow();
-        catch ME
-            errordlg(ME.message);
-            rethrow(ME)
+        ok=ZmapImportManager(@get_fdsn_data_from_web_callback);
+        if ok
+            ZG= ZmapGlobal.Data;
+            ZmapMainWindow([],ZG.primeCatalog);
         end
     end
 end

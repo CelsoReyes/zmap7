@@ -114,7 +114,7 @@ function rc_cross_a2()
             y = [y ; y(1)];     %  closes polygon
             clear vXLim vYLim;
         else
-            ax = mainmap('axes')
+            ax=findobj(gcf,'Tag','mainmap_ax');
             [x,y, mouse_points_overlay] = select_polygon(ax);
         end % of if bGridEntireArea
         
@@ -169,7 +169,7 @@ function rc_cross_a2()
         mRcCross = []; %NaN(length(newgri),14);
         allcount = 0.;
         wai = waitbar(0,' Please Wait ...  ');
-        set(wai,'NumberTitle','off','Name','b-value grid - percent done');;
+        set(wai,'NumberTitle','off','Name','b-value grid - percent done');
         drawnow
         %
         % loop

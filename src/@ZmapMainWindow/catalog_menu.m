@@ -187,8 +187,8 @@ function add_menu_catalog(obj, force)
     end
     
     function cb_importer(src, ev, fun)
-        c=ZmapImportManager(fun);
-        if ~isempty(c)
+        ok=ZmapImportManager(fun);
+        if ok
             delete(obj.fig);
             ZmapMainWindow();
             delete(obj)

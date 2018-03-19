@@ -46,7 +46,7 @@ function plotmap(fig)
     
     
     % add earthquakes from main map
-    qs=findobj(mainmap('axes'),'-regexp','Tag','mapax_part.+');
+    qs=findobj(findobj(gcf,'Tag','mainmap_ax'),'-regexp','Tag','mapax_part.+');
     %symbs=['+o*v^><s'];
     for n=1:numel(qs)
         h=plotm(qs(n).YData,qs(n).XData,'.','Color',qs(n).Color .* [.6],...

@@ -202,7 +202,7 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         zmap_update_displays();
         hold on
-        pl=plot(mainmap('axes'),ZG.cluscat.Longitude, ZG.cluscat.Latitude,'mo', 'DisplayName','Clustered Events');
+        pl=plot(findobj(gcf,'Tag','mainmap_ax'),ZG.cluscat.Longitude, ZG.cluscat.Latitude,'mo', 'DisplayName','Clustered Events');
         pl.ZData=ZG.cluscat.Depth;
         
         st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...

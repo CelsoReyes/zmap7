@@ -111,7 +111,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             %    error('unknown polygon type')
             %end
             
-            ax=mainmap('axes');
+            ax=findobj(gcf,'Tag','mainmap_ax');
             % assumption: we the current figure contains the axes of interest
             set(gcf,'CurrentAxes',ax) % bring up axes of interest.  should be the map, with lat/lon
 
@@ -231,7 +231,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function clearplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                ax=mainmap('axes');
+                ax=findobj(gcf,'Tag','mainmap_ax');
             end
             delete(findobj(ax,'Tag','shapeoutline'));
         end
@@ -239,7 +239,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function deemphasizeplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
-                ax=mainmap('axes');
+                ax=findobj(gcf,'Tag','mainmap_ax');
             end
             shout = findobj(ax,'Tag','shapeoutline');
             set(shout,'color',[.8 .8 .8],'linestyle',':');

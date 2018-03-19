@@ -51,7 +51,7 @@ else
     elseif get(handles.radHRadius, 'Value') == 1
       rOptionsH.nGriddingMode = 1;
       rOptionsH.nNumberEvents = 0;
-      rOptionsH.fRadius = str2double(get(handles.txtHRadius, 'String'));;
+      rOptionsH.fRadius = str2double(get(handles.txtHRadius, 'String'));
       rOptionsH.fSizeRectX = 0;
       rOptionsH.fSizeRectY = 0;
       rOptionsH.nMinimumNumber = str2double(get(handles.txtHMinimumNumber, 'String'));
@@ -85,7 +85,7 @@ else
     elseif get(handles.radNRadius, 'Value') == 1
       rOptionsN.nGriddingMode = 1;  % Constant Radius
       rOptionsN.nNumberEvents = 0;
-      rOptionsN.fRadius = str2double(get(handles.txtNRadius, 'String'));;
+      rOptionsN.fRadius = str2double(get(handles.txtNRadius, 'String'));
       rOptionsN.fSizeRectX = 0;
       rOptionsN.fSizeRectY = 0;
       rOptionsN.nMinimumNumber = str2double(get(handles.txtNMinimumNumber, 'String'));
@@ -119,7 +119,7 @@ else
     elseif get(handles.radTRadius, 'Value') == 1
       rOptionsT.nGriddingMode = 1;  % Constant Radius
       rOptionsT.nNumberEvents = 0;
-      rOptionsT.fRadius = str2double(get(handles.txtTRadius, 'String'));;
+      rOptionsT.fRadius = str2double(get(handles.txtTRadius, 'String'));
       rOptionsT.fSizeRectX = 0;
       rOptionsT.fSizeRectY = 0;
       rOptionsT.nMinimumNumber = str2double(get(handles.txtTMinimumNumber, 'String'));
