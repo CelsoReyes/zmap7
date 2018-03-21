@@ -48,7 +48,8 @@ classdef ZmapVGrid < ZmapGrid
                 y='Z';
             end
             if ~all(ishandle(ax))
-                error('invalid axes provided. If not specifying axes, but are providing additional options, lead with "[]". ex. obj.plot([],''color'',[ 1 1 0])');
+                error(['invalid axes provided. If not specifying axes, but are providing ',...
+                    'additional options, lead with "[]". ex. obj.plot([],''color'',[ 1 1 0])']);
             end
             grid_tag = ['grid_' obj.Name];
             prev_grid = findobj(ax,'Tag',grid_tag);
@@ -58,7 +59,8 @@ classdef ZmapVGrid < ZmapGrid
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=line(ax,obj.(x)(:),obj.(y)(1:end-1),'Marker','+','Color','k','LineStyle','none','Tag',grid_tag);
+                prev_grid=line(ax,obj.(x)(:),obj.(y)(1:end-1),...
+                    'Marker','+','Color','k','LineStyle','none','Tag',grid_tag);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end
@@ -88,18 +90,12 @@ classdef ZmapVGrid < ZmapGrid
                 name = '';
             end
             assert(numel(obj.X)==numel(values),'Number of values doesn''t match number of points')
-            %if isvector(values) && ~isvector(obj.X)
-            %    values=reshape(values,size(obj.X));
-            %end
             
             values=reshape(values(1:end-1) , numel(unique(obj.d_km)),[]);
             d_km_m=reshape(obj.d_km,size(values));
             z=reshape(obj.Z(1:end-1),size(d_km_m));
-            %h=pcolor(ax,d_km,z,values)
             h= gridpcolor(ax,d_km_m',z',values',obj.ActivePoints, name);
             set(gca,'YDir','reverse')
-    
-            %h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
         
     end

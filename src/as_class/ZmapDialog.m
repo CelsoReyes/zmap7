@@ -295,7 +295,7 @@ classdef ZmapDialog < handle
         
         function AddRadioGroup(obj, tag, grouplabel, radiolabels, default, tooltips)
             % AddRadioGroup
-            % AddRadioGroup(obj, tag, grouplabel, radiolabels, tooltips)
+            % ADDRADIOGROUP(obj, tag, grouplabel, radiolabels, default tooltips)
             
             details=struct(...
                 'Style','radiogroup',...
@@ -308,7 +308,11 @@ classdef ZmapDialog < handle
         end
         function AddBasicHeader(obj, String)
             % add a simple header to the dialog box
-            % AddBasicHeader(text)
+            % ADDBASICHEADER(text)
+            if ~ischar(String)
+                String = char(String);
+            end
+            
             details=struct(...
                 'Style','header',...
                 'Tag','',...
@@ -319,6 +323,12 @@ classdef ZmapDialog < handle
         function AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
             %AddBasicPopup represents a pop-up menu
             % AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+            if islogical(defaultChoice)
+                assert(numel(defaultChoice)==numel(choices))
+                assert(sum(defaultChoice)==1)
+                defaultChoice = find(defaultChoice);
+            end
+            assert(defaultChoice < numel(choices) && defaultChoice > 0)
             details=struct(...
                 'Style','popupmenu',...
                 'Tag',tag,...

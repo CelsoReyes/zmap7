@@ -142,14 +142,6 @@ classdef findquar < ZmapFunction
             end
         end
         
-        function CheckPreconditions(obj)
-            % check to make sure any inportant conditions are met.
-            % for example,
-            % - catalogs have what are expected.
-            % - required variables exist or have valid values
-            assert(true==true,'laws of logic are broken.');
-        end
-        
         function Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             
@@ -253,7 +245,6 @@ classdef findquar < ZmapFunction
             %
             orient landscape
             
-            %axes('position',[0.18,  0.10, 0.7, 0.75])
             set(obj.ax,'position',[0.18,  0.10, 0.7, 0.75]);
             hold on
             pco1 = gridpcolor(obj.ax, obj.Grid.X, obj.Grid.Y, re4');
@@ -266,10 +257,11 @@ classdef findquar < ZmapFunction
             
             fix_caxis(re4,'horiz',minc,maxc,false);
             fix_caxis.ApplyIfFrozen(obj.ax);
-            
-            title(obj.ax,[obj.RawCatalog.Name ';  '   char(min(obj.RawCatalog.Date)) ' to ' char(max(obj.RawCatalog.Date)) ],...
-                'FontSize',ZmapGlobal.Data.fontsz.s,...
-                'Interpreter','none','FontWeight','bold')
+            titlestr = sprintf('%s; %s to %s',...
+                obj.RawCatalog.Name, min(obj.RawCatalog.Date), max(obj.RawCatalog.Date));
+            title(obj.ax, titlestr, ...
+                'FontSize', ZmapGlobal.Data.fontsz.s,...
+                'Interpreter', 'none', 'FontWeight', 'bold')
             
             xlabel(obj.ax,'Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
             ylabel(obj.ax,'Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)

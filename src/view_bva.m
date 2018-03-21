@@ -154,7 +154,9 @@ function view_bva(lab1, valueMap,gx,gy)
         report_this_filefun(mfilename('fullpath'));
         
         
-        prompt={'Enter the minimum magnitude cut-off','Enter the maximum radius cut-off:','Enter the minimum goodness of fit percatge'};
+        prompt={'Enter the minimum magnitude cut-off',...
+            'Enter the maximum radius cut-off:',...
+            'Enter the minimum goodness of fit percatge'};
         def={'nan','nan','nan'};
         dlgTitle='Input Map subselection Criteria';
         lineNo=1;
@@ -172,74 +174,74 @@ function view_bva(lab1, valueMap,gx,gy)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
+        uimenu(options,'Label','Refresh ', 'callback',@cb_refresh)
         uimenu(options,'Label','Select EQ in Circle',...
-            'callback',@callbackfun_002)
+            'callback',@cb_seleq_cir)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'callback',@callbackfun_003)
+            'callback',@cb_seleq_cir_r)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-            'callback',@callbackfun_004)
+            'callback',@cb_seleq_cir_overlay)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            'callback',@callbackfun_005)
+            'callback',@cb_seleq_poly_new)
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
-            'callback',@callbackfun_006)
+            'callback',@cb_seleq_poly_hold)
         
         
         op1 = uimenu('Label',' Maps ');
         
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters');
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'callback',@callbackfun_007)
+            'callback',@cb_adjust_min_cut)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'callback',@callbackfun_008)
+            'callback',@cb_adjust_max_cut)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'callback',@callbackfun_009)
+            'callback',@cb_adjust_goodness_cut)
         
         
         uimenu(op1,'Label','b-value map (max likelihood)',...
-            'callback',@callbackfun_010)
+            'callback',@cb_bval_maxlikelihood)
         uimenu(op1,'Label','Standard deviation of b-Value (max likelihood) map',...
-            'callback',@callbackfun_011)
+            'callback',@cb_std_bval)
         uimenu(op1,'Label','Magnitude of completness map',...
-            'callback',@callbackfun_012)
+            'callback',@cb_magcomp)
         uimenu(op1,'Label','Standard deviation of magnitude of completness',...
-            'callback',@callbackfun_013)
+            'callback',@cb_std_magcomp)
         uimenu(op1,'Label','Goodness of fit to power law map',...
-            'callback',@callbackfun_014)
+            'callback',@cb_goodfit_powerlaw)
         uimenu(op1,'Label','Resolution map',...
-            'callback',@callbackfun_015)
+            'callback',@cb_resolution)
         uimenu(op1,'Label','Earthquake density map',...
-            'callback',@callbackfun_016)
+            'callback',@cb_eqdensity)
         uimenu(op1,'Label','a-value map',...
-            'callback',@callbackfun_017)
+            'callback',@cb_avalue)
         
         
         if exist('mStdDevB')
             AverageStdDevMenu = uimenu(op1,'Label', 'Additional random simulation');
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of b-value',...
-                'callback',@callbackfun_018)
+                'callback',@cb_bootstrap_std_bval)
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of Mc',...
-                'callback',@callbackfun_019)
+                'callback',@cb_bootstrap_std_mc)
             uimenu(AverageStdDevMenu,'Label', 'b-value map (max likelihood) with std. deviation',...
-                'callback',@callbackfun_020)
+                'callback',@cb_bval_with_std)
         end
         
         recmenu = uimenu(op1,'Label','recurrence time map ')...
         
         uimenu(recmenu,'Label','recurrence time map ',...
-            'callback',@callbackfun_021)
+            'callback',@cb_recurrence_time)
         
         uimenu(recmenu,'Label','(1/Tr)/area map ',...
-            'callback',@callbackfun_022)
+            'callback',@cb_oneovertroverarea)
         
         uimenu(recmenu,'Label','recurrence time percentage ',...
-            'callback',@callbackfun_023)
+            'callback',@cb_recperc)
         
         
         
         uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
-        uimenu(op1,'Label','Reccurrence Time Histogram ', 'callback',@callbackfun_025)
+        uimenu(op1,'Label','Reccurrence Time Histogram ', 'callback',@cb_rechist)
         uimenu(op1,'Label','Save map to ASCII file ', 'callback',@callbackfun_026)
         
         add_display_menu(4);
@@ -247,13 +249,13 @@ function view_bva(lab1, valueMap,gx,gy)
     
     %% callback functions
     
-    function callbackfun_001(mysrc,myevt)
+    function cb_refresh(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_002(mysrc,myevt)
+    function cb_seleq_cir(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -264,7 +266,7 @@ function view_bva(lab1, valueMap,gx,gy)
         watchoff(bmap);
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_seleq_cir_r(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -275,7 +277,7 @@ function view_bva(lab1, valueMap,gx,gy)
         watchoff(bmap);
     end
     
-    function callbackfun_004(mysrc,myevt)
+    function cb_seleq_cir_overlay(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -285,7 +287,7 @@ function view_bva(lab1, valueMap,gx,gy)
         watchoff(bmap);
     end
     
-    function callbackfun_005(mysrc,myevt)
+    function cb_seleq_poly_new(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
@@ -294,7 +296,7 @@ function view_bva(lab1, valueMap,gx,gy)
         selectp;
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_seleq_poly_hold(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cufi = gcf;
@@ -303,7 +305,7 @@ function view_bva(lab1, valueMap,gx,gy)
         selectp;
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_adjust_min_cut(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'mag';
@@ -311,7 +313,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap) ;
     end
     
-    function callbackfun_008(mysrc,myevt)
+    function cb_adjust_max_cut(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'rmax';
@@ -319,7 +321,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_009(mysrc,myevt)
+    function cb_adjust_goodness_cut(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         asel = 'gofi';
@@ -327,7 +329,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap) ;
     end
     
-    function callbackfun_010(mysrc,myevt)
+    function cb_bval_maxlikelihood(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
@@ -335,7 +337,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_011(mysrc,myevt)
+    function cb_std_bval(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='SdtDev b-Value';
@@ -343,7 +345,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_012(mysrc,myevt)
+    function cb_magcomp(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
@@ -351,7 +353,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_013(mysrc,myevt)
+    function cb_std_magcomp(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = 'Mcomp';
@@ -359,7 +361,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_014(mysrc,myevt)
+    function cb_goodfit_powerlaw(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 = ' % ';
@@ -367,7 +369,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_015(mysrc,myevt)
+    function cb_resolution(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
@@ -375,7 +377,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_016(mysrc,myevt)
+    function cb_eqdensity(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='log(EQ per km^2)';
@@ -383,7 +385,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_017(mysrc,myevt)
+    function cb_avalue(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='a-value';
@@ -391,7 +393,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_018(mysrc,myevt)
+    function cb_bootstrap_std_bval(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of b-value';
@@ -399,7 +401,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_019(mysrc,myevt)
+    function cb_bootstrap_std_mc(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='standard deviation of Mc';
@@ -407,7 +409,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_020(mysrc,myevt)
+    function cb_bval_with_std(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
@@ -416,7 +418,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_021(mysrc,myevt)
+    function cb_recurrence_time(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         def = {'6'};
@@ -429,7 +431,7 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_022(mysrc,myevt)
+    function cb_oneovertroverarea(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         def = {'6'};
@@ -443,13 +445,13 @@ function view_bva(lab1, valueMap,gx,gy)
         view_bva(lab1,valueMap);
     end
     
-    function callbackfun_023(mysrc,myevt)
+    function cb_recperc(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         recperc;
     end
     
-    function callbackfun_025(mysrc,myevt)
+    function cb_rechist(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         rechist;
