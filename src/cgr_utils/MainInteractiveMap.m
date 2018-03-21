@@ -323,9 +323,12 @@ classdef MainInteractiveMap
                 'Callback',@(~,~)stressgrid());
             
             uimenu(submenu,'Label','Misfit calculation',...
-                'Callback',@(~,~)inmisfit(),...
+                'Callback',@(~,~)cb_inmisfit,...
                 'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
-            
+                
+            function cb_inmisfit(~,~)
+                inmisfit(obj.Catalog)
+            end
             function analyze_time_series_cb(~,~)
                 % analyze time series for current catalog view
                 ZG=ZmapGlobal.Data;

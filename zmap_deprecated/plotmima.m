@@ -1,11 +1,12 @@
-function plotmima(var1)
+function plotmima(var1, mi)
     report_this_filefun(mfilename('fullpath'));
     
     ZG=ZmapGlobal.Data;
-    global  mi  mif1 hndl3
+    global mif1
+    global oneOfHowManyPopupIdx
     
-    sc = get(hndl3,'Value');
-    mi(:,2) = mi(:,2)+1;
+    sc = oneOfHowManyPopupIdx;
+    angMisfit = mi(:,2)+1; % added 1 because it's used as sizes
     figure(mif1) %TODO figure out where mif1 comes from
     delete(findobj(mif1,'Type','axes'));
     rect = [0.15,  0.20, 0.75, 0.65];
@@ -18,7 +19,7 @@ function plotmima(var1)
         for i = 1:ZG.primeCatalog.Count
             pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'ro');
             hold on
-            set(pl,'MarkerSize',mi(i,2)/sc)
+            set(pl,'MarkerSize',angMisfit(i)/sc)
         end
         
     elseif var1 == 2
@@ -26,7 +27,7 @@ function plotmima(var1)
         for i = 1:ZG.primeCatalog.Count
             pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'bx');
             hold on
-            set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc)
+            set(pl,'MarkerSize',angMisfit(i)/sc,'LineWidth',angMisfit(i)/sc)
         end
         
     elseif var1 == 3
@@ -34,8 +35,8 @@ function plotmima(var1)
         for i = 1:ZG.primeCatalog.Count
             pl =  plot(ZG.primeCatalog.Longitude(i),ZG.primeCatalog.Latitude(i),'bx');
             hold on
-            c = mi(i,2)/max(mi(:,2));
-            set(pl,'MarkerSize',mi(i,2)/sc,'LineWidth',mi(i,2)/sc,'Color',[ c c c ] )
+            c = angMisfit(i)/max(angMisfit);
+            set(pl,'MarkerSize',angMisfit(i)/sc,'LineWidth',angMisfit(i)/sc,'Color',[ c c c ] )
         end
         
     elseif var1 == 4
@@ -56,6 +57,5 @@ function plotmima(var1)
     set(gca,'box','on',...
         'SortMethod','childorder','TickDir','out','FontWeight',...
         'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.2)
-    mi(:,2) = mi(:,2)-1;
     watchoff
 end

@@ -284,22 +284,6 @@ function view_bvt(lab1,valueMap)
         cicros(3);
     end
     
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG=ZmapGlobal.Data;
-        ZG.hold_state=false;
-        polyb;
-    end
-    
-    function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG=ZmapGlobal.Data;
-        ZG.hold_state=true;
-        polyb;
-    end
-    
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

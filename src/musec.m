@@ -164,7 +164,7 @@ function musec()
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        crosssel;
+        newa2=crosssel(newa);
         ZG.newt2=newa2;
         ZG.newcat=newa2;
         timeplot();
