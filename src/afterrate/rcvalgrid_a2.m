@@ -1,4 +1,66 @@
-function [sel]=rcvalgrid_a2()
+classdef rcvalgrid_a2 < ZmapHGridFunction
+    % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
+    % Uses view_rcva_a2 to plot the results
+    properties
+    end
+    properties(Constant)
+        PlotTag='myplot'
+        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+            };
+        CalcFields={}
+    end
+    methods
+        function obj=rcvalgrid_a2(zap,varargin)
+            report_this_filefun(mfilename('fullpath'));
+            
+            obj@ZmapHGridFunction(zap, 'Rate change');
+            
+            % depending on whether parameters were provided, either run automatically, or
+            % request input from the user.
+            if nargin<2
+                % create dialog box, then exit.
+                obj.InteractiveSetup();
+                
+            else
+                % run this function without human interaction
+                obj.doIt();
+            end
+        end
+        function InteractiveSetup(obj)
+            zdlg = ZmapDialog();
+            
+            zdlg.AddBasicHeader('Choose stuff');
+            [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj,res)
+        end
+        function CheckPreconditions(obj)
+        end
+        function ModifyGlobals(obj)
+            obj.ZG.bvg=obj.Result.values;
+        end
+        
+        function results=Calculate(obj)
+            results=orig_rcvalgrid_a2();
+            error('not yet re-implemented');
+        end
+    end
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='Rate change, p-,c-,k-value map in aftershock sequence (MLE)';
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)rcvalgrid_a2(zapFcn()));
+        end
+    end
+end
+
+function [sel]=orig_rcvalgrid_a2()
     % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     %
@@ -10,7 +72,7 @@ function [sel]=rcvalgrid_a2()
     
     ZG=ZmapGlobal.Data;
     report_this_filefun(mfilename('fullpath'));
-
+    
     minThreshMag = min(ZG.primeCatalog.Magnitude);
     
     % Set the grid parameter
@@ -75,39 +137,39 @@ function [sel]=rcvalgrid_a2()
     %
     
     
-        zdlg = ZmapDialog();
-        
-        
-        McMethods={'Automatic Mcomp (max curvature)',...
-            'Fixed Mc (Mc = Mmin)',...
-            'Automatic Mcomp (90% probability)',...
-            'Automatic Mcomp (95% probability)',...
-            'Best (?) combination (Mc95 - Mc90 - max curvature)',...
-            'Constant Mc'};
-        
-        zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
-            'Please choose an Mc estimation option');
-        
-        zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
-        % add fMaxRadius
-        zdlg.AddEventSelectionParameters('EventSelector', ni, ra, Nmin) %selOpt
-        zdlg.AddBasicEdit('boot_samp','# boot loops', bootloops,' number of bootstraps');
-        zdlg.AddBasicEdit('forec_period','forecast period [days]', timef, 'forecast period [days]');
-        zdlg.AddBasicEdit('learn_period','learn period [days]', time, 'learning period [days]');
-        zdlg.AddBasicCheckbox('addtofig','plot in current figure', true,[],'plot in the current figure');
-        % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
-        % FIXME min number of events should be the number > Mc
-        
-        [res, okpressed]=zdlg.Create('relative rate change map');
-        if ~okpressed
-            return
-        end
-        disp(res)
-        Grid=ZmapGrid('rcvalgrid',res.Grid);
-        EventSelector=res.EventSelector;
-        
-        error('This feature hasn''t been completely implemented yet.')
-        %{
+    zdlg = ZmapDialog();
+    
+    
+    McMethods={'Automatic Mcomp (max curvature)',...
+        'Fixed Mc (Mc = Mmin)',...
+        'Automatic Mcomp (90% probability)',...
+        'Automatic Mcomp (95% probability)',...
+        'Best (?) combination (Mc95 - Mc90 - max curvature)',...
+        'Constant Mc'};
+    
+    zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
+        'Please choose an Mc estimation option');
+    
+    zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
+    % add fMaxRadius
+    zdlg.AddEventSelectionParameters('EventSelector', ni, ra, Nmin) %selOpt
+    zdlg.AddBasicEdit('boot_samp','# boot loops', bootloops,' number of bootstraps');
+    zdlg.AddBasicEdit('forec_period','forecast period [days]', timef, 'forecast period [days]');
+    zdlg.AddBasicEdit('learn_period','learn period [days]', time, 'learning period [days]');
+    zdlg.AddBasicCheckbox('addtofig','plot in current figure', true,[],'plot in the current figure');
+    % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+    % FIXME min number of events should be the number > Mc
+    
+    [res, okpressed]=zdlg.Create('relative rate change map');
+    if ~okpressed
+        return
+    end
+    disp(res)
+    Grid=ZmapGrid('rcvalgrid',res.Grid);
+    EventSelector=res.EventSelector;
+    
+    error('This feature hasn''t been completely implemented yet.')
+    %{
         figure
         % addtofig -> oldfig_button
         
@@ -192,12 +254,12 @@ function [sel]=rcvalgrid_a2()
         'FontSize',ZmapGlobal.Data.fontsz.s ,...
         'FontWeight','bold',...
         'String','Max. Radius /[km]:');
-        %}
+    %}
         set(gcf,'visible','on');
         watchoff
         
-        %}
-        
+    %}
+    
     function my_calculate() % 'ca'
         % get the grid-size interactively and
         % calculate the b-value in the grid by sorting
@@ -552,45 +614,45 @@ function callbackfun_001(mysrc,myevt)
     
     
     function callbackfun_006(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         mysrc.Value=str2double(mysrc.String);
         time=days(mysrc.Value);
     end
     
     function callbackfun_007(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         timef=str2double(mysrc.String);
     end
     
     function callbackfun_008(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         bootloops=str2double(mysrc.String);
     end
     
     function callbackfun_009(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         Nmin=str2double(mysrc.String);
     end
     
     function callbackfun_010(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fMaxRadius=str2double(mysrc.String);
     end
     
     function callbackfun_cancel(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         
     end
     
     function callbackfun_go(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         useEventsInRadius=selOpt.UseEventsInRadius;
         ni=selOpt.ni;

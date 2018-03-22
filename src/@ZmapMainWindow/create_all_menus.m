@@ -33,6 +33,8 @@ function create_all_menus(obj, force)
         bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
         bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
         bpvalgrid.AddMenuItem(submenu,@()obj.map_zap);
+        comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
+        rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
     end
     
     %% xsec-view analysis menu
@@ -40,6 +42,7 @@ function create_all_menus(obj, force)
     
     function create_xsec_analysis_menu()
         submenu = uimenu('Label','Analyze:X-sect');
+        magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
     end
     
     
@@ -278,12 +281,13 @@ function create_all_menus(obj, force)
     
     function create_map_p_menu(parent)
         submenu  =   uimenu(parent,'Label','Mapping p-values');
-        tmp=uimenu(submenu,'Label','p- and b-value map','Callback',@(~,~)bpvalgrid());
-        tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
-        uimenu(tmp,'Label','Calculate','Callback',@(~,~)rcvalgrid_a2());
-        uimenu(tmp,'Label','Load...',...
-            'Enable','off',...
-            'Callback',  @(~,~)rcvalgrid_a2('lo'));
+        bpvalgrid.AddMenuItem(submenu,@()obj.map_zap);
+        
+        % tmp=uimenu(submenu,'Label','Rate change, p-,c-,k-value map in aftershock sequence (MLE)');
+        rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
+        % uimenu(tmp,'Label','Calculate','Callback',@(~,~)rcvalgrid_a2());
+        
+       % uimenu(tmp,'Label','Load...','Enable','off','Callback',  @(~,~)rcvalgrid_a2('lo'));
     end
     
     function create_quarry_detection_menu(parent)
