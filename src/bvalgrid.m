@@ -2,13 +2,13 @@ classdef bvalgrid < ZmapHGridFunction
     % CGR_BVALGRID Generate a B-value grid
     
     properties
-        Nmin = 50
+        Nmin = 50 % minimum number of earthquakes
         fMcFix=1.0  %2.2
-        nBstSample=100
+        nBstSample=100 % number of bootstrap samples
         useBootstrap  % perform bootstrapping?
         fMccorr = 0.2  % magnitude correction
         fBinning = 0.1  % magnitude bins
-        mc_choice
+        mc_choice % magnitude of completion method (index to a method)
     end
     
     properties(Constant)
@@ -53,8 +53,6 @@ classdef bvalgrid < ZmapHGridFunction
         
         function InteractiveSetup(obj)
             % create a dialog that allows user to select parameters neccessary for the calculation
-            % if autoCalculate, then do the calculation immediately.
-            % if autoPlot, then plot results immediately after calculation
             
             %% make the interface
             zdlg = ZmapDialog();

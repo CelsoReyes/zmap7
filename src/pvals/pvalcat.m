@@ -62,13 +62,14 @@ function pvalcat()
     
     paramc2 = timeSinceMainshock >= minDaysAfterMainshock;
     eqDates = eqDates(paramc2);
+    eqMags = ZG.newt2.Magnitudes(paramc2);
     
     tmin = min(timeSinceMainshock);
     tmax = max(timeSinceMainshock);
     
     tint = [tmin tmax];
     
-    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(eqDates,'date',valeg2,CO,minThreshMag);
+    [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(eqDates,eqMags,'date',valeg2,CO,minThreshMag);
     
     if ~isnan(pv)
         dispStats(pv, pstd, cv, cstd, kv, kstd, rja, rjb,eqDates,tmin,tmax,minThreshMag);

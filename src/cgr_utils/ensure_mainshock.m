@@ -3,10 +3,10 @@ function TF = ensure_mainshock()
     
     ZG=ZmapGlobal.Data;
     
-    TF=true
+    TF=true;
     if isempty(ZG.maepi)
         ZmapMessageCenter.set_error('missing mainshock',...
         'No Mainshock exists. Select one before choosing this option')
-        TF=false
+        TF=false;
     end
 end

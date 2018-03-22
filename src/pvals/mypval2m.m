@@ -1,4 +1,4 @@
-function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates, datestyle, valeg2, CO, minThreshMag)
+function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates,eqMags, datestyle, valeg2, CO, minThreshMag)
     
     % MYPVAL2M  calculate the parameters of the modified Omori Law
     %
@@ -56,6 +56,9 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates, datestyle
     isflag=false;
     pcheck=false;
     
+    %
+    rja=nan;
+    rjb=nan;
     %Build timecatalog
     
     assert(isa(eqDates,'datetime'))
@@ -111,13 +114,13 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates, datestyle
         % compute average magnitude above cutoff - to calc max like b
         % and then a from k (dk) and b
         %%
-        magi = ZG.newt2.Magnitude >= minThreshMag & ZG.newt2.Magnitude <= 6.1 ;
-        magz = ZG.newt2.Magnitude(magi);
+        magi = eqMags >= minThreshMag & eqMags <= 6.1 ;
+        magz = eqMags(magi);
         amag = sum(magz) / numel(magz);
         
         rjb = .4343/(amag-minThreshMag+.05);
         % NOTE, uses first maepi value
-        rja = log10(dk) - rjb * (ZG.maepi.Magnitude(1) - min(ZG.newt2.Magnitude));
+        rja = log10(dk) - rjb * (ZG.maepi.Magnitude(1) - min(eqMags));
         dk=round(dk, -2);
         sdk= round(sdk, -2);
     else
