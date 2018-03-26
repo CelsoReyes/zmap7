@@ -1,45 +1,45 @@
-function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,maepi)
-    % calc_rcloglike_a2 Determines ratechanges within aftershock sequences for defined time window using log likelihood estimation
-    % procedures; defines the best model using the corrected AIC and calculates uncertainties for the fitted
-    % parameters
+function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
+    % CALC_RCLOGLIKE_A2 Determines ratechanges within aftershock sequences for a time window using
+    % log likelihood estimation procedures; defines the best model using the corrected AIC and
+    % calculates uncertainties for the fitted parameters
     %
-    % function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
+    % function [rc] = CALC_RCLOGLIKE_A2(mycat,time,timef,bootloops,mainshock_date);
     % ----------------------------------------------------------------
     % Input parameters:
     %   mycat       earthquake catalog
-    %   time_as     delay times (days)
+    %   % time_as     delay times (duration) [was days]
     %   step        number of quakes to determine forecast period
-    %   time        learning period [days]
-    %   timeF       forecast period [days]
+    %   time        learning period (duration) [days]
+    %   timeF       forecast period (duration) [days]
     %   bootloops   Number of bootstraps
-    %   ZG.maepi       Mainsock values
+    %   mainshock_date   date of mainshock
     %
     % Output parameters:
-    %   rc      See results at the end of the script
+    %   rc      Struct containing results. See the end of the function 
     %
     % J. Woessner
-
-report_this_filefun(mfilename('fullpath'));
+    
+    report_this_filefun(mfilename('fullpath'));
     % Warning off for fmincon
     % warning off;
-
+    
     % Initialize
     rc = [];
-
-
+    
+    
     % Define aftershock times
     date_matlab = datenum(mycat.Date);
     if ~ensure_mainshock()
         return
     end
-    date_main = datenum(ZG.maepi.Date);
+    date_main = datenum(mainshock_date);
     time_aftershock = date_matlab-date_main;
-
+    
     % Aftershock catalog
     vSel1 = time_aftershock(:) > 0;
     tas = time_aftershock(vSel1);
     eqcatalogue = mycat.subset(vSel1);
-
+    
     % Estimation of Omori parameters from learning period
     l = tas <= time;
     time_as=tas(l);
@@ -47,12 +47,12 @@ report_this_filefun(mfilename('fullpath'));
     lf = tas <= time+timef ;
     time_asf= [tas(lf) ];
     time_asf=sort(time_asf);
-
+    
     % Select biggest aftershock earliest in time, but more than 1 day after
     % mainshock and in learning period
     mAfLearnCat = eqcatalogue(l,:);
     fDay = 1; %days
-    vSel = (mAfLearnCat.Date > ZG.maepi.Date + days(fDay)) & mAfLearnCat.Date<= ZG.maepi.Date+days(time);
+    vSel = (mAfLearnCat.Date > mainshock_date + days(fDay)) & mAfLearnCat.Date<= mainshock_date+days(time);
     mCat = mAfLearnCat.subset(vSel);
     vSel = mCat.Magnitude == max(mCat.Magnitude);
     vBigAf = mCat(vSel,:);
@@ -63,22 +63,31 @@ report_this_filefun(mfilename('fullpath'));
     date_biga = datenum(vBigAf.Date);
     % Time of big aftershock
     fT1 = date_biga - date_main;
-
-    % Calculate fits of different models
-    mRes = [];
+    
+    %% Calculate fits of different models
+    
+    mRes = nan(4,9);
+    
     % Modified Omori law (pck)
-    nMod = 1; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    nMod = 1; 
+    [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+    mRes(1,:) = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    
     % MOL with secondary aftershock (pckk)
-    nMod = 2; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    nMod = 2; 
+    [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+    mRes(2,:) = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    
     % MOL with secondary aftershock (ppckk)
-    nMod = 3; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    nMod = 3; 
+    [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+    mRes(3,:) = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    
     % MOL with secondary aftershock (ppcckk)
-    nMod = 4; [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-    mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-
+    nMod = 4; 
+    [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+    mRes(4,:) = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    
     % Select best fitting model by AIC
     vSel = (mRes(:,8)==min(mRes(:,8)));
     mRes = mRes(vSel,:);
@@ -91,10 +100,10 @@ report_this_filefun(mfilename('fullpath'));
     pval1= mRes(1,2); pval2= mRes(1,3);
     cval1= mRes(1,4); cval2= mRes(1,5);
     kval1= mRes(1,6); kval2= mRes(1,7);
-
+    
     % Goodness of fit test of the fit to the observed data
     [rc.H,rc.P,rc.KSSTAT,rc.fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, cval2, kval1, kval2, nMod);
-
+    
     % Calculate uncertainty and mean values of p,c,and k
     [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, bootloops,fT1,nMod);
     pmed1 = mMedModF(1,1); pmedStd1 = mStdL(1,1);
@@ -103,11 +112,11 @@ report_this_filefun(mfilename('fullpath'));
     cmed2 = mMedModF(1,7); cmedStd2 = mStdL(1,4);
     kmed1 = mMedModF(1,9); kmedStd1 = mStdL(1,5);
     kmed2 = mMedModF(1,11); kmedStd2 = mStdL(1,6);
-
+    
     %rc = [time absdiff sigma numreal nummod pval pvalstd cval cvalstd kval kvalstd fStdBst];
-
-    if (isnan(pval1) == 0 & isnan(pval2) == 0)
-
+    
+    if (~isnan(pval1) && ~isnan(pval2))
+        
         % Calculate forecast for median model
         cumnrf = (1:length(time_asf))';
         cumnr_modelf = [];
@@ -145,14 +154,14 @@ report_this_filefun(mfilename('fullpath'));
         end % End of if on nMod
         time_asf=sort(time_asf);
         cumnr_modelf=sort(cumnr_modelf);
-
+        
         % Find amount of events in forecast period for modeled data
         nummod = max(cumnr_modelf)-cumnr_modelf(length(time_as));
         % Find amount of  events in forecast period for observed data
         l = time_asf <=time+timef & time_asf > time;
         numreal = sum(l); % observed number of aftershocks
         absdiff = numreal-nummod;
-
+        
         % Compute 2nd moment of forecasted number of events at end of forecast period
         for j = 1:length(loopout(:,1))
             cumnr = (1:length(time_asf))';
@@ -200,7 +209,7 @@ report_this_filefun(mfilename('fullpath'));
         end
         % 2nd moment of bootstrap number of forecasted number of events
         fStdBst = std(loopout(:,9),1,'omitnan');
-
+        
         % Results
         rc.time = time; rc.absdiff = absdiff;
         rc.numreal = numreal; rc.nummod = nummod;
@@ -230,4 +239,5 @@ report_this_filefun(mfilename('fullpath'));
         rc.fStdBst = nan; rc.nMod = nan;
         rc.fTBigAf = nan;
     end
-
+    
+end

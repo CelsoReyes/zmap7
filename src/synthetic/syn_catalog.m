@@ -1,11 +1,12 @@
-function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime)
-    % function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat,
+function [synCat] = syn_catalog(nEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime)
+    % SYN_CATALOG Creates a synthetic catalog.
+    % 
+    % [mNewCatalog] = SYNCATALOG(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat,
     %                                      fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime)
     % ------------------------------------------------------------------------------------------------
-    % Creates a synthetic catalog.
     %
     % Input parameters:
-    %   nNumberEvents     Number of events in the catalog
+    %   nEvents     Number of events in the catalog
     %   fBValue           b-value of the catalog
     %   fMc               Magnitude of completeness of the catalog (= minimum magnitude)
     %   fInc              Magnitude increment (usually 0.1)
@@ -19,7 +20,7 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
     %   fMaxTime          Maximun date/time of events in the catalog (decimal year: e.g. 1987.9)
     %
     % Output parameters:
-    %   mNewCatalog       Synthetic catalog
+    %   synCat       Synthetic catalog
     %
     % Danijel Schorlemmer
     % April 17, 2002
@@ -33,29 +34,20 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
     end
 
     % Create empty catalog
-    mNewCatalog = nan(nNumberEvents,10);
+    synCat = ZmapCatalog(nan(nEvents,10),'synthetic');
 
     % Create magnitudes
-    [mNewCatalog] = syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);
+    [synCat] = syn_create_magnitudes(synCat, fBValue, fMc, fInc);
 
     % Randomize
     rng('shuffle');
-
+    getRandomVals=@(minv,maxv) rand(nEvents,1) * (maxv - minv) + minv;
     % Create location
-    mNewCatalog(:,1) = rand(nNumberEvents, 1) * (fMaxLon-fMinLon) + fMinLon;
-    mNewCatalog(:,2) = rand(nNumberEvents, 1) * (fMaxLat-fMinLat) + fMinLat;
-    mNewCatalog(:,7) = rand(nNumberEvents, 1) * (fMaxDepth-fMinDepth) + fMinDepth;
-
-    % Randomize
-    rng('shuffle');
+    synCat.Longitude =  getRandomVals(fMinLon,fMaxLon);
+    synCat.Latitude = getRandomVals(fMinLat,fMaxLat);
+    synCat.Depth = getRandomVals(fMinDepth, mFaxDepth);
 
     % Create focal times
-    mNewCatalog(:,3) = rand(nNumberEvents, 1) * (fMaxTime-fMinTime) + fMinTime;
-    % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by
-    % decyear2mat.
-    % [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9)] = datevec(mNewCatalog(:,3));
-    [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9) tmp] = decyear2matS(mNewCatalog(:,3));
+    synCat.Date = dateshift(getRandomVals(fMinTime, fMaxTime),'start','minute');
 
-    % Remove column 10 (seconds)
-    mNewCatalog = mNewCatalog(:,1:9);
 

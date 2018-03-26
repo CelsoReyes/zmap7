@@ -138,7 +138,11 @@ classdef ZmapMainWindow < handle
                 delete(h)
             end
             obj.create_all_menus(true); % plot_base_events(...) must have already been called, ino order to load the features from ZG
-            add_grid_menu(obj);
+
+            
+            if isempty(obj.xsections)
+                set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+            end
         end
         
         %% METHODS DEFINED IN DIRECTORY
@@ -404,10 +408,13 @@ classdef ZmapMainWindow < handle
             end
             function deltab(~,~)
                 xsec.DeleteFcn();
-                xsec.DeleteFcn='';
+                xsec.DeleteFcn=@do_nothing;
                 delete(mytab);
                 obj.xsec_remove(mytitle);
                 obj.replot_all('CatalogUnchanged');
+                if isempty(obj.xsections)
+                    set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+                end
             end
         end
         
@@ -471,6 +478,9 @@ classdef ZmapMainWindow < handle
             obj.xsections.remove(key);
             obj.xscats.remove(key);
             obj.xscatinfo.remove(key);
+            if isempty(obj.xsections)
+                set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+            end
         end
         
         function xsec_add(obj, key, xsec)
@@ -480,6 +490,10 @@ classdef ZmapMainWindow < handle
             obj.xscats(key)= xsec.project(obj.rawcatalog.subset(obj.mdate));
             % add the information about the catalog used
             obj.xscatinfo(key)=obj.catalog.summary('stats');
+            
+            if ~isempty(obj.xsections)
+                set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','on')
+            end
         end
             
     end

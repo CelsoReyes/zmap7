@@ -1,4 +1,251 @@
-function rc_cross_a2()
+classdef rc_cross_a2 < ZmapVGridFunction
+    % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
+    % Uses view_rcva_a2 to plot the results
+    properties
+        bootloops = 100 % number of bootstrap loops [bootloops]
+        timef duration = days(20) % forecast period [forec_period]
+        time duration = days(47)% learning period  [learn_period]
+        addtofig logical = false % should this plot in current figure? [oldfig_button]
+        Nmin % from eventsel
+    end
+    properties(Constant)
+        PlotTag='myplot'
+        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+            'time', 'learning period','days';... #1
+            'absdiff','obs. aftershocks - #events in modeled forecast period','';... #2
+            'numreal','observed # aftershocks',''; ... #3
+            'nummod','#events in modeled forecast period','';... #4
+            ...  p,c,k- values for period before large aftershock or just modified Omori law
+            'pval1', 'p-value','';... #5 [mPval]
+            'pmedStd1', 'p-value standard deviation', '';... #6 [mPvalstd]
+            'cval1', 'c-value','';... #7 [mCval]
+            'cmedStd1','c-value standard deviation','';...#8 [mCvalstd]
+            'kval1','k-value','';... #9 [mKval]
+            'kmedStd1','k-value standard deviation','';... #10 [mKvalstd]
+            ... Resolution parameters
+            'fStdBst','',''; ... #11 [?]
+            'nMod', 'Chosen fitting model', '';... #12 [mMd]
+            'nY','Number of events per grid node', '';... #13 [mNumevents]
+            'fMaxDist','Radii of chosen events, Resolution', '';... #14 [vRadiusRes]
+            'fRcBst', 'Relative rate change (bootstrap)','';... #15 [mRelchange]
+            ... p,c,k- values for period AFTER large aftershock
+            'pval2', 'p-value (after large aftershock)','';... #16 [mPval2]
+            'pmedStd2','p-value std dev (after large aftershock)','';... #17 [mPvalstd2]
+            'cval2','c-value (after large aftershock)','';... #18 [mCval2]
+            'cmedStd2','c-value std dev (after large aftershock)','';... #19 [mCvalstd2]
+            'kval2','k-value (after large aftershock)','';... #20 [mKval2]
+            'kmedStd2','k-value std dev (after large aftershock)','';... #21 [mKvalstd2]
+            'H','KS-Test (H-value) binary rejection criterion at 95% confidence level','';...#22 [mKstestH]
+            'KSSTAT','KS-Test statistic for goodness of fit','';...#23 [mKsstat]
+            'P', 'KS-Test p-value','';... #24 [mKsp]
+            'fRMS','RMS value for goodness of fit',''... #25 [mRMS]
+            }
+        CalcFields={'time','absdiff','numredal','nummod',...
+            'pval1','pmedStd1','cval1','cmedStd1',...
+            'kval1','kmedStd1','fStdBst','nMod','nY','fMaxDist','fRcBst',...
+            'pval2','pmedStd2','cval2','cmedStd2',...
+            'kval2','kmedStd2','H','KSSTAT','P','fRMS'}
+    end
+    methods
+        function obj=rc_cross_a2(zap,varargin)
+            report_this_filefun(mfilename('fullpath'));
+            
+            obj@ZmapVGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
+            
+            % depending on whether parameters were provided, either run automatically, or
+            % request input from the user.
+            if nargin<2
+                % create dialog box, then exit.
+                obj.InteractiveSetup();
+                
+            else
+                % run this function without human interaction
+                obj.doIt();
+            end
+        end
+        function InteractiveSetup(obj)
+            
+            zdlg = ZmapDialog();
+            
+            McMethods={'Automatic Mcomp (max curvature)',...
+                'Fixed Mc (Mc = Mmin)',...
+                'Automatic Mcomp (90% probability)',...
+                'Automatic Mcomp (95% probability)',...
+                'Best (?) combination (Mc95 - Mc90 - max curvature)',...
+                'Constant Mc'};
+            
+            zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
+                'Please choose an Mc estimation option');
+            
+            %zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
+            % add fMaxRadius
+            %zdlg.AddEventSelectionParameters('EventSelector', ni, ra, Nmin) %selOpt
+            zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
+            zdlg.AddBasicEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
+            zdlg.AddBasicEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
+            zdlg.AddBasicCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
+            % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+            % FIXME min number of events should be the number > Mc
+            
+            [res, okpressed]=zdlg.Create('relative rate change map');
+            if ~okpressed
+                return
+            end
+    
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj,res)
+            %% old version
+%             useEventsInRadius=selOpt.UseEventsInRadius;
+%             ni=selOpt.ni;
+%             ra=selOpt.ra;
+%             dx=gridOpt.dx;
+%             dy=gridOpt.dy;
+            obj.bootloops = res.boot_samp;
+            obj.timef = res.forec_period;
+            obj.time = res.learn_period;
+            
+            oldfig_button=oldfig_button.Value;
+        end
+        function CheckPreconditions(obj)
+            assert(ensure_mainshock(),'No mainshock was defined')
+        end
+        function ModifyGlobals(obj)
+            obj.ZG.bvg=obj.Result.values;
+        end
+        function results = Calculate(obj)
+            % ...
+                
+            % cut catalog at mainshock time:
+            mainshock=ZG.maepi.subset(1);
+            mainshock_time = mainshock.Date;
+            learn_to_date = mainshock_time + obj.time;
+            forecast_to_date = learn_to_date + obj.timef;
+            l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > minThreshMag;
+            
+            assert(any(l),'no events meet the criteria of being after the mainshock ,and greater than threshold magnitude');
+            
+            obj.RawCatalog=obj.RawCatalog.subset(l);
+            ZG.newt2=obj.RawCatalog;
+            
+            
+            obj.gridCalculations(@calculation_function);
+            
+            if nargout
+                results=obj.Result.values;
+            end
+            %view_rccross_a2(lab1,valueMap)
+            
+            function [catA, catB] = prep_catalog(catalog)
+                
+                % Select subcatalog
+                % Calculate distance from center point and sort with distance
+                l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
+                [s,is] = sort(l);
+                b = newa(is(:,1),:) ;       % re-orders matrix to agree row-wise
+                
+                %         % Choose method of constant radius or constant number
+                %         if tgl1 == 0   % take point within r
+                %             l3 = l <= ra;
+                %             b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
+                %             rd = ra;
+                %         else
+                %             % take first ni points
+                %             b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
+                %             rd = s(ni);
+                %         end
+                % Choose between constant radius or constant number of events with maximum radius
+                if tgl1 == 0   % take point within r
+                    % Use Radius to determine grid node catalogs
+                    l3 = l <= ra;
+                    b = catalog.subset(l3);      % new data per grid point (b) is sorted in distance
+                    rd = ra;
+                    vDist = sort(l(l3));
+                    fMaxDist = max(vDist);
+                    % Calculate number of events per gridnode in learning period time
+                    vSel = b.Date <= learn_to_date;
+                    mb_tmp = b(vSel,:);
+                else
+                    % Determine ni number of events in learning period
+                    % Set minimum number to constant number
+                    Nmin = ni;
+                    % Select events in learning time period
+                    vSel = (b.Date <= learn_to_date);
+                    b_learn = b(vSel,:);
+                    vSel2 = (b.Date > learn_to_date & b.Date <= forecast_to_date);
+                    b_forecast = b(vSel2,:);
+                    
+                    % Distance from grid node for learning period and forecast period
+                    vDist = sort(l(vSel));
+                    vDist_forecast = sort(l(vSel2));
+                    
+                    % Select constant number
+                    b_learn = b_learn(1:ni,:);
+                    % Maximum distance of events in learning period
+                    fMaxDist = vDist(ni);
+                    
+                    if fMaxDist <= fMaxRadius
+                        vSel3 = vDist_forecast <= fMaxDist;
+                        b_forecast = b_forecast(vSel3,:);
+                        b = [b_learn; b_forecast];
+                    else
+                        vSel4 = (l < fMaxRadius & b.Date <= learn_to_date);
+                        b = b(vSel4,:);
+                        b_learn = b;
+                    end
+                    length(b_learn)
+                    length(b_forecast)
+                    length(b)
+                    mb_tmp = b_learn;
+                end % End If on tgl1
+                
+                %Set catalog after selection
+                ZG.newt2 = b;
+            end
+            
+            function out=calculation_function(catalog)
+                error('hey developer, finish editing the prep_catalog function first')
+                % [catA, catB] = prep_catalog(catalog);
+                
+                % Calculate the relative rate change, p, c, k, resolution
+                if length(b) >= obj.Nmin  % enough events?
+                    [mRc] = calc_rcloglike_a2(catalog,obj.time,obj.timef,obj.bootloops, mainshock_time);
+                    % Relative rate change normalized to sigma of bootstrap
+                    if mRc.fStdBst~=0
+                        mRc.fRcBst = mRc.absdiff/mRc.fStdBst;
+                    else
+                        mRc.fRcBst = NaN;
+                    end
+                    
+                    % Final grid
+                    mRc.nY = mb_tmp.Count;
+                    mRc.fMaxDist = fMaxDist;
+                    out = [mRc.time mRc.absdiff mRc.numreal mRc.nummod...
+                        mRc.pval1 mRc.pmedStd1 mRc.cval1 mRc.cmedStd1...
+                        mRc.kval1 mRc.kmedStd1 mRc.fStdBst mRc.nMod ...
+                        mRc.nY mRc.fMaxDist mRc.fRcBst...
+                        mRc.pval2 mRc.pmedStd2 mRc.cval2 mRc.cmedStd2...
+                        mRc.kval2 mRc.kmedStd2 mRc.H mRc.KSSTAT mRc.P mRc.fRMS];
+                else
+                    out = nan(1,25);
+                end
+            end
+        end
+        
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='Rate change, p-,c-,k-value map in aftershock sequence [xsec]';
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)rc_cross_a2(zapFcn()));
+        end
+    end
+end
+
+function orig_rc_cross_a2()
     % Calculate relative rate changes and Omori_parameters on cross section.
     % This subroutine assigns creates a grid with spacing dx,dy (in degreees). The size will
     % be selected interactively or the entire area. The values are calculated for in each volume
@@ -245,7 +492,7 @@ function rc_cross_a2()
             
             % Calculate the relative rate change, p, c, k, resolution
             if length(b) >= Nmin  % enough events?
-                [mRc] = calc_rcloglike_a2(b,time,timef,bootloops, ZG.maepi);
+                [mRc] = calc_rcloglike_a2(b,time,timef,bootloops, ZG.maepi.Date(1));
                 % Relative rate change normalized to sigma of bootstrap
                 if mRc.fStdBst~=0
                     mRc.fRcBst = mRc.absdiff/mRc.fStdBst;

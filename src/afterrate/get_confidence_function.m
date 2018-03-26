@@ -1,5 +1,5 @@
 function fn= get_confidence_function(pval)
-    % get_confidence_function returns a function with the following signature:
+    % GET_CONFIDENCER_FUNCTION returns a function with the following signature:
     % function [ans] = conf_fun(p, c, k, t)
     %   where p = pvalues as n x 1
     %   where c = cvalues as n x 1

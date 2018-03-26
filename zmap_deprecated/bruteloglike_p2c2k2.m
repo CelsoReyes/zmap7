@@ -1,9 +1,8 @@
-function [fL] = bruteloglike_p2ck2(vValues,tas,fT1)
-    % bruteloglike_p2ck2 calculates the log likelihood function of an Omori law including one secondary aftershock at time fT1. c constant , p and k different before and after fT1
+function [fL] = bruteloglike_p2c2k2(vValues,tas,fT1)
+    % bruteloglike_p2c2k2 calculates the log likelihood function of an Omori law including one secondary aftershock at time fT1. p, c and k different before and after fT1
     %
-    % [fL] = bruteloglike_p2ck2(vValues,time_as, fT1);
+    % [fL] = bruteloglike_p2c2k2(vValues,time_as, fT1);
     % --------------------------------------------------
-    %
     % Incoming variables:
     % vValues : Starting values for p,c,k1,k2
     % time_as : Vector of aftershock times from mainshock time
@@ -15,11 +14,10 @@ function [fL] = bruteloglike_p2ck2(vValues,tas,fT1)
     % J. Woessner
     % updated: 05.08.03
 
-
     p1 = vValues(1);
     p2 = vValues(2);
-    c1 = vValues(3); % c1 = c2
-    c2 = vValues(3);
+    c1 = vValues(3);
+    c2 = vValues(4);
     k1 = vValues(5);
     k2 = vValues(6);
 
@@ -50,7 +48,6 @@ function [fL] = bruteloglike_p2ck2(vValues,tas,fT1)
     fpsup2 = 1-p2;
 
     fTerm1 = sum(log(k1*(vTperiod2+c1).^(-p1)+k2*(vTperiod2-fT1+c2).^(-p2)));
-
     if (p1~=1  &&  p2~=2)
         fTerm2a = k1/fpsup1*((fTend+c1).^fpsup1-(fT1+c1).^fpsup1);
         fTerm2b = k2/fpsup2*((fTend-fT1+c2).^fpsup2-c2.^fpsup2);
@@ -71,5 +68,6 @@ function [fL] = bruteloglike_p2ck2(vValues,tas,fT1)
 
     % Add upp likelihoods
     fL = -(fL_per1+fL_per2);
+end
 
 

@@ -4,8 +4,8 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     % [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, cval2, kval1, kval2, nMod)
     %
     % Input variables:
-    % time_as      : Times of aftershocks in days after mainshock
-    % fT1          : Date of biggest aftershock
+    % time_as      : Times elapsed between mainshock and each aftershock (duration or days)
+    % fT1          : Time elapsed to between mainshock and biggest aftershock (duration or days)
     % pval1, pval2 : p-values of the two periods
     % cval1, cval2 : c-values of the two periods
     % kval1, kval2 : k-values of the two periods
@@ -17,43 +17,73 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     % KSSTAT  : KS-Test satistic  => See kstest2 for more explanations on the test
     % fRMS    : RMS of the fit
     %
+    % see also kstest2
+    %
     % J.Woessner, S. Wiemer
     % updated: 13.08.03
 
-    % % Check values
-    % if (isnan(pval1) == 0 & isnan(pval2) == 0)
-
-    % Calculate cumulative number for the model
-    cumnrf = (1:length(time_as))';
-    cumnr_modelf = [];
-    if nMod == 1
-        for i=1:length(time_as)
-            if pval1 ~= 1
-                cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1));
-            else
-                cm = kval1*log(time_as(i)/cval1+1);
-            end
-            cumnr_modelf = [cumnr_modelf; cm];
-        end % END of FOR on length(time_as)
+    % check input values
+    
+    if isduration(time_as)
+        time_as = days(time_as);
     else
-        for i=1:length(time_as)
-            if time_as(i) <= fT1
-                if pval1 ~= 1
-                    cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1));
-                else
-                    cm = kval1*log(time_as(i)/cval1+1);
-                end
-                cumnr_modelf = [cumnr_modelf; cm];
+        assert(isnumeric(time_as),'time_as should either be a duration or the number of days')
+    end
+    if isduration(fT1)
+        fT1 = days(fT1);
+    else
+        assert(isnumeric(fT1),'biggest aftershock should be either a duration or number of days since mainshock');
+    end
+    
+    % Calculate cumulative number for the model
+    
+    nAftershocks = length(time_as);
+    cumnrf = (1:nAftershocks)';
+    switch nMod % switch based on the Fitting Model for Omori Parameters
+        case 1
+            if pval1 ~= 1
+                cumnr_modelf = kval1 ./ (pval1-1) .* ...
+                    (cval1.^(1-pval1) - (time_as+cval1).^(1-pval1));
             else
-                if (pval1 ~= 1 & pval2 ~= 1)
-                    cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1))+ kval2/(pval2-1)*(cval2^(1-pval2)-(time_as(i)-fT1+cval2)^(1-pval2));
+                cumnr_modelf =  kval1 .* log(time_as ./ cval1 + 1);
+            end
+        otherwise
+            if pval1 ~= 1
+                % calculate values for aftershocks occurring before biggest aftershock
+                mask = time_as <= fT1;
+                ev = time_as(mask);
+                cumnr_modelf(mask) = kval1./(pval1-1) .* ...
+                    ( cval1.^(1-pval1) - (ev+cval1) .^ (1-pval1) );
+                
+                % calculate values for aftershocks occurring after biggest aftershock
+                mask = ~mask; % events AFTER fT1
+                ev = time_as(mask);
+                
+                if pval2 ~=1
+                    cumnr_modelf(mask) = kval1 ./ (pval1-1) ...
+                        .* (cval1.^(1-pval1) - (ev+cval1).^(1-pval1)) ...
+                        + kval2/(pval2-1)  .* (cval2.^(1-pval2)-(ev-fT1+cval2).^(1-pval2) );
                 else
-                    cm = kval1*log(time_as(i)/cval1+1) + kval2*log((time_as(i)-fT1)/cval2+1);
+                    cumnr_modelf(mask) = kval1 .* log(ev/cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
                 end
-                cumnr_modelf = [cumnr_modelf; cm];
-            end %END of IF on fT1
-        end % End of FOR length(time_as)
-    end % End of if on nMod
+            else 
+                % take the simple route, since pval1 is 1.
+                mask = time_as <= fT1;
+                ev = time_as(mask);
+                
+                % calculate values for aftershocks occurring before biggest aftershock
+                cumnr_modelf(mask) = kval1 .* log(ev ./ cval1 + 1);
+                
+                % calculate values for aftershcks occurring after biggest aftershock
+                mask = ~mask; % events AFTER fT1
+                ev = time_as(mask);
+                
+                cumnr_modelf(mask) = kval1 .* log(ev./cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
+                
+            end
+            
+    end % End of switch for nMod
+    
     time_as=sort(time_as);
     cumnr_modelf=sort(cumnr_modelf);
 
@@ -61,13 +91,5 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     [H,P,KSSTAT] = kstest2(cumnr_modelf,cumnrf);
 
     % Calculate RMS
-    i=(1:1:length(time_as))';
+    i=(1:nAftershocks)';
     fRMS = (sum((i-cumnr_modelf).^2)/length(i))^0.5;
-    % else
-    %     disp('no result')
-    %     H=nan;
-    %     P=nan;
-    %     KSSTAT = nan;
-    %     fRMS = nan;
-    % end % END of isnan check
-

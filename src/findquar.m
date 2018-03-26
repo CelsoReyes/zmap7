@@ -1,4 +1,4 @@
-classdef findquar < ZmapFunction
+classdef findquar < ZmapHGridFunction
     % description of this function
     %
     % in the function that generates the figure where this function can be called:
@@ -13,24 +13,25 @@ classdef findquar < ZmapFunction
     %
     
     properties
-        
-        EvtSel {EventSelectionChoice.mustBeEventSelector}
-        Grid {mustBeZmapGrid}
         oldratios
         inDaytime (24,1) logical =false(24,1);
     end
     
     properties(Constant)
         PlotTag='QuarryRatios';
+        ReturnDetails = {...VariableNames, VariableDescriptions, VariableUnits
+            'day_night_ratio', 'Day-Night event ratio', '';
+            'n_day','Number of events during day','';
+            'n_night','Number of events during night',''...
+            };
+        CalcFields = {'day_night_ratio','n_day','n_night'};
     end
     
     methods
-        function obj=findquar(catalog,varargin) %CONSTRUCTOR
+        function obj=findquar(zap,varargin) %CONSTRUCTOR
             % create a [...]
             
-            narginchk(1,inf); 
-            ZmapFunction.verify_catalog(catalog);
-            obj.RawCatalog=catalog;
+            obj@ZmapHGridFunction(zap, 'day_night_ratio');
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
@@ -52,11 +53,11 @@ classdef findquar < ZmapFunction
         
         function InteractiveSetup(obj)
             % allow user to determin grid and selection paramters
-            
-            zdlg=ZmapDialog(...
-                obj,...  pass it a handle that it can change when the OK button is pressed.
-                @obj.InteractiveSetup_part2...  if OK is pressed, then this function will be executed.
-                );
+            obj.InteractiveSetup_part2();
+            %zdlg=ZmapDialog(...
+            %    obj,...  pass it a handle that it can change when the OK button is pressed.
+            %    @obj.InteractiveSetup_part2...  if OK is pressed, then this function will be executed.
+            %    );
             
             %----------------------------
             % The dialog box is a vertically oriented series of controls
@@ -77,11 +78,11 @@ classdef findquar < ZmapFunction
             %  zdlg.AddEventSelectionParameters : add section that returns how grid points
             %                                     may be evaluated
             
-            zdlg.AddGridParameters('Grid',1.0,'deg',1.0,'deg',[],[]);
-            zdlg.AddEventSelectionParameters('EvtSel',100,[],1);
+            %zdlg.AddGridParameters('Grid',1.0,'deg',1.0,'deg',[],[]);
+            %zdlg.AddEventSelectionParameters('EvtSel',100,[],1);
             % get the grid parameter
             
-            zdlg.Create('Define Grid and Selection Parameters')
+            % zdlg.Create('Define Grid and Selection Parameters')
         end
         
         function InteractiveSetup_part2(obj)
@@ -142,7 +143,7 @@ classdef findquar < ZmapFunction
             end
         end
         
-        function Calculate(obj)
+        function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             
             % create the function call that someone could use to recreate this calculation.
@@ -154,22 +155,7 @@ classdef findquar < ZmapFunction
             % then the next line should be:
             %      obj.FunctionCall={'name','age','runreport'};
             
-            obj.FunctionCall={};
-            
-            
             close(findobj('Tag','fifhr'));
-            
-            
-            %[fullGrid,gridInPolygon, polyMask]=selgp(obj.Grid);
-            
-            
-            mygrid=ZmapGrid('quarry', obj.Grid);
-            if ~obj.Grid.GridEntireArea
-                mygrid=mygrid.MaskWithShape(ZG.selection_shape);
-            end
-            %  make grid, calculate start- endtime etc.  ...
-            %
-            
             
             ld = sum(obj.inDaytime);
             
@@ -181,32 +167,38 @@ classdef findquar < ZmapFunction
             
             % loop over all points in polygon. Evaluated for earthquakes that may extend outside
             % the points.
+            %{
             [valueMap,nEv,r]=gridfun(@calculate_day_night_ratio, obj.RawCatalog, mygrid, obj.EvtSel);
             bvg=[valueMap(mygrid.ActivePoints), mygrid.ActiveGrid, r(mygrid.ActivePoints)];
+            %}
+            
+            obj.gridCalculations(@calculate_day_night_ratio);
+        
+            if nargout
+                results=obj.Result.values;
+            end
             
             % plot the results
             % obj.oldratios and valueMap (initially ) is the b-value matrix
             
-            obj.oldratios = valueMap;
+            %obj.oldratios = valueMap;
             
             % results of the calculation should be stored in fields belonging to obj.Result
             
-            obj.Result.bvg=bvg;
-            obj.Result.msg='bvg is [daynightratios x y maxdist_km]';
-            obj.Result.valueMap=valueMap;
-            obj.Result.maxRad=r;
-            obj.Result.nEvents=nEv;
-            obj.Grid=mygrid;
+            %obj.Result.bvg=bvg;
+            %obj.Result.msg='bvg is [daynightratios x y maxdist_km]';
+            %obj.Result.valueMap=valueMap;
             
             
             function val = calculate_day_night_ratio(catalog)
                 hrofday= hour(catalog.Date);
                 nDay= sum(obj.inDaytime(hrofday+1));
                 nNight = catalog.Count - nDay;
-                val = (sum(nDay)/sum(nNight)) * daynight_hr_ratio;
+                myratio = (sum(nDay)/sum(nNight)) * daynight_hr_ratio;
+                val=[myratio nDay nNight];
             end
         end
-        
+        %{
         function plot(obj,varargin)
             % plots the results somewhere
             f=obj.Figure('deleteaxes',@create_my_menu); % nothing or 'deleteaxes'
@@ -364,6 +356,7 @@ classdef findquar < ZmapFunction
             end
             
         end
+        %}
         
         function ModifyGlobals(obj)
             % change the ZmapGlobal variable, if appropriate
@@ -373,12 +366,10 @@ classdef findquar < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, catalogfn)
+        function h=AddMenuItem(parent, zapFcn)
             % create a menu item that will be used to call this function/class
-            
-            h=uimenu(parent,'Label','Find Quarry Events',...
-                'Callback', @(~,~)findquar(catalogfn())...
-                );
+            label='Find Quarry Events';
+            h=uimenu(parent,'Label',label,'Callback', @(~,~)findquar(zapFcn()));
         end
         
     end % static methods

@@ -1,9 +1,10 @@
 function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, bootloops,fT1, nMod)
-    % brutebootloglike_a2 Bootstrap analysis of Omori parameters calculated by brute force
-    % (p1,p2,c1,c2,k1,k2)-pair is mean of the bootstrap values by determining the mean cumulative number modeled a end of the learning period
+    % BRUTEBOOTLOGLIKE_A2 Bootstrap analysis of Omori parameters calculated by brute force
+    % (p1,p2,c1,c2,k1,k2)-pair is mean of the bootstrap values by determining the mean cumulative 
+    % number modeled a end of the learning period
     % Standard deviations are calculated as the 2nd moment, not to rely fully on normal distributions
     %
-    % [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, bootloops,fT1, nMod);
+    % [mMedModF, mStdL, loopout] = BRUTEBOOTLOGLIKE_A2(time_as, time_asf, bootloops,fT1, nMod);
     % -------------------------------------------------------------------------------
     %
     % Input parameters:
@@ -34,22 +35,16 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
     time_as = sort(time_as);
     %bootloops = 50; % number of bootstrap samples
     n = length(time_as);
-    loopout = [];
+    loopout = nan(bootloops,9); % 8 from bruteforceloglike_a2, plus variate column.
     % Initialize random seed
     rng('shuffle');
-    %hWaitbar1 = waitbar(0,'Bootstrapping...');
-    %set(hWaitbar1,'Numbertitle','off','Name','Bootstap Omori parameters')
+    
+    % i = (1:n)';
     for j = 1:bootloops
-        clear newtas
-        randnr = ceil(rand(n,1)*n);
-        i = (1:n)';
-        newtas(i,:) = time_as(randnr(i),:); % bootstrap sample
-        newtas = sort(newtas);
+        newtas = sort(datasample(time_as, n, 'Replace',true)); 
         [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(newtas, fT1, nMod);
-        loopout = [loopout; pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL];
-        %    waitbar(j/bootloops)
+        loopout(j,1:8) = [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL];
     end
-    %close(hWaitbar1)
 
     % New version: Choose mean (p,c,k)-variables by modelling the cumulative number at end of
     % the learning period
@@ -65,50 +60,54 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
     % Uncertainties of fit
     mStdL = [pstd1 pstd2 cstd1 cstd2 kstd1 kstd2];
 
-    % Compute best fitting pair of variates
-    loopout = [loopout , loopout(:,1)*0];
-    for j = 1:length(loopout(:,1))
-
-        cumnr = (1:length(time_asf))';
-        cumnr_model = [];
-        pval1 = loopout(j,1);
-        pval2 = loopout(j,2);
-        cval1 = loopout(j,3);
-        cval2 = loopout(j,4);
-        kval1 = loopout(j,5);
-        kval2 = loopout(j,6);
+   
+    %% Compute best fitting pair of variates
+    % TODO (maybe) vectorize this
+    n_time_asf = length(time_asf);
+    for j = 1:size(loopout,1)
+        thisloop = loopout(j,:);
+        %cumnr = (1:n_time_asf)';
+        cumnr_model = nan(n_time_asf,1);
+        pval1 = thisloop(1);
+        pval2 = thisloop(2);
+        cval1 = thisloop(3);
+        cval2 = thisloop(4);
+        kval1 = thisloop(5);
+        kval2 = thisloop(6);
         if nMod == 1
-            for i=1:length(time_asf)
-                if pval1 ~= 1
-                    cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                else
-                    cm = kval1*log(time_asf(i)/cval1+1);
-                end
-                cumnr_model = [cumnr_model; cm];
-            end % END of FOR on length(time_asf)
-            loopout(j,9) = max(cumnr_model);
+            if pval1 ~= 1
+                cumnr_model = kval1./(pval1-1).*(cval1.^(1-pval1)-(time_asf+cval1).^(1-pval1));
+            else
+                cumnr_model = kval1.*log(time_asf./cval1+1);
+            end
+            
         else
-            for i=1:length(time_asf)
-                if time_asf(i) <= fT1
-                    if pval1 ~= 1
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                    else
-                        cm = kval1*log(time_asf(i)/cval1+1);
-                    end
-                    cumnr_model = [cumnr_model; cm];
+            % pick which functions to use, based on these particular pvalues
+            if pval1 ~=1
+                % calculate values for aftershocks occurring before biggest aftershock
+                modelfnBefore = @(ev) kval1./(pval1-1) .*(cval1.^(1-pval1)-(ev+cval1).^(1-pval1) );
+                if pval2~=1
+                    modelfnAfter=@(ev) kval1 ./ (pval1-1)  .* (cval1.^(1-pval1) - (ev+cval1).^(1-pval1)) + kval2/(pval2-1)  .* (cval2.^(1-pval2)-(ev-fT1+cval2).^(1-pval2) );
                 else
-                    if (pval1 ~= 1 & pval2 ~= 1)
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1))+ kval2/(pval2-1)*(cval2^(1-pval2)-(time_asf(i)-fT1+cval2)^(1-pval2));
-                    else
-                        cm = kval1*log(time_asf(i)/cval1+1) + kval2*log((time_asf(i)-fT1)/cval2+1);
-                    end
-                    cumnr_model = [cumnr_model; cm];
-                end %END of IF on fT1
-            end % End of FOR length(time_asf)
-            loopout(j,9) = max(cumnr_model);
+                    modelfnAfter=@(ev) kval1 .* log(ev/cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
+                end
+            else
+                modelfnBefore = @(ev) kval1 .* log(ev ./ cval1 + 1);
+                modelfnAfter = @(ev) kval1 .* log(ev./cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
+            end
+            
+            % calculate values for aftershocks occurring before biggest aftershock
+            isBefore= time_as <= fT1;
+            cumnr_model(isBefore) = modelfnBefore(time_as(isBefore));
+            
+            % calculate values for aftershocks occurring after biggest aftershock
+            cumnr_model(~isBefore) = modelfnAfter(time_as(~isBefore));
+          
         end % End of if on nMod
+        
+        loopout(j,9) = max(cumnr_model);
     end
-
+    %%
     [Y, in] = sort(loopout(:,9));
     loops = loopout(in,:);
     % % Median values: Old version

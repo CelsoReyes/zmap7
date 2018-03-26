@@ -1,5 +1,5 @@
-function [mRandomCatalog] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes, nMagnitudes, fBValue, fMc, fInc)
-    % function [mRandomCatalog] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth,
+function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes, nMagnitudes, fBValue, fMc, fInc)
+    % function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth,
     %                                                   bTimes, nMagnitudes, fBValue, fMc, fInc)
     % ------------------------------------------------------------------------------------------
     % Randomizes a given catalog.
@@ -19,51 +19,85 @@ function [mRandomCatalog] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, 
     %   fInc              magnitude increment for new magnitudes
     %
     % Output parameters:
-    %   mRandomCatalog     Randomized catalog
+    %   randCat     Randomized catalog
     %
     % Danijel Schorlemmer
     % April 29, 2002
-
+    
     global bDebug
     if bDebug
         report_this_filefun(mfilename('fullpath'));
     end
-
-    mRandomCatalog = mCatalog;
-
-    % Permute longitudes
-    if bLon
-        mRandomCatalog(:,1) = mRandomCatalog(randperm(length(mRandomCatalog)), 1);
+    
+    if isnumeric(mCatalog)
+        %% do the old thing
+        randCat = mCatalog;
+        
+        % Permute longitudes
+        if bLon
+            randCat(:,1) = randCat(randperm(length(randCat)), 1);
+        end
+        
+        % Permute latitudes
+        if bLat
+            randCat(:,2) = randCat(randperm(length(randCat)), 2);
+        end
+        
+        % Permute depths
+        if bDepth
+            randCat(:,7) = randCat(randperm(length(randCat)), 7);
+        end
+        
+        % Permute times
+        % Get free column
+        nNumberColumns = size(randCat, 2);
+        % Create the single-value date
+        randCat(:,(nNumberColumns + 1)) = datenum(floor(randCat(:,3)), randCat(:,4), randCat(:,5), randCat(:,8), randCat(:,9), 0);
+        % Permute these dates
+        randCat(:,(nNumberColumns + 1)) = randCat(randperm(length(randCat)), (nNumberColumns + 1));
+        % Reassign them to the existing fields
+        [randCat(:,3) randCat(:,4) randCat(:,5) randCat(:,8) randCat(:,9)] = datevec(randCat(:,(nNumberColumns + 1)));
+        [randCat(:,3)] = decyear([randCat(:,3) randCat(:,4) randCat(:,5) randCat(:,8) randCat(:,9)]);
+        % Delete the new column
+        randCat = randCat(:,1:nNumberColumns);
+        
+        % What's up with the magnitudes?
+        if nMagnitudes == 3
+            randCat(:,6) = randCat(randperm(length(randCat)), 6);
+        elseif nMagnitudes == 2
+            [randCat] = syn_create_magnitudes(randCat, fBValue, fMc, fInc);
+        end
+    else
+        %% do the new thing
+        randCat = mCatalog;
+        
+        % Permute longitudes
+        if bLon
+            randCat=copy(mCatalog);
+            randCat.Longitude = randCat.Longitude(randperm(randCat.Count));
+        end
+        
+        % Permute latitudes
+        if bLat
+            randCat.Latitude = randCat.Latitude(randperm(randCat.Count));
+        end
+        
+        % Permute depths
+        if bDepth
+            randCat.Depth = randCat.Depth(randperm(randCat.Count));
+        end
+        
+        % Permute times
+        
+        randCat.Date = randCat.Date(randperm(randCat.Count));
+        
+        
+        % What's up with the magnitudes?
+        if nMagnitudes == 3
+            randCat.Magnitude = randCat.Magnitude(randperm(randCat.Count));
+        elseif nMagnitudes == 2
+            [randCat] = syn_create_magnitudes(randCat, fBValue, fMc, fInc);
+        end
     end
-
-    % Permute latitudes
-    if bLat
-        mRandomCatalog(:,2) = mRandomCatalog(randperm(length(mRandomCatalog)), 2);
-    end
-
-    % Permute depths
-    if bDepth
-        mRandomCatalog(:,7) = mRandomCatalog(randperm(length(mRandomCatalog)), 7);
-    end
-
-    % Permute times
-    % Get free column
-    nNumberColumns = size(mRandomCatalog, 2);
-    % Create the single-value date
-    mRandomCatalog(:,(nNumberColumns + 1)) = datenum(floor(mRandomCatalog(:,3)), mRandomCatalog(:,4), mRandomCatalog(:,5), mRandomCatalog(:,8), mRandomCatalog(:,9), 0);
-    % Permute these dates
-    mRandomCatalog(:,(nNumberColumns + 1)) = mRandomCatalog(randperm(length(mRandomCatalog)), (nNumberColumns + 1));
-    % Reassign them to the existing fields
-    [mRandomCatalog(:,3) mRandomCatalog(:,4) mRandomCatalog(:,5) mRandomCatalog(:,8) mRandomCatalog(:,9)] = datevec(mRandomCatalog(:,(nNumberColumns + 1)));
-    [mRandomCatalog(:,3)] = decyear([mRandomCatalog(:,3) mRandomCatalog(:,4) mRandomCatalog(:,5) mRandomCatalog(:,8) mRandomCatalog(:,9)]);
-    % Delete the new column
-    mRandomCatalog = mRandomCatalog(:,1:nNumberColumns);
-
-    % What's up with the magnitudes?
-    if nMagnitudes == 3
-        mRandomCatalog(:,6) = mRandomCatalog(randperm(length(mRandomCatalog)), 6);
-    elseif nMagnitudes == 2
-        [mRandomCatalog] = syn_create_magnitudes(mRandomCatalog, fBValue, fMc, fInc);
-    end
-
-
+    
+    

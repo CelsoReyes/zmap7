@@ -147,7 +147,7 @@ classdef ZmapGrid
                             obj=obj.MaskWithShape(myshape.Points);
                         end
                     else
-                        error('unknown');
+                        error('unknown: class %s',class(varargin{1}));
                     end
                 case 3
                     % ZMAPGRID( name, all_points, units)

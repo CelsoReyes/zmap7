@@ -1,10 +1,17 @@
-function [mRandomCatalog] = syn_invoke_random_dialog(mCatalog)
-
+function [mRandomCatalog, ok] = syn_invoke_random_dialog(mCatalog)
+%SYN_INVOKE_RANDOM_DIALOG permutes/generates a catalog based on interactive choices
+%
+%  [randCatalog, ok] = SYN_INVOKE_RANDOM_DIALOG(catalog) allows permutation of longitude,
+%  latitude, depth, dates, and magnitudes.  randCatalog contains the permutated catalog
+%
+%  if user cancels, then randCatalog is the incoming catalog, and ok is false
+%
     global bDebug
     if bDebug
         report_this_filefun(mfilename('fullpath'));
     end
 
+    ok=true;
     % Open figure
     hDialog = syn_random_dialog;
 
@@ -27,18 +34,21 @@ function [mRandomCatalog] = syn_invoke_random_dialog(mCatalog)
                 fMc = 1;
                 fInc = 0.1;
             end
-            bLon = get(handles.chkLon, 'Value');
-            bLat = get(handles.chkLat, 'Value');
-            bDepth = get(handles.chkDepth, 'Value');
-            bTimes = get(handles.chkTimes, 'Value');
+            bLon = logical(get(handles.chkLon, 'Value'));
+            bLat = logical(get(handles.chkLat, 'Value'));
+            bDepth = logical(get(handles.chkDepth, 'Value'));
+            bTimes = logical(get(handles.chkTimes, 'Value'));
 
             % Remove figure from memory
             delete(hDialog);
 
             % Create the new catalog
             [mRandomCatalog] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes, nMagnitudes, fBValue, fMc, fInc);
+            sort(mRandomCatalog,'Date')
         else
             delete(hDialog);
-            mRandomCatalog = nan;
+            disp('catalog is unchanged')
+            mRandomCatalog = mCatalog;
+            ok=false;
         end
     end

@@ -1,7 +1,8 @@
-function [pv, cv, kv] = bruteforceloglike(time_as)
-    % BRUTEFORCELOGLIKE Calculates by a constrained grid search
+function [vValues] = bruteforceloglikecgr(time_as)
+    % bruteforceloglike Calculates by a constrained grid search
     %
     % [pv, cv, kv] = bruteforceloglike(time_as);
+    % vValues = [pvalue, cvalue, kvalue];
     % --------------------------------------------
     % the parameters of the modified Omori formula
     % using the log likelihood function by Ogata
@@ -22,8 +23,3 @@ function [pv, cv, kv] = bruteforceloglike(time_as)
 
     [vValues, ~] = fmincon(@bruteloglike, vStartValues, [], [], [], [],...
         [0.2 0.01 10], [2.7 3 5000], [], options, time_as);
-
-    pv = vValues(1);
-    cv = vValues(2);
-    kv = vValues(3);
-

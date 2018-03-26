@@ -1,17 +1,21 @@
-function [mNewCatalog] = syn_invoke_dialog(mCatalog)
-
+function [newCat, ok] = syn_invoke_dialog(mCatalog)
+% SYN_INVOKE_DIALOG interactive creation of a synthetic catalog
+%
+% [newCat, ok] = syn_invoke_dialog(catalog)
+%
     global bDebug
     if bDebug
         report_this_filefun(mfilename('fullpath'));
     end
 
+    ok=false;
     % Open figure
     hDialog = syn_dialog(mCatalog);
 
     % Analyze Output
     if ~ishandle(hDialog)
         answer = 0;
-        mNewCatalog = nan;
+        newCat = mCatalog;
     else
         handles = guidata(hDialog);
         answer = handles.answer;
@@ -35,9 +39,11 @@ function [mNewCatalog] = syn_invoke_dialog(mCatalog)
             delete(hDialog);
 
             % Create the new catalog
-            [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime);
+            [newCat] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime);
+            newCat.sort('Date');
+            ok=true;
         else
             delete(hDialog);
-            mNewCatalog = nan;
+            newCat = mCatalog;
         end
     end

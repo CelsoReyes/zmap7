@@ -60,30 +60,7 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         plot(time_asf, conf_lims, 'color',[0.8 0.8 0.8]);
         hold on
         toc
-        %{
-        %% old double-loop version, to be replaced
-        % Compute the confidence limits
-        tic
-        for j = 1:size(loopout,1) % loop through each row
-            cumnr_model = [];
-            pvalb = loopout(j,1);
-            cvalb = loopout(j,2);
-            kvalb = loopout(j,3);
-            
-            for i=1:length(time_asf)
-                cm=modfun(pvalb,cvalb,kvalb,time_asf);
-                cumnr_model = [cumnr_model; cm];
-            end
-            plot(time_asf,cumnr_model,'color',[0.8 0.8 0.8]);
-            loopout(j,4) = max(cumnr_model);
-            hold on
-            %drawnow
-        end
-        toc
-        %% temp test.  Remove and then comment out the above loops once it is shown to work!
-        assert(isequal(loopout(:,4),conf_lims));
-        % end temp test.
-        %}
+      
         
         %% done with the above replacemtns
         % 2nd moment of bootstrap number of forecasted number of events
@@ -106,15 +83,8 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         % plot the best fit
         nLearnEvents = length(learningEventTimes);
         
-        %% this can be vectorized
         cumnr_model = modfun(pval,cval,kval,learningEventTimes);
-        %{
-        cumnr_model = [];
-        for i=1:nLearnEvents
-            cm = modfun(pval,cval,kval,learningEventTimes(i));  % note this is NOT time_asf
-            cumnr_model = [cumnr_model; cm];
-        end
-        %}
+        
         cumnr_model=sort(cumnr_model);
 
         % to Plot observed events in forecast period from endpoint of modeled events in learning period
