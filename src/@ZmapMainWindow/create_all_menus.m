@@ -249,8 +249,9 @@ function create_all_menus(obj, force)
         end
     end
     function create_topo_map_menu(parent)
-        submenu   =  uimenu(parent,'Label','Plot topographic map',...
-            'Enable','off');
+        submenu   =  uimenu(parent,'Label','Plot topographic map');
+        uimenu(submenu,'Label','Open a Web Map Display','Callback',@(~,~)webmap_of_catalog(obj.catalog,true));
+        return
         uimenu(submenu,'Label','Open DEM GUI','Callback', @(~,~)prepinp());
         uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)','Callback', @(~,~)pltopo('lo3'));
         uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)','Callback', @(~,~)pltopo('lo1'));

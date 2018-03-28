@@ -26,7 +26,8 @@ function reportIssue()
         h=helpdlg('Please enter an issue in the Github project main page');
         uiwait(h);
     if datetime < datetime(2018,6,30)
-        web('https://gitlab.seismo.ethz.ch/reyesc/zmap/issues','-browser')
+        %web('https://gitlab.seismo.ethz.ch/reyesc/zmap/issues','-browser');
+        web('https://github.com/CelsoReyes/ZMAP-7.0-issue-tracking/issues','-browser');
     else
         errordlg('Need to determine where to report issues');
     end
