@@ -31,8 +31,11 @@ function plot_base_events(obj, featurelist)
     
     wereLoaded = cellfun(@(x) ZG.features(x).WasLoaded , featurelist);
     if ~all(wereLoaded)
-        Farray = cellfun(@(x) ZG.features(x), featurelist);
-        MapFeature.foreach_waitbar(Farray(~wereLoaded),'load');
+        % prior to 2017B (ver 9.3), cellfun can't simply return a featurelist.
+        doNewWay =  ~verLessThan('matlab','9.3');
+        theFeatures = cellfun(@(x) ZG.features(x), featurelist, 'UniformOutput',doNewWay); 
+        if iscell(theFeatures),theFeatures=[theFeatures{:}]; end
+        MapFeature.foreach_waitbar(theFeatures(~wereLoaded),'load');
     end
     for i=1:numel(featurelist)
         feat_key = featurelist{i};

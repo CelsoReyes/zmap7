@@ -4,7 +4,7 @@ classdef ShapeCircle < ShapeGeneral
     % see also ShapeGeneral, ShapePolygon
     
     properties
-        Radius (1,1) double = 5 % active radius km (if circle)
+        Radius (1,1) double = 5 % active radius km
     end
     
     
@@ -56,6 +56,7 @@ classdef ShapeCircle < ShapeGeneral
         end
         
         function val=Outline(obj,col)
+            % TODO: look into using scircle1 or scircle2
             [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:.1:360)');
             val=[lon, lat];
             if exist('col','var')
