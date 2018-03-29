@@ -18,6 +18,7 @@ function addAboutMenuItem()
             end
         end
         uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on','Callback',@(~,~)reportIssue);
+        uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Callback',@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
         uimenu(mainhelp,'Label','About ZMAP','Separator','on','Callback',@(~,~)aboutZmapDialog);
     end
 end
