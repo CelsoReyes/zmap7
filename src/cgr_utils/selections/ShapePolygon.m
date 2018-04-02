@@ -170,10 +170,10 @@ classdef ShapePolygon < ShapeGeneral
                 switch myitem % based on Tags that should already be assigned to menu items
                     case 'polyCreateBox'
                         lab='Set Polygon: Box...';
-                        set(myhandle,'Label',lab,'Callback',@(~,~)ShapePolygon('box'));
+                        set(myhandle,'Label',lab,'MenuSelectedFcn',@(~,~)ShapePolygon('box'));
                     case 'polyCreateIrregular'
                         lab='Set Polygon: Irregular shape...';
-                        set(myhandle,'Label',lab,'Callback',@(~,~)ShapePolygon('polygon'));
+                        set(myhandle,'Label',lab,'MenuSelectedFcn',@(~,~)ShapePolygon('polygon'));
                     otherwise
                         error('Tried to set a menu item that doesn''t exist');
                 end

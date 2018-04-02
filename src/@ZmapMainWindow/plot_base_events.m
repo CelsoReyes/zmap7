@@ -54,15 +54,15 @@ function plot_base_events(obj, featurelist)
     ShapeCircle.AddCircleMenu(c, obj.shape);
     for j=1:numel(c.Children)
         if startsWith(c.Children(j).Tag,{'circle','poly'})
-            c.Children(j).Callback={@updatewrapper,c.Children(j).Callback};
+            c.Children(j).MenuSelectedFcn={@updatewrapper,c.Children(j).Callback};
         end
     end
     
-    uimenu(c,'Label','Clear Shape','Callback',{@updatewrapper,@(~,~)cb_shapeclear});
-    uimenu(c,'Label','Zoom to shape','Callback',@cb_zoom_shape);
-    uimenu(c,'Label','Crop to selection','Callback',@cb_crop_to_selection);
-    uimenu(c,'Label','Zoom to selection','Callback',@cb_zoom)
-    uimenu(c,'Label','Define X-section','Separator','on','Callback',@(s,v)obj.cb_xsection);
+    uimenu(c,'Label','Clear Shape','MenuSelectedFcn',{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Zoom to shape','MenuSelectedFcn',@cb_zoom_shape);
+    uimenu(c,'Label','Crop to selection','MenuSelectedFcn',@cb_crop_to_selection);
+    uimenu(c,'Label','Zoom to selection','MenuSelectedFcn',@cb_zoom)
+    uimenu(c,'Label','Define X-section','Separator','on','MenuSelectedFcn',@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
     

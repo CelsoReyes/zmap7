@@ -137,43 +137,43 @@ function view_xstress(lab1,valueMap)
         
         % Menu Select
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         uimenu(options,'Label','Select N closest EQs',...
-            'callback',@callbackfun_002)
+            'MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'callback',@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         uimenu(options,'Label','Select EQ in Polygon',...
-            'callback',@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         
         % Menu Maps
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','Variance',...
-            'callback',@callbackfun_005)
+            'MenuSelectedFcn',@callbackfun_005)
         uimenu(op1,'Label','Phi',...
-            'callback',@callbackfun_006)
+            'MenuSelectedFcn',@callbackfun_006)
         uimenu(op1,'Label','Trend S1',...
-            'callback',@callbackfun_007)
+            'MenuSelectedFcn',@callbackfun_007)
         uimenu(op1,'Label','Plunge S1',...
-            'callback',@callbackfun_008)
+            'MenuSelectedFcn',@callbackfun_008)
         uimenu(op1,'Label','Trend S2',...
-            'callback',@callbackfun_009)
+            'MenuSelectedFcn',@callbackfun_009)
         uimenu(op1,'Label','Plunge S2',...
-            'callback',@callbackfun_010)
+            'MenuSelectedFcn',@callbackfun_010)
         uimenu(op1,'Label','Trend S3',...
-            'callback',@callbackfun_011)
+            'MenuSelectedFcn',@callbackfun_011)
         uimenu(op1,'Label','Plunge S3',...
-            'callback',@callbackfun_012)
+            'MenuSelectedFcn',@callbackfun_012)
         uimenu(op1,'Label','Angular misfit',...
-            'callback',@callbackfun_013)
+            'MenuSelectedFcn',@callbackfun_013)
         uimenu(op1,'Label','\tau spread',...
-            'callback',@callbackfun_014)
+            'MenuSelectedFcn',@callbackfun_014)
         uimenu(op1,'Label','Resolution map (const. Radius)',...
-            'callback',@callbackfun_015)
+            'MenuSelectedFcn',@callbackfun_015)
         uimenu(op1,'Label','Resolution map',...
-            'callback',@callbackfun_016)
+            'MenuSelectedFcn',@callbackfun_016)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
-            'callback',@callbackfun_017)
-        %uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
+            'MenuSelectedFcn',@callbackfun_017)
+        %uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
         
         % Menu Display
         add_display_menu(1);

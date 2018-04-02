@@ -166,15 +166,15 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         % Menus
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         %    uimenu(options,'Label','Select EQ in Circle',...
-        %        'callback',@callbackfun_002)
+        %        'MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
             'Enable','off',...
-            'callback',@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         uimenu(options,'Label','Select EQ with const. number',...
             'Enable','off',...
-            'callback',@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -183,16 +183,16 @@ function view_Omoricross(src_table, mygrid, field_name)
         adjmenu = uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
             'Enable','off',...
-            'callback',@callbackfun_005)
+            'MenuSelectedFcn',@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
             'Enable','off',...
-            'callback',@callbackfun_006)
+            'MenuSelectedFcn',@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
             'Enable','off',...
-            'callback',@callbackfun_007)
+            'MenuSelectedFcn',@callbackfun_007)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
             'Enable','off',...
-            'callback',@callbackfun_008)
+            'MenuSelectedFcn',@callbackfun_008)
         
         % Add all the map options to the figure
         viewable={'p-value','p-value';... 8, p-Value
@@ -213,7 +213,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         for j = 1 : length(viewable)
             uimenu(op1, 'Label',viewable{j,1},'Tag',viewable{j,2},...
-                'Callback',{@callback_changeplot,viewable{j,2}}); %Table header IS the title AND tag
+                'MenuSelectedFcn',{@callback_changeplot,viewable{j,2}}); %Table header IS the title AND tag
         end
         add_display_menu(1)
     end

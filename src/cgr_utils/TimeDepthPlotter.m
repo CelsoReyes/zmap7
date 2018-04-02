@@ -59,7 +59,7 @@ classdef TimeDepthPlotter
             end
             delete(findobj(f,'Tag','TimeDepthContext'));
             c=uicontextmenu('Tag','TimeDepthContext');
-            uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
+            uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',{@logtoggle,ax,'Y'});
             yl.UIContextMenu=c;
             
             grid

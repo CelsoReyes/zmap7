@@ -203,13 +203,13 @@ function view_qva(lab1,valueMap)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@callbackfun_002)
-        uimenu(options,'Label','Select EQ in Circle', 'callback',@callbackfun_003)
-        uimenu(options,'Label','Select EQ in Polygon ', 'callback',@callbackfun_004)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_002)
+        uimenu(options,'Label','Select EQ in Circle','MenuSelectedFcn',@callbackfun_003)
+        uimenu(options,'Label','Select EQ in Polygon ','MenuSelectedFcn',@callbackfun_004)
         
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','day/night value map',...
-            'callback',@callbackfun_005)
+            'MenuSelectedFcn',@callbackfun_005)
         
         
         add_display_menu(1);

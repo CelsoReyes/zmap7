@@ -366,13 +366,13 @@ function plotala()
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Find Anomalie Groups  ',...
-            'callback',@callbackfun_007);
+            'MenuSelectedFcn',@callbackfun_007);
         uimenu(op3,'Label','Display one Anomalie Group ',...
-            'callback',@callbackfun_008);
+            'MenuSelectedFcn',@callbackfun_008);
         uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
-            'callback',@callbackfun_009);
+            'MenuSelectedFcn',@callbackfun_009);
         uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
-            'callback',@callbackfun_010);
+            'MenuSelectedFcn',@callbackfun_010);
     end
     
     %% callback functions

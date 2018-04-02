@@ -365,7 +365,7 @@ function c=pointcontext()
     c=uicontextmenu('Tag','MapViewerPointContext');
     uimenu(c,'Label','Change Symbol');
     uimenu(c,'Label','Change Color');
-    uimenu(c,'Label','Remove','callback',@showcb);
+    uimenu(c,'Label','Remove','MenuSelectedFcn',@showcb);
 end
 function showcb(src,ev)
     disp('------');

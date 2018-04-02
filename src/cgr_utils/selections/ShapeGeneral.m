@@ -192,23 +192,23 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 c=uicontextmenu('Tag','ShapeGenContext');
                 uimenu(c,...
                     'Label','info...',...
-                    'Callback',@(src,ev) obj.summary());
+                    'MenuSelectedFcn',@(src,ev) obj.summary());
                 uimenu(c,'Label','Analyze EQ inside Shape (timeplot)',...
                     'separator','on',...
-                    'Callback',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
+                    'MenuSelectedFcn',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
                 uimenu(c,'Label','Analyze EQ outside Shape (timeplot)',...
-                    'Callback',{@ShapeGeneral.cb_selectp,'outside'});
+                    'MenuSelectedFcn',{@ShapeGeneral.cb_selectp,'outside'});
                 uimenu(c,'Label','Compare Inside vs Outside (timeplot)',...
-                    'Callback',@compare_in_out);
+                    'MenuSelectedFcn',@compare_in_out);
                 uimenu(c,...
                     'Label','edit shape (mouse)',...
                     'separator','on',...
-                    'Callback',{@obj.interactive_edit,changedFcn});
+                    'MenuSelectedFcn',{@obj.interactive_edit,changedFcn});
                 uimenu(c,...
                     'Label','Change shape with latitude?',...
-                    'Callback',@latscale);
+                    'MenuSelectedFcn',@latscale);
                 obj.add_shape_specific_context(c,ax, changedFcn);
-                %uimenu(c,'Label','Clear shape','separator','on', 'Callback',@(~,~)ShapeGeneral.cb_clear);
+                %uimenu(c,'Label','Clear shape','separator','on','MenuSelectedFcn',@(~,~)ShapeGeneral.cb_clear);
                 
                 function compare_in_out(src,ev)
                     beep;
@@ -324,7 +324,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             
             uimenu(submenu,'Label','Display Shape Outline','Checked','on',...
-                'Tag','shapeoutlinetoggle','Callback',@ShapeGeneral.cb_outlinetoggle);
+                'Tag','shapeoutlinetoggle','MenuSelectedFcn',@ShapeGeneral.cb_outlinetoggle);
             
             % options for choosing a shape
             ShapePolygon.AddPolyMenu(submenu,ZGshape);
@@ -336,16 +336,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             uimenu(submenu,'separator','on',...
                 'Enable',isenabled,...
-                'Label','crop Main Catalog (keep INSIDE)','Callback',{@ShapeGeneral.cb_crop,'inside'})
+                'Label','crop Main Catalog (keep INSIDE)','MenuSelectedFcn',{@ShapeGeneral.cb_crop,'inside'})
             uimenu(submenu,'Enable',isenabled,...
-                'Label','crop Main Catalog (keep OUTSIDE)','Callback',{@ShapeGeneral.cb_crop,'outside'})
+                'Label','crop Main Catalog (keep OUTSIDE)','MenuSelectedFcn',{@ShapeGeneral.cb_crop,'outside'})
       
             uimenu(submenu,'Label','Analyze EQ inside Shape (timeplot)',...
                 'separator','on',...
-                'Callback',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
+                'MenuSelectedFcn',{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
             
             uimenu(submenu,'Label','Analyze EQ outside Shape (timeplot)',...
-                'Callback',{@ShapeGeneral.cb_selectp,'outside'});
+                'MenuSelectedFcn',{@ShapeGeneral.cb_selectp,'outside'});
             
             vis= tf2onoff( strcmp(ZGshape.Type, 'unassigned') );
             uimenu(submenu,'separator','on',...
@@ -354,11 +354,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             
             uimenu(submenu,'Separator','on',...
-                'Label','Load shape','Callback',@ShapeGeneral.cb_load);
-            uimenu(submenu,'Label','Save shape','Callback',@ShapeGeneral.cb_save);
-            %uimenu(submenu,'Label','Clear shape','Callback',@ShapeGeneral.cb_clear);
+                'Label','Load shape','MenuSelectedFcn',@ShapeGeneral.cb_load);
+            uimenu(submenu,'Label','Save shape','MenuSelectedFcn',@ShapeGeneral.cb_save);
+            %uimenu(submenu,'Label','Clear shape','MenuSelectedFcn',@ShapeGeneral.cb_clear);
             
-            uimenu(submenu,'Label','refresh menu','Separator','on','Callback',@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',char(ZG.debug));
+            uimenu(submenu,'Label','refresh menu','Separator','on','MenuSelectedFcn',@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',char(ZG.debug));
             
             
         end

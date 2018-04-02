@@ -174,75 +174,75 @@ function view_bva(lab1, valueMap,gx,gy)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ', 'callback',@cb_refresh)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@cb_refresh)
         uimenu(options,'Label','Select EQ in Circle',...
-            'callback',@cb_seleq_cir)
+            'MenuSelectedFcn',@cb_seleq_cir)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'callback',@cb_seleq_cir_r)
+            'MenuSelectedFcn',@cb_seleq_cir_r)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-            'callback',@cb_seleq_cir_overlay)
+            'MenuSelectedFcn',@cb_seleq_cir_overlay)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            'callback',@cb_seleq_poly_new)
+            'MenuSelectedFcn',@cb_seleq_poly_new)
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
-            'callback',@cb_seleq_poly_hold)
+            'MenuSelectedFcn',@cb_seleq_poly_hold)
         
         
         op1 = uimenu('Label',' Maps ');
         
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters');
         uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'callback',@cb_adjust_min_cut)
+            'MenuSelectedFcn',@cb_adjust_min_cut)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'callback',@cb_adjust_max_cut)
+            'MenuSelectedFcn',@cb_adjust_max_cut)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'callback',@cb_adjust_goodness_cut)
+            'MenuSelectedFcn',@cb_adjust_goodness_cut)
         
         
         uimenu(op1,'Label','b-value map (max likelihood)',...
-            'callback',@cb_bval_maxlikelihood)
+            'MenuSelectedFcn',@cb_bval_maxlikelihood)
         uimenu(op1,'Label','Standard deviation of b-Value (max likelihood) map',...
-            'callback',@cb_std_bval)
+            'MenuSelectedFcn',@cb_std_bval)
         uimenu(op1,'Label','Magnitude of completness map',...
-            'callback',@cb_magcomp)
+            'MenuSelectedFcn',@cb_magcomp)
         uimenu(op1,'Label','Standard deviation of magnitude of completness',...
-            'callback',@cb_std_magcomp)
+            'MenuSelectedFcn',@cb_std_magcomp)
         uimenu(op1,'Label','Goodness of fit to power law map',...
-            'callback',@cb_goodfit_powerlaw)
+            'MenuSelectedFcn',@cb_goodfit_powerlaw)
         uimenu(op1,'Label','Resolution map',...
-            'callback',@cb_resolution)
+            'MenuSelectedFcn',@cb_resolution)
         uimenu(op1,'Label','Earthquake density map',...
-            'callback',@cb_eqdensity)
+            'MenuSelectedFcn',@cb_eqdensity)
         uimenu(op1,'Label','a-value map',...
-            'callback',@cb_avalue)
+            'MenuSelectedFcn',@cb_avalue)
         
         
         if exist('mStdDevB')
             AverageStdDevMenu = uimenu(op1,'Label', 'Additional random simulation');
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of b-value',...
-                'callback',@cb_bootstrap_std_bval)
+                'MenuSelectedFcn',@cb_bootstrap_std_bval)
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of Mc',...
-                'callback',@cb_bootstrap_std_mc)
+                'MenuSelectedFcn',@cb_bootstrap_std_mc)
             uimenu(AverageStdDevMenu,'Label', 'b-value map (max likelihood) with std. deviation',...
-                'callback',@cb_bval_with_std)
+                'MenuSelectedFcn',@cb_bval_with_std)
         end
         
         recmenu = uimenu(op1,'Label','recurrence time map ')...
         
         uimenu(recmenu,'Label','recurrence time map ',...
-            'callback',@cb_recurrence_time)
+            'MenuSelectedFcn',@cb_recurrence_time)
         
         uimenu(recmenu,'Label','(1/Tr)/area map ',...
-            'callback',@cb_oneovertroverarea)
+            'MenuSelectedFcn',@cb_oneovertroverarea)
         
         uimenu(recmenu,'Label','recurrence time percentage ',...
-            'callback',@cb_recperc)
+            'MenuSelectedFcn',@cb_recperc)
         
         
         
-        uimenu(op1,'Label','Histogram ', 'callback',@(~,~)zhist())
-        uimenu(op1,'Label','Reccurrence Time Histogram ', 'callback',@cb_rechist)
-        uimenu(op1,'Label','Save map to ASCII file ', 'callback',@callbackfun_026)
+        uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+        uimenu(op1,'Label','Reccurrence Time Histogram ','MenuSelectedFcn',@cb_rechist)
+        uimenu(op1,'Label','Save map to ASCII file ','MenuSelectedFcn',@callbackfun_026)
         
         add_display_menu(4);
     end

@@ -363,7 +363,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             if ~exist('label','var')
                 label='differential b';
             end
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)bcrossVt2(catalogfn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bcrossVt2(catalogfn()));
         end
         
     end % static method

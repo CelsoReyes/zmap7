@@ -3,6 +3,6 @@ function addQuitMenuItem()
     hQuit=findall(gcf,'Label','QuitZmap');
     if isempty(hQuit)
         mainfile=findall(gcf,'Tag','figMenuFile');
-        uimenu(mainfile,'Label','Quit Zmap','Separator','on','Callback',@(~,~)restartZmap);
+        uimenu(mainfile,'Label','Quit Zmap','Separator','on','MenuSelectedFcn',@(~,~)restartZmap);
     end
 end

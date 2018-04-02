@@ -19,28 +19,28 @@ function cummomentplot(obj,tabgrouptag)
         if isempty(xscat); continue; end
         [~, vCumMoment, ~] = calc_moment(xscat);
         c=uicontextmenu('tag','CumPlot xs contextmenu');
-        uimenu(c,'Label','Open in new window','Callback',{@cb_xstimeplot,xs});
+        uimenu(c,'Label','Open in new window','MenuSelectedFcn',{@cb_xstimeplot,xs});
         line(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color,...
             'UIContextMenu',c);
     end
         
     yl=ylabel(ax,'Cummulative Moment');
     c=uicontextmenu('Tag','CumMom Yscaling');
-    uimenu(c,'Label','Use Log Scale','Callback',{@logtoggle,ax,'Y'});
+    uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',{@logtoggle,ax,'Y'});
     yl.UIContextMenu=c;
     
     xlabel(ax,'Time');
     c=uicontextmenu('tag','CumMom line contextmenu');
-    uimenu(c,'Label','start here','Callback',@(~,~)obj.cb_starthere(ax));
-    uimenu(c,'Label','end here','Callback',@(~,~)obj.cb_endhere(ax));
-    uimenu(c, 'Label', 'trim to largest event','Callback',@obj.cb_trim_to_largest);
+    uimenu(c,'Label','start here','MenuSelectedFcn',@(~,~)obj.cb_starthere(ax));
+    uimenu(c,'Label','end here','MenuSelectedFcn',@(~,~)obj.cb_endhere(ax));
+    uimenu(c, 'Label', 'trim to largest event','MenuSelectedFcn',@obj.cb_trim_to_largest);
     p.UIContextMenu=c;
     
-    uimenu(p.UIContextMenu,'Label','Open in new window','Callback',@(~,~)timeplot());
+    uimenu(p.UIContextMenu,'Label','Open in new window','MenuSelectedFcn',@(~,~)timeplot());
     c=uicontextmenu('tag','CumMom bg contextmenu');
     ax.UIContextMenu=c;
     addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
-    uimenu(c,'Label','Open in new window','Callback',@(~,~)timeplot());
+    uimenu(c,'Label','Open in new window','MenuSelectedFcn',@(~,~)timeplot());
     
     function cb_xstimeplot(~,~,xs)
         ZG=ZmapGlobal.Data;

@@ -240,7 +240,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Rate change, p-,c-,k-value map in aftershock sequence [xsec]';
-            h=uimenu(parent,'Label',label,'Callback', @(~,~)rc_cross_a2(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)rc_cross_a2(zapFcn()));
         end
     end
 end
