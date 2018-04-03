@@ -176,7 +176,7 @@ classdef bvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Mc, a- and b- value map';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedFcnName(), @(~,~)bvalgrid(zapFcn()));
         end
     end % static methods
     

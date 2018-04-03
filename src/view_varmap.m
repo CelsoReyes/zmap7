@@ -146,25 +146,25 @@ function view_varmap(lab1,valueMap)
         add_menu_divider();
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle',...
-            'MenuSelectedFcn',@callbackfun_002)
+            MenuSelectedFcnName(),@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'MenuSelectedFcn',@callbackfun_003)
+            MenuSelectedFcnName(),@callbackfun_003)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            'MenuSelectedFcn',@callbackfun_004)
+            MenuSelectedFcnName(),@callbackfun_004)
         
         op1 = uimenu('Label',' Maps ');
         
         uimenu(op1,'Label','Variance map',...
-            'MenuSelectedFcn',@callbackfun_005)
+            MenuSelectedFcnName(),@callbackfun_005)
         uimenu(op1,'Label','Resolution map',...
-            'MenuSelectedFcn',@callbackfun_006)
+            MenuSelectedFcnName(),@callbackfun_006)
         uimenu(op1,'Label','Plot map on top of topography ',...
-            'MenuSelectedFcn',@callbackfun_007)
+            MenuSelectedFcnName(),@callbackfun_007)
         
-        uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+        uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
         
         add_display_menu(1)
     end

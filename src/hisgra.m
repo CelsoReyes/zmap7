@@ -45,9 +45,9 @@ function hisgra(mycat, opt, ax)
             
             add_menu_divider();
             op1 = uimenu('Label','Display');
-            uimenu(op1,'Label','Change Number of Bins...','MenuSelectedFcn',@callback_change_nBins);
-            uimenu(op1,'Label','Change Bin Edges...','MenuSelectedFcn',@callback_change_bVector);
-            uimenu(op1,'Label','Default','MenuSelectedFcn',@callback_reset);
+            uimenu(op1,'Label','Change Number of Bins...',MenuSelectedFcnName(),@callback_change_nBins);
+            uimenu(op1,'Label','Change Bin Edges...',MenuSelectedFcnName(),@callback_change_bVector);
+            uimenu(op1,'Label','Default',MenuSelectedFcnName(),@callback_reset);
             addAboutMenuItem();
         end
         
@@ -97,10 +97,10 @@ function hisgra(mycat, opt, ax)
         mycontextmenu=findobj(gcf,'uicontextmenu','-and','Tag',['histogram ' opt]);
         if isempty(mycontextmenu)
             c=uicontextmenu('Tag',['histogram ' opt]);
-            uimenu(c,'Label','Change Number of Bins...','MenuSelectedFcn',@callback_change_nBins);
-            uimenu(c,'Label','Change Bin Edges...','MenuSelectedFcn',@callback_change_bVector);
-            uimenu(c,'Label','Default','MenuSelectedFcn',@callback_reset);
-            uimenu(c,'Label','Open as new figure','MenuSelectedFcn',@open_as_new_fig); %TOFIX
+            uimenu(c,'Label','Change Number of Bins...',MenuSelectedFcnName(),@callback_change_nBins);
+            uimenu(c,'Label','Change Bin Edges...',MenuSelectedFcnName(),@callback_change_bVector);
+            uimenu(c,'Label','Default',MenuSelectedFcnName(),@callback_reset);
+            uimenu(c,'Label','Open as new figure',MenuSelectedFcnName(),@open_as_new_fig); %TOFIX
             addcontext(opt,c);
             ax.UIContextMenu=c;
         else
@@ -109,7 +109,7 @@ function hisgra(mycat, opt, ax)
         
         
         c=uicontextmenu('Tag',['histogram ' opt ' scale']);
-        uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',{@logtoggle,ax,'Y'});
+        uimenu(c,'Label','Use Log Scale',MenuSelectedFcnName(),{@logtoggle,ax,'Y'});
         yl.UIContextMenu=c;
         
     end
@@ -182,10 +182,10 @@ function hisgra(mycat, opt, ax)
         h=findobj(ax,'Type','histogram');
         switch opt
             case 'Date'
-                uimenu(c,'separator','on','Label','Snap to Day','MenuSelectedFcn',@(~,~)cb_snap_to_datetime(h,'day'));
-                uimenu(c,'Label','Snap to Week','MenuSelectedFcn',@(~,~)cb_snap_to_datetime(h,'week'));
-                uimenu(c,'Label','Snap to Month','MenuSelectedFcn',@(~,~)cb_snap_to_datetime(h,'month'));
-                uimenu(c,'Label','Snap to Year','MenuSelectedFcn',@(~,~)cb_snap_to_datetime(h,'year'));
+                uimenu(c,'separator','on','Label','Snap to Day',MenuSelectedFcnName(),@(~,~)cb_snap_to_datetime(h,'day'));
+                uimenu(c,'Label','Snap to Week',MenuSelectedFcnName(),@(~,~)cb_snap_to_datetime(h,'week'));
+                uimenu(c,'Label','Snap to Month',MenuSelectedFcnName(),@(~,~)cb_snap_to_datetime(h,'month'));
+                uimenu(c,'Label','Snap to Year',MenuSelectedFcnName(),@(~,~)cb_snap_to_datetime(h,'year'));
         end
         function cb_snap_to_datetime(h,x)
             newEdges=dateshift(h.BinEdges,'start',x,'nearest');
@@ -239,9 +239,9 @@ function hisgra(mycat, opt, ax)
               
               add_menu_divider();
               op1 = uimenu('Label','Display');
-              uimenu(op1,'Label','Change Number of Bins...','MenuSelectedFcn',@callback_change_nBins);
-              uimenu(op1,'Label','Change Bin Edges...','MenuSelectedFcn',@callback_change_bVector);
-              uimenu(op1,'Label','Default','MenuSelectedFcn',@callback_reset);
+              uimenu(op1,'Label','Change Number of Bins...',MenuSelectedFcnName(),@callback_change_nBins);
+              uimenu(op1,'Label','Change Bin Edges...',MenuSelectedFcnName(),@callback_change_bVector);
+              uimenu(op1,'Label','Default',MenuSelectedFcnName(),@callback_reset);
               copyobj(ax,histo)
               
               th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');

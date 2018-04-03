@@ -193,11 +193,11 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'MenuSelectedFcn',@cb_constR)
+            MenuSelectedFcnName(),@cb_constR)
         uimenu(options,'Label','Select EQ with const. number',...
-            'MenuSelectedFcn',@cb_constN)
+            MenuSelectedFcnName(),@cb_constN)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -205,47 +205,47 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'MenuSelectedFcn',@callbackfun_004)
+            MenuSelectedFcnName(),@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'MenuSelectedFcn',@callbackfun_005)
+            MenuSelectedFcnName(),@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'MenuSelectedFcn',@callbackfun_006)
+            MenuSelectedFcnName(),@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            'MenuSelectedFcn',@callbackfun_007)
+            MenuSelectedFcnName(),@callbackfun_007)
         
         
         %    uimenu(op1,'Label','b-value map (WLS)',...
-        %        'MenuSelectedFcn',@callbackfun_008)
+        %        MenuSelectedFcnName(),@callbackfun_008)
         %    uimenu(op1,'Label','b(max likelihood) map',...
-        %        'MenuSelectedFcn',@callbackfun_009)
+        %        MenuSelectedFcnName(),@callbackfun_009)
         %    uimenu(op1,'Label','Mag of completness map',...
-        %        'MenuSelectedFcn',@callbackfun_010)
+        %        MenuSelectedFcnName(),@callbackfun_010)
         %    uimenu(op1,'Label','max magnitude map',...
-        %           'MenuSelectedFcn',@callbackfun_011)
+        %           MenuSelectedFcnName(),@callbackfun_011)
         %    uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-        %           'MenuSelectedFcn',@callbackfun_012)
+        %           MenuSelectedFcnName(),@callbackfun_012)
         %
         uimenu(op1,'Label','Relative rate change',...
-            'MenuSelectedFcn',@callbackfun_013)
+            MenuSelectedFcnName(),@callbackfun_013)
         uimenu(op1,'Label','Relative rate change by boostrap',...
-            'MenuSelectedFcn',@callbackfun_014)
+            MenuSelectedFcnName(),@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            'MenuSelectedFcn',@callbackfun_015)
+            MenuSelectedFcnName(),@callbackfun_015)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            'MenuSelectedFcn',@callbackfun_016)
+            MenuSelectedFcnName(),@callbackfun_016)
         uimenu(op1,'Label','p-value',...
-            'MenuSelectedFcn',@callbackfun_017)
+            MenuSelectedFcnName(),@callbackfun_017)
         uimenu(op1,'Label','p-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_018)
+            MenuSelectedFcnName(),@callbackfun_018)
         uimenu(op1,'Label','c-value',...
-            'MenuSelectedFcn',@callbackfun_019)
+            MenuSelectedFcnName(),@callbackfun_019)
         uimenu(op1,'Label','c-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_020)
+            MenuSelectedFcnName(),@callbackfun_020)
         uimenu(op1,'Label','k-value',...
-            'MenuSelectedFcn',@callbackfun_021)
+            MenuSelectedFcnName(),@callbackfun_021)
         uimenu(op1,'Label','k-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_022)
-        %    uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+            MenuSelectedFcnName(),@callbackfun_022)
+        %    uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
         
         add_display_menu(1);
     end

@@ -247,7 +247,7 @@ classdef(Abstract) ZmapFunction < handle
         %
         %       label = 'testmenuitem';                        % CHANGE THIS TO YOUR MENUNAME
         %       cb = @(~,~)sample_ZmapFunction(zapFcn());      % CHANGE THIS TO YOUR CALLBACK
-        %       h=uimenu(parent,'Label',label,'MenuSelectedFcn',cb);
+        %       h=uimenu(parent,'Label',label,MenuSelectedFcnName(),cb);
         %    end
         %
         % you can copy/paste the above into your Static methods section

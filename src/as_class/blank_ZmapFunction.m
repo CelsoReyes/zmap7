@@ -130,7 +130,7 @@ classdef blank_ZmapFunction < ZmapFunction
             % create a menu item that will be used to call this function/class
             
             h=uimenu(parent,'Label','testmenuitem',...    CHANGE THIS TO YOUR MENUNAME
-                'MenuSelectedFcn', @(~,~)blank_ZmapFunction(catalogfn())... CHANGE THIS TO YOUR CALLBACK
+                MenuSelectedFcnName(), @(~,~)blank_ZmapFunction(catalogfn())... CHANGE THIS TO YOUR CALLBACK
                 );
         end
         

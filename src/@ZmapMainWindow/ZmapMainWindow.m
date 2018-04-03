@@ -114,9 +114,9 @@ classdef ZmapMainWindow < handle
             obj.pushState();
             
             emm = uimenu(obj.fig,'label','Edit!');
-            obj.undohandle=uimenu(emm,'label','Undo','MenuSelectedFcn',@(s,v)obj.cb_undo(s,v),'Enable','off');
-            uimenu(emm,'label','Redraw','MenuSelectedFcn',@(s,v)obj.cb_redraw(s,v));
-            uimenu(emm,'label','xsection','MenuSelectedFcn',@(s,v)obj.cb_xsection);
+            obj.undohandle=uimenu(emm,'label','Undo',MenuSelectedFcnName(),@(s,v)obj.cb_undo(s,v),'Enable','off');
+            uimenu(emm,'label','Redraw',MenuSelectedFcnName(),@(s,v)obj.cb_redraw(s,v));
+            uimenu(emm,'label','xsection',MenuSelectedFcnName(),@(s,v)obj.cb_xsection);
             % TODO: undo could also stash grid options & grids
             
             
@@ -343,14 +343,14 @@ classdef ZmapMainWindow < handle
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
-            uimenu(c,'Label','Info','MenuSelectedFcn',@(~,~) cb_info);
-            uimenu(c,'Label','Change Width','MenuSelectedFcn',@(~,~)cb_chwidth);
-            uimenu(c,'Label','Change Color','MenuSelectedFcn',@(~,~)cb_chcolor);
-            % uimenu(c,'Label','Swap Ends','MenuSelectedFcn',@(~,~)cb_swapends); doesn't work(?)
-            uimenu(c,'Label','Examine This Area','MenuSelectedFcn',@(~,~)cb_cropToXS);
+            uimenu(c,'Label','Info',MenuSelectedFcnName(),@(~,~) cb_info);
+            uimenu(c,'Label','Change Width',MenuSelectedFcnName(),@(~,~)cb_chwidth);
+            uimenu(c,'Label','Change Color',MenuSelectedFcnName(),@(~,~)cb_chcolor);
+            % uimenu(c,'Label','Swap Ends',MenuSelectedFcnName(),@(~,~)cb_swapends); doesn't work(?)
+            uimenu(c,'Label','Examine This Area',MenuSelectedFcnName(),@(~,~)cb_cropToXS);
             uimenu(c,'Separator','on',...
                 'Label','Delete',...
-                'MenuSelectedFcn',@deltab);
+                MenuSelectedFcnName(),@deltab);
             mytab.UIContextMenu=c;
             
             % plot the 

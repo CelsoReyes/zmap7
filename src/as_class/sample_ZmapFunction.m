@@ -146,7 +146,7 @@ classdef sample_ZmapFunction < ZmapFunction
             % create a menu item
             disp('MenuItem in sample');
             h=uimenu(parent,'Label','testmenuitem',...
-                'MenuSelectedFcn', @(~,~)sample_ZmapFunction(catalogfn())); 
+                MenuSelectedFcnName(), @(~,~)sample_ZmapFunction(catalogfn())); 
         end
     end % static methods
     

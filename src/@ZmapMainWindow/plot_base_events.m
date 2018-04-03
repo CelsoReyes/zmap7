@@ -58,11 +58,11 @@ function plot_base_events(obj, featurelist)
         end
     end
     
-    uimenu(c,'Label','Clear Shape','MenuSelectedFcn',{@updatewrapper,@(~,~)cb_shapeclear});
-    uimenu(c,'Label','Zoom to shape','MenuSelectedFcn',@cb_zoom_shape);
-    uimenu(c,'Label','Crop to selection','MenuSelectedFcn',@cb_crop_to_selection);
-    uimenu(c,'Label','Zoom to selection','MenuSelectedFcn',@cb_zoom)
-    uimenu(c,'Label','Define X-section','Separator','on','MenuSelectedFcn',@(s,v)obj.cb_xsection);
+    uimenu(c,'Label','Clear Shape',MenuSelectedFcnName(),{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Zoom to shape',MenuSelectedFcnName(),@cb_zoom_shape);
+    uimenu(c,'Label','Crop to selection',MenuSelectedFcnName(),@cb_crop_to_selection);
+    uimenu(c,'Label','Zoom to selection',MenuSelectedFcnName(),@cb_zoom)
+    uimenu(c,'Label','Define X-section','Separator','on',MenuSelectedFcnName(),@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
     

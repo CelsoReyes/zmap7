@@ -173,11 +173,11 @@ function view_rcva_a2(lab1,valueMap)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'MenuSelectedFcn',@callbackfun_002)
+            MenuSelectedFcnName(),@callbackfun_002)
         uimenu(options,'Label','Select EQ with const. number',...
-            'MenuSelectedFcn',@callbackfun_003)
+            MenuSelectedFcnName(),@callbackfun_003)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -185,56 +185,56 @@ function view_rcva_a2(lab1,valueMap)
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'MenuSelectedFcn',@callbackfun_004)
+            MenuSelectedFcnName(),@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'MenuSelectedFcn',@callbackfun_005)
+            MenuSelectedFcnName(),@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'MenuSelectedFcn',@callbackfun_006)
+            MenuSelectedFcnName(),@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            'MenuSelectedFcn',@callbackfun_007)
+            MenuSelectedFcnName(),@callbackfun_007)
         
         
         uimenu(op1,'Label','Relative rate change (bootstrap)',...
-            'MenuSelectedFcn',@callbackfun_008)
+            MenuSelectedFcnName(),@callbackfun_008)
         uimenu(op1,'Label','Model',...
-            'MenuSelectedFcn',@callbackfun_009)
+            MenuSelectedFcnName(),@callbackfun_009)
         uimenu(op1,'Label','KS-Test',...
-            'MenuSelectedFcn',@callbackfun_010)
+            MenuSelectedFcnName(),@callbackfun_010)
         uimenu(op1,'Label','KS-Test Statistic',...
-            'MenuSelectedFcn',@callbackfun_011)
+            MenuSelectedFcnName(),@callbackfun_011)
         uimenu(op1,'Label','KS-Test p-value',...
-            'MenuSelectedFcn',@callbackfun_012)
+            MenuSelectedFcnName(),@callbackfun_012)
         uimenu(op1,'Label','RMS of fit',...
-            'MenuSelectedFcn',@callbackfun_013)
+            MenuSelectedFcnName(),@callbackfun_013)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            'MenuSelectedFcn',@callbackfun_014)
+            MenuSelectedFcnName(),@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            'MenuSelectedFcn',@callbackfun_015)
+            MenuSelectedFcnName(),@callbackfun_015)
         uimenu(op1,'Label','p-value',...
-            'MenuSelectedFcn',@callbackfun_016)
+            MenuSelectedFcnName(),@callbackfun_016)
         uimenu(op1,'Label','p-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_017)
+            MenuSelectedFcnName(),@callbackfun_017)
         uimenu(op1,'Label','c-value',...
-            'MenuSelectedFcn',@callbackfun_018)
+            MenuSelectedFcnName(),@callbackfun_018)
         uimenu(op1,'Label','c-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_019)
+            MenuSelectedFcnName(),@callbackfun_019)
         uimenu(op1,'Label','k-value',...
-            'MenuSelectedFcn',@callbackfun_020)
+            MenuSelectedFcnName(),@callbackfun_020)
         uimenu(op1,'Label','k-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_021)
+            MenuSelectedFcnName(),@callbackfun_021)
         uimenu(op1,'Label','p2-value',...
-            'MenuSelectedFcn',@callbackfun_022)
+            MenuSelectedFcnName(),@callbackfun_022)
         uimenu(op1,'Label','p-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_023)
+            MenuSelectedFcnName(),@callbackfun_023)
         uimenu(op1,'Label','c2-value',...
-            'MenuSelectedFcn',@callbackfun_024)
+            MenuSelectedFcnName(),@callbackfun_024)
         uimenu(op1,'Label','c2-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_025)
+            MenuSelectedFcnName(),@callbackfun_025)
         uimenu(op1,'Label','k2-value',...
-            'MenuSelectedFcn',@callbackfun_026)
+            MenuSelectedFcnName(),@callbackfun_026)
         uimenu(op1,'Label','k2-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_027)
-        %    uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+            MenuSelectedFcnName(),@callbackfun_027)
+        %    uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
         
         add_display_menu(2);
     end

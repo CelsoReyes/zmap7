@@ -43,7 +43,7 @@ classdef magrcros < ZmapVGridFunction
             % magrcros_orig(sel,obj);
             
             
-            % consider this for future: uimenu(op1,'Label','Show Circles ','MenuSelectedFcn',@(~,~)plotcirc)
+            % consider this for future: uimenu(op1,'Label','Show Circles ',MenuSelectedFcnName(),@(~,~)plotcirc)
         end
         
         function InteractiveSetup(obj)
@@ -274,7 +274,7 @@ classdef magrcros < ZmapVGridFunction
         function h=AddMenuItem(parent,zap_Fcn) %xsec_zap
             % create a menu item
             label='Z-value section map';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)magrcros(zap_Fcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedFcnName(), @(~,~)magrcros(zap_Fcn()));
         end
             
         %{

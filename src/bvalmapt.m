@@ -251,7 +251,7 @@ classdef bvalmapt < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Differential b-value map';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bvalmapt(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedFcnName(), @(~,~)bvalmapt(zapFcn()));
         end
         function obj= load()
             %RZ Load existing  diff b-grid

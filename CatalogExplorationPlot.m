@@ -216,7 +216,7 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'MenuSelectedFcn',{@obj.change,'x_by'});
+                    MenuSelectedFcnName(),{@obj.change,'x_by'});
             end
             obj.add_axes_toggles(h,'X');
             xl.UIContextMenu=h;
@@ -228,7 +228,7 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'MenuSelectedFcn',{@obj.change,'y_by'});
+                    MenuSelectedFcnName(),{@obj.change,'y_by'});
             end
             obj.add_axes_toggles(h,'Y');
             yl.UIContextMenu=h;
@@ -240,7 +240,7 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'MenuSelectedFcn',{@obj.change,'z_by'});
+                    MenuSelectedFcnName(),{@obj.change,'z_by'});
             end
             obj.add_axes_toggles(h,'Z');
             zl.UIContextMenu=h;
@@ -260,10 +260,10 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'MenuSelectedFcn',{@obj.changeSize,sc});
+                    MenuSelectedFcnName(),{@obj.changeSize,sc});
             end
             uimenu(h,'Separator','on','Label','Single Size',...
-                'MenuSelectedFcn',{@obj.changeSize,sc});
+                MenuSelectedFcnName(),{@obj.changeSize,sc});
             
         end
         
@@ -272,17 +272,17 @@ classdef CatalogExplorationPlot < handle
             for i=1:numel(obj.axes_choices)
                 %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    'MenuSelectedFcn',{@obj.changeColor,sc});
+                    MenuSelectedFcnName(),{@obj.changeColor,sc});
             end
             uimenu(h,'Separator','on','Label','Single Color',...
-                'MenuSelectedFcn',{@obj.changeColor,sc});
+                MenuSelectedFcnName(),{@obj.changeColor,sc});
         end
         
         function add_axes_toggles(obj,h,letter)
             uimenu(h,'Label','Flip axes direction','Separator','on',...
-                'MenuSelectedFcn',@(src,~)cb_axisdir(letter));
+                MenuSelectedFcnName(),@(src,~)cb_axisdir(letter));
             uimenu(h,'Label','Toggle Log/Linear scale','Separator','on',...
-                'MenuSelectedFcn',@(src,~)cb_axisscale(letter));
+                MenuSelectedFcnName(),@(src,~)cb_axisscale(letter));
             
             function cb_axisdir(letter)
                 dirs={'normal','reverse'};

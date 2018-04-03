@@ -150,54 +150,54 @@ end
 function create_my_menu(c2)
         add_menu_divider();
         options = uimenu('Label','Select');
-        %uimenu(options,'Label','Select EQ inside Polygon ','MenuSelectedFcn',@cb_select_eq_inside_poly);
-        %uimenu(options,'Label','Refresh ','MenuSelectedFcn',@cb_refresh2);
+        %uimenu(options,'Label','Select EQ inside Polygon ',MenuSelectedFcnName(),@cb_select_eq_inside_poly);
+        %uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@cb_refresh2);
         
         options = uimenu('Label','Ztools');
         
         
         uimenu(options,'Label', 'differential b ',...
-            'MenuSelectedFcn',@cb_diff_b);
+            MenuSelectedFcnName(),@cb_diff_b);
         
         uimenu(options,'Label','Fractal Dimension',...
-            'MenuSelectedFcn',@cb_fractaldim);
+            MenuSelectedFcnName(),@cb_fractaldim);
         
         uimenu(options,'Label','Mean Depth',...
-            'MenuSelectedFcn',{@cb_meandepth,c2});
+            MenuSelectedFcnName(),{@cb_meandepth,c2});
         
         uimenu(options,'Label','z-value grid',...
-            'MenuSelectedFcn',@cb_zvaluegrid);
+            MenuSelectedFcnName(),@cb_zvaluegrid);
         
         uimenu(options,'Label','b and Mc grid ',...
-            'MenuSelectedFcn',@cb_b_mc_grid);
+            MenuSelectedFcnName(),@cb_b_mc_grid);
         
         uimenu(options,'Label','Prob. forecast test',...
-            'MenuSelectedFcn',@cb_probforecast_test);
+            MenuSelectedFcnName(),@cb_probforecast_test);
         
         uimenu(options,'Label','beCubed',...
-            'MenuSelectedFcn',@cb_becubed);
+            MenuSelectedFcnName(),@cb_becubed);
         
         uimenu(options,'Label','b diff (bootstrap)',...
-            'MenuSelectedFcn',@cb_b_diff_boot);
+            MenuSelectedFcnName(),@cb_b_diff_boot);
         
         uimenu(options,'Label','Stress Variance',...
-            'MenuSelectedFcn',@cb_stressvariance);
+            MenuSelectedFcnName(),@cb_stressvariance);
         
         
         uimenu(options,'Label','Time Plot ',...
-            'MenuSelectedFcn',{@cb_timeplot, c2});
+            MenuSelectedFcnName(),{@cb_timeplot, c2});
         
         uimenu(options,'Label',' X + topo ',...
-            'MenuSelectedFcn',@cb_xplustopo);
+            MenuSelectedFcnName(),@cb_xplustopo);
         
         uimenu(options,'Label','Vert. Exaggeration',...
-            'MenuSelectedFcn',@cb_vertexaggeration);
+            MenuSelectedFcnName(),@cb_vertexaggeration);
         
         uimenu(options,'Label','Rate change grid',...
-            'MenuSelectedFcn',@cb_ratechangegrid);
+            MenuSelectedFcnName(),@cb_ratechangegrid);
         
         uimenu(options,'Label','Omori parameter grid',...
-            'MenuSelectedFcn',@cb_omoriparamgrid); % formerly pcross
+            MenuSelectedFcnName(),@cb_omoriparamgrid); % formerly pcross
         
     end
     

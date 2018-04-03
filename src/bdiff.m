@@ -204,12 +204,12 @@ function  bdiff(mycat, holdplot)
     function create_my_menu()
         add_menu_divider();
         options = uimenu('Label','ZTools');
-        uimenu(options,'Label','Estimate recurrence time/probability','MenuSelectedFcn',@cb_est_recurr);
-        uimenu(options,'Label','Plot time series','MenuSelectedFcn',@cb_plot_ts);
-        uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)','MenuSelectedFcn',@cb_nonlin_optimize);
-        uimenu(options,'Label','Examine Nonlinearity (Keep Mc)','MenuSelectedFcn',@cb_nonlin_keepmc);
-        uimenu(options,'Label','Do not show discrete','MenuSelectedFcn',@cb_nodiscrete);
-        uimenu(options,'Label','Save values to file', 'Enable','off','MenuSelectedFcn',{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
+        uimenu(options,'Label','Estimate recurrence time/probability',MenuSelectedFcnName(),@cb_est_recurr);
+        uimenu(options,'Label','Plot time series',MenuSelectedFcnName(),@cb_plot_ts);
+        uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedFcnName(),@cb_nonlin_optimize);
+        uimenu(options,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedFcnName(),@cb_nonlin_keepmc);
+        uimenu(options,'Label','Do not show discrete',MenuSelectedFcnName(),@cb_nodiscrete);
+        uimenu(options,'Label','Save values to file', 'Enable','off',MenuSelectedFcnName(),{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
         addAboutMenuItem();
     end
     
