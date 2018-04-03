@@ -184,7 +184,7 @@ function cluoverl(var1)
                 fore_h=[];
             end
         end
-        main_h=plotZG.primeCatalog.Longitude(tmp),ZG.primeCatalog.Latitude(tmp),'xm');
+        main_h=plot(ZG.primeCatalog.Longitude(tmp),ZG.primeCatalog.Latitude(tmp),'xm');
         mainsh=ZG.primeCatalog.subset(tmp);
         set(main_h,'MarkerSize',10);
         set(main_h,'LineWidth',2);

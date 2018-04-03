@@ -217,7 +217,7 @@ classdef bvalmapt < ZmapHGridFunction
                 tmp_av = rslt.aval_1;
                 
                 % replace av values for grid points where there are not enough events.
-                tmp_av(~idx) = log10( rslt.nEvents_1(~idx) + rslt.bval_1(~idx) .* rslt.magco_1(~idx) );
+                tmp_av(~idx) = log10( rslt.nEvents_1(~idx)) + rslt.bval_1(~idx) .* rslt.magco_1(~idx) ;
                 rslt.P6b = 10.^(tmp_av-rslt.bval_1 .* rfactor) ./ years(obj.duration_A);
                 rslt.bval_1(~idx) = NaN;
                 

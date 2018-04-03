@@ -1,5 +1,6 @@
 function [vMags, vClusTime, vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMethod)
-% function [vMags, vClusTime,vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMethod)
+% PLOT_CLUSCOMP  Compare actual cluster length with applied windowing technique (Gardner & Knopoff)
+% [vMags, vClusTime,vDist]=PLOT_CLUSCOMP(vmain, vcluster, mCatalog, nMethod)
 % ------------------------------------------------------------------------------
 % Compare actual cluster length with applied windowing technique (Gardner & Knopoff)
 %
@@ -15,8 +16,10 @@ function [vMags, vClusTime, vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMet
 % vDist     : Vector of cluster distances
 % J. Woessner
 % updated: 14.08.02
-
+%
 % 28.08.02: Changed distance determination using distance now
+
+error('Developer: plot_cluscomp Needs to be updated to handle new catalogs')
 
 mTmpCat = [vmain vcluster mCatalog];
 % Select cluster
@@ -38,7 +41,7 @@ for nCevent = 1: max(mTmpCat(:,1))
     vClusTime(nCevent) = (vMaxClusTime(nCevent)-vMinClusTime(nCevent))*365;
     %%% End of calculating time difference %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %
-    %%% Calculate spacial extend of cluster %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Calculate spatial extent of cluster %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     vMinClusLat(nCevent) = min(mTmpCat2(:,3));
     vMinClusLon(nCevent) = min(mTmpCat2(:,4));
     vMaxClusLat(nCevent) = max(mTmpCat2(:,3));

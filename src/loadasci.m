@@ -140,7 +140,7 @@ function loadasci(da,sa)
                 a = a(is(:,1),:) ;
                 ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 % set up the focal mechanism data
-                %prepfocal
+                %dall=prepfocal()
                 
                 close;
                 

@@ -91,7 +91,7 @@ function add_menu_catalog(obj, force)
         MenuSelectedFcnName(),@cb_resetcat); % Resets the catalog to the original selection
     
     uimenu (catmenu,'Label','Decluster the catalog',...
-        MenuSelectedFcnName(),@(~,~)inpudenew())
+        MenuSelectedFcnName(),@(~,~)inpudenew(obj.catalog))
     
     function cb_crop(~,~)
         ax = findobj(obj.fig, 'Type','Axes');

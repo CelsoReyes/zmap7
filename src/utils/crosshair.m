@@ -72,7 +72,7 @@ function crosshair(action)
                 xhr_plot.units='pixels';
                 loc = xhr_plot.Position;
                 pt = [scrn_pt(1) - loc(1), scrn_pt(2) - loc(2)];
-                xhr_plot.CurrentPoint=pt);
+                xhr_plot.CurrentPoint=pt;
 
 
             end

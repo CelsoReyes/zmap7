@@ -97,7 +97,7 @@ switch nMode_
 %         declusCat=mCatalog_((sum(mNumDeclus') > nSimul_*fFactor_)',:);
 %         mNumDeclus(:,nSimul_)=(sum(mNumDeclus') > nSimul_*fFactor_)';
     case 4
-        clear declus mNumDeclus;
+        clear mNumDeclus;
         disp('Monte Carlo Simulation for Reasenberg-declustering parameters (fortran Cluster200x)');
         sprintf('No. of Simulations : %d',nSimul_)
         tic

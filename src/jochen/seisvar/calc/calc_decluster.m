@@ -17,7 +17,7 @@ function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluste
 % Outgoing variables:
 % mCatDecluster : Declustered earthquake catalog
 % mCatAfter     : Catalog of aftershocks (and foreshocks)
-% vCluster      : Vector indicating only aftershocks/foreshocls in cluster using a cluster number
+% vCluster      : Vector indicating only aftershocks/foreshocks in cluster using a cluster number
 % vCl           : Vector indicating all events in clusters using a cluster number
 % vMainCluster  : Vector indicating mainshocks of clusters using a cluster number
 %
@@ -37,6 +37,9 @@ function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluste
 %%% Remember: Improve zero length cluster problem which might appear
 
 %% Initialize Vectors and Matrices
+
+error('Developer: calc_decluster Needs to be updated to handle new catalogs')
+
 mCatDecluster = [];
 mCatAfter = [];
 vCluster = zeros(length(mCatalog),1); % Initialize all events as mainshock

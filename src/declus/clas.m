@@ -35,7 +35,7 @@ function clas
     %
     %  Plot the as(t)
     %
-    ccum=figure(findobj('Tag','ccum','-and','Type','Figure');
+    ccum=figure(findobj('Tag','ccum','-and','Type','Figure'));
     cla
     hold off
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...

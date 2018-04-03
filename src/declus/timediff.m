@@ -1,6 +1,6 @@
 function [tdiff, ac]  = timediff(j,ci,tau, clus, eqtimes)
     % TIMEDIFF calculates the time difference between the ith and jth event
-    % works with variable eqtime from function clustime
+    % works with variable eqtime from function CLUSTIME
     % gives the indices ac of the eqs not already related to cluster k1
     
     % j : offset in eqtimes

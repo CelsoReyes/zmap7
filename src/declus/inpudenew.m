@@ -1,4 +1,4 @@
-function inpudenew()
+function inpudenew(catalog)
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  values Raesenberg used in this program
@@ -65,7 +65,9 @@ function inpudenew()
     end
     [vals, okpressed]=zdlg.Create('Declustering Parameters');
     if okpressed
-        declus(vals);
+        [outputcatalog,details]=declus(catalog,vals);
+        error('hey developer. do something with outputcatalog')
+        % TODO do something with the declustered catalog
     end
 
     

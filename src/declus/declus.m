@@ -1,8 +1,9 @@
-function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
+function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
+    % DECLUS main decluster algorithm
     % declus.m                                A.Allmann
     % main decluster algorithm
     % modified version, uses two different circles for already related events
-    % works on ZG.newcat
+    % works on catalog
     % different clusters stored with respective numbers in clus
     % Program is based on Raesenberg paper JGR;Vol90;Pages5479-5495;06/10/85
     
@@ -33,7 +34,6 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     % k      index of the cluster
     % k1     working index for cluster
     
-    %routine works on ZG.newcat
     
     report_this_filefun(mfilename('fullpath'));
     
@@ -75,13 +75,13 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     clustnumbers=[];
     cluslength=[];
     
-    [rmain_km,r1]=interaction_zone(ZG.newcat, rfact);   %calculation of interaction radii
+    [rmain_km,r1]=interaction_zone(catalog, rfact);   %calculation of interaction radii
 
     %calculation of the eq-time relative to 1902
-    eqtime=clustime(ZG.newcat);
+    eqtime=clustime(catalog);
     
     %variable to store information whether earthquake is already clustered
-    clus = zeros(1,ZG.newcat.Count);
+    clus = zeros(1,catalog.Count);
     
     k = 0;                                %clusterindex
     
@@ -89,11 +89,11 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     set(wai,'NumberTitle','off','Name','Decluster - Percent done');
     drawnow
     
-    %for every earthquake in ZG.newcat, main loop
-    for i = 1: (ZG.newcat.Count-1)
+    %for every earthquake in catalog, main loop
+    for i = 1: (catalog.Count-1)
         
         if rem(i,50)==0
-            waitbar(i/(ZG.newcat.Count-1));
+            waitbar(i/(catalog.Count-1));
         end
         
         % variable needed for distance and timediff
@@ -101,8 +101,8 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         
         % attach interaction time
         if k1~=0                %If i is already related with a cluster
-            if ZG.newcat.Magnitude(i)>=mbg(k1) %if magnitude of i is biggest in cluster
-                mbg(k1)=ZG.newcat.Magnitude(i);    %set biggest magnitude to magnitude of i
+            if catalog.Magnitude(i)>=mbg(k1) %if magnitude of i is biggest in cluster
+                mbg(k1)=catalog.Magnitude(i);    %set biggest magnitude to magnitude of i
                 bgevent(k1)=i;                  %index of biggest event is i
                 tau=taumin;
             else
@@ -173,7 +173,7 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
                     k=k+1;                         %
                     k1=k;
                     clus(i) = k1;
-                    mbg(k1) = ZG.newcat.Magnitude(i);
+                    mbg(k1) = catalog.Magnitude(i);
                     bgevent(k1) = i;
                 end
                 
@@ -191,8 +191,8 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         ZmapMessageCenter.set_info('Alert','No Cluster found')
         return
     else
-        [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(ZG.newcat,bgevent,clus,mbg);%builds a matrix clust that stored clusters
-        equi=equevent(ZG.newcat, clus);               % calculates equivalent events
+        [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(catalog,bgevent,clus,mbg);%builds a matrix clust that stored clusters
+        equi=equevent(catalog, clus);               % calculates equivalent events
         if isempty(equi)
             disp('No clusters in the catalog with this input parameters');
             return;
@@ -213,7 +213,11 @@ function declus(declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
         msgbox(st1,'Declustering Information')
         
         
-        maybe_analyse_clusters(); % depends on user input
+        if user_wants_to_analyze_clusters()
+            plot(clust)
+        else
+            disp('keep on going');
+        end
         
         watchoff
         
@@ -225,22 +229,22 @@ end
 function juggle_catalogs(clus)
     ZG = ZmapGlobal.Data;
     ZG.primeCatalog=buildcat('interactive');  % create new catalog for main program
-    ZG.original=ZG.newcat;       %save ZG.newcat in variable original
+    ZG.original=catalog;       %save catalog in variable original
     ZG.newcat=ZG.primeCatalog;
     ZG.storedcat=ZG.original;
     ZG.cluscat=ZG.original.subset(clus(clus~=0));
 end
     
-function tf = maybe_analyse_clusters()
-    % analyse_clusters ask user whether clusters should be analyzed
-        tf = questdlg('                                                           ',...
+function tf = user_wants_to_analyze_clusters()
+    % USER_WANTS_TO_ANALYZE_CLUSTERS ask user whether clusters should be analyzed
+        myans = questdlg('                                                           ',...
             'Analyse clusters? ',...
             'Yes please','No thank you','No thank you' );
         
-        switch tf
+        switch myans
             case 'Yes please'
-                plotclust()
-            case 'No thank you'
-                disp('Keep on going ...');
+                tf=true;
+            otherwise
+                tf=false;
         end
 end

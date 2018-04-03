@@ -128,7 +128,7 @@ function CreateMenu(obj)
             'Enable','off');
         uimenu(plotmenu,'Label','Overlay another curve (hold)',MenuSelectedFcnName(),@cb_hold)
         
-        uimenu (analyzemenu,'Label','Decluster the catalog',MenuSelectedFcnName(),@(~,~)inpudenew())
+        uimenu (analyzemenu,'Label','Decluster the catalog',MenuSelectedFcnName(),@(~,~)inpudenew(mycat))
         %uimenu(ztoolsmenu,'Label','Day/Night split ',MenuSelectedFcnName(),@cb_006)
         
         op3D  =   uimenu(plotmenu,'Label','Time series ');

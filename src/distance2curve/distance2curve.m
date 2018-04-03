@@ -177,8 +177,8 @@ elseif ~ischar(interpmethod)
     'Invalid method indicated. Only ''linear'',''pchip'',''spline'' allowed')
 else
   validmethods = {'linear' 'pchip' 'spline'};
-  ind = strmatch(lower(interpmethod),validmethods);
-  if isempty(ind) || (length(ind) > 1)
+  ind = strcmpi(interpmethod,validmethods);
+  if isempty(ind) || (sum(ind) > 1)
     error('DISTANCE2CURVE:invalidinterpmethod', ...
       'Invalid method indicated. Only ''linear'',''pchip'',''spline'' allowed')
   end
@@ -1630,7 +1630,7 @@ for i=1:n
   p_i = lower(pv_pairs{2*i-1});
   v_i = pv_pairs{2*i};
 
-  ind = strmatch(p_i,lpropnames,'exact');
+  ind = strcmp(p_i,lpropnames);
   if isempty(ind)
     ind = find(strncmp(p_i,lpropnames,length(p_i)));
     if isempty(ind)

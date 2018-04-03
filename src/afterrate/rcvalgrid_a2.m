@@ -214,7 +214,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         end
     end
 end
-
+%{
 function [sel]=orig_rcvalgrid_a2()
     % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
@@ -617,3 +617,4 @@ function callbackfun_001(mysrc,myevt)
     
     
 end
+%}

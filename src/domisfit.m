@@ -40,9 +40,11 @@ function domisfit(catalog,sig,plu,az,phi,R)
     
     fid = ('tmpin.dat');
     format = '%f%f%f%f%f';
-    [d1, d2, d3, d4, d5] = textread(fid,format,'headerlines',1);
+    %[d1, d2, d3, d4, d5] = textread(fid,format,'headerlines',1);
+    C = textscan(fid,format,'HeaderLines',1); %Problem: "Errorlines" cause crashes.
+    dall=[C{:}];
     
-    dall = [d1, d2, d3, d4, d5];
+    %dall = [d1, d2, d3, d4, d5];
     save tmpin.dat dall -ascii
     
     
