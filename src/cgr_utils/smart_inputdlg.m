@@ -82,6 +82,7 @@ function [dlgstruct , cancelled, varargout] = smart_inputdlg(dlgtitle, dlgstruct
         def(i)={dlgstruct(i).toChar(v)};
     end
     
+    % TODO inputdlg appears anywhere, but would be best put somewhere specific
     v = inputdlg({dlgstruct.prompt},dlgtitle, 1, def);
     cancelled = isempty(v);
     if ~cancelled()

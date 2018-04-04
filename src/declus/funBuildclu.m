@@ -1,5 +1,5 @@
-function[clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg)
-% funBuildclu builds cluster out out of information stored in clus
+function [clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg)
+% FUNBUILDCLU builds cluster out out of information stored in clus
 % mycat : catalog
 % clus: size of catalog, containing cluster index numbers
 % biggestEvent: size nClusters

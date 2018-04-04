@@ -327,7 +327,7 @@ function csubcat()
     function callbackfun_011(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        newccat=buildcat('original');
+        newccat=build_declustered_cat('original');
         csubcat;
     end
     

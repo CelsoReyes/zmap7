@@ -7,10 +7,11 @@ function plotmainmap(obj)
     eq=findobj(axm,'Tag','active quakes');
     
     
-    if isempty(eq)
+    if isempty(eq) 
+        % CREATE the pot
         hold(axm,'on');
         eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
-            mag2dotsize(obj.catalog.Magnitude),datenum(obj.catalog.Date),...
+            mag2dotsize(obj.catalog.Magnitude),getLegalColors(),...
             'Tag','active quakes','HitTest','off');
         eq.ZData=obj.catalog.Depth;
         if obj.catalog.Count > MAX_FOR_MARKER
@@ -20,11 +21,12 @@ function plotmainmap(obj)
         end
         hold(axm,'off');
     else
+        % REUSE the plot
         eq.XData=obj.catalog.Longitude;
         eq.YData=obj.catalog.Latitude;
         eq.ZData=obj.catalog.Depth;
         eq.SizeData=mag2dotsize(obj.catalog.Magnitude);
-        eq.CData=datenum(obj.catalog.Date);
+        eq.CData=getLegalColors();
     end
     
     hold(axm,'on');
@@ -37,4 +39,15 @@ function plotmainmap(obj)
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
     end
     axm.Visible='on';
+    
+    function c = getLegalColors()
+        % because datetime isn't allowed
+        switch  obj.colorField
+            case 'Date'
+                c=datenum(obj.catalog.Date);
+            otherwise
+                c=obj.catalog.(obj.colorField);
+        end
+    end
+    
 end

@@ -608,10 +608,8 @@ function Fetch_Callback(hObject, eventdata, handles)
     watchon;
     whos queryset
     
-    m=msgbox('Please wait while requested data is downloaded','Downloading');
-    mybutton=findobj(m,'Style','pushbutton');
-    mybutton.String='wait';mybutton.Enable='off';
-    drawnow
+    m=msgbox_nobutton('Please wait while requested data is downloaded','Downloading');
+    m.ButtonString='wait';
     %% do the import
     tmp=import_fdsn_event(1, queryset{:});
     
@@ -619,11 +617,9 @@ function Fetch_Callback(hObject, eventdata, handles)
     % make it OK to close dialog box.
     if isvalid(m)
         m.Name='Done';
-        set(findobj(m,'Tag','MessageBox'),'String',...
-            sprintf('Done Downloading. Found %d events',tmp.Count));
-        pause(.5);
+        m.String=sprintf('Done Downloading. Found %d events',tmp.Count);
+        m.delay_for_close(1);
         delete(m);
-        %set(mybutton,'Enable','on','String','OK');
     end
     watchoff;
     

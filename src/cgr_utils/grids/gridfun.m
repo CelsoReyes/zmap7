@@ -99,18 +99,9 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     % start parallel pool if necessary, but warn user!
     ZG = ZmapGlobal.Data;
     try
-        p=gcp('nocreate');
-        if isempty(p) &&  ZG.useParallel
-            h=msgbox('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
-            set(findobj(h,'Style','pushbutton'),'Visible','off'); %hide the "ok" button.
-            drawnow nocallbacks;
-            parpool();
-            close(h);
-        end
-    catch
-        if isvalid(h)
-            close(h)
-        end
+        start_the_parallel_pool();
+    catch ME
+        warning(ME.message);
     end
     
     mytic = tic;    
@@ -122,40 +113,21 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         gridttl = sprintf('Zmap: [%d functions]', numel(infun));
     end
     
-    h=msgbox({ 'Please wait.' , gridmsg },gridttl);
-    set(findobj(h,'Tag','OKButton'),'visible','off')
-    h.Tag='gridmessage';
-    watchon;
-    drawnow nocallbacks;
+    h=msgbox_nobutton({ 'Please wait.' , gridmsg },gridttl);
         
     if multifun
-        watchoff;
-        close(h);
         error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
     else
         doSinglefun(infun);
     end
     toc(mytic)
-    watchoff(h);
-    if isvalid(h)
-        set(findobj(h,'Style','pushbutton'),'Visible','on');
-        set(findobj(h,'Tag','MessageBox'),'String',...
-        {'Calculation Complete.',...
-        sprintf('skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents)});
+    h.ButtonVisible=true;
+    h.String={'Calculation Complete.',...
+        sprintf('skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents)};
     
-        % close the window after a while. this is probably a kludge.
-        for t=1:10
-            pause(.2);
-            if ~isvalid(h)
-                break;
-            end
-        end
-        if isvalid(h)
-            close(h);
-        end
-        
-    end
+    % close the window after a while. this is probably a kludge.
+    h.delay_for_close(seconds(2));
     if answidth==1
         reshaper=@(x) reshape(x, size(zgrid.X));
         values=reshaper(values);
@@ -247,5 +219,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             values=nan(length(zgrid),answidth);
     end
     
+    function start_the_parallel_pool()
+        p=gcp('nocreate');
+        if isempty(p) &&  ZG.useParallel
+            msgbox_nobutton('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
+            parpool();
+        end
+    end
 end
 

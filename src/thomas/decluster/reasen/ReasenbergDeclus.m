@@ -77,7 +77,7 @@ ltn=mycat.Count-1;
 for i = 1:ltn
 %    i
    % variable needed for distance and timediff
-   j=i+1;
+   % j=i+1; hardwired into the TIMEDIFF call
    k1=clus(i);
 
    % attach interaction time
@@ -101,7 +101,7 @@ for i = 1:ltn
    end
 
    %extract eqs that fit interation time window
-   [tdiff,ac]=funTimediff(j,i,tau,clus,eqtime);
+   [tdiff,ac] = timediff(i+1,i,tau,clus,eqtime);
 
 
    if size(ac)~=0   %if some eqs qualify for further examination

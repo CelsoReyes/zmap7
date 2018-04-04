@@ -1,6 +1,6 @@
-function newt2=buildcat(from_where)
-    %builds declustered catalog with equivalent events
-    %buildcat.m                                A.Allmann
+function newt2=build_declustered_cat(from_where)
+    %BUILD_DECLUSTERED_CAT builds declustered catalog with equivalent events
+    %A.Allmann
     %
    
     % highly modified by Celso Reyes, 2017
@@ -37,7 +37,7 @@ function newt2=buildcat(from_where)
             tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(backequi));
         end
     else
-        error('unknown option for buildcat "%s"',from_where);
+        error('unknown option for build_declustered_cat "%s"',from_where);
     end
     
     if exist('tmpcat','var')

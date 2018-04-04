@@ -26,6 +26,7 @@ function plot_base_events(obj, featurelist)
     
     xlabel(axm,'Longitude')
     ylabel(axm,'Latitude');
+    commandeer_colorbar_button();
     ZG=ZmapGlobal.Data;
     
     
@@ -65,6 +66,7 @@ function plot_base_events(obj, featurelist)
     uimenu(c,'Label','Define X-section','Separator','on',MenuSelectedFcnName(),@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
+    uimenu(c,'Label','Toggle ColorBar','Separator','on',MenuSelectedFcnName(),@(s,v)obj.do_colorbar);
     
     function updatewrapper(s,v,f)
         f(s,v);
@@ -107,4 +109,14 @@ function plot_base_events(obj, featurelist)
         axm.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
+    function commandeer_colorbar_button()
+        cbb=findall(groot,'Tooltip','Insert Colorbar');
+        origCallback = cbb.ClickedCallback;
+        if isequal(origCallback ,@do_colorbar)
+            return
+        end
+        cbb.ClickedCallback=@obj.do_colorbar;
+        
+        
+    end
 end

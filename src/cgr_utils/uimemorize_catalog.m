@@ -29,9 +29,8 @@ function uimemorize_catalog(catalog)
     switch todo
         case 'Memorize'
             ZG.memorized_catalogs = catalog;
-            h=msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            h=msgbox_nobutton(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
             set(findobj(h,'Style','pushbutton'),'Enable','off');
-            pause(1)
-            if isvalid(h),delete(h),end
+            h.delay_for_close(1);
     end
 end

@@ -204,7 +204,7 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
         showTimeCut = any(arrayfun(@(x)isa(get(x,'Xaxis'),'matlab.graphics.axis.decorator.DatetimeRuler'),ax));
         if ~showTimeCut
             src.Visible='off';
-            msgbox('The X axis is not a datetime axis, so this menu item will not work.','Inactive Menu Item');
+            msgbox('The X axis is not a datetime axis, so this menu item will not work.','Inactive Menu Item','modal');
         end
         
         [tt1,tt2]=timesel('cum');

@@ -68,7 +68,8 @@ function plot_mag_histogram(origCatalog, declusteredCatalog)
         set(0,'Currentfigure',hd1_declus_wintec);
         disp('Figure exists');
     else
-        hd1_win_fig=figure('tag','fig_declus_wintec','Name','Histogram','Units','normalized','Nextplot','add',...
+        hd1_win_fig=figure('tag','fig_declus_wintec','Name','Histogram',...
+            'Units','normalized','Nextplot','add',...
             'Numbertitle','off','Position',[0.4 0.2 .4 .6],'Menubar','none');
     end
     

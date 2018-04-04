@@ -1,4 +1,4 @@
-function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
+function [outputcatalog, details] = declus(catalog, declusParams) %(taumin,taumax,xk,xmeff,P,rfact,err,derr)
     % DECLUS main decluster algorithm
     % declus.m                                A.Allmann
     % main decluster algorithm
@@ -21,7 +21,7 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
     % P      to be P confident that you are observing the next event in
     %        the sequence (default is 0.95)
     
-        
+    
     
     %basic variables used in the program
     %
@@ -41,18 +41,18 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
     
     %declaration of global variables
     %
-    global clus 
+    global clus % number of the cluster with which this event is associated.
     global rmain_km % interaction zone for mainshock, km
     global r1   % interaction zone if included in a cluster, km
     global eqtime   %time of all earthquakes catalogs
     global k k1 bg mbg bgevent bgdiff          %indices
     global equi %[OUT]
-    global clust 
+    global clust
     global clustnumbers
     global cluslength %[OUT]
-   %  global taumin taumax 
+    %  global taumin taumax
     % global xk xmeff P
-
+    
     ZG=ZmapGlobal.Data;
     
     
@@ -75,8 +75,8 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
     clustnumbers=[];
     cluslength=[];
     
-    [rmain_km,r1]=interaction_zone(catalog, rfact);   %calculation of interaction radii
-
+    [rmain_km, r1]=interaction_zone(catalog, rfact);   %calculation of interaction radii
+    
     %calculation of the eq-time relative to 1902
     eqtime=clustime(catalog);
     
@@ -189,6 +189,8 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
     
     if ~any(clus)
         ZmapMessageCenter.set_info('Alert','No Cluster found')
+        outputcatalog=catalog;
+        details=struct()
         return
     else
         [cluslength,bgevent,mbg,bg,clustnumbers] = funBuildclu(catalog,bgevent,clus,mbg);%builds a matrix clust that stored clusters
@@ -198,9 +200,10 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
             return;
         end
         
-        juggle_catalogs(clus)
         
-        zmap_update_displays();
+        juggle_catalogs(clus,catalog)
+        
+        warning('should somehow zmap_update_displays()');
         hold on
         pl=plot(findobj(gcf,'Tag','mainmap_ax'),ZG.cluscat.Longitude, ZG.cluscat.Latitude,'mo', 'DisplayName','Clustered Events');
         pl.ZData=ZG.cluscat.Depth;
@@ -209,7 +212,7 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
             ' events (out of %d). The map window now display the declustered catalog containing %d events.'...
             'The individual clusters are displayed as magenta on the  map.' ] ...
             , bgevent.Count, ZG.cluscat.Count, ZG.original.Count , ZG.primeCatalog.Count);
-
+        
         msgbox(st1,'Declustering Information')
         
         
@@ -223,28 +226,28 @@ function [outputcatalog,details] = declus(catalog, declusParams) %(taumin,taumax
         
     end
     
-
+    
 end
 
-function juggle_catalogs(clus)
+function juggle_catalogs(clus, catalog)
     ZG = ZmapGlobal.Data;
-    ZG.primeCatalog=buildcat('interactive');  % create new catalog for main program
+    ZG.primeCatalog=build_declustered_cat('interactive');  % create new catalog for main program
     ZG.original=catalog;       %save catalog in variable original
     ZG.newcat=ZG.primeCatalog;
     ZG.storedcat=ZG.original;
     ZG.cluscat=ZG.original.subset(clus(clus~=0));
 end
-    
+
 function tf = user_wants_to_analyze_clusters()
     % USER_WANTS_TO_ANALYZE_CLUSTERS ask user whether clusters should be analyzed
-        myans = questdlg('                                                           ',...
-            'Analyse clusters? ',...
-            'Yes please','No thank you','No thank you' );
-        
-        switch myans
-            case 'Yes please'
-                tf=true;
-            otherwise
-                tf=false;
-        end
+    myans = questdlg('                                                           ',...
+        'Analyse clusters? ',...
+        'Yes please','No thank you','No thank you' );
+    
+    switch myans
+        case 'Yes please'
+            tf=true;
+        otherwise
+            tf=false;
+    end
 end

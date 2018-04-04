@@ -23,19 +23,16 @@ function memorize_recall_catalog(catalog)
     switch todo
         case 'Memorize'
             ZG.memorized_catalogs = copy(catalog);
-            h=msgbox(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
-            pause(1)
-            if isvalid(h),delete(h),end
+            h=msgbox_nobutton(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
+            h.ButtonVisible=true;
+            h.delay_for_close(1);
         case 'Recall'
             replaceMainCatalog(ZG.memorized_catalogs);
             h=msgbox(['Catalog ' catalog.Name ' has been Recalled.     '],'Recall Catalog');
-            pause(2)
-            if isvalid(h),delete(h),end
-            
             ZG.newcat = ZG.memorized_catalogs; 
             ZG.newt2= ZG.memorized_catalogs;
             zmap_update_displays();
             ZmapMessageCenter.update_catalog();
-            
+            h.delay_for_close(2);
     end
 end

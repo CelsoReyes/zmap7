@@ -36,13 +36,13 @@ function clpval(var1)
     global autop tmeqtime tmvar
     tmvar=[];
     %input of parameters(Magnitude,Time)
-    if var1==1  | var1==3 | var1==4  | var1==5
+    if any(var1==[1 3 4 5])
         pplot=findobj('Type','Figure','-and','Name','P-Value Plot');
         if ~isempty(pplot)
             figure(pplot);
             clf
         else
-            if var1==3 | var1==4
+            if var1==3 || var1==4
                 ppc=1;
             end
             pplot=figure_w_normalized_uicontrolunits(...
@@ -81,7 +81,7 @@ function clpval(var1)
         else
             [cumu, xt] = hist(ZG.newt2.Date-min(ZG.newt2.Date), 0:par5:tdiff);
         end
-        if var1==3 | var1==4
+        if var1==3 || var1==4
             difp= [0 diff(cumu)];
         end
         cumu2 = cumsum(cumu);
@@ -96,7 +96,7 @@ function clpval(var1)
         ctiplo = plot(xt,cumu2,'ob');
         set(gca,'visible','off')
         cplot2 = plot(xt,cumu2,'r');
-        if var1==3  | var1==4
+        if var1==3  || var1==4
             plot(xt,difp/10,'g');
         end
         
@@ -176,7 +176,7 @@ function clpval(var1)
             disp('Please select the end time of the P-value plot. Click with the left   mouse button at your end position.')
             XLim=get(cplot,'XLim');
         end
-        if var1==1 | var1==3
+        if var1==1 || var1==3
             M2b = [];
             M2b = ginput(1);
             tt3= M2b(1);
@@ -370,7 +370,7 @@ function clpval(var1)
                 tmp6=tmp3;
             end
             tmpcat=tmpcat(find(tmpcat(:,6)>=tmp2 & tmpcat(:,6)<=tmp1),:);
-            if var1 ==6 | var1==7
+            if var1 ==6 || var1==7
                 ttt=find(tmpcat(:,3)>mains(1,3));
                 tmpcat=tmpcat(ttt,:);
                 tmpcat=[mains; tmpcat];
@@ -406,11 +406,7 @@ function clpval(var1)
         
         if autop~=1
             figure(pplot);
-            delete(freq_field1);
-            delete(freq_field2);
-            delete(freq_field3);
-            delete(freq_field4);
-            delete(Go_p_button);
+            delete([freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button]);
             cla;
         end
         if loopcheck<500

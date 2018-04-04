@@ -132,6 +132,16 @@ function create_all_menus(obj, force)
             'checked',char(ZmapGlobal.Data.mainmap_grid));
         grid(axm,char(ZmapGlobal.Data.mainmap_grid));
         
+        % choose what to plot by
+        for j=1:numel(obj.ValidColorFields)
+            myfn = obj.ValidColorFields{j};
+            um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedFcnName(),{@set_colorby,myfn},...
+                'Checked',tf2onoff(strcmp(obj.colorField,myfn)));
+            if j==1
+                um(j).Separator='on';
+            end
+        end
+        
         
         add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu,'Label','Layers');
@@ -174,6 +184,23 @@ function create_all_menus(obj, force)
         uimenu(mapoptionmenu,...
             'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.big_eq_minmag)],...
             MenuSelectedFcnName(),@cb_plot_large_quakes);
+        
+        function set_colorby(~,~,val)
+            obj.colorField=val;
+            for jj=1:numel(um)
+                myfn = obj.ValidColorFields{jj};
+                um(jj).Checked = tf2onoff(strcmp(obj.colorField,myfn));
+            end
+            h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
+            hascolorbar=~isempty(h);
+            delete(h)
+            obj.replot_all();
+            obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
+            % redraw the colorbar?
+            if hascolorbar
+                obj.do_colorbar();
+            end
+        end
         
         function cb_plotby(~,~, s)
             ZG=ZmapGlobal.Data;

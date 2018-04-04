@@ -20,6 +20,7 @@ classdef ZmapMainWindow < handle
         replotting=false
         mdate
         mshape
+        colorField='Depth'; % see ValidColorFields for choices 
     end
     
     properties(Constant)
@@ -32,6 +33,7 @@ classdef ZmapMainWindow < handle
         XSAxPos=[45 40 675 120]
         FeaturesToPlot = {'borders','coastline',...
             'faults','lakes','plates','rivers','stations','volcanoes'}
+        ValidColorFields={'Depth','Date','Magnitude'};
     end
     properties(Dependent)
         map_axes % main map axes handle
@@ -66,7 +68,7 @@ classdef ZmapMainWindow < handle
             end
             
             % set up figure
-            h=msgbox('drawing the main window. Please wait');
+            h=msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
             
             obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
                 'pixels','Tag','Zmap Main Window','NumberTitle','off','visible','off');
@@ -86,7 +88,6 @@ classdef ZmapMainWindow < handle
             end
             if isempty(obj.rawcatalog)
                 errordlg(sprintf('Cannot open the ZmapMainWindow: No catalog is loaded.\nFirst load a catalog into Zmap, then try again.'),'ZMap');
-                if isvalid(h),delete(h),end
                 error('No catalog is loaded');
             end
             obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
@@ -134,11 +135,13 @@ classdef ZmapMainWindow < handle
             
             obj.replot_all();
             obj.fig.Visible='on';
-            if isvalid(h)
-                delete(h)
-            end
+            
             obj.create_all_menus(true); % plot_base_events(...) must have already been called, ino order to load the features from ZG
-
+            ax=findobj(obj.fig,'Tag','mainmap_ax');
+            obj.fig.CurrentAxes=ax;
+            legend(ax,'show');
+            
+            
             
             if isempty(obj.xsections)
                 set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
@@ -162,6 +165,7 @@ classdef ZmapMainWindow < handle
         popState(obj)
         catalog_menu(obj,force)
         [c, mdate, mshape, mall]=filtered_catalog(obj)
+        do_colorbar(obj,~,~)
         
         % menus
         create_all_menus(obj, force)

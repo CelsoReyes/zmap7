@@ -47,7 +47,7 @@ function cluster_length = save_declus(catalog)
     watchon;
     disp('Reloading data ...')
     
-    yr =   str2double(dat(:,1:4));
+    yr = str2double(dat(:,1:4));
     mo=  str2double(dat(:,5:6));
     da=  str2double(dat(:,7:8));
     hr=  str2double(dat(:,9:10));
