@@ -54,7 +54,7 @@ function plot_base_events(obj, featurelist)
     ShapeCircle.AddCircleMenu(c, obj.shape);
     for j=1:numel(c.Children)
         if startsWith(c.Children(j).Tag,{'circle','poly'})
-            c.Children(j).MenuSelectedFcn={@updatewrapper,c.Children(j).Callback};
+            c.Children(j).(MenuSelectedFcnName)={@updatewrapper,c.Children(j).Callback};
         end
     end
     
