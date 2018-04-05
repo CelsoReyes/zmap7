@@ -79,6 +79,11 @@ function replot_all(obj,status)
     if isempty(obj.xsgroup.Children)
         obj.xsgroup.Visible='off';
         set(obj.map_axes,'Position',obj.MapPos_L);
+        
+        % set the colorbar position, if it is visible.
+        cb = findobj(obj.fig,'tag','mainmap_colorbar');
+        set(cb,'Position',obj.MapCBPos_L);
+        
     end
     obj.replotting=false;
     lrTabGroup.Visible='on';

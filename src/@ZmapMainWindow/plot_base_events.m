@@ -112,10 +112,10 @@ function plot_base_events(obj, featurelist)
     function commandeer_colorbar_button()
         cbb=findall(groot,'Tooltip','Insert Colorbar');
         origCallback = cbb.ClickedCallback;
-        if isequal(origCallback ,@do_colorbar)
+        if isequal(origCallback ,@obj.do_colorbar)
             return
         end
-        cbb.ClickedCallback=@obj.do_colorbar;
+        cbb.ClickedCallback={@obj.do_colorbar,origCallback};
         
         
     end

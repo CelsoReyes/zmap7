@@ -27,10 +27,12 @@ classdef ZmapMainWindow < handle
         WinPos=position_in_current_monitor(1200,750)% [50 50 1200 750]; % position of main window
         URPos=[800 380 390 360] %
         LRPos=[800 10 390 360]
-        MapPos_S=[70 270 680 450]
-        MapPos_L=[70 50 680 450+220] %260
+        MapPos_S=[70 270 645 450] % width was 670(?)
+        MapPos_L=[70 50 645 450+220] %260
         XSPos=[15 10 760 215]
-        XSAxPos=[45 40 675 120]
+        XSAxPos=[45 40 650 120]
+        MapCBPos_S=[70+645+2 270 20 450] % 
+        MapCBPos_L=[70+645+2 50 20 450+220]
         FeaturesToPlot = {'borders','coastline',...
             'faults','lakes','plates','rivers','stations','volcanoes'}
         ValidColorFields={'Depth','Date','Magnitude'};
@@ -165,7 +167,7 @@ classdef ZmapMainWindow < handle
         popState(obj)
         catalog_menu(obj,force)
         [c, mdate, mshape, mall]=filtered_catalog(obj)
-        do_colorbar(obj,~,~)
+        do_colorbar(obj,~,~, prevcallback)
         
         % menus
         create_all_menus(obj, force)
@@ -338,6 +340,11 @@ classdef ZmapMainWindow < handle
             
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes,'Position',obj.MapPos_S);
+            
+            % set the colorbar position, if it is visible.
+            cb = findobj(obj.fig,'tag','mainmap_colorbar');
+            set(cb,'Position',obj.MapCBPos_S);
+            
             mytab=uitab(obj.xsgroup, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
             
             % keep tabs alphabetized
