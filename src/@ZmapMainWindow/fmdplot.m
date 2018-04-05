@@ -9,6 +9,7 @@ function fmdplot(obj, tabgrouptag)
     
     %mainax=obj.map_axes;
     bdiff2(obj.catalog,false,ax);
+    legend(ax,'show')
     
     addLegendToggleContextMenuItem(ax,ax,[],'bottom','above')
     %mainax2=obj.map_axes;

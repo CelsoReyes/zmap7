@@ -313,7 +313,7 @@ classdef bdiff2
             bfig=findobj('Type','Figure','-and','Name','Frequency-magnitude distribution');
             is_standalone = ~isempty(bfig) && ax==findobj(bfig,'Tag','main_bval_axes');
             if is_standalone
-                fw='bold';
+                fw='normal'; % fw='bold';
                 fs=ZG.fontsz.m;
             else
                 fw='normal';
@@ -352,14 +352,17 @@ classdef bdiff2
                 'Marker','v','MarkerFaceColor','b',...
                 'LineWidth',1.0,'MarkerSize',7,...
                 'Tag','magnitude of Completeness',...
-                'DisplayName','M_{comp}');
+                'DisplayName',sprintf('%s: %0.1f','Mc',obj.magco));
             text(obj.magsteps_desc(obj.index_low)+0.2,obj.bvalsum3(obj.index_low)*1.5,'Mc','FontWeight','bold','FontSize',ZG.fontsz.s,'Color','b')
             
             % plot line corresponding to B value
+            bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',...
+                obj.bw, obj.std_backg, obj.aw, obj.a0);
             line(ax, obj.mag_zone,obj.f,'Color','r','LineWidth',1 ,...
                 'Tag', 'linear fit',...
-                'DisplayName',sprintf('b-val fit: %g',obj.bw));   % plot linear fit to backg
-            
+                'DisplayName',bvdispname);   % plot linear fit to backg
+            % a value
+            %line(ax, obj.aw,1,'color','m','Marker','o','MarkerSize',6,'linestyle','none','DisplayName',sprintf('a-val: %.2f',obj.aw));
             %pdf_calc;
             set(ax,'XLim',obj.myXLim);
             set(ax,'YLim',obj.myYLim);
@@ -375,7 +378,7 @@ classdef bdiff2
             end
             
             set(bfig,'visible','on');
-            
+            legend(ax,'show')
             % created here too, for when figure is created from inset figure
             if isempty(ax.UIContextMenu)
                 delete(findobj(bfig,'Tag','bdiff_from_inset context'))
