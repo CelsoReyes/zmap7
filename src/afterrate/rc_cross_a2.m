@@ -79,7 +79,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
             
             %zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
             % add fMaxRadius
-            %zdlg.AddEventSelectionParameters('EventSelector', ni, ra, Nmin) %selOpt
+            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
             zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
             zdlg.AddBasicEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
             zdlg.AddBasicEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
@@ -106,6 +106,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
             obj.bootloops = res.boot_samp;
             obj.timef = res.forec_period;
             obj.time = res.learn_period;
+            obj.EventSelector=res.evsel;
             
             oldfig_button=oldfig_button.Value;
         end

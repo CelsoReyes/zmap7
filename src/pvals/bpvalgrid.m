@@ -71,6 +71,8 @@ classdef bpvalgrid < ZmapHGridFunction
             zdlg.AddBasicCheckbox('use_const_c','fixed c', obj.CO<0, {'const_c'},'keep the Omori C parameter fixed');
             zdlg.AddBasicEdit('const_c','omori c parameter', obj.valeg2, 'C-parameter parameter (fixed)');
             zdlg.AddBasicEdit('minpe','min goodness %', obj.minpe, 'Minimum goodness of fit (percentage)');
+
+            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
             % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
@@ -88,6 +90,7 @@ classdef bpvalgrid < ZmapHGridFunction
             %ZG.inb1=res.mc_choice;
             obj.valeg2=res.c_val;
             obj.minpe=res.minpe;
+            obj.EventSelector=res.evsel;
             if res.use_const_c
                 obj.CO=res.const_c;
                 obj.valeg2 = -obj.valeg2; %duplicating original inputs

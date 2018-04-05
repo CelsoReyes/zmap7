@@ -73,6 +73,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             zdlg.AddBasicEdit('bottom_of_bottom','BOTTOM zone floor [km]',obj.bottomzone_floor,'');
             zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
                 'Min # events greater than magnitude of completeness (Mc)');
+            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
             [res,okPressed]=zdlg.Create('Depth Ratio Grid input parameters');
             if ~okPressed
                 return
@@ -90,6 +91,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             obj.bottomzone_ceiling = res.top_of_bottom;
             obj.bottomzone_floor = res.bottom_of_bottom;
             obj.Nmin=res.Nmin;
+            obj.EventSelector=res.evsel;
         end
         
         function CheckPreConditions(obj)

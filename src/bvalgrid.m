@@ -68,6 +68,7 @@ classdef bvalgrid < ZmapHGridFunction
                 'Min # events greater than magnitude of completeness (Mc)');
             zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',obj.fMccorr,...
                 'Correction term to be added to Mc');
+            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
             
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
             if ~okPressed
@@ -86,6 +87,7 @@ classdef bvalgrid < ZmapHGridFunction
             obj.mc_choice = res.mc_choice;
             %obj.ZG.inb1=res.mc_choice;
             obj.useBootstrap=res.useBootstrap;
+            obj.EventSelector=res.evsel;
         end
         
         function CheckPreconditions(obj)

@@ -180,9 +180,14 @@ classdef ZmapDialog < handle
                         
                     case 'eventselectparameterbox'
                         didEvSel=true;
-                        obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
-                            [labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10],...
-                            details.maxnum, details.maxrad, details.minvalid);
+                        pos=[labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10];
+                        if isfield(details,'fulldetails')
+                            obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
+                                pos, details.fulldetails);
+                        else
+                            obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
+                                pos, details.maxnum, details.maxrad, details.minvalid);
+                        end
                         
                     case 'header'
                         obj.parts{i}.handle=uicontrol('Style','text',...
@@ -421,7 +426,8 @@ classdef ZmapDialog < handle
         
         function AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
             %AddEventSelectionParameters Choose between events in a radius, or closest N events
-            %AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
+            % AddEventSelectionParameters(obj, tag, EventSelectionStruct)
+            % AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
             % used to define how each grid point will select events
             %
             % returns structure
@@ -436,12 +442,18 @@ classdef ZmapDialog < handle
             if ~exist('minvalid','var')
                 minvalid=0;
             end
+            if isa(ni,'struct')
+                details=struct('Style','eventselectparameterbox',...
+                'Tag',tag,...
+                'fulldetails',ni);
+            else
             details=struct(...
                 'Style','eventselectparameterbox',...
                 'Tag',tag,...
                 'maxnum',ni,...
                 'maxrad',ra,...
                 'minvalid',minvalid);
+            end
             obj.parts(end+1)={details};
         end
         

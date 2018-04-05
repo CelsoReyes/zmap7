@@ -105,6 +105,7 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg.AddBasicEdit('t4','End Time B :', obj.t4, 'Start time for Second period');
             zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.radius_km,...
                 'Radius used in calculation');
+            % zdlg.AddEventSelectionParameters('evsel', obj.EventSelector); two items from this are used instead
             zdlg.AddBasicEdit('minnu', 'Minimum number of events in each period:', ...
                 obj.EventSelector.requiredNumEvents,'');
             

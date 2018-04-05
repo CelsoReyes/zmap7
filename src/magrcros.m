@@ -63,7 +63,7 @@ classdef magrcros < ZmapVGridFunction
             % make the interface
             %
             zdlg = ZmapDialog([]);
-            % zdlg.AddEventSelectionParameters('evtparams', ni, ra);
+            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
             if ~isempty(obj.Shape)
                 zdlg.AddBasicCheckbox('useGridFromShape', 'Limit grid to shape', true,[],...
                     'Only evaluate for gridpoints within the shape region. Does not restrict the catalog');
@@ -141,6 +141,7 @@ classdef magrcros < ZmapVGridFunction
             obj.window_duration = unitizer(res.win_dur);
             obj.bin_dur = obj.window_duration/res.n_bins_in_window;
             obj.cutoff = res.cutoff;
+            obj.EventSelector=res.evsel;
             
             if isfield(res,'useGridFromShape') && res.useGridFromShape
                 obj.Grid = obj.Grid.MaskWithShape(obj.Shape);

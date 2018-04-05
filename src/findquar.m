@@ -53,7 +53,6 @@ classdef findquar < ZmapHGridFunction
         
         function InteractiveSetup(obj)
             % allow user to determin grid and selection paramters
-            obj.InteractiveSetup_part2();
             %zdlg=ZmapDialog(...
             %    obj,...  pass it a handle that it can change when the OK button is pressed.
             %    @obj.InteractiveSetup_part2...  if OK is pressed, then this function will be executed.
@@ -79,10 +78,20 @@ classdef findquar < ZmapHGridFunction
             %                                     may be evaluated
             
             %zdlg.AddGridParameters('Grid',1.0,'deg',1.0,'deg',[],[]);
+            % TODO: add Event Selector here somehow
             %zdlg.AddEventSelectionParameters('EvtSel',100,[],1);
             % get the grid parameter
+            %{
+            zdlg=ZmapDialog();
+            zdlg.AddEventSelectionParameters('evsel',obj.EventSelector);
+            [res,okpressed]=zdlg.Create('Define Grid and Selection Parameters');
+            if ~okpressed
+                return
+            end
+            obj.EventSelector=res.evsel;
+            %}
+            obj.InteractiveSetup_part2();
             
-            % zdlg.Create('Define Grid and Selection Parameters')
         end
         
         function InteractiveSetup_part2(obj)
@@ -95,28 +104,33 @@ classdef findquar < ZmapHGridFunction
                 'units','points',...
                 'Visible','on', ...
                 'Tag','fifhr',...
-                'Position',[ 100 200 500 450]);
+                'Position',[ 100 100 500 650]);
             axis off
-            text(...
-                'Position',[0. 0.90 0 ],...
-                'FontSize',ZmapGlobal.Data.fontsz.m ,...
-                'FontWeight','bold',...
-                'String',' Select the daytime hours and then ''GO''  ');
-            figure(fifhr);
+            
+            uicontrol(fifhr,'Style','text','String','Detect Quarry Events',...
+                'FontWeight','Bold','FontSize',14,'Units','points','Position',[50 620 300 20]);
+          
             hold on
-            axes(fifhr,'pos',[0.1 0.2 0.6 0.6]);
-            histogram(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
-            [X,N] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
+            hax=axes(fifhr,'Units','points','pos', [50 320 300 270])%[0.1 0.2 0.6 0.6]);
+            dayHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','day','FaceColor',[.8 .8 .2]);
+            hold on;
+            nightHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','night','FaceColor',[.1 0 .6]);
+            title(' Select the daytime hours and then "GO"')
+            [X,N,B] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
             %[X,~] = hist(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
             
             xlabel('Hr of the day')
             ylabel('Number of events per hour')
             
+            evsel=EventSelectionChoice(fifhr,'evsel', [40,100], obj.EventSelector);
+            
+            chkpos = @(n)[.80 1-n/28-0.03 .17 1/26];
             for i = 1:24
                 hHourly(i)=uicontrol('Style','checkbox',...
                     'string',[num2str(i-1) ' - ' num2str(i) ],...
-                    'Position',[.80 1-i/28-0.03 .17 1/26],'tag',num2str(i),...
-                    'Units','normalized');
+                    'Position',chkpos(i),'tag',num2str(i),...
+                    'Units','normalized',...
+                    'Callback',{@cb_flip,i});
             end
             
             % turn on checkboxes according to their percentile score
@@ -124,16 +138,28 @@ classdef findquar < ZmapHGridFunction
             for i = 1:length(idx)
                 set(hHourly(i),'Value',idx(i));
             end
-            
+            dayHist.Data(ismember(B,find(~idx)))=nan;
+            nightHist.Data(ismember(B,find(idx)))=nan;
+            legend(hax,'show');
             if isempty(findobj(fifhr,'Tag','quarryinfo'))
                 add_menu_divider();
                 uimenu(fifhr,'Label','Info',MenuSelectedFcnName(),@cb_info,'tag','quarryinfo');
-                uimenu(fifhr,'Label','Go',MenuSelectedFcnName(),@cb_go);
-                uimenu(fifhr,'Label','Cancel',MenuSelectedFcnName(),@cb_cancel);
+            end
+            
+            uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,...
+                'units','pixels','Position',[330 10 60 25]);
+            
+            uicontrol(fifhr,'style','pushbutton','String','Cancel','callback',@cb_cancel,...
+                'units','pixels','Position',[400 10 60 25]);
+            
+            function cb_flip(~,~,i)
+                idx(i)=~idx(i);
+                dayHist.Data=obj.RawCatalog.Date.Hour(ismember(B,find(idx)));
+                nightHist.Data=obj.RawCatalog.Date.Hour(ismember(B,find(~idx)));
             end
             
             function cb_go(~,~)
-                obj.inDaytime=logical([hHourly.Value]);
+                obj.inDaytime=logical([hHourly.Value]); %same as idx
                 close;
                 obj.doIt();
             end
