@@ -59,14 +59,15 @@ function plot_base_events(obj, featurelist)
         end
     end
     
-    uimenu(c,'Label','Clear Shape',MenuSelectedFcnName(),{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Clear Shape',...
+        'Separator','on', MenuSelectedFcnName(),{@updatewrapper,@(~,~)cb_shapeclear});
     uimenu(c,'Label','Zoom to shape',MenuSelectedFcnName(),@cb_zoom_shape);
     uimenu(c,'Label','Crop to selection',MenuSelectedFcnName(),@cb_crop_to_selection);
     uimenu(c,'Label','Zoom to selection',MenuSelectedFcnName(),@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on',MenuSelectedFcnName(),@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
-    uimenu(c,'Label','Toggle ColorBar','Separator','on',MenuSelectedFcnName(),@(s,v)obj.do_colorbar);
+    uimenu(c,'Label','Toggle ColorBar',MenuSelectedFcnName(),@(s,v)obj.do_colorbar);
     
     function updatewrapper(s,v,f)
         f(s,v);

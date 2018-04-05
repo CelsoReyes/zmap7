@@ -10,14 +10,15 @@ function plothist(obj, name, values, tabgrouptag)
         hisgra(obj.catalog,name,ax)
         h=findobj(ax,'Type','histogram');
         h.DisplayName='catalog';
+        h.Tag='cataloghist';
         ax.YGrid='on';
         hold on
         addLegendToggleContextMenuItem(ax,ax,[],'bottom','above');
         
     else
         h=findobj(ax,'Type','histogram');
-        h.Data=values; %TODO move into hisgra
-        delete(findobj(ax,'Type','line'));
+        h(strcmp({h.Tag},'cataloghist')).Data=values; %TODO move into hisgra
+        delete(h(~strcmp({h.Tag},'cataloghist')))%delete(findobj(ax,'Type','line'));
         if ~isempty(obj.xscats)
             doit(ax)
         end
@@ -34,16 +35,22 @@ function plothist(obj, name, values, tabgrouptag)
             k=keys{j};
             switch name
                 case 'Hour'
-                    n=histcounts(hours(obj.xscats(k).Date.(name)),edges);
+                    h=histogram(ax,hours(obj.xscats(k).Date.(name)),edges,'DisplayStyle','stairs',...
+                        'DisplayName',k,'Tag',k);
+                    %n=histcounts(hours(obj.xscats(k).Date.(name)),edges);
                 otherwise
-                    n=histcounts(obj.xscats(k).(name),edges);
+                    h=histogram(ax,obj.xscats(k).(name),edges,'DisplayStyle','stairs',...
+                        'DisplayName',k,'Tag',k);
+                    %n=histcounts(obj.xscats(k).(name),edges);
             end
-            line(ax,middles,n,'MarkerEdgeColor',obj.xsections(k).color,...
-                'LineStyle','none',...
-                'DisplayName',k,...
-                'Marker','.');
+            h.EdgeColor=obj.xsections(k).color;
+            %line(ax,middles,n,'MarkerEdgeColor',obj.xsections(k).color,...
+            %    'LineStyle','none',...
+            %    'DisplayName',k,...
+            %    'Marker','.');
         end
         hold(ax,'off')
+        set(findobj(ax,'Type','histogram'),'linewidth',1.0)
     end
     
 end

@@ -8,7 +8,7 @@ function hisgra(mycat, opt, ax)
     global histo hisvar strii1 strii2
     
     try
-        [vari1, bins] = get_histparams(opt);
+        [vari1, bins] = get_histparams(mycat, opt);
     catch ME
         return;
     end
@@ -117,29 +117,30 @@ function hisgra(mycat, opt, ax)
     %% callback functions
     function callback_change_nBins(~,~)
         h=findobj(ax,'Type','histogram');
-        def = num2str(h.NumBins);
+        def = num2str(h(1).NumBins);
         binsS = inputdlg('Choose number of bins','Histogram Params',1, {def});
-        h.NumBins = str2double(binsS{1});
+        set(h,'NumBins',str2double(binsS{1}));
     end
     
     function callback_change_bVector(~,~)
         h=findobj(ax,'Type','histogram');
+        mainh=h(1);
         %edges= num2str(h.BinEdges);
-        if isduration(h.BinEdges(1))
-            fmt = h.BinEdges(1).Format;
+        if isduration(mainh.BinEdges(1))
+            fmt = mainh.BinEdges(1).Format;
             switch fmt
                 case 'm'
                     units='minutes';
-                    numedges=minutes(h.BinEdges);
+                    numedges=minutes(mainh.BinEdges);
                 case 'h'
                     units='hours';
-                    numedges=hours(h.BinEdges);
+                    numedges=hours(mainh.BinEdges);
                 case 'y'
                     units='years';
-                    numedges=years(h.BinEdges);
+                    numedges=years(mainh.BinEdges);
                 otherwise
                     units='days';
-                    numedges=days(h.BinEdges);
+                    numedges=days(mainh.BinEdges);
             end
             def=[num2str(numedges(1)), ' : ',...
                 num2str(mode(diff(numedges))),' : ',...
@@ -148,34 +149,38 @@ function hisgra(mycat, opt, ax)
             binsS = inputdlg(['Vector of bin edges (e.g. 0:5:20) in ' units],'Histogram Params',1,{def});
             switch fmt
                 case 'm'
-                    h.BinEdges=minutes(str2num(binsS{1})); %#ok<ST2NM>
+                    binEdgeValues=minutes(str2num(binsS{1})); %#ok<ST2NM>
                 case 'h'
-                    h.BinEdges=hours(str2num(binsS{1})); %#ok<ST2NM>
+                    binEdgeValues=hours(str2num(binsS{1})); %#ok<ST2NM>
                 case 'y'
-                    h.BinEdges=years(str2num(binsS{1})); %#ok<ST2NM>
+                    binEdgeValues=years(str2num(binsS{1})); %#ok<ST2NM>
                 otherwise
-                    h.BinEdges=days(str2num(binsS{1})); %#ok<ST2NM>
+                    binEdgeValues=days(str2num(binsS{1})); %#ok<ST2NM>
             end
-        elseif isdatetime(h.BinEdges(1))
+        elseif isdatetime(mainh.BinEdges(1))
             prompt={'Starting Date [year month day hour minute second]',...
                 'Date step [year month day hour minute second]',...
                 'Ending Date [year month day hour minute second]'};
-            delt= mode(diff(h.BinEdges));
-            def = {num2str(fix(datevec(h.BinEdges(1)))), ... starting date
-                num2str(fix(datevec(mode(diff(h.BinEdges))))),... difference
-                num2str(fix(datevec(h.BinEdges(end))))}; % ending date
+            delt= mode(diff(mainh.BinEdges));
+            def = {num2str(fix(datevec(mainh.BinEdges(1)))), ... starting date
+                num2str(fix(datevec(mode(diff(mainh.BinEdges))))),... difference
+                num2str(fix(datevec(mainh.BinEdges(end))))}; % ending date
             binsS = inputdlg(prompt,'Histogram Params',1,def);
             dur = datetime(str2num(binsS{2})) - datetime([0 0 0 0 0 0]);
-            h.BinEdges=datetime(str2num(binsS{1})) : dur : datetime(str2num(binsS{3}));
+            binEdgeValues=datetime(str2num(binsS{1})) : dur : datetime(str2num(binsS{3}));
             
         else
-            def=[num2str(h.BinEdges(1)), ' : ',...
-                num2str(mode(diff(h.BinEdges))),' : ',...
-                num2str(h.BinEdges(end))];
+            def=[num2str(mainh.BinEdges(1)), ' : ',...
+                num2str(mode(diff(mainh.BinEdges))),' : ',...
+                num2str(mainh.BinEdges(end))];
             %def = num2str(h.BinEdges);
             binsS = inputdlg('Vector of bin edges (e.g. 1:0.1:7)','Histogram Params',1,{def});
-            h.BinEdges=str2num(binsS{1}); %#ok<ST2NM>
+            binEdgeValues=str2num(binsS{1}); %#ok<ST2NM>
         end
+        
+         set(h,'BinEdges',binEdgeValues);
+         set(ax,'xlim',mainh.BinLimits);
+         
     end
     
     function addcontext(opt, c)
@@ -193,24 +198,28 @@ function hisgra(mycat, opt, ax)
             if numel(newEdges) ~= numel(h.BinEdges)
                 warning('One or more bins have been removed');
             end
-            h.BinEdges=newEdges;
+            set(findobj(ax,'Type','histogram'),'BinEdges',newEdges);
         end
                     
     end
     
-    function [vari1, bins] = get_histparams(opt)
-        switch opt
+    function [vari1, bins] = get_histparams(mycat, binByField)
+        % GET_HISTPARAMS(catalog, binbyfield)
+        % vari1 is the data to be binned
+        % bins may be a vector of bin edges, or the number of bins.
+        
+        switch binByField
             case 'Magnitude'
-                vari1 = mycat.(opt);
+                vari1 = mycat.(binByField);
                 bins=floor(min(vari1)):0.1:ceil(max(vari1));
             case 'Depth'
-                vari1 = mycat.(opt);
+                vari1 = mycat.(binByField);
                 bins=50;
             case 'Date'
-                vari1 = mycat.(opt);
+                vari1 = mycat.(binByField);
                 bins=50;
             case 'Hour'
-                vari1 = hours(mycat.Date.(opt));
+                vari1 = hours(mycat.Date.(binByField));
                 bins= hours(0:1:24);
             case 'Quality'
                 error('unimplemented');
@@ -218,17 +227,29 @@ function hisgra(mycat, opt, ax)
                 bins = -0.1:0.01:1.1;
                 
             otherwise
-                errtxt=sprintf('Unknown histogram option:%s', opt);
+                errtxt=sprintf('Unknown histogram option:%s', binByField);
                 errordlg(errtxt,'Error:histograms');
                 error(errtxt);
         end
     end
     
-    function callback_reset(~,~)
-        [vari1, bins] = get_histparams(opt);
-        figure(histo);
-        delete(findobj(histo,'Type','Axes'));
-        histogram(vari1,bins);
+    function callback_reset(src,ev)
+        [~, bins] = get_histparams(mycat, opt);
+        ax=gca;
+        %set(findobj(ax.Children,'Type','Histogram'),'BinEdges',bins);
+        %delete(ax.Children);
+        %reset(ax)
+        %figure(histo);
+        %delete(findobj(histo,'Type','Axes'));
+        h=findobj(ax,'Type','histogram');
+        if numel(bins)==1
+            fld='NumBins';
+        else
+            fld='BinEdges';
+        end
+        set(h,fld,bins);
+        axis(ax,'tight')
+        %histogram(ax,vari1,bins);
     end
     
     function open_as_new_fig(~,~)

@@ -94,9 +94,9 @@ function replot_all(obj,status)
     ch=obj.map_axes.Children;
     items.map = startsWith(get(ch,'Tag'),'mainmap_');
     items.grid = startsWith(get(ch,'Tag'),'grid_');
-    items.shape = startsWith(get(ch,'Tag'),'shape');
     items.bgevents = strcmp(get(ch,'Tag'),'all events');
     items.fgevents = strcmp(get(ch,'Tag'),'active quakes');
+    items.shape = startsWith(get(ch,'Tag'),'shape');
     items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents);
     %obj.map_axes.Children = [ ch(items.grid); ch(items.map); ch(items.bgevents); ch(items.other); ch(items.fgevents); ch(items.shape)];
     obj.map_axes.Children = [  ch(items.shape); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];

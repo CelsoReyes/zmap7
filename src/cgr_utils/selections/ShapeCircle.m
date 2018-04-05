@@ -322,9 +322,6 @@ classdef ShapeCircle < ShapeGeneral
                     otherwise
                         error('Tried to set a menu item that doesn''t exist');
                 end
-                if j==1
-                    set(myhandle,'Separator','on');
-                end
             end
             
         end
