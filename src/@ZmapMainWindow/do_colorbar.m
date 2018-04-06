@@ -1,9 +1,10 @@
 function do_colorbar(obj,src,evt,origCallback)
-    % used to override colorbar button
-    if get(gcbf,'CurrentAxes')==findobj(obj.fig,'Tag','mainmap_ax')
+    % DO_COLORBAR used to override colorbar button
+    % do_colorbar(obj,src,evt,origCallback)
+    if get(gcbf,'CurrentAxes')==findobj(obj.fig,'Tag','mainmap_ax') || (exist('src','var') && isequal(src,obj.map_axes))
         % do our thing
         h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
-        if ~isempty(h)
+        if ~isempty(h) || strcmp(obj.colorField,'-none-')
             delete(h)
             return;
         end
@@ -33,7 +34,9 @@ function do_colorbar(obj,src,evt,origCallback)
         
     else
         % callbacks could be of several forms. It could be a
-        if isa(origCallback,'function_handle')
+        if ~exist('origCallback','var') || isempty(origCallback)
+            % do nothing
+        elseif isa(origCallback,'function_handle')
             origCallback(src,evt)
         elseif iscell(origCallback)
             fn=origCallback{1};

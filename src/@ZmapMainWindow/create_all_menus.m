@@ -144,7 +144,6 @@ function create_all_menus(obj, force)
             end
         end
         
-        
         add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu,'Label','Layers');
         try
@@ -189,12 +188,14 @@ function create_all_menus(obj, force)
         
         function set_colorby(~,~,val)
             obj.colorField=val;
+
+            % update menus
             for jj=1:numel(um)
                 myfn = obj.ValidColorFields{jj};
                 um(jj).Checked = tf2onoff(strcmp(obj.colorField,myfn));
             end
             h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
-            hascolorbar=~isempty(h);
+            hascolorbar=~isempty(h) && ~isempty(obj.colorField);
             delete(h)
             obj.replot_all();
             obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');

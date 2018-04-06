@@ -20,7 +20,7 @@ classdef ZmapMainWindow < handle
         replotting=false
         mdate
         mshape
-        colorField='Depth'; % see ValidColorFields for choices 
+        colorField='-none-'; % see ValidColorFields for choices 
     end
     
     properties(Constant)
@@ -31,11 +31,11 @@ classdef ZmapMainWindow < handle
         MapPos_L=[70 50 645 450+220] %260
         XSPos=[15 10 760 215]
         XSAxPos=[45 40 650 120]
-        MapCBPos_S=[70+645+2 270 20 450] % 
-        MapCBPos_L=[70+645+2 50 20 450+220]
+        MapCBPos_S=[70+645+2 420 20 300] %  was 270 to 450 high
+        MapCBPos_L=[70+645+2 420 20 300] % was 50 to 450+220 high
         FeaturesToPlot = {'borders','coastline',...
             'faults','lakes','plates','rivers','stations','volcanoes'}
-        ValidColorFields={'Depth','Date','Magnitude'};
+        ValidColorFields={'Depth','Date','Magnitude','-none-'};
     end
     properties(Dependent)
         map_axes % main map axes handle
@@ -151,7 +151,12 @@ classdef ZmapMainWindow < handle
             obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
         end
         
+        
         %% METHODS DEFINED IN DIRECTORY
+        %
+        %
+        %
+        
         replot_all(obj,status)
         plot_base_events(obj, featurelist)
         plotmainmap(obj)
@@ -173,6 +178,9 @@ classdef ZmapMainWindow < handle
         % menus
         create_all_menus(obj, force)
         
+        %
+        %
+        %
         %%
         function ax=get.map_axes(obj)
             % get mainmap axes

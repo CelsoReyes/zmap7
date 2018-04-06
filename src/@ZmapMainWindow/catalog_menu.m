@@ -169,6 +169,7 @@ function add_menu_catalog(obj, force)
             struct('prompt','Catalog Name:','value',oldname));
         obj.rawcatalog.Name=newname;
         obj.catalog.Name=newname;
+        obj.replot_all();
     end
     
     function cb_clearmemorized(~,~)

@@ -10,9 +10,10 @@ function plotmainmap(obj)
     if isempty(eq) 
         % CREATE the pot
         hold(axm,'on');
+        dispname = replace(obj.catalog.Name,'_','\_');
         eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
             mag2dotsize(obj.catalog.Magnitude),getLegalColors(),...
-            'Tag','active quakes','HitTest','off');
+            'Tag','active quakes','HitTest','off','DisplayName',dispname);
         eq.ZData=obj.catalog.Depth;
         if obj.catalog.Count > MAX_FOR_MARKER
             eq.Marker='.';
@@ -20,6 +21,7 @@ function plotmainmap(obj)
             eq.Marker='o';
         end
         hold(axm,'off');
+        obj.do_colorbar(axm);
     else
         % REUSE the plot
         eq.XData=obj.catalog.Longitude;
@@ -27,6 +29,11 @@ function plotmainmap(obj)
         eq.ZData=obj.catalog.Depth;
         eq.SizeData=mag2dotsize(obj.catalog.Magnitude);
         eq.CData=getLegalColors();
+        dispname = replace(obj.catalog.Name,'_','\_');
+        if ~strcmp(eq.DisplayName,dispname)
+            eq.DisplayName=dispname;
+        end
+        
     end
     
     hold(axm,'on');
@@ -43,6 +50,8 @@ function plotmainmap(obj)
     function c = getLegalColors()
         % because datetime isn't allowed
         switch  obj.colorField
+            case '-none-'
+                c=[0 0 .15];
             case 'Date'
                 c=datenum(obj.catalog.Date);
             otherwise
