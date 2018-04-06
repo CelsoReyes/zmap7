@@ -42,7 +42,8 @@ function create_all_menus(obj, force)
         
         % P menu
         h=bpvalgrid.AddMenuItem(submenu,@()obj.map_zap);
-        rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
+        h2=rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
+        h2.Enable='off';
         h.Separator='on';
         
         % Rate Change menu
@@ -71,9 +72,10 @@ function create_all_menus(obj, force)
         
         h=magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
         rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
+ 
         h.Separator='on';
         
-        uimenu(submenu,'Label','Calc a b-value cross-section',Futures.MenuSelectedFcn, @(~,~)nlammap(@()obj.xsec_zap));
+        uimenu(submenu,'enable','off','Label','Calc a b-value cross-section',Futures.MenuSelectedFcn, @(~,~)nlammap(@()obj.xsec_zap));
         
         
         % DONE ALREADY? : uimenu(submenu,'Label','Calculate a z-value cross-section',Futures.MenuSelectedFcn,@(~,~)nlammap());

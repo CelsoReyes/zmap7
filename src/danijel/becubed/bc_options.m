@@ -42,8 +42,8 @@ elseif ischar(varargin{1}) % INVOKE NAMED SUBFUNCTION OR CALLBACK
 		else
 			feval(varargin{:}); % FEVAL switchyard
 		end
-	catch
-		disp(lasterr);
+	catch ME
+		disp(ME.message);
 	end
 
 end

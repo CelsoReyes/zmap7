@@ -45,7 +45,7 @@ function add_menu_catalog(obj, force)
     %uimenu(submenu,'Label','Crop main catalog to shape',Futures.MenuSelectedFcn,@cb_shapecrop);
     
     
-    uimenu(submenu,'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange,'Enable','off'); %TOFIX
+    uimenu(submenu,'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
             
@@ -158,9 +158,9 @@ function add_menu_catalog(obj, force)
     function cb_editrange(~,~)
         cf=@()obj.catalog
         [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
-        ZG.Views.(myview)=tmpcat;
-        obj.catalog=tmpcat.Catalog();
-        zmap_update_displays();
+        obj.pushState();
+        obj.rawcatalog=tmpcat.Catalog();
+        obj.replot_all;
     end
     
     function cb_rename(~,~)

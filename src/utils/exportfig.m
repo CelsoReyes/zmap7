@@ -401,7 +401,7 @@ function varargout = exportfig(varargin)
         args = {args{:}, ['-' opts.preview]};
     end
 
-    hadError = 0;
+    hadError = false;
     oldwarn = warning;
     try
 
@@ -461,8 +461,8 @@ function varargout = exportfig(varargin)
             else
                 try
                     newlstyle = feval(opts.stylemap,allLines);
-                catch
-                    warning(['Skipping stylemap. ' lasterr]);
+                catch ME
+                    warning(['Skipping stylemap. ' ME.message]);
                 end
             end
             set(allLines,{'LineStyle'},newlstyle);
@@ -723,9 +723,10 @@ function varargout = exportfig(varargin)
         end
         warning(oldwarn);
 
-    catch
+    catch ME
         warning(oldwarn);
-        hadError = 1;
+        hadError = true;
+        errmsg = ME.message;
     end
 
     % Restore figure settings
@@ -741,7 +742,7 @@ function varargout = exportfig(varargin)
     end
 
     if hadError
-        error(deblank(lasterr));
+        error(deblank(errmsg));
     end
 
     %

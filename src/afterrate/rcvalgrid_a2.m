@@ -7,6 +7,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         time duration = days(47)% learning period  [learn_period]
         addtofig logical = false % should this plot in current figure? [oldfig_button]
         Nmin % from eventsel
+        minThreshMag  = 0;
     end
     properties(Constant)
         PlotTag='myplot'
@@ -85,7 +86,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             zdlg.AddBasicEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
             zdlg.AddBasicEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
             zdlg.AddBasicCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
-            % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+            zdlg.AddBasicEdit('Mmin','minMag', obj.minThreshMag, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
             [res, okpressed]=zdlg.Create('relative rate change map');
@@ -105,11 +106,17 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
 %             dx=gridOpt.dx;
 %             dy=gridOpt.dy;
             obj.bootloops = res.boot_samp;
+            if ~isduration(res.forec_period)
+                res.forec_period=days(res.forec_period);
+            end
             obj.timef = res.forec_period;
+            if ~isduration(res.learn_period)
+                res.learn_period=days(res.learn_period);
+            end
             obj.time = res.learn_period;
             obj.EventSelector = res.evsel;
-            
-            oldfig_button=oldfig_button.Value;
+            obj.minThreshMag=res.Mmin
+            %oldfig_button=oldfig_button.Value;
         end
         function CheckPreconditions(obj)
             assert(ensure_mainshock(),'No mainshock was defined')
@@ -120,11 +127,11 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         
         function results=Calculate(obj)
             % cut catalog at mainshock time:
-            mainshock=ZG.maepi.subset(1);
+            mainshock=obj.ZG.maepi.subset(1);
             mainshock_time = mainshock.Date;
             learn_to_date = mainshock_time + obj.time;
             forecast_to_date = learn_to_date + obj.timef;
-            l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > minThreshMag;
+            l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > obj.minThreshMag;
             
             assert(any(l),'no events meet the criteria of being after the mainshock ,and greater than threshold magnitude');
             

@@ -83,6 +83,8 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates,eqMags, da
     %Loop begins here
     %call of function who calculates parameters
     
+    lastwarn('');
+    warning('off','MATLAB:illConditionedMatrix');
     if (valeg2 >= 0)
         MIN_CSTEP = 0.0001; 
         MIN_PSTEP = 0.0001;
@@ -90,6 +92,11 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates,eqMags, da
     else
         MIN_PSTEP = 0.0001;
         [loopcheck, c, p, dk, sdc, sdp, sdk]=ploop_c_and_p_calcs([], MIN_PSTEP, false, 'kp');
+    end
+    
+    warning('on','MATLAB:illConditionedMatrix');
+    if ~isempty(lastwarn)
+        disp(['warnings were given. ' lastwarn]);
     end
     
     %loopcheck

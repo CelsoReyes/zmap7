@@ -48,7 +48,7 @@ function [mBvalue] = calc_bwithmag(mCatalog, fBinning, nMinNumberEvents)
         mCat = mCatalog.subset(vSel);
         
         % Determine size of background catalog
-        mBvalue(x,5)=mCat.Count();
+        mBvalue(x,5)=mCat.Count;
         
         % Check for minimum number of events
         if mCat.Count >= nMinNumberEvents

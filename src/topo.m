@@ -66,8 +66,8 @@ function varargout = topo(varargin)
             else
                 feval(varargin{:}); % FEVAL switchyard
             end
-        catch
-            disp(lasterr);
+        catch ME
+            disp(ME.message);
         end
     end
     

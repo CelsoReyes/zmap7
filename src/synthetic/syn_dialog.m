@@ -41,8 +41,8 @@ function varargout = syn_dialog(varargin)
 
         try
             [varargout{1:nargout}] = feval(varargin{:}); % FEVAL switchyard
-        catch
-            disp(lasterr);
+        catch ME
+            disp(ME.message);
         end
 
     end

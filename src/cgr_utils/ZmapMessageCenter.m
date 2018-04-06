@@ -295,13 +295,40 @@ end
 
 function edit_catalog_range(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
-    if ~isempty(ZG.Views.primary)
-    [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+    if ~isempty(ZG.Views.primary) 
+        [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
     else
         beep;
         warndlg('No catalog loaded','Zmap');
     end
-    %zmap_update_displays();
+    
+    zw=findobj(groot,'Tag','Zmap Main Window','-and','Type','figure');
+  
+    if ~isempty(zw) && numel(zw)
+        if numel(zw)>1
+            [s,ok]=listdlg('PromptString','Choose plot to replace                     ',...
+                'SelectionMode','single','ListString',...
+                strcat(string([zw.Number]'), ':',{zw.Name}'));
+            if ok
+                zw=zw(s);
+                ann='Yes';
+            else
+                ann='New Figure';
+            end
+        else
+            ann=questdlg('Change Existing Plot?','Change Existing Plot?','Yes','New Figure','Nevermind','Yes');
+        end
+        switch ann
+            case 'Yes'
+                zw.UserData.rawcatalog = ZG.Views.primary.Catalog();
+                %zw.UserData.catalog=ZG.Views.primary.Catalog();
+                zw.UserData.replot_all();
+            case 'New Figure'
+                ZmapMainWindow(figure);
+        end
+    else
+        ZmapMainWindow(figure);
+    end
     ZmapMessageCenter.update_catalog();
     
 end

@@ -127,7 +127,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         sprintf('skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents)};
     
     % close the window after a while. this is probably a kludge.
-    h.delay_for_close(seconds(2));
+    %h.delay_for_close(seconds(2));
     if answidth==1
         reshaper=@(x) reshape(x, size(zgrid.X));
         values=reshaper(values);
@@ -171,8 +171,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 values(write_idx,:)=returned_vals;
                 
                 wasEvaluated(write_idx)=true;
-                %waitbar(i/length(zgrid))
                 if ~mod(i,ceil(length(zgrid)/50))
+                    h.String=sprintf('Computing values across grid.   %5d / %d Total points', i,length(zgrid));
                     drawnow limitrate nocallbacks
                 end
             end

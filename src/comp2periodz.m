@@ -82,7 +82,7 @@ classdef comp2periodz < ZmapHGridFunction
             obj.t2=res.t2;
             obj.t3=res.t3;
             obj.t4=res.t4;
-            obj.binsize=res.binsize;
+            obj.binsize=days(res.binsize);
             obj.EventSelector=res.eventsel;
         end
         

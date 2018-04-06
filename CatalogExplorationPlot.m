@@ -188,7 +188,7 @@ classdef CatalogExplorationPlot < handle
             c=obj.catalogFcn();
             p = properties(c);
             usable=true(size(p));
-            nEvents=  c.Count();
+            nEvents=  c.Count;
             for i=1:numel(p)
                 try
                     usable(i)=length(c.(p{i}))==nEvents;

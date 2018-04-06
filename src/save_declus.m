@@ -32,8 +32,8 @@ function cluster_length = save_declus(catalog)
         format = ['%12c %3f %f %f %f %d'];
         [dat,mag,lat,lon,dep,clu] = ...
             textread(fid,format,'whitespace',' \b\r\t\n mb A ');
-    catch
-        l = lasterr;
+    catch ME
+        l=ME.message;
         l1 = strfind(l,',');
         anz = str2double(l(53:l1-1));
         [dat,mag,lat,lon,dep,clu] = ...

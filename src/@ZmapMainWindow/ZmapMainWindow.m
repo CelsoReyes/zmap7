@@ -148,6 +148,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.xsections)
                 set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
             end
+            obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
         end
         
         %% METHODS DEFINED IN DIRECTORY

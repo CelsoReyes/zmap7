@@ -174,7 +174,7 @@ classdef bpvalgrid < ZmapHGridFunction
             function bpvg = calcguts_opt1(b)
                 [bv, magco, stan, av] =  bvalca3(b.Magnitude,1);
                 maxcat = b.subset(b.Magnitude >= magco-0.05);
-                if maxcat.Count()  >= Nmin
+                if maxcat.Count  >= Nmin
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     
@@ -197,7 +197,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 [~, Mc90, ~, magco, prf]=bvalca3(b.Magnitude);
                 maxcat = b.subset(b.Magnitude >= Mc90-0.05);
                 magco = Mc90;
-                if maxcat.Count()  >= Nmin
+                if maxcat.Count  >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
@@ -211,7 +211,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 [~, ~, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
                 maxcat= b.subset(b.Magnitude >= Mc95-0.05);
                 magco = Mc95;
-                if maxcat.Count() >= Nmin
+                if maxcat.Count >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
@@ -232,7 +232,7 @@ classdef bpvalgrid < ZmapHGridFunction
                     [bv, magco, stan, av] =  bvalca3(b.Magnitude,1);
                 end
                 maxcat= b.subset(b.Magnitude >= magco-0.05);
-                if maxcat.Count()  >= Nmin
+                if maxcat.Count  >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date, maxcat.Magnitude, 'days' ,obj.valeg2,obj.CO,minThreshMag);

@@ -104,11 +104,11 @@ classdef rc_cross_a2 < ZmapVGridFunction
 %             dx=gridOpt.dx;
 %             dy=gridOpt.dy;
             obj.bootloops = res.boot_samp;
-            obj.timef = res.forec_period;
-            obj.time = res.learn_period;
+            obj.timef = days(res.forec_period);
+            obj.time = days(res.learn_period);
             obj.EventSelector=res.evsel;
             
-            oldfig_button=oldfig_button.Value;
+            %oldfig_button=oldfig_button.Value;
         end
         function CheckPreconditions(obj)
             assert(ensure_mainshock(),'No mainshock was defined')
@@ -120,7 +120,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
             % ...
                 
             % cut catalog at mainshock time:
-            mainshock=ZG.maepi.subset(1);
+            mainshock=obj.ZG.maepi.subset(1);
             mainshock_time = mainshock.Date;
             learn_to_date = mainshock_time + obj.time;
             forecast_to_date = learn_to_date + obj.timef;

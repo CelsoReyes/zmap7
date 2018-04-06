@@ -108,6 +108,7 @@ function [loopcheck, pc_, pp_, pk_, sdc, sdp, sdk] = ploop_c_and_p_calcs(MIN_CST
         err2x=err2;
         
     end
+        
     %p= pp;
     pp_=pp;
     pc_=pc;

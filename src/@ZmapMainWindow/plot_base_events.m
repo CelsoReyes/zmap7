@@ -55,7 +55,7 @@ function plot_base_events(obj, featurelist)
     ShapeCircle.AddCircleMenu(c, obj.shape);
     for j=1:numel(c.Children)
         if startsWith(c.Children(j).Tag,{'circle','poly'})
-            c.Children(j).(MenuSelectedFcnName)={@updatewrapper,c.Children(j).Callback};
+            c.Children(j).(Futures.MenuSelectedFcn)={@updatewrapper,c.Children(j).Callback};
         end
     end
     
@@ -111,7 +111,7 @@ function plot_base_events(obj, featurelist)
     end
     
     function commandeer_colorbar_button()
-        cbb=findall(groot,'Tooltip','Insert Colorbar');
+        cbb=findall(obj.fig,'Tooltip','Insert Colorbar');
         origCallback = cbb.ClickedCallback;
         if isequal(origCallback ,@obj.do_colorbar)
             return

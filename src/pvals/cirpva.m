@@ -41,7 +41,7 @@ if met == 'ni'
     disp(messtext)
 elseif  met == 'ra'
     ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, ra);
-    messtext = ['Number of selected events: ' num2str(ZG.newt2.Count())  ];
+    messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
     disp(messtext)
 elseif met == 'ti'
     global t1 t2 t3 t4

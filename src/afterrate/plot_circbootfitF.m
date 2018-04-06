@@ -18,7 +18,7 @@ function plot_circbootfitF()
     newt3=ZG.newt2;
     vSel = (ZG.newt2.Date <= ZG.maepi.Date+days(time));
     ZG.newt2 = ZG.newt2.subset(vSel);
-    R2 = ZG.newt2.Count();
+    R2 = ZG.newt2.Count;
     messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
     disp(messtext)
     
