@@ -4,10 +4,10 @@ function stackorder_menu(parent)
     %FIXME doesn't seem to attach to all items
     c=uicontextmenu('Tag','StackOrderContext');
     set(parent,'UIContextMenu',c);
-    uimenu(c,'Label','top',MenuSelectedFcnName(),{@setstack,'top'});
-    uimenu(c,'Label','up',MenuSelectedFcnName(),{@setstack,'up'});
-    uimenu(c,'Label','down',MenuSelectedFcnName(),{@setstack,'down'});
-    uimenu(c,'Label','bottom',MenuSelectedFcnName(),{@setstack,'bottom'});
+    uimenu(c,'Label','top',Futures.MenuSelectedFcn,{@setstack,'top'});
+    uimenu(c,'Label','up',Futures.MenuSelectedFcn,{@setstack,'up'});
+    uimenu(c,'Label','down',Futures.MenuSelectedFcn,{@setstack,'down'});
+    uimenu(c,'Label','bottom',Futures.MenuSelectedFcn,{@setstack,'bottom'});
     
     function setstack(source,~,val)
         uistack(source.Parent,val);

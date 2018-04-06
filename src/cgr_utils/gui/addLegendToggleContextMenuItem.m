@@ -51,7 +51,7 @@ function addLegendToggleContextMenuItem(ax,parent, cm, position, separator)
     % add once again
     uimenu(cm,'Label', label, ...
         'Separator', tf2onoff(strcmp(separator,'above')),...
-        MenuSelectedFcnName(), @(~,~)legend(ax,'toggle') );
+        Futures.MenuSelectedFcn, @(~,~)legend(ax,'toggle') );
     
     % by default it adds it to the bottom of the menu, which is actually
     % the first item in the context menu's children

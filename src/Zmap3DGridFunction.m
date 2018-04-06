@@ -66,39 +66,39 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                 
                 % TODO: combine mapdata_viewer with this function
                 exploremenu=uimenu(gcf,'label','explore');
-                uimenu(exploremenu,'label','explore',MenuSelectedFcnName(),@(src,ev)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
+                uimenu(exploremenu,'label','explore',Futures.MenuSelectedFcn,@(src,ev)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
                 
-                uimenu(shademenu,'Label','interpolated',MenuSelectedFcnName(),@(~,~)shading('interp'));
-                uimenu(shademenu,'Label','flat',MenuSelectedFcnName(),@(~,~)shading('flat'));
+                uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading('interp'));
+                uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading('flat'));
                 
                 plottype=uimenu(lookmenu,'Label','plot type');
                 uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
-                    MenuSelectedFcnName(),@(src,~)obj.plot(choice),'Checked','on');
+                    Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
                 
                 % countour-related menu items
                 
                 uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
                     'Enable','off',...not fully unimplmented
-                    MenuSelectedFcnName(),@(src,~)obj.contour(choice));
+                    Futures.MenuSelectedFcn,@(src,~)obj.contour(choice));
                 uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
                     'Enable','off',...not fully unimplmented
-                    MenuSelectedFcnName(),@(src,~)contourf(choice));
+                    Futures.MenuSelectedFcn,@(src,~)contourf(choice));
                 uimenu(lookmenu,'Label','change contour interval',...
                     'Enable','off',...
-                    MenuSelectedFcnName(),@(src,~)changecontours_cb(src));
+                    Futures.MenuSelectedFcn,@(src,~)changecontours_cb(src));
                 
                 % display overlay menu items
                 
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
-                    MenuSelectedFcnName(),@obj.togglegrid_cb);
+                    Futures.MenuSelectedFcn,@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                    MenuSelectedFcnName(),{@addquakes_cb,obj.RawCatalog});
+                    Futures.MenuSelectedFcn,{@addquakes_cb,obj.RawCatalog});
                 
                 uimenu(lookmenu,'Separator','on',...
                     'Label','brighten',...
-                    MenuSelectedFcnName(),@(~,~)colormap(ax,brighten(colormap,0.4)));
+                    Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,0.4)));
                 uimenu(lookmenu,'Label','darken',...
-                    MenuSelectedFcnName(),@(~,~)colormap(ax,brighten(colormap,-0.4)));
+                    Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,-0.4)));
                 
             end
             
@@ -146,7 +146,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                     tmpname=obj.Result.values.Properties.VariableNames{i};
                     uimenu(layermenu,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        MenuSelectedFcnName(),@(~,~)plot_cb(tmpname));
+                        Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname));
                 end
             end
             

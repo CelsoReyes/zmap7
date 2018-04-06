@@ -365,37 +365,37 @@ return
             
             
             uimenu(catmenu,'Label','Rename Catalog (this subset)',...
-                MenuSelectedFcnName(),@cb_rename_cat);
+                Futures.MenuSelectedFcn,@cb_rename_cat);
             
             uimenu(catmenu,'Label','Set as main catalog',...
-                MenuSelectedFcnName(),@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
+                Futures.MenuSelectedFcn,@cb_keep); % Replaces the primary catalog, and replots this subset in the map window
             uimenu(catmenu,'Separator','on','Label','Reset',...
-                MenuSelectedFcnName(),@cb_resetcat); % Resets the catalog to the original selection
+                Futures.MenuSelectedFcn,@cb_resetcat); % Resets the catalog to the original selection
             
             uimenu(ztoolsmenu,'Label','Cuts in time, magnitude and depth',...
-                MenuSelectedFcnName(),@cut_tmd_callback);
+                Futures.MenuSelectedFcn,@cut_tmd_callback);
             uimenu(ztoolsmenu,'Label','Cut in Time (cursor) ',...
-                MenuSelectedFcnName(),@cursor_timecut_callback);
+                Futures.MenuSelectedFcn,@cursor_timecut_callback);
             uimenu(plotmenu,'Label','Date Ticks in different format',...
-                MenuSelectedFcnName(),@(~,~)newtimetick,'Enable','off');
+                Futures.MenuSelectedFcn,@(~,~)newtimetick,'Enable','off');
             
             uimenu (analyzemenu,'Label','Decluster the catalog',...
-                MenuSelectedFcnName(),@(~,~)inpudenew(catalog))
+                Futures.MenuSelectedFcn,@(~,~)inpudenew(catalog))
             uimenu(plotmenu,'Label','Overlay another curve (hold)',...
                 'Checked',tf2onoff(ZG.hold_state2),...
-                MenuSelectedFcnName(),@cb_hold)
+                Futures.MenuSelectedFcn,@cb_hold)
             uimenu(ztoolsmenu,'Label','Compare two rates (fit)',...
-                MenuSelectedFcnName(),@cb_comparerates_fit)
+                Futures.MenuSelectedFcn,@cb_comparerates_fit)
             uimenu(ztoolsmenu,'Label','Compare two rates (no fit)',...
                 'enable','off',...
-                MenuSelectedFcnName(),@cb_comparerates_nofit)
-            %uimenu(ztoolsmenu,'Label','Day/Night split ',MenuSelectedFcnName(),@cb_006)
+                Futures.MenuSelectedFcn,@cb_comparerates_nofit)
+            %uimenu(ztoolsmenu,'Label','Day/Night split ',Futures.MenuSelectedFcn,@cb_006)
             
             op3D  =   uimenu(plotmenu,'Label','Time series ');
             uimenu(op3D,'Label','Time-depth plot ',...
-                MenuSelectedFcnName(),@(~,~)TimeDepthPlotter.plot(ZG.Views.timeplot));
+                Futures.MenuSelectedFcn,@(~,~)TimeDepthPlotter.plot(ZG.Views.timeplot));
             uimenu(op3D,'Label','Time-magnitude plot ',...
-                MenuSelectedFcnName(),@(~,~)TimeMagnitudePlotter.plot(ZG.Views.timeplot));
+                Futures.MenuSelectedFcn,@(~,~)TimeMagnitudePlotter.plot(ZG.Views.timeplot));
             
             
             
@@ -403,71 +403,71 @@ return
             op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
             
             uimenu(op4B, 'Label', 'beta values: LTA(t) function',...
-                MenuSelectedFcnName(),{@cb_z_beta_ratechanges,'bet'});
+                Futures.MenuSelectedFcn,{@cb_z_beta_ratechanges,'bet'});
             uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',...
-                MenuSelectedFcnName(), {@cb_betaTriangle,'newcat'})
+                Futures.MenuSelectedFcn, {@cb_betaTriangle,'newcat'})
             uimenu(op4B,'Label','z-values: AS(t)function',...
-                MenuSelectedFcnName(),{@cb_z_beta_ratechanges,'ast'})
+                Futures.MenuSelectedFcn,{@cb_z_beta_ratechanges,'ast'})
             uimenu(op4B,'Label','z-values: Rubberband function',...
-                MenuSelectedFcnName(),{@cb_z_beta_ratechanges,'rub'})
+                Futures.MenuSelectedFcn,{@cb_z_beta_ratechanges,'rub'})
             uimenu(op4B,'Label','z-values: LTA(t) function ',...
-                MenuSelectedFcnName(),{@cb_z_beta_ratechanges,'lta'});
+                Futures.MenuSelectedFcn,{@cb_z_beta_ratechanges,'lta'});
             
             
             op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-            uimenu(op4,'Label','automatic',MenuSelectedFcnName(),@cb_010)
-            uimenu(op4,'label','Mc with time ',MenuSelectedFcnName(),{@plotwithtime,'mc'});
-            uimenu(op4,'Label','b with depth',MenuSelectedFcnName(),@(~,~)bwithde2())
-            uimenu(op4,'label','b with magnitude',MenuSelectedFcnName(),@(~,~)bwithmag);
-            uimenu(op4,'label','b with time',MenuSelectedFcnName(),{@plotwithtime,'b'});
+            uimenu(op4,'Label','automatic',Futures.MenuSelectedFcn,@cb_010)
+            uimenu(op4,'label','Mc with time ',Futures.MenuSelectedFcn,{@plotwithtime,'mc'});
+            uimenu(op4,'Label','b with depth',Futures.MenuSelectedFcn,@(~,~)bwithde2())
+            uimenu(op4,'label','b with magnitude',Futures.MenuSelectedFcn,@(~,~)bwithmag);
+            uimenu(op4,'label','b with time',Futures.MenuSelectedFcn,{@plotwithtime,'b'});
             
             op5 = uimenu(analyzemenu,'Label','p-value estimation');
             
             %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
             %displayed (the catalog mycat).
-            uimenu(op5,'Label','Completeness in days after mainshock',MenuSelectedFcnName(),@(~,~)mcwtidays)
+            uimenu(op5,'Label','Completeness in days after mainshock',Futures.MenuSelectedFcn,@(~,~)mcwtidays)
             uimenu(op5,'Label','Define mainshock',...
-                'Enable','off', MenuSelectedFcnName(),@cb_016);
-            uimenu(op5,'Label','Estimate p',MenuSelectedFcnName(),@cb_pestimate);
+                'Enable','off', Futures.MenuSelectedFcn,@cb_016);
+            uimenu(op5,'Label','Estimate p',Futures.MenuSelectedFcn,@cb_pestimate);
             
             %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
             %initial time.
-            uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedFcnName(),@(~,~)pvalcat2())
+            uimenu(op5,'Label','p as a function of time and magnitude',Futures.MenuSelectedFcn,@(~,~)pvalcat2())
             uimenu(op5,'Label','Cut catalog at mainshock time',...
-                MenuSelectedFcnName(),@cb_cut_mainshock)
+                Futures.MenuSelectedFcn,@cb_cut_mainshock)
             
             op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
-            uimenu(op6,'Label','Compute the fractal dimension D',MenuSelectedFcnName(),{@cb_computefractal,2});
-            uimenu(op6,'Label','Compute D for random catalog',MenuSelectedFcnName(),{@cb_computefractal,5});
-            uimenu(op6,'Label','Compute D with time',MenuSelectedFcnName(),{@cb_computefractal,6});
-            uimenu(op6,'Label',' Help/Info on  fractal dimension',MenuSelectedFcnName(),@(~,~)showweb('fractal'))
+            uimenu(op6,'Label','Compute the fractal dimension D',Futures.MenuSelectedFcn,{@cb_computefractal,2});
+            uimenu(op6,'Label','Compute D for random catalog',Futures.MenuSelectedFcn,{@cb_computefractal,5});
+            uimenu(op6,'Label','Compute D with time',Futures.MenuSelectedFcn,{@cb_computefractal,6});
+            uimenu(op6,'Label',' Help/Info on  fractal dimension',Futures.MenuSelectedFcn,@(~,~)showweb('fractal'))
             
-            uimenu(ztoolsmenu,'Label','Cumulative Moment Release ',MenuSelectedFcnName(),@(~,~)morel(ZG.Views.timeplot))
+            uimenu(ztoolsmenu,'Label','Cumulative Moment Release ',Futures.MenuSelectedFcn,@(~,~)morel(ZG.Views.timeplot))
             
             op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
-            uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ',MenuSelectedFcnName(),@(~,~)doinverse_michael())
-            uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ',MenuSelectedFcnName(),@(~,~)doinversgep_pc())
-            uimenu(op7,'Label','Stress tensor with time',MenuSelectedFcnName(),@(~,~)stresswtime())
-            uimenu(op7,'Label','Stress tensor with depth',MenuSelectedFcnName(),@(~,~)stresswdepth())
-            uimenu(op7,'Label',' Help/Info on  stress tensor inversions',MenuSelectedFcnName(),@(~,~)showweb('stress'))
+            uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ',Futures.MenuSelectedFcn,@(~,~)doinverse_michael())
+            uimenu(op7,'Label','Invert for stress-tensor - Gephart''s Method ',Futures.MenuSelectedFcn,@(~,~)doinversgep_pc())
+            uimenu(op7,'Label','Stress tensor with time',Futures.MenuSelectedFcn,@(~,~)stresswtime())
+            uimenu(op7,'Label','Stress tensor with depth',Futures.MenuSelectedFcn,@(~,~)stresswdepth())
+            uimenu(op7,'Label',' Help/Info on  stress tensor inversions',Futures.MenuSelectedFcn,@(~,~)showweb('stress'))
             op5C = uimenu(plotmenu,'Label','Histograms');
             
             uimenu(op5C,'Label','Magnitude',...
-                MenuSelectedFcnName(),@(~,~)obj.histogram('Magnitude'));
+                Futures.MenuSelectedFcn,@(~,~)obj.histogram('Magnitude'));
             uimenu(op5C,'Label','Depth',...
-                MenuSelectedFcnName(),{@cb_histogram,'Depth'});
+                Futures.MenuSelectedFcn,{@cb_histogram,'Depth'});
             uimenu(op5C,'Label','Time',...
-                MenuSelectedFcnName(),{@cb_histogram,'Date'});
+                Futures.MenuSelectedFcn,{@cb_histogram,'Date'});
             uimenu(op5C,'Label','Hr of the day',...
-                MenuSelectedFcnName(),{@cb_histogram,'Hour'});
+                Futures.MenuSelectedFcn,{@cb_histogram,'Hour'});
             
             
             %uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
             %    'Separator','on',...
-            %    MenuSelectedFcnName(),@(~,~)errordlg('unimplemented','unimplemented');
+            %    Futures.MenuSelectedFcn,@(~,~)errordlg('unimplemented','unimplemented');
             
             %uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
-            %    MenuSelectedFcnName(),@(~,~)errordlg('unimplemented','unimplemented');
+            %    Futures.MenuSelectedFcn,@(~,~)errordlg('unimplemented','unimplemented');
         end
         
         %% callback-type methods

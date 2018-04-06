@@ -12,10 +12,10 @@ function cumplot(obj, tabgrouptag)
     ax.TickDir='out';
     
     c=uicontextmenu('tag','CumPlot line contextmenu');
-    uimenu(c,'Label','start here',MenuSelectedFcnName(),@(~,~)obj.cb_starthere(ax));
-    uimenu(c,'Label','end here',MenuSelectedFcnName(),@(~,~)obj.cb_endhere(ax));
-    uimenu(c, 'Label', 'trim to largest event',MenuSelectedFcnName(),@obj.cb_trim_to_largest);
-    uimenu(c,'Label','Open in new window',MenuSelectedFcnName(),@(~,~)obj.cb_timeplot());
+    uimenu(c,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
+    uimenu(c,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
+    uimenu(c, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
+    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
     
     p=line(ax,obj.catalog.Date,1:obj.catalog.Count,...
         'linewidth',2.5,'DisplayName','catalog',...
@@ -33,7 +33,7 @@ function cumplot(obj, tabgrouptag)
         xs=obj.xsections(tit);
         xscat = obj.xscats(tit);
     c=uicontextmenu('tag','CumPlot xs contextmenu');
-    uimenu(c,'Label','Open in new window',MenuSelectedFcnName(),{@cb_xstimeplot,xs});
+    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,{@cb_xstimeplot,xs});
         line(ax,xscat.Date, 1:xscat.Count,...
             'linewidth',1.5,'DisplayName',tit,'Color',xs.color,...
             'UIContextMenu',c);
@@ -41,13 +41,13 @@ function cumplot(obj, tabgrouptag)
     
     yl=ylabel(ax,'Cummulative Number of events');
     c=uicontextmenu('Tag','CumPlot Yscaling');
-    uimenu(c,'Label','Use Log Scale',MenuSelectedFcnName(),{@logtoggle,ax,'Y'});
+    uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
     yl.UIContextMenu=c;
     
     xl=xlabel(ax,'Time');
     c=uicontextmenu('Tag','CumPlot Xscaling');
-    uimenu(c,'Label','Split View on largest event(s)',MenuSelectedFcnName(),{@splittimeslargest,ax,'X'});
-    uimenu(c,'Label','Split View (Fixed Durations)',MenuSelectedFcnName(),{@splittimesduration,ax,'X'});
+    uimenu(c,'Label','Split View on largest event(s)',Futures.MenuSelectedFcn,{@splittimeslargest,ax,'X'});
+    uimenu(c,'Label','Split View (Fixed Durations)',Futures.MenuSelectedFcn,{@splittimesduration,ax,'X'});
     xl.UIContextMenu=c;
     
     
@@ -55,7 +55,7 @@ function cumplot(obj, tabgrouptag)
     c=uicontextmenu('tag','CumPlot bg contextmenu');
     ax.UIContextMenu=c;
     addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
-    uimenu(c,'Label','Open in new window',MenuSelectedFcnName(),@(~,~)obj.cb_timeplot());
+    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
     
     function cb_xstimeplot(~,~,xs)
             ZG=ZmapGlobal.Data;

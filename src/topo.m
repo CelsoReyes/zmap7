@@ -198,15 +198,9 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     inp = get(handles.pop1,'Value');
     if depq==1  &&  (inp==3 || inp==4)  &&  handles.maptype==1
-        clear('depq');
         [lat,lon] = meshgrat(tmap,tmapleg);
-        hw = waitbar(0,'Please wait...');
-        for i=1:size(A,1) % computation here %
-            waitbar(i/length(A));
-            depq(i) = interp2(lon,lat,tmap,A(i,1),A(i,2));
-        end
+        depq = interp2(lon,lat,tmap,A(:,1),A(:,2));
         close(hw);
-        depq=depq';
     end
     
     if inp == 1
@@ -257,13 +251,7 @@ function varargout = popfau_Callback(h, eventdata, handles, varargin)
     if depf==1  &&  inp==2  &&  handles.maptype==1
         clear('depf');
         [lat,lon] = meshgrat(tmap,tmapleg);
-        hw = waitbar(0,'Please wait...');
-        for i=1:size(faults,1), % computation here %
-            waitbar(i/length(faults));
-            depf(i) = interp2(lon,lat,tmap,faults(i,1),faults(i,2));
-        end
-        close(hw);
-        depf=depf'
+        depf= interp2(lon,lat,tmap,faults(:,1),faults(:,2));
     end
     
     if inp == 1
@@ -297,15 +285,8 @@ function varargout = popspec_Callback(h, eventdata, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     
     if desp==1  &&  (inp==3 | inp==4)  &&  handles.maptype==1
-        clear('desp');
-        [lat,lon] = meshgrat(tmap,tmapleg);
-        hw = waitbar(0,'Please wait...');
-        for i=1:size(s,1), % computation here %
-            waitbar(i/length(s));
-            desp(i) = interp2(lat,lon,tmap,s(i,1),s(i,2));
-        end
-        close(hw);
-        desp=desp';
+        [lat,lon] = meshgrat(tmap,tmapleg); 
+        desp = interp2(lat,lon,tmap,s(:,1),s(:,2));
     end
     
     if inp == 1
@@ -353,15 +334,8 @@ function varargout = ploli_Callback(h, eventdata, handles, varargin)
     ploli=handles.ploli;
     figure_w_normalized_uicontrolunits(handles.plma);
     if depl==1  &&  inp==2  &&  handles.maptype==1
-        clear('depl')
         [lat,lon] = meshgrat(tmap,tmapleg);
-        hw = waitbar(0,'Please wait...');
-        for i=1:size(faults,1), % computation here %
-            waitbar(i/length(s));
-            depl(i) = interp2(lon,lat,tmap,s(i,1),s(i,2));
-        end
-        close(hw);
-        depl=depl';
+        depl = interp2(lon,lat,tmap,s(:,1),s(:,2));
     end
     if inp == 1
         ploli = plotm(s(:,2),s(:,1),'m','Linewidth',2)

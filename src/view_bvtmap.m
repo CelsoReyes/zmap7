@@ -171,47 +171,47 @@ function view_bvtmap(lab1,valueMap)
         add_menu_divider();
         add_symbol_menu('eq_plot');
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_002)
+        uimenu(options,'Label','Refresh ',Futures.MenuSelectedFcn,@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle',...
-            MenuSelectedFcnName(),@callbackfun_003)
+            Futures.MenuSelectedFcn,@callbackfun_003)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedFcnName(),@callbackfun_004)
+            Futures.MenuSelectedFcn,@callbackfun_004)
         uimenu(options,'Label','Select EQ in Circle - Time split',...
-            MenuSelectedFcnName(),@callbackfun_005)
+            Futures.MenuSelectedFcn,@callbackfun_005)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-            MenuSelectedFcnName(),@callbackfun_006)
+            Futures.MenuSelectedFcn,@callbackfun_006)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            MenuSelectedFcnName(),@callbackfun_007)
+            Futures.MenuSelectedFcn,@callbackfun_007)
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
-            MenuSelectedFcnName(),@callbackfun_008)
+            Futures.MenuSelectedFcn,@callbackfun_008)
         
         
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','Differential b-value map ',...
-            MenuSelectedFcnName(),@callbackfun_009)
+            Futures.MenuSelectedFcn,@callbackfun_009)
         uimenu(op1,'Label','b change in percent map  ',...
-            MenuSelectedFcnName(),@callbackfun_010)
+            Futures.MenuSelectedFcn,@callbackfun_010)
         uimenu(op1,'Label','b-value map first period',...
-            MenuSelectedFcnName(),@callbackfun_011)
+            Futures.MenuSelectedFcn,@callbackfun_011)
         uimenu(op1,'Label','b-value map second period',...
-            MenuSelectedFcnName(),@callbackfun_012)
+            Futures.MenuSelectedFcn,@callbackfun_012)
         uimenu(op1,'Label','Probability Map (Utsus test for b1 and b2) ',...
-            MenuSelectedFcnName(),@callbackfun_013)
+            Futures.MenuSelectedFcn,@callbackfun_013)
         uimenu(op1,'Label','Earthquake probability change map (M5) ',...
-            MenuSelectedFcnName(),@callbackfun_014)
+            Futures.MenuSelectedFcn,@callbackfun_014)
         uimenu(op1,'Label','standard error map',...
-            MenuSelectedFcnName(),@callbackfun_015)
+            Futures.MenuSelectedFcn,@callbackfun_015)
         
         uimenu(op1,'Label','mag of completeness map - period 1',...
-            MenuSelectedFcnName(),@callbackfun_016)
+            Futures.MenuSelectedFcn,@callbackfun_016)
         uimenu(op1,'Label','mag of completeness map - period 2',...
-            MenuSelectedFcnName(),@callbackfun_017)
+            Futures.MenuSelectedFcn,@callbackfun_017)
         uimenu(op1,'Label','differential completeness map ',...
-            MenuSelectedFcnName(),@callbackfun_018)
+            Futures.MenuSelectedFcn,@callbackfun_018)
         uimenu(op1,'Label','resolution Map - number of events ',...
-            MenuSelectedFcnName(),@callbackfun_019)
-        uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
+            Futures.MenuSelectedFcn,@callbackfun_019)
+        uimenu(op1,'Label','Histogram ',Futures.MenuSelectedFcn,@(~,~)zhist())
         
         add_display_menu(1)
     end

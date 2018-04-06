@@ -194,8 +194,8 @@ function cltiplot(var1)
             'callback',@callbackfun_007);
         uimenu(op2,'label','automatic',...
             'callback',@callbackfun_008);
-        uimenu(op2,'label','with time',MenuSelectedFcnName(),@callbackfun_009);
-        uimenu(op2,'label','with magnitude',MenuSelectedFcnName(),@callbackfun_010);
+        uimenu(op2,'label','with time',Futures.MenuSelectedFcn,@callbackfun_009);
+        uimenu(op2,'label','with magnitude',Futures.MenuSelectedFcn,@callbackfun_010);
         
     end
     

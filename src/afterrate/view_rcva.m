@@ -193,11 +193,11 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ',Futures.MenuSelectedFcn,@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedFcnName(),@cb_constR)
+            Futures.MenuSelectedFcn,@cb_constR)
         uimenu(options,'Label','Select EQ with const. number',...
-            MenuSelectedFcnName(),@cb_constN)
+            Futures.MenuSelectedFcn,@cb_constN)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -205,47 +205,47 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            MenuSelectedFcnName(),@callbackfun_004)
+            Futures.MenuSelectedFcn,@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            MenuSelectedFcnName(),@callbackfun_005)
+            Futures.MenuSelectedFcn,@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            MenuSelectedFcnName(),@callbackfun_006)
+            Futures.MenuSelectedFcn,@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            MenuSelectedFcnName(),@callbackfun_007)
+            Futures.MenuSelectedFcn,@callbackfun_007)
         
         
         %    uimenu(op1,'Label','b-value map (WLS)',...
-        %        MenuSelectedFcnName(),@callbackfun_008)
+        %        Futures.MenuSelectedFcn,@callbackfun_008)
         %    uimenu(op1,'Label','b(max likelihood) map',...
-        %        MenuSelectedFcnName(),@callbackfun_009)
+        %        Futures.MenuSelectedFcn,@callbackfun_009)
         %    uimenu(op1,'Label','Mag of completness map',...
-        %        MenuSelectedFcnName(),@callbackfun_010)
+        %        Futures.MenuSelectedFcn,@callbackfun_010)
         %    uimenu(op1,'Label','max magnitude map',...
-        %           MenuSelectedFcnName(),@callbackfun_011)
+        %           Futures.MenuSelectedFcn,@callbackfun_011)
         %    uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-        %           MenuSelectedFcnName(),@callbackfun_012)
+        %           Futures.MenuSelectedFcn,@callbackfun_012)
         %
         uimenu(op1,'Label','Relative rate change',...
-            MenuSelectedFcnName(),@callbackfun_013)
+            Futures.MenuSelectedFcn,@callbackfun_013)
         uimenu(op1,'Label','Relative rate change by boostrap',...
-            MenuSelectedFcnName(),@callbackfun_014)
+            Futures.MenuSelectedFcn,@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            MenuSelectedFcnName(),@callbackfun_015)
+            Futures.MenuSelectedFcn,@callbackfun_015)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            MenuSelectedFcnName(),@callbackfun_016)
+            Futures.MenuSelectedFcn,@callbackfun_016)
         uimenu(op1,'Label','p-value',...
-            MenuSelectedFcnName(),@callbackfun_017)
+            Futures.MenuSelectedFcn,@callbackfun_017)
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_018)
+            Futures.MenuSelectedFcn,@callbackfun_018)
         uimenu(op1,'Label','c-value',...
-            MenuSelectedFcnName(),@callbackfun_019)
+            Futures.MenuSelectedFcn,@callbackfun_019)
         uimenu(op1,'Label','c-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_020)
+            Futures.MenuSelectedFcn,@callbackfun_020)
         uimenu(op1,'Label','k-value',...
-            MenuSelectedFcnName(),@callbackfun_021)
+            Futures.MenuSelectedFcn,@callbackfun_021)
         uimenu(op1,'Label','k-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_022)
-        %    uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
+            Futures.MenuSelectedFcn,@callbackfun_022)
+        %    uimenu(op1,'Label','Histogram ',Futures.MenuSelectedFcn,@(~,~)zhist())
         
         add_display_menu(1);
     end

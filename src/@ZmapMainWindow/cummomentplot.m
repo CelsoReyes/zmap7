@@ -19,28 +19,28 @@ function cummomentplot(obj,tabgrouptag)
         if isempty(xscat); continue; end
         [~, vCumMoment, ~] = calc_moment(xscat);
         c=uicontextmenu('tag','CumPlot xs contextmenu');
-        uimenu(c,'Label','Open in new window',MenuSelectedFcnName(),{@cb_xstimeplot,xs});
+        uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,{@cb_xstimeplot,xs});
         line(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',k{j},'Color',xs.color,...
             'UIContextMenu',c);
     end
         
     yl=ylabel(ax,'Cummulative Moment');
     c=uicontextmenu('Tag','CumMom Yscaling');
-    uimenu(c,'Label','Use Log Scale',MenuSelectedFcnName(),{@logtoggle,ax,'Y'});
+    uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
     yl.UIContextMenu=c;
     
     xlabel(ax,'Time');
     c=uicontextmenu('tag','CumMom line contextmenu');
-    uimenu(c,'Label','start here',MenuSelectedFcnName(),@(~,~)obj.cb_starthere(ax));
-    uimenu(c,'Label','end here',MenuSelectedFcnName(),@(~,~)obj.cb_endhere(ax));
-    uimenu(c, 'Label', 'trim to largest event',MenuSelectedFcnName(),@obj.cb_trim_to_largest);
+    uimenu(c,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
+    uimenu(c,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
+    uimenu(c, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
     p.UIContextMenu=c;
     
-    uimenu(p.UIContextMenu,'Label','Open in new window',MenuSelectedFcnName(),@(~,~)timeplot());
+    uimenu(p.UIContextMenu,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)timeplot());
     c=uicontextmenu('tag','CumMom bg contextmenu');
     ax.UIContextMenu=c;
     addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
-    uimenu(c,'Label','Open in new window',MenuSelectedFcnName(),@(~,~)timeplot());
+    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)timeplot());
     
     function cb_xstimeplot(~,~,xs)
         ZG=ZmapGlobal.Data;

@@ -1,12 +1,12 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Grid');
-    uimenu(parent,'Label','Create Auto-Grid',MenuSelectedFcnName(),@cb_autogrid);
-    uimenu(parent,'Label','Create Grid (interactive)',MenuSelectedFcnName(),@cb_creategrid);
-    uimenu(parent,'Label','Refresh Grid',MenuSelectedFcnName(),@cb_refresh);
-    uimenu(parent,'Label','Clear Grid (Delete)',MenuSelectedFcnName(),@cb_clear);
-    uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',MenuSelectedFcnName(),@cb_autoradius);
-    uimenu(parent,'Label','Choose Sample Radius',MenuSelectedFcnName(),@cb_manualradius);
+    uimenu(parent,'Label','Create Auto-Grid',Futures.MenuSelectedFcn,@cb_autogrid);
+    uimenu(parent,'Label','Create Grid (interactive)',Futures.MenuSelectedFcn,@cb_creategrid);
+    uimenu(parent,'Label','Refresh Grid',Futures.MenuSelectedFcn,@cb_refresh);
+    uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
+    uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
+    uimenu(parent,'Label','Choose Sample Radius',Futures.MenuSelectedFcn,@cb_manualradius);
     
     function cb_creategrid(~,~)
         %CB_CREATEGRID interactively create a grid

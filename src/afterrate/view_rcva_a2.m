@@ -173,11 +173,11 @@ function view_rcva_a2(lab1,valueMap)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ',Futures.MenuSelectedFcn,@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedFcnName(),@callbackfun_002)
+            Futures.MenuSelectedFcn,@callbackfun_002)
         uimenu(options,'Label','Select EQ with const. number',...
-            MenuSelectedFcnName(),@callbackfun_003)
+            Futures.MenuSelectedFcn,@callbackfun_003)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -185,56 +185,56 @@ function view_rcva_a2(lab1,valueMap)
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            MenuSelectedFcnName(),@callbackfun_004)
+            Futures.MenuSelectedFcn,@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            MenuSelectedFcnName(),@callbackfun_005)
+            Futures.MenuSelectedFcn,@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            MenuSelectedFcnName(),@callbackfun_006)
+            Futures.MenuSelectedFcn,@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            MenuSelectedFcnName(),@callbackfun_007)
+            Futures.MenuSelectedFcn,@callbackfun_007)
         
         
         uimenu(op1,'Label','Relative rate change (bootstrap)',...
-            MenuSelectedFcnName(),@callbackfun_008)
+            Futures.MenuSelectedFcn,@callbackfun_008)
         uimenu(op1,'Label','Model',...
-            MenuSelectedFcnName(),@callbackfun_009)
+            Futures.MenuSelectedFcn,@callbackfun_009)
         uimenu(op1,'Label','KS-Test',...
-            MenuSelectedFcnName(),@callbackfun_010)
+            Futures.MenuSelectedFcn,@callbackfun_010)
         uimenu(op1,'Label','KS-Test Statistic',...
-            MenuSelectedFcnName(),@callbackfun_011)
+            Futures.MenuSelectedFcn,@callbackfun_011)
         uimenu(op1,'Label','KS-Test p-value',...
-            MenuSelectedFcnName(),@callbackfun_012)
+            Futures.MenuSelectedFcn,@callbackfun_012)
         uimenu(op1,'Label','RMS of fit',...
-            MenuSelectedFcnName(),@callbackfun_013)
+            Futures.MenuSelectedFcn,@callbackfun_013)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            MenuSelectedFcnName(),@callbackfun_014)
+            Futures.MenuSelectedFcn,@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            MenuSelectedFcnName(),@callbackfun_015)
+            Futures.MenuSelectedFcn,@callbackfun_015)
         uimenu(op1,'Label','p-value',...
-            MenuSelectedFcnName(),@callbackfun_016)
+            Futures.MenuSelectedFcn,@callbackfun_016)
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_017)
+            Futures.MenuSelectedFcn,@callbackfun_017)
         uimenu(op1,'Label','c-value',...
-            MenuSelectedFcnName(),@callbackfun_018)
+            Futures.MenuSelectedFcn,@callbackfun_018)
         uimenu(op1,'Label','c-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_019)
+            Futures.MenuSelectedFcn,@callbackfun_019)
         uimenu(op1,'Label','k-value',...
-            MenuSelectedFcnName(),@callbackfun_020)
+            Futures.MenuSelectedFcn,@callbackfun_020)
         uimenu(op1,'Label','k-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_021)
+            Futures.MenuSelectedFcn,@callbackfun_021)
         uimenu(op1,'Label','p2-value',...
-            MenuSelectedFcnName(),@callbackfun_022)
+            Futures.MenuSelectedFcn,@callbackfun_022)
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_023)
+            Futures.MenuSelectedFcn,@callbackfun_023)
         uimenu(op1,'Label','c2-value',...
-            MenuSelectedFcnName(),@callbackfun_024)
+            Futures.MenuSelectedFcn,@callbackfun_024)
         uimenu(op1,'Label','c2-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_025)
+            Futures.MenuSelectedFcn,@callbackfun_025)
         uimenu(op1,'Label','k2-value',...
-            MenuSelectedFcnName(),@callbackfun_026)
+            Futures.MenuSelectedFcn,@callbackfun_026)
         uimenu(op1,'Label','k2-value standard deviation',...
-            MenuSelectedFcnName(),@callbackfun_027)
-        %    uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
+            Futures.MenuSelectedFcn,@callbackfun_027)
+        %    uimenu(op1,'Label','Histogram ',Futures.MenuSelectedFcn,@(~,~)zhist())
         
         add_display_menu(2);
     end

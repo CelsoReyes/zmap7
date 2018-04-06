@@ -165,7 +165,7 @@ classdef fix_caxis < ZmapFunction
             % create a menu item that will be used to call this function/class
             
             h=uimenu(parent,'Label','fix c-axes',...    CHANGE THIS TO YOUR MENUNAME
-                MenuSelectedFcnName(), @(~,~)fix_caxis(catalogfn())... CHANGE THIS TO YOUR CALLBACK
+                Futures.MenuSelectedFcn, @(~,~)fix_caxis(catalogfn())... CHANGE THIS TO YOUR CALLBACK
                 );
         end
         function ApplyIfFrozen(ax)

@@ -104,19 +104,19 @@ classdef (Sealed) CumTimePlot < handle
             add_menu_divider();
             disp('CumTimePlot.create_menu (unimplemented)');
             mm=uimenu('Label','TimePlot');
-            uimenu(mm,'Label','Reset',MenuSelectedFcnName(),@(~,~)obj.reset);
+            uimenu(mm,'Label','Reset',Futures.MenuSelectedFcn,@(~,~)obj.reset);
             
             % HISTOGRAMS
             op5C = uimenu(mm,'Label','Histograms');
             
             uimenu(op5C,'Label','Magnitude',...
-                MenuSelectedFcnName(),@(~,~)hisgra(obj.catalog,'Magnitude'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Magnitude'));
             uimenu(op5C,'Label','Depth',...
-                MenuSelectedFcnName(),@(~,~)hisgra(obj.catalog,'Depth'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Depth'));
             uimenu(op5C,'Label','Time',...
-                MenuSelectedFcnName(),@(~,~)hisgra(obj.catalog,'Date'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Date'));
             uimenu(op5C,'Label','Hr of the day',...
-                MenuSelectedFcnName(),@(~,~)hisgra(obj.catalog,'Hour'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Hour'));
             
             add_menu_catalog(obj.catname,obj.viewname,false,gcf);
             add_cumtimeplot_zmenu(obj, mm)

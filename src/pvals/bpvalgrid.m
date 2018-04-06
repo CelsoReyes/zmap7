@@ -251,7 +251,7 @@ classdef bpvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='p- and b-value map';
-            h=uimenu(parent,'Label',label,MenuSelectedFcnName(), @(~,~)bpvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,Futures.MenuSelectedFcn, @(~,~)bpvalgrid(zapFcn()));
         end
     end
 end

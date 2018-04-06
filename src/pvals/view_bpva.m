@@ -245,23 +245,23 @@ function view_bpva(res, idx)
         add_menu_divider();
         add_symbol_menu('eq_plot');
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedFcnName(),@callbackfun_002)
+        uimenu(options,'Label','Refresh ',Futures.MenuSelectedFcn,@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle',...
             'enable','off',...
-            MenuSelectedFcnName(),@callbackfun_003)
+            Futures.MenuSelectedFcn,@callbackfun_003)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
             'enable','off',...
-            MenuSelectedFcnName(),@callbackfun_004)
+            Futures.MenuSelectedFcn,@callbackfun_004)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
             'enable','off',...
-            MenuSelectedFcnName(),@callbackfun_005)
+            Futures.MenuSelectedFcn,@callbackfun_005)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
             'enable','off',...
-            MenuSelectedFcnName(),{@select_polygon,false})
+            Futures.MenuSelectedFcn,{@select_polygon,false})
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
             'enable','off',...
-            MenuSelectedFcnName(),{@select_polygon,true})
+            Futures.MenuSelectedFcn,{@select_polygon,true})
         
         op1 = uimenu('Label',' Maps ');
         
@@ -269,47 +269,47 @@ function view_bpva(res, idx)
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
             'enable','off',...
-            MenuSelectedFcnName(),{@cb_adjust,'mag'}); %8
+            Futures.MenuSelectedFcn,{@cb_adjust,'mag'}); %8
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
             'enable','off',...
-            MenuSelectedFcnName(),{@cb_adjust,'rmax'}); %9
+            Futures.MenuSelectedFcn,{@cb_adjust,'rmax'}); %9
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
             'enable','off',...
-            MenuSelectedFcnName(),{@cb_adjust,'gofi'}); %10
+            Futures.MenuSelectedFcn,{@cb_adjust,'gofi'}); %10
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
             'enable','off',...
-            MenuSelectedFcnName(),{@cb_adjust,'pstdc'}); %11
+            Futures.MenuSelectedFcn,{@cb_adjust,'pstdc'}); %11
         
         
         uimenu(op1,'Label','b-value map (WLS)',... % b-value / old
-            MenuSelectedFcnName(),{@cb_changeIdx,1})  %12
+            Futures.MenuSelectedFcn,{@cb_changeIdx,1})  %12
         uimenu(op1,'Label','b(max likelihood) map',... % b-value / meg
-            MenuSelectedFcnName(),{@cb_changeIdx,6}) %13
+            Futures.MenuSelectedFcn,{@cb_changeIdx,6}) %13
         uimenu(op1,'Label','Mag of completness map',...% Mcomp / old1
-            MenuSelectedFcnName(),{@cb_changeIdx,2}) %14
+            Futures.MenuSelectedFcn,{@cb_changeIdx,2}) %14
         uimenu(op1,'Label','max magnitude map',... %Mmax / maxm
-            MenuSelectedFcnName(),{@cb_changeIdx,13}) %15
+            Futures.MenuSelectedFcn,{@cb_changeIdx,13}) %15
         uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',... % dM / maxm-magco
-            MenuSelectedFcnName(),@cb_magrange) %16
+            Futures.MenuSelectedFcn,@cb_magrange) %16
         
         uimenu(op1,'Label','p-value',...
-            MenuSelectedFcnName(),{@cb_changeIdx,11})    % 17
+            Futures.MenuSelectedFcn,{@cb_changeIdx,11})    % 17
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedFcnName(),{@cb_changeIdx,12}) %18
+            Futures.MenuSelectedFcn,{@cb_changeIdx,12}) %18
         
         uimenu(op1,'Label','a-value map',...
-            MenuSelectedFcnName(),{@cb_changeIdx,8}) %19
+            Futures.MenuSelectedFcn,{@cb_changeIdx,8}) %19
         uimenu(op1,'Label','Standard error map',...
-            MenuSelectedFcnName(),{@cb_changeIdx,7}) %20
+            Futures.MenuSelectedFcn,{@cb_changeIdx,7}) %20
         uimenu(op1,'Label','(WLS-Max like) map',...
-            MenuSelectedFcnName(),@cb_deltaB)
+            Futures.MenuSelectedFcn,@cb_deltaB)
         
         uimenu(op1,'Label','Resolution Map',...
-            MenuSelectedFcnName(),{@cb_changeIdx,5})
+            Futures.MenuSelectedFcn,{@cb_changeIdx,5})
         uimenu(op1,'Label','c map',...
-            MenuSelectedFcnName(),{@cb_changeIdx,14})
+            Futures.MenuSelectedFcn,{@cb_changeIdx,14})
         
-        uimenu(op1,'Label','Histogram ',MenuSelectedFcnName(),@(~,~)zhist())
+        uimenu(op1,'Label','Histogram ',Futures.MenuSelectedFcn,@(~,~)zhist())
         
         add_display_menu(1);
     end

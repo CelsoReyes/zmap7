@@ -117,8 +117,8 @@ classdef ShapeCircle < ShapeGeneral
             end
         end
         function add_shape_specific_context(obj,c,ax, changedFcn)
-            uimenu(c,'label','Choose Radius',MenuSelectedFcnName(),@chooseRadius)
-            uimenu(c,'label','Snap To N Events',MenuSelectedFcnName(),@snapToEvents)
+            uimenu(c,'label','Choose Radius',Futures.MenuSelectedFcn,@chooseRadius)
+            uimenu(c,'label','Snap To N Events',Futures.MenuSelectedFcn,@snapToEvents)
             
             function snapToEvents(~,~)
                 ZG=ZmapGlobal.Data;
@@ -315,10 +315,10 @@ classdef ShapeCircle < ShapeGeneral
                 switch myitem % based on Tags that should already be assigned to menu items
                     case 'circleCreateDlg'
                         lab='Set Circle: dialog box...';
-                        set(myhandle,'Label',lab,MenuSelectedFcnName(),@(~,~)ShapeCircle('dlg'));
+                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapeCircle('dlg'));
                     case 'circleCreateMouse'
                         lab='Set Circle: mouse click';
-                        set(myhandle,'Label',lab,MenuSelectedFcnName(),@(~,~)ShapeCircle('mouse'));
+                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapeCircle('mouse'));
                     otherwise
                         error('Tried to set a menu item that doesn''t exist');
                 end
