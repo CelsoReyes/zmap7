@@ -6,8 +6,10 @@ function mapdata_viewer(res,catalog,resfig)
     % closest grid datapoint is found.
     % - Circle is drawn, showing the radius for which events were used
     % in the calculation
-    % - Bvalue is (WILL BE) plotted
-    % - Cum Rate is (WILL BE) plotted
+    % - Bvalue is plotted
+    % - Cum Rate is plotted
+    % - depth profile is plotted
+    % - Cumulative moment release is plotted
     %
     %  keep choosing symbols. If symbol isn't already chosen, it is added to the plot. this way several
     %  poinds can be simultaneously compared
@@ -22,47 +24,43 @@ function mapdata_viewer(res,catalog,resfig)
     % - polar plots: show # events in radius
     % - radius plots: show # events as function of radius
     % - 3d depth plots of selection
-    %
+    
     % RES is the results table
-    % AX is 
-    tb = res.values; % perhaps get sample data from running an Mc, a- and b- calcualtion from the main map
+    tb = res.Result.values; % perhaps get sample data from running an Mc, a- and b- calcualtion from the main map
     
-    keyBindings.delete = 8; %backspace
+    keyBindings.delete = char(8); %backspace
     %keyBindings.delete = 127; %del
-    keyBindings.quit = 27; %escape
+    keyBindings.quit = char(27); %escape
     
-    magsteps = .1;
-    magrange=catalog.MagnitudeRange;
-    binCenters= min(magrange) : magsteps : max(magrange);
-    bvalBinEdges=[binCenters-(magsteps/2), binCenters(end)+(magsteps/2)];
-    
-    
-    deprange=[floor(min(catalog.Depth)) ceil(max(catalog.Depth))];
-    depBinEdges=[deprange(1):5:deprange(2) + 4.9];
-    depBinCenters=depBinEdges(1:end-1) + 2.5;
-    %bvalBinEdges=-1.15:.1:8.05; % magnitudes
-    %binCenters=-1.1:.1:8; % magnitudes
-    
-    try
-        if isvalid(f),close(f),end
-    end
-    
-    f=figure('Name','Data View');
-    f.Units='pixels';
-    f.Position = [60 60 1300 700];
-    f.Resize='off';
     %f.KeyPressFcn=@(src,ev)disp(ev);
     
     
     if exist('resfig','var')
-        % use existing figure as the base of our axes
-        mapax=copyobj(findobj(resfig,'Type','axes'),f);
-        set(findobj(mapax,'Tag','pointgrid'),'visible','off');
-        mapax.Units='pixels';
-        mapax.Position=[50 150 650 500];
-        mapax.Tag = 'dvMap';
-        grid on
+        if strcmp(resfig.Type,'figure')
+            f=resfig;
+            f.Position([3,4])=[1300 700];
+            % use existing figure as the base of our axes
+            mapax=findobj(resfig,'Type','axes');
+            %mapax=copyobj(findobj(resfig,'Type','axes'),f);
+            set(findobj(mapax,'Tag','pointgrid'),'visible','off');
+            mapax.Units='pixels';
+            mapax.Position=[50 150 650 500];
+            mapax.Tag = 'dvMap';
+            grid on
+            subplotContainer=f;
+        elseif strcmp(resfig.Type,'axes')
+            mapax = resfig;
+            f=mapax.Parent; % TOFIX 
+            subplotContainer = figure;
+            subplotContainer.Units='pixels';
+            subplotContainer.Position = [60 60 1300 700];
+            figure(subplotContainer)
+        end
     else
+        f=figure('Name','Data View');
+        f.Units='pixels';
+        f.Position = [60 60 1300 700];
+        f.Resize='off';
         % main axes, with map-view of data
         mapax=axes(f,'units','pixels','Position',[50 150 650 500]);
         mapax.Tag = 'dvMap';
@@ -73,46 +71,40 @@ function mapdata_viewer(res,catalog,resfig)
         ylabel(mapax,'Latitude');
         mapax.YLim=[45.5 48];
         mapax.XLim=[5.75 8.75];
+        subplotContainer=f;
     end
-    colorbar(mapax);
-    mapax.UIContextMenu=mapcontext();
+    % cross'colorbar(mapax);
+    % mapax.UIContextMenu=mapcontext();
     
-   
+    bvalax=subplot(2,2,1);
+    rateax=subplot(2,2,2);
+    evdepax=subplot(2,2,3);
+    momentax=subplot(2,2,4);
+    
+    analyPt = AnalysisPoint(mapax);
+    
     
     % b-value axes, showing b-value rates
     %bvalax=axes(f,'units','pixels','Position',[850 375 300 275]);
-    bvalax=axes(f,'units','pixels','Position',[750 400 225 250]);
-    bvalax.Tag = 'dvBval';
-    bvalax.YScale='log';
-    bvalax.YLim=[0 10000];
-    bvalax.XLim=[floor(min(bvalBinEdges)), ceil(max(bvalBinEdges))];
-    title(bvalax,'B-Value')
-    xlabel('Magnitude')
-    ylabel('# Events')
+    %bvalax=axes(f,'units','pixels','Position',[750 400 225 250]);
+    bvalAnalyWin=AnalysisBvalues(bvalax);
     
     % cumulative event axes
-    rateax=axes(f,'units','pixels','Position',[750 100 225 250]);
-    rateax.Tag = 'dvCumrate';
-    title(rateax,'Cumulative Rate');
-    xlabel('Time')
-    ylabel('Cumulative Events')
+    %rateax=axes(f,'units','pixels','Position',[750 100 225 250]);
+    cumRateAnalyWin = CumRateAnalysisWindow(rateax);
     
     % event with depth axes
-    evdepax=axes(f,'units','pixels','Position',[1025 400 225 250]);
-    evdepax.Tag = 'dvEventsWidthDepth';
-    evdepax.YDir='reverse';
-    evdepax.YLim=[min(catalog.Depth) max(catalog.Depth)];
-    title(evdepax,'Depth Profile')
-    xlabel('Number of events')
-    ylabel('Depth');
+    %evdepax=axes(f,'units','pixels','Position',[1025 400 225 250]);
+    
+    %fff=figure;
+    depAnalyWin = DepthAnalysisWindow(evdepax,...
+        [floor(min(catalog.Depth)./5) : ceil(max(catalog.Depth)./5) ] .*5);
+    
+    figure(f);
     
     % moment release axes
-    momentax=axes(f,'units','pixels','Position',[1025 100 225 250]);
-    momentax.Tag = 'dvMoment';
-    title(momentax,'Cum Moment Release');
-    xlabel('time')
-    ylabel('Cumulative Moment [nm]'); %units as per calc_moment
-    
+    %momentax=axes(f,'units','pixels','Position',[1025 100 225 250]);
+    cumMomentAnalyWin=CumMomentAnalysisWindow(momentax);
     
     
     %%
@@ -120,20 +112,12 @@ function mapdata_viewer(res,catalog,resfig)
     set(f,'Pointer','cross')
     pause(.01)
     
+    symbolIndexes = containers.Map;
     
-    remapper=[...
-        'abcdefghijk';...
-        'ox+v^sph.*x'];
+    validMarkers={'+','o','*','.','x','s','d','v','^','<','>','p','h'};
     
-    toSymb=@(x) remapper(2,x==remapper(1,:));
-    toField=@(x) remapper(1,x==remapper(2,:));
-    isSymb=@(x)any(x==remapper(2,:));
-    isField=@(x)any(x==remapper(1,:));
-    
-    selections=struct();
-    disp('entering loop')
+    %disp('entering loop')
     curChar='o';
-    field=toField(curChar);
     
     
     % Instructions
@@ -152,223 +136,206 @@ function mapdata_viewer(res,catalog,resfig)
         'HorizontalAlignment','left','FontName','fixedwidth');
     amh.FontSize=amh.FontSize * 1.2;
     
+    prepare_map_axes(f,mapax);
+    %responseLoop()
     
-    while true % ESC
-        try
-            keydown = waitforbuttonpress;
-        catch
-            break
-        end
-        prevChar=curChar;
-        if (keydown == 0)
-            axx = mapax.CurrentPoint(1,1);
-            axy = mapax.CurrentPoint(1,2);
-            %[~,i]=min( distance([tb.y,tb.x], [axy, axx]) );% find closest point
-            % which button?
-            disp(['Selection Type: ', f.SelectionType])
-            switch f.SelectionType
-                case 'normal'
-                    disp('MOUSE:left button')
-                    %curChar=curChar;
-                case 'alt'
-                    disp('MOUSE:right button')
-                    %curChar=keyBindings.delete;
-                case 'extend'
-                    disp('MOUSE:center button');
-                    % curChar=keyBindings.quit;
-                otherwise
-                    disp(['MOUSE:other [' f.SelectionType ']' ]);
-                    continue
+    
+    function prepare_map_axes(f,ax)
+        
+        % available FIGURE props (+UIContextMenu)
+        
+        %{
+        %% statuses
+        % CurrentAxes :
+        % CurrentCharacter : last key pressed in figure
+        % CurrentObject :
+        % CurrentPoint :
+        % SelectionType: 'Normal','Extend' [shift],'Alt' [ctrl],'Open'[dbl]. open is finnicky
+        
+        %% callbacks
+        % CloseRequestFcn :
+        % SizeChangedFcn :
+        % WindowButtonDownFcn :
+        % WindowButtonUpFcn :
+        % WindowButtonMotionFcn :to get button position, use the axes' CurrentPoint x=(1,1), y=(1,2)
+        %     and also do a drawnow if updating something graphical.  Values are reported in relation
+        %     to requested axes.  So, for multiple axes, one would figure out which one the cursor
+        %     is within  warning, drawnow might cause callback to be reentered.
+        % WindowScrollWheelFcn : event contains 'VerticalScrollCount' and 'VerticalScrollAmount'
+        %     if this property has a callback associated with it, then CurrentPoint is also updated
+        %     prior to the callback's execution.
+        % WindowKeyPressFcn : executes whenver the figure is in focus. Event has
+        %     fields Character, Modifier, Key, Source, EventName
+        % WindowKeyReleaseFcn :
+        % ButtonDownFcn : also, see SelectionType to see what modifier keys were pressed
+        % CreateFcn :
+        % DeleteFcn :
+        % KeyPressFcn : executes AFTER WindowKeyPressFcn, KeyPressFcn values can be intercepted
+        %     a ui object (like a button) has defined a KeyPressFcn
+        % KeyReleaseFcn :
+        %}
+        %{
+        %% available AXES function callbacks (+UIContextMenu)
+        % CurrentPoint :
+        %
+        % ButtonDownFcn :
+        % CreateFcn :
+        % DeleteFcn :
+        
+        %% available LINE callbacks (+UIContextMenu)
+        % ButtonDownFcn :
+        
+        %% available UI object callbacks (buttons, etc)  (+UIContextMenu)
+        % ButtonDownFcn :
+        % CreateFcn :
+        % DeleteFcn :
+        % KeyPressFcn : executes AFTER WindowKeyPressFcn, KeyPressFcn values can be intercepted
+        %     a ui object (like a button) has defined a KeyPressFcn
+        % KeyReleaseFcn :
+        %}
+        oldMotionFcn=f.WindowButtonMotionFcn;
+        oldKeyPressFcn=f.KeyPressFcn;
+        f.WindowButtonMotionFcn=@do_nothing; % must be set in order to track mouse position
+        f.KeyPressFcn = @kpfcb;
+        oldAxButtonDownFcn = ax.ButtonDownFcn;
+        ax.ButtonDownFcn=@kpfcb;
+        sf=findobj(ax,'Type','surface');
+        sf.ButtonDownFcn=@kpfcb;
+        addmapcontext(sf);
+        set(findobj(gca,'Type','image'),'HitTest','off');
+        curChar = 'o';
+        prevChar= ' ';
+        
+        function kpfcb(src,evt)
+            % kpfcb KeyPressCallback executes at the figure level
+            clickPos=ax.CurrentPoint(1,[1 2]);
+            if ~insideAxes(ax, clickPos)
+                return
             end
             
-            % axes CurrentPoint is updated
-        else
-            curChar = f.CurrentCharacter;
-            
-            if isSymb(curChar)
-                field=toField(curChar);
-                amh.String=curChar;
+            if strcmp(evt.EventName,'KeyPress')
+                prevChar = curChar;
+                curChar = evt.Character;
+            elseif strcmp(f.SelectionType,'alt')
+                disp('right-click')
             end
-            [axx, axy] = screenpix2axes(mapax,[],[]);
-            % disp(f.SelectionType)
+            
+            [~,idx]=min( (tb.y - clickPos(2)) .^2 +  (tb.x - clickPos(1)).^2 );% assuming cartesian axes
+            %[~,idx]=min( distance([tb.y,tb.x], [clickPos(2), clickPos(1)]) );% assuming Lat-Lon axes
+            
+            [curChar,exitFlag] = evaluateChar(curChar, prevChar, idx, clickPos);
+            if exitFlag
+                restoreCallbacks
+            end
+            disp(tb(idx,:))
+            
+        end
+            
+        
+        function tf = insideAxes(ax, xy)
+            xl = ax.XLim;
+            yl = ax.YLim;
+            tf = ~ ( xy(1) > xl(2) || xy(1) < xl(1) || xy(2) > yl(2) ||xy(2) < yl(1) );
         end
         
-        if double(curChar) == keyBindings.quit
-            disp('done')
-            break
+        function restoreCallbacks()
+            if isvalid(f)
+                f.WindowMotionButton=oldMotionFcn;
+                f.KeyPressFcn=oldKeyPressFcn;
+                f.Pointer='arrow';
+            end
+            if isvalid(ax)
+                ax.ButtonDownFcn=oldAxButtonDownFcn;
+            end
         end
-        
-        [~,i]=min( distance([tb.y,tb.x], [axy, axx]) );% find closest point
-        disp(tb(i,:))
-        
-        % if BACKSPACE is pressed, then delete closest selection
-        if curChar == keyBindings.delete
-            % delete closest selection
-            disp('deleting closest selection');
-            fn=fieldnames(selections);
-            for n=numel(fn):-1:1
-                myfn=fn{n};
-                if selections.(fn{n}).residx == i
-                    fprintf('Found %s is idx %d\n',myfn, n);
-                    delete(selections.(myfn).m1)
-                    delete(selections.(myfn).m2)
-                    delete(selections.(myfn).m3)
-                    delete(selections.(myfn).cr1)
-                    delete(selections.(myfn).cm1)
-                    delete(selections.(myfn).bv1)
-                    delete(selections.(myfn).bv3)
-                    selections=rmfield(selections,myfn);
+    end
+    
+    
+    function [curChar,exitFlag] = evaluateChar(curChar, prevChar, index, clickPos)
+        exitFlag=false;
+        switch curChar
+            case keyBindings.quit
+                disp('Done')
+                exitFlag=true;
+                
+                
+            case keyBindings.delete
+                disp('deleting closest selection')
+                tag='';
+                for n=symbolIndexes.keys
+                    if symbolIndexes(n{:})==index
+                        tag=n{:};
+                        break;
+                    end
                 end
-            end
-            curChar=prevChar;
-            continue
-        end
-        
-        disp(['[' curChar '] : ' num2str(double(curChar))]);
-        % axes CurrentPoint is NOT updated.
-        
-        %% modify map
-        
-        [lat,lon]=reckon(tb.y(i),tb.x(i),km2deg(tb.Radius_km(i)),(0:1:360)');
-        
-        createNewField=~isfield(selections,field);
-        selections.(field).residx = i;
-        if createNewField
-            disp('creating new field')
-            % create a new circle plot
-            hold(mapax,'on')
-            
-            % plot click location
-            selections.(field).m1=line(mapax,[axx ; tb.x(i)] , [axy;tb.y(i)],'LineStyle','--', 'Marker',curChar,'Color',[.75 .75 .75],'LineWidth',1.5);
-            
-            % plot marker in actual location
-            selections.(field).m2=line(mapax,tb.x(i),tb.y(i),'Marker',curChar,'MarkerSize',12,'MarkerFaceColor','k','LineWidth',2);
-            selections.(field).m2.UIContextMenu=pointcontext();
-            % plot selected event circle
-            selections.(field).m3=line(mapax, lon, lat, 'LineStyle','-.','Color',[.75 .75 .75],'LineWidth',2);
-            hold(mapax, 'off')
-        else
-            disp('modifying field')
-            % move the circle plot
-            selections.(field).m1.XData=[axx ; tb.x(i)];
-            selections.(field).m1.YData=[axy;tb.y(i)];
-            
-            selections.(field).m2.XData=tb.x(i);
-            selections.(field).m2.YData=tb.y(i);
-            
-            selections.(field).m3.XData=lon;
-            selections.(field).m3.YData=lat;
-        end
-        thiscolor = selections.(field).m2.Color;
-        amh.ForegroundColor=thiscolor;
-        % plot circle of radius showing events
-        
-        %% modify cum rate
-        theseEvents = catalog.selectCircle(res.EventSelector,tb.x(i),tb.y(i));
-        
-        if createNewField
-            hold(rateax,'on');
-            selections.(field).cr1=line(rateax, ...
-                theseEvents.Date, 1:theseEvents.Count,...
-                'marker',curChar);
-            hold(rateax,'off');
-            rateax.XLimMode='auto';
-            rateax.YLimMode='auto';
-        else
-            selections.(field).cr1.XData=theseEvents.Date;
-            selections.(field).cr1.YData=1:theseEvents.Count;
-        end
-        selections.(field).cr1.Color=thiscolor;
-        
-        %% modify cum moment
-        [~, vCumMoment, ~] = calc_moment(theseEvents);
-        if createNewField
-            hold(momentax,'on');
-            selections.(field).cm1=line(momentax, ...
-                theseEvents.Date, vCumMoment,...
-                'marker',curChar);
-            hold(momentax,'off');
-            momentax.XLimMode='auto';
-            momentax.YLimMode='auto';
-        else
-            selections.(field).cm1.XData=theseEvents.Date;
-            selections.(field).cm1.YData=vCumMoment;
-        end
-        selections.(field).cm1.Color=thiscolor;
-        
-        %% modify event with depth
-        
-        tmpdeph=histcounts(theseEvents.Depth,depBinEdges);
-        if createNewField
-            hold(evdepax,'on');
-            %tmpdeph=histcounts(theseEvents.Depth,depBinEdges)
-            selections.(field).ed=line(evdepax, ...
-                tmpdeph,depBinCenters,...
-                'marker',curChar);
-            hold(evdepax,'off');
-            evdepax.XLimMode='auto';
-            evdepax.YLimMode='auto';
-        else
-            selections.(field).ed.XData=tmpdeph;
-            %selections.(field).ed.YData=1:theseEvents.dep;
-        end
-        selections.(field).ed.Color=thiscolor;
-        
-        %% modify b-val
-        cs=cumsum(histcounts(theseEvents.Magnitude,bvalBinEdges),'reverse');
-        Y_mc = cs(binCenters==tb.Mc_value(i));
-        Y_maxmag = cs(binCenters==tb.max_mag(i));
-        minmaxmag = [tb.Mc_value(i) ; tb.max_mag(i)];
-        b_line = 10.^(tb.a_value(i) - tb.b_value(i) .* minmaxmag);
-        if createNewField
-            hold(bvalax,'on');
-            bvalax.YScale='log';
-            % plot cumulative magnitudes
-            selections.(field).bv1=line(bvalax,binCenters,cs,'Marker',curChar,'Color',thiscolor);
-            
-            %plot slope
-            selections.(field).bv3=line(bvalax, minmaxmag, b_line,...
-                'Marker',curChar,...
-                'Color', thiscolor,'MarkerFaceColor',thiscolor);
-            
-            hold(bvalax,'off');
-            bvalax.XLim=[min(catalog.Magnitude) max(catalog.Magnitude)+.1];
-            bvalax.YLim=[-inf inf];
-        else
-            selections.(field).bv1.YData=cs;  % X data remains the same, based on main catalog
-            
-            selections.(field).bv3.XData=minmaxmag; % [tb.Mc_value(i); tb.max_mag(i)];
-            selections.(field).bv3.YData=b_line; % [Y_mc; Y_maxmag];
-        end
-        
-        % keep colors synchronized
-        selection.(field).bv1.Color=thiscolor;
-        selection.(field).bv1.MarkerEdgeColor=thiscolor;
-        selection.(field).bv3.Color=thiscolor;
-        selection.(field).bv3.MarkerEdgeColor=thiscolor;
-    end
-    try
-        set(f,'Pointer','arrow');
-    end
-end
+                if ~isempty(tag)
+                    removeSeriesByTag(tag);
 
+                end
+                curChar=prevChar;
+                
+            case validMarkers
+                
+                ptName=sprintf('(%g,%g)',tb.y(index),tb.x(index));
+                
+                if any(strcmp(curChar, symbolIndexes.keys))
+                    disp('symbol that is used')
+                    plotAttribs={'DisplayName',sprintf('point %d',index)};
+                else
+                    disp('marker that wasn''t used yet. Creating')
+                    plotAttribs={'Marker',curChar,'MarkerSize',12,...
+                        'MarkerFaceColor','k','LineWidth',2, ...
+                        'DisplayName',sprintf('point %d',index),...
+                        'UIContextMenu',pointcontext(curChar)};
+                end
+                
+                symbolIndexes(curChar)=index;
+                
+                analyPt.add_point(clickPos, tb(index,:), curChar, plotAttribs);
+                thiscolor = analyPt.color(curChar);
+                
+                amh.ForegroundColor=thiscolor;
+                
+                theseEvents = catalog.selectCircle(res.EventSelector,tb.x(index),tb.y(index));
+                theseEvents.Name=ptName;
+                theseAttributes = {'Marker',curChar,'Color',thiscolor};
+                
+                cumRateAnalyWin.add_series(theseEvents,curChar,theseAttributes); % cum rate
+                cumMomentAnalyWin.add_series(theseEvents,curChar,theseAttributes);%  cum moment
+                depAnalyWin.add_series(theseEvents,curChar,theseAttributes); % events with depth
+                bvalAnalyWin.add_series(theseEvents,curChar,theseAttributes); %b-val
+                
+                if ~isempty(mapax.Legend) && any(strcmp(mapax.Legend.String,'do_not_show_in_legend'))
+                    legend(findobj(mapax.Children,'-not','DisplayName','do_not_show_in_legend'));
+                end
+                    
+            otherwise
+                disp('unmapped key')
+        end
+        
 
-function c=mapcontext()
-    c=uicontextmenu('Tag','MapViewerMapContext');
+    end
+    function removeSeriesByTag(tag)
+        cumMomentAnalyWin.remove_series(tag);
+        cumRateAnalyWin.remove_series(tag);
+        depAnalyWin.remove_series(tag);
+        analyPt.remove_point(tag)
+        bvalAnalyWin.remove_series(tag);
+        symbolIndexes.remove(tag);
+    end
+    function addmapcontext(obj)
+        c=uicontextmenu('Tag','MapViewerMapContext');
+        
+        uimenu(c,'Label','Select Rectangle');
+        uimenu(c,'Label','Select Circle');
+        uimenu(c,'Label','Select Polygon');
+        obj.UIContextMenu=c;
+    end
     
-    uimenu(c,'Label','Select Rectangle');
-    uimenu(c,'Label','Select Circle');
-    uimenu(c,'Label','Select Polygon');
-end
-
-function c=pointcontext()
-    c=uicontextmenu('Tag','MapViewerPointContext');
-    uimenu(c,'Label','Change Symbol');
-    uimenu(c,'Label','Change Color');
-    uimenu(c,'Label','Remove',Futures.MenuSelectedFcn,@showcb);
-end
-function showcb(src,ev)
-    disp('------');
-    disp(src)
-    disp(ev)
+    function c=pointcontext(marker)
+        c=uicontextmenu('Tag','MapViewerPointContext');
+        uimenu(c,'Label','Change Symbol');
+        uimenu(c,'Label','Change Color');
+        uimenu(c,'Label','Remove',Futures.MenuSelectedFcn,@(~,~)removeSeriesByTag(marker));
+    end
 end

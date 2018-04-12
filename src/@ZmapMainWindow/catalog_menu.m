@@ -1,4 +1,4 @@
-function add_menu_catalog(obj, force)
+function catalog_menu(obj, force)
     % add_menu_catalog was create_catalog_menu adds a menu designed to handle catalog modifications
     % add_menu_catalog(mycatalog, force, handle)
     % mycatalog is a name of the ZmapGlobal.Data field containing a ZmapCatalog

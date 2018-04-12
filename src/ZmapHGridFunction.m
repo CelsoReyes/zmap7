@@ -13,6 +13,41 @@ classdef ZmapHGridFunction < ZmapGridFunction
             obj@ZmapGridFunction(varargin{:});
         end
         
+        function overlay(obj, ax, choice)
+            % plots the results on the provided axes.
+            if ~exist('choice','var')
+                choice=obj.active_col;
+            end
+            if ~isnumeric(choice)
+                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
+            end
+            
+            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
+            myname = obj.Result.values.Properties.VariableNames{choice};
+            
+            hold(ax,'on');
+            delete(findobj(ax,'Tag','result overlay'));
+            % this is to show the data
+            if islogical(obj.Result.values.(myname)(1))
+                p=double(obj.Result.values.(myname));
+                p(p==0)=nan;
+                h=obj.Grid.pcolor(ax,p, mydesc);
+            else
+                h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
+            end
+            h.Tag = 'result overlay';
+            shading(obj.ZG.shading_style);
+            
+            if isempty(findobj(gcf,'Tag','lookmenu'))
+                add_menus(obj,choice);
+            end
+            
+            update_layermenu(obj,myname, ax);
+            
+            mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
+            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
+        end
+        
         function plot(obj,choice, varargin)
             % plots the results on the provided axes.
             if ~exist('choice','var')
@@ -20,6 +55,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
             end
             if ~isnumeric(choice)
                 choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
+            end
+            
+            if strcmp(get(gcf,'Tag'),'Zmap Main Window')
+                obj.overlay(findobj(gcf,'Tag','mainmap_ax'),choice);
+                return
             end
             
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
@@ -44,7 +84,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             hold on;
             
             % the imagesc exists is to enable data cursor browsing.
-            obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
+            % obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
             
             shading(obj.ZG.shading_style);
             hold on
@@ -56,78 +96,65 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 ft=obj.ZG.features(obj.features{n});
                 copyobj(ft,ax);
             end
-            colorbar
+            % colorbar
             title(mydesc)
             xlabel('Longitude')
             ylabel('Latitude')
             
-            dcm_obj=datacursormode(gcf);
-            dcm_obj.Updatefcn=@ZmapGridFunction.mydatacursor;
+            %dcm_obj=datacursormode(gcf);
+            %dcm_obj.UpdateFcn=@ZmapGridFunction.mydatacursor;
+            %dcm_obj.SnapToDataVertex='on';
+            
             if isempty(findobj(gcf,'Tag','lookmenu'))
-                add_menu_divider();
-                lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
-                shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
-                
-                % TODO: combine mapdata_viewer with this function
-                exploremenu=uimenu(gcf,'label','explore');
-                uimenu(exploremenu,'label','explore',Futures.MenuSelectedFcn,@(src,ev)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
-                
-                uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading('interp'));
-                uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading('flat'));
-                
-                plottype=uimenu(lookmenu,'Label','plot type');
-                uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
-                    Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
-                
-                % countour-related menu items
-                
-                uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
-                    'Enable','off',...not fully unimplmented
-                    Futures.MenuSelectedFcn,@(src,~)obj.contour(choice));
-                uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
-                    'Enable','off',...not fully unimplmented
-                    Futures.MenuSelectedFcn,@(src,~)contourf(choice));
-                uimenu(lookmenu,'Label','change contour interval',...
-                    'Enable','off',...
-                    Futures.MenuSelectedFcn,@(src,~)changecontours_cb(src));
-                
-                % display overlay menu items
-                
-                uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
-                    Futures.MenuSelectedFcn,@obj.togglegrid_cb);
-                uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                    Futures.MenuSelectedFcn,{@obj.addquakes_cb, obj.RawCatalog});
-                
-                uimenu(lookmenu,'Separator','on',...
-                    'Label','brighten',...
-                    Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,0.4)));
-                uimenu(lookmenu,'Label','darken',...
-                    Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,-0.4)));
-                
+                add_menus();
             end
             
             update_layermenu(obj,myname);
+            
+            mapdata_viewer(obj,obj.RawCatalog,f);
+            
+
+            
         end % plot function
         
-        %{
-function contour(obj,choice,intervals)
-            % like plot, except with contours!
-            if ~exist('intervals','var')
-                intervals=[floor(min(zz)):.1:ceil(max(zz))];
-            end
-            [C,h]=contour(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
-            clabel(C,h)
+        function add_menus(obj,choice)
+            
+            add_menu_divider();
+            lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
+            shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
+            
+            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading('interp'));
+            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading('flat'));
+            
+            plottype=uimenu(lookmenu,'Label','plot type');
+            uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
+                Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
+            
+            % countour-related menu items
+            
+            uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
+                'Enable','off',...not fully unimplmented
+                Futures.MenuSelectedFcn,@(src,~)obj.contour(choice));
+            uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
+                'Enable','off',...not fully unimplmented
+                Futures.MenuSelectedFcn,@(src,~)contourf(choice));
+            uimenu(lookmenu,'Label','change contour interval',...
+                'Enable','off',...
+                Futures.MenuSelectedFcn,@(src,~)changecontours_cb(src));
+            
+            % display overlay menu items
+            
+            uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
+                Futures.MenuSelectedFcn,@obj.togglegrid_cb);
+            uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
+                Futures.MenuSelectedFcn,{@obj.addquakes_cb, obj.RawCatalog});
+            
+            uimenu(lookmenu,'Separator','on',...
+                'Label','brighten',...
+                Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,0.4)));
+            uimenu(lookmenu,'Label','darken',...
+                Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,-0.4)));
         end
-        
-function contourf(obj,choice,intervals)
-            % like plot, except with contours!
-            if ~exist('intervals','var')
-                intervals=[floor(min(zz)):.1:ceil(max(zz))];
-            end
-            [C,h]=contourf(unique(xx),unique(yy),reshaper(zz),'LevelList',[floor(min(zz)):.1:ceil(max(zz))]);
-            clabel(C,h)
-        end
-        %}
         
     end % Public methods
     
@@ -163,7 +190,8 @@ function contourf(obj,choice,intervals)
             end
         end
         
-        function update_layermenu(obj, myname)
+        function update_layermenu(obj, myname, ax)
+            % UPDATE_LAYERMENU
             if isempty(findobj(gcf,'Tag','layermenu'))
                 layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
                 for i=1:width(obj.Result.values)
@@ -171,7 +199,8 @@ function contourf(obj,choice,intervals)
                     tmpname=obj.Result.values.Properties.VariableNames{i};
                     uimenu(layermenu,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname));
+                        Futures.MenuSelectedFcn,@(~,~)overlay_cb(ax,tmpname));
+                        %Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
                 end
             end
             
@@ -183,6 +212,10 @@ function contourf(obj,choice,intervals)
             function plot_cb(name)
                 set(findobj(layermenu,'type','uimenu'),'Checked','off');
                 obj.plot(name);
+            end
+            function overlay_cb(ax,name)
+                set(findobj(layermenu,'type','uimenu'),'Checked','off');
+                obj.overlay(ax,name);
             end
         end
         

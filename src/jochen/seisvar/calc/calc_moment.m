@@ -17,7 +17,12 @@ function [fCumMoment, vCumMoment, vMoment] = calc_moment(mCatalog)
 % J. Woessner, j.woessner@sed.ethz.ch
 % updated: 09.11.05
 
-
+if isempty(mCatalog)
+    fCumMoment=[];
+    vCumMoment=[];
+    vMoment=[];
+    return
+end
 if isa(mCatalog,'ZmapCatalog') && mCatalog.Count >= 1
     % Sort the catalog according to time
     mCatalog.sort('Date');

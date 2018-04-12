@@ -634,13 +634,3 @@ function value = toValueStruct(data)
     %}
     
 end
-
-            
-%{
-function mustBeNameValuePairs(val)
-    assert(all(cellfun(@isstr,val(1:2:end))),...
-        'Value should be a series of name-value pairs. One of the expected names was not a string');
-    assert(mod(numel(val),2)==0,...
-        'Value should be a series of name-value pairs. Number of items not divisible by 2');
-end
-%}

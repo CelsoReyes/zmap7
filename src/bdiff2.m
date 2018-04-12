@@ -85,6 +85,11 @@ classdef bdiff2
             end
             
             obj=obj.calculate(catalog);
+            if exist('ax','var') && strcmp(ax,'noplot')
+                % do not plot
+                obj.write_globals();
+                return;
+            end
             if ~exist('ax','var')||isempty(ax)|| ~isvalid(ax)
                 [ax]=obj.setup_figure(catalog);
             end
@@ -263,52 +268,12 @@ classdef bdiff2
                 
             end
         end
-        
+       
         function plot(obj,catalog, ax)
             % extracted from inside the calculation routine
             
             global gBdiff % contains b1, n1, b2, n2
             ZG = ZmapGlobal.Data;
-            %{
-            bfig=findobj('Type','Figure','-and','Name','Frequency-magnitude distribution');
-            if isempty(bfig)
-                bfig=figure_w_normalized_uicontrolunits(...
-                    'Units','normalized','NumberTitle','off',...
-                    'Name','Frequency-magnitude distribution',...
-                    'visible','off',...
-                    'pos',[ 0.300  0.3 0.4 0.6]);
-                
-                ZG.hold_state=false;
-                
-                add_menu_divider();
-                c = uimenu('Label','ZTools');
-                obj.create_my_menu(c,catalog);
-                
-                
-                
-            end
-            
-            figure(bfig);
-            %
-            % some calculations were done here...
-            %
-            
-            if ZG.hold_state
-                axes(ax)
-                disp('hold on')
-                hold on
-            else
-                delete(findobj(bfig,'Type','axes'));
-                rect = [0.22,  0.3, 0.65, 0.6];           % plot Freq-Mag curves
-                ax=axes('position',rect);
-                
-                % add context menu equivelent to ztools menu
-                c = uicontextmenu('Tag','blalbabla');
-                obj.create_my_menu(c,catalog);
-                ax.UIContextMenu=c;
-            end
-            %}
-            
             
             bfig=findobj('Type','Figure','-and','Name','Frequency-magnitude distribution');
             is_standalone = ~isempty(bfig) && ax==findobj(bfig,'Tag','main_bval_axes');
