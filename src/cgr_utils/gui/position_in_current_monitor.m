@@ -30,6 +30,9 @@ function position = position_in_current_monitor(w,h,alignment, border)
     
     mpos_curr=mpos(whichmonitor,:);
     
+    % if width is a percent
+    if isa(w,'Percent'), w=double(w) .* mpos_curr(3); end
+    if isa(h,'Percent'), h=double(h) .* mpos_curr(4); end
     % try to ensure dialog box is shown on screen large enough to accomodate it
     if h > mpos_curr(4)
         tallEnough=mpos(:,4)>=h;

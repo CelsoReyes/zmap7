@@ -9,10 +9,10 @@ function do_colorbar(obj,src,evt,origCallback)
             return;
         end
         colorbar('peer',findobj(obj.fig,'Tag','mainmap_ax'),...
-            'manual','Units','pixels','Position',determineColorbarPosition(),...
+            'manual','Units','normalized','Position',determineColorbarPosition(),...
             'Tag','mainmap_colorbar')
         h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
-        h.Units='pixels';
+        h.Units='normalized';
         
         switch obj.colorField
             

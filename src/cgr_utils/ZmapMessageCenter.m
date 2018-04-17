@@ -185,7 +185,7 @@ function h = create_message_figure()
     im=image(ax,rgb);
     axis(ax,'equal')
     ax.Visible='off';
-    im.ButtonDownFcn=@(~,~)web('www.seismo.ethz.ch','-browser');
+    im.ButtonDownFcn=@cb_go_to_sed;
     
     %{
     
@@ -285,7 +285,11 @@ function h = create_message_figure()
     %}
     
 end
-
+function cb_go_to_sed(~,~)
+    if strcmp(get(gcf,'SelectionType'),'open')
+        web('www.seismo.ethz.ch','-browser');
+    end
+end
 function do_timeplot(s,~, catName)
     disp(['ZmapMessageCenter.do_timeplot ', catName])
     ZG=ZmapGlobal.Data;

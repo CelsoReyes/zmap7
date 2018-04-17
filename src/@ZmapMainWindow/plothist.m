@@ -11,14 +11,17 @@ function plothist(obj, name, values, tabgrouptag)
         h=findobj(ax,'Type','histogram');
         h.DisplayName='catalog';
         h.Tag='cataloghist';
+        h.FaceColor = [0.4 0.4 0.4];
         ax.YGrid='on';
         hold on
-        addLegendToggleContextMenuItem(ax,ax,[],'bottom','above');
+        c=uicontextmenu('Tag','plothist');
+        addLegendToggleContextMenuItem(c,'bottom','above');
+        ax.UIContextMenu=c;
         
     else
         h=findobj(ax,'Type','histogram');
         h(strcmp({h.Tag},'cataloghist')).Data=values; %TODO move into hisgra
-        delete(h(~strcmp({h.Tag},'cataloghist')))%delete(findobj(ax,'Type','line'));
+        delete(h(~strcmp({h.Tag},'cataloghist')))
         if ~isempty(obj.xscats)
             doit(ax)
         end
@@ -27,30 +30,24 @@ function plothist(obj, name, values, tabgrouptag)
     
     function doit(ax)
         h= findobj(ax,'Type','histogram');
-        keys=obj.xscats.keys;
         edges=  h.BinEdges;
-        middles = edges(1:end-1) + diff(edges)/2;
-        hold(ax,'on')
-        for j=1:numel(keys)
-            k=keys{j};
-            switch name
-                case 'Hour'
-                    h=histogram(ax,hours(obj.xscats(k).Date.(name)),edges,'DisplayStyle','stairs',...
-                        'DisplayName',k,'Tag',k);
-                    %n=histcounts(hours(obj.xscats(k).Date.(name)),edges);
-                otherwise
-                    h=histogram(ax,obj.xscats(k).(name),edges,'DisplayStyle','stairs',...
-                        'DisplayName',k,'Tag',k);
-                    %n=histcounts(obj.xscats(k).(name),edges);
-            end
-            h.EdgeColor=obj.xsections(k).color;
-            %line(ax,middles,n,'MarkerEdgeColor',obj.xsections(k).color,...
-            %    'LineStyle','none',...
-            %    'DisplayName',k,...
-            %    'Marker','.');
+        
+        %keys=obj.xscats.keys;
+        
+        switch name
+            case 'Hour'
+                xsplotter=@(xs,xscat)histogram(ax,hours(xscat.Date.(name)),edges,...
+                        'DisplayStyle','stairs',...
+                        'DisplayName',xs.name,'EdgeColor',xs.color,'linewidth',1.0);
+                
+            otherwise
+                xsplotter=@(xs,xscat)histogram(ax,xscat.(name),edges,...
+                        'DisplayStyle','stairs',...
+                        'DisplayName',xs.name,'EdgeColor',xs.color,'linewidth',1.0);
         end
-        hold(ax,'off')
-        set(findobj(ax,'Type','histogram'),'linewidth',1.0)
+        
+        obj.plot_xsections(xsplotter, 'Xsection');
+        
     end
     
 end

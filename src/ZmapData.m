@@ -9,7 +9,12 @@ classdef ZmapData < handle
     % 
     %  several of these variables exist as carryovers from previous version of Zmap
     % 
+    %
+    % change these for your personal use by editing ini_zmap
+    %
     % for details about globally accessible variables, see the ZmapData Reference page 
+    %
+    % see ini_zmap
     
     properties(Constant)
         zmap_version = '7.0'
@@ -56,7 +61,10 @@ classdef ZmapData < handle
         big_eq_minmag (1,1) double = 8 % events of this magnitude or higher are plotted & labeled
         lock_aspect matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.off
         mainmap_grid matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.on
-        mainmap_plotby (1,:) char = 'depth' % was typele
+        mainmap_plotby (1,:) char = '-none-' % was typele
+        mainmap_features = {'borders','coastline',...
+            'faults','lakes','plates','rivers',...
+            'stations','volcanoes'} % features that will be loaded on the main map
         
         bin_dur duration = days(14) %bin length
         
@@ -88,13 +96,17 @@ classdef ZmapData < handle
         freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
         shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'
         someColor (1,1) char = 'w'
+        event_marker char = 'o';
+        grid_markersize = get(0,'DefaultLineMarkerSize')
+        grid_marker = '+'
+        grid_color=[0.7 0.7 0.7]
        
         % b-value related
         inb1 {mustBeNonnegative, mustBeInteger} = 1 % choice for b-value calculation (?)
         inb2 {mustBeNonnegative, mustBeInteger} = 1 % maximum curvature method(?)
         bo1 (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[] % b-value grid
-        Grid {mustBeZmapGrid} = ZmapGrid() % grid used for calculations
+        Grid % grid used for calculations
         gridopt=struct('dx',.5,'dx_units','deg',...
             'dy',.5,'dy_units','deg',...
             'dz',1,'dz_units','km',...
@@ -121,6 +133,12 @@ classdef ZmapData < handle
         teb % end time for earthquakes in primary catalog
     end
     methods
+        function out=get.Grid(obj)
+            if isempty(obj.Grid)
+                obj.Grid=ZmapGrid();
+            end
+            out=obj.Grid; % grid used for calculations
+        end
         function out=get.teb(obj)
             out=max(obj.primeCatalog.Date);
         end

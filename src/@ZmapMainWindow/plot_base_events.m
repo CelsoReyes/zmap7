@@ -1,4 +1,4 @@
-function plot_base_events(obj, featurelist)
+function plot_base_events(obj, container, featurelist)
     % PLOT_BASE_EVENTS plot all events from catalog as dots before it gets filtered by shapes, etc.
     % call once at beginning
     % obj.PLOT_BASE_EVENTS(featurelist) where featurelist is a cell array of feature names, such as
@@ -7,7 +7,7 @@ function plot_base_events(obj, featurelist)
         
     axm=obj.map_axes;
     if isempty(axm)
-        axm=axes('Units','pixels','Position',obj.MapPos_L);
+        axm=axes(container,'Units','normalized','Position',obj.MapPos_L);
     end
     alleq = findobj(obj.fig,'Tag','all events');
     if isempty(alleq)
@@ -26,7 +26,7 @@ function plot_base_events(obj, featurelist)
     
     xlabel(axm,'Longitude')
     ylabel(axm,'Latitude');
-    commandeer_colorbar_button();
+    %commandeer_colorbar_button();
     ZG=ZmapGlobal.Data;
     
     
@@ -66,8 +66,8 @@ function plot_base_events(obj, featurelist)
     uimenu(c,'Label','Zoom to selection',Futures.MenuSelectedFcn,@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@(s,v)obj.cb_xsection);
     axm.UIContextMenu=c;
-    addLegendToggleContextMenuItem(axm,axm,c,'bottom','above');
-    uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
+    addLegendToggleContextMenuItem(c,'bottom','above');
+    %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
     
     function updatewrapper(s,v,f)
         f(s,v);

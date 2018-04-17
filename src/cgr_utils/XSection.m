@@ -38,6 +38,7 @@ classdef XSection
     properties(Dependent)
         length_km % length of cross section [read only]
         azimuth % direction 
+        name
     end
     
     methods
@@ -66,18 +67,16 @@ classdef XSection
             
             % dialog box to choose cross-section
             if ~exist('endpt1','var')||~exist('endpt2','var')
-                obj=obj.set_endpoints(gca);
+                obj=obj.set_endpoints(ax); %gca
             else
                 obj.startpt = startpt;
                 obj.endpt = endpt;
             end
-            
             % get waypoints along the great-circle curve
             [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
             
             % get width polygon
             [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
-            
             % mask so that we can plot original quakes in original positions
            [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             
@@ -109,16 +108,29 @@ classdef XSection
             
         end
             
-        function obj = change_color(obj, color, ax)
+        function obj = change_color(obj, color, container)
             % CHANGE_COLOR changes the color for the cross section and area outline
             %
             % obj = obj.CHANGE_COLOR(color, ax)
-            
+            if isempty(color)
+                color=uisetcolor(obj.color,['Color for ' obj.name]);
+            end
+                
             obj.color = color;
-            obj.DeleteFcn();
-            % mask so that we can plot original quakes in original positions
-           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
+            
+            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','line'), 'Color',color);
+            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','text'), 'Color',color .* 0.8);
+            ax=findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','axes');
+            if ~isempty(ax)
+                set(get(ax,'XAxis'),'color',color .* 0.5);
+                set(get(ax,'YAxis'),'color',color .* 0.5);
+            end
+            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','histogram'), 'EdgeColor',color);
+            
+            %obj.DeleteFcn();
+            %% mask so that we can plot original quakes in original positions
+           %[xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+           % obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
         
         function obj = swap_ends(obj, ax)
@@ -199,26 +211,31 @@ classdef XSection
                 'linewidth',obj.linewidth,...
                 'Color',obj.color,...
                 'MarkerIndices',[1 numel(obj.curvelons)],'Marker','x',...
-                'Tag','Xsection Line','DisplayName',['Xsection ' obj.startlabel]);
+                'Tag',['Xsection Line ', obj.name],...
+                'DisplayName',['Xsection ' obj.startlabel]);
             
             % plot width polygon
             xs_poly=line(ax,obj.polylons,obj.polylats,'LineStyle','-.',...
                 'Color',obj.color,...
                 'LineWidth',obj.linewidth * 0.75,...
-                'Tag','Xsection Area','DisplayName','');
+                'Tag',['Xsection Area ' obj.name],...
+                'DisplayName','');
             %label it: put labels offset and outside the great-circle line.
             hOffset=@(x,polarity) x+(1/75).*diff(xlim(ax)) * sign(obj.endpt(2)-obj.startpt(2)) * polarity;
             vOffset=@(x,polarity) x+(1/75).*diff(ylim(ax)) * sign(obj.endpt(1)-obj.endpt(1)) * polarity;
             textStartX = hOffset(obj.startpt(2),-1);
             textStartY = vOffset(obj.startpt(1),-1);
             xs_slabel = text(ax,textStartX,textStartY,obj.startlabel,...
-                'Color',obj.color.*0.8, 'fontweight','bold');
+                'Color',obj.color.*0.8, 'fontweight','bold',...
+                'Tag',['Xsection Start ' obj.name]);
             textEndX = hOffset(obj.endpt(2),1);
             textEndY = vOffset(obj.endpt(1),1);
             xs_elabel = text(ax,textEndX,textEndY,obj.endlabel,...
-                'Color',obj.color.*0.8, 'fontweight','bold');
+                'Color',obj.color.*0.8, 'fontweight','bold',...
+                'Tag',['Xsection End ' obj.name]);
             ax.XLimMode=prev_xlimmode;
             ax.YLimMode=prev_ylimmode;
+            drawnow
         end
         
         % TODO add method to toggle between shape and not
@@ -232,11 +249,12 @@ classdef XSection
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
             h=findobj(ax,'Tag','ev_along_strike_plot');
             cep=XSectionExplorationPlot(ax,@()mycat,obj);
-            cep.scatter('xsec_plot');
+            cep.scatter(['Xsection plot ' obj.name]);
+            ax.Tag=['Xsection strikeplot ' obj.name];
         end
         
         function gr = getGrid(obj, x_km, zs_km)
-            % GETGRID get a grid fom this cross section
+            % GETGRID get a grid from this cross section
             if numel(x_km) == 1
                 % x_km is the delta spacing in km
                 % keep x_km/2 away from both edges to avoid edge effects
@@ -262,6 +280,31 @@ classdef XSection
             end
             name=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
             gr=ZmapVGrid(name,lolaz);
+        end
+        
+        function s = get.name(obj)
+            s=[obj.startlabel ' - ' obj.endlabel];
+        end
+        
+        function s = info(obj)
+            displayer=@(x)sprintf(...
+                    'X-Sec %s: %g km long by %g km wide [(%g,%g) to (%g,%g)]',...
+                    x.name, x.length_km, x.width_km, x.startpt, x.endpt);
+            nObj = numel(obj);
+            if isempty(nObj)
+                s=('No cross section(s) or empty cross section');
+            elseif nObj==1
+                s=sprintf('%s', displayer(obj));
+            else
+                s=sprintf('%d XSection slices:', nObj);
+                for n=1:nObj
+                    s=sprintf('%s]n%s',s,displayer(nObj(n)));
+                end
+            end
+        end
+        
+        function disp(obj)
+            disp(info(obj));
         end
     end % METHODS
     

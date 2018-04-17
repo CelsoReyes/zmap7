@@ -3,44 +3,46 @@ function obj=selectSegmentUsingMouse(ax, color)
     if ~exist('ax','var')
         ax=gca; 
     else
-        axes(ax)
+        axes(ax);
     end
     if ~exist('color','var')
-        color='k'
+        color='k';
     end
+    
     fig=gcf;
     started=false;
-    obj=struct('xy1',[nan nan],'xy2',[nan nan],'dist_km',[0]);
+    
+    obj=struct('xy1',[nan nan],'xy2',[nan nan],'dist_km',0);
     
     [x1, y1, x2, y2]=deal(nan);
     sel_start=tic;
-    sel_elapse=toc(sel_start);
+    % sel_elapse=toc(sel_start);
     
     % select center point, if it isn't provided
     disp('click on segment start');% . ESC aborts');
     f=gcf;
-    TMP.fWBMF=f.WindowButtonMotionFcn;
-    f.WindowButtonMotionFcn=@moveMouse;
-    TMP.fWBUF = f.WindowButtonUpFcn;
-    f.WindowButtonUpFcn=@endSegment;
+    
     TMP.aBDF = ax.ButtonDownFcn;
+    TMP.fWBUF = f.WindowButtonUpFcn;
+    TMP.fWBMF=f.WindowButtonMotionFcn;
+    
     ax.ButtonDownFcn=@startSegment;
     
-    x2=nan;
-    y2=nan;
+    
     selected=false;
-    tmpstartpth=[];
     fig.Pointer='Cross';
+    
+    % pause because we need completed user input before exiting this function
     while ~started
         pause(.01);
     end
     disp('started!')
     % set center using ginput, which reads the button down
-    b=0;%[x1,y1,b] = ginput(1);
+    b=0;
     sel_start=tic;
     
     
-    
+    b=f.CurrentCharacter;
     if b==ABORTKEY
         % restore previous window functions
         f.WindowButtonMotionFcn=TMP.fWBMF;
@@ -51,8 +53,8 @@ function obj=selectSegmentUsingMouse(ax, color)
     end
     
     hold on;
+    %{
     %% mouse should still be pressed.
-    delete(tmpstartpth);
     % draw line from origin to edge of circle
     h=plot([x1;x1],[y1;y1],'+:','markersize',10,'linewidth',2,'color',color);
     
@@ -62,6 +64,7 @@ function obj=selectSegmentUsingMouse(ax, color)
     hold off;
     
     % loop waits for mouse button to come back up before continuing
+    %}
     while ~selected
         pause(.05)
     end
@@ -70,16 +73,30 @@ function obj=selectSegmentUsingMouse(ax, color)
     obj.xy2=[x2,y2];
     obj.dist_km=deg2km(distance(y1,x1,y2,x2));
     
-    % by now we have the new points and the distance.
-    f.WindowButtonMotionFcn=TMP.fWBMF;
-    f.WindowButtonUpFcn=TMP.fWBUF;
-    ax.ButtonDownFcn=TMP.aBDF;
-    pause(1)
     delete(h);
-    fig.Pointer='arrow';
+    
+    function startSegment(~,ev)
+        disp('start Line'); 
+        hold on;
+        cp=ax.CurrentPoint;
+        
+        x1=cp(1,1);
+        y1=cp(1,2);
+        h=plot(ax,[x1;x1], [y1;y1], '+:','MarkerSize',20,'color',color,'linewidth',2);
+        %sel_start=tic;
+        started=true;
+        
+        % write the text
+        h(2)=text((x1+x2)/2,(y1+y2)/2,['Dist: 0 km'],...
+            'FontSize',12,'FontWeight','bold','Color',color);
+        
+        f.WindowButtonMotionFcn=@moveMouse;
+    end
     
     function moveMouse(~,~)
-        cp=get(gca,'CurrentPoint');
+        cp=ax.CurrentPoint;
+        ax.ButtonDownFcn=@endSegment;
+        f.WindowButtonUpFcn=@endSegment;
         x2=cp(1,1);
         y2=cp(1,2);
         h(1).XData(2)=x2;
@@ -89,22 +106,21 @@ function obj=selectSegmentUsingMouse(ax, color)
         h(2).String=['Dist:' num2str(obj.dist_km,4) ' km'];
     end
     
-    function startSegment(~,ev)
-        disp('start Line'); hold on;
-        x1=ax.CurrentPoint(1,1);y1=ax.CurrentPoint(1,2)
-        tmpstartpth=plot(ax,x1,y1,'+','MarkerSize',20,'color',color);
-        sel_start=tic;
-        started=true;
-    end
     
-    function endSegment(~,ev)
-        cp=get(gca,'CurrentPoint');
-        sel_elapse=toc(sel_start);
-        disp(sel_elapse)
-        if sel_elapse >=1 % prevent accidental click.
-            selected=true;
+    function endSegment(~,~)
+        if strcmp(f.SelectionType, 'open')
+            % was a double click. just ignore it.
+            return
         end
-        disp(ev);
+        %cp=get(gca,'CurrentPoint');
+        %sel_elapse=toc(sel_start);
+        %disp(sel_elapse)
+        %if sel_elapse >=1 % prevent accidental click.
+        selected=true;
+        f.WindowButtonMotionFcn=TMP.fWBMF;
+        f.WindowButtonUpFcn=TMP.fWBUF;
+        ax.ButtonDownFcn=TMP.aBDF;
+        fig.Pointer='arrow';
     end
     
 end

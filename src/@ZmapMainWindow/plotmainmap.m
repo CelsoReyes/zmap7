@@ -13,15 +13,16 @@ function plotmainmap(obj)
         dispname = replace(obj.catalog.Name,'_','\_');
         eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
             mag2dotsize(obj.catalog.Magnitude),getLegalColors(),...
+            'LIneWidth',.5,...
             'Tag','active quakes','HitTest','off','DisplayName',dispname);
         eq.ZData=obj.catalog.Depth;
         if obj.catalog.Count > MAX_FOR_MARKER
             eq.Marker='.';
         else
-            eq.Marker='o';
+            eq.Marker=obj.eventMarker;
         end
         hold(axm,'off');
-        obj.do_colorbar(axm);
+        %obj.do_colorbar(axm);
     else
         % REUSE the plot
         eq.XData=obj.catalog.Longitude;

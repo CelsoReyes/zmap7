@@ -108,8 +108,9 @@ function hisgra(mycat, opt, ax)
         end
         
         
-        c=uicontextmenu('Tag',['histogram ' opt ' scale']);
-        uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
+        %c=uicontextmenu('Tag',['histogram ' opt ' scale']);
+        %uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
+        uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'Y'});
         yl.UIContextMenu=c;
         
     end

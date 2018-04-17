@@ -9,8 +9,18 @@ function ini_zmap()
     
     ZG=ZmapGlobal.Data;
     
-    % When the main map first shows, it will default to this view:
-    ZG.mainmap_plotby='depth';
+    % MAINMAP_PLOTBY defines by which field the events will be colored on the main map.
+    % valid choices are one of  : 'Depth','Date','Magnitude','-none-'
+    ZG.mainmap_plotby='-none-';
+    
+    % MAINMAP_FEATURES lists which features will be plotted by default on the main map.
+    % provide the list as a cell. Valid choices are:
+    % {'borders','coastline','faults','lakes','plates','rivers','stations','volcanoes'}
+    ZG.mainmap_features={'borders','coastline','faults','lakes','plates','rivers'};
+    ZG.event_marker = 's';
+    
+    ZG.grid_markersize = 2.5;
+    
     
     infstri = ' Please enter information about the | current dataset here';
 

@@ -16,10 +16,14 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             obj.scatter@CatalogExplorationPlot(tag, varargin);
             obj.fix_alongstrike_axis();
             obj.ax.YDir='reverse';    
+            obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
+            obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
             title(obj.ax,sprintf('Profile: %s to %s',obj.xsec.startlabel,obj.xsec.endlabel));
         end
         function update(obj, varargin)
             obj.update@CatalogExplorationPlot(varargin{:})
+            obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
+            obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
             obj.fix_alongstrike_axis(varargin{:})
         end
         
@@ -53,22 +57,8 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             if (isempty(specific) || strcmp(specific,'z_by')) && strcmp(obj.z_by, 'dist_along_strike_km')
                 modify_axis('ZLim','ZLabel','ZTick','ZTickLabel');
             end
-            %{
-            if strcmp(obj.x_by,'dist_along_strike_km')
-                % make the plot pretty.
-                obj.ax.XLabel.String='Dist along strike [km]';
-                obj.ax.XLim=[0 obj.xsec.length_km];
-                if obj.ax.XTick(1) ~=0
-                    obj.ax.XTick=[0 obj.ax.XTick];
-                end
-                obj.ax.XTickLabel(1)={['\bf' obj.xsec.startlabel]};
-                if obj.ax.XTick(end) ~= obj.xsec.length_km
-                    obj.ax.XTick(end+1)= obj.xsec.length_km;
-                end
-                %\bf makes it bold, and assumes interpreter TEX
-                obj.ax.XTickLabel(length(obj.ax.XTick))={['\bf' obj.xsec.endlabel]};
-            end
-            %}
+ 
+
             function modify_axis( xyzlim, xyzlabel, xyztick, xyzticklabel)
                 % make the plot pretty.
                 obj.ax.(xyzlabel).String='Dist along strike [km]';

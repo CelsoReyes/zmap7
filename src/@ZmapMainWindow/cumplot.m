@@ -1,66 +1,93 @@
 function cumplot(obj, tabgrouptag)
     % Cumulative Event Plot
+    
+    Tags.xs = 'CumPlot xs contextmenu';
+    Tags.bg = 'CumPlot bg contextmenu';
+    Tags.line = 'CumPlot line contextmenu';
+    
+    
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'cumplot');
     
     delete(myTab.Children);
-    delete(findobj(obj.fig,'Tag','CumPlot bg contextmenu'))
-    delete(findobj(obj.fig,'Tag','CumPlot line contextmenu'))
-    delete(findobj(obj.fig,'Tag','CumPlot xs contextmenu'))
-    delete(findobj(obj.fig,'Tag','CumPlot Yscaling'))
-    delete(findobj(obj.fig,'Tag','CumPlot Xscaling'))
+    
     ax=axes(myTab);
     ax.TickDir='out';
     
-    c=uicontextmenu('tag','CumPlot line contextmenu');
-    uimenu(c,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
-    uimenu(c,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
-    uimenu(c, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
-    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+    cln=findobj(gcf,'Tag',Tags.line);
+    if isempty(cln)
+        cln=uicontextmenu('tag',Tags.line);
+        uimenu(cln,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
+        uimenu(cln,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
+        uimenu(cln, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
+        uimenu(cln,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+    end
     
-    p=line(ax,obj.catalog.Date,1:obj.catalog.Count,...
-        'linewidth',2.5,'DisplayName','catalog',...
-        'color','k');
-    p.UIContextMenu=c;
+    % plot the main catalog
+    p=line(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2.5,'DisplayName','catalog',...
+        'Tag','catalog','color','k');
+    p.UIContextMenu=cln;
     grid(ax,'on');
     
     
-    
     % plot cross sections, too
-    k=obj.xsections.keys;
-    for j=1:obj.xsections.Count
-        hold on
-        tit=k{j};
-        xs=obj.xsections(tit);
-        xscat = obj.xscats(tit);
-    c=uicontextmenu('tag','CumPlot xs contextmenu');
-    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,{@cb_xstimeplot,xs});
-        line(ax,xscat.Date, 1:xscat.Count,...
-            'linewidth',1.5,'DisplayName',tit,'Color',xs.color,...
-            'UIContextMenu',c);
+    cxs=findobj(gcf,'Tag',Tags.xs);
+    if isempty(cxs)
+        cxs=uicontextmenu('tag',Tags.xs);
+        uimenu(cxs,'Label','Open in new window',Futures.MenuSelectedFcn,@cb_xstimeplot);
     end
     
+    % remove any cross-sections that are no longer exist
+    k = obj.xsections.keys;
+    m=findobj(ax,'Type','line','-and','-not','Tag','catalog'); % plotted cross sections
+    if ~isempty(m)
+        notrep = ~ismember({m.DisplayName},k);
+        if any(notrep)
+            delete(m(notrep));
+        end
+    end
+        
+    obj.plot_xsections(@xsplotter, 'Xsection cumplot');
+    
     yl=ylabel(ax,'Cummulative Number of events');
-    c=uicontextmenu('Tag','CumPlot Yscaling');
-    uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
-    yl.UIContextMenu=c;
+    yl.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
     xl=xlabel(ax,'Time');
-    c=uicontextmenu('Tag','CumPlot Xscaling');
-    uimenu(c,'Label','Split View on largest event(s)',Futures.MenuSelectedFcn,{@splittimeslargest,ax,'X'});
-    uimenu(c,'Label','Split View (Fixed Durations)',Futures.MenuSelectedFcn,{@splittimesduration,ax,'X'});
-    xl.UIContextMenu=c;
+    %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
     
     
+    cbg=findobj(gcf,'Tag',Tags.bg);
     
-    c=uicontextmenu('tag','CumPlot bg contextmenu');
-    ax.UIContextMenu=c;
-    addLegendToggleContextMenuItem(ax,ax,c,'bottom','above');
-    uimenu(c,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+    if isempty(cbg)
+        cbg=uicontextmenu('Tag',Tags.bg);
+        addLegendToggleContextMenuItem(cbg,'bottom','above');
+        uimenu(cbg,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+        ax.UIContextMenu=cbg;
+    end
     
-    function cb_xstimeplot(~,~,xs)
-            ZG=ZmapGlobal.Data;
-            ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog))
-            ZG.newt2.Name=sprintf('Events within %g km of %s - %s',xs.width_km,xs.startlabel,xs.endlabel);
-            timeplot();
+    
+    function h = xsplotter(xs, xscat)
+        h=findobj(ax,'DisplayName',xs.name,'-and','Type','line');
+        if isempty(h)
+            h=line(ax,xscat.Date, 1:xscat.Count,...
+                'linewidth',1.5,'DisplayName',xs.name,'Color',xs.color,...
+                'Tag',['Xsection cumplot ' xs.name]);
+            h.UIContextMenu = cxs;
+        else
+            if ~isequal(xscat.Date, h.XData)
+                set(h,'XData',xscat.Date, 'YData', 1:xscat.Count,'linewidth',1.5,'Color',xs.color);
+            else
+                set(h,'Color',xs.color);
+            end
+        end
+    end
+    
+    function cb_xstimeplot(~,~)
+        % CB_XSTIMEPLOT shows the TIMEPLOT for the currently selected cross-section
+        myName = get(gco,'DisplayName');
+        xs = obj.xsections(myName);
+        ZG=ZmapGlobal.Data;
+        ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog));
+        ZG.newt2.Name=sprintf('Events within %g km of %s',xs.name);
+        timeplot();
     end
 end

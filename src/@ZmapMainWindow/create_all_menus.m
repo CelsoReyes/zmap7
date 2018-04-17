@@ -186,6 +186,10 @@ function create_all_menus(obj, force)
             'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.big_eq_minmag)],...
             Futures.MenuSelectedFcn,@cb_plot_large_quakes);
         
+        uimenu(mapoptionmenu,'label','Redraw',...
+            'Separator','on',...
+            Futures.MenuSelectedFcn,@(s,v)obj.cb_redraw(s,v));
+        
         function set_colorby(~,~,val)
             obj.colorField=val;
 
@@ -200,9 +204,9 @@ function create_all_menus(obj, force)
             obj.replot_all();
             obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
             % redraw the colorbar?
-            if hascolorbar
-                obj.do_colorbar();
-            end
+            %if hascolorbar
+            %    obj.do_colorbar();
+            %end
         end
         
         function cb_plotby(~,~, s)

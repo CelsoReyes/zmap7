@@ -74,8 +74,8 @@ function replot_all(obj,status)
     obj.plothist('Hour',hours(obj.catalog.Date.Hour),'UR plots');
     obj.fmdplot('UR plots');
     obj.cummomentplot('LR plots');
-    obj.time_vs_something_plot('Time-Mag',TimeMagnitudePlotter,'LR plots');
-    obj.time_vs_something_plot('Time-Depth',TimeDepthPlotter, 'LR plots');
+    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter, 'LR plots');
+    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter, 'LR plots');
     if isempty(obj.xsgroup.Children)
         obj.xsgroup.Visible='off';
         set(obj.map_axes,'Position',obj.MapPos_L);

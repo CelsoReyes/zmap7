@@ -4,7 +4,7 @@ classdef CatalogExplorationPlot < handle
         x_by (1,:) char ='Latitude'
         y_by (1,:) char ='Longitude'
         z_by (1,:) char ='Depth'
-        color_by (1,:) char ='Date'
+        color_by (1,:) char =ZmapGlobal.Data.mainmap_plotby%'Date'
         size_by (1,:) char ='Magnitude'
         colorFcn function_handle = @datenum
         sizeFcn function_handle = @mag2dotsize
@@ -14,6 +14,7 @@ classdef CatalogExplorationPlot < handle
         ax matlab.graphics.axis.Axes;
         conversions;
         curview;
+        marker = ZmapGlobal.Data.event_marker;
     end
     methods
         
@@ -24,8 +25,14 @@ classdef CatalogExplorationPlot < handle
             obj.set_valid_axes_choices();
             obj.set_conversions();
             obj.ax=ax;
-            addLegendToggleContextMenuItem(ax,ax,[],'top','below')
-            
+            c=ax.UIContextMenu;
+            if isempty(c)
+                c=uicontextmenu('Tag','catexplot');
+                addLegendToggleContextMenuItem(c,'top','below');
+                ax.UIContextMenu=c;
+            else
+                addLegendToggleContextMenuItem(c,'top','below');
+            end
         end
         
         function scatter(obj, tag, varargin)
@@ -36,12 +43,15 @@ classdef CatalogExplorationPlot < handle
             z=c.(obj.z_by);
             s=c.(obj.size_by);
             s=obj.sizeFcn(s);
-            cl=c.(obj.color_by);
-            cl=obj.colorFcn(cl);
-            obj.ax
+            if strcmp(obj.color_by,'-none-')
+                cl=[0 0 0];
+            else 
+                cl=c.(obj.color_by);
+                cl=obj.colorFcn(cl);
+            end
             
             delete(findobj(obj.ax,'Tag',tag));
-            obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Tag',tag);
+            obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Marker',obj.marker,'Tag',tag);
             obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
             if isempty(obj.curview)
                 view(obj.ax,2);
@@ -50,12 +60,12 @@ classdef CatalogExplorationPlot < handle
             end
             %obj.myscatter.ZData=c.(obj.z_by);
             xl = xlabel(obj.x_by,'interpreter','none');
-            obj.xContextMenu(xl);
+            obj.xContextMenu(xl, tag);
             yl = ylabel(obj.y_by,'interpreter','none');
-            obj.yContextMenu(yl);
+            obj.yContextMenu(yl, tag);
             zl = zlabel(obj.z_by,'interpreter','none');
-            obj.zContextMenu(zl);
-            obj.scatterContextMenu(obj.myscatter);
+            obj.zContextMenu(zl, tag);
+            obj.scatterContextMenu(obj.myscatter, tag);
             grid(obj.ax,'on');
             box(obj.ax,'on');
         end
@@ -95,7 +105,7 @@ classdef CatalogExplorationPlot < handle
                         end
                     case 'color_by'
                         switch obj.color_by
-                            case 'Single Color'
+                            case '-none-'
                                 set(obj.myscatter,'CData',obj.colorFcn(1));
                             otherwise
                                 set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
@@ -210,11 +220,10 @@ classdef CatalogExplorationPlot < handle
             end
             
         end
-        function xContextMenu(obj,xl)
-            h=uicontextmenu('Tag','xselection context');
+        function xContextMenu(obj,xl, tag)
+            h=uicontextmenu('Tag',['xsel_ctxt ' tag]);
             checkmask = strcmp(obj.axes_choices, obj.x_by);
             for i=1:numel(obj.axes_choices)
-                %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
                     Futures.MenuSelectedFcn,{@obj.change,'x_by'});
             end
@@ -222,11 +231,10 @@ classdef CatalogExplorationPlot < handle
             xl.UIContextMenu=h;
         end
         
-        function yContextMenu(obj,yl)
-            h=uicontextmenu('Tag','yselection context');
+        function yContextMenu(obj,yl, tag)
+            h=uicontextmenu('Tag',['ysel_ctxt ' tag]);
             checkmask = strcmp(obj.axes_choices, obj.y_by);
             for i=1:numel(obj.axes_choices)
-                %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
                     Futures.MenuSelectedFcn,{@obj.change,'y_by'});
             end
@@ -234,11 +242,10 @@ classdef CatalogExplorationPlot < handle
             yl.UIContextMenu=h;
         end
         
-        function zContextMenu(obj,zl)
-            h=uicontextmenu('Tag','zselection context');
+        function zContextMenu(obj,zl,tag)
+            h=uicontextmenu('Tag',['zsel_ctxt ' tag]);
             checkmask = strcmp(obj.axes_choices, obj.z_by);
             for i=1:numel(obj.axes_choices)
-                %label = obj.axes_choices{i};
                 uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
                     Futures.MenuSelectedFcn,{@obj.change,'z_by'});
             end
@@ -246,36 +253,42 @@ classdef CatalogExplorationPlot < handle
             zl.UIContextMenu=h;
         end
         
-        function scatterContextMenu(obj,sc)
-            h=uicontextmenu('Tag','sselection context');
-            szm = uimenu(h,'Label','Size by...');
-            clm = uimenu(h,'Label','Color by...');
-            obj.sizeContextMenu(szm,sc);
-            obj.colorContextMenu(clm,sc);
+        function scatterContextMenu(obj,sc,tag)
+            tag=['ssel_ctxt ' tag];
+            delete(findobj(gcf,'Tag','tag'));
+            h=uicontextmenu('Tag',tag);
+            szm = uimenu(h,'Label','Size by...',...
+                Futures.MenuSelectedFcn,{@obj.cleanChildren_cb,'size_by'});
+            clm = uimenu(h,'Label','Color by...',...
+                Futures.MenuSelectedFcn,{@obj.cleanChildren_cb,'color_by'});
+            obj.sizeContextMenu(szm);
+            obj.colorContextMenu(clm);
             sc.UIContextMenu=h;
         end
-        
-        function sizeContextMenu(obj,h,sc)
-            checkmask = strcmp(obj.axes_choices, obj.size_by);
+        function cleanChildren_cb(obj,src,ev,bywhat)
+            m=findobj(src.Children,'Type','uimenu');
+            labels = get(m,'Label');
+            ison = strcmp(get(m,'Checked'),'on');
+            isoff = ~ison;
+            checkmask = strcmp(labels, obj.(bywhat));
+            disp(labels{checkmask})
+            set(m(~checkmask & ison),'Checked','off');
+            set(m(checkmask & isoff),'Checked','on');
+        end
+
+        function sizeContextMenu(obj,h)
             for i=1:numel(obj.axes_choices)
-                %label = obj.axes_choices{i};
-                uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    Futures.MenuSelectedFcn,{@obj.changeSize,sc});
+                uimenu(h,'Label',obj.axes_choices{i},Futures.MenuSelectedFcn,@obj.changeSize);
             end
-            uimenu(h,'Separator','on','Label','Single Size',...
-                Futures.MenuSelectedFcn,{@obj.changeSize,sc});
+            uimenu(h,'Separator','on','Label','Single Size',Futures.MenuSelectedFcn,@obj.changeSize);
             
         end
         
-        function colorContextMenu(obj,h,sc)
-            checkmask = strcmp(obj.axes_choices, obj.color_by);
+        function colorContextMenu(obj,h)
             for i=1:numel(obj.axes_choices)
-                %label = obj.axes_choices{i};
-                uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    Futures.MenuSelectedFcn,{@obj.changeColor,sc});
+                uimenu(h,'Label',obj.axes_choices{i},Futures.MenuSelectedFcn,@obj.changeColor);
             end
-            uimenu(h,'Separator','on','Label','Single Color',...
-                Futures.MenuSelectedFcn,{@obj.changeColor,sc});
+            uimenu(h,'Separator','on','Label','-none-',Futures.MenuSelectedFcn,@obj.changeColor);
         end
         
         function add_axes_toggles(obj,h,letter)
@@ -326,20 +339,16 @@ classdef CatalogExplorationPlot < handle
             %replot
             obj.update(whatby);
         end
-        function changeSize(obj,src,~, sc)
+        
+        function changeSize(obj,src,~)
             % whatby is x_by, y_by, etc...
             
-            % remove checkmarks
-            set(src.Parent.Children,'Checked','off');
             
             % change the plotting value
             obj.size_by= src.Label;
             
-            % add new checkmark
-            src.Checked='on';
-            
             % relabel
-            sc.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
+            set(gco,'DisplayName',sprintf('size:%s\ncolor:%s', obj.size_by, obj.color_by));
             switch(obj.size_by)
                 case 'Date'
                     obj.sizeFcn=@(x) normalize(x,2,8,@(x)x.^2 );
@@ -369,7 +378,7 @@ classdef CatalogExplorationPlot < handle
             end
             
         end
-        function changeColor(obj,src,~,sc)
+        function changeColor(obj,src,~)
             % whatby is x_by, y_by, etc...
             
             % remove checkmarks
@@ -382,13 +391,13 @@ classdef CatalogExplorationPlot < handle
             src.Checked='on';
             
             % relabel
-            sc.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
+            set(gco,'DisplayName',sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by));
             %h.String=src.Label;
             
             switch(obj.color_by)
                 case 'Date'
                     obj.colorFcn=@datenum;
-                case 'Single Color'
+                case '-none-'
                     val=uisetcolor();
                     obj.colorFcn=@(x)val;
                 otherwise

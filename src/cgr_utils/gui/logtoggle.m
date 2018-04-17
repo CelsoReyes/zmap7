@@ -1,9 +1,9 @@
-function logtoggle(src,~,ax,scale)
+function logtoggle(src,evt,scale)
     % LOGTOGGLE toggle an axis between log and linear
     % SRC is the uimenu item
     % AX is the axes to scale
     % scale is 'X' , 'Y', or 'Z'
-    
+    ax=get(gcf,'CurrentAxes');
     switch scale
         case 'X'
             fld = 'XScale';
@@ -12,12 +12,16 @@ function logtoggle(src,~,ax,scale)
         case 'Z'
             fld = 'ZScale';
     end
+    try
     switch src.Label
         case 'Use Log Scale'
-            src.Label='Use Linear Scale';
             ax.(fld)='log';
+            src.Label='Use Linear Scale';
         otherwise
-            src.Label='Use Log Scale';
             ax.(fld)='linear';
+            src.Label='Use Log Scale';
+    end
+    catch ME
+        warning(ME.message)
     end
 end

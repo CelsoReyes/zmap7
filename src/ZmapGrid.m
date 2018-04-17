@@ -54,6 +54,9 @@ classdef ZmapGrid
         Y double % all Y positions in matrix
         Z double % all Y positions in matrix.
         Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
+        MarkerSize = ZmapGlobal.Data.grid_markersize;
+        Marker = ZmapGlobal.Data.grid_marker;
+        Color = ZmapGlobal.Data.grid_color;
     end
     properties(Dependent)
         Xactive % all X positions for active points
@@ -291,7 +294,9 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',[.5 .5 .5],'displayname','grid points','markersize',4,'marker','+'};
+            def_opts={'color',obj.Color,'displayname','grid points',...
+                'MarkerSize',obj.MarkerSize,'Marker',obj.Marker,...
+                'LineStyle','none'};
             varargin=[def_opts,varargin];
             useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)
@@ -313,7 +318,7 @@ classdef ZmapGrid
                 disp('reusing grid on plot');
             else
                 hold(ax,'on');
-                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Marker','+','Color','k','LineStyle','none','Tag',grid_tag);
+                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Tag',grid_tag);
                 hold(ax,'off');
                 disp('created new grid on plot');
             end

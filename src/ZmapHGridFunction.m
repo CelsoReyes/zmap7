@@ -13,6 +13,41 @@ classdef ZmapHGridFunction < ZmapGridFunction
             obj@ZmapGridFunction(varargin{:});
         end
         
+        function showInTab(obj, ax, choice)
+            % plots the results on the provided axes.
+            if ~exist('choice','var')
+                choice=obj.active_col;
+            end
+            if ~isnumeric(choice)
+                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
+            end
+            
+            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
+            myname = obj.Result.values.Properties.VariableNames{choice};
+            
+            hold(ax,'on');
+            delete(findobj(ax,'Tag','result overlay'));
+            % this is to show the data
+            if islogical(obj.Result.values.(myname)(1))
+                p=double(obj.Result.values.(myname));
+                p(p==0)=nan;
+                h=obj.Grid.pcolor(ax,p, mydesc);
+            else
+                h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
+            end
+            h.Tag = 'result overlay';
+            shading(obj.ZG.shading_style);
+            
+            if isempty(findobj(gcf,'Tag','lookmenu'))
+                add_menus(obj,choice);
+            end
+            
+            update_layermenu(obj,myname, ax);
+            
+            mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
+            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
+        end
+
         function overlay(obj, ax, choice)
             % plots the results on the provided axes.
             if ~exist('choice','var')
@@ -46,6 +81,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
+            shading(obj.ZG.shading_style);
         end
         
         function plot(obj,choice, varargin)
@@ -106,10 +142,10 @@ classdef ZmapHGridFunction < ZmapGridFunction
             %dcm_obj.SnapToDataVertex='on';
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
-                add_menus();
+                obj.add_menus(choice);
             end
             
-            update_layermenu(obj,myname);
+            obj.update_layermenu(myname);
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             

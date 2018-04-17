@@ -36,25 +36,35 @@ function mapdata_viewer(res,catalog,resfig)
     
     
     if exist('resfig','var')
-        if strcmp(resfig.Type,'figure')
-            f=resfig;
-            f.Position([3,4])=[1300 700];
-            % use existing figure as the base of our axes
-            mapax=findobj(resfig,'Type','axes');
-            %mapax=copyobj(findobj(resfig,'Type','axes'),f);
-            set(findobj(mapax,'Tag','pointgrid'),'visible','off');
-            mapax.Units='pixels';
-            mapax.Position=[50 150 650 500];
-            mapax.Tag = 'dvMap';
-            grid on
-            subplotContainer=f;
-        elseif strcmp(resfig.Type,'axes')
-            mapax = resfig;
-            f=mapax.Parent; % TOFIX 
-            subplotContainer = figure;
-            subplotContainer.Units='pixels';
-            subplotContainer.Position = [60 60 1300 700];
-            figure(subplotContainer)
+        switch resfig.Type
+            case 'figure'
+                f=resfig;
+                f.Position([3,4])=[1300 700];
+                % use existing figure as the base of our axes
+                mapax=findobj(resfig,'Type','axes');
+                %mapax=copyobj(findobj(resfig,'Type','axes'),f);
+                set(findobj(mapax,'Tag','pointgrid'),'visible','off');
+                mapax.Units='pixels';
+                mapax.Position=[50 150 650 500];
+                mapax.Tag = 'dvMap';
+                grid on
+                subplotContainer=f;
+            case'axes'
+                mapax = resfig;
+                f=mycontainingfigure(mapax.Parent);
+                subplotContainer = figure;
+                subplotContainer.Units='pixels';
+                subplotContainer.Position = [60 60 1300 700];
+                figure(subplotContainer)
+            case 'uitabgroup'
+                mapax = resfig;
+                f=mycontainingfigure(mapax.Parent);
+                subplotContainer = figure;
+                subplotContainer.Units='pixels';
+                subplotContainer.Position = [60 60 1300 700];
+                figure(subplotContainer)
+            otherwise
+                warning('huh. unknown container');
         end
     else
         f=figure('Name','Data View');
@@ -100,7 +110,7 @@ function mapdata_viewer(res,catalog,resfig)
     depAnalyWin = DepthAnalysisWindow(evdepax,...
         [floor(min(catalog.Depth)./5) : ceil(max(catalog.Depth)./5) ] .*5);
     
-    figure(f);
+    %figure(f);
     
     % moment release axes
     %momentax=axes(f,'units','pixels','Position',[1025 100 225 250]);
@@ -109,7 +119,7 @@ function mapdata_viewer(res,catalog,resfig)
     
     %%
     axes(mapax);
-    set(f,'Pointer','cross')
+    set(gcf,'Pointer','cross')
     pause(.01)
     
     symbolIndexes = containers.Map;
@@ -337,5 +347,10 @@ function mapdata_viewer(res,catalog,resfig)
         uimenu(c,'Label','Change Symbol');
         uimenu(c,'Label','Change Color');
         uimenu(c,'Label','Remove',Futures.MenuSelectedFcn,@(~,~)removeSeriesByTag(marker));
+    end
+end
+function f = mycontainingfigure(f)
+    while ~strcmp(f.Type,'figure') && ~strcmp(f.Type,'root')
+        f=f.Parent;
     end
 end
