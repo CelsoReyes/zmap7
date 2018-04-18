@@ -8,7 +8,7 @@ function plotmainmap(obj)
     
     
     if isempty(eq) 
-        % CREATE the pot
+        % CREATE the plot
         hold(axm,'on');
         dispname = replace(obj.catalog.Name,'_','\_');
         eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...

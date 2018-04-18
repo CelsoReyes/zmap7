@@ -183,9 +183,6 @@ classdef ShapePolygon < ShapeGeneral
                         error('Tried to set a menu item that doesn''t exist');
                 end
                 
-                %if j==1
-                %    set(myhandle,'Separator','on');
-                %end
             end
         end
     end
@@ -197,31 +194,70 @@ classdef ShapePolygon < ShapeGeneral
             disp('enter first corner, or click on desired center and press "S" for square. ESC aborts');
             % MOUSEDOWN: select first corner
             % DRAG: extend rectangle
+            fig=gcf;
+            ax=gca;
+            fWBU=fig.WindowButtonUpFcn;
+            fWBM=fig.WindowButtonMotionFcn;
+            aBD=ax.ButtonDownFcn;
             
-            [x,y,b] = ginput(1);
-            if b==27 %escape
-                error('ESCAPE pressed. aborting polygon creation'); %catch me!
-            else
-                hold on
-                mpo=line(gca,[x, x, nan, xlim],[ylim,nan,y,y],...
-                    'LineStyle','--','Color',[.6 .6 .6],'LineWidth',2.0);
-                pt1=line(gca,x,y,'Color','k',...
-                    'Marker','o','LineStyle','none',...
-                    'MarkerSize',2');
-                disp('enter second corner. ESC aborts')
-                [x2,y2,b]=ginput(1);
-                if b==27 %escape
-                    delete([mpo, plt1])
-                    error('ESCAPE pressed. aborting polygon creation')
+            mpo=[]; 
+            boxpoints=[];
+            active=false;
+            fig.Pointer='Cross';
+            [x,y,x2,y2]=deal(nan);
+            ax.ButtonDownFcn=@startbox;
+            drawnow
+            while ~active
+                pause(0.01);
+            end
+            while active
+                pause(0.01);
+            end
+            fig.Pointer='Arrow';
+            function startbox(src,ev)
+                cp=ax.CurrentPoint(1,[1,2]);
+                x=cp(1);y=cp(2);
+                key=fig.CurrentCharacter;
+                if key==char(27)
+                    ax.ButtonDownFcn=abD;
                 else
-                    delete(pt1);
-                    obj.Points=[x,y; x,y2; x2, y2; x2, y; x,y];
-                    mpo.XData=obj.Points(:,1);
-                    mpo.YData=obj.Points(:,2);
-                    mpo.Color='k';
-                    pause(.5);
-                    delete(mpo);
+                    mpo=line(gca,[x, x, nan, xlim],[ylim,nan,y,y],'LineStyle','--','Color',[.6 .6 .6],'LineWidth',2.0);
                 end
+                fig.WindowButtonMotionFcn=@updateBox;
+                ax.ButtonDownFcn=@endbox;
+                active=true;
+            end
+                   
+            function updateBox(src,ev)
+                fig.WindowButtonUpFcn=@endbox;
+                if fig.CurrentCharacter==char(27)
+                    ax.ButtonDownFcn=aBD;
+                    fig.WindowButtonUpFcn=fWBU;
+                    fig.WindowButtonMotionFcn=fWBM;
+                    active=false;
+                    return
+                end
+                cp=ax.CurrentPoint(1,[1,2]);
+                x2=cp(1); y2=cp(2);
+                boxpoints=[x,y; x,y2; x2, y2; x2, y; x,y];
+                mpo.XData=boxpoints(:,1);
+                mpo.YData=boxpoints(:,2);
+            end
+            
+            function endbox(src,ev)
+                if strcmp(fig.SelectionType,'open')
+                    return
+                end
+                ax.ButtonDownFcn=aBD;
+                fig.WindowButtonUpFcn=fWBU;
+                fig.WindowButtonMotionFcn=fWBM;
+                if fig.CurrentCharacter==char(27)
+                    % escape
+                else
+                   obj.Points=boxpoints;
+                end
+                delete(mpo)
+                active=false;
             end
         end
     end % private methods

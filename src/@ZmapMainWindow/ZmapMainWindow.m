@@ -1,12 +1,16 @@
 classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW
     
-    properties
+    properties(SetObservable)
         catalog ZmapCatalog % event catalog
-        rawcatalog ZmapCatalog;
         shape {mustBeShape} = ShapeGeneral % used to subset catalog by selected area
-        daterange datetime % used to subset the catalog with date ranges
         Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % grid that covers entire catalog area
+        daterange datetime % used to subset the catalog with date ranges
+        colorField=ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices 
+    end
+    
+    properties
+        rawcatalog ZmapCatalog;
         gridopt % used to define the grid
         evsel {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector % how events are chosen
         fig % figure handle
@@ -19,10 +23,9 @@ classdef ZmapMainWindow < handle
         prev_states Stack = Stack(10);
         undohandle;
         Features = containers.Map();
-        replotting=false
+        replotting=false % keep from plotting while plotting
         mdate
         mshape
-        colorField=ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices 
         WinPos (4,1) = position_in_current_monitor(Percent(95),Percent(90))% [50 50 1200 750]; % position of main window
         eventMarker char = ZmapGlobal.Data.event_marker; % Marker used when plotting events
         sharedContextMenus;
@@ -46,6 +49,17 @@ classdef ZmapMainWindow < handle
         map_axes % main map axes handle
     end
     
+    events
+        XsectionEmptied
+        XsectionAdded
+        XsectionChanged
+        XsectionRemoved
+        GridChanged
+        ShapeChanged
+        CatalogChanged
+        DateRangeChanged
+    end
+    
     methods
         function obj=ZmapMainWindow(fig,catalog)
             if exist('fig','var') &&... specifed a figure, perhaps.
@@ -56,8 +70,13 @@ classdef ZmapMainWindow < handle
                 return
             end
             
+            if exist('fig','var') && isa(fig,'ZmapCatalog')
+                catalog=fig;
+                fig=[];
+            end
+            
             %if the figure was specified, but wasn't empty, then delete it.
-            if exist('fig','var') && ~isempty(fig)
+            if exist('fig','var') && isa('fig','matlab.ui.Figure') && isvalid(fig)
                 delete(fig);
             end
             
@@ -140,6 +159,10 @@ classdef ZmapMainWindow < handle
             
             obj.replot_all();
             obj.fig.Visible='on';
+            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','LR plots'),'Visible','on');
+            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','UR plots'),'Visible','on');
+            
+            drawnow
             
             obj.create_all_menus(true); % plot_base_events(...) must have already been called, ino order to load the features from ZG
             ax=findobj(obj.fig,'Tag','mainmap_ax');
@@ -152,15 +175,36 @@ classdef ZmapMainWindow < handle
                 set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
             end
             obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
+            
+            attach_catalog_listeners(obj);
+            attach_xsection_listeners(obj);
+            addlistener(obj,'CatalogChanged',@obj.replot_all);
+            addlistener(obj, 'daterange', 'PostSet', @obj.replot_all)
+            addlistener(obj,'catalog','PostSet',@obj.attach_catalog_listeners);
+            addlistener(obj,'shape','PostSet',@(~,~)disp('**Shape Changed'));
+            addlistener(obj,'Grid','PostSet',@(~,~)disp('**Grid Changed'));
         end
         
+        function attach_catalog_listeners(obj,~,~)
+            % reapply listeners to this specific catalog
+            addlistener(obj.catalog,'Name','PostSet',@(~,~)obj.set_figure_name);
+            addlistener(obj.catalog,'ValueChange',@(~,~)notify('CatalogChanged'));
+        end
+            
+        function attach_xsection_listeners(obj)
+            addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
+            addlistener(obj,'XsectionAdded',@(~,~)obj.activateXsections);
+            addlistener(obj,'XsectionAdded',@obj.replot_all);
+            addlistener(obj,'XsectionChanged',@obj.replot_all);
+            addlistener(obj,'XsectionEmptied',@obj.replot_all);
+        end
         
         %% METHODS DEFINED IN DIRECTORY
         %
         %
         %
         
-        replot_all(obj,status)
+        replot_all(obj,metaProp,eventData)
         plot_base_events(obj, container, featurelist)
         plotmainmap(obj)
         c=context_menus(obj, tag,createmode, varargin) % manage context menus used in figure
@@ -285,14 +329,12 @@ classdef ZmapMainWindow < handle
             [x,~]=click_to_datetime(ax);
             obj.pushState();
             obj.daterange(1)=x;
-            obj.replot_all();
         end
         
         function cb_endhere(obj,ax)
             [x,~]=click_to_datetime(ax);
             obj.pushState();
             obj.daterange(2)=x;
-            obj.replot_all();
         end
         
         function cb_trim_to_largest(obj,~,~)
@@ -301,7 +343,6 @@ classdef ZmapMainWindow < handle
             obj.pushState();
             obj.daterange(1)=obj.catalog.Date(idx);
             %obj.catalog = obj.catalog.subset(obj.catalog.Date>=obj.catalog.Date(idx));
-            obj.replot_all()
         end
         
         
@@ -331,7 +372,6 @@ classdef ZmapMainWindow < handle
                 disp('pushing')
                 obj.pushState();
             end
-            %[obj.catalog,obj.mdate,obj.mshape]=obj.filtered_catalog();
             obj.replot_all();
             watchoff
         end
@@ -349,14 +389,14 @@ classdef ZmapMainWindow < handle
             if ~isempty(mytab)
                 delete(mytab);
             end
-            
+            %{
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes,'Position',obj.MapPos_S);
             
             % set the colorbar position, if it is visible.
             cb = findobj(obj.fig,'tag','mainmap_colorbar');
             set(cb,'Position',obj.MapCBPos_S);
-            
+            %}
             mytab=uitab(obj.xsgroup, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
             
             % keep tabs alphabetized
@@ -514,11 +554,14 @@ classdef ZmapMainWindow < handle
             obj.xscats.remove(key);
             obj.xscatinfo.remove(key);
             if isempty(obj.xsections)
-                set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+                obj.notify('XsectionEmptied');
+            else
+                obj.notify('XsectionRemoved');
             end
         end
         
         function xsec_add(obj, key, xsec)
+            isUpdating=ismember(key,obj.xsections.keys);
             %XSEC_ADD add/replace cross section
             obj.xsections(key)=xsec;
             % add catalog generated by the cross section (ignoring shape)
@@ -526,15 +569,38 @@ classdef ZmapMainWindow < handle
             % add the information about the catalog used
             obj.xscatinfo(key)=obj.catalog.summary('stats');
             
-            if ~isempty(obj.xsections)
-                set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','on')
+            if isUpdating
+                obj.notify('XsectionChanged');
+            else
+                obj.notify('XsectionAdded')
             end
+        end
+        
+        function activateXsections(obj)
+            set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','on');
+            
+            obj.xsgroup.Visible = 'on';
+            set(obj.map_axes,'Position',obj.MapPos_S);
+            
+            % set the colorbar position, if it is visible.
+            cb = findobj(obj.fig,'tag','mainmap_colorbar');
+            set(cb,'Position',obj.MapCBPos_S);
+        end
+        
+        function deactivateXsections(obj)
+            set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off');
+            obj.xsgroup.Visible='off';
+            set(obj.map_axes,'Position',obj.MapPos_L);
+            
+            % set the colorbar position, if it is visible.
+            cb = findobj(obj.fig,'tag','mainmap_colorbar');
+            set(cb,'Position',obj.MapCBPos_L);
         end
             
         function plot_xsections(obj, plotfn, tagBase)
-            %  plot_xsections(obj, plotfn, tagBase, contextmenu)
+            % PLOT_XSECTIONS 
+            %  obj.plot_xsections(plotfn, tagBase)
             % plotfn is a function like: [@(xs,xcat)plot(...)] that does plotting and returns a handle
-            %
             k=obj.xsections.keys;
             for j=1:obj.xsections.Count
                 hold on
@@ -544,6 +610,14 @@ classdef ZmapMainWindow < handle
                 h.Tag=[tagBase,' ' , xs.name];
             end
         end
+        
+        function set_figure_name(obj)
+            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
+                char(max(obj.catalog.Date)));
+            obj.maintab.Title=obj.catalog.Name;
+            drawnow
+        end
+        
     end
 end % CLASSDEF
 

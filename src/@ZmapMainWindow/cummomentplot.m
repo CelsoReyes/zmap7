@@ -23,8 +23,9 @@ function cummomentplot(obj,tabgrouptag)
     
     
     % plot the main catalog
-    [~, vCumMoment, ~] = calc_moment(obj.catalog);
-    p=line(ax,obj.catalog.Date,vCumMoment,'linewidth',2.5,...
+    Xs=obj.catalog.Date;
+    [~, Ys, ~] = calc_moment(obj.catalog);
+    p=line(ax,Xs,Ys,'linewidth',2.5,...
         'Tag','catalog','DisplayName','catalog','color','k');
     p.UIContextMenu=cln;
     grid(ax,'on');
@@ -65,17 +66,27 @@ function cummomentplot(obj,tabgrouptag)
     end
     
     
+    bigcat=ZmapGlobal.Data.maepi;
+    idx = Xs==bigcat.Date & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+    hold on
+    scatter(ax,Xs(idx), Ys(idx), mag2dotsize(bigcat.Magnitude),...
+        'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+        'Tag','big events');
+    hold off
+    
+    
+    
     function h = xsplotter(xs, xscat)
         h=findobj(ax,'DisplayName',xs.name,'-and','Type','line');
         if isempty(h)
-        [~, vCumMoment, ~] = calc_moment(xscat);
-        h=line(ax,xscat.Date, vCumMoment,'linewidth',1.5,'DisplayName',xs.name,...
+        [~, vmom, ~] = calc_moment(xscat);
+        h=line(ax,xscat.Date, vmom,'linewidth',1.5,'DisplayName',xs.name,...
             'Tag',['Xsection cummomplot ' xs.name],'Color',xs.color,...
             'UIContextMenu',cxs);
         else
             if ~isequal(xscat.Date,h.XData)
-                [~, vCumMoment, ~] = calc_moment(xscat);
-                set(h,'XData',xscat.Date, 'YData', vCumMoment,'linewidth',1.5,'Color',xs.color);
+                [~, vmom, ~] = calc_moment(xscat);
+                set(h,'XData',xscat.Date, 'YData', vmom,'linewidth',1.5,'Color',xs.color);
             else
                 set(h,'Color',xs.color);
             end

@@ -23,7 +23,9 @@ function cumplot(obj, tabgrouptag)
     end
     
     % plot the main catalog
-    p=line(ax,obj.catalog.Date,1:obj.catalog.Count,'linewidth',2.5,'DisplayName','catalog',...
+    Ys=1:obj.catalog.Count;
+    Xs=obj.catalog.Date;
+    p=line(ax,Xs,Ys,'linewidth',2.5,'DisplayName','catalog',...
         'Tag','catalog','color','k');
     p.UIContextMenu=cln;
     grid(ax,'on');
@@ -54,6 +56,14 @@ function cumplot(obj, tabgrouptag)
     xl=xlabel(ax,'Time');
     %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
     
+    bigcat=ZmapGlobal.Data.maepi;
+    idx = Xs==bigcat.Date & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+    hold on
+
+    scatter(ax,Xs(idx), Ys(idx), mag2dotsize(bigcat.Magnitude),...
+        'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+        'Tag','big events');
+    hold off
     
     cbg=findobj(gcf,'Tag',Tags.bg);
     
@@ -63,6 +73,8 @@ function cumplot(obj, tabgrouptag)
         uimenu(cbg,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
         ax.UIContextMenu=cbg;
     end
+    
+    
     
     
     function h = xsplotter(xs, xscat)
@@ -90,4 +102,5 @@ function cumplot(obj, tabgrouptag)
         ZG.newt2.Name=sprintf('Events within %g km of %s',xs.name);
         timeplot();
     end
+    
 end

@@ -86,7 +86,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         %    summary (?), getCropped, sort, subset, 
     end
     
-    properties(SetObservable)
+    properties(SetObservable,AbortSet)
         Name (1,:) char        % name of this catalog. Used when labeling plots
         Filter logical     % logical Filter used for getting a subset of events
         IsSortedBy char = '' % describes sort order
@@ -100,7 +100,71 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         DateSpan % read-only duration 
     end
     
+    events
+        ValueChange
+    end
+        
+    
     methods
+        
+        function obj = ZmapCatalog(varargin)
+            % ZMAPCATALOG create a ZmapCatalog object
+            %
+            % catalog = ZMAPCATALOG() get an empty catalog
+            % catalog = ZMAPCATALOG(name) get an empty catalog, but set the name
+            % catalog = ZMAPCATALOG(otherCatalog) get a copy of a catalog
+            % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
+            %   [longitude, latitude, decyear, month, day, magnitude, depth, hour, minute, second]
+            
+            
+            obj.Name = '';
+            if nargin==0
+                %donothing
+            elseif nargin==1 && ischar(varargin{1})
+                obj.Name=varargin{1};
+            elseif isnumeric(varargin{1})
+                % import Catalog from Array
+                nCols = size(varargin{1},2);
+                fprintf(['importing from old catalog array with %d columns and %d events:\n'...
+                    '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(varargin{1},1));
+                obj.Longitude = varargin{1}(:,1);
+                obj.Latitude = varargin{1}(:,2);
+                if all(varargin{1}(:,3) < 100)
+                    varargin{1}(:,3) = varargin{1}(:,3)+1900;
+                    errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
+                    warndlg(errdisp)
+                end
+                obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
+                obj.Depth = varargin{1}(:,7);
+                obj.Magnitude = varargin{1}(:,6);
+                
+                obj.MagnitudeType = cell(size(obj.Magnitude));
+                obj.Dip = nan(obj.Count,1);
+                obj.DipDirection = nan(obj.Count,1);
+                obj.Rake = nan(obj.Count,1);
+                
+                for i=1:numel(obj.MagnitudeType)
+                    if isempty(obj.MagnitudeType{i})
+                        obj.MagnitudeType(i)={''};
+                    end
+                end
+                
+                
+                if nargin==2 && ischar(varargin{2})
+                    obj.Name = varargin{2};
+                end
+                
+            elseif isa(varargin{1},'ZmapCatalog')
+                % force a copy
+                idx=true(varargin{1}.Count,1);
+                obj = varargin{1}.subset(idx);
+                obj.Name=varargin{1}.Name;
+            end
+            obj.Filter=true(size(obj.Longitude));
+            
+            
+        end
+        
         function propval = get.Count(obj)
             % number of events
             propval = numel(obj.Longitude);
@@ -168,67 +232,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 otherwise
                     a = [min(obj.Magnitude), max(obj.Magnitude)];
             end
-        end
-        
-        function obj = ZmapCatalog(varargin)
-            % ZMAPCATALOG create a ZmapCatalog object
-            %
-            % catalog = ZMAPCATALOG() get an empty catalog
-            % catalog = ZMAPCATALOG(name) get an empty catalog, but set the name
-            % catalog = ZMAPCATALOG(otherCatalog) get a copy of a catalog
-            % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
-            %   [longitude, latitude, decyear, month, day, magnitude, depth, hour, minute, second]
-            
-            
-            obj.Name = '';
-            if nargin==0
-                %donothing
-                return
-            end
-            if nargin==1 && ischar(varargin{1})
-                obj.Name=varargin{1};
-                return;
-            end
-            if isnumeric(varargin{1})
-                % import Catalog from Array
-                nCols = size(varargin{1},2);
-                fprintf(['importing from old catalog array with %d columns and %d events:\n'...
-                    '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(varargin{1},1));
-                obj.Longitude = varargin{1}(:,1);
-                obj.Latitude = varargin{1}(:,2);
-                if all(varargin{1}(:,3) < 100)
-                    varargin{1}(:,3) = varargin{1}(:,3)+1900;
-                    errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
-                    warndlg(errdisp)
-                end
-                obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
-                obj.Depth = varargin{1}(:,7);
-                obj.Magnitude = varargin{1}(:,6);
-                
-                obj.MagnitudeType = cell(size(obj.Magnitude));
-                obj.Dip = nan(obj.Count,1);
-                obj.DipDirection = nan(obj.Count,1);
-                obj.Rake = nan(obj.Count,1);
-                
-                for i=1:numel(obj.MagnitudeType)
-                    if isempty(obj.MagnitudeType{i})
-                        obj.MagnitudeType(i)={''};
-                    end
-                end
-                
-                
-                if nargin==2 && ischar(varargin{2})
-                    obj.Name = varargin{2};
-                end
-                
-            elseif isa(varargin{1},'ZmapCatalog')
-                % force a copy
-                idx=true(varargin{1}.Count,1);
-                obj = varargin{1}.subset(idx);
-                obj.Name=varargin{1}.Name;
-            end
-            obj.Filter=true(size(obj.Longitude));
-            
         end
         
         function TF=isempty(obj)

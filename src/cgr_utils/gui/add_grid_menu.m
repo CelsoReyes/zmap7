@@ -38,11 +38,11 @@ function add_grid_menu(obj)
         end
         delete(todel);
         
-        [obj.Grid,obj.gridopt]=autogrid(obj.catalog,...
+        [tmpgrid,obj.gridopt]=autogrid(obj.catalog,...
             false,... % plot histogram
             true... % put on map
             );
-        obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+        obj.Grid = tmpgrid.MaskWithShape(obj.shape);
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
 
     end

@@ -306,6 +306,9 @@ classdef XSection
         function disp(obj)
             disp(info(obj));
         end
+        
+
+        
     end % METHODS
     
     methods(Static)

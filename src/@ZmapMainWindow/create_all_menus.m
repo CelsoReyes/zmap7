@@ -201,8 +201,8 @@ function create_all_menus(obj, force)
             h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
             hascolorbar=~isempty(h) && ~isempty(obj.colorField);
             delete(h)
-            obj.replot_all();
-            obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
+            obj.plotmainmap();
+            %obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
             % redraw the colorbar?
             %if hascolorbar
             %    obj.do_colorbar();
