@@ -59,7 +59,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
-            
+            resfig=findobj('Type','uitab','-and','Tag','resultstab');
+            if isempty(findobj(ax.Parent,'Tag','result_map'))
+                copyobj(findobj(ax.Parent,'Tag','mainmap_ax'),resfig);
+                ax=findobj(resfig,'Tag','mainmap_ax');
+                ax.Tag='result_map';
+                else
+                ax=findobj(ax.Parent,'Tag','result_map');
+                set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
+                lineobjs=findobj(ax,'Type','Line');
+                for n=1:numel(lineobjs)
+                    set(lineobjs(n),'Color', (lineobjs(n).Color + [3 3 3]) ./ 4);
+                end
+            end
+                
             hold(ax,'on');
             delete(findobj(ax,'Tag','result overlay'));
             % this is to show the data
@@ -71,7 +84,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
             end
             h.Tag = 'result overlay';
-            shading(obj.ZG.shading_style);
+            shading(ax,obj.ZG.shading_style);
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menus(obj,choice);
@@ -79,9 +92,9 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             update_layermenu(obj,myname, ax);
             
-            mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
+            % mapdata_viewer(obj,obj.RawCatalog,ax);
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
-            shading(obj.ZG.shading_style);
+            shading(ax,obj.ZG.shading_style);
         end
         
         function plot(obj,choice, varargin)

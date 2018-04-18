@@ -63,6 +63,16 @@ function mapdata_viewer(res,catalog,resfig)
                 subplotContainer.Units='pixels';
                 subplotContainer.Position = [60 60 1300 700];
                 figure(subplotContainer)
+            case 'uitab'
+                copyobj(findobj(resfig.Parent,'Tag','mainmap_ax'),resfig);
+                mapax=findobj(resfig,'Tag','mainmap_ax');
+                mapax.Tag='result_map';
+                f=mycontainingfigure(mapax.Parent);
+                subplotContainer = figure;
+                subplotContainer.Units='pixels';
+                subplotContainer.Position = [60 60 1300 700];
+                figure(subplotContainer)
+                
             otherwise
                 warning('huh. unknown container');
         end
@@ -146,7 +156,7 @@ function mapdata_viewer(res,catalog,resfig)
         'HorizontalAlignment','left','FontName','fixedwidth');
     amh.FontSize=amh.FontSize * 1.2;
     
-    prepare_map_axes(f,mapax);
+    %prepare_map_axes(f,mapax);
     %responseLoop()
     
     
@@ -316,7 +326,7 @@ function mapdata_viewer(res,catalog,resfig)
                 bvalAnalyWin.add_series(theseEvents,curChar,theseAttributes); %b-val
                 
                 if ~isempty(mapax.Legend) && any(strcmp(mapax.Legend.String,'do_not_show_in_legend'))
-                    legend(findobj(mapax.Children,'-not','DisplayName','do_not_show_in_legend'));
+                    legend(findobj(mapax.Children,'-not','DisplayName','do_not_show_in_legend','-not','Type','text'));
                 end
                     
             otherwise
