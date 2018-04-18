@@ -57,7 +57,7 @@ function cumplot(obj, tabgrouptag)
     %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
     
     bigcat=ZmapGlobal.Data.maepi;
-    idx = Xs==bigcat.Date & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+    idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
     hold on
 
     scatter(ax,Xs(idx), Ys(idx), mag2dotsize(bigcat.Magnitude),...
