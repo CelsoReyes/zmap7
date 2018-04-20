@@ -11,7 +11,7 @@ classdef comp2periodz < ZmapHGridFunction
     end
     
     properties(Constant)
-        PlotTag='myplot';
+        PlotTag='comp2periodz';
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
             ...
             ... % these are returned by the calculation function

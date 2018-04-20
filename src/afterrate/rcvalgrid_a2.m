@@ -10,7 +10,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         minThreshMag  = 0;
     end
     properties(Constant)
-        PlotTag='myplot'
+        PlotTag='rcvalgrid_a2'
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
             'time', 'learning period','days';... #1
             'absdiff','obs. aftershocks - #events in modeled forecast period','';... #2

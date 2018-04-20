@@ -1,6 +1,7 @@
 function do_colorbar(obj,src,evt,origCallback)
     % DO_COLORBAR used to override colorbar button
     % do_colorbar(obj,src,evt,origCallback)
+    
     if get(gcbf,'CurrentAxes')==findobj(obj.fig,'Tag','mainmap_ax') || (exist('src','var') && isequal(src,obj.map_axes))
         % do our thing
         h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);

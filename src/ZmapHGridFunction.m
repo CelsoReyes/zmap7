@@ -65,6 +65,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
+            myunits = obj.Result.values.Properties.VariableUnits{choice};
             
             ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
             
@@ -74,6 +75,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
                 ax=findobj(resTab,'Tag','mainmap_ax');
                 ax.Tag='result_map';
+                ax.Units='normalized';
+                ax.Position=[0.025 0.05 .95 .90];
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
                 lineobjs=findobj(ax,'Type','Line');
                 for n=1:numel(lineobjs)
@@ -99,19 +102,24 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menus(obj,choice);
             end
+            
+            % add a menu to choose which layer / variable to examine
             c=findobj(gcf,'Type','uicontextmenu','-and','Tag',obj.PlotTag);
-            if isempty(c)
-                c=uicontextmenu('Tag',obj.PlotTag);
-            end
+            delete(c); % avoid replotting old data.
+            
+            c=uicontextmenu('Tag',obj.PlotTag);
             resTab.UIContextMenu=c;
             
             update_layermenu(obj,myname, c);
             
+            uimenu(c,'Separator','on','Label','Close tab',...
+                Futures.MenuSelectedFcn,@(~,~)delete(resTab));
             % mapdata_viewer(obj,obj.RawCatalog,ax);
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
             shading(ax,obj.ZG.shading_style);
             
             tabGroup.SelectedTab = resTab;
+            pretty_colorbar(ax,mydesc,myunits);
         end
         
         function plot(obj,choice, varargin)
@@ -132,6 +140,10 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if strcmp(get(gcf,'Tag'),'Zmap Main Window')
                 theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
                 theTab=findobj(theTabHolder,'Tag',obj.PlotTag);
+                if ~isempty(theTab)
+                    delete(theTab)
+                    theTab=[];
+                end
                 if isempty(theTab)
                     theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
                 end
@@ -174,7 +186,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 ft=obj.ZG.features(obj.features{n});
                 copyobj(ft,ax);
             end
-            % colorbar
+            colorbar
             title(mydesc)
             xlabel('Longitude')
             ylabel('Latitude')
@@ -203,8 +215,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             activeax=findobj(activeTab.Children,'Type','axes');
             
-            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading(activeax,'interp'));
-            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading(activeax,'flat'));
+            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)cb_shading('interp'));
+            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)cb_shading('flat'));
             
             plottype=uimenu(lookmenu,'Label','plot type');
             %uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
@@ -230,12 +242,24 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 Futures.MenuSelectedFcn,{@obj.addquakes_cb, obj.RawCatalog});
             %}
             uimenu(lookmenu,'Separator','on',...
-                'Label','brighten',...
-                Futures.MenuSelectedFcn,@(~,~)colormap(activeax,brighten(colormap,0.4)));
-            uimenu(lookmenu,'Label','darken',...
-                Futures.MenuSelectedFcn,@(~,~)colormap(activeax,brighten(colormap,-0.4)));
+                'Label','brighten active map',...
+                Futures.MenuSelectedFcn,@(~,~)cb_brighten(0.4));
+            uimenu(lookmenu,'Label','darken active map',...
+                Futures.MenuSelectedFcn,@(~,~)cb_brighten(-0.4));
+            
+            function cb_shading(val)
+                % must be in function because ax must be evaluated in real-time
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes');
+                shading(ax,val)
+            end
+            function cb_brighten(val)
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes');
+                cm=colormap(ax);
+                colormap(ax,brighten(cm,val));
+            end
         end
-        
     end % Public methods
     
     methods(Access=protected)
@@ -275,6 +299,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
         
         function update_layermenu(obj, myname, container)
+            % updates the layers associated with some container. usually the context menu for a tab.
             report_this_filefun();
             if ~exist('container','var')
                 container=uimenu(gcf,'Label','layer');
@@ -348,4 +373,14 @@ function changecontours_cb()
             x = eval(x);
         end
     end
+end
+
+function pretty_colorbar(ax, cb_title, cb_units)
+    h=colorbar('peer',ax, 'location','EastOutside');
+    if isempty(cb_units)
+    h.Label.String = cb_title;
+    else
+        h.Label.String =  sprintf('%s [%s]',cb_title,cb_units);
+    end
+    
 end

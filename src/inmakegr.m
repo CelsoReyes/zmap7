@@ -14,7 +14,7 @@ classdef inmakegr < ZmapHGridFunction
         % and should match items first column of ReturnDetails
         CalcFields = {'nEvents_top','mean_mag_top','nEvents_bottom','mean_mag_bottom'};
         
-        PlotTag = 'my_simple_plot';
+        PlotTag = 'inmakegr';
     end
     
     methods
