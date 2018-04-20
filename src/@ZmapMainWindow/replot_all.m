@@ -29,7 +29,7 @@ function replot_all(obj,metaProp,eventData)
             k=obj.xsections.keys;
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             [obj.catalog, md, ~, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
-            evs=findobj(obj.fig,'Tag','all events');
+            evs=findobj(findobj('Tag','mainmap_tab'),'Tag','all events');
             if all(mall)
                 evs.Visible='off';
             else

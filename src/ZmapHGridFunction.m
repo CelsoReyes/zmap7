@@ -101,7 +101,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             end
             c=findobj(gcf,'Type','uicontextmenu','-and','Tag',obj.PlotTag);
             if isempty(c)
-                c=uicontextmenu;
+                c=uicontextmenu('Tag',obj.PlotTag);
             end
             resTab.UIContextMenu=c;
             
@@ -187,7 +187,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 obj.add_menus(choice);
             end
             
-            obj.update_layermenu(myname);
+            obj.update_layermenu(myname,gcf);
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             
