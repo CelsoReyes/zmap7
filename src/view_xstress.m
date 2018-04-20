@@ -6,7 +6,7 @@ function view_xstress(lab1,valueMap)
     % last modified: J. Woessner, 02.2004
     if isempty(lab1); lab1='';end; %CR
     ZG=ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     % Color shortcut
     ZG.someColor = 'w';
     

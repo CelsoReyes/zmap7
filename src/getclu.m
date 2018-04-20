@@ -6,7 +6,7 @@ function selected_cluster_num = getclu(gecl, clus, slider_obj, text_obj)
     
     global cluslength % [IN]
     global equi %[IN] reference events in cluster
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     
     prev_cluster_num = round(slider_obj.Value);

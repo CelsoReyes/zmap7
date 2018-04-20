@@ -46,7 +46,7 @@ function makecmap(bins,fighandle)
     
     %TODO fix confusing global situation -CGR
     
-    %report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun();
     
     nargs = nargin;
     

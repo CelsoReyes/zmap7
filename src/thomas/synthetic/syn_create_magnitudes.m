@@ -1,9 +1,6 @@
 function [mNewCatalog] = syn_create_magnitudes(mCatalog, fBValue, fMc, fInc)
 
-global bDebug
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 mNewCatalog = mCatalog;
 

@@ -22,10 +22,7 @@ function [fAverageStdDev] = kj_CalcOverallStdDev(params)
 % Danijel Schorlemmer
 % November 7, 2001
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Initialize container
 vStdDev = [];

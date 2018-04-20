@@ -45,7 +45,7 @@ function view_qva(lab1,valueMap)
 %                 Double click on text allows editing it.   
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     % Find out if figure already exists
     %

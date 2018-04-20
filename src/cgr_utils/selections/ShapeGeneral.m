@@ -102,7 +102,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % results are stored in ZG.selection_shape
             %
             %FIXME this should dispatch, or there should be a factory
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             if nargin==0
                 return
             end

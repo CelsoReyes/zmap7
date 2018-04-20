@@ -9,7 +9,7 @@ function equi=equevent(mycat,clus)
     % weight according to seismic moment
     % time for equivalent event is time of first biggest event
     %
-     report_this_filefun(mfilename('fullpath'));
+     report_this_filefun();
    
     global bg
 

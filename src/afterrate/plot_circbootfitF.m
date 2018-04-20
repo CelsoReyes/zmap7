@@ -6,7 +6,7 @@ function plot_circbootfitF()
     % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     ZG.selection_shape.clearplot(); % was axes h1, tag plos1
     

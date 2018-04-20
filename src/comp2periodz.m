@@ -34,7 +34,7 @@ classdef comp2periodz < ZmapHGridFunction
             %   Stefan Wiemer 1/95
             %   Rev. R.Z. 4/2001
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'z_value');
             

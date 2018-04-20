@@ -17,7 +17,7 @@ function  bdiff(mycat, holdplot)
     end
     
     disp(ZmapGlobal.Data.hold_state)
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %obsolate, replace
     bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
     

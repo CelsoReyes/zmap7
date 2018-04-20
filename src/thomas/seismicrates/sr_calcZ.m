@@ -28,7 +28,7 @@ function [params] = sr_calcZ(params)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
 
 % Initialize
 bChk=logical(0);    % for debugging the code

@@ -31,10 +31,7 @@ function [caNodeIndices, vResolution_] = ex_CreateIndexCatalog(mCatalog, mPolygo
 % either the maximal radius or the number of earthquake per gridnode
 %
 
-global bDebug;
-if bDebug
-    report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Create the catalogs for each node with pointers to the overall catalog
 nNumberNodes_ = length(mPolygon(:,1));

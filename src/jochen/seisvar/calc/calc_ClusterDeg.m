@@ -14,10 +14,7 @@ function [fClusterDeg] = calc_ClusterDeg(mCatalog, vCluster)
 % updated: 19.08.02
 
 
-global bDebug;
-if bDebug
-    report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 vSel = (vCluster(:,1) > 0);
 mCatalogDecl = mCatalog.subset(vSel);

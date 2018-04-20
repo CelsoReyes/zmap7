@@ -50,7 +50,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
     end
     methods
         function obj=rcvalgrid_a2(zap,varargin)
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
             
@@ -234,7 +234,7 @@ function [sel]=orig_rcvalgrid_a2()
     % updated: 14.02.05
     
     ZG=ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     minThreshMag = min(ZG.primeCatalog.Magnitude);
     

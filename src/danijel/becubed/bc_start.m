@@ -15,10 +15,7 @@ function bc_start(mCatalog, hFigure, bMap, vCoastline, vFaults, rContainer, sNam
 % Danijel Schorlemmer
 % June 26, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Launch GUI
 hMenuFig = bc_options(bMap);

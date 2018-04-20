@@ -300,7 +300,7 @@ function timeplot(mycat, nosort)
     % Updates:
     % Added callback in op5 for afterschock sequence rate change detection (07.07.03: J. Woessner)
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     myFigName='Cumulative Number';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     

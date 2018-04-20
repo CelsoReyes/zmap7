@@ -32,7 +32,7 @@ p2=ginput(1);
     disp(c2)
     return
     ZG=ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %
     % Find out if figure already exists
     %

@@ -48,29 +48,39 @@ classdef ZmapHGridFunction < ZmapGridFunction
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
         end
 
-        function overlay(obj, ax, choice)
+        function overlay(obj, resTab, choice)
             % plots the results on the provided axes.
+            report_this_filefun();
+            %dbk=dbstack(1);disp(dbk(1).name);
+            
             if ~exist('choice','var')
                 choice=obj.active_col;
             end
+            
+            tabGroup = resTab.Parent;
+            
             if ~isnumeric(choice)
                 choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
             end
             
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
-            resfig=findobj('Type','uitab','-and','Tag','resultstab');
-            if isempty(findobj(ax.Parent,'Tag','result_map'))
-                copyobj(findobj(ax.Parent,'Tag','mainmap_ax'),resfig);
-                ax=findobj(resfig,'Tag','mainmap_ax');
+            
+            ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
+            
+            %resTab=findobj('Type','uitab','-and','Tag',obj.PlotTag);
+            
+            if isempty(ax)
+                copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
+                ax=findobj(resTab,'Tag','mainmap_ax');
                 ax.Tag='result_map';
-                else
-                ax=findobj(ax.Parent,'Tag','result_map');
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
                 lineobjs=findobj(ax,'Type','Line');
                 for n=1:numel(lineobjs)
                     set(lineobjs(n),'Color', (lineobjs(n).Color + [3 3 3]) ./ 4);
                 end
+            else
+                ax=findobj(resTab,'Tag','result_map');
             end
                 
             hold(ax,'on');
@@ -89,25 +99,44 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menus(obj,choice);
             end
+            c=findobj(gcf,'Type','uicontextmenu','-and','Tag',obj.PlotTag);
+            if isempty(c)
+                c=uicontextmenu;
+            end
+            resTab.UIContextMenu=c;
             
-            update_layermenu(obj,myname, ax);
+            update_layermenu(obj,myname, c);
             
             % mapdata_viewer(obj,obj.RawCatalog,ax);
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
             shading(ax,obj.ZG.shading_style);
+            
+            tabGroup.SelectedTab = resTab;
         end
         
         function plot(obj,choice, varargin)
             % plots the results on the provided axes.
+            % obj.PLOT( choice, ...) where choice is the nameor number of the table column to plot. if not
+            % provided, it will default to OBJ.active_col
+            
+            report_this_filefun();
             if ~exist('choice','var')
                 choice=obj.active_col;
             end
+            
             if ~isnumeric(choice)
                 choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
             end
             
+            
             if strcmp(get(gcf,'Tag'),'Zmap Main Window')
-                obj.overlay(findobj(gcf,'Tag','mainmap_ax'),choice);
+                theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
+                theTab=findobj(theTabHolder,'Tag',obj.PlotTag);
+                if isempty(theTab)
+                    theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
+                end
+                obj.overlay(theTab, choice)
+                %obj.overlay(findobj(gcf,'Tag','mainmap_ax'),choice);
                 return
             end
             
@@ -171,13 +200,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
             add_menu_divider();
             lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
             shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            activeax=findobj(activeTab.Children,'Type','axes');
             
-            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading('interp'));
-            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading('flat'));
+            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)shading(activeax,'interp'));
+            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)shading(activeax,'flat'));
             
             plottype=uimenu(lookmenu,'Label','plot type');
-            uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
-                Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
+            %uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
+            %    Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
             
             % countour-related menu items
             
@@ -192,23 +223,25 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 Futures.MenuSelectedFcn,@(src,~)changecontours_cb(src));
             
             % display overlay menu items
-            
+            %{
             uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
                 Futures.MenuSelectedFcn,@obj.togglegrid_cb);
             uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
                 Futures.MenuSelectedFcn,{@obj.addquakes_cb, obj.RawCatalog});
-            
+            %}
             uimenu(lookmenu,'Separator','on',...
                 'Label','brighten',...
-                Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,0.4)));
+                Futures.MenuSelectedFcn,@(~,~)colormap(activeax,brighten(colormap,0.4)));
             uimenu(lookmenu,'Label','darken',...
-                Futures.MenuSelectedFcn,@(~,~)colormap(ax,brighten(colormap,-0.4)));
+                Futures.MenuSelectedFcn,@(~,~)colormap(activeax,brighten(colormap,-0.4)));
         end
         
     end % Public methods
     
     methods(Access=protected)
         function plot_image_for_cursor_browsing(obj, myname, mydesc, choice)
+            report_this_filefun();
+            
             h=obj.Grid.imagesc([],obj.Result.values.(myname), mydesc);
             h.AlphaData=zeros(size(h.AlphaData))+0.0;
             
@@ -222,6 +255,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         
         function addquakes_cb(obj,src,~,catalog)
+            report_this_filefun();
+            
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
                 hold on
@@ -239,37 +274,50 @@ classdef ZmapHGridFunction < ZmapGridFunction
             end
         end
         
-        function update_layermenu(obj, myname, ax)
+        function update_layermenu(obj, myname, container)
+            report_this_filefun();
+            if ~exist('container','var')
+                container=uimenu(gcf,'Label','layer');
+            end
+            
             % UPDATE_LAYERMENU
-            if isempty(findobj(gcf,'Tag','layermenu'))
-                layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
+            if isempty(container.Children)  % TODO: change to plotTag_layermeu
+                %layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
                 for i=1:width(obj.Result.values)
                     tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
                     tmpname=obj.Result.values.Properties.VariableNames{i};
-                    uimenu(layermenu,'Label',tmpdesc,'Tag',tmpname,...
+                    uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        Futures.MenuSelectedFcn,@(~,~)overlay_cb(ax,tmpname));
+                        Futures.MenuSelectedFcn,@(~,~)overlay_cb(tmpname));
                         %Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
                 end
             end
             
             % make sure the correct option is checked
-            layermenu=findobj(gcf,'Tag','layermenu');
-            set(findobj(layermenu,'Tag',myname),'Checked','on');
+            %layermenu=findobj(container,'Tag','layermenu');
+            set(findobj(container,'Tag',myname),'Checked','on');
             
             % plot here
             function plot_cb(name)
-                set(findobj(layermenu,'type','uimenu'),'Checked','off');
+                report_this_filefun();
+                set(findobj(container,'type','uimenu'),'Checked','off');
                 obj.plot(name);
             end
-            function overlay_cb(ax,name)
-                set(findobj(layermenu,'type','uimenu'),'Checked','off');
-                obj.overlay(ax,name);
+            
+            function overlay_cb(name)
+                report_this_filefun();
+                set(findobj(container,'type','uimenu'),'Checked','off');
+                theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
+                theTab=findobj(theTabHolder,'Tag', obj.PlotTag);
+                obj.overlay(theTab,name);
             end
         end
         
         function add_grid_centers(obj)
             % show grid centers, but don't make them clickable
+            report_this_filefun();
+            dbk=dbstack(1);disp(dbk(1).name);
+            
             gph=obj.Grid.plot(gca,'ActiveOnly');
             gph.Tag='pointgrid';
             gph.PickableParts='none';

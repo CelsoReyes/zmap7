@@ -16,7 +16,7 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
 
     % Surpress warnings from fmincon
     % warning off;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     asset(mainshockTime.Count == 1, 'Expected a single aftershock, not %d events', mainshockTime.Count);
     if ~isduration(timef), timef=days(timef);end
     if ~isduration(time), time=days(time);end

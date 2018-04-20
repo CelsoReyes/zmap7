@@ -31,7 +31,7 @@ function [p,S] = polyfit(x,y,n)
     
     %TODO understand why this exists -CR
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if any(size(x) ~= size(y))
         error('X and Y vectors must be the same size.')

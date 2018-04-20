@@ -9,10 +9,8 @@ function [ params ]= sr_startZ
 % Th. van Stiphout; vanstiphout@sed.ethz.ch
 % updated: 17.08.2005
 
-% global bDebug;
-% if bDebug
-report_this_filefun(mfilename('fullpath'));
-% end
+
+report_this_filefun();
 
 % go to directory
 cd ~/zmap/src/thomas;

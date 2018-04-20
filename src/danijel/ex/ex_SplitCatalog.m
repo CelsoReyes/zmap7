@@ -35,10 +35,7 @@ function [mFirstCatalog, mSecondCatalog, fFirstPeriodExact, fSecondPeriodExact, 
 % Danijel Schorlemmer
 % April 25, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Create the first catalog
 if ~bFirstPeriod

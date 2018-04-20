@@ -9,7 +9,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     % bigEventMag typically comes from ZG.big_eq_minmag
    
     %ZG=ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
      % mycat=ZG.Views.(mycatview);
     
     %  default values

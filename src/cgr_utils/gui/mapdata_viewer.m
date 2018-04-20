@@ -26,6 +26,7 @@ function mapdata_viewer(res,catalog,resfig)
     % - 3d depth plots of selection
     
     % RES is the results table
+    report_this_filefun();
     tb = res.Result.values; % perhaps get sample data from running an Mc, a- and b- calcualtion from the main map
     
     keyBindings.delete = char(8); %backspace

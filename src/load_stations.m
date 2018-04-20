@@ -31,7 +31,7 @@ function out=load_stations(filename, force)
     % all swiss stations:
     % http://eida.ethz.ch/fdsnws/station/1/query?format=text&level=station&nodata=404
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if ~exist('filename','var')
         filename = 'features/stations_irisall_20170714.mat';

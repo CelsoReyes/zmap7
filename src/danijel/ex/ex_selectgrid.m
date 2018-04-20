@@ -17,10 +17,7 @@ function [mGrid, vXVector, vYVector, vUsedNodes] = ex_selectgrid(hFigure, fSpaci
 % Danijel Schorlemmer
 % March 24, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 try
   % Bring figure-window to front

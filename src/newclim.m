@@ -1,6 +1,6 @@
 function CLim = newclim(BeginSlot,EndSlot,CDmin,CDmax,CmLength)
 
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
 
     PBeginSlot = (BeginSlot - 1) / (CmLength - 1);
     PEndSlot = (EndSlot - 1) / (CmLength - 1);

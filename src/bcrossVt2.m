@@ -102,7 +102,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             end
         end
         function InteractiveSetup(obj)
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             %ZG=ZmapGlobal.Data;
             
             sdlg.prompt='T1 = '; sdlg.value=obj.t1;

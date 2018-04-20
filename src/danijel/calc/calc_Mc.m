@@ -42,10 +42,7 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     % Free Software Foundation, Inc.,
     % 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
     
-    global bDebug;
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun(0);
     
     if nargin == 0
         fMc = ['1: Maximum curvature|' ...

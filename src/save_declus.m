@@ -3,7 +3,7 @@ function cluster_length = save_declus(catalog)
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     global cluslength %[OUT]
     %FIXME: this is torn to shreds by the updated catalog format
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     storedcat=a;
     hodis = fullfile(hodi, 'external');
     cd(hodis);

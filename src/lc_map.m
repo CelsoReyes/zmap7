@@ -20,7 +20,7 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     %	If these global variables are not set, it will use the
     %	following defaults: line_type = '-' & line_width = [0.5]
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global scale
     global phi0 lambda0 phi1 phi2

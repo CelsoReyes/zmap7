@@ -19,7 +19,7 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     %
     % J. Woessner
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     % Warning off for fmincon
     % warning off;
     

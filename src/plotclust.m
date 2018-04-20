@@ -1,7 +1,7 @@
 function plotclust()
     global clus
     ZG = ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     clustNum0=[];
     
     close(findobj('Name','Cluster Map'));

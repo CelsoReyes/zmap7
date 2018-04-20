@@ -12,7 +12,7 @@ classdef bvalgrid < ZmapHGridFunction
     end
     
     properties(Constant)
-        PlotTag='myplot';
+        PlotTag='bvalgrid';
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
             'Mc_value', 'Magnitude of Completion (Mc)', '';...
             'Mc_std', 'Std. of Magnitude of Completion', '';...
@@ -35,7 +35,7 @@ classdef bvalgrid < ZmapHGridFunction
             %
             % obj = CGR_BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'b_value');
             

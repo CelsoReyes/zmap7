@@ -5,7 +5,7 @@ function infoz(var1)
     %
     global slapinfo p1
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if var1==1               %first call in P-Value window
         

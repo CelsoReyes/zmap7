@@ -18,7 +18,7 @@ function selectp(in_or_out)
     %  Use the right mouse button to select the final point.
     %_____________________________________________________________
     echo off
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %zoom off
     ZG.newt2 = [ ];           % reset catalogue variables
     %a=storedcat;              % uses the catalogue with the pre-selected main

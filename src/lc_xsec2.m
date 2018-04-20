@@ -50,16 +50,14 @@ function [xsecx,xsecy] = lc_xsec2(eqlat,eqlon,depth,width,length,...
     %	It is assumed that LC_MAP was used before using this function!
     %	This is neccessary to set global variables used by this function.
     
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
     
     global sine_phi0 lambda0
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width
     global label1 label2
     global mindepth maxdepth
+    
+    report_this_filefun();
     
     ZG = ZmapGlobal.Data;
     todeg = 180 / pi;

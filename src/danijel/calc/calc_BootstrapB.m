@@ -20,10 +20,7 @@ function [fStdDevB, fStdDevMc, fBValue, fMc, vBValues] = calc_BootstrapB(mCatalo
 % Danijel Schorlemmer
 % June 18, 2003
 
-global bDebug
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Get number of events in catalog
 nLength = mCatalog.Count;

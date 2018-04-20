@@ -3,10 +3,7 @@ function [newCat, ok] = syn_invoke_dialog(mCatalog)
 %
 % [newCat, ok] = syn_invoke_dialog(catalog)
 %
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
 
     ok=false;
     % Open figure

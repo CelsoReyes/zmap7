@@ -4,7 +4,7 @@ function [mCatalog_, mNumDeclus] = MonteUhr(mCatalog_,nSimul_)
 % fSpaceDiff = fSpaceRange(2) - fSpaceRange(1);
 % fTimeDiff = fTimeDiff(2) - fTimeDiff(1);
 
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
 mCatalog_(:,10)=zeros(size(mCatalog_,1),1);
 mNumDeclus=[];
 

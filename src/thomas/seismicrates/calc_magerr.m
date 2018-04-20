@@ -18,10 +18,7 @@ function [mCatNew, mMagShift] =calc_magerr(mCat,mDeltaMag)
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% global bDebug;
-% if bDebug
-% report_this_filefun(mfilename('fullpath'));
-% end
+report_this_filefun();
 
 % reset random number generator
 rng('shuffle');

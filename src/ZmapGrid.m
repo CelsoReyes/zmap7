@@ -235,7 +235,7 @@ classdef ZmapGrid
             % obj = obj.MASKWITHSHAPE() user selects polygon from gca
             % obj = obj.MASKWITHSHAPE(shape)
             % obj = obj.MASKWITHSHAPE(polyX, polyY) where polyX and polyY define the polygon
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             narginchk(1,3);
             nargoutchk(1,1);
             switch nargin

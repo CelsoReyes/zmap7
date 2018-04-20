@@ -2,7 +2,7 @@ function dramap_z(colback, valuemap)
     % drap a colormap of variance, S1 orientation onto topography
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     j = colormap;
     % check if mapping toolbox and topo map exists

@@ -8,7 +8,7 @@ function view_rcva_a2(lab1,valueMap)
     % TODO: recreate adju2 (?) to do a variety of cuts: mag, rmax, gofi, pstdc
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     myFigName='rc-value-map';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     

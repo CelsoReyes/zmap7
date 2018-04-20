@@ -39,7 +39,7 @@ classdef bgrid3dB < ZmapGridFunction
         function obj=bgrid3dB()
             ZG=ZmapGlobal.Data; % used by get_zmap_globals
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             useRadius=false;
             

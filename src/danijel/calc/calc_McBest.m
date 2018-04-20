@@ -2,10 +2,7 @@ function [fMc, fMc95, fMc90] = calc_McBest(mCatalog, fBinning)
     % CALC_MCBEST calculate best Magnitude of Completion
     % [fMc, fMc95, fMc90] = calc_McBest(mCatalog, fBinning)
     
-    global bDebug;
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
     
     % Magnitude increment
     if ~exist('fBinning','var')

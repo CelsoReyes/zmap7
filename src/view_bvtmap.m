@@ -7,7 +7,7 @@ function view_bvtmap(lab1,valueMap)
     %
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     % Find out if figure already exists
     %

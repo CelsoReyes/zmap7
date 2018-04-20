@@ -12,7 +12,7 @@ function newsta(sta)
     % start and end time
     NuBins=[]; NuRep=[];% declare for functions that share this variable
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %b = ZG.newcat;
     
     %select big evenets
@@ -251,7 +251,7 @@ function newsta(sta)
         
         ZG=ZmapGlobal.Data; % used by get_zmap_globals
         
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         % call
         ButtonName = questdlg('Translate which data into probabilities?', ...
@@ -330,7 +330,7 @@ function newsta(sta)
         % NuRep             number of repetitions
        
         
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         
         delta=winlen_days/NuBins;

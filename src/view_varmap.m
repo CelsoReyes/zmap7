@@ -11,7 +11,7 @@ function view_varmap(lab1,valueMap)
     end
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % Find out if figure already exists
     %

@@ -15,7 +15,7 @@ function bcross(sel)
     % bootstrapping
     
     ZG=ZmapGlobal.Data
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     error('Update this file to the new catalog')
     if ~exist('sel','var'), sel='in',end
     

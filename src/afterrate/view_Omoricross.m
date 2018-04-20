@@ -41,7 +41,7 @@ function view_Omoricross(src_table, mygrid, field_name)
     
     myFigName='Omoricros-section';
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG = ZmapGlobal.Data;
     
     if ~exist('field_name','var')

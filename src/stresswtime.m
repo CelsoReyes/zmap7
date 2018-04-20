@@ -3,7 +3,7 @@ function stresswtime(mycat)
     % stresswtime(catalog)
 
     dirbase= ZmapGlobal.Data.hodi;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     mResStress = [];
     sdlg.prompt='Number of events in window'; sdlg.value=50;

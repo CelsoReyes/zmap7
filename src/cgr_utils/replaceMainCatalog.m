@@ -2,7 +2,7 @@ function replaceMainCatalog(otherCatalog)
     % replaceMainCatalog(otherCatalog)
     % use this instead of a=something
     % protects the main catalog from corruption
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     if isempty(otherCatalog)
         otherCatalog=ZmapCatalog();
     end

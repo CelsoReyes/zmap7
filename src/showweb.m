@@ -4,7 +4,7 @@ function showweb(action)
     %
     %  Stefan Wiemer   6/96
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     disp('Attempting to open browser - please be patient...');
     
     switch(action)

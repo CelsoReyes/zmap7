@@ -1,5 +1,5 @@
 function setcol(fig)
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % load setcol %todo delete setcol data.
     resp=questdlg('Set Background Color','Which background do you wish to set?','Axes','Figure','neither','neither');

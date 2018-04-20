@@ -3,7 +3,7 @@ function setup()
 
     % turned into function by Celso G Reyes 2017
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     % make the interface
     %

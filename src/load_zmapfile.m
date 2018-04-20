@@ -32,7 +32,7 @@ function [catalog, OK] = load_zmapfile(myfile)%
     OK=false;
     catalog=ZmapCatalog();
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if ~exist('myfile','var') || isempty(myfile)
     % start program and load data:

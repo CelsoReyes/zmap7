@@ -16,7 +16,7 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep) % autogener
     
     %FIXME why ZG.newt2?
     
-    %report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun();
     
     nEvents=numel(actualMags);
     mags= startMag : magStep : 15;

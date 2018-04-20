@@ -8,7 +8,7 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     % J. Woessner, woessner@seismo.ifg.ethz.ch
     % updated: 02.09.02
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global mCatalog
     

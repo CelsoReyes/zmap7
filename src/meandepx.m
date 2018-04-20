@@ -4,7 +4,7 @@ function meandepx(catalog, dist_km)
     %   dist : distance from cross-section start
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % compute the mean depth along a x-section
     

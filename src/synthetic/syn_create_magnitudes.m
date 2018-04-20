@@ -1,9 +1,6 @@
 function [newCat] = syn_create_magnitudes(mCatalog, B, startMag, magStep)
 
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
 
     if isnumeric(mCatalog)
         %% do the old thing

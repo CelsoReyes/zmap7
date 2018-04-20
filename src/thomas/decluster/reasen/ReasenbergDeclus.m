@@ -34,7 +34,7 @@ function[declustered_cat, is_mainshock] = ReasenbergDeclus(taumin,taumax,xk,xmef
 
 %routine works on mycat
 
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
 
 
 

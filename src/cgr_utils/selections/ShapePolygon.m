@@ -17,7 +17,7 @@ classdef ShapePolygon < ShapeGeneral
             %
             % results are stored in ZG.selection_shape
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             if nargin==0
                 return
             end

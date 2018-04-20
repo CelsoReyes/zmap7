@@ -15,7 +15,7 @@ function cicros(opt)
     %
     persistent ic
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     
     if opt==0 && ~isempty(ic)

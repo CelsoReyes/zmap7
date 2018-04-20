@@ -3,7 +3,7 @@ function [xsecx,xsecy, inde] = mysectnoplo(eqlat,eqlon,depth,width,length,...
 % mysectnoplo
 % [probably] based off of LC_XSECTION [LC_xsect]
 
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR

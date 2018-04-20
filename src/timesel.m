@@ -7,7 +7,7 @@ function [tt1,tt2]=timesel(tagn)
     % additional functionality: Celso G Reyes
     
     ZG=ZmapGlobal.Data;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     %timeselection with mouse in cumulative number plot
     f=findobj('Tag',tagn,'-and','Type','Figure');

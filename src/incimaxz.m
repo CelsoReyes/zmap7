@@ -3,7 +3,7 @@ function incimaxz()
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %
     %initial values
     minval = 1.0

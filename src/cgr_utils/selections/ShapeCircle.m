@@ -21,7 +21,7 @@ classdef ShapeCircle < ShapeGeneral
             %
             % results are stored in ZG.selection_shape
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             axes(findobj(gcf,'Tag','mainmap_ax')); % should be the map, with lon/lat
             obj.Type='circle';

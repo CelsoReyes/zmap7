@@ -14,7 +14,7 @@ function  bdiff_bdepth(mycat)
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution');
     if ~isempty(bfig)

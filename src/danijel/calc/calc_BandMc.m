@@ -39,10 +39,7 @@ function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog,
 % Free Software Foundation, Inc.,
 % 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Magnitude binning
 if ~exist('fBinning', 'var')

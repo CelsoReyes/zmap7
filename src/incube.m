@@ -6,7 +6,7 @@ function incube()
     %
     
     global step
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % initial values
     %
@@ -103,7 +103,7 @@ function incube()
         
         % Input Rubberband
         %
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         tre2 = 4.00;
         
@@ -238,7 +238,7 @@ function incube()
     function loadala()
         % Load the alarm data set
         % TODO Define what is an alarm datafile
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         cupa = cd;
         

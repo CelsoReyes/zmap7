@@ -31,7 +31,7 @@ function plotstations(ax, options)
     % all swiss stations:
     % http://eida.ethz.ch/fdsnws/station/1/query?format=text&level=station&nodata=404
     error('not fully implemented')
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     ZG=ZmapGlobal.Data;
     if ~exist('options','var')

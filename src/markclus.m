@@ -9,7 +9,7 @@ function active_cluster = markclus(clus, active_cluster, slider_obj, text_obj)
     % 
     % see also getclu
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     %
     

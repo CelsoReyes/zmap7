@@ -5,7 +5,7 @@ function overlay_()
     % TODO DELETE ME, function is now in MainInteractiveMap
     %  Stefan Wiemer   11/94
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     errordlg('Use zmap_update_displays(); instead');
     return
     

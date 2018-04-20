@@ -5,7 +5,7 @@ function [bv, magco, std_backg, av, me,  rt] = bvalcalc(mycat)
     global les
     %global n
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     maxmag = max(mycat.Magnitude);
     dm1 = 0.1;

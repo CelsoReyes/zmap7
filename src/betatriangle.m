@@ -6,7 +6,7 @@ function BEZ = betatriangle(catalog, xt)
     %
     % db, 05/25/01, denise@etha.net
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     if isempty(catalog)
         errordlg('Catalog is empty, cannot produce a betatriangle plot','Beta Triangle');

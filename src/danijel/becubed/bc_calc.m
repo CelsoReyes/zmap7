@@ -23,10 +23,7 @@ function [params] = bc_calc(params)
 % Danijel Schorlemmer
 % July 5, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 nNumberNodes_ = length(params.mPolygon(:,1));
 

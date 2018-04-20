@@ -7,7 +7,7 @@ function view_rcva(lab1,valueMap)
     %
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
    myFigName='rc-value-map';
 myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     

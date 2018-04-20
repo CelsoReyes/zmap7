@@ -3,7 +3,7 @@ function ini_zmap_PCWIN64()
     %    It's purpose is to modify the ZmapGlobal variables as necessary
     %    to fit the system.
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     ZG=ZmapGlobal.Data;
     % Marker sizes

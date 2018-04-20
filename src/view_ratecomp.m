@@ -12,7 +12,7 @@ function view_ratecomp(det,valueMap)
     %%
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     ZG.someColor = 'w';
     clear title;

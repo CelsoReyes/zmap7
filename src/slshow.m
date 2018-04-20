@@ -3,7 +3,7 @@ function slshow()
     % now essentially self-contained.
     % - CGR
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     setup_slideshow();
 end
 

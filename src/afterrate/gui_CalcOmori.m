@@ -38,10 +38,7 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     % J. Woessner; j.woessner@sed.ethz.ch
     % updated: 16.02.2006
 
-    global bDebug;
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
 
     % Check calculation for splitting of nodes
     if nargin < 2

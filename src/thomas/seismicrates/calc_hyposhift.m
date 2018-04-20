@@ -18,10 +18,7 @@ function [mCatNew, mHyposhift] =calc_hyposhift(mCat,mDelta,nDim)
 %
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% global bDebug;
-% if bDebug
-% report_this_filefun(mfilename('fullpath'));
-% end
+report_this_filefun();
 
 % bring error into degree format
 nDim=logical(nDim);

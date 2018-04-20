@@ -20,7 +20,7 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     % 2017 Celso Reyes
 
     %TODO fix the time periods from decyear to days or dates
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     timef = days(0); % This is needed since no forecast is calculated here!! JW
 
     % Warning off for fmincon

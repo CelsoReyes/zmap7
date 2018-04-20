@@ -17,7 +17,7 @@ function cltiplot(var1)
     global freq_field1 freq_field2 freq_field3 freq_field4 freq_field5
     global tmp1 tmp2 tmp3 tmp4 tmm magn hpndl1 ctiplo
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     myFigName='Cumulative Number Plot (Cluster)';
     
     if ~isempty(pyy)

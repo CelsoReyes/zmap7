@@ -1,6 +1,6 @@
 function [fSpace, fTime] = calc_MonteGKParms(fMagnitude)
 
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
 % Gardner & Knopoff Window algorithm from Paper 1974;
 GKValue=[[2.5000   19.5000    6.0000];...
    [ 3.0000   22.5000   11.5000 ];...

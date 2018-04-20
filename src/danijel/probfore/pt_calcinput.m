@@ -16,10 +16,7 @@ function [mValueGrid, vcsGridNames] = pt_calcinput(mLearningCatalog, mObservedCa
 % Danijel Schorlemmer
 % Oktober 14, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 nNumberNodes = length(mPolygon(:,1));
 

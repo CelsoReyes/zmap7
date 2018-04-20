@@ -20,10 +20,7 @@ function [mMaxRadCatalog] = ex_CheckMaxRadius(mCatalog, mPolygon, nNode, caNodeI
 % J. Woessner; woessner@seismo.ifg.ethz.ch
 % updated: 11.06.03
 
-global bDebug;
-if bDebug
-    report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 mNodeCatalog_ = mCatalog;
 

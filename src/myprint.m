@@ -5,7 +5,7 @@ function myprint(command,param1)
     %printdlg
     uiprint
     return
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %
     %
     %  usage:       myprint(command,parameter1)

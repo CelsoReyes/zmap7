@@ -5,7 +5,7 @@ function ini_zmap()
     % system-specific initialization happens in the following
     % see also ini_zmap_GLXNA64, ini_zmap_PCWIN64, ini_zmap_MACI64
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     ZG=ZmapGlobal.Data;
     
@@ -21,6 +21,8 @@ function ini_zmap()
     
     ZG.grid_markersize = 2.5;
     
+    report_this_filefun('on');
+    report_this_filefun('set',1);
     
     infstri = ' Please enter information about the | current dataset here';
 

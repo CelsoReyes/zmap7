@@ -15,10 +15,7 @@ function st_start(mCatalog, hFigure, bMap, rContainer)
 % Danijel Schorlemmer
 % June 26, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Launch GUI
 hMenuFig = st_options(bMap);

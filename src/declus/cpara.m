@@ -6,7 +6,7 @@ function mycat=cpara(option, mycat)
     
     persistent tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if option==1
         

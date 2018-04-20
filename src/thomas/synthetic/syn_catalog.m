@@ -31,10 +31,7 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
 % Mai  9, 2007  van Stiphout, Thomas     replaced datevec.m by decyear2mat.m
 
 
-global bDebug
-if bDebug
-    report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % allocate matrix for synthetc catalog
 mNewCatalog=nan(nNumberEvents,14);

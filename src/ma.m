@@ -6,7 +6,7 @@ function [b_value_ma, a_value_ma, b_error_ma] = ma(mag,cumnum)
     % e.g. [b,a,e] = ma(X,Y) were X and Y are column vectors of the same length.
     % outputs are the b and a values and the standard error.
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     X = [mag cumnum];
     m = mean(X);

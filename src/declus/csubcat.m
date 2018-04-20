@@ -8,7 +8,7 @@ function csubcat()
     global  name minde maxde maxma2 minma2
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     myFigName='Seismicity Map (Cluster)';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);

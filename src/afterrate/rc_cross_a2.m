@@ -48,7 +48,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
     end
     methods
         function obj=rc_cross_a2(zap,varargin)
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapVGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
             
@@ -255,7 +255,7 @@ function orig_rc_cross_a2()
     % updated: 31.08.03
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     catalog = ZG.primeCatalog;
     catalog.sort('Date')

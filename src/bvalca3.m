@@ -17,7 +17,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     
     global les magsteps_desc bvalsum3
     
-    %report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun();
     ZG = ZmapGlobal.Data;
     dm1 = 0.1;
     [pr,  av, std_backg, magco, bv] = deal(nan);

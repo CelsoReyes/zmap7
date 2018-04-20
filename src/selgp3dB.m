@@ -3,7 +3,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     
     % TODO replace with ZmapGrid and depth 
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     ok_cancel=questdlg('Please selelct a polygon on the map', ...
         '3D grid selection', ...

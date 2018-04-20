@@ -33,10 +33,7 @@ function [hPlot, fBValue, fAValue, fStdDev, fMc, fMeanMag] = plot_FMD(mCatalog, 
 % Danijel Schorlemmer
 % June 16, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Create the frequency magnitude distribution vector
 [vFMD, vNonCFMD] = calc_FMD(mCatalog);

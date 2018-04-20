@@ -16,10 +16,7 @@ function [mFMDC, mFMD] = calc_FMD(mCatalog)
 % Danijel Schorlemmer
 % November 16, 2001
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Determine the magnitude range
 fMaxMagnitude = ceil(10 * max(mCatalog.Magnitude)) / 10;

@@ -8,7 +8,7 @@ ZG=ZmapGlobal.Data; % used by get_zmap_globals
 
 %  Input Ni:
 %
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
 ZG=ZmapGlobal.Data;
 
 delete(findobj('Tag','plos1'));

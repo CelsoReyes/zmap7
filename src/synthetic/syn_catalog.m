@@ -28,10 +28,7 @@ function [synCat] = syn_catalog(nEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, f
     % Mai  9, 2007  van Stiphout, Thomas     replaced datevec.m by decyear2mat.m
 
 
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
 
     % Create empty catalog
     synCat = ZmapCatalog(nan(nEvents,10),'synthetic');

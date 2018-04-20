@@ -15,10 +15,7 @@ function [fSigmaDistance, fMu, fSigma] = pt_CalcDeltaSig(values, fTestValue)
 % Danijel Schorlemmer
 % April 14, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Select all non-NaN values of the distribution
 vSelection = ~isnan(values);

@@ -5,7 +5,7 @@ function inpudenew(catalog)
     %  Alexander Allmann
     
     % modified Celso Reyes 2017
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     
     global taumin taumax xmeff xk rfact P err derr

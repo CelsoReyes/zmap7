@@ -15,10 +15,7 @@ function pt_start(mCatalog, hFigure, bMap, rContainer, sName)
 % Danijel Schorlemmer
 % June 4, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Launch GUI
 hMenuFig = pt_options(bMap);

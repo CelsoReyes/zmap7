@@ -63,7 +63,7 @@ classdef bvalmapt < ZmapHGridFunction
             %   Rev. R.Z. 4/2001
             % turned into function by Celso G Reyes 2017
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'db12');
             
@@ -256,7 +256,7 @@ classdef bvalmapt < ZmapHGridFunction
         end
         function obj= load()
             %RZ Load existing  diff b-grid
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             warndlg('Not implemented');
             %{
             [file1,path1] = uigetfile(['*.mat'],'Diff b-value gridfile');

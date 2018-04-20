@@ -8,7 +8,7 @@ function musec()
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global sw
     

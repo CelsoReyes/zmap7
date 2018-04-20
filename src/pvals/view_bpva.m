@@ -8,7 +8,7 @@ function view_bpva(res, idx)
     %TODO fix this, it broke when turned into a function.
 
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     
     % This is the info window text

@@ -6,7 +6,7 @@ function view_rccross_a2(lab1,valueMap)
     % define size of the plot etc.
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
 
     myFigName='RC-Cross-section';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);

@@ -52,7 +52,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global  torad
     % global lat1 lon1 lat2 lon2

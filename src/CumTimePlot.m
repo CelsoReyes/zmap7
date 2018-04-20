@@ -50,7 +50,7 @@ classdef (Sealed) CumTimePlot < handle
     methods (Access = private)
         function obj = CumTimePlot
             % CUMTIMEPLOT creates a new Cumulative Time Plot figure
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             cf=@()ZmapGlobal.Data.(obj.catname);
             obj.catalog = ZmapCatalogView(cf);
             %obj.BigView = ZmapCatalogView(@()obj.catalog); % major event(s)

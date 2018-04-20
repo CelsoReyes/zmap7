@@ -3,7 +3,7 @@ function dall=prepfocal(catalog)
     % to prepare the events for inversion based
     % on Lu Zhongs code.
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     
     tmp = [catalog.Dip(:), catalog.DipDirection(:), catalog.Rake(:)];

@@ -18,10 +18,7 @@ function [hPlot] = plot_CDF(vDistribution, hAxes, sColor)
 % Danijel Schorlemmer
 % July 9, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Define missing input parameters
 if ~exist('hAxes', 'var')

@@ -27,10 +27,7 @@ function [x,y] = LC_tocart(phi,lambda,maxlat,minlat,maxlon,minlon)
     %               U.S. Geological Survey" by John P. Snyder
     %               Geological Survey Bulletin 1532, pg: 101-109.
     
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
     
     % set the global variables
     global torad Re scale

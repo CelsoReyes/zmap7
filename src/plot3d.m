@@ -62,7 +62,7 @@ function plot3d()
     end   % if exist newmap3
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     figure(map3)
     delete(gca);

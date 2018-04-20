@@ -4,7 +4,7 @@ function y = infix(x)
     %	depending on the sign of x.  If x > 0, infix(x) --> +inf; if
     %	x < 0, infix(x) --> -inf.
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     if x > 0
         y = ceil(x);

@@ -6,10 +6,7 @@ function [mRandomCatalog, ok] = syn_invoke_random_dialog(mCatalog)
 %
 %  if user cancels, then randCatalog is the incoming catalog, and ok is false
 %
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
 
     ok=true;
     % Open figure

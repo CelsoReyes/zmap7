@@ -20,7 +20,7 @@ function calc_across(sel)
     %   and was modified
     %       by Thomas van Stiphout 3/2004
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % Do we have to create the dialogbox?
     if sel == 'in'

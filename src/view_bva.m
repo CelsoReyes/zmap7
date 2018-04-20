@@ -17,7 +17,7 @@ function view_bva(lab1, valueMap,gx,gy)
     end
     ZG=ZmapGlobal.Data;
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG.someColor = 'w';
     
     
@@ -151,7 +151,7 @@ function view_bva(lab1, valueMap,gx,gy)
     
     
     function adju()
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         
         prompt={'Enter the minimum magnitude cut-off',...

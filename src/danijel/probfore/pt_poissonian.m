@@ -33,10 +33,7 @@ function [fDeltaProbability, fProbabilityN, fProbabilityH, mPredictionFMD, vObse
 % Danijel Schorlemmer
 % April 30, 2003
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Index description
 % xxxxN : Variable with a value for the null hypothesis model

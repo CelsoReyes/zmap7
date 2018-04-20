@@ -26,7 +26,7 @@ function  th = signature(name,logo,pos,fontsize,offset)
     %  Kirill K. Pankratov,   kirill@plume.mit.edu
     %  April 8, 1994;  April 27, 1994
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % Defaults and setup ........................................
     namedflt = 'MyPlot';   % Name default

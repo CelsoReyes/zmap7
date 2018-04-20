@@ -8,7 +8,7 @@ function pvalcat()
     
     persistent cua2a % axes associated with this  (should be persistent instead)
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG=ZmapGlobal.Data;
     
     nn2 = ZG.newt2;

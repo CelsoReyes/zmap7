@@ -6,7 +6,7 @@ function [A,B, S, err] = wls(x,y)
     %    err: estimate of the std deviation of the error in predicting a future observation at X by A and B
     %      S: contains fields for triangular factor(R) from QR decomp... see polyfit (used in polyval)
     %    
-    %report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun();
     %partially vectorized version
     
 %    global S % output of POLYFIT used for error estimates

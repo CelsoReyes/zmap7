@@ -5,7 +5,7 @@ function calc_Omoricross()
     % J. Woessner
     % updated: 20.10.04
     ZG=ZmapGlobal;
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     wCat='primeCatalog'; % working catalog name
     
     myvalues=table;

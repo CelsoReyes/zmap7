@@ -33,7 +33,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates,eqMags, da
     global loopcheck
     global p sdp c sdc dk sdk
     
-    %report_this_filefun(mfilename('fullpath'));
+    %report_this_filefun();
     ZG=ZmapGlobal.Data;
     %set some errors
     eps1=.001;

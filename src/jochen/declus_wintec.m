@@ -16,7 +16,7 @@ function [mCluster,out]=declus_wintec(mCatalog, nMethod)
     % see DECLUS_INP, CALC_DECLUSTER
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     %%% Decluster catalog using window technique
     out = struct;

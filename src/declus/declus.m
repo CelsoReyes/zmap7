@@ -35,7 +35,7 @@ function [outputcatalog, details] = declus(catalog, declusParams) %(taumin,tauma
     % k1     working index for cluster
     
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     % FIXME this apparently can return empty clusters (?)
     

@@ -40,7 +40,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         function obj = bdepth_ratio(zap, varargin) 
             % BDEPTH_RATIO compare b values at two different depths
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'bv_ratio');
             

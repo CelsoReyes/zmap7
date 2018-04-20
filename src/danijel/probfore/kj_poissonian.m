@@ -42,10 +42,7 @@ function [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, f
     % Danijel Schorlemmer
     % March 13, 2002
     
-    global bDebug;
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
     
     % Index description
     % xxxxK : Variable with a value for the Kagan & Jackson model

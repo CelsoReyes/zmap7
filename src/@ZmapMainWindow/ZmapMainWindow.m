@@ -140,7 +140,7 @@ classdef ZmapMainWindow < handle
                 obj.Grid=ZmapGrid('Grid',obj.gridopt);
             end
             
-            uitab(obj.maingroup,'Title','Results','Tag','resultstab');
+            %uitab(obj.maingroup,'Title','Results','Tag','resultstab');
             
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();

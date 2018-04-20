@@ -26,10 +26,7 @@ function [caNodeIndices, vResolution_] = ex_CreateIndexCatalog3D(mCatalog, mPoly
 % Danijel Schorlemmer
 % June 17, 2002
 
-global bDebug;
-if bDebug
-  report_this_filefun(mfilename('fullpath'));
-end
+report_this_filefun();
 
 % Create the catalogs for each node with pointers to the overall catalog
 nNumberNodes_ = length(mPolygon(:,1));

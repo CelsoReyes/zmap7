@@ -5,7 +5,7 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
     % returns [x, y, lineobject]
     %
     % lineobject has tag 'mouse_points_overlay'
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     axes(ax);
     holdstate=ishold(ax);
     hold on

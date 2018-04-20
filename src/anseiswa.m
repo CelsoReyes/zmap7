@@ -12,7 +12,7 @@ function anseiswa(action, ds)
     %    samp2
     %
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global currPt ni teb
     global tgl1

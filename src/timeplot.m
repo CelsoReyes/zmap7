@@ -39,7 +39,7 @@ return
             ZG = ZmapGlobal.Data;
             
             catname='newt2';
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             myfig = obj.FigH; % will automatically create if it doesn't exist
             

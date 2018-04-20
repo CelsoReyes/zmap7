@@ -5,7 +5,7 @@ function loadasci(da,sa)
     
     % make the interface
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     loasci=findobj('Type','Figure','-and','Name','Load ASCII Data');
     

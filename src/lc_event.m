@@ -19,14 +19,12 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
     %	      you can use this function as it needs to have some global
     %	      variables to be set.
     
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
     
     global torad scale
     global phi0 lambda0 phi1 phi2
     global maxlatg minlatg maxlong minlong
+    
+    report_this_filefun();
     
     % set some constants
     scale = 1;

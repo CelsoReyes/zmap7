@@ -3,7 +3,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     
     %	Ned Gulley, 6-21-93
     %	Copyright (c) 1984-94 by The MathWorks, Inc.
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     numPages=nargin-1;
     if nargin<4

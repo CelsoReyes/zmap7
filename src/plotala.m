@@ -8,7 +8,7 @@ function plotala()
     % This is the info window text
     %
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     global main mainfault faults coastline
     global iala
@@ -88,7 +88,7 @@ function plotala()
         
     end   % if exist newCube
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     figure(cube);
     delete(gca)
@@ -184,7 +184,7 @@ function plotala()
         
         global abo
         
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         % Reset the alarms to the all alarms above the current threshold
         l = abo2(:,4) >= tre2;
@@ -227,7 +227,7 @@ function plotala()
         
         % Stefan Wiemer    4/95
         
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         global abo
         abo = abo2;
@@ -322,7 +322,7 @@ function plotala()
     
     function cian()
         % find anomalie groups
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         for i = 1:j
             do = ['tmp = an' num2str(i) ';' ];
@@ -344,7 +344,7 @@ function plotala()
     
     function cian2()
         % will display cumulative # curve for one anomaly group
-        report_this_filefun(mfilename('fullpath'));
+        report_this_filefun();
         
         def = {'1'};
         ni2 = inputdlg('Please Input  Anomalie Number ?','Input',1,def);

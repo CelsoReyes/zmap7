@@ -13,7 +13,7 @@ function plot_bootfitloglike_a2(mycat,time,timef,bootloops,maepi)
     % J.Woessner, S. Wiemer
 
 %FIXME mCat ZG.maepi still treated as arrays
-report_this_filefun(mfilename('fullpath'));
+report_this_filefun();
     % Surpress warnings from fmincon
     % warning off;
 

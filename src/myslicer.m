@@ -3,7 +3,7 @@ function myslicer(ac2)
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     global pli
     sl1=[]; % used to track my axes
     if ~exist('ac2','var')

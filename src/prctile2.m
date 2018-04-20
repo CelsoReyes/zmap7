@@ -10,7 +10,7 @@ function y = prctile(x,p)
     %	Copyright (c) 1993 by The MathWorks, Inc.
     %	$Revision: 1399 $  $Date: 2006-08-11 11:19:27 +0200 (Fr, 11 Aug 2006) $
     
-    % report_this_filefun(mfilename('fullpath'));
+    % report_this_filefun();
     
     [prows, pcols] = size(p);
     if prows ~= 1  && pcols ~= 1

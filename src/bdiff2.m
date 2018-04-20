@@ -45,7 +45,7 @@ classdef bdiff2
             % obj = bdiff2(catalog, interactive)
             % if unspecified, catalog defaults to ZG.newt2
             
-            report_this_filefun(mfilename('fullpath'));
+            report_this_filefun();
             
             ZG=ZmapGlobal.Data;
             

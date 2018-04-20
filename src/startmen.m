@@ -1,7 +1,7 @@
 function startmen(parent_fig)
     % startmen adds menus for the basic zmap functions (Data, help)
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     %
     %  This file display the original menu
     %

@@ -7,7 +7,7 @@ function bcrossV2(sel)
     % of completness
     %   Stefan Wiemer 1/95
     
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     
     
     % get the grid parameter

@@ -24,10 +24,7 @@ function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes,
     % Danijel Schorlemmer
     % April 29, 2002
     
-    global bDebug
-    if bDebug
-        report_this_filefun(mfilename('fullpath'));
-    end
+    report_this_filefun();
     
     if isnumeric(mCatalog)
         %% do the old thing

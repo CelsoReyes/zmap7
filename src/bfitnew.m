@@ -6,7 +6,7 @@ function bfitnew(mycat)
     %  originally, "mycat" was "newcat"
     global  cluscat mess bfig backcat
     global magsteps_desc bvalsum3
-    report_this_filefun(mfilename('fullpath'));
+    report_this_filefun();
     ZG = ZmapGlobal.Data;
     
     bfig=findobj('Type','Figure','-and','Name','frequency-magnitude distribution - 2');
