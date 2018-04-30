@@ -68,7 +68,7 @@ function create_all_menus(obj, force)
     
     function create_xsec_analysis_menu()
         submenu = uimenu('Label','X-sect');
-        uimenu(submenu,'Label','Define a cross-section',Futures.MenuSelectedFcn,@(~,~)obj.cb_xsection,'Tag','CreateXsec');
+        uimenu(submenu,'Label','Define a cross-section',Futures.MenuSelectedFcn,@obj.cb_xsection,'Tag','CreateXsec');
         
         h=magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
         rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
@@ -268,7 +268,7 @@ function create_all_menus(obj, force)
         
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
-        % uimenu(submenu,'Label','Create [simple] cross-section',Futures.MenuSelectedFcn,@(~,~)obj.cb_xsection);
+        % uimenu(submenu,'Label','Create [simple] cross-section',Futures.MenuSelectedFcn,@obj.cb_xsection);
         
         create_histogram_menu(submenu);
         

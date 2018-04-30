@@ -1,5 +1,5 @@
 classdef ZmapMainWindow < handle
-    % ZMAPMAINWINDOW
+    % ZMAPMAINWINDOW controls the main interactive window for Zmap
     
     properties(SetObservable)
         catalog ZmapCatalog % event catalog
@@ -37,7 +37,7 @@ classdef ZmapMainWindow < handle
             'LR',[0.6658    0.0120    0.3250    0.4800],...LRPos
             'Main',[0.0125    0.012    0.64    0.9733],...MainGroupPos
             'XS',[0.01    0.008    0.98    0.28]); % XSPos
-        MapPos_S=[0.059    0.3200    0.8    0.6500] % width was .5375
+        MapPos_S=[0.059    0.33    0.8    0.64] % width was .5375
         MapPos_L=[0.059    0.065    0.8    0.8933]
         XSAxPos=[0.06    0.2    0.86    0.7] % inside XSPos
         MapCBPos_S=[0.5975    0.5600    0.0167    0.4000]
@@ -45,6 +45,7 @@ classdef ZmapMainWindow < handle
         FeaturesToPlot = ZmapGlobal.Data.mainmap_features
         ValidColorFields={'Depth','Date','Magnitude','-none-'};
     end
+    
     properties(Dependent)
         map_axes % main map axes handle
     end
@@ -88,11 +89,11 @@ classdef ZmapMainWindow < handle
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
             
             c=uicontextmenu('tag','yscale contextmenu');
-            uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'Y'});
+            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'Y'});
             obj.sharedContextMenus.LogLinearYScale = c;
             
             c=uicontextmenu('tag','xscale contextmenu');
-            uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'X'});
+            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'X'});
             obj.sharedContextMenus.LogLinearXScale = c;
             
             add_menu_divider('mainmap_menu_divider')
@@ -140,8 +141,6 @@ classdef ZmapMainWindow < handle
                 obj.Grid=ZmapGrid('Grid',obj.gridopt);
             end
             
-            %uitab(obj.maingroup,'Title','Results','Tag','resultstab');
-            
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();
             
@@ -170,7 +169,6 @@ classdef ZmapMainWindow < handle
             legend(ax,'show');
             
             
-            
             if isempty(obj.xsections)
                 set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
             end
@@ -178,11 +176,11 @@ classdef ZmapMainWindow < handle
             
             attach_catalog_listeners(obj);
             attach_xsection_listeners(obj);
-            addlistener(obj,'CatalogChanged',@obj.replot_all);
+            addlistener(obj,'CatalogChanged'  ,      @obj.replot_all);
             addlistener(obj, 'daterange', 'PostSet', @obj.replot_all)
-            addlistener(obj,'catalog','PostSet',@obj.attach_catalog_listeners);
-            addlistener(obj,'shape','PostSet',@(~,~)disp('**Shape Changed'));
-            addlistener(obj,'Grid','PostSet',@(~,~)disp('**Grid Changed'));
+            addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
+            addlistener(obj, 'shape',     'PostSet', @(~,~)disp('**Shape Changed'));
+            addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
         end
         
         function attach_catalog_listeners(obj,~,~)
@@ -193,15 +191,13 @@ classdef ZmapMainWindow < handle
             
         function attach_xsection_listeners(obj)
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
-            addlistener(obj,'XsectionAdded',@(~,~)obj.activateXsections);
-            addlistener(obj,'XsectionAdded',@obj.replot_all);
+            addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
+            addlistener(obj,'XsectionAdded',  @obj.replot_all);
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
         end
         
         %% METHODS DEFINED IN DIRECTORY
-        %
-        %
         %
         
         replot_all(obj,metaProp,eventData)
@@ -226,9 +222,8 @@ classdef ZmapMainWindow < handle
         create_all_menus(obj, force)
         
         %
-        %
-        %
         %%
+        
         function ax=get.map_axes(obj)
             % get mainmap axes
             ax=findobj(obj.fig,'Tag','mainmap_ax');
@@ -241,6 +236,7 @@ classdef ZmapMainWindow < handle
             % zp = obj.MAP_ZAP()
             %
             % see also ZMAPANALYSISPKG
+            
             if isempty(obj.evsel)
                 obj.evsel = EventSelectionChoice.quickshow();
             else
@@ -257,7 +253,7 @@ classdef ZmapMainWindow < handle
         end
         
         function zp = xsec_zap(obj, xsTitle)
-            % XSEC_ZAP create a ZmapAnalysis Pkg from a cross section
+            % XSEC_ZAP create a ZmapAnalysisPkg from a cross section
             % the ZmapAnalysisPkg can be used as inputs to the various processing routines
             %
             % zp = obj.XSEC_ZAP() create a Z.A.P. but use the currently active cross section as a guide
@@ -265,8 +261,6 @@ classdef ZmapMainWindow < handle
             %
             % see also ZMAPANALYSISPKG
             
-            
-            % first, make sure a cross section exists!
             if isempty(obj.xsections)
                 errordlg('There is no cross section to analyze. Aborting.');
                 zp=[];
@@ -305,8 +299,7 @@ classdef ZmapMainWindow < handle
             zp = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
             
         end
-            
-        
+         
         function myTab = findOrCreateTab(obj, parent, title)
             % FINDORCREATETAB if tab doesn't exist yet, create it
             %    parent :
@@ -316,8 +309,7 @@ classdef ZmapMainWindow < handle
                 myTab=uitab(p, 'Title',title);
             end
         end
-        
-        
+           
         function cb_timeplot(obj)
             ZG=ZmapGlobal.Data;
             ZG.newt2=obj.catalog;
@@ -344,8 +336,7 @@ classdef ZmapMainWindow < handle
             obj.daterange(1)=obj.catalog.Date(idx);
             %obj.catalog = obj.catalog.subset(obj.catalog.Date>=obj.catalog.Date(idx));
         end
-        
-        
+             
         function shapeChangedFcn(obj,oldshapecopy,varargin)
             if ~isempty(varargin)
                 disp(varargin)
@@ -376,7 +367,7 @@ classdef ZmapMainWindow < handle
             watchoff
         end
         
-        function cb_xsection(obj)
+        function cb_xsection(obj,~,~)
             % main map axes, where the cross section outline will be plotted
             axm=obj.map_axes;
             obj.fig.CurrentAxes=axm;
@@ -389,14 +380,7 @@ classdef ZmapMainWindow < handle
             if ~isempty(mytab)
                 delete(mytab);
             end
-            %{
-            obj.xsgroup.Visible = 'on';
-            set(obj.map_axes,'Position',obj.MapPos_S);
             
-            % set the colorbar position, if it is visible.
-            cb = findobj(obj.fig,'tag','mainmap_colorbar');
-            set(cb,'Position',obj.MapCBPos_S);
-            %}
             mytab=uitab(obj.xsgroup, 'Title',mytitle,'ForegroundColor',xsec.color,'DeleteFcn',xsec.DeleteFcn);
             
             % keep tabs alphabetized
@@ -404,17 +388,15 @@ classdef ZmapMainWindow < handle
             obj.xsgroup.Children=obj.xsgroup.Children(idx);
            
             % add context menu to tab allowing modifications to x-section
-            hxstc = findobj(obj.fig,'Tag','xsTabContext');
             delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
-            uimenu(c,'Label','Info',Futures.MenuSelectedFcn,@obj.cb_info);
-            uimenu(c,'Label','Change Width',Futures.MenuSelectedFcn,@obj.cb_chwidth);
-            uimenu(c,'Label','Change Color',Futures.MenuSelectedFcn,@obj.cb_chcolor);
-            % uimenu(c,'Label','Swap Ends',Futures.MenuSelectedFcn,@(~,~)cb_swapends); doesn't work(?)
-            uimenu(c,'Label','Examine This Area',Futures.MenuSelectedFcn,@(~,~)cb_cropToXS);
+            uimenu(c,'Label','Info',CallbackFld,@obj.cb_info);
+            uimenu(c,'Label','Change Width',CallbackFld,@obj.cb_chwidth);
+            uimenu(c,'Label','Change Color',CallbackFld,@obj.cb_chcolor);
+            uimenu(c,'Label','Examine This Area',CallbackFld,{@obj.cb_cropToXS, xsec});
             uimenu(c,'Separator','on',...
                 'Label','Delete',...
-                Futures.MenuSelectedFcn,@deltab);
+                CallbackFld,{@obj.cb_deltab,xsec});
             mytab.UIContextMenu=c;
             
             % plot the 
@@ -426,34 +408,29 @@ classdef ZmapMainWindow < handle
             % make this the active tab
             mytab.Parent.SelectedTab=mytab;
             obj.replot_all();
-            
-
-            function cb_swapends()
-                xsec = xsec.swap_ends(axm);
-                obj.xsec_add(mytitle,xsec);
-                obj.replot_all();
-            end
-            
-            function cb_cropToXS()
-                oldshape=copy(obj.shape);
-                obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
-                obj.shapeChangedFcn(oldshape);
-                obj.replot_all();
-            end
-            function deltab(~,~)
-                xsec.DeleteFcn();
-                xsec.DeleteFcn=@do_nothing;
-                disp(['deleting ' mytitle]);
-                delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' mytitle '$']))
-                delete(mytab);
-                obj.xsec_remove(mytitle);
-                obj.replot_all('CatalogUnchanged');
-                if isempty(obj.xsections)
-                    set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
-                end
-            end
+         
         end
         
+        function cb_cropToXS(obj,~,~,xsec)
+            oldshape=copy(obj.shape);
+            obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            obj.shapeChangedFcn(oldshape);
+            obj.replot_all();
+        end
+            
+        function cb_deltab(obj, ~,~, xsec)
+            xsec.DeleteFcn();
+            xsec.DeleteFcn=@do_nothing;
+            disp(['deleting ' mytitle]);
+            delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' mytitle '$']))
+            delete(mytab);
+            obj.xsec_remove(mytitle);
+            obj.replot_all('CatalogUnchanged');
+            if isempty(obj.xsections)
+                set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+            end
+        end
+            
         function cb_chwidth(obj,~,~)
             % change width of a cross-section
             title=get(gco,'Title');
@@ -533,6 +510,7 @@ classdef ZmapMainWindow < handle
                 obj.evsel = ZG.GridSelector;
             end
         end
+        
         function ev = get_event_selection(obj)
             ev = obj.evsel;
         end
@@ -577,6 +555,7 @@ classdef ZmapMainWindow < handle
         end
         
         function activateXsections(obj)
+            disp('activationg Xsections')
             set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','on');
             
             obj.xsgroup.Visible = 'on';
@@ -585,6 +564,7 @@ classdef ZmapMainWindow < handle
             % set the colorbar position, if it is visible.
             cb = findobj(obj.fig,'tag','mainmap_colorbar');
             set(cb,'Position',obj.MapCBPos_S);
+            drawnow
         end
         
         function deactivateXsections(obj)
@@ -630,4 +610,8 @@ function cb_selectionChanged(~,~)
     %set(subax,'visible','off');
 end
 function cb_mainMapSelectionChanged(src,~)
+end
+
+function s=CallbackFld()
+    s=Futures.MenuSelectedFcn;
 end

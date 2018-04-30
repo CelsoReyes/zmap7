@@ -1,26 +1,27 @@
 function addAboutMenuItem()
     % ADDABOUTMENUITEM add about menu to Help menu
-    hAbout = findall(gcf,'Label','About ZMAP');
+    hAbout = findall(gcf,'Tag','zmaphelpmenuitem');
     if ~isempty(hAbout)
         delete(hAbout);
-        hAbout=[];
     end
-    hAbout2 = findall(gcf,'Label','Report a ZMAP Issue');
-    if ~isempty(hAbout2)
-        delete(hAbout2);
-    end
-    if isempty(hAbout)
-        mainhelp=findall(gcf,'Tag','figMenuHelp');
-        if isempty(mainhelp) 
-            mainhelp=findobj(gcf,'Label','Help');
-            if isempty(mainhelp)
-                mainhelp=uimenu(gcf,'Label','Help');
-            end
+    mainhelp=findall(gcf,'Tag','figMenuHelp');
+    if isempty(mainhelp)
+        mainhelp=findobj(gcf,'Label','Help');
+        
+        if isempty(mainhelp)
+            mainhelp=uimenu(gcf,'Label','Help');
         end
-        tmp=uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',Futures.MenuSelectedFcn,@(~,~)reportIssue);
-        uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on',Futures.MenuSelectedFcn,@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
-        uimenu(mainhelp,'Label','About ZMAP','Separator','on',Futures.MenuSelectedFcn,@(~,~)aboutZmapDialog);
+        
     end
+    
+    uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
+        Futures.MenuSelectedFcn,@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
+    
+    uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Tag','zmaphelpmenuitem',...
+        Futures.MenuSelectedFcn,@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
+    
+    uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
+        Futures.MenuSelectedFcn,@(~,~)aboutZmapDialog);
 end
 
 function reportIssue()

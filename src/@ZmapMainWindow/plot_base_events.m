@@ -64,7 +64,7 @@ function plot_base_events(obj, container, featurelist)
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
     uimenu(c,'Label','Crop to selection',Futures.MenuSelectedFcn,@cb_crop_to_selection);
     uimenu(c,'Label','Zoom to selection',Futures.MenuSelectedFcn,@cb_zoom)
-    uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@(s,v)obj.cb_xsection);
+    uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@obj.cb_xsection);
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(c,'bottom','above');
     %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
