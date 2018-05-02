@@ -31,6 +31,15 @@ function create_all_menus(obj, force)
     addQuitMenuItem();
     addAboutMenuItem();
     
+    if ZmapGlobal.Data.debug
+        mainhelp=findall(gcf,'Tag','figMenuHelp');
+        uimenu(mainhelp,'Label','Export ZmapMainWindow to workspace as zmw',...
+            'Separator','on', Futures.MenuSelectedFcn,@export_me);
+    end
+    function export_me(src,ev)
+        assignin('base','zmw',obj);
+    end
+    
     %% map-view analysis menu
     % analyze items according to spacing in a horizontal plane
     function create_map_analysis_menu()
@@ -143,8 +152,8 @@ function create_all_menus(obj, force)
                 um(j).Separator='on';
             end
         end
-        
-        add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
+        uimenu(mapoptionmenu,'Label','Edit Map Symbols',Futures.MenuSelectedFcn,{@SymbolManager.cb,axm});
+        % add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu,'Label','Layers');
         try
             MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu,axm)

@@ -1,5 +1,5 @@
 function addAboutMenuItem()
-    % ADDABOUTMENUITEM add about menu to Help menu
+    % ADDABOUTMENUITEM add about menu to Help menu and zmap videos and report issue
     hAbout = findall(gcf,'Tag','zmaphelpmenuitem');
     if ~isempty(hAbout)
         delete(hAbout);
@@ -38,7 +38,6 @@ end
 function aboutZmapDialog()
     
     % if possible, recycle the existing figure
-    
     fig=findobj('Name','About Zmap','-and','Type','figure');
     if ~isempty(fig)
         figure(fig)
@@ -137,5 +136,4 @@ function aboutZmapDialog()
     p(2)=B1;
     uicontrol(fig,'Style','pushbutton','String','Close','Tag','close',...
         'Units','pixels','Position',p,'Callback',@(~,~)close(fig));
-    
 end
