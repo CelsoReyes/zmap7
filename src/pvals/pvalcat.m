@@ -62,7 +62,7 @@ function pvalcat()
     
     paramc2 = timeSinceMainshock >= minDaysAfterMainshock;
     eqDates = eqDates(paramc2);
-    eqMags = ZG.newt2.Magnitudes(paramc2);
+    eqMags = ZG.newt2.Magnitude(paramc2);
     
     tmin = min(timeSinceMainshock);
     tmax = max(timeSinceMainshock);
