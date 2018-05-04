@@ -66,7 +66,7 @@ classdef XSection
             %method = zans.chooser;               % chooser
             
             % dialog box to choose cross-section
-            if ~exist('endpt1','var')||~exist('endpt2','var')
+            if ~exist('startpt','var')||~exist('endpt','var')
                 obj=obj.set_endpoints(ax); %gca
             else
                 obj.startpt = startpt;
@@ -313,7 +313,11 @@ classdef XSection
     
     methods(Static)
         
-        function obj=initialize_with_dialog(ax, default_width)
+        function obj=initialize_with_mouse(ax, default_width)
+                ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m');
+                obj = XSection.initialize_with_dialog(ax, default_width, ptdetails);
+        end
+        function obj=initialize_with_dialog(ax, default_width, ptdetails)
             %INITIALIZE_WITH_DIALOG get a XSECTION, where parameters are determined via dialog box
             %
             %obj=XSECTION.INITIALIZE_WITH_DIALOG(ax, default_width)
@@ -332,6 +336,10 @@ classdef XSection
                 colororders=get(gca,'ColorOrder');
                 coloridx=1;
             end
+            
+            cidx=mod(coloridx-1,size(colororders,1))+1;
+            C = colororders(cidx,:); % color for cross section
+            
             prime='''';
             % dialog box to choose cross-section
             zdlg=ZmapDialog([]);
@@ -341,25 +349,29 @@ classdef XSection
                 'start label for map');
             zdlg.AddBasicEdit('endlabel','end label', [lastletter prime],...
                 'end label for map');
-            zdlg.AddBasicCheckbox('choosecolor','choose cross-section color', false,{},...
+            zdlg.AddBasicCheckbox('choosecolor',sprintf('choose cross-section color [%s]',alt_colorlist(C)), false,{},...
                 'When checked, a color selection dialog will allow you to choose a different cross-section color');
-            zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
-                'no choice');
+            if ~exist('ptdetails','var')
+                zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
+                    'no choice');
+            end
             [zans,okPressed]=zdlg.Create('slicer');
             
             if ~okPressed
                 obj=[];
                 return
             end
-            cidx=mod(coloridx-1,size(colororders,1))+1;
-            C = colororders(cidx,:); % color for cross section
             if zans.choosecolor
                 C=uisetcolor(C,['Color for ' zans.startlabel '-' zans.endlabel]);
             else
                 coloridx=coloridx+1;
             end
             zans.color=C;
-            obj=XSection(ax, zans);
+            if exist('ptdetails','var')
+                obj=XSection(ax, zans, ptdetails.xy1([2,1]), ptdetails.xy2([2,1]));
+            else
+                obj=XSection(ax, zans);
+            end
             if strcmp(lastletter,zans.startlabel)
                 lastletter=increment_lettercode(lastletter);
             end

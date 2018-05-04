@@ -371,7 +371,8 @@ classdef ZmapMainWindow < handle
             % main map axes, where the cross section outline will be plotted
             axm=obj.map_axes;
             obj.fig.CurrentAxes=axm;
-            xsec = XSection.initialize_with_dialog(axm,20);
+            % xsec = XSection.initialize_with_dialog(axm,20);
+            xsec = XSection.initialize_with_mouse(axm, 20);
             mytitle=xsec.name;
             
             obj.xsec_add(mytitle, xsec);
