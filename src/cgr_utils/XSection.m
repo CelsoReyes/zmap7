@@ -176,7 +176,7 @@ classdef XSection
             
             if exist('ax','var')
                 % pick first point
-                ptdetails = selectSegmentUsingMouse(ax, obj.color);
+                ptdetails = selectSegmentUsingMouse(ax, 'deg','km',obj.color);
                 obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
                 obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
             else
