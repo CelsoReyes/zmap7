@@ -115,7 +115,8 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         
         x1=cp(1,1);
         y1=cp(1,2);
-        h=plot(ax,[x1;x1], [y1;y1], '+:','MarkerSize',20,'color',color,'linewidth',2,'DisplayName','Choose Xsection');
+        h=plot(ax,[x1;x1], [y1;y1], 'o:','MarkerSize',15,'color','k','MarkerFaceColor',color,'MarkerEdgeColor','k',...
+            'linewidth',2,'DisplayName','Choose Xsection');
         started=true;
         
         % write the text
