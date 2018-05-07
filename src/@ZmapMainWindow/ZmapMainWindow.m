@@ -132,7 +132,9 @@ classdef ZmapMainWindow < handle
                 'Visible','on',...
                 'SelectionChangedFcn',@cb_mainMapSelectionChanged,...
                 'TabLocation',TabLocation,'Tag','main plots');
-            obj.maintab = uitab(obj.maingroup,'Title',obj.catalog.Name,'Tag','mainmap_tab');
+            obj.maintab = findOrCreateTab(gcf,'main plots',obj.catalog.Name);
+            obj.maintab.Tag = 'mainmap_tab';
+            %obj.maintab = uitab(obj.maingroup,'Title',obj.catalog.Name,'Tag','mainmap_tab');
             
             
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
@@ -299,7 +301,7 @@ classdef ZmapMainWindow < handle
             zp = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
             
         end
-         
+        %{
         function myTab = findOrCreateTab(obj, parent, title)
             % FINDORCREATETAB if tab doesn't exist yet, create it
             %    parent :
@@ -309,7 +311,8 @@ classdef ZmapMainWindow < handle
                 myTab=uitab(p, 'Title',title);
             end
         end
-           
+        %}
+        
         function cb_timeplot(obj)
             ZG=ZmapGlobal.Data;
             ZG.newt2=obj.catalog;
@@ -368,6 +371,7 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_xsection(obj,~,~)
+            import callbacks.copytab
             % main map axes, where the cross section outline will be plotted
             axm=obj.map_axes;
             obj.fig.CurrentAxes=axm;
@@ -391,7 +395,8 @@ classdef ZmapMainWindow < handle
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig,'Tag',['xsTabContext' mytitle]))
             c=uicontextmenu(obj.fig,'Tag',['xsTabContext' mytitle]);
-            uimenu(c,'Label','Info',CallbackFld,@obj.cb_info);
+            uimenu(c,'Label','Copy Contents to new figure (static)','Callback',@copytab);
+            uimenu(c,'Label','Info','Separator','on',CallbackFld,@obj.cb_info);
             uimenu(c,'Label','Change Width',CallbackFld,@obj.cb_chwidth);
             uimenu(c,'Label','Change Color',CallbackFld,@obj.cb_chcolor);
             uimenu(c,'Label','Examine This Area',CallbackFld,{@obj.cb_cropToXS, xsec});

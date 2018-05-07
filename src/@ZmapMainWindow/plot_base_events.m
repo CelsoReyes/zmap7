@@ -21,7 +21,12 @@ function plot_base_events(obj, container, featurelist)
     
     axm.Tag = 'mainmap_ax';
     axm.TickDir='out';
+    axm.XMinorTick='on';
+    axm.YMinorTick='on';
+    axm.TickLength=[0.006 0.006];
+    axm.LineWidth=2;
     axm.Box='on';
+    axm.BoxStyle='full';
     axm.ZDir='reverse';
     
     xlabel(axm,'Longitude')

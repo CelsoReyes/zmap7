@@ -94,15 +94,28 @@ classdef SymbolManager
                     h.(fld)=newc;
                     % add this "new" color to the list
                     src.String(end+1)=src.String(end);
-                    src.String(end-1)={FancyColors.name(newc)};
+                    nm = FancyColors.name(newc);
+                    src.String(end-1)={FancyColors.colorize(nm,nm)};
                 else
-                    nAdded = find(strcmp(src.String,obj.colors{1})) - 1; % zero if nothing added
+                    cs = src.String;
+                    fancy=endsWith(cs,'</font>');
+                    cs(fancy)=extractBetween(cs(fancy),'">',"</font>");
+                    
+                    nAdded = find(strcmp(cs,obj.colors{1})) - 1; % zero if nothing addeds
+                    
+                    %nAdded = find(strcmp(src.String,obj.colors{1})) - 1; % zero if nothing added
+                    
+                    
                     idx=src.Value - nAdded;
+                    idx=idx(1);
+                    newc = FancyColors.dec(cs{src.Value});
+                    %{
                     if idx>numel(obj.colors_rgb)
-                        newc = FancyColors.dec(src.String{src.Value});
+                        %newc = FancyColors.dec(src.String{src.Value});
                     else
                         newc = obj.colors_rgb{idx};
                     end
+                    %}
                     h.(fld)= newc;
                 end
             end
@@ -111,7 +124,14 @@ classdef SymbolManager
                 % find position in list. if it doesn't exist, add it. return index.
                 
                 % add field-unique options to top of list
-                displist = [additionalOptions(:) ; obj.colors(:)];
+                %displist = [additionalOptions(:) ; obj.colors(:)];
+                cl = obj.colors(:);
+                for n=1:numel(cl)
+                    if ~startsWith(cl(n),'<html>')
+                        cl(n)={ FancyColors.colorize(cl{n},cl{n}) };
+                    end
+                end
+                displist = [additionalOptions(:) ; cl];
                 lookuplist = [additionalOptions(:) ; obj.colors_rgb(:)];
                 
                 % find existing value's position within the lookup list
@@ -121,7 +141,7 @@ classdef SymbolManager
                 if isempty(idx) || idx==0
                     nm = FancyColors.name(existingValue);
                     displist(end+1)=displist(end);
-                    displist(end-1)={nm};
+                    displist(end-1)={FancyColors.colorize(nm,nm)};
                     idx=numel(displist)-1;
                 end
             end

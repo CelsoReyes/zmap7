@@ -52,10 +52,15 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     h = gobjects(0);
     
     ax.ButtonDownFcn=@startSegment;
+    f.WindowButtonMotionFcn=@queryFirstPoint;
+    
     
     
     selected=false;
     fig.Pointer='Cross';
+    instructionText = text(nan,nan,'Choose start point','FontSize',12,...
+        'FontWeight','bold','HitTest','off','BackgroundColor','w');
+    
     
     switch dispunits
         case 'km'
@@ -115,7 +120,8 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         
         x1=cp(1,1);
         y1=cp(1,2);
-        h=plot(ax,[x1;x1], [y1;y1], 'o:','MarkerSize',15,'color','k','MarkerFaceColor',color,'MarkerEdgeColor','k',...
+        h=plot(ax,[x1;x1], [y1;y1], 'o:','MarkerSize',15,'color','k',...
+            'MarkerFaceColor',color,'MarkerEdgeColor','k',...
             'linewidth',2,'DisplayName','Choose Xsection');
         started=true;
         
@@ -128,6 +134,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
             case 'km'
                 f.WindowButtonMotionFcn=@moveMouse;
         end
+        instructionText.String='Choose end point';
     end
     
     function v = range_limited(v, minmax)
@@ -138,6 +145,21 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         end
     end
         
+    function queryFirstPoint(~,~)
+        % move mouse before any point is selected
+        cp=ax.CurrentPoint;
+        xl=ax.XLim; 
+        x=range_limited(cp(1,1), xl);
+        y=range_limited(cp(1,2), ax.YLim);
+
+        dx=abs(diff(xl))/100;
+        if (x > mean(xl)) 
+            set(instructionText,'HorizontalAlignment','right','Position',[x-dx y 0]);
+        else
+            set(instructionText,'HorizontalAlignment','left','Position',[x+dx y 0]);
+        end
+    end
+    
     function moveMouse(~,~)
         cp=ax.CurrentPoint;
         ax.ButtonDownFcn=@endSegment;
@@ -149,6 +171,14 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         obj.(distfld)=dist(x1,y1,x2,y2);
         h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
         h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' dispunits];
+        
+        % update instruction text
+        dx=abs(diff(ax.XLim))/100;
+        if (x2 > mean(ax.XLim)) 
+            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0]);
+        else
+            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0]);
+        end
     end
     
     function moveMouseGC(~,~)
@@ -162,6 +192,14 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         obj.(distfld)=dist(x1,y1,x2,y2);
         h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
         h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' dispunits];
+        
+        % update instruction text
+        dx=abs(diff(ax.XLim))/100;
+        if (x2 > mean(ax.XLim)) 
+            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0]);
+        else
+            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0]);
+        end
     end
     
     
@@ -171,11 +209,16 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
             return
         end
         
+        if isvalid(instructionText)
+            delete(instructionText);
+        end
+        
         selected=true;
         f.WindowButtonMotionFcn=TMP.fWBMF;
         f.WindowButtonUpFcn=TMP.fWBUF;
         ax.ButtonDownFcn=TMP.aBDF;
         fig.Pointer='arrow';
+        
     end
     
 end

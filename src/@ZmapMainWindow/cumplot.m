@@ -12,6 +12,8 @@ function cumplot(obj, tabgrouptag)
     
     ax=axes(myTab);
     ax.TickDir='out';
+    ax.YMinorTick='on';
+    ax.Box='on';
     
     cln=findobj(gcf,'Tag',Tags.line);
     if isempty(cln)

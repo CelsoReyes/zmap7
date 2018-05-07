@@ -27,6 +27,7 @@ function plothist(obj, name, values, tabgrouptag)
         end
     end
     
+    ax.YMinorTick='on';
     
     function doit(ax)
         h= findobj(ax,'Type','histogram');
