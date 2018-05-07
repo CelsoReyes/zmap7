@@ -419,17 +419,34 @@ classdef ZmapMainWindow < handle
             obj.replot_all();
         end
             
-        function cb_deltab(obj, ~,~, xsec)
-            xsec.DeleteFcn();
-            xsec.DeleteFcn=@do_nothing;
-            disp(['deleting ' mytitle]);
-            delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' mytitle '$']))
-            delete(mytab);
-            obj.xsec_remove(mytitle);
-            obj.replot_all('CatalogUnchanged');
-            if isempty(obj.xsections)
-                set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+        function cb_deltab(obj, src,~, xsec)
+            prevPtr = obj.fig.Pointer;
+            obj.fig.Pointer='watch';
+            try
+                
+                if strcmp(get(gco,'Type'),'uitab') && strcmp(get(gco,'Title'), xsec.name)
+                    delete(gco);
+                else
+                    error('Supposed to delete tab, but gco is not what is expected');
+                end
+                drawnow
+                xsec.DeleteFcn();
+                xsec.DeleteFcn=@do_nothing;
+                disp(['deleting ' xsec.name]);
+                delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' xsec.name '$']))
+                obj.xsec_remove(xsec.name);
+                obj.replot_all('CatalogUnchanged');
+                if isempty(obj.xsections)
+                    set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+                end
+                
+                obj.fig.Pointer=prevPtr;
+            catch ME
+                obj.fig.Pointer=prevPtr;
+                rethrow(ME);
             end
+            
+                
         end
             
         function cb_chwidth(obj,~,~)

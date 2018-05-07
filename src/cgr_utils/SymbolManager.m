@@ -94,13 +94,12 @@ classdef SymbolManager
                     h.(fld)=newc;
                     % add this "new" color to the list
                     src.String(end+1)=src.String(end);
-                    %src.String(end-1)={mat2str(newc,2)}; %
-                    src.String(end-1)={alt_colorlist(newc)};
+                    src.String(end-1)={FancyColors.name(newc)};
                 else
                     nAdded = find(strcmp(src.String,obj.colors{1})) - 1; % zero if nothing added
                     idx=src.Value - nAdded;
                     if idx>numel(obj.colors_rgb)
-                        [~,newc]=alt_colorlist(src.String{src.Value});
+                        newc = FancyColors.dec(src.String{src.Value});
                     else
                         newc = obj.colors_rgb{idx};
                     end
@@ -120,7 +119,7 @@ classdef SymbolManager
                 
                 % if our value isn't found, then add it to the top of the list, and set index to it.
                 if isempty(idx) || idx==0
-                    [nm,v] = alt_colorlist(existingValue);
+                    nm = FancyColors.name(existingValue);
                     displist(end+1)=displist(end);
                     displist(end-1)={nm};
                     idx=numel(displist)-1;

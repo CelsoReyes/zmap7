@@ -338,7 +338,7 @@ classdef XSection
             end
             
             cidx=mod(coloridx-1,size(colororders,1))+1;
-            C = colororders(cidx,:); % color for cross section
+            C = colororders(cidx,:); % color for cross section [rgb]
             
             prime='''';
             % dialog box to choose cross-section
@@ -349,10 +349,13 @@ classdef XSection
                 'start label for map');
             zdlg.AddBasicEdit('endlabel','end label', [lastletter prime],...
                 'end label for map');
-            c1=round(C.*255); c1=c1(1)*256*256+c1(2)*256+c1(3);
-            c1=dec2hex(c1);
-            zdlg.AddBasicCheckbox('choosecolor',sprintf('<html>change x-section color : <b>[<font color="%s">%s</font>]</b>',c1,alt_colorlist(C)), false,{},...
+
+            cname = FancyColors.name(C);
+            cname = FancyColors.colorize(cname,cname,'nohtml');
+            zdlg.AddBasicCheckbox('choosecolor',...
+                sprintf('<html>change x-section color : <b>[%s]</b>',cname), false,{},...
                 'When checked, a color selection dialog will allow you to choose a different cross-section color');
+            
             if ~exist('ptdetails','var')
                 zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
                     'no choice');
