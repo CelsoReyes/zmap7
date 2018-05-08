@@ -1,9 +1,26 @@
 classdef FancyColors
-    % FANCYCOLORS helps with color manipulation
+    % FANCYCOLORS provides additional color choices for use with MATLAB.
+    % colors may be specifed by name, RGB [0..1] vector, or HEX
+    %
+    % example usage:
+    %    % create a line of a defined  color, by name
+    %    line(rand(5,1),rand(5,1),'Color', FancyColors.rgb('orange red'))
+    %
+    %    % create a button that displays a random color from the list
+    %     s = sprintf('Change to a random color');
+    %     new_s = @() FancyColors.autocolorize(sprintf('I am now [%s]',FancyColors.name(rand(1,3))));
+    %     uicontrol('Style','pushbutton','String', s ,'TooltipString','Change to new color',...
+    %         'Callback', @(s,~)set(s, 'String', new_s()), 'Position',[20, 20, 180, 20]);
+    %
+    %    % run the example
+    %    FancyColors.example;
+    %
+    % Created By Celso G. Reyes
     
     % color values modified from https://www.rapidtables.com/web/color/RGB_Color.html
    
     properties(Constant)
+        % lookup-list of color names, RGB decimal values, and hexidecimal strings.
         colors = {... name, 0-1 decimal, hex
             'maroon', [0.50 0.00 0.00], '800000';...
             'dark red', [0.55 0.00 0.00], '8C0000';...
@@ -146,15 +163,18 @@ classdef FancyColors
     end
     
     methods(Static, Access=private)
-        function idx = name2idx(val)
-            if ischar(val) || isstring(val)
-                idx=find(strcmpi(val,FancyColors.colors(:,1)));
+        function idx = name2idx(name)
+            % NAME2IDX return the index into the color matrix corresponding to a name
+            if ischar(name) || isstring(name)
+                idx=find(strcmpi(name,FancyColors.colors(:,1)));
             else
                 idx = [];
             end
         end
         
-        function idx = dec2idx(rgb)
+        function idx = rgb2idx(rgb)
+            % RGB2IDX return the index into the color matrix corresponding to a decimal RGB vector
+            % this returns the closest matching value.
             if  isnumeric(rgb) && numel(rgb)==3
                 % look up closest value from decimal RGB
                 vals=cell2mat(FancyColors.colors(:,2));
@@ -163,10 +183,11 @@ classdef FancyColors
                 idx=[];
             end
         end
-        function idx = hex2idx(val)
-                % looking up name from hex characters
-            if ischar(val) && length(val)==6
-                idx=find(strcmpi(FancyColors.colors(:,3),val));
+        
+        function idx = hex2idx(hexval)
+           % HEX2IDX return the index into the color matrix corresponding to a hexidecimal RGB value
+            if ischar(hexval) && length(hexval)==6
+                idx=find(strcmpi(FancyColors.colors(:,3),hexval));
             else
                 idx=[];
             end
@@ -176,22 +197,27 @@ classdef FancyColors
     methods(Static)
         
         function n=name(val)
+            % NAME translates an RGB decimal value or hex string to a color name
             if ischar(val)
                 n=FancyColors.colors{FancyColors.hex2idx(val),1};
             else
-                n=FancyColors.colors{FancyColors.dec2idx(val),1};
+                n=FancyColors.colors{FancyColors.rgb2idx(val),1};
             end
         end
         
         function h=hex(val)
+            % HEX translates a color name or RGB decimal value to a hex string
             if ischar(val)
                 h=FancyColors.colors{FancyColors.name2idx(val),3};
             else
-                h=FancyColors.colors{FancyColors.dec2idx(val),3};
+                h=FancyColors.colors{FancyColors.rgb2idx(val),3};
             end
         end
         
-        function d=dec(val)
+        function d=rgb(val)
+            % RGB translate from a color name or hex value into the RGB decimal value
+            % d= RGB( name )
+            % d = RGB( hexstring )
             if length(val)==6&& all(ismember(val,'ABCDEF0123456789'))
                 d=FancyColors.colors{FancyColors.hex2idx(val),2};
             else
@@ -199,9 +225,29 @@ classdef FancyColors
             end
         end
         
-        function s=colorize(s,val, varargin)
-            %colorizing using html
+        function s=colorize(s,color, varargin)
+            %COLORIZE adds html to text to render it in color in several 
+            % S = COLORIZE (S , COLOR) will add html tags to the string S, changing it
+            % the the requested COLOR.  COLOR can be specified as a matlab RGB designation, or
+            % as a Hex string 'RRGGBB', or as a color name.
+            %
+            % By default, this function  wraps the string in a <font> tag to define the color.
+            % it also adds <html> to the front, so that MATLAB knows to properl interpet it.
+            %
+            % S = COLORIZE ( ... , 'nohtml') do not add the "<html>" tag to the beginning. Useful
+            % when this string will be inserted into another one.  
+            %
+            % NOTE: this works for most uicontrol items, including pushbutton, radiobutton, 
+            %       togglebutton, checkbox, listbox, popupmenu
+            %
+            % It also works inside tooltips.
             htmltag= '<html>';
+            
+            % don't duplicate an existing <html> tag.
+            if startsWith(s,htmltag)
+                htmltag='';
+            end
+            
             for z=1:numel(varargin)
                 if exist('opt','var')
                     switch opt
@@ -210,18 +256,25 @@ classdef FancyColors
                     end
                 end
             end
-            val_is_hex = length(val)==6&& all(ismember(val,'ABCDEF0123456789'));
+            val_is_hex = length(color)==6&& all(ismember(color,'ABCDEF0123456789'));
             if val_is_hex
-                s=[htmltag, '<font color="#',val,'">',s,'</font>'];
+                s=[htmltag, '<font color="#',color,'">',s,'</font>'];
             else
-                s=[htmltag, '<font color="#',FancyColors.hex(val),'">',s,'</font>'];
+                s=[htmltag, '<font color="#',FancyColors.hex(color),'">',s,'</font>'];
             end
         end
         
         function s=autocolorize(s)
-            % AUTOCOLORIZE automatically adds color to the color name in string. color name must be surrounded by []
-            st=find(s=='[') + 1;
-            ed=find(s==']') - 1;
+            % AUTOCOLORIZE automatically adds color to the color name in string. 
+            % string must either be the color name, or the color name must be surrounded by []
+            if any(s=='[')
+                st=find(s=='[') + 1;
+                ed=find(s==']') - 1;
+            else
+                % entire s should be a string
+                st=1;
+                ed=length(s);
+            end
             was_colored=false;
             for n=numel(st):-1:1
                 cn=s(st(n) : ed(n) );
@@ -239,6 +292,7 @@ classdef FancyColors
         end
         
         function test(idx)
+            % TEST test to make sure FANCYCOLORS works.
             if ~exist('idx','var')
                 nColors = size(FancyColors.colors,1);
                 idx= randi(nColors);
@@ -248,7 +302,7 @@ classdef FancyColors
             mydec =FancyColors.colors{idx,2};
             myhex = FancyColors.colors{idx,3};
             
-            assert(FancyColors.dec2idx(mydec)==idx);
+            assert(FancyColors.rgb2idx(mydec)==idx);
             assert(FancyColors.name2idx(myname)==idx);
             assert(FancyColors.hex2idx(myhex)==idx);
             
@@ -256,8 +310,8 @@ classdef FancyColors
             assert(strcmp(myname,FancyColors.name(myhex)));
             assert(strcmp(myhex,FancyColors.hex(mydec)));
             assert(strcmp(myhex,FancyColors.hex(myname)));
-            assert(isequal(mydec,FancyColors.dec(myname)));
-            assert(isequal(mydec,FancyColors.dec(myhex)));
+            assert(isequal(mydec,FancyColors.rgb(myname)));
+            assert(isequal(mydec,FancyColors.rgb(myhex)));
             
             txt = 'test';
             colorized = FancyColors.colorize(txt,'plum');
@@ -267,8 +321,39 @@ classdef FancyColors
             colorized = FancyColors.autocolorize(txt);
             expected = '<html>test [<font color="#DEA1DE">plum</font>] [<font color="#FF0000">RED</font>]';
             assert(strcmp(colorized, expected));
+        end
+       
+        function example()
+            % add a button that changes color
+            f=figure('Name','FancyColor example','Units','pixels','MenuBar','none');
+            f.Position([3 4]) = [430 300];
+            s = sprintf('Change to a random color');
+            pb = uicontrol(f,'Style','pushbutton','String', s ,'TooltipString','Change to new color',...
+                'Callback', @add_to_list, 'Units','pixels', 'Position',[20, 10, 250, 20]);
+            
+            lb  = uicontrol(f,'Style','listbox','String',{'<html><b><code>hexval [ red green blue] - name'},...
+                'Units','pixels', 'Position',[20, 35, 400, 260],'Callback',@change_button);
+            
+            function add_to_list(s,~)
+                color = FancyColors.name(rand(1,3));
+                new_s = FancyColors.autocolorize(sprintf('I am now [%s]',color));
+                s.String=new_s;
+                this_rgb = FancyColors.rgb(color);
+                
+                lb.String(end+1)={sprintf('<html><code>#%6s [%0.2f %0.2f %0.2f] - %s',...
+                    FancyColors.colorize(FancyColors.hex(color),color,'nohtml'), ...
+                    this_rgb(1), this_rgb(2), this_rgb(3), ...
+                    color)};
+                lb.Value=numel(lb.String);
+            end
+            function change_button(s,~)
+                if s.Value > 1
+                    active = s.String{s.Value};
+                    color = strip(active(find(active=='-')+1 : end));
+                    set(pb, 'string',  FancyColors.autocolorize(sprintf('I am now [%s]',color)));
+                end
+            end
             
         end
-        
     end
 end
