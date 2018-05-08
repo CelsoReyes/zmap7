@@ -25,7 +25,8 @@ classdef XSection
         startpt (1,2) double % [lat lon] start point for cross section
         endpt (1,2) double % [lat lon] end point for cross section
         color % color used when plotting cross section
-        linewidth (1,1) {mustBePositive} = 2.0 % line width for cross section
+        linewidth (1,1) {mustBePositive} = 3 % line width for cross section
+        markersize (1,1) {mustBePositive} = 10 % size of the end marker
         startlabel char % label for start point
         endlabel char % label for end point
         curvelons (:,1) double % longitudes that define the cross-section curve
@@ -211,28 +212,50 @@ classdef XSection
                 'linewidth',obj.linewidth,...
                 'Color',obj.color,...
                 'MarkerIndices',[1 numel(obj.curvelons)],'Marker','x',...
+                'MarkerSize',obj.markersize,...
                 'Tag',['Xsection Line ', obj.name],...
                 'DisplayName',['Xsection ' obj.startlabel]);
             
             % plot width polygon
             xs_poly=line(ax,obj.polylons,obj.polylats,'LineStyle','-.',...
                 'Color',obj.color,...
-                'LineWidth',obj.linewidth * 0.75,...
+                'LineWidth',obj.linewidth * 0.5,...
                 'Tag',['Xsection Area ' obj.name],...
                 'DisplayName','');
             %label it: put labels offset and outside the great-circle line.
-            hOffset=@(x,polarity) x+(1/75).*diff(xlim(ax)) * sign(obj.endpt(2)-obj.startpt(2)) * polarity;
-            vOffset=@(x,polarity) x+(1/75).*diff(ylim(ax)) * sign(obj.endpt(1)-obj.endpt(1)) * polarity;
-            textStartX = hOffset(obj.startpt(2),-1);
-            textStartY = vOffset(obj.startpt(1),-1);
-            xs_slabel = text(ax,textStartX,textStartY,obj.startlabel,...
+            
+            l2r_orientation = obj.startpt(2) <= obj.endpt(2)
+            u2d_orientation = obj.startpt(1) >= obj.endpt(1)
+            xs_slabel = text(ax, obj.startpt(2), obj.startpt(1),obj.startlabel,...
                 'Color',obj.color.*0.8, 'fontweight','bold',...
+                'BackgroundColor','w', 'EdgeColor',obj.color,...
                 'Tag',['Xsection Start ' obj.name]);
-            textEndX = hOffset(obj.endpt(2),1);
-            textEndY = vOffset(obj.endpt(1),1);
-            xs_elabel = text(ax,textEndX,textEndY,obj.endlabel,...
+            
+            
+            xs_elabel = text(ax,obj.endpt(2),obj.endpt(1),obj.endlabel,...
                 'Color',obj.color.*0.8, 'fontweight','bold',...
+                'BackgroundColor','w', 'EdgeColor',obj.color,...
                 'Tag',['Xsection End ' obj.name]);
+            
+            % avoid overlapping the label with the plot
+            if u2d_orientation
+                dy = 1;
+            else
+                dy = -1;
+            end
+            dx = 1.5;
+            if l2r_orientation
+                xs_slabel.Position([1 2]) = xs_slabel.Position([1 2]) + [-dx dy].*xs_slabel.Extent([3 4]);
+                xs_slabel.HorizontalAlignment = 'right';
+                xs_elabel.Position([1 2]) = xs_elabel.Position([1 2]) + [dx -dy].*xs_elabel.Extent([3 4]);
+                xs_elabel.HorizontalAlignment = 'left';
+            else
+                xs_slabel.Position([1 2]) = xs_slabel.Position([1 2]) + [dx dy].*xs_slabel.Extent([3 4]);
+                xs_slabel.HorizontalAlignment = 'left';
+                xs_elabel.Position([1 2]) = xs_elabel.Position([1 2]) + [-dx -dy].*xs_elabel.Extent([3 4]);
+                xs_elabel.HorizontalAlignment = 'right';
+            end
+            
             ax.XLimMode=prev_xlimmode;
             ax.YLimMode=prev_ylimmode;
             drawnow

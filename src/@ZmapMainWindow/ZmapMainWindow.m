@@ -87,6 +87,12 @@ classdef ZmapMainWindow < handle
             obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
                 'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
+           
+            
+            % make sure that empty legend entries automatically disappear when the menu is called up 
+            set(findall(obj.fig,'Type','uitoggletool'),'ClickedCallback',...
+                'insertmenufcn(gcbf,''Legend'');clear_empty_legend_entries(gcf);');
+            
             
             c=uicontextmenu('tag','yscale contextmenu');
             uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'Y'});
@@ -169,6 +175,8 @@ classdef ZmapMainWindow < handle
             ax=findobj(obj.fig,'Tag','mainmap_ax');
             obj.fig.CurrentAxes=ax;
             legend(ax,'show');
+            clear_empty_legend_entries(obj.fig);
+            
             
             
             if isempty(obj.xsections)
@@ -197,9 +205,13 @@ classdef ZmapMainWindow < handle
             addlistener(obj,'XsectionAdded',  @obj.replot_all);
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
+            addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
         end
         
         %% METHODS DEFINED IN DIRECTORY
+        %
+        %
+        %
         %
         
         replot_all(obj,metaProp,eventData)
@@ -223,6 +235,9 @@ classdef ZmapMainWindow < handle
         % menus
         create_all_menus(obj, force)
         
+        %
+        %
+        %
         %
         %%
         

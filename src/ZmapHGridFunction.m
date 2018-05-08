@@ -305,9 +305,12 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 container=uimenu(gcf,'Label','layer');
             end
             
+            
             % UPDATE_LAYERMENU
             if isempty(container.Children)  % TODO: change to plotTag_layermeu
                 %layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
+                import callbacks.copytab
+                uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
                 for i=1:width(obj.Result.values)
                     tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
                     tmpname=obj.Result.values.Properties.VariableNames{i};
@@ -316,6 +319,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         Futures.MenuSelectedFcn,@(~,~)overlay_cb(tmpname));
                         %Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
                 end
+                container.Children(end-1).Separator='on';
             end
             
             % make sure the correct option is checked

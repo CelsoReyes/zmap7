@@ -55,7 +55,8 @@ function addLegendToggleContextMenuItem(cm, position, separator)
     end
     
     function legend_cb(~,~)
-        legend(gca,'toggle');
+        l=legend(gca,'toggle');
+        clear_empty_legend_entries(l)
     end
     
 end
