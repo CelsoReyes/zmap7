@@ -77,8 +77,18 @@ classdef ZmapMainWindow < handle
             end
             
             %if the figure was specified, but wasn't empty, then delete it.
-            if exist('fig','var') && isa('fig','matlab.ui.Figure') && isvalid(fig)
-                delete(fig);
+            if exist('fig','var') && isa(fig,'matlab.ui.Figure') && isvalid(fig)
+                an=questdlg(sprintf('Replace existing Map Windows?\nWarning: This will delete any results tabs'),...
+                    'Window exists','Replace Existing','Create Another', 'cancel','cancel');
+                switch an
+                    case 'Replace Existing'
+                        delete(fig);
+                    case 'Create a new figure'
+                        ;
+                    case 'Nevermind'
+                        return;
+                end
+                %delete(fig);
             end
             
             % set up figure
