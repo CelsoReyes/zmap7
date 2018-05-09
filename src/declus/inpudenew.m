@@ -1,7 +1,7 @@
 function inpudenew(catalog)
     %  This scriptfile ask for several input parameters that can be setup
-    %  at the beginning of each session. The default values are the
-    %  values Raesenberg used in this program
+    %  at the beginning of each session. The default values are the values used by Raesenberg
+    %
     %  Alexander Allmann
     
     % modified Celso Reyes 2017

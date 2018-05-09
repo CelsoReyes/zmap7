@@ -122,6 +122,7 @@ classdef ZmapData < handle
         Views struct = struct('primary',[],'layers',[]) % catalog views
         
         useParallel logical = false % use parallel pool when available
+        Datastore = DataStore % mapseis DataStore adapter
     end
     properties(Dependent)
         wex % welcome window x (welcome_pos(1))

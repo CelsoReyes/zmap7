@@ -108,10 +108,10 @@ classdef SymbolManager
                     
                     idx=src.Value - nAdded;
                     idx=idx(1);
-                    newc = FancyColors.dec(cs{src.Value});
+                    newc = FancyColors.rgb(cs{src.Value});
                     %{
                     if idx>numel(obj.colors_rgb)
-                        %newc = FancyColors.dec(src.String{src.Value});
+                        %newc = FancyColors.rgb(src.String{src.Value});
                     else
                         newc = obj.colors_rgb{idx};
                     end
@@ -150,8 +150,9 @@ classdef SymbolManager
         function test(obj, ax)
             
             % show the legend. has dual purpose. it assigns DisplayName and provides feedback for user
-            wasVisible=strcmp(ax.Legend.Visible,'on');
+            wasVisible=~isempty(ax.Legend) && strcmp(ax.Legend.Visible,'on');
             if ~wasVisible
+                legend(ax,'show');
                 ax.Legend.Visible='on';
             end
             
@@ -180,7 +181,11 @@ classdef SymbolManager
             
             xoff=x;
             for itt=numel(ch): -1 : 1
-                if ~strcmp(ch(itt).Type,'line') && ~strcmp(ch(itt).Type,'scatter')
+                if ~isvalid(ch(itt))
+                    ch(itt)=[];
+                    continue;
+                end
+                if (~strcmp(ch(itt).Type,'line') && ~strcmp(ch(itt).Type,'scatter'))
                     continue
                 end
                 C=obj.fill_values(ch(itt));

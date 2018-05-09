@@ -204,8 +204,9 @@ function [outputcatalog, details] = declus(catalog, declusParams) %(taumin,tauma
         juggle_catalogs(clus,catalog)
         
         warning('should somehow zmap_update_displays()');
-        hold on
-        pl=plot(findobj(gcf,'Tag','mainmap_ax'),ZG.cluscat.Longitude, ZG.cluscat.Latitude,'mo', 'DisplayName','Clustered Events');
+        plot_ax = findobj(gcf,'Tag','mainmap_ax');
+        hold(plot_ax,'on');
+        pl=scatter3(plot_ax,ZG.cluscat.Longitude, ZG.cluscat.Latitude,ZG.cluscat.Depth,[],'m', 'DisplayName','Clustered Events');
         pl.ZData=ZG.cluscat.Depth;
         
         st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...
@@ -217,7 +218,7 @@ function [outputcatalog, details] = declus(catalog, declusParams) %(taumin,tauma
         
         
         if user_wants_to_analyze_clusters()
-            plot(clust)
+            plot(plot_ax,clust)
         else
             disp('keep on going');
         end
