@@ -54,7 +54,10 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERmag(ShortCat,MainMag,Bac
 	
 	%init output
 	ClusterID=nan(numEvents,1);
-	EventType=ones(numEvents,1);
+	%EventType=ones(numEvents,1);
+	EventType = categorical(ones(numEvents,1),...
+		[0 1 2 3],...
+        {'unclassified','single event','mainshock','aftershock'}); 
 	InitEvent=false(numEvents,1);
 	AlgoInfo=[];
 	
@@ -202,13 +205,13 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERmag(ShortCat,MainMag,Bac
 			
 			%First mark all as Events of the cluster and as Aftershocks
 			ClusterID(inCluster)=clusterno;
-			EventType(inCluster)=3;
+			EventType(inCluster)='aftershock';
 			
 			%find the first of the largest events label it as mainshock
 			[MaxMag IDX] = max(ShortCat(inCluster,5));
 			availIndex=WorkArray(inCluster,1);
 			MrMaxMag=availIndex(IDX(1));
-			EventType(MrMaxMag)=2;
+			EventType(MrMaxMag)='mainshock';
 			
 			%Mark initial event
 			[MinTime IDX] = min(ShortCat(inCluster,4));
@@ -221,7 +224,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERmag(ShortCat,MainMag,Bac
 		elseif sum(inCluster)==1
 			%only one event
 			ClusterID(inCluster)=nan;
-			EventType(inCluster)=1;
+			EventType(inCluster)='single event';
 			
 			%clusterno=clusterno+1;
 			
@@ -234,7 +237,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERmag(ShortCat,MainMag,Bac
 	%And set all not assign clusters to NaN and 1
 	notInClust=WorkArray(:,2)==0;
 	ClusterID(notInClust)=nan;
-	EventType(notInClust)=1
+	EventType(notInClust)='single event'
 	
 	
 	

@@ -94,8 +94,9 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	
 	clusterID = NaN(1,length(ShortCat(:,1))); %clus
 	%EventType = zeros(1,length(ShortCat(:,1))); %the eventType (new feature)
-	EventType = categorical(zeros(1,length(ShortCat(:,1))),[0 1 2 3],...
-        {'unclassified','single','mainshock','aftershock'}); %the eventType (new feature)
+	EventType = categorical(zeros(1,length(ShortCat(:,1))),...
+		[0 1 2 3],...
+        {'unclassified','single event','mainshock','aftershock'}); %the eventType (new feature)
 	%(0: unclassified, 1: single event, 2: mainshock (largest eq) and 3: aftershock)
 	
 	LastClustID = 0;           %clusterindex k
@@ -195,7 +196,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 			else   
 				%has its bigger brothers
 				[dist1,dist2]=ReasDistance(i,largeEqID(oldClustID),suitableEq,ShortCat,err,derr);     
-			end;                                   
+            end                              
 			
 			%Instead of this function also the internal distance function of matlab could be used
 			%but it would not used the error of the depth and location, besides it might not be that
@@ -285,7 +286,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 		%default is single if anything is processed (which is the case)
 		EventType = categorical(ones(1,length(ShortCat(:,1))),...
             [0 1 2 3],...
-            {'unclassified','single','mainshock','aftershock'});
+            {'unclassified','single event','mainshock','aftershock'});
 		EventType(~isnan(clusterID))='aftershock';
 		EventType(largeEqID)='mainshock';
 		

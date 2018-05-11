@@ -2,7 +2,7 @@ classdef DataStore<handle
     % DATASTORE is an adapter from zmap to the MapSeis Datastore
     
     properties
-        % gives the type determined by the decluster algorithmen
+        % gives the type determined by the decluster algorithmen categorical
         % (1:single event, 2: mainshock, 3:aftershock and 0: unclassified)
         EventType
         
@@ -60,11 +60,15 @@ classdef DataStore<handle
             
             if isempty(obj.EventType)
                 %create new arrays with unclasified data
-                obj.EventType=zeros(obj.getRawRowCount,1);
+                obj.EventType = categorical(zeros(obj.getRawRowCount,1),...
+                    [0 1 2 3],...
+                    {'unclassified','single event','mainshock','aftershock'});
                 obj.ClusterNR=NaN(obj.getRawRowCount,1);
                 
             end
-            
+            if isempty(selected)
+                selected=true(size(obj.EventType));
+            end
             
             obj.EventType(selected)=EventType;
             obj.ClusterNR(selected)=ClusterNR;

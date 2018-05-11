@@ -58,7 +58,10 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 		
 	%init output
 	ClusterID=nan(numEvents,1);
-	EventType=ones(numEvents,1);
+	%EventType=ones(numEvents,1);
+	EventType = categorical(ones(numEvents,1),...
+	[0 1 2 3],...
+	{'unclassified','single event','mainshock','aftershock'});
 	InitEvent=false(numEvents,1);
 	AlgoInfo=[];
 	
@@ -110,7 +113,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 			
 			if (edist <= searchradius)
 			    WorkArray(lino,2)=clusterno;
-			    %changed, because catalog should already be cutted
+			    %changed, because catalog should already be cut
 			    %if (ShortCat(lino,5) > Mc && ShortCat(lino,4) >tref)
 			    
 			    if (ShortCat(lino,4) >tref)&(ShortCat(lino,5) > MainMag)
@@ -178,13 +181,13 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 			
 			%First mark all as Events of the cluster and as Aftershocks
 			ClusterID(inCluster)=clusterno;
-			EventType(inCluster)=3;
+			EventType(inCluster)='aftershock';
 			
 			%find the first of the largest events label it as mainshock
 			[MaxMag IDX] = max(ShortCat(inCluster,5));
 			availIndex=WorkArray(inCluster,1);
 			MrMaxMag=availIndex(IDX(1));
-			EventType(MrMaxMag)=2;
+			EventType(MrMaxMag)='mainshock';
 			
 			%Mark initial event
 			[MinTime IDX] = min(ShortCat(inCluster,4));
@@ -197,7 +200,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 		elseif sum(inCluster)==1
 			%only one event
 			ClusterID(inCluster)=nan;
-			EventType(inCluster)=1;
+			EventType(inCluster)='single event';
 			
 			%clusterno=clusterno+1;
 			
@@ -210,7 +213,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 	%And set all not assign clusters to NaN and 1
 	notInClust=WorkArray(:,2)==0;
 	ClusterID(notInClust)=nan;
-	EventType(notInClust)=1
+	EventType(notInClust)='single event';
 	
 	
 	%And finally the AlgoInfo

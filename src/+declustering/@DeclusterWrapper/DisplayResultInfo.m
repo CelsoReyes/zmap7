@@ -4,8 +4,8 @@ function DisplayResultInfo(obj)
 		switch obj.CalcMode
 			case 'Reasenberg' 
 				foundClusters=numel(unique(obj.CalcRes.clusterID(~isnan(obj.CalcRes.clusterID))));
-				inCluster=sum(obj.CalcRes.EventType>1);
-				notCluster=sum(obj.CalcRes.EventType<=1);
+				inCluster=sum(ismember(obj.CalcRes.EventType,{'mainshock','aftershock'});
+				notCluster=sum(ismember(obj.CalcRes.EventType,{'single event','unclassified'});
 				if iscell(obj.CalcRes.AlgoInfo.ClusterLengths);
 					longestClust=max(obj.CalcRes.AlgoInfo.ClusterLengths{2});
 				else
@@ -32,8 +32,8 @@ function DisplayResultInfo(obj)
 			
 			case 'Gardner-Knopoff'
 				foundClusters=numel(unique(obj.CalcRes.clusterID(~isnan(obj.CalcRes.clusterID))));
-				inCluster=sum(obj.CalcRes.EventType>1);
-				notCluster=sum(obj.CalcRes.EventType<=1);
+				inCluster=sum(ismember(obj.CalcRes.EventType,{'mainshock','aftershock'});
+				notCluster=sum(ismember(obj.CalcRes.EventType,{'single event','unclassified'});
 				if iscell(obj.CalcRes.AlgoInfo.ClusterLengths);
 					longestClust=max(obj.CalcRes.AlgoInfo.ClusterLengths{1});
 				else
@@ -55,8 +55,8 @@ function DisplayResultInfo(obj)
 				
 			case 'SLIDER'
 				foundClusters=numel(unique(obj.CalcRes.clusterID(~isnan(obj.CalcRes.clusterID))));
-				inCluster=sum(obj.CalcRes.EventType>1);
-				notCluster=sum(obj.CalcRes.EventType<=1);
+				inCluster=sum(ismember(obj.CalcRes.EventType,{'mainshock','aftershock'});
+				notCluster=sum(ismember(obj.CalcRes.EventType,{'single event','unclassified'});
 				
 				infoText={'SLIDER declustering finished';...
 					  ['Calculation Time: ',num2str(obj.CalcTime/60),' min'];... 

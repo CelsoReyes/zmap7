@@ -230,12 +230,14 @@ function [clusterID,EventType,AlgoInfo] = calc_decluster_gardKnop(mCatalog,nMeth
 	
 	%create the wanted output for mapseis
 	%clusterID,EventType,AlgoInfo
-	EventType=ones(length(mCatalog),1);
+	EventType = categorical(ones(length(mCatalog,1)),...
+		[0 1 2 3],...
+		{'unclassified','single event','mainshock','aftershock'}); 
 	clusterID=vCl;
 	
 	%the type first
-	EventType(vCl~=0)=2;
-	EventType(vCluster~=0)=3;
+	EventType(vCl~=0)='mainshock';
+	EventType(vCluster~=0)='aftershock';
 	clusterID(clusterID==0)=NaN;
 	
 	%The original does not set a mainshock if all earhquakes in a cluster have the same Magnitude, this part will 
@@ -248,9 +250,9 @@ function [clusterID,EventType,AlgoInfo] = calc_decluster_gardKnop(mCatalog,nMeth
 		for i=1:numel(ClusterLength);
 			ClusterLength(i)=sum(clusterID==uniqueClust(i));
 			
-			if all(EventType(clusterID==uniqueClust(i))==3)
+			if all(EventType(clusterID==uniqueClust(i))=='aftershock')
 				TheInder=find(clusterID==uniqueClust(i));
-				EventType(TheInder(1))=2;
+				EventType(TheInder(1))='mainshock';
 			end
 		end
 		
