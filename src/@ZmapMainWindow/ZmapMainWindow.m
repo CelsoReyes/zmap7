@@ -1,5 +1,5 @@
 classdef ZmapMainWindow < handle
-    % ZMAPMAINWINDOW controls the main interactive window for Zmap
+    % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable)
         catalog ZmapCatalog % event catalog
@@ -312,7 +312,7 @@ classdef ZmapMainWindow < handle
             zdlg.AddBasicPopup('xsTitle', 'Cross Section:', obj.xsections.keys, xsIndex, 'Choose the cross section');
             zdlg.AddEventSelectionParameters('evsel', ZG.ni, ZG.ra, 1);
             zdlg.AddBasicEdit('x_km','Horiz Spacing [km]', 5,'Distance along strike, in kilometers');
-            zdlg.AddBasicEdit('z_min','min Z [km]', z_min,'Shallowest gridpoint');
+            zdlg.AddBasicEdit('z_min','min Z [km]', z_min,'Shallowest grid point');
             zdlg.AddBasicEdit('z_max','max Z [km]', z_max,'Deepest grid point, in kilometers');
             zdlg.AddBasicEdit('z_delta','number of layers', round(z_max-z_min)+1,'Number of horizontal layers ');
             [zans, okPressed] = zdlg.Create('Cross Section Sample parameters');
@@ -401,7 +401,14 @@ classdef ZmapMainWindow < handle
             axm=obj.map_axes;
             obj.fig.CurrentAxes=axm;
             % xsec = XSection.initialize_with_dialog(axm,20);
-            xsec = XSection.initialize_with_mouse(axm, 20);
+            try
+                xsec = XSection.initialize_with_mouse(axm, 20);
+            catch ME
+                warning(ME.message)
+                return
+                % do not set segment
+            end
+            if isempty(xsec), return, end
             mytitle=xsec.name;
             
             obj.xsec_add(mytitle, xsec);

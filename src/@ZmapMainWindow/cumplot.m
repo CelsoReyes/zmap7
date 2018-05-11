@@ -27,7 +27,7 @@ function cumplot(obj, tabgrouptag)
     % plot the main catalog
     Ys=1:obj.catalog.Count;
     Xs=obj.catalog.Date;
-    p=line(ax,Xs,Ys,'linewidth',2.5,'DisplayName','catalog',...
+    p=line(ax,Xs,Ys,'LineWidth',2.5,'DisplayName','catalog',...
         'Tag','catalog','color','k');
     p.UIContextMenu=cln;
     grid(ax,'on');
@@ -83,12 +83,12 @@ function cumplot(obj, tabgrouptag)
         h=findobj(ax,'DisplayName',xs.name,'-and','Type','line');
         if isempty(h)
             h=line(ax,xscat.Date, 1:xscat.Count,...
-                'linewidth',1.5,'DisplayName',xs.name,'Color',xs.color,...
+                'LineWidth',1.5,'DisplayName',xs.name,'Color',xs.color,...
                 'Tag',['Xsection cumplot ' xs.name]);
             h.UIContextMenu = cxs;
         else
             if ~isequal(xscat.Date, h.XData)
-                set(h,'XData',xscat.Date, 'YData', 1:xscat.Count,'linewidth',1.5,'Color',xs.color);
+                set(h,'XData',xscat.Date, 'YData', 1:xscat.Count,'LineWidth',1.5,'Color',xs.color);
             else
                 set(h,'Color',xs.color);
             end

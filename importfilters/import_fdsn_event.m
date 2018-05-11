@@ -63,6 +63,10 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     if exist(code,'file')
         %fid = fopen(code,'r');
         uOutput = convert_from_fdsn_text(fileread(code));
+        if mean(uOutput.Depth >= 1000) 
+            warning('depths look like they are in m instead of km! scaling')
+            uOutput.Depth= uOutput.Depth ./ 1000;
+        end
         %fclose(fid);
         return;
     end

@@ -34,7 +34,8 @@ classdef DataStore<handle
             %sets the declustering data
             %ShowParts can be empty, in this case it will be set to true for
             %all parts or will be kept if TypeUsed is already defined
-            
+            % SETDECLUSTERDATA(obj,EventType,ClusterNR,selected,ShowParts)
+            % EventType : type of event: 
             
             % This file is part of MapSeis.
             

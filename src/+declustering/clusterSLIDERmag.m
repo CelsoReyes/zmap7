@@ -164,7 +164,7 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERmag(ShortCat,MainMag,Bac
 		
 	end
 	
-	%Ouput clustered matrix
+	%Output clustered matrix
 	% column 1: longitude
 	% column 2: latitude
 	% column 3: year (decimal year, including seconds)

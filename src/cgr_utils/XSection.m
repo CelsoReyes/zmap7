@@ -13,7 +13,7 @@ classdef XSection
     %   figure;
     %   ax=axes;
     %   
-    %   % plot the projection of a catalog (distalong projection vs depth)
+    %   % plot the projection of a catalog (dist along projection vs depth)
     %   % sized by magnitude, colored by date.
     %
     %   obj.plot_events_along_strike(ax,ZG.primeCatalog); 
@@ -51,7 +51,7 @@ classdef XSection
             %
             % plots cross-section (great-circle curve) on map, along with boundary for selected events.
             % brings up new figure containing cross-section, with selected events plotted with depth,
-            % and histograms of events along sgtrike and with depth
+            % and histograms of events along strike and with depth
             %
             % plots into the ZmapMainWindow
             %
@@ -81,7 +81,7 @@ classdef XSection
             % mask so that we can plot original quakes in original positions
            [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
             
         end
         
@@ -105,7 +105,7 @@ classdef XSection
             
             % mask so that we can plot original quakes in original positions
            [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % autodelete xsection when figure is closed
+            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
             
         end
             
@@ -177,9 +177,14 @@ classdef XSection
             
             if exist('ax','var')
                 % pick first point
-                ptdetails = selectSegmentUsingMouse(ax, 'deg','km',obj.color);
-                obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
-                obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
+                try
+                    ptdetails = selectSegmentUsingMouse(ax, 'deg','km',obj.color);
+                    obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
+                    obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
+                catch ME
+                    warning(ME.message)
+                    % do not set segment
+                end
             else
                 error('expecting axes to be able to choose endpoints');
                 % get endpoints via dialog box
@@ -209,7 +214,7 @@ classdef XSection
             prev_ylimmode=ax.YLimMode;
             ax.YLimMode='manual';
             xs_line=line(ax,obj.curvelons,obj.curvelats,'LineStyle','--',...
-                'linewidth',obj.linewidth,...
+                'LineWidth',obj.linewidth,...
                 'Color',obj.color,...
                 'MarkerIndices',[1 numel(obj.curvelons)],'Marker','x',...
                 'MarkerSize',obj.markersize,...
@@ -227,13 +232,13 @@ classdef XSection
             l2r_orientation = obj.startpt(2) <= obj.endpt(2)
             u2d_orientation = obj.startpt(1) >= obj.endpt(1)
             xs_slabel = text(ax, obj.startpt(2), obj.startpt(1),obj.startlabel,...
-                'Color',obj.color.*0.8, 'fontweight','bold',...
+                'Color',obj.color.*0.8, 'FontWeight','bold',...
                 'BackgroundColor','w', 'EdgeColor',obj.color,...
                 'Tag',['Xsection Start ' obj.name]);
             
             
             xs_elabel = text(ax,obj.endpt(2),obj.endpt(1),obj.endlabel,...
-                'Color',obj.color.*0.8, 'fontweight','bold',...
+                'Color',obj.color.*0.8, 'FontWeight','bold',...
                 'BackgroundColor','w', 'EdgeColor',obj.color,...
                 'Tag',['Xsection End ' obj.name]);
             
@@ -337,7 +342,7 @@ classdef XSection
     methods(Static)
         
         function obj=initialize_with_mouse(ax, default_width)
-                ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m');
+                ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m'); % could throw
                 obj = XSection.initialize_with_dialog(ax, default_width, ptdetails);
         end
         function obj=initialize_with_dialog(ax, default_width, ptdetails)
@@ -372,7 +377,6 @@ classdef XSection
                 'start label for map');
             zdlg.AddBasicEdit('endlabel','end label', [lastletter prime],...
                 'end label for map');
-
             cname = FancyColors.name(C);
             cname = FancyColors.colorize(cname,cname,'nohtml');
             zdlg.AddBasicCheckbox('choosecolor',...
@@ -382,7 +386,21 @@ classdef XSection
             if ~exist('ptdetails','var')
                 zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
                     'no choice');
+                zdlg.AddBasicHeader('Start point:');
+                zdlg.AddBasicEdit('startx','x',nan,'Cross section starting point (x or lon)');
+                zdlg.AddBasicEdit('starty','y',nan,'Cross section starting point (y or lat)');
+                zdlg.AddBasicHeader('End point:');
+                zdlg.AddBasicEdit('endx','x',nan,'Cross section ending point (x or lon)');
+                zdlg.AddBasicEdit('endy','y',nan,'Cross section ending point (y or lat)');
+            else
+                zdlg.AddBasicHeader('Start point:');
+                zdlg.AddBasicEdit('startx','x',ptdetails.xy1(1),'Cross section starting point (x or lon)');
+                zdlg.AddBasicEdit('starty','y',ptdetails.xy1(2),'Cross section starting point (y or lat)');
+                zdlg.AddBasicHeader('End point:');
+                zdlg.AddBasicEdit('endx','x',ptdetails.xy2(1),'Cross section ending point (x or lon)');
+                zdlg.AddBasicEdit('endy','y',ptdetails.xy2(2),'Cross section ending point (y or lat)');
             end
+            
             
             [zans,okPressed]=zdlg.Create('slicer');
             
@@ -397,7 +415,8 @@ classdef XSection
             end
             zans.color=C;
             if exist('ptdetails','var')
-                obj=XSection(ax, zans, ptdetails.xy1([2,1]), ptdetails.xy2([2,1]));
+                %obj=XSection(ax, zans, ptdetails.xy1([2,1]), ptdetails.xy2([2,1]));
+                obj=XSection(ax, zans, [zans.starty, zans.startx] , [zans.endy, zans.endx]);
             else
                 obj=XSection(ax, zans);
             end

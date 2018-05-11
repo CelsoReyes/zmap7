@@ -39,12 +39,12 @@ function plothist(obj, name, values, tabgrouptag)
             case 'Hour'
                 xsplotter=@(xs,xscat)histogram(ax,hours(xscat.Date.(name)),edges,...
                         'DisplayStyle','stairs',...
-                        'DisplayName',xs.name,'EdgeColor',xs.color,'linewidth',1.0);
+                        'DisplayName',xs.name,'EdgeColor',xs.color,'LineWidth',1.0);
                 
             otherwise
                 xsplotter=@(xs,xscat)histogram(ax,xscat.(name),edges,...
                         'DisplayStyle','stairs',...
-                        'DisplayName',xs.name,'EdgeColor',xs.color,'linewidth',1.0);
+                        'DisplayName',xs.name,'EdgeColor',xs.color,'LineWidth',1.0);
         end
         
         obj.plot_xsections(xsplotter, 'Xsection');

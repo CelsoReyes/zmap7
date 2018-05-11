@@ -213,8 +213,8 @@ classdef ShapeCircle < ShapeGeneral
             % draw line from origin to edge of circle
             h=line([x1;x1],[y1;y1],...
                 'Color','k','Marker','+',...
-                'LineStyle',':','markersize',10,'linewidth',2);
-            % h(3)=plot([x1,x2],[y1,y2],'-o','markersize',10,'linewidth',2,'color',[.4 .4 .4]);
+                'LineStyle',':','MarkerSize',10,'LineWidth',2);
+            % h(3)=plot([x1,x2],[y1,y2],'-o','MarkerSize',10,'LineWidth',2,'color',[.4 .4 .4]);
             
             % write the text
             h(2)=text((x1+x2)/2,(y1+y2)/2,['Radius:' num2str(obj.Radius,4) ' km'],'fontsize',12,'Fontweight','bold');
@@ -320,7 +320,7 @@ classdef ShapeCircle < ShapeGeneral
                         lab='Set Circle: mouse click';
                         set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapeCircle('mouse'));
                     otherwise
-                        error('Tried to set a menu item that doesn''t exist');
+                        error('Tried to set a menu item that does not exist');
                 end
             end
             

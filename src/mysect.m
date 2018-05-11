@@ -48,7 +48,7 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     %
     %	NOTE:
     %	It is assumed that LC_MAP was used before using this function!
-    %	This is neccessary to set global variables used by this function.
+    %	This is necessary to set global variables used by this function.
     
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
     
@@ -91,11 +91,11 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
             
         case 4	% method 3: selection of the end points by mouse
             [lat1, lon1] = inputm(1);
-            h=plotm(lat1, lon1,'rx','markersize',6,'linewidth',2);
+            h=plotm(lat1, lon1,'rx','MarkerSize',6,'LineWidth',2);
             [lat2, lon2] = inputm(1);
             
             delete(h)
-            h=plotm([lat1 lat2],[lon1 lon2],'rx:','markersize',6,'linewidth',2);
+            h=plotm([lat1 lat2],[lon1 lon2],'rx:','MarkerSize',6,'LineWidth',2);
             
             [arclen,azimuth] = distance([lat1, lon1] , [lat2, lon2]);
             leng=deg2km(arclen);

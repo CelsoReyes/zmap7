@@ -126,7 +126,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
             if isempty(qtag)
                 hold on
                 plot(catalog.Longitude, catalog.Latitude, 'o',...
-                    'markersize',3,...
+                    'MarkerSize',3,...
                     'markeredgecolor',[.2 .2 .2],...
                     'tag','quakes');
                 hold off
@@ -186,7 +186,7 @@ function changecontours_cb()
     set(contr,'LevelList',answer.value);
     
     function x=mystr2vec(x)
-        % ensures only valid charaters for the upcoming eval statement
+        % ensures only valid characters for the upcoming eval statement
         if ~all(ismember(x,'(),:[]01234567890.- '))
             x = str2num(x); %#ok<ST2NM>
         else

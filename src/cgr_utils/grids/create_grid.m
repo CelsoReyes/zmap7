@@ -73,7 +73,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     
     % DISPLAY POLYGON
     if USEPOLY
-        plot(ax, pts(:,1),pts(:,2),'k:','linewidth',2,'DisplayName','polygon');
+        plot(ax, pts(:,1),pts(:,2),'k:','LineWidth',2,'DisplayName','polygon');
     end
     
     legend(ax,'show')
@@ -94,13 +94,13 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     % SELECT FIXED POINT
     write_string(t,'Enter a fixed point for the grid');
     [fixed_x,fixed_y]=ginput(1);
-    fp=plot(ax,fixed_x,fixed_y,'b+','linewidth',2,'DisplayName','Origin');
+    fp=plot(ax,fixed_x,fixed_y,'b+','LineWidth',2,'DisplayName','Origin');
     instruction_end(t);
     
     % SELECT OTHER POINT
     write_string(t,'Click at a distance that will define a grid');
     [x2,y2]=ginput(1);
-    %tmph=plot(ax,x2,y2,'bo','linewidth',2)
+    %tmph=plot(ax,x2,y2,'bo','LineWidth',2)
     instruction_end(t);
     
     dx = abs(x2-fixed_x);

@@ -93,7 +93,9 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	%clus = zeros(1,length(newcat(:,1))); %use NAN (DE)
 	
 	clusterID = NaN(1,length(ShortCat(:,1))); %clus
-	EventType = zeros(1,length(ShortCat(:,1))); %the eventType (new feature)
+	%EventType = zeros(1,length(ShortCat(:,1))); %the eventType (new feature)
+	EventType = categorical(zeros(1,length(ShortCat(:,1))),[0 1 2 3],...
+        {'unclassified','single','mainshock','aftershock'}); %the eventType (new feature)
 	%(0: unclassified, 1: single event, 2: mainshock (largest eq) and 3: aftershock)
 	
 	LastClustID = 0;           %clusterindex k
@@ -281,9 +283,11 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 		
 		%Do the translation to ClusterID List and EventType  
 		%default is single if anything is processed (which is the case)
-		EventType = ones(1,length(ShortCat(:,1)));
-		EventType(~isnan(clusterID))=3;
-		EventType(largeEqID)=2;
+		EventType = categorical(ones(1,length(ShortCat(:,1))),...
+            [0 1 2 3],...
+            {'unclassified','single','mainshock','aftershock'});
+		EventType(~isnan(clusterID))='aftershock';
+		EventType(largeEqID)='mainshock';
 		
 		ParamInput=struct(	'taumin',taumin,...
 					'taumax',taumax,...

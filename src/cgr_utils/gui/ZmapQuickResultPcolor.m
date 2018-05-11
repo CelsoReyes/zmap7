@@ -43,7 +43,7 @@ function h=ZmapQuickResultPcolor(ax, res, choice, features)
     if isa(ZG,'ZmapData')
         shading(ZG.shading_style)
         hold on
-        res.Grid.plot([],'color',[.5 .5 .5],'displayname','grid points','markersize',3);
+        res.Grid.plot([],'color',[.5 .5 .5],'displayname','grid points','MarkerSize',3);
         for j=1:numel(features)
             try
                 ft=ZG.features(features{j});

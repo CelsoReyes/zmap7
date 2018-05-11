@@ -100,7 +100,7 @@ function loadasci(da,sa)
         
         te = text(0.03,0.96,'Please setup an ascii file (e.g., data.dat) in the following format (12 or 13 colums):');
         
-        t2 = text(0.03,0.82,'lon          lat    year  month   day  mag  depth  hour   min dip-direction dip  rake (otional: solution uncertainty) ') ;
+        t2 = text(0.03,0.82,'lon          lat    year  month   day  mag  depth  hour   min dip-direction dip  rake (optional: solution uncertainty) ') ;
         t3 = text(0.03,0.68,' -116.86  34.35   86        03     27    4.21    15.0   10   2  5     230      75                 137    ') ;
         
         t4 = text(0.03,0.40,'Press <Load> when you are ready to load this file.');

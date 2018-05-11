@@ -22,7 +22,7 @@ classdef MainInteractiveMap
             obj.Features=ZmapGlobal.Data.features;
             
             % the lock avoids loading features multiple times when MainInteractiveMap is called
-            % TODO find more elegent solution where MainInteractiveMap isn't called twice.
+            % TODO find more elegant solution where MainInteractiveMap isn't called twice.
             if isempty(lock)
                 lock=1;
                 MapFeature.foreach_waitbar(obj.Features,'load');
@@ -324,7 +324,7 @@ classdef MainInteractiveMap
             
             uimenu(submenu,'Label','Misfit calculation',...
                 Futures.MenuSelectedFcn,@(~,~)cb_inmisfit,...
-                'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
+                'Enable','off'); %FIXME: misfit calclulation poorly documented, not sure what it is comparing.
                 
             function cb_inmisfit(~,~)
                 inmisfit(obj.Catalog)
@@ -1116,7 +1116,7 @@ function cb_xsect(src,~)
     % pick first point
     [lon, lat] = ginput(1);
     hold on; 
-    xs_endpts=plot(lon,lat,'x','linewidth',2,'MarkerSize',5,'Color',C);
+    xs_endpts=plot(lon,lat,'x','LineWidth',2,'MarkerSize',5,'Color',C);
     
     % pick second point
     [lon(2), lat(2)] = ginput(1);
@@ -1126,7 +1126,7 @@ function cb_xsect(src,~)
     [curvelats,curvelons]=gcwaypts(lat(1),lon(1),lat(2),lon(2),100);
     
     % plot great-circle path
-    xs_line=plot(curvelons,curvelats,'--','linewidth',1.5,'Color',C);
+    xs_line=plot(curvelons,curvelats,'--','LineWidth',1.5,'Color',C);
     
     % plot width polygon
     [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth_km/2);
@@ -1135,8 +1135,8 @@ function cb_xsect(src,~)
     %label it: put labels offset and outside the great-circle line.
     hOffset=@(x,polarity) x+(1/75).*diff(xlim) * sign(lon(2)-lon(1)) * polarity;
     vOffset=@(x,polarity) x+(1/75).*diff(ylim) * sign(lat(2)-lat(1)) * polarity;
-    slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'Color',C.*0.8, 'fontweight','bold');
-    elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'fontweight','bold');
+    slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'Color',C.*0.8, 'FontWeight','bold');
+    elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'FontWeight','bold');
 
     [c2,mindist,mask,gcDist]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km/2,0.1);
     

@@ -31,7 +31,7 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     [curvelats,curvelons]=gcwaypts(lat(1),lon(1),lat(2),lon(2),100);
     
     % plot great-circle path
-    xs_line=plot(curvelons,curvelats,'--','linewidth',1.5,'Color',C);
+    xs_line=plot(curvelons,curvelats,'--','LineWidth',1.5,'Color',C);
     
     % plot width polygon
     [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth_km/2);
@@ -40,8 +40,8 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     %label it: put labels offset and outside the great-circle line.
     hOffset=@(x,polarity) x+(1/75).*diff(xlim) * sign(lon(2)-lon(1)) * polarity;
     vOffset=@(x,polarity) x+(1/75).*diff(ylim) * sign(lat(2)-lat(1)) * polarity;
-    slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'Color',C.*0.8, 'fontweight','bold');
-    elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'fontweight','bold');
+    slabel = text(hOffset(lon(1),-1),vOffset(lat(1),-1),zans.startlabel,'Color',C.*0.8, 'FontWeight','bold');
+    elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'FontWeight','bold');
 
     % mask so that we can plot original quakes in original positions
     mask=polygon_filter(plon,plat,catalog.Longitude,catalog.Latitude,'inside');
@@ -64,7 +64,7 @@ function [lon, lat,h] = get_endpoints(ax,C)
     % pick first point
     [lon, lat] = ginput(1);
     hold on; 
-    h=plot(ax,lon,lat,'x','linewidth',2,'MarkerSize',5,'Color',C);
+    h=plot(ax,lon,lat,'x','LineWidth',2,'MarkerSize',5,'Color',C);
     
     % pick second point
     [lon(2), lat(2)] = ginput(1);

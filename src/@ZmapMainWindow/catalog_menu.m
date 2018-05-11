@@ -14,7 +14,7 @@ function catalog_menu(obj, force)
     %   - - -
     %   Combine Catalogs -
     %   Compare Catalogs -
-    %   Save Current Catalog - save as a ZmapCatdalog (.mat) or a v6 or v7+ ASCII table (.dat)
+    %   Save Current Catalog - save as a ZmapCatalog (.mat) or a v6 or v7+ ASCII table (.dat)
     %   - - -
     %   Stats -
     %   Get/Load Catalog - 

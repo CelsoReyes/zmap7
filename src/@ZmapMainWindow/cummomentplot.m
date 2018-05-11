@@ -1,5 +1,5 @@
 function cummomentplot(obj,tabgrouptag)
-    %CUMMOMENTPLOT plot the Cumulative Moment into the specifed tab group
+    %CUMMOMENTPLOT plot the Cumulative Moment into the specified tab group
     
     Tags.xs = 'CumMom xs contextmenu';
     Tags.bg = 'CumMom bg contextmenu';
@@ -27,7 +27,7 @@ function cummomentplot(obj,tabgrouptag)
     % plot the main catalog
     Xs=obj.catalog.Date;
     [~, Ys, ~] = calc_moment(obj.catalog);
-    p=line(ax,Xs,Ys,'linewidth',2.5,...
+    p=line(ax,Xs,Ys,'LineWidth',2.5,...
         'Tag','catalog','DisplayName','catalog','color','k');
     p.UIContextMenu=cln;
     grid(ax,'on');
@@ -52,7 +52,7 @@ function cummomentplot(obj,tabgrouptag)
     
     obj.plot_xsections(@xsplotter, 'Xsection cummomplot');
 
-    yl=ylabel(ax,'Cummulative Moment');
+    yl=ylabel(ax,'Cumulative Moment');
     yl.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
     xlabel(ax,'Time');
@@ -83,13 +83,13 @@ function cummomentplot(obj,tabgrouptag)
         h=findobj(ax,'DisplayName',xs.name,'-and','Type','line');
         if isempty(h)
         [~, vmom, ~] = calc_moment(xscat);
-        h=line(ax,xscat.Date, vmom,'linewidth',1.5,'DisplayName',xs.name,...
+        h=line(ax,xscat.Date, vmom,'LineWidth',1.5,'DisplayName',xs.name,...
             'Tag',['Xsection cummomplot ' xs.name],'Color',xs.color,...
             'UIContextMenu',cxs);
         else
             if ~isequal(xscat.Date,h.XData)
                 [~, vmom, ~] = calc_moment(xscat);
-                set(h,'XData',xscat.Date, 'YData', vmom,'linewidth',1.5,'Color',xs.color);
+                set(h,'XData',xscat.Date, 'YData', vmom,'LineWidth',1.5,'Color',xs.color);
             else
                 set(h,'Color',xs.color);
             end

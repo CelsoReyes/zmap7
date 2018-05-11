@@ -2,7 +2,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     % SELECTSEGMENTSUSINGMOUSE tracks user mouse movements to define a great-circle line segment
     % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, AXUNITS, DISPUNITS, COLOR) where AX is the axis in which to
     % draw your line segment.  AXUNITS is the distance units of the axis (either 'deg' or 'km').
-    % If axis is deg, then the line sement is drawn as the great-circle line.  Otherwise, it is a 
+    % If axis is deg, then the line segment is drawn as the great-circle line.  Otherwise, it is a 
     % straight line (in cartesian coords). DISPUNITS are the units in which the distance is reported
     % (either 'deg' or 'km').  color is the color in which the line segment is drawn.
     %
@@ -45,6 +45,10 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     disp('click on segment start');% . ESC aborts');
     f=gcf;
     
+    if f.CurrentCharacter==ABORTKEY
+        f.CurrentCharacter='';
+    end
+    
     TMP.aBDF = ax.ButtonDownFcn;
     TMP.fWBUF = f.WindowButtonUpFcn;
     TMP.fWBMF=f.WindowButtonMotionFcn;
@@ -58,6 +62,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     
     selected=false;
     fig.Pointer='Cross';
+    instructionTextFmt = 'Choose start point\n (x:%g, y:%g)';
     instructionText = text(nan,nan,'Choose start point','FontSize',12,...
         'FontWeight','bold','HitTest','off','BackgroundColor','w');
     
@@ -85,8 +90,6 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     end
     disp('started!')
     % set center using ginput, which reads the button down
-    b=0;
-    
     
     b=f.CurrentCharacter;
     if b==ABORTKEY
@@ -95,6 +98,8 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         f.WindowButtonUpFcn=TMP.fWBUF;
         ax.ButtonDownFcn=TMP.aBDF;
         fig.Pointer='arrow';
+        delete(instructionText);
+        delete(h);
         error('Aborting segment creation'); %to calling routine: catch me!
     end
     
@@ -122,7 +127,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         y1=cp(1,2);
         h=plot(ax,[x1;x1], [y1;y1], 'o:','MarkerSize',15,'color','k',...
             'MarkerFaceColor',color,'MarkerEdgeColor','k',...
-            'linewidth',2,'DisplayName','Choose Xsection');
+            'LineWidth',2,'DisplayName','Choose Xsection');
         started=true;
         
         % write the text
@@ -134,7 +139,8 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
             case 'km'
                 f.WindowButtonMotionFcn=@moveMouse;
         end
-        instructionText.String='Choose end point';
+        instructionTextFmt = 'Choose end point\n (x:%g, y:%g)';
+        instructionText.String=sprintf(instructionTextFmt,x1,y1);
     end
     
     function v = range_limited(v, minmax)
@@ -154,9 +160,9 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
 
         dx=abs(diff(xl))/100;
         if (x > mean(xl)) 
-            set(instructionText,'HorizontalAlignment','right','Position',[x-dx y 0]);
+            set(instructionText,'HorizontalAlignment','right','Position',[x-dx y 0],'String',sprintf(instructionTextFmt,x,y));
         else
-            set(instructionText,'HorizontalAlignment','left','Position',[x+dx y 0]);
+            set(instructionText,'HorizontalAlignment','left','Position',[x+dx y 0],'String',sprintf(instructionTextFmt,x,y));
         end
     end
     
@@ -175,9 +181,9 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         % update instruction text
         dx=abs(diff(ax.XLim))/100;
         if (x2 > mean(ax.XLim)) 
-            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0]);
+            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         else
-            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0]);
+            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         end
     end
     
@@ -196,9 +202,9 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         % update instruction text
         dx=abs(diff(ax.XLim))/100;
         if (x2 > mean(ax.XLim)) 
-            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0]);
+            set(instructionText,'HorizontalAlignment','right','Position',[x2-dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         else
-            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0]);
+            set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         end
     end
     
