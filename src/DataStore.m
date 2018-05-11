@@ -2,13 +2,29 @@ classdef DataStore<handle
     % DATASTORE is an adapter from zmap to the MapSeis Datastore
     
     properties
+        % gives the type determined by the decluster algorithmen
+        % (1:single event, 2: mainshock, 3:aftershock and 0: unclassified)
         EventType
+        
+        % sets the number of the cluster a event belongs to (is NaN for single event)
         ClusterNR
+        
+        % is a 3 element vector and sets which eventtypes are used in the datastore 
+        % [singleToggle mainshockToggle aftershockToggle]
         TypeUsed
-        ShowUnclassified
-        catalog
+        
+        ShowUnclassified = true 
+        catalog % earthquake catalog
+        
+        % optional field and is used to store additional info of the decluster algorithmen
         DeclusterMetaData
-        NumberedUserData
+        
+        UserData = containers.Map % User-specific settings eg filter settings etc
+         
+        %filled with UserData names which contain data which is
+		%available for each catalog entry (those events will be automatically
+		%filtered in case filtered data is edited)
+        NumberedUserData={};
     end
     
     methods

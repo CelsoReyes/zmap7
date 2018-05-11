@@ -61,9 +61,9 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     end
     
     if exist(code,'file')
-        fid = fopen(code,'r');
-        uOutput = convert_from_fdsn_text(fid);
-        fclose(fid);
+        %fid = fopen(code,'r');
+        uOutput = convert_from_fdsn_text(fileread(code));
+        %fclose(fid);
         return;
     end
     
@@ -151,6 +151,10 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
             time_format = 'HH:mm:ss.SSSSSS';
         else
             time_format ='HH:mm:ss';
+        end
+        
+        if endsWith(vals{2},'Z')
+            time_format = [time_format, '''Z'''];
         end
         
         if ismember('T', vals{time_pos}) % FDSN date standard

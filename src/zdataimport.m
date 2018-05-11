@@ -10,7 +10,7 @@ function [catalog, OK] = zdataimport()
     % start filters
     
     [catalog] = import_start(fullfile(ZmapGlobal.Data.hodi, 'importfilters'));
-    if isnan(catalog)
+    if isnumeric(catalog) && isnan(catalog)
         % import cancelled / failed
         return
     end
