@@ -467,8 +467,8 @@ classdef ZmapMainWindow < handle
                     error('Supposed to delete tab, but gco is not what is expected');
                 end
                 drawnow
-                xsec.DeleteFcn();
-                xsec.DeleteFcn=@do_nothing;
+                %xsec.DeleteFcn();
+                %xsec.DeleteFcn=@do_nothing;
                 disp(['deleting ' xsec.name]);
                 delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' xsec.name '$']))
                 obj.xsec_remove(xsec.name);
@@ -500,7 +500,9 @@ classdef ZmapMainWindow < handle
                 obj.xsec_add(title,xsec);
             end
             ax= findobj(gco,'Type','axes','-and','-regexp','Tag','Xsection strikeplot.*');
-            xsec.plot_events_along_strike(ax,obj.xscats(title),true);
+            ax.UserData.cep.catalogFcn=@()obj.xscats(xsec.name);
+            ax.UserData.cep.update();%
+            % xsec.plot_events_along_strike(ax,obj.xscats(title),true);
             ax.Title=[];
             obj.replot_all('CatalogUnchanged');
         end

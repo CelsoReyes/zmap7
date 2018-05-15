@@ -71,8 +71,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     
     % TODO consider using matlab.mixin.CustomDisplay
     properties
-        Date datetime        % datetime
-        % Nanosecond  % additional precision, if needed
+        Date datetime        % date and time of event (capable of storing data to microseconds)
         Longitude double   % Longitude (Deg) of each event
         Latitude  double   % Latitude (Deg) of each event
         Depth double      % Depth (km) of events 

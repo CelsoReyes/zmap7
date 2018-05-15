@@ -1,4 +1,4 @@
-classdef XSection
+classdef XSection < handle
     % XSECTION create and manage cross-sections. Location, labels, plotting attributes.
     %
     %   XSECTION 
@@ -20,15 +20,18 @@ classdef XSection
     %   %... OR ... instead...
     %   obj.plot_events_along_strike(ax,c2, true); %plot a ZmapXsectionCatalog without projecting
     
-    properties
+    properties(SetObservable, AbortSet)
         width_km (1,1) double % width of cross section, in kilometers
         startpt (1,2) double % [lat lon] start point for cross section
         endpt (1,2) double % [lat lon] end point for cross section
+        startlabel char % label for start point
+        endlabel char % label for end point
+    end
+    
+    properties
         color % color used when plotting cross section
         linewidth (1,1) {mustBePositive} = 3 % line width for cross section
         markersize (1,1) {mustBePositive} = 10 % size of the end marker
-        startlabel char % label for start point
-        endlabel char % label for end point
         curvelons (:,1) double % longitudes that define the cross-section curve
         curvelats (:,1) double % latitudes that define the cross-section curve
         polylats (:,1) double % latitudes that define the polygon containing points within width of curve
@@ -36,10 +39,21 @@ classdef XSection
         DeleteFcn function_handle % function that will remove the plotted polygon from the map
         
     end
+    
+    properties(Access=private)
+        handles=gobjects(0);
+    end
+    
     properties(Dependent)
         length_km % length of cross section [read only]
         azimuth % direction 
         name
+    end
+    
+    events
+        XsecChanged; % event to send that will force a redraw.
+        LabelChanged; %
+        Deleted;
     end
     
     methods
@@ -73,15 +87,19 @@ classdef XSection
                 obj.startpt = startpt;
                 obj.endpt = endpt;
             end
-            % get waypoints along the great-circle curve
-            [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
+            addlistener(obj,'width_km','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj,'startpt','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj,'endpt','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj,'startlabel','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj,'endlabel','PostSet',@XSection.handlePropertyEvents);
             
-            % get width polygon
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
+            obj.recalculate_xsec_curve();
+            obj.recalculate_boundary();
+            plot_mapview(obj, ax);
             % mask so that we can plot original quakes in original positions
-           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
+           % [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
+            obj.DeleteFcn = @(~,~)obj.delete_graphics();
+            %obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
             
         end
         
@@ -95,18 +113,7 @@ classdef XSection
             % obj = obj.CHANGE_WIDTH( WIDTH_KM, AZ)
             
             obj.width_km=w;
-            
-            % get waypoints along the great-circle curve
-            [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
-            
-            % get width polygon
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
-            obj.DeleteFcn();
-            
-            % mask so that we can plot original quakes in original positions
-           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
-            
+
         end
             
         function obj = change_color(obj, color, container)
@@ -127,11 +134,7 @@ classdef XSection
                 set(get(ax,'YAxis'),'color',color .* 0.5);
             end
             set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','histogram'), 'EdgeColor',color);
-            
-            %obj.DeleteFcn();
-            %% mask so that we can plot original quakes in original positions
-           %[xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-           % obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
+
         end
         
         function obj = swap_ends(obj, ax)
@@ -139,17 +142,6 @@ classdef XSection
             xxx = obj.startpt;
             obj.startpt = obj.endpt;
             obj.endpt = xxx;
-            
-            % get waypoints along the great-circle curve
-            [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),100);
-            
-            % get width polygon
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
-            
-            obj.DeleteFcn();
-            % mask so that we can plot original quakes in original positions
-           [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
-            obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); 
         end
             
         function mask = inside(obj, catalog)
@@ -183,20 +175,9 @@ classdef XSection
                     obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
                 catch ME
                     warning(ME.message)
-                    % do not set segment
                 end
             else
                 error('expecting axes to be able to choose endpoints');
-                % get endpoints via dialog box
-                %{
-                zdlg=ZmapDialog([]);
-                zdlg.AddBasicEdit('startpt',['Starting point "', obj.startlabel, '" : [lat lon]'],[nan nan],...
-                    'First point');
-                zdlg.AddBasicEdit('endpt',['Ending point "', obj.startlabel, '" : [lat lon]']', [nan nan], ...
-                    'Other endpoint');
-                [res, ok]=zdlg.Create('Choose start and end points for cross section');
-                assert(ok, 'Endpoints not set');
-                %}
             end
             
         end
@@ -229,8 +210,6 @@ classdef XSection
                 'DisplayName','');
             %label it: put labels offset and outside the great-circle line.
             
-            l2r_orientation = obj.startpt(2) <= obj.endpt(2)
-            u2d_orientation = obj.startpt(1) >= obj.endpt(1)
             xs_slabel = text(ax, obj.startpt(2), obj.startpt(1),obj.startlabel,...
                 'Color',obj.color.*0.8, 'FontWeight','bold',...
                 'BackgroundColor','w', 'EdgeColor',obj.color,...
@@ -242,24 +221,9 @@ classdef XSection
                 'BackgroundColor','w', 'EdgeColor',obj.color,...
                 'Tag',['Xsection End ' obj.name]);
             
-            % avoid overlapping the label with the plot
-            if u2d_orientation
-                dy = 1;
-            else
-                dy = -1;
-            end
-            dx = 1.5;
-            if l2r_orientation
-                xs_slabel.Position([1 2]) = xs_slabel.Position([1 2]) + [-dx dy].*xs_slabel.Extent([3 4]);
-                xs_slabel.HorizontalAlignment = 'right';
-                xs_elabel.Position([1 2]) = xs_elabel.Position([1 2]) + [dx -dy].*xs_elabel.Extent([3 4]);
-                xs_elabel.HorizontalAlignment = 'left';
-            else
-                xs_slabel.Position([1 2]) = xs_slabel.Position([1 2]) + [dx dy].*xs_slabel.Extent([3 4]);
-                xs_slabel.HorizontalAlignment = 'left';
-                xs_elabel.Position([1 2]) = xs_elabel.Position([1 2]) + [-dx -dy].*xs_elabel.Extent([3 4]);
-                xs_elabel.HorizontalAlignment = 'right';
-            end
+            obj.add_graphics(ax,xs_line, xs_slabel, xs_elabel, xs_poly);
+            obj.update_label('startlabel',ax);
+            obj.update_label('endlabel',ax);
             
             ax.XLimMode=prev_xlimmode;
             ax.YLimMode=prev_ylimmode;
@@ -306,8 +270,8 @@ classdef XSection
                 ed = st + nPts;
                 lolaz( st : ed , 3) = zs_km(n);
             end
-            name=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
-            gr=ZmapVGrid(name,lolaz);
+            gname=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
+            gr=ZmapVGrid(gname, lolaz);
         end
         
         function s = get.name(obj)
@@ -335,9 +299,102 @@ classdef XSection
             disp(info(obj));
         end
         
-
+        function recalculate_boundary(obj)
+            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
+        end
         
+        function recalculate_xsec_curve(obj)
+            % RECALCULATE if the width, startpoint, or endpoint changes, then recalculate boundaries
+            % get waypoints along the great-circle curve
+            nPoints  = 100;
+            [obj.curvelats, obj.curvelons]=gcwaypts(obj.startpt(1), obj.startpt(2), obj.endpt(1),obj.endpt(2),nPoints);
+        end
+
+        function delete(obj)
+           graphicsToDelete = isvalid(obj.handles(:,2:end));
+           delete(obj.handles(graphicsToDelete));
+           notify(obj, 'Deleted');
+        end
     end % METHODS
+    
+    methods(Access=private)
+        function add_graphics(obj, ax,hLine, hStart, hEnd, hPoly)
+            obj.handles(end+1,1:5)=[ax, hLine, hStart, hEnd, hPoly];
+        end
+        function delete_graphics(obj, ax)
+            if exist('ax','var')
+                thisRow = obj.handles(:,1)==ax;
+            else
+                thisRow= true(size(obj.handles,1),1);
+            end
+            delete(obj.handles(thisRow, 2:5 ));
+            obj.handles(thisRow)=[];
+        end
+
+        function update_label(obj,whichLabel, ax)
+            % update the label names as well as their position relative to the xsection
+            
+            if ~exist('ax','var')
+                i=true(size(obj.handle,1),1);
+            else
+                i = obj.handles(:,1)==ax;
+            end
+            
+            
+            l2r_orientation = obj.startpt(2) <= obj.endpt(2);
+            u2d_orientation = obj.startpt(1) >= obj.endpt(1);
+            
+            % avoid overlapping the label with the plot
+            if u2d_orientation
+                dy = 1;
+            else
+                dy = -1;
+            end
+            dx = 1.5;
+            
+            switch whichLabel
+                case 'startlabel'
+                    mylabels = obj.handles(i,3);
+                    
+                    for n=1:numel(mylabels)
+                        mylabel=mylabels(n);
+                        if l2r_orientation
+                            mylabel.Position([1 2]) = mylabel.Position([1 2]) + [-dx dy].* mylabel.Extent([3 4]);
+                            mylabel.HorizontalAlignment = 'right';
+                        else
+                            mylabel.Position([1 2]) = mylabel.Position([1 2]) + [dx dy].*mylabel.Extent([3 4]);
+                            mylabel.HorizontalAlignment = 'left';
+                        end
+                    end
+                    set(mylabel,'Tag',['Xsection Start ' obj.name]);
+                    
+                case 'endlabel'
+                    mylabels = obj.handles(i,4);
+                    for n=1:numel(mylabels)
+                        mylabel=mylabels(n);
+                        if l2r_orientation
+                            mylabel.Position([1 2]) = mylabel.Position([1 2]) + [dx -dy].*mylabel.Extent([3 4]);
+                            mylabel.HorizontalAlignment = 'left';
+                        else
+                            mylabel.Position([1 2]) = mylabel.Position([1 2]) + [-dx -dy].*mylabel.Extent([3 4]);
+                            mylabel.HorizontalAlignment = 'right';
+                        end
+                    end
+                    set(mylabel,'Tag',['Xsection End ' obj.name]);
+            end
+        end
+        
+        function update_xsec_plots(obj)
+            polys = obj.handles(:,5);
+            lines = obj.handles(:,2);
+            set(polys,'XData',obj.polylons, ...
+                'YData',obj.polylats,...
+                'Color',obj.color,...
+                'Tag',['Xsection Area ' obj.name]);
+            set(lines,'XData',obj.curvelons, 'YData', obj.curvelats,'Color', obj.color,...
+                'Tag',['Xsection ' obj.name]);
+        end
+    end
     
     methods(Static)
         
@@ -440,6 +497,28 @@ classdef XSection
             end
         end
         
+        
+        function handlePropertyEvents(src,ev)
+            obj = ev.AffectedObject;
+            switch src.Name
+                case 'width_km'
+                    obj.recalculate_boundary();
+                    obj.update_xsec_plots();
+                    notify(obj,'XsecChanged');
+                    
+                case {'startpt','endpt'}
+                    obj.recalculate_xsec_curve();
+                    obj.recalculate_boundary();
+                    obj.update_xsec_plots();
+                    obj.update_label(obj, 'startlabel');
+                    obj.update_label(obj, 'endlabel');
+                    notify(obj,'XsecChanged');
+                    
+                case {'startlabel','endlabel'}
+                    obj.update_label(obj, src.Name);
+                    
+            end
+        end
     end
     
     

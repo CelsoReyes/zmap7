@@ -1,4 +1,4 @@
-function [uOutput] = import_fdsn_event(nFunction, code, varargin)
+function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     % Import or fetch FDSN event data
     %
     % to get basic help string:
@@ -60,10 +60,11 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         return
     end
     
+    % load FDSN text details that had been saved to a files
     if exist(code,'file')
         %fid = fopen(code,'r');
         uOutput = convert_from_fdsn_text(fileread(code));
-        if mean(uOutput.Depth >= 1000) 
+        if mean(uOutput.Depth >= 1000)
             warning('depths look like they are in m instead of km! scaling')
             uOutput.Depth= uOutput.Depth ./ 1000;
         end
@@ -112,14 +113,30 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
     hf = matlab.net.http.HeaderField('Content-Encoding','gzip');
     %options = weboptions('timeout',120); %seconds
     options = weboptions('timeout',120,'HeaderFields',hf); %seconds
-
+    
     disp(['sending request to:' baseurl 'query  with options'])
     disp(varargin)
-    data = webread([baseurl 'query'], varargin{:},'format','text',options);
-    %data = webread([baseurl 'query'], varargin{:},'format','xml',options);
-    uOutput = convert_from_fdsn_text(data);
     
-    function uOutput = convert_from_fdsn_text(data)
+    try
+        data = webread([baseurl 'query'], varargin{:},'format','text',options);
+    catch ME
+        switch ME.identifier
+            %case 'MATLAB:webservices:CopyContentToDataStreamError'
+            otherwise
+                txt = 'An  error occurred attempting to reach the FDSN web services';
+                errordlg(sprintf('%s\n\n%s\n\nidentifier: ''%s''',txt,ME.message,ME.identifier),...
+                    'Error retrieving data');
+        end
+        uOutput=[];
+        ok=false;
+        return
+    end
+    
+    
+    %data = webread([baseurl 'query'], varargin{:},'format','xml',options);
+    [uOutput, ok] = convert_from_fdsn_text(data);
+    
+    function [uOutput,ok] = convert_from_fdsn_text(data)
         % the FDSN text format is something like:
         % EventID|Time|Latitude|Longitude|Depth/km|
         % Author|Catalog|Contributor|ContributorID|
@@ -128,6 +145,12 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         % remarks start with #, so the first line is actually #EventID|time, etc..
         % spacing in header line is not guaranteed
         
+        if isempty(data)
+            uOutput = ZmapCatalog('nodata');
+            ok=false;
+            return
+        end
+        ok=true;
         % scan only the relevant fields
         
         %This version makes no assumptions other than the field titles it expects.
@@ -135,66 +158,35 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         newl = sprintf('\n');
         newlines = find(data==newl,2);
         headerline =data(1:newlines(1)-1);
-        firstrow = data(newlines(1)+1:newlines(2)-1);
         hdrs=lower(strip(split(headerline,'|')));
-        vals=strip(split(firstrow,'|'));
-       
-        mappings = containers.Map;
+        firstrow = data(newlines(1)+1:newlines(2)-1);
+        
+        mappings = determine_field_mappings(hdrs, firstrow);
+        
         midx = containers.Map;
-        
-        time_pos = find(strcmp(hdrs,'time'));
-        
-        % look at format for the time field
-        if ismember('/',vals{time_pos}) 
-            date_format = 'yyyy/MM/dd';
-        else
-            date_format = 'yyyy-MM-dd'; %FDSN date standard
-        end
-        
-        if ismember('.',vals{time_pos})
-            time_format = 'HH:mm:ss.SSSSSS';
-        else
-            time_format ='HH:mm:ss';
-        end
-        
-        if endsWith(vals{2},'Z')
-            time_format = [time_format, '''Z'''];
-        end
-        
-        if ismember('T', vals{time_pos}) % FDSN date standard
-            mappings('time')=['%{', date_format, '''T''', time_format, '}D'];
-        else
-            mappings('time')=['%{', date_format, ' ', time_format, '}D'];
-        end
-        
-        mappings('latitude')='%f';
-        mappings('longitude')='%f';
-        mappings('depth/km')='%f';
-        mappings('magnitude')='%f';
-        mappings('magtype')='%s';
-        
         fmtstr=[];
         next_idx = 1;
         for ij=1:numel(hdrs)
-                
+            
             field = hdrs{ij};
             if (strcmp(field,'longtitude')) %SCEDC mispelling
                 hdrs{ij} = 'longitude';
                 field = hdrs{ij};
             end
-           if mappings.isKey(field)
-               fmtstr=[fmtstr, mappings(field)]; %field of interest
-               midx(field) = next_idx;
-               next_idx = next_idx + 1;
-           else
-               fmtstr=[fmtstr,'%*s']; % ignore field
-           end
+            if mappings.isKey(field)
+                fmtstr=[fmtstr, mappings(field)]; %field of interest
+                midx(field) = next_idx;
+                next_idx = next_idx + 1;
+            else
+                fmtstr=[fmtstr,'%*s']; % ignore field
+            end
         end
         try
             mData = textscan(data,fmtstr,'Delimiter','|','Headerlines',1,'MultipleDelimsAsOne',false);
         catch ME
             disp('unable to scan data');
             disp(ME)
+            ok=false;
         end
         
         
@@ -214,6 +206,48 @@ function [uOutput] = import_fdsn_event(nFunction, code, varargin)
         uOutput=zc;
         %%
         
+    end
+    
+end
+
+function  mappings = determine_field_mappings(hdrs, firstrow)
+    vals=strip(split(firstrow,'|'));
+    
+    
+    mappings = containers.Map;
+    
+    mappings('latitude')='%f';
+    mappings('longitude')='%f';
+    mappings('depth/km')='%f';
+    mappings('magnitude')='%f';
+    mappings('magtype')='%s';
+    
+    % the TIME could be in one of several different formats. Figure out which one.
+    time_pos = find(strcmp(hdrs,'time'));
+    
+    % look at format for the date
+    if ismember('/',vals{time_pos})
+        date_format = 'yyyy/MM/dd';
+    else
+        date_format = 'yyyy-MM-dd'; %FDSN date standard
+    end
+    
+    % look at format for time
+    if ismember('.',vals{time_pos})
+        time_format = 'HH:mm:ss.SSSSSS';
+    else
+        time_format ='HH:mm:ss';
+    end
+    
+    if endsWith(vals{2},'Z')
+        time_format = [time_format, '''Z'''];
+    end
+    
+    % look at separator between date & time fields
+    if ismember('T', vals{time_pos}) % FDSN date standard
+        mappings('time')=['%{', date_format, '''T''', time_format, '}D'];
+    else
+        mappings('time')=['%{', date_format, ' ', time_format, '}D'];
     end
     
 end

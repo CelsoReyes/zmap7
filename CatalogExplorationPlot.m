@@ -68,6 +68,7 @@ classdef CatalogExplorationPlot < handle
             obj.scatterContextMenu(obj.myscatter, tag);
             grid(obj.ax,'on');
             box(obj.ax,'on');
+            obj.ax.UserData.cep = obj;
         end
         
         function update(obj, specific)
@@ -81,13 +82,38 @@ classdef CatalogExplorationPlot < handle
             c=obj.catalogFcn();
             [obj.curview(1), obj.curview(2)] = view(obj.ax);
             if ~exist('specific','var')
-                set( obj.myscatter,...
-                    'XData',c.(obj.x_by),...
-                    'YData',c.(obj.y_by),...
-                    'ZData',c.(obj.z_by),...
-                    'SizeData',obj.sizeFcn(c.(obj.size_by)),...
-                    'CData',obj.colorFcn(c.(obj.color_by))...
-                    );
+                switch obj.color_by
+                    case '-none-'
+                         cdata=obj.colorFcn(1);
+                         if ~isequal(size(cdata),[1,3])
+                            cdata = [0 0 0];
+                         end
+                    otherwise
+                        cdata= obj.colorFcn(c.(obj.color_by));
+                end
+                switch obj.size_by
+                    case 'Single Size'
+                        sdata=obj.sizeFcn(1);
+                    otherwise
+                        sdata=obj.sizeFcn(c.(obj.size_by));
+                end
+                try
+                    set( obj.myscatter,...
+                        'XData',c.(obj.x_by),...
+                        'YData',c.(obj.y_by),...
+                        'ZData',c.(obj.z_by),...
+                        'SizeData',sdata,...
+                        'CData',cdata...
+                        );
+                catch ME
+                    switch me.identifier
+                        case 'MATLAB:hg:shaped_arrays:VectorDataType'
+                            % TOFIX 
+                            error('problem changing to date axes and back.')
+                        otherwise
+                            throwAsCaller(ME);
+                    end
+                end
             else
                 switch specific
                     case 'x_by'
