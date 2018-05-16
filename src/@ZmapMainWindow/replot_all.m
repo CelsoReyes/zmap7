@@ -7,6 +7,7 @@ function replot_all(obj,metaProp,eventData)
     end
     disp(['*** REPLOTTING BECAUSE: ' eventData.EventName]);
     
+    %warning('ReplotStack')
     md=[];
     k={};
     
@@ -14,7 +15,7 @@ function replot_all(obj,metaProp,eventData)
     switch eventData.EventName
         case 'XsectionAdded'
             disp('add a cross section to plots')
-            k=obj.xsections.keys;
+            k=obj.XSectionTitles;
             if numel(k)>1
                 k = k(~ismember(k,get(obj.xsgroup.Children,'Title')));
             end
@@ -22,11 +23,15 @@ function replot_all(obj,metaProp,eventData)
         case {'XsectionRemoved'}
             disp('remove cross section from plots')
             
+        case {'XsectionChanged'}
+            display('replot cross sections')
+            k=obj.XSectionTitles;
+            
         case 'XsectionEmptied'
             
         case {'CatalogChanged','ReplotAll','DateRangeChanged'}
             disp('replot evererything touched by catalog')
-            k=obj.xsections.keys;
+            k=obj.XSectionTitles;
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             [obj.catalog, md, ~, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
             evs=findobj(findobj(obj.fig,'Tag','mainmap_tab'),'Tag','all events');
@@ -40,7 +45,7 @@ function replot_all(obj,metaProp,eventData)
             obj.plotmainmap();
             
         otherwise
-            k=obj.xsections.keys;
+            k=obj.XSectionTitles;
             disp('uncaught event')
     end
     
@@ -87,16 +92,16 @@ end
 function plot_xsection(obj, k, currcatsummary,md)
     % plot into the xsection tab area
     hold on
-    xs=obj.xsections(k);
+    idx = strcmp(obj.XSectionTitles,k);
     
     % only reproject if the catalog is changed since memorizing
-    if ~isequal(currcatsummary,obj.xscatinfo(k))
+    %if ~isequal(currcatsummary,obj.xscatinfo(k))
         
         % store the projected catalog. only events within the strip [ignoring shape] are stored
         if ~isempty(md)
-            obj.xscats(k)=xs.project(obj.rawcatalog.subset(md));
+            obj.xscats(k)=obj.CrossSections(idx).project(obj.rawcatalog.subset(md));
         else
-            obj.xscats(k)=xs.project(obj.rawcatalog);
+            obj.xscats(k)=obj.CrossSections(idx).project(obj.rawcatalog);
         end
         
         % store the information about the current catalog used to project
@@ -105,8 +110,8 @@ function plot_xsection(obj, k, currcatsummary,md)
         % plot
         mytab=findobj(obj.xsgroup,'Title',k,'-and','Type','uitab');
         myax=findobj(mytab,'Type','axes');
-        xs.plot_events_along_strike(myax,obj.xscats(k),false);
+        obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(k),false);
         myax.Title=[];
-    end
+    %end
 end
 

@@ -30,19 +30,10 @@ function cb_chwidth(obj, xsec)
     defaultanswer={num2str(xsec.width_km)};
     answer=inputdlg(prompt,name,numlines,defaultanswer);
     if ~isempty(answer)
-        xsec=xsec.change_width(str2double(answer),axm);
-        obj.xsec_add(mytitle, xsec);
+        xsec.change_width(str2double(answer),axm);
     end
     xsec.plot_events_along_strike(ax,obj.xscats(mytitle),true);
     ax.Title=[];
-    obj.replot_all('CatalogUnchanged');
-end
-
-function cb_chcolorb(obj, xsec)
-    color=uisetcolor(xsec.color,['Color for ' xsec.startlabel '-' xsec.endlabel]);
-    xsec=xsec.change_color(color,axm);
-    mytab.ForegroundColor = xsec.color;
-    obj.xsections(mytitle)=xsec;
     obj.replot_all('CatalogUnchanged');
 end
 
@@ -51,14 +42,4 @@ function cb_cropToXS(obj, xsec)
     obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
     obj.shapeChangedFcn(oldshape, obj.shape);
     obj.replot_all();
-end
-
-function deltab(s,v,obj, xsec)
-    % cross section "knows" how to delete itself from the main map. 
-    xsec.DeleteFcn();
-    xsec.DeleteFcn='';
-    
-    delete(mytab);
-    obj.xsec_remove(mytitle);
-    obj.replot_all('CatalogUnchanged');
 end

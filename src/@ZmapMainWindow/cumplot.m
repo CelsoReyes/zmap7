@@ -41,7 +41,7 @@ function cumplot(obj, tabgrouptag)
     end
     
     % remove any cross-sections that are no longer exist
-    k = obj.xsections.keys;
+    k = obj.XSectionTitles;
     m=findobj(ax,'Type','line','-and','-not','Tag','catalog'); % plotted cross sections
     if ~isempty(m)
         notrep = ~ismember({m.DisplayName},k);
@@ -98,10 +98,10 @@ function cumplot(obj, tabgrouptag)
     function cb_xstimeplot(~,~)
         % CB_XSTIMEPLOT shows the TIMEPLOT for the currently selected cross-section
         myName = get(gco,'DisplayName');
-        xs = obj.xsections(myName);
+        idx = strcmp(obj.XSectionTitles,myName);
         ZG=ZmapGlobal.Data;
-        ZG.newt2=obj.catalog.subset(xs.inside(obj.catalog));
-        ZG.newt2.Name=sprintf('Events within %g km of %s',xs.name);
+        ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
+        ZG.newt2.Name=sprintf('Events within %g km of %s',obj.CrossSections(idx).name);
         timeplot();
     end
     

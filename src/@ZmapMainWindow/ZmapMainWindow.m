@@ -3,10 +3,12 @@ classdef ZmapMainWindow < handle
     
     properties(SetObservable)
         catalog ZmapCatalog % event catalog
+        bigEvents
         shape {mustBeShape} = ShapeGeneral % used to subset catalog by selected area
         Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange datetime % used to subset the catalog with date ranges
         colorField=ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices 
+        CrossSections
     end
     
     properties
@@ -17,7 +19,6 @@ classdef ZmapMainWindow < handle
         xsgroup;
         maingroup; % maps will be plotted in here
         maintab; % handle to tab where the main map is plotted
-        xsections; % contains XSection 
         xscats; % ZmapXsectionCatalogs corresponding to each cross section
         xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
         prev_states Stack = Stack(10);
@@ -48,8 +49,12 @@ classdef ZmapMainWindow < handle
     
     properties(Dependent)
         map_axes % main map axes handle
+        XSectionTitles
     end
     
+    properties(Access=private)
+        lastXSectionCount = 0;
+    end
     events
         XsectionEmptied
         XsectionAdded
@@ -135,7 +140,6 @@ classdef ZmapMainWindow < handle
             obj.Grid=ZG.Grid;
             obj.gridopt= ZG.gridopt;
             obj.evsel = ZG.GridSelector;
-            obj.xsections=containers.Map();
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
             
@@ -189,7 +193,7 @@ classdef ZmapMainWindow < handle
             
             
             
-            if isempty(obj.xsections)
+            if isempty(obj.CrossSections)
                 set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
             end
             obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
@@ -201,8 +205,17 @@ classdef ZmapMainWindow < handle
             addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
             addlistener(obj, 'shape',     'PostSet', @(~,~)disp('**Shape Changed'));
             addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
+            addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
         end
         
+        function xst = get.XSectionTitles(obj)
+            if isempty(obj.CrossSections)
+                xst={};
+            else
+                xst =  {obj.CrossSections.name};
+            end
+        end
+            
         function attach_catalog_listeners(obj,~,~)
             % reapply listeners to this specific catalog
             addlistener(obj.catalog,'Name','PostSet',@(~,~)obj.set_figure_name);
@@ -216,6 +229,35 @@ classdef ZmapMainWindow < handle
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
             addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
+        end
+        
+        %% functions called by individual display panes to "hook into" the main window
+        function getCatalogUpdates(obj, callbackfn)
+            obj.addlistener('catalog','PostSet',callbackfn);
+        end
+        
+        function getXSectionUpdates(obj, callbackfn)
+            obj.addlistener('CrossSections','PostSet',callbackfn);
+        end
+        
+        function notifyXsectionChange(obj,prop,evt)
+            lastCount = obj.lastXSectionCount;
+            thisCount = numel(obj.CrossSections);
+            obj.lastXSectionCount= thisCount;
+            if thisCount == 0
+                notify(obj,'XsectionEmptied');
+            elseif thisCount > lastCount
+                notify(obj,'XsectionAdded');
+            elseif thisCount < lastCount
+                notify(obj,'XsectionRemoved');
+            else
+                disp('Registered a simple cross-section change');
+                notify(obj,'XsectionChanged');
+            end
+        end
+        
+        function getBigEventUpdates(obj, callbackfn)
+            % obj.addlistener('maepi','PostSet',callbackfn);
         end
         
         %% METHODS DEFINED IN DIRECTORY
@@ -288,7 +330,7 @@ classdef ZmapMainWindow < handle
             %
             % see also ZMAPANALYSISPKG
             
-            if isempty(obj.xsections)
+            if isempty(obj.CrossSections)
                 errordlg('There is no cross section to analyze. Aborting.');
                 zp=[];
                 return
@@ -303,13 +345,13 @@ classdef ZmapMainWindow < handle
             if ~exist('xsTitle','var')
                 xsTitle=obj.xsgroup.SelectedTab.Title;
             else
-                if ~any(strcmp(obj.xsections.keys,xsTitle))
+                if ~any(strcmp(obj.XSectionTitles,xsTitle))
                     warndlg(sprintf('The requested cross section [%s] does not exist. Using selected tab.',xsTitle));
                     xsTitle=obj.xsgroup.SelectedTab.Title;
                 end
             end
-            xsIndex = find(strcmp(obj.xsections.keys,xsTitle));
-            zdlg.AddBasicPopup('xsTitle', 'Cross Section:', obj.xsections.keys, xsIndex, 'Choose the cross section');
+            xsIndex = find(strcmp(obj.XSectionTitles,xsTitle));
+            zdlg.AddBasicPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
             zdlg.AddEventSelectionParameters('evsel', ZG.ni, ZG.ra, 1);
             zdlg.AddBasicEdit('x_km','Horiz Spacing [km]', 5,'Distance along strike, in kilometers');
             zdlg.AddBasicEdit('z_min','min Z [km]', z_min,'Shallowest grid point');
@@ -322,7 +364,8 @@ classdef ZmapMainWindow < handle
             end
             
             zs_km = linspace(zans.z_min, zans.z_max, zans.z_delta);
-            gr = obj.xsections(xsTitle).getGrid(zans.x_km, zs_km);
+            idx=strcmp(xsTitle,obj.XSectionTitles);
+            gr = obj.CrossSections(idx).getGrid(zans.x_km, zs_km);
             zp = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
             
         end
@@ -411,7 +454,6 @@ classdef ZmapMainWindow < handle
             if isempty(xsec), return, end
             mytitle=xsec.name;
             
-            obj.xsec_add(mytitle, xsec);
             
             mytab=findobj(obj.fig,'Title',mytitle,'-and','Type','uitab');
             if ~isempty(mytab)
@@ -440,12 +482,14 @@ classdef ZmapMainWindow < handle
             % plot the 
             ax=axes(mytab,'Units','normalized','Position',obj.XSAxPos,'YDir','reverse');
             %xsec.plot_events_along_strike(ax,obj.catalog);
+            obj.xsec_add(mytitle, xsec);
             xsec.plot_events_along_strike(ax,obj.xscats(mytitle));
             ax.Title=[];
             
+            
             % make this the active tab
             mytab.Parent.SelectedTab=mytab;
-            obj.replot_all();
+            %obj.replot_all();
          
         end
         
@@ -459,6 +503,7 @@ classdef ZmapMainWindow < handle
         function cb_deltab(obj, src,~, xsec)
             prevPtr = obj.fig.Pointer;
             obj.fig.Pointer='watch';
+            mytitle = get(gco,'Title');
             try
                 
                 if strcmp(get(gco,'Type'),'uitab') && strcmp(get(gco,'Title'), xsec.name)
@@ -471,10 +516,10 @@ classdef ZmapMainWindow < handle
                 %xsec.DeleteFcn=@do_nothing;
                 disp(['deleting ' xsec.name]);
                 delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' xsec.name '$']))
-                obj.xsec_remove(xsec.name);
-                obj.replot_all('CatalogUnchanged');
-                if isempty(obj.xsections)
-                    set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+                %obj.CrossSections(strcmp(obj.XSectionTitles, mytitle))= [];
+                obj.xsec_remove(mytitle);
+                if isempty(obj.CrossSections)
+                    set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off');
                 end
                 
                 obj.fig.Pointer=prevPtr;
@@ -482,42 +527,39 @@ classdef ZmapMainWindow < handle
                 obj.fig.Pointer=prevPtr;
                 rethrow(ME);
             end
-            
-                
         end
             
         function cb_chwidth(obj,~,~)
             % change width of a cross-section
             title=get(gco,'Title');
-            xsec=obj.xsections(title);
+            idx = strcmp(title,obj.XSectionTitles);
             prompt={'Enter the New Width:'};
             name='Cross Section Width';
             numlines=1;
-            defaultanswer={num2str(xsec.width_km)};
+            defaultanswer={num2str(obj.CrossSections(idx).width_km)};
             answer=inputdlg(prompt,name,numlines,defaultanswer);
             if ~isempty(answer)
-                xsec=xsec.change_width(str2double(answer),obj.map_axes);
-                obj.xsec_add(title,xsec);
+                obj.CrossSections(idx).change_width(str2double(answer),obj.map_axes);
             end
             ax= findobj(gco,'Type','axes','-and','-regexp','Tag','Xsection strikeplot.*');
-            ax.UserData.cep.catalogFcn=@()obj.xscats(xsec.name);
+            ax.UserData.cep.catalogFcn=@()obj.xscats(obj.CrossSections(idx).name);
             ax.UserData.cep.update();%
-            % xsec.plot_events_along_strike(ax,obj.xscats(title),true);
             ax.Title=[];
-            obj.replot_all('CatalogUnchanged');
+            obj.notify('XsectionChanged')
+            % obj.replot_all('CatalogUnchanged');
         end
         
         function cb_chcolor(obj,~,~)
             title=get(gco,'Title');
-            xsec=obj.xsections(title);
-            xsec=xsec.change_color([],gcf);
-            set(gco,'ForegroundColor',xsec.color); %was mytab
-            obj.xsections(title)=xsec;
+            idx = strcmp(title,obj.XSectionTitles);
+            obj.CrossSections(idx).change_color([],gcf);
+            set(gco,'ForegroundColor',obj.CrossSections(idx).color); %was mytab
         end
+
         function cb_info(obj,~,~)
             title=get(gco,'Title');
-            xsec=obj.xsections(title);
-            s=sprintf('%s containing:\n\n%s',xsec.info(),...
+            idx = strcmp(title,obj.XSectionTitles);
+            s=sprintf('%s containing:\n\n%s',obj.CrossSections(idx).info(),...
                 obj.xscats(title).summary('stats'));
             msgbox(s,title);
         end
@@ -585,30 +627,32 @@ classdef ZmapMainWindow < handle
         
         function xsec_remove(obj, key)
             % XSEC_REMOVE completely removes cross section from object
-            obj.xsections.remove(key);
+            idx = strcmp(key,obj.XSectionTitles);
+            obj.CrossSections(idx)=[];
             obj.xscats.remove(key);
             obj.xscatinfo.remove(key);
-            if isempty(obj.xsections)
-                obj.notify('XsectionEmptied');
-            else
-                obj.notify('XsectionRemoved');
-            end
+            %if isempty(obj.CrossSections)
+            %    obj.notify('XsectionEmptied');
+            %else
+            %    obj.notify('XsectionRemoved');
+            %end
         end
         
         function xsec_add(obj, key, xsec)
-            isUpdating=ismember(key,obj.xsections.keys);
             %XSEC_ADD add/replace cross section
-            obj.xsections(key)=xsec;
+            isUpdating=ismember(key,obj.XSectionTitles);
+            
             % add catalog generated by the cross section (ignoring shape)
             obj.xscats(key)= xsec.project(obj.rawcatalog.subset(obj.mdate));
             % add the information about the catalog used
             obj.xscatinfo(key)=obj.catalog.summary('stats');
             
-            if isUpdating
-                obj.notify('XsectionChanged');
-            else
-                obj.notify('XsectionAdded')
+            if isempty(obj.CrossSections)
+                obj.CrossSections=xsec;
+            elseif ~isUpdating
+                obj.CrossSections(end+1)=xsec;
             end
+            
         end
         
         function activateXsections(obj)
@@ -638,13 +682,11 @@ classdef ZmapMainWindow < handle
             % PLOT_XSECTIONS 
             %  obj.plot_xsections(plotfn, tagBase)
             % plotfn is a function like: [@(xs,xcat)plot(...)] that does plotting and returns a handle
-            k=obj.xsections.keys;
-            for j=1:obj.xsections.Count
+            for j=1:numel(obj.CrossSections)
                 hold on
-                tit=k{j};
-                xs=obj.xsections(tit);
-                h=plotfn(xs, obj.xscats(tit) );
-                h.Tag=[tagBase,' ' , xs.name];
+                tit=obj.CrossSections(j).name;
+                h=plotfn(obj.CrossSections(j), obj.xscats(tit) );
+                h.Tag=[tagBase,' ' , tit];
             end
         end
         

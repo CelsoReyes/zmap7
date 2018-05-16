@@ -107,7 +107,7 @@ classdef XSection < handle
             ln=deg2km(distance(obj.startpt,obj.endpt));
         end
         
-        function obj = change_width(obj, w, ax)
+        function change_width(obj, w, ax)
             % CHANGE_COLOR changes the width for the cross section and area outline
             %
             % obj = obj.CHANGE_WIDTH( WIDTH_KM, AZ)
@@ -116,7 +116,7 @@ classdef XSection < handle
 
         end
             
-        function obj = change_color(obj, color, container)
+        function change_color(obj, color, container)
             % CHANGE_COLOR changes the color for the cross section and area outline
             %
             % obj = obj.CHANGE_COLOR(color, ax)
@@ -127,7 +127,8 @@ classdef XSection < handle
             obj.color = color;
             
             set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','line'), 'Color',color);
-            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','text'), 'Color',color .* 0.8);
+            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','text'),...
+                'Color',color .* 0.8, 'EdgeColor',color);
             ax=findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','axes');
             if ~isempty(ax)
                 set(get(ax,'XAxis'),'color',color .* 0.5);
@@ -137,7 +138,7 @@ classdef XSection < handle
 
         end
         
-        function obj = swap_ends(obj, ax)
+        function swap_ends(obj, ax)
             % SWAP_ENDS reverses the direction of the cross section
             xxx = obj.startpt;
             obj.startpt = obj.endpt;
@@ -160,7 +161,7 @@ classdef XSection < handle
             c2=ZmapXsectionCatalog(catalog, obj.startpt, obj.endpt, obj.width_km);
         end
         
-        function obj = set_endpoints(obj,ax)
+        function set_endpoints(obj,ax)
             % SET_ENDPOINTS select beginning and ending point for cross section
             %
             % obj = obj.set_endpoints(AX) select segments with a mouse
