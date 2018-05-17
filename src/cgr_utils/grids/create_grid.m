@@ -262,7 +262,6 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
             offset=base_lon_idx - main_lon_idx;
             xs(n,(1:row_length)+offset)=these_lons;
         end
-        
     end
    
     function mouse_down(src,~)

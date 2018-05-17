@@ -3,6 +3,7 @@ function add_grid_menu(obj)
     parent = uimenu(obj.fig,'Label','Grid');
     uimenu(parent,'Label','Create Auto-Grid',Futures.MenuSelectedFcn,@cb_autogrid);
     uimenu(parent,'Label','Create Grid (interactive)',Futures.MenuSelectedFcn,@cb_creategrid);
+    uimenu(parent,'Label','Create Grid (figure)',Futures.MenuSelectedFcn,@cb_gridfigure);
     uimenu(parent,'Label','Refresh Grid',Futures.MenuSelectedFcn,@cb_refresh);
     uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
     uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
@@ -45,6 +46,13 @@ function add_grid_menu(obj)
         obj.Grid = tmpgrid.MaskWithShape(obj.shape);
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
 
+    end
+    
+    function cb_gridfigure(src,ev)
+        app = grid_chooser();
+        waitfor(app);
+        obj.Grid = ZmapGlobal.Data.Grid;
+        obj.gridopt = ZmapGlobal.Data.gridopt;
     end
     
     function cb_autoradius(~,~)
