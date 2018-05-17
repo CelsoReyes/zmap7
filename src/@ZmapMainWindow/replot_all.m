@@ -11,6 +11,10 @@ function replot_all(obj,metaProp,eventData)
     md=[];
     k={};
     
+    s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
+    set(findobj(obj.fig,'Tag','zmap_watermark','-and','Type','uicontrol','-and','Style','text'),...
+        'String',s);
+    
     obj.replotting=true;
     switch eventData.EventName
         case 'XsectionAdded'
@@ -80,7 +84,6 @@ function replot_all(obj,metaProp,eventData)
     obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter, 'LR plots');
     
     obj.replotting=false;
-    
     drawnow
     
     rearrange_axes_items(obj)

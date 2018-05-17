@@ -35,9 +35,9 @@ classdef ZmapMainWindow < handle
     properties(Constant)
         TabGroupPositions = struct(...
             'UR', [0.6658    0.5053    0.3250    0.4800],... URPos
-            'LR',[0.6658    0.0120    0.3250    0.4800],...LRPos
+            'LR',[0.6658    0.0620    0.3250    0.4400],... [0.6658    0.0120    0.3250    0.4800],...LRPos
             'Main',[0.0125    0.012    0.64    0.9733],...MainGroupPos
-            'XS',[0.01    0.008    0.98    0.28]); % XSPos
+            'XS',[0 0  1  0.28]);%[0.01    0.008    0.98    0.28]); % XSPos
         MapPos_S=[0.059    0.33    0.8    0.64] % width was .5375
         MapPos_L=[0.059    0.065    0.8    0.8933]
         XSAxPos=[0.06    0.2    0.86    0.7] % inside XSPos
@@ -103,6 +103,10 @@ classdef ZmapMainWindow < handle
                 'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
            
+            % add the time stamp
+            s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
+            uicontrol(gcf,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
+                'String',s,'FontWeight','bold','Tag','zmap_watermark')
             
             % make sure that empty legend entries automatically disappear when the menu is called up 
             set(findall(obj.fig,'Type','uitoggletool'),'ClickedCallback',...
@@ -174,7 +178,8 @@ classdef ZmapMainWindow < handle
                 'Visible','off','SelectionChangedFcn',@cb_selectionChanged,...
                 'TabLocation',TabLocation,'Tag','LR plots');
             
-            obj.xsgroup=uitabgroup(obj.maintab,'Units','normalized','Position',obj.TabGroupPositions.XS,...
+            obj.xsgroup=uitabgroup(obj.maintab,'Units','normalized',...
+                'Position',obj.TabGroupPositions.XS,...
                 'TabLocation',TabLocation,'Tag','xsections',...
                 'SelectionChangedFcn',@cb_selectionChanged,'Visible','off');
             
