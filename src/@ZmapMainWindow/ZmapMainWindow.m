@@ -109,11 +109,11 @@ classdef ZmapMainWindow < handle
                 'insertmenufcn(gcbf,''Legend'');clear_empty_legend_entries(gcf);');
             
             
-            c=uicontextmenu('tag','yscale contextmenu');
+            c=uicontextmenu(obj.fig,'tag','yscale contextmenu');
             uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'Y'});
             obj.sharedContextMenus.LogLinearYScale = c;
             
-            c=uicontextmenu('tag','xscale contextmenu');
+            c=uicontextmenu(obj.fig,'tag','xscale contextmenu');
             uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'X'});
             obj.sharedContextMenus.LogLinearXScale = c;
             
@@ -152,7 +152,7 @@ classdef ZmapMainWindow < handle
                 'Visible','on',...
                 'SelectionChangedFcn',@cb_mainMapSelectionChanged,...
                 'TabLocation',TabLocation,'Tag','main plots');
-            obj.maintab = findOrCreateTab(gcf,'main plots',obj.catalog.Name);
+            obj.maintab = findOrCreateTab(obj.fig,'main plots',obj.catalog.Name);
             obj.maintab.Tag = 'mainmap_tab';
             %obj.maintab = uitab(obj.maingroup,'Title',obj.catalog.Name,'Tag','mainmap_tab');
             
@@ -552,7 +552,7 @@ classdef ZmapMainWindow < handle
         function cb_chcolor(obj,~,~)
             title=get(gco,'Title');
             idx = strcmp(title,obj.XSectionTitles);
-            obj.CrossSections(idx).change_color([],gcf);
+            obj.CrossSections(idx).change_color([],obj.fig);
             set(gco,'ForegroundColor',obj.CrossSections(idx).color); %was mytab
         end
 

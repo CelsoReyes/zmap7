@@ -11,7 +11,7 @@ function fmdplot(obj, tabgrouptag)
     bdiff2(obj.catalog,false,ax);
     legend(ax,'show')
     if isempty(ax.UIContextMenu)
-        c = uicontextmenu;
+        c = uicontextmenu(obj.fig);
         ax.UIContextMenu = c;
     end
     addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above')

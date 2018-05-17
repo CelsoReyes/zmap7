@@ -14,7 +14,7 @@ function plothist(obj, name, values, tabgrouptag)
         h.FaceColor = [0.4 0.4 0.4];
         ax.YGrid='on';
         hold on
-        c=uicontextmenu('Tag','plothist');
+        c=uicontextmenu(obj.fig,'Tag','plothist');
         addLegendToggleContextMenuItem(c,'bottom','above');
         ax.UIContextMenu=c;
         

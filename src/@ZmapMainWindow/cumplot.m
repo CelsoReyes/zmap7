@@ -15,9 +15,9 @@ function cumplot(obj, tabgrouptag)
     ax.YMinorTick='on';
     ax.Box='on';
     
-    cln=findobj(gcf,'Tag',Tags.line);
+    cln=findobj(obj.fig,'Tag',Tags.line);
     if isempty(cln)
-        cln=uicontextmenu('tag',Tags.line);
+        cln=uicontextmenu(obj.fig,'tag',Tags.line);
         uimenu(cln,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
         uimenu(cln,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
         uimenu(cln, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
@@ -34,9 +34,9 @@ function cumplot(obj, tabgrouptag)
     
     
     % plot cross sections, too
-    cxs=findobj(gcf,'Tag',Tags.xs);
+    cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
-        cxs=uicontextmenu('tag',Tags.xs);
+        cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
         uimenu(cxs,'Label','Open in new window',Futures.MenuSelectedFcn,@cb_xstimeplot);
     end
     
@@ -67,10 +67,10 @@ function cumplot(obj, tabgrouptag)
         'Tag','big events');
     hold off
     
-    cbg=findobj(gcf,'Tag',Tags.bg);
+    cbg=findobj(obj.fig,'Tag',Tags.bg);
     
     if isempty(cbg)
-        cbg=uicontextmenu('Tag',Tags.bg);
+        cbg=uicontextmenu(obj.fig,'Tag',Tags.bg);
         addLegendToggleContextMenuItem(cbg,'bottom','above');
         uimenu(cbg,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
         ax.UIContextMenu=cbg;

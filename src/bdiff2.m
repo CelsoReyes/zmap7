@@ -95,12 +95,9 @@ classdef bdiff2
             end
             
             % add context menu equivelent to ztools menu
-            f=ax;
-            while (~strcmp(f.Type ,'figure'))
-                f=f.Parent;
-            end
+            f=ancestor(ax,'figure');
             delete(findobj(f,'Tag','bdiff context','-and','Type','uicontextmenu'));
-            c = uicontextmenu('Tag','bdiff context');
+            c = uicontextmenu(f,'Tag','bdiff context');
             obj.create_my_menu(c,catalog);
             ax.UIContextMenu=c;
             uimenu(ax.UIContextMenu,'Label','Open as new figure',Futures.MenuSelectedFcn,@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));

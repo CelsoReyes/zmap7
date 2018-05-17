@@ -70,16 +70,10 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     
     pOrigMarker=p.Marker;
     changeMaker(p,'s');
+
+    ax=ancestor(p,'axes')
+    f=ancestor(ax,'figure');
     
-    item=p;
-    while ~isempty(item.Parent) 
-        item = item.Parent;
-        if isa(item,'matlab.ui.Figure')
-            f=item;
-        elseif isa(item,'matlab.graphics.axis.Axes')
-            ax=item;
-        end
-    end
     f.Pointer='circle';
     returnstate=return_state(f,p); % used to put things back the way they were
     p.ButtonDownFcn=@bdown;

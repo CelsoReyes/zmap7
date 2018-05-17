@@ -680,7 +680,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function s= blurb(obj)
             % BLURB get simple statement about catalog
-            % s = catalog.blurb();
             if obj.Count > 0
                 s=sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count);
             else

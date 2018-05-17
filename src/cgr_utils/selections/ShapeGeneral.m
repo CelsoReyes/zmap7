@@ -168,8 +168,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             shout=findobj(ax,'Tag','shapeoutline');
             assert(numel(shout)<2,'should only have one shape outline')
 
-            f=ax;
-            while(~strcmp(f.Type,'figure'));f=f.Parent;end
+            f=ancestor(ax,'figure');
             delete(findobj(f,'Tag','ShapeGenContext'));
             
             if isempty(shout)

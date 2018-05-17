@@ -5,7 +5,7 @@ function c=context_menus(obj, tag, createmode, varargin)
     % objects that they are attached to will not delete the context menus.
     %
     % context menus can be reused.
-    existing_contexts = findobj(gcf,'Type','uicontextmenu');
+    existing_contexts = findobj(obj.fig,'Type','uicontextmenu');
     c = findobj(existing_contests, 'Tag',tag);
     
     switch method

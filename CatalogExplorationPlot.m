@@ -281,8 +281,9 @@ classdef CatalogExplorationPlot < handle
         
         function scatterContextMenu(obj,sc,tag)
             tag=['ssel_ctxt ' tag];
-            delete(findobj(gcf,'Tag','tag'));
-            h=uicontextmenu('Tag',tag);
+            f = ancestor(obj.ax,'figure');
+            delete(findobj(f,'Tag','tag'));
+            h=uicontextmenu(f,'Tag',tag);
             szm = uimenu(h,'Label','Size by...',...
                 Futures.MenuSelectedFcn,{@obj.cleanChildren_cb,'size_by'});
             clm = uimenu(h,'Label','Color by...',...

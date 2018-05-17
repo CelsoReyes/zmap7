@@ -38,9 +38,18 @@ function replot_all(obj,metaProp,eventData)
             if all(mall)
                 evs.Visible='off';
             else
+                if numel(evs.XData)==numel(obj.rawcatalog.Count)
                 evs.XData(mall)=nan;
                 evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
+                else
+                    % catalog is out of sync. replot
+                    evs.XData=obj.rawcatalog.Longitude;
+                    evs.YData=obj.rawcatalog.Latitude;
+                    evs.ZData=obj.rawcatalog.Depth;
+                    evs.XData(mall)=nan;
+                end
                 evs.Visible='on';
+                
             end
             obj.plotmainmap();
             

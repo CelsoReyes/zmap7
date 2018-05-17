@@ -13,7 +13,7 @@ function create_all_menus(obj, force)
         add_menu_divider('mainmap_menu_divider');
     end
     create_overlay_menu();
-    %ShapeGeneral.AddMenu(gcf);
+    %ShapeGeneral.AddMenu(obj.fig);
     %add_grid_menu(uimenu('Label','Grid'));
     obj.catalog_menu(force);
     
@@ -32,7 +32,7 @@ function create_all_menus(obj, force)
     addAboutMenuItem();
     
     if ZmapGlobal.Data.debug
-        mainhelp=findall(gcf,'Tag','figMenuHelp');
+        mainhelp=findall(obj.fig,'Tag','figMenuHelp');
         uimenu(mainhelp,'Label','Export ZmapMainWindow to workspace as zmw',...
             'Separator','on', Futures.MenuSelectedFcn,@export_me);
     end
@@ -212,7 +212,7 @@ function create_all_menus(obj, force)
                 myfn = obj.ValidColorFields{jj};
                 um(jj).Checked = tf2onoff(strcmp(obj.colorField,myfn));
             end
-            h=findobj(gcf,'Type','colorbar','-and','Parent',obj.fig);
+            h=findobj(obj.fig,'Type','colorbar','-and','Parent',obj.fig);
             hascolorbar=~isempty(h) && ~isempty(obj.colorField);
             delete(h)
             obj.plotmainmap();
