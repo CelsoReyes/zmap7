@@ -28,7 +28,7 @@ function replot_all(obj,metaProp,eventData)
             disp('remove cross section from plots')
             
         case {'XsectionChanged'}
-            display('replot cross sections')
+            disp('replot cross sections')
             k=obj.XSectionTitles;
             
         case 'XsectionEmptied'
@@ -98,6 +98,7 @@ function rearrange_axes_items(obj)
     items.fgevents = strcmp(get(ch,'Tag'),'active quakes');
     items.shape = startsWith(get(ch,'Tag'),'shape');
     items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents);
+    obj.map_axes.SortMethod='childorder';
     obj.map_axes.Children = [  ch(items.shape); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];   
 end
 
