@@ -4,8 +4,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     %
     % zgrid = AUTOGRID(catalog) calculate a ZmapGrid from a ZmapCatalog
     %
-    % [zgrid, gpc] = AUTOGRID(...) additionally, provide a GridParameterChoice
-    % styled struct.
+    % [zgrid, gpc] = AUTOGRID(...) additionally, provide a GridOptions
     %
     % [zgrid, gpc] = AUTOGRID(catalog, dohist, plotOnMap) show a 2-d histogram of
     % events if dohist is true, and plot the grid dots on the main map if plotOnMap
@@ -13,9 +12,9 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     %
     % output:
     %    zgrid : ZmapGrid
-    %    gpc : GridParameterChoice styled struct
+    %    gpc : GridOptions objects
     %
-    % see also autoradius, ZmapGrid, GridParameterChoice
+    % see also autoradius, ZmapGrid, GridOptions
     
     % assert(isa(catalog,'ZmapCatalog'), 'catalog must be a zmap catalog')
    
@@ -59,17 +58,7 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         %    YEDGES(2:end)-diff(YEDGES(1:2))/2,'deg');
         
         
-    % create a structure equivelent to GridParameterChoice.toStruct()
-    gpc=struct('dx',diff(XEDGES(1:2))/2,...
-        'dy',diff(YEDGES(1:2))/2,...
-        'dz',[],...
-        'dx_units','deg',...
-        'dy_units','deg',...
-        'dz_units','km',...
-        'GridEntireArea',true,...
-        'SaveGrid',false,...
-        'LoadGrid',false,...
-        'CreateGrid',false); %should be done in conj. with GridParameterChoice
+    gpc = GridOptions(diff(XEDGES(1:2))/2, diff(YEDGES(1:2))/2, [], 'deg', true, true );
     
     zgrid=ZmapGrid('autogrid',gpc);
     f=gcf;

@@ -18,7 +18,6 @@ classdef ZmapDialog < handle
     %   AddBasicPopup - add a popup menu to the dialog box
     %   AddBasicEdit - add an edit bow with text label
     %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
-    %   AddGridParameters - add a grid parameter widget to the box
     %   AddEventSelectionParameters - add widget to choose between events in a radius, or closest events
     %
     %   addOKButton - (added automatically)
@@ -36,7 +35,6 @@ classdef ZmapDialog < handle
     %     zdlg.AddBasicHeader('Say something for each thing');
     %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
     %         'Choose what is most important to you');
-    %     zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
     %     zdlg.AddBasicEdit('noiselevel','Noise level', 1,...
     %         'how much noise should?');
     %     zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...

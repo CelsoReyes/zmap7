@@ -77,7 +77,6 @@ classdef rc_cross_a2 < ZmapVGridFunction
             zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
                 'Please choose an Mc estimation option');
             
-            %zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
             % add fMaxRadius
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
             zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
@@ -343,7 +342,7 @@ function orig_rc_cross_a2()
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
-    % the seimicity and selecting the ni neighbors
+    % the seismicity and selecting the ni neighbors
     % to each grid point
     
     function my_calculate()

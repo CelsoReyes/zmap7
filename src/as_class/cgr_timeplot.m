@@ -65,25 +65,6 @@ classdef cgr_timeplot < ZmapFigureFunction
                 @obj.doIt...  if OK is pressed, then this function will be executed.
                 );
             
-            %----------------------------
-            % The dialog box is a vertically oriented series of controls
-            % that allow you to choose parameters
-            %
-            %  every procedure takes a tag parameter. This is the name of the class variable
-            %  where results will be stored for that field.  Results will be of the same type
-            %  as the provided values.  That is, if I initialize a field with a datetime, then
-            %  the result will be converted back to a datetime. etc.
-            %
-            % add items ex.  :
-            %  zdlg.AddBasicHeader  : add line of bold text to separate areas
-            %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddGridParameters : add section that returns grid defining params
-            %  zdlg.AddBasicCheckbox : add checkbox that returns state, 
-            %                          and may affect other control's enable states
-            %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
-            %  zdlg.AddEventSelectionParameters : add section that returns how grid points
-            %                                     may be evaluated
-           
             zdlg.Create('my dialog title')
             % The dialog runs. if:
             %  OK is pressed -> assigns 
@@ -274,7 +255,7 @@ function timeplot(mycat, nosort)
 %         '       select "Overlay..." and then selext a new     '
 %         '       subset of data in the map window              '
 %         ' Compare two rates: start a comparison and moddeling '
-%         '       of two seimicity rates based on the assumption'
+%         '       of two seismicity rates based on the assumption'
 %         '       of a constant b-value. Will calculate         '
 %         '       Magnitude Signature. Will ask you for four    '
 %         '       times.                                        '

@@ -14,9 +14,9 @@ function plothist(obj, name, values, tabgrouptag)
         h.FaceColor = [0.4 0.4 0.4];
         ax.YGrid='on';
         hold on
-        c=uicontextmenu(obj.fig,'Tag','plothist');
+        c=ax.UIContextMenu;
         addLegendToggleContextMenuItem(c,'bottom','above');
-        ax.UIContextMenu=c;
+        set(findobj(ax.Children,'Type','histogram'),'UIContextMenu',c);
         
     else
         h=findobj(ax,'Type','histogram');

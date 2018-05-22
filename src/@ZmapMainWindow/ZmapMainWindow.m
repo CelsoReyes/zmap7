@@ -318,8 +318,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                gridopts= GridParameterChoice.quickshow();
-                obj.Grid = ZmapGrid('grid',gridopts.toStruct);
+                [gridopts, obj.Grid] = GridOptions.fromDialog();
             else
                 fprintf('Using existing grid:\n');
             end
@@ -374,17 +373,6 @@ classdef ZmapMainWindow < handle
             zp = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
             
         end
-        %{
-        function myTab = findOrCreateTab(obj, parent, title)
-            % FINDORCREATETAB if tab doesn't exist yet, create it
-            %    parent :
-            myTab=findobj(obj.fig,'Title',title,'-and','Type','uitab');
-            if isempty(myTab)
-                p = findobj(obj.fig,'Tag',parent);
-                myTab=uitab(p, 'Title',title);
-            end
-        end
-        %}
         
         function cb_timeplot(obj)
             ZG=ZmapGlobal.Data;

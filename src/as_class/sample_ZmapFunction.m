@@ -78,7 +78,6 @@ classdef sample_ZmapFunction < ZmapFunction
             % add items ex.  :
             %  zdlg.AddBasicHeader  : add line of bold text to separate areas
             %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddGridParameters : add section that returns grid defining params
             %  zdlg.AddBasicCheckbox : add checkbox that returns state, 
             %                          and may affect other control's enable states
             %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
@@ -87,7 +86,6 @@ classdef sample_ZmapFunction < ZmapFunction
             %%%%%%%%%%%%%%%
             zdlg.AddBasicHeader('Say something for each thing');
             zdlg.AddBasicPopup('lifechoice','life choice',obj.choices,2,'youer choice. your life.');
-            zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
             zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},'use noise levels?');
             zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel,'noise levels');
             zdlg.AddEventSelectionParameters('evsel',obj.ZG.ni, obj.ZG.ra,obj.nMin);

@@ -100,7 +100,7 @@ function bcross(sel)
     
     % get the grid-size interactively and
     % calculate the b-value in the grid by sorting
-    % the seimicity and selecting the ni neighbors
+    % the seismicity and selecting the ni neighbors
     % to each grid point
     
     function mycalculate()

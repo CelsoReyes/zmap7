@@ -140,11 +140,9 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     function set_grid(~,~)
         ZG.Grid=ZmapGrid(name,pgr.xs, pgr.ys, 'deg');
         if FOLLOW_PARALLELS
-            ZG.gridopt = struct('dx',deg2km(dx),'dy',deg2km(dy),'dx_units','deg','dy_units','deg',...
-                'dz',[],'dz_units','km');
+            ZG.gridopt = GridOptions(deg2km(dx),deg2km(dy),[],'deg', FOLLOW_PARALLELS);
         else
-            ZG.gridopt = struct('dx',dx,'dy',dy,'dx_units','km','dy_units','km',...
-                'dz',[],'dz_units','km');
+            ZG.gridopt = GridOptions(dx, dy, [], 'km', FOLLOW_PARALLELS);
         end
         changed=false;
     end

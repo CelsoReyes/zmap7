@@ -195,9 +195,7 @@ function calc_Omoricross()
         end % of if bGridEntireArea
         
         % CREATE THE GRID (NEW WAY)
-        gridopt=struct('dx',dx,'dx_units','km',...
-                        'dy',dy,'dy_units','km',...
-                        'GridEntireArea',false)
+        gridopts = GridOptions(dx, dy, [], 'km',false, false);
         mygrid = ZmapGrid('omoricross',gridopt);
         mygrid = mygrid.MaskWithShape(ZG.shape_selection);
         mygrid.plot();

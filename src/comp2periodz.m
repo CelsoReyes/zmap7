@@ -66,7 +66,6 @@ classdef comp2periodz < ZmapHGridFunction
             zdlg.AddBasicEdit('t4','end period 2',obj.t4,'end time for period 2');
             zdlg.AddBasicEdit('binsize','Bin Size (days)',obj.binsize,'number of days in each bin');
             zdlg.AddEventSelectionParameters('eventsel', obj.EventSelector);
-            %zdlg.AddGridParameters('gridparam',dx,'deg', dy,'deg', [],[])
             [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
             if ~okPressed
                 return

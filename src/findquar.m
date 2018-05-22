@@ -52,44 +52,8 @@ classdef findquar < ZmapHGridFunction
         end
         
         function InteractiveSetup(obj)
-            % allow user to determin grid and selection paramters
-            %zdlg=ZmapDialog(...
-            %    obj,...  pass it a handle that it can change when the OK button is pressed.
-            %    @obj.InteractiveSetup_part2...  if OK is pressed, then this function will be executed.
-            %    );
+            % allow user to determine grid and selection parameters
             
-            %----------------------------
-            % The dialog box is a vertically oriented series of controls
-            % that allow you to choose parameters
-            %
-            %  every procedure takes a tag parameter. This is the name of the class variable
-            %  where results will be stored for that field.  Results will be of the same type
-            %  as the provided values.  That is, if I initialize a field with a datetime, then
-            %  the result will be converted back to a datetime. etc.
-            %
-            % add items ex.  :
-            %  zdlg.AddBasicHeader  : add line of bold text to separate areas
-            %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddGridParameters : add section that returns grid defining params
-            %  zdlg.AddBasicCheckbox : add checkbox that returns state,
-            %                          and may affect other control's enable states
-            %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
-            %  zdlg.AddEventSelectionParameters : add section that returns how grid points
-            %                                     may be evaluated
-            
-            %zdlg.AddGridParameters('Grid',1.0,'deg',1.0,'deg',[],[]);
-            % TODO: add Event Selector here somehow
-            %zdlg.AddEventSelectionParameters('EvtSel',100,[],1);
-            % get the grid parameter
-            %{
-            zdlg=ZmapDialog();
-            zdlg.AddEventSelectionParameters('evsel',obj.EventSelector);
-            [res,okpressed]=zdlg.Create('Define Grid and Selection Parameters');
-            if ~okpressed
-                return
-            end
-            obj.EventSelector=res.evsel;
-            %}
             obj.InteractiveSetup_part2();
             
         end

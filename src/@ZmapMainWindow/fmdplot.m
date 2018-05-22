@@ -14,7 +14,5 @@ function fmdplot(obj, tabgrouptag)
         c = uicontextmenu(obj.fig);
         ax.UIContextMenu = c;
     end
-    addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above')
-    %mainax2=obj.map_axes;
-    %assert(mainax==mainax2);
+    addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
 end

@@ -62,7 +62,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     %
     %   NOTE: grid evaluations are parallelized
     %
-    % see also ZmapGrid, EventSelectionChoice, GridParameterChoice
+    % see also ZmapGrid, EventSelectionChoice, GridOpts
     %
     
     % set flags for how to treat this data

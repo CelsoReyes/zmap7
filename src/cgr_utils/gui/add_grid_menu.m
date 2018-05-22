@@ -1,33 +1,12 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
-    parent = uimenu(obj.fig,'Label','Grid');
+    parent = uimenu(obj.fig,'Label','Sampling');
     uimenu(parent,'Label','Create Auto-Grid',Futures.MenuSelectedFcn,@cb_autogrid);
-    uimenu(parent,'Label','Create Grid (interactive)',Futures.MenuSelectedFcn,@cb_creategrid);
-    uimenu(parent,'Label','Create Grid (figure)',Futures.MenuSelectedFcn,@cb_gridfigure);
+    uimenu(parent,'Label','Create Grid',Futures.MenuSelectedFcn,@cb_gridfigure);
     uimenu(parent,'Label','Refresh Grid',Futures.MenuSelectedFcn,@cb_refresh);
     uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
     uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
     uimenu(parent,'Label','Choose Sample Radius',Futures.MenuSelectedFcn,@cb_manualradius);
-    
-    function cb_creategrid(~,~)
-        %CB_CREATEGRID interactively create a grid
-        %obj=ZmapGlobal.Data;
-        
-        if ~isempty(obj.Grid)
-            todel=findobj(obj.map_axes,'Tag',['grid_', obj.Grid.Name]);
-        else
-            todel=[];
-        end
-        delete(todel);
-        
-        obj.Grid = create_grid(...
-            obj.shape.Outline,...
-            false,... % do not follow meridians (km)
-            false... % do not trim to the shape
-            ); % getting result forces program to pause until selection is complete
-        obj.Grid.plot(obj.map_axes,'ActiveOnly')
-        cb_refresh()
-    end
     
     function cb_autogrid(~,~)
         % following assumes grid from main map
@@ -49,10 +28,9 @@ function add_grid_menu(obj)
     end
     
     function cb_gridfigure(src,ev)
-        app = grid_chooser();
-        waitfor(app);
-        obj.Grid = ZmapGlobal.Data.Grid;
-        obj.gridopt = ZmapGlobal.Data.gridopt;
+        [obj.Grid, obj.gridopt] = GridOptions.fromDialog(obj.gridopt);
+        
+        obj.Grid.plot(obj.map_axes,'ActiveOnly');
     end
     
     function cb_autoradius(~,~)

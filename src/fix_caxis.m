@@ -66,24 +66,6 @@ classdef fix_caxis < ZmapFunction
                 @obj.doIt...  if OK is pressed, then this function will be executed.
                 );
             
-            %----------------------------
-            % The dialog box is a vertically oriented series of controls
-            % that allow you to choose parameters
-            %
-            %  every procedure takes a tag parameter. This is the name of the class variable
-            %  where results will be stored for that field.  Results will be of the same type
-            %  as the provided values.  That is, if I initialize a field with a datetime, then
-            %  the result will be converted back to a datetime. etc.
-            %
-            % add items ex.  :
-            %  zdlg.AddBasicHeader  : add line of bold text to separate areas
-            %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddGridParameters : add section that returns grid defining params
-            %  zdlg.AddBasicCheckbox : add checkbox that returns state,
-            %                          and may affect other control's enable states
-            %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
-            %  zdlg.AddEventSelectionParameters : add section that returns how grid points
-            %                                     may be evaluated
             zdlg.AddBasicPopup('orientation','Choose Colorbar Orientation',obj.Orientations,1,...
                 'If an orientation is chosen, the colorbar will be (re)drawn in that position');
             zdlg.AddBasicEdit('minval','Please input minimum of z-axis',obj.minval,...

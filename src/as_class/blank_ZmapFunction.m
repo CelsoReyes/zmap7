@@ -65,7 +65,6 @@ classdef blank_ZmapFunction < ZmapFunction
             % add items ex.  :
             %  zdlg.AddBasicHeader  : add line of bold text to separate areas
             %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddGridParameters : add section that returns grid defining params
             %  zdlg.AddBasicCheckbox : add checkbox that returns state, 
             %                          and may affect other control's enable states
             %  zdlg.AddBasicEdit : add basic edit field & edit field label combo

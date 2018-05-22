@@ -79,7 +79,6 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
                 'Please choose an Mc estimation option');
             
-            %zdlg.AddGridParameters('Grid',dx,'deg',dy,'deg',[],'');
             % add fMaxRadius
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
             zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
@@ -270,7 +269,7 @@ function [sel]=orig_rcvalgrid_a2()
     function my_calculate() % 'ca'
         % get the grid-size interactively and
         % calculate the cat_all-value in the grid by sorting
-        % thge seimicity and selectiong the ni neighbors
+        % the seismicity and selectiong the ni neighbors
         % to each grid point
         %In the following line, the program .m is called, which creates a rectangular grid from which then selects,
         %on the basis of the vector ll, the points within the selected poligon.

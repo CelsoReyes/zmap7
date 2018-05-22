@@ -139,7 +139,7 @@ end
 
 % get the grid-size interactively and
 % calculate the b-value in the grid by sorting
-% the seimicity and selectiong the ni neighbors
+% the seismicity and selectiong the ni neighbors
 % to each grid point
 
 functin my_calculate()

@@ -71,7 +71,7 @@ classdef ZmapGrid
     methods
         function obj = ZmapGrid(name, varargin)
             %ZMAPGRID create a grid of points
-            %   OBJ = ZMAPGRID(NAME, GPC_STRUCT) where gpc_struct has fields dx, dy, [dz,] dx_units, GridEntireArea.
+            %   OBJ = ZMAPGRID(NAME, grid_options) where grid_options is a GridOptions object
             %
             % ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) where
             %   origin_degs is (Lon, Lat) or (Lon, Lat, Z_km). 
@@ -105,14 +105,13 @@ classdef ZmapGrid
                         if size(varargin{1},2)==3
                             obj.Z = varargin{1}(:,3);
                         end
-                    elseif isstruct(varargin{1})
+                    elseif isa(varargin{1},'GridOptions')
                         % ZMAPGRID( NAME, GRIDOPTIONS)
                         
                         % assume it came from GridParameterChoice
                         ZG=ZmapGlobal.Data;
                         gridopt=varargin{1};
-                        use_shape=isfield(gridopt,'GridEntireArea') &&...
-                            ~gridopt.GridEntireArea;
+                        use_shape=gridopt.gridEntireArea;
                         
                         if use_shape
                             myshape=ZG.selection_shape;
@@ -139,12 +138,17 @@ classdef ZmapGrid
                         
                         % 3rd: FIGURE OUT LIMITS
                         limsLonLatZ=[xlim(ax);ylim(ax)];
+                        switch gridopt.horizUnits
+                            case 'km'
+                                obj.Units='Kilometers';
+                            case 'deg'
+                                obj.Units='Degrees';
+                        end
                         
-                        follow_meridians=strcmp(gridopt.dx_units,'deg');
-                        obj.Units = gridopt.dx_units;
+                        obj.Origin=lonLatZ0;
                         
-                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,...
-                                                                limsLonLatZ, follow_meridians);
+                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,obj.Units,...
+                                                                limsLonLatZ, gridopt.followMeridians);
                         
                         if use_shape
                             obj=obj.MaskWithShape(myshape.Points);
@@ -167,14 +171,15 @@ classdef ZmapGrid
                     obj.Y=varargin{2};
                     assert(ischar(varargin{3}));
                     obj.Units = varargin{3};
-                case 5
-                    %ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) 
+                case 6
+                    %ZMAPGRID(name,origin_degs, deltas, delta_units limits_degs, follow_meridians) 
                     lonLatZ0=varargin{1};
+                    obj.Origin=lonLatZ0;
                     deltasLonLatZ = varargin{2};
-                    limsLonLatZ = varargin{3};
-                    follow_meridians = varargin{4};
-                    obj.Units='degrees';
-                    [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,...
+                    obj.Units=varargin{3};
+                    limsLonLatZ = varargin{4};
+                    follow_meridians = varargin{5};
+                    [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0, deltasLonLatZ, obj.Units,...
                                                             limsLonLatZ, follow_meridians);
                     
                 otherwise
@@ -486,7 +491,7 @@ classdef ZmapGrid
             obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'deg');
         end
         
-        function [lonMat,latMat,zMat] = get_grid(lonLatZ0,deltasLonLatZ, limsLonLatZ, FOLLOW_MERIDIANS)
+        function [lonMat,latMat,zMat] = get_grid(lonLatZ0, deltasXYZ, deltaUnits,limsLonLatZ, FOLLOW_MERIDIANS)
             % GET_GRID given an origin point and dlon, dlat, returns a grid as 2 matrices
             %
             %[lonMat,latMat] = ZMAPGRID.GET_GRID(lon0,lat0,dLon,dLat, FOLLOW_MERIDIANS)
@@ -516,7 +521,7 @@ classdef ZmapGrid
             
             %
             % deltas
-            switch(numel(deltasLonLatZ))
+            switch(numel(deltasXYZ))
                 case 0
                     % get from Zmap Global
                     ZG=ZmapGloba.Data; 
@@ -524,12 +529,14 @@ classdef ZmapGrid
                         'Grid options haven''t been defined. Define them or specify delta values for this functin');
                     switch ZG.gridopt.dx_units
                         case 'deg'
+                            deltaUnits = 'Degrees';
                            dLon=ZG.gridopt.dx;
                            if ~exist('FOLLOW_MERIDIANS','var')
                                % assumed intent with deg is to keep longitudes constant.
                                FOLLOW_MERIDIANS=true;
                            end
                         case 'km'
+                            deltaUnits = 'Kilometers';
                             dLon=km2deg(ZG.gridopt.dx);
                            if ~exist('FOLLOW_MERIDIANS','var')
                                % assumed intent with km is to keep distance constant
@@ -543,15 +550,25 @@ classdef ZmapGrid
                             dLon=Zkm2deg(ZG.gridopt.dy);
                     end
                 case 1
-                    dLat = deltasLonLatZ;
-                    dLon = deltasLonLatZ;
+                    dLat = deltasXYZ;
+                    dLon = deltasXYZ;
                 case 2
-                    dLat = deltasLonLatZ(2);
-                    dLon = deltasLonLatZ(1);
+                    dLat = deltasXYZ(2);
+                    dLon = deltasXYZ(1);
                 case 3
-                    dLat = deltasLonLatZ(2);
-                    dLon = deltasLonLatZ(1);
-                    dZ = deltasLonLatZ(3);
+                    dLat = deltasXYZ(2);
+                    dLon = deltasXYZ(1);
+                    dZ = deltasXYZ(3);
+            end
+            
+            switch deltaUnits
+                case 'Degrees'
+                    % do nothing
+                case 'Kilometers'
+                    dLat = km2deg(dLat);
+                    dLon = km2deg(dLon);
+                otherwise
+                    error('Unknown units: should be "Degrees" or "Kilometers"');
             end
             
             xlims_deg=limsLonLatZ(1,:);
@@ -589,9 +606,9 @@ classdef ZmapGrid
                 [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
                 % each gridx & gridy are vectors.
             end
-            if numel(deltasLonLatZ)==3
+            if numel(deltasXYZ)==3
                 zlims_km=limsLonLatZ(3,:);
-                zs=vector_including_origin(lonLatZ0, deltasLonLatZ(3), zlims_km);
+                zs=vector_including_origin(lonLatZ0, deltasXYZ(3), zlims_km);
                 lonMat=repmat(lonMat,1,1,numel(zs));
                 latMat=repmat(latMat,1,1,numel(zs));
                 zMat=ones(size(lonMat));

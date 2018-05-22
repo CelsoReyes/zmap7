@@ -79,7 +79,7 @@ classdef bgrid3dB < ZmapGridFunction
         
         % get the grid-size interactively and
         % calculate the b-value in the grid by sorting
-        % thge seimicity and selectiong the ni neighbors
+        % the seismicity and selectiong the ni neighbors
         % to each grid point
         
         function results=Calculate(obj)

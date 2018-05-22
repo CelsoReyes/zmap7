@@ -102,7 +102,7 @@ classdef bvalgrid < ZmapHGridFunction
         function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             % get the grid-size interactively and calculate the b-value in the grid by sorting the 
-            % seimicity and selecting the ni neighbors to each grid point
+            % seismicity and selecting the ni neighbors to each grid point
 
             % Overall b-value
             bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_choice); %ignore all the other outputs of bvalca3
