@@ -28,6 +28,11 @@ function create_all_menus(obj, force)
     create_xsec_analysis_menu();
     create_3d_analysis_menu();
     add_menu_divider();
+    
+   % modify the file menu to add ZMAP stuff
+   hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
+   copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy');
+            
     addQuitMenuItem();
     addAboutMenuItem();
     
@@ -36,6 +41,7 @@ function create_all_menus(obj, force)
         uimenu(mainhelp,'Label','Export ZmapMainWindow to workspace as zmw',...
             'Separator','on', Futures.MenuSelectedFcn,@export_me);
     end
+    
     function export_me(src,ev)
         assignin('base','zmw',obj);
     end

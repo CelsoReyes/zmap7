@@ -103,6 +103,7 @@ classdef ZmapMainWindow < handle
                 'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
            
+            
             % add the time stamp
             s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
             uicontrol(gcf,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
@@ -195,7 +196,6 @@ classdef ZmapMainWindow < handle
             obj.fig.CurrentAxes=ax;
             legend(ax,'show');
             clear_empty_legend_entries(obj.fig);
-            
             
             
             if isempty(obj.CrossSections)
