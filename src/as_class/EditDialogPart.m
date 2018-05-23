@@ -126,8 +126,8 @@ classdef EditDialogPart < handle
             hasGrid=false;
             hasEvSel=false;
             for n=1:numel(obj.parts)
-                hasGrid= hasGrid || strcmp(obj.parts{n}.Style,'gridparameterbox');   
-                hasEvSel= hasEvSel || strcmp(obj.parts{n}.Style,'eventselectparameterbox'); 
+                hasGrid= hasGrid || obj.parts{n}.Style == "gridparameterbox";   
+                hasEvSel= hasEvSel || obj.parts{n}.Style == "eventselectparameterbox"; 
             end
             %hasGridGroup=any(strcmp(inFields(:,1),'gridparameterbox'));
             didGrid=false;

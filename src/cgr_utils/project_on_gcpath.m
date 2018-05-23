@@ -14,7 +14,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     %
     % see also gcwaypts
     
-    if nargin==1 && strcmp(pt1,'test')
+    if nargin==1 && pt1 == "test"
         [projectedcat,mindist,mask,gcDist_km]=test_this;
         return
     end

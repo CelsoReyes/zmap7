@@ -10,7 +10,7 @@ function newt2=build_declustered_cat(from_where)
     
     eq_noclus=find(clus==0);    %elements which are not related to a cluster
     
-    if strcmp(from_where,'interactive')
+    if from_where == "interactive"
         
         ans_ = questdlg('Replace mainshocks with equivalent events?',...
             'Replace mainshocks with equivalent events?',...
@@ -30,7 +30,7 @@ function newt2=build_declustered_cat(from_where)
         %equivalent event
         tmpcat.sort('Date')
         
-    elseif strcmp(from_where,'original')
+    elseif from_where == "original"
         if isempty(backequi)
             tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(equi));
         else

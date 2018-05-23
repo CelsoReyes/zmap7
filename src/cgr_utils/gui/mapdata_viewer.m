@@ -234,10 +234,10 @@ function mapdata_viewer(res,catalog,resfig)
                 return
             end
             
-            if strcmp(evt.EventName,'KeyPress')
+            if evt.EventName == "KeyPress"
                 prevChar = curChar;
                 curChar = evt.Character;
-            elseif strcmp(f.SelectionType,'alt')
+            elseif f.SelectionType == "alt"
                 disp('right-click')
             end
             
@@ -326,7 +326,7 @@ function mapdata_viewer(res,catalog,resfig)
                 depAnalyWin.add_series(theseEvents,curChar,theseAttributes); % events with depth
                 bvalAnalyWin.add_series(theseEvents,curChar,theseAttributes); %b-val
                 
-                if ~isempty(mapax.Legend) && any(strcmp(mapax.Legend.String,'do_not_show_in_legend'))
+                if ~isempty(mapax.Legend) && any(mapax.Legend.String == "do_not_show_in_legend")
                     legend(findobj(mapax.Children,'-not','DisplayName','do_not_show_in_legend','-not','Type','text'));
                 end
                     
@@ -361,7 +361,7 @@ function mapdata_viewer(res,catalog,resfig)
     end
 end
 function f = mycontainingfigure(f)
-    while ~strcmp(f.Type,'figure') && ~strcmp(f.Type,'root')
+    while f.Type ~= "figure" && f.Type ~= "root"
         f=f.Parent;
     end
 end

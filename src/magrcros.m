@@ -80,7 +80,7 @@ classdef magrcros < ZmapVGridFunction
             
             %zdlg.AddBasicEdit('bin_dur','Time steps in days',ZG.bin_dur,'time steps in days');
             
-            default_unit = find(strcmp(obj.unit_options,'days'));
+            default_unit = find(obj.unit_options == "days");
             unitizer = obj.unit_functions{default_unit};
             
             zdlg.AddBasicCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end,'fixed_start',...

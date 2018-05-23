@@ -951,12 +951,12 @@ function change_legend_breakpoints(~, ~)
             def_ans={char(strjoin(['datetime({''', strjoin(string(div,'uuuu-MM-dd'),''','''), '''})'],''))};
             myans=inputdlg(strjoin(prompt,'\n'),dlg_title,3,def_ans,options);
             if ~isempty(myans)
-                if ~strcmp(myans{1},'--')
+                if myans{1} ~= "--"
                     div=myans{1}; % NO divisions
                 else
                     div=eval(myans{1});
                 end
-                if isa(div,'datetime') || isempty(div) || strcmp(div,'--')
+                if isa(div,'datetime') || isempty(div) || div == "--"
                     MainInteractiveMap.date_divs(div);
                 end
                 zmap_update_displays()
@@ -968,7 +968,7 @@ function change_legend_breakpoints(~, ~)
             def_ans={mat2str(div)};
             myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
             if ~isempty(myans)
-                if strcmp(myans{1},'--')
+                if myans{1} == "--"
                     div=myans{1}; % NO divisions
                 else
                     try
@@ -977,7 +977,7 @@ function change_legend_breakpoints(~, ~)
                         div=eval(['[' myans{1} ']']);
                     end
                 end
-                if isnumeric(div) || isempty(div) || strcmp(div,'--')
+                if isnumeric(div) || isempty(div) || div == "--"
                     MainInteractiveMap.depth_divs(div);
                 end
                 zmap_update_displays()
@@ -991,7 +991,7 @@ function change_legend_breakpoints(~, ~)
             def_ans={mat2str(div)};
             myans=inputdlg(prompt,dlg_title,num_lines,def_ans,options);
             if ~isempty(myans)
-                if strcmp(myans{1},'--')
+                if myans{1} == "--"
                     div=myans{1}; % NO divisions
                 else
                     try
@@ -1000,7 +1000,7 @@ function change_legend_breakpoints(~, ~)
                         div=eval(['[' myans{1} ']']);
                     end
                 end
-                if isnumeric(div) || isempty(div) || strcmp(div,'--')
+                if isnumeric(div) || isempty(div) || div == "--"
                     MainInteractiveMap.magnitude_divs(div);
                 end
                 zmap_update_displays()
@@ -1172,7 +1172,7 @@ function cb_xsect(src,~)
 end
 
 function A = toggleOnOff(A)
-    if strcmp(A,'on')
+    if A == "on"
         A='off';
     else
         A='on';

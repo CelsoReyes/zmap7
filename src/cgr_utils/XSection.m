@@ -490,7 +490,7 @@ classdef XSection < handle
                     if length(ll)==1
                         ll='AA';
                     else
-                        assert(~strcmp(lastletter,'ZZ'),'Error. too many cross sections');
+                        assert(lastletter ~= "ZZ",'Error. too many cross sections');
                         ll(1)=char(ll(1)+1);
                         ll(2)='A';
                     end

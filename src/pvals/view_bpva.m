@@ -388,7 +388,7 @@ function view_bpva(res, idx)
         %lab1='dM ';
         %valueMap = maxm-magco;
         res.values.dM=res.values.maxmg - res.values.magco;
-        idx=find(strcmp(res.values.Properties.VariableNames,'dM'));
+        idx=find(res.values.Properties.VariableNames == "dM");
         res.values.Properties.VariableDescriptions(idx)='Magnitude range(Mmax - Mcomp)';
         view_bpva(res,idx);
     end
@@ -399,7 +399,7 @@ function view_bpva(res, idx)
         %lab1='difference in b';
         %valueMap = old-meg;
         res.values.deltaB=res.values.bv - res.values.bv2;
-        idx=find(strcmp(res.values.Propertes.VariableNames,'deltaB'));
+        idx=find(res.values.Propertes.VariableNames == "deltaB");
         res.values.Properties.VariableDescriptions(idx)='difference in b';
         view_bpva(res,idx);
     end

@@ -330,7 +330,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             ShapeCircle.AddCircleMenu(submenu, ZGshape);
             
             % % menu items that change the main catalog % %
-            isenabled = tf2onoff( ~strcmp(ZGshape.Type,'unassigned') );
+            isenabled = tf2onoff( ZGshape.Type ~= "unassigned" );
             
             
             uimenu(submenu,'separator','on',...
@@ -389,7 +389,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             else
                 myview=ZG.Views.primary.PolygonApply(ZG.selection_shape.Outline);
             end
-            if strcmp(in_or_out,'outside')
+            if in_or_out == "outside"
                 myview=myview.PolygonInvert();
             end
             
@@ -425,7 +425,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             allmenus=findobj(parent,'Type','uimenu');
             shapeMenus=startsWith({allmenus.Label},'Set Polygon');
             shapeMenus=startsWith({allmenus.Label},'Set Circle') | shapeMenus;
-            checkedMenus=strcmp({allmenus.Checked},'on');
+            checkedMenus={allmenus.Checked} == "on";
             set(allmenus(shapeMenus&checkedMenus),'Checked','off');
             %activate crop menu items
             cropMenus=startsWith({allmenus.Label},'crop ');
@@ -483,7 +483,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             else
                 myview=ZG.Views.primary.PolygonApply(ZG.selection_shape.Outline);
             end
-            if strcmp(in_or_out,'outside')
+            if in_or_out == "outside"
                 myview=myview.PolygonInvert();
             end
             

@@ -240,7 +240,7 @@ function  bdiff(mycat, holdplot)
     end
     
     function cb_nodiscrete(mysrc,~)
-        isChecked = strcmp(mysrc.Checked,'on');
+        isChecked = mysrc.Checked == "on";
         mysrc.Checked = tf2onoff(~isChecked);
         pl.Visible = tf2onoff(isChecked);
     end

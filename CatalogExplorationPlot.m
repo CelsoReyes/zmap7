@@ -43,7 +43,7 @@ classdef CatalogExplorationPlot < handle
             z=c.(obj.z_by);
             s=c.(obj.size_by);
             s=obj.sizeFcn(s);
-            if strcmp(obj.color_by,'-none-')
+            if obj.color_by == "-none-"
                 cl=[0 0 0];
             else 
                 cl=c.(obj.color_by);
@@ -180,7 +180,7 @@ classdef CatalogExplorationPlot < handle
                     if iscell(c.(fld))
                         beep;
                         obj.ax.(xyzscale)='linear';
-                    elseif any(c.(fld)<=0) && strcmp(obj.ax.(xyzscale),'log')
+                    elseif any(c.(fld)<=0) && obj.ax.(xyzscale) == "log"
                         beep;
                         disp(['enforcing linear ' xyzscale ' because of negative values']);
                         obj.ax.(xyzscale)='linear';
@@ -295,7 +295,7 @@ classdef CatalogExplorationPlot < handle
         function cleanChildren_cb(obj,src,ev,bywhat)
             m=findobj(src.Children,'Type','uimenu');
             labels = get(m,'Label');
-            ison = strcmp(get(m,'Checked'),'on');
+            ison = get(m,'Checked') == "on";
             isoff = ~ison;
             checkmask = strcmp(labels, obj.(bywhat));
             disp(labels{checkmask})
@@ -338,7 +338,7 @@ classdef CatalogExplorationPlot < handle
                 scales(strcmp(obj.ax.(prop),scales))=[];
                 
                 % if any data is non-positive, axes must remain linear
-                if any(obj.myscatter.([letter 'Data']) <=0) && strcmp(scales{1},'log')
+                if any(obj.myscatter.([letter 'Data']) <=0) && scales{1} == "log"
                     beep
                     disp(['enforcing linear ' prop ' because of negative values'])
                     obj.ax.(prop) = 'linear'; 

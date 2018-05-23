@@ -150,7 +150,7 @@ classdef SymbolManager
         function test(obj, ax)
             
             % show the legend. has dual purpose. it assigns DisplayName and provides feedback for user
-            wasVisible=~isempty(ax.Legend) && strcmp(ax.Legend.Visible,'on');
+            wasVisible=~isempty(ax.Legend) && ax.Legend.Visible == "on";
             if ~wasVisible
                 legend(ax,'show');
                 ax.Legend.Visible='on';

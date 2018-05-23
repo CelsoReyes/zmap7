@@ -136,7 +136,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
                     'Tag','quakes');
                 hold off
             else
-                ison=strcmp(qtag.Visible,'on');
+                ison=qtag.Visible == "on";
                 qtag.Visible=tf2onoff(~ison);
                 src.Checked=tf2onoff(~ison);
                 drawnow

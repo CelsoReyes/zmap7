@@ -173,7 +173,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         for ij=1:numel(hdrs)
             
             field = hdrs{ij};
-            if (strcmp(field,'longtitude')) %SCEDC mispelling
+            if field == "longtitude" % SCEDC mispelling
                 hdrs{ij} = 'longitude';
                 field = hdrs{ij};
             end
@@ -227,7 +227,7 @@ function  mappings = determine_field_mappings(hdrs, firstrow)
     mappings('magtype')='%s';
     
     % the TIME could be in one of several different formats. Figure out which one.
-    time_pos = find(strcmp(hdrs,'time'));
+    time_pos = find(hdrs == "time");
     
     % look at format for the date
     if ismember('/',vals{time_pos})

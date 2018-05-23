@@ -3,7 +3,7 @@ function A = toggleOnOff(A)
     %
     % A = TOGGLEONOFF(B) if B is 'on', then A is 'off' and vice-versa.
     
-    if strcmp(A,'on')
+    if A == "on"
         A='off';
     else
         A='on';

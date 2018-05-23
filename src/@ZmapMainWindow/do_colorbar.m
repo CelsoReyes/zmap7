@@ -5,7 +5,7 @@ function do_colorbar(obj,src,evt,origCallback)
     if get(gcbf,'CurrentAxes')==findobj(obj.fig,'Tag','mainmap_ax') || (exist('src','var') && isequal(src,obj.map_axes))
         % do our thing
         h=findobj(obj.fig,'Type','colorbar','-and','Parent',obj.fig);
-        if ~isempty(h) || strcmp(obj.colorField,'-none-')
+        if ~isempty(h) || obj.colorField == "-none-"
             delete(h)
             return;
         end

@@ -45,7 +45,7 @@ function out=load_stations(filename, force)
     out=TMP.stations;
     
     % get rid of synthetic stations
-    out=out(~strcmp(out.Network,'SY'),:);
+    out=out(out.Network ~= "SY",:);
     
     out.Properties.VariableNames{2}='StaName';
     out.Name=strcat(out.Network,'.',out.StaName,' : [',out.SiteName,']');

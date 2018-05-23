@@ -245,7 +245,7 @@ classdef ShapePolygon < ShapeGeneral
             end
             
             function endbox(src,ev)
-                if strcmp(fig.SelectionType,'open')
+                if fig.SelectionType == "open"
                     return
                 end
                 ax.ButtonDownFcn=aBD;

@@ -27,7 +27,7 @@ function addLegendToggleContextMenuItem(cm, position, separator)
     if isempty(h)
         h=uimenu(cm,'Label', label);
     end
-    h.Separator = tf2onoff(strcmp(separator,'above'));
+    h.Separator = tf2onoff(separator == "above");
     h.(Futures.MenuSelectedFcn) = @legend_cb;
     
     % by default it adds it to the bottom of the menu, which is actually

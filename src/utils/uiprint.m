@@ -509,7 +509,7 @@ function uiprint(action)
         %reset the file and path name and redisplay
         uiprint('eval');
 
-    elseif strcmp(action,'ok')
+    elseif action == "ok"
 
         %execute the print command and exit
 

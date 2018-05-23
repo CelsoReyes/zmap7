@@ -134,7 +134,7 @@ function hpol = polar(theta,rho,line_style)
     xx = rho.*sin(theta);
     
     % plot data on top of grid
-    if strcmp(line_style,'auto')
+    if line_style == "auto"
         q = plot(xx,yy);
     else
         q = plot(xx,yy,line_style);

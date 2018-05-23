@@ -47,16 +47,16 @@ function addLegendToggleContextMenuItem(ax,parent, cm, position, separator)
     
     % add once again
     uimenu(cm,'Label', label, ...
-        'Separator', tf2onoff(strcmp(separator,'above')),...
+        'Separator', tf2onoff(separator == "above"),...
         'Callback', @(~,~)legend(ax,'toggle') );
     
     % by default it adds it to the bottom of the menu, which is actually
     % the first item in the context menu's children
     
     %if we want it at the top, then do a circular shift
-    if strcmp(position,'top') && ~isempty(cm.Children)
+    if position == "top" && ~isempty(cm.Children)
         disp('acting on top')
-        cm.Children(end).Separator=tf2onoff(strcmp(separator,'below'));
+        cm.Children(end).Separator=tf2onoff(separator == "below");
         cm.Children=circshift(cm.Children,-1);
     end
     

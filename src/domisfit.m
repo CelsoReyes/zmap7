@@ -823,7 +823,7 @@ function newcat2=plotmi(var1, newcat2, mi)
     ylabel('Cumulative Misfit ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);
     xlabel(xtitle,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
-    if ~ strcmp(var1 ,'Default')
+    if var1 ~= "Default"
         hold on
         for i=1:6
             plot(ax,tmp(sixSlices(i)),cumu2(sixSlices(i)),'xr');

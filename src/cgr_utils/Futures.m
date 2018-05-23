@@ -77,7 +77,7 @@ classdef Futures
             %
             % see also VERLESSTHAN
             
-            evaluateFunction=exist('evaluated','var') && strcmp(evaluated,'evaluated');
+            evaluateFunction=exist('evaluated','var') && evaluated == "evaluated";
             
             if any(startsWith(minVer,{'(R','R'}))
                 minVer=Futures.release2version(minVer);

@@ -248,7 +248,7 @@ t = t0(pointdistances.columnindex);
 
 % we must now do at least some looping, still vectorized where possible.
 % the piecewise linear case is simpler though, so do it separately.
-if strcmp(interpmethod,'linear');
+if interpmethod == "linear";
   % loop over the individual points, vectorizing in the number of
   % segments, when there are many segments, but not many points to map.
   if n >= (5*m)
@@ -495,7 +495,7 @@ else
     
   end
   
-end % if strcmp(interpmethod,'linear');
+end % if interpmethod == "linear";
 
 
 % ==========================================================

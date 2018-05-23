@@ -12,7 +12,7 @@ function zmap_update_displays(opt)
     m=findobj(gcf,'Tag','mainmap_ax');
     
     if ~isempty(m)
-        if strcmp(opt,'showmap')
+        if opt == "showmap"
             m.update('show');
         else
             m.update();

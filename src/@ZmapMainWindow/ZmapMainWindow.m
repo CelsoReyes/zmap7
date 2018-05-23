@@ -468,7 +468,7 @@ classdef ZmapMainWindow < handle
             mytitle = get(gco,'Title');
             try
                 
-                if get(gco,'Type')=="uitab" && strcmp(get(gco,'Title'), xsec.name)
+                if get(gco,'Type') == "uitab" && strcmp(get(gco,'Title'), xsec.name)
                     delete(gco);
                 else
                     error('Supposed to delete tab, but gco is not what is expected');

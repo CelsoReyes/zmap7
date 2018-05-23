@@ -2,7 +2,7 @@ function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
     % REPLOT_ALL(obj, metaProp, eventData)
 
-    if ~exist('eventData','var') || strcmp(eventData.EventName,'PostSet')
+    if ~exist('eventData','var') || eventData.EventName == "PostSet"
         eventData.EventName='ReplotAll';
     end
     disp(['*** REPLOTTING BECAUSE: ' eventData.EventName]);
@@ -94,8 +94,8 @@ function rearrange_axes_items(obj)
     ch=obj.map_axes.Children;
     items.map = startsWith(get(ch,'Tag'),'mainmap_');
     items.grid = startsWith(get(ch,'Tag'),'grid_');
-    items.bgevents = strcmp(get(ch,'Tag'),'all events');
-    items.fgevents = strcmp(get(ch,'Tag'),'active quakes');
+    items.bgevents = get(ch,'Tag') == "all events";
+    items.fgevents = get(ch,'Tag') == "active quakes";
     items.shape = startsWith(get(ch,'Tag'),'shape');
     items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents);
     obj.map_axes.SortMethod='childorder';

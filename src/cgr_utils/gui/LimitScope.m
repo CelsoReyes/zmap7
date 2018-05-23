@@ -180,25 +180,25 @@ classdef LimitScope < handle
             % set font to bold until tmpT is changed
             tmpT=LimitScope(mbt,'FontWeight','bold','normal'); %#ok<NASGU>
             
-            assert(strcmp(mbt.FontWeight,'bold'));
+            assert(mbt.FontWeight == "bold");
             
             % disable the button for 3 seconds.
             LimitScope(mbb,'Enable','off','on', seconds(3));
             
             % program pauses, so by the time it reaches here, it should be on again 
-            assert(strcmp(mbb.Enable,'on')); 
+            assert(mbb.Enable == "on"); 
             
             %  change the button color for 3 seconds before resetting it
             LimitScope(mbb,'BackgroundColor','r',mbb.BackgroundColor, 3);
             
             % font should still be bold until we reassign tmpT
-            assert(strcmp(mbt.FontWeight,'bold'));
+            assert(mbt.FontWeight == "bold");
             
             % change the display string
             tmpT=LimitScope(mbt,'String','TESTING!',mbt.String); %#ok<NASGU>
             
-            assert(strcmp(mbt.FontWeight,'normal'));
-            assert(strcmp(mbt.String,'TESTING!'));
+            assert(mbt.FontWeight == "normal");
+            assert(mbt.String == "TESTING!");
             
             pause(3)
             

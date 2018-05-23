@@ -54,7 +54,7 @@ classdef TimeDepthPlotter
             
             yl=ylabel('Depth [km]');
             f=ax;
-            while(~strcmp(f.Type,'figure'))
+            while(f.Type ~= "figure")
                 f=f.Parent;
             end
             delete(findobj(f,'Tag','TimeDepthContext'));

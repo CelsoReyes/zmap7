@@ -23,8 +23,8 @@ function plothist(obj, name, values, tabgrouptag)
     else
         h=findobj(ax,'Type','histogram');
         if ~isempty(h)
-            h(strcmp({h.Tag},'cataloghist')).Data=values; %TODO move into hisgra
-            delete(h(~strcmp({h.Tag},'cataloghist')))
+            h({h.Tag} == cataloghist).Data=values; %TODO move into hisgra
+            delete(h({h.Tag} ~= "cataloghist"))
             if ~isempty(obj.xscats)
                 doit(ax)
             end

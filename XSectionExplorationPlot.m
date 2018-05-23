@@ -48,13 +48,13 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
                         obj.ax.ZTickLabelMode='auto';
                 end
             end
-            if (isempty(specific) || strcmp(specific,'x_by')) && strcmp(obj.x_by, 'dist_along_strike_km')
+            if (isempty(specific) || specific == "x_by") && obj.x_by == "dist_along_strike_km"
                 modify_axis('XLim','XLabel','XTick','XTickLabel');
             end
-            if (isempty(specific) || strcmp(specific,'y_by')) && strcmp(obj.y_by, 'dist_along_strike_km')
+            if (isempty(specific) || specific == "y_by") && obj.y_by == "dist_along_strike_km"
                 modify_axis('YLim','YLabel','YTick','YTickLabel');
             end
-            if (isempty(specific) || strcmp(specific,'z_by')) && strcmp(obj.z_by, 'dist_along_strike_km')
+            if (isempty(specific) || specific == "z_by") && obj.z_by == "dist_along_strike_km"
                 modify_axis('ZLim','ZLabel','ZTick','ZTickLabel');
             end
  

@@ -85,7 +85,7 @@ classdef bdiff2
             end
             
             obj=obj.calculate(catalog);
-            if exist('ax','var') && strcmp(ax,'noplot')
+            if exist('ax','var') && ax == "noplot"
                 % do not plot
                 obj.write_globals();
                 return;
@@ -397,7 +397,7 @@ classdef bdiff2
             
             function callbackfun_nodiscrete(mysrc,~)
                 % toggles discrete curve
-                isChecked = strcmp(mysrc.Checked,'on');
+                isChecked = mysrc.Checked == "on";
                 mysrc.Checked = tf2onoff(~isChecked);
                 set(findobj(gcf,'Tag','DiscreteValuePlot'),'Visible',mysrc.Checked);
             end
