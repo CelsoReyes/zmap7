@@ -38,21 +38,7 @@ classdef TimeMagnitudePlotter
                 end
             end
             ax.Visible = 'off';
-            %% to do a colored-by depth plot, use this
-            %{
-            depcolors=catalog.Depth - min(catalog.Depth);
-            colormap('jet')
-            pl=scatter(ax, catalog.Date, catalog.Magnitude,12,depcolors,'Tag',tag,...
-                'DisplayName','Events');
-            pl.Marker='+';
-            cb=colorbar('peer',ax,'YDir','reverse');
-            ylabel(cb,'depth [km]')
-            %}
-            %% to do a not-colored plot, use this
-            
-            %pl=scatter(ax, catalog.Date, catalog.Magnitude,12,'Tag',tag,...
-            %    'DisplayName','Events','MarkerEdgeColor',[0.05 0.05 0.2],'Marker','+');
-            
+
             % plotting from ZERO magnitude is arbitrary, and stemplot becomes unusable if all magnitudes
             % are below zero. Therefore, make sure stems are always going up
             minMag= min(catalog.Magnitude);
@@ -65,18 +51,18 @@ classdef TimeMagnitudePlotter
                 scatter(ax, catalog.Date, catalog.Magnitude,'.','CData',[.6 .6 .7],...
                     'Tag',tag,'DisplayName','Events',...
                     'MarkerEdgeColor',[0.05 0.05 0.2]);
+            elseif isempty(catalog)
+                stem(ax, catalog.Date, catalog.Magnitude,TimeMagnitudePlotter.MARKER,...
+                    'Color',[.6 .6 .7],'Tag',tag,'DisplayName','Events',...
+                    'MarkerEdgeColor',[0.05 0.05 0.2]);
             else
                 stem(ax, catalog.Date, catalog.Magnitude,TimeMagnitudePlotter.MARKER,...
                     'BaseValue',BaseValue,'Color',[.6 .6 .7],'Tag',tag,'DisplayName','Events',...
                     'MarkerEdgeColor',[0.05 0.05 0.2]);
             end
-            %pl.Tag = tag;
-            %pl.DisplayName='Events';
-            %pl.MarkerEdgeColor=[0.05 0.05 0.2];
+            
             set(ax,'box','on', 'TickDir','out');
-            %set(ax,'box','on',...
-            %    'SortMethod','childorder','TickDir','out','FontWeight',...
-            %    'bold','FontSize',14,'Linewidth',1.2);
+            
             ax.Tag='time_mag_axis';
             title(['Time Magnitude Plot for "' catalog.Name '"'],'Interpreter','none');
             xlabel('Date');
@@ -87,23 +73,14 @@ classdef TimeMagnitudePlotter
             TimeMagnitudePlotter.overlayBigEvents(ax);
             ax.Visible = 'on';
         end
-        %{
-function pl2=addCatalog(catalog,color)
-            % add another catalog to this plot
-            tag= 'time_mag_plotA';
-            ax=findobj('Tag','time_mag_axis');
-            hold(ax,'on');
-            pl2=scatter(ax, catalog.Date, catalog.Magnitude, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
-        end
-        %}
+        
         function overlayBigEvents(ax)
             %overlayBigEvents plots large events as a different marker
             ZG=ZmapGlobal.Data;
             bigcat=ZG.maepi;
-            %tag = 'time_mag_axis';
-            %ax = findobj('Tag',tag);
+            
             holdstate=HoldStatus(ax,'on');
-            scatter(ax,ZG.maepi.Date,ZG.maepi.Magnitude,'h',...
+            scatter(ax,ZG.maepi.Date,ZG.maepi.Magnitude,mag2dotsize(ZG.maepi.Magnitude),'h',...
                 'MarkerEdgeColor','k','MarkerFaceColor','y',...
                 'DisplayName','Large Events');
             holdstate.Undo();

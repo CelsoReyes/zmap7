@@ -188,7 +188,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             function c=makeuicontext(changedFcn)
-                c=uicontextmenu('Tag','ShapeGenContext');
+                c=uicontextmenu(f,'Tag','ShapeGenContext');
                 uimenu(c,...
                     'Label','info...',...
                     Futures.MenuSelectedFcn,@(src,ev) obj.summary());

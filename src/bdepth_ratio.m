@@ -105,7 +105,6 @@ classdef bdepth_ratio < ZmapHGridFunction
         
         function results=Calculate(obj)
             
-            ZmapMessageCenter.set_info(' ','Running bdepth_ratio... ');
             %  make grid, calculate start- endtime etc.  ...
             %
             

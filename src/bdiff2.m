@@ -289,7 +289,7 @@ classdef bdiff2
                 ...'MarkerFaceColor','w',...
                 'MarkerEdgeColor','k',...
                 'Tag','total events at or above magnitude',...
-                'DisplayName','Tot events > M(x)');
+                'DisplayName','Cum events > M(x)');
             
             % plot discrete values
             line(ax,obj.magsteps_desc,obj.bval2,'LineStyle','none','Marker','^',...
@@ -309,13 +309,15 @@ classdef bdiff2
             obj.cua = ax;
             
             % Marks the point of Mc
+            mcText = sprintf('%s: %0.1f','Mc',obj.magco);
             line(ax, obj.magsteps_desc(obj.index_low),...
                 obj.bvalsum3(obj.index_low)*1.5,...
                 'Marker','v','MarkerFaceColor','b',...
-                'LineWidth',1.0,'MarkerSize',7,...
+                'LineWidth',1.0,'LineStyle','none','MarkerSize',7,...
                 'Tag','magnitude of Completeness',...
-                'DisplayName',sprintf('%s: %0.1f','Mc',obj.magco));
-            text(obj.magsteps_desc(obj.index_low)+0.2,obj.bvalsum3(obj.index_low)*1.5,'Mc','FontWeight','bold','FontSize',ZG.fontsz.s,'Color','b')
+                'DisplayName',mcText);
+            text(obj.magsteps_desc(obj.index_low)+0.2,obj.bvalsum3(obj.index_low)*1.5,...
+                mcText,'FontWeight','bold','FontSize',ZG.fontsz.s,'Color','b')
             
             % plot line corresponding to B value
             bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',...
@@ -339,8 +341,9 @@ classdef bdiff2
                 text(ax,.16,.14,tx);
             end
             
+            grid(ax,'on');
             set(bfig,'visible','on');
-            legend(ax,'show')
+            % legend(ax,'show')
             % created here too, for when figure is created from inset figure
             if isempty(ax.UIContextMenu)
                 delete(findobj(bfig,'Tag','bdiff_from_inset context'))
@@ -354,13 +357,13 @@ classdef bdiff2
         function tx=descriptive_text(obj,gBdiff)
             ZG=ZmapGlobal.Data;
             if ZG.hold_state
-                ba_text = sprintf('b-value (w LS, M  >= %f ): %.2f +/- %.2f ,a-value = %.3f',M1b(1) ,obj.bw, obj.std_backg, obj.aw );
+                ba_text = sprintf('b-value (w LS, M  >= %f ): %.2f +/- %.2f \na-value = %.3f',M1b(1) ,obj.bw, obj.std_backg, obj.aw );
                 
                 p_text = ['p=  ', num2str(obj.pr,2)];
                 nbs_text = sprintf( 'n1: %g, n2: %g, b1: %g, b2: %g', gBdiff.n1, gBdiff.n2, gBdiff.b1, gBdiff.b2);
                 tx = sprintf('%s\n%s\n%s',ba_text, p_text, nbs_text');
             else
-                fmt = 'b-value = %.2f +/- %.2f,  a-value = %.3f,  a-value (annual) = %.3f';
+                fmt = 'b-value = %.2f +/- %.2f\na-value = %.3f,  a-value (annual) = %.3f';
                 if ~obj.dlg_res.doBootstrap
                     ba_text = sprintf(fmt, obj.bw, obj.std_backg, obj.aw, obj.a0);
                     sol_type = 'Maximum Likelihood Solution';

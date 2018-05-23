@@ -3,9 +3,11 @@ function replot_all(obj,metaProp,eventData)
     % REPLOT_ALL(obj, metaProp, eventData)
 
     if ~exist('eventData','var') || eventData.EventName == "PostSet"
-        eventData.EventName='ReplotAll';
+        eventName='ReplotAll';
+    else
+        eventName = eventData.EventName;
     end
-    disp(['*** REPLOTTING BECAUSE: ' eventData.EventName]);
+    disp(['*** REPLOTTING BECAUSE: ' eventName]);
     
     %warning('ReplotStack')
     md=[];
@@ -16,7 +18,7 @@ function replot_all(obj,metaProp,eventData)
         'String',s);
     
     obj.replotting=true;
-    switch eventData.EventName
+    switch eventName
         case 'XsectionAdded'
             disp('add a cross section to plots')
             k=obj.XSectionTitles;

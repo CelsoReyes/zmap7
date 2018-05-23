@@ -22,6 +22,10 @@ function cumplot(obj, tabgrouptag)
         uimenu(cln,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
         uimenu(cln, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
         uimenu(cln,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+    else
+        % update the referenced axes
+        set(findobj(cln,'Label','start here'),Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
+        set(findobj(cln,'Label','end here'),Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
     end
     
     % plot the main catalog

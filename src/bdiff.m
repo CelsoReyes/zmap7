@@ -164,7 +164,6 @@ function  bdiff(mycat, holdplot)
     end
     
     set(gcf,'visible','on');
-    ZmapMessageCenter.set_info('  ','Done')
     
     
     if ZG.hold_state

@@ -157,7 +157,6 @@ function bfitnew(mycat)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     

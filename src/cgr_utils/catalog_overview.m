@@ -33,8 +33,8 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     fignum = create_dialog();
     
     watchoff
-    str = 'Please Select a subset of earthquakes and press "Go"';
-    ZmapMessageCenter.set_message('Message',str);
+    %str = 'Please Select a subset of earthquakes and press "Go"';
+    %ZmapMessageCenter.set_message('Message',str);
     figure(fignum);
     
     uiwait(fignum)

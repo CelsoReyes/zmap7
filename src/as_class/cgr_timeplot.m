@@ -589,7 +589,7 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;
-        ZmapMessageCenter.update_catalog();
+        %ZmapMessageCenter.update_catalog();
         zmap_update_displays();
     end
     

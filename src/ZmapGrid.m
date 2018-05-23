@@ -332,7 +332,9 @@ classdef ZmapGrid
             end
             % make sure that grid is on the bottom layer
             chh=ax.Children;
-            ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
+            if ~isempty(prev_grid)
+                ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
+            end
              
             if numel(varargin)>1
                 set(prev_grid,varargin{:});

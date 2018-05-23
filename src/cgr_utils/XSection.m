@@ -401,6 +401,9 @@ classdef XSection < handle
         
         function obj=initialize_with_mouse(ax, default_width)
                 ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m'); % could throw
+                if isequal(ptdetails.xy1,ptdetails.xy2)
+                    error('Cannot create a zero-length cross section');
+                end
                 obj = XSection.initialize_with_dialog(ax, default_width, ptdetails);
         end
         function obj=initialize_with_dialog(ax, default_width, ptdetails)

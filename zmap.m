@@ -27,7 +27,7 @@
 %  Stefan Wiemer  12/94
 %  Modified by Celso Reyes Spring-Fall 2017
 %
-% see also: ZmapCatalog, ZmapCatalogView, ZmapMainWindow, ZmapMessageCenter
+% see also: ZmapCatalog, ZmapCatalogView, ZmapMainWindow
 
 global ZG
 % ZG (ZmapGlobal) provides access to all ZMAP's global variables
