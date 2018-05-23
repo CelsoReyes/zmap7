@@ -17,8 +17,8 @@ classdef FancyColors
     %
     % Created By Celso G. Reyes
     
-    % color values modified from https://www.rapidtables.com/web/color/RGB_Color.html
-    % or  http://chir.ag/projects/name-that-color/
+    % color values modified from http://chir.ag/projects/name-that-color/
+    % or https://www.rapidtables.com/web/color/RGB_Color.html
    
     properties(Constant)
         % lookup-list of color names, RGB decimal values, and hexidecimal strings

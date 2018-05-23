@@ -247,6 +247,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
             uimenu(lookmenu,'Label','darken active map',...
                 Futures.MenuSelectedFcn,@(~,~)cb_brighten(-0.4));
             
+            uimenu(lookmenu,'Separator','on',...
+                'Label','increase alpha ( +0.2 )',...
+                Futures.MenuSelectedFcn, @(~,~)cb_alpha( 0.2));
+            uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
+                Futures.MenuSelectedFcn, @(~,~)cb_alpha( - 0.2));
             function cb_shading(val)
                 % must be in function because ax must be evaluated in real-time
                 activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
@@ -259,6 +264,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 cm=colormap(ax);
                 colormap(ax,brighten(cm,val));
             end
+            function cb_alpha(val)
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes');
+                ss = findobj(ax.Children,'Tag','result overlay');
+                newAlpha = ss.FaceAlpha + val;
+                if newAlpha < 0; newAlpha = 0; end
+                if newAlpha > 1; newAlpha = 1; end
+                alpha(ss,newAlpha);
+            end
+                
         end
     end % Public methods
     
