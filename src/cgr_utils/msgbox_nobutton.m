@@ -65,7 +65,7 @@ classdef msgbox_nobutton < handle
         function delay_for_close(obj, dur)
             % DELAY_FOR_CLOSE(dur) how long to wait before closing automatically. (in seconds)
             if isnumeric(dur)
-                dur=seconds(dur)
+                dur=seconds(dur);
             end
             if dur > seconds(30)
                 warning('duration seems fairly long %s. MATLAB is paused in meantime',char(dur))

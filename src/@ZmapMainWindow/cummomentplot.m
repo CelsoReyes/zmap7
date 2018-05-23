@@ -27,9 +27,8 @@ function cummomentplot(obj,tabgrouptag)
     % plot the main catalog
     Xs=obj.catalog.Date;
     [~, Ys, ~] = calc_moment(obj.catalog);
-    p=line(ax,Xs,Ys,'LineWidth',2.5,...
-        'Tag','catalog','DisplayName','catalog','color','k');
-    p.UIContextMenu=cln;
+    line(ax,Xs,Ys,'LineWidth',2.5,...
+        'Tag','catalog','DisplayName','catalog','color','k','UIContextMenu',cln);
     grid(ax,'on');
     
     % plot cross sections, too

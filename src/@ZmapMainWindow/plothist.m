@@ -9,21 +9,27 @@ function plothist(obj, name, values, tabgrouptag)
         ax=axes(myTab);
         hisgra(obj.catalog,name,ax)
         h=findobj(ax,'Type','histogram');
-        h.DisplayName='catalog';
-        h.Tag='cataloghist';
-        h.FaceColor = [0.4 0.4 0.4];
-        ax.YGrid='on';
-        hold on
-        c=ax.UIContextMenu;
-        addLegendToggleContextMenuItem(c,'bottom','above');
-        set(findobj(ax.Children,'Type','histogram'),'UIContextMenu',c);
+        if ~isempty(h)
+            h.DisplayName='catalog';
+            h.Tag='cataloghist';
+            h.FaceColor = [0.4 0.4 0.4];
+            ax.YGrid='on';
+            hold on
+            c=ax.UIContextMenu;
+            addLegendToggleContextMenuItem(c,'bottom','above');
+            set(findobj(ax.Children,'Type','histogram'),'UIContextMenu',c);
+        end
         
     else
         h=findobj(ax,'Type','histogram');
-        h(strcmp({h.Tag},'cataloghist')).Data=values; %TODO move into hisgra
-        delete(h(~strcmp({h.Tag},'cataloghist')))
-        if ~isempty(obj.xscats)
-            doit(ax)
+        if ~isempty(h)
+            h(strcmp({h.Tag},'cataloghist')).Data=values; %TODO move into hisgra
+            delete(h(~strcmp({h.Tag},'cataloghist')))
+            if ~isempty(obj.xscats)
+                doit(ax)
+            end
+        else
+            disp('no histogram exists in axes');
         end
     end
     

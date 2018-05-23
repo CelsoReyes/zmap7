@@ -12,6 +12,10 @@ function hisgra(mycat, opt, ax)
     catch ME
         return;
     end
+    if isempty(vari1)
+        return
+    end
+    
     if exist('ax','var') && isvalid(ax)
         % plot into the axes instead of creating a new figure;
         plotIntoAxes();

@@ -25,8 +25,8 @@ classdef ZmapMainWindow < handle
         undohandle;
         Features = containers.Map();
         replotting=false % keep from plotting while plotting
-        mdate
-        mshape
+        mdate %
+        mshape %
         WinPos (4,1) = position_in_current_monitor(Percent(95),Percent(90))% [50 50 1200 750]; % position of main window
         eventMarker char = ZmapGlobal.Data.event_marker; % Marker used when plotting events
         sharedContextMenus;
@@ -45,6 +45,7 @@ classdef ZmapMainWindow < handle
         MapCBPos_L=[0.5975    0.5600    0.0167    0.4000]
         FeaturesToPlot = ZmapGlobal.Data.mainmap_features
         ValidColorFields={'Depth','Date','Magnitude','-none-'};
+        Type = 'zmapwindow';
     end
     
     properties(Dependent)
@@ -67,150 +68,108 @@ classdef ZmapMainWindow < handle
     end
     
     methods
-        function obj=ZmapMainWindow(fig,catalog)
-            if exist('fig','var') &&... specifed a figure, perhaps.
-                    isa(fig,'ZmapMainWindow') &&... actually, specified a ZmapMainWindow object, instead
-                    ~isvalid(fig.fig) % but that object's figure isn't valid. (?)
-                % recreate the figure (?)
-                errordlg('unimplemented');
-                return
+        function obj=ZmapMainWindow(varargin)
+            % ZMAPMAINWINDOW
+            % obj = ZMAPMAINWINDOW( CATALOG )
+            % obj = ZMAPMAINWINDOW( FIG, ... )
+            % obj = ZMAPMAINWINDOW( ) 
+            
+            fig = gobjects(0);
+            in_catalog = [];
+            
+            switch nargin
+                case 0
+                    % do nothing
+                case 1
+                    % either CATALOG or FIG is provided
+                    try
+                        switch varargin{1}.Type
+                            case 'zmapcatalog'
+                                in_catalog = varargin{1};
+                            case 'figure'
+                                fig = varargin{1};
+                            otherwise
+                                error('unexpected argument to ZmapMainWindow: %s',varargin{1}.Type);
+                        end
+                    catch ME
+                        warning(ME)
+                        error('unexpected argument to ZmapMainWindow: %s',class(varargin{1}));
+                    end
+                case 2
+                    % provided a FIGURE and a CATALOG
+                    if isempty(varargin{1})
+                        % do nothing. it was a place holder
+                    elseif isgraphics(varargin{1}) && isvalid(varargin{1}) && varargin{1}.Type == "figure"
+                        fig = varargin{1};
+                    else
+                        error('Usage: ZmapMainWindow(FIG, catalog)\n%s','  First argument was not a figure');
+                    end
+                    
+                    if isa(varargin{2},'ZmapCatalog')
+                        in_catalog = varargin{2};
+                    else
+                        error('Usage: ZmapMainWindow(fig, CATALOG).\nSecond argument was not a catalog');
+                    end
             end
             
-            if exist('fig','var') && isa(fig,'ZmapCatalog')
-                catalog=fig;
-                fig=[];
-            end
             
             %if the figure was specified, but wasn't empty, then delete it.
-            if exist('fig','var') && isa(fig,'matlab.ui.Figure') && isvalid(fig)
+            if isvalid(fig)
                 an=questdlg(sprintf('Replace existing Map Windows?\nWarning: This will delete any results tabs'),...
                     'Window exists','Replace Existing','Create Another', 'cancel','cancel');
                 switch an
                     case 'Replace Existing'
                         delete(fig);
                     case 'Create a new figure'
-                        ;
+                        do_nothing();
                     case 'Nevermind'
                         return;
                 end
                 %delete(fig);
             end
             
-            % set up figure
-            h=msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
-            
-            obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
-                'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
-            % plot all events from catalog as dots before it gets filtered by shapes, etc.
-           
-            
-            % add the time stamp
-            s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
-            uicontrol(gcf,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
-                'String',s,'FontWeight','bold','Tag','zmap_watermark')
-            
-            % make sure that empty legend entries automatically disappear when the menu is called up 
-            set(findall(obj.fig,'Type','uitoggletool'),'ClickedCallback',...
-                'insertmenufcn(gcbf,''Legend'');clear_empty_legend_entries(gcf);');
-            
-            
-            c=uicontextmenu(obj.fig,'tag','yscale contextmenu');
-            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'Y'});
-            obj.sharedContextMenus.LogLinearYScale = c;
-            
-            c=uicontextmenu(obj.fig,'tag','xscale contextmenu');
-            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'X'});
-            obj.sharedContextMenus.LogLinearXScale = c;
-            
-            add_menu_divider('mainmap_menu_divider')
-            
-            
+            %% prepare the catalog
+            % if no catalog is provided, then use the default primary catalog.
             ZG=ZmapGlobal.Data;
-            if exist('catalog','var')
-                obj.rawcatalog=catalog;
-            else
+            if ~isa(in_catalog,'ZmapCatalog')
                 rawview = ZG.Views.primary;
                 if ~isempty(rawview)
                     obj.rawcatalog=ZG.Views.primary.Catalog;
                 end
+            else
+                obj.rawcatalog=in_catalog;
             end
-            if isempty(obj.rawcatalog)
-                errordlg(sprintf('Cannot open the ZmapMainWindow: No catalog is loaded.\nFirst load a catalog into Zmap, then try again.'),'ZMap');
-                error('No catalog is loaded');
-            end
-            obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
             
             obj.shape=ZG.selection_shape;
-            [obj.catalog,obj.mdate, obj.mshape]=obj.filtered_catalog();
+            
+            if isempty(obj.rawcatalog)
+                obj.daterange = [NaT NaT];
+                obj.catalog = ZmapCatalog();
+                obj.mdate = [];
+                obj.mshape=[];
+            else
+                obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
+                [obj.catalog, obj.mdate, obj.mshape]=obj.filtered_catalog();
+            end
+            % retrieve default values from ZmapGlobal.
+            [obj.catalog, obj.mdate, obj.mshape]=obj.filtered_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopt= ZG.gridopt;
             obj.evsel = ZG.GridSelector;
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
             
-            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
-                char(max(obj.catalog.Date)));
-            
-            TabLocation = 'top'; % 'top','bottom','left','right'
-            
-            obj.maingroup=uitabgroup('Units','normalized','Position',obj.TabGroupPositions.Main,...
-                'Visible','on',...
-                'SelectionChangedFcn',@cb_mainMapSelectionChanged,...
-                'TabLocation',TabLocation,'Tag','main plots');
-            obj.maintab = findOrCreateTab(obj.fig,'main plots',obj.catalog.Name);
-            obj.maintab.Tag = 'mainmap_tab';
-            %obj.maintab = uitab(obj.maingroup,'Title',obj.catalog.Name,'Tag','mainmap_tab');
+            %% prepare the figure
+            obj.prepareMainFigure();
             
             
-            obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
+            % "listeners" are functions called when certain values are changed.
+            obj.attach_listeners();
             
-            if isempty(obj.Grid)
-                obj.Grid=ZmapGrid('Grid',obj.gridopt);
-            end
+            %% prepare the UNDO
             
             obj.prev_states=Stack(5); % remember last 5 catalogs
             obj.pushState();
-            
-            
-            uitabgroup('Units','normalized','Position',obj.TabGroupPositions.UR,...
-                'Visible','off','SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation',TabLocation,'Tag','UR plots');
-            uitabgroup('Units','normalized','Position',obj.TabGroupPositions.LR,...
-                'Visible','off','SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation',TabLocation,'Tag','LR plots');
-            
-            obj.xsgroup=uitabgroup(obj.maintab,'Units','normalized',...
-                'Position',obj.TabGroupPositions.XS,...
-                'TabLocation',TabLocation,'Tag','xsections',...
-                'SelectionChangedFcn',@cb_selectionChanged,'Visible','off');
-            
-            obj.replot_all();
-            obj.fig.Visible='on';
-            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','LR plots'),'Visible','on');
-            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','UR plots'),'Visible','on');
-            
-            drawnow
-            
-            obj.create_all_menus(true); % plot_base_events(...) must have already been called, ino order to load the features from ZG
-            ax=findobj(obj.fig,'Tag','mainmap_ax');
-            obj.fig.CurrentAxes=ax;
-            legend(ax,'show');
-            clear_empty_legend_entries(obj.fig);
-            
-            
-            if isempty(obj.CrossSections)
-                set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
-            end
-            obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
-            
-            attach_catalog_listeners(obj);
-            attach_xsection_listeners(obj);
-            addlistener(obj,'CatalogChanged'  ,      @obj.replot_all);
-            addlistener(obj, 'daterange', 'PostSet', @obj.replot_all)
-            addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
-            addlistener(obj, 'shape',     'PostSet', @(~,~)disp('**Shape Changed'));
-            addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
-            addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
         end
         
         function xst = get.XSectionTitles(obj)
@@ -221,20 +180,32 @@ classdef ZmapMainWindow < handle
             end
         end
             
-        function attach_catalog_listeners(obj,~,~)
-            % reapply listeners to this specific catalog
-            addlistener(obj.catalog,'Name','PostSet',@(~,~)obj.set_figure_name);
-            addlistener(obj.catalog,'ValueChange',@(~,~)notify('CatalogChanged'));
-        end
+        function attach_listeners(obj)
+            attach_catalog_listeners(obj);
             
-        function attach_xsection_listeners(obj)
+            % attach cross-section listeners
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
             addlistener(obj,'XsectionAdded',  @obj.replot_all);
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
             addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
+            
+            % other listeners
+            addlistener(obj,'CatalogChanged'  ,      @obj.replot_all);
+            addlistener(obj, 'daterange', 'PostSet', @obj.replot_all);
+            addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
+            addlistener(obj, 'shape',     'PostSet', @(~,~)disp('**Shape Changed'));
+            addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
+            addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
         end
+        
+        function attach_catalog_listeners(obj,~,~)
+            % reapply listeners to this specific catalog
+            addlistener(obj.catalog,'Name','PostSet',@(~,~)obj.set_figure_name);
+            addlistener(obj.catalog,'ValueChange',@(~,~)notify('CatalogChanged'));
+        end
+            
         
         %% functions called by individual display panes to "hook into" the main window
         function getCatalogUpdates(obj, callbackfn)
@@ -245,7 +216,9 @@ classdef ZmapMainWindow < handle
             obj.addlistener('CrossSections','PostSet',callbackfn);
         end
         
-        function notifyXsectionChange(obj,prop,evt)
+        function notifyXsectionChange(obj,~,~) 
+            % NOTIFYXSECTIONCHANGE
+            % obj.NOTIFYXSECTIONCHANGE(prop, evt)
             lastCount = obj.lastXSectionCount;
             thisCount = numel(obj.CrossSections);
             obj.lastXSectionCount= thisCount;
@@ -318,7 +291,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [gridopts, obj.Grid] = GridOptions.fromDialog();
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog();
             else
                 fprintf('Using existing grid:\n');
             end
@@ -398,7 +371,6 @@ classdef ZmapMainWindow < handle
             idx=find(biggests,1,'first');
             obj.pushState();
             obj.daterange(1)=obj.catalog.Date(idx);
-            %obj.catalog = obj.catalog.subset(obj.catalog.Date>=obj.catalog.Date(idx));
         end
              
         function shapeChangedFcn(obj,oldshapecopy,varargin)
@@ -436,7 +408,6 @@ classdef ZmapMainWindow < handle
             % main map axes, where the cross section outline will be plotted
             axm=obj.map_axes;
             obj.fig.CurrentAxes=axm;
-            % xsec = XSection.initialize_with_dialog(axm,20);
             try
                 xsec = XSection.initialize_with_mouse(axm, 20);
             catch ME
@@ -472,9 +443,8 @@ classdef ZmapMainWindow < handle
                 CallbackFld,{@obj.cb_deltab,xsec});
             mytab.UIContextMenu=c;
             
-            % plot the 
+            
             ax=axes(mytab,'Units','normalized','Position',obj.XSAxPos,'YDir','reverse');
-            %xsec.plot_events_along_strike(ax,obj.catalog);
             obj.xsec_add(mytitle, xsec);
             xsec.plot_events_along_strike(ax,obj.xscats(mytitle));
             ax.Title=[];
@@ -482,7 +452,6 @@ classdef ZmapMainWindow < handle
             
             % make this the active tab
             mytab.Parent.SelectedTab=mytab;
-            %obj.replot_all();
          
         end
         
@@ -493,23 +462,21 @@ classdef ZmapMainWindow < handle
             obj.replot_all();
         end
             
-        function cb_deltab(obj, src,~, xsec)
+        function cb_deltab(obj, ~,~, xsec)
             prevPtr = obj.fig.Pointer;
             obj.fig.Pointer='watch';
             mytitle = get(gco,'Title');
             try
                 
-                if strcmp(get(gco,'Type'),'uitab') && strcmp(get(gco,'Title'), xsec.name)
+                if get(gco,'Type')=="uitab" && strcmp(get(gco,'Title'), xsec.name)
                     delete(gco);
                 else
                     error('Supposed to delete tab, but gco is not what is expected');
                 end
                 drawnow
-                %xsec.DeleteFcn();
-                %xsec.DeleteFcn=@do_nothing;
                 disp(['deleting ' xsec.name]);
                 delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' xsec.name '$']))
-                %obj.CrossSections(strcmp(obj.XSectionTitles, mytitle))= [];
+                
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
                     set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off');
@@ -616,6 +583,112 @@ classdef ZmapMainWindow < handle
     end % METHODS
     methods(Access=protected) % HELPER METHODS
         
+        function prepareMainFigure(obj)
+            % set up figure
+            h=msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
+            
+            obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
+                'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
+            % plot all events from catalog as dots before it gets filtered by shapes, etc.
+            
+            
+            % add the time stamp
+            s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
+            uicontrol(gcf,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
+                'String',s,'FontWeight','bold','Tag','zmap_watermark')
+            
+            % make sure that empty legend entries automatically disappear when the menu is called up
+             set(findall(gcf,'Type','uitoggletool','-and','Tag','Annotation.InsertLegend'),'ClickedCallback',...
+                char("insertmenufcn(gcbf,'Legend');clear_empty_legend_entries(gcf);"));
+            
+            
+            c=uicontextmenu(obj.fig,'tag','yscale contextmenu');
+            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'Y'});
+            obj.sharedContextMenus.LogLinearYScale = c;
+            
+            c=uicontextmenu(obj.fig,'tag','xscale contextmenu');
+            uimenu(c,'Label','Use Log Scale',CallbackFld,{@logtoggle,'X'});
+            obj.sharedContextMenus.LogLinearXScale = c;
+            
+            add_menu_divider('mainmap_menu_divider')
+            
+            
+            obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
+                char(max(obj.catalog.Date)));
+            
+            TabLocation = 'top'; % 'top','bottom','left','right'
+            
+            obj.maingroup=uitabgroup('Units','normalized','Position',obj.TabGroupPositions.Main,...
+                'Visible','on',...
+                'SelectionChangedFcn',@cb_mainMapSelectionChanged,...
+                'TabLocation',TabLocation,'Tag','main plots');
+            obj.maintab = findOrCreateTab(obj.fig,'main plots',obj.catalog.Name);
+            obj.maintab.Tag = 'mainmap_tab';
+            
+            obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
+            
+            if isempty(obj.Grid)
+                obj.Grid=ZmapGrid('Grid',obj.gridopt);
+            end
+            
+            
+            
+            uitabgroup('Units','normalized','Position',obj.TabGroupPositions.UR,...
+                'Visible','off','SelectionChangedFcn',@cb_selectionChanged,...
+                'TabLocation',TabLocation,'Tag','UR plots');
+            uitabgroup('Units','normalized','Position',obj.TabGroupPositions.LR,...
+                'Visible','off','SelectionChangedFcn',@cb_selectionChanged,...
+                'TabLocation',TabLocation,'Tag','LR plots');
+            
+            obj.xsgroup=uitabgroup(obj.maintab,'Units','normalized',...
+                'Position',obj.TabGroupPositions.XS,...
+                'TabLocation',TabLocation,'Tag','xsections',...
+                'SelectionChangedFcn',@cb_selectionChanged,'Visible','off');
+            
+            obj.replot_all();
+            obj.fig.Visible='on';
+            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','LR plots'),'Visible','on');
+            set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','UR plots'),'Visible','on');
+            
+            drawnow
+            
+            obj.create_all_menus(true); % plot_base_events(...) must have already been called, in order to load the features from ZG
+            ax=findobj(obj.fig,'Tag','mainmap_ax');
+            obj.fig.CurrentAxes=ax;
+            legend(ax,'show');
+            clear_empty_legend_entries(obj.fig);
+            
+            
+            if isempty(obj.CrossSections)
+                set(findobj('Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off')
+            end
+            obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
+            
+            if isempty(obj.rawcatalog)
+                % there is no catalog in the system, so there is nothing to recall, and nothing to filter
+                % therefore, force the user to the right menu choice
+                txt = sprintf('%s\n%s',...
+                    'No Catalog is loaded. Please import a catalog first.',...
+                    'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu');
+                helpdlg(txt, 'Empty Catalog');
+                obj.fig.ToolBar = 'none';
+                h=findobj(obj.fig,'Type','uimenu','-depth',1,'-not','Label','Catalog','-not','Label','Help');
+                set(h,'Enable','off');
+                h=findobj(obj.fig,'Type','uimenu','-depth',1,'Label','Catalog');
+                % disable all the other items at this level
+                set(findobj(h.Children,'flat','-not','Label','Get/Load Catalog'),'Enable','off');
+                h=get(findall(obj.fig,'Label','Get/Load Catalog'),'Children');
+                if iscell(h)
+                    for i=1:numel(h)
+                        set(h{i}(~startsWith(get(h{i},'Label'), 'from ')),'Enable','off');
+                    end
+                else
+                    set(h(~startsWith(get(h,'Label'), 'from ')),'Enable','off');
+                end
+            end
+        end
+        
+        
         %% CROSS SECTION HELPERS
         
         function xsec_remove(obj, key)
@@ -624,11 +697,6 @@ classdef ZmapMainWindow < handle
             obj.CrossSections(idx)=[];
             obj.xscats.remove(key);
             obj.xscatinfo.remove(key);
-            %if isempty(obj.CrossSections)
-            %    obj.notify('XsectionEmptied');
-            %else
-            %    obj.notify('XsectionRemoved');
-            %end
         end
         
         function xsec_add(obj, key, xsec)
@@ -701,7 +769,7 @@ function cb_selectionChanged(~,~)
     %subax=findobj(alltabs(~isselected),'Type','axes')
     %set(subax,'visible','off');
 end
-function cb_mainMapSelectionChanged(src,~)
+function cb_mainMapSelectionChanged(~,~)
 end
 
 function s=CallbackFld()

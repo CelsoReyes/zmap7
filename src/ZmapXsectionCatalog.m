@@ -51,7 +51,13 @@ classdef ZmapXsectionCatalog < ZmapCatalog
             P = [C.Properties{:}];
             P([P.Dependent])=[];
             for k = 1:length(P)
+                try
                     me.(P(k).Name) = other.(P(k).Name);
+                catch ME
+                    if ME.identifier~="MATLAB:class:SetProhibited"
+                        rethrow(ME)
+                    end
+                end
             end
         end     
             

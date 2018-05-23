@@ -99,6 +99,10 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         DateSpan % read-only duration 
     end
     
+    properties(Constant)
+        Type = 'zmapcatalog'
+    end
+    
     events
         ValueChange
     end
@@ -166,7 +170,11 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function propval = get.Count(obj)
             % number of events
-            propval = numel(obj.Longitude);
+            if numel(obj)==0
+                propval=0;
+            else
+                propval = numel(obj.Longitude);
+            end
         end
         %function set.Name(obj,value)
         %    obj.Name=value; %only here for debugging
@@ -680,7 +688,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function s= blurb(obj)
             % BLURB get simple statement about catalog
-            if obj.Count > 0
+            if numel(obj)>0 && obj.Count > 0
                 s=sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count);
             else
                 s='empty ZmapCatalog';

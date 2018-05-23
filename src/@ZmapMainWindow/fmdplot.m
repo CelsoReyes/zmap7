@@ -7,6 +7,10 @@ function fmdplot(obj, tabgrouptag)
     ylabel(ax,'Cum # events');
     xlabel(ax,'Magnitude');
     
+    if isempty(obj.catalog)
+        return
+    end
+    
     %mainax=obj.map_axes;
     bdiff2(obj.catalog,false,ax);
     legend(ax,'show')

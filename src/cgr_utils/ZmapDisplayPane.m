@@ -11,6 +11,10 @@ classdef ZmapDisplayPane < handle
         Tags
     end
     
+    properties(Constant)
+        Type = 'zmappane';
+    end
+    
     methods
         function obj=ZmapDisplayPane(hContainer, hCaller)
             obj.setup(hContainer);

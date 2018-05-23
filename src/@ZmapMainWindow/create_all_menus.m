@@ -64,7 +64,7 @@ function create_all_menus(obj, force)
         % Rate Change menu
         h=comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
         uimenu(submenu,'Label','Calculate a z-value map','Enable','off',Futures.MenuSelectedFcn,@(~,~)inmakegr(obj.catalog));
-        h.Separator='on'
+        h.Separator='on';
         
         % Quarry menu : detect quarry contamination
         h=findquar.AddMenuItem(submenu,@()obj.map_zap);

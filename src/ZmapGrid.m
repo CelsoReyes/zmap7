@@ -64,6 +64,9 @@ classdef ZmapGrid
         Zactive % all Z positions for active points
         GridVector % Nx2 or Nx3 of all grid points [X1,Y1; X2,Y2;...] or [X1,Y1,Z1; X2,Y2,Z2; ...]
     end
+    properties(Constant)
+        Type = 'zmapgrid';
+    end
     properties(Constant,Hidden)
         POSSIBLY_TOO_MANY_POINTS = 1000 * 1000;
     end

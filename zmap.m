@@ -61,7 +61,7 @@ if verLessThan('matlab',ZG.min_matlab_version)
     exit
 end
 
-tested_systems = {'MAC'};
+tested_systems = {'MAC','PCW'};
 prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
 if ~ismember( sys(1:3), tested_systems)
     warndlg(' Warning: ZMAP has not been tested on this computer type.','Warning!')
@@ -75,4 +75,5 @@ ini_zmap
 ini_zmap_sys
 
 % open message window
-ZmapMessageCenter;
+%  ZmapMessageCenter; 
+ZmapMainWindow();

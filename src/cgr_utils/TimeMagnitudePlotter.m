@@ -62,15 +62,17 @@ classdef TimeMagnitudePlotter
                 BaseValue=floor(minMag);
             end
             if catalog.Count > TimeMagnitudePlotter.MAX_FOR_STEM
-                pl=scatter(ax, catalog.Date, catalog.Magnitude,'.');
-                pl.CData=[.6 .6 .7];
+                scatter(ax, catalog.Date, catalog.Magnitude,'.','CData',[.6 .6 .7],...
+                    'Tag',tag,'DisplayName','Events',...
+                    'MarkerEdgeColor',[0.05 0.05 0.2]);
             else
-                pl=stem(ax, catalog.Date, catalog.Magnitude,TimeMagnitudePlotter.MARKER,'BaseValue',BaseValue);
-                pl.Color=[.6 .6 .7];
+                stem(ax, catalog.Date, catalog.Magnitude,TimeMagnitudePlotter.MARKER,...
+                    'BaseValue',BaseValue,'Color',[.6 .6 .7],'Tag',tag,'DisplayName','Events',...
+                    'MarkerEdgeColor',[0.05 0.05 0.2]);
             end
-            pl.Tag = tag;
-            pl.DisplayName='Events';
-            pl.MarkerEdgeColor=[0.05 0.05 0.2];
+            %pl.Tag = tag;
+            %pl.DisplayName='Events';
+            %pl.MarkerEdgeColor=[0.05 0.05 0.2];
             set(ax,'box','on', 'TickDir','out');
             %set(ax,'box','on',...
             %    'SortMethod','childorder','TickDir','out','FontWeight',...

@@ -27,9 +27,8 @@ function cumplot(obj, tabgrouptag)
     % plot the main catalog
     Ys=1:obj.catalog.Count;
     Xs=obj.catalog.Date;
-    p=line(ax,Xs,Ys,'LineWidth',2.5,'DisplayName','catalog',...
-        'Tag','catalog','color','k');
-    p.UIContextMenu=cln;
+    line(ax,Xs,Ys,'LineWidth',2.5,'DisplayName','catalog',...
+        'Tag','catalog','color','k', 'UIContextMenu',cln);
     grid(ax,'on');
     
     

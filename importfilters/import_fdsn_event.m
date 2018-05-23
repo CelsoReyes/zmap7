@@ -25,8 +25,16 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     
     % get list of data providers that support the FDSN Event query
     persistent datacenter_details
+    
+    hf = matlab.net.http.HeaderField('Content-Encoding','gzip');
+    options = weboptions('timeout',120,'HeaderFields',hf); %seconds
+    ZG=ZmapGlobal.Data;
+    
+    % make sure that this program identified during requests to datacenter
+    options.UserAgent=[options.UserAgent,' ZMAP/',ZG.zmap_version];
+    
     if isempty(datacenter_details)
-        datacenter_details = webread('http://service.iris.edu/irisws/fedcatalog/1/datacenters');
+        datacenter_details = webread('http://service.iris.edu/irisws/fedcatalog/1/datacenters',options);
         
         %dump datacenters with no event catalog access
         i=1;
@@ -110,9 +118,6 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     provider = datacenter_details(strcmp({datacenter_details.name},code));
     
     baseurl = provider.serviceURLs.eventService;
-    hf = matlab.net.http.HeaderField('Content-Encoding','gzip');
-    %options = weboptions('timeout',120); %seconds
-    options = weboptions('timeout',120,'HeaderFields',hf); %seconds
     
     disp(['sending request to:' baseurl 'query  with options'])
     disp(varargin)
@@ -155,8 +160,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         
         %This version makes no assumptions other than the field titles it expects.
         % various FDSN services tend to disagree on formats.. time, spellings, capitalization, etc.
-        newl = sprintf('\n');
-        newlines = find(data==newl,2);
+        newlines = find(data==newline,2);
         headerline =data(1:newlines(1)-1);
         hdrs=lower(strip(split(headerline,'|')));
         firstrow = data(newlines(1)+1:newlines(2)-1);
