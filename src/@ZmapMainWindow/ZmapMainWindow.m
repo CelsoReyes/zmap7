@@ -667,10 +667,8 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 % there is no catalog in the system, so there is nothing to recall, and nothing to filter
                 % therefore, force the user to the right menu choice
-                txt = sprintf('%s\n%s',...
-                    'No Catalog is loaded. Please import a catalog first.',...
-                    'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu');
-                helpdlg(txt, 'Empty Catalog');
+                txt = 'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu';
+                helpdlg(txt, 'No Active Catalogs');
                 obj.fig.ToolBar = 'none';
                 h=findobj(obj.fig,'Type','uimenu','-depth',1,'-not','Label','Catalog','-not','Label','Help');
                 set(h,'Enable','off');

@@ -15,18 +15,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function showInTab(obj, ax, choice)
             % plots the results on the provided axes.
-            if ~exist('choice','var')
-                choice=obj.active_col;
-            end
-            if ~isnumeric(choice)
-                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
-            end
             
-            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
-            myname = obj.Result.values.Properties.VariableNames{choice};
+            if exist('choice','var')
+                [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
+            else
+                [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails();
+            end
             
             hold(ax,'on');
             delete(findobj(ax,'Tag','result overlay'));
+            
             % this is to show the data
             if islogical(obj.Result.values.(myname)(1))
                 p=double(obj.Result.values.(myname));
@@ -49,27 +47,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
 
         function overlay(obj, resTab, choice)
-            % plots the results on the provided axes.
-            report_this_filefun();
-            %dbk=dbstack(1);disp(dbk(1).name);
+            % plots the results in the provided Tab.
+            % expects that tab is empty
             
-            if ~exist('choice','var')
-                choice=obj.active_col;
-            end
+            report_this_filefun();
+            
+            [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
             
             tabGroup = resTab.Parent;
             
-            if ~isnumeric(choice)
-                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
-            end
-            
-            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
-            myname = obj.Result.values.Properties.VariableNames{choice};
-            myunits = obj.Result.values.Properties.VariableUnits{choice};
-            
             ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
-            
-            %resTab=findobj('Type','uitab','-and','Tag',obj.PlotTag);
             
             if isempty(ax)
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
@@ -88,16 +75,38 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 
             hold(ax,'on');
             delete(findobj(ax,'Tag','result overlay'));
+            
+            % delete existing grid points
+            delete(findobj(ax,'-regexp','Tag','grid_\w.*'));
+            
             % this is to show the data
             if islogical(obj.Result.values.(myname)(1))
                 p=double(obj.Result.values.(myname));
                 p(p==0)=nan;
                 h=obj.Grid.pcolor(ax,p, mydesc);
             else
-                h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
+                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc);
+                
+                %[~,h]=contourf(ax,obj.Grid.X, obj.Grid.Y, ...
+                 %   reshape(obj.Result.values.(myname),...
+                 %   size(obj.Grid.X)));
+                % set the title
+                %h.LineStyle='none';
+                %h.LevelList=linspace(floor(min(h.ZData(:))),ceil(max(h.ZData(:))),100);
+                
+                %h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
             end
+            ax.Children=circshift(ax.Children,-1); % move the contour to the bottom layer
+            %gx = obj.Grid.X;
+            %gy = obj.Grid.Y;
+            val = obj.Result.values.(myname);
+            s=scatter(ax,obj.Result.values.x,obj.Result.values.y,10,val,'+','Tag',obj.Grid.Name);
+            %s.MarkerEdgeColor=[0.1 0.1 0.1];
+            %s.MarkerEdgeAlpha=[0.3];
+            s.MarkerFaceAlpha=[0.5];
+            
             h.Tag = 'result overlay';
-            shading(ax,obj.ZG.shading_style);
+            %shading(ax,obj.ZG.shading_style);
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menus(obj,choice);
@@ -116,45 +125,35 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 Futures.MenuSelectedFcn,@(~,~)delete(resTab));
             % mapdata_viewer(obj,obj.RawCatalog,ax);
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
-            shading(ax,obj.ZG.shading_style);
+            % shading(ax,obj.ZG.shading_style);
             
             tabGroup.SelectedTab = resTab;
             pretty_colorbar(ax,mydesc,myunits);
+            obj.interact(ax, myname)
         end
         
-        function plot(obj,choice, varargin)
-            % plots the results on the provided axes.
-            % obj.PLOT( choice, ...) where choice is the nameor number of the table column to plot. if not
-            % provided, it will default to OBJ.active_col
+        function plot(obj, choice)
+            % plots the results
+            % obj.PLOT( choice, ...) where choice is the name or number of the table column to plot.
+            % if not provided, it will default to OBJ.active_col
+            %
+            % called by the ZmapGridFunction's doit() method
             
             report_this_filefun();
             if ~exist('choice','var')
-                choice=obj.active_col;
+                choice = obj.active_col;
             end
             
-            if ~isnumeric(choice)
-                choice = find(strcmp(obj.Result.values.Properties.VariableNames,choice));
-            end
-            
-            
-            if strcmp(get(gcf,'Tag'),'Zmap Main Window')
-                theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
-                theTab=findobj(theTabHolder,'Tag',obj.PlotTag);
-                if ~isempty(theTab)
-                    delete(theTab)
-                    theTab=[];
-                end
-                if isempty(theTab)
-                    theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
-                end
+            if get(gcf,'Tag') == "Zmap Main Window"
+                theTab=obj.recreateExistingResultsTab(gcf);
                 obj.overlay(theTab, choice)
-                %obj.overlay(findobj(gcf,'Tag','mainmap_ax'),choice);
                 return
             end
             
-            mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
-            myname = obj.Result.values.Properties.VariableNames{choice};
+            %% plotting into some window other than the Main ZMAP window
             
+            [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
+                
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
@@ -368,8 +367,71 @@ classdef ZmapHGridFunction < ZmapGridFunction
             gph.Visible=char(obj.showgridcenters);
         end
         
+        function theTab = recreateExistingResultsTab(obj, f)
+            % delete existing tab from main window
+            theTabHolder = findobj(f, 'Tag','main plots','-and','Type','uitabgroup');
+            theTab=findobj(theTabHolder,'Tag',obj.PlotTag);
+            if ~isempty(theTab)
+                delete(theTab)
+            end
+            
+            theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
+        end
+        
+        function interact(obj,ax, myname)
+            f=ancestor(ax,'figure');
+            mytab=ax.Parent;
+            mytabholder=mytab.Parent;
+            hold(ax,'on');
+            delete(findobj(ax,'Tag','thisresulttext'));
+            delete(findobj(ax,'Tag','thisresulthilight'));
+            delete(findobj(ax,'Tag','thisradius'));
+            TX = text(ax,nan,nan,'','FontWeight','bold','BackgroundColor','w','Interpreter','none','Tag','thisresulttext');
+            HL = scatter(ax,nan,nan,'+','CData',[0 0 0],'Tag','thisresulthilight');
+            CR = line(ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
+            f.WindowButtonMotionFcn=@update;
+            lastNearest=0;
+            
+            function update(src,ev)
+                if mytabholder.SelectedTab~=mytab
+                    return
+                end
+                axX=ax.XLim;
+                axY=ax.YLim;
+                pt=ax.CurrentPoint(1,1:2);
+                if pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1)
+                    mx=pt(1); my=pt(2);
+                    [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
+                    if nearest ~= lastNearest
+                        lastNearest=nearest;
+                        x=obj.Result.values.x(nearest);
+                        y=obj.Result.values.y(nearest);
+                        % update hilight
+                        HL.XData=x;
+                        HL.YData=y;
+                        
+                        % update text
+                        TX.Position=[x, y,0];
+                        valstr=string(obj.Result.values.(myname)(nearest));
+                        if ismissing(valstr)
+                            TX.String="  "+myname + " : <missing>";
+                        else
+                            TX.String="  "+myname + " : "+ valstr;
+                        end
+                        
+                        % update samplecircle
+                        [La,Lo]=reckon(y, x, km2deg(obj.Result.values.Radius_km(nearest)), 0:2:360);
+                        set(CR,'XData',Lo,'YData',La,'LineStyle','--');
+                        
+                        
+                    end
+                end
+            end
+        end
     end % Protected methods
+    
 end
+
 
 function changecontours_cb()
     % CHANGECONTOURS_CB doesn't depend on this obj at all.
@@ -385,7 +447,7 @@ function changecontours_cb()
     set(contr,'LevelList',answer.value);
     
     function x=mystr2vec(x)
-        % ensures only valid charaters for the upcoming eval statement
+        % ensures only valid characters for the upcoming eval statement
         if ~all(ismember(x,'(),:[]01234567890.- '))
             x = str2num(x); %#ok<ST2NM>
         else

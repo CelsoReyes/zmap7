@@ -152,6 +152,22 @@ classdef ZmapGridFunction < ZmapFunction
             end
         end
         
+        function [numeric_choice, name, desc, units] = ActiveDataColumnDetails(obj, choice)
+            if ~exist('choice','var')
+                choice = obj.active_col;
+            end
+            
+            if ~isnumeric(choice)
+                numeric_choice = find(strcmp(obj.Result.values.Properties.VariableNames, choice));
+            else
+                numeric_choice = choice;
+            end
+            
+            desc = obj.Result.values.Properties.VariableDescriptions{numeric_choice};
+            name = obj.Result.values.Properties.VariableNames{numeric_choice};
+            units = obj.Result.values.Properties.VariableUnits{choice};
+            
+        end
     end % Protected methods
     
     methods(Access=protected, Static)

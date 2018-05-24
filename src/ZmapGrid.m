@@ -363,6 +363,14 @@ classdef ZmapGrid
             end
             h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
+        function [c,h]=contourf(obj,ax,values,name)
+            
+                [c,h]=contourf(ax,obj.X, obj.Y, reshape(values, size(obj.X)));
+                % set the title
+                h.LineStyle='none';
+                h.DisplayName=name;
+                h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), 20);
+        end
         
         function h=imagesc(obj, ax, values, name)
             % imagesc create a imagesc plot where each point of the grid is center of cell

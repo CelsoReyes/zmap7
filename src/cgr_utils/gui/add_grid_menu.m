@@ -1,9 +1,9 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Sampling');
-    uimenu(parent,'Label','Create Auto-Grid',Futures.MenuSelectedFcn,@cb_autogrid);
-    uimenu(parent,'Label','Create Grid',Futures.MenuSelectedFcn,@cb_gridfigure);
-    uimenu(parent,'Label','Refresh Grid',Futures.MenuSelectedFcn,@cb_refresh);
+    uimenu(parent,'Label','Quick-Grid (auto)',Futures.MenuSelectedFcn,@cb_autogrid);
+    uimenu(parent,'Label','Define Grid',Futures.MenuSelectedFcn,@cb_gridfigure);
+    uimenu(parent,'Label','Redraw Grid',Futures.MenuSelectedFcn,@cb_refresh);
     uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
     uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
     uimenu(parent,'Label','Choose Sample Radius',Futures.MenuSelectedFcn,@cb_manualradius);
