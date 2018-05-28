@@ -183,7 +183,7 @@ function catalog_menu(obj, force)
     
     function cb_combinecatalogs(~,~)
         ZG.newcat=comcat(ZG.Views.(myview));
-        timeplot('newcat');
+        CumTimePlot(ZG.newcat);
     end
     
     function cb_importer(src, ev, fun)

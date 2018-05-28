@@ -395,7 +395,7 @@ classdef bdiff2
             function callbackfun_ts(~,~)
                 ZG=ZmapGlobal.Data;
                 ZG.newcat = catalog;
-                timeplot();
+                CumTimePlot(catalog);
             end
             
             function callbackfun_nodiscrete(mysrc,~)

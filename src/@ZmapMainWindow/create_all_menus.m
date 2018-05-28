@@ -13,8 +13,7 @@ function create_all_menus(obj, force)
         add_menu_divider('mainmap_menu_divider');
     end
     create_overlay_menu();
-    %ShapeGeneral.AddMenu(obj.fig);
-    %add_grid_menu(uimenu('Label','Grid'));
+    
     obj.catalog_menu(force);
     
     create_decluster_menu(findobj(obj.fig,'Label','Catalog','-and','type','uimenu'));
@@ -297,9 +296,7 @@ function create_all_menus(obj, force)
         
         function analyze_time_series_cb(~,~)
             % analyze time series for current catalog view
-            ZG=ZmapGlobal.Data;
-            ZG.newt2 = obj.catalog;
-            timeplot();
+            CumTimePlot(obj.catalog);
         end
     end
     function create_topo_map_menu(parent)
@@ -333,11 +330,6 @@ function create_all_menus(obj, force)
             if ok
                 ZmapMainWindow(figure,rand_catalog);
             end
-            %ZG.newt2 = ZmapCatalog(ZG.primeCatalog);
-            %timeplot();
-            %zmap_update_displays();
-            %bdiff(ZG.primeCatalog);
-            %revertcat
         end
         
         function cb_create_synhthetic_cat(src,~)
@@ -347,11 +339,6 @@ function create_all_menus(obj, force)
             if ok
                 ZmapMainWindow(figure,syn_cat);
             end
-%             ZG.newt2 = ZG.primeCatalog;
-%             timeplot();
-%             zmap_update_displays();
-%             bdiff(ZG.primeCatalog);
-%             revertcat
         end
 
         

@@ -784,6 +784,10 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function plotFocalMechanisms(obj,ax,color)
             % PLOTFOCALMECHANISMS plot the focal mechanisms of a catalog (if they exist)
             % plotFocalMechanisms(catalog, ax, color)
+            if ~exist(ax,'var') || ~isprop(ax,'type') || ax ~= "axes"
+                ax=gca;
+            end
+            
             
             pbar=pbaspect(ax);
             pbar=daspect(ax);

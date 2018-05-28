@@ -45,7 +45,7 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
     % assumptions
     % simple curve, so events are only closest to 1 point
     % distance grows 
-    refEllipse = wgs84Ellipsoid; % defaults to legth unit of meters
+    refEllipse = wgs84Ellipsoid; % defaults to length unit of meters
     lat0 = median(curvelats);
     lon0 = median(curvelons);
     [xEast,yNorth, zUp] = geodetic2enu(catalog.Latitude, catalog.Longitude, -catalog.Depth*1000,...

@@ -1,14 +1,15 @@
-function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
+function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUpdateFcn)
     % SELECTSEGMENTSUSINGMOUSE tracks user mouse movements to define a great-circle line segment
     % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, AXUNITS, DISPUNITS, COLOR) where AX is the axis in which to
-    % draw your line segment.  AXUNITS is the distance units of the axis (either 'deg' or 'km').
+    % draw your line segment.  AXUNITS is the distance units of the axis. ex. 'deg', 'km', 'mm'.
     % If axis is deg, then the line segment is drawn as the great-circle line.  Otherwise, it is a 
     % straight line (in cartesian coords). DISPUNITS are the units in which the distance is reported
-    % (either 'deg' or 'km').  color is the color in which the line segment is drawn.
+    % color is the color in which the line segment is drawn.
     %
     % RESULT is a struct with fields:
     %   xy1 : starting point [x , y]
     %   xy2 : ending point [x , y]
+    %   dispunits affects the fieldname for the distance returned
     %   IF dispunits is 'km', then the field returned is:
     %   dist_km : distance between x & y in km.
     %   IF dispunits is 'deg', then the field returned is:
@@ -17,13 +18,27 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     % once the segment has been chosen, it is removed from the plot.
     
     ABORTKEY=27; % escape;
+    ok=false;
+    %% make sure all arguments are accounted for
     if ~exist('ax','var')
         ax=gca; 
     else
         axes(ax);
     end
+    
+    if ~(isnumeric(ax.XLim) && isnumeric(ax.YLim))
+        ed=errordlg('Axes should be degrees or distance, the selected axes has a non numeric scale');
+        origcolor=ax.Color;
+        bringToForeground(ax);
+        drawnow;
+        ax.Color=[1 .7 .7];
+        waitfor(ed);
+        ax.Color=origcolor;
+        return
+    end
+    
     if ~exist('color','var')
-        color='k';
+        color='r';
     end
     
     if ~exist('axunits','var') || isempty(axunits)
@@ -34,6 +49,11 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         dispunits='km';
     end
     
+    if ~exist('addlUpdateFcn','var')
+        addlUpdateFcn=@do_nothing;
+    end
+    
+    %% 
     fig=gcf;
     started=false;
     
@@ -46,7 +66,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     f=gcf;
     
     if f.CurrentCharacter==ABORTKEY
-        f.CurrentCharacter='';
+        f.CurrentCharacter=' ';
     end
     
     TMP.aBDF = ax.ButtonDownFcn;
@@ -72,24 +92,36 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
             switch axunits
                 case 'km'
                     dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2);
-                case 'deg'
+                case {'deg','degree','degrees'}
                     dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2));
+                otherwise
+                    dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits, axunits);
             end
-        case 'deg'
+        case {'deg','degree','degrees'}
             switch axunits
                 case 'km'
                     dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2));
-                case 'deg'
+                case {'deg','degree','degrees'}
                     dist=@(x1,y1,x2, y2)distance(y1,x1,y2,x2);
+                otherwise
+                    dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(axunits,'km') );
             end
+        otherwise
+            switch axunits
+                case {'deg','degree','degrees'}
+                    dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2)) .* unitsratio(dispunits,'km');
+                otherwise
+                    dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits,axunits);
+            end
+            
     end
     distfld=(['dist_',dispunits]);
-    % pause because we need completed user input before exiting this function
+    
+    %% pause because we need completed user input before exiting this function
     while ~started
         pause(.01);
     end
     disp('started!')
-    % set center using ginput, which reads the button down
     
     b=f.CurrentCharacter;
     if b==ABORTKEY
@@ -100,12 +132,17 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         fig.Pointer='arrow';
         delete(instructionText);
         delete(h);
-        error('Aborting segment creation'); %to calling routine: catch me!
+        f.CurrentCharacter=' ';
+        if nargout<2
+            error('Aborting segment creation'); %to calling routine: catch me!
+        else
+            return;
+        end
     end
     
     hold on;
  
-    % loop waits for mouse button to come back up before continuing
+    %% loop waits for mouse button to come back up before continuing
     
     while ~selected
         pause(.05)
@@ -116,6 +153,14 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
     obj.(distfld)=dist(x1,y1,x2,y2);
     
     delete(h);
+    
+    b=f.CurrentCharacter;
+    if b==ABORTKEY
+        f.CurrentCharacter=' ';
+    else
+        ok=true;
+    end
+        
     return
     
     function startSegment(~,ev)
@@ -134,9 +179,9 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         h(2)=text((x1+x2)/2,(y1+y2)/2,['Dist: 0 ' dispunits],...
             'FontSize',12,'FontWeight','bold','Color',color);
         switch axunits
-            case 'deg'
+            case {'deg','degree','degrees'}
                 f.WindowButtonMotionFcn=@moveMouseGC;
-            case 'km'
+            otherwise
                 f.WindowButtonMotionFcn=@moveMouse;
         end
         instructionTextFmt = 'Choose end point\n (x:%g, y:%g)';
@@ -185,6 +230,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         else
             set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         end
+        addlUpdateFcn([x1 y1],[x2 y2],obj.(distfld));
     end
     
     function moveMouseGC(~,~)
@@ -206,6 +252,7 @@ function obj=selectSegmentUsingMouse(ax, axunits, dispunits, color)
         else
             set(instructionText,'HorizontalAlignment','left','Position',[x2+dx y2 0],'String',sprintf(instructionTextFmt,x2,y2));
         end
+        addlUpdateFcn([x1 y1],[x2 y2],obj.(distfld));
     end
     
     

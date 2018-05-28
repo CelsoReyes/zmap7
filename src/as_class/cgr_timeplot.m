@@ -495,14 +495,15 @@ function timeplot(mycat, nosort)
         cf = @()ZG.newt2;
         [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
         ZG.newt2=tmpcat.Catalog();
-        timeplot()
+        CumTimePlot(ZG.newt2);
     end
     
     function cursor_timecut_callback(~,~)
         % will change ZG.newt2
         [tt1,tt2]=timesel('cum');
         ZG.newt2=ZG.newt2.subset(ZG.newt2.Date>=tt1&ZG.newt2.Date<=tt2);
-        timeplot();
+        ZG=ZmapGlobal; 
+        CumTimePlot(ZG.newt2);
     end
     
     function cb_hold(mysrc,myevt)
@@ -558,7 +559,8 @@ function timeplot(mycat, nosort)
         l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
         mycat = mycat(l+1:mycat.Count,:);
         z
-        timeplot() ;
+        ZG=ZmapGlobal; 
+        CumTimePlot(ZG.newt2);
     end
     
     function cb_computefractal(mysrc,myevt, org)

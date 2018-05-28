@@ -26,7 +26,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     % plot(-10:.5:10,-10:.5:10,'.','color',[.5 .5 .5])
     % hold on
     % p=plot([3;2.5;4],[2;1;3],'-*')
-    % putback = make_editable(f,ax,p);
+    % putback = make_editable(p);
     %
     % now you can, scale, translate, add, remove points.
     %
@@ -46,7 +46,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     dragging=false;
     lastIntersect=[];
     
-    
+    ghost=gobjects(1);
         XTOL=0.01;
         YTOL=0.01;
     
@@ -71,7 +71,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     pOrigMarker=p.Marker;
     changeMaker(p,'s');
 
-    ax=ancestor(p,'axes')
+    ax=ancestor(p,'axes');
     f=ancestor(ax,'figure');
     
     f.Pointer='circle';
@@ -109,6 +109,9 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
                 ys=[ev.IntersectionPoint(2);ev.IntersectionPoint(2)];
                 hold on;
                 h=plot(xs,ys,'ko:');
+                ghost = copyobj(p,gca);
+                ghost.LineStyle=':';
+                ghost.Color='r';
                 f.WindowButtonMotionFcn={@translateSeries,h};
                 f.WindowButtonUpFcn={@endTranslation,src,h}; %attach mouseup function to THIS item
             end
@@ -145,6 +148,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         cp=ax.CurrentPoint;
         h.XData(end)=cp(1,1);
         h.YData(end)=cp(1,2);
+        translate_target(ghost,h);
     end
     
     function mouseup(~,~,target,activepoint)
@@ -162,6 +166,26 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
                 f.WindowButtonMotionFcn='';
                 intermedUpdateFn();
             end
+        end
+    end
+    
+    function translate_target(target,h)
+        if LATLON_AWARE
+            % to keep same shape, have to use distances & reckoning
+            % MOUSEUP at PLOT level
+            midX = (min(p.XData) + max(p.XData)) / 2;
+            midY = (min(p.YData) + max(p.YData)) / 2;
+            
+            % find position of all points relative to center
+            [ARCLEN, AZ] = distance([midY,midX],[p.YData(:),p.XData(:)]);
+            
+            %move center, then recalculate all points.
+            [target.YData, target.XData] = reckon(midY+diff(h.YData), midX+diff(h.XData),ARCLEN, AZ);
+            
+        else
+            % simply move points around  by constant
+            target.XData=p.XData + (diff(h.XData));
+            target.YData=p.YData + (diff(h.YData));
         end
     end
     
@@ -189,6 +213,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         end
         
         delete(h);
+        delete(ghost);
         axis(prevax)
         f.WindowButtonMotionFcn='';
         f.WindowButtonUpFcn='';

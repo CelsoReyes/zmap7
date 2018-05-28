@@ -45,7 +45,7 @@ function selected_cluster_num = getclu(gecl, clus, slider_obj, text_obj)
     ZG.newt2.Name=sprintf('%s : cluster %d',ZG.newt2.Name, selected_cluster_num);
     
     if ~exist('tiplo', 'var')
-        timeplot();
+        CumTimePlot(ZG.newt2);
     end
     nu = (1:ZG.newt2.Count) ;
     nu = nu';

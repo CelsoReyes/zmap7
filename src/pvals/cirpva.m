@@ -74,7 +74,8 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 % Call program "timeplot to plot cumulative number
 %
 %bdiff(ZG.newt2)
-timeplot()
+        ZG=ZmapGlobal; 
+        CumTimePlot(ZG.newt2);
 pvalcat
 
 end

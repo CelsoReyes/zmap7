@@ -16,15 +16,13 @@ lon = latlon(:,2);
 
 %Defining the y and x coordinates of each lat and lon
 
-y = zeros(length(lat),1);
 y = deg2km(lat - centerpoint(1));
 
-x = zeros(length(lon),1);
-x = deg2km(lon - centerpoint(2)).*cos(deg2rad(lat));
+x = deg2km(lon - centerpoint(2)).*cosd(lat);
 
 %Outputting a vector with column1 = x coords, column2 = y coords
 
-xycoords = [x y];
+xycoords = [x(:) y(:)];
 
 
 

@@ -126,7 +126,7 @@ classdef cumMomDisplayPane < ZmapDisplayPane
             ZG=ZmapGlobal.Data;
             ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
             ZG.newt2.Name=sprintf('Events within %g km of %s',myName);
-            timeplot();
+            CumTimePlot(ZG.newt2);
         end
     end
     

@@ -120,18 +120,6 @@ classdef bpvalgrid < ZmapHGridFunction
             l = obj.RawCatalog.Magnitude >= minThreshMag;
             obj.RawCatalog = obj.RawCatalog.subset(obj.RawCatalog.Magnitude >= minThreshMag);
             
-            %{
-            ff=gcf
-            ZG.hold_state2=true;
-            timeplot()
-            ZG.hold_state2=false;
-            figure(ff)
-            dx = 0.025;
-            dy = 0.025;
-            ni = 150;
-            Nmin = 100;
-            valeg2 = 2;
-            %}
             %%%%%%%
 
             % overall b-value

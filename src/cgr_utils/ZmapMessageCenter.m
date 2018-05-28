@@ -294,7 +294,7 @@ function do_timeplot(s,~, catName)
     disp(['ZmapMessageCenter.do_timeplot ', catName])
     ZG=ZmapGlobal.Data;
     ZG.newt2=ZmapCatalog(ZG.(catName));
-    timeplot();
+    CumTimePlot(ZG.newt2);
 end
 
 function edit_catalog_range(s,~)

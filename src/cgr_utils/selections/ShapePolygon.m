@@ -5,9 +5,9 @@ classdef ShapePolygon < ShapeGeneral
     
     
     methods
-        function obj=ShapePolygon(type, varargin)
+        function obj=ShapePolygon(shapeType, varargin)
             % ShapeGeneral create a shape
-            % type is one of 'circle', 'axes', 'box', 'polygon'}
+            % shapeType is one of 'circle', 'axes', 'box', 'polygon'}
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             % AXES: use current main map axes as a box
             % BOX: define using two corners
@@ -22,18 +22,18 @@ classdef ShapePolygon < ShapeGeneral
                 return
             end
             
-            if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
+            if ~ismember(lower(shapeType),{'circle','axes','box','rectangle','polygon','unassigned'})
                 error('unknown polygon type')
             end
             ax=findobj(gcf,'Tag','mainmap_ax');
-            if ~exist('type','var')
+            if ~exist('ShapeType','var')
                 obj.Type='unassigned';
             end
 
             % assume we are looking at the right figure already
             set(gcf,'CurrentAxes',ax); % bring up axes of interest.  should be the map, with lat/lon
             
-            obj.Type=lower(type);
+            obj.Type=lower(shapeType);
             ZG=ZmapGlobal.Data;
             
             % hide any existing events
@@ -60,6 +60,9 @@ classdef ShapePolygon < ShapeGeneral
                     else
                         obj=obj.select_box(obj);
                     end
+                    if isempty(obj)
+                        return
+                    end
                     obj.Type='polygon'; % box isn't really a type. it's a convenience method for creation
                     ZG.selection_shape=obj;
                 case 'polygon' % ShapeGeneral('polygon', [x1,y1;...;xn,yn]);
@@ -71,7 +74,6 @@ classdef ShapePolygon < ShapeGeneral
                     end
                     ZG.selection_shape=obj;
             end
-            ZmapMessageCenter.update_catalog();
             obj.plot(gca);
             obj.setVisibility('on');
         end
@@ -97,30 +99,68 @@ classdef ShapePolygon < ShapeGeneral
             % select_polygon plots a polygon interactively using the mouse on selected axis
             % usage obj.select_polygon()
             hold on
-            mouse_points_overlay = line(gca,0,0,'Marker','o','LineStyle','-',...
-                'Color','k',...
+            ax=gca;
+            mouse_points_overlay = line(ax,nan,nan,'Marker','o','LineStyle','-',...
+                'Color','r',...
+                'MarkerSize',5,'LineWidth',2.0,...
+                'Tag','mouse_points_overlay',...
+                'DisplayName','polygon outline');
+            mouse_points_overlay_nub = line(ax,nan,nan,'Marker','+','LineStyle',':',...
+                'Color','r',...
                 'MarkerSize',5,'LineWidth',2.0,...
                 'Tag','mouse_points_overlay',...
                 'DisplayName','polygon outline');
             hold off
             
-            but=1;
-            x=[];
-            y=[];
-            
-            while but == 1 || but == 112
-                [xi,yi,but] = ginput(1);
-                x = [x; xi]; %#ok<AGROW>
-                y = [y; yi]; %#ok<AGROW>
-                mouse_points_overlay.XData=x;
-                mouse_points_overlay.YData=y;
+            x=[nan];
+            y=[nan];
+            f= ancestor(ax,'figure');
+            mfn = f.WindowButtonMotionFcn;
+            bfn = f.WindowButtonUpFcn;
+            f.WindowButtonUpFcn=@mup;
+            f.WindowButtonMotionFcn=@mmv;
+            f.Pointer='cross';
+            f.CurrentCharacter=' ';
+            while f.Pointer=="cross" && f.CurrentCharacter==' '
+                pause(0.1);
             end
-            
+            f.Pointer='arrow';
+            f.WindowButtonUpFcn=bfn;
+            f.WindowButtonMotionFcn=mfn;
             x = [x ; x(1)];
             y = [y ; y(1)];      %  closes polygon
             obj.Points=[x,y];
             delete(mouse_points_overlay);
-
+            delete(mouse_points_overlay_nub);
+            
+            
+            function mup(~,ev)
+                 cp=ax.CurrentPoint(1,1:2);
+                if f.SelectionType=="normal"
+                    if isnan(x);
+                        x=cp(1);
+                        y=cp(2);
+                    else
+                        x=[x; cp(1)];
+                        y=[y; cp(2)];
+                    end
+                    mouse_points_overlay.XData=x;
+                    mouse_points_overlay.YData=y;
+                else
+                    x=[x;cp(1);x(1)];
+                    y=[y;cp(2);y(1)];
+                    mouse_points_overlay.XData=x;
+                    mouse_points_overlay.YData=y;
+                    f.Pointer='arrow';
+                end
+            end
+            
+            function mmv(~,~)
+                cp=ax.CurrentPoint(1,1:2);
+                mouse_points_overlay_nub.XData=[mouse_points_overlay.XData(end);cp(1)];
+                mouse_points_overlay_nub.YData=[mouse_points_overlay.YData(end);cp(2)];
+            end
+                
         end
 
         function interactive_edit(obj,src,ev,changedFcn)
@@ -129,22 +169,13 @@ classdef ShapePolygon < ShapeGeneral
             
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
             initialShape=copy(obj);
-            if obj.AUTO_UPDATE_TIMEPLOT
-                make_editable(shout,@()update_shape,@()update_shape,'normal',obj.ScaleWithLatitude);
-            else
-                make_editable(shout,@()update_shape,[],'normal',obj.ScaleWithLatitude);
-            end
+            make_editable(shout,@()update_shape,[],'normal',obj.ScaleWithLatitude);
             
             %make_editable(shout,@()update_shape);
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
                 ZG=ZmapGlobal.Data;
                 ZG.selection_shape=obj;
-                
-                if obj.AUTO_UPDATE_TIMEPLOT
-                    ShapeGeneral.cb_selectp(src,ev,'inside');
-                end
-                    
                 
                 if ~isequal(initialShape,obj)
                     changedFcn(initialShape);
@@ -189,76 +220,35 @@ classdef ShapePolygon < ShapeGeneral
     
     methods(Access=private)
         
-        function obj=select_box(obj,varargin)
+        function [obj,ok]=select_box(obj,varargin)
             
-            disp('enter first corner, or click on desired center and press "S" for square. ESC aborts');
-            % MOUSEDOWN: select first corner
-            % DRAG: extend rectangle
-            fig=gcf;
-            ax=gca;
-            fWBU=fig.WindowButtonUpFcn;
-            fWBM=fig.WindowButtonMotionFcn;
-            aBD=ax.ButtonDownFcn;
+            [ss,ok] = selectSegmentUsingMouse(gca,'deg','km','r',@box_update);
+            h=findobj(gca,'Tag','tmp_box_outline');
+            if ~isempty(h)
+                x=h.XData;
+                y=h.YData;
+            end
+            set(gcf,'CurrentCharacter',' ');
+            delete(findobj(gca,'Tag','tmp_box_outline'));
+            if ~ok
+                obj=[];
+                return
+            else
+                obj.Points=[x(:),y(:)];
+            end
+            return
             
-            mpo=[]; 
-            boxpoints=[];
-            active=false;
-            fig.Pointer='Cross';
-            [x,y,x2,y2]=deal(nan);
-            ax.ButtonDownFcn=@startbox;
-            drawnow
-            while ~active
-                pause(0.01);
-            end
-            while active
-                pause(0.01);
-            end
-            fig.Pointer='Arrow';
-            function startbox(src,ev)
-                cp=ax.CurrentPoint(1,[1,2]);
-                x=cp(1);y=cp(2);
-                key=fig.CurrentCharacter;
-                if key==char(27)
-                    ax.ButtonDownFcn=abD;
-                else
-                    mpo=line(gca,[x, x, nan, xlim],[ylim,nan,y,y],'LineStyle','--','Color',[.6 .6 .6],'LineWidth',2.0);
+            
+            function box_update(stxy, edxy,~)
+                h=findobj(gca,'Tag','tmp_box_outline');
+                if isempty(h)
+                    h=line(nan,nan,'LineStyle','--','Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_box_outline');
                 end
-                fig.WindowButtonMotionFcn=@updateBox;
-                ax.ButtonDownFcn=@endbox;
-                active=true;
-            end
-                   
-            function updateBox(src,ev)
-                fig.WindowButtonUpFcn=@endbox;
-                if fig.CurrentCharacter==char(27)
-                    ax.ButtonDownFcn=aBD;
-                    fig.WindowButtonUpFcn=fWBU;
-                    fig.WindowButtonMotionFcn=fWBM;
-                    active=false;
-                    return
-                end
-                cp=ax.CurrentPoint(1,[1,2]);
-                x2=cp(1); y2=cp(2);
-                boxpoints=[x,y; x,y2; x2, y2; x2, y; x,y];
-                mpo.XData=boxpoints(:,1);
-                mpo.YData=boxpoints(:,2);
+                h.XData=[stxy(1); stxy(1); edxy(1); edxy(1); stxy(1)] ;
+                h.YData=[stxy(2); edxy(2); edxy(2); stxy(2); stxy(2)];
             end
             
-            function endbox(src,ev)
-                if fig.SelectionType == "open"
-                    return
-                end
-                ax.ButtonDownFcn=aBD;
-                fig.WindowButtonUpFcn=fWBU;
-                fig.WindowButtonMotionFcn=fWBM;
-                if fig.CurrentCharacter==char(27)
-                    % escape
-                else
-                   obj.Points=boxpoints;
-                end
-                delete(mpo)
-                active=false;
-            end
+            
         end
     end % private methods
     

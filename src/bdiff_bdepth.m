@@ -259,6 +259,6 @@ function  bdiff_bdepth(mycat)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG=ZmapGlobal.Data;
         ZG.newt2 = mycat;
-        timeplot();
+        CumTimePlot(mycat);
     end
 end

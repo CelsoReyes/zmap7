@@ -16,7 +16,7 @@ function pvalcat()
     prompt = {'Minimum magnitude',...
         'Min. time after mainshock (in days)',...
         'Enter a negative value if you wish to fix c'};
-    title = 'You can change the following parameters:';
+    title_str = 'You can change the following parameters:';
     lines = 1;
     minThreshMag = min(ZG.newt2.Magnitude);
     minDaysAfterMainshock = days(0); % 
@@ -28,7 +28,7 @@ function pvalcat()
         return
     end
     def = {num2str(minThreshMag), num2str(minDaysAfterMainshock/days()) , num2str(valeg2)};
-    answer = inputdlg(prompt,title,lines,def);
+    answer = inputdlg(prompt,title_str,lines,def);
     
     minThreshMag=str2double(answer{1});
     minDaysAfterMainshock = days(str2double(answer{2}));
@@ -43,16 +43,16 @@ function pvalcat()
     ZG.newt2 = ZG.newt2.subset(l); %keep big-enough events
     
     ZG.hold_state2=true;
-    timeplot()
+    CumTimePlot(ZG.newt2);
     ZG.hold_state2=false;
     
     CO = 0.01; % c-value (initial?)
     if (valeg2 < 0)
         prompt = {'c-value'}; % time delay before the onset of the power-law aftershock decay rate
-        title = 'c-value:';
+        title_str = 'c-value:';
         lines = 1;
         def = {num2str(CO)};
-        answer = inputdlg(prompt,title,lines,def);
+        answer = inputdlg(prompt,title_str,lines,def);
         CO = str2double(answer{1});
     end
     

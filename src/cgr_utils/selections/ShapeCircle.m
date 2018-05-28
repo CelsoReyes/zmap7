@@ -44,11 +44,15 @@ classdef ShapeCircle < ShapeGeneral
                 end
                 ZG.selection_shape=obj;
             else
-                obj=ShapeCircle.selectUsingMouse();
-                ZG.selection_shape=obj;
+                oo=ShapeCircle.selectUsingMouse();
+                if ~isempty(oo)
+                    ZG.selection_shape=oo;
+                    obj=oo;
+                else
+                    return
+                end
             end
             
-            ZmapMessageCenter.update_catalog();
             obj.plot(gca);
             obj.setVisibility('on');
             
@@ -93,11 +97,11 @@ classdef ShapeCircle < ShapeGeneral
                 disp(shout);
             end
             initialShape = obj.copy();
-            if obj.AUTO_UPDATE_TIMEPLOT
+            %if obj.AUTO_UPDATE_TIMEPLOT
                 make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
-            else
-                make_editable(shout,@()update_shape,[],'nopoint',obj.ScaleWithLatitude);
-            end
+            %else
+                %make_editable(shout,@()update_shape,[],'nopoint',obj.ScaleWithLatitude);
+            %end
             
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
@@ -105,9 +109,6 @@ classdef ShapeCircle < ShapeGeneral
                 ZG=ZmapGlobal.Data;
                 ZG.selection_shape=obj;
                 
-                if obj.AUTO_UPDATE_TIMEPLOT
-                    ShapeGeneral.cb_selectp(src,ev,'inside');
-                end
                 if ~isequal(initialShape,obj)
                     % changedFcn(initialShape, obj.copy());
                     changedFcn(obj.copy());
@@ -170,98 +171,26 @@ classdef ShapeCircle < ShapeGeneral
     methods(Static)
         
         function obj=selectUsingMouse()
-            ABORTKEY=27; % escape;
-            ax=gca;
+            
+            [ss,ok] = selectSegmentUsingMouse(gca,'deg','km','r',@circ_update);
+            delete(findobj(gca,'Tag','tmp_circle_outline'));
+            if ~ok
+                obj=[];
+                return
+            end
             obj=ShapeCircle;
+            obj.Points=ss.xy1;
+            obj.Radius=ss.dist_km;
             
-            [x1, y1, x2, y2]=deal(nan);
-            sel_start=tic;
-            sel_elapse=toc(sel_start);
-            
-            % select center point, if it isn't provided
-            disp('click in center of circle, drag to radius. ESC aborts');
-            f=gcf;
-            TMP.fWBMF=f.WindowButtonMotionFcn;
-            f.WindowButtonMotionFcn=@moveMouse;
-            TMP.fWBUF = f.WindowButtonUpFcn;
-            f.WindowButtonUpFcn=@endCircle;
-            TMP.aBDF = ax.ButtonDownFcn;
-            ax.ButtonDownFcn=@startCircle;
-            
-            x2=nan;
-            y2=nan;
-            selected=false;
-            
-            
-            % set center using ginput, which reads the button down
-            [x1,y1,b] = ginput(1);
-            sel_start=tic;
-            
-            
-            
-            if b==ABORTKEY
-                % restore previous window functions
-                f.WindowButtonMotionFcn=TMP.fWBMF;
-                f.WindowButtonUpFcn=TMP.fWBUF;  
-                ax.ButtonDownFcn=TMP.aBDF;
-                error('Aborting circle creation'); %to calling routine: catch me!
-            end
-            
-            hold on;
-            %% mouse should still be pressed.
-            
-            % draw line from origin to edge of circle
-            h=line([x1;x1],[y1;y1],...
-                'Color','k','Marker','+',...
-                'LineStyle',':','MarkerSize',10,'LineWidth',2);
-            % h(3)=plot([x1,x2],[y1,y2],'-o','MarkerSize',10,'LineWidth',2,'color',[.4 .4 .4]);
-            
-            % write the text
-            h(2)=text((x1+x2)/2,(y1+y2)/2,['Radius:' num2str(obj.Radius,4) ' km'],'fontsize',12,'Fontweight','bold');
-            h(3)=line(nan,nan,'Color','k','Marker','.','DisplayName','Rough Outline');
-            hold off;
-            
-            obj.Points=[x1,y1];
-            
-            % loop waits for mouse button to come back up before continuing
-            while ~selected
-                pause(.05)
-            end
-            % by now we have the new points and the radius.
-            f.WindowButtonMotionFcn=TMP.fWBMF;
-            f.WindowButtonUpFcn=TMP.fWBUF;  
-            ax.ButtonDownFcn=TMP.aBDF;
-            pause(1)
-            delete(h);
-            
-            function moveMouse(~,~)
-                cp=get(gca,'CurrentPoint');
-                x2=cp(1,1); 
-                y2=cp(1,2);
-                h(1).XData(2)=x2;
-                h(1).YData(2)=y2;
-                obj.Radius=deg2km(distance(y1,x1,y2,x2)); % assuming degrees.
-                h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
-                h(2).String=['Radius:' num2str(obj.Radius,4) ' km'];
-                %update the outline
-                [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:3:359)');
-                h(3).XData=lon;
-                h(3).YData=lat;
-            end
-            function startCircle(~,ev)
-                disp('start circle!');
-                sel_start=tic;
-            end
-            function endCircle(~,ev)
-                cp=get(gca,'CurrentPoint');
-                 sel_elapse=toc(sel_start);
-                % disp(sel_elapse)
-                if sel_elapse >=1 % prevent accidental click.
-                    selected=true;
+            function circ_update(stxy, ~, d)
+                h=findobj(gca,'Tag','tmp_circle_outline');
+                if isempty(h)
+                    h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                % disp(ev)
+                [lat,lon]=reckon(stxy(2),stxy(1),km2deg(d),(0:3:360)');
+                h.XData=lon;
+                h.YData=lat;
             end
-            
         end
         function obj=select(varargin)
             % ShapeCircle.select()
@@ -327,15 +256,4 @@ classdef ShapeCircle < ShapeGeneral
         end
     end
     
-    methods(Access=protected)
-        
-        function select_circle_events(obj, catalog)
-            selcrit=struct('radius_km',obj.Radius,'useEventsInRadius',true);
-            ZG=ZmapGlobal.Data;
-            obj.plot()
-            ZG.newt2 = catalog.selectCircle(selcrit,obj.X0,obj.Y0,[]);
-            ZG.newcat=ZG.newt2;
-            timeplot()
-        end
-    end % protected methods
 end

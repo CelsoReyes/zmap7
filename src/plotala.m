@@ -355,7 +355,7 @@ function plotala()
         eval(do)
         do = ['ZG.newcat = anB' num2str(n) ';' ];
         eval(do)
-        timeplot()
+        CumTimePlot(ZG.newt2);
         zmap_update_displays();
         axes(h1)
         plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k')

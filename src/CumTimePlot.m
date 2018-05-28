@@ -48,14 +48,6 @@ classdef (Sealed) CumTimePlot < handle
     end
     
     methods (Access = private)
-        function obj = CumTimePlot
-            % CUMTIMEPLOT creates a new Cumulative Time Plot figure
-            report_this_filefun();
-            cf=@()ZmapGlobal.Data.(obj.catname);
-            obj.catalog = ZmapCatalogView(cf);
-            %obj.BigView = ZmapCatalogView(@()obj.catalog); % major event(s)
-            obj.plot()
-        end
         function add_xlabel(obj)
             if (max(obj.catalog.Date)-min(obj.catalog.Date)) >= days(1)
                 xlabel(obj.AxH,'Date',...
@@ -157,6 +149,15 @@ classdef (Sealed) CumTimePlot < handle
     end
     
     methods
+        function obj = CumTimePlot(catalog)
+            % CUMTIMEPLOT creates a new Cumulative Time Plot figure
+            report_this_filefun();
+            cf=@()ZmapGlobal.Data.(obj.catname);
+            obj.catalog = ZmapCatalogView(cf);
+            %obj.BigView = ZmapCatalogView(@()obj.catalog); % major event(s)
+            obj.plot()
+        end
+        
         function fig= get.FigH(obj)
             % FigH is the handle to the one-and-only timeplot figure
             persistent stored_fig
@@ -292,17 +293,5 @@ classdef (Sealed) CumTimePlot < handle
             % (0: ZG.bin_dur :(tdiff + 2*ZG.bin_dur)));
         end
             
-    end
-    
-    methods(Static)
-        function singleObj = getInstance
-            % getInstance
-            %
-            persistent localObj
-            if isempty(localObj) || ~isvalid(localObj)
-                localObj = CumTimePlot;
-            end
-            singleObj = localObj;
-        end
     end
 end

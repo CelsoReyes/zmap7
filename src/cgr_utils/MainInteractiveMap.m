@@ -203,11 +203,8 @@ classdef MainInteractiveMap
                 add_menu_divider('mainmap_menu_divider');
             end
             obj.create_overlay_menu(force);
-            ShapeGeneral.AddMenu(gcf);
             add_grid_menu(uimenu('Label','Grid'));
-            %obj.create_select_menu(force);
             add_menu_catalog('primeCatalog','primary',force,gcf);
-            %obj.create_catalog_menu(force);
             obj.create_ztools_menu(force);
             
             % add quit menu to main file menu
@@ -333,7 +330,7 @@ classdef MainInteractiveMap
                 % analyze time series for current catalog view
                 ZG=ZmapGlobal.Data;
                 ZG.newt2 = obj.Catalog();
-                timeplot();
+                CumTimePlot(ZG.newt2);
             end
         end
         function create_topo_map_menu(obj,parent)
@@ -1067,7 +1064,7 @@ function cb_create_permutated(src,~)
     ZG=ZmapGlobal.Data;
     ZG.primeCatalog=syn_invoke_random_dialog(ZG.primeCatalog);
     ZG.newt2 = ZmapCatalog(ZG.primeCatalog); 
-    timeplot(); 
+    CumTimePlot(ZG.newt2);
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
     revertcat
@@ -1078,7 +1075,7 @@ function cb_create_syhthetic_cat(src,~)
     ZG=ZmapGlobal.Data;
     ZG.primeCatalog=syn_invoke_dialog(ZG.primeCatalog); 
     ZG.newt2 = ZG.primeCatalog; 
-    timeplot(); 
+    CumTimePlot(ZG.newt2);
     zmap_update_displays(); 
     bdiff(ZG.primeCatalog); 
     revertcat

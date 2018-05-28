@@ -224,7 +224,7 @@ function  bdiff(mycat, holdplot)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newt2=mycat;
-        timeplot();
+        CumTimePlot(mycat);
     end
     
     function cb_nonlin_optimize(mysrc, myevt)

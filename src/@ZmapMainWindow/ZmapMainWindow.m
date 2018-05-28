@@ -348,9 +348,7 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_timeplot(obj)
-            ZG=ZmapGlobal.Data;
-            ZG.newt2=obj.catalog;
-            timeplot();
+            CumTimePlot(obj.catalog);
         end
         
         function cb_starthere(obj,ax)
@@ -491,8 +489,8 @@ classdef ZmapMainWindow < handle
             
         function cb_chwidth(obj,~,~)
             % change width of a cross-section
-            title=get(gco,'Title');
-            idx = strcmp(title,obj.XSectionTitles);
+            secTitle=get(gco,'Title');
+            idx = strcmp(secTitle,obj.XSectionTitles);
             prompt={'Enter the New Width:'};
             name='Cross Section Width';
             numlines=1;
@@ -510,18 +508,18 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_chcolor(obj,~,~)
-            title=get(gco,'Title');
-            idx = strcmp(title,obj.XSectionTitles);
+            secTitle=get(gco,'Title');
+            idx = strcmp(secTitle,obj.XSectionTitles);
             obj.CrossSections(idx).change_color([],obj.fig);
             set(gco,'ForegroundColor',obj.CrossSections(idx).color); %was mytab
         end
 
         function cb_info(obj,~,~)
-            title=get(gco,'Title');
-            idx = strcmp(title,obj.XSectionTitles);
+            secTitle=get(gco,'Title');
+            idx = strcmp(secTitle,obj.XSectionTitles);
             s=sprintf('%s containing:\n\n%s',obj.CrossSections(idx).info(),...
-                obj.xscats(title).summary('stats'));
-            msgbox(s,title);
+                obj.xscats(secTitle).summary('stats'));
+            msgbox(s,secTitle);
         end
         
         %% menu items.        %% create menus

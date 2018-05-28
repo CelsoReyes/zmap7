@@ -2,9 +2,9 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %ShapeGeneral represents a geographical selection of events
     %
     %
-    % obj=ShapeGeneral() no shape. initialization
+    % obj=SHAPEGENERAL() no shape. initialization
     %
-    % ShapeGeneral.AddMenu(fig , ax) creates a selection menu on specified figure that provides
+    % SHAPEGENERAL.AddMenu(fig , ax) creates a selection menu on specified figure that provides
     % methods to:
     %     A. specify the shape.
     %     B. Apply shape to catalog
@@ -15,13 +15,13 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     % replaces selectp and perhaps ex_select and (?)
     %
     %
-    %  pg = ShapeGeneral(ax,'box')
+    %  pg = SHAPEGENERAL(ax,'box')
     %  % user is prompted for two points
     %
-    %  ShapeGeneral properties:
+    %  SHAPEGENERAL properties:
     %     Points - points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
     %              prefer using the "Outline" method
-    %     Type - shape type
+    %     Type - shape shapeType
     %     ApplyGrid - apply grid options to the selected shape.
     %     Center - geographic center of shape
     %     X0 - center X coordinate (center of shape extent)
@@ -30,8 +30,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %     Lon - X coordinate for the shape outline
     %     Area - approximate area of shape (km^2)
     %
-    %  ShapeGeneral methods:
-    %     ShapeGeneral -
+    %  SHAPEGENERAL methods:
+    %     SHAPEGENERAL -
     %     Outline - get shape outline. like Points, except guaranteed to give outline instead of centerpoints
     %     isInside - return a vector of size otherLon that is true where item is inside polygon
     %     plot
@@ -44,15 +44,15 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %
     %     save -
     %
-    %  ShapeGeneral static methods:
+    %  SHAPEGENERAL static methods:
     %     AddMenu
     %
-    %  ShapeGeneral callbacks:
+    %  SHAPEGENERAL callbacks:
     %     callbacks that affect the global shape variable
     %     cb_load
     %     cb_save
     %     cb_clear
-    %     cb_createshape
+    %     
     %
     %     callbacks that affect the current figure/menu
     %     cb_outlinetoggle
@@ -77,7 +77,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     end
     
     properties(Constant)
-        AUTO_UPDATE_TIMEPLOT=false % automatically updates when shape is changed (can be tempermental)
+        AnalysisFunctions = {@CumTimePlot,'timeplot'}
+    end
+    
+    events
+        Changed
     end
     
     methods
@@ -89,9 +93,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 val=obj.Points;
             end
         end
-        function obj=ShapeGeneral(type)
+        
+        function obj=ShapeGeneral(shapeType)
             % ShapeGeneral create a shape
-            % type is one of 'circle', 'axes', 'box', 'polygon'}
+            % shapeType is one of 'circle', 'axes', 'box', 'polygon'}
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             % AXES: use current main map axes as a box
             % BOX: define using two corners
@@ -107,26 +112,21 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 return
             end
             
-            %if ~ismember(lower(type),{'circle','axes','box','rectangle','polygon','unassigned'})
-            %    error('unknown polygon type')
-            %end
-            
             ax=findobj(gcf,'Tag','mainmap_ax');
             % assumption: we the current figure contains the axes of interest
             set(gcf,'CurrentAxes',ax) % bring up axes of interest.  should be the map, with lat/lon
 
-            obj.Type=lower(type);
+            obj.Type=lower(shapeType);
             
-            if ~exist('type','var')
+            if ~exist('shapeType','var')
                 obj.Type='unassigned';
             end
             
             % hide any existing events
             obj.deemphasizeplot(ax);
             % make existing shape less obvious
-                    obj.Points=[nan nan];
+            obj.Points=[nan nan];
                     
-            ZmapMessageCenter.update_catalog()
         end
         
         function val=get.Lat(obj)
@@ -140,7 +140,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         end
         
         function val=get.Area(obj)
-            % Area tries to scale according to lat/lon
+            % Area attempts to scale according to lat/lon
             lats=obj.Lat;
             lons=obj.Lon;
             ys=deg2km(lats);
@@ -175,7 +175,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 hold on;
                 p=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
                     'LineStyle','-',...
-                    'Color','k',...
+                    'Color','r',...
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
                 p.UIContextMenu=makeuicontext(changedFcn);
@@ -183,7 +183,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
-                    'Color','k');
+                    'Color','r');
                 shout.UIContextMenu=makeuicontext(changedFcn);
             end
             
@@ -192,13 +192,20 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 uimenu(c,...
                     'Label','info...',...
                     Futures.MenuSelectedFcn,@(src,ev) obj.summary());
-                uimenu(c,'Label','Analyze EQ inside Shape (timeplot)',...
-                    'separator','on',...
-                    Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
-                uimenu(c,'Label','Analyze EQ outside Shape (timeplot)',...
-                    Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,'outside'});
-                uimenu(c,'Label','Compare Inside vs Outside (timeplot)',...
-                    Futures.MenuSelectedFcn,@compare_in_out);
+                
+                % add analysis functions
+                for i=1:size(obj.AnalysisFunctions,1)
+                    fn=obj.AnalysisFunctions{i,1};
+                    nm=obj.AnalysisFunctions{i,2};
+                    uimenu(c,'Label',sprintf('Analyze EQ inside Shape (%s)',nm),...
+                        'separator','on',...
+                        Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,fn,'inside'}); %@cb_analyze
+                    uimenu(c,'Label',sprintf('Analyze EQ outside Shape (%s)',nm),...
+                        Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,fn,'outside'});
+                    uimenu(c,'Label',sprintf('Compare Inside vs Outside (%s)',nm),...
+                        Futures.MenuSelectedFcn,{@compare_in_out, fn});
+                end
+                
                 uimenu(c,...
                     'Label','edit shape (mouse)',...
                     'separator','on',...
@@ -212,8 +219,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 function compare_in_out(src,ev)
                     beep;
                     error('not implemented');
-                    %ShapeGeneral.cb_selectp(src,ev,'inside')
-                    %ShapeGeneral.cb_selectp(src,ev,'outside')
                 end
                 
                 function autogrid(src,ev)
@@ -302,65 +307,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     
     methods(Static)
         
-        function submenu=AddMenu(fig)
-            %
-            % should write changes to ZG.selection_shape (?)
-            ZG=ZmapGlobal.Data;
-            ZGshape=ZG.selection_shape; %convenience name
-            % this works with the ZG polygon
-            
-            % get rid of the menu if it already exists,but keep position
-            submenu=findobj(fig,'Type','uimenu','-and','Tag','shape_select');
-            % add a selection menu to a figure
-            if isempty(submenu)
-                submenu = uimenu('Label','Selection','Tag','shape_select');
-            end
-            delete(submenu.Children);
-            
-            
-            uimenu(submenu,'Label',['Current Shape:' ZGshape.Type],'Tag','shapetype','Enable','off');
-            uimenu(submenu,'Label',ZGshape.toStr,'Tag','shapesummary','Enable','off'); %modify this
-            
-            
-            uimenu(submenu,'Label','Display Shape Outline','Checked','on',...
-                'Tag','shapeoutlinetoggle',Futures.MenuSelectedFcn,@ShapeGeneral.cb_outlinetoggle);
-            
-            % options for choosing a shape
-            ShapePolygon.AddPolyMenu(submenu,ZGshape);
-            ShapeCircle.AddCircleMenu(submenu, ZGshape);
-            
-            % % menu items that change the main catalog % %
-            isenabled = tf2onoff( ZGshape.Type ~= "unassigned" );
-            
-            
-            uimenu(submenu,'separator','on',...
-                'Enable',isenabled,...
-                'Label','crop Main Catalog (keep INSIDE)',Futures.MenuSelectedFcn,{@ShapeGeneral.cb_crop,'inside'})
-            uimenu(submenu,'Enable',isenabled,...
-                'Label','crop Main Catalog (keep OUTSIDE)',Futures.MenuSelectedFcn,{@ShapeGeneral.cb_crop,'outside'})
-      
-            uimenu(submenu,'Label','Analyze EQ inside Shape (timeplot)',...
-                'separator','on',...
-                Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,'inside'}); %@cb_analyze
-            
-            uimenu(submenu,'Label','Analyze EQ outside Shape (timeplot)',...
-                Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,'outside'});
-            
-            vis= tf2onoff( strcmp(ZGshape.Type, 'unassigned') );
-            uimenu(submenu,'separator','on',...
-                'Enable','off','Visible',vis,...
-                'Label','[cannot select earthquakes, no active shape]');
-            
-            
-            uimenu(submenu,'Separator','on',...
-                'Label','Load shape',Futures.MenuSelectedFcn,@ShapeGeneral.cb_load);
-            uimenu(submenu,'Label','Save shape',Futures.MenuSelectedFcn,@ShapeGeneral.cb_save);
-            %uimenu(submenu,'Label','Clear shape',Futures.MenuSelectedFcn,@ShapeGeneral.cb_clear);
-            
-            uimenu(submenu,'Label','refresh menu','Separator','on',Futures.MenuSelectedFcn,@(~,~)ShapeGeneral.AddMenu(gcf),'Visible',char(ZG.debug));
-            
-            
-        end
         function cb_outlinetoggle(src,~)
             sh=findobj(gcf,'Tag','shapeoutline');
             ev=findobj(gcf,'Tag','selectedevents');
@@ -407,36 +353,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             ZG.newcat=ZG.newt2;
             
             % show the timeseries
-            timeplot();
-        end
-        
-        function cb_createshape(src,~,type)
-            ZG=ZmapGlobal.Data;
-            %try
-            f=gcf;
-            ZG.selection_shape=ShapeGeneral(type);
-            
-            % clear any checkmark for a previous shape
-            parent=findobj(f,'Type','uimenu','-and','Label','Selection');
-            if isempty(parent)
-                warning('wrong figure')
-                return
-            end
-            allmenus=findobj(parent,'Type','uimenu');
-            shapeMenus=startsWith({allmenus.Label},'Set Polygon');
-            shapeMenus=startsWith({allmenus.Label},'Set Circle') | shapeMenus;
-            checkedMenus={allmenus.Checked} == "on";
-            set(allmenus(shapeMenus&checkedMenus),'Checked','off');
-            %activate crop menu items
-            cropMenus=startsWith({allmenus.Label},'crop ');
-            set(allmenus(cropMenus),'Enable','on');
-            % set this one on
-            src.Checked='on';
-            %catch ME
-            %    errordlg(ME.message);
-            %end
-            ShapeGeneral.AddMenu(gcf); %also refreshes menu
-            ZG.selection_shape.plot(gca)
+        CumTimePlot(ZG.newt2);
         end
         
         function cb_load(~,~)
@@ -457,8 +374,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function cb_clear(~,~)
             % callback to clear the plot and reset the menus
             ZG=ZmapGlobal.Data;
-            type='unassigned';
-            ZG.selection_shape=ShapeGeneral(type);
+            shapeType='unassigned';
+            ZG.selection_shape=ShapeGeneral(shapeType);
             % deactivate crop menu items
             parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
             allmenus=findobj(parent,'Type','uimenu');
@@ -467,11 +384,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 set(allmenus(cropMenus),'Enable','off');
             end
             curshapeh = findobj(gcf,'Tag','shapetype');
-            set(curshapeh,'Label',['Current Shape:',upper(type)]);
+            set(curshapeh,'Label',['Current Shape:',upper(shapeType)]);
             ZG.selection_shape.clearplot();
         end
         
-        function cb_selectp(~,~,in_or_out)
+        function cb_selectp(~,~,analysis_fn, in_or_out)
             % analyze EQ inside/outside shape works from view in current figure
             
             ZG = ZmapGlobal.Data;
@@ -493,7 +410,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             ZG.newcat=ZG.newt2;
-            timeplot();
+            analysis_fn();
             
         end
 

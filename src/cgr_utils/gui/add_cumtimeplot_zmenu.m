@@ -125,7 +125,7 @@ function add_cumtimeplot_zmenu(obj, parent)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         l = min(find( ZG.(obj.catname).Magnitude == max(ZG.(obj.catname).Magnitude) ));
         ZG.(obj.catname) = ZG.(obj.catname).subset(l:ZG.(obj.catname).Count);
-        timeplot() ;
+        CumTimePlot(ZG.(obj.catname));
     end
     
     function cb_pestimate(mysrc,myevt)
