@@ -68,10 +68,15 @@ function cummomentplot(obj,tabgrouptag)
     
     
     bigcat=ZmapGlobal.Data.maepi;
-    
-    idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+     if ~isempty(bigcat)
+        idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+        Sz=mag2dotsize(bigcat.Magnitude);
+    else
+        idx=[];
+        Sz=[];
+     end
     hold on
-    scatter(ax,Xs(idx), Ys(idx), mag2dotsize(bigcat.Magnitude),...
+    scatter(ax,Xs(idx), Ys(idx), Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
         'Tag','big events');
     hold off
