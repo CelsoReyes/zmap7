@@ -81,7 +81,9 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     end
     
     events
-        Changed
+        ShapeChanging % deemphasizes existing plots of this shape
+        ShapeChanged
+        ShapeDestroyed 
     end
     
     methods
@@ -94,7 +96,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function obj=ShapeGeneral(shapeType)
+        function obj=ShapeGeneral()
             % ShapeGeneral create a shape
             % shapeType is one of 'circle', 'axes', 'box', 'polygon'}
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
@@ -103,39 +105,32 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % POLYGON: define with lots of clicks. anything except
             %
             % UNASSIGNED: clear shape
-            %
-            % results are stored in ZG.selection_shape
-            %
-            %FIXME this should dispatch, or there should be a factory
             report_this_filefun();
-            if nargin==0
-                return
-            end
+            obj.subscribe('ShapeChanged',@(~,~)warning('Shape changed'));
+            obj.subscribe('ShapeChanged',@(A,~)disp(A));
+            obj.subscribe('ShapeChanged',@(~,B)disp(B));
             
+            %{
             ax=findobj(gcf,'Tag','mainmap_ax');
             % assumption: we the current figure contains the axes of interest
             set(gcf,'CurrentAxes',ax) % bring up axes of interest.  should be the map, with lat/lon
 
-            obj.Type=lower(shapeType);
-            
-            if ~exist('shapeType','var')
-                obj.Type='unassigned';
-            end
-            
             % hide any existing events
             obj.deemphasizeplot(ax);
             % make existing shape less obvious
             obj.Points=[nan nan];
-                    
+            %}
+        end
+        
+        function subscribe(obj, evt, fcn)
+            addlistener(obj, evt, fcn);
         end
         
         function val=get.Lat(obj)
-            % get Y coordinate from shape outline
             val= obj.Outline(2);
         end
         
         function val=get.Lon(obj)
-            % get X coordinate from shape outline
             val=obj.Outline(1);
         end
         
@@ -160,11 +155,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function plot(obj,ax,changedFcn)
+        function plot(obj,ax)
             % changedFcn is called with (oldshape, newshape) when the shape is changed.
-            if ~exist('changedFcn','var') || isempty(changedFcn)
-                changedFcn=@(~,~)[];
-            end
             shout=findobj(ax,'Tag','shapeoutline');
             assert(numel(shout)<2,'should only have one shape outline')
 
@@ -178,16 +170,18 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Color','r',...
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
-                p.UIContextMenu=makeuicontext(changedFcn);
+                p.UIContextMenu=makeuicontext();
+                %moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas));
                 hold off;
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
                     'Color','r');
-                shout.UIContextMenu=makeuicontext(changedFcn);
+                shout.UIContextMenu=makeuicontext();
             end
             
-            function c=makeuicontext(changedFcn)
+            
+            function c=makeuicontext()
                 c=uicontextmenu(f,'Tag','ShapeGenContext');
                 uimenu(c,...
                     'Label','info...',...
@@ -209,11 +203,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 uimenu(c,...
                     'Label','edit shape (mouse)',...
                     'separator','on',...
-                    Futures.MenuSelectedFcn,{@obj.interactive_edit,changedFcn});
+                    Futures.MenuSelectedFcn,{@obj.interactive_edit});
                 uimenu(c,...
                     'Label','Change shape with latitude?',...
                     Futures.MenuSelectedFcn,@latscale);
-                obj.add_shape_specific_context(c,ax, changedFcn);
+                obj.add_shape_specific_context(c,ax);
                 %uimenu(c,'Label','Clear shape','separator','on',Futures.MenuSelectedFcn,@(~,~)ShapeGeneral.cb_clear);
                 
                 function compare_in_out(src,ev)
@@ -221,15 +215,13 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     error('not implemented');
                 end
                 
-                function autogrid(src,ev)
-                end
                 function latscale(src,ev)
                     obj.ScaleWithLatitude=~obj.ScaleWithLatitude;
                     src.Checked=tf2onoff(obj.ScaleWithLatitude);
                 end
             end
         end
-        function add_shape_specific_context(obj,c,ax,changedFcn)
+        function add_shape_specific_context(obj,c,ax)
             % would add additional menu items here
         end
         function clearplot(obj,ax)
@@ -263,9 +255,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             tf=isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
         end
         function s=toStr(obj)
-            % return 1 less point, since last & first points are the same
             s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1)-1);
-            %Extent: Lon: [ %s to %s ], Lat: [ %s to %s]'
         end
         function s=toStruct(obj)
             s.Points=obj.Points;
@@ -274,8 +264,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             s.Center=obj.Center;
             s.X0=obj.X0;
             s.Y0=obj.Y0;
-            x.Lat=obj.Outline(:,2);
-            x.Lon=obj.Outline(:,1);
+            s.Lat=obj.Outline(:,2);
+            s.Lon=obj.Outline(:,1);
         end
         
         function save(obj)
@@ -303,6 +293,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         
         function interactive_edit(obj,ax)
         end
+        
+        function delete(obj)
+            notify(obj,'ShapeDestroyed');
+        end
     end
     
     methods(Static)
@@ -320,40 +314,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             set([sh ev],'Visible',v);
-        end
-        
-        function cb_crop(~,~,in_or_out)
-            % crop the primary catalog based on the shape, and current view then resets views
-            %
-            % precondition: this figure has a view stored in UserData.View
-            
-            ZG = ZmapGlobal.Data;
-            
-            fig = gcf;
-            if isfield(fig.UserData,'View')
-                myview=fig.UserData.View.PolygonApply(ZG.selection_shape.Outline);
-            else
-                myview=ZG.Views.primary.PolygonApply(ZG.selection_shape.Outline);
-            end
-            if in_or_out == "outside"
-                myview=myview.PolygonInvert();
-            end
-            
-            % set the catalogs and their views
-            ZG.primeCatalog=myview.Catalog();
-            ZG.Views.primary = ZG.Views.primary.reset();
-            
-            ZG.newt2=ZG.primeCatalog;
-            if isfield(ZG.Views,'timeplot')
-                ZG.Views.timeplot = ZG.Views.timeplot.reset();
-            else
-                ZG.Views.timeplot = ZG.Views.primary;
-            end
-            
-            ZG.newcat=ZG.newt2;
-            
-            % show the timeseries
-        CumTimePlot(ZG.newt2);
         end
         
         function cb_load(~,~)
@@ -375,7 +335,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % callback to clear the plot and reset the menus
             ZG=ZmapGlobal.Data;
             shapeType='unassigned';
-            ZG.selection_shape=ShapeGeneral(shapeType);
+            ZG.selection_shape=ShapeGeneral();
             % deactivate crop menu items
             parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
             allmenus=findobj(parent,'Type','uimenu');
@@ -413,7 +373,12 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             analysis_fn();
             
         end
-
+        
+    end % static methods
+    methods(Access=protected)
+        function finishedMoving(obj, updateShapeFcn, movedObject, movedDelta)
+            error('this should be implemented in the specific shape');
+        end
     end
     
 end

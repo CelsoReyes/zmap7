@@ -69,8 +69,8 @@ function plot_base_events(obj, container, featurelist)
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
     
     % options for choosing a shape
-    ShapePolygon.AddPolyMenu(c,obj.shape);
-    ShapeCircle.AddCircleMenu(c, obj.shape);
+    ShapePolygon.AddPolyMenu(c,@obj.replot_all);
+    ShapeCircle.AddCircleMenu(c, @obj.replot_all);
     for j=1:numel(c.Children)
         if startsWith(c.Children(j).Tag,{'circle','poly'})
             c.Children(j).(Futures.MenuSelectedFcn)={@updatewrapper,c.Children(j).Callback};
@@ -89,14 +89,12 @@ function plot_base_events(obj, container, featurelist)
     
     function updatewrapper(s,v,f)
         f(s,v);
-        obj.shape=copy(ZmapGlobal.Data.selection_shape);
+        return
+        obj.shape=ZmapGlobal.Data.selection_shape;
         obj.cb_redraw();
     end
-    
     function cb_shapeclear
-        ZG=ZmapGlobal.Data;
-        ZG.selection_shape=ShapeGeneral('unassigned');
-        ZG.selection_shape.clearplot();
+        obj.shape.clearplot();
     end
     function cb_zoom(~,~)
         xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];

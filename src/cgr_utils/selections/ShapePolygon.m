@@ -6,23 +6,22 @@ classdef ShapePolygon < ShapeGeneral
     
     methods
         function obj=ShapePolygon(shapeType, varargin)
-            % ShapeGeneral create a shape
-            % shapeType is one of 'circle', 'axes', 'box', 'polygon'}
-            % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
+            % ShapePolygon create a shape
+            % shapeType is one of 'axes', 'box', 'polygon'}
             % AXES: use current main map axes as a box
             % BOX: define using two corners
             % POLYGON: define with lots of clicks. anything except
             %
             % UNASSIGNED: clear shape
             %
-            % results are stored in ZG.selection_shape
+            obj@ShapeGeneral;
             
             report_this_filefun();
             if nargin==0
                 return
             end
             
-            if ~ismember(lower(shapeType),{'circle','axes','box','rectangle','polygon','unassigned'})
+            if ~ismember(lower(shapeType),{'axes','box','rectangle','polygon','unassigned'})
                 error('unknown polygon type')
             end
             ax=findobj(gcf,'Tag','mainmap_ax');
@@ -34,11 +33,20 @@ classdef ShapePolygon < ShapeGeneral
             set(gcf,'CurrentAxes',ax); % bring up axes of interest.  should be the map, with lat/lon
             
             obj.Type=lower(shapeType);
-            ZG=ZmapGlobal.Data;
             
             % hide any existing events
             obj.deemphasizeplot(ax);
             % make existing shape less obvious
+            
+            
+            charIdx = cellfun(@ischar,varargin);
+            i=find(varargin(charIdx)=="ShapeChanged");
+            if ~isempty(i)
+                charIdx(i)
+                shapeChangedFcn=varargin{charIdx(i)+1};
+                varargin([charIdx(i) charIdx(i)+1])=[];
+            end
+            
             switch obj.Type
                 case 'axes' % ShapeGeneral('axes' [, axeshandle])
                     if ~isempty(varargin)
@@ -50,7 +58,6 @@ classdef ShapePolygon < ShapeGeneral
                         lrbt(2),lrbt(4);lrbt(1),lrbt(4);...
                         lrbt(1),lrbt(3)];
                     obj.Type='polygon'; % axes isn't really a type. it's a convenience method for creation
-                    ZG.selection_shape=obj;
                 case 'box' % ShapeGeneral('box' [, [minX maxX minY maxY]])
                     if ~isempty(varargin)
                         lrbt=varargin{1};
@@ -64,7 +71,6 @@ classdef ShapePolygon < ShapeGeneral
                         return
                     end
                     obj.Type='polygon'; % box isn't really a type. it's a convenience method for creation
-                    ZG.selection_shape=obj;
                 case 'polygon' % ShapeGeneral('polygon', [x1,y1;...;xn,yn]);
                     if ~isempty(varargin)
                         obj.Points=varargin{1};
@@ -72,10 +78,11 @@ classdef ShapePolygon < ShapeGeneral
                     else
                         obj.select_polygon();
                     end
-                    ZG.selection_shape=obj;
             end
             obj.plot(gca);
             obj.setVisibility('on');
+            obj.subscribe('ShapeChanged',shapeChangedFcn);
+            notify(obj,'ShapeChanged');
         end
      
         function summary(obj)
@@ -90,7 +97,7 @@ classdef ShapePolygon < ShapeGeneral
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
-        function add_shape_specific_context(obj,c,ax,changedFcn)
+        function add_shape_specific_context(obj,c,ax)
             % would add additional menu items here
         end
         
@@ -130,6 +137,7 @@ classdef ShapePolygon < ShapeGeneral
             x = [x ; x(1)];
             y = [y ; y(1)];      %  closes polygon
             obj.Points=[x,y];
+            notify(obj,'ShapeChanged')
             delete(mouse_points_overlay);
             delete(mouse_points_overlay_nub);
             
@@ -163,35 +171,31 @@ classdef ShapePolygon < ShapeGeneral
                 
         end
 
-        function interactive_edit(obj,src,ev,changedFcn)
+        function interactive_edit(obj,src,~)
             % INTERACTIVE_EDIT callback
             % obj.INTERACTIVE_EDIT(src,ev)
             
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            initialShape=copy(obj);
-            make_editable(shout,@()update_shape,[],'normal',obj.ScaleWithLatitude);
+            make_editable(shout,@()update_shape,@()obj.notify('ShapeChanged'),'normal',obj.ScaleWithLatitude);
             
             %make_editable(shout,@()update_shape);
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
-                ZG=ZmapGlobal.Data;
-                ZG.selection_shape=obj;
-                
-                if ~isequal(initialShape,obj)
-                    changedFcn(initialShape);
-                end
+                notify(obj,'ShapeChanged');
             end
         end
     end
     
     methods(Static)
         
-        function submenu=AddPolyMenu(submenu,ZGshape)
+        function submenu=AddPolyMenu(submenu, updateFcn)
             %
-            % should write changes to ZG.selection_shape (?)
             %polygonTypes={'axes','box','rectangle','polygon'};
             menuItems={'polyCreateBox',...
                 'polyCreateIrregular'};
+            if ~exist('updateFcn','var')
+                updateFcn=@do_nothing;
+            end
             
             for j=1:numel(menuItems)
                 myitem=menuItems{j};
@@ -206,10 +210,10 @@ classdef ShapePolygon < ShapeGeneral
                 switch myitem % based on Tags that should already be assigned to menu items
                     case 'polyCreateBox'
                         lab='Set Polygon: Box...';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('box'));
+                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('box','ShapeChanged',updateFcn));
                     case 'polyCreateIrregular'
                         lab='Set Polygon: Irregular shape...';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('polygon'));
+                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('polygon','ShapeChanged',updateFcn));
                     otherwise
                         error('Tried to set a menu item that doesn''t exist');
                 end
@@ -232,14 +236,14 @@ classdef ShapePolygon < ShapeGeneral
             delete(findobj(gca,'Tag','tmp_box_outline'));
             if ~ok
                 obj=[];
-                return
             else
                 obj.Points=[x(:),y(:)];
             end
-            return
+            notify(obj,'ShapeChanged');
             
             
             function box_update(stxy, edxy,~)
+                % called while selecting the box
                 h=findobj(gca,'Tag','tmp_box_outline');
                 if isempty(h)
                     h=line(nan,nan,'LineStyle','--','Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_box_outline');
@@ -248,8 +252,12 @@ classdef ShapePolygon < ShapeGeneral
                 h.YData=[stxy(2); edxy(2); edxy(2); stxy(2); stxy(2)];
             end
             
-            
         end
     end % private methods
-    
+    methods(Access=protected)
+        function finishedMoving(obj, movedObject, ~)
+            obj.Points=[movedObject.XData(:),movedObject.YData(:)];
+            notify(obj,'ShapeChanged');
+        end
+    end
 end

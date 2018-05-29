@@ -41,10 +41,6 @@ function catalog_menu(obj, force)
     
     submenu = uimenu('Label','Catalog','Tag','menu_catalog');
     
-    %uimenu(submenu,'Label','Crop main catalog to window axes',Futures.MenuSelectedFcn,@cb_crop);
-    %uimenu(submenu,'Label','Crop main catalog to shape',Futures.MenuSelectedFcn,@cb_shapecrop);
-    
-    
     uimenu(submenu,'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.

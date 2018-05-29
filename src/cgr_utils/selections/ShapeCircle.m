@@ -14,12 +14,14 @@ classdef ShapeCircle < ShapeGeneral
             %
             % ShapeCircle() :
             % ShapeCircle('dlg') create via a dialg box
-            % ?
+            %
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             
             % UNASSIGNED: clear shape
             %
             % results are stored in ZG.selection_shape
+            
+            obj@ShapeGeneral;
             
             report_this_filefun();
             
@@ -32,7 +34,7 @@ classdef ShapeCircle < ShapeGeneral
                 ra=nan;
             end
             if nargin==0
-                ZG.selection_shape=obj;
+                % ZG.selection_shape=obj;
             elseif strcmpi(varargin{1},'dlg')
                 sdlg.prompt='Radius (km):'; sdlg.value=ra;
                 sdlg(2).prompt='Center X (Lon):'; sdlg(2).value=ZG.selection_shape.X0;
@@ -42,11 +44,9 @@ classdef ShapeCircle < ShapeGeneral
                     beep
                     return
                 end
-                ZG.selection_shape=obj;
             else
-                oo=ShapeCircle.selectUsingMouse();
+                oo=ShapeCircle.selectUsingMouse(gca);
                 if ~isempty(oo)
-                    ZG.selection_shape=oo;
                     obj=oo;
                 else
                     return
@@ -89,35 +89,24 @@ classdef ShapeCircle < ShapeGeneral
             helpdlg(obj.toStr,'Circle');
         end
         
-        function interactive_edit(obj,src,ev,changedFcn)
+        function interactive_edit(obj,src,ev)
             % INTERACTIVE_EDIT callback
             % obj.INTERACTIVE_EDIT(src,ev)
             shout=findobj(gcf,'Tag','shapeoutline');
             if numel(shout)>1
                 disp(shout);
             end
-            initialShape = obj.copy();
-            %if obj.AUTO_UPDATE_TIMEPLOT
-                make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
-            %else
-                %make_editable(shout,@()update_shape,[],'nopoint',obj.ScaleWithLatitude);
-            %end
+            
+            make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
             
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
                 obj.Radius= deg2km(shout.YData(1) - obj.Center(2));
-                ZG=ZmapGlobal.Data;
-                ZG.selection_shape=obj;
                 
-                if ~isequal(initialShape,obj)
-                    % changedFcn(initialShape, obj.copy());
-                    changedFcn(obj.copy());
-                end
-                    
-                
+                notify(obj,'ShapeChanged');
             end
         end
-        function add_shape_specific_context(obj,c,ax, changedFcn)
+        function add_shape_specific_context(obj,c,ax)
             uimenu(c,'label','Choose Radius',Futures.MenuSelectedFcn,@chooseRadius)
             uimenu(c,'label','Snap To N Events',Futures.MenuSelectedFcn,@snapToEvents)
             
@@ -126,25 +115,20 @@ classdef ShapeCircle < ShapeGeneral
                 nc=inputdlg('Number of events to enclose','Edit Circle',1,{num2str(ZG.ni)});
                 nc=round(str2double(nc{1}));
                 if ~isempty(nc) && ~isnan(nc)
-                    initialShape=obj.copy();
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
                     obj.Radius=obj.Radius;%+0.005;
                     obj.plot(ax); % replot
-                    ZG.selection_shape=obj;
-                    changedFcn(initialShape, obj.copy());
+                    notify(obj,'ShapeChanged');
                 end
             end
             function chooseRadius(~,~)
-                ZG=ZmapGlobal.Data;
                 nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
                 nc=str2double(nc{1});
                 if ~isempty(nc) && ~isnan(nc)
-                    initialShape=obj.copy();
                     obj.Radius=nc;
                     obj.plot(ax); % replot
-                    ZG.selection_shape=obj;
-                    changedFcn(initialShape, obj.copy());
+                    notify(obj,'ShapeChanged');
                 end
                 
             end
@@ -170,9 +154,9 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=selectUsingMouse()
+        function obj=selectUsingMouse(ax)
             
-            [ss,ok] = selectSegmentUsingMouse(gca,'deg','km','r',@circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'deg','km','r',@circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];
@@ -200,7 +184,7 @@ classdef ShapeCircle < ShapeGeneral
             
             obj=ShapeCircle;
             if nargin==0
-                obj = ShapeCircle.selectUsingMouse();
+                obj = ShapeCircle.selectUsingMouse(gca);
                 return
             end
             % select center point, if it isn't provided
@@ -256,4 +240,17 @@ classdef ShapeCircle < ShapeGeneral
         end
     end
     
+    methods(Access=protected)
+        function finishedMoving(obj, movedObject, deltas)
+            initialShape=copy(obj);
+            %obj.Points=[movedObject.XData(:),movedObject.YData(:)];
+            centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
+            centerY = mean([min(movedObject.YData),max(movedObject.YData)])
+            obj.Points=[centerX,centerY];
+            if ~isequal(initialShape,obj)
+                notify(obj,'ShapeChanged');
+            end
+        end
+    end
+            
 end

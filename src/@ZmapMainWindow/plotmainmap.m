@@ -39,7 +39,8 @@ function plotmainmap(obj)
     
     hold(axm,'on');
     if ~isempty(obj.shape)
-        obj.shape.plot(axm,@obj.shapeChangedFcn)
+        %obj.shape.plot(axm,@obj.shapeChangedFcn)
+        obj.shape.plot(axm);
     end
     hold(axm,'off');
     if ~isempty(obj.Grid)

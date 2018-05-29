@@ -7,6 +7,34 @@ function add_grid_menu(obj)
     uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
     uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
     uimenu(parent,'Label','Choose Sample Radius',Futures.MenuSelectedFcn,@cb_manualradius);
+    uimenu(parent,'Separator','on','Label','Select events in CIRCLE',...
+        Futures.MenuSelectedFcn,@cb_makecircle);
+    uimenu(parent,'Label','Select events in BOX',...
+        Futures.MenuSelectedFcn,@cb_makebox);
+    uimenu(parent,'Label','Select events in POLYGON',...
+        Futures.MenuSelectedFcn,@cb_makepolygon);
+    uimenu(parent,'Label','Clear shape selection',...
+        Futures.MenuSelectedFcn,@cb_clear_shape)
+    
+    function cb_makecircle(src,ev)
+        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        sh=ShapeCircle.selectUsingMouse(obj.map_axes);
+        set_my_shape(obj,sh);
+    end
+    
+    function cb_makebox(src,ev)
+        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        sh=ShapePolygon('box');
+        set_my_shape(obj,sh);
+    end
+    
+    function cb_makepolygon(src,ev)
+        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        sh=ShapePolygon('polygon');
+        set_my_shape(obj,sh);
+    end
+    
+    
     
     function cb_autogrid(~,~)
         % following assumes grid from main map
@@ -72,7 +100,7 @@ function add_grid_menu(obj)
         end
         delete(findobj(obj.fig,'Tag',['grid_',obj.Grid.Name]))
         obj.Grid=obj.Grid.MaskWithShape(obj.shape);
-        obj.Grid.plot(obj.map_axes,'ActiveOnly')
+        obj.Grid.plot(obj.map_axes,'ActiveOnly');
     end
     
     function cb_clear(~,~)

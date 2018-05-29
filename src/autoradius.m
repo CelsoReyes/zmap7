@@ -16,7 +16,7 @@ function [r, evsel] = autoradius(catalog, zgrid, minNum, pct, reach)
     %     evsel : structure styled after EventSelection.toStruct() to make this
     %             answer easily compatible with other sections of Zmap.
     %
-    % see also ZmapGrid, ShapeGeneral
+    % see also ZmapGrid
     
     % TODO: this could be tweaked to return answers based on overlap, too
    

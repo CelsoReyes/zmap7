@@ -140,7 +140,14 @@ classdef ZmapMainWindow < handle
                 obj.rawcatalog=in_catalog;
             end
             
-            obj.shape=ZG.selection_shape;
+            % TODO: make this handle a default shape once again
+            
+            %obj.shape=copy(ZG.selection_shape);
+            
+            obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
+            obj.shape.subscribe('ShapeChanging', @(~,~)disp('** notified that shape is changING'));
+            obj.shape.subscribe('ShapeChanged', @(~,~)disp('** notified that shape has CHANGED'));
+            obj.shape.subscribe('ShapeDestroyed', @(~,~)disp('** notified that shape has been  DESTROYED'));
             
             if isempty(obj.rawcatalog)
                 obj.daterange = [NaT NaT];
@@ -233,6 +240,15 @@ classdef ZmapMainWindow < handle
                 notify(obj,'XsectionChanged');
             end
         end
+        
+    function set_my_shape(obj,sh)
+        if ~isempty(sh)
+            obj.shape=sh;
+            subscribe(obj.shape,'ShapeChanged',@obj.replot_all);
+            obj.shape.plot(obj.map_axes);
+            obj.replot_all('ShapeChanged');
+        end
+    end
         
         function getBigEventUpdates(obj, callbackfn)
             % obj.addlistener('maepi','PostSet',callbackfn);
@@ -371,12 +387,10 @@ classdef ZmapMainWindow < handle
             obj.daterange(1)=obj.catalog.Date(idx);
         end
              
-        function shapeChangedFcn(obj,oldshapecopy,varargin)
-            if ~isempty(varargin)
-                disp(varargin)
-            end
-            obj.prev_states.push({obj.catalog, oldshapecopy, obj.daterange});
-            obj.replot_all();
+        function shapeChangedFcn(obj,varargin)
+            disp(varargin)
+            %obj.prev_states.push({obj.catalog, oldshapecopy, obj.daterange});
+            obj.replot_all([],varargin{2});
         end
         
         function cb_undo(obj,~,~)

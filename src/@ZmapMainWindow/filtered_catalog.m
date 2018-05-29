@@ -15,7 +15,7 @@ function [c, mdate, mshape, mall]=filtered_catalog(obj)
     end
     mdate=obj.rawcatalog.Date>=obj.daterange(1) & obj.rawcatalog.Date<=obj.daterange(2);
     if  length(obj.shape.Outline) < 4
-        obj.shape = ShapeGeneral; % it was invalid
+        obj.shape = ShapeGeneral(); % it was invalid
     end
     if ~isempty(obj.shape)
         mshape = obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude);

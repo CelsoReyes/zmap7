@@ -35,9 +35,14 @@ function replot_all(obj,metaProp,eventData)
             
         case 'XsectionEmptied'
             
-        case {'CatalogChanged','ReplotAll','DateRangeChanged'}
-            disp('replot evererything touched by catalog')
+        case {'CatalogChanged','ReplotAll','DateRangeChanged','ShapeChanged'}
+            disp('replot everything touched by catalog')
             k=obj.XSectionTitles;
+            if eventName=="ShapeChanged"
+                disp(eventData.Source);
+                disp(metaProp);
+                obj.shape=eventData.Source;
+            end
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             [obj.catalog, md, ~, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
             evs=findobj(findobj(obj.fig,'Tag','mainmap_tab'),'Tag','all events');
@@ -58,10 +63,9 @@ function replot_all(obj,metaProp,eventData)
                 
             end
             obj.plotmainmap();
-            
         otherwise
             k=obj.XSectionTitles;
-            disp('uncaught event')
+            fprintf('uncaught event: [%s]\n',eventName);
     end
     
     if ~isvalid(obj.fig)

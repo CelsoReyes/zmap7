@@ -112,8 +112,8 @@ classdef ZmapData < handle
             struct('useEventsInRadius',true,'radius_km',5,...
             'useNumNearbyEvents',false,'numNearbyEvents',100,...
             'maxRadiusKm',5,'requiredNumEvents',1) % criteria used to select events at a grid point
-        selection_shape {mustBeShape} = ShapeGeneral()
-        debug matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.on % makes special menus visible
+        %selection_shape {mustBeShape} = ShapeGeneral()
+        debug matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.off % makes special menus visible
         
         Views struct = struct('primary',[],'layers',[]) % catalog views
         
@@ -155,18 +155,7 @@ classdef ZmapData < handle
         function out=get.wely(obj)
             out=obj.welcome_len(2);
         end
-        %{
-        function set.bin_dur(obj,val)
-            if isa(val,'duration')
-                obj.bin_dur=val;
-            elseif isnumeric(val)
-                warning('expected bin_dur to be a duration. converting and assuming it is days');
-                obj.bin_dur=days(val);
-            else
-                error('only can convert durations and numerics to bin_dur');
-            end
-        end
-        %}
+        
         function disp_catalogs(obj)
             p=properties(obj);
             for n=1:numel(p)
