@@ -275,7 +275,6 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         
     end
     
-    
     function scale(~,ev,targ)
         
         extent=[min(targ.XData) max(targ.XData) min(targ.YData) max(targ.YData)];

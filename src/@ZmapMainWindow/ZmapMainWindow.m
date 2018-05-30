@@ -145,9 +145,6 @@ classdef ZmapMainWindow < handle
             %obj.shape=copy(ZG.selection_shape);
             
             obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
-            obj.shape.subscribe('ShapeChanging', @(~,~)disp('** notified that shape is changING'));
-            obj.shape.subscribe('ShapeChanged', @(~,~)disp('** notified that shape has CHANGED'));
-            obj.shape.subscribe('ShapeDestroyed', @(~,~)disp('** notified that shape has been  DESTROYED'));
             
             if isempty(obj.rawcatalog)
                 obj.daterange = [NaT NaT];
@@ -202,7 +199,7 @@ classdef ZmapMainWindow < handle
             addlistener(obj,'CatalogChanged'  ,      @obj.replot_all);
             addlistener(obj, 'daterange', 'PostSet', @obj.replot_all);
             addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
-            addlistener(obj, 'shape',     'PostSet', @(~,~)disp('**Shape Changed'));
+            addlistener(obj, 'shape',     'PostSet', @obj.replot_all);
             addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
             addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
         end

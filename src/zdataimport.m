@@ -5,8 +5,6 @@ function [catalog, OK] = zdataimport()
     OK = false;
     catalog = ZmapCatalog();
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    
     % start filters
     
     [catalog] = import_start(fullfile(ZmapGlobal.Data.hodi, 'importfilters'));

@@ -59,12 +59,19 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %     cb_crop - crop the primary catalog based on the shape, and current view then resets views
     %     cb_selectp - analyze EQ inside/outside shape works from view in current figure
     
-    properties
+    properties(SetObservable = true, AbortSet = true)
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
+        Units = 'degrees'; % either 'degrees' or 'kilometers'
+    end
+    
+    properties(SetAccess = protected)
         Type (1,:) char = 'unassigned' % shape type
+        AllowVertexEditing = true;
+    end
+    
+    properties
         ApplyGrid logical = true %apply grid options to the selected shape.
         ScaleWithLatitude logical = false
-        Units = 'degrees'; % either 'degrees' or 'kilometers'
     end
     
     properties(Dependent)
@@ -83,10 +90,32 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     events
         ShapeChanging % deemphasizes existing plots of this shape
         ShapeChanged
-        ShapeDestroyed 
     end
     
     methods
+        
+        function obj=ShapeGeneral()
+            % ShapeGeneral create a shape
+            report_this_filefun();
+            addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
+            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('changing shape units'));
+        end
+        
+        function notifyShapeChange(obj,metaprop, evt)
+            notify(obj, 'ShapeChanged');
+        end
+        
+        function moveTo(obj, x , y)
+            % MOVETO moves theshape to a new point.  assumes the same units as points
+            delta = [x , y] - obj.Center;
+            if ~obj.ScaleWithLatitude
+                obj.Points = obj.Points + delta;
+            else
+                % TODO: deferred math
+            end
+        end
+            
+            
         function val=Outline(obj,col)
             % get shape outline. like Points, except guaranteed to give outline instead of centerpoints
             if exist('col','var')
@@ -94,32 +123,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             else
                 val=obj.Points;
             end
-        end
-        
-        function obj=ShapeGeneral()
-            % ShapeGeneral create a shape
-            % shapeType is one of 'circle', 'axes', 'box', 'polygon'}
-            % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
-            % AXES: use current main map axes as a box
-            % BOX: define using two corners
-            % POLYGON: define with lots of clicks. anything except
-            %
-            % UNASSIGNED: clear shape
-            report_this_filefun();
-            obj.subscribe('ShapeChanged',@(~,~)warning('Shape changed'));
-            obj.subscribe('ShapeChanged',@(A,~)disp(A));
-            obj.subscribe('ShapeChanged',@(~,B)disp(B));
-            
-            %{
-            ax=findobj(gcf,'Tag','mainmap_ax');
-            % assumption: we the current figure contains the axes of interest
-            set(gcf,'CurrentAxes',ax) % bring up axes of interest.  should be the map, with lat/lon
-
-            % hide any existing events
-            obj.deemphasizeplot(ax);
-            % make existing shape less obvious
-            obj.Points=[nan nan];
-            %}
         end
         
         function subscribe(obj, evt, fcn)
@@ -155,13 +158,20 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function plot(obj,ax)
+        function [h, myListener]=plot(obj,ax, myListener)
+            
             % changedFcn is called with (oldshape, newshape) when the shape is changed.
+            if ~isvalid(ax) && exist('myListener','var')
+                delete(myListener); % no point in plotting to an axis that no longer exists!
+                return
+            end
             shout=findobj(ax,'Tag','shapeoutline');
+            
             assert(numel(shout)<2,'should only have one shape outline')
 
             f=ancestor(ax,'figure');
-            delete(findobj(f,'Tag','ShapeGenContext'));
+            %shapegencontext=findobj(f,'Tag','ShapeGenContext');
+            %delete(shapegencontext)
             
             if isempty(shout)
                 hold on;
@@ -171,15 +181,31 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
                 p.UIContextMenu=makeuicontext();
-                %moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas));
+                moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas),...
+                    'movepoints',obj.AllowVertexEditing,'xtol',.05,'ytol',0.05,...
+                    'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
                 hold off;
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
                     'Color','r');
-                shout.UIContextMenu=makeuicontext();
+                %shout.UIContextMenu=makeuicontext();
             end
             
+            %default behavior is to refresh any plots associated with this shape
+            if ~exist('myListener','var')
+                
+                % first create a listener with a bogus function, so we can get its handle.
+                myListener=addlistener(obj,'ShapeChanged',@(~,~)disp('unset!'));
+                
+                % now set the callback to this function again, but pass this handle along.
+                % this is to ensure that the handle is managed by the plot routine.
+                myListener.Callback = @(~,~)plot(obj,ax,myListener); 
+                
+                % delete the listener when the outline is deleted, otherwise it will simply be
+                % recreated when the shape properties change
+                p.DeleteFcn=@(~,~)delete(myListener);
+            end
             
             function c=makeuicontext()
                 c=uicontextmenu(f,'Tag','ShapeGenContext');
@@ -193,22 +219,17 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     nm=obj.AnalysisFunctions{i,2};
                     uimenu(c,'Label',sprintf('Analyze EQ inside Shape (%s)',nm),...
                         'separator','on',...
-                        Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,fn,'inside'}); %@cb_analyze
+                        Futures.MenuSelectedFcn,{@obj.cb_selectp,fn,'inside'}); %@cb_analyze
                     uimenu(c,'Label',sprintf('Analyze EQ outside Shape (%s)',nm),...
-                        Futures.MenuSelectedFcn,{@ShapeGeneral.cb_selectp,fn,'outside'});
+                        Futures.MenuSelectedFcn,{@obj.cb_selectp,fn,'outside'});
                     uimenu(c,'Label',sprintf('Compare Inside vs Outside (%s)',nm),...
                         Futures.MenuSelectedFcn,{@compare_in_out, fn});
                 end
                 
                 uimenu(c,...
-                    'Label','edit shape (mouse)',...
-                    'separator','on',...
-                    Futures.MenuSelectedFcn,{@obj.interactive_edit});
-                uimenu(c,...
                     'Label','Change shape with latitude?',...
                     Futures.MenuSelectedFcn,@latscale);
-                obj.add_shape_specific_context(c,ax);
-                %uimenu(c,'Label','Clear shape','separator','on',Futures.MenuSelectedFcn,@(~,~)ShapeGeneral.cb_clear);
+                obj.add_shape_specific_context(c);
                 
                 function compare_in_out(src,ev)
                     beep;
@@ -221,9 +242,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 end
             end
         end
-        function add_shape_specific_context(obj,c,ax)
+        
+        function add_shape_specific_context(obj,c)
             % would add additional menu items here
         end
+        
         function clearplot(obj,ax)
             %clear the shape from the plot
             if ~exist('ax','var') || isempty(ax)
@@ -294,9 +317,33 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function interactive_edit(obj,ax)
         end
         
-        function delete(obj)
-            notify(obj,'ShapeDestroyed');
+        
+        function cb_selectp(obj,~,~,analysis_fn, in_or_out)
+            % analyze EQ inside/outside shape works from view in current figure
+            
+            ZG = ZmapGlobal.Data;
+            
+            % apply shape to current figure's view (inverting if necessary)
+            fig = gcf;
+            if isfield(fig.UserData,'View')
+                myview=fig.UserData.View.PolygonApply(obj.Outline);
+            else
+                myview=ZG.Views.primary.PolygonApply(obj.Outline);
+            end
+            if in_or_out == "outside"
+                myview=myview.PolygonInvert();
+            end
+            
+            ZG.newt2=myview.Catalog();
+            if isfield(ZG.Views,'timeplot')
+                ZG.Views.timeplot = ZG.Views.timeplot.reset();
+            end
+            
+            ZG.newcat=ZG.newt2;
+            analysis_fn();
+            
         end
+        
     end
     
     methods(Static)
@@ -346,32 +393,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             curshapeh = findobj(gcf,'Tag','shapetype');
             set(curshapeh,'Label',['Current Shape:',upper(shapeType)]);
             ZG.selection_shape.clearplot();
-        end
-        
-        function cb_selectp(~,~,analysis_fn, in_or_out)
-            % analyze EQ inside/outside shape works from view in current figure
-            
-            ZG = ZmapGlobal.Data;
-            
-            % apply shape to current figure's view (inverting if necessary)
-            fig = gcf;
-            if isfield(fig.UserData,'View')
-                myview=fig.UserData.View.PolygonApply(ZG.selection_shape.Outline);
-            else
-                myview=ZG.Views.primary.PolygonApply(ZG.selection_shape.Outline);
-            end
-            if in_or_out == "outside"
-                myview=myview.PolygonInvert();
-            end
-            
-            ZG.newt2=myview.Catalog();
-            if isfield(ZG.Views,'timeplot')
-                ZG.Views.timeplot = ZG.Views.timeplot.reset();
-            end
-            
-            ZG.newcat=ZG.newt2;
-            analysis_fn();
-            
         end
         
     end % static methods

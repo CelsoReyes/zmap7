@@ -77,8 +77,8 @@ function plot_base_events(obj, container, featurelist)
         end
     end
     
-    uimenu(c,'Label','Clear Shape',...
-        'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapeclear});
+    uimenu(c,'Label','Delete Shape',...
+        'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
     uimenu(c,'Label','Crop to selection',Futures.MenuSelectedFcn,@cb_crop_to_selection);
     uimenu(c,'Label','Zoom to selection',Futures.MenuSelectedFcn,@cb_zoom)
@@ -93,8 +93,11 @@ function plot_base_events(obj, container, featurelist)
         obj.shape=ZmapGlobal.Data.selection_shape;
         obj.cb_redraw();
     end
-    function cb_shapeclear
+    function cb_shapedelete
         obj.shape.clearplot();
+        delete(obj.shape);
+        obj.shape=ShapeGeneral;
+        obj.replot_all();
     end
     function cb_zoom(~,~)
         xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];

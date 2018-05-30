@@ -3,7 +3,7 @@ classdef ShapeCircle < ShapeGeneral
     %
     % see also ShapeGeneral, ShapePolygon
     
-    properties
+    properties (SetObservable = true, AbortSet=true)
         Radius (1,1) double = 5 % active radius km
     end
     
@@ -25,7 +25,7 @@ classdef ShapeCircle < ShapeGeneral
             
             report_this_filefun();
             
-            axes(findobj(gcf,'Tag','mainmap_ax')); % should be the map, with lon/lat
+            %axes(findobj(gcf,'Tag','mainmap_ax')); % should be the map, with lon/lat
             obj.Type='circle';
             ZG=ZmapGlobal.Data;
             try
@@ -33,6 +33,8 @@ classdef ShapeCircle < ShapeGeneral
             catch
                 ra=nan;
             end
+            obj.AllowVertexEditing = false;
+            addlistener(obj, 'Radius', 'PostSet', @obj.notifyShapeChange);
             if nargin==0
                 % ZG.selection_shape=obj;
             elseif strcmpi(varargin{1},'dlg')
@@ -52,11 +54,6 @@ classdef ShapeCircle < ShapeGeneral
                     return
                 end
             end
-            
-            obj.plot(gca);
-            obj.setVisibility('on');
-            
-            
         end
         
         function val=Outline(obj,col)
@@ -68,6 +65,12 @@ classdef ShapeCircle < ShapeGeneral
             end
         end
         
+        function moveTo(obj, x, y)
+            if isnan(obj.Points)
+                obj.Points=[0 0];
+            end
+            moveTo@ShapeGeneral(obj,x,y)
+        end
         
         function s=toStruct(obj)
             s=toStruct@ShapeGeneral(obj);
@@ -102,11 +105,9 @@ classdef ShapeCircle < ShapeGeneral
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
                 obj.Radius= deg2km(shout.YData(1) - obj.Center(2));
-                
-                notify(obj,'ShapeChanged');
             end
         end
-        function add_shape_specific_context(obj,c,ax)
+        function add_shape_specific_context(obj,c)
             uimenu(c,'label','Choose Radius',Futures.MenuSelectedFcn,@chooseRadius)
             uimenu(c,'label','Snap To N Events',Futures.MenuSelectedFcn,@snapToEvents)
             
@@ -118,17 +119,14 @@ classdef ShapeCircle < ShapeGeneral
                     ZG.ni=nc;
                     [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
                     obj.Radius=obj.Radius;%+0.005;
-                    obj.plot(ax); % replot
-                    notify(obj,'ShapeChanged');
                 end
             end
+            
             function chooseRadius(~,~)
                 nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
                 nc=str2double(nc{1});
                 if ~isempty(nc) && ~isnan(nc)
                     obj.Radius=nc;
-                    obj.plot(ax); % replot
-                    notify(obj,'ShapeChanged');
                 end
                 
             end
@@ -242,14 +240,10 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Access=protected)
         function finishedMoving(obj, movedObject, deltas)
-            initialShape=copy(obj);
-            %obj.Points=[movedObject.XData(:),movedObject.YData(:)];
             centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
-            centerY = mean([min(movedObject.YData),max(movedObject.YData)])
+            centerY = mean([min(movedObject.YData),max(movedObject.YData)]);
+            obj.Radius=obj.Radius.*deltas(3);
             obj.Points=[centerX,centerY];
-            if ~isequal(initialShape,obj)
-                notify(obj,'ShapeChanged');
-            end
         end
     end
             

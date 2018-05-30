@@ -15,8 +15,8 @@ classdef ShapePolygon < ShapeGeneral
             % UNASSIGNED: clear shape
             %
             obj@ShapeGeneral;
-            
             report_this_filefun();
+            
             if nargin==0
                 return
             end
@@ -39,13 +39,6 @@ classdef ShapePolygon < ShapeGeneral
             % make existing shape less obvious
             
             
-            charIdx = cellfun(@ischar,varargin);
-            i=find(varargin(charIdx)=="ShapeChanged");
-            if ~isempty(i)
-                charIdx(i)
-                shapeChangedFcn=varargin{charIdx(i)+1};
-                varargin([charIdx(i) charIdx(i)+1])=[];
-            end
             
             switch obj.Type
                 case 'axes' % ShapeGeneral('axes' [, axeshandle])
@@ -79,10 +72,6 @@ classdef ShapePolygon < ShapeGeneral
                         obj.select_polygon();
                     end
             end
-            obj.plot(gca);
-            obj.setVisibility('on');
-            obj.subscribe('ShapeChanged',shapeChangedFcn);
-            notify(obj,'ShapeChanged');
         end
      
         function summary(obj)
@@ -97,7 +86,7 @@ classdef ShapePolygon < ShapeGeneral
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
-        function add_shape_specific_context(obj,c,ax)
+        function add_shape_specific_context(obj,c)
             % would add additional menu items here
         end
         
@@ -137,7 +126,6 @@ classdef ShapePolygon < ShapeGeneral
             x = [x ; x(1)];
             y = [y ; y(1)];      %  closes polygon
             obj.Points=[x,y];
-            notify(obj,'ShapeChanged')
             delete(mouse_points_overlay);
             delete(mouse_points_overlay_nub);
             
@@ -145,7 +133,7 @@ classdef ShapePolygon < ShapeGeneral
             function mup(~,ev)
                  cp=ax.CurrentPoint(1,1:2);
                 if f.SelectionType=="normal"
-                    if isnan(x);
+                    if isnan(x)
                         x=cp(1);
                         y=cp(2);
                     else
@@ -176,18 +164,21 @@ classdef ShapePolygon < ShapeGeneral
             % obj.INTERACTIVE_EDIT(src,ev)
             
             shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            make_editable(shout,@()update_shape,@()obj.notify('ShapeChanged'),'normal',obj.ScaleWithLatitude);
+            make_editable(shout,@()update_shape,@()update_shape,'normal',obj.ScaleWithLatitude);
             
             %make_editable(shout,@()update_shape);
             function update_shape()
                 obj.Points=[shout.XData(:),shout.YData(:)];
-                notify(obj,'ShapeChanged');
             end
         end
     end
     
     methods(Static)
-        
+        function obj = selectPolygonUsingMouse(ax)
+        end
+        function obj = selectBoxUsingMouse(ax)
+            
+        end
         function submenu=AddPolyMenu(submenu, updateFcn)
             %
             %polygonTypes={'axes','box','rectangle','polygon'};
@@ -239,7 +230,6 @@ classdef ShapePolygon < ShapeGeneral
             else
                 obj.Points=[x(:),y(:)];
             end
-            notify(obj,'ShapeChanged');
             
             
             function box_update(stxy, edxy,~)
@@ -257,7 +247,6 @@ classdef ShapePolygon < ShapeGeneral
     methods(Access=protected)
         function finishedMoving(obj, movedObject, ~)
             obj.Points=[movedObject.XData(:),movedObject.YData(:)];
-            notify(obj,'ShapeChanged');
         end
     end
 end
