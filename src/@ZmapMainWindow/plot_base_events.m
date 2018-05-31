@@ -69,13 +69,6 @@ function plot_base_events(obj, container, featurelist)
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
     
     % options for choosing a shape
-    ShapePolygon.AddPolyMenu(c,@obj.replot_all);
-    ShapeCircle.AddCircleMenu(c, @obj.replot_all);
-    for j=1:numel(c.Children)
-        if startsWith(c.Children(j).Tag,{'circle','poly'})
-            c.Children(j).(Futures.MenuSelectedFcn)={@updatewrapper,c.Children(j).Callback};
-        end
-    end
     
     uimenu(c,'Label','Delete Shape',...
         'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
@@ -86,19 +79,23 @@ function plot_base_events(obj, container, featurelist)
     axm.UIContextMenu=c;
     addLegendToggleContextMenuItem(c,'bottom','above');
     %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
-    
+    function shapeassignment(sh)
+        obj.shape=sh;
+    end
     function updatewrapper(s,v,f)
         f(s,v);
         return
-        obj.shape=ZmapGlobal.Data.selection_shape;
+        obj.shape=ShapeGeneral.ShapeStash;
         obj.cb_redraw();
     end
+    
     function cb_shapedelete
-        obj.shape.clearplot();
+        ShapeGeneral.clearplot();
         delete(obj.shape);
         obj.shape=ShapeGeneral;
         obj.replot_all();
     end
+    
     function cb_zoom(~,~)
         xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
         yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];

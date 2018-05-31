@@ -18,8 +18,6 @@ classdef ShapeCircle < ShapeGeneral
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             
             % UNASSIGNED: clear shape
-            %
-            % results are stored in ZG.selection_shape
             
             obj@ShapeGeneral;
             
@@ -27,20 +25,20 @@ classdef ShapeCircle < ShapeGeneral
             
             %axes(findobj(gcf,'Tag','mainmap_ax')); % should be the map, with lon/lat
             obj.Type='circle';
-            ZG=ZmapGlobal.Data;
             try
-                ra=ZG.selection_shape.Radius;
+                ra=ShapeGeneral.ShapeStash.Radius;
             catch
-                ra=nan;
+                ra=obj.Radius;
             end
             obj.AllowVertexEditing = false;
             addlistener(obj, 'Radius', 'PostSet', @obj.notifyShapeChange);
             if nargin==0
-                % ZG.selection_shape=obj;
+                do_nothing;
             elseif strcmpi(varargin{1},'dlg')
+                stashedshape = ShapeGeneral.ShapeStash;
                 sdlg.prompt='Radius (km):'; sdlg.value=ra;
-                sdlg(2).prompt='Center X (Lon):'; sdlg(2).value=ZG.selection_shape.X0;
-                sdlg(3).prompt='Center Y (Lat):'; sdlg(3).value=ZG.selection_shape.Y0;
+                sdlg(2).prompt='Center X (Lon):'; sdlg(2).value=stashedshape.X0;
+                sdlg(3).prompt='Center Y (Lat):'; sdlg(3).value=stashedshape.Y0;
                 [~,cancelled,obj.Radius,obj.Points(1),obj.Points(2)]=smart_inputdlg('Define Circle',sdlg);
                 if cancelled
                     beep
@@ -78,7 +76,7 @@ classdef ShapeCircle < ShapeGeneral
         end
         
         function s = toStr(obj)
-            cardinalDirs=['SNWE'];
+            cardinalDirs='SNWE';
             isN=obj.Y0>=0; NS=cardinalDirs(isN+1);
             
             isE=obj.X0>=0; EW=cardinalDirs(isE+3);
@@ -91,22 +89,7 @@ classdef ShapeCircle < ShapeGeneral
         function summary(obj)
             helpdlg(obj.toStr,'Circle');
         end
-        
-        function interactive_edit(obj,src,ev)
-            % INTERACTIVE_EDIT callback
-            % obj.INTERACTIVE_EDIT(src,ev)
-            shout=findobj(gcf,'Tag','shapeoutline');
-            if numel(shout)>1
-                disp(shout);
-            end
-            
-            make_editable(shout,@()update_shape,@()update_shape,'nopoint',obj.ScaleWithLatitude);
-            
-            function update_shape()
-                obj.Points=[shout.XData(:),shout.YData(:)];
-                obj.Radius= deg2km(shout.YData(1) - obj.Center(2));
-            end
-        end
+
         function add_shape_specific_context(obj,c)
             uimenu(c,'label','Choose Radius',Futures.MenuSelectedFcn,@chooseRadius)
             uimenu(c,'label','Snap To N Events',Futures.MenuSelectedFcn,@snapToEvents)
@@ -146,6 +129,14 @@ classdef ShapeCircle < ShapeGeneral
                 dists=distance(obj.Y0, obj.X0, otherLat, otherLon);
                 mask=deg2km(dists) <= obj.Radius;
             end
+        end
+        
+        function finishedMoving(obj, movedObject, deltas)
+            centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
+            centerY = mean([min(movedObject.YData),max(movedObject.YData)]);
+            obj.Radius=obj.Radius.*deltas(3);
+            obj.Points=[centerX,centerY];
+            %notify(obj,'ShapeChanged');
         end
         
     end
@@ -204,47 +195,7 @@ classdef ShapeCircle < ShapeGeneral
             obj.Points=[x1,y1];
         end
         
-        function submenu=AddCircleMenu(submenu,ZGshape)
-            % add menu items specific to circles.
-            % ZGshape=ZG.selection_shape; %convenience name
-            % this works with the ZG polygon
-            
-            % get rid of the menu if it already exists,but keep position
-            
-            menuItems={'circleCreateDlg',...
-                'circleCreateMouse'};
-            for j=1:numel(menuItems)
-                myitem=menuItems{j};
-                
-                myhandle=findobj(submenu,'Tag',myitem);
-                if isempty(myhandle)
-                    myhandle=uimenu(submenu,...
-                        'Label',myitem,...
-                        'Tag',myitem);
-                end
-                
-                switch myitem % based on Tags that should already be assigned to menu items
-                    case 'circleCreateDlg'
-                        lab='Set Circle: dialog box...';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapeCircle('dlg'));
-                    case 'circleCreateMouse'
-                        lab='Set Circle: mouse click';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapeCircle('mouse'));
-                    otherwise
-                        error('Tried to set a menu item that does not exist');
-                end
-            end
-            
-        end
     end
     
-    methods(Access=protected)
-        function finishedMoving(obj, movedObject, deltas)
-            centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
-            centerY = mean([min(movedObject.YData),max(movedObject.YData)]);
-            obj.Radius=obj.Radius.*deltas(3);
-            obj.Points=[centerX,centerY];
-        end
-    end
             
 end

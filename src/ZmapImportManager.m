@@ -55,19 +55,16 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
         ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.big_eq_minmag);
         %[ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
         
-        %{
-        % TOFIX: TEMP DISABLED ZG.selection_shape
         % OPTIONALLY CLEAR SHAPE
-        if ~isempty(ZG.selection_shape)
+        if ~isempty(ShapeGeneral.ShapeStash)
             % ask whether to keep shape
             switch questdlg('Keep current shape?','SHAPE','yes','no','no')
                 case 'no'
-                    ZG.selection_shape.cb_clear();
+                    ShapeGenreal.ShapeStash(ShapeGeneral)
                 case 'yes'
                     % do nothing
             end
         end
-        %} 
         
         % OPTIONALLY CLEAR GRID
         if ~isempty(ZG.Grid)

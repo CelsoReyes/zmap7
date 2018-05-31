@@ -157,8 +157,8 @@ function create_all_menus(obj, force)
                 um(j).Separator='on';
             end
         end
-        uimenu(mapoptionmenu,'Label','Edit Main Map Symbols',Futures.MenuSelectedFcn,{@SymbolManager.cb,axm});
-        uimenu(mapoptionmenu,'Label','Edit Current Map Symbols',Futures.MenuSelectedFcn,{@manage_symbols_for_current_map});
+        uimenu(mapoptionmenu,'Label','Edit Main Map Symbols',Futures.MenuSelectedFcn, @manage_mainmap_symbols);
+        uimenu(mapoptionmenu,'Label','Edit Current Map Symbols',Futures.MenuSelectedFcn,@manage_symbols_for_current_map);
         % add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu,'Label','Layers');
         try
@@ -209,6 +209,12 @@ function create_all_menus(obj, force)
             ax=findobj(obj.maingroup.SelectedTab,'Type','axes');
             SymbolManager.cb(src,ev,ax);
         end
+        
+        function manage_mainmap_symbols(src,ev)
+            bringToForeground(axm);
+            SymbolManager.cb(src,ev,axm);
+        end
+        
         function set_colorby(~,~,val)
             obj.colorField=val;
 

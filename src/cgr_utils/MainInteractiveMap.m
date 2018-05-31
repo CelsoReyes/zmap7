@@ -457,7 +457,7 @@ classdef MainInteractiveMap
                 working_catalog=ZG.primeCatalog;
                 return
             end
-            tmpview = tmpview.PolygonApply(ZG.selection_shape);
+            tmpview = tmpview.PolygonApply(ShapeGeneral.ShapeStash);
             working_catalog=tmpview.Catalog();
         end
             

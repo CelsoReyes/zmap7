@@ -158,18 +158,10 @@ classdef ShapePolygon < ShapeGeneral
             end
                 
         end
-
-        function interactive_edit(obj,src,~)
-            % INTERACTIVE_EDIT callback
-            % obj.INTERACTIVE_EDIT(src,ev)
+        function finishedMoving(obj, movedObject, deltas)
+            obj.Points=[movedObject.XData(:), movedObject.YData(:)];
             
-            shout=findobj(src.Parent.Parent,'Tag','shapeoutline');
-            make_editable(shout,@()update_shape,@()update_shape,'normal',obj.ScaleWithLatitude);
-            
-            %make_editable(shout,@()update_shape);
-            function update_shape()
-                obj.Points=[shout.XData(:),shout.YData(:)];
-            end
+            notify(obj,'ShapeChanged'); % perhaps not totally necessary
         end
     end
     
@@ -177,39 +169,7 @@ classdef ShapePolygon < ShapeGeneral
         function obj = selectPolygonUsingMouse(ax)
         end
         function obj = selectBoxUsingMouse(ax)
-            
-        end
-        function submenu=AddPolyMenu(submenu, updateFcn)
-            %
-            %polygonTypes={'axes','box','rectangle','polygon'};
-            menuItems={'polyCreateBox',...
-                'polyCreateIrregular'};
-            if ~exist('updateFcn','var')
-                updateFcn=@do_nothing;
-            end
-            
-            for j=1:numel(menuItems)
-                myitem=menuItems{j};
-                
-                myhandle=findobj(submenu,'Tag',myitem);
-                if isempty(myhandle)
-                    myhandle=uimenu(submenu,...
-                        'Label',myitem,...
-                        'Tag',myitem);
-                end
-                
-                switch myitem % based on Tags that should already be assigned to menu items
-                    case 'polyCreateBox'
-                        lab='Set Polygon: Box...';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('box','ShapeChanged',updateFcn));
-                    case 'polyCreateIrregular'
-                        lab='Set Polygon: Irregular shape...';
-                        set(myhandle,'Label',lab,Futures.MenuSelectedFcn,@(~,~)ShapePolygon('polygon','ShapeChanged',updateFcn));
-                    otherwise
-                        error('Tried to set a menu item that doesn''t exist');
-                end
-                
-            end
+          
         end
     end
     
@@ -244,9 +204,4 @@ classdef ShapePolygon < ShapeGeneral
             
         end
     end % private methods
-    methods(Access=protected)
-        function finishedMoving(obj, movedObject, ~)
-            obj.Points=[movedObject.XData(:),movedObject.YData(:)];
-        end
-    end
 end

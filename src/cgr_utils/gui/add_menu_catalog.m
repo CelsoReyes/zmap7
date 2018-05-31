@@ -146,11 +146,12 @@ function add_menu_catalog(mycatalog, myview, force, figureHandle)
     end
     
     function cb_shapecrop(~,~)
-        if isempty(ZG.selection_shape) || isnan(ZG.selection_shape.Points(1))
+        theShape = ShapeGeneral.ShapeStash;
+        if isempty(theShape)
             errordlg('No shape exists. Create one from the selection menu first','Cannot crop to shape');
             return
         end
-        events_in_shape = ZG.selection_shape.isInside(ZG.(mycatalog).Longitude, ZG.(mycatalog).Latitude);
+        events_in_shape = theShape.isInside(ZG.(mycatalog).Longitude, ZG.(mycatalog).Latitude);
         ZG.(mycatalog)=ZG.(mycatalog).subset(events_in_shape);
             
         zmap_update_displays();

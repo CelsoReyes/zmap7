@@ -99,7 +99,7 @@ classdef ZmapData < handle
         event_marker char = 'o';
         grid_markersize = get(0,'DefaultLineMarkerSize')
         grid_marker = '+'
-        grid_color=[0.62 0.7 0.62]
+        grid_color=[.7 0 0];
        
         % b-value related
         inb1 {mustBeNonnegative, mustBeInteger} = 1 % choice for b-value calculation (?)

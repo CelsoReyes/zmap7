@@ -58,7 +58,7 @@ function circle_select_dlg_OpeningFcn(hObject, eventdata, handles, varargin)
     % Update handles structure
     guidata(hObject, handles);
     ZG = ZmapGlobal.Data;
-    hObject.UserData=ZG.selection_shape;
+    hObject.UserData=ShapeGeneral.ShapeStash;
     hObject.UserData.Points=[ hObject.UserData.X0, hObject.UserData.Y0];
     handles.x_field.String=num2str(hObject.UserData.X0);
     handles.y_field.String=num2str(hObject.UserData.Y0);
@@ -93,7 +93,7 @@ function okbutton_Callback(hObject, ~, handles)
     
     ZG = ZmapGlobal.Data;
     handles.figure1.UserData.Type='circle';
-    ZG.selection_shape=handles.figure1.UserData;
+    ShapeGeneral.ShapeStash(handles.figure1.UserData);
     close(handles.figure1)
     % set all the values based on this dialog box.
 end
@@ -124,7 +124,7 @@ function x_field_CreateFcn(hObject, ~, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
-    sr=ZmapGlobal.Data.selection_shape.X0;
+    sr=ShapeGeneral.ShapeStash.X0;
     hObject.String=num2str(sr);%handles.figure1.UserData.X0;
     if isempty(sr)
         hObject.Val=nan;
@@ -143,7 +143,7 @@ function y_field_CreateFcn(hObject, ~, handles)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
-    sr=ZmapGlobal.Data.selection_shape.Y0;
+    sr=ShapeGeneral.ShapeStash.Y0;
     hObject.String=num2str(sr);%handles.figure1.UserData.X0;
     if isempty(sr)
         hObject.Val=nan;

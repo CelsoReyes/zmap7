@@ -50,7 +50,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %  SHAPEGENERAL callbacks:
     %     callbacks that affect the global shape variable
     %     cb_load
-    %     cb_save
     %     cb_clear
     %     
     %
@@ -59,7 +58,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %     cb_crop - crop the primary catalog based on the shape, and current view then resets views
     %     cb_selectp - analyze EQ inside/outside shape works from view in current figure
     
-    properties(SetObservable = true, AbortSet = true)
+    properties(SetObservable = true)
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
         Units = 'degrees'; % either 'degrees' or 'kilometers'
     end
@@ -70,8 +69,12 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     end
     
     properties
-        ApplyGrid logical = true %apply grid options to the selected shape.
+        ApplyGrid logical = true % apply grid options to the selected shape.
         ScaleWithLatitude logical = false
+    end
+    
+    properties (NonCopyable = true)
+        DeleteFcn = [] % this function will be run when the shape is deleted
     end
     
     properties(Dependent)
@@ -166,6 +169,12 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 return
             end
             shout=findobj(ax,'Tag','shapeoutline');
+            if ~isempty(shout)
+                if ~strcmp(shout.UserData, obj.Type)
+                    delete(shout);
+                    shout=[];
+                end
+            end
             
             assert(numel(shout)<2,'should only have one shape outline')
 
@@ -175,15 +184,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             if isempty(shout)
                 hold on;
-                p=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
+                shout=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
                     'LineStyle','-',...
                     'Color','r',...
                     'Tag','shapeoutline',...
                     'DisplayName','Selection Outline');
-                p.UIContextMenu=makeuicontext();
-                moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas),...
-                    'movepoints',obj.AllowVertexEditing,'xtol',.05,'ytol',0.05,...
-                    'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
+                shout.UIContextMenu=makeuicontext();
+                shout.UserData=obj.Type;
+                %moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas),...
+                %    'movepoints',obj.AllowVertexEditing,'xtol',.05,'ytol',0.05,...
+                %    'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
                 hold off;
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
@@ -191,7 +201,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     'Color','r');
                 %shout.UIContextMenu=makeuicontext();
             end
-            
+            % do this each time, to make sure it stays updated
+            moveable_item(shout,[],@obj.finishedMoving,...
+            'movepoints',obj.AllowVertexEditing,'xtol',.05,'ytol',0.05,...
+            'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
+
             %default behavior is to refresh any plots associated with this shape
             if ~exist('myListener','var')
                 
@@ -204,7 +218,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 
                 % delete the listener when the outline is deleted, otherwise it will simply be
                 % recreated when the shape properties change
-                p.DeleteFcn=@(~,~)delete(myListener);
+                shout.DeleteFcn=@(~,~)delete(myListener);
             end
             
             function c=makeuicontext()
@@ -247,13 +261,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % would add additional menu items here
         end
         
-        function clearplot(obj,ax)
-            %clear the shape from the plot
-            if ~exist('ax','var') || isempty(ax)
-                ax=findobj(gcf,'Tag','mainmap_ax');
-            end
-            delete(findobj(ax,'Tag','shapeoutline'));
-        end
         
         function deemphasizeplot(obj,ax)
             %clear the shape from the plot
@@ -291,10 +298,9 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             s.Lon=obj.Outline(:,1);
         end
         
-        function save(obj)
-            ZG=ZmapGlobal.Data;
+        function save(obj, data_dir)
             zmap_shape=obj;
-            uisave('zmap_shape',fullfile(ZG.data_dir,'zmap_shape.mat'));
+            uisave('zmap_shape',fullfile(data_dir, 'zmap_shape.mat'));
         end
         
         function applyVisibility(obj)
@@ -303,6 +309,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             sh=findobj(gcf,'Tag','shapeoutline');
             set(sh,'Visible',tf2onoff(isVisible));
         end
+        
         function setVisibility(obj,val)
             % set the visibility of this shape
             isVisible=set(findobj('Tag','shapeoutlinetoggle'),'Checked',val);
@@ -314,9 +321,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             helpdlg('no shape','Unassigned shape');
         end
         
-        function interactive_edit(obj,ax)
+        function delete(obj)
+            if ~isempty(obj.DeleteFcn)
+                obj.DeleteFcn();
+            end
         end
-        
         
         function cb_selectp(obj,~,~,analysis_fn, in_or_out)
             % analyze EQ inside/outside shape works from view in current figure
@@ -344,6 +353,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
         end
         
+        function finishedMoving(obj, movedObject, movedDelta)
+            error('this should be implemented in the specific shape');
+        end
+        
     end
     
     methods(Static)
@@ -363,44 +376,43 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             set([sh ev],'Visible',v);
         end
         
-        function cb_load(~,~)
-            ZG=ZmapGlobal.Data;
-            [f,p]=uigetfile('*.mat','Load Zmap Shape file',fullfile(ZG.data_dir, 'zmap_shape.mat'));
+        function obj = load(data_dir)
+            obj=[];
+            [f,p]=uigetfile('*.mat','Load Zmap Shape file',fullfile(data_dir, 'zmap_shape.mat'));
             if ~isempty(f)
                 tmp=load(fullfile(p,f),'zmap_shape');
-                ZG.selection_shape=tmp.zmap_shape;
+                obj=tmp.zmap_shape;
             end
         end
         
-        function cb_save(~,~)
-            %
-            ZG=ZmapGlobal.Data;
-            ZG.selection_shape.save();
+        
+        function clearplot(ax)
+            %clear the shape from the plot
+            if ~exist('ax','var') || isempty(ax)
+                ax=findobj(gcf,'Tag','mainmap_ax');
+            end
+            delete(findobj(ax,'Tag','shapeoutline'));
         end
         
-        function cb_clear(~,~)
-            % callback to clear the plot and reset the menus
-            ZG=ZmapGlobal.Data;
-            shapeType='unassigned';
-            ZG.selection_shape=ShapeGeneral();
-            % deactivate crop menu items
-            parent=findobj(gcf,'Type','uimenu','-and','Label','Selection');
-            allmenus=findobj(parent,'Type','uimenu');
-            if ~isempty(allmenus)
-                cropMenus=startsWith({get(allmenus,'Label')},'crop ');
-                set(allmenus(cropMenus),'Enable','off');
+        function obj = ShapeStash(obj)
+            % persistent storage that holds one shape
+            persistent stashed_shape
+            if nargin==1 
+                assert(isa(obj,'ShapeGeneral'),'Cannot stash something that is not a shape');
+                stashed_shape = copy(obj);
             end
-            curshapeh = findobj(gcf,'Tag','shapetype');
-            set(curshapeh,'Label',['Current Shape:',upper(shapeType)]);
-            ZG.selection_shape.clearplot();
+            
+            if isnumeric(stashed_shape)
+                stashed_shape = ShapeGeneral;
+            end
+            
+            if nargin==0
+                obj=copy(stashed_shape);
+            end
         end
         
     end % static methods
-    methods(Access=protected)
-        function finishedMoving(obj, updateShapeFcn, movedObject, movedDelta)
-            error('this should be implemented in the specific shape');
-        end
-    end
+    
     
 end
 

@@ -355,14 +355,19 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     end
         
     function delete_point(~,~,pointToDelete)
+        c=copyobj(h,ax);
+        set(c,COPY);
         if pointToDelete(1)==1 && numel(pointToDelete)>1
-            h.XData(end)=h.XData(2);
-            h.XData(1)=[];
+            c.XData(end)=c.XData(2);
+            c.XData(1)=[];
+            c.YData(end)=c.YData(2);
+            c.YData(1)=[];
         else
-            h.XData(pointToDelete)=[];
-            h.YData(pointToDelete)=[];
+            c.XData(pointToDelete)=[];
+            c.YData(pointToDelete)=[];
         end
-        do_update();
+        doneFcn(c, [0 0 1]);
+        delete(c);
     end
     
     function add_point(intersectionPoint)

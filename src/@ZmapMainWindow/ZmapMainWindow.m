@@ -4,7 +4,7 @@ classdef ZmapMainWindow < handle
     properties(SetObservable)
         catalog ZmapCatalog % event catalog
         bigEvents
-        shape {mustBeShape} = ShapeGeneral % used to subset catalog by selected area
+        shape {mustBeShape} = ShapeGeneral.ShapeStash % used to subset catalog by selected area
         Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange datetime % used to subset the catalog with date ranges
         colorField=ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices 
@@ -141,8 +141,6 @@ classdef ZmapMainWindow < handle
             end
             
             % TODO: make this handle a default shape once again
-            
-            %obj.shape=copy(ZG.selection_shape);
             
             obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
             
@@ -637,7 +635,7 @@ classdef ZmapMainWindow < handle
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
             
             if isempty(obj.Grid)
-                obj.Grid=ZmapGrid('Grid',obj.gridopt);
+                obj.Grid=ZmapGrid('Grid',obj.gridopt,'shape',obj.shape);
             end
             
             

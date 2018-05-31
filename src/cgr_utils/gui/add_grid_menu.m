@@ -1,20 +1,29 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Sampling');
-    uimenu(parent,'Label','Quick-Grid (auto)',Futures.MenuSelectedFcn,@cb_autogrid);
-    uimenu(parent,'Label','Define Grid',Futures.MenuSelectedFcn,@cb_gridfigure);
-    uimenu(parent,'Label','Redraw Grid',Futures.MenuSelectedFcn,@cb_refresh);
-    uimenu(parent,'Label','Clear Grid (Delete)',Futures.MenuSelectedFcn,@cb_clear);
-    uimenu(parent,'Separator','on','Label','Create Auto Sample Radius',Futures.MenuSelectedFcn,@cb_autoradius);
-    uimenu(parent,'Label','Choose Sample Radius',Futures.MenuSelectedFcn,@cb_manualradius);
-    uimenu(parent,'Separator','on','Label','Select events in CIRCLE',...
-        Futures.MenuSelectedFcn,@cb_makecircle);
-    uimenu(parent,'Label','Select events in BOX',...
-        Futures.MenuSelectedFcn,@cb_makebox);
-    uimenu(parent,'Label','Select events in POLYGON',...
-        Futures.MenuSelectedFcn,@cb_makepolygon);
-    uimenu(parent,'Label','Clear shape selection',...
-        Futures.MenuSelectedFcn,@cb_clear_shape)
+    MenuSelectedFcn=Futures.MenuSelectedFcn;
+    uimenu(parent,'Label','Quick-Grid (auto)',MenuSelectedFcn,@cb_autogrid);
+    uimenu(parent,'Label','Define Grid',MenuSelectedFcn,@cb_gridfigure);
+    uimenu(parent,'Label','Redraw Grid',MenuSelectedFcn,@cb_refresh);
+    uimenu(parent,'Label','Clear Grid (Delete)',MenuSelectedFcn,@cb_clear);
+    
+    uimenu(parent,'Separator','on',...
+        'Label','Create Auto Sample Radius',MenuSelectedFcn,@cb_autoradius);
+    uimenu(parent,'Label','Choose Sample Radius',MenuSelectedFcn,@cb_manualradius);
+    
+    uimenu(parent,'Separator','on',...
+        'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
+    uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
+    uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
+    
+    uimenu(parent,'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);
+    
+    shapeiomenu=uimenu(parent,'Separator','on','Label','Shape IO...');
+    uimenu(shapeiomenu,'Label','get default', MenuSelectedFcn, @(~,~)cb_get_default_shape);
+    uimenu(shapeiomenu,'Label','set as default', MenuSelectedFcn, @(~,~)ShapeGeneral.ShapeStash(obj.shape));
+    uimenu(shapeiomenu,'Separator','on',...
+        'Label','load', MenuSelectedFcn, @(~,~)cb_load_shape);
+    uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.data_dir));
     
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
@@ -34,7 +43,29 @@ function add_grid_menu(obj)
         set_my_shape(obj,sh);
     end
     
+    function cb_clear_shape(src,ev)
+        ShapeGeneral.clearplot();
+        delete(obj.shape);
+        obj.shape=ShapeGeneral;
+        %obj.replot_all();
+    end
     
+    function cb_load_shape(src,ev)
+        sh=ShapeGeneral.load(ZmapGlobal.Data.data_dir);
+        cb_clear_shape;
+        if ~isempty(sh)
+            obj.set_my_shape(sh);
+        end
+    end
+    
+    function cb_get_default_shape(src,ev)
+        sh=ShapeGeneral.ShapeStash();
+        if isempty(sh)
+            warndlg('No default shape exists');
+        else
+            set_my_shape(obj,sh);
+        end
+    end
     
     function cb_autogrid(~,~)
         % following assumes grid from main map

@@ -18,6 +18,7 @@ function zmap_update_displays(opt)
             m.update();
         end
     end
-    ZG.selection_shape.plot(findobj(gcf,'Tag','mainmap_ax'));
+    sh=ShapeGeneral.ShapeStash;
+    sh.plot(findobj(gcf,'Tag','mainmap_ax'));
         
 end

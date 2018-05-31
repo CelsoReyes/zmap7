@@ -8,11 +8,11 @@ function plot_circbootfitF()
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();
     
-    ZG.selection_shape.clearplot(); % was axes h1, tag plos1
+    ShapeGeneral.clearplot(); % was axes h1, tag plos1
     
     % interactively get the circle of interest
-    ShapeCircle(); % writes to ZG.selection_shape
-    [ZG.newt2, max_km] = selectCircle(newa, ZG.selection_shape.toStruct());
+    shape=ShapeCircle();
+    [ZG.newt2, max_km] = selectCircle(newa, shape.toStruct());
     
     % Select radius in time
     newt3=ZG.newt2;
@@ -28,7 +28,7 @@ function plot_circbootfitF()
     R2 = ra;
     
     % Plot selected earthquakes
-    ZG.selection_shape.plot([],ZG.newt2); % linespec was xk, tag was plos1
+    shape.plot([],ZG.newt2); % linespec was xk, tag was plos1
     
     % Compute and Plot the forecast
     calc_bootfitF(newt3.Date,time,timef,bootloops,ZG.maepi.Date)

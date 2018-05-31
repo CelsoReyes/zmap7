@@ -89,15 +89,21 @@ classdef ZmapGrid
             %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
             %
             % see also: MESHGRID
+            
+            if numel(varargin)>1 && ischar(varargin{end-1}) && varargin{end-1}=="shape"
+                myshape=varargin{end};
+                varargin(end-1:end)=[];
+            else
+                myshape=ShapeGeneral.ShapeStash();
+            end
+            
             if exist('name','var')
                 obj.Name = name;
             end
-            switch nargin
+            switch numel(varargin)
                 case 0
-                    % don't do much of anything.
+                    % do nothing
                 case 1
-                    % don't do much of anything.
-                case 2
                     if isnumeric(varargin{1})
                         % ZMAPGRID( NAME , [X1,Y1;...;XnYn] )
                         warning('ZmapGrid works best when provided with X and Y matrices of points');
@@ -112,18 +118,8 @@ classdef ZmapGrid
                         % ZMAPGRID( NAME, GRIDOPTIONS)
                         
                         % assume it came from GridParameterChoice
-                        ZG=ZmapGlobal.Data;
                         gridopt=varargin{1};
-                        use_shape=gridopt.gridEntireArea;
-                        
-                        if use_shape
-                            myshape=ZG.selection_shape;
-                            use_shape = ~isempty(myshape); % no shape to use. cancel that order.
-                            if ~use_shape
-                                ZmapMessageCenter.set_warning('Polygon not defined',...
-                                'Requested that grid conforms to shape, but no shape is defined.');
-                            end
-                        end
+                        use_shape=gridopt.gridEntireArea & ~isempty(myshape);
                         
                         % also, assume it is requesting a 2d gid
                         
@@ -159,7 +155,7 @@ classdef ZmapGrid
                     else
                         error('unknown: class %s',class(varargin{1}));
                     end
-                case 3
+                case 2
                     % ZMAPGRID( name, all_points, units)
                     warning('ZmapGrid works best when provided with X and Y matrices of points');
                     assert(size(varargin{1},2)==2);
@@ -167,14 +163,14 @@ classdef ZmapGrid
                     obj.Y=varargin{1}(:,2);
                     assert(ischar(varargin{2}));
                     obj.Units = varargin{2};
-                case 4
+                case 3
                     % ZMAPGRID( name, Xmatrix, Ymatrix, units)
                     assert(isequal(size(varargin{1}),size(varargin{2})),'X and Y should be the same size');
                     obj.X=varargin{1};
                     obj.Y=varargin{2};
                     assert(ischar(varargin{3}));
                     obj.Units = varargin{3};
-                case 6
+                case 5
                     %ZMAPGRID(name,origin_degs, deltas, delta_units limits_degs, follow_meridians) 
                     lonLatZ0=varargin{1};
                     obj.Origin=lonLatZ0;
@@ -240,7 +236,6 @@ classdef ZmapGrid
         function obj = MaskWithShape(obj,polyX, polyY)
             % MaskWithShape sets the mask according to a polygon
             % does not change the actual grid!
-            % obj = obj.MASKWITHSHAPE() user selects polygon from gca
             % obj = obj.MASKWITHSHAPE(shape)
             % obj = obj.MASKWITHSHAPE(polyX, polyY) where polyX and polyY define the polygon
             report_this_filefun();
@@ -257,12 +252,6 @@ classdef ZmapGrid
                         polyX(:,2)=[];
                     end
                     
-                case 1 % OBJ only
-                    ZG=ZmapGlobal.Data;
-                    if ~isempty(ZG.selection_shape) && ~isnan(ZG.selection_shape.Points(1))
-                        polyX=ZG.selection_shape.Lon;
-                        polyY=ZG.selection_shape.Lat;
-                    end
                 case 3 % OBJ, POLYX, POLYY
                     if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
                         warning('polygon is not closed. adding a point to close it.')

@@ -136,11 +136,11 @@ function catalog_menu(obj, force)
     end
     
     function cb_shapecrop(~,~)
-        if isempty(ZG.selection_shape) || isnan(ZG.selection_shape.Points(1))
+        if isempty(obj.shape)
             errordlg('No shape exists. Create one from the selection menu first','Cannot crop to shape');
             return
         end
-        events_in_shape = ZG.selection_shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);
+        events_in_shape = obj.shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);
         obj.catalog=obj.catalog.subset(events_in_shape);
             
         zmap_update_displays();

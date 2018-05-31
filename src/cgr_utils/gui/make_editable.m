@@ -36,6 +36,9 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     %
     % returnstate is called when 'Finished' context menu is activated.
     % returnstate also calls 'updateFn'. Use this to update something with the new values
+    
+    error('deprecated. use "moveable_item" instead');
+    
     if ~exist('finalUpdateFn','var') || isempty(finalUpdateFn)
         finalUpdateFn=@()[];
     end
