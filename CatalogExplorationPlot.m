@@ -10,7 +10,7 @@ classdef CatalogExplorationPlot < handle
         sizeFcn function_handle = @mag2dotsize
         catalogFcn function_handle;
         axes_choices cell = {};
-        myscatter matlab.graphics.chart.primitive.Scatter;
+        myscatter;
         ax matlab.graphics.axis.Axes;
         conversions;
         curview;
@@ -49,26 +49,34 @@ classdef CatalogExplorationPlot < handle
                 cl=c.(obj.color_by);
                 cl=obj.colorFcn(cl);
             end
-            
-            delete(findobj(obj.ax,'Tag',tag));
-            obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Marker',obj.marker,'Tag',tag);
-            obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
+            % delete(findobj(obj.ax,'Tag',tag));
+            if isempty(obj.myscatter)
+                obj.myscatter=scatter3(obj.ax,x, y, z, s, cl,'Marker',obj.marker,'Tag',tag);
+                obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
+                grid(obj.ax,'on');
+                box(obj.ax,'on');
+                fig=ancestor(obj.ax,'figure');
+                xl = xlabel(obj.x_by,'interpreter','none');
+                obj.xContextMenu(xl, tag, fig);
+                yl = ylabel(obj.y_by,'interpreter','none');
+                obj.yContextMenu(yl, tag, fig);
+                zl = zlabel(obj.z_by,'interpreter','none');
+                obj.zContextMenu(zl, tag, fig);
+                obj.scatterContextMenu(obj.myscatter, tag);
+                obj.ax.UserData.cep = obj;
+            else
+                obj.myscatter.XData=x;
+                obj.myscatter.YData=y;
+                obj.myscatter.ZData=z;
+                obj.myscatter.SizeData=s;
+                obj.myscatter.CData=cl;
+                obj.myscatter.DisplayName=sprintf('size:%s\ncolor:%s',obj.size_by,obj.color_by);
+            end
             if isempty(obj.curview)
                 view(obj.ax,2);
             else
                 view(obj.ax,obj.curview);
             end
-            %obj.myscatter.ZData=c.(obj.z_by);
-            xl = xlabel(obj.x_by,'interpreter','none');
-            obj.xContextMenu(xl, tag);
-            yl = ylabel(obj.y_by,'interpreter','none');
-            obj.yContextMenu(yl, tag);
-            zl = zlabel(obj.z_by,'interpreter','none');
-            obj.zContextMenu(zl, tag);
-            obj.scatterContextMenu(obj.myscatter, tag);
-            grid(obj.ax,'on');
-            box(obj.ax,'on');
-            obj.ax.UserData.cep = obj;
         end
         
         function update(obj, specific)
@@ -161,7 +169,6 @@ classdef CatalogExplorationPlot < handle
                     % convert durations to a numbers depending on max duration
                     [obj.myscatter.(where), axisH.Label.String] = duration2numbers(c.(fld));
                     enforce_linear_scale_if_necessary();
-                    
                 elseif islogical(c.(fld))
                     % plot as 1 and 0
                     obj.myscatter.(where) = double(c.(fld));
@@ -246,43 +253,69 @@ classdef CatalogExplorationPlot < handle
             end
             
         end
-        function xContextMenu(obj,xl, tag)
-            h=uicontextmenu('Tag',['xsel_ctxt ' tag]);
+        
+        function updateCheckedStatus(obj,h, checkmask)
+            labels = {h.Children.Label};
+            choices=string(obj.axes_choices);
+            for j=1:numel(h.Children)
+                whichChoice = labels(j) == choices;
+                set(h.Children(whichChoice), 'Checked', tf2onoff(checkmask(whichChoice)) );
+            end
+        end
+        
+        function xContextMenu(obj,xl, tag, fig)
+            %delete(findobj(ancestor(ax),['xsel_ctxt' tag]));
+            h=xl.UIContextMenu;
             checkmask = strcmp(obj.axes_choices, obj.x_by);
-            for i=1:numel(obj.axes_choices)
-                uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    Futures.MenuSelectedFcn,{@obj.change,'x_by'});
+            if isempty(h)
+                mytag = ['xsel_ctxt ' tag];
+                delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
+                h=uicontextmenu('Tag',mytag);
+                for i=1:numel(obj.axes_choices)
+                    uimenu(h,'Label',obj.axes_choices{i}, Futures.MenuSelectedFcn,{@obj.change,'x_by'});
+                end
+                obj.add_axes_toggles(h,'X');
+                xl.UIContextMenu=h;
             end
-            obj.add_axes_toggles(h,'X');
-            xl.UIContextMenu=h;
+            obj.updateCheckedStatus(h, checkmask);
         end
         
-        function yContextMenu(obj,yl, tag)
-            h=uicontextmenu('Tag',['ysel_ctxt ' tag]);
+        function yContextMenu(obj,yl,tag, fig)
+            h=yl.UIContextMenu;
             checkmask = strcmp(obj.axes_choices, obj.y_by);
-            for i=1:numel(obj.axes_choices)
-                uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    Futures.MenuSelectedFcn,{@obj.change,'y_by'});
+            if isempty(h)
+                mytag = ['ysel_ctxt ' tag];
+                delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
+                h=uicontextmenu('Tag',mytag);
+                for i=1:numel(obj.axes_choices)
+                    uimenu(h,'Label',obj.axes_choices{i},Futures.MenuSelectedFcn,{@obj.change,'y_by'});
+                end
+                obj.add_axes_toggles(h,'Y');
+                yl.UIContextMenu=h;
             end
-            obj.add_axes_toggles(h,'Y');
-            yl.UIContextMenu=h;
+            obj.updateCheckedStatus(h, checkmask);
         end
         
-        function zContextMenu(obj,zl,tag)
-            h=uicontextmenu('Tag',['zsel_ctxt ' tag]);
+        function zContextMenu(obj,zl,tag, fig)
+            h=zl.UIContextMenu;
             checkmask = strcmp(obj.axes_choices, obj.z_by);
-            for i=1:numel(obj.axes_choices)
-                uimenu(h,'Label',obj.axes_choices{i},'Checked',tf2onoff(checkmask(i)),...
-                    Futures.MenuSelectedFcn,{@obj.change,'z_by'});
+            if isempty(h)
+                mytag = ['zsel_ctxt ' tag];
+                delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
+                h=uicontextmenu('Tag',mytag);
+                for i=1:numel(obj.axes_choices)
+                    uimenu(h,'Label',obj.axes_choices{i}, Futures.MenuSelectedFcn,{@obj.change,'z_by'});
+                end
+                obj.add_axes_toggles(h,'Z');
+                zl.UIContextMenu=h;
             end
-            obj.add_axes_toggles(h,'Z');
-            zl.UIContextMenu=h;
+            obj.updateCheckedStatus(h, checkmask);
         end
         
         function scatterContextMenu(obj,sc,tag)
             tag=['ssel_ctxt ' tag];
             f = ancestor(obj.ax,'figure');
-            delete(findobj(f,'Tag','tag'));
+            delete(findobj(f,'Tag',tag));
             h=uicontextmenu(f,'Tag',tag);
             szm = uimenu(h,'Label','Size by...',...
                 Futures.MenuSelectedFcn,{@obj.cleanChildren_cb,'size_by'});

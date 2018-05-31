@@ -45,6 +45,7 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
     % assumptions
     % simple curve, so events are only closest to 1 point
     % distance grows 
+    d2c=memoize(@distance2curve);
     refEllipse = wgs84Ellipsoid; % defaults to length unit of meters
     lat0 = median(curvelats);
     lon0 = median(curvelons);
@@ -52,7 +53,7 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
         lat0, lon0, 0, refEllipse);
     [xCurveEast, yCurveNorth] = geodetic2enu(curvelats, curvelons, 0, median(curvelats), median(curvelons), 0, refEllipse);
     
-    [xy,dist,t]=distance2curve([xCurveEast(:) yCurveNorth(:)], [xEast, yNorth]);
+    [xy,dist,t]=d2c([xCurveEast(:) yCurveNorth(:)], [xEast, yNorth]);
     [catalog.Latitude, catalog.Longitude]= enu2geodetic(xy(:,1), xy(:,2), zUp, lat0, lon0, 0, wgs84Ellipsoid); 
 end
 

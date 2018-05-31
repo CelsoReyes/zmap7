@@ -232,7 +232,7 @@ classdef XSection < handle
         end
         
         % TODO add method to toggle between shape and not
-        function h=plot_events_along_strike(obj,ax, catalog, noproject)
+        function plot_events_along_strike(obj,ax, catalog, noproject)
             % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
             if exist('noproject','var') && isa(catalog,'ZmapXsectionCatalog') && noproject
                 mycat=catalog;
@@ -240,8 +240,12 @@ classdef XSection < handle
                 mycat = obj.project(catalog);
             end
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
-            h=findobj(ax,'Tag','ev_along_strike_plot');
-            cep=XSectionExplorationPlot(ax,@()mycat,obj);
+            if isstruct(ax.UserData) && isfield(ax.UserData,'cep')
+                cep=ax.UserData.cep;
+                cep.catalogFcn=@()mycat;
+            else
+                cep=XSectionExplorationPlot(ax,@()mycat,obj);
+            end
             cep.scatter(['Xsection plot ' obj.name]);
             ax.Tag=['Xsection strikeplot ' obj.name];
         end

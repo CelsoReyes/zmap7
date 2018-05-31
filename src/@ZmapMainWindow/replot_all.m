@@ -129,7 +129,7 @@ function plot_xsection(obj, k, currcatsummary,md)
         % plot
         mytab=findobj(obj.xsgroup,'Title',k,'-and','Type','uitab');
         myax=findobj(mytab,'Type','axes');
-        obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(k),false);
+        obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(k),true);
         myax.Title=[];
     %end
 end

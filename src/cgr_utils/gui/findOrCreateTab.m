@@ -8,12 +8,13 @@ function myTab = findOrCreateTab(fig, container, title)
     %
     %
     import callbacks.copytab
-    myContainer=findobj(fig,'Tag',container);
-    myTab=findobj(myContainer,'Title',title,'-and','Type','uitab');
+    myContainer=findobj(fig,'Type','uitabgroup','Tag',container);
+    myTab=findobj(myContainer.Children,'flat','Title',title,'-and','Type','uitab');
     if isempty(myTab)
         myTab=uitab(myContainer, 'Title',title);
 
         contextMenus = findobj(fig.Children,'flat','Tag','CopyTabToFig','-and','Type','uicontextmenu');
+        
         if isempty(contextMenus)
             contextMenus=uicontextmenu('Tag','CopyTabToFig');
             uimenu(contextMenus,'Label','Copy Contents to new figure (static)','Callback',@copytab)

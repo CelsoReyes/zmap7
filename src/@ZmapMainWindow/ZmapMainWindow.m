@@ -188,7 +188,7 @@ classdef ZmapMainWindow < handle
             % attach cross-section listeners
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
-            addlistener(obj,'XsectionAdded',  @obj.replot_all);
+            %addlistener(obj,'XsectionAdded',  @obj.replot_all);
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
             addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
@@ -284,7 +284,7 @@ classdef ZmapMainWindow < handle
         
         function ax=get.map_axes(obj)
             % get mainmap axes
-            ax=findobj(obj.fig,'Tag','mainmap_ax');
+            ax=findobj(obj.fig,'Type','axes','-and','Tag','mainmap_ax');
         end
         
         function zp = map_zap(obj)
@@ -510,10 +510,9 @@ classdef ZmapMainWindow < handle
             end
             ax= findobj(gco,'Type','axes','-and','-regexp','Tag','Xsection strikeplot.*');
             ax.UserData.cep.catalogFcn=@()obj.xscats(obj.CrossSections(idx).name);
-            ax.UserData.cep.update();%
+            ax.UserData.cep.update();
             ax.Title=[];
             obj.notify('XsectionChanged')
-            % obj.replot_all('CatalogUnchanged');
         end
         
         function cb_chcolor(obj,~,~)
