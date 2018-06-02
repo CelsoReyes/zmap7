@@ -51,10 +51,10 @@ function cummomentplot(obj,tabgrouptag)
     
     obj.plot_xsections(@xsplotter, 'Xsection cummomplot');
 
-    yl=ylabel(ax,'Cumulative Moment');
-    yl.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
+    ax.YLabel.String'Cumulative Moment';
+    ax.YLabel.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
-    xlabel(ax,'Time');
+    ax.XLabel.String='Time';
     %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
    
     cbg=findobj(obj.fig,'Tag',Tags.bg);

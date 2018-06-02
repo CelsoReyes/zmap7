@@ -6,9 +6,10 @@ function plothist(obj, name, values, tabgrouptag)
     %if axes doesn't exist, create it and plot
     ax=findobj(myTab,'Type','axes');
     if isempty(ax)
+        %ax=axes(myTab, 'Tag', ');
         ax=axes(myTab);
-        hisgra(obj.catalog,name,ax)
-        h=findobj(ax,'Type','histogram');
+        h=hisgra(obj.catalog,name,ax)
+        %h=findobj(ax,'Type','histogram');
         if ~isempty(h)
             h.DisplayName='catalog';
             h.Tag='cataloghist';

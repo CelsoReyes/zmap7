@@ -5,9 +5,9 @@ function plot_base_events(obj, container, featurelist)
     % {'borders', 'coastline'}
     if ~exist('featurelist','var'), featurelist={}; end
         
-    axm=obj.map_axes;
-    if isempty(axm)
-        axm=axes(container,'Units','normalized','Position',obj.MapPos_L);
+    if isempty(obj.map_axes)
+        obj.map_axes=axes(container,'Units','normalized','Position',obj.MapPos_L);
+        
     end
     alleq = findobj(obj.fig,'Tag','all events');
     
@@ -17,13 +17,13 @@ function plot_base_events(obj, container, featurelist)
 %            warning('empty catalog. making visible for debug purposes')
 %            set(findall(0,'Type','figure'),'Visible','on')
             
-            line(axm,'XData',nan,'YData',nan,'ZData',nan,'Marker','.','LineStyle','none',...
+            line(obj.map_axes,'XData',nan,'YData',nan,'ZData',nan,'Marker','.','LineStyle','none',...
                 'Color',[.76 .75 .8],...
                 'DisplayName','unselected events',...
                 'HitTest','off',...
                 'Tag','all events');
         else
-            line(axm, 'XData',obj.rawcatalog.Longitude, 'YData',obj.rawcatalog.Latitude,...
+            line(obj.map_axes, 'XData',obj.rawcatalog.Longitude, 'YData',obj.rawcatalog.Latitude,...
                 'ZData',obj.rawcatalog.Depth,'Marker','.','LineStyle','none',...
                 'Color',[.76 .75 .8],...
                 'DisplayName','unselected events',...
@@ -32,18 +32,18 @@ function plot_base_events(obj, container, featurelist)
         end
     end
     
-    axm.Tag = 'mainmap_ax';
-    axm.TickDir='out';
-    axm.XMinorTick='on';
-    axm.YMinorTick='on';
-    axm.TickLength=[0.006 0.006];
-    axm.LineWidth=2;
-    axm.Box='on';
-    axm.BoxStyle='full';
-    axm.ZDir='reverse';
+    obj.map_axes.Tag = 'mainmap_ax';
+    obj.map_axes.TickDir='out';
+    obj.map_axes.XMinorTick='on';
+    obj.map_axes.YMinorTick='on';
+    obj.map_axes.TickLength=[0.006 0.006];
+    obj.map_axes.LineWidth=2;
+    obj.map_axes.Box='on';
+    obj.map_axes.BoxStyle='full';
+    obj.map_axes.ZDir='reverse';
     
-    xlabel(axm,'Longitude')
-    ylabel(axm,'Latitude');
+    xlabel(obj.map_axes,'Longitude')
+    ylabel(obj.map_axes,'Latitude');
     %commandeer_colorbar_button();
     ZG=ZmapGlobal.Data;
     
@@ -58,14 +58,14 @@ function plot_base_events(obj, container, featurelist)
     end
     for i=1:numel(featurelist)
         feat_key = featurelist{i};
-        obj.Features(featurelist{i})=copyobj(ZG.features(feat_key),axm);
+        obj.Features(featurelist{i})=copyobj(ZG.features(feat_key),obj.map_axes);
     end
     
-    %    obj.Features(feat_key) = copyobj(ZG.features(feat_key), axm);
+    %    obj.Features(feat_key) = copyobj(ZG.features(feat_key), obj.map_axes);
     
-    % MapFeature.foreach(obj.Features,'plot',axm);
-    axm.XLimMode='manual';
-    axm.YLimMode='manual';
+    % MapFeature.foreach(obj.Features,'plot',obj.map_axes);
+    obj.map_axes.XLimMode='manual';
+    obj.map_axes.YLimMode='manual';
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
     
     % options for choosing a shape
@@ -76,7 +76,7 @@ function plot_base_events(obj, container, featurelist)
     uimenu(c,'Label','Crop to selection',Futures.MenuSelectedFcn,@cb_crop_to_selection);
     uimenu(c,'Label','Zoom to selection',Futures.MenuSelectedFcn,@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@obj.cb_xsection);
-    axm.UIContextMenu=c;
+    obj.map_axes.UIContextMenu=c;
     addLegendToggleContextMenuItem(c,'bottom','above');
     %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
     function shapeassignment(sh)
@@ -99,8 +99,8 @@ function plot_base_events(obj, container, featurelist)
     function cb_zoom(~,~)
         xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
         yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
-        axm.XLim=xl;
-        axm.YLim=yl;
+        obj.map_axes.XLim=xl;
+        obj.map_axes.YLim=yl;
     end
 
     function cb_zoom_shape(~,~)
@@ -111,8 +111,8 @@ function plot_base_events(obj, container, featurelist)
         ol=obj.shape.Outline; % as [X, Y]
         xl = [min(ol(:,1)) max(ol(:,1))];
         yl = [min(ol(:,2)) max(ol(:,2))];
-        axm.XLim=xl;
-        axm.YLim=yl;
+        obj.map_axes.XLim=xl;
+        obj.map_axes.YLim=yl;
     end
     
 
@@ -122,8 +122,8 @@ function plot_base_events(obj, container, featurelist)
             return
         end
         obj.rawcatalog=obj.catalog;
-        axm.YLim=[min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
-        axm.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
+        obj.map_axes.YLim=[min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
+        obj.map_axes.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
     function commandeer_colorbar_button()

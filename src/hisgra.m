@@ -1,4 +1,4 @@
-function hisgra(mycat, opt, ax)
+function h=hisgra(mycat, opt, ax)
     %plots histogram in cumulative number window
     %vari1 depends on input parameter
     %histogram.m                               A.Allmann
@@ -6,7 +6,7 @@ function hisgra(mycat, opt, ax)
     %modified by Reyes 2017
     
     global histo hisvar strii1 strii2
-    
+    h=gobjects(0);
     try
         [vari1, bins] = get_histparams(mycat, opt);
     catch ME
@@ -18,9 +18,9 @@ function hisgra(mycat, opt, ax)
     
     if exist('ax','var') && isvalid(ax)
         % plot into the axes instead of creating a new figure;
-        plotIntoAxes();
+        h=plotIntoAxes();
     else
-        plotIntoFigure();
+        h=plotIntoFigure();
     end
     
     function plotIntoFigure()
@@ -73,7 +73,7 @@ function hisgra(mycat, opt, ax)
         ylabel('  Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     
-    function plotIntoAxes()
+    function hg=plotIntoAxes()
         
         %myFigName='Histogram';
         

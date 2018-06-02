@@ -60,16 +60,14 @@ classdef (Sealed) CumTimePlot < handle
                     'FontSize',obj.fontsz.m,...
                     'UserData',field_unit.Duration(statime));
             end
-            
         end
         function add_ylabel(obj)
-            ylabel(obj.AxH,'Cumulative Number ',...
-                'FontSize',obj.fontsz.s)
+            ax.YLabel.String='Cumulative Number ';
+            ax.YLabel.FontSize=obj.fontsz.s;
         end
         function add_title(obj)
-            title(obj.AxH,...
-                sprintf('"%s": Cumulative Earthquakes over time', obj.catalog.Name),...
-                'Interpreter','none');
+            obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catalog.Name);
+            obj.AxH.Interpreter = 'none';
         end
         function add_legend(obj)
             disp('CumTimePlot.add_legend (unimplemented)')

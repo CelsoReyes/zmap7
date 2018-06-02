@@ -16,6 +16,7 @@ classdef ZmapMainWindow < handle
         gridopt % used to define the grid
         evsel {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector % how events are chosen
         fig % figure handle
+        map_axes % main map axes handle
         xsgroup;
         maingroup; % maps will be plotted in here
         maintab; % handle to tab where the main map is plotted
@@ -49,7 +50,6 @@ classdef ZmapMainWindow < handle
     end
     
     properties(Dependent)
-        map_axes % main map axes handle
         XSectionTitles
     end
     
@@ -188,7 +188,7 @@ classdef ZmapMainWindow < handle
             % attach cross-section listeners
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
-            %addlistener(obj,'XsectionAdded',  @obj.replot_all);
+            addlistener(obj,'XsectionAdded',  @(~,~)disp('added xsection'));
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
             addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
@@ -281,11 +281,6 @@ classdef ZmapMainWindow < handle
         %
         %
         %%
-        
-        function ax=get.map_axes(obj)
-            % get mainmap axes
-            ax=findobj(obj.fig,'Type','axes','-and','Tag','mainmap_ax');
-        end
         
         function zp = map_zap(obj)
             % MAP_ZAP create a ZmapAnalysis Pkg for the main window
@@ -659,9 +654,8 @@ classdef ZmapMainWindow < handle
             drawnow
             
             obj.create_all_menus(true); % plot_base_events(...) must have already been called, in order to load the features from ZG
-            ax=findobj(obj.fig,'Tag','mainmap_ax');
-            obj.fig.CurrentAxes=ax;
-            legend(ax,'show');
+            obj.fig.CurrentAxes=obj.map_axes;
+            legend(obj.map_axes,'show');
             clear_empty_legend_entries(obj.fig);
             
             

@@ -55,11 +55,11 @@ function cumplot(obj, tabgrouptag)
         
     obj.plot_xsections(@xsplotter, 'Xsection cumplot');
     
-    yl=ylabel(ax,'Cummulative Number of events');
-    yl.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
+    ax.YLabel.String='Cummulative Number of events';
+    ax.YLabel.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
-    xl=xlabel(ax,'Time');
-    %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
+    ax.XLabel.String='Time';
+    %ax.XLabel.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
     
     bigcat=ZmapGlobal.Data.maepi;
     if ~isempty(bigcat)
