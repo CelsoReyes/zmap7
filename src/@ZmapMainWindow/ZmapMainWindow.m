@@ -161,8 +161,11 @@ classdef ZmapMainWindow < handle
             obj.evsel = ZG.GridSelector;
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
-            obj.bigEvents=obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.big_eq_minmag);
-            
+            if isempty(obj.rawcatalog)
+                obj.bigEvents=obj.rawcatalog;
+            else
+                obj.bigEvents=obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.big_eq_minmag);
+            end
             %% prepare the figure
             obj.prepareMainFigure();
             

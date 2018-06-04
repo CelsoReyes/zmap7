@@ -1,5 +1,9 @@
 function sz = mag2dotsize(maglist)
     % mag2dotsize - given array of magnitudes, return marker sizes
+    if ~exist('maglist','var')
+        sz=[];
+        return
+    end
     minmag = min(maglist);
     maxmag = max(maglist);
     %delta = maxmag - minmag

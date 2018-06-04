@@ -75,10 +75,14 @@ function plotmainmap(obj)
     
     function update_large()
         beq = findobj(axm,'Tag','big events');
-        beq.XData=obj.bigEvents.Longitude;
-        beq.YData=obj.bigEvents.Latitude;
-        beq.ZData=obj.bigEvents.Depth;
-        beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
+            if ~isempty(obj.bigEvents)
+            beq.XData=obj.bigEvents.Longitude;
+            beq.YData=obj.bigEvents.Latitude;
+            beq.ZData=obj.bigEvents.Depth;
+            beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
+        else
+            [beq.XData, beq.YData, beq.ZData, beq.SizeData]=deal([]);
+        end
     end
     function c = getLegalColors()
         % because datetime isn't allowed

@@ -246,6 +246,8 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     % if the ESC key has been pressed, then changes are discarded and doneFcn is not called
     
     function endmove(~,~)
+        fig.Pointer='watch';
+        drawnow nocallbacks;
         fig.WindowButtonMotionFcn=prev_WindowButtonMotionFcn;
         fig.WindowButtonUpFcn=prev_WindowButtonUpFcn;
         h.Marker=prev_Marker;
@@ -266,6 +268,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         fig.Pointer=prev_Pointer;
         ax.XLimMode=prev_axesMode{1};
         ax.YLimMode=prev_axesMode{2};
+        drawnow nocallbacks;
     end
     
     function do_update()

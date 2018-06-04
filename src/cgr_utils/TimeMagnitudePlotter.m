@@ -93,17 +93,29 @@ classdef TimeMagnitudePlotter
             end
             
             holdstate=HoldStatus(ax,'on');
-            scatter(ax,bigcat.Date,bigcat.Magnitude,mag2dotsize(bigcat.Magnitude),'h',...
-                'MarkerEdgeColor','k','MarkerFaceColor','y',...
-                'DisplayName','Large Events');
+            if isempty(bigcat)
+                scatter(ax,[],[],[],'h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+                    'DisplayName','Large Events');
+            else
+                scatter(ax,bigcat.Date,bigcat.Magnitude,mag2dotsize(bigcat.Magnitude),'h',...
+                    'MarkerEdgeColor','k','MarkerFaceColor','y',...
+                    'DisplayName','Large Events');
+            end
             holdstate.Undo();
         end
         
         function updateBigEvents(ax,bigcat)
+            
             sc = findobj(ax,'Tag','big events');
-            sc.XData=bigcat.Date;
-            sc.YData=bigcat.Depth;
-            sc.SizeData=mag2dotsize(bigcat.Magnitude);
+            if isempty(bigcat)
+                sc.XData=[];
+                sc.YData=[];
+                sc.SizeData=[];
+            else
+                sc.XData=bigcat.Date;
+                sc.YData=bigcat.Depth;
+                sc.SizeData=mag2dotsize(bigcat.Magnitude);
+            end
         end
         
         function colorByLatLon(catalog)

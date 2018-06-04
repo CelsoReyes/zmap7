@@ -22,7 +22,7 @@ function varargout = fdsn_param_dialog(varargin)
     
     % Edit the above text to modify the response to help fdsn_param_dialog
     
-    % Last Modified by GUIDE v2.5 31-May-2017 09:15:33
+    % Last Modified by GUIDE v2.5 04-Jun-2018 17:30:59
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -97,6 +97,9 @@ function data_provider_Callback(hObject, eventdata, handles)
         ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
         
     end
+     if ~ handles.catalog_name.UserData.touched 
+         handles.catalog_name.String = [currprovider.name,'_fdsn']
+     end
     
     % --- Executes during object creation, after setting all properties.
 function data_provider_CreateFcn(hObject, eventdata, handles)
@@ -632,17 +635,14 @@ function Fetch_Callback(hObject, eventdata, handles)
     end
     ZG.primeCatalog.sort('Date')
     assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
-    provider_details=handles.data_provider.UserData(handles.data_provider.Value);
+    % provider_details=handles.data_provider.UserData(handles.data_provider.Value);
     if isempty(ZG.primeCatalog.Name) %TODO move this functionality into import_fdsn_event
-        ZG.primeCatalog.Name = [provider_details.name,'_fdsn'];
+        ZG.primeCatalog.Name = handles.catalog_name.String;
     end
     pause(.1)
     
     %name catalog
     %sdlg.prompt='Provide a catalog name (used in plots, files)';
-    sdlg.prompt=sprintf('Provide a catalog name for these %d events. ',tmp.Count);
-    sdlg.value=ZG.primeCatalog.Name;
-    [~,~,ZG.primeCatalog.Name] = smart_inputdlg('Name Catalog',sdlg);
     cf=@()ZG.primeCatalog;
     ZG.Views.primary=ZmapCatalogView(cf);
     assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
@@ -713,3 +713,24 @@ function enforce_gt_edit_relationship(hSmaller, hBigger)
             hBigger.BackgroundColor = bad_bgcolor;
         end
     end
+
+
+
+function catalog_name_Callback(hObject, eventdata, handles)
+% hObject    handle to catalog_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of catalog_name as text
+%        str2double(get(hObject,'String')) returns contents of catalog_name as a double
+hObject.UserData.touched = true;
+
+% --- Executes during object creation, after setting all properties.
+function catalog_name_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to catalog_name (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+hObject.UserData.touched = false;

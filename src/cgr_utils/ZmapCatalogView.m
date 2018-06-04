@@ -470,7 +470,7 @@ classdef ZmapCatalogView
             fprintf('      Count: %d events\n',obj.Count);
             fprintf('      Dates: %s to %s\n', char(obj.DateRange(1),'uuuu-MM-dd hh:mm:ss'),...
                  char(obj.DateRange(2),'uuuu-MM-dd hh:mm:ss'));
-             magtypes =strjoin(unique(obj.mycat.MagnitudeType(obj.filter)),',');
+             magtypes =strjoin(string(unique(obj.mycat.MagnitudeType(obj.filter))),',');
             disp('Filter ranges for this catalog view are set to:');
             % actual catalog will have ranges inside and out
             fprintf(' Magnitudes: %.4f to %.4f  [%s]\n',...

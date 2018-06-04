@@ -43,11 +43,23 @@ function plot_base_events(obj, container, featurelist)
     
     % add large events to the plot
     set(obj.map_axes,'NextPlot','add')
-    Sz=mag2dotsize(obj.bigEvents.Magnitude);
-    scatter(obj.map_axes,obj.bigEvents.Longitude, obj.bigEvents.Latitude, Sz,...
+    
+    if isempty(obj.bigEvents)
+        x=[];
+        y=[];
+        z=[];
+        Sz=[];
+    else
+        x=obj.bigEvents.Longitude;
+        y=obj.bigEvents.Latitude;
+        Sz=mag2dotsize(obj.bigEvents.Magnitude);
+        z=obj.bigEvents.Depth;
+    end
+        
+    scatter(obj.map_axes, x, y, Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
         'Tag','big events','DisplayName', "Events >= M" + ZmapGlobal.Data.big_eq_minmag,...
-        'ZData',obj.bigEvents.Depth,'HitTest','off');
+        'ZData',z,'HitTest','off');
     set(obj.map_axes,'NextPlot','replace')
     
     obj.map_axes.XLabel.String='Longitude';
