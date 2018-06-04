@@ -3,7 +3,7 @@ classdef ZmapMainWindow < handle
     
     properties(SetObservable)
         catalog ZmapCatalog % event catalog
-        bigEvents
+        bigEvents ZmapCatalog
         shape {mustBeShape} = ShapeGeneral.ShapeStash % used to subset catalog by selected area
         Grid {mustBeZmapGrid} = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange datetime % used to subset the catalog with date ranges
@@ -152,15 +152,16 @@ classdef ZmapMainWindow < handle
                 obj.mshape=[];
             else
                 obj.daterange=[min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
-                [obj.catalog, obj.mdate, obj.mshape]=obj.filtered_catalog();
+                [obj.mdate, obj.mshape]=obj.filter_catalog();
             end
             % retrieve default values from ZmapGlobal.
-            [obj.catalog, obj.mdate, obj.mshape]=obj.filtered_catalog();
+            [obj.mdate, obj.mshape]=obj.filter_catalog();
             obj.Grid=ZG.Grid;
             obj.gridopt= ZG.gridopt;
             obj.evsel = ZG.GridSelector;
             obj.xscats=containers.Map();
             obj.xscatinfo=containers.Map();
+            obj.bigEvents=obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.big_eq_minmag);
             
             %% prepare the figure
             obj.prepareMainFigure();
@@ -200,7 +201,8 @@ classdef ZmapMainWindow < handle
             addlistener(obj, 'daterange', 'PostSet', @obj.replot_all);
             addlistener(obj, 'catalog',   'PostSet', @obj.attach_catalog_listeners);
             addlistener(obj, 'shape',     'PostSet', @obj.replot_all);
-            addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
+            addlistener(obj, 'bigEvents',     'PostSet', @obj.replot_all);
+            % addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
             addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
         end
         
@@ -272,7 +274,7 @@ classdef ZmapMainWindow < handle
         pushState(obj)
         popState(obj)
         catalog_menu(obj,force)
-        [c, mdate, mshape, mall]=filtered_catalog(obj)
+        [mdate, mshape, mall]=filter_catalog(obj)
         %do_colorbar(obj,~,~, prevcallback)
         
         % menus

@@ -41,8 +41,16 @@ function plot_base_events(obj, container, featurelist)
         end
     end
     
+    % add large events to the plot
+    set(obj.map_axes,'NextPlot','add')
+    Sz=mag2dotsize(obj.bigEvents.Magnitude);
+    scatter(obj.map_axes,obj.bigEvents.Longitude, obj.bigEvents.Latitude, Sz,...
+        'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+        'Tag','big events','DisplayName', "Events >= M" + ZmapGlobal.Data.big_eq_minmag,...
+        'ZData',obj.bigEvents.Depth,'HitTest','off');
+    set(obj.map_axes,'NextPlot','replace')
     
-    obj.map_axes.XLabel.String='Longitude'
+    obj.map_axes.XLabel.String='Longitude';
     obj.map_axes.YLabel.String='Latitude';
     ZG=ZmapGlobal.Data;
     
@@ -95,10 +103,6 @@ function plot_base_events(obj, container, featurelist)
         idx=endsWith({obj.map_axes.UIContextMenu.Children.Label}," sampling grid");
         gridExists=~isempty(obj.Grid);
         set(obj.map_axes.UIContextMenu.Children(idx),'Enable',char(matlab.lang.OnOffSwitchState(gridExists)));
-    end
-    
-    function shapeassignment(sh)
-        obj.shape=sh;
     end
     
     function updatewrapper(s,v,f)

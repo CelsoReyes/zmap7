@@ -6,18 +6,27 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     
     myTab = findOrCreateTab(obj.fig, tabgrouptag, name);
     
-    contextTag =[name ' contextmenu'];
 
     delete(myTab.Children);
-    delete(findobj(obj.fig,'Tag',contextTag));
+    %delete(findobj(obj.fig.Children,'flat','Tag',contextTag));
+    ax=findobj(myTab.Children,'flat','Type','axes');
+    if isempty(ax)
+        ax=axes(myTab);
+        whichplotter.plot(ax, obj.catalog, obj.bigEvents);
+        ax.Title=[];
+    else
+        whichplotter.update(ax,obj.catalog, obj.bigEvents);
+    end
     
-    ax=axes(myTab);
-    whichplotter.plot(obj.catalog,ax);
-    ax.Title=[];
-    c=uicontextmenu(obj.fig,'Tag', contextTag);
-    uimenu(c, 'Label', 'Open in new window',...
-        Futures.MenuSelectedFcn, @(~,~)whichplotter.plot(obj.catalog));
-    addLegendToggleContextMenuItem(c,'bottom','above');
+    contextTag =[name ' contextmenu'];
+    c=findobj(obj.fig.Children,'flat','Tag',contextTag);
+    
+    if isempty(c)
+        c=uicontextmenu(obj.fig,'Tag', contextTag);
+        uimenu(c, 'Label', 'Open in new window',...
+            Futures.MenuSelectedFcn, @cb_context);
+        addLegendToggleContextMenuItem(c,'bottom','above');
+    end
     ax.UIContextMenu=c;
     
     switch name
@@ -36,5 +45,9 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
         
     
     obj.plot_xsections(xsplotter,'Xsection timeplot')
+    
+    function cb_context(~,~)
+        whichplotter.plot([],obj.catalog, obj.bigEvents)
+    end
     
 end

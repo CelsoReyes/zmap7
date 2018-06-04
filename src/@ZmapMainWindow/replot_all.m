@@ -46,14 +46,14 @@ function replot_all(obj,metaProp,eventData)
                 obj.shape=eventData.Source;
             end
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
-            [obj.catalog, md, ~, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
+            [md, ~, mall]=obj.filter_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
             evs=findobj(obj.maintab,'Tag','all events');
             if all(mall)
                 evs.Visible='off';
             else
                 if numel(evs.XData)==numel(obj.rawcatalog.Count)
-                evs.XData(mall)=nan;
-                evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
+                    evs.XData(mall)=nan;
+                    evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
                 else
                     % catalog is out of sync. replot
                     evs.XData=obj.rawcatalog.Longitude;
@@ -64,6 +64,7 @@ function replot_all(obj,metaProp,eventData)
                 evs.Visible='on';
                 
             end
+            
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;
@@ -104,10 +105,11 @@ function rearrange_axes_items(obj)
     items.grid = startsWith(get(ch,'Tag'),'grid_');
     items.bgevents = get(ch,'Tag') == "all events";
     items.fgevents = get(ch,'Tag') == "active quakes";
+    items.bigevents = get(ch,'Tag') == "big events";
     items.shape = startsWith(get(ch,'Tag'),'shape');
-    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents);
+    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents | items.bigevents);
     obj.map_axes.SortMethod='childorder';
-    obj.map_axes.Children = [  ch(items.shape); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];   
+    obj.map_axes.Children = [  ch(items.shape); ch(items.bigevents); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];   
 end
 
 function plot_xsection(obj, k, currcatsummary,md)

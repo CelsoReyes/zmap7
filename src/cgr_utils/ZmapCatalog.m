@@ -286,7 +286,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 return
             end
             
-            if obj.Count==0
+            if isempty(obj) || obj.Count==0
                 s = sprintf('Empty Catalog, named "%s"',obj.Name);
                 return
             end

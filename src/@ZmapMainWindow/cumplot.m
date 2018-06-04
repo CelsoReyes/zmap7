@@ -61,7 +61,9 @@ function cumplot(obj, tabgrouptag)
     ax.XLabel.String='Time';
     %ax.XLabel.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
     
-    bigcat=ZmapGlobal.Data.maepi;
+    %bigcat=ZmapGlobal.Data.maepi;
+    bigcat=obj.bigEvents;
+    bigcat=bigcat.subset(ismember(bigcat.Date,Xs)); % bigcat only contains the big events within the Xs
     if ~isempty(bigcat)
         idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
         Sz=mag2dotsize(bigcat.Magnitude);
@@ -69,12 +71,12 @@ function cumplot(obj, tabgrouptag)
         idx=[];
         Sz=[];
     end
-    set(gca,'NextPlot','add')
+    set(ax,'NextPlot','add')
 
     scatter(ax,Xs(idx), Ys(idx), Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
         'Tag','big events');
-    set(gca,'NextPlot','replace')
+    set(ax,'NextPlot','replace')
     
     cbg=findobj(obj.fig,'Tag',Tags.bg);
     

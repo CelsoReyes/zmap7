@@ -134,9 +134,9 @@ classdef ShapeCircle < ShapeGeneral
         function finishedMoving(obj, movedObject, deltas)
             centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
             centerY = mean([min(movedObject.YData),max(movedObject.YData)]);
-            obj.Radius=obj.Radius.*deltas(3);
+            
+            obj.Radius=obj.Radius.* abs(deltas(3)); % NO NEGATIVE RADII
             obj.Points=[centerX,centerY];
-            %notify(obj,'ShapeChanged');
         end
         
     end

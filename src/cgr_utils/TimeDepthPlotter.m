@@ -18,14 +18,14 @@ classdef TimeDepthPlotter
     end
     
     methods (Static)
-        function pl=plot(catalog,ax)
+        function pl=plot(ax,catalog,bigcat)
             % plot plot a time-depth series for this catalog, with symbol sizes representing
             % event size
             % pl = plot(catalog)
             %
             tag = 'time_depth_plot';
             
-            if ~exist('ax','var')
+            if ~exist('ax','var') || isempty(ax)
                 f=figure('Name','Time Depth',...
                     'NumberTitle','off', ...
                     ......
@@ -61,21 +61,43 @@ classdef TimeDepthPlotter
             uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'Y'});
             ax.YLabel.UIContextMenu=c;
             
-            grid
-            TimeDepthPlotter.overlayBigEvents(ax);
+            grid(ax,'on');
+            if exist('bigcat','var')
+                TimeDepthPlotter.overlayBigEvents(ax,bigcat);
+            else
+                TimeDepthPlotter.overlayBigEvents(ax);
+            end
             ax.Visible = 'on';
             
         end
         
-        function overlayBigEvents(ax)
-            ZG=ZmapGlobal.Data;
-            bigcat=ZG.maepi;
+        function update(ax, catalog, bigcat)
+            p=findobj(ax.Children,'flat','time_depth_plot');
+            p.XData=catalog.Date;
+            p.YData=catalog.Magnitude;
+            p.SizeData=mag2dotsize(catalog.Magnitude);
+            TimeDepthPlotter.updateBigEvents(ax, bigcat);
+        end
+        
+        function overlayBigEvents(ax,bigcat)
+            if nargin==1
+                ZG=ZmapGlobal.Data;
+                bigcat=ZG.maepi;
+            end
             holdstate=HoldStatus(ax,'on');
-            scatter(ax,ZG.maepi.Date,ZG.maepi.Depth, mag2dotsize(ZG.maepi.Magnitude),...
+            scatter(ax,bigcat.Date,bigcat.Depth, mag2dotsize(bigcat.Magnitude),...
                 'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
                 'Tag','big events');
             holdstate.Undo();
         end
+        
+        function updateBigEvents(ax,bigcat)
+            sc = findobj(ax,'Tag','big events');
+            sc.XData=bigcat.Date;
+            sc.YData=bigcat.Depth;
+            sc.SizeData=mag2dotsize(bigcat.Magnitude);
+        end
+            
             
         function colorByLatLon(catalog)
             % colorByLatLon - color the values by their relative lat-lon position

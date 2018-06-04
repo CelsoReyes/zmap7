@@ -248,8 +248,9 @@ function create_all_menus(obj, force)
             [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
                 struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
             src.Label=['Mark large event with M > ' num2str(ZG.big_eq_minmag)];
-            ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
-            obj.replot_all();
+            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
+            % ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
+            %obj.replot_all();
         end
         
         
