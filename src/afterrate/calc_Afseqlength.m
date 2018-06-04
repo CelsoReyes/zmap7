@@ -39,7 +39,7 @@ function [fTafshock] = calc_Afseqlength(fPval1,fCval1,fKval1,fBgrate,fTlength,bP
 
         figure
         hOmori=loglog(vT,vCumEv,'k','Linestyle','-');
-        hold on
+        set(gca,'NextPlot','add')
         hBg = loglog([0.01 vT(end)],[fBgrate fBgrate]);
         set(hBg,'Linewidth',2,'Color',[0.5 0.5 0.5])
         legend([hOmori hBg],'Omori law','Background rate','Location','SouthWest');

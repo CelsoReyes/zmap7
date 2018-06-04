@@ -10,7 +10,14 @@ classdef HoldStatus
             obj.wasHeld=ishold(ax);
             obj.ax=ax;
             if exist('newstate','var')
+                switch newstate
+                case 'on'
+                    ax.NextPlot='add';
+                case 'off'
+                    ax.NextPlot='replace';
+                otherwise
                 hold(ax,newstate);
+                end
             end
         end
         
@@ -19,7 +26,11 @@ classdef HoldStatus
                 error('tried to undo empty axis. This shouldn''t be')
             end
             if isvalid(obj.ax)
-                hold(obj.ax,tf2onoff(obj.wasHeld));
+                if obj.wasHeld
+                    obj.ax.NextPlot='add';
+                else
+                    obj.ax.NextPlot='replace';
+                end
             end
         end
     end

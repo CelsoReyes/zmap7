@@ -43,7 +43,7 @@ function selectp(in_or_out)
         ZG.newt2 = ZG.primeCatalog.subset(mask);
         
         % Plot of new catalog
-        washeld=ishold(ax); hold(ax,'on');
+        washeld=ishold(ax); ax.NextPlot='add';
         hMap=mainmap();
         hMap.plotOtherEvents(ZG.newt2,0,...
             'Marker','.',...
@@ -55,7 +55,7 @@ function selectp(in_or_out)
         
         %change the polygon characteristics
         set(mouse_points_overlay,'LineStyle','--','LineWidth',2,'Color',[.5 .5 .5],'Marker','none');
-        if ~washeld; hold(ax,'off');end
+        if ~washeld; ax.NextPlot='replace';end
     end
     % ask for a name for this new catalog
     %ploc = get(0,'PointerLocation');

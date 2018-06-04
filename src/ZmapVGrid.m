@@ -58,10 +58,10 @@ classdef ZmapVGrid < ZmapGrid
                 prev_grid.YData=obj.(y)(:);
                 disp('reusing grid on plot');
             else
-                hold(ax,'on');
+                ax.NextPlot='add';
                 prev_grid=line(ax,obj.(x)(:),obj.(y)(1:end-1),...
                     'Marker','+','Color','k','LineStyle','none','Tag',grid_tag);
-                hold(ax,'off');
+                ax.NextPlot='replace';
                 disp('created new grid on plot');
             end
             % make sure that grid is on the bottom layer

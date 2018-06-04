@@ -59,19 +59,19 @@ function LC_event(lat,lon,symb,symb_size,symb_thick)
     % after the plot
     if ishold
         hold_flag = 1;
-        hold on
+        set(gca,'NextPlot','add')
     else
         hold_flag = 0;
-        hold off
+        set(gca,'NextPlot','replace')
     end
     
     plot(x,y,symb,'MarkerSize',symb_size,'LineWidth',symb_thick)
     
     % put HOLD back the way it was before this function was called
     if hold_flag
-        hold on
+        set(gca,'NextPlot','add')
     else
-        hold off
+        set(gca,'NextPlot','replace')
     end
     
 end

@@ -90,7 +90,7 @@ try
       set(handles.hSurface,'Edgecolor','none');
   end
   set(handles.hMainAxes, 'box', 'on');
-  hold on;
+  set(gca,'NextPlot','add');
 
   % Plotting coastline & faults
   if handles.vResult.bMap

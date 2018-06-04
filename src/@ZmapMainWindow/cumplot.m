@@ -69,12 +69,12 @@ function cumplot(obj, tabgrouptag)
         idx=[];
         Sz=[];
     end
-    hold on
+    set(gca,'NextPlot','add')
 
     scatter(ax,Xs(idx), Ys(idx), Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
         'Tag','big events');
-    hold off
+    set(gca,'NextPlot','replace')
     
     cbg=findobj(obj.fig,'Tag',Tags.bg);
     

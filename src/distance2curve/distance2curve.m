@@ -81,7 +81,7 @@ function [xy,distance,t_a] = distance2curve(curvexy,mapxy,interpmethod)
 %
 %
 % plot(curvexy(:,1),curvexy(:,2),'k-o',mapxy(:,1),mapxy(:,2),'r*')
-% hold on
+% set(gca,'NextPlot','add')
 % plot(xy(:,1),xy(:,2),'g*')
 % line([mapxy(:,1),xy(:,1)]',[mapxy(:,2),xy(:,2)]','color',[0 0 1])
 % axis equal

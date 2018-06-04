@@ -91,7 +91,7 @@ try
     shading(handles.hMainAxes, 'interp');
   end
   set(handles.hMainAxes, 'box', 'on');
-  hold on;
+  set(gca,'NextPlot','add');
 
   if handles.vResult.bMap
     if get(handles.chkCoastlines, 'Value') == 1

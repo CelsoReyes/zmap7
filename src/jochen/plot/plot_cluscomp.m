@@ -77,7 +77,7 @@ set(gca,'tag','ax1_clus','Nextplot','replace','box','on','Xlim', [0 8]);
 axs1=findobj('tag','ax1_clus');
 axes(axs1(1));
 semilogy(vMags,vClusTime,'*');
-hold on;
+set(gca,'NextPlot','add');
 
 switch nMethod
 case 1
@@ -102,14 +102,14 @@ end
 set(gca,'Xlim', [0 ceil(max(vMags))]);
 xlabel('Magnitude');
 ylabel('Time / [days]');
-hold off;
+set(gca,'NextPlot','replace');
 
 subplot(2,1,2);
 set(gca,'tag','ax2_clus','Nextplot','replace','box','on','Xlim', [0 8]);
 axs2=findobj('tag','ax2_clus');
 axes(axs2(1));
 semilogy(vMags,vDist,'*');
-hold on;
+set(gca,'NextPlot','add');
 switch nMethod
 case 1
     % % Gardner & Knopoff
@@ -129,5 +129,5 @@ end
 set(gca,'Xlim', [0 ceil(max(vMags))],'Ylim', [0 ceil(max(vDist))+100]);
 xlabel('Magnitude');
 ylabel('Distance / [km]');
-hold off;
+set(gca,'NextPlot','replace');
 

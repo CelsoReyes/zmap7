@@ -47,7 +47,7 @@ function add_display_menu(version)
     add_shading_section(op2e);
     add_brighten_section(op2e);
     uimenu(op2e,'Label','Redraw Overlay',...
-        Futures.MenuSelectedFcn,'hold on;zmap_update_displays();'); % this is different from case #1
+        Futures.MenuSelectedFcn,'set(gca,'NextPlot','add');zmap_update_displays();'); % this is different from case #1
     
     function callback_shader(style)
         % set default shading style and apply to current axes
@@ -57,7 +57,7 @@ function add_display_menu(version)
     end
     
     function callback_showgrid(src,~)
-        hold on;
+        set(gca,'NextPlot','add');
         plot(newgri(:,1),newgri(:,2),'+k')
     end
     function callback_brighten(src,~,val)

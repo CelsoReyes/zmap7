@@ -36,13 +36,13 @@ classdef Zmap3DGridFunction < ZmapGridFunction
             
             % this is to show the data
             obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
-            hold on;
+            set(gca,'NextPlot','add');
             
             % the imagesc exists is to enable data cursor browsing.
             obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
             
             shading(obj.ZG.shading_style);
-            hold on
+            set(gca,'NextPlot','add')
             
             obj.add_grid_centers();
             
@@ -124,12 +124,12 @@ classdef Zmap3DGridFunction < ZmapGridFunction
         function addquakes_cb(src,~,catalog)
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
-                hold on
+                set(gca,'NextPlot','add')
                 plot(catalog.Longitude, catalog.Latitude, 'o',...
                     'MarkerSize',3,...
                     'markeredgecolor',[.2 .2 .2],...
                     'tag','quakes');
-                hold off
+                set(gca,'NextPlot','replace')
             else
                 ison=qtag.Visible == "on";
                 qtag.Visible=tf2onoff(~ison);

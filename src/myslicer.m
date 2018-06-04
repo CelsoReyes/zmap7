@@ -144,7 +144,7 @@ function myslicer(ac2)
         set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);
         deplo3 =plot(ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2),ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2),'.r');
         set(deplo3,'MarkerSize',ZG.ms6,'Marker',ty3)
-        hold on;
+        set(gca,'NextPlot','add');
         
         zmap_update_displays();
         whitebg(gcf,[0 0 0]);
@@ -186,7 +186,7 @@ function myslicer(ac2)
             delete(findobj(sl2,'Type','axes'));
         end
         
-        hold on;
+        set(gca,'NextPlot','add');
         my_plotslice();
         
     end
@@ -270,14 +270,14 @@ function myslicer(ac2)
             delete(findobj(sl2,'Type','axes'));
         end
         
-        hold on;
+        set(gca,'NextPlot','add');
         my_plotslice();
     end
     
     function my_plotslice()
         figure(sl2)
         delete(findobj(sl2,'Type','axes'));
-        hold on; axis manual ; axis ij
+        set(gca,'NextPlot','add'); axis manual ; axis ij
         
         sl = slice(X,Y,Z,zvg,Y2,X2,Z2);
         if prev == 'hor'; set(sl,'tag','slice'); end
@@ -286,7 +286,7 @@ function myslicer(ac2)
         shading interp
         axis([min(gy) max(gy) min(gx) max(gx) min(gz) max(gz)+1 ]);
         view([-120 24]); box on;
-        hold on
+        set(gca,'NextPlot','add')
         whitebg(gcf,[0 0 0]);
         
         cl = coastline;
@@ -384,7 +384,7 @@ function myslicer(ac2)
         set(slax,'CLim',newclim(65,128,mic,mac,128))
         set(ax3,'CLim',newclim(65,128,mic,mac,128))
         set(ax2,'CLim',newclim(3,63,clim(1),clim(2),128))
-        hold on
+        set(gca,'NextPlot','add')
     end
     
     function my_topo()

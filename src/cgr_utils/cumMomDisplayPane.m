@@ -93,11 +93,11 @@ classdef cumMomDisplayPane < ZmapDisplayPane
         function updateBigEvents(obj, prop, evt)
             bigcat=ZmapGlobal.Data.maepi;
             idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
-            hold on
+            set(gca,'NextPlot','add')
             scatter(ax,Xs(idx), Ys(idx), mag2dotsize(bigcat.Magnitude),...
                 'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
                 'Tag','big events');
-            hold off
+            set(gca,'NextPlot','replace')
         end
     end
     

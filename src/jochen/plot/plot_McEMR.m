@@ -241,7 +241,7 @@ end
 figure_w_normalized_uicontrolunits('tag','best_cdfit','Name','CDF fit','Units','normalized','Nextplot','add',...
                     'Numbertitle','off','visible','on');
 p1=plot(mDatPredBest(:,2), mDatPredBest(:,3),'Marker','d','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0.4 0.4 0.4],'Markersize',8,'Linewidth',2,'Linestyle','none');
-hold on;
+set(gca,'NextPlot','add');
 p2=plot(mDatPredBest(:,2),mDatPredBest(:,1),'Marker','o','MarkerEdgeColor',[0.25 0.25 0.25],'MarkerFaceColor',[0.75 0.75 0.75],'Markersize',8,'Linewidth',2,'Linestyle','none');
 %sTitlestr = ['mu = ' num2str(fMu) ', sigma = ' num2str(fSigma)];
 %title(sTitlestr)
@@ -255,13 +255,13 @@ ylim = ([0 max(mDatPredBest(:))]);
 hl1=legend([p1,p2,p3,p4],'Noncum. FMD','Noncum. model FMD ','Model','Model uncertainty');
 set(hl1,'FontWeight','bold','FontSize',12')
 set(gca,'visible','on','FontSize',12,'FontWeight','bold','LineWidth',2,'Box','on');
-hold off;
+set(gca,'NextPlot','replace');
 
 % Plot Non-/Cumulative distribution, original and predicted
 figure_w_normalized_uicontrolunits('tag','ncumdist','Name','Best model','Units','normalized','Nextplot','add',...
                     'Numbertitle','off','visible','on');
 p1 = semilogy(vNonCFMDorg(1,:)', vNonCFMDorg(2,:)', 'Marker','d','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0.4 0.4 0.4],'Markersize',8,'Linewidth',2,'Linestyle','none');
-hold on;
+set(gca,'NextPlot','add');
 p2 = semilogy(vFMDorg(1,:)', vFMDorg(2,:)', 'Marker','^','MarkerEdgeColor',[0 0 0],'MarkerFaceColor',[0.75 0.75 0.75],'Markersize',8,'Linewidth',2,'Linestyle','none');
 %p2=semilogy(vCFMD(1,:)', vNBest.*fPeriod1, '*',
 p3=semilogy(mDatPredBest(:,2),mDatPredBest(:,1),'Marker','o','MarkerEdgeColor',[0.25 0.25 0.25],'MarkerFaceColor',[0.75 0.75 0.75],'Markersize',8,'Linewidth',2,'Linestyle','none');

@@ -74,7 +74,7 @@ function cluster_length = save_declus(catalog)
     
     % plot the results
     zmap_update_displays();
-    hold on
+    set(gca,'NextPlot','add')
     plot(clus(:,1),clus(:,2),'m+');
     
     st1 = [' The declustering found ' num2str(max(clu)) ' clusters of earthquakes, a total of '...

@@ -158,7 +158,7 @@ classdef NDK
             c.Depth=obj.allNDKs.Depth;
             c.Date=obj.allNDKs.ReferenceEventDateTime;
             c.Magnitude=obj.allNDKs.ReportedMagnitudes(:,1);
-            c.MagnitudeType=repmat('unk',size(c.Magnitude));
+            c.MagnitudeType=repmat(categorical({''}),size(c.Magnitude));
             mt=obj.allNDKs(:,{'Mrr','Mtt','Mpp','Mrt','Mrp','Mtp'});
             mt{:,:}=mt{:,:}.* 10.^double(obj.allNDKs.ExponentForAllMomentValues);
             mt.Properties.VariableNames={'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};

@@ -97,11 +97,11 @@ function pvalcat()
     if ZG.hold_state
         axes(cua2a);
         disp('Hold');
-        hold on
+        set(gca,'NextPlot','add')
     else
-        hold on
+        set(gca,'NextPlot','add')
         figure(pgraph);
-        hold on
+        set(gca,'NextPlot','add')
         delete(gca)
         axis off
     end
@@ -135,7 +135,7 @@ function pvalcat()
     %TOFIX: this works, but seems to plot incorrectly
     
     llh1=loglog(tavg, ratac, '-k','LineStyle', 'none', 'Marker', '+','MarkerSize',9);
-    hold on
+    set(gca,'NextPlot','add')
     loglog(days(tavgr), frfr, '-k','LineWidth',2.0);
     
     if ZG.hold_state

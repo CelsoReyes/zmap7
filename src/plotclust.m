@@ -26,7 +26,7 @@ function plotclust()
     plot(ax, ZG.original.Longitude,ZG.original.Latitude,'k.',...
         'Markersize',2,...
         'DisplayName','catalog')
-    hold on
+    set(gca,'NextPlot','add')
     
     st = 'ox+*sdv^<>ph^'; % available markers
     col = hsv(max(clus));

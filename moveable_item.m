@@ -33,7 +33,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     % example:
     %
     %     h = plot([1;2;3],[2; 1; 3],'o-');
-    %     hold on;
+    %     set(gca,'NextPlot','add');
     %
     %     % this will be used to show how far we dragged the item
     %     txt = text(2, 2,'','Tag','description');
@@ -417,7 +417,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         f=figure('Name','moveable_item demo');
         ax = axes(f);
         h = plot(ax, [1;2;3],[2; 1; 3],'o-');
-        hold on;
+        set(gca,'NextPlot','add');
         h2 = plot(ax, [0;4;2],[1.5; 1; 2.5],'o-');
         ax.XLim=[-10 10];
         ax.YLim=[-10 10];

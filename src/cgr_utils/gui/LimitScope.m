@@ -40,7 +40,7 @@ classdef LimitScope < handle
     %     plot(x,y);
     %     for n=1:3
     %         idx= randsample(x,8);
-    %         hold on
+    %         set(gca,'NextPlot','add')
     %         sc = scatter(x(idx),y(idx),'o');
     %         d = text(x(idx(2)),y(idx(2)),'Notice here...')
     %         tmp=LimitScope([sc d]);

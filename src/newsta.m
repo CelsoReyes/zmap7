@@ -77,7 +77,7 @@ function newsta(sta)
     delete(findobj(cumfig,'Tag','zmaxtext')); 
    delete(findobj(cumfig,'Tag','cumulativeplot'));
     %clf
-    hold on
+    set(gca,'NextPlot','add')
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,...
         'LineWidth',1.5,...
         'Box','on')
@@ -125,7 +125,7 @@ function newsta(sta)
     grid
     set(gca,'Color',ZG.color_bg)
     
-    hold on;
+    set(gca,'NextPlot','add');
     
     
     % plot big events on curve
@@ -386,7 +386,7 @@ function newsta(sta)
         figure
         pq = -log10(1-Pbeta); l = isinf(pq);pq(l) = 18 ;
         pl1 = plot(xt,pq,'color',[0.0 0.5 0.9]);
-        hold on
+        set(gca,'NextPlot','add')
         l = pq < 1.3; pq(l) = nan;
         pl3 = plot(xt,pq,'b','Linewidth',2);
         

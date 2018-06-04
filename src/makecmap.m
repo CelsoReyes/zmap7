@@ -165,7 +165,7 @@ function makecmap(bins,fighandle)
         
         nodenum = size(red,1);
         subplot(3,2,1)                 % Red Graph
-        hold on
+        set(gca,'NextPlot','add')
         for i = 1:nodenum-1
             plot(red(i,1),red(i,2),'ow')
             line([red(i,1),red(i+1)],[red(i,2),red(i+1,2)],'color','r')
@@ -180,7 +180,7 @@ function makecmap(bins,fighandle)
         
         subplot(3,2,3)                % Green Graph
         nodenum = size(green,1);
-        hold on
+        set(gca,'NextPlot','add')
         for i = 1:nodenum-1
             plot(green(i,1),green(i,2),'ow')
             line([green(i,1),green(i+1)],[green(i,2),green(i+1,2)],'color','g')
@@ -195,7 +195,7 @@ function makecmap(bins,fighandle)
         
         subplot(3,2,5)                % Blue Graph
         nodenum = size(blue,1);
-        hold on
+        set(gca,'NextPlot','add')
         for i = 1:nodenum-1
             plot(blue(i,1),blue(i,2),'ow')
             line([blue(i,1),blue(i+1)],[blue(i,2),blue(i+1,2)],'color','b')
@@ -212,7 +212,7 @@ function makecmap(bins,fighandle)
         set(fighandle,'Colormap',map)
         
         transax = axes('Position',[.578 .4056 .327 .2238]); % Transfer Graph
-        hold on
+        set(gca,'NextPlot','add')
         trans = [1 1;bins 1];
         nodenum = 2;
         cla

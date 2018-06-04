@@ -45,7 +45,7 @@ function view_ratecomp(det,valueMap)
     % delete(sizmap);
     reset(gca)
     cla
-    hold off
+    set(gca,'NextPlot','replace')
     watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,...
         'FontWeight','bold','LineWidth',1,...
@@ -66,7 +66,7 @@ function view_ratecomp(det,valueMap)
     orient landscape
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     pcolor(gx,gy,valueMap);
     axis([ s2 s1 s4 s3])
     
@@ -302,7 +302,7 @@ function view_ratecomp(det,valueMap)
     function callbackfun_022(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        hold on;
+        set(gca,'NextPlot','add');
         zmap_update_displays();
     end
 end

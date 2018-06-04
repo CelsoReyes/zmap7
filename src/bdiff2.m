@@ -257,7 +257,7 @@ classdef bdiff2
             
             if ~isempty(ax) && isvalid(ax) && ZG.hold_state
                 axes(bfig,ax)
-                hold on
+                set(gca,'NextPlot','add')
             else
                 delete(findobj(bfig,'Type','axes'));
                 rect = [0.22,  0.3, 0.65, 0.6];           % plot Freq-Mag curves

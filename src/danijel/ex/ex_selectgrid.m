@@ -22,7 +22,7 @@ report_this_filefun();
 try
   % Bring figure-window to front
   figure(hFigure);
-  hold on;
+  set(gca,'NextPlot','add');
 
   if bGridEntireArea % Use entire area for grid
     vXLim = get(gca, 'XLim');

@@ -128,8 +128,8 @@ for i=1:size(mVar,1)
     if bChk
         ii=ceil(rand(1)*length(params.mPolygon));
         figure;plot(mLoc(:,1),mLoc(:,2),'.c');
-        hold on;plot(params.mPolygon(ii,1),params.mPolygon(ii,2),'ok');
-        %  hold on;plot(mLoc(I2(1:nN,ii)-(ii-1)*size(mLoc,1),1),mLoc(I2(1:nN,ii)-(ii-1)*size(mLoc,1),2),'dr')
+        set(gca,'NextPlot','add');plot(params.mPolygon(ii,1),params.mPolygon(ii,2),'ok');
+        %  set(gca,'NextPlot','add');plot(mLoc(I2(1:nN,ii)-(ii-1)*size(mLoc,1),1),mLoc(I2(1:nN,ii)-(ii-1)*size(mLoc,1),2),'dr')
     end
 
     % reshape resolution matrix
@@ -156,7 +156,7 @@ for i=1:size(mVar,1)
         caNodeIndices4_=zeros(size(caNodeIndices_));
         caNodeIndices4_(caNodeIndices3_)=1;
         caNodeIndices4_=logical(caNodeIndices4_);
-%         hold on;plot(params.mCatalog(caNodeIndices4_(:,ii),1),...
+%         set(gca,'NextPlot','add');plot(params.mCatalog(caNodeIndices4_(:,ii),1),...
 %                                  params.mCatalog(caNodeIndices4_(:,ii),2),'sr')
          mCat0(not(caNodeIndices4_))=NaN;
          mLon0(not(caNodeIndices4_))=NaN;
@@ -190,8 +190,8 @@ for i=1:size(mVar,1)
         mLon00=mLon00_;mLat00=mLat00_;
         mLon00(mSelD01)=(mLon0(mSelD01));
         mLat00(mSelD01)=(mLat0(mSelD01));
-%         hold on;plot(mLon00(:,ii),mLat00(:,ii),'xk','MarkerSize',10);
-        hold on;plot(mLon00(not(vNaN1(:,ii)),ii),mLat00(not(vNaN1(:,ii)),ii),'xk','MarkerSize',10);
+%         set(gca,'NextPlot','add');plot(mLon00(:,ii),mLat00(:,ii),'xk','MarkerSize',10);
+        set(gca,'NextPlot','add');plot(mLon00(not(vNaN1(:,ii)),ii),mLat00(not(vNaN1(:,ii)),ii),'xk','MarkerSize',10);
     end
 
     % 1st period
@@ -208,8 +208,8 @@ for i=1:size(mVar,1)
         mLon10=mLon00_;mLat10=mLat00_;
         mLon10(mSelD11)=(mLon0(mSelD11));
         mLat10(mSelD11)=(mLat0(mSelD11));
-%         hold on;plot(mLon10(:,ii),mLat10(:,ii),'dr','MarkerSize',10);
-        hold on;plot(mLon10(not(vNaN1(:,ii)),ii),mLat10(not(vNaN1(:,ii)),ii),'dr','MarkerSize',10);
+%         set(gca,'NextPlot','add');plot(mLon10(:,ii),mLat10(:,ii),'dr','MarkerSize',10);
+        set(gca,'NextPlot','add');plot(mLon10(not(vNaN1(:,ii)),ii),mLat10(not(vNaN1(:,ii)),ii),'dr','MarkerSize',10);
     end
 
 
@@ -227,8 +227,8 @@ for i=1:size(mVar,1)
         mLon20=mLon00_;mLat20=mLat00_;
         mLon20(mSelD21)=(mLon0(mSelD21));
         mLat20(mSelD21)=(mLat0(mSelD21));
-%         hold on;plot(mLon20(:,ii),mLat20(:,ii),'sb','MarkerSize',10);
-        hold on;plot(mLon20(not(vNaN1(:,ii)),ii),mLat20(not(vNaN1(:,ii)),ii),'sb','MarkerSize',10);
+%         set(gca,'NextPlot','add');plot(mLon20(:,ii),mLat20(:,ii),'sb','MarkerSize',10);
+        set(gca,'NextPlot','add');plot(mLon20(not(vNaN1(:,ii)),ii),mLat20(not(vNaN1(:,ii)),ii),'sb','MarkerSize',10);
     end
 
     %  lta

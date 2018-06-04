@@ -30,7 +30,7 @@ function addLegendToggleContextMenuItem(cm, position, separator)
     h.Separator = tf2onoff(separator == "above");
     h.(Futures.MenuSelectedFcn) = @legend_cb;
     
-    % by default it adds it to the bottom of the menu, which is actually
+    % by default add item to the bottom of the menu, which is actually
     % the first item in the context menu's children
     
     mypos = h==cm.Children;

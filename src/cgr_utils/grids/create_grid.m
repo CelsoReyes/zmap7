@@ -45,9 +45,9 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     ax.Position=fix(ax.Position);
     plot(ax,ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'.',...
         'color',[.75 .75 .8],'DisplayName','events');
-    xlabel('longitude')
-    ylabel('latitude')
-    hold on;
+    ax.XLabel.String='longitude';
+    ax.YLabel.String='latitude';
+    ax.NextPlot='add';
     
     if exist('pts','var') && ischar(pts)
         switch pts

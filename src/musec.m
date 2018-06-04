@@ -90,7 +90,7 @@ function musec()
     set(pl,'Linewidth',1.5,'MarkerSize',6)
     
     if exist('maex', 'var')
-        hold on
+        set(gca,'NextPlot','add')
         pl = plot(maex,-maey,'xm')
         set(pl,'MarkerSize',10,'LineWidth',2)
     end

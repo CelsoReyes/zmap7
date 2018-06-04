@@ -26,7 +26,7 @@ function h=gridpcolor(ax,xs, ys, values, mask, name)
     end
     
     [xs,ys, values]=centers2edges(xs,ys,values);
-    hold(ax,'on');
+    ax.NextPlot='add';
     h=pcolor(ax,xs, ys, values);
     %if ~isempty('name')
     set(h,'DisplayName',name);

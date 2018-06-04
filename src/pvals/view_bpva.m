@@ -156,7 +156,7 @@ function view_bpva(res, idx)
     colormap('jet')
     res.Grid.pcolor([],re4{:,1},lab1);
     shading(ZG.shading_style)
-    hold on
+    set(gca,'NextPlot','add')
     res.Grid.plot()
     ft=ZG.features('borders');
     %newft=copyobj(ft,gca)
@@ -169,12 +169,12 @@ function view_bpva(res, idx)
     %{
     %Plots re4, which contains the filtered values.
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,re4);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
-    hold on
+    set(gca,'NextPlot','add')
     
     shading(ZG.shading_style);
 %}
@@ -198,7 +198,7 @@ function view_bpva(res, idx)
     %}
     % plot overlay
     %
-    hold on
+    set(gca,'NextPlot','add')
     zmap_update_displays();
     ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     %set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Color',ZG.someColor,'Visible','on')

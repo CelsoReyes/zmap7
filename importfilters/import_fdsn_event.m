@@ -206,7 +206,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         uOutput(:,9)=mData{midx('time')}.Minute;
         uOutput(:,10)=mData{midx('time')}.Second;
         zc=ZmapCatalog(uOutput);
-        zc.MagnitudeType=mData{midx('magtype')};
+        zc.MagnitudeType=categorical(mData{midx('magtype')});
         uOutput=zc;
         %%
         

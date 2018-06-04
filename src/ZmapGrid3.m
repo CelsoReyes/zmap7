@@ -125,9 +125,9 @@ classdef ZmapGrid3 < ZmapGrid
                 prev_grid.ZData=obj.(z);
                 disp('reusing grid on plot');
             else
-                hold(ax,'on');
+                ax.NextPlot='add';
                 prev_grid=plot3(ax,obj.(x),obj.(y),obj.(z),'+k','Tag',['grid_' obj.Name]);
-                hold(ax,'off');
+                ax.NextPlot='replace';
                 disp('created new grid3 on plot');
             end
             if numel(varargin)>1

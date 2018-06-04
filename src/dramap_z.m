@@ -67,7 +67,7 @@ function dramap_z(colback, valuemap)
     %start figure
     figure_w_normalized_uicontrolunits('pos',[50 100 800 600])
     
-    hold on; 
+    set(gca,'NextPlot','add'); 
     axis off
     axesm('MapProjection','eqaconic','MapParallels',[],...
         'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])

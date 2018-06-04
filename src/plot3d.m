@@ -69,7 +69,7 @@ function plot3d()
     rect= [0.2 0.2 0.6 0.6];
     ax=axes('pos',rect);
     set(gca,'visible','off');
-    hold on
+    set(gca,'NextPlot','add')
     
     if ~exist('divs','var')
         divs=[]
@@ -107,7 +107,7 @@ function plot3d()
     view(3);
     
     grid
-    hold on
+    set(gca,'NextPlot','add')
     
     %if ~isempty(coastline)
     %l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf;
@@ -202,7 +202,7 @@ function plot3d()
         xlabel(ax,'Longitude');
         ylabel(ax,'Latitude');
         zlabel(ax,'Depth [km]');
-        if ~washeld; hold(ax,'off'); end
+        if ~washeld; ax.NextPlot='replace'; end
     end
     
     function callbackfun_001(mysrc,myevt)

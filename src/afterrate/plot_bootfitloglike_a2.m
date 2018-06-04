@@ -145,7 +145,7 @@ report_this_filefun();
                 loopout(j,9) = max(cumnr_model);
             end % End of if on nMod
             pfloop = plot(time_asf,cumnr_model,'color',[0.8 0.8 0.8]);
-            hold on
+            set(gca,'NextPlot','add')
             %drawnow
         end
         % 2nd moment of bootstrap number of forecasted number of events
@@ -186,7 +186,7 @@ report_this_filefun();
         cumnr_modelf=sort(cumnr_modelf);
 
         pf1 =  plot(time_asf,cumnr_modelf,'g-.','Linewidth',2);
-        hold on
+        set(gca,'NextPlot','add')
         %pf2 =  plot(time_asf,cumnrf, 'b-','Linewidth',2);
         %
         % Plot the  fit to the observed data
@@ -228,7 +228,7 @@ report_this_filefun();
         time_as=sort(time_as);
         cumnr_model=sort(cumnr_model);
         p1 = plot(time_as,cumnr_model,'r','Linewidth',2,'Linestyle','--');
-        hold on;
+        set(gca,'NextPlot','add');
         p2 = plot(time_as,cumnr,'b','Linewidth',2,'Linestyle','--');
 
         % Plot the forecast from median value

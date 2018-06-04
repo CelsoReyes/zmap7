@@ -1,7 +1,9 @@
 function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
     % REPLOT_ALL(obj, metaProp, eventData)
-
+    
+    obj.AllAxes=findobj(gcf,'Type','axes');
+    
     if ~exist('eventData','var') || eventData.EventName == "PostSet"
         eventName='ReplotAll';
     else
@@ -45,7 +47,7 @@ function replot_all(obj,metaProp,eventData)
             end
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             [obj.catalog, md, ~, mall]=obj.filtered_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
-            evs=findobj(findobj(obj.fig,'Tag','mainmap_tab'),'Tag','all events');
+            evs=findobj(obj.maintab,'Tag','all events');
             if all(mall)
                 evs.Visible='off';
             else
@@ -90,7 +92,7 @@ function replot_all(obj,metaProp,eventData)
     obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter, 'LR plots');
     
     obj.replotting=false;
-    drawnow
+    drawnow nocallbacks
     
     rearrange_axes_items(obj)
 end
@@ -110,7 +112,7 @@ end
 
 function plot_xsection(obj, k, currcatsummary,md)
     % plot into the xsection tab area
-    hold on
+    set(gca,'NextPlot','add')
     idx = strcmp(obj.XSectionTitles,k);
     
     % only reproject if the catalog is changed since memorizing

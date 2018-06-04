@@ -27,7 +27,7 @@ function bfitnew(mycat)
     
     figure(bfig);
     delete(findobj(bfig,'Type','axes'));
-    hold on; axis off
+    set(gca,'NextPlot','add'); axis off
     uicontrol('Style','Pushbutton',...
         'callback',@callbackfun_001,...
         'Units','normalized',...
@@ -70,7 +70,7 @@ function bfitnew(mycat)
     axes('position',rect);
     
     semilogy(magsteps_desc,bvalsum3,'-.m')
-    hold on
+    set(gca,'NextPlot','add')
     semilogy(magsteps_desc,bvalsum3,'om')
     grid
     xlabel('Magnitude','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -115,7 +115,7 @@ function bfitnew(mycat)
     [p,s] = polyfit(x,y,1);                   % fit a line to background
     f = polyval(p,x);
     f = 10.^f;
-    hold on
+    set(gca,'NextPlot','add')
     ttm= semilogy(x,f,'b');                         % plot linear fit to backg
     set(ttm,'LineWidth',2)
     r = corrcoef(x,y);

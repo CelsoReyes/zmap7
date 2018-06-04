@@ -18,9 +18,9 @@ classdef AnalysisBvalues < AnalysisWindow
             obj.ax.YScale='log';
             obj.ax.YLim=[1 10000];
             obj.ax.XLim=[-inf inf];
-            title(obj.ax,'B-Value')
-            xlabel(obj.ax,'Magnitude')
-            ylabel(obj.ax,'# Events')
+            obj.ax.Title.String='B-Value';
+            obj.ax.XLabel.String='Magnitude';
+            obj.ax.YLabel.String='# Events';
         end
         
         function add_series(obj, catalog, tagID, varargin)

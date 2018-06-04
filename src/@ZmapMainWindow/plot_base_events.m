@@ -3,20 +3,29 @@ function plot_base_events(obj, container, featurelist)
     % call once at beginning
     % obj.PLOT_BASE_EVENTS(featurelist) where featurelist is a cell array of feature names, such as
     % {'borders', 'coastline'}
-    if ~exist('featurelist','var'), featurelist={}; end
+    if ~exist('featurelist','var')
+        featurelist={};
+    end
         
     if isempty(obj.map_axes)
         obj.map_axes=axes(container,'Units','normalized','Position',obj.MapPos_L);
         
+        obj.map_axes.Tag = 'mainmap_ax';
+        obj.map_axes.TickDir='out';
+        obj.map_axes.XMinorTick='on';
+        obj.map_axes.YMinorTick='on';
+        obj.map_axes.TickLength=[0.006 0.006];
+        obj.map_axes.LineWidth=2;
+        obj.map_axes.Box='on';
+        obj.map_axes.BoxStyle='full';
+        obj.map_axes.ZDir='reverse';
     end
-    alleq = findobj(obj.fig,'Tag','all events');
+    alleq = findobj(obj.map_axes,'Tag','all events');
     
     
     if isempty(alleq)
         if isempty(obj.rawcatalog)
-%            warning('empty catalog. making visible for debug purposes')
-%            set(findall(0,'Type','figure'),'Visible','on')
-            
+
             line(obj.map_axes,'XData',nan,'YData',nan,'ZData',nan,'Marker','.','LineStyle','none',...
                 'Color',[.76 .75 .8],...
                 'DisplayName','unselected events',...
@@ -32,19 +41,9 @@ function plot_base_events(obj, container, featurelist)
         end
     end
     
-    obj.map_axes.Tag = 'mainmap_ax';
-    obj.map_axes.TickDir='out';
-    obj.map_axes.XMinorTick='on';
-    obj.map_axes.YMinorTick='on';
-    obj.map_axes.TickLength=[0.006 0.006];
-    obj.map_axes.LineWidth=2;
-    obj.map_axes.Box='on';
-    obj.map_axes.BoxStyle='full';
-    obj.map_axes.ZDir='reverse';
     
-    xlabel(obj.map_axes,'Longitude')
-    ylabel(obj.map_axes,'Latitude');
-    %commandeer_colorbar_button();
+    obj.map_axes.XLabel.String='Longitude'
+    obj.map_axes.YLabel.String='Latitude';
     ZG=ZmapGlobal.Data;
     
     
@@ -70,18 +69,38 @@ function plot_base_events(obj, container, featurelist)
     
     % options for choosing a shape
     
-    uimenu(c,'Label','Delete Shape',...
+    uimenu(c,'Label','Delete shape',...
         'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
-    uimenu(c,'Label','Crop to selection',Futures.MenuSelectedFcn,@cb_crop_to_selection);
-    uimenu(c,'Label','Zoom to selection',Futures.MenuSelectedFcn,@cb_zoom)
+    uimenu(c,'Label','Crop to shape',Futures.MenuSelectedFcn,@cb_crop_to_selection);
+    uimenu(c,'Label','Zoom to selected events',Futures.MenuSelectedFcn,@cb_zoom)
     uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@obj.cb_xsection);
+    uimenu(c,'Separator','on','Label','Hide/Show sampling grid','Tag','ToggleGrid',...
+        Futures.MenuSelectedFcn,@cb_toggle_grid)
     obj.map_axes.UIContextMenu=c;
+
     addLegendToggleContextMenuItem(c,'bottom','above');
     %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
+    obj.map_axes.ButtonDownFcn = @control_menu_enablement;
+    
+    function control_menu_enablement(src,~)
+        % enable/disable the axes menu items according to whether or not a shape exists
+        % shape menu labels end with the word "shape"
+        idx=endsWith({obj.map_axes.UIContextMenu.Children.Label}," shape");
+        shapeExists=~isempty(obj.shape);
+        set(obj.map_axes.UIContextMenu.Children(idx),'Enable',char(matlab.lang.OnOffSwitchState(shapeExists)));
+        
+        % enable/disable the axes menu items according to whether or not a grid exists
+        % shape menu labels end with the word "shape"
+        idx=endsWith({obj.map_axes.UIContextMenu.Children.Label}," sampling grid");
+        gridExists=~isempty(obj.Grid);
+        set(obj.map_axes.UIContextMenu.Children(idx),'Enable',char(matlab.lang.OnOffSwitchState(gridExists)));
+    end
+    
     function shapeassignment(sh)
         obj.shape=sh;
     end
+    
     function updatewrapper(s,v,f)
         f(s,v);
         return
@@ -89,6 +108,15 @@ function plot_base_events(obj, container, featurelist)
         obj.cb_redraw();
     end
     
+    function cb_toggle_grid(src,~)
+        gr = findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
+        if numel(gr)==1
+            gr.Visible=toggleOnOff(gr.Visible);
+        elseif numel(gr)>1
+            error('multiple grids available to toggle');
+        end
+    end
+
     function cb_shapedelete
         ShapeGeneral.clearplot();
         delete(obj.shape);

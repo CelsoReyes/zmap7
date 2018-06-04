@@ -72,7 +72,7 @@ p2=ginput(1);
         coastline = [ZG.primeCatalog.Longitude(1) ZG.primeCatalog.Latitude(1)];
     end
     %}
-    hold on
+    set(gca,'NextPlot','add')
     % Added try-catch to prevent failure if no coastline is inside
     % cross-section box, JW
     %try
@@ -84,14 +84,14 @@ p2=ginput(1);
         
         %catch
     end
-    hold on
+    set(gca,'NextPlot','add')
     try
         if length(faults) > 10
             lc_map(faults(:,2),faults(:,1),s3,s4,s1,s2)
         end
     catch
     end
-    hold on
+    set(gca,'NextPlot','add')
     if ~isempty(mainfault)
         lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
     end

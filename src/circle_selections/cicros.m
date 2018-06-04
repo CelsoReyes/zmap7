@@ -63,7 +63,7 @@ function cicros(opt)
             %
             % plot Ni clostest events on map as 'x':
             
-            hold on
+            set(gca,'NextPlot','add')
             [na,ma] = size(ZG.newt2);
             plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','Tag','plos1');
             set(gcf,'Pointer','arrow')
@@ -96,7 +96,7 @@ function cicros(opt)
             %
             % plot Ni clostest events on map as 'x':
             
-            hold on
+            set(gca,'NextPlot','add')
             [na,ma] = size(ZG.newt2);
             plot(ZG.newt2(:,ma),-ZG.newt2.Depth,'xk','Tag','plos1');
             set(gcf,'Pointer','arrow')

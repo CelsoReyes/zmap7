@@ -13,7 +13,7 @@ function aux_1FMD(params, hParentFigure)
 
 % Get the axes handle of the plotwindow
 axes(sv_result('GetAxesHandle', hParentFigure, [], guidata(hParentFigure)));
-hold on;
+set(gca,'NextPlot','add');
 % Select a point in the plot window with the mouse
 [fX, fY] = ginput(1);
 disp(['X: ' num2str(fX) ' Y: ' num2str(fY)]);
@@ -23,7 +23,7 @@ plot(fX,fY,'ok');
 % Get closest gridnode for the chosen point on the map
 [fXGridNode fYGridNode,  nNodeGridPoint] = calc_ClosestGridNode(params.mPolygon, fX, fY);
 plot(fXGridNode, fYGridNode, '*r');
-hold off;
+set(gca,'NextPlot','replace');
 
 % Get the data for the grid node
 mNodeCatalog_ = params.mCatalog(params.caNodeIndices{nNodeGridPoint}, :);
@@ -57,7 +57,7 @@ set(gca,'tag','ax_bnew','Nextplot','replace','box','on');
 axs5=findobj('tag','ax_bnew');
 axes(axs5(1));
 semilogy(vFMD(1,:), vFMD(2,:),'ks');
-hold on;
+set(gca,'NextPlot','add');
 semilogy(vNonCFMD(1,:), vNonCFMD(2,:),'k^');
 
 % Calculate magnitude of completeness
@@ -94,4 +94,4 @@ else
 end
 
 title(sTitleString);
-hold off;
+set(gca,'NextPlot','replace');

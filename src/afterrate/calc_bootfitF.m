@@ -58,7 +58,7 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         loopout.maxes=max(conf_lims,[],2);
         
         plot(time_asf, conf_lims, 'color',[0.8 0.8 0.8]);
-        hold on
+        set(gca,'NextPlot','add')
         toc
       
         
@@ -99,12 +99,12 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         %% plot stuff
         
         pf1 =  plot(time_asf, cumnr_modelf,'g-.','Linewidth',2);
-        hold on
+        set(gca,'NextPlot','add')
         pf2 =  plot(time_asf, cumnrf, 'b-','Linewidth',2);
 
         
         p1 = plot(learningEventTimes,cumnr_model,'r','Linewidth',2);
-        hold on
+        set(gca,'NextPlot','add')
 
         p2 = plot(learningEventTimes, 1:nLearnEvents ,'b','Linewidth',2);
         

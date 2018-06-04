@@ -140,7 +140,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         end
     end
     
-    hold on;
+    set(gca,'NextPlot','add');
  
     %% loop waits for mouse button to come back up before continuing
     
@@ -165,7 +165,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     
     function startSegment(~,ev)
         disp('start Line'); 
-        hold on;
+        set(gca,'NextPlot','add');
         cp=ax.CurrentPoint;
         
         x1=cp(1,1);

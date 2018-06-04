@@ -1031,7 +1031,7 @@ function set_3d_view(src,~)
     switch src.Label
         case '3-D view'
             ax=MainInteractiveMap.mainAxes();
-            hold on
+            set(gca,'NextPlot','add')
             view(ax,3);
             grid(ax,'on');
             zlim(ax,'auto');
@@ -1039,7 +1039,7 @@ function set_3d_view(src,~)
             zlabel(ax,'Depth [km]','UserData',field_unit.Depth);
             ax.ZDir='reverse';
             rotate3d(ax,'on'); %activate rotation tool
-            hold off
+            set(gca,'NextPlot','replace')
             src.Label = '2-D view';
         otherwise
             ax=MainInteractiveMap.mainAxes();
@@ -1112,7 +1112,7 @@ function cb_xsect(src,~)
     
     % pick first point
     [lon, lat] = ginput(1);
-    hold on; 
+    set(gca,'NextPlot','add'); 
     xs_endpts=plot(lon,lat,'x','LineWidth',2,'MarkerSize',5,'Color',C);
     
     % pick second point
@@ -1145,7 +1145,7 @@ function cb_xsect(src,~)
     % plot events
     ax=subplot(3,3,[1 5])
     scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
-    hold on
+    ax.NextPlot='add';
     plot(ax,catalog.Longitude,catalog.Latitude,'.','Color',[.75 .75 .75],'MarkerSize',1);
     scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,mindist)
     ax.ZDir='reverse';
@@ -1153,19 +1153,19 @@ function cb_xsect(src,~)
     copyobj(ZG.features('borders'),ax);
     copyobj(ZG.features('faults'),ax);
     copyobj(ZG.features('lakes'),ax);
-    hold off
+    ax.NextPlot='replace';
     
-    subplot(3,3,[7 8])
+    hPar=subplot(3,3,[7 8])
     h=histogram(gcDist);
-    h.Parent.XTickLabel{1}=zans.startlabel;
-    h.Parent.XTickLabel{end}=zans.endlabel;
-    ylabel('# events');
-    xlabel('Distance along strike (km)');
-    subplot(3,3,[3 6])
-    histogram(c2.Depth,'Orientation','horizontal');
-    set(gca, 'YDir','reverse')
-    xlabel('# events');
-    ylabel('Distance Depth Profile (km)');
+    hPar.XTickLabel{1}=zans.startlabel;
+    hPar.XTickLabel{end}=zans.endlabel;
+    hPar.YLabel.String='# events';
+    hPar.XLabel.String='Distance along strike (km)';
+    ax_dp=subplot(3,3,[3 6]);
+    histogram(ax_dp,c2.Depth,'Orientation','horizontal');
+    ax_dp.YDir='reverse';
+    ax_dp.XLabel.String='# events';
+    ax_dp.YLabel.String='Distance Depth Profile (km)';
 end
 
 function A = toggleOnOff(A)

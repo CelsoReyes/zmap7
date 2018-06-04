@@ -59,10 +59,10 @@ else
     Z = griddata(mClusterDeg(:,1),mClusterDeg(:,2),mClusterDeg(:,3),X,Y,'linear');
     pcolor(X,Y,Z);
     shading interp;
-    hold on;
+    set(gca,'NextPlot','add');
     plot(coastline(:,1),coastline(:,2),'k');
     xlabel('Longitude / [deg]');
     ylabel('Latitude / [deg]');
     colorbar('horiz');
-    hold off;
+    set(gca,'NextPlot','replace');
 end

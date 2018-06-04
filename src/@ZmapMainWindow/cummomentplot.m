@@ -51,7 +51,7 @@ function cummomentplot(obj,tabgrouptag)
     
     obj.plot_xsections(@xsplotter, 'Xsection cummomplot');
 
-    ax.YLabel.String'Cumulative Moment';
+    ax.YLabel.String='Cumulative Moment';
     ax.YLabel.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
     ax.XLabel.String='Time';
@@ -75,11 +75,11 @@ function cummomentplot(obj,tabgrouptag)
         idx=[];
         Sz=[];
      end
-    hold on
+    set(gca,'NextPlot','add')
     scatter(ax,Xs(idx), Ys(idx), Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
         'Tag','big events');
-    hold off
+    set(gca,'NextPlot','replace')
     
     
     

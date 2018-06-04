@@ -64,10 +64,10 @@ classdef TimeMagnitudePlotter
             set(ax,'box','on', 'TickDir','out');
             
             ax.Tag='time_mag_axis';
-            title(['Time Magnitude Plot for "' catalog.Name '"'],'Interpreter','none');
-            xlabel('Date');
-            
-            yl=ylabel('Magnitude');
+            ax.Title.String=['Time Magnitude Plot for "' catalog.Name '"'];
+            ax.Title.Interpreter='none';
+            ax.XLabel.String='Date';
+            ax.YLabel.String='Magnitude';
             
             grid on
             TimeMagnitudePlotter.overlayBigEvents(ax);

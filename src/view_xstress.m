@@ -37,7 +37,7 @@ function view_xstress(lab1,valueMap)
     delete(findobj(stressmap,'Type','axes'));
     reset(gca)
     cla
-    hold off
+    set(gca,'NextPlot','replace')
     watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -56,12 +56,12 @@ function view_xstress(lab1,valueMap)
     orient landscape
     
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
-    hold on
+    set(gca,'NextPlot','add')
 
     shading(ZG.shading_style);
 

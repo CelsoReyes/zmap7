@@ -74,10 +74,10 @@ classdef findquar < ZmapHGridFunction
             uicontrol(fifhr,'Style','text','String','Detect Quarry Events',...
                 'FontWeight','Bold','FontSize',14,'Units','points','Position',[50 620 300 20]);
           
-            hold on
+            set(gca,'NextPlot','add')
             hax=axes(fifhr,'Units','points','pos', [50 320 300 270])%[0.1 0.2 0.6 0.6]);
             dayHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','day','FaceColor',[.8 .8 .2]);
-            hold on;
+            set(gca,'NextPlot','add');
             nightHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','night','FaceColor',[.1 0 .6]);
             title(' Select the daytime hours and then "GO"')
             [X,N,B] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
@@ -228,7 +228,7 @@ classdef findquar < ZmapHGridFunction
             orient landscape
             
             set(obj.ax,'position',[0.18,  0.10, 0.7, 0.75]);
-            hold on
+            set(gca,'NextPlot','add')
             pco1 = gridpcolor(obj.ax, obj.Grid.X, obj.Grid.Y, re4');
             
             axis(obj.ax, [ min(obj.Grid.X(:)) max(obj.Grid.X(:)) min(obj.Grid.Y(:)) max(obj.Grid.Y(:))])
@@ -250,7 +250,7 @@ classdef findquar < ZmapHGridFunction
             
             % plot overlay
             %
-            hold on
+            set(gca,'NextPlot','add')
             %zmap_update_displays();
             ploeq = plot(obj.ax,obj.RawCatalog.Longitude,obj.RawCatalog.Latitude,'k.');
             set(ploeq,'Tag','eq_plot','MarkerSize',obj.ZG.ms6,'Marker','.','Color',obj.ZG.someColor,'Visible','on')

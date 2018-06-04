@@ -182,7 +182,7 @@ function calc_Omoricross()
     function my_calculate() % 'ca'
     
         figure(xsec_fig());
-        hold on
+        set(gca,'NextPlot','add')
         
         if bGridEntireArea % Use entire area for grid
             vXLim = get(gca, 'XLim');
@@ -362,7 +362,7 @@ function calc_Omoricross()
             nlammap
             [xsecx, xsecy inde] =mysect(ZG.(wCat).Latitude',ZG.(wCat).Longitude',ZG.(wCat).Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
-            hold on
+            set(gca,'NextPlot','add')
             
             % Plot
             view_Omoricross(myvalues, mygrid, 'p-value');

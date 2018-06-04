@@ -39,13 +39,13 @@ classdef ZmapVGridFunction < ZmapGridFunction
             
             % this is to show the data
             obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
-            hold on;
+            set(gca,'NextPlot','add');
             
             % the imagesc exists is to enable data cursor browsing.
             obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
             
             shading(obj.ZG.shading_style);
-            hold on
+            set(gca,'NextPlot','add')
             
             obj.add_grid_centers();
             
@@ -54,12 +54,12 @@ classdef ZmapVGridFunction < ZmapGridFunction
             %copyobj(ft,ax);
             
             colorbar
-            title(mydesc)
-            xlabel('Distance along Strike (km)')
-            ylabel('Depth');
+            ax.Title.String=mydesc;
+            ax.XLabel.String='Distance along Strike (km)';
+            ax.YLabel.String='Depth';
             ax.YDir='reverse';
-            xlim(ax,[0 obj.RawCatalog.curvelength_km]);
-            ylim(ax,[max(0,min(obj.Grid.Z)) max(obj.Grid.Z)]);
+            ax.XLim=[0 obj.RawCatalog.curvelength_km];
+            ax.YLim=[max(0,min(obj.Grid.Z)) max(obj.Grid.Z)];
 
             dcm_obj=datacursormode(gcf);
             dcm_obj.Updatefcn=@ZmapGridFunction.mydatacursor;
@@ -128,13 +128,13 @@ classdef ZmapVGridFunction < ZmapGridFunction
         function addquakes_cb(obj,src,~,catalog)
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
-                hold on
+                set(gca,'NextPlot','add')
                 line(catalog.dist_along_strike_km, catalog.Depth, 'Marker','o',...
                     'MarkerSize',3,...
                     'MarkerEdgeColor',[.2 .2 .2],...
                     'LineStyle','none',...
                     'Tag','quakes');
-                hold off
+                set(gca,'NextPlot','replace')
             else
                 ison=qtag.Visible == "on";
                 qtag.Visible=tf2onoff(~ison);

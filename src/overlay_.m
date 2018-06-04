@@ -9,7 +9,7 @@ function overlay_()
     errordlg('Use zmap_update_displays(); instead');
     return
     
-    hold on
+    set(gca,'NextPlot','add')
     ax=findobj(gcf,'Tag','mainmap_ax');
     
     if isempty(coastline)

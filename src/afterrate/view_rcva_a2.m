@@ -111,12 +111,12 @@ function view_rcva_a2(lab1,valueMap)
     
     %Plots re4, which contains the filtered values.
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,re4);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
-    hold on
+    set(gca,'NextPlot','add')
     
     shading(ZG.shading_style);
 
@@ -136,7 +136,7 @@ function view_rcva_a2(lab1,valueMap)
     
     % plot overlay
     %
-    hold on
+    set(gca,'NextPlot','add')
     zmap_update_displays();
     ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     set(ploeq,'Tag','eq_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')

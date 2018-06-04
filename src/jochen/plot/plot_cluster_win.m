@@ -78,7 +78,7 @@ set(gca,'tag','ax_timewindow','Nextplot','replace','box','on','Xticklabel', [0 1
 axs1=findobj('tag','ax_timewindow');
 axes(axs1(1));
 semilogy(vMagnitudea,vTimeGaKn74,'Color',[1 0 0],'Linewidth', 2);
-hold on;
+set(gca,'NextPlot','add');
 %semilogy(vMagnitude,vTimeGr85,'Color',[0 0.5 0],'Linewidth', 2);
 semilogy(vMagnitudea,vTimeGra,'Color',[0 0.8 0],'Linewidth', 2);
 semilogy(vMagnitude,vTimeUr,'Color',[0.5 0 0],'Linewidth', 2);
@@ -92,7 +92,7 @@ xlabel('Magnitude');
 ylabel('Time / [days]');
 set(gca,'Xlim',[0 9]);%,'Ylim',[0.1 3000],'Yticklabel', [0.1 1 10 100 1000]);
 grid on;
-hold off;
+set(gca,'NextPlot','replace');
 
 % Plotting space window
 subplot(2,1,2);
@@ -101,7 +101,7 @@ set(gca,'tag','ax_spacewindow','Nextplot','replace','box','on');
 axs2=findobj('tag','ax_spacewindow');
 axes(axs2(1));
 semilogy(vMagnitude,vSpaceGaKn74,'Color',[1 0 0],'Linewidth', 2);
-hold on;
+set(gca,'NextPlot','add');
 %semilogy(vMagnitude,vSpaceGr85,'Color',[0 0.5 0],'Linewidth', 2);
 semilogy(vMagnitude,vSpaceGr,'Color',[0 0.8 0],'Linewidth', 2);
 semilogy(vMagnitude,vSpaceUr,'Color',[0.5 0 0],'Linewidth', 2);

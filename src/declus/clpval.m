@@ -92,7 +92,7 @@ function clpval(var1)
         axis off
         rect = [0.22,  0.5, 0.55, 0.45];
         cplot=axes('position',rect);
-        hold on
+        set(gca,'NextPlot','add')
         ctiplo = plot(xt,cumu2,'ob');
         set(gca,'visible','off')
         cplot2 = plot(xt,cumu2,'r');
@@ -550,7 +550,7 @@ function clpval(var1)
             orient tall
             rect = [0.22,  0.5, 0.55, 0.45];
             cplot=axes('position',rect);
-            hold on
+            set(gca,'NextPlot','add')
             tiplo = plot(xt,cumu2,'ob');
             set(gca,'visible','off')
             plot(xt,cumu2,'r','Tag','tiplo2');

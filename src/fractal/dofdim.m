@@ -66,10 +66,10 @@ switch(dofd)
         Ha_Cax = gca;
         axis([0.00001 100 0.00001 10]);
         figure(Hf_Fig);
-        hold on;
+        set(gca,'NextPlot','add');
         Hl_gr2a = loglog(r2(v), corint(v), 'r.');
         set(Hl_gr2a,'MarkerSize',20);
-        hold on;
+        set(gca,'NextPlot','add');
         Hl_gr2b = plot(r3,10.^line,'b','Linewidth',2);
         Hl_gr2d = plot(r3, 10.^line1,'g', 'Linewidth', [0.5]);
         Hl_gr2e = plot(r3, 10.^line2, 'g', 'Linewidth',0.5);
@@ -88,7 +88,7 @@ switch(dofd)
 
         str1 = ['Range = [' sprintf('%.2f',rad) '; ' sprintf('%.2f',ras) ']'];
         str2 = ['D =  ' sprintf('%.2f',coef(1,1)) '  +/- ' sprintf('%.2f', deltar)];
-        axes('pos',[0 0 1 1]); axis off; hold on;
+        axes('pos',[0 0 1 1]); axis off; set(gca,'NextPlot','add');
         te1 = text(0.18, 0.78, str1, 'fontsize', 12);
         te2 = text(0.18, 0.73, str2, 'fontsize', 12);
 
@@ -145,7 +145,7 @@ switch(dofd)
 
         str1 = ['Range = [' sprintf('%.2f',rad) '; ' sprintf('%.2f',ras) ']'];
         str2 = ['D =  ' sprintf('%.2f',coef(1,1)) '  +/- ' sprintf('%.2f', deltar)];
-        axes('pos',[0 0 1 1]); axis off; hold on;
+        axes('pos',[0 0 1 1]); axis off; set(gca,'NextPlot','add');
         set(te1, 'string', str1);
         set(te2, 'string', str2);
 

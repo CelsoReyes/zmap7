@@ -263,7 +263,7 @@ function bcross(sel)
             nlammap
             [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
-            hold on
+            set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')
             view_bv2([],valueMap)
         else

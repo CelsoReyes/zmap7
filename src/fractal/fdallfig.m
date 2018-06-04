@@ -46,7 +46,7 @@ switch(fig);
         ylabel('Correlation Integral C(R)', 'fontsize',12);
         title('Correlation Integral of All Subsets', 'fontsize',14);
         set(Haxes, 'fontsize', 11);
-        hold on;
+        set(gca,'NextPlot','add');
 
 
     case 'addfig'
@@ -54,7 +54,7 @@ switch(fig);
         figure(HCIfig);
         set(gcf,'visible','on');
         axes(Haxes);
-        hold on;
+        set(gca,'NextPlot','add');
         if Dc < 1; Dc = 1; end
         if Dc > 63; Dc = 63; end
         Hline = loglog(r, corint,'color', [colin(Dc,1) colin(Dc,2) colin(Dc,3)]);

@@ -63,7 +63,7 @@ function [lon, lat,h] = get_endpoints(ax,C)
     
     % pick first point
     [lon, lat] = ginput(1);
-    hold on; 
+    set(gca,'NextPlot','add'); 
     h=plot(ax,lon,lat,'x','LineWidth',2,'MarkerSize',5,'Color',C);
     
     % pick second point
@@ -111,7 +111,7 @@ function plot3_events(ax,c2, catalog, mask, featurelist)
     % plot relevant events (at depth)
     scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,mag2dotsize(c2.Magnitude),c2.dist_along_strike_km,'+')
     
-    hold on
+    set(gca,'NextPlot','add')
     % plot all events as gray on surface
     plot(ax,catalog.Longitude,catalog.Latitude,'.','Color',[.75 .75 .75],'MarkerSize',1);
     scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,c2.displacement_km)
@@ -126,7 +126,7 @@ function plot3_events(ax,c2, catalog, mask, featurelist)
     for n=1:numel(featurelist)
         copyobj(ZG.features(featurelist{n}),ax);
     end
-    hold off
+    set(gca,'NextPlot','replace')
 end
 
 function h=plot_events_along_strike_hist(ax, zans, gcDist)

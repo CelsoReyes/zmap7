@@ -68,7 +68,7 @@ function hpol = polar(theta,rho,line_style)
     if ~hold_state
         
         % make a radial grid
-        hold on;
+        set(gca,'NextPlot','add');
         hhh=plot([0 max(theta(:))],[0 max(abs(rho(:)))]);
         v = [get(cax,'xlim') get(cax,'ylim')];
         ticks = length(get(cax,'ytick'));

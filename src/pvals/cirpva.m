@@ -58,7 +58,7 @@ R2 = ra;
 %
 % plot Ni clostest events on map as 'x':
 
-hold on
+set(gca,'NextPlot','add')
 plot(ZG.newt2.Longitude,ZG.newt2.Latitude,'xk','Tag','plos1');
 
 % plot circle containing events as circle

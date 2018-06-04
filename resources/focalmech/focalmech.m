@@ -200,7 +200,7 @@ function handles=focalmech(fm, centerX, centerY, diam, varargin)
     %%% plot
     % Note centerX & centerY are in conventional cartesian coords unlike x,y
     % above where x is north.
-    hold on
+    set(gca,'NextPlot','add')
     if ~colorit
         handles.circle=plot(ax,centerX+u,centerY+w,'k');   % plot circle boundary
         c = contourc(ax,centerX+sE*y,centerY+sN*x,uz,[0 0]);       % no fill

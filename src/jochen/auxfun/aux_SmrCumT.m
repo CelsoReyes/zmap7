@@ -13,7 +13,7 @@ function aux_SmrCumT(params, hParentFigure)
 
 % Get the axes handle of the plotwindow
 axes(sv_result('GetAxesHandle', hParentFigure, [], guidata(hParentFigure)));
-hold on;
+set(gca,'NextPlot','add');
 % Select a point in the plot window with the mouse
 [fX, fY] = ginput(1);
 disp(['X: ' num2str(fX) ' Y: ' num2str(fY)]);
@@ -23,7 +23,7 @@ plot(fX,fY,'ok');
 % Get closest gridnode for the chosen point on the map
 [fXGridNode fYGridNode,  nNodeGridPoint] = calc_ClosestGridNode(params.mPolygon, fX, fY);
 plot(fXGridNode, fYGridNode, '*r');
-hold off;
+set(gca,'NextPlot','replace');
 
 % Get the data for the grid node
 mNodeCatalog_ = params.mCatalog(params.caNodeIndices{nNodeGridPoint}, :);

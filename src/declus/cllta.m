@@ -92,7 +92,7 @@ function cllta(var1)
     %
     % plot  the data
     %
-    hold off
+    set(gca,'NextPlot','replace')
     pyy = plotyy(xt,cumu2,'ob',xt,lta,'r',[0 0 0 NaN NaN NaN NaN min(lta)*3-1 max(lta*3)+1  ]);
     
     xlabel('Time in [years]')

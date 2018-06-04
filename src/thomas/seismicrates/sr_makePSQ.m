@@ -34,7 +34,7 @@ elseif nPSQType==2
 end
 % control plots
 % figure;plot(mCat(:,1),mCat(:,2),'.k');
-% hold on;plot(mCat(vSel,1),mCat(vSel,2),'dr');
+% set(gca,'NextPlot','add');plot(mCat(vSel,1),mCat(vSel,2),'dr');
 
 
 % select from N events the one in the quiescence time period

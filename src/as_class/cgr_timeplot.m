@@ -363,7 +363,7 @@ function timeplot(mycat, nosort)
         cumu2 = cumsum(cumu);
         
         
-        hold on
+        set(gca,'NextPlot','add')
         axes(ht)
         tiplot2 = plot(ht,mycat.Date,(1:mycat.Count),'r');
         set(tiplot2,'LineWidth',2.0)
@@ -381,7 +381,7 @@ function timeplot(mycat, nosort)
     delete(findobj(cum,'Type','Axes'));
     % delete(sicum)
     ax=axes(fig);
-    hold off
+    set(gca,'NextPlot','replace')
     watchon;
     
     set(ax,'visible','off',...
@@ -424,7 +424,7 @@ function timeplot(mycat, nosort)
     set(fig,'PaperPosition',[0.5 0.5 5.5 8.5])
     rect = [0.25,  0.18, 0.60, 0.70];
     axes(fig,'position',rect)
-    hold(ax,'on');
+    ax.NextPlot='add';
     set(ax,'visible','off')
     
     nu = (1:mycat.Count);

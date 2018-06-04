@@ -106,7 +106,7 @@ function [rused,Nused,maxcMc,DEW_b,DEW_a]=calc_b_DEW_sampling(catalog,lat,lon,de
         
         figure
         semilogy(Mrange,cumnumb,'.b')
-        hold on
+        set(gca,'NextPlot','add')
         semilogy(Mrange,cumweightnumb,'*r')
         semilogy([maxcMc,max(Mrange)],[N1,N2],'-r')
     end

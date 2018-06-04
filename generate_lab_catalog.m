@@ -36,7 +36,7 @@ C.Latitude=km2deg(mmY/1000);C.Longitude=km2deg(mmX/1000);C.Depth=km2deg(mmZ/1000
 C.Date=dates;
 C.Magnitude=mag;
 C.Name='lab_event_synth';
-C.MagnitudeType=repmat({'Mw'},C.Count,1)
+C.MagnitudeType=repmat(categorical({'Mw'}),C.Count,1)
 C.Dip=nan(C.Count,1);
 C.DipDirection=nan(C.Count,1);
 C.Rake=nan(C.Count,1);

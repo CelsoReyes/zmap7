@@ -150,7 +150,7 @@ functin my_calculate()
     xlabel('Distance in [km]')
     ylabel('Depth in [km]')
 
-    hold on
+    set(gca,'NextPlot','add')
     ax=findobj(gcf,'Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
 
@@ -283,7 +283,7 @@ functin my_calculate()
     figure(HCIfig);
     cb = colorbar('horiz');
     set(cb, 'position', [0.32 0.08 0.4 0.03], 'XTickLabel', col);
-    axes('pos',[0 0 1 1]); axis off; hold on;
+    axes('pos',[0 0 1 1]); axis off; set(gca,'NextPlot','add');
     te= text('string','D-value','pos',[0.49,0.01], 'fontsize',8,'FontWeight','bold')
     set(gcf,'visible','on');
     % save data
@@ -345,7 +345,7 @@ function my_load()
         nlammap
         [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
-        hold on
+        set(gca,'NextPlot','add')
         plot(newgri(:,1),newgri(:,2),'+k')
         view_Dv
     else

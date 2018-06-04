@@ -123,7 +123,7 @@ try
     shading(handles.hMainAxes, 'interp');
   end
   set(handles.hMainAxes, 'box', 'on');
-  hold on;
+  set(gca,'NextPlot','add');
   if get(handles.chkSeismicity, 'Value') == 1
     if handles.vResult.bMap
       handles.hEQPlot = plot(handles.vResult.mCatalog.Longitude,handles.vResult.mCatalog.Latitude,'.k','MarkerSize',6,'Marker','.','Color','k','Visible','on');

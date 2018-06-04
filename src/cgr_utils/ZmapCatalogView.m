@@ -345,7 +345,7 @@ classdef ZmapCatalogView
                 end
             end
             h=ishold(ax);
-            hold(ax,'on');
+            ax.NextPlot='add';
             p=plot(ax,0,0,'o');
             set(p,...
                 'YData',obj.Latitude, ...
@@ -428,7 +428,7 @@ classdef ZmapCatalogView
                 delete(h);
             end
             
-            holdstatus = ishold(ax); hold(ax,'on');
+            holdstatus = ishold(ax); ax.NextPlot='add';
             h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
             set(h, 'ZData',obj.Depth);
             set(ax,'ZDir','reverse');

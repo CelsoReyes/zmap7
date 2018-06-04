@@ -24,7 +24,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     % f=figure
     % ax=axes
     % plot(-10:.5:10,-10:.5:10,'.','color',[.5 .5 .5])
-    % hold on
+    % set(gca,'NextPlot','add')
     % p=plot([3;2.5;4],[2;1;3],'-*')
     % putback = make_editable(p);
     %
@@ -110,7 +110,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
                 % drag entire series
                 xs=[ev.IntersectionPoint(1);ev.IntersectionPoint(1)];
                 ys=[ev.IntersectionPoint(2);ev.IntersectionPoint(2)];
-                hold on;
+                set(gca,'NextPlot','add');
                 h=plot(xs,ys,'ko:');
                 ghost = copyobj(p,gca);
                 ghost.LineStyle=':';

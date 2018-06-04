@@ -49,39 +49,27 @@ classdef TimeDepthPlotter
             set(ax,'box','on','TickDir','out');
             ax.YDir='reverse';
             ax.Tag='time_depth_axis';
-             title(['Time Depth Plot for "' catalog.Name '"'],'Interpreter','none');
-            xlabel('Date');
+            ax.Title.String=['Time Depth Plot for "' catalog.Name '"'];
+            ax.Title.Interpreter='none';
+            ax.XLabel.String='Date';
             
-            yl=ylabel('Depth [km]');
-            f=ax;
-            while(f.Type ~= "figure")
-                f=f.Parent;
-            end
+            ax.YLabel.String='Depth [km]';
+            f=ancestor(ax,'figure');
             delete(findobj(f,'Tag','TimeDepthContext'));
             c=uicontextmenu('Tag','TimeDepthContext');
             %uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,ax,'Y'});
             uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'Y'});
-            yl.UIContextMenu=c;
+            ax.YLabel.UIContextMenu=c;
             
             grid
             TimeDepthPlotter.overlayBigEvents(ax);
             ax.Visible = 'on';
             
         end
-        %{
-        function pl2=addCatalog(catalog,color)
-            % add another catalog to this plot
-            tag= 'time_depth_plotA';
-            ax=findobj('Tag','time_depth_axis');
-            hold(ax,'on');
-            pl2=scatter(ax, catalog.Date, catalog.Depth, mag2dotsize(catalog.Magnitude),color,'Tag',tag);
-        end
-        %}
+        
         function overlayBigEvents(ax)
             ZG=ZmapGlobal.Data;
             bigcat=ZG.maepi;
-            %tag = 'time_depth_plot';
-            %ax = findobj('Tag','time_depth_axis');
             holdstate=HoldStatus(ax,'on');
             scatter(ax,ZG.maepi.Date,ZG.maepi.Depth, mag2dotsize(ZG.maepi.Magnitude),...
                 'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...

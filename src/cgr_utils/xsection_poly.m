@@ -99,6 +99,6 @@ end
 %% some scripts that can be used to test:
 A=[35,70],B=[40,78];
 [las,los]=xsection_poly([35,70], [40,78],100,true);
-figure;plot(A(2),A(1),'*r');hold on;plot(B(2),B(1),'*g');plot(los',las',':.');
+figure;plot(A(2),A(1),'*r');set(gca,'NextPlot','add');plot(B(2),B(1),'*g');plot(los',las',':.');
 %}
 

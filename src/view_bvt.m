@@ -126,7 +126,7 @@ function view_bvt(lab1,valueMap)
     % delete(sizmap);
     reset(gca);
     cla
-    hold off
+    set(gca,'NextPlot','replace')
     watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
@@ -144,10 +144,10 @@ function view_bvt(lab1,valueMap)
     orient portrait
     set(gcf,'PaperPosition', [2. 1 7.0 5.0])
     
-    hold on
+    set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,db12);
     axis([ min(gx) max(gx) min(gy) max(gy)])
-    hold on;  shading flat; axis image
+    set(gca,'NextPlot','add');  shading flat; axis image
     
     hocm = hot;
     
@@ -159,7 +159,7 @@ function view_bvt(lab1,valueMap)
     set(gca,'visible','on','FontSize',10,...
         'FontWeight','normal','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    hold on
+    set(gca,'NextPlot','add')
     
     % plot overlay
     %

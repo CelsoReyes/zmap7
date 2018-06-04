@@ -583,7 +583,7 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
         
         ax=subplot(2,2,3);
         plot(ax,b.Mc,b.b1,'b.');
-        hold(ax,'on');
+        ax.NextPlot='add';
         plot(ax, b.Mc,b.b1-b.sig1,'b:');
         plot(ax, b.Mc,b.b1+b.sig1,'b:');
         plot(ax, b.Mc(k+1:end),b.b1(k+1:end),'.c');
@@ -606,7 +606,7 @@ function bvalue_cutoff_mag_histogram(b, xout, histb)
     %----------------------------------------------------------
     ax = subplot(2,2,4);
     bar(ax,xout,histb);
-    hold(ax,'on');
+    ax.NextPlot='add';
     plot(ax,[mean(b.b1),mean(b.b1)],[0,1]);
     plot(ax,[mean(b.b1)-std(b.b1),mean(b.b1)-std(b.b1)],[0,1],':');
     plot(ax,[mean(b.b1)+std(b.b1),mean(b.b1)+std(b.b1)],[0,1],':');

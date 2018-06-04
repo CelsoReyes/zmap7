@@ -63,12 +63,13 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
     zgrid=ZmapGrid('autogrid',gpc);
     f=gcf;
     if exist('dohist','var') && dohist
-        figure('Name','Automatic Grid');
+        hf=figure('Name','Automatic Grid');
         histogram2(catalog.Longitude,catalog.Latitude,XEDGES,YEDGES);
-        title('Event distribution')
-        xlabel('Longitude')
-        ylabel('Latitude')
-        zlabel('# events')
+        ax=gca;
+        ax.title.String='Event distribution';
+        ax.XLabel.String='Longitude';
+        ax.YLabel.String='Latitude';
+        ax.ZLabel.String='# events';
     end
     figure(f);
     if exist('plotOnMap','var') && plotOnMap

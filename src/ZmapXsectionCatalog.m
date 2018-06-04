@@ -106,7 +106,7 @@ classdef ZmapXsectionCatalog < ZmapCatalog
             
             % pick first point
             [lon, lat] = ginput(1);
-            hold on;
+            set(gca,'NextPlot','add');
             h=scatter(ax,lon,lat,'Marker','x','LineWidth',2,'MarkerSize',5,'Color',C);
             
             % pick second point

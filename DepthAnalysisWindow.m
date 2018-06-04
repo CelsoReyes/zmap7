@@ -13,9 +13,9 @@ classdef DepthAnalysisWindow < AnalysisWindow
             obj.ax.Tag = 'dvEventsWidthDepth';
             obj.ax.YDir='reverse';
             %ax.YLim=[min(catalog.Depth) max(catalog.Depth)];
-            title(obj.ax,'Depth Profile')
-            xlabel(obj.ax,'Number of events')
-            ylabel(obj.ax,'Depth');
+            obj.ax.Title.String='Depth Profile';
+            obj.ax.XLabel.String='Number of events';
+            obj.ax.YLabel.String='Depth';
         end
         
         function [x,y]=calculate(obj,catalog)

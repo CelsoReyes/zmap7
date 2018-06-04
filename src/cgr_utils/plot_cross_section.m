@@ -69,7 +69,7 @@ function [lon, lat,h] = get_endpoints(ax,C)
     
     % pick first point
     [lon, lat] = ginput(1);
-    hold on; 
+    set(gca,'NextPlot','add'); 
     h=plot(ax,lon,lat,'x','LineWidth',2,'MarkerSize',5,'Color',C);
     
     % pick second point

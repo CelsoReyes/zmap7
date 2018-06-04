@@ -37,7 +37,7 @@ function clas
     %
     ccum=figure(findobj('Tag','ccum','-and','Type','Figure'));
     cla
-    hold off
+    set(gca,'NextPlot','replace')
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on')
@@ -52,7 +52,7 @@ function clas
     y2label('z-value')
     grid
 
-    hold on;
+    set(gca,'NextPlot','add');
 
 
 

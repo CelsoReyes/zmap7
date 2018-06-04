@@ -58,7 +58,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
         t1(2) = xsum(ixs);
         t1p = [  t1(1)  t1(2); t1(1)   t1(2)+par2 ];
         plot(t1p(:,1),t1p(:,2),'k');
-        hold on;
+        set(gca,'NextPlot','add');
         
         S = sprintf('bin0 %d sig-Z at %d bin1 %d ',bin0, ixs, bin1);
         disp(S)
@@ -80,7 +80,7 @@ function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
     % orient tall
     % rect = [0.2,  0.20, 0.55, 0.75];
     % axes('position',rect)
-    %hold on
+    %set(gca,'NextPlot','add')
     %%plotyy(xt,cumu2,xt,as*10,'m')
     %% y2label('z-value')
     %% plot(xt,as*10,'+m')

@@ -52,8 +52,8 @@ function  bdiff(mycat, holdplot)
     
     if ZG.hold_state
         axes(cua)
-        disp('hold on')
-        hold on
+        disp('set(gca,'NextPlot','add')')
+        set(gca,'NextPlot','add')
     else
         figure(bfig);
         delete(findobj(bfig,'Type','axes'));
@@ -66,7 +66,7 @@ function  bdiff(mycat, holdplot)
         'MarkerFaceColor','w',...
         'MarkerEdgeColor','k',...
         'DisplayName','M >= ');
-    hold on
+    set(gca,'NextPlot','add')
     
     difb = [0 diff(bvalsum3) ];
     
@@ -114,7 +114,7 @@ function  bdiff(mycat, holdplot)
     f = polyval(p,x);
     
     f = 10.^f;
-    hold on
+    set(gca,'NextPlot','add')
     ttm= semilogy(x,f,'r','DisplayName','linear fit to background');  % plot linear fit to backg
     set(ttm,'LineWidth',1)
     

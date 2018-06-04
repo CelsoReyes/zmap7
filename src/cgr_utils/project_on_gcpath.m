@@ -87,14 +87,16 @@ function [c2,mindist,mask,gcDist]=test_this()
     [lon, lat] = ginput(2);
     [c2,mindist,mask,gcDist]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,20,0.1);
     figure
-    subplot(3,1,[1 2])
-    scatter3(c2.Longitude,c2.Latitude,-c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
-    hold on
-    plot(catalog.Longitude,catalog.Latitude,'k.','MarkerSize',1)
-    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),-c2.Depth,3,mindist)
-    hold off
-    subplot(3,1,3)
-    histogram(gcDist);
-    ylabel('# events');
-    xlabel('Distance along strike (km)');
+
+    ax1=subplot(3,1,[1 2]);
+    scatter3(ax1,c2.Longitude,c2.Latitude,-c2.Depth,(c2.Magnitude+3).^2,mindist,'+')
+    ax1.NextPlot='add';
+    plot(ax1,catalog.Longitude,catalog.Latitude,'k.','MarkerSize',1)
+    scatter3(ax1,catalog.Longitude(mask),catalog.Latitude(mask),-c2.Depth,3,mindist)
+    ax1.NextPlot=replace';
+
+    ax2=subplot(3,1,3);
+    histogram(ax2,gcDist);
+    ax2.YLabel.String='# events';
+    ax2.XLabel.String='Distance along strike (km)';
 end

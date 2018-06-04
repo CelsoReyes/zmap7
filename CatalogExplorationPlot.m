@@ -45,7 +45,7 @@ classdef CatalogExplorationPlot < handle
             s=obj.sizeFcn(s);
             if obj.color_by == "-none-"
                 cl=[0 0 0];
-            else 
+            else
                 cl=c.(obj.color_by);
                 cl=obj.colorFcn(cl);
             end
@@ -57,14 +57,15 @@ classdef CatalogExplorationPlot < handle
                 box(obj.ax,'on');
                 fig=ancestor(obj.ax,'figure');
                 xl = xlabel(obj.x_by,'interpreter','none');
-                obj.xContextMenu(xl, tag, fig);
                 yl = ylabel(obj.y_by,'interpreter','none');
-                obj.yContextMenu(yl, tag, fig);
                 zl = zlabel(obj.z_by,'interpreter','none');
+                obj.xContextMenu(xl, tag, fig);
+                obj.yContextMenu(yl, tag, fig);
                 obj.zContextMenu(zl, tag, fig);
                 obj.scatterContextMenu(obj.myscatter, tag);
                 obj.ax.UserData.cep = obj;
             else
+                obj.ax.NextPlot='replace';
                 obj.myscatter.XData=x;
                 obj.myscatter.YData=y;
                 obj.myscatter.ZData=z;
@@ -77,25 +78,26 @@ classdef CatalogExplorationPlot < handle
             else
                 view(obj.ax,obj.curview);
             end
+            
         end
-        
+
         function update(obj, specific)
             % UPDATE updates the scatter plot, optionally changing only one axis (or color or size)
             %
             % obj.update() update all aspects of the scatter plot
-            % 
+            %
             % obj.update( SPECIFIC ) updates only thes specific part of the plot, where SPECIFIC can
             % be 'x_by', 'y_by', 'z_by', 'size_by', 'sin
-            % 
+            %
             c=obj.catalogFcn();
             [obj.curview(1), obj.curview(2)] = view(obj.ax);
             if ~exist('specific','var')
                 switch obj.color_by
                     case '-none-'
-                         cdata=obj.colorFcn(1);
-                         if ~isequal(size(cdata),[1,3])
+                        cdata=obj.colorFcn(1);
+                        if ~isequal(size(cdata),[1,3])
                             cdata = [0 0 0];
-                         end
+                        end
                     otherwise
                         cdata= obj.colorFcn(c.(obj.color_by));
                 end
@@ -105,23 +107,13 @@ classdef CatalogExplorationPlot < handle
                     otherwise
                         sdata=obj.sizeFcn(c.(obj.size_by));
                 end
-                try
-                    set( obj.myscatter,...
-                        'XData',c.(obj.x_by),...
-                        'YData',c.(obj.y_by),...
-                        'ZData',c.(obj.z_by),...
-                        'SizeData',sdata,...
-                        'CData',cdata...
-                        );
-                catch ME
-                    switch me.identifier
-                        case 'MATLAB:hg:shaped_arrays:VectorDataType'
-                            % TOFIX 
-                            error('problem changing to date axes and back.')
-                        otherwise
-                            throwAsCaller(ME);
-                    end
-                end
+                set( obj.myscatter,...
+                    'XData', c.(obj.x_by),...
+                    'YData', c.(obj.y_by),...
+                    'ZData', c.(obj.z_by),...
+                    'SizeData',sdata,...
+                    'CData',cdata...
+                    );
             else
                 switch specific
                     case 'x_by'
@@ -147,47 +139,60 @@ classdef CatalogExplorationPlot < handle
                         
                 end
             end
-            
+            function val = use_correct_ruler(obj, axisName, val)
+            switch class(val)
+                case 'datetime'
+                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DatetimeRuler')
+                        set(obj.ax, axisName, matlab.graphics.axis.decorator.DatetimeRuler);
+                    end
+                case 'duration'
+                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DurationRuler')
+                        set(obj.ax, axisName, matlab.graphics.axis.decorator.DurationRuler);
+                    end
+                case 'categorical'
+                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.CategoricalRuler')
+                        set(obj.ax, axisName, matlab.graphics.axis.decorator.CategoricalRuler);
+                    end
+                otherwise % numeric
+                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.NumericRuler')
+                        set(obj.ax, axisName, matlab.graphics.axis.decorator.NumericRuler);
+                    end
+            end
+        end
             function doit(axAx, where, fld)
                 % doit(axAx, where, fld) poor name.
                 % axAx: 'XAxis', etc...
                 % where: 'XData', etc...
                 % fld: 'Longitude', etc... which is the result of obj.x_by, etc...
-                axisH = obj.ax.(axAx);
-                DateTimeRulerClass='matlab.graphics.axis.decorator.DatetimeRuler';
-                DurationRulerClass='matlab.graphics.axis.decorator.DurationRuler';
-               % NumericRulerClass='matlab.graphics.axis.decorator.NumericRuler';
-                
-                %cur_name = axisH.Label.String;
-                %cur_context = axisH.Label.UIContextMenu;
-                
-                if isa(c.(fld), 'datetime') && ~isa(axisH,DateTimeRulerClass)
-                    
-                    obj.myscatter.(where) = years(c.(fld) - datetime(0,0,0,0,0,0,0));
-                    
-                elseif isa(c.(fld), 'duration') && ~isa(axisH,DurationRulerClass)
-                    % convert durations to a numbers depending on max duration
-                    [obj.myscatter.(where), axisH.Label.String] = duration2numbers(c.(fld));
+                % axisH = obj.ax.(axAx);
                     enforce_linear_scale_if_necessary();
-                elseif islogical(c.(fld))
-                    % plot as 1 and 0
-                    obj.myscatter.(where) = double(c.(fld));
-                elseif iscell(c.(fld))
-                    warndlg(['These data [' fld '] are stored in cells, and are therefore not plottable']);
-                    obj.myscatter.(where) = nan(size(c.(fld)));
-                else
+                    try
+                        obj.myscatter.(where) = c.(fld);
+                        axruler=obj.ax.(axAx);
+                        assert(...
+                            (isnumeric(c.fld) &&  isa(axruler,'matlab.graphics.axis.decorator.NumericRuler')) || ...
+                            (isdatetime(c.fld) && isa(axruler,'matlab.graphics.axis.decorator.DatetimeRuler')) || ...
+                            (iscategorical(c.fld) && isa(axruler,'matlab.graphics.axis.decorator.CategoricalRuler')) ||...
+                            (isduration(c.fld) && isa(axruler,'matlab.graphics.axis.decorator.DurationRuler'))...
+                            );
+                        
+                    catch
+                        t=obj.myscatter.Tag;
+                        cla(obj.ax);
+                        obj.myscatter=[];
+                        obj.scatter(t);
+                    end
+                        
+                        
                     
-                    % if any value is less than 0, cannot use a log scale plot.
-                    enforce_linear_scale_if_necessary();
-                    obj.myscatter.(where) = c.(fld);
-                    
-                end
+                %end
+                
                 function enforce_linear_scale_if_necessary()
                     xyzscale=[where(1) 'Scale'];
-                    if iscell(c.(fld))
+                    if iscell(c.(fld)) || iscategorical(c.(fld))
                         beep;
                         obj.ax.(xyzscale)='linear';
-                    elseif any(c.(fld)<=0) && obj.ax.(xyzscale) == "log"
+                    elseif isnumeric(c.(fld))&&any(c.(fld)<=0) && obj.ax.(xyzscale) == "log"
                         beep;
                         disp(['enforcing linear ' xyzscale ' because of negative values']);
                         obj.ax.(xyzscale)='linear';
@@ -239,9 +244,9 @@ classdef CatalogExplorationPlot < handle
                     usable(i)=false;
                 end
                 try
-                     if all(isnan(c.(p{i})))
-                         usable(i)=false;
-                     end
+                    if all(isnan(c.(p{i})))
+                        usable(i)=false;
+                    end
                 end
             end
             obj.axes_choices=p(usable);
@@ -335,7 +340,7 @@ classdef CatalogExplorationPlot < handle
             set(m(~checkmask & ison),'Checked','off');
             set(m(checkmask & isoff),'Checked','on');
         end
-
+        
         function sizeContextMenu(obj,h)
             for i=1:numel(obj.axes_choices)
                 uimenu(h,'Label',obj.axes_choices{i},Futures.MenuSelectedFcn,@obj.changeSize);
@@ -374,7 +379,7 @@ classdef CatalogExplorationPlot < handle
                 if any(obj.myscatter.([letter 'Data']) <=0) && scales{1} == "log"
                     beep
                     disp(['enforcing linear ' prop ' because of negative values'])
-                    obj.ax.(prop) = 'linear'; 
+                    obj.ax.(prop) = 'linear';
                 else
                     obj.ax.(prop) = scales{1};
                 end

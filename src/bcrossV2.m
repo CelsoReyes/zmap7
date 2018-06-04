@@ -115,7 +115,7 @@ function bcrossV2(sel)
     
     function my_calculation() % 'ca'
         figure(xsec_fig());
-        hold on
+        set(gca,'NextPlot','add')
         
         ax=findobj(gcf,'Tag','mainmap_ax');
         [x,y, mouse_points_overlay] = select_polygon(ax);

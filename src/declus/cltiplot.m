@@ -58,7 +58,7 @@ function cltiplot(var1)
         figure(ccum);
     end
     
-    hold off
+    set(gca,'NextPlot','replace')
     cla
     watchon;
     
@@ -118,7 +118,7 @@ function cltiplot(var1)
     orient tall
     rect = [0.2,  0.15, 0.55, 0.75];
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     tiplo = plot(xt,cumu2,'ob');
     set(gca,'visible','off')
     plot(xt,cumu2,'r','Tag','tiplo2');

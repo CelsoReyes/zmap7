@@ -56,7 +56,7 @@ function view_bva(lab1, valueMap,gx,gy)
     % delete(sizmap);
     reset(gca)
     cla
-    hold off
+    set(gca,'NextPlot','replace')
     watchon;
     set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
         'FontWeight','normal','LineWidth',1,...
@@ -78,12 +78,12 @@ function view_bva(lab1, valueMap,gx,gy)
     %set(gcf,'PaperPosition', [0.5 1 9.0 4.0])
     
     axes('position',rect)
-    hold on
+    set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
     set(gca,'dataaspect',[1 cosd(nanmean(ZG.primeCatalog.Latitude)) 1]);
-    hold on
+    set(gca,'NextPlot','add')
     
     shading(ZG.shading_style);
 
@@ -105,7 +105,7 @@ function view_bva(lab1, valueMap,gx,gy)
     
     % plot overlay
     %
-    hold on
+    set(gca,'NextPlot','add')
     zmap_update_displays();
     ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')

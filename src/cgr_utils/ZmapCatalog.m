@@ -76,7 +76,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         Latitude  double   % Latitude (Deg) of each event
         Depth double      % Depth (km) of events 
         Magnitude double  % Magnitude of each event
-        MagnitudeType % Magnitude units, such as M, ML, MW, etc. 
+        MagnitudeType categorical % Magnitude units, such as M, ML, MW, etc. 
         Dip         % unused?
         DipDirection % unused?
         Rake % unused?
@@ -141,17 +141,10 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 obj.Depth = varargin{1}(:,7);
                 obj.Magnitude = varargin{1}(:,6);
                 
-                obj.MagnitudeType = cell(size(obj.Magnitude));
+                obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
                 obj.Dip = nan(obj.Count,1);
                 obj.DipDirection = nan(obj.Count,1);
                 obj.Rake = nan(obj.Count,1);
-                
-                for i=1:numel(obj.MagnitudeType)
-                    if isempty(obj.MagnitudeType{i})
-                        obj.MagnitudeType(i)={''};
-                    end
-                end
-                
                 
                 if nargin==2 && ischar(varargin{2})
                     obj.Name = varargin{2};
@@ -367,8 +360,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                     fprintf('Date                      Lat       Lon   Dep(km)    Mag  MagType\n');
                     for n=1:obj.Count
                         fmtstr = '%s  %8.4f  %9.4f   %6.2f   %4.1f   %s\n';
-                        mt =obj.MagnitudeType{n};
-                        if isempty(mt), mt='-'; end
+                        mt = obj.MagnitudeType(n);
                         fprintf( fmtstr, char(obj.Date(n),'uuuu-MM-dd HH:mm:ss'),...
                             obj.Latitude(n), obj.Longitude(n),...
                             obj.Depth(n), obj.Magnitude(n), mt);
@@ -379,13 +371,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             function mtypes=cat2mtypestring()
                 % CAT2MTYPESTRING returns a string representation of the catalog type
                 % mtypes = CAT2MTYPESTRING()
-                mtypes=strcat(unique(obj.MagnitudeType)',',');
-                if iscell(mtypes)
-                    mtypes=strcat(mtypes{:});
-                else
-                    mtypes=strcat([mtypes]);
-                end
-                mtypes(end)=[];
+                mtypes=strjoin(categories(unique(obj.MagnitudeType)),',');
                 if isempty(mtypes)
                     mtypes='-none-';
                 end
@@ -582,9 +568,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.Depth =  obj.Depth(range) ;
             
             obj.Magnitude = obj.Magnitude(range) ;
-            if ~isempty(obj.MagnitudeType)
-                obj.MagnitudeType = obj.MagnitudeType(range) ;
-            end
+            obj.MagnitudeType = obj.MagnitudeType(range) ;
             
             if ~isempty(obj.Filter)
                 obj.Filter = obj.Filter(range) ;
@@ -619,9 +603,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.Latitude = existobj.Latitude(range);
             obj.Depth =  existobj.Depth(range) ;      % km
             obj.Magnitude = existobj.Magnitude(range);
-            if ~isempty(existobj.MagnitudeType)
             obj.MagnitudeType = existobj.MagnitudeType(range) ;
-            end
             if ~isempty(obj.Filter)
                 obj.Filter = existobj.Filter(range) ;
             end
@@ -730,7 +712,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
             
             holdstatus = ishold(ax); 
-            hold(ax,'on');
+            ax.NextPlot='add';
             
             % val = obj.getTrimmedData();
             h=plot(ax,nan,nan,'x');
@@ -738,7 +720,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             set(h,varargin{:}); % if Tag is in varargin, it will override default tag
             %h.ZData = obj.Depth;
             
-            if ~holdstatus; hold(ax,'off'); end
+            if ~holdstatus; ax.NextPlot='replace'; end
             
         end
         %}
@@ -772,12 +754,12 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 delete(h);
             end
             
-            holdstatus = ishold(ax); hold(ax,'on');
+            holdstatus = ishold(ax); ax.NextPlot='add';
             h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
             set(h, 'ZData',obj.Depth);
             set(ax,'ZDir','reverse');
             daspectm('km');
-            if ~holdstatus; hold(ax,'off'); end
+            if ~holdstatus; ax.NextPlot='replace'; end
             
         end
        %}
@@ -796,7 +778,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 warning('no moment tensors to plot');
             end
             axes(ax)
-            hold on;
+            set(gca,'NextPlot','add');
             set(findobj(gcf,'Type','Legend'),'AutoUpdate','off'); %
             for i=1:obj.Count
                 mt = obj.MomentTensor{i,:};

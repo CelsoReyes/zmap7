@@ -68,8 +68,8 @@ function  bdiff_bdepth(mycat)
     
     if ZG.hold_state
         axes(cua)
-        disp('hold on')
-        hold on
+        disp('set(gca,'NextPlot','add')')
+        set(gca,'NextPlot','add')
     else
         figure(bfig);delete(findobj(bfig,'Type','axes'));
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
@@ -79,7 +79,7 @@ function  bdiff_bdepth(mycat)
     pldepth =semilogy(magsteps_desc,bvalsum3,'sb');
     set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
         'MarkerFaceColor','r','MarkerEdgeColor','b');
-    hold on
+    set(gca,'NextPlot','add')
     difb = [0 diff(bvalsum3) ];
     
     % Marks the point of maximum curvature
@@ -143,7 +143,7 @@ function  bdiff_bdepth(mycat)
     f3 = 10.^f3;
     f4 = 10.^f4;
     delta = 10.^delta;
-    hold on
+    set(gca,'NextPlot','add')
     ttm= semilogy(x,f,'r');                         % plot linear fit to backg
     set(ttm,'LineWidth',1)
     ttm= semilogy(x,f2,'k');                         % plot linear fit to backg
@@ -235,7 +235,7 @@ function  bdiff_bdepth(mycat)
     dp = sqrt(da^2*ew^2+db^2*0.05^2);
     dr = 1/dp;
     
-    hold off;
+    set(gca,'NextPlot','replace');
     
     function callbackfun_001(mysrc,myevt)
 

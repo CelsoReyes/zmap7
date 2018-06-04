@@ -18,7 +18,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             obj.ax.YDir='reverse';    
             obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
             obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
-            title(obj.ax,sprintf('Profile: %s to %s',obj.xsec.startlabel,obj.xsec.endlabel));
+            obj.ax.Title.String=sprintf('Profile: %s to %s',obj.xsec.startlabel,obj.xsec.endlabel);
         end
         function update(obj, varargin)
             obj.update@CatalogExplorationPlot(varargin{:})

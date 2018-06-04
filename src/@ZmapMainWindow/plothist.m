@@ -8,14 +8,14 @@ function plothist(obj, name, values, tabgrouptag)
     if isempty(ax)
         %ax=axes(myTab, 'Tag', ');
         ax=axes(myTab);
-        h=hisgra(obj.catalog,name,ax)
+        h=hisgra(obj.catalog,name,ax);
         %h=findobj(ax,'Type','histogram');
         if ~isempty(h)
             h.DisplayName='catalog';
             h.Tag='cataloghist';
             h.FaceColor = [0.4 0.4 0.4];
             ax.YGrid='on';
-            hold on
+            set(gca,'NextPlot','add')
             c=ax.UIContextMenu;
             addLegendToggleContextMenuItem(c,'bottom','above');
             set(findobj(ax.Children,'Type','histogram'),'UIContextMenu',c);

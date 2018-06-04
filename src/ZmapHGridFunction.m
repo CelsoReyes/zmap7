@@ -22,7 +22,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails();
             end
             
-            hold(ax,'on');
+            ax.NextPlot='add';
             delete(findobj(ax,'Tag','result overlay'));
             
             % this is to show the data
@@ -43,7 +43,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             update_layermenu(obj,myname, ax);
             
             mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
-            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
+            ax.Title.String=sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc);
+            ax.Title.Interpreter='none';
         end
 
         function overlay(obj, resTab, choice)
@@ -73,7 +74,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 ax=findobj(resTab,'Tag','result_map');
             end
                 
-            hold(ax,'on');
+            ax.NextPlot='add';
             delete(findobj(ax,'Tag','result overlay'));
             
             % delete existing grid points
@@ -170,13 +171,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
             else
                 obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
             end
-            hold on;
+            set(gca,'NextPlot','add');
             
             % the imagesc exists is to enable data cursor browsing.
             % obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
             
             shading(obj.ZG.shading_style);
-            hold on
+            set(gca,'NextPlot','add')
             
             obj.add_grid_centers();
             
@@ -297,13 +298,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
-                hold on
+                set(gca,'NextPlot','add')
                 line(catalog.Longitude, catalog.Latitude, 'Marker','o',...
                     'MarkerSize',3,...
                     'MarkerEdgeColor',[.2 .2 .2],...
                     'LineStyle','none',...
                     'Tag','quakes');
-                hold off
+                set(gca,'NextPlot','replace')
             else
                 ison=qtag.Visible == "on";
                 qtag.Visible=tf2onoff(~ison);
@@ -382,7 +383,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             f=ancestor(ax,'figure');
             mytab=ax.Parent;
             mytabholder=mytab.Parent;
-            hold(ax,'on');
+            ax.NextPlot='add';
             delete(findobj(ax,'Tag','thisresulttext'));
             delete(findobj(ax,'Tag','thisresulthilight'));
             delete(findobj(ax,'Tag','thisradius'));

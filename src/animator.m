@@ -24,7 +24,7 @@ function [ps1, ps2, plin, pli] = animator_start(animatorFun)
     % works with current figure
     disp('waiting for button press')
     axis manual;
-    hold on
+    set(gca,'NextPlot','add')
     set(gcf,'Pointer','cross');
     waitforbuttonpress
     point1 = get(gca,'CurrentPoint'); % button down detected

@@ -24,7 +24,7 @@ function anseiswa(action, ds)
     switch(action)
         case 'start1'
             axes(findobj(groot,'Tag','hs'))
-            axis manual; hold on
+            axis manual; set(gca,'NextPlot','add')
             point1 = get(gca,'CurrentPoint'); % button down detected
             set(xc1,'Xdata',point1(1,1),'Ydata',point1(1,2))
             
@@ -36,7 +36,7 @@ function anseiswa(action, ds)
             
         case 'start2'
             axes(findobj(groot,'Tag','hs'))
-            axis manual; hold on
+            axis manual; set(gca,'NextPlot','add')
             point1 = get(gca,'CurrentPoint'); % button down detected
             set(xc2,'Xdata',point1(1,1),'Ydata',point1(1,2))
             
@@ -60,7 +60,7 @@ function anseiswa(action, ds)
     function cb_start1(~,~)
         axes(findobj(groot,'Tag','hs'))
         axis manual;
-        hold on
+        set(gca,'NextPlot','add')
         point1 = get(gca,'CurrentPoint'); % button down detected
         set(xc1,'Xdata',point1(1,1),'Ydata',point1(1,2))
         

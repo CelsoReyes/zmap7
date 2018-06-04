@@ -68,7 +68,7 @@ function BEZ = betatriangle(catalog, xt)
     beX=years(beX-nultime); %must be duration before can be converted
     beY=years(beY); %
     contour(beX, beY, beZ, [-4 -4], 'r:');
-    hold on;
+    set(gca,'NextPlot','add');
     contour(beX, beY, beZ, [-2 -2], 'r');
     contour(beX, beY, beZ, [0 0], 'k');
     contour(beX, beY, beZ, [2 2], 'b');

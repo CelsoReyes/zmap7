@@ -61,7 +61,7 @@ function meandepx(catalog, dist_km)
     
     figure
     plot(d,z,'.r','MarkerSize',1);
-    hold on
+    set(gca,'NextPlot','add')
     errorbar(MD(:,2),MD(:,1),MD(:,1)+MD(:,3));
     
     pl = plot(MD(:,2),MD(:,1),'sk');

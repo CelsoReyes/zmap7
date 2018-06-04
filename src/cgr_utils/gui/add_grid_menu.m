@@ -88,6 +88,8 @@ function add_grid_menu(obj)
     
     function cb_gridfigure(src,ev)
         [obj.Grid, obj.gridopt] = GridOptions.fromDialog(obj.gridopt);
+        mygr=findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
+        delete(mygr);
         
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
     end

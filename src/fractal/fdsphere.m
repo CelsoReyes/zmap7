@@ -71,7 +71,7 @@ sphere = E1(sph,:);
 
 
 figure;
-hold on;
+set(gca,'NextPlot','add');
 cla;
 sphere(:,7) = [-sphere(:,7)];
 E1(:,7) = [-E1(:,7)];

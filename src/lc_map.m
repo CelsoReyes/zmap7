@@ -71,7 +71,7 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     end
     
     lc_borde('-k',2)
-    hold on
+    set(gca,'NextPlot','add')
     
     lc_grid(':',0.20)
     
@@ -85,9 +85,9 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     
     % put HOLD back the way it was before this function was called
     if hold_flag
-        hold on
+        set(gca,'NextPlot','add')
     else
-        hold off
+        set(gca,'NextPlot','replace')
     end
     
 end

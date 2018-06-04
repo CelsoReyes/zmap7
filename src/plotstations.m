@@ -89,7 +89,7 @@ function plotstations(ax, options)
     showNames = ~isfield(options,'ShowNames') || options.ShowNames;
     options = rmfield(options, {'StartTime','EndTime','Network', 'ShowNames'});
     
-    hold on
+    set(gca,'NextPlot','add')
     dx = abs(s1-s2)/130;
     pl = plot(ax, stas.Longitude,stas.Latitude,options.Marker);
     set(pl,'LineWidth',1,options);
@@ -98,7 +98,7 @@ function plotstations(ax, options)
         set(te1,'FontWeight','bold','Color','k','FontSize',9);
     end
     drawnow
-    hold off
+    set(gca,'NextPlot','replace')
 end
 
 

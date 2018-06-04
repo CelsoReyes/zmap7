@@ -94,7 +94,7 @@ classdef ShapePolygon < ShapeGeneral
         function select_polygon(obj)
             % select_polygon plots a polygon interactively using the mouse on selected axis
             % usage obj.select_polygon()
-            hold on
+            set(gca,'NextPlot','add')
             ax=gca;
             mouse_points_overlay = line(ax,nan,nan,'Marker','o','LineStyle','-',...
                 'Color','r',...
@@ -106,7 +106,7 @@ classdef ShapePolygon < ShapeGeneral
                 'MarkerSize',5,'LineWidth',2.0,...
                 'Tag','mouse_points_overlay',...
                 'DisplayName','polygon outline');
-            hold off
+            set(gca,'NextPlot','replace')
             
             x=[nan];
             y=[nan];

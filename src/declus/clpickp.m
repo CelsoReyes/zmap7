@@ -164,7 +164,7 @@ function clpickp(choice)
             csubcat;
         end
         strib=[' Polygon of  ' file1];
-        hold on
+        set(gca,'NextPlot','add')
         title(strib,'FontWeight','bold',...
             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         if decc~=0

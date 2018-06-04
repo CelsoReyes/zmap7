@@ -164,14 +164,14 @@ classdef MapFeature < handle
                 return % nothing to plot
             end
             
-            holdstatus = ishold(ax); hold(ax,'on');
+            holdstatus = ishold(ax); ax.NextPlot='add';
             
             val = obj.getTrimmedData();
             layer=line(ax,'XData',val.Longitude, 'YData',val.Latitude,'ZData',val.Depth');
             ax.ZDir='reverse';
             %stackorder_menu(layer)
             
-            if ~holdstatus; hold(ax,'off'); end
+            if ~holdstatus; ax.NextPlot='replace'; end
             
             % set properties for this layer
             set(layer, obj.PlottingDefaults);
@@ -205,13 +205,13 @@ classdef MapFeature < handle
                 return % nothing to plot
             end
             
-            holdstatus = ishold(ax); hold(ax,'on');
+            holdstatus = ishold(ax); ax.NextPlot='add';
             
             val = obj.getTrimmedData();
             layer=plotm(val.Latitude, val.Longitude); %not allowed to specify axes
             zdatam(layer, val.Depth(:)');
             daspectm('km');
-            if ~holdstatus; hold(ax,'off'); end
+            if ~holdstatus; ax.NextPlot='replace'; end
             
             % set properties for this layer
             set(layer, obj.PlottingDefaults);

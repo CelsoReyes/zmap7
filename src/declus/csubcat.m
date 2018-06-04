@@ -60,7 +60,7 @@ function csubcat()
     dele = 'delete(si),delete(le)';er = 'disp('' '')'; eval(dele,er);
     watchon;
     set(gca,'visible','off','SortMethod','childorder')
-    hold off
+    set(gca,'NextPlot','replace')
     
     % find min and Maximum axes points
     s1 = max(ZG.primeCatalog.Longitude);
@@ -86,7 +86,7 @@ function csubcat()
     % plot earthquakes (differnt colors for varous depth layers) as
     % defined in "startzmap"
     %
-    hold on
+    set(gca,'NextPlot','add')
     
     %plot earthquakes according to depth
     switch (xxxxxxxx) %FIXME no idea what this is supposed to be swithicng on. does it work at all? has it worked (ever)?

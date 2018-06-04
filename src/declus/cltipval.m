@@ -78,7 +78,7 @@ function cltipval(var1)
         orient tall
         rect = [0.22,  0.5, 0.55, 0.45];
         ctiplo=axes('position',rect);
-        hold on
+        set(gca,'NextPlot','add')
         cplot = plot(xt,cumu2,'ob');
         set(gca,'visible','off')
         ctiplo2 = plot(xt,cumu2,'r');
@@ -545,7 +545,7 @@ function cltipval(var1)
         %plot p-value + standard deviation
         rect = [0.15,  0.7, 0.65, 0.26];
         mpplot=axes('position',rect,'box','on');
-        hold on
+        set(gca,'NextPlot','add')
         plot(magn,mp,'ob')
         if tmm==0
             xlabel('Minimum Magnitude ');
@@ -559,7 +559,7 @@ function cltipval(var1)
         %plot  k-value + standard deviation
         rect= [0.15,  0.38, 0.65, 0.26];
         mkplot=axes('position',rect,'box','on');
-        hold on
+        set(gca,'NextPlot','add')
         plot(magn,mk,'ob')
         if tmm==0
             xlabel('Minimum Magnitude ');
@@ -574,7 +574,7 @@ function cltipval(var1)
         %plot c-value +  standard deviation
         rect=[0.15,  0.06, 0.65, 0.26];
         mctiplo=axes('position',rect,'box','on');
-        hold on
+        set(gca,'NextPlot','add')
         plot(magn,mc,'ob');
         if tmm==0
             xlabel('Minimum Magnitude ');

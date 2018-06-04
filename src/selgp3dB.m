@@ -19,7 +19,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) % autogenerate
     end
     figure(mapfig);
     
-    hold on
+    set(gca,'NextPlot','add')
     ax=findobj(gcf,'Tag','mainmap_ax');
     [x,y, mouse_points_overlay] = select_polygon(ax);
     

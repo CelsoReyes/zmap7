@@ -55,7 +55,7 @@ function cluoverl(var1)
         end
         cla
         set(gca,'Visible','off')
-        hold off
+        set(gca,'NextPlot','replace')
         minde = 0.;
         maxde = max(ZG.primeCatalog.Depth);
 
@@ -88,7 +88,7 @@ function cluoverl(var1)
         % plot earthquakes (differnt colors for varous depth layers) as
         % defined in "startzmap"
         %
-        hold on
+        set(gca,'NextPlot','add')
         dplo1_h =plot(...
             ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep1),...
             ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep1),'.b');
@@ -142,7 +142,7 @@ function cluoverl(var1)
         replaceMainCatalog(ZG.ttcat);
         cla
         set(gca,'visible','off')
-        hold off
+        set(gca,'NextPlot','replace')
         s1 = max(ZG.primeCatalog.Longitude);       %limits for area plot
         s2 = min(ZG.primeCatalog.Longitude);
         s3 = max(ZG.primeCatalog.Latitude);
@@ -173,7 +173,7 @@ function cluoverl(var1)
         overlay;
         %plot fore and aftershocks in different colors
         %
-        hold on
+        set(gca,'NextPlot','add')
         if tmp-1>=1
             fore_h=plot(ZG.primeCatalogLongitude(1:tmp-1),ZG.primeCatalog.Latitude(1:tmp-1),'.b');
             if isempty(aftersh)                           %only at first call

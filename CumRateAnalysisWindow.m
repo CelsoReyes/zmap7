@@ -9,9 +9,9 @@ classdef CumRateAnalysisWindow < AnalysisWindow
         function prepare_axes(obj)
             %ax=axes(f,'units','pixels','Position',[1025 400 225 250]);
             obj.ax.Tag = 'dvCumrate';
-            title(obj.ax,'Cumulative Rate');
-            xlabel(obj.ax,'Time')
-            ylabel(obj.ax,'Cumulative Events')
+            obj.ax.Title.String='Cumulative Rate';
+            obj.ax.XLabel='Time';
+            obj.ax.YLabel='Cumulative Events';
         end
         
         function [x,y]=calculate(obj,catalog)

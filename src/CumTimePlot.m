@@ -67,7 +67,7 @@ classdef (Sealed) CumTimePlot < handle
         end
         function add_title(obj)
             obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catalog.Name);
-            obj.AxH.Interpreter = 'none';
+            obj.AxH.Title.Interpreter = 'none';
         end
         function add_legend(obj)
             disp('CumTimePlot.add_legend (unimplemented)')

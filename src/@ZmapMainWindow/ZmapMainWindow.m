@@ -54,7 +54,8 @@ classdef ZmapMainWindow < handle
     end
     
     properties(Access=private)
-        lastXSectionCount = 0;
+        lastXSectionCount = 0
+        AllAxes=gobjects(0)
     end
     events
         XsectionEmptied
@@ -189,9 +190,10 @@ classdef ZmapMainWindow < handle
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)disp('added xsection'));
+            addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
+            
             addlistener(obj,'XsectionChanged',@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
-            addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
             
             % other listeners
             addlistener(obj,'CatalogChanged'  ,      @obj.replot_all);
@@ -454,7 +456,7 @@ classdef ZmapMainWindow < handle
             
             % make this the active tab
             mytab.Parent.SelectedTab=mytab;
-         
+            
         end
         
         function cb_cropToXS(obj,~,~,xsec)
@@ -724,7 +726,8 @@ classdef ZmapMainWindow < handle
             % set the colorbar position, if it is visible.
             cb = findobj(obj.fig,'tag','mainmap_colorbar');
             set(cb,'Position',obj.MapCBPos_S);
-            drawnow
+            obj.notifyXsectionChange();
+            
         end
         
         function deactivateXsections(obj)
@@ -742,7 +745,7 @@ classdef ZmapMainWindow < handle
             %  obj.plot_xsections(plotfn, tagBase)
             % plotfn is a function like: [@(xs,xcat)plot(...)] that does plotting and returns a handle
             for j=1:numel(obj.CrossSections)
-                hold on
+                set(gca,'NextPlot','add')
                 tit=obj.CrossSections(j).name;
                 h=plotfn(obj.CrossSections(j), obj.xscats(tit) );
                 h.Tag=[tagBase,' ' , tit];
@@ -753,7 +756,7 @@ classdef ZmapMainWindow < handle
             obj.fig.Name=sprintf('%s [%s - %s]',obj.catalog.Name ,char(min(obj.catalog.Date)),...
                 char(max(obj.catalog.Date)));
             obj.maintab.Title=obj.catalog.Name;
-            drawnow
+            drawnow nocallbacks;
         end
         
     end
@@ -761,6 +764,7 @@ end % CLASSDEF
 
 %% helper functions
 function cb_selectionChanged(~,~)
+    disp('cb_selectionChanged. no action taken, though');
     %alltabs = src.Children;
     %isselected=alltabs == src.SelectedTab;
     %set(alltabs(isselected).Children, 'Visible','on');
@@ -768,6 +772,7 @@ function cb_selectionChanged(~,~)
     %set(subax,'visible','off');
 end
 function cb_mainMapSelectionChanged(~,~)
+    disp('cb_mainMapSelectionChanged. no action taken');
 end
 
 function s=CallbackFld()

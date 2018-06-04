@@ -105,7 +105,7 @@ function plotala()
     l = abo(:,3) < ZG.tresh_km;
     abo = abo(l,:);
     if length(abo)  < 1  ; errordlg('No alarms with z >= Zmin detected!');return; end
-    hold on
+    set(gca,'NextPlot','add')
     
     if ~isempty(abo)
         figure(map);
@@ -124,7 +124,7 @@ function plotala()
     view(3);
     
     grid
-    hold on
+    set(gca,'NextPlot','add')
     
     if ~isempty(coastline)
         l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf | coastline(: ,1) == -inf;
@@ -265,7 +265,7 @@ function plotala()
             abo = abo(l,:);
             disp([' Current Alarm threshold:  ' num2str(tre2) ])
             disp(['Number of alarms:  ' num2str(length(abo(:,1))) ])
-            hold on
+            set(gca,'NextPlot','add')
             
             j = 0;
             tmp = abo;
@@ -304,7 +304,7 @@ function plotala()
         
         rect = [0.20,  0.10, 0.70, 0.60];
         axes('position',rect)
-        hold on
+        set(gca,'NextPlot','add')
         pl = plot(re(:,1),re(:,2),'r');
         set(pl,'LineWidth',1.5)
         pl = plot(re(:,1),re(:,2),'ob');

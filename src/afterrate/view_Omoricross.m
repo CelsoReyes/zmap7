@@ -109,12 +109,12 @@ function view_Omoricross(src_table, mygrid, field_name)
         ZG.minc = fix(min(src_table.(field_name)))-1;
         
         % Plot surface
-        hold on
+        set(gca,'NextPlot','add')
         pcolor(ax, mygrid.X, mygrid.Y, src_table.(field_name));
         
         
         axis image
-        hold on
+        set(gca,'NextPlot','add')
         
         shading(ZG.shading_style)
         
@@ -130,7 +130,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         % Plot overlay
         %
-        hold on
+        set(gca,'NextPlot','add')
         [nYnewa,nXnewa] = size(newa);
         ploeq = plot(newa(:,nXnewa),-newa.Depth,'k.');
         set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')

@@ -35,14 +35,14 @@ function h=ZmapQuickResultPcolor(ax, res, choice, features)
         ax=gca;
     else
         axis(ax);
-        hold on;
+        set(gca,'NextPlot','add');
     end
     pg = res.Grid.pcolor(ax, res.values.(choice), choice);
     % uistack(pg,'bottom');
     ZG = ZmapGlobal.Data;
     if isa(ZG,'ZmapData')
         shading(ZG.shading_style)
-        hold on
+        set(gca,'NextPlot','add')
         res.Grid.plot([],'color',[.5 .5 .5],'displayname','grid points','MarkerSize',3);
         for j=1:numel(features)
             try
