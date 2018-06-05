@@ -103,6 +103,9 @@ function   A=loadCatalog(path, file, S)
     if isempty(A.Name)
         A.Name = file;
     end
+    if isempty(A.MagnitudeType)
+        A.MagnitudeType=repmat(categorical({''}),size(A.Longitude));
+    end
     A.sort('Date')
 end
 

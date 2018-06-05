@@ -40,6 +40,7 @@ end
 function cb_cropToXS(obj, xsec)
     oldshape=copy(obj.shape)
     obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
-    obj.shapeChangedFcn(oldshape, obj.shape);
+    %obj.shapeChangedFcn(oldshape, obj.shape);
+    %obj.shapeChangedFcn(obj.shape)
     obj.replot_all();
 end

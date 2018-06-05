@@ -6,9 +6,18 @@ function myTab = findOrCreateTab(fig, container, title)
     %    belonging to this figure are returned. If the tab doesn't already exist, it will be
     %    created with the title TITLE within the container identified by the CONTAINER_TAG.
     %
+    %    CONTAINER_TAG can be the handle to a container, too.
+    %
     %
     import callbacks.copytab
-    myContainer=findobj(fig,'Type','uitabgroup','Tag',container);
+    if ischar(container) || isstring(container)
+        myContainer=findobj(fig,'Type','uitabgroup','Tag',container);
+    elseif isgraphics(container) && isvalid(container)
+        myContainer=container;
+    else
+        error('unspecified container');
+    end
+        
     myTab=findobj(myContainer.Children,'flat','Title',title,'-and','Type','uitab');
     if isempty(myTab)
         myTab=uitab(myContainer, 'Title',title);

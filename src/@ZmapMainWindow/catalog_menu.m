@@ -58,6 +58,7 @@ function catalog_menu(obj, force)
     uimenu(submenu,'Label','Compare catalogs - find identical events',Futures.MenuSelectedFcn,@(~,~)comp2cat);
     
     uimenu(submenu,'Label','Save current catalog',Futures.MenuSelectedFcn,@(~,~)save_zmapcatalog(obj.catalog));
+    
     catexport = uimenu(submenu,'Label','Export current catalog...');
     uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog),...
         'Enable','off');
@@ -185,9 +186,11 @@ function catalog_menu(obj, force)
     function cb_importer(src, ev, fun)
         ok=ZmapImportManager(fun);
         if ok
-            delete(obj.fig);
-            ZmapMainWindow();
-            delete(obj)
+            % get rid of the message ox asking us to load a catalog
+            delete(findobj(groot,'-depth', 1, 'Tag','Msgbox_No Active Catalogs'));
+            f=obj.fig;
+            delete(obj);
+            ZmapMainWindow(f);
         else
             warndlg('Did not load a catalog');
         end

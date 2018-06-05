@@ -66,16 +66,19 @@ function cummomentplot(obj,tabgrouptag)
         ax.UIContextMenu=cbg;
     end
     
-    
-    if ~isempty(obj.bigEvents)
-        bigcat=obj.bigEvents;
-        bigcat=bigcat.subset(ismember(bigcat.Date,Xs)); % bigcat only contains the big events within the Xs
+    bigcat=obj.bigEvents;
+    if ~isempty(bigcat)
+        big_events_within_Xs = ismember(bigcat.Date,Xs);
+        bigcat=bigcat.subset(big_events_within_Xs); % bigcat only contains the big events within the Xs
+    end
+    if ~isempty(bigcat)
         idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
         Sz=mag2dotsize(bigcat.Magnitude);
     else
         idx=[];
         Sz=[];
     end
+    
     set(gca,'NextPlot','add')
     scatter(ax,Xs(idx), Ys(idx), Sz,...
         'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...

@@ -53,7 +53,6 @@ function plotmainmap(obj)
     % update the shape
     axm.NextPlot='add';
     if ~isempty(obj.shape)
-        %obj.shape.plot(axm,@obj.shapeChangedFcn)
         obj.shape.plot(axm);
     end
     axm.NextPlot='replace';

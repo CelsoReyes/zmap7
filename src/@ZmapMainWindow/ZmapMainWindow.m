@@ -126,7 +126,6 @@ classdef ZmapMainWindow < handle
                     case 'Nevermind'
                         return;
                 end
-                %delete(fig);
             end
             
             %% prepare the catalog
@@ -143,7 +142,7 @@ classdef ZmapMainWindow < handle
             
             % TODO: make this handle a default shape once again
             
-            obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
+            %obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
             
             if isempty(obj.rawcatalog)
                 obj.daterange = [NaT NaT];
@@ -290,7 +289,7 @@ classdef ZmapMainWindow < handle
         %%
         
         function zp = map_zap(obj)
-            % MAP_ZAP create a ZmapAnalysis Pkg for the main window
+            % MAP_ZAP create a ZmapAnalysisPkg for the main window
             % the ZmapAnalysisPkg can be used as inputs to the various processing routines
             %
             % zp = obj.MAP_ZAP()
@@ -321,7 +320,7 @@ classdef ZmapMainWindow < handle
             % see also ZMAPANALYSISPKG
             
             if isempty(obj.CrossSections)
-                errordlg('There is no cross section to analyze. Aborting.');
+                errordlg('There is no cross section to analyze. Aborting operation.');
                 zp=[];
                 return
             end
@@ -385,9 +384,7 @@ classdef ZmapMainWindow < handle
         end
              
         function shapeChangedFcn(obj,varargin)
-            disp(varargin)
-            %obj.prev_states.push({obj.catalog, oldshapecopy, obj.daterange});
-            obj.replot_all([],varargin{2});
+            %obj.replot_all([],varargin{1});
         end
         
         function cb_undo(obj,~,~)
@@ -467,7 +464,7 @@ classdef ZmapMainWindow < handle
         function cb_cropToXS(obj,~,~,xsec)
             oldshape=copy(obj.shape);
             obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
-            obj.shapeChangedFcn(oldshape);
+            %obj.shapeChangedFcn(oldshape);
             obj.replot_all();
         end
             
@@ -482,8 +479,7 @@ classdef ZmapMainWindow < handle
                 else
                     error('Supposed to delete tab, but gco is not what is expected');
                 end
-                drawnow
-                disp(['deleting ' xsec.name]);
+                % drawnow
                 delete(findobj(obj.fig,'Type','uicontextmenu','-and','-regexp','Tag',['.sel_ctxt .*' xsec.name '$']))
                 
                 obj.xsec_remove(mytitle);
@@ -536,7 +532,7 @@ classdef ZmapMainWindow < handle
         
         function set_3d_view(obj, src,~)
             watchon
-            drawnow;
+            drawnow nocallbacks;
             axm=obj.map_axes;
             switch src.Label
                 case '3-D view'
@@ -598,7 +594,7 @@ classdef ZmapMainWindow < handle
             obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
                 'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
-            
+            obj.fig.Pointer='watch';
             
             % add the time stamp
             s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
@@ -658,7 +654,7 @@ classdef ZmapMainWindow < handle
             set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','LR plots'),'Visible','on');
             set(findobj(obj.fig,'Type','uitabgroup','-and','Tag','UR plots'),'Visible','on');
             
-            drawnow
+            drawnow nocallbacks
             
             obj.create_all_menus(true); % plot_base_events(...) must have already been called, in order to load the features from ZG
             obj.fig.CurrentAxes=obj.map_axes;
@@ -675,7 +671,9 @@ classdef ZmapMainWindow < handle
                 % there is no catalog in the system, so there is nothing to recall, and nothing to filter
                 % therefore, force the user to the right menu choice
                 txt = 'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu';
-                helpdlg(txt, 'No Active Catalogs');
+                hdlg=helpdlg(txt, 'No Active Catalogs');
+                hdlg.Units='normalized';
+                hdlg.Position([1 2]) = obj.fig.Position([1 2])+ [0.3 0.6].* obj.fig.Position([3 4]);
                 obj.fig.ToolBar = 'none';
                 h=findobj(obj.fig,'Type','uimenu','-depth',1,'-not','Label','Catalog','-not','Label','Help');
                 set(h,'Enable','off');
@@ -691,6 +689,7 @@ classdef ZmapMainWindow < handle
                     set(h(~startsWith(get(h,'Label'), 'from ')),'Enable','off');
                 end
             end
+            obj.fig.Pointer='arrow';
         end
         
         
@@ -728,7 +727,7 @@ classdef ZmapMainWindow < handle
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes,'Position',obj.MapPos_S);
             
-            % set the colorbar position, if it is visible.
+            % modify the colorbar position, if it is visible.
             cb = findobj(obj.fig,'tag','mainmap_colorbar');
             set(cb,'Position',obj.MapCBPos_S);
             obj.notifyXsectionChange();
@@ -740,7 +739,7 @@ classdef ZmapMainWindow < handle
             obj.xsgroup.Visible='off';
             set(obj.map_axes,'Position',obj.MapPos_L);
             
-            % set the colorbar position, if it is visible.
+            % reset the colorbar position, if it is visible.
             cb = findobj(obj.fig,'tag','mainmap_colorbar');
             set(cb,'Position',obj.MapCBPos_L);
         end

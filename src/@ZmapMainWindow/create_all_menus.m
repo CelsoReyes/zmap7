@@ -249,8 +249,7 @@ function create_all_menus(obj, force)
                 struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
             src.Label=['Mark large event with M > ' num2str(ZG.big_eq_minmag)];
             obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
-            % ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
-            %obj.replot_all();
+            set(findobj(obj.fig,'Tag','big events'), 'DisplayName', src.Label);
         end
         
         
@@ -270,7 +269,7 @@ function create_all_menus(obj, force)
         function toggle_grid(src, ~)
             src.Checked=toggleOnOff(src.Checked);
             grid(axm,src.Checked);
-            drawnow
+            drawnow nocallbacks
         end
         
     end
@@ -296,7 +295,8 @@ function create_all_menus(obj, force)
         create_random_data_simulations_menu(submenu);
         % uimenu(submenu,'Label','Create [simple] cross-section',Futures.MenuSelectedFcn,@obj.cb_xsection);
         
-        create_histogram_menu(submenu);
+        % create_histogram_menu(submenu);
+        create_explore_catalog_menu(submenu);
         
         uimenu(submenu,'Label','Misfit calculation',Futures.MenuSelectedFcn,@(~,~)inmisfit(),...
             'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
@@ -351,8 +351,33 @@ function create_all_menus(obj, force)
         
     end
 
+    function create_explore_catalog_menu(parent)
+        uimenu(parent,'Separator','on',...
+            'Label','Explore Catalog', Futures.MenuSelectedFcn, @explore_catalog);
+        
+        function explore_catalog(~,~)
+            t = findOrCreateTab(obj.fig, obj.maingroup,'Exploration');
+            ax=findobj(t.Children,'Type','axes')
+            if isempty(ax)
+                ax=axes(t);
+            end
+            cep=CatalogExplorationPlot(ax,@get_catalog);
+            cep.scatter('explore catalog')
+            legend(ax,'show','Location','northeast');
+            title(ax,sprintf('Exploring : catalog: %s , with %d events',...
+                strrep(obj.catalog.Name,'_', '\_'), obj.catalog.Count));
+            bringToForeground(ax);
+            CatalogExplorationPlot.instructions;
+        end
+        
+        function c=get_catalog()
+            c=obj.catalog
+        end
+        
+    end
 
-    
+    %{
+    % this has been supplanted by the tabbed histogram plots
     function create_histogram_menu(parent)
         
         submenu = parent; %uimenu(parent,'Label','Histograms');
@@ -369,6 +394,7 @@ function create_all_menus(obj, force)
         end
         
     end
+    %}
     
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent,'Label','Decluster the catalog');

@@ -102,6 +102,7 @@ function add_grid_menu(obj)
         [~,cancelled,minNum,pct,reach]=smart_inputdlg('automatic radius',sdlg);
         if cancelled
             beep
+            disp('autoradius selection cancelled by user')
             return
         end
         [r, evselch] = autoradius(obj.catalog, obj.Grid, minNum, pct, reach);

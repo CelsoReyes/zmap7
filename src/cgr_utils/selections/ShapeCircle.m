@@ -42,6 +42,7 @@ classdef ShapeCircle < ShapeGeneral
                 [~,cancelled,obj.Radius,obj.Points(1),obj.Points(2)]=smart_inputdlg('Define Circle',sdlg);
                 if cancelled
                     beep
+                    disp('Circle creation cancelled by user')
                     return
                 end
             else

@@ -63,8 +63,11 @@ function cumplot(obj, tabgrouptag)
     
     %bigcat=ZmapGlobal.Data.maepi;
     bigcat=obj.bigEvents;
-    if ~isempty(obj.bigEvents)
-        bigcat=bigcat.subset(ismember(bigcat.Date,Xs)); % bigcat only contains the big events within the Xs
+    if ~isempty(bigcat)
+        big_events_within_Xs = ismember(bigcat.Date,Xs);
+        bigcat=bigcat.subset(big_events_within_Xs); % bigcat only contains the big events within the Xs
+    end
+    if ~isempty(bigcat)
         idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
         Sz=mag2dotsize(bigcat.Magnitude);
     else

@@ -139,26 +139,28 @@ classdef CatalogExplorationPlot < handle
                         
                 end
             end
+            %{
             function val = use_correct_ruler(obj, axisName, val)
-            switch class(val)
-                case 'datetime'
-                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DatetimeRuler')
-                        set(obj.ax, axisName, matlab.graphics.axis.decorator.DatetimeRuler);
-                    end
-                case 'duration'
-                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DurationRuler')
-                        set(obj.ax, axisName, matlab.graphics.axis.decorator.DurationRuler);
-                    end
-                case 'categorical'
-                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.CategoricalRuler')
-                        set(obj.ax, axisName, matlab.graphics.axis.decorator.CategoricalRuler);
-                    end
-                otherwise % numeric
-                    if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.NumericRuler')
-                        set(obj.ax, axisName, matlab.graphics.axis.decorator.NumericRuler);
-                    end
+                switch class(val)
+                    case 'datetime'
+                        if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DatetimeRuler')
+                            set(obj.ax, axisName, matlab.graphics.axis.decorator.DatetimeRuler);
+                        end
+                    case 'duration'
+                        if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.DurationRuler')
+                            set(obj.ax, axisName, matlab.graphics.axis.decorator.DurationRuler);
+                        end
+                    case 'categorical'
+                        if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.CategoricalRuler')
+                            set(obj.ax, axisName, matlab.graphics.axis.decorator.CategoricalRuler);
+                        end
+                    otherwise % numeric
+                        if ~isa(obj.ax.(axisName),'matlab.graphics.axis.decorator.NumericRuler')
+                            set(obj.ax, axisName, matlab.graphics.axis.decorator.NumericRuler);
+                        end
+                end
             end
-        end
+            %}
             function doit(axAx, where, fld)
                 % doit(axAx, where, fld) poor name.
                 % axAx: 'XAxis', etc...
@@ -177,10 +179,34 @@ classdef CatalogExplorationPlot < handle
                             );
                         
                     catch
+                        % unable to reuse existing axes rulers. Since they are read-only, we'll have
+                        % to recreate.  However, first stash some information that will be lost, so
+                        % that the figure appears to only change instead of being recreated.
+                        
+                        % what is this scatter plot called again?
                         t=obj.myscatter.Tag;
+                        ttl=get(obj.ax.Title);
+                        % what is the state of the legend?
+                        reshowLegend= ~isempty(obj.ax.Legend) && obj.ax.Legend.Visible =="on";
+                        if reshowLegend
+                            legendLocation = obj.ax.Legend.Location;
+                        end
+                        
+                        % recreate the axes and scatter plot
                         cla(obj.ax);
                         obj.myscatter=[];
                         obj.scatter(t);
+                        
+                        obj.ax.Title.String=ttl.String;
+                        obj.ax.Title.Color=ttl.Color;
+                        obj.ax.Title.FontSize=ttl.FontSize;
+                        obj.ax.Title.FontName=ttl.FontName;
+                        obj.ax.Title.FontWeight=ttl.FontWeight;
+                        
+                        % restore the legend
+                        if reshowLegend
+                            legend(obj.ax,'show','Location',legendLocation);
+                        end
                     end
                         
                         
@@ -189,8 +215,13 @@ classdef CatalogExplorationPlot < handle
                 
                 function enforce_linear_scale_if_necessary()
                     xyzscale=[where(1) 'Scale'];
+                    if obj.ax.(xyzscale)=="linear"
+                        return
+                    end
+
                     if iscell(c.(fld)) || iscategorical(c.(fld))
                         beep;
+                        disp(['enforcing linear ' xyzscale ' because of data type']); 
                         obj.ax.(xyzscale)='linear';
                     elseif isnumeric(c.(fld))&&any(c.(fld)<=0) && obj.ax.(xyzscale) == "log"
                         beep;
@@ -229,6 +260,8 @@ classdef CatalogExplorationPlot < handle
                 
             end % DOIT
         end
+        
+
     end
     methods(Hidden)
         
@@ -483,4 +516,20 @@ classdef CatalogExplorationPlot < handle
             obj.update('color_by');
         end
     end % HIDDEN methods
+    
+    methods (Static)
+        function s=instructions(varargin)
+            % Explore your data in 4-5 dimensions by choosing a parameter for each axis.
+            % Right-click on the X, Y, or Z axes for a list of available variables.
+            % Right-click on data points to choose how they will be sized or colored.
+            s=help('CatalogExplorationPlot.instructions');
+            if nargout==0
+                hdg=helpdlg(s,'Exploring your Catalog');
+                tx=findobj(hdg,'Tag','MessageBox');
+                tx.FontSize=12;
+                hdg.Position(3)=tx.Extent(3)+100;
+                tx.String=s;
+            end
+        end
+    end
 end
