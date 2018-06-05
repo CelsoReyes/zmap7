@@ -4,34 +4,49 @@ function cummomentplot(obj,tabgrouptag)
     Tags.xs = 'CumMom xs contextmenu';
     Tags.bg = 'CumMom bg contextmenu';
     Tags.line = 'CumMom line contextmenu';
+    Tags.ax = 'CumMom axes';
     
     
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'Moment');
+    ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
+    if isempty(ax)
+        ax=axes(myTab);
+        ax.TickDir='out';
+        ax.YMinorTick='on';
+        ax.Box='on';
+        ax.Tag=Tags.ax;
+    end
     
-    delete(myTab.Children);
-    ax=axes(myTab);
-    ax.TickDir='out';
-    ax.YMinorTick='on';
-    ax.Box='on';
-    
+    % find the context menu for these line plots
     cln=findobj(obj.fig,'Tag',Tags.line);
+    
     if isempty(cln)
         cln=uicontextmenu(obj.fig,'tag',Tags.line);
         uimenu(cln,'Label','start here',Futures.MenuSelectedFcn,@(~,~)obj.cb_starthere(ax));
         uimenu(cln,'Label','end here',Futures.MenuSelectedFcn,@(~,~)obj.cb_endhere(ax));
         uimenu(cln, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@obj.cb_trim_to_largest);
-        uimenu(cln,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+        uimenu(cln,'Label','Open in new window',Futures.MenuSelectedFcn,@obj.cb_timeplot);
     end
     
     
-    % plot the main catalog
+    %% plot the main catalog
     Xs=obj.catalog.Date;
     [~, Ys, ~] = calc_moment(obj.catalog);
-    line(ax,Xs,Ys,'LineWidth',2.5,...
-        'Tag','catalog','DisplayName','catalog','color','k','UIContextMenu',cln);
-    grid(ax,'on');
     
-    % plot cross sections, too
+    catalogline = findobj(ax.Children,'flat','Tag','catalog');
+    if isempty(catalogline)
+        line(ax,Xs,Ys,'LineWidth',2.5,'DisplayName','catalog','Tag','catalog',...
+            'color','k','UIContextMenu',cln);
+        grid(ax,'on');
+    else
+        catalogline.XData=Xs;
+        catalogline.YData=Ys;
+    end
+    
+    
+    %% plot cross sections, too
+    
+    %%make sure that the cross section context menu exists in this figure
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
         cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
@@ -55,36 +70,52 @@ function cummomentplot(obj,tabgrouptag)
     ax.YLabel.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
     
     ax.XLabel.String='Time';
-    %xl.UIContextMenu=obj.sharedContextMenus.LogLinearXScale;
    
+    add_big_events();
+    
     cbg=findobj(obj.fig,'Tag',Tags.bg);
     
     if isempty(cbg)
         cbg=uicontextmenu(obj.fig,'Tag',Tags.bg);
         addLegendToggleContextMenuItem(cbg,'bottom','above');
-        uimenu(cbg,'Label','Open in new window',Futures.MenuSelectedFcn,@(~,~)obj.cb_timeplot());
+        uimenu(cbg,'Label','Open in new window',Futures.MenuSelectedFcn,@obj.cb_timeplot);
+    end
+    
+    if isempty(ax.UIContextMenu)
         ax.UIContextMenu=cbg;
     end
     
-    bigcat=obj.bigEvents;
-    if ~isempty(bigcat)
-        big_events_within_Xs = ismember(bigcat.Date,Xs);
-        bigcat=bigcat.subset(big_events_within_Xs); % bigcat only contains the big events within the Xs
-    end
-    if ~isempty(bigcat)
-        idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
-        Sz=mag2dotsize(bigcat.Magnitude);
-    else
-        idx=[];
-        Sz=[];
-    end
     
-    set(gca,'NextPlot','add')
-    scatter(ax,Xs(idx), Ys(idx), Sz,...
-        'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
-        'Tag','big events');
-    set(gca,'NextPlot','replace')
-    
+    function add_big_events()
+        bigcat=obj.bigEvents;
+        if ~isempty(bigcat)
+            big_events_within_Xs = ismember(bigcat.Date,Xs);
+            bigcat=bigcat.subset(big_events_within_Xs); % bigcat only contains the big events within the Xs
+        end
+        if ~isempty(bigcat)
+            idx = ismember(Xs,bigcat.Date) & obj.catalog.Magnitude >= min(bigcat.Magnitude);
+            Sz=mag2dotsize(bigcat.Magnitude);
+        else
+            idx=[];
+            Sz=[];
+        end
+        
+        bev = findobj(ax.Children,'Tag','big events');
+        if isempty(bev)
+            ax.NextPlot='add';
+            
+            scatter(ax,Xs(idx), Ys(idx), Sz,...
+                'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
+                'Tag','big events','DisplayName','big events');
+            
+            ax.NextPlot='replace';
+        else
+            bev.XData=Xs(idx);
+            bev.YData=Ys(idx);
+            bev.SizeData=Sz;
+        end
+    end
+  
     
     
     function h = xsplotter(xs, xscat)

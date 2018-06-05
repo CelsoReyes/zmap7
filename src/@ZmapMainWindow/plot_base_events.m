@@ -94,6 +94,7 @@ function plot_base_events(obj, container, featurelist)
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
     uimenu(c,'Label','Crop to shape',Futures.MenuSelectedFcn,@cb_crop_to_selection);
     uimenu(c,'Label','Zoom to selected events',Futures.MenuSelectedFcn,@cb_zoom)
+    uimenu(c,'Label','Crop to axes limits',Futures.MenuSelectedFcn,@cb_crop_to_axes)
     uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@obj.cb_xsection);
     uimenu(c,'Separator','on','Label','Hide/Show sampling grid','Tag','ToggleGrid',...
         Futures.MenuSelectedFcn,@cb_toggle_grid)
@@ -170,6 +171,18 @@ function plot_base_events(obj, container, featurelist)
         obj.map_axes.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
     end
     
+    function cb_crop_to_axes(~,~)
+        xl = obj.map_axes.XLim;
+        yl = obj.map_axes.YLim;
+
+        obj.rawcatalog.subset_in_place(...
+            obj.rawcatalog.Longitude >= xl(1) &...
+            obj.rawcatalog.Longitude <= xl(2) &...
+            obj.rawcatalog.Latitude >= yl(1) &...
+            obj.rawcatalog.Latitude <= yl(2));
+        obj.replot_all();
+    end
+
     function commandeer_colorbar_button()
         cbb=findall(obj.fig,'Tooltip','Insert Colorbar');
         origCallback = cbb.ClickedCallback;

@@ -164,7 +164,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function [h, myListener]=plot(obj,ax, myListener)
             
             % changedFcn is called with (oldshape, newshape) when the shape is changed.
-            if ~isvalid(ax) && exist('myListener','var')
+            if (isempty(ax) || ~isvalid(ax)) && exist('myListener','var')
                 delete(myListener); % no point in plotting to an axis that no longer exists!
                 return
             end

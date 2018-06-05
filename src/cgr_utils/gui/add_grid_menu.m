@@ -15,8 +15,9 @@ function add_grid_menu(obj)
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
     uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
-    
-    uimenu(parent,'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);
+    uimenu(parent,'Label','about editing shapes...',MenuSelectedFcn,@(~,~)moveable_item('help'));
+    uimenu(parent,'Separator','on',...
+        'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);
     
     shapeiomenu=uimenu(parent,'Separator','on','Label','Shape IO...');
     uimenu(shapeiomenu,'Label','get default', MenuSelectedFcn, @(~,~)cb_get_default_shape);

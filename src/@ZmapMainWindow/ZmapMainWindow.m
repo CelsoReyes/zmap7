@@ -192,10 +192,10 @@ classdef ZmapMainWindow < handle
             % attach cross-section listeners
             addlistener(obj,'XsectionEmptied',@(~,~)obj.deactivateXsections);
             addlistener(obj,'XsectionAdded',  @(~,~)obj.activateXsections);
-            addlistener(obj,'XsectionAdded',  @(~,~)disp('added xsection'));
             addlistener(obj,'XsectionAdded', @(~,~)clear_empty_legend_entries(obj.fig));
             
             addlistener(obj,'XsectionChanged',@obj.replot_all);
+            addlistener(obj,'XsectionRemoved' ,@obj.replot_all);
             addlistener(obj,'XsectionEmptied',@obj.replot_all);
             
             % other listeners
@@ -243,6 +243,7 @@ classdef ZmapMainWindow < handle
         end
         
     function set_my_shape(obj,sh)
+        % call this whenever shape is replaced, otherwise catalog will not adjust to it
         if ~isempty(sh)
             obj.shape=sh;
             subscribe(obj.shape,'ShapeChanged',@obj.replot_all);
@@ -359,8 +360,9 @@ classdef ZmapMainWindow < handle
             
         end
         
-        function cb_timeplot(obj)
-            CumTimePlot(obj.catalog);
+        function cb_timeplot(obj,src,evt)
+            disp('oh')
+            CumTimePlot(@()obj.catalog);
         end
         
         function cb_starthere(obj,ax)
@@ -462,10 +464,9 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_cropToXS(obj,~,~,xsec)
-            oldshape=copy(obj.shape);
-            obj.shape=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
-            %obj.shapeChangedFcn(oldshape);
-            obj.replot_all();
+            sh=ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            set_my_shape(obj,sh);
+            %obj.replot_all();
         end
             
         function cb_deltab(obj, ~,~, xsec)
@@ -485,6 +486,9 @@ classdef ZmapMainWindow < handle
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
                     set(findobj(obj.fig,'Parent',findobj(obj.fig,'Label','X-sect'),'-not','Tag','CreateXsec'),'Enable','off');
+                    % a notification will be sent notifying that we have no more
+                else
+                    notify(obj,'XsectionRemoved');
                 end
                 
                 obj.fig.Pointer=prevPtr;

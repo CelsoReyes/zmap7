@@ -31,7 +31,7 @@ classdef (Sealed) CumTimePlot < handle
     % 
     
     properties
-        catalog ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
+        catview ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
         fontsz = ZmapGlobal.Data.fontsz;
         hold_state = false;
         AxH % axes handle (may move to dependent)
@@ -49,13 +49,13 @@ classdef (Sealed) CumTimePlot < handle
     
     methods (Access = private)
         function add_xlabel(obj)
-            if (max(obj.catalog.Date)-min(obj.catalog.Date)) >= days(1)
+            if (max(obj.catview.Date)-min(obj.catview.Date)) >= days(1)
                 xlabel(obj.AxH,'Date',...
                     'FontSize',obj.fontsz.s,...
                     'UserData',field_unit.Date)
                 
             else
-                statime=obj.catalog.Date(1);
+                statime=obj.catview.Date(1);
                 xlabel(obj.AxH,['Time in days relative to ',char(statime)],...
                     'FontSize',obj.fontsz.m,...
                     'UserData',field_unit.Duration(statime));
@@ -66,7 +66,7 @@ classdef (Sealed) CumTimePlot < handle
             ax.YLabel.FontSize=obj.fontsz.s;
         end
         function add_title(obj)
-            obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catalog.Name);
+            obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catview.Name);
             obj.AxH.Title.Interpreter = 'none';
         end
         function add_legend(obj)
@@ -100,13 +100,13 @@ classdef (Sealed) CumTimePlot < handle
             op5C = uimenu(mm,'Label','Histograms');
             
             uimenu(op5C,'Label','Magnitude',...
-                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Magnitude'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catview,'Magnitude'));
             uimenu(op5C,'Label','Depth',...
-                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Depth'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catview,'Depth'));
             uimenu(op5C,'Label','Time',...
-                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Date'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catview,'Date'));
             uimenu(op5C,'Label','Hr of the day',...
-                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catalog,'Hour'));
+                Futures.MenuSelectedFcn,@(~,~)hisgra(obj.catview,'Hour'));
             
             add_menu_catalog(obj.catname,obj.viewname,false,gcf);
             add_cumtimeplot_zmenu(obj, mm)
@@ -116,12 +116,12 @@ classdef (Sealed) CumTimePlot < handle
             % plot big events on curve
             ZG=ZmapGlobal.Data;
             % select "big" events
-            bigMask= obj.catalog.Magnitude >= ZG.big_eq_minmag;
-            bigCat = obj.catalog.subset( bigMask );
+            bigMask= obj.catview.Magnitude >= ZG.big_eq_minmag;
+            bigCat = obj.catview.subset( bigMask );
             
             bigIdx = find(bigMask);
             
-            if (max(obj.catalog.Date)-min(obj.catalog.Date))>=days(1) && ~isempty(bigCat)
+            if (max(obj.catview.Date)-min(obj.catview.Date))>=days(1) && ~isempty(bigCat)
                 hold(obj.AxH,'on')
                 plot(obj.AxH,bigCat.Date, bigIdx,'hm',...
                     'LineWidth',1.0,'MarkerSize',10,...
@@ -150,9 +150,15 @@ classdef (Sealed) CumTimePlot < handle
         function obj = CumTimePlot(catalog)
             % CUMTIMEPLOT creates a new Cumulative Time Plot figure
             report_this_filefun();
-            cf=@()ZmapGlobal.Data.(obj.catname);
-            obj.catalog = ZmapCatalogView(cf);
-            %obj.BigView = ZmapCatalogView(@()obj.catalog); % major event(s)
+            if nargin==0
+                cf=@()ZmapGlobal.Data.(obj.catname);
+            elseif ischar(catalog)
+                cf=@()ZmapGlobal.Data.(obj.catname);
+            elseif isa(catalog,'function_handle')
+                cf=catalog;
+            end
+            obj.catview = ZmapCatalogView(cf);
+            %obj.BigView = ZmapCatalogView(@()obj.catview); % major event(s)
             obj.plot()
         end
         
@@ -171,7 +177,7 @@ classdef (Sealed) CumTimePlot < handle
         end
         function reset(obj)
             % reset resets the catalog to the global-version, then replots
-            obj.catalog = ZmapCatalogView(@()ZmapGlobal.Data.(obj.catname));
+            obj.catview = ZmapCatalogView(@()ZmapGlobal.Data.(obj.catname));
             obj.plot();
         end
         function c = Catalog(obj,n)
@@ -181,8 +187,8 @@ classdef (Sealed) CumTimePlot < handle
             if ~exist('n','var')
                 n=1;
             end
-            if numel(obj.catalog) <=n && n>0
-                c = obj.catalog(n).Catalog;
+            if numel(obj.catview) <=n && n>0
+                c = obj.catview(n).Catalog;
             end
         end
         function update(obj)
@@ -197,7 +203,7 @@ classdef (Sealed) CumTimePlot < handle
             
             hold(obj.AxH,'on');
             axes(obj.AxH)
-            tiplot2 = plot(obj.AxH,obj.catalog.Date,(1:obj.catalog.Count),'r','LineWidth',2.0);
+            tiplot2 = plot(obj.AxH,obj.catview.Date,(1:obj.catview.Count),'r','LineWidth',2.0);
             tiplot2.DisplayName=caller(dbstack);
             obj.hold_state=false;
             hold(obj.AxH,'off');
@@ -229,8 +235,8 @@ classdef (Sealed) CumTimePlot < handle
                 return;
             end
             
-            t0b = obj.catalog.DateRange(1);
-            teb = obj.catalog.DateRange(2);
+            t0b = obj.catview.DateRange(1);
+            teb = obj.catview.DateRange(2);
             
             delete(findobj(myfig,'Type','Axes'));
             watchon;
@@ -282,12 +288,12 @@ classdef (Sealed) CumTimePlot < handle
         function ed = get.Edges(obj)
             ZG=ZmapGlobal.Data;
             % get.Edges get date edges
-            ed = min(obj.catalog.Date) : ZG.bin_dur : max(obj.catalog.Date);
+            ed = min(obj.catview.Date) : ZG.bin_dur : max(obj.catview.Date);
         end
         function red = get.RelativeEdges(obj)
             ZG=ZmapGlobal.Data;
             % get.RelativeEdges get duration edges
-            red = 0 : ZG.bin_dur : (max(obj.catalog.Date) - min(obj.catalog.Date));
+            red = 0 : ZG.bin_dur : (max(obj.catview.Date) - min(obj.catview.Date));
             % (0: ZG.bin_dur :(tdiff + 2*ZG.bin_dur)));
         end
             
