@@ -58,7 +58,7 @@ classdef bvalgrid < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(getoptions),1,...
                 'Choose the calculation method for Mc');
             zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                 're takes longer, but provides more accurate results');
@@ -108,7 +108,7 @@ classdef bvalgrid < ZmapHGridFunction
             bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_choice); %ignore all the other outputs of bvalca3
             
             obj.ZG.bo1 = bv;
-            
+            [~,mcCalculator]= calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
             obj.gridCalculations(@calculation_function);
         
             if nargout
@@ -122,7 +122,8 @@ classdef bvalgrid < ZmapHGridFunction
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
                 [~, ~, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
                 
-                [Mc_value] = calc_Mc(catalog, obj.mc_choice, obj.fBinning, obj.fMccorr);
+                Mc_value = mcCalculator(catalog);
+                
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
                 
                 if sum(l) >= obj.Nmin

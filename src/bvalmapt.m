@@ -92,7 +92,7 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,'Choose the calculation method for Mc');
+            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,'Choose the calculation method for Mc');
             
             zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
                 obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');

@@ -228,22 +228,32 @@ function calc_Omoricross()
         end
         
         mCross=nan(numel(gridcats),20);
+
+
+        % decide which calculator to use
+        if ZG.inb2 == 1
+            fMc = fMcFix;
+            mcCalculator=@(~,~)fMcFix;
+        elseif ZG.inb2 == 2 %Maximum curvature
+            nMethod = 1;
+            [~,mcCalculator]=calc_Mc([], nMethod, fBinning);
+        else % ZG.inb2 == 3 % EMR method
+            nMethod = 6;
+            [~,mcCalculator] = calc_Mc([], nMethod, fBinning);
+        end % END if ZG.inb2
+
+
         % Loop over grid nodes
+        
+
+
         for i= 1:numel(gridcats)
             % Grid coordinates
             allcount = allcount + 1.;
             
             b = gridcats(i);  %already subset by date and radius/number events
             
-            if ZG.inb2 == 1
-                fMc = fMcFix;
-            elseif ZG.inb2 == 2 %Maximum curvature
-                nMethod = 1;
-            else % ZG.inb2 == 3 % EMR method
-                nMethod = 6;
-                [fMc] = calc_Mc(b, nMethod, fBinning); % if this fails, once defaulted to nan.. but it shouldn't fail. right?
-            end % END if ZG.inb2
-            
+            fMc = mcCalculator(b);
             
             % for some reason this was only associatdd with radius
             if ~isnan(fMc)

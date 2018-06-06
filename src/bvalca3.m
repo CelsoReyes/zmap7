@@ -1,4 +1,4 @@
-function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
+function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, overall_b_value)
     % BVALCA3
     % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method, bo1)
     %
@@ -6,7 +6,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
     % magnitudes     : Magnitude values
     % mc_method - 1 : automatic estimate of Mcomp [or mc_method is true] DEFAULT
     %        2 : not automatic estimate of Mcomp  [or mc_method is false]
-    % bo1: overall b-value (maybe? used in probability calculation)
+    % overall_b_value: overall b-value (maybe? used in probability calculation)
     %
     % OUTPUT
     %    bv : b-value
@@ -91,13 +91,13 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, bo1)
         
         if ~exist('bo1','var')
             warning('provide bo1, which is overall bvalue to bvalca3 needed to calc pr');
-            bo1=ZG.bo1;
+            overall_b_value=ZG.bo1;
         end
     
         b2 = p;
         n2 =  M1b(2);
         n = no1+n2;
-        da = -2*n*log(n) + 2*no1*log(no1+n2*bo1/b2) + 2*n2*log(no1*b2/bo1+n2) -2;
+        da = -2*n*log(n) + 2*no1*log(no1+n2*overall_b_value/b2) + 2*n2*log(no1*b2/overall_b_value+n2) -2;
         pr = (1  -  exp(-da/2-2))*100; % probability
     end
     %catch ME

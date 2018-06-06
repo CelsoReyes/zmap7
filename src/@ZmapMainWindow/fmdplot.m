@@ -1,22 +1,38 @@
 function fmdplot(obj, tabgrouptag)
     
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'FMD');
-    
-    delete(myTab.Children);
-    ax=axes(myTab);
-    ylabel(ax,'Cum # events');
-    xlabel(ax,'Magnitude');
-    
-    if isempty(obj.catalog)
-        return
+    ax=findobj(myTab,'Type','axes');
+    if isempty(ax)
+        ax=axes(myTab);
+        ylabel(ax,'Cum # events');
+        xlabel(ax,'Magnitude');
+        if ~isempty(obj.catalog)
+            bdiffobj=bdiff2(obj.catalog,false,ax); 
+            ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
+        end
+        
+    elseif isempty(obj.catalog)
+        cla(ax);
+        ylabel(ax,'Cum # events');
+        xlabel(ax,'Magnitude');
+    else
+        bdiffobj=ax.UserData;
+        if isempty(bdiffobj)
+            bdiffobj=bdiff2(obj.catalog,false,ax);
+            ax.UserData=bdiffobj;
+        else
+            bdiffobj=bdiffobj.calculate(obj.catalog);
+            bdiffobj.updatePlottedCumSum(ax);
+            bdiffobj.updatePlottedDiscreteValues(ax);
+            bdiffobj.updatePlottedMc(ax);
+            bdiffobj.updatePlottedBvalLine(ax);
+        end
+        ax.XLimMode='auto';
+        ax.YLimMode='auto';
+        if isempty(ax.UIContextMenu)
+            c = uicontextmenu(obj.fig);
+            ax.UIContextMenu = c;
+        end
+        addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
     end
-    
-    %mainax=obj.map_axes;
-    bdiff2(obj.catalog,false,ax);
-    legend(ax,'show')
-    if isempty(ax.UIContextMenu)
-        c = uicontextmenu(obj.fig);
-        ax.UIContextMenu = c;
-    end
-    addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
 end

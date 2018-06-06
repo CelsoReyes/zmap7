@@ -55,7 +55,7 @@ function bcross(sel)
     %zdlg = ZmapDialog(obj, @obj.doIt);
     
     zdlg.AddBasicHeader('Choose stuff');
-    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
+    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,...
         'Choose the calculation method for Mc');
     zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
     zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);

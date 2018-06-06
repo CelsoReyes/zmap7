@@ -1,7 +1,13 @@
-function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
-    % function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
+function [fMc, mc_calculator] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
+    % CALC_MCCalculates the magnitude of completeness for a given catalog
+    %
+    % [fMc] = CALC_MC(mCatalog, nMethod, fBinning, fMcCorrection)
+    % [fMc, mc_calculator]=CALC_MC(...) will return a function handle to the calculation
+    % method, so it can be reused in heavy loops.  MC_CALCULATOR hs the form:
+    %    fMc =  MY_CALCULATOR(catalog, bins, correction);
+    %
     % --------------------------------------------------------------------
-    % Calculates the magnitude of completeness for a given catalog
+    %
     %
     % Input parameters:
     %   mCatalog       Earthquake catalog for determing the magnitude of completeness
@@ -25,6 +31,8 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     %   If called without any parameters, calc_Mc returns a string containing the names
     %   of all available Mc-determination routines
     %
+    %
+    %
     % Copyright (C) 2004 by Danijel Schorlemmer, Jochen Woessner
     %
     % This program is free software; you can redistribute it and/or modify
@@ -44,7 +52,7 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     
     report_this_filefun(0);
     
-    if nargin == 0
+    if nargin==1 && ( ischar(mCatalog) || isstring(mCatalog) )&& mCatalog=="getoptions"
         fMc = ['1: Maximum curvature|' ...
             '2: Fixed Mc = minimum magnitude (Mmin)|' ...
             '3: Mc90 (90% probability)|' ...
@@ -69,40 +77,50 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     
     if nMethod == 1
         % Maximum curvature
-        fMc = calc_McMaxCurvature(mCatalog);
+        methodFun = @(C)calc_McMaxCurvature(C);
     elseif nMethod == 2
         % Fixed Mc (Mc = Mmin)
-        fMc = min(mCatalog.Magnitude);
+        methodFun = @(C) min(C.Magnitude);
     elseif nMethod == 3
         % Automatic Mc90
-        [~, ~, fMc] = calc_McBest(mCatalog, fBinning);
+        methodFun = @(C)method_mc90(C,fBinning);
     elseif nMethod == 4
         % Automatic Mc95
-        [~, fMc, ~] = calc_McBest(mCatalog, fBinning);
+        methodFun = @(C)method_mc95(C,fBinning);
     elseif nMethod == 5
         % Best combination (Mc95 - Mc90 - maximum curvature)
-        [~, Mc95, Mc90] = calc_McBest(mCatalog, fBinning);
-        if ~isnan(Mc95)
-            fMc = Mc95;
-        elseif ~isnan(Mc90)
-            fMc = Mc90;
-        else
-            fMc = calc_McMaxCurvature(mCatalog);
-        end
+        methodFun = @(C)method_bestcombo(C,fBinning);
     elseif nMethod == 6
         % EMR-method
-        fMc = calc_McEMR(mCatalog, fBinning);
+        methodFun = @(C)calc_McEMR(C,fBinning);
     elseif nMethod == 7
         % Mc due b using Shi & Bolt uncertainty
-        fMc = calc_Mcdueb(mCatalog);
+        methodFun = @(C)calc_Mcdueb(C,fBinning);
     elseif nMethod == 8
         % Mc due b using bootstrap uncertainty
         nSample = 500;
-        fMc = calc_McduebBst(mCatalog, fBinning, 5, 50,nSample);
+        nWindowSize = 5;
+        nMinEvents = 50;
+        methodFun = @(C) calc_McduebBst(C, fBinning, nWindowSize, nMinEvents,nSample);
     else % nMethod == 9
         % Mc due b Cao-criterion
-        fMc = calc_McduebCao(mCatalog);
+        methodFun = @(C, ~)calc_McduebCao(C);
     end
+    % lock the method into this calculation
+    calculator = @(C) do_calculation(methodFun, C, fMcCorrection);
+
+    % do the calculation
+    fMc = calculator(mCatalog);
+    
+end
+
+function fMc=do_calculation(methodFun, mCatalog, fMcCorrection)
+    if isempty(mCatalog) 
+        fMc=nan;
+        return
+    end
+    
+    fMc = methodFun(mCatalog);
     
     % Check fMc
     if isempty(fMc)
@@ -112,3 +130,23 @@ function [fMc] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrection)
     % Apply correction
     fMc = fMc + fMcCorrection;
 end
+
+% functions to return that all have same signature
+function fMc = method_mc90(mCatalog, fBinning)
+    [~, ~, fMc] = calc_McBest(mCatalog, fBinning);
+end
+function fMc = method_mc95(mCatalog, fBinning)
+    [~, fMc] = calc_McBest(mCatalog, fBinning);
+end
+function fMc = method_bestcombo(mCatalog, fBinning)
+        [~, Mc95, Mc90] = calc_McBest(mCatalog, fBinning);
+        if ~isnan(Mc95)
+            fMc = Mc95;
+        elseif ~isnan(Mc90)
+            fMc = Mc90;
+        else
+            fMc = calc_McMaxCurvature(mCatalog);
+        end
+end
+
+

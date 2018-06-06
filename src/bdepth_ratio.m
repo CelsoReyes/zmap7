@@ -64,7 +64,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             zdlg=ZmapDialog([]);            
             zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
                 obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc(),1,...
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,...
                 'Choose the calculation method for Mc');
             zdlg.AddBasicHeader('Please define two Depth ranges to compare');
             zdlg.AddBasicEdit('top_of_top','TOP zone ceiling [km]',obj.topzone_ceiling,'');
@@ -123,6 +123,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             depth_ratio = tbo1/bbo1;
             disp(depth_ratio);
             
+            [~,mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
             
             % loop over all points
             obj.gridCalculations(@calculation_function);
@@ -151,8 +152,8 @@ classdef bdepth_ratio < ZmapHGridFunction
                 
                 if length(topb) < obj.Nmin  || length(botb) < obj.Nmin
                     
-                    [Mc_valueTop] = calc_Mc(topb, obj.mc_choice,obj.fBinning);
-                    [Mc_valueBot] = calc_Mc(botb, obj.mc_choice, obj.fBinning);
+                    [Mc_valueTop] = mcCalculator(topb);
+                    [Mc_valueBot] = mcCalculator(botb);
                     [topbv, topbv2, ~, topav, n1]=calc_bval_both_ways(topb,Mc_valueTop,tbo1);
                     [botbv, botbv2, magco, botav, n2]=calc_bval_both_ways(botb,Mc_valueBot,bbo1);
                 else
