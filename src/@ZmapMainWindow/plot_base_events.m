@@ -166,9 +166,16 @@ function plot_base_events(obj, container, featurelist)
             warning('No shape selected');
             return
         end
+        [obj.mdate,obj.mshape]=obj.filter_catalog();
         obj.rawcatalog=obj.catalog;
-        obj.map_axes.YLim=[min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
-        obj.map_axes.XLim=[min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
+        obj.mdate=obj.mdate(obj.mshape);
+        obj.mshape=obj.mshape(true);
+        
+        ol=obj.shape.Outline; % as [X, Y]
+        xl = [min(ol(:,1)) max(ol(:,1))];
+        yl = [min(ol(:,2)) max(ol(:,2))];
+        obj.map_axes.XLim=xl;
+        obj.map_axes.YLim=yl;
     end
     
     function cb_crop_to_axes(~,~)

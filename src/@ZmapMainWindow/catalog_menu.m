@@ -7,7 +7,7 @@ function catalog_menu(obj, force)
     % Menu Options:
     %   Crop catalog to window -
     %   Edit Ranges -
-    %   Rename - 
+    %   Rename -
     %   - - -
     %   Memorize/Recall Catalog -
     %   Clear Memorized Catalog -
@@ -17,7 +17,7 @@ function catalog_menu(obj, force)
     %   Save Current Catalog - save as a ZmapCatalog (.mat) or a v6 or v7+ ASCII table (.dat)
     %   - - -
     %   Stats -
-    %   Get/Load Catalog - 
+    %   Get/Load Catalog -
     %   Reload Last Catalog -
     
     
@@ -41,35 +41,7 @@ function catalog_menu(obj, force)
     
     submenu = uimenu('Label','Catalog','Tag','menu_catalog');
     
-    uimenu(submenu,'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange);
-    
-    % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
-            
-    uimenu(submenu,'Label','Rename...',Futures.MenuSelectedFcn,@cb_rename);
-    
-    uimenu(submenu,'Label','Memorize/Recall Catalog',Futures.MenuSelectedFcn,@(~,~) memorize_recall_catalog(obj.catalog),...
-        'Separator','on');
-    
-    uimenu(submenu,'Label','Clear Memorized Catalog',Futures.MenuSelectedFcn,@cb_clearmemorized);
-    
-    uimenu(submenu,'Label','Combine catalogs',Futures.MenuSelectedFcn,@cb_combinecatalogs,...
-        'Separator','on');
-    
-    uimenu(submenu,'Label','Compare catalogs - find identical events',Futures.MenuSelectedFcn,@(~,~)comp2cat);
-    
-    uimenu(submenu,'Label','Save current catalog',Futures.MenuSelectedFcn,@(~,~)save_zmapcatalog(obj.catalog));
-    
-    catexport = uimenu(submenu,'Label','Export current catalog...');
-    uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog),...
-        'Enable','off');
-    uimenu(catexport,'Label','to workspace (Table)',Futures.MenuSelectedFcn,@(~,~)exportToTable(obj.catalog),...
-        'Enable','off');
-    
-    uimenu(submenu,'Label','Info (Summary)',Futures.MenuSelectedFcn,@(~,~)info_summary_callback(obj.catalog),...
-        'Separator','on');
-    
-    catmenu = uimenu(submenu,'Label','Get/Load Catalog',...
-        'Separator','on');
+    catmenu = uimenu(submenu,'Label','Get/Load Catalog');
     
     uimenu(submenu,'Label','Reload last catalog',Futures.MenuSelectedFcn,@cb_reloadlast,...
         'Enable','off');
@@ -82,12 +54,43 @@ function catalog_menu(obj, force)
         Futures.MenuSelectedFcn, {@cb_importer,@get_fdsn_data_from_web_callback});
     
     
+    uimenu(submenu,'Label','Save current catalog',Futures.MenuSelectedFcn,@(~,~)save_zmapcatalog(obj.catalog));
+    
+    catexport = uimenu(submenu,'Label','Export current catalog...');
+    uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog),...
+        'Enable','off');
+    uimenu(catexport,'Label','to workspace (Table)',Futures.MenuSelectedFcn,@(~,~)exportToTable(obj.catalog),...
+        'Enable','off');
+    
+    
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
         Futures.MenuSelectedFcn,@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
     uimenu(catmenu,'Separator','on','Label','Reset',...
         Futures.MenuSelectedFcn,@cb_resetcat); % Resets the catalog to the original selection
     
-    uimenu (catmenu,'Label','Decluster the catalog',...
+    uimenu(submenu,'Separator','on',...
+        'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange);
+    
+    % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
+    
+    uimenu(submenu,'Label','Rename...',Futures.MenuSelectedFcn,@cb_rename);
+    
+    uimenu(submenu,'Label','Memorize/Recall Catalog',Futures.MenuSelectedFcn,@(~,~) memorize_recall_catalog(obj.catalog),...
+        'Separator','on');
+    
+    uimenu(submenu,'Label','Clear Memorized Catalog',Futures.MenuSelectedFcn,@cb_clearmemorized);
+    
+    uimenu(submenu,'Label','Combine catalogs',Futures.MenuSelectedFcn,@cb_combinecatalogs,...
+        'Separator','on');
+    
+    uimenu(submenu,'Label','Compare catalogs - find identical events',Futures.MenuSelectedFcn,@(~,~)comp2cat);
+    
+
+    uimenu(submenu,'Label','Info (Summary)',Futures.MenuSelectedFcn,@(~,~)info_summary_callback(obj.catalog),...
+        'Separator','on');
+    
+    
+    uimenu (submenu,'Label','Decluster the catalog',...
         Futures.MenuSelectedFcn,@(~,~)inpudenew(obj.catalog))
     
     function cb_crop(~,~)
@@ -103,7 +106,7 @@ function catalog_menu(obj, force)
                 fields={'','',''};
                 warning('Do not know how to crop catalog to these axes');
         end
-
+        
         if isequal(v , [0 90]) % XY view
             style='XY';
         elseif isequal(v,[0 0]) % XZ view
@@ -130,7 +133,7 @@ function catalog_menu(obj, force)
         zmap_update_displays();
     end
     
-
+    
     function cb_replace_main(~,~)
         ZG.primeCatalog=obj.catalog;
         obj.replot_all();
@@ -143,7 +146,7 @@ function catalog_menu(obj, force)
         end
         events_in_shape = obj.shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);
         obj.catalog=obj.catalog.subset(events_in_shape);
-            
+        
         zmap_update_displays();
         
         % adjust the size of the main map if the current figure IS the main map
@@ -186,10 +189,10 @@ function catalog_menu(obj, force)
     function cb_importer(src, ev, fun)
         ok=ZmapImportManager(fun);
         if ok
-            % get rid of the message ox asking us to load a catalog
+            % get rid of the message box asking us to load a catalog
             delete(findobj(groot,'-depth', 1, 'Tag','Msgbox_No Active Catalogs'));
             f=obj.fig;
-            delete(obj);
+            %delete(obj);
             ZmapMainWindow(f);
         else
             warndlg('Did not load a catalog');
@@ -214,7 +217,7 @@ function exportToTable(catalog)
         assignin('base',fn{1},catalog.table())
     end
 end
-    
+
 
 function info_summary_callback(mycatalog)
     ZG=ZmapGlobal.Data;

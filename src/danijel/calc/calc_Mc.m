@@ -107,10 +107,10 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrecti
         methodFun = @(C, ~)calc_McduebCao(C);
     end
     % lock the method into this calculation
-    calculator = @(C) do_calculation(methodFun, C, fMcCorrection);
+    mc_calculator = @(C) do_calculation(methodFun, C, fMcCorrection);
 
     % do the calculation
-    fMc = calculator(mCatalog);
+    fMc = mc_calculator(mCatalog);
     
 end
 

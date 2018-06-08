@@ -114,13 +114,25 @@ classdef ZmapMainWindow < handle
             end
             
             
-            %if the figure was specified, but wasn't empty, then delete it.
+            %if the figure was specified, but wasn't empty, then clear it out.
             if isvalid(fig)
+                isMainMapWindow=isa(fig.UserData,'ZmapMainWindow');
+                resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children)>1;
+                shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
+                grid_exists = isMainMapWindow && ~isempty(fig.UserData.Grid);
+                catalog_exists = isMainMapWindow && isempty(fig.UserData.rawcatalog);
+                
+                   
+                if resultplot_exists
                 an=questdlg(sprintf('Replace existing Map Windows?\nWarning: This will delete any results tabs'),...
                     'Window exists','Replace Existing','Create Another', 'cancel','cancel');
+                else
+                    an='ReplaceExisting';
+                end
                 switch an
                     case 'Replace Existing'
-                        delete(fig);
+                        clf(fig);
+                        fig.UserData=[];
                     case 'Create a new figure'
                         do_nothing();
                     case 'Nevermind'
@@ -672,32 +684,40 @@ classdef ZmapMainWindow < handle
             obj.fig.UserData=obj; % hopefully not creating a problem with the space-time-continuum.
             
             if isempty(obj.rawcatalog)
-                % there is no catalog in the system, so there is nothing to recall, and nothing to filter
-                % therefore, force the user to the right menu choice
-                txt = 'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu';
-                hdlg=helpdlg(txt, 'No Active Catalogs');
-                hdlg.Units='normalized';
-                hdlg.Position([1 2]) = obj.fig.Position([1 2])+ [0.3 0.6].* obj.fig.Position([3 4]);
-                obj.fig.ToolBar = 'none';
-                h=findobj(obj.fig,'Type','uimenu','-depth',1,'-not','Label','Catalog','-not','Label','Help');
-                set(h,'Enable','off');
-                h=findobj(obj.fig,'Type','uimenu','-depth',1,'Label','Catalog');
-                % disable all the other items at this level
-                set(findobj(h.Children,'flat','-not','Label','Get/Load Catalog'),'Enable','off');
-                h=get(findall(obj.fig,'Label','Get/Load Catalog'),'Children');
-                if iscell(h)
-                    for i=1:numel(h)
-                        set(h{i}(~startsWith(get(h{i},'Label'), 'from ')),'Enable','off');
-                    end
-                else
-                    set(h(~startsWith(get(h,'Label'), 'from ')),'Enable','off');
-                end
+                obj.disable_non_load_menus();
             end
             obj.fig.Pointer='arrow';
         end
         
+        function disable_non_load_menus( obj)
+            % make Get/Load Catalog only valid option from catalog menus
+            % there is no catalog in the system, so there is nothing to recall, and nothing to filter
+            % therefore, force the user to the right menu choice
+            txt = 'To load a catalog, choose GET/LOAD CATALOG from the  CATALOG Menu';
+            hdlg=helpdlg(txt, 'No Active Catalogs');
+            hdlg.Units='normalized';
+            hdlg.Position([1 2]) = obj.fig.Position([1 2])+ [0.3 0.6].* obj.fig.Position([3 4]);
+            obj.fig.ToolBar = 'none';
+            h=findobj(obj.fig,'Type','uimenu','-depth',1,'-not','Label','Catalog','-not','Label','Help');
+            set(h,'Enable','off');
+            h=findobj(obj.fig,'Type','uimenu','-depth',1,'Label','Catalog');
+            % disable all the other items at this level
+            set(findobj(h.Children,'flat','-not','Label','Get/Load Catalog'),'Enable','off');
+            h=get(findall(obj.fig,'Label','Get/Load Catalog'),'Children');
+            if iscell(h)
+                for i=1:numel(h)
+                    set(h{i}(~startsWith(get(h{i},'Label'), 'from ')),'Enable','off');
+                end
+            else
+                set(h(~startsWith(get(h,'Label'), 'from ')),'Enable','off');
+            end
+        end
+            
+            
         
         %% CROSS SECTION HELPERS
+        %
+        %
         
         function xsec_remove(obj, key)
             % XSEC_REMOVE completely removes cross section from object

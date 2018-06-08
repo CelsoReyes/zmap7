@@ -1,12 +1,9 @@
 function moveable_item(h, updateFcn, doneFcn, varargin)
-    % MOVEABLE_ITEM makes a graphical item (line) draggable
+    %% MOVEABLE_ITEM makes a graphical item (line) draggable
     %
-    % MOVEABLE_ITEM( h , updateFcn , doneFcn );  makes the graphics object h draggable, by checking
-    % for when it gets a mousedown.  Then, it makes a copy of h, with some aesthetic modifications
-    % which is directly moved around the axes while the mouse is down.  As the item is moved around
-    % UPDATEFCN will be repeatedly called. It will be provided the handle for the copy and a [x y]
-    % delta array.  Upon finishing, the DONEFCN will be called, with the handle to the copy. The
-    % copy is then deleted.
+    % MOVEABLE_ITEM( h , updateFcn , doneFcn );  makes the graphics object h modifiable via mouse.
+    % As the item is moved around UPDATEFCN will be repeatedly called. 
+    %Upon finishing [mouseup], the DONEFCN will be called
     %
     % If the escape key is pressed, then the DONEFCN will not be  called, and the copy will simply
     % be deleted.
@@ -30,21 +27,54 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     %
     % MOVEABLE_ITEM('noscale',true) disables the scaling abilities
     %
+    %
+    % This function can make a line, scatter, or even a text item editable.
+    % Here, they are all referred to as 'shapes'
+    %
+    % Each shape consists of 'Points' and 'Segments'.  A POINT is a vertex, while the
+    % SEGMENT is the straight line in between the points.
+    %
+    % You are able to do one or more of the following to your shape:
+    %     - DRAG shape around, by holding down the left mousebutton on a segment and moving the mouse.
+    %     - ADD a point by left-clicking on the outline and choosing 'add point' from the context menu.
+    %     - MOVE points around by holding down the left mousebutton on a point and moving the mouse.
+    %     - DELETE a point by left-clicking on a point, and choosing 'delete point' from the context menu.
+    %     - RESIZE the shape by scrolling the mouse wheel while holding down the left mousebutton.
+    %           Other Resizing options are available via the keyboard, since RESIZING would otherwise
+    %           be difficult on a touchpad. Here is a list of buttons, and what they do:
+    %              '+' or up arrow - increases scale by 1/10
+    %              '-' or down arrow - decreases scale by 1/10
+    %              '1' - resets scale to 1
+    %              '2' - sets the scale to 2
+    %              'h' - halves the current scale
+    %              'd' - doubles the current scale
+    %
+    %           At the point you press down the left mousebutton, the scale is 1.
+    %
+    %
+    %   cancel RESIZE, MOVE, or DRAG by pressing the ESC key before letting go of the mouse button.
+    %
+    %   exactly which of these options are available depends upon how the item was set up for editing.
+    %
+    %
     % example:
     %
+    %     % draw something that we will later modify
     %     h = plot([1;2;3],[2; 1; 3],'o-');
     %     set(gca,'NextPlot','add');
     %
-    %     % this will be used to show how far we dragged the item
+    %     % add text to show how far we dragged the item
     %     txt = text(2, 2,'','Tag','description');
     %
-    %     % this will show how far we dragged the item, and is called as we drag around
+    %     % updateFcn is called as the shape is dragged around.  This implementation shows some stats
     %     updateFcn=@(x,delta) set(txt,'String', sprintf('deltas: [ %g , %g] scale: %g',delta));
     %
-    %     % this will move our original plot to the new location, once we let up on the mouse button.
+    %     % doneFcn is called once the mouse button is let up. this will move our original plot to the new location
     %     doneFcn=@(x,~)set(h,'XData',x.XData,'YData',x.YData);
     %
+    %     % here is where the magic happens. make our shape moveable.
     %     MOVEABLE_ITEM(h,updateFcn,doneFcn, 'Marker','+');
+    %
     %
     % By Celso G Reyes, PhD  2018
     
@@ -131,7 +161,10 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     prev_KeyPressFcn = do_nothing;
     prev_WindowScrollWheelFcn = do_nothing;
     
-    prev_Marker = h.Marker;
+    
+    if h.Type ~= "text"
+        prev_Marker = h.Marker;
+    end
     
     prev_Pointer = 'arrow';
     origin=[nan nan];
@@ -207,12 +240,18 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         ax.YLimMode='manual';
         
         % these values will not change during a move, so set them now.
-        hX = h.XData(:);
-        hY = h.YData(:);
-        hMidpt = middle(h);
+        if h.Type=="text"
+            hX = h.Position(1);
+            hY = h.Position(2);
+            hMidpt=[hX hY];
+        else
+            hX = h.XData(:);
+            hY = h.YData(:);
+            hMidpt = middle(h);
+        end
         
         % now, deal with context specific stuff.
-        if doMovePoints || p.Results.addpoints || p.Results.movepoints
+        if (doMovePoints || p.Results.addpoints || p.Results.movepoints) && h.Type ~= "text"
             h.Marker='s';
         end
         
@@ -255,7 +294,9 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         drawnow nocallbacks;
         fig.WindowButtonMotionFcn=prev_WindowButtonMotionFcn;
         fig.WindowButtonUpFcn=prev_WindowButtonUpFcn;
-        h.Marker=prev_Marker;
+        if h.Type ~= "text"
+            h.Marker=prev_Marker;
+        end
         if doScaling
             fig.KeyPressFcn = prev_KeyPressFcn;
             fig.WindowScrollWheelFcn=prev_WindowScrollWheelFcn;
@@ -421,37 +462,8 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     end
   
     function showhelp()
-        s= "One or more plotted items have been set up to be editable. This message refers to them as 'Shapes'"+ newline +...
-""+ newline +...
-"Each item consists of 'Points' and 'Segments'.  A POINT is a vertex, while the"+ newline +...
-"SEGMENT is the straight line in between the points."+ newline +...
-""+ newline +...
-"You are able to do one or more of the following to your shape:"+ newline +...
-"    - DRAG shape around, by holding down the left mousebutton on a segment and moving the mouse."+ newline +...
-"    - ADD a point by left-clicking on the outline and choosing 'add point' from the context menu."+ newline +...
-"    - MOVE points around by holding down the left mousebutton on a point and moving the mouse."+ newline +...
-"    - DELETE a point by left-clicking on a point, and choosing 'delete point' from the context menu."+ newline +...
-"    - RESIZE the shape by scrolling the mouse wheel while holding down the left mousebutton."+ newline +...
-"          Other Resizing options are available via the keyboard, since RESIZING would otherwise"+ newline +...
-"          be difficult on a touchpad. Here is a list of buttons, and what they do:"+ newline +...
-"             '+' or up arrow - increases scale by 1/10"+ newline +...
-"             '-' or down arrow - decreases scale by 1/10"+ newline +...
-"             '1' - resets scale to 1"+ newline +...
-"             '2' - sets the scale to 2"+ newline +...
-"             'h' - halves the current scale"+ newline +...
-"             'd' - doubles the current scale"+ newline +...
-""+ newline +...
-"          At the point you press down the left mousebutton, the scale is 1."+ newline +...
-""+ newline +...
-""+ newline +...
-"  cancel RESIZE, MOVE, or DRAG by pressing the ESC key before letting go of the mouse button."+ newline +...
-""+ newline +...
-"  exactly which of these options are available depends upon how the item was set up for editing."
-        hd=helpdlg('','About interactive shape editing');
-        hd.Position([3 4])=[600 450];
-        mb=findobj(hd,'Tag','MessageBox');
-        mb.FontSize=12;
-        mb.String=s;
+        %moveable item help
+        helpwin('moveable_item');
     end
     
     function demo()

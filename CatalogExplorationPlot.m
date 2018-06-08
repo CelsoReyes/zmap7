@@ -522,14 +522,7 @@ classdef CatalogExplorationPlot < handle
             % Explore your data in 4-5 dimensions by choosing a parameter for each axis.
             % Right-click on the X, Y, or Z axes for a list of available variables.
             % Right-click on data points to choose how they will be sized or colored.
-            s=help('CatalogExplorationPlot.instructions');
-            if nargout==0
-                hdg=helpdlg(s,'Exploring your Catalog');
-                tx=findobj(hdg,'Tag','MessageBox');
-                tx.FontSize=12;
-                hdg.Position(3)=tx.Extent(3)+100;
-                tx.String=s;
-            end
+            helpwin('CatalogExplorationPlot.instructions');
         end
     end
 end
