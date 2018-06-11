@@ -4,18 +4,19 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     % WhichPlotter can be an instance of either TimeMagnitudePlotter or TimeDepthPlotter
     % if tab doesn't exist yet, create it
     
+    
     myTab = findOrCreateTab(obj.fig, tabgrouptag, name);
     
-
-    delete(myTab.Children);
-    %delete(findobj(obj.fig.Children,'flat','Tag',contextTag));
+    
     ax=findobj(myTab.Children,'flat','Type','axes');
-    if isempty(ax)
+    if isempty(ax) || ~isstruct(ax.UserData) || ~isfield(ax.UserData,'TimeSomethingPlotter')
         ax=axes(myTab);
         whichplotter.plot(ax, obj.catalog, obj.bigEvents);
         ax.Title=[];
+        ax.UserData.TimeSomethingPlotter=whichplotter;
     else
-        whichplotter.update(ax,obj.catalog, obj.bigEvents);
+        whichplotter=ax.UserData.TimeSomethingPlotter;
+        whichplotter.update(obj.catalog, obj.bigEvents);
     end
     
     contextTag =[name ' contextmenu'];

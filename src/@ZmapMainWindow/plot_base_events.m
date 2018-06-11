@@ -88,7 +88,11 @@ function plot_base_events(obj, container, featurelist)
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
     
     % options for choosing a shape
+    create_from_existing_menu(c,'Select events in CIRCLE');
+    create_from_existing_menu(c,'Select events in BOX');
+    create_from_existing_menu(c,'Select events in POLYGON');
     
+    %uimenu(c,'Label','Select events in CIRCLE',Futures.MenuSelectedFcn,@do_nothing)'
     uimenu(c,'Label','Delete shape',...
         'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
@@ -103,6 +107,18 @@ function plot_base_events(obj, container, featurelist)
     addLegendToggleContextMenuItem(c,'bottom','above');
     %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
     obj.map_axes.ButtonDownFcn = @control_menu_enablement;
+    
+    
+    function create_from_existing_menu(parent,label)
+            % use the callback from a menu item that (will) exist in this figure. Labels must match
+            uimenu(parent,'Label',label,Futures.MenuSelectedFcn,{@do_other,label});
+            
+        function do_other(src,ev,label)
+            um=findobj(obj.fig,'Type','uimenu','-and','Label',label);
+            newsrc=um(um~=src);
+            newsrc.(Futures.MenuSelectedFcn)(newsrc,ev);
+        end
+    end
     
     function control_menu_enablement(src,~)
         % enable/disable the axes menu items according to whether or not a shape exists

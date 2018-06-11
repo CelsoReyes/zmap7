@@ -41,14 +41,6 @@ function plotmainmap(obj)
     end
     % update the largest events
     update_large()
-    %{
-    beq = findobj(axm,'Tag','big events');
-    
-    beq.XData=obj.bigEvents.Longitude;
-    beq.YData=obj.bigEvents.Latitude;
-    beq.ZData=obj.bigEvents.Depth;
-    beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
-    %}
     
     % update the shape
     axm.NextPlot='add';
@@ -74,7 +66,8 @@ function plotmainmap(obj)
     
     function update_large()
         beq = findobj(axm,'Tag','big events');
-            if ~isempty(obj.bigEvents)
+        
+        if ~isempty(obj.bigEvents)
             beq.XData=obj.bigEvents.Longitude;
             beq.YData=obj.bigEvents.Latitude;
             beq.ZData=obj.bigEvents.Depth;
@@ -83,6 +76,7 @@ function plotmainmap(obj)
             [beq.XData, beq.YData, beq.ZData, beq.SizeData]=deal([]);
         end
     end
+    
     function c = getLegalColors()
         % because datetime isn't allowed
         switch  obj.colorField

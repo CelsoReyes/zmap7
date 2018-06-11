@@ -64,7 +64,8 @@ function replot_all(obj,metaProp,eventData)
                 evs.Visible='on';
                 
             end
-            
+            ZG=ZmapGlobal.Data;
+            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude >ZG.big_eq_minmag);
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;
@@ -89,8 +90,8 @@ function replot_all(obj,metaProp,eventData)
     obj.plothist('Date',obj.catalog.Date,'UR plots');
     obj.plothist('Hour',hours(obj.catalog.Date.Hour),'UR plots');
     obj.cummomentplot('LR plots');
-    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter, 'LR plots');
-    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter, 'LR plots');
+    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'LR plots');
+    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'LR plots');
     
     obj.replotting=false;
     drawnow nocallbacks
