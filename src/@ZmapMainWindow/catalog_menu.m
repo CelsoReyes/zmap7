@@ -75,8 +75,9 @@ function catalog_menu(obj, force)
     
     uimenu(submenu,'Label','Rename...',Futures.MenuSelectedFcn,@cb_rename);
     
-    uimenu(submenu,'Label','Memorize/Recall Catalog',Futures.MenuSelectedFcn,@(~,~) memorize_recall_catalog(obj.catalog),...
-        'Separator','on');
+    uimenu(submenu,'Separator','on',...
+        'Label','Memorize Catalog',  Futures.MenuSelectedFcn, @cb_memorize);
+    uimenu(submenu,'Label','Recall Catalog', Futures.MenuSelectedFcn, @cb_recall);
     
     uimenu(submenu,'Label','Clear Memorized Catalog',Futures.MenuSelectedFcn,@cb_clearmemorized);
     
@@ -92,6 +93,18 @@ function catalog_menu(obj, force)
     
     uimenu (submenu,'Label','Decluster the catalog',...
         Futures.MenuSelectedFcn,@(~,~)inpudenew(obj.catalog))
+    
+    function cb_recall(src,evt)
+        obj.rawcatalog=memorize_recall_catalog();
+        [obj.mshape,obj.mdate]=obj.filter_catalog();
+        obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
+        obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
+    end
+    
+    function cb_memorize(src,evt)
+        memorize_recall_catalog(obj.catalog);
+    end
+    
     
     function cb_crop(~,~)
         ax = findobj(obj.fig, 'Type','Axes');
