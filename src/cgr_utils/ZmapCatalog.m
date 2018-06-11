@@ -137,7 +137,14 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                     errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
                     warndlg(errdisp)
                 end
-                obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
+                if nCols==9
+                    nRows=size(varargin{1},1);
+                    obj.Date = datetime([floor(varargin{1}(:,3)),...
+                        varargin{1}(:,[4,5,8,9]),...
+                        zeros(nRows,1)]);
+                else
+                    obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
+                end
                 obj.Depth = varargin{1}(:,7);
                 obj.Magnitude = varargin{1}(:,6);
                 
