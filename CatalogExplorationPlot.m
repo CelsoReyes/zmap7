@@ -27,7 +27,7 @@ classdef CatalogExplorationPlot < handle
             obj.ax=ax;
             c=ax.UIContextMenu;
             if isempty(c)
-                c=uicontextmenu('Tag','catexplot');
+                c=uicontextmenu(ancestor(ax,'figure'),'Tag','catexplot');
                 addLegendToggleContextMenuItem(c,'top','below');
                 ax.UIContextMenu=c;
             else

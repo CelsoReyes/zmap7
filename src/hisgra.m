@@ -69,8 +69,8 @@ function h=hisgra(mycat, opt, ax)
         elseif strcmp(stri2,stri4)
             stri2='Foreshock Duration in days';
         end
-        xlabel(stri2,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-        ylabel('  Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        xlabel(ax, stri2,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        ylabel(ax,'# Events per bin','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     end
     
     function hg=plotIntoAxes()
@@ -97,7 +97,7 @@ function h=hisgra(mycat, opt, ax)
             stri2='Foreshock Duration in days';
         end
         xlabel(ax,stri2)
-        yl = ylabel(ax,'Number');
+        yl = ylabel(ax,'# Events per bin');
         mycontextmenu=findobj(gcf,'uicontextmenu','-and','Tag',['histogram ' opt]);
         if isempty(mycontextmenu)
             c=uicontextmenu('Tag',['histogram ' opt]);
@@ -124,7 +124,17 @@ function h=hisgra(mycat, opt, ax)
         h=findobj(ax,'Type','histogram');
         def = num2str(h(1).NumBins);
         binsS = inputdlg('Choose number of bins','Histogram Params',1, {def});
+        if isempty(binsS)
+            return
+        end
         set(h,'NumBins',str2double(binsS{1}));
+        if isduration(h(1).BinWidth)
+            d=floor(days(h(1).BinWidth));
+            tm=h(1).BinWidth-floor(days(h(1).BinWidth));
+            ax.YLabel.String=sprintf('# Events per bin [%d days %s]',d,tm);
+        else
+            ax.YLabel.String=sprintf('# Events per bin   [width:%g]',h(1).BinWidth);
+        end
     end
     
     function callback_change_bVector(~,~)
@@ -171,6 +181,9 @@ function h=hisgra(mycat, opt, ax)
                 num2str(fix(datevec(mode(diff(mainh.BinEdges))))),... difference
                 num2str(fix(datevec(mainh.BinEdges(end))))}; % ending date
             binsS = inputdlg(prompt,'Histogram Params',1,def);
+            if isempty(binsS)
+                return;
+            end
             dur = datetime(str2num(binsS{2})) - datetime([0 0 0 0 0 0]);
             binEdgeValues=datetime(str2num(binsS{1})) : dur : datetime(str2num(binsS{3}));
             
@@ -183,29 +196,64 @@ function h=hisgra(mycat, opt, ax)
             binEdgeValues=str2num(binsS{1}); %#ok<ST2NM>
         end
         
-         set(h,'BinEdges',binEdgeValues);
-         set(ax,'xlim',mainh.BinLimits);
-         
+        set(h,'BinEdges',binEdgeValues);
+        set(ax,'xlim',mainh.BinLimits);
+        
+        d=floor(days(h(1).BinWidth));
+        tm=h(1).BinWidth-floor(days(h(1).BinWidth));
+        ax.YLabel.String=sprintf('# Events per bin [%d days %s]',d,tm);
     end
     
     function addcontext(opt, c)
         h=findobj(ax,'Type','histogram');
         switch opt
             case 'Date'
+                %{
                 uimenu(c,'separator','on','Label','Snap to Day',Futures.MenuSelectedFcn,@(~,~)cb_snap_to_datetime(h,'day'));
                 uimenu(c,'Label','Snap to Week',Futures.MenuSelectedFcn,@(~,~)cb_snap_to_datetime(h,'week'));
                 uimenu(c,'Label','Snap to Month',Futures.MenuSelectedFcn,@(~,~)cb_snap_to_datetime(h,'month'));
                 uimenu(c,'Label','Snap to Year',Futures.MenuSelectedFcn,@(~,~)cb_snap_to_datetime(h,'year'));
+                %}
+                
+                uimenu(c,'separator','on','Label','Events per Day',Futures.MenuSelectedFcn,@(~,~)cb_set_to_period(h,'day'));
+                uimenu(c,'Label','Events per Week',Futures.MenuSelectedFcn,@(~,~)cb_set_to_period(h,'week'));
+                uimenu(c,'Label','Events per Month',Futures.MenuSelectedFcn,@(~,~)cb_set_to_period(h,'month'));
+                uimenu(c,'Label','Events per Year',Futures.MenuSelectedFcn,@(~,~)cb_set_to_period(h,'year'));
         end
-        function cb_snap_to_datetime(h,x)
-            newEdges=dateshift(h.BinEdges,'start',x,'nearest');
+        
+        function cb_snap_to_datetime(h,unit)
+            newEdges=dateshift(h.BinEdges,'start',unit,'nearest');
             newEdges=unique(newEdges);
             if numel(newEdges) ~= numel(h.BinEdges)
                 warning('One or more bins have been removed');
             end
             set(findobj(ax,'Type','histogram'),'BinEdges',newEdges);
+            ax.YLabel.String=['# Events per ' unit];
         end
-                    
+        
+        
+        function cb_set_to_period(h,unit)
+            mindate=min(h.Data); maxdate = max(h.Data);
+            mindate=dateshift(mindate,'start',unit,'previous');
+            maxdate=dateshift(maxdate,'start',unit,'next');
+            delta=maxdate-mindate;
+            switch unit
+                case 'day'
+                    edges = mindate : days(1) : maxdate;
+                case 'week'
+                    edges = mindate : days(7) : maxdate;
+                case 'year'
+                    nyears=ceil(years(delta));
+                    edges = mindate + calendarDuration(0:nyears,0,0);
+                case 'month'
+                    nmonths=ceil(years(delta) .* 12);
+                    edges = mindate + calendarDuration(0,0:nmonths,0);
+            end
+            set(findobj(ax,'Type','histogram'),'BinEdges',edges);
+            ax.YLabel.String=['# Events per ' unit];
+        end
+        
+        
     end
     
     function [vari1, bins] = get_histparams(mycat, binByField)
@@ -251,19 +299,19 @@ function h=hisgra(mycat, opt, ax)
     
     function open_as_new_fig(~,~)
         
-              titlestr = [opt, ' Histogram', ' : ', mycat.Name];
-              histo= figure_w_normalized_uicontrolunits( ...
-                  'NumberTitle','off','Name',titlestr);
-              
-              add_menu_divider();
-              op1 = uimenu('Label','Display');
-              uimenu(op1,'Label','Change Number of Bins...',Futures.MenuSelectedFcn,@callback_change_nBins);
-              uimenu(op1,'Label','Change Bin Edges...',Futures.MenuSelectedFcn,@callback_change_bVector);
-              uimenu(op1,'Label','Default',Futures.MenuSelectedFcn,@callback_reset);
-              copyobj(ax,histo)
-              
-              th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
-              th.Interpreter='none';
+        titlestr = [opt, ' Histogram', ' : ', mycat.Name];
+        histo= figure_w_normalized_uicontrolunits( ...
+            'NumberTitle','off','Name',titlestr);
+        
+        add_menu_divider();
+        op1 = uimenu('Label','Display');
+        uimenu(op1,'Label','Change Number of Bins...',Futures.MenuSelectedFcn,@callback_change_nBins);
+        uimenu(op1,'Label','Change Bin Edges...',Futures.MenuSelectedFcn,@callback_change_bVector);
+        uimenu(op1,'Label','Default',Futures.MenuSelectedFcn,@callback_reset);
+        copyobj(ax,histo)
+        
+        th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
+        th.Interpreter='none';
     end
 end
 
