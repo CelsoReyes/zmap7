@@ -217,10 +217,7 @@ function h=hisgra(mycat, opt, ax)
             case 'Magnitude'
                 vari1 = mycat.(binByField);
                 bins=floor(min(vari1)):0.1:ceil(max(vari1));
-            case 'Depth'
-                vari1 = mycat.(binByField);
-                bins=50;
-            case 'Date'
+            case {'Depth','Date'}
                 vari1 = mycat.(binByField);
                 bins=50;
             case 'Hour'
@@ -241,11 +238,6 @@ function h=hisgra(mycat, opt, ax)
     function callback_reset(src,ev)
         [~, bins] = get_histparams(mycat, opt);
         ax=gca;
-        %set(findobj(ax.Children,'Type','Histogram'),'BinEdges',bins);
-        %delete(ax.Children);
-        %reset(ax)
-        %figure(histo);
-        %delete(findobj(histo,'Type','Axes'));
         h=findobj(ax,'Type','histogram');
         if numel(bins)==1
             fld='NumBins';

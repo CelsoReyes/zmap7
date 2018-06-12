@@ -79,7 +79,11 @@ function replot_all(obj,metaProp,eventData)
     
     currcatsummary = obj.catalog.summary('stats');
     for j=1:numel(k)
-        plot_xsection(obj,k{j},currcatsummary,md);
+        tb=plot_xsection(obj,k{j},currcatsummary,md);
+        
+        % add a UIContextMenu
+        % xsstuff=findobj(obj.map_axes,'-regexp','Tag',['Xsection .*' k{j}]);
+        % set(xsstuff,'UIContextMenu',tb.UIContextMenu);
     end
     
     obj.fmdplot('UR plots');
@@ -102,18 +106,30 @@ end
 function rearrange_axes_items(obj)
     % rearrange main axes items into specific order
     ch=obj.map_axes.Children;
-    items.map = startsWith(get(ch,'Tag'),'mainmap_');
-    items.grid = startsWith(get(ch,'Tag'),'grid_');
-    items.bgevents = get(ch,'Tag') == "all events";
-    items.fgevents = get(ch,'Tag') == "active quakes";
-    items.bigevents = get(ch,'Tag') == "big events";
-    items.shape = startsWith(get(ch,'Tag'),'shape');
-    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents | items.bigevents);
+    tags = get(ch,'Tag');
+    items.map = startsWith(tags,'mainmap_');
+    items.grid = startsWith(tags,'grid_');
+    items.bgevents = tags == "all events";
+    items.fgevents = tags == "active quakes";
+    items.bigevents = tags == "big events";
+    items.shape = startsWith(tags,'shape');
+    items.crosssec = startsWith(tags,'Xsection ');
+    
+    
+    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents | items.bigevents |items.crosssec);
     obj.map_axes.SortMethod='childorder';
-    obj.map_axes.Children = [  ch(items.shape); ch(items.bigevents); ch(items.fgevents); ch(items.other); ch(items.bgevents); ch(items.map);ch(items.grid)];   
+    obj.map_axes.Children = [ ... from top to bottom
+        ch(items.shape);...
+        ch(items.crosssec); ...
+        ch(items.bigevents); ...
+        ch(items.fgevents); ...
+        ch(items.other); ...
+        ch(items.bgevents); ...
+        ch(items.map);...
+        ch(items.grid)];   
 end
 
-function plot_xsection(obj, k, currcatsummary,md)
+function [mytab] = plot_xsection(obj, k, currcatsummary,md)
     % plot into the xsection tab area
     set(gca,'NextPlot','add')
     idx = strcmp(obj.XSectionTitles,k);
