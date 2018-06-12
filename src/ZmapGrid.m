@@ -325,7 +325,7 @@ classdef ZmapGrid
                 ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
             end
              
-            if numel(varargin)>1
+            if ~isempty(varargin)
                 set(prev_grid,varargin{:});
             end
         end

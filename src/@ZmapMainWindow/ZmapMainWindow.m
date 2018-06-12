@@ -124,13 +124,14 @@ classdef ZmapMainWindow < handle
                 
                    
                 if resultplot_exists
-                an=questdlg(sprintf('Replace existing Map Windows?\nWarning: This will delete any results tabs'),...
-                    'Window exists','Replace Existing','Create Another', 'cancel','cancel');
+                    an=questdlg(sprintf('Replace existing Map Windows?\nWarning: This will delete any results tabs'),...
+                        'Window exists','Replace Existing','Create Another', 'cancel','cancel');
                 else
-                    an='ReplaceExisting';
+                    an='Replace Existing';
                 end
                 switch an
                     case 'Replace Existing'
+                        obj.fig=fig;
                         clf(fig);
                         fig.UserData=[];
                     case 'Create a new figure'
@@ -606,19 +607,23 @@ classdef ZmapMainWindow < handle
         function prepareMainFigure(obj)
             % set up figure
             h=msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
-            
-            obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
-                'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
+            if ~isempty(obj.fig) && isgraphics(obj.fig) && isvalid(obj.fig)
+                set(obj.fig,'Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
+                    'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
+            else
+                obj.fig=figure('Position',obj.WinPos,'Name','Catalog Name and Date','Units',...
+                    'Normalized','Tag','Zmap Main Window','NumberTitle','off','visible','off');
+            end
             % plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.fig.Pointer='watch';
             
             % add the time stamp
             s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
-            uicontrol(gcf,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
+            uicontrol(obj.fig,'Style','text','Units','normalized','Position',[0.67 0.0 0.3 0.05],...
                 'String',s,'FontWeight','bold','Tag','zmap_watermark')
             
             % make sure that empty legend entries automatically disappear when the menu is called up
-             set(findall(gcf,'Type','uitoggletool','-and','Tag','Annotation.InsertLegend'),'ClickedCallback',...
+             set(findall(obj.fig,'Type','uitoggletool','-and','Tag','Annotation.InsertLegend'),'ClickedCallback',...
                 char("insertmenufcn(gcbf,'Legend');clear_empty_legend_entries(gcf);"));
             
             

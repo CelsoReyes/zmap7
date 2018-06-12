@@ -117,8 +117,10 @@ classdef ShapePolygon < ShapeGeneral
             f.WindowButtonMotionFcn=@mmv;
             f.Pointer='cross';
             f.CurrentCharacter=' ';
-            while f.Pointer=="cross" && f.CurrentCharacter==' '
+            cc=f.CurrentCharacter;
+            while f.Pointer=="cross" && (isempty(cc) || cc==' ')
                 pause(0.1);
+                cc = f.CurrentCharacter;
             end
             f.Pointer='arrow';
             f.WindowButtonUpFcn=bfn;

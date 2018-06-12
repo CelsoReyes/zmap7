@@ -48,7 +48,9 @@ classdef AnalysisWindow < handle
                     marker_indices=[];
                 end
                 h.MarkerIndices=marker_indices;
-                set(h,varargin{:});
+                if ~isempty(varargin)
+                    set(h,varargin{:});
+                end
                 h.DisplayName=catalog.Name;
             end
         end

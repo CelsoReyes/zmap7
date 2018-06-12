@@ -28,11 +28,22 @@ function position = position_in_current_monitor(w,h,alignment, border)
         ppos(2)>=mpos(:,2) & ...
         ppos(2)<=(mpos(:,2)+mpos(:,4));
     
+    if whichmonitor==0
+        % perhaps monitor status changed (added?) since MATLAB started
+        whichmonitor=1;
+    end
     mpos_curr=mpos(whichmonitor,:);
-    
+        
+        
     % if width is a percent
-    if isa(w,'Percent'), w=double(w) .* mpos_curr(3); end
-    if isa(h,'Percent'), h=double(h) .* mpos_curr(4); end
+    if isa(w,'Percent')
+        tmp=double(w) .* mpos_curr(3);
+        w=tmp;
+    end
+    if isa(h,'Percent')
+        tmp=double(h) .* mpos_curr(4); 
+        h=tmp;
+    end
     % try to ensure dialog box is shown on screen large enough to accomodate it
     if h > mpos_curr(4)
         tallEnough=mpos(:,4)>=h;

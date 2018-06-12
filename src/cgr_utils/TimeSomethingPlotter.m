@@ -46,7 +46,9 @@ classdef TimeSomethingPlotter < handle
             else
                 obj.ax.YLabel.String = obj.YVar;
             end
-            set(obj.ax,varargin{:});
+            if ~isempty(varargin)
+                set(obj.ax,varargin{:}); % if varargin was empty, then set displays all options for obj.ax
+            end
         end
         
         function pl=scatter(obj, catalog, varargin)
@@ -65,7 +67,9 @@ classdef TimeSomethingPlotter < handle
             obj.CFld='Color';
             obj.hpl=stem(obj.ax, NaT, nan, obj.Marker);
             obj.hpl.Visible='off';
-            set(obj.hpl,varargin{:});
+            if ~isempty(varargin)
+                set(obj.hpl,varargin{:});
+            end
             if ~isempty(catalog)
                 obj.hpl.XData = catalog.Date;
                 obj.hpl.YData = catalog.(obj.YVar);

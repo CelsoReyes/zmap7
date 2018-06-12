@@ -130,7 +130,7 @@ classdef ZmapGrid3 < ZmapGrid
                 ax.NextPlot='replace';
                 disp('created new grid3 on plot');
             end
-            if numel(varargin)>1
+            if ~isempty(varargin)
                 set(prev_grid,varargin{:});
             end
         end
