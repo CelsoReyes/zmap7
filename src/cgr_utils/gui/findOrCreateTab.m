@@ -11,9 +11,10 @@ function myTab = findOrCreateTab(fig, container, title)
     %
     import callbacks.copytab
     if ischar(container) || isstring(container)
-        myContainer=findobj(fig,'Type','uitabgroup','Tag',container);
+        myContainer=findobj(fig,'Type','uitabgroup','-and','Tag',container);
     elseif isgraphics(container) && isvalid(container)
         myContainer=container;
+        assert(ancestor(myContainer,'figure')==fig);
     else
         error('unspecified container');
     end
@@ -25,7 +26,7 @@ function myTab = findOrCreateTab(fig, container, title)
         contextMenus = findobj(fig.Children,'flat','Tag','CopyTabToFig','-and','Type','uicontextmenu');
         
         if isempty(contextMenus)
-            contextMenus=uicontextmenu('Tag','CopyTabToFig');
+            contextMenus=uicontextmenu(fig,'Tag','CopyTabToFig');
             uimenu(contextMenus,'Label','Copy Contents to new figure (static)','Callback',@copytab)
         end
         myTab.UIContextMenu=contextMenus;

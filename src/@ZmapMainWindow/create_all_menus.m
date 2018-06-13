@@ -10,7 +10,7 @@ function create_all_menus(obj, force)
         delete(h); h=[];
     end
     if isempty(h)
-        add_menu_divider('mainmap_menu_divider');
+        add_menu_divider(obj.fig, 'mainmap_menu_divider');
     end
     create_overlay_menu();
     
@@ -26,7 +26,7 @@ function create_all_menus(obj, force)
     create_map_analysis_menu();
     create_xsec_analysis_menu();
     create_3d_analysis_menu();
-    add_menu_divider();
+    add_menu_divider(obj.fig);
     
    % modify the file menu to add ZMAP stuff
    hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');

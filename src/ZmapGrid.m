@@ -88,6 +88,10 @@ classdef ZmapGrid
             %
             %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
             %
+            %   ZMAPGRID(...,'shape',ShapeObject) where ShapeObject is an object of a class decended
+            %   from ShapeGeneral
+            %
+            %
             % see also: MESHGRID
             
             if numel(varargin)>1 && ischar(varargin{end-1}) && varargin{end-1}=="shape"
