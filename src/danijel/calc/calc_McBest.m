@@ -84,7 +84,7 @@ function Mc = maxCurvature(m, min_max, binwidth)
     % Mc = MAXCURVATURE(m, min_max, binwidth)
     centers=min_max(1) : binwidth : min_max(2); 
     halfBinwidth = binwidth/2;
-    edges= [centers-halfBinwidth , centers(end)+halfBinWidth];
+    edges= [centers-halfBinwidth , centers(end)+halfBinwidth];
     [vEvents, ~] = histcounts(m, edges);
     nSel = find(vEvents == max(vEvents), 1, 'last' );
     Mc = centers(nSel);
