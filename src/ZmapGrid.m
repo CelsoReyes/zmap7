@@ -362,7 +362,9 @@ classdef ZmapGrid
                 % set the title
                 h.LineStyle='none';
                 h.DisplayName=name;
-                h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), 20);
+                if ~all(isnan(values))
+                    h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), 20);
+                end
         end
         
         function h=imagesc(obj, ax, values, name)

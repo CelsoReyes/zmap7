@@ -92,6 +92,7 @@ classdef ZmapData < handle
         tresh_km (1,1) double {mustBeNonnegative} = 50 % radius below which blocks zmap's (?) will be plotted
         xsec_width_km (1,1) double {mustBeNonnegative} = 10 % not entirely sure units are km
         xsec_rotation_deg (1,1) double = 10 % rotation angle for cross sections
+        xsec_defaults = defaults.readDefaults('cross_section');
         
         freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
         shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'
@@ -120,6 +121,7 @@ classdef ZmapData < handle
         useParallel logical = false % use parallel pool when available
         Datastore = DataStore % mapseis DataStore adapter
     end
+    
     properties(Dependent)
         wex % welcome window x (welcome_pos(1))
         wey % welcome window y (welcome_pos(2))
@@ -129,6 +131,7 @@ classdef ZmapData < handle
         t0b % start time for earthquakes in primary catalog
         teb % end time for earthquakes in primary catalog
     end
+    
     methods
         function out=get.Grid(obj)
             if isempty(obj.Grid)
@@ -274,4 +277,15 @@ function out = get_features(level)
                 
         %}
 end
+
+function s = asStruct(varargin)
+    n=floor(nargin/2);
+    s=struct;
+    flds=varargin(1:2:n*2);
+    vals=varargin(2:2:end);
+    for i=1:n
+        s.(flds{i})=vals{i};
+    end
+end
+    
     

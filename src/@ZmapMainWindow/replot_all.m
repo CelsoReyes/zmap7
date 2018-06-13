@@ -81,7 +81,7 @@ function replot_all(obj,metaProp,eventData)
     for j=1:numel(k)
         tb=plot_xsection(obj,k{j},currcatsummary,md);
         
-        % add a UIContextMenu
+        %%  add a UIContextMenu
         % xsstuff=findobj(obj.map_axes,'-regexp','Tag',['Xsection .*' k{j}]);
         % set(xsstuff,'UIContextMenu',tb.UIContextMenu);
     end

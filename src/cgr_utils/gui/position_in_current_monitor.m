@@ -20,7 +20,7 @@ function position = position_in_current_monitor(w,h,alignment, border)
     %       % create figure box (500w x 450h) in center of current screen
     %       f=figure('Name','test','Position',position_in_current_monitor(500,450))
     
-    
+    persistent gave_monitor_warning
     ppos=get(groot,'PointerLocation');
     mpos=get(groot,'MonitorPositions');
     whichmonitor = ppos(1)>=mpos(:,1) & ...
@@ -29,7 +29,16 @@ function position = position_in_current_monitor(w,h,alignment, border)
         ppos(2)<=(mpos(:,2)+mpos(:,4));
     
     if whichmonitor==0
-        % perhaps monitor status changed (added?) since MATLAB started
+        if  isempty(gave_monitor_warning)
+            % perhaps monitor status changed (added?) since MATLAB started
+            s=sprintf(['MATLAB might have incorrect monitor positions.\nMATLAB is configured for %d monitor(s),',...
+                ' but your pointer location suggests otherwise.  This information is stored at startup, so if',...
+                ' you added a monitor since starting MATLAB, then restarting MATLAB should correct the issue.\n\n',...
+                'This message will not repeat until the next time you restart zmap.'], size(mpos,1));
+            gave_monitor_warning = true;
+            h=errordlg(s,'MATLAB might not currently recognize a monitor','modal');
+            waitfor(h);
+        end
         whichmonitor=1;
     end
     mpos_curr=mpos(whichmonitor,:);
