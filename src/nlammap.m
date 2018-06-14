@@ -137,7 +137,7 @@ p2=ginput(1);
     % dialog box for parameters
     zdlg=ZmapDialog([]);
     %zdlg.AddBasicEdit(tag,label,value,tooltip);
-    zdlg.AddBasicEdit('xsec_width_km','Cross section width [km]',ZG.xsec_width_km,'cross section width, km');
+    zdlg.AddBasicEdit('xsec_width_km','Cross section width [km]',ZG.xsec_defaults.WidthKm,'cross section width, km');
     zdlg.AddBasicPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');
     zdlg.AddBasicCheckbox('do_rotation','Rotate Cross Section', false, 'xsec_rotation_deg','Rotate Cross section');
     zdlg.AddBasicEdit('xsec_rotation_deg','Rotation [deg]:',ZG.xsec_rotation_deg,'Rotate cross-section');
@@ -145,7 +145,7 @@ p2=ginput(1);
     if ~okPressed
         return
     end
-    ZG.xsec_width_km = result.xsec_width_km;
+    ZG.xsec_defaults.WidthKm = result.xsec_width_km;
     ZG.xsec_rotation_deg = result.xsec_rotation_deg;
     
     select_xsection();
@@ -156,7 +156,7 @@ p2=ginput(1);
         %in2=uic.Value;
         switch in2
             case 2
-                [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_width_km);
+                [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm);
                 nlammap2; %select endpoints by mouse
             case 3
                 posinpu; % coordinate input

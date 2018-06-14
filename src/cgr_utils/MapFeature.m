@@ -45,10 +45,12 @@ classdef MapFeature < handle
     % lakes.plot(ax2m) % plot into map
     % lakes.plot(ax1) % plot onto "normal" axes
     
-    properties
-        Name (1,:) char        % name of this feature
+    properties(Transient, Hidden)
         Loadfn function_handle = @do_nothing % function used to load/import this feature's data
         Savefn function_handle = @do_nothing % function used to save/export this feature's data
+    end
+    properties
+        Name (1,:) char        % name of this feature
         PlottingDefaults struct  % properties used on this layer
         Value struct           % raw values to plot, as struct, class, or Table containing a "Longitude" and "Latitude" field
         ParentAxis matlab.graphics.axis.Axes % handle to a parent axis. assigned when this is plotted
@@ -107,7 +109,8 @@ classdef MapFeature < handle
             if ~isempty(obj.ParentAxis)
                 h = findobj(obj.ParentAxis, 'Tag', obj.PlottingDefaults.Tag);
             else
-                error('This feature %s is not associated with a valid parent',obj.Name);
+                h=[];
+                %error('This feature %s is not associated with a valid parent',obj.Name);
                 % h = findobj(groot, 'Tag', obj.PlottingDefaults.Tag);
             end
         end

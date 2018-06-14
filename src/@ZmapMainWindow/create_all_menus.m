@@ -28,10 +28,11 @@ function create_all_menus(obj, force)
     create_3d_analysis_menu();
     add_menu_divider(obj.fig);
     
-   % modify the file menu to add ZMAP stuff
-   hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
-   copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy');
-            
+    % modify the file menu to add ZMAP stuff
+    hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
+    copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy');
+    
+    addPreferencesMenuItem();
     addQuitMenuItem();
     addAboutMenuItem();
     
@@ -86,7 +87,7 @@ function create_all_menus(obj, force)
         
         h=magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
         rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
- 
+        
         h.Separator='on';
         
         uimenu(submenu,'enable','off','Label','Calc a b-value cross-section',Futures.MenuSelectedFcn, @(~,~)nlammap(@()obj.xsec_zap));
@@ -217,7 +218,7 @@ function create_all_menus(obj, force)
         
         function set_colorby(~,~,val)
             obj.colorField=val;
-
+            
             % update menus
             for jj=1:numel(um)
                 myfn = obj.ValidColorFields{jj};
@@ -347,10 +348,10 @@ function create_all_menus(obj, force)
                 ZmapMainWindow(figure,syn_cat);
             end
         end
-
+        
         
     end
-
+    
     function create_explore_catalog_menu(parent)
         uimenu(parent,'Separator','on',...
             'Label','Explore Catalog', Futures.MenuSelectedFcn, @explore_catalog);
@@ -375,7 +376,7 @@ function create_all_menus(obj, force)
         end
         
     end
-
+    
     %{
     % this has been supplanted by the tabbed histogram plots
     function create_histogram_menu(parent)

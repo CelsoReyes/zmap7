@@ -390,7 +390,7 @@ function calc_across(sel)
         close(wai)
         watchoff
         
-        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 ZG.xsec_width_km  avg ra xvect yvect gx gy dx dd ZG.bin_dur newa ;
+        save across2.mat ll a tmpgri newgri lat1 lon1 lat2 lon2 ZG.xsec_defaults.WidthKm  avg ra xvect yvect gx gy dx dd ZG.bin_dur newa ;
         
         
         % reshape a few matrices
@@ -469,7 +469,7 @@ function calc_across(sel)
             valueMap = aValueMap;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')

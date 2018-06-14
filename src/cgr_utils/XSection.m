@@ -30,8 +30,8 @@ classdef XSection < handle
     
     properties
         color % color used when plotting cross section
-        linewidth (1,1) {mustBePositive} = 3 % line width for cross section
-        markersize (1,1) {mustBePositive} = 10 % size of the end marker
+        linewidth (1,1) {mustBePositive} = ZmapGlobal.Data.xsec_defaults.LineProps.LineWidth % line width for cross section
+        markersize (1,1) {mustBePositive} = ZmapGlobal.Data.xsec_defaults.LineProps.MarkerSizer % size of the end marker
         curvelons (:,1) double % longitudes that define the cross-section curve
         curvelats (:,1) double % latitudes that define the cross-section curve
         polylats (:,1) double % latitudes that define the polygon containing points within width of curve

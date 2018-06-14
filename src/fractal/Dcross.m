@@ -343,7 +343,7 @@ function my_load()
         old = valueMap;
 
         nlammap
-        [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
         % Plot all grid points
         set(gca,'NextPlot','add')
         plot(newgri(:,1),newgri(:,2),'+k')

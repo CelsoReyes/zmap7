@@ -39,7 +39,7 @@ function musec()
     po = length(a(1,:))+1;
     for i=1:length(x)-1
         lat1 = y(i);lat2 = y(i+1);lon1 = x(i);lon2=x(i+1);
-        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
         if strcmp(sw,'on')
             xsecx = -xsecx +max(xsecx);
         end
@@ -158,7 +158,7 @@ function musec()
     function callbackfun_003(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
     end
     
     function callbackfun_007(mysrc,myevt)

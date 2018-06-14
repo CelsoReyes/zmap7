@@ -247,7 +247,7 @@ function create_my_menu(c2)
     function cb_probforecast_test(mysrc,myevt)
         ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rContainer.fXSWidth = ZG.xsec_width_km;
+        rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
         rContainer.Lon1 = lon1;
         rContainer.Lat1 = lat1;
         rContainer.Lon2 = lon2;
@@ -259,7 +259,7 @@ function create_my_menu(c2)
 
         ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rContainer.fXSWidth = ZG.xsec_width_km;
+        rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
         rContainer.Lon1 = lon1;
         rContainer.Lat1 = lat1;
         rContainer.Lon2 = lon2;
@@ -271,7 +271,7 @@ function create_my_menu(c2)
 
         ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rContainer.fXSWidth = ZG.xsec_width_km;
+        rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
         rContainer.Lon1 = lon1;
         rContainer.Lat1 = lat1;
         rContainer.Lon2 = lon2;
@@ -313,7 +313,7 @@ function create_my_menu(c2)
 
         ZG=ZmapGlobal.Data;
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_width_km,0,lat1,lon1,lat2,lon2);
+        [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
     end
     
     function cb_refresh2(mysrc,myevt)
