@@ -6,6 +6,7 @@ function zmap(varargin)
     % Options:
     %   -debug : enables debugging functionality
     %   -restart
+    %   -initonly : set up zmap paths and prefs, but don't open a window
     %
     % Options to be probably implemented
     %   -grid :
@@ -61,6 +62,7 @@ function zmap(varargin)
     % advise matlab where it can find everything zmap
     set_zmap_paths;
     ZG = ZmapGlobal.Data;
+    startWindow=true;
     if ismember('-debug',varargin)
         ZG.debug=true;
     end
@@ -74,6 +76,9 @@ function zmap(varargin)
                 disp('Quitting ZMAP');
                 restartZmap('quit');
                 return
+            case "-initonly"
+                disp('Initializing Zmap without starting the default main window');
+                startWindow=false;
         end
     end
     ZG.out_dir = fullfile(hodi,'out');
@@ -106,7 +111,9 @@ function zmap(varargin)
     % set system dependent initial variables
     ini_zmap_sys
     
-    % if 
+    % if s
     % start the main zmap program
-    ZmapMainWindow();
+    if startWindow
+        ZmapMainWindow();
+    end
 end
