@@ -86,7 +86,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 p(p==0)=nan;
                 h=obj.Grid.pcolor(ax,p, mydesc);
             else
-                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc);
+                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc, Zmap.Data.ResultOptions.ContourCount);
                 
                 %[~,h]=contourf(ax,obj.Grid.X, obj.Grid.Y, ...
                  %   reshape(obj.Result.values.(myname),...

@@ -356,14 +356,22 @@ classdef ZmapGrid
             end
             h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
-        function [c,h]=contourf(obj,ax,values,name)
-            
+        function [c,h]=contourf(obj, ax, values, name, nlevels)
+            % [c,h]=CONTOURF(obj,ax, values, name, nlevels)
+                if ~exist('nlevels','var') || ~isempty(nlevels)
+                    nlevels=20;
+                end
+                
                 [c,h]=contourf(ax,obj.X, obj.Y, reshape(values, size(obj.X)));
                 % set the title
                 h.LineStyle='none';
                 h.DisplayName=name;
                 if ~all(isnan(values))
-                    h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), 20);
+                    if numel(nlevels)>1
+                        h.LevelList = nlevels;
+                    else
+                        h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), nlevels);
+                    end
                 end
         end
         
