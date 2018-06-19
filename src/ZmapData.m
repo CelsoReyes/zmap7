@@ -92,7 +92,7 @@ classdef ZmapData < handle
         tresh_km (1,1) double {mustBeNonnegative} = 50 % radius below which blocks zmap's (?) will be plotted
         % xsec_width_km (1,1) double {mustBeNonnegative} = 10 % not entirely sure units are km
         xsec_rotation_deg (1,1) double = 10 % rotation angle for cross sections
-        xsec_defaults = defaults.readDefaults('cross_section');
+        xsec_defaults = defaults.readDefaults('cross_section_defaults');
         
         freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
         shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'

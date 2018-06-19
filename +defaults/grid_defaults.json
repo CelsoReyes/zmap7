@@ -1,0 +1,22 @@
+{
+    "LineProps": {
+        "Marker": "+",
+        "LineWidth": 3,
+        "Color": "Option 1",
+        "MarkerSize": 10
+    },
+    "SeparationProps": {
+        "Dx": 5,
+        "Dy": 5,
+        "Dz": 1,
+        "xyunits": "Kilometers",
+        "FollowMeridians": false
+    },
+    "AnchorPoint": {
+        "UseFixedAnchorPoint": false,
+        "XAnchor": 0,
+        "YAnchor": 0,
+        "ZAnchor": 0
+    },
+    "Name": "grid"
+}

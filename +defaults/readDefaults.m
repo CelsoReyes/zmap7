@@ -1,6 +1,6 @@
 function s=readDefaults(fn)
     w=which('defaults.writeDefaults'); % should reference ME
-    inf=strrep(w,'writeDefaults.m',[fn,'.json']);
-    st=fileread(inf);
+    infile=strrep(w,'writeDefaults.m',[fn,'.json']);
+    st=fileread(infile);
     s=jsondecode(st);
 end
