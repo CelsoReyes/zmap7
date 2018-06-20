@@ -114,6 +114,6 @@ function zmap(varargin)
     % if s
     % start the main zmap program
     if startWindow
-        ZmapMainWindow();
+        ZmapMainWindow(ZG.primeCatalog);
     end
 end

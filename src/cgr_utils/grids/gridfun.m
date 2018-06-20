@@ -70,7 +70,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     countEvents=nargout>1;
     getMaxDist=nargout>2;
     
-    MIN_POINTS_FOR_PARALLEL = 1000000;
+    MIN_POINTS_FOR_PARALLEL = ZmapGlobal.Data.MinPointsForParallel;
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     

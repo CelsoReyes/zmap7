@@ -40,8 +40,23 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
             post_load();
         end
     end
-    save(fullfile(ZmapGlobal.Data.work_dir, ZmapGlobal.Data.lastCatalogFilename), 'catalog');
     
+    % save this catalog
+    saveFile=fullfile(ZmapGlobal.Data.work_dir, ZmapGlobal.Data.lastCatalogFilename);
+    [pathstr,name,ext] = fileparts(saveFile);
+    if isempty(ext)
+        ext='.mat';
+    end
+    saveFile=fullfile(pathstr,name,ext);
+    if ~exist(pathstr,'dir')
+        mkdir(pathstr);
+    end
+    try
+        save(saveFile, 'catalog');
+    catch ME
+        warning('unable to save the catalog');
+        warning(ME)
+    end
     
     function post_load()
         disp('post load')
