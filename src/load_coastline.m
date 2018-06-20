@@ -1,4 +1,4 @@
-function out=load_coast(level)
+function out=load_coastline(level)
     % load coast 
     % level: 'i'ntermediate, 'h'igh, 'f'ull
     tmp=load(fullfile('features',['continents_' level '.mat']), 'data', 'metadata');

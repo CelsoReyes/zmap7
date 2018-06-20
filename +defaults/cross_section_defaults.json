@@ -1,23 +1,23 @@
 {
-    "WidthKm": 20,
-    "LineProps": {
-        "Marker": "x",
-        "LineWidth": 3,
-        "LineStyle": "--",
-        "Color": "AUTO",
-        "MarkerSize": 10
-    },
-    "LabelProps": {
-        "FontWeight": "bold",
-        "FontSize": 12,
-        "BackgroundColor": "white",
-        "EdgeColor": "AUTO"
-    },
-    "TabProps": {
-        "Color": "Darker"
-    },
-    "BorderProps": {
-        "LineStyle": "-.",
-        "LineWidth": 1.5
-    }
+   "WidthKm":20,
+   "LineProps":{
+      "Marker":"x",
+      "LineWidth":3,
+      "LineStyle":"--",
+      "Color":"AUTO",
+      "MarkerSize":10
+   },
+   "LabelProps":{
+      "FontWeight":"bold",
+      "FontSize":12,
+      "BackgroundColor":"white",
+      "EdgeColor":"AUTO"
+   },
+   "TabProps":{
+      "Color":"Darker"
+   },
+   "BorderProps":{
+      "LineStyle":"-.",
+      "LineWidth":1.5
+   }
 }

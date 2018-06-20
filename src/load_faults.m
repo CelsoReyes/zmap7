@@ -1,4 +1,4 @@
-function out=load_faults()
+function out=load_faults(level)
     % load coast 
     % level: 'i'ntermediate, 'h'igh, 'f'ull
     tmp=load(fullfile('features','eurofaults.mat'), 'data', 'metadata');

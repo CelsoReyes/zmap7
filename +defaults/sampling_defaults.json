@@ -1,7 +1,7 @@
 {
-    "NumNearbyEvents": 150,
-    "UseNumNearbyEvents": true,
-    "RadiusKm": 10,
-    "UseEventsInRadius": false,
-    "WeightByDistance": false
+   "NumNearbyEvents":150,
+   "UseNumNearbyEvents":true,
+   "RadiusKm":10,
+   "UseEventsInRadius":false,
+   "WeightByDistance":false
 }

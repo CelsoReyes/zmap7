@@ -1,4 +1,4 @@
-function out = load_volcanoes(filename, vname)
+function out = load_volcanoes(~, filename, vname)
     % loads volcano information from a file
     % by default, this loads volcao.mat, which contains
     % a Table called GVPHoloceneVolcanoes

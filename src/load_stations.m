@@ -1,4 +1,4 @@
-function out=load_stations(filename, force)
+function out=load_stations(level, filename)
     %plotstations plots stations on specified axes
     % (Not fully IMPLEMENTED)
     % plotstatiosn(ax) plots the default station list, cropped to the current window

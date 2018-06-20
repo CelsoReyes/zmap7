@@ -40,7 +40,8 @@ classdef ZmapData < handle
         memorized_catalogs % manually stored via Memorize/Recall
         storedcat % automatically stored catalog, used by synthetic catalogs, etc.
         original ZmapCatalog = ZmapCatalog('default empty catalog')  % used with declustering
-        
+        lastCatalogFilename='lastcatalog.mat';
+        reopenLatCatalog=true;
         %cluster catalogs 
         newccat ZmapCatalog = ZmapCatalog('default empty catalog')  % apparently main clustered catalog (csubcat, capara, clpickp)
         ttcat ZmapCatalog = ZmapCatalog('default empty catalog')   %  some sort of clustered catalog? selclust
@@ -192,11 +193,22 @@ end
 function out = get_features(level)
     % imports the various features that can be plotted on maps
     out = containers.Map;
-    
-    
+    featureDefaults=defaults.readDefaults('mainmap_defaults');
+    fp = featureDefaults.FeatureProperties;
+    keys=fieldnames(fp);
     % each MapFeature is something that can be overlain on the main map
     %
-    out('coastline')= MapFeature('coast', @()load_coast(level), [],...
+    
+    for i=1:numel(keys)
+        key=keys{i};
+        fnname= str2func(['load_',key]);
+        loadfn = @()fnname(level);
+        fp.(key)=rmfield(fp.(key),{'IDLabel','UseMe'}); %add DetailLevel here once it is in settings box
+        fp.(key).HitTest=char(matlab.lang.OnOffSwitchState(fp.(key).HitTest));
+        out(key)=MapFeature(key,loadfn,[],fp.(key));
+    end
+    return
+    out('coastline')= MapFeature('coast', @()load_coastline(level), [],...
         struct('Tag','mainmap_coastline',...
         'DisplayName', 'Coastline',...
         'HitTest','off',...

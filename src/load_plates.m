@@ -1,4 +1,4 @@
-function out = load_plates(filename, vname)
+function out = load_plates(~, filename, vname)
     %load crustal plates
     % returns a structure containing fields for Longitude, Latitude, and Depth (which is 0 km)
     

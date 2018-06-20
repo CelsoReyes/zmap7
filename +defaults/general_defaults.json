@@ -1,0 +1,12 @@
+{
+   "Directories":{
+      "output":"./output",
+      "data":"./eq_data",
+      "working":"./working"
+   },
+   "ParallelProcessing":{
+      "Enable":false,
+      "Threshhold":10000
+   },
+   "DebugMode":false
+}

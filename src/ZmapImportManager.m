@@ -40,6 +40,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
             post_load();
         end
     end
+    save(fullfile(ZmapGlobal.Data.work_dir, ZmapGlobal.Data.lastCatalogFilename), 'catalog');
     
     
     function post_load()
