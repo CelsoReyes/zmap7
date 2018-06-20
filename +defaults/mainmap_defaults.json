@@ -6,9 +6,10 @@
     "FeatureProperties": {
         "borders": {
             "IDLabel": "borders",
+            "UseMe": true,
             "DisplayName": "Borders",
             "Tag": "mainmap_borders",
-            "LineWidth": 2,
+            "LineWidth": 4,
             "LineStyle": "-",
             "Color": "[0.45 0.3 0.1]",
             "Marker": "none",
@@ -20,6 +21,7 @@
         },
         "coastline": {
             "IDLabel": "coastline",
+            "UseMe": true,
             "DisplayName": "Coastline",
             "Tag": "mainmap_coastline",
             "LineWidth": 2,
@@ -34,6 +36,7 @@
         },
         "faults": {
             "IDLabel": "faults",
+            "UseMe": true,
             "DisplayName": "main faultine",
             "Tag": "mainmap_faultlines",
             "LineWidth": 3,
@@ -48,6 +51,7 @@
         },
         "lakes": {
             "IDLabel": "lakes",
+            "UseMe": true,
             "DisplayName": "Lakes",
             "Tag": "mainmap_lakes",
             "LineWidth": 0.5,
@@ -62,6 +66,7 @@
         },
         "plates": {
             "IDLabel": "plates",
+            "UseMe": true,
             "DisplayName": "plate boundaries",
             "Tag": "mainmap_plates",
             "LineWidth": 3,
@@ -76,6 +81,7 @@
         },
         "rivers": {
             "IDLabel": "rivers",
+            "UseMe": true,
             "DisplayName": "Rivers",
             "Tag": "mainmap_rivers",
             "LineWidth": 0.5,
@@ -90,6 +96,7 @@
         },
         "stations": {
             "IDLabel": "stations",
+            "UseMe": false,
             "DisplayName": "stations",
             "Tag": "mainmap_stations",
             "LineWidth": 3,
@@ -104,6 +111,7 @@
         },
         "volcanoes": {
             "IDLabel": "volcanoes",
+            "UseMe": false,
             "DisplayName": "Volcanoes",
             "Tag": "mainmap_volcanoes",
             "LineWidth": 1.5,
