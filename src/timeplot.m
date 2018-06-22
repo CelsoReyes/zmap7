@@ -9,7 +9,7 @@ function pl = timeplot
     %
     %
     %
-    % Time of events with a Magnitude greater than ZG.big_eq_minmag will
+    % Time of events with a Magnitude greater than ZG.CatalogOpts.BigEvents.MinMag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
     %                       - "primeCatalog" if either "Back" button or "Close" button is pressed.

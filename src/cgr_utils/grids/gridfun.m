@@ -67,10 +67,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     % set flags for how to treat this data
     multifun=iscell(infun);
-    countEvents=nargout>1;
-    getMaxDist=nargout>2;
     
-    MIN_POINTS_FOR_PARALLEL = ZmapGlobal.Data.MinPointsForParallel;
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     
@@ -85,21 +82,27 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
     
     values = initialize_from_grid(answidth);
+    resultsize = [size(values,1),1];
     
-    nEvents=zeros(size(values,1),1);
+    nEvents = zeros(resultsize);
+    maxDist = nan(resultsize);
+    maxMag = nan(resultsize);
     
-    maxDist=nan(size(values,1),1);
-    
-    maxMag=nan(size(values,1),1);
-    
-    wasEvaluated=false(length(zgrid),1);
+    wasEvaluated = false(length(zgrid),1);
     
     drawnow nocallbacks
     
     % start parallel pool if necessary, but warn user!
     ZG = ZmapGlobal.Data;
+    
+    
+    UseParallelProcessing = ZG.ParallelProcessingOpts.Enable && ...
+        length(zgrid) >= ZG.ParallelProcessingOpts.Threshhold;
+    
     try
-        start_the_parallel_pool();
+        if UseParallelProcessing
+            start_the_parallel_pool();
+        end
     catch ME
         warning(ME.message);
     end
@@ -119,6 +122,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
     else
+            
         doSinglefun(infun);
     end
     toc(mytic)
@@ -134,50 +138,49 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
  
     function doSinglefun(myfun)
-        if length(zgrid)<MIN_POINTS_FOR_PARALLEL || ~ZG.useParallel
-            
-            gridpoints = zgrid.GridVector;
-            gridpoints=gridpoints(zgrid.ActivePoints,:);
-            
-            % where to put the value back into the matrix
-            activeidx = find(zgrid.ActivePoints);
-            doZ=~isempty(zgrid.Z);
-            
-            for i=1:numel(activeidx)
-                fun=myfun; % local copy of function
-                % is this point of interest?
-                write_idx = activeidx(i);
-                x=gridpoints(i,1);
-                y=gridpoints(i,2);
-                if doZ
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
-                else
-                    
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
-                end
-                
-                nEvents(write_idx)=minicat.Count;
-                maxDist(write_idx)=maxd;
-                if ~isempty(minicat)
-                    maxMag(write_idx)=max(minicat.Magnitude);
-                end
-                % are there enough events to do the calculation?
-                if minicat.Count < selcrit.requiredNumEvents
-                    nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
-                    continue
-                end
-                
-                returned_vals = fun(minicat);
-                values(write_idx,:)=returned_vals;
-                
-                wasEvaluated(write_idx)=true;
-                if ~mod(i,ceil(length(zgrid)/50))
-                    h.String=sprintf('Computing values across grid.   %5d / %d Total points', i,length(zgrid));
-                    drawnow limitrate nocallbacks
-                end
-            end
-        else
+        if UseParallelProcessing
             error('disabled parallel processing')
+        end
+            
+        gridpoints = zgrid.GridVector;
+        gridpoints=gridpoints(zgrid.ActivePoints,:);
+        
+        % where to put the value back into the matrix
+        activeidx = find(zgrid.ActivePoints);
+        doZ=~isempty(zgrid.Z);
+        
+        for i=1:numel(activeidx)
+            fun=myfun; % local copy of function
+            % is this point of interest?
+            write_idx = activeidx(i);
+            x=gridpoints(i,1);
+            y=gridpoints(i,2);
+            if doZ
+                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
+            else
+                
+                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+            end
+            
+            nEvents(write_idx)=minicat.Count;
+            maxDist(write_idx)=maxd;
+            if ~isempty(minicat)
+                maxMag(write_idx)=max(minicat.Magnitude);
+            end
+            % are there enough events to do the calculation?
+            if minicat.Count < selcrit.requiredNumEvents
+                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                continue
+            end
+            
+            returned_vals = fun(minicat);
+            values(write_idx,:)=returned_vals;
+            
+            wasEvaluated(write_idx)=true;
+            if ~mod(i,ceil(length(zgrid)/50))
+                h.String=sprintf('Computing values across grid.   %5d / %d Total points', i,length(zgrid));
+                drawnow limitrate nocallbacks
+            end
         end
     end
 
@@ -221,7 +224,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     function start_the_parallel_pool()
         p=gcp('nocreate');
-        if isempty(p) &&  ZG.useParallel
+        if isempty(p)
             msgbox_nobutton('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
             parpool();
         end

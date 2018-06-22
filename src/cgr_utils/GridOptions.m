@@ -45,7 +45,7 @@ classdef GridOptions < handle
                         obj.gridEntireArea = gridopt.GridEntireArea;
                         
                         % assume intent is to follow meridians if dx units are in degrees
-                        obj.followMeridians = matlab.lang.OnOffSwitchState(dx == "deg");
+                        obj.followMeridians = matlab.lang.OnOffSwitchState(ismember(lower(obj.dxUnits),{"deg","degrees"}));
                     end
                 case {0,2,3,4}
                     warning(help('GridOptions.GridOptions'));

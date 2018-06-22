@@ -16,7 +16,7 @@ function newsta(sta)
     %b = ZG.newcat;
     
     %select big evenets
-    l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
+    l = ZG.newt2.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
     big = ZG.newt2.subset(l);
     
     [ZG.compare_window_dur, ZG.bin_dur] = choose_parameters(ZG.compare_window_dur, ZG.bin_dur); % window length, bin length
@@ -131,7 +131,7 @@ function newsta(sta)
     % plot big events on curve
     %
     if ~isempty(big)
-        l = ZG.newt2.Magnitude > ZG.big_eq_minmag;
+        l = ZG.newt2.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
         f = find( l  == 1);
         bigplo = plot(big.Date,f,'hm');
         set(bigplo,'LineWidth',1.0,'MarkerSize',10,...

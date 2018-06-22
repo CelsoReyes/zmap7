@@ -199,7 +199,7 @@ function create_all_menus(obj, force)
             Futures.MenuSelectedFcn,@(~,~)setcol,'Enable','off'); %
         
         uimenu(mapoptionmenu,...
-            'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.big_eq_minmag)],...
+            'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)],...
             Futures.MenuSelectedFcn,@cb_plot_large_quakes);
         
         uimenu(mapoptionmenu,'label','Redraw',...
@@ -246,10 +246,10 @@ function create_all_menus(obj, force)
         
         function cb_plot_large_quakes(src,~)
             ZG=ZmapGlobal.Data;
-            [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
-                struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
-            src.Label=['Mark large event with M > ' num2str(ZG.big_eq_minmag)];
-            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.big_eq_minmag);
+            [~,~,ZG.CatalogOpts.BigEvents.MinMag] = smart_inputdlg('Choose magnitude threshold',...
+                struct('prompt','Mark events with M > ? ','value',ZG.CatalogOpts.BigEvents.MinMag));
+            src.Label=['Mark large event with M > ' num2str(ZG.CatalogOpts.BigEvents.MinMag)];
+            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
             set(findobj(obj.fig,'Tag','big events'), 'DisplayName', src.Label);
         end
         

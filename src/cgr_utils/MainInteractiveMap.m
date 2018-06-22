@@ -671,7 +671,7 @@ classdef MainInteractiveMap
                 big_events = ZmapCatalog();
             end
             
-            defaults.DisplayName = sprintf('Events > M %2.1f', ZG.big_eq_minmag);
+            defaults.DisplayName = sprintf('Events > M %2.1f', ZG.CatalogOpts.BigEvents.MinMag);
             
             if big_events.Count > 0
                 % show events
@@ -870,10 +870,10 @@ function plot_large_quakes()
     ZG=ZmapGlobal.Data;
     mycat=ZmapCatalog(ZG.primeCatalog);
 
-    [~,~,ZG.big_eq_minmag] = smart_inputdlg('Choose magnitude threshold',...
-        struct('prompt','Mark events with M > ? ','value',ZG.big_eq_minmag));
+    [~,~,ZG.CatalogOpts.BigEvents.MinMag] = smart_inputdlg('Choose magnitude threshold',...
+        struct('prompt','Mark events with M > ? ','value',ZG.CatalogOpts.BigEvents.MinMag));
     
-    ZG.maepi = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
+    ZG.maepi = mycat.subset(mycat.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
     zmap_update_displays(); %FIXME changing magnitudes didn't chnge map output
 end
 
@@ -1289,7 +1289,7 @@ function pd = getPlotDefaults(name)
             'MarkerEdgeColor','k');
         
         defaults('bigquake') = struct('Tag','mainmap_big_events',...
-            'DisplayName',sprintf('Events > M%2.1f',ZG.big_eq_minmag),...
+            'DisplayName',sprintf('Events > M%2.1f',ZG.CatalogOpts.BigEvents.MinMag),...
             'Marker','h',...
             'Color','m',...
             'LineWidth',1.5,...

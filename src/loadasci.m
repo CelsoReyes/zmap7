@@ -83,10 +83,10 @@ function loadasci(da,sa)
                 % Sort the catalog in time just to make sure ...
                 [s,is] = sort(ZG.primeCatalog.Date);
                 a = a(is(:,1),:) ;
-                ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
+                ZG.CatalogOpts.BigEvents.MinMag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 
                 close;
-                [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+                [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
                 %ZmapMessageCenter.update_catalog();
                 %zmap_update_displays();
                 setup
@@ -138,13 +138,13 @@ function loadasci(da,sa)
                 % Sort the catalog in time just to make sure ...
                 [s,is] = sort(ZG.primeCatalog.Date);
                 a = a(is(:,1),:) ;
-                ZG.big_eq_minmag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
+                ZG.CatalogOpts.BigEvents.MinMag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 % set up the focal mechanism data
                 %dall=prepfocal()
                 
                 close;
                 
-                [ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+                [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
                 %ZmapMessageCenter.update_catalog();
                 %zmap_update_displays();
                 setup

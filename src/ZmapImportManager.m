@@ -42,7 +42,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     end
     
     % save this catalog
-    saveFile=fullfile(ZmapGlobal.Data.work_dir, ZmapGlobal.Data.lastCatalogFilename);
+    saveFile=fullfile(ZmapGlobal.Data.work_dir, ZmapGlobal.Data.ZG.CatalogOpts.LastCatalogilename);
     [pathstr,name,ext] = fileparts(saveFile);
     if isempty(ext)
         ext='.mat';
@@ -68,8 +68,8 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
         setDefaultValues(ZG.primeCatalog);
         cf=@()ZG.primeCatalog;
         ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
-        ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.big_eq_minmag);
-        %[ZG.Views.primary,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZG.Views.primary, ZG.big_eq_minmag);
+        ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
+        %[ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
         
         % OPTIONALLY CLEAR SHAPE
         if ~isempty(ShapeGeneral.ShapeStash)
@@ -114,5 +114,5 @@ function setDefaultValues(A)
     elseif ttdif<=1
         ZG.bin_dur = days(0.01);
     end
-    ZG.big_eq_minmag = max(A.Magnitude) -0.2;
+    ZG.CatalogOpts.BigEvents.MinMag = max(A.Magnitude) -0.2;
 end

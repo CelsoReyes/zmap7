@@ -1753,6 +1753,9 @@ classdef FancyColors
         
         function n=name(val)
             % NAME translates an RGB decimal value or hex string to a color name
+            if startsWith(val,'[') && endsWith(val,']')
+                val=str2num(val); %#ok<ST2NM>
+            end
             if ischar(val)
                 n=FancyColors.colors{FancyColors.hex2idx(val),1};
             else
@@ -1762,6 +1765,9 @@ classdef FancyColors
         
         function h=hex(val)
             % HEX translates a color name or RGB decimal value to a hex string
+            if startsWith(val,'[') && endsWith(val,']')
+                val=str2num(val); %#ok<ST2NM>
+            end
             if ischar(val)
                 h=FancyColors.colors{FancyColors.name2idx(val),3};
             else
@@ -1773,7 +1779,10 @@ classdef FancyColors
             % RGB translate from a color name or hex value into the RGB decimal value
             % d= RGB( name )
             % d = RGB( hexstring )
-            if length(val)==6&& all(ismember(val,'ABCDEF0123456789'))
+            if startsWith(val,'[') && endsWith(val,']')
+                d=str2num(val); %#ok<ST2NM>
+                assert(isequal(size(d),[1,3]),'Expected [R G B]');
+            elseif length(val)==6&& all(ismember(val,'ABCDEF0123456789'))
                 d=FancyColors.colors{FancyColors.hex2idx(val),2};
             else
                 d=FancyColors.colors{FancyColors.name2idx(val),2};

@@ -6,7 +6,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
     %
-    % bigEventMag typically comes from ZG.big_eq_minmag
+    % bigEventMag typically comes from ZG.CatalogOpts.BigEvents.MinMag
    
     %ZG=ZmapGlobal.Data;
     report_this_filefun();
@@ -18,7 +18,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     %    ZG.bin_dur = days(30);
     %end
     
-    big_evt_minmag = ZmapGlobal.Data.big_eq_minmag;
+    big_evt_minmag = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     bigEventCat = mycat.subset(mycat.Magnitude > big_evt_minmag);
     daterange = mycat.DateRange;
     minti = daterange(1);
@@ -281,7 +281,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         h = findall(myparent,'Tag','mapview_end_field');
         maxti = datetime(datevec(h.Value));
         h = findall(myparent,'Tag','mapview_big_evt_field');
-        ZG.big_eq_minmag = h.Value;
+        ZG.CatalogOpts.BigEvents.MinMag = h.Value;
         h = findall(myparent,'Tag','catalog_name_field');
         mycat.Name = h.String;
         %h = findall(myparent,'Tag','mapview_binlen_field');
@@ -296,7 +296,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         
         %create catalog of "big events" if not merged with the original one:
         %
-        bigEventCat = mycat.subset(mycat.Magnitude > ZG.big_eq_minmag);
+        bigEventCat = mycat.subset(mycat.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
         
         %mycat.sort('Date');
         % ZG.Views.(mycatview)=mycat;

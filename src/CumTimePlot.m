@@ -116,7 +116,7 @@ classdef (Sealed) CumTimePlot < handle
             % plot big events on curve
             ZG=ZmapGlobal.Data;
             % select "big" events
-            bigMask= obj.catview.Magnitude >= ZG.big_eq_minmag;
+            bigMask= obj.catview.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
             bigCat = obj.catview.subset( bigMask );
             
             bigIdx = find(bigMask);

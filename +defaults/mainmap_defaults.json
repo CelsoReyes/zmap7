@@ -1,8 +1,34 @@
 {
    "AspectRatioByLatitude":true,
    "ShowLegend":true,
-   "ShowLatLonGrid":false,
-   "ColorEventsBy":"-none-",
+   "ShowLatLonGrid":true,
+   "MainEvents":{
+      "LineWidth":2,
+      "Marker":"square",
+      "MarkerEdgeColor":"black",
+      "MarkerFaceColor":"none",
+      "ColorBy":"-none-",
+      "UseDotsForSmallEvents":false,
+      "SmallEventThreshhold":0,
+      "MarkerSizeFcn":"mag2dotsize",
+      "UseDotsForTooManyEvents":true,
+      "HowManyAreTooMany":100000
+   },
+   "UnselectedEvents":{
+      "LineWidth":1,
+      "Marker":".",
+      "MarkerEdgeColor":"[0.7 0.7 0.7]",
+      "MarkerFaceColor":"none",
+      "MarkerSize":6
+   },
+   "BigEvents":{
+      "LineWidth":1,
+      "Marker":"hexagram",
+      "MarkerEdgeColor":"black",
+      "MarkerFaceColor":"yellow",
+      "MarkerSize":10,
+      "UseMainEventSizeFunction":true
+   },
    "FeatureProperties":{
       "borders":{
          "IDLabel":"borders",

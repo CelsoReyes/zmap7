@@ -228,7 +228,7 @@ end %classdef
 function timeplot(mycat, nosort)
     % timeplot plots selected events as cummulative # over time
     %
-    % Time of events with a Magnitude greater than ZG.big_eq_minmag will
+    % Time of events with a Magnitude greater than ZG.CatalogOpts.BigEvents.MinMag will
     % be shown on the curve.  Operates on mycat, resets  b  to mycat
     %     ZG.newcat is reset to:
     %                       - "primeCatalog" if either "Back" button or "Close" button is pressed.
@@ -395,9 +395,9 @@ function timeplot(mycat, nosort)
         ZG.newcat =ZG.primeCatalog;
     end
     
-    % select big events ( > ZG.big_eq_minmag)
+    % select big events ( > ZG.CatalogOpts.BigEvents.MinMag)
     %
-    l = mycat.Magnitude >= ZG.big_eq_minmag;
+    l = mycat.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
     big = mycat.subset(l);
     %calculate start -end time of overall catalog
     statime=[];
@@ -446,7 +446,7 @@ function timeplot(mycat, nosort)
     %
     if ZG.bin_dur>=days(1)
         if ~isempty(big)
-            l = mycat.Magnitude >= ZG.big_eq_minmag;
+            l = mycat.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
             f = find(l);
             hold(ax,'on')
             bigplo = plot(ax,big.Date,f,'hm');
@@ -493,7 +493,7 @@ function timeplot(mycat, nosort)
     
     function cut_tmd_callback(~,~)
         cf = @()ZG.newt2;
-        [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
+        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
         ZG.newt2=tmpcat.Catalog();
         CumTimePlot(ZG.newt2);
     end

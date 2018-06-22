@@ -176,7 +176,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 obj.bigEvents=obj.rawcatalog;
             else
-                obj.bigEvents=obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.big_eq_minmag);
+                obj.bigEvents=obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag);
             end
             %% prepare the figure
             obj.prepareMainFigure();

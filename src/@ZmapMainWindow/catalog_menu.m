@@ -170,7 +170,7 @@ function catalog_menu(obj, force)
     
     function cb_editrange(~,~)
         cf=@()obj.catalog
-        [tmpcat,ZG.maepi,ZG.big_eq_minmag] = catalog_overview(ZmapCatalogView(cf), ZG.big_eq_minmag);
+        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
         obj.pushState();
         obj.rawcatalog=tmpcat.Catalog();
         obj.replot_all;

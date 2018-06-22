@@ -1,9 +1,9 @@
 {
    "LineProps":{
       "Marker":"+",
-      "LineWidth":3,
-      "Color":"Option 1",
-      "MarkerSize":10
+      "LineWidth":0.5,
+      "Color":"[0.7 0 0]",
+      "MarkerSize":3
    },
    "SeparationProps":{
       "Dx":5,

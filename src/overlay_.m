@@ -70,7 +70,7 @@ function overlay_()
         epimax = plot(ax,ZG.maepi.Longitude,ZG.maepi.Latitude,'hm');
         set(epimax,'LineWidth',1.5,'MarkerSize',12,...
             'MarkerFaceColor','y','MarkerEdgeColor','k')
-        epimax.DisplayName = sprintf('Events > M %2.1f', ZG.big_eq_minmag);
+        epimax.DisplayName = sprintf('Events > M %2.1f', ZG.CatalogOpts.BigEvents.MinMag);
         
         stri2 = '';
         for i = 1:ZG.maepi.Count

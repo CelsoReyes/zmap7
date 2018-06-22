@@ -207,7 +207,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             %
             n = obj.RawCatalog.Count;
             
-            % set mainshock magnitude to  ZG.big_eq_minmag
+            % set mainshock magnitude to  ZG.CatalogOpts.BigEvents.MinMag
             % f = find(newa(:,6) == max(newa(:,6)))
             % newa(f,6) = min(newa(:,6));
             

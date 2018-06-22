@@ -3,7 +3,7 @@ function cltiplot(var1)
     % function to create a cumulative number curve of a selected area
     % valid for all catalog types in Cluster Menu or Cluster
     % cumulative number versus time
-    % Time of events with a Magnitude greater than ZG.big_eq_minmag will
+    % Time of events with a Magnitude greater than ZG.CatalogOpts.BigEvents.MinMag will
     % be shown on the curve.
     %
     

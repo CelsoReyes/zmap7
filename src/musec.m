@@ -51,7 +51,7 @@ function musec()
         newa  = [newa ; a(inde,:) xsecx'+ma];
     end
     
-    l = newa(:,6) >= ZG.big_eq_minmag;
+    l = newa(:,6) >= ZG.CatalogOpts.BigEvents.MinMag;
     maex = newa(l,po);
     maey = newa(l,7);
     if isempty(maex)

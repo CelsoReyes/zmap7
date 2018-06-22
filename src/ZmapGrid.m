@@ -47,16 +47,16 @@ classdef ZmapGrid
     % see also gridfun, EventSelectionChoice, autogrid
     %
     properties
-        Name (1,:) char = '' % name of this grid
+        Name (1,:) char = ZmapGlobal.Data.GridOpts.Name % name of this grid
         Units (1,:) char = 'unk' % degrees or kilometers
         ActivePoints logical    % logical mask
         X double % all X positions in matrix
         Y double % all Y positions in matrix
         Z double % all Y positions in matrix.
         Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
-        MarkerSize = ZmapGlobal.Data.grid_markersize;
-        Marker = ZmapGlobal.Data.grid_marker;
-        Color = ZmapGlobal.Data.grid_color;
+        MarkerSize = ZmapGlobal.Data.GridOpts.LineProps.MarkerSize;
+        Marker = ZmapGlobal.Data.GridOpts.LineProps.Marker;
+        Color = FancyColors.rgb(ZmapGlobal.Data.GridOpts.LineProps.Color);
     end
     properties(Dependent)
         Xactive % all X positions for active points
@@ -141,10 +141,10 @@ classdef ZmapGrid
                         
                         % 3rd: FIGURE OUT LIMITS
                         limsLonLatZ=[xlim(ax);ylim(ax)];
-                        switch gridopt.horizUnits
-                            case 'km'
+                        switch lower(gridopt.horizUnits)
+                            case {'km','kilometers'}
                                 obj.Units='Kilometers';
-                            case 'deg'
+                            case {'deg','degrees'}
                                 obj.Units='Degrees';
                         end
                         
