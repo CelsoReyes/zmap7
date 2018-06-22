@@ -17,9 +17,6 @@ function ini_zmap()
     % provide the list as a cell. Valid choices are:
     % {'borders','coastline','faults','lakes','plates','rivers','stations','volcanoes'}
     ZG.mainmap_features={'borders','coastline','faults','lakes','plates','rivers'};
-    ZG.event_marker = 's';
-    
-    ZG.grid_markersize = 2.5;
     
     report_this_filefun('on');
     report_this_filefun('set',1);
