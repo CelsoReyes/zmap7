@@ -24,10 +24,16 @@ function add_topo(varargin)
         case 'CH'
             tag='topographic_map_switzerland';
             delete(findobj(ax,'Tag',tag,'-and','Type','surface'));
-            filename=fullfile('/Users/reyesc/Desktop/data/DHM200.asc');
+            fname='DHM200.asc';
+            if ~exist(fullfile('CH',fname),'file')
+                CHSourceURL='https://opendata.swiss/en/dataset/das-digitale-hohenmodell-der-schweiz-mit-einer-maschenweite-von-200-m';
+                error('Data for this topographic model cannot be found. Expected "%s" in folder dem/CH/\n\nPossibly downloadable from:\n%s',fname,CHSourceURL);
+            end
+            
+            filename=fullfile('CH',fname); % expected to be in dem directory
             [Z,~] = arcgridread(filename);
             
-            % limits picked out of accompanying metadata file
+            % limits picked manually out of accompanying metadata file
             LonLims=[5.867,10.921];
             LatLims=[45.803,47.866];
             lats=fliplr(linspace(LatLims(1),LatLims(2),size(Z,1)));
@@ -38,14 +44,21 @@ function add_topo(varargin)
             
             % expand the borders by 1 sample in each direction
             lonidx(find(diff(lonidx)==1))=true; 
-            lonidx(find(diff(lonidx)==-1)+1)=true;
+            lastadd=find(diff(lonidx)==-1); 
+            if ~isempty(lastadd)
+                lonidx(lastadd+1)=true;
+            end
+            
             latidx(find(diff(latidx)==1))=true; 
-            latidx(find(diff(latidx)==-1)+1)=true; 
+            lastadd=find(diff(latidx)==-1);
+            if ~isempty(lastadd)
+                latidx(lastadd+1)=true; 
+            end
             Z=Z(latidx,lonidx);
             
             %set(ax,'YDir','normal')
             ax.NextPlot = 'add';
-            pc=pcolor(ax,lons,lats,Z);
+            pc=pcolor(ax,lons(lonidx),lats(latidx),Z);
             pc.Tag=tag;
             pc.DisplayName='Swiss topography';
             ax.NextPlot = 'replace';
@@ -56,7 +69,13 @@ function add_topo(varargin)
         otherwise
             tag='topographic_map_world';
             delete(findobj(ax,'Tag',tag,'-and','Type','surface'));
-            [Z,R]=geotiffread('/Users/reyesc/Desktop/ETOPO1_Bed_c_geotiff.tif');
+            fname='ETOPO1_Bed_c_geotiff.tif';
+            if ~exist(fullfile('WORLD',fname),'file')
+                WorldSourceURL='https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/bedrock/cell_registered/georeferenced_tiff/';
+                error('Data for this topographic model cannot be found. Expected "%s" in folder dem/WORLD/\nPossibly downloadable from:\n%s',fname,WorldSourceURL);
+            end
+            
+            [Z,R]=geotiffread(fullfile('WORLD',fname));
             lons = linspace(R.XWorldLimits(1),R.XWorldLimits(2),R.RasterSize(2));
             lats = fliplr(linspace(R.YWorldLimits(1),R.YWorldLimits(2),R.RasterSize(1)));
             
@@ -65,9 +84,15 @@ function add_topo(varargin)
             
             % expand the borders by 1 sample in each direction
             lonidx(find(diff(lonidx)==1))=true; 
-            lonidx(find(diff(lonidx)==-1)+1)=true;
+            lastadd=find(diff(lonidx)==-1); 
+            if ~isempty(lastadd)
+                lonidx(lastadd+1)=true;
+            end
             latidx(find(diff(latidx)==1))=true; 
-            latidx(find(diff(latidx)==-1)+1)=true; 
+            lastadd=find(diff(latidx)==-1);
+            if ~isempty(lastadd)
+                latidx(lastadd+1)=true; 
+            end
             Z=Z(latidx,lonidx);
             
             ax.NextPlot = 'add';

@@ -9,6 +9,7 @@ path_list = [
     'importfilters';
     'resources';
     });
+    fullfile(hodi, 'dem', {'WORLD';'CH'});  %location for DEM data files
     fullfile(hodi, 'resources', {'features';'sample';'focalmech'});
     fullfile(hodi, 'src',{'afterrate';
     'cgr_utils';
