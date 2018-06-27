@@ -6,8 +6,8 @@ function dramap_z(colback, valuemap)
     
     j = colormap;
     % check if mapping toolbox and topo map exists
-    if ~license('test','map_toolbox')
-        errordlg('It seems like you do not have the mapping toolbox installed - plotting topography will not work without it, sorry');
+
+    if ~has_mapping_toolbox()
         return
     end
     

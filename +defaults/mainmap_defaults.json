@@ -3,7 +3,7 @@
    "ShowLegend":true,
    "ShowLatLonGrid":true,
    "MainEvents":{
-      "LineWidth":2,
+      "LineWidth":0.5,
       "Marker":"square",
       "MarkerEdgeColor":"black",
       "MarkerFaceColor":"none",
@@ -17,7 +17,7 @@
    "UnselectedEvents":{
       "LineWidth":1,
       "Marker":".",
-      "MarkerEdgeColor":"[0.7 0.7 0.7]",
+      "MarkerEdgeColor":"[0.76 0.75 0.8]",
       "MarkerFaceColor":"none",
       "MarkerSize":6
    },

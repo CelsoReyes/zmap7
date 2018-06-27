@@ -14,7 +14,7 @@ function [fMc] = calc_McMaxCurvature(mCatalog)
     % Danijel Schorlemmer 2001
     % Modified by CGReyes 2017
     
-    report_this_filefun(0);
+    % report_this_filefun();
     
     try
         % Get maximum and minimum magnitudes of the catalog

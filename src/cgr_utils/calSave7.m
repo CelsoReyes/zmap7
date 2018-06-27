@@ -3,7 +3,7 @@ function calSave7 (~, ~, xt, cumu2, as)
     
     %ZmapMessageCenter.set_info('Save Data','  ');
     
-    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.out_dir, '*.dat'), 'Earthquake Datafile');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Earthquake Datafile');
     if file1 && path1
         data = [xt', cumu2', as']';
         fid = fopen([path1 file1],'w') ;

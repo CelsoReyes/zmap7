@@ -54,9 +54,10 @@ classdef ZmapGrid
         Y double % all Y positions in matrix
         Z double % all Y positions in matrix.
         Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
-        MarkerSize = ZmapGlobal.Data.GridOpts.LineProps.MarkerSize;
-        Marker = ZmapGlobal.Data.GridOpts.LineProps.Marker;
-        Color = FancyColors.rgb(ZmapGlobal.Data.GridOpts.LineProps.Color);
+        PlotOpts struct = ZmapGlobal.Data.GridOpts.LineProps;
+        %MarkerSize = ZmapGlobal.Data.GridOpts.LineProps.MarkerSize;
+        %Marker = ZmapGlobal.Data.GridOpts.LineProps.Marker;
+        %Color = FancyColors.rgb(ZmapGlobal.Data.GridOpts.LineProps.Color);
     end
     properties(Dependent)
         Xactive % all X positions for active points
@@ -93,6 +94,7 @@ classdef ZmapGrid
             %
             %
             % see also: MESHGRID
+            
             
             if numel(varargin)>1 && ischar(varargin{end-1}) && varargin{end-1}=="shape"
                 myshape=varargin{end};
@@ -192,6 +194,7 @@ classdef ZmapGrid
             if isempty(obj.ActivePoints)
                 obj.ActivePoints=true(size(obj.X));
             end
+            
             
         end
         
@@ -295,10 +298,13 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',obj.Color,'displayname','grid points',...
-                'MarkerSize',obj.MarkerSize,'Marker',obj.Marker,...
+            def_opts={'color',obj.PlotOpts.Color,...
+                'displayname','grid points',...
+                'MarkerSize',obj.PlotOpts.MarkerSize,...
+                'Marker',obj.PlotOpts.Marker,...
+                'LineWidth',obj.PlotOpts.LineWidth,...
                 'LineStyle','none'};
-            varargin=[def_opts,varargin];
+            varargin=[def_opts, varargin];
             useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)
                 varargin(end)=[];
@@ -426,7 +432,7 @@ classdef ZmapGrid
                 filename = fullfile(pathname,['zmapgrid_',obj.Name,'.m']);
                 uisave('zmapgrid',filename)
             elseif ~exist('path','var')
-                filename = fullfile(ZG.data_dir,['zmapgrid_',obj.Name,'.m']);
+                filename = fullfile(ZG.Directories.data,['zmapgrid_',obj.Name,'.m']);
                 uisave('zmapgrid',filename)
             else
                 uisave('zmapgrid',fullfile(pathname,filename));
@@ -669,12 +675,12 @@ classdef ZmapGrid
                     [filename, pathname] = uigetfile('zmapgrid_*.m', 'Pick a ZmapGrid file');
                     fullfilename= fullfile(pathname,filename);
                 case 1
-                    if exist(fullfile(ZG.data_dir,filename),'file')
-                        fullfilename=fullfile(ZG.data_dir,filename);
+                    if exist(fullfile(ZG.Directories.data,filename),'file')
+                        fullfilename=fullfile(ZG.Directories.data,filename);
                     elseif exist(filename,'file')
                         fullfilename=filename;
                     else
-                        fullfilename=fullfile(ZG.data_dir,['zmapgrid_' filename '.m']);
+                        fullfilename=fullfile(ZG.Directories.data,['zmapgrid_' filename '.m']);
                     end
                 case 2
                     if exist(fullfile(pathname,filename),'file')

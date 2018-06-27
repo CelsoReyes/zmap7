@@ -33,19 +33,19 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        primeCatalog    ZmapCatalog = ZmapCatalog('default empty catalog')
-        newcat          ZmapCatalog = ZmapCatalog('default empty catalog')
-        newt2           ZmapCatalog = ZmapCatalog('default empty catalog')
-        catalog_working ZmapCatalog = ZmapCatalog('default empty catalog') 
+        primeCatalog    ZmapCatalog
+        newcat          ZmapCatalog
+        newt2           ZmapCatalog
+        catalog_working ZmapCatalog
         memorized_catalogs              % manually stored via Memorize/Recall
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
-        original        ZmapCatalog = ZmapCatalog('default empty catalog')  % used with declustering
+        original        ZmapCatalog     % used with declustering
         
         % cluster catalogs 
-        newccat          ZmapCatalog = ZmapCatalog('default empty catalog')  % apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat            ZmapCatalog = ZmapCatalog('default empty catalog')   %  some sort of clustered catalog? selclust
-        cluscat          ZmapCatalog = ZmapCatalog('default empty catalog')  %  some sort of clustered catalog? selclust
-        newclcat         ZmapCatalog = ZmapCatalog('default empty catalog')  %   some sort of clustered catalog? selclust
+        newccat          ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat            ZmapCatalog	% some sort of clustered catalog? selclust
+        cluscat          ZmapCatalog	% some sort of clustered catalog? selclust
+        newclcat         ZmapCatalog	% some sort of clustered catalog? selclust
         
         features      containers.Map = get_features('h') % map features that can be looked up by name. ex. ZG.features('volcanoes')
         well % well locations
@@ -74,9 +74,7 @@ classdef ZmapData < handle
         hold_state2 logical = false % was ho2, contained 'hold' or 'noho'
         
         % directories
-        out_dir        char % was hodo
-        data_dir       char % was hoda
-        work_dir       char
+        Directories     struct  % includes 'working', 'output', and 'data' directory locations
         
         % scaling params from view_ functions
         minc
@@ -98,7 +96,7 @@ classdef ZmapData < handle
         freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
         shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'
         
-        
+        CrossSectionOpts    struct      %
         CatalogOpts         struct
         MainEventOpts       struct      % contains details used for plotting main events
         BigEventOpts        struct      % contains details used for plotting the "big" events
@@ -106,6 +104,7 @@ classdef ZmapData < handle
         GridOpts            struct      %
         SamplingOpts        struct      % TODO integrate with GridSelector
         ParallelProcessingOpts struct   % contains  details about parallel processing
+        ResultOpts          struct      % options for the results screen
         
         someColor (1,1) char = 'w'
         event_marker char = 'o'
@@ -121,6 +120,7 @@ classdef ZmapData < handle
         GridSelector % criteria used to select events at a grid point
         %selection_shape {mustBeShape} = ShapeGeneral()
         debug           matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.off % makes special menus visible
+        debugLevel (1,1) double = 0
         
         Views           struct          = struct('primary',[],'layers',[]) % catalog views
         
@@ -154,10 +154,19 @@ classdef ZmapData < handle
             end
             
             if isfield(ZDefaults,'general')
-                obj.work_dir = fullfile(obj.hodi ,ZDefaults.general.Directories.working);
-                obj.out_dir =  fullfile(obj.hodi, ZDefaults.general.Directories.output);
-                obj.data_dir =  fullfile(obj.hodi, ZDefaults.general.Directories.data);
+                
+                % directories
+                d = ZDefaults.general.Directories;
+                dnames = fieldnames(d);
+                for i = 1 : numel(dnames)
+                    obj.Directories(1).(dnames{i}) = fullfile(obj.hodi ,d.(dnames{i}));
+                end
+                assert(all(ismember(["working","output","data"], dnames)));
+                
+                % parallel processing
                 obj.ParallelProcessingOpts = ZDefaults.general.ParallelProcessing;
+                
+                % debug
                 obj.debug = ZDefaults.general.DebugMode;
             end
             
@@ -165,29 +174,32 @@ classdef ZmapData < handle
                 obj.CatalogOpts = ZDefaults.catalog;
                 
                 if obj.CatalogOpts.ReopenLastCatalog
-                    catalogFile = fullfile(obj.work_dir,ZDefaults.catalog.LastCatalogFilename);
+                    catalogFile = fullfile(obj.Directories.working,ZDefaults.catalog.LastCatalogFilename);
                     if exist(catalogFile,'file')
-                        tmp=load(catalogFile,'catalog');
+                        tmp = load(catalogFile,'catalog');
                     end
                     obj.primeCatalog = tmp.catalog;
                 end
             end
             
             if isfield(ZDefaults,'cross_section')
+                obj.CrossSectionOpts = ZDefaults.cross_section;
             end
             
             
             if isfield(ZDefaults,'grid')
                 obj.GridOpts = ZDefaults.grid;
-                sepProps=obj.GridOpts.SeparationProps;
-                obj.gridopt=GridOptions(...
-                    sepProps.Dx, sepProps.Dy, sepProps.Dz, sepProps.xyunits,...
-                    sepProps.FollowMeridians, 'off')
+                sepProps = obj.GridOpts.SeparationProps;
+                
+                obj.gridopt = GridOptions(...
+                    sepProps.Dx, sepProps.Dy, sepProps.Dz, lower(sepProps.xyunits),...
+                    sepProps.FollowMeridians, 'off');
             end
             
             if isfield(ZDefaults,'mainmap')
                 obj.MainEventOpts = ZDefaults.mainmap.MainEvents;
                 obj.BigEventOpts = ZDefaults.mainmap.BigEvents;
+                obj.UnselectedEventOpts = ZDefaults.mainmap.UnselectedEvents;
                 
                 obj.lock_aspect = ZDefaults.mainmap.AspectRatioByLatitude;
                 obj.mainmap_grid = ZDefaults.mainmap.ShowLatLonGrid;
@@ -195,6 +207,7 @@ classdef ZmapData < handle
             end
             
             if isfield(ZDefaults,'result')
+                obj.ResultOpts = ZDefaults.result;
             end
             
             if isfield(ZDefaults,'sampling')

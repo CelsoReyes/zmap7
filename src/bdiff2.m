@@ -312,6 +312,12 @@ classdef bdiff2
                 h2=axes('position',rect);
                 h2.Visible='off';
                 text(ax,.16,.14,tx);
+            else
+                txh=text(ax,'Units','Normalized',...
+                    'HorizontalAlignment','right',...
+                    'Position',[.995 .75],...
+                    'String',tx);
+                txh.String(end)=[];
             end
             
             bfig.Visible = 'on';
@@ -420,22 +426,22 @@ classdef bdiff2
         function tx=descriptive_text(obj,gBdiff)
             ZG=ZmapGlobal.Data;
             if ZG.hold_state
-                ba_text = sprintf('b-value (w LS, M  >= %f ): %.2f +/- %.2f \na-value = %.3f',...
+                ba_text = sprintf('b-value (w LS, M >= %f): %.2f +/-%.2f \na-value = %.3f',...
                     obj.MaxCurveMag ,obj.bw, obj.std_backg, obj.aw );
                 
                 p_text = sprintf('p=  %.2g', obj.pr);
                 nbs_text = sprintf('n1: %g, n2: %g, b1: %g, b2: %g', gBdiff.n1, gBdiff.n2, gBdiff.b1, gBdiff.b2);
                 tx = sprintf('%s\n%s\n%s', ba_text, p_text, nbs_text');
             else
-                fmt = 'b-value = %.2f +/- %.2f\na-value = %.3f,  a-value (annual) = %.3f';
+                fmt = 'b-value = %.2f +/-%.2f\na-value=%.3f, (annual)=%.3f';
                 if ~obj.dlg_res.doBootstrap
                     ba_text = sprintf(fmt, obj.bw, obj.std_backg, obj.aw, obj.a0);
-                    sol_type = 'Maximum Likelihood Solution';
-                    mag_text = sprintf('Magnitude of Completeness = %.2f',obj.magco);
+                    sol_type = 'Max Likelihood Solution';
+                    mag_text = sprintf('Magnitude of Completeness=%.2f',obj.magco);
                 else
                     ba_text = sprintf(fmt, obj.bw, obj.ew, obj.aw, obj.a0);
-                    sol_type = 'Maximum Likelihood Estimate, Uncertainties by bootstrapping';
-                    mag_text = sprintf('Magnitude of Completeness = %.2f +/- %.2f',obj.magco, obj.fStd_Mc);
+                    sol_type = 'Max Likelihood Est., Uncertainties by bootstrapping';
+                    mag_text = sprintf('Magnitude of Completeness=%.2f +/-%.2f',obj.magco, obj.fStd_Mc);
                 end
                 tx = sprintf('%s\n%s\n%s', sol_type, ba_text ,mag_text);
             end % ZmapGlobal.Data.hold_state

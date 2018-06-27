@@ -49,7 +49,7 @@ function clpickp(choice)
             y = [y; yi];
             proceed=true;
         case 'LOAD'
-            [file2,path2] = uigetfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'),'Cluster Datafile');
+            [file2,path2] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'),'Cluster Datafile');
             
             load([path2 file2]);
             x=polcordinates(:,1);

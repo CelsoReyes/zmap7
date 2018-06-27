@@ -2,7 +2,7 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep) % autogener
     %This program generates a synthetic catalog of given total number of events, b-value, minimum magnitude,
     %and magnitude increment. matches number of events provided
     %
-    % VALUE RETURNED IS some sort of residual from binned actual cat vs synth cat
+    % VALUE RETURNED IS some sort of residual from binned actual mags vs synth mags
     %  
     %   actualMags: total # events
     %   B : desired b-value
@@ -14,12 +14,10 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep) % autogener
     % turned into function by Celso G Reyes 2017
     % rewritten by Celso G Reyes 2017
     
-    %FIXME why ZG.newt2?
-    
     %report_this_filefun();
     
     nEvents=numel(actualMags);
-    mags= startMag : magStep : 15;
+    mags= startMag : magStep : 10;
     N = 10 .^ (log10(nEvents) - B*(mags - startMag)); %expected events per mag step
     % N=round(N);
     N=round(N / sum(N) * nEvents); % get distribution at this number

@@ -29,7 +29,7 @@ classdef ZmapMainWindow < handle
         mdate %
         mshape %
         WinPos (4,1) = position_in_current_monitor(Percent(95), Percent(90))% [50 50 1200 750]; % position of main window
-        eventMarker char = ZmapGlobal.Data.event_marker; % Marker used when plotting events
+        mainEventProps = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
         sharedContextMenus;
     end
     
@@ -521,7 +521,7 @@ classdef ZmapMainWindow < handle
             defaultanswer={num2str(obj.CrossSections(idx).width_km)};
             answer=inputdlg(prompt, name, numlines, defaultanswer);
             if ~isempty(answer)
-                obj.CrossSections(idx).change_width(str2double(answer), obj.map_axes);
+                obj.CrossSections(idx).change_width(str2double(answer));
             end
             ax= findobj(gco, 'Type', 'axes', '-and', '-regexp', 'Tag', 'Xsection strikeplot.*');
             ax.UserData.cep.catalogFcn=@()obj.xscats(obj.CrossSections(idx).name);

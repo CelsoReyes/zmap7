@@ -18,8 +18,6 @@ function ini_zmap()
     % {'borders','coastline','faults','lakes','plates','rivers','stations','volcanoes'}
     ZG.mainmap_features={'borders','coastline','faults','lakes','plates','rivers'};
     
-    report_this_filefun('on');
-    report_this_filefun('set',1);
     
     infstri = ' Please enter information about the | current dataset here';
 

@@ -23,7 +23,7 @@ function domisfit(catalog,sig,plu,az,phi,R)
     try
         save data.inp tmp -ascii
     catch ME
-        error_handler(ME, ['Error - could not save file ' ZmapGlobal.Data.out_dir 'data.inp - permission?']);
+        error_handler(ME, ['Error - could not save file ' ZmapGlobal.Data.Directories.output 'data.inp - permission?']);
     end
     
     infi =  ['data.inp'];

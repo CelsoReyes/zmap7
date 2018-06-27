@@ -9,17 +9,16 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
     
     % This is a completeness determination test
     magwin_centers = -2 : 0.1 : 6;
-    [bval,xt2] = histcounts(magnitudes,centers2edges(magwin_centers));
+    [bval,xt2] = histcounts(magnitudes, centers2edges(magwin_centers));
     xt2=edges2centers(xt2);
     l = find(bval == max(bval), 1, 'last' );
     magco0 =  xt2(l);
     
-    loopvalues= magco0-0.5 : 0.1 : magco0+0.7;
-    nMags = numel(loopvalues);
+    loopMags= magco0-0.5 : 0.1 : magco0+0.7; % from near magnitude of completion to a little past it.
+    nMags = numel(loopMags);
     dat=nan(nMags,2);
-    
     for n = 1:nMags
-        thisMag = loopvalues(n);
+        thisMag = loopMags(n);
         l = magnitudes >= thisMag - 0.0499;
         nEvents=sum(l);
         if nEvents >= 25

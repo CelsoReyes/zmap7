@@ -2,6 +2,8 @@ function create_all_menus(obj, force)
     % create menus for main zmap figure
     % create_all_menus() - will create all menus, if they don't exist
     % create_all_menus(force) - will delete and recreate menus if force is true
+    import zmaptopo.pltopo
+    
     h = findobj(obj.fig,'Tag','mainmap_menu_divider');
     if ~exist('force','var')
         force=false;
@@ -310,8 +312,11 @@ function create_all_menus(obj, force)
     function create_topo_map_menu(parent)
         submenu   =  uimenu(parent,'Label','Plot topographic map');
         uimenu(submenu,'Label','Open a Web Map Display',Futures.MenuSelectedFcn,@(~,~)webmap_of_catalog(obj.catalog,true));
+        uimenu(submenu,'Label','Plot Topography on main map',Futures.MenuSelectedFcn,@add_topography_to_main_map);
+        uimenu(submenu,'Label','Plot Swiss Topography on main map',Futures.MenuSelectedFcn,{@add_topography_to_main_map,'CH'});
         return
-        uimenu(submenu,'Label','Open DEM GUI',Futures.MenuSelectedFcn, @(~,~)prepinp());
+        % the following need to be found/fixed
+        uimenu(submenu,'Label','Open DEM GUI',Futures.MenuSelectedFcn, @(~,~)zmaptopo.prepinp());
         uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)',Futures.MenuSelectedFcn, @(~,~)pltopo('lo3'));
         uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)',Futures.MenuSelectedFcn, @(~,~)pltopo('lo1'));
         uimenu(submenu,'Label','30 arc sec resolution (GTOPO30)',Futures.MenuSelectedFcn, @(~,~)pltopo('lo30'));
@@ -319,6 +324,17 @@ function create_all_menus(obj, force)
         uimenu(submenu,'Label','5 deg resolution (ETOPO 5, Terrain Base)',Futures.MenuSelectedFcn, @(~,~)pltopo('lo5'));
         uimenu(submenu,'Label','Your topography (mydem, mx, my must be defined)',Futures.MenuSelectedFcn, @(~,~)pltopo('yourdem'));
         uimenu(submenu,'Label','Help on plotting topography',Futures.MenuSelectedFcn, @(~,~)pltopo('genhelp'));
+    end
+    
+    function add_topography_to_main_map(src,ev,code)
+        htopo=findobj(obj.map_axes,'-regexp','Tag','topographic_map.*');
+        delete(htopo);
+        
+        if exist('code','var')
+            zmaptopo.add_topo(obj.map_axes,'locale',code);
+        end
+        % now plot the world topography too.
+        zmaptopo.add_topo(obj.map_axes,'locale','world');
     end
     
     function create_random_data_simulations_menu(parent)

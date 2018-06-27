@@ -219,7 +219,7 @@ function incube()
         iala = ZG.compare_window_dur;
         try
             ZmapMessageCenter.set_info('Save Alarm Cube?','  ');
-            [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
+            [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
             sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala winlen_years'];
             if length(file1) > 1
                 eval(sapa2);

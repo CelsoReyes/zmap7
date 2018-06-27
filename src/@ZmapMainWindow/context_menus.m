@@ -30,7 +30,7 @@ function cb_chwidth(obj, xsec)
     defaultanswer={num2str(xsec.width_km)};
     answer=inputdlg(prompt,name,numlines,defaultanswer);
     if ~isempty(answer)
-        xsec.change_width(str2double(answer),axm);
+        xsec.change_width(str2double(answer));
     end
     xsec.plot_events_along_strike(ax,obj.xscats(mytitle),true);
     ax.Title=[];

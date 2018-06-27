@@ -70,7 +70,7 @@ function selectp(in_or_out)
     xy = [x y];
     
     %save polcor.dat xy -ascii
-    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.txt'),'Save Polygon ? (yes/cancel)');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.txt'),'Save Polygon ? (yes/cancel)');
     if length(file1) > 1
         if length(file1)>3
             if strcmp(file1(length(file1)-3:length(file1)),'.txt')==0

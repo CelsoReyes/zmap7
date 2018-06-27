@@ -17,7 +17,7 @@ classdef ZmapCatalogView
     %   minicat = zcv.Catalog(); %get the catalog that matches the filters
     %
     % *beware that there might be an issue with variable name scope.
-    %  
+    %
     % zcv = zcv.reset(); %return to original ranges
     %
     % Polygons
@@ -77,22 +77,22 @@ classdef ZmapCatalogView
     %   linkedplot - plot this view, but plot will autoupdate when view changes
     %   plot - plot this view (catalog)
     %   plotm - plot this view (catalog) on a map
-    % 
+    %
     %   disp - display this view
     %   trace - trace shows this and all Catalogs / Views from which this is descended
-    %   
+    %
     %   subset - get a catalog that is a subset of this view (catalog) via logical/numeric indexing
-    % 
+    %
     %   ZmapCatalogView polygon routines:
     %   PolygonApply - further masks the view with a polygon. Events must be inside/outside polygon
-    %   PolygonRemove - clears the polygon, so that 
+    %   PolygonRemove - clears the polygon, so that
     %   PolygonInvert - changes whether events must be inside or outside polygon
     %
     % see also ZmapCatalog
     
     
     properties
-        % source - name of catalog's global variable, for example 'primeCatalog', 
+        % source - name of catalog's global variable, for example 'primeCatalog',
         % which means the original catalog can be found in ZmapData.primeCatalog
         source function_handle % function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
         
@@ -138,7 +138,7 @@ classdef ZmapCatalogView
     methods
         function obj=ZmapCatalogView(sourcefn,varargin)
             %
-            % sourcefn is a function handle, that when called returns the desired catalog . 
+            % sourcefn is a function handle, that when called returns the desired catalog .
             %     ex.
             %        sourcefn=@()ZmapGlobal.Data.primeCatalog
             %        obj=ZmapCatalogView(sourcefn);
@@ -162,7 +162,7 @@ classdef ZmapCatalogView
                     error('problem parsing ZmapCatalogView argument or its value : [%s]',varargin{1});
                 end
                 varargin(1:2)=[];
-            end    
+            end
         end
         
         function n=get.Name(obj)
@@ -211,8 +211,8 @@ classdef ZmapCatalogView
                 % f(idx) is the t/f value for the sorted index
                 f=idx(f(idx)); % returns numeric index of sorted values
             end
-                
-                
+            
+            
         end
         
         function obj = sort(obj,field)
@@ -223,18 +223,18 @@ classdef ZmapCatalogView
             else
                 error('cannot sort by : %s',field);
             end
-                
-         end
+            
+        end
         function lat=get.Latitude(obj)
             lat=obj.mycat.Latitude(obj.filter);
         end
-                
+        
         function mt=get.MagnitudeType(obj)
             mt=obj.mycat.MagnitudeType(obj.filter);
         end
         
         function obj=set.LatitudeRange(obj,val)
-            % change the latitude ranges. 
+            % change the latitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
                 val=obj.mycat.LatitudeRange;
@@ -248,9 +248,9 @@ classdef ZmapCatalogView
         function lon=get.Longitude(obj)
             lon=obj.mycat.Longitude(obj.filter);
         end
-                
+        
         function obj=set.LongitudeRange(obj,val)
-            % change the longitude ranges. 
+            % change the longitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
                 val=obj.mycat.LatitudeRange;
@@ -266,9 +266,9 @@ classdef ZmapCatalogView
         function mag=get.Magnitude(obj)
             mag=obj.mycat.Magnitude(obj.filter);
         end
-                
+        
         function obj=set.MagnitudeRange(obj,val)
-            % change the magnitude ranges. 
+            % change the magnitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
                 val=[min(obj.mycat.Magnitude) max(obj.mycat.Magnitude)];
@@ -363,7 +363,7 @@ classdef ZmapCatalogView
             % relativeTimes
             % rt = obj.relativeTimes() get times relative to start
             % rt = obj.relativeTimes(other) get times relative to another time
-        
+            
             if ~exist('other','var')
                 rt = obj.Date - min(obj.Date);
                 return
@@ -381,7 +381,7 @@ classdef ZmapCatalogView
             % h=plot (obj,ax, varargin)
             %
             % see also refreshPlot
-
+            
             % build up additional features
             v={};
             for i=1:numel([obj.ValidProps])
@@ -436,7 +436,7 @@ classdef ZmapCatalogView
             hold(ax,tf2onoff(holdstatus));
             
         end
-       
+        
         %% in-out routines
         function c=Catalog(obj)
             % get the subset catalog represented by this view
@@ -469,12 +469,13 @@ classdef ZmapCatalogView
             
             fprintf('      Count: %d events\n',obj.Count);
             fprintf('      Dates: %s to %s\n', char(obj.DateRange(1),'uuuu-MM-dd hh:mm:ss'),...
-                 char(obj.DateRange(2),'uuuu-MM-dd hh:mm:ss'));
-             magtypes =strjoin(string(unique(obj.mycat.MagnitudeType(obj.filter))),',');
+                char(obj.DateRange(2),'uuuu-MM-dd hh:mm:ss'));
+            magtypes =strjoin(string(unique(obj.mycat.MagnitudeType(obj.filter))),',');
+            if ismissing(magtypes),magtypes="unk";end
             disp('Filter ranges for this catalog view are set to:');
             % actual catalog will have ranges inside and out
             fprintf(' Magnitudes: %.4f to %.4f  [%s]\n',...
-                obj.MagnitudeRange, magtypes);
+                obj.MagnitudeRange, char(magtypes));
             
             fprintf('  Latitudes: %.4f to %.4f  [deg]\n', obj.LatitudeRange);
             fprintf(' Longitudes: %.4f to %.4f  [deg]\n', obj.LongitudeRange);
@@ -543,7 +544,7 @@ classdef ZmapCatalogView
                 end
             end
             if isempty(obj.polygon.Latitude) || all(isnan(obj.polygon.Latitude))
-                    obj=obj.PolygonRemove();
+                obj=obj.PolygonRemove();
                 return
             end
             obj.polymask = polygon_filter(obj.polygon.Longitude, obj.polygon.Latitude,...
@@ -567,7 +568,7 @@ classdef ZmapCatalogView
             nargoutchk(1,1) % to avoid confusion, don't let this NOT be assigned
             obj.polymask=~obj.polymask;
         end
-            
+        
         function trace(obj)
             % trace shows this and all Catalogs / Views from which this is descended
             disp(obj)

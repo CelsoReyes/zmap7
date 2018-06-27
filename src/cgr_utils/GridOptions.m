@@ -3,9 +3,9 @@ classdef GridOptions < handle
         dx % east-west distance between grid points
         dy % north-south distance between grid points
         dz % vertical distance between grid points
-        dxUnits char {mustBeMember(dxUnits, {'deg','km'})} = 'deg';
-        dyUnits char {mustBeMember(dyUnits, {'deg','km'})} = 'deg';
-        dzUnits char {mustBeMember(dzUnits, {'km'})} = 'km';
+        dxUnits char {mustBeMember(dxUnits, {'deg','degrees','km','kilometers'})} = 'deg';
+        dyUnits char {mustBeMember(dyUnits, {'deg','degrees','km','kilometers'})} = 'deg';
+        dzUnits char {mustBeMember(dzUnits, {'km','kilometers'})} = 'km';
         % Defines whether horizontal distances are constant, or whether they scale as the grid
         % deviates from the equator. 
         followMeridians matlab.lang.OnOffSwitchState = 'off';

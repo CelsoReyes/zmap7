@@ -1,44 +1,57 @@
 function plotmainmap(obj)
     % PLOTMAINMAP set up main map window
-    MAX_FOR_MARKER = 100000; %more than this number of earthquakes will be plotted with a "."
-    axm=obj.map_axes;
-    axm.Visible='off';
-    assert(~isempty(axm),'Somehow lost track of main map');
+    
+    % TAG : PURPOSE
+    % "active quakes" : selected events
+    % "big evens" : selected events, above a threshhold magnitude
+    
+    
+    axm = obj.map_axes;
+    axm.Visible = 'off';
+    assert(~isempty(axm), 'Somehow lost track of main map');
     
     % update the active earthquakes
     eq=findobj(axm,'Tag','active quakes');
     
+    mainEventOpts = obj.mainEventProps; % local copy
+    szFcn = str2func(mainEventOpts.MarkerSizeFcn);
+    
+    if mainEventOpts.UseDotsForTooManyEvents && obj.catalog.Count > mainEventOpts.HowManyAreTooMany
+        mainEventOpts.Marker = '.';
+    end
     
     if isempty(eq) 
         % CREATE the plot
         
         axm.NextPlot='add';
         dispname = replace(obj.catalog.Name,'_','\_');
+        
+        szFcn = str2func(mainEventOpts.MarkerSizeFcn);
         eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
-            mag2dotsize(obj.catalog.Magnitude),getLegalColors(),...
-            'LineWidth',.5,...
-            'Tag','active quakes','HitTest','off','DisplayName',dispname);
-        eq.ZData=obj.catalog.Depth;
-        if obj.catalog.Count > MAX_FOR_MARKER
-            eq.Marker='.';
-        else
-            eq.Marker=obj.eventMarker;
-        end
+            szFcn(obj.catalog.Magnitude), getLegalColors(),...
+            'Tag','active quakes',...
+            'HitTest','off',...
+            'DisplayName',dispname);
+        eq.ZData = obj.catalog.Depth;
         axm.NextPlot='replace';
         %obj.do_colorbar(axm);
-    else
-        % REUSE the plot
-        eq.XData=obj.catalog.Longitude;
-        eq.YData=obj.catalog.Latitude;
-        eq.ZData=obj.catalog.Depth;
-        eq.SizeData=mag2dotsize(obj.catalog.Magnitude);
-        eq.CData=getLegalColors();
-        dispname = replace(obj.catalog.Name,'_','\_');
-        if ~strcmp(eq.DisplayName,dispname)
-            eq.DisplayName=dispname;
-        end
         
+    else
+        
+        % REUSE the plot
+        eq.XData = obj.catalog.Longitude;
+        eq.YData = obj.catalog.Latitude;
+        eq.ZData = obj.catalog.Depth;
+        eq.SizeData = szFcn(obj.catalog.Magnitude);
+        eq.CData = getLegalColors();
+        dispname = replace(obj.catalog.Name, '_', '\_');
+        if ~strcmp(eq.DisplayName, dispname)
+            eq.DisplayName = dispname;
+        end
     end
+    
+    set_valid_properties(eq, mainEventOpts);
+    
     % update the largest events
     update_large()
     
@@ -56,9 +69,8 @@ function plotmainmap(obj)
         else
             maskedGrid = obj.Grid.MaskWithShape(obj.shape);
             if ~isequal(maskedGrid.ActivePoints, obj.Grid.ActivePoints)
-                %obj.Grid = obj.Grid.MaskWithShape(obj.shape);
                 obj.Grid.ActivePoints = maskedGrid.ActivePoints;
-                obj.Grid.plot(obj.map_axes,'ActiveOnly');
+                obj.Grid.plot(obj.map_axes, 'ActiveOnly');
             end
         end
     end
@@ -68,13 +80,14 @@ function plotmainmap(obj)
         beq = findobj(axm,'Tag','big events');
         
         if ~isempty(obj.bigEvents)
-            beq.XData=obj.bigEvents.Longitude;
-            beq.YData=obj.bigEvents.Latitude;
-            beq.ZData=obj.bigEvents.Depth;
+            beq.XData = obj.bigEvents.Longitude;
+            beq.YData = obj.bigEvents.Latitude;
+            beq.ZData = obj.bigEvents.Depth;
             beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
         else
             [beq.XData, beq.YData, beq.ZData, beq.SizeData]=deal([]);
         end
+        
     end
     
     function c = getLegalColors()
@@ -88,5 +101,7 @@ function plotmainmap(obj)
                 c=obj.catalog.(obj.colorField);
         end
     end
+    
+        
     
 end

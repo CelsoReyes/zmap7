@@ -192,7 +192,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         end
         
         function propval = get.DayOfYear(obj)
-            propval = fix(datenum(obj)) - datenum(obj.Date.Year - 1, 12 , 31);
+            propval = fix(datenum(obj.Date)) - datenum(obj.Date.Year - 1, 12 , 31);
         end
         
         function set.MomentTensor(obj, value)
@@ -593,6 +593,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 obj.MomentTensor=obj.MomentTensor(range,:);
             end
         end
+        
         function obj = subset(existobj, range)
             % SUBSET get a subset of this object
             % newcatalog = catalog.SUBSET(mask) where mask is a t/f array matching obj.Count
@@ -685,7 +686,58 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         end
         
         function disp(obj)
-            disp(obj.blurb);
+            disp(obj.blurb)
+            %if numel(dbstack)<2
+                % called from command line. give a nice explanation
+                disp('with properties:');
+                p=properties(obj);
+                for i=1:numel(p)
+                    pn = p{i};
+                    switch class(obj.(pn))
+                        case 'categorical'
+                            c=categories(obj.(pn));
+                            s = strjoin(c,', ');
+                            if numel(s) > 80
+                                commas = find(s==',');
+                                break1=max(commas(commas<25));
+                                break2=min(commas(commas>(length(s)-25)));
+                                
+                                s=[s(1:break1),'...',s(break2:end)];
+                            end
+                            fprintf('\t%20s : %d categories [ %s ]\n', pn, numel(c), s);
+                        case 'logical'
+                            fprintf('\t%20s : logical, %d are true cell> \n',pn,sum(obj.(pn)));
+                            
+                        case 'cell'
+                            fprintf('\t%20s : <%s cell> \n',pn,strjoin(num2str(size(obj.(pn))),'x'));
+                        case {'char','string'}
+                            fprintf('\t%20s : ''%s''\n',pn,obj.(pn));
+                        case {'datetime','duration'}
+                            if numel(obj.(pn))==1
+                                fprintf('\t%20s : %s\n',pn, obj.(pn));
+                            else
+                                fprintf('\t%20s : [ %s  to  %s ]\n',pn, min(obj.(pn)), max(obj.(pn)));
+                            end
+                            
+                        otherwise
+                            try
+                                
+                                if numel(obj.(pn))==1
+                                    fprintf('\t%20s : %g\n', pn, obj.(pn));
+                                else
+                                    fprintf('\t%20s : [ %g  to  %g ]\n', pn, min(obj.(pn)), max(obj.(pn)));
+                                end
+                            catch
+                                if isempty(obj.(pn))
+                                    fprintf('\t%20s : empty <%s>\n',pn,class(obj.(pn)))
+                                else
+                                    fprintf('\t%20s : <%s>\n',pn,class(obj.(pn)));
+                                end
+                            end
+                    end
+                    
+                end
+            %end
         end
         
         function h=plot(obj,varargin)
@@ -810,6 +862,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % dists_km = catalog.EPICENTRALDISTANCETO(to_lat, to_lon)
             dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
         end
+        
         function dists_km = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
             % get HYPOCENTRALDISTANCETO (lat,lon,z) distance to another point
             % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)

@@ -7,7 +7,7 @@ function dall=prepfocal(catalog)
     
     
     tmp = [catalog.Dip(:), catalog.DipDirection(:), catalog.Rake(:)];
-    data_inp_file=fullfile(ZmapGlobal.Data.out_dir,'data.inp');
+    data_inp_file=fullfile(ZmapGlobal.Data.Directories.output,'data.inp');
     try
         save(data_inp_file, 'tmp', '-ascii');
     catch ME
@@ -15,11 +15,11 @@ function dall=prepfocal(catalog)
         errordlg('Error - could not save file %s - permission?', data_inp_file);
         return
     end
-    infi = fullfile(ZmapGlobal.Data.out_dir, 'tmp.inp');
-    outfi = fullfile(ZmapGlobal.Data.out_dir, 'tmp.out');
+    infi = fullfile(ZmapGlobal.Data.Directories.output, 'tmp.inp');
+    outfi = fullfile(ZmapGlobal.Data.Directories.output, 'tmp.out');
     
     
-    fid = fopen(fullfile(ZmapGlobal.Data.out_dir, 'inmifi.dat'),'w');
+    fid = fopen(fullfile(ZmapGlobal.Data.Directories.output, 'inmifi.dat'),'w');
     
     fprintf(fid,'%s\n',infi);
     fprintf(fid,'%s\n',outfi);
@@ -29,10 +29,10 @@ function dall=prepfocal(catalog)
         delete(outfi);
     end
     ddsetupprogram = fullfile(ZmapGlobal.Data.hodi,'external','datasetupDD');
-    filetoreadfrom = [ZmapGlobal.Data.out_dir 'inmifi.dat'];
+    filetoreadfrom = [ZmapGlobal.Data.Directories.output 'inmifi.dat'];
     [status, result] = system(sprintf('%s < %s',ddsetupprogram,filetoreadfrom))
     
-    fid = fullfile(ZmapGlobal.Data.out_dir, 'tmpout.dat');
+    fid = fullfile(ZmapGlobal.Data.Directories.output, 'tmpout.dat');
     
     format = '%f%f%f%f%f';
     %[d1, d2, d3, d4, d5] = textread(fid,format,'headerlines',1);

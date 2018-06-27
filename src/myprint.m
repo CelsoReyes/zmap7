@@ -201,7 +201,7 @@ function myprint(command,param1)
                 'The current window will be printed   '
                 'as a postscript file. Buttons etc are'
                 'not printed.                         '];
-            [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.data_dir,'out','*.ps'),'PS  Filename');
+            [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data,'out','*.ps'),'PS  Filename');
             
             messtext = ['Thank you! Printing in PS file...'];
             watchon;

@@ -42,7 +42,7 @@ function [synCat] = syn_catalog(nEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, f
     % Create location
     synCat.Longitude =  getRandomVals(fMinLon,fMaxLon);
     synCat.Latitude = getRandomVals(fMinLat,fMaxLat);
-    synCat.Depth = getRandomVals(fMinDepth, mFaxDepth);
+    synCat.Depth = getRandomVals(fMinDepth, fMaxDepth);
 
     % Create focal times
     synCat.Date = dateshift(getRandomVals(fMinTime, fMaxTime),'start','minute');

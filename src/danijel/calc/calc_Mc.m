@@ -50,7 +50,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, nMethod, fBinning, fMcCorrecti
     % Free Software Foundation, Inc.,
     % 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
     
-    report_this_filefun(0);
+    report_this_filefun();
     
     if nargin==1 && ( ischar(mCatalog) || isstring(mCatalog) )&& mCatalog=="getoptions"
         fMc = ['1: Maximum curvature|' ...

@@ -3,7 +3,7 @@ function calSave1 (~, ~, A, B)
     
     ZmapMessageCenter.set_info('Save Data','  ');
     
-    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.out_dir, '*.dat'), 'Filename ');
+    [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Filename ');
     if file1 && path1
         if ~iscolumn(A)
             A = A';

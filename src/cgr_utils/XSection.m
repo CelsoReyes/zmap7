@@ -21,7 +21,7 @@ classdef XSection < handle
     %   obj.plot_events_along_strike(ax,c2, true); %plot a ZmapXsectionCatalog without projecting
     
     properties(SetObservable, AbortSet)
-        width_km (1,1) double % width of cross section, in kilometers
+        width_km (1,1) double = ZmapGlobal.Data.CrossSectionOpts.WidthKm; % width of cross section, in kilometers
         startpt (1,2) double % [lat lon] start point for cross section
         endpt (1,2) double % [lat lon] end point for cross section
         startlabel char % label for start point
@@ -30,8 +30,8 @@ classdef XSection < handle
     
     properties
         color % color used when plotting cross section
-        linewidth (1,1) {mustBePositive} = ZmapGlobal.Data.xsec_defaults.LineProps.LineWidth % line width for cross section
-        markersize (1,1) {mustBePositive} = ZmapGlobal.Data.xsec_defaults.LineProps.MarkerSize % size of the end marker
+        linewidth (1,1) {mustBePositive} = ZmapGlobal.Data.CrossSectionOpts.LineProps.LineWidth % line width for cross section
+        markersize (1,1) {mustBePositive} = ZmapGlobal.Data.CrossSectionOpts.LineProps.MarkerSize % size of the end marker
         curvelons (:,1) double % longitudes that define the cross-section curve
         curvelats (:,1) double % latitudes that define the cross-section curve
         polylats (:,1) double % latitudes that define the polygon containing points within width of curve
@@ -59,26 +59,14 @@ classdef XSection < handle
     methods
         function obj=XSection(ax, zans, startpt, endpt)
             % XSECTION create a cross section
-            %  [CatalogInCrossSection, optionsUsed] = PLOT_CROSS_SECTION
-            %
-            % you can choose section width, start & end labels, and color.
-            %
-            % plots cross-section (great-circle curve) on map, along with boundary for selected events.
-            % brings up new figure containing cross-section, with selected events plotted with depth,
-            % and histograms of events along strike and with depth
-            %
-            % plots into the ZmapMainWindow
-            %
-            % see also ZmapXsectionCatalog
+            % obj = XSECTION(ax, zans, startpt, endpt)
+            %  where zans is a struct with fields: 'width_km', 'startlabel', 'endlabel', and 'color'
+            % and startpt, endpoint are each [lat,lon]
             
-            %catalog=ZG.primeCatalog;
-            
-            % zans contains:
             obj.width_km = zans.slicewidth_km;  % slicewidth_km
             obj.startlabel = zans.startlabel;   % startlabel
             obj.endlabel = zans.endlabel;       % endlabel
             obj.color = zans.color;             % color
-            %method = zans.chooser;               % chooser
             
             % dialog box to choose cross-section
             if ~exist('startpt','var')||~exist('endpt','var')
@@ -87,6 +75,7 @@ classdef XSection < handle
                 obj.startpt = startpt;
                 obj.endpt = endpt;
             end
+            
             addlistener(obj,'width_km','PostSet',@XSection.handlePropertyEvents);
             addlistener(obj,'startpt','PostSet',@XSection.handlePropertyEvents);
             addlistener(obj,'endpt','PostSet',@XSection.handlePropertyEvents);
@@ -95,24 +84,25 @@ classdef XSection < handle
             
             obj.recalculate_xsec_curve();
             obj.recalculate_boundary();
+            
             plot_mapview(obj, ax);
             % mask so that we can plot original quakes in original positions
-           % [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax);
             obj.DeleteFcn = @(~,~)obj.delete_graphics();
-            %obj.DeleteFcn = @(~,~)delete([xs_line, xs_slabel, xs_elabel, xs_poly]); % automatically delete xsection when figure is closed
-            
         end
         
         function ln = get.length_km(obj)
             ln=deg2km(distance(obj.startpt,obj.endpt));
         end
         
-        function change_width(obj, w, ax)
+        function change_width(obj, w)
             % CHANGE_COLOR changes the width for the cross section and area outline
             %
             % obj = obj.CHANGE_WIDTH( WIDTH_KM, AZ)
-            
-            obj.width_km=w;
+            if ~exist('w','var') || isempty(w)
+                obj.width_km = obj.widthZmapGlobal.Data.CrossSectionOpts.WidthKm;
+            else
+                obj.width_km = w;
+            end
 
         end
             
@@ -189,37 +179,48 @@ classdef XSection < handle
             %   [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % these items might pollute the legend. consider turning off the Legend's autoupdate
             % function to avoid this
+            ZGOpts = ZmapGlobal.Data.CrossSectionOpts;
             
             hold(ax,'on')
             prev_xlimmode=ax.XLimMode;
             ax.XLimMode='manual';
             prev_ylimmode=ax.YLimMode;
             ax.YLimMode='manual';
-            xs_line=line(ax,obj.curvelons,obj.curvelats,'LineStyle','--',...
+            xs_line=line(ax,obj.curvelons,obj.curvelats,...
+                'LineStyle',ZGOpts.LineProps.LineStyle,...
                 'LineWidth',obj.linewidth,...
                 'Color',obj.color,...
-                'MarkerIndices',[1 numel(obj.curvelons)],'Marker','x',...
+                'MarkerIndices',[1 numel(obj.curvelons)],...
+                'Marker',ZGOpts.LineProps.Marker,...
                 'MarkerSize',obj.markersize,...
                 'Tag',['Xsection Line ', obj.name],...
                 'DisplayName',['Xsection ' obj.startlabel]);
             
-            % plot width polygon
-            xs_poly=line(ax,obj.polylons,obj.polylats,'LineStyle','-.',...
+            % plot width polygon (border)
+            xs_poly=line(ax,obj.polylons,obj.polylats,...
+                'LineStyle',ZGOpts.BorderProps.LineStyle,...
                 'Color',obj.color,...
-                'LineWidth',obj.linewidth * 0.5,...
+                'LineWidth',ZGOpts.BorderProps.LineWidth,...
                 'Tag',['Xsection Area ' obj.name],...
                 'DisplayName','');
+            
             %label it: put labels offset and outside the great-circle line.
             
             xs_slabel = text(ax, obj.startpt(2), obj.startpt(1),obj.startlabel,...
-                'Color',obj.color.*0.8, 'FontWeight','bold',...
-                'BackgroundColor','w', 'EdgeColor',obj.color,...
+                'Color',obj.color.*0.8, ...
+                'FontSize',ZGOpts.LabelProps.FontSize,...
+                'FontWeight',ZGOpts.LabelProps.FontWeight,...
+                'BackgroundColor',FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
+                'EdgeColor',obj.color,...
                 'Tag',['Xsection Start ' obj.name]);
             
             
             xs_elabel = text(ax,obj.endpt(2),obj.endpt(1),obj.endlabel,...
-                'Color',obj.color.*0.8, 'FontWeight','bold',...
-                'BackgroundColor','w', 'EdgeColor',obj.color,...
+                'Color',obj.color.*0.8,... 
+                'FontSize',ZGOpts.LabelProps.FontSize,...
+                'FontWeight',ZGOpts.LabelProps.FontWeight,...
+                'BackgroundColor',FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
+                'EdgeColor',obj.color,...
                 'Tag',['Xsection End ' obj.name]);
             
             obj.add_graphics(ax,xs_line, xs_slabel, xs_elabel, xs_poly);
@@ -480,10 +481,9 @@ classdef XSection < handle
             end
             zans.color=C;
             if exist('ptdetails','var')
-                %obj=XSection(ax, zans, ptdetails.xy1([2,1]), ptdetails.xy2([2,1]));
-                obj=XSection(ax, zans, [zans.starty, zans.startx] , [zans.endy, zans.endx]);
+                obj = XSection(ax, zans, [zans.starty, zans.startx] , [zans.endy, zans.endx]);
             else
-                obj=XSection(ax, zans);
+                obj = XSection(ax, zans);
             end
             if strcmp(lastletter,zans.startlabel)
                 lastletter=increment_lettercode(lastletter);
@@ -528,6 +528,4 @@ classdef XSection < handle
             end
         end
     end
-    
-    
-end
+end % classdef

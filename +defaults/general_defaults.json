@@ -8,5 +8,6 @@
       "Enable":false,
       "Threshhold":10000
    },
-   "DebugMode":false
+   "DebugMode":true,
+   "DebugLevel":true
 }

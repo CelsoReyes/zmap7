@@ -1753,7 +1753,7 @@ classdef FancyColors
         
         function n=name(val)
             % NAME translates an RGB decimal value or hex string to a color name
-            if startsWith(val,'[') && endsWith(val,']')
+            if (ischar(val)||isstring(val)) && startsWith(val,'[') && endsWith(val,']')
                 val=str2num(val); %#ok<ST2NM>
             end
             if ischar(val)
@@ -1765,7 +1765,7 @@ classdef FancyColors
         
         function h=hex(val)
             % HEX translates a color name or RGB decimal value to a hex string
-            if startsWith(val,'[') && endsWith(val,']')
+            if (ischar(val)||isstring(val)) && startsWith(val,'[') && endsWith(val,']')
                 val=str2num(val); %#ok<ST2NM>
             end
             if ischar(val)
@@ -1775,11 +1775,19 @@ classdef FancyColors
             end
         end
         
-        function d=rgb(val)
+        function d=rgb(val, passthrough)
             % RGB translate from a color name or hex value into the RGB decimal value
             % d= RGB( name )
             % d = RGB( hexstring )
-            if startsWith(val,'[') && endsWith(val,']')
+            % d = RGB( value, passthrough) PASSTHROUGH is a cell or string array containing values
+            % that should NOT be translated to RGB, and instead passed through as-is.
+            % ex.  d = RGB( 'auto', {'auto','none'}) passes the value 'auto' through without translation
+            %
+            if exist('passthrough','var') && ismember(val,passthrough)
+                d=val;
+                return;
+            end
+            if (ischar(val)||isstring(val)) && startsWith(val,'[') && endsWith(val,']')
                 d=str2num(val); %#ok<ST2NM>
                 assert(isequal(size(d),[1,3]),'Expected [R G B]');
             elseif length(val)==6&& all(ismember(val,'ABCDEF0123456789'))

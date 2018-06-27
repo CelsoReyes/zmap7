@@ -24,7 +24,7 @@ function add_grid_menu(obj)
     uimenu(shapeiomenu,'Label','set as default', MenuSelectedFcn, @(~,~)ShapeGeneral.ShapeStash(obj.shape));
     uimenu(shapeiomenu,'Separator','on',...
         'Label','load', MenuSelectedFcn, @(~,~)cb_load_shape);
-    uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.data_dir));
+    uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.Directories.data));
     
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
@@ -52,7 +52,7 @@ function add_grid_menu(obj)
     end
     
     function cb_load_shape(src,ev)
-        sh=ShapeGeneral.load(ZmapGlobal.Data.data_dir);
+        sh=ShapeGeneral.load(ZmapGlobal.Data.Directories.data);
         cb_clear_shape;
         if ~isempty(sh)
             obj.set_my_shape(sh);

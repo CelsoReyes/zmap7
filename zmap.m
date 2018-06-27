@@ -81,8 +81,6 @@ function zmap(varargin)
                 startWindow=false;
         end
     end
-    ZG.out_dir = fullfile(hodi,'out');
-    ZG.data_dir = fullfile(hodi, 'eq_data');
     
     % Set up the different computer systems
     sys = computer;

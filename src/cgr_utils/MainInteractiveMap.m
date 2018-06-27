@@ -854,7 +854,7 @@ function catSave()
     ZmapMessageCenter.set_message('Save Data', ' ');
     try
         
-        [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.data_dir, '*.mat'), 'Earthquake Datafile');
+        [file1, path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             wholePath=[path1 file1];
             error('not implemented')

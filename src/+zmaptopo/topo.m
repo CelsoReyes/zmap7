@@ -7,6 +7,7 @@ function varargout = topo(varargin)
     % TOPO Application M-file for topo.fig
     %    FIG = TOPO launch topo GUI.
     %    TOPO('callback_name', ...) invoke the named callback.
+    import zmaptopo.*
     
     if nargin == 8  % LAUNCH GUI
         cfig = openfig(mfilename,'reuse');

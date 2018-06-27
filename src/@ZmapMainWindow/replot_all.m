@@ -114,9 +114,12 @@ function rearrange_axes_items(obj)
     items.bigevents = tags == "big events";
     items.shape = startsWith(tags,'shape');
     items.crosssec = startsWith(tags,'Xsection ');
+    items.topos = startsWith(tags,'topographic_');
     
     
-    items.other = ~(items.map | items.grid | items.shape | items.bgevents | items.fgevents | items.bigevents |items.crosssec);
+    items.other = ~(items.map | items.grid | items.shape |...
+        items.bgevents | items.fgevents | items.bigevents |...
+        items.crosssec | items.topos);
     obj.map_axes.SortMethod='childorder';
     obj.map_axes.Children = [ ... from top to bottom
         ch(items.shape);...
@@ -126,7 +129,8 @@ function rearrange_axes_items(obj)
         ch(items.other); ...
         ch(items.bgevents); ...
         ch(items.map);...
-        ch(items.grid)];   
+        ch(items.grid);...
+        ch(items.topos)];   
 end
 
 function [mytab] = plot_xsection(obj, k, currcatsummary,md)

@@ -12,7 +12,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         function obj=ZmapHGridFunction(varargin)
             obj@ZmapGridFunction(varargin{:});
         end
-        
+        %{
         function showInTab(obj, ax, choice)
             % plots the results on the provided axes.
             
@@ -46,10 +46,19 @@ classdef ZmapHGridFunction < ZmapGridFunction
             ax.Title.String=sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc);
             ax.Title.Interpreter='none';
         end
-
+        %}
         function overlay(obj, resTab, choice)
             % plots the results in the provided Tab.
             % expects that tab is empty
+            
+            % no yet implemented:
+            % Layer Situation
+            %  TOP: grid points
+            %       Earthquakes(?)
+            %  MIDDLE: Contour
+            % 
+            %  Bottom: Features
+            %          Topographic stuff
             
             report_this_filefun();
             
@@ -60,6 +69,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
             
             if isempty(ax)
+                
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
                 ax=findobj(resTab,'Tag','mainmap_ax');
                 ax.Tag='result_map';
@@ -69,6 +79,29 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 lineobjs=findobj(ax,'Type','Line');
                 for n=1:numel(lineobjs)
                     set(lineobjs(n),'Color', (lineobjs(n).Color + [3 3 3]) ./ 4);
+                end
+                hTopos=findobj(resTab,'-regexp','Tag','topographic_map_*');
+                if ~isempty(hTopos)
+                    % topography map needs to exist underneath plot
+                    ax2=axes(resTab,'Position',ax.Position,'YLim',ax.YLim,'XLim',ax.XLim,...
+                        'DataAspectRatio',ax.DataAspectRatio,...
+                        'DataAspectRatioMode',ax.DataAspectRatioMode,...
+                        'Tag','topo_underlay','Visible','off');
+                    
+                    set(hTopos,'Parent',ax2); % move topography over to new axes
+                    linkaxes([ax ax2]);
+                    linkprop([ax ax2],{'Position','DataAspectRatio','DataAspectRatioMode'});
+                    
+                    % modify colormap for topography
+                    dc=demcmap([min(arrayfun(@(x)double(min(x.CData(:))),hTopos)),...
+                        max(arrayfun(@(x)double(max(x.CData(:))),hTopos)) ]);
+                    colormap(ax2, ((brighten(gray,0.8).*2 + brighten(dc,-0.5) )./ 3))
+                    
+                    % modify colormap for results
+                    colormap(ax, colormap(ancestor(resTab,'figure')));
+                    resTab.Children=circshift(resTab.Children,-1); %new axes must be below existing
+                    ax.Color='none';
+                    %ax2.Visible='off';
                 end
             else
                 ax=findobj(resTab,'Tag','result_map');
@@ -86,25 +119,18 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 p(p==0)=nan;
                 h=obj.Grid.pcolor(ax,p, mydesc);
             else
-                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc, ZmapGlobal.Data.ResultOptions.ContourCount);
-                
-                %[~,h]=contourf(ax,obj.Grid.X, obj.Grid.Y, ...
-                 %   reshape(obj.Result.values.(myname),...
-                 %   size(obj.Grid.X)));
-                % set the title
-                %h.LineStyle='none';
-                %h.LevelList=linspace(floor(min(h.ZData(:))),ceil(max(h.ZData(:))),100);
-                
-                %h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
+                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc, ZmapGlobal.Data.ResultOpts.NumContours);
+
             end
             ax.Children=circshift(ax.Children,-1); % move the contour to the bottom layer
-            %gx = obj.Grid.X;
-            %gy = obj.Grid.Y;
             val = obj.Result.values.(myname);
-            s=scatter(ax,obj.Result.values.x,obj.Result.values.y,10,val,'+','Tag',obj.Grid.Name);
-            %s.MarkerEdgeColor=[0.1 0.1 0.1];
-            %s.MarkerEdgeAlpha=[0.3];
-            s.MarkerFaceAlpha=[0.5];
+            s = findobj(ax,'Tag',obj.Grid.Name);
+            if isempty(s)
+                s=scatter(ax,obj.Result.values.x,obj.Result.values.y,10,val,'+','Tag',obj.Grid.Name);
+                s.MarkerFaceAlpha=[0.5];
+            else
+                set(s,'XData',obj.Result.values.x,'YData',obj.Result.values.y,'CData',val);
+            end
             
             h.Tag = 'result overlay';
             %shading(ax,obj.ZG.shading_style);
@@ -129,7 +155,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
             % shading(ax,obj.ZG.shading_style);
             
             tabGroup.SelectedTab = resTab;
+            minV=min(h.ZData(:)); maxV=max(h.ZData(:));
+            ax.CLim=[floor(minV), ceil(maxV)];
             pretty_colorbar(ax,mydesc,myunits);
+            
+            drawnow
             obj.interact(ax, myname)
         end
         
@@ -255,23 +285,28 @@ classdef ZmapHGridFunction < ZmapGridFunction
             function cb_shading(val)
                 % must be in function because ax must be evaluated in real-time
                 activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
                 shading(ax,val)
             end
             function cb_brighten(val)
                 activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
                 cm=colormap(ax);
                 colormap(ax,brighten(cm,val));
             end
             function cb_alpha(val)
                 activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
                 ss = findobj(ax.Children,'Tag','result overlay');
+                if isprop(ss,'FaceAlpha')
                 newAlpha = ss.FaceAlpha + val;
                 if newAlpha < 0; newAlpha = 0; end
                 if newAlpha > 1; newAlpha = 1; end
                 alpha(ss,newAlpha);
+                else
+                    beep;
+                    fprintf('alpha not supported for %s\n',ss.Type);
+                end
             end
                 
         end
@@ -293,7 +328,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
         
         
-        function addquakes_cb(obj,src,~,catalog)
+        function addquakes_cb(obj, src, ~, catalog)
             report_this_filefun();
             
             qtag=findobj(gcf,'tag','quakes');
@@ -393,7 +428,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             f.WindowButtonMotionFcn=@update;
             lastNearest=0;
             
-            function update(src,ev)
+            function update(src, ev)
                 if mytabholder.SelectedTab~=mytab
                     return
                 end
@@ -408,16 +443,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         x=obj.Result.values.x(nearest);
                         y=obj.Result.values.y(nearest);
                         % update hilight
-                        HL.XData=x;
-                        HL.YData=y;
+                        HL.XData = x;
+                        HL.YData = y;
                         
                         % update text
                         TX.Position=[x, y,0];
                         valstr=string(obj.Result.values.(myname)(nearest));
                         if ismissing(valstr)
-                            TX.String="  "+myname + " : <missing>";
+                            TX.String="  " + myname + " : <missing>";
                         else
-                            TX.String="  "+myname + " : "+ valstr;
+                            TX.String="  " + myname + " : " + valstr;
                         end
                         
                         % update samplecircle
@@ -460,7 +495,7 @@ end
 function pretty_colorbar(ax, cb_title, cb_units)
     h=colorbar('peer',ax, 'location','EastOutside');
     if isempty(cb_units)
-    h.Label.String = cb_title;
+        h.Label.String = cb_title;
     else
         h.Label.String =  sprintf('%s [%s]',cb_title,cb_units);
     end

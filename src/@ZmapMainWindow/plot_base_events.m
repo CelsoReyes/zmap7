@@ -7,6 +7,14 @@ function plot_base_events(obj, container, featurelist)
         featurelist={};
     end
         
+    unselOpts = ZmapGlobal.Data.UnselectedEventOpts;
+    unselOpts.MarkerEdgeColor = FancyColors.rgb(unselOpts.MarkerEdgeColor,{'auto','none'});
+    unselOpts.MarkerFaceColor = FancyColors.rgb(unselOpts.MarkerFaceColor,{'auto','none'});
+    unselOpts.LineStyle = 'none';
+    unselOpts.DisplayName = 'unselected events';
+    unselOpts.Tag = 'all events';
+    unselOpts.HitTest = 'off';
+    
     if isempty(obj.map_axes)
         obj.map_axes=axes(container,'Units','normalized','Position',obj.MapPos_L);
         
@@ -26,23 +34,25 @@ function plot_base_events(obj, container, featurelist)
     if isempty(alleq)
         if isempty(obj.rawcatalog)
 
-            line(obj.map_axes,'XData',nan,'YData',nan,'ZData',nan,'Marker','.','LineStyle','none',...
-                'Color',[.76 .75 .8],...
-                'DisplayName','unselected events',...
-                'HitTest','off',...
-                'Tag','all events');
+            uns=line(obj.map_axes,'XData', nan, 'YData', nan, 'ZData', nan);
         else
-            line(obj.map_axes, 'XData',obj.rawcatalog.Longitude, 'YData',obj.rawcatalog.Latitude,...
-                'ZData',obj.rawcatalog.Depth,'Marker','.','LineStyle','none',...
-                'Color',[.76 .75 .8],...
-                'DisplayName','unselected events',...
-                'HitTest','off',...
-                'Tag','all events');
+            uns=line(obj.map_axes,...
+                'XData', obj.rawcatalog.Longitude, 'YData', obj.rawcatalog.Latitude,...
+                'ZData', obj.rawcatalog.Depth);
         end
+        set_valid_properties(uns, unselOpts);
     end
     
     % add large events to the plot
     set(obj.map_axes,'NextPlot','add')
+    
+    bigEvOpt = ZmapGlobal.Data.BigEventOpts;
+    bigEvOpt.HitTest = 'off';
+    if bigEvOpt.UseMainEventSizeFunction
+        SzFcn = str2func(obj.mainEventProps.MarkerSizeFcn);
+    else
+        SzFcn = @(x) bigEvOpt.MarkerSize;
+    end
     
     if isempty(obj.bigEvents)
         x=[];
@@ -52,14 +62,16 @@ function plot_base_events(obj, container, featurelist)
     else
         x=obj.bigEvents.Longitude;
         y=obj.bigEvents.Latitude;
-        Sz=mag2dotsize(obj.bigEvents.Magnitude);
+        Sz=SzFcn(obj.bigEvents.Magnitude);
         z=obj.bigEvents.Depth;
     end
         
-    scatter(obj.map_axes, x, y, Sz,...
-        'Marker','h','MarkerEdgeColor','k','MarkerFaceColor','y',...
-        'Tag','big events','DisplayName', "Events >= M" + ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag,...
-        'ZData',z,'HitTest','off');
+    bev=scatter(obj.map_axes, x, y, Sz,...
+        'Tag','big events',...
+        'DisplayName', "Events >= M" + ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag,...
+        'ZData',z);
+    set_valid_properties(bev,bigEvOpt);
+    
     set(obj.map_axes,'NextPlot','replace')
     
     obj.map_axes.XLabel.String='Longitude';
@@ -80,9 +92,6 @@ function plot_base_events(obj, container, featurelist)
         obj.Features(featurelist{i})=copyobj(ZG.features(feat_key),obj.map_axes);
     end
     
-    %    obj.Features(feat_key) = copyobj(ZG.features(feat_key), obj.map_axes);
-    
-    % MapFeature.foreach(obj.Features,'plot',obj.map_axes);
     obj.map_axes.XLimMode='manual';
     obj.map_axes.YLimMode='manual';
     c=uicontextmenu(obj.fig,'Tag','mainmap context');
@@ -92,7 +101,6 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c,'Select events in BOX');
     create_from_existing_menu(c,'Select events in POLYGON');
     
-    %uimenu(c,'Label','Select events in CIRCLE',Futures.MenuSelectedFcn,@do_nothing)'
     uimenu(c,'Label','Delete shape',...
         'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
     uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
