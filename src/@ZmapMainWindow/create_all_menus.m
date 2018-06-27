@@ -373,7 +373,7 @@ function create_all_menus(obj, force)
             'Label','Explore Catalog', Futures.MenuSelectedFcn, @explore_catalog);
         
         function explore_catalog(~,~)
-            t = findOrCreateTab(obj.fig, obj.maingroup,'Exploration');
+            t = findOrCreateTab(obj.fig, obj.maingroup,'Exploration','deleteable');
             ax=findobj(t.Children,'Type','axes')
             if isempty(ax)
                 ax=axes(t);
@@ -384,7 +384,6 @@ function create_all_menus(obj, force)
             title(ax,sprintf('Exploring : catalog: %s , with %d events',...
                 strrep(obj.catalog.Name,'_', '\_'), obj.catalog.Count));
             bringToForeground(ax);
-            CatalogExplorationPlot.instructions;
         end
         
         function c=get_catalog()

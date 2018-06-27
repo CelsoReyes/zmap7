@@ -57,10 +57,9 @@ function catalog_menu(obj, force)
     uimenu(submenu,'Label','Save current catalog',Futures.MenuSelectedFcn,@(~,~)save_zmapcatalog(obj.catalog));
     
     catexport = uimenu(submenu,'Label','Export current catalog...');
-    uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog),...
-        'Enable','off');
-    uimenu(catexport,'Label','to workspace (Table)',Futures.MenuSelectedFcn,@(~,~)exportToTable(obj.catalog),...
-        'Enable','off');
+    uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'ZmapCatalog'));
+    uimenu(catexport,'Label','to workspace (Table)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'table'));
+        uimenu(catexport,'Label','to workspace (old ZmapArray)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
     
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
@@ -213,24 +212,20 @@ function catalog_menu(obj, force)
     end
 end
 
-function exportToWorkspace(catalog)
-    safername=catalog.Name;
-    safername(~ismember(safername,['a':'z','A':'Z','0':'9']))='_';
-    fn=inputdlg('Variable Name for export:','Export to workspace',1,safername);
+function exportToWorkspace(catalog, fmt)
+    safername=matlab.lang.makeValidName(catalog.Name);
+    fn=inputdlg('Variable Name for export:','Export to workspace',1,{safername});
     if ~isempty(fn)
-        assignin('base',fn{1},catalog)
+        switch lower(fmt)
+        case 'zmapcatalog'
+            assignin('base',fn{1},catalog);
+        case 'zmaparray'
+            assignin('base',fn{1},catalog.ZmapArray);
+        case 'table'
+            assignin('base',fn{1},catalog.table())
+        end
     end
 end
-
-function exportToTable(catalog)
-    safername=catalog.Name;
-    safername(~ismember(safername,['a':'z','A':'Z','0':'9']))='_';
-    fn=inputdlg('Variable Name for export:','Export to workspace',1,safername);
-    if ~isempty(fn)
-        assignin('base',fn{1},catalog.table())
-    end
-end
-
 
 function info_summary_callback(mycatalog)
     ZG=ZmapGlobal.Data;
