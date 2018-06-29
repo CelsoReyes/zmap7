@@ -9,5 +9,5 @@
       "Threshhold":10000
    },
    "DebugMode":true,
-   "DebugLevel":true
+   "DebugLevel":1
 }

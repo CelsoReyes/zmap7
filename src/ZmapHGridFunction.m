@@ -178,6 +178,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if get(gcf,'Tag') == "Zmap Main Window"
                 theTab=obj.recreateExistingResultsTab(gcf);
                 obj.overlay(theTab, choice)
+                theTab.UserData = obj; % stash results in this tab for future access
                 return
             end
             

@@ -22,7 +22,7 @@ function varargout = fdsn_param_dialog(varargin)
     
     % Edit the above text to modify the response to help fdsn_param_dialog
     
-    % Last Modified by GUIDE v2.5 04-Jun-2018 17:30:59
+    % Last Modified by GUIDE v2.5 29-Jun-2018 16:25:23
     
     % Begin initialization code - DO NOT EDIT
     gui_Singleton = 1;
@@ -734,3 +734,18 @@ function catalog_name_CreateFcn(hObject, eventdata, handles)
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
 hObject.UserData.touched = false;
+
+
+% --- Executes on button press in cancelbutton.
+function cancelbutton_Callback(hObject, eventdata, handles)
+% hObject    handle to cancelbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+delete(handles.fdsn_import_dialog);
+
+% --- If Enable == 'on', executes on mouse press in 5 pixel border.
+% --- Otherwise, executes on mouse press in 5 pixel border or over cancelbutton.
+function cancelbutton_ButtonDownFcn(hObject, eventdata, handles)
+% hObject    handle to cancelbutton (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
