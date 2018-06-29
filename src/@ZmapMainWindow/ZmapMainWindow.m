@@ -694,6 +694,7 @@ classdef ZmapMainWindow < handle
                 obj.disable_non_load_menus();
             end
             obj.fig.Pointer='arrow';
+            obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
         end
         
         function disable_non_load_menus( obj)
