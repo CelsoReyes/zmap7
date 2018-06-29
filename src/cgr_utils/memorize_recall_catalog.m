@@ -29,7 +29,7 @@ function catalog=memorize_recall_catalog(catalog)
     else
         % no arguments
         if ~hasMemorized
-            warning("no catalogs are already memorized");
+            warning('no catalogs are already memorized');
             c=[];
         else
             catalog=copy(ZG.memorized_catalogs);
