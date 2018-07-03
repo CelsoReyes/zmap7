@@ -8,7 +8,7 @@ function plot_base_events(obj, container, featurelist)
     end
         
     unselOpts = ZmapGlobal.Data.UnselectedEventOpts;
-    unselOpts.MarkerEdgeColor = FancyColors.rgb(unselOpts.MarkerEdgeColor,{'auto','none'});
+    unselOpts.MarkerEdgeColor = FancyColors.rgb(unselOpts.MarkerEdgeColor,{'auto','none','flat'});
     unselOpts.MarkerFaceColor = FancyColors.rgb(unselOpts.MarkerFaceColor,{'auto','none'});
     unselOpts.LineStyle = 'none';
     unselOpts.DisplayName = 'unselected events';

@@ -43,7 +43,16 @@ function plotmainmap(obj)
         eq.YData = obj.catalog.Latitude;
         eq.ZData = obj.catalog.Depth;
         eq.SizeData = szFcn(obj.catalog.Magnitude);
+        eq.MarkerEdgeColor='flat';
         eq.CData = getLegalColors();
+        
+        % this is a kludge, because if a MarkerEdgeColor is defined that isn't specifically 'flat'
+        % then it overrides the CData colors.
+        if size(eq.CData(:,1)>1)
+            mainEventOpts=renameStructField(mainEventOpts,'MarkerEdgeColor','Marker_Edge_Color');
+        else
+            mainEventOpts=renameStructField(mainEventOpts,'Marker_Edge_Color','MarkerEdgeColor');
+        end
         dispname = replace(obj.catalog.Name, '_', '\_');
         if ~strcmp(eq.DisplayName, dispname)
             eq.DisplayName = dispname;

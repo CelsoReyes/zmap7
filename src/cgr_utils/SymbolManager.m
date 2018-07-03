@@ -29,7 +29,12 @@ classdef SymbolManager
                 case 'scatter'
                     [MECidx, MarkerEdgeColor] = Xcolor({'flat';'none'}, h.MarkerEdgeColor);
                     [MFCidx, MarkerFaceColor] = Xcolor({'auto','flat','none'}, h.MarkerFaceColor);
-                    [Cidx, CColor] = Xcolor({}, h.CData(1,:));
+                    if size(h.CData,2) == 3
+                        [Cidx, CColor] = Xcolor({}, h.CData(1,:));
+                    else
+                        CColor={'<html><i>various','<html><b>choose'};
+                        Cidx=1;
+                    end
                     
                     mIndex=find(strcmp(h.Marker,obj.markerNames));
                     
@@ -88,9 +93,12 @@ classdef SymbolManager
             function setLineEdgeFaceColor(src,~,fld)
                 if ismember(src.String{src.Value},{'auto','none','flat'})
                     h.(fld)=src.String{src.Value};
-                elseif src.Value==numel(src.String)
-                    
-                    newc=uisetcolor(h.(fld));
+                elseif src.Value==numel(src.String) % last option is always CHOOSE
+                    try
+                        newc=uisetcolor(h.(fld));
+                    catch
+                        newc=uisetcolor([0 0 0]);
+                    end
                     h.(fld)=newc;
                     % add this "new" color to the list
                     src.String(end+1)=src.String(end);

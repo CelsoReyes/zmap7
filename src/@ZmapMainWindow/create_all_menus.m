@@ -306,7 +306,7 @@ function create_all_menus(obj, force)
         
         function analyze_time_series_cb(~,~)
             % analyze time series for current catalog view
-            CumTimePlot(obj.catalog);
+            CumTimePlot(@()obj.catalog);
         end
     end
     function create_topo_map_menu(parent)

@@ -42,7 +42,7 @@ function zmap(varargin)
     %  Stefan Wiemer  12/94
     %  Modified by Celso Reyes Spring-Fall 2017-2018
     %
-    % see also: ZmapCatalog, ZmapCatalogView, ZmapMainWindow
+    % see also: ZmapCatalog, ZmapMainWindow
     
     global ZG
     % ZG (ZmapGlobal) provides access to all ZMAP's global variables
