@@ -7,17 +7,15 @@ classdef CumRateAnalysisWindow < AnalysisWindow
         end
         
         function prepare_axes(obj)
-            %ax=axes(f,'units','pixels','Position',[1025 400 225 250]);
-            obj.ax.Tag = 'dvCumrate';
+            if isempty(obj.ax.Tag)
+                obj.ax.Tag = 'dvCumrate';
+            end
             obj.ax.Title.String='Cumulative Rate';
-            obj.ax.XLabel='Time';
-            obj.ax.YLabel='Cumulative Events';
+            obj.ax.XLabel.String='Time';
+            obj.ax.YLabel.String='Cumulative Events';
         end
         
         function [x,y]=calculate(obj,catalog)
-            %maxstep=ceil(max(catalog.Depth)./obj.depthsteps) .* obj.depthsteps;
-            %minstep=floor(min(catalog.Depth)./obj.depthsteps) .* obj.depthsteps;
-            %bins=minstep : obj.depthsteps : maxstep;
             x=sort(catalog.Date);
             y=1:catalog.Count;
         end

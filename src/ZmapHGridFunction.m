@@ -5,6 +5,32 @@ classdef ZmapHGridFunction < ZmapGridFunction
     
     properties
         features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
+        
+        showRing = false;
+        showPointValue = false;
+        showTable = true;
+        showResultPlots = true;
+        
+        nearestSample = 0;
+    end
+    
+    properties(Constant) 
+        % remember, return == char(13)
+        KeyMap = struct(...
+            'ToggleRadiusRing', 'r',...
+            'ShowValue', 'T',... 
+            'ShowValueNoNan', 't',...
+            'TogglePointValue', 'v',...
+            'KeyHelp','?',...
+            %'ClearPlot','k'...
+        );
+    end
+    
+    properties(Dependent)
+        resultsForThisPoint
+        resultsForThisPointNoNan
+        selectionForThisPoint
+        catalogForThisPoint
     end
     
     methods
@@ -12,6 +38,33 @@ classdef ZmapHGridFunction < ZmapGridFunction
         function obj=ZmapHGridFunction(varargin)
             obj@ZmapGridFunction(varargin{:});
         end
+        
+        function tb = get.resultsForThisPoint(obj)
+            tb = obj.Result.values(obj.nearestSample,:);
+        end
+        
+        function tb = get.resultsForThisPointNoNan(obj)
+            tb = obj.Result.values(obj.nearestSample,:);
+            OK = ~cellfun(@(x)isnumeric(x)&&isnan(x),table2cell(tb));
+            tb = tb(:,OK);
+        end
+        
+        function mask = get.selectionForThisPoint(obj)
+            tb = obj.resultsForThisPoint;
+            % evsel = obj.EventSelector;
+            dists = obj.RawCatalog.epicentralDistanceTo(tb.y,tb.x);
+            mask = dists <= tb.Radius_km;
+            if sum(mask) > tb.Number_of_Events
+                warning('Selection doesn''t exactly match results.')
+            end
+                
+        end
+        
+        function c = get.catalogForThisPoint(obj)
+            c=obj.RawCatalog.subset(obj.selectionForThisPoint);
+        end
+        
+        
         %{
         function showInTab(obj, ax, choice)
             % plots the results on the provided axes.
@@ -415,6 +468,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
         end
         
+        
         function interact(obj,ax, myname)
             f=ancestor(ax,'figure');
             mytab=ax.Parent;
@@ -424,10 +478,39 @@ classdef ZmapHGridFunction < ZmapGridFunction
             delete(findobj(ax,'Tag','thisresulthilight'));
             delete(findobj(ax,'Tag','thisradius'));
             TX = text(ax,nan,nan,'','FontWeight','bold','BackgroundColor','w','Interpreter','none','Tag','thisresulttext');
-            HL = scatter(ax,nan,nan,'+','CData',[0 0 0],'Tag','thisresulthilight');
+            HL = scatter(ax,nan,nan,'o','MarkerEdgeColor',[0 0 0], 'MarkerFaceColor',[1 0 0],...
+                ...'CData',[0 0 0],...
+                'Tag','thisresulthilight',...
+                'SizeData',60,...
+                'LineWidth',3);
             CR = line(ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
-            f.WindowButtonMotionFcn=@update;
-            lastNearest=0;
+            f.WindowButtonMotionFcn = @update;
+            f.WindowKeyPressFcn     = @keyupdate;
+            
+            function keyupdate(src, ev)
+                k = ev.Character;
+                switch k
+                    case obj.KeyMap.KeyHelp
+                        disp('Key Help')
+                        fn=fieldnames(obj.KeyMap)
+                        for i=1:numel(fn)
+                            fprintf('   %20s  : %s\n',fn{i},obj.KeyMap.(fn{i}));
+                        end
+                        
+                    case obj.KeyMap.ToggleRadiusRing
+                        obj.showRing = ~obj.showRing;
+                        
+                    case obj.KeyMap.TogglePointValue
+                        obj.showPointValue = ~obj.showPointValue;
+                        
+                    case obj.KeyMap.ShowValueNoNan
+                        disp(obj.resultsForThisPointNoNan);
+                        
+                    case obj.KeyMap.ShowValue
+                        disp(obj.resultsForThisPoint);
+                end
+                
+            end
             
             function update(src, ev)
                 if mytabholder.SelectedTab~=mytab
@@ -439,30 +522,54 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 if pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1)
                     mx=pt(1); my=pt(2);
                     [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
-                    if nearest ~= lastNearest
-                        lastNearest=nearest;
+                    if nearest ~= obj.nearestSample
+                        obj.nearestSample=nearest;
                         x=obj.Result.values.x(nearest);
                         y=obj.Result.values.y(nearest);
                         % update hilight
                         HL.XData = x;
                         HL.YData = y;
                         
-                        % update text
-                        TX.Position=[x, y,0];
-                        valstr=string(obj.Result.values.(myname)(nearest));
-                        if ismissing(valstr)
-                            TX.String="  " + myname + " : <missing>";
+                        if obj.showPointValue
+                            % update text
+                            TX.Position=[x, y,0];
+                            valstr=string(obj.Result.values.(myname)(nearest));
+                            if ismissing(valstr)
+                                TX.String="  " + myname + " : <missing>";
+                            else
+                                TX.String="  " + myname + " : " + valstr;
+                            end
                         else
-                            TX.String="  " + myname + " : " + valstr;
+                            TX.String="";
                         end
                         
-                        % update samplecircle
-                        [La,Lo]=reckon(y, x, km2deg(obj.Result.values.Radius_km(nearest)), 0:2:360);
-                        set(CR,'XData',Lo,'YData',La,'LineStyle','--');
+                        if obj.showRing
+                            % update samplecircle
+                            [La,Lo]=reckon(y, x, km2deg(obj.Result.values.Radius_km(nearest)), 0:2:360);
+                            set(CR,'XData',Lo,'YData',La,'LineStyle','--');
+                        else
+                            set(CR,'XData',nan,'YData',nan);
+                        end
                         
+                        h=findobj(gcf,'Tag','CumPlot axes');
+                        plOpt.Marker='o';
+                        plOpt.LineStyle='-.';
+                        plOpt.LineWidth=2;
+                        plOpt.DisplayName = [obj.PlotTag, ' selection'];
+                        gr=findobj(ax,'Tag','Grid');
+                        gridx = find(gr.XData==x & gr.YData==y);
+                        cm=colormap(ax);
+                        cl=ax.CLim;
+                        lookup=linspace(min(cl),max(cl),length(cm));
+                        mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
+                        mycolor = mycolorFn(gr.CData(gridx));
+                        if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
+                        plOpt.Color = mycolor;
+                        c = obj.catalogForThisPoint;
+                        h.UserData.add_series(c, [obj.PlotTag, ' selection'], plOpt);
                         
-                    end
-                end
+                    end %nearest
+                end % within axes
             end
         end
     end % Protected methods

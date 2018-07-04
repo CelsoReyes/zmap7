@@ -1,7 +1,5 @@
 classdef AnalysisBvalues < AnalysisWindow
     properties
-        %mcProps={}
-        %lineProps={}
         bobj;
     end
     
@@ -26,18 +24,25 @@ classdef AnalysisBvalues < AnalysisWindow
         function add_series(obj, catalog, tagID, varargin)
             % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
             % fit line
-            %unwrap varargin if it is a single thing
-            if numel(varargin)==1 && iscell(varargin)
-                varargin=varargin{1};
+            
+            p=inputParser();
+            p.addRequired(tagID, @(x)isstring(tagID)||ischar(tagID));
+            p.KeepUnmatched=true;
+            p.parse(tagID,varargin{:});
+            
+            add_series@AnalysisWindow(obj, catalog, tagID, p.Unmatched);
+            
+            McProps = p.Unmatched; 
+            if ~isfield(McProps,'Color')
+                McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
+            else
+                McProps.MarkerFaceColor = McProps.Color;
             end
-            basic_props = varargin;
-            add_series@AnalysisWindow(obj, catalog, tagID, basic_props);
-            color=get(findobj(obj.ax,'Tag',tagID),'Color');
-            color=AnalysisWindow.getProperty(varargin,'Color',color);
-            McProps=varargin; McProps(end+1:end+2)={'MarkerFaceColor',color};
-            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc,McProps{:});
-            lineProps=varargin; lineProps(end+1:end+2)={'LineWidth',2};
-            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine,lineProps{:});
+            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc,McProps);
+            
+            lineProps = p.Unmatched; 
+            lineProps.LineWidth = 2;
+            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine,lineProps);
             
         end   
         

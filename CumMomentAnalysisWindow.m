@@ -8,7 +8,6 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         
         function prepare_axes(obj)
             % moment release axes
-            %momentax=axes(f,'units','pixels','Position',[1025 100 225 250]);
             obj.ax.Tag = 'dvMoment';
             obj.ax.Title.String='Cum Moment Release';
             obj.ax.XLabel.String='time';
@@ -16,9 +15,6 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         end
         
         function [x,y]=calculate(~,catalog)
-            %maxstep=ceil(max(catalog.Depth)./obj.depthsteps) .* obj.depthsteps;
-            %minstep=floor(min(catalog.Depth)./obj.depthsteps) .* obj.depthsteps;
-            %bins=minstep : obj.depthsteps : maxstep;
             x=catalog.Date;
             [~, y, ~] = calc_moment(catalog);
         end
