@@ -40,8 +40,8 @@ function add_cumtimeplot_zmenu(obj, parent)
     op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
     uimenu(op4,'Label','automatic',Futures.MenuSelectedFcn,@cb_auto_mc_b_estimation)
     uimenu(op4,'label','Mc with time ',Futures.MenuSelectedFcn,{@plotwithtime,'mc'});
-    uimenu(op4,'Label','b with depth',Futures.MenuSelectedFcn,@(~,~)bwithde2('newt2'))
-    uimenu(op4,'label','b with magnitude',Futures.MenuSelectedFcn,@(~,~)bwithmag);
+    uimenu(op4,'Label','b with depth',Futures.MenuSelectedFcn,@(~,~)bwithde2(obj.catview.Catalog()));
+    uimenu(op4,'label','b with magnitude',Futures.MenuSelectedFcn,@(~,~)bwithmag(obj.catview.Catalog()));
     uimenu(op4,'label','b with time',Futures.MenuSelectedFcn,{@plotwithtime,'b'});
     
     op5 = uimenu(analyzemenu,'Label','p-value estimation');

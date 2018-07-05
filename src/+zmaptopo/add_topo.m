@@ -12,11 +12,16 @@ function add_topo(varargin)
     p.addOptional('ax',gca,@isgraphics);
     p.addParameter('locale','world');
     p.addParameter('colormap','demcmap');
+    p.addParameter('ShadedOnly',false);
     p.parse(varargin{:});
     
     ax=p.Results.ax;
     locale = p.Results.locale;
     colorscheme = p.Results.colormap;
+    
+    if p.Results.ShadedOnly
+        colorscheme = [0.5 0.5 0.5];
+    end
     
     xl = ax.XLim;
     yl  =ax.YLim;
@@ -96,7 +101,15 @@ function add_topo(varargin)
             Z=Z(latidx,lonidx);
             
             ax.NextPlot = 'add';
-            pc=pcolor(ax,lons(lonidx), lats(latidx), Z);
+            %{
+            pc=surf(ax,lons(lonidx),lats(latidx),Z./1000);
+%            light(ax)
+ %           lightangle(ax,45,60)
+  %          lighting phong
+   %         material dull
+            %}
+            pc=pcolor(ax,lons(lonidx),lats(latidx),Z);
+            
             pc.Tag=tag;
             pc.DisplayName='world topography';
             

@@ -109,9 +109,34 @@ function zmap(varargin)
     % set system dependent initial variables
     ini_zmap_sys
     
-    % if s
     % start the main zmap program
     if startWindow
-        ZmapMainWindow(ZG.primeCatalog);
+        delete(findall(groot,'Tag','Msgbox_No Active Catalogs'));
+        
+        zw = findall(get(groot,'Children'),'Tag','Zmap Main Window');
+        fprintf('%d ZMAP windows exist\n',numel(zw));
+        if ~isempty(zw)
+            emptyzw = arrayfun(@(x)isempty(x.UserData.catalog), zw);
+            delete(zw(emptyzw));
+            fprintf('... of which %d were empty\n',sum(emptyzw));
+        end
+        
+        cw = get(groot,'CurrentFigure');
+        if isempty(cw)
+            disp('No Figure currently exists');
+        else
+            switch cw.Tag
+                case 'Zmap Main Window'
+                    disp('ZMAP Window Exists, and is active')
+                otherwise
+                    disp('')
+            end
+        end
+        cw = figure;
+        if ~isempty(ZG.primeCatalog)
+            ZmapMainWindow(cw,ZG.primeCatalog);
+        else
+            ZmapMainWindow(cw);
+        end
     end
 end

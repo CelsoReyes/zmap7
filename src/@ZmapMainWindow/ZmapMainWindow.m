@@ -93,7 +93,7 @@ classdef ZmapMainWindow < handle
                                 error('unexpected argument to ZmapMainWindow: %s', varargin{1}.Type);
                         end
                     catch ME
-                        warning(ME)
+                        warning(ME.message)
                         error('unexpected argument to ZmapMainWindow: %s', class(varargin{1}));
                     end
                 case 2
@@ -115,7 +115,7 @@ classdef ZmapMainWindow < handle
             
             
             %if the figure was specified, but wasn't empty, then clear it out.
-            if isvalid(fig)
+            if ~isempty(fig) && isvalid(fig)
                 isMainMapWindow=isa(fig.UserData, 'ZmapMainWindow');
                 resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children)>1;
                 shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
@@ -653,11 +653,7 @@ classdef ZmapMainWindow < handle
             
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
             
-            if isempty(obj.Grid)
-                set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
-                obj.Grid=ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
-            end
-            
+            setGrid();
             
             
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.UR,...
@@ -694,7 +690,28 @@ classdef ZmapMainWindow < handle
                 obj.disable_non_load_menus();
             end
             obj.fig.Pointer='arrow';
-            obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
+            % obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
+            
+            function setGrid()
+                
+                if isempty(obj.Grid)
+                    set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
+                    try
+                        obj.Grid=ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
+                    catch ME
+                        switch ME.identifier
+                            case 'ZMAPGRID:get_grid:TooManyGridPoints'
+                                warning('Too many grid points. Downsampling grid\n%s',ME.message);
+                                obj.gridopt.dx=obj.gridopt.dx .* 2;
+                                obj.gridopt.dy=obj.gridopt.dy .* 2;
+                                setGrid();
+                            otherwise
+                                rethrow(ME)
+                        end
+                    end
+                    
+                end
+            end
         end
         
         function disable_non_load_menus( obj)

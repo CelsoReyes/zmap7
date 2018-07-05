@@ -131,10 +131,15 @@ classdef ZmapGrid
                         
                         % 1st: FIGURE OUT ORIGIN POINT OF GRID
                         ax=findobj(gcf,'Tag','mainmap_ax');
+                        xl = xlim(ax); yl=ylim(ax);
+                        minX=max([xl(1), -180]);
+                        maxX=min([xl(2), 180]);
+                        minY=max([yl(1), -90]);
+                        maxY=min([yl(2), 90]);
                         if use_shape
                             lonLatZ0=[myshape.X0 myshape.Y0];
                         else
-                            lonLatZ0=[mean(xlim(ax)), mean(ylim(ax))];
+                            lonLatZ0=[mean([minX, maxX]), mean([minY, maxY])];
                         end
                             
                         % 2nd: FIGURE OUT DELTAS
@@ -142,7 +147,7 @@ classdef ZmapGrid
                         
                         
                         % 3rd: FIGURE OUT LIMITS
-                        limsLonLatZ=[xlim(ax);ylim(ax)];
+                        limsLonLatZ=[minX maxX ; minY maxY];
                         switch lower(gridopt.horizUnits)
                             case {'km','kilometers'}
                                 obj.Units='Kilometers';
@@ -461,8 +466,7 @@ classdef ZmapGrid
             xs=nan(nrows,ncols);
             for n=1:nrows
                 thislat=ugy(n); % lat for this row
-                idx_lons=(latCol==thislat); % mask of lons in this row
-                these_lons=lonCol(idx_lons); % lons in this row
+                these_lons=lonCol(latCol==thislat); % lons in this row
                 row_length=numel(these_lons); % number of lons in this row
                 
                 main_lon_idx=find(these_lons==lon0); % offset of X in this row
@@ -619,12 +623,24 @@ classdef ZmapGrid
                 % number of degrees longitude covered by the arclength at each latitude
                 [~,dLon_per_lat]=reckon('rh',lats,0,dLon,90);
                 
+                totEstPts= ceil(sum( ( 1./dLon_per_lat ) .* range(xlims_deg) ));
+                if totEstPts > 1000000
+                    error('ZMAPGRID:get_grid:TooManyGridPoints','Too many grid points: est. %d',totEstPts);
+                end
+                lonMat=nan(totEstPts,1);
+                latMat=nan(totEstPts,1);
+                totCalcPts=0;
                 for n=1:numel(lats)
                     theseLonValues = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), xlims_deg);
-                    lonMat=[lonMat;theseLonValues(:)]; %#ok<AGROW>
-                    latMat=[latMat;repmat(lats(n),size(theseLonValues(:)))]; %#ok<AGROW>
+                    myEnd = totCalcPts + numel(theseLonValues);
+                    lonMat(totCalcPts+1 : myEnd) = theseLonValues(:);
+                    latMat(totCalcPts+1 : myEnd) =lats(n);
+                    totCalcPts = myEnd;
                 end
-                
+                if totCalcPts < totEstPts
+                    lonMat(totCalcPts+1:end)=[];
+                    latMat(totCalcPts+1:end)=[];
+                end
                 [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
                 % each gridx & gridy are vectors.
             end

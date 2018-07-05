@@ -332,9 +332,11 @@ function create_all_menus(obj, force)
         
         if exist('code','var')
             zmaptopo.add_topo(obj.map_axes,'locale',code);
+            % zmaptopo.add_topo(obj.map_axes,'locale',code,'ShadedOnly',true);
         end
         % now plot the world topography too.
         zmaptopo.add_topo(obj.map_axes,'locale','world');
+        % zmaptopo.add_topo(obj.map_axes,'locale','world','ShadedOnly',true);
     end
     
     function create_random_data_simulations_menu(parent)

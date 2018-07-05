@@ -33,13 +33,13 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        primeCatalog    ZmapCatalog
-        newcat          ZmapCatalog
-        newt2           ZmapCatalog
-        catalog_working ZmapCatalog
+        primeCatalog    ZmapCatalog = ZmapCatalog('empty catalog')
+        newcat          ZmapCatalog = ZmapCatalog('empty catalog')
+        newt2           ZmapCatalog = ZmapCatalog('empty catalog')
+        catalog_working ZmapCatalog = ZmapCatalog('empty catalog')
         memorized_catalogs              % manually stored via Memorize/Recall
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
-        original        ZmapCatalog     % used with declustering
+        original        ZmapCatalog     = ZmapCatalog('empty catalog')% used with declustering
         
         % cluster catalogs 
         newccat          ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
@@ -177,8 +177,10 @@ classdef ZmapData < handle
                     catalogFile = fullfile(obj.Directories.working,ZDefaults.catalog.LastCatalogFilename);
                     if exist(catalogFile,'file')
                         tmp = load(catalogFile,'catalog');
+                        obj.primeCatalog = tmp.catalog;
                     end
-                    obj.primeCatalog = tmp.catalog;
+                    % failed to open the last catalog
+                    obj.primeCatalog=ZmapCatalog('empty catalog');
                 end
             end
             

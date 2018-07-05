@@ -16,6 +16,7 @@ function cumplot(obj, tabgrouptag)
         ax.Box        = 'on';
         ax.Tag        = Tags.ax;
         ax.UserData   = CumRateAnalysisWindow(ax);
+        grid(ax, 'on');
     end
     craw = ax.UserData;
     
@@ -33,12 +34,13 @@ function cumplot(obj, tabgrouptag)
     
     plotted_xs = get(ax.Children,'Tag');
     plotted_xs = plotted_xs(startsWith(plotted_xs, 'Xsection'));
-    existing_xs = obj.XSectionTitles;
     
-    % delete cross sections that shouldn't exist
-    todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-    craw.remove_series(todel);
-    
+    if ~isempty(plotted_xs)
+     existing_xs = obj.XSectionTitles;
+        % delete cross sections that shouldn't exist
+        todel = plotted_xs(~ismember(plotted_xs,existing_xs));
+        craw.remove_series(todel);
+    end
     %% if necessary, add context menu to figure
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)

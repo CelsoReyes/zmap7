@@ -257,7 +257,7 @@ classdef bdiff2
             
             bfig=findobj(get(groot,'Children'),'flat','Type','Figure','-and','Name', obj.figName);
             if isempty(bfig)
-                bfig=figure('Units','normalized','pos',obj.figPos,'NumberTitle','off''Name',obj.figName);
+                bfig=figure('Units','normalized','pos',obj.figPos,'NumberTitle','off','Name',obj.figName);
                 
                 
                 add_menu_divider();
@@ -283,7 +283,7 @@ classdef bdiff2
             ZG = ZmapGlobal.Data;
             
             bfig=ancestor(ax,'figure');
-            is_standalone = bfig.Name==obj.figName && ax.Tag==obj.tags.mainbvalax;
+            is_standalone = bfig.Name==obj.figName && ax.Tag==string(obj.tags.mainbvalax);
             
             if is_standalone
                 fs=ZG.fontsz.m;

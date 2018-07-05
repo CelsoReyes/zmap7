@@ -52,7 +52,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
                 jj=jsondecode(fileread('fdsnservices.json')); % get additional services
                 for i=1:numel(jj)
                     % only include datacenters that are not already retrieved by the querying fedcatalog
-                    if ~ismember(jj.name,{datacenter_details.name})
+                    if ~ismember(jj(i).name,{datacenter_details.name})
                         datacenter_details(end+1)=jj(i);
                     end
                 end

@@ -47,7 +47,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     if isempty(ext)
         ext='.mat';
     end
-    saveFile=fullfile(pathstr,name,ext);
+    saveFile=fullfile(pathstr,[name ext]);
     if ~exist(pathstr,'dir')
         mkdir(pathstr);
     end
