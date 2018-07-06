@@ -285,11 +285,13 @@ classdef (Sealed) CumTimePlot < handle
             set(myfig,'Visible','on');
             watchoff(myfig);
         end
+        
         function ed = get.Edges(obj)
             ZG=ZmapGlobal.Data;
             % get.Edges get date edges
             ed = min(obj.catview.Date) : ZG.bin_dur : max(obj.catview.Date);
         end
+        
         function red = get.RelativeEdges(obj)
             ZG=ZmapGlobal.Data;
             % get.RelativeEdges get duration edges
