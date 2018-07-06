@@ -9,9 +9,8 @@ function replot_all(obj,metaProp,eventData)
     else
         eventName = eventData.EventName;
     end
-    disp(['*** REPLOTTING BECAUSE: ' eventName]);
+    msg.dbdisp(['Replotting because:', eventName]);
     
-    %warning('ReplotStack')
     md=[];
     k={};
     
@@ -22,7 +21,7 @@ function replot_all(obj,metaProp,eventData)
     obj.replotting=true;
     switch eventName
         case 'XsectionAdded'
-            disp('add a cross section to plots')
+            msg.dbdisp('add a cross section to plots')
             k=obj.XSectionTitles;
             if numel(k)>1
                 k = k(~ismember(k,get(obj.xsgroup.Children,'Title')));
@@ -32,13 +31,13 @@ function replot_all(obj,metaProp,eventData)
             disp('remove cross section from plots')
             
         case {'XsectionChanged'}
-            disp('replot cross sections')
+            msg.dbdisp('replot cross sections')
             k=obj.XSectionTitles;
             
         case 'XsectionEmptied'
             
         case {'CatalogChanged','ReplotAll','DateRangeChanged','ShapeChanged'}
-            disp('replot everything touched by catalog')
+            msg.dbdisp('replot everything touched by catalog')
             k=obj.XSectionTitles;
             if eventName=="ShapeChanged"
                 disp(eventData.Source);

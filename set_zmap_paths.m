@@ -4,12 +4,11 @@ path_list = [
     {hodi};
     fullfile(hodi, {'src';
     'help';
-    'dem';
     'zmapwww';
     'importfilters';
     'resources';
     });
-    fullfile(hodi, 'dem', {'WORLD';'CH'});  %location for DEM data files
+    split(genpath(fullfile(hodi,'dem'))); %location for DEM data files
     fullfile(hodi, 'resources', {'features';'sample';'focalmech'});
     fullfile(hodi, 'src',{'afterrate';
     'cgr_utils';
