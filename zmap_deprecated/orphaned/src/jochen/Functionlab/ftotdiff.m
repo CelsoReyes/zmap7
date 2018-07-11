@@ -1,5 +1,5 @@
-function [dNdiffsum, dNdiffsumYear, dNdiffsumYear]=ftotdiff(mCatalog1,mCatalog2)
-% function [dNdiffsum, dNdiffsumYear, dNdiffsumYear]=ftotdiff(mCatalog1,mCatalog2)
+function [dNdiffsum, dNdiffsumYear] = ftotdiff(mCatalog1,mCatalog2)
+% function [dNdiffsum, dNdiffsumYear]=ftotdiff(mCatalog1,mCatalog2)
 % --------------------------------------------------------------------------------------
 % Function to calculate absolute difference of number of events between
 % to time periods of an earthquake catalog

@@ -188,13 +188,13 @@ function domisfit(catalog,sig,plu,az,phi,R)
         add_menu_divider();    %
         omp2= uimenu('Label','Tools');
         uimenu(omp2,'label','Misfit-Magnitude',...
-            Futures.MenuSelectedFcn,@cb_misfitmag);
+            'MenuSelectedFcn',@cb_misfitmag);
         uimenu(omp2,'label','Misfit-Depth',...
-            Futures.MenuSelectedFcn,@cb_misfitdep);
+            'MenuSelectedFcn',@cb_misfitdep);
         uimenu(omp2,'label','Earthquake-Depth',...
-            Futures.MenuSelectedFcn,@cb_eqdep);
+            'MenuSelectedFcn',@cb_eqdep);
         uimenu(omp2,'label','Earthquake-Strike',...
-            Futures.MenuSelectedFcn,@cb_eqstrike);
+            'MenuSelectedFcn',@cb_eqstrike);
         %
     end
     
@@ -202,11 +202,11 @@ function domisfit(catalog,sig,plu,az,phi,R)
         add_menu_divider();
         omp1= uimenu('Label','Tools');
         uimenu(omp1,'label','Save sorted catalog',...
-            Futures.MenuSelectedFcn,@callbackfun_009);
+            'MenuSelectedFcn',@callbackfun_009);
         uimenu(omp1,'label','AS Function',...
-            Futures.MenuSelectedFcn,@cb_astmisfit);
+            'MenuSelectedFcn',@cb_astmisfit);
         uimenu(omp1,'label','Compare',...
-            Futures.MenuSelectedFcn,@cb_comparemisfit);
+            'MenuSelectedFcn',@cb_comparemisfit);
     end
     
     %% callback functions
@@ -773,7 +773,8 @@ function plotmimac(mi,inde)
         newa2=crosssel(newa);
         ZG.newt2=newa2;
         ZG.newcat=newa2;
-        CumTimePlot(ZG.newt2);
+        ctp=CumTimePlot(ZG.newt2);
+        ctp.plot();
     end
 end
 

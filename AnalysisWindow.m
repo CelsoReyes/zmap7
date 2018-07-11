@@ -134,7 +134,7 @@ classdef AnalysisWindow < handle
             is_the_one=strcmpi(flds,name);
             found=any(is_the_one);
             if found
-                valIdx=find(is_the_one, 1, 'last') .* 2;
+                valIdx=find(is_the_one, 1, 'last') * 2;
                 v = C{valIdx};
                 strippedC(valIdx-1:valIdx) = [];
             else

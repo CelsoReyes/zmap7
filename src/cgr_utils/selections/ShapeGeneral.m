@@ -225,7 +225,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 c=uicontextmenu(f,'Tag','ShapeGenContext');
                 uimenu(c,...
                     'Label','info...',...
-                    Futures.MenuSelectedFcn,@(src,ev) obj.summary());
+                    'MenuSelectedFcn',@(src,ev) obj.summary());
                 
                 % add analysis functions
                 for i=1:size(obj.AnalysisFunctions,1)
@@ -233,16 +233,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     nm=obj.AnalysisFunctions{i,2};
                     uimenu(c,'Label',sprintf('Analyze EQ inside Shape (%s)',nm),...
                         'separator','on',...
-                        Futures.MenuSelectedFcn,{@obj.cb_selectp,fn,'inside'}); %@cb_analyze
+                        'MenuSelectedFcn',{@obj.cb_selectp,fn,'inside'}); %@cb_analyze
                     uimenu(c,'Label',sprintf('Analyze EQ outside Shape (%s)',nm),...
-                        Futures.MenuSelectedFcn,{@obj.cb_selectp,fn,'outside'});
+                        'MenuSelectedFcn',{@obj.cb_selectp,fn,'outside'});
                     uimenu(c,'Label',sprintf('Compare Inside vs Outside (%s)',nm),...
-                        Futures.MenuSelectedFcn,{@compare_in_out, fn});
+                        'MenuSelectedFcn',{@compare_in_out, fn});
                 end
                 
                 uimenu(c,...
                     'Label','Change shape with latitude?',...
-                    Futures.MenuSelectedFcn,@latscale);
+                    'MenuSelectedFcn',@latscale);
                 obj.add_shape_specific_context(c);
                 
                 function compare_in_out(src,ev)

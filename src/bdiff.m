@@ -52,7 +52,7 @@ function  bdiff(mycat, holdplot)
     
     if ZG.hold_state
         axes(cua)
-        disp('set(gca,'NextPlot','add')')
+        disp("set(gca,'NextPlot','add')")
         set(gca,'NextPlot','add')
     else
         figure(bfig);
@@ -100,7 +100,7 @@ function  bdiff(mycat, holdplot)
     x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2)) ;
+    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2), 0.1) ;
     
     bv = -bv;
     
@@ -203,12 +203,12 @@ function  bdiff(mycat, holdplot)
     function create_my_menu()
         add_menu_divider();
         options = uimenu('Label','ZTools');
-        uimenu(options,'Label','Estimate recurrence time/probability',Futures.MenuSelectedFcn,@cb_est_recurr);
-        uimenu(options,'Label','Plot time series',Futures.MenuSelectedFcn,@cb_plot_ts);
-        uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)',Futures.MenuSelectedFcn,@cb_nonlin_optimize);
-        uimenu(options,'Label','Examine Nonlinearity (Keep Mc)',Futures.MenuSelectedFcn,@cb_nonlin_keepmc);
-        uimenu(options,'Label','Do not show discrete',Futures.MenuSelectedFcn,@cb_nodiscrete);
-        uimenu(options,'Label','Save values to file', 'Enable','off',Futures.MenuSelectedFcn,{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
+        uimenu(options,'Label','Estimate recurrence time/probability','MenuSelectedFcn',@cb_est_recurr);
+        uimenu(options,'Label','Plot time series','MenuSelectedFcn',@cb_plot_ts);
+        uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)','MenuSelectedFcn',@cb_nonlin_optimize);
+        uimenu(options,'Label','Examine Nonlinearity (Keep Mc)','MenuSelectedFcn',@cb_nonlin_keepmc);
+        uimenu(options,'Label','Do not show discrete','MenuSelectedFcn',@cb_nodiscrete);
+        uimenu(options,'Label','Save values to file', 'Enable','off','MenuSelectedFcn',{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
         addAboutMenuItem();
     end
     
@@ -224,7 +224,8 @@ function  bdiff(mycat, holdplot)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newt2=mycat;
-        CumTimePlot(mycat);
+        ctp=CumTimePlot(mycat);
+        ctp.plot();
     end
     
     function cb_nonlin_optimize(mysrc, myevt)

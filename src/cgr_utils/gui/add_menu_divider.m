@@ -1,6 +1,8 @@
 function add_menu_divider(fig,tag)
     % add_menu_divider add inactive item "|" to the menu bar, to right of existing menus
     %
+    % ADD_MENU_DIVIDER(fig,tag)
+    %
     % ex, excerpt from typical menu, adding divider, and 'Ztools' menu
     %   fig=figure;
     %   add_menu_divider()

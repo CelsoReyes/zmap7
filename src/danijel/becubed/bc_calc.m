@@ -39,13 +39,13 @@ for nNode_ = 1:nNumberNodes_
   mTHCatalog_ = bc_SelectMechanism(mNodeCatalog_, 2, params.fGamma);
   mNRCatalog_ = bc_SelectMechanism(mNodeCatalog_, 3, params.fGamma);
   % Compute the b-values for the node catalogs
-  [fBValueSS_, fStdDevSS_, fMcSS_, vDummy, nNumberSS_] = ...
+  [fBValueSS_, fStdDevSS_, fMcSS_, ~, nNumberSS_] = ...
     calc_BandMc(mSSCatalog_, params.rOptions.nMinimumNumber, params.rOptions.nCalculateMC, params.rOptions.fBinning, ...
       params.rOptions.bConstrainMc, params.rOptions.fMcMin, params.rOptions.fMcMax);
-  [fBValueTH_, fStdDevTH_, fMcTH_, vDummy, nNumberTH_] = ...
+  [fBValueTH_, fStdDevTH_, fMcTH_, ~, nNumberTH_] = ...
     calc_BandMc(mTHCatalog_, params.rOptions.nMinimumNumber, params.rOptions.nCalculateMC, params.rOptions.fBinning, ...
       params.rOptions.bConstrainMc, params.rOptions.fMcMin, params.rOptions.fMcMax);
-  [fBValueNR_, fStdDevNR_, fMcNR_, vDummy, nNumberNR_] = ...
+  [fBValueNR_, fStdDevNR_, fMcNR_, ~, nNumberNR_] = ...
     calc_BandMc(mNRCatalog_, params.rOptions.nMinimumNumber, params.rOptions.nCalculateMC, params.rOptions.fBinning, ...
       params.rOptions.bConstrainMc, params.rOptions.fMcMin, params.rOptions.fMcMax);
 
@@ -54,9 +54,9 @@ for nNode_ = 1:nNumberNodes_
   fBSSMinusTH_ = fBValueSS_ - fBValueTH_;
   fBNRMinusTH_ = fBValueNR_ - fBValueTH_;
 
-  [dA, fUtsuNRSS_, vDummy] = calc_Utsu(fBValueNR_, fBValueSS_, nNumberNR_, nNumberSS_);
-  [dA, fUtsuSSTH_, vDummy] = calc_Utsu(fBValueSS_, fBValueTH_, nNumberSS_, nNumberTH_);
-  [dA, fUtsuNRTH_, vDummy] = calc_Utsu(fBValueNR_, fBValueTH_, nNumberNR_, nNumberTH_);
+  [dA, fUtsuNRSS_, ~] = calc_Utsu(fBValueNR_, fBValueSS_, nNumberNR_, nNumberSS_);
+  [dA, fUtsuSSTH_, ~] = calc_Utsu(fBValueSS_, fBValueTH_, nNumberSS_, nNumberTH_);
+  [dA, fUtsuNRTH_, ~] = calc_Utsu(fBValueNR_, fBValueTH_, nNumberNR_, nNumberTH_);
 
   fUtsuNRSS_ = log10(fUtsuNRSS_);
   fUtsuSSTH_ = log10(fUtsuSSTH_);

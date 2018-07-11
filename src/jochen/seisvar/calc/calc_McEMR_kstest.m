@@ -1,5 +1,7 @@
-function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAvalue, bH, fPval, fKsstat] = calc_McEMR_kstest(mCatalog, fBinning)
-% function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAvalue, bH, fPval, fKsstat] = calc_McEMR_kstest(mCatalog, fBinning);
+function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAvalue, bH, fPval, fKsstat] = calc_McEMR_kstest(magnitudes, dateSpan, fBinning)
+% calc_McEMR_kstest Determine Mc using maximum likelihood estimate; same as calc_McEMR but with output of modeled data
+% [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAvalue, bH, fPval, fKsstat] = calc_McEMR_kstest(mCatalog, dateSpan, fBinning);
+%
 % -----------------------------------------------------------------------------------------------------------------------------
 % Determine Mc using maximum likelihood estimate; same as calc_McEMR but with output of modeled data
 % Fitting non-cumulative frequency magnitude distribution above and below Mc:
@@ -9,7 +11,8 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAv
 % results in a good-fit (0) or not (1) at 0.05 significance level.
 %
 % Incoming variables:
-% mCatalog   : EQ catalog
+% magnitudes   : EQ catalog magnitudes
+% dateSpan   : exact time period represented by the events
 % fBinning   : Binning interval, usually 0.1
 %
 % Outgoing variables:
@@ -31,7 +34,6 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAv
 % fKsstat        : KS-Test Statistic
 %
 % J. Woessner: woessner@seismo.ifg.ethz.ch
-% updated: 09.02.04
 
 
 % Initialize
@@ -49,14 +51,11 @@ vNmaxBest = [];
 mResult=[];
 mDatPredBest = [];
 
-% Determine exact time period
-fPeriod1 = max(mCatalog.Date) - min(mCatalog.Date);
-
 % Determine max. and min. magnitude
-fMaxMag = ceil(10 * max(mCatalog.Magnitude)) / 10;
+fMaxMag = ceil(10 * max(magnitudes)) / 10;
 
 % Set starting value for Mc loop and LSQ fitting procedure
-fMcTry= calc_Mc(mCatalog,1);
+fMcTry= calc_Mc(magnitudes, McMethods.MaxCurvature);
 fSmu = abs(fMcTry/2);
 fSSigma = abs(fMcTry/4);
 if (fSmu > 1)
@@ -66,7 +65,7 @@ end
 fMcBound = fMcTry;
 
 % Calculate FMD for original catalog
-[vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog);
+[vFMDorg, vNonCFMDorg] = calc_FMD(magnitudes);
 fMinMag = min(vNonCFMDorg(1,:));
 
 %% Shift to positive values
@@ -81,12 +80,12 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     vNonCFMD = fliplr(vNonCFMD);
     %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
     % Select magnitudes to calculate b- anda-value
-    vSel = mCatalog.Magnitude > fMc-fBinning/2;
-    if (length(mCatalog.Longitude(vSel)) >= 20)
-        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+    vSel = magnitudes > fMc-fBinning/2;
+    if sum(vSel) >= 20
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(magnitudes(vSel), fBinning);
         % Normalize to time period
-        vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
-        vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed
+        vFMD(2,:) = vFMD(2,:)./dateSpan; % ceil taken out
+        vNonCFMD(2,:) = vNonCFMD(2,:)./dateSpan; % ceil removed
         % Compute quantity of earthquakes by power law
         fMaxMagFMD = max(vNonCFMD(1,:));
         fMinMagFMD = min(vNonCFMD(1,:));
@@ -99,7 +98,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
         vN = abs(diff(vNCumTmp));
 
         % Normalize vN
-        vN = vN./fPeriod1;
+        vN = vN./dateSpan;
         % Data selection
         % mData = Non-cumulative FMD values from GR-law and original data
         mData = [vN' vNonCFMD'];
@@ -141,8 +140,8 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
             mDataTest(:,3) = mDataTest(:,3)*fNmax;
             mDataPred = [mDataTest; mDataTmp];
             % Denormalize to calculate probabilities
-            mDataPred(:,1) = round(mDataPred(:,1).*fPeriod1);
-            mDataPred(:,3) = mDataPred(:,3).*fPeriod1;
+            mDataPred(:,1) = round(mDataPred(:,1).*dateSpan);
+            mDataPred(:,3) = mDataPred(:,3).*dateSpan;
             vProb_ = calc_log10poisspdf2(mDataPred(:,3), mDataPred(:,1)); % Non-cumulative
 
             % Sum the probabilities
@@ -161,7 +160,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
             % Keep best fitting model
             if (fProbability == min(vProbability))
                 vDeltaBest = delta;
-                vPredBest = [mDataTest(:,2) vPred*fNmax*fPeriod1 delta*fNmax*fPeriod1]; % Gives back uncertainty
+                vPredBest = [mDataTest(:,2) vPred*fNmax*dateSpan delta*fNmax*dateSpan]; % Gives back uncertainty
                 %fMc+fMinMag : Test procedure
                 mDatPredBest = [mDataPred];
            end
@@ -239,7 +238,7 @@ try % Try catch block used as mDatPreBest not always calculated
         vMag = [vMag; fM];
     end
     % Calculate KS-Test
-    [bH,fPval,fKsstat] = kstest2(roundn(mCatalog.Magnitude,-1),roundn(vMag,-1),0.05,0);
+    [bH,fPval,fKsstat] = kstest2(roundn(magnitudes,-1),roundn(vMag,-1),0.05,0);
 catch
     bH = NaN;
     fPval = NaN;

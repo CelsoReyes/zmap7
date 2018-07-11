@@ -28,7 +28,7 @@ function zmap(varargin)
     %  - ability to import catalogs from FDSN web services.
     %  - global variables have been minimized. Data sharing occurs through one class.
     %  - only result variables should appear in the base workspace.
-    %  - requires minimum of matlab v 2017a,
+    %  - requires minimum of matlab v 2018a,
     %
     %
     %  see README.md and the help for individual parts of ZMAP for other change details
@@ -114,22 +114,22 @@ function zmap(varargin)
         delete(findall(groot,'Tag','Msgbox_No Active Catalogs'));
         
         zw = findall(get(groot,'Children'),'Tag','Zmap Main Window');
-        fprintf('%d ZMAP windows exist\n',numel(zw));
+        s=sprintf('%d ZMAP windows exist\n', numel(zw));
         if ~isempty(zw)
             emptyzw = arrayfun(@(x)isempty(x.UserData.catalog), zw);
             delete(zw(emptyzw));
-            fprintf('... of which %d were empty\n',sum(emptyzw));
+            s = s + "... of which " + sum(emptyzw) + " were empty";
         end
-        
+        msg.dbdisp(s)
         cw = get(groot,'CurrentFigure');
         if isempty(cw)
-            disp('No Figure currently exists');
+            msg.dbdisp('No Figure currently exists');
         else
             switch cw.Tag
                 case 'Zmap Main Window'
-                    disp('ZMAP Window Exists, and is active')
+                    msg.dbdisp('ZMAP Window Exists, and is active')
                 otherwise
-                    disp('')
+                    % do nothing
             end
         end
         cw = figure;

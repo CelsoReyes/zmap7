@@ -32,7 +32,7 @@ classdef ZmapMessageCenter < handle
                 h = create_message_figure();
                 startmen(h);
                 dvmen = uimenu('Label','Developer');
-                uimenu(dvmen,'Label','Refresh catalog summary',Futures.MenuSelectedFcn,'ZmapMessageCenter.update_catalog()');
+                uimenu(dvmen,'Label','Refresh catalog summary','MenuSelectedFcn','ZmapMessageCenter.update_catalog()');
                 ZmapMessageCenter.set_message('To get started...',...
                     ['Choose an import option from the "Data" menu', newline,...
                     'data can be imported from .MAT files, from  ', newline,...
@@ -199,7 +199,8 @@ function do_timeplot(s,~, catName)
     disp(['ZmapMessageCenter.do_timeplot ', catName])
     ZG=ZmapGlobal.Data;
     ZG.newt2=ZmapCatalog(ZG.(catName));
-    CumTimePlot(ZG.newt2);
+    ctp=CumTimePlot(ZG.newt2);
+    ctp.plot();
 end
 
 function edit_catalog_range(s,~)

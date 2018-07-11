@@ -1,7 +1,7 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Sampling');
-    MenuSelectedFcn=Futures.MenuSelectedFcn;
+    MenuSelectedFcn='MenuSelectedFcn';
     uimenu(parent,'Label','Quick-Grid (auto)',MenuSelectedFcn,@cb_autogrid);
     uimenu(parent,'Label','Define Grid',MenuSelectedFcn,@cb_gridfigure);
     uimenu(parent,'Label','Redraw Grid',MenuSelectedFcn,@cb_refresh);

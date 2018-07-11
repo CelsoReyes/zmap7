@@ -204,7 +204,7 @@ else
     % --------------------
 
     % Split the catalog
-    [params.mLearningCatalog, params.mObservedCatalog, vDummy_, vDummy_, params.fLearningPeriodUsed, params.fObservedPeriodUsed] ...
+    [params.mLearningCatalog, params.mObservedCatalog, DUMMY_, DUMMY_, params.fLearningPeriodUsed, params.fObservedPeriodUsed] ...
       = ex_SplitCatalog(params.mCatalog, params.fSplitTime, ...
       params.bLearningPeriod, params.fLearningPeriod, params.bForecastPeriod, params.fForecastPeriod);
     % Create Indices to catalogs
@@ -226,7 +226,7 @@ else
       %       % Determine the overall magnitude of completeness and overall b-value
       %       params.fMcOverall = calc_Mc(params.mCatalog, params.nCalculateMC);
       %       vSel = params.mCatalog.Magnitude >= params.fMcOverall;
-      %       [params.fBValueOverall params.fStdDevOverall] = calc_bmemag(params.mCatalog.Magnitude(vSel));
+      %       [params.fBValueOverall params.fStdDevOverall] = calc_bmemag(params.mCatalog.Magnitude(vSel), 0.1);
 
       %       % Determine the overall standard deviation of the b-value for the bayesian approach (if used)
       %       if params.nTestMethod == 3

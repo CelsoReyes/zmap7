@@ -11,7 +11,7 @@ if ~exist('vMidColor')
   vMidColor = [0.7 0.7 0.7];
 end
 % Get the size of the colormap
-[nSize, vDummy] = size(vColorMap);
+[nSize, ~] = size(vColorMap);
 % Create the necessary matrix of vMidColor-elements to fit into the colormap
 mMidColor = repmat(vMidColor, nSize-(2*nBorder), 1);
 % Replace the elements in the colormap

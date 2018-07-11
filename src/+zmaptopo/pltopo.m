@@ -344,10 +344,11 @@ function pltopo(plt,h1)
                         plt = 'lo5'; pltopo;
                     end
                 case 'Help'
-                    do = [ 'web ' fullfile(ZG.hodi , 'help','plottopo.htm'),' ;' ];
-                    err=['errordlg('' Error while opening, please open the browser first and try again or open the file ./help/topo.hmt manually'');'];
-                    eval(do,err)
-                    
+                    try
+                        web(fullfile(fullfile(ZG.hodi , 'help','plottopo.htm')));
+                    catch
+                        errordlg('Error while opening, please open the browser first and try again or open the file ./help/topo.hmt manually');
+                    end
                 case 'Cancel'
                     ZmapMessageCenter(); 
                     return

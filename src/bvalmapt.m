@@ -92,7 +92,7 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,'Choose the calculation method for Mc');
+            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),'Choose the calculation method for Mc');
             
             zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
                 obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');
@@ -252,7 +252,7 @@ classdef bvalmapt < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Differential b-value map';
-            h=uimenu(parent,'Label',label,Futures.MenuSelectedFcn, @(~,~)bvalmapt(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bvalmapt(zapFcn()));
         end
         function obj= load()
             %RZ Load existing  diff b-grid

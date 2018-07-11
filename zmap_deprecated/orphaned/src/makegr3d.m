@@ -1,6 +1,7 @@
 %TODO delete or update this. Interacts with Fortran? -CGR
 report_this_filefun(mfilename('fullpath'));
-
+error('really messed up')
+%{
 head     1.1;
 access   ;
 symbols  ;
@@ -178,3 +179,4 @@ uicontrol('Units','normal','Position',...
     [.3 .10 .2 .12],'String','Back', 'Callback','welcome')
 
 @
+%}

@@ -357,7 +357,7 @@ function mapdata_viewer(res,catalog,resfig)
         c=uicontextmenu('Tag','MapViewerPointContext');
         uimenu(c,'Label','Change Symbol');
         uimenu(c,'Label','Change Color');
-        uimenu(c,'Label','Remove',Futures.MenuSelectedFcn,@(~,~)removeSeriesByTag(marker));
+        uimenu(c,'Label','Remove','MenuSelectedFcn',@(~,~)removeSeriesByTag(marker));
     end
 end
 function f = mycontainingfigure(f)

@@ -152,7 +152,7 @@ if newpmapcWindowFlag
     set(nilabel2,'string','MinRad (in km):','background',color_fbg);
     set_ni2 = uicontrol('style','edit','value',tresh,'string',num2str(tresh),...
         'background','y');
-    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh))';
+    set(set_ni2,'Callback','tresh=str2double(set_ni2.String); set_ni2.String=num2str(tresh))');
     set(set_ni2,'units','norm','pos',[.85 .92 .08 .06],'min',0.01,'max',10000);
 
     uicontrol('Units','normal',...

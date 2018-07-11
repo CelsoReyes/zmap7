@@ -1,12 +1,12 @@
-function [mBvalue] = calc_bwithmag(mCatalog, fBinning, nMinNumberEvents)
-    % function [mBvalue] = calc_bwithmag(mCatalog, fBinning, nMinNumberevents)
+function [mBvalue] = calc_bwithmag(magnitudes, binInterval, nMinNumberEvents)
+    % function [mBvalue] = calc_bwithmag(mCatalog, binInterval, nMinNumberevents)
     % ------------------------------------------------------------------------
     % Calculate b-value depending on cut-off magnitude
     %
     % Incoming variables:
-    % mCatalog : Earthquake catalog
-    % fBinnig  : Binning interval
-    % nMinNumberevents : Minimum number of events
+    % magnitudes        : Earthquake catalog magnitudes
+    % binInterval           : Binning interval
+    % nMinNumberevents  : Minimum number of events
     %
     % Outgoing variables:
     % mBvalue(:,1) : b-values ascending with magnitude
@@ -18,41 +18,27 @@ function [mBvalue] = calc_bwithmag(mCatalog, fBinning, nMinNumberEvents)
     % Author: J. Woessner modified by C Reyes
     
     % Check input
-    narginchk(1,3)
-    
-    if nargin == 1
-        fBinning = 0.1;
-        nMinNumberEvents = 50;
-        disp('Default Bin size: 0.1, Minimum number of events: 50');
-    elseif nargin == 2
-        nMinNumberEvents = 50;
-        disp('Default Minimum number of events: 50');
-    end
-    
     
     % Set fix values
-    fMinMag = min(mCatalog.Magnitude);
-    fMaxMag = max(mCatalog.Magnitude);
+    fMinMag = min(magnitudes);
+    fMaxMag = max(magnitudes);
     
-    binCenters = fMinMag:fBinning:fMaxMag;
+    binCenters = fMinMag:binInterval:fMaxMag;
     
     mBvalue=nan(numel(binCenters),5);
     mBvalue(:,4)=binCenters(:);
     
     
     for x=1:numel(binCenters)
-        fMag = binCenters(x);
-        
         % Select magnitude range
-        vSel = mCatalog.Magnitude >= fMag-0.05;
-        mCat = mCatalog.subset(vSel);
+        mCat = magnitudes(magnitudes >= binCenters(x) - 0.05);
         
         % Determine size of background catalog
-        mBvalue(x,5)=mCat.Count;
+        mBvalue(x,5) = length(mCat);
         
         % Check for minimum number of events
-        if mCat.Count >= nMinNumberEvents
-            [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
+        if length(mCat) >= nMinNumberEvents
+            [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, binInterval);
             mBvalue(x,1:3) = [fBValue fStdDev fAValue];
         end
     end

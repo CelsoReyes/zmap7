@@ -2,21 +2,25 @@
 
 ## About
 
-Zmap version 7.0 represents a major rework of Zmap.
+ZMAP version 7.0 represents a major rework of ZMAP.
+
+## Requirements
+
+### ZMAP requires:
+- __MATLAB R2018a__ (Version 9.4) or higher
+- Mapping Toolbox
+- Statistics and Machine Learning Toolbox
+
+### To leverage the parallel computing abilities:
+- Parallel Computing Toolbox
+
+### Some functions also require:
+- Optimization toolbox.
+
 
 ## Getting Started
 
-When you start Zmap you are presented with a welcome screen...
-![WelcomeScreen](resources/img/welcome_2018216.png)
-From here, you will first load a catalog (`data` menu), and then explore it.  Once a catalog is loaded, a summary of its contents will appear, and the buttons for `Edit Ranges` and `Explore` will become active.
-
-* `Edit Ranges` will bring up a screen that allows you to specify which part of the catalog will be analyzed [see Loading Data](#Loading)
-
 ### Work flow
-
-1. import data
-1. (OPTIONAL) select a subset of data to work with
-1. Select a Grid and a Grid sampling method
 
 ### Loading data
 

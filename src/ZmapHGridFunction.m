@@ -201,7 +201,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             update_layermenu(obj,myname, c);
             
             uimenu(c,'Separator','on','Label','Close tab',...
-                Futures.MenuSelectedFcn,@(~,~)delete(resTab));
+                'MenuSelectedFcn',@(~,~)delete(resTab));
             % mapdata_viewer(obj,obj.RawCatalog,ax);
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
             % shading(ax,obj.ZG.shading_style);
@@ -298,43 +298,43 @@ classdef ZmapHGridFunction < ZmapGridFunction
             activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             activeax=findobj(activeTab.Children,'Type','axes');
             
-            uimenu(shademenu,'Label','interpolated',Futures.MenuSelectedFcn,@(~,~)cb_shading('interp'));
-            uimenu(shademenu,'Label','flat',Futures.MenuSelectedFcn,@(~,~)cb_shading('flat'));
+            uimenu(shademenu,'Label','interpolated','MenuSelectedFcn',@(~,~)cb_shading('interp'));
+            uimenu(shademenu,'Label','flat','MenuSelectedFcn',@(~,~)cb_shading('flat'));
             
             plottype=uimenu(lookmenu,'Label','plot type');
             %uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
-            %    Futures.MenuSelectedFcn,@(src,~)obj.plot(choice),'Checked','on');
+            %    'MenuSelectedFcn',@(src,~)obj.plot(choice),'Checked','on');
             
             % countour-related menu items
             
             uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
                 'Enable','off',...not fully unimplmented
-                Futures.MenuSelectedFcn,@(src,~)obj.contour(choice));
+                'MenuSelectedFcn',@(src,~)obj.contour(choice));
             uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
                 'Enable','off',...not fully unimplmented
-                Futures.MenuSelectedFcn,@(src,~)contourf(choice));
+                'MenuSelectedFcn',@(src,~)contourf(choice));
             uimenu(lookmenu,'Label','change contour interval',...
                 'Enable','off',...
-                Futures.MenuSelectedFcn,@(src,~)changecontours_cb(src));
+                'MenuSelectedFcn',@(src,~)changecontours_cb(src));
             
             % display overlay menu items
             %{
             uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
-                Futures.MenuSelectedFcn,@obj.togglegrid_cb);
+                'MenuSelectedFcn',@obj.togglegrid_cb);
             uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                Futures.MenuSelectedFcn,{@obj.addquakes_cb, obj.RawCatalog});
+                'MenuSelectedFcn',{@obj.addquakes_cb, obj.RawCatalog});
             %}
             uimenu(lookmenu,'Separator','on',...
                 'Label','brighten active map',...
-                Futures.MenuSelectedFcn,@(~,~)cb_brighten(0.4));
+                'MenuSelectedFcn',@(~,~)cb_brighten(0.4));
             uimenu(lookmenu,'Label','darken active map',...
-                Futures.MenuSelectedFcn,@(~,~)cb_brighten(-0.4));
+                'MenuSelectedFcn',@(~,~)cb_brighten(-0.4));
             
             uimenu(lookmenu,'Separator','on',...
                 'Label','increase alpha ( +0.2 )',...
-                Futures.MenuSelectedFcn, @(~,~)cb_alpha( 0.2));
+                'MenuSelectedFcn', @(~,~)cb_alpha( 0.2));
             uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
-                Futures.MenuSelectedFcn, @(~,~)cb_alpha( - 0.2));
+                'MenuSelectedFcn', @(~,~)cb_alpha( - 0.2));
             function cb_shading(val)
                 % must be in function because ax must be evaluated in real-time
                 activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
@@ -419,8 +419,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     tmpname=obj.Result.values.Properties.VariableNames{i};
                     uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        Futures.MenuSelectedFcn,@(~,~)overlay_cb(tmpname));
-                        %Futures.MenuSelectedFcn,@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
+                        'MenuSelectedFcn',@(~,~)overlay_cb(tmpname));
+                        %'MenuSelectedFcn',@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
                 end
                 container.Children(end-1).Separator='on';
             end

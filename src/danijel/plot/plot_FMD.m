@@ -1,106 +1,122 @@
-function [hPlot, fBValue, fAValue, fStdDev, fMc, fMeanMag] = plot_FMD(mCatalog, bCumulative, hAxes, sSymbol, sColor, bPlotB, nCalculateMC, fBinning)
-% function [hPlot, fBValue, fAValue, fStdDev, fMc, fMeanMag]
-%   = plot_FMD(mCatalog, bCumulative, hAxes, sSymbol, sColor, bPlotB, nCalculateMC, fBinning)
-% -------------------------------------------------------------------------------------------
-% Creates and plots a frequency magnitude distribution including the b-value
-%
-% plot_FMD(mCatalog) opens a figure and plots the frequency magnitude distribution
-%   with standard parameters
-%
-% Input parameters:
-%   mCatalog        Earthquake catalog
-%   bCumulative     Plot cumulative frequency magnitude distribution (=1) or non-cumulative (=0)
-%   hAxes           Handle of axes to plot the frequency magnitude distribution
-%   sSymbol         Type of symbol for plotting (refer to Matlab 'plot')
-%   sColor          Color of plot (refer to Matlab 'plot')
-%   bPlotB          Also plot the b-value line with markers
-%   nCalculateMC    Method to determine the magnitude of completeness
-%                   1: Maximum curvature
-%                   2: Fixed Mc = minimum magnitude (Mmin)
-%                   3: Mc90 (90% probability)
-%                   4: Mc95 (95% probability)
-%                   5: Best combination (Mc95 - Mc90 - maximum curvature)
-%   fBinning        Magnitude binning of the catalog (default 0.1)
-%
-% Output parameters:
-%   hPlot           Handle of the plot
-%   fBValue         Calculated b-value
-%   fAValue         Calculateda-value
-%   fStdDev         Standard deviation of b-value
-%   fMc             Magnitude of completeness
-%   fMeanMag        Determined mean magnitude
-%
-% Danijel Schorlemmer
-% June 16, 2003
+function [fBValue, fAValue, fStdDev, fMc, fMeanMag] = plot_FMD(mCatalog, varargin)
+    %  [fBValue, fAValue, fStdDev, fMc, fMeanMag] = PLOT_FMD(mCatalog,showCumulative, hAxes, sSymbol, sColor, bPlotB, nCalculateMC, binWidth)
+    % -------------------------------------------------------------------------------------------
+    % Creates and plots a frequency magnitude distribution including the b-value
+    %
+    % PLOT_FMD(mCatalog) opens a figure and plots the frequency magnitude distribution
+    %   with standard parameters
+    %
+    % Input parameters:
+    %   mCatalog        Earthquake catalog
+    %
+    % Named Input Parameters:  use as PLOT_FMD(... , Name, value)
+    %   ShowCumulative  Plot cumulative frequency magnitude distribution (true) or non-cumulative (false)
+    %   Axes           Handle of axes to plot the frequency magnitude distribution
+    %   Symbol         Type of symbol for plotting (refer to Matlab 'plot')
+    %   Color          Color of plot (refer to Matlab 'plot')
+    %   ShowBval          Also plot the b-value line with markers
+    %   CalcMethod    Method to determine the magnitude of completeness
+    %                   1: Maximum curvature
+    %                   2: Fixed Mc = minimum magnitude (Mmin)
+    %                   3: Mc90 (90% probability)
+    %                   4: Mc95 (95% probability)
+    %                   5: Best combination (Mc95 - Mc90 - maximum curvature)
+    %   BinWidth        Magnitude binning of the catalog (default 0.1)
+    %
+    % Output parameters:
+    %   fBValue         Calculated b-value
+    %   fAValue         Calculateda-value
+    %   fStdDev         Standard deviation of b-value
+    %   fMc             Magnitude of completeness
+    %   fMeanMag        Determined mean magnitude
+    %
+    % Danijel Schorlemmer
+    % June 16, 2003
+    
+    report_this_filefun();
+    
+    p = inputParser();
+    p.addRequired('mCatalog');
+    p.addParameter('ShowCumulative', true);
+    p.addParameter('Axes',          []);
+    P.addParameter('Symbol',        's');
+    p.addParameter('Color',         'k');
+    p.addParameter('ShowBval',      true)
+    p.addParameter('CalcMethod',    2);
+    p.addParameter('BinWidth',      0.1);
+    p.addParameter('MarkerSize',    12);
+    p.KeepUnmatched = true;
+    p.parse(varargin{:});
+    
+    if isempty(p.Results.Axes)
+        figure;
+        hAxes=newplot;
+    else
+        hAxes = p.Results.Axes;
+    end
+    
+    binWidth = p.Results.BinWidth;
+    sColor = p.Results.Color;
+    % Activate given axes
+    axes(hAxes);
+    
+    
+    
+    % Create the frequency magnitude distribution vector
+    [vFMD, vNonCFMD] = calc_FMD(mCatalog.Magnitude);
+    magX = vFMD(1,:);
+    nEvsCum = vFMD(2,:);
+    nEvsNonCum = vNonCFMD(2,:);
 
-report_this_filefun();
-
-% Create the frequency magnitude distribution vector
-[vFMD, vNonCFMD] = calc_FMD(mCatalog);
-
-% Define missing input parameters
-if ~exist('bCumulative', 'var')
-  bCumulative = 1;
+    
+    % Plot the frequency magnitude distribution
+    if p.Results.showCumulative
+        hPlot = semilogy(magX, nEvsCum);
+    else
+        hPlot = semilogy(magX, nEvsNonCum);
+    end
+    
+    hPlot.Symbol = p.Results.Symbol;
+    hPlot.Color = p.Results.Color;
+    hPlot.MarkerSize = p.Results.MarkerSize;
+    
+    
+    if p.Results.ShowBval
+        % Add further plots to the axes
+        hAxes.NextPlot = 'add';
+        
+        % Calculate magnitude of completeness
+        fMc = calc_Mc(mCatalog, p.Results.CalcMethod, binWidth);
+        
+        % Determine the positions of 'x'-markers
+        nIndexLo = find((magX < fMc + 0.05) & (magX > fMc - 0.05));
+        
+        % Plot the 'x'-marker
+        hPlot = semilogy(magX(nIndexLo), nEvsCum(nIndexLo));
+        hPlot.Marker = 'x';
+        hPlot.Color = sColor;
+        hPlot.LineWidth = 2.5;
+        hPlot.MarkerSize = 12;
+        
+        hPlot = semilogy(magX(1), nEvsCum(1));
+        hPlot.Marker = 'x';
+        hPlot.Color = sColor;
+        hPlot.LineWidth = 2.5;
+        hPlot.MarkerSize = 12;
+        
+        % Calculate the b-value etc. for M > Mc
+        vSel = mCatalog.Magnitude >= fMc-(binWidth/2);
+        fMeanMag = mean(mCatalog.Magnitude(vSel));
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.Magnitude(vSel), binWidth);
+        
+        % Plot the line representing the b-value
+        vPoly = [-1*fBValue fAValue];
+        
+        fMagHi = magX(1);
+        vMagnitudes = magX(fMc - 0.0001 <= magX & magX <= fMagHi);
+        
+        fBFunc = 10.^(polyval(vPoly, vMagnitudes));
+        hPlot = semilogy(vMagnitudes, fBFunc, sColor);
+        hPlot.LineWidth = 2.0;
+    end
 end
-if ~exist('hAxes', 'var')
-  figure;
-  hAxes = newplot;
-end
-if ~exist('sSymbol', 'var')
-  sSymbol = 's';
-end
-if ~exist('sColor', 'var')
-  sColor = 'k';
-end
-if ~exist('bPlotB', 'var')
-  bPlotB = 1;
-end
-if ~exist('nCalculateMC', 'var')
-  nCalculateMC = 2;
-end
-if ~exist('fBinning', 'var')
-  fBinning = 0.1;
-end
-
-% Activate given axes
-axes(hAxes);
-
-% Plot the frequency magnitude distribution
-if bCumulative
-  hPlot = semilogy(vFMD(1,:), vFMD(2,:), [sSymbol sColor]);
-else
-  hPlot = semilogy(vNonCFMD(1,:), vNonCFMD(2,:), [sSymbol sColor]);
-end
-
-if exist('bPlotB')
-  if bPlotB
-    % Add further plots to the axes
-    set(hAxes, 'NextPlot', 'add');
-
-    % Calculate magnitude of completeness
-    fMc = calc_Mc(mCatalog, nCalculateMC, fBinning);
-
-    % Determine the positions of 'x'-markers
-    nIndexLo = find((vFMD(1,:) < fMc + 0.05) & (vFMD(1,:) > fMc - 0.05));
-    fMagHi = vFMD(1,1);
-    vSel = vFMD(1,:) <= fMagHi & vFMD(1,:) >= fMc-.0001;
-    vMagnitudes = vFMD(1,vSel);
-
-    % Plot the 'x'-marker
-    hPlot = semilogy(vFMD(1,nIndexLo), vFMD(2,nIndexLo), ['x' sColor]);
-    set(hPlot, 'LineWidth', [2.5], 'MarkerSize', 12);
-    hPlot = semilogy(vFMD(1,1), vFMD(2,1), ['x' sColor]);
-    set(hPlot, 'LineWidth', [2.5], 'MarkerSize', 12)
-
-    % Calculate the b-value etc. for M > Mc
-    vSel = mCatalog.Magnitude >= fMc-(fBinning/2);
-    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
-
-    % Plot the line representing the b-value
-    vPoly = [-1*fBValue fAValue];
-    fBFunc = 10.^(polyval(vPoly, vMagnitudes));
-    hPlot = semilogy(vMagnitudes, fBFunc, sColor);
-    set(hPlot, 'LineWidth', [2.0]);
-  end
-end
-

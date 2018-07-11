@@ -118,9 +118,9 @@ classdef ZmapMainWindow < handle
             if ~isempty(fig) && isvalid(fig)
                 isMainMapWindow=isa(fig.UserData, 'ZmapMainWindow');
                 resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children)>1;
-                shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
-                grid_exists = isMainMapWindow && ~isempty(fig.UserData.Grid);
-                catalog_exists = isMainMapWindow && isempty(fig.UserData.rawcatalog);
+                %shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
+                %grid_exists = isMainMapWindow && ~isempty(fig.UserData.Grid);
+                %catalog_exists = isMainMapWindow && isempty(fig.UserData.rawcatalog);
                 
                    
                 if resultplot_exists
@@ -264,10 +264,10 @@ classdef ZmapMainWindow < handle
             obj.replot_all('ShapeChanged');
         end
     end
-        
-        function getBigEventUpdates(obj, callbackfn)
-            % obj.addlistener('maepi', 'PostSet', callbackfn);
-        end
+    
+    function getBigEventUpdates(obj, callbackfn)
+        obj.addlistener('bigEvents', 'PostSet', callbackfn);
+    end
         
         %% METHODS DEFINED IN DIRECTORY
         %
@@ -373,9 +373,10 @@ classdef ZmapMainWindow < handle
             
         end
         
-        function cb_timeplot(obj, src, evt)
+        function cb_timeplot(obj, ~, ~)
             disp('oh')
-            CumTimePlot(@()obj.catalog);
+            ctp=CumTimePlot(@()obj.catalog);
+            ctp.plot();
         end
         
         function cb_starthere(obj, ax)
@@ -398,7 +399,7 @@ classdef ZmapMainWindow < handle
             obj.daterange(1)=obj.catalog.Date(idx);
         end
              
-        function shapeChangedFcn(obj, varargin)
+        function shapeChangedFcn(~, varargin)
             %obj.replot_all([], varargin{1});
         end
         
@@ -701,7 +702,7 @@ classdef ZmapMainWindow < handle
                     catch ME
                         switch ME.identifier
                             case 'ZMAPGRID:get_grid:TooManyGridPoints'
-                                warning('Too many grid points. Downsampling grid\n%s',ME.message);
+                                warning(ME.identifier, 'Too many grid points. Downsampling grid\n%s',ME.message);
                                 obj.gridopt.dx=obj.gridopt.dx .* 2;
                                 obj.gridopt.dy=obj.gridopt.dy .* 2;
                                 setGrid();
@@ -829,5 +830,5 @@ function cb_mainMapSelectionChanged(~,~)
 end
 
 function s=CallbackFld()
-    s=Futures.MenuSelectedFcn;
+    s='MenuSelectedFcn';
 end

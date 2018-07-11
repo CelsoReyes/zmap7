@@ -310,9 +310,9 @@ function calc_across(sel)
             
             if length(b) >= Nmin  % enough events?
                 
-                if ZG.inb1 == 1;   % Calculation ofa-value by const b-value, and Mc
+                if ZG.inb1 == 1;   % Calculation of a-value by const b-value, and Mc
                     bv2 = fFixbValue;           % read fixed bValue to the bv2
-                    magco=calc_Mc(b, 1, 0.1);
+                    magco=calc_Mc(b, Methods.MaxCurvature, 0.1);
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin   % calculation of thea-value according to determined Mc (magco)
                         faValue = calc_MaxLikelihoodA(b, bv2);
@@ -328,7 +328,7 @@ function calc_across(sel)
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if sum(l) >= Nmin
-                        [bv2, stan2,  faValue] = calc_bmemag(b.Magnitude(l));
+                        [bv2, stan2,  faValue] = calc_bmemag(b.Magnitude(l), 0.1);
                     else
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end

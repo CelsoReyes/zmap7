@@ -35,7 +35,7 @@ for nRuns = 1:nNumberRuns
   % Create the bootstrapped catalog
   mLoopCatalog = mCatalog.subset(vRnd);
   % Reduce bootstrapped catalog to all events with M >= Mc
-  fMc = calc_Mc(mLoopCatalog, 5, fBinning);
+  fMc = calc_Mc(mLoopCatalog, McMethods.McBestCombo, fBinning);
   vSel = mLoopCatalog(:,6) >= fMc;
   mLoopCatalog = mLoopCatalog(vSel,:);
   % If enough events remain, compute b-value

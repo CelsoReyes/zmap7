@@ -355,7 +355,8 @@ function plotala()
         eval(do)
         do = ['ZG.newcat = anB' num2str(n) ';' ];
         eval(do)
-        CumTimePlot(ZG.newt2);
+        ctp=CumTimePlot(ZG.newt2);
+        ctp.plot();
         zmap_update_displays();
         axes(h1)
         plot(ZG.newt2.Longitude, ZG.newt2.Latitude,'*k')
@@ -366,13 +367,13 @@ function plotala()
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Find Anomalie Groups  ',...
-            Futures.MenuSelectedFcn,@callbackfun_007);
+            'MenuSelectedFcn',@callbackfun_007);
         uimenu(op3,'Label','Display one Anomalie Group ',...
-            Futures.MenuSelectedFcn,@callbackfun_008);
+            'MenuSelectedFcn',@callbackfun_008);
         uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
-            Futures.MenuSelectedFcn,@callbackfun_009);
+            'MenuSelectedFcn',@callbackfun_009);
         uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
-            Futures.MenuSelectedFcn,@callbackfun_010);
+            'MenuSelectedFcn',@callbackfun_010);
     end
     
     %% callback functions

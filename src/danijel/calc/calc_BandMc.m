@@ -1,13 +1,14 @@
-function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, nCalculateMC, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
-% function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, nCalculateMC, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
+function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, mcCalcMethod, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
+% CALC_BANDMC Calculation of the b-values, its standard deviation and the magnitudes of completeness of a given catalog
+%
+  % function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, mcCalcMethod, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
 % --------------------------------------------------------------------------------------------------------------------------------------------------------------
-% Calculation of the b-values, its standard deviation and the magnitudes of completeness
-%   of a given catalog
+% Calculation of the b-values, its standard deviation and the magnitudes of completeness of a given catalog
 %
 % Input parameters:
 %   mCatalog            Earthquake catalog
 %   nMinimumNumber      Minimum number of earthquakes in the catalog for calculating the output values
-%   nCalculateMC        Method to determine the magnitude of completeness (see also: help calc_Mc)
+%   mcCalcMethod        Method to determine the magnitude of completeness (see also: McMethods)
 %   fBinning            Magnitude binning of the catalog (default 0.1)
 %   bConstrainMc        Constrain Mc to [fMcMin, fMcMax] if set to 1 (default 0)
 %   fMcMin              see bConstrainMc
@@ -70,7 +71,7 @@ fAValue = nan;
 
 try
   % Determine magnitude of completeness
-  fMc = calc_Mc(mCatalog, nCalculateMC, fBinning);
+  fMc = calc_Mc(mCatalog, mcCalcMethod, fBinning);
   % Constrain magnitude of completeness
   if bConstrainMc
     if fMc < fMcMin
@@ -86,7 +87,7 @@ try
   mCatalog = mCatalog.subset(vSel_);
   nNumberQuakes = mCatalog.Count;
   if nNumberQuakes >= nMinimumNumber
-    [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog, fBinning);
+    [fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.Magnitude, fBinning);
   end
   if isempty(fMc)
     fMc = nan;

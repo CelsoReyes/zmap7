@@ -55,7 +55,7 @@ function bcross(sel)
     %zdlg = ZmapDialog(obj, @obj.doIt);
     
     zdlg.AddBasicHeader('Choose stuff');
-    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,...
+    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
         'Choose the calculation method for Mc');
     zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
     zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);
@@ -157,7 +157,7 @@ function bcross(sel)
             if length(b) >= Nmin  % enough events?
                 % Added to obtain goodness-of-fit to powerlaw value
                 [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
-                [fMc] = calc_Mc(b, ZG.inb1, fBinning, fMccorr);
+                [fMc] = calc_Mc(b, McMethods(ZG.inb1), fBinning, fMccorr);
                 l = b.Magnitude >= fMc-(fBinning/2);
                 if length(b(l,:)) >= Nmin
                     [ fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);

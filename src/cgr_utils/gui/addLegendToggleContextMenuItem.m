@@ -16,8 +16,8 @@ function addLegendToggleContextMenuItem(cm, position, separator)
     
     % validate inputs
     assert(isa(cm,'matlab.ui.container.ContextMenu'), 'CM must be a valid uicontextmenu item');
-    assert(ismember(position,{'top','bottom'}), 'POSITION must be ''top'' or ''bottom''');
-    assert(ismember(separator,{'above','below','off'}), 'SEPARATOR must be ''above'',''below'', or ''off''');
+    assert(ismember(position,{'top','bottom'}), "POSITION must be 'top' or 'bottom'");
+    assert(ismember(separator,{'above','below','off'}), "SEPARATOR must be 'above','below', or 'off'");
     
     
     label = 'Toggle Legend';
@@ -28,7 +28,7 @@ function addLegendToggleContextMenuItem(cm, position, separator)
         h=uimenu(cm,'Label', label);
     end
     h.Separator = tf2onoff(separator == "above");
-    h.(Futures.MenuSelectedFcn) = @legend_cb;
+    h.('MenuSelectedFcn') = @legend_cb;
     
     % by default add item to the bottom of the menu, which is actually
     % the first item in the context menu's children

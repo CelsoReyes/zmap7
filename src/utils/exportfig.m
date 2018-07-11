@@ -221,13 +221,12 @@ function varargout = exportfig(varargin)
             case 'format'
                 opts.format = LocalCheckAuto(lower(value),auto.format);
                 if strcmp(opts.format,'preview')
-                    error(['Format ''preview'' no longer supported. Use PREVIEWFIG' ...
-                        ' instead.']);
+                    error("Format 'preview' no longer supported. Use PREVIEWFIG instead.");
                 end
             case 'preview'
                 opts.preview = LocalCheckAuto(lower(value),auto.preview);
                 if ~strcmp(opts.preview,{'none','tiff'})
-                    error('Preview must be ''none'' or ''tiff''.');
+                    error("Preview must be 'none' or 'tiff'.");
                 end
             case 'width'
                 opts.width = LocalToNum(value, auto.width);
@@ -246,7 +245,7 @@ function varargout = exportfig(varargin)
             case 'color'
                 opts.color = LocalCheckAuto(lower(value),auto.color);
                 if ~strcmp(opts.color,{'bw','gray','rgb','cmyk'})
-                    error('Color must be ''bw'', ''gray'',''rgb'' or ''cmyk''.');
+                    error("Color must be 'bw', 'gray','rgb' or 'cmyk'.");
                 end
             case 'fontmode'
                 opts.fontmode = LocalCheckAuto(lower(value),auto.fontmode);
@@ -583,8 +582,7 @@ function varargout = exportfig(varargin)
             if (~strncmp(opts.format,'eps',3) & LocalHas3DPlot(allAxes)) | ...
                     (strncmp(opts.format,'eps',3) & opts.separatetext)
                 if (explicitbounds == 1)
-                    warning(['Cannot compute ''tight'' bounds. Using ''loose''' ...
-                        ' bounds.']);
+                    warning("Cannot compute 'tight' bounds. Using 'loose' bounds.");
                 end
                 opts.bounds = 'loose';
             end

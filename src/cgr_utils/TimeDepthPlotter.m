@@ -17,11 +17,11 @@ classdef TimeDepthPlotter < TimeSomethingPlotter
                     'Tag',obj.Tags.Figure);
                 addAboutMenuItem();
                 ax=axes(f);
-            else
-                obj.ax=ax;
             end
-            if isempty(obj.ax.Tag)
-                obj.ax.Tag=obj.Tags.Axes;
+            obj.ax=ax;
+            
+            if isempty(ax.Tag)
+                ax.Tag=obj.Tags.Axes;
             end
             
             ax.Visible = 'off';
@@ -35,11 +35,11 @@ classdef TimeDepthPlotter < TimeSomethingPlotter
             
             obj.prepare_axes(catalog,'YDir','reverse');
             
-            f=ancestor(obj.ax,'figure');
+            f=ancestor(ax,'figure');
             c=findobj(f,'Tag','TimeDepthContext');
             if isempty(c)
                 c=uicontextmenu('Tag','TimeDepthContext');
-                uimenu(c,'Label','Use Log Scale',Futures.MenuSelectedFcn,{@logtoggle,'Y'});
+                uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',{@logtoggle,'Y'});
             end
             ax.YLabel.UIContextMenu=c;
             

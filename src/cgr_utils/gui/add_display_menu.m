@@ -11,12 +11,12 @@ function add_display_menu(version)
         case 1
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'horiz');
-            uimenu(op2e,'Label','Plot Map in lambert projection',Futures.MenuSelectedFcn,'plotmap ');
+            uimenu(op2e,'Label','Plot Map in lambert projection','MenuSelectedFcn','plotmap ');
             %overlayfun=@overlay;
         case 2
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'');
-            uimenu(op2e,'Label','Plot Map in lambert projection',Futures.MenuSelectedFcn,'plotmap ');
+            uimenu(op2e,'Label','Plot Map in lambert projection','MenuSelectedFcn','plotmap ');
             %overlayfun=@overlay;
         case 3
             circlefun=@plotci3;
@@ -25,11 +25,11 @@ function add_display_menu(version)
         case 4
             circlefun=@plotci2;
             fixscalefun=@(data)fix_caxis(data,'horiz');
-            uimenu(op2e,'Label','Plot Map in lambert projection',Futures.MenuSelectedFcn,'plotmap ')
+            uimenu(op2e,'Label','Plot Map in lambert projection','MenuSelectedFcn','plotmap ')
             uimenu(op2e,'Label','Plot map on top of topography (white background)',...
-                Futures.MenuSelectedFcn,'colback = 1; dramap2_z'); % this is different from case #1
+                'MenuSelectedFcn','colback = 1; dramap2_z'); % this is different from case #1
             uimenu(op2e,'Label','Plot map on top of topography (black background)',...
-                Futures.MenuSelectedFcn,'colback = 2; dramap2_z'); % this is different from case #1
+                'MenuSelectedFcn','colback = 2; dramap2_z'); % this is different from case #1
             %overlayfun=@overlay;
         case 5
             circlefun=@plotci2;
@@ -40,14 +40,14 @@ function add_display_menu(version)
             %overlayfun=@overlay;
     end
     
-    uimenu(op2e,'Label','Fix color (z) scale',Futures.MenuSelectedFcn,@(~,~)fixscalefun(ZGvalueMap));
-    uimenu(op2e,'Label','Show Grid',Futures.MenuSelectedFcn,@callback_showgrid);
-    uimenu(op2e,'Label','Show Circles',Futures.MenuSelectedFcn,@(~,~)circlefun);
+    uimenu(op2e,'Label','Fix color (z) scale','MenuSelectedFcn',@(~,~)fixscalefun(ZGvalueMap));
+    uimenu(op2e,'Label','Show Grid','MenuSelectedFcn',@callback_showgrid);
+    uimenu(op2e,'Label','Show Circles','MenuSelectedFcn',@(~,~)circlefun);
     add_colormap_section(op2e);
     add_shading_section(op2e);
     add_brighten_section(op2e);
     uimenu(op2e,'Label','Redraw Overlay',...
-        Futures.MenuSelectedFcn,'set(gca,'NextPlot','add');zmap_update_displays();'); % this is different from case #1
+        'MenuSelectedFcn', "set(gca,'NextPlot','add');zmap_update_displays();"); % this is different from case #1
     
     function callback_shader(style)
         % set default shading style and apply to current axes
@@ -65,21 +65,21 @@ function add_display_menu(version)
         brighten(val);
     end
     function add_brighten_section(parent)
-        uimenu(parent,'Label','Brighten +0.4',Futures.MenuSelectedFcn,{@callback_brighten, 0.4});
-        uimenu(parent,'Label','Brighten -0.4',Futures.MenuSelectedFcn,{@callback_brighten,-0.4})
+        uimenu(parent,'Label','Brighten +0.4','MenuSelectedFcn',{@callback_brighten, 0.4});
+        uimenu(parent,'Label','Brighten -0.4','MenuSelectedFcn',{@callback_brighten,-0.4})
     end
     function add_colormap_section(parent)
         uimenu(parent,'Label','Colormap InvertGray',...
-            Futures.MenuSelectedFcn,'g=gray; g = g(64:-1:1,:);colormap(g);brighten(.4)');
+            'MenuSelectedFcn','g=gray; g = g(64:-1:1,:);colormap(g);brighten(.4)');
         uimenu(parent,'Label','Colormap Invertjet',...
-            Futures.MenuSelectedFcn,'g=jet; g = g(64:-1:1,:);colormap(g)');
+            'MenuSelectedFcn','g=jet; g = g(64:-1:1,:);colormap(g)');
     end
     function add_shading_section(parent)
         %TODO make this 1 option, simple inputdlg box, or flip the names
         uimenu(parent,'Label','shading flat',...
-            Futures.MenuSelectedFcn,@(~,~)callback_shader('flat'))
+            'MenuSelectedFcn',@(~,~)callback_shader('flat'))
         uimenu(parent,'Label','shading interpolated',...
-            Futures.MenuSelectedFcn,@(~,~)callback_shader('interp'))
+            'MenuSelectedFcn',@(~,~)callback_shader('interp'))
     end
     
 end

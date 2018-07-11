@@ -8,17 +8,17 @@ function c=menu_cumtimeseries(c)
     
     uimenu(c, 'Label', 'filter',...
         'Enable','off',...
-        Futures.MenuSelectedFcn,@(~,~)msgbox('Unimplemented','Unimplemented'));
+        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
     uimenu(c, 'Label', 'also plot main catalog',...
         'Enable','off',...
-        Futures.MenuSelectedFcn,@(~,~)msgbox('Unimplemented','Unimplemented'));
-    uimenu(c, 'separator','on','Label', 'start here',Futures.MenuSelectedFcn,@start_here);
-    uimenu(c, 'Label', 'end here',Futures.MenuSelectedFcn,@end_here);
-    uimenu(c, 'Label', 'trim to largest event',Futures.MenuSelectedFcn,@trim_to_largest);
-    uimenu(c, 'Label', 'show in map (keeping all)',Futures.MenuSelectedFcn,@show_in_map,'Enable','off');
+        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
+    uimenu(c, 'separator','on','Label', 'start here','MenuSelectedFcn',@start_here);
+    uimenu(c, 'Label', 'end here','MenuSelectedFcn',@end_here);
+    uimenu(c, 'Label', 'trim to largest event','MenuSelectedFcn',@trim_to_largest);
+    uimenu(c, 'Label', 'show in map (keeping all)','MenuSelectedFcn',@show_in_map,'Enable','off');
     uimenu(c, 'separator','on','Label', '- * t b a * -',...
         'Enable','off',...
-        Futures.MenuSelectedFcn,@(~,~)msgbox('Unimplemented','Unimplemented'));
+        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
     
     function trim_to_largest(~,~)
         disp('trim to largest')

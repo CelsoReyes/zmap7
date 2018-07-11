@@ -6,7 +6,7 @@ mati = maepi(1,3);
 %[p,sdp] = mypval(3,mati);
 % [p,sdp,c,sdc,dk,sdk,aa,bb]=mypval2(3, mati);
 
-tmin1 = 0.05m0;
+tmin1 = 0.05;
 
 p0 = 1.44;
 b0 = 0.96;

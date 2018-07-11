@@ -1,11 +1,12 @@
-function [mFMDC, mFMD] = calc_FMD(mCatalog)
-% function [mFMDC, mFMD] = calc_FMD(mCatalog)
+function [mFMDC, mFMD] = calc_FMD(magnitudes)
+% calc_FMD Calculates the cumulative and non-cumulative frequency magnitude distribution
+% function [mFMDC, mFMD] = calc_FMD(magnitudes)
 % -------------------------------------------
-% Calculates the cumulative and non-cumulative frequency magnitude distribution
+
 %   for a given earthquake catalog
 %
 % Input parameter:
-%   mCatalog    earthquake catalog
+%   magnitudes    earthquake catalog magnitudes
 %
 % Output parameters:
 %   mFMDC       cumulative frequency magnitude distribution
@@ -17,10 +18,12 @@ function [mFMDC, mFMD] = calc_FMD(mCatalog)
 % November 16, 2001
 
 report_this_filefun();
-
+if ~isnumeric(magnitudes)
+    error('Input should be magnitudes, not the full catalog');
+end
 % Determine the magnitude range
-fMaxMagnitude = ceil(10 * max(mCatalog.Magnitude)) / 10;
-fMinMagnitude = floor(min(mCatalog.Magnitude));
+fMaxMagnitude = ceil(10 * max(magnitudes)) / 10;
+fMinMagnitude = floor(min(magnitudes));
 if fMinMagnitude > 0
   fMinMagnitude = 0;
 end
@@ -30,7 +33,7 @@ end
 %   xxxxC : Cumulative number
 
 % Do the calculation
-[vNumberEvents] = hist(mCatalog.Magnitude, (fMinMagnitude:0.1:fMaxMagnitude));
+[vNumberEvents] = hist(magnitudes, (fMinMagnitude:0.1:fMaxMagnitude));
 vNumberEventsR  = vNumberEvents(end:-1:1);
 vNumberEventsCR = cumsum(vNumberEvents(end:-1:1));
 

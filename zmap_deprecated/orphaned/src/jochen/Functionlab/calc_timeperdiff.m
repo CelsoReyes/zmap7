@@ -22,7 +22,7 @@ result=[];
 
 % Create the catalogs for two time periods
 fStartTime = min(mCatalog(:,3));
-fEndTime = max(mCatalog(:,3);
+fEndTime = max(mCatalog(:,3));
 
 [result.mFirstCatalog, result.mSecondCatalog, result.fFirstPeriodExact, result.fSecondPeriodExact, result.fFirstPeriod,...
         result.fSecondPeriod] = ex_SplitCatalog(mCatalog, fSplitTime, 0, 100, 0, 100);

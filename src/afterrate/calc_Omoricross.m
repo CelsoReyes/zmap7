@@ -236,10 +236,10 @@ function calc_Omoricross()
             mcCalculator=@(~,~)fMcFix;
         elseif ZG.inb2 == 2 %Maximum curvature
             nMethod = 1;
-            [~,mcCalculator]=calc_Mc([], nMethod, fBinning);
+            [~,mcCalculator]=calc_Mc([], McMethods.MaxCurvature, fBinning);
         else % ZG.inb2 == 3 % EMR method
             nMethod = 6;
-            [~,mcCalculator] = calc_Mc([], nMethod, fBinning);
+            [~,mcCalculator] = calc_Mc([], McMethods.McEMR, fBinning);
         end % END if ZG.inb2
 
 

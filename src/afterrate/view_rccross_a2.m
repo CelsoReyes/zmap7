@@ -182,66 +182,66 @@ function view_rccross_a2(lab1,valueMap)
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ',Futures.MenuSelectedFcn,@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            Futures.MenuSelectedFcn,@callbackfun_002)
+            'MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ with const. number',...
-            Futures.MenuSelectedFcn,@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         
         op1 = uimenu('Label',' Maps ');
         
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            Futures.MenuSelectedFcn,{@cb_viewagain,'mag'})
+            'MenuSelectedFcn',{@cb_viewagain,'mag'})
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            Futures.MenuSelectedFcn,{@cb_viewagain,'rmax'})
+            'MenuSelectedFcn',{@cb_viewagain,'rmax'})
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            Futures.MenuSelectedFcn,{@cb_viewagain,'gofi'})
+            'MenuSelectedFcn',{@cb_viewagain,'gofi'})
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            Futures.MenuSelectedFcn,{@cb_viewagain,'pstdc'})
+            'MenuSelectedFcn',{@cb_viewagain,'pstdc'})
         
         
         uimenu(op1,'Label','Relative rate change (bootstrap)',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'Sigma'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'Sigma'})
         uimenu(op1,'Label','Model',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'Model'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'Model'})
         uimenu(op1,'Label','KS-Test',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'Rejection'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'Rejection'})
         uimenu(op1,'Label','KS-Test Statistic',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'KS distance'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'KS distance'})
         uimenu(op1,'Label','KS-Test p-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'KS-Test p-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'KS-Test p-value'})
         uimenu(op1,'Label','RMS of fit',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'RMS'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'RMS'})
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'Number of events'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'Number of events'})
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'Radius / [km]'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'Radius / [km]'})
         uimenu(op1,'Label','p-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'p-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'p-value'})
         uimenu(op1,'Label','p-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'p-valstd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'p-valstd'})
         uimenu(op1,'Label','c-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'c-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'c-value'})
         uimenu(op1,'Label','c-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'c-valuestd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'c-valuestd'})
         uimenu(op1,'Label','k-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'k-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'k-value'})
         uimenu(op1,'Label','k-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'k-valuestd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'k-valuestd'})
         uimenu(op1,'Label','p2-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'p2-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'p2-value'})
         uimenu(op1,'Label','p-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'p2-valuestd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'p2-valuestd'})
         uimenu(op1,'Label','c2-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'c2-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'c2-value'})
         uimenu(op1,'Label','c2-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'c2-valuestd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'c2-valuestd'})
         uimenu(op1,'Label','k2-value',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'k2-value'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'k2-value'})
         uimenu(op1,'Label','k2-value standard deviation',...
-            Futures.MenuSelectedFcn,{@cb_viewagainOtherdata,'k2-valuestd'})
+            'MenuSelectedFcn',{@cb_viewagainOtherdata,'k2-valuestd'})
         
         add_display_menu(1);
     end

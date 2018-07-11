@@ -14,7 +14,6 @@ path_list = [
     'cgr_utils';
     'as_class';
     'declus';
-    'fractal';
     'pvals';
     'synthetic';
     'utils';

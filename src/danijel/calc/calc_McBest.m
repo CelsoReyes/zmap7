@@ -1,82 +1,94 @@
-function [fMc, fMc95, fMc90] = calc_McBest(mCatalog, fBinning)
+function [fMc, fMc95, fMc90] = calc_McBest(magnitudes, binInterval)
     % CALC_MCBEST calculate best Magnitude of Completion
-    % [fMc, fMc95, fMc90] = calc_McBest(mCatalog, fBinning)
+    % [fMc, fMc95, fMc90] = calc_McBest(magnitudes, binInterval)
     
     report_this_filefun();
     
     % Magnitude increment
-    if ~exist('fBinning','var')
-        fBinning = 0.1;
+    if ~exist('binInterval','var')
+        binInterval = 0.1;
     end
     
     % First estimation of magnitude of completeness (maximum curvature)
-    McStart = maxCurvature(mCatalog.Magnitude, [-2 6] , fBinning);
+    McStart = maxCurvature(magnitudes, [-2 6] , binInterval);
     
-    half_fBin=fBinning/2;
-    eachbin = (McStart - 0.9) : fBinning : (McStart + 1.5);
-    eachedge = [eachbin-half_fBin , eachbin(end)+half_fBin]; 
+    half_fBin=binInterval/2;
+    magCenters = (McStart - 0.9) : binInterval : (McStart + 1.5);
+    eachedge = [magCenters-half_fBin , magCenters(end)+half_fBin]; 
     
-    mData=[eachbin(:), nan(numel(eachbin),1)];
+    mData=[magCenters(:), nan(numel(magCenters),1)];
     
-    for idx = 1:numel(eachbin)
-        vSel = mCatalog.Magnitude > eachedge(idx);
-        nEvents = sum(vSel);
+    % binForEvents = discretize(magnitudes, eachedge); % eg. where binForEvents==9, the event falls into magCenters(9)
+    % smallestBin = min(binForEvents);
+    % biggestBin = max(binForEvents);
+    % minRepresentedMag = magCenters(smallestBin);
+    % maxRepresentedMag = magCenters(biggestBin);
+    
+    %allBinnedEvents = histcounts(magnitudes, eachedge);
+    
+    for idx = 1:numel(magCenters)
+        hypotheticalMc = magCenters(idx);
+        bigEnough = magnitudes > eachedge(idx);
+        nEvents = sum(bigEnough);
         
         if nEvents < 25
             continue
         end
-        
-        fBValue = calc_bmemag(mCatalog.Magnitude(vSel));
-        
-        fStartMag = eachbin(idx); % Starting magnitude (hypothetical Mc)
-        
-        % log10(N)=A-B*M
-        vMag = fStartMag:fBinning:15; % Ending magnitude must be sufficiently high
-        vNumber = 10.^(log10(nEvents)-fBValue*(vMag - fStartMag));
-        vNumber = round(vNumber);
-        
-        % Find the last bin with an event
-        nLastEventBin = find(vNumber > 0, 1,'last' );
-        
-        % Determine set of all magnitude bins with number of events > 0
-        ct = round((vMag(nLastEventBin)-fStartMag)*(1/fBinning) + 1);
-        
-        % PM=vMag(1:ct);
-        PMedges = [vMag-half_fBin , vMag(end)+half_fBin]; 
-        [bval, ~] = histcounts(mCatalog.Magnitude(vSel),PMedges);
-        b3 = cumsum(bval,'reverse');    % N for M >= (counted backwards)
-        mData(idx,2) = sum(abs(b3 - vNumber(1:ct) )) / sum(b3)*100; %res2
+        mData(idx,2) = doCalculation(magnitudes(bigEnough), binInterval, hypotheticalMc);
     end
-    
+    results = mData(:,2); % where results(x) are associated with magcenters(x)
     % Evaluation of results
     
     % Is fMc90 available
-    nSel = find(mData(:,2) < 10, 1 );
+    nSel = find(results < 10, 1 );
     if isempty(nSel)
         fMc90 = NaN;
     else
-        fMc90 = mData(nSel,1);
+        fMc90 = magCenters(nSel);
     end
     
     % Is fMc95 available
-    nSel = find(mData(:,2) < 5, 1 );
+    nSel = find(results < 5, 1 );
     if isempty(nSel)
         fMc95 = NaN;
     else
         fMc95 = mData(nSel,1);
     end
     
-    % ?????
-    j =  find(mData(:,2) < 10 , 1 );
-    if isempty(j); j =  find(mData(:,2) < 15 , 1 ); end
-    if isempty(j); j =  find(mData(:,2) < 20 , 1 ); end
-    if isempty(j); j =  find(mData(:,2) < 25 , 1 ); end
-    %j2 =  min(find(dat(:,2) == min(dat(:,2)) ));
+    % take results from bins. (I tested against discretize, and this was faster -CGR)
     
-    fMc = mData(j,1);
+    j =  find(results < 10 , 1, 'first');
+    if isempty(j); j =  find(results < 15 , 1, 'first' ); end
+    if isempty(j); j =  find(results < 20 , 1, 'first' ); end
+    if isempty(j); j =  find(results < 25 , 1, 'first' ); end
+    fMc = magCenters(j);
     if isempty(fMc)
         fMc = NaN;
     end
+end
+
+function result = doCalculation(theseMags, binInterval, hypotheticalMc)
+        fBValue = calc_bmemag(theseMags, binInterval);
+        half_fBin = binInterval/2;
+        
+        % log10(N)=A-B*M
+        vMag = hypotheticalMc:binInterval:15; % Ending magnitude must be sufficiently high
+        vNumber = 10.^(log10(numel(theseMags))-fBValue*(vMag - hypotheticalMc));
+        vNumber = round(vNumber);
+        
+        % Find the last bin with an event
+        binsWithEvents = vNumber>0;
+        nLastEventBin = find(binsWithEvents, 1,'last' );
+        
+        
+        % Determine set of all magnitude bins with number of events > 0
+        ct = round((vMag(nLastEventBin)-hypotheticalMc)*(1/binInterval) + 1);
+        
+        % PM=vMag(1:ct);
+        PMedges = [vMag-half_fBin , vMag(end)+half_fBin]; 
+        [bval, ~] = histcounts(theseMags, PMedges);
+        b3 = cumsum(bval,'reverse');    % N for M >= (counted backwards)
+        result = sum(abs(b3 - vNumber(1:ct) )) / sum(b3)*100; %res2
 end
 
 function Mc = maxCurvature(m, min_max, binwidth)

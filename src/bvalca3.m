@@ -1,4 +1,4 @@
-function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, overall_b_value)
+function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overall_b_value)
     % BVALCA3
     % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method, bo1)
     %
@@ -41,7 +41,10 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, overall
     [bval,xt2] = hist(magnitudes,(mima:dm1:maxmag));
     % bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
+    %bvalsum3 = bvalsum3(:);
+    
     magsteps_desc = (maxmag:-dm1:mima);
+    %magsteps_desc = magsteps_desc(:);
     
     backg_ab = log10(bvalsum3);
     difb = [0 diff(bvalsum3) ];
@@ -52,7 +55,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes,mc_method, overall
     
     % if no automatic estimate of Mcomp
     if ~mc_method
-        i = length(magsteps_desc)-10*min(magnitudes);
+        i = length(magsteps_desc)- round((10*min(magnitudes))); % guessing how to fix this with parens
         if i > length(magsteps_desc)
             i = length(magsteps_desc)-1 ;
         end

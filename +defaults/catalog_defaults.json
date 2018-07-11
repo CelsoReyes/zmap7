@@ -1,6 +1,6 @@
 {
    "ReopenLastCatalog":true,
-   "LastCatalogFilename": "lastcatalog.mat",
+   "LastCatalogFilename":"lastcatalog.mat",
    "BigEvents":{
       "ThreshholdChangesWithCatalog":true,
       "MinMag":8

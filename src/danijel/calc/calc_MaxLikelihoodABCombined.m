@@ -59,7 +59,7 @@ mControl = [mControl vMaxTime_];
 % Set the callback starting values
 vStartValues = [1; 1];
 % Find the maximum likelihood solution
-[vValues, vDummy, bExitFlag_] = fminsearch('callback_LogLikelihoodABCombined', vStartValues, [], caCatalogs_, mControl);
+[vValues, ~, bExitFlag_] = fminsearch(@callback_LogLikelihoodABCombined, vStartValues, [], caCatalogs_, mControl);
 % Return values
 fAValue = vValues(1);
 fBValue = vValues(2);

@@ -1,5 +1,5 @@
-function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,ZG.maepi)
-    % function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,ZG.maepi);
+function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,maepi)
+    % function [rc] = calc_ratechangeF(mycat,time,timef,bootloops,maepi);
     % ----------------------------------------------------------------
     % Determines ratechanges within aftershock sequences for defined time window
     %

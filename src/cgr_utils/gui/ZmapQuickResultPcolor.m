@@ -20,7 +20,7 @@ function h=ZmapQuickResultPcolor(ax, res, choice, features)
     if ~exist('choice','var') || isempty(choice)
         disp('Possible plot choices for this variable are:')
         for i = 1 : numel(choices)
-            fprintf('%d : ''%s\n''',i,choices{i});
+            fprintf("%d : '%s\n'",i,choices{i});
         end
         return
     end

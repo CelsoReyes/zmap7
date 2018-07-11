@@ -9,7 +9,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         bottomzone_floor = 15; % Bottom of BOTTOM zone
         fBinning = 0.1;  % magnitude bins
         Nmin=50;
-        mc_choice % magnitude of completion method
+        mc_choice   McMethods  = McMethods.MaxCurvature% magnitude of completion method
         useAutoMcomp=true;
     end
     
@@ -64,7 +64,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             zdlg=ZmapDialog([]);            
             zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
                 obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,...
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(obj.mc_choice),...
                 'Choose the calculation method for Mc');
             zdlg.AddBasicHeader('Please define two Depth ranges to compare');
             zdlg.AddBasicEdit('top_of_top','TOP zone ceiling [km]',obj.topzone_ceiling,'');
@@ -202,7 +202,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='b-value depth ratio grid';
-            h=uimenu(parent,'Label',label,Futures.MenuSelectedFcn, @(~,~)bdepth_ratio(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bdepth_ratio(zapFcn()));
         end
         
         function obj=my_load()

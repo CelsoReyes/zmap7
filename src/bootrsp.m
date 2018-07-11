@@ -22,8 +22,8 @@ function[out]=bootrsp(indata,B)
     %
     %   out=bootrsp(randn(10,1),10);
     
-    %  Created by A. M. Zoubir and D. R. Iskander
-    %  May 1998
+    %  Created by A. M. Zoubir and D. R. Iskander -  May 1998
+    %  Modified by C Reyes 2018, to leverage randi
     %
     %  References:
     %
@@ -47,9 +47,10 @@ function[out]=bootrsp(indata,B)
         error('Input data can be a vector or a 2D matrix only');
     end
     if min(s)==1
-        out=indata(ceil(max(s)*rand(max(s),B)));
+        %out=indata(ceil(max(s)*rand(max(s),B)));
+        out=indata(randi(max(s) , max(s),B));
     else
-        out=indata(ceil(s(1)*s(2)*rand(s(1),s(2),B)));
+        out=indata(randi(s(1)*s(2) , s(1),s(2),B));
     end
 end
 

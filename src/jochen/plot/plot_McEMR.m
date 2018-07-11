@@ -44,7 +44,7 @@ fPeriod1 = max(mCatalog.Date) - min(mCatalog.Date);
 fMaxMag = ceil(10 * max(mCatalog.Magnitude)) / 10;
 
 % Set starting value for Mc loop and LSQ fitting procedure
-fMcTry= calc_Mc(mCatalog,1);
+fMcTry= calc_Mc(mCatalog, McMethods.MaxCurvature);
 fSmu = abs(fMcTry/2);
 fSSigma = abs(fMcTry/4);
 if (fSmu > 1)
@@ -54,7 +54,7 @@ end
 fMcBound = fMcTry;
 
 % Calculate FMD for original catalog
-[vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog);
+[vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog.Magnitude);
 fMinMag = min(vNonCFMDorg(1,:));
 
 %% Shift to positive values
@@ -71,7 +71,7 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     % Select magnitudes to calculate b- anda-value
     vSel = mCatalog.Magnitude > fMc-fBinning/2;
     if sum(vSel) >= 20
-        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+        [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.Magnitude(vSel), fBinning);
         % Normalize to time period
         vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
         vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

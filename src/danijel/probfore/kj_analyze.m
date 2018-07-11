@@ -73,8 +73,8 @@ set(handles.axsFMD, 'NextPlot', 'replace');
 set(handles.axsTimePlot, 'NextPlot', 'replace');
 if get(handles.radEntireTime, 'Value') == 1
   % Plot the frequency magnitude distribution
-  [hPlot, fBValue, fAValue, fStdDev] = plot_FMD(mPlotCatalog, 1, handles.axsFMD, 's', 'k', 1, handles.params.nCalculateMC);
-  set(hPlot, 'MarkerSize', 10);
+  [fBValue, fAValue, fStdDev] = plot_FMD(mPlotCatalog,...
+    'Axes',handles.axsFMD, 'CalcMc', handles.params.nCalculateMC, 'MarkerSize', 10);
   set(handles.lblBValue1, 'String', num2str(fBValue, 3));
   set(handles.lblAValue1, 'String', num2str(fAValue, 3));
   set(handles.lblStdValue1, 'String', num2str(fStdDev, 3));
@@ -82,7 +82,7 @@ if get(handles.radEntireTime, 'Value') == 1
   set(handles.lblAValue2, 'String', '');
   set(handles.lblStdValue2, 'String', '');
   % Plot the cumulative number
-  [vDummy, vIndices] = sort(mPlotCatalog(:,3));
+  [~, vIndices] = sort(mPlotCatalog(:,3));
   mSortedCatalog = mPlotCatalog(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
   plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-');
@@ -93,22 +93,21 @@ else
   fSplit = str2double(get(handles.txtSplit, 'String'));
   [mFirst, mSecond] = ex_SplitCatalog(mPlotCatalog, fSplit, 1, fFirst, 1, fSecond);
   % Plot the frequency magnitude distribution for the first period
-  [hPlot, fBValue, fAValue, fStdDev] = plot_FMD(mFirst, 1, handles.axsFMD, 's', 'k', 1, handles.params.nCalculateMC);
-  set(hPlot, 'MarkerSize', 3);
+  [fBValue, fAValue, fStdDev] = plot_FMD(mFirst, 'Axes', handles.axsFMD, ...
+      'CalcMethod',handles.params.nCalculateMC, 'MarkerSize', 3);
   set(handles.lblBValue1, 'String', num2str(fBValue, 3));
   set(handles.lblAValue1, 'String', num2str(fAValue, 3));
   set(handles.lblStdValue1, 'String', num2str(fStdDev, 3));
   % Plot the frequency magnitude distribution for the second period
   set(handles.axsFMD, 'NextPlot', 'add');
-  [hPlot, fBValue, fAValue, fStdDev] = plot_FMD(mSecond, 1, handles.axsFMD, '^', 'r', 1, handles.params.nCalculateMC);
-  set(hPlot, 'MarkerSize', 3);
+  [fBValue, fAValue, fStdDev] = plot_FMD(mSecond, 'Axes', handles.axsFMD,...
+      'Marker','^', 'Color','r', 'CalcMethod', handles.params.nCalculateMC,'MarkerSize',3);
   set(handles.lblBValue2, 'String', num2str(fBValue, 3));
   set(handles.lblAValue2, 'String', num2str(fAValue, 3));
   set(handles.lblStdValue2, 'String', num2str(fStdDev, 3));
 
   % Plot the Kagan & Jackson test
-  [hPlot] = plot_FMD(mSecond, 0, handles.axsTest, 'o', 'b');
-  set(hPlot, 'MarkerSize', 4);
+  plot_FMD(mSecond, 'ShowCumulative', false, 'Axes', handles.axsTest, 'Marker','o', 'Color', 'b', 'MarkerSize', 4);
   set(handles.axsTest, 'NextPlot', 'add');
   % Calculate Mc
   fMc = calc_Mc(mPlotCatalog, handles.params.nCalculateMC);
@@ -150,12 +149,12 @@ else
   fMinTime = min(mSecond(:,3));
   mSecond(:,3) = mSecond(:,3) - fMinTime;
   % Plot the cumulative number for the first period
-  [vDummy, vIndices] = sort(mFirst(:,3));
+  [~, vIndices] = sort(mFirst(:,3));
   mSortedCatalog = mFirst(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
   plot(mSortedCatalog(:,3),(1:length(mSortedCatalog(:,3))),'k-');
   % Plot the cumulative number for the second period
-  [vDummy, vIndices] = sort(mSecond(:,3));
+  [~, vIndices] = sort(mSecond(:,3));
   mSortedCatalog = mSecond(vIndices(:,1),:) ;
   axes(handles.axsTimePlot)
   set(handles.axsTimePlot, 'NextPlot', 'add');

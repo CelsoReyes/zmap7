@@ -19,7 +19,7 @@ classdef ZmapData < handle
     properties(Constant)
         zmap_version        = '7.0'
         min_matlab_version  = '9.2'
-        min_matlab_release  = '2017a'
+        min_matlab_release  = '2018a'
         hodi                = fileparts(which('zmap')) % zmap home directory
         torad               = pi / 180
         Re                  = 6378.137 % radius of earth, km
@@ -140,14 +140,12 @@ classdef ZmapData < handle
             ZDefaults=struct();
             
             %% a note about defaults
-            % default settings are set in the ZmapSettings.mlapp. R2017a
+            % default settings are set in the ZmapSettings.mlapp. R2018a
             % To add a setting, one would:
             %   1. add the widget to the app, 
             %   2. add it to setFromDefaults() and saveDefaults()
             %   3. (possibly) manually add it to the +defaults.[whatever].json file
             %   4. add it here.
-            % 
-            %   editing it in R2017b or later might make it incompatible with R2017a.
   
             for i=1:numel(def_files)
                 ZDefaults.(erase(def_files{i},'_defaults')) = defaults.readDefaults(def_files{i});

@@ -320,8 +320,8 @@ function [xsecx,xsecy, inde] = mysect(eqlat,eqlon,depth,width,length,lat1,lon1,l
     label_base3 = 1 + .12;
     lbl3_h = text(0,label_base2,label1,'FontSize',12,'Horizontal','center',...
         'FontWeight','bold','Vertical','middle','Units','norm');
-    lat1_dm = sprintf('    %2.2i N %4.2f''',fix(lat1),(frac(lat1)*60));
-    lon1_dm = sprintf('   %3.3i W %4.2f''',abs(fix(lon1)),abs(frac(lon1)*60));
+    lat1_dm = sprintf("    %2.2i N %4.2f'",fix(lat1),(frac(lat1)*60));
+    lon1_dm = sprintf("   %3.3i W %4.2f'",abs(fix(lon1)),abs(frac(lon1)*60));
     lbl5_h = text(0,label_base1+0.00,lat1_dm,'FontSize',10,'Horizontal','left',...
         'Vertical','bottom','Units','norm');
     lbl6_h = text(0,label_base3+0.04,lon1_dm,'FontSize',10,'Horizontal','left',...

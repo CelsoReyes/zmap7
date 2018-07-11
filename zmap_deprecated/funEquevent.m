@@ -5,7 +5,7 @@ function equi=equevent
 % time for equivalent event is time of first biggest event
 %
 % Last change 11/95
-global clus ZG.newcat  cluslength bg clustnumbers
+global clus newcat  cluslength bg clustnumbers
 
 j=0;
 eqmoment=10.^(ZG.newcat.Magnitude.*1.2);

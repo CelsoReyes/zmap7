@@ -102,33 +102,33 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c,'Select events in POLYGON');
     
     uimenu(c,'Label','Delete shape',...
-        'Separator','on', Futures.MenuSelectedFcn,{@updatewrapper,@(~,~)cb_shapedelete});
-    uimenu(c,'Label','Zoom to shape',Futures.MenuSelectedFcn,@cb_zoom_shape);
-    uimenu(c,'Label','Crop to shape',Futures.MenuSelectedFcn,@cb_crop_to_selection);
-    uimenu(c,'Label','Zoom to selected events',Futures.MenuSelectedFcn,@cb_zoom)
-    uimenu(c,'Label','Crop to axes limits',Futures.MenuSelectedFcn,@cb_crop_to_axes)
-    uimenu(c,'Label','Define X-section','Separator','on',Futures.MenuSelectedFcn,@obj.cb_xsection);
+        'Separator','on', 'MenuSelectedFcn',{@updatewrapper,@(~,~)cb_shapedelete});
+    uimenu(c,'Label','Zoom to shape','MenuSelectedFcn',@cb_zoom_shape);
+    uimenu(c,'Label','Crop to shape','MenuSelectedFcn',@cb_crop_to_selection);
+    uimenu(c,'Label','Zoom to selected events','MenuSelectedFcn',@cb_zoom)
+    uimenu(c,'Label','Crop to axes limits','MenuSelectedFcn',@cb_crop_to_axes)
+    uimenu(c,'Label','Define X-section','Separator','on','MenuSelectedFcn',@obj.cb_xsection);
     uimenu(c,'Separator','on','Label','Hide/Show sampling grid','Tag','ToggleGrid',...
-        Futures.MenuSelectedFcn,@cb_toggle_grid)
+        'MenuSelectedFcn',@cb_toggle_grid)
     obj.map_axes.UIContextMenu=c;
 
     addLegendToggleContextMenuItem(c,'bottom','above');
-    %uimenu(c,'Label','Toggle ColorBar',Futures.MenuSelectedFcn,@(s,v)obj.do_colorbar);
+    %uimenu(c,'Label','Toggle ColorBar','MenuSelectedFcn',@(s,v)obj.do_colorbar);
     obj.map_axes.ButtonDownFcn = @control_menu_enablement;
     
     
     function create_from_existing_menu(parent,label)
             % use the callback from a menu item that (will) exist in this figure. Labels must match
-            uimenu(parent,'Label',label,Futures.MenuSelectedFcn,{@do_other,label});
+            uimenu(parent,'Label',label,'MenuSelectedFcn',{@do_other,label});
             
         function do_other(src,ev,label)
             um=findobj(obj.fig,'Type','uimenu','-and','Label',label);
             newsrc=um(um~=src);
-            newsrc.(Futures.MenuSelectedFcn)(newsrc,ev);
+            newsrc.('MenuSelectedFcn')(newsrc,ev);
         end
     end
     
-    function control_menu_enablement(src,~)
+    function control_menu_enablement(~,~)
         % enable/disable the axes menu items according to whether or not a shape exists
         % shape menu labels end with the word "shape"
         idx=endsWith({obj.map_axes.UIContextMenu.Children.Label}," shape");
@@ -144,12 +144,9 @@ function plot_base_events(obj, container, featurelist)
     
     function updatewrapper(s,v,f)
         f(s,v);
-        return
-        obj.shape=ShapeGeneral.ShapeStash;
-        obj.cb_redraw();
     end
     
-    function cb_toggle_grid(src,~)
+    function cb_toggle_grid(~,~)
         gr = findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
         if numel(gr)==1
             gr.Visible=toggleOnOff(gr.Visible);
@@ -214,14 +211,4 @@ function plot_base_events(obj, container, featurelist)
         obj.replot_all();
     end
 
-    function commandeer_colorbar_button()
-        cbb=findall(obj.fig,'Tooltip','Insert Colorbar');
-        origCallback = cbb.ClickedCallback;
-        if isequal(origCallback ,@obj.do_colorbar)
-            return
-        end
-        cbb.ClickedCallback={@obj.do_colorbar,origCallback};
-        
-        
-    end
 end

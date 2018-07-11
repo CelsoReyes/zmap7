@@ -29,7 +29,7 @@ end
 
 % Calculate the percentile
 try
-  [fPercentile, vDummy, bExitFlag_] = fminbnd('callback_GetPercentile', 0, 100, [], vDistribution, fValue);
+  [fPercentile, ~, bExitFlag_] = fminbnd(@callback_GetPercentile, 0, 100, [], vDistribution, fValue);
   if ~bAscending
     fPercentile = 100 - fPercentile;
   end

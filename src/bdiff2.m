@@ -85,7 +85,7 @@ classdef bdiff2
                 %% new dialog
                 zdlg = ZmapDialog();
                 zdlg.AddBasicHeader('Magnitude of Completness parameters');
-                zdlg.AddBasicPopup('mc_method','Max. likelihood Estimation',calc_Mc('getoptions'),1,'Choose Magnitude of completion calculation method');
+                zdlg.AddBasicPopup('mc_method','Max. likelihood Estimation',McMethods.dropdownList(),double(McMethods.MaxCurvature),'Choose Magnitude of completion calculation method');
                 zdlg.AddBasicEdit('fMccorr','Mc Correction',fMccorr,'Correction term for Magnitude of Completeness');
                 zdlg.AddBasicCheckbox('doBootstrap','Uncertainty by bootstrapping',false,{'nBstSample'},'tooltip');
                 zdlg.AddBasicEdit('nBstSample','Bootstraps',nBstSample,'Number of bootstraps used to estimate error');
@@ -119,7 +119,7 @@ classdef bdiff2
             c = uicontextmenu(f,'Tag',obj.tags.bdcontext);
             obj.create_my_menu(c,catalog);
             ax.UIContextMenu=c;
-            uimenu(ax.UIContextMenu,'Label','Open as new figure',Futures.MenuSelectedFcn,@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
+            uimenu(ax.UIContextMenu,'Label','Open as new figure','MenuSelectedFcn',@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
                 
             obj.write_globals();
             
@@ -129,7 +129,10 @@ classdef bdiff2
         function obj = calculate(obj, catalog)
             % global magsteps_desc bvalsum3  bval
             global gBdiff % contains b1, n1, b2, n2
-            
+            if isempty(catalog)
+                msg.dbdisp('catalog is empty')
+                return
+            end
             ZG = ZmapGlobal.Data;
             
             % reassign variables
@@ -182,7 +185,7 @@ classdef bdiff2
                 obj.magco = calc_Mc(catalog, method, obj.fBinning, fMccorr);
                 l = catalog.Magnitude >= obj.magco-(obj.fBinning/2);
                 if sum(l) >= Nmin
-                    [ fBValue, fStd_B, fAValue] =  calc_bmemag(catalog.subset(l), obj.fBinning);
+                    [ fBValue, fStd_B, fAValue] =  calc_bmemag(catalog.Magnitude(l), obj.fBinning);
                 else
                     obj.magco = NaN;
                 end
@@ -342,7 +345,7 @@ classdef bdiff2
                 ax.UIContextMenu=c;
             end
             uimenu(ax.UIContextMenu,'Separator','on',...
-                'Label','info',Futures.MenuSelectedFcn,@(~,~)msgbox(tx,'b-Value results','modal'));
+                'Label','info','MenuSelectedFcn',@(~,~)msgbox(tx,'b-Value results','modal'));
         end
         
         function updatePlottedCumSum(obj,ax)
@@ -449,12 +452,12 @@ classdef bdiff2
         end
         %% ui functions
         function create_my_menu(obj,c,catalog)
-            uimenu(c,'Label','Estimate recurrence time/probability',Futures.MenuSelectedFcn,@callbackfun_recurrence);
-            uimenu(c,'Label','Plot time series',Futures.MenuSelectedFcn,@callbackfun_ts);
-            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',Futures.MenuSelectedFcn,{@cb_nonlin_optimize,catalog});
-            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',Futures.MenuSelectedFcn,{@cb_nonlin_keepmc,catalog});
-            uimenu(c,'Label','Show discrete curve',Futures.MenuSelectedFcn,@callbackfun_nodiscrete,'Checked','on');
-            uimenu(c,'Label','Save values to file',Futures.MenuSelectedFcn,{@calSave9,obj.magsteps_desc, obj.bvalsum3});
+            uimenu(c,'Label','Estimate recurrence time/probability','MenuSelectedFcn',@callbackfun_recurrence);
+            uimenu(c,'Label','Plot time series','MenuSelectedFcn',@callbackfun_ts);
+            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)','MenuSelectedFcn',{@cb_nonlin_optimize,catalog});
+            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)','MenuSelectedFcn',{@cb_nonlin_keepmc,catalog});
+            uimenu(c,'Label','Show discrete curve','MenuSelectedFcn',@callbackfun_nodiscrete,'Checked','on');
+            uimenu(c,'Label','Save values to file','MenuSelectedFcn',{@calSave9,obj.magsteps_desc, obj.bvalsum3});
             addAboutMenuItem();
             
             function callbackfun_recurrence(~,~)
@@ -465,7 +468,8 @@ classdef bdiff2
             function callbackfun_ts(~,~)
                 ZG=ZmapGlobal.Data;
                 ZG.newcat = catalog;
-                CumTimePlot(catalog);
+                ctp=CumTimePlot(catalog);
+                ctp.plot();
             end
             
             function callbackfun_nodiscrete(mysrc,~)

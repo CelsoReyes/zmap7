@@ -45,7 +45,7 @@ function cumplot(obj, tabgrouptag)
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
         cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
-        uimenu(cxs,'Label','Open in new window',Futures.MenuSelectedFcn,@cb_xstimeplot);
+        uimenu(cxs,'Label','Open in new window','MenuSelectedFcn',@cb_xstimeplot);
     end
     
     obj.plot_xsections(@xsplotter, 'Xsection cumplot');
@@ -58,7 +58,7 @@ function cumplot(obj, tabgrouptag)
     if isempty(cbg)
         cbg=uicontextmenu(obj.fig, 'Tag', Tags.bg);
         addLegendToggleContextMenuItem(cbg, 'bottom', 'above');
-        uimenu(cbg, 'Label', 'Open in new window', Futures.MenuSelectedFcn,@obj.cb_timeplot);
+        uimenu(cbg, 'Label', 'Open in new window', 'MenuSelectedFcn',@obj.cb_timeplot);
     end
     
     if isempty(ax.UIContextMenu)
@@ -70,10 +70,10 @@ function cumplot(obj, tabgrouptag)
         cln=findobj(obj.fig,'Tag',Tags.line);
         if isempty(cln)
             cln=uicontextmenu(obj.fig,'tag',Tags.line);
-            uimenu(cln, 'Label', 'start here',              Futures.MenuSelectedFcn, @(~,~)obj.cb_starthere(ax));
-            uimenu(cln, 'Label', 'end here',                Futures.MenuSelectedFcn, @(~,~)obj.cb_endhere(ax));
-            uimenu(cln, 'Label', 'trim to largest event',   Futures.MenuSelectedFcn, @obj.cb_trim_to_largest);
-            uimenu(cln, 'Label', 'Open in new window',      Futures.MenuSelectedFcn, @obj.cb_timeplot);
+            uimenu(cln, 'Label', 'start here',              'MenuSelectedFcn', @(~,~)obj.cb_starthere(ax));
+            uimenu(cln, 'Label', 'end here',                'MenuSelectedFcn', @(~,~)obj.cb_endhere(ax));
+            uimenu(cln, 'Label', 'trim to largest event',   'MenuSelectedFcn', @obj.cb_trim_to_largest);
+            uimenu(cln, 'Label', 'Open in new window',      'MenuSelectedFcn', @obj.cb_timeplot);
         end
     end
         
@@ -92,7 +92,8 @@ function cumplot(obj, tabgrouptag)
         ZG=ZmapGlobal.Data;
         ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
         ZG.newt2.Name=sprintf('Events within %g km of %s',obj.CrossSections(idx).name);
-        CumTimePlot(ZG.newt2);
+        ctp=CumTimePlot(ZG.newt2);
+        ctp.plot();
     end
     
 end

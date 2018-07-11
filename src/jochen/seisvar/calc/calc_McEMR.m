@@ -1,5 +1,6 @@
-function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
-    % function  [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning);
+function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, binInterval)
+    % CALC_MCEMR Determine Mc using Entire Magnitude Range (EMR)-method. Calculates also a- and b-value.
+    % [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, binInterval);
     % -----------------------------------------------------------------------------------------------------
     % Determine Mc using EMR-method. Calculates also a- and b-value.
     % Fitting non-cumulative frequency magnitude distribution above and below Mc:
@@ -8,7 +9,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
     %
     % Incoming variables:
     % catalog   : EQ catalog
-    % fBinning   : Binning interval, usually 0.1
+    % binInterval   : Binning interval, usually 0.1
     %
     % Outgoing variables:
     % fMc        : Best estimated magnitude of completeness
@@ -18,35 +19,24 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
     % fSigma     : sigma-values of the normal CDF
     %
     % J. Woessner: woessner@seismo.ifg.ethz.ch
-    % updated: 03.11.03
     
-    % Check input
-    if nargin == 0, error('No catalog input'); end
-    if nargin == 1, fBinning = 0.1; disp('Default Bin size: 0.1');end
-    if nargin > 2, disp('Too many arguments!'), return; end
+    narginchk(2,2);
     
     % Initialize
     vProbability = [];
     vMc = [];
     vABValue =[];
     mFitRes = [];
-    vNCumTmp = [];
-    mDataPred = [];
-    vPredBest = [];
     vDeltaBest = [];
     vX_res = [];
     vNmaxBest = [];
     mResult=[];
-    mDatPredBest = [];
     
     % Determine exact time period
-    fPeriod1 = years(max(catalog.Date) - min(catalog.Date)); % guessing it should be years
-    
-    % Determine max. and min. magnitude
-    maxMag = ceil(10 * max(catalog.Magnitude)) / 10;
+    timespan = years(max(catalog.Date) - min(catalog.Date)); % guessing it should be years
     
     % Set starting value for Mc loop and LSQ fitting procedure
-    fMcTry= calc_Mc(catalog,1);
+    fMcTry= calc_Mc(catalog, McMethods.MaxCurvature);
     fSmu = abs(fMcTry/2);
     fSSigma = abs(fMcTry/4);
     if (fSmu > 1)
@@ -72,11 +62,11 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
         %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(catalog, vFMD, fMc);
         [~, ~, vSel, ~] = fMagToFitBValue(catalog, vFMD, fMc);
         if (length(catalog.Longitude(vSel)) >= 20)
-            %[ fBValue, fStdDev, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
-            [fBValue, ~, fAValue] =  calc_bmemag(catalog.subset(vSel), fBinning);
+            %[ fBValue, fStdDev, fAValue] =  calc_bmemag(catalog.Magnitude(vSel), binInterval);
+            [fBValue, ~, fAValue] =  calc_bmemag(catalog.Magnitude(vSel), binInterval);
             % Normalize to time period
-            vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
-            vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed
+            vFMD(2,:) = vFMD(2,:)./timespan; % ceil taken out
+            vNonCFMD(2,:) = vNonCFMD(2,:)./timespan; % ceil removed
             % Compute quantity of earthquakes by power law
             fMaxMagFMD = max(vNonCFMD(1,:));
             fMinMagFMD = min(vNonCFMD(1,:));
@@ -89,7 +79,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
             vN = abs(diff(vNCumTmp));
             
             % Normalize vN
-            vN = vN./fPeriod1;
+            vN = vN./timespan;
             % Data selection
             % mData = Non-cumulative FMD values from GR-law and original data
             mData = [vN' vNonCFMD'];
@@ -129,8 +119,8 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
                 mDataTest(:,3) = mDataTest(:,3)*fNmax;
                 mDataPred = [mDataTest; mDataTmp];
                 % Denormalize to calculate probabilities
-                mDataPred(:,1) = round(mDataPred(:,1).*fPeriod1);
-                mDataPred(:,3) = mDataPred(:,3).*fPeriod1;
+                mDataPred(:,1) = round(mDataPred(:,1).*timespan);
+                mDataPred(:,3) = mDataPred(:,3).*timespan;
                 vProb_ = calc_log10poisspdf2(mDataPred(:,3), mDataPred(:,1)); % Non-cumulative
                 
                 % Sum the probabilities
@@ -149,7 +139,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, fBinning)
                 % Keep best fitting model
                 if (fProbability == min(vProbability))
                     vDeltaBest = delta;
-                    vPredBest = [mDataTest(:,2) vPred*fNmax*fPeriod1 delta*fNmax*fPeriod1]; % Gives back uncertainty
+                    vPredBest = [mDataTest(:,2) vPred*fNmax*timespan delta*fNmax*timespan]; % Gives back uncertainty
                     mDatPredBest = [mDataPred];
                 end
             else

@@ -34,7 +34,8 @@ function plot_circbootfitF()
     calc_bootfitF(newt3.Date,time,timef,bootloops,ZG.maepi.Date)
     
     ZG.newcat = ZG.newt2;
-    CumTimePlot(ZG.newt2);
+    ctp=CumTimePlot(ZG.newt2);
+    ctp.plot();
     
     
 end

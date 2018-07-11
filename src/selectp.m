@@ -93,7 +93,8 @@ function selectp(in_or_out)
     
     ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     
-    CumTimePlot(ZG.newt2);
+    ctp=CumTimePlot(ZG.newt2);
+    ctp.plot();
     
     h=ZmapMessageCenter;
     h.update_catalog();

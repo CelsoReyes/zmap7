@@ -22,13 +22,13 @@ for i=1:newcat.Count
 
     tmp=find((eqtime-eqtime(i))>0 & (eqtime - eqtime(i))<tcut1);
     if ~isempty(tmp)
-        tmp2=newcat.subset(tmp));
+        tmp2=newcat.subset(tmp);
         tmp3=find(tmp2(:,6)>=newcat(i,6));
         if ~isempty(tmp3)
-            newcat=[newcat.subset(i);tmp2(tmp3,:);
+            newcat=[newcat.subset(i);tmp2(tmp3,:)];
                 [dist1, dist2] = distance(1,1,2:newcat.Count);
                 tmp4=dist1<dist;
-                if ~isempty(tmp4);
+                if ~isempty(tmp4)
                 n=n+1;
                 if length(tmp4)>1
                     n1=n1+1;                %more than one bigger event follows in sequence

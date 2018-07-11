@@ -18,7 +18,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
         [projectedcat,mindist,mask,gcDist_km]=test_this;
         return
     end
-    gcDist_km=[];
+    
     tdist_km = deg2km(distance(pt1,pt2));
     nlegs = ceil(tdist_km / dx_km); % was doubled.
     
@@ -32,7 +32,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     gcDistances=deg2km(distance(pt1(1),pt1(2),curvelats,curvelons));
     % find closest point for each event
     eqLats=projectedcat.Latitude;
-    eqLons=projectedcat.Longitude;
+    % eqLons=projectedcat.Longitude;
     mindist=nan(size(eqLats));
     
     [projectedcat2, mindist2, arcpos] = tryit(projectedcat, curvelats, curvelons);

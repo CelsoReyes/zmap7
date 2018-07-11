@@ -29,6 +29,7 @@ function pl = timeplot
     %
     %FIXME this is affecting the primaryCatalog, instead of the other catalogs.
     
-    CumTimePlot.getInstance()
+    ctp=CumTimePlot.getInstance();
+    ctp.plot();
     pl.reset()
 return

@@ -9,7 +9,7 @@ function plot3d()
     % This is the info window text
     %
     global a faults mainfault main
-    report_this_filefun())
+    report_this_filefun()
     
     ZG=ZmapGlobal.Data; % get zmap globals;
     tag='mainmap3_ax';

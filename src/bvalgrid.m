@@ -58,7 +58,7 @@ classdef bvalgrid < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',calc_Mc('getoptions'),1,...
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
                 'Choose the calculation method for Mc');
             zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                 're takes longer, but provides more accurate results');
@@ -127,7 +127,7 @@ classdef bvalgrid < ZmapHGridFunction
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
                 
                 if sum(l) >= obj.Nmin
-                    [b_value, b_value_std, a_value] =  calc_bmemag(catalog.subset(l), obj.fBinning);
+                    [b_value, b_value_std, a_value] =  calc_bmemag(catalog.Magnitude(l), obj.fBinning);
                     % otherwise, they should be NaN
                 else
                     [b_value, b_value_std, a_value] = deal(nan);
@@ -179,7 +179,7 @@ classdef bvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Mc, a- and b- value map';
-            h=uimenu(parent,'Label',label,Futures.MenuSelectedFcn, @(~,~)bvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bvalgrid(zapFcn()));
         end
     end % static methods
     

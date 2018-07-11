@@ -43,64 +43,64 @@ function catalog_menu(obj, force)
     
     catmenu = uimenu(submenu,'Label','Get/Load Catalog');
     
-    uimenu(submenu,'Label','Reload last catalog',Futures.MenuSelectedFcn,@cb_reloadlast,...
+    uimenu(submenu,'Label','Reload last catalog','MenuSelectedFcn',@cb_reloadlast,...
         'Enable','off');
     
     uimenu(catmenu,'Label','from *.mat file',...
-        Futures.MenuSelectedFcn, {@cb_importer,@load_zmapfile});
+        'MenuSelectedFcn', {@cb_importer,@load_zmapfile});
     uimenu(catmenu,'Label','from other formatted file',...
-        Futures.MenuSelectedFcn, {@cb_importer,@zdataimport});
+        'MenuSelectedFcn', {@cb_importer,@zdataimport});
     uimenu(catmenu,'Label','from FDSN webservice',...
-        Futures.MenuSelectedFcn, {@cb_importer,@get_fdsn_data_from_web_callback});
+        'MenuSelectedFcn', {@cb_importer,@get_fdsn_data_from_web_callback});
     
     
-    uimenu(submenu,'Label','Save current catalog',Futures.MenuSelectedFcn,@(~,~)save_zmapcatalog(obj.catalog));
+    uimenu(submenu,'Label','Save current catalog','MenuSelectedFcn',@(~,~)save_zmapcatalog(obj.catalog));
     
     catexport = uimenu(submenu,'Label','Export current catalog...');
-    uimenu(catexport,'Label','to workspace (ZmapCatalog)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'ZmapCatalog'));
-    uimenu(catexport,'Label','to workspace (Table)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'table'));
-        uimenu(catexport,'Label','to workspace (old ZmapArray)',Futures.MenuSelectedFcn,@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
+    uimenu(catexport,'Label','to workspace (ZmapCatalog)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'ZmapCatalog'));
+    uimenu(catexport,'Label','to workspace (Table)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'table'));
+        uimenu(catexport,'Label','to workspace (old ZmapArray)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
     
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
-        Futures.MenuSelectedFcn,@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
+        'MenuSelectedFcn',@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
     uimenu(catmenu,'Separator','on','Label','Reset',...
-        Futures.MenuSelectedFcn,@cb_resetcat); % Resets the catalog to the original selection
+        'MenuSelectedFcn',@cb_resetcat); % Resets the catalog to the original selection
     
     uimenu(submenu,'Separator','on',...
-        'Label','Edit Ranges...',Futures.MenuSelectedFcn,@cb_editrange);
+        'Label','Edit Ranges...','MenuSelectedFcn',@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
     
-    uimenu(submenu,'Label','Rename...',Futures.MenuSelectedFcn,@cb_rename);
+    uimenu(submenu,'Label','Rename...','MenuSelectedFcn',@cb_rename);
     
     uimenu(submenu,'Separator','on',...
-        'Label','Memorize Catalog',  Futures.MenuSelectedFcn, @cb_memorize);
-    uimenu(submenu,'Label','Recall Catalog', Futures.MenuSelectedFcn, @cb_recall);
+        'Label','Memorize Catalog',  'MenuSelectedFcn', @cb_memorize);
+    uimenu(submenu,'Label','Recall Catalog', 'MenuSelectedFcn', @cb_recall);
     
-    uimenu(submenu,'Label','Clear Memorized Catalog',Futures.MenuSelectedFcn,@cb_clearmemorized);
+    uimenu(submenu,'Label','Clear Memorized Catalog','MenuSelectedFcn',@cb_clearmemorized);
     
-    uimenu(submenu,'Label','Combine catalogs',Futures.MenuSelectedFcn,@cb_combinecatalogs,...
+    uimenu(submenu,'Label','Combine catalogs','MenuSelectedFcn',@cb_combinecatalogs,...
         'Separator','on');
     
-    uimenu(submenu,'Label','Compare catalogs - find identical events',Futures.MenuSelectedFcn,@(~,~)comp2cat);
+    uimenu(submenu,'Label','Compare catalogs - find identical events','MenuSelectedFcn',@(~,~)comp2cat);
     
 
-    uimenu(submenu,'Label','Info (Summary)',Futures.MenuSelectedFcn,@(~,~)info_summary_callback(obj.catalog),...
+    uimenu(submenu,'Label','Info (Summary)','MenuSelectedFcn',@(~,~)info_summary_callback(obj.catalog),...
         'Separator','on');
     
     
     uimenu (submenu,'Label','Decluster the catalog',...
-        Futures.MenuSelectedFcn,@(~,~)inpudenew(obj.catalog))
+        'MenuSelectedFcn',@(~,~)inpudenew(obj.catalog))
     
-    function cb_recall(src,evt)
+    function cb_recall(~,~)
         obj.rawcatalog=memorize_recall_catalog();
         [obj.mshape,obj.mdate]=obj.filter_catalog();
         obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
         obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
     end
     
-    function cb_memorize(src,evt)
+    function cb_memorize(~,~)
         memorize_recall_catalog(obj.catalog);
     end
     
@@ -168,7 +168,7 @@ function catalog_menu(obj, force)
     end
     
     function cb_editrange(~,~)
-        cf=@()obj.catalog
+        cf=@()obj.catalog;
         [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
         obj.pushState();
         obj.rawcatalog=tmpcat.Catalog();
@@ -195,7 +195,8 @@ function catalog_menu(obj, force)
     
     function cb_combinecatalogs(~,~)
         ZG.newcat=comcat(ZG.Views.(myview));
-        CumTimePlot(ZG.newcat);
+        ctp=CumTimePlot(ZG.newcat);
+        ctp.plot();
     end
     
     function cb_importer(src, ev, fun)
@@ -228,7 +229,6 @@ function exportToWorkspace(catalog, fmt)
 end
 
 function info_summary_callback(mycatalog)
-    ZG=ZmapGlobal.Data;
     summarytext=mycatalog.summary('stats');
     f=msgbox(summarytext,'Catalog Details');
     f.Visible='off';

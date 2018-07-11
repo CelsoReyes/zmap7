@@ -158,9 +158,9 @@ function csubcat()
         %
         add_symbol_menu([]); %FIXME Figure out which target to affect
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
-            Futures.MenuSelectedFcn,@callbackfun_001);
+            'MenuSelectedFcn',@callbackfun_001);
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...
-            Futures.MenuSelectedFcn,@callbackfun_002);
+            'MenuSelectedFcn',@callbackfun_002);
         
         cal6 = ...
             [ 'set(deplo1,''MarkerSize'',ZG.ms6,''LineStyle'',ty1,''visible'',''on'');',...
@@ -170,28 +170,28 @@ function csubcat()
         cufi = gcf;
         options = uimenu('Label',' Select ');
         uimenu(options,'Label','Cluster Window Values',...
-            Futures.MenuSelectedFcn,@callbackfun_003);
+            'MenuSelectedFcn',@callbackfun_003);
         uimenu(options,'Label','Expanded Cluster Values ',...
-            Futures.MenuSelectedFcn,@callbackfun_004);
+            'MenuSelectedFcn',@callbackfun_004);
         uimenu(options,'Label','Select new parameters',...
-            Futures.MenuSelectedFcn,@callbackfun_005);
+            'MenuSelectedFcn',@callbackfun_005);
         uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
-            Futures.MenuSelectedFcn,@callbackfun_006);
+            'MenuSelectedFcn',@callbackfun_006);
         
         uimenu(options,'Label','Select EQ in Polygon ',...
-            Futures.MenuSelectedFcn,@callbackfun_007);
+            'MenuSelectedFcn',@callbackfun_007);
         
         %    uimenu(options,'Label','Select EQ in Circle (Menu) ',...
-        %          Futures.MenuSelectedFcn,@callbackfun_008);
+        %          'MenuSelectedFcn',@callbackfun_008);
         
         op2 = uimenu('Label','Catalog');
         uimenu(op2,'Label','Refresh Window ',...
-            Futures.MenuSelectedFcn,@callbackfun_009);
+            'MenuSelectedFcn',@callbackfun_009);
         
         uimenu(op2,'Label','Reset Catalog ',...
-            Futures.MenuSelectedFcn,@callbackfun_010);
+            'MenuSelectedFcn',@callbackfun_010);
         uimenu(op2,'label','Declustered catalog',...
-            Futures.MenuSelectedFcn,@callbackfun_011);
+            'MenuSelectedFcn',@callbackfun_011);
         catSave =...
             [ 'ZmapMessageCenter.set_info(''Save Data'',''  '');',...
             '[file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, ''*.mat''), ''Earthquake Datafile'');',...
@@ -203,20 +203,20 @@ function csubcat()
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Plot Cumulative Number ',...
-            Futures.MenuSelectedFcn,@callbackfun_012);
+            'MenuSelectedFcn',@callbackfun_012);
         
         uimenu(op3,'Label','Create Cross-section ',...
-            Futures.MenuSelectedFcn,@callbackfun_013);
+            'MenuSelectedFcn',@callbackfun_013);
         uimenu(op3,'Label','3 D view ',...
-            Futures.MenuSelectedFcn,@callbackfun_014);
+            'MenuSelectedFcn',@callbackfun_014);
         uimenu(op3,'Label','Time Depth Plot ',...
-            Futures.MenuSelectedFcn,@(~,~)TimeDepthPlotter.plot(ZG.newt2));
+            'MenuSelectedFcn',@(~,~)TimeDepthPlotter.plot(ZG.newt2));
         uimenu(op3,'Label','Time magnitude Plot ',...
-            Futures.MenuSelectedFcn,@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
+            'MenuSelectedFcn',@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
         uimenu(op3,'Label','Decluster the catalog',...
-            Futures.MenuSelectedFcn,@callbackfun_015);
+            'MenuSelectedFcn',@callbackfun_015);
         uimenu(op3,'Label','get coordinates with Cursor',...
-            Futures.MenuSelectedFcn,@callbackfun_016);
+            'MenuSelectedFcn',@callbackfun_016);
         
         %calculate several histogramms
         stt1='Magnitude ';stt2='Depth';stt3='Duration';st4='Foreshock Duration';
@@ -225,11 +225,11 @@ function csubcat()
         op5 = uimenu(op3,'Label','Histograms');
         
         uimenu(op5,'Label','Magnitude',...
-            Futures.MenuSelectedFcn,{@callbackfun_histogram,'Magnitude'});
+            'MenuSelectedFcn',{@callbackfun_histogram,'Magnitude'});
         uimenu(op5,'Label','Depth',...
-            Futures.MenuSelectedFcn,{@callbackfun_histogram,'Depth'});
+            'MenuSelectedFcn',{@callbackfun_histogram,'Depth'});
         uimenu(op5,'Label','Time',...
-            Futures.MenuSelectedFcn,{@callbackfun_histogram,'Date'});
+            'MenuSelectedFcn',{@callbackfun_histogram,'Date'});
     end
     
     %% callback functions

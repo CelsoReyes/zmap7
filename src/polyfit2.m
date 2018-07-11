@@ -47,7 +47,11 @@ function [p,S] = polyfit(x,y,n)
     end
     
     % Solve least squares problem.
-    [Q,R] = eval('qr(V,0)','qr(V)');
+    try
+        [Q,R] = qr(V,0);
+    catch
+        [Q,R] = qr(V);
+    end
     
     % The current PC version does not have the two-argument form of qr
     [rows, cols] = size(R);

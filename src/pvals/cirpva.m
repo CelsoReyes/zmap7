@@ -75,7 +75,8 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
 %
 %bdiff(ZG.newt2)
         ZG=ZmapGlobal; 
-        CumTimePlot(ZG.newt2);
+        ctp=CumTimePlot(ZG.newt2);
+        ctp.plot();
 pvalcat
 
 end

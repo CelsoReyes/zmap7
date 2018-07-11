@@ -53,7 +53,7 @@ function [xsecx,xsecy, inde] = LC_xsect(eqlat,eqlon,depth,width,length,...
 
     %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
 
-    global  torad Re scale lat1 lon1 lat2 lon2 leng
+    global  torad Re scale leng
     global sine_phi0 phi0 lambda0 phi1 phi2 pos
     global maxlatg minlatg maxlong minlong
     global symb_type symb_size symb_width

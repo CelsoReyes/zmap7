@@ -30,14 +30,17 @@ function cluster_length = save_declus(catalog)
     
     try
         format = ['%12c %3f %f %f %f %d'];
-        [dat,mag,lat,lon,dep,clu] = ...
-            textread(fid,format,'whitespace',' \b\r\t\n mb A ');
+        %[dat,mag,lat,lon,dep,clu] = textread(fid,format,'whitespace',' \b\r\t\n mb A ');
+        C = textscan(fid, format, 'Whitespace',' \b\r\t\n mb A ');
+        dat=C{1}; mag=C{2}; lat = C{3}; lon=C{4}; dep = C{5}; clu = C{6};
     catch ME
         l=ME.message;
         l1 = strfind(l,',');
         anz = str2double(l(53:l1-1));
-        [dat,mag,lat,lon,dep,clu] = ...
-            textread(fid,format,anz-1,'whitespace',' \b\r\t\n mb A ');
+        %[dat,mag,lat,lon,dep,clu] = textread(fid,format,anz-1,'whitespace',' \b\r\t\n mb A ');
+        C = textscan(fid, format, anz-1, 'Whitespace',' \b\r\t\n mb A ');
+        dat=C{1}; mag=C{2}; lat = C{3}; lon=C{4}; dep = C{5}; clu = C{6};
+        
         disp(['Error in Line ' num2str(anz) ' read only lines  1 - ' num2str(anz-1) ]);
         
     end

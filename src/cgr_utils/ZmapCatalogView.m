@@ -146,7 +146,7 @@ classdef ZmapCatalogView
             %
             % see properties for valid arguments
             obj.source=sourcefn;
-            obj.ViewName=obj.mycat.Name;
+            obj.ViewName = obj.mycat.Name;
             obj=obj.reset();
             
             

@@ -31,7 +31,7 @@ function s = report_this_filefun(level)
     
     switch numel(dbk)
         case 1
-            disp('nothing to report. [no stack to speak of]')
+            msg.dbdisp('nothing to report. [no stack to speak of]')
             return
         case 2
             thefun = dbk(2).name;
@@ -54,10 +54,10 @@ function s = report_this_filefun(level)
             fn_id_tag =  '';
         end
     end
-    
-    fprintf('\n- %s %s [%s]\n  called by %s line %d\n\n', fn_id_tag, thefun, thefilename, thecaller, line);
-    
-    if nargout > 0
-        s=sprintf('\n- %s %s [%s]\n  called by %s line %d\n\n', fn_id_tag, thefun, thefilename, thecaller, line);
+    if nargin > 0
+        s=sprintf('%s %s [%s]\n  called by %s line %d\n\n', fn_id_tag, thefun, thefilename, thecaller, line);
+    else
+        s=sprintf('[%s]\n  called by %s line %d\n', thefilename, thecaller, line);
     end
+    msg.dbdisp(s,['in ' fn_id_tag ' [' thefun ']']);
 end

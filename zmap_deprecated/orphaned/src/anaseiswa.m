@@ -1,7 +1,7 @@
 function anseiswa(action)
 
     global pipo gx gy gz xc1  xc2 currPt xc3 a ni newt2 tiplo2 ds ax1 ax2 ax3
-    global ax4 pl2 zvg X Y Z gd gx2 gy2 nie tiplo3 ax5 newt3 plas ax3b ZG.compare_window_yrs t0b teb par1
+    global ax4 pl2 zvg X Y Z gd gx2 gy2 nie tiplo3 ax5 newt3 plas ax3b compare_window_yrs t0b teb par1
     global  ps1 ps2 pli plin
     global  zv2 zall  plev
     global plx plx2 lat1 lat2 lon1 lon2 hs fix1 fix2 hndl2

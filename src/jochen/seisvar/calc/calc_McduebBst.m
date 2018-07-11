@@ -1,4 +1,5 @@
-function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = calc_McduebBst(mCatalog, fBinning, nWindowSize, nMinNumberEvents, nSample)
+function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = calc_McduebBst(magnitudes, fBinning, nWindowSize, nMinNumberEvents, nSample)
+% calc_McduebBst  Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach
     % [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = calc_McduebBst(mCatalog, fBinning, nWindowSize, nMinNumberEvents, nSample)
     %-------------------------------------------------------------------------------------------------------
     % Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach
@@ -8,7 +9,7 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     % beneath northeastern Japan island arc, GRL, 29, 9, 2002
     %
     % Incoming variables:
-    % mCatalog         : EQ catalog
+    % mCatalog         : EQ catalog magnitudes
     % fBinning         : Bin size
     % nWindowSize      : Window size
     % nMinNumberEvents : Minimum number of events
@@ -45,21 +46,21 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     mMcBA = [];
     
     % Set fix values
-    fMinMag = min(mCatalog.Magnitude);
-    fMaxMag = max(mCatalog.Magnitude);
+    fMinMag = min(magnitudes);
+    fMaxMag = max(magnitudes);
     
     % Create bootstrap samples using bootstrap matlab toolbox
-    mMag_bstsamp = bootrsp(mCatalog.Magnitude,nSample);
+    mMag_bstsamp = bootrsp(magnitudes,nSample);
     
     % Calculate b-with magnitude
     for fMag=fMinMag:fBinning:fMaxMag
         for nSamp=1:nSample
-            mCatalog.Magnitude = mMag_bstsamp(:,nSamp);
+            sampmagnitudes = mMag_bstsamp(:,nSamp);
             % Select magnitude range
-            vSel = mCatalog.Magnitude >= fMag-0.05;
-            mCat = mCatalog.subset(vSel);
+            vSel = sampmagnitudes >= fMag-0.05;
+            mCat = sampmagnitudes.subset(vSel);
             % Check for minimum number of events
-            if length(mCat(:,1)) >= nMinNumberEvents
+            if mCat.Count >= nMinNumberEvents
                 try
                     [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
                     mBvalue_bst = [mBvalue_bst; fBValue fStdDev fAValue fMag];

@@ -7,10 +7,10 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     %  extrema in the catalog
     %
     % bigEventMag typically comes from ZG.CatalogOpts.BigEvents.MinMag
-   
+    
     %ZG=ZmapGlobal.Data;
     report_this_filefun();
-     % mycat=ZG.Views.(mycatview);
+    % mycat=ZG.Views.(mycatview);
     
     %  default values
     
@@ -307,14 +307,14 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         close(main_dialog_figure('handle'));
         disp('changed to...')
         disp(mycat);
-        % changes in bin length go to global 
+        % changes in bin length go to global
     end
     
-function callback_update_catalog_name(src,~)
-    disp('in name callback')
-    % if field should respond somehow to changes, do it here
-end
-
+    function callback_update_catalog_name(~,~)
+        disp('in name callback')
+        % if field should respond somehow to changes, do it here
+    end
+    
 end
 
 function cancel_callback(~, ~)
@@ -331,7 +331,7 @@ function distro_callback(src,~,mycat)
     if numel(dlg) >1
         warning('multiple dialog windows found')
     end
-        
+    
     f = findall(0,'Tag','catoverview_distribution_pane');
     if isempty(f)
         % grow the catalog figure. create plots in the empty portion, change the button behavior
@@ -353,7 +353,7 @@ function distro_callback(src,~,mycat)
         dlg.Position = dlg.Position - [0 0 450 0];
         
         src.String = 'show distributions';
-        % delete the histograms, 
+        % delete the histograms,
     end
     watchoff; drawnow;
 end
@@ -369,8 +369,8 @@ function answer = main_dialog_figure(opt)
         case 'handle'
             answer = findobj('Tag', s);
         otherwise
-            error('main_dialog_figure:invalid option, must be ''tag'' or ''handle''');
+            error("main_dialog_figure:invalid option, must be 'tag' or 'handle'");
     end
 end
-    
-    
+
+

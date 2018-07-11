@@ -53,7 +53,7 @@ mDatPredBest = [];
 [fMc, fStd_Mc, fBvalueb, fStd_B, fAvalueb, fStd_A, vMcboot, mBvalue] = calc_McBboot(mCatalog, fBinning, nBst, nMethod);
 
 % Set starting value for Mc loop and LSQ fitting procedure
-fMcTry= calc_Mc(mCatalog,1);
+fMcTry= calc_Mc(mCatalog, McMethods.MaxCurvature);
 fSmu = abs(fMcTry/2);
 fSSigma = abs(fMcTry/4);
 if (fSmu > 1)
@@ -79,7 +79,7 @@ vNonCFMD = fliplr(vNonCFMD);
 % Calculate a and b-value for GR-law and distribution vNCum
 [nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
 if (length(mCatalog.Longitude(vSel)) >= 20)
-    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.subset(vSel), fBinning);
+    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCatalog.Magnitude(vSel), fBinning);
     % Normalize to time period
     vFMD(2,:) = vFMD(2,:)./fPeriod1; % ceil taken out
     vNonCFMD(2,:) = vNonCFMD(2,:)./fPeriod1; % ceil removed

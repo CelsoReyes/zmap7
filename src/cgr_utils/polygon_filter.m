@@ -54,6 +54,6 @@ function [mask] = polygon_filter(x, y, XI, YI, in_or_out)
         case 'outside'
             mask = ~l2;
         otherwise
-            error('unrecognized in_or_out option. either ''inside'' or ''outside''');
+            error("unrecognized in_or_out option. either 'inside' or 'outside'");
     end
 end

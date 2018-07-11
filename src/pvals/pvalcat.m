@@ -1,4 +1,4 @@
-function pvalcat()
+function pvalcat(catalog)
     %This program is called from timeplot.m and displays the values
     % of p, c and k from Omori law, together with their errors.
     %
@@ -11,14 +11,14 @@ function pvalcat()
     report_this_filefun();
     ZG=ZmapGlobal.Data;
     
-    nn2 = ZG.newt2;
+    nn2 = catalog;
     
     prompt = {'Minimum magnitude',...
         'Min. time after mainshock (in days)',...
         'Enter a negative value if you wish to fix c'};
     title_str = 'You can change the following parameters:';
     lines = 1;
-    minThreshMag = min(ZG.newt2.Magnitude);
+    minThreshMag = min(catalog.Magnitude);
     minDaysAfterMainshock = days(0); % 
     mainshockDate = ZG.maepi.Date(1);
     valeg2 = 0; %  decides if c is fixed or not.
@@ -35,15 +35,16 @@ function pvalcat()
     valeg2 = str2double(answer{3});
     
     % cut catalog at mainshock time:
-    l = ZG.newt2.Date > mainshockDate;
-    ZG.newt2 = ZG.newt2.subset(l); %keep events AFTER mainshock
+    l = catalog.Date > mainshockDate;
+    catalog = catalog.subset(l); %keep events AFTER mainshock
     
     % cat at selected magnitude threshold
-    l = ZG.newt2.Magnitude >= minThreshMag;
-    ZG.newt2 = ZG.newt2.subset(l); %keep big-enough events
+    l = catalog.Magnitude >= minThreshMag;
+    catalog = catalog.subset(l); %keep big-enough events
     
     ZG.hold_state2=true;
-    CumTimePlot(ZG.newt2);
+    ctp=CumTimePlot(catalog);
+    ctp.plot();
     ZG.hold_state2=false;
     
     CO = 0.01; % c-value (initial?)
@@ -56,13 +57,13 @@ function pvalcat()
         CO = str2double(answer{1});
     end
     
-    eqDates = ZG.newt2.Date;
+    eqDates = catalog.Date;
     timeSinceMainshock = eqDates - mainshockDate;
     assert(all(timeSinceMainshock>0));
     
     paramc2 = timeSinceMainshock >= minDaysAfterMainshock;
     eqDates = eqDates(paramc2);
-    eqMags = ZG.newt2.Magnitude(paramc2);
+    eqMags = catalog.Magnitude(paramc2);
     
     tmin = min(timeSinceMainshock);
     tmax = max(timeSinceMainshock);
@@ -154,10 +155,6 @@ function pvalcat()
     cua2a = ax;
     labelPlot(cua2a, pv, pstd, cv, cstd, kv, kstd, valeg2);
     
-    % reset ZG.newt2;
-    
-    ZG.newt2 = nn2;
-    
     function labelPlot(ax, pv, pstd, cv, cstd, kv, kstd, show_cstd)
         
         text(ax,0.05, 0.2,['p = ' num2str(pv)  ' +/- ' num2str(pstd)],'FontWeight','Bold','FontSize',12,'units','norm');
@@ -183,7 +180,7 @@ function pvalcat()
         end
         disp(['k = ' num2str(kv)  ' +/- ' num2str(kstd)]);
         disp(['Number of Earthquakes = ' num2str(length(eqDates))]);
-        %events_used = sum(ZG.newt2.Date(paramc1) > ZG.maepi.Date(1) + days(cv));
+        %events_used = sum(catalog.Date(paramc1) > ZG.maepi.Date(1) + days(cv));
         events_used = sum(eqDates > ZG.maepi.Date(1) + days(cv));
         disp(['Number of Earthquakes greater than c  = ' num2str(events_used)]);
         disp(['tmin = ' char(tmin)]);

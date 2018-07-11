@@ -1,4 +1,4 @@
-function [fProbability_] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
+function [fProbability] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
 % function [fProbability] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
 % -------------------------------------------------------------------------------------------------
 % Helper callback-function for calc_MaxLikelihoodACombined.m
@@ -25,7 +25,6 @@ function [fProbability_] = callback_LogLikelihoodACombined(fAValue, caCatalogs, 
 % Init variable
 vProbabilities = [];
 
-global fProbability
 [nRow_, ~] = size(mControl);
 fTotalLength_ = mControl(nRow_,5)-mControl(1,1);
 
@@ -62,5 +61,4 @@ for nCnt_ = 1:length(caCatalogs)
     vProbabilities = [vProbabilities; sum(vProb_)];
 end
 % Sum the probabilities for all given catalogs
-fProbability_ = (-1) * sum(vProbabilities);
-fProbability = fProbability_; % don't confuse the global with the local variable -CGR
+fProbability = (-1) * sum(vProbabilities);

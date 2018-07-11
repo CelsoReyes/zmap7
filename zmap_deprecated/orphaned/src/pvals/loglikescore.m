@@ -83,7 +83,7 @@ dssa = ssa/totd;
 for i = 1:length(nodes)
     tapera(i) = da*(1/fdkm(i).^2);
     sstapera(i) = dssa*(1/fdkm(i).^2);
-
+    
     %    tapera(i) = da*(1/fdkm(i));
 end
 
@@ -98,7 +98,7 @@ lgca = [];
 %%
 
 for gloop = 1:length(bpvg)
-
+    
     %%
     %     Calculate the forecast for varying a & b and varying a w/constant b
     %
@@ -110,7 +110,7 @@ for gloop = 1:length(bpvg)
     l = sqrt(((fore_cat(:,1)-x)*cos(pi/180*y)*111).^2 + ((fore_cat(:,2)-y)*111).^2) ;
     [s,is] = sort(l);
     fore_cat = fore_cat(is(:,1),:) ;       % re-orders matrix to agree row-wise
-
+    
     if bpvg(gloop,15) == 0   % get points within the original radius.
         l3 = l <= bpvg(1,5);
         obs_events = fore_cat(l3,:);      % obs_events is the events at the node w/in the radius of the original
@@ -119,17 +119,17 @@ for gloop = 1:length(bpvg)
         disp('%%%%ERROR%%%% This input grid was NOT calculated with constant radius please use one that is.')
         return
     end
-
+    
     %%
     % Calculate forecast for:
     % Generic CA model with a-values smoothed as 1/r^2 from fault and calculate the PDF
     %%
-
+    
     num_nodes = length(nodes);
     gen_b = .91;
     gen_p =  1.08;
     gen_c = .05;
-
+    
     mag_events = [];
     ct=1;
     for m = magco_fixed-0.1:0.1:7
@@ -140,13 +140,13 @@ for gloop = 1:length(bpvg)
         end
         ct = ct + 1;
     end
-
+    
     %%
     % Calculate forecast for:
     % Sequence Specific model with a-values smoothed as 1/r^2 from fault and calculate the PDF
     %%
-
-
+    
+    
     mag_events = [];
     ct=1;
     for m = magco_fixed-0.1:0.1:7
@@ -157,7 +157,7 @@ for gloop = 1:length(bpvg)
         end
         ct = ct + 1;
     end
-
+    
     %%
     % get a b c p and k from input file (in that order) for spaitally varying models
     %%
@@ -166,7 +166,7 @@ for gloop = 1:length(bpvg)
     x(3) = bpvg(gloop, 14);
     x(4) = bpvg(gloop, 11);
     x(5) = bpvg(gloop, 17);
-
+    
     %%
     % calculate the forecast for each magnitude bin for varying a and constant b
     % bo1 is the constant b value calculated in bpvalgrid
@@ -182,7 +182,7 @@ for gloop = 1:length(bpvg)
         end
         ct = ct + 1;
     end
-
+    
     %%
     % calculate the PDF and the log likelihood score for varying a & b
     %%
@@ -190,11 +190,11 @@ for gloop = 1:length(bpvg)
     diff_mag = -diff(sum_mag,1);
     [obs_mag,magbin] = hist(obs_events(:,6),magco_fixed-0.05:0.1:7);
     vary_abpdf = poisspdf(obs_mag',diff_mag);
-
+    
     lvary_ab(:,gloop) = log(vary_abpdf);
     l = isinf(lvary_ab(:,gloop));
     lvary_ab(l,gloop) = -350;
-
+    
     %%
     % calculate the PDF and the log likelihood score for varying a & constant b
     %%
@@ -202,11 +202,11 @@ for gloop = 1:length(bpvg)
     diff_mag = -diff(sum_mag,1);
     %[obs_mag,vary_amagbin] = hist(obs_events(:,6),magco_fixed-0.05:0.1:7);
     vary_apdf = poisspdf(obs_mag',diff_mag);
-
+    
     lvary_a(:,gloop) = log(vary_apdf);
     l = isinf(lvary_a(:,gloop));
     lvary_a(l,gloop) = -350;
-
+    
     %%
     % calculate the PDF and the log likelihood score for Generic model -- a tapered away from fault
     %%
@@ -214,22 +214,21 @@ for gloop = 1:length(bpvg)
     diff_mag = -diff(sum_mag,1);
     %[obs_mag,gca_magbin] = hist(obs_events(:,6),magco_fixed-0.05:0.1:7);
     gca_pdf = poisspdf(obs_mag',diff_mag);
-
+    
     lgca(:,gloop) = log(gca_pdf);
     l = isinf(lgca(:,gloop));
     lgca(l,gloop) = -350;
-
+    
     %%
     % calculate the PDF and the log likelihood score for Generic model -- a tapered away from fault
     %%
     sum_mag = sum(mag_events_ss,1)';
     diff_mag = -diff(sum_mag,1);
     ss_pdf = poisspdf(obs_mag',diff_mag);
-
+    
     lss(:,gloop) = log(ss_pdf);
     l = isinf(lss(:,gloop));
     lss(l,gloop) = -350;
-end
 end
 
 slvary_ab = sum(lvary_ab,2);

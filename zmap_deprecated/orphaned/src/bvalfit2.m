@@ -10,7 +10,9 @@
 %                                         R. Zuniga IGF-UNAM/GI-UAF  6/94
 
 report_this_filefun(mfilename('fullpath'));
-
+error('really messed up.')
+return
+%{
 if ic == 0
     global p
     backg = [ ] ;
@@ -424,7 +426,7 @@ if ic == 0 | ic == 2
     semilogy(p1,p2,'+g')
     text( p1(2)+0.1,p2(2),['  after rate change and Mag stretch'] )
     text(v(2)+0.25, v(4),['res = ' num2str(res)])
-    uicontrol(,'Units','normal','Position',[.01 .01 .10 .05],'String','Print  ', 'Callback','print')
+    uicontrol('Units','normal','Position',[.01 .01 .10 .05],'String','Print  ', 'Callback','print')
 
     uicontrol('Units','normal','Position',[.90 .01 .10 .05],'String','Back  ', 'Callback','close,ic = 0; dispma2')
 
@@ -443,7 +445,7 @@ if ic == 0 | ic == 2
     magis = round(magis);
     magis = magis/10.0;               % round to 0.1
 
-    uicontrol(,'Units','normal','Position',[.88 .9 .11 .06],'String','Print  ', 'Callback','print')
+    uicontrol('Units','normal','Position',[.88 .9 .11 .06],'String','Print  ', 'Callback','print')
 
     freq_field1=uicontrol('Style','edit',...
         'Position',[.30 .16 .13 .07],...
@@ -535,4 +537,5 @@ if ic == 0 | ic == 2
     xlabel('Magnitude ')
     ylabel('Nobs - Nsyn')
     text(v(2)-1.0, v(4),['Mag shift = ' num2str(dM)]);
-    text(v(2)-1.0, v(4)*0.8,['Stretch fac = ' num2
+    text(v(2)-1.0, v(4)*0.8,['Stretch fac = ' num2])
+%}

@@ -1,27 +1,31 @@
-function addAboutMenuItem()
+function addAboutMenuItem(fig)
     % ADDABOUTMENUITEM add about menu to Help menu and zmap videos and report issue
-    hAbout = findall(gcf,'Tag','zmaphelpmenuitem');
+    if ~exist('fig','var')
+        fig = gcf;
+    end
+    
+    hAbout = findall(fig,'Tag','zmaphelpmenuitem');
     if ~isempty(hAbout)
         delete(hAbout);
     end
-    mainhelp=findall(gcf,'Tag','figMenuHelp');
+    mainhelp=findall(fig,'Tag','figMenuHelp');
     if isempty(mainhelp)
-        mainhelp=findobj(gcf,'Label','Help');
+        mainhelp=findobj(fig,'Label','Help');
         
         if isempty(mainhelp)
-            mainhelp=uimenu(gcf,'Label','Help');
+            mainhelp=uimenu(fig,'Label','Help');
         end
         
     end
     
     uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
-        Futures.MenuSelectedFcn,@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
+        'MenuSelectedFcn',@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
     
     uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Tag','zmaphelpmenuitem',...
-        Futures.MenuSelectedFcn,@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
+        'MenuSelectedFcn',@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
     
     uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
-        Futures.MenuSelectedFcn,@(~,~)aboutZmapDialog);
+        'MenuSelectedFcn',@(~,~)aboutZmapDialog);
 end
 
 function reportIssue()
@@ -100,9 +104,9 @@ function aboutZmapDialog()
     % add a context menu that allows contents to be copied.
     c = uicontextmenu('Tag','citation contextmenu');
     uimenu(c,'Label','view original document',...
-        Futures.MenuSelectedFcn,@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
+        'MenuSelectedFcn',@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
     uimenu(c,'Label','copy to clipboard',...
-        Futures.MenuSelectedFcn,@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
+        'MenuSelectedFcn',@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
     h.UIContextMenu=c;
     t.UIContextMenu=c;
     t.TooltipString = tooltipMsg;

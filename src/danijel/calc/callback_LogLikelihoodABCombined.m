@@ -1,4 +1,4 @@
-function [fProbability_] = callback_LogLikelihoodABCombined(vValues, caCatalogs, mControl)
+function [fProbability] = callback_LogLikelihoodABCombined(vValues, caCatalogs, mControl)
 % function [fProbability] = callback_LogLikelihoodABCombined(vValues, caCatalogs, mControl)
 % -----------------------------------------------------------------------------------------
 % Helper callback-function for calc_MaxLikelihoodABCombined.m
@@ -23,8 +23,6 @@ function [fProbability_] = callback_LogLikelihoodABCombined(vValues, caCatalogs,
 
 % Init variable
 vProbabilities = [];
-
-global fProbability
 
 [nRow_, ~] = size(mControl);
 fTotalLength_ = mControl(nRow_,5)-mControl(1,1);
@@ -58,5 +56,4 @@ for nCnt_ = 1:length(caCatalogs)
   vProbabilities = [vProbabilities; sum(vProb_)];
 end
 % Sum the probabilities for all given catalogs
-fProbability_ = (-1) * sum(vProbabilities);
-fProbability = fProbability_;
+fProbability = (-1) * sum(vProbabilities);

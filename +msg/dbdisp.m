@@ -8,6 +8,5 @@ function dbdisp(msg,msgTitle)
         fprintf('\n---<strong> ZMAP DB: </strong>');
     end
     disp(msg)
-    fprintf('\n');
 end
     

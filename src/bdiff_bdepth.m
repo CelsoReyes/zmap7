@@ -68,7 +68,7 @@ function  bdiff_bdepth(mycat)
     
     if ZG.hold_state
         axes(cua)
-        disp('set(gca,'NextPlot','add')')
+        disp("set(gca,'NextPlot','add')")
         set(gca,'NextPlot','add')
     else
         figure(bfig);delete(findobj(bfig,'Type','axes'));
@@ -118,7 +118,7 @@ function  bdiff_bdepth(mycat)
     x = magsteps_desc(ll);
     
     l2 = mycat.Magnitude >= M1b(1)- 0.05  & mycat.Magnitude <= M2b(1)+ 0.05;
-    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2)) ;
+    [ bv, onesigma, av] = calc_bmemag(mycat.Magnitude(l2), 0.1) ;
     
     bv = -bv;
     
@@ -259,6 +259,7 @@ function  bdiff_bdepth(mycat)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG=ZmapGlobal.Data;
         ZG.newt2 = mycat;
-        CumTimePlot(mycat);
+        ctp=CumTimePlot(mycat);
+        ctp.plot();
     end
 end

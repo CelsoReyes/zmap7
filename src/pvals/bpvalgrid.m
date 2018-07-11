@@ -163,7 +163,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 [bv, magco, stan, av] =  bvalca3(b.Magnitude,1);
                 maxcat = b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
-                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
+                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude, 0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     
                     bpvg = [bv magco bv2 stan2 av stan nan pv pstd cv mmav kv mbv];
@@ -174,7 +174,7 @@ classdef bpvalgrid < ZmapHGridFunction
             
             function bpvg = calcguts_opt2(b)
                 [bv, magco, stan, av] =  bvalca3(b.Magnitude,2);
-                [bv2, stan2] = calc_bmemag(b.Magnitude);
+                [bv2, stan2] = calc_bmemag(b.Magnitude, 0.1);
                 [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date,b.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                 %[pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date(l),b.Magnitude(l),'days',obj.valeg2,obj.CO,minThreshMag);
                 
@@ -187,7 +187,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 magco = Mc90;
                 if maxcat.Count  >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
-                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
+                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
                 else
@@ -201,7 +201,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 magco = Mc95;
                 if maxcat.Count >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
-                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
+                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
@@ -222,7 +222,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 maxcat= b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
-                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude);
+                    [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date, maxcat.Magnitude, 'days' ,obj.valeg2,obj.CO,minThreshMag);
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
                 else
@@ -239,7 +239,7 @@ classdef bpvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='p- and b-value map';
-            h=uimenu(parent,'Label',label,Futures.MenuSelectedFcn, @(~,~)bpvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)bpvalgrid(zapFcn()));
         end
     end
 end

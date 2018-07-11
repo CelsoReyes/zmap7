@@ -1,6 +1,5 @@
-function newsta(sta)
+function newsta(sta, catalog)
     %  A as(t) value is calculated for a given cumulative number curve and displayed in the plot.
-    %  Operates on catalogue ZG.newcat
     % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
@@ -8,7 +7,7 @@ function newsta(sta)
         warning('unknown option : %s',sta);
         return
     end
-    
+    assert(~isempty(catalog))
     % start and end time
     NuBins=[]; NuRep=[];% declare for functions that share this variable
     
@@ -16,18 +15,19 @@ function newsta(sta)
     %b = ZG.newcat;
     
     %select big evenets
-    l = ZG.newt2.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
-    big = ZG.newt2.subset(l);
+    l = catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
+    big = catalog.subset(l);
     
     [ZG.compare_window_dur, ZG.bin_dur] = choose_parameters(ZG.compare_window_dur, ZG.bin_dur); % window length, bin length
     
     
-    [t0b, teb] = ZG.newt2.DateRange() ;
+    [t0b, teb] = catalog.DateRange() ;
     tdiff = round((teb - t0b)/ZG.bin_dur); % in days/ZG.bin_dur
     
     % for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.
-    [cumu, xt] = histcounts(ZG.newt2.Date, t0b: ZG.bin_dur :teb);
-    xt = xt + (xt(2)-xt(1))/2; xt(end)=[]; % convert from edges to centers!
+    [cumu, xt] = histcounts(catalog.Date, t0b: ZG.bin_dur :teb);
+    xt = xt + (xt(2)-xt(1))/2; 
+    xt(end)=[]; % convert from edges to centers!
     cumu2=cumsum(cumu);
     
     
@@ -40,7 +40,7 @@ function newsta(sta)
     ncu = length(xt);
     as = nan(1,ncu);
     
-    winlen_days = floor(ZG.compare_window_dur/ZG.bin_dur);
+    winlen_days = floor(ZG.compare_window_dur / ZG.bin_dur);
     probabilityButtonCallback=[];
     
     
@@ -56,12 +56,12 @@ function newsta(sta)
         case 'lta'
             as = ltafun(winlen_days, cumu, length(xt));
             titletext=['LTA(t) Function; wl = ', char(ZG.compare_window_dur)];
-            probabilityButtonCallback=@(~,~)translating(ZG.newt2, as,'z'); % was newcat
+            probabilityButtonCallback=@(~,~)translating(catalog, as,'z'); % was newcat
             
         case 'bet'
-            as=betfun(winlen_days, cumu, ZG.newt2, length(xt));% was newcat
+            as=betfun(winlen_days, cumu, catalog, length(xt));% was newcat
             titletext=['LTA(t) Function; \beta-values; wl = ', char(ZG.compare_window_dur)];
-            probabilityButtonCallback=@(~,~)translating(ZG.newt2, as,'beta'); % was newcat
+            probabilityButtonCallback=@(~,~)translating(catalog, as,'beta'); % was newcat
     end
     
     %  Plot the as(t)
@@ -131,7 +131,7 @@ function newsta(sta)
     % plot big events on curve
     %
     if ~isempty(big)
-        l = ZG.newt2.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
+        l = catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag;
         f = find( l  == 1);
         bigplo = plot(big.Date,f,'hm');
         set(bigplo,'LineWidth',1.0,'MarkerSize',10,...
@@ -238,7 +238,7 @@ function newsta(sta)
     function callbackfun_003(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        newsta(sta); % cannot e put directly into uicontrol's callback because 'sta' would be unchanging
+        newsta(sta,catalog); % cannot e put directly into uicontrol's callback because 'sta' would be unchanging
     end
   
     
