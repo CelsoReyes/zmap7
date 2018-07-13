@@ -70,13 +70,14 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     
     % load FDSN text details that had been saved to a files
     if exist(code,'file')
-        %fid = fopen(code,'r');
-        uOutput = convert_from_fdsn_text(fileread(code));
-        if mean(uOutput.Depth >= 1000)
-            warning('depths look like they are in m instead of km! scaling')
-            uOutput.Depth= uOutput.Depth ./ 1000;
+        [uOutput,ok] = convert_from_fdsn_text(fileread(code));
+        if ok
+            [~, uOutput.Name] = fileparts(code);
+            if mean(uOutput.Depth >= 1000)
+                warning('depths look like they are in m instead of km! scaling')
+                uOutput.Depth= uOutput.Depth ./ 1000;
+            end
         end
-        %fclose(fid);
         return;
     end
     
@@ -193,21 +194,22 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
             ok=false;
         end
         
-        
-        uOutput=zeros(numel(mData{1}),10);
-        uOutput(:,1)=mData{midx('longitude')}; % Longitude
-        uOutput(:,2)=mData{midx('latitude')}; % Latitude
-        uOutput(:,3)=decyear(mData{midx('time')});% decimal year.
-        uOutput(:,4)=mData{midx('time')}.Month;
-        uOutput(:,5)=mData{midx('time')}.Day;
-        uOutput(:,6)=mData{midx('magnitude')}; % Magnitude
-        uOutput(:,7)=mData{midx('depth/km')}; % depth (km)
-        uOutput(:,8)=mData{midx('time')}.Hour;
-        uOutput(:,9)=mData{midx('time')}.Minute;
-        uOutput(:,10)=mData{midx('time')}.Second;
-        zc=ZmapCatalog(uOutput);
-        zc.MagnitudeType=categorical(mData{midx('magtype')});
-        uOutput=zc;
+        conversionDetails = {... midxVal, type, TableVarName
+            'longitude', 'double', 'Longitude';...
+            'latitude',  'double', 'Latitude';...
+            'time', 'datetime', 'Date';...
+            'magnitude', 'double', 'Magnitude';...
+            'depth/km', 'double', 'Depth';...
+            'magtype', 'categorical', 'MagnitudeType'};
+            
+        tb=table('Size', [numel(mData{1}), 6], ...
+            'VariableTypes', conversionDetails(:,2),...
+            'VariableNames', conversionDetails(:,3));
+        for j=1:length(conversionDetails)
+            tb.(conversionDetails{j,3}) = mData{midx(conversionDetails{j,1})};
+        end
+        uOutput = ZmapCatalog(tb);
+           
         %%
         
     end

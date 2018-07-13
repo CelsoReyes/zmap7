@@ -125,6 +125,22 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 %donothing
             elseif nargin==1 && ischar(varargin{1})
                 obj.Name=varargin{1};
+            elseif istable(varargin{1})
+                vn = varargin{1}.Properties.VariableNames;
+                if any(vn == "Date")
+                    vn(vn == "DecimalYear")=[];
+                    vn(vn == "DayOfYear") = [];
+                end
+                for i=1:numel(vn)
+                    try
+                        obj.(vn{i})=varargin{1}.(vn{i});
+                    catch ME
+                        fprintf('Error interpreting field: %s\n',vn{i});
+                        rethrow(ME);
+                    end
+                end
+                obj.Name = varargin{1}.Properties.Description;
+                
             elseif isnumeric(varargin{1})
                 % import Catalog from Array
                 nCols = size(varargin{1},2);
@@ -271,13 +287,16 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function tbl = table(obj)
             % TABLE write catalog as a table.
             %
+            warning('off', 'MATLAB:structOnObject');
             st=struct(obj);
+            warning('on', 'MATLAB:structOnObject');
             flds=fieldnames(st);
             % to  convert to a table, all fields must be of same length
             % but some fields aren't individual to events.
             todelete=structfun(@(x)numel(x)~=st.Count , st);
             st=rmfield(st,flds(todelete));
             tbl = struct2table(st);
+            tbl.Properties.Description = obj.Name;
         end
         
         function s =  summary(obj, verbosity)

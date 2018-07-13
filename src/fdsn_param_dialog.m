@@ -64,10 +64,6 @@ function fdsn_param_dialog_OpeningFcn(hObject, eventdata, handles, varargin)
     
     % --- Outputs from this function are returned to the command line.
 function varargout = fdsn_param_dialog_OutputFcn(hObject, eventdata, handles)
-    % varargout  cell array for returning output args (see VARARGOUT);
-    % hObject    handle to figure
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
     % Get default command line output from handles structure
     varargout{1} = handles.output;
@@ -75,10 +71,6 @@ function varargout = fdsn_param_dialog_OutputFcn(hObject, eventdata, handles)
     
     % --- Executes on selection change in data_provider.
 function data_provider_Callback(hObject, eventdata, handles)
-    % hObject    handle to data_provider (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
     % Hints: contents = cellstr(get(hObject,'String')) returns data_provider contents as cell array
     %        contents{get(hObject,'Value')} returns selected item from data_provider
     
@@ -103,12 +95,6 @@ function data_provider_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function data_provider_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to data_provider (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: popupmenu controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -154,10 +140,6 @@ function data_provider_CreateFcn(hObject, eventdata, handles)
     
     % --- Executes on button press in rect_geoselect.
 function rect_geoselect_Callback(hObject, eventdata, handles)
-    % hObject    handle to rect_geoselect (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
     % Hint: get(hObject,'Value') returns toggle state of rect_geoselect
     set([handles.minlatitude, handles.maxlatitude, ...
         handles.minlongitude, handles.maxlongitude],'enable','on');
@@ -170,10 +152,6 @@ function rect_geoselect_Callback(hObject, eventdata, handles)
     
     % --- Executes on button press in rad_geoselect.
 function rad_geoselect_Callback(hObject, eventdata, handles)
-    % hObject    handle to rad_geoselect (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
     % Hint: get(hObject,'Value') returns toggle state of rad_geoselect
     set([handles.minlatitude, handles.maxlatitude, ...
         handles.minlongitude, handles.maxlongitude],'enable','off');
@@ -184,9 +162,6 @@ function rad_geoselect_Callback(hObject, eventdata, handles)
     
     
 function maxlatitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to maxlatitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(handles.minlatitude, hObject);
@@ -194,12 +169,6 @@ function maxlatitude_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function maxlatitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to maxlatitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -208,20 +177,11 @@ function maxlatitude_CreateFcn(hObject, eventdata, handles)
     
     
 function minlatitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to minlatitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(hObject, handles.maxlatitude);
     
     % --- Executes during object creation, after setting all properties.
 function minlatitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to minlatitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -230,9 +190,6 @@ function minlatitude_CreateFcn(hObject, eventdata, handles)
     
     
 function minlongitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to minlongitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     update_editfield_value(hObject);
     if isnan(hObject.Value) || isempty(hObject.Value)
         set(hObject,'BackgroundColor',[1.0 1.0 1.0]);
@@ -242,12 +199,6 @@ function minlongitude_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function minlongitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to minlongitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -255,10 +206,6 @@ function minlongitude_CreateFcn(hObject, eventdata, handles)
     
     
 function maxlongitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to maxlongitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
     
     update_editfield_value(hObject);
     if isnan(hObject.Value) || isempty(hObject.Value)
@@ -269,12 +216,6 @@ function maxlongitude_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function maxlongitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to maxlongitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -283,9 +224,6 @@ function maxlongitude_CreateFcn(hObject, eventdata, handles)
     
     
 function starttime_Callback(hObject, eventdata, handles)
-    % hObject    handle to starttime (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
     try
         d = datetime(get(hObject,'String'));
@@ -308,12 +246,6 @@ function starttime_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function starttime_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to starttime (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -321,10 +253,6 @@ function starttime_CreateFcn(hObject, eventdata, handles)
     
     
 function endtime_Callback(hObject, eventdata, handles)
-    % hObject    handle to endtime (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
     try
         d = datetime(get(hObject,'String'));
         set(hObject,'backgroundcolor',[0.95 1.0 0.95]);
@@ -344,12 +272,6 @@ function endtime_Callback(hObject, eventdata, handles)
     
     % --- Executes during object creation, after setting all properties.
 function endtime_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to endtime (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -357,21 +279,12 @@ function endtime_CreateFcn(hObject, eventdata, handles)
     
     
 function mindepth_Callback(hObject, eventdata, handles)
-    % hObject    handle to mindepth (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
     
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(hObject, handles.maxdepth);
     
     % --- Executes during object creation, after setting all properties.
 function mindepth_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to mindepth (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -379,22 +292,13 @@ function mindepth_CreateFcn(hObject, eventdata, handles)
     
     
     
-function maxdepth_Callback(hObject, eventdata, handles)
-    % hObject    handle to maxdepth (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function maxdepth_Callback(hObject, ~, handles)
     
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(handles.mindepth, hObject);
     
     % --- Executes during object creation, after setting all properties.
-function maxdepth_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to maxdepth (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function maxdepth_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -402,22 +306,13 @@ function maxdepth_CreateFcn(hObject, eventdata, handles)
     
     
     
-function minmagnitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to minmagnitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function minmagnitude_Callback(hObject, ~, handles)
     
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(hObject, handles.maxmagnitude)
     
     % --- Executes during object creation, after setting all properties.
-function minmagnitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to minmagnitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function minmagnitude_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
@@ -425,130 +320,77 @@ function minmagnitude_CreateFcn(hObject, eventdata, handles)
     
     
     
-function maxmagnitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to maxmagnitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function maxmagnitude_Callback(hObject, ~, handles)
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(handles.minmagnitude, hObject)
     
     % --- Executes during object creation, after setting all properties.
-function maxmagnitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to maxmagnitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function maxmagnitude_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     hObject.Value = nan;
     
     
-function magnitudetype_Callback(hObject, eventdata, handles)
-    % hObject    handle to magnitudetype (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function magnitudetype_Callback(~, ~, ~)
     
     
     % --- Executes during object creation, after setting all properties.
-function magnitudetype_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to magnitudetype (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function magnitudetype_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
     
     
-function latitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to latitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function latitude_Callback(hObject, ~, ~)
     
     update_editfield_value(hObject);
     % --- Executes during object creation, after setting all properties.
-function latitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to latitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function latitude_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
     
     
-function longitude_Callback(hObject, eventdata, handles)
-    % hObject    handle to longitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function longitude_Callback(hObject, ~, ~)
     
     update_editfield_value(hObject);
     % --- Executes during object creation, after setting all properties.
-function longitude_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to longitude (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function longitude_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
     
     
-function minradius_Callback(hObject, eventdata, handles)
-    % hObject    handle to minradius (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
-    
+function minradius_Callback(hObject, ~, handles)
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(hObject, handles.maxradius);
     
     % --- Executes during object creation, after setting all properties.
-function minradius_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to minradius (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    empty - handles not created until after all CreateFcns called
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
+function minradius_CreateFcn(hObject, ~, ~)
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
     
     
-function maxradius_Callback(hObject, eventdata, handles)
-    % hObject    handle to maxradius (see GCBO)
-    % eventdata  reserved - to be defined in a future version of MATLAB
-    % handles    structure with handles and user data (see GUIDATA)
+function maxradius_Callback(hObject, ~, handles)
     
     update_editfield_value(hObject);
     enforce_gt_edit_relationship(handles.minradius, hObject);
     
     % --- Executes during object creation, after setting all properties.
 function maxradius_CreateFcn(hObject, eventdata, handles)
-    % hObject    handle to maxradius (see GCBO)
-    
-    % Hint: edit controls usually have a white background on Windows.
-    %       See ISPC and COMPUTER.
     if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
         set(hObject,'BackgroundColor','white');
     end
     
     
     % --- Executes on button press in ignore_geo.
-function ignore_geo_Callback(hObject, eventdata, handles)
+function ignore_geo_Callback(~, ~, handles)
     % hObject    handle to ignore_geo (see GCBO)
     
     % Hint: get(hObject,'Value') returns toggle state of ignore_geo
@@ -559,7 +401,7 @@ function ignore_geo_Callback(hObject, eventdata, handles)
     
     
     % --- Executes on button press in Fetch.
-function Fetch_Callback(hObject, eventdata, handles)
+function Fetch_Callback(~, ~, handles)
     % hObject    handle to Fetch (see GCBO)
     % assemble the actual query
     % TODO: do this
@@ -716,36 +558,20 @@ function enforce_gt_edit_relationship(hSmaller, hBigger)
 
 
 
-function catalog_name_Callback(hObject, eventdata, handles)
-% hObject    handle to catalog_name (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
+function catalog_name_Callback(hObject, ~, ~)
 % Hints: get(hObject,'String') returns contents of catalog_name as text
 %        str2double(get(hObject,'String')) returns contents of catalog_name as a double
 hObject.UserData.touched = true;
 
 % --- Executes during object creation, after setting all properties.
-function catalog_name_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to catalog_name (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
+function catalog_name_CreateFcn(hObject, ~, ~)
 hObject.UserData.touched = false;
 
 
 % --- Executes on button press in cancelbutton.
 function cancelbutton_Callback(hObject, eventdata, handles)
-% hObject    handle to cancelbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
 delete(handles.fdsn_import_dialog);
 
 % --- If Enable == 'on', executes on mouse press in 5 pixel border.
 % --- Otherwise, executes on mouse press in 5 pixel border or over cancelbutton.
 function cancelbutton_ButtonDownFcn(hObject, eventdata, handles)
-% hObject    handle to cancelbutton (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)

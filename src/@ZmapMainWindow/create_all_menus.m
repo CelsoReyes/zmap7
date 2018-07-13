@@ -72,7 +72,8 @@ function create_all_menus(obj, force)
         h=findquar.AddMenuItem(submenu,@()obj.map_zap);
         h.Separator='on';
         
-        h=uimenu(submenu,'Label','Map stress tensor','MenuSelectedFcn',@(~,~)stressgrid());
+        %h=uimenu(submenu,'Label','Map stress tensor','MenuSelectedFcn',@(~,~)stressgrid());
+        h=stressgrid.AddMenuItem(submenu, @()obj.map_zap);
         h.Separator='on';
         %{
             uimenu(tmp,'Label','Load...','Enable','off','MenuSelectedFcn',  @(~,~)rcvalgrid_a2('lo'));

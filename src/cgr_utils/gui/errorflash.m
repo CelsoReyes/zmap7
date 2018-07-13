@@ -10,18 +10,26 @@ function errorflash(h, n)
     % errorflash(handles.data_provider);
     
     flashcolor = [0.6 0.0 0.0]; % medium-red
+    if isprop(h,'FontColor')
+        colorField = 'FontColor';
+    elseif isprop(h,'ForegroundColor')
+        colorField = 'ForeroundColor';
+    else
+        colorField = 'BackgroundColor';
+    end
+    
     flashweight = 'bold';
     origweight=get(h,'FontWeight');
-    origColor=get(h,'ForegroundColor');
+    origColor=get(h,colorField);
     
     if ~exist('n','var')
         n=2;
     end
     
     for i=1:n
-        set(h,'ForegroundColor',flashcolor,'FontWeight',flashweight);
+        set(h,colorField,flashcolor,'FontWeight',flashweight);
         pause(.5); drawnow;
-        set(h,'ForegroundColor',origColor,'FontWeight',origweight);
+        set(h,colorField,origColor,'FontWeight',origweight);
         pause(.1); drawnow;
     end
 end

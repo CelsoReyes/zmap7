@@ -39,8 +39,8 @@ function zmap(varargin)
     
     % The matlab searchpaths are updated, existing windows closed.
     %
-    %  Stefan Wiemer  12/94
-    %  Modified by Celso Reyes Spring-Fall 2017-2018
+    %  Originally created by: Stefan Wiemer  12/94
+    %  Modified by: Celso Reyes Spring 2017 - Winter 2018
     %
     % see also: ZmapCatalog, ZmapMainWindow
     
@@ -111,6 +111,8 @@ function zmap(varargin)
     
     % start the main zmap program
     if startWindow
+        
+        %get rid of message box that would exist if zmap was already opened without a catalog
         delete(findall(groot,'Tag','Msgbox_No Active Catalogs'));
         
         zw = findall(get(groot,'Children'),'Tag','Zmap Main Window');

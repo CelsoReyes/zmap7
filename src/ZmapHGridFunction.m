@@ -551,6 +551,9 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         end
                         
                         h=findobj(gcf,'Tag','CumPlot axes');
+                        if isempty(h)
+                            warning('Something is wrong. cannot find CumPlot axes handle');
+                        end
                         plOpt.Marker='o';
                         plOpt.LineStyle='-.';
                         plOpt.LineWidth=2;

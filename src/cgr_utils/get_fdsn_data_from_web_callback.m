@@ -6,17 +6,31 @@ function [c,ok] = get_fdsn_data_from_web_callback()
     %
     ZG = ZmapGlobal.Data;
     cur_cat_stats = ZG.primeCatalog.summary('stats');
-    h = findall(0,'Tag','fdsn_import_dialog');
+    h=findall(0,'Type','figure','-and','Name','Import from FDSN webservice');
+    % h = findall(0,'Tag','fdsn_import_dialog');
     if isempty(h)
-        fdsn_param_dialog(); % create
-        h = findall(0,'Tag','fdsn_import_dialog');
+        app= fdsn_chooser();
+        h = app.ImportfromFDSNwebserviceUIFigure;
     else
-        h.Visible = 'on'; % show existing
+        app = h.UserData;
     end
     
-    waitfor(h,'Visible','off'); 
-    new_cat_stats = ZG.primeCatalog.summary('stats');
+    c=[];
+    app.setCatalogFcn = @setfrom;
+    h.Visible = 'on'; % show existing
     
-    ok = ~isequal(cur_cat_stats, new_cat_stats);
-    c = ZG.primeCatalog;
+    waitfor(h,'Visible','off'); 
+    ok = ~isempty(c);
+    if ok
+        new_cat_stats = c.summary('stats');
+        
+        ok = ~isequal(cur_cat_stats, new_cat_stats);
+        ZG.primeCatalog = c;
+        ZG.Views.primary = ZmapCatalogView(@()ZG.primeCatalog);
+        
+        uimemorize_catalog();
+    end
+    function setfrom(incat)
+        c = incat;
+    end
 end
