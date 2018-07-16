@@ -136,10 +136,21 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         obj.(vn{i})=varargin{1}.(vn{i});
                     catch ME
                         fprintf('Error interpreting field: %s\n',vn{i});
-                        rethrow(ME);
+                        warning(ME.message);
                     end
                 end
+                if isempty(obj.MagnitudeType)
+                    obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
+                end
                 obj.Name = varargin{1}.Properties.Description;
+                pu = varargin{1}.Properties.VariableUnits;
+                
+                % automatically convert depth units
+                if ~isempty(pu) && ~isempty(pu(vn=="Depth"))
+                    units = validateLengthUnit(pu{vn=="Depth"});
+                    obj.Depth=unitsratio('kilometers',units) * obj.Depth;
+                end
+                    
                 
             elseif isnumeric(varargin{1})
                 % import Catalog from Array
