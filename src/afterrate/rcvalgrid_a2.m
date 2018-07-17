@@ -217,7 +217,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Rate change, p-,c-,k-value map in aftershock sequence (MLE)';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)rcvalgrid_a2(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)rcvalgrid_a2(zapFcn()));
         end
     end
 end

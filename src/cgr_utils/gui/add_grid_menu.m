@@ -1,7 +1,7 @@
 function add_grid_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     parent = uimenu(obj.fig,'Label','Sampling');
-    MenuSelectedFcn='MenuSelectedFcn';
+    MenuSelectedFcn=MenuSelectedField();
     uimenu(parent,'Label','Quick-Grid (auto)',MenuSelectedFcn,@cb_autogrid);
     uimenu(parent,'Label','Define Grid',MenuSelectedFcn,@cb_gridfigure);
     uimenu(parent,'Label','Redraw Grid',MenuSelectedFcn,@cb_refresh);
@@ -15,8 +15,8 @@ function add_grid_menu(obj)
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
     uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
-    uimenu(parent,'Label','Load a shape','MenuSelectedFcn',@cb_load_shape)
-    uimenu(parent,'Label','Save a shape','MenuSelectedFcn',@cb_save_shape)
+    uimenu(parent,'Label','Load a shape',MenuSelectedField(),@cb_load_shape)
+    uimenu(parent,'Label','Save a shape',MenuSelectedField(),@cb_save_shape)
     uimenu(parent,'Label','about editing shapes...',MenuSelectedFcn,@(~,~)moveable_item('help'));
     uimenu(parent,'Separator','on',...
         'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);

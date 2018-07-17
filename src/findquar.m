@@ -107,7 +107,7 @@ classdef findquar < ZmapHGridFunction
             legend(hax,'show');
             if isempty(findobj(fifhr,'Tag','quarryinfo'))
                 add_menu_divider();
-                uimenu(fifhr,'Label','Info','MenuSelectedFcn',@cb_info,'tag','quarryinfo');
+                uimenu(fifhr,'Label','Info',MenuSelectedField(),@cb_info,'tag','quarryinfo');
             end
             
             uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,...
@@ -293,14 +293,14 @@ classdef findquar < ZmapHGridFunction
                 add_symbol_menu('eq_plot');
                 
                 options = uimenu('Label',' Select ');
-                uimenu(options,'Label','Refresh ', 'MenuSelectedFcn',@cb_refresh)
-                uimenu(options,'Label','Edit Selection parameters','MenuSelectedFcn',@(~,~)obj.InteractiveSetup());
-                uimenu(options,'Label','Histogram: EQ in Circle', 'MenuSelectedFcn',@cb_select_circle)
-                uimenu(options,'Label','Histogram: EQ in Polygon ', 'MenuSelectedFcn',@cb_select_poly)
-                uimenu(options,'Label','Info','MenuSelectedFcn',@cb_info);
+                uimenu(options,'Label','Refresh ', MenuSelectedField(),@cb_refresh)
+                uimenu(options,'Label','Edit Selection parameters',MenuSelectedField(),@(~,~)obj.InteractiveSetup());
+                uimenu(options,'Label','Histogram: EQ in Circle', MenuSelectedField(),@cb_select_circle)
+                uimenu(options,'Label','Histogram: EQ in Polygon ', MenuSelectedField(),@cb_select_poly)
+                uimenu(options,'Label','Info',MenuSelectedField(),@cb_info);
                 op1 = uimenu('Label',' Maps ');
                 uimenu(op1,'Label','REVERT day/night value map',...
-                    'MenuSelectedFcn',@callbackfun_005)
+                    MenuSelectedField(),@callbackfun_005)
                 
                 
                 add_display_menu(1);
@@ -359,7 +359,7 @@ classdef findquar < ZmapHGridFunction
         function h=AddMenuItem(parent, zapFcn)
             % create a menu item that will be used to call this function/class
             label='Find Quarry Events';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)findquar(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)findquar(zapFcn()));
         end
         
     end % static methods

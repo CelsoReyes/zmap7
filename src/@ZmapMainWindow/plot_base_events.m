@@ -102,29 +102,29 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c,'Select events in POLYGON');
     
     uimenu(c,'Label','Delete shape',...
-        'Separator','on', 'MenuSelectedFcn',{@updatewrapper,@(~,~)cb_shapedelete});
-    uimenu(c,'Label','Zoom to shape','MenuSelectedFcn',@cb_zoom_shape);
-    uimenu(c,'Label','Crop to shape','MenuSelectedFcn',@cb_crop_to_selection);
-    uimenu(c,'Label','Zoom to selected events','MenuSelectedFcn',@cb_zoom)
-    uimenu(c,'Label','Crop to axes limits','MenuSelectedFcn',@cb_crop_to_axes)
-    uimenu(c,'Label','Define X-section','Separator','on','MenuSelectedFcn',@obj.cb_xsection);
+        'Separator','on', MenuSelectedField(),{@updatewrapper,@(~,~)cb_shapedelete});
+    uimenu(c,'Label','Zoom to shape',MenuSelectedField(),@cb_zoom_shape);
+    uimenu(c,'Label','Crop to shape',MenuSelectedField(),@cb_crop_to_selection);
+    uimenu(c,'Label','Zoom to selected events',MenuSelectedField(),@cb_zoom)
+    uimenu(c,'Label','Crop to axes limits',MenuSelectedField(),@cb_crop_to_axes)
+    uimenu(c,'Label','Define X-section','Separator','on',MenuSelectedField(),@obj.cb_xsection);
     uimenu(c,'Separator','on','Label','Hide/Show sampling grid','Tag','ToggleGrid',...
-        'MenuSelectedFcn',@cb_toggle_grid)
+        MenuSelectedField(),@cb_toggle_grid)
     obj.map_axes.UIContextMenu=c;
 
     addLegendToggleContextMenuItem(c,'bottom','above');
-    %uimenu(c,'Label','Toggle ColorBar','MenuSelectedFcn',@(s,v)obj.do_colorbar);
+    %uimenu(c,'Label','Toggle ColorBar',MenuSelectedField(),@(s,v)obj.do_colorbar);
     obj.map_axes.ButtonDownFcn = @control_menu_enablement;
     
     
     function create_from_existing_menu(parent,label)
             % use the callback from a menu item that (will) exist in this figure. Labels must match
-            uimenu(parent,'Label',label,'MenuSelectedFcn',{@do_other,label});
+            uimenu(parent,'Label',label,MenuSelectedField(),{@do_other,label});
             
         function do_other(src,ev,label)
             um=findobj(obj.fig,'Type','uimenu','-and','Label',label);
             newsrc=um(um~=src);
-            newsrc.('MenuSelectedFcn')(newsrc,ev);
+            newsrc.(MenuSelectedField())(newsrc,ev);
         end
     end
     

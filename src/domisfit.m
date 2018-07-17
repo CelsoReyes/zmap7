@@ -188,13 +188,13 @@ function domisfit(catalog,sig,plu,az,phi,R)
         add_menu_divider();    %
         omp2= uimenu('Label','Tools');
         uimenu(omp2,'label','Misfit-Magnitude',...
-            'MenuSelectedFcn',@cb_misfitmag);
+            MenuSelectedField(),@cb_misfitmag);
         uimenu(omp2,'label','Misfit-Depth',...
-            'MenuSelectedFcn',@cb_misfitdep);
+            MenuSelectedField(),@cb_misfitdep);
         uimenu(omp2,'label','Earthquake-Depth',...
-            'MenuSelectedFcn',@cb_eqdep);
+            MenuSelectedField(),@cb_eqdep);
         uimenu(omp2,'label','Earthquake-Strike',...
-            'MenuSelectedFcn',@cb_eqstrike);
+            MenuSelectedField(),@cb_eqstrike);
         %
     end
     
@@ -202,11 +202,11 @@ function domisfit(catalog,sig,plu,az,phi,R)
         add_menu_divider();
         omp1= uimenu('Label','Tools');
         uimenu(omp1,'label','Save sorted catalog',...
-            'MenuSelectedFcn',@callbackfun_009);
+            MenuSelectedField(),@callbackfun_009);
         uimenu(omp1,'label','AS Function',...
-            'MenuSelectedFcn',@cb_astmisfit);
+            MenuSelectedField(),@cb_astmisfit);
         uimenu(omp1,'label','Compare',...
-            'MenuSelectedFcn',@cb_comparemisfit);
+            MenuSelectedField(),@cb_comparemisfit);
     end
     
     %% callback functions

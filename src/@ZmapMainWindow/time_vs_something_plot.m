@@ -25,7 +25,7 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     if isempty(c)
         c=uicontextmenu(obj.fig,'Tag', contextTag);
         uimenu(c, 'Label', 'Open in new window',...
-            'MenuSelectedFcn', @cb_context);
+            MenuSelectedField(), @cb_context);
         addLegendToggleContextMenuItem(c,'bottom','above');
     end
     ax.UIContextMenu=c;

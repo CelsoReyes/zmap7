@@ -137,43 +137,43 @@ function view_xstress(lab1,valueMap)
         
         % Menu Select
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
         uimenu(options,'Label','Select N closest EQs',...
-            'MenuSelectedFcn',@callbackfun_002)
+            MenuSelectedField(),@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'MenuSelectedFcn',@callbackfun_003)
+            MenuSelectedField(),@callbackfun_003)
         uimenu(options,'Label','Select EQ in Polygon',...
-            'MenuSelectedFcn',@callbackfun_004)
+            MenuSelectedField(),@callbackfun_004)
         
         % Menu Maps
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','Variance',...
-            'MenuSelectedFcn',@callbackfun_005)
+            MenuSelectedField(),@callbackfun_005)
         uimenu(op1,'Label','Phi',...
-            'MenuSelectedFcn',@callbackfun_006)
+            MenuSelectedField(),@callbackfun_006)
         uimenu(op1,'Label','Trend S1',...
-            'MenuSelectedFcn',@callbackfun_007)
+            MenuSelectedField(),@callbackfun_007)
         uimenu(op1,'Label','Plunge S1',...
-            'MenuSelectedFcn',@callbackfun_008)
+            MenuSelectedField(),@callbackfun_008)
         uimenu(op1,'Label','Trend S2',...
-            'MenuSelectedFcn',@callbackfun_009)
+            MenuSelectedField(),@callbackfun_009)
         uimenu(op1,'Label','Plunge S2',...
-            'MenuSelectedFcn',@callbackfun_010)
+            MenuSelectedField(),@callbackfun_010)
         uimenu(op1,'Label','Trend S3',...
-            'MenuSelectedFcn',@callbackfun_011)
+            MenuSelectedField(),@callbackfun_011)
         uimenu(op1,'Label','Plunge S3',...
-            'MenuSelectedFcn',@callbackfun_012)
+            MenuSelectedField(),@callbackfun_012)
         uimenu(op1,'Label','Angular misfit',...
-            'MenuSelectedFcn',@callbackfun_013)
+            MenuSelectedField(),@callbackfun_013)
         uimenu(op1,'Label','\tau spread',...
-            'MenuSelectedFcn',@callbackfun_014)
+            MenuSelectedField(),@callbackfun_014)
         uimenu(op1,'Label','Resolution map (const. Radius)',...
-            'MenuSelectedFcn',@callbackfun_015)
+            MenuSelectedField(),@callbackfun_015)
         uimenu(op1,'Label','Resolution map',...
-            'MenuSelectedFcn',@callbackfun_016)
+            MenuSelectedField(),@callbackfun_016)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
-            'MenuSelectedFcn',@callbackfun_017)
-        %uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+            MenuSelectedField(),@callbackfun_017)
+        %uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         % Menu Display
         add_display_menu(1);

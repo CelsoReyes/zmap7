@@ -193,11 +193,11 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         add_symbol_menu('eq_plot');
         
         options = uimenu('Label',' Analyze ');
-        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            'MenuSelectedFcn',@cb_constR)
+            MenuSelectedField(),@cb_constR)
         uimenu(options,'Label','Select EQ with const. number',...
-            'MenuSelectedFcn',@cb_constN)
+            MenuSelectedField(),@cb_constN)
         
         
         op1 = uimenu('Label',' Maps ');
@@ -205,47 +205,47 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
         %Meniu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            'MenuSelectedFcn',@callbackfun_004)
+            MenuSelectedField(),@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            'MenuSelectedFcn',@callbackfun_005)
+            MenuSelectedField(),@callbackfun_005)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            'MenuSelectedFcn',@callbackfun_006)
+            MenuSelectedField(),@callbackfun_006)
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            'MenuSelectedFcn',@callbackfun_007)
+            MenuSelectedField(),@callbackfun_007)
         
         
         %    uimenu(op1,'Label','b-value map (WLS)',...
-        %        'MenuSelectedFcn',@callbackfun_008)
+        %        MenuSelectedField(),@callbackfun_008)
         %    uimenu(op1,'Label','b(max likelihood) map',...
-        %        'MenuSelectedFcn',@callbackfun_009)
+        %        MenuSelectedField(),@callbackfun_009)
         %    uimenu(op1,'Label','Mag of completness map',...
-        %        'MenuSelectedFcn',@callbackfun_010)
+        %        MenuSelectedField(),@callbackfun_010)
         %    uimenu(op1,'Label','max magnitude map',...
-        %           'MenuSelectedFcn',@callbackfun_011)
+        %           MenuSelectedField(),@callbackfun_011)
         %    uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',...
-        %           'MenuSelectedFcn',@callbackfun_012)
+        %           MenuSelectedField(),@callbackfun_012)
         %
         uimenu(op1,'Label','Relative rate change',...
-            'MenuSelectedFcn',@callbackfun_013)
+            MenuSelectedField(),@callbackfun_013)
         uimenu(op1,'Label','Relative rate change by boostrap',...
-            'MenuSelectedFcn',@callbackfun_014)
+            MenuSelectedField(),@callbackfun_014)
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            'MenuSelectedFcn',@callbackfun_015)
+            MenuSelectedField(),@callbackfun_015)
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            'MenuSelectedFcn',@callbackfun_016)
+            MenuSelectedField(),@callbackfun_016)
         uimenu(op1,'Label','p-value',...
-            'MenuSelectedFcn',@callbackfun_017)
+            MenuSelectedField(),@callbackfun_017)
         uimenu(op1,'Label','p-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_018)
+            MenuSelectedField(),@callbackfun_018)
         uimenu(op1,'Label','c-value',...
-            'MenuSelectedFcn',@callbackfun_019)
+            MenuSelectedField(),@callbackfun_019)
         uimenu(op1,'Label','c-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_020)
+            MenuSelectedField(),@callbackfun_020)
         uimenu(op1,'Label','k-value',...
-            'MenuSelectedFcn',@callbackfun_021)
+            MenuSelectedField(),@callbackfun_021)
         uimenu(op1,'Label','k-value standard deviation',...
-            'MenuSelectedFcn',@callbackfun_022)
-        %    uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+            MenuSelectedField(),@callbackfun_022)
+        %    uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         add_display_menu(1);
     end

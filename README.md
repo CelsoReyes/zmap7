@@ -1,8 +1,8 @@
-# Zmap version 7.0 Readme
+# Zmap version 7.X Readme
 
 ## About
 
-ZMAP version 7.0 represents a major rework of ZMAP.
+ZMAP version7.X represents a major rework of ZMAP.
 
 ## Requirements
 

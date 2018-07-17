@@ -119,7 +119,7 @@ classdef bdiff2
             c = uicontextmenu(f,'Tag',obj.tags.bdcontext);
             obj.create_my_menu(c,catalog);
             ax.UIContextMenu=c;
-            uimenu(ax.UIContextMenu,'Label','Open as new figure','MenuSelectedFcn',@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
+            uimenu(ax.UIContextMenu,'Label','Open as new figure',MenuSelectedField(),@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
                 
             obj.write_globals();
             
@@ -345,7 +345,7 @@ classdef bdiff2
                 ax.UIContextMenu=c;
             end
             uimenu(ax.UIContextMenu,'Separator','on',...
-                'Label','info','MenuSelectedFcn',@(~,~)msgbox(tx,'b-Value results','modal'));
+                'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
         end
         
         function updatePlottedCumSum(obj,ax)
@@ -452,12 +452,12 @@ classdef bdiff2
         end
         %% ui functions
         function create_my_menu(obj,c,catalog)
-            uimenu(c,'Label','Estimate recurrence time/probability','MenuSelectedFcn',@callbackfun_recurrence);
-            uimenu(c,'Label','Plot time series','MenuSelectedFcn',@callbackfun_ts);
-            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)','MenuSelectedFcn',{@cb_nonlin_optimize,catalog});
-            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)','MenuSelectedFcn',{@cb_nonlin_keepmc,catalog});
-            uimenu(c,'Label','Show discrete curve','MenuSelectedFcn',@callbackfun_nodiscrete,'Checked','on');
-            uimenu(c,'Label','Save values to file','MenuSelectedFcn',{@calSave9,obj.magsteps_desc, obj.bvalsum3});
+            uimenu(c,'Label','Estimate recurrence time/probability',MenuSelectedField(),@callbackfun_recurrence);
+            uimenu(c,'Label','Plot time series',MenuSelectedField(),@callbackfun_ts);
+            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),{@cb_nonlin_optimize,catalog});
+            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalog});
+            uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@callbackfun_nodiscrete,'Checked','on');
+            uimenu(c,'Label','Save values to file',MenuSelectedField(),{@calSave9,obj.magsteps_desc, obj.bvalsum3});
             addAboutMenuItem();
             
             function callbackfun_recurrence(~,~)

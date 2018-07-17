@@ -17,8 +17,8 @@ classdef ZmapData < handle
     % see ini_zmap
     
     properties(Constant)
-        zmap_version        = '7.0'
-        min_matlab_version  = '9.2'
+        zmap_version        = '7.1'
+        min_matlab_version  = '9.3' % actually 9.4
         min_matlab_release  = '2018a'
         hodi                = fileparts(which('zmap')) % zmap home directory
         torad               = pi / 180

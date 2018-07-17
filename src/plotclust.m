@@ -86,9 +86,9 @@ function plotclust()
         op6 =uimenu(op4,'Label','select clusters');
         
         uimenu(op6,'Label','Select by Mouse',...
-            'MenuSelectedFcn',@(~,~)getclu_callback('mouse'));
+            MenuSelectedField(),@(~,~)getclu_callback('mouse'));
         uimenu(op6,'Label','Plot largest Cluster',...
-            'MenuSelectedFcn',@(~,~)getclu_callback('large'));
+            MenuSelectedField(),@(~,~)getclu_callback('large'));
     end
     
     %% callback functions

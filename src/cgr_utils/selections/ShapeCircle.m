@@ -92,8 +92,8 @@ classdef ShapeCircle < ShapeGeneral
         end
 
         function add_shape_specific_context(obj,c)
-            uimenu(c,'label','Choose Radius','MenuSelectedFcn',@chooseRadius)
-            uimenu(c,'label','Snap To N Events','MenuSelectedFcn',@snapToEvents)
+            uimenu(c,'label','Choose Radius',MenuSelectedField(),@chooseRadius)
+            uimenu(c,'label','Snap To N Events',MenuSelectedField(),@snapToEvents)
             
             function snapToEvents(~,~)
                 ZG=ZmapGlobal.Data;

@@ -374,7 +374,7 @@ classdef stressgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Map Stress Tensor';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)stressgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)stressgrid(zapFcn()));
         end
     end % static methods
 end

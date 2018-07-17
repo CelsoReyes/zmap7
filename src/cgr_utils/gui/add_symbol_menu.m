@@ -34,15 +34,15 @@ function add_symbol_menu(target, parent, label)
     % menu button is pressed.  It SHOULD ideally be either a handle or a Tag.
     
     uimenu(symbolmenu,'Label','Symbol Size ...',...
-        'MenuSelectedFcn',@(~,~)symboledit_dlg(target,'MarkerSize'));
+        MenuSelectedField(),@(~,~)symboledit_dlg(target,'MarkerSize'));
     uimenu(symbolmenu,'Label','Symbol Type ...',...
-        'MenuSelectedFcn',@(~,~)symboledit_dlg(target,'Marker'));
+        MenuSelectedField(),@(~,~)symboledit_dlg(target,'Marker'));
     uimenu(symbolmenu,'Label','Line Width ...',...
-        'MenuSelectedFcn',@(~,~)symboledit_dlg(target,'LineWidth'));
+        MenuSelectedField(),@(~,~)symboledit_dlg(target,'LineWidth'));
     uimenu(symbolmenu,'Label','Line Style ...',...
-        'MenuSelectedFcn',@(~,~)symboledit_dlg(target,'LineStyle'));
+        MenuSelectedField(),@(~,~)symboledit_dlg(target,'LineStyle'));
     uimenu(symbolmenu,'Label','Change Symbol Color ...',...
-        'MenuSelectedFcn', @(~,~)change_color);
+        MenuSelectedField(), @(~,~)change_color);
 
     function change_color()
         lines = findobj('-regexp','Tag','\<mapax_part[0-9].*\>');

@@ -57,11 +57,11 @@ function zmap(varargin)
     %       ZG.ra = 23  % changes ra globally
     
     
-    disp('This is zmap.m - version 7.0')
     disp(varargin)
     % advise matlab where it can find everything zmap
     set_zmap_paths;
     ZG = ZmapGlobal.Data;
+    disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
     startWindow=true;
     if ismember('-debug',varargin)
         ZG.debug=true;

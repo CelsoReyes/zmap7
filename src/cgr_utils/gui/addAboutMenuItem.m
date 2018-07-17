@@ -19,13 +19,13 @@ function addAboutMenuItem(fig)
     end
     
     uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
-        'MenuSelectedFcn',@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
+        MenuSelectedField(),@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
     
     uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Tag','zmaphelpmenuitem',...
-        'MenuSelectedFcn',@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
+        MenuSelectedField(),@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
     
     uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
-        'MenuSelectedFcn',@(~,~)aboutZmapDialog);
+        MenuSelectedField(),@(~,~)aboutZmapDialog);
 end
 
 function reportIssue()
@@ -104,9 +104,9 @@ function aboutZmapDialog()
     % add a context menu that allows contents to be copied.
     c = uicontextmenu('Tag','citation contextmenu');
     uimenu(c,'Label','view original document',...
-        'MenuSelectedFcn',@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
+        MenuSelectedField(),@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
     uimenu(c,'Label','copy to clipboard',...
-        'MenuSelectedFcn',@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
+        MenuSelectedField(),@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
     h.UIContextMenu=c;
     t.UIContextMenu=c;
     t.TooltipString = tooltipMsg;

@@ -1,5 +1,5 @@
 # Adding Functionality
-Zmap 7.0 has been rewritten with the goal of making it easy to edit and extend.
+Zmap 7.X has been rewritten with the goal of making it easy to edit and extend.
 With minimal effort, you can write functions with rich functionality. 
 
 By following some simple rules, your function can be more stable, flexible,

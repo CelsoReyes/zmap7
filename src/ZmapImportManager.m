@@ -26,9 +26,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     else
         [catalog,ok] = fun();
     end
-    if isnumeric(catalog) && isnan(catalog)
-        % no catalog loaded 
-    else
+    if ok
         sort(catalog,'Date','ascend')
     end
     

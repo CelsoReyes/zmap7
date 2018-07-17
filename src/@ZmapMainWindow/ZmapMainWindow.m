@@ -830,5 +830,9 @@ function cb_mainMapSelectionChanged(~,~)
 end
 
 function s=CallbackFld()
-    s='MenuSelectedFcn';
+    if verLessThan('matlab','9.3') 
+        s='Callback';
+    else
+        s=MenuSelectedField();
+    end
 end

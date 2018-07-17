@@ -93,7 +93,7 @@ classdef simple_ZmapHGridFunction < ZmapHGridFunction
             % create a menu item that knows how to call this function with all the required parameters
             % such as grid, catalog, and event selection.
             label='Examine magnitudes above and below a level';
-            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)simple_ZmapHGridFunction(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)simple_ZmapHGridFunction(zapFcn()));
         end
     end
 end

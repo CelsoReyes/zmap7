@@ -8,17 +8,17 @@ function c=menu_cumtimeseries(c)
     
     uimenu(c, 'Label', 'filter',...
         'Enable','off',...
-        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
+        MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
     uimenu(c, 'Label', 'also plot main catalog',...
         'Enable','off',...
-        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
-    uimenu(c, 'separator','on','Label', 'start here','MenuSelectedFcn',@start_here);
-    uimenu(c, 'Label', 'end here','MenuSelectedFcn',@end_here);
-    uimenu(c, 'Label', 'trim to largest event','MenuSelectedFcn',@trim_to_largest);
-    uimenu(c, 'Label', 'show in map (keeping all)','MenuSelectedFcn',@show_in_map,'Enable','off');
+        MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+    uimenu(c, 'separator','on','Label', 'start here',MenuSelectedField(),@start_here);
+    uimenu(c, 'Label', 'end here',MenuSelectedField(),@end_here);
+    uimenu(c, 'Label', 'trim to largest event',MenuSelectedField(),@trim_to_largest);
+    uimenu(c, 'Label', 'show in map (keeping all)',MenuSelectedField(),@show_in_map,'Enable','off');
     uimenu(c, 'separator','on','Label', '- * t b a * -',...
         'Enable','off',...
-        'MenuSelectedFcn',@(~,~)msgbox('Unimplemented','Unimplemented'));
+        MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
     
     function trim_to_largest(~,~)
         disp('trim to largest')

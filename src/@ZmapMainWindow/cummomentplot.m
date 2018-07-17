@@ -46,7 +46,7 @@ function cummomentplot(obj,tabgrouptag)
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
         cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
-        uimenu(cxs,'Label','Open in new window','MenuSelectedFcn',@cb_xstimeplot);
+        uimenu(cxs,'Label','Open in new window',MenuSelectedField(),@cb_xstimeplot);
     end
     
     obj.plot_xsections(@xsplotter, 'Xsection cummomplot');
@@ -59,7 +59,7 @@ function cummomentplot(obj,tabgrouptag)
     if isempty(cbg)
         cbg=uicontextmenu(obj.fig,'Tag',Tags.bg);
         addLegendToggleContextMenuItem(cbg,'bottom','above');
-        uimenu(cbg,'Label','Open in new window','MenuSelectedFcn',@obj.cb_timeplot);
+        uimenu(cbg,'Label','Open in new window',MenuSelectedField(),@obj.cb_timeplot);
     end
     
     if isempty(ax.UIContextMenu)
@@ -71,10 +71,10 @@ function cummomentplot(obj,tabgrouptag)
         cln=findobj(obj.fig,'Tag',Tags.line);
         if isempty(cln)
             cln=uicontextmenu(obj.fig,'tag',Tags.line);
-            uimenu(cln, 'Label', 'start here',              'MenuSelectedFcn', @(~,~)obj.cb_starthere(ax));
-            uimenu(cln, 'Label', 'end here',                'MenuSelectedFcn', @(~,~)obj.cb_endhere(ax));
-            uimenu(cln, 'Label', 'trim to largest event',   'MenuSelectedFcn', @obj.cb_trim_to_largest);
-            uimenu(cln, 'Label', 'Open in new window',      'MenuSelectedFcn', @obj.cb_timeplot);
+            uimenu(cln, 'Label', 'start here',              MenuSelectedField(), @(~,~)obj.cb_starthere(ax));
+            uimenu(cln, 'Label', 'end here',                MenuSelectedField(), @(~,~)obj.cb_endhere(ax));
+            uimenu(cln, 'Label', 'trim to largest event',   MenuSelectedField(), @obj.cb_trim_to_largest);
+            uimenu(cln, 'Label', 'Open in new window',      MenuSelectedField(), @obj.cb_timeplot);
         end
     end
     

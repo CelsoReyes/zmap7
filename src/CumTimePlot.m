@@ -193,19 +193,19 @@ classdef (Sealed) CumTimePlot < handle
         function create_menu(obj,fig)
             add_menu_divider(fig);
             mm=uimenu(fig, 'Label', 'TimePlot');
-            uimenu(mm, 'Label', 'Reset', 'MenuSelectedFcn', @(~,~)obj.reset);
+            uimenu(mm, 'Label', 'Reset', MenuSelectedField(), @(~,~)obj.reset);
             
             % HISTOGRAMS
             op5C = uimenu(mm,'Label','Histograms');
             
             uimenu(op5C,'Label','Magnitude',...
-                'MenuSelectedFcn',@(~,~)hisgra(obj.catview,'Magnitude'));
+                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Magnitude'));
             uimenu(op5C,'Label','Depth',...
-                'MenuSelectedFcn',@(~,~)hisgra(obj.catview,'Depth'));
+                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Depth'));
             uimenu(op5C,'Label','Time',...
-                'MenuSelectedFcn',@(~,~)hisgra(obj.catview,'Date'));
+                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Date'));
             uimenu(op5C,'Label','Hr of the day',...
-                'MenuSelectedFcn',@(~,~)hisgra(obj.catview,'Hour'));
+                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Hour'));
             
             % add_menu_catalog(obj.catname, obj.viewname, false, fig);
             add_cumtimeplot_zmenu(obj, mm)

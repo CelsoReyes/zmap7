@@ -28,7 +28,7 @@ function addLegendToggleContextMenuItem(cm, position, separator)
         h=uimenu(cm,'Label', label);
     end
     h.Separator = tf2onoff(separator == "above");
-    h.('MenuSelectedFcn') = @legend_cb;
+    h.(MenuSelectedField()) = @legend_cb;
     
     % by default add item to the bottom of the menu, which is actually
     % the first item in the context menu's children
