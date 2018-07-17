@@ -175,7 +175,12 @@ classdef ZmapData < handle
                     catalogFile = fullfile(obj.Directories.working,ZDefaults.catalog.LastCatalogFilename);
                     if exist(catalogFile,'file')
                         tmp = load(catalogFile,'catalog');
-                        obj.primeCatalog = tmp.catalog;
+                        if isa(tmp.catalog,'ZmapCatalog')
+                            obj.primeCatalog = tmp.catalog;
+                        else
+                            warning("default catalog file does not contain a zmap catalog");
+                        end
+                            
                     end
                     % failed to open the last catalog
                     obj.primeCatalog=ZmapCatalog('empty catalog');

@@ -52,6 +52,8 @@ function catalog_menu(obj, force)
         'MenuSelectedFcn', {@cb_importer,@zdataimport});
     uimenu(catmenu,'Label','from FDSN webservice',...
         'MenuSelectedFcn', {@cb_importer,@get_fdsn_data_from_web_callback});
+    uimenu(catmenu,'Label','from the current MATLAB Workspace',...
+        'MenuSelectedFcn', {@cb_importer,@cb_catalog_from_workspace});
     
     
     uimenu(submenu,'Label','Save current catalog','MenuSelectedFcn',@(~,~)save_zmapcatalog(obj.catalog));
@@ -104,6 +106,10 @@ function catalog_menu(obj, force)
         memorize_recall_catalog(obj.catalog);
     end
     
+    function cb_catalog_from_workspace(src,evt)
+        f=ancestor(src,'figure');
+        
+    end
     
     function cb_crop(~,~)
         ax = findobj(obj.fig, 'Type','Axes');
