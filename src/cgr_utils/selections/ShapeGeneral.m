@@ -300,6 +300,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         
         function save(obj, data_dir)
             zmap_shape=obj;
+            error('should not be in this save')
             uisave('zmap_shape',fullfile(data_dir, 'zmap_shape.mat'));
         end
         
