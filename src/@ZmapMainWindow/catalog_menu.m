@@ -106,10 +106,10 @@ function catalog_menu(obj, force)
         memorize_recall_catalog(obj.catalog);
     end
     
-    function cb_catalog_from_workspace(src,evt)
+    function [catalog,ok]=cb_catalog_from_workspace(opt, fn)
         fig=ancestor(src,'figure');
-        
-        
+        app=catalog_from_workbench();
+        uiwait(app)
     end
     
     function cb_crop(~,~)
