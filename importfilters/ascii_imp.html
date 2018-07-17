@@ -1,0 +1,114 @@
+<html>
+
+<head>
+</head>
+
+<body>
+    ASCII file format: to import a catalog from an ascii file, have your data as columns in one of the common delimited formats
+    (tab, comma, '|', spaces, etc.) The first row should be a header that is similarly delimited. <h2>Columns recognized by Zmap:</h2>
+    <p>Column order does not matter, and additional columns may exist that will not be interpreted.</p>
+    <h3> Required Columns</h2>
+    <ul>
+        <li>
+            <b>Date</b>
+            <i>recommended</i> formatted as
+            <code>YYYY-MM-DDThh:mm:ss</code> with seconds expressed with up to 9 decimal places. However all dates must be formatted the same
+        </li>
+        <li>
+            <b>Longitude </b>
+            <i>(decimal)</i>
+        </li>
+        <li>
+            <b>Latitude </b>
+            <i>(decimal)</i>
+        </li>
+        <li>
+            <b>Depth</b>
+        </li>
+        <li>
+            <b>Magnitude</b>
+        </li>
+    </ul>
+    <br>
+    <h3>Optional Columns</h2>
+    <ul>
+        <li>
+            <b>MagnitudeType</b>
+            <i>, ex.
+                <code>ml</code>
+            </i>
+        </li>
+        <li>
+            <b>Dip</b>
+        </li>
+        <li>
+            <b>DipDirection</b>
+        </li>
+        <li>
+            <b>Rake</b>
+        </li>
+    </ul>
+    </ul>
+
+    <h3>Alternate fields</h3>
+    Dates can alternatively be expressed with a combination of fields:
+    <ul>
+        <li>
+            <b>year</b>
+        </li>
+        <li>
+            <b>month</b>
+        </li>
+        <li>
+            <b>day</b>
+        </li>
+        <li>
+            <b>hour</b>
+        </li>
+        <li>
+            <b>minute</b>
+        </li>
+        <li>
+            <b>second</b>
+        </li>
+        <li>
+            <b>decyear</b>
+        </li>
+        <li>
+            <b>time</b>, as
+            <code>hh:mm:ss</code>
+        </li>
+    </ul>
+
+    <p>Beware: The importer might be confused by an input file that contains multiple columns with similar names.
+    </p>
+    
+    <h2>Examples</h2>
+
+    Example 1. pipe '|' delimited data
+    <pre>
+year|month|day|hour|minute|lat|lon|dep[m]|mag|magtype
+2001|03|12|12|01|42.3|-120.5|20.0|4000|Ml
+2001|05|19|01|00|42.4|-120.2|15.0|3200|Ml
+2001|12|15|13|32|42.3|-120.3|13.0|2900|Ml
+    </pre>
+    <br> Example 2. Comma delimited data, with a column that will be ignored
+
+    <pre>
+Latitude,Longitude,Date,depth,magnitude, something
+42.3,-120.5,2001-03-12T12:01:32,20.0,4,abc
+42.4,-120.2,2001-05-19T01:00:00,15.0,3.2,def
+42.3,-120.3,2001-12-15T13:32:05,13.0,2.9,ghi
+
+    </pre>
+    <br> Example 3. Tab-delimited data
+    <pre>
+year	month	day	Time	latitude	longitude	depth	magnitude
+2001	03	12	12:01:32	42.3	-120.5	20.0	4
+2001	05	19	01:00:00	42.4	-120.2	15.0	3.2
+2001	12	15	13:32:05	42.3	-120.3	13.0	2.9
+    </pre>
+</body>
+
+
+</html>

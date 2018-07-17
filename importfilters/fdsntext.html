@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <title>FDSN</title>
+    </head>
+    <body>
+        <h1>FDSN Text Format</h1>
+        <p>FDSN web services text format, unfortunately varies somewhat from service to service. 
+            This version attempts to interpret some of the differing formats. In general, the returned data 
+        will be in pipe '|' separated columns with a header at the top.</p>
+        <p>Use this import option when you have downloaded data from one of the FDSN Event Webservices, <em>in text format</em></p>
+        <p>This will not import data downloaded as  <a href="https://quake.ethz.ch/quakeml/">QuakeML</a>
+        <h3>Example</h3>
+        Here is the example from IRIS:
+        <pre>
+EventID|Time|Latitude|Longitude|Depth|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName
+3380339|2012-09-12T11:27:51|-10.1105|161.0712|87.3|NEIC|NEIC PDE|NEIC ALERT|c000clxn|MB|5.2|NEIC|SOLOMON ISLANDS
+3380338|2012-09-12T09:37:29|24.99|123.192|15.4|NEIC|NEIC PDE|NEIC PDE-Q||MB|4.8|NEIC|SOUTHWESTERN RYUKYU ISLANDS
+3380337|2012-09-12T09:20:54|-32.485|-68.523|101.8|NEIC|NEIC PDE|NEIC PDE-Q||MB|4.7|NEIC|MENDOZA PROVINCE, ARGENTINA
+        </pre>
+        Not all the data is used. Imported data comes from:
+        <ul>
+            <li>Time</li>
+            <li>Latitude</li>
+            <li>Longitude</li>
+            <li>Depth</li>
+            <li>MagType</li>
+            <li>Magnitude</li>
+        </ul>
+        <h2>Accessing the web services directly</h2>
+        <p>If you wish to access data directly from the webservice, use the interactive FDSN importer,
+        available from the get/load catalog menu.</p>
+    </body>
+    
+    
+</html>

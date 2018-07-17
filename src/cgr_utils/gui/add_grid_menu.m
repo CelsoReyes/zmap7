@@ -15,6 +15,7 @@ function add_grid_menu(obj)
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
     uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
+    uimenu(parent,'Label','Load a shape','MenuSelectedFcn',@cb_load_shape)
     uimenu(parent,'Label','about editing shapes...',MenuSelectedFcn,@(~,~)moveable_item('help'));
     uimenu(parent,'Separator','on',...
         'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);
@@ -52,10 +53,18 @@ function add_grid_menu(obj)
     end
     
     function cb_load_shape(src,ev)
+        sh = load_shape();
+        if isempty(sh)
+            errordlg('Unable to load shape, or operation was cancelled');
+        else
+            obj.shape = sh;
+        %{
         sh=ShapeGeneral.load(ZmapGlobal.Data.Directories.data);
         cb_clear_shape;
         if ~isempty(sh)
             obj.set_my_shape(sh);
+        end
+        %}
         end
     end
     

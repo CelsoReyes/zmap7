@@ -376,13 +376,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             set([sh ev],'Visible',v);
         end
         
-        function obj = load(data_dir)
-            obj=[];
-            [f,p]=uigetfile('*.mat','Load Zmap Shape file',fullfile(data_dir, 'zmap_shape.mat'));
-            if ~isempty(f)
-                tmp=load(fullfile(p,f),'zmap_shape');
-                obj=tmp.zmap_shape;
-            end
+        function obj = load(varargin)
+            obj=load_shape();
         end
         
         

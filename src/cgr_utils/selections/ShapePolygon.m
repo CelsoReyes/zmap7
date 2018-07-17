@@ -67,7 +67,10 @@ classdef ShapePolygon < ShapeGeneral
                 case 'polygon' % ShapeGeneral('polygon', [x1,y1;...;xn,yn]);
                     if ~isempty(varargin)
                         obj.Points=varargin{1};
-                        %TODO check integerity, and make sure last point matches first
+                        if ~isequal(obj.Points(end,:), obj.Points(1,:))
+                            % close the polygon
+                        	obj.Points(end+1,:)=obj.Points(1,:);
+                        end
                     else
                         obj.select_polygon();
                     end

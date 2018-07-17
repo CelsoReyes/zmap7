@@ -1,23 +1,27 @@
 function [uOutput] = ascii_imp(nFunction, sFilename)
     
-
+    
     % Filter function switchyard
     if nFunction == 0     % Return info about filter
         uOutput = 'ASCII columns (.txt, .dat, .csv)';
         return
-    end
-    opts = detectImportOptions(sFilename);
-    tb = readtable(sFilename, opts);
-    
-  
-    if is_old_zmap_style(tb)
-        tb = from_old_zmap_style(tb);
-    end
-    tb = interpretFromTable(tb);
+    elseif nFunction == 2
+        uOutput = 'ascii_imp.html';
         
-    disp(tb(1:min(5,height(tb)),:));
-    
-    uOutput = ZmapCatalog(tb);
+    else
+        opts = detectImportOptions(sFilename);
+        tb = readtable(sFilename, opts);
+        
+        
+        if is_old_zmap_style(tb)
+            tb = from_old_zmap_style(tb);
+        end
+        tb = interpretFromTable(tb);
+        
+        disp(tb(1:min(5,height(tb)),:));
+        
+        uOutput = ZmapCatalog(tb);
+    end
 end
 
 function tf = is_old_zmap_style(tb)

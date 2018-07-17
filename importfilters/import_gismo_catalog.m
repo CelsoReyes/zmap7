@@ -21,6 +21,10 @@ function [uOutput] = import_gismo_catalog(nfunction, catalog)
         uOutput = 'GISMO Catalog - import catalog from the GISMO suite';
         return
     end
+    if nfunction ==2
+        uOutput = 'gismo.html';
+        return
+    end
     
     if ~exist('Catalog','class')
         uOutput(['Cannot import catalog, since Catalog class (and probably GISMO) is not installed.',...

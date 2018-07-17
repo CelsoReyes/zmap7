@@ -26,6 +26,16 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     % get list of data providers that support the FDSN Event query
     persistent datacenter_details
     
+    % Filter function switchyard
+    if nFunction == 0     % Return info about filter
+        uOutput = 'FDSNWS Events (text) - import ascii data downloaded from one of the FDSN webservice datacenters';
+        return
+    end
+    if nFunction == 2
+        uOutput = 'fdsntext.html'; % location of fdsn format documentation
+        return
+    end
+    
     hf = matlab.net.http.HeaderField('Content-Encoding','gzip');
     options = weboptions('timeout',120,'HeaderFields',hf); %seconds
     ZG=ZmapGlobal.Data;
@@ -60,12 +70,6 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
                 disp(['unable to access additional datacenter information: ', ME.message]);
             end
         end
-    end
-    
-    % Filter function switchyard
-    if nFunction == 0     % Return info about filter
-        uOutput = 'FDSN Events webservice text - import data from one of the webservice datacenters';
-        return
     end
     
     % load FDSN text details that had been saved to a files
