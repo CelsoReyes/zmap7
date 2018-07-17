@@ -139,7 +139,35 @@ classdef ShapeCircle < ShapeGeneral
             obj.Radius=obj.Radius.* abs(deltas(3)); % NO NEGATIVE RADII
             obj.Points=[centerX,centerY];
         end
-        
+          
+        function save(obj, filelocation, delimiter)
+            persistent savepath
+            if ~exist('filelocation','var') || isempty(filelocation)
+                if isempty(savepath)
+                    savepath = ZmapGlobal.Data.Directories.data;
+                end
+                [filename,pathname,filteridx]=uiputfile(...
+                    {'*.mat','MAT-files (*.mat)';...
+                    '*.csv;*.txt;*.dat','ASCII files (*.csv, *.txt, *.dat)'},...
+                    'Save Circle',...
+                    fullfile(savepath,'zmap_shape.mat'));
+                if filteridx==0
+                    msg.dbdisp('user cancelled shape save');
+                    return
+                end
+                filelocation=fullfile(pathname,filename);
+            end
+            [savepath,~,ext] = fileparts(filelocation); 
+            if ext==".mat"
+                zmap_shape=obj;
+                save(filelocation,'zmap_shape');
+            else
+                if ~exist('delimiter','var'), delimiter = ',';end
+                tb=table(obj.X0, obj.Y0,obj.Radius,'VariableNames',{'Latitude','Longitude','Radius[km]'});
+                writetable(tb,filelocation,'Delimiter',delimiter);
+            end
+                
+        end
     end
     
     methods(Static)

@@ -80,10 +80,10 @@ function obj = load_shape(filelocation)
                         'ListString',vn_with_example(tb, tb.Properties.VariableNames));
                     if ~ok; return; end
                     if width(tb)~=2
-                    [lonIdx,ok] = listdlg('PromptString','Select Longitude (E-W)',...
-                        'SelectionMode','single',...
-                        'ListString',vn_with_example(tb, tb.Properties.VariableNames));
-                    if ~ok; return; end
+                        [lonIdx,ok] = listdlg('PromptString','Select Longitude (E-W)',...
+                            'SelectionMode','single',...
+                            'ListString',vn_with_example(tb, tb.Properties.VariableNames));
+                        if ~ok; return; end
                     else
                         lonIdx = 2-latIdx+1;
                     end
