@@ -14,17 +14,22 @@ classdef findquar < ZmapHGridFunction
     
     properties
         oldratios
-        inDaytime (24,1) logical =false(24,1);
+        inDaytime (24,1) logical =false(24,1)
+        localNoonEstimate (1,1) = 12;
+        dayLength (1,2) = [4, 6] % hours BEFORE noon to hours AFTER noon
     end
     
     properties(Constant)
-        PlotTag='QuarryRatios';
-        ReturnDetails = {...VariableNames, VariableDescriptions, VariableUnits
+        PlotTag         = 'QuarryRatios'
+        ReturnDetails   = {...VariableNames, VariableDescriptions, VariableUnits
             'day_night_ratio', 'Day-Night event ratio', '';
+            'day_night_ratio_norm', 'Day-Night event ratio (normalized by hrs in day)', '';
             'n_day','Number of events during day','';
             'n_night','Number of events during night',''...
-            };
-        CalcFields = {'day_night_ratio','n_day','n_night'};
+            }
+        CalcFields      = {'day_night_ratio','day_night_ratio_norm','n_day','n_night'}
+        DayColor        = [0.8 0.8 0.2]
+        NightColor      = [0.1 0.0 0.6]
     end
     
     methods
@@ -61,7 +66,7 @@ classdef findquar < ZmapHGridFunction
         function InteractiveSetup_part2(obj)
             % allow user to define which hours are in a "day"
             
-            fifhr=figure_w_normalized_uicontrolunits(...
+            fifhr = figure(...
                 'Name','Daytime (explosion) hours',...
                 'NumberTitle','off', ...
                 'NextPlot','new', ...
@@ -70,58 +75,75 @@ classdef findquar < ZmapHGridFunction
                 'Tag','fifhr',...
                 'Position',[ 100 100 500 650]);
             axis off
+            ax = gca;
             
             uicontrol(fifhr,'Style','text','String','Detect Quarry Events',...
                 'FontWeight','Bold','FontSize',14,'Units','points','Position',[50 620 300 20]);
           
-            set(gca,'NextPlot','add')
-            hax=axes(fifhr,'Units','points','pos', [50 320 300 270])%[0.1 0.2 0.6 0.6]);
-            dayHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','day','FaceColor',[.8 .8 .2]);
-            set(gca,'NextPlot','add');
-            nightHist=histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','night','FaceColor',[.1 0 .6]);
+            set(ax,'NextPlot','add');
+            hax = axes(fifhr,'Units','points','pos', [50 320 300 270]);
+            eventHours = findquar.ToHourlyCategorical(obj.RawCatalog.Date.Hour);
+            %dayHist = histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','day','FaceColor',obj.DayColor);
+            dayHist = histogram(hax,eventHours,'DisplayName','day','FaceColor',obj.DayColor);
+            set(hax,'NextPlot','add');
+            %nightHist = histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','night','FaceColor', obj.NightColor);
+            nightHist = histogram(hax,eventHours,'DisplayName','night','FaceColor', obj.NightColor);
             title(' Select the daytime hours and then "GO"')
             [X,N,B] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
+            %[X,~,B] = histcounts(eventHours);
             %[X,~] = hist(obj.RawCatalog.Date.Hour,-0.5:1:24.5);
             
-            xlabel('Hr of the day')
-            ylabel('Number of events per hour')
+            xlabel(hax,'Hr of the day')
+            ylabel(hax,'Number of events per hour')
             
             evsel=EventSelectionChoice(fifhr,'evsel', [40,100], obj.EventSelector);
             
             chkpos = @(n)[.80 1-n/28-0.03 .17 1/26];
             for i = 1:24
-                hHourly(i)=uicontrol('Style','checkbox',...
+                hHourly(i)=uicontrol(fifhr,'Style','checkbox',...
                     'string',[num2str(i-1) ' - ' num2str(i) ],...
-                    'Position',chkpos(i),'tag',num2str(i),...
                     'Units','normalized',...
+                    'Position',chkpos(i),'tag',num2str(i),...
                     'Callback',{@cb_flip,i});
             end
             
-            % turn on checkboxes according to their percentile score
-            idx = X(1:end-1) > prctile2(X,60);
-            for i = 1:length(idx)
-                set(hHourly(i),'Value',idx(i));
+            obj.CalcLocalNoon();
+            dayStart = mod(obj.localNoonEstimate - obj.dayLength(1),24);
+            dayEnd = mod(obj.localNoonEstimate + obj.dayLength(2),24);
+            eachHour = 0:23;
+            if dayStart < dayEnd
+                obj.inDaytime = dayStart <= eachHour  & eachHour < dayEnd;
+            else
+                obj.inDaytime = dayStart <= eachHour | eachHour < dayEnd;
             end
-            dayHist.Data(ismember(B,find(~idx)))=nan;
-            nightHist.Data(ismember(B,find(idx)))=nan;
+            % turn on checkboxes according to their percentile score
+            %  idx = X(1:end-1) > prctile2(X,60); % then set values from this
+            
+            for hr = 1:24
+                hHourly(hr).Value = obj.inDaytime(hr);
+            end
+            update_histograms();
+            %nightHist.Data(obj.inDaytime)=nan;
             legend(hax,'show');
             if isempty(findobj(fifhr,'Tag','quarryinfo'))
                 add_menu_divider();
                 uimenu(fifhr,'Label','Info',MenuSelectedField(),@cb_info,'tag','quarryinfo');
             end
             
-            uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,...
-                'units','pixels','Position',[330 10 60 25]);
+            uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,'Position',[330 10 60 25]);
             
-            uicontrol(fifhr,'style','pushbutton','String','Cancel','callback',@cb_cancel,...
-                'units','pixels','Position',[400 10 60 25]);
+            uicontrol(fifhr,'style','pushbutton','String','Cancel','Callback',@cb_cancel,'Position',[400 10 60 25]);
             
             function cb_flip(~,~,i)
-                idx(i)=~idx(i);
-                dayHist.Data=obj.RawCatalog.Date.Hour(ismember(B,find(idx)));
-                nightHist.Data=obj.RawCatalog.Date.Hour(ismember(B,find(~idx)));
+                obj.inDaytime(i) = ~obj.inDaytime(i);
+                update_histograms();
             end
-            
+            function update_histograms()
+                dayCats = obj.ToHourlyCategorical(find(obj.inDaytime)-1);
+                nightCats = obj.ToHourlyCategorical(find(~obj.inDaytime)-1);
+                dayHist.Data = eventHours(ismember(eventHours, dayCats));
+                nightHist.Data = eventHours(ismember(eventHours, nightCats));
+            end
             function cb_go(~,~)
                 obj.inDaytime=logical([hHourly.Value]); %same as idx
                 close;
@@ -184,8 +206,9 @@ classdef findquar < ZmapHGridFunction
                 hrofday= hour(catalog.Date);
                 nDay= sum(obj.inDaytime(hrofday+1));
                 nNight = catalog.Count - nDay;
-                myratio = (sum(nDay)/sum(nNight)) * daynight_hr_ratio;
-                val=[myratio nDay nNight];
+                myratio = (nDay / nNight);
+                normalizedRatioByHoursInDay = myratio * daynight_hr_ratio;
+                val=[myratio normalizedRatioByHoursInDay nDay nNight];
             end
         end
         %{
@@ -353,6 +376,11 @@ classdef findquar < ZmapHGridFunction
             % obj.ZG.SOMETHING = obj.Result.SOMETHING
         end
         
+        function CalcLocalNoon(obj)
+            catMedianLatitude = median(obj.RawCatalog.Longitude);
+            obj.localNoonEstimate = round( catMedianLatitude  / 15) + 12;
+        end
+        
     end %methods
     
     methods(Static)
@@ -362,6 +390,9 @@ classdef findquar < ZmapHGridFunction
             h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)findquar(zapFcn()));
         end
         
+        function ct = ToHourlyCategorical(val)
+            ct = categorical(val, 0:23, 'ordinal', true);
+        end
     end % static methods
     
 end %classdef

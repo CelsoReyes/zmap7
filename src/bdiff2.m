@@ -411,17 +411,16 @@ classdef bdiff2
         
         function  updatePlottedBvalLine(obj,ax)
             % plot line corresponding to B value
-            bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',...
-                obj.bw, obj.std_backg, obj.aw, obj.a0);
+            %bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',obj.bw, obj.std_backg, obj.aw, obj.a0);
             bvl = findobj(ax,'Tag',obj.tags.linearfit);
             if isempty(bvl)
                 line(ax, obj.mag_zone,obj.f,'Color','r','LineWidth',1 ,...
-                    'Tag', obj.tags.linearfit,...
-                    'DisplayName',bvdispname);   % plot linear fit to backg
+                    'Tag', obj.tags.linearfit...,'DisplayName',bvdispname
+                    );   % plot linear fit to backg
             else
                 bvl.XData=obj.mag_zone;
                 bvl.YData=obj.f;
-                bvl.DisplayName=bvdispname;
+                % bvl.DisplayName=bvdispname;
             end
             txh = findobj(ax,'Tag','bvaltext');
             set(txh,'String', obj.descriptive_text());
