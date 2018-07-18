@@ -9,8 +9,11 @@ function replot_all(obj,metaProp,eventData)
     else
         eventName = eventData.EventName;
     end
-    msg.dbdisp(['Replotting because:', eventName]);
-    
+    if exist('metaprop','var') && isprop(metaProp,'Name')
+        msg.dbdisp(['Replotting because:', eventName, ' (', metaProp.Name, ')' ]);
+    else
+        msg.dbdisp(['Replotting because:', eventName]);
+    end
     md=[];
     k={};
     
@@ -28,7 +31,7 @@ function replot_all(obj,metaProp,eventData)
             end
             
         case {'XsectionRemoved'}
-            disp('remove cross section from plots')
+            msg.dbdisp('remove cross section from plots')
             
         case {'XsectionChanged'}
             msg.dbdisp('replot cross sections')
@@ -40,7 +43,7 @@ function replot_all(obj,metaProp,eventData)
             msg.dbdisp('replot everything touched by catalog')
             k=obj.XSectionTitles;
             if eventName=="ShapeChanged"
-                disp(eventData.Source);
+                msg.dbdisp(eventData.Source);
                 disp(metaProp);
                 obj.shape=eventData.Source;
             end

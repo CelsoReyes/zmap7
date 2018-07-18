@@ -314,12 +314,12 @@ classdef bdiff2
                 rect=[0 0 1 1];
                 h2=axes('position',rect);
                 h2.Visible='off';
-                text(ax,.16,.14,tx);
+                text(ax,.16,.14,tx,'Tag','bvaltext');
             else
                 txh=text(ax,'Units','Normalized',...
                     'HorizontalAlignment','right',...
                     'Position',[.995 .75],...
-                    'String',tx);
+                    'String',tx,'Tag','bvaltext');
                 txh.String(end)=[];
             end
             
@@ -423,6 +423,8 @@ classdef bdiff2
                 bvl.YData=obj.f;
                 bvl.DisplayName=bvdispname;
             end
+            txh = findobj(ax,'Tag','bvaltext');
+            set(txh,'String', obj.descriptive_text());
         end
         
         
@@ -433,7 +435,11 @@ classdef bdiff2
                     obj.MaxCurveMag ,obj.bw, obj.std_backg, obj.aw );
                 
                 p_text = sprintf('p=  %.2g', obj.pr);
+                if exist('gBdiff','var')
                 nbs_text = sprintf('n1: %g, n2: %g, b1: %g, b2: %g', gBdiff.n1, gBdiff.n2, gBdiff.b1, gBdiff.b2);
+                else
+                    nbs_text = 'n1:? n2:? b1:? b2:?';
+                end
                 tx = sprintf('%s\n%s\n%s', ba_text, p_text, nbs_text');
             else
                 fmt = 'b-value = %.2f +/-%.2f\na-value=%.3f, (annual)=%.3f';

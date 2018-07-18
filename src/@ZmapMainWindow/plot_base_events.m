@@ -159,7 +159,7 @@ function plot_base_events(obj, container, featurelist)
         ShapeGeneral.clearplot();
         delete(obj.shape);
         obj.shape=ShapeGeneral;
-        obj.replot_all();
+       % obj.replot_all();
     end
     
     function cb_zoom(~,~)

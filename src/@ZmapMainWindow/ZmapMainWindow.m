@@ -1,7 +1,7 @@
 classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
-    properties(SetObservable)
+    properties(SetObservable, AbortSet)
         catalog ZmapCatalog % event catalog
         bigEvents ZmapCatalog
         shape {mustBeShape} = ShapeGeneral.ShapeStash % used to subset catalog by selected area
@@ -257,7 +257,7 @@ classdef ZmapMainWindow < handle
         
     function set_my_shape(obj, sh)
         % call this whenever shape is replaced, otherwise catalog will not adjust to it
-        if ~isempty(sh)
+        if ~isempty(sh) && ~isequal(sh,obj.shape)
             obj.shape=sh;
             subscribe(obj.shape, 'ShapeChanged',@obj.replot_all);
             obj.shape.plot(obj.map_axes);
