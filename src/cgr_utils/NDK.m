@@ -11,6 +11,7 @@ classdef NDK
     properties
         allNDKs table
         
+        
         % TypeOfSourceInvertedFor is
         %"CMT: 0" - general moment tensor;
         %"CMT: 1" - moment tensor with constraint of zero trace (standard);
@@ -26,6 +27,18 @@ classdef NDK
         %Mrr % r is up
         %Mtt % t is south
         %Mpp % p is east
+    end
+    properties(Constant)
+        base_directory = 'https://www.ldeo.columbia.edu/~gcmt/projects/CMT/catalog/';
+        % different dates are stored in differing locations.
+        filelocations = {... [startdate>=, <enddate],location relative to base.
+            datetime([1962 1976], 1, 1), {'PRE1976/deep_1962-1976.ndk','PRE1976/intdep_1962-1976.ndk'};
+            datetime([1976 2017], 1, 1), 'jan76_dec17.ndk';...
+            datetime([2017 year(datetime)], 1, 1), 'NEW_MONTHLY/{yyyy}';...
+            [datetime(year(datetime), 1, 1), datetime], 'NEW_QUICK/E{yyyymmddHHMM}.ndk'...
+            }
+            
+        
     end
     
     methods
@@ -175,5 +188,40 @@ classdef NDK
             tx=fileread(f);
             NDKS = NDK(splitlines(strip(tx)));
         end
+        
+        function NDKS = download(varargin)
+            p=inputParser();
+            p.addRequired('starttime');
+            p.addRequired('endtime');
+            p.addParameter('minmagnitude',-inf);
+            p.addParameter('maxmagnitude',inf);
+            p.addParameter('minlatitude',-90);
+            p.addParameter('maxlatitude',90);
+            p.addParameter('minlongitude',-180);
+            p.addParameter('maxlongitude',180);
+            p.addParameter('mindepth',inf);
+            p.addParameter('maxdepth',inf);
+            % TODO finish this
+            
+        end
+        function tb = getFileLocations(starttime, endtime)
+            % unpack theoretical file locations into real ones.
+            floc_cells = NDK.filelocations;
+            fls = NDK.filelocations{:,1}(1);
+            fle = NDK.filelocations{:,1}(2);
+            ignoreMe =   starttime > fle || endtime <= fls ;
+            floc_cells(ignoreMe,:) = [];
+            tb = table('Size', [1,3],...
+                'VariableTypes', {'datetime',   'datetime', 'string'},...
+                'VariableNames', {'starttime',  'endtime',  'url'});
+            % TODO finish this
+                
+            
+        end
+        
+        
+        
+        
+            
     end
 end

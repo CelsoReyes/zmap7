@@ -3,19 +3,22 @@ classdef ZmapHGridFunction < ZmapGridFunction
     %
     % see also ZMAPGRIDFUNCTION
     
-    properties
+    properties(SetObservable, AbortSet)
         features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
         
-        showRing = false;
-        showPointValue = false;
-        showTable = true;
+        showRing        = false;
+        showPointValue	= false;
+        showTable       = true;
         showResultPlots = true;
         
-        nearestSample = 0;
+        nearestSample   = 0;         % current index (where user clicked) within the result table
+        lastPoint       = [nan nan]; % x, y of click
+        nearestSamplePos= [nan nan]; % x, y of measurement
     end
     
     properties(Constant) 
-        % remember, return == char(13)
+        % The results can be explored  also by pressing keys. This creates the mapping
+        % between the keys and actions
         KeyMap = struct(...
             'ToggleRadiusRing', 'r',...
             'ShowValue', 'T',... 
@@ -30,16 +33,22 @@ classdef ZmapHGridFunction < ZmapGridFunction
         resultsForThisPointNoNan
         selectionForThisPoint
         catalogForThisPoint
+        colorForThisPoint
     end
     
     methods
         
         function obj=ZmapHGridFunction(varargin)
             obj@ZmapGridFunction(varargin{:});
+            obj.addlistener('lastPoint','PostSet', @obj.update);
         end
         
         function tb = get.resultsForThisPoint(obj)
-            tb = obj.Result.values(obj.nearestSample,:);
+            if obj.nearestSample
+                tb = obj.Result.values(obj.nearestSample,:);
+            else
+                tb=obj.Result.values([],:);
+            end
         end
         
         function tb = get.resultsForThisPointNoNan(obj)
@@ -50,6 +59,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function mask = get.selectionForThisPoint(obj)
             tb = obj.resultsForThisPoint;
+            if isempty(tb); mask=[];return; end
             % evsel = obj.EventSelector;
             dists = obj.RawCatalog.epicentralDistanceTo(tb.y,tb.x);
             mask = dists <= tb.Radius_km;
@@ -61,6 +71,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function c = get.catalogForThisPoint(obj)
             c=obj.RawCatalog.subset(obj.selectionForThisPoint);
+        end
+        
+        
+        function mycolor = get.colorForThisPoint(obj)
+             % use the same color for the trend plot as is used for the results overlay
+            cm=colormap(obj.ax);
+            cl=obj.ax.CLim;
+            lookup=linspace(min(cl), max(cl), length(cm));
+            mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
+            gr=findobj(obj.ax.Children,'flat','-regexp','Tag','.*[gG]rid.*');
+            gridx = find(gr.XData==obj.nearestSamplePos(1) & gr.YData==obj.nearestSamplePos(2));
+            mycolor = mycolorFn(gr.CData(gridx));
+            
+            if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
         end
         
         
@@ -212,7 +236,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             pretty_colorbar(ax,mydesc,myunits);
             
             drawnow
-            obj.interact(ax, myname)
+            obj.ax = ax;
+            obj.interact(myname)
         end
         
         function plot(obj, choice)
@@ -227,8 +252,9 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 choice = obj.active_col;
             end
             
+            %% plot into the ZMAP main window
             if get(gcf,'Tag') == "Zmap Main Window"
-                theTab=obj.recreateExistingResultsTab(gcf);
+                theTab = obj.recreateExistingResultsTab(gcf);
                 obj.overlay(theTab, choice)
                 theTab.UserData = obj; % stash results in this tab for future access
                 return
@@ -245,7 +271,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             figure(f);
             set(f,'name',['results : ', myname])
             delete(findobj(f,'Type','axes'));
-            
             % this is to show the data
             if islogical(obj.Result.values.(myname)(1))
                 p=double(obj.Result.values.(myname));
@@ -254,35 +279,33 @@ classdef ZmapHGridFunction < ZmapGridFunction
             else
                 obj.Grid.pcolor([],obj.Result.values.(myname), mydesc);
             end
-            set(gca,'NextPlot','add');
+            obj.ax = gca;
+            set(obj.ax,'NextPlot','add');
             
-            % the imagesc exists is to enable data cursor browsing.
-            % obj.plot_image_for_cursor_browsing(myname, mydesc, choice);
             
             shading(obj.ZG.shading_style);
-            set(gca,'NextPlot','add')
+            set(obj.ax,'NextPlot','add')
             
             obj.add_grid_centers();
             
-            ax=gca;
             for n=1:numel(obj.features)
                 ft=obj.ZG.features(obj.features{n});
-                copyobj(ft,ax);
+                copyobj(ft,obj.ax);
             end
             colorbar
-            title(mydesc)
-            xlabel('Longitude')
-            ylabel('Latitude')
+            title(obj.ax,mydesc)
+            xlabel(obj.ax,'Longitude')
+            ylabel(obj.ax,'Latitude')
             
             %dcm_obj=datacursormode(gcf);
             %dcm_obj.UpdateFcn=@ZmapGridFunction.mydatacursor;
             %dcm_obj.SnapToDataVertex='on';
             
-            if isempty(findobj(gcf,'Tag','lookmenu'))
+            if isempty(findobj(f,'Tag','lookmenu'))
                 obj.add_menus(choice);
             end
             
-            obj.update_layermenu(myname,gcf);
+            obj.update_layermenu(myname,f);
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             
@@ -366,19 +389,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
     end % Public methods
     
     methods(Access=protected)
-        function plot_image_for_cursor_browsing(obj, myname, mydesc, choice)
-            report_this_filefun();
-            
-            h=obj.Grid.imagesc([],obj.Result.values.(myname), mydesc);
-            h.AlphaData=zeros(size(h.AlphaData))+0.0;
-            
-            % add some details that can be picked up by the interactive data cursor
-            h.UserData.vals= obj.Result.values;
-            h.UserData.choice=choice;
-            h.UserData.myname=myname;
-            h.UserData.myunit=obj.Result.values.Properties.VariableUnits{choice};
-            h.UserData.mydesc=obj.Result.values.Properties.VariableDescriptions{choice};
-        end
         
         
         function addquakes_cb(obj, src, ~, catalog)
@@ -448,7 +458,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
         function add_grid_centers(obj)
             % show grid centers, but don't make them clickable
             report_this_filefun();
-            dbk=dbstack(1);disp(dbk(1).name);
+            dbk=dbstack(1);
+            disp(dbk(1).name);
             
             gph=obj.Grid.plot(gca,'ActiveOnly');
             gph.Tag='pointgrid';
@@ -457,36 +468,113 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
         
         function theTab = recreateExistingResultsTab(obj, f)
-            % delete existing tab from main window
+            % create tab for this result in the main window. Existing tab will be deleted
             theTabHolder = findobj(f, 'Tag','main plots','-and','Type','uitabgroup');
-            theTab=findobj(theTabHolder,'Tag',obj.PlotTag);
-            if ~isempty(theTab)
-                delete(theTab)
-            end
+            delete(findobj(theTabHolder, 'Tag', obj.PlotTag))
             
-            theTab=uitab(theTabHolder,'Title',[obj.PlotTag ' Results'],'Tag',obj.PlotTag);
+            theTab = uitab(theTabHolder, 'Title', [obj.PlotTag ' Results'], 'Tag', obj.PlotTag);
         end
         
+        function updateRing(obj)
+            CR = findobj(obj.ax,'Tag','thisradius');
+            if obj.showRing
+                % update samplecircle
+                [La,Lo]=reckon(obj.nearestSamplePos(1), obj.nearestSamplePos(2), km2deg(obj.Result.values.Radius_km(obj.nearestSample)), 0:2:360);
+                set(CR,'XData',Lo,'YData',La,'LineStyle','--');
+            else
+                set(CR,'XData',nan,'YData',nan);
+            end
+        end
         
-        function interact(obj,ax, myname)
-            f=ancestor(ax,'figure');
-            mytab=ax.Parent;
+        function updateText(obj)
+            TX = findobj(obj.ax,'Tag','thisresulttext');
+            myname = TX.UserData;
+            if obj.showPointValue
+                % update text
+                TX.Position=[obj.nearestSamplePos,0];
+                valstr=string(obj.Result.values.(myname)(obj.nearestSample));
+                if ismissing(valstr)
+                    TX.String="  " + myname + " : <missing>";
+                else
+                    TX.String="  " + myname + " : " + valstr;
+                end
+            else
+                TX.String="";
+            end
+        end
+        function update(obj, ~, ~)
+            % get current point and axes
+            
+            obj.updateText();
+            obj.updateRing();
+            obj.updateSeries();
+        end
+        
+        function updateSeries(obj)
+            % update external plot(s)
+            
+            h=findobj(gcf,'Tag','CumPlot axes');
+            if isempty(h)
+                warning('Something is wrong. cannot find CumPlot axes handle');
+            end
+            
+            % define how these trends will appear
+            plOpt.Marker='o';
+            plOpt.LineStyle='-.';
+            plOpt.LineWidth=2;
+            plOpt.DisplayName = [obj.PlotTag, ' selection'];
+            plOpt.Color = obj.colorForThisPoint;
+            c = obj.catalogForThisPoint;
+            h.UserData.add_series(c, [obj.PlotTag, ' selection'], plOpt);
+        end
+        
+        function interact(obj,myname)
+            % make this results-plot interactive
+            f=ancestor(obj.ax,'figure');
+            mytab=obj.ax.Parent;
             mytabholder=mytab.Parent;
-            ax.NextPlot='add';
-            delete(findobj(ax,'Tag','thisresulttext'));
-            delete(findobj(ax,'Tag','thisresulthilight'));
-            delete(findobj(ax,'Tag','thisradius'));
-            TX = text(ax,nan,nan,'','FontWeight','bold','BackgroundColor','w','Interpreter','none','Tag','thisresulttext');
-            HL = scatter(ax,nan,nan,'o','MarkerEdgeColor',[0 0 0], 'MarkerFaceColor',[1 0 0],...
+            obj.ax.NextPlot='add';
+            delete(findobj(obj.ax,'Tag','thisresulttext'));
+            delete(findobj(obj.ax,'Tag','thisresulthilight'));
+            delete(findobj(obj.ax,'Tag','thisradius'));
+            text(obj.ax,nan,nan,'','FontWeight','bold','BackgroundColor','w',...
+                'Interpreter','none','Tag','thisresulttext','UserData',myname);
+            HL = scatter(obj.ax,nan,nan,'o','MarkerEdgeColor',[0 0 0], 'MarkerFaceColor',[1 0 0],...
                 ...'CData',[0 0 0],...
                 'Tag','thisresulthilight',...
                 'SizeData',60,...
                 'LineWidth',3);
-            CR = line(ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
-            f.WindowButtonMotionFcn = @update;
+            line(obj.ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
+
+            %% 
+            % desired behavior:
+            %  - do nothing until mouse is down
+            %  - on mouse click, choose the nearest data point, and update all relevant graphs with
+            %    data associated with that point.
+            %       - MainMap shows the appropriate data point, and may show radius and value
+            %       - Subplots may update with the catalog represented by that point
+            %  - While mouse is down, continuously update location
+            
+            % Do not update until mouse button is pressed
+            isUpdating=false;
+            
+            % update the data-point positions as the mouse moves
+            f.WindowButtonMotionFcn = @updateClickPoint;
+            
+            % Whenever the mouse is pressed in this axes, start doing updates
+            obj.ax.ButtonDownFcn = @trigger_update;
+            
+            % But, make sure that button presses are not intercepted, otherwise 
+            % the feedback will be intermittant.
+            set(obj.ax.Children,'HitTest','off');
+            
+            % allow for additional functionality by looking for key presses
             f.WindowKeyPressFcn     = @keyupdate;
             
+            return
+            
             function keyupdate(src, ev)
+                % translate key presses into actions
                 k = ev.Character;
                 switch k
                     case obj.KeyMap.KeyHelp
@@ -507,72 +595,58 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         
                     case obj.KeyMap.ShowValue
                         disp(obj.resultsForThisPoint);
+                        
+                    otherwise
+                        % add additional key funcitonality here.
+                        do_nothing();
+                end
+                updateClickPoint()
+            end
+            function trigger_update(src,ev)
+                % start tracking the mouse location
+                wbu_tmp = f.WindowButtonUpFcn;
+                f.WindowButtonUpFcn = @falsifyIsUpdating;
+                isUpdating=true;
+                try
+                    updateClickPoint(src,ev);
+                    drawnow
+                catch ME
+                    falsifyIsUpdating()
+                    rethrow(ME)
+                end
+                    
+                function falsifyIsUpdating(~,~)
+                    % stop updating the selected results.
+                    isUpdating=false;
+                    f.WindowButtonUpFcn=wbu_tmp;
                 end
                 
             end
             
-            function update(src, ev)
-                if mytabholder.SelectedTab~=mytab
+            function updateClickPoint(~,~)
+                % If user clicks in the active axis, then the point and sample are updated
+                if mytabholder.SelectedTab~=mytab || ~isUpdating
                     return
                 end
-                axX=ax.XLim;
-                axY=ax.YLim;
-                pt=ax.CurrentPoint(1,1:2);
-                if pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1)
+                axX=obj.ax.XLim;
+                axY=obj.ax.YLim;
+                pt=obj.ax.CurrentPoint(1,1:2);
+                withinAxes = pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1);
+                if withinAxes
+                    obj.lastPoint = pt;
                     mx=pt(1); my=pt(2);
                     [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
-                    if nearest ~= obj.nearestSample
-                        obj.nearestSample=nearest;
-                        x=obj.Result.values.x(nearest);
-                        y=obj.Result.values.y(nearest);
-                        % update hilight
-                        HL.XData = x;
-                        HL.YData = y;
-                        
-                        if obj.showPointValue
-                            % update text
-                            TX.Position=[x, y,0];
-                            valstr=string(obj.Result.values.(myname)(nearest));
-                            if ismissing(valstr)
-                                TX.String="  " + myname + " : <missing>";
-                            else
-                                TX.String="  " + myname + " : " + valstr;
-                            end
-                        else
-                            TX.String="";
-                        end
-                        
-                        if obj.showRing
-                            % update samplecircle
-                            [La,Lo]=reckon(y, x, km2deg(obj.Result.values.Radius_km(nearest)), 0:2:360);
-                            set(CR,'XData',Lo,'YData',La,'LineStyle','--');
-                        else
-                            set(CR,'XData',nan,'YData',nan);
-                        end
-                        
-                        h=findobj(gcf,'Tag','CumPlot axes');
-                        if isempty(h)
-                            warning('Something is wrong. cannot find CumPlot axes handle');
-                        end
-                        plOpt.Marker='o';
-                        plOpt.LineStyle='-.';
-                        plOpt.LineWidth=2;
-                        plOpt.DisplayName = [obj.PlotTag, ' selection'];
-                        gr=findobj(ax.Children,'flat','-regexp','Tag','.*[gG]rid.*');
-                        gridx = find(gr.XData==x & gr.YData==y);
-                        cm=colormap(ax);
-                        cl=ax.CLim;
-                        lookup=linspace(min(cl),max(cl),length(cm));
-                        mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
-                        mycolor = mycolorFn(gr.CData(gridx));
-                        if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
-                        plOpt.Color = mycolor;
-                        c = obj.catalogForThisPoint;
-                        h.UserData.add_series(c, [obj.PlotTag, ' selection'], plOpt);
-                        
-                    end %nearest
-                end % within axes
+                    x = obj.Result.values.x(nearest);
+                    y = obj.Result.values.y(nearest);
+                    obj.nearestSample=nearest;
+                    obj.nearestSamplePos = [x , y]
+                    
+                    % update hilight
+                    HL.XData = x;
+                    HL.YData = y;
+                end
             end
+            
         end
     end % Protected methods
     

@@ -68,7 +68,11 @@ function varargout = btnInfo_Callback(h, eventdata, handles, varargin)
     % Does the filter provides any info file?
     if ~isempty(sHelpFile)
         % Yes, invoke the webhelp
-        sInfo = [handles.sFilterDir sHelpFile];
+        if startsWith(sHelpFile,'http')
+            sInfo = sHelpFile
+        else
+            sInfo = [handles.sFilterDir sHelpFile];
+        end
         web(sInfo);
     else
         % No, sorry

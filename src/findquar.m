@@ -28,15 +28,15 @@ classdef findquar < ZmapHGridFunction
             'n_night','Number of events during night',''...
             }
         CalcFields      = {'day_night_ratio','day_night_ratio_norm','n_day','n_night'}
-        DayColor        = [0.8 0.8 0.2]
-        NightColor      = [0.1 0.0 0.6]
+        DayColor        = [0.8 0.8 0.2] % for histogram
+        NightColor      = [0.1 0.0 0.6] % for histogram
     end
     
     methods
         function obj=findquar(zap,varargin) %CONSTRUCTOR
             % create a [...]
             
-            obj@ZmapHGridFunction(zap, 'day_night_ratio');
+            obj@ZmapHGridFunction(zap, 'day_night_ratio_norm');
             
             % depending on whether parameters were provided, either run automatically, or
             % request input from the user.
