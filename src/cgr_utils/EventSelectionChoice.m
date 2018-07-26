@@ -3,12 +3,12 @@ classdef EventSelectionChoice < handle
     %
     % options this can control:
     %   1. Select all events within Radius R of a point?
-    %       useEventsInRadius = true
-    %       radius_km = [some value]
+    %       UseEventsInRadius = true
+    %       RadiusKm = [some value]
     %
     %   2. Select the closest N events to a point, up to a max radius?
-    %       useNumNearbyEvents =  true
-    %       numNearbyEvents = [some value]
+    %       UseNumNearbyEvents =  true
+    %       NumNearbyEvents = [some value]
     %       maxRadiusKm = [some value] 
     %       
     %   5. Minumum number of points for meaningful measurement?
@@ -55,11 +55,11 @@ classdef EventSelectionChoice < handle
         
         function out=toStruct(obj)
             % creates a structure with fields
-            %  numNearbyEvents, radius_km, useNumNearbyEvents, useEventsInRadius
-            out.numNearbyEvents=obj.ni;
-            out.radius_km=obj.ra;
-            out.useNumNearbyEvents=obj.UseNumNearbyEvents;
-            out.useEventsInRadius=obj.UseEventsInRadius;
+            %  NumNearbyEvents, RadiusKm, UseNumNearbyEvents, UseEventsInRadius
+            out.NumNearbyEvents=obj.ni;
+            out.RadiusKm=obj.ra;
+            out.UseNumNearbyEvents=obj.UseNumNearbyEvents;
+            out.UseEventsInRadius=obj.UseEventsInRadius;
             if obj.UseNumNearbyEvents
                 out.maxRadiusKm = obj.max_ra;
             else
@@ -77,8 +77,8 @@ classdef EventSelectionChoice < handle
                 ev=ni; % name correctly for readability below
                 % use the evsel fields
                      % Create, Load, or use Previous grid choice
-                obj.ni=ev.numNearbyEvents;
-                obj.ra=ev.radius_km;
+                obj.ni=ev.NumNearbyEvents;
+                obj.ra=ev.RadiusKm;
                 obj.max_ra = ev.maxRadiusKm;
                 obj.minValid = ev.requiredNumEvents;
                 
@@ -91,7 +91,7 @@ classdef EventSelectionChoice < handle
                 end
                 enable_ra = true;
                 enable_ni = true;
-                default_is_ni = isfield(ev,'useEventsInRadius') && ev.useEventsInRadius;
+                default_is_ni = isfield(ev,'UseEventsInRadius') && ev.UseEventsInRadius;
             else
                 % Create, Load, or use Previous grid choice
                 obj.ni=ni;
@@ -192,7 +192,7 @@ classdef EventSelectionChoice < handle
             obj.ubg1.SelectionChangedFcn=@callback_selectioncontrol;
             
             if exist('ev','var') 
-                if isfield(ev,'useNumNearbyEvents') && ev.useNumNearbyEvents
+                if isfield(ev,'UseNumNearbyEvents') && ev.UseNumNearbyEvents
                     obj.ubg1.SelectedObject=obj.hUseNevents;
                 else
                     obj.ubg1.SelectedObject=obj.hUseRadius;
@@ -275,10 +275,10 @@ classdef EventSelectionChoice < handle
             uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
             uiwait(f);
             if writeToGlobal && okPressed
-                assert(~isempty(evsel.numNearbyEvents));
-                ZG.ni=evsel.numNearbyEvents;
-                assert(~isempty(evsel.radius_km));
-                ZG.ra=evsel.radius_km;
+                assert(~isempty(evsel.NumNearbyEvents));
+                ZG.ni=evsel.NumNearbyEvents;
+                assert(~isempty(evsel.RadiusKm));
+                ZG.ra=evsel.RadiusKm;
                 ZG.GridSelector = evsel;
             end
             % TODO set another global saying which method to use?
@@ -300,17 +300,17 @@ classdef EventSelectionChoice < handle
         function tf=isValidSelector(ev)
             tf = true;
             % if  using nearby events, make sure the number is specified
-            if isfield(ev,'useNumNearbyEvents') && ev.useNumNearbyEvents
-                tf = tf && (isfield(ev,'numNearbyEvents') && ev.numNearbyEvents > 0);
+            if isfield(ev,'UseNumNearbyEvents') && ev.UseNumNearbyEvents
+                tf = tf && (isfield(ev,'NumNearbyEvents') && ev.NumNearbyEvents > 0);
             end
             
             % if using events in radius, make sure the radius is specified
-            if isfield(ev,'useEventsInRadius') && ev.useEventsInRadius
-                tf = tf && (isfield(ev,'radius_km') && ev.radius_km >=0);
+            if isfield(ev,'UseEventsInRadius') && ev.UseEventsInRadius
+                tf = tf && (isfield(ev,'RadiusKm') && ev.RadiusKm >=0);
             end
             
             % make sure that in any case, either the number of events or the radius is specified
-            tf = tf && (isfield(ev,'numNearbyEvents') || isfield(ev,'radius_km'));
+            tf = tf && (isfield(ev,'NumNearbyEvents') || isfield(ev,'RadiusKm'));
             
         end
         

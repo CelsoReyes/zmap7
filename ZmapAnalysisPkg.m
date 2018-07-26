@@ -24,7 +24,7 @@ classdef ZmapAnalysisPkg
         
         Catalog % a ZMapCatalog. Do not change this catalog directly
         % EVENTSEL is a structure containing one or more fields used to map a catalog onto a grid point:
-        %   numNearbyEvents, radius_km, useNumNearbyEvents, useEventsInRadius
+        %   NumNearbyEvents, RadiusKm, UseNumNearbyEvents, UseEventsInRadius
         %   maxRadiusKm, requiredNumEvents
         EventSel
         Grid % ZmapGrid used to sample at points in space

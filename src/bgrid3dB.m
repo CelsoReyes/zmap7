@@ -1,4 +1,4 @@
-classdef bgrid3dB < ZmapGridFunction
+classdef bgrid3dB < Zmap3DGridFunction
     % This subroutine assigns creates a 3D grid with
     % spacing dx,dy, dz (in degreees). The size will
     % be selected interactiVELY. The pvalue in each
@@ -13,20 +13,20 @@ classdef bgrid3dB < ZmapGridFunction
         R = 5;
         ni = ZG.ni;
         Nmin = 50;
-        mc_choice
+        mc_choice   McMethods = McMethods.MaxCurvature % magnitude of completion method 
     end
     
     properties(Constant)
-        PlotTag='myplot';
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
-            'bv2','bv2: b-value from bmemmag', '';...bv2 (?) b-value from calc_bmemag() ->bvg
-            'b_value', 'b-value', '';... bv ->bvg_wls
-            'power_fit', 'Goodness of fit to power-law', '';... prf
-            'a_value', 'a-value', '';... av
-            'av2','av2: a-value from bmemmag', '';...av2 (?) a-value from calc_bmemag() ->avm
-            'Mc_value', 'Magnitude of Completion (Mc)', '';... magco ->mcma
-            'b_value_std', 'Std. of b-value', '';...stan
-            'stan2','stan2: b-value std from calc_bmemag','';... stan2 (?) bvalue std from calc_bmemag()
+        PlotTag         = 'myplot';
+        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
+            'bv2',          'bv2: b-value from bmemmag', '';...     bv2 (?) b-value from calc_bmemag() ->bvg
+            'b_value',      'b-value', '';...                       bv ->bvg_wls
+            'power_fit',    'Goodness of fit to power-law', '';... prf
+            'a_value',      'a-value', '';...                       av
+            'av2',          'av2: a-value from bmemmag', '';...     av2 (?) a-value from calc_bmemag() ->avm
+            'Mc_value',     'Magnitude of Completion (Mc)', '';...  magco ->mcma
+            'b_value_std',  'Std. of b-value', '';...stan
+            'stan2',        'stan2: b-value std from calc_bmemag','';... stan2 (?) bvalue std from calc_bmemag()
             ...'Mc_std', 'Std. of Magnitude of Completion', '';...
             ...'a_value_std', 'Std. of a-value', '';...
             ...'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
@@ -34,12 +34,18 @@ classdef bgrid3dB < ZmapGridFunction
             ... av2 (?) a-value from calc_bmemag() ->avm
             ... bv2 (?) b-value from calc_bmemag() ->bvg
             };
+        xParameterableProperties = ["mc_choice", "Nmin"];
+            
     end
     methods
-        function obj=bgrid3dB()
-            ZG=ZmapGlobal.Data; % used by get_zmap_globals
+        function obj=bgrid3dB(zap, varargin)
             
+            obj@Zmap3DGridFunction(zap, 'b_value');
             report_this_filefun();
+            
+            obj.parseParameters(varargin);
+                
+            obj.StartProcess();
             
             useRadius=false;
             
@@ -64,9 +70,9 @@ classdef bgrid3dB < ZmapGridFunction
             obj.mc_choice=res.mc_choice;
             ZG.inb2=res.mc_choice;
             ZG.inb1=res.mc_choice;
-            obj.ni=res.evsel.numNearbyEvents;
-            obj.R=res.evsel.radius_km;
-            useRadius=res.evsel.useEventsInRadius;
+            obj.ni=res.evsel.NumNearbyEvents;
+            obj.R=res.evsel.RadiusKm;
+            useRadius=res.evsel.UseEventsInRadius;
             dx=res.gridopt.dx;
             dy=res.gridopt.dy;
             dz=res.gridopt.dz;

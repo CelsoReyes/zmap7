@@ -1,32 +1,33 @@
 classdef inmakegr < ZmapHGridFunction
     properties
+        depth_km
     end
     properties(Constant)
-        ReturnDetails= {... VariableNames, VariableDescriptions, VariableUnits
-            'nEvents_top','number of events in top layer','';...
-            'mean_mag_top','mean magnitude of events in top layer','mag';...
-            'nEvents_bottom','number of events in bottom layer','';...
-            'mean_mag_bottom','mean magnitude of events in bottom layer','mag';...
-            'ratio','number of events in top to bottom',''...
+        ReturnDetails   = {... VariableNames, VariableDescriptions, VariableUnits
+            'nEvents_top',      'number of events in top layer','';...
+            'mean_mag_top',     'mean magnitude of events in top layer','mag';...
+            'nEvents_bottom',   'number of events in bottom layer','';...
+            'mean_mag_bottom',  'mean magnitude of events in bottom layer','mag';...
+            'ratio',            'number of events in top to bottom',''...
             }
         
         % CalcFields is the label for each column coming out of the Calculate function
         % and should match items first column of ReturnDetails
-        CalcFields = {'nEvents_top','mean_mag_top','nEvents_bottom','mean_mag_bottom'};
+        CalcFields = {'nEvents_top', 'mean_mag_top', 'nEvents_bottom', 'mean_mag_bottom'};
         
-        PlotTag = 'inmakegr';
+        ParameterableProperties = ["depth_km"];
+            
+        PlotTag      = 'inmakegr';
     end
     
     methods
-        function obj=inmakegr(zap, depth_in_km)
+        function obj=inmakegr(zap, varargin)
             obj@ZmapHGridFunction(zap, 'shallow_mag');
+            report_this_filefun();
+            obj.parseParameters(varargin);
             warning('apparently still broken');
-            if nargin < 2
-                obj.InteractiveSetup();
-            else
-                obj.depth_km = depth_in_km;
-                obj.do_It();
-            end
+                
+            obj.StartProcess();
         end
     end
 end

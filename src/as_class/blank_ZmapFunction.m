@@ -87,17 +87,6 @@ classdef blank_ZmapFunction < ZmapFunction
         function Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             
-            % create the function call that someone could use to recreate this calculation.
-            %
-            % for example, if one would call this function with:
-            %      myfun('bob',23,false);
-            % with values that get assigned the variables:
-            %     obj.name, obj.age, obj.runreport
-            % then the next line should be:
-            %      obj.FunctionCall={'name','age','runreport'};
-            
-            obj.FunctionCall={};
-            
             % results of the calculation should be stored in fields belonging to obj.Result
             
             obj.Result.Data=[];

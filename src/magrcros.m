@@ -4,31 +4,36 @@ classdef magrcros < ZmapVGridFunction
     
     
     properties
-        cutoff datetime % time of cut
-        use_fixed_start logical = false;
-        t0b datetime % windows start time [where pre-window data starts]
-        use_fixed_end logical = false;
-        teb datetime % windows end time [where post-window data ends]
-        window_duration duration  = ZmapGlobal.Data.compare_window_dur;
-        bin_dur duration
+        cutoff          datetime                % time of cut
+        use_fixed_start logical     = false;
+        periodA_start   datetime                % windows start time [where pre-window data starts]
+        use_fixed_end   logical     = false;
+        periodB_end     datetime                % windows end time [where post-window data ends]
+        window_duration duration    = ZmapGlobal.Data.compare_window_dur;
+        bin_dur         duration
     end
     
     properties(Constant)
-        PlotTag='zsection';
-        ReturnDetails = { ... TODO update this. it hasn't been really done.
+        PlotTag         = 'zsection';
+        ReturnDetails   = { ... TODO update this. it hasn't been really done.
             ... VariableNames, VariableDescriptions, VariableUnits
-            'AST','Z-value comparing rate before to rate after cutoff','';...
-            'LTA','Z-value comparing rate outside window to inside window','';...
-            'RUB','Z-value comparing rate before cutoff [before window] to rate inside window','';...
-            'PCT','Compare ','';...
-            'nBeforeCutoff','','';...
-            'nAfterCutoff','','';...
-            'nInWindow','','';...
-            'nNotInWindow','','';...
-            'dist_along_strike','Distance along strike','km'...
+            'AST',                  'Z-value comparing rate before to rate after cutoff','';...
+            'LTA',                  'Z-value comparing rate outside window to inside window','';...
+            'RUB',                  'Z-value comparing rate before cutoff [before window] to rate inside window','';...
+            'PCT',                  'Compare ','';...
+            'nBeforeCutoff',        '','';...
+            'nAfterCutoff',         '','';...
+            'nInWindow',            '','';...
+            'nNotInWindow',         '','';...
+            'dist_along_strike',    'Distance along strike','km'...
             };
-        CalcFields = {'AST','LTA','RUB','PCT',...
+        
+        CalcFields      = {...
+            'AST','LTA','RUB','PCT',...
             'nBeforeCutoff','nAfterCutoff','nInWindow','nNotInWindow'}
+        
+        ParameterableProperties = ["cutoff", "use_fixed_start",...
+            "periodA_start", "periodB_end", "use_fixed_end", "window_duration", "bin_dur"]
         
         %Negative z-values indicate an increase in the seismicity rate, positive values a decrease.
             unit_options = {'seconds','hours','days','years'};
@@ -37,10 +42,16 @@ classdef magrcros < ZmapVGridFunction
     methods
         function obj=magrcros(zap,varargin)
             obj@ZmapVGridFunction(zap,'AST');
-            obj.t0b = min(obj.RawCatalog.Date);
-            obj.teb = max(obj.RawCatalog.Date);
-            obj.InteractiveSetup();
-            % magrcros_orig(sel,obj);
+            report_this_filefun();
+            
+            % set the dependent variables here
+            obj.periodA_start = min(obj.RawCatalog.Date);
+            obj.periodB_end = max(obj.RawCatalog.Date);
+            
+            obj.parseParameters(varargin);
+            warning('apparently still broken');
+                
+            obj.StartProcess();
             
             
             % consider this for future: uimenu(op1,'Label','Show Circles ',MenuSelectedField(),@(~,~)plotcirc)
@@ -86,14 +97,14 @@ classdef magrcros < ZmapVGridFunction
             zdlg.AddBasicCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end,'fixed_start',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddBasicEdit('fixed_start','Start time',obj.t0b,...
+            zdlg.AddBasicEdit('fixed_start','Start time',obj.periodA_start,...
                 'window size in specified units');
            
             
             zdlg.AddBasicCheckbox('use_fixed_end', 'Fix EndTime', obj.use_fixed_start,'fixed_end',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddBasicEdit('fixed_end','End time',obj.teb,...
+            zdlg.AddBasicEdit('fixed_end','End time',obj.periodB_end,...
                 'window size in specified units');
             
             zdlg.AddBasicEdit('cutoff','Please enter date & time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
@@ -127,15 +138,15 @@ classdef magrcros < ZmapVGridFunction
         
         function SetValuesFromDialog(obj, res)
             if res.use_fixed_start
-                obj.t0b = min(obj.RawCatalog.Date);
+                obj.periodA_start = min(obj.RawCatalog.Date);
             else
-                obj.t0b = res.fixed_start;
+                obj.periodA_start = res.fixed_start;
             end
             
             if res.use_fixed_end
-                obj.teb = max(obj.RawCatalog.Date);
+                obj.periodB_end = max(obj.RawCatalog.Date);
             else
-                obj.teb = res.fixed_end;
+                obj.periodB_end = res.fixed_end;
             end
             unitizer = obj.unit_functions{res.win_dur_unit};
             obj.window_duration = unitizer(res.win_dur);
@@ -149,10 +160,10 @@ classdef magrcros < ZmapVGridFunction
         end
         
         function CheckPreConditions(obj)
-            assert(obj.cutoff > obj.t0b && obj.cutoff < obj.teb,...
-                'Cutoff date should be some time after %s and before %s', char(obj.t0b), char(obj.teb));
-            assert(obj.t0b < obj.teb,'Invalid dates: Start date is after End date');
-            assert (obj.cutoff + obj.window_duration > obj.teb,...
+            assert(obj.cutoff > obj.periodA_start && obj.cutoff < obj.periodB_end,...
+                'Cutoff date should be some time after %s and before %s', char(obj.periodA_start), char(obj.periodB_end));
+            assert(obj.periodA_start < obj.periodB_end,'Invalid dates: Start date is after End date');
+            assert (obj.cutoff + obj.window_duration > obj.periodB_end,...
                 'window extends past end date. Manually set end date or change window');
         end
         
@@ -163,11 +174,11 @@ classdef magrcros < ZmapVGridFunction
             % gr = xsz.Grid.MaskWithShape(aa.shape)
             % and the above should already be pulled into the object.
       
-            edges_for_cov = unique([obj.cutoff : - obj.bin_dur : obj.t0b, obj.cutoff : obj.bin_dur : obj.teb]);
+            edges_for_cov = unique([obj.cutoff : - obj.bin_dur : obj.periodA_start, obj.cutoff : obj.bin_dur : obj.periodB_end]);
             
             obj.gridCalculations(@calculation_function);
-            obj.Result.t0b = obj.t0b;
-            obj.Result.teb = obj.teb;
+            obj.Result.periodA_start = obj.periodA_start;
+            obj.Result.periodB_end = obj.periodB_end;
             obj.Result.cutoff = obj.cutoff;
             obj.Result.bin_dur = obj.bin_dur;
             

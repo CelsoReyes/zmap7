@@ -2,49 +2,51 @@ classdef rc_cross_a2 < ZmapVGridFunction
     % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     properties
-        bootloops = 100 % number of bootstrap loops [bootloops]
-        timef duration = days(20) % forecast period [forec_period]
-        time duration = days(47)% learning period  [learn_period]
-        addtofig logical = false % should this plot in current figure? [oldfig_button]
+        bootloops                   = 100 % number of bootstrap loops [bootloops]
+        timef       duration        = days(20) % forecast period [forec_period]
+        time        duration        = days(47)% learning period  [learn_period]
+        addtofig    logical         = false % should this plot in current figure? [oldfig_button]
         Nmin % from eventsel
     end
     properties(Constant)
-        PlotTag='myplot'
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'time', 'learning period','days';... #1
-            'absdiff','obs. aftershocks - #events in modeled forecast period','';... #2
-            'numreal','observed # aftershocks',''; ... #3
-            'nummod','#events in modeled forecast period','';... #4
+        PlotTag         = 'rc_cross_a2'
+        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+            'time',     'learning period','days';...                    #1
+            'absdiff',  'obs. aftershocks - #events in modeled forecast period','';... #2
+            'numreal',  'observed # aftershocks',''; ...                #3
+            'nummod',   '#events in modeled forecast period','';...     #4
             ...  p,c,k- values for period before large aftershock or just modified Omori law
-            'pval1', 'p-value','';... #5 [mPval]
-            'pmedStd1', 'p-value standard deviation', '';... #6 [mPvalstd]
-            'cval1', 'c-value','';... #7 [mCval]
-            'cmedStd1','c-value standard deviation','';...#8 [mCvalstd]
-            'kval1','k-value','';... #9 [mKval]
-            'kmedStd1','k-value standard deviation','';... #10 [mKvalstd]
+            'pval1',    'p-value','';...                                #5 [mPval]
+            'pmedStd1', 'p-value standard deviation', '';...            #6 [mPvalstd]
+            'cval1',    'c-value','';...                                #7 [mCval]
+            'cmedStd1', 'c-value standard deviation','';...             #8 [mCvalstd]
+            'kval1',    'k-value','';...                                #9 [mKval]
+            'kmedStd1', 'k-value standard deviation','';...             #10 [mKvalstd]
             ... Resolution parameters
-            'fStdBst','',''; ... #11 [?]
-            'nMod', 'Chosen fitting model', '';... #12 [mMd]
-            'nY','Number of events per grid node', '';... #13 [mNumevents]
-            'fMaxDist','Radii of chosen events, Resolution', '';... #14 [vRadiusRes]
-            'fRcBst', 'Relative rate change (bootstrap)','';... #15 [mRelchange]
+            'fStdBst',  '',''; ...                                      #11 [?]
+            'nMod',     'Chosen fitting model', '';...                  #12 [mMd]
+            'nY',       'Number of events per grid node', '';...        #13 [mNumevents]
+            'fMaxDist', 'Radii of chosen events, Resolution', '';...    #14 [vRadiusRes]
+            'fRcBst',   'Relative rate change (bootstrap)','';...       #15 [mRelchange]
             ... p,c,k- values for period AFTER large aftershock
-            'pval2', 'p-value (after large aftershock)','';... #16 [mPval2]
-            'pmedStd2','p-value std dev (after large aftershock)','';... #17 [mPvalstd2]
-            'cval2','c-value (after large aftershock)','';... #18 [mCval2]
-            'cmedStd2','c-value std dev (after large aftershock)','';... #19 [mCvalstd2]
-            'kval2','k-value (after large aftershock)','';... #20 [mKval2]
-            'kmedStd2','k-value std dev (after large aftershock)','';... #21 [mKvalstd2]
-            'H','KS-Test (H-value) binary rejection criterion at 95% confidence level','';...#22 [mKstestH]
-            'KSSTAT','KS-Test statistic for goodness of fit','';...#23 [mKsstat]
-            'P', 'KS-Test p-value','';... #24 [mKsp]
-            'fRMS','RMS value for goodness of fit',''... #25 [mRMS]
+            'pval2',    'p-value (after large aftershock)','';...       #16 [mPval2]
+            'pmedStd2', 'p-value std dev (after large aftershock)','';... #17 [mPvalstd2]
+            'cval2',    'c-value (after large aftershock)','';...        #18 [mCval2]
+            'cmedStd2', 'c-value std dev (after large aftershock)','';... #19 [mCvalstd2]
+            'kval2',    'k-value (after large aftershock)','';...       #20 [mKval2]
+            'kmedStd2', 'k-value std dev (after large aftershock)','';... #21 [mKvalstd2]
+            'H',        'KS-Test (H-value) binary rejection criterion at 95% confidence level','';...#22 [mKstestH]
+            'KSSTAT',   'KS-Test statistic for goodness of fit','';...  #23 [mKsstat]
+            'P',        'KS-Test p-value','';...                        #24 [mKsp]
+            'fRMS',     'RMS value for goodness of fit',''...           #25 [mRMS]
             }
-        CalcFields={'time','absdiff','numredal','nummod',...
+        CalcFields      = {'time','absdiff','numredal','nummod',...
             'pval1','pmedStd1','cval1','cmedStd1',...
             'kval1','kmedStd1','fStdBst','nMod','nY','fMaxDist','fRcBst',...
             'pval2','pmedStd2','cval2','cmedStd2',...
             'kval2','kmedStd2','H','KSSTAT','P','fRMS'}
+        
+        ParameterableProperties = ["bootloops", "timef", "time", "addtofig", "Nmin"];
     end
     methods
         function obj=rc_cross_a2(zap,varargin)
@@ -52,30 +54,16 @@ classdef rc_cross_a2 < ZmapVGridFunction
             
             obj@ZmapVGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
             
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
+            obj.parseParameters(varargin);
                 
-            else
-                % run this function without human interaction
-                obj.doIt();
-            end
+            obj.StartProcess();
         end
         function InteractiveSetup(obj)
             
             zdlg = ZmapDialog();
             
-            McMethods={'Automatic Mcomp (max curvature)',...
-                'Fixed Mc (Mc = Mmin)',...
-                'Automatic Mcomp (90% probability)',...
-                'Automatic Mcomp (95% probability)',...
-                'Best (?) combination (Mc95 - Mc90 - max curvature)',...
-                'Constant Mc'};
-            
-            zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
-                'Please choose an Mc estimation option');
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
+                'Choose the calculation method for Mc');
             
             % add fMaxRadius
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
@@ -97,7 +85,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
         
         function SetValuesFromDialog(obj,res)
             %% old version
-%             useEventsInRadius=selOpt.UseEventsInRadius;
+%             UseEventsInRadius=selOpt.UseEventsInRadius;
 %             ni=selOpt.ni;
 %             ra=selOpt.ra;
 %             dx=gridOpt.dx;
@@ -321,9 +309,9 @@ function orig_rc_cross_a2()
     [res,okPressed]=zdlg.Create('Grid Parameters');
     
     % put response values back into variables expected by program
-    ni=res.evsel.numNearbyEvents;
-    ra=res.evsel.radius_km;
-    tgl1=res.evsel.useNumNearbyEvents;
+    ni=res.evsel.NumNearbyEvents;
+    ra=res.evsel.RadiusKm;
+    tgl1=res.evsel.UseNumNearbyEvents;
     tgl2=~tgl1;
     Nmin=res.evsel.requiredNumEvents;
     if ~isduration(res.time)

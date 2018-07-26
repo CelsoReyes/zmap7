@@ -73,7 +73,7 @@ classdef ShapeCircle < ShapeGeneral
         
         function s=toStruct(obj)
             s=toStruct@ShapeGeneral(obj);
-            s.radius_km = obj.Radius;
+            s.RadiusKm = obj.Radius;
         end
         
         function s = toStr(obj)

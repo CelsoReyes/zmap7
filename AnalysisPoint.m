@@ -41,7 +41,7 @@ classdef AnalysisPoint < handle
                     'Tag', tagID, 'Marker', marker, 'PickableParts','none', obj.clickLocProps{:},'DisplayName','do_not_show_in_legend');
                 
                 % plot selected event circle
-                [lat,lon]=scircle1(tb.y,tb.x,km2deg(tb.Radius_km));
+                [lat,lon]=scircle1(tb.y,tb.x,km2deg(tb.RadiusKm));
                 h(2)=line(obj.ax, lon, lat, obj.eventCircleProps{:},'Tag',tagID,'PickableParts','none','DisplayName','do_not_show_in_legend');
                 
                 % plot marker in actual location
@@ -67,7 +67,7 @@ classdef AnalysisPoint < handle
                 myLine.YData=[axy;tb.y];
                 
                 % modify selected event circle
-                [lat,lon]=scircle1(tb.y,tb.x,km2deg(tb.Radius_km));
+                [lat,lon]=scircle1(tb.y,tb.x,km2deg(tb.RadiusKm));
                 myCircle.XData=lon;
                 myCircle.YData=lat;
             end

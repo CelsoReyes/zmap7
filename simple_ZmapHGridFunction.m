@@ -1,10 +1,10 @@
 classdef simple_ZmapHGridFunction < ZmapHGridFunction
     properties
-        depth_km (1,1) double = 5 % default depth
+        depth_km (1,1)  double   = 5 % default depth
     end
     
     properties(Constant)
-        ReturnDetails= {... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = {... VariableNames, VariableDescriptions, VariableUnits
             'nEvents_top','number of events in top layer','';...
             'mean_mag_top','mean magnitude of events in top layer','mag';...
             'nEvents_bottom','number of events in bottom layer','';...
@@ -14,20 +14,19 @@ classdef simple_ZmapHGridFunction < ZmapHGridFunction
             
         % CalcFields is the label for each column coming out of the Calculate function
         % and should match items first column of ReturnDetails
-        CalcFields = {'nEvents_top','mean_mag_top','nEvents_bottom','mean_mag_bottom'};
+        CalcFields      = {'nEvents_top','mean_mag_top','nEvents_bottom','mean_mag_bottom'};
         
-        PlotTag = 'my_simple_plot';
+        PlotTag         = 'my_simple_plot';
+        ParameterableProperties     string = "depth_km";
     end
 
     methods
-        function obj=simple_ZmapHGridFunction(zap, depth_in_km)
+        function obj=simple_ZmapHGridFunction(zap, varargin)
             obj@ZmapHGridFunction(zap, 'shallow_mag');
-            if nargin < 2 
-                obj.InteractiveSetup();
-            else
-                obj.depth_km = depth_in_km;
-                obj.do_It();
-            end
+            report_this_filefun();
+            
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
         
         function InteractiveSetup(obj)

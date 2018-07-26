@@ -2,82 +2,76 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
     % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     properties
-        bootloops = 100 % number of bootstrap loops [bootloops]
-        timef duration = days(20) % forecast period [forec_period]
-        time duration = days(47)% learning period  [learn_period]
-        addtofig logical = false % should this plot in current figure? [oldfig_button]
-        Nmin % from eventsel
-        minThreshMag  = 0;
+        bootloops           = 100       % number of bootstrap loops [bootloops]
+        timef duration      = days(20)  % forecast period [forec_period]
+        time duration       = days(47)  % learning period  [learn_period]
+        addtofig logical    = false     % should this plot in current figure? [oldfig_button]
+        Nmin                            % from eventsel
+        minThreshMag        = 0
     end
     properties(Constant)
-        PlotTag='rcvalgrid_a2'
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'time', 'learning period','days';... #1
-            'absdiff','obs. aftershocks - #events in modeled forecast period','';... #2
-            'numreal','observed # aftershocks',''; ... #3
-            'nummod','#events in modeled forecast period','';... #4
+        PlotTag         ='rcvalgrid_a2'
+        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+            'time',     'learning period','days';...                #1
+            'absdiff',  'obs. aftershocks - #events in modeled forecast period','';... #2
+            'numreal',  'observed # aftershocks',''; ...            #3
+            'nummod',   '#events in modeled forecast period','';... #4
             ...  p,c,k- values for period before large aftershock or just modified Omori law
-            'pval1', 'p-value','';... #5 [mPval]
-            'pmedStd1', 'p-value standard deviation', '';... #6 [mPvalstd]
-            'cval1', 'c-value','';... #7 [mCval]
-            'cmedStd1','c-value standard deviation','';...#8 [mCvalstd]
-            'kval1','k-value','';... #9 [mKval]
-            'kmedStd1','k-value standard deviation','';... #10 [mKvalstd]
+            'pval1',    'p-value','';...                        #5 [mPval]
+            'pmedStd1', 'p-value standard deviation', '';...    #6 [mPvalstd]
+            'cval1',    'c-value','';...                        #7 [mCval]
+            'cmedStd1', 'c-value standard deviation','';...     #8 [mCvalstd]
+            'kval1',    'k-value','';...                        #9 [mKval]
+            'kmedStd1', 'k-value standard deviation','';...     #10 [mKvalstd]
             ... Resolution parameters
-            'fStdBst','',''; ... #11 [?]
-            'nMod', 'Chosen fitting model', '';... #12 [mMd]
-            'nY','Number of events per grid node', '';... #13 [mNumevents]
-            'fMaxDist','Radii of chosen events, Resolution', '';... #14 [vRadiusRes]
-            'fRcBst', 'Relative rate change (bootstrap)','';... #15 [mRelchange]
+            'fStdBst',  '',''; ... #11 [?]
+            'nMod',     'Chosen fitting model', '';...                  #12 [mMd]
+            'nY',       'Number of events per grid node', '';...        #13 [mNumevents]
+            'fMaxDist', 'Radii of chosen events, Resolution', '';...    #14 [vRadiusRes]
+            'fRcBst',   'Relative rate change (bootstrap)','';...       #15 [mRelchange]
             ... p,c,k- values for period AFTER large aftershock
-            'pval2', 'p-value (after large aftershock)','';... #16 [mPval2]
-            'pmedStd2','p-value std dev (after large aftershock)','';... #17 [mPvalstd2]
-            'cval2','c-value (after large aftershock)','';... #18 [mCval2]
-            'cmedStd2','c-value std dev (after large aftershock)','';... #19 [mCvalstd2]
-            'kval2','k-value (after large aftershock)','';... #20 [mKval2]
-            'kmedStd2','k-value std dev (after large aftershock)','';... #21 [mKvalstd2]
-            'H','KS-Test (H-value) binary rejection criterion at 95% confidence level','';...#22 [mKstestH]
-            'KSSTAT','KS-Test statistic for goodness of fit','';...#23 [mKsstat]
-            'P', 'KS-Test p-value','';... #24 [mKsp]
-            'fRMS','RMS value for goodness of fit','';... #25 [mRMS]
-            'fTBigAf','Times of secondary afterhsock',''... #26 [mBigAf]
+            'pval2',    'p-value (after large aftershock)','';...           #16 [mPval2]
+            'pmedStd2', 'p-value std dev (after large aftershock)','';...   #17 [mPvalstd2]
+            'cval2',    'c-value (after large aftershock)','';...           #18 [mCval2]
+            'cmedStd2', 'c-value std dev (after large aftershock)','';...   #19 [mCvalstd2]
+            'kval2',    'k-value (after large aftershock)','';...           #20 [mKval2]
+            'kmedStd2', 'k-value std dev (after large aftershock)','';...   #21 [mKvalstd2]
+            'H',        'KS-Test (H-value) binary rejection criterion at 95% confidence level','';...#22 [mKstestH]
+            'KSSTAT',   'KS-Test statistic for goodness of fit','';...      #23 [mKsstat]
+            'P',        'KS-Test p-value','';...                            #24 [mKsp]
+            'fRMS',     'RMS value for goodness of fit','';...              #25 [mRMS]
+            'fTBigAf',  'Times of secondary afterhsock',''...               #26 [mBigAf]
             }
-        CalcFields={'time','absdiff','numredal','nummod',...
-            'pval1','pmedStd1','cval1','cmedStd1',...
-            'kval1','kmedStd1','fStdBst','nMod','nY','fMaxDist','fRcBst',...
-            'pval2','pmedStd2','cval2','cmedStd2',...
-            'kval2','kmedStd2','H','KSSTAT','P','fRMS','fTBigAf'}
+        
+        CalcFields      = {...
+            'time',     'absdiff',  'numredal', 'nummod',...
+            'pval1',    'pmedStd1', 'cval1',    'cmedStd1',...
+            'kval1',    'kmedStd1', 'fStdBst',  'nMod',...
+            'nY',       'fMaxDist', 'fRcBst',...
+            'pval2',    'pmedStd2', 'cval2',    'cmedStd2',...
+            'kval2',    'kmedStd2', 'H',        'KSSTAT',...
+            'P',        'fRMS',     'fTBigAf'}
+        
+        ParameterableProperties = ["bootloops" "timef"....
+                "time" "addtofig"...
+                "Nmin" "minThreshMag"];
     end
     methods
         function obj=rcvalgrid_a2(zap,varargin)
-            report_this_filefun();
             
             obj@ZmapHGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
-            
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
-            else
-                % run this function without human interaction
-                obj.doIt();
-            end
+            report_this_filefun();
+           
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
+        
         function InteractiveSetup(obj)
             
             zdlg = ZmapDialog();
             
-            McMethods={'Automatic Mcomp (max curvature)',...
-                'Fixed Mc (Mc = Mmin)',...
-                'Automatic Mcomp (90% probability)',...
-                'Automatic Mcomp (95% probability)',...
-                'Best (?) combination (Mc95 - Mc90 - max curvature)',...
-                'Constant Mc'};
-            
-            zdlg.AddBasicPopup('mc_methods','Mc  Method:',McMethods,5,...
-                'Please choose an Mc estimation option');
+            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
+            %    'Choose the calculation method for Mc')
             
             % add fMaxRadius
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
@@ -99,7 +93,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         
         function SetValuesFromDialog(obj,res)
             %% old version
-%             useEventsInRadius=selOpt.UseEventsInRadius;
+%             UseEventsInRadius=selOpt.UseEventsInRadius;
 %             ni=selOpt.ni;
 %             ra=selOpt.ra;
 %             dx=gridOpt.dx;
@@ -147,7 +141,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             
             function [cat_learn, cat_forecast] = prep_catalog(catalog)
                 % Choose between constant radius or constant number of events with maximum radius
-                if useEventsInRadius   % take point within r
+                if UseEventsInRadius   % take point within r
                     catalog = ZG.primeCatalog.selectRadius(y,x,ra);
                     fMaxDist = max(catalog.epicentralDistanceTo(y,x));
                     % Calculate number of events per gridnode in learning period time
@@ -250,7 +244,7 @@ function [sel]=orig_rcvalgrid_a2()
     fMaxRadius = 5;  % Max. radius [km] in case of constant number
     bMap = 1; % Map view
     bGridEntireArea = 0; % Grid area, interactive or entire map
-    useEventsInRadius=false; % required for variable scoping.
+    UseEventsInRadius=false; % required for variable scoping.
     load_grid=false; % required for variable scoping.
     prev_grid=false; % required for variable scoping.
     Grid=[];
@@ -328,7 +322,7 @@ function [sel]=orig_rcvalgrid_a2()
             allcount = allcount + 1.;
             
             % Choose between constant radius or constant number of events with maximum radius
-            if useEventsInRadius   % take point within r
+            if UseEventsInRadius   % take point within r
                 cat_all = ZG.primeCatalog.selectRadius(y,x,ra);
                 fMaxDist = max(cat_all.epicentralDistanceTo(y,x));
                 % Calculate number of events per gridnode in learning period time

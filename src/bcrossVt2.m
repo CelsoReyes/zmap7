@@ -145,8 +145,8 @@ classdef bcrossVt2 < ZmapSliceFunction
             obj.ZG.inb2=res.mc_weights;
             obj.dx=res.gridOpts.dx;
             obj.dd=res.gridOpts.dz;
-            obj.ni = res.eventSelector.numNearbyEvents;
-            obj.ra = res.eventSelector.radius_km;
+            obj.ni = res.eventSelector.NumNearbyEvents;
+            obj.ra = res.eventSelector.RadiusKm;
             obj.Nmin = res.eventSelector.requiredNumEvents;
         end
         

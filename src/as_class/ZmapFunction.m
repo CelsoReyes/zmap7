@@ -53,28 +53,75 @@ classdef(Abstract) ZmapFunction < handle
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
         
          % holds complete catalog to be analyzed. defaults to the primary catalog
-        RawCatalog ZmapCatalog {ZmapFunction.verify_catalog} = ZmapGlobal.Data.primeCatalog
-        Result % results of the calculation, stored in a struct
+        RawCatalog      ZmapCatalog  = ZmapGlobal.Data.primeCatalog
+        Result                              % results of the calculation, stored in a struct
         
-        ZG = ZmapGlobal.Data; % provides access to the ZMAP globally used variables.
-        hPlot % tracks the plot(s) for each function
-        ax=[]; % axis where plotting will go
-        FunctionCall char = '%unknown function call'; % text representation of the function call.
+        ZG                           = ZmapGlobal.Data; % provides access to the ZMAP global variables.
+        hPlot                               % tracks the plot(s) for each function
+        ax                           = [];       % axis where plotting will go
         
+        AutoShowPlots   logical      = true; % will plots be generated upon calculation?
+        InteractiveMode logical      = true;
+        DelayProcessing logical      = false;
         % Grid, EventSelector, and Shape have been moved into the ZmapGridFunction
     end
     
     properties(Constant,Abstract)
         PlotTag % string used for tracking the plot for each function (assign in your function)
+        ParameterableProperties % properties from each class that can be used as constructor parameters 
+    end
+    
+    properties(Dependent)
+        FunctionCall    char; % text representation of the function call.
     end
     
     methods
         function obj=ZmapFunction(catalog)
             obj.RawCatalog=catalog;
+            obj.verify_catalog(catalog);
         end
-        function set.FunctionCall(obj, varargin)
+        
+        function fcall = get.FunctionCall(obj)
             % FUNCTIONCALL provides probable function call for CURRENT STATE of object
             % obj.SETFUNCTIONCALL(varargin)
+            
+            fcall = class(obj) + "(ZAP";
+            for j=1:numel(obj.ParameterableProperties)
+                fld = obj.ParameterableProperties(j);
+                val=obj.(fld);
+                switch class(val)
+                    case 'char'
+                        fcall = fcall + sprintf(", '%s', '%s'", fld, val);
+                    case 'string'
+                        fcall = fcall + sprintf(', ''%s'', "%s"', fld, val);
+                    case 'datetime'
+                        fcall = fcall + sprintf(", '%s', datetime('%s')", fld, string(val));
+                    case 'duration'
+                        val.Format = 'dd:hh:mm:ss.SSS';
+                        fcall = fcall + sprintf(", '%s', duration('%s')", fld,string(val));
+                    case 'McMethods' 
+                        fcall = fcall + sprintf(", '%s', McMethods.%s", fld,string(val));
+                        
+                    otherwise
+                        if isnumeric(val) && isempty(val)
+                            val = '[]';
+                        elseif (isnumeric(val) || islogical(val)) && numel(val)>1
+                            v="";
+                            for r=1:size(val,1)
+                                v(r)=strjoin(string(val(r,:)),',');
+                            end
+                            val="[" + strjoin(v,';') + "]";
+                        else
+                            val=string(val);
+                        end
+                        fcall = fcall + sprintf(", '%s', %s", fld, val);
+                end
+            end
+            fcall = fcall + ", 'AutoShowPlots', " + string(obj.AutoShowPlots);
+            fcall = fcall + ", 'InteractiveMode', " + string(obj.InteractiveMode);
+            % fcall = fcall + ", 'DelayProcessing', " + string(obj.DelayProcessing);
+            fcall = fcall + ")";
+            %{
             if numel(varargin)==1 && iscell(varargin)
                 varargin=varargin{:};
             end
@@ -94,7 +141,45 @@ classdef(Abstract) ZmapFunction < handle
             %    '% ' fcall, newline...
             %   class(obj),'()'];
             %end
-            obj.FunctionCall=fcall;
+            %}
+        end
+        
+        function p = parseParameters(obj, varginstuff)
+            
+            % property list is a list of this objects properties that
+            % can be set via the parameter list.
+            p=inputParser();
+            for i=1:numel(obj.ParameterableProperties)
+                % use this object's default properties as the... uh. default.
+                p.addParameter(obj.ParameterableProperties(i), obj.(obj.ParameterableProperties(i)));
+            end
+            
+            % add parameters inheritable by all functions
+            p.addParameter('AutoShowPlots',   obj.AutoShowPlots)
+            p.addParameter('InteractiveMode', obj.InteractiveMode);
+            p.addParameter('DelayProcessing', obj.DelayProcessing);
+            p.parse(varginstuff{:});
+            
+            % assign values from paramter to this object
+            for i=1:numel(obj.ParameterableProperties)
+                obj.(obj.ParameterableProperties(i)) = p.Results.(obj.ParameterableProperties(i));
+            end
+            obj.AutoShowPlots = p.Results.AutoShowPlots;
+            obj.InteractiveMode = p.Results.InteractiveMode;
+            obj.DelayProcessing = p.Results.DelayProcessing;
+        end
+        
+        function StartProcess(obj)
+            if obj.DelayProcessing
+                msg.dbdisp('Delaying processing',class(obj))
+                return
+            end
+            
+            if obj.InteractiveMode
+                obj.InteractiveSetup();
+            else
+                obj.doIt();
+            end
         end
         
         function clearPlot(obj)
@@ -111,7 +196,9 @@ classdef(Abstract) ZmapFunction < handle
             % change DOIT behavior by redefining DOIT in the sublcass.
             obj.CheckPreconditions();
             obj.Calculate();
-            obj.plot();
+            if obj.AutoShowPlots
+                obj.plot();
+            end
             obj.ModifyGlobals();
             obj.saveToDesktop();
         end

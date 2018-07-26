@@ -3,11 +3,11 @@ classdef bvalmapt < ZmapHGridFunction
     % The difference in both b and Mc can be displayed.
             
     properties
-        t1 datetime % start of timeperiod 1
-        t2 datetime % end of timeperiod 1
-        t3 datetime % start of timeperiod 2
-        t4 datetime % end of timeperiod 2
-        minnu {mustBeNonnegative, mustBeInteger} % minimum number of events/node/timeperiod
+        periodA_start   datetime            % start of timeperiod 1
+        periodA_end     datetime            % end of timeperiod 1
+        periodB_start   datetime            % start of timeperiod 2
+        periodB_end     datetime            % end of timeperiod 2
+        minnu                       {mustBeNonnegative, mustBeInteger} % minimum number of events/node/timeperiod
         useAutoMcomp = true;
     end
     properties(Access=private)
@@ -16,34 +16,40 @@ classdef bvalmapt < ZmapHGridFunction
     end
     
     properties(Constant)
-        PlotTag='bvalmapt';
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'nEvents_1','Number of events in node - period 1', '';...
-            'bval_1','b-value map first period','';... #1 'b-value'
-            'aval_1','a-value for period 1','';... 'av
-            'magco_1','mag of completeness map - period 1','mag';... #2 'Mcomp1' 
+        PlotTag         = 'bvalmapt';
+        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+            'nEvents_1',    'Number of events in node - period 1', '';...
+            'bval_1',       'b-value map first period','';... #1 'b-value'
+            'aval_1',       'a-value for period 1','';... 'av
+            'magco_1',      'mag of completeness map - period 1','mag';... #2 'Mcomp1' 
             
-            'nEvents_2', 'Number of events in node - period 2', '';...
-            'bval_2','b-value map second period','';...#6 'b-value'
-            'aval_2', 'a-value for period 2', '';... #8 avm
-            'magco_2','mag of completeness map - period 2','mag';... #12 'Momp2'
+            'nEvents_2',    'Number of events in node - period 2', '';...
+            'bval_2',       'b-value map second period','';...#6 'b-value'
+            'aval_2',       'a-value for period 2', '';... #8 avm
+            'magco_2',      'mag of completeness map - period 2','mag';... #12 'Momp2'
             ...
-            'pro','Probability Map (Utsus test for b1 and b2)','';... #7 'P'
+            'pro',          'Probability Map (Utsus test for b1 and b2)','';... #7 'P'
             ... 
             ... % these are added after the fact
             ...
-            'db12','Differential B-value','';... #11[outside] 'b-value'
-            'dbperc','b change in percent','pct';...[outside]#14 'b-value change'
-            'eqprobchange','Earthquake probability change map (M5)',''; ... [log10(#13)]'dP'
-            'stanm','standard error map (P6a - pro)','';... (#9-#7) 'error in b' 
-            'dmag','differential completeness map','';...[#2 - #12][outside] 'DMc'
-            'P6a','P6 for period 2','per year';...
-            'P6b','P6 for period 1','per year';...
-            'P6a_over_P6b','ratio of P6  (period1/period2)','ratio';...
-            
+            'db12',         'Differential B-value','';... #11[outside] 'b-value'
+            'dbperc',       'b change in percent','pct';...[outside]#14 'b-value change'
+            'eqprobchange', 'Earthquake probability change map (M5)',''; ... [log10(#13)]'dP'
+            'stanm',        'standard error map (P6a - pro)','';... (#9-#7) 'error in b' 
+            'dmag',         'differential completeness map','';...[#2 - #12][outside] 'DMc'
+            'P6a',          'P6 for period 2','per year';...
+            'P6b',          'P6 for period 1','per year';...
+            'P6a_over_P6b', 'ratio of P6  (period1/period2)','ratio'...
             };
-        CalcFields={'nEvents_1','bval_1','aval_1','magco_1',...
-                    'nEvents_2','bval_2','aval_2','magco_2','pro'};
+        
+        CalcFields = {'nEvents_1',    'bval_1',   'aval_1',   'magco_1',...
+                    'nEvents_2',    'bval_2',   'aval_2',   'magco_2',  'pro'};
+                
+                ParameterableProperties = [...
+                    "periodA_start" "periodA_end" ...
+                    "periodB_start" "periodB_end" ...
+                    "minnu" "useAutoMcomp"];
+                
         % the viewplotting methods also had call to zhist,
         %
         % various select eq in polygons (new/hold) [selectp with various hold_state],
@@ -63,30 +69,30 @@ classdef bvalmapt < ZmapHGridFunction
             %   Rev. R.Z. 4/2001
             % turned into function by Celso G Reyes 2017
             
-            report_this_filefun();
-            
             obj@ZmapHGridFunction(zap, 'db12');
-            
-            if obj.EventSelector.useNumNearbyEvents
-                disp('This is designed to use events in constant radius instead of # of events.')
-                obj.EventSelector.useNumNearbyEvents=false;
-                obj.EventSelector.useEventsInRadius=true;
-            end
-            
-            obj.InteractiveSetup();
-            
-        end
-        
-        function InteractiveSetup(obj)
+            report_this_filefun();
             
             
             t0b=min(obj.RawCatalog.Date());
             teb=max(obj.RawCatalog.Date());
             
-            obj.t1 = t0b;
-            obj.t4 = teb;
-            obj.t2 = t0b + (teb-t0b)/2;
-            obj.t3 = obj.t2+seconds(0.001);
+            obj.periodA_start = t0b;
+            obj.periodB_end = teb;
+            obj.periodA_end = t0b + (teb-t0b)/2;
+            obj.periodB_start = obj.periodA_end+seconds(0.001);
+            
+            if obj.EventSelector.UseNumNearbyEvents
+                disp('This is designed to use events in constant radius instead of # of events.')
+                obj.EventSelector.UseNumNearbyEvents=false;
+                obj.EventSelector.UseEventsInRadius=true;
+            end
+            
+            obj.parseParameters(varargin);
+            obj.StartProcess();
+        end
+        
+        function InteractiveSetup(obj)
+            
             
             %% make the interface
             zdlg = ZmapDialog();
@@ -99,11 +105,11 @@ classdef bvalmapt < ZmapHGridFunction
             %zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
             %    'Min # events greater than magnitude of completeness (Mc)');
             
-            zdlg.AddBasicEdit('t1','Start Time A : ', obj.t1, 'Start time for first period');
-            zdlg.AddBasicEdit('t2','End Time A : ', obj.t2, 'End time for first period');
-            zdlg.AddBasicEdit('t3','Start Time B : ', obj.t3, 'Start time for Second period');
-            zdlg.AddBasicEdit('t4','End Time B :', obj.t4, 'Start time for Second period');
-            zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.radius_km,...
+            zdlg.AddBasicEdit('periodA_start','Start Time A : ', obj.periodA_start, 'Start time for first period');
+            zdlg.AddBasicEdit('periodA_end','End Time A : ', obj.periodA_end, 'End time for first period');
+            zdlg.AddBasicEdit('periodB_start','Start Time B : ', obj.periodB_start, 'Start time for Second period');
+            zdlg.AddBasicEdit('periodB_end','End Time B :', obj.periodB_end, 'Start time for Second period');
+            zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.RadiusKm,...
                 'Radius used in calculation');
             % zdlg.AddEventSelectionParameters('evsel', obj.EventSelector); two items from this are used instead
             zdlg.AddBasicEdit('minnu', 'Minimum number of events in each period:', ...
@@ -120,14 +126,14 @@ classdef bvalmapt < ZmapHGridFunction
         function SetValuesFromDialog(obj,res)
             %obj.ZG.inb2=res.useAutoMcomp;
             obj.useAutoMcomp=logical(res.useAutoMcomp);
-            obj.EventSelector.radius_km=res.ra;
-            obj.t1 = res.t1;
-            obj.t2 = res.t2;
-            obj.t3 = res.t3;
-            obj.t4 = res.t4;
+            obj.EventSelector.RadiusKm=res.ra;
+            obj.periodA_start = res.periodA_start;
+            obj.periodA_end = res.periodA_end;
+            obj.periodB_start = res.periodB_start;
+            obj.periodB_end = res.periodB_end;
             obj.minnu = res.minnu;
-            obj.duration_A = obj.t2 - obj.t1;
-            obj.duration_B = obj.t4 - obj.t3;
+            obj.duration_A = obj.periodA_end - obj.periodA_start;
+            obj.duration_B = obj.periodB_end - obj.periodB_start;
             % note, dx & dy were originally in degrees
         end
         
@@ -139,8 +145,8 @@ classdef bvalmapt < ZmapHGridFunction
             
             obj.gridCalculations(@calculation_function, @calc_additional_results);
             
-            obj.Result.period1.dateRange=[obj.t1 obj.t2];
-            obj.Result.period2.dateRange=[obj.t3 obj.t4];
+            obj.Result.period1.dateRange=[obj.periodA_start obj.periodA_end];
+            obj.Result.period2.dateRange=[obj.periodB_start obj.periodB_end];
             
             if nargout
                 results=obj.Result.values;
@@ -151,11 +157,11 @@ classdef bvalmapt < ZmapHGridFunction
             
             function out=calculation_function(catalog)
                 
-                idx_1 =  catalog.Date >= obj.t1 &  catalog.Date <obj.t2 ;
+                idx_1 =  catalog.Date >= obj.periodA_start &  catalog.Date <obj.periodA_end ;
                 no_1=sum(idx_1);
                 enough_1 = no_1 >= obj.minnu;
                 
-                idx_2 = catalog.Date >= obj.t3 &  catalog.Date < obj.t4 ;
+                idx_2 = catalog.Date >= obj.periodB_start &  catalog.Date < obj.periodB_end ;
                 no_2=sum(idx_2);
                 enough_2  =no_2 >= obj.minnu;
                 

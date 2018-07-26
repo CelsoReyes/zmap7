@@ -131,12 +131,19 @@ classdef ZmapGrid
                         
                         % 1st: FIGURE OUT ORIGIN POINT OF GRID
                         ax=findobj(gcf,'Tag','mainmap_ax');
-                        xl = xlim(ax); yl=ylim(ax);
+                        if ~isempty(ax)
+                            xl = xlim(ax); yl=ylim(ax);
+                        else
+                            xl=[-180 180]; yl=[-90 90];
+                        end
                         minX=max([xl(1), -180]);
                         maxX=min([xl(2), 180]);
                         minY=max([yl(1), -90]);
                         maxY=min([yl(2), 90]);
-                        if use_shape
+                        
+                        if  ~isempty(gridopt.FixedAnchorPoint)
+                            lonLatZ0=gridopt.FixedAnchorPoint;
+                        elseif use_shape
                             lonLatZ0=[myshape.X0 myshape.Y0];
                         else
                             lonLatZ0=[mean([minX, maxX]), mean([minY, maxY])];

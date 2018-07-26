@@ -2,30 +2,34 @@ classdef bvalgrid < ZmapHGridFunction
     % CGR_BVALGRID Generate a B-value grid
     
     properties
-        Nmin = 50 % minimum number of earthquakes
-        fMcFix=1.0  %2.2
-        nBstSample=100 % number of bootstrap samples
-        useBootstrap  % perform bootstrapping?
-        fMccorr = 0.2  % magnitude correction
-        fBinning = 0.1  % magnitude bins
-        mc_choice % magnitude of completion method (index to a method)
+        Nmin            = 50    % minimum number of earthquakes
+        % fMcFix          = 1.0   % 2.2
+        nBstSample      = 100   % number of bootstrap samples
+        useBootstrap  logical = false  % perform bootstrapping?
+        fMccorr         = 0.2   % magnitude correction
+        fBinning        = 0.1   % magnitude bins
+        mc_choice    McMethods   = McMethods.MaxCurvature % magnitude of completion method
     end
     
     properties(Constant)
         PlotTag='bvalgrid';
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'Mc_value', 'Magnitude of Completion (Mc)', '';...
-            'Mc_std', 'Std. of Magnitude of Completion', '';...
-            'b_value', 'b-value', '';...
-            'b_value_std', 'Std. of b-value', '';...
-            'a_value', 'a-value', '';...
-            'a_value_std', 'Std. of a-value', '';...
-            'power_fit', 'Goodness of fit to power-law', '';...
-            'Additional_Runs_b_std', 'Additional runs: Std b-value', '';...
+            'Mc_value',     'Magnitude of Completion (Mc)', '';...
+            'Mc_std',       'Std. of Magnitude of Completion', '';...
+            'b_value',      'b-value', '';...
+            'b_value_std',  'Std. of b-value', '';...
+            'a_value',      'a-value', '';...
+            'a_value_std',  'Std. of a-value', '';...
+            'power_fit',    'Goodness of fit to power-law', '';...
+            'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
             'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', ''};
-        CalcFields = {'Mc_value','Mc_std','b_value','b_value_std',...
-            'a_value', 'a_value_std','power_fit',...
+        
+        % fields returned by the calculation. must match column 1 of ReturnDetails
+        CalcFields = {'Mc_value', 'Mc_std', 'b_value', 'b_value_std',...
+            'a_value', 'a_value_std', 'power_fit',...
             'Additional_Runs_b_std', 'Additional_Runs_Mc_std'}
+        
+        ParameterableProperties = ["Nmin", "nBstSample", "useBootstrap", "fMccorr", "fBinning"];
     end
     
     methods
@@ -35,20 +39,11 @@ classdef bvalgrid < ZmapHGridFunction
             %
             % obj = CGR_BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
             
-            report_this_filefun();
-            
             obj@ZmapHGridFunction(zap, 'b_value');
             
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
-            else
-                % run this function without human interaction
-                obj.doIt();
-            end
+            report_this_filefun();
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
         
         function InteractiveSetup(obj)

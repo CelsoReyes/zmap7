@@ -3,28 +3,31 @@ classdef comp2periodz < ZmapHGridFunction
     % The differences are as z- and beta-values and as percent change.
     
     properties
-        t1 datetime % start time for period 1
-        t2 datetime % end time for period 1
-        t3 datetime % start time for period 2
-        t4 datetime % end time for period 2
+        periodA_start datetime % start time for period 1
+        periodA_end datetime % end time for period 1
+        periodB_start datetime % start time for period 2
+        periodB_end datetime % end time for period 2
         binsize duration = ZmapGlobal.Data.bin_dur;
     end
     
     properties(Constant)
-        PlotTag='comp2periodz';
+        PlotTag = 'comp2periodz';
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
             ...
             ... % these are returned by the calculation function
-            'z_value','z-value', '';... #1 'valueMap'
-            'pct_change', 'percent change', 'pct';... #2  'per'
-            'beta_value', 'Beta value map','';... #3 'beta_map'
-            'Number_of_Events_1', 'Number of events in first period', '';... #4
-            'Number_of_Events_2', 'Number of events in second period', '';... #5
+            'z_value',              'z-value', '';...           #1 'valueMap'
+            'pct_change',           'percent change', 'pct';... #2  'per'
+            'beta_value',           'Beta value map','';...     #3 'beta_map'
+            'Number_of_Events_1',   'Number of events in first period', '';... #4
+            'Number_of_Events_2',   'Number of events in second period', '';... #5
             ...
             };
-
-        CalcFields={'z_value','pct_change','beta_value',...
-            'Number_of_Events_1','Number_of_Events_2'}
+        
+        CalcFields={...
+            'z_value',              'pct_change',   'beta_value',...
+            'Number_of_Events_1',   'Number_of_Events_2'}
+        
+        ParameterableProperties = ["periodA_start" "periodA_end" "periodB_start" "periodB_end" "binsize"];
     end
     
     methods
@@ -34,38 +37,34 @@ classdef comp2periodz < ZmapHGridFunction
             %   Stefan Wiemer 1/95
             %   Rev. R.Z. 4/2001
             
+            obj@ZmapHGridFunction(zap, 'z_value');
             report_this_filefun();
             
-            obj@ZmapHGridFunction(zap, 'z_value');
+            t0b = min(obj.RawCatalog.Date);
+            teb = max(obj.RawCatalog.Date);
+            obj.periodA_start = t0b;
+            obj.periodB_end = teb;
+            obj.periodA_end = t0b + (teb-t0b)/2;
+            obj.periodB_start = obj.periodA_end+minutes(0.01);
             
-            if nargin <2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-            else
-                % run this function without human intervention
-                obj.doIt();
-            end
+            obj.parseParameters(varargin);
+            
+            obj.StartProcess();
             
         end
         
         function InteractiveSetup(obj)
             
-            t0b = min(obj.RawCatalog.Date);
-            teb = max(obj.RawCatalog.Date);
-            obj.t1 = t0b;
-            obj.t4 = teb;
-            obj.t2 = t0b + (teb-t0b)/2;
-            obj.t3 = obj.t2+minutes(0.01);
             
             % get two time periods, along with grid and event parameters
             zdlg=ZmapDialog([]);
             zdlg.AddBasicHeader('Please define two time periods to compare');
-            zdlg.AddBasicEdit('t1','start period 1',obj.t1,'start time for period 1');
-            zdlg.AddBasicEdit('t2','end period 1',obj.t2,'end time for period 1');
-            zdlg.AddBasicEdit('t3','start period 2',obj.t3,'start time for period 2');
-            zdlg.AddBasicEdit('t4','end period 2',obj.t4,'end time for period 2');
-            zdlg.AddBasicEdit('binsize','Bin Size (days)',obj.binsize,'number of days in each bin');
-            zdlg.AddEventSelectionParameters('eventsel', obj.EventSelector);
+            zdlg.AddBasicEdit('periodA_start','start period 1',obj.periodA_start,'start time for period 1');
+            zdlg.AddBasicEdit('periodA_end','end period 1',  obj.periodA_end,'end time for period 1');
+            zdlg.AddBasicEdit('periodB_start','start period 2',obj.periodB_start,'start time for period 2');
+            zdlg.AddBasicEdit('periodB_end','end period 2',  obj.periodB_end,'end time for period 2');
+            zdlg.AddBasicEdit('binsize','Bin Size (days)', obj.binsize,'number of days in each bin');
+            zdlg.AddEventSelectionParameters('eventsel',   obj.EventSelector);
             [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
             if ~okPressed
                 return
@@ -77,18 +76,17 @@ classdef comp2periodz < ZmapHGridFunction
         end
         
         function SetValuesFromDialog(obj, res)
-            obj.t1=res.t1;
-            obj.t2=res.t2;
-            obj.t3=res.t3;
-            obj.t4=res.t4;
+            obj.periodA_start=res.periodA_start;
+            obj.periodA_end=res.periodA_end;
+            obj.periodB_start=res.periodB_start;
+            obj.periodB_end=res.periodB_end;
             obj.binsize=days(res.binsize);
             obj.EventSelector=res.eventsel;
         end
         
         function CheckPreConditions(obj)
-            assert(obj.t1 < obj.t2,'Period 1 starts before it ends');
-            assert(obj.t3 < obj.t4,'Period 2 starts before it ends');
-            assert(isa(obj.binsize,'duration'),'bin size should be a duration in days');
+            assert(obj.periodA_start < obj.periodA_end,'Period 1 starts before it ends');
+            assert(obj.periodB_start < obj.periodB_end,'Period 2 starts before it ends');
         end
         
         
@@ -96,21 +94,21 @@ classdef comp2periodz < ZmapHGridFunction
             
             %  make grid, calculate start- endtime etc.  ...
             
-            lt =  (obj.RawCatalog.Date >= obj.t1 &  obj.RawCatalog.Date < obj.t2) ...
-                | (obj.RawCatalog.Date >= obj.t3 &  obj.RawCatalog.Date <= obj.t4);
+            lt =  (obj.RawCatalog.Date >= obj.periodA_start &  obj.RawCatalog.Date < obj.periodA_end) ...
+                | (obj.RawCatalog.Date >= obj.periodB_start &  obj.RawCatalog.Date <= obj.periodB_end);
             obj.RawCatalog = obj.RawCatalog.subset(lt);
             
             
-            interval1_bins = obj.t1 : obj.binsize : obj.t2; % starts
-            interval2_bins = obj.t3 : obj.binsize : obj.t4; % starts
+            interval1_bins = obj.periodA_start : obj.binsize : obj.periodA_end; % starts
+            interval2_bins = obj.periodB_start : obj.binsize : obj.periodB_end; % starts
             interval1_edges = [interval1_bins, interval1_bins(end)+obj.binsize];
             interval2_edges = [interval2_bins, interval2_bins(end)+obj.binsize];
             
             
             obj.gridCalculations(@calculation_function);
-           
-            obj.Result.period1.dateRange=[obj.t1 obj.t2];
-            obj.Result.period2.dateRange=[obj.t3 obj.t4];
+            
+            obj.Result.period1.dateRange=[obj.periodA_start obj.periodA_end];
+            obj.Result.period2.dateRange=[obj.periodB_start obj.periodB_end];
             
             if nargout
                 results=obj.Result.values;
@@ -119,23 +117,23 @@ classdef comp2periodz < ZmapHGridFunction
             
             % plot the results
             % old and valueMap (initially ) is the z-value matrix
-           
             
-            %det =  'ast'; 
+            
+            %det =  'ast';
             %ZG.shading_style = 'interp';
             % View the b-value map: view_ratecomp.m
             %    which could create a topography overlay ala dramap_z.m
             %
-            % 
+            %
             
             function out=calculation_function(catalog)
-                % calulate values at a single point 
+                % calulate values at a single point
                 % calculate distance from center point and sort wrt distance
-
-                idx_back =  catalog.Date >= obj.t1 &  catalog.Date < obj.t2 ;
+                
+                idx_back =  catalog.Date >= obj.periodA_start &  catalog.Date < obj.periodA_end ;
                 [cumu1, ~] = histcounts(catalog.Date(idx_back),interval1_edges);
                 
-                idx_after =  catalog.Date >= obj.t3 &  catalog.Date <= obj.t4 ;
+                idx_after =  catalog.Date >= obj.periodB_start &  catalog.Date <= obj.periodB_end ;
                 [cumu2, ~] = histcounts(catalog.Date(idx_after),interval2_edges);
                 
                 mean1 = mean(cumu1);        % mean seismicity rate in first interval
@@ -174,5 +172,4 @@ classdef comp2periodz < ZmapHGridFunction
         end
     end % static methods
 end % classdef
-    
-        
+

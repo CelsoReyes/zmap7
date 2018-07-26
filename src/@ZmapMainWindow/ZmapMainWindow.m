@@ -602,6 +602,23 @@ classdef ZmapMainWindow < handle
             t=findobj(c, 'Type', 'line', '-or', 'Type', 'scatter', '-not', 'Tag', 'grid_Grid');
             set(t, 'PickableParts', 'none'); % mute the values
         end
+        
+        function clickMenuItem(obj,whatItem, varargin)
+            if isa(whatItem,'matlab.ui.container.Menu')
+                src = whatItem;
+            elseif isstring(whatItem)
+                theObj = obj.fig;
+                while ~isempty(whatItem) && ~isempty(theObj)
+                    theObj=findobj(theObj.Children,'Label',whatItem(1));
+                    whatItem(1)=[];
+                end
+                src = theObj;
+            end
+            evt = struct('Source',src,'EventName','Action');
+            src.MenuSelectedFcn(src,evt)
+        end
+        
+        
     end % METHODS
     methods(Access=protected) % HELPER METHODS
         

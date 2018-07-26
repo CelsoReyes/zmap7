@@ -3,13 +3,13 @@ classdef bdepth_ratio < ZmapHGridFunction
 % Stefan Wiemer 1/95
     
     properties
-        topzone_ceiling = 0; % Top of TOP zone
-        topzone_floor = 5; % Bottom of TOP zone
-        bottomzone_ceiling = 7; % Top of BOTTOM zone
-        bottomzone_floor = 15; % Bottom of BOTTOM zone
-        fBinning = 0.1;  % magnitude bins
-        Nmin=50;
-        mc_choice   McMethods  = McMethods.MaxCurvature% magnitude of completion method
+        topzone_ceiling         = 0;    % Top of TOP zone
+        topzone_floor           = 5;    % Bottom of TOP zone
+        bottomzone_ceiling      = 7;    % Top of BOTTOM zone
+        bottomzone_floor        = 15;   % Bottom of BOTTOM zone
+        fBinning                = 0.1;  % magnitude bins
+        Nmin                    = 50;
+        mc_choice   McMethods   = McMethods.MaxCurvature % magnitude of completion method
         useAutoMcomp=true;
     end
     
@@ -18,42 +18,38 @@ classdef bdepth_ratio < ZmapHGridFunction
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
             ...
             ... % these are returned from the calculation
-            'bv_ratio','b-value Ratio Map','';... %valueMap [old] #1
-            'magco','Magnitude of completion (bottom)','mag';... #2 
-            'bv2','b-value Ratio map (with autoestimate Mcomp)','';... #3
-            'av', 'a-value ratios','';... #4 avm
-            'Prmap','Utsu Probability map','';... #5 Prmap
-            'top_b', 'Top Zone b-value map','';... #6 tob_b
-            'bottom_b','Bottom Zone b-value map','';... #7 bottom_b
-            'per_top','% of nodal EQs within TOP zone','';... #8 per_in_top
-            'per_bot','% of nodal EQs within BOTTOM zone','';... #9 per_in_bot
+            'bv_ratio',     'b-value Ratio Map','';... %valueMap [old] #1
+            'magco',        'Magnitude of completion (bottom)','mag';... #2 
+            'bv2',          'b-value Ratio map (with autoestimate Mcomp)','';... #3
+            'av',           'a-value ratios','';... #4 avm
+            'Prmap',        'Utsu Probability map','';... #5 Prmap
+            'top_b',        'Top Zone b-value map','';... #6 tob_b
+            'bottom_b',     'Bottom Zone b-value map','';... #7 bottom_b
+            'per_top',      '% of nodal EQs within TOP zone','';... #8 per_in_top
+            'per_bot',      '% of nodal EQs within BOTTOM zone','';... #9 per_in_bot
             'Number_of_Events_top', 'Number of events in TOP zone', '';... #10
             'Number_of_Events_bot', 'Number of events in BOTTOM zone', '';... #11
             ...
             };
-        CalcFields = {'bv_ratio','magco','bv2','av','Prmap',...
-            'top_b','bottom_b','per_top','per_bot',...
-            'Number_of_Events_top','Number_of_Events_bot'};
+        CalcFields = {...
+            'bv_ratio',     'magco',    'bv2',      'av',       'Prmap',...
+            'top_b',        'bottom_b', 'per_top',  'per_bot',...
+            'Number_of_Events_top',     'Number_of_Events_bot'};
+        
+        ParameterableProperties = ["topzone_ceiling" "topzone_floor"....
+                    "bottomzone_ceiling" "bottomzone_floor"...
+                    "fBinning" "Nmin" "mc_choice" "useAutoMcomp"];
     end
     
     methods
         function obj = bdepth_ratio(zap, varargin) 
             % BDEPTH_RATIO compare b values at two different depths
             
+            obj@ZmapHGridFunction(zap, 'bv_ratio');
             report_this_filefun();
             
-            obj@ZmapHGridFunction(zap, 'bv_ratio');
-            
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
-            else
-                % run this function without human interaction
-                obj.doIt();
-            end
+            obj.parseParameters(varargin);
+            obj.StartProcess();
             
         end
         

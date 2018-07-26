@@ -7,19 +7,19 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     %  FUN is a function handle that takes a ZmapCatalog as input, and returns a number.
     %  GRID is a ZmapGrid.
     %  SELCRIT is a structure containing one or more of the following set of fields:
-    %    * numNearbyEvents (by itself) : runs function against this many closest events.
-    %          < incompatable with radius_km, unless useNumNearbyEvents 
-    %            and useEventsInRadius are also defined >
+    %    * NumNearbyEvents (by itself) : runs function against this many closest events.
+    %          < incompatable with RadiusKm, unless UseNumNearbyEvents 
+    %            and UseEventsInRadius are also defined >
     %
-    %    * radius_km  (by itself) : runs function against all events in this radius
-    %          < incompatable with numNearbyEvents, unless useNumNearbyEvents 
-    %            and useEventsInRadius are also defined >
+    %    * RadiusKm  (by itself) : runs function against all events in this radius
+    %          < incompatable with NumNearbyEvents, unless UseNumNearbyEvents 
+    %            and UseEventsInRadius are also defined >
     %
-    %    * useNumNearbyEvents, useEventsInRadius, numNearbyEvents, radius_km (ALL of the above): 
-    %           uses the useNumNearbyEvents and useEventsInRadius to determine its behavior.  Only
+    %    * UseNumNearbyEvents, UseEventsInRadius, NumNearbyEvents, RadiusKm (ALL of the above): 
+    %           uses the UseNumNearbyEvents and UseEventsInRadius to determine its behavior.  Only
     %           one of these fields may be true.
     %
-    %    * maxRadiusKm - defines a cutoff, used when local events are too sparce for numNearbyEvents 
+    %    * maxRadiusKm - defines a cutoff, used when local events are too sparce for NumNearbyEvents 
     %
     %    * requiredNumEvents - calculations are only performed for selections (catalogs) that
     %           contain at least this many events.
@@ -178,7 +178,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             
             wasEvaluated(write_idx)=true;
             if ~mod(i,ceil(length(zgrid)/50))
-                h.String=sprintf('Computing values across grid.   %5d / %d Total points', i,length(zgrid));
+                h.String=sprintf('Computing values across grid.   %5d / %d Total points', i, length(zgrid));
                 drawnow limitrate nocallbacks
             end
         end
@@ -211,8 +211,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     function check_selection()
         assert(isstruct(selcrit),'selcrit should be a struct');
-        assert(isfield(selcrit,'numNearbyEvents') || isfield(selcrit,'radius_km'),...
-            'selcrit should at least have one field named either "numNearbyEvents" or "radius_km"');
+        assert(isfield(selcrit,'NumNearbyEvents') || isfield(selcrit,'RadiusKm'),...
+            'selcrit should at least have one field named either "NumNearbyEvents" or "RadiusKm"');
         if ~isfield(selcrit,'requiredNumEvents')
             selcrit.requiredNumEvents=1;
         end

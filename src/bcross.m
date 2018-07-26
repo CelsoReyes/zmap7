@@ -82,10 +82,10 @@ function bcross(sel)
     hndl2=res.mc_choice;
     dx = res.gridOpts.dx;
     dd = res.gridOpts.dz;
-    tgl1 = res.eventSelector.useNumNearbyEvents;
+    tgl1 = res.eventSelector.UseNumNearbyEvents;
     tgl2 = ~tgl1;
-    ni = res.eventSelector.numNearbyEvents;
-    ra = res.eventSelector.radius_km;
+    ni = res.eventSelector.NumNearbyEvents;
+    ra = res.eventSelector.RadiusKm;
     Nmin = res.eventSelector.requiredNumEvents;
     bGridEntireArea = res.gridOpts.GridEntireArea;
     bBst_button = res.useBootstrap;

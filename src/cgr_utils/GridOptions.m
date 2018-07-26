@@ -3,13 +3,15 @@ classdef GridOptions < handle
         dx % east-west distance between grid points
         dy % north-south distance between grid points
         dz % vertical distance between grid points
-        dxUnits char {mustBeMember(dxUnits, {'deg','degrees','km','kilometers'})} = 'deg';
-        dyUnits char {mustBeMember(dyUnits, {'deg','degrees','km','kilometers'})} = 'deg';
-        dzUnits char {mustBeMember(dzUnits, {'km','kilometers'})} = 'km';
+        dxUnits char {mustBeMember(dxUnits, {'deg','degrees','km','kilometers'})} = 'deg'
+        dyUnits char {mustBeMember(dyUnits, {'deg','degrees','km','kilometers'})} = 'deg'
+        dzUnits char {mustBeMember(dzUnits, {'km','kilometers'})} = 'km'
         % Defines whether horizontal distances are constant, or whether they scale as the grid
         % deviates from the equator. 
-        followMeridians matlab.lang.OnOffSwitchState = 'off';
-        gridEntireArea matlab.lang.OnOffSwitchState = 'off';
+        followMeridians matlab.lang.OnOffSwitchState = 'off'
+        gridEntireArea matlab.lang.OnOffSwitchState = 'off'
+        FixedAnchorPoint double = []
+        AbsoluteGridLimits double = [-180 180 -90 90] % grid cannot be used past these limits [xmin xmax ymin ymax]
     end
     
     properties(Dependent)
@@ -28,26 +30,56 @@ classdef GridOptions < handle
             % see also ZmapGrid
             
             switch nargin
-                case 1
+                case {1,2}
                     
                     if isstruct(dx)
                         % incoming struct.
                         gridopt = dx; % rename for better understanding
+                        if nargin==2
+                            fixedptopts = dy;
+                        else
+                            fixedptopts.UseFixedAnchorPoint=false; % declaring as a struct
+                        end
                         
-                        obj.dx = gridopt.dx;
-                        obj.dy = gridopt.dy;
-                        obj.dz = gridopt.dz;
+                        if isfield(gridopt,'dx')
+                            obj.dx = gridopt.dx;
+                            obj.dy = gridopt.dy;
+                            obj.dz = gridopt.dz;
+                        elseif isfield(gridopt,'Dx')
+                            obj.dx = gridopt.Dx;
+                            obj.dy = gridopt.Dy;
+                            obj.dz = gridopt.Dz;
+                        else
+                            error('expected field dx,dy,dz')
+                        end
                         
-                        obj.dxUnits = gridopt.dx_units;
-                        obj.dyUnits = gridopt.dy_units;
-                        obj.dzUnits = gridopt.dz_units;
+                        if isfield(gridopt,'dx_units')
+                            obj.dxUnits = lower(gridopt.dx_units);
+                            obj.dyUnits = lower(gridopt.dy_units);
+                            obj.dzUnits = lower(gridopt.dz_units);
+                        elseif isfield(gridopt,'xyunits')
+                            obj.dxUnits = lower(gridopt.xyunits);
+                            obj.dyUnits = lower(gridopt.xyunits);
+                            obj.dzUnits = 'kilometers';
+                        end
                         
+                        if isfield(gridopt,'GridEntireArea')
                         obj.gridEntireArea = gridopt.GridEntireArea;
+                        end
                         
                         % assume intent is to follow meridians if dx units are in degrees
-                        obj.followMeridians = matlab.lang.OnOffSwitchState(ismember(lower(obj.dxUnits),{"deg","degrees"}));
+                        if isfield(gridopt,'FollowMeridians')
+                            obj.followMeridians = gridopt.FollowMeridians;
+                        else
+                            obj.followMeridians = ismember(lower(obj.dxUnits),{"deg","degrees"});
+                        end
+                        
+                        if fixedptopts.UseFixedAnchorPoint
+                            obj.FixedAnchorPoint = [fixedptopts.XAnchor, fixedptopts.YAnchor, fixedptopts.ZAnchor];
+                        end
+                        
                     end
-                case {0,2,3,4}
+                case {0,3,4}
                     warning(help('GridOptions.GridOptions'));
                     error('Incorrect inputs into GridOptions.');
                     

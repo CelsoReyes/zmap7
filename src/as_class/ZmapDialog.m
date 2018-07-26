@@ -430,9 +430,9 @@ classdef ZmapDialog < handle
             %
             % returns structure
             % tag.numNearbyEvent
-            % tag.radius_km
+            % tag.RadiusKm
             % tag.useNumNearbyEvent
-            % tag.useEventsInRadius
+            % tag.UseEventsInRadius
             % tag.requiredNumEvents
             % tag.maxRadiusKm
             %

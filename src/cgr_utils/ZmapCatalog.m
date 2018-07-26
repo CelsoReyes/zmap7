@@ -500,14 +500,14 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             other = obj.subset(mask);
         end
         
-        function [other,max_km] = selectRadius(obj, lat, lon, depth, radius_km)
+        function [other,max_km] = selectRadius(obj, lat, lon, depth, RadiusKm)
             %SELECTRADIUS  select subset catalog to a radius from a point 
             % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, dist_km) epicentral radius from a point. sortorder is preserved
             % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, depth, dist_km) hypocentral radius from a point. sortorder is preserved
             %
             % see also selectClosestEvents, selectCircle
-            if ~exist('radius_km','var')
-                radius_km=depth;
+            if ~exist('RadiusKm','var')
+                RadiusKm=depth;
                 depth=[];
             end
             if isempty(depth)
@@ -515,7 +515,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             else
                 dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
             end
-            mask = dists_km <= radius_km;
+            mask = dists_km <= RadiusKm;
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);
             if ~any(mask)
@@ -531,12 +531,12 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % [ minicat, maxd ] = catalog.SELECTCIRCLE(selcrit, x,y,z ) %specify th
             %
             %  SELCRIT is a structure containing one of the following set of fields:
-            %    * numNearbyEvents (by itself) : runs function against this many closest events.
-            %    * radius_km  (by itself) : runs function against all events in this radius
-            %    * useNumNearbyEvents, useEventsInRadius, numNearbyEvents, radius_km (ALL of the above):
-            %      uses the useNumNearbyEvents and useEventsInRadius to determine its behavior.  If
+            %    * NumNearbyEvents (by itself) : runs function against this many closest events.
+            %    * RadiusKm  (by itself) : runs function against all events in this radius
+            %    * UseNumNearbyEvents, UseEventsInRadius, NumNearbyEvents, RadiusKm (ALL of the above):
+            %      uses the UseNumNearbyEvents and UseEventsInRadius to determine its behavior.  If
             %      both of these fields are true, then the closest events are evaluated up to the distance
-            %      radius_km.
+            %      RadiusKm.
             %    * maxRadiusKm
             %   X, Y, Z : coordinates of a point.  Z may be empty [].
             %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
@@ -546,26 +546,26 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             assert(isstruct(selcrit),'SELCRIT should be a structure');
             
             % make sure the required selection fields exist
-            if ~isfield(selcrit,'useNumNearbyEvents')
-                selcrit.useNumNearbyEvents=isfield(selcrit,'numNearbyEvents');
+            if ~isfield(selcrit,'UseNumNearbyEvents')
+                selcrit.UseNumNearbyEvents=isfield(selcrit,'NumNearbyEvents');
             end
-            if ~isfield(selcrit,'useEventsInRadius')
-                selcrit.useEventsInRadius=isfield(selcrit,'radius_km');
+            if ~isfield(selcrit,'UseEventsInRadius')
+                selcrit.UseEventsInRadius=isfield(selcrit,'RadiusKm');
             end
-            if selcrit.useEventsInRadius
-                assert(isfield(selcrit,'radius_km'),'Error: useEventsInRadius was true, but no radius [radius_km] was specified');
+            if selcrit.UseEventsInRadius
+                assert(isfield(selcrit,'RadiusKm'),'Error: UseEventsInRadius was true, but no radius [RadiusKm] was specified');
             end
-            if selcrit.useNumNearbyEvents
-                assert(isfield(selcrit,'numNearbyEvents'),'Error: useNumNearbyEvents was true, but no number [numNearbyEvents] was specified');
+            if selcrit.UseNumNearbyEvents
+                assert(isfield(selcrit,'NumNearbyEvents'),'Error: UseNumNearbyEvents was true, but no number [NumNearbyEvents] was specified');
             end
             
-            assert(selcrit.useNumNearbyEvents ~= selcrit.useEventsInRadius,...
+            assert(selcrit.UseNumNearbyEvents ~= selcrit.UseEventsInRadius,...
                 'Error. Cannot select both numnearby and events in radius.');
             
             if ~isfield(selcrit,'minNumEvents')
                 selcrit.minNumEvents=0;
             end
-            if selcrit.useNumNearbyEvents && ~isfield(selcrit,'maxRadiusKm')
+            if selcrit.UseNumNearbyEvents && ~isfield(selcrit,'maxRadiusKm')
                 selcrit.maxRadiusKm=inf;
             end
             
@@ -579,12 +579,12 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 z = []; % not a member of selcrit.
             end
                 
-            assert( selcrit.useEventsInRadius || selcrit.useNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
+            assert( selcrit.UseEventsInRadius || selcrit.UseNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
             
-            if selcrit.useEventsInRadius
-                [minicat,max_km]=obj.selectRadius(y,x, z, selcrit.radius_km);
-            elseif selcrit.useNumNearbyEvents
-                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.numNearbyEvents); %works with sphere
+            if selcrit.UseEventsInRadius
+                [minicat,max_km]=obj.selectRadius(y,x, z, selcrit.RadiusKm);
+            elseif selcrit.UseNumNearbyEvents
+                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.NumNearbyEvents); %works with sphere
                 if max_km > selcrit.maxRadiusKm
                     [minicat, max_km]=obj.selectRadius(y,x, z, selcrit.maxRadiusKm);
                 end

@@ -1,77 +1,63 @@
 classdef bpvalgrid < ZmapHGridFunction
     properties
-        CO=0 % omori c parameter with sign dictating whether it is constant or not
-        valeg2=2 % omori c parameter
-        minpe=nan % min goodness percentage
-        mc_choice % magnitude of completion method (index to a method)
+        CO         = 0     % omori c parameter with sign dictating whether it is constant or not
+        valeg2      = 2     % omori c parameter
+        minpe       = nan   % min goodness percentage
+        mc_choice    McMethods   = McMethods.MaxCurvature % magnitude of completion method
     end
     properties(Constant)
-        PlotTag='bpvalgrid';
+        PlotTag = 'bpvalgrid';
         
         ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'b_value_wls','b-value map (WLS)','';...1 bv
-            'Mc_value','Mag of completieness','';...2 magco
-            'b_value_maxlikelihood','b(max likelihood) map','';... 6: bv2
-            'b_value_std_maxlikelihood','Error in b','';...7 {pro} stan2
-            'a_value', 'a-value','';...8 av
-            'stan','est. std predicting future based on A and B','';... stanm9: stan estimate of the std deviation of the error in predicting a future observation at X by A and B
-            'power_fit', 'Goodness of fit to power-law', '';... prf
-            'p_value','p-value','';... 11: pv
-            'pstd','p-val std','';... 12: pstd
-            'c_value','c in days','';... 14 cv
-            'mmav','mmav','';... mmav
-            'k_value','kv','';... kv
-            'mbv','mbv','';... mbv
-            'deltaB','difference in b','';...
-            'dM','Magnitude range map (Mmax - Mcomp)','';
+            'b_value_wls',  'b-value map (WLS)','';...      1 bv
+            'Mc_value',     'Mag of completeness','';...    2 magco
+            'b_value_maxlikelihood',        'b(max likelihood) map','';...  6: bv2
+            'b_value_std_maxlikelihood',    'Error in b','';...             7 {pro} stan2
+            'a_value',      'a-value','';...                8 av
+            'stan',         'est. std predicting future based on A and B','';... stanm9: stan estimate of the std deviation of the error in predicting a future observation at X by A and B
+            'power_fit',    'Goodness of fit to power-law', '';... prf
+            'p_value',      'p-value','';...                11: pv
+            'pstd',         'p-val std','';...              12: pstd
+            'c_value',      'c in days','';...              14 cv
+            'mmav',         'mmav','';...                   mmav
+            'k_value',      'kv','';...                     kv
+            'mbv',          'mbv','';...                    mbv
+            'deltaB',       'difference in b','';...
+            'dM',           'Magnitude range map (Mmax - Mcomp)','';
             };
-        CalcFields = {'b_value_wls', 'Mc_value', 'b_value_maxlikelihood',...
-            'b_value_std_maxlikelihood', 'a_value', 'stan', 'power_fit', 'p_value', 'pstd',...
-            'c_value', 'mmav', 'k_value', 'mbv'};
+        
+        CalcFields = {'b_value_wls',    'Mc_value', 'b_value_maxlikelihood',...
+            'b_value_std_maxlikelihood','a_value', ...
+            'stan',     'power_fit',    'p_value',  'pstd',...
+            'c_value',  'mmav',         'k_value',  'mbv'};
+        ParameterableProperties = ["CO" "valeg2" "minpe" "mc_choice"];
     end
     methods
         function obj=bpvalgrid(zap, varargin)
-            % CGR_BVALGRID 
+            % CGR_BVALGRID
             % obj = CGR_BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
             %
             % obj = CGR_BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
             
+            
+            obj@ZmapHGridFunction(zap, 'p_value'); %set default column here
             report_this_filefun();
             
-            obj@ZmapHGridFunction(zap, 'p_value'); %set default here
-            
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
-            else
-                % run this function without human interaction
-                obj.doIt();
-            end
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
         
         function InteractiveSetup(obj)
             % create a dialog that allows user to select parameters neccessary for the calculation
             zdlg = ZmapDialog();
             
-            McMethods={'Automatic Mcomp (max curvature)',...
-                'Fixed Mc (Mc = Mmin)',...
-                'Automatic Mcomp (90% probability)',...
-                'Automatic Mcomp (95% probability)',...
-                'Best (?) combination (Mc95 - Mc90 - max curvature)'...,...
-                ...'Constant Mc'
-                };
-            
-            zdlg.AddBasicPopup('mc_choice','Mc  Method:',McMethods,5,...
-                'Please choose an Mc estimation option');
-            
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
+                'Choose the calculation method for Mc');
             zdlg.AddBasicEdit('c_val','omori c parameter', obj.valeg2,' input parameter (varying)');
             zdlg.AddBasicCheckbox('use_const_c','fixed c', obj.CO<0, {'const_c'},'keep the Omori C parameter fixed');
             zdlg.AddBasicEdit('const_c','omori c parameter', obj.valeg2, 'C-parameter parameter (fixed)');
             zdlg.AddBasicEdit('minpe','min goodness %', obj.minpe, 'Minimum goodness of fit (percentage)');
-
+            
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
             % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
@@ -121,7 +107,7 @@ classdef bpvalgrid < ZmapHGridFunction
             obj.RawCatalog = obj.RawCatalog.subset(obj.RawCatalog.Magnitude >= minThreshMag);
             
             %%%%%%%
-
+            
             % overall b-value
             [bv, magco, stan, av] =  bvalca3(obj.RawCatalog.Magnitude,obj.mc_choice);
             ZG.bo1 = bv;
@@ -245,7 +231,7 @@ classdef bpvalgrid < ZmapHGridFunction
 end
 
 %{
-    function my_load()
+function my_load()
         % Load exist b-grid
         [file1,path1] = uigetfile('*.mat','b-value gridfile');
         if length(path1) > 1
@@ -257,4 +243,3 @@ end
         end
     end
 %}
-   

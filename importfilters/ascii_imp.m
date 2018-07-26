@@ -1,6 +1,6 @@
-function [uOutput] = ascii_imp(nFunction, sFilename)
+function [uOutput,ok] = ascii_imp(nFunction, sFilename)
     
-    
+    ok=false;
     % Filter function switchyard
     if nFunction == 0     % Return info about filter
         uOutput = 'ASCII columns (.txt, .dat, .csv)';
@@ -21,6 +21,7 @@ function [uOutput] = ascii_imp(nFunction, sFilename)
         disp(tb(1:min(5,height(tb)),:));
         
         uOutput = ZmapCatalog(tb);
+        ok=true;
     end
 end
 
@@ -189,6 +190,7 @@ end
 
 function fmt = timestr_to_fmt(val)
     % look at format for the date
+    if iscell(val); val=val{1};end
     hasDatePart = all(ismember(val(1:4),'1234567890')); %assume 4 digit year.
     hasTimePart = any(ismember(val,':')); % time 
     

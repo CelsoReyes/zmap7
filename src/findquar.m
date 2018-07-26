@@ -14,22 +14,24 @@ classdef findquar < ZmapHGridFunction
     
     properties
         oldratios
-        inDaytime (24,1) logical =false(24,1)
-        localNoonEstimate (1,1) = 12;
-        dayLength (1,2) = [4, 6] % hours BEFORE noon to hours AFTER noon
+        inDaytime (24,1) logical    = false(24,1)
+        localNoonEstimate (1,1)     = 12;
+        dayLength (1,2)             = [4, 6] % hours BEFORE noon to hours AFTER noon
     end
     
     properties(Constant)
         PlotTag         = 'QuarryRatios'
         ReturnDetails   = {...VariableNames, VariableDescriptions, VariableUnits
-            'day_night_ratio', 'Day-Night event ratio', '';
+            'day_night_ratio',      'Day-Night event ratio', '';
             'day_night_ratio_norm', 'Day-Night event ratio (normalized by hrs in day)', '';
-            'n_day','Number of events during day','';
-            'n_night','Number of events during night',''...
+            'n_day',                'Number of events during day','';
+            'n_night',              'Number of events during night',''...
             }
         CalcFields      = {'day_night_ratio','day_night_ratio_norm','n_day','n_night'}
         DayColor        = [0.8 0.8 0.2] % for histogram
         NightColor      = [0.1 0.0 0.6] % for histogram
+        
+        ParameterableProperties = ["oldratios" "inDaytime" "localNoonEstimate" "dayLength"];
     end
     
     methods
@@ -37,23 +39,23 @@ classdef findquar < ZmapHGridFunction
             % create a [...]
             
             obj@ZmapHGridFunction(zap, 'day_night_ratio_norm');
+            report_this_filefun();
             
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
+            
+            obj.CalcLocalNoon();
+            
+            % set the deafult days & nights based on  local noon and the "day" length
+            dayStart = mod(obj.localNoonEstimate - obj.dayLength(1),24);
+            dayEnd = mod(obj.localNoonEstimate + obj.dayLength(2),24);
+            eachHour = 0:23;
+            if dayStart < dayEnd
+                obj.inDaytime = dayStart <= eachHour  & eachHour < dayEnd;
             else
-                %run this function without human interaction
-                
-                % set values for properties
-                
-                ...
-                    
-                % run the rest of the program
-                obj.doIt();
+                obj.inDaytime = dayStart <= eachHour | eachHour < dayEnd;
             end
+            
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
         
         function InteractiveSetup(obj)
@@ -157,15 +159,7 @@ classdef findquar < ZmapHGridFunction
         
         function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
-            
-            % create the function call that someone could use to recreate this calculation.
-            %
-            % for example, if one would call this function with:
-            %      myfun('bob',23,false);
-            % with values that get assigned the variables:
-            %     obj.name, obj.age, obj.runreport
-            % then the next line should be:
-            %      obj.FunctionCall={'name','age','runreport'};
+        
             
             close(findobj('Tag','fifhr'));
             

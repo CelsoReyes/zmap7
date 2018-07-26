@@ -134,7 +134,7 @@ function add_grid_menu(obj)
         if isempty(ev)
             [evselch, okpressed] = EventSelectionChoice.quickshow(true);
         else
-            [evselch, okpressed] = EventSelectionChoice.quickshow(false,ev.numNearbyEvents,ev.maxRadiusKm,ev.requiredNumEvents);
+            [evselch, okpressed] = EventSelectionChoice.quickshow(false,ev.NumNearbyEvents,ev.maxRadiusKm,ev.requiredNumEvents);
         end
         if okpressed
             obj.set_event_selection(evselch);

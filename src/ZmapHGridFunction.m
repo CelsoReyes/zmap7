@@ -16,16 +16,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
         nearestSamplePos= [nan nan]; % x, y of measurement
     end
     
-    properties(Constant) 
+    properties
+        isUpdating
+    end
+    
+    properties(Constant)
         % The results can be explored  also by pressing keys. This creates the mapping
         % between the keys and actions
         KeyMap = struct(...
             'ToggleRadiusRing', 'r',...
-            'ShowValue', 'T',... 
+            'ShowValue', 'T',...
             'ShowValueNoNan', 't',...
             'TogglePointValue', 'v',...
             'KeyHelp','?'...
-        );
+            );
     end
     
     properties(Dependent)
@@ -40,7 +44,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function obj=ZmapHGridFunction(varargin)
             obj@ZmapGridFunction(varargin{:});
-            obj.addlistener('lastPoint','PostSet', @obj.update);
+            obj.addlistener('nearestSample','PostSet', @obj.update);
         end
         
         function tb = get.resultsForThisPoint(obj)
@@ -62,11 +66,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if isempty(tb); mask=[];return; end
             % evsel = obj.EventSelector;
             dists = obj.RawCatalog.epicentralDistanceTo(tb.y,tb.x);
-            mask = dists <= tb.Radius_km;
+            mask = dists <= tb.RadiusKm;
             if sum(mask) > tb.Number_of_Events
                 warning('Selection doesn''t exactly match results.')
             end
-                
+            
         end
         
         function c = get.catalogForThisPoint(obj)
@@ -75,7 +79,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         
         function mycolor = get.colorForThisPoint(obj)
-             % use the same color for the trend plot as is used for the results overlay
+            % use the same color for the trend plot as is used for the results overlay
             cm=colormap(obj.ax);
             cl=obj.ax.CLim;
             lookup=linspace(min(cl), max(cl), length(cm));
@@ -89,7 +93,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         
         %{
-        function showInTab(obj, ax, choice)
+function showInTab(obj, ax, choice)
             % plots the results on the provided axes.
             
             if exist('choice','var')
@@ -132,7 +136,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             %  TOP: grid points
             %       Earthquakes(?)
             %  MIDDLE: Contour
-            % 
+            %
             %  Bottom: Features
             %          Topographic stuff
             
@@ -182,7 +186,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             else
                 ax=findobj(resTab,'Tag','result_map');
             end
-                
+            
             ax.NextPlot='add';
             delete(findobj(ax,'Tag','result overlay'));
             
@@ -196,7 +200,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 h=obj.Grid.pcolor(ax,p, mydesc);
             else
                 [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc, ZmapGlobal.Data.ResultOpts.NumContours);
-
+                
             end
             ax.Children=circshift(ax.Children,-1); % move the contour to the bottom layer
             val = obj.Result.values.(myname);
@@ -263,7 +267,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             %% plotting into some window other than the Main ZMAP window
             
             [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
-                
+            
             f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
             if isempty(f)
                 f=figure('Tag',obj.PlotTag);
@@ -309,7 +313,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             
-
+            
             
         end % plot function
         
@@ -375,17 +379,44 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
                 ss = findobj(ax.Children,'Tag','result overlay');
                 if isprop(ss,'FaceAlpha')
-                newAlpha = ss.FaceAlpha + val;
-                if newAlpha < 0; newAlpha = 0; end
-                if newAlpha > 1; newAlpha = 1; end
-                alpha(ss,newAlpha);
+                    newAlpha = ss.FaceAlpha + val;
+                    if newAlpha < 0; newAlpha = 0; end
+                    if newAlpha > 1; newAlpha = 1; end
+                    alpha(ss,newAlpha);
                 else
                     beep;
                     fprintf('alpha not supported for %s\n',ss.Type);
                 end
             end
-                
+            
         end
+        function updateClickPoint(obj,~,~)
+            % If user clicks in the active axis, then the point and sample are updated
+            
+            mytab=obj.ax.Parent;
+            mytabholder=mytab.Parent;
+            if mytabholder.SelectedTab~=mytab || ~obj.isUpdating
+                return
+            end
+            axX=obj.ax.XLim;
+            axY=obj.ax.YLim;
+            pt=obj.ax.CurrentPoint(1,1:2);
+            withinAxes = pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1);
+            if withinAxes
+                obj.lastPoint = pt;
+                mx=pt(1); my=pt(2);
+                [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
+                x = obj.Result.values.x(nearest);
+                y = obj.Result.values.y(nearest);
+                obj.nearestSample=nearest;
+                obj.nearestSamplePos = [x , y];
+                % update hilight
+                HL=findobj(obj.ax.Children,'flat','Tag','thisresulthilight');
+                HL.XData = x;
+                HL.YData = y;
+            end
+        end
+        
     end % Public methods
     
     methods(Access=protected)
@@ -430,7 +461,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
                         MenuSelectedField(),@(~,~)overlay_cb(tmpname));
-                        %MenuSelectedField(),@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
+                    %MenuSelectedField(),@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
                 end
                 container.Children(end-1).Separator='on';
             end
@@ -477,9 +508,10 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function updateRing(obj)
             CR = findobj(obj.ax,'Tag','thisradius');
+            tb=obj.resultsForThisPoint;
             if obj.showRing
                 % update samplecircle
-                [La,Lo]=reckon(obj.nearestSamplePos(1), obj.nearestSamplePos(2), km2deg(obj.Result.values.Radius_km(obj.nearestSample)), 0:2:360);
+                [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
                 set(CR,'XData',Lo,'YData',La,'LineStyle','--');
             else
                 set(CR,'XData',nan,'YData',nan);
@@ -531,8 +563,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
         function interact(obj,myname)
             % make this results-plot interactive
             f=ancestor(obj.ax,'figure');
-            mytab=obj.ax.Parent;
-            mytabholder=mytab.Parent;
             obj.ax.NextPlot='add';
             delete(findobj(obj.ax,'Tag','thisresulttext'));
             delete(findobj(obj.ax,'Tag','thisresulthilight'));
@@ -545,8 +575,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 'SizeData',60,...
                 'LineWidth',3);
             line(obj.ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
-
-            %% 
+            
+            %%
             % desired behavior:
             %  - do nothing until mouse is down
             %  - on mouse click, choose the nearest data point, and update all relevant graphs with
@@ -556,15 +586,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
             %  - While mouse is down, continuously update location
             
             % Do not update until mouse button is pressed
-            isUpdating=false;
+            obj.isUpdating=false;
             
             % update the data-point positions as the mouse moves
-            f.WindowButtonMotionFcn = @updateClickPoint;
+            f.WindowButtonMotionFcn = @obj.updateClickPoint;
             
             % Whenever the mouse is pressed in this axes, start doing updates
             obj.ax.ButtonDownFcn = @trigger_update;
             
-            % But, make sure that button presses are not intercepted, otherwise 
+            % But, make sure that button presses are not intercepted, otherwise
             % the feedback will be intermittant.
             set(obj.ax.Children,'HitTest','off');
             
@@ -600,54 +630,32 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         % add additional key funcitonality here.
                         do_nothing();
                 end
-                updateClickPoint()
+                obj.updateClickPoint()
             end
             function trigger_update(src,ev)
                 % start tracking the mouse location
                 wbu_tmp = f.WindowButtonUpFcn;
                 f.WindowButtonUpFcn = @falsifyIsUpdating;
-                isUpdating=true;
+                obj.isUpdating=true;
                 try
-                    updateClickPoint(src,ev);
+                    obj.updateClickPoint(src,ev);
                     drawnow
                 catch ME
                     falsifyIsUpdating()
                     rethrow(ME)
                 end
-                    
+                
                 function falsifyIsUpdating(~,~)
                     % stop updating the selected results.
-                    isUpdating=false;
+                    obj.isUpdating=false;
                     f.WindowButtonUpFcn=wbu_tmp;
                 end
                 
             end
             
-            function updateClickPoint(~,~)
-                % If user clicks in the active axis, then the point and sample are updated
-                if mytabholder.SelectedTab~=mytab || ~isUpdating
-                    return
-                end
-                axX=obj.ax.XLim;
-                axY=obj.ax.YLim;
-                pt=obj.ax.CurrentPoint(1,1:2);
-                withinAxes = pt(1)<=axX(2) && pt(1)>=axX(1) && pt(2)<=axY(2) && pt(2) >=axY(1);
-                if withinAxes
-                    obj.lastPoint = pt;
-                    mx=pt(1); my=pt(2);
-                    [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
-                    x = obj.Result.values.x(nearest);
-                    y = obj.Result.values.y(nearest);
-                    obj.nearestSample=nearest;
-                    obj.nearestSamplePos = [x , y]
-                    
-                    % update hilight
-                    HL.XData = x;
-                    HL.YData = y;
-                end
-            end
             
         end
+        
     end % Protected methods
     
 end
