@@ -121,8 +121,9 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     if multifun
         error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
-    else
-            
+    elseif UseParallelProcessing
+        doParSinglefun(infun);
+    else 
         doSinglefun(infun);
     end
     toc(mytic)
@@ -184,6 +185,74 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         end
     end
 
+    
+    function doParSinglefun(myfun)
+            
+        gridpoints = zgrid.GridVector;
+        gridpoints=gridpoints(zgrid.ActivePoints,:);
+        
+        % where to put the value back into the matrix
+        activeidx = find(zgrid.ActivePoints);
+        size(activeidx)
+        x=gridpoints(zgrid.ActivePoints,1);
+        y=gridpoints(zgrid.ActivePoints,2);
+        doZ=~isempty(zgrid.Z);
+        if doZ
+            z=gridpoints(zgrid.ActivePoints,3);
+        else
+            z=nan(size(x));
+        end
+            
+        
+        parfor i=1:numel(x)
+            fun=myfun; % local copy of function;
+            size(selcrit);
+            size(catalog,1);
+            if doZ
+                [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),z(i));
+            else
+                
+                [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),[]);
+            end
+            % is this point of interest?
+            %write_idx = activeidx(i);
+        
+            
+            nEvents(i)=minicat.Count; %%
+            maxDist(i)=maxd; %%
+            if ~isempty(minicat)
+                maxMag(i)=max(minicat.Magnitude); %%
+            end
+            % are there enough events to do the calculation?
+            if minicat.Count < selcrit.requiredNumEvents
+                nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
+                continue
+            end
+            
+            returned_vals = fun(minicat);
+            values(i,:)=returned_vals; %%
+            
+            wasEvaluated(i)=true; %%
+            if ~mod(i,ceil(length(zgrid)/50))
+                %h.String=sprintf('Computing values across grid.   %5d / %d Total points', i, length(zgrid));
+                drawnow limitrate nocallbacks
+            end
+        end
+        %% put values into correct place
+        nEvents(zgrid.ActivePoints) = nEvents(1:numel(activeidx));
+        nEvents(~zgrid.ActivePoints)=0;
+        maxDist(zgrid.ActivePoints) = maxDist(1:numel(activeidx));
+        maxDist(~zgrid.ActivePoints)=nan;
+        maxMag(zgrid.ActivePoints) = maxMag(1:numel(activeidx));
+        maxMag(~zgrid.ActivePoints)=nan;
+        values(zgrid.ActivePoints,:) = values(1:numel(activeidx),:);
+        values(~zgrid.ActivePoints,:)=nan;
+        wasEvaluated(zgrid.ActivePoints) = wasEvaluated(1:numel(activeidx));
+        wasEvaluated(~zgrid.ActivePoints)=false;
+        
+    end
+
+    
     % helper functions
     function check_provided_functions(multifun)
         

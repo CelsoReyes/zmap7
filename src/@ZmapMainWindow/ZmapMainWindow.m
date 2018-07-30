@@ -255,6 +255,10 @@ classdef ZmapMainWindow < handle
             end
         end
         
+        function c = getCurrentCatalog(obj)
+            % getCurrentCatalog provides a function to always get the most recent catalog
+            c = obj.catalog;
+        end
     function set_my_shape(obj, sh)
         % call this whenever shape is replaced, otherwise catalog will not adjust to it
         if ~isempty(sh) && ~isequal(sh,obj.shape)

@@ -141,7 +141,7 @@ function create_all_menus(obj, force)
             MenuSelectedField(),@obj.set_3d_view); % callback was plot3d
         
         uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-            MenuSelectedField(),@toggle_aspectratio,...
+            MenuSelectedField(),{@callbacks.toggle_aspectratio, axm,"SetGlobal"}, ...
             'Checked',char(ZmapGlobal.Data.lock_aspect));
         if ZmapGlobal.Data.lock_aspect
             daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
@@ -251,24 +251,12 @@ function create_all_menus(obj, force)
             ZG=ZmapGlobal.Data;
             [~,~,ZG.CatalogOpts.BigEvents.MinMag] = smart_inputdlg('Choose magnitude threshold',...
                 struct('prompt','Mark events with M > ? ','value',ZG.CatalogOpts.BigEvents.MinMag));
-            src.Label=['Mark large event with M > ' num2str(ZG.CatalogOpts.BigEvents.MinMag)];
+            src.Label = "Mark large event with M > " + ZG.CatalogOpts.BigEvents.MinMag;
             obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
             set(findobj(obj.fig,'Tag','big events'), 'DisplayName', src.Label);
         end
         
         
-        function toggle_aspectratio(src, ~)
-            src.Checked=toggleOnOff(src.Checked);
-            switch src.Checked
-                case 'on'
-                    daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
-                case 'off'
-                    daspect(axm,'auto');
-            end
-            ZG = ZmapGlobal.Data;
-            ZG.lock_aspect = matlab.lang.OnOffSwitchState(src.Checked);
-            %align_supplimentary_legends();
-        end
         
         function toggle_grid(src, ~)
             src.Checked=toggleOnOff(src.Checked);

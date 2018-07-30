@@ -43,7 +43,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     % make sure that this program identified during requests to datacenter
     options.UserAgent=[options.UserAgent,' ZMAP/',ZG.zmap_version];
     
-    if isempty(datacenter_details)
+    if isempty(datacenter_details) && ~exist(code,'file')
         datacenter_details = webread('http://service.iris.edu/irisws/fedcatalog/1/datacenters',options);
         
         %dump datacenters with no event catalog access

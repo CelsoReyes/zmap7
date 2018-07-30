@@ -60,16 +60,16 @@ classdef bdiff2
             
     
     methods
-        function obj = bdiff2(catalog, interactive, ax)
-            % obj = bdiff2(catalog, interactive)
+        function obj = bdiff2(catalogFcn, interactive, ax)
+            % obj = bdiff2(catalog, interactive, ax)
             % if unspecified, catalog defaults to ZG.newt2
             
             report_this_filefun();
             
             ZG=ZmapGlobal.Data;
             
-            if ~exist('catalog','var') || isempty(catalog)
-                catalog = ZG.newt2;
+            if ~exist('catalogFcn','var') || isempty(catalogFcn)
+                catalogFcn = @()ZG.newt2;
             end
             if ~exist('interactive','var') || isempty(interactive)
                 interactive=true;
@@ -103,27 +103,35 @@ classdef bdiff2
                 obj.dlg_res = dlg_res;
             end
             
-            obj=obj.calculate(catalog);
+            obj=obj.calculate(catalogFcn());
             if exist('ax','var') && ax == "noplot"
                 % do not plot
                 obj.write_globals();
                 return;
             end
             if ~exist('ax','var')||isempty(ax)|| ~isvalid(ax)
-                [ax]=obj.setup_figure(catalog);
+                [ax]=obj.setup_figure(catalogFcn());
             end
             
             % add context menu equivelent to ztools menu
             f=ancestor(ax,'figure');
             delete(findobj(f,'Tag',obj.tags.bdcontext,'-and','Type','uicontextmenu'));
             c = uicontextmenu(f,'Tag',obj.tags.bdcontext);
-            obj.create_my_menu(c,catalog);
+            obj.create_my_menu(c,catalogFcn);
             ax.UIContextMenu=c;
-            uimenu(ax.UIContextMenu,'Label','Open as new figure',MenuSelectedField(),@(~,~)obj.plot(catalog,obj.setup_figure(catalog)));
+            uimenu(ax.UIContextMenu,...
+                'Label','Open as new figure',...
+                MenuSelectedField(),@open_as_new_figure_cb);
                 
             obj.write_globals();
             
-            obj.plot(catalog,ax);
+            obj.plot(catalogFcn(),ax);
+            
+            function open_as_new_figure_cb(src, ev)
+                otherobj = bdiff2(catalogFcn, false);
+                f=otherobj.setup_figure(catalogFcn);
+                otherobj.plot(catalogFcn(),f);
+            end
         end
         
         function obj = calculate(obj, catalog)
@@ -256,7 +264,7 @@ classdef bdiff2
             
         end
       
-        function ax = setup_figure(obj,catalog)
+        function ax = setup_figure(obj,catalogFcn)
             
             bfig=findobj(get(groot,'Children'),'flat','Type','Figure','-and','Name', obj.figName);
             if isempty(bfig)
@@ -265,7 +273,7 @@ classdef bdiff2
                 
                 add_menu_divider();
                 c = uimenu('Label','ZTools');
-                obj.create_my_menu(c,catalog);
+                obj.create_my_menu(c,catalogFcn);
             else
                 bfig.Visible='on';
                 figure(bfig)
@@ -456,11 +464,11 @@ classdef bdiff2
             
         end
         %% ui functions
-        function create_my_menu(obj,c,catalog)
+        function create_my_menu(obj,c,catalogFcn)
             uimenu(c,'Label','Estimate recurrence time/probability',MenuSelectedField(),@callbackfun_recurrence);
-            uimenu(c,'Label','Plot time series',MenuSelectedField(),@callbackfun_ts);
-            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),{@cb_nonlin_optimize,catalog});
-            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalog});
+            uimenu(c,'Label','Plot time series',MenuSelectedField(),{@callbackfun_ts,catalogFcn});
+            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),{@cb_nonlin_optimize,catalogFcn});
+            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalogFcn});
             uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@callbackfun_nodiscrete,'Checked','on');
             uimenu(c,'Label','Save values to file',MenuSelectedField(),{@calSave9,obj.magsteps_desc, obj.bvalsum3});
             addAboutMenuItem();
@@ -470,10 +478,10 @@ classdef bdiff2
                 plorem(onesigma, obj.aw, obj.bw);
             end
             
-            function callbackfun_ts(~,~)
+            function callbackfun_ts(~,~,catalogFcn)
                 ZG=ZmapGlobal.Data;
-                ZG.newcat = catalog;
-                ctp=CumTimePlot(catalog);
+                ZG.newcat = catalogFcn();
+                ctp=CumTimePlot(catalogFcn());
                 ctp.plot();
             end
             
@@ -484,13 +492,13 @@ classdef bdiff2
                 set(findobj(gcf,'Tag',obj.tags.discrete),'Visible',mysrc.Checked);
             end
             
-            function cb_nonlin_optimize(~, ~,catalog)
-                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(catalog, obj.magco, 'OptimizeMc');
+            function cb_nonlin_optimize(~, ~,catalogFcn)
+                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(catalogFcn(), obj.magco, 'OptimizeMc');
                 Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''OptimizeMc'')',obj.magco);
                 assignin('base','Results_NonlinearityAnalysis',Results);
             end
-            function cb_nonlin_keepmc(~, ~,catalog)
-                obj.nonlin_keepmc(catalog);
+            function cb_nonlin_keepmc(~, ~,catalogFcn)
+                obj.nonlin_keepmc(catalogFcn());
                 % DUPLICATED ast obj.nonlin_keepmc
                 %[Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(catalog, obj.magco, 'PreDefinedMc');
                 %Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.magco);

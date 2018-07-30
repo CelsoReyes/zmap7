@@ -94,6 +94,7 @@ classdef (Sealed) CumTimePlot < handle
             catch ME
                 disp('failed to get figure!')
             end
+            myfig.UserData = obj; % make this accessible
             
             if isempty(obj.Catalog)
                 ZmapMessageCenter.set_error('No Catalog','timeplot was passed an empty catalog');
@@ -173,7 +174,7 @@ classdef (Sealed) CumTimePlot < handle
     methods(Hidden)
         function c=catfun(obj)
             % for use with the ZmapCatalogView
-            c=obj.catalog;
+            c = obj.catalog;
         end
     end
     methods (Access = protected)
@@ -187,6 +188,7 @@ classdef (Sealed) CumTimePlot < handle
             fig.NextPlot = 'replace';
             fig.Position = position_in_current_monitor(ZG.map_len(1)-100, ZG.map_len(2)-20);
             obj.create_menu(fig);
+            fig.UserData=obj;
             obj.hold_state=false;
         end
         

@@ -7,7 +7,7 @@ function fmdplot(obj, tabgrouptag)
         ylabel(ax,'Cum # events');
         xlabel(ax,'Magnitude');
         if ~isempty(obj.catalog)
-            bdiffobj=bdiff2(obj.catalog,false,ax); 
+            bdiffobj=bdiff2(@obj.getCurrentCatalog,false,ax); 
             ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
         end
         
@@ -18,7 +18,7 @@ function fmdplot(obj, tabgrouptag)
     else
         bdiffobj=ax.UserData;
         if isempty(bdiffobj)
-            bdiffobj=bdiff2(obj.catalog,false,ax);
+            bdiffobj=bdiff2(@obj.getCurrentCatalog,false,ax);
             ax.UserData=bdiffobj;
         else
             bdiffobj=bdiffobj.calculate(obj.catalog);

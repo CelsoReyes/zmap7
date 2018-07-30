@@ -4,6 +4,8 @@
 close all
 clear all
 
+ONLINE = true;
+
 % start zmap
 zmap -initonly
 
@@ -15,7 +17,7 @@ tmp = load('resources/sample/sample_data_sed.mat','a');
 c0=ZmapCatalog(tmp.a);
 
 % load a catalog via the fdsn importer
-[~, c2] = ZmapImportManager(@import_fdsn_event,{[], 'resources/sample/example_fdsn_events.txt'});
+[~, mycat] = ZmapImportManager(@import_fdsn_event,{[], 'resources/sample/example_fdsn_events.txt'});
 
 % load a catalog via the ascii importer
 [~, c1] = ZmapImportManager(@ascii_imp,{[], 'resources/sample/example_fdsn_events.txt'});
@@ -23,12 +25,13 @@ c0=ZmapCatalog(tmp.a);
 % load a catalog via the NDK importer
 [~, c3] = ZmapImportManager(@import_ndk,{[], '~/Desktop/jan76_dec13.ndk'});
 
-% load a catalog via a live fdsn service
-[~, mycat] = ZmapImportManager(@import_fdsn_event, {[],'SED','starttime','2010-01-01T00:00'});
-
+if ONLINE
+    % load a catalog via a live fdsn service
+    [~, mycat] = ZmapImportManager(@import_fdsn_event, {[],'SED','starttime','2010-01-01T00:00'});
+end
 % cut the catalog
-c4 = c3.subset(c3.Longitude > 0 & c3.Longitude < 12);
-c4 = c4.subset(c4.Latitude > 40 & c4.Latitude < 50);
+c4 = c3.subset(c3.Longitude > 0 & c3.Longitude < 15);
+c4 = c4.subset(c4.Latitude > 30 & c4.Latitude < 50);
 
 %%
 % create the zmap interactive window
@@ -38,7 +41,7 @@ zmw = ZmapMainWindow(mycat);
 gopt = GridOptions(ZG.GridOpts.SeparationProps, ZG.GridOpts.AnchorPoint);
 zmw.Grid = ZmapGrid(ZG.GridOpts.Name, gopt);
 
-sh = load_shape(fullfile(ZG.Directories.data,'switzerland_shape.csv'))
+sh = load_shape(fullfile(ZG.Directories.data,'switzerland_shape.csv'));
 % the ZAP is a way to shuffle a bunch of relevant analysis data together:
 % it combines the catalog, method of sampling, grid points, and shape.
 ZAP = ZmapAnalysisPkg([],mycat, ZG.SamplingOpts, zmw.Grid, sh);
