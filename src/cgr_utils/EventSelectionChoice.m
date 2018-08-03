@@ -198,6 +198,7 @@ classdef EventSelectionChoice < handle
                     obj.ubg1.SelectedObject=obj.hUseRadius;
                 end
             end
+            obj.ubg1.SelectionChangedFcn(obj.ubg1); % ensure correct radiobutton is selected
             
             function callback_selectioncontrol(mysrc,~)
                 if mysrc.SelectedObject == obj.hUseNevents
