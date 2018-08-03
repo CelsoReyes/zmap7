@@ -21,12 +21,13 @@ classdef findquar < ZmapHGridFunction
     
     properties(Constant)
         PlotTag         = 'QuarryRatios'
-        ReturnDetails   = {...VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = cell2table({...VariableNames, VariableDescriptions, VariableUnits
             'day_night_ratio',      'Day-Night event ratio', '';
             'day_night_ratio_norm', 'Day-Night event ratio (normalized by hrs in day)', '';
             'n_day',                'Number of events during day','';
             'n_night',              'Number of events during night',''...
-            }
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
         CalcFields      = {'day_night_ratio','day_night_ratio_norm','n_day','n_night'}
         DayColor        = [0.8 0.8 0.2] % for histogram
         NightColor      = [0.1 0.0 0.6] % for histogram
@@ -381,7 +382,7 @@ classdef findquar < ZmapHGridFunction
         function h=AddMenuItem(parent, zapFcn)
             % create a menu item that will be used to call this function/class
             label='Find Quarry Events';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)findquar(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.findquar(zapFcn()));
         end
         
         function ct = ToHourlyCategorical(val)

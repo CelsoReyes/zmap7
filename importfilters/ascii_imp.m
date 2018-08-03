@@ -2,10 +2,10 @@ function [uOutput,ok] = ascii_imp(nFunction, sFilename)
     
     ok=false;
     % Filter function switchyard
-    if nFunction == 0     % Return info about filter
+    if nFunction == FilterOp.getDescription
         uOutput = 'ASCII columns (.txt, .dat, .csv)';
         return
-    elseif nFunction == 2
+    elseif nFunction == FilterOp.getWebpage
         uOutput = 'ascii_imp.html';
         
     else

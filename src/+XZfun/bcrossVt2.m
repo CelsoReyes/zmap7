@@ -1,5 +1,6 @@
-classdef bcrossVt2 < ZmapSliceFunction
-    % BCROSSVT2 tHis subroutine assigns creates a grid with
+classdef bcrossVt2 < ZmapVGridFunction
+    % BCROSSVT2 compares b-values for 2 time periods within a cross section
+    % tHis subroutine assigns creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactiVELY. The bvalue in each
     % volume around a grid point containing ni earthquakes
@@ -25,8 +26,8 @@ classdef bcrossVt2 < ZmapSliceFunction
     end
     
     properties(Constant)
-        PlotTag = 'myotherplot'
-        ReturnDetails = {... VariableNames, VariableDescriptions, VariableUnits
+        PlotTag = 'bcrossVt2'
+        ReturnDetails = cell2table({... VariableNames, VariableDescriptions, VariableUnits
             'b_value_1', 'b-value I', '';...1 bv > valueMap [discarded later]
             'Mc_value1', 'Magnitude of Completion (Mc) I', '';...2 magco > old1
             'stan1','error in b I','';...9 stan > stanm
@@ -45,7 +46,8 @@ classdef bcrossVt2 < ZmapSliceFunction
             'dM','Difference in Mc','mag';... Mc_value2 - Mc_value1 (Not)maxm-magco
             'delta_bval','Difference in b-values','';... old - meg  : BV2 - BV1
             'dbperc','b-value change','pct';... bv2/bv*100-100 
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'});
+        
         CalcFields = {...
             'b_value_1','Mc_value1','stan1','a_value1','probability','count_1',...
             'b_value_2','Mc_value2', 'stan2','a_value2','probability2','count_2'};
@@ -149,10 +151,7 @@ classdef bcrossVt2 < ZmapSliceFunction
             obj.ra = res.eventSelector.RadiusKm;
             obj.Nmin = res.eventSelector.requiredNumEvents;
         end
-        
-        function CheckPreconditions(obj)
-        end
-        
+
         % get the grid-size interactively and
         % calculate the b-value in the grid by sorting
         % the seismicity and selectiong the ni neighbors
@@ -217,9 +216,9 @@ classdef bcrossVt2 < ZmapSliceFunction
             obj.ZG.bo1 = bv;
             %
             
-            returnFields = obj.ReturnDetails(:,1);
-            returnDesc = obj.ReturnDetails(:,2);
-            returnUnits = obj.ReturnDetails(:,3);
+            returnFields = obj.ReturnDetails.Names;
+            returnDesc = obj.ReturnDetails.Descriptions;
+            returnUnits = obj.ReturnDetails.Units;
             
             [bvg,nEvents,maxDists,maxMag, ll]=gridfun(@calculation_function,obj.RawCatalog,obj.Grid, obj.EventSelector, numel(returnFields));
             
@@ -361,9 +360,9 @@ classdef bcrossVt2 < ZmapSliceFunction
         function h=AddMenuItem(parent, catalogfn, label)
             % create a menu item
             if ~exist('label','var')
-                label='differential b';
+                label='differential b-value [xsec]';
             end
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bcrossVt2(catalogfn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcrossVt2(catalogfn()));
         end
         
     end % static method

@@ -228,13 +228,14 @@ function exportToWorkspace(catalog, fmt)
     safername=matlab.lang.makeValidName(catalog.Name);
     fn=inputdlg('Variable Name for export:','Export to workspace',1,{safername});
     if ~isempty(fn)
+        safername = matlab.lang.makeValidName(fn{1});
         switch lower(fmt)
         case 'zmapcatalog'
-            assignin('base',fn{1},catalog);
+            assignin('base',safername,catalog);
         case 'zmaparray'
-            assignin('base',fn{1},catalog.ZmapArray);
+            assignin('base',safername,catalog.ZmapArray);
         case 'table'
-            assignin('base',fn{1},catalog.table())
+            assignin('base',safername,catalog.table())
         end
     end
 end

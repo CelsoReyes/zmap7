@@ -27,11 +27,11 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     persistent datacenter_details
     
     % Filter function switchyard
-    if nFunction == 0     % Return info about filter
+    if nFunction == FilterOp.getDescription
         uOutput = 'FDSNWS Events (text) - import ascii data downloaded from one of the FDSN webservice datacenters';
         return
     end
-    if nFunction == 2
+    if nFunction == FilterOp.getWebpage
         uOutput = 'fdsntext.html'; % location of fdsn format documentation
         return
     end
@@ -87,7 +87,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     
     
     % check to see if program merely requests a summary of this type of import
-    if nFunction==0
+    if nFunction == FilterOp.getDescription
         uOutput=sprintf('Available Datacenters: %s',strcat({datacenter_details(:).name,','}));
         for n=1:numel(datacenter_details)
             disp(datacenter_details(n))

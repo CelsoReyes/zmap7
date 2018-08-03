@@ -2,11 +2,11 @@ function [uOutput] = ncedc_imp(nFunction, sFilename)
 
 % Filter function switchyard
 %%%%     CHANGE THESE LINES %%%%%%%%%%%
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'SCEC (Caltech) Data Center format';
-elseif nFunction == 2 % Return filename of helpfile (HTML)
+elseif nFunction == FilterOp.getWebpage
   uOutput = 'SCEC.htm'; %%%%    DO NOT CHANGE %%%%%%%%%%%
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
     % Read formated data
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
     % Create empty catalog

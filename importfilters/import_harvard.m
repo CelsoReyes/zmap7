@@ -10,11 +10,11 @@ function [uOutput] = import_harvard(nFunction, sFilename)
 % 17.05.2005
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'Harvard CMT catalog';
-elseif nFunction == 2     % Return filename of help-file
+elseif nFunction == FilterOp.getWebpage
   uOutput = 'import_harvard_doc.html';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
   % Read formated data
   mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
   % Create empty catalog

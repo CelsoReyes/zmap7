@@ -10,13 +10,13 @@ function [uOutput,Error_lines] = import_ncedc_hyp2000(nFunction, sFilename)
 
 % Filter function switchyard
 %%%%     CHANGE THESE LINES %%%%%%%%%%%
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
     uOutput = 'Northern California Earthquake Data Center - HYP2000 format incl.seconds';
-elseif nFunction == 2 % Return filename of helpfile (HTML)
+elseif nFunction == FilterOp.getWebpage
   uOutput = 'hypo2000.htm';
  %%%%    DO NOT CHANGE %%%%%%%%%%%
 
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
     % Read formated data
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
     % Create empty catalog

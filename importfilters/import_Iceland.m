@@ -1,9 +1,9 @@
 function [uOutput] = import_Iceland(nFunction, sFilename)
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'Iceland (with focal mechanisms)';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
   % Init catalog variable
   uOutput = [];
   % Open file
@@ -24,7 +24,7 @@ elseif nFunction == 1 % Import and return catalog
     end
   end
   fclose(hFile);
-% elseif nFunction == 2 % Help file
+% elseif nFunction == FilterOp.getWebpage
 %   uOutput = 'import_Iceland_doc.html';
 end
 

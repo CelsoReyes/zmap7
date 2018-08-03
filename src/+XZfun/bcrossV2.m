@@ -1,4 +1,79 @@
-function bcrossV2(sel)
+classdef bcrossV2 < ZmapVGridFunction
+    % BCROSSV2 calculate b-values along a cross section
+    properties
+        
+    end
+    
+    properties(Constant)
+        PlotTag         = 'bcrossV2'
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            '','',''...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
+        CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
+        
+        ParameterableProperties = []; % array of strings matching into obj.Properties
+    end
+    
+    methods
+        function obj=bcrossV2(zap, varargin)
+            % BCROSSV2
+            % obj = BCROSSV2() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            %
+            % obj = BCROSSV2(ZAP) where ZAP is a ZmapAnalysisPkg
+            
+            obj@ZmapVGridFunction(zap, 'b_value');
+            
+            report_this_filefun();
+            error('Not yet implemented');
+            obj.parseParameters(varargin);
+            obj.StartProcess();
+        end
+        
+        function InteractiveSetup(obj)
+            % create a dialog that allows user to select parameters neccessary for the calculation
+            
+            %% make the interface
+            zdlg = ZmapDialog();
+            
+            zdlg.AddBasicHeader('Choose stuff');
+            [res,okPressed] = zdlg.Create('B-Value Parameters [xsec]');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj, res)
+            % called when the dialog's OK button is pressed
+        end
+        
+        function results=Calculate(obj)
+            % once the properties have been set, either by the constructor or by interactive_setup
+            % get the grid-size interactively and calculate the values in the grid by sorting the
+            % seismicity and selecting the appropriate neighbors to each grid point
+            
+            
+            function out=calculation_function(catalog)
+                % calulate values at a single point
+            end
+        end
+        
+        function ModifyGlobals(obj)
+        end
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='b-value V2[xsec]';
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcrossV2(zapFcn()));
+        end
+    end
+end
+
+function bcrossV2_orig(sel)
     % tHis subroutine assigns creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactiVELY. The bvalue in each
@@ -218,7 +293,7 @@ function bcrossV2(sel)
         %  set(txt1,'String', 'Saving data...')
         drawnow
         gx = xvect;gy = yvect;
-        catsave3('bcrossV2');
+        catsave3('bcrossV2_orig');
         
         close(wai)
         watchoff

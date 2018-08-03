@@ -17,7 +17,7 @@ classdef bvalmapt < ZmapHGridFunction
     
     properties(Constant)
         PlotTag         = 'bvalmapt';
-        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             'nEvents_1',    'Number of events in node - period 1', '';...
             'bval_1',       'b-value map first period','';... #1 'b-value'
             'aval_1',       'a-value for period 1','';... 'av
@@ -40,7 +40,7 @@ classdef bvalmapt < ZmapHGridFunction
             'P6a',          'P6 for period 2','per year';...
             'P6b',          'P6 for period 1','per year';...
             'P6a_over_P6b', 'ratio of P6  (period1/period2)','ratio'...
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'})
         
         CalcFields = {'nEvents_1',    'bval_1',   'aval_1',   'magco_1',...
                     'nEvents_2',    'bval_2',   'aval_2',   'magco_2',  'pro'};
@@ -258,7 +258,7 @@ classdef bvalmapt < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Differential b-value map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bvalmapt(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bvalmapt(zapFcn()));
         end
         function obj= load()
             %RZ Load existing  diff b-grid

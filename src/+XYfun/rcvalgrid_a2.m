@@ -1,5 +1,5 @@
 classdef rcvalgrid_a2 < ZmapHGridFunction
-    % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
+    % RCVALGRID_A2 Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     properties
         bootloops           = 100       % number of bootstrap loops [bootloops]
@@ -11,7 +11,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
     end
     properties(Constant)
         PlotTag         ='rcvalgrid_a2'
-        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             'time',     'learning period','days';...                #1
             'absdiff',  'obs. aftershocks - #events in modeled forecast period','';... #2
             'numreal',  'observed # aftershocks',''; ...            #3
@@ -41,7 +41,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             'P',        'KS-Test p-value','';...                            #24 [mKsp]
             'fRMS',     'RMS value for goodness of fit','';...              #25 [mRMS]
             'fTBigAf',  'Times of secondary afterhsock',''...               #26 [mBigAf]
-            }
+            }, 'VariableNames', {'Names','Descriptions','Units'})
         
         CalcFields      = {...
             'time',     'absdiff',  'numredal', 'nummod',...
@@ -111,14 +111,16 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             obj.minThreshMag=res.Mmin
             %oldfig_button=oldfig_button.Value;
         end
-        function CheckPreconditions(obj)
-            assert(ensure_mainshock(),'No mainshock was defined')
-        end
+
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
         end
         
         function results=Calculate(obj)
+
+            % check pre-conditions
+            assert(ensure_mainshock(),'No mainshock was defined')
+
             % cut catalog at mainshock time:
             mainshock=obj.ZG.maepi.subset(1);
             mainshock_time = mainshock.Date;
@@ -211,7 +213,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Rate change, p-,c-,k-value map in aftershock sequence (MLE)';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)rcvalgrid_a2(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.rcvalgrid_a2(zapFcn()));
         end
     end
 end

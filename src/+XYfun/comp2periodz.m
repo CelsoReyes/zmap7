@@ -12,16 +12,16 @@ classdef comp2periodz < ZmapHGridFunction
     
     properties(Constant)
         PlotTag = 'comp2periodz';
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             ...
             ... % these are returned by the calculation function
-            'z_value',              'z-value', '';...           #1 'valueMap'
-            'pct_change',           'percent change', 'pct';... #2  'per'
-            'beta_value',           'Beta value map','';...     #3 'beta_map'
+            'z_value',              'z-value',          '';...           #1 'valueMap'
+            'pct_change',           'percent change',   'pct';... #2  'per'
+            'beta_value',           'Beta value map',   '';...     #3 'beta_map'
             'Number_of_Events_1',   'Number of events in first period', '';... #4
             'Number_of_Events_2',   'Number of events in second period', '';... #5
             ...
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'})
         
         CalcFields={...
             'z_value',              'pct_change',   'beta_value',...
@@ -168,7 +168,7 @@ classdef comp2periodz < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Compare two periods (z, beta, probabilty)';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)comp2periodz(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.comp2periodz(zapFcn()));
         end
     end % static methods
 end % classdef

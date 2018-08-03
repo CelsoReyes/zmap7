@@ -1,9 +1,9 @@
 function [uOutput] = scecdcimp(nFunction, sFilename)
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
     uOutput = 'UW catalog ';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
     % Read formated data
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
     % Create empty catalog

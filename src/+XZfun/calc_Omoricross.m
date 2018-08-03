@@ -1,4 +1,97 @@
-function calc_Omoricross()
+ classdef calc_Omoricross < ZmapVGridFunction
+     % CALC_OMORICROSS calculate omori paramters (p, c, k) along a cross section
+     
+    properties
+        
+    end
+    
+    properties(Constant)
+        PlotTag         = 'calc_Omoricross'
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'p_value',      'p-Value','';...
+            'p_value std',  'p-value standard deviation','';...
+            'c_value',      'c-value','';...
+            'c_value std',  'c-value standard deviation','';...
+            'k_value',      'k-value','';...
+            'k_value std',  'k-value standard deviation','';...
+            'model',        'Chosen fitting model','';...
+            'p_value2',     'p-Value2 UNUSED(?)','';...
+            'p_value2 std', 'p-value2 standard deviation UNUSED(?)','';...
+            'c_value2',     'c-value2  UNUSED(?)','';...
+            'c_value2 std', 'c-value2 standard deviation UNUSED(?)','';...
+            'k_value2',     'k-value UNUSED(?)','';...
+            'k_value2 std', 'k-value standard deviation UNUSED(?)','';...
+            'KS_Test H',    'KS-Test (H-value) binary rejection criterion at 95% confidence level','';...
+            'KS_Test stat', 'KS-Test statistic for goodness of fit','';...
+            'KS_Test P_value','KS-Test p-value','';...
+            'RMS',          'RMS value for goodness of fit','';...
+            'Mc_value','Mc value',''...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
+        CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
+        
+        ParameterableProperties = []; % array of strings matching into obj.Properties
+    end
+    
+    methods
+        function obj=calc_Omoricross(zap, varargin)
+            % CALC_OMORICROSS
+            % obj = CALC_OMORICROSS() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            %
+            % obj = CALC_OMORICROSS(ZAP) where ZAP is a ZmapAnalysisPkg
+            
+            obj@ZmapVGridFunction(zap, 'b_value');
+            
+            report_this_filefun();
+            error('Not yet implemented');
+            obj.parseParameters(varargin);
+            obj.StartProcess();
+        end
+        
+        function InteractiveSetup(obj)
+            % create a dialog that allows user to select parameters neccessary for the calculation
+            
+            %% make the interface
+            zdlg = ZmapDialog();
+            
+            zdlg.AddBasicHeader('Choose stuff');
+            [res,okPressed] = zdlg.Create('Omori Parameters [xsec]');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj, res)
+            % called when the dialog's OK button is pressed
+        end
+        
+        function results=Calculate(obj)
+            % once the properties have been set, either by the constructor or by interactive_setup
+            % get the grid-size interactively and calculate the values in the grid by sorting the
+            % seismicity and selecting the appropriate neighbors to each grid point
+            
+            
+            function out=calculation_function(catalog)
+                % calulate values at a single point
+            end
+        end
+        
+        function ModifyGlobals(obj)
+        end
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='omori parameters (p-, k-,c-) [xsec]';
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.calc_Omoricross(zapFcn()));
+        end
+    end
+end
+
+function calc_Omoricross_orig()
     % Calculate Omori parameters on cross section using different choices for Mc
     % Data is displayed with view_Omoricross.m
     %
@@ -290,7 +383,7 @@ function calc_Omoricross()
         
         drawnow
         
-        catsave3('calc_Omoricross')
+        catsave3('calc_Omoricross_orig')
         
         close(wai)
         watchoff

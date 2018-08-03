@@ -6,9 +6,9 @@ function [uOutput] = cnssimp(nFunction, sFilename)
 %
 % updated: 15.09.03, J. Woessner
 
-if nFunction == 0
+if nFunction == FilterOp.getDescription
     uOutput = 'ANSS/CNSS format (string conversion)';
-elseif nFunction == 1
+elseif nFunction == FilterOp.importCatalog
 
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
 

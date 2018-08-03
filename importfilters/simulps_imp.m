@@ -5,9 +5,9 @@ MODE_EVENT = 0;
 MODE_PICKS = 1;
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'SIMULPS';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
   % Read formatted data
   mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
   % Create empty catalog

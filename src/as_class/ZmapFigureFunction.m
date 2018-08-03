@@ -36,13 +36,11 @@ classdef ZmapFigureFunction < ZmapFunction
                 obj.CreateMenu();
                 assert(~isempty(fig) && isvalid(fig),'problem creating figure');
 
-                obj.CheckPreconditions();
                 obj.Calculate();
                 obj.plot();
             else
                 assert(~isempty(fig) && isvalid(fig),'problem creating figure');
                 % duplicated in case a refresh/clearplot is necessary first
-                obj.CheckPreconditions();
                 obj.Calculate();
                 obj.plot();
                 

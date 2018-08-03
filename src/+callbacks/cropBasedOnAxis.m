@@ -1,4 +1,5 @@
 function deets=cropBasedOnAxis(src,evt)
+    % CROPBASEDONAXIS crop based on current axes (interactive)
     persistent stored
     if nargin==0
         deets=stored;

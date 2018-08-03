@@ -1,4 +1,5 @@
 classdef bpvalgrid < ZmapHGridFunction
+    % calculate P values on X-Y grid
     properties
         CO         = 0     % omori c parameter with sign dictating whether it is constant or not
         valeg2      = 2     % omori c parameter
@@ -8,23 +9,23 @@ classdef bpvalgrid < ZmapHGridFunction
     properties(Constant)
         PlotTag = 'bpvalgrid';
         
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
-            'b_value_wls',  'b-value map (WLS)','';...      1 bv
-            'Mc_value',     'Mag of completeness','';...    2 magco
-            'b_value_maxlikelihood',        'b(max likelihood) map','';...  6: bv2
-            'b_value_std_maxlikelihood',    'Error in b','';...             7 {pro} stan2
-            'a_value',      'a-value','';...                8 av
+        ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'b_value_wls',  'b-value map (WLS)',    '';...      1 bv
+            'Mc_value',     'Mag of completeness',  '';...    2 magco
+            'b_value_maxlikelihood',        'b(max likelihood) map',    '';...  6: bv2
+            'b_value_std_maxlikelihood',    'Error in b',               '';...             7 {pro} stan2
+            'a_value',      'a-value',          '';...                8 av
             'stan',         'est. std predicting future based on A and B','';... stanm9: stan estimate of the std deviation of the error in predicting a future observation at X by A and B
             'power_fit',    'Goodness of fit to power-law', '';... prf
-            'p_value',      'p-value','';...                11: pv
-            'pstd',         'p-val std','';...              12: pstd
-            'c_value',      'c in days','';...              14 cv
-            'mmav',         'mmav','';...                   mmav
-            'k_value',      'kv','';...                     kv
-            'mbv',          'mbv','';...                    mbv
-            'deltaB',       'difference in b','';...
-            'dM',           'Magnitude range map (Mmax - Mcomp)','';
-            };
+            'p_value',      'p-value',          '';...                11: pv
+            'pstd',         'p-val std',        '';...              12: pstd
+            'c_value',      'c in days',        '';...              14 cv
+            'mmav',         'mmav',             '';...                   mmav
+            'k_value',      'kv',               '';...                     kv
+            'mbv',          'mbv',              '';...                    mbv
+            'deltaB',       'difference in b',  '';...
+            'dM',           'Magnitude range map (Mmax - Mcomp)',   ''...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
         
         CalcFields = {'b_value_wls',    'Mc_value', 'b_value_maxlikelihood',...
             'b_value_std_maxlikelihood','a_value', ...
@@ -225,7 +226,7 @@ classdef bpvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='p- and b-value map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bpvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bpvalgrid(zapFcn()));
         end
     end
 end

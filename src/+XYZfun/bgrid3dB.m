@@ -18,7 +18,7 @@ classdef bgrid3dB < Zmap3DGridFunction
     
     properties(Constant)
         PlotTag         = 'myplot';
-        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits  [bv2 bv rd prf av av2 magco stan stan2];
             'bv2',          'bv2: b-value from bmemmag', '';...     bv2 (?) b-value from calc_bmemag() ->bvg
             'b_value',      'b-value', '';...                       bv ->bvg_wls
             'power_fit',    'Goodness of fit to power-law', '';... prf
@@ -33,7 +33,8 @@ classdef bgrid3dB < Zmap3DGridFunction
             ...'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
             ... av2 (?) a-value from calc_bmemag() ->avm
             ... bv2 (?) b-value from calc_bmemag() ->bvg
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
         xParameterableProperties = ["mc_choice", "Nmin"];
             
     end
@@ -279,6 +280,14 @@ classdef bgrid3dB < Zmap3DGridFunction
             callback_tracker(mysrc,myevt,mfilename('fullpath'));
         end
         
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='B value grid [3D]';
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYZfun.bgrid3dB(zapFcn()));
+        end
     end
 end
 

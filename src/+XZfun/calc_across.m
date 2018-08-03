@@ -1,4 +1,80 @@
-function calc_across(sel)
+classdef calc_across < ZmapVGridFunction
+    % CALC_ACROSS calculate a-value parameters for a cross section
+    
+    properties
+        
+    end
+    
+    properties(Constant)
+        PlotTag         = 'calc_across'
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'a_value','a-value',''...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
+        CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
+        
+        ParameterableProperties = []; % array of strings matching into obj.Properties
+    end
+    
+    methods
+        function obj=calc_across(zap, varargin)
+            % CALC_ACROSS
+            % obj = CALC_ACROSS() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            %
+            % obj = CALC_ACROSS(ZAP) where ZAP is a ZmapAnalysisPkg
+            
+            obj@ZmapVGridFunction(zap, 'a_value');
+            
+            report_this_filefun();
+            error('Not yet implemented');
+            obj.parseParameters(varargin);
+            obj.StartProcess();
+        end
+        
+        function InteractiveSetup(obj)
+            % create a dialog that allows user to select parameters neccessary for the calculation
+            
+            %% make the interface
+            zdlg = ZmapDialog();
+            
+            zdlg.AddBasicHeader('Choose stuff');
+            [res,okPressed] = zdlg.Create('A-Value Parameters [xsec]');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj, res)
+            % called when the dialog's OK button is pressed
+        end
+        
+        function results=Calculate(obj)
+            % once the properties have been set, either by the constructor or by interactive_setup
+            % get the grid-size interactively and calculate the values in the grid by sorting the
+            % seismicity and selecting the appropriate neighbors to each grid point
+            
+            
+            function out=calculation_function(catalog)
+                % calulate values at a single point
+            end
+        end
+        
+        function ModifyGlobals(obj)
+        end
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='a-value [xsec]';
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.calc_across(zapFcn()));
+        end
+    end
+end
+
+function calc_across_orig(sel)
     % This subroutine assigns creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactively.
@@ -8,12 +84,12 @@ function calc_across(sel)
     % will be calculated
     %
     %   This subroutine provides 4 methods for calculation:
-    % 1. calculatea-value for const b-value
-    % 2. calculatea-value by maxlikelihood (MaxLikelihoodA.m)
+    % 1. calculate a-value for const b-value
+    % 2. calculate a-value by maxlikelihood (MaxLikelihoodA.m)
     %    of b-value and Mc defined by MaxC
-    % 3. calculatea-value by maxlikelihood (MaxLikelihoodA.m)
+    % 3. calculate a-value by maxlikelihood (MaxLikelihoodA.m)
     %    of b-value and Mc defined by Mc(EMR)
-    % 4. calculatea-value within the radius ri and Mc within ra, where ra > ri
+    % 4. calculate a-value within the radius ri and Mc within ra, where ra > ri
     %
     %   This subrouting is based on bcross.m
     %       by Stefan Wiemer 1/95
@@ -152,7 +228,7 @@ function calc_across(sel)
         
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.60 .05 .15 .10], ...
-            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across(sel)',...
+            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across_orig(sel)',...
             'String', 'OK');
         
         % Labels
@@ -386,7 +462,7 @@ function calc_across(sel)
         drawnow
         gx = xvect;gy = yvect;
         
-        catsave3('calc_across');
+        catsave3('calc_across_orig');
         close(wai)
         watchoff
         

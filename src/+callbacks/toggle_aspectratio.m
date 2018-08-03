@@ -1,5 +1,5 @@
 function toggle_aspectratio(src, ~, ax, options)
-    % toggle_aspectratio : toggles axes aspect ratio and sets checked property
+    % TOGGLE_ASPECTRATIO toggles axes aspect ratio and sets checked property
     % uses the checked state to determine currentstate.
     % aspect ratio is based on current latitude (Y)
     % 

@@ -80,7 +80,6 @@ classdef EditDialogPart < handle
     %   end
     %
     %  function doit(obj)
-    %       obj.CheckPreconditions();
     %       obj.Calculate();
     %       obj.plot();
     %  end

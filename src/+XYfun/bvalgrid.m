@@ -13,7 +13,7 @@ classdef bvalgrid < ZmapHGridFunction
     
     properties(Constant)
         PlotTag='bvalgrid';
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             'Mc_value',     'Magnitude of Completion (Mc)', '';...
             'Mc_std',       'Std. of Magnitude of Completion', '';...
             'b_value',      'b-value', '';...
@@ -22,7 +22,9 @@ classdef bvalgrid < ZmapHGridFunction
             'a_value_std',  'Std. of a-value', '';...
             'power_fit',    'Goodness of fit to power-law', '';...
             'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
-            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', ''};
+            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', ''
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+            
         
         % fields returned by the calculation. must match column 1 of ReturnDetails
         CalcFields = {'Mc_value', 'Mc_std', 'b_value', 'b_value_std',...
@@ -34,10 +36,10 @@ classdef bvalgrid < ZmapHGridFunction
     
     methods
         function obj=bvalgrid(zap, varargin)
-            % CGR_BVALGRID 
-            % obj = CGR_BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            % BVALGRID 
+            % obj = BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
             %
-            % obj = CGR_BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
+            % obj = BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
             
             obj@ZmapHGridFunction(zap, 'b_value');
             
@@ -83,15 +85,6 @@ classdef bvalgrid < ZmapHGridFunction
             %obj.ZG.inb1=res.mc_choice;
             obj.useBootstrap=res.useBootstrap;
             obj.EventSelector=res.evsel;
-        end
-        
-        function CheckPreconditions(obj)
-            % check to make sure any important conditions are met.
-            % for example,
-            % - catalogs have what are expected.
-            % - required variables exist or have valid values
-            
-            assert(~isempty(obj.Grid), 'No grid exists. please create one first');
         end
         
         function results=Calculate(obj)
@@ -174,7 +167,7 @@ classdef bvalgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Mc, a- and b- value map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bvalgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bvalgrid(zapFcn()));
         end
     end % static methods
     

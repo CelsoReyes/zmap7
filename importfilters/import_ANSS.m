@@ -6,9 +6,9 @@ function [uOutput] = import_ANSS(nFunction, sFilename)
 %
 % updated: 18.08.2005, D. Schorlemmer
 
-if nFunction == 0
+if nFunction == FilterOp.getDescription
   uOutput = 'ANSS readable format';
-elseif nFunction == 1
+elseif nFunction == FilterOp.importCatalog
   % Read the full catalog
   mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
 

@@ -1,5 +1,5 @@
 classdef rc_cross_a2 < ZmapVGridFunction
-    % Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
+    % RC_CROSS_A2 Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     properties
         bootloops                   = 100 % number of bootstrap loops [bootloops]
@@ -10,7 +10,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
     end
     properties(Constant)
         PlotTag         = 'rc_cross_a2'
-        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             'time',     'learning period','days';...                    #1
             'absdiff',  'obs. aftershocks - #events in modeled forecast period','';... #2
             'numreal',  'observed # aftershocks',''; ...                #3
@@ -39,7 +39,8 @@ classdef rc_cross_a2 < ZmapVGridFunction
             'KSSTAT',   'KS-Test statistic for goodness of fit','';...  #23 [mKsstat]
             'P',        'KS-Test p-value','';...                        #24 [mKsp]
             'fRMS',     'RMS value for goodness of fit',''...           #25 [mRMS]
-            }
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
         CalcFields      = {'time','absdiff','numredal','nummod',...
             'pval1','pmedStd1','cval1','cmedStd1',...
             'kval1','kmedStd1','fStdBst','nMod','nY','fMaxDist','fRcBst',...
@@ -97,15 +98,16 @@ classdef rc_cross_a2 < ZmapVGridFunction
             
             %oldfig_button=oldfig_button.Value;
         end
-        function CheckPreconditions(obj)
-            assert(ensure_mainshock(),'No mainshock was defined')
-        end
+
         function ModifyGlobals(obj)
             obj.ZG.bvg=obj.Result.values;
         end
         function results = Calculate(obj)
             % ...
                 
+            % check preconditions
+            assert(ensure_mainshock(),'No mainshock was defined')
+            
             % cut catalog at mainshock time:
             mainshock=obj.ZG.maepi.subset(1);
             mainshock_time = mainshock.Date;
@@ -228,7 +230,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Rate change, p-,c-,k-value map in aftershock sequence [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)rc_cross_a2(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.rc_cross_a2(zapFcn()));
         end
     end
 end

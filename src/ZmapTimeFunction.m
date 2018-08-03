@@ -1,20 +1,20 @@
-classdef ZmapGridFunction < ZmapFunction
-    % ZMAPGRIDFUNCTION is a ZmapFunction that produces a grid of 1 or more results as output
-    % and can be plotted on a map
+classdef ZmapTimeFunction < ZmapFunction
+    % ZMAPTimeFUNCTION is a ZmapFunction that produces results that vary through time, but are NOT spatially dependent
     %
     % see also ZMAPFUNCTION
     
     properties
-        active_col      char                            = '';  % the name of the column of the results to be plotted
-        showgridcenters matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.on; % toggle the grid points on and off.
-        Grid                        {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % ZmapGrid
-        EventSelector               {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector% how to choose events for the grid points
-        Shape                       {mustBeShape}       = ShapeGeneral % shape to be used 
-        do_memoize                                      = true;
+        active_col        char            = ''           % the name of the column of the results to be plotted
+        WindowDuration    duration        = seconds(nan) % size of analysis window
+        TimeStep          duration        = seconds(nan)
+        FirstStartTime    datetime        = NaT
+        ForceStartBounds  char      {ismember('','year','quarter','month','day','hour','minute','second')} = '';
+        do_memoize        logical         = false
     end
     properties(Constant,Abstract)
         
-        % table with columns: Names, Descriptions, Units
+        % table containing columns 'Names', 'Descriptions', 'Units', corresponding to 
+        % VariableNames, VariableDescriptions, VariableUnits
         ReturnDetails; 
         
         % cell of VariableNames (chosen from first row of ReturnDetails) that
@@ -23,26 +23,19 @@ classdef ZmapGridFunction < ZmapFunction
     end
     
     methods
-        function obj=ZmapGridFunction(zap, active_col)
+        function obj=ZmapTimeFunction(zap, active_col)
             % ZMAPGRIDFUNCTION constructor  assigns grid, event, catalog, and shape properties
             if isempty(zap)
                 zap = ZmapAnalysisPkg.fromGlobal();
             end
             obj@ZmapFunction(zap.Catalog);
             
-            obj.EventSelector = zap.EventSel;
-            %obj.RawCatalog = zap.Catalog;
-            obj.Grid = zap.Grid;
-            obj.Shape = zap.Shape;
             
             obj.active_col=active_col;
         end
         
         function saveToDesktop(obj)
-            % SAVETODESKTOP saves the grid, eventselector and shape before calling superclass
-            obj.Result.Grid = obj.Grid;
-            obj.Result.EventSelector = obj.EventSelector;
-            obj.Result.Shape = obj.Shape;
+            % SAVETODESKTOP 
             
             % super must be called last, since it does the actual writing
             saveToDesktop@ZmapFunction(obj) 
@@ -61,21 +54,33 @@ classdef ZmapGridFunction < ZmapFunction
             % returnDesc = obj.ReturnDetails.Descriptions;
             % returnUnits = obj.ReturnDetails.Units;
             fieldname = string(fieldname);
-            
-            assert (isequal(strcmp(fieldname,obj.ReturnDetails.Names) ,...
-                fieldbname == obj.ReturnDetails.Names)); % if this doesn't trigger,leave the following
-            allvalues(:, fieldname == obj.ReturnDetails.Names ) = thesevalues;
-            % allvalues(:,strcmp(fieldname,obj.ReturnDetails.Names)) = thesevalues;
+            allvalues(:, fieldname==obj.ReturnDetails.Names) = thesevalues;
             
         end
+        
+        function [starts, ends] = getTimeWindowBoundaries(obj)
+            if obj.FirstStartTime == NaT
+                firstTime = min(obj.RawCatalog.Date);
+            else
+                firstTime = obj.FirstStartTime;
+            end
+                
+            starts = firstTime : TimeStep : max(obj.RawCatalog.Date);
             
-        function gridCalculations(obj, calculationFcn, modificationFcn)
-            % GRIDCALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
-            % GRIDCALCULATIONS(obj, calculationFcn, modificationfcn)
-            % calculate values at all points
+            if ~isempty(obj.ForceStartBounds)
+                starts = dateshift(starts, 'start', obj.ForceStartBounds);
+            end
+            starts = unique(starts); % in case there was overlap
+            ends = starts + WindowDuration;
+        end
+            
+        function timeCalculations(obj, calculationFcn, modificationFcn)
+            % TIMECALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
+            % TIMECALCULATIONS(obj, calculationFcn, modificationfcn)
+            % calculate values for all windows
             %
-            % Determine the sample catalogs, based on existing object properties,
-            % then calculate metrics for each. The results of which are then
+            % Determine the time-windows, based on existing object properties,
+            % then calculate metrics for each time window, which are then
             % turned into an annotated table, and kept in obj.ReturnDetails
             %
             % once metrics aree calculated for each point, the modificationFcn (if it exists)
@@ -83,44 +88,40 @@ classdef ZmapGridFunction < ZmapFunction
             %    myResultsTable = modificationFcn(myResultsTable)
             %
             % The idea is that addiional calculations that rely upon calculated table values
-            % may be done outside the main spatial loop. Generally, these are confined to
+            % may be done outside the main time loop. Generally, these are confined to
             % matrix/vector operations.
+   
+            [starttimes, endtimes] = obj.getTimeWindowBoundaries();
             
             [...
                 vals, ...
                 nEvents, ...
-                maxDists, ...
+                dateSpread, ...
                 maxMag, ...
                 wasEvaluated...
-                ] = gridfun( calculationFcn, obj.RawCatalog, obj.Grid, obj.EventSelector, numel(obj.CalcFields) );
+                ] = datetimefun( calculationFcn, obj.RawCatalog, starttimes, endtimes, mineventcount, numel(obj.CalcFields) );
+            
             mytable = array2table(vals,'VariableNames', obj.CalcFields);
             
-            useZ = ~isempty(obj.Grid.Z);
             whichdetails = ismember(obj.ReturnDetails.Names, obj.CalcFields);
-            if ~useZ
-                descs=[obj.ReturnDetails.Descriptions(whichdetails)',...
-                    {'Radius','Longitude','Latitude','Maximum magnitude at node',...
-                    'Number of events in node','was evaluated'}];
-                units = [obj.ReturnDetails.Units(whichdetails)',{'km','deg','deg','mag','','logical'}];
+
+            descs=[obj.ReturnDetails.Descriptions(whichdetails)',...
+                {'Date spread','Window start date','Window end date','Maximum magnitude in window',...
+                'Number of events in node','was evaluated'}];
+            units = [obj.ReturnDetails.Units(whichdetails)',{'duration','datetime','datetime','mag','','logical'}];
                 
-            else
-                descs=[obj.ReturnDetails.Descriptions(whichdetails)',...
-                    {'Radius','Longitude','Latitude','Depth','Maximum magnitude at node',...
-                    'Number of events in node','was evaluated'}];
-                
-                units = [obj.ReturnDetails.Units(whichdetails)', {'km','deg','deg','km','mag','','logical'}];
-            end
             
-            mytable.RadiusKm = maxDists;
-            mytable.x=obj.Grid.X(:);
-            mytable.y=obj.Grid.Y(:);
-            if useZ
-                mytable.z=obj.Grid.Z(:);
-            end
+            % include local items into the table
+            mytable.StartDate = starttimes;
+            mytable.EndDate = endtimes;
+            
+            % include the return values from datetimefun in the table
+            mytable.DateSpread = dateSpread;
             mytable.max_mag = maxMag;
             mytable.Number_of_Events = nEvents;
             mytable.was_evaluated = wasEvaluated;
             
+            % update the table with proper descriptions of its contents
             mytable.Properties.VariableDescriptions = descs;
             mytable.Properties.VariableUnits = units;
             
@@ -137,7 +138,7 @@ classdef ZmapGridFunction < ZmapFunction
                         warning('Could not find matching description for %s',...
                             mytable.Properties.VariableNames{j});
                     end
-                    mytable.Properties.VariableDescriptions(j)=obj.ReturnDetails.Units(row);
+                    mytable.Properties.VariableDescriptions(j)=obj.ReturnDetails.Descriptions(row);
                     mytable.Properties.VariableUnits(j)=obj.ReturnDetails.Units(row);
                 end
                     
@@ -145,26 +146,7 @@ classdef ZmapGridFunction < ZmapFunction
             end
             obj.Result.values=mytable;
         end
-        
-        function togglegrid_cb(obj,src,~)
-            gph=findobj(gcf,'tag','pointgrid');
-            if isempty(gph)
-                gph=obj.Grid.plot();
-                gph.Tag='pointgrid';
-                gph.PickableParts='none';
-                gph.Visible=char(obj.showgridcenters);
-            end
-            switch src.Checked
-                case 'on'
-                    src.Checked='off';
-                    gph.Visible='off';
-                    obj.showgridcenters = matlab.lang.OnOffSwitchState.off;
-                case 'off'
-                    src.Checked='on';
-                    gph.Visible='on';
-                    obj.showgridcenters = matlab.lang.OnOffSwitchState.on;
-            end
-        end
+
         
         function [numeric_choice, name, desc, units] = ActiveDataColumnDetails(obj, choice)
             if ~exist('choice','var')
@@ -233,32 +215,3 @@ classdef ZmapGridFunction < ZmapFunction
     end % Protected STATIC methods
 end
 
-%% nice-to-have functionality for gridfucntions or its children:
-    %     Threshold: You can set the maximum size that
-    %       a volume is allowed to have in order to be
-    % displayed in the map. Therefore, areas with
-    % a low seismicity rate are not displayed.
-    % edit the size (in km) and click the mouse
-    % outside the edit window.
-    %    FixAx: You can chose the minimum and maximum
-    %values of the color-legend used.
-    %    Polygon: You can select earthquakes in a
-    %     polygon either by entering the coordinates or
-    %     defining the corners with the mouse
-    %
-    %    Circle: Select earthquakes in a circular volume:
-    %    Ni, the number of selected earthquakes can
-    %    be edited in the upper right corner of the
-    %    window.
-    %     Refresh Window: Redraws the figure, erases
-    %     selected events.
-    %
-    %     zoom: Selecting Axis -> zoom on allows you to
-    %     zoom into a region. Click and drag with
-    %     the left mouse button. type <help zoom>
-    %     for details.
-    %     Aspect: select one of the aspect ratio options
-    %     Text: You can select text items by clicking.The
-    %     selected text can be rotated, moved, you
-    %     can change the font size etc.
-    %     Double click on text allows editing it.

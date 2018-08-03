@@ -17,7 +17,6 @@ classdef(Abstract) ZmapFunction < handle
     %       The following methods are RECOMMENDED, but do not need to be defined in your derrived
     %       class:
     %
-    %       CheckPreconditions - do checks to ensure incoming data & parameters meet requirements of the Calculate() method.
     %       ModifyGlobals - change ZmapGlobal.Data items here. If possible: ONLY here.
     %
     %       The following methods MUST BE DEFINED.  They provide a
@@ -121,27 +120,6 @@ classdef(Abstract) ZmapFunction < handle
             fcall = fcall + ", 'InteractiveMode', " + string(obj.InteractiveMode);
             % fcall = fcall + ", 'DelayProcessing', " + string(obj.DelayProcessing);
             fcall = fcall + ")";
-            %{
-            if numel(varargin)==1 && iscell(varargin)
-                varargin=varargin{:};
-            end
-            %try
-            % provides probable function call for CURRENT STATE of object
-            fcall=[class(obj),'('];
-            for i=1:numel(varargin)
-                fcall=[fcall char(string(obj.(varargin{i}))) ','];
-            end
-            if ~isempty(varargin)
-                fcall(end)=''; % replaces comma
-            end
-            fcall(end+1)=')';
-            %catch ME
-            %warning(ME.message)
-            %fcall=['% could not describe call. next comment is up to parse error, then generic call' newline...
-            %    '% ' fcall, newline...
-            %   class(obj),'()'];
-            %end
-            %}
         end
         
         function p = parseParameters(obj, varginstuff)
@@ -190,22 +168,16 @@ classdef(Abstract) ZmapFunction < handle
         
         function doIt(obj)
             % DOIT called by the interactive dialog box once OK is pressed. 
-            % Calls, in turn: CheckPreconditions, Calculate, plot, ModifyGlobals, saveToDesktop
+            % Calls, in turn: Calculate, plot, ModifyGlobals, saveToDesktop
             %
             % each of these functions is defined in the subclass.
             % change DOIT behavior by redefining DOIT in the sublcass.
-            obj.CheckPreconditions();
             obj.Calculate();
             if obj.AutoShowPlots
                 obj.plot();
             end
             obj.ModifyGlobals();
             obj.saveToDesktop();
-        end
-        
-        function CheckPreconditions(obj)
-            % CHECKPRECONDITIONS ensure parameters meet pre-conditions (define in subclass)
-            do_nothing(obj)
         end
         
         function  ModifyGlobals(obj)
@@ -216,12 +188,12 @@ classdef(Abstract) ZmapFunction < handle
         
         function saveToDesktop(obj)
             % SAVETODESKTOP saves results to desktop
-            vname=[class(obj),'_result'];
+            vname = matlab.lang.makeValidName([class(obj),'_result']);
             assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
-            obj.Result.FunctionCall=obj.FunctionCall;
+            obj.Result.FunctionCall = obj.FunctionCall;
            
-            obj.Result.InCatalogName=obj.RawCatalog.Name; %was OperatingCatalog
-            assignin('base',vname,obj.Result);
+            obj.Result.InCatalogName = obj.RawCatalog.Name; %was OperatingCatalog
+            assignin('base', vname, obj.Result);
             fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));
             fprintf('%% results in: %s\n',vname);
         end
@@ -265,7 +237,7 @@ classdef(Abstract) ZmapFunction < handle
         InteractiveSetup(obj);
         
         % CALCULATE perform calculations
-        % obj.CALCULATE() store results in obj.Result  (obj.Result.values= results)
+        % obj.CALCULATE() stores results in obj.Result  (obj.Result.values = results)
         % RESULTS = OBJ.CALCULATE() also, return results
         Results=Calculate(obj);
         
@@ -276,46 +248,7 @@ classdef(Abstract) ZmapFunction < handle
         % if plots can be generalized, such as xsection-plots, or map-view plots, then
         % sublcass ZmapFunction and define the plot in the subclass. Then, make your function
         % a subclass of THAT class. 
-        %   For example: if this function computes values for a grid, and displays data as a 2D map
-        %   then, create a class something like:
-        % 
-        %        classdef ZmapGridFunction < ZmapFunction
-        %           %ZMAPGRIDFUNCTION calculates and plots functions that require a map grid.
-        %           properties
-        %              Grid % used to store the grid used in calculation
-        %              ... % other useful properties
-        %           end 
-        %           methods
-        %              function plot(obj, varargin)
-        %                   % plot items on a grid
-        %                   ...
-        %              end
-        %              
-        %              ... % other required/useful methods
-        %           end
-        %        end
-        %
-        %   Then use THIS class to define your function
-        %        classdef myawesomefunction < ZmapGridFunction
-        %           %MYAWESOMEFUNCTION calculates dark-matter decoherence  at each point on the maps surface.
-        %           properties
-        %              ... % properties, specific to function
-        %           end 
-        %           methods
-        %              function InteractiveSetup(obj)
-        %                    ...
-        %              end
-        %              function Calculate(obj)
-        %                   ...
-        %              end
-        %              ... % other required/useful methods
-        %           end
-        %           methods(Static)
-        %              function AddMenuItem(obj, zapFcn)
-        %                 ...
-        %              end
-        %        end
-        %     
+        % for examples, see also ZmapGridFunction, ZmapTimeFunction,  ZmapHGridFunction
         plot(obj,varargin); % plot
         
     end %ABSTRACT METHODS

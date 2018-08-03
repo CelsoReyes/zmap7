@@ -9,7 +9,7 @@ function [uOutput] = import_gismo_catalog(nfunction, catalog)
     %   [uOutput] = import_gismo_catalog(1, filename)
     %
     % to convert Catalog stored in memory
-    %   [uOutput] = import_gismo_catalog(1, catalog)
+    %   [uOutput] = import_gismo_catalog(1, catalog) % name will be name of variable
     
     % created by Celso G Reyes, 2017
     
@@ -40,20 +40,18 @@ function [uOutput] = import_gismo_catalog(nfunction, catalog)
     end
     
     if exist('catalog','var') && isa(catalog,'Catalog')
-        uOutput=nan(numel(catalog.lon),10);
+        tb=table(datetime(datevec(catalog.otime)),...
+            catalog.lat,...
+            catalog.lon,...
+            catalog.depth,...
+            catalog.mag,...
+            catalog.magtype,...
+            'VariableNames',{'Date','Latitude','Longitude','Depth','Magnitude','MagnitudeType'});
+        uOutput=ZmapCatalog(tb);
         
-        uOutput(:,1) = catalog.lon;
-        uOutput(:,2) = catalog.lat;
-        uOutput(:,3)= decyear(catalog.otime);% decimal year.
-        
-        [~, uOutput(:,4),...
-            uOutput(:,5),...
-            uOutput(:,8),...
-            uOutput(:,9),...
-            uOutput(:,10)] = datevec(catalog.otime);
-        
-        uOutput(:,6) = catalog.mag;
-        uOutput(:,7) = catalog.depth;
+        uOutput.Name=inputname(2);
+            
+
     else
         uOutput = 'unable to import Catalog';
     end

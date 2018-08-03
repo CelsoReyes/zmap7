@@ -5,10 +5,10 @@ function [result, ok] = import_ndk(nFunction, sFilename)
     % see also NDK
     
     ok=false;
-    if nFunction == 0
+    if nFunction == FilterOp.getDescription
         % respond with brief summary of function, used in selection box
         result = 'Centroid-Moment-Tensor (CMT) Catalog, NDK file (formerly Harvard CMT catalog)';
-    elseif nFunction == 2
+    elseif nFunction == FilterOp.getWebpage
         % respond with an html file that should help
         % website last accessed 18-July-2018
         result = 'https://www.ldeo.columbia.edu/~gcmt/projects/CMT/catalog/allorder.ndk_explained';

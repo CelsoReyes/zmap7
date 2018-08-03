@@ -79,17 +79,12 @@ classdef fix_caxis < ZmapFunction
             %  OK is pressed -> assigns
         end
         
-        function CheckPreconditions(obj)
-            % check to make sure any inportant conditions are met.
-            % for example,
-            % - catalogs have what are expected.
-            % - required variables exist or have valid values
-            assert(obj.orientation ~= 0,'Invalid colorbar orientation choice');
-            assert(true==true,'laws of logic are broken.');
-        end
-        
         function Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
+
+            % check pre-conditions
+            assert(obj.orientation ~= 0,'Invalid colorbar orientation choice');
+
 
             obj.FunctionCall={'','orientation','minval','maxval','freeze'};
             % results of the calculation should be stored in fields belonging to obj.Result

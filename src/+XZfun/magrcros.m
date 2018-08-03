@@ -1,5 +1,6 @@
 classdef magrcros < ZmapVGridFunction
-    % TODO document this
+    % MAGRCROS calcualtes Z-values in cross section
+    %
     % TODO make this the first x-section function
     
     
@@ -15,7 +16,7 @@ classdef magrcros < ZmapVGridFunction
     
     properties(Constant)
         PlotTag         = 'zsection';
-        ReturnDetails   = { ... TODO update this. it hasn't been really done.
+        ReturnDetails   = cell2table({ ... TODO update this. it hasn't been really done.
             ... VariableNames, VariableDescriptions, VariableUnits
             'AST',                  'Z-value comparing rate before to rate after cutoff','';...
             'LTA',                  'Z-value comparing rate outside window to inside window','';...
@@ -26,7 +27,7 @@ classdef magrcros < ZmapVGridFunction
             'nInWindow',            '','';...
             'nNotInWindow',         '','';...
             'dist_along_strike',    'Distance along strike','km'...
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'});
         
         CalcFields      = {...
             'AST','LTA','RUB','PCT',...
@@ -286,7 +287,7 @@ classdef magrcros < ZmapVGridFunction
         function h=AddMenuItem(parent,zap_Fcn) %xsec_zap
             % create a menu item
             label='Z-value section map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)magrcros(zap_Fcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.magrcros(zap_Fcn()));
         end
             
         %{

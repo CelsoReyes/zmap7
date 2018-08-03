@@ -222,7 +222,7 @@ function exportToWorkspace(catalog)
     safername(~ismember(safername,['a':'z','A':'Z','0':'9']))='_';
     fn=inputdlg('Variable Name for export:','Export to workspace',1,safername);
     if ~isempty(fn)
-        assignin('base',fn{1},catalog)
+        assignin('base',matlab.lang.makeValidName(fn{1}),catalog)
     end
 end
 
@@ -231,7 +231,7 @@ function exportToTable(catalog)
     safername(~ismember(safername,['a':'z','A':'Z','0':'9']))='_';
     fn=inputdlg('Variable Name for export:','Export to workspace',1,safername);
     if ~isempty(fn)
-        assignin('base',fn{1},catalog.table())
+        assignin('base',matlab.lang.makeValidName(fn{1}),catalog.table())
     end
 end
     

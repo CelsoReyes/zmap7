@@ -1,11 +1,11 @@
 function [uOutput] = import_Iceland_2(nFunction, sFilename)
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'Iceland Mw (Bergthora Iceland)';
-elseif nFunction == 2 % Return filename of helpfile (HTML)
+elseif nFunction == FilterOp.getWebpage
   uOutput = '';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
   % Read formated data
   mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
   % Create empty catalog

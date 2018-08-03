@@ -1,4 +1,86 @@
-function bcross(sel)
+classdef bcross < ZmapVGridFunction
+    % BCROSS calculate b-values along a cross section
+    properties
+        
+    end
+    
+    properties(Constant)
+        PlotTag         = 'bcross'
+        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'magComp', 'Mc map', '';...
+            'McStdDev', 'Standard deviation Mc', '';...
+            'b_value', 'b-value', '';...
+            'mStdB', 'Standard deviation b-value', '';...
+            'a_value', 'a-value M(0)', '';...
+            'mStdA', 'Standard deviation a-value', '';...
+            'fitToPowerlaw', 'Goodness of fit to power-law map', '';...
+            'ro', 'Whatever this is', '';...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
+        CalcFields      = {'magComp','McStdDev','b_value','mStdB','a_value','mStdA','fitToPowerlaw','ro'} % cell array of charstrings, matching into ReturnDetails.Names
+        
+        ParameterableProperties = []; % array of strings matching into obj.Properties
+    end
+    
+    methods
+        function obj=bcross(zap, varargin)
+            % BCROSS
+            % obj = BCROSS() takes catalog, grid, and eventselection from ZmapGlobal.Data
+            %
+            % obj = CBCROSS(ZAP) where ZAP is a ZmapAnalysisPkg
+            
+            obj@ZmapVGridFunction(zap, 'b_value');
+            
+            report_this_filefun();
+            error('Not yet implemented');
+            obj.parseParameters(varargin);
+            obj.StartProcess();
+        end
+        
+        function InteractiveSetup(obj)
+            % create a dialog that allows user to select parameters neccessary for the calculation
+            
+            %% make the interface
+            zdlg = ZmapDialog();
+            
+            zdlg.AddBasicHeader('Choose stuff');
+            [res,okPressed] = zdlg.Create('B-Value Parameters [xsec]');
+            if ~okPressed
+                return
+            end
+            obj.SetValuesFromDialog(res);
+            obj.doIt()
+        end
+        
+        function SetValuesFromDialog(obj, res)
+            % called when the dialog's OK button is pressed
+        end
+        
+        function results=Calculate(obj)
+            % once the properties have been set, either by the constructor or by interactive_setup
+            % get the grid-size interactively and calculate the values in the grid by sorting the
+            % seismicity and selecting the appropriate neighbors to each grid point
+            
+            
+            function out=calculation_function(catalog)
+                % calulate values at a single point
+            end
+        end
+        
+        function ModifyGlobals(obj)
+        end
+    end
+    
+    methods(Static)
+        function h=AddMenuItem(parent,zapFcn)
+            % create a menu item
+            label='b-value [xsec]';
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcross(zapFcn()));
+        end
+    end
+end
+
+function bcross_orig(sel)
     % This subroutine  creates a grid with
     % spacing dx,dy (in degreees). The size will
     % be selected interactively or grids the entire cross section.
@@ -171,7 +253,7 @@ function bcross(sel)
                     % Check Mc from original catalog
                     l = b.Magnitude >= fMc-(fBinning/2);
                     if length(b(l,:)) >= Nmin
-                        [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, mBvalue] = calc_McBboot(b, fBinning, nBstSample, ZG.inb1);
+                        [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, b_value] = calc_McBboot(b, fBinning, nBstSample, ZG.inb1);
                     else
                         %fMc = NaN;
                         %fStd_Mc = NaN;
@@ -203,27 +285,27 @@ function bcross(sel)
         drawnow
         gx = xvect;gy = yvect;
         
-        catsave3('bcross');
+        catsave3('bcross_orig');
         %corrected window positioning error
         close(wai)
         watchoff
         
         % initialize a few matrices
-        [mMc, mStdMc, mRadRes, mBvalue, mStdB, mAvalue, mStdA, Prmap, ro, mNumEq] = deal(NaN(length(yvect), length(xvect)));
+        [magComp, McStdDev, mRadRes, b_value, mStdB, a_value, mStdA, fitToPowerlaw, ro, mNumEq] = deal(NaN(length(yvect), length(xvect)));
         % replace the indexed values within
         
-        mMc(ll) = bvg(:,1);         % Mc map
-        mStdMc(ll) = bvg(:,2);       % Standard deviation Mc
+        magComp(ll) = bvg(:,1);         % Mc map
+        McStdDev(ll) = bvg(:,2);       % Standard deviation Mc
         mRadRes(ll) = bvg(:,5);     % Radius resolution
-        mBvalue(ll) = bvg(:,6);      % b-value
+        b_value(ll) = bvg(:,6);      % b-value
         mStdB(ll) = bvg(:,7);        % Standard deviation b-value
-        mAvalue(ll) = bvg(:,8);      % a-value M(0)
+        a_value(ll) = bvg(:,8);      % a-value M(0)
         mStdA(ll) = bvg(:,9);        % Standard deviation a-value
-        Prmap(ll) = bvg(:,10);       % Goodness of fit to power-law map
+        fitToPowerlaw(ll) = bvg(:,10);       % Goodness of fit to power-law map
         ro(ll) = bvg(:,11);          % Whatever this is
         mNumEq(ll) = bvg(:,12);     % number of events
         
-        valueMap = mBvalue;
+        valueMap = b_value;
         kll = ll;
         % View the b-value map
         view_bv2([],valueMap)
@@ -244,21 +326,21 @@ function bcross(sel)
             
             normlap2=NaN(length(tmpgri(:,1)),1); % no longer used(?)
             % initialize a few matrices
-            [mMc, mStdMc, mRadRes, mBvalue, mStdB, mAvalue, mStdA, Prmap, ro, mNumEq] = deal(NaN(length(yvect), length(xvect)));
+            [magComp, McStdDev, mRadRes, b_value, mStdB, a_value, mStdA, fitToPowerlaw, ro, mNumEq] = deal(NaN(length(yvect), length(xvect)));
             % replace the indexed values within
             
-            mMc(ll) = bvg(:,1);         % Magnitude of completness
-            mStdMc(ll) = bvg(:,2);       % Standard deviation Mc
+            magComp(ll) = bvg(:,1);         % Magnitude of completness
+            McStdDev(ll) = bvg(:,2);       % Standard deviation Mc
             mRadRes(ll) = bvg(:,5);     % Radius resolution
-            mBvalue(ll) = bvg(:,6);      % b-value
+            b_value(ll) = bvg(:,6);      % b-value
             mStdB(ll) = bvg(:,7);        % Standard deviation b-value
-            mAvalue(ll)= bvg(:,8);      % a-value M(0)
+            a_value(ll)= bvg(:,8);      % a-value M(0)
             mStdA(ll) = bvg(:,9);        % Standard deviation a-value
-            Prmap(ll) = bvg(:,10);       % Goodness of fit to power-law map
+            fitToPowerlaw(ll) = bvg(:,10);       % Goodness of fit to power-law map
             ro(ll) = bvg(:,11);          % Whatever this is
             mNumEq(ll) = bvg(:,12);     % number of events
             
-            valueMap = mBvalue;
+            valueMap = b_value;
             
             nlammap
             [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);

@@ -14,9 +14,9 @@ function [uOutput] = import_california_fm(nFunction, sFilename)
 nCount = 0;
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
   uOutput = 'California focal mechanism catalogs (NCEDC NCSN-FPFIT/SCSN Hauksson) raw format/multiple solutions eliminated';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
   % Read formatted data
   mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
   % Create empty catalog

@@ -12,9 +12,9 @@ function [uOutput] = harvardcmt_imp(nFunction, sFilename)
 % updated: 10.03.02
 
 % Filter function switchyard
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
     uOutput = 'Harvard CMT import';
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
     % Read formated data
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
     % Create empty catalog

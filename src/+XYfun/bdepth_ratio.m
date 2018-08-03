@@ -15,22 +15,23 @@ classdef bdepth_ratio < ZmapHGridFunction
     
     properties(Constant)
         PlotTag='bdepth'
-        ReturnDetails = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
             ...
             ... % these are returned from the calculation
-            'bv_ratio',     'b-value Ratio Map','';... %valueMap [old] #1
-            'magco',        'Magnitude of completion (bottom)','mag';... #2 
-            'bv2',          'b-value Ratio map (with autoestimate Mcomp)','';... #3
-            'av',           'a-value ratios','';... #4 avm
-            'Prmap',        'Utsu Probability map','';... #5 Prmap
-            'top_b',        'Top Zone b-value map','';... #6 tob_b
-            'bottom_b',     'Bottom Zone b-value map','';... #7 bottom_b
-            'per_top',      '% of nodal EQs within TOP zone','';... #8 per_in_top
+            'bv_ratio',     'b-value Ratio Map',                            '';... %valueMap [old] #1
+            'magco',        'Magnitude of completion (bottom)',             'mag';... #2 
+            'bv2',          'b-value Ratio map (with autoestimate Mcomp)',  '';... #3
+            'av',           'a-value ratios',                   '';... #4 avm
+            'Prmap',        'Utsu Probability map',             '';... #5 Prmap
+            'top_b',        'Top Zone b-value map',             '';... #6 tob_b
+            'bottom_b',     'Bottom Zone b-value map',          '';... #7 bottom_b
+            'per_top',      '% of nodal EQs within TOP zone',   '';... #8 per_in_top
             'per_bot',      '% of nodal EQs within BOTTOM zone','';... #9 per_in_bot
-            'Number_of_Events_top', 'Number of events in TOP zone', '';... #10
-            'Number_of_Events_bot', 'Number of events in BOTTOM zone', '';... #11
+            'Number_of_Events_top', 'Number of events in TOP zone',     '';... #10
+            'Number_of_Events_bot', 'Number of events in BOTTOM zone',  '';... #11
             ...
-            };
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
         CalcFields = {...
             'bv_ratio',     'magco',    'bv2',      'av',       'Prmap',...
             'top_b',        'bottom_b', 'per_top',  'per_bot',...
@@ -198,7 +199,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='b-value depth ratio grid';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bdepth_ratio(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bdepth_ratio(zapFcn()));
         end
         
         function obj=my_load()

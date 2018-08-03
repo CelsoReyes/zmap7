@@ -1,11 +1,12 @@
 classdef stressgrid < ZmapHGridFunction
+    % STRESSGRID calculate stress grid for event that have Dip, DipDirection, and Rake
     properties
         
     end
     
     properties(Constant)
         PlotTag         = 'stressgrid';
-        ReturnDetails   = { ... VariableNames, VariableDescriptions, VariableUnits
+        ReturnDetails   = cell2table({ ...
             ...
             'S1Trend',  'S1Trend','';...
             'S1Plunge', 'S1Plunge','';...
@@ -14,7 +15,7 @@ classdef stressgrid < ZmapHGridFunction
             'S3Trend',  'S3Trend','';...
             'S3Plunge', 'S3Plunge','';...
             'Variance', 'Variance',''...
-            }
+            }, 'VariableNames', {'Names','Descriptions','Units'});
         
         CalcFields = {...
             'S1Trend',  'S1Plunge',...
@@ -362,7 +363,7 @@ classdef stressgrid < ZmapHGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='Map Stress Tensor';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)stressgrid(zapFcn()));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.stressgrid(zapFcn()));
         end
     end % static methods
 end

@@ -2,13 +2,13 @@ function [uOutput] = import_Iceland_PT(nFunction, sFilename)
 
 % Filter function switchyard
 %%%%     CHANGE THESE LINES %%%%%%%%%%%
-if nFunction == 0     % Return info about filter
+if nFunction == FilterOp.getDescription
     uOutput = 'Iceland (with P/T-axes)';
-elseif nFunction == 2 % Return filename of helpfile (HTML)
+elseif nFunction == FilterOp.getWebpage
   uOutput = 'import_Iceland_PT_doc.html';
  %%%%    DO NOT CHANGE %%%%%%%%%%%
 
-elseif nFunction == 1 % Import and return catalog
+elseif nFunction == FilterOp.importCatalog
     % Read formated data
     mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', '');
     % Create empty catalog
