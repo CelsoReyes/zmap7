@@ -10,7 +10,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         fBinning                = 0.1;  % magnitude bins
         Nmin                    = 50;
         mc_choice   McMethods   = McMethods.MaxCurvature % magnitude of completion method
-        useAutoMcomp=true;
+        useAutoMcomp McAutoEstimate = true
     end
     
     properties(Constant)
@@ -80,8 +80,9 @@ classdef bdepth_ratio < ZmapHGridFunction
             
             obj.doIt()
         end
+        
         function SetValuesFromDialog(obj, res)
-            obj.useAutoMcomp=logical(res.useAutoMcomp);
+            obj.useAutoMcomp=res.useAutoMcomp;
             obj.mc_choice = res.mc_choice;
             obj.topzone_ceiling = res.top_of_top;
             obj.topzone_floor = res.bottom_of_top;
@@ -183,8 +184,8 @@ classdef bdepth_ratio < ZmapHGridFunction
                     idx = mycat.Magnitude >= magco-0.05;
                     n=sum(idx);
                     if sum(idx) >= obj.Nmin
-                        [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx),false,bo1); %not automatic estimate of Mcomp 
-                        bv2 =  bvalca3(mycat.Magnitude(idx),true); % automatic estimate of Mcomp 
+                        [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx),McAutoEstimate.manual, bo1); %not automatic estimate of Mcomp 
+                        bv2 =  bvalca3(mycat.Magnitude(idx),McAutoEstimate.auto); % automatic estimate of Mcomp 
                     else
                         [bv, bv2, magco, av] = deal(nan);
                     end

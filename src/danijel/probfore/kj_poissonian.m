@@ -103,7 +103,7 @@ function [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, f
                     fBValueO = fBValueK;
                 end
             end
-            % Get thea-value
+            % Get the a-value
             fAValueO = log10(length(mLearningCatalog(:,1))) + (fBValueO * fMc);
             fAValueK = log10(length(mLearningCatalog(:,1))) + (fBValueK * fMc);
             % Calculate the number of events for both of the models

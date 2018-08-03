@@ -89,7 +89,7 @@ for nNode_ = 1:nNumberNodes_
 %   else
 %     fMcWhereBFirst_ = fMcFirst_;
 %   end
-%   % Compute thea-value at Mc for first node catalog
+%   % Compute the a-value at Mc for first node catalog
 %   nNumQuakes_ = sum(mNodeCatalog_(:,6) >= fMcFirst_);
 %   fAnnualRate_ = nNumQuakes_/(params.fEndFirstPeriod - params.fStartFirstPeriod);
 %   fAValueFirst_ = log10(fAnnualRate_);
@@ -115,7 +115,7 @@ for nNode_ = 1:nNumberNodes_
 %   else
 %     fMcWhereBSecond_ = fMcSecond_;
 %   end
-%   % Compute thea-value at Mc for first node catalog
+%   % Compute the a-value at Mc for first node catalog
 %   nNumQuakes_ = sum(mNodeCatalog_(:,6) >= fMcFirst_);
 %   fAnnualRate_ = nNumQuakes_/(params.fEndSecondPeriod - params.fStartSecondPeriod);
 %   fAValueSecond_ = log10(fAnnualRate_);

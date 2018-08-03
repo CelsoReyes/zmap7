@@ -10,7 +10,7 @@ function [aValue] = calc_AValueFixedB(magnitudes, bValue)
     %   bValue     Predetermined b-value
     %
     % Output parameters:
-    %   fAValue     Maximum likelihooda-value
+    %   fAValue     Maximum likelihood a-value
     %
     % Danijel Schorlemmer
     % July 1, 2002

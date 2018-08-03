@@ -308,7 +308,7 @@ function clinfo(var1)
         hlpStr1=...
             ['This routine calculates the b-value of a given sequence based'
             ' on weighted LS and on the maximum liklelihood method for    '
-            ' different minimum magnitude cutoffs and diplays the results '
+            ' different minimum magnitude cutoffs and displays the results '
             ' with its errorbars.                                         '
             ' The default values for the smallest minimum magnitude is set'
             ' to the smallest magnitude in the sequence. The default for  '

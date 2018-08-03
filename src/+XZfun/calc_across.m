@@ -390,7 +390,7 @@ function calc_across_orig(sel)
                     bv2 = fFixbValue;           % read fixed bValue to the bv2
                     magco=calc_Mc(b, Methods.MaxCurvature, 0.1);
                     l = b.Magnitude >= magco-0.05;
-                    if length(b(l,:)) >= Nmin   % calculation of thea-value according to determined Mc (magco)
+                    if length(b(l,:)) >= Nmin   % calculation of the a-value according to determined Mc (magco)
                         faValue = calc_MaxLikelihoodA(b, bv2);
                         stan2 = NaN;
                         bv = NaN;
@@ -400,7 +400,7 @@ function calc_across_orig(sel)
                     
                     % a(0) for Mc(MAxCurv) + Mc(Corr)
                 elseif ZG.inb1 == 2
-                    [bv magco stan av pr] =  bvalca3(b.Magnitude,1);
+                    [bv magco stan av pr] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if sum(l) >= Nmin
@@ -421,7 +421,7 @@ function calc_across_orig(sel)
                 elseif ZG.inb1 == 4
                     % a(0) by r1 and Mc by r2
                     if length(b) >= Nmin
-                        [bv magco stan av pr] =  bvalca3(b.Magnitude,1);
+                        [bv magco stan av pr] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
                         magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                         bv2 = fFixbValue;
                         l = bri(:,6) >= magco-0.05;
@@ -500,7 +500,7 @@ function calc_across_orig(sel)
         
         valueMap = aValueMap;
         kll = ll;
-        % View thea-value map
+        % View the a-value map
         view_av2
         
     end

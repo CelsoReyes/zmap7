@@ -1,7 +1,7 @@
 function [fAValue] = calc_MaxLikelihoodA(mCatalog, fBValue)
 % function [fAValue] = calc_AValueFixedB(mCatalog, fBValue)
 % ---------------------------------------------------------
-% Calculates the maximum likelihooda-value for a given
+% Calculates the maximum likelihood a-value for a given
 %   catalog and given b-value. The Catalog has to be complete
 %   down to the smalles magnitude: Mc=Mmin
 %
@@ -10,7 +10,7 @@ function [fAValue] = calc_MaxLikelihoodA(mCatalog, fBValue)
 %   fBValue     Predetermined b-value
 %
 % Output parameters:
-%   fAValue     Maximum likelihooda-value
+%   fAValue     Maximum likelihood a-value
 %
 % Danijel Schorlemmer
 % July 17, 2002
@@ -25,5 +25,5 @@ vMagnitudes = fMc:0.1:10.1;  % 10 is the maximum magnitude. Add an additional bi
 vExpectation = 10.^(-fBValue * vMagnitudes);
 vExpectation = -diff(vExpectation);
 fSum = sum(vExpectation);
-% Get thea-value as the maximum likelihood solution
+% Get the a-value as the maximum likelihood solution
 fAValue = log10(nNumber/fSum);

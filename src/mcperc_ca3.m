@@ -23,7 +23,7 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
         nEvents=sum(l);
         if nEvents >= 25
             smallcat = magnitudes(l);
-            %[bv magco stan,  av] =  bvalca3(catalog.Magnitude(l),2);
+            %[bv magco stan,  av] =  bvalca3(catalog.Magnitude(l), McAutoEstimate.manual);
             [bv2, stan2, av] = calc_bmemag(smallcat, 0.1);
             try
                 res2=synthb_aut(smallcat, bv2,thisMag, 0.1);

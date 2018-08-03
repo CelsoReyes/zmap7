@@ -215,7 +215,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
                             magco = Mc90;
-                            [bv magco0 stan av pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv magco0 stan av pr] =  bvalca3(minicat.Magnitude, McAutoEstimate.manual);
                             [bv2 stan2 av2 ] = calc_bmemag(minicat.Magnitude);
                         end
                         
@@ -225,7 +225,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
                             magco = Mc95;
-                            [bv, magco0, stan, av,   pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv, magco0, stan, av,   pr] =  bvalca3(minicat.Magnitude, McAutoEstimate.manual);
                             [bv2, stan2, av2 ] = calc_bmemag(minicat.Magnitude);
                         end
                         
@@ -236,19 +236,19 @@ classdef bgrid3dB < Zmap3DGridFunction
                         elseif ~isnan(Mc90)
                             magco = Mc90;
                         else
-                            [~, magco] =  bvalca3(catalog.Magnitude,1);
+                            [~, magco] =  bvalca3(catalog.Magnitude,McAutoEstimate.auto);
                         end
                         l = catalog.Magnitude >= magco-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
-                            [bv, magco0, stan, av, pr] =  bvalca3(minicat.Magnitude,2);
+                            [bv, magco0, stan, av, pr] =  bvalca3(minicat.Magnitude, McAutoEstimate.manual);
                             [bv2, stan2,  av2] = calc_bmemag(minicat.Magnitude);
                         else
                             [bv, bv2, magco, av, av2] = deal(nan);
                         end
                         
                     case 1 % Automatic Mcomp (max curvature)
-                        [bv magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,1);
+                        [bv magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,McAutoEstimate.auto);
                         l = catalog.Magnitude >= magco-0.05;
                         if  sum(l) >= Nmin
                             [bv2 stan2,  av2] = calc_bmemag(catalog.Magnitude(l));
@@ -257,7 +257,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                         end
                         
                     case 2 % Fixed Mc (Mc = Mmin)
-                        [bv, magco, stan, av,   pr] =  bvalca3(catalog.Magnitude,2);
+                        [bv, magco, stan, av,   pr] =  bvalca3(catalog.Magnitude, McAutoEstimate.manual);
                         [bv2, stan2, av2 ] = calc_bmemag(catalog.Magnitude);
                         
                     otherwise

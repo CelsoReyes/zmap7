@@ -17,7 +17,7 @@ function [fBValue, fAValue] = calc_MaxLikelihoodAB(mCatalog, mControl)
     %
     % Output parameters:
     %   fBValue         Maximum likelihood b-value
-    %   fAValue         Maximum likelihooda-value
+    %   fAValue         Maximum likelihood a-value
     %
     % Danijel Schorlemmer
     % July 5, 2002

@@ -44,7 +44,7 @@ function create_all_menus(obj, force)
             'Separator','on', MenuSelectedField(),@export_me);
     end
     
-    function export_me(src,ev)
+    function export_me(~,~)
         assignin('base','zmw',obj);
     end
     
@@ -52,28 +52,30 @@ function create_all_menus(obj, force)
     % analyze items according to spacing in a horizontal plane
     function create_map_analysis_menu()
         submenu = uimenu('Label','Map');
+        
+        import XYfun.* % the map functions exist in the XYfun package
         % AB menu
-        XYfun.bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
-        XYfun.bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
-        XYfun.bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
+        bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+        bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
+        bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
         
         % P menu
-        h=XYfun.bpvalgrid.AddMenuItem(submenu,@()obj.map_zap);
-        h2=XYfun.rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
+        h=bpvalgrid.AddMenuItem(submenu,@()obj.map_zap);
+        h2=rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
         h2.Enable='off';
         h.Separator='on';
         
         % Rate Change menu
-        h=XYfun.comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
+        h=comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
         uimenu(submenu,'Label','Calculate a z-value map','Enable','off',MenuSelectedField(),@(~,~)inmakegr(obj.catalog));
         h.Separator='on';
         
         % Quarry menu : detect quarry contamination
-        h=XYfun.findquar.AddMenuItem(submenu,@()obj.map_zap);
+        h=findquar.AddMenuItem(submenu,@()obj.map_zap);
         h.Separator='on';
         
         %h=uimenu(submenu,'Label','Map stress tensor',MenuSelectedField(),@(~,~)stressgrid());
-        h=XYfun.stressgrid.AddMenuItem(submenu, @()obj.map_zap);
+        h=stressgrid.AddMenuItem(submenu, @()obj.map_zap);
         h.Separator='on';
         %{
             uimenu(tmp,'Label','Load...','Enable','off',MenuSelectedField(),  @(~,~)rcvalgrid_a2('lo'));
@@ -88,25 +90,21 @@ function create_all_menus(obj, force)
         submenu = uimenu('Label','X-sect');
         uimenu(submenu,'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
         
-        h=XZfun.magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
-        XZfun.rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
+        import XZfun.* % the cross-section functions exist in the XZfun package
+        
+        h=magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
+        rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
         
         h.Separator='on';
         
         uimenu(submenu,'enable','off','Label','Calc a b-value cross-section',MenuSelectedField(), @(~,~)nlammap(@()obj.xsec_zap));
         
-        h=XZfun.bcross.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        h=XZfun.bcrossV2.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        h=XZfun.bcrossVt2.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        h=XZfun.calc_Omoricross.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        h=XZfun.calc_across.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        h=XZfun.cross_stress.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
-        
-        % DONE ALREADY? : uimenu(submenu,'Label','Calculate a z-value cross-section',MenuSelectedField(),@(~,~)nlammap());
-        %{
-            uimenu(submenu,'Label','Load a b-value grid (cross-section-view)',MenuSelectedField(),@(~,~)bcross('lo'));
-        	uimenu(submenu,'Label','Load a z-value grid (cross-section-view)',MenuSelectedField(),@(~,~)magrcros('lo'));
-        %}
+        h=bcross.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
+        h=bcrossV2.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
+        h=bcrossVt2.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
+        h=calc_Omoricross.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
+        h=calc_across.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
+        h=cross_stress.AddMenuItem(submenu,@()obj.xsec_zap); h.Enable = 'off';
     end
     
     
@@ -117,8 +115,10 @@ function create_all_menus(obj, force)
         submenu = uimenu('Label','3D-Vol');
         uimenu(submenu, 'Label','Nothing here yet','Enable','off');
         
-        h=XYZfun.bgrid3dB.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
-        h=XYZfun.zgrid3d.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
+        import XYZfun.* % the cross-section functions exist in the XYZfun package
+        
+        h=bgrid3dB.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
+        h=zgrid3d.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
         
         %{
             uimenu(submenu,'Label','Load a 3D b-value grid',MenuSelectedField(),@(~,~)myslicer('load'));
@@ -234,7 +234,7 @@ function create_all_menus(obj, force)
                 um(jj).Checked = tf2onoff(strcmp(obj.colorField,myfn));
             end
             h=findobj(obj.fig,'Type','colorbar','-and','Parent',obj.fig);
-            hascolorbar=~isempty(h) && ~isempty(obj.colorField);
+            % hascolorbar=~isempty(h) && ~isempty(obj.colorField);
             delete(h)
             obj.plotmainmap();
             %obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
@@ -322,7 +322,7 @@ function create_all_menus(obj, force)
         uimenu(submenu,'Label','Help on plotting topography',MenuSelectedField(), @(~,~)pltopo('genhelp'));
     end
     
-    function add_topography_to_main_map(src,ev,code)
+    function add_topography_to_main_map(~,~,code)
         htopo=findobj(obj.map_axes,'-regexp','Tag','topographic_map.*');
         delete(htopo);
         
@@ -388,25 +388,6 @@ function create_all_menus(obj, force)
         
     end
     
-    %{
-    % this has been supplanted by the tabbed histogram plots
-    function create_histogram_menu(parent)
-        
-        submenu = parent; %uimenu(parent,'Label','Histograms');
-        
-        uimenu(submenu,'Label','Magnitude Hist.',MenuSelectedField(),@(~,~)histo_callback('Magnitude'), ...
-            'Separator','on');
-        uimenu(submenu,'Label','Depth Hist.',MenuSelectedField(),@(~,~)histo_callback('Depth'));
-        uimenu(submenu,'Label','Time Hist.',MenuSelectedField(),@(~,~)histo_callback('Date'));
-        uimenu(submenu,'Label','Hr of the day Hist.',MenuSelectedField(),@(~,~)histo_callback('Hour'));
-        % uimenu(submenu,'Label','Stress tensor quality',MenuSelectedField(),@(~,~)histo_callback('Quality '));
-        
-        function histo_callback(hist_type)
-            hisgra(obj.catalog, hist_type);
-        end
-        
-    end
-    %}
     
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent,'Label','Decluster the catalog');

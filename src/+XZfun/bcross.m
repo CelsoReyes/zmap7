@@ -260,7 +260,7 @@ function bcross_orig(sel)
                         fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
                     end
                 else
-                    % Set standard deviation ofa-value to NaN;
+                    % Set standard deviation of a-value to NaN;
                     fStd_A= NaN; fStd_Mc = NaN;
                 end
                 

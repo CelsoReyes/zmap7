@@ -2,6 +2,9 @@ classdef bcrossV2 < ZmapVGridFunction
     % BCROSSV2 calculate b-values along a cross section
     properties
         
+        mc_choice    McMethods              = McMethods.MaxCurvature % magnitude of completion method
+        wt_auto    LSWeightingAutoEstimate  = true
+        mc_auto    McAutoEstimate           = true
     end
     
     properties(Constant)
@@ -116,7 +119,7 @@ function bcrossV2_orig(sel)
     
     labelList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
     labelPos = [0.2 0.8  0.6  0.08];
-    hndl1=uicontrol(...
+    hndl1=uicontrol(... % McAutoEstimate
         'Style','popup',...
         'Position',labelPos,...
         'Units','normalized',...
@@ -340,13 +343,13 @@ function bcrossV2_orig(sel)
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
+        ZG.inb2=hndl2.Value; % LSWeightingAutoEstimate
     end
     
     function callbackfun_002(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value;
+        ZG.inb1=hndl1.Value; % McAutoEstimate
     end
     
     function callbackfun_003(mysrc,myevt)
@@ -377,8 +380,8 @@ function bcrossV2_orig(sel)
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value;
-        ZG.inb2=hndl2.Value;
+        ZG.inb1=hndl1.Value; % McAutoEstimate
+        ZG.inb2=hndl2.Value; % LSWeightinghAutoEstimate
         close;
         my_calculate();
     end

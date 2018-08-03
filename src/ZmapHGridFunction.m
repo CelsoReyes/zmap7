@@ -231,14 +231,18 @@ function showInTab(obj, ax, choice)
             uimenu(c,'Separator','on','Label','Close tab',...
                 MenuSelectedField(),@(~,~)delete(resTab));
             % mapdata_viewer(obj,obj.RawCatalog,ax);
-            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc),'Interpreter','None');
+            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc), 'Interpreter', 'None');
             % shading(ax,obj.ZG.shading_style);
             
             tabGroup.SelectedTab = resTab;
             minV=min(h.ZData(:)); maxV=max(h.ZData(:));
+            try
             ax.CLim=[floor(minV), ceil(maxV)];
             pretty_colorbar(ax,mydesc,myunits);
-            
+            catch ME
+                warning(ME.message)
+            end
+                
             drawnow
             obj.ax = ax;
             obj.interact(myname)
@@ -390,9 +394,14 @@ function showInTab(obj, ax, choice)
             end
             
         end
-        function updateClickPoint(obj,~,~)
+        
+        function updateClickPoint(obj,src,~)
             % If user clicks in the active axis, then the point and sample are updated
             
+            if ~isvalid(obj.ax)
+                src
+                return
+            end
             mytab=obj.ax.Parent;
             mytabholder=mytab.Parent;
             if mytabholder.SelectedTab~=mytab || ~obj.isUpdating

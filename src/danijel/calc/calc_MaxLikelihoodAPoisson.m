@@ -1,7 +1,7 @@
 function [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
 % function [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
 % ------------------------------------------------------------------
-% Calculates the maximum likelihooda-value for a given
+% Calculates the maximum likelihood a-value for a given
 %   catalog and given b-value using the poisson probability density.
 %   The Catalog has to be complete down to the smalles magnitude: Mc=Mmin
 %
@@ -10,7 +10,7 @@ function [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
 %   fBValue     Predetermined b-value
 %
 % Output parameters:
-%   fAValue     Maximum likelihooda-value
+%   fAValue     Maximum likelihood a-value
 %
 % Danijel Schorlemmer
 % July 17, 2002

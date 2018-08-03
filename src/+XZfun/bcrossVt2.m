@@ -23,6 +23,7 @@ classdef bcrossVt2 < ZmapVGridFunction
         
         t3 = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2 + seconds(.1);
         t4 = ZmapGlobal.Data.teb;
+        mcAuto      McAutoEstimate = false;
     end
     
     properties(Constant)
@@ -116,19 +117,19 @@ classdef bcrossVt2 < ZmapVGridFunction
             
             % make the interface
             %
-            labelList2=['Weighted LS - automatic Mcomp | Weighted LS - no automatic Mcomp '];
+            autoWeightList=['Weighted LS - automatic Mcomp | Weighted LS - no automatic Mcomp '];
             
-            labelList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
+            autoMcList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
             
             %% make the interface
             zdlg = ZmapDialog();
             %zdlg = ZmapDialog(obj, @obj.doIt);
             
             zdlg.AddBasicHeader('Automatically estimate magnitude of completeness?');
-            zdlg.AddBasicPopup('mc_choice', 'Mc method:',labelList,1,...
+            zdlg.AddBasicPopup('mc_choice', 'Mc method:',autoMcList,1,...
                 'Choose the calculation method for Mc');
-            zdlg.AddBasicPopup('mc_weights', 'Weighting:',labelList2,1,...
-                'Choose the calculation method for Mc');
+            zdlg.AddBasicCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting',autoWeightList,true,...
+                'Choose the calculation weighting method for Mc');
             zdlg.AddGridParameters('gridOpts',obj.dx,'km',[],'',obj.dd,'km');
             zdlg.AddEventSelectionParameters('eventSelector',obj.ni, obj.ra,obj.Nmin);
             
@@ -143,8 +144,8 @@ classdef bcrossVt2 < ZmapVGridFunction
         
         function SetValuesFromDialog(obj,res)
             % called when the dialog's OK button is pressed
-            obj.ZG.inb1=res.mc_choice;
-            obj.ZG.inb2=res.mc_weights;
+            obj.ZG.inb1=res.mc_choice; % MC Calculation using Max Likelihood automatic  Mcomp 
+            obj.ZG.inb2=double(res.mc_weights) + 1; % 1 is automatic LSW, 2 is  not automatic
             obj.dx=res.gridOpts.dx;
             obj.dd=res.gridOpts.dz;
             obj.ni = res.eventSelector.NumNearbyEvents;

@@ -112,6 +112,7 @@ classdef ZmapData < handle
         % b-value related
         inb1 {mustBeNonnegative, mustBeInteger} = 1 % choice for b-value calculation (?)
         inb2 {mustBeNonnegative, mustBeInteger} = 1 % maximum curvature method(?)
+        McCalcMethod        McMethods           = McMethods.MaxCurvature;
         bo1 (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[] % b-value grid
         

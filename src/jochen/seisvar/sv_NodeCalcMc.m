@@ -20,7 +20,7 @@ function [result]=sv_NodeCalcMc(params,mCatalog)
 % result.fBvalue_Bst : Mean b-value from bootstrapping (Method depends on params.fBstMethod)
 % result.fStd_B      : 2nd moment of b-value distribution
 % result.fAvalue_Bst : Meana-value from bootstrapping (Method depends on params.fBstMethod)
-% result.fStd_A      : 2nd moment ofa-value distribution
+% result.fStd_A      : 2nd moment of a-value distribution
 %
 % Author: J. Woessner
 % woessner@seismo.ifg.ethz.ch

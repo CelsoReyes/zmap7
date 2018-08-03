@@ -36,7 +36,7 @@ for nCnt_ = 1:length(caCatalogs)
   fMaxMag_ = max(mCatalog_(:,6));
   % Set up vector of available magnitude bins
   vCnt_ = (mControl(nCnt_,2):mControl(nCnt_,4):(fMaxMag_+mControl(nCnt_,4)))'; % Add one more magnitude bin for later use of diff()
-  % Compute lengths of periods and ajust thea-value
+  % Compute lengths of periods and adjust the a-value
   fTimeLength_ = mControl(nCnt_,5) - mControl(nCnt_,1);
   fTimeRatio_ = fTimeLength_/fTotalLength_;
   fA_ = vValues(1) + log10(fTimeRatio_);

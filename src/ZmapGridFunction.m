@@ -143,7 +143,7 @@ classdef ZmapGridFunction < ZmapFunction
                     
                     
             end
-            obj.Result.values=mytable;
+            obj.Result(1).values=mytable;
         end
         
         function togglegrid_cb(obj,src,~)

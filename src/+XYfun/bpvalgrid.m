@@ -4,7 +4,9 @@ classdef bpvalgrid < ZmapHGridFunction
         CO         = 0     % omori c parameter with sign dictating whether it is constant or not
         valeg2      = 2     % omori c parameter
         minpe       = nan   % min goodness percentage
-        mc_choice    McMethods   = McMethods.MaxCurvature % magnitude of completion method
+        mc_choice    McMethods              = McMethods.MaxCurvature % magnitude of completion method
+        wt_auto    LSWeightingAutoEstimate  = true
+        mc_auto    McAutoEstimate           = true
     end
     properties(Constant)
         PlotTag = 'bpvalgrid';
@@ -51,8 +53,14 @@ classdef bpvalgrid < ZmapHGridFunction
         function InteractiveSetup(obj)
             % create a dialog that allows user to select parameters neccessary for the calculation
             zdlg = ZmapDialog();
-            
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
+            Mc_Methods={'Automatic Mcomp (max curvature)',...
+            'Fixed Mc (Mc = Mmin)',...
+            'Automatic Mcomp (90% probability)',...
+            'Automatic Mcomp (95% probability)',...
+            'Best (?) combination (Mc95 - Mc90 - max curvature)',...
+            'Constant Mc'};
+
+            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',Mc_Methods,5,...
                 'Choose the calculation method for Mc');
             zdlg.AddBasicEdit('c_val','omori c parameter', obj.valeg2,' input parameter (varying)');
             zdlg.AddBasicCheckbox('use_const_c','fixed c', obj.CO<0, {'const_c'},'keep the Omori C parameter fixed');
@@ -96,11 +104,17 @@ classdef bpvalgrid < ZmapHGridFunction
             
             % get the grid parameter
             % initial values
+            mainshock_idx = find(obj.RawCatalog.Magnitude==max(obj.RawCatalog.Magnitude),1,'first');
+            mainshock = obj.RawCatalog.subset(mainshock_idx);
+            
+            ZG.maepi = mainshock;  % TODO remove maepi dependencies from called functions (mypval2m, z.B.)
+            
             if ~ensure_mainshock()
                 return
             end
+            
             % cut catalog at mainshock time:
-            l = obj.RawCatalog.Date > ZG.maepi.Date(1);
+            l = obj.RawCatalog.Date > mainshock.Date;
             obj.RawCatalog = obj.RawCatalog.subset(l);
             
             % cut cat at selected magnitude threshold
@@ -119,19 +133,19 @@ classdef bpvalgrid < ZmapHGridFunction
                 @calcguts_opt3,...
                 @calcguts_opt4,...
                 @calcguts_opt5};
-            calculation_function=mycalcmethods{obj.mc_choice};
+            calculation_function = mycalcmethods{obj.mc_choice};
             % calculate at all points
             obj.gridCalculations(calculation_function);
             
             % prepare output to dektop
-            obj.Result.minpe=obj.minpe; %min goodness of fit (%)
+            obj.Result.minpe = obj.minpe; %min goodness of fit (%)
             
             % ADDITIONAL VALUES
             obj.Result.values.dM = obj.Result.values.max_mag - obj.Result.values.Mc_value;
             obj.Result.values.deltaB = obj.Result.values.b_value_wls - obj.Result.values.b_value_maxlikelihood;
             
             if nargout
-                results=obj.Result.values;
+                results = obj.Result.values;
             end
             
             
@@ -147,7 +161,7 @@ classdef bpvalgrid < ZmapHGridFunction
             
             
             function bpvg = calcguts_opt1(b)
-                [bv, magco, stan, av] =  bvalca3(b.Magnitude,1);
+                [bv, magco, stan, av] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
                 maxcat = b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude, 0.1);
@@ -160,7 +174,7 @@ classdef bpvalgrid < ZmapHGridFunction
             end
             
             function bpvg = calcguts_opt2(b)
-                [bv, magco, stan, av] =  bvalca3(b.Magnitude,2);
+                [bv, magco, stan, av] =  bvalca3(b.Magnitude, McAutoEstimate.manual);
                 [bv2, stan2] = calc_bmemag(b.Magnitude, 0.1);
                 [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date,b.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                 %[pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date(l),b.Magnitude(l),'days',obj.valeg2,obj.CO,minThreshMag);
@@ -173,7 +187,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 maxcat = b.subset(b.Magnitude >= Mc90-0.05);
                 magco = Mc90;
                 if maxcat.Count  >= Nmin
-                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
+                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
@@ -187,7 +201,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 maxcat= b.subset(b.Magnitude >= Mc95-0.05);
                 magco = Mc95;
                 if maxcat.Count >= Nmin
-                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
+                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     
@@ -204,11 +218,11 @@ classdef bpvalgrid < ZmapHGridFunction
                 elseif ~isnan(Mc90)
                     magco = Mc90;
                 else
-                    [bv, magco, stan, av] =  bvalca3(b.Magnitude,1);
+                    [bv, magco, stan, av] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
                 end
                 maxcat= b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
-                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude,2);
+                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date, maxcat.Magnitude, 'days' ,obj.valeg2,obj.CO,minThreshMag);
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];

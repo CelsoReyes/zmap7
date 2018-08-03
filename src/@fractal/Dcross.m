@@ -251,7 +251,7 @@ functin my_calculate()
         if b.Count >= ni  % enough events?
 
             dtokm = 0;
-            [bv magco0 stan av pr] =  bvalca3(b.Magnitude,1);
+            [bv magco0 stan av pr] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
 
 
             if range == 1 | range == 2

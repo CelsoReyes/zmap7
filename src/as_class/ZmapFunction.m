@@ -53,7 +53,7 @@ classdef(Abstract) ZmapFunction < handle
         
          % holds complete catalog to be analyzed. defaults to the primary catalog
         RawCatalog      ZmapCatalog  = ZmapGlobal.Data.primeCatalog
-        Result                              % results of the calculation, stored in a struct
+        Result          struct            % results of the calculation, stored in a struct
         
         ZG                           = ZmapGlobal.Data; % provides access to the ZMAP global variables.
         hPlot                               % tracks the plot(s) for each function
@@ -112,6 +112,9 @@ classdef(Abstract) ZmapFunction < handle
                             val="[" + strjoin(v,';') + "]";
                         else
                             val=string(val);
+                            if ismissing(val)
+                                val = "<missing>";
+                            end
                         end
                         fcall = fcall + sprintf(", '%s', %s", fld, val);
                 end

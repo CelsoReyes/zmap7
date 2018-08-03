@@ -141,7 +141,7 @@ classdef bvalgrid < ZmapHGridFunction
                         % fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
                     end
                 else
-                    % Set standard deviation ofa-value to NaN;
+                    % Set standard deviation of a-value to NaN;
                     a_value_std= NaN;
                     Mc_std = NaN;
                     Additional_Runs_b_std=NaN;
