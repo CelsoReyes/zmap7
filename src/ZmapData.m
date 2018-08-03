@@ -181,13 +181,16 @@ classdef ZmapData < handle
                         tmp = load(catalogFile,'catalog');
                         if isa(tmp.catalog,'ZmapCatalog')
                             obj.primeCatalog = tmp.catalog;
+                            fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
+                            disp(obj.primeCatalog)
                         else
                             warning("default catalog file does not contain a zmap catalog");
+                            % failed to open the last catalog
+                            obj.primeCatalog=ZmapCatalog('empty catalog');
                         end
-                            
+                    else
+                        warning('could not find the default catalog file %s', catalogFile);
                     end
-                    % failed to open the last catalog
-                    obj.primeCatalog=ZmapCatalog('empty catalog');
                 end
             end
             
