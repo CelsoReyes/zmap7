@@ -1,11 +1,12 @@
-function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overall_b_value)
+function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_auto_estimate, overall_b_value)
     % BVALCA3
-    % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_method, bo1)
+    % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_auto_estimate, overall_b_value)
     %
     % INPUT parameters
     % magnitudes     : Magnitude values
-    % mc_method - 1 : automatic estimate of Mcomp [or mc_method is true] DEFAULT
-    %        2 : not automatic estimate of Mcomp  [or mc_method is false]
+    % mc_auto_estimate: use automatic estimate of Mcomp?
+    %        McAutoEstimate.auto  DEFAULT
+    %        McAutoEstimate.manual
     % overall_b_value: overall b-value (maybe? used in probability calculation)
     %
     % OUTPUT
@@ -18,22 +19,19 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overal
     global les magsteps_desc bvalsum3
     
     %report_this_filefun();
-    ZG = ZmapGlobal.Data;
     dm1 = 0.1;
     [pr,  av, std_backg, magco, bv] = deal(nan);
     maxmag = max(magnitudes);
     mima = min( min(magnitudes) , 0);
     if exist('mc_method','var')
-        if ~islogical(mc_method)
-            mc_method = mc_method==1;
-        end
+        mc_auto_estimate = McAutoEstimate(mc_auto_estimate);
     else
-        mc_method=true;
+        mc_auto_estimate=McAutoEstimate.auto;
     end
-    if ~exist('no1','var')
-        no1=numel(magnitudes); % added by CGR because no1 appears to not be initialized
-    end
-    %try % if an error occures, set values to NaN
+    
+    no1=numel(magnitudes); % added by CGR because no1 appears to not be initialized
+    
+    %try % if an error occurs, set values to NaN
     
     % number of mag units
     % nmagu = (maxmag*10)+1;
@@ -54,7 +52,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overal
     magco = max(xt2(i2));
     
     % if no automatic estimate of Mcomp
-    if ~mc_method
+    if ~mc_auto_estimate
         i = length(magsteps_desc)- round((10*min(magnitudes))); % guessing how to fix this with parens
         if i > length(magsteps_desc)
             i = length(magsteps_desc)-1 ;
@@ -62,7 +60,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overal
     end
     
     M1b = [magsteps_desc(i) bvalsum3(i)];
-    M2b =  [magsteps_desc(1) bvalsum3(1)];
+    M2b = [magsteps_desc(1) bvalsum3(1)];
     
     ll = magsteps_desc >= M1b(1) & magsteps_desc <= M2b(1);
     x = magsteps_desc(ll);
@@ -91,12 +89,16 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_method, overal
     
     if nargout >=5
         % calculate probability [OF WHAT?]
-        
-        if ~exist('bo1','var')
-            warning('provide bo1, which is overall bvalue to bvalca3 needed to calc pr');
-            overall_b_value=ZG.bo1;
+        if ~exist('overall_b_value','var')
+            warning('provide overall_bvalue, which is needed to calc pr');
+            ZG = ZmapGlobal.Data;
+            overall_b_value = ZG.overall_b_value;
+        elseif isempty(overall_b_value)
+            % providing an empty overall_b_value simply uses the default value
+            ZG = ZmapGlobal.Data;
+            overall_b_value = ZG.overall_b_value;
         end
-    
+            
         b2 = p;
         n2 =  M1b(2);
         n = no1+n2;

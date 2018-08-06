@@ -1,5 +1,5 @@
 function zmap(varargin)
-    %% ZMAP Version 7.0
+    %% run ZMAP Version 7.X
     %
     % This files start up ZMAP.
     %

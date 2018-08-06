@@ -17,7 +17,8 @@ classdef bcrossVt2 < ZmapVGridFunction
         
         t3 = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2 + seconds(.1);
         t4 = ZmapGlobal.Data.teb;
-        mcAuto      McAutoEstimate = false;
+        mcAuto      McAutoEstimate              = true;
+        wtAuto      LSWeightingAutoEstimate     = true;
     end
     
     properties(Constant)
@@ -109,20 +110,14 @@ classdef bcrossVt2 < ZmapVGridFunction
             sdlg(5).prompt='Nmin'; sdlg(5).value=obj.Nmin;
             [~,~,obj.t1,obj.t2,obj.t3,obj.t4,obj.Nmin]=smart_inputdlg('differential b-value map', sdlg);
             
-            % make the interface
-            %
-            autoWeightList=['Weighted LS - automatic Mcomp | Weighted LS - no automatic Mcomp '];
-            
-            autoMcList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
             
             %% make the interface
             zdlg = ZmapDialog();
             %zdlg = ZmapDialog(obj, @obj.doIt);
             
             zdlg.AddBasicHeader('Automatically estimate magnitude of completeness?');
-            zdlg.AddBasicPopup('mc_choice', 'Mc method:',autoMcList,1,...
-                'Choose the calculation method for Mc');
-            zdlg.AddBasicCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting',autoWeightList,true,...
+            zdlg.AddMcAutoEstimateCheckbox('mc_auto', obj.mcAuto);
+            zdlg.AddBasicCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting', obj.wtAuto,...
                 'Choose the calculation weighting method for Mc');
             zdlg.AddGridParameters('gridOpts',obj.dx,'km',[],'',obj.dd,'km');
             zdlg.AddEventSelectionParameters('eventSelector',obj.ni, obj.ra,obj.Nmin);
@@ -138,8 +133,8 @@ classdef bcrossVt2 < ZmapVGridFunction
         
         function SetValuesFromDialog(obj,res)
             % called when the dialog's OK button is pressed
-            obj.ZG.inb1=res.mc_choice; % MC Calculation using Max Likelihood automatic  Mcomp 
-            obj.ZG.inb2=double(res.mc_weights) + 1; % 1 is automatic LSW, 2 is  not automatic
+            obj.mcAuto = res.mc_auto; % MC Calculation using Max Likelihood automatic  Mcomp 
+            obj.wtAuto = res.mc_weights; % 1 is automatic LSW, 2 is  not automatic
             obj.dx=res.gridOpts.dx;
             obj.dd=res.gridOpts.dz;
             obj.ni = res.eventSelector.NumNearbyEvents;
@@ -207,8 +202,9 @@ classdef bcrossVt2 < ZmapVGridFunction
             
             
             % overall b-value
-            bv =  bvalca3(obj.RawCatalog.Magnitude,obj.ZG.inb1);
-            obj.ZG.bo1 = bv;
+            bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mcAuto);
+            b_value_overall = bv;
+            obj.ZG.overall_b_value = bv;
             %
             
             returnFields = obj.ReturnDetails.Names;
@@ -304,7 +300,6 @@ classdef bcrossVt2 < ZmapVGridFunction
                 %}
 
                 if catalog.Count >= obj.Nmin
-                    mc_method=ZG.inb1;
                     minForTimeslice = obj.Nmin/2;
                     % call the catalog-value function
                     
@@ -314,8 +309,8 @@ classdef bcrossVt2 < ZmapVGridFunction
                     count1 = sum(lt);
                     bv = NaN; pr = 50; no1=0;stan1=NaN;av=NaN; pr=NaN; magco=NaN;
                     if  count1 > minForTimeslice
-                        [bv, magco, stan, av, pr] =  bvalca3(catalog.Magnitude(lt),mc_method);
-                        obj.ZG.bo1 = bv;
+                        [bv, magco, stan, av, pr] =  bvalca3(catalog.Magnitude(lt),obj.mcAuto, b_value_overall);
+                        obj.ZG.overall_b_value = bv;
                         no1 = count1;
                     end
                     
@@ -323,12 +318,12 @@ classdef bcrossVt2 < ZmapVGridFunction
                     count2 = sum(lt);
                     bv2 = NaN; pr2=50; no2=0; stan2=NaN; av2=NaN; pr2=NaN; magco2=NaN;
                     if  count2 > minForTimeslice
-                        [bv2, magco2, stan2, av2, pr2] =  bvalca3(catalog.Magnitude(lt),mc_method);
-                        no2=count2
+                        [bv2, magco2, stan2, av2, pr2] =  bvalca3(catalog.Magnitude(lt),obj.mcAuto, b_value_overall);
+                        no2=count2;
                     end
                     
                     if pr2 >= 99 % don't know what [specifically] this is accomplishing.
-                        out = [bv magco stan av pr no1 bv2 magco2 stan2 av2 pr2 no2] % changed to return relevent properies
+                        out = [bv magco stan av pr no1 bv2 magco2 stan2 av2 pr2 no2]; % changed to return relevent properies
                         %out = [bv magco x y catalog.Count bv2 pr av stan  max(catalog.Magnitude) bv-bv2  pr bv2/bv*100-100];
                     else
                         out = [0 NaN(1,11)];

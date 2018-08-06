@@ -13,6 +13,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             obj.x_by='dist_along_strike_km';
         end
         function scatter(obj, tag, varargin)
+            % scatter plot
             obj.scatter@CatalogExplorationPlot(tag, varargin);
             obj.fix_alongstrike_axis();
             obj.ax.YDir='reverse';    
@@ -21,6 +22,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             obj.ax.Title.String=sprintf('Profile: %s to %s',obj.xsec.startlabel,obj.xsec.endlabel);
         end
         function update(obj, varargin)
+            % updates the cross section plot
             obj.update@CatalogExplorationPlot(varargin{:})
             obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
             obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
@@ -30,6 +32,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
     end % METHODS
     methods(Hidden)
         function fix_alongstrike_axis(obj,specific)
+            % embarrassingly (because it is a one-off), this just changes the names for axes
             if ~exist('specific','var') 
                 specific=[];
             else

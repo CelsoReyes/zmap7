@@ -2,8 +2,6 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
     % RCVALGRID_A2 Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     
-    % at one point, this affected ZG.inb2
-    
     properties
         bootloops           = 100       % number of bootstrap loops [bootloops]
         timef duration      = days(20)  % forecast period [forec_period]
@@ -391,7 +389,7 @@ function [sel]=orig_rcvalgrid_a2()
         
         %%
         % Save the data to rcval_grid.mat
-        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll ZG.bo1 newgri gll ra time timef bootloops ZG.maepi
+        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll overall_b_value newgri gll ra time timef bootloops ZG.maepi
         [sFilename, sPathname] = uiputfile('*.mat', 'Save MAT-file');
         sFileSave = [sPathname sFilename];
         save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','ZG.maepi');

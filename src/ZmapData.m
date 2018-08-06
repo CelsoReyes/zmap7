@@ -110,11 +110,9 @@ classdef ZmapData < handle
         event_marker char = 'o'
        
         % b-value related
-        inb1 {mustBeNonnegative, mustBeInteger} = 1 % choice for b-value calculation (?)
-        inb2 {mustBeNonnegative, mustBeInteger} = 1 % maximum curvature method(?)
         McCalcMethod        McMethods           = McMethods.MaxCurvature;
         UseAutoEstimate     McAutoEstimate      = McAutoEstimate.auto;
-        bo1 (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
+        overall_b_value (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg=[] % b-value grid
         
         Grid % grid object, used for calculations

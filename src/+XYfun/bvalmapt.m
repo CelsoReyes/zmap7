@@ -124,7 +124,6 @@ classdef bvalmapt < ZmapHGridFunction
         end
         
         function SetValuesFromDialog(obj,res)
-            %obj.ZG.inb2=res.useAutoMcomp;
             obj.useAutoMcomp=logical(res.useAutoMcomp);
             obj.EventSelector.RadiusKm=res.ra;
             obj.periodA_start = res.periodA_start;

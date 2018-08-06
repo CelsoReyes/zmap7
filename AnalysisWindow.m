@@ -1,5 +1,5 @@
 classdef AnalysisWindow < handle
-    % AnalysisWindow 
+    % AnalysisWindow is a base class to make creating analysis windows of a catalog easier
     %
     %   add_series    : 
     %   remove_series :
@@ -18,14 +18,32 @@ classdef AnalysisWindow < handle
         end
         
         function h=add_series(obj, catalog, tagID, varargin)
-            % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
+            % add a series of data to this plot. 
+            % h = obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
+            %
+            % Inputs:
+            %   REQUIRED:
+            %     catalog : a ZmapCatalog
+            %     tagID   : string or char description by which this data series will be accessed
+            % 
+            %   PARAMETERIZED:  as name,value. for example.. obj.add_series(cat,tag, 'UseCalculation',@mycalcfunction)
+            %     'UseCalculation' : handle to a function that accepts a catalog and returns x and y
+            %     'SizeFcn' :  handle to a function that accepts a catalog and returns valid sizes 
+            %                  (either a single size, or one for each point)
+            %     'ColorFcn' : handle to a function that accepts a catalog and returns valid colors
+            %                  (either a single RGB value or a vector of RGB for each point)
+            %     'MinBigMag' : minimum value for an event to be labeled as a "big" event
+            %
+            %     Additional Parameterized properties will be interpreted as plotting properties,
+            %          such as 'FontSize','LineWidth', etc...
+            
             p = inputParser();
             p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
             p.addRequired('tagID',      @(x)ischar(tagID)|| isstring(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...
-                @(x)isa(x,'function_handle') && ... % must be a function that
-                nargout(x)==2 ...                   % must return [x,y]
+                @(x)isa(x,'function_handle') && ... 
+                nargout(x)==2 ...
             );
         
             % if either SizeFcn or ColorFcn are defined, then this will create a scatter plot.
@@ -87,6 +105,8 @@ classdef AnalysisWindow < handle
         end
         
         function remove_series(obj,tagID)
+            % remove a data series from this axes. Specify the tag(s) to delete
+            
             if isempty(tagID)
                 return;
             end
@@ -104,13 +124,18 @@ classdef AnalysisWindow < handle
         
         
     end
+    
     methods(Abstract)
-        prepare_axes(obj)
+        % run prior to plotting any data series
+        prepare_axes(obj)  
+        
+         % results of this function are what are graphed
         [x,y]=calculate(obj,catalog)
     end
     
     methods(Access=protected)
         function add_big_series(obj, catalog, minbigmag)
+            % controls the plotting of "big" events 
             bigProps = ZmapGlobal.Data.BigEventOpts;
             idx = find(catalog.Magnitude >= minbigmag);
             if bigProps.UseMainEventSizeFunction
@@ -127,7 +152,7 @@ classdef AnalysisWindow < handle
     methods(Access=protected, Static)
         
         function [v,found,strippedC] = getProperty(C,name,defaultval)
-            % [v,found,strippedC] = GETPROPERTY(C,name,defaultval)
+            % [v, found,strippedC] = GETPROPERTY(C,name,defaultval)
             % looks for property NAME in cell C. if not found, returns DEFAULTVAL
             flds=C(1:2:end);
             strippedC=C;

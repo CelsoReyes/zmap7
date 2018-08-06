@@ -2,13 +2,14 @@ classdef bvalgrid < ZmapHGridFunction
     % CGR_BVALGRID Generate a B-value grid
     
     properties
-        Nmin            = 50    % minimum number of earthquakes
-        % fMcFix          = 1.0   % 2.2
-        nBstSample      = 100   % number of bootstrap samples
-        useBootstrap  logical = false  % perform bootstrapping?
-        fMccorr         = 0.2   % magnitude correction
-        fBinning        = 0.1   % magnitude bins
-        mc_choice    McMethods   = McMethods.MaxCurvature % magnitude of completion method
+        Nmin                            = 50    % minimum number of earthquakes
+        % fMcFix                        = 1.0   % 2.2
+        nBstSample                      = 100   % number of bootstrap samples
+        useBootstrap  logical           = false  % perform bootstrapping?
+        fMccorr                         = 0.2   % magnitude correction
+        fBinning                        = 0.1   % magnitude bins
+        mc_choice    McMethods          = McMethods.MaxCurvature % magnitude of completion method
+        mc_auto_est  McAutoEstimate     = McAutoEstimate.auto
     end
     
     properties(Constant)
@@ -55,6 +56,7 @@ classdef bvalgrid < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddMcAutoEstimateCheckbox('mc_auto_est');
             zdlg.AddMcMethodDropdown('mc_choice'); % McMethods.MaxCurvature
             zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                 're takes longer, but provides more accurate results');
@@ -81,7 +83,6 @@ classdef bvalgrid < ZmapHGridFunction
             obj.nBstSample=res.nBstSample;
             obj.fMccorr=res.fMccorr;
             obj.mc_choice = res.mc_choice;
-            %obj.ZG.inb1=res.mc_choice;
             obj.useBootstrap=res.useBootstrap;
             obj.EventSelector=res.evsel;
         end
@@ -92,9 +93,9 @@ classdef bvalgrid < ZmapHGridFunction
             % seismicity and selecting the ni neighbors to each grid point
 
             % Overall b-value
-            bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_choice); %ignore all the other outputs of bvalca3
+            bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_auto_est); %ignore all the other outputs
             
-            obj.ZG.bo1 = bv;
+            obj.ZG.overall_b_value = bv;
             [~,mcCalculator]= calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
             obj.gridCalculations(@calculation_function);
         

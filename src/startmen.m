@@ -34,11 +34,6 @@ function startmen(parent_fig)
             'Enable','off',... % may no longer be relevent
             MenuSelectedField(), @(~,~)datinf());
         
-        uimenu(genmen, ...
-            'Label','Set working directory ',...
-            'Enable','off',... % doesn't seem to be used anywhere
-            MenuSelectedField(),@(~,~)working_dir_in);
-        
         genmen = uimenu(parent_fig,'Label','Help');
         
         

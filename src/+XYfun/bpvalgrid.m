@@ -87,7 +87,7 @@ classdef bpvalgrid < ZmapHGridFunction
         
         function SetValuesFromDialog(obj, res)
             obj.mc_choice = res.mc_choice;
-            %ZG.inb1=res.mc_choice;
+            obj.mc_auto = res.mc_auto;
             obj.valeg2=res.c_val;
             obj.minpe=res.minpe;
             obj.EventSelector=res.evsel;
@@ -129,8 +129,9 @@ classdef bpvalgrid < ZmapHGridFunction
             %%%%%%%
             
             % overall b-value
-            [bv, magco, stan, av] =  bvalca3(obj.RawCatalog.Magnitude,obj.mc_choice);
-            ZG.bo1 = bv;
+            [bv, magco, stan, av] =  bvalca3(obj.RawCatalog.Magnitude,obj.mc_auto);
+            overall_b_value = bv;
+            ZG.overall_b_value = bv;
             
             
             mycalcmethods= {@calcguts_opt1,...
@@ -188,11 +189,11 @@ classdef bpvalgrid < ZmapHGridFunction
             end
             
             function bpvg = calcguts_opt3(b)
-                [~, Mc90, ~, magco, prf]=bvalca3(b.Magnitude);
+                [~, Mc90, ~, ~, ~]=bvalca3(b.Magnitude, McAutoEstimate.manual);
                 maxcat = b.subset(b.Magnitude >= Mc90-0.05);
                 magco = Mc90;
                 if maxcat.Count  >= Nmin
-                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
+                    [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual, overall_b_value );
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
                     [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];

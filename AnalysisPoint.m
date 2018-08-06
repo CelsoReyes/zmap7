@@ -1,4 +1,5 @@
 classdef AnalysisPoint < handle
+    % handle the analysis of a clicked point
     properties
         ax
         eventCircleProps={'LineStyle','-.','Color',[.75 .75 .75], 'LineWidth',1.5}
@@ -12,6 +13,8 @@ classdef AnalysisPoint < handle
         end
         
         function c = color(obj, tagID)
+            % get the color for the point specified by tagID
+            
         	h = findobj(obj.ax,'Tag',tagID);
         	dataLengths = arrayfun(@(x)numel(x.XData),h);
             c=get(h(dataLengths==1),'Color');
@@ -19,7 +22,9 @@ classdef AnalysisPoint < handle
            
             
         function add_point(obj,clickPos, tb, tagID, varargin)
-            % tb is a single line of the table
+            % add a point
+            %  add_point(obj,clickPos, tb, tagID, varargin)
+            %  tb is a single line of the results table
             
             %unwrap varargin if it is a single thing
             if numel(varargin)==1 && iscell(varargin)
@@ -74,6 +79,7 @@ classdef AnalysisPoint < handle
         end
         
         function remove_point(obj,tagID)
+            % remove this point from the axes, by tagID
             myGraphics=findobj(obj.ax,'Tag',tagID);
             delete(myGraphics);
         end

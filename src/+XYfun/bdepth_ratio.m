@@ -113,10 +113,10 @@ classdef bdepth_ratio < ZmapHGridFunction
             
             
             % overall b-value
-            [tbo1] =  bvalca3(top_zone.Magnitude,obj.useAutoMcomp);
-            [bbo1] =  bvalca3(bot_zone.Magnitude,obj.useAutoMcomp);
+            [top_b_overall] = bvalca3(top_zone.Magnitude, obj.useAutoMcomp);
+            [bottom_b_overall] = bvalca3(bot_zone.Magnitude, obj.useAutoMcomp);
             
-            depth_ratio = tbo1/bbo1;
+            depth_ratio = top_b_overall/bottom_b_overall;
             disp(depth_ratio);
             
             [~,mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
@@ -150,8 +150,8 @@ classdef bdepth_ratio < ZmapHGridFunction
                     
                     [Mc_valueTop] = mcCalculator(topb);
                     [Mc_valueBot] = mcCalculator(botb);
-                    [topbv, topbv2, ~, topav, n1]=calc_bval_both_ways(topb,Mc_valueTop,tbo1);
-                    [botbv, botbv2, magco, botav, n2]=calc_bval_both_ways(botb,Mc_valueBot,bbo1);
+                    [topbv, topbv2, ~, topav, n1]=calc_bval_both_ways(topb,Mc_valueTop, top_b_overall);
+                    [botbv, botbv2, magco, botav, n2]=calc_bval_both_ways(botb,Mc_valueBot, bottom_b_overall);
                 else
                     [topbv, topbv2, ~, topav,  n1]=deal(nan);
                     [botbv, botbv2, magco, botav, n2]=deal(nan);
@@ -161,7 +161,7 @@ classdef bdepth_ratio < ZmapHGridFunction
                 av = topav/botav;
                 
                 n = n1+n2;
-                ZG.bo1 = topbv;
+                ZG.overall_b_value = topbv;
                 da = -2*n*log(n) + 2*n1*log(n1+n2 * topbv/botbv) + 2*n2*log(n1 * botbv/topbv + n2) - 2;
                 pr = (1  -  exp(-da/2-2))*100;
                 
@@ -177,13 +177,13 @@ classdef bdepth_ratio < ZmapHGridFunction
                     ltopb lbotb];
                 
                 
-                function [bv, bv2, magco, av, n] = calc_bval_both_ways(mycat,magco,bo1)
+                function [bv, bv2, magco, av, n] = calc_bval_both_ways(mycat,magco,b_overall)
                     % where mycat is already the subset value
                     idx = mycat.Magnitude >= magco-0.05;
                     n=sum(idx);
                     if sum(idx) >= obj.Nmin
-                        [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx),McAutoEstimate.manual, bo1); %not automatic estimate of Mcomp 
-                        bv2 =  bvalca3(mycat.Magnitude(idx),McAutoEstimate.auto); % automatic estimate of Mcomp 
+                        [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.manual, b_overall); %not automatic estimate of Mcomp 
+                        bv2 =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.auto); % automatic estimate of Mcomp 
                     else
                         [bv, bv2, magco, av] = deal(nan);
                     end

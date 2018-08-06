@@ -1,4 +1,5 @@
 classdef CumMomentAnalysisWindow < AnalysisWindow
+    % CUMMOMENTANALYSISWINDOW shows cumulative moment release
     properties
     end
     methods
@@ -7,7 +8,7 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         end
         
         function prepare_axes(obj)
-            % moment release axes
+            % prepare the moment release axes
             obj.ax.Tag = 'dvMoment';
             obj.ax.Title.String='Cum Moment Release';
             obj.ax.XLabel.String='time';
@@ -15,6 +16,7 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         end
         
         function [x,y]=calculate(~,catalog)
+            % return the datetime and cumulative-moment for each event in the catalog
             x=catalog.Date;
             [~, y, ~] = calc_moment(catalog);
         end

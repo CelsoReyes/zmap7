@@ -249,8 +249,9 @@ function bcrossV2_orig(sel)
         
         
         % overall b-value
-        [bv magco stan av pr] =  bvalca3(newa.Magnitude,ZG.inb1);
-        ZG.bo1 = bv;
+        [bv] =  bvalca3(newa.Magnitude,ZG.UseAutoEstimate);
+        overall_b_value = bv;
+        ZG.overall_b_value = bv;
         no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
@@ -268,12 +269,12 @@ function bcrossV2_orig(sel)
             b = newa.subset(l);      % new data per grid point (b) is sorted in distance
             
             if isempty(b); b = newa.subset(1); end
-            if b.Count >= 50;
+            if b.Count >= 50
                 % call the b-value function
-                [bv magco stan av pr] =  bvalca3(b.Magnitude,ZG.inb1);
+                [bv, magco, stan, av, pr] =  bvalca3(b.Magnitude,ZG.UseAutoEstimate, overall_b_value);
                 l2 = sort(l);
                 b2 = b;
-                if wt_auto;
+                if wt_auto
                     l = b.Magnitude >= magco;
                     b2 = b(l,:);
                 end

@@ -43,6 +43,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     if ~exist('binInterval', 'var') || isempty(binInterval)
         binInterval = 0.1;
     end
+    assert(isa(calcMethod,'McMethods'),'Expected an actual method (McMethods) but received something else');
     
     % Correction
     if ~exist('mcCorrectionFactor', 'var') || isempty(mcCorrectionFactor)

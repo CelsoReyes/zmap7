@@ -721,11 +721,5 @@ function orig_rc_cross_a2()
             return
         end
     end
-   
-    
-    function callbackfun_001(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-    end
     
 end

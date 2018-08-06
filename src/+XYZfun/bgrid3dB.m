@@ -89,7 +89,7 @@ classdef bgrid3dB < Zmap3DGridFunction
         % to each grid point
         
         function results=Calculate(obj)
-            zg3=ZmapGrid3('bgid3dBGrid',res.gridopt,[res.minz res.maxz]); % create 3d grid
+            zg3=ZmapGrid('bgid3dBGrid',res.gridopt,[res.minz res.maxz]); % create 3d grid
             vol_dimensions=zg3.mesh_size();
             %[t5, gx, gy, gz]=selgp3dB(dx, dy, dz, z1, z2);
             

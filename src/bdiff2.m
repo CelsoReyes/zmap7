@@ -146,7 +146,7 @@ classdef bdiff2
             ZG = ZmapGlobal.Data;
             
             % reassign variables
-            ZG.inb2 = obj.dlg_res.mc_method;
+            ZG.McCalcMethod = obj.dlg_res.mc_method;
             fMccorr = obj.dlg_res.fMccorr;
             nBstSample = obj.dlg_res.nBstSample;
             method = obj.dlg_res.mc_method;

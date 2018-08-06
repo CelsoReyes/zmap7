@@ -2,7 +2,8 @@ classdef calc_across < ZmapVGridFunction
     % CALC_ACROSS calculate a-value parameters for a cross section
     
     properties
-        
+        mc_auto         McAutoEstimate      = ZmapGlobal.Data.UseAutoEstimate
+        aval_method
     end
     
     properties(Constant)
@@ -14,6 +15,11 @@ classdef calc_across < ZmapVGridFunction
         CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
         
         ParameterableProperties = []; % array of strings matching into obj.Properties
+        
+        aval_methods = {' a(M=0) for fixed b',...
+            'a(M=0) for Mc(MaxC) + M(corr)',...
+            'a(M=0) for M(EMR)',...
+            'a(M=0) by r1 & Mc by r2 '}
     end
     
     methods
@@ -38,6 +44,9 @@ classdef calc_across < ZmapVGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddMcAutoEstimateCheckbox('mc_auto',obj.mc_auto);
+            zdlg.AddBasicPopup('aval_method','A-value calculation method',obj.aval_methods,1,...
+                'methods used to calculate a value');
             [res,okPressed] = zdlg.Create('A-Value Parameters [xsec]');
             if ~okPressed
                 return
@@ -48,6 +57,18 @@ classdef calc_across < ZmapVGridFunction
         
         function SetValuesFromDialog(obj, res)
             % called when the dialog's OK button is pressed
+            obj.mc_auto = res.mc_auto;
+            
+            obj.aval_method = res.aval_method;
+            
+            
+            tgl1 = tgl1.Value;
+            tgl2 = tgl2.Value;
+            bRandom = get(chkRandom, 'Value'); 
+            bGridEntireArea = get(chkGridEntireArea, 'Value');
+            close,sel ='ca', 
+            calc_across_orig(sel)
+            
         end
         
         function results=Calculate(obj)
@@ -65,6 +86,8 @@ classdef calc_across < ZmapVGridFunction
         end
     end
     
+    methods(Hidden)
+    end
     methods(Static)
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
@@ -73,6 +96,8 @@ classdef calc_across < ZmapVGridFunction
         end
     end
 end
+
+
 
 function calc_across_orig(sel)
     % The aValue, Mc and a resolution estimation in each
@@ -222,11 +247,7 @@ function calc_across_orig(sel)
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.80 .05 .15 .10], ...
             'Callback', 'close;', 'String', 'Cancel');
-        
-        uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
-            'Units', 'normalized', 'Position', [.60 .05 .15 .10], ...
-            'Callback', 'ZG.inb1=hndl2.Value;tgl1=tgl1.Value;tgl2=tgl2.Value;bRandom = get(chkRandom, ''Value''); bGridEntireArea = get(chkGridEntireArea, ''Value'');close,sel =''ca'', calc_across_orig(sel)',...
-            'String', 'OK');
+
         
         % Labels
         text('Color', [0 0 0], 'Units', 'normalized', ...
@@ -348,8 +369,10 @@ function calc_across_orig(sel)
         
         
         % overall b-value
-        [bv magco stan av pr] =  bvalca3(newa.Magnitude,ZG.inb1);
-        ZG.bo1 = bv; no1 = newa.Count;
+        [bv, magco, stan, av] =  bvalca3(newa.Magnitude, obj.mc_auto);
+        overall_b_value = bv;
+        ZG.overall_b_value = bv;
+        no1 = newa.Count;
         %
         for i= 1:length(newgri(:,1))
             x = newgri(i,1);y = newgri(i,2);
@@ -383,7 +406,7 @@ function calc_across_orig(sel)
             
             if length(b) >= Nmin  % enough events?
                 
-                if ZG.inb1 == 1;   % Calculation of a-value by const b-value, and Mc
+                if obj.aval_method == 1;   % Calculation of a-value by const b-value, and Mc
                     bv2 = fFixbValue;           % read fixed bValue to the bv2
                     magco=calc_Mc(b, Methods.MaxCurvature, 0.1);
                     l = b.Magnitude >= magco-0.05;
@@ -396,8 +419,8 @@ function calc_across_orig(sel)
                     end
                     
                     % a(0) for Mc(MAxCurv) + Mc(Corr)
-                elseif ZG.inb1 == 2
-                    [bv magco stan av pr] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
+                elseif obj.aval_method == 2
+                    [bv, magco, stan, av, pr] =  bvalca3(b.Magnitude, McAutoEstimate.auto, overall_b_value);
                     magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                     l = b.Magnitude >= magco-0.05;
                     if sum(l) >= Nmin
@@ -406,7 +429,7 @@ function calc_across_orig(sel)
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end
                     
-                elseif ZG.inb1 == 3; % a(0) for Mc(EMR)
+                elseif obj.aval_method == 3; % a(0) for Mc(EMR)
                     [magco, bv2, faValue, stan2, stan] = calc_McEMR(b, 0.1);
                     l = b.Magnitude >= magco-0.05;
                     if length(b(l,:)) >= Nmin
@@ -415,10 +438,10 @@ function calc_across_orig(sel)
                         bv = NaN; bv2 = NaN, magco = NaN; av = NaN; faValue = NaN;
                     end
                     
-                elseif ZG.inb1 == 4
+                elseif obj.aval_method == 4
                     % a(0) by r1 and Mc by r2
                     if length(b) >= Nmin
-                        [bv magco stan av pr] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
+                        [bv, magco, stan, av, pr] =  bvalca3(b.Magnitude, McAutoEstimate.auto, overall_b_value);
                         magco = magco + 0.2;    % Add 0.2 to Mc (Tobias)
                         bv2 = fFixbValue;
                         l = bri(:,6) >= magco-0.05;
@@ -551,15 +574,7 @@ function calc_across_orig(sel)
             return
         end
     end
-    
-    
-    function callbackfun_001(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-        ;
-    end
-    
     function callbackfun_002(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

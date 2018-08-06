@@ -1,4 +1,5 @@
 classdef AnalysisBvalues < AnalysisWindow
+    % ANALYSISBVALUES shows b-value plot (FMD)
     properties
         bobj;
     end
@@ -12,6 +13,7 @@ classdef AnalysisBvalues < AnalysisWindow
         
         
         function prepare_axes(obj)
+            % label and scale the axes
             obj.ax.Tag = 'dvBval';
             obj.ax.YScale='log';
             obj.ax.YLim=[1 10000];
@@ -38,15 +40,16 @@ classdef AnalysisBvalues < AnalysisWindow
             else
                 McProps.MarkerFaceColor = McProps.Color;
             end
-            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc,McProps);
+            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
             
             lineProps = p.Unmatched; 
             lineProps.LineWidth = 2;
-            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine,lineProps);
+            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
             
         end   
         
         function [x,y] = calculate(obj,catalog)
+            % Cumulative events by magnitude
             if isempty(catalog)
                 x=nan;
                 y=nan;
@@ -57,7 +60,9 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=obj.bobj.bvalsum3;
             end
         end
+        
         function [x,y] = getMc(obj,~)
+            % Determine magnitude of completion. X is magnitude, y is approximately # of events below MC
             if isempty(obj.bobj)
                 y=nan;
                 x=nan;
@@ -66,7 +71,9 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=obj.bobj.bvalsum3(obj.bobj.index_low)*1.5;
             end
         end
+        
         function [x,y] = getBvalLine(obj,~)
+            % Show the B-value trend line
             if isempty(obj.bobj)|| isempty(obj.bobj.mag_zone)
                 x=[nan nan];
                 y=[nan nan];
@@ -77,6 +84,7 @@ classdef AnalysisBvalues < AnalysisWindow
         end
         
         function remove_series(obj,tagID)
+            % remove  B-value graphical objects associated with this tag
             remove_series@AnalysisWindow(obj,tagID);
             remove_series@AnalysisWindow(obj,[tagID ' Mc']);
             remove_series@AnalysisWindow(obj,[tagID ' line']);

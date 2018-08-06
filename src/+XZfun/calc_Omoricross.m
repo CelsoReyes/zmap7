@@ -2,7 +2,7 @@
      % CALC_OMORICROSS calculate omori paramters (p, c, k) along a cross section
      
     properties
-        
+        mc_method       McMethods   = McMethods.FixedMc; % this function might only know [' Fixed Mc (Mc = Mmin) | Automatic Mc (max curvature) | EMR-method'];
     end
     
     properties(Constant)
@@ -107,8 +107,6 @@ function calc_Omoricross_orig()
     
     % Set the grid parameter
     % initial values
-    %
-    ZG.inb2 = 1;
     dd = 1.00; % Depth spacing in km
     dx = 1.00 ; % X-Spacing in km
     ni = 100;   % Number of events
@@ -315,7 +313,7 @@ function calc_Omoricross_orig()
         drawnow
         
         % if fixed magnitude of completeness, request from user
-        if ZG.inb2 == 1
+        if obj.mc_method == McMethods.FixedMc
             [~,~,fMcFix] = smart_inputdlg('Fixed Mc input',...
             struct('prompt','Enter Mc:', 'value', 1.5));
         end
@@ -324,16 +322,18 @@ function calc_Omoricross_orig()
 
 
         % decide which calculator to use
-        if ZG.inb2 == 1
+        if mc_method == McMethods.FixedMc
             fMc = fMcFix;
             mcCalculator=@(~,~)fMcFix;
-        elseif ZG.inb2 == 2 %Maximum curvature
+        elseif mc_method == McMethods.MaxCurvature
             nMethod = 1;
             [~,mcCalculator]=calc_Mc([], McMethods.MaxCurvature, fBinning);
-        else % ZG.inb2 == 3 % EMR method
+        elseif mc_method2 == McMethods.McEMR
             nMethod = 6;
             [~,mcCalculator] = calc_Mc([], McMethods.McEMR, fBinning);
-        end % END if ZG.inb2
+        else
+            error('unknown Mc method (in THIS function... which needs to be updated')
+        end
 
 
         % Loop over grid nodes
@@ -475,11 +475,7 @@ function calc_Omoricross_orig()
     end
     
     
-    function callbackfun_001(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-    end
     
     function callbackfun_002(mysrc,myevt)
 
