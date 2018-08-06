@@ -28,12 +28,12 @@ set(gca,'NextPlot','replace');
 % Get the data for the grid node
 mNodeCatalog_ = params.mCatalog(params.caNodeIndices{nNodeGridPoint}, :);
 
-if (params.nGriddingMode == 1 && params.bMap == 1)
+if (params.nGriddingMode == 1 && params.bMap)
     vDistances_ = sqrt(((mNodeCatalog_(:,1)-fXGridNode)*cosd(fYGridNode)*111).^2 + ((mNodeCatalog_(:,2)-fYGridNode)*111).^2);
     vSel = (vDistances_ <= params.fRadius);
     fCheckDist = max(vDistances_(vSel, :));
     mNodeCatalog_=mNodeCatalog_(vSel,:);
-elseif (params.nGriddingMode == 1 && params.bMap == 0)
+elseif (params.nGriddingMode == 1 && ~params.bMap)
     [nRow_, nColumn_] = size(mNodeCatalog_);
     vXSecX_ = mNodeCatalog_(:,nColumn_);  % length along x-section
     vXSecY_ = (-1) * mNodeCatalog_(:,7);

@@ -1,7 +1,6 @@
 function [mBvalue] = calc_bwithmag(magnitudes, binInterval, nMinNumberEvents)
-    % function [mBvalue] = calc_bwithmag(mCatalog, binInterval, nMinNumberevents)
-    % ------------------------------------------------------------------------
     % Calculate b-value depending on cut-off magnitude
+    % [mBvalue] = calc_bwithmag(mCatalog, binInterval, nMinNumberevents)
     %
     % Incoming variables:
     % magnitudes        : Earthquake catalog magnitudes

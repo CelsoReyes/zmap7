@@ -77,12 +77,8 @@ classdef bcrossV2 < ZmapVGridFunction
 end
 
 function bcrossV2_orig(sel)
-    % tHis subroutine assigns creates a grid with
-    % spacing dx,dy (in degreees). The size will
-    % be selected interactiVELY. The bvalue in each
-    % volume around a grid point containing ni earthquakes
-    % will be calculated as well as the magnitude
-    % of completness
+    % The bvalue in each volume around a grid point will be calculated as well 
+    % as the magnitude of completeness
     %   Stefan Wiemer 1/95
     
     report_this_filefun();
@@ -108,23 +104,21 @@ function bcrossV2_orig(sel)
     
     labelList2=['Weighted LS - automatic Mcomp | Weighted LS - no automatic Mcomp '];
     labelPos = [0.2 0.7  0.6  0.08];
-    hndl2=uicontrol(...
+    hAutoWt=uicontrol(...
         'Style','popup',...
         'Position',labelPos,...
         'Units','normalized',...
-        'String',labelList2,...
-        'callback',@callbackfun_001);
+        'String',labelList2);
     
     
     
     labelList=['Maximum likelihood - automatic Mcomp | Maximum likelihood  - no automatic Mcomp '];
     labelPos = [0.2 0.8  0.6  0.08];
-    hndl1=uicontrol(... % McAutoEstimate
+    hMcAutoEst=uicontrol(... % McAutoEstimate
         'Style','popup',...
         'Position',labelPos,...
         'Units','normalized',...
-        'String',labelList,...
-        'callback',@callbackfun_002);
+        'String',labelList);
     
     % creates a dialog box to input grid parameters
     %
@@ -150,7 +144,7 @@ function bcrossV2_orig(sel)
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
         'Units','normalized',...
-        'callback',@callbackfun_007,...
+        'callback',@cb_go,...
         'String','Go');
     
     text(...
@@ -279,7 +273,7 @@ function bcrossV2_orig(sel)
                 [bv magco stan av pr] =  bvalca3(b.Magnitude,ZG.inb1);
                 l2 = sort(l);
                 b2 = b;
-                if ZG.inb2 ==  1
+                if wt_auto;
                     l = b.Magnitude >= magco;
                     b2 = b(l,:);
                 end
@@ -340,33 +334,16 @@ function bcrossV2_orig(sel)
         load_existing_bgrid_version_A
     end
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value; % LSWeightingAutoEstimate
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value; % McAutoEstimate
-    end
     
     function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ra=str2double(mysrc.String);
     end
     
     function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         dx=str2double(mysrc.String);
     end
     
     function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         dd=str2double(mysrc.String);
     end
     
@@ -377,11 +354,10 @@ function bcrossV2_orig(sel)
         
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_go(mysrc,myevt)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb1=hndl1.Value; % McAutoEstimate
-        ZG.inb2=hndl2.Value; % LSWeightinghAutoEstimate
+        mc_auto = hMcAutoEst.Value; % McAutoEstimate
+        wt_auto = hAutoWt.Value; % LSWeightinghAutoEstimate
         close;
         my_calculate();
     end

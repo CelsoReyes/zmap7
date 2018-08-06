@@ -1,8 +1,8 @@
 function bfitnew(mycat)
-    %bfitnew.m                      A.Allmann  10/94
+    %Calculates Freq-Mag functions (b-value) for a catalog
+    %  A.Allmann  10/94
     %  modified  Stefan Wiemer 12/94
     %
-    %   Calculates Freq-Mag functions (b-value) for a catalog
     %  originally, "mycat" was "newcat"
     global  cluscat mess bfig backcat
     global magsteps_desc bvalsum3

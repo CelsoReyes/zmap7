@@ -43,7 +43,7 @@ vSel3=find((mCat(vSel,3)>T-fTw) & (mCat(vSel,3)<T));
 vSel4=zeros(size(vSel3,1),1);
 % determine number of events to remove
 fRemove=fPSQ;
-% create vector with % events to be removed (=1)
+% create vector with % events to be removed (true)
 vSel4(1:ceil(size(vSel4,1)*fRemove))=1;
 vSel4=logical(vSel4(randperm(size(vSel4,1))));
 % Select indices of the N events to be removed

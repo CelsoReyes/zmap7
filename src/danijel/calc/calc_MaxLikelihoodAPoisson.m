@@ -1,9 +1,11 @@
 function [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
-% function [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
+  % maximum likelihood a-value for catalog and given b-value using poisson probability density
+  %
+% [aValue] = calc_MaxLikelihoodAPoisson(magnitudes, bValue)
 % ------------------------------------------------------------------
 % Calculates the maximum likelihood a-value for a given
 %   catalog and given b-value using the poisson probability density.
-%   The Catalog has to be complete down to the smalles magnitude: Mc=Mmin
+%   The Catalog has to be complete down to the smallest magnitude: Mc=Mmin
 %
 % Input parameters:
 %   magnitudes    earthquake catalog magnitudes (complete down to minimum magnitude)
@@ -27,7 +29,9 @@ end
 
 
 function [fProbability] = callback_LogLikelihoodAPoisson(fAValue, magnitudes, fBValue)
-  % function [fProbability] = callback_LogLikelihoodAPoisson(fAValue, magnitudes, fBValue)
+    %   Computes the negative log-likelihood of a given a- and b-value for a given catalog
+  %   using the poisson probability density
+  % [fProbability] = callback_LogLikelihoodAPoisson(fAValue, magnitudes, fBValue)
   % ------------------------------------------------------------------------------------
   %   Computes the negative log-likelihood of a given a- and b-value for a given catalog
   %   using the poisson probability density

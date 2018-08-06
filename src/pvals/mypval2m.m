@@ -6,7 +6,7 @@ function [p_, sdp_, c_, sdc_, dk_, sdk_, rja, rjb] = mypval2m(eqDates,eqMags, da
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata.
     %
-    % function finds the maximum liklihood estimates of p,c and k, the
+    % finds the maximum liklihood estimates of p,c and k, the
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
     %

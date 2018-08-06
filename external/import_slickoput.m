@@ -1,9 +1,10 @@
 function [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename)
-% function [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename);
+    % IMPORT_SLICKOPUT Read measures of misfit computed for the stress tensor inversion from files
+% sFilename.oput (usually data2.oput) produced with external/slick sFilename
+%
+% [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename);
 % ---------------------------------------------------------------------------
 %
-% Read measures of misfit computed for the stress tensor inversion from files
-% sFilename.oput (usually data2.oput) produced with external/slick sFilename
 % Reference:
 % A. Michael, JGR, Vol. 96, No. B4, 6303-6319, Spatial variation in stress
 % within the 1987 Whittier Narrows, CA, aftershock sequence: New techniques
@@ -16,7 +17,7 @@ function [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilena
 % fBeta    : Angle between observed slip direction and and predicted
 %            tangential traction averaged over the slip data
 % fStdBeta : Standard deviation of fBeta
-% fTauFit  : Spread of fAvgTau over the data set; the smaller (=0) the
+% fTauFit  : Spread of fAvgTau over the data set; the smaller (false) the
 %            better
 % fAvgTau  : Size of the traction that actually should be =1 due to the
 %            assumption of the method

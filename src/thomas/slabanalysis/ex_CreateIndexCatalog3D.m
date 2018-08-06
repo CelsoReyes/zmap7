@@ -8,7 +8,7 @@ function [caNodeIndices, vResolution_] = ex_CreateIndexCatalog3D(mCatalog, mPoly
 % Input parameters:
 %   mCatalog              Earthquake catalog
 %   mPolygon              Polygon (defined by ex_selectgrid)
-%   bMap                  Calculate cell-array for a map (=1) or a cross-section (=0)
+%   bMap                  Calculate cell-array for a map (true) or a cross-section (false)
 %   nGriddingMode         Mode of creating grid node subcatalogs
 %                         0: Constant number of events
 %                         1: Constant radius

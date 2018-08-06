@@ -1,7 +1,7 @@
 function [result]=sv_NodeCalcMc(params,mCatalog)
-% function [result]=sv_NodeCalcMc(params,mCatalog)
-% ----------------------------------------------------
-% Function to calculate Mc using different methods
+% SV_NODECALCMC calculate Mc using several different methods
+%
+% [result]=sv_NodeCalcMc(params, mCatalog)
 %
 % Incoming variables:
 % mCatalog     : current earthquake catalog
@@ -70,7 +70,7 @@ if isempty(result.fMc_shi)
 end
 
 % Case of calculations with bootstrapping
-if (params.bBstnum == 1)
+if params.bBstnum
     % Mc bootstrap and uncertainty
     % EMR method
     % nCalculateMC=params.fBstMethod;

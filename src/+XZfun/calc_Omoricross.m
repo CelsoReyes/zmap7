@@ -114,7 +114,7 @@ function calc_Omoricross_orig()
     ni = 100;   % Number of events
     bv2 = NaN;
     Nmin = 50;  % Minimum number of events
-    bGridEntireArea = 0;
+    bGridEntireArea = false;
     time = days(100); % days
     timef= days(0); % No forecast done, but needed for functions
     bootloops = 50;

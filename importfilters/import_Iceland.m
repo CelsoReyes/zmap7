@@ -41,7 +41,7 @@ for nCnt = 1:length(sLine)
 end
 
 % Default
-bOK = 1;
+bOK = true;
 vEvent = zeros(1,12);
 
 % Read year

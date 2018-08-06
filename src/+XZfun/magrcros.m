@@ -135,7 +135,7 @@ classdef magrcros < ZmapVGridFunction
             SetValuesFromDialog(obj,zparam);
             obj.doIt();
             
-        end  % function InteractiveSetup
+        end  %  InteractiveSetup
         
         function SetValuesFromDialog(obj, res)
             if res.use_fixed_start
@@ -277,8 +277,8 @@ classdef magrcros < ZmapVGridFunction
                 % the original code was seriously convoluted. -CGR
 
                 
-            end % function calculation_function
-        end %function Calculate
+            end %  calculation_function
+        end % Calculate
         
         
 

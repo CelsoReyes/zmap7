@@ -7,8 +7,8 @@ function pt_start(mCatalog, hFigure, bMap, rContainer, sName)
 % Input parameters:
 %   mCatalog      Earthquake catalog to use for the testing
 %   hFigure       Handle of figure where the user should select the grid (i.e. the seismicity map)
-%   bMap          Map/cross-section switch. If the testing is carried out on a map set bMap = 1,
-%                 on a cross-section set bMap = 0
+%   bMap          Map/cross-section switch. If the testing is carried out on a map set bMap = true,
+%                 on a cross-section set bMap = false
 %   rContainer    Just a container (structure proposed) to store any variables that should be available in the
 %                 probabilistic forecast testing code
 %
@@ -132,7 +132,7 @@ else
     end
     rOptionsT.nCalculateMC = [];      % Fill the unused fields
     rOptionsT.nCalcMode = [];         % Fill the unused fields
-    rOptionsT.bCalcBothPeriods = 0;   % Fill the unused fields
+    rOptionsT.bCalcBothPeriods = false;   % Fill the unused fields
     bSaveParameter = get(handles.chkSaveParameter, 'Value');
     if bSaveParameter
       sSaveParameter = get(handles.lblSaveParameter, 'String');
@@ -172,11 +172,11 @@ else
 
     % Additional stuff
     params.nTestMethod = get(handles.cboTestMethod, 'Value');
-    params.bForceRandomCalculation = 0;
+    params.bForceRandomCalculation = false;
     params.sComment = 'First test';
 
     % Dave Jackson
-    params.bSaveRates = 1;
+    params.bSaveRates = true;
     params.sSaveRatesAsciiFilenameH = '/home/danijel/pro/parkfield/Runs/ratesH.txt';
     params.sSaveRatesAsciiFilenameN = '/home/danijel/pro/parkfield/Runs/ratesN.txt';
     params.sSaveRatesMatFilenameH = '/home/danijel/pro/parkfield/Runs/ratesH.mat';

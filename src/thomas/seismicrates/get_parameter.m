@@ -55,7 +55,7 @@ end
 params.nMCS=1;               % number of simulation for hypocenter and/or magnitude and/or declustering
 
 params.nMode=2;              % 0:Declustering, 1: only Rates, 2:Declustering and Rates
-params.bDeclus=1;            % Only in Case nMode = 1 : 0:Load Declusterd Catalog, 1:no declustering
+params.bDeclus = true;            % Only in Case nMode = 1 : 0:Load Declusterd Catalog, 1:no declustering
 params.nSimul=1;              % No of Simulation for MCS - have to be 1 at the moment
 params.nDeclusMode=4;   % Applied declustering algorithm
                         % 1: Reasenberg Matlab
@@ -88,9 +88,9 @@ params.vTw = [2.5 ]';
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Gridding
-params.bMap=1;                             % working in map view
+params.bMap = true;                             % working in map view
 params.nGriddingMode=0;            % 0:Constant number,1:Constant radius,2:Rectangle mode
-params.bGridEntireArea=1;       % Grid entire region (1) or no (0)
+params.bGridEntireArea = true;       % Grid entire region (1) or no (0)
 params.fSpacingHorizontal=[];  % Grid spacing latitude
 params.fSpacingDepth=[];       % Grid spacing longitude
 params.fSizeRectHorizontal=[];  % Rectangular selection instead radius params.fRadius

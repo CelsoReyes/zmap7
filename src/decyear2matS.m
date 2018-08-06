@@ -1,5 +1,6 @@
 function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2matS(fDy)
-    % function [fYr, nMn, nDay, nHr, nMin, nSec] = decyear2mat(fDy)
+    % Calculate decimal year format to matrix with columns year, month, day, hour, minute, and second.
+    % [fYr, nMn, nDay, nHr, nMin, nSec] = decyear2mat(fDy)
     % ------------------------------------------------------------------------------------------------
     % Calculate decimal year format (from zmap-function decyear, i.e. 1998.734)
     % to matrix with columns year, month, day, hour, minute, and second.
@@ -30,7 +31,7 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2matS(fDy)
     %bLeapYr = rem(fix(fDy),4) == 0 & rem(fix(fDy),100) ~= 0 | rem(fix(fDy),400) == 0 ;
     bLeapYr=isleap(floor(fYr));
     
-    lep=(find(bLeapYr==1));
+    lep=(find(bLeapYr));
     
     
     % for leap years
@@ -60,7 +61,7 @@ function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2matS(fDy)
     
     
     %normal years
-    lep=(find(bLeapYr==0));
+    lep=(find(~bLeapYr));
     mDay= [0,31,59,90,120,151,181,212,243,273,304,334]';%cumulative days in one year
     dadi=mDay*ones(size(lep),1)';
     

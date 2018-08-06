@@ -69,8 +69,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                 return
             end
             obj.mc_choice=res.mc_choice;
-            ZG.inb2=res.mc_choice;
-            ZG.inb1=res.mc_choice;
+            % NOTE: this used to write back to ZG
             obj.ni=res.evsel.NumNearbyEvents;
             obj.R=res.evsel.RadiusKm;
             useRadius=res.evsel.UseEventsInRadius;

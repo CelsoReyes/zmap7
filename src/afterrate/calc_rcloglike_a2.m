@@ -3,7 +3,7 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     % log likelihood estimation procedures; defines the best model using the corrected AIC and
     % calculates uncertainties for the fitted parameters
     %
-    % function [rc] = CALC_RCLOGLIKE_A2(mycat,time,timef,bootloops,mainshock_date);
+    % [rc] = CALC_RCLOGLIKE_A2(mycat,time,timef,bootloops,mainshock_date);
     % ----------------------------------------------------------------
     % Input parameters:
     %   mycat       earthquake catalog

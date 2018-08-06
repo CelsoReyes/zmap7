@@ -1,16 +1,16 @@
 function cltipval(var1)
-    % cltipvla.m                            A.Allmann
-    % function to calculate P-values for different time or magnitude windows
+    % calculate P-values for different time or magnitude windows
+    %  A.Allmann
     %
-
+    %
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
-
-    % function finds the maximum liklihood estimates of p,c and k, the
+    %
+    % finds the maximum liklihood estimates of p,c and k, the
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
     % all values are calculated for different time or magnitude windows
-
+    %
     % Input: Earthquake Catalog of an Cluster Sequence
 
     % Output: p c k values of the modified Omori Law with respective

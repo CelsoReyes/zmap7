@@ -123,11 +123,11 @@ function bcross_orig(sel)
     prf = NaN;
     av = NaN;
     %nRandomRuns = 1000;
-    bGridEntireArea = 0;
+    bGridEntireArea = false;
     nBstSample = 100;
     fMccorr = 0;
     fBinning = 0.1;
-    bBst_button = 0;
+    bBst_button = false;
     fMcFix = 1.5;
     
     
@@ -137,8 +137,7 @@ function bcross_orig(sel)
     %zdlg = ZmapDialog(obj, @obj.doIt);
     
     zdlg.AddBasicHeader('Choose stuff');
-    zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
-        'Choose the calculation method for Mc');
+    zdlg.AddMcMethodDropdown('mc_choice');
     zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
     zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);
     
@@ -249,7 +248,7 @@ function bcross_orig(sel)
                 end
                 
                 % Bootstrap uncertainties
-                if bBst_button == 1
+                if bBst_button
                     % Check Mc from original catalog
                     l = b.Magnitude >= fMc-(fBinning/2);
                     if length(b(l,:)) >= Nmin

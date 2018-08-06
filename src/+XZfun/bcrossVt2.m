@@ -1,11 +1,5 @@
 classdef bcrossVt2 < ZmapVGridFunction
     % BCROSSVT2 compares b-values for 2 time periods within a cross section
-    % tHis subroutine assigns creates a grid with
-    % spacing dx,dy (in degreees). The size will
-    % be selected interactiVELY. The bvalue in each
-    % volume around a grid point containing ni earthquakes
-    % will be calculated as well as the magnitude
-    % of completness
     %   Stefan Wiemer 1/95
     properties
         

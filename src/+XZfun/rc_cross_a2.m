@@ -63,8 +63,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
             
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
-                'Choose the calculation method for Mc');
+            zdlg.AddMcMethodDropdown('mc_choice');
             
             % add fMaxRadius
             zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
@@ -237,9 +236,6 @@ end
 
 function orig_rc_cross_a2()
     % Calculate relative rate changes and Omori_parameters on cross section.
-    % This subroutine assigns creates a grid with spacing dx,dy (in degreees). The size will
-    % be selected interactively or the entire area. The values are calculated for in each volume
-    % around a grid point containing ni earthquakes
     % J. Woessner
     % updated: 31.08.03
     
@@ -263,7 +259,7 @@ function orig_rc_cross_a2()
     prf = NaN;
     av = NaN;
     nRandomRuns = 1000;
-    bGridEntireArea = 0;
+    bGridEntireArea = false;
     time = days(47);
     timef= days(20);
     bootloops = 50;

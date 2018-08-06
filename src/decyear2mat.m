@@ -1,5 +1,6 @@
 function [fYr, nMn, nDay, nHr, nMin, nSec]=decyear2mat(fDy)
-    % function [fYr, nMn, nDay, nHr, nMin, nSec] = decyear2mat(fDy)
+    % Calculate decimal year format to matrix with columns year, month, day, hour, minute, and second.
+    % [fYr, nMn, nDay, nHr, nMin, nSec] = decyear2mat(fDy)
     % ------------------------------------------------------------------------------------------------
     % Calculate decimal year format (from zmap-function decyear, i.e. 1998.734)
     % to matrix with columns year, month, day, hour, minute, and second.

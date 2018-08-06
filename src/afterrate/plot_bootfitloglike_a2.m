@@ -1,5 +1,7 @@
 function plot_bootfitloglike_a2(mycat,time,timef,bootloops,maepi)
-    % function plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
+    % Plots Ncum (observed vs. modeled) for specified time windows (choose model for the learning period)
+    %
+    % plot_bootfitloglike_a2(mycat,time,timef,bootloops,ZG.maepi);
     % --------------------------------------------------
     % Plots Ncum observed vs. Ncum modeled for specified time windows
     % with choosing the model for the learning period

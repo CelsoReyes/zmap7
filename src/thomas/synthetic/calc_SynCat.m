@@ -48,7 +48,7 @@ function [ mSynCat, vMain] = calc_SynCat(nNbkg,vSynCat,nSynCat_,nSynMode,...
 %
 % Output:
 % SynCat Simulated ETES catalog [yr lon lat month day mag depth hrs min sec]
-% vMain            Vector with assignments if main (=1) or aftershock (=0)
+% vMain            Vector with assignments if main (true) or aftershock (false)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % initialize:

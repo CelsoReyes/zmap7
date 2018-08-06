@@ -456,6 +456,41 @@ classdef ZmapDialog < handle
         
         %% uicontrol parts
         
+        % Magnitude of completion parts
+        function AddMcMethodDropdown(obj, tag, mc_method)
+            % AddMcMethodDropdown choose the McMethod from the dropdown
+            % AddMcMethodDropdown(obj) % creates dropdown with tag 'mc_method' using the default method
+            % AddMcMethodDropdown(obj, tag, method) % specifies the tag and method. Either can be empty
+            if ~exist('tag','var') || isempty(tag)
+                tag = 'mc_method';
+            end
+            
+            if ~exist('mc_method','var') || isempty(mc_method)
+                mc_method = ZmapGlobal.Data.McCalcMethod;
+            else
+                assert(isa(mc_method,'McMethods'),'method must be either empty or an McMethods enum');
+            end
+            
+            obj.AddBasicPopup(tag, 'Choose the calculation method for Mc',...
+                McMethods.dropdownList(), double(mc_method),...
+                'Choose Magnitude of completion calculation method');
+        end
+        
+        function AddMcAutoEstimateCheckbox(obj, tag, default)
+            % ADDMCAUTOESTIMATECHECKBOX
+            % AddMcAutoEstimateCheckbox(obj, tag, default), default should be a McAutoEstimate enum
+            % if tag is empty, it defaults to 'use_auto_mcomp'
+            % if default is empty, it defaults to the zmap global UseAutoEstimate
+            if ~exist('tag','var') || isempty(tag)
+                tag = 'use_auto_mcomp';
+            end
+            if ~exist('default','var') || isempty(default)
+                default =  ZmapGlobal.Data.UseAutoEstimate;
+            end
+            obj.AddBasicCheckbox(tag, 'Automatically estimate magn. of completeness',...
+                default, [],'Maximum likelihood - automatic magnitude of completeness');
+        end
+            
         % if there are other COMMONLY used button behaviors, perhaps they
         %would go here.
         

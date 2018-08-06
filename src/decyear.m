@@ -1,8 +1,9 @@
 function [decyr] = decyear(date)
-    
-    % function [decyr] = decyear(date)
+    % converts dates in year,month,day into year+fraction of yr. Takes into account leap years. Don't use if you don't have to
     %
-    % This Matlab function converts dates in year,month,day into
+    % [decyr] = decyear(date)
+    %
+    % onverts dates in year,month,day into
     % year+fraction of yr. Takes into account leap years.
     % date is a matrix with dates as yr, mn, dy , etc
     % It returns a n-vector (decyr) with results

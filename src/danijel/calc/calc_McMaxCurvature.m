@@ -1,8 +1,6 @@
 function [fMc] = calc_McMaxCurvature(magnitudes)
-    % function [fMc] = calc_McMaxCurvature(magnitudes);
-    % -----------------------------------------------
-    % Determines the magnitude of completeness at the point of maximum
-    %   curvature of the frequency magnitude distribution
+    % magnitude of completeness at the point of maximum curvature of the frequency magnitude distribution
+    %  [fMc] = calc_McMaxCurvature(magnitudes);
     %
     % Input parameter:
     %   mCatalog        Earthquake catalog magnitudes

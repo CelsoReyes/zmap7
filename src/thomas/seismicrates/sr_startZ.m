@@ -24,8 +24,8 @@ params=get_parameter;
 nMode=params.nMode;             % 0:MCS, 1:rates, 2:MCS+rates
 bDeclus=params.bDeclus;       % 0:Load Declusterd Catalog, 1:no declustering
 
-bSaveIt=0;              % save results 0:no, 1:yes
-bDisplayIt=0;          % display results 0: no, 1: yes
+bSaveIt = false;              % save results 0:no, 1:yes
+bDisplayIt = false;          % display results 0: no, 1: yes
 % Add coastline
 if exist('vCoastline','var')    params.vCoastline = vCoastline; end
 % Add faults

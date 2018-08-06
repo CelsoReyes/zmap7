@@ -1,8 +1,10 @@
 function [clusterID,EventType,AlgoInfo] = calc_decluster_gardKnop(mCatalog,nMethod,SetMain)
-	% function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog,nMethod)
+	% decluster earthquake catalog using the Windowing technique in space and time (Knopoff & Gardner)
+	%
+	% [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = CALC_DECLUSTER_GARDKNOP(mCatalog,nMethod)
 	% ----------------------------------------------------------------------------------------------------------
 	% 
-	% Function to decluster earthquake catalog using the Windowing technique in space and time by 
+	% Decluster earthquake catalog using the Windowing technique in space and time by 
 	% Knopoff & Gardner, GJR astr. Soc, 28, 311-313, 1972
 	% Gardner & Knopoff, BSSA, 64,5, 1363-1367, 1974
 	% using different windows

@@ -24,8 +24,8 @@ classdef AnalysisWindow < handle
             p.addRequired('tagID',      @(x)ischar(tagID)|| isstring(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...
-                @(x)isa(x,'function_handle') && ... % must be a function and
-                nargout(x)==2 ...                   % function must return [x,y]
+                @(x)isa(x,'function_handle') && ... % must be a function that
+                nargout(x)==2 ...                   % must return [x,y]
             );
         
             % if either SizeFcn or ColorFcn are defined, then this will create a scatter plot.

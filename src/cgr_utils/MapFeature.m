@@ -46,8 +46,8 @@ classdef MapFeature < handle
     % lakes.plot(ax1) % plot onto "normal" axes
     
     properties(Transient, Hidden)
-        Loadfn function_handle = @do_nothing % function used to load/import this feature's data
-        Savefn function_handle = @do_nothing % function used to save/export this feature's data
+        Loadfn function_handle = @do_nothing % used to load/import this feature's data
+        Savefn function_handle = @do_nothing % used to save/export this feature's data
     end
     properties
         Name (1,:) char        % name of this feature

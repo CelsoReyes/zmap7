@@ -85,7 +85,9 @@ classdef bdiff2
                 %% new dialog
                 zdlg = ZmapDialog();
                 zdlg.AddBasicHeader('Magnitude of Completness parameters');
-                zdlg.AddBasicPopup('mc_method','Max. likelihood Estimation',McMethods.dropdownList(),double(McMethods.MaxCurvature),'Choose Magnitude of completion calculation method');
+                
+                zdlg.AddMcMethodDropdown('mc_method'); %this might supposed to be max likelihood instead
+                zdlg.AddMcAutoEstimateCheckbox('mc_auto');
                 zdlg.AddBasicEdit('fMccorr','Mc Correction',fMccorr,'Correction term for Magnitude of Completeness');
                 zdlg.AddBasicCheckbox('doBootstrap','Uncertainty by bootstrapping',false,{'nBstSample'},'tooltip');
                 zdlg.AddBasicEdit('nBstSample','Bootstraps',nBstSample,'Number of bootstraps used to estimate error');

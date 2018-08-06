@@ -8,8 +8,8 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     % [OK, CATALOG] = ZMAPIMPORTMANAGER( FUN ) return the catalog as output INSTEAD of updating the
     % primary catalog.
     %
-    % ZMAPIMPORTMANAGER( FUN , ARGS ) ARGS is a cell of arguments that will be passed to the import
-    % function FUN
+    % ZMAPIMPORTMANAGER( FUN , ARGS ) ARGS is a cell of arguments that will be 
+    % passed to the import function FUN
     %
     % The ZMAPIMPORTMANAGER exists to do cleanup and shutdown as necessary of other catalogs in
     % memory. this includes the creation of maps and timeplots.

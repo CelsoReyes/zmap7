@@ -36,7 +36,7 @@ classdef XSection < handle
         curvelats (:,1) double % latitudes that define the cross-section curve
         polylats (:,1) double % latitudes that define the polygon containing points within width of curve
         polylons (:,1) double % longitudes that define the polygon containing points within width of curve
-        DeleteFcn function_handle % function that will remove the plotted polygon from the map
+        DeleteFcn function_handle % a function to remove the plotted polygon from the map
         
     end
     
@@ -178,7 +178,7 @@ classdef XSection < handle
             % plot great-circle path
             %   [xs_line, xs_poly, xs_slabel, xs_elabel] = plot_mapview(obj,ax)
             % these items might pollute the legend. consider turning off the Legend's autoupdate
-            % function to avoid this
+            % ability to avoid this
             ZGOpts = ZmapGlobal.Data.CrossSectionOpts;
             
             hold(ax,'on')

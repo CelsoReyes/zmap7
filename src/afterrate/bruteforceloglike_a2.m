@@ -101,8 +101,9 @@ end
 function [fL] = bruteloglike_pck2(vValues,tas,fT1)
     % bruteloglike_pck2 calculates the log likelihood function of an Omori law including one secondary aftershock at time fT1. 
     % 
-    %[fL] = bruteloglike_pck2(vValues,time_as, fT1)
-    % Function to calculate the log likelihood function of an Omori law including one
+    % [fL] = bruteloglike_pck2(vValues,time_as, fT1)
+    %
+    % Calculate the log likelihood function of an Omori law including one
     % secondary aftershock at time fT1. Assume p and c constant for the entire sequence,
     % but different k's before and after fT1
     %

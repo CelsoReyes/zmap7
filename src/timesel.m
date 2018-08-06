@@ -1,7 +1,9 @@
 function [tt1,tt2]=timesel(tagn)
-    % function to select time intervals for further examination
+    % TIMESEL select time intervals for further examination
     % when selecting time, pressing the y,m,d,h keys will shift the
     % date to the beginning of the nearest break.
+    %
+    % [TT1, TT2] = timesel(figuretag)
     %
     % timesel                       originally Alexander Allmann
     % additional functionality: Celso G Reyes

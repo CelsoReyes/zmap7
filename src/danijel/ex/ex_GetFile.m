@@ -17,7 +17,7 @@ function [bOK, sFilePath] = ex_GetFile(vFilterSpec, sDialogTitle, nXPos, nYPos)
 % December 18, 2001
 
 % Init return values
-bOK = 0;
+bOK = false;
 sFilePath = '';
 % Invoke Matlab's original function
 if ~exist('vFilterSpec')
@@ -39,5 +39,5 @@ end
 sFilePath = [sPath sFile];
 if length(sFilePath) > 1
   % We got everything
-  bOK = 1;
+  bOK = true;
 end

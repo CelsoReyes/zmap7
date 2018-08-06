@@ -19,10 +19,10 @@ function [rRelmTest] = relm_LTest4(vRatesH, vRatesN, nNumberSimulation, fMagThre
 %   rRelmTest.vSimValues_N        Vector containing the sorted simulated numbers of events for the null hypothesis
 %   rRelmTest.nNumberSimulation   Number of random simulations
 %   rRelmTest.fObservedData       Observed total number of events
-%   rRelmTest.vSimNLike_H         Likelihood of test hypothesis based on simulations of null hypothesis (normalized if bNormalized = 1)
-%   rRelmTest.vSimNLike_N         Likelihood of null hypothesis based on simulations of null hypothesis (normalized if bNormalized = 1)
-%   rRelmTest.vSimHLike_H         Likelihood of test hypothesis based on simulations of test hypothesis (normalized if bNormalized = 1)
-%   rRelmTest.vSimHLike_N         Likelihood of null hypothesis based on simulations of test hypothesis (normalized if bNormalized = 1)
+%   rRelmTest.vSimNLike_H         Likelihood of test hypothesis based on simulations of null hypothesis (normalized if bNormalized = true)
+%   rRelmTest.vSimNLike_N         Likelihood of null hypothesis based on simulations of null hypothesis (normalized if bNormalized = true)
+%   rRelmTest.vSimHLike_H         Likelihood of test hypothesis based on simulations of test hypothesis (normalized if bNormalized = true)
+%   rRelmTest.vSimHLike_N         Likelihood of null hypothesis based on simulations of test hypothesis (normalized if bNormalized = true)
 %
 % Copyright (C) 2002-2006 by Danijel Schorlemmer
 %
@@ -53,15 +53,15 @@ if isempty(vRatesH)  ||  isempty(vRatesN)
 end
 
 if ~exist('bDrawFigure')
-  bDrawFigure = 0;
+  bDrawFigure = false;
 end
 
 if ~exist('bTestBoth')
-  bTestBoth = 0;
+  bTestBoth = false;
 end
 
 if ~exist('bNormalized')
-  bNormalized = 0;
+  bNormalized = false;
 end
 
 % Randomize

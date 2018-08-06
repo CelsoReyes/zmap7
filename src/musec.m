@@ -1,10 +1,8 @@
 function musec()
-    % function to create a cross-section consisting of multiple segments
+    % create a cross-section consisting of multiple segments
     % works from a MAP
     %
     % stefan wiemer 1/97
-    
-    % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     

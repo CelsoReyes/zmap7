@@ -9,12 +9,12 @@ function [params] = st_calc(params)
 %   params.vX                 X-vector (defined by ex_selectgrid)
 %   params.vY                 Y-vector (defined by ex_selectgrid)
 %   params.vUsedNodes         Used nodes vX * vY defining the mPolygon (defined by ex_selectgrid)
-%   params.bRandom            Perform random simulation (=1) or real calculation (=0)
+%   params.bRandom            Perform random simulation (true) or real calculation (false)
 %   params.nCalculation       Number of random simulations
-%   params.bMap               Calculate a map (=1) or a cross-section (=0)
-%   params.bNumber            Use constant number (=1) or constant radius (=0)
-%   params.nNumberEvents      Number of earthquakes if bNumber == 1
-%   params.fRadius            Radius of gridnode if bNumber == 0
+%   params.bMap               Calculate a map (true) or a cross-section (false)
+%   params.bNumber            Use constant number (true) or constant radius (false)
+%   params.nNumberEvents      Number of earthquakes if bNumber is true
+%   params.fRadius            Radius of gridnode if bNumber is false
 %   params.nMinimumNumber     Minimum number of earthquakes per node for determining a b-value
 %   params.fForecastPeriod    Forecasting period in years
 %   params.bLearningPeriod    Use different learning period than the rest of the catalog
@@ -24,8 +24,8 @@ function [params] = st_calc(params)
 %   params.fRealProbability   Probability of calculation with real data
 %   params.nCalculateMC       Method to calculate magnitude of completeness (see also: help calc_Mc)
 %   params.nTestMethod        Method to calculate the Kagan & Jackson test (see also: help kj_poissonian)
-%   params.bMinMagMc          Use magnitude of completeness as lower limit of magnitude range for testing (=1)
-%                             Use params.fMinMag as lower limit (=0)
+%   params.bMinMagMc          Use magnitude of completeness as lower limit of magnitude range for testing (true)
+%                             Use params.fMinMag as lower limit (false)
 %   params.fMinMag            Lower limit of magnitude range for testing
 %   params.fMaxMag            Upper limit of magnitude range for testing
 %

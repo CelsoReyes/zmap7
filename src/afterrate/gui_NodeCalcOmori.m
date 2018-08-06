@@ -28,7 +28,7 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     result.nNumAf = nYAf;
 
     % Compute backgroundrate [year] or use given
-    if params.bTimeBgr == 0
+    if ~params.bTimeBgr
         fBgrate = params.fBgrate;
         vSel = (params.fTstart-params.fTimeBgr <= params.mCatalog.Date & params.mCatalog.Date < params.fTstart);
         mCatBgr = params.mCatalog.subset(vSel);

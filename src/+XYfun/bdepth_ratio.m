@@ -58,11 +58,9 @@ classdef bdepth_ratio < ZmapHGridFunction
         function InteractiveSetup(obj)
             
             % get two time periods, along with grid and event parameters
-            zdlg=ZmapDialog([]);            
-            zdlg.AddBasicCheckbox('useAutoMcomp', 'Automatically estimate magn. of completeness',...
-                obj.useAutoMcomp, [],'Maximum likelihood - automatic magnitude of completeness');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(obj.mc_choice),...
-                'Choose the calculation method for Mc');
+            zdlg=ZmapDialog([]);   
+            zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',  obj.useAutoMcomp);
+            zdlg.AddMcMethodDropdown('mc_choice',           obj.mc_choice);
             zdlg.AddBasicHeader('Please define two Depth ranges to compare');
             zdlg.AddBasicEdit('top_of_top','TOP zone ceiling [km]',obj.topzone_ceiling,'');
             zdlg.AddBasicEdit('bottom_of_top','TOP zone floor [km]',obj.topzone_floor,'');

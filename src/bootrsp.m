@@ -1,7 +1,7 @@
 function[out]=bootrsp(indata,B)
-    %   out=bootrsp(indata,B)
+    %   BOOTRSP Bootstrap  resampling  procedure
     %
-    %   Bootstrap  resampling  procedure.
+    %   out=bootrsp(indata,B)
     %
     %     Inputs:
     %        indata - input data

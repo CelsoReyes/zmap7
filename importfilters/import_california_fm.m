@@ -1,8 +1,7 @@
 function [uOutput] = import_california_fm(nFunction, sFilename)
-% function [uOutput] = import_california_fm(nFunction, sFilename);
-% ----------------------------------------------------------------
-% Function to import NCEDC NCSN-FPFIT catalog from the UCB, CA, and
-% the Hauksson relocated catalog for southern California.
+  % import NCEDC NCSN-FPFIT catalog from the UCB, CA, and the Hauksson relocated catalog for southern California.
+% [uOutput] = import_california_fm(nFunction, sFilename)
+%
 % See:
 % http://quake.geo.berkeley.edu
 % http://www.data.scec.org/ftp/catalogs/hauksson/Socal_focal/

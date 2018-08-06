@@ -6,7 +6,7 @@ function [mGrid, vXVector, vYVector, vUsedNodes] = ex_selectgrid(hFigure, fSpaci
 % Input parameters:
 %   hFigure           Handle to window containing the figure where the polygon has to defined
 %   fSpacing          Spacing of gridnodes in X/Y-direction
-%   bGridEntireArea   Use the entire area of current axes in hFigure (=1), select polygon for grid manually (=0)
+%   bGridEntireArea   Use the entire area of current axes in hFigure (true), select polygon for grid manually (false)
 %
 % Output parameters:
 %   mGrid             Matrix with gridnodes

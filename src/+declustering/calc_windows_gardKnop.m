@@ -1,9 +1,9 @@
 function [fSpace, fTime] = calc_windows_gardKnop(fMagnitude, nMethod);
-	% function [fSpace, fTime] = calc_windows(fMagnitude, nMethod);
-	% -----------------------------------------------------------
+	% Calculate window lengths in space and time forthe windowing declustering technique
 	%
-	% Function to calculate window lengths in space and time for
-	% the windowing declustering technique
+	% [fSpace, fTime] = calc_windows_gardKnop(fMagnitude, nMethod);
+	%
+	% Calculate window lengths in space and time forthe windowing declustering technique
 	%
 	% Incoming variables: 
 	% fMagnitude : magnitude

@@ -414,7 +414,7 @@ function view_bva(lab1, valueMap,gx,gy)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='b-value';
         valueMap = mBvalue;
-        bOverlayTransparentStdDev = 1;
+        bOverlayTransparentStdDev = true;
         view_bva(lab1,valueMap);
     end
     

@@ -9,11 +9,11 @@ function [fAverageStdDev] = kj_CalcOverallStdDev(params)
 %
 % Input parameters:
 %   params.mPolygon           Polygon (defined by ex_selectgrid)
-%   params.bMap               Do the calculation for a map (=1) or a cross-section (=0)
+%   params.bMap               Do the calculation for a map (true) or a cross-section (false)
 %   params.mCatalog           Earthquake catalog
-%   params.bNumber            Use constant number (=1) or constant radius (=0)
-%   params.nNumberEvents      Number of earthquakes if bNumber == 1
-%   params.fRadius            Radius of gridnode if bNumber == 0
+%   params.bNumber            Use constant number (true) or constant radius (false)
+%   params.nNumberEvents      Number of earthquakes if bNumber is true
+%   params.fRadius            Radius of gridnode if bNumber is false
 %   params.nMinimumNumber     Minimum number of earthquakes per node
 %
 % Output parameters:

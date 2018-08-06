@@ -1,6 +1,9 @@
 classdef rcvalgrid_a2 < ZmapHGridFunction
     % RCVALGRID_A2 Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
     % Uses view_rcva_a2 to plot the results
+    
+    % at one point, this affected ZG.inb2
+    
     properties
         bootloops           = 100       % number of bootstrap loops [bootloops]
         timef duration      = days(20)  % forecast period [forec_period]
@@ -244,8 +247,8 @@ function [sel]=orig_rcvalgrid_a2()
     bootloops = 100; % Bootstrap
     ra = 5;          % Radius [km]
     fMaxRadius = 5;  % Max. radius [km] in case of constant number
-    bMap = 1; % Map view
-    bGridEntireArea = 0; % Grid area, interactive or entire map
+    bMap = true; % Map view
+    bGridEntireArea = false; % Grid area, interactive or entire map
     UseEventsInRadius=false; % required for variable scoping.
     load_grid=false; % required for variable scoping.
     prev_grid=false; % required for variable scoping.
@@ -609,14 +612,6 @@ function [sel]=orig_rcvalgrid_a2()
             return
         end
     end
-    %{
-function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZG.inb2=hndl2.Value;
-        ;
-    end
-    %}
     
     
 end

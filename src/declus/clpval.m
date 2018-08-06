@@ -1,11 +1,11 @@
 function clpval(var1)
-    % clpval function to calculate the parameters of the modified Omori Law
+    % clpval calculate the parameters of the modified Omori Law
     %  A.Allmann
     %
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
     
-    % function finds the maximum liklihood estimates of p,c and k, the
+    % find the maximum liklihood estimates of p,c and k, the
     % parameters of the modifies Omori equation
     % it also finds the standard deviations of these parameters
     %
@@ -19,7 +19,8 @@ function clpval(var1)
     % plot cumulative number versus time to allow input of start and end
     % time
     
-    
+    % TODO: burn this file and dance around the ashes. 
+
     global file1
     global mess bgevent clust original newclcat
     global backcat cluscat

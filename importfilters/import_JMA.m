@@ -34,7 +34,7 @@ end
 function [bOK, vEvent] = ConvertLine(sLine)
 
 % Default
-bOK = 1;
+bOK = true;
 vEvent = zeros(1,10);
 % Replace 0xA0 with 0x20
 for nCnt = 1:length(sLine)
@@ -75,7 +75,7 @@ vEvent(2) = fVal + fVal2/6000;
 sPart = sLine(2:5);
 [fVal, nCnt] = sscanf(sPart, '%4d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
    disp('No Year');
  return;
 end
@@ -84,7 +84,7 @@ vEvent(3) = fVal;
 sPart = sLine(6:7);
 [fVal, nCnt] = sscanf(sPart, '%2d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
   disp('No Month');
   return;
 end
@@ -93,7 +93,7 @@ vEvent(4) = fVal;
 sPart = sLine(8:9);
 [fVal, nCnt] = sscanf(sPart, '%2d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
   disp('No Day');
   return;
 end
@@ -102,7 +102,7 @@ vEvent(5) = fVal;
 sPart = sLine(53:54);
 [fVal, nCnt] = sscanf(sPart, '%2d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
   disp('No Magnitude');
   return;
 end
@@ -119,7 +119,7 @@ vEvent(7) = fVal/100;
 sPart = sLine(10:11);
 [fVal, nCnt] = sscanf(sPart, '%2d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
   disp('No Hour');
   return;
 end
@@ -128,7 +128,7 @@ vEvent(8) = fVal;
 sPart = sLine(12:13);
 [fVal, nCnt] = sscanf(sPart, '%2d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
    disp('No Minute');
  return;
 end
@@ -138,7 +138,7 @@ vEvent(9) = fVal;
 sPart = sLine(14:16);
 [fVal, nCnt] = sscanf(sPart, '%4d');
 if nCnt == 0
-  bOK = 0;
+  bOK = false;
    disp('No seconds');
  return;
 end
@@ -152,7 +152,7 @@ vEvent(3) = decyear([vEvent(3) vEvent(4) vEvent(5) vEvent(8) vEvent(9)]);
 function [bOK, fValue] = Decode(sLine, nLength)
 
 if isempty(str2num(sLine))
-  bOK = 0;
+  bOK = false;
   return;
 end
 fValue = 0;
@@ -162,4 +162,4 @@ for nCnt = 1:nLength
     fValue = fValue + (str2double(sLine(nCnt)) * 10^nExp);
   end
 end
-bOK = 1;
+bOK = true;

@@ -18,7 +18,7 @@ function [fPercentile] = calc_GetPercentile(fValue, vDistribution, bAscending)
 
 % Declare missing parameters
 if ~exist('bAscending', 'var')
-  bAscending = 1;
+  bAscending = true;
 end
 
 % Don't calculate percentile for value == nan

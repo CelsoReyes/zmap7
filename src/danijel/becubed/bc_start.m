@@ -7,8 +7,8 @@ function bc_start(mCatalog, hFigure, bMap, vCoastline, vFaults, rContainer, sNam
 % Input parameters:
 %   mCatalog      Earthquake catalog to use for the testing
 %   hFigure       Handle of figure where the user should select the grid (i.e. the seismicity map)
-%   bMap          Map/cross-section switch. If the testing is carried out on a map set bMap = 1,
-%                 on a cross-section set bMap = 0
+%   bMap          Map/cross-section switch. If the testing is carried out on a map set bMap = true,
+%                 on a cross-section set bMap = false
 %   rContainer    Just a container (structure proposed) to store any variables that should be available in the
 %                 probabilistic forecast testing code
 %

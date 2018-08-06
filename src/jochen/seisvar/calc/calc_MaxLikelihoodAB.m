@@ -1,7 +1,6 @@
 function [fBValue, fAValue] = calc_MaxLikelihoodAB(mCatalog, mControl)
-    % function [fBValue, fAValue] = calc_MaxLikelihoodAB(mCatalog, mControl, bReBin)
-    % ------------------------------------------------------------------------------
     % Computes the maximum likelihood a- and b-values for a set of given catalogs.
+    % [fBValue, fAValue] = calc_MaxLikelihoodAB(mCatalog, mControl, bReBin)
     %
     % Input parameters:
     %   mCatalog        Catalog containing different periods with varying
@@ -60,8 +59,9 @@ end
 
 
 function [fProbability] = callback_LogLikelihoodABValue(vValues, caMags, mControl)
-    % function [fProbability] = callback_LogLikelihoodABValue(vValues, caCatalogs, mControl)
-    % --------------------------------------------------------------------------------------
+    % calculate the negative log-likelihood sum of a given a- and b-value for multiple catalogs
+    % [fProbability] = callback_LogLikelihoodABValue(vValues, caCatalogs, mControl)
+    %
     % Helper callback-function for calc_MaxLikelihoodAB.m
     %   Computes the negative log-likelihood sum of a given a- and b-value for a
     %   set of given catalogs

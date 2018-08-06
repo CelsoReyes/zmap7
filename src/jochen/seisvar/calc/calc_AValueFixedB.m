@@ -1,6 +1,7 @@
 function [aValue] = calc_AValueFixedB(magnitudes, bValue)
-    % function [fAValue] = calc_AValueFixedB(mCatalog, bValue)
-    % ---------------------------------------------------------
+    % maximum likelihood a-value for a given catalog & b-value
+    % [fAValue] = calc_AValueFixedB(mCatalog, bValue)
+    % %
     % Calculates the maximum likelihood a-value for a given
     %   catalog and given b-value. The Catalog has to be complete
     %   down to the smalles magnitude: Mc=Mmin
@@ -28,9 +29,8 @@ function [aValue] = calc_AValueFixedB(magnitudes, bValue)
 end
 
 function [fProbability] = calc_LogLikelihoodAValue(fAValue, magnitudes, fBValue)
-    % function [fProbability] = calc_LogLikelihoodAValue(fAValue, magnitudes, fBValue)
-    % ------------------------------------------------------------------------------
-    %   Computes the negative log-likelihood of a given a- and b-value for a given catalog
+    % Computes the negative log-likelihood of a given a- and b-value for a given catalog
+    % [fProbability] = calc_LogLikelihoodAValue(fAValue, magnitudes, fBValue)
     %
     % Input parameters:
     %   fAValue         Predetermineda-value

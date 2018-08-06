@@ -1,7 +1,9 @@
 function [uOutput] = cnssimp(nFunction, sFilename)
-% function [uOutput] = cnssimp(nFunction, sFilename);
-% ---------------------------------------------------
-% Function to import data of the ANSS/CNSS raw format catalog (http://quake.geo.berkeley.edu/ncedc/documents.html#catalog_formats)
+    % CNSSIMP import data of the ANSS/CNSS raw format catalog 
+    %
+% [uOutput] = cnssimp(nFunction, sFilename);
+%
+% ANSS/CNSS raw format: (http://quake.geo.berkeley.edu/ncedc/documents.html#catalog_formats)
 % Description of the parameters can be found at http://quake.geo.berkeley.edu/ftp/pub/doc/cat5/cnss.catalog.5
 %
 % updated: 15.09.03, J. Woessner

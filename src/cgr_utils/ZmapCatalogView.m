@@ -94,7 +94,7 @@ classdef ZmapCatalogView
     properties
         % source - name of catalog's global variable, for example 'primeCatalog',
         % which means the original catalog can be found in ZmapData.primeCatalog
-        source function_handle % function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
+        source function_handle % a function that when called returns the desired catalog . ex source=@()ZmapGlobal.Data.primeCatalog
         
         ViewName (1,:) char % name given to this view for plotting
         

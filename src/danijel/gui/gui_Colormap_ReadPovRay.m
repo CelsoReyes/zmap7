@@ -26,9 +26,9 @@ fclose(hFile);
 function [bUsed] = IsUsed(sLine)
 
 if ((sLine(1) == '/') | (sLine(1) == 'c') | (sLine(1) == '}'))
-  bUsed = 0;
+  bUsed = false;
 else
-  bUsed = 1;
+  bUsed = true;
 end
 
 % ---

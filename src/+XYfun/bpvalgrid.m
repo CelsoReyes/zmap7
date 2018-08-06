@@ -4,7 +4,7 @@ classdef bpvalgrid < ZmapHGridFunction
         CO         = 0     % omori c parameter with sign dictating whether it is constant or not
         valeg2      = 2     % omori c parameter
         minpe       = nan   % min goodness percentage
-        mc_choice    McMethods              = McMethods.MaxCurvature % magnitude of completion method
+        mc_choice  McMethods              = McMethods.MaxCurvature % magnitude of completion method
         wt_auto    LSWeightingAutoEstimate  = true
         mc_auto    McAutoEstimate           = true
     end
@@ -53,6 +53,8 @@ classdef bpvalgrid < ZmapHGridFunction
         function InteractiveSetup(obj)
             % create a dialog that allows user to select parameters neccessary for the calculation
             zdlg = ZmapDialog();
+            
+            % TODO: replace this haphazard list with zdlg.AddMcMethodDropdown('mc_choice',      obj.mc_choice);
             Mc_Methods={'Automatic Mcomp (max curvature)',...
             'Fixed Mc (Mc = Mmin)',...
             'Automatic Mcomp (90% probability)',...
@@ -62,6 +64,9 @@ classdef bpvalgrid < ZmapHGridFunction
 
             zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',Mc_Methods,5,...
                 'Choose the calculation method for Mc');
+            
+            zdlg.AddMcAutoEstimateCheckbox('mc_auto',  obj.mc_auto);
+            
             zdlg.AddBasicEdit('c_val','omori c parameter', obj.valeg2,' input parameter (varying)');
             zdlg.AddBasicCheckbox('use_const_c','fixed c', obj.CO<0, {'const_c'},'keep the Omori C parameter fixed');
             zdlg.AddBasicEdit('const_c','omori c parameter', obj.valeg2, 'C-parameter parameter (fixed)');

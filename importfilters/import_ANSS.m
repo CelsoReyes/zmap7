@@ -1,7 +1,9 @@
 function [uOutput] = import_ANSS(nFunction, sFilename)
-% function [uOutput] = import_ANSS(nFunction, sFilename)
+  % IMPORT_ANSS Importfilter for ANSS readable format catalog
+  %
+% [uOutput] = import_ANSS(nFunction, sFilename)
 % ------------------------------------------------------
-% Importfilter for ANSS readable format catalog
+% ANSS  format
 % (http://quake.geo.berkeley.edu/anss/catalog-search.html)
 %
 % updated: 18.08.2005, D. Schorlemmer

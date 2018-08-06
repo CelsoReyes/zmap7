@@ -10,7 +10,7 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
     % mCatalog    : Earthquake catalog
     % binInterval : Binning interval [magnitude]
     % nBootstraps : Number of bootstraps to determine Mc
-    % mcCalcMethod     : Method to determine Mc (see calc_Mc)
+    % mcCalcMethod     : Method to determine Mc (see calc_Mc , McMethods)
     % nMinNum     : Minimum number of events above Mc to calculate
     % fMcCorr     : Correction term for Mc
     %

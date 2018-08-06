@@ -9,13 +9,13 @@ function [params] = sv_calcMc(params)
 %   params.vX                 X-vector (defined by ex_selectgrid)
 %   params.vY                 Y-vector (defined by ex_selectgrid)
 %   params.vUsedNodes         Used nodes vX * vY defining the mPolygon (defined by ex_selectgrid)
-%   params.bRandom            Perform random simulation (=1) or real calculation (=0)
+%   params.bRandom            Perform random simulation (true) or real calculation (false)
 %   params.nCalculation       Number of random simulations
-%   params.bMap               Calculate a map (=1) or a cross-section (=0)
-%   params.bNumber            Use constant number (=1) or constant radius (=0)
-%   params.nNumberEvents      Number of earthquakes if bNumber == 1
-%   params.fMaxRadius         Maximum Radius using a constant number of events; works only with bNumber == 1
-%   params.fRadius            Radius of gridnode if bNumber == 0
+%   params.bMap               Calculate a map (true) or a cross-section (false)
+%   params.bNumber            Use constant number (true) or constant radius (false)
+%   params.nNumberEvents      Number of earthquakes if bNumber is true
+%   params.fMaxRadius         Maximum Radius using a constant number of events; works only when bNumber is true
+%   params.fRadius            Radius of gridnode if bNumber is false
 %   params.nMinimumNumber     Minimum number of earthquakes per node for determining a b-value
 %   params.fMinMag            Lower limit of magnitude range for testing
 %   params.fMaxMag            Upper limit of magnitude range for testing
@@ -60,7 +60,7 @@ mCatalog = params.mCatalog;
 % Check for bootstrapping or not
 % ------------------------------
 % Case of calculations with bootstrapping
-if (params.bBstnum == 1)
+if params.bBstnum
     % Loop over time
     fTstart = params.fTstart;
     while fTstart < params.fTmaxCat

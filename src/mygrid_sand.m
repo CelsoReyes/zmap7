@@ -1,5 +1,5 @@
 function  [image_data,vlat,vlon] = mygrid_sand(region)
-    % Function MYGRID_SAND  Read bathymetry data from Sandwell Database
+    % MYGRID_SAND  Read bathymetry data from Sandwell Database
     %      [image_data,vlat,vlon] = mygrid_sand(region)
     %
     % program to get bathymetry from topo_6.2.img
@@ -12,7 +12,6 @@ function  [image_data,vlat,vlon] = mygrid_sand(region)
     %               image_data - matrix of sandwell bathymetry/topography
     %               vlat - vector of latitudes associated with image_data
     %               vlon - vector of longitudes
-    % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     

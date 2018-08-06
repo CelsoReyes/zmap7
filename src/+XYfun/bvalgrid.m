@@ -55,8 +55,7 @@ classdef bvalgrid < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddBasicHeader('Choose stuff');
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
-                'Choose the calculation method for Mc');
+            zdlg.AddMcMethodDropdown('mc_choice'); % McMethods.MaxCurvature
             zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                 're takes longer, but provides more accurate results');
             zdlg.AddBasicEdit('nBstSample','Number of bootstraps', obj.nBstSample,...

@@ -75,9 +75,6 @@ classdef calc_across < ZmapVGridFunction
 end
 
 function calc_across_orig(sel)
-    % This subroutine assigns creates a grid with
-    % spacing dx,dy (in degreees). The size will
-    % be selected interactively.
     % The aValue, Mc and a resolution estimation in each
     % volume around a grid point, or defined by a radius
     % (ra for Mc, ri for aValue) containing ni earthquakes
@@ -116,7 +113,7 @@ function calc_across_orig(sel)
         prf = NaN;
         av = NaN;
         nRandomRuns = 1000;
-        bGridEntireArea = 0;
+        bGridEntireArea = false;
         
         % Create the dialog box
         figure_w_normalized_uicontrolunits(...

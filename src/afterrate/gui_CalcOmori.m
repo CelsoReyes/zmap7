@@ -11,11 +11,11 @@ function [params] = gui_CalcOmori(params,nNodeStart, nNodeEnd)
     %   params.vY                 Y-vector (defined by ex_selectgrid)
     %   params.vUsedNodes         Used nodes vX * vY defining the mPolygon (defined by ex_selectgrid)
     %   params.nCalculation       Number of random simulations
-    %   params.bMap               Calculate a map (=1) or a cross-section (=0)
-    %   params.bNumber            Use constant number (=1) or constant radius (=0)
-    %   params.nNumberEvents      Number of earthquakes if bNumber == 1
-    %   params.fMaxRadius         Maximum Radius using a constant number of events; works only with bNumber == 1
-    %   params.fRadius            Radius of gridnode if bNumber == 0
+    %   params.bMap               Calculate a map (true) or a cross-section (false)
+    %   params.bNumber            Use constant number (true) or constant radius (false)
+    %   params.nNumberEvents      Number of earthquakes if bNumber is true
+    %   params.fMaxRadius         Maximum Radius using a constant number of events; works only with bNumber is true
+    %   params.fRadius            Radius of gridnode if bNumber is false
     %   params.nMinimumNumber     Minimum number of earthquakes per node for determining a b-value
     %   params.fMinMag            Lower limit of magnitude range for testing
     %   params.fMaxMag            Upper limit of magnitude range for testing

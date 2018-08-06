@@ -1,15 +1,15 @@
 function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes, nMagnitudes, fBValue, fMc, fInc)
-    % function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth,
+    %  syn_randomize_catalog Randomizes a given catalog.
+    %  [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth,
     %                                                   bTimes, nMagnitudes, fBValue, fMc, fInc)
-    % ------------------------------------------------------------------------------------------
-    % Randomizes a given catalog.
+    %
     %
     % Input parameters:
     %   mCatalog          Catalog for randomizing
-    %   bLon              Perturb longitudes (=1) or leave longitudes unchanged (=0)
-    %   bLat              Perturb latitudes (=1) or leave latitudes unchanged (=0)
-    %   bDepth            Perturb depths (=1) or leave depths unchanged (=0)
-    %   bTimes            Perturb focal times (=1) or leave focal times unchanged (=0)
+    %   bLon              Perturb longitudes (true) or leave longitudes unchanged (false)
+    %   bLat              Perturb latitudes (true) or leave latitudes unchanged (false)
+    %   bDepth            Perturb depths (true) or leave depths unchanged (false)
+    %   bTimes            Perturb focal times (true) or leave focal times unchanged (false)
     %   nMagnitudes       Magnitude switch
     %                     1: Leave magnitudes unchanged
     %                     2: Generate new magnitudes according to parameters fBValue, fMc, fInc

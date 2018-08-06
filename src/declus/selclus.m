@@ -1,9 +1,9 @@
 function clustercat = selclus(windowing, clustercat)
-    % SELCLUS select eqs according to cat limits             original:Alexander Allmann
+    % SELCLUS select eqs according to cat limits             
+    % original:Alexander Allmann
     % clustercat = SELCLUS(windowing, clustercat)
-    % function to select eqs in the map window according to the catalog
+    % select eqs in the map window according to the catalog
     % limits in the Cluster Menu or Single Cluster window
-    %
 
     ZG=ZmapGlobal.Data;
 
