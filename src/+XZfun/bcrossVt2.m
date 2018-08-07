@@ -115,12 +115,12 @@ classdef bcrossVt2 < ZmapVGridFunction
             zdlg = ZmapDialog();
             %zdlg = ZmapDialog(obj, @obj.doIt);
             
-            zdlg.AddBasicHeader('Automatically estimate magnitude of completeness?');
+            zdlg.AddHeader('Automatically estimate magnitude of completeness?');
             zdlg.AddMcAutoEstimateCheckbox('mc_auto', obj.mcAuto);
-            zdlg.AddBasicCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting', obj.wtAuto,...
+            zdlg.AddCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting', obj.wtAuto,...
                 'Choose the calculation weighting method for Mc');
-            zdlg.AddGridParameters('gridOpts',obj.dx,'km',[],'',obj.dd,'km');
-            zdlg.AddEventSelectionParameters('eventSelector',obj.ni, obj.ra,obj.Nmin);
+            zdlg.AddGridSpacing('gridOpts',obj.dx,'km',[],'',obj.dd,'km');
+            zdlg.AddEventSelector('eventSelector',obj.ni, obj.ra,obj.Nmin);
             
             [res,okPressed] = zdlg.Create('differential b-value map X-section Grid Parameters');
             

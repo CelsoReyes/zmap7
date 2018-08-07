@@ -66,12 +66,12 @@ classdef rc_cross_a2 < ZmapVGridFunction
             zdlg.AddMcMethodDropdown('mc_choice');
             
             % add fMaxRadius
-            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
-            zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
-            zdlg.AddBasicEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
-            zdlg.AddBasicEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
-            zdlg.AddBasicCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
-            % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+            zdlg.AddEventSelector('evsel', obj.EventSelector)
+            zdlg.AddEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
+            zdlg.AddEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
+            zdlg.AddEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
+            zdlg.AddCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
+            % zdlg.AddEdit('Mmin','minMag', nan, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
             [res, okpressed]=zdlg.Create('relative rate change map');
@@ -298,11 +298,11 @@ function orig_rc_cross_a2()
     %     set(hndl2,'value',5);
     
     zdlg = ZmapDialog([]);
-    zdlg.AddEventSelectionParameters('evsel',ni,ra,Nmin);
-    zdlg.AddGridParameters('gridparam',dx,'km',[],[],dd,'km'); %gridparam.dx->dx %gridparam.dz ->dd
-    zdlg.AddBasicEdit('time','learning period (days)',time,'learning period');
-    zdlg.AddBasicEdit('timef','forecast period (days)',timef,'forecast period');
-    zdlg.AddBasicEdit('bootloops','bootstrap samples',bootloops,'Bootstrap samples');
+    zdlg.AddEventSelector('evsel',ni,ra,Nmin);
+    zdlg.AddGridSpacing('gridparam',dx,'km',[],[],dd,'km'); %gridparam.dx->dx %gridparam.dz ->dd
+    zdlg.AddEdit('time','learning period (days)',time,'learning period');
+    zdlg.AddEdit('timef','forecast period (days)',timef,'forecast period');
+    zdlg.AddEdit('bootloops','bootstrap samples',bootloops,'Bootstrap samples');
     
     [res,okPressed]=zdlg.Create('Grid Parameters');
     

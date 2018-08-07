@@ -34,8 +34,8 @@ classdef simple_ZmapHGridFunction < ZmapHGridFunction
             % see also ZmapDialog
             
             zdlg = ZmapDialog();
-            zdlg.AddBasicEdit('depth_km','Enter Depth [km]', depth, 'Enter depth for comparison');
-            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
+            zdlg.AddEdit('depth_km','Enter Depth [km]', depth, 'Enter depth for comparison');
+            zdlg.AddEventSelector('evsel', obj.EventSelector)
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
             
             if ~okPressed

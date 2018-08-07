@@ -14,12 +14,12 @@ classdef EditDialogPart < handle
     %   ZmapDialog - initialize a ZmapDialog
     %   Create - creates a dialog box based on a cell description of types within.
     %
-    %   AddBasicHeader - add a simple header to the dialog box
-    %   AddBasicPopup - add a popup menu to the dialog box
-    %   AddBasicEdit - add an edit bow with text label
-    %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
-    %   AddGridParameters - add a grid parameter widget to the box
-    %   AddEventSelectionParameters - add widget to choose between events in a radius, or closest events
+    %   AddHeader - add a simple header to the dialog box
+    %   AddPopup - add a popup menu to the dialog box
+    %   AddEdit - add an edit bow with text label
+    %   AddCheckbox - add a checkbox (has ability to enable/disable other UI elements
+    %   AddGridSpacing - add a grid parameter widget to the box
+    %   AddEventSelector - add widget to choose between events in a radius, or closest events
     %
     %   addOKButton - (added automatically)
     %   addCancelButton - (added automatically)
@@ -33,7 +33,7 @@ classdef EditDialogPart < handle
     % can be called in 2 ways.
     % EXAMPLE USAGE IN A SCRIPT
     %     zdlg = ZmapDialog();
-    %     zdlg.AddBasicEdit('noiselevel','Noise level', 1,...
+    %     zdlg.AddEdit('noiselevel','Noise level', 1,...
     %         'how much noise should?');
     %     [myans,okpressed] = zdlg.Create('my example');
     %
@@ -64,17 +64,17 @@ classdef EditDialogPart < handle
     %   function interact(obj)
     %     zdlg = ZmapDialog(obj, @doit)
     %
-    %     zdlg.AddBasicHeader('Say something for each thing');
-    %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
+    %     zdlg.AddHeader('Say something for each thing');
+    %     zdlg.AddPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
     %                 'Choose what is most important to you');
-    %     zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
-    %     zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel,...
+    %     zdlg.AddGridSpacing('grid',0,'deg',3,'deg',5,'km');
+    %     zdlg.AddEdit('noiselevel','Noise level', obj.noiselevel,...
     %                   'how much noise should?');
-    %     zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
+    %     zdlg.AddCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
     %                   'Should noise be applied to the data?');
-    %     zdlg.AddBasicCheckbox('cleverness','be clever', false,...
+    %     zdlg.AddCheckbox('cleverness','be clever', false,...
     %                   'if checked, then plot is cleverly drawn');
-    %     zdlg.AddEventSelectionParameters('evtparams', 100, 5)
+    %     zdlg.AddEventSelector('evtparams', 100, 5)
     %     zdlg.Create('my dialog title');
     %
     %   end
@@ -200,9 +200,9 @@ classdef EditDialogPart < handle
         
         %% methods to declare uicontrols
         
-        function AddBasicEdit(obj,tag, label, value,tooltip)
-            % AddBasicEdit adds an edit-box & text label combo
-            % AddBasicEdit(obj,tag, label, value,tooltip)
+        function AddEdit(obj,tag, label, value,tooltip)
+            % AddEdit adds an edit-box & text label combo
+            % AddEdit(obj,tag, label, value,tooltip)
             %
             % callback is determined by the value's type
             if isnumeric(value)

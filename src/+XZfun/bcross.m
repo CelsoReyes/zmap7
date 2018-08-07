@@ -45,24 +45,24 @@ classdef bcross < ZmapVGridFunction
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             
             
             zdlg.AddMcMethodDropdown('mc_choice');
-            zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
-            zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);
+            zdlg.AddGridSpacing('gridOpts',dx,'km',[],'',dd,'km');
+            zdlg.AddEventSelector('eventSelector',ni, ZG.ra,Nmin);
             
-            zdlg.AddBasicEdit('fBinning','Magnitude binning', fBinning,...
+            zdlg.AddEdit('fBinning','Magnitude binning', fBinning,...
                 'Bins for magnitudes');
-            zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
+            zdlg.AddCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
                 're takes longer, but provides more accurate results');
-            zdlg.AddBasicEdit('nBstSample','Number of bootstraps', nBstSample,...
+            zdlg.AddEdit('nBstSample','Number of bootstraps', nBstSample,...
                 'Number of bootstraps to determine Mc');
-            zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', Nmin,...
+            zdlg.AddEdit('Nmin','Min. No. of events > Mc', Nmin,...
                 'Min # events greater than magnitude of completeness (Mc)');
-            zdlg.AddBasicEdit('fMcFix', 'Fixed Mc',fMcFix,...
+            zdlg.AddEdit('fMcFix', 'Fixed Mc',fMcFix,...
                 'fixed magnitude of completeness (Mc)');
-            zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',fMccorr,...
+            zdlg.AddEdit('fMccorr', 'Mc correction for MaxC',fMccorr,...
                 'Correction term to be added to Mc');
             
             
@@ -76,19 +76,19 @@ classdef bcross < ZmapVGridFunction
         
         function SetValuesFromDialog(obj, res)
             % called when the dialog's OK button is pressed
-            hndl2=res.mc_choice;
-            dx = res.gridOpts.dx;
-            dd = res.gridOpts.dz;
-            tgl1 = res.eventSelector.UseNumNearbyEvents;
-            tgl2 = ~tgl1;
-            ni = res.eventSelector.NumNearbyEvents;
-            ra = res.eventSelector.RadiusKm;
-            Nmin = res.eventSelector.requiredNumEvents;
-            bGridEntireArea = res.gridOpts.GridEntireArea;
-            bBst_button = res.useBootstrap;
-            nBstSample = res.nBstSample;
-            fMccorr = res.fMccorr;
-            fBinning = res.fBinning;
+            obj.hndl2=res.mc_choice;
+            obj.dx = res.gridOpts.dx;
+            obj.dd = res.gridOpts.dz;
+            obj.tgl1 = res.eventSelector.UseNumNearbyEvents;
+            obj.tgl2 = ~tgl1;
+            obj.ni = res.eventSelector.NumNearbyEvents;
+            obj.ra = res.eventSelector.RadiusKm;
+            obj.Nmin = res.eventSelector.requiredNumEvents;
+            obj.bGridEntireArea = res.gridOpts.GridEntireArea;
+            obj.bBst_button = res.useBootstrap;
+            obj.nBstSample = res.nBstSample;
+            obj.fMccorr = res.fMccorr;
+            obj.fBinning = res.fBinning;
             
         end
         
@@ -296,22 +296,22 @@ function bcross_orig(sel)
     zdlg = ZmapDialog();
     %zdlg = ZmapDialog(obj, @obj.doIt);
     
-    zdlg.AddBasicHeader('Choose stuff');
+    zdlg.AddHeader('Choose stuff');
     zdlg.AddMcMethodDropdown('mc_choice');
-    zdlg.AddGridParameters('gridOpts',dx,'km',[],'',dd,'km');
-    zdlg.AddEventSelectionParameters('eventSelector',ni, ZG.ra,Nmin);
+    zdlg.AddGridSpacing('gridOpts',dx,'km',[],'',dd,'km');
+    zdlg.AddEventSelector('eventSelector',ni, ZG.ra,Nmin);
     
-    zdlg.AddBasicEdit('fBinning','Magnitude binning', fBinning,...
+    zdlg.AddEdit('fBinning','Magnitude binning', fBinning,...
         'Bins for magnitudes');
-    zdlg.AddBasicCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
+    zdlg.AddCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
         're takes longer, but provides more accurate results');
-    zdlg.AddBasicEdit('nBstSample','Number of bootstraps', nBstSample,...
+    zdlg.AddEdit('nBstSample','Number of bootstraps', nBstSample,...
         'Number of bootstraps to determine Mc');
-    zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', Nmin,...
+    zdlg.AddEdit('Nmin','Min. No. of events > Mc', Nmin,...
         'Min # events greater than magnitude of completeness (Mc)');
-    zdlg.AddBasicEdit('fMcFix', 'Fixed Mc',fMcFix,...
+    zdlg.AddEdit('fMcFix', 'Fixed Mc',fMcFix,...
         'fixed magnitude of completeness (Mc)');
-    zdlg.AddBasicEdit('fMccorr', 'Mc correction for MaxC',fMccorr,...
+    zdlg.AddEdit('fMccorr', 'Mc correction for MaxC',fMccorr,...
         'Correction term to be added to Mc');
     
     [res,okPressed] = zdlg.Create('b-Value X-section Grid Parameters');

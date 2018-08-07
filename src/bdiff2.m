@@ -84,25 +84,29 @@ classdef bdiff2
             if interactive
                 %% new dialog
                 zdlg = ZmapDialog();
-                zdlg.AddBasicHeader('Magnitude of Completness parameters');
+                zdlg.AddHeader('Magnitude of Completness parameters');
                 
                 zdlg.AddMcMethodDropdown('mc_method'); %this might supposed to be max likelihood instead
                 zdlg.AddMcAutoEstimateCheckbox('mc_auto');
-                zdlg.AddBasicEdit('fMccorr','Mc Correction',fMccorr,'Correction term for Magnitude of Completeness');
-                zdlg.AddBasicCheckbox('doBootstrap','Uncertainty by bootstrapping',false,{'nBstSample'},'tooltip');
-                zdlg.AddBasicEdit('nBstSample','Bootstraps',nBstSample,'Number of bootstraps used to estimate error');
-                zdlg.AddBasicCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',false,[],'tooltip');
+                zdlg.AddEdit('fMccorr',        'Mc Correction',                fMccorr,...
+                    'Correction term for Magnitude of Completeness');
+                zdlg.AddCheckbox('doBootstrap','Uncertainty by bootstrapping', false,{'nBstSample'},...
+                    'tooltip');
+                zdlg.AddEdit('nBstSample',     'Bootstraps',                   nBstSample,...
+                    'Number of bootstraps used to estimate error');
+                zdlg.AddCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',false,[],...
+                    'tooltip');
                 [obj.dlg_res, pressedOk] = zdlg.Create('Mc Input Parameter');
                 if ~pressedOk
                     return
                 end
             else
-                dlg_res.mc_method = McMethods.MaxCurvature;
-                dlg_res.fMccorr = fMccorr;
+                dlg_res.mc_method   = McMethods.MaxCurvature;
+                dlg_res.fMccorr     = fMccorr;
                 dlg_res.doBootstrap = false;
-                dlg_res.nBstSample = nBstSample;
+                dlg_res.nBstSample  = nBstSample;
                 dlg_res.doLinearityCheck = false;
-                obj.dlg_res = dlg_res;
+                obj.dlg_res         = dlg_res;
             end
             
             obj=obj.calculate(catalogFcn());

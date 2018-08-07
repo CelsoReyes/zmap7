@@ -63,12 +63,12 @@ classdef blank_ZmapFunction < ZmapFunction
             %  the result will be converted back to a datetime. etc.
             %
             % add items ex.  :
-            %  zdlg.AddBasicHeader  : add line of bold text to separate areas
-            %  zdlg.AddBasicPopup   : add popup that returns the # of chosen line
-            %  zdlg.AddBasicCheckbox : add checkbox that returns state, 
+            %  zdlg.AddHeader  : add line of bold text to separate areas
+            %  zdlg.AddPopup   : add popup that returns the # of chosen line
+            %  zdlg.AddCheckbox : add checkbox that returns state, 
             %                          and may affect other control's enable states
-            %  zdlg.AddBasicEdit : add basic edit field & edit field label combo
-            %  zdlg.AddEventSelectionParameters : add section that returns how grid points
+            %  zdlg.AddEdit : add basic edit field & edit field label combo
+            %  zdlg.AddEventSelector : add section that returns how grid points
             %                                     may be evaluated
            
             zdlg.Create('my dialog title')

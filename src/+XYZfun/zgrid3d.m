@@ -38,7 +38,7 @@ classdef zgrid3d < Zmap3DGridFunction
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             [res,okPressed] = zdlg.Create('3D Z-Value Parameters');
             if ~okPressed
                 return

@@ -71,16 +71,16 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             
             zdlg = ZmapDialog();
             
-            %zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
+            %zdlg.AddPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',McMethods.dropdownList(),double(McMethods.MaxCurvature),...
             %    'Choose the calculation method for Mc')
             
             % add fMaxRadius
-            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
-            zdlg.AddBasicEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
-            zdlg.AddBasicEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
-            zdlg.AddBasicEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
-            zdlg.AddBasicCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
-            zdlg.AddBasicEdit('Mmin','minMag', obj.minThreshMag, 'Minimum magnitude');
+            zdlg.AddEventSelector('evsel', obj.EventSelector);
+            zdlg.AddEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
+            zdlg.AddEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
+            zdlg.AddEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
+            zdlg.AddCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
+            zdlg.AddEdit('Mmin','minMag', obj.minThreshMag, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
             [res, okpressed]=zdlg.Create('relative rate change map');

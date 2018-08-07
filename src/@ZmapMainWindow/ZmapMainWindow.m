@@ -358,12 +358,12 @@ classdef ZmapMainWindow < handle
                 end
             end
             xsIndex = find(strcmp(obj.XSectionTitles, xsTitle));
-            zdlg.AddBasicPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
-            zdlg.AddEventSelectionParameters('evsel', ZG.ni, ZG.ra, 1);
-            zdlg.AddBasicEdit('x_km', 'Horiz Spacing [km]', 5, 'Distance along strike, in kilometers');
-            zdlg.AddBasicEdit('z_min', 'min Z [km]', z_min, 'Shallowest grid point');
-            zdlg.AddBasicEdit('z_max', 'max Z [km]', z_max, 'Deepest grid point, in kilometers');
-            zdlg.AddBasicEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
+            zdlg.AddPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
+            zdlg.AddEventSelector('evsel', ZG.ni, ZG.ra, 1);
+            zdlg.AddEdit('x_km', 'Horiz Spacing [km]', 5, 'Distance along strike, in kilometers');
+            zdlg.AddEdit('z_min', 'min Z [km]', z_min, 'Shallowest grid point');
+            zdlg.AddEdit('z_max', 'max Z [km]', z_max, 'Deepest grid point, in kilometers');
+            zdlg.AddEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
             [zans, okPressed] = zdlg.Create('Cross Section Sample parameters');
             if ~okPressed
                 zp = [];

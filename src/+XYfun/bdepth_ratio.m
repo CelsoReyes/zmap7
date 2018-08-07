@@ -61,14 +61,14 @@ classdef bdepth_ratio < ZmapHGridFunction
             zdlg=ZmapDialog([]);   
             zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',  obj.useAutoMcomp);
             zdlg.AddMcMethodDropdown('mc_choice',           obj.mc_choice);
-            zdlg.AddBasicHeader('Please define two Depth ranges to compare');
-            zdlg.AddBasicEdit('top_of_top','TOP zone ceiling [km]',obj.topzone_ceiling,'');
-            zdlg.AddBasicEdit('bottom_of_top','TOP zone floor [km]',obj.topzone_floor,'');
-            zdlg.AddBasicEdit('top_of_bottom','BOTTOM zone ceiling [km]',obj.bottomzone_ceiling,'');
-            zdlg.AddBasicEdit('bottom_of_bottom','BOTTOM zone floor [km]',obj.bottomzone_floor,'');
-            zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
+            zdlg.AddHeader('Please define two Depth ranges to compare');
+            zdlg.AddEdit('top_of_top','TOP zone ceiling [km]',         obj.topzone_ceiling,'');
+            zdlg.AddEdit('bottom_of_top','TOP zone floor [km]',        obj.topzone_floor,'');
+            zdlg.AddEdit('top_of_bottom','BOTTOM zone ceiling [km]',   obj.bottomzone_ceiling,'');
+            zdlg.AddEdit('bottom_of_bottom','BOTTOM zone floor [km]',  obj.bottomzone_floor,'');
+            zdlg.AddEdit('Nmin','Min. No. of events > Mc',             obj.Nmin,...
                 'Min # events greater than magnitude of completeness (Mc)');
-            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector)
+            zdlg.AddEventSelector('evsel',                       obj.EventSelector)
             [res,okPressed]=zdlg.Create('Depth Ratio Grid input parameters');
             if ~okPressed
                 return
@@ -80,14 +80,14 @@ classdef bdepth_ratio < ZmapHGridFunction
         end
         
         function SetValuesFromDialog(obj, res)
-            obj.useAutoMcomp=res.useAutoMcomp;
-            obj.mc_choice = res.mc_choice;
-            obj.topzone_ceiling = res.top_of_top;
-            obj.topzone_floor = res.bottom_of_top;
-            obj.bottomzone_ceiling = res.top_of_bottom;
-            obj.bottomzone_floor = res.bottom_of_bottom;
-            obj.Nmin=res.Nmin;
-            obj.EventSelector=res.evsel;
+            obj.useAutoMcomp        = res.useAutoMcomp;
+            obj.mc_choice           = res.mc_choice;
+            obj.topzone_ceiling     = res.top_of_top;
+            obj.topzone_floor       = res.bottom_of_top;
+            obj.bottomzone_ceiling  = res.top_of_bottom;
+            obj.bottomzone_floor    = res.bottom_of_bottom;
+            obj.Nmin                = res.Nmin;
+            obj.EventSelector       = res.evsel;
         end
         
         function CheckPreConditions(obj)

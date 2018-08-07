@@ -437,34 +437,34 @@ classdef XSection < handle
             prime='''';
             % dialog box to choose cross-section
             zdlg=ZmapDialog([]);
-            zdlg.AddBasicEdit('slicewidth_km','Width of slice [km]',default_width,...
+            zdlg.AddEdit('slicewidth_km','Width of slice [km]',default_width,...
                 'distance from slice for which to select events. 1/2 distance in either direction');
-            zdlg.AddBasicEdit('startlabel','start label', lastletter, ...
+            zdlg.AddEdit('startlabel','start label', lastletter, ...
                 'start label for map');
-            zdlg.AddBasicEdit('endlabel','end label', [lastletter prime],...
+            zdlg.AddEdit('endlabel','end label', [lastletter prime],...
                 'end label for map');
             cname = FancyColors.name(C);
             cname = FancyColors.colorize(cname,cname,'nohtml');
-            zdlg.AddBasicCheckbox('choosecolor',...
+            zdlg.AddCheckbox('choosecolor',...
                 sprintf('<html>change x-section color : <b>[%s]</b>',cname), false,{},...
                 'When checked, a color selection dialog will allow you to choose a different cross-section color');
             
             if ~exist('ptdetails','var')
-                zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
+                zdlg.AddPopup('chooser','Choose Points',{'choose start and end with mouse'},1,...
                     'no choice');
-                zdlg.AddBasicHeader('Start point:');
-                zdlg.AddBasicEdit('startx','x',nan,'Cross section starting point (x or lon)');
-                zdlg.AddBasicEdit('starty','y',nan,'Cross section starting point (y or lat)');
-                zdlg.AddBasicHeader('End point:');
-                zdlg.AddBasicEdit('endx','x',nan,'Cross section ending point (x or lon)');
-                zdlg.AddBasicEdit('endy','y',nan,'Cross section ending point (y or lat)');
+                zdlg.AddHeader('Start point:');
+                zdlg.AddEdit('startx','x',nan,'Cross section starting point (x or lon)');
+                zdlg.AddEdit('starty','y',nan,'Cross section starting point (y or lat)');
+                zdlg.AddHeader('End point:');
+                zdlg.AddEdit('endx','x',nan,'Cross section ending point (x or lon)');
+                zdlg.AddEdit('endy','y',nan,'Cross section ending point (y or lat)');
             else
-                zdlg.AddBasicHeader('Start point:');
-                zdlg.AddBasicEdit('startx','x',ptdetails.xy1(1),'Cross section starting point (x or lon)');
-                zdlg.AddBasicEdit('starty','y',ptdetails.xy1(2),'Cross section starting point (y or lat)');
-                zdlg.AddBasicHeader('End point:');
-                zdlg.AddBasicEdit('endx','x',ptdetails.xy2(1),'Cross section ending point (x or lon)');
-                zdlg.AddBasicEdit('endy','y',ptdetails.xy2(2),'Cross section ending point (y or lat)');
+                zdlg.AddHeader('Start point:');
+                zdlg.AddEdit('startx','x',ptdetails.xy1(1),'Cross section starting point (x or lon)');
+                zdlg.AddEdit('starty','y',ptdetails.xy1(2),'Cross section starting point (y or lat)');
+                zdlg.AddHeader('End point:');
+                zdlg.AddEdit('endx','x',ptdetails.xy2(1),'Cross section ending point (x or lon)');
+                zdlg.AddEdit('endy','y',ptdetails.xy2(2),'Cross section ending point (y or lat)');
             end
             
             

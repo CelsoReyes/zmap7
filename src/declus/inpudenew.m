@@ -58,10 +58,10 @@ function inpudenew(catalog)
         };
     
     zdlg = ZmapDialog([],@do_nothing);
-    zdlg.AddBasicHeader('Declustering parameters');
+    zdlg.AddHeader('Declustering parameters');
     for i=1:size(ctrl_params,1)
         params=ctrl_params(i,:);
-        zdlg.AddBasicEdit(params{IDX_TAG},params{IDX_LABEL}, params{IDX_VAL}, params{IDX_HELP});
+        zdlg.AddEdit(params{IDX_TAG},params{IDX_LABEL}, params{IDX_VAL}, params{IDX_HELP});
     end
     [vals, okpressed]=zdlg.Create('Declustering Parameters');
     if okpressed

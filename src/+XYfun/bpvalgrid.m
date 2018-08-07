@@ -62,18 +62,22 @@ classdef bpvalgrid < ZmapHGridFunction
             'Best (?) combination (Mc95 - Mc90 - max curvature)',...
             'Constant Mc'};
 
-            zdlg.AddBasicPopup('mc_choice', 'Magnitude of Completeness (Mc) method:',Mc_Methods,5,...
+            zdlg.AddPopup('mc_choice', 'Magnitude of Completeness (Mc) method:', Mc_Methods, 5,...
                 'Choose the calculation method for Mc');
             
             zdlg.AddMcAutoEstimateCheckbox('mc_auto',  obj.mc_auto);
             
-            zdlg.AddBasicEdit('c_val','omori c parameter', obj.valeg2,' input parameter (varying)');
-            zdlg.AddBasicCheckbox('use_const_c','fixed c', obj.CO<0, {'const_c'},'keep the Omori C parameter fixed');
-            zdlg.AddBasicEdit('const_c','omori c parameter', obj.valeg2, 'C-parameter parameter (fixed)');
-            zdlg.AddBasicEdit('minpe','min goodness %', obj.minpe, 'Minimum goodness of fit (percentage)');
+            zdlg.AddEdit('c_val',          'omori c parameter',    obj.valeg2,...
+                ' input parameter (varying)');
+            zdlg.AddCheckbox('use_const_c','fixed c',              obj.CO<0, {'const_c'},...
+                'keep the Omori C parameter fixed');
+            zdlg.AddEdit('const_c',        'omori c parameter',    obj.valeg2,...
+                'C-parameter parameter (fixed)');
+            zdlg.AddEdit('minpe',          'min goodness %',       obj.minpe,...
+                'Minimum goodness of fit (percentage)');
             
-            zdlg.AddEventSelectionParameters('evsel', obj.EventSelector);
-            % zdlg.AddBasicEdit('Mmin','minMag', nan, 'Minimum magnitude');
+            zdlg.AddEventSelector('evsel', obj.EventSelector);
+            % zdlg.AddEdit('Mmin','minMag', nan, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
             [res, okpressed]=zdlg.Create('B P val grid');

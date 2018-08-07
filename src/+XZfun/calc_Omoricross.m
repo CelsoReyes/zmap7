@@ -54,7 +54,7 @@
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             [res,okPressed] = zdlg.Create('Omori Parameters [xsec]');
             if ~okPressed
                 return

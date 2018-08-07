@@ -136,11 +136,11 @@ p2=ginput(1);
     
     % dialog box for parameters
     zdlg=ZmapDialog([]);
-    %zdlg.AddBasicEdit(tag,label,value,tooltip);
-    zdlg.AddBasicEdit('xsec_width_km','Cross section width [km]',ZG.xsec_defaults.WidthKm,'cross section width, km');
-    zdlg.AddBasicPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');
-    zdlg.AddBasicCheckbox('do_rotation','Rotate Cross Section', false, 'xsec_rotation_deg','Rotate Cross section');
-    zdlg.AddBasicEdit('xsec_rotation_deg','Rotation [deg]:',ZG.xsec_rotation_deg,'Rotate cross-section');
+    %zdlg.AddEdit(tag,label,value,tooltip);
+    zdlg.AddEdit('xsec_width_km','Cross section width [km]',ZG.xsec_defaults.WidthKm,'cross section width, km');
+    zdlg.AddPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');
+    zdlg.AddCheckbox('do_rotation','Rotate Cross Section', false, 'xsec_rotation_deg','Rotate Cross section');
+    zdlg.AddEdit('xsec_rotation_deg','Rotation [deg]:',ZG.xsec_rotation_deg,'Rotate cross-section');
     [result,okPressed]=zdlg.Create('Cross section parameters');
     if ~okPressed
         return

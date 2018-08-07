@@ -97,22 +97,22 @@ classdef bvalmapt < ZmapHGridFunction
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             zdlg.AddMcMethodDropdown('mc_choice');
             zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',obj.useAutoMcomp);
             
             
-            %zdlg.AddBasicEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
+            %zdlg.AddEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
             %    'Min # events greater than magnitude of completeness (Mc)');
             
-            zdlg.AddBasicEdit('periodA_start','Start Time A : ', obj.periodA_start, 'Start time for first period');
-            zdlg.AddBasicEdit('periodA_end','End Time A : ', obj.periodA_end, 'End time for first period');
-            zdlg.AddBasicEdit('periodB_start','Start Time B : ', obj.periodB_start, 'Start time for Second period');
-            zdlg.AddBasicEdit('periodB_end','End Time B :', obj.periodB_end, 'Start time for Second period');
-            zdlg.AddBasicEdit('ra', 'Constant radius [km]', obj.EventSelector.RadiusKm,...
+            zdlg.AddEdit('periodA_start','Start Time A : ', obj.periodA_start, 'Start time for first period');
+            zdlg.AddEdit('periodA_end','End Time A : ', obj.periodA_end, 'End time for first period');
+            zdlg.AddEdit('periodB_start','Start Time B : ', obj.periodB_start, 'Start time for Second period');
+            zdlg.AddEdit('periodB_end','End Time B :', obj.periodB_end, 'Start time for Second period');
+            zdlg.AddEdit('ra', 'Constant radius [km]', obj.EventSelector.RadiusKm,...
                 'Radius used in calculation');
-            % zdlg.AddEventSelectionParameters('evsel', obj.EventSelector); two items from this are used instead
-            zdlg.AddBasicEdit('minnu', 'Minimum number of events in each period:', ...
+            % zdlg.AddEventSelector('evsel', obj.EventSelector); two items from this are used instead
+            zdlg.AddEdit('minnu', 'Minimum number of events in each period:', ...
                 obj.EventSelector.requiredNumEvents,'');
             
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');

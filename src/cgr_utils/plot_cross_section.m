@@ -17,12 +17,12 @@ function [c2, zans] = plot_cross_section(catalog)
     
     % dialog box to choose cross-section
     zdlg=ZmapDialog([]);
-    zdlg.AddBasicEdit('slicewidth_km','Width of slice [km]',20,'distance from slice for which to select events. 1/2 distance in either direction');
-    zdlg.AddBasicEdit('startlabel','start label','A','start label for map');
-    zdlg.AddBasicEdit('endlabel','end label','A''','start label for map');
-    zdlg.AddBasicCheckbox('choosecolor','choose cross-section color [red]', false,{},...
+    zdlg.AddEdit('slicewidth_km','Width of slice [km]',20,'distance from slice for which to select events. 1/2 distance in either direction');
+    zdlg.AddEdit('startlabel','start label','A','start label for map');
+    zdlg.AddEdit('endlabel','end label','A''','start label for map');
+    zdlg.AddCheckbox('choosecolor','choose cross-section color [red]', false,{},...
                     'When checked, a color selection dialog will allow you to choose a different cross-section color');
-    zdlg.AddBasicPopup('chooser','Choose Points',{'choose start and end with mouse'},1,'no choice');
+    zdlg.AddPopup('chooser','Choose Points',{'choose start and end with mouse'},1,'no choice');
     zans=zdlg.Create('slicer');
     C = [1 0 0]; % color for cross-section
     if zans.choosecolor

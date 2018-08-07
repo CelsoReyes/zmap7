@@ -28,9 +28,9 @@ function symboledit_dlg(ax,field)
     symbs = get(lines,field);
         
     zdlg = ZmapDialog([]);
-    zdlg.AddBasicHeader(['Change ' field]);
+    zdlg.AddHeader(['Change ' field]);
     for n=1:numel(lines)
-        zdlg.AddBasicEdit(['field' num2str(n)],toshow{n},symbs{n},'');
+        zdlg.AddEdit(['field' num2str(n)],toshow{n},symbs{n},'');
     end
     [answer,pressedOk]=zdlg.Create(['Change ' field]);
     if ~pressedOk

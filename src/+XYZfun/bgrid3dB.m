@@ -58,12 +58,12 @@ classdef bgrid3dB < Zmap3DGridFunction
                 'Best (?) combination (Mc95 - Mc90 - max curvature)'};
             
             zdlg=ZmapDialog(); %h, okevent
-            zdlg.AddBasicHeader('Grid Input Parameters');
-            zdlg.AddBasicPopup('mc_choice','Mc Estimation Option:',labelList2,5,'Magnitude of completion option')
-            zdlg.AddEventSelectionParameters('evsel',ni,R,50);
-            zdlg.AddGridParameters('gridopt',.1,'deg',.1,'deg',5,'km')
-            zdlg.AddBasicEdit('minz','Shallowest Boundary [km]',min(ZG.primeCatalog.Depth),'Shallowest boundary');
-            zdlg.AddBasicEdit('maxz','Deepest Boundary [km]',max(ZG.primeCatalog.Depth),'Deepest boundary');
+            zdlg.AddHeader('Grid Input Parameters');
+            zdlg.AddPopup('mc_choice','Mc Estimation Option:',labelList2,5,'Magnitude of completion option')
+            zdlg.AddEventSelector('evsel',ni,R,50);
+            zdlg.AddGridSpacing('gridopt',.1,'deg',.1,'deg',5,'km')
+            zdlg.AddEdit('minz','Shallowest Boundary [km]',min(ZG.primeCatalog.Depth),'Shallowest boundary');
+            zdlg.AddEdit('maxz','Deepest Boundary [km]',max(ZG.primeCatalog.Depth),'Deepest boundary');
             [res, pressedOk]=zdlg.Create('b-value 3D Grid');
             if ~pressedOk
                 return

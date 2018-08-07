@@ -39,7 +39,7 @@ classdef bcrossV2 < ZmapVGridFunction
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             [res,okPressed] = zdlg.Create('B-Value Parameters [xsec]');
             if ~okPressed
                 return

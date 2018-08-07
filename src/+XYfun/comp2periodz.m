@@ -58,13 +58,13 @@ classdef comp2periodz < ZmapHGridFunction
             
             % get two time periods, along with grid and event parameters
             zdlg=ZmapDialog([]);
-            zdlg.AddBasicHeader('Please define two time periods to compare');
-            zdlg.AddBasicEdit('periodA_start','start period 1',obj.periodA_start,'start time for period 1');
-            zdlg.AddBasicEdit('periodA_end','end period 1',  obj.periodA_end,'end time for period 1');
-            zdlg.AddBasicEdit('periodB_start','start period 2',obj.periodB_start,'start time for period 2');
-            zdlg.AddBasicEdit('periodB_end','end period 2',  obj.periodB_end,'end time for period 2');
-            zdlg.AddBasicEdit('binsize','Bin Size (days)', obj.binsize,'number of days in each bin');
-            zdlg.AddEventSelectionParameters('eventsel',   obj.EventSelector);
+            zdlg.AddHeader('Please define two time periods to compare');
+            zdlg.AddEdit('periodA_start','start period 1',obj.periodA_start,'start time for period 1');
+            zdlg.AddEdit('periodA_end','end period 1',  obj.periodA_end,'end time for period 1');
+            zdlg.AddEdit('periodB_start','start period 2',obj.periodB_start,'start time for period 2');
+            zdlg.AddEdit('periodB_end','end period 2',  obj.periodB_end,'end time for period 2');
+            zdlg.AddEdit('binsize','Bin Size (days)', obj.binsize,'number of days in each bin');
+            zdlg.AddEventSelector('eventsel',   obj.EventSelector);
             [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
             if ~okPressed
                 return

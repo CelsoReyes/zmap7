@@ -43,9 +43,9 @@ classdef calc_across < ZmapVGridFunction
             %% make the interface
             zdlg = ZmapDialog();
             
-            zdlg.AddBasicHeader('Choose stuff');
+            zdlg.AddHeader('Choose stuff');
             zdlg.AddMcAutoEstimateCheckbox('mc_auto',obj.mc_auto);
-            zdlg.AddBasicPopup('aval_method','A-value calculation method',obj.aval_methods,1,...
+            zdlg.AddPopup('aval_method','A-value calculation method',obj.aval_methods,1,...
                 'methods used to calculate a value');
             [res,okPressed] = zdlg.Create('A-Value Parameters [xsec]');
             if ~okPressed

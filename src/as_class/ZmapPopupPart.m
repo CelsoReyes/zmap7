@@ -14,8 +14,8 @@ classdef ZmapPopupPart < ZmapDialogPart
     methods(Access=public)
         function obj=ZmapPopupPart(tag, label, choices, default, tooltip)
             
-            %AddBasicPopup represents a pop-up menu
-            % AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+            %AddPopup represents a pop-up menu
+            % AddPopup(obj,tag, label, choices, defaultChoice,tooltip)
             obj.tag=tag;
             obj.label=label;
             obj.choices=choices;

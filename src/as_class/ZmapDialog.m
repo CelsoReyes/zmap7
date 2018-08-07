@@ -13,13 +13,13 @@ classdef ZmapDialog < handle
     %   ZmapDialog - initialize a ZmapDialog
     %   Create - creates a dialog box based on a cell description of types within.
     %
-    %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
-    %   AddBasicEdit - add an edit bow with text label
-    %   AddBasicHeader - add a simple header to the dialog box
-    %   AddBasicPopup - add a popup menu to the dialog box
+    %   AddCheckbox - add a checkbox (has ability to enable/disable other UI elements
+    %   AddEdit - add an edit bow with text label
+    %   AddHeader - add a simple header to the dialog box
+    %   AddPopup - add a popup menu to the dialog box
     %   AddDurationEdit - add a duration editbox to dialog box.
-    %   AddEventSelectionParameters - add widget to choose between events in a radius, or closest events
-    %   AddGridParameters - add a GridParameterChoice editgroup to edit box. 
+    %   AddEventSelector - add widget to choose between events in a radius, or closest events
+    %   AddGridSpacing - add a GridParameterChoice editgroup to edit box. 
     %  
     %   AddMcMethodDropdown       - 
     %   AddMcAutoEstimateCheckbox
@@ -37,16 +37,16 @@ classdef ZmapDialog < handle
     % EXAMPLE USAGE IN A SCRIPT
     %
     %     zdlg = ZmapDialog();
-    %     zdlg.AddBasicHeader('Say something for each thing');
-    %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
+    %     zdlg.AddHeader('Say something for each thing');
+    %     zdlg.AddPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
     %         'Choose what is most important to you');
-    %     zdlg.AddBasicEdit('noiselevel','Noise level', 1,...
+    %     zdlg.AddEdit('noiselevel','Noise level', 1,...
     %         'how much noise should?');
-    %     zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
+    %     zdlg.AddCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
     %         'Should noise be applied to the data?');
-    %     zdlg.AddBasicCheckbox('cleverness','be clever', false,[],...
+    %     zdlg.AddCheckbox('cleverness','be clever', false,[],...
     %         'if checked, then plot is cleverly drawn');
-    %     zdlg.AddEventSelectionParameters('evtparams', 100, 5)
+    %     zdlg.AddEventSelector('evtparams', 100, 5)
     %     [myans,okpressed] = zdlg.Create('my example');
     %
     %         myans = 
@@ -76,17 +76,17 @@ classdef ZmapDialog < handle
     %   function interact(obj)
     %     zdlg = ZmapDialog(obj, @doit)
     %
-    %     zdlg.AddBasicHeader('Say something for each thing');
-    %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
+    %     zdlg.AddHeader('Say something for each thing');
+    %     zdlg.AddPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
     %                 'Choose what is most important to you');
-    %     zdlg.AddGridParameters('grid',0,'deg',3,'deg',5,'km');
-    %     zdlg.AddBasicEdit('noiselevel','Noise level', obj.noiselevel,...
+    %     zdlg.AddGridSpacing('grid',0,'deg',3,'deg',5,'km');
+    %     zdlg.AddEdit('noiselevel','Noise level', obj.noiselevel,...
     %                   'how much noise should?');
-    %     zdlg.AddBasicCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
+    %     zdlg.AddCheckbox('usenoise','use noise level', false,{'noiselevel','noiselevel_label'},...
     %                   'Should noise be applied to the data?');
-    %     zdlg.AddBasicCheckbox('cleverness','be clever', false,...
+    %     zdlg.AddCheckbox('cleverness','be clever', false,...
     %                   'if checked, then plot is cleverly drawn');
-    %     zdlg.AddEventSelectionParameters('evtparams', 100, 5)
+    %     zdlg.AddEventSelector('evtparams', 100, 5)
     %     zdlg.Create('my dialog title');
     %
     %   end
@@ -275,10 +275,10 @@ classdef ZmapDialog < handle
         end
         %} 
         
-        function AddBasicHeader(obj, String, varargin)
+        function AddHeader(obj, String, varargin)
             % add a simple header to the dialog box
-            % ADDBASICHEADER(text)
-            % ADDBASICHEADER(text, [Name, value]...) sets additional text parameters.
+            % ADDHEADER(text)
+            % ADDHEADER(text, [Name, value]...) sets additional text parameters.
             %  Name can be something like 'FontSize', 'FontWeight', etc.
             if ~ischar(String)
                 String = char(String);
@@ -300,17 +300,17 @@ classdef ZmapDialog < handle
             end
         end
         
-        function AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip, conversion_function)
-            %AddBasicPopup represents a pop-up menu
-            % AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+        function AddPopup(obj,tag, label, choices, defaultChoice,tooltip, conversion_function)
+            %AddPopup represents a pop-up menu
+            % AddPopup(obj,tag, label, choices, defaultChoice,tooltip)
             %
             % after the tooltip you can add (only) ONE of the following optional parameters:
             %
-            % AddBasicPopup(..., conversionFcn) where CONVERSIONFCN is a function that takes the 
+            % AddPopup(..., conversionFcn) where CONVERSIONFCN is a function that takes the 
             %      value (a number from 1 to the number of choices), representing the chosen value, 
             %      and returns something else.
             %
-            % AddBasicPopup(..., alternateValues)  where ALTERNATEVALUES is a CELL of values.
+            % AddPopup(..., alternateValues)  where ALTERNATEVALUES is a CELL of values.
             %      ALTERNATEVALUES{chosenvalue} will be returned
             
             if islogical(defaultChoice)
@@ -398,10 +398,10 @@ classdef ZmapDialog < handle
             end
          end
         
-        function AddBasicEdit(obj,tag, label, value, tooltip, conversion_function)
-            % AddBasicEdit adds an edit-box & text label combo
-            % AddBasicEdit(obj,tag, label, value,tooltip)
-            % AddBasicEdit(..., conversion_function)
+        function AddEdit(obj,tag, label, value, tooltip, conversion_function)
+            % AddEdit adds an edit-box & text label combo
+            % AddEdit(obj,tag, label, value,tooltip)
+            % AddEdit(..., conversion_function)
             
             assert(~isduration(value),'Use AddDurationEdit for durations');
             if ~exist('conversion_function','var') || isempty(conversion_function)
@@ -448,10 +448,10 @@ classdef ZmapDialog < handle
             end
         end
         
-        function AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip, conversion_function)
-            % AddBasicCheckbox adds a checkbox to the dialog box, returns checked state, converted to same class as isOn
-            % AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
-            % AddBasicCheckbox(..., conversion_function)
+        function AddCheckbox(obj,tag, String, isOn,dependentTags,tooltip, conversion_function)
+            % AddCheckbox adds a checkbox to the dialog box, returns checked state, converted to same class as isOn
+            % AddCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
+            % AddCheckbox(..., conversion_function)
             %
             % dependentTags will be enabled/disabled based on the value of this checkbox
             %convert to type, tag, label, defaultString, defaultValue, callback
@@ -485,9 +485,9 @@ classdef ZmapDialog < handle
             end
         end
         
-        function AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
+        function AddGridSpacing(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
             % Add a grid parameter widget to the box.
-            % AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
+            % AddGridSpacing(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
             % retrieved values will be found in a structure defined by GridParameterChoice.toStruct
             %
             % see also GridParameterChoice.toStruct
@@ -509,10 +509,10 @@ classdef ZmapDialog < handle
             end
         end
         
-        function AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
-            %AddEventSelectionParameters Choose between events in a radius, or closest N events
-            % AddEventSelectionParameters(obj, tag, EventSelectionStruct)
-            % AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
+        function AddEventSelector(obj, tag, ni, ra, minvalid)
+            %AddEventSelector Choose between events in a radius, or closest N events
+            % AddEventSelector(obj, tag, EventSelectionStruct)
+            % AddEventSelector(obj, tag, ni, ra, minvalid)
             % used to define how each grid point will select events
             %
             % returns structure defined by EventSelectionChoice.toStruct
@@ -559,7 +559,7 @@ classdef ZmapDialog < handle
             end
             
             % this adds a popup to the end of obj.parts
-            obj.AddBasicPopup(tag, 'Choose the calculation method for Mc',...
+            obj.AddPopup(tag, 'Choose the calculation method for Mc',...
                 McMethods.dropdownList(), double(mc_method),...
                 'Choose Magnitude of completion calculation method', @(h)McMethods(h.Value));
         end
@@ -575,7 +575,7 @@ classdef ZmapDialog < handle
             if ~exist('default','var') || isempty(default)
                 default =  ZmapGlobal.Data.UseAutoEstimate;
             end
-            obj.AddBasicCheckbox(tag, 'Automatically estimate magn. of completeness',...
+            obj.AddCheckbox(tag, 'Automatically estimate magn. of completeness',...
                 default, [],'Maximum likelihood - automatic magnitude of completeness', @McAutoEstimate);
         end
             
@@ -658,36 +658,36 @@ classdef ZmapDialog < handle
             
             zdlg = ZmapDialog();
             % simple header
-            zdlg.AddBasicHeader('I am a header');
+            zdlg.AddHeader('I am a header');
             
             % popup that provides three choices, and returns an alternate value based on your choice
             listValues = {'Eat','Drink','Be Merry'}
             altValues = {'Yum', 'glug glug', 'horray!'}
-            zdlg.AddBasicPopup('lifechoice',   'life choice',     listValues,2,'Which is most important?',        altValues);
+            zdlg.AddPopup('lifechoice',   'life choice',     listValues,2,'Which is most important?',        altValues);
             
             % edit box that gets a number, and returns a number
-            zdlg.AddBasicEdit( 'noiselevel',   'Noise level',      1.5,        'how much noise should there be?');
+            zdlg.AddEdit( 'noiselevel',   'Noise level',      1.5,        'how much noise should there be?');
             
             % checkbox that reuturns a logical value
-            zdlg.AddBasicCheckbox('usenoise',  'use noise level',  false,  {'noiselevel','noiselevel_label'},...
+            zdlg.AddCheckbox('usenoise',  'use noise level',  false,  {'noiselevel','noiselevel_label'},...
                 'Should noise be applied to the data?');
             
             % special-case  items
-            zdlg.AddEventSelectionParameters('evtparams', 100, 5);
-            zdlg.AddGridParameters('gridparams', 5 ,'km', 5,'km', 10,'km')
+            zdlg.AddEventSelector('evtparams', 100, 5);
+            zdlg.AddGridSpacing('gridparams', 5 ,'km', 5,'km', 10,'km')
             
             zdlg.AddMcMethodDropdown();  % reutrns a McMethod enumerator
             zdlg.AddMcAutoEstimateCheckbox(); %returns a McAutoEstimate enumerator
             
             % return an LSWeightingAutoEstimate enumerator from a checkbox
-            zdlg.AddBasicCheckbox('weighting',  'use weighting', LSWeightingAutoEstimate.auto, [],'usewttooltip',   @LSWeightingAutoEstimate)
+            zdlg.AddCheckbox('weighting',  'use weighting', LSWeightingAutoEstimate.auto, [],'usewttooltip',   @LSWeightingAutoEstimate)
  
             % ask for a duration. number interpretation is controlled by the provided function
             some_duration = days(.5);
             zdlg.AddDurationEdit('howlong',     'How long',      some_duration,                      'how long is it?', @hours)
             
             % ask for a datetime
-            zdlg.AddBasicEdit('when',           'when',          datetime,                        'when is it');
+            zdlg.AddEdit('when',           'when',          datetime,                        'when is it');
             [myans,okpressed] = zdlg.Create('my example');
             
            
