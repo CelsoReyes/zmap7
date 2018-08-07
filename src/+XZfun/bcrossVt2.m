@@ -93,7 +93,6 @@ classdef bcrossVt2 < ZmapVGridFunction
             else
                 % run this function without human interaction
                 obj.doIt();
-                %obj.CheckCatalogPreconditions();
                 %obj.Calculate();
                 %obj.plot();
                 %obj.ModifyGlobals();

@@ -90,10 +90,6 @@ classdef bdepth_ratio < ZmapHGridFunction
             obj.EventSelector       = res.evsel;
         end
         
-        function CheckPreConditions(obj)
-            assert(obj.topzone_ceiling < obj.topzone_floor, 'TOP ZONE: zone floor is above zone ceiling');
-            assert(obj.bottomzone_ceiling < obj.bottomzone_floor, 'BOTTOM ZONE: zone floor is above zone ceiling');
-        end
         
         function modifyGlobals(obj)
             obj.ZG.bvg = obj.Result.values;
@@ -101,6 +97,9 @@ classdef bdepth_ratio < ZmapHGridFunction
         
         function results=Calculate(obj)
             
+            assert(obj.topzone_ceiling < obj.topzone_floor, 'TOP ZONE: zone floor is above zone ceiling');
+            assert(obj.bottomzone_ceiling < obj.bottomzone_floor, 'BOTTOM ZONE: zone floor is above zone ceiling');
+
             %  make grid, calculate start- endtime etc.  ...
             %
             

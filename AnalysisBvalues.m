@@ -55,7 +55,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=nan;
                 obj.bobj=[];
             else
-                obj.bobj=bdiff2(catalog,false,'noplot');
+                obj.bobj=bdiff2(catalog,'AutoShowPlots',false);
                 x=obj.bobj.magsteps_desc;
                 y=obj.bobj.bvalsum3;
             end

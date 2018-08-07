@@ -76,11 +76,11 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             
             % add fMaxRadius
             zdlg.AddEventSelector('evsel', obj.EventSelector);
-            zdlg.AddEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
-            zdlg.AddEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
-            zdlg.AddEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
-            zdlg.AddCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
-            zdlg.AddEdit('Mmin','minMag', obj.minThreshMag, 'Minimum magnitude');
+            zdlg.AddEdit(        'boot_samp',   '# boot loops',           obj.bootloops,  'number of bootstraps');
+            zdlg.AddDurationEdit('forec_period','forecast period',        obj.timef,      'forecast period', @days);
+            zdlg.AddDurationEdit('learn_period','learn period',           obj.time,       'learning period', @days);
+            zdlg.AddCheckbox(    'addtofig',    'plot in current figure', obj.addtofig,[],'plot in the current figure');
+            zdlg.AddEdit(        'Mmin',        'minMag',                 obj.minThreshMag, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
             
             [res, okpressed]=zdlg.Create('relative rate change map');
@@ -99,17 +99,11 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
 %             ra=selOpt.ra;
 %             dx=gridOpt.dx;
 %             dy=gridOpt.dy;
-            obj.bootloops = res.boot_samp;
-            if ~isduration(res.forec_period)
-                res.forec_period=days(res.forec_period);
-            end
-            obj.timef = res.forec_period;
-            if ~isduration(res.learn_period)
-                res.learn_period=days(res.learn_period);
-            end
-            obj.time = res.learn_period;
+            obj.bootloops   = res.boot_samp;
+            obj.timef       = res.forec_period;
+            obj.time        = res.learn_period;
             obj.EventSelector = res.evsel;
-            obj.minThreshMag=res.Mmin
+            obj.minThreshMag = res.Mmin;
             %oldfig_button=oldfig_button.Value;
         end
 

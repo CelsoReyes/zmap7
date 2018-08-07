@@ -31,6 +31,7 @@ p2=ginput(1);
     [c2, gcDist, zans] = plot_cross_section_from_mainmap; %was select_xsection();
     disp(c2)
     return
+    
     ZG=ZmapGlobal.Data;
     report_this_filefun();
     %
@@ -123,11 +124,15 @@ p2=ginput(1);
         lc_event(well(:,2),well(:,1),'dk')
     end
     %}
-    labelList={'Select an option',...
-        'Select Endpoints by Mouse',...
+    labelList={'Select Endpoints by Mouse',...
         'Coordinate Input',...
         'Multiple segments',...
         'Rotate X-Section'};
+    funList = { @do_nlammap2,... select endpoints by mouse
+                @posinpu,...    coordinate input
+                @musec,...      multiple segments
+                @rotateit};     % rotate cross-section
+            
     labelPos = [.05 .00 .40 .06];
     
     tmp1=ZG.primeCatalog.Latitude';
@@ -138,7 +143,8 @@ p2=ginput(1);
     zdlg=ZmapDialog([]);
     %zdlg.AddEdit(tag,label,value,tooltip);
     zdlg.AddEdit('xsec_width_km','Cross section width [km]',ZG.xsec_defaults.WidthKm,'cross section width, km');
-    zdlg.AddPopup('uic','Selection Method:',labelList,1,'Select an option for choosing cross section');
+    zdlg.AddPopup('uic',         'Selection Method:',labelList,1,...
+        'Select an option for choosing cross section', funlist);
     zdlg.AddCheckbox('do_rotation','Rotate Cross Section', false, 'xsec_rotation_deg','Rotate Cross section');
     zdlg.AddEdit('xsec_rotation_deg','Rotation [deg]:',ZG.xsec_rotation_deg,'Rotate cross-section');
     [result,okPressed]=zdlg.Create('Cross section parameters');
@@ -148,25 +154,11 @@ p2=ginput(1);
     ZG.xsec_defaults.WidthKm = result.xsec_width_km;
     ZG.xsec_rotation_deg = result.xsec_rotation_deg;
     
-    select_xsection();
+    result.uic(); 
     
-    function select_xsection()%(mysrc,myevt)
-        
-        in2=result.uic;
-        %in2=uic.Value;
-        switch in2
-            case 2
-                [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm);
-                nlammap2; %select endpoints by mouse
-            case 3
-                posinpu; % coordinate input
-            case 4
-                musec; % multiple segments
-            case 5
-                rotateit; % rotate cross-section
-            otherwise
-                error('unknown option');
-        end
+    function do_nlammap2()
+        [xsecx xsecy,  inde] = mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm);
+        nlammap2;
     end
     
 end

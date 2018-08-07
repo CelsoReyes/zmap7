@@ -95,27 +95,27 @@ classdef magrcros < ZmapVGridFunction
             default_unit = find(obj.unit_options == "days");
             unitizer = obj.unit_functions{default_unit};
             
-            zdlg.AddCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end,'fixed_start',...
+            zdlg.AddCheckbox('use_fixed_start', 'Fix StartTime', obj.use_fixed_end, 'fixed_start',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddEdit('fixed_start','Start time',obj.periodA_start,...
+            zdlg.AddEdit('fixed_start',         'Start time',    obj.periodA_start,...
                 'window size in specified units');
            
             
-            zdlg.AddCheckbox('use_fixed_end', 'Fix EndTime', obj.use_fixed_start,'fixed_end',...
+            zdlg.AddCheckbox('use_fixed_end',   'Fix EndTime',  obj.use_fixed_start, 'fixed_end',...
                 'Otherwise, the StartTime will depend on the catalog');
             
-            zdlg.AddEdit('fixed_end','End time',obj.periodB_end,...
+            zdlg.AddEdit('fixed_end',           'End time',     obj.periodB_end,...
+                'end time');
+            
+            zdlg.AddEdit('cutoff','Please enter date & time of cut:', obj.cutoff, 'Cutoff Date as yyyy-mm-dd hh:MM:ss');
+            
+            zdlg.AddEdit('win_dur',             'Window Size',  unitizer(obj.window_duration),...
                 'window size in specified units');
             
-            zdlg.AddEdit('cutoff','Please enter date & time of cut:',obj.cutoff,'Cutoff Date as yyyy-mm-dd hh:MM:ss');
-            
-            zdlg.AddEdit('win_dur','Window Size',unitizer(obj.window_duration),...
-                'window size in specified units');
-            
-            zdlg.AddPopup('win_dur_unit','Window Size Units:',obj.unit_options, default_unit,...
+            zdlg.AddPopup('win_dur_unit', 'Window Size Units:', obj.unit_options,   default_unit,...
                 'Chooose units for window duration');
-            zdlg.AddEdit('n_bins_in_window','Number of bins within window',...
+            zdlg.AddEdit('n_bins_in_window',    'Number of bins within window',...
                 round(obj.window_duration/obj.ZG.bin_dur),...
                 'Number of windows used to divide up the window [INTEGER]. this determines the bin size');
             
@@ -160,14 +160,6 @@ classdef magrcros < ZmapVGridFunction
             end
         end
         
-        function CheckPreConditions(obj)
-            assert(obj.cutoff > obj.periodA_start && obj.cutoff < obj.periodB_end,...
-                'Cutoff date should be some time after %s and before %s', char(obj.periodA_start), char(obj.periodB_end));
-            assert(obj.periodA_start < obj.periodB_end,'Invalid dates: Start date is after End date');
-            assert (obj.cutoff + obj.window_duration > obj.periodB_end,...
-                'window extends past end date. Manually set end date or change window');
-        end
-        
         function Calculate(obj)
             
             % this is how to get a xsection grid from ZmapMainWindow (aa is handle to window)
@@ -175,6 +167,13 @@ classdef magrcros < ZmapVGridFunction
             % gr = xsz.Grid.MaskWithShape(aa.shape)
             % and the above should already be pulled into the object.
       
+            assert(obj.cutoff > obj.periodA_start && obj.cutoff < obj.periodB_end,...
+                'Cutoff date should be some time after %s and before %s', char(obj.periodA_start), char(obj.periodB_end));
+            assert(obj.periodA_start < obj.periodB_end,'Invalid dates: Start date is after End date');
+            assert (obj.cutoff + obj.window_duration > obj.periodB_end,...
+                'window extends past end date. Manually set end date or change window');
+
+
             edges_for_cov = unique([obj.cutoff : - obj.bin_dur : obj.periodA_start, obj.cutoff : obj.bin_dur : obj.periodB_end]);
             
             obj.gridCalculations(@calculation_function);

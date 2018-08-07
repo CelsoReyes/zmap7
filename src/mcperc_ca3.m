@@ -1,6 +1,8 @@
 function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes) 
     % MCPERC_CA3
     %
+    % TO FIX: WHAT MAKES THIS SPECIAL?  doesn't calc_Mc do this? what is this method, specifically!
+    %
     % MCPERC_CA3(catalog)
     % returns:
     %     [Mc, Mc90, Mc95, magco, prf]

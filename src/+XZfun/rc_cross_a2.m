@@ -68,8 +68,8 @@ classdef rc_cross_a2 < ZmapVGridFunction
             % add fMaxRadius
             zdlg.AddEventSelector('evsel', obj.EventSelector)
             zdlg.AddEdit('boot_samp','# boot loops', obj.bootloops,' number of bootstraps');
-            zdlg.AddEdit('forec_period','forecast period [days]', obj.timef, 'forecast period [days]');
-            zdlg.AddEdit('learn_period','learn period [days]', obj.time, 'learning period [days]');
+            zdlg.AddDurationEdit('forec_period','forecast period', obj.timef, 'forecast period', @days);
+            zdlg.AddDurationEdit('learn_period','learn period', obj.time, 'learning period', @days);
             zdlg.AddCheckbox('addtofig','plot in current figure', obj.addtofig,[],'plot in the current figure');
             % zdlg.AddEdit('Mmin','minMag', nan, 'Minimum magnitude');
             % FIXME min number of events should be the number > Mc
@@ -91,8 +91,8 @@ classdef rc_cross_a2 < ZmapVGridFunction
 %             dx=gridOpt.dx;
 %             dy=gridOpt.dy;
             obj.bootloops = res.boot_samp;
-            obj.timef = days(res.forec_period);
-            obj.time = days(res.learn_period);
+            obj.timef = res.forec_period;
+            obj.time = res.learn_period;
             obj.EventSelector=res.evsel;
             
             %oldfig_button=oldfig_button.Value;
@@ -104,7 +104,6 @@ classdef rc_cross_a2 < ZmapVGridFunction
         function results = Calculate(obj)
             % ...
                 
-            % check preconditions
             assert(ensure_mainshock(),'No mainshock was defined')
             
             % cut catalog at mainshock time:

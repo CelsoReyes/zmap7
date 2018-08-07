@@ -59,12 +59,12 @@ classdef comp2periodz < ZmapHGridFunction
             % get two time periods, along with grid and event parameters
             zdlg=ZmapDialog([]);
             zdlg.AddHeader('Please define two time periods to compare');
-            zdlg.AddEdit('periodA_start','start period 1',obj.periodA_start,'start time for period 1');
-            zdlg.AddEdit('periodA_end','end period 1',  obj.periodA_end,'end time for period 1');
-            zdlg.AddEdit('periodB_start','start period 2',obj.periodB_start,'start time for period 2');
-            zdlg.AddEdit('periodB_end','end period 2',  obj.periodB_end,'end time for period 2');
-            zdlg.AddEdit('binsize','Bin Size (days)', obj.binsize,'number of days in each bin');
-            zdlg.AddEventSelector('eventsel',   obj.EventSelector);
+            zdlg.AddEdit('periodA_start','start period 1',  obj.periodA_start,'start time for period 1');
+            zdlg.AddEdit('periodA_end',  'end period 1',    obj.periodA_end,'end time for period 1');
+            zdlg.AddEdit('periodB_start','start period 2',  obj.periodB_start,'start time for period 2');
+            zdlg.AddEdit('periodB_end',  'end period 2',    obj.periodB_end,'end time for period 2');
+            zdlg.AddDurationEdit('binsize','Bin Size',      obj.binsize,'number of days in each bin',@days);
+            zdlg.AddEventSelector('eventsel',               obj.EventSelector);
             [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
             if ~okPressed
                 return
@@ -76,21 +76,18 @@ classdef comp2periodz < ZmapHGridFunction
         end
         
         function SetValuesFromDialog(obj, res)
-            obj.periodA_start=res.periodA_start;
-            obj.periodA_end=res.periodA_end;
-            obj.periodB_start=res.periodB_start;
-            obj.periodB_end=res.periodB_end;
-            obj.binsize=days(res.binsize);
-            obj.EventSelector=res.eventsel;
+            obj.periodA_start   = res.periodA_start;
+            obj.periodA_end     = res.periodA_end;
+            obj.periodB_start   = res.periodB_start;
+            obj.periodB_end     = res.periodB_end;
+            obj.binsize         = res.binsize;
+            obj.EventSelector = res.eventsel;
         end
-        
-        function CheckPreConditions(obj)
-            assert(obj.periodA_start < obj.periodA_end,'Period 1 starts before it ends');
-            assert(obj.periodB_start < obj.periodB_end,'Period 2 starts before it ends');
-        end
-        
         
         function results=Calculate(obj)
+            
+            assert(obj.periodA_start < obj.periodA_end,'Period 1 starts before it ends');
+            assert(obj.periodB_start < obj.periodB_end,'Period 2 starts before it ends');
             
             %  make grid, calculate start- endtime etc.  ...
             

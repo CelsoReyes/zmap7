@@ -37,8 +37,6 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     % Free Software Foundation, Inc.,
     % 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
     
-    % report_this_filefun();
-    
     % Magnitude binning
     if ~exist('binInterval', 'var') || isempty(binInterval)
         binInterval = 0.1;

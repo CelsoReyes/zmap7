@@ -661,20 +661,20 @@ classdef ZmapDialog < handle
             zdlg.AddHeader('I am a header');
             
             % popup that provides three choices, and returns an alternate value based on your choice
-            listValues = {'Eat','Drink','Be Merry'}
-            altValues = {'Yum', 'glug glug', 'horray!'}
-            zdlg.AddPopup('lifechoice',   'life choice',     listValues,2,'Which is most important?',        altValues);
+            listValues = {'Eat','Drink','Be Merry'};
+            altValues = {'Yum', 'glug glug', 'horray!'};
+            zdlg.AddPopup('lifechoice',   'life choice',     listValues, 2, 'Which is most important?',  altValues);
             
             % edit box that gets a number, and returns a number
-            zdlg.AddEdit( 'noiselevel',   'Noise level',      1.5,        'how much noise should there be?');
+            zdlg.AddEdit( 'noiselevel',   'Noise level',      1.5,          'how much noise should there be?');
             
             % checkbox that reuturns a logical value
-            zdlg.AddCheckbox('usenoise',  'use noise level',  false,  {'noiselevel','noiselevel_label'},...
+            zdlg.AddCheckbox('usenoise',  'use noise level',  false,        {'noiselevel','noiselevel_label'},...
                 'Should noise be applied to the data?');
             
             % special-case  items
             zdlg.AddEventSelector('evtparams', 100, 5);
-            zdlg.AddGridSpacing('gridparams', 5 ,'km', 5,'km', 10,'km')
+            zdlg.AddGridSpacing('gridparams', 5 ,'km', 5,'km', 10,'km');
             
             zdlg.AddMcMethodDropdown();  % reutrns a McMethod enumerator
             zdlg.AddMcAutoEstimateCheckbox(); %returns a McAutoEstimate enumerator
