@@ -97,7 +97,7 @@ classdef bdiff2
                     return
                 end
             else
-                dlg_res.mc_method = double(McMethods.MaxCurvature);
+                dlg_res.mc_method = McMethods.MaxCurvature;
                 dlg_res.fMccorr = fMccorr;
                 dlg_res.doBootstrap = false;
                 dlg_res.nBstSample = nBstSample;

@@ -2,7 +2,7 @@ classdef bvalgrid < ZmapHGridFunction
     % CGR_BVALGRID Generate a B-value grid
     
     properties
-        Nmin                            = 50    % minimum number of earthquakes
+        Nmin          (1,1) double      = 50    % minimum number of earthquakes
         % fMcFix                        = 1.0   % 2.2
         nBstSample                      = 100   % number of bootstrap samples
         useBootstrap  logical           = false  % perform bootstrapping?

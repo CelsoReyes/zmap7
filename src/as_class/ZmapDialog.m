@@ -3,22 +3,26 @@ classdef ZmapDialog < handle
     %
     % ZmapDialog properties:
     %
-    %   hCaller - handle to the caller. Values are written to hCaller.(tag) upon OK
+    %   hCaller          - handle to the caller. Values are written to hCaller.(tag) upon OK
     %   callerOKFunction - to be run once values are copied back to caller and dialog disappears
-    %   hDialog - handle to the dialog box
-    %   parts - ui details go here
-    %   okPressed - true when the dialog box's OK button was pressed
+    %   hDialog          - handle to the dialog box
+    %   okPressed        - true when the dialog box's OK button was pressed
     %
     % ZmapDialog methods:
     %
     %   ZmapDialog - initialize a ZmapDialog
     %   Create - creates a dialog box based on a cell description of types within.
     %
+    %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
+    %   AddBasicEdit - add an edit bow with text label
     %   AddBasicHeader - add a simple header to the dialog box
     %   AddBasicPopup - add a popup menu to the dialog box
-    %   AddBasicEdit - add an edit bow with text label
-    %   AddBasicCheckbox - add a checkbox (has ability to enable/disable other UI elements
+    %   AddDurationEdit - add a duration editbox to dialog box.
     %   AddEventSelectionParameters - add widget to choose between events in a radius, or closest events
+    %   AddGridParameters - add a GridParameterChoice editgroup to edit box. 
+    %  
+    %   AddMcMethodDropdown       - 
+    %   AddMcAutoEstimateCheckbox
     %
     %   addOKButton - (added automatically)
     %   addCancelButton - (added automatically)
@@ -31,6 +35,7 @@ classdef ZmapDialog < handle
     %
     % can be called in 2 ways.
     % EXAMPLE USAGE IN A SCRIPT
+    %
     %     zdlg = ZmapDialog();
     %     zdlg.AddBasicHeader('Say something for each thing');
     %     zdlg.AddBasicPopup('lifechoice','life choice',{'Eat','Drink','Be Merry'},2,...
@@ -93,14 +98,60 @@ classdef ZmapDialog < handle
     %  end % methods
     
     properties
-        hCaller; % handle to the caller. Values are written to hCaller.(tag) upon OK
-        callerOKFunction=[]; % to be run once values are copied back to caller and dialog disappears
-        hDialog; % handle to the dialog box
-        parts={}; % ui details go here
-        okPressed logical = false;
+        hCaller;                                   % handle to the caller. Values are written to hCaller.(tag) upon OK
+        callerOKFunction            = @do_nothing; % to be run once values are copied back to caller and dialog disappears
+        hDialog;                                   % handle to the dialog box
+        okPressed       logical     = false;
+    end
+    
+    properties(Constant)
+        buttonSpace = 60;   % space left over for button placement
+        rowH        = 35;   % height of each item in a row
+        
+        dlgW        = 330;  % width of entire dialog
+        labelX      = 10;
+        labelW      = 150;
+        
+        editX       = ZmapDialog.labelX + ZmapDialog.labelW + 20;
+        editW       = ZmapDialog.dlgW   - ZmapDialog.editX  - 15;
+    end
+    
+    properties(Hidden)
+        % these one-off issues need to be reconsidered. t
+        hasGrid         logical     = false;
+        didGrid         logical     = false;
+        gridHeight                  = GridParameterChoice.GROUPHEIGHT;
+        
+        hasEvSel        logical     = false;
+        didEvSel        logical     = false;
+        evSelHeight                 = EventSelectionChoice.GROUPHEIGHT;
+    end
+    
+    properties(SetAccess=private)
+        parts                       = struct([]); % ui details go in fields CreatorFcn, Tag, Style, and Handle
+        partIdx                     = 0;  % current part, used when creating the dialog box
+    end
+    
+    properties(Dependent)
+        dlgH
+        labelY
     end
     
     methods
+        
+        function h = get.dlgH(obj)
+             h = (numel(obj.parts)+1) * obj.rowH + obj.buttonSpace ...
+                + obj.hasGrid *  obj.gridHeight...
+                + obj.hasEvSel * obj.evSelHeight;
+        end
+        
+        function y = get.labelY(obj) 
+            % get y for current part
+            y = obj.dlgH - obj.rowH * (obj.partIdx + 1) ...
+                - obj.didGrid * obj.gridHeight ...
+                - obj.didEvSel * obj.evSelHeight;
+        end
+        
         function obj=ZmapDialog(hCaller,okevent)
             % initialize a ZmapDialog
             % hCaller is the handle to the calling Function.
@@ -128,149 +179,36 @@ classdef ZmapDialog < handle
             % Create creates a dialog box based on a cell description of types within.
             % [results,okPressed]=Create(obj, dlgTitle)
             obj.okPressed=false;
-            assert(~isempty(obj.parts),'Dialog cannot be created unless there are parts to add to it');
-            hasGrid=false;
-            hasEvSel=false;
-            for n=1:numel(obj.parts)
-                hasGrid= hasGrid || obj.parts{n}.Style == "gridparameterbox";   
-                hasEvSel= hasEvSel || obj.parts{n}.Style == "eventselectparameterbox"; 
-            end
-            %hasGridGroup=any(strcmp(inFields(:,1),'gridparameterbox'));
-            didGrid=false;
-            didEvSel=false;
+            assert(~isempty(obj.parts),'An empty Dialog cannot be created');
             
-            nFields=numel(obj.parts);
-            buttonSpace=60;
-            rowH=35;
-            dlgH=(nFields+1) * rowH + buttonSpace ...
-                + hasGrid * GridParameterChoice.GROUPHEIGHT ...
-                + hasEvSel * EventSelectionChoice.GROUPHEIGHT;
-            
-            dlgW=330;
-            
-            labelX=10;
-            labelW=150;
-            labelY=@(n,didGridParam,didEvSelParam) dlgH - rowH*(n+1) ...
-                - didGridParam * GridParameterChoice.GROUPHEIGHT ...
-                - didEvSelParam * EventSelectionChoice.GROUPHEIGHT;
-            
-            editX = labelX+labelW +20;
-            editW = dlgW - editX - 15;
+            % reset these values
+            obj.didGrid  = false;
+            obj.didEvSel = false;
             
             setOnCompletion={}; % uicontrols that require further setting after all items created
             
-            
             obj.hDialog=figure('Name',dlgTitle,...
                 'MenuBar', 'none',...
-                'InnerPosition',position_in_current_monitor(dlgW , dlgH),...
+                'InnerPosition', position_in_current_monitor(obj.dlgW , obj.dlgH),...
                 'NumberTitle','off'...
                 );
             
-            for i=1:nFields
-                details=obj.parts{i};
+            for i = 1 : numel(obj.parts)
+                obj.partIdx = i;
+                details=obj.parts(obj.partIdx);
                 switch lower(details.Style)
-                    case 'gridparameterbox'
-                        didGrid=true;
-                        obj.parts{i}.handle = GridParameterChoice(obj.hDialog,details.Tag,...
-                            [labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10],...
-                            details.dx, details.dy, details.dz);
-                        
-                    case 'eventselectparameterbox'
-                        didEvSel=true;
-                        pos=[labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10];
-                        if isfield(details,'fulldetails')
-                            obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
-                                pos, details.fulldetails);
-                        else
-                            obj.parts{i}.handle = EventSelectionChoice(obj.hDialog,details.Tag,...
-                                pos, details.maxnum, details.maxrad, details.minvalid);
-                        end
-                        
-                    case 'header'
-                        obj.parts{i}.handle=uicontrol('Style','text',...
-                            'String',[details.String, ' : '],...
-                            'FontWeight','bold',...
-                            'Position',[labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10]);
-                    case 'radiogroup'
-                        
-                        %details={'Style','Tag','Label','RadioLabels','SelectedNumber','tooltips'};
-                        obj.parts{i}.handle=uibuttongroup(details.GroupLabel);
-                        for k=1:numel(details.RadioLablels)
-                            hh(k)=uicontrol('Style','Radio',...
-                                'String',details.RadioLabels{k},...
-                                'pos',[10 350 100 30],...
-                                'parent',obj.parts{i}.handle,...
-                                'ToolTipString',details.tooltips{k},...
-                                'HandleVisibility','off');
-                        end
-                        %obj.parts{i}.handle.SelectionChangeFcn = 'disp selectionChanged';
-                        obj.parts{i}.handle.SelectedObject = hh(details.SelectedNumber);
-                        obj.parts{i}.handle.Visible = 'on';
                     case 'checkbox'
-                        obj.parts{i}.handle=uicontrol('Style','checkbox',...
-                            'Value',details.Value,...
-                            'String',details.String,...
-                            'Callback',details.Callback,...
-                            'Tag',details.Tag,...
-                            'ToolTipString',details.ToolTipString,...
-                            'Position',[labelX labelY(i,didGrid,didEvSel) dlgW-labelX rowH-10]);
-                        if ~isempty(details.Callback)
+                        obj.parts(obj.partIdx).Handle = details.CreatorFcn();
+                        if ~isempty(obj.parts(obj.partIdx).Handle.Callback)
                             setOnCompletion=[setOnCompletion; {details.Tag}];
                         end
-                    case 'popupmenu'
-                        uicontrol('Style','text',...
-                            'String',[details.Label, ' : '],...
-                            'HorizontalAlignment','right',...
-                            'Position',[labelX labelY(i,didGrid,didEvSel) labelW-50 rowH-10]);
-                        obj.parts{i}.handle=uicontrol('Style','popupmenu',...
-                            'Value',details.Value,...
-                            'String',details.String,...
-                            'Callback',details.Callback,...
-                            'Tag',details.Tag,...
-                            'ToolTipString',details.ToolTipString,...
-                            'Position',[editX-50 labelY(i,didGrid,didEvSel) editW+50 rowH-10]);
-                    case 'edit'
-                        uicontrol('Style','text',...
-                            'String',[details.Label, ' : '],...
-                            'HorizontalAlignment','right',...
-                            'Position',[labelX labelY(i,didGrid,didEvSel) labelW rowH-10],...
-                            'ToolTipString',details.ToolTipString,...
-                            'Tag',[details.Tag '_label']);
-                        
-                        % this handles special cases, such as durations and datetime
-                        
-                        [userData, mystr] = value2String(details.ClassName, details.Label, details.Value);
-                        
-                        try
-                        obj.parts{i}.handle=uicontrol('Style','edit',...
-                            'Value',details.Value,...
-                            'String',mystr,...
-                            'Callback',details.Callback,...
-                            'Tag',details.Tag,...
-                            'UserData',userData,...
-                            'ToolTipString',details.ToolTipString,...
-                            'Position',[editX labelY(i,didGrid,didEvSel) editW rowH-10]);
-                        catch
-                            %messy way.  should check for datetime
-                        obj.parts{i}.handle=uicontrol('Style','edit',...
-                            'String',mystr,...
-                            'Callback',details.Callback,...
-                            'Tag',details.Tag,...
-                            'UserData',userData,...
-                            'ToolTipString',details.ToolTipString,...
-                            'Position',[editX labelY(i,didGrid,didEvSel) editW rowH-10]);
-                        end
-                        if isempty(userData)
-                            details.Callback(obj.parts{i}.handle);
-                        end
-                        
                     otherwise
-                        error('unknown control');
+                        obj.parts(obj.partIdx).Handle = details.CreatorFcn();
                 end
             end
             
-            obj.addCancelButton([dlgW-80 10 70 buttonSpace/2]);
-            obj.addOKButton([dlgW-160 10 70 buttonSpace/2]);
+            obj.addCancelButton([obj.dlgW-80 10 70 obj.buttonSpace/2]);
+            obj.addOKButton([obj.dlgW-160 10 70 obj.buttonSpace/2]);
             
             % checkboxes may have callbacks that affect other uicontrols' Enable status.
             % now that all uicontrols have been created, disable/enable as dictated by the
@@ -295,86 +233,225 @@ classdef ZmapDialog < handle
         
         %% methods to declare uicontrols
         
-        function AddRadioGroup(obj, tag, grouplabel, radiolabels, default, tooltips)
-            % AddRadioGroup
+        %{
+        function AddRadioGroup(obj, tag, grouplabel, radiolabels, default, tooltips, conversion_function)
+            % AddRadioGroup returns Tag of selected radio buttion in the group
             % ADDRADIOGROUP(obj, tag, grouplabel, radiolabels, default tooltips)
+            % ADDRADIOGROUP(..., conversionFcn)
+            % 
+            % TOFIX: implementing this would require that heights be reconsidered.
             
-            details=struct(...
-                'Style','radiogroup',...
-                'Tag',tag,...
-                'Label',grouplabel,...
-                'RadioLabels',radiolabels,...
-                'SelectedNumber',default,...
-                'tooltips',tooltips);
-                
+            if ~exist('conversion_function','var') || isempty(conversion_function)
+                conversion_function = @(x)x;
+            elseif ischar(conversion_function) || isstring(conversion_function)
+                conversion_function = str2func(conversion_function);
+            end
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style            = 'radiogroup';
+            obj.parts(idx).CreatorFcn       =  @createRadioGroup;
+            obj.parts(idx).ConversionFcn    =  @(h)conversion_function(h.SelectedObject.Tag);
+            obj.parts(idx).Tag              = tag;
+            
+            function h = createRadioGroup()
+                n=numel(radiolabels);
+                h = uibuttongroup('Title',grouplabel, 'Tag', tag,...
+                    ...'Visible','off',...
+                    'Units','pixels','Position',...
+                    [obj.labelX obj.labelY obj.dlgW - 2*obj.labelX (obj.rowH-10) .* (n+1)]);
+                vspace = 1/n;
+                for k=1:numel(radiolabels)
+                    ip = vspace * k - (vspace/3);
+                    hh(k)=uicontrol('Style','Radio',...
+                        'String',radiolabels{k},...
+                        'Parent',h,...
+                        'ToolTipString',tooltips{k});
+                    hh(k).Units='normalized';
+                    hh(k).Position(2) = 1-ip;
+                    hh(k).Position(3) = .9;
+                end
+                h.SelectedObject = hh(default);
+                h.Visible = 'on';
+            end
         end
-        function AddBasicHeader(obj, String)
+        %} 
+        
+        function AddBasicHeader(obj, String, varargin)
             % add a simple header to the dialog box
             % ADDBASICHEADER(text)
+            % ADDBASICHEADER(text, [Name, value]...) sets additional text parameters.
+            %  Name can be something like 'FontSize', 'FontWeight', etc.
             if ~ischar(String)
                 String = char(String);
             end
+
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'header';
+            obj.parts(idx).CreatorFcn   =  @createHeader;
+            obj.parts(idx).Tag          = '';
             
-            details=struct(...
-                'Style','header',...
-                'Tag','',...
-                'String',String);
-            obj.parts(end+1)={details};
+            function h = createHeader()
+                h = uicontrol('Style','text',...
+                    'String',[String, ' : '],...
+                    'FontWeight','bold',...
+                    'Position',[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
+                if ~isempty(varargin)
+                    set(h,varargin{:});
+                end
+            end
         end
         
-        function AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+        function AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip, conversion_function)
             %AddBasicPopup represents a pop-up menu
             % AddBasicPopup(obj,tag, label, choices, defaultChoice,tooltip)
+            %
+            % after the tooltip you can add (only) ONE of the following optional parameters:
+            %
+            % AddBasicPopup(..., conversionFcn) where CONVERSIONFCN is a function that takes the 
+            %      value (a number from 1 to the number of choices), representing the chosen value, 
+            %      and returns something else.
+            %
+            % AddBasicPopup(..., alternateValues)  where ALTERNATEVALUES is a CELL of values.
+            %      ALTERNATEVALUES{chosenvalue} will be returned
+            
             if islogical(defaultChoice)
                 assert(numel(defaultChoice)==numel(choices))
                 assert(sum(defaultChoice)==1)
                 defaultChoice = find(defaultChoice);
             end
             assert(defaultChoice <= numel(choices) && defaultChoice > 0,'%d out of %d choices',defaultChoice,choices)
-            details=struct(...
-                'Style','popupmenu',...
-                'Tag',tag,...
-                'Label',label,...
-                'String',{choices},...
-                'Value',defaultChoice,...
-                'Callback',[],...
-                'ToolTipString',tooltip);
-            obj.parts(end+1)={details};
-        end
-        
-        function AddBasicEdit(obj,tag, label, value,tooltip)
-            % AddBasicEdit adds an edit-box & text label combo
-            % AddBasicEdit(obj,tag, label, value,tooltip)
-            %
-            % callback is determined by the value's type
-            if isnumeric(value)
-                % put num2str(value) into String
-                callback=@cb_str2numeric;
-                
-            elseif isduration(value)
-                callback=@cb_str2duration;
-            elseif isdatetime(value)
-                callback=@cb_str2datetime;
-            elseif ischar(value)
-                callback=@cb_str2str;
+
+            if iscell(conversion_function) && numel(conversion_function) == numel(choices)
+                alternateValues = conversion_function;
+                conversion_function = @(h) h.UserData{h.Value};
             else
-                callback=str2func(['cb_str2', class(value)]);
+                alternateValues = [];
             end
             
-            details=struct(...
-                'Style','edit',...
-                'Tag',tag,...
-                'Label',label,...
-                'ClassName',class(value),...
-                'Value',value,...
-                'Callback',callback,...
-                'ToolTipString',tooltip);
-            obj.parts(end+1)={details};
+            if ~exist('conversion_function','var') || isempty(conversion_function)
+                conversion_function = @(x)x;
+                conversion_function = @(h)conversion_function(h.Value);
+            elseif ischar(conversion_function)|| isstring(conversion_function)
+                conversion_function = str2func(conversion_function);
+                conversion_function = @(h)conversion_function(h.Value);
+            end
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style            = 'popupmenu';
+            obj.parts(idx).CreatorFcn       =  @createPopup;
+            obj.parts(idx).ConversionFcn    =  conversion_function;
+            obj.parts(idx).Tag              = tag;
+            
+            function h = createPopup()
+                % label for popup
+                uicontrol('Style','text',...
+                    'String',[label, ' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW-50 obj.rowH-10],...
+                    'Tag',[tag '_label']);
+                % popup box
+                h = uicontrol('Style','popupmenu',...
+                    'Value',defaultChoice,...
+                    'String',choices,...
+                    'Callback',[],...
+                    'Tag',tag,...
+                    'ToolTipString',tooltip,...
+                    'UserData', alternateValues,...
+                    'Position',[obj.editX-50 obj.labelY obj.editW+50 obj.rowH-10]);
+            end
         end
         
-        function AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
-            % AddBasicCheckbox adds a checkbox to the dialog box
+        function AddDurationEdit(obj,tag, label, value, tooltip, conversion_function)
+            % AddDurationEdit adds an edit-box & text label combo
+            % AddDurationEdit(obj,tag, label, value,tooltip, conversion_function)
+            % where conversion_function is usually one of @years, @days, @hours, @minutes, @seconds
+            
+            if isduration(value)
+                value = conversion_function(value);
+            end
+            assert(isnumeric(value));
+            
+            if ~exist('conversion_function','var') || isempty(conversion_function)
+                % conversion_function = callback;
+                conversion_function = str2func(class(value));
+            elseif ischar(conversion_function) || isstring(conversion_function)
+                conversion_function = str2func(conversion_function);
+            end
+            
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'durationedit';
+            obj.parts(idx).CreatorFcn   =  @createEdit;
+            obj.parts(idx).ConversionFcn = @(h)conversion_function(double(string(h.String)));
+            obj.parts(idx).Tag          = tag;
+            
+            function h = createEdit()
+                uicontrol('Style','text',...
+                    'String',[label, ' [',func2str(conversion_function), '] : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'ToolTipString',tooltip,...
+                    'Tag',[tag '_label']);
+                
+                h = uicontrol('Style','edit',...
+                    'String',string(value),...
+                    'Tag',tag,...
+                    'ToolTipString',tooltip,...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+            end
+         end
+        
+        function AddBasicEdit(obj,tag, label, value, tooltip, conversion_function)
+            % AddBasicEdit adds an edit-box & text label combo
+            % AddBasicEdit(obj,tag, label, value,tooltip)
+            % AddBasicEdit(..., conversion_function)
+            
+            assert(~isduration(value),'Use AddDurationEdit for durations');
+            if ~exist('conversion_function','var') || isempty(conversion_function)
+                % conversion_function = callback;
+                if isnumeric(value)
+                    conversion_function = @(v)double(string(v));
+                else
+                    conversion_function = str2func(class(value));
+                end
+            elseif ischar(conversion_function)|| isstring(conversion_function)
+                conversion_function = str2func(conversion_function);
+            end
+            
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'edit';
+            obj.parts(idx).CreatorFcn   =  @createEdit;
+            obj.parts(idx).ConversionFcn = @(h)conversion_function(h.String);
+            obj.parts(idx).Tag          = tag;
+            
+            function h = createEdit()
+                uicontrol('Style','text',...
+                    'String',[label, ' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'ToolTipString',tooltip,...
+                    'Tag',[tag '_label']);
+                
+                switch class(value)
+                    case 'datetime'
+                        mystr=string(value,'uuuu-MM-dd hh:mm:ss');
+                        
+                    otherwise
+                        mystr=string(value);
+                        if ismissing(mystr)
+                            mystr='';
+                        end
+                end
+                
+                h = uicontrol('Style','edit',...
+                    'String',mystr,...
+                    'Tag',tag,...
+                    'ToolTipString',tooltip,...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+            end
+        end
+        
+        function AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip, conversion_function)
+            % AddBasicCheckbox adds a checkbox to the dialog box, returns checked state, converted to same class as isOn
             % AddBasicCheckbox(obj,tag, String, isOn,dependentTags,tooltip)
+            % AddBasicCheckbox(..., conversion_function)
             %
             % dependentTags will be enabled/disabled based on the value of this checkbox
             %convert to type, tag, label, defaultString, defaultValue, callback
@@ -384,41 +461,52 @@ classdef ZmapDialog < handle
             else
                 cb=[];
             end
-            details=struct(...
-                'Style','checkbox',...
-                'Tag',tag,...
-                'String',String,...
-                'Value',isOn,...
-                'Callback',cb,...
-                'ToolTipString',tooltip);
-            obj.parts(end+1)={details};
+            
+            if ~exist('conversion_function','var') || isempty(conversion_function)
+                conversion_function = str2func(class(isOn));
+            elseif ischar(conversion_function)
+                conversion_function = str2func(conversion_function);
+            end
+                
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'checkbox';
+            obj.parts(idx).CreatorFcn   =  @createCheckbox;
+            obj.parts(idx).ConversionFcn = @(h)conversion_function(h.Value);
+            obj.parts(idx).Tag          = tag;
+            
+            function h = createCheckbox()
+                h = uicontrol('Style','checkbox',...
+                    'Value', logical(isOn),...
+                    'String', String,...
+                    'Callback', cb,...
+                    'Tag', tag,...
+                    'ToolTipString', tooltip,...
+                    'Position',[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
+            end
         end
         
         function AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
             % Add a grid parameter widget to the box.
             % AddGridParameters(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
-            % retrieved values will be found in a structure
-            % tag.dx
-            % tag.dy
-            % tag.dz
-            % tag.dx_units
-            % tag.dy_units
-            % tag.dz_units,
-            % tag.gridEntireArea
-            % tag.SaveGrid
-            % tag.LoadGrid
-            % tag.CreateGrid
+            % retrieved values will be found in a structure defined by GridParameterChoice.toStruct
             %
-            % see also GridParameterChoice
+            % see also GridParameterChoice.toStruct
+            assert (~obj.hasGrid,'Dialog box already has an grid parameter section');
+            obj.hasGrid = true;
+
             
-            details=struct(...
-                'Style','gridparameterbox',...
-                'Tag',tag,...
-                'dx',{{dx, dxunits}},...
-                'dy',{{dy, dyunits}},...
-                'dz',{{dz, dzunits}});
-            obj.parts(end+1)={details};
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'gridparameterbox';
+            obj.parts(idx).CreatorFcn   =  @createGridParameters;
+            obj.parts(idx).ConversionFcn    =  @toStruct;
+            obj.parts(idx).Tag          = tag;
             
+            function h = createGridParameters()
+                        obj.didGrid = true;
+                        pos = [obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10];
+                        h = GridParameterChoice(...
+                            obj.hDialog, tag, pos, {dx, dxunits}, {dy, dyunits}, {dz, dzunits});
+            end
         end
         
         function AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
@@ -427,31 +515,30 @@ classdef ZmapDialog < handle
             % AddEventSelectionParameters(obj, tag, ni, ra, minvalid)
             % used to define how each grid point will select events
             %
-            % returns structure
-            % tag.numNearbyEvent
-            % tag.RadiusKm
-            % tag.useNumNearbyEvent
-            % tag.UseEventsInRadius
-            % tag.requiredNumEvents
-            % tag.maxRadiusKm
+            % returns structure defined by EventSelectionChoice.toStruct
             %
             % see also EventSelectionChoice, EventSelectionChoice.toStruct
+            assert (~obj.hasEvSel,'Dialog box already has an event selection section');
+            obj.hasEvSel = true;
             if ~exist('minvalid','var')
                 minvalid=0;
             end
-            if isa(ni,'struct')
-                details=struct('Style','eventselectparameterbox',...
-                'Tag',tag,...
-                'fulldetails',ni);
-            else
-            details=struct(...
-                'Style','eventselectparameterbox',...
-                'Tag',tag,...
-                'maxnum',ni,...
-                'maxrad',ra,...
-                'minvalid',minvalid);
+
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'eventselectparameterbox';
+            obj.parts(idx).CreatorFcn   =  @createEvSel;
+            obj.parts(idx).ConversionFcn    =  @toStruct;
+            obj.parts(idx).Tag          = tag;
+            
+            function h = createEvSel()
+                obj.didEvSel=true;
+                pos=[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10];
+                if isa(ni,'struct')
+                    h = EventSelectionChoice(obj.hDialog, tag, pos, ni);
+                else
+                    h = EventSelectionChoice(obj.hDialog, tag, pos, ni, ra, minvalid);
+                end
             end
-            obj.parts(end+1)={details};
         end
         
         %% uicontrol parts
@@ -471,9 +558,10 @@ classdef ZmapDialog < handle
                 assert(isa(mc_method,'McMethods'),'method must be either empty or an McMethods enum');
             end
             
+            % this adds a popup to the end of obj.parts
             obj.AddBasicPopup(tag, 'Choose the calculation method for Mc',...
                 McMethods.dropdownList(), double(mc_method),...
-                'Choose Magnitude of completion calculation method');
+                'Choose Magnitude of completion calculation method', @(h)McMethods(h.Value));
         end
         
         function AddMcAutoEstimateCheckbox(obj, tag, default)
@@ -488,7 +576,7 @@ classdef ZmapDialog < handle
                 default =  ZmapGlobal.Data.UseAutoEstimate;
             end
             obj.AddBasicCheckbox(tag, 'Automatically estimate magn. of completeness',...
-                default, [],'Maximum likelihood - automatic magnitude of completeness');
+                default, [],'Maximum likelihood - automatic magnitude of completeness', @McAutoEstimate);
         end
             
         % if there are other COMMONLY used button behaviors, perhaps they
@@ -535,25 +623,20 @@ classdef ZmapDialog < handle
             % copy values back to caller hCaller, using tags as reference.
             obj.okPressed=true;
             for n=1:numel(obj.parts)
-                tag=obj.parts{n}.Tag;
-                h = obj.parts{n}.handle;
+                me  = obj.parts(n);
+                h   = me.Handle;
+                tag = me.Tag;
+                
+                disp([me.Style,  ' : ',  tag]);
+                
                 if ~isempty(tag) && (~isprop(obj.hCaller,tag) && ~isstruct(obj.hCaller))
                     warning('unable to assign value back to caller because the property %s does not exist',tag);
                 end
-                switch obj.parts{n}.Style
-                    case 'header'
-                        % ignore
-                    case 'gridparameterbox'
-                        obj.hCaller.(tag)=h.toStruct();
-                    case 'eventselectparameterbox'
-                        obj.hCaller.(tag)=h.toStruct();
-                    otherwise
-                        if ~isempty(h.UserData)
-                            obj.hCaller.(tag)=h.UserData;
-                        else
-                            obj.hCaller.(tag)=h.Value;
-                        end
+                if isempty(tag) % not meant to be analyzed
+                    continue
                 end
+                
+                obj.hCaller.(tag) = me.ConversionFcn(h);
             end
             close(obj.hDialog);
             
@@ -569,74 +652,48 @@ classdef ZmapDialog < handle
         end
     end
     
-end
-
-%% helper functions
-
-function [userData, mystr] = value2String(className, label, value)
-    userData=[]; % used when interpreting durations
-    switch className
-        case 'datetime'
-            mystr=string(value,'uuuu-MM-dd hh:mm:ss');
-        case 'duration'
-            if contains(lower(label),{'year','yr'})
-                userData=1;
-                mystr=years(value);
-            elseif contains(lower(label),'day')
-                userData=3;
-                mystr=days(value);
-            elseif contains(lower(label),{'hr','hour'})
-                userData=4;
-                mystr=hours(value);
-            elseif contains(lower(label),'min')
-                userData=5;
-                mystr=minutes(value);
-            elseif contains(lower(label),'sec')
-                userData=6;
-                mystr=seconds(value);
-            else
-                error('label for a duration field must contain some indication of the units')
-            end
-        otherwise
-            mystr=string(value);
-            if ismissing(mystr)
-                mystr='';
-            end
+    methods(Static)
+        function [myans, okpressed] = simpletest()
+            % simple test of each type of item
+            
+            zdlg = ZmapDialog();
+            % simple header
+            zdlg.AddBasicHeader('I am a header');
+            
+            % popup that provides three choices, and returns an alternate value based on your choice
+            listValues = {'Eat','Drink','Be Merry'}
+            altValues = {'Yum', 'glug glug', 'horray!'}
+            zdlg.AddBasicPopup('lifechoice',   'life choice',     listValues,2,'Which is most important?',        altValues);
+            
+            % edit box that gets a number, and returns a number
+            zdlg.AddBasicEdit( 'noiselevel',   'Noise level',      1.5,        'how much noise should there be?');
+            
+            % checkbox that reuturns a logical value
+            zdlg.AddBasicCheckbox('usenoise',  'use noise level',  false,  {'noiselevel','noiselevel_label'},...
+                'Should noise be applied to the data?');
+            
+            % special-case  items
+            zdlg.AddEventSelectionParameters('evtparams', 100, 5);
+            zdlg.AddGridParameters('gridparams', 5 ,'km', 5,'km', 10,'km')
+            
+            zdlg.AddMcMethodDropdown();  % reutrns a McMethod enumerator
+            zdlg.AddMcAutoEstimateCheckbox(); %returns a McAutoEstimate enumerator
+            
+            % return an LSWeightingAutoEstimate enumerator from a checkbox
+            zdlg.AddBasicCheckbox('weighting',  'use weighting', LSWeightingAutoEstimate.auto, [],'usewttooltip',   @LSWeightingAutoEstimate)
+ 
+            % ask for a duration. number interpretation is controlled by the provided function
+            some_duration = days(.5);
+            zdlg.AddDurationEdit('howlong',     'How long',      some_duration,                      'how long is it?', @hours)
+            
+            % ask for a datetime
+            zdlg.AddBasicEdit('when',           'when',          datetime,                        'when is it');
+            [myans,okpressed] = zdlg.Create('my example');
+            
+           
+        end 
     end
 end
 
-%% callbacks
-function cb_str2numeric(src,~)
-    % default callback that updates value for a string
-    src.Value=str2double(src.String);
-    src.UserData=src.Value;
-end
-
-function cb_str2datetime(src,~)
-    src.UserData=datetime(src.String);
-end
-
-function cb_str2duration(src,~)
-    % value encodes the original type
-    % 1 year, 3 day, 4 hour, 5 minute, 6 second
-    % (
-    persistent getduration
-    if isempty(getduration)
-        getduration = {... to be indexed by type
-            @(s) years(str2double(s.String)); ...   1 : years
-            @(s) error('not a known function');...  2 : months (not applicable
-            @(s) days(str2double(s.String));...     3 : days
-            @(s) hours(str2double(s.String));...    4 : hours
-            @(s) minutes(str2double(s.String));...  5 : minutes
-            @(s) seconds(str2double(s.String)) ...  6 : seconds
-            };
-    end
-    
-    src.UserData = getduration{src.Value}(src);
-end
-
-function cb_str2str(src,~)
-    src.UserData=src.String; % duplicates data, but makes retrieval easy
-end
 
 
