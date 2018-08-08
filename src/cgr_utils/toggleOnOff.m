@@ -3,7 +3,7 @@ function A = toggleOnOff(A)
     %
     % A = TOGGLEONOFF(B) if B is 'on', then A is 'off' and vice-versa.
     curState=matlab.lang.OnOffSwitchState(A);
-    if ison(curState)
+    if curState
         A='off';
     else
         A='on';

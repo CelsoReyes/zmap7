@@ -196,7 +196,7 @@ classdef(Abstract) ZmapFunction < handle
         function saveToDesktop(obj)
             % SAVETODESKTOP saves results to desktop
             vname = matlab.lang.makeValidName([class(obj),'_result']);
-            assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
+            %assert(~isfield(obj.Result,'FunctionCall'), 'FunctionCall is a reserved field in the results');
             obj.Result.FunctionCall = obj.FunctionCall;
            
             obj.Result.InCatalogName = obj.RawCatalog.Name; %was OperatingCatalog

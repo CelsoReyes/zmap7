@@ -30,7 +30,7 @@ function catalog=memorize_recall_catalog(catalog)
         % no arguments
         if ~hasMemorized
             warning('no catalogs are already memorized');
-            c=[];
+            catalog=[];
         else
             catalog=copy(ZG.memorized_catalogs);
             replaceMainCatalog(ZG.memorized_catalogs);

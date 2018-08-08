@@ -96,10 +96,14 @@ function catalog_menu(obj, force)
         MenuSelectedField(),@(~,~)inpudenew(obj.catalog))
     
     function cb_recall(~,~)
-        obj.rawcatalog=memorize_recall_catalog();
-        [obj.mshape,obj.mdate]=obj.filter_catalog();
-        obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
-        obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
+        try
+            obj.rawcatalog=memorize_recall_catalog();
+            [obj.mshape,obj.mdate]=obj.filter_catalog();
+            obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
+            obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
+        catch ME
+            warning(ME.message);
+        end
     end
     
     function cb_memorize(~,~)

@@ -393,19 +393,19 @@ classdef bdiff2 < ZmapFunction
             
             ax.YScale='log';
             ax.NextPlot='add';
-            obj.updatePlottedCumSum(ax);
+            obj.updatePlottedCumSum();
             
-            obj.updatePlottedDiscreteValues(ax);
+            obj.updatePlottedDiscreteValues();
             % CALCULATE the diff in cum sum from the previous bin
            
-            obj.updatePlottedMc(ax);
-            obj.updatePlottedBvalLine(ax);
+            obj.updatePlottedMc();
+            obj.updatePlottedBvalLine();
             
             ax.XLim=obj.myXLim;
             ax.YLim=obj.myYLim;
             
             tx = obj.descriptive_text(gBdiff);
-            
+            delete(findobj(ax,'Tag','bvaltext'));
             if is_standalone % unique figure, go ahead,
                 rect=[0 0 1 1];
                 h2=axes('position',rect);
@@ -439,15 +439,17 @@ classdef bdiff2 < ZmapFunction
                 obj.create_my_menu(c);
                 ax.UIContextMenu=c;
             end
-            uimenu(ax.UIContextMenu,'Separator','on',...
-                'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
+            if isempty(findobj(ax.UIContextMenu.Children,'Label','info'))
+                uimenu(ax.UIContextMenu,'Separator','on',...
+                    'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
+            end
         end
         
-        function updatePlottedCumSum(obj,ax)
+        function updatePlottedCumSum(obj)
             % plot the cum. sum in each bin
-            h = findobj(ax,'Tag',obj.tags.cumevents);
+            h = findobj(obj.ax,'Tag',obj.tags.cumevents);
             if isempty(h)
-                h = scatter(ax,obj.mag_bin_centers, obj.cum_b_values);
+                h = scatter(obj.ax,obj.mag_bin_centers, obj.cum_b_values);
                 set(h, obj.plotProps.CumSum);
             else
                 h.XData=obj.mag_bin_centers;
@@ -455,11 +457,11 @@ classdef bdiff2 < ZmapFunction
             end
         end
         
-        function updatePlottedDiscreteValues(obj,ax)
+        function updatePlottedDiscreteValues(obj)
             % plot discrete values
-            hdv = findobj(ax,'Tag',obj.tags.discrete);
+            hdv = findobj(obj.ax,'Tag',obj.tags.discrete);
             if isempty(hdv)
-                hdv = scatter(ax,obj.mag_bin_centers, obj.binnedEvents_reverse);
+                hdv = scatter(obj.ax,obj.mag_bin_centers, obj.binnedEvents_reverse);
                 set(hdv, obj.plotProps.Discrete);
             else
                 hdv.XData=obj.mag_bin_centers;
@@ -467,18 +469,23 @@ classdef bdiff2 < ZmapFunction
             end
         end  
             
-        function updatePlottedMc(obj, ax)
+        function updatePlottedMc(obj)
             
             % Marks the point of Mc
             mcText = sprintf('%s: %0.1f','Mc',obj.Result.Mc_value);
             idx_low = obj.Result.index_low;
+            if ~isnan(idx_low)
             markerX = obj.mag_bin_centers(idx_low);
             markerY = obj.cum_b_values(idx_low) * 1.5;
+            else
+                markerX = nan;
+                markerY = nan;
+            end
             textX = markerX + 0.2;
             
-            hMc=findobj(ax,'Tag',obj.tags.mc);
+            hMc=findobj(obj.ax,'Tag',obj.tags.mc);
             if isempty(hMc)
-                hMc = line(ax, markerX, markerY,'DisplayName',mcText);
+                hMc = line(obj.ax, markerX, markerY,'DisplayName',mcText);
                 set(hMc, obj.plotProps.Mc);
             else
                 hMc.XData=markerX;
@@ -486,10 +493,10 @@ classdef bdiff2 < ZmapFunction
                 hMc.DisplayName=mcText;
             end
             
-            hMcText=findobj(ax,'Tag',obj.tags.mctext);
+            hMcText=findobj(obj.ax,'Tag',obj.tags.mctext);
             
             if isempty(hMcText)
-                hMcText = text(ax,textX, markerY, mcText);
+                hMcText = text(obj.ax,textX, markerY, mcText);
                 set(hMcText, obj.plotProps.McText);
             else
                 hMcText.Position([1 2])=[textX, markerY];
@@ -499,19 +506,19 @@ classdef bdiff2 < ZmapFunction
                 
         end
         
-        function  updatePlottedBvalLine(obj,ax)
+        function  updatePlottedBvalLine(obj)
             % plot line corresponding to B value
             %bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',obj.b_value, obj.b_value_std, obj.a_value, obj.a_value_annual);
-            bvl = findobj(ax,'Tag',obj.tags.linearfit);
+            bvl = findobj(obj.ax,'Tag',obj.tags.linearfit);
             if isempty(bvl)
-                line(ax, obj.Result.mag_zone, obj.fitted, obj.plotProps.BvalFit);
+                line(obj.ax, obj.Result.mag_zone, obj.fitted, obj.plotProps.BvalFit);
             else
                 bvl.XData = obj.Result.mag_zone;
                 bvl.YData = obj.fitted;
                 % bvl.DisplayName=bvdispname;
             end
             
-            set(findobj(ax,'Tag','bvaltext'), 'String', obj.descriptive_text());
+            set(findobj(obj.ax,'Tag','bvaltext'), 'String', obj.descriptive_text());
         end
         
         
@@ -551,6 +558,7 @@ classdef bdiff2 < ZmapFunction
             uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalogFcn});
             uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
             uimenu(c,'Label','Save values to file',MenuSelectedField(),@simple_save_cb);
+            uimenu(c,'Label','Modify Parameters for this calculation',MenuSelectedField(),@(~,~)obj.InteractiveSetup);
             addAboutMenuItem();
             
             function catalog = catalogFcn()
