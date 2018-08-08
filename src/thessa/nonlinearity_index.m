@@ -136,7 +136,7 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
         bestmc=nan;
         bestb=nan;
         disp('not enough events to calculate b')
-        
+        return
     end
     
     % determine magnitude range in catalog from Mcmin to Mmax

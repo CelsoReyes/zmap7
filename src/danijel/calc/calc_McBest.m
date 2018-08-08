@@ -2,7 +2,7 @@ function [fMc, fMc95, fMc90] = calc_McBest(magnitudes, binInterval)
     % CALC_MCBEST calculate best Magnitude of Completion
     % [fMc, fMc95, fMc90] = calc_McBest(magnitudes, binInterval)
     
-    report_this_filefun();
+    % report_this_filefun();
     
     % Magnitude increment
     if ~exist('binInterval','var')

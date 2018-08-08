@@ -220,7 +220,7 @@ classdef bdiff2 < ZmapFunction
             obj.doIt()
         end
         
-        function obj = Calculate(obj)
+        function results = Calculate(obj)
             global gBdiff % contains b1, n1, b2, n2
             obj.Result(1).magco = NaN; % have to assign SOMETHING to the first item of struct when that struct is empty
             
@@ -254,7 +254,9 @@ classdef bdiff2 < ZmapFunction
             %
             % calculates max likelihood b value(bvml) && WLS(bvls)
             %
-            
+            if obj.useBootstrapping && obj.mc_method == McMethod.McDueB_Bootstrap
+                warning('This could take a while. McDueB_Bootstrap doesn''t play well with other bootstrap parameters');
+            end
             
             if catalog.Count >= obj.Nmin
                 % Added to obtain goodness-of-fit to powerlaw value
@@ -277,10 +279,11 @@ classdef bdiff2 < ZmapFunction
                             calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.mc_method, obj.Nmin, obj.fMccorr);
                     end
                 else
-                    [fStd_Mc, b_value, b_value_std, a_value] = NaN;
+                    [fStd_Mc, b_value, b_value_std, a_value] = deal(NaN);
                 end
             else  % catalog doesn't have enough values
-                    [magco, fStd_Mc, b_value, b_value_std, a_value] = NaN;
+                msg.dbdisp('toofew events','bdiff2.Calculate didn''t run');
+                [magco, fStd_Mc, b_value, b_value_std, a_value] = deal(NaN);
             end 
             
             %% calculate limits of line to plot for b value line
@@ -288,7 +291,9 @@ classdef bdiff2 < ZmapFunction
             % For ZMAP
             halfstep = obj.fBinning / 2;
             obj.Result.index_low = find(obj.mag_bin_centers < (magco + halfstep) & obj.mag_bin_centers > (magco - halfstep));
-            
+            if isempty(obj.Result.index_low)
+                obj.Result.index_low = nan;
+            end
             mag_hi = obj.mag_bin_centers(1);
             % index_hi = 1;
             mz = obj.mag_bin_centers <= mag_hi & obj.mag_bin_centers >= magco-.0001;
@@ -329,9 +334,15 @@ classdef bdiff2 < ZmapFunction
             end
             
             if obj.doLinearityCheck
-                obj.nonlin_keepmc(catalog);
+                r=obj.nonlin_keepmc(catalog);
+                obj.Result.nonlinear_check = r;
+            else
+                obj.Result.nonlinear_check = struct('bestmc',nan,'bestb',nan,'result_flag',nan);
             end
             
+            if nargout
+                results=obj.Result;
+            end
             
         end
       
@@ -460,7 +471,7 @@ classdef bdiff2 < ZmapFunction
             
             % Marks the point of Mc
             mcText = sprintf('%s: %0.1f','Mc',obj.Result.Mc_value);
-            idx_low = obj.Result.index_low
+            idx_low = obj.Result.index_low;
             markerX = obj.mag_bin_centers(idx_low);
             markerY = obj.cum_b_values(idx_low) * 1.5;
             textX = markerX + 0.2;
@@ -521,7 +532,7 @@ classdef bdiff2 < ZmapFunction
                 fmt = 'b-value = %.2f +/-%.2f\na-value=%.3f, (annual)=%.3f';
                 if ~obj.useBootstrapping
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
-                    sol_type = char(obj.mc_method) + " solution"%'Max Likelihood Solution';
+                    sol_type = char(obj.mc_method) + " solution"; %'Max Likelihood Solution';
                     mag_text = sprintf('Magnitude of Completeness=%.2f',res.Mc_value);
                 else
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
@@ -597,7 +608,7 @@ classdef bdiff2 < ZmapFunction
             
         end
         
-        function nonlin_keepmc(obj,catalog)
+        function Results = nonlin_keepmc(obj,catalog)
             [Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(catalog, obj.Result.Mc_value, 'PreDefinedMc');
             Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.Result.Mc_value);
             assignin('base','Results_NonlinearityAnalysis',Results);
@@ -631,47 +642,99 @@ classdef bdiff2 < ZmapFunction
             p=inputParser();
             p.addParameter('fail',false)
             p.addParameter('interactive',false);
+            p.addParameter('skip_plot',false);
             p.parse(varargin{:})
             
             mc_methods = enumeration('McMethods');
             failMethods = McMethods([]);
-            nCols = 3;
-            nRows = 3;
-            f = findobj('Tag','Bvalue test');
-            if isempty(f)
-                figure('Name','Bvalue test' + string(datetime),'Tag','Bvalue test');
-            else
-                figure(f);
-                clf
-            end
             
-            for i=1:numel(mc_methods)
-                mc_method=mc_methods(i);
-                ax = subplot(nCols, nRows, i);
-                ttl = char(mc_method);
-                title(ax,ttl,'Interpreter','none');
-                if p.Results.fail
-                    bdiff2(catalog,'ax',ax,'mc_method',mc_method, 'InteractiveMode',p.Results.interactive);
+            if ~p.Results.skip_plot
+                nCols = 3;
+                nRows = 3;
+                f = findobj('Tag','Bvalue test');
+                if isempty(f)
+                    figure('Name','Bvalue test' + string(datetime),'Tag','Bvalue test');
                 else
-                    try
+                    figure(f);
+                    clf
+                end
+                
+                for i=1:numel(mc_methods)
+                    mc_method=mc_methods(i);
+                    ax = subplot(nCols, nRows, i);
+                    ttl = char(mc_method);
+                    title(ax,ttl,'Interpreter','none');
+                    if p.Results.fail
                         bdiff2(catalog,'ax',ax,'mc_method',mc_method, 'InteractiveMode',p.Results.interactive);
-                    catch ME
-                        ttl = ttl + ": BROKEN";
-                        failMethods = [failMethods; mc_method]; %#ok<AGROW>
-                        warning(ME.identifier, "%s\n", ME.message);
-                        for j = 1 : min(3, numel(ME.stack))
-                            disp(ME.stack(j));
+                    else
+                        try
+                            bdiff2(catalog,'ax',ax,'mc_method',mc_method, 'InteractiveMode',p.Results.interactive);
+                        catch ME
+                            ttl = ttl + ": BROKEN";
+                            failMethods = [failMethods; mc_method]; %#ok<AGROW>
+                            warning(ME.identifier, "%s\n", ME.message);
+                            for j = 1 : min(3, numel(ME.stack))
+                                disp(ME.stack(j));
+                            end
                         end
                     end
+                    if ~isempty(ax.Legend) && i > 1
+                        ax.Legend.Visible = 'off';
+                    end
+                    title(ax,ttl,'Interpreter','none');
+                    drawnow
                 end
-                if ~isempty(ax.Legend) && i > 1
-                    ax.Legend.Visible = 'off';
-                end
-                title(ax,ttl,'Interpreter','none');
-                drawnow
-                
             end
             allpassed = isempty(failMethods);
+            
+            %% random testing
+            % N-Rand Tests
+            msg.dbdisp('Testing random properties','Testing bdiff2')
+            
+            bd=bdiff2(catalog,'InteractiveMode',false,'DelayProcessing',true);
+            
+            pp = bd.ParameterableProperties;
+            permutable = pp(pp ~="ax");
+            mc_autos = enumeration('McAutoEstimate');
+            magBinOpts = [0.1 0.2 0.25 0.5];
+            
+            fn.mc_method = @() McMethods(randi(numel(mc_methods)));
+            fn.mc_auto = @() McAutoEstimate(randi(numel(mc_autos)));
+            fn.nBstSample = @() randi(600);
+            fn.useBootstrapping = @() randi(3)== 1;
+            fn.doLinearityCheck = @() randi(2)== 1;
+            fn.fBinning = @() magBinOpts(randi(size(magBinOpts)));
+            fn.showDiscrete = @() logical(randi(2)-1);
+            
+            paramTypes = {'string', 'McAutoEstimate', 'double', 'logical','logical','double','logical'};
+            resultsFields = {'Mc_value','Mc_std', 'b_value', 'b_value_std', 'a_value',...
+                'index_low', 'maxCurveMag', 'maxCurveBval', 'bestmc_nonlinear', 'bestb_nonlinear', 'result_flag_nonlinear', 'calctime'}';
+            resultsTypes  = {'double','double','double','double','double','double','double','double', 'double','double','double','duration'};
+            nTrials = 50;
+            
+            tb = table('Size',[nTrials, numel(fieldnames(fn))+numel(resultsFields)],...
+                'VariableTypes', [paramTypes resultsTypes],...
+                'VariableNames',[fieldnames(fn); resultsFields]);
+            for i=1: nTrials
+                nPropsToChange = randi(4);
+                for j=1:nPropsToChange
+                    propToChange = permutable(randi(numel(permutable)));
+                    bd.(propToChange) = fn.(propToChange)();
+                end
+
+                tb(i,1:numel(paramTypes)) = {string(bd.mc_method), bd.mc_auto, bd.nBstSample, bd.useBootstrapping, ...
+                    bd.doLinearityCheck, bd.fBinning, bd.showDiscrete};
+                
+                disp(tb(i,1:numel(paramTypes)));
+                t=tic;
+                r = bd.Calculate();
+                calctime = seconds(toc(t));
+                tb(i,numel(paramTypes)+1:end) = {...
+                    r.Mc_value, r.Mc_std, r.b_value, r.b_value_std, r.a_value, r.index_low,...
+                    r.maxCurveMag, r.maxCurveBval,r.nonlinear_check.bestmc, r.nonlinear_check.bestb, r.nonlinear_check.result_flag, calctime};
+                
+            end
+            assignin('base','bdiff2testtable',tb);
         end
     end
 end
