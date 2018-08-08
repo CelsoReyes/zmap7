@@ -252,7 +252,7 @@ function  bdiff_bdepth(mycat)
     function callbackfun_003(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem(onesigma, aw, bw);
+        plorem(mhcat, onesigma, aw, bw);
     end
     
     function cb_timeplot(mysrc,myevt)

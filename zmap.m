@@ -118,7 +118,7 @@ function zmap(varargin)
         zw = findall(get(groot,'Children'),'Tag','Zmap Main Window');
         s=sprintf('%d ZMAP windows exist\n', numel(zw));
         if ~isempty(zw)
-            emptyzw = arrayfun(@(x)isempty(x.UserData.catalog), zw);
+            emptyzw = arrayfun(@(x)~isstruct(x.UserData) || isempty(x.UserData.catalog), zw);
             delete(zw(emptyzw));
             s = s + "... of which " + sum(emptyzw) + " were empty";
         end

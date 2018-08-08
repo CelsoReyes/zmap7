@@ -217,7 +217,7 @@ function  bdiff(mycat, holdplot)
     function cb_est_recurr(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem(onesigma, aw, bw);
+        plorem(mycat, onesigma, aw, bw);
     end
     
     function cb_plot_ts(mysrc,myevt)

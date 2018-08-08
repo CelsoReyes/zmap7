@@ -6,6 +6,9 @@ classdef bdiff2 < ZmapFunction
     % magnitude end of the b-value curve.
     %
     %
+    % note : No longer discarding magco when catalog has enough events, but
+    %        number of events > magco
+                    
     % Formerly : function  bdiff(newcat)
     % Stefan Wiemer 1/95
     % upadated: J.Woessner, 27.08.04
@@ -21,19 +24,12 @@ classdef bdiff2 < ZmapFunction
         %index_low;
         myXLim
         myYLim
-        fitted
-        %a_value_annual
-        %a_value % a-value
-        %b_value % b-value
-        %b_value_std % error for b-value
+        fitted % was f
         binnedEvents_reverse;% number of  events in each bin, in reverse order
         cum_b_values % reverse order cum. sum.
         
-        fStd_Mc;
-        magsteps_desc % the step in magnitude for the bins == .1
+        mag_bin_centers % the step in magnitude for the bins == .1
         % mag_zone
-        % magco % magnitude of completion
-        pr % probability
         %maxCurveMag
         %maxCurveBval
         
@@ -47,12 +43,38 @@ classdef bdiff2 < ZmapFunction
         
         showDiscrete        matlab.lang.OnOffSwitchState  = 'on'    %show discrete events curve
         Nmin                                = 10;  % minimum number of events
+        
+        % properties to apply to the various plots
+        plotProps           struct          = struct(   'Mc',struct(),...
+                                                        'McText',struct(),...
+                                                        'Discrete',struct(),...
+                                                        'CumSum',struct(),...
+                                                        'BvalFit',struct());
     end
     
     properties(Constant)
         PlotTag = 'FMDplot';
+        
+         ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'Mc_value',     'Magnitude of Completion (Mc)', '';... % was magco
+            'Mc_std',       'Std. of Magnitude of Completion', '';... % was fStd_Mc
+            'b_value',      'b-value', '';...   % was bw
+            'b_value_std',  'Std. of b-value', '';...  % was ew
+            'a_value',      'a-value', '';...  % was aw
+            'a_value_annual',  'Annualized a-value', '';... % was a0
+            'power_fit',    'Goodness of fit to power-law', '';...
+            'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
+            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
+            'index_low','','';...
+            'pr','probability','';...
+            'maxCurveMag','','';...
+            'maxCurveBval','','';...
+            'fitted','linear fit','';...  % was f
+            'cum_b_values','cumulative b-values','';...
+            }, 'VariableNames', {'Names','Descriptions','Units'})
+        
         ParameterableProperties = ["mc_method", "mc_auto", "nBstSample", "useBootstrapping",...
-            "doLinearityCheck", "fBinning", "showDiscrete", "ax"]
+            "doLinearityCheck", "fBinning", "showDiscrete","ax"]
         
         tags = struct(...% itemdesc, tag
             'cumevents',    'total events at or above magnitude',...
@@ -67,27 +89,69 @@ classdef bdiff2 < ZmapFunction
         figName = "Frequency-magnitude distribution"
         figPos = [0.3 0.3 0.4 0.6] % normalized position for base figure
         axRect = [0.22,  0.3, 0.65, 0.6] % normalized position for axes within figure
+        
     end
             
     
     methods
-        function obj = bdiff2(catalogFcn, varargin)
+        function obj = bdiff2(catalog, varargin)
             % obj = bdiff2(catalog, interactive, ax)
             % catalog used to default to ZG.newt2
             
-            report_this_filefun();
-            
-            obj@ZmapFunction(catalogFcn);
+            obj@ZmapFunction(catalog);
             
             report_this_filefun();
+            
+            
+            % the varous plotProps control how the plots appear
+            obj.plotProps.Figure(1).Units = 'normalized';
+            obj.plotProps.Figure.pos = obj.figPos;
+            obj.plotProps.Figure.NumberTitle = 'off';
+            obj.plotProps.Figure.Name = obj.figName;
+            
+            obj.plotProps.Mc(1).Marker              = 'v';
+            obj.plotProps.Mc.MarkerFaceColor        = 'b';
+            obj.plotProps.Mc.LineWidth              = 1.0;
+            obj.plotProps.Mc.LineStyle              = 'none';
+            obj.plotProps.Mc.MarkerSize             = 7;
+            obj.plotProps.Mc.Tag                    = obj.tags.mc;
+            
+            obj.plotProps.McText(1).FontWeight      = 'bold';
+            obj.plotProps.McText.FontSize           = obj.ZG.fontsz.s;
+            obj.plotProps.McText.Color              = 'b';
+            obj.plotProps.McText.Tag                = obj.tags.mctext;
+            
+            obj.plotProps.Discrete(1).Marker        = '^';
+            obj.plotProps.Discrete.LineWidth        = 1.0;
+            obj.plotProps.Discrete.MarkerFaceColor  = [0.7 0.7 .7];
+            obj.plotProps.Discrete.MarkerEdgeColor  = 'k';
+            obj.plotProps.Discrete.Tag              = obj.tags.discrete;
+            obj.plotProps.Discrete.DisplayName      = 'Discrete';
+            
+            obj.plotProps.CumSum(1).Marker          = 's';
+            obj.plotProps.CumSum.LineWidth          = 1.0;
+            obj.plotProps.CumSum.MarkerEdgeColor    = 'k';
+            obj.plotProps.CumSum.Tag                = obj.tags.cumevents;
+            obj.plotProps.CumSum.DisplayName        = 'Cum events > M(x)';
+            
+            obj.plotProps.BvalFit(1).Color          = 'r';
+            obj.plotProps.BvalFit.LineWidth         = 1;
+            obj.plotProps.BvalFit.Tag               = obj.tags.linearfit;
+            
+            obj.plotProps.Axes(1).LineWidth     = 1.0;
+            obj.plotProps.Axes.Color            = 'w';
+            obj.plotProps.Axes.Tag              = 'cufi';
+            obj.plotProps.Axes.Box              = 'on';
+            obj.plotProps.Axes.TickDir          = 'out';
+            obj.plotProps.Axes.TickLength       = [0.02 0.02];
+            
             obj.parseParameters(varargin);
+            
             obj.StartProcess();
         return
-        
-            ZG=ZmapGlobal.Data;
             
-            if ~exist('catalogFcn','var') || isempty(catalogFcn)
-                catalogFcn = @()ZG.newt2;
+            if ~exist('catalog','var') || isempty(catalog)
+                catalog = obj.ZG.newt2;
             end
             if ~exist('interactive','var') || isempty(interactive)
                 interactive=true;
@@ -107,7 +171,7 @@ classdef bdiff2 < ZmapFunction
             f=ancestor(ax,'figure');
             delete(findobj(f,'Tag',obj.tags.bdcontext,'-and','Type','uicontextmenu'));
             c = uicontextmenu(f,'Tag',obj.tags.bdcontext);
-            obj.create_my_menu(c,catalogFcn);
+            obj.create_my_menu(c);
             ax.UIContextMenu=c;
             uimenu(ax.UIContextMenu,...
                 'Label','Open as new figure',...
@@ -143,7 +207,7 @@ classdef bdiff2 < ZmapFunction
                 'Number of bootstraps used to estimate error');
             zdlg.AddCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',obj.doLinearityCheck,[],...
                 'tooltip');
-            [res, pressedOk] = zdlg.Create('Mc Input Parameter');
+            [res, okPressed] = zdlg.Create('Mc Input Parameter');
             
             if ~okPressed
                 return
@@ -153,8 +217,9 @@ classdef bdiff2 < ZmapFunction
         end
         
         function obj = Calculate(obj)
-            % global magsteps_desc cum_b_values  bval
             global gBdiff % contains b1, n1, b2, n2
+            obj.Result(1).magco = NaN; % have to assign SOMETHING to the first item of struct when that struct is empty
+            
             catalog = obj.RawCatalog;
           
             dMag = obj.fBinning;
@@ -165,7 +230,7 @@ classdef bdiff2 < ZmapFunction
             mima = min([0; catalog.Magnitude]);
             mima = round(mima,1);
             
-            obj.magsteps_desc = (maxmag : -dMag : mima);
+            obj.mag_bin_centers = (maxmag : -dMag : mima);
             binEdges = (mima-(dMag/2) : dMag : maxmag+(dMag/2));
             
             
@@ -186,40 +251,44 @@ classdef bdiff2 < ZmapFunction
             % calculates max likelihood b value(bvml) && WLS(bvls)
             %
             
-            [obj.magco, obj.fStd_Mc, b_value, b_value_std, a_value] = deal(NaN);
             
             if catalog.Count >= obj.Nmin
                 % Added to obtain goodness-of-fit to powerlaw value
-                magco = calc_Mc(catalog, obj.mc_method, obj.fBinning, obj.fMccorr);
-                l = catalog.Magnitude >= obj.magco - (obj.fBinning/2);
-                if sum(l) >= obj.Nmin
-                    [b_value, b_value_std, a_value] = calc_bmemag(catalog.Magnitude(l), obj.fBinning);
-                else
-                    magco = NaN;
-                end
                 
-                % Bootstrap uncertainties
-                if obj.useBootstrapping
-                    % Check Mc from original catalog
-                    l = catalog.Magnitude >= magco-(obj.fBinning/2);
-                    if sum(l) >= obj.Nmin
-                        % note: this will replace the magnitude of completion with the mean magnitude of completion from bootstrapping
-                        [magco, obj.fStd_Mc, b_value, b_value_std, a_value] = ...
+                % calculate an initial magnitude of completion
+                magco = calc_Mc(catalog, obj.mc_method, obj.fBinning, obj.fMccorr);
+                
+                % use it to cut the catalog
+                l = catalog.Magnitude >= magco - (obj.fBinning/2);
+                
+                % if there are still enough events in the cut catalog, then calculate b- and a- values
+                if sum(l) >= obj.Nmin
+                    if ~obj.useBootstrapping
+                        [b_value, b_value_std, a_value] = calc_bmemag(catalog.Magnitude(l), obj.fBinning);
+                        fStd_Mc = NaN;
+                    else
+                        % note: this replaces Mc with the mean Mc from bootstrapping
+                        % note also: catalog analyzed is the UNCUT original catalog.
+                        [magco, fStd_Mc, b_value, b_value_std, a_value] = ...
                             calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.mc_method, obj.Nmin, obj.fMccorr);
                     end
+                else
+                    [fStd_Mc, b_value, b_value_std, a_value] = NaN;
                 end
-            end% of if length(catalog) >= Nmin
+            else  % catalog doesn't have enough values
+                    [magco, fStd_Mc, b_value, b_value_std, a_value] = NaN;
+            end 
             
             %% calculate limits of line to plot for b value line
             
             % For ZMAP
             halfstep = obj.fBinning / 2;
-            obj.Result.index_low = find(obj.magsteps_desc < (magco + halfstep) & obj.magsteps_desc > (magco - halfstep));
+            obj.Result.index_low = find(obj.mag_bin_centers < (magco + halfstep) & obj.mag_bin_centers > (magco - halfstep));
             
-            mag_hi = obj.magsteps_desc(1);
+            mag_hi = obj.mag_bin_centers(1);
             % index_hi = 1;
-            mz = obj.magsteps_desc <= mag_hi & obj.magsteps_desc >= magco-.0001;
-            mag_zone=obj.magsteps_desc(mz);
+            mz = obj.mag_bin_centers <= mag_hi & obj.mag_bin_centers >= magco-.0001;
+            mag_zone=obj.mag_bin_centers(mz);
             
             
             bdiffs = diff(obj.cum_b_values);
@@ -238,22 +307,18 @@ classdef bdiff2 < ZmapFunction
             obj.myXLim = [min(catalog.Magnitude)-0.5  max(catalog.Magnitude)+0.5];
             obj.myYLim = [0.9 length(catalog.Date+30)*2.5];
             
+            obj.Result.Mc_value     = magco;
+            obj.Result.Mc_std       = fStd_Mc;
             
-            %p=-p(1,1);
-            %p=fix(100*p)/100;
+            obj.Result.b_value      = b_value;
+            obj.Result.b_value_std  = b_value_std; % standard deviation of fit
             
-            obj.Result.magco        = magco;
-            obj.Result.b_value      = b_value;%bvml;
-            obj.Result.a_value      = a_value; %avml;
-            obj.Result.b_value_std  = b_value_std; %stanml;    % standard deviation of fit
+            obj.Result.a_value      = a_value;
             obj.Result.a_value_annual = a_value-log10(years(max(catalog.Date)-min(catalog.Date)));
             
-            obj.Result.maxCurveMag  = obj.magsteps_desc(maxCurveIdx);
+            obj.Result.maxCurveMag  = obj.mag_bin_centers(maxCurveIdx);
             obj.Result.maxCurveBval = obj.cum_b_values(maxCurveIdx);
             obj.Result.mag_zone     = mag_zone;
-            
-            
-            
             
             if ZmapGlobal.Data.hold_state
                 [obj.Result.pr, gBdiff] = calc_probability(obj,gBdiff);
@@ -266,16 +331,16 @@ classdef bdiff2 < ZmapFunction
             
         end
       
-        function ax = setup_figure(obj,catalogFcn)
+        function ax = setup_figure(obj)
             
             bfig=findobj(get(groot,'Children'),'flat','Type','Figure','-and','Name', obj.figName);
             if isempty(bfig)
-                bfig=figure('Units','normalized','pos',obj.figPos,'NumberTitle','off','Name',obj.figName);
+                bfig=figure(obj.plotProps.Figure);
                 
                 
                 add_menu_divider();
                 c = uimenu('Label','ZTools');
-                obj.create_my_menu(c,catalogFcn);
+                obj.create_my_menu(c);
             else
                 bfig.Visible='on';
                 figure(bfig)
@@ -289,17 +354,23 @@ classdef bdiff2 < ZmapFunction
             
         end
        
-        function plot(obj,catalog, ax)
+        function plot(obj,ax)
             % extracted from inside the calculation routine
             
             global gBdiff % contains b1, n1, b2, n2
-            ZG = ZmapGlobal.Data;
+            
+            if ~exist('ax','var')
+                if isempty(obj.ax)
+                    obj.ax = obj.setup_figure();
+                end
+                ax = obj.ax;
+            end
             
             bfig=ancestor(ax,'figure');
             is_standalone = bfig.Name==obj.figName && ax.Tag==string(obj.tags.mainbvalax);
             
             if is_standalone
-                fs=ZG.fontsz.m;
+                fs=obj.ZG.fontsz.m;
             else
                 fs=get(ax,'FontSize');
             end
@@ -340,9 +411,8 @@ classdef bdiff2 < ZmapFunction
             grid(ax,'on');
             xlabel('Magnitude',fontProps{:});
             ylabel('Cumulative Number',fontProps{:});
-            set(ax,'visible','on',fontProps{:},...
-                'LineWidth',1.0,'TickDir','out','Ticklength',[0.02 0.02],...
-                'Box','on','Tag','cufi','color','w')
+            set(ax,'visible','on',fontProps{:});
+            set(ax,obj.plotProps.Axes);
             
             legend(ax,'show');
             ax.Legend.String(~(startsWith(ax.Legend.String,'Cum') | startsWith(ax.Legend.String,'Discrete')))=[];
@@ -351,7 +421,7 @@ classdef bdiff2 < ZmapFunction
             if isempty(ax.UIContextMenu)
                 delete(findobj(bfig,'Tag',obj.tags.bdinscontext))
                 c = uicontextmenu('Tag',obj.tags.bdinscontext);
-                obj.create_my_menu(c,catalog);
+                obj.create_my_menu(c);
                 ax.UIContextMenu=c;
             end
             uimenu(ax.UIContextMenu,'Separator','on',...
@@ -362,27 +432,22 @@ classdef bdiff2 < ZmapFunction
             % plot the cum. sum in each bin
             h = findobj(ax,'Tag',obj.tags.cumevents);
             if isempty(h)
-                scatter(ax,obj.magsteps_desc, obj.cum_b_values,...
-                    'Marker','s',...
-                    'LineWidth',1.0,...
-                    'MarkerEdgeColor','k',...
-                    'Tag',obj.tags.cumevents,...
-                    'DisplayName','Cum events > M(x)');
+                h = scatter(ax,obj.mag_bin_centers, obj.cum_b_values);
+                set(h, obj.plotProps.CumSum);
             else
-                h.XData=obj.magsteps_desc;
+                h.XData=obj.mag_bin_centers;
                 h.YData=obj.cum_b_values;
             end
         end
+        
         function updatePlottedDiscreteValues(obj,ax)
             % plot discrete values
             hdv = findobj(ax,'Tag',obj.tags.discrete);
             if isempty(hdv)
-            scatter(ax,obj.magsteps_desc,obj.binnedEvents_reverse,'Marker','^',...
-                'LineWidth',1.0,...
-                'MarkerFaceColor',[0.7 0.7 .7],'MarkerEdgeColor','k',...
-                'Tag',obj.tags.discrete, 'DisplayName','Discrete');
+                hdv = scatter(ax,obj.mag_bin_centers, obj.binnedEvents_reverse);
+                set(hdv, obj.plotProps.Discrete);
             else
-                hdv.XData=obj.magsteps_desc;
+                hdv.XData=obj.mag_bin_centers;
                 hdv.YData=obj.binnedEvents_reverse;
             end
         end  
@@ -390,30 +455,30 @@ classdef bdiff2 < ZmapFunction
         function updatePlottedMc(obj, ax)
             
             % Marks the point of Mc
-            mcText = sprintf('%s: %0.1f','Mc',obj.Results.magco);
+            mcText = sprintf('%s: %0.1f','Mc',obj.Result.Mc_value);
+            idx_low = obj.Result.index_low
+            markerX = obj.mag_bin_centers(idx_low);
+            markerY = obj.cum_b_values(idx_low) * 1.5;
+            textX = markerX + 0.2;
             
-            mcline=findobj(ax,'Tag',obj.tags.mc);
-            if isempty(mcline)
-                line(ax, obj.magsteps_desc(obj.index_low),...
-                    obj.cum_b_values(obj.index_low)*1.5,...
-                    'Marker','v','MarkerFaceColor','b',...
-                    'LineWidth',1.0,'LineStyle','none','MarkerSize',7,...
-                    'Tag',obj.tags.mc,...
-                    'DisplayName',mcText);
+            hMc=findobj(ax,'Tag',obj.tags.mc);
+            if isempty(hMc)
+                hMc = line(ax, markerX, markerY,'DisplayName',mcText);
+                set(hMc, obj.plotProps.Mc);
             else
-                mcline.XData=obj.magsteps_desc(obj.index_low);
-                mcline.YData=obj.cum_b_values(obj.index_low)*1.5;
-                mcline.DisplayName=mcText;
+                hMc.XData=markerX;
+                hMc.YData=markerY;
+                hMc.DisplayName=mcText;
             end
-            hmctext=findobj(ax,'Tag',obj.tags.mctext);
-            if isempty(hmctext)
-                ZG=ZmapGlobal.Data;
-                
-                text(ax,obj.magsteps_desc(obj.index_low)+0.2,obj.cum_b_values(obj.index_low)*1.5,...
-                    mcText,'FontWeight','bold','FontSize',ZG.fontsz.s,'Color','b','Tag',obj.tags.mctext)
+            
+            hMcText=findobj(ax,'Tag',obj.tags.mctext);
+            
+            if isempty(hMcText)
+                hMcText = text(ax,textX, markerY, mcText);
+                set(hMcText, obj.plotProps.McText);
             else
-                hmctext.Position([1 2])=[obj.magsteps_desc(obj.index_low)+0.2, obj.cum_b_values(obj.index_low)*1.5];
-                hmctext.String=mcText;
+                hMcText.Position([1 2])=[textX, markerY];
+                hMcText.String=mcText;
             end
             
                 
@@ -424,27 +489,24 @@ classdef bdiff2 < ZmapFunction
             %bvdispname = sprintf('b-val: %.3f +/- %0.3f\na-val: %.3f\na-val_{annual}: %.3f',obj.b_value, obj.b_value_std, obj.a_value, obj.a_value_annual);
             bvl = findobj(ax,'Tag',obj.tags.linearfit);
             if isempty(bvl)
-                line(ax, obj.mag_zone,obj.fitted,'Color','r','LineWidth',1 ,...
-                    'Tag', obj.tags.linearfit...,'DisplayName',bvdispname
-                    );   % plot linear fit to backg
+                line(ax, obj.Result.mag_zone, obj.fitted, obj.plotProps.BvalFit);
             else
-                bvl.XData=obj.Result.mag_zone;
-                bvl.YData=obj.fitted;
+                bvl.XData = obj.Result.mag_zone;
+                bvl.YData = obj.fitted;
                 % bvl.DisplayName=bvdispname;
             end
-            txh = findobj(ax,'Tag','bvaltext');
-            set(txh,'String', obj.descriptive_text());
+            
+            set(findobj(ax,'Tag','bvaltext'), 'String', obj.descriptive_text());
         end
         
         
         function tx=descriptive_text(obj,gBdiff)
-            ZG=ZmapGlobal.Data;
             res = obj.Result;
-            if ZG.hold_state
+            if obj.ZG.hold_state
                 ba_text = sprintf('b-value (w LS, M >= %f): %.2f +/-%.2f \na-value = %.3f',...
                     res.MaxCurveMag ,res.b_value, res.b_value_std, res.a_value );
                 
-                p_text = sprintf('p=  %.2g', obj.pr);
+                p_text = sprintf('p=  %.2g', obj.Result.pr);
                 if exist('gBdiff','var')
                 nbs_text = sprintf('n1: %g, n2: %g, b1: %g, b2: %g', gBdiff.n1, gBdiff.n2, gBdiff.b1, gBdiff.b2);
                 else
@@ -456,34 +518,40 @@ classdef bdiff2 < ZmapFunction
                 if ~obj.useBootstrapping
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
                     sol_type = 'Max Likelihood Solution';
-                    mag_text = sprintf('Magnitude of Completeness=%.2f',obj.magco);
+                    mag_text = sprintf('Magnitude of Completeness=%.2f',res.Mc_value);
                 else
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
                     sol_type = 'Max Likelihood Est., Uncertainties by bootstrapping';
-                    mag_text = sprintf('Magnitude of Completeness=%.2f +/-%.2f',obj.magco, obj.fStd_Mc);
+                    mag_text = sprintf('Magnitude of Completeness=%.2f +/-%.2f',res.Mc_value, res.Mc_std);
                 end
                 tx = sprintf('%s\n%s\n%s', sol_type, ba_text ,mag_text);
             end % ZmapGlobal.Data.hold_state
             
         end
         %% ui functions
-        function create_my_menu(obj,c,catalogFcn)
+        function create_my_menu(obj,c)
             uimenu(c,'Label','Estimate recurrence time/probability',MenuSelectedField(),@callbackfun_recurrence);
             uimenu(c,'Label','Plot time series',MenuSelectedField(),{@callbackfun_ts,catalogFcn});
             uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),{@cb_nonlin_optimize,catalogFcn});
             uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalogFcn});
-            uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.ShowDiscrete));
-            uimenu(c,'Label','Save values to file',MenuSelectedField(),{@calSave9,obj.magsteps_desc, obj.Resultcum_b_values});
+            uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
+            uimenu(c,'Label','Save values to file',MenuSelectedField(),@simple_save_cb);
             addAboutMenuItem();
+            
+            function catalog = catalogFcn()
+                catalog = obj.RawCatalog;
+            end
+            function simple_save_cb(~,~)
+                calsave9(obj.mag_bin_centers, obj.Result.cum_b_values)
+            end
             
             function callbackfun_recurrence(~,~)
                 global onesigma
-                plorem(onesigma, obj.Result.a_value, obj.Result.b_value);
+                plorem(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
             end
             
             function callbackfun_ts(~,~,catalogFcn)
-                ZG=ZmapGlobal.Data;
-                ZG.newcat = catalogFcn();
+                obj.ZG.newcat = catalogFcn();
                 ctp=CumTimePlot(catalogFcn());
                 ctp.plot();
             end
@@ -496,8 +564,8 @@ classdef bdiff2 < ZmapFunction
             end
             
             function cb_nonlin_optimize(~, ~,catalogFcn)
-                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(catalogFcn(), obj.magco, 'OptimizeMc');
-                Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''OptimizeMc'')',obj.magco);
+                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(catalogFcn(), obj.Result.Mc_value, 'OptimizeMc');
+                Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''OptimizeMc'')',obj.Result.Mc_value);
                 assignin('base', 'Results_NonlinearityAnalysis',Results);
             end
             function cb_nonlin_keepmc(~, ~,catalogFcn)
@@ -511,23 +579,23 @@ classdef bdiff2 < ZmapFunction
         end
         
         function write_globals(obj)
-            global a_value b_value b_value_std
+            global a_value b_value b_value_std cumsum3
             global inpr1
-            global magsteps_desc
+            global mag_bin_centers
             global magco
-            a_value = obj.a_value;
-            b_value = obj.b_value;
-            b_value_std = obj.b_value_std;
+            a_value = obj.Result.a_value;
+            b_value = obj.Result.b_value;
+            b_value_std = obj.Result.b_value_std;
             inpr1 = obj.dlg_res.mc_method;
-            magsteps_desc = obj.magsteps_desc;
-            cum_b_values = obj.cum_b_values;
-            magco = obj.magco;
+            mag_bin_centers = obj.mag_bin_centers;
+            cumsum3 = obj.cum_b_values;
+            magco = obj.Result.Mc_value;
             
         end
         
         function nonlin_keepmc(obj,catalog)
-            [Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(catalog, obj.magco, 'PreDefinedMc');
-            Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.magco);
+            [Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(catalog, obj.Result.Mc_value, 'PreDefinedMc');
+            Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.Result.Mc_value);
             assignin('base','Results_NonlinearityAnalysis',Results);
         end
             

@@ -111,9 +111,13 @@ classdef(Abstract) ZmapFunction < handle
                             end
                             val="[" + strjoin(v,';') + "]";
                         else
+                            try
                             val=string(val);
                             if ismissing(val)
                                 val = "<missing>";
+                            end
+                            catch
+                                val = "<some " + class(val) + ">";
                             end
                         end
                         fcall = fcall + sprintf(", '%s', %s", fld, val);

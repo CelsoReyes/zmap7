@@ -105,7 +105,7 @@ classdef bvalgrid < ZmapHGridFunction
             end
             
             function out=calculation_function(catalog)
-                % calulate values at a single point
+                % calculate values at a single point
                 
                 % Added to obtain goodness-of-fit to powerlaw value
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);

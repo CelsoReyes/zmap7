@@ -57,7 +57,7 @@ classdef AnalysisBvalues < AnalysisWindow
             else
                 obj.bobj=bdiff2(catalog,'AutoShowPlots',false);
                 x=obj.bobj.magsteps_desc;
-                y=obj.bobj.bvalsum3;
+                y=obj.bobj.cum_b_values;
             end
         end
         
@@ -68,7 +68,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 x=nan;
             else
                 x=obj.bobj.magsteps_desc(obj.bobj.index_low);
-                y=obj.bobj.bvalsum3(obj.bobj.index_low)*1.5;
+                y=obj.bobj.cum_b_values(obj.bobj.index_low)*1.5;
             end
         end
         
@@ -79,7 +79,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=[nan nan];
             else
                 x=obj.bobj.mag_zone([1 end]);
-                y=obj.bobj.f([1 end]);
+                y=obj.bobj.fitted([1 end]);
             end
         end
         

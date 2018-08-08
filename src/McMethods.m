@@ -4,15 +4,15 @@ classdef McMethods < uint32
     % >>  enumeration('McMethods')
     
     enumeration
-        FixedMc         (2)
-        MaxCurvature    (1)
-        Mc90            (3)
-        Mc95            (4)
-        McBestCombo     (5) % Mc90, Mc95, or MaxCurvature
-        McEMR           (6)
-        McDueB_ShiBolt  (7)
+        MaxCurvature     (1)
+        FixedMc          (2)
+        Mc90             (3)
+        Mc95             (4)
+        McBestCombo      (5) % Mc90, Mc95, or MaxCurvature
+        McEMR            (6)
+        McDueB_ShiBolt   (7)
         McDueB_Bootstrap (8)
-        McDueB_Cao      (9)
+        McDueB_Cao       (9)
     end
     
     methods(Static)
@@ -67,7 +67,7 @@ classdef McMethods < uint32
         end
         
         function s = dropdownList()
-            methods = enumeration('McMethods');
+            methods = sort(enumeration('McMethods'));
             s = strjoin(arrayfun(@McMethods.taggeddescription, methods), '|');
             s = char(s);
         end

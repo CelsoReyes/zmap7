@@ -116,7 +116,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     function cb_auto_mc_b_estimation(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         obj.hold_state=false;
-        bdiff2(@ZG.newt2());
+        bdiff2(ZG.newt2);
     end
     
     function cb_cut_mainshock(mysrc,myevt)
