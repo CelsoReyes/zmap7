@@ -80,6 +80,10 @@ for j=1:numel(itemsToTry)
 end
 
 
+msg.dbdisp('Now Testing B values (bdiff)');
+[allpassed, failMethods] = bdiff2.test(ZG.primeCatalog)
+
+
 disp("DONE. DONE. DONE")
 %{
 % prototype behavior

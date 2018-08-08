@@ -627,7 +627,7 @@ classdef ZmapDialog < handle
                 h   = me.Handle;
                 tag = me.Tag;
                 
-                disp([me.Style,  ' : ',  tag]);
+                % disp([me.Style,  ' : ',  tag]);
                 
                 if ~isempty(tag) && (~isprop(obj.hCaller,tag) && ~isstruct(obj.hCaller))
                     warning('unable to assign value back to caller because the property %s does not exist',tag);

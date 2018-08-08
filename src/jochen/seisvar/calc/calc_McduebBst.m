@@ -9,7 +9,7 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     % beneath northeastern Japan island arc, GRL, 29, 9, 2002
     %
     % Incoming variables:
-    % mCatalog         : EQ catalog magnitudes
+    % magnitudes         : EQ catalog magnitudes
     % fBinning         : Bin size
     % nWindowSize      : Window size
     % nMinNumberEvents : Minimum number of events
@@ -58,9 +58,9 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
             sampmagnitudes = mMag_bstsamp(:,nSamp);
             % Select magnitude range
             vSel = sampmagnitudes >= fMag-0.05;
-            mCat = sampmagnitudes.subset(vSel);
+            mCat = sampmagnitudes(vSel);
             % Check for minimum number of events
-            if mCat.Count >= nMinNumberEvents
+            if numel(mCat) >= nMinNumberEvents
                 try
                     [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
                     mBvalue_bst = [mBvalue_bst; fBValue fStdDev fAValue fMag];

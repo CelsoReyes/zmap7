@@ -145,7 +145,11 @@ classdef bdiff2 < ZmapFunction
             obj.plotProps.Axes.TickDir          = 'out';
             obj.plotProps.Axes.TickLength       = [0.02 0.02];
             
-            obj.parseParameters(varargin);
+            p = obj.parseParameters(varargin);
+            if ismember('useBootStrapping', p.UsingDefaults) && ~ismember('nBstSample',p.UsingDefaults)
+                % user specified number of bootstraps. This means they want to do bootstrapping (unless this is 0)
+                obj.useBootStrapping = obj.nBstSample ~= 0;
+            end
             
             obj.StartProcess();
         return
@@ -400,7 +404,7 @@ classdef bdiff2 < ZmapFunction
                 txh=text(ax,'Units','Normalized',...
                     'HorizontalAlignment','right',...
                     'Position',[.995 .75],...
-                    'String',tx,'Tag','bvaltext');
+                    'String',tx,'Tag','bvaltext','Interpreter','none');
                 txh.String(end)=[];
             end
             
@@ -517,11 +521,11 @@ classdef bdiff2 < ZmapFunction
                 fmt = 'b-value = %.2f +/-%.2f\na-value=%.3f, (annual)=%.3f';
                 if ~obj.useBootstrapping
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
-                    sol_type = 'Max Likelihood Solution';
+                    sol_type = char(obj.mc_method) + " solution"%'Max Likelihood Solution';
                     mag_text = sprintf('Magnitude of Completeness=%.2f',res.Mc_value);
                 else
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
-                    sol_type = 'Max Likelihood Est., Uncertainties by bootstrapping';
+                    sol_type = string(obj.mc_method) + "solution, Uncertainties by bootstrapping";
                     mag_text = sprintf('Magnitude of Completeness=%.2f +/-%.2f',res.Mc_value, res.Mc_std);
                 end
                 tx = sprintf('%s\n%s\n%s', sol_type, ba_text ,mag_text);
@@ -617,6 +621,57 @@ classdef bdiff2 < ZmapFunction
             % create a menu item
             label='FMD plot';
             h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bdiff2(catalogFcn()));
+        end
+        
+        function [allpassed, failMethods] = test(catalog, varargin)
+            % [allpassed, failMethods] = test(catalog)
+            %  ... = test(...,'fail',true) force errors to be thrown instead of caught & reported
+            %  ... = test(...,'interactive',true) allow bvalue popup to be interactive
+            
+            p=inputParser();
+            p.addParameter('fail',false)
+            p.addParameter('interactive',false);
+            p.parse(varargin{:})
+            
+            mc_methods = enumeration('McMethods');
+            failMethods = McMethods([]);
+            nCols = 3;
+            nRows = 3;
+            f = findobj('Tag','Bvalue test');
+            if isempty(f)
+                figure('Name','Bvalue test' + string(datetime),'Tag','Bvalue test');
+            else
+                figure(f);
+                clf
+            end
+            
+            for i=1:numel(mc_methods)
+                mc_method=mc_methods(i);
+                ax = subplot(nCols, nRows, i);
+                ttl = char(mc_method);
+                title(ax,ttl,'Interpreter','none');
+                if p.Results.fail
+                    bdiff2(catalog,'ax',ax,'mc_method',mc_method, 'InteractiveMode',p.Results.interactive);
+                else
+                    try
+                        bdiff2(catalog,'ax',ax,'mc_method',mc_method, 'InteractiveMode',p.Results.interactive);
+                    catch ME
+                        ttl = ttl + ": BROKEN";
+                        failMethods = [failMethods; mc_method]; %#ok<AGROW>
+                        warning(ME.identifier, "%s\n", ME.message);
+                        for j = 1 : min(3, numel(ME.stack))
+                            disp(ME.stack(j));
+                        end
+                    end
+                end
+                if ~isempty(ax.Legend) && i > 1
+                    ax.Legend.Visible = 'off';
+                end
+                title(ax,ttl,'Interpreter','none');
+                drawnow
+                
+            end
+            allpassed = isempty(failMethods);
         end
     end
 end

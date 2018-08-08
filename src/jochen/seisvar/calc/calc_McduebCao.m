@@ -1,7 +1,7 @@
-function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, varargin)
+function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(magnitudes, varargin)
     % CALC_MCDUEBCAO Calculate Mc using the function b-value vs. cut-off-magnitude
     %
-    % [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, fBinning, nMinNumberEvents)
+    % [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(magnitudes, fBinning, nMinNumberEvents)
     %----------------------------------------------------------------------------------------------------
     % Calculate Mc using the function b-value vs. cut-off-magnitude
     % Decision criterion for Mc and b is: b_i - b_i-1 <= 0.03 as in reference
@@ -10,7 +10,7 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, varargin)
     % beneath northeastern Japan island arc, GRL, 29, 9, 2002
     %
     % Incoming variables:
-    % mCatalog         : EQ catalog
+    % magnitudes       : EQ catalog magnitudes
     % fBinning         : Bin size
     % nMinNumberEvents : Minimum number of events
     %
@@ -28,9 +28,9 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, varargin)
     p.addRequired('magnitudes');
     p.addOptional('binInterval',0.1);
     p.addOptional('minNumberEvents',50);
-    p.parse(mCatalog, varargin{:});
+    p.parse(magnitudes, varargin{:});
     
-    mCatalog = p.Results.magnitudes;
+    magnitudes = p.Results.magnitudes;
     fBinning = p.Results.binInterval;
     nMinNumberEvents = p.Results.minNumberEvents;
     
@@ -39,7 +39,7 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(mCatalog, varargin)
     BVAL = 1; BSTD = 2; AVAL = 3; MAG = 4; %unused is COUNT = 5;
     
     % Calculate b-with magnitude
-    [mBvalue] = calc_bwithmag(mCatalog, fBinning, nMinNumberEvents);
+    [mBvalue] = calc_bwithmag(magnitudes, fBinning, nMinNumberEvents);
     
     % Remove NANs
     mBvalue = mBvalue( ~isnan(mBvalue(:,BVAL)) , : );

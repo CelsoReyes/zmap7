@@ -26,7 +26,7 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin)
     % Check input
     p=inputParser();
     p.addRequired('magnitudes');
-    p.addOptional('binInteraval',0.1);
+    p.addOptional('binInterval',0.1);
     p.addOptional('windowSize',5);
     p.addOptional('minNumberEvents',50);
     p.parse(magnitudes, varargin{:});

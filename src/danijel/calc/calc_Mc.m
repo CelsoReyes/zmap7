@@ -67,7 +67,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
             methodFun = @(C)calc_McEMR(C,binInterval); %requires catalog Magnitude AND Date
             
         case  McMethods.McDueB_ShiBolt
-            methodFun = @(C)calc_Mcdueb(C,binInterval);
+            methodFun = @(C)calc_Mcdueb(C.Magnitude, binInterval);
             
         case McMethods.McDueB_Bootstrap
             nSample = 500;
@@ -76,7 +76,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
             methodFun = @(C) calc_McduebBst(C.Magnitude, binInterval, nWindowSize, nMinEvents,nSample);
 
         case McMethods.McDueB_Cao 
-            methodFun = @(C, ~)calc_McduebCao(C);
+            methodFun = @(C, ~)calc_McduebCao(C.Magnitude);
 
         otherwise
             error('unknown Mc method');

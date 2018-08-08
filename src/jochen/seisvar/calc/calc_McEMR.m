@@ -46,7 +46,7 @@ function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, binInterval)
     fMcBound = fMcTry;
     
     % Calculate FMD for original catalog
-    [vFMDorg, vNonCFMDorg] = calc_FMD(catalog);
+    [vFMDorg, vNonCFMDorg] = calc_FMD(catalog.Magnitude);
     fMinMag = min(vNonCFMDorg(1,:));
     
     % %% Shift to positive values

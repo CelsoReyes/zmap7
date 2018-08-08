@@ -72,7 +72,7 @@ function result = doCalculation(theseMags, binInterval, hypotheticalMc)
         half_fBin = binInterval/2;
         
         % log10(N)=A-B*M
-        vMag = hypotheticalMc:binInterval:15; % Ending magnitude must be sufficiently high
+        vMag = hypotheticalMc:binInterval:15; % Ending magnitude must be sufficiently high (???what is "sufficently high")
         vNumber = 10.^(log10(numel(theseMags))-fBValue*(vMag - hypotheticalMc));
         vNumber = round(vNumber);
         
@@ -88,7 +88,7 @@ function result = doCalculation(theseMags, binInterval, hypotheticalMc)
         PMedges = [vMag-half_fBin , vMag(end)+half_fBin]; 
         [bval, ~] = histcounts(theseMags, PMedges);
         b3 = cumsum(bval,'reverse');    % N for M >= (counted backwards)
-        result = sum(abs(b3 - vNumber(1:ct) )) / sum(b3)*100; %res2
+        result = sum(abs(b3(1:ct) - vNumber(1:ct) )) / sum(b3)*100; %res2
 end
 
 function Mc = maxCurvature(m, min_max, binwidth)
