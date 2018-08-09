@@ -33,11 +33,10 @@ classdef ZmapData < handle
     
     properties
         % catalogs
-        primeCatalog    ZmapCatalog = ZmapCatalog('empty catalog')
-        newcat          ZmapCatalog = ZmapCatalog('empty catalog')
-        newt2           ZmapCatalog = ZmapCatalog('empty catalog')
-        catalog_working ZmapCatalog = ZmapCatalog('empty catalog')
-        memorized_catalogs              % manually stored via Memorize/Recall
+        primeCatalog    ZmapCatalog     = ZmapCatalog('empty catalog')
+        newcat          ZmapCatalog     = ZmapCatalog('empty catalog')
+        newt2           ZmapCatalog     = ZmapCatalog('empty catalog')
+        catalog_working ZmapCatalog     = ZmapCatalog('empty catalog')
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
         original        ZmapCatalog     = ZmapCatalog('empty catalog')% used with declustering
         
@@ -47,31 +46,32 @@ classdef ZmapData < handle
         cluscat          ZmapCatalog	% some sort of clustered catalog? selclust
         newclcat         ZmapCatalog	% some sort of clustered catalog? selclust
         
-        features      containers.Map = get_features('h') % map features that can be looked up by name. ex. ZG.features('volcanoes')
-        well % well locations
+        % map features that can be looked up by name. ex. ZG.features('volcanoes')
+        features      containers.Map    = get_features('h')         
+        well                                                        % well locations
         main
-        maepi            ZmapCatalog = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
+        maepi            ZmapCatalog    = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
         
         % niceties
-        fontsz       FontSizeTracker = FontSizeTracker
+        fontsz       FontSizeTracker    = FontSizeTracker
         
-        color_bg        = [1.0 1.0 1.0] % was [cb1 cb2 cb3] axis background
-        color_fg        = [0.9 0.9 0.9] % was [c1 c2 c3] figure backgorund
+        color_bg                        = [1.0 1.0 1.0] % was [cb1 cb2 cb3] axis background
+        color_fg                        = [0.9 0.9 0.9] % was [c1 c2 c3] figure backgorund
         ms6             (1,1) double {mustBePositive}   = 6 % standard markersize %TODO change to a markersize class
         
-        lock_aspect     matlab.lang.OnOffSwitchState 
-        mainmap_grid    matlab.lang.OnOffSwitchState
+        lock_aspect     matlab.lang.OnOffSwitchState    % use fixed aspect ratio
+        mainmap_grid    matlab.lang.OnOffSwitchState    % show the grid on the main map
         mainmap_plotby  (1,:) char                      % was typele
         
-        mainmap_features = {'borders','coastline',...
-            'faults','lakes','plates','rivers',...
-            'stations','volcanoes'} % features that will be loaded on the main map
+        % features that will be loaded on the main map
+        mainmap_features                = {'borders','coastline','faults','lakes','plates',...
+                                           'rivers','stations','volcanoes'} 
         
-        bin_dur    duration = days(14) %bin length
+        bin_dur         duration = days(14) %bin length
         
         % likely to be completely removed stuff
-        hold_state  logical = false % was ho, contained 'hold' or 'noho'
-        hold_state2 logical = false % was ho2, contained 'hold' or 'noho'
+        hold_state      logical         = false % was ho, contained 'hold' or 'noho'
+        hold_state2     logical         = false % was ho2, contained 'hold' or 'noho'
         
         % directories
         Directories     struct  % includes 'working', 'output', and 'data' directory locations
@@ -82,18 +82,20 @@ classdef ZmapData < handle
         
         % unknown other entities
         Rconst % used with the slicers
-        ra  (1,1) double {mustBeNonnegative} = 5 % default max sphere radius
-        ni  (1,1) double {mustBeNonnegative} = 100 % default number of nearby events for grid calculations
-        compare_window_dur    (1,1) duration = years(1.5) % Compare window length (years)
-        compare_window_dur_v3 (1,1) duration = years(1.0) % Compare window length, alternate version
+        ra                    (1,1) double  {mustBeNonnegative}     = 5 % default max sphere radius
+        ni                    (1,1) double  {mustBeNonnegative}     = 100 % default number of nearby events for grid calculations
+        compare_window_dur    (1,1) duration                        = years(1.5) % Compare window length (years)
+        compare_window_dur_v3 (1,1) duration                        = years(1.0) % Compare window length, alternate version
         
         % cross section stuff, perhaps
-        tresh_km (1,1) double {mustBeNonnegative} = 50 % radius below which blocks zmap's (?) will be plotted
-        % xsec_width_km (1,1) double {mustBeNonnegative} = 10 % not entirely sure units are km
-        xsec_rotation_deg (1,1) double = 10 % rotation angle for cross sections
+        tresh_km            (1,1) double    {mustBeNonnegative}     = 50 % radius below which blocks zmap's (?) will be plotted
+        xsec_rotation_deg   (1,1) double                            = 10 % rotation angle for cross sections
         xsec_defaults = defaults.readDefaults('cross_section_defaults');
         
-        freeze_colorbar = struct('minval',nan,'maxval',nan,'freeze', false)
+        freeze_colorbar                                             = struct('minval', nan,...
+                                                                            'maxval',nan,...
+                                                                            'freeze', false)
+                                                                        
         shading_style {mustBeMember(shading_style,{'flat','interp','faceted'})} = 'flat'
         
         CrossSectionOpts    struct      %
@@ -106,29 +108,26 @@ classdef ZmapData < handle
         ParallelProcessingOpts struct   % contains  details about parallel processing
         ResultOpts          struct      % options for the results screen
         
-        someColor (1,1) char = 'w'
-        event_marker char = 'o'
+        someColor           (1,1) char          = 'w'
+        event_marker        char                = 'o'
        
         % b-value related
-        McCalcMethod        McMethods           = McMethods.MaxCurvature;
-        UseAutoEstimate     McAutoEstimate      = McAutoEstimate.auto;
+        McCalcMethod        McMethods           = McMethods.MaxCurvature
+        UseAutoEstimate     McAutoEstimate      = McAutoEstimate.auto
         overall_b_value (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
-        bvg=[] % b-value grid
+        bvg                                     = [] % b-value grid
         
-        Grid % grid object, used for calculations
-        gridopt % options used for creating a grid 
-        GridSelector % criteria used to select events at a grid point
-        %selection_shape {mustBeShape} = ShapeGeneral()
-        debug           matlab.lang.OnOffSwitchState = matlab.lang.OnOffSwitchState.off % makes special menus visible
-        debugLevel (1,1) double = 0
+        Grid                                % grid object, used for calculations
+        gridopt                             % options used for creating a grid 
+        GridSelector                        % criteria used to select events at a grid point
+        debug           matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.off % makes special menus visible
+        debugLevel      (1,1) double                    = 0
         
         Views           struct          = struct('primary',[],'layers',[]) % catalog views
         
         % Datastore                       = DataStore % mapseis DataStore adapter
         
         Interactive = true;
-        
-        
     end
     
     properties(Dependent)

@@ -11,7 +11,7 @@ function fmdplot(obj, tabgrouptag)
         if ~isempty(obj.catalog)
             bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false); 
             ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
-            uimenu(ax.UIContextMenu,'Label','Crop To this Mc',MenuSelectedField(),{@crop_to_mc,bdiffobj});
+            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(),{@crop_to_mc,bdiffobj});
         end
         
     elseif isempty(obj.catalog)
@@ -26,13 +26,10 @@ function fmdplot(obj, tabgrouptag)
         else
             bdiffobj.RawCatalog = obj.catalog;
             bdiffobj.Calculate();
-            bdiffobj.updatePlottedCumSum();
-            bdiffobj.updatePlottedDiscreteValues();
-            bdiffobj.updatePlottedMc();
-            bdiffobj.updatePlottedBvalLine();
+            bdiffobj.updatePlot();
         end
-        ax.XLimMode='auto';
-        ax.YLimMode='auto';
+        %ax.XLimMode='auto';
+        %ax.YLimMode='auto';
         if isempty(ax.UIContextMenu)
             c = uicontextmenu(obj.fig);
             ax.UIContextMenu = c;
@@ -42,7 +39,13 @@ function fmdplot(obj, tabgrouptag)
     
     function crop_to_mc(src,ev, bdiffobj)
         % should this crop the raw catalog?
-        obj.rawcatalog = obj.rawcatalog.subset(obj.rawcatalog.Magnitude>= bdiffobj.Result.Mc_value);
-        obj.replot_all;
+        zdlg = ZmapDialog();
+        zdlg.AddEdit('mc', "Cut Magnitude [Mc:" + bdiffobj.Result.Mc_value + "]", bdiffobj.Result.Mc_value,...
+            'Choose magnitude to cut the catalog');
+        [res,okpressed] = zdlg.Create('Choose Cut Magnitude');
+        if okpressed
+            obj.rawcatalog = obj.rawcatalog.subset(obj.rawcatalog.Magnitude>= res.mc);
+            obj.replot_all;
+        end
     end
 end

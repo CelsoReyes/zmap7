@@ -75,11 +75,12 @@ function plotmainmap(obj)
     if ~isempty(obj.Grid)
         if isempty(obj.shape) && all(obj.Grid.ActivePoints(:))
             % do nothing needs to be done.
+            obj.Grid.plot(obj.map_axes, 'HitTest', 'off', 'ActiveOnly');
         else
             maskedGrid = obj.Grid.MaskWithShape(obj.shape);
             if ~isequal(maskedGrid.ActivePoints, obj.Grid.ActivePoints)
                 obj.Grid.ActivePoints = maskedGrid.ActivePoints;
-                obj.Grid.plot(obj.map_axes, 'ActiveOnly');
+                obj.Grid.plot(obj.map_axes, 'HitTest', 'off', 'ActiveOnly');
             end
         end
     end

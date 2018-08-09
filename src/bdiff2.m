@@ -22,7 +22,9 @@ classdef bdiff2 < ZmapFunction
     properties
         fBinning = 0.1; % magnitude binning
         %index_low;
+        myXLimIsConstant    logical     = false
         myXLim
+        myYLimIsConstant    logical     = false
         myYLim
         fitted % was f
         binnedEvents_reverse;% number of  events in each bin, in reverse order
@@ -43,6 +45,7 @@ classdef bdiff2 < ZmapFunction
         
         showDiscrete        matlab.lang.OnOffSwitchState  = 'on'    %show discrete events curve
         Nmin                                = 10;  % minimum number of events
+        bFitLineMaxMagCatalogPct            = 99; % bval fit line goes to the magnitude that covers THIS percentage of events (0-100)
         
         % properties to apply to the various plots
         plotProps           struct          = struct(   'Mc',struct(),...
@@ -65,16 +68,16 @@ classdef bdiff2 < ZmapFunction
             'power_fit',    'Goodness of fit to power-law', '';...
             'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
             'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
-            'index_low','','';...
-            'pr','probability','';...
-            'maxCurveMag','','';...
-            'maxCurveBval','','';...
-            'fitted','linear fit','';...  % was f
-            'cum_b_values','cumulative b-values','';...
+            'index_low',    '','';...
+            'pr',           'probability','';...
+            'maxCurveMag',  '','';...
+            'maxCurveBval', '','';...
+            'fitted',       'linear fit','';...  % was f
+            'cum_b_values', 'cumulative b-values','';...
             }, 'VariableNames', {'Names','Descriptions','Units'})
         
         ParameterableProperties = ["mc_method", "mc_auto", "nBstSample", "useBootstrapping",...
-            "doLinearityCheck", "fBinning", "showDiscrete","ax"]
+            "doLinearityCheck", "fBinning", "showDiscrete","ax","bFitLineMaxMagCatalogPct"]
         
         tags = struct(...% itemdesc, tag
             'cumevents',    'total events at or above magnitude',...
@@ -211,6 +214,9 @@ classdef bdiff2 < ZmapFunction
                 'Number of bootstraps used to estimate error');
             zdlg.AddCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',obj.doLinearityCheck,[],...
                 'tooltip');
+            zdlg.AddHeader('Bvalue Fit Line');
+            zdlg.AddEdit('bFitLineMaxMagCatalogPct','Pct of events, where Bvalue fit stops (0-100)',obj.bFitLineMaxMagCatalogPct,...
+                'The B-value fit line will stop at the magnitude represented by THIS percentage of events');
             [res, okPressed] = zdlg.Create('Mc Input Parameter');
             
             if ~okPressed
@@ -290,13 +296,22 @@ classdef bdiff2 < ZmapFunction
             
             % For ZMAP
             halfstep = obj.fBinning / 2;
-            obj.Result.index_low = find(obj.mag_bin_centers < (magco + halfstep) & obj.mag_bin_centers > (magco - halfstep));
+            obj.Result.index_low = find(obj.mag_bin_centers < (magco + halfstep) &...
+                                        obj.mag_bin_centers > (magco - halfstep));
             if isempty(obj.Result.index_low)
                 obj.Result.index_low = nan;
             end
-            mag_hi = obj.mag_bin_centers(1);
+            
+            % mag_hi = obj.mag_bin_centers(1);
+            
+            assert(obj.bFitLineMaxMagCatalogPct >=0 && obj.bFitLineMaxMagCatalogPct <=100,...
+                'Fit Percentage should be a value between 0 and 100');
+            nEventsInPercentile = ceil(catalog.Count .* (1-( obj.bFitLineMaxMagCatalogPct /100)));
+            index_hi = find(obj.cum_b_values <= nEventsInPercentile,1,'last');
+            mag_hi = obj.mag_bin_centers(index_hi);
             % index_hi = 1;
-            mz = obj.mag_bin_centers <= mag_hi & obj.mag_bin_centers >= magco-.0001;
+            mz = obj.mag_bin_centers <= mag_hi &...
+                obj.mag_bin_centers >= magco-.0001;
             mag_zone=obj.mag_bin_centers(mz);
             
             
@@ -313,8 +328,12 @@ classdef bdiff2 < ZmapFunction
             obj.fitted = 10 .^ obj.fitted;
             
             %% Error Bar Calculation -- call to pdf_calc.m
-            obj.myXLim = [min(catalog.Magnitude)-0.5  max(catalog.Magnitude)+0.5];
-            obj.myYLim = [0.9 length(catalog.Date+30)*2.5];
+            if ~obj.myXLimIsConstant
+                obj.autosetXLim();
+            end
+            if ~obj.myYLimIsConstant
+                obj.autosetYLim();
+            end
             
             obj.Result.Mc_value     = magco;
             obj.Result.Mc_std       = fStd_Mc;
@@ -393,16 +412,7 @@ classdef bdiff2 < ZmapFunction
             
             ax.YScale='log';
             ax.NextPlot='add';
-            obj.updatePlottedCumSum();
-            
-            obj.updatePlottedDiscreteValues();
-            % CALCULATE the diff in cum sum from the previous bin
-           
-            obj.updatePlottedMc();
-            obj.updatePlottedBvalLine();
-            
-            ax.XLim=obj.myXLim;
-            ax.YLim=obj.myYLim;
+            obj.updatePlot();
             
             tx = obj.descriptive_text(gBdiff);
             delete(findobj(ax,'Tag','bvaltext'));
@@ -442,6 +452,18 @@ classdef bdiff2 < ZmapFunction
             if isempty(findobj(ax.UIContextMenu.Children,'Label','info'))
                 uimenu(ax.UIContextMenu,'Separator','on',...
                     'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
+            end
+        end
+        function updatePlot(obj)
+            updatePlottedCumSum(obj);
+            updatePlottedDiscreteValues(obj);
+            updatePlottedMc(obj);
+            updatePlottedBvalLine(obj);
+            if obj.myXLimIsConstant
+                obj.ax.XLim = obj.myXLim;
+            end
+            if obj.myYLimIsConstant
+                obj.ax.YLim = obj.myYLim;
             end
         end
         
@@ -540,7 +562,7 @@ classdef bdiff2 < ZmapFunction
                 if ~obj.useBootstrapping
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
                     sol_type = char(obj.mc_method) + " solution"; %'Max Likelihood Solution';
-                    mag_text = sprintf('Magnitude of Completeness=%.2f',res.Mc_value);
+                    mag_text = sprintf('Mc=%.2f',res.Mc_value);
                 else
                     ba_text = sprintf(fmt, res.b_value, res.b_value_std, res.a_value, res.a_value_annual);
                     sol_type = string(obj.mc_method) + "solution, Uncertainties by bootstrapping";
@@ -558,8 +580,44 @@ classdef bdiff2 < ZmapFunction
             uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalogFcn});
             uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
             uimenu(c,'Label','Save values to file',MenuSelectedField(),@simple_save_cb);
-            uimenu(c,'Label','Modify Parameters for this calculation',MenuSelectedField(),@(~,~)obj.InteractiveSetup);
+            uimenu(c,'Separator','on', 'Label','Modify Parameters for this calculation...',...
+                MenuSelectedField(),@(~,~)obj.InteractiveSetup);
+            uimenu(c,'Label','Change Axes Limits...',MenuSelectedField(),@cb_axedit);
             addAboutMenuItem();
+            
+            function cb_axedit(src,ev)
+                zdlg = ZmapDialog()
+                xl = obj.ax.XLim;
+                yl = obj.ax.YLim;
+                zdlg.AddCheckbox('fixedX','Fixed X axis?',obj.myXLimIsConstant,{}, '');
+                zdlg.AddEdit('xlmin','Min Mag',xl(1),'');
+                zdlg.AddEdit('xlmax','Max Mag',xl(2),'');
+                zdlg.AddCheckbox('fixedY','Fixed Y axis?',obj.myYLimIsConstant,{}, '');
+                zdlg.AddEdit('ylmin','Min Count',yl(1),'');
+                zdlg.AddEdit('ylmax','Max Count',yl(2),'');
+                [res,okpressed]=zdlg.Create('Axes limits for FMD');
+                if ~okpressed
+                    return
+                end
+                
+                obj.myXLimIsConstant = res.fixedX;
+                if res.fixedX
+                    obj.myXLim = [res.xlmin, res.xlmax];
+                else
+                    obj.autosetXLim();
+                end
+                obj.ax.YLim = obj.myYLim;
+                
+                obj.myYLimIsConstant = res.fixedY;
+                if res.fixedY
+                    obj.myYLim = [res.ylmin, res.ylmax];
+                else
+                    obj.autosetYLim();
+                end
+                obj.ax.YLim = obj.myYLim;
+                    
+                
+            end
             
             function catalog = catalogFcn()
                 catalog = obj.RawCatalog;
@@ -621,6 +679,7 @@ classdef bdiff2 < ZmapFunction
             Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.Result.Mc_value);
             assignin('base','Results_NonlinearityAnalysis',Results);
         end
+        
             
     end
     methods(Access=private)
@@ -631,6 +690,13 @@ classdef bdiff2 < ZmapFunction
                 n = gBdiff.n1+gBdiff.n2;
                 da = -2*n*log(n) + 2*gBdiff.n1*log(gBdiff.n1+gBdiff.n2*gBdiff.b1/gBdiff.b2) + 2*gBdiff.n2*log(gBdiff.n1*gBdiff.b2/gBdiff.b1+gBdiff.n2) -2;
                 pr = exp(-da/2-2);
+        end
+        function autosetXLim(obj)
+            obj.myXLim = [min(obj.RawCatalog.Magnitude)-0.5  max(obj.RawCatalog.Magnitude)+0.5];
+        end
+        
+        function autosetYLim(obj)
+            obj.myYLim = [0.9 length(obj.RawCatalog.Date+30)*2.5];
         end
     end
     
