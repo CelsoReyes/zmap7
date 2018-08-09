@@ -209,7 +209,6 @@ classdef (Sealed) CumTimePlot < handle
             uimenu(op5C,'Label','Hr of the day',...
                 MenuSelectedField(),@(~,~)hisgra(obj.catview,'Hour'));
             
-            % add_menu_catalog(obj.catname, obj.viewname, false, fig);
             add_cumtimeplot_zmenu(obj, mm)
             addAboutMenuItem(fig);
         end

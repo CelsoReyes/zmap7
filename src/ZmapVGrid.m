@@ -13,7 +13,7 @@ classdef ZmapVGrid < ZmapGrid
             v=deg2km(distance([obj.Y(1) obj.X(1)],[obj.Y(1:end-1) obj.X(1:end-1)]));
         end
         function v = get.d_km_active(obj)
-            v=obj.d_km(obj.ActivePoints(1:end-1)); % TOFIX all this end-1 stuff!
+            v=obj.d_km(obj.ActivePoints(1:end-1)); % FIXME all this end-1 stuff!
         end
         
         function obj=ZmapVGrid(varargin)

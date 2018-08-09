@@ -470,7 +470,7 @@ function showInTab(obj, ax, choice)
                     uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
                         MenuSelectedField(),@(~,~)overlay_cb(tmpname));
-                    %MenuSelectedField(),@(~,~)plot_cb(tmpname)); %TOFIX just replot the layer
+                    %MenuSelectedField(),@(~,~)plot_cb(tmpname)); %FIXME just replot the layer
                 end
                 container.Children(end-1).Separator='on';
             end

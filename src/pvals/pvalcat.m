@@ -133,7 +133,7 @@ function pvalcat(catalog)
     frfr = [frf2(1) frf frf2(2)];
     tavgr = [tint(1) days(tavg) tint(2)];
     
-    %TOFIX: this works, but seems to plot incorrectly
+    %FIXME: this works, but seems to plot incorrectly
     
     llh1=loglog(tavg, ratac, '-k','LineStyle', 'none', 'Marker', '+','MarkerSize',9);
     set(gca,'NextPlot','add')

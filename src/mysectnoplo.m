@@ -6,7 +6,7 @@ function [xsecx,xsecy, inde] = mysectnoplo(eqlat,eqlon,depth,width,length,...
     report_this_filefun();
     
     
-    %TODO fix the global situation, incoming parameters cannot match globals directly. -CGR
+    %TODO untangle the global situation, incoming parameters cannot match globals directly. -CGR
     global  torad
     global sine_phi0 lambda0  sw eq1
     global maxlatg minlatg maxlong minlong

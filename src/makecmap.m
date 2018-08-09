@@ -44,7 +44,7 @@ function makecmap(bins,fighandle)
     %             colin@salk.edu
     %
     
-    %TODO fix confusing global situation -CGR
+    % TODO untangle the confusing global situation -CGR
     
     %report_this_filefun();
     

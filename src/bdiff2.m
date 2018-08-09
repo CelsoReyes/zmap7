@@ -706,13 +706,14 @@ classdef bdiff2 < ZmapFunction
             mc_autos = enumeration('McAutoEstimate');
             magBinOpts = [0.1 0.2 0.25 0.5];
             
-            fn.mc_method = @() McMethods(randi(numel(mc_methods)));
-            fn.mc_auto = @() McAutoEstimate(randi(numel(mc_autos)));
-            fn.nBstSample = @() randi(600);
-            fn.useBootstrapping = @() randi(3)== 1;
-            fn.doLinearityCheck = @() randi(2)== 1;
-            fn.fBinning = @() magBinOpts(randi(size(magBinOpts)));
-            fn.showDiscrete = @() logical(randi(2)-1);
+            % functions that provide valid random values to the 
+            changeFcn.mc_method = @() McMethods(randi(numel(mc_methods)));
+            changeFcn.mc_auto = @() McAutoEstimate(randi(numel(mc_autos)));
+            changeFcn.nBstSample = @() randi(600);
+            changeFcn.useBootstrapping = @() randi(3)== 1;
+            changeFcn.doLinearityCheck = @() randi(2)== 1;
+            changeFcn.fBinning = @() magBinOpts(randi(size(magBinOpts)));
+            changeFcn.showDiscrete = @() logical(randi(2)-1);
             
             paramTypes = {'string', 'McAutoEstimate', 'double', 'logical','logical','double','logical'};
             resultsFields = {'Mc_value','Mc_std', 'b_value', 'b_value_std', 'a_value',...
@@ -720,14 +721,14 @@ classdef bdiff2 < ZmapFunction
             resultsTypes  = {'double','double','double','double','double','double','double','double', 'double','double','double','duration'};
             nTrials = 50;
             
-            tb = table('Size',[nTrials, numel(fieldnames(fn))+numel(resultsFields)],...
+            tb = table('Size',[nTrials, numel(fieldnames(changeFcn))+numel(resultsFields)],...
                 'VariableTypes', [paramTypes resultsTypes],...
-                'VariableNames',[fieldnames(fn); resultsFields]);
+                'VariableNames',[fieldnames(changeFcn); resultsFields]);
             for i=1: nTrials
                 nPropsToChange = randi(4);
                 for j=1:nPropsToChange
                     propToChange = permutable(randi(numel(permutable)));
-                    bd.(propToChange) = fn.(propToChange)();
+                    bd.(propToChange) = changeFcn.(propToChange)();
                 end
 
                 tb(i,1:numel(paramTypes)) = {string(bd.mc_method), bd.mc_auto, bd.nBstSample, bd.useBootstrapping, ...

@@ -80,7 +80,7 @@ function h=hisgra(mycat, opt, ax)
             uimenu(c,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
             uimenu(c,'Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
             uimenu(c,'Label','Default',MenuSelectedField(),@cb_reset);
-            uimenu(c,'Label','Open as new figure',MenuSelectedField(),@open_as_new_fig); %TOFIX
+            uimenu(c,'Label','Open as new figure',MenuSelectedField(),@open_as_new_fig); %FIXME
             addcontext(opt,c);
             ax.UIContextMenu=c;
         else

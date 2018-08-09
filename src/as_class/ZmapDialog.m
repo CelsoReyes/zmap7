@@ -239,7 +239,7 @@ classdef ZmapDialog < handle
             % ADDRADIOGROUP(obj, tag, grouplabel, radiolabels, default tooltips)
             % ADDRADIOGROUP(..., conversionFcn)
             % 
-            % TOFIX: implementing this would require that heights be reconsidered.
+            % FIXME: implementing this would require that heights be reconsidered.
             
             if ~exist('conversion_function','var') || isempty(conversion_function)
                 conversion_function = @(x)x;

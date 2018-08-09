@@ -1,34 +1,28 @@
 function uimemorize_catalog(catalog)
     % uimemorize_catalog manages access to a temporarily stored version of the catalog
     %
-    % see also memorize_recall_catalog
-    
-    ZG = ZmapGlobal.Data;
-    hasMemorized = ~isempty(ZG.memorized_catalogs);
+    % see also MemorizedCatalogManager
+    mcm = MemorizedCatalogManager();
+    hasMemorized = ~isempty(mcm);
     if ~exist('catalog','var')
-        catalog=ZG.primeCatalog;
+        ZG=ZmapGlobal.Data;
+        catalog = ZG.primeCatalog;
     end
+    
     if hasMemorized
-
-        % don't bother if catalogs are the same
-        if strcmp(ZG.memorized_catalogs.summary('stats'),...
-            catalog.summary('stats'))
-            todo='Cancel';
-            disp('Ignoring. catalog matches already memorized catalog.')
-        else
         % ask to memorize new catalog, or recall existing catalog
-        todo=questdlg(['Memorize "',catalog.Name ,'?',...
-            newline, newline, 'MEMORIZE will replace currently memorized catalog:', newline,...
-            ZG.memorized_catalogs.summary('simple'), newline, newline...
-            'with:', newline,...
-            catalog.summary('simple') ],'Memorize Catalog','Memorize','Cancel','Cancel');
-        end
+        msg = sprintf("Memorize %s ?\n\n"+...
+            "MEMORIZE will replace currently memorized catalog:\n%s\n\nwith:\n%s",...
+        	catalog.Name, mcm.info(), catalog.summary('simple'));
+        
+        todo=questdlg( msg,'Memorize Catalog', 'Memorize', 'Cancel','Cancel');
     else
         todo='Memorize';
     end
+    
     switch todo
         case 'Memorize'
-            ZG.memorized_catalogs = catalog;
+            mcm.memorize(catalog)
             h=msgbox_nobutton(['Catalog ' catalog.Name ' has been Memorized.    '],'Memorize Catalog');
             set(findobj(h,'Style','pushbutton'),'Enable','off');
             h.delay_for_close(1);

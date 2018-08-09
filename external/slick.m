@@ -90,7 +90,7 @@ function [varargout] = slick(coords)
 
 	% solve equations via linear least squares
 	[stress, sigma]=leasq(amat,slick_vec_el_vec);
-	% fix zz element by using trace = 0
+	% correct zz element by using trace = 0
 	stress(6)= -(stress(1)+stress(4));
 
 	% put stress tensor into tensor form

@@ -311,7 +311,7 @@ function create_all_menus(obj, force)
         uimenu(submenu,'Label','Plot Topography on main map',MenuSelectedField(),@add_topography_to_main_map);
         uimenu(submenu,'Label','Plot Swiss Topography on main map',MenuSelectedField(),{@add_topography_to_main_map,'CH'});
         return
-        % the following need to be found/fixed
+        % FIXME the following need to be found and fixed
         uimenu(submenu,'Label','Open DEM GUI',MenuSelectedField(), @(~,~)zmaptopo.prepinp());
         uimenu(submenu,'Label','3 arc sec resolution (USGS DEM)',MenuSelectedField(), @(~,~)pltopo('lo3'));
         uimenu(submenu,'Label','30 arc sec resolution (GLOBE DEM)',MenuSelectedField(), @(~,~)pltopo('lo1'));

@@ -1287,12 +1287,12 @@ switch params.Subset
 
             % any points which fell below the minimum element in data2
             % will have a zero for the index of the element on their
-            % left. fix this.
+            % left. correct this.
             leftelement = max(1,leftelement);
 
             % likewise, any point greater than the max in data2 will
             % have an n2 in left element. this too will be a problem
-            % later, so fix it.
+            % later, so correct it.
             leftelement = min(n2-1,leftelement);
 
             % distance to the left hand element

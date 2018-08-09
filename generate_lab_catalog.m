@@ -44,12 +44,12 @@ C.Rake=nan(C.Count,1);
 clear dates mmX mmY mmZ dt mag mags magadjust
 disp('now, replace a catalog with C. for example ZG.primeCatalog=C');
 
-%% TOFIX
+%% FIXME
 % To get this working properly, there appears to be a couple things needed:
 
-% TOFIX size of markers is ridiculously large for large negative events.
+% FIXME size of markers is ridiculously large for large negative events.
 %  marker size should perhaps be relative to smallest events.  Additionally, for many-many events
 % perhaps default to a simple dot marker.
 %
-% TOFIX Short time scales don't look nice on the plots.
-% TOFIX building a new catalog might not change ZG.maepi.
+% FIXME Short time scales don't look nice on the plots.
+% FIXME building a new catalog might not change ZG.maepi.

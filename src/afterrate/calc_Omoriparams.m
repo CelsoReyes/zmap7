@@ -19,7 +19,7 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     % updated: 11.03.04
     % 2017 Celso Reyes
 
-    %TODO fix the time periods from decyear to days or dates
+    %TODO change the time periods from decyear to days or dates
     report_this_filefun();
     timef = days(0); % This is needed since no forecast is calculated here!! JW
 

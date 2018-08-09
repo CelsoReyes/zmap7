@@ -1,6 +1,6 @@
 function catalog_menu(obj, force)
-    % add_menu_catalog was create_catalog_menu adds a menu designed to handle catalog modifications
-    % add_menu_catalog(mycatalog, force, handle)
+    % catalog_menu was create_catalog_menu adds a menu designed to handle catalog modifications
+    % catalog_menu(mycatalog, force, handle)
     % mycatalog is a name of the ZmapGlobal.Data field containing a ZmapCatalog
     % myview is a name of the ZmapGlobal.Data.View field containing a ZmapCatalogView
     %
@@ -26,7 +26,6 @@ function catalog_menu(obj, force)
     % to find this menu, use findobj(obj.fig, 'Tag');
     
     %mycatalog = 'primeCatalog';
-    disp('called ZmapMainWindow version of add_menu_catalog')
     ZG = ZmapGlobal.Data; % for use in all subroutines
     h = findobj(obj.fig,'Tag','menu_catalog');
     if ~exist('force','var')
@@ -96,18 +95,37 @@ function catalog_menu(obj, force)
         MenuSelectedField(),@(~,~)inpudenew(obj.catalog))
     
     function cb_recall(~,~)
-        try
-            obj.rawcatalog=memorize_recall_catalog();
+        mcm = MemorizedCatalogManager;
+        if ~isempty(mcm) && any(mcm.list=="default")
+            obj.rawcatalog = mcm.recall();
+            
             [obj.mshape,obj.mdate]=obj.filter_catalog();
             obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
             obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
-        catch ME
-            warning(ME.message);
+            
+            hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
+            hh.delay_for_close(1);
+        else
+            warndlg('No catalog is currently memorized','Recall Catalog');
         end
     end
     
     function cb_memorize(~,~)
-        memorize_recall_catalog(obj.catalog);
+        mcm = MemorizedCatalogManager;
+        mcm.memorize(obj.catalog);
+        hh=msgbox_nobutton('The catalog has been memorized.','Memorize Catalog');
+        hh.delay_for_close(1);
+    end
+    
+    function cb_clearmemorized(~,~)
+        mcm = MemorizedCatalogManager;
+        if isempty(mcm) || ~any(mcm.list=="default")
+            warndlg('No catalogs are currently memorized','Clear Memorized Catalog');
+        else
+            mcm.remove();
+            hh=msgbox_nobutton('The memorized catalog has been cleared.','Clear Memorized Catalog');
+            hh.delay_for_close(1);
+        end
     end
     
     function [catalog,ok]=cb_catalog_from_workspace(opt, fn)
@@ -194,15 +212,6 @@ function catalog_menu(obj, force)
         obj.catalog.Name=newname;
     end
     
-    function cb_clearmemorized(~,~)
-        if isempty(ZG.memorized_catalogs)
-            msg='No catalogs are currently memorized';
-        else
-            msg='The memorized catalog has been cleared.';
-        end
-        ZG.memorized_catalogs=[];
-        msgbox(msg,'Clear Memorized');
-    end
     
     function cb_combinecatalogs(~,~)
         ZG.newcat=comcat(ZG.Views.(myview));
