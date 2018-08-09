@@ -10,7 +10,7 @@ function cumplot(obj, tabgrouptag)
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'cumplot');
     ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
     if isempty(ax)
-        ax=axes(myTab);
+        ax            = axes(myTab);
         ax.TickDir    = 'out';
         ax.YMinorTick = 'on';
         ax.Box        = 'on';

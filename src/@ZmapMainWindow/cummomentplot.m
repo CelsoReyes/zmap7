@@ -10,12 +10,12 @@ function cummomentplot(obj,tabgrouptag)
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'Moment');
     ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
     if isempty(ax)
-        ax=axes(myTab);
-        ax.TickDir='out';
-        ax.YMinorTick='on';
-        ax.Box='on';
-        ax.Tag=Tags.ax;
-        ax.UserData = CumMomentAnalysisWindow(ax);
+        ax              = axes(myTab);
+        ax.TickDir      = 'out';
+        ax.YMinorTick   = 'on';
+        ax.Box          = 'on';
+        ax.Tag          = Tags.ax;
+        ax.UserData     = CumMomentAnalysisWindow(ax);
         grid(ax, 'on');
     end
     craw = ax.UserData;
@@ -82,7 +82,7 @@ function cummomentplot(obj,tabgrouptag)
         xsProps.LineWidth   = 1.5;
         xsProps.DisplayName = xs.name;
         xsProps.Color       = xs.color;
-        mytag               = ['Xsection cumplot ' xs.name];
+        mytag               = ['Xsection cummomplot ' xs.name];
         h = craw.add_series(xscat, mytag, xsProps);
        
     end

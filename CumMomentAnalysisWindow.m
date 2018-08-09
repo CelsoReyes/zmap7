@@ -9,7 +9,9 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         
         function prepare_axes(obj)
             % prepare the moment release axes
-            obj.ax.Tag = 'dvMoment';
+            if isempty(obj.ax.Tag)
+                obj.ax.Tag = 'dvMoment';
+            end
             obj.ax.Title.String='Cum Moment Release';
             obj.ax.XLabel.String='time';
             obj.ax.YLabel.String='Cumulative Moment [nm]'; %units as per calc_moment
