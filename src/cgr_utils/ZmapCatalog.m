@@ -7,11 +7,11 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     %
     %   Longitude - Longitude (Deg) of each event
     %   Latitude - Latitude (Deg) of each event
-    %   Depth -  Depth (km) of events 
+    %   Depth -  Depth (km) of events
     %
     %   Magnitude - Magnitude of each event
     %   MagnitudeType - Magnitude[unit of each event
-    % 
+    %
     %    Dip         - unused?
     %    DipDirection - unused?
     %    Rake - unused?
@@ -24,7 +24,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     %   DateSpan - duration between first and last events in catalog
     %
     % ZmapCatalog methods:
-    %   
+    %
     %   ZmapCatalog -  create an empty ZmapCatalog, or from an array
     %
     %   isempty - returns true if catalog contains no events
@@ -56,7 +56,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     %   * Filtering methods have been outsourced into the ZmapCatalogView class.
     %
     %   getCropped - apply filters to get a NEW smaller ZmapCatalog
-    % 
+    %
     %   Sorting Methods:
     %
     %   sort - sort the catalog according to a field, either ascending or descending
@@ -64,7 +64,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     %
     %   Spatial Methods:
     %
-    %   epicentralDistanceTo - get distance (km) to a point, considering only Lat/Lon. 
+    %   epicentralDistanceTo - get distance (km) to a point, considering only Lat/Lon.
     %   hypocentralDistanceTo - get distance (km) to a point, taking depth into consideration
     %   selectClosestEvents - return a catalog containing only N closest events
     %   selectRadius - return a catalog containing only events within a radius
@@ -74,29 +74,29 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         Date datetime        % date and time of event (capable of storing data to microseconds)
         Longitude double   % Longitude (Deg) of each event
         Latitude  double   % Latitude (Deg) of each event
-        Depth double      % Depth (km) of events 
+        Depth double      % Depth (km) of events
         Magnitude double  % Magnitude of each event
-        MagnitudeType categorical % Magnitude units, such as M, ML, MW, etc. 
+        MagnitudeType categorical % Magnitude units, such as M, ML, MW, etc.
         Dip         % unused?
         DipDirection % unused?
         Rake % unused?
         MomentTensor table = table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
-        % additions to this table need to be also added to a bunch of functions: 
-        %    summary (?), getCropped, sort, subset, 
+        % additions to this table need to be also added to a bunch of functions:
+        %    summary (?), getCropped, sort, subset,
     end
     
     properties(SetObservable,AbortSet)
         Name (1,:) char        % name of this catalog. Used when labeling plots
         Filter logical     % logical Filter used for getting a subset of events
-        IsSortedBy char = '' % describes sort order
-        SortDirection char = '' %describes sorting direction
+        IsSortedBy char     = '' % describes sort order
+        SortDirection char  = '' %describes sorting direction
     end
     
     properties(Dependent)
         DecimalYear % read-only
         DayOfYear % read-only
         Count % read-only number of events in catalog
-        DateSpan % read-only duration 
+        DateSpan % read-only duration
     end
     
     properties(Constant)
@@ -106,7 +106,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     events
         ValueChange
     end
-        
+    
     
     methods
         
@@ -124,16 +124,16 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             if nargin==0
                 %donothing
             elseif nargin==1 && ischar(varargin{1})
-                obj.Name=varargin{1};
+                obj.Name = varargin{1};
             elseif istable(varargin{1})
                 vn = varargin{1}.Properties.VariableNames;
                 if any(vn == "Date")
-                    vn(vn == "DecimalYear")=[];
-                    vn(vn == "DayOfYear") = [];
+                    vn(vn == "DecimalYear") = [];
+                    vn(vn == "DayOfYear")   = [];
                 end
                 for i=1:numel(vn)
                     try
-                        obj.(vn{i})=varargin{1}.(vn{i});
+                        obj.(vn{i}) = varargin{1}.(vn{i});
                     catch ME
                         fprintf('Error interpreting field: %s\n',vn{i});
                         warning(ME.message);
@@ -142,23 +142,23 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 if isempty(obj.MagnitudeType)
                     obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
                 end
-                obj.Name = varargin{1}.Properties.Description;
-                pu = varargin{1}.Properties.VariableUnits;
+                obj.Name    = varargin{1}.Properties.Description;
+                pu          = varargin{1}.Properties.VariableUnits;
                 
                 % automatically convert depth units
                 if ~isempty(pu) && ~isempty(pu(vn=="Depth"))
-                    units = validateLengthUnit(pu{vn=="Depth"});
-                    obj.Depth=unitsratio('kilometers',units) * obj.Depth;
+                    units       = validateLengthUnit(pu{vn=="Depth"});
+                    obj.Depth   = unitsratio('kilometers',units) * obj.Depth;
                 end
-                    
+                
                 
             elseif isnumeric(varargin{1})
                 % import Catalog from Array
                 nCols = size(varargin{1},2);
                 fprintf(['importing from old catalog array with %d columns and %d events:\n'...
                     '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(varargin{1},1));
-                obj.Longitude = varargin{1}(:,1);
-                obj.Latitude = varargin{1}(:,2);
+                obj.Longitude   = varargin{1}(:,1);
+                obj.Latitude    = varargin{1}(:,2);
                 if all(varargin{1}(:,3) < 100)
                     varargin{1}(:,3) = varargin{1}(:,3)+1900;
                     errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
@@ -170,25 +170,25 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         varargin{1}(:,[4,5,8,9]),...
                         zeros(nRows,1)]);
                 else
-                    obj.Date = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
+                    obj.Date        = datetime([floor(varargin{1}(:,3)), varargin{1}(:,[4,5,8,9,10])]);
                 end
-                obj.Depth = varargin{1}(:,7);
-                obj.Magnitude = varargin{1}(:,6);
+                obj.Depth           = varargin{1}(:,7);
+                obj.Magnitude       = varargin{1}(:,6);
                 
-                obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
-                obj.Dip = nan(obj.Count,1);
-                obj.DipDirection = nan(obj.Count,1);
-                obj.Rake = nan(obj.Count,1);
+                obj.MagnitudeType   = repmat(categorical({''}),size(obj.Magnitude));
+                obj.Dip             = nan(obj.Count,1);
+                obj.DipDirection    = nan(obj.Count,1);
+                obj.Rake            = nan(obj.Count,1);
                 
                 if nargin==2 && ischar(varargin{2})
-                    obj.Name = varargin{2};
+                    obj.Name        = varargin{2};
                 end
                 
             elseif isa(varargin{1},'ZmapCatalog')
                 % force a copy
-                idx=true(varargin{1}.Count,1);
-                obj = varargin{1}.subset(idx);
-                obj.Name=varargin{1}.Name;
+                idx      = true(varargin{1}.Count,1);
+                obj      = varargin{1}.subset(idx);
+                obj.Name = varargin{1}.Name;
             end
             obj.Filter=true(size(obj.Longitude));
             
@@ -198,7 +198,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function propval = get.Count(obj)
             % number of events
             if numel(obj)==0
-                propval=0;
+                propval = 0;
             else
                 propval = numel(obj.Longitude);
             end
@@ -209,7 +209,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function out = get.DateSpan(obj)
             % dspan = obj.DateSpan  returns difference between min & max dates
-            out=max(obj.Date) - min(obj.Date);
+            out = max(obj.Date) - min(obj.Date);
             if days(out)>5
                 out.Format = 'd';
             end
@@ -223,13 +223,14 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         end
         
         function set.MomentTensor(obj, value)
+            MomentTensorColumns = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
             if istable(value)
-                assert(isequal(value.Properties.VariableNames,{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'}));
-                obj.MomentTensor=value;
+                assert(isequal(value.Properties.VariableNames,MomentTensorColumns));
+                obj.MomentTensor = value;
             elseif isnumeric(value)
-                assert(size(value,2)==6,'expect moment tensors to have 6 columns: mrr, mtt, mff, mrt, mrf, mtf');
-                % assert(size(value,1)==obj.Count,'# of moment tensors must match catalog size.');
-                obj.MomentTensor=array2table(value,'VariableNames',{'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'});
+                assert(size(value,2) == 6,...
+                    'expect moment tensors to have 6 columns %s:', strjoin(MomentTensorColumns,', '));
+                obj.MomentTensor     = array2table(value, 'VariableNames', MomentTensorColumns);
             end
         end
         
@@ -268,7 +269,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
         end
         
-        function TF=isempty(obj)
+        function TF = isempty(obj)
             % ISEMPTY is true when there are no events in the catalog
             % tf = ISEMPTY(catalog)
             TF = numel(obj)==0 || obj.Count == 0;
@@ -299,24 +300,26 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % TABLE write catalog as a table.
             %
             warning('off', 'MATLAB:structOnObject');
-            st=struct(obj);
+            st       = struct(obj);
             warning('on', 'MATLAB:structOnObject');
-            flds=fieldnames(st);
+            flds     = fieldnames(st);
             % to  convert to a table, all fields must be of same length
             % but some fields aren't individual to events.
-            todelete=structfun(@(x)numel(x)~=st.Count , st);
-            st=rmfield(st,flds(todelete));
-            tbl = struct2table(st);
+            todelete = structfun(@(x)numel(x)~=st.Count , st);
+            st       = rmfield(st,flds(todelete));
+            tbl      = struct2table(st);
             tbl.Properties.Description = obj.Name;
         end
         
-        function s =  summary(obj, verbosity)
+        function s = summary(obj, verbosity)
             % SUMMARY return a summary of this catalog
             % valid verbosity values: 'simple', 'stats'
             
+            tFmt = 'uuuu-MM-dd HH:mm:ss';
+            
             % add additional ways to look at catalog if it makes sense
             if ~exist('verbosity','var')
-                verbosity='';
+                verbosity = '';
             end
             if numel(obj) > 1
                 s = sprintf('%d Catalogs',numel(obj));
@@ -330,14 +333,14 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             
             switch verbosity
                 case 'simple'
-                    minti = min( obj.Date );
-                    maxti  = max( obj.Date );
-                    minma = min(obj.Magnitude);
-                    maxma = max(obj.Magnitude);
-                    mindep = min(obj.Depth);
-                    maxdep = max(obj.Depth);
-                    mtypes=cat2mtypestring();
-                    fmtstr = [...
+                    minti   = min( obj.Date );
+                    maxti   = max( obj.Date );
+                    minma   = min(obj.Magnitude);
+                    maxma   = max(obj.Magnitude);
+                    mindep  = min(obj.Depth);
+                    maxdep  = max(obj.Depth);
+                    mtypes  = cat2mtypestring();
+                    fmtstr  = [...
                         'Catalog "%s" with %d events\n',...
                         'Start Date: %s\n',...
                         'End Date:   %s\n',...
@@ -345,17 +348,17 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         'Magnitudes: %2.1f <= M <= %2.1f\n',...
                         'MagnitudeTypes: %s'];
                     s = sprintf(fmtstr, obj.Name, obj.Count, ...
-                        char(minti,'uuuu-MM-dd HH:mm:ss'),...
-                        char(maxti,'uuuu-MM-dd HH:mm:ss'),...
+                        char(minti,tFmt),...
+                        char(maxti,tFmt),...
                         mindep, maxdep,...
                         minma, maxma,mtypes);
                 case 'stats'
-                    minti = min( obj.Date );
-                    maxti  = max( obj.Date );
-                    minma = min(obj.Magnitude);
-                    maxma = max(obj.Magnitude);
-                    mindep = min(obj.Depth);
-                    maxdep = max(obj.Depth);
+                    minti   = min( obj.Date );
+                    maxti   = max( obj.Date );
+                    minma   = min(obj.Magnitude);
+                    maxma   = max(obj.Magnitude);
+                    mindep  = min(obj.Depth);
+                    maxdep  = max(obj.Depth);
                     
                     fmtstr = [...
                         'Catalog "%s"\nNumber of events: %d\n',...
@@ -368,49 +371,48 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         '  %s\n',...
                         'Magnitude Types: %s'];
                     
-                    mean_int = mean(diff(obj.Date));
-                    median_int = median(diff(obj.Date));
-                    std_int = std(diff(obj.Date));
-                    mean_int.Format = 'd';
-                    median_int.Format = 'd';
-                    std_int.Format = 'd';
+                    mean_int    = mean(diff(obj.Date));
+                    median_int  = median(diff(obj.Date));
+                    std_int     = std(diff(obj.Date));
+                    mean_int.Format     = 'd';
+                    median_int.Format   = 'd';
+                    std_int.Format      = 'd';
                     if std_int < 10
-                        std_int.Format = 'hh:mm:ss';
+                        std_int.Format      = 'hh:mm:ss';
                     end
                     if mean_int < 10
-                        mean_int.Format = 'hh:mm:ss';
+                        mean_int.Format     = 'hh:mm:ss';
                     end
                     if median_int < 10
-                        median_int.Format = 'hh:mm:ss';
+                        median_int.Format   = 'hh:mm:ss';
                     end
                     s = sprintf(fmtstr, obj.Name, obj.Count, ...
-                        char(minti,'uuuu-MM-dd HH:mm:ss'),...
-                        char(maxti,'uuuu-MM-dd HH:mm:ss'),...
-                        sprintf('mean interval: %s ±std %s , median int: %s',mean_int, std_int, median_int),...
+                        char(minti, tFmt),...
+                        char(maxti, tFmt),...
+                        sprintf('mean interval: %s ±std %s , median int: %s', mean_int, std_int, median_int),...
                         mindep, maxdep,...
-                        sprintf('mean: %.3f ±std %.3f , median: %.3f',mean(obj.Depth), std(obj.Depth), median(obj.Depth)),...
+                        sprintf('mean: %.3f ±std %.3f , median: %.3f', mean(obj.Depth), std(obj.Depth), median(obj.Depth)),...
                         minma, maxma,...
-                        sprintf('mean: %.2f ±std %.2f , median: %.2f',mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)),...
+                        sprintf('mean: %.2f ±std %.2f , median: %.2f', mean(obj.Magnitude), std(obj.Magnitude), median(obj.Magnitude)),...
                         cat2mtypestring());
                 case 'list'
-                    fprintf('Catalog "%s" with %d events\n',obj.Name, obj.Count);
+                    fprintf('Catalog "%s" with %d events\n', obj.Name, obj.Count);
                     fprintf('Date                      Lat       Lon   Dep(km)    Mag  MagType\n');
                     for n=1:obj.Count
-                        fmtstr = '%s  %8.4f  %9.4f   %6.2f   %4.1f   %s\n';
-                        mt = obj.MagnitudeType(n);
+                        fmtstr  = '%s  %8.4f  %9.4f   %6.2f   %4.1f   %s\n';
+                        mt      = obj.MagnitudeType(n);
                         fprintf( fmtstr, char(obj.Date(n),'uuuu-MM-dd HH:mm:ss'),...
-                            obj.Latitude(n), obj.Longitude(n),...
-                            obj.Depth(n), obj.Magnitude(n), mt);
+                            obj.Latitude(n), obj.Longitude(n), obj.Depth(n), obj.Magnitude(n), mt);
                     end
                 otherwise
                     s = sprintf('Catalog "%s", containing %d events', obj.Name, obj.Count);
             end
-            function mtypes=cat2mtypestring()
+            function mtypes = cat2mtypestring()
                 % CAT2MTYPESTRING returns a string representation of the catalog type
                 % mtypes = CAT2MTYPESTRING()
-                mtypes=strjoin(categories(unique(obj.MagnitudeType)),',');
+                mtypes = strjoin(categories(unique(obj.MagnitudeType)), ',');
                 if isempty(mtypes)
-                    mtypes='-none-';
+                    mtypes = '-none-';
                 end
             end
         end
@@ -453,25 +455,25 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             if isempty(obj.Filter)
                 obj.clearFilter();
             end
-            obj.IsSortedBy=field;
-            obj.SortDirection=direction;
+            obj.IsSortedBy      = field;
+            obj.SortDirection   = direction;
         end
         
-        function other=sortedByDistanceTo(obj, lat, lon, depth)
+        function other = sortedByDistanceTo(obj, lat, lon, depth)
             % SORTEDBYDISTANCE returns a catalog that has been sorted by distance to a point
             % ans=catalog.SORTEDBYDISTANCE(lat, lon) % epicentral sort
             % ans=catalog.SORTEDBYDISTANCE(lat, lon, depth) % hypocentral sort to surface
             %
             % does NOT modify original
             if ~exist('depth','var')
-                dists= obj.epicentralDistanceTo(lat, lon);
+                dists = obj.epicentralDistanceTo(lat, lon);
             else
-                dists= obj.hypocentralDistanceTo(lat, lon, depth);
+                dists = obj.hypocentralDistanceTo(lat, lon, depth);
             end
-            [~,idx]=sort(dists);
-            other=obj.subset(idx);
-            other.IsSortedBy='distance';
-            other.SortDirection='ascending';
+            [~,idx]   = sort(dists);
+            other     = obj.subset(idx);
+            other.IsSortedBy    = 'distance';
+            other.SortDirection = 'ascending';
         end
         
         function [other, max_km] = selectClosestEvents(obj, lat, lon, depth, n)
@@ -492,23 +494,23 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             sorted_dists = sort(dists_km);
             n = min(n, numel(sorted_dists));
             if n>0
-                max_km = sorted_dists(n);
+                max_km  = sorted_dists(n);
             else
-                max_km=0;
+                max_km  = 0;
             end
-            mask = dists_km <= max_km;
-            other = obj.subset(mask);
+            mask        = dists_km <= max_km;
+            other       = obj.subset(mask);
         end
         
         function [other,max_km] = selectRadius(obj, lat, lon, depth, RadiusKm)
-            %SELECTRADIUS  select subset catalog to a radius from a point 
+            %SELECTRADIUS  select subset catalog to a radius from a point
             % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, dist_km) epicentral radius from a point. sortorder is preserved
             % [catalog,max_km] = catalog.SELECTRADIUS(lat, lon, depth, dist_km) hypocentral radius from a point. sortorder is preserved
             %
             % see also selectClosestEvents, selectCircle
             if ~exist('RadiusKm','var')
-                RadiusKm=depth;
-                depth=[];
+                RadiusKm = depth;
+                depth    = [];
             end
             if isempty(depth)
                 dists_km = obj.epicentralDistanceTo(lat, lon);
@@ -519,9 +521,9 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);
             if ~any(mask)
-                max_km=0;
+                max_km = 0;
             else
-                max_km= max(dists_km(mask));
+                max_km = max(dists_km(mask));
             end
         end
         
@@ -540,33 +542,35 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %    * maxRadiusKm
             %   X, Y, Z : coordinates of a point.  Z may be empty [].
             %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
-            %               
+            %
             %
             % see also selectClosestEvents, selectRadius
             assert(isstruct(selcrit),'SELCRIT should be a structure');
             
             % make sure the required selection fields exist
             if ~isfield(selcrit,'UseNumNearbyEvents')
-                selcrit.UseNumNearbyEvents=isfield(selcrit,'NumNearbyEvents');
+                selcrit.UseNumNearbyEvents = isfield(selcrit,'NumNearbyEvents');
             end
             if ~isfield(selcrit,'UseEventsInRadius')
-                selcrit.UseEventsInRadius=isfield(selcrit,'RadiusKm');
+                selcrit.UseEventsInRadius = isfield(selcrit,'RadiusKm');
             end
             if selcrit.UseEventsInRadius
-                assert(isfield(selcrit,'RadiusKm'),'Error: UseEventsInRadius was true, but no radius [RadiusKm] was specified');
+                assert(isfield(selcrit,'RadiusKm'),...
+                    'Error: UseEventsInRadius was true, but no radius [RadiusKm] was specified');
             end
             if selcrit.UseNumNearbyEvents
-                assert(isfield(selcrit,'NumNearbyEvents'),'Error: UseNumNearbyEvents was true, but no number [NumNearbyEvents] was specified');
+                assert(isfield(selcrit,'NumNearbyEvents'),...
+                    'Error: UseNumNearbyEvents was true, but no number [NumNearbyEvents] was specified');
             end
             
             assert(selcrit.UseNumNearbyEvents ~= selcrit.UseEventsInRadius,...
                 'Error. Cannot select both numnearby and events in radius.');
             
             if ~isfield(selcrit,'minNumEvents')
-                selcrit.minNumEvents=0;
+                selcrit.minNumEvents = 0;
             end
             if selcrit.UseNumNearbyEvents && ~isfield(selcrit,'maxRadiusKm')
-                selcrit.maxRadiusKm=inf;
+                selcrit.maxRadiusKm  = inf;
             end
             
             if ~exist('x','var')||isempty('x')
@@ -578,49 +582,48 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             if ~exist('z','var') || isempty('z')
                 z = []; % not a member of selcrit.
             end
-                
+            
             assert( selcrit.UseEventsInRadius || selcrit.UseNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
             
             if selcrit.UseEventsInRadius
-                [minicat,max_km]=obj.selectRadius(y,x, z, selcrit.RadiusKm);
+                [minicat,max_km] = obj.selectRadius(y,x, z, selcrit.RadiusKm);
             elseif selcrit.UseNumNearbyEvents
-                [minicat,max_km]=obj.selectClosestEvents(y,x,z, selcrit.NumNearbyEvents); %works with sphere
+                [minicat,max_km] = obj.selectClosestEvents(y,x,z, selcrit.NumNearbyEvents); %works with sphere
                 if max_km > selcrit.maxRadiusKm
-                    [minicat, max_km]=obj.selectRadius(y,x, z, selcrit.maxRadiusKm);
+                    [minicat, max_km] = obj.selectRadius(y,x, z, selcrit.maxRadiusKm);
                 end
             end
         end
         
         function obj = blank(obj2)
             % allows subclass-aware use of empty objects
-            obj=ZmapCatalog();
+            obj = ZmapCatalog();
         end
         
         function subset_in_place(obj,range)
             %SUBSET_IN_PLACE modifies this object, not a copy of it.
             obj.Date = obj.Date(range);
             
-            obj.Longitude = obj.Longitude(range) ;
-            obj.Latitude = obj.Latitude(range);
-            obj.Depth =  obj.Depth(range) ;
-            
-            obj.Magnitude = obj.Magnitude(range) ;
-            obj.MagnitudeType = obj.MagnitudeType(range) ;
+            obj.Longitude       = obj.Longitude(range) ;
+            obj.Latitude        = obj.Latitude(range);
+            obj.Depth           = obj.Depth(range);
+            obj.Magnitude       = obj.Magnitude(range) ;
+            obj.MagnitudeType   = obj.MagnitudeType(range) ;
             
             if ~isempty(obj.Filter)
-                obj.Filter = obj.Filter(range) ;
+                obj.Filter      = obj.Filter(range) ;
             end
             if ~isempty(obj.Dip)
-                obj.Dip = obj.Dip(range);
+                obj.Dip         = obj.Dip(range);
             end
             if ~isempty(obj.DipDirection)
-                obj.DipDirection=obj.DipDirection(range);
+                obj.DipDirection = obj.DipDirection(range);
             end
             if ~isempty(obj.Rake)
-                obj.Rake=obj.Rake(range);
+                obj.Rake        = obj.Rake(range);
             end
             if ~isempty(obj.MomentTensor)
-                obj.MomentTensor=obj.MomentTensor(range,:);
+                obj.MomentTensor = obj.MomentTensor(range,:);
             end
         end
         
@@ -632,30 +635,30 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %    will retrieve the specified events.
             %    this option can be used to change the order of the catalog too
             
-            % changed this to make subset usable by subclassed catalogs. 
-            obj = existobj.blank(); 
-            obj.Name = existobj.Name;
+            % changed this to make subset usable by subclassed catalogs.
+            obj             = existobj.blank();
+            obj.Name        = existobj.Name;
             
-            obj.Date = existobj.Date(range);       % datetime
-            obj.Longitude = existobj.Longitude(range) ;
-            obj.Latitude = existobj.Latitude(range);
-            obj.Depth =  existobj.Depth(range) ;      % km
-            obj.Magnitude = existobj.Magnitude(range);
-            obj.MagnitudeType = existobj.MagnitudeType(range) ;
+            obj.Date             = existobj.Date(range);       % datetime
+            obj.Longitude        = existobj.Longitude(range) ;
+            obj.Latitude         = existobj.Latitude(range);
+            obj.Depth            = existobj.Depth(range) ;      % km
+            obj.Magnitude        = existobj.Magnitude(range);
+            obj.MagnitudeType    = existobj.MagnitudeType(range) ;
             if ~isempty(obj.Filter)
-                obj.Filter = existobj.Filter(range) ;
+                obj.Filter       = existobj.Filter(range) ;
             end
             if ~isempty(existobj.Dip)
-                obj.Dip = existobj.Dip(range);
+                obj.Dip          = existobj.Dip(range);
             end
             if ~isempty(existobj.DipDirection)
-                obj.DipDirection=existobj.DipDirection(range);
+                obj.DipDirection = existobj.DipDirection(range);
             end
             if ~isempty(existobj.Rake)
-                obj.Rake=existobj.Rake(range);
+                obj.Rake         = existobj.Rake(range);
             end
             if ~isempty(existobj.MomentTensor)
-                obj.MomentTensor=existobj.MomentTensor(range,:);
+                obj.MomentTensor = existobj.MomentTensor(range,:);
             end
         end
         
@@ -664,117 +667,118 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % combinedCatalog = cat(catalogA, catalogB)
             % duplicates are not removed
             obj = objA;
-            objA.Date = [objA.Date; objB.Date];
-            objA.Longitude = [objA.Longitude; objB.Longitude];
-            objA.Latitude = [objA.Latitude; objB.Latitude];
-            objA.Depth = [objA.Depth; objB.Depth];
-            objA.Magnitude = [objA.Magnitude; objB.Magnitude];
-            objA.MagnitudeType = [objA.MagnitudeType; objB.MagnitudeType];
-            objA.Dip = [objA.Dip; objB.Dip];
-            objA.DipDirection = [objA.DipDirection; objB.DipDirection];
-            objA.Rake = [objA.Rake; objB.Rake];
-            objA.MomentTensor=[objA.MomentTensor;objB.MomentTensor];
+            objA.Date           = [objA.Date;           objB.Date];
+            objA.Longitude      = [objA.Longitude;      objB.Longitude];
+            objA.Latitude       = [objA.Latitude;       objB.Latitude];
+            objA.Depth          = [objA.Depth;      	objB.Depth];
+            objA.Magnitude      = [objA.Magnitude;      objB.Magnitude];
+            objA.MagnitudeType  = [objA.MagnitudeType;  objB.MagnitudeType];
+            objA.Dip            = [objA.Dip;            objB.Dip];
+            objA.DipDirection   = [objA.DipDirection;   objB.DipDirection];
+            objA.Rake           = [objA.Rake;           objB.Rake];
+            objA.MomentTensor   = [objA.MomentTensor;   objB.MomentTensor];
             ...
                 %add additional fields here!
             ...
                 objA.clearFilter();
         end
         
-        function obj = removeDuplicates(obj, tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
+        function obj = removeDuplicates(obj, varargin)
             % REMOVEDUPLICATES removes events from catalog that are similar within tolerances
             % catalog = catalog.REMOVEDUPLICATES(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
             
             obj.sort('Date');
             orig_size = obj.Count;
-            if ~exist('tolLat','var') || isempty(tolLat), tolLat = 0.0001; end
-            if ~exist('tolLon','var') || isempty(tolLon), tolLon = 0.0001; end
-            if ~exist('tolDepth_m','var') || isempty(tolDepth_m), tolDepth_m = 0.5; end
-            if ~exist('tolTime_sec','var') || isempty(tolTime_sec), tolTime_sec = 0.01; end
-            if ~exist('tolMag','var') || isempty(tolMag), tolMag = 0.001; end
+            p=inputParser();
+            p.addOptional('tolLat',         0.0001);
+            p.addOptional('tolLon',         0.0001);
+            p.addOptional('tolDepth_m',     0.5);
+            p.addOptional('tolTime_sec',    0.01);
+            p.addOptional('tolMag',         0.001);
+            p.parse(varargin{:})
+            
+            tols = p.Results;
             fprintf('Removing duplicates with the following tolerances:\n');
             fprintf('  Time (s): %.2f\nLat: %f\nLon: %f\nDepth (m): %f\nMag:%.3f\n',...
-                tolTime_sec, tolLat, tolLon, tolDepth_m, tolMag);
+                tols.tolTime_sec, tols.tolLat, tols.tolLon, tols.tolDepth_m, tols.tolMag);
             
             % Dip, DipDirection, Rake, MomentTensor are not included in calculation
-            isSame = abs(diff(obj.Date)) <= seconds(tolTime_sec) & ...
-                abs(diff(obj.Latitude)) <= tolLat & ...
-                abs(diff(obj.Longitude)) <= tolLon & ...
-                abs(diff(obj.Depth)) <= (tolDepth_m / 1000) & ...
-                abs(diff(obj.Magnitude)) <= tolMag;
+            isSame = abs(diff(obj.Date)) <= seconds(tols.tolTime_sec) & ...
+                abs(diff(obj.Latitude))  <= tols.tolLat & ...
+                abs(diff(obj.Longitude)) <= tols.tolLon & ...
+                abs(diff(obj.Depth))     <= (tols.tolDepth_m / 1000) & ...
+                abs(diff(obj.Magnitude)) <= tols.tolMag;
             sameidx = [false; isSame];
             obj = obj.subset(~sameidx);
             fprintf('Removed %d duplicates\n', orig_size - obj.Count);
         end
         
-        function s= blurb(obj)
+        function s = blurb(obj)
             % BLURB get simple statement about catalog
             if numel(obj)>0 && obj.Count > 0
-                s=sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count);
+                s = sprintf('ZmapCatalog "%s" with %d events\n',obj.Name,obj.Count);
             else
-                s='empty ZmapCatalog';
+                s = 'empty ZmapCatalog';
             end
         end
         
         function disp(obj)
             disp(obj.blurb)
-            %if numel(dbstack)<2
-                % called from command line. give a nice explanation
-                disp('with properties:');
-                p=properties(obj);
-                for i=1:numel(p)
-                    pn = p{i};
-                    switch class(obj.(pn))
-                        case 'categorical'
-                            c=categories(obj.(pn));
-                            s = strjoin(c,', ');
-                            if numel(s) > 80
-                                commas = find(s==',');
-                                break1=max(commas(commas<25));
-                                break2=min(commas(commas>(length(s)-25)));
-                                
-                                s=[s(1:break1),'...',s(break2:end)];
-                            end
-                            fprintf('\t%20s : %d categories [ %s ]\n', pn, numel(c), s);
-                        case 'logical'
-                            fprintf('\t%20s : logical, %d are true cell> \n',pn,sum(obj.(pn)));
+            disp('with properties:');
+            p=properties(obj);
+            for i=1:numel(p)
+                pn = p{i};
+                switch class(obj.(pn))
+                    case 'categorical'
+                        c=categories(obj.(pn));
+                        s = strjoin(c,', ');
+                        if numel(s) > 80
+                            commas = find(s==',');
+                            break1=max(commas(commas<25));
+                            break2=min(commas(commas>(length(s)-25)));
                             
-                        case 'cell'
-                            fprintf('\t%20s : <%s cell> \n',pn,strjoin(num2str(size(obj.(pn))),'x'));
-                        case {'char','string'}
-                            fprintf('\t%20s : ''%s''\n',pn,obj.(pn));
-                        case {'datetime','duration'}
+                            s=[s(1:break1),'...',s(break2:end)];
+                        end
+                        fprintf('\t%20s : %d categories [ %s ]\n', pn, numel(c), s);
+                    case 'logical'
+                        fprintf('\t%20s : logical, %d are true cell> \n',pn,sum(obj.(pn)));
+                        
+                    case 'cell'
+                        fprintf('\t%20s : <%s cell> \n',pn,strjoin(num2str(size(obj.(pn))),'x'));
+                    case {'char','string'}
+                        fprintf('\t%20s : ''%s''\n',pn,obj.(pn));
+                    case {'datetime','duration'}
+                        if numel(obj.(pn))==1
+                            fprintf('\t%20s : %s\n',pn, obj.(pn));
+                        else
+                            fprintf('\t%20s : [ %s  to  %s ]\n',pn, min(obj.(pn)), max(obj.(pn)));
+                        end
+                        
+                    otherwise
+                        try
+                            
                             if numel(obj.(pn))==1
-                                fprintf('\t%20s : %s\n',pn, obj.(pn));
+                                fprintf('\t%20s : %g\n', pn, obj.(pn));
                             else
-                                fprintf('\t%20s : [ %s  to  %s ]\n',pn, min(obj.(pn)), max(obj.(pn)));
+                                fprintf('\t%20s : [ %g  to  %g ]\n', pn, min(obj.(pn)), max(obj.(pn)));
                             end
-                            
-                        otherwise
-                            try
-                                
-                                if numel(obj.(pn))==1
-                                    fprintf('\t%20s : %g\n', pn, obj.(pn));
-                                else
-                                    fprintf('\t%20s : [ %g  to  %g ]\n', pn, min(obj.(pn)), max(obj.(pn)));
-                                end
-                            catch
-                                if isempty(obj.(pn))
-                                    fprintf('\t%20s : empty <%s>\n',pn,class(obj.(pn)))
-                                else
-                                    fprintf('\t%20s : <%s>\n',pn,class(obj.(pn)));
-                                end
+                        catch
+                            if isempty(obj.(pn))
+                                fprintf('\t%20s : empty <%s>\n',pn,class(obj.(pn)))
+                            else
+                                fprintf('\t%20s : <%s>\n',pn,class(obj.(pn)));
                             end
-                    end
-                    
+                        end
                 end
-            %end
+                
+            end
         end
         
-        function h=plot(obj,varargin)
+        function h = plot(obj,varargin)
             error('use a ZmapCatalogView instead');
         end
         %{
-        function h=plot(obj, ax, varargin)
+            function h=plot(obj, ax, varargin)
             % plot this catalog. It will plot on
             %
             % see also refreshPlot
@@ -800,7 +804,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 delete(h);
             end
             
-            holdstatus = ishold(ax); 
+            holdstatus = ishold(ax);
             ax.NextPlot='add';
             
             % val = obj.getTrimmedData();
@@ -813,11 +817,11 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             
         end
         %}
-        function h=plotm(obj,varargin)
+        function h = plotm(obj,varargin)
             error('use a ZmapCatalogView instead');
         end
         %{
-        function h=plotm(obj,ax, varargin)
+            function h=plotm(obj,ax, varargin)
             % plot this layer onto a map (Requires mapping toolbox)
             % will delete layer if it exists
             % note features will only plot the subset of features within the
@@ -851,7 +855,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             if ~holdstatus; ax.NextPlot='replace'; end
             
         end
-       %}
+        %}
         function plotFocalMechanisms(obj,ax,color)
             % PLOTFOCALMECHANISMS plot the focal mechanisms of a catalog (if they exist)
             % plotFocalMechanisms(catalog, ax, color)
@@ -860,23 +864,23 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
             
             
-            pbar=pbaspect(ax);
-            pbar=daspect(ax);
-            asp=pbar(1)/pbar(2);
+            pbar    = pbaspect(ax);
+            pbar    = daspect(ax);
+            asp     = pbar(1)/pbar(2);
             if isempty(obj.MomentTensor)
                 warning('no moment tensors to plot');
             end
             axes(ax)
-            set(gca,'NextPlot','add');
-            set(findobj(gcf,'Type','Legend'),'AutoUpdate','off'); %
+            set(gca, 'NextPlot', 'add');
+            set(findobj(gcf,'Type','Legend'), 'AutoUpdate', 'off'); %
             for i=1:obj.Count
                 mt = obj.MomentTensor{i,:};
                 if istable(mt)
-                    mt=mt{:,:};
+                    mt = mt{:,:};
                 end
                 
                 if ~any(isnan(mt))
-                    h(i)=focalmech(mt,obj.Longitude(i),obj.Latitude(i),.05*obj.Magnitude(i),asp,color);
+                    h(i) = focalmech(mt,obj.Longitude(i),obj.Latitude(i),.05*obj.Magnitude(i),asp,color);
                     set([h(i).circle(:);h(i).fill(:);h(i).text],'Tag','focalmech_');
                     drawnow
                     %TODO set the tag
@@ -890,22 +894,22 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             % dists_km = catalog.EPICENTRALDISTANCETO(to_lat, to_lon)
-            dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
+            dists_km    = deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
         end
         
         function dists_km = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
             % get HYPOCENTRALDISTANCETO (lat,lon,z) distance to another point
             % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
-            dists_km=deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
-            delta_dep = (obj.Depth - to_depth_km);
-            dists_km = sqrt( dists_km .^ 2 + delta_dep .^ 2);
+            dists_km    = deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
+            delta_dep   = (obj.Depth - to_depth_km);
+            dists_km    = sqrt( dists_km .^ 2 + delta_dep .^ 2);
         end
         
         function rt = relativeTimes(obj, other)
             % relativeTimes
             % rt = catalog.RELATIVETIMES() get times relative to start
             % rt = catalog.RELATIVETIMES(other) get times relative to another time
-        
+            
             if ~exist('other','var')
                 rt = obj.Date - min(obj.Date);
                 return

@@ -300,9 +300,34 @@ function create_all_menus(obj, force)
             'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
         
         function analyze_time_series_cb(~,~)
+            % pick which time series we are investigating
+            if ~isempty(obj.shape)
+                items = ["Selected Events (IN polygon)", "Unselected Events (OUTSIDE polygon)"];
+                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))}
+            else
+                items = ["Selected Events"];
+                items_data = {@()obj.catalog};
+            end
+            if ~isempty(obj.XSectionTitles)
+                items(end+1 : end + numel(obj.XSectionTitles)) = [strcat("XSEC: ",string(obj.XSectionTitles))];
+                for i=1:numel(obj.XSectionTitles)
+                    items_data(end+1) = {@()obj.xscats(obj.XSectionTitles{i}) };
+                end
+            end
+            items(end+1) = "FULL (raw) Catalog";
+            items_data(end+1) = {@()obj.rawcatalog};
+            [selection, ok] = listdlg('PromptString','Select catalog to analyze',...
+                'SelectionMode', 'single',...
+                'ListString',items);
+            if ok
+                c = items_data{selection};
+                ctp = CumTimePlot(items_data{selection}() );
+                ctp.plot();
+            end
+            
             % analyze time series for current catalog view
-            ctp=CumTimePlot(@()obj.catalog);
-            ctp.plot();
+            %ctp=CumTimePlot(@()obj.catalog);
+            %ctp.plot();
         end
     end
     function create_topo_map_menu(parent)

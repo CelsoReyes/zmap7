@@ -182,7 +182,7 @@ function catalog_menu(obj, force)
     
     function cb_shapecrop(~,~)
         if isempty(obj.shape)
-            errordlg('No shape exists. Create one from the selection menu first','Cannot crop to shape');
+            errordlg('No polygon exists. Create one from the selection menu first','Cannot crop to polygon');
             return
         end
         events_in_shape = obj.shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);

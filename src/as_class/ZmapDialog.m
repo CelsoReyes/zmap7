@@ -125,6 +125,7 @@ classdef ZmapDialog < handle
         hasEvSel        logical     = false;
         didEvSel        logical     = false;
         evSelHeight                 = EventSelectionChoice.GROUPHEIGHT;
+        curfig                      % figure handle to figure prior to call
     end
     
     properties(SetAccess=private)
@@ -178,6 +179,7 @@ classdef ZmapDialog < handle
         function [results,okPressed]=Create(obj, dlgTitle)
             % Create creates a dialog box based on a cell description of types within.
             % [results,okPressed]=Create(obj, dlgTitle)
+            obj.curfig = gcf;
             obj.okPressed=false;
             assert(~isempty(obj.parts),'An empty Dialog cannot be created');
             
@@ -227,6 +229,11 @@ classdef ZmapDialog < handle
                 if isstruct(obj.hCaller)
                     results=obj.hCaller;
                 end
+                
+                if isvalid(obj.curfig)
+                    set(groot,'CurrentFigure',obj.curfig);
+                end
+                
             end
             okPressed = obj.okPressed;
         end
@@ -291,16 +298,16 @@ classdef ZmapDialog < handle
             
             function h = createHeader()
                 h = uicontrol('Style','text',...
-                    'String',[String, ' : '],...
-                    'FontWeight','bold',...
-                    'Position',[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
+                    'String', [String, ' : '],...
+                    'FontWeight', 'bold',...
+                    'Position', [obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
                 if ~isempty(varargin)
                     set(h,varargin{:});
                 end
             end
         end
         
-        function AddPopup(obj,tag, label, choices, defaultChoice,tooltip, conversion_function)
+        function AddPopup(obj,tag, label, choices, defaultChoice, tooltip, conversion_function)
             %AddPopup represents a pop-up menu
             % AddPopup(obj,tag, label, choices, defaultChoice,tooltip)
             %
@@ -616,6 +623,10 @@ classdef ZmapDialog < handle
             obj.okPressed=false;
             close(obj.hDialog);
             obj.hDialog=[];
+            
+            if isvalid(obj.curfig)
+                set(groot,'CurrentFigure',obj.curfig);
+            end
         end
         
                 
@@ -642,6 +653,10 @@ classdef ZmapDialog < handle
             
             if ~isempty(obj.callerOKFunction)
                 obj.callerOKFunction(); % call the caller's method before quitting
+            end
+            obj.curfig
+            if ~isempty(obj.curfig) && isvalid(obj.curfig)
+                set(groot,'CurrentFigure',obj.curfig);
             end
         end
         

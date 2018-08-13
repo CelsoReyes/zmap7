@@ -1,14 +1,17 @@
 classdef AnalysisBvalues < AnalysisWindow
     % ANALYSISBVALUES shows b-value plot (FMD)
     properties
-        bobj;
+        bobj; % points to an existing bobj
     end
     
     
     methods
-        function obj = AnalysisBvalues(ax)
+        function obj = AnalysisBvalues(ax, other_bobj)
             obj@AnalysisWindow(ax);
             obj.nMarkers=2;
+            if exist('other_bobj','var')
+                obj.bobj = other_bobj;
+            end
         end
         
         
@@ -53,10 +56,9 @@ classdef AnalysisBvalues < AnalysisWindow
             if isempty(catalog)
                 x=nan;
                 y=nan;
-                obj.bobj=[];
             else
-                obj.bobj=bdiff2(catalog,'AutoShowPlots',false);
-                x=obj.bobj.magsteps_desc;
+                obj.bobj.RawCatalog=catalog;
+                x=obj.bobj.mag_bin_centers;
                 y=obj.bobj.cum_b_values;
             end
         end
@@ -67,18 +69,18 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=nan;
                 x=nan;
             else
-                x=obj.bobj.magsteps_desc(obj.bobj.index_low);
-                y=obj.bobj.cum_b_values(obj.bobj.index_low)*1.5;
+                x=obj.bobj.Result.Mc_value;
+                y=obj.bobj.cum_b_values(obj.bobj.Result.index_low)*1.5;
             end
         end
         
         function [x,y] = getBvalLine(obj,~)
             % Show the B-value trend line
-            if isempty(obj.bobj)|| isempty(obj.bobj.mag_zone)
+            if isempty(obj.bobj) || isempty(obj.bobj.Result.mag_zone)
                 x=[nan nan];
                 y=[nan nan];
             else
-                x=obj.bobj.mag_zone([1 end]);
+                x=obj.bobj.Result.mag_zone([1 end]);
                 y=obj.bobj.fitted([1 end]);
             end
         end

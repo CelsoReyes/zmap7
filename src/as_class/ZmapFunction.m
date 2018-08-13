@@ -1,4 +1,4 @@
-classdef(Abstract) ZmapFunction < handle
+classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
     %ZmapFunction base class for functions in Zmap, providing a common interface
     %   expects that functions can be called from command prompt or menus
     %

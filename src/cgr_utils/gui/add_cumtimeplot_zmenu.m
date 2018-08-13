@@ -105,7 +105,6 @@ function add_cumtimeplot_zmenu(obj, parent)
         %   'rub' : Rubberband function
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         set(gcf,'Pointer','watch');
-        ZG = ZmapGlobal.Data;
         newsta(sta, obj.catalog);
     end
     
@@ -116,7 +115,7 @@ function add_cumtimeplot_zmenu(obj, parent)
     function cb_auto_mc_b_estimation(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         obj.hold_state=false;
-        bdiff2(ZG.newt2);
+        bdiff2(obj.catalog);
     end
     
     function cb_cut_mainshock(mysrc,myevt)

@@ -282,7 +282,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         end
         
         function tf=isempty(obj)
-            tf=isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
+            tf=isvalid(obj) && isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
         end
         function s=toStr(obj)
             s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1)-1);
@@ -399,6 +399,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             if isnumeric(stashed_shape)
+                stashed_shape = ShapeGeneral;
+            end
+            
+            if ~isvalid(stashed_shape) %shape could have been deleted
                 stashed_shape = ShapeGeneral;
             end
             

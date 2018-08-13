@@ -454,6 +454,7 @@ classdef bdiff2 < ZmapFunction
                     'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
             end
         end
+        
         function updatePlot(obj)
             updatePlottedCumSum(obj);
             updatePlottedDiscreteValues(obj);
@@ -543,7 +544,6 @@ classdef bdiff2 < ZmapFunction
             set(findobj(obj.ax,'Tag','bvaltext'), 'String', obj.descriptive_text());
         end
         
-        
         function tx=descriptive_text(obj,gBdiff)
             res = obj.Result;
             if obj.ZG.hold_state
@@ -575,9 +575,9 @@ classdef bdiff2 < ZmapFunction
         %% ui functions
         function create_my_menu(obj,c)
             uimenu(c,'Label','Estimate recurrence time/probability',MenuSelectedField(),@callbackfun_recurrence);
-            uimenu(c,'Label','Plot time series',MenuSelectedField(),{@callbackfun_ts,catalogFcn});
-            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),{@cb_nonlin_optimize,catalogFcn});
-            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),{@cb_nonlin_keepmc,catalogFcn});
+            uimenu(c,'Label','Plot time series',MenuSelectedField(),@callbackfun_ts);
+            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),@cb_nonlin_optimize);
+            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),@cb_nonlin_keepmc);
             uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
             uimenu(c,'Label','Save values to file',MenuSelectedField(),@simple_save_cb);
             uimenu(c,'Separator','on', 'Label','Modify Parameters for this calculation...',...
@@ -631,9 +631,9 @@ classdef bdiff2 < ZmapFunction
                 plorem(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
             end
             
-            function callbackfun_ts(~,~,catalogFcn)
-                obj.ZG.newcat = catalogFcn();
-                ctp=CumTimePlot(catalogFcn());
+            function callbackfun_ts(~,~)
+                obj.ZG.newcat = obj.RawCatalog;
+                ctp=CumTimePlot(obj.RawCatalog);
                 ctp.plot();
             end
             
@@ -644,13 +644,13 @@ classdef bdiff2 < ZmapFunction
                 set(findobj(gcf,'Tag',obj.tags.discrete),'Visible', mysrc.Checked);
             end
             
-            function cb_nonlin_optimize(~, ~,catalogFcn)
-                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(catalogFcn(), obj.Result.Mc_value, 'OptimizeMc');
+            function cb_nonlin_optimize(~, ~)
+                [Results.bestmc,Results.bestb,Results.result_flag] = nonlinearity_index(obj.RawCatalog, obj.Result.Mc_value, 'OptimizeMc');
                 Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''OptimizeMc'')',obj.Result.Mc_value);
                 assignin('base', 'Results_NonlinearityAnalysis',Results);
             end
-            function cb_nonlin_keepmc(~, ~,catalogFcn)
-                obj.nonlin_keepmc(catalogFcn());
+            function cb_nonlin_keepmc(~, ~)
+                obj.nonlin_keepmc(obj.RawCatalog);
                 % DUPLICATED ast obj.nonlin_keepmc
                 %[Results.bestmc,Results.bestb,Results.result_flag]=nonlinearity_index(catalog, obj.magco, 'PreDefinedMc');
                 %Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.magco);
@@ -679,8 +679,7 @@ classdef bdiff2 < ZmapFunction
             Results.functioncall = sprintf('nonlinearity_index(catalog,%.1f,''PreDefinedMc'')',obj.Result.Mc_value);
             assignin('base','Results_NonlinearityAnalysis',Results);
         end
-        
-            
+           
     end
     methods(Access=private)
         function [pr, gBdiff] = calc_probability(obj,gBdiff)
@@ -691,6 +690,7 @@ classdef bdiff2 < ZmapFunction
                 da = -2*n*log(n) + 2*gBdiff.n1*log(gBdiff.n1+gBdiff.n2*gBdiff.b1/gBdiff.b2) + 2*gBdiff.n2*log(gBdiff.n1*gBdiff.b2/gBdiff.b1+gBdiff.n2) -2;
                 pr = exp(-da/2-2);
         end
+        
         function autosetXLim(obj)
             obj.myXLim = [min(obj.RawCatalog.Magnitude)-0.5  max(obj.RawCatalog.Magnitude)+0.5];
         end
