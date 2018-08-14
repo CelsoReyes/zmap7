@@ -1,15 +1,26 @@
 function[] = Param_Space(Cat)
 
-lTaumin = [1];
-lTaumax = [10];
-lP = [.95];
-lXk = [.4];
-lXmeff = [3];
-lRfact = [10];
-lErr = [2];
-lDerr = [5];
+    
+rdc= ReasenbergDeclusterClass(Cat, ....
+    'AutoShowPlots',false,'DelayProcessing',true,'InteractiveMode',false);
 
+lTaumin     = 1;
+lTaumax     = 10;
+lP          = .95;
+lXk         = .4;
+lXmeff      = 3;
+lRfact      = 10;
+lErr        = 2;
+lDerr       = 5;
 
+rdc.taumin  = lTaumin;
+rdc.taumax  = lTaumax;
+rdc.P       = lP;
+rdc.xk      = lXk;
+rdc.xmeff   = lXmeff;
+rdc.rfact   = lRfact;
+rdc.err     = lErr;
+rdc.derr    = lDerr;
 
 %% loop for P
 
@@ -20,15 +31,17 @@ numSim = length(P_Sim);
 
 
 for simNum = 1:numSim
-    [declusCat] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,P_Sim(simNum),lRfact,lErr,lDerr,Cat);
+    rdc.P = P_sim(simNum);
+    [declusCat] = rdc.ReasenbergDeclus();
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end
 
+rdc.P = lTauP;
 
 %% loop for Taumin
 
@@ -39,14 +52,17 @@ numSim = length(T_Sim);
 
 
 for simNum = 1:numSim
-    [declusCat] = ReasenbergDeclus(T_Sim(simNum),lTaumax,lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
+    rdc.taumin = T_Sim(simNum);
+    [declusCat] = rdc.ReasenbergDeclus();
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end
+
+rdc.taumin = lTaumin;
 
 %% loop for Taumax
 
@@ -57,14 +73,16 @@ numSim = length(T_Sim);
 
 
 for simNum = 1:numSim
-    [declusCat] = ReasenbergDeclus(lTaumin,T_Sim(simNum),lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
+    rdc.taumax = T_Sim(simNum);
+    [declusCat] = rdc.ReasenbergDeclus();
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end
+rdc.taumax  = lTaumax;
 
 %% loop for rFact
 
@@ -75,11 +93,12 @@ numSim = length(R_Sim);
 
 
 for simNum = 1:numSim
-    [declusCat] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,lP,R_Sim(simNum),lErr,lDerr,Cat);
+    rdc.rfact = R_Sim(simNum);
+    [declusCat] = rdc.ReasenbergDeclus();
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end
@@ -93,11 +112,12 @@ numSim = length(Xk_Sim);
 
 
 for simNum = 1:numSim
-    [declusCat] = ReasenbergDeclus(lTaumin,lTaumax,Xk_Sim(simNum),lXmeff,lP,lRfact,lErr,lDerr,Cat);
+    rdc.xk = Xk_Sim(simNum);
+    [declusCat] = rdc.ReasenbergDeclus();
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end

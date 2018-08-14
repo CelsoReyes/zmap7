@@ -85,11 +85,11 @@ classdef findquar < ZmapHGridFunction
           
             set(ax,'NextPlot','add');
             hax = axes(fifhr,'Units','points','pos', [50 320 300 270]);
-            eventHours = findquar.ToHourlyCategorical(obj.RawCatalog.Date.Hour);
-            %dayHist = histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','day','FaceColor',obj.DayColor);
+            eventHours = obj.ToHourlyCategorical(obj.RawCatalog.Date.Hour);
+            
             dayHist = histogram(hax,eventHours,'DisplayName','day','FaceColor',obj.DayColor);
             set(hax,'NextPlot','add');
-            %nightHist = histogram(hax,obj.RawCatalog.Date.Hour,-0.5:1:24.5,'DisplayName','night','FaceColor', obj.NightColor);
+            
             nightHist = histogram(hax,eventHours,'DisplayName','night','FaceColor', obj.NightColor);
             title(' Select the daytime hours and then "GO"')
             [X,N,B] = histcounts(obj.RawCatalog.Date.Hour,-0.5:1:24.5);

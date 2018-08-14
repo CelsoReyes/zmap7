@@ -1,5 +1,8 @@
-function [clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,biggestEvent,clus,mbg)
+function [clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat, biggestEvent, clus, mbg)
 % FUNBUILDCLU builds cluster out out of information stored in clus
+% 
+%  FUNBUILDCLU(mycat, biggestEvent, clus, mbg)
+%
 % mycat : catalog
 % clus: size of catalog, containing cluster index numbers
 % biggestEvent: size nClusters
@@ -8,6 +11,7 @@ function [clusLengths,biggestEvent,mbg,bg,clustnumbers] = funBuildclu(mycat,bigg
 %
     %  originally, "mycat" was "newcat"
     % A.Allmann
+    
 % modified by C Reyes 2017
 
 %global mycat clus mbg k1 clust clustnumbers 

@@ -417,11 +417,13 @@ function create_all_menus(obj, force)
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent,'Label','Decluster the catalog');
         
-        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@(~,~)inpudenew(obj.catalog),...
+        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@(~,~)ResenbergDeclusterClass(obj.catalog),...
             'Separator','on');
         uimenu(submenu,'Label','Decluster (Gardner & Knopoff)',...
-            'Enable','off',... %TODO this needs to be turned into a function
-            MenuSelectedField(),@(~,~)declus_inp());
+            MenuSelectedField(),@cb_declus_inp);
     end
+    function cb_declus_inp(~,~)
+        [out,nMethod]=declus_inp
+        error('declustered. now what to do with results?');
     
 end

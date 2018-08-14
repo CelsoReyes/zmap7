@@ -14,15 +14,6 @@ resFileOut = 'DeclusRes';
 parmFileOut = 'DeclusParms';
 mNumDeclus=[];
 
-%  default values
-dfTaumin = 1;
-dfTaumax = 10;
-dfP = 0.95;
-dfXk = 0.5;
-dfXmeff = 1.5;
-dfRfact = 10;
-dfErr=1.5;
-dfDerr=2;
 
 %%
 % set Default ranges for Reasenberg input variables and find their range
@@ -34,8 +25,6 @@ raXmeff = [2.7 2.9];
 raRfact = [5 20];
 raErr = [2 4];
 raDerr = [4 6];
-
-
 
 
 tauminDiff = (raTaumin(2) - raTaumin(1));
@@ -55,19 +44,25 @@ Cat(:,10) = 0;
 rng('shuffle');
 
 % simulate parameter values and run the delcustering code
+
+lErr = raErr(1);
+lDerr = raDerr(1);
+rdc= ReasenbergDeclusterClass(Cat, 'err', lErr, 'derr', lDerr, ....
+    'AutoShowPlots',false,'DelayProcessing',true,'InteractiveMode',false);
+
 for simNum = 1:numSim
 
     randNum = rand(1,8);
-    lTaumin = raTaumin(1) + tauminDiff*randNum(1);
-    lTaumax = raTaumax(1) + taumaxDiff*randNum(2);
-    lP = raP(1) + pDiff*randNum(3);
-    lXk = raXk(1) + xkDiff*randNum(4);
-    lXmeff = raXmeff(1) + xmeffDiff*randNum(5);
-    lRfact = raRfact(1) + rfactDiff*randNum(6);
-    lErr = raErr(1);
-    lDerr = raDerr(1);
+    rdc.taumin = raTaumin(1) + tauminDiff*randNum(1);
+    rdc.taumax = raTaumax(1) + taumaxDiff*randNum(2);
+    rdc.P = raP(1) + pDiff*randNum(3);
+    rdc.xk = raXk(1) + xkDiff*randNum(4);
+    rdc.xmeff = raXmeff(1) + xmeffDiff*randNum(5);
+    rdc.rfact = raRfact(1) + rfactDiff*randNum(6);
 
-    [declusCat,is_mainshock] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
+    [declusCat, is_mainshock] = rdc.ReasenbergDeclus();
+
+    % [declusCat,is_mainshock] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
 
 
     Cat(is_mainshock,10) = Cat(is_mainshock,10) + 1;
@@ -77,10 +72,11 @@ for simNum = 1:numSim
     mNumDeclus=[mNumDeclus,(nIst==1)];
     save(resFileOut,'Cat');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 
 
+end
 end
 

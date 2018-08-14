@@ -1,7 +1,7 @@
-function [tau] = funTaucalc(xk,mbg,k1,xmeff,bgdiff,P)
-% FUNTAUCALC calculate look ahead time for clustered events
+function [tau] = clustLookAheadTime(xk,mbg,k1,xmeff,bgdiff,P)
+% CLUSTLOOKAHEAD calculate look ahead time for clustered events
 %
-% [tau] = FUNTAUCALC( xk,mbg,k1,xmeff,bgdiff,P)
+% [tau] = CLUSTLOOKAHEAD( xk,mbg,k1,xmeff,bgdiff,P)
 %   xk  : factor used for xmeff
 %   mbg : biggest magnitude in each cluster
 %   k1  :

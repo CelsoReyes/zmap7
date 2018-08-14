@@ -1,4 +1,5 @@
 function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,xmeff,P,rfact,err,derr,ShortCat) 
+	% ReasenbergDecluster
 			
 	%Version for MapSeis by David Eberhard 2011 (testing)
 	
@@ -15,7 +16,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	%What I in the end need out of this code is a list with the clusters, which events belong to 
 	%which cluster and the mainshock of the cluster (DE)
 	
-	% declus.m                                A.Allmann  
+	% A.Allmann  
 	% main decluster algorithm
 	% modified version, uses two different circles for already related events
 	% works on newcat
@@ -50,8 +51,6 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	
 	%routine works on newcat
 	
-	%disp('This is src/declus/declus')
-	
 	
 		
 	bg=[];
@@ -69,12 +68,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	
 	man =[taumin;taumax;xk;xmeff;P;rfact;err;derr;];
 	
-	%[rmain,r1]=funInteract(1,newcat,rfact,xmeff);                     %calculation of interaction radii
-	%that function was reduced by someone to only one equation, so the function call might not be really 
-	%needed (DE)
-	
 	%calculation of interaction radii
-	%from The funInteract function 
 	rmain = 0.011*10.^(0.4*ShortCat(:,5)); %interaction zone for mainshock 
 	r1    = rfact*rmain;   %interaction zone if included in a cluster
 	
@@ -280,7 +274,6 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 
 	else
 		[cluslength,bgevent,mbg,bg,clustnumbers] = ReasBuildclu(ShortCat,largeEqID,clusterID,largestEq,oldClustID,bg);  %builds a matrix clust that stored clusters
-		%[a,is_mainshock] = funBuildcat(newcat,clus,bg,bgevent);        %new catalog for main program
 		
 		%Do the translation to ClusterID List and EventType  
 		%default is single if anything is processed (which is the case)

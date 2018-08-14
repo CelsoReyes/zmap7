@@ -1,6 +1,6 @@
 function [fBValue, fAValue] = calc_MaxLikelihoodABCombined(mCatalog, mControl, bReBin)
 % function [fBValue, fAValue] = calc_MaxLikelihoodABCombined(mCatalog, mControl, bReBin)
-% --------------------------------------------------------------------------------------
+%   --------------------------------------------------------------------------------------
 % Computes the maximum likelihood a- and b-values for a combined catalog containing
 %   different periods.
 %

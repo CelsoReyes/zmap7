@@ -62,26 +62,30 @@ rng('shuffle');
 P_Sim = .8:.01:1;
 numP = length(P_Sim);
 
+
+rdc= ReasenbergDeclusterClass(Cat, ....
+    'AutoShowPlots',false,'DelayProcessing',true,'InteractiveMode',false);
+
 % simulate parameter values and run the delcustering code
 for simNum = 1:numP
 
     randNum = rand(1,8);
-    lTaumin = raTaumin(1) + tauminDiff*randNum(1);
-    lTaumax = raTaumax(1) + taumaxDiff*randNum(2);
+    rdc.taumin = raTaumin(1) + tauminDiff*randNum(1);
+    rdc.taumax = raTaumax(1) + taumaxDiff*randNum(2);
     %lP = raP(1) + pDiff*randNum(3);
-    lP = P_Sim(simNum);
-    lXk = raXk(1) + xkDiff*randNum(4);
-    lXmeff = raXmeff(1) + xmeffDiff*randNum(5);
-    lRfact = raRfact(1) + rfactDiff*randNum(6);
-    lErr = raErr(1) + errDiff*randNum(7);
-    lDerr = raDerr(1) + derrDiff*randNum(8);
+    rdc.P = P_Sim(simNum);
+    rdc.xk = raXk(1) + xkDiff*randNum(4);
+    rdc.xmeff = raXmeff(1) + xmeffDiff*randNum(5);
+    rdc.rfact = raRfact(1) + rfactDiff*randNum(6);
+    rdc.err = raErr(1) + errDiff*randNum(7);
+    rdc.derr = raDerr(1) + derrDiff*randNum(8);
 
-
-    [declusCat] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
+    declusCat = rdc.ReasenbergDeclus();
+    %[declusCat] = ReasenbergDeclus(lTaumin,lTaumax,lXk,lXmeff,lP,lRfact,lErr,lDerr,Cat);
     decResult(simNum) = {declusCat};
     save(resFileOut,'decResult');
 
-    monteParms(simNum) = {[lTaumin;lTaumax;lP;lXk;lXmeff;lRfact;lErr;lDerr]};
+    monteParms(simNum) = {[rdc.taumin;rdc.taumax;rdc.P;rdc.xk;rdc.xmeff;rdc.rfact;rdc.err;rdc.derr]};
     save(parmFileOut,'monteParms');
     disp(num2str(simNum));
 end
