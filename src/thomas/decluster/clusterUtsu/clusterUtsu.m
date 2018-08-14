@@ -1,6 +1,6 @@
 function [mCatclus] =  clusterUtsu(mCatalog, Mainmag, Mc, t1, t2)
 
-% Example [mCatclus] =  clusterGK(b, 1.95, 1.95, 1984, 1, 1);
+% Example [mCatclus] =  clusterUtsu(b, 1.95, 1.95, 1984, 1, 1);
 
 %
 % Input parameters:

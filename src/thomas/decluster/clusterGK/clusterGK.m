@@ -38,8 +38,7 @@ function [mCatclus] =  clusterGK(mCatalog, Mainmag, Mc, t1, t2)
 % variables used
 % mc completeness magnitude
 % twindow duration in time in which to look for related events
-
-disp('~/zmap/src/thomas/decluster/clusterGK/clusterGK.m');
+report_this_filefun
 
 Dtafter = days(t2); %30 days in decimal years
 Dtbefore = days(t1); %2 days in decimal years

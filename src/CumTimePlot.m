@@ -4,16 +4,16 @@ classdef (Sealed) CumTimePlot < handle
     
     properties
         catalog
-        catview ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
-        fontsz = ZmapGlobal.Data.fontsz;
-        hold_state = false;
+        catview         ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
+        fontsz                          = ZmapGlobal.Data.fontsz
+        hold_state                      = false
         AxH % axes handle (may move to dependent)
-        Tag = 'cum'
+        Tag                             = 'cum'
     end
     properties(Constant)
-        FigName='Cumulative Number';
-        catname = 'newt2';
-        viewname = 'timeplot';
+        FigName                         = 'Cumulative Number';
+        catname                         = 'newt2';
+        viewname                        = 'timeplot';
     end
     properties(Dependent)
         FigH % figure handle
@@ -129,7 +129,7 @@ classdef (Sealed) CumTimePlot < handle
             plot(obj.AxH, obj.Catalog.Date, nu, 'b',...
                 'LineWidth', 2.0,...
                 'Tag','cumulative events',...
-                'UIContextMenu',menu_cumtimeseries());
+                'UIContextMenu',obj.menu_cumtimeseries());
             
             % plot marker at end of data
             pl = plot(obj.AxH, teb, obj.Catalog.Count,'rs');
@@ -230,7 +230,7 @@ classdef (Sealed) CumTimePlot < handle
                     'MarkerEdgeColor','k',...
                     'visible','on',...
                     'Tag','large events',...
-                    'UIContextMenu',menu_cumtimeseries());
+                    'UIContextMenu',obj.menu_cumtimeseries());
                 stri4 = [];
                 for i = 1: bigCat.Count
                     s = sprintf('  M=%3.1f',bigCat.Magnitude(i));
@@ -246,6 +246,7 @@ classdef (Sealed) CumTimePlot < handle
             end
         end
     end
+    
     methods (Access = private)
         function add_xlabel(obj)
             if (max(obj.catview.Date)-min(obj.catview.Date)) >= days(1)
@@ -271,6 +272,80 @@ classdef (Sealed) CumTimePlot < handle
         function add_legend(obj)
             disp('CumTimePlot.add_legend (unimplemented)')
         end
+        
+        function c=menu_cumtimeseries(obj, c)
+            % menu_cumtimeseries add a context menu to the cumulative timeseries
+            % plot(x,x,....,'UIContextMenu',menu_cumtimeseries);
+            
+            if ~exist('c','var')
+                c=uicontextmenu('Tag','CumTimeSeriesContext');
+            end
+            
+            uimenu(c, 'Label', 'filter',...
+                'Enable','off',...
+                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+            uimenu(c, 'Label', 'also plot main catalog',...
+                'Enable','off',...
+                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+            uimenu(c, 'separator','on','Label', 'start here',MenuSelectedField(),@start_here);
+            uimenu(c, 'Label', 'end here',MenuSelectedField(),@end_here);
+            uimenu(c, 'Label', 'trim to largest event',MenuSelectedField(),@trim_to_largest);
+            uimenu(c, 'Label', 'show in map (keeping all)',MenuSelectedField(),@show_in_map,'Enable','off');
+            uimenu(c, 'separator','on','Label', '- * t b a * -',...
+                'Enable','off',...
+                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+            
+            function trim_to_largest(~,~)
+                disp('trim to largest')
+                obj=CumTimePlot.getInstance;
+                biggests = obj.catalog.Magnitude == max(obj.catalog.Magnitude);
+                idx=find(biggests,1,'first');
+                obj.catalog.DateRange(1)=obj.catalog.Date(idx);
+                obj.plot()
+            end
+            
+            function start_here(src,ev)
+                [x,~]=click_to_datetime(obj.AxH);
+                zdlg = ZmapDialog();
+                zdlg.AddEdit('startdate','Keep events AFTER ', x,'');
+                zdlg.AddCheckbox('inclusive','inclusive',true,[],'keep events that occur at exactly this time?');
+                [res,ok] = zdlg.Create('Cut catalog');
+                if ok
+                    if res.inclusive
+                        obj.catalog = obj.catalog.subset(obj.catalog.Date > res.startdate);
+                    else
+                        obj.catalog = obj.catalog.subset(obj.catalog.Date >= res.startdate);
+                    end
+                    obj.plot();
+                else
+                    beep;
+                end
+            end
+            
+            function end_here(src,ev)
+                [x,~]=click_to_datetime(obj.AxH);
+                zdlg = ZmapDialog();
+                zdlg.AddEdit('enddate','Keep events BEFORE ', x,'');
+                zdlg.AddCheckbox('inclusive','inclusive',false,[],'keep events that occur at exactly this time?');
+                [res,ok] = zdlg.Create('Cut catalog');
+                if ok
+                    if res.inclusive
+                        obj.catalog = obj.catalog.subset(obj.catalog.Date < res.enddate);
+                    else
+                        obj.catalog = obj.catalog.subset(obj.catalog.Date <= res.enddate);
+                    end
+                    obj.plot();
+                else
+                    beep;
+                end
+            end
+            
+            function show_in_map()
+                ZmapMessageCenter.set_info('Unimplemented. now there would be some green marks on the main map, too');
+            end
+            
+        end
+        
     end
     
     

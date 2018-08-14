@@ -29,17 +29,17 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     %
     %
     % This function can make a line, scatter, or even a text item editable.
-    % Here, they are all referred to as 'shapes'
+    % Here, they are all referred to as 'polygons'
     %
-    % Each shape consists of 'Points' and 'Segments'.  A POINT is a vertex, while the
+    % Each polygon consists of 'Points' and 'Segments'.  A POINT is a vertex, while the
     % SEGMENT is the straight line in between the points.
     %
-    % You are able to do one or more of the following to your shape:
-    %     - DRAG shape around, by holding down the left mousebutton on a segment and moving the mouse.
+    % You are able to do one or more of the following to your polygon:
+    %     - DRAG polygon around, by holding down the left mousebutton on a segment and moving the mouse.
     %     - ADD a point by left-clicking on the outline and choosing 'add point' from the context menu.
     %     - MOVE points around by holding down the left mousebutton on a point and moving the mouse.
     %     - DELETE a point by left-clicking on a point, and choosing 'delete point' from the context menu.
-    %     - RESIZE the shape by scrolling the mouse wheel while holding down the left mousebutton.
+    %     - RESIZE the polygon by scrolling the mouse wheel while holding down the left mousebutton.
     %           Other Resizing options are available via the keyboard, since RESIZING would otherwise
     %           be difficult on a touchpad. Here is a list of buttons, and what they do:
     %              '+' or up arrow - increases scale by 1/10
@@ -66,13 +66,13 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     %     % add text to show how far we dragged the item
     %     txt = text(2, 2,'','Tag','description');
     %
-    %     % updateFcn is called as the shape is dragged around.  This implementation shows some stats
+    %     % updateFcn is called as the polygon is dragged around.  This implementation shows some stats
     %     updateFcn=@(x,delta) set(txt,'String', sprintf('deltas: [ %g , %g] scale: %g',delta));
     %
     %     % doneFcn is called once the mouse button is let up. this will move our original plot to the new location
     %     doneFcn=@(x,~)set(h,'XData',x.XData,'YData',x.YData);
     %
-    %     % here is where the magic happens. make our shape moveable.
+    %     % here is where the magic happens. make our polygon moveable.
     %     MOVEABLE_ITEM(h,updateFcn,doneFcn, 'Marker','+');
     %
     %
@@ -329,7 +329,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         % this recalculates and changes the points for our copied figure.
         if nargin==0
             if latitudeAware
-                % to keep same shape, have to use distances & reckoning
+                % to keep same polygon, have to use distances & reckoning
                 %move center, then recalculate all points.
                 [c.YData, c.XData] = reckon(hY + deltas(2),hX + deltas(1), ARCLEN .* scale, AZ);
             else

@@ -1,35 +1,31 @@
-function [fSpace, fTime] = CalcMonteGKWinParms(fMagnitude)
+function [fSpace, dur] = CalcMonteGKWinParms(fMagnitude)
+% provides time and space windows using a random value between lowest and greatest values of Gruenthal and Urhammer
+%
+%  accepts arrays of magnitudes
+
+    % fMagnitude is in a cloumn
+    fMagnitude = fMagnitude(:);
+    
+    [spaceGK, timeGK] = calc_windows(fMagnitude, DeclusterWindowingMethods.GardinerKnopoff1974);
+    [fSpace2, dur2] = calc_windows(fMagnitude, DeclusterWindowingMethods.GruenthalPersCom);
+    [spaceU, timeU] = calc_windows(fMagnitude, DeclusterWindowingMethods.Urhammer1986);
+    
+
+
+%% now get the ranges for these
+fSpaceMin = min([spaceGK, fSpace2, spaceU],[],2);
+fSpaceMax = max([spaceGK, fSpace2, spaceU],[],2);
+fSpaceRange = [min(fSpaceMin,[],2) max(fSpaceMax,[],2)]; %[min max]
 
 rng('shuffle');
-mRndFactors_=rand(2,1);
-%disp('Using Gruenthal, pers. communication')
-fSpace1 = 10.^(0.1238*fMagnitude+0.983);
-if fMagnitude >= 6.5
-    fTime1 = (10.^(0.032*fMagnitude+2.7389))/365;
-else
-    fTime1 = (10.^(0.5409*fMagnitude-0.547))/365;
-end
 
-%disp('Using Gruenthal, pers. communication')
-fSpace2 = exp(1.77+sqrt(0.037+1.02*fMagnitude));
-if fMagnitude < 6.5
-    fTime2 = abs((exp(-3.95+sqrt(0.62+17.32*fMagnitude)))/365);
-else
-    fTime2 = (10.^(2.8+0.024*fMagnitude))/365;
-end
-%disp('Urhammer, 1976');
-fSpace3 = exp(-1.024+0.804*fMagnitude);
-fTime3 = (exp(-2.87+1.235*fMagnitude))/365;
+% chose randomly value within fSpaceRange
+fSpace = rand(length(fMagnitude),1) .* (fSpaceRange(:,2) - fSpaceRange(:,1)) + fSpaceRange(:,1);
 
-fSpaceMin = min([fSpace1,fSpace2,fSpace3]);
-fSpaceMax = max([fSpace1,fSpace2,fSpace3]);
-fSpaceRange = [min(fSpaceMin) max(fSpaceMax)];
-% chose randomly value out of fSpaceRange
-fSpace=mRndFactors_(1)*(max(fSpaceRange)-min(fSpaceRange))+min(fSpaceRange);
+durMin = min([timeGK, dur2, timeU],[],2);
+durMax = max([timeGK, dur2, timeU],[],2);
 
-fTimeMin = min([fTime1,fTime2,fTime3]);
-fTimeMax = max([fTime1,fTime2,fTime3]);
+durRange = [min(durMin,[],2) max(durMax,[],2)];
 
-fTimeRange = [min(fTimeMin) max(fTimeMax)];
-% chose randomly value out of fTimeRange
-fTime=mRndFactors_(2)*(max(fTimeRange)-min(fTimeRange))+min(fTimeRange);
+% chose randomly value within fTimeRange
+dur=rand(length(fMagnitude),1)  .* (durRange(:,2) - durRange(:,1)) + durRange(:,1);

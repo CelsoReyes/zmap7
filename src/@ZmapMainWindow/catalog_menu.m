@@ -129,7 +129,15 @@ function catalog_menu(obj, force)
     end
     
     function [catalog,ok]=cb_catalog_from_workspace(opt, fn)
-        fig=ancestor(src,'figure');
+        % TODO Implement this!
+        %fig=ancestor(src,'figure');
+        ok = false;
+        catalog = [];
+        ed=errordlg(['not yet fully implemented. To get data from the worskapce into zmap do one of the following:' newline ...
+            'for a ZmapCatalog MyCat, use ', newline , ...
+            '   ZmapMainWindow(MyCat)'...
+            newline 'If loading a table MyCat, use: ' newline '   ZmapMainWindow(ZmapCatalog(MyCat))', newline, newline...
+            'You can also specify the figure, as in ZmapMainWindow(fig, MyCat)']);
         app=catalog_from_workbench();
         uiwait(app)
     end

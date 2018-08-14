@@ -1,6 +1,6 @@
 function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,BackTime,ForeTime,MinRad,MagRadScale,MagRadConst)
 
-	% Example [mCatclus] =  clusterGK(b, 1.95, 1.95, 1984, 1, 1);
+	% Example [mCatclus] =  clusterSLIDERtime(b, 1.95, 1.95, 1984, 1, 1);
 	
 	%
 	% Input parameters:

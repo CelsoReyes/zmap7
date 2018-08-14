@@ -1,5 +1,5 @@
-function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog,nMethod)
-% function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog,nMethod)
+function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog,dcwMethod)
+% function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog,dcwMethod)
 % ----------------------------------------------------------------------------------------------------------
 %
 % Function to decluster earthquake catalog using the Windowing technique in space and time by
@@ -9,7 +9,7 @@ function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluste
 %
 % Incoming variables
 % mCatalog : Incoming earthquake catalog (ZMAP format)
-% nMethod  : Window length for declustering (see calc_windows.m)
+% dcwMethod  : decluster window calculation method  (see DeclusterWindowingMethods)
 %            1: Gardener & Knopoff, 1974
 %            2: Gruenthal pers. communication
 %            3: Urhammer, 1986
@@ -61,7 +61,7 @@ for nEvent=1:length(mCatalog.Magnitude)
         if fMagnitude(nEvent) >= fMagThreshold
             %% Define first aftershock zone and determine magnitude of strongest aftershock
             fMag = fMagnitude(nEvent);
-            [fSpace, fTime] = calc_windows(fMagnitude(nEvent), nMethod);
+            [fSpace, fTime] = calc_windows(fMagnitude(nEvent), dcwMethod);
             fSpaceDeg = km2deg(fSpace);
             %% This first if is for events with no location given
             if isnan(mCatalog.Longitude(nEvent))
@@ -85,7 +85,7 @@ for nEvent=1:length(mCatalog.Magnitude)
                 fTimeMaxClusterMag = mTmp(max(nIndiceMaxMag),3);
                 % Search for event with bigger magnitude in cluster and resize windows if necessary
                 while fMaxClusterMag-fMag > 0
-                    [fSpace, fTime] = calc_windows(fMaxClusterMag, nMethod);
+                    [fSpace, fTime] = calc_windows(fMaxClusterMag, dcwMethod);
                     fSpaceDeg = km2deg(fSpace);
                     %% Adjust time window by adding time difference of max aftershock - actual event (nEvent)
                     fTime = fTime+(mTmp(max(nIndiceMaxMag),3)-vDecDate(nEvent,1));
@@ -110,7 +110,7 @@ for nEvent=1:length(mCatalog.Magnitude)
             end; % End of if
             % Define final aftershock zone if different from original one
             if fMaxClusterMag > fMagnitude(nEvent)
-                [fSpace, fTime] = calc_windows(fMaxClusterMag, nMethod);
+                [fSpace, fTime] = calc_windows(fMaxClusterMag, dcwMethod);
                 fSpaceDeg = km2deg(fSpace);
                 %% Adjust time window by adding time difference of max aftershock - actual event (nEvent)
                 fTime = fTime+(fTimeMaxClusterMag-vDecDate(nEvent,1));

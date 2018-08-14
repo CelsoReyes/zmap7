@@ -20,7 +20,7 @@ classdef cumMomDisplayPane < ZmapDisplayPane
                 uimenu(cln,'Label','start here',MenuSelectedField(),@(~,~)obj.cb_starthere(ax));
                 uimenu(cln,'Label','end here',MenuSelectedField(),@(~,~)obj.cb_endhere(ax));
                 uimenu(cln, 'Label', 'trim to largest event',MenuSelectedField(),@obj.cb_trim_to_largest);
-                uimenu(cln,'Label','Open in new window',MenuSelectedField(),@(~,~)obj.cb_timeplot());
+                % uimenu(cln,'Label','Open in new window',MenuSelectedField(),@(~,~)obj.cb_timeplot());
             end
             
             % context for axes

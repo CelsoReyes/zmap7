@@ -671,7 +671,7 @@ classdef ZmapMainWindow < handle
                 'Visible', 'on',...
                 'SelectionChangedFcn', @cb_mainMapSelectionChanged,...
                 'TabLocation', TabLocation, 'Tag', 'main plots');
-            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, obj.catalog.Name);
+            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, [ "MAINMAP:" + obj.catalog.Name]);
             obj.maintab.Tag = 'mainmap_tab';
             
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
@@ -830,7 +830,7 @@ classdef ZmapMainWindow < handle
         function set_figure_name(obj)
             obj.fig.Name = sprintf('%s [%s - %s]', obj.catalog.Name , char(min(obj.catalog.Date)),...
                 char(max(obj.catalog.Date)));
-            obj.maintab.Title = obj.catalog.Name;
+            obj.maintab.Title = ["MAINMAP:"+ obj.catalog.Name];
             drawnow nocallbacks;
         end
         
@@ -848,6 +848,11 @@ function cb_selectionChanged(~,~)
 end
 function cb_mainMapSelectionChanged(~,~)
     disp('cb_mainMapSelectionChanged. no action taken');
+    
+    % TODO: hide trends that are not appropriate to the current tab.
+    % that means, that result trends (ie. cumulative quakes, etc.) disappear when we are back at the MAINMAP
+    % and reappear when the appropriate result tab is opened.
+    
 end
 
 function s = CallbackFld()

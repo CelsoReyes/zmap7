@@ -1,18 +1,15 @@
 function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = GKDeclus(mCatalog)
-% function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster(mCatalog)
+    % decluster earthquake catalog using the Windowing technique in space and time by Knopoff & Gardner
+% [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = GKDeclus(mCatalog)
 % ----------------------------------------------------------------------------------------------------------
 %
-% Function to decluster earthquake catalog using the Windowing technique in space and time by
-% Knopoff & Gardner, GJR astr. Soc, 28, 311-313, 1972
+%  Knopoff & Gardner, GJR astr. Soc, 28, 311-313, 1972
 % Gardner & Knopoff, BSSA, 64,5, 1363-1367, 1974
 % using different windows
 %
 % Incoming variables
 % mCatalog : Incoming earthquake catalog (ZMAP format)
-% nMethod  : Window length for declustering (see calc_windows.m)
-%            1: Gardener & Knopoff, 1974
-%            2: Gruenthal pers. communication
-%            3: Urhammer, 1986
+% dcwMethod :  decluster window calculation method  (see DeclusterWindowingMethods)
 %
 % Outgoing variables:
 % mCatDecluster : Declustered earthquake catalog
@@ -65,7 +62,7 @@ for nEvent=1:length(mCatalog.Magnitude)
             %% Define first aftershock zone and determine magnitude of strongest aftershock
             fMag = fMagnitude(nEvent);
             % vst       Replace following line
-            %             [fSpace, fTime] = calc_windows(fMagnitude(nEvent), nMethod);
+            %             [fSpace, fTime] = calc_windows(fMagnitude(nEvent), dcwMethod);
             %           with these (to perform simulation over aftershockspace)
             [fSpace, fTime]=CalcMonteGKWinParms(fMagnitude(nEvent));
             fSpaceDeg = km2deg(fSpace);
@@ -90,7 +87,7 @@ for nEvent=1:length(mCatalog.Magnitude)
                 % Search for event with bigger magnitude in cluster and add to cluster
                 while fMaxClusterMag-fMag > 0
                     % vst               Replace calc_windows by CalcMonteGKWinParms
-                    %                     [fSpace, fTime] = calc_windows(fMaxClusterMag, nMethod);
+                    %                     [fSpace, fTime] = calc_windows(fMaxClusterMag, dcwMethod);
                     [fSpace, fTime] = CalcMonteGKWinParms(fMaxClusterMag);
                     fSpaceDeg = km2deg(fSpace);
                     %% Adding aftershocks from bigger aftershock

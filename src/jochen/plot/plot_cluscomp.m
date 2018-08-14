@@ -8,7 +8,7 @@ function [vMags, vClusTime, vDist]=plot_cluscomp(vmain, vcluster, mCatalog, nMet
 % vmain    : Vector of mainshocks
 % vcluster : Vector with cluster numbers
 % mCatalog : EQ catalog in ZMAP format
-% nMethod  : Number of window lengths choice (see calc_windows.m)
+% nMethod  : decluster window calculation method  (see DeclusterWindowingMethods)
 %
 % Outgoing variable:
 % vMags     : Vector of magnitudes
