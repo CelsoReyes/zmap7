@@ -35,7 +35,7 @@ path_list = [
     'stressinv'});
     fullfile(hodi, 'src', 'jochen', 'seisvar', 'calc');
     {fullfile(hodi, 'src', 'thomas')};
-    fullfile(hodi, 'src', 'thomas', {'decluster/*';
+    fullfile(hodi, 'src', 'thomas', {'decluster';
     'etas';
     'slabanalysis';
     'seismicrates';

@@ -56,7 +56,7 @@ function tb = interpretFromTable(tb)
     Candidates.Latitude  = "^lat.*";
     Candidates.Longitude = "^lon.*";
     Candidates.Depth     = "^dep.*";
-    Candidates.Magnitude = ["^mag$","^mags$","^magnitude.?"];
+    Candidates.Magnitude = ["^mag$","^mags$","^magnitude$","^magnitudes$"];
     Candidates.Date      = "^date.";
     
     Candidates.DecYear   = "^decyear";
@@ -69,7 +69,7 @@ function tb = interpretFromTable(tb)
     Candidates.Minute    = ["^mi","^min","^minute."];
     Candidates.Second    = ["^sec","^second\w?"];
     
-    Candidates.MagnitudeType = ["^magnitudetype","^magtype"];
+    Candidates.MagnitudeType = ["^magnitudetype$","^magtype$"];
     Candidates.Dip           = "^dip";
     Candidates.DipDirection  = "^dipd.*";
     Candidates.Rake          = "^rake";

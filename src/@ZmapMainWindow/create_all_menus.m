@@ -425,5 +425,5 @@ function create_all_menus(obj, force)
     function cb_declus_inp(~,~)
         [out,nMethod]=declus_inp
         error('declustered. now what to do with results?');
-    
+    end
 end

@@ -134,7 +134,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
             %case 'MATLAB:webservices:CopyContentToDataStreamError'
             otherwise
                 txt = 'An  error occurred attempting to reach the FDSN web services';
-                errordlg(sprintf("%s\n\n%s\n\nidentifier: '%s'", txt, ME.message, ME.identifier),...
+                errordlg(sprintf('%s\n\n%s\n\nidentifier: ''%s''', txt, ME.message, ME.identifier),...
                     'Error retrieving data');
         end
         uOutput=[];
