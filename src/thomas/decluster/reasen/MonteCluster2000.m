@@ -1,4 +1,5 @@
 function [declusCat,mNumDeclus] = MonteCluster2000(numSim,Cat,mRaParam)
+    % Monte Carlo Simulation for Reasenberg-declustering parameters (fortran Cluster200x)
 %%
 % by van Stiphout, Thomas
 % based on MonteReasenberg.m

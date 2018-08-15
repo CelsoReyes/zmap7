@@ -199,4 +199,4 @@ function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = GKDeclus(cata
     vSel = (vCluster(:,1) > 0);
     mCatDecluster=catalog(~vSel,:);
     mCatAfter = catalog.subset(vSel);
-    
+end

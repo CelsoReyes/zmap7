@@ -1,5 +1,5 @@
 function [out,nMethod] = declus_inp(catalog, varargin)
-    %% declus_inp.m
+    % declusters a catalog using window technique by Gardiner & Knopoff
     % ---------------------------------------------------------------
     % This script asks for input parameters that need to be setup
     % at the beginning of declustering a catalog using the windowing
@@ -17,7 +17,7 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     mCatalog=catalog; % Script works on mCatalog
     
     methoddescriptions=string(enumeration('DeclusterWindowingMethods'));
-    nMethod=1; % default declusting methods
+    nMethod = DeclusterWindowingMethods.GardinerKnopoff1974  % default declusting methods
     % Make the interface
     %
     bas_fig=figure_w_normalized_uicontrolunits(...

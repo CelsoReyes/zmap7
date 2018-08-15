@@ -1,5 +1,5 @@
 function [declusteredCatalog, aftershockCatalog, vCluster, vCl, vMainCluster] = calc_decluster(inCatalog, dcwMethod)
-    % Function to decluster earthquake catalog using the Windowing technique in space and time
+    % Decluster earthquake catalog using the Windowing technique in space and time
     %
     % [declusteredCatalog, aftershockCatalog, vCluster, vCl, vMainCluster] = calc_decluster(inCatalog, dcwMethod)
     % ----------------------------------------------------------------------------------------------------------

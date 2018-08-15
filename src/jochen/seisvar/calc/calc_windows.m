@@ -1,9 +1,7 @@
 function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
+    % Calculate window lengths in space and time for the windowing declustering technique
     % function [spatial_km, temporal] = calc_windows(mags, dcwMethod);
-    % -----------------------------------------------------------
     %
-    % Function to calculate window lengths in space and time for
-    % the windowing declustering technique
     %
     % Incoming variables:
     % mags : magnitude
@@ -11,7 +9,7 @@ function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
     %
     % Outgoing variables:
     % spatial_km : Window length in space [km]
-    % temporal  : Window duration in time % was [dec. years], now duration 
+    % temporal  : Window duration in time % was [dec. years], now duration
     %
     % J. Woessner, woessner@seismo.ifg.ethz.ch
     % updated: 22.07.02
@@ -29,7 +27,7 @@ function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
             
             idxT = mags < 6.5;
             temporal(idxT) = 10.^(0.5409*mags(idxT)-0.547);   % mags < 6.5
-            temporal(~idxT) = 10.^(0.032*mags(~idxT)+2.7389); % mags >= 6.5 
+            temporal(~idxT) = 10.^(0.032*mags(~idxT)+2.7389); % mags >= 6.5
             
             temporal = days(temporal);
             
@@ -40,7 +38,7 @@ function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
             idxT = mags < 6.5;
             temporal(idxT) = abs((exp(-3.95+sqrt(0.62+17.32*mags(idxT)))));
             temporal(~idxT) = (10.^(2.8+0.024*mags(~idxT)));
-                
+            
             temporal = days(temporal);
             
         case DeclusterWindowingMethods.Urhammer1986
@@ -48,8 +46,8 @@ function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
             spatial_km = exp(-1.024+0.804*mags);
             temporal = days(exp(-2.87+1.235*mags));
             
-       %% the following are not used
-       %{
+            %% the following are not used
+            %{
         case DeclusterWindowingMethods.Gruenthal1985
             
             spatial_km = 10.^(0.1060*mags+1.0982);
@@ -88,8 +86,8 @@ function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
             temporal(idxT) = 15;
             temporal(~idxT) = 10.^(1.0526*mags-4.5610);
             temporal = days(temporal);
-        %}
-        
+            %}
+            
         otherwise
             disp('Choose a valid method number');
     end

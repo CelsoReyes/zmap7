@@ -8,9 +8,9 @@ classdef DeclusterTypes < int32
         Stochastic                  (3)
         Reasenberg_cluster200x      (4) % cluster200x fortran
         Marsan                      (5) % Model-independent stochastic declustering (misd)"
-        Gardner_Knopoff_clusterGK   (6) % clusterGK.m)
-        Uhrhammer                   (7) % clusterU.m
-        Utsu                        (8) % clusterUtsu.m
+        Gardner_Knopoff_clusterGK   (6) % (From Annemarie's codes)
+        Uhrhammer                   (7) % (From Annemarie's codes)
+        Utsu                        (8) % (From Annemarie's codes)
     end
     
     methods(Static)
@@ -27,11 +27,11 @@ classdef DeclusterTypes < int32
                 case DeclusterTypes.Marsan
                     s = "Marsan (Model-independent stochastic declustering (misd)";
                 case DeclusterTypes.Gardner_Knopoff_clusterGK
-                    s = "Gardner and Knopoff (clusterGK.m)";
+                    s = "Gardner and Knopoff (From Annemarie's codes)";
                 case DeclusterTypes.Uhrhammer
-                    s = "Uhrhammer (clusterU.m)";
+                    s = "Uhrhammer (From Annemarie's codes)";
                 case DeclusterTypes.Utsu
-                    s = "Utsu (clusterUtsu.m)";
+                    s = "Utsu (From Annemarie's codes)";
             end
         end
     end

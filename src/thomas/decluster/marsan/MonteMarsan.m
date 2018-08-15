@@ -1,4 +1,5 @@
 function [declusCat,mNumDeclus] = MonteMarsan(numSim,Cat)
+    % Monte Carlo Simulation for Model-independent stochastic declustering / misd
 %%
 % by van Stiphout, Thomas
 % based on MonteReasenberg.m

@@ -36,7 +36,7 @@ function [declusCat, mNumDeclus] = MonteDeclus(mCatalog_,nSimul_,nMode_,nSynCat_
     
     switch nMode_
         case 1
-            disp('Monte Carlo Simulation for Reasenberg-declustering parameters (Matlab)');
+            disp('Monte Carlo Simulation for Reasenberg-declustering parameters');
             sprintf('No. of Simulations : %d',nSimul_)
             tic
             [declusCat,mNumDeclus] = MonteReasenberg(nSimul_,mCatalog_);

@@ -1,5 +1,5 @@
 function [mCluster,out]=declus_wintec(mCatalog, nMethod)
-    % DECLUS_WINTEC  execute declustering by windowing technique
+    % DECLUS_WINTEC execute declustering by windowing technique
     %
     % DECLUS_WINTEC(catalog, nMethod)
     %
