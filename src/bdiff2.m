@@ -261,7 +261,7 @@ classdef bdiff2 < ZmapFunction
             %
             % calculates max likelihood b value(bvml) && WLS(bvls)
             %
-            if obj.useBootstrapping && obj.mc_method == McMethod.McDueB_Bootstrap
+            if obj.useBootstrapping && obj.mc_method == McMethods.McDueB_Bootstrap
                 warning('This could take a while. McDueB_Bootstrap doesn''t play well with other bootstrap parameters');
             end
             
