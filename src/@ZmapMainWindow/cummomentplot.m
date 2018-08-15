@@ -59,7 +59,7 @@ function cummomentplot(obj,tabgrouptag)
     if isempty(cbg)
         cbg=uicontextmenu(obj.fig,'Tag',Tags.bg);
         addLegendToggleContextMenuItem(cbg,'bottom','above');
-        uimenu(cbg,'Label','Open in new window',MenuSelectedField(),@obj.cb_timeplot);
+        uimenu(cbg,'Label','Open in new window','Enable','off',MenuSelectedField(),@obj.cb_timeplot);
     end
     
     if isempty(ax.UIContextMenu)

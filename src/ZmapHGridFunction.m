@@ -209,6 +209,9 @@ function showInTab(obj, ax, choice)
                 s=scatter(ax,obj.Result.values.x,obj.Result.values.y,10,val,'+','Tag',obj.Grid.Name);
                 s.MarkerFaceAlpha=[0.5];
             else
+                if islogical(val)
+                    val = double(val);
+                end
                 set(s,'XData',obj.Result.values.x,'YData',obj.Result.values.y,'CData',val);
             end
             
@@ -235,10 +238,15 @@ function showInTab(obj, ax, choice)
             % shading(ax,obj.ZG.shading_style);
             
             tabGroup.SelectedTab = resTab;
-            minV=min(h.ZData(:)); maxV=max(h.ZData(:));
+            minV=min(h.ZData(:));
+            maxV=max(h.ZData(:));
             try
-            ax.CLim=[floor(minV), ceil(maxV)];
-            pretty_colorbar(ax,mydesc,myunits);
+                if minV==maxV
+                    ax.CLim=[-inf inf];
+                else
+                    ax.CLim=[floor(minV), ceil(maxV)];
+                end
+                pretty_colorbar(ax,mydesc,myunits);
             catch ME
                 warning(ME.message)
             end

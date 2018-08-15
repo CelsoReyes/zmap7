@@ -548,6 +548,17 @@ classdef ZmapDialog < handle
             end
         end
         
+        %% special control
+        function StartPane(obj, tag, name)
+            % indicate the beginning of a pane connecting items
+            unimplemented_error();
+        end
+        
+        function EndPane(obj)
+            % indicate the end of a pane connecting items
+            unimplemented_error();
+        end
+            
         %% uicontrol parts
         
         % Magnitude of completion parts

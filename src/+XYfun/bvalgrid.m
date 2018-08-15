@@ -59,14 +59,14 @@ classdef bvalgrid < ZmapHGridFunction
             zdlg.AddMcAutoEstimateCheckbox('mc_auto_est');
             zdlg.AddMcMethodDropdown('mc_choice'); % McMethods.MaxCurvature
             checkboxTargets= {'nBstSample','nBstSample_label'};
+            zdlg.AddEdit('Nmin',               'Min. No. of events > Mc',  obj.Nmin,...
+                'Min # events greater than magnitude of completeness (Mc)');
+            zdlg.AddEdit('fMccorr',            'Mc correction factor',   obj.fMccorr,...
+                'Correction term to be added to Mc');
             zdlg.AddCheckbox('useBootstrap',   'Use Bootstrapping',        false,  checkboxTargets ,...
                 're takes longer, but provides more accurate results');
             zdlg.AddEdit('nBstSample',         'Number of bootstraps',     obj.nBstSample,...
                 'Number of bootstraps to determine Mc');
-            zdlg.AddEdit('Nmin',               'Min. No. of events > Mc',  obj.Nmin,...
-                'Min # events greater than magnitude of completeness (Mc)');
-            zdlg.AddEdit('fMccorr',            'Mc correction for MaxC',   obj.fMccorr,...
-                'Correction term to be added to Mc');
             zdlg.AddEventSelector('evsel',                           obj.EventSelector)
             
             [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
@@ -80,12 +80,12 @@ classdef bvalgrid < ZmapHGridFunction
         function SetValuesFromDialog(obj, res)
             % called when the dialog's OK button is pressed
             
-            obj.Nmin=res.Nmin;
-            obj.nBstSample=res.nBstSample;
-            obj.fMccorr=res.fMccorr;
-            obj.mc_choice = res.mc_choice;
-            obj.useBootstrap=res.useBootstrap;
-            obj.EventSelector=res.evsel;
+            obj.Nmin            = res.Nmin;
+            obj.nBstSample      = res.nBstSample;
+            obj.fMccorr         = res.fMccorr;
+            obj.mc_choice       = res.mc_choice;
+            obj.useBootstrap    = res.useBootstrap;
+            obj.EventSelector   = res.evsel;
         end
         
         function results=Calculate(obj)

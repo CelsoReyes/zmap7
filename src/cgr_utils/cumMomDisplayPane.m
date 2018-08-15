@@ -37,7 +37,7 @@ classdef cumMomDisplayPane < ZmapDisplayPane
             cxs=findobj(gcf,'Tag',obj.Tags.xs);
             if isempty(cxs)
                 cxs=uicontextmenu('tag',obj.Tags.xs);
-                uimenu(cxs,'Label','Open in new window',MenuSelectedField(),@cb_xstimeplot);
+                uimenu(cxs,'Label','Open in new window','Enable','off',MenuSelectedField(),@cb_xstimeplot);
             end
             
             yl=ylabel(obj.ax,'Cumulative Moment');

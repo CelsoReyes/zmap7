@@ -28,6 +28,7 @@ classdef EventSelectionChoice < handle
     properties(Dependent)
         UseNumNearbyEvents
         UseEventsInRadius
+        MaxRadiusKm
     end
     properties(Access=private)
         % add handles
@@ -37,6 +38,7 @@ classdef EventSelectionChoice < handle
         hRa
         hMin
         hMaxRa
+        hUseMaxRa
         
     end
     
@@ -53,19 +55,23 @@ classdef EventSelectionChoice < handle
             out = obj.ubg1.SelectedObject==obj.hUseRadius;
         end
         
+        function out=get.MaxRadiusKm(obj)
+            if obj.UseNumNearbyEvents && logical(obj.hUseMaxRa.Value)
+                out = obj.max_ra;
+            else
+                out = inf;
+            end
+        end
+        
         function out=toStruct(obj)
             % creates a structure with fields
             %  NumNearbyEvents, RadiusKm, UseNumNearbyEvents, UseEventsInRadius
-            out.NumNearbyEvents=obj.ni;
-            out.RadiusKm=obj.ra;
-            out.UseNumNearbyEvents=obj.UseNumNearbyEvents;
-            out.UseEventsInRadius=obj.UseEventsInRadius;
-            if obj.UseNumNearbyEvents
-                out.maxRadiusKm = obj.max_ra;
-            else
-                out.maxRadiusKm = obj.ra;
-            end
-            out.requiredNumEvents = obj.minValid;
+            out.NumNearbyEvents     = obj.ni;
+            out.RadiusKm            = obj.ra;
+            out.UseNumNearbyEvents  = obj.UseNumNearbyEvents;
+            out.UseEventsInRadius   = obj.UseEventsInRadius;
+            out.maxRadiusKm         = obj.MaxRadiusKm;
+            out.requiredNumEvents   = obj.minValid;
         end
         
         function obj=EventSelectionChoice(fig, tag, lowerCornerPosition, ni,ra, min_valid)
@@ -77,10 +83,10 @@ classdef EventSelectionChoice < handle
                 ev=ni; % name correctly for readability below
                 % use the evsel fields
                      % Create, Load, or use Previous grid choice
-                obj.ni=ev.NumNearbyEvents;
-                obj.ra=ev.RadiusKm;
-                obj.max_ra = ev.maxRadiusKm;
-                obj.minValid = ev.requiredNumEvents;
+                obj.ni          = ev.NumNearbyEvents;
+                obj.ra          = ev.RadiusKm;
+                obj.max_ra      = ev.maxRadiusKm;
+                obj.minValid    = ev.requiredNumEvents;
                 
                 if isempty(lowerCornerPosition)
                     X0 = 5;
@@ -89,19 +95,19 @@ classdef EventSelectionChoice < handle
                     X0 = lowerCornerPosition(1);
                     Y0 = lowerCornerPosition(2);
                 end
-                enable_ra = true;
-                enable_ni = true;
+                enable_ra   = true;
+                enable_ni   = true;
                 default_is_ni = isfield(ev,'UseEventsInRadius') && ev.UseEventsInRadius;
             else
                 % Create, Load, or use Previous grid choice
-                obj.ni=ni;
-                obj.ra=ra;
-                obj.max_ra = ra;
+                obj.ni      = ni;
+                obj.ra      = ra;
+                obj.max_ra  = ra;
                 if ~exist('min_valid','var')
-                    min_valid=0;
+                    min_valid = 0;
                     ZmapMessageCenter.set_warning('unset MIN events','no minimum valid # events are set. assuming 0');
                 end
-                obj.minValid=min_valid;
+                obj.minValid = min_valid;
                 
                 if isempty(lowerCornerPosition)
                     X0 = 5;
@@ -111,16 +117,16 @@ classdef EventSelectionChoice < handle
                     Y0 = lowerCornerPosition(2);
                 end
                 
-                enable_ra = ~isempty(ra);
-                enable_ni = ~isempty(ni);
-                default_is_ni = enable_ni;
+                enable_ra       = ~isempty(ra);
+                enable_ni       = ~isempty(ni);
+                default_is_ni   = enable_ni;
             end
             
             
             obj.ubg1=uibuttongroup(fig,'Title','Event Selection',...
                 'Units','pixels','Position',[X0 Y0 obj.GROUPWIDTH obj.GROUPHEIGHT], 'Tag',tag);
             
-            % N EVENTS
+            %% N EVENTS
             obj.hUseNevents = uicontrol(obj.ubg1,'Style','radiobutton',...
                 'Units','pixels',...
                 'Position',[17 obj.GROUPHEIGHT-40 280 22],...
@@ -131,23 +137,29 @@ classdef EventSelectionChoice < handle
                 'Units','pixels',...
                 'Position',[234 obj.GROUPHEIGHT-40 72 22],...
                 'String',num2str(obj.ni),...
-                'callback',@callbackfun_ni,...
+                'callback',@cb_numberevents,...
                 'ToolTipString','# closest events to include');
             
             
-            % SAMPLE DISTANCE
+            %% SAMPLE DISTANCE
+            obj.hUseMaxRa = uicontrol(obj.ubg1, 'Style','checkbox',...
+                'Units', 'pixels', 'Position', [50 obj.GROUPHEIGHT-70 170 22],...
+                'String', 'up to max radius (km)...',...
+                'Tag','useMaxRadius','callback', @cb_useMaxRadius);
+            %{
             uicontrol(obj.ubg1,'Style','text',...
-                'Units','pixels','Position',[17 obj.GROUPHEIGHT-70 160 22],...
+                'Units','pixels','Position',[80 obj.GROUPHEIGHT-70 130 22],...
                 'String','...up to max radius (km)',...
                 'HorizontalAlignment','right');
-            
+            %}
             obj.hMaxRa=uicontrol(obj.ubg1,'Style','edit',...
-                'Units','pixels','Position',[190 obj.GROUPHEIGHT-70 72 22],...
+                'Units','pixels','Position',[230 obj.GROUPHEIGHT-70 72 22],...
                 'String',num2str(obj.max_ra),...
-                'callback',@callbackfun_maxra, ...
+                'callback',@cb_maxra, ...
                 'ToolTipString','Limit sample distance for events');
                 
-            % CONSTANT RADIUS
+            
+            %% CONSTANT RADIUS
             obj.hUseRadius =  uicontrol(obj.ubg1,'Style','radiobutton',...
                 'Units','pixels',...
                 'Position',[17 obj.GROUPHEIGHT-105 280 22],...
@@ -158,7 +170,7 @@ classdef EventSelectionChoice < handle
                 'Units','pixels',...
                 'Position',[234 obj.GROUPHEIGHT-105 72 22],...
                 'String',num2str(obj.ra),...
-                'callback',@callbackfun_ra,...
+                'callback',@cb_radius,...
                 'ToolTipString','event selection radius');
                 
             
@@ -176,7 +188,7 @@ classdef EventSelectionChoice < handle
             obj.hMin=uicontrol(obj.ubg1,'Style','edit',...
                 'Units','pixels','Position',[234 10 72 22],...
                 'String',num2str(obj.minValid),...
-                'callback',@callbackfun_minval, ...
+                'callback',@cb_minval, ...
                 'ToolTipString','Number of events that must be selected for this to be a valid measurement');
                 
             
@@ -189,7 +201,7 @@ classdef EventSelectionChoice < handle
                 obj.hMaxRa.Enable='off';
                 obj.ubg1.SelectedObject=obj.hUseRadius;
             end
-            obj.ubg1.SelectionChangedFcn=@callback_selectioncontrol;
+            obj.ubg1.SelectionChangedFcn=@cb_selectioncontrol;
             
             if exist('ev','var') 
                 if isfield(ev,'UseNumNearbyEvents') && ev.UseNumNearbyEvents
@@ -200,27 +212,37 @@ classdef EventSelectionChoice < handle
             end
             obj.ubg1.SelectionChangedFcn(obj.ubg1); % ensure correct radiobutton is selected
             
-            function callback_selectioncontrol(mysrc,~)
+            function cb_selectioncontrol(mysrc,~)
                 if mysrc.SelectedObject == obj.hUseNevents
                     set([obj.hRa],'Enable','off');
-                    set([obj.hNi, obj.hMaxRa],'Enable','on');
+                    set([obj.hNi, obj.hUseMaxRa],'Enable','on');
                 else
-                    set([obj.hNi, obj.hMaxRa],'Enable','off');
+                    set([obj.hNi, obj.hUseMaxRa],'Enable','off');
                     set([obj.hRa],'Enable','on');
+                end
+                cb_useMaxRadius();
+            end
+            
+            function cb_useMaxRadius(~,~)
+                % enables the max radius edit box when the max radius checkbox is checked & active
+                if obj.hUseMaxRa.Value && obj.hUseMaxRa.Enable=="on"
+                    set(obj.hMaxRa,'Enable','on');
+                else
+                    set(obj.hMaxRa,'Enable','off');
                 end
             end
             
-            function callbackfun_ni(mysrc,~)
+            function cb_numberevents(mysrc,~)
                 obj.ni=str2double(mysrc.String);
             end
 
-            function callbackfun_ra(mysrc,~)
+            function cb_radius(mysrc,~)
                 obj.ra=str2double(mysrc.String);
             end
-            function callbackfun_maxra(mysrc,~)
+            function cb_maxra(mysrc,~)
                 obj.max_ra=str2double(mysrc.String);
             end
-            function callbackfun_minval(mysrc,~)
+            function cb_minval(mysrc,~)
                 obj.minValid = str2double(mysrc.String);
             end
         end

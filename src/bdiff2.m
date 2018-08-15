@@ -1,5 +1,5 @@
 classdef bdiff2 < ZmapFunction
-    % bdiff2 estimates the b-value of a curve automatically
+    % bdiff2 estimates the b-value of a curve automatically .  FMD
     % The b-value curve is differenciated and the point
     % of the magnitude of completeness is marked. The b-value will be calculated
     % using this point and the point half way toward the high
@@ -45,7 +45,7 @@ classdef bdiff2 < ZmapFunction
         
         showDiscrete        matlab.lang.OnOffSwitchState  = 'on'    %show discrete events curve
         Nmin                                = 10;  % minimum number of events
-        bFitLineMaxMagCatalogPct            = 99; % bval fit line goes to the magnitude that covers THIS percentage of events (0-100)
+        bFitLineMaxMagCatalogPct            = 99.9; % bval fit line goes to the magnitude that covers THIS percentage of events (0-100)
         
         % properties to apply to the various plots
         plotProps           struct          = struct(   'Mc',struct(),...
@@ -208,12 +208,13 @@ classdef bdiff2 < ZmapFunction
                 'size of each magnitude bin');
             zdlg.AddEdit('Nmin',     'min # of events',                   obj.Nmin,...
                 'Minimum number of events required to calculate b-values');
+            
+            zdlg.AddCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',obj.doLinearityCheck,[],...
+                'tooltip');
             zdlg.AddCheckbox('useBootstrapping','Uncertainty by bootstrapping', obj.useBootstrapping,{'nBstSample'},...
                 'tooltip');
             zdlg.AddEdit('nBstSample',     'Bootstraps',                   obj.nBstSample,...
                 'Number of bootstraps used to estimate error');
-            zdlg.AddCheckbox('doLinearityCheck','Perform Nonlinearity check on B-values',obj.doLinearityCheck,[],...
-                'tooltip');
             zdlg.AddHeader('Bvalue Fit Line');
             zdlg.AddEdit('bFitLineMaxMagCatalogPct','Pct of events, where Bvalue fit stops (0-100)',obj.bFitLineMaxMagCatalogPct,...
                 'The B-value fit line will stop at the magnitude represented by THIS percentage of events');
@@ -307,6 +308,7 @@ classdef bdiff2 < ZmapFunction
             assert(obj.bFitLineMaxMagCatalogPct >=0 && obj.bFitLineMaxMagCatalogPct <=100,...
                 'Fit Percentage should be a value between 0 and 100');
             nEventsInPercentile = ceil(catalog.Count .* (1-( obj.bFitLineMaxMagCatalogPct /100)));
+            nEventsInPercentile = max([1,nEventsInPercentile]);
             index_hi = find(obj.cum_b_values <= nEventsInPercentile,1,'last');
             mag_hi = obj.mag_bin_centers(index_hi);
             % index_hi = 1;

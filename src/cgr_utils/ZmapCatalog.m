@@ -539,7 +539,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %      uses the UseNumNearbyEvents and UseEventsInRadius to determine its behavior.  If
             %      both of these fields are true, then the closest events are evaluated up to the distance
             %      RadiusKm.
-            %    * maxRadiusKm
+            %    * maxRadiusKm : if UseNumNearbyEvents should be limited to a maximum radius, this value is used
             %   X, Y, Z : coordinates of a point.  Z may be empty [].
             %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
             %
