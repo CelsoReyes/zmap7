@@ -1,5 +1,5 @@
 function[] =loadDec_ParmSpace(numSim)
-
+error('this function looks for files specific to someone''s project')
 resFileIn = '/home/matt/mProjects/MonteDeclus/Results/decRes_xk.mat';
 parmFileIn = '/home/matt/mProjects/MonteDeclus/Results/decParm_xk.mat';
 

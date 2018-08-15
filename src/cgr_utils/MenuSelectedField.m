@@ -1,4 +1,5 @@
 function s = MenuSelectedField()
+    % provide compatibility as Matlab changes from Callback to MenuSelectedFcn for menu items
     persistent ss
     if isempty(ss)
         if verLessThan('matlab','9.3')

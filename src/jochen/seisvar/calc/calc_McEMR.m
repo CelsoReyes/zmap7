@@ -1,5 +1,5 @@
 function [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, binInterval)
-    % CALC_MCEMR Determine Mc using Entire Magnitude Range (EMR)-method. Calculates also a- and b-value.
+    % Determine Mc using Entire Magnitude Range (EMR)-method. Calculates also a- and b-value.
     % [fMc, fBvalue, fAvalue, fMu, fSigma] = calc_McEMR(catalog, binInterval);
     % -----------------------------------------------------------------------------------------------------
     % Determine Mc using EMR-method. Calculates also a- and b-value.

@@ -32,7 +32,7 @@ classdef cgr_timeplot < ZmapFigureFunction
             % usage:
             %   cgr_timeplot(catalog)
             
-            errror('not implemented')
+            unimplemented_error()
             
             obj.FigureDetails={...
                 'Name','Cumulative Number',...
@@ -540,7 +540,7 @@ function timeplot(mycat, nosort)
     
     function cb_016(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        error('not implemented: define mainshock.  Original input_main.m function broken;')
+        unimplemented_error()
     end
     
     function cb_pestimate(mysrc,myevt)

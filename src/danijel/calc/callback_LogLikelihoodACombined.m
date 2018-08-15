@@ -1,9 +1,9 @@
 function [fProbability] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
-% function [fProbability] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
-% -------------------------------------------------------------------------------------------------
+%  Negative log-likelihood sum of a given a- and fixed b-value for a combined catalog catalog containing different periods
+%
+% [fProbability] = callback_LogLikelihoodACombined(fAValue, caCatalogs, mControl, fBValue)
+%
 % Helper callback-function for calc_MaxLikelihoodACombined.m
-%   Computes the negative log-likelihood sum of a given a- and fixed b-value for a
-%   combined catalog catalog containing different periods
 %
 % Input parameters:
 %   fAValue        a-value

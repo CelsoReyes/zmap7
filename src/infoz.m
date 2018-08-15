@@ -1,8 +1,8 @@
-function infoz(var1)
-    %slapinfo.m                        A.Allmann
-    %function to make an info window for various routines
+function infoz(var1)   
+    % make an info window for various routines
     %
-    %
+    %   A.Allmann
+    
     global slapinfo p1
     
     report_this_filefun();

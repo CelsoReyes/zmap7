@@ -1,5 +1,4 @@
 classdef DeclusterTypes < int32
-    %
     % types of clustering, scraped from MonteDeclus
     
     enumeration
@@ -17,7 +16,7 @@ classdef DeclusterTypes < int32
         function s = description(dt)
             switch dt
                 case DeclusterTypes.Reasenberg
-                    s = "Reasenberg declustering (Matlab-Code)";
+                    s = "Reasenberg declustering";
                 case DeclusterTypes.Gardner_Knoppoff
                     s = "Gardner & Knoppoff  (zmap)";
                 case DeclusterTypes.Stochastic

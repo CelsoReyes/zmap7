@@ -44,3 +44,4 @@ function [newCat, ok] = syn_invoke_dialog(mCatalog)
             newCat = mCatalog;
         end
     end
+end

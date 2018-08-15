@@ -262,7 +262,7 @@ classdef bvalmapt < ZmapHGridFunction
         function obj= load()
             %RZ Load existing  diff b-grid
             report_this_filefun();
-            warndlg('Not implemented');
+            under_construction();
             %{
             [file1,path1] = uigetfile(['*.mat'],'Diff b-value gridfile');
             if length(path1) > 1

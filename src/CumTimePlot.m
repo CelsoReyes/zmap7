@@ -270,7 +270,7 @@ classdef (Sealed) CumTimePlot < handle
             obj.AxH.Title.Interpreter = 'none';
         end
         function add_legend(obj)
-            disp('CumTimePlot.add_legend (unimplemented)')
+            under_construction()
         end
         
         function c=menu_cumtimeseries(obj, c)
@@ -283,17 +283,17 @@ classdef (Sealed) CumTimePlot < handle
             
             uimenu(c, 'Label', 'filter',...
                 'Enable','off',...
-                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+                MenuSelectedField(),@unimplemented_error);
             uimenu(c, 'Label', 'also plot main catalog',...
                 'Enable','off',...
-                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+                MenuSelectedField(),@unimplemented_error;
             uimenu(c, 'separator','on','Label', 'start here',MenuSelectedField(),@start_here);
             uimenu(c, 'Label', 'end here',MenuSelectedField(),@end_here);
             uimenu(c, 'Label', 'trim to largest event',MenuSelectedField(),@trim_to_largest);
             uimenu(c, 'Label', 'show in map (keeping all)',MenuSelectedField(),@show_in_map,'Enable','off');
             uimenu(c, 'separator','on','Label', '- * t b a * -',...
                 'Enable','off',...
-                MenuSelectedField(),@(~,~)msgbox('Unimplemented','Unimplemented'));
+                MenuSelectedField(),@unimplemented_error);
             
             function trim_to_largest(~,~)
                 disp('trim to largest')

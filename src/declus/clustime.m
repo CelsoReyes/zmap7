@@ -1,7 +1,7 @@
 function eqtime = clustime(some_cat)
     % These routine calculates the time in days of the eqs. in ZG.newcat relative
     % to the year 1902
-    %clustime.m                                          A.Allmann
+    % A.Allmann
   
     %rewritten by Celso Reyes 2017
     

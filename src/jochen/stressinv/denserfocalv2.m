@@ -1,11 +1,13 @@
-%function to determine a density field in a stereonet type plot
+function [densfield] = denserfocalv2(rho,theta,radius)
+% Determine a density field in a stereonet type plot
+%
+% [densfield] = denserfocalv2(rho,theta,radius)
+%
 %input in polar coordinates
 %rho: the distance of the points
 %theta: angle of the points
 %radius: radius of the countercircle, kind of grid size
 %output is a matrix cartesian coordinates (x,y,density)
-
-function [densfield] = denserfocalv2(rho,theta,radius)
 
 %get the number of events
 totalev=length(rho);

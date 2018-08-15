@@ -1,4 +1,11 @@
 function under_construction(varargin)
+    % warn user that this feature is under construction/not implemented
+    %
+    % see also unimplemented_error
+    
     beep;
-    ZmapMessageCenter.set_warning('Under Construction','Not reimplemented yet')
+    if ZmapDialog.Data.Interactive
+        warndlg('Under Construction','Not reimplemented yet');
+    end
+    warning('ZMAP:UNDERCONSTRUCTION','Under Construction : Not implemented / reimplemented yet');
 end

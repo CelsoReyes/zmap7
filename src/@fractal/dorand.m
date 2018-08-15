@@ -1,5 +1,4 @@
 function ran = dorand(obj, params) 
-    %
     % Calculates any desired number of random distributed points with different
     % random distributions and geometries.
     %

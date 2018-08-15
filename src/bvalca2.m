@@ -1,6 +1,6 @@
 function [bv, magco, std_backg, av, rt] =  bvalca2(mycat)
-    % bvalca2
-    %  [bv, magco, std_backg, av, ~, ~ , ~, ~] = bvalca2(catalog)
+    % bvalca2 calculate b-values and more from a catalog
+    %  [bv, magco, std_backg, av, ~, ~ ] = bvalca2(catalog)
     
     global  les
     

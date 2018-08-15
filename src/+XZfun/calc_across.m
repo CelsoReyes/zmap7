@@ -32,7 +32,7 @@ classdef calc_across < ZmapVGridFunction
             obj@ZmapVGridFunction(zap, 'a_value');
             
             report_this_filefun();
-            error('Not yet implemented');
+            unimplemented_error()
             obj.parseParameters(varargin);
             obj.StartProcess();
         end

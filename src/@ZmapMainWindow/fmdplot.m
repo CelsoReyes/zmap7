@@ -1,5 +1,5 @@
 function fmdplot(obj, tabgrouptag)
-    %
+    % control the FMD plot in the main window
     
     % the fmd object is actually stored in the axes into which it plots
     myTab = findOrCreateTab(obj.fig, tabgrouptag, 'FMD');

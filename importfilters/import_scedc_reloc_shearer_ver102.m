@@ -1,5 +1,5 @@
 function [uOutput,Error_lines] = import_scedc_reloc_shearer_ver102(nFunction, sFilename)
-% function [uOutput] = import_scedc_reloc_sheaererver10(nFunction, sFilename);
+% [uOutput] = import_scedc_reloc_sheaererver10(nFunction, sFilename);
 % ----------------------------------------------------------------
 % Import relocated data set for Southern California (P. Shearer)
 % Get data http://www.data.scec.org/ftp/catalogs/SHLK/

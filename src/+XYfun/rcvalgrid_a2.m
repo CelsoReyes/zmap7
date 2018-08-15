@@ -255,7 +255,7 @@ function [sel]=orig_rcvalgrid_a2()
     ZG.newt2=ZG.primeCatalog.subset(l);
     
 
-    error('This feature hasn''t been completely implemented yet.')
+    unimplemented_error()
     
     function my_calculate() % 'ca'
         % get the grid-size interactively and

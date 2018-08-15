@@ -1,8 +1,7 @@
 function [params] = sr_calcZ(params)
-% function [params] = sr_calcZ(params)
-% -------------------------------------
-% Calculation of seismic rate changes. This function calculates the rates
-% for all grid points together.
+% Calculation of seismic rate changes. This function calculates the rates for all grid points together.
+% [params] = sr_calcZ(params)
+%
 %
 % Input parameters:
 % please see function ~/zmap/src/thomas/seismicrates/get_parameter.m

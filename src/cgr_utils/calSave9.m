@@ -1,5 +1,5 @@
 function calSave9 (~, ~, A, B)
-    % calSave9 = save data to an interactively chosen file
+    % save data to an interactively chosen file
     
     %ZmapMessageCenter.set_info('Save Data','  ');
     

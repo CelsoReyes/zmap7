@@ -1,7 +1,6 @@
 function [in,bnd] = inpoly(p,node,cnect)
 
-% Determine which points are inside a 2D polygonal region via the crossing
-% number test. Should be much faster than inpolygon.
+% Determine which points are inside a 2D polygonal region via the crossing number test. Should be much faster than inpolygon.
 %
 % TWO INPUT CALL:
 %

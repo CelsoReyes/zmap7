@@ -88,7 +88,7 @@ classdef ZmapGridNew
                         ll = myshape.isInside(XYZ(:,2),XYZ(:,1));
                         XYZ=XYZ(ll,:);
                     case 'degrees'
-                        error('not implemented yet');
+                        unimplemented_error()
                 end
             end
             
@@ -174,7 +174,7 @@ classdef ZmapGridNew
                         ll = myshape.isInside(LatLonDepth(:,2),LatLonDepth(:,1));
                         LatLonDepth=LatLonDepth(ll,:);
                     case 'kilometers'
-                        error('not implemented yet');
+                        unimplemented_error()
                 end
             end
             

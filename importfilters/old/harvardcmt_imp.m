@@ -1,5 +1,5 @@
 function [uOutput] = harvardcmt_imp(nFunction, sFilename)
-% function [uOutput] = harvardcmt_imp(nFunction, sFilename);
+% [uOutput] = harvardcmt_imp(nFunction, sFilename);
 % ----------------------------------------------------------
 % Read in Harvard CMT data of a selfmade Ascii-file. Ascii-file needs to be produced from a Harvard *.dek file
 % converted using an executable of cmtsel.f

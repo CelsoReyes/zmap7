@@ -1,6 +1,6 @@
 function [mCatalog] = import_start(sFilterDir,FilePath)
-    %13.04.14: small fix allowing to pass in the filepath directly to avoid
     %GUI file handler (used for MapSeis)
+    %13.04.14: small fix allowing to pass in the filepath directly to avoid
     
     if nargin<2
         FilePath=[];

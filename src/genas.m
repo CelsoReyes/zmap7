@@ -1,4 +1,5 @@
 function out_ztimes = genas(cumu,xt,totbin,bin0,bin1)
+    % Uses the GenAS algorithm to determine times of maximum Z values (as given by function AS) for a cumulative time curve
     %
     %  Syntax:     ztimes = genas(cumu,xt,totbin,bin0,bin1)
     %

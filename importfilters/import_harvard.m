@@ -1,5 +1,5 @@
 function [uOutput] = import_harvard(nFunction, sFilename)
-% function [uOutput] = harvardcmt_imp(nFunction, sFilename);
+% [uOutput] = harvardcmt_imp(nFunction, sFilename);
 % ----------------------------------------------------------
 % Imports Harvard CMT data of a selfmade ASCII-file.
 % Use 'getharvardcatalog' in the importfilters/harvard directory.

@@ -159,7 +159,7 @@ function [cstep, pc, loop] = take_cstep(MIN_CSTEP, cstep, preverr, ts, pc, nit, 
 end
 
 function [pstep, pp] = take_pstep(MIN_PSTEP, pp, pstep, preverr, nit, err2)
-    %function to calculate the parameters of p-value
+    % calculate the parameters of p-value
     if isempty(MIN_PSTEP); return; end
     STEP_REDUCTIONFACTOR = 0.9;
     
@@ -178,7 +178,7 @@ function [sdk, sdp, sdc] = kcp_stdevs()
     % calculate standard deviations for k, c, and p values
     %kcp_stdevs.m                          A.Allmann
     %
-    %function to calculat the parameters of p-value
+    % calculat the parameters of p-value
     %calls itself with different parameters for different loops in programm
     
     % TODO: get rid of all these globals!!@!!Q#RQR@!#R$@!

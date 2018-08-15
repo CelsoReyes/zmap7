@@ -1,5 +1,6 @@
 function [params] = sv_calcMc(params)
-% function [params] = sv_calcMc(params)
+    % Calculation of magnitude of completeness
+% [params] = sv_calcMc(params)
 % -------------------------------------
 % Calculation of magnitude of completeness
 %

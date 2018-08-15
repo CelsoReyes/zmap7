@@ -1,5 +1,5 @@
 function [uOutput] = import_KantoTokai(nFunction, sFilename)
-% function [uOutput] = import_KantoTokai(nFunction, sFilename)
+% [uOutput] = import_KantoTokai(nFunction, sFilename)
 % ------------------------------------------------------------
 % Imports Kanto-Tokai data of a selfmade ASCII-file.
 % Use 'gettokaicatalog' in the importfilters/KantoTokai directory.

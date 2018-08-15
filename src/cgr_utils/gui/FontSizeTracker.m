@@ -1,4 +1,5 @@
 classdef FontSizeTracker
+    % enables font size tracking and modification
     properties
         base_size = 14;
     end

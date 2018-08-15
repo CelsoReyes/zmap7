@@ -1,5 +1,5 @@
 function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
-    % TIME_VS_SOMETHING_PLOT
+    % TIME_VS_SOMETHING_PLOT plot time vs something
     %
     % WhichPlotter can be an instance of either TimeMagnitudePlotter or TimeDepthPlotter
     % if tab doesn't exist yet, create it

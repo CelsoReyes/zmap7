@@ -1,5 +1,6 @@
 function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_auto_estimate, overall_b_value)
-    % BVALCA3
+    % calculates b-values and more from a catalog
+    %
     % [bv, magco, std_backg, av, pr] =  BVALCA3(magnitudes, mc_auto_estimate, overall_b_value)
     %
     % INPUT parameters

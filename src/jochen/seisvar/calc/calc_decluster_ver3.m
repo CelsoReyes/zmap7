@@ -1,6 +1,6 @@
 function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster_ver3(mCatalog,dcwMethod)
     % Decluster earthquake catalog using the Windowing technique in space and time by Knopoff & Gardner
-    % function [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster_ver3(mCatalog,dcwMethod)
+    % [mCatDecluster, mCatAfter, vCluster, vCl, vMainCluster] = calc_decluster_ver3(mCatalog,dcwMethod)
     % ----------------------------------------------------------------------------------------------------------
     %
     % Knopoff & Gardner, GJR astr. Soc, 28, 311-313, 1972

@@ -1,4 +1,5 @@
 function move_topo_layers_to_bottom(container)
+    % move the topo layers to the bottom of an axes
     h=findobj(container,'Type','surface','-and','-regexp','Tag','topographic_map_.*');
     p=unique([h.Parent]);
     for i=1:numel(p)

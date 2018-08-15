@@ -1,7 +1,8 @@
 function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest] = plot_McEMR(mCatalog, fBinning)
-% function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest] = plot_McEMR(mCatalog, fBinning);
-% -----------------------------------------------------------------------------------------------------
 % Same as calc_McCdfnormal with plotting the fitting steps and the final result
+%
+% [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest] = plot_McEMR(mCatalog, fBinning);
+% -----------------------------------------------------------------------------------------------------
 %
 % Incoming variables:
 % mCatalog   : EQ catalog

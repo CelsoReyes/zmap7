@@ -5,8 +5,7 @@ function symboledit_dlg(ax,field)
     %    AX is either the Tag name of an axes, or a handle to the axes
     %    FIELD is the property value to be chosen
     %
-    % items that would not appear on the legend. If the DisplayName property is absent, then that
-    % particular item will be ignored
+    % items that would not appear on the legend. If the DisplayName property is absent, then that item will be ignored
     
     if ischar(ax)
         % ax was a Tag to an axis, but this requiers the handle

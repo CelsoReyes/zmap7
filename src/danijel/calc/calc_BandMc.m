@@ -1,5 +1,5 @@
 function [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, mcCalcMethod, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
-% CALC_BANDMC Calculation of the b-values, its standard deviation and the magnitudes of completeness of a given catalog
+%  b-values (with stddev) and the magnitudes of completeness of a given catalog
 %
   % [fBValue, fStdDev, fMc, fAValue, nNumberQuakes] = calc_BandMc(mCatalog, nMinimumNumber, mcCalcMethod, fBinning, bConstrainMc, fMcMin, fMcMax, fMcAdd)
 % --------------------------------------------------------------------------------------------------------------------------------------------------------------

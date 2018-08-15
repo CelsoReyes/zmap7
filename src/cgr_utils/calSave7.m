@@ -1,5 +1,5 @@
 function calSave7 (~, ~, xt, cumu2, as)
-    % calSave7 = Save cum #  and z value to an interactively chosen file
+    % Save cum #  and z value to an interactively chosen file
     
     %ZmapMessageCenter.set_info('Save Data','  ');
     

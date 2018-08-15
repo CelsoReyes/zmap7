@@ -1,4 +1,6 @@
 function animator(action, function_on_stop)
+    % 
+    
     global ps1 ps2 plin pli
     % combined and turned into function by Celso G Reyes 2017
     

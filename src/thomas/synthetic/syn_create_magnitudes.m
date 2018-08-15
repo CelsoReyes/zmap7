@@ -1,4 +1,5 @@
 function [mNewCatalog] = syn_create_magnitudes(mCatalog, fBValue, fMc, fInc)
+% NO DESCRIPTION
 
 report_this_filefun();
 

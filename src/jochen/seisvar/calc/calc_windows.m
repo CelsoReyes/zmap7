@@ -1,6 +1,6 @@
 function [spatial_km, temporal] = calc_windows(mags, dcwMethod)
     % Calculate window lengths in space and time for the windowing declustering technique
-    % function [spatial_km, temporal] = calc_windows(mags, dcwMethod);
+    % [spatial_km, temporal] = calc_windows(mags, dcwMethod);
     %
     %
     % Incoming variables:

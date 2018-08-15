@@ -1,7 +1,7 @@
-function [result]=gui_NodeCalcStressInv(params,mCatalog)
-% function [result]=gui_NodeCalcStressInv(params,mCatalog)
-% --------------------------------------------------------
-% Function to calculate stress inversion at a specific node
+function [result]=gui_NodeCalcStressInv(params, mCatalog)
+% Calculate stress inversion at a specific node
+% [result]=gui_NodeCalcStressInv(params, mCatalog)
+%
 %
 % Incoming variables:
 % mCatalog     : current earthquake catalog

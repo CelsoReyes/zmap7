@@ -1,4 +1,10 @@
 classdef HoldStatus
+% allows memory of hold-state, so that that axes can be left in original hold-state
+%
+% usage
+% holdstatus = HoldStatus(gca, 'on') % attach to axes you'll affect and set the status
+%  % do something
+% holdstatus.Undo();
 
     properties
         wasHeld logical

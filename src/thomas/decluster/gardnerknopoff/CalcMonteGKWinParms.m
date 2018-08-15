@@ -1,15 +1,14 @@
 function [fSpace, fTime] = CalcMonteGKWinParms(fMagnitude)
+% calculate window lengths in space and time for the windowing declustering technique
 % Example:  [fSpace, fTime] = CalcMonteGKWinParms([1,2,3,4,5,6,7]')
 %
-% Function to calculate window lengths in space and time for
-% the windowing declustering technique
 %
 % Incoming variables:
 % fMagnitude : magnitude
 %
 % Outgoing variables:
 % fSpace : Window length in space [km]
-% fTime  : Window length in time [dec. years]
+% fTime  : Window length in time (duration)
 %
 % van Stiphout, Thomas, vanstiphout@sed.ethz.ch
 % updated: 25.01.2008
@@ -17,50 +16,38 @@ function [fSpace, fTime] = CalcMonteGKWinParms(fMagnitude)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-
-%disp('Using Gardner & Knopoff, 1974')
-fSpace = 10.^(0.1238*fMagnitude+0.983);
-if fMagnitude >= 6.5
-    fTime = (10.^(0.032*fMagnitude+2.7389))/365;
-else
-    fTime = (10.^(0.5409*fMagnitude-0.547))/365;
-end
+[fSpace, fTime] = calc_windows(fMagnitude(:), DeclusterWindowingMethods.GardinerKnopoff1974);
 
 % adding variation
 rng('shuffle');
-mRndFactors_=randn(2,length(fMagnitude)).*0.1+1;
-mTmp=[fSpace fTime].*mRndFactors_';
-fSpace=mTmp(:,1);
-fTime=mTmp(:,2);
+mRndFactors_= randn(2,length(fMagnitude)) .* 0.1 + 1;
+fSpace  = fSpace .* mRndfactors_(1);
+fTime   = fTime .* mRndfactors_(2);
 
+%% alternate version of this had:
+%{
 
-
-
-%
-% %disp('Using Gruenthal, pers. communication')
-% fSpace2 = exp(1.77+sqrt(0.037+1.02*fMagnitude));
-% if fMagnitude < 6.5
-%     fTime2 = abs((exp(-3.95+sqrt(0.62+17.32*fMagnitude)))/365);
-% else
-%     fTime2 = (10.^(2.8+0.024*fMagnitude))/365;
-% end
-% %disp('Urhammer, 1976');
-% fSpace3 = exp(-1.024+0.804*fMagnitude);
-% fTime3 = (exp(-2.87+1.235*fMagnitude))/365;
-%
-% fSpaceMin = min([fSpace1,fSpace2,fSpace3]);
-% fSpaceMax = max([fSpace1,fSpace2,fSpace3]);
-% fSpaceRange = [min(fSpaceMin) max(fSpaceMax)];
-% % chose randomly value out of fSpaceRange
-% fSpace=mRndFactors_(1)*(max(fSpaceRange)-min(fSpaceRange))+min(fSpaceRange);
-%
-% fTimeMin = min([fTime1,fTime2,fTime3]);
-% fTimeMax = max([fTime1,fTime2,fTime3]);
-%
-% fTimeRange = [min(fTimeMin) max(fTimeMax)];
-% % chose randomly value out of fTimeRange
-% fTime=mRndFactors_(2)*(max(fTimeRange)-min(fTimeRange))+min(fTimeRange);
-%
-%
-%
+    [spaceGK, timeGK] = calc_windows(fMagnitude, DeclusterWindowingMethods.GardinerKnopoff1974);
+    [fSpace2, dur2] = calc_windows(fMagnitude, DeclusterWindowingMethods.GruenthalPersCom);
+    [spaceU, timeU] = calc_windows(fMagnitude, DeclusterWindowingMethods.Urhammer1986);
+    
+    
+    
+    %% now get the ranges for these
+    fSpaceMin = min([spaceGK, fSpace2, spaceU],[],2);
+    fSpaceMax = max([spaceGK, fSpace2, spaceU],[],2);
+    fSpaceRange = [min(fSpaceMin,[],2) max(fSpaceMax,[],2)]; %[min max]
+    
+    rng('shuffle');
+    
+    % chose randomly value within fSpaceRange
+    fSpace = rand(length(fMagnitude),1) .* (fSpaceRange(:,2) - fSpaceRange(:,1)) + fSpaceRange(:,1);
+    
+    durMin = min([timeGK, dur2, timeU],[],2);
+    durMax = max([timeGK, dur2, timeU],[],2);
+    
+    durRange = [min(durMin,[],2) max(durMax,[],2)];
+    
+    % chose randomly value within fTimeRange
+    fTime=rand(length(fMagnitude),1)  .* (durRange(:,2) - durRange(:,1)) + durRange(:,1);
+%}

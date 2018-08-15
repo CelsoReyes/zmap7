@@ -26,7 +26,7 @@ function [declusCat, mNumDeclus] = MonteDeclus(mCatalog_, nSimul_, nMode_, mReas
     %
     %
     % Example:
-    % [declusCat,params.mNumDeclus] = MonteDeclus(mCatalog_,nSimul_,1);
+    % [declusCat,params.mNumDeclus] = MonteDeclus(mCatalog_,nSimul_, DeclusterTypes.Reasenberg);
     %
     % Th. van Stiphout; vanstiphout@sed.ethz.ch
     % updated: 14.08.2006

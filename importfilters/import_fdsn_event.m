@@ -107,7 +107,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         'updatedafter',...
         'includeallmagnitudes',...
         'orderby', ... either 'time' or 'magnitude'
-        'eventid',... specify a specific event by id
+        'eventid',... specify an event by id
         'format' ... 'xml' or 'text'.  Don't use this. we'll automatically get text
         };
     

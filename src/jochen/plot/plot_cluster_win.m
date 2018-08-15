@@ -1,6 +1,6 @@
 function [] = plot_cluster_win()
     % Plots the distance window length and the time window length against magnitude in one figure
-    % function [] = plot_cluster_win();
+    % [] = plot_cluster_win();
     % ---------------------------------
     %
     %

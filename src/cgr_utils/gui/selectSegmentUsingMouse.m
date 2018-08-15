@@ -1,5 +1,5 @@
 function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUpdateFcn)
-    % SELECTSEGMENTSUSINGMOUSE tracks user mouse movements to define a great-circle line segment
+    % tracks user mouse movements to define a great-circle line segment
     % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, AXUNITS, DISPUNITS, COLOR) where AX is the axis in which to
     % draw your line segment.  AXUNITS is the distance units of the axis. ex. 'deg', 'km', 'mm'.
     % If axis is deg, then the line segment is drawn as the great-circle line.  Otherwise, it is a 

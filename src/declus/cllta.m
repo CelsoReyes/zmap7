@@ -1,10 +1,8 @@
 function cllta(var1)
-    %cllta.m                             A.Allmann
-    %function to calculate the LTA-function of a givenn graph
-    %calculates a z-value useing a given window length winlen_days
-    %operates on ZG.ttcat
+    % calculate the LTA-function of a given graph calculates a z-value using a given window length winlen_days
+    % operates on ZG.ttcat
     %
-    %
+    % A.Allmann
     global xt cumu cumu2 pyy
     global file1 freq_field freq_slider par5
     ZG=ZmapGlobal.Data;

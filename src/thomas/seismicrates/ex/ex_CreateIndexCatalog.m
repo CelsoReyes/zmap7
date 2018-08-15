@@ -1,5 +1,5 @@
 function [caNodeIndices, vResolution_] = ex_CreateIndexCatalog(mCatalog, mPolygon, bMap, nGriddingMode, nNumberEvents, fRadius, fSizeRectHorizontal, fSizeRectDepth)
-% function [caNodeIndices] = ex_CreateIndexCatalog(mCatalog, mPolygon, bMap, nGriddingMode,
+% [caNodeIndices] = ex_CreateIndexCatalog(mCatalog, mPolygon, bMap, nGriddingMode,
 %                                                  nNumberEvents, fRadius, fSizeRectHorizontal, fSizeRectDepth)
 % -------------------------------------------------------------------------------------------------------------
 % Creates a cell-array with subcatalogs for every grid node defined by mPolygon. These subcatalogs

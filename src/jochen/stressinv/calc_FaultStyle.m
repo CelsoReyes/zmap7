@@ -1,5 +1,6 @@
 function [fAphi] = calc_FaultStyle(rStress)
-% function [fAphi] = calc_FaultStyle(rStress)
+    % Determine the faulting style based on Quantifying Anderson's fault type
+% [fAphi] = calc_FaultStyle(rStress)
 % ------------------------------------------
 % Determining the faulting style based on Quantifying Anderson's fault type
 % by B. Simpson, 1997, JGR

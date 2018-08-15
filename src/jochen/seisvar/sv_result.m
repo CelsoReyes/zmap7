@@ -1,5 +1,5 @@
 function varargout = sv_result(varargin)
-
+% GUI
 if (nargin == 1) & ~ischar(varargin{1})  % LAUNCH GUI
 
   fig = openfig(mfilename,'reuse');

@@ -1,8 +1,8 @@
 function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval)
-    % calc_bmemag Calculates the b-value based on the maximum likelihood estimation, the a-value and the standard deviation of the b-value
+    % a- and b-value based on the maximum likelihood estimation (with b-value's std dev)
     %
     % [ bValue, bStdDev, aValue] =  calc_bmemag(magnitudes , binInterval)
-    % ---------------------------------------------------------------------------------
+    %
     % Calculates the mean magnitute, the b-value based
     % on the maximum likelihood estimation, the a-value and the
     % standard deviation of the b-value

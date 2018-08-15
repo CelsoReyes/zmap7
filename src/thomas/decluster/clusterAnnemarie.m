@@ -1,4 +1,4 @@
-function [mCatclus] =  clusterGeneral(dMethod, mCatalog, Mainmag, Mc, t1, t2)
+function [mCatclus] =  clusterAnnemarie(dMethod, mCatalog, Mainmag, Mc, t1, t2)
     % Clustering function, based on Annemarie's perl codes for finding aftershock sequences 
     % Example [mCatclus] =  clusterGeneral(b, 1.55, 1.55, 1, 1);
     % Input parameters:
@@ -119,15 +119,15 @@ function [mCatclus] =  clusterGeneral(dMethod, mCatalog, Mainmag, Mc, t1, t2)
     
     b.Magnitude=round(b.Magnitude*10)/10;%  round magnitudes to 0.1
     clusterno = 1;
-    b(:,11)= 1:length(b)'; %introduce column 13 with row number
+    b(:,11)= 1:length(b); %introduce column 13 with row number
     
     for i = 1:b.Count
         vSel=find(b(:,12)==i);
         if ~isempty(vSel)
-            nMin =min(find(b(vSel,6)== max(b(vSel,6))));
+            nMin =min(b(vSel,6)== max(b(vSel,6)));
             b(vSel(nMin),13)=clusterno; %label first largest event with clusterno
             b(vSel,12)=clusterno; %label all events of the cluster with clusterno
-            b(min(find(b(:,12)==clusterno)),14)=clusterno; %label first event in column 14
+            b(min(b(:,12)==clusterno),14)=clusterno; %label first event in column 14
             clusterno=clusterno+1;
         end
     end

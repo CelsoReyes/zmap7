@@ -1,6 +1,6 @@
 function [declusCat,mNumDeclus] = MonteReasenberg(numSim,Cat)
     % Monte Carlo Simulation for Reasenberg-declustering parameters
-    %%
+    %
     % Wrapper function to do Monte Carlo simulations of the
     % input parameters into the Reasenberg Declustering algorithm
     %%

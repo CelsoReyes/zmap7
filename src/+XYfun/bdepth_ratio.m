@@ -201,7 +201,7 @@ classdef bdepth_ratio < ZmapHGridFunction
         end
         
         function obj=my_load()
-            error('Not implemented');
+            unimplemented_error();
             % Load exist b-grid
             [file1,path1] = uigetfile(['*.mat'],'b-value gridfile');
             if length(path1) > 1

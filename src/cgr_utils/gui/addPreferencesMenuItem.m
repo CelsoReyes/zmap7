@@ -1,5 +1,5 @@
 function addPreferencesMenuItem()
-    % ADDQUITMENUITEM add quit menu to main file menu
+    % add quit menu to main file menu
     hQuit=findall(gcf,'Label','ZMAP Preferences...');
     if isempty(hQuit)
         mainfile=findall(gcf,'Tag','figMenuFile');

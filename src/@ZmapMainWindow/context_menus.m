@@ -1,7 +1,7 @@
 function c=context_menus(obj, tag, createmode, varargin)
+    % manages context menus, which avoids repeatedly creating context menus
     % c=context_menus(obj, tag, createmode, varargin)
-    % handles context menus, which avoids creating context menus
-    % over and over. Contexts are attached to the figure, so deleting
+    % Contexts are attached to the figure, so deleting
     % objects that they are attached to will not delete the context menus.
     %
     % context menus can be reused.

@@ -1,8 +1,7 @@
 function clinfo(var1)
-    %clinfo.m                        A.Allmann
-    %function to make an info window for various routines
+    % make an info window for various routines
     %
-    %
+    % A.Allmann
     global cinfo p1
     
     

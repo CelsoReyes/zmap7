@@ -1,9 +1,11 @@
 function [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, fBValueO, vProbK, vProbO, mPredictionFMD] = kj_poissonian(mLearningCatalog, fLearningTime, mObservedCatalog, fObservedTime, nTestMethod, nMinimumNumber, fMc, fBValueK, fStdDevK, fMinMag, fMaxMag, bFull)
     % Calculate log-likelihoods of Kagan & Jackson forecasting model, our forecasting model, and the difference between these two models.
+    %
     % [fDeltaProbability, fProbabilityK, fProbabilityO, fWeightK, fWeightO, fBValueO, vProbK, vProbO]...
     %   = kj_poissonian(mLearningCatalog, fLearningTime, mObservedCatalog, fObservedTime, nTestMethod,
     %                   nMinimumNumber, fMc, fBValueK, fStdDevK, fMinMag, fMaxMag, bFull)
-    % ------------------------------------------------------------------------------------------------
+    %
+    %
     % Calculation of the log-likelihoods of the Kagan & Jackson forecasting model, our forecasting model,
     %   and the difference between these two models.
     %

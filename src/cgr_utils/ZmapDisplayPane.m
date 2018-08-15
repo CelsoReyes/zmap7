@@ -1,5 +1,5 @@
 classdef ZmapDisplayPane < handle
-    % ZMAPDISPLAYPANE
+    % ZMAPDISPLAYPANE parent class for ZmapMainWindow display panes
     %
     % assumes caller has the following methods:
     %

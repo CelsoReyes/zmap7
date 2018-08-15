@@ -252,7 +252,7 @@ classdef ZmapMainWindow < handle
         end
         
         function attach_catalog_listeners(obj,~,~)
-            % reapply listeners to this specific catalog
+            % reapply listeners to this catalog
             addlistener(obj.catalog, 'Name', 'PostSet',@(~,~)obj.set_figure_name);
             addlistener(obj.catalog, 'ValueChange',@(~,~)notify('CatalogChanged'));
         end

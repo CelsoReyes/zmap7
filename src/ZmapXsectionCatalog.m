@@ -87,7 +87,7 @@ classdef ZmapXsectionCatalog < ZmapCatalog
         
         function obj = cat(objA, ObjB)
             % cannot currently concatinate two of these
-            error('unimplemented for ZmapXsectionCatalog');
+            unimplemented_error()
         end
         
         function obj=blank(obj2)

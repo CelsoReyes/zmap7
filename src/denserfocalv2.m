@@ -1,5 +1,5 @@
 function [densfield] = denserfocalv2(rho,theta,radius)
-    %function to determine a density field in a stereonet type plot
+    % determine a density field in a stereonet type plot
     %input in polar coordinates
     %rho: the distance of the points
     %theta: angle of the points

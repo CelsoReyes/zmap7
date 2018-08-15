@@ -1,5 +1,5 @@
 function h = mainmap(target)
-    % MAINMAP - access zmap's main interactive map
+    % MAINMAP access zmap's main interactive map
     %
     % only one instance of the MainInteractiveMap exists,
     % and this method ensures that.

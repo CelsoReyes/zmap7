@@ -1,6 +1,4 @@
 function [h] = figure(varargin)
-    %figure_w_normalized_uicontrolunits 
-    %
     % creates a figure, and sets the DefaultUicontrolUnits to 'normalized'
     % which is expected by most of the controls in Zmap.
     %

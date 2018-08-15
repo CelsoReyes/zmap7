@@ -1,5 +1,5 @@
 function mapdata_viewer(res,catalog,resfig)
-    % MAPDATA_VIEWER (PROTOTYPE) explore map data
+    % explore map data (PROTOTYPE)
     % interactive data map, based on results in the table from a ZmapFunction
     % put mouse in DataMap, and choose a symbol key (such as o+v^shp*. )
     %

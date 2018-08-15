@@ -1,7 +1,8 @@
 function [fBValue, fAValue, fStdDev, fMc, fMeanMag] = plot_FMD(mCatalog, varargin)
+        % Creates and plots a frequency magnitude distribution including the b-value
     %  [fBValue, fAValue, fStdDev, fMc, fMeanMag] = PLOT_FMD(mCatalog,showCumulative, hAxes, sSymbol, sColor, bPlotB, nCalculateMC, binWidth)
     % -------------------------------------------------------------------------------------------
-    % Creates and plots a frequency magnitude distribution including the b-value
+
     %
     % PLOT_FMD(mCatalog) opens a figure and plots the frequency magnitude distribution
     %   with standard parameters

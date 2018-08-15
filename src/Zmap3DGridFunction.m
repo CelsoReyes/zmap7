@@ -10,7 +10,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
     methods
         
         function obj=Zmap3DGridFunction(varargin)
-            error('Not yet implemented')
+            unimplemented_error()
             obj@ZmapGridFunction(varargin{:});
         end
         

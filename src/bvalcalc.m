@@ -1,5 +1,5 @@
 function [bv, magco, std_backg, av, me,  rt] = bvalcalc(mycat)
-    % bvalcalc
+    % bvalcalc calculates b-values and more from a catalog
     %  [bv, magco, std_backg, av, me, ~, rt] = bvalcalc(catalog)
     
     global les

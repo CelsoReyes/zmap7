@@ -6,7 +6,7 @@ function clpickp(choice)
     %older selection ares choice if you hit back your working catalog becomes
     %the original clustercatalog again
     %
-    %clpickp.m                          A.Allmann
+    % A.Allmann
     
     global clu newclcat equi_button backcat clu1
     global n x y xcordinate ycordinate

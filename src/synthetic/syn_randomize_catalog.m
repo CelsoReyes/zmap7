@@ -1,5 +1,6 @@
 function [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth, bTimes, nMagnitudes, fBValue, fMc, fInc)
-    %  syn_randomize_catalog Randomizes a given catalog.
+    %  Randomizes a given catalog.
+    %
     %  [randCat] = syn_randomize_catalog(mCatalog, bLon, bLat, bDepth,
     %                                                   bTimes, nMagnitudes, fBValue, fMc, fInc)
     %

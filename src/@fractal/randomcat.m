@@ -1,7 +1,6 @@
 function params = randomcat(obj)
-    %
-    % Input window for the random catalogue parameters. Called from
-    % startfd.m.%
+    % Input window for the random catalogue parameters.
+    % Called from startfd.m.%
     
     % Creates the input window
     

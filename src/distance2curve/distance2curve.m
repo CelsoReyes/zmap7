@@ -395,7 +395,7 @@ else
       % the computations more robust to numerical problems.
       xyi = mapxy(i,:) - xytrans;
       
-      % update the poly for this particular point
+      % update the poly for this point
       % (-2*a1*x0)*t^3
       % (-2*a2*x0)*t^2
       % (-2*a3*x0)*t

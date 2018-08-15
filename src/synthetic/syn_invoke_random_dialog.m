@@ -1,5 +1,5 @@
 function [mRandomCatalog, ok] = syn_invoke_random_dialog(mCatalog)
-%SYN_INVOKE_RANDOM_DIALOG permutes/generates a catalog based on interactive choices
+% permutes/generates a catalog based on interactive choices
 %
 %  [randCatalog, ok] = SYN_INVOKE_RANDOM_DIALOG(catalog) allows permutation of longitude,
 %  latitude, depth, dates, and magnitudes.  randCatalog contains the permutated catalog
@@ -49,3 +49,4 @@ function [mRandomCatalog, ok] = syn_invoke_random_dialog(mCatalog)
             ok=false;
         end
     end
+end

@@ -1,5 +1,5 @@
 function [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(magnitudes, varargin)
-    % CALC_MCDUEBCAO Calculate Mc using the function b-value vs. cut-off-magnitude
+    % Calculate Mc using the function b-value vs. cut-off-magnitude
     %
     % [fMc, fBvalue, fBStd, fAvalue] = calc_McduebCao(magnitudes, fBinning, nMinNumberEvents)
     %----------------------------------------------------------------------------------------------------

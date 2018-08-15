@@ -1,5 +1,4 @@
 function [FaultParam]=BuildFaultParam(vMagnitude,mLocations,mLambda1, mLambda2)
-%
 % Imigation for BuildFaultParam
 %
 %

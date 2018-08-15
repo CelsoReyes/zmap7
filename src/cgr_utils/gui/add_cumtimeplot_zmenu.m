@@ -1,4 +1,5 @@
 function add_cumtimeplot_zmenu(obj, parent)
+    % add the cumulative time plot menu
     ZG = ZmapGlobal.Data;
     
     analyzemenu=parent;%uimenu(parent,'Label','analyze');
@@ -75,10 +76,10 @@ function add_cumtimeplot_zmenu(obj, parent)
     
     %uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
     %    'Separator','on',...
-    %    MenuSelectedField(),@(~,~)errordlg('unimplemented','unimplemented');
+    %    MenuSelectedField(),@unimplemented_error);
     
     %uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
-    %    MenuSelectedField(),@(~,~)errordlg('unimplemented','unimplemented');
+    %    MenuSelectedField(),@unimplemented_error);
     
     function plotwithtime(mysrc,myevt,sPar)
         %sPar tells what to plot.  'mc', 'b'

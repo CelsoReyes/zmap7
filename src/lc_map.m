@@ -51,7 +51,7 @@ function LC_map(lat,lon,maxlat,minlat,maxlon,minlon)
     
     % convert all valid points to cartesian coordinates
     if index > 0
-        [x(index) y(index)] = lc_tocar(lat(index),lon(index));
+        [x(index) y(index)] = lc_tocart(lat(index),lon(index));
     end
     
     % reinsert the segment seperator points (ie: NaN)

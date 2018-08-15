@@ -278,7 +278,7 @@ function [vari1, bins] = get_histparams(mycat, binByField)
             vari1 = hours(mycat.Date.(binByField));
             bins= hours(0:1:24);
         case 'Quality'
-            error('unimplemented');
+            unimplemented_error()
             %vari1 = mycat.Quality;
             %bins = -0.1:0.01:1.1;
             

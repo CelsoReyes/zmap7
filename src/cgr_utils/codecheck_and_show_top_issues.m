@@ -1,3 +1,4 @@
+% check the code using codecheck() and report top issues
 fn=dir('*.m');
 fn={fn.name};
 A=checkcode(fn);

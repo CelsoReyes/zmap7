@@ -1,5 +1,5 @@
 function [uOutput] = import_scec_catread(nFunction, sFilename)
-% function [uOutput] = import_scec_catread(nFunction, sFilename);
+% [uOutput] = import_scec_catread(nFunction, sFilename);
 % ---------------------------------------------------------------
 % Import data from SCEDC in CATREAD format, importing also uncertainties
 % according to the rules published

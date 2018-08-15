@@ -1,12 +1,11 @@
 function cltiplot(var1)
     % create a cumulative number curve of a selected area valid for all catalog types in Cluster Menu or Cluster
     %
-    % A.Allmann
-    %
     % cumulative number versus time
     % Time of events with a Magnitude greater than ZG.CatalogOpts.BigEvents.MinMag will
     % be shown on the curve.
     %
+    %A.Allmann
     
     global freq_field freq_slider
     global bgevent file1 clust original newclcat

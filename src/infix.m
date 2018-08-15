@@ -1,6 +1,5 @@
 function y = infix(x)
-    %INFIX
-    %	infix(x) rounds the elements of x to integers toward +/- infinity
+    %INFIX infix(x) rounds the elements of x to integers toward +/- infinity
     %	depending on the sign of x.  If x > 0, infix(x) --> +inf; if
     %	x < 0, infix(x) --> -inf.
     

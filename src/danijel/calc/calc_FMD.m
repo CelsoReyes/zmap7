@@ -1,8 +1,9 @@
 function [mFMDC, mFMD] = calc_FMD(magnitudes)
-% calc_FMD Calculates the cumulative and non-cumulative frequency magnitude distribution
-% function [mFMDC, mFMD] = calc_FMD(magnitudes)
-% -------------------------------------------
-
+% Cumulative and non-cumulative frequency magnitude distribution
+%
+% [mFMDC, mFMD] = calc_FMD(magnitudes)
+%
+%
 %   for a given earthquake catalog
 %
 % Input parameter:

@@ -1,6 +1,5 @@
 function cltipval(var1)
     % calculate P-values for different time or magnitude windows
-    %  A.Allmann
     %
     %
     % this function is a modification of a program by Paul Raesenberg
@@ -21,6 +20,7 @@ function cltipval(var1)
     % Create an input window for magnitude thresholds and
     % plot cumulative number versus time to allow input of start and end
     % time
+    % A.Allmann
 
 
     global file1             

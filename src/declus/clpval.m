@@ -1,6 +1,5 @@
 function clpval(var1)
-    % clpval calculate the parameters of the modified Omori Law
-    %  A.Allmann
+    % calculate the parameters of the modified Omori Law
     %
     % this function is a modification of a program by Paul Raesenberg
     % that is based on Programs by Carl Kisslinger and Yoshi Ogata
@@ -18,6 +17,8 @@ function clpval(var1)
     % Create an input window for magnitude thresholds and
     % plot cumulative number versus time to allow input of start and end
     % time
+    %
+    %  A.Allmann
     
     % TODO: burn this file and dance around the ashes. 
 

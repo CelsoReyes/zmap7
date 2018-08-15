@@ -1,5 +1,0 @@
-function done()
-    drawnow();
-end
-
-

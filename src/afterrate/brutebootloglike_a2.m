@@ -82,7 +82,7 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
             end
             
         else
-            % pick which functions to use, based on these particular pvalues
+            % pick which functions to use, based on these pvalues
             if pval1 ~=1
                 % calculate values for aftershocks occurring before biggest aftershock
                 modelfnBefore = @(ev) kval1./(pval1-1) .*(cval1.^(1-pval1)-(ev+cval1).^(1-pval1) );
