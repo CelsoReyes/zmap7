@@ -1,4 +1,6 @@
 function mcwtidays(catalog) 
+    % plot Mc with time (days)
+    
     % turned into function by Celso G Reyes 2017
     
     report_this_filefun();

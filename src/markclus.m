@@ -1,5 +1,5 @@
 function active_cluster = markclus(clus, active_cluster, slider_obj, text_obj)
-    % markclus  -
+    % markclus Mark a cluster based on a slider position
     % active_cluster = markclus(clus, active_cluster, slider_obj, text_obj)
     % uses slider_obj.Value to determine next cluster
     % active_cluster is the previous cluster

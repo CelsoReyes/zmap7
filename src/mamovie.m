@@ -1,5 +1,5 @@
 function mamovie() 
-    % turned into function by Celso G Reyes 2017
+    
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();

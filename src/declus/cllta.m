@@ -58,15 +58,15 @@ function cllta(var1)
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.9 .30 .10 .05],...
-        'Units','normalized','callback',@callbackfun_003,'String','Close');
+        'Units','normalized','callback',@cb_close,'String','Close');
     
     %uicontrol('Units','normal','Position',[.9 .90 .10 .05],'String','Print ', 'callback',@callbackfun_004)
     
     %uicontrol('Units','normal','Position',[.9 .80 .10 .05],'String','Save', 'callback',@callbackfun_005)
     
-    uicontrol('Units','normal','Position',[.9 .70 .10 .05],'String','Back ', 'callback',@callbackfun_006)
+    uicontrol('Units','normal','Position',[.9 .70 .10 .05],'String','Back ', 'callback',@cb_back)
     
-    uicontrol('Units','normal','Position',[.9 .60 .10 .05],'String','Info ', 'callback',@callbackfun_007)
+    uicontrol('Units','normal','Position',[.9 .60 .10 .05],'String','Info ', 'callback',@cb_info)
     
     
     
@@ -122,7 +122,7 @@ function cllta(var1)
         cllta(2);
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_close(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
@@ -141,16 +141,28 @@ function cllta(var1)
         sav_lta;
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_back(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         clf;
         cltiplot(3);
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_info(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         clinfo(5);
     end
+end
+
+function sav_lta() 
+    report_this_filefun();
+    
+    str = [];
+    [newmatfile, newpath] = uiputfile(ZmapGlobal.Data.Directories.output,'*.m', 'Save As'); %Syntax change Matlab Version 7, no window positioning on macs
+    
+    
+    s = [xt  ; cumu2 ; lta   ];
+    fid = fopen([newpath newmatfile],'w') ;
+    fprintf(fid,'%6.2f  %6.2f %6.2f\n',s);
 end

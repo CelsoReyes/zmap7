@@ -1,5 +1,4 @@
 function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2) 
-    % turned into function by Celso G Reyes 2017
     
     % TODO replace with ZmapGrid and depth 
     ZG=ZmapGlobal.Data; % used by get_zmap_globals

@@ -1,5 +1,5 @@
 function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes) 
-    % MCPERC_CA3
+    % MCPERC_CA3 This is a completeness determination test
     %
     % FIXME: WHAT MAKES THIS SPECIAL?  doesn't calc_Mc do this? what is this method, specifically!
     %
@@ -9,7 +9,7 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
   
     % used to pull from newt2
     
-    % This is a completeness determination test
+    % 
     magwin_centers = -2 : 0.1 : 6;
     [bval,xt2] = histcounts(magnitudes, centers2edges(magwin_centers));
     xt2=edges2centers(xt2);

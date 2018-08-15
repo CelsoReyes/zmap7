@@ -1,7 +1,6 @@
 function save_ma() 
-    % turned into function by Celso G Reyes 2017
+    % save manitude signatureas
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();
     
     str = [];
@@ -22,7 +21,6 @@ function save_ma()
         fid = fopen([newpath newmatfile],'w')
         fprintf(fid,'%6.2f %6.2f  %6.2f\n',s)
         fclose(fid)
-    end             % if length
-    
+    end           
     
 end

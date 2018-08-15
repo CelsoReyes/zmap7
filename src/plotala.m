@@ -20,10 +20,10 @@ function plotala()
         ' corners with the mouse                         '];
     % Find out if figure already exists
     watchon
-    if isempty(iala) ; 
+    if isempty(iala)
         iala = ZG.compare_window_dur; 
     end
-    if ~exist('abo2') || isempty(abo2); 
+    if ~exist('abo2') || isempty(abo2)
         errordlg('No alarms with z >= Zmin detected!');
         return; 
     end
@@ -51,14 +51,14 @@ function plotala()
         
         uicontrol('Units','normal',...
             'Position',[.0 .65 .12 .06],'String','Refresh ',...
-            'callback',@callbackfun_001)
+            'callback',@cb_refresh)
         
         
         
         tre2 = max(abo(:,4)) - 0.5;
         new = uicontrol('style','edit','value',years(ZG.compare_window_dur),...
             'string',num2str(tre2,3), 'background','y',...
-            'callback',@callbackfun_002,...
+            'callback',@cb_compareDuration,...
             'units','norm','pos',[.80 .01 .08 .06],'min',2.65,'max',10);
         
         newlabel = uicontrol('style','text','units','norm','pos',[.40 .00 .40 .08]);
@@ -66,23 +66,23 @@ function plotala()
         
         mamo1 = uicontrol('Units','normal',...
             'Position',[.90 .01 .08 .06],'String','Go',...
-            'callback',@callbackfun_003);
+            'callback',@cb_othergo);
         
         mamo = uicontrol('Units','normal',...
             'Position',[.02 .01 .27 .10],'String','Make Movie',...
-            'callback',@callbackfun_004)
+            'callback',@cb_makemovie)
         
         nilabel2 = uicontrol('style','text','units','norm','pos',[.50 .92 .25 .06]);
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km,3),...
             'background','y');
-        set(set_ni2,'callback',@callbackfun_005);
+        set(set_ni2,'callback',@cb_set_threshhold_km);
         set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
         
         
         uicontrol('Units','normal',...
             'Position',[.93 .93 .07 .05],'String','Go ',...
-            'callback',@callbackfun_006)
+            'callback',@cb_go)
         create_my_menu();
         
         
@@ -367,25 +367,25 @@ function plotala()
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Find Anomalie Groups  ',...
-            MenuSelectedField(),@callbackfun_007);
+            MenuSelectedField(),@cb_findAnomalyGroups);
         uimenu(op3,'Label','Display one Anomalie Group ',...
-            MenuSelectedField(),@callbackfun_008);
+            MenuSelectedField(),@cb_dispAnomalyGroup);
         uimenu(op3,'Label','Determine Valarm/Vtotal(Zalarm) ',...
-            MenuSelectedField(),@callbackfun_009);
+            MenuSelectedField(),@cb_determineValarmOverVtotal);
         uimenu(op3,'Label','Determine # Alarmgroups (Zalarm) ',...
-            MenuSelectedField(),@callbackfun_010);
+            MenuSelectedField(),@cb_determineAlarmGroupCount);
     end
     
     %% callback functions
     
-    function callbackfun_001(mysrc,myevt)
+    function cb_refresh(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
         plotala();
     end
     
-    function callbackfun_002(mysrc,myevt)
+    function cb_compareDuration(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         tre2=str2num(new.String);
@@ -393,30 +393,30 @@ function plotala()
         num2str(tre2,3);
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_othergo(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         abo = abo2;
         plotala();
     end
     
-    function callbackfun_004(mysrc,myevt)
+    function cb_makemovie(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(mamo);
         delete(mamo1);
         delete(newlabel);
-        mamovie ;
+        make_movie() ;
     end
     
-    function callbackfun_005(mysrc,myevt)
+    function cb_set_threshhold_km(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.tresh_km=str2double(set_ni2.String);
         set_ni2.String=num2str(ZG.tresh_km,3);
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_go(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         
@@ -424,28 +424,118 @@ function plotala()
         plotala();
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_findAnomalyGroups(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         agroup;
         cian;
     end
     
-    function callbackfun_008(mysrc,myevt)
+    function cb_dispAnomalyGroup(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cian2;
     end
     
-    function callbackfun_009(mysrc,myevt)
+    function cb_determineValarmOverVtotal(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         sucra;
     end
     
-    function callbackfun_010(mysrc,myevt)
+    function cb_determineAlarmGroupCount(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         agz;
     end
+end
+
+function make_movie() 
+    
+    %TODO: variable sharing between this and other functions is undetermined
+    ZG=ZmapGlobal.Data; % used by get_zmap_globals
+    report_this_filefun();
+    
+    figure(cube);
+    
+    hm = gcf;
+    m = moviein(19,hm);
+    
+    i = 0;
+    
+    for j=-180:10:0
+        i=i+1;
+        view([ j 16+i*2])
+        m(:,i) = getframe(hm);
+    end
+    m(:,i+1) = getframe(hm);
+    m(:,i+2) = getframe(hm);
+    
+    figure(gcf);
+    clf
+    axis off
+    fs2 = get(gcf,'pos');
+    set(gca,'pos',[0 0 fs2(3) fs2(4)]);
+    set(gca,'visible','on')
+    
+    movie(m,3,12)
+    
+    mamo = uicontrol('Units','normal',...
+        'Position',[.02 .01 .15 .08],'String','Play ',...
+        'callback',@cb_play);
+    
+    uicontrol('Units','normal',...
+        'Position',[.20 .01 .15 .10],'String','Back ',...
+        'callback',@cb_back);
+    
+    uicontrol('Units','normal',...
+        'Position',[.0 .93 .10 .06],'String','Print ',...
+        'callback',@cb_print)
+    
+    
+    uicontrol('Units','normal',...
+        'Position',[.2 .93 .10 .06],'String','Close ',...
+        'callback',@cb_close)
+    
+    uicontrol('Units','normal',...
+        'Position',[.4 .93 .10 .06],'String','Info ',...
+        'callback',@cb_info)
+    
+    
+    
+    function cb_play(mysrc,myevt)
+
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        movie(m,3,12);
+    end
+    
+    function cb_back(mysrc,myevt)
+
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        close(cube);
+        close(vie);
+        plotala();
+    end
+    
+    function cb_print(mysrc,myevt)
+
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        myprint;
+    end
+    
+    function cb_close(mysrc,myevt)
+
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        close(cube);
+        close(vie);
+        clear m;
+        ZmapMessageCenter();
+    end
+    
+    function cb_info(mysrc,myevt)
+
+        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+        zmaphelp(ttlStr,hlpStr1);
+    end
+    
 end

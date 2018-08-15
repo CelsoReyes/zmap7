@@ -77,19 +77,19 @@ function zmapmenu()
     LTA3_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .65 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_002,...
+        'callback',@cb_movie_lta,...
         'String','LTA ');
     
     AS_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .58 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_003,...
+        'callback',@cb_movie_as,...
         'String','AS ');
     
     uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .51 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_004,...
+        'callback',@cb_movie_rubberband,...
         'String','RUB ');
     
     
@@ -102,25 +102,25 @@ function zmapmenu()
     LTA2_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .35 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_006,...
+        'callback',@cb_lta,...
         'String','LTA ');
     
     AS2_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .28 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_007,...
+        'callback',@cb_as,...
         'String','AS ');
     
     per_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .20 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_008,...
+        'callback',@cb_percent,...
         'String','Percent ');
     
     rub_button=uicontrol('BackGroundColor',[0.9 0.9 0.9]','Style','Pushbutton',...
         'Position',[.10 .12 .45 .04 ],...
         'Units','normalized',...
-        'callback',@callbackfun_009,...
+        'callback',@cb_rubberband,...
         'String','Rubberband');
     
     uicontrol('Style','Pushbutton',...
@@ -129,7 +129,7 @@ function zmapmenu()
     
     uicontrol('Units','normal',...
         'Position',[.1 .01 .25 .08],'String','Info ',...
-        'callback',@callbackfun_010)
+        'callback',@cb_info)
     
     uicontrol('BackGroundColor',[0.9 0.9 0.9],'Style','Pushbutton',...
         'Position',[.65 .75 .30 .04 ],...
@@ -137,11 +137,11 @@ function zmapmenu()
     
     uicontrol('BackGroundColor',[0.9 0.9 0.9],'Style','Pushbutton',...
         'Position',[.65 .65 .30 .04 ],...
-        'Units','normalized','callback',@callbackfun_012,'String','Load Cube');
+        'Units','normalized','callback',@cb_loadcube,'String','Load Cube');
     
     watchoff
     
-    function callbackfun_002(mysrc,myevt)
+    function cb_movie_lta(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in2 = 'input';
@@ -149,7 +149,7 @@ function zmapmenu()
         show_mov;
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_movie_as(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in2 = 'input';
@@ -157,7 +157,7 @@ function zmapmenu()
         show_mov;
     end
     
-    function callbackfun_004(mysrc,myevt)
+    function cb_movie_rubberband(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         in2 = 'input';
@@ -171,33 +171,33 @@ function zmapmenu()
         incimaxz;
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_lta(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         show_map('lta',in2);
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_as(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.compare_window_dur = years(0.1);
         show_map('ast',in2, ZG.compare_window_dur);
     end
     
-    function callbackfun_008(mysrc,myevt)
+    function cb_percent(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.compare_window_dur = years(0.1);
         show_map('per',in2,ZG.compare_window_dur);
     end
     
-    function callbackfun_009(mysrc,myevt)
+    function cb_rubberband(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         show_map('rub',in2);
     end
     
-    function callbackfun_010(mysrc,myevt)
+    function cb_info(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zmaphelp(ttlStr,hlpStr1,hlpStr2);
@@ -211,7 +211,7 @@ function zmapmenu()
         incube;
     end
     
-    function callbackfun_012(mysrc,myevt)
+    function cb_loadcube(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZmapMessageCenter();

@@ -1,5 +1,5 @@
 function makecmap(bins,fighandle)
-    %  MAKECMAP - Interactive colormap maker.
+    %  MAKECMAP Interactive colormap maker.
     %
     %     usage:    makecmap
     %               makecmap(map)

@@ -263,7 +263,6 @@ classdef bgrid3dB < Zmap3DGridFunction
                         error('unanticipated choice')
                 end
 
-                %  predi_ca
                 bvg(t5(il,5),t5(il,6),t5(il,7)) = bv2;
                 bvg_wls(t5(il,5),t5(il,6),t5(il,7)) = bv;
                 
