@@ -124,10 +124,13 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     end
     
     % modify based on unmatched varargin values
+    COPY = copyfields(COPY, p.Unmatched);
+    %{
     fn=fieldnames(p.Unmatched);
     for i=1:numel(fn)
         COPY.(fn{i})=p.Unmatched.(fn{i});
     end
+    %}
     
     ARCLEN=nan; % used when latitude aware
     AZ=nan; %used when latitude aware

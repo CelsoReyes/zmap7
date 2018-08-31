@@ -1,27 +1,14 @@
-function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, catalog, zgrid, selcrit, answidth )
+function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, catalog, zgrid, selcrit, requiredNumEvents, answidth,varargin )
     %GRIDFUN Applies a function to each grid point using events determined by selection criteria
     %
     %
-    %  VALUES = GRIDFUN( FUN, CATALOG, GRID, SELCRIT) will apply the function FUN to each point
+    %  VALUES = GRIDFUN( FUN, CATALOG, GRID, SELCRIT, requiredNumEvents) will apply the function FUN to each point
     %  in GRID, by choosing appropriate events from CATALOG using the selection criteria SELCRIT.
     %  FUN is a function handle that takes a ZmapCatalog as input, and returns a number.
     %  GRID is a ZmapGrid.
-    %  SELCRIT is a structure containing one or more of the following set of fields:
-    %    * NumNearbyEvents (by itself) : runs function against this many closest events.
-    %          < incompatable with RadiusKm, unless UseNumNearbyEvents 
-    %            and UseEventsInRadius are also defined >
+    %  SELCRIT is an EventSelectionParameters object
     %
-    %    * RadiusKm  (by itself) : runs function against all events in this radius
-    %          < incompatable with NumNearbyEvents, unless UseNumNearbyEvents 
-    %            and UseEventsInRadius are also defined >
-    %
-    %    * UseNumNearbyEvents, UseEventsInRadius, NumNearbyEvents, RadiusKm (ALL of the above): 
-    %           uses the UseNumNearbyEvents and UseEventsInRadius to determine its behavior.  Only
-    %           one of these fields may be true.
-    %
-    %    * maxRadiusKm - defines a cutoff, used when local events are too sparce for NumNearbyEvents 
-    %
-    %    * requiredNumEvents - calculations are only performed for selections (catalogs) that
+    %  requiredNumEvents - calculations are only performed for selections (catalogs) that
     %           contain at least this many events.
     %
     %  VALUES will be an Nx1 or NxANSWIDTH vector of values determined by the FUN.
@@ -68,16 +55,25 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     % set flags for how to treat this data
     multifun=iscell(infun);
     
+    assert(isa(selcrit,'EventSelectionParameters'));
+    
     nSkippedDueToInsufficientEvents = 0;
     % check input data
     
+    if isempty(requiredNumEvents)
+        requiredNumEvents = 1;
+    end
+    
     check_provided_functions(multifun);
-    check_catalog();
-    check_grid();
-    check_selection(); % may modify selcrit
     
+    if ~isa(catalog, 'ZmapCatalog')
+        error('CATALOG should be a ZmapCatalog');
+    end
+    if ~isa(zgrid, 'ZmapGrid')
+        error('Grid should be ZmapGrid, is a %s',class(zgrid));
+    end
     
-    if ~exist('answidth','var')
+    if ~exist('answidth', 'var')
         answidth=1;
     end
     
@@ -133,7 +129,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     % close the window after a while. this is probably a kludge.
     %h.delay_for_close(seconds(2));
-    if answidth==1
+    
+    if answidth==1 && ~isempty(varargin) && ~any(varargin == "noreshape")
         reshaper=@(x) reshape(x, size(zgrid.X));
         values=reshaper(values);
     end
@@ -150,12 +147,14 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         activeidx = find(zgrid.ActivePoints);
         doZ=~isempty(zgrid.Z);
         
+        assert(isa(selcrit,'EventSelectionParameters'));
         for i=1:numel(activeidx)
             fun=myfun; % local copy of function
             % is this point of interest?
             write_idx = activeidx(i);
             x=gridpoints(i,1);
             y=gridpoints(i,2);
+            
             if doZ
                 [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
             else
@@ -164,12 +163,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             end
             
             nEvents(write_idx)=minicat.Count;
-            maxDist(write_idx)=maxd;
             if ~isempty(minicat)
                 maxMag(write_idx)=max(minicat.Magnitude);
+                maxDist(write_idx)=maxd;
             end
             % are there enough events to do the calculation?
-            if minicat.Count < selcrit.requiredNumEvents
+            if minicat.Count < requiredNumEvents
                 nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
                 continue
             end
@@ -202,9 +201,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         else
             z=nan(size(x));
         end
-            
-        
-        parfor i=1:numel(x)
+        nTotal = numel(x);
+        nEvaluated=0;
+        D = parallel.pool.DataQueue;
+        D.afterEach(@updateWaitBar)
+        p=gcp('nocreate'); % get parallel pool details
+        parfor i=1:nTotal
             fun=myfun; % local copy of function;
             size(selcrit);
             size(catalog,1);
@@ -224,7 +226,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 maxMag(i)=max(minicat.Magnitude); %%
             end
             % are there enough events to do the calculation?
-            if minicat.Count < selcrit.requiredNumEvents
+            if minicat.Count < requiredNumEvents
                 nSkippedDueToInsufficientEvents = nSkippedDueToInsufficientEvents + 1;
                 continue
             end
@@ -233,10 +235,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             values(i,:)=returned_vals; %%
             
             wasEvaluated(i)=true; %%
-            if ~mod(i,ceil(length(zgrid)/50))
-                %h.String=sprintf('Computing values across grid.   %5d / %d Total points', i, length(zgrid));
-                drawnow limitrate nocallbacks
-            end
+            D.send(i);
         end
         %% put values into correct place
         nEvents(zgrid.ActivePoints) = nEvents(1:numel(activeidx));
@@ -250,6 +249,13 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         wasEvaluated(zgrid.ActivePoints) = wasEvaluated(1:numel(activeidx));
         wasEvaluated(~zgrid.ActivePoints)=false;
         
+        function updateWaitBar(~)
+            nEvaluated=nEvaluated+1;
+            if ~mod(nEvaluated,ceil(length(zgrid)/50))
+                h.String={"Parallel Computation: " + p.NumWorkers + " workers",sprintf('Computing grid values: %5d / %d Total points', nEvaluated, nTotal)};
+                drawnow limitrate nocallbacks
+            end
+        end
     end
 
     
@@ -267,23 +273,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             assert(isa(infun,'function_handle'),...
                 'FUN should be a function handle that accepts a catalog and returns a value');
             assert(nargin(infun)==1, 'FUN should take one input: a catalog')
-        end
-    end
-    
-    function check_catalog()
-        assert(isa(catalog,'ZmapCatalog'),'CATALOG should be a ZmapCatalog');
-    end
-    
-    function check_grid()
-        assert(isa(zgrid,'ZmapGrid'),'Grid should be ZmapGrid');
-    end
-    
-    function check_selection()
-        assert(isstruct(selcrit),'selcrit should be a struct');
-        assert(isfield(selcrit,'NumNearbyEvents') || isfield(selcrit,'RadiusKm'),...
-            'selcrit should at least have one field named either "NumNearbyEvents" or "RadiusKm"');
-        if ~isfield(selcrit,'requiredNumEvents')
-            selcrit.requiredNumEvents=1;
         end
     end
     

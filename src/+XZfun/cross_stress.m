@@ -27,6 +27,7 @@ classdef cross_stress < ZmapVGridFunction
         
         ExtDir = fullfile(ZmapGlobal.Data.hodi, 'external');
         ParameterableProperties = [];
+        References="";
     end
     
     methods
@@ -51,16 +52,7 @@ classdef cross_stress < ZmapVGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
-            [res,okPressed] = zdlg.Create('stress parameters [xsec]');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
-        end
-        
-        function SetValuesFromDialog(obj, res)
-            % called when the dialog's OK button is pressed
+            zdlg.Create('Name', 'stress parameters [xsec]',obj,'OkFcn', @obj.doIt);
         end
         
         function results=Calculate(obj)
@@ -126,15 +118,15 @@ function cross_stress_orig()
     
     labelList2=[' Michaels method | sorry, no other option'];
     
-    zdlg = ZmapDialog([]);
+    zdlg = ZmapDialog();
     
     zdlg.AddHeader('Stress Variance Parameters');
     zdlg.AddPopup('stress_method', 'stress tensor inversion method:',labelList2,1,...
         'Choose the calculation method for stress tensor inversion');
-    zdlg.AddEventSelector('selOpts', ni, ra);
+    zdlg.AddEventSelector('selOpts',obj.EventSelector);
     zdlg.AddGridSpacing('gridOpts',dx,'km',[],[],dd,'km');
     zdlg.AddEdit('fStrike','Strike [deg]',fStrike,'Strike');
-    [zparam,okPressed]=zdlg.Create('Stress Variance input parameters');
+    [zparam,okPressed]=zdlg.Create('Name', 'Stress Variance input parameters');
     if ~okPressed
         return
     end
@@ -144,7 +136,7 @@ function cross_stress_orig()
     fStrike=zparam.fStrike;
     
     useRadius = selOpts.UseEventsInRadius;
-    ni=selOpts.NumNearbyEvents;
+    ni=selOpts.NumClosestEvents;
     ra=selOpts.RadiusKm;
     bGridEntireArea = logical(gridOpts.GridEntireArea);
     dd=gridOpts.dz;

@@ -1300,7 +1300,8 @@ function mificrgr( mi, inde)
     axis off
     
     gridOpts = ZG.gridopt;
-    selOpts = EventSelectionChoice(fig,'evsel',[],ni,[]);
+    esp = EventSelectionParameters('NumClosestEvents',ni);
+    selOpts = EventSelectionChoice(fig,'evsel',esp);
     
     
     close_button=uicontrol('Style','Pushbutton',...

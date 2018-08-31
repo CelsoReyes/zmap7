@@ -2,7 +2,7 @@ classdef GridParameterChoice < handle
     % GridParameterChoice adds control to figure that describes how to choose a grid.
     %
     % Example usage:
-    %   obj =  GridParameterChoice(fig, lowerCornerPosition, {dx,'deg'},{dy,'deg'},{dz,'km'})   %dz currently unused
+    %   obj =  GridParameterChoice(fig, lowerCornerPosition, {dx,'degrees'},{dy,'degrees'},{dz,'kilometer'})   %dz currently unused
     %     ... mess with controls...
     %   dx=obj.dx
     %   dy=obj.dy
@@ -97,7 +97,7 @@ classdef GridParameterChoice < handle
         
         function obj=GridParameterChoice(fig,tag,lowerCornerPosition, A, B, C)
             % choose_grid adds controls to describe how to choose a grid.
-            % GridParameterChoice(fig, lowerCornerPosition, {dx,'deg'},{dy,'deg'},{dz,'km'})
+            % GridParameterChoice(fig, lowerCornerPosition, {dx,'degrees'},{dy,'degrees'},{dz,'kilometer'})
             %  Parameters A, B, and C are cells containing default vaules and units
             %    corresponding to E-W, N-S, and vertical.
             % Grid options
@@ -306,7 +306,11 @@ classdef GridParameterChoice < handle
                 'InnerPosition',position_in_current_monitor(GridParameterChoice.GROUPWIDTH+5, GridParameterChoice.GROUPHEIGHT+50),...
                 'Numbertitle','off'...
                 );
-            t='gpc'; lcp=[5 50]; A={2.3,'deg'}; B={-1.5,'deg'}; Z={.1,'km'};
+            t='gpc'; 
+            lcp=[5 50]; 
+            A={2.3,standardizeDistanceUnits('degrees')}; 
+            B={-1.5,standardizeDistanceUnits('degrees')}; 
+            Z={.1,standardizeDistanceUnits('kilometer')};
             gpc=GridParameterChoice(f,t,lcp,A,B,Z);
             
             inwidth=f.Position(3);
@@ -335,8 +339,8 @@ classdef GridParameterChoice < handle
             x=position(1);
             y=position(2);
             
-            unitnames.km={'dx','dy'};
-            unitnames.deg={'dLon','dLat'};
+            unitnames.kilometer={'dx','dy'};
+            unitnames.degrees={'dLon','dLat'};
             unitlookup=fieldnames(unitnames);
             
             switch numel(defaultsXYZ)
@@ -357,10 +361,10 @@ classdef GridParameterChoice < handle
             end
                     
             % conversion routines
-            hUnits=@(u)unitnames.(u){1}; %  km or deg -> dx or dlon
-            vUnits=@(u)unitnames.(u){2}; %  km or deg -> dy or dlat
-            fn=@(u)unitlookup{u}; % # -> km or deg
-            uname = @(u) find(strcmpi(unitlookup,u)) % km or deg -> #
+            hUnits=@(u)unitnames.(u){1}; %  kilometer or degrees -> dx or dlon
+            vUnits=@(u)unitnames.(u){2}; %  kilometer or degrees -> dy or dlat
+            fn=@(u)unitlookup{u}; % # -> kilometer or degrees 
+            uname = @(u) find(strcmpi(unitlookup,u)); % kilometer or degrees  -> #
             
             
             LabelWidth=30;
@@ -409,7 +413,7 @@ classdef GridParameterChoice < handle
                 'Position',[x+LabelWidth+Hspacing, posY, EditWidth,exV]);
             
             uicontrol(parent,'Style','popupmenu',...
-                'String',{'unused','km'},'Value',usingZ+1,...
+                'String',{'unused','kilometer'},'Value',usingZ+1,...
                 'Units','pixels','Position',[x+LabelWidth+EditWidth+2*Hspacing,posY,PopupZWidth,exV],...
                 'Callback',@zunit);
             

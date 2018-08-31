@@ -39,7 +39,7 @@ function plot_McBwtime(catalog, sPar)
     zdlg.AddEdit('fMcCorr',    'Mc correction',            fMcCorr,        'correction for the magnitude of completeness');
     zdlg.AddEdit('fBinning',   'Magnitude Binning',        fBinning,       'size of magnitude bins');
     zdlg.AddEdit('windowSize','Smooth plot',              nWindowSize,    'smooth plot');
-    [zans,okPressed] = zdlg.Create('Mc Input Parameter');
+    [zans,okPressed] = zdlg.Create('Name', 'Mc Input Parameter');
     
     if ~okPressed
         return

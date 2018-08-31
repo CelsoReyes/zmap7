@@ -7,26 +7,23 @@ function add_grid_menu(obj)
     uimenu(parent,'Label','Redraw Grid',MenuSelectedFcn,@cb_refresh);
     uimenu(parent,'Label','Clear Grid (Delete)',MenuSelectedFcn,@cb_clear);
     
-    uimenu(parent,'Separator','on',...
-        'Label','Create Auto Sample Radius',MenuSelectedFcn,@cb_autoradius);
-    uimenu(parent,'Label','Choose Sample Radius',MenuSelectedFcn,@cb_manualradius);
-    
+    uimenu(parent,'Separator','on','Label','Choose Sample Radius',MenuSelectedFcn,@cb_manualradius);
+    XYfun.sample_preview.AddMenuItem(parent, @()obj.map_zap);
     uimenu(parent,'Separator','on',...
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
     uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
-    uimenu(parent,'Label','Load a polygon',MenuSelectedField(),@cb_load_shape)
-    uimenu(parent,'Label','Save a polygon',MenuSelectedField(),@cb_save_shape)
     uimenu(parent,'Label','about editing polygons...',MenuSelectedFcn,@(~,~)moveable_item('help'));
     uimenu(parent,'Separator','on',...
-        'Label','Delete shape', MenuSelectedFcn, @cb_clear_shape);
+        'Label','Delete polygon', MenuSelectedFcn, @cb_clear_shape);
     
-    shapeiomenu=uimenu(parent,'Separator','on','Label','Shape IO...');
+    shapeiomenu=uimenu(parent,'Separator','on','Label','Polygon IO...');
     uimenu(shapeiomenu,'Label','get default', MenuSelectedFcn, @(~,~)cb_get_default_shape);
     uimenu(shapeiomenu,'Label','set as default', MenuSelectedFcn, @(~,~)ShapeGeneral.ShapeStash(obj.shape));
     uimenu(shapeiomenu,'Separator','on',...
-        'Label','load', MenuSelectedFcn, @(~,~)cb_load_shape);
-    uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.Directories.data));
+        'Label','Load a polygon',MenuSelectedField(),@cb_load_shape)
+    uimenu(shapeiomenu,'Label','Save a polygon',MenuSelectedField(),@cb_save_shape)
+    % uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.Directories.data));
     
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
@@ -110,34 +107,17 @@ function add_grid_menu(obj)
         
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
     end
-    
-    function cb_autoradius(~,~)
-        ZG=ZmapGlobal.Data;
-        sdlg.prompt='Required Number of Events:'; sdlg.value=ZG.ni;
-        sdlg(2).prompt='Percentile:'; sdlg(2).value=50;
-        sdlg(3).prompt='reach:' ; sdlg(3).value=1.5;
-        [~,cancelled,minNum,pct,reach]=smart_inputdlg('automatic radius',sdlg);
-        if cancelled
-            beep
-            disp('autoradius selection cancelled by user')
-            return
-        end
-        [r, evselch] = autoradius(obj.catalog, obj.Grid, minNum, pct, reach);
-        ZG.ra=r;
-        ZG.ni=minNum;
-        ZG.GridSelector=evselch;
-        obj.set_event_selection(evselch);
-        
-    end
+
     function cb_manualradius(~,~)
         ev = obj.get_event_selection;
         if isempty(ev)
             [evselch, okpressed] = EventSelectionChoice.quickshow(true);
         else
-            [evselch, okpressed] = EventSelectionChoice.quickshow(false,ev.NumNearbyEvents,ev.maxRadiusKm,ev.requiredNumEvents);
+            
+            [evselch, okpressed] = EventSelectionChoice.quickshow(false, ev);
         end
         if okpressed
-            obj.set_event_selection(evselch);
+            obj.set_event_selection(EventSelectionParameters.fromStruct(evselch));
         end
         
         % send message that global grid changed

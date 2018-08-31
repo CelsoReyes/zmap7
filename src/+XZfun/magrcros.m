@@ -36,6 +36,7 @@ classdef magrcros < ZmapVGridFunction
         ParameterableProperties = ["cutoff", "use_fixed_start",...
             "periodA_start", "periodB_end", "use_fixed_end", "window_duration", "bin_dur"]
         
+        References="";
         %Negative z-values indicate an increase in the seismicity rate, positive values a decrease.
             unit_options = {'seconds','hours','days','years'};
             unit_functions = {@seconds, @hours, @days, @years};
@@ -74,7 +75,7 @@ classdef magrcros < ZmapVGridFunction
             end
             % make the interface
             %
-            zdlg = ZmapDialog([]);
+            zdlg = ZmapDialog();
             zdlg.AddEventSelector('evsel', obj.EventSelector);
             if ~isempty(obj.Shape)
                 zdlg.AddCheckbox('useGridFromShape', 'Limit grid to polygon', true,[],...
@@ -119,7 +120,7 @@ classdef magrcros < ZmapVGridFunction
                 round(obj.window_duration/obj.ZG.bin_dur),...
                 'Number of windows used to divide up the window [INTEGER]. this determines the bin size');
             
-            [zparam,okPressed]=zdlg.Create('Z-value xsection input parameters');
+            [zparam,okPressed]=zdlg.Create('Name', 'Z-value xsection input parameters');
             if ~okPressed
                 return
             end

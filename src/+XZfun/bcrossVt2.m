@@ -7,7 +7,6 @@ classdef bcrossVt2 < ZmapVGridFunction
         ra = ZmapGlobal.Data.ra;
         dd = 1.0
         dx = 1.0
-        Nmin=100; % minimum number of events
         
         % get the time periods of interest
         t0b = ZmapGlobal.Data.t0b;
@@ -48,6 +47,7 @@ classdef bcrossVt2 < ZmapVGridFunction
             'b_value_1','Mc_value1','stan1','a_value1','probability','count_1',...
             'b_value_2','Mc_value2', 'stan2','a_value2','probability2','count_2'};
         
+        References="";
         % [bv magco stan av pr no1 bv2 magco2 stan2 av2 pr2 no2] % changed to return relevent properies
         %{
         ReturnDetailsOld = {... VariableNames, VariableDescriptions, VariableUnits
@@ -77,26 +77,14 @@ classdef bcrossVt2 < ZmapVGridFunction
     
     methods
         function obj=bcrossVt2(catalog, varargin)
+            obj@ZmapVGridFunction(zap, 'd_b');
             
-            narginchk(1,inf); 
-            ZmapFunction.verify_catalog(catalog);
-            obj.RawCatalog=catalog;
+            obj.NodeMinEventCount = 100;
             
-            % create bcrossVt2 object (or do the calculation)
-            obj.active_col='d_b';
-            % depending on whether parameters were provided, either run automatically, or
-            % request input from the user.
-            if nargin<2
-                % create dialog box, then exit.
-                obj.InteractiveSetup();
-                
-            else
-                % run this function without human interaction
-                obj.doIt();
-                %obj.Calculate();
-                %obj.plot();
-                %obj.ModifyGlobals();
-            end
+            report_this_filefun();
+            unimplemented_error()
+            obj.parseParameters(varargin);
+            obj.StartProcess();
         end
         function InteractiveSetup(obj)
             report_this_filefun();
@@ -106,8 +94,8 @@ classdef bcrossVt2 < ZmapVGridFunction
             sdlg(2).prompt='T2 = '; sdlg(2).value=obj.t2;
             sdlg(3).prompt='T3 = '; sdlg(3).value=obj.t3;
             sdlg(4).prompt='T4 = '; sdlg(4).value=obj.t4;
-            sdlg(5).prompt='Nmin'; sdlg(5).value=obj.Nmin;
-            [~,~,obj.t1,obj.t2,obj.t3,obj.t4,obj.Nmin]=smart_inputdlg('differential b-value map', sdlg);
+            sdlg(5).prompt='NodeMinEventCount'; sdlg(5).value=obj.NodeMinEventCount;
+            [~,~,obj.t1,obj.t2,obj.t3,obj.t4,obj.NodeMinEventCount]=smart_inputdlg('differential b-value map', sdlg);
             
             
             %% make the interface
@@ -115,13 +103,15 @@ classdef bcrossVt2 < ZmapVGridFunction
             %zdlg = ZmapDialog(obj, @obj.doIt);
             
             zdlg.AddHeader('Automatically estimate magnitude of completeness?');
-            zdlg.AddMcAutoEstimateCheckbox('mc_auto', obj.mcAuto);
-            zdlg.AddCheckbox('mc_weights', 'AUTOMATIC Least Squares Weighting', obj.wtAuto,...
+            zdlg.AddMcAutoEstimateCheckbox('mcAuto', obj.mcAuto);
+            zdlg.AddCheckbox('wtAuto', 'AUTOMATIC Least Squares Weighting', obj.wtAuto,...
                 'Choose the calculation weighting method for Mc');
             zdlg.AddGridSpacing('gridOpts',obj.dx,'km',[],'',obj.dd,'km');
-            zdlg.AddEventSelector('eventSelector',obj.ni, obj.ra,obj.Nmin);
+            obj.AddDialogOption(zdlg,'EventSelector');
+            obj.AddDialogOption(zdlg,'NodeMinEventCount');
             
-            [res,okPressed] = zdlg.Create('differential b-value map X-section Grid Parameters');
+            
+            [res,okPressed] = zdlg.Create('Name', 'differential b-value map X-section Grid Parameters');
             
             if ~okPressed
                 return
@@ -132,13 +122,13 @@ classdef bcrossVt2 < ZmapVGridFunction
         
         function SetValuesFromDialog(obj,res)
             % called when the dialog's OK button is pressed
-            obj.mcAuto = res.mc_auto; % MC Calculation using Max Likelihood automatic  Mcomp 
-            obj.wtAuto = res.mc_weights; % 1 is automatic LSW, 2 is  not automatic
+            obj.mcAuto = res.mcAuto; % MC Calculation using Max Likelihood automatic  Mcomp 
+            obj.wtAuto = res.wtAuto; % 1 is automatic LSW, 2 is  not automatic
             obj.dx=res.gridOpts.dx;
             obj.dd=res.gridOpts.dz;
-            obj.ni = res.eventSelector.NumNearbyEvents;
+            obj.ni = res.eventSelector.NumClosestEvents;
             obj.ra = res.eventSelector.RadiusKm;
-            obj.Nmin = res.eventSelector.requiredNumEvents;
+            obj.NodeMinEventCount = res.eventSelector.requiredNumEvents;
         end
 
         % get the grid-size interactively and
@@ -298,8 +288,8 @@ classdef bcrossVt2 < ZmapVGridFunction
                 catalog = newa.subset(l);      % new data per grid point (catalog) is sorted in distance
                 %}
 
-                if catalog.Count >= obj.Nmin
-                    minForTimeslice = obj.Nmin/2;
+                if catalog.Count >= obj.NodeMinEventCount
+                    minForTimeslice = obj.NodeMinEventCount/2;
                     % call the catalog-value function
                     
                     % this was [apparently] sloppy, output values migth be result of one or the other

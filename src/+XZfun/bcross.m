@@ -22,6 +22,7 @@ classdef bcross < ZmapVGridFunction
         CalcFields      = {'magComp','McStdDev','b_value','mStdB','a_value','mStdA','fitToPowerlaw','ro'} % cell array of charstrings, matching into ReturnDetails.Names
         
         ParameterableProperties = []; % array of strings matching into obj.Properties
+        References="";
     end
     
     methods
@@ -50,12 +51,11 @@ classdef bcross < ZmapVGridFunction
             
             zdlg.AddMcMethodDropdown('mc_choice');
             zdlg.AddGridSpacing('gridOpts',dx,'km',[],'',dd,'km');
-            zdlg.AddEventSelector('eventSelector',ni, ZG.ra,Nmin);
+            obj.AddDialogOption(zdlg,'EventSelector');
             
             zdlg.AddEdit('fBinning','Magnitude binning', fBinning,...
                 'Bins for magnitudes');
-            zdlg.AddEdit('Nmin','Min. No. of events > Mc', Nmin,...
-                'Min # events greater than magnitude of completeness (Mc)');
+            obj.AddDialogOption(zdlg, 'NodeMinEventCount');
             zdlg.AddEdit('fMcFix', 'Fixed Mc',fMcFix,...
                 'fixed magnitude of completeness (Mc)');
             zdlg.AddEdit('fMccorr', 'Mc correction factor',fMccorr,...
@@ -66,7 +66,7 @@ classdef bcross < ZmapVGridFunction
                 'Number of bootstraps to determine Mc');
             
             
-            [res,okPressed] = zdlg.Create('B-Value Parameters [xsec]');
+            [res,okPressed] = zdlg.Create('Name', 'B-Value Parameters [xsec]');
             if ~okPressed
                 return
             end
@@ -79,11 +79,10 @@ classdef bcross < ZmapVGridFunction
             obj.hndl2=res.mc_choice;
             obj.dx = res.gridOpts.dx;
             obj.dd = res.gridOpts.dz;
-            obj.tgl1 = res.eventSelector.UseNumNearbyEvents;
+            obj.tgl1 = res.eventSelector.UseNumClosestEvents;
             obj.tgl2 = ~tgl1;
-            obj.ni = res.eventSelector.NumNearbyEvents;
+            obj.ni = res.eventSelector.NumClosestEvents;
             obj.ra = res.eventSelector.RadiusKm;
-            obj.Nmin = res.eventSelector.requiredNumEvents;
             obj.bGridEntireArea = res.gridOpts.GridEntireArea;
             obj.bBst_button = res.useBootstrap;
             obj.nBstSample = res.nBstSample;
@@ -299,7 +298,7 @@ function bcross_orig(sel)
     zdlg.AddHeader('Choose stuff');
     zdlg.AddMcMethodDropdown('mc_choice');
     zdlg.AddGridSpacing('gridOpts',dx,'km',[],'',dd,'km');
-    zdlg.AddEventSelector('eventSelector',ni, ZG.ra,Nmin);
+    zdlg.AddEventSelector('eventSelector',obj.EventSelector);
     
     zdlg.AddEdit('fBinning','Magnitude binning', fBinning,...
         'Bins for magnitudes');
@@ -314,7 +313,7 @@ function bcross_orig(sel)
     zdlg.AddEdit('fMccorr', 'Mc correction factor',fMccorr,...
         'Correction term to be added to Mc');
     
-    [res,okPressed] = zdlg.Create('b-Value X-section Grid Parameters');
+    [res,okPressed] = zdlg.Create('Name', 'b-Value X-section Grid Parameters');
             
     if ~okPressed
         return
@@ -322,9 +321,9 @@ function bcross_orig(sel)
     hndl2=res.mc_choice;
     dx = res.gridOpts.dx;
     dd = res.gridOpts.dz;
-    tgl1 = res.eventSelector.UseNumNearbyEvents;
+    tgl1 = res.eventSelector.UseNumClosestEvents;
     tgl2 = ~tgl1;
-    ni = res.eventSelector.NumNearbyEvents;
+    ni = res.eventSelector.NumClosestEvents;
     ra = res.eventSelector.RadiusKm;
     Nmin = res.eventSelector.requiredNumEvents;
     bGridEntireArea = res.gridOpts.GridEntireArea;

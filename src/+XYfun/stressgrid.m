@@ -25,6 +25,9 @@ classdef stressgrid < ZmapHGridFunction
         
         ExtDir = fullfile(ZmapGlobal.Data.hodi, 'external');
         ParameterableProperties = [];
+        
+        %reference may not be the correct one
+        References = "Michael AJ (1984) Determination of stress from slip data: faults and folds. J Geophys Res 89:11517–11526. doi:10.1029/JB089iB13p11517";
     end
     methods
         function obj = stressgrid(zap, varargin)
@@ -53,15 +56,8 @@ classdef stressgrid < ZmapHGridFunction
             zdlg.AddPopup('calcmethod','Calc Method',{'Michaels Method'},1,...
                 'Choose the only method that is available. (sorry, no other options)');
             
-            zdlg.AddEventSelector('evsel', obj.EventSelector)
-            [res, okpressed]=zdlg.Create('Stress grid options');
-            if ~okpressed
-                return
-            end
-            obj.EventSelector=res.evsel;
-            % Set Values From Dialog
-            
-            obj.doIt()
+            obj.AddDialogOption(zdlg, 'EventSelector')
+            zdlg.Create('Name', 'Stress grid options', 'WriteToObj',obj, 'OkFcn',@obj.doIt);
         end
         
         function results = Calculate(obj)
@@ -402,8 +398,8 @@ function bvg = stressgrid
     zdlg.AddPopup('calcmethod','Calc Method',{'Michaels Method'},1,...
         'Choose the only method that is available. (sorry, no other options)');
     
-    zdlg.AddEventSelector('EventSelector', ni, ra, Nmin)
-    [res, okpressed]=zdlg.Create('Stress grid');
+    zdlg.AddEventSelector('EventSelector', obj.EventSelector)
+    [res, okpressed]=zdlg.Create('Name', 'Stress grid');
     if ~okpressed
         return
     end

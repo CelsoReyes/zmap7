@@ -18,6 +18,7 @@ classdef inmakegr < ZmapHGridFunction
         ParameterableProperties = ["depth_km"];
             
         PlotTag      = 'inmakegr';
+        References = "";
     end
     
     methods
@@ -63,7 +64,7 @@ function orig_inmakegr(catalog)
         'Position',[ ZG.welcome_pos + [200, -200], 650, 250]);
     axis off
     
-    zdlg = ZmapDialog([]);
+    zdlg = ZmapDialog();
     zdlg.AddDurationEdit('ts', 'Time step', ZG.bin_dur,'time step in days',@days);
     zdlg.AddEventSelector('evsel', obj.EventSelector);
     

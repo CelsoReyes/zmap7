@@ -31,9 +31,9 @@ function clpval(var1)
     global close_p_button pplot
     global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
     global h2 cplot Info_p close_p  print_p
-    global p c dk tt pc loop nn pp nit t err1x err2x ieflag isflag
+    global p c dk tt pc loop nn pp nit t err1x err2x
     global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk sdp cof qp cog aa bb pcheck loopcheck
+    global sdc sdk sdp qp aa bb loopcheck
     global ppc  cplot2 hndl1
     global autop tmeqtime tmvar
     tmvar=[];
@@ -326,9 +326,6 @@ function clpval(var1)
         pp=PO;
         pc=CO;
         nit=0;
-        ieflag=0;
-        isflag=0;
-        pcheck=false;
         err1x=0;
         err2x=0;
         ts=0.0000001;
@@ -403,8 +400,9 @@ function clpval(var1)
         
         MIN_CSTEP = 0.000001;
         MIN_PSTEP = 0.00001;
-        [loopcheck, c, p, dk, sdc, sdp, sdk]=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
-        % loopcheck=ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
+        % following moved into MyPvalClass
+        mpvc = MyPvalClass;
+        [loopcheck, c, p, dk, sdc, sdp, sdk]=mpvc.ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
         
         if autop~=1
             figure(pplot);
@@ -463,8 +461,13 @@ function clpval(var1)
                 'FontSize',ZmapGlobal.Data.fontsz.m ,...
                 'FontWeight','normal' ,...
                 'String',['Standard Deviation: ',tt1]);
-            
-            tt2=num2str(cof);tt3=num2str(pc);tt4=num2str(qp);tt5=num2str(cog);
+            cof=mpvc.pk/mpvc.qp;
+            tt2=num2str(cof);
+            tt3=num2str(pc);
+            tt4=num2str(qp);
+            cog = cof* mpvc.pc^obj.qp;
+            tt5=num2str(cog);
+
             tt1=['Integrated Omori Law: N(t) = ',tt2,'(t+',tt3,')^',tt4,' -   ',tt5];
             text1= text(...
                 'Position',[0.1 0.21 h2 ],...

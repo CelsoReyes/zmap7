@@ -3,15 +3,16 @@ classdef GridOptions < handle
         dx % east-west distance between grid points
         dy % north-south distance between grid points
         dz % vertical distance between grid points
-        dxUnits char {mustBeMember(dxUnits, {'deg','degrees','km','kilometers'})} = 'deg'
-        dyUnits char {mustBeMember(dyUnits, {'deg','degrees','km','kilometers'})} = 'deg'
-        dzUnits char {mustBeMember(dzUnits, {'km','kilometers'})} = 'km'
+        dxUnits             char    {isStandardDistanceUnit(dxUnits)}   = 'degrees'
+        dyUnits             char    {isStandardDistanceUnit(dyUnits)}   = 'degrees'
+        dzUnits             char    {isStandardDistanceUnit(dzUnits)}   = 'kilometer'
         % Defines whether horizontal distances are constant, or whether they scale as the grid
         % deviates from the equator. 
-        followMeridians matlab.lang.OnOffSwitchState = 'off'
-        gridEntireArea matlab.lang.OnOffSwitchState = 'off'
-        FixedAnchorPoint double = []
-        AbsoluteGridLimits double = [-180 180 -90 90] % grid cannot be used past these limits [xmin xmax ymin ymax]
+        followMeridians     matlab.lang.OnOffSwitchState                = 'off'
+        gridEntireArea      matlab.lang.OnOffSwitchState                = 'off'
+        FixedAnchorPoint    double                                      = []
+        % grid cannot be used past these limits [xmin xmax ymin ymax]
+        AbsoluteGridLimits  double                                      = [-180 180 -90 90] 
     end
     
     properties(Dependent)
@@ -60,7 +61,7 @@ classdef GridOptions < handle
                         elseif isfield(gridopt,'xyunits')
                             obj.dxUnits = lower(gridopt.xyunits);
                             obj.dyUnits = lower(gridopt.xyunits);
-                            obj.dzUnits = 'kilometers';
+                            obj.dzUnits = 'kilometer';
                         end
                         
                         if isfield(gridopt,'GridEntireArea')
@@ -71,7 +72,7 @@ classdef GridOptions < handle
                         if isfield(gridopt,'FollowMeridians')
                             obj.followMeridians = gridopt.FollowMeridians;
                         else
-                            obj.followMeridians = ismember(lower(obj.dxUnits),{"deg","degrees"});
+                            obj.followMeridians = obj.dxUnits=="degrees";
                         end
                         
                         if fixedptopts.UseFixedAnchorPoint

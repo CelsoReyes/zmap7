@@ -39,17 +39,9 @@ classdef zgrid3d < Zmap3DGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
-            [res,okPressed] = zdlg.Create('3D Z-Value Parameters');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
+            zdlg.Create('Name', '3D Z-Value Parameters','WriteToObj',obj,'OkFcn',@obj.doIt);
         end
         
-        function SetValuesFromDialog(obj, res)
-            % called when the dialog's OK button is pressed
-        end
         
         function results=Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup

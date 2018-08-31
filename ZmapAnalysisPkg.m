@@ -7,7 +7,7 @@ classdef ZmapAnalysisPkg
     %
     %   obj = ZmapAnalysisPkg([], catalog, eventparams, grid, shape) all values are provided as
     %         objects of the correct type.  CATALOG should be some sort of ZmapCatalog. EVENTPARAMS
-    %         should be a struct containing details on how to choose evnets
+    %         should be an EventSelectionParameters object containing details on how to choose events
     %
     %   obj = ZmapAnalysisPkg(s, catalogField, eventField, gridField, shapeField) retrieve all
     %         values from the structure or object "s".
@@ -23,10 +23,7 @@ classdef ZmapAnalysisPkg
         % can only be set in constructor
         
         Catalog % a ZMapCatalog. Do not change this catalog directly
-        % EVENTSEL is a structure containing one or more fields used to map a catalog onto a grid point:
-        %   NumNearbyEvents, RadiusKm, UseNumNearbyEvents, UseEventsInRadius
-        %   maxRadiusKm, requiredNumEvents
-        EventSel
+        EventSel    EventSelectionParameters
         Grid % ZmapGrid used to sample at points in space
         Shape % Shape used to mask a catalog
         
@@ -57,14 +54,17 @@ classdef ZmapAnalysisPkg
     end
     
     methods(Static)
-        function obj = fromGlobal(catname)
+        function obj = fromGlobal(catname,polyg)
             % FROMGLOBAL create the package from the Zmap Globals, using the catalog specified
             %
             % obj = ZMAPANALYSISPKG.FROMGLOBAL(catname)
             %
             % see also ZMAPDATA, ZMAPGLOBAL
             ZG=ZmapGlobal.Data;
-            obj=ZmapAnalysisPkg(ZG, catname, 'GridSelector', 'Grid', 'selection_shape');
+            if ~exist('polyg','var')
+                polyg = ShapeGeneral;
+            end
+            obj = ZmapAnalysisPkg([], ZG.(catname), ZG.GridSelector, ZG.Grid, polyg);
         end
     end  
 end

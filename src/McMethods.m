@@ -68,8 +68,8 @@ classdef McMethods < uint32
         
         function s = dropdownList()
             methods = sort(enumeration('McMethods'));
-            s = strjoin(arrayfun(@McMethods.taggeddescription, methods), '|');
-            s = char(s);
+            s =string(methods);
+            % s = strjoin(arrayfun(@McMethods.taggeddescription, methods), '|');
         end
     end
 end

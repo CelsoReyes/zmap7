@@ -78,6 +78,6 @@ newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
         ZG=ZmapGlobal; 
         ctp=CumTimePlot(ZG.newt2);
         ctp.plot();
-pvalcat
+MyPvalClass.pvalcat
 
 end

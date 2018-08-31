@@ -8,7 +8,9 @@ classdef ZmapGridFunction < ZmapFunction
         active_col      char                            = '';  % the name of the column of the results to be plotted
         showgridcenters matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.on; % toggle the grid points on and off.
         Grid                        {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % ZmapGrid
-        EventSelector               {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector% how to choose events for the grid points
+        EventSelector   EventSelectionParameters        = ZmapGlobal.Data.GridSelector% how to choose events for the grid points
+        NodeMinEventCount   double {mustBeInteger}     = 1; % minimum number of events in a sample for that sample to be calculated
+        OverallMinEventCount   double {mustBeInteger}  = 1; % minimum number of events in catalog, for calculations to operate
         Shape                       {mustBeShape}       = ShapeGeneral % shape to be used 
         do_memoize                                      = true;
     end
@@ -20,15 +22,19 @@ classdef ZmapGridFunction < ZmapFunction
         % cell of VariableNames (chosen from first row of ReturnDetails) that
         % describe the data returned from the calculation function. [in order]
         CalcFields;
+        Type; %XY, XZ, XYZ
     end
     
     methods
         function obj=ZmapGridFunction(zap, active_col)
             % ZMAPGRIDFUNCTION constructor  assigns grid, event, catalog, and shape properties
-            if isempty(zap)
-                zap = ZmapAnalysisPkg.fromGlobal();
+            obj@ZmapFunction();
+            %obj@ZmapFunction(zap.Catalog);
+            if isempty(zap) || ~isa(zap,'ZmapAnalysisPkg')
+                %zap = ZmapAnalysisPkg.fromGlobal();
+                zap = obj.ZAPfrom(zap);
             end
-            obj@ZmapFunction(zap.Catalog);
+            obj.RawCatalog = zap.Catalog;
             
             obj.EventSelector = zap.EventSel;
             %obj.RawCatalog = zap.Catalog;
@@ -48,6 +54,14 @@ classdef ZmapGridFunction < ZmapFunction
             saveToDesktop@ZmapFunction(obj) 
         end
         
+        function obj=set.EventSelector(obj,value)
+            if isa(value,'EventSelectionParameters')
+                obj.EventSelector = value;
+            else
+                obj.EventSelector = EventSelectionParameters.fromStruct(value);
+            end
+        end
+                
 
     end
     methods(Access=protected)
@@ -92,7 +106,7 @@ classdef ZmapGridFunction < ZmapFunction
                 maxDists, ...
                 maxMag, ...
                 wasEvaluated...
-                ] = gridfun( calculationFcn, obj.RawCatalog, obj.Grid, obj.EventSelector, numel(obj.CalcFields) );
+                ] = gridfun( calculationFcn, obj.RawCatalog, obj.Grid, obj.EventSelector, obj.NodeMinEventCount ,numel(obj.CalcFields), 'noreshape' );
             mytable = array2table(vals,'VariableNames', obj.CalcFields);
             
             useZ = ~isempty(obj.Grid.Z);
@@ -182,6 +196,86 @@ classdef ZmapGridFunction < ZmapFunction
             units = obj.Result.values.Properties.VariableUnits{choice};
             
         end
+        
+        function AddDialogOption(obj, zdlg, choice)
+            switch choice
+                case 'NodeMinEventCount'
+                    zdlg.AddEdit('NodeMinEventCount',   'Min. # events > Mc (per node)',...
+                        obj.NodeMinEventCount, 'Min # events greater than magnitude of completeness (Mc) at each node');
+                    
+                case 'OverallMinEventCount'
+                    zdlg.AddEdit('NodeMinEventCount',   'Min. # events > Mc (overall)',...
+                        obj.NodeMinEventCount, 'Min # events in catalog greater than magnitude of completeness (Mc)');
+                    
+                case 'EventSelector'
+                    zdlg.AddEventSelector('EventSelector', obj.EventSelector)
+                    
+                case 'active_col'
+                    unimplemented_error();
+                    
+                otherwise
+                    error('unrecognized dialog option');
+            end
+                    
+        end
+        
+        function zapObj=ZAPfrom(obj, v)
+            
+            if isempty(v)
+                zapObj = ZmapAnalysisPkg.fromGlobal();
+                return
+            end
+            
+            if ZmapGlobal.Data.Interactive
+                errfn = @errordlg;
+            else
+                errfn = @error;
+            end
+                
+            if ischar(v)||isstring(v)
+                vn = genvarname(v); % make it safe!
+                if v ~= vn
+                    errfn("[" + v + "] is not a valid variable name");
+                    return
+                end
+                try
+                vl=evalin('base',char("whos('" + v + "')"));
+                catch ME
+                    errfn(ME.message,ME.identifier);
+                    return
+                end
+                if numel(vl)==1
+                    v = evalin('base',vl.name);
+                elseif isempty(vl)
+                    errfn("No variable named [" + v + "] found in base");
+                    return
+                else
+                    errfn('unexpected error');
+                   return
+                end
+            end
+            
+            switch class(v)
+                case 'ZmapData'
+                    % create ZAP from ZmapData
+                    zapObj = ZmapAnalysisPkg.fromGlobal('primeCatalog');
+                case 'ZmapMainWindow'
+                    % create ZAP from the main window
+                    switch obj.Type
+                        case 'XY'
+                            zapObj = v.map_zap;
+                        case 'XZ'
+                            zapObj = v.xsec_zap;
+                        case 'xyz'
+                            error("unimplemented");
+                        otherwise
+                            error("unimplemented");
+                    end
+                otherwise
+                    errfn('do not know what to do with this')
+            end
+            %ZmapAnalysisPkg();
+        end
     end % Protected methods
     
     methods(Access=protected, Static)
@@ -230,6 +324,8 @@ classdef ZmapGridFunction < ZmapFunction
                 disp(ME.message)
             end
         end
+        
+
     end % Protected STATIC methods
 end
 

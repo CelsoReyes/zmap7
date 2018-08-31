@@ -36,8 +36,8 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_auto_estimate,
     
     % number of mag units
     % nmagu = (maxmag*10)+1;
-    
-    [bval,xt2] = hist(magnitudes,(mima:dm1:maxmag));
+    xt2 = (mima:dm1:maxmag);
+    bval = histcounts(magnitudes,(mima-(dm1/2):dm1:maxmag));
     % bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
     %bvalsum3 = bvalsum3(:);

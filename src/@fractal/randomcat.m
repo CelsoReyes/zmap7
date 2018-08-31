@@ -20,7 +20,7 @@ function params = randomcat(obj)
     zdlg.AddEdit('stdx', 'Std. deviation in longitude [km]', stdx, tooltip);
     zdlg.AddEdit('stdy', 'Std. deviation in latitude [km]', stdy, tooltip);
     zdlg.AddEdit('stdz', 'Std. deviation in Depth [km]', stdz, tooltip);
-    [params, okPressed] = zdlg.Create('Random Catalog Parameters');
+    [params, okPressed] = zdlg.Create('Name', 'Random Catalog Parameters');
     
     if ~okPressed
         return

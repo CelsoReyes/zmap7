@@ -174,7 +174,7 @@ classdef ShapeCircle < ShapeGeneral
         
         function obj=selectUsingMouse(ax)
             
-            [ss,ok] = selectSegmentUsingMouse(ax,'deg','km','r',@circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'degrees','kilometer','r',@circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];
@@ -182,7 +182,7 @@ classdef ShapeCircle < ShapeGeneral
             end
             obj=ShapeCircle;
             obj.Points=ss.xy1;
-            obj.Radius=ss.dist_km;
+            obj.Radius=ss.dist_kilometer;
             
             function circ_update(stxy, ~, d)
                 h=findobj(gca,'Tag','tmp_circle_outline');

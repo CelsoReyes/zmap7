@@ -18,6 +18,7 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep)
     
     nEvents=numel(actualMags);
     mags= startMag : magStep : 10;
+    
     N = 10 .^ (log10(nEvents) - B*(mags - startMag)); %expected events per mag step
     % N=round(N);
     N=round(N / sum(N) * nEvents); % get distribution at this number
@@ -64,7 +65,10 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep)
     PM=mags(1:ct);
     N = N(1:ct);
     %}
-    [bval,~] = hist(actualMags,mags); % guessing l comes from caller
+    halfStep = magStep /2;
+    magBinEdges = [mags - halfStep , max(newMags)];
+    bval = histcounts(actualMags,magBinEdges);
+    % bval = hist(actualMags,mags); % guessing l comes from caller
     b3 = cumsum(bval,'reverse');
     res = sum(abs(b3 - N)) / sum(b3)*100;
     

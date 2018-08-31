@@ -62,12 +62,12 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         AutoShowPlots   logical      = true; % will plots be generated upon calculation?
         InteractiveMode logical      = true;
         DelayProcessing logical      = false;
-        % Grid, EventSelector, and Shape have been moved into the ZmapGridFunction
     end
     
     properties(Constant,Abstract)
         PlotTag % string used for tracking the plot for each function (assign in your function)
         ParameterableProperties % properties from each class that can be used as constructor parameters 
+        References % paper references for calculations contained within
     end
     
     properties(Dependent)
@@ -76,8 +76,10 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
     
     methods
         function obj=ZmapFunction(catalog)
-            obj.RawCatalog=catalog;
-            obj.verify_catalog(catalog);
+            if exist('catalog','var')
+                obj.RawCatalog=catalog;
+                obj.verify_catalog(catalog);
+            end
         end
         
         function fcall = get.FunctionCall(obj)
@@ -259,6 +261,105 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         plot(obj,varargin); % plot
         
     end %ABSTRACT METHODS
+    
+    methods % will be protected
+        function t = helptext(obj, subject)
+            % provides help text, based on the subject.
+            switch subject
+                case 'PlotTag'
+                    t = "Title for this plot will be <strong>'" + obj.PlotTag+"'</strong>";
+                case 'ParameterableProperties'
+                    m=metaclass(obj);
+                    t = "<strong>Name-Value</strong> pairs that can be specified when creating this function:"+newline+...
+                        "";
+                    plist = [string(obj.ParameterableProperties),"AutoShowPlots","InteractiveMode","DelayProcessing"];
+                    for j=1:numel(plist)
+                        pidx=string({m.PropertyList.Name})==plist(j);
+                        p = m.PropertyList(pidx);
+                        t=t+newline+"   <strong>"+ pad(plist(j),20,'right') + "</strong> : " + class(obj.(plist(j)));
+                        if p.HasDefault
+                            if numel(p.DefaultValue)>0 && (isnumeric(p.DefaultValue) || islogical(p.DefaultValue))
+                                dv=string(mat2str(p.DefaultValue));
+                            else
+                                dv = string(p.DefaultValue);
+                            end
+                            if ismissing(dv)
+                                if isnumeric(p.DefaultValue)
+                                    dv="nan";
+                                else
+                                    dv="<missing>";
+                                end
+                            end
+                            
+                        if dv.strlength > 33
+                            dv=dv.extractBefore(15) + "<strong>...</strong>"+dv.extractAfter(dv.strlength-14);
+                        end
+                            t=t+" [default: "+dv+"]";
+                        end
+                        try
+                        if ~isempty(p.Validation) && ~isempty(p.Validation.ValidatorFunctions)
+                            fn = cellfun(@func2str,p.Validation.ValidatorFunctions,'UniformOutput',false);
+                            t=t+ " that " + strjoin(fn,',');
+                        end
+                        catch ME
+                            disp("error wile parsing validator functions:"+ me.identifier)
+                        end
+                    end
+                    
+                    if ~isempty(plist)
+                        pv = obj.(obj.ParameterableProperties(1));
+                        if ischar(pv)
+                            pp = sprintf("'%s'",pv);
+                        elseif isstring(pv)
+                            pp = sprintf('"%s"',pv);
+                        elseif isa(pv,'function_handle')
+                            pp = sprintf('@%s', func2str(pv)');
+                        elseif (isnumeric(pv) || islogical(pv)) && length(pv)>1
+                            pp=string(mat2str(pv));
+                        else
+                            try
+                                pp = string(pv);
+                            catch
+                                pp="some_"+ class(pv);
+                            end
+                        end
+                        
+                        t = t+ newline+newline+ "For example:"+newline+...
+                            "    obj = "+class(obj) +"(... , '" + ...
+                            obj.ParameterableProperties(1) + "', " + ...
+                            pp + ")";
+                    end
+                        
+                    assert(numel(t)==1)
+                    
+                case "ReturnDetails"
+                    t = "This function calculates :" + newline + ...
+                        strjoin("  <strong>"+pad(obj.ReturnDetails.Names,20,'right') + "</strong> "+ obj.ReturnDetails.Descriptions,newline);
+                    
+                case "References"
+                    t = "References for this function:"+newline;
+                    padValue = "  ";
+                    r = strjoin(padValue + string(obj.References),newline);
+                    if r~=padValue
+                        t = t + r;
+                    else
+                        t = t + "   <missing>";
+                    end
+                    
+                case "-choices"
+                    t = ["PlotTag","ParameterableProperties","ReturnDetails", "References"];
+                case "-all"
+                    ch = obj.helptext("-choices");
+                    t="";
+                    for i=1:numel(ch)
+                        t = t+ newline + newline + obj.helptext(ch(i));
+                    end
+                    
+                otherwise
+                    error('help for item %s not found', subject)
+            end
+        end
+    end
     
     methods(Static, Abstract)
         

@@ -60,12 +60,12 @@ classdef cgr_timeplot < ZmapFigureFunction
             % create a dialog that allows user to select parameters neccessary for the calculation
             
             
-            zdlg=ZmapDialog(...
-                obj,...  pass it a handle that it can change when the OK button is pressed.
-                @obj.doIt...  if OK is pressed, then this function will be executed.
-                );
+            zdlg=ZmapDialog();
             
-            zdlg.Create('my dialog title')
+            zdlg.Create('Name', 'my dialog title',...
+                'WriteToObj', obj, ... pass it a handle that it can change when the OK button is pressed.
+                'OkFcn', @obj.doIt ... if OK is pressed, then this function will be executed.
+                );
             % The dialog runs. if:
             %  OK is pressed -> assigns 
         end
@@ -134,7 +134,7 @@ function CreateMenu(obj)
         
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
-        uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(),@(~,~)pvalcat2())
+        uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(),@(~,~)MyPvalClass.pvalcat2())
         uimenu(op5,'Label','Cut catalog at mainshock time',...
             MenuSelectedField(),@cb_cut_mainshock)
         
@@ -546,7 +546,7 @@ function timeplot(mycat, nosort)
     function cb_pestimate(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.hold_state=false;
-        pvalcat();
+        MyPvalClass.pvalcat();
     end
     
     function cb_cut_mainshock(mysrc,myevt)

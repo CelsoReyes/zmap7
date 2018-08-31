@@ -60,7 +60,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     
     properties(SetObservable = true)
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
-        Units = 'degrees'; % either 'degrees' or 'kilometers'
+        Units = 'degrees'; % either 'degrees' or 'kilometer'
     end
     
     properties(SetAccess = protected)

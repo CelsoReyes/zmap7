@@ -436,7 +436,7 @@ classdef XSection < handle
             
             prime='''';
             % dialog box to choose cross-section
-            zdlg=ZmapDialog([]);
+            zdlg=ZmapDialog();
             zdlg.AddEdit('slicewidth_km','Width of slice [km]',default_width,...
                 'distance from slice for which to select events. 1/2 distance in either direction');
             zdlg.AddEdit('startlabel','start label', lastletter, ...
@@ -468,7 +468,7 @@ classdef XSection < handle
             end
             
             
-            [zans,okPressed]=zdlg.Create('slicer');
+            [zans,okPressed]=zdlg.Create('Name', 'slicer');
             
             if ~okPressed
                 obj=[];

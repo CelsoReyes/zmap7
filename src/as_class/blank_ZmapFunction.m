@@ -48,10 +48,7 @@ classdef blank_ZmapFunction < ZmapFunction
             % create a dialog that allows user to select parameters neccessary for the calculation
             
             
-            zdlg=ZmapDialog(...
-                obj,...  pass it a handle that it can change when the OK button is pressed.
-                @obj.doIt...  if OK is pressed, then this function will be executed.
-                );
+            zdlg=ZmapDialog();
             
             %----------------------------
             % The dialog box is a vertically oriented series of controls
@@ -71,7 +68,11 @@ classdef blank_ZmapFunction < ZmapFunction
             %  zdlg.AddEventSelector : add section that returns how grid points
             %                                     may be evaluated
            
-            zdlg.Create('my dialog title')
+            
+            zdlg.Create('Name', 'my dialog title',...
+                'WriteToObj', obj, ... pass it a handle that it can change when the OK button is pressed.
+                'OkFcn', @obj.doIt ... if OK is pressed, then this function will be executed.
+                );
             % The dialog runs. if:
             %  OK is pressed -> assigns 
         end

@@ -16,6 +16,7 @@ classdef bcrossV2 < ZmapVGridFunction
         CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
         
         ParameterableProperties = []; % array of strings matching into obj.Properties
+        References="";
     end
     
     methods
@@ -40,16 +41,7 @@ classdef bcrossV2 < ZmapVGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
-            [res,okPressed] = zdlg.Create('B-Value Parameters [xsec]');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
-        end
-        
-        function SetValuesFromDialog(obj, res)
-            % called when the dialog's OK button is pressed
+            [res,okPressed] = zdlg.Create('Name', 'B-Value Parameters [xsec]',obj,'OkFcn', @obj.doIt);
         end
         
         function results=Calculate(obj)

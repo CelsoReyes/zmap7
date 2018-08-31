@@ -42,7 +42,7 @@ function fmdplot(obj, tabgrouptag)
         zdlg = ZmapDialog();
         zdlg.AddEdit('mc', "Cut Magnitude [Mc:" + bdiffobj.Result.Mc_value + "]", bdiffobj.Result.Mc_value,...
             'Choose magnitude to cut the catalog');
-        [res,okpressed] = zdlg.Create('Choose Cut Magnitude');
+        [res,okpressed] = zdlg.Create('Name', 'Choose Cut Magnitude');
         if okpressed
             obj.rawcatalog = obj.rawcatalog.subset(obj.rawcatalog.Magnitude>= res.mc);
             obj.replot_all;

@@ -60,27 +60,11 @@ classdef bgrid3dB < Zmap3DGridFunction
             zdlg=ZmapDialog(); %h, okevent
             zdlg.AddHeader('Grid Input Parameters');
             zdlg.AddPopup('mc_choice','Mc Estimation Option:',labelList2,5,'Magnitude of completion option')
-            zdlg.AddEventSelector('evsel',ni,R,50);
+            obj.AddDialogOption(zdlg,'EventSelector');
             zdlg.AddGridSpacing('gridopt',.1,'deg',.1,'deg',5,'km')
-            zdlg.AddEdit('minz','Shallowest Boundary [km]',min(ZG.primeCatalog.Depth),'Shallowest boundary');
-            zdlg.AddEdit('maxz','Deepest Boundary [km]',max(ZG.primeCatalog.Depth),'Deepest boundary');
-            [res, pressedOk]=zdlg.Create('b-value 3D Grid');
-            if ~pressedOk
-                return
-            end
-            obj.mc_choice=res.mc_choice;
-            % NOTE: this used to write back to ZG
-            obj.ni=res.evsel.NumNearbyEvents;
-            obj.R=res.evsel.RadiusKm;
-            useRadius=res.evsel.UseEventsInRadius;
-            dx=res.gridopt.dx;
-            dy=res.gridopt.dy;
-            dz=res.gridopt.dz;
-            z1=res.minz;
-            z2=res.maxz;
-            
-            obj.Calculate();
-            
+            zdlg.AddEdit('minz','Shallowest Boundary [km]',min(ZG.primeCatalog.Depth),'Shallowest boundary'); %z1
+            zdlg.AddEdit('maxz','Deepest Boundary [km]',max(ZG.primeCatalog.Depth),'Deepest boundary'); %z2
+            zdlg.Create('Name', 'b-value 3D Grid','WriteToObj',obj,'OkFcn',@obj.doIt);
         end
         
         % get the grid-size interactively and

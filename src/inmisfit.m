@@ -44,7 +44,7 @@ function inmisfit(catalog)
     
     % creates a dialog box to input some parameters
     
-    zdlg = ZmapDialog([]);
+    zdlg = ZmapDialog();
     sigChoices = {'1','3'};
     sigDefault = strcmp(string(sig),sigChoices);
     zdlg.AddPopup('sig','Choose Sigma',sigChoices,find(sigDefault),'Choose Sigma');
@@ -56,7 +56,7 @@ function inmisfit(catalog)
     zdlg.AddCheckbox('doComparative','Compare misfits of different stress models',false,[],...
         'add this model to list of existing models, and then plot them all');
     end
-    [res,okPressed]=zdlg.Create('Misfit Calculation Parameters');
+    [res,okPressed]=zdlg.Create('Name', 'Misfit Calculation Parameters');
     if ~okPressed,return,end
     
     res.sig = str2double(sigChoices{res.sig});

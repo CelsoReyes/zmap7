@@ -31,6 +31,7 @@
         CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
         
         ParameterableProperties = []; % array of strings matching into obj.Properties
+        References="";
     end
     
     methods
@@ -55,16 +56,7 @@
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
-            [res,okPressed] = zdlg.Create('Omori Parameters [xsec]');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
-        end
-        
-        function SetValuesFromDialog(obj, res)
-            % called when the dialog's OK button is pressed
+            [res,okPressed] = zdlg.Create('Name', 'Omori Parameters [xsec]',obj,'OkFcn', @obj.doIt);
         end
         
         function results=Calculate(obj)

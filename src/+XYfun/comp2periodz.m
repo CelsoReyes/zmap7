@@ -28,6 +28,8 @@ classdef comp2periodz < ZmapHGridFunction
             'Number_of_Events_1',   'Number_of_Events_2'}
         
         ParameterableProperties = ["periodA_start" "periodA_end" "periodB_start" "periodB_end" "binsize"];
+        
+        References="";
     end
     
     methods
@@ -55,33 +57,16 @@ classdef comp2periodz < ZmapHGridFunction
         
         function InteractiveSetup(obj)
             
-            
             % get two time periods, along with grid and event parameters
-            zdlg=ZmapDialog([]);
+            zdlg=ZmapDialog();
             zdlg.AddHeader('Please define two time periods to compare');
             zdlg.AddEdit('periodA_start','start period 1',  obj.periodA_start,'start time for period 1');
             zdlg.AddEdit('periodA_end',  'end period 1',    obj.periodA_end,'end time for period 1');
             zdlg.AddEdit('periodB_start','start period 2',  obj.periodB_start,'start time for period 2');
             zdlg.AddEdit('periodB_end',  'end period 2',    obj.periodB_end,'end time for period 2');
             zdlg.AddDurationEdit('binsize','Bin Size',      obj.binsize,'number of days in each bin',@days);
-            zdlg.AddEventSelector('eventsel',               obj.EventSelector);
-            [res,okPressed]=zdlg.Create('Please choose rate change estimation option');
-            if ~okPressed
-                return
-            end
-            
-            obj.SetValuesFromDialog(res)
-            
-            obj.doIt()
-        end
-        
-        function SetValuesFromDialog(obj, res)
-            obj.periodA_start   = res.periodA_start;
-            obj.periodA_end     = res.periodA_end;
-            obj.periodB_start   = res.periodB_start;
-            obj.periodB_end     = res.periodB_end;
-            obj.binsize         = res.binsize;
-            obj.EventSelector = res.eventsel;
+            obj.AddDialogOption(zdlg,'EventSelector');
+            zdlg.Create('Name', 'Please choose rate change estimation option','WriteToObj',obj,'OkFcn',@obj.doIt);
         end
         
         function results=Calculate(obj)

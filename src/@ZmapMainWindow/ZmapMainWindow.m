@@ -14,7 +14,7 @@ classdef ZmapMainWindow < handle
     
     properties
         gridopt % used to define the grid
-        evsel                           {EventSelectionChoice.mustBeEventSelector} = ZmapGlobal.Data.GridSelector % how events are chosen
+        evsel           EventSelectionParameters             = ZmapGlobal.Data.GridSelector % how events are chosen
         fig % figure handle
         map_axes % main map axes handle
         xsgroup
@@ -344,7 +344,7 @@ classdef ZmapMainWindow < handle
             z_min = floor(min([0 min(obj.catalog.Depth)]));
             z_max = round(max(obj.catalog.Depth) + 4.9999 , -1);
             
-            zdlg = ZmapDialog([]);
+            zdlg = ZmapDialog();
             if ~exist('xsTitle', 'var')
                 xsTitle = obj.xsgroup.SelectedTab.Title;
             else
@@ -355,12 +355,12 @@ classdef ZmapMainWindow < handle
             end
             xsIndex = strcmp(obj.XSectionTitles, xsTitle);
             zdlg.AddPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
-            zdlg.AddEventSelector('evsel', ZG.ni, ZG.ra, 1);
+            zdlg.AddEventSelector('evsel', obj.evsel);
             zdlg.AddEdit('x_km', 'Horiz Spacing [km]', 5, 'Distance along strike, in kilometers');
             zdlg.AddEdit('z_min', 'min Z [km]', z_min, 'Shallowest grid point');
             zdlg.AddEdit('z_max', 'max Z [km]', z_max, 'Deepest grid point, in kilometers');
             zdlg.AddEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
-            [zans, okPressed] = zdlg.Create('Cross Section Sample parameters');
+            [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters');
             if ~okPressed
                 zp = [];
                 return
@@ -582,7 +582,7 @@ classdef ZmapMainWindow < handle
             %  similar to what is returned via EventelectionChoice.quickshow
             
             if ~isempty(val)
-                assert(isstruct(val)); % could do more detailed checking of fields
+                assert(isa(val,'EventSelectionParameters')); % could do more detailed checking of fields
                 obj.evsel = val;
             elseif isempty(ZmapGlobal.Data.GridSelector)
                 obj.evsel = EventSelectionChoice.quickshow();
@@ -669,7 +669,7 @@ classdef ZmapMainWindow < handle
                 'Units',    'normalized',...
                 'Position', obj.TabGroupPositions.Main,...
                 'Visible', 'on',...
-                'SelectionChangedFcn', @cb_mainMapSelectionChanged,...
+                'SelectionChangedFcn', @obj.cb_mainMapSelectionChanged,...
                 'TabLocation', TabLocation, 'Tag', 'main plots');
             obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, [ "MAINMAP:" + obj.catalog.Name]);
             obj.maintab.Tag = 'mainmap_tab';
@@ -834,6 +834,41 @@ classdef ZmapMainWindow < handle
             drawnow nocallbacks;
         end
         
+        function cb_mainMapSelectionChanged(obj, src, ev)
+            % make sure that the selections you see match the map you're looking at
+            
+            % functions should all modify the analysis windows in a similar way
+            % the mainmap has a unique set of displays.
+            
+            disp('cb_mainMapSelectionChanged');
+            toMainmap = ev.NewValue == obj.maintab;
+            fromMainmap = ev.OldValue == obj.maintab;
+            
+            
+            tagBase = ev.OldValue.Tag;
+            regexp_str = tagBase + " .*selection";
+            toHide = findobj(obj.fig,'-regexp','Tag',regexp_str);
+            
+            
+            tagBase = ev.NewValue.Tag;
+            regexp_str = tagBase + " .*selection";
+            toShow = findobj(obj.fig,'-regexp','Tag',regexp_str);
+            
+            set(toShow,'Visible','on');
+            set(toHide','Visible','off');
+            
+            if toMainmap
+                % show details specific to the main map
+                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                set(toShow,'Visible','on');
+            elseif fromMainmap
+                % hide details specific to the main map
+                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                
+                set(toShow,'Visible','off');
+            end
+        end
+ 
     end
 end % CLASSDEF
 
@@ -846,14 +881,7 @@ function cb_selectionChanged(~,~)
     %subax = findobj(alltabs(~isselected), 'Type', 'axes')
     %set(subax, 'visible', 'off');
 end
-function cb_mainMapSelectionChanged(~,~)
-    disp('cb_mainMapSelectionChanged. no action taken');
-    
-    % TODO: hide trends that are not appropriate to the current tab.
-    % that means, that result trends (ie. cumulative quakes, etc.) disappear when we are back at the MAINMAP
-    % and reappear when the appropriate result tab is opened.
-    
-end
+
 
 function s = CallbackFld()
     if verLessThan('matlab','9.3')

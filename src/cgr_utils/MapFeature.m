@@ -260,10 +260,13 @@ classdef MapFeature < handle
         
         function changeDefaults(obj, propname_struct)
             %changeDefaults changes this layer's properties and applies the change
+            obj.PlottingDefaults = copyfields(obj.PlottingDefaults, propname_struct);
+            %{
             fn=fieldnames(propname_struct);
             for i=1:numel(fn)
                 obj.PlottingDefaults.(fn{i}) = propname_struct.(fn{i});
             end
+            %}
             set(obj.Handle,obj.PlottingDefaults);
         end
         

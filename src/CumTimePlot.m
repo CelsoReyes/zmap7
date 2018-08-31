@@ -238,7 +238,7 @@ classdef (Sealed) CumTimePlot < handle
                 end
                 t=text(obj.AxH,bigCat.Date,bigIdx,stri4);
                 try
-                    [t.UIContextMenu] = deal(menu_cumtimeseries());
+                    [t.UIContextMenu] = deal(obj.menu_cumtimeseries());
                 catch ME
                     warning(ME.message)
                 end
@@ -270,7 +270,7 @@ classdef (Sealed) CumTimePlot < handle
             obj.AxH.Title.Interpreter = 'none';
         end
         function add_legend(obj)
-            under_construction()
+            % under_construction()
         end
         
         function c=menu_cumtimeseries(obj, c)
@@ -309,7 +309,7 @@ classdef (Sealed) CumTimePlot < handle
                 zdlg = ZmapDialog();
                 zdlg.AddEdit('startdate','Keep events AFTER ', x,'');
                 zdlg.AddCheckbox('inclusive','inclusive',true,[],'keep events that occur at exactly this time?');
-                [res,ok] = zdlg.Create('Cut catalog');
+                [res,ok] = zdlg.Create('Name', 'Cut catalog');
                 if ok
                     if res.inclusive
                         obj.catalog = obj.catalog.subset(obj.catalog.Date > res.startdate);
@@ -327,7 +327,7 @@ classdef (Sealed) CumTimePlot < handle
                 zdlg = ZmapDialog();
                 zdlg.AddEdit('enddate','Keep events BEFORE ', x,'');
                 zdlg.AddCheckbox('inclusive','inclusive',false,[],'keep events that occur at exactly this time?');
-                [res,ok] = zdlg.Create('Cut catalog');
+                [res,ok] = zdlg.Create('Name', 'Cut catalog');
                 if ok
                     if res.inclusive
                         obj.catalog = obj.catalog.subset(obj.catalog.Date < res.enddate);
@@ -396,7 +396,7 @@ classdef (Sealed) CumTimePlot < handle
                 'Enable','off', MenuSelectedField(),@cb_016);
             uimenu(op5,'Label','Estimate p',MenuSelectedField(),@cb_pestimate);
             
-            uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(),@(~,~)pvalcat2(obj.catalog))
+            uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(),@(~,~)MyPvalClass.pvalcat2(obj.catalog))
             uimenu(op5,'Label','Cut catalog at mainshock time',...
                 MenuSelectedField(),@cb_cut_mainshock)
             
@@ -473,7 +473,7 @@ classdef (Sealed) CumTimePlot < handle
             function cb_pestimate(mysrc,myevt)
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
                 ZG.hold_state=false;
-                pvalcat(obj.catalog);
+                MyPvalClass.pvalcat(obj.catalog);
             end
             
             function cb_computefractal(mysrc,myevt, org)

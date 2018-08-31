@@ -15,6 +15,7 @@ classdef calc_across < ZmapVGridFunction
         CalcFields      = {} % cell array of charstrings, matching into ReturnDetails.Names
         
         ParameterableProperties = []; % array of strings matching into obj.Properties
+        References="";
         
         aval_methods = {' a(M=0) for fixed b',...
             'a(M=0) for Mc(MaxC) + M(corr)',...
@@ -45,9 +46,9 @@ classdef calc_across < ZmapVGridFunction
             
             zdlg.AddHeader('Choose stuff');
             zdlg.AddMcAutoEstimateCheckbox('mc_auto',obj.mc_auto);
-            zdlg.AddPopup('aval_method','A-value calculation method',obj.aval_methods,1,...
+            zdlg.AddPopup('aval_method', 'A-value calculation method', obj.aval_methods,1,...
                 'methods used to calculate a value');
-            [res,okPressed] = zdlg.Create('A-Value Parameters [xsec]');
+            [res,okPressed] = zdlg.Create('Name', 'A-Value Parameters [xsec]');
             if ~okPressed
                 return
             end

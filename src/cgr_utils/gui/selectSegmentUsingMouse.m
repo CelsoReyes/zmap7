@@ -1,8 +1,8 @@
 function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUpdateFcn)
     % tracks user mouse movements to define a great-circle line segment
     % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, AXUNITS, DISPUNITS, COLOR) where AX is the axis in which to
-    % draw your line segment.  AXUNITS is the distance units of the axis. ex. 'deg', 'km', 'mm'.
-    % If axis is deg, then the line segment is drawn as the great-circle line.  Otherwise, it is a 
+    % draw your line segment.  AXUNITS is the distance units of the axis. ex. 'degrees', 'kilometer', 'mm'.
+    % If axis is degrees, then the line segment is drawn as the great-circle line.  Otherwise, it is a 
     % straight line (in cartesian coords). DISPUNITS are the units in which the distance is reported
     % color is the color in which the line segment is drawn.
     %
@@ -10,10 +10,10 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     %   xy1 : starting point [x , y]
     %   xy2 : ending point [x , y]
     %   dispunits affects the fieldname for the distance returned
-    %   IF dispunits is 'km', then the field returned is:
-    %   dist_km : distance between x & y in km.
-    %   IF dispunits is 'deg', then the field returned is:
-    %   dist_deg : distance between x & y in deg
+    %   IF dispunits is 'kilometer', then the field returned is:
+    %   dist_km : distance between x & y in kilometer.
+    %   IF dispunits is 'degrees', then the field returned is:
+    %   dist_deg : distance between x & y in degrees
     %
     % once the segment has been chosen, it is removed from the plot.
     
@@ -42,11 +42,15 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     end
     
     if ~exist('axunits','var') || isempty(axunits)
-        axunits='km';
+        axunits='kilometer';
+    else
+        axunits = standardizeDistanceUnits(axunits);
     end
     
     if ~exist('dispunits','var') || isempty(dispunits)
-        dispunits='km';
+        dispunits='kilometer';
+    else
+        dispunits = standardizeDistanceUnits(dispunits);
     end
     
     if ~exist('addlUpdateFcn','var')
@@ -88,28 +92,28 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     
     
     switch dispunits
-        case 'km'
+        case 'kilometer'
             switch axunits
-                case 'km'
+                case 'kilometer'
                     dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2);
-                case {'deg','degree','degrees'}
+                case 'degrees'
                     dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2));
                 otherwise
                     dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits, axunits);
             end
-        case {'deg','degree','degrees'}
+        case 'degrees'
             switch axunits
-                case 'km'
+                case 'kilometer'
                     dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2));
-                case {'deg','degree','degrees'}
+                case 'degrees'
                     dist=@(x1,y1,x2, y2)distance(y1,x1,y2,x2);
                 otherwise
-                    dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(axunits,'km') );
+                    dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(axunits,'kilometer') );
             end
         otherwise
             switch axunits
-                case {'deg','degree','degrees'}
-                    dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2)) .* unitsratio(dispunits,'km');
+                case 'degrees'
+                    dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2)) .* unitsratio(dispunits,'kilometer');
                 otherwise
                     dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits,axunits);
             end
@@ -179,7 +183,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         h(2)=text((x1+x2)/2,(y1+y2)/2,['Dist: 0 ' dispunits],...
             'FontSize',12,'FontWeight','bold','Color',color);
         switch axunits
-            case {'deg','degree','degrees'}
+            case 'degrees'
                 f.WindowButtonMotionFcn=@moveMouseGC;
             otherwise
                 f.WindowButtonMotionFcn=@moveMouse;

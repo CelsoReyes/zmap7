@@ -93,6 +93,7 @@ classdef bdiff2 < ZmapFunction
         figPos = [0.3 0.3 0.4 0.6] % normalized position for base figure
         axRect = [0.22,  0.3, 0.65, 0.6] % normalized position for axes within figure
         
+        References="";
     end
             
     
@@ -104,7 +105,6 @@ classdef bdiff2 < ZmapFunction
             obj@ZmapFunction(catalog);
             
             report_this_filefun();
-            
             
             % the varous plotProps control how the plots appear
             obj.plotProps.Figure(1).Units = 'normalized';
@@ -218,13 +218,7 @@ classdef bdiff2 < ZmapFunction
             zdlg.AddHeader('Bvalue Fit Line');
             zdlg.AddEdit('bFitLineMaxMagCatalogPct','Pct of events, where Bvalue fit stops (0-100)',obj.bFitLineMaxMagCatalogPct,...
                 'The B-value fit line will stop at the magnitude represented by THIS percentage of events');
-            [res, okPressed] = zdlg.Create('Mc Input Parameter');
-            
-            if ~okPressed
-                return
-            end
-            %obj.SetValuesFromDialog(res)
-            obj.doIt()
+            zdlg.Create('Name', 'Mc Input Parameter', 'WriteToObj', obj, 'OkFcn', @obj.doIt);
         end
         
         function results = Calculate(obj)
@@ -310,6 +304,10 @@ classdef bdiff2 < ZmapFunction
             nEventsInPercentile = ceil(catalog.Count .* (1-( obj.bFitLineMaxMagCatalogPct /100)));
             nEventsInPercentile = max([1,nEventsInPercentile]);
             index_hi = find(obj.cum_b_values <= nEventsInPercentile,1,'last');
+            if isempty(index_hi)
+                smallestNonZero = min(obj.cum_b_values(obj.cum_b_values > 0));
+                index_hi = find(obj.cum_b_values==smallestNonZero,1,'last');
+            end
             mag_hi = obj.mag_bin_centers(index_hi);
             % index_hi = 1;
             mz = obj.mag_bin_centers <= mag_hi &...
@@ -597,7 +595,7 @@ classdef bdiff2 < ZmapFunction
                 zdlg.AddCheckbox('fixedY','Fixed Y axis?',obj.myYLimIsConstant,{}, '');
                 zdlg.AddEdit('ylmin','Min Count',yl(1),'');
                 zdlg.AddEdit('ylmax','Max Count',yl(2),'');
-                [res,okpressed]=zdlg.Create('Axes limits for FMD');
+                [res,okpressed]=zdlg.Create('Name', 'Name', 'Axes limits for FMD');
                 if ~okpressed
                     return
                 end

@@ -117,9 +117,9 @@ classdef ZmapData < handle
         overall_b_value (1,1) double = nan % original b-value prior to modifications(?) only used by bvalca3 & bdepth_ratio, but set elsewhere
         bvg                                     = [] % b-value grid
         
-        Grid                                % grid object, used for calculations
-        gridopt                             % options used for creating a grid 
-        GridSelector                        % criteria used to select events at a grid point
+        Grid                                             % grid object, used for calculations
+        gridopt                                          % options used for creating a grid 
+        GridSelector    EventSelectionParameters         % criteria used to select events at a grid point
         debug           matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.off % makes special menus visible
         debugLevel      (1,1) double                    = 0
         
@@ -223,16 +223,17 @@ classdef ZmapData < handle
             
             if isfield(ZDefaults,'sampling')
                 obj.SamplingOpts = ZDefaults.sampling;
-                
-                obj.GridSelector = struct(...
-                    'UseEventsInRadius',obj.SamplingOpts.UseNumNearbyEvents,...
-                    'RadiusKm',obj.SamplingOpts.RadiusKm,...
-                    'UseNumNearbyEvents',obj.SamplingOpts.UseNumNearbyEvents,...
-                    'NumNearbyEvents',obj.SamplingOpts.NumNearbyEvents,...
-                    'maxRadiusKm',obj.SamplingOpts.RadiusKm,...
-                    'requiredNumEvents',1) ;
+                obj.GridSelector = EventSelectionParameters.fromStruct(obj.SamplingOpts);
             end
             
+        end
+        
+        function set.GridSelector(obj,val)
+            if isstruct(val)
+                obj.GridSelector = EventSelectionParameters(val);
+            else
+                obj.GridSelector = val;
+            end
         end
         
         function out=get.Grid(obj)

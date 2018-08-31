@@ -47,14 +47,14 @@ classdef ZmapGrid
     % see also gridfun, EventSelectionChoice, autogrid
     %
     properties
-        Name (1,:) char = ZmapGlobal.Data.GridOpts.Name % name of this grid
-        Units (1,:) char = 'unk' % degrees or kilometers
-        ActivePoints logical    % logical mask
+        Name (1,:)      char         = ZmapGlobal.Data.GridOpts.Name % name of this grid
+        Units (1,:)     char         = 'unk'                % degrees or kilometer
+        ActivePoints    logical                             % logical mask
         X double % all X positions in matrix
         Y double % all Y positions in matrix
         Z double % all Y positions in matrix.
         Origin % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
-        PlotOpts struct = ZmapGlobal.Data.GridOpts.LineProps;
+        PlotOpts        struct      = ZmapGlobal.Data.GridOpts.LineProps;
         %MarkerSize = ZmapGlobal.Data.GridOpts.LineProps.MarkerSize;
         %Marker = ZmapGlobal.Data.GridOpts.LineProps.Marker;
         %Color = FancyColors.rgb(ZmapGlobal.Data.GridOpts.LineProps.Color);
@@ -66,7 +66,7 @@ classdef ZmapGrid
         GridVector % Nx2 or Nx3 of all grid points [X1,Y1; X2,Y2;...] or [X1,Y1,Z1; X2,Y2,Z2; ...]
     end
     properties(Constant)
-        Type = 'zmapgrid';
+        Type                        = 'zmapgrid';
     end
     properties(Constant,Hidden)
         POSSIBLY_TOO_MANY_POINTS = 1000 * 1000;
@@ -155,12 +155,7 @@ classdef ZmapGrid
                         
                         % 3rd: FIGURE OUT LIMITS
                         limsLonLatZ=[minX maxX ; minY maxY];
-                        switch lower(gridopt.horizUnits)
-                            case {'km','kilometers'}
-                                obj.Units='Kilometers';
-                            case {'deg','degrees'}
-                                obj.Units='Degrees';
-                        end
+                        obj.Units = standardizeDistanceUnits(gridopt.horizUnits);
                         
                         obj.Origin=lonLatZ0;
                         
@@ -521,7 +516,7 @@ classdef ZmapGrid
             %dz =  (z_end - z_start)/ZBINS;
             %TODO make spacing more intelligent. maybe.
             %FIXME map units and this unit might be out of whack.
-            obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'deg');
+            obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'degrees');
         end
         
         function [lonMat,latMat,zMat] = get_grid(lonLatZ0, deltasXYZ, deltaUnits,limsLonLatZ, FOLLOW_MERIDIANS)
@@ -546,7 +541,7 @@ classdef ZmapGrid
             %    distance(lat0,lon0,lat0,lon0+dLon,'degrees'),...
             %    distance(lat0,lon0,lat0+dLat,lon0,'degrees')]);
             
-            %d.String=sprintf('Dist: %.3f (deg) [%.3f (km)]',dist_arc,deg2km(dist_arc));
+            %d.String=sprintf('Dist: %.3f (degrees) [%.3f (kilometer)]',dist_arc,deg2km(dist_arc));
             zMat=[];
             % origin point
             lon0=lonLatZ0(1);
@@ -560,26 +555,26 @@ classdef ZmapGrid
                     ZG=ZmapGloba.Data; 
                     assert(~isempty(ZG.gridopt),...
                         'Grid options haven''t been defined. Define them or specify delta values for this functin');
-                    switch ZG.gridopt.dx_units
-                        case 'deg'
-                            deltaUnits = 'Degrees';
+                    switch standardizeDistanceUnits( ZG.gridopt.dx_units)
+                        case 'degrees'
+                            deltaUnits = 'degrees';
                            dLon=ZG.gridopt.dx;
                            if ~exist('FOLLOW_MERIDIANS','var')
-                               % assumed intent with deg is to keep longitudes constant.
+                               % assumed intent with degrees is to keep longitudes constant.
                                FOLLOW_MERIDIANS=true;
                            end
-                        case 'km'
-                            deltaUnits = 'Kilometers';
+                        case 'kilometer'
+                            deltaUnits = 'kilometer';
                             dLon=km2deg(ZG.gridopt.dx);
                            if ~exist('FOLLOW_MERIDIANS','var')
-                               % assumed intent with km is to keep distance constant
+                               % assumed intent with kilometer is to keep distance constant
                                FOLLOW_MERIDIANS=false;
                            end
                     end
-                    switch ZG.gridopt.dy_units
-                        case 'deg'
+                    switch standardizeDistanceUnits(ZG.gridopt.dy_units)
+                        case 'degrees'
                             dLat=ZG.gridopt.dy;
-                        case 'km'
+                        case 'kilometer'
                             dLon=Zkm2deg(ZG.gridopt.dy);
                     end
                 case 1
@@ -594,14 +589,14 @@ classdef ZmapGrid
                     dZ = deltasXYZ(3);
             end
             
-            switch deltaUnits
-                case 'Degrees'
+            switch standardizeDistanceUnits( deltaUnits )
+                case 'degrees'
                     % do nothing
-                case 'Kilometers'
+                case 'kilometer'
                     dLat = km2deg(dLat);
                     dLon = km2deg(dLon);
                 otherwise
-                    error('Unknown units: should be "Degrees" or "Kilometers"');
+                    error('Unknown units: should be "degrees" or "kilometer" [%s]',deltaUnits);
             end
             
             xlims_deg=limsLonLatZ(1,:);

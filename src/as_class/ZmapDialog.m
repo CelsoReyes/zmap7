@@ -3,7 +3,7 @@ classdef ZmapDialog < handle
     %
     % ZmapDialog properties:
     %
-    %   hCaller          - handle to the caller. Values are written to hCaller.(tag) upon OK
+    %   WriteToObj          - handle to the caller. Values are written to WriteToObj.(tag) upon OK
     %   callerOKFunction - to be run once values are copied back to caller and dialog disappears
     %   hDialog          - handle to the dialog box
     %   okPressed        - true when the dialog box's OK button was pressed
@@ -46,8 +46,9 @@ classdef ZmapDialog < handle
     %         'Should noise be applied to the data?');
     %     zdlg.AddCheckbox('cleverness','be clever', false,[],...
     %         'if checked, then plot is cleverly drawn');
-    %     zdlg.AddEventSelector('evtparams', 100, 5)
-    %     [myans,okpressed] = zdlg.Create('my example');
+    %     esp = EventSelectionParameters('NumClosestEventsUpToRadius',100, 5)
+    %      zdlg.AddEventSelector('evtparams', esp);
+    %     [myans,okpressed] = zdlg.Create('Name', 'my example');
     %
     %         myans = 
     % 
@@ -86,8 +87,9 @@ classdef ZmapDialog < handle
     %                   'Should noise be applied to the data?');
     %     zdlg.AddCheckbox('cleverness','be clever', false,...
     %                   'if checked, then plot is cleverly drawn');
-    %     zdlg.AddEventSelector('evtparams', 100, 5)
-    %     zdlg.Create('my dialog title');
+    %     esp = EventSelectionParameters('NumClosestEventsUpToRadius',100, 5)
+    %     zdlg.AddEventSelector('evtparams', esp);
+    %     zdlg.Create('Name', 'my dialog title');
     %
     %   end
     %
@@ -98,119 +100,198 @@ classdef ZmapDialog < handle
     %  end % methods
     
     properties
-        hCaller;                                   % handle to the caller. Values are written to hCaller.(tag) upon OK
-        callerOKFunction            = @do_nothing; % to be run once values are copied back to caller and dialog disappears
-        hDialog;                                   % handle to the dialog box
-        okPressed       logical     = false;
+        % Values are written to WriteToObj.(tag) upon the user clicking 'OK'.  (prior to OkFcn).
+        WriteToObj                                 
+        
+        % function to run when OK is pressed (no arguments). This is called AFTER dialog is deleted
+        OkFcn               function_handle     = @do_nothing
+        % function to run when Cancel is pressed (no arguments) called AFTER dialog is deleted
+        CancelFcn           function_handle     = @do_nothing                
+        callerOKFunction    function_handle     = @do_nothing  % to be run once values are copied back to caller and dialog disappears
+        hDialog                                    % handle to the dialog box
+        okPressed           logical             = false        % user pressed the OK button
+        
+        % control whether an old-style 'figure' will be created, or the newer 'uifigure'
+        % TOFIX: 'uifigure' will trigger an error: "No method 'put' with matching signature found for class 'java.util.HashMap'."
+        figureType      string  {mustBeMember(figureType,{'uifigure','figure'})}  = 'figure'
+        
+        OKbutton                                    % handle to the OK button
+        CANCELbutton                                % handle to the CANCEL button
     end
     
     properties(Constant)
-        buttonSpace = 60;   % space left over for button placement
-        rowH        = 35;   % height of each item in a row
+        %% placement of items within the dialog box
         
-        dlgW        = 330;  % width of entire dialog
-        labelX      = 10;
-        labelW      = 150;
+        buttonSpace     = 60    % space left at bottom of dialog for button placement
+        rowH            = 35    % height of each control within a row
         
-        editX       = ZmapDialog.labelX + ZmapDialog.labelW + 20;
-        editW       = ZmapDialog.dlgW   - ZmapDialog.editX  - 15;
+        dlgW            = 330   % width of entire dialog
+        labelX          = 10    % start position of the label (for controls with labels)
+        labelW          = 150   % width of label (for controls with labels)
+        
+        editX           = ZmapDialog.labelX + ZmapDialog.labelW + 20  % start position of edit boxes
+        editW           = ZmapDialog.dlgW   - ZmapDialog.editX  - 15  % width of edit boxes
     end
     
     properties(Hidden)
-        % these one-off issues need to be reconsidered. t
-        hasGrid         logical     = false;
-        didGrid         logical     = false;
-        gridHeight                  = GridParameterChoice.GROUPHEIGHT;
+        %% these one-off issues need to be reconsidered
         
-        hasEvSel        logical     = false;
-        didEvSel        logical     = false;
-        evSelHeight                 = EventSelectionChoice.GROUPHEIGHT;
+        gridHeight                  = GridParameterChoice.GROUPHEIGHT 
+        
+        hasEvSel        logical     = false 
+        didEvSel        logical     = false 
+        evSelHeight                 = EventSelectionChoice.GROUPHEIGHT 
         curfig                      % figure handle to figure prior to call
+        
     end
     
     properties(SetAccess=private)
-        parts                       = struct([]); % ui details go in fields CreatorFcn, Tag, Style, and Handle
-        partIdx                     = 0;  % current part, used when creating the dialog box
+        parts                       = struct([])    % ui details go in fields CreatorFcn, Tag, Style, Height, and Handle
+        partIdx                     = 0             % current part, used when creating the dialog box
+        
     end
     
     properties(Dependent)
         dlgH
         labelY
     end
-    
+   
     methods
         
         function h = get.dlgH(obj)
-             h = (numel(obj.parts)+1) * obj.rowH + obj.buttonSpace ...
-                + obj.hasGrid *  obj.gridHeight...
-                + obj.hasEvSel * obj.evSelHeight;
+            % get overall dialog height
+            if isempty(obj.parts)
+                h = obj.buttonSpace;
+            else
+                h = sum([obj.parts.Height]) + obj.buttonSpace + obj.rowH;
+            end
         end
         
         function y = get.labelY(obj) 
             % get y for current part
-            y = obj.dlgH - obj.rowH * (obj.partIdx + 1) ...
-                - obj.didGrid * obj.gridHeight ...
-                - obj.didEvSel * obj.evSelHeight;
+            y = obj.dlgH - obj.rowH - sum([obj.parts(1:obj.partIdx).Height]);
         end
         
-        function obj=ZmapDialog(hCaller,okevent)
+        function h=PartHandle(obj, tag)
+            % get the graphics handle for one of the controls
+            h = obj.parts( {obj.parts.Tag} == string(tag)).Handle;
+        end
+        
+        function obj=ZmapDialog(WriteToObj,okevent)
             % initialize a ZmapDialog
-            % hCaller is the handle to the calling Function.
-            % output values are returned to hCaller.(tag) for each uicontrol
+            % zdlg = ZmapDialog()
+            % zdlg = ZmapDialog(NAME, VALUE [,...]) accepts pairs of inputs specifying additional
+            % behavior
+            %    Where NAME can be:
+            %        'WriteHandle'
+            %        'OkFcn' 
+            %        'CancelFcn'
+            %        'OkEvent'
+            %        'CancelEvent'
+            % zdlg = ZmapDialog('OkFcn', hOk)
+            % zdlg = ZmapDialog('CancelFcn', hCancel)
+            %
+            % WriteToObj is the handle to the calling Function.
+            % output values are returned to WriteToObj.(tag) for each uicontrol
             % once the OK button is pressed. if the OK button is not pressed, no changes are made
             % okevent (a function handle) will be executed if OK is pressed
-            if ~exist('hCaller','var') || isempty(hCaller)
-                obj.hCaller=struct();
+            
+            if ~exist('WriteToObj','var') || isempty(WriteToObj)
+                obj.WriteToObj=struct();
             else
-                obj.hCaller=hCaller;
+                obj.WriteToObj=WriteToObj;
             end
-            %if isempty(hCaller)
-            %    warning('values cannot be saved to the calling function. they''l be written to base');
-            %end
+            
             if exist('okevent','var')
                 obj.callerOKFunction=okevent;
             else
-                if ishandle(obj.hCaller)
-                    obj.callerOKFunction=@(src,~) fprintf('ZmapFunctionDialog: no OK function was specified for the %s object, so it will not be notified\n',class(obj.hCaller));
+                if ishandle(obj.WriteToObj)
+                    obj.callerOKFunction=@(src,~) fprintf('ZmapFunctionDialog: no OK function was specified for the %s object, so it will not be notified\n',class(obj.WriteToObj));
                 end
             end
         end
         
-        function [results,okPressed]=Create(obj, dlgTitle)
+        function [results,okPressed]=Create(obj, varargin)
             % Create creates a dialog box based on a cell description of types within.
             % [results,okPressed]=Create(obj, dlgTitle)
-            obj.curfig = gcf;
-            obj.okPressed=false;
+            % [results,okPressed]=Create(obj, dlgTitle)
+            % ... Create(obj, ...,'Style','figure') % or uifigure
+            % ... Create(obj, ...,'CreatedFcn', fnHandle) where DialogCreatedFcn is a function to execute
+            %        'OkFcn' 
+            %        'CancelFcn'
+            %    after figure has been created
+            %
+            %        'WriteHandle'
+            %        'OkFcn' 
+            %        'CancelFcn'
+            
+            mustBeFunctionHandle = @(x) isa(x,'function_handle');
+            p = inputParser();
+            p.addParameter('Name',              'Parameter Dialog');
+            p.addParameter('Style',             obj.figureType) 
+            p.addParameter('DialogCreatedFcn',  @do_nothing, mustBeFunctionHandle);
+            p.addParameter('OkFcn',             @do_nothing, mustBeFunctionHandle);
+            p.addParameter('CancelFcn',         @do_nothing, mustBeFunctionHandle);
+            p.addParameter('WriteToObj',        struct());
+            p.parse(varargin{:});
+           
+            obj.figureType          = p.Results.Style;
+            obj.OkFcn               = p.Results.OkFcn;
+            obj.CancelFcn           = p.Results.CancelFcn;
+            obj.WriteToObj          = p.Results.WriteToObj;
+            dialogCreatedFcn        = p.Results.DialogCreatedFcn;
+            dlgName                 = p.Results.Name;
+            
+            
+            obj.curfig              = get(groot,'CurrentFigure');
+            obj.okPressed           = false;
             assert(~isempty(obj.parts),'An empty Dialog cannot be created');
             
-            % reset these values
-            obj.didGrid  = false;
-            obj.didEvSel = false;
+            if obj.figureType == "uifigure"
+                myStyle = 'NewStyle';
+            else
+                myStyle = 'OldStyle';
+            end
             
             setOnCompletion={}; % uicontrols that require further setting after all items created
             
-            obj.hDialog=figure('Name',dlgTitle,...
-                'MenuBar', 'none',...
-                'InnerPosition', position_in_current_monitor(obj.dlgW , obj.dlgH),...
-                'NumberTitle','off'...
-                );
-            
+            switch myStyle
+                case 'OldStyle'
+                    obj.hDialog=figure('Name',dlgName,...
+                        'MenuBar', 'none',...
+                        'InnerPosition', position_in_current_monitor(obj.dlgW , obj.dlgH),...
+                        'NumberTitle','off'...
+                        );
+                case 'NewStyle'
+                    obj.hDialog=uifigure('Name',dlgName,...
+                        'MenuBar', 'none',...
+                        'InnerPosition', position_in_current_monitor(obj.dlgW , obj.dlgH)...
+                        );
+            end
+            drawnow nocallbacks;
             for i = 1 : numel(obj.parts)
                 obj.partIdx = i;
                 details=obj.parts(obj.partIdx);
                 switch lower(details.Style)
                     case 'checkbox'
-                        obj.parts(obj.partIdx).Handle = details.CreatorFcn();
-                        if ~isempty(obj.parts(obj.partIdx).Handle.Callback)
-                            setOnCompletion=[setOnCompletion; {details.Tag}];
+                        obj.parts(obj.partIdx).Handle = details.CreatorFcn.(myStyle)();
+                        
+                        if obj.figureType == "uifigure"
+                            if ~isempty(obj.parts(obj.partIdx).Handle.ValueChangedFcn)
+                                setOnCompletion=[setOnCompletion; {details.Tag}];
+                            end
+                        else
+                            if ~isempty(obj.parts(obj.partIdx).Handle.Callback)
+                                setOnCompletion=[setOnCompletion; {details.Tag}];
+                            end
                         end
                     otherwise
-                        obj.parts(obj.partIdx).Handle = details.CreatorFcn();
+                        obj.parts(obj.partIdx).Handle = details.CreatorFcn.(myStyle)();
                 end
             end
-            
             obj.addCancelButton([obj.dlgW-80 10 70 obj.buttonSpace/2]);
             obj.addOKButton([obj.dlgW-160 10 70 obj.buttonSpace/2]);
+            drawnow nocallbacks
             
             % checkboxes may have callbacks that affect other uicontrols' Enable status.
             % now that all uicontrols have been created, disable/enable as dictated by the
@@ -218,16 +299,24 @@ classdef ZmapDialog < handle
             
             for n=1:numel(setOnCompletion)
                 src=obj.findDlgTag(setOnCompletion{n});
-                src.Callback(src,[]);
+                
+                if obj.figureType == "uifigure"
+                    src.ValueChangedFcn(src, []);
+                else
+                    src.Callback(src,[]);
+                end
             end
             
             results=[];
             
+            % call a provided function, now that the dialog has been created
+            dialogCreatedFcn();
+            
             % if we are expecting an answer, wait until dialog is finished.
             if nargout > 0
                 uiwait(obj.hDialog)
-                if isstruct(obj.hCaller)
-                    results=obj.hCaller;
+                if isstruct(obj.WriteToObj)
+                    results=obj.WriteToObj;
                 end
                 
                 if isvalid(obj.curfig)
@@ -287,13 +376,16 @@ classdef ZmapDialog < handle
             % ADDHEADER(text)
             % ADDHEADER(text, [Name, value]...) sets additional text parameters.
             %  Name can be something like 'FontSize', 'FontWeight', etc.
+            
             if ~ischar(String)
                 String = char(String);
             end
 
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'header';
-            obj.parts(idx).CreatorFcn   =  @createHeader;
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createHeader;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createUIheader;
+            obj.parts(idx).Height       = obj.rowH;
             obj.parts(idx).Tag          = '';
             
             function h = createHeader()
@@ -305,8 +397,35 @@ classdef ZmapDialog < handle
                     set(h,varargin{:});
                 end
             end
+            
+            function h = createUIheader()
+                h = uilabel('Parent',obj.hDialog,...
+                    'Text',String,...
+                    'FontWeight', 'bold', ...
+                    'Position', [obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
+                if ~isempty(varargin)
+                    set(h, varargin{:});
+                end
+            end
         end
         
+        function AddDivider(obj, varargin)
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'divider';
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createDivider;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createDivider;
+            obj.parts(idx).Height       = obj.rowH;
+            obj.parts(idx).Tag          = '';
+            
+            function h = createDivider()
+                h = uipanel('Units','pixels',...
+                    'Position', [obj.labelX obj.labelY obj.dlgW-obj.labelX - 10 3]);
+                if ~isempty(varargin)
+                    set(h,varargin{:});
+                end
+            end
+        end
+            
         function AddPopup(obj,tag, label, choices, defaultChoice, tooltip, conversion_function)
             %AddPopup represents a pop-up menu
             % AddPopup(obj,tag, label, choices, defaultChoice,tooltip)
@@ -325,9 +444,8 @@ classdef ZmapDialog < handle
                 assert(sum(defaultChoice)==1)
                 defaultChoice = find(defaultChoice);
             end
-            assert(defaultChoice <= numel(choices) && defaultChoice > 0,'%d out of %d choices',defaultChoice,choices)
 
-            if iscell(conversion_function) && numel(conversion_function) == numel(choices)
+            if exist('conversion_function','var') && (iscell(conversion_function) && numel(conversion_function) == numel(choices))
                 alternateValues = conversion_function;
                 conversion_function = @(h) h.UserData{h.Value};
             else
@@ -343,11 +461,19 @@ classdef ZmapDialog < handle
             end
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style            = 'popupmenu';
-            obj.parts(idx).CreatorFcn       =  @createPopup;
-            obj.parts(idx).ConversionFcn    =  conversion_function;
-            obj.parts(idx).Tag              = tag;
+            obj.parts(idx).CreatorFcn.OldStyle      = @createPopup;
+            obj.parts(idx).CreatorFcn.NewStyle      = @createUIdropdown;
+            obj.parts(idx).ConversionFcn.figure     = conversion_function;
+            obj.parts(idx).ConversionFcn.uifigure   = @(x)x.Value;
+            obj.parts(idx).Height                   = obj.rowH;
+            obj.parts(idx).Tag                      = tag;
             
             function h = createPopup()
+                % expectes an index into the choices
+                if ~isnumeric(defaultChoice)
+                    defaultChoice = find(string(defaultChoice) == choices);
+                end
+                assert(defaultChoice <= numel(choices) && defaultChoice > 0,'%d out of %d choices',defaultChoice,choices)
                 % label for popup
                 uicontrol('Style','text',...
                     'String',[label, ' : '],...
@@ -364,6 +490,34 @@ classdef ZmapDialog < handle
                     'UserData', alternateValues,...
                     'Position',[obj.editX-50 obj.labelY obj.editW+50 obj.rowH-10]);
             end
+            
+            function h = createUIdropdown()
+                % expects a member of Items
+                if isnumeric(defaultChoice)
+                    assert(defaultChoice <= numel(choices) && defaultChoice > 0,'%d out of %d choices',defaultChoice,choices)
+                    defaultChoice = choices{defaultChoice};
+                end
+                
+                % label for dropdown
+                uilabel('Parent',obj.hDialog,...
+                    'Text',[label,' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW-50 obj.rowH-10],...
+                    'Tag',[tag '_label']);
+                
+                % dropdown
+                h = uidropdown('Parent',obj.hDialog,...
+                    'Items',choices,...
+                    'Value', defaultChoice,...
+                    'ValueChangedFcn', [],...
+                    'Position',[obj.editX-50 obj.labelY obj.editW+50 obj.rowH-10]);
+                if ~isempty(alternateValues)
+                    h.ItemsData = alternateValues;
+                end
+            end
+                    
+                    
+                
         end
         
         function AddDurationEdit(obj,tag, label, value, tooltip, conversion_function)
@@ -385,8 +539,11 @@ classdef ZmapDialog < handle
             
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'durationedit';
-            obj.parts(idx).CreatorFcn   =  @createEdit;
-            obj.parts(idx).ConversionFcn = @(h)conversion_function(double(string(h.String)));
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createEdit;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createUIedit;
+            obj.parts(idx).ConversionFcn.figure = @(h)conversion_function(double(string(h.String)));
+            obj.parts(idx).ConversionFcn.uifigure = @(h)conversion_function(double(string(h.Value)));
+            obj.parts(idx).Height       = obj.rowH;
             obj.parts(idx).Tag          = tag;
             
             function h = createEdit()
@@ -403,6 +560,20 @@ classdef ZmapDialog < handle
                     'ToolTipString',tooltip,...
                     'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
             end
+            
+            function h = createUIedit
+                uilabel('Parent',obj.hDialog,...
+                    'Text', [label, ' [',func2str(conversion_function), '] : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'Tag',[tag '_label']);
+                
+                h = uieditfield('Parent',obj.hDialog,...
+                    'Value',string(value),...
+                    'Tag',tag,...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+                
+            end
          end
         
         function AddEdit(obj,tag, label, value, tooltip, conversion_function)
@@ -415,6 +586,8 @@ classdef ZmapDialog < handle
                 % conversion_function = callback;
                 if isnumeric(value)
                     conversion_function = @(v)double(string(v));
+                elseif isdatetime(value)
+                    conversion_function = @(v)datetime(v); % could be: 'InputFormat','uuuu-MM-dd HH:mm:ss'
                 else
                     conversion_function = str2func(class(value));
                 end
@@ -424,8 +597,11 @@ classdef ZmapDialog < handle
             
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'edit';
-            obj.parts(idx).CreatorFcn   =  @createEdit;
-            obj.parts(idx).ConversionFcn = @(h)conversion_function(h.String);
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createEdit;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createUIedit;
+            obj.parts(idx).ConversionFcn.figure = @(h)conversion_function(h.String);
+            obj.parts(idx).ConversionFcn.uifigure = @(h)conversion_function(h.Value);
+            obj.parts(idx).Height       = obj.rowH;
             obj.parts(idx).Tag          = tag;
             
             function h = createEdit()
@@ -438,7 +614,7 @@ classdef ZmapDialog < handle
                 
                 switch class(value)
                     case 'datetime'
-                        mystr=string(value,'uuuu-MM-dd hh:mm:ss');
+                        mystr=string(value,'uuuu-MM-dd HH:mm:ss');
                         
                     otherwise
                         mystr=string(value);
@@ -451,6 +627,29 @@ classdef ZmapDialog < handle
                     'String',mystr,...
                     'Tag',tag,...
                     'ToolTipString',tooltip,...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+            end
+            function h = createUIedit()
+                uilabel('Parent',obj.hDialog,...
+                    'Text',[label, ' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'Tag',[tag '_label']);
+                
+                switch class(value)
+                    case 'datetime'
+                        mystr=string(value,'uuuu-MM-dd HH:mm:ss');
+                        
+                    otherwise
+                        mystr=string(value);
+                        if ismissing(mystr)
+                            mystr='';
+                        end
+                end
+                
+                h = uieditfield('Parent',obj.hDialog,...
+                    'Value',mystr,...
+                    'Tag',tag,...
                     'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
             end
         end
@@ -477,8 +676,11 @@ classdef ZmapDialog < handle
                 
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'checkbox';
-            obj.parts(idx).CreatorFcn   =  @createCheckbox;
-            obj.parts(idx).ConversionFcn = @(h)conversion_function(h.Value);
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createCheckbox;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createUIcheckbox;
+            obj.parts(idx).ConversionFcn.figure = @(h)conversion_function(h.Value);
+            obj.parts(idx).ConversionFcn.uifigure = @(h)conversion_function(h.Value);
+            obj.parts(idx).Height       = obj.rowH;
             obj.parts(idx).Tag          = tag;
             
             function h = createCheckbox()
@@ -490,6 +692,14 @@ classdef ZmapDialog < handle
                     'ToolTipString', tooltip,...
                     'Position',[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
             end
+            function h = createUIcheckbox()
+                h = uicheckbox('Parent',obj.hDialog,...
+                    'Value', isOn,...
+                    'Text', String,...
+                    'ValueChangedFcn', cb,...
+                    'Tag', tag,...
+                    'Position',[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10]);
+            end
         end
         
         function AddGridSpacing(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
@@ -498,14 +708,12 @@ classdef ZmapDialog < handle
             % retrieved values will be found in a structure defined by GridParameterChoice.toStruct
             %
             % see also GridParameterChoice.toStruct
-            assert (~obj.hasGrid,'Dialog box already has an grid parameter section');
-            obj.hasGrid = true;
-
             
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'gridparameterbox';
             obj.parts(idx).CreatorFcn   =  @createGridParameters;
             obj.parts(idx).ConversionFcn    =  @toStruct;
+            obj.parts(idx).Height       = GridParameterChoice.GROUPHEIGHT;
             obj.parts(idx).Tag          = tag;
             
             function h = createGridParameters()
@@ -516,36 +724,36 @@ classdef ZmapDialog < handle
             end
         end
         
-        function AddEventSelector(obj, tag, ni, ra, minvalid)
+        function AddEventSelector(obj, tag, esp)
             %AddEventSelector Choose between events in a radius, or closest N events
-            % AddEventSelector(obj, tag, EventSelectionStruct)
-            % AddEventSelector(obj, tag, ni, ra, minvalid)
+            % AddEventSelector(obj, tag, EventSelectionParameter)
             % used to define how each grid point will select events
             %
             % returns structure defined by EventSelectionChoice.toStruct
             %
-            % see also EventSelectionChoice, EventSelectionChoice.toStruct
-            assert (~obj.hasEvSel,'Dialog box already has an event selection section');
-            obj.hasEvSel = true;
-            if ~exist('minvalid','var')
-                minvalid=0;
-            end
-
+            % see also EventSelectionChoice, EventSelectionChoice.toStruct, EventSelectionParameter
+            
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'eventselectparameterbox';
-            obj.parts(idx).CreatorFcn   =  @createEvSel;
-            obj.parts(idx).ConversionFcn    =  @toStruct;
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createEvSel;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createEvSel;
+            obj.parts(idx).ConversionFcn.figure    =  @EventSelectionParameters;
+            obj.parts(idx).ConversionFcn.uifigure    =  @EventSelectionParameters;
+            obj.parts(idx).Height       = EventSelectionChoice.GROUPHEIGHT;
             obj.parts(idx).Tag          = tag;
             
             function h = createEvSel()
                 obj.didEvSel=true;
                 pos=[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10];
-                if isa(ni,'struct')
-                    h = EventSelectionChoice(obj.hDialog, tag, pos, ni);
-                else
-                    h = EventSelectionChoice(obj.hDialog, tag, pos, ni, ra, minvalid);
-                end
+                h = EventSelectionChoice(obj.hDialog, tag, pos, esp);
             end
+            %{
+            function h = createUIEvSel()
+                obj.didEvSel=true;
+                pos=[obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10];
+                h = UIEventSelectionChoice(obj.hDialog, tag, pos, esp);
+            end
+            %}
         end
         
         %% special control
@@ -602,17 +810,30 @@ classdef ZmapDialog < handle
         
         function addOKButton(obj,position) % add it to Dialog
             % create "go" button -> modifies properties, closes figure, does calculation
-            uicontrol('style','pushbutton','String','OK',...
-                'Position',position,...
-                'Callback',@(src,~)obj.okDlg());
+            switch obj.figureType
+                case 'figure'
+                    obj.OKbutton = uicontrol('style','pushbutton','String','OK',...
+                        'Position',position,...
+                        'Callback',@(src,~)obj.okDlg());
+                case 'uifigure'
+                    obj.OKbutton = uibutton('Parent',obj.hDialog,'Text','OK',...
+                        'Position',position,...
+                        'ButtonPushedFcn',@(src,~)obj.okDlg());
+            end
         end
         
         function addCancelButton(obj,position) %add it to Dialog
             % create "cancel" button -> leaves properties unchanged, closes figure
-            
-            uicontrol('style','pushbutton','String','Cancel',...
-                'Position',position,...
-                'Callback',@(src,~)obj.clearDlg());
+            switch obj.figureType
+                case 'figure'
+                    obj.CANCELbutton = uicontrol('style','pushbutton','String','Cancel',...
+                        'Position',position,...
+                        'Callback',@(src,~)obj.clearDlg());
+                case 'uifigure'
+                    obj.CANCELbutton = uibutton('Parent',obj.hDialog, 'Text','Cancel',...
+                        'Position',position,...
+                        'ButtonPushedFcn',@(src,~)obj.clearDlg());
+            end
         end
         
         
@@ -632,7 +853,8 @@ classdef ZmapDialog < handle
             % this should be the callback for the cancel/clear buttons for
             % the interactive dialog boxes
             obj.okPressed=false;
-            close(obj.hDialog);
+            obj.CancelFcn(); % call the function provided by the user upon dialog creation
+            delete(obj.hDialog);
             obj.hDialog=[];
             
             if isvalid(obj.curfig)
@@ -640,9 +862,8 @@ classdef ZmapDialog < handle
             end
         end
         
-                
         function okDlg(obj)
-            % copy values back to caller hCaller, using tags as reference.
+            % copy values back to caller WriteToObj, using tags as reference.
             obj.okPressed=true;
             for n=1:numel(obj.parts)
                 me  = obj.parts(n);
@@ -651,24 +872,24 @@ classdef ZmapDialog < handle
                 
                 % disp([me.Style,  ' : ',  tag]);
                 
-                if ~isempty(tag) && (~isprop(obj.hCaller,tag) && ~isstruct(obj.hCaller))
+                if ~isempty(tag) && (~isprop(obj.WriteToObj,tag) && ~isstruct(obj.WriteToObj))
                     warning('unable to assign value back to caller because the property %s does not exist',tag);
                 end
                 if isempty(tag) % not meant to be analyzed
                     continue
                 end
-                
-                obj.hCaller.(tag) = me.ConversionFcn(h);
+                valueToWrite =  me.ConversionFcn.(obj.figureType)(h);
+                obj.WriteToObj.(tag) = valueToWrite;
             end
-            close(obj.hDialog);
             
-            if ~isempty(obj.callerOKFunction)
-                obj.callerOKFunction(); % call the caller's method before quitting
-            end
-            obj.curfig
+            delete(obj.hDialog);
+            
+            
             if ~isempty(obj.curfig) && isvalid(obj.curfig)
                 set(groot,'CurrentFigure',obj.curfig);
             end
+            
+            obj.OkFcn(); % call the function provided by the user upon dialog creation
         end
         
         %% helper functions
@@ -699,7 +920,8 @@ classdef ZmapDialog < handle
                 'Should noise be applied to the data?');
             
             % special-case  items
-            zdlg.AddEventSelector('evtparams', 100, 5);
+            esp = EventSelectionParameters('NumClosestEventsUpToRadius',100, 5)
+            zdlg.AddEventSelector('evtparams', esp);
             zdlg.AddGridSpacing('gridparams', 5 ,'km', 5,'km', 10,'km');
             
             zdlg.AddMcMethodDropdown();  % reutrns a McMethod enumerator
@@ -714,7 +936,7 @@ classdef ZmapDialog < handle
             
             % ask for a datetime
             zdlg.AddEdit('when',           'when',          datetime,                        'when is it');
-            [myans,okpressed] = zdlg.Create('my example');
+            [myans,okpressed] = zdlg.Create('Name', 'my example');
             
            
         end 

@@ -4,16 +4,15 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
     
     properties
         bootloops           = 100       % number of bootstrap loops [bootloops]
-        timef duration      = days(20)  % forecast period [forec_period]
-        time duration       = days(47)  % learning period  [learn_period]
+        forec_period duration      = days(20)  % forecast period [forec_period]
+        learn_period duration       = days(47)  % learning period  [learn_period]
         addtofig logical    = false     % should this plot in current figure? [oldfig_button]
-        Nmin                            % from eventsel
         minThreshMag        = 0
     end
     properties(Constant)
         PlotTag         ='rcvalgrid_a2'
         ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
-            'time',     'learning period','days';...                #1
+            'learn_period',     'learning period','days';...                #1
             'absdiff',  'obs. aftershocks - #events in modeled forecast period','';... #2
             'numreal',  'observed # aftershocks',''; ...            #3
             'nummod',   '#events in modeled forecast period','';... #4
@@ -45,7 +44,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             }, 'VariableNames', {'Names','Descriptions','Units'})
         
         CalcFields      = {...
-            'time',     'absdiff',  'numredal', 'nummod',...
+            'learn_period',     'absdiff',  'numredal', 'nummod',...
             'pval1',    'pmedStd1', 'cval1',    'cmedStd1',...
             'kval1',    'kmedStd1', 'fStdBst',  'nMod',...
             'nY',       'fMaxDist', 'fRcBst',...
@@ -53,9 +52,11 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             'kval2',    'kmedStd2', 'H',        'KSSTAT',...
             'P',        'fRMS',     'fTBigAf'}
         
-        ParameterableProperties = ["bootloops" "timef"....
-                "time" "addtofig"...
-                "Nmin" "minThreshMag"];
+        ParameterableProperties = ["bootloops" "forec_period"....
+                "learn_period" "addtofig"...
+                "NodeMinEventCount" "minThreshMag"];
+            
+        References="";
     end
     methods
         function obj=rcvalgrid_a2(zap,varargin)
@@ -75,36 +76,16 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             %    'Choose the calculation method for Mc')
             
             % add fMaxRadius
-            zdlg.AddEventSelector('evsel', obj.EventSelector);
-            zdlg.AddEdit(        'boot_samp',   '# boot loops',           obj.bootloops,  'number of bootstraps');
-            zdlg.AddDurationEdit('forec_period','forecast period',        obj.timef,      'forecast period', @days);
-            zdlg.AddDurationEdit('learn_period','learn period',           obj.time,       'learning period', @days);
+            obj.AddDialogOption(zdlg, 'EventSelector');
+            zdlg.AddEdit(        'bootloops',   '# boot loops',           obj.bootloops,  'number of bootstraps');
+            zdlg.AddDurationEdit('forec_period','forecast period',        obj.forec_period,      'forecast period', @days);
+            zdlg.AddDurationEdit('learn_period','learn period',           obj.learn_period,       'learning period', @days);
             zdlg.AddCheckbox(    'addtofig',    'plot in current figure', obj.addtofig,[],'plot in the current figure');
-            zdlg.AddEdit(        'Mmin',        'minMag',                 obj.minThreshMag, 'Minimum magnitude');
+            zdlg.AddEdit(        'minThreshMag', 'min. threshhold Mag',    obj.minThreshMag, 'Minimum magnitude');
+            obj.AddDialogOption(zdlg, 'NodeMinEventCount');
             % FIXME min number of events should be the number > Mc
             
-            [res, okpressed]=zdlg.Create('relative rate change map');
-            if ~okpressed
-                return
-            end
-    
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
-        end
-        
-        function SetValuesFromDialog(obj,res)
-            %% old version
-%             UseEventsInRadius=selOpt.UseEventsInRadius;
-%             ni=selOpt.ni;
-%             ra=selOpt.ra;
-%             dx=gridOpt.dx;
-%             dy=gridOpt.dy;
-            obj.bootloops   = res.boot_samp;
-            obj.timef       = res.forec_period;
-            obj.time        = res.learn_period;
-            obj.EventSelector = res.evsel;
-            obj.minThreshMag = res.Mmin;
-            %oldfig_button=oldfig_button.Value;
+            zdlg.Create('Name', 'relative rate change map','WriteToObj',obj,'OkFcn', @obj.doIt);
         end
 
         function ModifyGlobals(obj)
@@ -116,11 +97,11 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             % check pre-conditions
             assert(ensure_mainshock(),'No mainshock was defined')
 
-            % cut catalog at mainshock time:
+            % cut catalog at mainshock learn_period:
             mainshock=obj.ZG.maepi.subset(1);
             mainshock_time = mainshock.Date;
-            learn_to_date = mainshock_time + obj.time;
-            forecast_to_date = learn_to_date + obj.timef;
+            learn_to_date = mainshock_time + obj.learn_period;
+            forecast_to_date = learn_to_date + obj.forec_period;
             l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > obj.minThreshMag;
             
             assert(any(l),'no events meet the criteria of being after the mainshock ,and greater than threshold magnitude');
@@ -141,13 +122,13 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
                 if UseEventsInRadius   % take point within r
                     catalog = ZG.primeCatalog.selectRadius(y,x,ra);
                     fMaxDist = max(catalog.epicentralDistanceTo(y,x));
-                    % Calculate number of events per gridnode in learning period time
+                    % Calculate number of events per gridnode in learning period learn_period
                     cat_learn = catalog.subset(catalog.Date <= learn_to_date);
                 else
                     % Determine ni number of events in learning period
                     % Set minimum number to constant number
-                    Nmin = ni;
-                    % Select events in learning time period
+                    NodeMinEventCount = ni;
+                    % Select events in learning learn_period period
                     cat_learn = catalog.subset(catalog.Date <= learn_to_date);
                     
                     cat_forecast = catalog.subset(...
@@ -178,8 +159,8 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
                 [cat_learn, cat_forecast] = prep_catalog(catalog);
                 
                 % Calculate the relative rate change, p, c, k, resolution
-                if cat_learn.Count >= obj.Nmin  % enough events?
-                    [mRc] = calc_rcloglike_a2(catalog,obj.time,obj.timef,obj.bootloops, mainshock);
+                if cat_learn.Count >= obj.NodeMinEventCount  % enough events?
+                    [mRc] = calc_rcloglike_a2(catalog,obj.learn_period,obj.forec_period,obj.bootloops, mainshock);
                     % Relative rate change normalized to sigma of bootstrap
                     if mRc.fStdBst~=0
                         mRc.fRcBst = mRc.absdiff/mRc.fStdBst;
@@ -191,7 +172,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
                     % Final grid
                     mRc.nY = cat_learn.Count;
                     mRc.fMaxDist = fMaxDist;
-                    out = [mRc.time mRc.absdiff mRc.numreal mRc.nummod ...
+                    out = [mRc.learn_period mRc.absdiff mRc.numreal mRc.nummod ...
                         mRc.pval1 mRc.pmedStd1 mRc.cval1 mRc.cmedStd1...
                         mRc.kval1 mRc.kmedStd1 mRc.fStdBst...
                         mRc.nMod mRc.nY mRc.fMaxDist mRc.fRcBst...
@@ -233,9 +214,9 @@ function [sel]=orig_rcvalgrid_a2()
     dx = 0.02; % Grid size latitude [deg]
     dy = 0.02; % Grid size longitude [deg]
     ni = 150;  % Minimum number
-    Nmin = 100; % Minimum number
-    time = days(47);  % Learning period [days]
-    timef= days(20);  % Forecast period [days]
+    NodeMinEventCount = 100; % Minimum number
+    learn_period = days(47);  % Learning period [days]
+    forec_period= days(20);  % Forecast period [days]
     bootloops = 100; % Bootstrap
     ra = 5;          % Radius [km]
     fMaxRadius = 5;  % Max. radius [km] in case of constant number
@@ -250,7 +231,7 @@ function [sel]=orig_rcvalgrid_a2()
     if ~ensure_mainshock()
         return
     end
-    % cut catalog at mainshock time:
+    % cut catalog at mainshock learn_period:
     l = ZG.primeCatalog.Date > ZG.maepi.Date(1) & ZG.primeCatalog.Magnitude > minThreshMag;
     ZG.newt2=ZG.primeCatalog.subset(l);
     
@@ -322,18 +303,18 @@ function [sel]=orig_rcvalgrid_a2()
             if UseEventsInRadius   % take point within r
                 cat_all = ZG.primeCatalog.selectRadius(y,x,ra);
                 fMaxDist = max(cat_all.epicentralDistanceTo(y,x));
-                % Calculate number of events per gridnode in learning period time
-                vSel = cat_all.Date <= ZG.maepi.Date(1)+days(time);
+                % Calculate number of events per gridnode in learning period learn_period
+                vSel = cat_all.Date <= ZG.maepi.Date(1)+days(learn_period);
                 cat_tmp = cat_all.subset(vSel);
             else
                 % Determine ni number of events in learning period
                 % Set minimum number to constant number
-                Nmin = ni;
-                % Select events in learning time period
-                vSel = (cat_all.Date <= ZG.maepi.Date(1)+days(time));
+                NodeMinEventCount = ni;
+                % Select events in learning learn_period period
+                vSel = (cat_all.Date <= ZG.maepi.Date(1)+days(learn_period));
                 cat_learn = cat_all.subset(vSel);
                 
-                vSel2 = (cat_all.Date > ZG.maepi.Date(1)+days(time) & cat_all.Date <= ZG.maepi.Date(1)+(time+timef)/365);
+                vSel2 = (cat_all.Date > ZG.maepi.Date(1)+days(learn_period) & cat_all.Date <= ZG.maepi.Date(1)+(learn_period+forec_period)/365);
                 cat_forecast = cat_all.subset(vSel2);
                 
                 % Distance from grid node for learning period and forecast period
@@ -344,7 +325,7 @@ function [sel]=orig_rcvalgrid_a2()
                     cat_forecast = cat_forecast.subset(vSel3);
                     cat_all = [cat_learn; cat_forecast]; %FIXME I'm sure this isn't concatenating properly
                 else
-                    vSel4 = (cat_all.epicentralDistanceTo(y,x) < fMaxRadius & cat_all.Date <= ZG.maepi.Date(1)+days(time));
+                    vSel4 = (cat_all.epicentralDistanceTo(y,x) < fMaxRadius & cat_all.Date <= ZG.maepi.Date(1)+days(learn_period));
                     cat_all = cat_all.subset(vSel4);
                     cat_learn = cat_all;
                 end
@@ -355,8 +336,8 @@ function [sel]=orig_rcvalgrid_a2()
             end
             
             % Calculate the relative rate change, p, c, k, resolution
-            if cat_tmp.Count >= Nmin  % enough events?
-                [mRc] = calc_rcloglike_a2(cat_all,obj.time,obj.timef,obj.bootloops, ZG.maepi);
+            if cat_tmp.Count >= NodeMinEventCount  % enough events?
+                [mRc] = calc_rcloglike_a2(cat_all,obj.learn_period,obj.forec_period,obj.bootloops, ZG.maepi);
                 % Relative rate change normalized to sigma of bootstrap
                 if mRc.fStdBst~=0
                     mRc.fRcBst = mRc.absdiff/mRc.fStdBst;
@@ -370,7 +351,7 @@ function [sel]=orig_rcvalgrid_a2()
                 mRc.nY = nY;
                 mRc.fMaxDist = fMaxDist;
                 mRcGrid = [mRcGrid; ...
-                    mRc.time mRc.absdiff mRc.numreal mRc.nummod ...
+                    mRc.learn_period mRc.absdiff mRc.numreal mRc.nummod ...
                     mRc.pval1 mRc.pmedStd1 mRc.cval1 mRc.cmedStd1...
                     mRc.kval1 mRc.kmedStd1 mRc.fStdBst mRc.nMod mRc.nY mRc.fMaxDist mRc.fRcBst...
                     mRc.pval2 mRc.pmedStd2 mRc.cval2 mRc.cmedStd2...
@@ -383,11 +364,11 @@ function [sel]=orig_rcvalgrid_a2()
         
         %%
         % Save the data to rcval_grid.mat
-        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll overall_b_value newgri gll ra time timef bootloops ZG.maepi
+        % save rcval_grid.mat mRcGrid gx gy dx dy ZG.bin_dur tdiff t0b teb a main faults mainfault coastline yvect xvect tmpgri ll overall_b_value newgri gll ra learn_period forec_period bootloops ZG.maepi
         [sFilename, sPathname] = uiputfile('*.mat', 'Save MAT-file');
         sFileSave = [sPathname sFilename];
-        save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','time','timef','bootloops','ZG.maepi');
-        save rcval_grid.mat mRcGrid gx gy dx dy a main yvect xvect ll newgri ra time timef bootloops ZG.maepi
+        save(sFileSave,'mRcGrid','gx','gy','dx','dy','a','main','yvect','xvect','ll','newgri','ra','learn_period','forec_period','bootloops','ZG.maepi');
+        save rcval_grid.mat mRcGrid gx gy dx dy a main yvect xvect ll newgri ra learn_period forec_period bootloops ZG.maepi
         disp('Saving data to rcval_grid.mat in current directory')
         
         close(wai)

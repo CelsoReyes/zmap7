@@ -37,7 +37,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             
             % make the interface
             
-            zdlg = ZmapDialog([],@do_nothing);
+            zdlg = ZmapDialog();
             zdlg.AddHeader('Reasenberg Declustering parameters','FontSize',12);
             zdlg.AddHeader('look-ahead times');
             zdlg.AddDurationEdit('taumin', '(min) for UNclustered events' ,obj.taumin, '<b>TauMin</b> look ahead time for not clustered events');
@@ -50,7 +50,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             zdlg.AddEdit('err',     'Epicenter error',              obj.err,        '<b>Epicenter</b> error');
             zdlg.AddEdit('derr',    'Depth error',                  obj.derr,       '<b>derr</b>Depth error');
             
-            [vals, okpressed]=zdlg.Create('Reasenberg Declustering');
+            [vals, okpressed]=zdlg.Create('Name', 'Reasenberg Declustering');
             if okpressed
                 [outputcatalog,details]=declus(catalog,vals);
                 assignin('base','declustered_reas',outputcatalog);

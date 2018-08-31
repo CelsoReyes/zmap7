@@ -19,7 +19,7 @@ function dispma3()
         % Input times t1p t2p t3p and t4p by editing or use cursor if desired
         %
         
-        dlg=ZmapDialog([],@(~,~)do_nothing);
+        dlg=ZmapDialog();
         dlg.AddEdit('t1p','Time 1 (T1):', t1p,'enter begin segment 1');
         dlg.AddEdit('t2p','Time 2 (T2):', t2p,'enter end segment 1');
         dlg.AddEdit('t3p','Time 3 (T3):', t3p,'enter begin segment 2');
@@ -28,7 +28,7 @@ function dispma3()
         
         par2 = 0.1 * ZG.newt2.Count;
         
-        [myans, okpressed] =dlg.Create('Select two time segments');
+        [myans, okpressed] =dlg.Create('Name', 'Select two time segments');
         if ~okpressed
             return
         end

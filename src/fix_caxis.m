@@ -12,6 +12,7 @@ classdef fix_caxis < ZmapFunction
         PlotTag='fixcaxis';
         Orientations={'do not draw','vert','horiz'}
         
+        References="";
     end
     
     
@@ -74,9 +75,7 @@ classdef fix_caxis < ZmapFunction
                 'Will be upper limit for clim');
             zdlg.AddCheckbox('freeze','Freeze Colorbar?',false,{},...
                 'If true, then the colorbar will be frozen to these values on various maps');
-            zdlg.Create('Vertical Axis Control');
-            % The dialog runs. if:
-            %  OK is pressed -> assigns
+            zdlg.Create('Name', 'Vertical Axis Control', 'WriteToObj', obj, 'OkFcn', @obj.doIt);
         end
         
         function Calculate(obj)
@@ -84,7 +83,6 @@ classdef fix_caxis < ZmapFunction
 
             % check pre-conditions
             assert(obj.orientation ~= 0,'Invalid colorbar orientation choice');
-
 
             obj.FunctionCall={'','orientation','minval','maxval','freeze'};
             % results of the calculation should be stored in fields belonging to obj.Result

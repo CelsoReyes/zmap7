@@ -1,8 +1,8 @@
 {
-   "NumNearbyEvents":150,
+   "NumClosestEvents":150,
    "UseNumNearbyEvents":true,
-   "RadiusKm":10,
+   "MaxSampleRadius":10,
+   "DistanceUnits":"kilometer",
    "UseEventsInRadius":false,
-   "WeightByDistance":false,
-   "maxRadiusKm":null
+   "WeightByDistance":false
 }

@@ -7,14 +7,17 @@ classdef bvalmapt < ZmapHGridFunction
         periodA_end     datetime            % end of timeperiod 1
         periodB_start   datetime            % start of timeperiod 2
         periodB_end     datetime            % end of timeperiod 2
-        minnu                       {mustBeNonnegative, mustBeInteger} % minimum number of events/node/timeperiod
-        useAutoMcomp = true;
+        minnu                       {mustBeNonnegative, mustBeInteger}  = 100 % minimum number of events/node/timeperiod
+        useAutoMcomp    logical         = true;
     end
     properties(Access=private)
         duration_A duration
         duration_B duration
     end
     
+    properties(Dependent, Hidden)
+        EventSelectorRadius % enables direct modification from the intractive dialog
+    end
     properties(Constant)
         PlotTag         = 'bvalmapt';
         ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
@@ -50,6 +53,7 @@ classdef bvalmapt < ZmapHGridFunction
                     "periodB_start" "periodB_end" ...
                     "minnu" "useAutoMcomp"];
                 
+        References="";
         % the viewplotting methods also had call to zhist,
         %
         % various select eq in polygons (new/hold) [selectp with various hold_state],
@@ -81,9 +85,9 @@ classdef bvalmapt < ZmapHGridFunction
             obj.periodA_end = t0b + (teb-t0b)/2;
             obj.periodB_start = obj.periodA_end+seconds(0.001);
             
-            if obj.EventSelector.UseNumNearbyEvents
+            if obj.EventSelector.UseNumClosestEvents
                 disp('This is designed to use events in constant radius instead of # of events.')
-                obj.EventSelector.UseNumNearbyEvents=false;
+                obj.EventSelector.UseNumClosestEvents=false;
                 obj.EventSelector.UseEventsInRadius=true;
             end
             
@@ -101,42 +105,31 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg.AddMcMethodDropdown('mc_choice');
             zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',obj.useAutoMcomp);
             
-            
-            %zdlg.AddEdit('Nmin','Min. No. of events > Mc', obj.Nmin,...
-            %    'Min # events greater than magnitude of completeness (Mc)');
-            
             zdlg.AddEdit('periodA_start','Start Time A : ', obj.periodA_start, 'Start time for first period');
             zdlg.AddEdit('periodA_end','End Time A : ', obj.periodA_end, 'End time for first period');
             zdlg.AddEdit('periodB_start','Start Time B : ', obj.periodB_start, 'Start time for Second period');
             zdlg.AddEdit('periodB_end','End Time B :', obj.periodB_end, 'Start time for Second period');
-            zdlg.AddEdit('ra', 'Constant radius [km]', obj.EventSelector.RadiusKm,...
+            zdlg.AddEdit('EventSelectorRadius', 'Constant radius [km]', obj.EventSelector.RadiusKm,...
                 'Radius used in calculation');
             % zdlg.AddEventSelector('evsel', obj.EventSelector); two items from this are used instead
             zdlg.AddEdit('minnu', 'Minimum number of events in each period:', ...
-                obj.EventSelector.requiredNumEvents,'');
+                obj.minnu,'');
             
-            [res,okPressed] = zdlg.Create('b-Value Grid Parameters');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
+            zdlg.Create('Name', 'b-Value Grid Parameters''WriteToObj',obj,'OkFcn', @obj.doIt);
         end
         
-        function SetValuesFromDialog(obj,res)
-            obj.useAutoMcomp=logical(res.useAutoMcomp);
-            obj.EventSelector.RadiusKm=res.ra;
-            obj.periodA_start = res.periodA_start;
-            obj.periodA_end = res.periodA_end;
-            obj.periodB_start = res.periodB_start;
-            obj.periodB_end = res.periodB_end;
-            obj.minnu = res.minnu;
-            obj.duration_A = obj.periodA_end - obj.periodA_start;
-            obj.duration_B = obj.periodB_end - obj.periodB_start;
-            % note, dx & dy were originally in degrees
+        function ra = get.EventSelectorRadius(obj)
+            ra = obj.EventSelector.RadiusKm;
+        end
+        
+        function obj = set.EventSelectorRadius(obj,ra)
+            obj.EventSelector.RadiusKm = ra;
         end
         
         function results=Calculate(obj)
+            
+            obj.duration_A = obj.periodA_end - obj.periodA_start;
+            obj.duration_B = obj.periodB_end - obj.periodB_start;
             
             % overall b-value
             [bv] =  bvalca3(obj.RawCatalog.Magnitude, obj.useAutoMcomp);

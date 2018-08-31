@@ -30,6 +30,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             'TogglePointValue', 'v',...
             'KeyHelp','?'...
             );
+        Type='XY';
     end
     
     properties(Dependent)
@@ -272,6 +273,7 @@ function showInTab(obj, ax, choice)
             if get(gcf,'Tag') == "Zmap Main Window"
                 theTab = obj.recreateExistingResultsTab(gcf);
                 obj.overlay(theTab, choice)
+                theTab.DeleteFcn=@cb_deleteTab
                 theTab.UserData = obj; % stash results in this tab for future access
                 return
             end
@@ -325,7 +327,12 @@ function showInTab(obj, ax, choice)
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             
-            
+            function cb_deleteTab(src,ev)
+                % also delete the selection lines
+                tagBase = src.Tag;
+                regexp_str = tagBase + " .*selection";
+                delete(findobj(ancestor(src,'figure'),'-regexp','Tag',regexp_str));
+            end
             
         end % plot function
         
@@ -407,7 +414,7 @@ function showInTab(obj, ax, choice)
             % If user clicks in the active axis, then the point and sample are updated
             
             if ~isvalid(obj.ax)
-                src
+                % src
                 return
             end
             mytab=obj.ax.Parent;
@@ -434,6 +441,22 @@ function showInTab(obj, ax, choice)
             end
         end
         
+        function t = helptext(obj, subject)
+            switch subject
+                case 'KeyMap'
+                    t = "When viewing the results map, the following keys have special functions";
+                    f=fieldnames(obj.KeyMap); f=sort(f);
+                    for j=1:numel(f)
+                        fn=string(f{j});
+                        t=t+newline+"  "+ pad(fn,20,'right') + " : <strong>" + obj.KeyMap.(fn)+"</strong>";
+                    end
+                case "-choices"
+                    t = helptext@ZmapGridFunction(obj,subject);
+                    t = [t, "KeyMap"];
+                otherwise
+                    t= helptext@ZmapGridFunction(obj,subject);
+            end
+        end
     end % Public methods
     
     methods(Access=protected)

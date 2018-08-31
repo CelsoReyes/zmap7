@@ -13,10 +13,9 @@ classdef findquar < ZmapHGridFunction
     %
     
     properties
-        oldratios
-        inDaytime (24,1) logical    = false(24,1)
-        localNoonEstimate (1,1)     = 12;
-        dayLength (1,2)             = [4, 6] % hours BEFORE noon to hours AFTER noon
+        inDaytime (24,1) logical    = false(24,1) % true for hours that are "daytime" hours
+        localNoonEstimate (1,1) double    = 12; % estimate time where local noon is. used with dayLength
+        dayLength (1,2)  double   {mustBePositive}    = [4, 6] % hours BEFORE noon to hours AFTER noon
     end
     
     properties(Constant)
@@ -32,7 +31,8 @@ classdef findquar < ZmapHGridFunction
         DayColor        = [0.8 0.8 0.2] % for histogram
         NightColor      = [0.1 0.0 0.6] % for histogram
         
-        ParameterableProperties = ["oldratios" "inDaytime" "localNoonEstimate" "dayLength"];
+        ParameterableProperties = ["inDaytime" "localNoonEstimate" "dayLength" "NodeMinEventCount"];
+        References="";
     end
     
     methods
@@ -44,7 +44,7 @@ classdef findquar < ZmapHGridFunction
             
             
             obj.CalcLocalNoon();
-            
+            obj.NodeMinEventCount = 20;
             % set the deafult days & nights based on  local noon and the "day" length
             dayStart = mod(obj.localNoonEstimate - obj.dayLength(1),24);
             dayEnd = mod(obj.localNoonEstimate + obj.dayLength(2),24);
@@ -148,6 +148,8 @@ classdef findquar < ZmapHGridFunction
                 nightHist.Data = eventHours(ismember(eventHours, nightCats));
             end
             function cb_go(~,~)
+                
+                obj.EventSelector = EventSelectionParameters.fromStruct(evsel.toStruct());
                 obj.inDaytime=logical([hHourly.Value]); %same as idx
                 close;
                 obj.doIt();

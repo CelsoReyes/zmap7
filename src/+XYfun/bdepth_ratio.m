@@ -8,7 +8,6 @@ classdef bdepth_ratio < ZmapHGridFunction
         bottomzone_ceiling      = 7;    % Top of BOTTOM zone
         bottomzone_floor        = 15;   % Bottom of BOTTOM zone
         fBinning                = 0.1;  % magnitude bins
-        Nmin                    = 50;
         mc_choice   McMethods   = McMethods.MaxCurvature % magnitude of completion method
         useAutoMcomp McAutoEstimate = true
     end
@@ -39,7 +38,9 @@ classdef bdepth_ratio < ZmapHGridFunction
         
         ParameterableProperties = ["topzone_ceiling" "topzone_floor"....
                     "bottomzone_ceiling" "bottomzone_floor"...
-                    "fBinning" "Nmin" "mc_choice" "useAutoMcomp"];
+                    "fBinning" "NodeMinEventCount" "mc_choice" "useAutoMcomp"];
+                
+        References="";
     end
     
     methods
@@ -58,38 +59,18 @@ classdef bdepth_ratio < ZmapHGridFunction
         function InteractiveSetup(obj)
             
             % get two time periods, along with grid and event parameters
-            zdlg=ZmapDialog([]);   
+            zdlg=ZmapDialog();   
             zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',  obj.useAutoMcomp);
             zdlg.AddMcMethodDropdown('mc_choice',           obj.mc_choice);
             zdlg.AddHeader('Please define two Depth ranges to compare');
-            zdlg.AddEdit('top_of_top','TOP zone ceiling [km]',         obj.topzone_ceiling,'');
-            zdlg.AddEdit('bottom_of_top','TOP zone floor [km]',        obj.topzone_floor,'');
-            zdlg.AddEdit('top_of_bottom','BOTTOM zone ceiling [km]',   obj.bottomzone_ceiling,'');
-            zdlg.AddEdit('bottom_of_bottom','BOTTOM zone floor [km]',  obj.bottomzone_floor,'');
-            zdlg.AddEdit('Nmin','Min. No. of events > Mc',             obj.Nmin,...
-                'Min # events greater than magnitude of completeness (Mc)');
-            zdlg.AddEventSelector('evsel',                       obj.EventSelector)
-            [res,okPressed]=zdlg.Create('Depth Ratio Grid input parameters');
-            if ~okPressed
-                return
-            end
-            
-            obj.SetValuesFromDialog(res)
-            
-            obj.doIt()
+            zdlg.AddEdit('topzone_ceiling','TOP zone ceiling [km]',         obj.topzone_ceiling,'');
+            zdlg.AddEdit('topzone_floor','TOP zone floor [km]',        obj.topzone_floor,'');
+            zdlg.AddEdit('bottomzone_ceiling','BOTTOM zone ceiling [km]',   obj.bottomzone_ceiling,'');
+            zdlg.AddEdit('bottomzone_floor','BOTTOM zone floor [km]',  obj.bottomzone_floor,'');
+            obj.AddDialogOption(zdlg, 'NodeMinEventCount');
+            obj.AddDialogOption(zdlg,'EventSelector');
+            zdlg.Create('Name', 'Depth Ratio Grid input parameters','WriteToObj',obj,'OkFcn',@obj.doIt);
         end
-        
-        function SetValuesFromDialog(obj, res)
-            obj.useAutoMcomp        = res.useAutoMcomp;
-            obj.mc_choice           = res.mc_choice;
-            obj.topzone_ceiling     = res.top_of_top;
-            obj.topzone_floor       = res.bottom_of_top;
-            obj.bottomzone_ceiling  = res.top_of_bottom;
-            obj.bottomzone_floor    = res.bottom_of_bottom;
-            obj.Nmin                = res.Nmin;
-            obj.EventSelector       = res.evsel;
-        end
-        
         
         function modifyGlobals(obj)
             obj.ZG.bvg = obj.Result.values;
@@ -145,7 +126,7 @@ classdef bdepth_ratio < ZmapHGridFunction
                 
                 
                 
-                if length(topb) < obj.Nmin  || length(botb) < obj.Nmin
+                if length(topb) < obj.NodeMinEventCount  || length(botb) < obj.NodeMinEventCount
                     
                     [Mc_valueTop] = mcCalculator(topb);
                     [Mc_valueBot] = mcCalculator(botb);
@@ -180,7 +161,7 @@ classdef bdepth_ratio < ZmapHGridFunction
                     % where mycat is already the subset value
                     idx = mycat.Magnitude >= magco-0.05;
                     n=sum(idx);
-                    if sum(idx) >= obj.Nmin
+                    if sum(idx) >= obj.NodeMinEventCount
                         [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.manual, b_overall); %not automatic estimate of Mcomp 
                         bv2 =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.auto); % automatic estimate of Mcomp 
                     else

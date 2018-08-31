@@ -1,12 +1,13 @@
 classdef bpvalgrid < ZmapHGridFunction
     % calculate P values on X-Y grid
     properties
-        CO         = 0     % omori c parameter with sign dictating whether it is constant or not
-        valeg2      = 2     % omori c parameter
-        minpe       = nan   % min goodness percentage
+        c_initial    double           = 2     % omori c parameter 
+        use_const_c  logical    = false
+        minpe      double            = nan   % min goodness percentage
         mc_choice  McMethods              = McMethods.MaxCurvature % magnitude of completion method
         wt_auto    LSWeightingAutoEstimate  = true
         mc_auto    McAutoEstimate           = true
+        main_event ZmapCatalog
     end
     properties(Constant)
         PlotTag = 'bpvalgrid';
@@ -22,9 +23,9 @@ classdef bpvalgrid < ZmapHGridFunction
             'p_value',      'p-value',          '';...                11: pv
             'pstd',         'p-val std',        '';...              12: pstd
             'c_value',      'c in days',        '';...              14 cv
-            'mmav',         'mmav',             '';...                   mmav
+            'mmav',         'R&J a-value (unadjusted, untrusted)',             '';...      mmav, untrusted
             'k_value',      'kv',               '';...                     kv
-            'mbv',          'mbv',              '';...                    mbv
+            'mbv',          'R&J b-value (unadjusted, untrusted)',              '';...     mbv, untrusted
             'deltaB',       'difference in b',  '';...
             'dM',           'Magnitude range map (Mmax - Mcomp)',   ''...
             }, 'VariableNames', {'Names','Descriptions','Units'})
@@ -33,7 +34,8 @@ classdef bpvalgrid < ZmapHGridFunction
             'b_value_std_maxlikelihood','a_value', ...
             'stan',     'power_fit',    'p_value',  'pstd',...
             'c_value',  'mmav',         'k_value',  'mbv'};
-        ParameterableProperties = ["CO" "valeg2" "minpe" "mc_choice"];
+        ParameterableProperties = ["c_initial", "use_const_c", "minpe", "mc_choice", "main_event"];
+        References="";
     end
     methods
         function obj=bpvalgrid(zap, varargin)
@@ -67,40 +69,13 @@ classdef bpvalgrid < ZmapHGridFunction
             
             zdlg.AddMcAutoEstimateCheckbox('mc_auto',  obj.mc_auto);
             
-            zdlg.AddEdit('c_val',          'omori c parameter',    obj.valeg2,...
-                ' input parameter (varying)');
-            zdlg.AddCheckbox('use_const_c','fixed c',              obj.CO<0, {'const_c'},...
-                'keep the Omori C parameter fixed');
-            zdlg.AddEdit('const_c',        'omori c parameter',    obj.valeg2,...
-                'C-parameter parameter (fixed)');
-            zdlg.AddEdit('minpe',          'min goodness %',       obj.minpe,...
-                'Minimum goodness of fit (percentage)');
+            zdlg.AddCheckbox('use_const_c', 'fixed c',              obj.use_const_c,[],  'keep the Omori C parameter fixed');
+            zdlg.AddEdit('c_initial',  'initial omori c parameter', obj.c_initial, 'C-parameter parameter');
+            zdlg.AddEdit('minpe',      'min goodness %',            obj.minpe,     'Minimum goodness of fit (percentage)');
+            obj.AddDialogOption(zdlg,'EventSelector');
+            obj.AddDialogOption(zdlg,'NodeMinEventCount');
             
-            zdlg.AddEventSelector('evsel', obj.EventSelector);
-            % zdlg.AddEdit('Mmin','minMag', nan, 'Minimum magnitude');
-            % FIXME min number of events should be the number > Mc
-            
-            [res, okpressed]=zdlg.Create('B P val grid');
-            if ~okpressed
-                return
-            end
-            
-            obj.SetValuesFromDialog(res);
-            obj.doIt();
-        end
-        
-        function SetValuesFromDialog(obj, res)
-            obj.mc_choice = res.mc_choice;
-            obj.mc_auto = res.mc_auto;
-            obj.valeg2=res.c_val;
-            obj.minpe=res.minpe;
-            obj.EventSelector=res.evsel;
-            if res.use_const_c
-                obj.CO=res.const_c;
-                obj.valeg2 = -obj.valeg2; %duplicating original inputs
-            else
-                obj.CO=0;
-            end
+            zdlg.Create('Name', 'B P val grid','WriteToObj',obj,'OkFcn', @obj.doIt);
         end
         
         function results=Calculate(obj)
@@ -108,7 +83,7 @@ classdef bpvalgrid < ZmapHGridFunction
             %on the basis of the vector ll, the points within the selected poligon.
             
             ZG=ZmapGlobal.Data;
-            Nmin = obj.EventSelector.requiredNumEvents;
+            Nmin = obj.NodeMinEventCount;
             minThreshMag = min(obj.RawCatalog.Magnitude);
             
             % get the grid parameter
@@ -137,21 +112,29 @@ classdef bpvalgrid < ZmapHGridFunction
             overall_b_value = bv;
             ZG.overall_b_value = bv;
             
+            % 
+            mpvc = MyPvalClass;
+            mpvc.MinThreshMag = minThreshMag;
+            mpvc = mpvc.setMainEvent(mainshock);
+            mpvc.c_initial      = obj.c_initial;
+            mpvc.UseConstantC   = obj.use_const_c;
             
+            %
             mycalcmethods= {@calcguts_opt1,...
                 @calcguts_opt2,...
                 @calcguts_opt3,...
                 @calcguts_opt4,...
                 @calcguts_opt5};
             calculation_function = mycalcmethods{obj.mc_choice};
+            
             % calculate at all points
             obj.gridCalculations(calculation_function);
             
             % prepare output to dektop
-            obj.Result.minpe = obj.minpe; %min goodness of fit (%)
+            obj.Result.minpe         = obj.minpe; %min goodness of fit (%)
             
             % ADDITIONAL VALUES
-            obj.Result.values.dM = obj.Result.values.max_mag - obj.Result.values.Mc_value;
+            obj.Result.values.dM     = obj.Result.values.max_mag - obj.Result.values.Mc_value;
             obj.Result.values.deltaB = obj.Result.values.b_value_wls - obj.Result.values.b_value_maxlikelihood;
             
             if nargout
@@ -174,8 +157,9 @@ classdef bpvalgrid < ZmapHGridFunction
                 [bv, magco, stan, av] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
                 maxcat = b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
+                    mpvc = mpvc.setEvents(maxcat);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude, 0.1);
-                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
+                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mpvc.mypval2m();
                     
                     bpvg = [bv magco bv2 stan2 av stan nan pv pstd cv mmav kv mbv];
                 else
@@ -186,8 +170,9 @@ classdef bpvalgrid < ZmapHGridFunction
             function bpvg = calcguts_opt2(b)
                 [bv, magco, stan, av] =  bvalca3(b.Magnitude, McAutoEstimate.manual);
                 [bv2, stan2] = calc_bmemag(b.Magnitude, 0.1);
-                [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date,b.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
-                %[pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(b.Date(l),b.Magnitude(l),'days',obj.valeg2,obj.CO,minThreshMag);
+
+                mpvc = mpvc.setEvents(b);
+                [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mpvc.mypval2m();
                 
                 bpvg = [bv magco bv2 stan2 av stan nan pv pstd cv mmav kv mbv];
             end
@@ -197,9 +182,10 @@ classdef bpvalgrid < ZmapHGridFunction
                 maxcat = b.subset(b.Magnitude >= Mc90-0.05);
                 magco = Mc90;
                 if maxcat.Count  >= Nmin
+                    mpvc = mpvc.setEvents(maxcat);
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual, overall_b_value );
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
-                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
+                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mpvc.mypval2m();
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
                 else
                     bpvg = nan(1,numel(obj.CalcFields));
@@ -211,9 +197,10 @@ classdef bpvalgrid < ZmapHGridFunction
                 maxcat= b.subset(b.Magnitude >= Mc95-0.05);
                 magco = Mc95;
                 if maxcat.Count >= Nmin
+                    mpvc = mpvc.setEvents(maxcat);
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
-                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date,maxcat.Magnitude,'days',obj.valeg2,obj.CO,minThreshMag);
+                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mpvc.mypval2m();
                     
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
                 else
@@ -232,9 +219,10 @@ classdef bpvalgrid < ZmapHGridFunction
                 end
                 maxcat= b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
+                    mpvc = mpvc.setEvents(maxcat);
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual);
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);
-                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mypval2m(maxcat.Date, maxcat.Magnitude, 'days' ,obj.valeg2,obj.CO,minThreshMag);
+                    [pv, pstd, cv, ~, kv, ~, mmav,  mbv] = mpvc.mypval2m();
                     bpvg = [bv magco bv2 stan2 av stan prf pv pstd cv mmav kv mbv];
                 else
                     bpvg = nan(1,numel(obj.CalcFields));

@@ -86,7 +86,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     end
     
     properties(SetObservable,AbortSet)
-        Name (1,:) char        % name of this catalog. Used when labeling plots
+        Name (1,:) char     = ''  % name of this catalog. Used when labeling plots
         Filter logical     % logical Filter used for getting a subset of events
         IsSortedBy char     = '' % describes sort order
         SortDirection char  = '' %describes sorting direction
@@ -120,9 +120,8 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %   [longitude, latitude, decyear, month, day, magnitude, depth, hour, minute, second]
             
             
-            obj.Name = '';
             if nargin==0
-                %donothing
+                return
             elseif nargin==1 && ischar(varargin{1})
                 obj.Name = varargin{1};
             elseif istable(varargin{1})
@@ -148,7 +147,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 % automatically convert depth units
                 if ~isempty(pu) && ~isempty(pu(vn=="Depth"))
                     units       = validateLengthUnit(pu{vn=="Depth"});
-                    obj.Depth   = unitsratio('kilometers',units) * obj.Depth;
+                    obj.Depth   = unitsratio('kilometer',units) * obj.Depth;
                 end
                 
                 
@@ -191,8 +190,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 obj.Name = varargin{1}.Name;
             end
             obj.Filter=true(size(obj.Longitude));
-            
-            
         end
         
         function propval = get.Count(obj)
@@ -272,7 +269,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function TF = isempty(obj)
             % ISEMPTY is true when there are no events in the catalog
             % tf = ISEMPTY(catalog)
-            TF = numel(obj)==0 || obj.Count == 0;
+            TF = numel(obj)==0 || isempty(obj.Latitude);
         end
         
         function outval = ZmapArray(obj)
@@ -459,17 +456,13 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.SortDirection   = direction;
         end
         
-        function other = sortedByDistanceTo(obj, lat, lon, depth)
+        function other = sortedByDistanceTo(obj, lat, lon, varargin)
             % SORTEDBYDISTANCE returns a catalog that has been sorted by distance to a point
             % ans=catalog.SORTEDBYDISTANCE(lat, lon) % epicentral sort
             % ans=catalog.SORTEDBYDISTANCE(lat, lon, depth) % hypocentral sort to surface
             %
             % does NOT modify original
-            if ~exist('depth','var')
-                dists = obj.epicentralDistanceTo(lat, lon);
-            else
-                dists = obj.hypocentralDistanceTo(lat, lon, depth);
-            end
+            dists = obj.DistanceTo(lat, lon, varargin{:});
             [~,idx]   = sort(dists);
             other     = obj.subset(idx);
             other.IsSortedBy    = 'distance';
@@ -484,22 +477,12 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % the distance to the nth closest event
             %
             % see also selectCircle, selectRadius
-            if isempty(depth) || isnan(depth)
-                dists_km = obj.epicentralDistanceTo(lat, lon);
-            else
-                dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
-            end
             
-            % find nth closest by grabbing from the sorted distances
-            sorted_dists = sort(dists_km);
-            n = min(n, numel(sorted_dists));
-            if n>0
-                max_km  = sorted_dists(n);
-            else
-                max_km  = 0;
-            end
-            mask        = dists_km <= max_km;
+            dists_km = obj.DistanceTo(lat, lon, depth);
+            esp = EventSelectionParameters('NumClosestEvents', n);
+            mask = esp.SelectionFromDistances(dists_km,'kilometer');
             other       = obj.subset(mask);
+            max_km = max(dists_km(mask));
         end
         
         function [other,max_km] = selectRadius(obj, lat, lon, depth, RadiusKm)
@@ -512,11 +495,9 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 RadiusKm = depth;
                 depth    = [];
             end
-            if isempty(depth)
-                dists_km = obj.epicentralDistanceTo(lat, lon);
-            else
-                dists_km = obj.hypocentralDistanceTo(lat, lon, depth);
-            end
+            
+            dists_km = obj.DistanceTo(lat, lon, depth);
+            
             mask = dists_km <= RadiusKm;
             % furthest_event_km = max(dists_km(mask));
             other = obj.subset(mask);
@@ -527,72 +508,23 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
         end
         
-        function [ minicat, max_km ] = selectCircle(obj, selcrit, x,y,z )
+        function [ minicat, max_km ] = selectCircle(obj, esp, x,y,z )
             %selectCircle Select events in a circle defined by either distance or number of events or both
-            % [ minicat, maxd ] = catalog.SELECTCIRCLE(selcrit);
-            % [ minicat, maxd ] = catalog.SELECTCIRCLE(selcrit, x,y,z ) %specify th
+            % [ minicat, maxd ] = catalog.SELECTCIRCLE( SELCRIT, x,y,z ) where selcrit is an 
+            % EventSelectionParameters object. The comparison point is x,y,z, where 
+            % x, y are in degrees, and z is in km or is empty [].
+            % returns a catalog containing selected events, along with the maximum distance of the
+            % catalog from the chosen point
             %
-            %  SELCRIT is a structure containing one of the following set of fields:
-            %    * NumNearbyEvents (by itself) : runs function against this many closest events.
-            %    * RadiusKm  (by itself) : runs function against all events in this radius
-            %    * UseNumNearbyEvents, UseEventsInRadius, NumNearbyEvents, RadiusKm (ALL of the above):
-            %      uses the UseNumNearbyEvents and UseEventsInRadius to determine its behavior.  If
-            %      both of these fields are true, then the closest events are evaluated up to the distance
-            %      RadiusKm.
-            %    * maxRadiusKm : if UseNumNearbyEvents should be limited to a maximum radius, this value is used
-            %   X, Y, Z : coordinates of a point.  Z may be empty [].
-            %   if X,Y not provided, then they should be fields of selcrit as X0, Y0
-            %
-            %
-            % see also selectClosestEvents, selectRadius
-            assert(isstruct(selcrit),'SELCRIT should be a structure');
+            % see also selectClosestEvents, selectRadius, EventSelectionParameters
+            if ~(esp.UseEventsInRadius || esp.UseNumClosestEvents)
+                error('Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
+            end
+            dists_km = obj.DistanceTo(y,x,z);
             
-            % make sure the required selection fields exist
-            if ~isfield(selcrit,'UseNumNearbyEvents')
-                selcrit.UseNumNearbyEvents = isfield(selcrit,'NumNearbyEvents');
-            end
-            if ~isfield(selcrit,'UseEventsInRadius')
-                selcrit.UseEventsInRadius = isfield(selcrit,'RadiusKm');
-            end
-            if selcrit.UseEventsInRadius
-                assert(isfield(selcrit,'RadiusKm'),...
-                    'Error: UseEventsInRadius was true, but no radius [RadiusKm] was specified');
-            end
-            if selcrit.UseNumNearbyEvents
-                assert(isfield(selcrit,'NumNearbyEvents'),...
-                    'Error: UseNumNearbyEvents was true, but no number [NumNearbyEvents] was specified');
-            end
-            
-            assert(selcrit.UseNumNearbyEvents ~= selcrit.UseEventsInRadius,...
-                'Error. Cannot select both numnearby and events in radius.');
-            
-            if ~isfield(selcrit,'minNumEvents')
-                selcrit.minNumEvents = 0;
-            end
-            if selcrit.UseNumNearbyEvents && ~isfield(selcrit,'maxRadiusKm')
-                selcrit.maxRadiusKm  = inf;
-            end
-            
-            if ~exist('x','var')||isempty('x')
-                x = selcrit.X0;
-            end
-            if ~exist('y','var')||isempty('y')
-                y = selcrit.Y0;
-            end
-            if ~exist('z','var') || isempty('z')
-                z = []; % not a member of selcrit.
-            end
-            
-            assert( selcrit.UseEventsInRadius || selcrit.UseNumNearbyEvents,'Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
-            
-            if selcrit.UseEventsInRadius
-                [minicat,max_km] = obj.selectRadius(y,x, z, selcrit.RadiusKm);
-            elseif selcrit.UseNumNearbyEvents
-                [minicat,max_km] = obj.selectClosestEvents(y,x,z, selcrit.NumNearbyEvents); %works with sphere
-                if max_km > selcrit.maxRadiusKm
-                    [minicat, max_km] = obj.selectRadius(y,x, z, selcrit.maxRadiusKm);
-                end
-            end
+            mask = esp.SelectionFromDistances(dists_km,'kilometer');
+            minicat = obj.subset(mask);
+            max_km = max(dists_km(mask));
         end
         
         function obj = blank(obj2)
@@ -636,6 +568,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %    this option can be used to change the order of the catalog too
             
             % changed this to make subset usable by subclassed catalogs.
+            
             obj             = existobj.blank();
             obj.Name        = existobj.Name;
             
@@ -891,6 +824,12 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             set(findobj(gcf,'Type','Legend'),'AutoUpdate','on')
         end
         
+        function dists_deg = epicentralArcDistanceTo(obj, to_lat, to_lon)
+            % get epicentral (lat-lon) distance to another point
+            % dists_km = catalog.EPICENTRALARCDISTANCETO(to_lat, to_lon)
+            dists_deg   = distance(obj.Latitude, obj.Longitude, to_lat, to_lon);
+        end
+        
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             % dists_km = catalog.EPICENTRALDISTANCETO(to_lat, to_lon)
@@ -903,6 +842,14 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             dists_km    = deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
             delta_dep   = (obj.Depth - to_depth_km);
             dists_km    = sqrt( dists_km .^ 2 + delta_dep .^ 2);
+        end
+        
+        function dists_km = DistanceTo(obj, to_lat, to_lon, to_depth_km)
+            if ~exist('to_depth_km','var') || isempty(to_depth_km)
+                dists_km = obj.epicentralDistanceTo(to_lat, to_lon);
+            else
+                dists_km = obj.hypocentralDistanceTo(lat, lon, to_depth_km);
+            end
         end
         
         function rt = relativeTimes(obj, other)
