@@ -859,11 +859,18 @@ classdef ZmapMainWindow < handle
             
             if toMainmap
                 % show details specific to the main map
-                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                toShow = [...
+                    findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','catalog')...
+                    ];
+                    
                 set(toShow,'Visible','on');
             elseif fromMainmap
                 % hide details specific to the main map
-                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                toShow = [...
+                    findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','catalog')...
+                    ];
                 
                 set(toShow,'Visible','off');
             end
