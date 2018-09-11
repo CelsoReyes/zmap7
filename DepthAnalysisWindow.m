@@ -1,7 +1,7 @@
 classdef DepthAnalysisWindow < AnalysisWindow
     % DEPTHANALYSISWINDOW shows the number of events, binned per depth
     properties
-        binedges; % km
+        binedges    double; % km
     end
     methods
         function obj=DepthAnalysisWindow(ax,binedges)
@@ -11,11 +11,11 @@ classdef DepthAnalysisWindow < AnalysisWindow
         
         function prepare_axes(obj)
             % prepare the depth profile axes
-            obj.ax.Tag = 'dvEventsWidthDepth';
-            obj.ax.YDir='reverse';
-            obj.ax.Title.String='Depth Profile';
-            obj.ax.XLabel.String='Number of events';
-            obj.ax.YLabel.String='Depth';
+            obj.ax.Tag          = 'dvEventsWidthDepth';
+            obj.ax.YDir         = 'reverse';
+            obj.ax.Title.String = 'Depth Profile';
+            obj.ax.XLabel.String= 'Number of events';
+            obj.ax.YLabel.String= 'Depth';
         end
         
         function [x,y]=calculate(obj,catalog)

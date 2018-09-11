@@ -13,9 +13,9 @@ classdef findquar < ZmapHGridFunction
     %
     
     properties
-        inDaytime (24,1) logical    = false(24,1) % true for hours that are "daytime" hours
-        localNoonEstimate (1,1) double    = 12; % estimate time where local noon is. used with dayLength
-        dayLength (1,2)  double   {mustBePositive}    = [4, 6] % hours BEFORE noon to hours AFTER noon
+        inDaytime         (24,1) logical    = false(24,1) % true for hours that are "daytime" hours
+        localNoonEstimate (1,1)  double     = 12; % estimate time where local noon is. used with dayLength
+        dayLength         (1,2)  double   {mustBePositive}    = [4, 6] % hours BEFORE noon to hours AFTER noon
     end
     
     properties(Constant)

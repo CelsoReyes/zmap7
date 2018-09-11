@@ -10,8 +10,8 @@ classdef bgrid3dB < Zmap3DGridFunction
     
     properties
         
-        R = 5;
-        ni = ZG.ni;
+        R   = 5;
+        ni  = ZG.ni;
         Nmin = 50;
         mc_choice   McMethods = McMethods.MaxCurvature % magnitude of completion method 
     end

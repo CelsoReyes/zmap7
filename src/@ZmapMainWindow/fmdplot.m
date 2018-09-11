@@ -21,7 +21,7 @@ function fmdplot(obj, tabgrouptag)
     else
         bdiffobj=ax.UserData;
         if isempty(bdiffobj)
-            bdiffobj=bdiff2(bj.getCurrentCatalog,'ax',ax,'InteractiveMode',false);
+            bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false);
             ax.UserData=bdiffobj;
         else
             bdiffobj.RawCatalog = obj.catalog;

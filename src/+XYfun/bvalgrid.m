@@ -4,7 +4,7 @@ classdef bvalgrid < ZmapHGridFunction
     properties 
         % fMcFix                        = 1.0   % 2.2
         nBstSample   {mustBeNonnegative,mustBeInteger}  = 100   % number of bootstrap samples
-        useBootstrap  logical           = false  % perform bootstrapping?
+        useBootstrap logical            = false  % perform bootstrapping?
         fMccorr      double             = 0.2   % magnitude correction
         fBinning     {mustBePositive}   = 0.1   % magnitude bins
         mc_choice    McMethods          = McMethods.MaxCurvature % magnitude of completion method
@@ -33,7 +33,7 @@ classdef bvalgrid < ZmapHGridFunction
         
         ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr", "fBinning", "mc_choice", "mc_auto_est"];
         
-        References="";
+        References = "";
     end
     
     methods

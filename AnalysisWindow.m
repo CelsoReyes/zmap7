@@ -7,7 +7,7 @@ classdef AnalysisWindow < handle
     %   calculate     : 
     
     properties
-        ax               % handle for the axis
+        ax     {mustBeAxesOrEmpty}          % handle for the axis
         prepared = false % axis has been prepared (labeled, titled, scaled, etc.) 
         nMarkers = 3;    % number of markers in the plot
     end
@@ -173,3 +173,8 @@ classdef AnalysisWindow < handle
     end
 end
 
+function mustBeAxesOrEmpty(val)
+    if ~( isempty(val) || val.Type=="axes" )
+        error("value must be an axes or be empty")
+    end
+end

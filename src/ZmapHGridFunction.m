@@ -1,23 +1,33 @@
 classdef ZmapHGridFunction < ZmapGridFunction
     % ZMAPHGRIDFUNCTION is a ZmapFunction that produces a grid of results plottable on map (horiz slice)
     %
+    % plot results in a corresponding tab using obj.overlay(resTab, choice)
+    % obj.interact handles the user interaction with the results
+    %
+    %
+    %
+    %
+    %
+    %
+    %
     % see also ZMAPGRIDFUNCTION
     
     properties(SetObservable, AbortSet)
         features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
         
-        showRing        = false;
-        showPointValue	= false;
-        showTable       = true;
-        showResultPlots = true;
+        showRing        logical     = false;
+        showPointValue	logical     = false;
+        showTable       logical     = true;
+        showResultPlots logical     = true;
         
         nearestSample   = 0;         % current index (where user clicked) within the result table
         lastPoint       = [nan nan]; % x, y of click
-        nearestSamplePos= [nan nan]; % x, y of measurement
+        pointChoice (1,1) char   {mustBeMember(pointChoice,{'A','B'})}   = 'A'; % choose points for comparison. 'A', or 'B'
+        samplePoints = containers.Map(); % track individual points
     end
     
     properties
-        isUpdating
+        isUpdating      logical
     end
     
     properties(Constant)
@@ -28,17 +38,27 @@ classdef ZmapHGridFunction < ZmapGridFunction
             'ShowValue', 'T',...
             'ShowValueNoNan', 't',...
             'TogglePointValue', 'v',...
+            'ChoosePointA','A',...
+            'ChoosePointB','B',...
+            'RemovePoint',sprintf('\b'),...
             'KeyHelp','?'...
             );
-        Type='XY';
+        Type = 'XY';
     end
     
     properties(Dependent)
-        resultsForThisPoint
-        resultsForThisPointNoNan
-        selectionForThisPoint
-        catalogForThisPoint
-        colorForThisPoint
+        resultsForThisPoint      % table row corresponding to closest grid point
+        resultsForThisPointNoNan % table row corresponding to closest grid point, excluding NAN columns
+        selectionForThisPoint    % mask for catalog, true for events used in this point's calculations
+        catalogForThisPoint      % events used in calculating values for this point
+        colorForThisPoint        % color used by the grid at this point, If no color specified, default to grey
+    end
+    
+    properties(Constant, Hidden)
+        gridMarkerSize = 5;
+        gridMarker = '+';
+        gridMarkerFaceAlpha = 0.5;
+        deemphasizeFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
     end
     
     methods
@@ -48,16 +68,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
             obj.addlistener('nearestSample','PostSet', @obj.update);
         end
         
+        %% dependent properties
+        
         function tb = get.resultsForThisPoint(obj)
             if obj.nearestSample
-                tb = obj.Result.values(obj.nearestSample,:);
+                % tb = obj.Result.values(obj.nearestSample,:);
+                tb = obj.Result.values(obj.samplePoints(obj.pointChoice).idx,:);
             else
                 tb=obj.Result.values([],:);
             end
         end
         
         function tb = get.resultsForThisPointNoNan(obj)
-            tb = obj.Result.values(obj.nearestSample,:);
+            %tb = obj.Result.values(obj.nearestSample,:);
+            tb = obj.Result.values(obj.samplePoints(obj.pointChoice).idx,:);
             OK = ~cellfun(@(x)isnumeric(x)&&isnan(x),table2cell(tb));
             tb = tb(:,OK);
         end
@@ -68,8 +92,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
             % evsel = obj.EventSelector;
             dists = obj.RawCatalog.epicentralDistanceTo(tb.y,tb.x);
             mask = dists <= tb.RadiusKm;
+            nFoundEvents = sum(mask);
             if sum(mask) > tb.Number_of_Events
-                warning('Selection doesn''t exactly match results.')
+                warning("Selection doesn't exactly match results" + ...
+                    " (<strong>%d</strong> found, expected <strong>%d</strong>)" + newline + ...
+                    "This happens when sampling requests N closest events," +...
+                    " but multiple events occur at same (farthest) distance",...
+                    nFoundEvents, tb.Number_of_Events);
             end
             
         end
@@ -78,7 +107,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             c=obj.RawCatalog.subset(obj.selectionForThisPoint);
         end
         
-        
         function mycolor = get.colorForThisPoint(obj)
             % use the same color for the trend plot as is used for the results overlay
             cm=colormap(obj.ax);
@@ -86,48 +114,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
             lookup=linspace(min(cl), max(cl), length(cm));
             mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
             gr=findobj(obj.ax.Children,'flat','-regexp','Tag','.*[gG]rid.*');
-            gridx = find(gr.XData==obj.nearestSamplePos(1) & gr.YData==obj.nearestSamplePos(2));
+            gridx = find(gr.XData==obj.samplePoints(obj.pointChoice).X & gr.YData==obj.samplePoints(obj.pointChoice).Y);
+            %gridx = find(gr.XData==obj.nearestSamplePos(1) & gr.YData==obj.nearestSamplePos(2));
             mycolor = mycolorFn(gr.CData(gridx));
             
             if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
         end
         
+        %% plotting functions
         
-        %{
-function showInTab(obj, ax, choice)
-            % plots the results on the provided axes.
-            
-            if exist('choice','var')
-                [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
-            else
-                [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails();
-            end
-            
-            ax.NextPlot='add';
-            delete(findobj(ax,'Tag','result overlay'));
-            
-            % this is to show the data
-            if islogical(obj.Result.values.(myname)(1))
-                p=double(obj.Result.values.(myname));
-                p(p==0)=nan;
-                h=obj.Grid.pcolor(ax,p, mydesc);
-            else
-                h=obj.Grid.pcolor(ax,obj.Result.values.(myname), mydesc);
-            end
-            h.Tag = 'result overlay';
-            shading(obj.ZG.shading_style);
-            
-            if isempty(findobj(gcf,'Tag','lookmenu'))
-                add_menus(obj,choice);
-            end
-            
-            update_layermenu(obj,myname, ax);
-            
-            mapdata_viewer(obj,obj.RawCatalog,findobj(gcf,'Tag','mainmap_ax'));
-            ax.Title.String=sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc);
-            ax.Title.Interpreter='none';
-        end
-        %}
         function overlay(obj, resTab, choice)
             % plots the results in the provided Tab.
             % expects that tab is empty
@@ -143,46 +138,28 @@ function showInTab(obj, ax, choice)
             
             report_this_filefun();
             
-            [choice, myname, mydesc, myunits] = obj.ActiveDataColumnDetails(choice);
+            [choice, colname, coldesc, colunits] = obj.ActiveDataColumnDetails(choice);
             
             tabGroup = resTab.Parent;
             
             ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
             
             if isempty(ax)
-                
+                % copy entire main map to this axes, and de-emphasized, and
+                % then become the base for displaying results
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
                 ax=findobj(resTab,'Tag','mainmap_ax');
-                ax.Tag='result_map';
-                ax.Units='normalized';
-                ax.Position=[0.025 0.05 .95 .90];
+                ax.Tag      = 'result_map';
+                ax.Units    = 'normalized';
+                ax.Position = [0.025 0.05 .95 .90];
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
-                lineobjs=findobj(ax,'Type','Line');
-                for n=1:numel(lineobjs)
-                    set(lineobjs(n),'Color', (lineobjs(n).Color + [3 3 3]) ./ 4);
-                end
+                
+                % de-emphasize all line objects
+                arrayfun(@obj.deemphasizeFcn, findobj(ax,'Type','Line'));
+                
                 hTopos=findobj(resTab,'-regexp','Tag','topographic_map_*');
                 if ~isempty(hTopos)
-                    % topography map needs to exist underneath plot
-                    ax2=axes(resTab,'Position',ax.Position,'YLim',ax.YLim,'XLim',ax.XLim,...
-                        'DataAspectRatio',ax.DataAspectRatio,...
-                        'DataAspectRatioMode',ax.DataAspectRatioMode,...
-                        'Tag','topo_underlay','Visible','off');
-                    
-                    set(hTopos,'Parent',ax2); % move topography over to new axes
-                    linkaxes([ax ax2]);
-                    linkprop([ax ax2],{'Position','DataAspectRatio','DataAspectRatioMode'});
-                    
-                    % modify colormap for topography
-                    dc=demcmap([min(arrayfun(@(x)double(min(x.CData(:))),hTopos)),...
-                        max(arrayfun(@(x)double(max(x.CData(:))),hTopos)) ]);
-                    colormap(ax2, ((brighten(gray,0.8).*2 + brighten(dc,-0.5) )./ 3))
-                    
-                    % modify colormap for results
-                    colormap(ax, colormap(ancestor(resTab,'figure')));
-                    resTab.Children=circshift(resTab.Children,-1); %new axes must be below existing
-                    ax.Color='none';
-                    %ax2.Visible='off';
+                    deal_with_topography(ax,hTopos, resTab );
                 end
             else
                 ax=findobj(resTab,'Tag','result_map');
@@ -191,24 +168,28 @@ function showInTab(obj, ax, choice)
             ax.NextPlot='add';
             delete(findobj(ax,'Tag','result overlay'));
             
-            % delete existing grid points
-            delete(findobj(ax,'-regexp','Tag','grid_\w.*'));
+            %% --  replace existing grid points with contour or color-coded grid showing results
             
-            % this is to show the data
-            if islogical(obj.Result.values.(myname)(1))
-                p=double(obj.Result.values.(myname));
+            delete(findobj(ax,'-regexp','Tag','grid_\w.*'));
+            if islogical(obj.Result.values.(colname)(1))
+                p=double(obj.Result.values.(colname));
                 p(p==0)=nan;
-                h=obj.Grid.pcolor(ax,p, mydesc);
+                h = obj.Grid.pcolor(ax,p, coldesc);
+                shading(ax,'flat')
             else
-                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(myname),mydesc, ZmapGlobal.Data.ResultOpts.NumContours);
-                
+                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(colname), coldesc, ZmapGlobal.Data.ResultOpts.NumContours);
             end
-            ax.Children=circshift(ax.Children,-1); % move the contour to the bottom layer
-            val = obj.Result.values.(myname);
-            s = findobj(ax,'Tag',obj.Grid.Name);
+            
+            % move the contour to the bottom layer so other graphical elements can be interacted with
+            ax.Children = circshift(ax.Children,-1);
+            
+            val         = obj.Result.values.(colname);
+            s           = findobj(ax, 'Tag', obj.Grid.Name);
             if isempty(s)
-                s=scatter(ax,obj.Result.values.x,obj.Result.values.y,10,val,'+','Tag',obj.Grid.Name);
-                s.MarkerFaceAlpha=[0.5];
+                % overlay colored grid on top of existing data
+                s = scatter(ax,obj.Result.values.x, obj.Result.values.y, ...
+                    obj.gridMarkerSize, val, obj.gridMarker, 'Tag', obj.Grid.Name);
+                s.MarkerFaceAlpha = obj.gridMarkerFaceAlpha;
             else
                 if islogical(val)
                     val = double(val);
@@ -230,15 +211,17 @@ function showInTab(obj, ax, choice)
             c=uicontextmenu('Tag',obj.PlotTag);
             resTab.UIContextMenu=c;
             
-            update_layermenu(obj,myname, c);
+            update_layermenu(obj,colname, c);
             
             uimenu(c,'Separator','on','Label','Close tab',...
                 MenuSelectedField(),@(~,~)delete(resTab));
             % mapdata_viewer(obj,obj.RawCatalog,ax);
-            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, mydesc), 'Interpreter', 'None');
+            title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, coldesc), 'Interpreter', 'None');
             % shading(ax,obj.ZG.shading_style);
             
+            mySelectionChangedEvent = struct('OldValue', tabGroup.SelectedTab, 'NewValue', resTab);
             tabGroup.SelectedTab = resTab;
+            
             minV=min(h.ZData(:));
             maxV=max(h.ZData(:));
             try
@@ -247,14 +230,19 @@ function showInTab(obj, ax, choice)
                 else
                     ax.CLim=[floor(minV), ceil(maxV)];
                 end
-                pretty_colorbar(ax,mydesc,myunits);
+                pretty_colorbar(ax,coldesc,colunits);
             catch ME
                 warning(ME.message)
             end
-                
+            if mySelectionChangedEvent.OldValue ~= mySelectionChangedEvent.NewValue
+                tabGroup.SelectionChangedFcn([],mySelectionChangedEvent);
+            else
+                % reestablish the points
+            end
             drawnow
             obj.ax = ax;
-            obj.interact(myname)
+            obj.interact(colname)
+            
         end
         
         function plot(obj, choice)
@@ -329,9 +317,17 @@ function showInTab(obj, ax, choice)
             
             function cb_deleteTab(src,ev)
                 % also delete the selection lines
+                watchon
+                drawnow nocallbacks
+                
                 tagBase = src.Tag;
+                tg=ancestor(src,'uitabgroup');
+                mySelectionChangedEvent = struct('OldValue', src, 'NewValue', ...
+                    findobj(tg.Children','flat','Tag','mainmap_tab'));
+                tg.SelectionChangedFcn([],mySelectionChangedEvent);
                 regexp_str = tagBase + " .*selection";
                 delete(findobj(ancestor(src,'figure'),'-regexp','Tag',regexp_str));
+                watchoff
             end
             
         end % plot function
@@ -432,12 +428,23 @@ function showInTab(obj, ax, choice)
                 [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
                 x = obj.Result.values.x(nearest);
                 y = obj.Result.values.y(nearest);
+                % obj.nearestSamplePos = [x , y];
+                
+                % update point-specific details
+                p = obj.samplePoints(obj.pointChoice);
+                p.X = x;
+                p.Y = y;
+                p.idx = nearest;
+                obj.samplePoints(obj.pointChoice) = p;
+                
                 obj.nearestSample=nearest;
-                obj.nearestSamplePos = [x , y];
+                
                 % update hilight
-                HL=findobj(obj.ax.Children,'flat','Tag','thisresulthilight');
+                HL = obj.samplePoints(obj.pointChoice).thisresulthilight;
+                % HL=findobj(obj.ax.Children,'flat','Tag','thisresulthilight');
                 HL.XData = x;
                 HL.YData = y;
+                
             end
         end
         
@@ -547,8 +554,9 @@ function showInTab(obj, ax, choice)
         end
         
         function updateRing(obj)
-            CR = findobj(obj.ax,'Tag','thisradius');
-            tb=obj.resultsForThisPoint;
+            CR = obj.samplePoints(obj.pointChoice).thisradius;
+            % CR = findobj(obj.ax,'Tag','thisradius');
+            tb = obj.resultsForThisPoint;
             if obj.showRing
                 % update samplecircle
                 [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
@@ -559,19 +567,21 @@ function showInTab(obj, ax, choice)
         end
         
         function updateText(obj)
-            TX = findobj(obj.ax,'Tag','thisresulttext');
+            TX = obj.samplePoints(obj.pointChoice).thisresulttext;
+            % TX = findobj(obj.ax,'Tag','thisresulttext');
             myname = TX.UserData;
             if obj.showPointValue
                 % update text
-                TX.Position=[obj.nearestSamplePos,0];
-                valstr=string(obj.Result.values.(myname)(obj.nearestSample));
+                % TX.Position = [obj.nearestSamplePos,0];
+                TX.Position = [obj.samplePoints(obj.pointChoice).X obj.samplePoints(obj.pointChoice).Y 0];
+                valstr = string(obj.Result.values.(myname)(obj.nearestSample));
                 if ismissing(valstr)
-                    TX.String="  " + myname + " : <missing>";
+                    TX.String = "  " + myname + " : <missing>";
                 else
-                    TX.String="  " + myname + " : " + valstr;
+                    TX.String = "  " + myname + " : " + valstr;
                 end
             else
-                TX.String="";
+                TX.String = "";
             end
         end
         function update(obj, ~, ~)
@@ -585,36 +595,75 @@ function showInTab(obj, ax, choice)
         function updateSeries(obj)
             % update external plot(s)
             
-            h=findobj(gcf,'Tag','CumPlot axes');
-            if isempty(h)
-                warning('Something is wrong. cannot find CumPlot axes handle');
-            end
+            % discover external axes that are AnalysisWindow related: they will have an AnalysisWindow
+            % subclass in their UserData.
+            
+            analysisWindowFilter = @(x) ~isempty(x.UserData)&& isa(x.UserData,'AnalysisWindow');
+            
+            h = findobj(gcf,'Type','axes');
+            h = h(arrayfun(analysisWindowFilter,h));
+            analysisWindows = {h.UserData};
             
             % define how these trends will appear
-            plOpt.Marker='o';
-            plOpt.LineStyle='-.';
-            plOpt.LineWidth=2;
-            plOpt.DisplayName = [obj.PlotTag, ' selection'];
-            plOpt.Color = obj.colorForThisPoint;
+            plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
+            plOpt.LineStyle     = '-.';
+            plOpt.LineWidth     = 2;
+            plOpt.DisplayName   = [obj.PlotTag, ' selection'];
+            plOpt.Color         = obj.colorForThisPoint;
+            
             c = obj.catalogForThisPoint;
-            h.UserData.add_series(c, [obj.PlotTag, ' selection'], plOpt);
+            thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
+            cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
+            % analysisWindows(i).add_series(c, [obj.PlotTag ' ' obj.pointChoice, ' selection'], plOpt);
         end
         
         function interact(obj,myname)
             % make this results-plot interactive
-            f=ancestor(obj.ax,'figure');
-            obj.ax.NextPlot='add';
+            f = ancestor(obj.ax,'figure');
+            obj.ax.NextPlot = 'add';
+            
             delete(findobj(obj.ax,'Tag','thisresulttext'));
             delete(findobj(obj.ax,'Tag','thisresulthilight'));
             delete(findobj(obj.ax,'Tag','thisradius'));
-            text(obj.ax,nan,nan,'','FontWeight','bold','BackgroundColor','w',...
-                'Interpreter','none','Tag','thisresulttext','UserData',myname);
-            HL = scatter(obj.ax,nan,nan,'o','MarkerEdgeColor',[0 0 0], 'MarkerFaceColor',[1 0 0],...
-                ...'CData',[0 0 0],...
-                'Tag','thisresulthilight',...
-                'SizeData',60,...
-                'LineWidth',3);
-            line(obj.ax,nan,nan,'LineStyle',':','Color','k','Tag','thisradius','LineWidth',2);
+            
+            textOpt.FontWeight     = 'bold';
+            textOpt.BackgroundColor = 'w';
+            textOpt.Interpreter    = 'none';
+            textOpt.Tag            = 'thisresulttext';
+            textOpt.UserData       = myname;
+            
+            hilightOpt.Marker            = 'o';
+            hilightOpt.MarkerEdgeColor   = [0 0 0];
+            hilightOpt.MarkerFaceColor   = [1 0 0];
+            hilightOpt.Tag               = 'thisresulthilight';
+            hilightOpt.SizeData          = 60;
+            hilightOpt.LineWidth         = 3;
+            
+            radiusOpt.LineStyle = ':';
+            radiusOpt.Color = 'k';
+            radiusOpt.Tag = 'thisradius';
+            radiusOpt.LineWidth = 2;
+            
+            % POINT A
+            TL = text(obj.ax,nan,nan,'',textOpt);
+            HL = scatter(obj.ax, nan, nan)
+            set(HL, hilightOpt);
+            RL = line(obj.ax,nan,nan,radiusOpt);
+            obj.samplePoints('A') = struct(TL.Tag, TL, HL.Tag, HL, RL.Tag, RL,...
+                'X',nan, 'Y', nan, 'idx', []);
+            
+            % POINT B
+            hilightOpt.Marker = '^';
+            hilightOpt.MarkerFaceColor=[0 1 1];
+            
+            TL = text(obj.ax,nan,nan,'',textOpt);
+            HL = scatter(obj.ax, nan, nan)
+            set(HL, hilightOpt);
+            RL = line(obj.ax,nan,nan,radiusOpt);
+            obj.samplePoints('B') = struct(TL.Tag, TL, HL.Tag, HL, RL.Tag, RL,...
+                'X',nan, 'Y', nan, 'idx', []);
+            
+            
             
             %%
             % desired behavior:
@@ -649,9 +698,13 @@ function showInTab(obj, ax, choice)
                 switch k
                     case obj.KeyMap.KeyHelp
                         disp('Key Help')
-                        fn=fieldnames(obj.KeyMap)
+                        fn=fieldnames(obj.KeyMap);
                         for i=1:numel(fn)
-                            fprintf('   %20s  : %s\n',fn{i},obj.KeyMap.(fn{i}));
+                            k=obj.KeyMap.(fn{i});
+                            if k==sprintf('\b');k='backspace';
+                            elseif k==sprintf('\t'); k='tab';
+                            end
+                            fprintf('   %20s  : %s\n',fn{i},k);
                         end
                         
                     case obj.KeyMap.ToggleRadiusRing
@@ -665,6 +718,33 @@ function showInTab(obj, ax, choice)
                         
                     case obj.KeyMap.ShowValue
                         disp(obj.resultsForThisPoint);
+                        
+                    case {upper(obj.KeyMap.ChoosePointA), lower(obj.KeyMap.ChoosePointA)}
+                        % current point will not be updated until click
+                        obj.pointChoice='A';
+                        
+                    case {upper(obj.KeyMap.ChoosePointB), lower(obj.KeyMap.ChoosePointB)}
+                        % current point will not be updated until click
+                        obj.pointChoice='B'; 
+                       
+                        
+                    case obj.KeyMap.RemovePoint
+                        p = obj.samplePoints(obj.pointChoice);
+                        p.thisresulttext.Position=[nan nan 0];
+                        set(p.thisresulthilight,'XData',nan,'YData',nan);
+                        set(p.thisradius,'XData',nan,'YData',nan);
+                        p.X = nan;
+                        p.Y = nan;
+                        p.idx= [];
+                        obj.samplePoints(obj.pointChoice)=p;
+                        if obj.pointChoice == 'B'
+                            obj.pointChoice = 'A';
+                        elseif ~isnan(obj.samplePoints('B').X)
+                            obj.pointChoice = 'B';
+                        else
+                            % do nothing
+                        end
+                        obj.update();
                         
                     otherwise
                         % add additional key funcitonality here.
@@ -700,6 +780,7 @@ function showInTab(obj, ax, choice)
     
 end
 
+%% helper functions
 
 function changecontours_cb()
     % CHANGECONTOURS_CB doesn't depend on this obj at all.
@@ -732,4 +813,27 @@ function pretty_colorbar(ax, cb_title, cb_units)
         h.Label.String =  sprintf('%s [%s]',cb_title,cb_units);
     end
     
+end
+
+function deal_with_topography(hTopos, ax, resTab)
+    % topography map needs to exist underneath plot
+    ax2=axes(resTab,'Position',ax.Position,'YLim',ax.YLim,'XLim',ax.XLim,...
+        'DataAspectRatio',ax.DataAspectRatio,...
+        'DataAspectRatioMode',ax.DataAspectRatioMode,...
+        'Tag','topo_underlay','Visible','off');
+    
+    set(hTopos,'Parent',ax2); % move topography over to new axes
+    linkaxes([ax ax2]);
+    linkprop([ax ax2],{'Position','DataAspectRatio','DataAspectRatioMode'});
+    
+    % modify colormap for topography
+    dc=demcmap([min(arrayfun(@(x)double(min(x.CData(:))),hTopos)),...
+        max(arrayfun(@(x)double(max(x.CData(:))),hTopos)) ]);
+    colormap(ax2, ((brighten(gray,0.8).*2 + brighten(dc,-0.5) )./ 3))
+    
+    % modify colormap for results
+    colormap(ax, colormap(ancestor(resTab,'figure')));
+    resTab.Children=circshift(resTab.Children,-1); %new axes must be below existing
+    ax.Color='none';
+    %ax2.Visible='off';
 end

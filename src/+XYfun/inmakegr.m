@@ -1,6 +1,6 @@
 classdef inmakegr < ZmapHGridFunction
     properties
-        depth_km
+        depth_km  double
     end
     properties(Constant)
         ReturnDetails   = cell2table({... VariableNames, VariableDescriptions, VariableUnits

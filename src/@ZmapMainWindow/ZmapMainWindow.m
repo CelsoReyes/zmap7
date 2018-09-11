@@ -30,6 +30,8 @@ classdef ZmapMainWindow < handle
         mshape %
         WinPos (4,1)                                        = position_in_current_monitor(Percent(95), Percent(90))% position of main window
         mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
+        % context menus that are are used in multiple graphical objects within this window
+        % enables easy reuse/access, and lessens duplication
         sharedContextMenus
     end
     
@@ -245,6 +247,7 @@ classdef ZmapMainWindow < handle
             addlistener(obj, 'bigEvents',   'PostSet', @obj.replot_all);
             % addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
             addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
+            
             function cb_alert(src,ev)
                 msg.dbdisp('refiltering because rawcatalog changed','rawcatalog changed')
                 [obj.mdate, obj.mshape]=obj.filter_catalog();
@@ -636,7 +639,6 @@ classdef ZmapMainWindow < handle
             obj.fig.NumberTitle = 'off';
             obj.fig.Units       = 'normalized'; % so that things could be resized
             
-            % plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.fig.Pointer     = 'watch';
             
             % add the time stamp
@@ -645,17 +647,25 @@ classdef ZmapMainWindow < handle
                 'String', s, 'FontWeight', 'bold', 'Tag', 'zmap_watermark')
             
             % make sure that empty legend entries automatically disappear when the menu is called up
-            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'), 'ClickedCallback',...
-                char("insertmenufcn(gcbf, 'Legend');clear_empty_legend_entries(gcf);"));
+            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'),...
+                'ClickedCallback',char("insertmenufcn(gcbf, 'Legend');clear_empty_legend_entries(gcf);"));
             
+            %-- add context menus that will be used in subplots
             
+            % add Y-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
             uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
             obj.sharedContextMenus.LogLinearYScale = c;
             
+            % add X-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
             uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
             obj.sharedContextMenus.LogLinearXScale = c;
+            
+            % add Z-axis scale toggle
+            c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
+            obj.sharedContextMenus.LogLinearZScale = c;
             
             add_menu_divider(obj.fig, 'mainmap_menu_divider')
             
@@ -674,6 +684,7 @@ classdef ZmapMainWindow < handle
             obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, [ "MAINMAP:" + obj.catalog.Name]);
             obj.maintab.Tag = 'mainmap_tab';
             
+            %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
             
             setGrid();
@@ -714,6 +725,8 @@ classdef ZmapMainWindow < handle
             end
             obj.fig.Pointer = 'arrow';
             % obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
+            
+            
             
             function setGrid()
                 
@@ -834,7 +847,7 @@ classdef ZmapMainWindow < handle
             drawnow nocallbacks;
         end
         
-        function cb_mainMapSelectionChanged(obj, src, ev)
+        function cb_mainMapSelectionChanged(obj, ~, ev)
             % make sure that the selections you see match the map you're looking at
             
             % functions should all modify the analysis windows in a similar way

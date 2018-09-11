@@ -20,17 +20,17 @@ classdef GridParameterChoice < handle
     %
     % see also EventSelectionChoice
     properties(Constant)
-        GROUPWIDTH=315;
-        GROUPHEIGHT=137;
+        GROUPWIDTH      = 315;
+        GROUPHEIGHT     = 137;
     end
     
     properties
-        dx=[] % horzontal (longitudinal) grid spacing, degrees
-        dy=[] % vertical (latitudinal) grid spacing, degrees
-        dz=[] % depth spacing (not functional)
-        dy_units=''
-        dx_units=''
-        dz_units=''
+        dx = [] % horzontal (longitudinal) grid spacing, degrees
+        dy= [] % vertical (latitudinal) grid spacing, degrees
+        dz= [] % depth spacing (not functional)
+        dy_units = ''
+        dx_units = ''
+        dz_units = ''
         GridEntireArea
         SaveGrid=false; % TODO: move to dependent and add ui widget
         UseExisting=true;
