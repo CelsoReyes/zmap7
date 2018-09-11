@@ -1,7 +1,7 @@
 classdef AnalysisBvalues < AnalysisWindow
     % ANALYSISBVALUES shows b-value plot (FMD)
     properties
-        bobj; % points to an existing bobj
+        bobj; % points to an existing bobj (bdiff2 object)
     end
     
     
@@ -31,7 +31,7 @@ classdef AnalysisBvalues < AnalysisWindow
             % fit line
             
             p=inputParser();
-            p.addRequired(tagID, @(x)isstring(tagID)||ischar(tagID));
+            p.addRequired('tagID', @(x)isstring(tagID)||ischar(tagID));
             p.KeepUnmatched=true;
             p.parse(tagID,varargin{:});
             
@@ -58,6 +58,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=nan;
             else
                 obj.bobj.RawCatalog=catalog;
+                obj.bobj.Calculate();
                 x=obj.bobj.mag_bin_centers;
                 y=obj.bobj.cum_b_values;
             end

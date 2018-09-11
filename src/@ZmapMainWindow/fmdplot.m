@@ -10,7 +10,9 @@ function fmdplot(obj, tabgrouptag)
         xlabel(ax,'Magnitude');
         if ~isempty(obj.catalog)
             bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false); 
-            ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
+            bAnalysisWin = AnalysisBvalues(ax,bdiffobj);
+            ax.UserData = bAnalysisWin;
+            % ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
             uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(),{@crop_to_mc,bdiffobj});
         end
         
@@ -19,6 +21,19 @@ function fmdplot(obj, tabgrouptag)
         ylabel(ax,'Cum # events');
         xlabel(ax,'Magnitude');
     else
+        bAnalysisWin = ax.UserData;
+        if isempty(bAnalysisWin)
+            bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false);
+            bAnalysisWin = AnalysisBvalues(ax,bdiffobj);
+            ax.UserData = bAnalysisWin;
+            % ax.UserData=bdiffobj;
+        else
+            bAnalysisWin.bobj.RawCatalog = obj.catalog;
+            bAnalysisWin.bobj.Calculate();
+            bAnalysisWin.bobj.updatePlot();
+        end
+        %{
+        
         bdiffobj=ax.UserData;
         if isempty(bdiffobj)
             bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false);
@@ -28,6 +43,7 @@ function fmdplot(obj, tabgrouptag)
             bdiffobj.Calculate();
             bdiffobj.updatePlot();
         end
+        %}
         %ax.XLimMode='auto';
         %ax.YLimMode='auto';
         if isempty(ax.UIContextMenu)

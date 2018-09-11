@@ -157,23 +157,6 @@ classdef bdiff2 < ZmapFunction
             obj.StartProcess();
         return
             
-            if ~exist('catalog','var') || isempty(catalog)
-                catalog = obj.ZG.newt2;
-            end
-            if ~exist('interactive','var') || isempty(interactive)
-                interactive=true;
-            end
-              
-            obj=obj.calculate(catalogFcn());
-            if exist('ax','var') && ax == "noplot"
-                % do not plot
-                obj.write_globals();
-                return;
-            end
-            if ~exist('ax','var')||isempty(ax)|| ~isvalid(ax)
-                [ax]=obj.setup_figure(catalogFcn());
-            end
-            
             % add context menu equivalent to ztools menu
             f=ancestor(ax,'figure');
             delete(findobj(f,'Tag',obj.tags.bdcontext,'-and','Type','uicontextmenu'));

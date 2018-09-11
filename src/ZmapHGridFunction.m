@@ -15,7 +15,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
     properties(SetObservable, AbortSet)
         features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
         
-        showRing        logical     = false;
+        showRing        logical     = true;
         showPointValue	logical     = false;
         showTable       logical     = true;
         showResultPlots logical     = true;
