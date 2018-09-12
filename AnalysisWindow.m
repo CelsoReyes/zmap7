@@ -77,6 +77,15 @@ classdef AnalysisWindow < handle
                 props.CData = p.Results.ColorFcn(catalog);
             end
             
+            % allow MarkerIndices to be overridden by incoming parameters
+            if isfield(p.Unmatched,'MarkerIndices')
+                if ischar(p.Unmatched.MarkerIndices) && p.Unmatched.MarkerIndices == "all"
+                    props.MarkerIndices = 1:numel(x);
+                else
+                    props.MarkerIndices = p.Unmatched.MarkerIndices;
+                end
+            end
+            
             
             if ~obj.prepared
                 obj.prepare_axes();

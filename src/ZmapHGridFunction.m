@@ -15,15 +15,19 @@ classdef ZmapHGridFunction < ZmapGridFunction
     properties(SetObservable, AbortSet)
         features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
         
-        showRing        logical     = true;
+        showRing        logical     = true; % show ring
         showPointValue	logical     = false;
         showTable       logical     = true;
         showResultPlots logical     = true;
+        showEvents      logical     = false; % show events as dots
         
         nearestSample   = 0;         % current index (where user clicked) within the result table
         lastPoint       = [nan nan]; % x, y of click
         pointChoice (1,1) char   {mustBeMember(pointChoice,{'A','B'})}   = 'A'; % choose points for comparison. 'A', or 'B'
         samplePoints = containers.Map(); % track individual points
+        
+        ColorBy {mustBeMember(ColorBy,{'result','choice'})} = 'choice'
+        SelectionColors = [FancyColors.rgb('purple'); FancyColors.rgb('mandy')];
     end
     
     properties
@@ -58,7 +62,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
         gridMarkerSize = 5;
         gridMarker = '+';
         gridMarkerFaceAlpha = 0.5;
-        deemphasizeFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
+        deemphasizeLineFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
+        deemphasizeScatterFcn=@(sob) set(sob,'MarkerEdgeAlpha', 0.2);
     end
     
     methods
@@ -94,10 +99,10 @@ classdef ZmapHGridFunction < ZmapGridFunction
             mask = dists <= tb.RadiusKm;
             nFoundEvents = sum(mask);
             if sum(mask) > tb.Number_of_Events
-                warning("Selection doesn't exactly match results" + ...
+                msg.dbfprintf("<strong>Note:</strong>Selection doesn't exactly match results" + ...
                     " (<strong>%d</strong> found, expected <strong>%d</strong>)" + newline + ...
-                    "This happens when sampling requests N closest events," +...
-                    " but multiple events occur at same (farthest) distance",...
+                    "  This happens when sampling requests N closest events," + newline + ...
+                    "  but multiple events occur at same (farthest) distance\n",...
                     nFoundEvents, tb.Number_of_Events);
             end
             
@@ -109,16 +114,27 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function mycolor = get.colorForThisPoint(obj)
             % use the same color for the trend plot as is used for the results overlay
-            cm=colormap(obj.ax);
-            cl=obj.ax.CLim;
-            lookup=linspace(min(cl), max(cl), length(cm));
-            mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
-            gr=findobj(obj.ax.Children,'flat','-regexp','Tag','.*[gG]rid.*');
-            gridx = find(gr.XData==obj.samplePoints(obj.pointChoice).X & gr.YData==obj.samplePoints(obj.pointChoice).Y);
-            %gridx = find(gr.XData==obj.nearestSamplePos(1) & gr.YData==obj.nearestSamplePos(2));
-            mycolor = mycolorFn(gr.CData(gridx));
-            
-            if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
+            switch obj.ColorBy
+                case 'result'
+                    cm=colormap(obj.ax);
+                    cl=obj.ax.CLim;
+                    lookup=linspace(min(cl), max(cl), length(cm));
+                    mycolorFn = @(v) cm(v>=lookup(1:end-1) & v<lookup(2:end),:);
+                    gr=findobj(obj.ax.Children,'flat','-regexp','Tag','.*[gG]rid.*');
+                    gridx = find(gr.XData==obj.samplePoints(obj.pointChoice).X & gr.YData==obj.samplePoints(obj.pointChoice).Y);
+                    %gridx = find(gr.XData==obj.nearestSamplePos(1) & gr.YData==obj.nearestSamplePos(2));
+                    mycolor = mycolorFn(gr.CData(gridx));
+                    
+                    if isempty(mycolor),mycolor=[0.4 0.4 0.4];end
+                    
+                case 'choice'
+                    switch obj.pointChoice
+                        case 'A'
+                            mycolor = obj.SelectionColors(1,:);
+                        case 'B'
+                            mycolor = obj.SelectionColors(2,:);
+                    end
+            end
         end
         
         %% plotting functions
@@ -155,7 +171,9 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
                 
                 % de-emphasize all line objects
-                arrayfun(@obj.deemphasizeFcn, findobj(ax,'Type','Line'));
+                arrayfun(@obj.deemphasizeLineFcn, findobj(ax,'Type','line'));
+                arrayfun(@obj.deemphasizeScatterFcn, findobj(ax,'Type','scatter'));
+                %arrayfun(@obj.deemphasizeFcn, findobj(ax,'Type','scatter'));
                 
                 hTopos=findobj(resTab,'-regexp','Tag','topographic_map_*');
                 if ~isempty(hTopos)
@@ -609,12 +627,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
             plOpt.LineStyle     = '-.';
             plOpt.LineWidth     = 2;
             plOpt.DisplayName   = [obj.PlotTag, ' selection'];
+            %plOpt.Color         = obj.colorForThisPoint;
             plOpt.Color         = obj.colorForThisPoint;
             
             c = obj.catalogForThisPoint;
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
             cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
             % analysisWindows(i).add_series(c, [obj.PlotTag ' ' obj.pointChoice, ' selection'], plOpt);
+            
+            clear_empty_legend_entries(gcf);
         end
         
         function interact(obj,myname)
@@ -634,7 +655,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             hilightOpt.Marker            = 'o';
             hilightOpt.MarkerEdgeColor   = [0 0 0];
-            hilightOpt.MarkerFaceColor   = [1 0 0];
+            hilightOpt.MarkerFaceColor   = obj.SelectionColors(1,:);
             hilightOpt.Tag               = 'thisresulthilight';
             hilightOpt.SizeData          = 60;
             hilightOpt.LineWidth         = 3;
@@ -646,7 +667,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             % POINT A
             TL = text(obj.ax,nan,nan,'',textOpt);
-            HL = scatter(obj.ax, nan, nan)
+            HL = scatter(obj.ax, nan, nan);
             set(HL, hilightOpt);
             RL = line(obj.ax,nan,nan,radiusOpt);
             obj.samplePoints('A') = struct(TL.Tag, TL, HL.Tag, HL, RL.Tag, RL,...
@@ -654,7 +675,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             % POINT B
             hilightOpt.Marker = '^';
-            hilightOpt.MarkerFaceColor=[0 1 1];
+            hilightOpt.MarkerFaceColor=obj.SelectionColors(2,:);
             
             TL = text(obj.ax,nan,nan,'',textOpt);
             HL = scatter(obj.ax, nan, nan)

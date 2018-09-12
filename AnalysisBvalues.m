@@ -26,7 +26,7 @@ classdef AnalysisBvalues < AnalysisWindow
             obj.ax.YLabel.String='# Events';
         end
         
-        function add_series(obj, catalog, tagID, varargin)
+        function h=add_series(obj, catalog, tagID, varargin)
             % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
             % fit line
             
@@ -35,9 +35,17 @@ classdef AnalysisBvalues < AnalysisWindow
             p.KeepUnmatched=true;
             p.parse(tagID,varargin{:});
             
-            add_series@AnalysisWindow(obj, catalog, tagID, p.Unmatched);
+            countProps = p.Unmatched;
+            countProps.LineStyle='none';
+            countProps.MarkerIndices='all';
+            countProps.LineWidth=1;
             
+            h=add_series@AnalysisWindow(obj, catalog, tagID, countProps);
+            % maybe each other add_series should contribute to h, too.
+            
+            % magnitude of completeness point
             McProps = p.Unmatched; 
+            McProps.DisplayName = '';
             if ~isfield(McProps,'Color')
                 McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
             else
@@ -45,8 +53,10 @@ classdef AnalysisBvalues < AnalysisWindow
             end
             add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
             
+            % linear fit
             lineProps = p.Unmatched; 
-            lineProps.LineWidth = 2;
+            lineProps.LineWidth = 3;
+            lineProps.DisplayName = '';
             add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
             
         end   
@@ -88,9 +98,15 @@ classdef AnalysisBvalues < AnalysisWindow
         
         function remove_series(obj,tagID)
             % remove  B-value graphical objects associated with this tag
-            remove_series@AnalysisWindow(obj,tagID);
-            remove_series@AnalysisWindow(obj,[tagID ' Mc']);
-            remove_series@AnalysisWindow(obj,[tagID ' line']);
+            if iscell(tagID) || isstring(tagID)
+                for j=1:numel(tagID)
+                    obj.remove_series(tagID{j});
+                end
+            else
+                remove_series@AnalysisWindow(obj,tagID);
+                remove_series@AnalysisWindow(obj,[tagID ' Mc']);
+                remove_series@AnalysisWindow(obj,[tagID ' line']);
+            end
         end
     end
 end

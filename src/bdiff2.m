@@ -124,7 +124,7 @@ classdef bdiff2 < ZmapFunction
             obj.plotProps.McText.Color              = 'b';
             obj.plotProps.McText.Tag                = obj.tags.mctext;
             
-            obj.plotProps.Discrete(1).Marker        = '^';
+            obj.plotProps.Discrete(1).Marker        = 's'; % changed from triangle
             obj.plotProps.Discrete.LineWidth        = 1.0;
             obj.plotProps.Discrete.MarkerFaceColor  = [0.7 0.7 .7];
             obj.plotProps.Discrete.MarkerEdgeColor  = 'k';

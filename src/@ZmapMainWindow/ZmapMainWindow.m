@@ -877,6 +877,9 @@ classdef ZmapMainWindow < handle
                     findobj(obj.fig,'-regexp','Tag','catalog')...
                     ];
                     
+                toShow=findobj(toShow,'flat','-not','Type','uicontextmenu');
+                toShow=findobj(toShow,'flat','-not','Type','uimenu');
+                toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','on');
             elseif fromMainmap
                 % hide details specific to the main map
@@ -885,6 +888,9 @@ classdef ZmapMainWindow < handle
                     findobj(obj.fig,'-regexp','Tag','catalog')...
                     ];
                 
+                toShow=findobj(toShow,'flat','-not','Type','uicontextmenu');
+                toShow=findobj(toShow,'flat','-not','Type','uimenu');
+                toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','off');
             end
         end

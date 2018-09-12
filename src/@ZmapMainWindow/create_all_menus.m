@@ -211,10 +211,17 @@ function create_all_menus(obj, force)
             'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)],...
             MenuSelectedField(),@cb_plot_large_quakes);
         
+        uimenu(mapoptionmenu,...
+            'Separator','on',...
+            'Label','Close all result tabs', MenuSelectedField(),@clear_result_tabs);
+
         uimenu(mapoptionmenu,'label','Redraw',...
             'Separator','on',...
             MenuSelectedField(),@(s,v)obj.cb_redraw(s,v));
         
+        function clear_result_tabs(src,ev)
+            delete(obj.maingroup.Children(obj.maingroup.Children ~= obj.maintab))
+        end
         function manage_symbols_for_current_map(src,ev)
             ax=findobj(obj.maingroup.SelectedTab,'Type','axes');
             SymbolManager.cb(src,ev,ax);
