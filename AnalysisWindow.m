@@ -14,7 +14,7 @@ classdef AnalysisWindow < handle
 
     methods
         function obj = AnalysisWindow(ax)
-            obj.ax=ax;
+            obj.ax = ax;
         end
         
         function h=add_series(obj, catalog, tagID, varargin)

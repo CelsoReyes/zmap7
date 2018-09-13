@@ -19,7 +19,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         showPointValue	logical     = false;
         showTable       logical     = true;
         showResultPlots logical     = true;
-        showEvents      logical     = false; % show events as dots
+        showEvents      logical     = true; % show events as dots
         
         nearestSample   = 0;         % current index (where user clicked) within the result table
         lastPoint       = [nan nan]; % x, y of click
@@ -27,7 +27,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         samplePoints = containers.Map(); % track individual points
         
         ColorBy {mustBeMember(ColorBy,{'result','choice'})} = 'choice'
-        SelectionColors = [FancyColors.rgb('purple'); FancyColors.rgb('mandy')];
+        SelectionColors = [FancyColors.rgb('dark orchid'); FancyColors.rgb('mandy')];
     end
     
     properties
@@ -64,6 +64,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         gridMarkerFaceAlpha = 0.5;
         deemphasizeLineFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
         deemphasizeScatterFcn=@(sob) set(sob,'MarkerEdgeAlpha', 0.2);
+        deemphasizeEventsFcn = @(ev) set(ev,'MarkerEdgeColor',[0.6 0.6 0.6],'Marker','.');
     end
     
     methods
@@ -173,6 +174,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 % de-emphasize all line objects
                 arrayfun(@obj.deemphasizeLineFcn, findobj(ax,'Type','line'));
                 arrayfun(@obj.deemphasizeScatterFcn, findobj(ax,'Type','scatter'));
+                if ~obj.showEvents
+                    arrayfun(@delete, findobj(ax,'Type','scatter','-and','Tag','active quakes'));
+                else
+                    arrayfun(@obj.deemphasizeEventsFcn, findobj(ax,'Type','scatter','-and','Tag','active quakes'));
+                end
                 %arrayfun(@obj.deemphasizeFcn, findobj(ax,'Type','scatter'));
                 
                 hTopos=findobj(resTab,'-regexp','Tag','topographic_map_*');
@@ -624,17 +630,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             % define how these trends will appear
             plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
-            plOpt.LineStyle     = '-.';
-            plOpt.LineWidth     = 2;
-            plOpt.DisplayName   = [obj.PlotTag, ' selection'];
-            %plOpt.Color         = obj.colorForThisPoint;
+            plOpt.LineStyle     = '-';
+            plOpt.LineWidth     = 3;
+            plOpt.DisplayName   = [obj.PlotTag, ' ', obj.pointChoice,' selection'];
             plOpt.Color         = obj.colorForThisPoint;
             
             c = obj.catalogForThisPoint;
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
             cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
             % analysisWindows(i).add_series(c, [obj.PlotTag ' ' obj.pointChoice, ' selection'], plOpt);
-            
+            set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
             clear_empty_legend_entries(gcf);
         end
         
@@ -657,8 +662,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             hilightOpt.MarkerEdgeColor   = [0 0 0];
             hilightOpt.MarkerFaceColor   = obj.SelectionColors(1,:);
             hilightOpt.Tag               = 'thisresulthilight';
-            hilightOpt.SizeData          = 60;
-            hilightOpt.LineWidth         = 3;
+            hilightOpt.SizeData          = 80;
+            hilightOpt.LineWidth         = 2;
             
             radiusOpt.LineStyle = ':';
             radiusOpt.Color = 'k';
@@ -684,6 +689,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             obj.samplePoints('B') = struct(TL.Tag, TL, HL.Tag, HL, RL.Tag, RL,...
                 'X',nan, 'Y', nan, 'idx', []);
             
+            CA = scatter(obj.ax,nan,nan,'Marker','.','DisplayName','selection A','Tag','selectionA','CData',obj.SelectionColors(1,:));
+            CB = scatter(obj.ax,nan,nan,'Marker','.','DisplayName','selection B','Tag','selectionB','CData',obj.SelectionColors(2,:));
             
             
             %%

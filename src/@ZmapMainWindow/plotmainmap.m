@@ -5,6 +5,13 @@ function plotmainmap(obj)
     % "active quakes" : selected events
     % "big evens" : selected events, above a threshhold magnitude
     
+    % %
+    % this probably belongs somewhere else...
+    if ~isempty(obj.shape) && ~isvalid(obj.shape)
+        msg.dbdisp('shape had been deleted');
+        obj.shape = ShapeGeneral;
+    end
+    % %
     
     axm = obj.map_axes;
     axm.Visible = 'off';

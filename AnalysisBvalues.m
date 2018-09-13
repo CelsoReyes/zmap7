@@ -44,19 +44,22 @@ classdef AnalysisBvalues < AnalysisWindow
             % maybe each other add_series should contribute to h, too.
             
             % magnitude of completeness point
-            McProps = p.Unmatched; 
-            McProps.DisplayName = '';
-            if ~isfield(McProps,'Color')
-                McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
-            else
-                McProps.MarkerFaceColor = McProps.Color;
-            end
-            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
+            %McProps = p.Unmatched; 
+            %McProps.DisplayName = '';
+            %if ~isfield(McProps,'Color')
+            %    McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
+            %else
+            %    McProps.MarkerFaceColor = McProps.Color;
+            %end
+            %add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
             
             % linear fit
             lineProps = p.Unmatched; 
-            lineProps.LineWidth = 3;
+            lineProps.LineWidth = 2;
+            lineProps.MarkerFaceColor = 'auto';
             lineProps.DisplayName = '';
+            lineProps.MarkerIndices=2;
+            lineProps.MarkerSize=10;
             add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
             
         end   
@@ -104,7 +107,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 end
             else
                 remove_series@AnalysisWindow(obj,tagID);
-                remove_series@AnalysisWindow(obj,[tagID ' Mc']);
+                % remove_series@AnalysisWindow(obj,[tagID ' Mc']);
                 remove_series@AnalysisWindow(obj,[tagID ' line']);
             end
         end

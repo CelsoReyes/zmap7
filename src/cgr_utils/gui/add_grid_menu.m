@@ -96,6 +96,8 @@ function add_grid_menu(obj)
     end
     
     function cb_gridfigure(src,ev)
+        watchon
+        drawnow
         [gr, gro] = GridOptions.fromDialog(obj.gridopt);
         if ~isempty(gr)
             obj.Grid = gr;
@@ -104,8 +106,8 @@ function add_grid_menu(obj)
         % [obj.Grid, obj.gridopt] = GridOptions.fromDialog(obj.gridopt);
         mygr=findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
         delete(mygr);
-        
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
+        watchoff
     end
 
     function cb_manualradius(~,~)

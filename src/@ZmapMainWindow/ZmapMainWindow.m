@@ -376,6 +376,10 @@ classdef ZmapMainWindow < handle
             
         end
         
+        
+        %% CALLBACK FUNCTIONS
+        
+        
         function cb_timeplot(obj, ~, ~)
             disp('oh')
             ctp = CumTimePlot(@()obj.catalog);
@@ -553,6 +557,7 @@ classdef ZmapMainWindow < handle
         
         function set_3d_view(obj, src,~)
             watchon
+            obj.make_map_active('notify');
             drawnow nocallbacks;
             axm = obj.map_axes;
             switch src.Label
@@ -621,7 +626,32 @@ classdef ZmapMainWindow < handle
             src.MenuSelectedFcn(src,evt)
         end
         
-        
+        %% MISC
+        function make_map_active(obj, donotify)
+            % obj.make_map_active('notify') brings main map tab to front and sets focus on main map
+            % axes.  The main tab group's SelectionChanged function will be appropriately called
+            % 
+            % obj.make_map_active('do_not_notify') will bring the main tab to front and set focus
+            % on the main map axes, but the tab group's SelectionChanged function will not be called
+            %
+            % see also bringToForeground
+            switch donotify
+                case 'notify'
+                    myTabSelectionChangedEvent.OldValue = obj.maingroup.SelectedTab;
+                    myTabSelectionChangedEvent.NewValue = obj.maintab;
+                    
+                    obj.maingroup.SelectedTab = obj.maintab;
+                    obj.fig.CurrentAxes = obj.map_axes;
+                    obj.maingroup.SelectionChangedFcn([], myTabSelectionChangedEvent);
+                    
+                case 'do_not_notify'
+                    obj.maingroup.SelectedTab = obj.maintab;
+                    obj.fig.CurrentAxes = obj.map_axes;
+            end
+        end
+        function max = get_all_map_axes(obj)
+            max = findobj(obj.maingroup.Children,'-depth',1,'Type','axes');
+        end
     end % METHODS
     methods(Access=protected) % HELPER METHODS
         
