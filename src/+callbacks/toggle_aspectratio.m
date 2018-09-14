@@ -29,9 +29,13 @@ function toggle_aspectratio(src, ~, ax, options)
     
     switch src.Checked
         case 'on'
-            daspect(ax, [1 cosd(mean(ax.YLim)) 10]);
+            for i=1:numel(ax)
+                daspect(ax(i), [1 cosd(mean(ax(i).YLim)) 10]);
+            end
         case 'off'
-            daspect(ax,'auto');
+            for i=1:numel(ax)
+                daspect(ax(i),'auto');
+            end
     end
     
     if any(options == "SetGlobal")

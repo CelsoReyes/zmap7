@@ -7,14 +7,14 @@ classdef AnalysisWindow < handle
     %   calculate     : 
     
     properties
-        ax               % handle for the axis
+        ax     {mustBeAxesOrEmpty}          % handle for the axis
         prepared = false % axis has been prepared (labeled, titled, scaled, etc.) 
         nMarkers = 3;    % number of markers in the plot
     end
 
     methods
         function obj = AnalysisWindow(ax)
-            obj.ax=ax;
+            obj.ax = ax;
         end
         
         function h=add_series(obj, catalog, tagID, varargin)
@@ -75,6 +75,15 @@ classdef AnalysisWindow < handle
                 % set properties unique to a scatter
                 props.SizeData = p.Results.SizeFcn(catalog);
                 props.CData = p.Results.ColorFcn(catalog);
+            end
+            
+            % allow MarkerIndices to be overridden by incoming parameters
+            if isfield(p.Unmatched,'MarkerIndices')
+                if ischar(p.Unmatched.MarkerIndices) && p.Unmatched.MarkerIndices == "all"
+                    props.MarkerIndices = 1:numel(x);
+                else
+                    props.MarkerIndices = p.Unmatched.MarkerIndices;
+                end
             end
             
             
@@ -173,3 +182,8 @@ classdef AnalysisWindow < handle
     end
 end
 
+function mustBeAxesOrEmpty(val)
+    if ~( isempty(val) || val.Type=="axes" )
+        error("value must be an axes or be empty")
+    end
+end

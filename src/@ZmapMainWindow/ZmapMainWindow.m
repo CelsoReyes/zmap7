@@ -30,6 +30,8 @@ classdef ZmapMainWindow < handle
         mshape %
         WinPos (4,1)                                        = position_in_current_monitor(Percent(95), Percent(90))% position of main window
         mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
+        % context menus that are are used in multiple graphical objects within this window
+        % enables easy reuse/access, and lessens duplication
         sharedContextMenus
     end
     
@@ -245,6 +247,7 @@ classdef ZmapMainWindow < handle
             addlistener(obj, 'bigEvents',   'PostSet', @obj.replot_all);
             % addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
             addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
+            
             function cb_alert(src,ev)
                 msg.dbdisp('refiltering because rawcatalog changed','rawcatalog changed')
                 [obj.mdate, obj.mshape]=obj.filter_catalog();
@@ -372,6 +375,10 @@ classdef ZmapMainWindow < handle
             zp      = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
             
         end
+        
+        
+        %% CALLBACK FUNCTIONS
+        
         
         function cb_timeplot(obj, ~, ~)
             disp('oh')
@@ -550,6 +557,7 @@ classdef ZmapMainWindow < handle
         
         function set_3d_view(obj, src,~)
             watchon
+            obj.make_map_active('notify');
             drawnow nocallbacks;
             axm = obj.map_axes;
             switch src.Label
@@ -618,7 +626,32 @@ classdef ZmapMainWindow < handle
             src.MenuSelectedFcn(src,evt)
         end
         
-        
+        %% MISC
+        function make_map_active(obj, donotify)
+            % obj.make_map_active('notify') brings main map tab to front and sets focus on main map
+            % axes.  The main tab group's SelectionChanged function will be appropriately called
+            % 
+            % obj.make_map_active('do_not_notify') will bring the main tab to front and set focus
+            % on the main map axes, but the tab group's SelectionChanged function will not be called
+            %
+            % see also bringToForeground
+            switch donotify
+                case 'notify'
+                    myTabSelectionChangedEvent.OldValue = obj.maingroup.SelectedTab;
+                    myTabSelectionChangedEvent.NewValue = obj.maintab;
+                    
+                    obj.maingroup.SelectedTab = obj.maintab;
+                    obj.fig.CurrentAxes = obj.map_axes;
+                    obj.maingroup.SelectionChangedFcn([], myTabSelectionChangedEvent);
+                    
+                case 'do_not_notify'
+                    obj.maingroup.SelectedTab = obj.maintab;
+                    obj.fig.CurrentAxes = obj.map_axes;
+            end
+        end
+        function max = get_all_map_axes(obj)
+            max = findobj(obj.maingroup.Children,'-depth',1,'Type','axes');
+        end
     end % METHODS
     methods(Access=protected) % HELPER METHODS
         
@@ -636,7 +669,6 @@ classdef ZmapMainWindow < handle
             obj.fig.NumberTitle = 'off';
             obj.fig.Units       = 'normalized'; % so that things could be resized
             
-            % plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.fig.Pointer     = 'watch';
             
             % add the time stamp
@@ -645,17 +677,25 @@ classdef ZmapMainWindow < handle
                 'String', s, 'FontWeight', 'bold', 'Tag', 'zmap_watermark')
             
             % make sure that empty legend entries automatically disappear when the menu is called up
-            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'), 'ClickedCallback',...
-                char("insertmenufcn(gcbf, 'Legend');clear_empty_legend_entries(gcf);"));
+            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'),...
+                'ClickedCallback',char("insertmenufcn(gcbf, 'Legend');clear_empty_legend_entries(gcf);"));
             
+            %-- add context menus that will be used in subplots
             
+            % add Y-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
             uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
             obj.sharedContextMenus.LogLinearYScale = c;
             
+            % add X-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
             uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
             obj.sharedContextMenus.LogLinearXScale = c;
+            
+            % add Z-axis scale toggle
+            c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
+            obj.sharedContextMenus.LogLinearZScale = c;
             
             add_menu_divider(obj.fig, 'mainmap_menu_divider')
             
@@ -674,6 +714,7 @@ classdef ZmapMainWindow < handle
             obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, [ "MAINMAP:" + obj.catalog.Name]);
             obj.maintab.Tag = 'mainmap_tab';
             
+            %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
             
             setGrid();
@@ -714,6 +755,8 @@ classdef ZmapMainWindow < handle
             end
             obj.fig.Pointer = 'arrow';
             % obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
+            
+            
             
             function setGrid()
                 
@@ -834,7 +877,7 @@ classdef ZmapMainWindow < handle
             drawnow nocallbacks;
         end
         
-        function cb_mainMapSelectionChanged(obj, src, ev)
+        function cb_mainMapSelectionChanged(obj, ~, ev)
             % make sure that the selections you see match the map you're looking at
             
             % functions should all modify the analysis windows in a similar way
@@ -859,12 +902,25 @@ classdef ZmapMainWindow < handle
             
             if toMainmap
                 % show details specific to the main map
-                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                toShow = [...
+                    findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','catalog')...
+                    ];
+                    
+                toShow=findobj(toShow,'flat','-not','Type','uicontextmenu');
+                toShow=findobj(toShow,'flat','-not','Type','uimenu');
+                toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','on');
             elseif fromMainmap
                 % hide details specific to the main map
-                toShow = findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                toShow = [...
+                    findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','catalog')...
+                    ];
                 
+                toShow=findobj(toShow,'flat','-not','Type','uicontextmenu');
+                toShow=findobj(toShow,'flat','-not','Type','uimenu');
+                toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','off');
             end
         end

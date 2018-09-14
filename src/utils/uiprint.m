@@ -46,7 +46,7 @@ function uiprint(action)
     % 16 April 95 Stefan Wiemer
     %
 
-    global D_STR O_STR PR_CMD keco fs
+    global PR_CMD keco % D_STR O_STR fs
 
     fign = gcf;
 

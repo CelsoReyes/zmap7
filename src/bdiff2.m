@@ -48,11 +48,11 @@ classdef bdiff2 < ZmapFunction
         bFitLineMaxMagCatalogPct            = 99.9; % bval fit line goes to the magnitude that covers THIS percentage of events (0-100)
         
         % properties to apply to the various plots
-        plotProps           struct          = struct(   'Mc',struct(),...
-                                                        'McText',struct(),...
-                                                        'Discrete',struct(),...
-                                                        'CumSum',struct(),...
-                                                        'BvalFit',struct());
+        plotProps           struct          = struct(   'Mc',       struct(),...
+                                                        'McText',   struct(),...
+                                                        'Discrete', struct(),...
+                                                        'CumSum',   struct(),...
+                                                        'BvalFit',  struct());
     end
     
     properties(Constant)
@@ -124,7 +124,7 @@ classdef bdiff2 < ZmapFunction
             obj.plotProps.McText.Color              = 'b';
             obj.plotProps.McText.Tag                = obj.tags.mctext;
             
-            obj.plotProps.Discrete(1).Marker        = '^';
+            obj.plotProps.Discrete(1).Marker        = 's'; % changed from triangle
             obj.plotProps.Discrete.LineWidth        = 1.0;
             obj.plotProps.Discrete.MarkerFaceColor  = [0.7 0.7 .7];
             obj.plotProps.Discrete.MarkerEdgeColor  = 'k';
@@ -156,23 +156,6 @@ classdef bdiff2 < ZmapFunction
             
             obj.StartProcess();
         return
-            
-            if ~exist('catalog','var') || isempty(catalog)
-                catalog = obj.ZG.newt2;
-            end
-            if ~exist('interactive','var') || isempty(interactive)
-                interactive=true;
-            end
-              
-            obj=obj.calculate(catalogFcn());
-            if exist('ax','var') && ax == "noplot"
-                % do not plot
-                obj.write_globals();
-                return;
-            end
-            if ~exist('ax','var')||isempty(ax)|| ~isvalid(ax)
-                [ax]=obj.setup_figure(catalogFcn());
-            end
             
             % add context menu equivalent to ztools menu
             f=ancestor(ax,'figure');

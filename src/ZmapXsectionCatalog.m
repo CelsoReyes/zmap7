@@ -4,10 +4,10 @@ classdef ZmapXsectionCatalog < ZmapCatalog
     %
     
     properties
-        curve=[nan,nan] % points along the curve
-        dist_along_strike_km=[]; % distance for each event from startPoint, in km
-        displacement_km=[]; % perpendicular distance of each event from the line
-        curvelength_km=0;
+        curve                   = [nan,nan] % points along the curve
+        dist_along_strike_km    = []; % distance for each event from startPoint, in km
+        displacement_km         = []; % perpendicular distance of each event from the line
+        curvelength_km          = 0;
     end
     properties(Dependent)
         startPoint

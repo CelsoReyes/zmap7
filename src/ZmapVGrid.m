@@ -4,8 +4,8 @@ classdef ZmapVGrid < ZmapGrid
     % overrides some important drawing functions
     
     properties (Dependent)
-        d_km % distance in km along strike to grid point
-        d_km_active
+        d_km            double% distance in km along strike to grid point
+        d_km_active     double
     end
     
     methods

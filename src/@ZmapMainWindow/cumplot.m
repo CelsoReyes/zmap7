@@ -18,7 +18,7 @@ function cumplot(obj, tabgrouptag)
         ax.UserData   = CumRateAnalysisWindow(ax);
         grid(ax, 'on');
     end
-    craw = ax.UserData;
+    craw = ax.UserData; % craw is the cumplot analysisWindow
     
     %% plot the main series
     lineProps.Color         = [0 0 0];

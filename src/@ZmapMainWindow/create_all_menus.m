@@ -147,10 +147,10 @@ function create_all_menus(obj, force)
             MenuSelectedField(),@obj.set_3d_view); % callback was plot3d
         
         uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-            MenuSelectedField(),{@callbacks.toggle_aspectratio, axm,"SetGlobal"}, ...
+            MenuSelectedField(),@set_aspects_cb, ...
             'Checked',char(ZmapGlobal.Data.lock_aspect));
         if ZmapGlobal.Data.lock_aspect
-            daspect(axm, [1 cosd(mean(axm.YLim)) 10]);
+            daspect(obj.get_all_map_axes(), [1 cosd(mean(axm.YLim)) 10]);
         end
         
         uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
@@ -211,22 +211,34 @@ function create_all_menus(obj, force)
             'Label',['Mark large event with M > ' num2str(ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)],...
             MenuSelectedField(),@cb_plot_large_quakes);
         
+        uimenu(mapoptionmenu,...
+            'Separator','on',...
+            'Label','Close all result tabs', MenuSelectedField(),@clear_result_tabs);
+
         uimenu(mapoptionmenu,'label','Redraw',...
             'Separator','on',...
             MenuSelectedField(),@(s,v)obj.cb_redraw(s,v));
         
+        function set_aspects_cb(src,ev)
+            callbacks.toggle_aspectratio(src, ev, obj.get_all_map_axes(), "SetGlobal");
+        end
+        
+        function clear_result_tabs(src,ev)
+            delete(obj.maingroup.Children(obj.maingroup.Children ~= obj.maintab))
+        end
         function manage_symbols_for_current_map(src,ev)
             ax=findobj(obj.maingroup.SelectedTab,'Type','axes');
             SymbolManager.cb(src,ev,ax);
         end
         
         function manage_mainmap_symbols(src,ev)
-            bringToForeground(axm);
+            obj.make_map_active('notify');
             SymbolManager.cb(src,ev,axm);
         end
         
         function set_colorby(~,~,val)
             obj.colorField=val;
+            obj.make_map_active('notify')
             
             % update menus
             for jj=1:numel(um)
@@ -266,7 +278,7 @@ function create_all_menus(obj, force)
         
         function toggle_grid(src, ~)
             src.Checked=toggleOnOff(src.Checked);
-            grid(axm,src.Checked);
+            arrayfun(@(x)grid(x,src.Checked) , obj.get_all_map_axes())
             drawnow nocallbacks
         end
         

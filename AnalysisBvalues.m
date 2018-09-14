@@ -1,7 +1,7 @@
 classdef AnalysisBvalues < AnalysisWindow
     % ANALYSISBVALUES shows b-value plot (FMD)
     properties
-        bobj; % points to an existing bobj
+        bobj; % points to an existing bobj (bdiff2 object)
     end
     
     
@@ -26,27 +26,40 @@ classdef AnalysisBvalues < AnalysisWindow
             obj.ax.YLabel.String='# Events';
         end
         
-        function add_series(obj, catalog, tagID, varargin)
+        function h=add_series(obj, catalog, tagID, varargin)
             % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
             % fit line
             
             p=inputParser();
-            p.addRequired(tagID, @(x)isstring(tagID)||ischar(tagID));
+            p.addRequired('tagID', @(x)isstring(tagID)||ischar(tagID));
             p.KeepUnmatched=true;
             p.parse(tagID,varargin{:});
             
-            add_series@AnalysisWindow(obj, catalog, tagID, p.Unmatched);
+            countProps = p.Unmatched;
+            countProps.LineStyle='none';
+            countProps.MarkerIndices='all';
+            countProps.LineWidth=1;
             
-            McProps = p.Unmatched; 
-            if ~isfield(McProps,'Color')
-                McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
-            else
-                McProps.MarkerFaceColor = McProps.Color;
-            end
-            add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
+            h=add_series@AnalysisWindow(obj, catalog, tagID, countProps);
+            % maybe each other add_series should contribute to h, too.
             
+            % magnitude of completeness point
+            %McProps = p.Unmatched; 
+            %McProps.DisplayName = '';
+            %if ~isfield(McProps,'Color')
+            %    McProps.MarkerFaceColor = get(findobj(obj.ax,'Tag',tagID),'Color');
+            %else
+            %    McProps.MarkerFaceColor = McProps.Color;
+            %end
+            %add_series@AnalysisWindow(obj, catalog, [tagID ' Mc'], 'UseCalculation',@obj.getMc, McProps);
+            
+            % linear fit
             lineProps = p.Unmatched; 
             lineProps.LineWidth = 2;
+            lineProps.MarkerFaceColor = 'auto';
+            lineProps.DisplayName = '';
+            lineProps.MarkerIndices=2;
+            lineProps.MarkerSize=10;
             add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
             
         end   
@@ -58,6 +71,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 y=nan;
             else
                 obj.bobj.RawCatalog=catalog;
+                obj.bobj.Calculate();
                 x=obj.bobj.mag_bin_centers;
                 y=obj.bobj.cum_b_values;
             end
@@ -87,9 +101,15 @@ classdef AnalysisBvalues < AnalysisWindow
         
         function remove_series(obj,tagID)
             % remove  B-value graphical objects associated with this tag
-            remove_series@AnalysisWindow(obj,tagID);
-            remove_series@AnalysisWindow(obj,[tagID ' Mc']);
-            remove_series@AnalysisWindow(obj,[tagID ' line']);
+            if iscell(tagID) || isstring(tagID)
+                for j=1:numel(tagID)
+                    obj.remove_series(tagID{j});
+                end
+            else
+                remove_series@AnalysisWindow(obj,tagID);
+                % remove_series@AnalysisWindow(obj,[tagID ' Mc']);
+                remove_series@AnalysisWindow(obj,[tagID ' line']);
+            end
         end
     end
 end

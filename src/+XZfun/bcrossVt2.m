@@ -9,13 +9,13 @@ classdef bcrossVt2 < ZmapVGridFunction
         dx = 1.0
         
         % get the time periods of interest
-        t0b = ZmapGlobal.Data.t0b;
-        teb = ZmapGlobal.Data.teb;
-        t1 = ZmapGlobal.Data.t0b;
-        t2 = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2;
+        t0b datetime = ZmapGlobal.Data.t0b;
+        teb datetime = ZmapGlobal.Data.teb;
+        t1  datetime = ZmapGlobal.Data.t0b;
+        t2  datetime = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2;
         
-        t3 = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2 + seconds(.1);
-        t4 = ZmapGlobal.Data.teb;
+        t3  datetime = ZmapGlobal.Data.t0b + ([ ZmapGlobal.Data.teb - ZmapGlobal.Data.t0b])/2 + seconds(.1);
+        t4  datetime = ZmapGlobal.Data.teb;
         mcAuto      McAutoEstimate              = true;
         wtAuto      LSWeightingAutoEstimate     = true;
     end

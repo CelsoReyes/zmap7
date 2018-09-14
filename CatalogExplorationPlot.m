@@ -1,20 +1,20 @@
 classdef CatalogExplorationPlot < handle
     % CATALOGEXPLORATIONPLOT create a plot where x,y,z,color, and size are modifiable
     properties
-        x_by (1,:) char ='Latitude'
-        y_by (1,:) char ='Longitude'
-        z_by (1,:) char ='Depth'
-        color_by (1,:) char =ZmapGlobal.Data.mainmap_plotby%'Date'
-        size_by (1,:) char ='Magnitude'
-        colorFcn function_handle = @datenum
-        sizeFcn function_handle = @mag2dotsize
-        catalogFcn function_handle;
-        axes_choices cell = {};
+        x_by (1,:)      char            ='Latitude'
+        y_by (1,:)      char            ='Longitude'
+        z_by (1,:)      char            ='Depth'
+        color_by (1,:)  char            = ZmapGlobal.Data.mainmap_plotby%'Date'
+        size_by (1,:)   char            ='Magnitude'
+        colorFcn        function_handle = @datenum
+        sizeFcn         function_handle = @mag2dotsize
+        catalogFcn      function_handle;
+        axes_choices    cell            = {};
         myscatter;
-        ax matlab.graphics.axis.Axes;
+        ax              matlab.graphics.axis.Axes;
         conversions;
         curview;
-        marker = ZmapGlobal.Data.event_marker;
+        marker                          = ZmapGlobal.Data.event_marker;
     end
     methods
         

@@ -3,11 +3,11 @@ classdef comp2periodz < ZmapHGridFunction
     % The differences are as z- and beta-values and as percent change.
     
     properties
-        periodA_start datetime % start time for period 1
-        periodA_end datetime % end time for period 1
-        periodB_start datetime % start time for period 2
-        periodB_end datetime % end time for period 2
-        binsize duration = ZmapGlobal.Data.bin_dur;
+        periodA_start   datetime % start time for period 1
+        periodA_end     datetime % end time for period 1
+        periodB_start   datetime % start time for period 2
+        periodB_end     datetime % end time for period 2
+        binsize duration            = ZmapGlobal.Data.bin_dur;
     end
     
     properties(Constant)

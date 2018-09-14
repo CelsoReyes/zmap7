@@ -1,20 +1,20 @@
 classdef TimeSomethingPlotter < handle
     properties
-        LotsOfEvents=100000
-        Marker='s'
-        Color = [.6 .6 .7]
-        MarkerEdgeColor=[0.05 0.05 0.2]
-        CFld='Color'
-        SizeFcn = @(c)mag2dotsize(c.Magnitude)
+        LotsOfEvents    = 100000
+        Marker          = 's'
+        Color           = [.6 .6 .7]
+        MarkerEdgeColor = [0.05 0.05 0.2]
+        CFld            = 'Color'
+        SizeFcn         = @(c)mag2dotsize(c.Magnitude)
         Tags struct
-        ax = gobjects(1);
-        hpl = gobjects(1);
-        hbg = gobjects(1);
+        ax              = gobjects(1);
+        hpl             = gobjects(1);
+        hbg             = gobjects(1);
     end
     
     properties(SetAccess=immutable)
-        YVar char
-        YUnits char
+        YVar    char
+        YUnits  char
     end
     
     methods

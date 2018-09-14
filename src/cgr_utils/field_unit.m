@@ -5,8 +5,8 @@ classdef field_unit
     %
     % They are then used to do filtering by axes
     properties
-        fieldn=''
-        units='' % ideally a unit, but can be a date, if units would be duration
+        fieldn  = ''
+        units   = '' % ideally a unit, but can be a date, if units would be duration
     end
     
     methods
