@@ -64,13 +64,13 @@ function h=hisgra(mycat, opt, ax)
         
         hg=histogram(ax,vari1, bins);
         
-        ax.XLim = hg.BinLimits;
-        ax.TickDir = 'out';
+        ax.XLim     = hg.BinLimits;
+        ax.TickDir  = 'out';
         ax.TickLength = [0.01 0.01];
         ax.LineWidth = 1;
-        ax.Box = 'on';
-        ax.Visible = 'on';
-        ax.Tag = 'histgra_axes';
+        ax.Box      = 'on';
+        ax.Visible  = 'on';
+        ax.Tag      = 'histgra_axes';
         
         xlabel(ax, getLabel(opt));
         yl = ylabel(ax, '# Events per bin');

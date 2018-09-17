@@ -27,7 +27,7 @@ ZMAP version7.X represents a major rework of ZMAP.
 From the welcome screen, choose the `data` menu, where you will be presented with several options including:
 * `Load Catalog (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resources/sample
 
-* `FDSN web fetch` : retrieve a catalog from an FDSN web service
+* [`FDSN web fetch`](FDSN.md) : retrieve a catalog from an [FDSN web service](https://www.fdsn.org/webservices) 
 
 * `Import Catalog from other formatted file` : this contains mostly unmaintained functions to import from other sources.
 
@@ -434,4 +434,6 @@ completenessweb.org
 
 ## ADDING FUNCTIONALITY
 
-[Adding Functionality](ADDING_FUNCTIONALITY.md)
+* [Adding Functionality](ADDING_FUNCTIONALITY.md) 
+
+  You can add your own functions to ZMAP to calculate values from the earthquake catalog.

@@ -59,11 +59,11 @@ classdef ZmapHGridFunction < ZmapGridFunction
     end
     
     properties(Constant, Hidden)
-        gridMarkerSize = 5;
-        gridMarker = '+';
+        gridMarkerSize      = 5;
+        gridMarker          = '+';
         gridMarkerFaceAlpha = 0.5;
-        deemphasizeLineFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
-        deemphasizeScatterFcn=@(sob) set(sob,'MarkerEdgeAlpha', 0.2);
+        deemphasizeLineFcn  = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
+        deemphasizeScatterFcn = @(sob) set(sob,'MarkerEdgeAlpha', 0.2);
         deemphasizeEventsFcn = @(ev) set(ev,'MarkerEdgeColor',[0.6 0.6 0.6],'Marker','.');
     end
     
