@@ -121,7 +121,7 @@ Right-Clicking on the axes labels will allow the axes to be changed to any of th
 
 The binning for these plots can be changed through the axes' context menu.
 
-* `FMD` : frequency magnitude distribution plot. This plot reflects only the data within the selected region, and does not include cross-section specific details. Information contained in here can be further analyzed via the context menu.
+* `FMD` : frequency magnitude distribution plot. Information contained in here can be further analyzed via the context menu.
 
 ### Cummulative plots
 
@@ -144,13 +144,13 @@ functions and classes.  Here, super briefly, is what these changes mean:
 * __functions__ vs __scripts__:
   * _scripts_ work on variables in the main workspace.  Everything one does may
   affect (intentionally or not) values used by other scripts.  Once the script
-  is run, then the workspace is left in an altered state.  _#very script behaves
+  is run, then the workspace is left in an altered state.  _every script behaves
   as though the user was typing at the MATLAB command prompt_
   * _functions_ are routines that are self contained. They may take a list of
   arguments (input variables), create and modify a bunch of variables internally, and then return one or more results.  The behavior is well defined at the top
   of each function
 * __classes__ : a class is a package of interrelated _functions_ (called _methods_)and _variables_ (called _properties_).  A good class will either represent one
-thing, or accomplish one major goal.
+thing, or accomplish one major goal. The use of classes makes ZMAP more stable and consistent.
 
 ### major classes
 
@@ -168,15 +168,25 @@ properties (variables) and methods (functions).
 
 #### ZmapCatalog
 
-#### ZmapData
+The earthquake catalog is now stored in a class, isntead of as an array.  This allows it to be used more intuitively, and provides the ability to store more complex information than numbers.  Some notable details:
 
-#### ZmapGlobal
+* The event time (`Date`) is stored as a `datetime` variable, instead of decimal date. This provides greater precision and accuracy, and comes with some useful functionality.
+
+* The magnitude type (`MagnitudeType`) is now included in the catalog
+
+* access data by the field name, instead of a column number.  ex.  `mycatalog.Longitude` , `mycatalog.Depth`, etc.
+
+#### ZmapData and ZmapGlobal
+
+These two classes work together as a replacement for the `global` data that was everywhere.
 
 #### ZmapGrid
 
+Many computations are area specific, computed for some region around a grid point.  `ZmapGrid` manages these grid points. Grid points may have constant spacing or follow meridians.
+
 #### MapFeature
 
-MapFeatures are stored in ZmapGlobal.Data.features and can be looked up by name
+MapFeatures are stored in ZmapGlobal.Data.features and can be looked up by name.
 
 ```matlab
 feat = ZmagGlobal.Data.features('borders');
@@ -186,9 +196,17 @@ feat.plot(ax);
 
 #### ZmapFunction
 
-#### ZmapGridFunction < ZmapFunction
+This is the basis for many functions in Zmap.
 
-#### ZmapFunctionDialog
+#### ZmapGridFunction
+
+Functions that operate on a grid are subclassed from `ZmapGridFunction`.  Additional capabilities are provided by this layer
+
+#### ZmapVGridFunction, ZmapHGridFunction, Zmap3DGridFunction
+
+#### ZmapXSectionCatalog
+
+#### ZmapDialog
 
 #### testing
 
@@ -258,102 +276,29 @@ To get a `ZmapCatalog` from a `ZmapCatalogView` using the `ZmapCatalogView.Catal
 
 # other general things to tackle project-wide
 
-* `lasterr` not recommended (88 results, 64 files) since 2009b
-* `fileparts`, remove 4th output (versn) (6 results) [done] since 2010a
-* `isstr` not recommended, use `ischar` (150 results, 68 files) [done] since 2010a [mapseis, too]
-* `str2mat` replace with `char` (4 results, 2 files) [done] zmap
 * `strread` replace usage with textscan. (97 results, 40 files) [in AddOneFiles] since 2010a
   * ex. [a,b,c]=strread(...) => C= textscan(...); [a,b,c] = deal(C{:}) since 2010a
-* `strvcat` replace with char  (4 results, 3 files) [done] since 2010a
 * `textread` replace with textscan as above, and use fopen/fclose.  (31results, 3 files) since 2010a
 * `sprintf` - not necessary for error text (74 results in 14 files)
-* `eval` - replace in favor of actually doing the thing (1567 results, 364 files) 
-  * `eval(do[,err])` - replace with a try/catch (174 results, 82 files)
-* `evalin` - ensure use makes sense (44 results, 14 files)
-* `NaN` - be consistent about capitalization, and do not create matrix with ones()*nan or zeros(*nan)
-* `NaN` - cannot compare with ==, use isnan() instead.  only a couple places [done]
-* `error(nargchk...)` - replace with narginchk or nargoutchk [done] since 2011b
 * `hdf_funs.m` - probably outdated. matlab has built-in version hdfread, hdfinfo
-* error and warning message identifiers have changed since 2012b.  info at: http://www.mathworks.com/support/solutions/en/data/1-ERAFNC/?solution=1-ERAFNC -- see pdf
+* error and warning message identifiers have changed since 2012b.  info [HERE](http://www.mathworks.com/support/solutions/en/data/1-ERAFNC/?solution=1-ERAFNC) -- see pdf
 * `num2str` - for large integers, use int2str(x) instead. (manymany, but probably affects very few)
 since 2013a
-* `addParamValue` - replace with `addParameter` for an input parser.  [done] r2013b
-* `flipdim` - replace with `flip` (45 in 19) [done] r2014a
-* `bitmax` - replace with `flintmax` [done]
-* `layout` gone.  no replacemnt, in 1 file.
-* HitTest, Selected, and SelectionHighlight properties for several ui components shouldn't be used r2014a
-
-* remove DateStr2Num, is no longer used anywhere. cursory test shows this causes a long delay.
-* remove DateConvert. also unused
+* `HitTest`, `Selected`, and `SelectionHighlight` properties for several ui components shouldn't be used r2014a
 
 * remove MacMarone - doesn't seem to be used, and is likely an unneeded layer of abstraction.  Also.. requires compilation for system and has large disclaimer on web page (dated 2014).
 
 * consider new storage options where it makes sense:  DateTime, table, timetable, timeseries, tscollection, containers.Map,  duration, categorical arrays (especially DateTime and Catagorical Arrays)
 
-* provide help tooltips for menu items.  Perhaps functions could provide their own tooltip text
-* provide description (and a REFERENCE!) for each function.
-* identify and prioritize Zmap functions for incorporation into MapSeis
-* clearly define how to convert a script from Zmap into MapSeis -->automation tool?
 * clearly define how functionality can be added to MapSeis
 
 * investigate required actions (documentation? coding? examples?) to facilitate use of MapSeis / Zmap. How do I add functionality? How do I make a script that leverages this?
-
-* assocArray() is not needed [EXCEPT FOR BACKWARDS COMPATIBILITY?] use containers.Map instead. (introduced matlab 2008b)
-
-* remove "backup" files.  Let versioning system (git) take care of remembering past versions of stuff.
 
 * **remember to keep zmap compatible with mapSeis**
 
 # previous authors/contributors
 
-*Stefan Wiemer ~ca 1994-1999
-*Danijel Schorlemmer* ~ca 2003
-*Jochen Woessner*
-*Matt McDonnell* mapseis
-*David Eberhard* mapseis (after Matt?)
-*Carlos Adrian Vargas Aguillera* - cm_and_cb_utilities
-*Peter J. Acklam*
-*Denis Gilbert*
-*Morris Maynard*
-*Anders Brun*
-*Elmar Tarajan*
-*Deidre Byrne*
-*Michael W Mann*
-*Thomas van Stiphout*
-*Elvis Chen*
-*cpouillo*
-*Jiancang Zhuang*
-*Joaquim Luis* - wrote Mirone?
-*R. A. Baker* '98
-*Jan Simon* [matlab]
-*Joseph Kirk*
-*R Pawlowicz*
-*D. L. Hallman*
-*Bob Hamans*
-*R Cobb* 11/94
-*Quan Quach* 12/12/07
-*A Kim*
-*W Strumpf*
-*E Byrns*
-*L Job*
-*E Brown*
-*Annemarie*
-*M Hendrix* - calendar2.m see matlab central
-*D. Kroon*
-*Doug Harriman*
-*Brandon Kuczenski*
-*Colin Humphries*
-*Dave Mellinger*
-*Gerry Middleton* '95
-*T Debole*
-*Takeshi Ikuma*
-*Karaen Felzer* 2007
-*Ramon Zuniga*
-*Alexander Allmann*
-*Guiseppe Cardillo*
-*Dahua Lin* 2008
-*A. M. Zoubir* 1998
-*D R Iskander* 1998
+[List of authors/contributors](ZmapContributorList.txt)
 
 # Adding Focal mechanisms
 
@@ -361,11 +306,8 @@ look at:
 Focal Mechanisms:
 https://ch.mathworks.com/matlabcentral/fileexchange/61227-focalmech-fm--centerx--centery--diam--varargin-
 
-Moment tensors can be retrieved from places like:
-http://www.isc.ac.uk/cgi-bin/web-db-v4?event_id=610635717&out_format=IMS1.0&request=COMPREHENSIVE
-http://www.isc.ac.uk/iscbulletin/search/webservices/
-and IRIS's SPUD
-http://www.isc.ac.uk/iscbulletin/search/webservices/
+Moment tensors can be retrieved from places like: [ISC comprehensive](http://www.isc.ac.uk/cgi-bin/web-db-v4?event_id=610635717&out_format=IMS1.0&request=COMPREHENSIVE)
+and IRIS's [SPUD](http://www.isc.ac.uk/iscbulletin/search/webservices/)
 
 # uncertainties, EVENT data
 
