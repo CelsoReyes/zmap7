@@ -63,13 +63,10 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*', 'Load EQ Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);
-                befehl=['a = ',tr,';'];
-                eval(befehl);
-                clear(tr)
+                xxx = load  ([newpath file1])
+                tr=getfilebase(file1);
+                a = xxx.(tr);
+                clear(xxx)
                 %check for 0 in day or month - set to 1
                 l = ZG.primeCatalog.Date.Day == 0; a(l,5) = 1;
                 l = ZG.primeCatalog.Date.Month == 0; a(l,4) = 1;
@@ -115,13 +112,10 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*.m', 'Load EQ Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);
-                befehl=['a = ',tr,';'];
-                eval(befehl);
-                clear(tr)
+                xxx=load  ([newpath file1]);
+                tr=getfilebase(file1);
+                a = xxx.(tr);
+                clear(xxx)
                 %check for 0 in day or month - set to 1
                 l = ZG.primeCatalog.Date.Day == 0; a(l,5) = 1;
                 l = ZG.primeCatalog.Date.Month == 0; a(l,4) = 1;
@@ -176,13 +170,10 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*.m', 'Load Faults Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);
-                befehl=['faults = ',tr,';'];
-                eval(befehl);
-                %    clear(tr)
+                xxx=load  ([newpath file1]);
+                tr=getfilebase(file1);
+                faults=xxx.(tr);
+                clear(xxx)
                 close;zmap_update_displays(); setup
             else
                 close, setup
@@ -209,12 +200,10 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*.m', 'Load main Faults Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);   befehl=['mainfault = ',tr,';'];
-                eval(befehl);
-                %  clear(tr)
+                xxx=load  ([newpath file1])
+                tr=getfilebase(file1);
+                mainfault=xxx.(tr);
+                clear(xxx)
                 close;zmap_update_displays(); setup
             else
                 close, setup
@@ -242,13 +231,10 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*.m', 'Load Mainshock Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);
-                befehl=['main = ',tr,';'];
-                eval(befehl);
-                %  clear(tr)
+                xxx=load  ([newpath file1])
+                tr=getfilebase(file1);
+                main = xxx.(tr);
+                clear(xxx)
                 close; zmap_update_displays();setup
             else
                 close, setup
@@ -276,13 +262,9 @@ function loadasci(da,sa)
             [file1, newpath] = uigetfile('*.m', 'Load Coastline Data File');
             if length(newpath) >  1
                 drawnow
-                load  ([newpath file1])
-                do = find(file1 == '.');
-                if isempty(do); do = length(file1)+1;end
-                tr = file1(1:do-1);
-                befehl=['coastline = ',tr,';'];
-                eval(befehl);
-                %clear(tr)
+                xxx=load  ([newpath file1])
+                tr = getfilebase(file1);
+                coastline = xxx.(tr);
                 close; zmap_update_displays();setup
             else
                 close, setup
@@ -345,3 +327,9 @@ function dall=prepfocal(catalog)
     dall=[C{:}];
 end
 
+function s = getfilebase(s)
+    % removes the extension, returning file base
+    if contains(s,'.')
+        s = extractBefore(s,'.');
+    end
+end

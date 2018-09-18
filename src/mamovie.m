@@ -69,7 +69,7 @@ function mamovie()
     function callbackfun_003(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_004(mysrc,myevt)

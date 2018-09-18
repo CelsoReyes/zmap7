@@ -57,7 +57,12 @@ function csubcat()
     figure(mapp);
     reset(gca)
     cla
-    dele = 'delete(si),delete(le)';er = 'disp('' '')'; eval(dele,er);
+    try
+        delete(si)
+        delete(le)
+    catch
+        do_nothing()
+    end
     watchon;
     set(gca,'visible','off','SortMethod','childorder')
     set(gca,'NextPlot','replace')
@@ -192,14 +197,6 @@ function csubcat()
             MenuSelectedField(),@callbackfun_010);
         uimenu(op2,'label','Declustered catalog',...
             MenuSelectedField(),@callbackfun_011);
-        catSave =...
-            [ 'ZmapMessageCenter.set_info(''Save Data'',''  '');',...
-            '[file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, ''*.mat''), ''Earthquake Datafile'');',...
-            'if length(file1) > 1 , sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri ''],',...
-            'eval(sapa2) ,end, '];
-        
-        
-        
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Plot Cumulative Number ',...
@@ -363,6 +360,13 @@ function csubcat()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ginput(1);
     end
+    function do_catSave()
+        ZmapMessageCenter.set_info('Save Data','  ');
+        [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
+        if length(file1) > 1
+            save([path1 file1], 'a','faults','main','mainfault','coastline','infstri');
+        end
+
 end
 
 function setleg() 

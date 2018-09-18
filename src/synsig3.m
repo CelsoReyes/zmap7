@@ -81,7 +81,7 @@ function synsig3()
                 if ~isempty(junk)
                     if i <= magis
                         l =  junk(:,6) <= magis;    % find out events below cut off for rate factor
-                        if length(junk(l,:)) > 0;
+                        if length(junk(l,:)) > 0
                             [cum_junk, xt_backg] = hist(junk(l,3),xt_backg);
                         end  %  if junk4
                     end  % if i < magis

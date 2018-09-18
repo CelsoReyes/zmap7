@@ -75,8 +75,9 @@ function mylojma(in,inda)
     
     % save the data
     [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Save Earthquake Datafile');
-    sapa2 = ['save ' path1 file1 ' a'];
-    if length(file1) > 1; eval(sapa2);end
+    if length(file1) > 1
+        save(fullfile(path1,file1),'a');
+    end
     
     ZG.CatalogOpts.BigEvents.MinMag = max(ZG.primeCatalog.Magnitude) -0.2;
     dep1 = 0.3*max(ZG.primeCatalog.Depth);

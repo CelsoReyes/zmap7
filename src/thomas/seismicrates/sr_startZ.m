@@ -11,7 +11,6 @@ function [ params ]= sr_startZ
     % Th. van Stiphout; vanstiphout@sed.ethz.ch
     % updated: 17.08.2005
     
-    % TODO: remove all the 'eval' commands
     report_this_filefun();
     
     % go to directory
@@ -53,14 +52,19 @@ function [ params ]= sr_startZ
                     params.vSynCat,params.nSynCat,params.nSynMode,...
                     params.vAfter, params.vEtas,params.mSynCatRef,...
                     params.bPSQ,params.vPSQ,params.mPSQ);
-                [Ntmp,Xi]=sort(mCatalog.Date);
-                mCatalog=mCatalog.subset(Xi);clear Xi Ntmp;
+
+                mCatalog.sort('Date','ascend')
                 params.mCatalog=mCatalog;
                 [pathstr, name, ext, versn] = fileparts(params.sFile);
                 clear ext versn;
-                eval(sprintf('!mkdir %s',name));
-                eval(sprintf('save %s/%s%04.0f.mat mCatalog -mat',name,'mCatalog',jj));
-                eval(sprintf('save %s/%s%04.0f.mat vMain -mat',name,'vMain',jj));
+                mkdir(name);
+
+                fs = filesep();
+                fn = sprintf('%s%c%s%04.0f.mat',name,fs, 'mCatalog', jj);
+                save(fn, 'mCatalog', '-mat');
+
+                fn = sprintf('%s%c%s%04.0f.mat',name,fs, 'vMain', jj);
+                save(fn, 'vMain', '-mat');
             end
         end
         
@@ -118,7 +122,8 @@ function [ params ]= sr_startZ
                     end
                 else
                     params.mNumDeclus=mNumDeclus_;
-                    eval(sprintf('save %s/%s%04.0f.mat mNumDeclus_ -mat',name,'vDeclusMain',jj));
+                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj);
+                    save(nm, 'mNumDeclus', '-mat');
                 end
             case 1
                 switch bDeclus
@@ -146,7 +151,8 @@ function [ params ]= sr_startZ
                     end
                 else
                     params.mNumDeclus=mNumDeclus_;
-                    eval(sprintf('save %s/%s%04.0f.mat mNumDeclus_ -mat',name,'vDeclusMain',jj));
+                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj);
+                    save(nm, 'mNumDeclus', '-mat');
                 end
                 
                 if params.nLimit<size(params.mPolygon,1)
@@ -207,20 +213,15 @@ function [ params ]= sr_startZ
         params.mResult4=mResult4;
     end
     
-    sString=sprintf('save %s params -mat',params.sFile);
-    eval(sString);
-    sString=sprintf('Results saved in  %s',params.sFile);
-    disp(sString);
+    save(params.sFile, 'params', '-mat');
+    fprintf('Results saved in  %s\n',params.sFile);
     % save test_sr_UniformRate.mat params -mat
     if (nMode>0)
         if bSaveIt
             vResults=params;
-            sString=sprintf('save %s_N%s_Rmax%s_nSim%s_nMode%s.mat vResults',...
-                rContainer,num2str(params.vN),...
-                num2str(params.fMaxRadius),...
-                num2str(params.nSimul),...
-                string(params.nDeclusMode) );
-            eval(sString)
+            sString=sprintf('%s_N%g_Rmax%g_nSim%g_nMode%n.mat',...
+                rContainer, params.vN, params.fMaxRadius, params.nSimulparams.nDeclusMode);
+            save(sString,'vResults');
             disp(sString)
         end
         if bDisplayIt

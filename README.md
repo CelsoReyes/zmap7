@@ -22,30 +22,34 @@ ZMAP version7.X represents a major rework of ZMAP.
 
 ### Work flow
 
-### Loading data
+#### [How do I ...](docs/HOWDOI.md)
+* [subset the catalog?](docs/HOWDOI.md#subset-the-catalog)
+
+
+### Loading or importing data
 
 From the welcome screen, choose the `data` menu, where you will be presented with several options including:
 * `Load Catalog (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resources/sample
 
-* [`FDSN web fetch`](FDSN.md) : retrieve a catalog from an [FDSN web service](https://www.fdsn.org/webservices) 
+* <u>[`FDSN web fetch`](docs/FDSN.md)</u> : retrieve a catalog from an [FDSN web service](https://www.fdsn.org/webservices) 
 
-* `Import Catalog from other formatted file` : this contains mostly unmaintained functions to import from other sources.
+* `Import Catalog from other formatted file` : this contains functions to import from other sources. these files are _mostly unmaintained_
 
 Catalogs can also be imported from the `Catalog` menu on the main map interface.
 
 Upon importing data you may be presented with another dialog box that allows you to further constrain your data.
 
-![Catalog Overview](resources/img/catalog_overview_20180216.png)
+![Catalog Overview](docs/img/catalog_overview_20180216.png)
 
 Clicking on the `see distributions` button will show a few histograms that may help you decide where to set your parameters
-![Catalog Overview With Distributions](resources/img/catoverview_dist_20180216.png)
+![Catalog Overview With Distributions](docs/img/catoverview_dist_20180216.png)
 
 ## The Main interfaces
 
 ### Main Map Screen
 
 Once a catalog is loaded, you will be presented with the Main Window.
-![MainMapScreen](resources/img/ZmapMainWindow_20180216.png)
+![MainMapScreen](docs/img/ZmapMainWindow_20180216.png)
 This is where most of the work will happen.  The screen is divided into several sections.  When first presented, all events will be hilighted, and the main map will take up the entirety of the left side of the window.
 
 The plots on the right side of the screen will reflect statistics for the entire catalog.
@@ -68,10 +72,10 @@ Regions can be selected in a few ways. Start by right-clicking in the map. Sever
 When any of the above choices have been made, only the events within the region (or _shape_) will be colored. All other events become grey dots.  The plots to the right will also change to reflect your selection.
 
 While defining a circle, you'll see the radius.  This circle is an oval because the map is distorted at this latitude.
-![Define a Circle - in progress](resources/img/circle_inprogress.png)
+![Define a Circle - in progress](docs/img/circle_inprogress.png)
 
 Once a shape is defined, then all other events fade into the background.
-![Define a Circle - done](resources/img/circleselected.png)
+![Define a Circle - done](docs/img/circleselected.png)
 
 #### Working with a region
 
@@ -98,7 +102,7 @@ a *circle* has:
 One or more cross sections can be created. Cross sections are defined along
 great-circle arcs, and therefore may not appear as straight lines on the map.
 To create a cross section, choose `Define X-section` from the map's context menu (that is, right click on the map). A dialog box will appear to allow the user to choose a width, specify cross-section labels, or override the color. Simple Labels are automatically generated.
-![Map with Cross Sections](resources/img/map_with_2p5xsec.png)
+![Map with Cross Sections](docs/img/map_with_2p5xsec.png)
 
 The primary map will then shrink to accomodate a cross-section plot that will
 appear beneath the map.  In the above image, two cross sections were already made, and the third `C-C'` is in progress.
@@ -219,81 +223,18 @@ These are all kept in an object (variable) named ZmapGlobals. This:
 * __user interface__: the user interfacer has been overhauled in countless
 ways.
 
-### UI Controls not showing up
-
-For `uicontrol` items, the `units` must be set to `normalized` prior to setting the `Position`, otherwise they will not show.  ex. `working_dir_in`
-My solution, to avoid fixing 1000's of individual callbacks: set the system's defaultuicontrolunits to 'normalized'.
-
-`set(0,'defaultuicontrolunits','normalized')`
-
-There is some fluff around it to warn users. However any other defaults are not kept.
-
 ### eval
 
-eval is (no longer/not) a recommended way to do things. Providing strings to be evaluated is generally considered unsafe, and circumvents any checking that MATLAB could do
-
-In some cases, it was used prior to "try/catch".  What exists:
-
-```matlab
-do = ['risky_outcome = risky_function(''parameter'',value);']
-err = ['disp(''oops'')']
-eval(do,err);
-```
-
-which should all be converted to
-
-```matlab
-try
-  risky_outcome = risky_function('parameter', value);
-catch ME
-  error_handler(ME,'oops');
-end
-```
+eval is (no longer/not) a recommended way to do things. Providing strings to be evaluated is generally considered unsafe, and circumvents the ability for MATLAB to check code.  
 
 ### CallBack functions
 
-Most callback functions are implemented as strings. Ideally they would be function calls instead.  The complications of determining the context makes editing these somewhat less-than straightforward.
+Most callback functions are implemented as char arrays. Ideally they would be function calls instead.  The complications of determining the context makes editing these somewhat less-than straightforward.
 
-## deprecated functions
+## MATLAB changes
 
-Some functions are deprecated, or specific options are deprecated.  These need to be changed.
-
-Some (non-exhaustive) somewhat straight-forward replacements
-
-* rand('seed',...) -> rng('shuffle')
-* TBD
-
-### strategies
-
-For some functions, an *adapter* function will be used. This makes for very simple code substitution, especially when the function is in widespread use.
-
-Example:
-
-```matlab
-[figexists, fignum] = figflag('title');
-% figflag is deprecated
-```
-
-now, I created a function named `figure_exists.m` with the same basic functionality.  A global search-replace allowed me to nearluy instantaneously change these (194 occurances, spread throughout 163 files) to
-
-```matlab
-[figexists, fignum] = figure_exists('title');
-```
-
-## shadowed functions
-
-Functions which have the same name as provided matlab functions and serve the same purpose are renamed QUARENTINE_ .  eg. `ginput()`
-Often the newer functions have different signatures, and shadowning produces some confusing errors.
-
-## Celso supplied functions
-
-`do_nothing` provides a function call that works as advertised.
-
-`error_handler` provides a unified location to send those pesky **case** issues.  This can make tracking issues easier.
-  Depending on the paramters, it could show the error, do nothing, or show some alternate text.
-
-`figure_exists` provides a replacement for `figflag`
-*the above is severely outdated*
+Since the time of ZMAP 6.0, the MATLAB language has changed greatly.  Some functions or options have been deprecated, the graphics system has been overhauled, as have MATLAB's object-oriented capabilities. The mapping toolbox was in its infancy.  Try-Catch was not an option, and function handles were not nearly as efficient as they are these days.
+the types `string`, `table`, `datetime`, `duration` did not exist.
 
 ## catalog / catalog views
 
@@ -434,6 +375,6 @@ completenessweb.org
 
 ## ADDING FUNCTIONALITY
 
-* [Adding Functionality](ADDING_FUNCTIONALITY.md) 
+* [Adding Functionality](docs/ADDING_FUNCTIONALITY.md) 
 
   You can add your own functions to ZMAP to calculate values from the earthquake catalog.

@@ -59,8 +59,9 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
         % Then the editable text field (of which there are three)
         % Store the text field's handle two places: once in the figure
         % UserData and once in the button's UserData.
+        hs={helpStr1; helpStr2; helpStr3};
         for count=1:3
-            helpStr=eval(['helpStr',num2str(count)]);
+            helpStr = hs{count};
             txtPos=[left bottom (right-left) top-bottom-labelHt-spacing];
             txtHndlList(count)=uicontrol( ...
                 'Style','edit', ...

@@ -42,7 +42,7 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep)
     new = nan(nEvents,1);
     
     ct1  = find(N == 0, 1 ) - 1;
-    if isempty(ct1) ; 
+    if isempty(ct1) 
         ct1 = length(N); 
     end
     

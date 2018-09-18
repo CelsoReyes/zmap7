@@ -423,7 +423,7 @@ function loadhypo(choice)
         dep= str2num(so(:,de1:de2))/cde;
         mag= str2num(so(:,ma1:ma2))/mac;
         
-        if get(hndl2,'Value') == 1;
+        if get(hndl2,'Value') == 1
             latm = latm*10/6;
             lonm = lonm*10/6;
         end

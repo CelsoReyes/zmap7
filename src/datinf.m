@@ -84,7 +84,7 @@ function datinf()
         
         uicontrol('Units','normal',...
             'Position',[.6 .90 .10 .09 ],'String','Save',...
-            'callback',@callbackfun_004);
+            'callback',@save_cb);
         
         
         
@@ -99,7 +99,7 @@ function datinf()
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -117,16 +117,18 @@ function datinf()
         zmaphelp(ttlStr,hlpStr1dainf);
     end
     
-    function callbackfun_004(mysrc,myevt)
+    function save_cb(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        catSaveb =...
-            ['infstri = get(uic,''String'');',...
-            'ZmapMessageCenter.set_info(''Save Data'',''  '');',...
-            '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, ''*.mat''), ''Earthquake Datafile'');',...
-            'if length(file1) > 1 , sapa2 = [''save '' path1 file1 '' a faults main mainfault coastline infstri ''],',...
-            'eval(sapa2) ,end, '];
-        eval(catSaveb);
+        infstri = get(uic,'String');ZmapMessageCenter.set_info('Save Data','  ');
+        [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
+        if length(file1) > 1
+            try
+                save([path1, file1, 'a','faults','main','mainfault','coastline','infstri')
+            catch ME
+                errordlg(ME.message,'Error saving data');
+            end
+        end
     end
     
 end

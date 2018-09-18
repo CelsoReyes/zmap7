@@ -26,17 +26,16 @@ function domisfit(catalog,sig,plu,az,phi,R)
         error_handler(ME, ['Error - could not save file ' ZmapGlobal.Data.Directories.output 'data.inp - permission?']);
     end
     
-    infi =  ['data.inp'];
-    outfi = ['tmpin.dat'];
+    infi =  'data.inp';
+    outfi = 'tmpin.dat';
     fid = fopen('inmifi.dat','w');
     fprintf(fid,'%s\n',infi);
     fprintf(fid,'%s\n',outfi);
     fclose(fid);
-    comm = ['delete ' outfi];
-    eval(comm)
     
-    comm ='datasetupDD < inmifi.dat';
-    [status,result]=system(comm);
+    delete(outfi)
+    
+    [status, result] = system('datasetupDD < inmifi.dat');
     
     fid = ('tmpin.dat');
     format = '%f%f%f%f%f';

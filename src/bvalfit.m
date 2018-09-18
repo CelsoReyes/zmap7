@@ -342,7 +342,7 @@ function bvalfit()
         
         ind = 0;                      %  find minimum magnitude for the rate change
         resm = [ ];
-        if ic ==0;
+        if ic ==0
             fac = 1.0 ;
         end
         bvalN = bvalN*fac ;    % apply rate to all data
@@ -506,7 +506,7 @@ function bvalfit()
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_002(mysrc,myevt)
@@ -546,7 +546,7 @@ function bvalfit()
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_008(mysrc,myevt)
@@ -555,10 +555,10 @@ function bvalfit()
         f1=gcf;
         f2=gpf;
         set(f1,'Visible','off');
-        if f1~=f2;
+        if f1~=f2
             % ZmapMessageCenter();
             
-        end;
+        end
     end
     
     function callbackfun_009(mysrc,myevt)

@@ -67,7 +67,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
     properties(Constant,Abstract)
         PlotTag % string used for tracking the plot for each function (assign in your function)
         ParameterableProperties % properties from each class that can be used as constructor parameters 
-        References % paper references for calculations contained within
+        References % paper references for calculations contained within this fn
     end
     
     properties(Dependent)

@@ -17,12 +17,10 @@ function plot95C()
         'Position',[ (ZG.fipo(3:4) - [600 500]) winx winx]);
     
     global c i newgri ste s te te1
-    hodis = [hodi '/stinvers'];
-    do = ['load ' hodis '/out95'];
-    eval(do)
+    hodis = fullfile(hodi,'stinvers');
+    load(fullfile(hodis,out95));
     
-    do = ['cd  ' hodis ];
-    eval(do)
+    cd(hodis)
     
     % find the 95% confidence region
     
@@ -49,20 +47,18 @@ function plot95C()
     %str = [180-strike 0 ; 360-strike 0];
     %save strike.dat str -ascii
     
+    system("psbasemap -R0/360/-90/0 -Ja0/-90/2.5/0  -Ba400f30N  -G255/255/255 -V -P -X3.0 -Y4.0 -K > gmt.ps");
+    system("awk '{print $2, -$1}' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G255/0/0 -V -P -K >> gmt.ps");
+    system("awk '{print $4, -$3}' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G0/255/0 -V -P -K >> gmt.ps");
+    system("awk '{print $6, -$5}' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G0/0/255 -V -P -K >> gmt.ps");
     
-    do = ['!psbasemap -R0/360/-90/0 -Ja0/-90/2.5/0  -Ba400f30N  -G255/255/255 -V -P -X3.0 -Y4.0 -K > gmt.ps']; ; eval(do)
-    do = [' !awk ''{print $2, -$1}'' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G255/0/0 -V -P -K >> gmt.ps ']; eval(do)
-    do = [' !awk ''{print $4, -$3}'' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G0/255/0 -V -P -K >> gmt.ps ']; eval(do)
-    do = [' !awk ''{print $6, -$5}'' out95B.dat  | psxy -R -Ja -Sc0.08 -O -G0/0/255 -V -P -K >> gmt.ps ']; eval(do)
+    system("awk '{print $2, -$1}' out95C.dat  | psxy -R -Ja -St0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps");
+    system("awk '{print $4, -$3}' out95C.dat  | psxy -R -Ja -Ss0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps");
+    system("awk '{print $6, -$5}' out95C.dat  | psxy -R -Ja -Si0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps");
     
+    system("awk '{print $1, -$2}' strike.dat  | psxy -R -Ja -W2/0/0/0 -O -V -P -K >> gmt.ps");
     
-    do = [' !awk ''{print $2, -$1}'' out95C.dat  | psxy -R -Ja -St0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps ']; eval(do)
-    do = [' !awk ''{print $4, -$3}'' out95C.dat  | psxy -R -Ja -Ss0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps ']; eval(do)
-    do = [' !awk ''{print $6, -$5}'' out95C.dat  | psxy -R -Ja -Si0.20 -W2/0/0/0 -O -G255 -V -P -K >> gmt.ps ']; eval(do)
-    
-    %do = [' !awk ''{print $1, -$2}'' strike.dat  | psxy -R -Ja -W2/0/0/0 -O -V -P -K >> gmt.ps ']; eval(do)
-    
-    do = ['!gs gmt.ps']; eval(do)
+    system("gs gmt.ps");
     
     
     

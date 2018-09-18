@@ -268,7 +268,8 @@ function varargout = btnAnalyze_Callback(h, eventdata, handles, varargin)
 
 sAuxiliaryFunction = get(handles.txtAuxiliaryFunction, 'String');
 if ~isempty(sAuxiliaryFunction)
-  eval([sAuxiliaryFunction '(handles.vResult, handles.dlgResult)']);
+  fnc=str2func(sAuxiliaryFunction);
+  fnc(handles.vResult, handles.dlgResult);
 end
 
 % --------------------------------------------------------------------
@@ -323,7 +324,7 @@ function varargout = mnuFileExport_Callback(h, eventdata, handles, varargin)
 [newfile, newpath] = uiputfile('figure.eps', 'Export figure');
 newfile = [newpath newfile];
 if length(newfile) > 1
-  exportfig(handles.hPlotFigure, newfile, 'Color', 'cmyk');
+  saveas(handles.hPlotFigure, newfile, 'Color', 'cmyk');
 end
 
 % --------------------------------------------------------------------

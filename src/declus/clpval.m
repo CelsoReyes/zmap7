@@ -265,7 +265,7 @@ function clpval(var1)
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
-                'Units','normalized','Callback', 'myprint',...
+                'Units','normalized','Callback', @(~,~)printdlg,...
                 'String','Print');
             
             labelList=['Mainshock| Main-Input| Sequence' ];
@@ -301,7 +301,7 @@ function clpval(var1)
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
-                'Units','normalized','Callback', 'myprint',...
+                'Units','normalized','Callback',  @(~,~)printdlg,...
                 'String','Print');
             
             
@@ -642,12 +642,12 @@ function clpval(var1)
     function callbackfun_007(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        if ~isempty(tmvar);
+        if ~isempty(tmvar)
             clpval(8);
         else;
             in2 = get(hndl1,'Value')+5;
             clpval(in2);
-        end;
+        end
     end
     
     function callbackfun_008(mysrc,myevt)

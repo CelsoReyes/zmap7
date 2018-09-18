@@ -32,8 +32,7 @@ function doinversgep_pc(mycat)
     fprintf(fid,'%s\n',infi);
     fprintf(fid,'%s\n',outfi);
     fclose(fid);
-    comm = ['delete ' outfi];
-    eval(comm)
+    delete(outfi)
     
     %added support for multiple platforms de 07/2009
     switch computer

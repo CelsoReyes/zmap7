@@ -48,7 +48,7 @@ function cluoverl(var1)
 
     elseif var1==7                  %plot clusters and faults for the first time
         set(clus_button,'Value',1)
-        if isempty(newclcat);
+        if isempty(newclcat)
             replaceMainCatalog(cluscat);
         else
             replaceMainCatalog(newclcat);

@@ -91,7 +91,7 @@ function synsig()
                     [cum_syn, xt_backg] = hist(junk(:,3),xt_backg);      % synthetic  foreground
                     if i <= magis
                         l =  junk(:,6) <= magis;    % find out events below cut off for rate factor
-                        if length(junk(l,:)) > 0;
+                        if length(junk(l,:)) > 0
                             [cum_junk, xt_backg] = hist(junk(l,3),xt_backg);
                             cum_syn = cum_syn+cum_junk*(fac-1);                % apply rate factor
                         end  %  if junk4

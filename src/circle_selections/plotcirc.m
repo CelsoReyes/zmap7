@@ -14,7 +14,7 @@ function plotcirc()
     x = -pi-0.1:0.1:pi;
     for i = 1:st:m
         for k = 1:st:n
-            if r(i,k) <= ZG.tresh_km;
+            if r(i,k) <= ZG.tresh_km
                 plot(X(i,k)+r(i,k)*sin(x),Y(i,k)+r(i,k)*cos(x),'b')
                 plot(X(i,k),Y(i,k),'+k')
             end

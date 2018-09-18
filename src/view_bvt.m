@@ -79,9 +79,6 @@ function view_bvt(lab1,valueMap)
             'Position',[.0 .93 .08 .06],'String','Print ',...
             'callback',@callbackfun_001)
         
-        callbackStr= ...
-            ['f1=gcf; f2=gpf; set(f1,''Visible'',''off'');close(bmapc);', ...
-            'if f1~=f2, figure(map); end'];
         
         uicontrol('Units','normal',...
             'Position',[.0 .75 .08 .06],'String','Close ',...
@@ -227,13 +224,20 @@ function view_bvt(lab1,valueMap)
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_002(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        eval(callbackStr);
+
+        f1=gcf; 
+        f2=gpf; 
+        set(f1,'Visible','off');
+        close(bmapc);
+        if f1~=f2
+            figure(map);
+        end
     end
     
     function callbackfun_003(mysrc,myevt)

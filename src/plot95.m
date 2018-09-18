@@ -16,9 +16,6 @@ function plot95()
         'Position',[ (ZG.fipo(3:4) - [600 500]) winx winx]);
     
     global c i newgri ste s te te1  te2 te3
-    %hodis = [hodi '/stinvers'];
-    %do = ['load ' hodis '/out95'];
-    %eval(do)
     load out95
     % find the 95% confidence region
     

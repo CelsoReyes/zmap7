@@ -77,9 +77,6 @@ function selectp(in_or_out)
                 file1=[file1 '.txt']
             end
         end
-        %bollocks, changed it to a normal command
-        %sapa2 = ['save ' path1 file1  '  xy -ascii '] ;
-        %eval(sapa2)
         save([path1 file1],'xy', '-ascii');
     end
     

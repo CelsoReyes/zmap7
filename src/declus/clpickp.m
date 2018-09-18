@@ -148,7 +148,8 @@ function clpickp(choice)
             if isempty(ZG.ttcat)
                 set(equi_button,'value',1)
                 st1=get(equi_button,'Callback');
-                eval(st1);
+                assert(isa(st1,'function_handle'));
+                st1();
                 pause(2);
                 tmp=equi(:,10)';
                 tmpcat=clust(:,tmp);
@@ -169,7 +170,7 @@ function clpickp(choice)
             'FontSize',ZmapGlobal.Data.fontsz.l,'Color','r')
         if decc~=0
             if isempty(ZG.ttcat)
-                eval(st1);
+                st1();
             end
         end
         x=[];
