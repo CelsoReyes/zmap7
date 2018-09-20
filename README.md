@@ -17,11 +17,45 @@ ZMAP version7.X represents a major rework of ZMAP.
 ### Some functions also require:
 - Optimization toolbox.
 
+### About ZMAP7
+
+Nearly every aspect of the program has been modified, with the following goals in mind:
+
+*  Make ZMAP compatible with modern MATLAB installations
+*  Make it easer to add additional functionality
+*  Make the user interfaces more consistent and interactive.
+*  Make code more robust (leveraging MATLAB functions and objects)
+*  Make existing code more readable and maintainable (reducing code duplication)
+*  Retrieve event data from online services (FDSN web services)
+ 
+**Be aware, the changes in ZMAP are extensive**, and not all previously existing features may still exist. Also, you may not be able to load existing save files.
+ZMAP7 should work from Matlab 2018a upwards.
+ 
+**Since this is an *alpha* version, expect that there are many areas that are still under construction**. Menu items will likely move around, and figures will change.  However, the basic functionality is there and should be able to help you start to explore your seismology data. We look forward to your feedback and idea for what we should include.
+ 
+If (when) you run into bugs, feel free to report through creating a GitHub issue. (“Report a ZMAP issue” , under the “Help” menu on the ZMAP windows.  Please, do not send reports through email, as the issue list will be accessible by both whomever continues to maintain this program and the community.  The issues can be properly documented, prioritized, and addressed. 
+ 
+To get started with git, and ZMAP7, I created a few movies:
+https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX 
+[Note: these may already be severely out-of-date]
+
 
 ## Getting Started
 
+### Quick Start
+
+1. Download or clone ZMAP 7 to your computer. 
+1. Start MATLAB.
+1. Change directory to the zmap directory
+1. in the MATLAB command line, type "zmap"
+
+> some sample data for Switzerland can be found in the file `zmap/resources/sample/SED_fdsn_2000_on.mat`
+
+> Video: https://www.youtube.com/embed/gONcFBy4p8U?end=79
+
 ### Work flow
 
+<<<<<<< HEAD
 #### [How do I ...](docs/HOWDOI.md)
 * [subset the catalog?](docs/HOWDOI.md#subset-the-catalog)
 
@@ -34,10 +68,20 @@ From the welcome screen, choose the `data` menu, where you will be presented wit
 * <u>[`FDSN web fetch`](docs/FDSN.md)</u> : retrieve a catalog from an [FDSN web service](https://www.fdsn.org/webservices) 
 
 * `Import Catalog from other formatted file` : this contains functions to import from other sources. these files are _mostly unmaintained_
+=======
+Most work will happen in the Main ZMAP screen.  
 
-Catalogs can also be imported from the `Catalog` menu on the main map interface.
+### Loading data
 
-Upon importing data you may be presented with another dialog box that allows you to further constrain your data.
+From the main ZMAP window, choose the `catalog` menu, then select `get/load catalog` where you will be presented with several options including:
+
+* `from (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resources/sample
+
+* `from FDSN service` : retrieve a catalog from an FDSN web service
+>>>>>>> master
+
+* `from other formatted file` : this contains mostly unmaintained functions to import from other sources.
+
 
 ![Catalog Overview](docs/img/catalog_overview_20180216.png)
 
@@ -48,8 +92,13 @@ Clicking on the `see distributions` button will show a few histograms that may h
 
 ### Main Map Screen
 
+<<<<<<< HEAD
 Once a catalog is loaded, you will be presented with the Main Window.
 ![MainMapScreen](docs/img/ZmapMainWindow_20180216.png)
+=======
+Once a catalog is loaded, earthquakes will be plotted in the Main Window.
+![MainMapScreen](resources/img/ZmapMainWindow_20180216.png)
+>>>>>>> master
 This is where most of the work will happen.  The screen is divided into several sections.  When first presented, all events will be hilighted, and the main map will take up the entirety of the left side of the window.
 
 The plots on the right side of the screen will reflect statistics for the entire catalog.
@@ -64,10 +113,10 @@ Several features are plotted on the map along with the earthquakes. Which ones a
 
 Regions can be selected in a few ways. Start by right-clicking in the map. Several options related to regions will be presented including :
 
-* `Set Polygon: Box` : select a rectangular region by clicking on two corners to define a box.
-* `Set Polygon: Irregular Shape`: select a region by creating a polygon with the mouse.  Anything other than a "normal" click will close the polygon.
-* `Set Circle` : Click and drag from the center of the circle out to some radius of interest.
-* `Clear Shape` : deletes the shape. all events are once again active.
+* `Select events in BOX` : select a rectangular region by clicking on two corners to define a box.
+* `Select events in POLYGON`: select a region by creating a polygon with the mouse.  Anything other than a "normal" click will close the polygon.
+* `Select events in CIRCLE` : Click and drag from the center of the circle out to some radius of interest.
+* `Delete polygon` : deletes the shape. all events are once again active.
 
 When any of the above choices have been made, only the events within the region (or _shape_) will be colored. All other events become grey dots.  The plots to the right will also change to reflect your selection.
 
@@ -79,21 +128,9 @@ Once a shape is defined, then all other events fade into the background.
 
 #### Working with a region
 
-Regions can be modified : scaled, dragged, points added, etc. by right-clicking on the shape itself.  Here are a list of current options (as of Feb 2017):
+Regions can be modified : scaled, dragged, points added, etc. by interacting with the shape itself.  
+See the menu item `about editing polygons` from the `Sampling` menu for a list of ways to interact with a polygon.
 
-* `info...` provide basic information about this region and the shape that defines it.
-
-* `Analyze EQ inside Shape`,  `Analyze EQ outside Shape`, and 
-`Compare Inside vs Outside` : all bring up a cumulative time plot window, from
-where further analysis is possible.
-
-* `edit shape` : activates the shape, allowing it to be dragged, resized (via scrollwheel), and, for some shapes, have individual points added, moved, or removed.
-Once you are done with the shape manipulations, select `Finished` from the same context menu. The changes will then be reflected in all the accompanying plots.
-
-* additional options may appear, depending upon the chosen shape. For example,
-a *circle* has:
-  * `Choose Radius` : allowing you to define a specific radius by typing.
-  * `Snap to N Events` : resizes the circle to encompass a specified number of events.
 
 ### Cross Sections
 
@@ -132,6 +169,7 @@ The binning for these plots can be changed through the axes' context menu.
 
 These plots can all be opened in another window, available for further analysis. To do so, right click on the data line of interest.  Additionally, the axes scaling for many plots can be toggled between linear and logarithmic.
 
+<<<<<<< HEAD
 # Other stuff
 
 ## Concepts
@@ -320,3 +358,10 @@ completenessweb.org
 * [Adding Functionality](docs/ADDING_FUNCTIONALITY.md) 
 
   You can add your own functions to ZMAP to calculate values from the earthquake catalog.
+=======
+## Other help pages
+
+[Adding Functionality](ADDING_FUNCTIONALITY.md)
+
+[How Do I...?](HOWDOI.md)
+>>>>>>> master
