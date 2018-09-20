@@ -124,7 +124,7 @@ function aboutZmapDialog()
     
     upan = uipanel(fig,'Units','pixels','Position',[B1 50 W-2*B1 120],'BackgroundColor','w',...
         'Tag','ETH Logo container');
-    rgb=imread('resources/logos/SED_ETH_Lang_2014_RGB.jpg');
+    rgb=imread('resrc/logos/SED_ETH_Lang_2014_RGB.jpg');
     ax=axes(upan,'units','pixels','Position',[5 5 upan.Position(3:4)-10]);
     im=image(ax,rgb);
     axis(ax,'equal')

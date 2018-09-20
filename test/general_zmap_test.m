@@ -13,14 +13,14 @@ zmap -initonly
 ZG.Interactive = false;
 
 %load a catalog from an old file
-tmp = load('resources/sample/sample_data_sed.mat','a');
+tmp = load('resrc/sample/sample_data_sed.mat','a');
 c0=ZmapCatalog(tmp.a);
 
 % load a catalog via the fdsn importer
-[~, mycat] = ZmapImportManager(@import_fdsn_event,{FilterOp.importCatalog, 'resources/sample/example_fdsn_events.txt'});
+[~, mycat] = ZmapImportManager(@import_fdsn_event,{FilterOp.importCatalog, 'resrc/sample/example_fdsn_events.txt'});
 
 % load a catalog via the ascii importer
-[~, c1] = ZmapImportManager(@ascii_imp,{FilterOp.importCatalog, 'resources/sample/example_fdsn_events.txt'});
+[~, c1] = ZmapImportManager(@ascii_imp,{FilterOp.importCatalog, 'resrc/sample/example_fdsn_events.txt'});
 
 % load a catalog via the NDK importer
 [~, c3] = ZmapImportManager(@import_ndk,{FilterOp.importCatalog, '~/Desktop/jan76_dec13.ndk'});
@@ -36,7 +36,7 @@ c4 = c4.subset(c4.Latitude > 30 & c4.Latitude < 50);
 %%
 % create the zmap interactive window
 
-tmp=load('resources/sample/SED_fdsn_2000_on.mat');
+tmp=load('resrc/sample/SED_fdsn_2000_on.mat');
 mycat = tmp.catalog;
 mycat.Name = "mycat";
 

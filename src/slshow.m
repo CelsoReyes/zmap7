@@ -12,7 +12,7 @@ function setup_slideshow()
     file_extensions = {'jpg','png','bmp','gif'};
     slides = dir('this will be an empty anwser');
     for n=1:numel(file_extensions)
-        slides = [slides; dir(fullfile(hodi, 'resources','slides', ['*.', file_extensions{n}]))];  %#ok<AGROW>
+        slides = [slides; dir(fullfile(hodi, 'resrc','slides', ['*.', file_extensions{n}]))];  %#ok<AGROW>
     end
     
     fn = fullfile(slides(1).folder,{slides.name});

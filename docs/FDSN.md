@@ -3,11 +3,11 @@
 
 ZMAP is able to import catalog data from FDSN web services.  As of Sept 2018, ZMAP imports via text format, not [QuakeML](https://quake.ethz.ch/quakeml/).
 
-![FDSN catalog menu](resources/img/fdsn_catalog_menu.png)
+![FDSN catalog menu](resrc/img/fdsn_catalog_menu.png)
 
 You will be presented with a dialog window that allows you to further refine your query. 
 
-![FDSN Import Dialog](resources/img/fdsn_import_blank.png)
+![FDSN Import Dialog](resrc/img/fdsn_import_blank.png)
 
 ### Choose a provider from the drop-down
 
@@ -15,9 +15,9 @@ If a `catalog name` is not specified, then one will be automatically assigned, b
 
 When a provider is chosen, summary information about the provider will be displayed.
 
-![SED provider](resources/img/fdsn_provider.png)
+![SED provider](resrc/img/fdsn_provider.png)
 
-> Providers are automatically retrieved from the [IRIS fedcatalog service](http://service.iris.edu/irisws/fedcatalog/1/datacenters).  However, not all datacenters are associated with the fedcatalog service, and may not appear in the list.  To manually add datacenters to the list, modify the [fdsnservices.json](resources/fdsnservices.json) file using the existing services as a guide.
+> Providers are automatically retrieved from the [IRIS fedcatalog service](http://service.iris.edu/irisws/fedcatalog/1/datacenters).  However, not all datacenters are associated with the fedcatalog service, and may not appear in the list.  To manually add datacenters to the list, modify the [fdsnservices.json](resrc/fdsnservices.json) file using the existing services as a guide.
 ### Time constraints
 
 All times are UTC. Valid formats are:
@@ -38,13 +38,13 @@ Not only can the magnitude range be specified, but you can specify the magnitude
 
 * #### Rectangular Seclection
 
-  ![Rectangular Area selection](resources/img/fdsn_rect.png)
+  ![Rectangular Area selection](resrc/img/fdsn_rect.png)
 
   Technically, this is isn't rectangular... Specify the boundaries for events.
 
 * #### Radial Selection
 
-  ![Radial Area selection](resources/img/fdsn_radial.png)
+  ![Radial Area selection](resrc/img/fdsn_radial.png)
 
   Events can be requested within a specific radius of an origin point.
  

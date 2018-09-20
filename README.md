@@ -29,7 +29,7 @@ ZMAP version7.X represents a major rework of ZMAP.
 ### Loading or importing data
 
 From the welcome screen, choose the `data` menu, where you will be presented with several options including:
-* `Load Catalog (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resources/sample
+* `Load Catalog (*.mat file)` : retreive a catalog saved into a matlab data file.  Some sample data can be found in zmap/resrc/sample
 
 * <u>[`FDSN web fetch`](docs/FDSN.md)</u> : retrieve a catalog from an [FDSN web service](https://www.fdsn.org/webservices) 
 

@@ -20,8 +20,8 @@ function out=load_stations(level, filename)
     %
     % FileName:
     % path&name of a station file meeting above criteria. Samples that come with Zmap:
-    %  resources/features/stations_irisall_20170714.mat       %unfiltered IRIS station list
-    %  or  resources/features/stations_sedall_20170714.mat    %unfiltered SED station list
+    %  resrc/features/stations_irisall_20170714.mat       %unfiltered IRIS station list
+    %  or  resrc/features/stations_sedall_20170714.mat    %unfiltered SED station list
     
     % TODO Maybe these should be actually go into a get/load stations file.
     % TODO Provide ability to update the stations file?

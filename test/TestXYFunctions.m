@@ -37,7 +37,7 @@ end
 function zap = getZmapAnalysisPkg()
     
     % get catalog
-    catalogFile = 'resources/sample/SED_fdsn_2000_on.mat';
+    catalogFile = 'resrc/sample/SED_fdsn_2000_on.mat';
     c=load(catalogFile,'catalog');
     
     % set up sampling parameters
