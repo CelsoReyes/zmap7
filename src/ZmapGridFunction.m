@@ -180,6 +180,19 @@ classdef ZmapGridFunction < ZmapFunction
             end
         end
         
+        
+        function add_grid_centers(obj)
+            % show grid centers, but don't make them clickable
+            report_this_filefun();
+            dbk=dbstack(1);
+            disp(dbk(1).name);
+            
+            gph=obj.Grid.plot(gca,'ActiveOnly');
+            gph.Tag='pointgrid';
+            gph.PickableParts='none';
+            gph.Visible=char(obj.showgridcenters);
+        end
+        
         function [numeric_choice, name, desc, units] = ActiveDataColumnDetails(obj, choice)
             if ~exist('choice','var')
                 choice = obj.active_col;
@@ -325,7 +338,52 @@ classdef ZmapGridFunction < ZmapFunction
             end
         end
         
-
+        
+        function cb_deleteTab(src,ev)
+            % also delete the selection lines
+            watchon
+            drawnow nocallbacks
+            
+            tagBase = src.Tag;
+            tg=ancestor(src,'uitabgroup');
+            mySelectionChangedEvent = struct('OldValue', src, 'NewValue', ...
+                findobj(tg.Children','flat','Tag','mainmap_tab'));
+            tg.SelectionChangedFcn([],mySelectionChangedEvent);
+            regexp_str = tagBase + " .*selection";
+            delete(findobj(ancestor(src,'figure'),'-regexp','Tag',regexp_str));
+            watchoff
+        end
+        
+        
+            function cb_shading(val)
+                % must be in function because ax must be evaluated in real-time
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+                shading(ax,val)
+            end
+            
+            function cb_brighten(val)
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+                cm=colormap(ax);
+                colormap(ax,brighten(cm,val));
+            end
+            
+            function cb_alpha(val)
+                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+                ss = findobj(ax.Children,'Tag','result overlay');
+                if isprop(ss,'FaceAlpha')
+                    newAlpha = ss.FaceAlpha + val;
+                    if newAlpha < 0; newAlpha = 0; end
+                    if newAlpha > 1; newAlpha = 1; end
+                    alpha(ss,newAlpha);
+                else
+                    beep;
+                    fprintf('alpha not supported for %s\n',ss.Type);
+                end
+            end
+            
     end % Protected STATIC methods
 end
 

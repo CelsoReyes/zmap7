@@ -220,9 +220,8 @@ function incube()
         try
             ZmapMessageCenter.set_info('Save Alarm Cube?','  ');
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
-            sapa2 = ['save ' path1 file1 ' cumuall abo loc abo2 iala winlen_years'];
             if length(file1) > 1
-                eval(sapa2);
+                save([path1 file1],'cumuall','abo','loc','abo2','iala','winlen_years' )
             end
         catch ME
             warning(ME)
@@ -303,7 +302,7 @@ end
 function callbackfun_007(mysrc,myevt)
 
     callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    myprint;
+    printdlg;
 end
 
 function callbackfun_008(mysrc,myevt)
@@ -312,7 +311,7 @@ function callbackfun_008(mysrc,myevt)
     f1=gcf;
     f2=gpf;
     set(f1,'Visible','off');
-    if f1~=f2;
+    if f1~=f2
         ZmapMessageCenter();
         
     end

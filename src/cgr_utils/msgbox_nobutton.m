@@ -71,10 +71,10 @@ classdef msgbox_nobutton < handle
                 warning('duration seems fairly long %s. MATLAB is paused in meantime',char(dur))
             end
             finish = datetime + dur;
+            t=timer;
+            t.TimerFcn=@(~,~) delete(obj);
+            startat(t,finish);
             obj.ButtonVisible=true;
-            while datetime < finish && isvalid(obj.h)
-                pause(.2);
-            end
         end
             
         function move_to_mouse(obj)

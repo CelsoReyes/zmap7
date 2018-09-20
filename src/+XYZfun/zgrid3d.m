@@ -148,7 +148,7 @@ function zgrid3d_orig(sel,catalog)
             
             zvg(t5(il,5),t5(il,6),t5(il,7),:) = is(1:300);
             ram(t5(il,5),t5(il,6),t5(il,7),:) = di(is(1:300));
-            if rem(allcount,20) == 0;
+            if rem(allcount,20) == 0
                 waitbar(allcount/itotal) ;
             end
         end  % for xt5
@@ -161,7 +161,6 @@ function zgrid3d_orig(sel,catalog)
                     'ZG', 'tdiff', 't0b', 'teb', 'a', 'main', 'faults', 'mainfault',...
                     'coastline', 'yvect', 'xvect', 'tmpgri', 'll'); %FIXME savevariables
                 
-                eval(sapa2),
             end
         catch ME
             warning(ME)

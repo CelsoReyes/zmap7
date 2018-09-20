@@ -56,7 +56,7 @@ function xsectopobw()
         if sm < 1; sm = 1; end
         
         col = ceil(newa(i,7)*fac)+1; 
-        if col > 63; 
+        if col > 63 
             col = 63; 
         end
         set(pl,'Markersize',sm,'markerfacecolor',[1 1 1 ]);

@@ -179,21 +179,21 @@ function showmovi()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         v = get(cs,'value');
-        if v==1;
+        if v==1
             cur_color = 'hsv';
-        elseif v==2;
+        elseif v==2
             cur_color = 'hot';
-        elseif v==3;
+        elseif v==3
             cur_color = 'cool';
-        elseif v==4;
+        elseif v==4
             cur_color = 'pink';
-        elseif v==5;
+        elseif v==5
             cur_color = 'bone';
-        elseif v==6;
+        elseif v==6
             cur_color = 'gray';
-        elseif v==7;
+        elseif v==7
             cur_color = 'jet';
-        end;
+        end
         colormap(cur_color);
         movie(m(:,i),1,1);
     end
@@ -215,9 +215,9 @@ function showmovi()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         i=i+1;
-        if i > b1;
+        if i > b1
             i=b1;
-        end;
+        end
         movie(m(:,i),1,1);
         frame_slide.Value=i;
     end
@@ -226,9 +226,9 @@ function showmovi()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         i=i-1;
-        if i < 1;
+        if i < 1
             i=1;
-        end;
+        end
         movie(m(:,i),1,1);
         frame_slide.Value=i;
     end

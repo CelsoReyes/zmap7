@@ -22,7 +22,7 @@ function dofdim()
             if ~exist('radm', 'var') ; radm = []; end
             if ~exist('rasm', 'var') ; rasm = []; end
             
-            if isempty(radm)  &&  isempty(rasm);
+            if isempty(radm)  &&  isempty(rasm)
                 
                 rad = (rmax*((1/size(E,1))^(1/d)))/3;		% 2rmax= linear size of the hypercube enclosing a given dataset
                 ras = rmax/(2*(d+1));

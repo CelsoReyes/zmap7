@@ -108,7 +108,8 @@ function pltopo(plt,h1)
                 fac = str2double(l);
             end
             
-            if ~exist('tbase.bin', 'var');  plt = 'err';
+            if ~exist('tbase.bin', 'var')
+                plt = 'err';
                 pltopo
             else
                 
@@ -149,10 +150,8 @@ function pltopo(plt,h1)
             s3 = l(2); s4 = l(1);
             region = [s4 s3 s2 s1];
             
-            do = ['  [tmap,vlat,vlon] = mygrid_sand(region);'];
-            % end
             toflag = '2';
-            eval(do);
+            [tmap,vlat,vlon] = mygrid_sand(region);
             
             plt = 'plo2'; pltopo;
             
@@ -217,11 +216,14 @@ function pltopo(plt,h1)
             region = [s4 s3 s2 s1];
             
             % is mydem defined?
-            if ~exist('mydem', 'var'); plt = 'loadmydem'; pltopo ; end
+            if ~exist('mydem', 'var')
+                plt = 'loadmydem'; 
+                pltopo ; 
+            end
             % cut the data
-            if exist('butt', 'var');
-                if butt(1) == 'C' || butt(1) == 'H';
-                    return;
+            if exist('butt', 'var')
+                if butt(1) == 'C' || butt(1) == 'H'
+                    return
                 end
             end
             l2 = min(find(mx >= s2));
@@ -246,7 +248,7 @@ function pltopo(plt,h1)
             
             to1=findobj('Type','Figure','-and','Name','Topographic Map');
             
-            if isempty(to1);  
+            if isempty(to1)  
                 ac3 = 'new'; 
                 overtopo;
                 to1=findobj('Type','Figure','-and','Name','Topographic Map');
@@ -274,7 +276,7 @@ function pltopo(plt,h1)
         case 'plo2'
             to1=findobj('Type','Figure','-and','Name','Topographic Map');
             
-            if existFlag == 0;  
+            if existFlag == 0  
                 ac3 = 'new';
                 overtopo;
                 to1=findobj('Type','Figure','-and','Name','Topographic Map');
@@ -387,14 +389,18 @@ function pltopo(plt,h1)
                         return
                     else
                         lopa = [path1 file1];
-                        do = ['load(lopa)']; eval(do);
-                        plt = 'yourdem'; pltopo;
+                        load(lopa)
+                        plt = 'yourdem'; 
+                        pltopo;
                     end
                 case 'Help'
-                    plt = 'genhelp'; pltopo; return; return;
+                    plt = 'genhelp'; 
+                    pltopo; 
+                    return;
                     
                 case 'Cancel'
-                    ZmapMessageCenter(); return; return; return
+                    ZmapMessageCenter();
+                    return;
                     
             end %swith butt
             

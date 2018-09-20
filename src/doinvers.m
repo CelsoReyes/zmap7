@@ -31,10 +31,8 @@ function doinvers()
     infi = [ZmapGlobal.Data.Directories.output 'data.inp'];
     outfi = [ZmapGlobal.Data.Directories.output 'tmpout.dat'];
     
-    
-    comm = [ '! '   hodis '/invshell1 ',...
-        num2str(length(tmpi(:,1))) ' ' num2str(10) ' ' hodis ' ' infi  ' & ']
-    eval(comm)
+    comm = sprintf('%s %g %g %s %s &',fullfile(hodis,'invshell1',length(tmpi(:,1)), 10, hodis, infi));
+    system(comm)
     
     function prepfocal2() 
         % PREPFOCAL2 prepare the events for inversion based  on Lu Zhongs code.
@@ -65,17 +63,12 @@ function doinvers()
         fprintf(fid,'%s\n',outfi);
         
         fclose(fid);
-        comm = ['!/bin/rm ' outfi];
-        eval(comm)
         
-        comm = ['!  ' hodi '/stinvers/datasetupDD < ' ZmapGlobal.Data.Directories.output 'inmifi.dat ' ]
-        eval(comm)
+        system(['/bin/rm ' outfi])
+        system([ hodi '/stinvers/datasetupDD < ' ZmapGlobal.Data.Directories.output 'inmifi.dat '])
+        system(['grep  "1.0" ' outfi  '>'  outfi2])
         
-        comm = ['!grep  "1.0" ' outfi  '>'  outfi2];
-        eval(comm)
-        
-        comm = ['load ' ZmapGlobal.Data.Directories.output 'tmpout2.dat'];
-        eval(comm)
+        load([ZmapGlobal.Data.Directories.output,'tmpout2.dat'];
     end
     
 end

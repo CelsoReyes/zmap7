@@ -7,11 +7,17 @@ function plotala()
     %
     % This is the info window text
     %
-    
-    report_this_filefun();
+
     
     global main mainfault faults coastline
     global iala
+    
+        
+    report_this_filefun();
+    
+    an=struct();
+    anB = struct();
+    j % shared
     watchon
     
     ttlStr='The Alarm Cube Window                                ';
@@ -208,9 +214,8 @@ function plotala()
             po2 = [0;  po(1:length(po)-1)] ;
             l = find(po-po2 > 0) ;
             po3 = po(l) ;
-            do = ['an' num2str(j) ' = abo(po3,:);'];
+            an(j).data = abo(po3,:);
             disp([num2str(j) '  Anomalie groups  found'])
-            eval(do)
             pl = plot(abo(po3,1),abo(po3,2),'co');
             set(pl,'MarkerSize',5,'Linewidth',4.0,...
                 'Color',[rand rand rand])
@@ -282,9 +287,8 @@ function plotala()
                 po2 = [0;  po(1:length(po)-1)] ;
                 l = find(po-po2 > 0) ;
                 po3 = po(l) ;
-                do = ['an' num2str(j) ' = abo(po3,:);'];
+                an(j).data = abo(po3,:);
                 disp([num2str(j) '  Anomalie groups  found'])
-                eval(do)
                 abo(po3,:) =[];
             end   % while j
             
@@ -324,9 +328,8 @@ function plotala()
         % find anomalie groups
         report_this_filefun();
         
-        for i = 1:j
-            do = ['tmp = an' num2str(i) ';' ];
-            eval(do)
+        for ii = 1 : j
+            tmp=an(ii).data;
             m = [];
             for t = 1:length(tmp(:,1) )
                 xa0 = tmp(t,1);ya0 = tmp(t,2);
@@ -337,8 +340,7 @@ function plotala()
             m = sort(m);
             m2 = [0 ; m(1:length(m)-1)];
             l = find(m-m2 > 0);
-            do = ['anB' num2str(i) ' = ZG.primeCatalog.subset(m(l));' ]; %FIXME don't do this this way.
-            eval(do)
+            anB(ii).data = ZG.primeCatalog.subset(m(l));
         end
     end
     
@@ -351,10 +353,8 @@ function plotala()
         l = ni2{1};
         n = str2double(l);
         
-        do = ['ZG.newt2 = anB' num2str(n) ';' ];
-        eval(do)
-        do = ['ZG.newcat = anB' num2str(n) ';' ];
-        eval(do)
+        ZG.newt2 = anB(n).data;
+        ZG.newcat = anB(n).data;
         ctp=CumTimePlot(ZG.newt2);
         ctp.plot();
         zmap_update_displays();
@@ -520,7 +520,7 @@ function make_movie()
     function cb_print(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function cb_close(mysrc,myevt)

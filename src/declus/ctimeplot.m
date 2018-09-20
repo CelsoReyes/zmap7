@@ -133,7 +133,7 @@ function ctimeplot()
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','SortMethod','childorder')
     
-    if isempty(ZG.newcat), 
+    if isempty(ZG.newcat)
         ZG.newcat =ZG.primeCatalog;
     end
     
@@ -286,13 +286,14 @@ function ctimeplot()
         uimenu(options,'Label','Time Selection',MenuSelectedField(),@cb_time_selection);
         %uimenu(options,'Label',' Magnitude signature',MenuSelectedField(),@cb_mag_signature)
         uimenu(options,'Label','Save cumulative number curve',MenuSelectedField(),@cb_save_cumnumcurve)
-        calSave =...
-            [ 'ZmapMessageCenter.set_info(''Save Data'',''  '');',...
-            '[file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.output, ''*.dat''), ''Earthquake Datafile'');',...
-            'out=[xt;cumu2]'';',...
-            ' sapa = [''save '' path1 file1 '' out  -ascii''];',...
-            'eval(sapa) ; '];
+
         
+    end
+    function do_calSave
+        ZmapMessageCenter.set_info('Save Data','  ');
+        [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Earthquake Datafile');
+        out=[xt;cumu2]'; 
+        save([path1 file1],'out','-ascii');
     end
     
     %% callback functions
@@ -355,7 +356,10 @@ function ctimeplot()
     function cb_save_cumnumcurve(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        eval(calSave);
+        ZmapMessageCenter.set_info('Save Data','  ');
+        [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Earthquake Datafile');
+        out=[xt;cumu2]'; 
+        save([path1 file1], 'out', '-ascii');
     end
     
     function cb_info(mysrc,myevt)
@@ -379,7 +383,7 @@ function ctimeplot()
     function cb_print(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function cb_back(mysrc,myevt)

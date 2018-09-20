@@ -332,7 +332,7 @@ function varargout = exportfig(varargin)
             case 'resolution'
                 opts.resolution = LocalToNum(value,auto.resolution);
                 if ~ischar(value) | ~strcmp(value,'auto')
-                    if ~(isnumeric(value) & (numel(value) == 1)  &&  (value >= 0));
+                    if ~(isnumeric(value) & (numel(value) == 1)  &&  (value >= 0))
                         error('Resolution must be a numeric scalar >= 0');
                     end
                 end

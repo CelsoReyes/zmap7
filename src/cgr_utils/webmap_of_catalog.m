@@ -3,7 +3,7 @@ function [hwm,hwmm]=webmap_of_catalog(catalog,force)
     % using the geoweb toolbox
     %
     % see webmap, webmarker
-    iconFolder=fullfile('resources','img','ico');
+    iconFolder=fullfile('resrc','img','ico');
     icons=strcat('ball_',{'cyan';'blue1';'blue2';'purp1';'puce';'pink';'red';'orange';'yellow';'lime';'green';'mint'},'_30.png');
     %icons=icons(1:2:end);
     % TODO: future idea: this can  execute scripts in links. eg: <a heref="matlab: uisetcolor">col</a>

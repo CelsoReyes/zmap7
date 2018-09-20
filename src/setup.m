@@ -259,7 +259,6 @@ function setup()
         
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Filename?');
         save(fullfile(path1, file1),'a','faults','mainfault','coastline','main','infstri');
-        eval(sapa) ;
         close(loda);
         zmap_update_displays();
         

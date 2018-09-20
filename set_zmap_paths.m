@@ -6,10 +6,10 @@ path_list = [
     'help';
     'zmapwww';
     'importfilters';
-    'resources';
+    'resrc';
     });
     split(genpath(fullfile(hodi,'dem'))); %location for DEM data files
-    fullfile(hodi, 'resources', {'features';'sample';'focalmech'});
+    fullfile(hodi, 'resrc', {'features';'sample';'focalmech'});
     fullfile(hodi, 'src',{'afterrate';
     'cgr_utils';
     'as_class';

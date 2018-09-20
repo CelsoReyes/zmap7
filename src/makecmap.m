@@ -495,30 +495,18 @@ function makecmap(bins,fighandle)
             ui1 = uicontrol('Style','Edit','Units','Pixels',...
                 'String','cmap','FontSize',12,...
                 'Position',[120 figy-100 150 30]);
-            
-            TIMESTRING = ['[OBJ1,FIGH1] = gcbo;',...
-                'OBJHAN = get(OBJ1,''UserData'');',...
-                'LAB1 = get(OBJHAN(1),''string'');',...
-                'DATA1 = get(OBJHAN(2),''Colormap'');',...
-                'eval([LAB1,'' = DATA1;'']);',...
-                'delete(FIGH1);',...
-                'clear OBJ1 FIGH1 OBJHAN DATA1 LAB1'];
-            
+
             % OK Button
             uicontrol('Style','PushButton','Units','Pixels',...
                 'String','OK','FontSize',14,...
                 'Position',[figx/4-20 10 65 30],...
-                'UserData',[ui1 fig],'Callback',TIMESTRING)
-            
-            TIMESTRING = ['[OBJ1,FIGH1] = gcbo;',...
-                'delete(FIGH1);',...
-                'clear OBJ1 FIGH1;'];
+                'UserData',[ui1 fig],'Callback',@timestringA) %does not get data back proerly, I'd bet
             
             % Cancel Button
             uicontrol('Style','PushButton','Units','Pixels',...
                 'String','Cancel','FontSize',14,...
                 'Position',[3*figx/4-20 10 65 30],...
-                'Callback',TIMESTRING)
+                'Callback',@timestringB) %does not get data back proerly, I'd bet
             
         elseif strcmp(bins,'close')   % Close Request function
             figh = gcbf;
@@ -607,5 +595,19 @@ function makecmap(bins,fighandle)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         makecmap('close');
+    end
+
+    function timestringA(src,ev)
+        [OBJ1,FIGH1] = gcbo;
+        OBJHAN = get(OBJ1,'UserData');
+        LAB1 = get(OBJHAN(1),'string');
+        DATA1 = get(OBJHAN(2),'Colormap');
+        eval([LAB1,' = DATA1;']); % YUCK. Yuck. yuck.
+        delete(FIGH1);
+    end
+
+    function timestringB(src,ev)
+        [OBJ1,FIGH1] = gcbo;
+        delete(FIGH1);
     end
 end

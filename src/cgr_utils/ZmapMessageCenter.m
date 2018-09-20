@@ -178,8 +178,8 @@ function h = create_message_figure()
         'Tag','tsbutton','Visible','off');
     
         %rgb=imread('sedcoffee.jpg');
-        %rgb=imread('resources/logos/SED_ETH_Logo_2014_RGB.jpg');
-        rgb=imread('resources/logos/SED_Logo_2014_RGB.jpg');
+        %rgb=imread('resrc/logos/SED_ETH_Logo_2014_RGB.jpg');
+        rgb=imread('resrc/logos/SED_Logo_2014_RGB.jpg');
     ax=axes('Position',[0.05 0.1 0.9 .43]);
     im=image(ax,rgb);
     axis(ax,'equal')

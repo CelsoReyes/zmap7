@@ -84,7 +84,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
     if nargin < 4; lonlim = []; end
     
     % get the warning state
-    [s,f] = warning;
+    s = warning;
     % warning off
     
     fid = fopen('gtopo30s.dat','r');
@@ -692,8 +692,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
     %====End  === Tiles cross dateline =================
     
     % reset the warning state
-    eval(['warning ',s])
-    eval(['warning ',f])
+    warning(s)
     
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

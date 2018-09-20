@@ -74,8 +74,9 @@ function myload36(da,inda)
     
     % save the data
     [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Save Earthquake Datafile');
-    sapa2 = ['save ' path1 file1 ' a'];
-    if length(file1) > 1; eval(sapa2);end
+    if length(file1) > 1; 
+        save([path1 file1], 'a');
+    end
     
     dep1 = 0.3*(max(ZG.primeCatalog.Depth)-min(ZG.primeCatalog.Depth))+min(ZG.primeCatalog.Depth);
     dep2 = 0.6*(max(ZG.primeCatalog.Depth)-min(ZG.primeCatalog.Depth))+min(ZG.primeCatalog.Depth);

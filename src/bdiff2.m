@@ -399,7 +399,7 @@ classdef bdiff2 < ZmapFunction
             
             tx = obj.descriptive_text(gBdiff);
             delete(findobj(ax,'Tag','bvaltext'));
-            if is_standalone % unique figure, go ahead,
+            if is_standalone % unique figure, go ahead
                 rect=[0 0 1 1];
                 h2=axes('position',rect);
                 h2.Visible='off';

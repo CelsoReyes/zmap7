@@ -229,12 +229,13 @@ function cross_stress_orig()
         end
         
         if save_grid == 1
-            grid_save =...
-                [ 'ZmapMessageCenter.set_info(''Saving Grid'',''  '');',...
-                '[file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data,''*.mat''), ''Grid File Name?'') ;',...
-                ' gs = [''save '' path1 file1 '' newgri dx dy gx gy xvect yvect tmpgri ll dd dx ra ni Nmin fMaxRad tgl1 xsecx xsecy''];',...
-                ' if length(file1) > 1, eval(gs),end , ']; eval(grid_save)
-            %newgri dx dy xvect yvect tmpgri ll
+            ZmapMessageCenter.set_info('Saving Grid','  ');
+            [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data,'*.mat'), 'Grid File Name?') ;
+            vlist = split('newgri dx dy gx gy xvect yvect tmpgri ll dd dx ra ni Nmin fMaxRad tgl1 xsecx xsecy')
+            if length(file1) > 1
+                save(fullfile(path1,file1),vlist{:})
+            end
+
         end
         
         % Total number of grid points (needed for waitbar)

@@ -286,7 +286,8 @@ function varargout = btnAnalyze_Callback(h, eventdata, handles, varargin)
 
 sAuxiliaryFunction = get(handles.txtAuxiliaryFunction, 'String');
 if ~isempty(sAuxiliaryFunction)
-  eval([sAuxiliaryFunction '(handles.vResult, handles.dlgResult)']);
+  sFcn=str2func(sAuxiliaryFunction);
+  sFcn(handles.vResult, handles.dlgResult);
 end
 
 % --------------------------------------------------------------------

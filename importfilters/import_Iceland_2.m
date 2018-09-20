@@ -17,7 +17,7 @@ elseif nFunction == FilterOp.importCatalog
   nError = 1;
 
   for nCnt = 1:length(mData(:,1))
-    if rem(nCnt, 100) == 0 ;
+    if rem(nCnt, 100) == 0
       disp([num2str(nCnt) ' of ' num2str(length(mData)) ' events processed']);
     end
     try

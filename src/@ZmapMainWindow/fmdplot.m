@@ -50,8 +50,9 @@ function fmdplot(obj, tabgrouptag)
     %% plot & synchronize cross sections
     
     plotted_xs = get(ax.Children,'Tag');
-    plotted_xs = plotted_xs(startsWith(plotted_xs, 'Xsection fmd'));
-    
+    if ~isempty(plotted_xs)
+        plotted_xs = plotted_xs(startsWith(plotted_xs, 'Xsection fmd'));
+    end
     if ~isempty(plotted_xs)
         existing_xs = obj.XSectionTitles;
         plotted_xs2 = extractAfter(plotted_xs,'Xsection fmd ');

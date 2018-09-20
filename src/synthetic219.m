@@ -130,7 +130,7 @@ function synthetic219()
         tdays(:,1)=transpose([31 59 90 120 151 181 212 243 273 304 334 365]);
         tdays(:,2)=transpose([31 60 91 121 152 182 213 244 274 305 335 366]);
         swt=0;
-        if (floor(syn(I,3))>=100);
+        if (floor(syn(I,3))>=100)
             yrr=floor(syn(I,3));
         elseif (floor(syn(I,3))<=99)
             yrr=floor(syn(I,3))+1900;
@@ -157,7 +157,7 @@ function synthetic219()
         else
             disp('error in dates');
         end
-        if dys<=tdays(1,swt);
+        if dys<=tdays(1,swt)
             moo=1;
             dayy=floor(dys)+1;
             hrr=floor((dys-dayy-1)*24);
@@ -231,8 +231,7 @@ function synthetic219()
     aa_=a;
     replaceMainCatalog(synt);
     file = ['synt.mat'];
-    do = [' save ' file  ' a' ];
-    eval(do);
+    save(file, 'a');
     helpdlg('Sythetic catalogs was saved in file synth.mat')
     replaceMainCatalog(aa_) ;
     

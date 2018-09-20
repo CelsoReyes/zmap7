@@ -17,7 +17,7 @@ eqmoment=10.^(newcat(:,6).*1.2);
 
 for n=1:max(clus)
    l = clus == n; 
-   if max(l) >0; 
+   if max(l) >0
       j = j + 1; 
       emoment=sum(eqmoment(l));         %moment
       

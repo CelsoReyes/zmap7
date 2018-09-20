@@ -223,7 +223,7 @@ function cltiplot(var1)
     function callbackfun_003(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_004(mysrc,myevt)
@@ -701,7 +701,7 @@ function cltipval(var1)
             'String','Close');
         print_p = uicontrol('Style','Pushbutton',...
             'Position',[.15 .05 .1 .06],...
-            'Units','normalized','Callback', 'myprint',...
+            'Units','normalized','Callback',  @(~,~)printdlg,...
             'String','Print');
         labelPos= [.6 .05 .2 .06];
         labelList=['Mainshock| Main-Input| Sequence' ];
@@ -1073,15 +1073,13 @@ end
 function callbackfun_005(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  magn=freq_field5.String;
-  magn=eval(magn);
+  magn=str2num(freq_field5.String);
 end
  
 function callbackfun_006(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  magn=freq_field5.String;
-  magn=eval(magn);
+  magn=str2num(freq_field5.String);
 end
  
 function callbackfun_007(mysrc,myevt)

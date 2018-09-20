@@ -38,14 +38,14 @@ classdef ZmapHGridFunction < ZmapGridFunction
         % The results can be explored  also by pressing keys. This creates the mapping
         % between the keys and actions
         KeyMap = struct(...
-            'ToggleRadiusRing', 'r',...
-            'ShowValue', 'T',...
-            'ShowValueNoNan', 't',...
-            'TogglePointValue', 'v',...
-            'ChoosePointA','A',...
-            'ChoosePointB','B',...
-            'RemovePoint',sprintf('\b'),...
-            'KeyHelp','?'...
+            'ToggleRadiusRing'  , 'r',...
+            'ShowValue'         , 'T',...
+            'ShowValueNoNan'    , 't',...
+            'TogglePointValue'  , 'v',...
+            'ChoosePointA'      , 'A',...
+            'ChoosePointB'      , 'B',...
+            'RemovePoint'       , sprintf('\b'),...
+            'KeyHelp'           , '?'...
             );
         Type = 'XY';
     end
@@ -59,12 +59,12 @@ classdef ZmapHGridFunction < ZmapGridFunction
     end
     
     properties(Constant, Hidden)
-        gridMarkerSize = 5;
-        gridMarker = '+';
-        gridMarkerFaceAlpha = 0.5;
-        deemphasizeLineFcn = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
-        deemphasizeScatterFcn=@(sob) set(sob,'MarkerEdgeAlpha', 0.2);
-        deemphasizeEventsFcn = @(ev) set(ev,'MarkerEdgeColor',[0.6 0.6 0.6],'Marker','.');
+        gridMarkerSize        = 5;
+        gridMarker            = '+';
+        gridMarkerFaceAlpha   = 0.5;
+        deemphasizeLineFcn    = @(lineobject) set(lineobject, 'Color', (lineobject.Color + [3 3 3]) ./ 4);
+        deemphasizeScatterFcn = @(sob) set(sob,'MarkerEdgeAlpha', 0.2);
+        deemphasizeEventsFcn  = @(ev) set(ev,'MarkerEdgeColor',[0.6 0.6 0.6],'Marker','.');
     end
     
     methods
@@ -179,7 +179,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 else
                     arrayfun(@obj.deemphasizeEventsFcn, findobj(ax,'Type','scatter','-and','Tag','active quakes'));
                 end
-                %arrayfun(@obj.deemphasizeFcn, findobj(ax,'Type','scatter'));
                 
                 hTopos=findobj(resTab,'-regexp','Tag','topographic_map_*');
                 if ~isempty(hTopos)
@@ -222,7 +221,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             end
             
             h.Tag = 'result overlay';
-            %shading(ax,obj.ZG.shading_style);
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menus(obj,choice);
@@ -239,9 +237,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             uimenu(c,'Separator','on','Label','Close tab',...
                 MenuSelectedField(),@(~,~)delete(resTab));
-            % mapdata_viewer(obj,obj.RawCatalog,ax);
+            
             title(ax,sprintf('%s : [ %s ]',obj.RawCatalog.Name, coldesc), 'Interpreter', 'None');
-            % shading(ax,obj.ZG.shading_style);
             
             mySelectionChangedEvent = struct('OldValue', tabGroup.SelectedTab, 'NewValue', resTab);
             tabGroup.SelectedTab = resTab;
@@ -285,7 +282,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             if get(gcf,'Tag') == "Zmap Main Window"
                 theTab = obj.recreateExistingResultsTab(gcf);
                 obj.overlay(theTab, choice)
-                theTab.DeleteFcn=@cb_deleteTab
+                theTab.DeleteFcn=@ZmapGridFunction.cb_deleteTab
                 theTab.UserData = obj; % stash results in this tab for future access
                 return
             end
@@ -327,10 +324,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             xlabel(obj.ax,'Longitude')
             ylabel(obj.ax,'Latitude')
             
-            %dcm_obj=datacursormode(gcf);
-            %dcm_obj.UpdateFcn=@ZmapGridFunction.mydatacursor;
-            %dcm_obj.SnapToDataVertex='on';
-            
             if isempty(findobj(f,'Tag','lookmenu'))
                 obj.add_menus(choice);
             end
@@ -339,37 +332,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             mapdata_viewer(obj,obj.RawCatalog,f);
             
-            function cb_deleteTab(src,ev)
-                % also delete the selection lines
-                watchon
-                drawnow nocallbacks
-                
-                tagBase = src.Tag;
-                tg=ancestor(src,'uitabgroup');
-                mySelectionChangedEvent = struct('OldValue', src, 'NewValue', ...
-                    findobj(tg.Children','flat','Tag','mainmap_tab'));
-                tg.SelectionChangedFcn([],mySelectionChangedEvent);
-                regexp_str = tagBase + " .*selection";
-                delete(findobj(ancestor(src,'figure'),'-regexp','Tag',regexp_str));
-                watchoff
-            end
-            
         end % plot function
         
         function add_menus(obj,choice)
             
             add_menu_divider();
-            lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
-            shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
-            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-            activeax=findobj(activeTab.Children,'Type','axes');
+            lookmenu  = uimenu(gcf,'label','graphics','Tag','lookmenu');
+            shademenu = uimenu(lookmenu,'Label','shading','Tag','shading');
+            activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            activeax  = findobj(activeTab.Children,'Type','axes');
             
-            uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)cb_shading('interp'));
-            uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)cb_shading('flat'));
+            uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('interp'));
+            uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('flat'));
             
             plottype=uimenu(lookmenu,'Label','plot type');
-            %uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
-            %    MenuSelectedField(),@(src,~)obj.plot(choice),'Checked','on');
             
             % countour-related menu items
             
@@ -381,52 +357,19 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 MenuSelectedField(),@(src,~)contourf(choice));
             uimenu(lookmenu,'Label','change contour interval',...
                 'Enable','off',...
-                MenuSelectedField(),@(src,~)changecontours_cb(src));
+                MenuSelectedField(),@(src,~)changecontours());
             
-            % display overlay menu items
-            %{
-            uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
-                MenuSelectedField(),@obj.togglegrid_cb);
-            uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                MenuSelectedField(),{@obj.addquakes_cb, obj.RawCatalog});
-            %}
             uimenu(lookmenu,'Separator','on',...
                 'Label','brighten active map',...
-                MenuSelectedField(),@(~,~)cb_brighten(0.4));
+                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(0.4));
             uimenu(lookmenu,'Label','darken active map',...
-                MenuSelectedField(),@(~,~)cb_brighten(-0.4));
+                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(-0.4));
             
             uimenu(lookmenu,'Separator','on',...
                 'Label','increase alpha ( +0.2 )',...
-                MenuSelectedField(), @(~,~)cb_alpha( 0.2));
+                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( 0.2));
             uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
-                MenuSelectedField(), @(~,~)cb_alpha( - 0.2));
-            function cb_shading(val)
-                % must be in function because ax must be evaluated in real-time
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                shading(ax,val)
-            end
-            function cb_brighten(val)
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                cm=colormap(ax);
-                colormap(ax,brighten(cm,val));
-            end
-            function cb_alpha(val)
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                ss = findobj(ax.Children,'Tag','result overlay');
-                if isprop(ss,'FaceAlpha')
-                    newAlpha = ss.FaceAlpha + val;
-                    if newAlpha < 0; newAlpha = 0; end
-                    if newAlpha > 1; newAlpha = 1; end
-                    alpha(ss,newAlpha);
-                else
-                    beep;
-                    fprintf('alpha not supported for %s\n',ss.Type);
-                end
-            end
+                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
             
         end
         
@@ -434,7 +377,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             % If user clicks in the active axis, then the point and sample are updated
             
             if ~isvalid(obj.ax)
-                % src
                 return
             end
             mytab=obj.ax.Parent;
@@ -452,7 +394,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 [~,nearest]=min((mx-obj.Result.values.x).^2 + (my-obj.Result.values.y).^2);
                 x = obj.Result.values.x(nearest);
                 y = obj.Result.values.y(nearest);
-                % obj.nearestSamplePos = [x , y];
                 
                 % update point-specific details
                 p = obj.samplePoints(obj.pointChoice);
@@ -465,7 +406,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 
                 % update hilight
                 HL = obj.samplePoints(obj.pointChoice).thisresulthilight;
-                % HL=findobj(obj.ax.Children,'flat','Tag','thisresulthilight');
                 HL.XData = x;
                 HL.YData = y;
                 
@@ -523,7 +463,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             % UPDATE_LAYERMENU
             if isempty(container.Children)  % TODO: change to plotTag_layermeu
-                %layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
                 import callbacks.copytab
                 uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
                 for i=1:width(obj.Result.values)
@@ -531,42 +470,21 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     tmpname=obj.Result.values.Properties.VariableNames{i};
                     uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
                         'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        MenuSelectedField(),@(~,~)overlay_cb(tmpname));
-                    %MenuSelectedField(),@(~,~)plot_cb(tmpname)); %FIXME just replot the layer
+                        MenuSelectedField(),@(~,~)obj.overlay_cb(tmpname, container));
                 end
                 container.Children(end-1).Separator='on';
             end
             
             % make sure the correct option is checked
-            %layermenu=findobj(container,'Tag','layermenu');
             set(findobj(container,'Tag',myname),'Checked','on');
-            
-            % plot here
-            function plot_cb(name)
-                report_this_filefun();
-                set(findobj(container,'type','uimenu'),'Checked','off');
-                obj.plot(name);
-            end
-            
-            function overlay_cb(name)
-                report_this_filefun();
-                set(findobj(container,'type','uimenu'),'Checked','off');
-                theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
-                theTab=findobj(theTabHolder,'Tag', obj.PlotTag);
-                obj.overlay(theTab,name);
-            end
         end
         
-        function add_grid_centers(obj)
-            % show grid centers, but don't make them clickable
+        function overlay_cb(obj, name, container)
             report_this_filefun();
-            dbk=dbstack(1);
-            disp(dbk(1).name);
-            
-            gph=obj.Grid.plot(gca,'ActiveOnly');
-            gph.Tag='pointgrid';
-            gph.PickableParts='none';
-            gph.Visible=char(obj.showgridcenters);
+            set(findobj(container,'type','uimenu'),'Checked','off');
+            theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
+            theTab=findobj(theTabHolder,'Tag', obj.PlotTag);
+            obj.overlay(theTab,name);
         end
         
         function theTab = recreateExistingResultsTab(obj, f)
@@ -579,7 +497,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function updateRing(obj)
             CR = obj.samplePoints(obj.pointChoice).thisradius;
-            % CR = findobj(obj.ax,'Tag','thisradius');
             tb = obj.resultsForThisPoint;
             if obj.showRing
                 % update samplecircle
@@ -592,11 +509,9 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function updateText(obj)
             TX = obj.samplePoints(obj.pointChoice).thisresulttext;
-            % TX = findobj(obj.ax,'Tag','thisresulttext');
             myname = TX.UserData;
             if obj.showPointValue
                 % update text
-                % TX.Position = [obj.nearestSamplePos,0];
                 TX.Position = [obj.samplePoints(obj.pointChoice).X obj.samplePoints(obj.pointChoice).Y 0];
                 valstr = string(obj.Result.values.(myname)(obj.nearestSample));
                 if ismissing(valstr)
@@ -638,7 +553,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             c = obj.catalogForThisPoint;
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
             cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
-            % analysisWindows(i).add_series(c, [obj.PlotTag ' ' obj.pointChoice, ' selection'], plOpt);
             set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
             clear_empty_legend_entries(gcf);
         end
@@ -716,70 +630,10 @@ classdef ZmapHGridFunction < ZmapGridFunction
             set(obj.ax.Children,'HitTest','off');
             
             % allow for additional functionality by looking for key presses
-            f.WindowKeyPressFcn     = @keyupdate;
+            f.WindowKeyPressFcn     = @obj.keyupdate;
             
             return
             
-            function keyupdate(src, ev)
-                % translate key presses into actions
-                k = ev.Character;
-                switch k
-                    case obj.KeyMap.KeyHelp
-                        disp('Key Help')
-                        fn=fieldnames(obj.KeyMap);
-                        for i=1:numel(fn)
-                            k=obj.KeyMap.(fn{i});
-                            if k==sprintf('\b');k='backspace';
-                            elseif k==sprintf('\t'); k='tab';
-                            end
-                            fprintf('   %20s  : %s\n',fn{i},k);
-                        end
-                        
-                    case obj.KeyMap.ToggleRadiusRing
-                        obj.showRing = ~obj.showRing;
-                        
-                    case obj.KeyMap.TogglePointValue
-                        obj.showPointValue = ~obj.showPointValue;
-                        
-                    case obj.KeyMap.ShowValueNoNan
-                        disp(obj.resultsForThisPointNoNan);
-                        
-                    case obj.KeyMap.ShowValue
-                        disp(obj.resultsForThisPoint);
-                        
-                    case {upper(obj.KeyMap.ChoosePointA), lower(obj.KeyMap.ChoosePointA)}
-                        % current point will not be updated until click
-                        obj.pointChoice='A';
-                        
-                    case {upper(obj.KeyMap.ChoosePointB), lower(obj.KeyMap.ChoosePointB)}
-                        % current point will not be updated until click
-                        obj.pointChoice='B'; 
-                       
-                        
-                    case obj.KeyMap.RemovePoint
-                        p = obj.samplePoints(obj.pointChoice);
-                        p.thisresulttext.Position=[nan nan 0];
-                        set(p.thisresulthilight,'XData',nan,'YData',nan);
-                        set(p.thisradius,'XData',nan,'YData',nan);
-                        p.X = nan;
-                        p.Y = nan;
-                        p.idx= [];
-                        obj.samplePoints(obj.pointChoice)=p;
-                        if obj.pointChoice == 'B'
-                            obj.pointChoice = 'A';
-                        elseif ~isnan(obj.samplePoints('B').X)
-                            obj.pointChoice = 'B';
-                        else
-                            % do nothing
-                        end
-                        obj.update();
-                        
-                    otherwise
-                        % add additional key funcitonality here.
-                        do_nothing();
-                end
-                obj.updateClickPoint()
-            end
             function trigger_update(src,ev)
                 % start tracking the mouse location
                 wbu_tmp = f.WindowButtonUpFcn;
@@ -804,34 +658,74 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
         end
         
+        function keyupdate(obj, src, ev)
+            % translate key presses into actions
+            k = ev.Character;
+            switch k
+                case obj.KeyMap.KeyHelp
+                    disp('Key Help')
+                    fn=fieldnames(obj.KeyMap);
+                    for i=1:numel(fn)
+                        k=obj.KeyMap.(fn{i});
+                        if k==sprintf('\b')
+                            k='backspace';
+                        elseif k==sprintf('\t')
+                            k='tab';
+                        end
+                        fprintf('   %20s  : %s\n',fn{i},k);
+                    end
+                    
+                case obj.KeyMap.ToggleRadiusRing
+                    obj.showRing = ~obj.showRing;
+                    
+                case obj.KeyMap.TogglePointValue
+                    obj.showPointValue = ~obj.showPointValue;
+                    
+                case obj.KeyMap.ShowValueNoNan
+                    disp(obj.resultsForThisPointNoNan);
+                    
+                case obj.KeyMap.ShowValue
+                    disp(obj.resultsForThisPoint);
+                    
+                case {upper(obj.KeyMap.ChoosePointA), lower(obj.KeyMap.ChoosePointA)}
+                    % current point will not be updated until click
+                    obj.pointChoice='A';
+                    
+                case {upper(obj.KeyMap.ChoosePointB), lower(obj.KeyMap.ChoosePointB)}
+                    % current point will not be updated until click
+                    obj.pointChoice='B';
+                    
+                    
+                case obj.KeyMap.RemovePoint
+                    p = obj.samplePoints(obj.pointChoice);
+                    p.thisresulttext.Position=[nan nan 0];
+                    set(p.thisresulthilight,'XData',nan,'YData',nan);
+                    set(p.thisradius,'XData',nan,'YData',nan);
+                    p.X = nan;
+                    p.Y = nan;
+                    p.idx= [];
+                    obj.samplePoints(obj.pointChoice)=p;
+                    if obj.pointChoice == 'B'
+                        obj.pointChoice = 'A';
+                    elseif ~isnan(obj.samplePoints('B').X)
+                        obj.pointChoice = 'B';
+                    else
+                        do_nothing()
+                    end
+                    obj.update();
+                    
+                otherwise
+                    % add additional key functionality here.
+                    do_nothing();
+            end
+            obj.updateClickPoint()
+        end
+        
     end % Protected methods
     
 end
 
 %% helper functions
-
-function changecontours_cb()
-    % CHANGECONTOURS_CB doesn't depend on this obj at all.
-    dlgtitle='Contour interval';
-    s.prompt='Enter interval';
-    contr= findobj(gca,'Type','Contour');
-    s.value=get(contr,'LevelList');
-    if all(abs(diff(s.value)-diff(s.value(1:2))<=eps)) % eps is floating-point number spacing
-        s.toChar = @(x)sprintf('%g:%g:%g',x(1),diff(x(1:2)),x(end));
-    end
-    s.toValue = @mystr2vec;
-    answer = smart_inputdlg(dlgtitle,s);
-    set(contr,'LevelList',answer.value);
-    
-    function x=mystr2vec(x)
-        % ensures only valid characters for the upcoming eval statement
-        if ~all(ismember(x,'(),:[]01234567890.- '))
-            x = str2num(x); %#ok<ST2NM>
-        else
-            x = eval(x);
-        end
-    end
-end
 
 function pretty_colorbar(ax, cb_title, cb_units)
     h=colorbar('peer',ax, 'location','EastOutside');
@@ -863,5 +757,4 @@ function deal_with_topography(hTopos, ax, resTab)
     colormap(ax, colormap(ancestor(resTab,'figure')));
     resTab.Children=circshift(resTab.Children,-1); %new axes must be below existing
     ax.Color='none';
-    %ax2.Visible='off';
 end

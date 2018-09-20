@@ -17,13 +17,13 @@ classdef AnalysisBvalues < AnalysisWindow
         
         function prepare_axes(obj)
             % label and scale the axes
-            obj.ax.Tag = 'dvBval';
-            obj.ax.YScale='log';
-            obj.ax.YLim=[1 10000];
-            obj.ax.XLim=[-inf inf];
-            obj.ax.Title.String='B-Value';
-            obj.ax.XLabel.String='Magnitude';
-            obj.ax.YLabel.String='# Events';
+            obj.ax.Tag          = 'dvBval';
+            obj.ax.YScale       = 'log';
+            obj.ax.YLim         = [1 10000];
+            obj.ax.XLim         = [-inf inf];
+            obj.ax.Title.String = 'B-Value';
+            obj.ax.XLabel.String= 'Magnitude';
+            obj.ax.YLabel.String= '# Events';
         end
         
         function h=add_series(obj, catalog, tagID, varargin)

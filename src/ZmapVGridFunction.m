@@ -91,7 +91,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
                     MenuSelectedField(),@(src,~)contourf(choice));
                 uimenu(lookmenu,'Label','change contour interval',...
                     'Enable','off',...
-                    MenuSelectedField(),@(src,~)changecontours_cb(src));
+                    MenuSelectedField(),@(src,~)changecontours());
                 
                 % display overlay menu items
                 
@@ -168,36 +168,5 @@ classdef ZmapVGridFunction < ZmapGridFunction
             end
         end
         
-        function add_grid_centers(obj)
-            % show grid centers, but don't make them clickable
-            gph=obj.Grid.plot(gca,'ActiveOnly');
-            gph.Tag='pointgrid';
-            gph.PickableParts='none';
-            gph.Visible=char(obj.showgridcenters);
-        end
-        
     end % Protected methods
-end
-
-function changecontours_cb()
-    % CHANGECONTOURS_CB doesn't depend on this obj at all.
-    dlgtitle='Contour interval';
-    s.prompt='Enter interval';
-    contr= findobj(gca,'Type','Contour');
-    s.value=get(contr,'LevelList');
-    if all(abs(diff(s.value)-diff(s.value(1:2))<=eps)) % eps is floating-point number spacing
-        s.toChar = @(x)sprintf('%g:%g:%g',x(1),diff(x(1:2)),x(end));
-    end
-    s.toValue = @mystr2vec;
-    answer = smart_inputdlg(dlgtitle,s);
-    set(contr,'LevelList',answer.value);
-    
-    function x=mystr2vec(x)
-        % ensures only valid charaters for the upcoming eval statement
-        if ~all(ismember(x,'(),:[]01234567890.- '))
-            x = str2num(x); %#ok<ST2NM>
-        else
-            x = eval(x);
-        end
-    end
 end

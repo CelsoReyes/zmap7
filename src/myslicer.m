@@ -263,7 +263,7 @@ function myslicer(ac2)
         
         sl2=findobj('Type','Figure','-and','Name','Slice');
         
-        if ~exist(sl2);
+        if ~exist(sl2)
             chooseint();
         else
             figure(sl2)

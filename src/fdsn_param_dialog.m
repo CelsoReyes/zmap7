@@ -121,7 +121,7 @@ function data_provider_CreateFcn(hObject, eventdata, handles)
     if exist('fdsnservices.json','file')
         try
             %TODO add a way to modify data centers
-            % this is the datacenter_details structure, saved as a json file in the resources directory
+            % this is the datacenter_details structure, saved as a json file in the resrc directory
             jj=jsondecode(fileread('fdsnservices.json')); % get additional services
             for i=1:numel(jj)
                 % only include datacenters that are not already retrieved by the querying fedcatalog

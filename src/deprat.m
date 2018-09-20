@@ -122,7 +122,7 @@ function deprat()
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        myprint;
+        printdlg;
     end
     
     function callbackfun_002(mysrc,myevt)

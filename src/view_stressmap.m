@@ -112,7 +112,10 @@ function view_stressmap(bvg)
         l0 = pl2;
         pl3_n = plot([px_n(i) px_n(i)+dx_n],[py_n(i) py_n(i)+dy_n],'k','Linewidth',1,'color',[0 0 0] );
         
-        if ste(n,1) > 52  &&                 ste(n,5) < 35 ;                 set([pl_n pl3_n],'color','r'); set(pl2_n,'color','r'); l1 = pl_n;
+        if ste(n,1) > 52  && ste(n,5) < 35
+            set([pl_n pl3_n],'color','r'); 
+            set(pl2_n,'color','r'); 
+            l1 = pl_n;
         end
     end
     
