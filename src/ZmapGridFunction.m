@@ -289,6 +289,8 @@ classdef ZmapGridFunction < ZmapFunction
             end
             %ZmapAnalysisPkg();
         end
+        
+           
     end % Protected methods
     
     methods(Access=protected, Static)
@@ -354,7 +356,11 @@ classdef ZmapGridFunction < ZmapFunction
             watchoff
         end
         
-        
+        function cb_changecontours(src,ev)
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            changecontours(ax)
+        end
         function cb_shading(val)
             % must be in function because ax must be evaluated in real-time
             activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');

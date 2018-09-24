@@ -958,6 +958,7 @@ classdef ZmapMainWindow < handle
                 toShow=findobj(toShow,'flat','-not','Type','uimenu');
                 toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','on');
+                set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','off');
             elseif fromMainmap
                 % hide details specific to the main map
                 toShow = [...
@@ -970,6 +971,7 @@ classdef ZmapMainWindow < handle
                 toShow=findobj(toShow,'flat','-not','Type','uimenu');
                 toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','off');
+                set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','on');
             end
         end
  

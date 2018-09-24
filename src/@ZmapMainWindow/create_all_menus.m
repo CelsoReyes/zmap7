@@ -174,7 +174,8 @@ function create_all_menus(obj, force)
     
     
     function create_results_menu()
-        submenu = uimenu('Label','results'); %'3D-Vol');
+        ZmapHGridFunction.add_menus();
+        set(findobj(allchild(gcf),'flat','Tag','lookmenu'),'Enable','off');
     end
     
     %% individual menus to create
