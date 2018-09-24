@@ -350,7 +350,7 @@ classdef bdiff2 < ZmapFunction
       
         function ax = setup_figure(obj)
             
-            bfig=findobj(get(groot,'Children'),'flat','Type','Figure','-and','Name', obj.figName);
+            bfig=findobj(allchild(groot),'flat','Type','Figure','-and','Name', obj.figName);
             if isempty(bfig)
                 bfig=figure(obj.plotProps.Figure);
                 

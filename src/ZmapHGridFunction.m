@@ -223,7 +223,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             h.Tag = 'result overlay';
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
-                add_menus(obj,choice);
+                obj.add_menus(choice);
             end
             
             % add a menu to choose which layer / variable to examine
@@ -336,8 +336,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         function add_menus(obj,choice)
             
-            add_menu_divider();
-            lookmenu  = uimenu(gcf,'label','graphics','Tag','lookmenu');
+            lookmenu  = uimenu(gcf,'label','Results','Tag','lookmenu');
             shademenu = uimenu(lookmenu,'Label','shading','Tag','shading');
             activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             activeax  = findobj(activeTab.Children,'Type','axes');

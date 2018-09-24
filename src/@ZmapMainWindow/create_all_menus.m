@@ -24,11 +24,15 @@ function create_all_menus(obj, force)
     create_ztools_menu();
     
     
-    uimenu('Label','|Analyse:','Enable','off');
+    uimenu('Label','|>','Enable','off');
+    create_time_analysis_menu();
     create_map_analysis_menu();
     create_xsec_analysis_menu();
     create_3d_analysis_menu();
-    add_menu_divider(obj.fig);
+
+    uimenu('Label','<|>','Enable','off');
+    create_results_menu();
+    uimenu('Label','<|','Enable','off');
     
     % modify the file menu to add ZMAP stuff
     hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
@@ -40,18 +44,60 @@ function create_all_menus(obj, force)
     
     if ZmapGlobal.Data.debug
         mainhelp=findall(obj.fig,'Tag','figMenuHelp');
-        uimenu(mainhelp,'Label','Export ZmapMainWindow to workspace as zmw',...
+        uimenu(mainhelp,'Label','Export ZmapMainWindow to workspace',...
             'Separator','on', MenuSelectedField(),@export_me);
     end
     
     function export_me(~,~)
-        assignin('base','zmw',obj);
+        prompt='Variable name to use';
+        name='Export ZmapMainWindow to desktop';
+        numlines =1;
+        defaultanswer={'zmw'};
+        name=inputdlg(prompt,name,numlines,defaultanswer);
+        if ~isempty(name)
+            assignin('base',name{:},obj);
+        end
+    end
+    
+    %% time analysis_menu
+    function create_time_analysis_menu()
+        submenu = uimenu('Label','ƒ(t)');
+        uimenu(submenu,'Label','Analyze time series ...',...
+            'Separator','on',...
+            MenuSelectedField(),@(s,e)analyze_time_series_cb);
+                
+        function analyze_time_series_cb(~,~)
+            % pick which time series we are investigating
+            if ~isempty(obj.shape)
+                items = ["Selected Events (IN polygon)", "Unselected Events (OUTSIDE polygon)"];
+                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))};
+            else
+                items = ["Selected Events"];
+                items_data = {@()obj.catalog};
+            end
+            if ~isempty(obj.XSectionTitles)
+                items(end+1 : end + numel(obj.XSectionTitles)) = [strcat("XSEC: ",string(obj.XSectionTitles))];
+                for i=1:numel(obj.XSectionTitles)
+                    items_data(end+1) = {@()obj.xscats(obj.XSectionTitles{i}) };
+                end
+            end
+            items(end+1) = "FULL (raw) Catalog";
+            items_data(end+1) = {@()obj.rawcatalog};
+            [selection, ok] = listdlg('PromptString','Select catalog to analyze',...
+                'SelectionMode', 'single',...
+                'ListString',items);
+            if ok
+                c = items_data{selection};
+                ctp = CumTimePlot(items_data{selection}() );
+                ctp.plot();
+            end
+        end
     end
     
     %% map-view analysis menu
     % analyze items according to spacing in a horizontal plane
     function create_map_analysis_menu()
-        submenu = uimenu('Label','Map');
+        submenu = uimenu('Label','ƒ(x,y)'); % 'Map');
         
         import XYfun.* % the map functions exist in the XYfun package
         % AB menu
@@ -87,7 +133,7 @@ function create_all_menus(obj, force)
     % analyze items according to position & depth along strike.
     
     function create_xsec_analysis_menu()
-        submenu = uimenu('Label','X-sect');
+        submenu = uimenu('Label','ƒ(s,z)'); %'X-sect');
         uimenu(submenu,'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
         
         import XZfun.* % the cross-section functions exist in the XZfun package
@@ -112,7 +158,7 @@ function create_all_menus(obj, force)
     % analyze items in a volume
     
     function create_3d_analysis_menu()
-        submenu = uimenu('Label','3D-Vol');
+        submenu = uimenu('Label','ƒ(x,y,z)'); %'3D-Vol');
         uimenu(submenu, 'Label','Nothing here yet','Enable','off');
         
         import XYZfun.* % the cross-section functions exist in the XYZfun package
@@ -126,6 +172,10 @@ function create_all_menus(obj, force)
         
     end
     
+    
+    function create_results_menu()
+        submenu = uimenu('Label','results'); %'3D-Vol');
+    end
     
     %% individual menus to create
     
@@ -141,7 +191,7 @@ function create_all_menus(obj, force)
         
         % Make the menu to change symbol size and type
         %
-        mapoptionmenu = uimenu(obj.fig,'Label','Map Options','Tag','mainmap_menu_overlay');
+        mapoptionmenu = uimenu(obj.fig,'Label','Display','Tag','mainmap_menu_overlay');
         
         uimenu(mapoptionmenu,'Label','3-D view',...
             MenuSelectedField(),@obj.set_3d_view); % callback was plot3d
@@ -297,10 +347,6 @@ function create_all_menus(obj, force)
         %uimenu(submenu,'Label','Show main message window',...
         %    MenuSelectedField(), @(s,e)ZmapMessageCenter());
         
-        uimenu(submenu,'Label','Analyze time series ...',...
-            'Separator','on',...
-            MenuSelectedField(),@(s,e)analyze_time_series_cb);
-        
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
         % uimenu(submenu,'Label','Create [simple] cross-section',MenuSelectedField(),@obj.cb_xsection);
@@ -310,37 +356,7 @@ function create_all_menus(obj, force)
         
         uimenu(submenu,'Label','Misfit calculation',MenuSelectedField(),@(~,~)inmisfit(),...
             'Enable','off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
-        
-        function analyze_time_series_cb(~,~)
-            % pick which time series we are investigating
-            if ~isempty(obj.shape)
-                items = ["Selected Events (IN polygon)", "Unselected Events (OUTSIDE polygon)"];
-                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))}
-            else
-                items = ["Selected Events"];
-                items_data = {@()obj.catalog};
-            end
-            if ~isempty(obj.XSectionTitles)
-                items(end+1 : end + numel(obj.XSectionTitles)) = [strcat("XSEC: ",string(obj.XSectionTitles))];
-                for i=1:numel(obj.XSectionTitles)
-                    items_data(end+1) = {@()obj.xscats(obj.XSectionTitles{i}) };
-                end
-            end
-            items(end+1) = "FULL (raw) Catalog";
-            items_data(end+1) = {@()obj.rawcatalog};
-            [selection, ok] = listdlg('PromptString','Select catalog to analyze',...
-                'SelectionMode', 'single',...
-                'ListString',items);
-            if ok
-                c = items_data{selection};
-                ctp = CumTimePlot(items_data{selection}() );
-                ctp.plot();
-            end
-            
-            % analyze time series for current catalog view
-            %ctp=CumTimePlot(@()obj.catalog);
-            %ctp.plot();
-        end
+
     end
     function create_topo_map_menu(parent)
         submenu   =  uimenu(parent,'Label','Plot topographic map');

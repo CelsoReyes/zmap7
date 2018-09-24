@@ -362,7 +362,7 @@ function slicemapz()
     function my_newdep()
         watchon
         if ds < min(abs(gz)) ; ds = min(abs(gz)); end
-        chil = get(findobj(groot,'Tag','hs'),'Children');
+        chil = allchild(findobj(groot,'Tag','hs'));
         Z2 = (X2*0 + ds);
         sliceh = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sliceh);
@@ -406,7 +406,7 @@ function slicemapz()
                 end % for i
             end % for j
             
-            chil = get(findobj(groot,'Tag','hs'),'Children');
+            chil = allchild(findobj(groot,'Tag','hs'));
             Z2 = (X2*0 + ds);
             sliceh = interp3(X,Y,Z,zvg,Y2,X2,Z2);
             set(chil(length(chil)),'Cdata',sliceh);
@@ -495,7 +495,7 @@ function slicemapz()
         
         if get(hndl3,'Value') == 2
             
-            chil = get(hsc,'Children');
+            chil = allchild(hsc);
             zvals = get(chil(length(chil)),'Cdata');
             l = isnan(zvals) == 0;
             zvals(l)  = log10(1- normcdf(zvals(l),mu,varz)); %
@@ -511,7 +511,7 @@ function slicemapz()
         
         if get(hndl3,'Value') == 3
             
-            chil = get(hsc,'Children');
+            chil = allchild(hsc);
             zvals = get(chil(length(chil)),'Cdata');
             l = isnan(zvals) == 0;
             zvals(l)  = log10(normcdf(zvals(l),mu,varz));
@@ -569,7 +569,7 @@ function slicemapz()
         end
         
         
-        chil = get(findobj(groot,'Tag','hs'),'Children');
+        chil = allchild(findobj(groot,'Tag','hs'));
         Z2 = (X2*0 + ds);
         sliceh = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sliceh);
@@ -600,7 +600,7 @@ function slicemapz()
         
         mu = mean(as);
         varz = std(as);
-        chil = get(findobj(groot,'Tag','hs'),'Children');
+        chil = allchild(findobj(groot,'Tag','hs'));
         zvals = get(chil(length(chil)),'Cdata');
         l = isnan(zvals) == 0;
         zvals(l)  = log10(1- normcdf(zvals(l),mu,varz));

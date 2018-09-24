@@ -392,7 +392,7 @@ function slicemap()
                 zvg =(teb - t0b)./(10.^(avm-m*bvg));
         end
         
-        chil = get(findobj(groot,'Tag','hs'),'Children');
+        chil = allchild(findobj(groot,'Tag','hs'));
         Z2 = (X2*0 + ds);
         sliceh = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sliceh);
@@ -425,7 +425,7 @@ function slicemap()
         if ds < min(abs(gz))
             ds = min(abs(gz));
         end
-        chil = get(findobj(groot,'Tag','hs'),'Children');
+        chil = allchild(findobj(groot,'Tag','hs'));
         Z2 = (X2*0 + ds);
         sliceh = interp3(X,Y,Z,zvg,Y2,X2,Z2);
         set(chil(length(chil)),'Cdata',sliceh); %FIXME I seriously doubt this is written as intended
