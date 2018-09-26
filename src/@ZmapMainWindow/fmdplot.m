@@ -9,7 +9,7 @@ function fmdplot(obj, tabgrouptag)
     ax=findobj(myTab,'Type','axes');
     if isempty(ax)
         ax=axes(myTab);
-        ylabel(ax,'Cum # events');
+        ylabel(ax,'Cum # events > M(x)');
         xlabel(ax,'Magnitude');
         if ~isempty(obj.catalog)
             bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false); 
@@ -21,9 +21,11 @@ function fmdplot(obj, tabgrouptag)
         
     elseif isempty(obj.catalog)
         cla(ax);
-        ylabel(ax,'Cum # events');
+        ylabel(ax,'Cum # events > M(x)');
         xlabel(ax,'Magnitude');
     else
+        % axes exists, and the catalog is not empty
+        
         bAnalysisWin = ax.UserData;
         if isempty(bAnalysisWin)
             bdiffobj=bdiff2(obj.getCurrentCatalog,'ax',ax,'InteractiveMode',false);

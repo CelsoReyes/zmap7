@@ -80,14 +80,14 @@ classdef bdiff2 < ZmapFunction
             "doLinearityCheck", "fBinning", "showDiscrete","ax","bFitLineMaxMagCatalogPct"]
         
         tags = struct(...% itemdesc, tag
-            'cumevents',    'total events at or above magnitude',...
-            'discrete',     'DiscreteValuePlot',...
-            'mc',           'magnitude of Completeness',...
-            'mctext',       'mctext',...
-            'linearfit',    'linear fit',...
-            'bdinscontext', 'bdiff_from_inset context',...
-            'bdcontext',    'bdiff context',...
-            'mainbvalax',   'main_bval_axes'...
+            'cumevents',    'catalog total events at or above magnitude',...
+            'discrete',     'catalog DiscreteValuePlot',...
+            'mc',           'catalog magnitude of Completeness',...
+            'mctext',       'catalog mctext',...
+            'linearfit',    'catalog linear fit',...
+            'bdinscontext', 'catalog bdiff_from_inset context',...
+            'bdcontext',    'catalog bdiff context',...
+            'mainbvalax',   'catalog main_bval_axes'...
             )
         figName = "Frequency-magnitude distribution"
         figPos = [0.3 0.3 0.4 0.6] % normalized position for base figure
@@ -398,17 +398,17 @@ classdef bdiff2 < ZmapFunction
             obj.updatePlot();
             
             tx = obj.descriptive_text(gBdiff);
-            delete(findobj(ax,'Tag','bvaltext'));
+            delete(findobj(ax,'Tag','catalog bvaltext'));
             if is_standalone % unique figure, go ahead
                 rect=[0 0 1 1];
                 h2=axes('position',rect);
                 h2.Visible='off';
-                text(ax,.16,.14,tx,'Tag','bvaltext');
+                text(ax,.16,.14,tx,'Tag','catalog bvaltext');
             else
                 txh=text(ax,'Units','Normalized',...
                     'HorizontalAlignment','right',...
                     'Position',[.995 .75],...
-                    'String',tx,'Tag','bvaltext','Interpreter','none');
+                    'String',tx,'Tag','catalog bvaltext','Interpreter','none');
                 txh.String(end)=[];
             end
             
@@ -423,7 +423,10 @@ classdef bdiff2 < ZmapFunction
             set(ax,obj.plotProps.Axes);
             
             legend(ax,'show');
-            ax.Legend.String(~(startsWith(ax.Legend.String,'Cum') | startsWith(ax.Legend.String,'Discrete')))=[];
+            % ax.Legend.String(~(startsWith(ax.Legend.String,'Cum') | startsWith(ax.Legend.String,'Discrete')))=[];
+            if ax.Parent ~= ancestor(ax,'figure')
+                legend(ax,'hide');
+            end
             
             % created here too, for when figure is created from inset figure
             if isempty(ax.UIContextMenu)
@@ -524,7 +527,7 @@ classdef bdiff2 < ZmapFunction
                 % bvl.DisplayName=bvdispname;
             end
             
-            set(findobj(obj.ax,'Tag','bvaltext'), 'String', obj.descriptive_text());
+            set(findobj(obj.ax,'Tag','catalog bvaltext'), 'String', obj.descriptive_text());
         end
         
         function tx=descriptive_text(obj,gBdiff)
@@ -578,7 +581,7 @@ classdef bdiff2 < ZmapFunction
                 zdlg.AddCheckbox('fixedY','Fixed Y axis?',obj.myYLimIsConstant,{}, '');
                 zdlg.AddEdit('ylmin','Min Count',yl(1),'');
                 zdlg.AddEdit('ylmax','Max Count',yl(2),'');
-                [res,okpressed]=zdlg.Create('Name', 'Name', 'Axes limits for FMD');
+                [res,okpressed]=zdlg.Create('Name', 'Axes limits for FMD');
                 if ~okpressed
                     return
                 end
@@ -589,7 +592,7 @@ classdef bdiff2 < ZmapFunction
                 else
                     obj.autosetXLim();
                 end
-                obj.ax.YLim = obj.myYLim;
+                obj.ax.XLim = obj.myXLim;
                 
                 obj.myYLimIsConstant = res.fixedY;
                 if res.fixedY

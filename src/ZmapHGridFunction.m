@@ -609,12 +609,18 @@ classdef ZmapHGridFunction < ZmapGridFunction
             h = h(arrayfun(analysisWindowFilter,h));
             analysisWindows = {h.UserData};
             
-            % define how these trends will appear
+            % define how trends will appear
             plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
             plOpt.LineStyle     = '-';
             plOpt.LineWidth     = 3;
             plOpt.DisplayName   = [obj.PlotTag, ' ', obj.pointChoice,' selection'];
             plOpt.Color         = obj.colorForThisPoint;
+            switch obj.pointChoice
+                case 'A'
+                    plOpt.Ypos=0.75;
+                case 'B'
+                    plOpt.Ypos=0.55;
+            end
             
             c = obj.catalogForThisPoint;
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
@@ -630,6 +636,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 case obj.KeyMap.KeyHelp
                     disp('Key Help')
                     fn=fieldnames(obj.KeyMap);
+                    s="Certain keys affect the map...";
                     for i=1:numel(fn)
                         k=obj.KeyMap.(fn{i});
                         if k==sprintf('\b')
@@ -637,8 +644,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         elseif k==sprintf('\t')
                             k='tab';
                         end
-                        fprintf('   %20s  : %s\n',fn{i},k);
+                        s(i+1)=sprintf(' %17s  : %s',fn{i},k);
                     end
+                    s=strjoin(s, newline);
+                    disp(s);
+                    hd=helpdlg(s,'Keys with special meaning');
+                    hd.Position(3)=hd.Position(3) + 70;
+                    hButton = findobj(hd,'Tag','OKButton');
+                    hButton.Position(3) = hButton.Position(3)+70;
+                    set(findobj(hd,'Type','text'),'HorizontalAlignment','left','FontName','Courier New');
                     
                 case obj.KeyMap.ToggleRadiusRing
                     obj.showRing = ~obj.showRing;
