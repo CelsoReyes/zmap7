@@ -607,9 +607,31 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             obj.Depth          = [objA.Depth;      	objB.Depth];
             obj.Magnitude      = [objA.Magnitude;      objB.Magnitude];
             obj.MagnitudeType  = [objA.MagnitudeType;  objB.MagnitudeType];
-            obj.Dip            = [objA.Dip;            objB.Dip];
-            obj.DipDirection   = [objA.DipDirection;   objB.DipDirection];
-            obj.Rake           = [objA.Rake;           objB.Rake];
+            
+            if isempty(objA.Dip) && ~isempty(objB.Dip)
+                obj.Dip        = [nan(objA.Count,1);            objB.Dip];
+            elseif isempty(objB.Dip) && ~isempty(objA.Dip)
+                obj.Dip        = [objA.Dip;            nan(objB.Count,1)];
+            else
+                obj.Dip        = [objA.Dip;            objB.Dip];
+            end
+            
+            if isempty(objA.DipDirection) && ~isempty(objB.DipDirection)
+                obj.DipDirection        = [nan(objA.Count,1);            objB.DipDirection];
+            elseif isempty(objB.DipDirection) && ~isempty(objA.DipDirection)
+                obj.DipDirection        = [objA.DipDirection;            nan(objB.Count,1)];
+            else
+                obj.DipDirection        = [objA.DipDirection;            objB.DipDirection];
+            end
+            
+            if isempty(objA.Rake) && ~isempty(objB.Rake)
+                obj.Rake        = [nan(objA.Count,1);            objB.Rake];
+            elseif isempty(objB.Rake) && ~isempty(objA.Rake)
+                obj.Rake        = [objA.Rake;            nan(objB.Count,1)];
+            else
+                obj.Rake        = [objA.Rake;            objB.Rake];
+            end
+            
             obj.MomentTensor   = [objA.MomentTensor;   objB.MomentTensor];
             ...
                 %add additional fields here!
@@ -618,7 +640,39 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             assert(obj.Count == initialCount);
         end
         
-        function obj = removeDuplicates(obj, varargin)
+        function [C, IA] = setdiff(A, B)
+            % returns values that are in A but not in B with no repetitions. NO tolerance.
+            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
+            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSS';
+            compstrA = string(A.Date,dateFmt)+" "+string(A.Longitude)+","+string(A.Latitude)+" "+string(A.Depth)+" "+string(A.Magnitude);
+            compstrB = string(B.Date,dateFmt)+" "+ string(B.Longitude)+","+string(B.Latitude)+" "+string(B.Depth)+" "+string(B.Magnitude);
+            IA=ismember(compstrA,compstrB);
+            C=A.subset(~IA);
+        end
+        
+        function E = setxor(A,B)
+            % return combination of values that are either in A or B, but not in both. no tolerance
+            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
+            C=setdiff(A,B); % in A, not in B
+            D=setdiff(B,A); % in B, not in A
+            E = C.cat(D);
+        end
+        
+        function [C,IA,IB] = intersect(A,B)
+            % return values common to both events, no repetitions. no tolerance
+            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
+            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSS';
+            compstrA = string(A.Date,dateFmt)+" "+string(A.Longitude)+","+string(A.Latitude)+" "+string(A.Depth)+" "+string(A.Magnitude);
+            compstrB = string(B.Date,dateFmt)+" "+ string(B.Longitude)+","+string(B.Latitude)+" "+string(B.Depth)+" "+string(B.Magnitude);
+            IA=ismember(compstrA,compstrB);
+            if nargout==3
+                IB=ismember(compstrB,compstrA);
+            end
+            C=A.subset(IA);
+        end
+        
+        
+        function [obj, sameidx] = removeDuplicates(obj, varargin)
             % REMOVEDUPLICATES removes events from catalog that are similar within tolerances
             %
             % catalog = catalog.REMOVEDUPLICATES() removes the duplicates according to default
@@ -626,8 +680,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %
             % Valid Tolerances names are:
             %   'tolDist_m'  : Horizontal distance tolerance, in meters
-            %   'tolLat'     : Latitude Tolerance, in degrees
-            %   'tolLon'     : Longitude Tolerance, in degrees
             %   'tolDepth_m' : Depth Tolorance, in meters 
             %   'tolTime'    : Time tolerance (in seconds) OR a duration
             %   'tolMag'     : Magnitude Tolerance

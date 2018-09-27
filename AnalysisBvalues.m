@@ -61,7 +61,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 if ~isfield(p.Unmatched,'Color')
                     p.Unmatched.Color=[.2 .2 .2]; 
                 end
-                text(obj.ax, xStart, 10^myLogY, seriesText,'Color',p.Unmatched.Color .* 0.75,'Tag',[tagID,' txt']);
+                text(obj.ax, xStart, 10^myLogY, seriesText,'Color',p.Unmatched.Color .* 0.75,'Tag',[tagID,' txt'],'EdgeColor','none');
             end
             
             % maybe each other add_series should contribute to h, too.
