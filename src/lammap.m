@@ -42,7 +42,7 @@ function lammap()
     set(gca,'NextPlot','add')
     if length(coastline) > 1
         lc_map(coastline(:,2),coastline(:,1),s3,s4,s1,s2)
-        g = get(gca,'Children');
+        g = allchild(gca);
         set(g,'Color','k')
     end
     set(gca,'NextPlot','add')

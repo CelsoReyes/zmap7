@@ -160,7 +160,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             tabGroup = resTab.Parent;
             
             ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
-            
+            set(findobj(allchild(gcf),'Tag','lookmenu'),'Enable','on');
             if isempty(ax)
                 % copy entire main map to this axes, and de-emphasized, and
                 % then become the base for displaying results
@@ -223,7 +223,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             h.Tag = 'result overlay';
             
             if isempty(findobj(gcf,'Tag','lookmenu'))
-                add_menus(obj,choice);
+                ZmapHGridFunction.add_menus(choice);
             end
             
             % add a menu to choose which layer / variable to examine
@@ -325,7 +325,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             ylabel(obj.ax,'Latitude')
             
             if isempty(findobj(f,'Tag','lookmenu'))
-                obj.add_menus(choice);
+                ZmapHGridFunction.add_menus(choice);
             end
             
             obj.update_layermenu(myname,f);
@@ -334,44 +334,6 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
         end % plot function
         
-        function add_menus(obj,choice)
-            
-            add_menu_divider();
-            lookmenu  = uimenu(gcf,'label','graphics','Tag','lookmenu');
-            shademenu = uimenu(lookmenu,'Label','shading','Tag','shading');
-            activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-            activeax  = findobj(activeTab.Children,'Type','axes');
-            
-            uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('interp'));
-            uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('flat'));
-            
-            plottype=uimenu(lookmenu,'Label','plot type');
-            
-            % countour-related menu items
-            
-            uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
-                'Enable','off',...not fully unimplmented
-                MenuSelectedField(),@(src,~)obj.contour(choice));
-            uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
-                'Enable','off',...not fully unimplmented
-                MenuSelectedField(),@(src,~)contourf(choice));
-            uimenu(lookmenu,'Label','change contour interval',...
-                'Enable','off',...
-                MenuSelectedField(),@(src,~)changecontours());
-            
-            uimenu(lookmenu,'Separator','on',...
-                'Label','brighten active map',...
-                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(0.4));
-            uimenu(lookmenu,'Label','darken active map',...
-                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(-0.4));
-            
-            uimenu(lookmenu,'Separator','on',...
-                'Label','increase alpha ( +0.2 )',...
-                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( 0.2));
-            uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
-                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
-            
-        end
         
         function updateClickPoint(obj,src,~)
             % If user clicks in the active axis, then the point and sample are updated
@@ -428,135 +390,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     t= helptext@ZmapGridFunction(obj,subject);
             end
         end
-    end % Public methods
+        
     
-    methods(Access=protected)
-        
-        
-        function addquakes_cb(obj, src, ~, catalog)
-            report_this_filefun();
-            
-            qtag=findobj(gcf,'tag','quakes');
-            if isempty(qtag)
-                set(gca,'NextPlot','add')
-                line(catalog.Longitude, catalog.Latitude, 'Marker','o',...
-                    'MarkerSize',3,...
-                    'MarkerEdgeColor',[.2 .2 .2],...
-                    'LineStyle','none',...
-                    'Tag','quakes');
-                set(gca,'NextPlot','replace')
-            else
-                ison=qtag.Visible == "on";
-                qtag.Visible=tf2onoff(~ison);
-                src.Checked=tf2onoff(~ison);
-                drawnow
-            end
-        end
-        
-        function update_layermenu(obj, myname, container)
-            % updates the layers associated with some container. usually the context menu for a tab.
-            report_this_filefun();
-            if ~exist('container','var')
-                container=uimenu(gcf,'Label','layer');
-            end
-            
-            
-            % UPDATE_LAYERMENU
-            if isempty(container.Children)  % TODO: change to plotTag_layermeu
-                import callbacks.copytab
-                uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
-                for i=1:width(obj.Result.values)
-                    tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
-                    tmpname=obj.Result.values.Properties.VariableNames{i};
-                    uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
-                        'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        MenuSelectedField(),@(~,~)obj.overlay_cb(tmpname, container));
-                end
-                container.Children(end-1).Separator='on';
-            end
-            
-            % make sure the correct option is checked
-            set(findobj(container,'Tag',myname),'Checked','on');
-        end
-        
-        function overlay_cb(obj, name, container)
-            report_this_filefun();
-            set(findobj(container,'type','uimenu'),'Checked','off');
-            theTabHolder = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
-            theTab=findobj(theTabHolder,'Tag', obj.PlotTag);
-            obj.overlay(theTab,name);
-        end
-        
-        function theTab = recreateExistingResultsTab(obj, f)
-            % create tab for this result in the main window. Existing tab will be deleted
-            theTabHolder = findobj(f, 'Tag','main plots','-and','Type','uitabgroup');
-            delete(findobj(theTabHolder, 'Tag', obj.PlotTag))
-            
-            theTab = uitab(theTabHolder, 'Title', [obj.PlotTag ' Results'], 'Tag', obj.PlotTag);
-        end
-        
-        function updateRing(obj)
-            CR = obj.samplePoints(obj.pointChoice).thisradius;
-            tb = obj.resultsForThisPoint;
-            if obj.showRing
-                % update samplecircle
-                [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
-                set(CR,'XData',Lo,'YData',La,'LineStyle','--');
-            else
-                set(CR,'XData',nan,'YData',nan);
-            end
-        end
-        
-        function updateText(obj)
-            TX = obj.samplePoints(obj.pointChoice).thisresulttext;
-            myname = TX.UserData;
-            if obj.showPointValue
-                % update text
-                TX.Position = [obj.samplePoints(obj.pointChoice).X obj.samplePoints(obj.pointChoice).Y 0];
-                valstr = string(obj.Result.values.(myname)(obj.nearestSample));
-                if ismissing(valstr)
-                    TX.String = "  " + myname + " : <missing>";
-                else
-                    TX.String = "  " + myname + " : " + valstr;
-                end
-            else
-                TX.String = "";
-            end
-        end
-        function update(obj, ~, ~)
-            % get current point and axes
-            
-            obj.updateText();
-            obj.updateRing();
-            obj.updateSeries();
-        end
-        
-        function updateSeries(obj)
-            % update external plot(s)
-            
-            % discover external axes that are AnalysisWindow related: they will have an AnalysisWindow
-            % subclass in their UserData.
-            
-            analysisWindowFilter = @(x) ~isempty(x.UserData)&& isa(x.UserData,'AnalysisWindow');
-            
-            h = findobj(gcf,'Type','axes');
-            h = h(arrayfun(analysisWindowFilter,h));
-            analysisWindows = {h.UserData};
-            
-            % define how these trends will appear
-            plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
-            plOpt.LineStyle     = '-';
-            plOpt.LineWidth     = 3;
-            plOpt.DisplayName   = [obj.PlotTag, ' ', obj.pointChoice,' selection'];
-            plOpt.Color         = obj.colorForThisPoint;
-            
-            c = obj.catalogForThisPoint;
-            thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
-            cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
-            set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
-            clear_empty_legend_entries(gcf);
-        end
-        
         function interact(obj,myname)
             % make this results-plot interactive
             f = ancestor(obj.ax,'figure');
@@ -657,6 +492,142 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
             
         end
+            
+    end % Public methods
+    
+    methods(Access=protected)
+        
+        
+        function addquakes_cb(obj, src, ~, catalog)
+            report_this_filefun();
+            
+            qtag=findobj(gcf,'tag','quakes');
+            if isempty(qtag)
+                set(gca,'NextPlot','add')
+                line(catalog.Longitude, catalog.Latitude, 'Marker','o',...
+                    'MarkerSize',3,...
+                    'MarkerEdgeColor',[.2 .2 .2],...
+                    'LineStyle','none',...
+                    'Tag','quakes');
+                set(gca,'NextPlot','replace')
+            else
+                ison=qtag.Visible == "on";
+                qtag.Visible=tf2onoff(~ison);
+                src.Checked=tf2onoff(~ison);
+                drawnow
+            end
+        end
+        
+        function update_layermenu(obj, myname, container)
+            % updates the layers associated with some container. usually the context menu for a tab.
+            report_this_filefun();
+            if ~exist('container','var')
+                container=uimenu(gcf,'Label','layer');
+            end
+            
+            
+            % UPDATE_LAYERMENU
+            if isempty(container.Children)  % TODO: change to plotTag_layermeu
+                import callbacks.copytab
+                uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
+                for i=1:width(obj.Result.values)
+                    tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
+                    tmpname=obj.Result.values.Properties.VariableNames{i};
+                    uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
+                        'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
+                        MenuSelectedField(),@(~,~)obj.overlay_cb(tmpname, container));
+                end
+                container.Children(end-1).Separator='on';
+            end
+            
+            % make sure the correct option is checked
+            set(findobj(container,'Tag',myname),'Checked','on');
+        end
+        
+        function overlay_cb(obj, name, container)
+            report_this_filefun();
+            set(findobj(container,'type','uimenu'),'Checked','off');
+            theTabHolder    = findobj(gcf,'Tag','main plots','-and','Type','uitabgroup');
+            theTab          = findobj(theTabHolder,'Tag', obj.PlotTag);
+            obj.active_col  = name; % % % % cgr 24.9.18
+            obj.overlay(theTab,name);
+        end
+        
+        function theTab = recreateExistingResultsTab(obj, f)
+            % create tab for this result in the main window. Existing tab will be deleted
+            theTabHolder = findobj(f, 'Tag','main plots','-and','Type','uitabgroup');
+            delete(findobj(theTabHolder, 'Tag', obj.PlotTag))
+            
+            theTab = uitab(theTabHolder, 'Title', [obj.PlotTag ' Results'], 'Tag', obj.PlotTag);
+        end
+        
+        function updateRing(obj)
+            CR = obj.samplePoints(obj.pointChoice).thisradius;
+            tb = obj.resultsForThisPoint;
+            if obj.showRing
+                % update samplecircle
+                [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
+                set(CR,'XData',Lo,'YData',La,'LineStyle','--');
+            else
+                set(CR,'XData',nan,'YData',nan);
+            end
+        end
+        
+        function updateText(obj)
+            TX = obj.samplePoints(obj.pointChoice).thisresulttext;
+            myname = TX.UserData;
+            if obj.showPointValue
+                % update text
+                TX.Position = [obj.samplePoints(obj.pointChoice).X obj.samplePoints(obj.pointChoice).Y 0];
+                valstr = string(obj.Result.values.(myname)(obj.nearestSample));
+                if ismissing(valstr)
+                    TX.String = "  " + myname + " : <missing>";
+                else
+                    TX.String = "  " + myname + " : " + valstr;
+                end
+            else
+                TX.String = "";
+            end
+        end
+        function update(obj, ~, ~)
+            % get current point and axes
+            
+            obj.updateText();
+            obj.updateRing();
+            obj.updateSeries();
+        end
+        
+        function updateSeries(obj)
+            % update external plot(s)
+            
+            % discover external axes that are AnalysisWindow related: they will have an AnalysisWindow
+            % subclass in their UserData.
+            
+            analysisWindowFilter = @(x) ~isempty(x.UserData)&& isa(x.UserData,'AnalysisWindow');
+            
+            h = findobj(gcf,'Type','axes');
+            h = h(arrayfun(analysisWindowFilter,h));
+            analysisWindows = {h.UserData};
+            
+            % define how trends will appear
+            plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
+            plOpt.LineStyle     = '-';
+            plOpt.LineWidth     = 3;
+            plOpt.DisplayName   = [obj.PlotTag, ' ', obj.pointChoice,' selection'];
+            plOpt.Color         = obj.colorForThisPoint;
+            switch obj.pointChoice
+                case 'A'
+                    plOpt.Ypos=0.75;
+                case 'B'
+                    plOpt.Ypos=0.55;
+            end
+            
+            c = obj.catalogForThisPoint;
+            thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
+            cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
+            set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
+            clear_empty_legend_entries(gcf);
+        end
         
         function keyupdate(obj, src, ev)
             % translate key presses into actions
@@ -665,6 +636,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 case obj.KeyMap.KeyHelp
                     disp('Key Help')
                     fn=fieldnames(obj.KeyMap);
+                    s="Certain keys affect the map...";
                     for i=1:numel(fn)
                         k=obj.KeyMap.(fn{i});
                         if k==sprintf('\b')
@@ -672,8 +644,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
                         elseif k==sprintf('\t')
                             k='tab';
                         end
-                        fprintf('   %20s  : %s\n',fn{i},k);
+                        s(i+1)=sprintf(' %17s  : %s',fn{i},k);
                     end
+                    s=strjoin(s, newline);
+                    disp(s);
+                    hd=helpdlg(s,'Keys with special meaning');
+                    hd.Position(3)=hd.Position(3) + 70;
+                    hButton = findobj(hd,'Tag','OKButton');
+                    hButton.Position(3) = hButton.Position(3)+70;
+                    set(findobj(hd,'Type','text'),'HorizontalAlignment','left','FontName','Courier New');
                     
                 case obj.KeyMap.ToggleRadiusRing
                     obj.showRing = ~obj.showRing;
@@ -723,6 +702,102 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
     end % Protected methods
     
+    methods(Static)
+        
+        function add_menus()
+            
+            lookmenu  = uimenu(gcf,'label','Results','Tag','lookmenu');
+            shademenu = uimenu(lookmenu,'Label','shading','Tag','shading');
+            activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            activeax  = findobj(activeTab.Children,'Type','axes');
+            
+            uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('interp'));
+            uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('flat'));
+            
+            plottype=uimenu(lookmenu,'Label','plot type');
+            
+            % countour-related menu items
+            %{
+            uimenu(plottype,'Label','Plot Contours','Tag','plot_contour',...
+                'Enable','off',...not fully unimplmented
+                MenuSelectedField(),@(src,~)obj.contour(obj.active_col));
+            uimenu(plottype,'Label','Plot filled Contours','Tag','plot_contourf',...
+                'Enable','off',...not fully unimplmented
+                MenuSelectedField(),@(src,~)obj.contourf(obj.active_col));
+            %}
+            uimenu(lookmenu,'Label','change contour interval',...
+                ...'Enable','off',...
+                MenuSelectedField(), @ZmapGridFunction.cb_changecontours);
+            
+            uimenu(lookmenu,'Separator','on',...
+                'Label','brighten active map',...
+                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(0.4));
+            uimenu(lookmenu,'Label','darken active map',...
+                MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(-0.4));
+            %{
+            uimenu(lookmenu,'Separator','on',...
+                'Label','increase alpha ( +0.2 )',...
+                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( 0.2));
+            uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
+                MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
+                %}
+            uimenu(lookmenu,'Separator','on',...
+                'Label','Save results',...
+                MenuSelectedField(),@save);
+            
+            function save(src,ev)
+                obj = theObj();
+                co = class(obj);
+                if any(co=='.')
+                    co=extractAfter(co,'.');
+                end
+                saveFileOptions = {...
+                    '*.csv','Results as a ASCII file';...
+                    '*.mat', [co ' object'];...
+                    '*.fig','Entire figure';...
+                    '*.fig','Result Axes only';...
+                    '*.mat','Results as a table';...
+                    '*.txt','X, Y, VAL ASCII table'};
+                defaultSaveName = fullfile(ZmapGlobal.Data.Directories.output, co + "_results");
+                [fn,pn,fmt] = uiputfile(...
+                    saveFileOptions,...
+                    'Save as', defaultSaveName);
+                ff = fullfile(pn,fn);
+                switch fmt
+                    case 1
+                        writetable(obj.Result.values,ff,'FileType','text');
+                    case 2
+                        save(ff,'obj');
+                    case 3
+                        saveas(gcf,ff,'fig');
+                    case 4
+                        f=figure();
+                        copyobj(obj.ax,f);
+                        saveas(f,ff,'fig');
+                        delete(f);
+                    case 5
+                        myresults = obj.Result.values;
+                        save(ff,'myresults');
+                    case 6
+                        minitable = table;
+                        minitable.x = obj.Result.values.x ;
+                        minitable.y = obj.Result.values.y ;
+                        minitable.(obj.active_col)=obj.Result.values.(obj.active_col);
+                        writetable(minitable,ff,'filetype','text');
+                        
+                    otherwise
+                        disp('do not yet know how to export to :');
+                end
+                
+            end
+            function obj=theObj()
+                % in the main plots, the object is stored in the UserData of each result's tab
+                actt = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+                obj=actt.UserData;
+            end
+            
+        end
+    end
 end
 
 %% helper functions

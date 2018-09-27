@@ -29,18 +29,41 @@ classdef AnalysisBvalues < AnalysisWindow
         function h=add_series(obj, catalog, tagID, varargin)
             % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
             % fit line
+            xlm=obj.ax.XLimMode;
+            xl = obj.ax.XLim;
             
             p=inputParser();
             p.addRequired('tagID', @(x)isstring(tagID)||ischar(tagID));
+            p.addParameter('Ypos',0.6);
             p.KeepUnmatched=true;
             p.parse(tagID,varargin{:});
+            
             
             countProps = p.Unmatched;
             countProps.LineStyle='none';
             countProps.MarkerIndices='all';
             countProps.LineWidth=1;
+            obj.ax.XLimMode='auto';
             
             h=add_series@AnalysisWindow(obj, catalog, tagID, countProps);
+            
+            obj.ax.XLimMode='Manual';
+            
+            seriesText=obj.bobj.descriptive_text([]);
+            textHandle = findobj('Type','text','-and','-regexp','Tag',[tagID,' txt']);
+            xStart = range(xlim(obj.ax))*0.6 + min(xlim(obj.ax));
+            if ~isempty(textHandle)
+                textHandle.String=seriesText;
+                textHandle.Position(1)=xStart;
+            else
+                logLim = log10(ylim(obj.ax));
+                myLogY = p.Results.Ypos * range(logLim)+min(logLim);
+                if ~isfield(p.Unmatched,'Color')
+                    p.Unmatched.Color=[.2 .2 .2]; 
+                end
+                text(obj.ax, xStart, 10^myLogY, seriesText,'Color',p.Unmatched.Color .* 0.75,'Tag',[tagID,' txt'],'EdgeColor','none');
+            end
+            
             % maybe each other add_series should contribute to h, too.
             
             % magnitude of completeness point
@@ -61,7 +84,8 @@ classdef AnalysisBvalues < AnalysisWindow
             lineProps.MarkerIndices=2;
             lineProps.MarkerSize=10;
             add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
-            
+            obj.ax.XLim=xl;
+            obj.ax.XLimMode=xlm;
         end   
         
         function [x,y] = calculate(obj,catalog)

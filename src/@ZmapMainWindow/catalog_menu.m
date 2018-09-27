@@ -222,9 +222,12 @@ function catalog_menu(obj, force)
     
     
     function cb_combinecatalogs(~,~)
+        combine_catalogs;
+        %{
         ZG.newcat=comcat(ZG.Views.(myview));
         ctp=CumTimePlot(ZG.newcat);
         ctp.plot();
+        %}
     end
     
     function cb_importer(src, ev, fun)

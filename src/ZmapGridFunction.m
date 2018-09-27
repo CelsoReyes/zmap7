@@ -11,13 +11,13 @@ classdef ZmapGridFunction < ZmapFunction
         EventSelector   EventSelectionParameters        = ZmapGlobal.Data.GridSelector% how to choose events for the grid points
         NodeMinEventCount   double {mustBeInteger}     = 1; % minimum number of events in a sample for that sample to be calculated
         OverallMinEventCount   double {mustBeInteger}  = 1; % minimum number of events in catalog, for calculations to operate
-        Shape                       {mustBeShape}       = ShapeGeneral % shape to be used 
+        Shape                       {mustBeShape}       = ShapeGeneral % shape to be used
         do_memoize                                      = true;
     end
     properties(Constant,Abstract)
         
         % table with columns: Names, Descriptions, Units
-        ReturnDetails; 
+        ReturnDetails;
         
         % cell of VariableNames (chosen from first row of ReturnDetails) that
         % describe the data returned from the calculation function. [in order]
@@ -51,7 +51,7 @@ classdef ZmapGridFunction < ZmapFunction
             obj.Result.Shape = obj.Shape;
             
             % super must be called last, since it does the actual writing
-            saveToDesktop@ZmapFunction(obj) 
+            saveToDesktop@ZmapFunction(obj)
         end
         
         function obj=set.EventSelector(obj,value)
@@ -61,8 +61,8 @@ classdef ZmapGridFunction < ZmapFunction
                 obj.EventSelector = EventSelectionParameters.fromStruct(value);
             end
         end
-                
-
+        
+        
     end
     methods(Access=protected)
         
@@ -82,7 +82,7 @@ classdef ZmapGridFunction < ZmapFunction
             % allvalues(:,strcmp(fieldname,obj.ReturnDetails.Names)) = thesevalues;
             
         end
-            
+        
         function gridCalculations(obj, calculationFcn, modificationFcn)
             % GRIDCALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
             % GRIDCALCULATIONS(obj, calculationFcn, modificationfcn)
@@ -154,8 +154,8 @@ classdef ZmapGridFunction < ZmapFunction
                     mytable.Properties.VariableDescriptions(j)=obj.ReturnDetails.Units(row);
                     mytable.Properties.VariableUnits(j)=obj.ReturnDetails.Units(row);
                 end
-                    
-                    
+                
+                
             end
             obj.Result(1).values=mytable;
         end
@@ -229,7 +229,7 @@ classdef ZmapGridFunction < ZmapFunction
                 otherwise
                     error('unrecognized dialog option');
             end
-                    
+            
         end
         
         function zapObj=ZAPfrom(obj, v)
@@ -244,7 +244,7 @@ classdef ZmapGridFunction < ZmapFunction
             else
                 errfn = @error;
             end
-                
+            
             if ischar(v)||isstring(v)
                 vn = genvarname(v); % make it safe!
                 if v ~= vn
@@ -252,7 +252,7 @@ classdef ZmapGridFunction < ZmapFunction
                     return
                 end
                 try
-                vl=evalin('base',char("whos('" + v + "')"));
+                    vl=evalin('base',char("whos('" + v + "')"));
                 catch ME
                     errfn(ME.message,ME.identifier);
                     return
@@ -264,7 +264,7 @@ classdef ZmapGridFunction < ZmapFunction
                     return
                 else
                     errfn('unexpected error');
-                   return
+                    return
                 end
             end
             
@@ -289,6 +289,8 @@ classdef ZmapGridFunction < ZmapFunction
             end
             %ZmapAnalysisPkg();
         end
+        
+           
     end % Protected methods
     
     methods(Access=protected, Static)
@@ -354,65 +356,69 @@ classdef ZmapGridFunction < ZmapFunction
             watchoff
         end
         
+        function cb_changecontours(src,ev)
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            changecontours(ax)
+        end
+        function cb_shading(val)
+            % must be in function because ax must be evaluated in real-time
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            shading(ax,val)
+        end
         
-            function cb_shading(val)
-                % must be in function because ax must be evaluated in real-time
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                shading(ax,val)
+        function cb_brighten(val)
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            cm=colormap(ax);
+            colormap(ax,brighten(cm,val));
+        end
+        
+        function cb_alpha(val)
+            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            ss = findobj(ax.Children,'Tag','result overlay');
+            if isprop(ss,'FaceAlpha')
+                newAlpha = ss.FaceAlpha + val;
+                if newAlpha < 0; newAlpha = 0; end
+                if newAlpha > 1; newAlpha = 1; end
+                alpha(ss,newAlpha);
+            else
+                beep;
+                fprintf('alpha not supported for %s\n',ss.Type);
             end
-            
-            function cb_brighten(val)
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                cm=colormap(ax);
-                colormap(ax,brighten(cm,val));
-            end
-            
-            function cb_alpha(val)
-                activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-                ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-                ss = findobj(ax.Children,'Tag','result overlay');
-                if isprop(ss,'FaceAlpha')
-                    newAlpha = ss.FaceAlpha + val;
-                    if newAlpha < 0; newAlpha = 0; end
-                    if newAlpha > 1; newAlpha = 1; end
-                    alpha(ss,newAlpha);
-                else
-                    beep;
-                    fprintf('alpha not supported for %s\n',ss.Type);
-                end
-            end
-            
+        end
+        
     end % Protected STATIC methods
 end
 
 %% nice-to-have functionality for gridfucntions or its children:
-    %     Threshold: You can set the maximum size that
-    %       a volume is allowed to have in order to be
-    % displayed in the map. Therefore, areas with
-    % a low seismicity rate are not displayed.
-    % edit the size (in km) and click the mouse
-    % outside the edit window.
-    %    FixAx: You can chose the minimum and maximum
-    %values of the color-legend used.
-    %    Polygon: You can select earthquakes in a
-    %     polygon either by entering the coordinates or
-    %     defining the corners with the mouse
-    %
-    %    Circle: Select earthquakes in a circular volume:
-    %    Ni, the number of selected earthquakes can
-    %    be edited in the upper right corner of the
-    %    window.
-    %     Refresh Window: Redraws the figure, erases
-    %     selected events.
-    %
-    %     zoom: Selecting Axis -> zoom on allows you to
-    %     zoom into a region. Click and drag with
-    %     the left mouse button. type <help zoom>
-    %     for details.
-    %     Aspect: select one of the aspect ratio options
-    %     Text: You can select text items by clicking.The
-    %     selected text can be rotated, moved, you
-    %     can change the font size etc.
-    %     Double click on text allows editing it.
+%     Threshold: You can set the maximum size that
+%       a volume is allowed to have in order to be
+% displayed in the map. Therefore, areas with
+% a low seismicity rate are not displayed.
+% edit the size (in km) and click the mouse
+% outside the edit window.
+%    FixAx: You can chose the minimum and maximum
+%values of the color-legend used.
+%    Polygon: You can select earthquakes in a
+%     polygon either by entering the coordinates or
+%     defining the corners with the mouse
+%
+%    Circle: Select earthquakes in a circular volume:
+%    Ni, the number of selected earthquakes can
+%    be edited in the upper right corner of the
+%    window.
+%     Refresh Window: Redraws the figure, erases
+%     selected events.
+%
+%     zoom: Selecting Axis -> zoom on allows you to
+%     zoom into a region. Click and drag with
+%     the left mouse button. type <help zoom>
+%     for details.
+%     Aspect: select one of the aspect ratio options
+%     Text: You can select text items by clicking.The
+%     selected text can be rotated, moved, you
+%     can change the font size etc.
+%     Double click on text allows editing it.

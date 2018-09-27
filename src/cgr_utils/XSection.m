@@ -117,8 +117,11 @@ classdef XSection < handle
             obj.color = color;
             
             set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','line'), 'Color',color);
-            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','text'),...
-                'Color',color .* 0.8, 'EdgeColor',color);
+            mytexts = findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','text');
+            set(mytexts, 'Color', color .* 0.8);
+            
+            set(findobj(mytexts,'-regexp','Tag',['Xsection .*' obj.name, '$']), 'EdgeColor',color);
+            
             ax=findobj(container,'-regexp','Tag',['Xsection .*' obj.name],'Type','axes');
             if ~isempty(ax)
                 set(get(ax,'XAxis'),'color',color .* 0.5);

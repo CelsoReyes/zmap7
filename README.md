@@ -105,7 +105,7 @@ The plots on the right side of the screen will reflect statistics for the entire
 
 #### map features
 
-Several features are plotted on the map along with the earthquakes. Which ones are shown can be controlled from the `Map Options` menu.  From here, you an also choose whether to view the map in 3D or toggle its aspect ratio to more-or-less match the geographic region.
+Several features are plotted on the map along with the earthquakes. Which ones are shown can be controlled from the `Display` menu.  From here, you an also choose whether to view the map in 3D or toggle its aspect ratio to more-or-less match the geographic region.
 
 ### Selecting data of interest
 

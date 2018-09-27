@@ -4,7 +4,7 @@ function style = figtype(f)
     
     % depends upon fact that modern figures aren't children of groot
     if isa(f,"matlab.ui.Figure")
-        if ismember(f,get(groot,'Children'))
+        if ismember(f,allchild(groot))
             style = 'figure';
         else
             style = 'uifigure';

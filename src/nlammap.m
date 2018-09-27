@@ -80,7 +80,7 @@ p2=ginput(1);
     %{
     if length(coastline) > 1 %TODO what is coastline?
         lc_map(coastline(:,2),coastline(:,1),s3,s4,s1,s2)
-        g = get(gca,'Children');
+        g = allchild(gca);
         set(g,'Color','k')
         
         %catch

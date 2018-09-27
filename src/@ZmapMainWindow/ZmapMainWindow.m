@@ -218,6 +218,22 @@ classdef ZmapMainWindow < handle
             obj.pushState();
         end
         
+        function obj = showFigure(obj)
+            % this object has already been created, either show, or recreate in a new figure
+            h=findobj(0,'Type','figure');
+            m=arrayfun(@(x) isa(x.UserData,'ZmapMainWindow') && x.UserData==obj, h);
+            h=h(m);
+            
+            if ~isempty(h)
+                figure(h);
+                return
+            end
+            obj.fig = [];
+            obj.map_axes=[];
+            obj.prepareMainFigure();
+            
+        end
+        
         function xst = get.XSectionTitles(obj)
             if isempty(obj.CrossSections)
                 xst={};
@@ -657,80 +673,79 @@ classdef ZmapMainWindow < handle
         
         function prepareMainFigure(obj)
             % set up figure
+            % this is only called to create a brand-new figure.
+            
             h = msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
+            
+            
+            %% create the main figure
             if isempty(obj.fig) || ~isgraphics(obj.fig) || ~isvalid(obj.fig)
                 obj.fig = figure();
             end
+            
             obj.fig.Visible     = 'off';
-            obj.fig.Units       =  'pixels';
-            obj.fig.Position    = obj.WinPos; % in pixels
             obj.fig.Name        = 'Catalog Name and Date';
             obj.fig.Tag         = 'Zmap Main Window';
             obj.fig.NumberTitle = 'off';
+            
+            obj.fig.Units       =  'pixels';
+            obj.fig.Position    = obj.WinPos; % in pixels
             obj.fig.Units       = 'normalized'; % so that things could be resized
+            
             
             obj.fig.Pointer     = 'watch';
             
-            % add the time stamp
-            s = sprintf('Created by: ZMAP %s , %s', ZmapData.zmap_version, char(datetime));
-            uicontrol(obj.fig, 'Style', 'text', 'Units', 'normalized', 'Position',[0.67 0.0 0.3 0.05],...
-                'String', s, 'FontWeight', 'bold', 'Tag', 'zmap_watermark')
-            
-            % make sure that empty legend entries automatically disappear when the menu is called up
-            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'),...
-                'ClickedCallback',char("insertmenufcn(gcbf, 'Legend');clear_empty_legend_entries(gcf);"));
-            
-            %-- add context menus that will be used in subplots
-            
-            % add Y-axis scale toggle
-            c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
-            obj.sharedContextMenus.LogLinearYScale = c;
-            
-            % add X-axis scale toggle
-            c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
-            obj.sharedContextMenus.LogLinearXScale = c;
-            
-            % add Z-axis scale toggle
-            c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
-            obj.sharedContextMenus.LogLinearZScale = c;
-            
-            add_menu_divider(obj.fig, 'mainmap_menu_divider')
+            addTimeStamp(obj.fig);
             
             
-            obj.fig.Name = sprintf('%s [%s - %s]', obj.catalog.Name , char(min(obj.catalog.Date)),...
-                char(max(obj.catalog.Date)));
+            obj.set_figure_name();
+            
             
             TabLocation = 'top'; % 'top', 'bottom', 'left', 'right'
             
+            
+            %% initialize the varous tab groups
+            
+            % prepare the Tab Group for the main plots [main map, result maps, etc]
             obj.maingroup = uitabgroup(obj.fig,...
                 'Units',    'normalized',...
                 'Position', obj.TabGroupPositions.Main,...
                 'Visible', 'on',...
                 'SelectionChangedFcn', @obj.cb_mainMapSelectionChanged,...
                 'TabLocation', TabLocation, 'Tag', 'main plots');
-            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, [ "MAINMAP:" + obj.catalog.Name]);
-            obj.maintab.Tag = 'mainmap_tab';
             
-            %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
-            obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
-            
-            setGrid();
-            
-            
+            % prepare the Tab Group for the upper-right plots [fmd, histograms, etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.UR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
                 'TabLocation', TabLocation, 'Tag', 'UR plots');
+            
+            % prepare the Tab Group for the lower-right plots [cumulative , etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.LR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
                 'TabLocation', TabLocation, 'Tag', 'LR plots');
+            
+            
+            % prepare the Tab Group for the cross sections (subordinate to the main tab)
+            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
+            obj.maintab.Tag = 'mainmap_tab';
             
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...
                 'Position', obj.TabGroupPositions.XS,...
                 'TabLocation', TabLocation, 'Tag', 'xsections',...
                 'SelectionChangedFcn',@cb_selectionChanged, 'Visible', 'off');
+            
+            %% dress up the 
+            
+            set(findall(obj.fig, 'Type', 'uitoggletool', '-and', 'Tag', 'Annotation.InsertLegend'),...
+                'ClickedCallback',@newLegendButtonAction); % auto-hide empty legend entries
+            
+            obj.add_context_menus_for_subplots();
+            
+            
+            %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
+            obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
+            
+            obj.setGrid();
             
             obj.replot_all();
             obj.fig.Visible = 'on';
@@ -748,36 +763,66 @@ classdef ZmapMainWindow < handle
             if isempty(obj.CrossSections)
                 set(findobj('Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off')
             end
-            obj.fig.UserData = obj; % hopefully not creating a problem with the space-time-continuum.
+            
+            obj.fig.UserData = obj;
             
             if isempty(obj.rawcatalog)
                 obj.disable_non_load_menus();
             end
             obj.fig.Pointer = 'arrow';
-            % obj.fig.WindowButtonDownFcn = @callbacks.cropBasedOnAxis;
             
-            
-            
-            function setGrid()
-                
-                if isempty(obj.Grid)
-                    set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
-                    try
-                        obj.Grid = ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
-                    catch ME
-                        switch ME.identifier
-                            case 'ZMAPGRID:get_grid:TooManyGridPoints'
-                                warning(ME.identifier, 'Too many grid points. Downsampling grid\n%s',ME.message);
-                                obj.gridopt.dx = obj.gridopt.dx .* 2;
-                                obj.gridopt.dy = obj.gridopt.dy .* 2;
-                                setGrid();
-                            otherwise
-                                rethrow(ME)
-                        end
-                    end
-                    
-                end
+            function addTimeStamp(h)
+                s = sprintf('Created by: ZMAP %s , %s', ZmapData.zmap_version, char(datetime));
+                uicontrol(h, 'Style', 'text', 'Units', 'normalized', 'Position',[0.67 0.0 0.3 0.05],...
+                    'String', s, 'FontWeight', 'bold', 'Tag', 'zmap_watermark')
             end
+            
+            function newLegendButtonAction(~,~)
+                % ensure empty legend entries  disappear when the menu is called up
+                insertmenufcn(gcbf, 'Legend');
+                clear_empty_legend_entries(gcf);
+            end
+        end
+        
+        
+        function setGrid(obj)
+            
+            if isempty(obj.Grid)
+                set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
+                try
+                    obj.Grid = ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
+                catch ME
+                    switch ME.identifier
+                        case 'ZMAPGRID:get_grid:TooManyGridPoints'
+                            warning(ME.identifier, 'Too many grid points. Downsampling grid\n%s',ME.message);
+                            obj.gridopt.dx = obj.gridopt.dx .* 2;
+                            obj.gridopt.dy = obj.gridopt.dy .* 2;
+                            obj.setGrid();
+                        otherwise
+                            rethrow(ME)
+                    end
+                end
+                
+            end
+        end
+        
+        function add_context_menus_for_subplots(obj)
+            %-- add context menus that will be used in subplots
+            
+            % add Y-axis scale toggle
+            c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
+            obj.sharedContextMenus.LogLinearYScale = c;
+            
+            % add X-axis scale toggle
+            c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
+            obj.sharedContextMenus.LogLinearXScale = c;
+            
+            % add Z-axis scale toggle
+            c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
+            obj.sharedContextMenus.LogLinearZScale = c;
         end
         
         function disable_non_load_menus( obj)
@@ -794,7 +839,7 @@ classdef ZmapMainWindow < handle
             h           = findobj(obj.fig, 'Type', 'uimenu', '-depth',1, 'Label', 'Catalog');
             % disable all the other items at this level
             set(findobj(h.Children, 'flat', '-not', 'Label', 'Get/Load Catalog'), 'Enable', 'off');
-            h = get(findall(obj.fig, 'Label', 'Get/Load Catalog'), 'Children');
+            h = allchild(findall(obj.fig, 'Label', 'Get/Load Catalog'));
             if iscell(h)
                 for i = 1:numel(h)
                     set(h{i}(~startsWith(get(h{i}, 'Label'), 'from ')), 'Enable', 'off');
@@ -870,10 +915,11 @@ classdef ZmapMainWindow < handle
             end
         end
         
+        
         function set_figure_name(obj)
             obj.fig.Name = sprintf('%s [%s - %s]', obj.catalog.Name , char(min(obj.catalog.Date)),...
                 char(max(obj.catalog.Date)));
-            obj.maintab.Title = ["MAINMAP:"+ obj.catalog.Name];
+            obj.maintab.Title = "MAINMAP:"+ obj.catalog.Name;
             drawnow nocallbacks;
         end
         
@@ -904,6 +950,7 @@ classdef ZmapMainWindow < handle
                 % show details specific to the main map
                 toShow = [...
                     findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','big events');
                     findobj(obj.fig,'-regexp','Tag','catalog')...
                     ];
                     
@@ -911,10 +958,12 @@ classdef ZmapMainWindow < handle
                 toShow=findobj(toShow,'flat','-not','Type','uimenu');
                 toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','on');
+                set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','off');
             elseif fromMainmap
                 % hide details specific to the main map
                 toShow = [...
                     findobj(obj.fig,'-regexp','Tag','Xsection.*');
+                    findobj(obj.fig,'-regexp','Tag','big events');
                     findobj(obj.fig,'-regexp','Tag','catalog')...
                     ];
                 
@@ -922,6 +971,7 @@ classdef ZmapMainWindow < handle
                 toShow=findobj(toShow,'flat','-not','Type','uimenu');
                 toShow=findobj(toShow,'flat','-not','Type','axes');
                 set(toShow,'Visible','off');
+                set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','on');
             end
         end
  

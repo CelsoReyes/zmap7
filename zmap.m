@@ -115,7 +115,7 @@ function zmap(varargin)
         %get rid of message box that would exist if zmap was already opened without a catalog
         delete(findall(groot,'Tag','Msgbox_No Active Catalogs'));
         
-        zw = findall(get(groot,'Children'),'Tag','Zmap Main Window');
+        zw = findall(allchild(groot),'Tag','Zmap Main Window');
         s=sprintf('%d ZMAP windows exist\n', numel(zw));
         if ~isempty(zw)
             emptyzw = arrayfun(@(x)~isstruct(x.UserData) || isempty(x.UserData.catalog), zw);
