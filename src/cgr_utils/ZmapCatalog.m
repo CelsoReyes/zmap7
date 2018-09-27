@@ -599,51 +599,71 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             % CAT combines two catalogs
             % combinedCatalog = cat(catalogA, catalogB)
             % duplicates are not removed
-            obj = objA;
-            objA.Date           = [objA.Date;           objB.Date];
-            objA.Longitude      = [objA.Longitude;      objB.Longitude];
-            objA.Latitude       = [objA.Latitude;       objB.Latitude];
-            objA.Depth          = [objA.Depth;      	objB.Depth];
-            objA.Magnitude      = [objA.Magnitude;      objB.Magnitude];
-            objA.MagnitudeType  = [objA.MagnitudeType;  objB.MagnitudeType];
-            objA.Dip            = [objA.Dip;            objB.Dip];
-            objA.DipDirection   = [objA.DipDirection;   objB.DipDirection];
-            objA.Rake           = [objA.Rake;           objB.Rake];
-            objA.MomentTensor   = [objA.MomentTensor;   objB.MomentTensor];
+            initialCount = objA.Count + objB.Count;
+            obj = copy(objA);
+            obj.Date           = [objA.Date;           objB.Date];
+            obj.Longitude      = [objA.Longitude;      objB.Longitude];
+            obj.Latitude       = [objA.Latitude;       objB.Latitude];
+            obj.Depth          = [objA.Depth;      	objB.Depth];
+            obj.Magnitude      = [objA.Magnitude;      objB.Magnitude];
+            obj.MagnitudeType  = [objA.MagnitudeType;  objB.MagnitudeType];
+            obj.Dip            = [objA.Dip;            objB.Dip];
+            obj.DipDirection   = [objA.DipDirection;   objB.DipDirection];
+            obj.Rake           = [objA.Rake;           objB.Rake];
+            obj.MomentTensor   = [objA.MomentTensor;   objB.MomentTensor];
             ...
                 %add additional fields here!
             ...
-                objA.clearFilter();
+            obj.clearFilter();
+            assert(obj.Count == initialCount);
         end
         
         function obj = removeDuplicates(obj, varargin)
             % REMOVEDUPLICATES removes events from catalog that are similar within tolerances
-            % catalog = catalog.REMOVEDUPLICATES(tolLat, tolLon, tolDepth_m, tolTime_sec, tolMag)
+            %
+            % catalog = catalog.REMOVEDUPLICATES() removes the duplicates according to default
+            % tolerances. To specify tolerances, add them as NAME - VALUE pairs.
+            %
+            % Valid Tolerances names are:
+            %   'tolDist_m'  : Horizontal distance tolerance, in meters
+            %   'tolLat'     : Latitude Tolerance, in degrees
+            %   'tolLon'     : Longitude Tolerance, in degrees
+            %   'tolDepth_m' : Depth Tolorance, in meters 
+            %   'tolTime'    : Time tolerance (in seconds) OR a duration
+            %   'tolMag'     : Magnitude Tolerance
+            %
+            % For example:
+            %   c = mycat.removeDuplicates('tolDepth_m', 20 , 'tolTime', milliseconds(50))
+
             
             obj.sort('Date');
             orig_size = obj.Count;
             p=inputParser();
-            p.addOptional('tolLat',         0.0001);
-            p.addOptional('tolLon',         0.0001);
-            p.addOptional('tolDepth_m',     0.5);
-            p.addOptional('tolTime_sec',    0.01);
-            p.addOptional('tolMag',         0.001);
+            p.addOptional('tolDist_m'   , 10            , @(x)isscalar(x) && x>=0 );
+            p.addOptional('tolDepth_m'  , 0.5           , @(x)isscalar(x) && x>=0 );
+            p.addOptional('tolTime'     ,seconds(0.01)  , @(x)isscalar(x) && x>=0 );
+            p.addOptional('tolMag'      , 0.001         , @(x)isscalar(x) && x>=0 );
             p.parse(varargin{:})
             
             tols = p.Results;
-            fprintf('Removing duplicates with the following tolerances:\n');
-            fprintf('  Time (s): %.2f\nLat: %f\nLon: %f\nDepth (m): %f\nMag:%.3f\n',...
-                tols.tolTime_sec, tols.tolLat, tols.tolLon, tols.tolDepth_m, tols.tolMag);
-            
+            if ~isduration(tols.tolTime)
+                tols.tolTime = seconds(tols.tolTime);
+            end
+            msg.dbfprintf(['Removing duplicates\n Using Tolerances:\n'...
+            	'     Time : %10s\n Distance : %6g m\n    Depth : %6g m\n      Mag : %6.3f\n'],...
+                tols.tolTime, tols.tolDist_m, tols.tolDepth_m, tols.tolMag);
             % Dip, DipDirection, Rake, MomentTensor are not included in calculation
-            isSame = abs(diff(obj.Date)) <= seconds(tols.tolTime_sec) & ...
-                abs(diff(obj.Latitude))  <= tols.tolLat & ...
-                abs(diff(obj.Longitude)) <= tols.tolLon & ...
+            
+            dist_deg = distance(obj.Latitude(1:end-1),obj.Longitude(1:end-1),...
+                obj.Latitude(2:end),obj.Longitude(2:end));
+            
+            isSame = abs(diff(obj.Date)) <= tols.tolTime & ...
+                dist_deg <= km2deg(tols.tolDist_m / 1000) & ...
                 abs(diff(obj.Depth))     <= (tols.tolDepth_m / 1000) & ...
                 abs(diff(obj.Magnitude)) <= tols.tolMag;
             sameidx = [false; isSame];
             obj = obj.subset(~sameidx);
-            fprintf('Removed %d duplicates\n', orig_size - obj.Count);
+            msg.dbfprintf('Removed %d duplicates\n', orig_size - obj.Count);
         end
         
         function s = blurb(obj)
