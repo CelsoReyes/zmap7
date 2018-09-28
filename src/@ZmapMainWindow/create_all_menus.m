@@ -348,6 +348,9 @@ function create_all_menus(obj, force)
         %uimenu(submenu,'Label','Show main message window',...
         %    MenuSelectedField(), @(s,e)ZmapMessageCenter());
         
+        uimenu(submenu,'Label', 'Plot Current Map into Projection',...
+            MenuSelectedField(),@(~,~)create_projectedmap_from_mainmap(obj.fig));
+        
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
         % uimenu(submenu,'Label','Create [simple] cross-section',MenuSelectedField(),@obj.cb_xsection);

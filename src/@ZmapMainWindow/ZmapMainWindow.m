@@ -190,7 +190,7 @@ classdef ZmapMainWindow < handle
                 obj.mdate       = [];
                 obj.mshape      = [];
             else
-                obj.daterange   = [min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
+                obj.daterange   = bounds2(obj.rawcatalog.Date);
                 [obj.mdate, obj.mshape] = obj.filter_catalog();
             end
             % retrieve default values from ZmapGlobal.

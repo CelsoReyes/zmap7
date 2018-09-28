@@ -374,7 +374,7 @@ function orig_rc_cross_a2()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = newa.DateRange();
+        [t0b, teb] = bounds(newa.Date);
         n = newa.Count;
         tdiff = round(newa.DateSpan/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));

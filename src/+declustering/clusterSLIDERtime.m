@@ -76,8 +76,8 @@ function [ClusterID,EventType,AlgoInfo] =  clusterSLIDERtime(ShortCat,MainMag,Ba
 	
 	for i = 1:numEvents
 	    %write i to screen
-	    if rem(i,100) == 0;
-		disp(['Current Step: ',num2str(i),' of ', num2str(numEvents)]);
+		if rem(i,100) == 0;
+			fprintf('Current Step: %d of %d\n', i, numEvents);
 	    end
 	    % write to screen every 100th line
 	    

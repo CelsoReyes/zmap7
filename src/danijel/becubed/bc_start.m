@@ -106,7 +106,7 @@ function bc_start(mCatalog, hFigure, bMap, vCoastline, vFaults, rContainer, sNam
                 params.rOptions.fSizeRectX, params.rOptions.fSizeRectY);
             
             if bSaveParameter
-                % Save paramters
+                % Save parameters
                 save(sSaveParameter, 'params');
             else
                 % Perform the calculation

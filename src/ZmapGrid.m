@@ -410,8 +410,8 @@ classdef ZmapGrid
             end
             
             % corners for image
-            x = [min(obj.X) max(obj.X)];
-            y = [min(obj.Y) max(obj.Y)];
+            x = bounds2(obj.X);
+            y = bounds2(obj.Y);
             try
                 values(~obj.ActivePoints)=nan;
             catch

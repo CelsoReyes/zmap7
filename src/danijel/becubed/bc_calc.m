@@ -30,7 +30,7 @@ function [params] = bc_calc(params)
     mValueGrid_ = [];
     
     for nNode_ = 1:nNumberNodes_
-        %disp(['Calculating node ' num2str(nNode_) ' of ' num2str(nNumberNodes_)]);
+        % fprintf('Calculating node %d of %d\n', nNode_, nNumberNodes_);
         %save('node.mat', 'nNode_');
         % Create node catalog
         mNodeCatalog_ = params.mCatalog(params.rOptions.caNodeIndices{nNode_}, :);

@@ -54,7 +54,7 @@ elseif nFunction == FilterOp.importCatalog
             % Create decimal year
              uOutput(i,3) = decyear([uOutput(i,3) uOutput(i,4) uOutput(i,5) uOutput(i,8) uOutput(i,9)]);
         catch
-            disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
+            msg.dbfprintf('Import: Problem in line %d of %s. Line ignored.\n',i, sFilename);
         end
     end
 end

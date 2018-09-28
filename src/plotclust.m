@@ -52,7 +52,7 @@ function plotclust()
         'FontWeight','bold','LineWidth',3.0,...
         'Box','on','SortMethod','childorder','TickDir','out')
     
-    axis(ax,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude) min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)])
+    axis(ax,[bounds2(ZG.primeCatalog.Longitude), bounds(ZG.primeCatalog.Latitude)]);
     xlabel(ax,'Longitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
     ylabel(ax,'Latitude [deg]','FontWeight','bold','FontSize',ZG.fontsz.m)
     strib = [  ' Clusters in '  ZG.primeCatalog.Name ': '  char(min(ZG.primeCatalog.Date),'uuuu-MM-dd hh:mm') ' to ' char(max(ZG.primeCatalog.Date),'uuuu-MM-dd hh:mm') ];

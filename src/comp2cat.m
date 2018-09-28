@@ -38,7 +38,7 @@ function comp2cat()
         
         sdlg.prompt='Maximum distance of events in km';sdlg.value=dlmax;
         sdlg(2).prompt= 'Maximum Time Seperation in Minutes';sdlg(2).value=timax;
-        [~,~,dimax, timax]=smart_inputdlg('Input paramters: Identical events',sdlg);
+        [~,~,dimax, timax]=smart_inputdlg('Input parameters: Identical events',sdlg);
         id = [];
         
         %% do the comparison

@@ -81,7 +81,7 @@ function csubcat()
     %
     
     
-    [t0b, teb] = ZG.primeCatalog.DateRange() ;
+    [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
     n = ZG.primeCatalog.Count;
     tdiff =round(teb - t0b)/days(ZG.bin_dur);
     

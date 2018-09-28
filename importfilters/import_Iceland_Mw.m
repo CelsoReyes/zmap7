@@ -30,7 +30,7 @@ elseif nFunction == FilterOp.importCatalog
           return
         end
       end
-      disp(['Import: Problem in line ' num2str(nCnt) ' of ' sFilename '. Line ignored.']);
+      msg.fprintf('Import: Problem in line %d of %s. Line ignored.\n', nCnt, sFilename);
       %uOutput(nCnt,:) = nan;
     end
   end

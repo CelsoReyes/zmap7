@@ -141,7 +141,7 @@ function orig_inmakegr(catalog)
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = catalog.DateRange() ;
+        [t0b, teb] = bounds(catalog.Date) ;
         n = catalog.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         cumu = zeros(length(t0b:days(ZG.bin_dur):teb)+2);

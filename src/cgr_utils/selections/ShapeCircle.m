@@ -133,8 +133,8 @@ classdef ShapeCircle < ShapeGeneral
         end
         
         function finishedMoving(obj, movedObject, deltas)
-            centerX = mean([min(movedObject.XData),max(movedObject.XData)]);
-            centerY = mean([min(movedObject.YData),max(movedObject.YData)]);
+            centerX = mean(bounds2(movedObject.XData));
+            centerY = mean(bounds2(movedObject.YData));
             
             obj.Radius=obj.Radius.* abs(deltas(3)); % NO NEGATIVE RADII
             obj.Points=[centerX,centerY];

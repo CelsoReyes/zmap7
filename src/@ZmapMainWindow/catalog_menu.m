@@ -100,8 +100,8 @@ function catalog_menu(obj, force)
             obj.rawcatalog = mcm.recall();
             
             [obj.mshape,obj.mdate]=obj.filter_catalog();
-            obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
-            obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
+            obj.map_axes.XLim=bounds2(obj.rawcatalog.Longitude);
+            obj.map_axes.YLim=bounds2(obj.rawcatalog.Latitude);
             
             hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
             hh.delay_for_close(1);
@@ -200,8 +200,8 @@ function catalog_menu(obj, force)
         
         % adjust the size of the main map if the current figure IS the main map
         set(obj.map_axes,...
-            'XLim',[min(obj.catalog.Longitude),max(obj.catalog.Longitude)],...
-            'YLim',[min(obj.catalog.Latitude),max(obj.catalog.Latitude)]);
+            'XLim',bounds2(obj.catalog.Longitude),...
+            'YLim',bounds2(obj.catalog.Latitude));
     end
     
     function cb_editrange(~,~)

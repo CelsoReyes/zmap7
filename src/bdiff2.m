@@ -678,7 +678,7 @@ classdef bdiff2 < ZmapFunction
         end
         
         function autosetXLim(obj)
-            obj.myXLim = [min(obj.RawCatalog.Magnitude)-0.5  max(obj.RawCatalog.Magnitude)+0.5];
+            obj.myXLim = bounds2(obj.RawCatalog.Magnitude) + [-0.5, 0.5];
         end
         
         function autosetYLim(obj)

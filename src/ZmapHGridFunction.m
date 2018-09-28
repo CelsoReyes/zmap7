@@ -23,7 +23,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         
         nearestSample   = 0;         % current index (where user clicked) within the result table
         lastPoint       = [nan nan]; % x, y of click
-        pointChoice (1,1) char   {mustBeMember(pointChoice,{'A','B'})}   = 'A'; % choose points for comparison. 'A', or 'B'
+        pointChoice (1,1) char   {mustBeMember(pointChoice,{'A','B','-'})}   = 'A'; % choose points for comparison. 'A', or 'B'
         samplePoints = containers.Map(); % track individual points
         
         ColorBy {mustBeMember(ColorBy,{'result','choice'})} = 'choice'

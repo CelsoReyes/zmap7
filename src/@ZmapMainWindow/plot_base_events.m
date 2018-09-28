@@ -166,8 +166,8 @@ function plot_base_events(obj, container, featurelist)
     end
     
     function cb_zoom(~ ,~)
-        xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
-        yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
+        xl = bounds2(obj.catalog.Longitude);
+        yl = bounds2(obj.catalog.Latitude);
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end
@@ -178,8 +178,8 @@ function plot_base_events(obj, container, featurelist)
             return
         end
         ol = obj.shape.Outline; % as [X, Y]
-        xl = [min(ol(:,1)) max(ol(:,1))];
-        yl = [min(ol(:,2)) max(ol(:,2))];
+        xl = bounds2(ol(:,1));
+        yl = bounds2(ol(:,2));
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end

@@ -65,7 +65,7 @@ function clpval(var1)
             autop=1;
         end
         %calculate start -end time of overall catalog
-        [t0b, teb] = ZG.newt2.DateRange() ;
+        [t0b, teb] = bounds(ZG.newt2.Date) ;
         tdiff=days(teb-t0b);       %time difference in days
         
         par3=tdiff/100;

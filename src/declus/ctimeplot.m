@@ -146,7 +146,7 @@ function ctimeplot()
     %R
     statime=[];
     par2 = ZG.bin_dur;
-    [t0b, teb] = ZG.primeCatalog.DateRange() ;
+    [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
     n = ZG.newt2.Count;
     ttdif=days(teb - t0b);
     if ttdif>10                 %select bin length respective to time in catalog

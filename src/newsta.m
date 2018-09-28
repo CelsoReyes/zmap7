@@ -21,7 +21,7 @@ function newsta(sta, catalog)
     [ZG.compare_window_dur, ZG.bin_dur] = choose_parameters(ZG.compare_window_dur, ZG.bin_dur); % window length, bin length
     
     
-    [t0b, teb] = catalog.DateRange() ;
+    [t0b, teb] = bounds(catalog.Date) ;
     tdiff = round((teb - t0b)/ZG.bin_dur); % in days/ZG.bin_dur
     
     % for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.

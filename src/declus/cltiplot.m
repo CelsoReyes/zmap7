@@ -92,7 +92,7 @@ function cltiplot(var1)
     l = ZG.newt2.Magnitude == bigmag;
     big = ZG.newt2.subset(l);
     %calculate start -end time of overall catalog
-    [t0b, teb] = ZG.newt2.DateRange() ;
+    [t0b, teb] = bounds(ZG.newt2.Date) ;
     n = ZG.newt2.Count;
     tdiff = days(teb - t0b);
     par5=tdiff/100;         %bin length is 1/100 of timedifference(in days)
@@ -303,7 +303,7 @@ function cllta(var1)
         set(freq_slider,'Value',years(ZG.compare_window_dur_v3));
     end
     
-    [t0b, teb] = ZG.primeCatalog.DateRange() ;
+    [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
     n = ZG.primeCatalog.Count;
     tdiff = round((teb - t0b)/days(par5));
     ZG.compare_window_dur_v3 = days(winlen_days*days(par5));
@@ -508,7 +508,7 @@ function cltipval(var1)
         
         ZG.newt2=ZG.ttcat;
         %calculate start -end time of overall catalog
-        [t0b, teb] = ZG.newt2.DateRange() ;
+        [t0b, teb] = bounds(ZG.newt2.Date) ;
         tdiff=days(teb-t0b);       %time difference in days
         par3=tdiff/100;
         par5=par3;

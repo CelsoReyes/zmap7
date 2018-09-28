@@ -14,7 +14,7 @@ function [rRelmTest] = relm_LTest4(vRatesH, vRatesN, nNumberSimulation, fMagThre
     %   bTestBoth                     0 (default): simulate only based on the null hypothesis, 1: simulate based on both hypotheses
     %   bDrawFigure                   Draw the cumulative density plot after testing (default: off)
     %
-    % Output paramters:
+    % Output parameters:
     %   rRelmTest.fAlpha              Alpha-value of the cumulative density
     %   rRelmTest.fBeta               Beta-value of the cumulative density
     %   rRelmTest.vSimValues_H        Vector containing the sorted simulated numbers of events for the test hypothesis

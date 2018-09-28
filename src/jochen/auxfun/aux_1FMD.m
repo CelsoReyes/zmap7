@@ -16,7 +16,7 @@ function aux_1FMD(params, hParentFigure)
     set(gca,'NextPlot','add');
     % Select a point in the plot window with the mouse
     [fX, fY] = ginput(1);
-    disp(['X: ' num2str(fX) ' Y: ' num2str(fY)]);
+    fprintf('X: %g Y: %g\n', fX, FY);
     % Plot a small circle at the chosen place
     plot(fX,fY,'ok');
     

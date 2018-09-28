@@ -33,12 +33,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
     %   removeDuplicates - remove duplicate events, based on tolerance values
     %   subset - get a subset of the catalog, based on an index (numeric, or logical)
     %
-    %   Range methods:
-    %
-    %   getRange - get the min and max range for specified field
-    %   DateRange - get the min and max date for this catalog
-    %   MagnitudeRange - get the min and max magnitude for this catalog
-    %
     %   Output Methods:
     %
     %   disp - display simple details for catalog
@@ -206,7 +200,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function out = get.DateSpan(obj)
             % dspan = obj.DateSpan  returns difference between min & max dates
-            out = max(obj.Date) - min(obj.Date);
+            out = range(obj.Date);
             if days(out)>5
                 out.Format = 'd';
             end
@@ -228,41 +222,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 assert(size(value,2) == 6,...
                     'expect moment tensors to have 6 columns %s:', strjoin(MomentTensorColumns,', '));
                 obj.MomentTensor     = array2table(value, 'VariableNames', MomentTensorColumns);
-            end
-        end
-        
-        function [a, b] = getRange(obj,fieldname)
-            switch nargout
-                case 2
-                    a = min(obj.(fieldname));
-                    b = max(obj.(fieldname));
-                otherwise
-                    a = [min(obj.(fieldname)), max(obj.(fieldname))];
-            end
-        end
-        function [a, b] = DateRange(obj)
-            % DATERANGE get min and max dates from catalog
-            % A = catalog.DATERANGE() will return a 1x2 vector [minDate, maxDate]
-            % [minDate, maxDate] = catalog.DATERANGE()
-            switch nargout
-                case 2
-                    a = min(obj.Date);
-                    b = max(obj.Date);
-                otherwise
-                    a = [min(obj.Date), max(obj.Date)];
-            end
-        end
-        
-        function [a, b] = MagnitudeRange(obj)
-            % MAGNITUDERANGE get min and max magnitudes from catalog
-            % A = catalog.MAGNITUDERANGE() will return a 1x2 vector [minMag, maxMag]
-            % [minmag, maxmag] obj.MAGNITUDERANGE()
-            switch nargout
-                case 2
-                    a = min(obj.Magnitude);
-                    b = max(obj.Magnitude);
-                otherwise
-                    a = [min(obj.Magnitude), max(obj.Magnitude)];
             end
         end
         

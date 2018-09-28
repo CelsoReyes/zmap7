@@ -12,7 +12,7 @@ function myload36(da,inda)
     
     % Lets make sure the file is closed...
     safe_fclose(fid);
-    % reset paramteres
+    % reset parameteres
     replaceMainCatalog([]); b = []; n = 0;
     
     if inda == 1

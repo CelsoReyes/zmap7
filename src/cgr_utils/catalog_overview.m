@@ -20,13 +20,12 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     
     big_evt_minmag = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     bigEventCat = mycat.subset(mycat.Magnitude > big_evt_minmag);
-    daterange = mycat.DateRange;
-    minti = daterange(1);
-    maxti  = daterange(2);
-    magrange = mycat.MagnitudeRange;
+    [minti, maxti] = bounds(mycat.Date);
+    daterange = [minti, maxti];
+    magrange = mycat.MagnitudeLims;
     minma = magrange(1);
     maxma = magrange(2);
-    depthrange= mycat.DepthRange;
+    depthrange= mycat.DepthLims;
     mindep = depthrange(1);
     maxdep = depthrange(2);
     
@@ -290,9 +289,9 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         % following code originally from sele_sub.m
         %    Create  reduced (in time and magnitude) catalogs "primeCatalog" and "newcat"
         %
-        mycat.DepthRange=[mindep, maxdep];
-        mycat.DateRange=[minti, maxti];
-        mycat.MagnitudeRange=[minma, maxma];
+        mycat.DepthLims=[mindep, maxdep];
+        mycat.DateLims=[minti, maxti];
+        mycat.MagnitudeLims=[minma, maxma];
         
         %create catalog of "big events" if not merged with the original one:
         %

@@ -222,7 +222,7 @@ function pt_start(mCatalog, hFigure, bMap, rContainer, sName)
             end
             
             if bSaveParameter
-                % Save paramters
+                % Save parameters
                 save(sSaveParameter, 'params');
             else
                 %       % Determine the overall magnitude of completeness and overall b-value

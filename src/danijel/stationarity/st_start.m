@@ -106,7 +106,7 @@ function st_start(mCatalog, hFigure, bMap, rContainer)
             end
             
             if bSaveParameter
-                % Save paramters
+                % Save parameters
                 save(sSaveParameter, 'params');
             else
                 % Perform the calculation

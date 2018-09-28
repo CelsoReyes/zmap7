@@ -12,7 +12,7 @@ classdef ZmapCatalogView
     % ex
     %   zcv = ZmapCatalogView(@()ZmapGlobal.Data.primeCatalog) % creates a view into ZmapGlobal.Data.primeCatalog
     %   zcv.linkedplot(gca,'zcv'); %  plot onto current axis
-    %   zcv.MagnitudeRange=[2 3]; %set filter to show mags >=2 and <=3.  map updates automatically*
+    %   zcv.MagnitudeLims=[2 3]; %set filter to show mags >=2 and <=3.  map updates automatically*
     %
     %   minicat = zcv.Catalog(); %get the catalog that matches the filters
     %
@@ -33,11 +33,11 @@ classdef ZmapCatalogView
     %
     %     source - function that when called returns the desired catalog
     %     ViewName - name given to this view for plotting
-    %     DateRange - [mindate maxdate] as dateime
-    %     MagnitudeRange - [minmag maxmag]
-    %     LatitudeRange - [minlat maxlat]
-    %     LongitudeRange - [minlon maxlon] % doesn't take dateline into account
-    %     DepthRange - [mindepth maxdepth]
+    %     DateLims - [mindate maxdate] as dateime
+    %     MagnitudeLims - [minmag maxmag]
+    %     LatitudeLims- [minlat maxlat]
+    %     LongitudeLims - [minlon maxlon] % doesn't take dateline into account
+    %     DepthLims - [mindepth maxdepth]
     %     Marker - default marker used when plotting this view
     %     MarkerSize - default marker size for plotting
     %     MarkerFaceColor - default marker fill for plotting
@@ -98,11 +98,11 @@ classdef ZmapCatalogView
         
         ViewName (1,:) char % name given to this view for plotting
         
-        DateRange (2,1) datetime % [mindate maxdate] as dateime
-        MagnitudeRange (2,1) double % [minmag maxmag]
-        LatitudeRange (2,1) double % [minlat maxlat]
-        LongitudeRange (2,1) double % [minlon maxlon] % doesn't take dateline into account
-        DepthRange (2,1) double % [mindepth maxdepth]
+        DateLims (2,1) datetime % [mindate maxdate] as dateime
+        MagnitudeLims (2,1) double % [minmag maxmag]
+        LatitudeLims (2,1) double % [minlat maxlat]
+        LongitudeLims (2,1) double % [minlon maxlon] % doesn't take dateline into account
+        DepthLims (2,1) double % [mindepth maxdepth]
         
         sortby='';
         Marker=''
@@ -171,7 +171,7 @@ classdef ZmapCatalogView
         function obj=set.Name(obj, name)
             obj.ViewName=name;
         end
-        function c= get.mycat(obj)
+        function c = get.mycat(obj)
             % MYCAT get the catalog using the provided function
             c=obj.source();
         end
@@ -179,25 +179,20 @@ classdef ZmapCatalogView
         
         function obj=reset(obj)
             % reset all the ranges to their original values
-            obj.DateRange=obj.mycat.DateRange;
-            obj.MagnitudeRange=obj.mycat.MagnitudeRange;
-            obj.LatitudeRange=[min(obj.mycat.Latitude) max(obj.mycat.Latitude)];
-            obj.LongitudeRange=[min(obj.mycat.Longitude) max(obj.mycat.Longitude)];
-            obj.DepthRange=[min(obj.mycat.Depth) max(obj.mycat.Depth)];
-            obj=obj.PolygonRemove();
+            obj.DateLims            = bounds2(obj.mycat.Date);
+            obj.MagnitudeLims(1)    = bounds2(obj.mycat.Magnitude);
+            obj.LatitudeLims(1)     = bounds2(obj.mycat.Latitude);
+            obj.LongitudeLims(1)    = bounds2(obj.mycat.Longitude) ;
+            obj.DepthLims           = bounds2(obj.mycat.Depth);
+            obj = obj.PolygonRemove();
         end
         
         function f = get.filter(obj)
-            f = obj.mycat.Latitude >= obj.LatitudeRange(1) &...
-                obj.mycat.Latitude <= obj.LatitudeRange(2) &...
-                obj.mycat.Longitude >= obj.LongitudeRange(1) &...
-                obj.mycat.Longitude <= obj.LongitudeRange(2) &...
-                obj.mycat.Magnitude >= obj.MagnitudeRange(1) &...
-                obj.mycat.Magnitude <= obj.MagnitudeRange(2) &...
-                obj.mycat.Depth >= obj.DepthRange(1) &...
-                obj.mycat.Depth <= obj.DepthRange(2) &...
-                obj.mycat.Date >= obj.DateRange(1) & ...
-                obj.mycat.Date <= obj.DateRange(2);
+            f = in_range_inclusive(obj.mycat.Latitude   , obj.LatitudeLims)     &...
+                in_range_inclusive(obj.mycat.Longitude  , obj.LongitudeLims)    &...
+                in_range_inclusive(obj.mycat.Magnitude  , obj.MagnitudeLims)    &...
+                in_range_inclusive(obj.mycat.Depth      , obj.DepthLims)        &...
+                in_range_inclusive(obj.mycat.Date       , obj.DateLims);
             if ~isempty(obj.polymask)
                 if numel(f) ~= numel(obj.polymask)
                     warning('mask and events out of sync. loosing polygon mask')
@@ -230,35 +225,29 @@ classdef ZmapCatalogView
         end
         
         function mt=get.MagnitudeType(obj)
-            mt=obj.mycat.MagnitudeType(obj.filter);
+            mt = obj.mycat.MagnitudeType(obj.filter);
         end
         
-        function obj=set.LatitudeRange(obj,val)
+        function obj=set.LatitudeLims(obj,val)
             % change the latitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
-                val=obj.mycat.LatitudeRange;
+                val = bounds2(obj.mycat.Latitude);
             end
-            if ~isequal(val,obj.LatitudeRange)
-                obj.LatitudeRange=val;
-                %refreshdata;
-            end
+            obj.LatitudeLims = val;
         end
         
         function lon=get.Longitude(obj)
-            lon=obj.mycat.Longitude(obj.filter);
+            lon = obj.mycat.Longitude(obj.filter);
         end
         
-        function obj=set.LongitudeRange(obj,val)
+        function obj=set.LongitudeLims(obj,val)
             % change the longitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
-                val=obj.mycat.LatitudeRange;
+                val = bounds2(obj.mycat.Longitude);
             end
-            if ~isequal(val,obj.LongitudeRange)
-                obj.LongitudeRange=val;
-                %refreshdata;
-            end
+            obj.LongitudeLims = val;
         end
         
         
@@ -267,16 +256,13 @@ classdef ZmapCatalogView
             mag=obj.mycat.Magnitude(obj.filter);
         end
         
-        function obj=set.MagnitudeRange(obj,val)
+        function obj=set.MagnitudeLims(obj,val)
             % change the magnitude ranges.
             % setting to [] will reset to the catalog's min/max values
             if isempty(val)
-                val=[min(obj.mycat.Magnitude) max(obj.mycat.Magnitude)];
+                val = bounds2(obj.mycat.Magnitude);
             end
-            if ~isequal(val,obj.MagnitudeRange)
-                obj.MagnitudeRange=val;
-                %refreshdata;
-            end
+            obj.MagnitudeLims = val;
         end
         
         
@@ -284,38 +270,26 @@ classdef ZmapCatalogView
             d=obj.mycat.Date(obj.filter);
         end
         
-        function obj=set.DateRange(obj,val)
+        function obj=set.DateLims(obj,val)
             % change the date range
             % setting to [] will reset to the catalog's min/max values
             
-            if ~isa(obj.DateRange,'datetime') || isempty(val)
-                obj.DateRange=obj.mycat.DateRange;
-                %refreshdata;
-                return
+            if ~isa(obj.DateLims,'datetime') || isempty(val)
+                val = bounds2(obj.mycat.Date);
             end
-            if ~isa(val,'datetime')
-                val=datetime(val);
-            end
-            if isempty(val)
-                val=obj.mycat.DateRange;
-            end
-            obj.DateRange=val;
-            %refreshdata;
+            obj.DateLims=val;
         end
         
         function d=get.Depth(obj)
-            d=obj.mycat.Depth(obj.filter);
+            d = obj.mycat.Depth(obj.filter);
         end
         
-        function obj=set.DepthRange(obj,val)
+        function obj=set.DepthLims(obj,val)
             % change the depth ranges. setting to [] will reset to the catalog's min/max values
             if isempty(val)
-                val=[min(obj.mycat.Depth) max(obj.mycat.Depth)]; %#ok<*MCSUP>
+                [val(1),val(2)] = bounds(obj.mycat.Depth);
             end
-            if ~isequal(val,obj.DepthRange)
-                obj.DepthRange=val;
-                %refreshdata;
-            end
+            obj.DepthLims=val;
         end
         
         function cnt=get.Count(obj)
@@ -335,13 +309,13 @@ classdef ZmapCatalogView
             % see also linkdata
             
             % build up additional features
-            v={};
-            s=mysource;
+            v = {};
+            s = mysource;
             for i=1:numel([obj.ValidProps])
                 prop = obj.ValidProps{i};
                 val = obj.(prop);
                 if ~isempty(val)
-                    v=[v,{prop,val}]; %#ok<AGROW>
+                    v= [v,{prop,val}]; %#ok<AGROW>
                 end
             end
             h=ishold(ax);
@@ -428,7 +402,8 @@ classdef ZmapCatalogView
                 delete(h);
             end
             
-            holdstatus = ishold(ax); ax.NextPlot='add';
+            holdstatus = ishold(ax); 
+            ax.NextPlot='add';
             h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
             set(h, 'ZData',obj.Depth);
             set(ax,'ZDir','reverse');
@@ -468,18 +443,18 @@ classdef ZmapCatalogView
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
             fprintf('      Count: %d events\n',obj.Count);
-            fprintf('      Dates: %s to %s\n', char(obj.DateRange(1),'uuuu-MM-dd hh:mm:ss'),...
-                char(obj.DateRange(2),'uuuu-MM-dd hh:mm:ss'));
+            fprintf('      Dates: %s to %s\n', char(obj.DateLims(1),'uuuu-MM-dd hh:mm:ss'),...
+                char(obj.DateLims(2),'uuuu-MM-dd hh:mm:ss'));
             magtypes =strjoin(string(unique(obj.mycat.MagnitudeType(obj.filter))),',');
             if ismissing(magtypes),magtypes="unk";end
             disp('Filter ranges for this catalog view are set to:');
             % actual catalog will have ranges inside and out
             fprintf(' Magnitudes: %.4f to %.4f  [%s]\n',...
-                obj.MagnitudeRange, char(magtypes));
+                obj.MagnitudeLims, char(magtypes));
             
-            fprintf('  Latitudes: %.4f to %.4f  [deg]\n', obj.LatitudeRange);
-            fprintf(' Longitudes: %.4f to %.4f  [deg]\n', obj.LongitudeRange);
-            fprintf('     Depths: %.2f to %.2f  [km]\n', obj.DepthRange);
+            fprintf('  Latitudes: %.4f to %.4f  [deg]\n', obj.LatitudeLims);
+            fprintf(' Longitudes: %.4f to %.4f  [deg]\n', obj.LongitudeLims);
+            fprintf('     Depths: %.2f to %.2f  [km]\n', obj.DepthLims);
             fprintf('     Symbol: marker ''%s'', size: %.1f\n', obj.Marker, obj.MarkerSize);
             if ~isempty(obj.polymask)
                 disp('     Polygon filtering in effect');

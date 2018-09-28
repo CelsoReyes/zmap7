@@ -1,5 +1,5 @@
  classdef calc_Omoricross < ZmapVGridFunction
-     % CALC_OMORICROSS calculate omori paramters (p, c, k) along a cross section
+     % CALC_OMORICROSS calculate omori parameters (p, c, k) along a cross section
      
     properties
         mc_method       McMethods   = McMethods.FixedMc; % this function might only know [' Fixed Mc (Mc = Mmin) | Automatic Mc (max curvature) | EMR-method'];

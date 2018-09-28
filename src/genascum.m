@@ -40,7 +40,7 @@ function genascum()
     magstep = 0.5;                   %set the missing magstep to 0.5
     evsum = ZG.newcat.Count;
     n = evsum;
-    [t0b, teb] = ZG.newcat.DateRange() ;
+    [t0b, teb] = bounds(ZG.newcat.Date) ;
     tdiff = round((teb-t0b)/ZG.bin_dur);
     xt = t0b:incx:teb;
     bin0 = 1;

@@ -105,9 +105,7 @@ classdef (Sealed) CumTimePlot < handle
                 addplot(obj,varargin{:});
                 return;
             end
-            
-            t0b = obj.catview.DateRange(1);
-            teb = obj.catview.DateRange(2);
+            [t0b, teb] = bounds(obj.catview.Date);
             
             delete(findobj(myfig,'Type','Axes'));
             watchon;
@@ -300,7 +298,7 @@ classdef (Sealed) CumTimePlot < handle
                 obj=CumTimePlot.getInstance;
                 biggests = obj.catalog.Magnitude == max(obj.catalog.Magnitude);
                 idx=find(biggests,1,'first');
-                obj.catalog.DateRange(1)=obj.catalog.Date(idx);
+                obj.catalog.DateLims(1)=obj.catalog.Date(idx);
                 obj.plot()
             end
             

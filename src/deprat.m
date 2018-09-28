@@ -61,7 +61,7 @@ function deprat()
     if isempty(ZG.newcat)
         ZG.newcat = a;
     end
-    [t0b, teb] = ZG.newcat.DateRange() ;
+    [t0b, teb] = bounds(ZG.newcat.Date) ;
     n = ZG.newcat.Count;
     tdiff = round(teb - t0b);
     

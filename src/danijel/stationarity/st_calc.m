@@ -72,7 +72,7 @@ function [params] = st_calc(params)
     
     for nNode_ = 1:nNumberNodes_
         if rem(nNode_,100) == 0
-            disp(['Calculating node ' num2str(nNode_) ' of ' num2str(nNumberNodes_)]);
+            fprintf('Calculating node %d of %d\n', nNode_, nNumberNodes_);
         end
         % save('node.mat', 'nNode_');
         % Create node catalog for the first catalog
