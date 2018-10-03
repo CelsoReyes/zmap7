@@ -1,4 +1,4 @@
-function mylojma(in,inda) 
+function mylojma(~) 
     % This script file load a data set using fscanf
     % The default reads Northern California Hypoellipse Format
     %
@@ -15,7 +15,6 @@ function mylojma(in,inda)
     % reset parameters
     replaceMainCatalog([]); b = []; n = 0;
     
-    if inda == 1
         % initial selection option
         tmin   = 0.0001;
         tmax   = 2005.000;
@@ -28,10 +27,30 @@ function mylojma(in,inda)
         mindep = -10;
         maxdep = 700;
         
-        % call the pre-selection window
-        presel(@mylojma)
-        return
+    zdlg = ZmapDialog();
+    zdlg.AddEdit('latmin','min Latitude',latmin,'');
+    zdlg.AddEdit('latmax','max Latitude',latmax,'');
+    zdlg.AddEdit('lonmin','min Longitude',lonmin,'');
+    zdlg.AddEdit('lonmax','max Longitude',lonmax,'');
+    zdlg.AddEdit('tmin','Start time',tmin,'');
+    zdlg.AddEdit('tmax','End time',tmax,'');
+    zdlg.AddEdit('Mmin','min Lat', Mmin,'');
+    zdlg.AddEdit('Mmax','max Lat',Mmax,'');
+    zdlg.AddEdit('mindep','min Lat',mindep,'');
+    zdlg.AddEdit('maxdep','max Lat',maxdep,'');
+    [s, okPressed] = zdlg.Create('Name','Pre-selection parameters');
+    if ~okPressed
+        return;
     end
+    
+    latmin=s.latmin;
+    latmax=s.latmax;
+    lonmin=s.lonmin;
+    lonmax=s.lonmax;
+    tmin=s.tmin;
+    tmax=s.tmax;
+    Mmin=s.Mmin;
+    Mmax=s.Mmax;
     
     % open the file and read 10000 lines at a time
     [file1,path1] = uigetfile([ '*'],' Earthquake Datafile - JMA Format');
@@ -53,7 +72,7 @@ function mylojma(in,inda)
         b = [l(11,:)+l(12,:)/6000 ; l(8,:)+l(9,:)/6000 ; l(1,:) ; l(2,:);l(3,:);
             l(16,:)/10;l(14,:)/100;l(4,:);l(5,:) ; l(17,:) ];
         b = b';
-        l =  b.Magnitude >= Mmin & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
+        l =  b.Magnitude >= Mmin & b.Magnitude <= Mmax & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
             b(:,2) >= latmin & b(:,2) <= latmax & b.Date <= tmax  & ...
             b.Date >= tmin  ;
         a = [a ; b(l,:)];

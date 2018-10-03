@@ -1,4 +1,4 @@
-classdef fractal
+classdef fractal < handle
     
     properties
         catalog
@@ -22,7 +22,7 @@ classdef fractal
             obj.org = org;
             obj.catalog = catalog;
             obj.gobut = gobut;
-            obj=obj.startfd(obj);
+            obj = obj.startfd(obj);
         end
         
         Dcross(obj)
@@ -41,9 +41,10 @@ classdef fractal
         pdc3(obj)
         pdc3nofig(obj)
         params=randomcat(obj)
-        startfd(obj)
         view_Dv(obj)
     end
     
-    
+    methods(Static)
+        obj = startfd(org)
+    end
 end

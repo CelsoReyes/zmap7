@@ -74,7 +74,7 @@ function create_projectedmap_from_mainmap(fig)
                 hasContour=true;
                 continue
             otherwise
-                warning('did not copy a %s',thisThing.Type);
+                warning('ZMAP:projections:uncopiedType''did not copy a %s',thisThing.Type);
                 continue
         end
         

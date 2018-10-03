@@ -228,7 +228,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         isEndpoint = activepoint(1)==1 || activepoint(1)==length(target.XData);
         closedLoop = target.XData(1)==target.XData(end) && target.YData(1)==target.YData(end);
         if closedLoop && length(target.XData)<=4
-            warning('Cannot delete a closed shape down to less than 3 points')
+            warning('ZMAP:polygon:tooFewPoints','Cannot delete a closed shape down to less than 3 points')
             return
         else
             fprintf('%d points before deleting\n',length(target.XData));

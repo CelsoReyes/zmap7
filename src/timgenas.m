@@ -9,11 +9,13 @@ function timgenas(gx,gy)
     report_this_filefun();
     
     it = t0b + 1;
-    mess = gcf;
+    mess = findobj(allchild(groot),'flat','Tag','GenAS-Grid Time Selection');
+    if isempty(mes)
+        mess=figure('Name','GenAS-Grid Time Selection','Tag',);
+    end
     clf
     set(gca,'visible','off')
-    set(gcf,'pos',[ 0.02  0.9 0.3 0.35])
-    set(gcf,'Name','GenAS-Grid Time Selection');
+    set(mess,'pos',[ 0.02  0.9 0.3 0.35])
     
     inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...
         'Units','normalized','String',num2str(it),...

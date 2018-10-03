@@ -56,7 +56,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     try
         save(saveFile, 'catalog');
     catch ME
-        warning('unable to save the catalog');
+        warning('ZMAP:unableToSaveCatalog','unable to save the catalog');
         warning(ME.message);
     end
     

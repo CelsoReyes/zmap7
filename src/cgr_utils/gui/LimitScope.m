@@ -126,7 +126,7 @@ classdef LimitScope < handle
                 dur=seconds(dur);
             end
             if dur > minutes(1)
-                warning('duration seems fairly long %s. MATLAB is paused in meantime',char(dur))
+                warning('ZMAP:suspiciousDuration','duration seems fairly long %s. MATLAB is paused in meantime',char(dur))
             end
             finish = datetime + dur;
             while datetime < finish && any(isvalid(obj.h))

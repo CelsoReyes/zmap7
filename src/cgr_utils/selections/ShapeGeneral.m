@@ -101,7 +101,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % ShapeGeneral create a shape
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
-            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('changing shape units'));
+            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('ZMAP:polygon:changingUnits','changing polygon units'));
         end
         
         function notifyShapeChange(obj,metaprop, evt)

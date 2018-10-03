@@ -52,9 +52,8 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         tic
         
         %% define the functions that will be used in all the following loops
-        modfun=get_confidence_function(pval);
-        
-        conf_lims = modfun(pvalb,cvalb,kvalb,time_asf);
+        nMod=OmoriModel.pck;
+        conf_lims = OmoriModel.doForecast(nMod, time_asf, pvalb, cvalb, kvalb);
         loopout.maxes=max(conf_lims,[],2);
         
         plot(time_asf, conf_lims, 'color',[0.8 0.8 0.8]);
@@ -69,22 +68,13 @@ function [output] = calc_bootfitF(catTimes,time,timef,bootloops,mainshockTime)
         % now calculate the forecast ...        
         %% this is the vectorized version ...
         
-        cumnr_modelf = modfun(pval,cval,kval,time_asf);
-        
-        %% which replaces this...
-        cumnrf = (1:length(time_asf))'; 
-        cumnr_modelf = [];
-        for i=1:length(time_asf)
-            cm = modfun(pval,cval,kval,time_asf(i));
-            cumnr_modelf = [cumnr_modelf; cm];
-        end
-        
+        cumnr_modelf = OmoriModel.doForecast(nMod, time_asf, pval, cval, kval);
+                
         %%
         % plot the best fit
         nLearnEvents = length(learningEventTimes);
         
-        cumnr_model = modfun(pval,cval,kval,learningEventTimes);
-        
+        cumnr_model = OmoriModel.doForecast(learningEventTimes, pval, cval, kval);
         cumnr_model=sort(cumnr_model);
 
         % to Plot observed events in forecast period from endpoint of modeled events in learning period

@@ -1,5 +1,5 @@
 function dcparain() 
-    % Creates the input window for the parameters needed in order to compute the spatial variation of the correlatiin dimension.
+    % Creates the input window for the parameters needed in order to compute the spatial variation of the correlation dimension.
     % Called from startfd.m (org=10).
     %
     %

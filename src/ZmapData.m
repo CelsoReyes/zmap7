@@ -183,12 +183,12 @@ classdef ZmapData < handle
                             fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
                             disp(obj.primeCatalog)
                         else
-                            warning("default catalog file does not contain a zmap catalog");
+                            warning('ZMAP:missingCatalog','default catalog file does not contain a zmap catalog');
                             % failed to open the last catalog
                             obj.primeCatalog=ZmapCatalog('empty catalog');
                         end
                     else
-                        warning('could not find the default catalog file %s', catalogFile);
+                        warning('ZMAP:missingCatalog','could not find the default catalog file %s', catalogFile);
                     end
                 end
             end

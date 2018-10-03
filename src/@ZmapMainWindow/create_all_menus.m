@@ -62,6 +62,7 @@ function create_all_menus(obj, force)
     %% time analysis_menu
     function create_time_analysis_menu()
         submenu = uimenu('Label','ƒ(t)');
+        uimenu(submenu,'Label','functions evaluated through time','enable','off');
         uimenu(submenu,'Label','Analyze time series ...',...
             'Separator','on',...
             MenuSelectedField(),@(s,e)analyze_time_series_cb);
@@ -99,9 +100,12 @@ function create_all_menus(obj, force)
     function create_map_analysis_menu()
         submenu = uimenu('Label','ƒ(x,y)'); % 'Map');
         
+        uimenu(submenu,'Label','functions evaluated over a planar grid','enable','off');
+        
         import XYfun.* % the map functions exist in the XYfun package
         % AB menu
-        bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+        h=bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+        h.Separator='on'; % add separator to first item in list
         bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
         bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
         
@@ -134,7 +138,9 @@ function create_all_menus(obj, force)
     
     function create_xsec_analysis_menu()
         submenu = uimenu('Label','ƒ(s,z)'); %'X-sect');
-        uimenu(submenu,'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
+        uimenu(submenu,'Label','functions evaluated along a cross-section','enable','off');
+        uimenu(submenu,'Separator','on',...
+            'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
         
         import XZfun.* % the cross-section functions exist in the XZfun package
         
@@ -159,7 +165,8 @@ function create_all_menus(obj, force)
     
     function create_3d_analysis_menu()
         submenu = uimenu('Label','ƒ(x,y,z)'); %'3D-Vol');
-        uimenu(submenu, 'Label','Nothing here yet','Enable','off');
+        uimenu(submenu,'Label','functions over a 3-D grid','enable','off');
+        uimenu(submenu,'Separator', 'on', 'Label','Nothing here yet','Enable','off');
         
         import XYZfun.* % the cross-section functions exist in the XYZfun package
         

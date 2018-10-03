@@ -1,4 +1,4 @@
-function obj = startfd(obj)
+function obj = startfd(org)
     % This is the starting code for the fractal dimension, which manages the different codes.
     % Francesco Pacchiani 1/2000
     %
@@ -9,14 +9,15 @@ function obj = startfd(obj)
     % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    switch (obj.org)
+    switch (org)
         
         case 1 	% Call from TIMEPLOT, FDSPHERE, DORAND
             
             range = 1;
             radm = [];
             rasm = [];
-            fdparain(obj.gobut);
+            obj=
+            obj.fdparain(obj.gobut);
             
             
         case 2	% Call from FDPARAIN
@@ -59,7 +60,7 @@ function obj = startfd(obj)
             rasm = [];
             crclparain;
             
-    end	%end switch(org)
+    end
     
     
     

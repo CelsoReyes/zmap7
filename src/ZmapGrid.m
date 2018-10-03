@@ -170,7 +170,7 @@ classdef ZmapGrid
                     end
                 case 2
                     % ZMAPGRID( name, all_points, units)
-                    warning('ZmapGrid works best when provided with X and Y matrices of points');
+                    warning('ZMAP:grid:matrixRecommendation','ZmapGrid works best when provided with X and Y matrices of points');
                     assert(size(varargin{1},2)==2);
                     obj.X=varargin{1}(:,1);
                     obj.Y=varargin{1}(:,2);
@@ -268,7 +268,7 @@ classdef ZmapGrid
                     
                 case 3 % OBJ, POLYX, POLYY
                     if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
-                        warning('polygon is not closed. adding a point to close it.')
+                        warning('ZMAP:polygon:unclosedPolygon','polygon is not closed. adding a point to close it.')
                         polyX(end+1)=polyX(1);
                         polyY(end+1)=polyY(1);
                     end

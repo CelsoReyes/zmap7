@@ -27,7 +27,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
             mydesc = obj.Result.values.Properties.VariableDescriptions{choice};
             myname = obj.Result.values.Properties.VariableNames{choice};
             catch
-                warning('did not find expected field %s',obj.active_col);
+                warning('ZMAP:missingField','did not find expected field %s',obj.active_col);
                 mydesc = obj.Result.values.Properties.VariableDescriptions{1};
                 myname = obj.Result.values.Properties.VariableNames{1};
             end

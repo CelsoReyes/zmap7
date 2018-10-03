@@ -39,51 +39,8 @@ function [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, c
     
     nAftershocks = length(time_as);
     cumnrf = (1:nAftershocks)';
-    switch nMod % switch based on the Fitting Model for Omori Parameters
-        case 1
-            if pval1 ~= 1
-                cumnr_modelf = kval1 ./ (pval1-1) .* ...
-                    (cval1.^(1-pval1) - (time_as+cval1).^(1-pval1));
-            else
-                cumnr_modelf =  kval1 .* log(time_as ./ cval1 + 1);
-            end
-        otherwise
-            if pval1 ~= 1
-                % calculate values for aftershocks occurring before biggest aftershock
-                mask = time_as <= fT1;
-                ev = time_as(mask);
-                cumnr_modelf(mask) = kval1./(pval1-1) .* ...
-                    ( cval1.^(1-pval1) - (ev+cval1) .^ (1-pval1) );
-                
-                % calculate values for aftershocks occurring after biggest aftershock
-                mask = ~mask; % events AFTER fT1
-                ev = time_as(mask);
-                
-                if pval2 ~=1
-                    cumnr_modelf(mask) = kval1 ./ (pval1-1) ...
-                        .* (cval1.^(1-pval1) - (ev+cval1).^(1-pval1)) ...
-                        + kval2/(pval2-1)  .* (cval2.^(1-pval2)-(ev-fT1+cval2).^(1-pval2) );
-                else
-                    cumnr_modelf(mask) = kval1 .* log(ev/cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
-                end
-            else 
-                % take the simple route, since pval1 is 1.
-                mask = time_as <= fT1;
-                ev = time_as(mask);
-                
-                % calculate values for aftershocks occurring before biggest aftershock
-                cumnr_modelf(mask) = kval1 .* log(ev ./ cval1 + 1);
-                
-                % calculate values for aftershcks occurring after biggest aftershock
-                mask = ~mask; % events AFTER fT1
-                ev = time_as(mask);
-                
-                cumnr_modelf(mask) = kval1 .* log(ev./cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
-                
-            end
+    cumnr_modelf = OmoriModel.doForecast(nMod, time_as, pval1, cval1, kval1, fT1, kval2, pval2, cval2);
             
-    end % End of switch for nMod
-    
     time_as=sort(time_as);
     cumnr_modelf=sort(cumnr_modelf);
 

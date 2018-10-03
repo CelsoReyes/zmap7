@@ -1,4 +1,4 @@
-function myload36(da,inda) 
+function myload36(~) 
     % This script file load a data set using fscanf
     % The default reads Northern California Hypoellipse Format
     %
@@ -15,30 +15,52 @@ function myload36(da,inda)
     % reset parameteres
     replaceMainCatalog([]); b = []; n = 0;
     
-    if inda == 1
-        % initial selection option
-        tmin   = 10.0001;
-        tmax   = 98.000;
-        lonmin = -180.0;
-        lonmax =  180.0;
-        latmin =  -90.00;
-        latmax =  90.0 ;
-        Mmin   = -4.0;
-        Mmax   = 10.;
-        mindep = -10;
-        maxdep = 700;
-        
-        % call the pre-selection window
-        presel(@myload36);
-        return
+    % initial selection option
+    tmin   = 10.0001;
+    tmax   = 98.000;
+    lonmin = -180.0;
+    lonmax =  180.0;
+    latmin =  -90.00;
+    latmax =  90.0 ;
+    Mmin   = -4.0;
+    Mmax   = 10.;
+    mindep = -10;
+    maxdep = 700;
+    
+    % call the pre-selection window
+    
+    zdlg = ZmapDialog();
+    zdlg.AddEdit('latmin','min Latitude',latmin,'');
+    zdlg.AddEdit('latmax','max Latitude',latmax,'');
+    zdlg.AddEdit('lonmin','min Longitude',lonmin,'');
+    zdlg.AddEdit('lonmax','max Longitude',lonmax,'');
+    zdlg.AddEdit('tmin','Start time',tmin,'');
+    zdlg.AddEdit('tmax','End time',tmax,'');
+    zdlg.AddEdit('Mmin','min Lat', Mmin,'');
+    zdlg.AddEdit('Mmax','max Lat',Mmax,'');
+    zdlg.AddEdit('mindep','min Lat',mindep,'');
+    zdlg.AddEdit('maxdep','max Lat',maxdep,'');
+    [s, okPressed] = zdlg.Create('Name','Pre-selection parameters');
+    if ~okPressed
+        return;
     end
+    
+    latmin=s.latmin;
+    latmax=s.latmax;
+    lonmin=s.lonmin;
+    lonmax=s.lonmax;
+    tmin=s.tmin;
+    tmax=s.tmax;
+    Mmin=s.Mmin;
+    Mmax=s.Mmax;
     
     % open the file and read 10000 lines at a time
     [file1,path1] = uigetfile([ '*.dat'],' Earthquake Datafile');
     if length(file1) >1
         fid = fopen([path1 file1],'r') ;
     else
-        disp('Data import canceled'); return
+        disp('Data import canceled');
+        return
     end
     
     while  ferror(fid) == ''
@@ -53,15 +75,18 @@ function myload36(da,inda)
         b = [ -l(9,:)-l(10,:)/6000 ; l(7,:)+l(8,:)/6000 ; l(1,:);l(2,:);l(3,:);
             l(12,:)/10;l(11,:)/100;l(4,:);l(5,:)];
         b = b';
-        l =  b.Magnitude >= Mmin & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
+        l =  b.Magnitude >= Mmin & b.Magnitude <= Mmax & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
             b(:,2) >= latmin & b(:,2) <= latmax & b.Date <= tmax  & ...
             b.Date >= tmin  ;
         a = [a ; b(l,:)];
         
         disp([ num2str(n*10000) ' earthquakes scanned, ' num2str(ZG.primeCatalog.Count) ' EQ found'])
-        if max(b.Date) >  tmax ; break; end
+        if max(b.Date) >  tmax 
+            break; 
+        end
         
     end
+
     ferror(fid)
     fclose(fid);
     
@@ -98,9 +123,6 @@ function myload36(da,inda)
     t3p(1) = 90.;
     t4p(1) = 93.;
     ZG.tresh_km = 10;
-    
-    % call the map window
-    zmap_update_displays();
     
     
 end

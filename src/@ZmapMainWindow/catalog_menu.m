@@ -153,7 +153,7 @@ function catalog_menu(obj, force)
                 fields={'Date','',''};
             otherwise
                 fields={'','',''};
-                warning('Do not know how to crop catalog to these axes');
+                warning('ZMAP:unknownCatalogCut','Do not know how to crop catalog to these axes');
         end
         
         if isequal(v , [0 90]) % XY view

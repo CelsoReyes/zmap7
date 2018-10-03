@@ -174,7 +174,7 @@ function plot_base_events(obj, container, featurelist)
 
     function cb_zoom_shape(~, ~)
         if isempty(obj.shape)
-            warning('No shape selected');
+            warning('ZMAP:polygon:noneSelected','No shape selected');
             return
         end
         ol = obj.shape.Outline; % as [X, Y]
@@ -187,7 +187,7 @@ function plot_base_events(obj, container, featurelist)
 
     function cb_crop_to_selection(~, ~)
         if isempty(obj.shape)
-            warning('No shape selected');
+            warning('ZMAP:polygon:noneSelected','No shape selected');
             return
         end
         

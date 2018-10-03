@@ -247,7 +247,7 @@ function calc_across_orig(sel)
         % Buttons
         uicontrol('BackGroundColor', [0.8 0.8 0.8], 'Style', 'pushbutton', ...
             'Units', 'normalized', 'Position', [.80 .05 .15 .10], ...
-            'Callback', 'close;', 'String', 'Cancel');
+            'Callback', @(~,~)close, 'String', 'Cancel');
 
         
         % Labels

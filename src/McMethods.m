@@ -2,6 +2,8 @@ classdef McMethods < uint32
     % McMethods provides the list of methods usable throughout Zmap
     % for a complete list of valid types, type 
     % >>  enumeration('McMethods')
+    %
+    % see also calc_Mc
     
     enumeration
         MaxCurvature     (1)

@@ -97,7 +97,7 @@ function zmap(varargin)
     tested_systems = {'MAC','PCW'};
     prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
     if ~ismember( sys(1:3), tested_systems)
-        warndlg(' Warning: ZMAP has not been tested on this computer type.','Untested System')
+        warndlg('ZMAP:zmap:UntestedComputer', ' Warning: ZMAP has not been tested on this computer type.','Untested System')
         pause(5)
     end
     

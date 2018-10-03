@@ -286,7 +286,12 @@ classdef ZmapDialog < handle
                             end
                         end
                     otherwise
-                        obj.parts(obj.partIdx).Handle = details.CreatorFcn.(myStyle)();
+                        try
+                            obj.parts(obj.partIdx).Handle = details.CreatorFcn.(myStyle)();
+                        catch ME
+                            msg.dbdisp(obj.parts(obj.partIdx),'Error instantiating dialog box part:');
+                            rethrow(ME);
+                        end
                 end
             end
             obj.addCancelButton([obj.dlgW-80 10 70 obj.buttonSpace/2]);
@@ -711,13 +716,14 @@ classdef ZmapDialog < handle
             
             idx = numel(obj.parts)+1;
             obj.parts(idx).Style        = 'gridparameterbox';
-            obj.parts(idx).CreatorFcn   =  @createGridParameters;
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createGridParameters;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createGridParameters;
             obj.parts(idx).ConversionFcn    =  @toStruct;
             obj.parts(idx).Height       = GridParameterChoice.GROUPHEIGHT;
             obj.parts(idx).Tag          = tag;
             
             function h = createGridParameters()
-                        obj.didGrid = true;
+                        % obj.didGrid = true;
                         pos = [obj.labelX obj.labelY obj.dlgW-obj.labelX obj.rowH-10];
                         h = GridParameterChoice(...
                             obj.hDialog, tag, pos, {dx, dxunits}, {dy, dyunits}, {dz, dzunits});
@@ -873,7 +879,7 @@ classdef ZmapDialog < handle
                 % disp([me.Style,  ' : ',  tag]);
                 
                 if ~isempty(tag) && (~isprop(obj.WriteToObj,tag) && ~isstruct(obj.WriteToObj))
-                    warning('unable to assign value back to caller because the property %s does not exist',tag);
+                    warning('ZMAP:dialog:missingExpectedProperty','unable to assign value back to caller because the property %s does not exist',tag);
                 end
                 if isempty(tag) % not meant to be analyzed
                     continue

@@ -187,7 +187,7 @@ function cltiplot(var1)
             'callback',@callbackfun_006)
         
         uimenu(op1,'label','Back',...
-            'Callback', 'if ~isempty(pyy),cltiplot(3);pyy=[];end');
+            'Callback', @back_menu_cb);
         
         op2=uimenu(op1,'label','P-Value');
         uimenu(op2,'label','manual',...
@@ -200,6 +200,13 @@ function cltiplot(var1)
     end
     
     %% callback functions
+    function back_menu_cb(~,~)
+        if ~isempty(pyy)
+            cltiplot(3);
+            pyy=[];
+        end
+    end
+
     function callbackfun_001(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));

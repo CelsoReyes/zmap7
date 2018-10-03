@@ -26,7 +26,7 @@ classdef inmakegr < ZmapHGridFunction
             obj@ZmapHGridFunction(zap, 'shallow_mag');
             report_this_filefun();
             obj.parseParameters(varargin);
-            warning('apparently still broken');
+            warning('ZMAP:unimplemented','apparently still broken');
                 
             obj.StartProcess();
         end

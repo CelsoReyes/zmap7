@@ -328,7 +328,7 @@ function distro_callback(src,~,mycat)
     watchon; drawnow;
     dlg = main_dialog_figure('handle');
     if numel(dlg) >1
-        warning('multiple dialog windows found')
+        warning('ZMAP:nonUniqueHandle','multiple dialog windows found')
     end
     
     f = findall(0,'Tag','catoverview_distribution_pane');

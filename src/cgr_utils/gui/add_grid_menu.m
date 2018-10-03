@@ -127,7 +127,7 @@ function add_grid_menu(obj)
 
     function cb_refresh(~,~)
         if isempty(obj.Grid)
-            warning('no grid exists to refresh')
+            warning('ZMAP:grid:missingGrid','no grid exists to refresh')
             warndlg('no grid exists to refresh')
             return
         end

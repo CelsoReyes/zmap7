@@ -429,7 +429,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         pointBefore=find(isOnLine([h.XData(:) h.YData(:)], intersectionPoint(1:2)));
         if ~isempty(pointBefore)
             if numel(pointBefore)>1
-                warning('multiple segments go through this line')
+                warning('ZMAP:nonUniquePoint','multiple segments go through this point')
                 return
             end
             newPtX=intersectionPoint(1);
