@@ -180,9 +180,9 @@ classdef ZmapCatalogView
         function obj=reset(obj)
             % reset all the ranges to their original values
             obj.DateLims            = bounds2(obj.mycat.Date);
-            obj.MagnitudeLims(1)    = bounds2(obj.mycat.Magnitude);
-            obj.LatitudeLims(1)     = bounds2(obj.mycat.Latitude);
-            obj.LongitudeLims(1)    = bounds2(obj.mycat.Longitude) ;
+            obj.MagnitudeLims       = bounds2(obj.mycat.Magnitude);
+            obj.LatitudeLims        = bounds2(obj.mycat.Latitude);
+            obj.LongitudeLims       = bounds2(obj.mycat.Longitude) ;
             obj.DepthLims           = bounds2(obj.mycat.Depth);
             obj = obj.PolygonRemove();
         end
@@ -443,8 +443,8 @@ classdef ZmapCatalogView
             % DISP display the ranges used to view a catalog. The actual catalog dates do not need to match
             
             fprintf('      Count: %d events\n',obj.Count);
-            fprintf('      Dates: %s to %s\n', char(obj.DateLims(1),'uuuu-MM-dd hh:mm:ss'),...
-                char(obj.DateLims(2),'uuuu-MM-dd hh:mm:ss'));
+            fprintf('      Dates: %s to %s\n', char(obj.DateLims(1),'uuuu-MM-dd HH:mm:ss'),...
+                char(obj.DateLims(2),'uuuu-MM-dd HH:mm:ss'));
             magtypes =strjoin(string(unique(obj.mycat.MagnitudeType(obj.filter))),',');
             if ismissing(magtypes),magtypes="unk";end
             disp('Filter ranges for this catalog view are set to:');

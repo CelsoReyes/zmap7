@@ -113,7 +113,7 @@ function newsta(sta, catalog)
     
     idx = find(as == max(as),1);
     
-    tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(idx),'uuuu-MM-dd hh:mm:ss'));
+    tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(idx),'uuuu-MM-dd HH:mm:ss'));
     
     vx = xlim;
     vy = ylim;

@@ -44,7 +44,7 @@ function selected_cluster_num = getclu(gecl, clus, slider_obj, text_obj)
     ZG.newt2 = ZG.original.subset(clus==selected_cluster_num);
     ZG.newt2.Name=sprintf('%s : cluster %d',ZG.newt2.Name, selected_cluster_num);
     
-    if ~exist('tiplo', 'var')
+    if isempty(findobj('Tag','tiplo'))
         ctp=CumTimePlot(ZG.newt2);
         ctp.plot();
     end

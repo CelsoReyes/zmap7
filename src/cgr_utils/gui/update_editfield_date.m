@@ -14,7 +14,7 @@ function update_editfield_date(src,~)
         d = str2double(get(src,'String'));
         if d >= 1800 && d < 3000
             %treat as year
-            set(src,'String',[get(src,'String'), '-01-01']);
+            set(src,'String',[get(src,'String'), '-01-01 00:00:00']);
             update_editfield_date(src);
             return
         else

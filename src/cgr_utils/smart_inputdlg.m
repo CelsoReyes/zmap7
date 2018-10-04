@@ -27,8 +27,8 @@ function [dlgstruct , cancelled, varargout] = smart_inputdlg(dlgtitle, dlgstruct
     %
     % sample converters to use..
     %   for a datetime:
-    %   	toChar = @(d) char(d,'uuuu-MM-dd hh:mm:ss');
-    %   	toValue = @(s) datetime(s,'InputFormat','uuuu-MM-dd hh:mm:ss');
+    %   	toChar = @(d) char(d,'uuuu-MM-dd HH:mm:ss');
+    %   	toValue = @(s) datetime(s,'InputFormat','uuuu-MM-dd HH:mm:ss');
     %
     %   for a duration:
     %       toChar = @(d)  num2str(days(d))
@@ -52,8 +52,8 @@ function [dlgstruct , cancelled, varargout] = smart_inputdlg(dlgtitle, dlgstruct
             dlgstruct(i).toChar=@(x)num2str(x);
             dlgstruct(i).toValue=@(x)str2num(x);
         elseif isa(v,'datetime')
-            dlgstruct(i).toChar=@(x) char(x,'uuuu-MM-dd hh:mm:ss');
-            dlgstruct(i).toValue=@(s) datetime(s,'InputFormat','uuuu-MM-dd hh:mm:ss');
+            dlgstruct(i).toChar=@(x) char(x,'uuuu-MM-dd HH:mm:ss');
+            dlgstruct(i).toValue=@(s) datetime(s,'InputFormat','uuuu-MM-dd HH:mm:ss');
         elseif isa(v,'duration')
             % search prompt for clues....
             p=dlgstruct(i).prompt;

@@ -234,7 +234,7 @@ function view_varmap(lab1,valueMap)
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        colback = 1;
+        colback = 'w';
         dramap_stress2;
     end
 

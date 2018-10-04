@@ -179,21 +179,7 @@ function showmovi()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         v = get(cs,'value');
-        if v==1
-            cur_color = 'hsv';
-        elseif v==2
-            cur_color = 'hot';
-        elseif v==3
-            cur_color = 'cool';
-        elseif v==4
-            cur_color = 'pink';
-        elseif v==5
-            cur_color = 'bone';
-        elseif v==6
-            cur_color = 'gray';
-        elseif v==7
-            cur_color = 'jet';
-        end
+        cur_color=lower(v);
         colormap(cur_color);
         movie(m(:,i),1,1);
     end
