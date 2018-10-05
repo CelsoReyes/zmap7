@@ -485,8 +485,9 @@ function timeplot(mycat, nosort)
     
     function cut_tmd_callback(~,~)
         cf = @()ZG.newt2;
-        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-        ZG.newt2=tmpcat.Catalog();
+        app = range_selector(ZG.newt2);
+        waitfor(app);
+        ZG.maepi=ZG.newt2.subset(ZG.newt2.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
         ctp=CumTimePlot(ZG.newt2);
         ctp.plot();
     end

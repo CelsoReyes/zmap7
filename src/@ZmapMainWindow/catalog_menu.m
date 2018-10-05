@@ -69,7 +69,7 @@ function catalog_menu(obj, force)
         MenuSelectedField(),@cb_resetcat); % Resets the catalog to the original selection
     
     uimenu(submenu,'Separator','on',...
-        'Label','Edit Ranges...',MenuSelectedField(),@cb_editrange);
+        'Label','Edit Raw Catalog Range...',MenuSelectedField(),@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
     
@@ -205,10 +205,15 @@ function catalog_menu(obj, force)
     end
     
     function cb_editrange(~,~)
-        cf=@()obj.catalog;
-        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-        obj.pushState();
-        obj.rawcatalog=tmpcat.Catalog();
+        watchon;
+        summ = obj.rawcatalog.summary;
+        app=range_selector(obj.rawcatalog);
+        waitfor(app);
+        if ~isequal(summ, obj.rawcatalog.summary)
+            obj.catalog = obj.rawcatalog;
+            ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude>=ZG.CatalogOpts.BigEvents.MinMag);
+        end
+        watchoff
         obj.replot_all;
     end
     
@@ -223,11 +228,6 @@ function catalog_menu(obj, force)
     
     function cb_combinecatalogs(~,~)
         combine_catalogs;
-        %{
-        ZG.newcat=comcat(ZG.Views.(myview));
-        ctp=CumTimePlot(ZG.newcat);
-        ctp.plot();
-        %}
     end
     
     function cb_importer(src, ev, fun)

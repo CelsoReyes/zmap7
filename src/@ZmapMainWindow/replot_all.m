@@ -2,7 +2,7 @@ function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
     % REPLOT_ALL(obj, metaProp, eventData)
     
-    obj.AllAxes=findobj(gcf,'Type','axes');
+    obj.AllAxes=findobj(obj.fig,'Type','axes');
     
     if ~exist('eventData','var') || eventData.EventName == "PostSet"
         eventName='ReplotAll';
@@ -16,6 +16,7 @@ function replot_all(obj,metaProp,eventData)
     end
     md=[];
     k={};
+    obj.set_figure_name();
     
     s=sprintf('Created by: ZMAP %s , %s',ZmapData.zmap_version, char(datetime));
     set(findobj(obj.fig,'Tag','zmap_watermark','-and','Type','uicontrol','-and','Style','text'),...

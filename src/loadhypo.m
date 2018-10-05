@@ -452,11 +452,10 @@ function loadhypo(choice)
         ZG=ZmapGlobal.Data;
         ZG.mainmap_plotby='depth';
         do = 'view';
-        
-        [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
-        %ZmapMessageCenter.update_catalog();
-        %zmap_update_displays();
-        
+        mycat=ZG.primeCatalog; % points to same thing!
+        app = range_selector(mycat);
+        waitfor(app);
+        ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
     end
     
     function callbackfun_001(mysrc,myevt)

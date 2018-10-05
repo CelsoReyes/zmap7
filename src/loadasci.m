@@ -83,9 +83,12 @@ function loadasci(da,sa)
                 ZG.CatalogOpts.BigEvents.MinMag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default
                 
                 close;
-                [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
-                %ZmapMessageCenter.update_catalog();
-                %zmap_update_displays();
+
+                mycat=ZG.primeCatalog; % points to same thing!
+                app = range_selector(mycat);
+                waitfor(app);
+                ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
+
                 setup
             else
                 close, setup
@@ -138,9 +141,11 @@ function loadasci(da,sa)
                 
                 close;
                 
-                [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
-                %ZmapMessageCenter.update_catalog();
-                %zmap_update_displays();
+                mycat=ZG.primeCatalog; % points to same thing!
+                app = range_selector(mycat);
+                waitfor(app);
+                ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
+                
                 setup
             else
                 close

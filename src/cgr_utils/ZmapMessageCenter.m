@@ -206,7 +206,10 @@ end
 function edit_catalog_range(s,~)
     ZG=ZmapGlobal.Data; % get zmap globals
     if ~isempty(ZG.Views.primary) 
-        [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
+        mycat=ZG.primeCatalog; % points to same thing!
+        app = range_selector(mycat);
+        waitfor(app);
+        ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
     else
         beep;
         warndlg('No catalog loaded','Zmap');
@@ -246,18 +249,20 @@ end
 function do_selected_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    cf=@()ZG.newcat;
-    [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-    ZG.newcat=tmpcat.Catalog();
+    mycat=ZG.newcat; % points to same thing!
+    app = range_selector(mycat);
+    waitfor(app);
+    ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
      ZmapMessageCenter.update_catalog();
 end
 
 function do_other_catalog_overview(s,~)
     
     ZG=ZmapGlobal.Data; % get zmap globals
-    cf=@()ZG.newt2;
-    [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-    ZG.newt2=tmpcat.Catalog();
+    mycat=ZG.newt2; % points to same thing!
+    app = range_selector(mycat);
+    waitfor(app);
+    ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
     ZmapMessageCenter.update_catalog();
 end
 

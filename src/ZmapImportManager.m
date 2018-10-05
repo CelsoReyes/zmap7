@@ -71,7 +71,6 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
         cf=@()ZG.primeCatalog;
         ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
         ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
-        %[ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
         
         % OPTIONALLY CLEAR SHAPE
         if ~isempty(ShapeGeneral.ShapeStash)

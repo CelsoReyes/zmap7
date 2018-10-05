@@ -769,6 +769,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 obj.disable_non_load_menus();
             end
+            if isvalid(h), delete(h),end
             obj.fig.Pointer = 'arrow';
             
             function addTimeStamp(h)

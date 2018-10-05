@@ -302,7 +302,11 @@ function ctimeplot()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG=ZmapGlobal.Data;
         cf=@()ZG.newt2;
-        [ZG.newt2,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag]=catalog_overview(ZmapCatalogView(cf),ZG.CatalogOpts.BigEvents.MinMag);
+
+        mycat=ZG.newt2; % points to same thing!
+        app = range_selector(mycat);
+        waitfor(app);
+        ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
     end
     
     function cb_overlayanothercurve(mysrc,myevt)
