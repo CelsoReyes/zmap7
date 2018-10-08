@@ -59,6 +59,11 @@ function zmap(varargin)
     
     disp(varargin)
     % advise matlab where it can find everything zmap
+    if ~exist('set_zmap_paths','var')
+        p = mfilename('fullpath'); 
+        p(end-length(mfilename) : end)=[];
+        addpath(fullfile(p,'src'));
+    end
     set_zmap_paths;
     ZG = ZmapGlobal.Data;
     disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])

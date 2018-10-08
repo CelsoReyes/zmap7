@@ -336,7 +336,7 @@ since 2013a
 
 # previous authors/contributors
 
-[List of authors/contributors](ZmapContributorList.txt)
+[List of authors/contributors](docs/ZmapContributorList.txt)
 
 # Adding Focal mechanisms
 

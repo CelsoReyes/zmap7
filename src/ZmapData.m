@@ -4,7 +4,7 @@ classdef ZmapData < handle
     %
     % h = ZmapGlobal.Data;          % get pointer to all the global data
     %
-    % catalogcopy = h.catalog;      % get a particlar item
+    % catalogcopy = h.catalog;      % get a particular item
     % h.catalog = modified_catalog; % set the item, with changes visible EVERYWHERE
     % 
     %  several of these variables exist as carryovers from previous version of Zmap
