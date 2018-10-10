@@ -14,6 +14,15 @@ classdef AnalysisWindow < handle
 
     methods
         function obj = AnalysisWindow(ax)
+            if ~exist('ax','var') || isempty(ax)
+                ax=axes(figure);
+            elseif ~isa(ax,'matlab.graphics.axis.Axes')
+                try
+                    ax=axes(ax);
+                catch
+                    error('Did not get axes handle, or axes could not be created')
+                end
+            end
             obj.ax = ax;
         end
         

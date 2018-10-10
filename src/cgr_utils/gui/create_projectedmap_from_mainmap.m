@@ -45,9 +45,15 @@ function create_projectedmap_from_mainmap(fig)
     
     
     hasContour=false;
+    
+    warnItem(1) = warning('off','MATLAB:structOnObject');
+    warnItem(2) = warning('off','MATLAB:hg:EraseModeIgnored');
+    
     for i=1:numel(ch)
         thisThing=ch(i);
         disp(thisThing);
+        
+        % there is likely a better way to transfer items values from the object that what is implemented here
         st = struct(thisThing);
         fn = fieldnames(st);
         st=rmfield(st, fn(~ismember(fn ,valid)));
@@ -63,7 +69,9 @@ function create_projectedmap_from_mainmap(fig)
                 else
                     h=scatterm(Y, X, thisThing.SizeData, thisThing.CData);
                 end
-                if isfield(st,'Color'), st=rmfield(st,'Color'),end
+                if isfield(st,'Color');
+                    st=rmfield(st,'Color');
+                end
             case 'line'
                 if ~isempty(thisThing.ZData)
                     h=linem(thisThing.YData, thisThing.XData, thisThing.ZData);
@@ -84,6 +92,9 @@ function create_projectedmap_from_mainmap(fig)
         
         set(h,st);
     end
+    
+    warning(warnItem(1).state,warnItem(1).identifier);
+    warning(warnItem(2).state,warnItem(2).identifier);
     
     if hasContour
         % assume it came from the results.

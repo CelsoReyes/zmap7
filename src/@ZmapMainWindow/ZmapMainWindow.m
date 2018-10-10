@@ -78,7 +78,7 @@ classdef ZmapMainWindow < handle
         plot_base_events(obj, container, featurelist)
         plotmainmap(obj)
         c = context_menus(obj, tag, createmode, varargin) % manage context menus used in figure
-        plothist(obj, name, values, tabgrouptag)
+        plothist(obj, name, tabgrouptag)
         fmdplot(obj, tabgrouptag)
         
         cummomentplot(obj, tabgrouptag)
@@ -924,12 +924,22 @@ classdef ZmapMainWindow < handle
             drawnow nocallbacks;
         end
         
+        function cb_updateSelections(obj,~,~)
+            if obj.maingroup.SelectedTab==obj.maintab
+            ev.NewValue = obj.maintab;
+            ev.OldValue = obj.maingroup.SelectedTab;
+            else
+            ev.NewValue = obj.maingroup.SelectedTab;
+            ev.OldValue = obj.maintab;
+            end
+            obj.cb_mainMapSelectionChanged([],ev);
+        end
+            
         function cb_mainMapSelectionChanged(obj, ~, ev)
             % make sure that the selections you see match the map you're looking at
             
             % functions should all modify the analysis windows in a similar way
             % the mainmap has a unique set of displays.
-            
             disp('cb_mainMapSelectionChanged');
             toMainmap = ev.NewValue == obj.maintab;
             fromMainmap = ev.OldValue == obj.maintab;

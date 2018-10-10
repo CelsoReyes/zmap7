@@ -5,7 +5,7 @@ function zmap(varargin)
     %
     % Options:
     %   -debug : enables debugging functionality
-    %   -restart
+    %   -restart : clear all windows and variables, then restart zmap
     %   -initonly : set up zmap paths and prefs, but don't open a window
     %
     % Options to be probably implemented
@@ -25,16 +25,13 @@ function zmap(varargin)
     %  - scripts have been turned into functions and classes (allowing zmap functions to be run programmatically)
     %  - GUI elements have been consolidated, updated
     %  - unreachable code (& scripts not appearing in any menus) have been removed
-    %  - ability to import catalogs from FDSN web services.
+    %  - added ability to import catalogs from FDSN web services.
     %  - global variables have been minimized. Data sharing occurs through one class.
     %  - only result variables should appear in the base workspace.
     %  - requires minimum of matlab v 2018a,
     %
     %
     %  see README.md and the help for individual parts of ZMAP for other change details
-    %
-    % ADDING CUSTOM FUNCTIONS to ZMAP:
-    % -
     %
     
     % The matlab searchpaths are updated, existing windows closed.

@@ -14,7 +14,7 @@ function [N,Mmax,catalog,IDAll,HistoryAll] = ETESProject3(cat,vEtas,vAfter,Start
     %background earthquakes.  The background earthquakes will have an r^1.37
     %distribution in one dimension distribution away from hypocenters in the
     %input catalog which are identified as being background earthquakes
-    %themselves (e.g. not wihtin one fault length and 10 years of A bigger
+    %themselves (e.g. not within one fault length and 10 years of A bigger
     %earthquake).
     %
     %Earthquakes that are smaller than magb are treated as point sources;

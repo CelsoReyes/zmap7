@@ -255,9 +255,10 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function tbl = table(obj)
             % TABLE write catalog as a table.
             %
-            warning('off', 'MATLAB:structOnObject');
+            warnState=warning('off', 'MATLAB:structOnObject');
             st       = struct(obj);
-            warning('on', 'MATLAB:structOnObject');
+            warning(warnState.state, warnState.identifier); %restore
+
             flds     = fieldnames(st);
             % to  convert to a table, all fields must be of same length
             % but some fields aren't individual to events.

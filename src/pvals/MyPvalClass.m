@@ -118,14 +118,16 @@ classdef MyPvalClass
             %set the initial step size
             
             lastwarn('');
-            warning('off','MATLAB:illConditionedMatrix');
+            warnState = warning('off','MATLAB:illConditionedMatrix');
             
             % % % main calculation % % %
             %
             [nLoops, C, P, K, cStdDev, PstdDev, KstdDev] = obj.ploop_c_and_p_calcs;
             %
             % % %
-            warning('on','MATLAB:illConditionedMatrix');
+
+            warning(warnState.state,warnState.identifier);
+            
             if ~isempty(lastwarn)
                 disp(['warnings were given. ' lastwarn]);
             end

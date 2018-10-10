@@ -86,12 +86,13 @@ function replot_all(obj,metaProp,eventData)
     end
     
     obj.fmdplot('UR plots');
-    obj.plothist('Magnitude',obj.catalog.Magnitude,'UR plots');
+    %obj.plothist('Magnitude',obj.catalog.Magnitude,'UR plots');
+    obj.plothist('Magnitude','UR plots');
     obj.cumplot('LR plots');
     
-    obj.plothist('Depth',obj.catalog.Depth,'UR plots');
-    obj.plothist('Date',obj.catalog.Date,'UR plots');
-    obj.plothist('Hour',hours(obj.catalog.Date.Hour),'UR plots');
+    %obj.plothist('Depth',obj.catalog.Depth,'UR plots');
+    %obj.plothist('Date',obj.catalog.Date,'UR plots');
+    %obj.plothist('Hour',hours(obj.catalog.Date.Hour),'UR plots');
     obj.cummomentplot('LR plots');
     obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'LR plots');
     obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'LR plots');
