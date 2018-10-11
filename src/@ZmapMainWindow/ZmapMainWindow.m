@@ -172,10 +172,7 @@ classdef ZmapMainWindow < handle
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
             if ~isa(in_catalog, 'ZmapCatalog')
-                rawview = ZG.Views.primary;
-                if ~isempty(rawview)
-                    obj.rawcatalog = ZG.Views.primary.Catalog;
-                end
+                obj.rawcatalog = ZG.primeCatalog;
             else
                 obj.rawcatalog = in_catalog;
             end

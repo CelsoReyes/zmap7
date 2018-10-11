@@ -92,7 +92,4 @@ function selectp(in_or_out)
     
     ctp=CumTimePlot(ZG.newt2);
     ctp.plot();
-    
-    h=ZmapMessageCenter;
-    h.update_catalog();
 end

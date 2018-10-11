@@ -397,8 +397,7 @@ classdef MyPvalClass
     end
     methods(Static)
         function pvalcat(catalog)
-            %This program is called from timeplot.m and displays the values
-            % of p, c and k from Omori law, together with their errors.
+            %This program displays the values of p, c and k from Omori law, together with their errors.
             %
             %
             %Modified May: 2001. B. Enescu
@@ -609,7 +608,7 @@ classdef MyPvalClass
             %Modified May, 2001 Bogdan Enescu
             % turned into function by Celso G Reyes 2017
             
-            %This file is called from timeplot.m and helps for the computation of p-value from Omori formula. for different values of Mcut and Minimum time. The value of p is then displayed as a isoline map.
+            %This file helps for the computation of p-value from Omori formula. for different values of Mcut and Minimum time. The value of p is then displayed as a isoline map.
             
             % FIXME : This doesn't produce answers... why? units on the thresholds?
             

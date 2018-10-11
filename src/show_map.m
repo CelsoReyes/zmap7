@@ -57,7 +57,7 @@ function show_map(in, in2, compare_window_dur)
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position', [.60 .05 .15 .15 ],...
-            'Units','normalized','Callback',@(~,~)ZmapMessageCenter(),'String','Cancel');
+            'Units','normalized','Callback',@(~,~)close(),'String','Cancel');
         
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.25 .05 .15 .15 ],...
@@ -226,7 +226,6 @@ function show_map(in, in2, compare_window_dur)
     
     function callbackfun_003(mysrc,myevt)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         
         watchon;
         drawnow;

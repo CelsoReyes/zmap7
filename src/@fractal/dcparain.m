@@ -106,7 +106,6 @@ function dcparain()
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     function callbackfun_007(mysrc,myevt)

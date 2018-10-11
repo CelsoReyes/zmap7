@@ -45,7 +45,7 @@ function incircle()
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.05 .85 .15 .1 ],...
-        'Units','normalized','Callback',@(~,~)ZmapMessageCenter(),'String','Cancel');
+        'Units','normalized','Callback',@(~,~)close(),'String','Cancel');
     
     button1=uicontrol('Style','Pushbutton',...
         'Position',[.35 .15 .3 .1 ],...
@@ -129,7 +129,6 @@ function incircle()
     function callbackfun_006(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         ic = 2;
         circle0;
     end
@@ -137,7 +136,6 @@ function incircle()
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         ic = 3;
         circle0;
     end
@@ -192,8 +190,6 @@ function incircle()
             set(gcf,'Pointer','arrow')
             
             
-            % Call program "timeplot to plot cumulative number
-            %
             stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6) '; R = ' num2str(rad) ' km'];
             stri = stri1;
             ZG.newt2.sort('Date');
@@ -220,8 +216,6 @@ function incircle()
             
             ZG.newcat = ZG.newt2;                   % resets ZG.newcat
             
-            % Call program "timeplot to plot cumulative number
-            %
             stri1 = [ 'Circle: ' num2str(xa0,6) '; ' num2str(ya0,6)];
             stri = stri1;
             ctp=CumTimePlot(ZG.newt2);

@@ -557,10 +557,6 @@ function bvalfit()
         f1=gcf;
         f2=gpf;
         set(f1,'Visible','off');
-        if f1~=f2
-            % ZmapMessageCenter();
-            
-        end
     end
     
     function callbackfun_009(mysrc,myevt)

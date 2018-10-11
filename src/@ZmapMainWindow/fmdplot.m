@@ -98,8 +98,6 @@ function fmdplot(obj, tabgrouptag)
         ZG=ZmapGlobal.Data;
         ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
         ZG.newt2.Name=sprintf('Events within %g km of %s',obj.CrossSections(idx).name);
-        %ctp=CumTimePlot(ZG.newt2);
-        %ctp.plot();
     end
     
     

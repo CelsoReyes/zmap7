@@ -39,7 +39,7 @@ function myslicer(ac2)
             messtext=...
                 ['Thank you! Now loading data'
                 'Hang on...                 '];
-            ZmapMessageCenter.set_message('  ',messtext);
+            msg.dbdisp(messtext, '  ');
             
             try
                 load(lopa)

@@ -393,7 +393,7 @@ function loadhypo(choice)
         end
         % read the first three lines as a test...
         fid = fopen([path1 file1],'r');
-        ZmapMessageCenter.set_info(' ','Loading data...hang on');
+        msg.infodisp('Loading data...hang on',' ');
         so = fscanf(fid,'%c',[nu+1, inf]);
         fclose(fid);
         so = so';

@@ -35,7 +35,7 @@ function cirbva()
         ' The "ni" events nearest to this point          '
         ' will be selected and displayed in the map.     '];
     
-    ZmapMessageCenter.set_message(titStr,messtext);
+    msg.dbdisp(messtext, titStr);
     
     % Input center of circle with mouse
     %
@@ -86,8 +86,6 @@ function cirbva()
     %
     newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     
-    % Call program "timeplot to plot cumulative number
-    %
     bdiff(ZG.newt2,ZmapGlobal.Data.hold_state)
     
 end

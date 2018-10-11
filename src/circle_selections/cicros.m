@@ -32,7 +32,7 @@ function cicros(opt)
         ' The "ni" events nearest to this point          '
         ' will be selected and displayed in the map.     '];
     
-    ZmapMessageCenter.set_message(titStr,messtext);
+    msg.dbdisp(messtext, titStr);
     
     % Input center of circle with mouse
     %
@@ -54,7 +54,7 @@ function cicros(opt)
             l =  sort(l);
             messtext = ['Radius of selected Circle:' num2str(l(ni))  ' km' ];
             disp(messtext)
-            ZmapMessageCenter.set_message('Message',messtext)
+            msg.dbdisp(messtext, 'Message')
             %
             % take first ni and sort by time
             %
@@ -76,8 +76,6 @@ function cicros(opt)
             %
             ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
             
-            % Call program "timeplot to plot cumulative number
-            %
             clear l s is
             bdiff(ZG.newt2)
             
@@ -87,7 +85,7 @@ function cicros(opt)
             ll = l <=ra;
             messtext = ['Number of events in Circle :' num2str(sum(ll)) ];
             disp(messtext)
-            ZmapMessageCenter.set_message('Message',messtext)
+            msg.dbdisp(messtext, 'Message')
             %
             % take first ni and sort by time
             %
@@ -109,8 +107,6 @@ function cicros(opt)
             %
             ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
             
-            % Call program "timeplot to plot cumulative number
-            %
             clear l s is
             bdiff(ZG.newt2)
             

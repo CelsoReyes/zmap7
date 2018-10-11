@@ -352,7 +352,6 @@ function pltopo(plt,h1)
                         errordlg('Error while opening, please open the browser first and try again or open the file ./help/topo.hmt manually');
                     end
                 case 'Cancel'
-                    ZmapMessageCenter(); 
                     return
                     
             end %swith butt
@@ -399,7 +398,6 @@ function pltopo(plt,h1)
                     return;
                     
                 case 'Cancel'
-                    ZmapMessageCenter();
                     return;
                     
             end %swith butt

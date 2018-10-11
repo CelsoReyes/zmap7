@@ -123,7 +123,7 @@ classdef ZmapData < handle
         debug           matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.off % makes special menus visible
         debugLevel      (1,1) double                    = 0
         
-        Views           struct          = struct('primary',[],'layers',[]) % catalog views
+        % Views           struct          = struct('primary',[],'layers',[]) % catalog views
         
         % Datastore                       = DataStore % mapseis DataStore adapter
         
@@ -261,21 +261,6 @@ classdef ZmapData < handle
             end
         end
         
-        function disp_views(obj)
-            f=fields(obj.Views);
-            for n=1:numel(f)
-                cl=class(obj.Views.(f{n}));
-                switch cl
-                    case 'ZmapCatalogView'
-                        fprintf('%20s : ',f{n})
-                        try
-                            blurb(obj.Views.(f{n}));
-                        catch
-                            disp(' unable to show');
-                        end
-                end
-            end
-        end
     end
 end
 

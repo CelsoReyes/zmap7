@@ -13,7 +13,7 @@ function csubcat()
     myFigName='Seismicity Map (Cluster)';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
-    ZmapMessageCenter.set_info('Message','Plotting Seismicity Map(Cluster) ....');
+    msg.infodisp('Plotting Seismicity Map(Cluster) ....','Message');
     ZG=ZmapGlobal.Data;
     storedcat=original;
     %set catalog to the original catalog used at declustering
@@ -361,7 +361,7 @@ function csubcat()
         ginput(1);
     end
     function do_catSave()
-        ZmapMessageCenter.set_info('Save Data','  ');
+        msg.infodisp('  ','Save Data');
         [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             save([path1 file1], 'a','faults','main','mainfault','coastline','infstri');
@@ -420,8 +420,6 @@ function setleg()
                 tim2=answer{2};
                 tim3=answer{3};
                 tim4=answer{4};
-            else
-                ZmapMessageCenter();
             end
     end
     clear answer temp defaultans prompt dlg_title

@@ -1,7 +1,7 @@
 function calSave1 (~, ~, A, B)
     % save data to an interactively chosen file
     
-    ZmapMessageCenter.set_info('Save Data','  ');
+    msg.infodisp('  ','Save Data');
     
     [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Filename ');
     if file1 && path1
@@ -16,7 +16,7 @@ function calSave1 (~, ~, A, B)
         fprintf(fid, '%12.5f  %12.5f\n' , data);
         fclose(fid) ;
     else
-        ZmapMessageCenter.set_message('cancelled save', '  ');
+        msg.dbdisp('  ','cancelled save');
     end
     
 end

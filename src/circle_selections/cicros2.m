@@ -9,7 +9,6 @@ function cicros2()
     % outCatalog: newt2, newcat
     % mouse controlled
     % closest events OR radius
-    % calls: timeplot
     %
     % turned into function by Celso G Reyes 2017
     
@@ -34,8 +33,6 @@ function cicros2()
     %
     ZG.newcat = ZG.newt2;                   % resets ZG.newcat and ZG.newt2
     
-    % Call program "timeplot to plot cumulative number
-    %
     ctp=CumTimePlot(ZG.newt2);
     ctp.plot();
     

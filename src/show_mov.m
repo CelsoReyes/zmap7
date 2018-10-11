@@ -57,7 +57,7 @@ function show_mov(in, in2)
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position', [.60 .05 .15 .15 ],...
-            'Units','normalized','Callback',@(~,~)ZmapMessageCenter(),'String','Cancel');
+            'Units','normalized','Callback',@(~,~)close(),'String','Cancel');
         
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.25 .05 .15 .15 ],...
@@ -245,8 +245,6 @@ function show_mov(in, in2)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         nustep=str2num(inp2_field.String);
         ZG.compare_window_dur=years(str2num(inp3_field.String));
-        ZmapMessageCenter();
-        
         watchon;
         drawnow;
         in2 = 'calma';

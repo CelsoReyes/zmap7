@@ -4,7 +4,7 @@ classdef (Sealed) CumTimePlot < handle
     
     properties
         catalog
-        catview         ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
+        % catview         ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
         fontsz                          = ZmapGlobal.Data.fontsz
         hold_state                      = false
         AxH % axes handle (may move to dependent)
@@ -13,7 +13,6 @@ classdef (Sealed) CumTimePlot < handle
     properties(Constant)
         FigName                         = 'Cumulative Number';
         catname                         = 'newt2';
-        viewname                        = 'timeplot';
     end
     properties(Dependent)
         FigH % figure handle
@@ -23,36 +22,24 @@ classdef (Sealed) CumTimePlot < handle
     methods
         function obj = CumTimePlot(catalog)
             % CUMTIMEPLOT creates a new Cumulative Time Plot figure
-            report_this_filefun();
             if isa(catalog,'function_handle')
                 obj.catalog = catalog();
             else
                 obj.catalog = catalog;
             end
-            obj.catview = ZmapCatalogView(@obj.catfun);
-            %obj.plot()
         end
         
         function fig= get.FigH(obj)
-            % FigH is the handle to the one-and-only timeplot figure
-            persistent stored_fig
-            if numel(stored_fig) ~= 1 || ~isgraphics(stored_fig) || ~isvalid(stored_fig)
-                % either this has never been called or something is wrong. start over.
-                fig = findall(groot, 'Type','Figure','-and','Name',obj.FigName);
-                delete(fig)
-                stored_fig = obj.create_figure();
-                
-            end
-            
-            fig = stored_fig;
+            fig = findall(groot, 'Type','Figure','-and','Name',obj.FigName);
         end
+
         function reset(obj)
-            obj.catview = ZmapCatalogView(@obj.catfun);
+            % obj.catview = ZmapCatalogView(obj.catalog);
             obj.plot();
         end
         function c = Catalog(obj,n)
             % Catalog get a catalog
-            % c = Catalog(obj) returns the main catalog from timeplot
+            % c = Catalog(obj) returns the main catalog
             % c = Catalog(obj,n) returns another catalog (for when multiple have been plotted
             if ~exist('n','var')
                 n=1;
@@ -89,6 +76,11 @@ classdef (Sealed) CumTimePlot < handle
         end
         function plot(obj,varargin)
             myfig = obj.FigH; % will automatically create if it doesn't exist
+
+            if isempty(myfig)
+               myfig = obj.create_figure();
+            end
+
             try
                 figure(myfig);
             catch ME
@@ -97,7 +89,7 @@ classdef (Sealed) CumTimePlot < handle
             myfig.UserData = obj; % make this accessible
             
             if isempty(obj.Catalog)
-                ZmapMessageCenter.set_error('No Catalog','timeplot was passed an empty catalog');
+                msg.errordisp('CumTimePlot was passed an empty catalog','No Catalog');
                 return
             end
             
@@ -169,25 +161,20 @@ classdef (Sealed) CumTimePlot < handle
         end
         
     end
-    methods(Hidden)
-        function c=catfun(obj)
-            % for use with the ZmapCatalogView
-            c = obj.catalog;
-        end
-    end
+    
     methods (Access = protected)
         
         function fig = create_figure(obj)
             % acquire_cumtimeplotfigure get handle to figure, otherwise create one and sync the appropriate hold_state
             % Set up the Cumulative Number window
             ZG=ZmapGlobal.Data;
-            fig = figure('Name',obj.FigName,'Tag',obj.Tag);
-            fig.NumberTitle = 'off';
-            fig.NextPlot = 'replace';
-            fig.Position = position_in_current_monitor(ZG.map_len(1)-100, ZG.map_len(2)-20);
+            fig                 = figure('Name',obj.FigName,'Tag',obj.Tag);
+            fig.NumberTitle     = 'off';
+            fig.NextPlot        = 'replace';
+            fig.Position        = position_in_current_monitor(ZG.map_len(1)-100, ZG.map_len(2)-20);
             obj.create_menu(fig);
-            fig.UserData=obj;
-            obj.hold_state=false;
+            fig.UserData        = obj;
+            obj.hold_state      = false;
         end
         
         function create_menu(obj,fig)
@@ -339,7 +326,7 @@ classdef (Sealed) CumTimePlot < handle
             end
             
             function show_in_map()
-                ZmapMessageCenter.set_info('Unimplemented. now there would be some green marks on the main map, too');
+                msg.infodisp( too', 'Unimplemented. now there would be some green marks on the main map);
             end
             
         end

@@ -125,7 +125,7 @@ function zmapmenu()
     
     uicontrol('Style','Pushbutton',...
         'Position',[.70 .01 .25 .08 ],...
-        'Units','normalized','Callback',@(~,~)ZmapMessageCenter(),'String','Cancel');
+        'Units','normalized','Callback',@(~,~)close(),'String','Cancel');
     
     uicontrol('Units','normal',...
         'Position',[.1 .01 .25 .08],'String','Info ',...
@@ -206,7 +206,6 @@ function zmapmenu()
     function cb_alarm(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         drawnow;
         incube;
     end
@@ -214,7 +213,6 @@ function zmapmenu()
     function cb_loadcube(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         drawnow;
         loadcube;
     end

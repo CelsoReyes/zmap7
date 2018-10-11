@@ -78,7 +78,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         if ok
             [~, uOutput.Name] = fileparts(code);
             if mean(uOutput.Depth >= 1000)
-                warning('ZMAP:unexpectedUnit',depths look like they are in m instead of km! scaling')
+                warning('ZMAP:unexpectedUnit','depths look like they are in m instead of km! scaling')
                 uOutput.Depth= uOutput.Depth ./ 1000;
             end
         end

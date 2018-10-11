@@ -229,7 +229,7 @@ function cross_stress_orig()
         end
         
         if save_grid == 1
-            ZmapMessageCenter.set_info('Saving Grid','  ');
+            msg.infodisp('  ','Saving Grid');
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data,'*.mat'), 'Grid File Name?') ;
             vlist = split('newgri dx dy gx gy xvect yvect tmpgri ll dd dx ra ni Nmin fMaxRad tgl1 xsecx xsecy')
             if length(file1) > 1

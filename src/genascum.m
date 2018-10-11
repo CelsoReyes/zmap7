@@ -28,7 +28,6 @@ function genascum()
     f = [x0 y0 ; x1 y0 ; x1 y1 ; x0 y1 ; x0 y0];
     fplo = plot(f(:,1),f(:,2),'r');
     set(fplo,'LineWidth',2)
-    ZmapMessageCenter();
     
     gx = x0:dx:x1;
     gy = y0:dy:y1;
@@ -292,7 +291,7 @@ function genascum()
         [.7 .10 .2 .12],'String','maxZmap', 'callback',@callbackfun_max_z_map)
     
     close_button = uicontrol('Units','normal','Position',...
-        [.7 .7 .2 .12],'String','Close ', 'Callback',@(~,~)ZmapMessageCenter())
+        [.7 .7 .2 .12],'String','Close ', 'Callback',@(~,~)close)
     
     clear Zsumb Zsuma Zsum Zabsa Zabsb Zabs meanZ max_meanZ min_meanZ;
     

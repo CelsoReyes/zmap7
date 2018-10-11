@@ -16,7 +16,7 @@ function [x, y, mouse_points_overlay] = select_polygon(ax)
     
     hold(ax,tf2onoff(holdstate));
     
-    %ZmapMessageCenter.set_info('Define Polygon for Grid: (LEFT button): add point, (other key/button) last point');
+    %msg.infodisp( (other key/button) last point', 'Define Polygon for Grid: (LEFT button): add point);
     
     but=1;
     x=[]; 

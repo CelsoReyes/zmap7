@@ -99,7 +99,7 @@ function slider_cb(src,~)
             tmp = round(str2double(src.String));
             if (tmp > sld.Max || tmp < sld.Min)
                 beep;
-                ZmapMessageCenter.set_error('rounding slider','rounding out of range');
+                msg.errordisp('rounding out of range','rounding slider');
                 src.String = num2str(src.Value);
                 return
             end

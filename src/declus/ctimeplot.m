@@ -11,7 +11,7 @@ function ctimeplot()
     % Probably replaced by CumTimePlot
     
     ZG=ZmapGlobal.Data;
-    ZmapMessageCenter.set_info(' ','Plotting cumulative number plot...');
+    msg.infodisp('Plotting cumulative number plot...',' ');
     
     report_this_filefun();
     
@@ -289,7 +289,7 @@ function ctimeplot()
         
     end
     function do_calSave
-        ZmapMessageCenter.set_info('Save Data','  ');
+        msg.infodisp('  ','Save Data');
         [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Earthquake Datafile');
         out=[xt;cumu2]'; 
         save([path1 file1],'out','-ascii');
@@ -359,7 +359,7 @@ function ctimeplot()
     function cb_save_cumnumcurve(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter.set_info('Save Data','  ');
+        msg.infodisp('  ','Save Data');
         [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.output, '*.dat'), 'Earthquake Datafile');
         out=[xt;cumu2]'; 
         save([path1 file1], 'out', '-ascii');

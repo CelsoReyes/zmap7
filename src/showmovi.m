@@ -250,7 +250,6 @@ function showmovi()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         clear m;
         close(mov);
-        ZmapMessageCenter();
         
     end
     

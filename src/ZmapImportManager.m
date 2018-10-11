@@ -68,8 +68,6 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
         % ZG.mainmap_plotby='depth';
         
         setDefaultValues(ZG.primeCatalog);
-        cf=@()ZG.primeCatalog;
-        ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
         ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
         
         % OPTIONALLY CLEAR SHAPE
@@ -92,8 +90,6 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
                     % do nothing
             end
         end
-        
-        ZmapMessageCenter.update_catalog();
         
         uimemorize_catalog();
         

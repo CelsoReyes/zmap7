@@ -76,7 +76,7 @@ function lammap()
         ' crossection                                    '
         ];
     
-    ZmapMessageCenter.set_message(titStr,messtext);
+    msg.dbdisp(messtext, titStr);
     
     
     [xsecx xsecy,  inde] = mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm);

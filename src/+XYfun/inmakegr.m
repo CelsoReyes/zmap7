@@ -214,7 +214,7 @@ function orig_inmakegr(catalog)
             [.7 .10 .2 .12],'String','Options ', 'callback',@(~,~)zmapmenu)
         
         uicontrol('Units','normal','Position',...
-            [.3 .10 .2 .12],'String','Back', 'Callback',@(~,~)ZmapMessageCenter())
+            [.3 .10 .2 .12],'String','Back', 'Callback',@(~,~)close())
         
         return
         

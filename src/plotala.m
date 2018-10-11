@@ -99,7 +99,7 @@ function plotala()
     figure(cube);
     delete(gca)
     abo = abo2;
-    if isempty(abo);ZmapMessageCenter.set_info(' ','No data above threshold'); return; end
+    if isempty(abo);msg.infodisp('No data above threshold',' '); return; end
     rect= [0.2 0.2 0.6 0.6];
     axes('pos',rect)
     set(gca,'visible','off')
@@ -246,7 +246,7 @@ function plotala()
             ' the calculation with a ^C. The results         '
             ' calculated so far are stored in the variable re'];
         
-        ZmapMessageCenter.set_message(titStr,messtext);
+        msg.dbdisp(messtext, titStr);
         figure(mess);
         
         def = {'5','0.1'};
@@ -529,7 +529,6 @@ function make_movie()
         close(cube);
         close(vie);
         clear m;
-        ZmapMessageCenter();
     end
     
     function cb_info(mysrc,myevt)

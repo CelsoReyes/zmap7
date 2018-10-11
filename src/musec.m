@@ -20,7 +20,7 @@ function musec()
         'point to select, "l" last point.      '
         '                                      '];
     
-    ZmapMessageCenter.set_message('Select Mutiple segments for x-section',messtext');
+    msg.dbdisp(messtext', 'Select Mutiple segments for x-section');
     
     % first lets input the endpoints
     but = 1;x=[];y=[];

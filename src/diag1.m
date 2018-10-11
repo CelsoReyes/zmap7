@@ -75,7 +75,6 @@ function diag1()
     function callbackfun_004(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         show_map('maz','calma',ZG.compare_window_dur);
     end
     

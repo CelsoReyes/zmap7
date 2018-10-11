@@ -1,31 +1,9 @@
 function catalog_menu(obj, force)
     % catalog_menu was create_catalog_menu adds a menu designed to handle catalog modifications
-    % catalog_menu(mycatalog, force, handle)
-    % mycatalog is a name of the ZmapGlobal.Data field containing a ZmapCatalog
-    % myview is a name of the ZmapGlobal.Data.View field containing a ZmapCatalogView
-    %
-    % Menu Options:
-    %   Crop catalog to window -
-    %   Edit Ranges -
-    %   Rename -
-    %   - - -
-    %   Memorize/Recall Catalog -
-    %   Clear Memorized Catalog -
-    %   - - -
-    %   Combine Catalogs -
-    %   Compare Catalogs -
-    %   Save Current Catalog - save as a ZmapCatalog (.mat) or a v6 or v7+ ASCII table (.dat)
-    %   - - -
-    %   Stats -
-    %   Get/Load Catalog -
-    %   Reload Last Catalog -
     
-    
-    %TODO clear up mess between ZG.catalogs and ZG.Views.view
     
     % to find this menu, use findobj(obj.fig, 'Tag');
     
-    %mycatalog = 'primeCatalog';
     ZG = ZmapGlobal.Data; % for use in all subroutines
     h = findobj(obj.fig,'Tag','menu_catalog');
     if ~exist('force','var')
@@ -193,7 +171,7 @@ function catalog_menu(obj, force)
             errordlg('No polygon exists. Create one from the selection menu first','Cannot crop to polygon');
             return
         end
-        events_in_shape = obj.shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);
+        events_in_shape = obj.shape.isinterior(obj.catalog.Longitude, obj.catalog.Latitude);
         obj.catalog=obj.catalog.subset(events_in_shape);
         
         zmap_update_displays();

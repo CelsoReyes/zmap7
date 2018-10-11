@@ -26,8 +26,6 @@ function plothist(obj, name, tabgrouptag)
     lineProps.FaceColor         = [0.4 0.4 0.4];
     lineProps.EdgeColor     = [0.4 0.4 0.4];
     lineProps.LineWidth     = 1;
-    % lineProps.UIContextMenu = line_plot_context_menu();
-    % lineProps.MinBigMag     = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     lineProps.DisplayName   = obj.catalog.Name;
     lineProps.DisplayStyle   = 'bar';
     
@@ -96,42 +94,7 @@ function plothist(obj, name, tabgrouptag)
     end
     
     ax.YMinorTick='on';
-    %{
-    function doit(ax)
-        h= findobj(ax,'Type','histogram');
-        edges=  h.BinEdges;
-        
-        %keys=obj.xscats.keys;
-        
-        switch name
-            case 'Hour'
-                xsplotter=@(xs,xscat)histogram(ax,hours(xscat.Date.(name)),edges,...
-                        'DisplayStyle','stairs',...
-                        'DisplayName',xs.name,'EdgeColor',xs.color,'LineWidth',1.0);
-                
-            otherwise
-                xsplotter=@(xs,xscat)histogram(ax,xscat.(name),edges,...
-                        'DisplayStyle','stairs',...
-                        'DisplayName',xs.name,'EdgeColor',xs.color,'LineWidth',1.0);
-        end
-        
-        obj.plot_xsections(xsplotter, 'Xsection');
-        
-    end
-    %}
-    
-    function cln = line_plot_context_menu()
-        % set up the context menu for these line plots
-        cln=findobj(obj.fig,'Tag',Tags.line);
-        if isempty(cln)
-            cln=uicontextmenu(obj.fig,'tag',Tags.line);
-            uimenu(cln, 'Label', 'start here',              MenuSelectedField(), @(~,~)obj.cb_starthere(ax));
-            uimenu(cln, 'Label', 'end here',                MenuSelectedField(), @(~,~)obj.cb_endhere(ax));
-            uimenu(cln, 'Label', 'trim to largest event',   MenuSelectedField(), @obj.cb_trim_to_largest);
-            uimenu(cln, 'Label', 'Open in new window',      MenuSelectedField(), @obj.cb_timeplot);
-        end
-    end
-        
+
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 2;
         xsProps.DisplayName = xs.name;
@@ -141,15 +104,6 @@ function plothist(obj, name, tabgrouptag)
         h = craw.add_series(xscat, mytag, xsProps);
     end
     
-    function cb_xstimeplot(~,~)
-        % CB_XSTIMEPLOT shows the TIMEPLOT for the currently selected cross-section
-        myName = get(gco,'DisplayName');
-        idx = strcmp(obj.XSectionTitles,myName);
-        ZG=ZmapGlobal.Data;
-        ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
-        ZG.newt2.Name=sprintf('Events within %g km of %s',obj.CrossSections(idx).name);
-        ctp=CumTimePlot(ZG.newt2);
-        ctp.plot();
-    end
+
     
 end

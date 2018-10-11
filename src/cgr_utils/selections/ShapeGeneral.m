@@ -33,7 +33,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %  SHAPEGENERAL methods:
     %     SHAPEGENERAL -
     %     Outline - get shape outline. like Points, except guaranteed to give outline instead of centerpoints
-    %     isInside - return a vector of size otherLon that is true where item is inside polygon
+    %     isinterior - return a vector of size otherLon that is true where item is inside polygon
     %     plot
     %     clearplot
     %     deemphasizeplot
@@ -151,8 +151,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             val = polyarea(xs,ys);
         end
         
-        function [mask]=isInside(obj,otherLon, otherLat)
-            % [mask]=isInside(obj,otherLon, otherLat)
+        function [mask]=isinterior(obj,otherLon, otherLat)
+            % [mask]=isinterior(obj,otherLon, otherLat)
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
@@ -335,11 +335,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             % apply shape to current figure's view (inverting if necessary)
             fig = gcf;
-            if isfield(fig.UserData,'View')
+            if isprop(fig.UserData,'rawcatalog')
+                myview=ZmapCatalogView(fig.UserData.rawcatalog);
+                myview = myview.PolygonApply(obj.Outline);
+                
+            elseif isfield(fig.UserData,'View')
                 myview=fig.UserData.View.PolygonApply(obj.Outline);
             else
                 myview=ZG.Views.primary.PolygonApply(obj.Outline);
             end
+            
             if in_or_out == "outside"
                 myview=myview.PolygonInvert();
             end

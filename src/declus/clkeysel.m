@@ -106,8 +106,7 @@ end
 function callbackfun_004(mysrc,myevt)
 
   callback_tracker(mysrc,myevt,mfilename('fullpath'));
-  ZmapMessageCenter();
-  
+  close
 end
  
 end

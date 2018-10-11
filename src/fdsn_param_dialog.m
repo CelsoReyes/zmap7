@@ -82,11 +82,11 @@ function data_provider_Callback(hObject, eventdata, handles)
         currprovider.serviceURLs.eventService));
     if hObject.Value==1
         hObject.BackgroundColor = [1.0 0.95 0.95];
-        ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data - First choose a data provider...');
+        msg.infodisp('Importing FDSN data - First choose a data provider...','FDSN Fetch');
         
     else
         hObject.BackgroundColor = [0.95 1.0 0.95];
-        ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)');
+        msg.infodisp('Importing FDSN data - Choose the desired catalog constraints (time, magnitude, etc..)','FDSN Fetch');
         
     end
      if ~ handles.catalog_name.UserData.touched 
@@ -438,7 +438,7 @@ function Fetch_Callback(~, ~, handles)
     queryset = add_numeric(handles, queryset, 'maxdepth');
     queryset = add_string(handles, queryset, 'magnitudetype');
     
-    ZmapMessageCenter.set_info('FDSN Fetch','Importing FDSN data from the web. This might take a minute');
+    msg.infodisp('Importing FDSN data from the web. This might take a minute','FDSN Fetch');
     
     set(handles.fdsn_import_dialog,'Visible','off');
     drawnow;
@@ -469,7 +469,7 @@ function Fetch_Callback(~, ~, handles)
     watchoff;
     
     % CONVERT
-    ZmapMessageCenter.set_info('FDSN Fetch','Converting to a ZmapCatalog');
+    msg.infodisp('Converting to a ZmapCatalog','FDSN Fetch');
     if ~isa(tmp,'ZmapCatalog')
         ZG.primeCatalog=ZmapCatalog(tmp);
     else
@@ -485,17 +485,12 @@ function Fetch_Callback(~, ~, handles)
     
     %name catalog
     %sdlg.prompt='Provide a catalog name (used in plots, files)';
-    cf=@()ZG.primeCatalog;
-    ZG.Views.primary=ZmapCatalogView(cf);
     assert(ZG.primeCatalog.Date(1)<=ZG.primeCatalog.Date(end));
     
     if isvalid(m)
         close(m)
     end
     clear tmp
-%    h=ZmapMessageCenter();
-%    h.update_catalog()%;
-%    zmap_update_displays();
     
     uimemorize_catalog();
     

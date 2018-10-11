@@ -105,7 +105,6 @@ function fdparain(gobut)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     

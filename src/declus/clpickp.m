@@ -176,7 +176,6 @@ function clpickp(choice)
         x=[];
         y=[];
         n=0;
-        ZmapMessageCenter();
     end
 end
 
