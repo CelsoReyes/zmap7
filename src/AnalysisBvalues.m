@@ -133,6 +133,7 @@ classdef AnalysisBvalues < AnalysisWindow
                 remove_series@AnalysisWindow(obj,tagID);
                 % remove_series@AnalysisWindow(obj,[tagID ' Mc']);
                 remove_series@AnalysisWindow(obj,[tagID ' line']);
+                remove_series@AnalysisWindow(obj,[tagID ' txt']);
             end
         end
     end

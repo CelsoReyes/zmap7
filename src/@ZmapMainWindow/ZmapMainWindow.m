@@ -981,6 +981,7 @@ classdef ZmapMainWindow < handle
                 set(toShow,'Visible','off');
                 set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','on');
             end
+            clear_empty_legend_entries(obj.fig);
         end
  
     end

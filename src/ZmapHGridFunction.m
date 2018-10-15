@@ -77,7 +77,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         %% dependent properties
         
         function tb = get.resultsForThisPoint(obj)
-            if obj.nearestSample
+            if obj.nearestSample ~= 0
                 % tb = obj.Result.values(obj.nearestSample,:);
                 tb = obj.Result.values(obj.samplePoints(obj.pointChoice).idx,:);
             else
@@ -93,8 +93,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
         
         function mask = get.selectionForThisPoint(obj)
+            if obj.nearestSample == 0
+                mask=[];
+                return
+            end
             tb = obj.resultsForThisPoint;
-            if isempty(tb); mask=[];return; end
+            if isempty(tb)
+                mask=[];
+                return; 
+            end
             % evsel = obj.EventSelector;
             dists = obj.RawCatalog.epicentralDistanceTo(tb.y,tb.x);
             mask = dists <= tb.RadiusKm;
@@ -335,15 +342,15 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end % plot function
         
         
-        function updateClickPoint(obj,src,~)
+        function updateClickPoint(obj,~,ev)
             % If user clicks in the active axis, then the point and sample are updated
-            
-            if ~isvalid(obj.ax)
+            % disp(ev)
+            if ~obj.isUpdating &&( (nargin>1 && ev.EventName ~= "Hit") || ~isvalid(obj.ax))
                 return
             end
             mytab=obj.ax.Parent;
             mytabholder=mytab.Parent;
-            if mytabholder.SelectedTab~=mytab || ~obj.isUpdating
+            if mytabholder.SelectedTab~=mytab % || ~obj.isUpdating
                 return
             end
             axX=obj.ax.XLim;
@@ -406,6 +413,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             textOpt.Interpreter    = 'none';
             textOpt.Tag            = 'thisresulttext';
             textOpt.UserData       = myname;
+            textOpt.DisplayName='';
             
             hilightOpt.Marker            = 'o';
             hilightOpt.MarkerEdgeColor   = [0 0 0];
@@ -413,11 +421,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
             hilightOpt.Tag               = 'thisresulthilight';
             hilightOpt.SizeData          = 80;
             hilightOpt.LineWidth         = 2;
+            hilightOpt.DisplayName='';
             
             radiusOpt.LineStyle = ':';
             radiusOpt.Color = 'k';
             radiusOpt.Tag = 'thisradius';
             radiusOpt.LineWidth = 2;
+            radiusOpt.DisplayName='';
             
             % POINT A
             TL = text(obj.ax,nan,nan,'',textOpt);
@@ -476,7 +486,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 obj.isUpdating=true;
                 try
                     obj.updateClickPoint(src,ev);
-                    drawnow
+                    drawnow % limitrate
                 catch ME
                     falsifyIsUpdating()
                     rethrow(ME)
@@ -561,24 +571,23 @@ classdef ZmapHGridFunction < ZmapGridFunction
             theTab = uitab(theTabHolder, 'Title', [obj.PlotTag ' Results'], 'Tag', obj.PlotTag);
         end
         
-        function updateRing(obj)
-            CR = obj.samplePoints(obj.pointChoice).thisradius;
-            tb = obj.resultsForThisPoint;
-            if obj.showRing
+        function updateRing(obj, tb, sp)
+            CR = sp.thisradius;
+            if obj.showRing && ~isempty(tb)
                 % update samplecircle
-                [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
+               [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
                 set(CR,'XData',Lo,'YData',La,'LineStyle','--');
             else
                 set(CR,'XData',nan,'YData',nan);
-            end
+           end
         end
         
-        function updateText(obj)
-            TX = obj.samplePoints(obj.pointChoice).thisresulttext;
+        function updateText(obj,tb, sp)
+            TX = sp.thisresulttext;
             myname = TX.UserData;
-            if obj.showPointValue
+            if obj.showPointValue && ~isempty(tb)
                 % update text
-                TX.Position = [obj.samplePoints(obj.pointChoice).X obj.samplePoints(obj.pointChoice).Y 0];
+                TX.Position = [sp.X sp.Y 0];
                 valstr = string(obj.Result.values.(myname)(obj.nearestSample));
                 if ismissing(valstr)
                     TX.String = "  " + myname + " : <missing>";
@@ -591,26 +600,23 @@ classdef ZmapHGridFunction < ZmapGridFunction
         end
         function update(obj, ~, ~)
             % get current point and axes
-            
-            obj.updateText();
-            obj.updateRing();
-            obj.updateSeries();
+            tb = obj.resultsForThisPoint;
+            sp = obj.samplePoints(obj.pointChoice);
+            obj.updateText(tb,sp);
+            obj.updateRing(tb, sp);
+            obj.updateSeries(sp);
         end
         
-        function updateSeries(obj)
+        function updateSeries(obj,sp)
             % update external plot(s)
             
             % discover external axes that are AnalysisWindow related: they will have an AnalysisWindow
             % subclass in their UserData.
             
-            analysisWindowFilter = @(x) ~isempty(x.UserData)&& isa(x.UserData,'AnalysisWindow');
-            
-            h = findobj(gcf,'Type','axes');
-            h = h(arrayfun(analysisWindowFilter,h));
-            analysisWindows = {h.UserData};
+            analysisWindows = obj.getAnalysisWindows(gcf);
             
             % define how trends will appear
-            plOpt.Marker        = obj.samplePoints(obj.pointChoice).thisresulthilight.Marker;
+            plOpt.Marker        = sp.thisresulthilight.Marker;
             plOpt.LineStyle     = '-';
             plOpt.LineWidth     = 3;
             plOpt.DisplayName   = [obj.PlotTag, ' ', obj.pointChoice,' selection'];
@@ -626,7 +632,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
             cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
             set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
-            clear_empty_legend_entries(gcf);
+            % clear_empty_legend_entries(gcf);
         end
         
         function keyupdate(obj, src, ev)
@@ -684,6 +690,12 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     p.Y = nan;
                     p.idx= [];
                     obj.samplePoints(obj.pointChoice)=p;
+                    obj.update();
+            
+                    analysisWindows = obj.getAnalysisWindows(gcf);
+                    thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
+                    cellfun(@(aw) aw.remove_series(thetag), analysisWindows,'UniformOutput',false);
+                    
                     if obj.pointChoice == 'B'
                         obj.pointChoice = 'A';
                     elseif ~isnan(obj.samplePoints('B').X)
@@ -691,8 +703,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                     else
                         do_nothing()
                     end
-                    obj.update();
-                    
+                    return
                 otherwise
                     % add additional key functionality here.
                     do_nothing();
@@ -704,6 +715,13 @@ classdef ZmapHGridFunction < ZmapGridFunction
     
     methods(Static)
         
+        function aw = getAnalysisWindows(fig)
+            analysisWindowFilter = @(x) ~isempty(x.UserData)&& isa(x.UserData,'AnalysisWindow');
+            
+            h = findobj(fig,'Type','axes');
+            h = h(arrayfun(analysisWindowFilter,h));
+            aw = {h.UserData};
+        end
         function add_menus()
             
             lookmenu  = uimenu(gcf,'label','Results','Tag','lookmenu');
