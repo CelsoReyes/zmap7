@@ -27,7 +27,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
         samplePoints = containers.Map(); % track individual points
         
         ColorBy {mustBeMember(ColorBy,{'result','choice'})} = 'choice'
-        SelectionColors = [FancyColors.rgb('dark orchid'); FancyColors.rgb('mandy')];
+        SelectionColors = [FancyColors.rgb('blue'); FancyColors.rgb('mandy')];
     end
     
     properties

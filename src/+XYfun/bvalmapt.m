@@ -7,6 +7,7 @@ classdef bvalmapt < ZmapHGridFunction
         periodA_end     datetime            % end of timeperiod 1
         periodB_start   datetime            % start of timeperiod 2
         periodB_end     datetime            % end of timeperiod 2
+        % mc_choice       McMethods       = McMethods.MaxCurvature
         minnu                       {mustBeNonnegative, mustBeInteger}  = 100 % minimum number of events/node/timeperiod
         useAutoMcomp    logical         = true;
     end
@@ -102,7 +103,7 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
-            zdlg.AddMcMethodDropdown('mc_choice');
+            % zdlg.AddMcMethodDropdown('mc_choice');
             zdlg.AddMcAutoEstimateCheckbox('useAutoMcomp',obj.useAutoMcomp);
             
             zdlg.AddEdit('periodA_start','Start Time A : ', obj.periodA_start, 'Start time for first period');
@@ -115,7 +116,7 @@ classdef bvalmapt < ZmapHGridFunction
             zdlg.AddEdit('minnu', 'Minimum number of events in each period:', ...
                 obj.minnu,'');
             
-            zdlg.Create('Name', 'b-Value Grid Parameters''WriteToObj',obj,'OkFcn', @obj.doIt);
+            zdlg.Create('Name', 'b-Value Grid Parameters', 'WriteToObj',obj,'OkFcn', @obj.doIt);
         end
         
         function ra = get.EventSelectorRadius(obj)

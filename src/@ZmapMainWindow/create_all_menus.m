@@ -24,7 +24,7 @@ function create_all_menus(obj, force)
     create_ztools_menu();
     
     
-    uimenu('Label','|>','Enable','off');
+    uimenu('Label','|>','Enable','off');% 
     create_time_analysis_menu();
     create_map_analysis_menu();
     create_xsec_analysis_menu();
@@ -36,8 +36,9 @@ function create_all_menus(obj, force)
     
     % modify the file menu to add ZMAP stuff
     hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
-    copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy');
-    
+    % copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy'); %PROBLEM!!!
+    %copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu);
+    copymenus(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu);
     addPreferencesMenuItem();
     addQuitMenuItem();
     addAboutMenuItem();

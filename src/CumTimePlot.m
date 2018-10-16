@@ -4,50 +4,32 @@ classdef (Sealed) CumTimePlot < handle
     
     properties
         catalog
-        % catview         ZmapCatalogView %= ZmapCatalogView(@()ZmapGlobal.Data.newt2) % catalog
         fontsz                          = ZmapGlobal.Data.fontsz
         hold_state                      = false
         AxH % axes handle (may move to dependent)
         Tag                             = 'cum'
+        zmw                             = []; % ZmapMainWindow
     end
     properties(Constant)
         FigName                         = 'Cumulative Number';
-        catname                         = 'newt2';
     end
-    properties(Dependent)
-        FigH % figure handle
-        Edges % bin edges (datetime)
-        RelativeEdges % bin edges (duration, offset from first event)
-    end
+    
     methods
         function obj = CumTimePlot(catalog)
             % CUMTIMEPLOT creates a new Cumulative Time Plot figure
-            if isa(catalog,'function_handle')
-                obj.catalog = catalog();
+            if isa(catalog,'ZmapMainWindow')
+                obj.zmw = catalog;
+                obj.catalog=zmw.catalog;
             else
                 obj.catalog = catalog;
             end
         end
         
-        function fig= get.FigH(obj)
-            fig = findall(groot, 'Type','Figure','-and','Name',obj.FigName);
-        end
-
         function reset(obj)
             % obj.catview = ZmapCatalogView(obj.catalog);
             obj.plot();
         end
-        function c = Catalog(obj,n)
-            % Catalog get a catalog
-            % c = Catalog(obj) returns the main catalog
-            % c = Catalog(obj,n) returns another catalog (for when multiple have been plotted
-            if ~exist('n','var')
-                n=1;
-            end
-            if numel(obj.catview) <=n && n>0
-                c = obj.catview(n).Catalog;
-            end
-        end
+                
         function update(obj)
             obj.plot()
         end
@@ -55,12 +37,13 @@ classdef (Sealed) CumTimePlot < handle
         function addplot(obj, othercat, varargin)
             % addplot add another line to the plot
             % tdiff=mycat.DateSpan; % added by CR
-            cumu = histcounts(othercat.Date, obj.Edges);
+            edges = min(obj.catalog.Date) : ZG.bin_dur : max(obj.catalog.Date);
+            cumu = histcounts(othercat.Date, edges);
             cumu2 = cumsum(cumu);
             
             hold(obj.AxH,'on');
             axes(obj.AxH)
-            tiplot2 = plot(obj.AxH,obj.catview.Date,(1:obj.catview.Count),'r','LineWidth',2.0);
+            tiplot2 = plot(obj.AxH,obj.catalog.Date,(1:obj.catalog.Count),'r','LineWidth',2.0);
             tiplot2.DisplayName=caller(dbstack);
             obj.hold_state=false;
             hold(obj.AxH,'off');
@@ -74,8 +57,9 @@ classdef (Sealed) CumTimePlot < handle
                 end
             end
         end
+        
         function plot(obj,varargin)
-            myfig = obj.FigH; % will automatically create if it doesn't exist
+            myfig = findall(groot, 'Type','Figure','-and','Name',obj.FigName);
 
             if isempty(myfig)
                myfig = obj.create_figure();
@@ -88,7 +72,7 @@ classdef (Sealed) CumTimePlot < handle
             end
             myfig.UserData = obj; % make this accessible
             
-            if isempty(obj.Catalog)
+            if isempty(obj.catalog)
                 msg.errordisp('CumTimePlot was passed an empty catalog','No Catalog');
                 return
             end
@@ -97,7 +81,7 @@ classdef (Sealed) CumTimePlot < handle
                 addplot(obj,varargin{:});
                 return;
             end
-            [t0b, teb] = bounds(obj.catview.Date);
+            [t0b, teb] = bounds(obj.catalog.Date);
             
             delete(findobj(myfig,'Type','Axes'));
             watchon;
@@ -105,7 +89,7 @@ classdef (Sealed) CumTimePlot < handle
             
             set(obj.AxH,...
                 ...'visible','off',...
-                'FontSize',ZmapGlobal.Data.fontsz.s,...
+                'FontSize',obj.fontsz.s,...
                 'FontWeight','normal',...
                 'LineWidth',1.5,...
                 'Tag','cumtimeplot_ax',...
@@ -113,21 +97,21 @@ classdef (Sealed) CumTimePlot < handle
             grid(obj.AxH,'on')
             % plot time series
             
-            nu = (1:obj.Catalog.Count);
+            nu = (1:obj.catalog.Count);
             
             hold(obj.AxH,'on')
-            plot(obj.AxH, obj.Catalog.Date, nu, 'b',...
+            plot(obj.AxH, obj.catalog.Date, nu, 'b',...
                 'LineWidth', 2.0,...
                 'Tag','cumulative events',...
                 'UIContextMenu',obj.menu_cumtimeseries());
             
             % plot marker at end of data
-            pl = plot(obj.AxH, teb, obj.Catalog.Count,'rs');
+            pl = plot(obj.AxH, teb, obj.catalog.Count,'rs');
             set(pl,'LineWidth',1.0,'MarkerSize',4,...
                 'MarkerFaceColor','w','MarkerEdgeColor','r',...
                 'Tag','end marker');
             
-            set(obj.AxH,'Ylim',[0 obj.Catalog.Count*1.05]);
+            set(obj.AxH,'Ylim',[0 obj.catalog.Count*1.05]);
             
             obj.plot_big_events();
             
@@ -139,27 +123,13 @@ classdef (Sealed) CumTimePlot < handle
             
             % Make the figure visible
             %
-            set(obj.AxH,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
+            set(obj.AxH,'visible','on','FontSize',obj.fontsz.s,...
                 'LineWidth',1.0,'TickDir','out');%,'Ticklength',[0.02 0.02],'Box','on')
             figure(myfig);
             axes(obj.AxH);
             set(myfig,'Visible','on');
             watchoff(myfig);
         end
-        
-        function ed = get.Edges(obj)
-            ZG=ZmapGlobal.Data;
-            % get.Edges get date edges
-            ed = min(obj.catview.Date) : ZG.bin_dur : max(obj.catview.Date);
-        end
-        
-        function red = get.RelativeEdges(obj)
-            ZG=ZmapGlobal.Data;
-            % get.RelativeEdges get duration edges
-            red = 0 : ZG.bin_dur : (max(obj.catview.Date) - min(obj.catview.Date));
-            % (0: ZG.bin_dur :(tdiff + 2*ZG.bin_dur)));
-        end
-        
     end
     
     methods (Access = protected)
@@ -185,16 +155,12 @@ classdef (Sealed) CumTimePlot < handle
             % HISTOGRAMS
             op5C = uimenu(mm,'Label','Histograms');
             
-            uimenu(op5C,'Label','Magnitude',...
-                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Magnitude'));
-            uimenu(op5C,'Label','Depth',...
-                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Depth'));
-            uimenu(op5C,'Label','Time',...
-                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Date'));
-            uimenu(op5C,'Label','Hr of the day',...
-                MenuSelectedField(),@(~,~)hisgra(obj.catview,'Hour'));
+            uimenu(op5C,'Label','Magnitude', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Magnitude'));
+            uimenu(op5C,'Label','Depth', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Depth'));
+            uimenu(op5C,'Label','Time', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Date'));
+            uimenu(op5C,'Label','Hr of the day', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Hour'));
             
-            add_cumtimeplot_zmenu(obj, mm)
+            obj.add_cumtimeplot_zmenu(mm)
             addAboutMenuItem(fig);
         end
         
@@ -202,12 +168,12 @@ classdef (Sealed) CumTimePlot < handle
             % plot big events on curve
             ZG=ZmapGlobal.Data;
             % select "big" events
-            bigMask= obj.catview.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
-            bigCat = obj.catview.subset( bigMask );
+            bigMask= obj.catalog.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
+            bigCat = obj.catalog.subset( bigMask );
             
             bigIdx = find(bigMask);
             
-            if (max(obj.catview.Date)-min(obj.catview.Date))>=days(1) && ~isempty(bigCat)
+            if (max(obj.catalog.Date)-min(obj.catalog.Date))>=days(1) && ~isempty(bigCat)
                 hold(obj.AxH,'on')
                 plot(obj.AxH,bigCat.Date, bigIdx,'hm',...
                     'LineWidth',1.0,'MarkerSize',10,...
@@ -234,13 +200,13 @@ classdef (Sealed) CumTimePlot < handle
     
     methods (Access = private)
         function add_xlabel(obj)
-            if (max(obj.catview.Date)-min(obj.catview.Date)) >= days(1)
+            if (max(obj.catalog.Date)-min(obj.catalog.Date)) >= days(1)
                 obj.AxH.XLabel.String = 'Date';
                 obj.AxH.XLabel.FontSize = obj.fontsz.s;
                 obj.AxH.XLabel.UserData = field_unit.Date;
                 
             else
-                statime=obj.catview.Date(1);
+                statime=obj.catalog.Date(1);
                 obj.AxH.XLabel.String = ['Time in days relative to ',char(statime)];
                 obj.AxH.XLabel.FontSize = obj.fontsz.m;
                 obj.AxH.XLabel.UserData = field_unit.Duration(statime);
@@ -251,7 +217,7 @@ classdef (Sealed) CumTimePlot < handle
             obj.AxH.YLabel.FontSize=obj.fontsz.s;
         end
         function add_title(obj)
-            obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catview.Name);
+            obj.AxH.Title.String=sprintf('"%s": Cumulative Earthquakes over time', obj.catalog.Name);
             obj.AxH.Title.Interpreter = 'none';
         end
         function add_legend(obj)
@@ -326,7 +292,7 @@ classdef (Sealed) CumTimePlot < handle
             end
             
             function show_in_map()
-                msg.infodisp( too', 'Unimplemented. now there would be some green marks on the main map);
+                msg.infodisp('Unimplemented. now there would be some green marks on the main map too');
             end
             
         end
@@ -368,8 +334,8 @@ classdef (Sealed) CumTimePlot < handle
             op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
             uimenu(op4,'Label','automatic',MenuSelectedField(),@cb_auto_mc_b_estimation)
             uimenu(op4,'label','Mc with time ',MenuSelectedField(),{@plotwithtime,'mc'});
-            uimenu(op4,'Label','b with depth',MenuSelectedField(),@(~,~)bwithde2(obj.catview.Catalog()));
-            uimenu(op4,'label','b with magnitude',MenuSelectedField(),@(~,~)bwithmag(obj.catview.Catalog()));
+            uimenu(op4,'Label','b with depth',MenuSelectedField(),@(~,~)bwithde2(obj.catalog));
+            uimenu(op4,'label','b with magnitude',MenuSelectedField(),@(~,~)bwithmag(obj.catalog));
             uimenu(op4,'label','b with time',MenuSelectedField(),{@plotwithtime,'b'});
             
             op5 = uimenu(analyzemenu,'Label','p-value estimation');
@@ -399,20 +365,11 @@ classdef (Sealed) CumTimePlot < handle
             uimenu(op7,'Label','Stress tensor with time',MenuSelectedField(),@(~,~)stresswtime())
             uimenu(op7,'Label','Stress tensor with depth',MenuSelectedField(),@(~,~)stresswdepth())
             uimenu(op7,'Label',' Help/Info on  stress tensor inversions',MenuSelectedField(),@(~,~)showweb('stress'))
-            
-            
-            
-            %uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
-            %    'Separator','on',...
-            %    MenuSelectedField(),@unimplemented_error);
-            
-            %uimenu(ztoolsmenu,'Label','Save cum #  and z value',...
-            %    MenuSelectedField(),@unimplemented_error);
-            
+                        
             function plotwithtime(mysrc,myevt,sPar)
                 %sPar tells what to plot.  'mc', 'b'
                 callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                plot_McBwtime(obj.catview.Catalog(), sPar);
+                plot_McBwtime(obj.catalog, sPar);
             end
             
             function cb_hold(mysrc,myevt)

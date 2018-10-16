@@ -395,7 +395,7 @@ classdef ZmapMainWindow < handle
         
         function cb_timeplot(obj, ~, ~)
             disp('oh')
-            ctp = CumTimePlot(@()obj.catalog);
+            ctp = CumTimePlot(obj.catalog);
             ctp.plot();
         end
         
@@ -725,6 +725,10 @@ classdef ZmapMainWindow < handle
             % prepare the Tab Group for the cross sections (subordinate to the main tab)
             obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
             obj.maintab.Tag = 'mainmap_tab';
+            if isempty(findobj(obj.fig,'Name','Move Tab','-and','Type','uimenu'))
+                uimenu(obj.maintab.UIContextMenu,'Text','Move Tab', ...
+                    MenuSelectedField(),{@callbacks.switchtabgroup,obj.maingroup});
+            end
             
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...
                 'Position', obj.TabGroupPositions.XS,...
@@ -840,7 +844,9 @@ classdef ZmapMainWindow < handle
             h = allchild(findall(obj.fig, 'Label', 'Get/Load Catalog'));
             if iscell(h)
                 for i = 1:numel(h)
-                    set(h{i}(~startsWith(get(h{i}, 'Label'), 'from ')), 'Enable', 'off');
+                    if ~isempty(h{i})
+                        set(h{i}(~startsWith(get(h{i}, 'Label'), 'from ')), 'Enable', 'off');
+                    end
                 end
             else
                 set(h(~startsWith(get(h, 'Label'), 'from ')), 'Enable', 'off');
