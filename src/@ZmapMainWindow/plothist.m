@@ -6,7 +6,7 @@ function plothist(obj, name, tabgrouptag)
     Tags.bg = 'hist bg contextmenu';
     Tags.line = 'hist line contextmenu';
     
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, 'histograms');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'histograms');
     
     
      %% set up the axes

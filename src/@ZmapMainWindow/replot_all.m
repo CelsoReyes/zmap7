@@ -85,17 +85,17 @@ function replot_all(obj,metaProp,eventData)
         plot_xsection(obj,k{j},currcatsummary,md);
     end
     
-    obj.fmdplot('UR plots');
-    %obj.plothist('Magnitude',obj.catalog.Magnitude,'UR plots');
-    obj.plothist('Magnitude','UR plots');
-    obj.cumplot('LR plots');
+    obj.fmdplot('Upper Right panel');
+    %obj.plothist('Magnitude',obj.catalog.Magnitude,'Upper Right panel');
+    obj.plothist('Magnitude','Upper Right panel');
+    obj.cumplot('Lower Right panel');
     
-    %obj.plothist('Depth',obj.catalog.Depth,'UR plots');
-    %obj.plothist('Date',obj.catalog.Date,'UR plots');
-    %obj.plothist('Hour',hours(obj.catalog.Date.Hour),'UR plots');
-    obj.cummomentplot('LR plots');
-    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'LR plots');
-    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'LR plots');
+    %obj.plothist('Depth',obj.catalog.Depth,'Upper Right panel');
+    %obj.plothist('Date',obj.catalog.Date,'Upper Right panel');
+    %obj.plothist('Hour',hours(obj.catalog.Date.Hour),'Upper Right panel');
+    obj.cummomentplot('Lower Right panel');
+    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'Lower Right panel');
+    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'Lower Right panel');
     
     obj.replotting=false;
     drawnow nocallbacks

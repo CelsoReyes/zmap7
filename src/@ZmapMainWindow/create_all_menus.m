@@ -431,7 +431,7 @@ function create_all_menus(obj, force)
             'Label','Explore Catalog', MenuSelectedField(), @explore_catalog);
         
         function explore_catalog(~,~)
-            t = findOrCreateTab(obj.fig, obj.maingroup,'Exploration','deleteable');
+            t = findOrCreateTab(obj.fig, obj.maingroup, obj.maingroup,'Exploration','deleteable');
             ax=findobj(t.Children,'Type','axes');
             if isempty(ax)
                 ax=axes(t);
@@ -460,7 +460,7 @@ function create_all_menus(obj, force)
             MenuSelectedField(),@cb_declus_inp);
     end
     function cb_declus_inp(~,~)
-        [out,nMethod]=declus_inp
+        [out,nMethod]=declus_inp(obj.catalog)
         error('declustered. now what to do with results?');
     end
 end

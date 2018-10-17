@@ -714,16 +714,16 @@ classdef ZmapMainWindow < handle
             % prepare the Tab Group for the upper-right plots [fmd, histograms, etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.UR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation', TabLocation, 'Tag', 'UR plots');
+                'TabLocation', TabLocation, 'Tag', 'Upper Right panel');
             
             % prepare the Tab Group for the lower-right plots [cumulative , etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.LR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation', TabLocation, 'Tag', 'LR plots');
+                'TabLocation', TabLocation, 'Tag', 'Lower Right panel');
             
             
             % prepare the Tab Group for the cross sections (subordinate to the main tab)
-            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
+            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
             obj.maintab.Tag = 'mainmap_tab';
             if isempty(findobj(obj.fig,'Name','Move Tab','-and','Type','uimenu'))
                 uimenu(obj.maintab.UIContextMenu,'Text','Move Tab', ...
@@ -750,8 +750,8 @@ classdef ZmapMainWindow < handle
             
             obj.replot_all();
             obj.fig.Visible = 'on';
-            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'LR plots'), 'Visible', 'on');
-            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'UR plots'), 'Visible', 'on');
+            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Lower Right panel'), 'Visible', 'on');
+            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Upper Right panel'), 'Visible', 'on');
             
             drawnow nocallbacks
             

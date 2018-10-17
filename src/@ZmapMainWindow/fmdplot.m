@@ -5,7 +5,7 @@ function fmdplot(obj, tabgrouptag)
     Tags.xs = 'fmd xs contextmenu';
     
     % the fmd object is actually stored in the axes into which it plots
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, 'FMD');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'FMD');
     ax=findobj(myTab,'Type','axes');
     if isempty(ax)
         ax=axes(myTab);
