@@ -114,9 +114,14 @@ function comp2cat()
         
         %% plot UR axis [magnitude differences]
         tmax = max(jm.Date(f1_idx));
-        Times=tmin:0.1:tmax;
-        blank=nan(size(Times(:)));
-        dmt=struct('Time',NaT(size(Times(:))),'Mean',blank,'Var',blank,'Length',blank);
+        Times = tmin:0.1:tmax;
+        sz = size(Times(:));
+
+        dmt.Time    = NaT(sz);
+        dmt.Mean    = nan(sz);
+        dmt.Var     = nan(sz);
+        dmt.Length  = nan(sz);
+        
         %dmt = nan(numel(Times),4);
         for n =1:numel(Times)
             t=Times(n);

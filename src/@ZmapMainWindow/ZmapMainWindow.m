@@ -182,7 +182,7 @@ classdef ZmapMainWindow < handle
             %obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
             
             if isempty(obj.rawcatalog)
-                obj.daterange   = [NaT NaT];
+                obj.daterange   = [missing missing];
                 obj.catalog     = ZmapCatalog();
                 obj.mdate       = [];
                 obj.mshape      = [];

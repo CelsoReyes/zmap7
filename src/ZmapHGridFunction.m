@@ -535,17 +535,20 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 container=uimenu(gcf,'Label','layer');
             end
             
-            
             % UPDATE_LAYERMENU
             if isempty(container.Children)  % TODO: change to plotTag_layermeu
                 import callbacks.copytab
                 uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
+                
+                hasValues = @(name) ~all(ismissing(obj.Result.Values.(name)));
+            
                 for i=1:width(obj.Result.values)
-                    tmpdesc=obj.Result.values.Properties.VariableDescriptions{i};
-                    tmpname=obj.Result.values.Properties.VariableNames{i};
-                    uimenu(container,'Label',tmpdesc,'Tag',tmpname,...
-                        'Enable',tf2onoff(~all(isnan(obj.Result.values.(tmpname)))),...
-                        MenuSelectedField(),@(~,~)obj.overlay_cb(tmpname, container));
+                    varName=obj.Result.values.Properties.VariableNames{i};
+                    uimenu(container,...
+                        'Label',obj.Result.values.Properties.VariableDescriptions{i},...
+                        'Tag',varName,...
+                        'Enable',tf2onoff(hasValues(varName)),...
+                        MenuSelectedField(),@(~,~)obj.overlay_cb(varName, container));
                 end
                 container.Children(end-1).Separator='on';
             end

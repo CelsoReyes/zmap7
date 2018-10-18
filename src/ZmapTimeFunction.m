@@ -7,7 +7,7 @@ classdef ZmapTimeFunction < ZmapFunction
         active_col        char            = ''           % the name of the column of the results to be plotted
         WindowDuration    duration        = seconds(nan) % size of analysis window
         TimeStep          duration        = seconds(nan)
-        FirstStartTime    datetime        = NaT
+        FirstStartTime    datetime        = missing
         ForceStartBounds  char      {ismember('','year','quarter','month','day','hour','minute','second')} = '';
         do_memoize        logical         = false
     end
@@ -59,7 +59,7 @@ classdef ZmapTimeFunction < ZmapFunction
         end
         
         function [starts, ends] = getTimeWindowBoundaries(obj)
-            if obj.FirstStartTime == NaT
+            if ismissing(obj.FirstStartTime)
                 firstTime = min(obj.RawCatalog.Date);
             else
                 firstTime = obj.FirstStartTime;
