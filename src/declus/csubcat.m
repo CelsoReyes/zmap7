@@ -350,7 +350,7 @@ function csubcat()
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ResenbergDeclusterClass(); %FIXME
+        ReasenbergDeclusterClass(); %FIXME
     end
     
     function callbackfun_016(mysrc,myevt)

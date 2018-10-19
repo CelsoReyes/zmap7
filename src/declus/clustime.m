@@ -11,5 +11,6 @@ function eqtime = clustime(some_cat)
     else
         % just use ZG.newcat
     end
-    eqtime = days(ZG.newcat.Date - datetime(1902,01,01));
+    eqtime = ZG.newcat.Date - datetime(1902,01,01);
+    eqtime.Format='d';
 end

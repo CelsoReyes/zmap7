@@ -183,7 +183,7 @@ classdef HistAnalysisWindow < AnalysisWindow
                 obj.ax.UIContextMenu=c;
             end
         
-            uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y');
+            uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
             
             yl = ylabel(obj.ax, '# Events per bin');
             yl.UIContextMenu=c;

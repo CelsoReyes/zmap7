@@ -12,7 +12,8 @@ function Dcross(sel)
     
     % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
     % D = [x,y,z ]
-    Da = [eq0p(1,:)' eq0p(2,:)' ZG.primeCatalog.Date ZG.primeCatalog.Date.Month ZG.primeCatalog.Date.Day ZG.primeCatalog.Magnitude ZG.primeCatalog.Depth];
+    catalog=ZG.primeCatalog;
+    Da = [eq0p(1,:)' eq0p(2,:)' catalog.Date catalog.Date.Month catalog.Date.Day catalog.Magnitude catalog.Depth];
     Da0 = find(Da(:,7) > -2.99);
     Da = Da.subset(Da0);
     clear Da0;
@@ -341,7 +342,7 @@ function Dcross(sel)
             old = valueMap;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(catalog.Latitude',catalog.Longitude',catalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')

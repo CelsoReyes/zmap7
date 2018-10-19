@@ -261,7 +261,7 @@ function view_bpva(res, idx)
             MenuSelectedField(), @(~,~)select_polygon(false));
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
             'enable','off',...
-            MenuSelectedField(), @(~,~)@select_polygon(true));
+            MenuSelectedField(), @(~,~)select_polygon(true));
         
         op1 = uimenu('Label',' Maps ');
         

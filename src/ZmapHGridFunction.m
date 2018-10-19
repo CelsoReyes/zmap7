@@ -540,7 +540,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 import callbacks.copytab
                 uimenu(container,'Label','Copy Contents to new figure (static)','Callback',@copytab);
                 
-                hasValues = @(name) ~all(ismissing(obj.Result.Values.(name)));
+                hasValues = @(name) ~all(ismissing(obj.Result.values.(name)));
             
                 for i=1:width(obj.Result.values)
                     varName=obj.Result.values.Properties.VariableNames{i};

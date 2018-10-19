@@ -264,7 +264,7 @@ function ctimeplot()
         options = uimenu('Label','Tools ');
         
         uimenu(options,'Label','Cuts in magnitude and depth',MenuSelectedField(),@cb_cut_mag_depth)
-        uimenu (options,'Label','Decluster the catalog',MenuSelectedField(),@(~,~)ResenbergDeclusterClass(catalog));
+        uimenu (options,'Label','Decluster the catalog',MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(catalog));
         uimenu(options,'Label','AS(t)function',MenuSelectedField(),@(~,~)newsta('ast',ZG.newt2));
         uimenu(options,'Label','Rubberband function',MenuSelectedField(),@(~,~)newsta('rub',ZG.newt2));
         uimenu(options,'Label','LTA(t) function ',MenuSelectedField(),@(~,~)newsta('lta',ZG.newt2));

@@ -72,7 +72,7 @@ function catalog_menu(obj, force)
     
     
     uimenu (submenu,'Label','Decluster the catalog',...
-        MenuSelectedField(),@(~,~)ResenbergDeclusterClass(obj.catalog));
+        MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog));
     
     function cb_recall(~,~)
         mcm = MemorizedCatalogManager;

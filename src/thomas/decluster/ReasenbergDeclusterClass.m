@@ -12,11 +12,13 @@ classdef ReasenbergDeclusterClass < ZmapFunction
         err                 = 1.5       % epicenter error
         derr                = 2         % depth error, km
         declustRoutine       = "ReasenbergDeclus";
+        declusteredCatalog   ZmapCatalog
     end
     
     properties(Constant)
         PlotTag = "ReasenbergDecluster"
         ParameterableProperties = ["taumin", "taumax", "P", "xk","xmeff","rfact","err","derr","declustRoutine"];
+        References = 'Paul Reasenberg (1985) "SECOND -ORDER MOMENT OF CENTRAL CALIFORNIA SEISMICITY", JGR, VOL 90, P. 5479-5495.';
     end
     
     methods
@@ -40,8 +42,8 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             zdlg = ZmapDialog();
             zdlg.AddHeader('Reasenberg Declustering parameters','FontSize',12);
             zdlg.AddHeader('look-ahead times');
-            zdlg.AddDurationEdit('taumin', '(min) for UNclustered events' ,obj.taumin, '<b>TauMin</b> look ahead time for not clustered events');
-            zdlg.AddDurationEdit('taumax', '(max) for   clustered events', obj.taumax,  '<b>TauMax</b> maximum look ahead time for clustered events');
+            zdlg.AddDurationEdit('taumin', '(min) for UNclustered events' ,obj.taumin, '<b>TauMin</b> look ahead time for not clustered events',@days);
+            zdlg.AddDurationEdit('taumax', '(max) for   clustered events', obj.taumax,  '<b>TauMax</b> maximum look ahead time for clustered events',@days);
             zdlg.AddHeader('');
             zdlg.AddEdit('P',       'Confidence Level',             obj.P,          '<b>P1</b> Confidence level : observing the next event in the sequence');
             zdlg.AddEdit('xk',      'XK factor',                    obj.xk,         '<b>XK</b> factor used in xmeff');
@@ -50,13 +52,15 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             zdlg.AddEdit('err',     'Epicenter error',              obj.err,        '<b>Epicenter</b> error');
             zdlg.AddEdit('derr',    'Depth error',                  obj.derr,       '<b>derr</b>Depth error');
             
-            [vals, okpressed]=zdlg.Create('Name', 'Reasenberg Declustering');
+            [vals, okpressed]=zdlg.Create('Name', 'Reasenberg Declustering','WriteToObj',obj,'OkFcn',@obj.declus);
+            %{
             if okpressed
-                [outputcatalog,details]=declus(catalog,vals);
+                [outputcatalog, details]=obj.declus(vals);
                 assignin('base','declustered_reas',outputcatalog);
                 error('hey developer. do something with outputcatalog')
                 % TODO do something with the declustered catalog
             end
+            %}
             
         end
         
@@ -68,7 +72,11 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             end
         end
         
-        function [outputcatalog, details] = declus(obj) 
+        function plot(obj)
+            unimplemented_error()
+        end
+        
+        function [outputcatalog, details] = declus(obj, vals) 
             % DECLUS main decluster algorithm
             % A.Allmann
             % main decluster algorithm
@@ -246,7 +254,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 end
                 
                 
-                juggle_catalogs(clus,obj.RawCatalog)
+                obj.juggle_catalogs(clus)
                 
                 warning('should somehow zmap_update_displays()');
                 plot_ax = findobj(gcf,'Tag','mainmap_ax');
@@ -269,34 +277,36 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 end
                 
                 watchoff
-                
+                outputcatalog=ZG.cluscat;
             end
             
-            
+            return
+
+            function tf = user_wants_to_analyze_clusters()
+                % USER_WANTS_TO_ANALYZE_CLUSTERS ask user whether clusters should be analyzed
+                myans = questdlg('                                                           ',...
+                    'Analyse clusters? ',...
+                    'Yes please','No thank you','No thank you' );
+
+                switch myans
+                    case 'Yes please'
+                        tf=true;
+                    otherwise
+                        tf=false;
+                end
+            end
         end
         
-        function juggle_catalogs(clus, catalog)
+        function juggle_catalogs(obj, clus)
             ZG = ZmapGlobal.Data;
             ZG.primeCatalog=build_declustered_cat('interactive');  % create new catalog for main program
-            ZG.original=catalog;       %save catalog in variable original
+            ZG.original=obj.RawCatalog;       %save catalog in variable original
             ZG.newcat=ZG.primeCatalog;
             ZG.storedcat=ZG.original;
             ZG.cluscat=ZG.original.subset(clus(clus~=0));
+            assignin('base','declustered_catalog',ZG.cluscat);
         end
         
-        function tf = user_wants_to_analyze_clusters()
-            % USER_WANTS_TO_ANALYZE_CLUSTERS ask user whether clusters should be analyzed
-            myans = questdlg('                                                           ',...
-                'Analyse clusters? ',...
-                'Yes please','No thank you','No thank you' );
-            
-            switch myans
-                case 'Yes please'
-                    tf=true;
-                otherwise
-                    tf=false;
-            end
-        end
         
         function [rmain_km,r1]= interaction_zone(obj)
             % interaction_zone calculates the interaction zones of the earthquakes in [km]
@@ -539,7 +549,7 @@ end
         function h=AddMenuItem(parent,catalog)
             % create a menu item
             label='Reasenberg Decluster';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ResenbergDeclusterClass(catalog));
+            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
         end
     end
     
