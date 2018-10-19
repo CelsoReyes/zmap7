@@ -69,10 +69,10 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                 
                 % TODO: combine mapdata_viewer with this function
                 exploremenu=uimenu(gcf,'label','explore');
-                uimenu(exploremenu,'label','explore',MenuSelectedField(),@(src,ev)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
+                uimenu(exploremenu,'label','explore'    , MenuSelectedField(),@(~,~)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
                 
-                uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)shading('interp'));
-                uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)shading('flat'));
+                uimenu(shademenu,'Label','interpolated' , MenuSelectedField(),@(~,~)shading('interp'));
+                uimenu(shademenu,'Label','flat'         , MenuSelectedField(),@(~,~)shading('flat'));
                 
                 plottype=uimenu(lookmenu,'Label','plot type');
                 uimenu(plottype,'Label','Pcolor plot','Tag','plot_pcolor',...
@@ -95,7 +95,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
                 uimenu(lookmenu,'Label','Show grid centerpoints','Checked',char(obj.showgridcenters),...
                     MenuSelectedField(),@obj.togglegrid_cb);
                 uimenu(lookmenu,'Label',['Show ', obj.RawCatalog.Name, ' events'],...
-                    MenuSelectedField(),{@addquakes_cb,obj.RawCatalog});
+                    MenuSelectedField(),@(src,~)obj.addquakes_cb(src,obj.RawCatalog));
                 
                 uimenu(lookmenu,'Separator','on',...
                     'Label','brighten',...
@@ -123,24 +123,6 @@ classdef Zmap3DGridFunction < ZmapGridFunction
             h.UserData.mydesc=obj.Result.values.Properties.VariableDescriptions{choice};
         end
         
-        
-        function addquakes_cb(src,~,catalog)
-            qtag=findobj(gcf,'tag','quakes');
-            if isempty(qtag)
-                set(gca,'NextPlot','add')
-                plot(catalog.Longitude, catalog.Latitude, 'o',...
-                    'MarkerSize',3,...
-                    'markeredgecolor',[.2 .2 .2],...
-                    'tag','quakes');
-                set(gca,'NextPlot','replace')
-            else
-                ison=qtag.Visible == "on";
-                qtag.Visible=tf2onoff(~ison);
-                src.Checked=tf2onoff(~ison);
-                drawnow
-            end
-        end
-        
         function update_layermenu(obj, myname)
             if isempty(findobj(gcf,'Tag','layermenu'))
                 layermenu=uimenu(gcf,'Label','layer','Tag','layermenu');
@@ -165,4 +147,22 @@ classdef Zmap3DGridFunction < ZmapGridFunction
         end
         
     end % Protected methods
+    methods(Access=protected, Static)
+        function addquakes_cb(src, catalog)
+            qtag=findobj(gcf,'tag','quakes');
+            if isempty(qtag)
+                set(gca,'NextPlot','add')
+                plot(catalog.Longitude, catalog.Latitude, 'o',...
+                    'MarkerSize',3,...
+                    'markeredgecolor',[.2 .2 .2],...
+                    'tag','quakes');
+                set(gca,'NextPlot','replace')
+            else
+                ison=qtag.Visible == "on";
+                qtag.Visible=tf2onoff(~ison);
+                src.Checked=tf2onoff(~ison);
+                drawnow
+            end
+        end
+    end
 end

@@ -105,7 +105,7 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c, 'Select events in POLYGON');
     
     uimenu(c,'Separator','on',...
-        'Label', 'Delete polygon',               MenuSelectedField(), {@updatewrapper,@(~,~)cb_shapedelete});
+        'Label', 'Delete polygon',               MenuSelectedField(), @(s,v)updatewrapper(s, v, @(~,~)cb_shapedelete) );
     uimenu(c,'Label', 'Zoom to polygon',         MenuSelectedField(), @cb_zoom_shape);
     uimenu(c,'Label', 'Crop to polygon',         MenuSelectedField(), @cb_crop_to_selection);
     uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom)
@@ -123,7 +123,7 @@ function plot_base_events(obj, container, featurelist)
     
     function create_from_existing_menu(parent, label)
             % use the callback from a menu item that (will) exist in this figure. Labels must match
-            uimenu(parent, 'Label', label, MenuSelectedField(), {@do_other, label});
+            uimenu(parent, 'Label', label, MenuSelectedField(), @(s,v)do_other(s, v,  label) );
             
         function do_other(src, ev, label)
             um = findobj(obj.fig,'Type','uimenu','-and','Label',label);

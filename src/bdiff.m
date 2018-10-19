@@ -208,7 +208,7 @@ function  bdiff(mycat, holdplot)
         uimenu(options,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),@cb_nonlin_optimize);
         uimenu(options,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),@cb_nonlin_keepmc);
         uimenu(options,'Label','Do not show discrete',MenuSelectedField(),@cb_nodiscrete);
-        uimenu(options,'Label','Save values to file', 'Enable','off',MenuSelectedField(),{@calSave9,magsteps_desc, bvalsum3}); %FIXME decide what actually gets saved
+        uimenu(options,'Label','Save values to file', 'Enable','off',MenuSelectedField(), @(s,v)calSave9(s, v, magsteps_desc, bvalsum3) ); %FIXME decide what actually gets saved
         addAboutMenuItem();
     end
     

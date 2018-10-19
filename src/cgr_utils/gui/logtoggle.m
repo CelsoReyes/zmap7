@@ -1,7 +1,6 @@
-function logtoggle(src,evt,scale)
+function logtoggle(src, scale)
     % LOGTOGGLE toggle an axis between log and linear
     % SRC is the uimenu item
-    % AX is the axes to scale
     % scale is 'X' , 'Y', or 'Z'
     ax=get(gcf,'CurrentAxes');
     switch scale

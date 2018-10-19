@@ -233,11 +233,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     nm=obj.AnalysisFunctions{i,2};
                     uimenu(c,'Label',sprintf('Analyze EQ inside Shape (%s)',nm),...
                         'separator','on',...
-                        MenuSelectedField(),{@obj.cb_selectp,fn,'inside'}); %@cb_analyze
+                        MenuSelectedField(), @(~,~)obj.cb_selectp(fn,'inside')); % @cb_analyze
                     uimenu(c,'Label',sprintf('Analyze EQ outside Shape (%s)',nm),...
-                        MenuSelectedField(),{@obj.cb_selectp,fn,'outside'});
+                        MenuSelectedField(), @(~,~)obj.cb_selectp(fn,'outside'));
                     uimenu(c,'Label',sprintf('Compare Inside vs Outside (%s)',nm),...
-                        MenuSelectedField(),{@compare_in_out, fn});
+                        MenuSelectedField(), @(~,~)compare_in_out(fn));
                 end
                 
                 uimenu(c,...
@@ -245,7 +245,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     MenuSelectedField(),@latscale);
                 obj.add_shape_specific_context(c);
                 
-                function compare_in_out(src,ev)
+                function compare_in_out(src,ev,fn)
                     beep;
                     error('not implemented');
                 end
@@ -328,7 +328,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function cb_selectp(obj,~,~,analysis_fn, in_or_out)
+        function cb_selectp(obj, analysis_fn, in_or_out)
             % analyze EQ inside/outside shape works from view in current figure
             
             ZG = ZmapGlobal.Data;

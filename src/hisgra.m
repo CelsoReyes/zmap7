@@ -87,7 +87,7 @@ function h=hisgra(mycat, opt, ax)
             ax.UIContextMenu=c;
         end
         
-        uimenu(c,'Label','Use Log Scale',MenuSelectedField(),{@logtoggle,'Y'});
+        uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
         yl.UIContextMenu=c;
         
     end

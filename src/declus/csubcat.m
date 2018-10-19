@@ -222,17 +222,15 @@ function csubcat()
         op5 = uimenu(op3,'Label','Histograms');
         
         uimenu(op5,'Label','Magnitude',...
-            MenuSelectedField(),{@callbackfun_histogram,'Magnitude'});
+            MenuSelectedField(),@(~,~)cb_histogram('Magnitude'));
         uimenu(op5,'Label','Depth',...
-            MenuSelectedField(),{@callbackfun_histogram,'Depth'});
+            MenuSelectedField(),@(~,~)cb_histogram('Depth'));
         uimenu(op5,'Label','Time',...
-            MenuSelectedField(),{@callbackfun_histogram,'Date'});
+            MenuSelectedField(),@(~,~)cb_histogram('Date'));
     end
     
     %% callback functions
-    function callbackfun_histogram(mysrc,myevt,hist_type)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_histogram(hist_type)
         hisgra(ZG.primeCatalog, hist_type);
     end
     

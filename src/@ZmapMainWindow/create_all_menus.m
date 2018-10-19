@@ -220,7 +220,7 @@ function create_all_menus(obj, force)
         % choose what to plot by
         for j=1:numel(obj.ValidColorFields)
             myfn = obj.ValidColorFields{j};
-            um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedField(),{@set_colorby,myfn},...
+            um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedField(), @(s,v)set_colorby(s, v, myfn) ,...
                 'Checked',tf2onoff(strcmp(obj.colorField,myfn)));
             if j==1
                 um(j).Separator='on';
@@ -253,7 +253,7 @@ function create_all_menus(obj, force)
         
         for i=1:size(legend_types,1)
             m=uimenu(lemenu,'Label',legend_types{i,1},...
-                MenuSelectedField(), {@cb_plotby,legend_types{i,2}});
+                MenuSelectedField(), @(s,v)cb_plotby(s, v, legend_types{i,2}) );
             if i==1
                 m.Separator='on';
             end
@@ -371,7 +371,7 @@ function create_all_menus(obj, force)
         submenu   =  uimenu(parent,'Label','Plot topographic map');
         uimenu(submenu,'Label','Open a Web Map Display',MenuSelectedField(),@(~,~)webmap_of_catalog(obj.catalog,true));
         uimenu(submenu,'Label','Plot Topography on main map',MenuSelectedField(),@add_topography_to_main_map);
-        uimenu(submenu,'Label','Plot Swiss Topography on main map',MenuSelectedField(),{@add_topography_to_main_map,'CH'});
+        uimenu(submenu,'Label','Plot Swiss Topography on main map',MenuSelectedField(), @(s,v)add_topography_to_main_map(s, v, 'CH') );
         return
         % FIXME the following need to be found and fixed
         uimenu(submenu,'Label','Open DEM GUI',MenuSelectedField(), @(~,~)zmaptopo.prepinp());

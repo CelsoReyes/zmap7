@@ -16,7 +16,7 @@ function fmdplot(obj, tabgrouptag)
             bAnalysisWin = AnalysisBvalues(ax,bdiffobj);
             ax.UserData = bAnalysisWin;
             % ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
-            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(),{@crop_to_mc,bdiffobj});
+            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(), @(s,v)crop_to_mc(s, v, bdiffobj) );
         end
         
     elseif isempty(obj.catalog)

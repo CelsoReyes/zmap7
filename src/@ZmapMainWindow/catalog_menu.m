@@ -24,14 +24,14 @@ function catalog_menu(obj, force)
         'Enable','off');
     
     uimenu(catmenu,'Label','from *.mat file',...
-        MenuSelectedField(), {@cb_importer,@load_zmapfile});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @load_zmapfile));
     
     uimenu(catmenu,'Label','from other formatted file',...
-        MenuSelectedField(), {@cb_importer,@zdataimport});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @zdataimport));
     uimenu(catmenu,'Label','from FDSN webservice',...
-        MenuSelectedField(), {@cb_importer,@get_fdsn_data_from_web_callback});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @get_fdsn_data_from_web_callback));
     uimenu(catmenu,'Label','from the current MATLAB Workspace',...
-        MenuSelectedField(), {@cb_importer,@cb_catalog_from_workspace});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @cb_catalog_from_workspace));
     
     
     uimenu(submenu,'Label','Save current catalog',MenuSelectedField(),@(~,~)save_zmapcatalog(obj.catalog));

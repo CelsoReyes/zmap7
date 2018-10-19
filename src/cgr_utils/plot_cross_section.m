@@ -91,16 +91,16 @@ function create_my_menu(c2)
             MenuSelectedField(),@cb_diff_b);
         
         uimenu(options,'Label','Fractal Dimension',...
-            MenuSelectedField(),@cb_fractaldim);
+            MenuSelectedField(),@(~,~)Dcross());
         
         uimenu(options,'Label','Mean Depth',...
-            MenuSelectedField(),{@cb_meandepth,c2});
+            MenuSelectedField(), @(~,~)cb_meandepth(c2));
         
         uimenu(options,'Label','z-value grid',...
-            MenuSelectedField(),@cb_zvaluegrid);
+            MenuSelectedField(),@(~,~)magrcros());
         
         uimenu(options,'Label','b and Mc grid ',...
-            MenuSelectedField(),@cb_b_mc_grid);
+            MenuSelectedField(),@(~,~)bcross('in'));
         
         uimenu(options,'Label','Prob. forecast test',...
             MenuSelectedField(),@cb_probforecast_test);
@@ -112,23 +112,23 @@ function create_my_menu(c2)
             MenuSelectedField(),@cb_b_diff_boot);
         
         uimenu(options,'Label','Stress Variance',...
-            MenuSelectedField(),@cb_stressvariance);
+            MenuSelectedField(),@(~,~)cross_stress());
         
         
         uimenu(options,'Label','Time Plot ',...
-            MenuSelectedField(),{@cb_timeplot, c2});
+            MenuSelectedField(),@(~,~)timcplo(c2));
         
         uimenu(options,'Label',' X + topo ',...
-            MenuSelectedField(),@cb_xplustopo);
+            MenuSelectedField(),@(~,~)xsectopo());
         
         uimenu(options,'Label','Vert. Exaggeration',...
-            MenuSelectedField(),@cb_vertexaggeration);
+            MenuSelectedField(),@(~,~)vert_exaggeration());
         
         uimenu(options,'Label','Rate change grid',...
-            MenuSelectedField(),@cb_ratechangegrid);
+            MenuSelectedField(),@(~,~)rc_cross_a2());
         
         uimenu(options,'Label','Omori parameter grid',...
-            MenuSelectedField(),@cb_omoriparamgrid); % formerly pcross
+            MenuSelectedField(),@(~,~)calc_Omoricross()); % formerly pcross
         
     end
     
@@ -146,21 +146,8 @@ function create_my_menu(c2)
         bcrossVt2();
     end
     
-    function cb_fractaldim(mysrc,myevt)
-        Dcross();
-    end
-    
-    function cb_meandepth(mysrc,myevt,mycat)
+    function cb_meandepth(mycat)
         meandepx(mycat, mycat.displacement_along_strike);
-    end
-    
-    function cb_zvaluegrid(mysrc,myevt)
-        magrcros();
-    end
-    
-    function cb_b_mc_grid(mysrc,myevt)
-        sel = 'in';
-        bcross(sel);
     end
     
     function cb_probforecast_test(mysrc,myevt)
@@ -194,30 +181,7 @@ function create_my_menu(c2)
         rContainer.Lat2 = lat2;
         st_start(newa, xsec_fig(), 0, rContainer);
     end
-    
-    function cb_stressvariance(mysrc,myevt)
-        cross_stress();
-    end
-    
-    function cb_timeplot(mysrc,myevt, c2)
-        timcplo(c2);
-    end
-    
-    function cb_xplustopo(mysrc,myevt)
-        xsectopo;
-    end
-    
-    function cb_vertexaggeration(mysrc,myevt)
-        vert_exaggeration;
-    end
-    
-    function cb_ratechangegrid(mysrc,myevt)
-        rc_cross_a2();
-    end
-    
-    function cb_omoriparamgrid(mysrc,myevt)
-        calc_Omoricross();
-    end
+        
     
     function cb_refresh(mysrc,myevt)
 

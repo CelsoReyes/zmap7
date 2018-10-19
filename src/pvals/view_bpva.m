@@ -258,10 +258,10 @@ function view_bpva(res, idx)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
             'enable','off',...
-            MenuSelectedField(),{@select_polygon,false})
+            MenuSelectedField(), @(~,~)select_polygon(false));
         uimenu(options,'Label','Select EQ in Polygon - hold ',...
             'enable','off',...
-            MenuSelectedField(),{@select_polygon,true})
+            MenuSelectedField(), @(~,~)@select_polygon(true));
         
         op1 = uimenu('Label',' Maps ');
         
@@ -269,45 +269,45 @@ function view_bpva(res, idx)
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
             'enable','off',...
-            MenuSelectedField(),{@cb_adjust,'mag'}); %8
+            MenuSelectedField(),@(~,~)cb_adjust('mag')); %8
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
             'enable','off',...
-            MenuSelectedField(),{@cb_adjust,'rmax'}); %9
+            MenuSelectedField(),@(~,~)cb_adjust('rmax')); %9
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
             'enable','off',...
-            MenuSelectedField(),{@cb_adjust,'gofi'}); %10
+            MenuSelectedField(),@(~,~)cb_adjust('gofi')); %10
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
             'enable','off',...
-            MenuSelectedField(),{@cb_adjust,'pstdc'}); %11
+            MenuSelectedField(),@(~,~)cb_adjust('pstdc')); %11
         
         
         uimenu(op1,'Label','b-value map (WLS)',... % b-value / old
-            MenuSelectedField(),{@cb_changeIdx,1})  %12
+            MenuSelectedField(), @(~,~)cb_changeIdx(1))  %12
         uimenu(op1,'Label','b(max likelihood) map',... % b-value / meg
-            MenuSelectedField(),{@cb_changeIdx,6}) %13
+            MenuSelectedField(), @(~,~)cb_changeIdx(6)) %13
         uimenu(op1,'Label','Mag of completness map',...% Mcomp / old1
-            MenuSelectedField(),{@cb_changeIdx,2}) %14
+            MenuSelectedField(), @(~,~)cb_changeIdx(2)) %14
         uimenu(op1,'Label','max magnitude map',... %Mmax / maxm
-            MenuSelectedField(),{@cb_changeIdx,13}) %15
+            MenuSelectedField(), @(~,~)cb_changeIdx(13)) %15
         uimenu(op1,'Label','Magnitude range map (Mmax - Mcomp)',... % dM / maxm-magco
             MenuSelectedField(),@cb_magrange) %16
         
         uimenu(op1,'Label','p-value',...
-            MenuSelectedField(),{@cb_changeIdx,11})    % 17
+            MenuSelectedField(), @(~,~)cb_changeIdx(11))    % 17
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedField(),{@cb_changeIdx,12}) %18
+            MenuSelectedField(), @(~,~)cb_changeIdx(12)) %18
         
         uimenu(op1,'Label','a-value map',...
-            MenuSelectedField(),{@cb_changeIdx,8}) %19
+            MenuSelectedField(), @(~,~)cb_changeIdx(8)) %19
         uimenu(op1,'Label','Standard error map',...
-            MenuSelectedField(),{@cb_changeIdx,7}) %20
+            MenuSelectedField(), @(~,~)cb_changeIdx(7)) %20
         uimenu(op1,'Label','(WLS-Max like) map',...
             MenuSelectedField(),@cb_deltaB)
         
         uimenu(op1,'Label','Resolution Map',...
-            MenuSelectedField(),{@cb_changeIdx,5})
+            MenuSelectedField(), @(~,~)cb_changeIdx(5))
         uimenu(op1,'Label','c map',...
-            MenuSelectedField(),{@cb_changeIdx,14})
+            MenuSelectedField(), @(~,~)cb_changeIdx(14))
         
         uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
@@ -316,31 +316,25 @@ function view_bpva(res, idx)
     
     %% callback functions
     
-    function cb_changeIdx(mysrc,~,idx)
+    function cb_changeIdx(idx)
         view_bpva(res,idx)
     end
     
-    function cb_adjust(mysrc,~,name)
+    function cb_adjust(name)
         asel=name
         adju2
         view_bpva(res,idx);
     end
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_001(~,~)
         web(['file:' hodi '/zmapwww/chp11.htm#996756']) ;
     end
     
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_002(~,~)
         view_bpva;
     end
     
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_003(~,~)
         h1 = gca;
         met = 'ni';
         ZG=ZmapGlobal.Data;
@@ -349,9 +343,7 @@ function view_bpva(res, idx)
         watchoff(bpmap);
     end
     
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_004(~,~)
         h1 = gca;
         met = 'ra';
         ZG=ZmapGlobal.Data;
@@ -360,9 +352,7 @@ function view_bpva(res, idx)
         watchoff(bpmap);
     end
     
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_005(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state2=true;
@@ -372,9 +362,7 @@ function view_bpva(res, idx)
         watchoff(bpmap);
     end
     
-    function select_polygon(mysrc,myevt, newstate)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function select_polygon(newstate)
         cufi = gcf;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=newstate;
@@ -382,9 +370,8 @@ function view_bpva(res, idx)
     end
    
     
-    function cb_magrange(mysrc,myevt)
+    function cb_magrange(~,~)
 
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         %lab1='dM ';
         %valueMap = maxm-magco;
         res.values.dM=res.values.maxmg - res.values.magco;
@@ -393,9 +380,7 @@ function view_bpva(res, idx)
         view_bpva(res,idx);
     end
     
-    function cb_deltaB(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_deltaB(~,~)
         %lab1='difference in b';
         %valueMap = old-meg;
         res.values.deltaB=res.values.bv - res.values.bv2;

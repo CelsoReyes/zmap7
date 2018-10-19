@@ -813,17 +813,17 @@ classdef ZmapMainWindow < handle
             
             % add Y-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Y'));
             obj.sharedContextMenus.LogLinearYScale = c;
             
             % add X-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'X'));
             obj.sharedContextMenus.LogLinearXScale = c;
             
             % add Z-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Z'));
             obj.sharedContextMenus.LogLinearZScale = c;
         end
         

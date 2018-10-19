@@ -190,58 +190,58 @@ function view_rccross_a2(lab1,valueMap)
         
         op1 = uimenu('Label',' Maps ');
         
-        %Meniu for adjusting several parameters.
+        %Menu for adjusting several parameters.
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters'),...
             uimenu(adjmenu,'Label','Adjust Mmin cut',...
-            MenuSelectedField(),{@cb_viewagain,'mag'})
+            MenuSelectedField(), @(~,~)cb_viewagain('mag') )
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            MenuSelectedField(),{@cb_viewagain,'rmax'})
+            MenuSelectedField(), @(~,~)cb_viewagain('rmax') )
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            MenuSelectedField(),{@cb_viewagain,'gofi'})
+            MenuSelectedField(), @(~,~)cb_viewagain('gofi') )
         uimenu(adjmenu,'Label','Adjust p-value st. dev. cut',...
-            MenuSelectedField(),{@cb_viewagain,'pstdc'})
+            MenuSelectedField(), @(~,~)cb_viewagain('pstdc') )
         
         
         uimenu(op1,'Label','Relative rate change (bootstrap)',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'Sigma'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('Sigma') )
         uimenu(op1,'Label','Model',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'Model'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('Model') )
         uimenu(op1,'Label','KS-Test',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'Rejection'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('Rejection') )
         uimenu(op1,'Label','KS-Test Statistic',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'KS distance'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('KS distance') )
         uimenu(op1,'Label','KS-Test p-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'KS-Test p-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('KS-Test p-value') )
         uimenu(op1,'Label','RMS of fit',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'RMS'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('RMS') )
         uimenu(op1,'Label','Resolution Map (Number of events)',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'Number of events'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('Number of events') )
         uimenu(op1,'Label','Resolution Map (Radii)',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'Radius / [km]'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('Radius / [km]') )
         uimenu(op1,'Label','p-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'p-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('p-value') )
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'p-valstd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('p-valstd') )
         uimenu(op1,'Label','c-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'c-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('c-value') )
         uimenu(op1,'Label','c-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'c-valuestd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('c-valuestd') )
         uimenu(op1,'Label','k-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'k-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('k-value') )
         uimenu(op1,'Label','k-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'k-valuestd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('k-valuestd') )
         uimenu(op1,'Label','p2-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'p2-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('p2-value') )
         uimenu(op1,'Label','p-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'p2-valuestd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('p2-valuestd') )
         uimenu(op1,'Label','c2-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'c2-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('c2-value') )
         uimenu(op1,'Label','c2-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'c2-valuestd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('c2-valuestd') )
         uimenu(op1,'Label','k2-value',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'k2-value'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('k2-value') )
         uimenu(op1,'Label','k2-value standard deviation',...
-            MenuSelectedField(),{@cb_viewagainOtherdata,'k2-valuestd'})
+            MenuSelectedField(), @(~,~)cb_viewagainOtherdata('k2-valuestd') )
         
         add_display_menu(1);
     end
@@ -274,18 +274,16 @@ function view_rccross_a2(lab1,valueMap)
         watchoff(hRccross);
     end
     
-    function cb_viewagain(mysrc,myevt,asel)
+    function cb_viewagain(asel)
         % set asel, adju2, then view
         ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         adju2;
         view_rccross_a2(lab1,ZG.valueMap);
     end
     
-    function cb_viewagainOtherdata(mysrc,myevt, label)
+    function cb_viewagainOtherdata(label)
         % set asel, adju2, then view
         ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         switch label
             case 'Sigma'
                 valueMap=mRelchange; %8
