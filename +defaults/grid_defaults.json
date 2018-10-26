@@ -6,6 +6,7 @@
       "MarkerSize":2
    },
    "SeparationProps":{
+      "AutomaticGridCalculation":true,
       "Dx":5,
       "Dy":5,
       "Dz":1,

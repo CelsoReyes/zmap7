@@ -2,13 +2,16 @@ Analyse a region|Right click on the main map to select a polygon or cross-sectio
 Get a catalog's details|Choose "info" from the Catalog menu to get details including the number of events
 Get events from the web|ZMAP can retrieve event catalogs from a FDSN Event web service, giving you access to datacenters across the globe
 Change default settings|Choose ZMAP Preferences from the file menu to access the ZMAP settings. saved settings are persistent between sessions.
-Analyses in space and time|ƒ(t) - analysis in space|ƒ(x,y) - analysis over a grid (x,y) or (lon,lat)|f(s,z) - analyse a cross-section (distance, depth)| f(x,y,z) - analysis over volume
+Analyses in space and time|ƒ(t) - analysis in space|ƒ(x,y) - analysis over a grid (x,y) or (lon,lat)|f(s,z) - analyse a cross-section (distance, depth)|f(x,y,z) - analysis over volume
 Save catalog to workspace|choose "catalog" -> "export current catalog" from the menu to save the event catalog as a table, a catalog, or an old z-map array.
-Start a zmap a workspace variable| To start a Zmap session using a catalog that you have in your workspace, |at the command prompt type: |>> ZmapMainWindow(catalog)|, where "catalog" is your catalog variable.
+Start a zmap a workspace variable| To start a Zmap session using a catalog that you have in your workspace type |    ZmapMainWindow(catalog)| at the command prompt, where "catalog" is your catalog variable.
 Shift tabs around|Move an analysis window to the top or bottom pane by right-clicking on the tab name, and then choosing choosing "Move Tab".
-Change cross-section properties|By <strong>right-clicking</strong> on the cross-section name, you can modify the color, or width of the cross section.
+Change cross-section properties|By right-clicking on the cross-section name, you can modify the color, or width of the cross section.
 Get cross-section info|Choose "Info" from the drop-down menu accessed by right-clicking the cross-section name
 Explore the cross section in different ways|Right-click on the axes labels, or on the data points to change how the data is shown. You can change the X and Y axes, as well as the color and size.
 Explore the catalog|Choose "Explore Catalog" from the "Ztools" menu to open an interactive axes, where you can change which catalog attributes plot to the  X and Y axes, as well as the with color and size. 
-
+Discover new functionality|Right-click on everything! Many of the axes, axes labels, tabs, lines, and scatterplots are interactive. They contain menus that provide additional options.
+Change the symbols on your map|Choose "Edit Main Map Symbos" from the Display menu
+Learn more about your results|When looking at a results map, certain keys have special functionality.  Press '?' to get a list of functions, including getting full results for a point and choosing multiple points to compare
+Confine the sample grid to your events|To reduce the nubmer of grid points to evaluate without manually selecting a polygon, choose "Wrap events in POLYGON (complex hull)" from the Sampling menu.
 

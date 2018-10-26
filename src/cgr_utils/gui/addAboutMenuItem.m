@@ -17,15 +17,17 @@ function addAboutMenuItem(fig)
         end
         
     end
-    
+    uimenu(mainhelp,'Label','v-- ZMAP --v','Separator','on','Enable','off','Tag','zmaphelpmenuitem');
     uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
         MenuSelectedField(),@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
     
-    uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Tag','zmaphelpmenuitem',...
+    uimenu(mainhelp,'Label','ZMAP Tutorial videos','Tag','zmaphelpmenuitem',...
         MenuSelectedField(),@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
     
     uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
         MenuSelectedField(),@(~,~)aboutZmapDialog);
+        uimenu(mainhelp,'Label','ZMAP Tips','Tag','zmaphelpmenuitem',...
+            MenuSelectedField(),@(~,~)show_a_tip);
 end
 
 function reportIssue()

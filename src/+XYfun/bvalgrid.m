@@ -22,14 +22,16 @@ classdef bvalgrid < ZmapHGridFunction
             'a_value_std',  'Std. of a-value', '';...
             'power_fit',    'Goodness of fit to power-law', '';...
             'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
-            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', ''
+            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
+            'failreason',   'reason b-value was nan', '';...
+            'nEvents_gt_local_Mc', 'nEvents > local Mc','';...
             }, 'VariableNames', {'Names','Descriptions','Units'})
             
         
         % fields returned by the calculation. must match column 1 of ReturnDetails
         CalcFields = {'Mc_value', 'Mc_std', 'b_value', 'b_value_std',...
             'a_value', 'a_value_std', 'power_fit',...
-            'Additional_Runs_b_std', 'Additional_Runs_Mc_std'}
+            'Additional_Runs_b_std', 'Additional_Runs_Mc_std', 'failreason', 'nEvents_gt_local_Mc'}
         
         ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr", "fBinning", "mc_choice", "mc_auto_est"];
         
@@ -93,15 +95,16 @@ classdef bvalgrid < ZmapHGridFunction
                 % Added to obtain goodness-of-fit to powerlaw value
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
                 [~, ~, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
-                
+                fail_reason=nan;
                 Mc_value = mcCalculator(catalog);
                 
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
-                
+                nEvents_gt_local_mc = sum(l);
                 if sum(l) >= obj.NodeMinEventCount
                     [b_value, b_value_std, a_value] =  calc_bmemag(catalog.Magnitude(l), obj.fBinning);
                     % otherwise, they should be NaN
                 else
+                    fail_reason=1;
                     [b_value, b_value_std, a_value] = deal(nan);
                 end
                 
@@ -117,6 +120,7 @@ classdef bvalgrid < ZmapHGridFunction
                             calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.mc_choice);
                         % where Additiona_Runs_Mc_std = nBoot x [fMeanMag fBvalue fStdDev fAvalue];
                     else
+                        fail_reason=2;
                         Mc_std=NaN;
                         Mc_value = NaN;
                         a_value_std=NaN;
@@ -136,7 +140,7 @@ classdef bvalgrid < ZmapHGridFunction
                 % Result matrix
                 out  = [Mc_value Mc_std,...
                     b_value b_value_std a_value a_value_std,...
-                    prf std(Additional_Runs_b_std) std(Additional_Runs_Mc_std(:,1))];
+                    prf std(Additional_Runs_b_std) std(Additional_Runs_Mc_std(:,1)), fail_reason,nEvents_gt_local_mc];
                 
             end
         end

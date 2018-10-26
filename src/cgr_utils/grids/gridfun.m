@@ -93,7 +93,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     
     UseParallelProcessing = ZG.ParallelProcessingOpts.Enable && ...
-        length(zgrid) >= ZG.ParallelProcessingOpts.Threshhold;
+        (length(zgrid) >= ZG.ParallelProcessingOpts.Threshhold || ~isempty(gcp('nocreate'))); % get parallel pool details
     
     try
         if UseParallelProcessing
@@ -193,11 +193,11 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         % where to put the value back into the matrix
         activeidx = find(zgrid.ActivePoints);
         size(activeidx)
-        x=gridpoints(zgrid.ActivePoints,1);
-        y=gridpoints(zgrid.ActivePoints,2);
+        x=gridpoints(:,1);
+        y=gridpoints(:,2);
         doZ=~isempty(zgrid.Z);
         if doZ
-            z=gridpoints(zgrid.ActivePoints,3);
+            z=gridpoints(:,3);
         else
             z=nan(size(x));
         end

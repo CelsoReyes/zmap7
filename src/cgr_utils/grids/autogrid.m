@@ -20,6 +20,21 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
    
     % use 2-d histogram to automatically determine an appropriate grid coverage
     % for the catalog
+    
+    % get the convex hull for our catalog.
+    lola = [catalog.Longitude, catalog.Latitude];
+    ch = convhull(lola,'simplify',true);
+    area = areaint(lola(ch,2),lola(ch,1));
+    area=area * 510.1e6;   % times area of earth(km) to get to km^2
+    line_len = sqrt(area); % assuming a square area, it would be this long on a side.
+    dS=line_len/30;
+    gpc = GridOptions(dS, dS, [], 'km', false, true );
+    gpc.AbsoluteGridLimits = [bounds2(catalog.Longitude), bounds2(catalog.Latitude)];
+    
+    
+    %% 
+    if false
+    %%
         [N,XEDGES,YEDGES] = histcounts2(...
             catalog.Longitude,...
             catalog.Latitude,...
@@ -59,6 +74,10 @@ function [zgrid, gpc] = autogrid(catalog, dohist, plotOnMap)
         
         
     gpc = GridOptions(diff(XEDGES(1:2))/2, diff(YEDGES(1:2))/2, [], 'deg', true, true );
+    
+    %%
+    end
+    %%
     
     zgrid=ZmapGrid('autogrid',gpc);
     f=gcf;

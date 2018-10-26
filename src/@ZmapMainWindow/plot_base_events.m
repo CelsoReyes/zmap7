@@ -103,6 +103,7 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c, 'Select events in CIRCLE');
     create_from_existing_menu(c, 'Select events in BOX');
     create_from_existing_menu(c, 'Select events in POLYGON');
+    create_from_existing_menu(c, 'Wrap events in POLYGON (complex hull)');
     
     uimenu(c,'Separator','on',...
         'Label', 'Delete polygon',               MenuSelectedField(), @(s,v)updatewrapper(s, v, @(~,~)cb_shapedelete) );

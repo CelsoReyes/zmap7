@@ -192,8 +192,12 @@ classdef ZmapMainWindow < handle
             end
             % retrieve default values from ZmapGlobal.
             [obj.mdate, obj.mshape] = obj.filter_catalog();
-            obj.Grid                = ZG.Grid;
-            obj.gridopt             = ZG.gridopt;
+            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation
+                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog);
+            else
+                obj.Grid                = ZG.Grid;
+                obj.gridopt             = ZG.gridopt;
+            end
             obj.evsel               = ZG.GridSelector;
             obj.xscats              = containers.Map();
             obj.xscatinfo           = containers.Map();
