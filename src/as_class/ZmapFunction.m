@@ -147,7 +147,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             p.addParameter('DelayProcessing', obj.DelayProcessing);
             p.parse(varginstuff{:});
             
-            % assign values from paramter to this object
+            % assign values from parameter to this object
             for i=1:numel(obj.ParameterableProperties)
                 obj.(obj.ParameterableProperties(i)) = p.Results.(obj.ParameterableProperties(i));
             end

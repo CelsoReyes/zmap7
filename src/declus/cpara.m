@@ -4,23 +4,24 @@ function mycat=cpara(option, mycat)
     % mycat=cpara(option, mycat)
     %
     
+    persistent latrange lonrange daterange magrange depthrange
+    
     persistent tmp1 tmp2 tmp3 tmp4 tmp5 tmp6 tmp7 tmp8 tmp9 tmp10
     
     report_this_filefun();
     
-    if option==1
+    if option=="interactive"
         
-        % default values
-        tmp1=min(mycat.Longitude);       %longitude
-        tmp2=max(mycat.Longitude);
-        tmp3=min(mycat.Latitude);       %latitude
-        tmp4=max(mycat.Latitude);
-        tmp5=min(mycat.Date);       %time
-        tmp6=max(mycat.Date);
-        tmp7=min(mycat.Magnitude);       %magnitude
-        tmp8=max(mycat.Magnitude);
-        tmp9=min(mycat.Depth);       %depth
-        tmp10=max(mycat.Depth);
+        mycat = catalog_overview(mycat);
+        
+        % stash results
+        latrange = bounds2(mycat.Latitude);
+        lonrange = bounds2(mycat.Longitude);
+        daterange = bounds2(mycat.Date);
+        magrange = bounds2(mycat.Magnitude);
+        depthrange = bounds2(mycat.depth);
+        
+    else
         
         %make the interface
         figure_w_normalized_uicontrolunits(...
@@ -32,6 +33,7 @@ function mycat=cpara(option, mycat)
         axis off
         
         
+        
         inp1=uicontrol('Style','edit','Position',[.47 .80 .22 .06],...
             'Units','normalized','String',num2str(tmp7),...
             'callback',@callbackfun_001);
@@ -41,11 +43,11 @@ function mycat=cpara(option, mycat)
             'callback',@callbackfun_002);
         
         inp3=uicontrol('Style','edit','Position',[.47 .65 .22 .06],...
-            'Units','normalized','String',num2str(tmp5),...
+            'Units','normalized','String',char(tmp5),...
             'callback',@callbackfun_003);
         
         inp4=uicontrol('Style','edit','Position',[.72 .65 .22 .06],...
-            'Units','normalized','String',num2str(tmp6),...
+            'Units','normalized','String',char(tmp6),...
             'callback',@callbackfun_004);
         
         inp5=uicontrol('Style','edit','Position',[.47 .50 .22 .06],...
@@ -116,7 +118,7 @@ function mycat=cpara(option, mycat)
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position',[.75 .02 .20 .10 ],...
-            'Units','normalized','callback',@callbackfun_011,'String','Cancel');
+            'Units','normalized', 'Callback', @callbackfun_011,'String','Cancel');
         
         go_button=uicontrol('Style','Pushbutton',...
             'Position',[.45 .02 .20 .10 ],...
@@ -219,7 +221,6 @@ function mycat=cpara(option, mycat)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     
@@ -235,6 +236,6 @@ function mycat=cpara(option, mycat)
     function callbackfun_013(mysrc,myevt)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(15);
+        clinfo("ParamSelect");
     end
 end

@@ -1,4 +1,4 @@
-function presel(call) 
+function presel(call, vals) 
     %  This scriptfile ask for several input parameters that can be setup
     %  at the beginning of each session. The default values are the
     %  extrema in the catalog
@@ -11,14 +11,16 @@ function presel(call)
     
     %
     % make the interface
-    
+    latmin=0;latmax=0;lonmin=0;lonmax=0;tmin=0;tmax=0;Mmin=0;Mmax=0;mindep=0;maxdep=0;
+    %zdlg = ZmapDialog();
+    %zdlg.AddEdit('latmin','min Lat:');
     %
     figure_w_normalized_uicontrolunits(...
         'Units','pixel','pos',[ZG.welcome_pos 380 500 ],...
         'Name','Pre-selection Parameters!',...
         'visible','off',...
         'NumberTitle','off',...
-        'Color',color_fbg,...
+        ...'Color',color_fbg,...
         'NextPlot','new');
     axis off
     

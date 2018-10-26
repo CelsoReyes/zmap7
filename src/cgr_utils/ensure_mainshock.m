@@ -5,8 +5,8 @@ function TF = ensure_mainshock()
     
     TF=true;
     if isempty(ZG.maepi)
-        ZmapMessageCenter.set_error('missing mainshock',...
-        'No Mainshock exists. Select one before choosing this option')
+        msg.errordisp(        'No Mainshock exists. Select one before choosing this option',...
+        'missing mainshock');
         TF=false;
     end
 end

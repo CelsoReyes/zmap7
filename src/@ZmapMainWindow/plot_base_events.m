@@ -105,7 +105,7 @@ function plot_base_events(obj, container, featurelist)
     create_from_existing_menu(c, 'Select events in POLYGON');
     
     uimenu(c,'Separator','on',...
-        'Label', 'Delete polygon',               MenuSelectedField(), {@updatewrapper,@(~,~)cb_shapedelete});
+        'Label', 'Delete polygon',               MenuSelectedField(), @(s,v)updatewrapper(s, v, @(~,~)cb_shapedelete) );
     uimenu(c,'Label', 'Zoom to polygon',         MenuSelectedField(), @cb_zoom_shape);
     uimenu(c,'Label', 'Crop to polygon',         MenuSelectedField(), @cb_crop_to_selection);
     uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom)
@@ -123,7 +123,7 @@ function plot_base_events(obj, container, featurelist)
     
     function create_from_existing_menu(parent, label)
             % use the callback from a menu item that (will) exist in this figure. Labels must match
-            uimenu(parent, 'Label', label, MenuSelectedField(), {@do_other, label});
+            uimenu(parent, 'Label', label, MenuSelectedField(), @(s,v)do_other(s, v,  label) );
             
         function do_other(src, ev, label)
             um = findobj(obj.fig,'Type','uimenu','-and','Label',label);
@@ -166,20 +166,20 @@ function plot_base_events(obj, container, featurelist)
     end
     
     function cb_zoom(~ ,~)
-        xl = [min(obj.catalog.Longitude) max(obj.catalog.Longitude)];
-        yl = [min(obj.catalog.Latitude) max(obj.catalog.Latitude)];
+        xl = bounds2(obj.catalog.Longitude);
+        yl = bounds2(obj.catalog.Latitude);
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end
 
     function cb_zoom_shape(~, ~)
         if isempty(obj.shape)
-            warning('No shape selected');
+            warning('ZMAP:polygon:noneSelected','No shape selected');
             return
         end
         ol = obj.shape.Outline; % as [X, Y]
-        xl = [min(ol(:,1)) max(ol(:,1))];
-        yl = [min(ol(:,2)) max(ol(:,2))];
+        xl = bounds2(ol(:,1));
+        yl = bounds2(ol(:,2));
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end
@@ -187,7 +187,7 @@ function plot_base_events(obj, container, featurelist)
 
     function cb_crop_to_selection(~, ~)
         if isempty(obj.shape)
-            warning('No shape selected');
+            warning('ZMAP:polygon:noneSelected','No shape selected');
             return
         end
         

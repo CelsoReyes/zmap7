@@ -51,7 +51,7 @@ classdef magrcros < ZmapVGridFunction
             obj.periodB_end = max(obj.RawCatalog.Date);
             
             obj.parseParameters(varargin);
-            warning('apparently still broken');
+            warning('ZMAP:unimplemented','apparently still broken');
                 
             obj.StartProcess();
             

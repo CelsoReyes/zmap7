@@ -137,7 +137,7 @@ function  bdiff_bdepth(mycat)
     f3 = polyval(p3,x);
     [f4,delta] = polyval(p,x,S);
     Tr  = (teb-t0b)/(10.^ polyval(p,mrt));
-    disp(['Recurrence time Tr(M' num2str(mrt) ') = ' num2str(Tr) ' years']);
+    fprintf('Recurrence time Tr(M%g) = %g years\n', mrt, Tr);
     f = 10.^f;
     f2 = 10.^f2;
     f3 = 10.^f3;
@@ -213,16 +213,17 @@ function  bdiff_bdepth(mycat)
     set(gcf,'visible','on');
     
     if ZG.hold_state
-        % calculate the probability that the two distributins are differnt
+        % calculate the probability that the two distributions are different
         l = mycat.Magnitude >=  M1b(1);
         gBdiff.b2 = str2double(tt1); gBdiff.n2 = M1b(2);
         n = gBdiff.n1+gBdiff.n2;
         da = -2*n*log(n) + 2*gBdiff.n1*log(gBdiff.n1+gBdiff.n2*gBdiff.b1/gBdiff.b2) + 2*gBdiff.n2*log(gBdiff.n1*gBdiff.b2/gBdiff.b1+gBdiff.n2) -2;
         pr = exp(-da/2-2);
-        disp(['Probability: ',  num2str(pr)]);
+        fprintf('Probability: %g\n', pr);
         txt1=text(.60, .75,['p=  ', num2str(pr,2)],'Units','normalized');
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.60, .70,[ 'gBdiff.n1: ' num2str(gBdiff.n1) ', gBdiff.n2: '  num2str(gBdiff.n2) ', gBdiff.b1: ' num2str(gBdiff.b1)  ', gBdiff.b2: ' num2str(gBdiff.b2)]);
+        txt1=text(.60, .70, sprintf('gBdiff.n1: %g, gBdiff.n2: %g, gBdiff.b1: %g, gBdiff.b2: %g', ...
+            gBdiff.n1, gBdiff.n2, gBdiff.b1, gBdiff.b2));
         set(txt1,'FontSize',8,'Units','normalized')
     else
         gBdiff.b1 = str2double(tt1); gBdiff.n1 = M1b(2);

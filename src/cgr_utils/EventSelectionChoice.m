@@ -164,7 +164,7 @@ classdef EventSelectionChoice < handle
                 obj.hUseMaxRa = uicontrol(obj.ubg1, 'Style','checkbox',...
                     'Units', 'pixels', 'Position', [50 obj.GROUPHEIGHT-70 170 22],...
                     'String', 'up to max radius (km)...',...
-                    'Tag','useMaxRadius','callback', @cb_useMaxRadius);
+                    'Tag','useMaxRadius', 'Callback', @cb_useMaxRadius);
                 
                 obj.hMaxRa=uicontrol(obj.ubg1,'Style','edit',...
                     'Units','pixels','Position',[230 obj.GROUPHEIGHT-70 72 22],...
@@ -193,18 +193,18 @@ classdef EventSelectionChoice < handle
                 function cb_useMaxRadius(~,~)
                     % enables the max radius edit box when the max radius checkbox is checked & active
                     if obj.hUseMaxRa.Value && obj.hUseMaxRa.Enable=="on"
-                        set(obj.hMaxRa,'Enable','on');
+                        obj.hMaxRa.Enable = 'on';
                     else
-                        set(obj.hMaxRa,'Enable','off');
+                        obj.hMaxRa.Enable = 'off';
                     end
                 end
                 
                 function cb_numberevents(mysrc,~)
-                    obj.ni=str2double(mysrc.String);
+                    obj.ni = str2double(mysrc.String);
                 end
                 
                 function cb_radius(mysrc,~)
-                    obj.ra=str2double(mysrc.String);
+                    obj.ra = str2double(mysrc.String);
                     if mysrc == obj.hMaxRa
                         obj.hRa.String = mysrc.String;
                     else
@@ -230,10 +230,10 @@ classdef EventSelectionChoice < handle
             
             
             %% SAMPLE DISTANCE
-            obj.hUseMaxRa = uicheckbox(obj.ubg1);
-            obj.hUseMaxRa.Position = [50 obj.GROUPHEIGHT-70 170 22];
-            obj.hUseMaxRa.Text ='up to max radius (km)...';
-            obj.hUseMaxRa.Tag='useMaxRadius';
+            obj.hUseMaxRa           = uicheckbox(obj.ubg1);
+            obj.hUseMaxRa.Position  = [50 obj.GROUPHEIGHT-70 170 22];
+            obj.hUseMaxRa.Text      = 'up to max radius (km)...';
+            obj.hUseMaxRa.Tag       = 'useMaxRadius';
             obj.hUseMaxRa.ValueChangedFcn = @cb_useMaxRadius;
             
             obj.hMaxRa=uieditfield(obj.ubg1,...
@@ -356,7 +356,7 @@ classdef EventSelectionChoice < handle
             obj.hUseMaxRa = uicheckbox(obj.ubg1,...
                 'Position', [50 obj.GROUPHEIGHT-70 170 22],...
                 'Text', 'up to max radius (km)...',...
-                'Tag','useMaxRadius','callback', @cb_useMaxRadius);
+                'Tag','useMaxRadius', 'Callback', @cb_useMaxRadius);
             
             obj.hMaxRa=uieditfield(obj.ubg1,...
                 'Position',[230 obj.GROUPHEIGHT-70 72 22],...
@@ -469,7 +469,7 @@ classdef EventSelectionChoice < handle
             
             uicontrol('style','pushbutton','string','OK','Callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
             
-            uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
+            uicontrol('style','pushbutton','string','Cancel', 'Callback', @cancel_cb,'Position',[inwidth-70 10 60 25]);
             uiwait(f);
             if writeToGlobal && okPressed
                 assert(~isempty(evsel.NumClosestEvents));

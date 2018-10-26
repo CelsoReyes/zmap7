@@ -8,7 +8,7 @@ function [vLambdaH, vLambdaN, vNumberQuake] = relm_PrepareData(vRatesH, vRatesN,
     %   vRatesN         Matrix with rates of the null hypothesis
     %   fMagThreshold   Magnitude threshold (Use only bins with magnitude >= threshold
     %
-    % Output paramters:
+    % Output parameters:
     %   vLambdaH        Vector containing expected rates for the test hypothesis
     %   vLambdaN        Vector containing expected rates for the null hypothesis
     %   vNumberQuake    Vector containing the observed numbers of events

@@ -10,6 +10,16 @@ function clpval(var1)
     %
     % Input: Earthquake Catalog of an Cluster Sequence
     %
+    %  best guesses about the meaning of var1:
+    %         1: manual    / Mainshock
+    %         2: --        / Main-Input
+    %         3: automatic / Sequence
+    %         4:
+    %
+    %         6: tmvar is empty and Mainshock chosen from dropdown
+    %         7: tmvar is empty and Main-Input chosen from dropdown
+    %         8: tmvar is not empty OR (tmvar is empty and Sequence chosen from dropdown)
+    %
     % Output: p c k values of the modified Omori Law with respective
     %         standard deviations
     %         A and B values of the Gutenberg Relation based on k
@@ -20,26 +30,28 @@ function clpval(var1)
     %
     %  A.Allmann
     
-    % TODO: burn this file and dance around the ashes. 
-
-    global file1
-    global mess bgevent clust original newclcat
-    global backcat cluscat
-    global  clu te1
-    global clu1 pyy tmp1 tmp2 tmp3 tmp4 difp
-    global xt cumu cumu2
-    global close_p_button pplot
-    global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
-    global h2 cplot Info_p close_p  print_p
-    global p c dk tt pc loop nn pp nit t err1x err2x
-    global cstep pstep tmpcat ts tend eps1 eps2
-    global sdc sdk sdp qp aa bb loopcheck
-    global ppc  cplot2 hndl1
-    global autop tmeqtime tmvar
+    % TODO: burn this file and dance around the ashes.
+    
+    
+    persistent autop
+    
+    par3=[];
+    par5=[];
+    
     tmvar=[];
+    do_1345(var1);
+    
     %input of parameters(Magnitude,Time)
-    if any(var1==[1 3 4 5])
-        pplot=findobj('Type','Figure','-and','Name','P-Value Plot');
+    function do_1345(var1)
+        global tmp1 tmp2 tmp3 tmp4 difp
+        global xt cumu cumu2
+        global freq_field1 freq_field2 freq_field3 freq_field4
+        global h2 cplot_ax Info_p close_p  print_p
+        global ppc  cplot2 hndl1
+        global tmvar
+        
+        
+        pplot = findobj('Type','Figure','-and','Tag','pplot');
         if ~isempty(pplot)
             figure(pplot);
             clf
@@ -47,42 +59,44 @@ function clpval(var1)
             if var1==3 || var1==4
                 ppc=1;
             end
-            pplot=figure_w_normalized_uicontrolunits(...
+            pplot=figure(...
                 'Name','P-Value Plot',...
                 'NumberTitle','off',...
                 'NextPlot','new',...
                 'visible','off',...
                 'Units','normalized',...
+                'Tag', 'pplot',...
                 'Position',[ 0.435  0.8 0.5 0.8]);
-            axis off
         end
         
         axis off
         
-        ZG.newt2=ZG.ttcat;              %function operates with single cluster
-        autop=0;
-        if var1==4
-            autop=1;
-        end
+        ZG = ZmapGlobal.Data;
+        ZG.newt2 = ZG.ttcat;              %function operates with single cluster
+        
+        autop = var1 == 4;
+        
         %calculate start -end time of overall catalog
-        [t0b, teb] = ZG.newt2.DateRange() ;
+        [t0b, teb] = bounds(ZG.newt2.Date) ;
         tdiff=days(teb-t0b);       %time difference in days
         
         par3=tdiff/100;
         
-        par5=par3;
-        if par5>.5
-            par5=par5/5;
+        if par3 > 0.5
+            par5 = par5/5;
+        else
+            par5 = par3;
         end
         
         % calculate cumulative number versus time and bin it
         %
         n = ZG.newt2.Count;
-        if par3>=1
+        if par3 >= 1
             [cumu, xt] = hist(ZG.newt2.Date, t0b:days(par3):teb);
         else
             [cumu, xt] = hist(ZG.newt2.Date-min(ZG.newt2.Date), 0:par5:tdiff);
         end
+        
         if var1==3 || var1==4
             difp= [0 diff(cumu)];
         end
@@ -92,12 +106,14 @@ function clpval(var1)
         %
         orient tall
         axis off
+        
         rect = [0.22,  0.5, 0.55, 0.45];
-        cplot=axes('position',rect);
-        set(gca,'NextPlot','add')
-        ctiplo = plot(xt,cumu2,'ob');
-        set(gca,'visible','off')
-        cplot2 = plot(xt,cumu2,'r');
+        cplot_ax = axes('position', rect, 'NextPlot', 'add');
+        plot(cplot_ax, xt, cumu2, 'ob');
+        cplot_ax.Visible = 'off';
+        
+        cplot2 = plot(cplot_ax, xt,cumu2,'r');
+        
         if var1==3  || var1==4
             plot(xt,difp/10,'g');
         end
@@ -107,49 +123,41 @@ function clpval(var1)
             v = axis;
             tea = text(v(1)+0.5,v(4)*0.9,stri) ;
             set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold')
-            %else
-            % strib = [file1];
-        end %% if stri
-        
-        %strib = [file1];
-        
-        %title(strib,'FontWeight','bold',...
-        %'FontSize',14,...
-        %'Color','r')
+        end
         
         grid
-        if par3>=1
-            xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        if par3 >= 1
+            xlabel(cplot_ax, 'Time in years')
         else
-            xlabel(['Time in days relative to ',num2str(t0b)],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+            xlabel(cplot_ax, sprintf('Time in days relative to %s', t0b))
         end
-        ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        
+        ylabel(cplot_ax, 'Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         
         % Make the figure visible
         %
-        set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
+        set(cplot_ax, 'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
             'FontWeight','bold','LineWidth',1.5,...
             'Box','on')
         
-        gcf;
         rect=[0 0 1 1];
         h2=axes('Position',rect);
         set(h2,'visible','off');
         if var1==1
-            str =  ['\newline \newline \newlinePlease select start and end time of the P-Value plot\newlineClick first with the left Mouse Button at your start position\newlineand then with the left Mouse Button at the end position'];
-            te = text(0.2,0.37,str) ;
-            
-            set(te,'FontSize',14);
+            str =  sprintf(['\n\n\nPlease select start and end time of the P-Value plot',...
+                '\nClick first with the left Mouse Button at your start position\n',...
+                'and then with the left Mouse Button at the end position']);
+            te = text(0.2,0.37,str,'FontSize',14);
             set(pplot,'Visible','on');
             
-            disp('Please select start and end time of the P-value plot. Click first with the left Mouse Button at your start position and then at the end position.')
+            disp(str)
             
             
             seti = uicontrol('Units','normal',...
                 'Position',[.4 .01 .2 .05],'String','Select Time1 ');
             
             
-            XLim=get(cplot,'XLim');
+            XLim=get(cplot_ax,'XLim');
             
             
             M1b = [];
@@ -171,12 +179,11 @@ function clpval(var1)
             else
                 tmp3=nnn*par5;
             end
-            str = ['\newline \newline \newlinePlease select the end time of the P-value plot.\newlineClick with the left Mouse Button at you end position'];
-            te = text(0.15,0.37,str) ;
-            set(te,'FontSize',14);
+            str = sprintf('\n\n\nPlease select the end time of the P-value plot.\nClick with the left Mouse Button at the end position');
+            te = text(0.15,0.37,str,'FontSize',14);
             set(pplot,'Visible','on');
-            disp('Please select the end time of the P-value plot. Click with the left   mouse button at your end position.')
-            XLim=get(cplot,'XLim');
+            disp(str)
+            XLim=get(cplot_ax,'XLim');
         end
         if var1==1 || var1==3
             M2b = [];
@@ -188,7 +195,6 @@ function clpval(var1)
             pause(0.1)
             delete(seti)
             
-            watchoff
             watchoff
             
             set(te,'visible','off');
@@ -252,7 +258,7 @@ function clpval(var1)
             Info_p = uicontrol('Style','Pushbutton',...
                 'String','Info ',...
                 'Position',[.3 .05 .10 .06],...
-                'Units','normalized','callback',@callbackfun_005);
+                'Units','normalized','callback',@(~,~)clinfo("Pval1"));
             
             
             
@@ -261,17 +267,19 @@ function clpval(var1)
             
             close_p =uicontrol('Style','Pushbutton',...
                 'Position', [.45 .05 .10 .06 ],...
-                'Units','normalized','callback',@callbackfun_006,...
+                'Units','normalized','Callback',@(~,~)set(findobj('Tag','pplot'),'Visible','off'),...
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
                 'Units','normalized','Callback', @(~,~)printdlg,...
                 'String','Print');
             
-            labelList=['Mainshock| Main-Input| Sequence' ];
             if var1==3
                 labelList=['Sequence'];
+            else
+                labelList=['Mainshock| Main-Input| Sequence' ];
             end
+            
             labelPos= [.6 .05 .2 .06];
             hndl1 =uicontrol(...
                 'style','popup',...
@@ -280,38 +288,78 @@ function clpval(var1)
                 'string',labelList,...
                 'callback',@callbackfun_007);
             
-            figure(mess);
-            clf;
-            str =  ['\newline \newline \newlinePlease give in parameters in green fields\newlineThis parameters will be used as the threshold\newline for the P-Value.\newlineAfter input push GO to continue. '];
-            te = text(0.01,0.9,str) ;
-            
-            set(te,'FontSize',12);
-            set(gca,'visible','off');
+            msg.dbfprintf(['\n \n \nPlease give in parameters in green fields\n',...
+                'This parameters will be used as the threshold\n for the P-Value.\n',...
+                'After input push GO to continue. ']);
         end
-        if autop==1
+        if autop
             figure(pplot);
             Info_p = uicontrol('Style','Pushbutton',...
                 'String','Info ',...
                 'Position',[.3 .05 .10 .06],...
-                'Units','normalized','callback',@callbackfun_008);
+                'Units','normalized','callback',@(~,~)clinfo("Pval1"));
             
             close_p =uicontrol('Style','Pushbutton',...
                 'Position', [.45 .05 .10 .06 ],...
-                'Units','normalized','callback',@callbackfun_009,...
+                'Units','normalized','callback',@(~,~)set(findobj('Tag','pplot'),'Visible','off'),...
                 'String','Close');
             print_p = uicontrol('Style','Pushbutton',...
                 'Position',[.15 .05 .1 .06],...
                 'Units','normalized','Callback',  @(~,~)printdlg,...
                 'String','Print');
             
-            
-            clpval(8);
+            var1=8;
+            do_678(var1);
             
         end
         
+        function callbackfun_001(mysrc,myevt)
+            
+            tmp2=str2double(freq_field1.String);
+            freq_field1.String=num2str(tmp2);
+        end
         
-        %cumputation part after parameter input
-    elseif var1==8   ||  var1==6  ||  var1==7
+        function callbackfun_002(mysrc,myevt)
+            
+            tmp1=str2double(freq_field2.String);
+            freq_field2.String=num2str(tmp1);
+        end
+        
+        
+        function callbackfun_004(mysrc,myevt)
+            tmp4=str2double(freq_field4.String);
+            freq_field4.String=num2str(tmp4);
+        end
+        
+        function callbackfun_003(mysrc,myevt)
+            tmp3=str2double(freq_field3.String);
+            freq_field3.String=num2str(tmp3);
+        end
+        
+        function callbackfun_007(mysrc,myevt)
+            if ~isempty(tmvar)
+                
+                var1=8;
+                do_678(var1);
+            else
+                var1 = hndl1.Value + 5;
+                do_678(var1);
+            end
+        end
+        
+    end
+    %computation part after parameter input
+    function do_678(var1)
+        global tmp1 tmp2 tmp3 tmp4 difp
+        global xt cumu cumu2
+        global freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button
+        global h2 cplot_ax Info_p
+        global p c dk tt pc loop nn pp nit t err1x err2x
+        global cstep pstep tmpcat ts tend eps1 eps2
+        global sdc sdk sdp qp aa bb loopcheck
+        global hndl1
+        global tmeqtime tmvar
+        
         %set the error test values
         eps1=.0005;
         eps2=.0005;
@@ -329,7 +377,7 @@ function clpval(var1)
         err1x=0;
         err2x=0;
         ts=0.0000001;
-        if autop ~= 1             %input was manual
+        if ~autop            %input was manual
             
             %Build timecatalog
             
@@ -340,7 +388,7 @@ function clpval(var1)
                 seti = uicontrol('Units','normal',...
                     'Position',[.4 .01 .2 .05],'String','Select Maintime');
                 
-                XLim=get(cplot,'XLim');
+                XLim=get(cplot_ax,'XLim');
                 M1b = [];
                 M1b= ginput(1);
                 tt3= M1b(1);
@@ -404,7 +452,7 @@ function clpval(var1)
         mpvc = MyPvalClass;
         [loopcheck, c, p, dk, sdc, sdp, sdk]=mpvc.ploop_c_and_p_calcs(MIN_CSTEP, MIN_PSTEP, true,'kpc');%call of function who calculates parameters
         
-        if autop~=1
+        if ~autop
             figure(pplot);
             delete([freq_field1 freq_field2 freq_field3 freq_field4 Go_p_button]);
             cla;
@@ -467,7 +515,7 @@ function clpval(var1)
             tt4=num2str(qp);
             cog = cof* mpvc.pc^obj.qp;
             tt5=num2str(cog);
-
+            
             tt1=['Integrated Omori Law: N(t) = ',tt2,'(t+',tt3,')^',tt4,' -   ',tt5];
             text1= text(...
                 'Position',[0.1 0.21 h2 ],...
@@ -490,18 +538,18 @@ function clpval(var1)
                 'FontWeight','bold' ,...
                 'String',['B-value: ',tt1]);
             
-            set(Info_p, 'callback',@callbackfun_010);
+            set(Info_p, 'callback',@(~,~)clinfo("Pval2"));
             
-            if autop~=1
-                tt1=num2str(tmp3);
-                tt2=num2str(tmp4);
-                tt3=num2str(tmp2);
-                tt4=num2str(tmp1);
-            else
+            if autop
                 tt1=num2str(tmeqtime(1));
                 tt2=num2str(tend);
                 tt3=num2str(min(ZG.ttcat(:,6)));
                 tt4=num2str(max(ZG.ttcat(:,6)));
+            else
+                tt1=num2str(tmp3);
+                tt2=num2str(tmp4);
+                tt3=num2str(tmp2);
+                tt4=num2str(tmp1);
             end
             tt5=[tt1,'<=t<=',tt2];
             tt6=[tt3,'<=mag<=',tt4];
@@ -512,165 +560,83 @@ function clpval(var1)
         else    %if loopcheck
             
             
-            str = ['\newline \newline \newlineThe P-Value evaluation leads to no stable result! \newlineTo avoid a segmentation fault the algorithm was shut down.\newlineFor more information hit the Info button.'];
-            te = text(0.2,0.37,str) ;
-            set(te,'FontSize',12);
-            set(Info_p, 'callback',@callbackfun_011);
+            str = ['\n \n \nThe P-Value evaluation leads to no stable result! \nTo avoid a segmentation fault the algorithm was shut down.\nFor more information hit the Info button.'];
+            te = text(0.2,0.37,str,'FontSize',12);
+            set(Info_p, 'callback',@(~,~)clinfo("UnstablePval"));
         end
-        if autop~=1
-            if par3>=1
-                tdiff = round(tmpcat(length(tmpcat(:,1)),3)-tmpcat(1,3));
-            else
-                tdiff = (tmpcat(length(tmpcat(:,1)),3)-tmpcat(1,3))*365;
-            end
-            % set arrays to zero
-            %
-            if par3>=1
-                cumu = 0:1:(tdiff/days(par3))+1;
-                cumu2 = 0:1:(tdiff/days(par3))-1;
-            else
-                par5=par3/5;
-                cumu = 0:par5:tdiff+2*par3;
-                cumu2 =  0:par5:tdiff-1;
-            end
-            cumu = cumu * 0;
-            cumu2 = cumu2 * 0;
-            %
-            % calculate cumulative number versus time and bin it
-            %
-            %  n = length(tmpcat(:,1));
-            if par3>=1
-                [cumu, xt] = hist(tmpcat(:,3),(tmpcat(1,3):days(par3):tmpcat(length(tmpcat(:,1)),3)));
-            else
-                [cumu, xt] = hist((tmpcat(:,3)-tmpcat(1,3))*365,(0:par5:tdiff));
-            end
-            if exist('ppc')
-                difp= [0 diff(cumu)];
-            end
-            cumu2 = cumsum(cumu);
-            
-            % plot time series
-            %
-            delete(cplot)
-            orient tall
-            rect = [0.22,  0.5, 0.55, 0.45];
-            cplot=axes('position',rect);
-            set(gca,'NextPlot','add')
-            tiplo = plot(xt,cumu2,'ob');
-            set(gca,'visible','off')
-            plot(xt,cumu2,'r','Tag','tiplo2');
-            if exist('ppc')
-                plot(xt,difp,'g');
-            end
-            
-            if exist('stri', 'var')
-                v = axis;
-                tea = text(v(1)+0.5,v(4)*0.9,stri) ;
-                set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold')
-            else
-                strib = [file1];
-            end %% if stri
-            
-            strib = [file1];
-            
-            %  title(strib,'FontWeight','bold',...
-            %     'FontSize',ZmapGlobal.Data.fontsz.l,...
-            %    'Color','r')
-            
-            grid
-            if par3>=1
-                xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-            else
-                xlabel(['Time in days relative to ',num2str(tmpcat(1,3))],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-            end
-            ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-            
-            % Make the figure visible
-            %
-            set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
-                'FontWeight','bold','LineWidth',1.5,...
-                'Box','on')
-        end;  %if autop~=1
-        ZmapMessageCenter();
-        tmvar=[];
-        if ~isempty(hndl1)
-            delete(hndl1);
-            hndl1=[];
+        if autop
+            finish_up()
+            return
         end
-    end
-    
-    function callbackfun_001(mysrc,myevt)
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tmp2=str2double(freq_field1.String);
-        freq_field1.String=num2str(tmp2);
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tmp1=str2double(freq_field2.String);
-        freq_field2.String=num2str(tmp1);
-    end
-    
-    function callbackfun_003(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tmp3=str2double(freq_field3.String);
-        freq_field3.String=num2str(tmp3);
-    end
-    
-    function callbackfun_004(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        tmp4=str2double(freq_field4.String);
-        freq_field4.String=num2str(tmp4);
-    end
-    
-    function callbackfun_005(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(1);
-    end
-    
-    function callbackfun_006(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        set(pplot,'visible','off');
-    end
-    
-    function callbackfun_007(mysrc,myevt)
-        
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        if ~isempty(tmvar)
-            clpval(8);
-        else;
-            in2 = get(hndl1,'Value')+5;
-            clpval(in2);
+        % autop is false... do it manually
+        if par3>=1
+            tdiff = round(tmpcat(length(tmpcat(:,1)),3)-tmpcat(1,3));
+        else
+            tdiff = (tmpcat(length(tmpcat(:,1)),3)-tmpcat(1,3))*365;
         end
-    end
-    
-    function callbackfun_008(mysrc,myevt)
+        % set arrays to zero
+        %
+        if par3<1
+            par5 = par3/5;
+        end
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(1);
-    end
-    
-    function callbackfun_009(mysrc,myevt)
+        % calculate cumulative number versus time and bin it
+        %
+        %  n = length(tmpcat(:,1));
+        if par3>=1
+            [cumu, xt] = hist(tmpcat(:,3),(tmpcat(1,3):days(par3):tmpcat(length(tmpcat(:,1)),3)));
+        else
+            [cumu, xt] = hist((tmpcat(:,3)-tmpcat(1,3))*365,(0:par5:tdiff));
+        end
+        if exist('ppc','var')
+            difp= [0 diff(cumu)];
+        end
+        cumu2 = cumsum(cumu);
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        set(pplot,'visible','off');
-    end
-    
-    function callbackfun_010(mysrc,myevt)
+        % plot time series
+        %
+        delete(cplot_ax)
+        orient tall
+        rect = [0.22,  0.5, 0.55, 0.45];
+        cplot_ax = axes('position',rect);
+        cplot_ax.NextPlot = 'add';
+        tiplo = plot(cplot_ax, xt,cumu2,'ob','Tag','tiplo');
+        cplot_ax.Visible = 'off';
+        plot(cplot_ax,xt,cumu2,'r','Tag','tiplo2');
+        if exist('ppc')
+            plot(cplot_ax, xt,difp,'g');
+        end
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(2);
-    end
-    
-    function callbackfun_011(mysrc,myevt)
+        if exist('stri', 'var')
+            v = axis;
+            tea = text(v(1)+0.5,v(4)*0.9,stri) ;
+            set(tea,'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k','FontWeight','bold')
+        end %% if stri
         
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        clinfo(10);
+        
+        grid
+        if par3>=1
+            xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        else
+            xlabel(['Time in days relative to ',num2str(tmpcat(1,3))],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        end
+        ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+        
+        % Make the figure visible
+        %
+        set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
+            'FontWeight','bold','LineWidth',1.5,...
+            'Box','on')
+        
+        finish_up()
+        
+        function finish_up()
+            tmvar=[];
+            if ~isempty(hndl1)
+                delete(hndl1);
+                hndl1=[];
+            end
+        end
     end
 end

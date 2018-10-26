@@ -239,7 +239,7 @@ classdef bdiff2 < ZmapFunction
             % calculates max likelihood b value(bvml) && WLS(bvls)
             %
             if obj.useBootstrapping && obj.mc_method == McMethods.McDueB_Bootstrap
-                warning('This could take a while. McDueB_Bootstrap doesn''t play well with other bootstrap parameters');
+                warning('ZMAP:inefficientAlgorithm','This could take a while. McDueB_Bootstrap doesn''t play well with other bootstrap parameters');
             end
             
             if catalog.Count >= obj.Nmin
@@ -678,7 +678,7 @@ classdef bdiff2 < ZmapFunction
         end
         
         function autosetXLim(obj)
-            obj.myXLim = [min(obj.RawCatalog.Magnitude)-0.5  max(obj.RawCatalog.Magnitude)+0.5];
+            obj.myXLim = bounds2(obj.RawCatalog.Magnitude) + [-0.5, 0.5];
         end
         
         function autosetYLim(obj)

@@ -170,7 +170,7 @@ classdef ZmapGrid
                     end
                 case 2
                     % ZMAPGRID( name, all_points, units)
-                    warning('ZmapGrid works best when provided with X and Y matrices of points');
+                    warning('ZMAP:grid:matrixRecommendation','ZmapGrid works best when provided with X and Y matrices of points');
                     assert(size(varargin{1},2)==2);
                     obj.X=varargin{1}(:,1);
                     obj.Y=varargin{1}(:,2);
@@ -268,7 +268,7 @@ classdef ZmapGrid
                     
                 case 3 % OBJ, POLYX, POLYY
                     if polyX(1) ~= polyX(end) || polyY(1) ~= polyY(end)
-                        warning('polygon is not closed. adding a point to close it.')
+                        warning('ZMAP:polygon:unclosedPolygon','polygon is not closed. adding a point to close it.')
                         polyX(end+1)=polyX(1);
                         polyY(end+1)=polyY(1);
                     end
@@ -305,7 +305,7 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',obj.PlotOpts.Color,...
+            def_opts={'color',FancyColors.rgb(obj.PlotOpts.Color),...
                 'displayname','grid points',...
                 'MarkerSize',obj.PlotOpts.MarkerSize,...
                 'Marker',obj.PlotOpts.Marker,...
@@ -410,8 +410,8 @@ classdef ZmapGrid
             end
             
             % corners for image
-            x = [min(obj.X) max(obj.X)];
-            y = [min(obj.Y) max(obj.Y)];
+            x = bounds2(obj.X);
+            y = bounds2(obj.Y);
             try
                 values(~obj.ActivePoints)=nan;
             catch

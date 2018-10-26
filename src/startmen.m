@@ -28,7 +28,7 @@ function startmen(parent_fig)
             MenuSelectedField(), @(~,~)cb_load_web);%ZmapImportManager(@get_fdsn_data_from_web_callback));
         uimenu(genmen, ...
             'Label', 'Create or Modify *.mat datafile',...
-            MenuSelectedField(), {@think_and_do, 'setup'});
+            MenuSelectedField(), @(~,~)think_and_do('setup'));
         uimenu(genmen, ...
             'Label', 'Current Dataset Info',...
             'Enable','off',... % may no longer be relevent
@@ -69,6 +69,5 @@ function think_and_do(~, ~, f_handle, varargin)
     else
         f_handle(varargin{:});
     end
-    ZmapMessageCenter.update_catalog();
 end
 

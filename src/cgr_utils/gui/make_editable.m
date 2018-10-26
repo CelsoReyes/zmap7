@@ -223,12 +223,12 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         intermedUpdateFn();
     end
     
-    function delpoint(~,~, target, activepoint)
+    function delpoint(target, activepoint)
         % controlled by RT CLICK choice at PLOT level
         isEndpoint = activepoint(1)==1 || activepoint(1)==length(target.XData);
         closedLoop = target.XData(1)==target.XData(end) && target.YData(1)==target.YData(end);
         if closedLoop && length(target.XData)<=4
-            warning('Cannot delete a closed shape down to less than 3 points')
+            warning('ZMAP:polygon:tooFewPoints','Cannot delete a closed shape down to less than 3 points')
             return
         else
             fprintf('%d points before deleting\n',length(target.XData));
@@ -248,7 +248,7 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
         intermedUpdateFn()
     end
     
-    function addpoint(~,~,target,activepoint)
+    function addpoint(target,activepoint)
         % controlled by RT CLICK choice at PLOT level
         if ~exist('activepoint','var') || isempty(activepoint)
             ds=@(A,B) sqrt((A(:,1)-B(:,1)).^2 + (A(:,2) - B(:,2)).^2);
@@ -322,8 +322,8 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     function c=pointcontext(p)
         c=uicontextmenu('Tag','PointEditableContext');
         if BEHAVIOR ~= "nopoint"
-            uimenu(c,'Label','delete point',MenuSelectedField(),{@delpoint,p});
-            uimenu(c,'Label','add point',MenuSelectedField(),{@addpoint,p});
+            uimenu(c,'Label','delete point',MenuSelectedField(),@(~,~)delpoint(p));
+            uimenu(c,'Label','add point',MenuSelectedField(),@(~,~)addpoint(p));
             uimenu(c,'Label','Finished', 'Separator','on',MenuSelectedField(),@(~,~)returnstate());
         else
             uimenu(c,'Label','Finished',MenuSelectedField(),@(~,~)returnstate());

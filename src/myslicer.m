@@ -39,7 +39,7 @@ function myslicer(ac2)
             messtext=...
                 ['Thank you! Now loading data'
                 'Hang on...                 '];
-            ZmapMessageCenter.set_message('  ',messtext);
+            msg.dbdisp(messtext, '  ');
             
             try
                 load(lopa)
@@ -138,7 +138,7 @@ function myslicer(ac2)
         
         dep1 = 0.3*max(ZG.primeCatalog.Depth); dep2 = 0.6*max(ZG.primeCatalog.Depth); dep3 = max(ZG.primeCatalog.Depth);
         
-        deplo1 =plot(ZG.primeCatalog.aLongitude(ZG.primeCatalog.Depth<=dep1),ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep1),'.b'); hold
+        deplo1 =plot(ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep1),ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep1),'.b'); hold
         set(deplo1,'MarkerSize',ZG.ms6,'Marker',ty1)
         deplo2 =plot(ZG.primeCatalog.Longitude(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1),ZG.primeCatalogLatitude(ZG.primeCatalog.Depth<=dep2&ZG.primeCatalog.Depth>dep1),'.g');
         set(deplo2,'MarkerSize',ZG.ms6,'Marker',ty2);

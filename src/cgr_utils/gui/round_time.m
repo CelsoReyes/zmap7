@@ -9,7 +9,7 @@ function dates = round_time(dates, selector)
         case 'nearest_hour'
             dates = datetime(dates.Year, dates.Month, dates.Day, dates.Hour + round(dates.Minute/60),0,0);
         otherwise
-            dates.Format='uuuu-MM-dd hh:mm:ss';
+            dates.Format='uuuu-MM-dd HH:mm:ss';
             % do nothing
     end
 end

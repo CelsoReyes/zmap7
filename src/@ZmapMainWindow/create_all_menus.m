@@ -24,7 +24,7 @@ function create_all_menus(obj, force)
     create_ztools_menu();
     
     
-    uimenu('Label','|>','Enable','off');
+    uimenu('Label','|>','Enable','off');% 
     create_time_analysis_menu();
     create_map_analysis_menu();
     create_xsec_analysis_menu();
@@ -36,8 +36,9 @@ function create_all_menus(obj, force)
     
     % modify the file menu to add ZMAP stuff
     hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
-    copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy');
-    
+    % copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu,'legacy'); %PROBLEM!!!
+    %copyobj(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu);
+    copymenus(findobj(obj.fig,'Label','Get/Load Catalog'),hFileMenu);
     addPreferencesMenuItem();
     addQuitMenuItem();
     addAboutMenuItem();
@@ -62,6 +63,7 @@ function create_all_menus(obj, force)
     %% time analysis_menu
     function create_time_analysis_menu()
         submenu = uimenu('Label','ƒ(t)');
+        uimenu(submenu,'Label','functions evaluated through time','enable','off');
         uimenu(submenu,'Label','Analyze time series ...',...
             'Separator','on',...
             MenuSelectedField(),@(s,e)analyze_time_series_cb);
@@ -70,7 +72,7 @@ function create_all_menus(obj, force)
             % pick which time series we are investigating
             if ~isempty(obj.shape)
                 items = ["Selected Events (IN polygon)", "Unselected Events (OUTSIDE polygon)"];
-                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isInside(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))};
+                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isinterior(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))};
             else
                 items = ["Selected Events"];
                 items_data = {@()obj.catalog};
@@ -99,9 +101,12 @@ function create_all_menus(obj, force)
     function create_map_analysis_menu()
         submenu = uimenu('Label','ƒ(x,y)'); % 'Map');
         
+        uimenu(submenu,'Label','functions evaluated over a planar grid','enable','off');
+        
         import XYfun.* % the map functions exist in the XYfun package
         % AB menu
-        bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+        h=bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
+        h.Separator='on'; % add separator to first item in list
         bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
         bdepth_ratio.AddMenuItem(submenu,@()obj.map_zap);
         
@@ -134,7 +139,9 @@ function create_all_menus(obj, force)
     
     function create_xsec_analysis_menu()
         submenu = uimenu('Label','ƒ(s,z)'); %'X-sect');
-        uimenu(submenu,'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
+        uimenu(submenu,'Label','functions evaluated along a cross-section','enable','off');
+        uimenu(submenu,'Separator','on',...
+            'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
         
         import XZfun.* % the cross-section functions exist in the XZfun package
         
@@ -159,7 +166,8 @@ function create_all_menus(obj, force)
     
     function create_3d_analysis_menu()
         submenu = uimenu('Label','ƒ(x,y,z)'); %'3D-Vol');
-        uimenu(submenu, 'Label','Nothing here yet','Enable','off');
+        uimenu(submenu,'Label','functions over a 3-D grid','enable','off');
+        uimenu(submenu,'Separator', 'on', 'Label','Nothing here yet','Enable','off');
         
         import XYZfun.* % the cross-section functions exist in the XYZfun package
         
@@ -212,7 +220,7 @@ function create_all_menus(obj, force)
         % choose what to plot by
         for j=1:numel(obj.ValidColorFields)
             myfn = obj.ValidColorFields{j};
-            um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedField(),{@set_colorby,myfn},...
+            um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedField(), @(s,v)set_colorby(s, v, myfn) ,...
                 'Checked',tf2onoff(strcmp(obj.colorField,myfn)));
             if j==1
                 um(j).Separator='on';
@@ -245,7 +253,7 @@ function create_all_menus(obj, force)
         
         for i=1:size(legend_types,1)
             m=uimenu(lemenu,'Label',legend_types{i,1},...
-                MenuSelectedField(), {@cb_plotby,legend_types{i,2}});
+                MenuSelectedField(), @(s,v)cb_plotby(s, v, legend_types{i,2}) );
             if i==1
                 m.Separator='on';
             end
@@ -345,8 +353,8 @@ function create_all_menus(obj, force)
         end
         submenu = uimenu('Label','ZTools','Tag','mainmap_menu_ztools');
         
-        %uimenu(submenu,'Label','Show main message window',...
-        %    MenuSelectedField(), @(s,e)ZmapMessageCenter());
+        uimenu(submenu,'Label', 'Plot Current Map into Projection',...
+            MenuSelectedField(),@(~,~)create_projectedmap_from_mainmap(obj.fig));
         
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
@@ -363,7 +371,7 @@ function create_all_menus(obj, force)
         submenu   =  uimenu(parent,'Label','Plot topographic map');
         uimenu(submenu,'Label','Open a Web Map Display',MenuSelectedField(),@(~,~)webmap_of_catalog(obj.catalog,true));
         uimenu(submenu,'Label','Plot Topography on main map',MenuSelectedField(),@add_topography_to_main_map);
-        uimenu(submenu,'Label','Plot Swiss Topography on main map',MenuSelectedField(),{@add_topography_to_main_map,'CH'});
+        uimenu(submenu,'Label','Plot Swiss Topography on main map',MenuSelectedField(), @(s,v)add_topography_to_main_map(s, v, 'CH') );
         return
         % FIXME the following need to be found and fixed
         uimenu(submenu,'Label','Open DEM GUI',MenuSelectedField(), @(~,~)zmaptopo.prepinp());
@@ -423,7 +431,7 @@ function create_all_menus(obj, force)
             'Label','Explore Catalog', MenuSelectedField(), @explore_catalog);
         
         function explore_catalog(~,~)
-            t = findOrCreateTab(obj.fig, obj.maingroup,'Exploration','deleteable');
+            t = findOrCreateTab(obj.fig, obj.maingroup, obj.maingroup,'Exploration','deleteable');
             ax=findobj(t.Children,'Type','axes');
             if isempty(ax)
                 ax=axes(t);
@@ -446,13 +454,13 @@ function create_all_menus(obj, force)
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent,'Label','Decluster the catalog');
         
-        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@(~,~)ResenbergDeclusterClass(obj.catalog),...
+        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog),...
             'Separator','on');
         uimenu(submenu,'Label','Decluster (Gardner & Knopoff)',...
             MenuSelectedField(),@cb_declus_inp);
     end
     function cb_declus_inp(~,~)
-        [out,nMethod]=declus_inp
+        [out,nMethod]=declus_inp(obj.catalog)
         error('declustered. now what to do with results?');
     end
 end

@@ -11,9 +11,7 @@ function varargout = topo(varargin)
     
     if nargin == 8  % LAUNCH GUI
         cfig = openfig(mfilename,'reuse');
-        set(cfig,'Name','Topo')
-        % Use system color scheme for figure:
-        % set(cfig,'Color',get(groot,'defaultUicontrolBackgroundColor'));
+        set(cfig,'Name','Topo')        % set(cfig,'Color',get(groot,'defaultUicontrolBackgroundColor'));
         % whitebg('white')
         % set(gcf,'color','w')
         % Generate a structure of handles to pass to callbacks, and store it.
@@ -80,7 +78,7 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
     global pgt30;
     global pgdem;
     
-    inp =get(handles.listdem,'Value');
+    inp =handles.listdem.String(handles.listdem.Value);
     bor=handles.bor;
     handles.plma=figure_w_normalized_uicontrolunits( ...
         'Name','Topographic Map',...
@@ -102,14 +100,14 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
         fac = str2double(l);
     end
     switch(inp)
-        case 1
+        case "30 arc sec resolution (GTOPO30)"
             gtopo30s([la1 la2],[lo1 lo2]);
             [tmap, tmapleg] = gtopo302(pgt30,fac,[la1 la2],[lo1 lo2]);
             cd (psloc); %Stao des Skriptes
             tmap(isnan(tmap)) = -1; %Replace the NaNs in the ocean with -1 to color them blue
             [latlim,lonlim] = limitm(tmap,tmapleg);
             
-        case 2
+        case "GLOBE Digital Elevation Map"
             fname = globedems([la1 la2],[lo1 lo2]);
             try
                 [tmap, tmapleg] = globedem(fname{1},fac,[la1 la2],[lo1 lo2]);
@@ -121,7 +119,7 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
             tmap(isnan(tmap)) = nan; %Replace the NaNs in the ocean with -1 to color them blue
             [latlim,lonlim] = limitm(tmap,tmapleg);
             
-        case 3
+        case "2 deg resolution"
             
             [lat,lon, gtmap] =satbath(fac,[la1 la2],[lo1 lo2]); % general matrix map
             gtmap(isnan(gtmap)) = -1;
@@ -133,7 +131,7 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
             tmap = imbedm(lat,lon,gtmap,map,maplegend);
             tmapleg=maplegend;
             
-        case 4
+        case "5 deg resolution"
             region = [la1 la2 lo1 lo2];
             [tmap,tmapleg] = tbase(fac,[la1 la2 ],[lo1 lo2] );
             [latlim,lonlim] = limitm(tmap,tmapleg);
@@ -197,40 +195,46 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
     end
     ploe=handles.ploe;
     figure_w_normalized_uicontrolunits(handles.plma);
-    inp = get(handles.pop1,'Value');
-    if depq==1  &&  (inp==3 || inp==4)  &&  handles.maptype==1
+    inp = handles.pop1.String{handles.pop1.Value};
+    if depq==1  &&  contains(inp,'on top')  &&  handles.maptype==1
         [lat,lon] = meshgrat(tmap,tmapleg);
         depq = interp2(lon,lat,tmap,A(:,1),A(:,2));
         close(hw);
     end
-    
-    if inp == 1
-        ploe=plotm(A.Latitude,A.Longitude,'ro');
-        set(ploe,'LineWidth',0.1,'MarkerSize',2,...
-            'MarkerFaceColor','w','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
+    switch inp
+        
+        case "EQ (dot)"
+            ploe=plotm(A.Latitude,A.Longitude,'ro');
+            set(ploe,'LineWidth',0.1,'MarkerSize',2,...
+                'MarkerFaceColor','w','MarkerEdgeColor','r');
+            if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
+            
+        case "EQ (o)"
+            ploe=plotm(A.Latitude,A.Longitude,'ro');
+            set(ploe,'LineWidth',0.1,'MarkerSize',3,...
+                'MarkerFaceColor','w','MarkerEdgeColor','k');
+            if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
+            
+        case "EQ (dot) on top (slow)"
+            if handles.maptype==1
+                ploe=plot3m(A.Latitude,A.Longitude,depq+25,'ro');
+                set(ploe,'LineWidth',0.1,'MarkerSize',2,...
+                    'MarkerFaceColor','w','MarkerEdgeColor','r');
+            end
+        case "EQ (o) on top (slow)"
+            if handles.maptype==1
+                ploe=plot3m(A.Latitude,A.Longitude,depq+25,'ro');
+                set(ploe,'LineWidth',0.1,'MarkerSize',3,...
+                    'MarkerFaceColor','w','MarkerEdgeColor','k');
+            end
+            
+            
+        case "No EQ"
+            delete(ploe);
+        otherwise
+            error("unexpected choice");
+            
     end
-    
-    if inp == 2
-        ploe=plotm(A.Latitude,A.Longitude,'ro');
-        set(ploe,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','MarkerEdgeColor','k');
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
-    end
-    
-    if inp == 3  &&  handles.maptype==1
-        ploe=plot3m(A.Latitude,A.Longitude,depq+25,'ro');
-        set(ploe,'LineWidth',0.1,'MarkerSize',2,...
-            'MarkerFaceColor','w','MarkerEdgeColor','r');
-    end
-    
-    if inp == 4  &&  handles.maptype==1
-        ploe=plot3m(A.Latitude,A.Longitude,depq+25,'ro');
-        set(ploe,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','MarkerEdgeColor','k');
-    end
-    
-    if inp == 5 ; delete(ploe);  end
     handles.ploe=ploe;
     handles.depq=depq;
     
@@ -248,21 +252,30 @@ function varargout = popfau_Callback(h, eventdata, handles, varargin)
     end
     plof=handles.plof;
     figure_w_normalized_uicontrolunits(handles.plma);
-    inp =get(handles.pop2,'Value');
-    if depf==1  &&  inp==2  &&  handles.maptype==1
-        clear('depf');
-        [lat,lon] = meshgrat(tmap,tmapleg);
-        depf= interp2(lon,lat,tmap,faults(:,1),faults(:,2));
+    inp =handles.pop2.String{handles.pop2.Value};
+
+    switch inp
+        case "Faults"
+            if depf==1 &&  handles.maptype==1
+                clear('depf');
+                [lat,lon] = meshgrat(tmap,tmapleg);
+                depf= interp2(lon,lat,tmap,faults(:,1),faults(:,2));
+            end
+            plof = plotm(faults(:,2),faults(:,1),'m','Linewidth',2);
+            if handles.maptype==1
+                zdatam(handlem('allline'),max(tmap(:)));
+            end
+        case "Faults on topo (slow)"
+            plof = plot3m(faults(:,2),faults(:,1),depf+25,'m','Linewidth',2);
+        case "No faults"
+            delete(plof);
+        case "Coastlines"
+            ploc=plot3m(coast(:,2),coast(:,1),1,'k','Linewidth',2)
+        case "No Coastlines"
+            delete (ploc)
+        otherwise
+            error("unexpected value");
     end
-    
-    if inp == 1
-        plof = plotm(faults(:,2),faults(:,1),'m','Linewidth',2);
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
-    end
-    if inp == 2 ; plof = plot3m(faults(:,2),faults(:,1),depf+25,'m','Linewidth',2);end
-    if inp == 3 ; delete(plof) ; end
-    if inp == 4 ; ploc=plot3m(coast(:,2),coast(:,1),1,'k','Linewidth',2) ; end
-    if inp == 5 ; delete (ploc); end
     handles.ploc=ploc;
     handles.plof=plof;
     handles.depf=depf;
@@ -272,8 +285,8 @@ function varargout = popfau_Callback(h, eventdata, handles, varargin)
 function varargout = popspec_Callback(h, eventdata, handles, varargin)
     disp('this is topo|popspec')
     s=handles.spec;
-    inp = get(handles.pop3,'Value');
-    if not(inp==5)
+    inp = handles.pop3.String(handles.pop3.Value);
+    if ~inp=="No Special Objects"
         [file1,path1] = uigetfile([ '*.txt'],'File containing  my, mx ');
         s=load(file1);
     end
@@ -285,35 +298,41 @@ function varargout = popspec_Callback(h, eventdata, handles, varargin)
     plos=handles.plos;
     figure_w_normalized_uicontrolunits(handles.plma);
     
-    if desp==1  &&  (inp==3 | inp==4)  &&  handles.maptype==1
+    if desp==1  &&  contains(inp,'on topo') &&  handles.maptype==1
         [lat,lon] = meshgrat(tmap,tmapleg); 
         desp = interp2(lat,lon,tmap,s(:,1),s(:,2));
     end
     
-    if inp == 1
-        plos=plotm(s(:,1),s(:,2),'*');
-        set(plos,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','Marker','*','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:))); end
-        
-    elseif inp == 2
-        plos=plotm(s(:,1),s(:,2),'v');
-        set(plos,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','Marker','v','MarkerEdgeColor','r');
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
-        
-    elseif inp == 3   &&  handles.maptype==1
-        plos=plot3m(s(:,1),s(:,2),desp+25,'*');
-        set(plos,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','Marker','*','MarkerEdgeColor','r');
-        
-    elseif inp == 4  &&  handles.maptype==1
-        plos=plot3m(s(:,1),s(:,2),desp+25,'v');
-        set(plos,'LineWidth',0.1,'MarkerSize',3,...
-            'MarkerFaceColor','w','Marker','v','MarkerEdgeColor','r');
+    switch inp
+        case "Special Objects (star)"
+            plos=plotm(s(:,1),s(:,2),'*');
+            set(plos,'LineWidth',0.1,'MarkerSize',3,...
+                'MarkerFaceColor','w','Marker','*','MarkerEdgeColor','r');
+            if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:))); end
+            
+        case "Special Objects (triangle)"
+            plos=plotm(s(:,1),s(:,2),'v');
+            set(plos,'LineWidth',0.1,'MarkerSize',3,...
+                'MarkerFaceColor','w','Marker','v','MarkerEdgeColor','r');
+            if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
+            
+        case "Special Objects (star) on topo"
+            if handles.maptype==1
+                plos=plot3m(s(:,1),s(:,2),desp+25,'*');
+                set(plos,'LineWidth',0.1,'MarkerSize',3,...
+                    'MarkerFaceColor','w','Marker','*','MarkerEdgeColor','r');
+            end
+        case "Special Objects (triangle) on topo"
+            if  handles.maptype==1
+                plos=plot3m(s(:,1),s(:,2),desp+25,'v');
+                set(plos,'LineWidth',0.1,'MarkerSize',3,...
+                    'MarkerFaceColor','w','Marker','v','MarkerEdgeColor','r');
+            end
+        case "No Special Objects"
+            delete(plos);
+        otherwise
+            error('unknown choice');
     end
-    
-    if inp == 5 ; delete(plos);  end
     handles.plos=plos;
     handles.depsp=desp;
     guidata(gcbo,handles)
@@ -321,8 +340,8 @@ function varargout = popspec_Callback(h, eventdata, handles, varargin)
     % -------------------------------------------------------------------
 function varargout = ploli_Callback(h, eventdata, handles, varargin)
     disp('this is topo|ploli')
-    inp =get(handles.pop4,'Value');
-    if not(inp==3)
+    inp =handles.pop4.String(handles.pop4.Value);
+    if ~(inp == "No Special Objects")
         [file1,path1] = uigetfile([ '*.txt'],'File containing  my, mx ');
         s=load(file1);
     end
@@ -334,16 +353,24 @@ function varargout = ploli_Callback(h, eventdata, handles, varargin)
     end
     ploli=handles.ploli;
     figure_w_normalized_uicontrolunits(handles.plma);
-    if depl==1  &&  inp==2  &&  handles.maptype==1
+    if depl==1  &&  contains(inp,'on topo')  &&  handles.maptype==1
         [lat,lon] = meshgrat(tmap,tmapleg);
         depl = interp2(lon,lat,tmap,s(:,1),s(:,2));
     end
-    if inp == 1
-        ploli = plotm(s(:,2),s(:,1),'m','Linewidth',2)
-        if handles.maptype==1;zdatam(handlem('allline'),max(tmap(:)));end
+    switch inp
+        case "Special Lines"
+            ploli = plotm(s(:,2),s(:,1),'m','Linewidth',2);
+            if handles.maptype==1
+                zdatam(handlem('allline'),max(tmap(:)));
+            end
+        case "Special Lines on topo"
+            if handles.maptype==1
+                ploli = plot3m(s(:,2),s(:,1),depl+25,'m','Linewidth',2);end
+        case "No Special Objects"
+            delete(ploli) ;
+        otherwise
+            error("unknown selection");
     end
-    if inp == 2 & handles.maptype==1; ploli = plot3m(s(:,2),s(:,1),depl+25,'m','Linewidth',2);end
-    if inp == 3 ; delete(ploli) ; end
     
     handles.ploli=ploli;
     handles.depl=depl;
@@ -355,7 +382,7 @@ function varargout = colorsty_Callback(h, eventdata, handles, varargin)
     tmap=handles.tmap;
     figure_w_normalized_uicontrolunits(handles.plma);
     inp =get(handles.pop5,'Value');
-    if inp == 3
+    if inp == 3 % colormap(decmap)
         if min(tmap(:)) > 0
             demcmap(tmap,100,[0 0.3 1],[]);
             daspectm('m',05);
@@ -363,10 +390,10 @@ function varargout = colorsty_Callback(h, eventdata, handles, varargin)
             demcmap(tmap);
             daspectm('m',05);
         end
-    elseif inp == 1
+    elseif inp == 1 %greyscale 1
         demcmap(tmap,265,[1 1 1],[.3 .3 .3; .8 .8 .8]);
         daspectm('m',05);
-    elseif inp==2
+    elseif inp==2 %greyscale 2
         demcmap(tmap,265,[1 1 1],[.5 .5 .5; .8 .8 .8]);
         daspectm('m',05);
     end
@@ -512,7 +539,8 @@ function varargout = listvec_Callback(h, eventdata, handles, varargin)
     % --------------------------------------------------------------------
 function varargout = dvmap_Callback(h, eventdata, handles, varargin)
     disp('this is topo|dvmap')
-    inp =get(handles.listvec,'Value');
+    inp = handles.listvec.String(handles.listvec.Value);
+    inp = extractbefore(inp,' '); %get first word, which will be one of: "crude", "low", "intermediate", "high"
     bor=handles.bor;
     handles.plma=figure_w_normalized_uicontrolunits( ...
         'Name','Topographic Map',...
@@ -529,31 +557,29 @@ function varargout = dvmap_Callback(h, eventdata, handles, varargin)
     latlim=[la1 la2];
     lonlim=[lo1 lo2];
     
-    if inp ==1
-        load worldlo;
-        displaym(POline);
-        delete(handlem('International Boundary'));
-    end
-    
-    if inp==2
-        GSHHS('gshhs_c.b','createindex');
-        vdata = gshhs('gshhs_c.b',latlim,lonlim);
-        coli=displaym(vdata);
-        set(coli,'FaceColor',[1 1 1]);
-    end
-    
-    if inp==3
-        GSHHS('gshhs_i.b','createindex');
-        vdata = gshhs('gshhs_i.b',latlim,lonlim);
-        coli=displaym(vdata);
-        set(coli,'FaceColor',[1 1 1]) ;
-    end
-    
-    if inp==4
-        GSHHS('gshhs_h.b','createindex');
-        vdata = gshhs('gshhs_h.b',latlim,lonlim);
-        coli=displaym(vdata);
-        set(coli,'FaceColor',[1 1 1]);
+    switch inp
+        case "crude"
+            load worldlo;
+            displaym(POline);
+            delete(handlem('International Boundary'));
+            
+        case "low"
+            GSHHS('gshhs_c.b','createindex');
+            vdata = gshhs('gshhs_c.b',latlim,lonlim);
+            coli=displaym(vdata);
+            set(coli,'FaceColor',[1 1 1]);
+            
+        case "intermediate"
+            GSHHS('gshhs_i.b','createindex');
+            vdata = gshhs('gshhs_i.b',latlim,lonlim);
+            coli=displaym(vdata);
+            set(coli,'FaceColor',[1 1 1]) ;
+            
+        case "high"
+            GSHHS('gshhs_h.b','createindex');
+            vdata = gshhs('gshhs_h.b',latlim,lonlim);
+            coli=displaym(vdata);
+            set(coli,'FaceColor',[1 1 1]);
     end
     
     tilat=(abs(abs(latlim(1))-abs(latlim(2)))/4);

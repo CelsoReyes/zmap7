@@ -5,7 +5,7 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     % if tab doesn't exist yet, create it
     
     
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, name);
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, name);
     
     
     ax=findobj(myTab.Children,'flat','Type','axes');

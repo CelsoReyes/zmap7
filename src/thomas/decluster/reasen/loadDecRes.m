@@ -55,13 +55,13 @@ maxE5 = max(sortedE5);
 histStepE5 = minE5:(maxE5-minE5)/100:maxE5;
 histE5 = histogram(sortedE5,histStepE5);
 
-disp(['taumin: ',num2str(min(taumin)),' ',num2str(max(taumin))]);
-disp(['taumax: ',num2str(min(taumax)),' ',num2str(max(taumax))]);
-
-disp(['P: ',num2str(min(P)),' ',num2str(max(P))]);
-disp(['rfact: ',num2str(min(rfact)),' ',num2str(max(rfact))]);
-disp(['xk: ',num2str(min(xk)),' ',num2str(max(xk))]);
-disp(['xmeff: ',num2str(min(xmeff)),' ',num2str(max(xmeff))]);
+printMinMax = @(val) fprintf('%s: %g %g\n', inputname(1), min(val), max(val));
+printMinMax(taumin);
+printMinMax(taumax);
+printMinMax(P);
+printMinMax(rfact);
+printMinMax(xk);
+printMinMax(xmeff);
 
 figure
 plot(numEvents5,rfact,'.k');

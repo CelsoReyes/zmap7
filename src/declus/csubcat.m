@@ -13,7 +13,7 @@ function csubcat()
     myFigName='Seismicity Map (Cluster)';
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
-    ZmapMessageCenter.set_info('Message','Plotting Seismicity Map(Cluster) ....');
+    msg.infodisp('Plotting Seismicity Map(Cluster) ....','Message');
     ZG=ZmapGlobal.Data;
     storedcat=original;
     %set catalog to the original catalog used at declustering
@@ -81,7 +81,7 @@ function csubcat()
     %
     
     
-    [t0b, teb] = ZG.primeCatalog.DateRange() ;
+    [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
     n = ZG.primeCatalog.Count;
     tdiff =round(teb - t0b)/days(ZG.bin_dur);
     
@@ -222,17 +222,15 @@ function csubcat()
         op5 = uimenu(op3,'Label','Histograms');
         
         uimenu(op5,'Label','Magnitude',...
-            MenuSelectedField(),{@callbackfun_histogram,'Magnitude'});
+            MenuSelectedField(),@(~,~)cb_histogram('Magnitude'));
         uimenu(op5,'Label','Depth',...
-            MenuSelectedField(),{@callbackfun_histogram,'Depth'});
+            MenuSelectedField(),@(~,~)cb_histogram('Depth'));
         uimenu(op5,'Label','Time',...
-            MenuSelectedField(),{@callbackfun_histogram,'Date'});
+            MenuSelectedField(),@(~,~)cb_histogram('Date'));
     end
     
     %% callback functions
-    function callbackfun_histogram(mysrc,myevt,hist_type)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_histogram(hist_type)
         hisgra(ZG.primeCatalog, hist_type);
     end
     
@@ -352,7 +350,7 @@ function csubcat()
     function callbackfun_015(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ResenbergDeclusterClass(); %FIXME
+        ReasenbergDeclusterClass(); %FIXME
     end
     
     function callbackfun_016(mysrc,myevt)
@@ -361,7 +359,7 @@ function csubcat()
         ginput(1);
     end
     function do_catSave()
-        ZmapMessageCenter.set_info('Save Data','  ');
+        msg.infodisp('  ','Save Data');
         [file1,path1] = uigetfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             save([path1 file1], 'a','faults','main','mainfault','coastline','infstri');
@@ -420,8 +418,6 @@ function setleg()
                 tim2=answer{2};
                 tim3=answer{3};
                 tim4=answer{4};
-            else
-                ZmapMessageCenter();
             end
     end
     clear answer temp defaultans prompt dlg_title

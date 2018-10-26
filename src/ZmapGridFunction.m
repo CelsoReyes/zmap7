@@ -148,7 +148,7 @@ classdef ZmapGridFunction < ZmapFunction
                 for j=idxEmptyDesc % for each empty description field
                     row=strcmp(obj.ReturnDetails.Names,mytable.Properties.VariableNames{j});
                     if ~any(row)
-                        warning('Could not find matching description for %s',...
+                        warning('ZMAP:missingDescription','Could not find matching description for %s',...
                             mytable.Properties.VariableNames{j});
                     end
                     mytable.Properties.VariableDescriptions(j)=obj.ReturnDetails.Units(row);

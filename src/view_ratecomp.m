@@ -173,10 +173,10 @@ function view_ratecomp(det,valueMap)
         uimenu(op1,'Label','Colormap Invertjet',...
             MenuSelectedField(),@callbackfun_016)
         
-        uimenu(op1,'Label','shading flat',MenuSelectedField(),{@cb_shading,'flat'})
-        uimenu(op1,'Label','shading interpolated',MenuSelectedField(),{@cb_shading,'interp'})
-        uimenu(op1,'Label','Brigten +0.4',MenuSelectedField(), {@cb_brighten, 0.4})
-        uimenu(op1,'Label','Brigten -0.4',MenuSelectedField(), {@cb_brighten, -0.4})
+        uimenu(op1,'Label','shading flat',MenuSelectedField(), @(~,~)cb_shading('flat'))
+        uimenu(op1,'Label','shading interpolated',MenuSelectedField(), @(~,~)cb_shading('interp'))
+        uimenu(op1,'Label','Brigten +0.4',MenuSelectedField(), @(~,~)cb_brighten(0.4))
+        uimenu(op1,'Label','Brigten -0.4',MenuSelectedField(), @(~,~)cb_brighten(-0.4))
         
         uimenu(op1,'Label','Redraw overlay',MenuSelectedField(),@callbackfun_022)
     end
@@ -283,17 +283,13 @@ function view_ratecomp(det,valueMap)
         colormap(g);
     end
     
-    function cb_shading(mysrc,myevt,shading_style)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_shading(shading_style)
         ZG.shading_style=shading_style;
         axes(hzma);
         shading(shading_style);
     end
     
-    function cb_brighten(mysrc,myevt,val)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_brighten(val)
         axes(hzma);
         brighten(val);
     end

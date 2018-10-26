@@ -147,7 +147,7 @@ function dramap2_z()
     colormap(j); brighten(0.1);
     axis off;
     
-    if ~exist('colback', 'var'); colback = 1; end
+    if ~exist('colback', 'var'); colback = 'w'; end
     
     setm(gca,'mlabellocation',dlo)
     setm(gca,'meridianlabel','on')
@@ -156,7 +156,7 @@ function dramap2_z()
     
     
     
-    if colback == 2  % black background
+    if colback == 'w'  % black background
         set(gcf,'color','k')
         setm(gca,'ffacecolor','k')
         setm(gca,'fedgecolor','w','flinewidth',3);

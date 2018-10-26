@@ -19,7 +19,7 @@ function [result]=gui_NodeCalcOmori(params,mCatalog)
     vSel = (params.fTstart <= mCatalog.Date & mCatalog.Date < params.fTstart+params.fTimePeriodDays);
     mCatAf = mCatalog.subset(vSel);
     timef = 0; % this is used for rate change calculations
-    nMod = 1; % Omori law computation
+    nMod = OmoriModel.pck; % Omori law computation
     % Compute Omori law
     fTime = params.fTimePeriodDays;
     [result] = calc_Omoriparams(mCatAf,fTime,timef,params.fBstnum,params.mMainshock,nMod);

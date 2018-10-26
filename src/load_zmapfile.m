@@ -52,15 +52,33 @@ function [catalog, OK] = load_zmapfile(myfile)%
     
     % find and load the ZmapCatalog variable from the file
     S=whos('-file',myfile);
-    S=S(startsWith({S.class},'ZmapCatalog'));
-    if ~isempty(S)
+    ZCats=S(startsWith({S.class},'ZmapCatalog'));
+    if ~isempty(ZCats) && numel(ZCats) == 1
+        catalog=loadCatalog(path1, file1, ZCats);
+        OK=~isempty(catalog);
+        return
+    end
+    % there's only one variable, so try to load it
+    if numel(S)==1
         catalog=loadCatalog(path1, file1, S);
         OK=~isempty(catalog);
         return
     end
-        
+    
+    % maybe there is a table?
+    szStr = string(cellfun(@(x)mat2str(x),{S.size},'UniformOutput',false));
+    szStr=strrep(szStr,' ','x');
+    popupString = '<html><strong>'+ string({S.name}) + '</strong> : ' + string({S.class}) + ' : '+ szStr;
+    zdlg=ZmapDialog();
+    zdlg.AddPopup('mycatvar','Variables in file: ',popupString,1,@(x)S.name(x))
+    [v,OK]=zdlg.Create('Name','Choose your CATALOG');
+    if ~OK
+        return
+    end
     % ZmapCatalog didn't exist in the file. Perhaps it is an old version?
     % If so, then catalog would have been saved in "a" as a matrix
+    catalog=loadCatalog(path1,file1,S);
+    %{
     S=whos('-file',myfile,'a');
     if ~isempty(S)
         catalog=loadCatalog(path1, file1, S);
@@ -68,6 +86,8 @@ function [catalog, OK] = load_zmapfile(myfile)%
     else
         errordlg('File did not contain a catalog variable - Nothing was loaded');
     end
+    %}
+    OK=~isempty(catalog);
     
 end
 
@@ -91,7 +111,7 @@ function   A=loadCatalog(path, file, S)
     
 
     clear tmp
-    if isnumeric(A)
+    if isnumeric(A) ||istable(A)
         % convert to a ZmapCatalog
         A=ZmapCatalog(A);
         

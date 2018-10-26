@@ -81,7 +81,7 @@ classdef GridOptions < handle
                         
                     end
                 case {0,3,4}
-                    warning(help('GridOptions.GridOptions'));
+                    warning('ZMAP:gridoptions:incorrectUsage',help('GridOptions.GridOptions'));
                     error('Incorrect inputs into GridOptions.');
                     
                 otherwise

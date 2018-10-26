@@ -131,7 +131,7 @@ function bcrossV2_orig(sel)
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','callback',@callbackfun_006,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_006,'String','Cancel');
     
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
@@ -222,7 +222,7 @@ function bcrossV2_orig(sel)
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = newa.DateRange() ;
+        [t0b, teb] = bounds(newa.Date) ;
         n = newa.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));

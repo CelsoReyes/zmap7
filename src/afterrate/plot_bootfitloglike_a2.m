@@ -62,17 +62,16 @@ report_this_filefun();
     % answer  = inputdlg(prompt,title,lines,def);
     % nMod = str2double(answer{1});
     % Calculate fits of different models
+    % see OmoriModel for enumaration details
 
-    % model 1 :  MOL with secondary aftershock (pck)
-    % model 2 :  MOL with secondary aftershock (pckk)
-    % model 3 : MOL with secondary aftershock (ppckk)
-    % model 4 : MOL with secondary aftershock (ppcckk)
+    MOL_models = sort(enumeration('OmoriModel'));
+
     mRes = [];
     % Modified Omori law (pck)
 
-    for nMod=1:4; % do this for each model
-        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    for nMod=1:numel(MOL_models) % do this for each model
+        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as, fT1, MOL_models(nMod));
+        mRes(nMod,:) = [nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
     end
 
     % Select best fitting model by AIC
@@ -83,10 +82,13 @@ report_this_filefun();
         mRes = mRes(vSel,:);
     end
     % Model to use for bootstrapping as of lowest AIC to observed data
-    nMod = mRes(1,1);
-    pval1= mRes(1,2); pval2= mRes(1,3);
-    cval1= mRes(1,4); cval2= mRes(1,5);
-    kval1= mRes(1,6); kval2= mRes(1,7);
+    nMod = OmoriModel(mRes(1,1));
+    pval1= mRes(1,2); 
+    pval2= mRes(1,3);
+    cval1= mRes(1,4); 
+    cval2= mRes(1,5);
+    kval1= mRes(1,6); 
+    kval2= mRes(1,7);
 
     % Calculate goodness of fit with KS-Test and RMS
     [H,P,KSSTAT,fRMS] = calc_llkstest_a2(time_as,fT1,pval1, pval2, cval1, cval2, kval1, kval2, nMod);
@@ -101,89 +103,34 @@ report_this_filefun();
     kmed2 = mMedModF(1,11);
 
     % Start plotting
-    if (isnan(pval1) == 0 & isnan(pval2) == 0)
+    if (~isnan(pval1) && ~isnan(pval2))
 
         figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Forecast aftershock occurence')
-        loopout = [loopout , loopout(:,1)*0];
+        loopout(:,end+1) = 0; % add a column
 
-        % Time until end of forecast
-        for j = 1:length(loopout(:,1))
-            cumnr = (1:length(time_asf))';
-            cumnr_model = [];
-            pval1 = loopout(j,1);
-            pval2 = loopout(j,2);
-            cval1 = loopout(j,3);
-            cval2 = loopout(j,4);
-            kval1 = loopout(j,5);
-            kval2 = loopout(j,6);
-            if nMod == 1
-                for i=1:length(time_asf)
-                    if pval1 ~= 1
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                    else
-                        cm = kval1*log(time_asf(i)/cval1+1);
-                    end
-                    cumnr_model = [cumnr_model; cm];
-                end % END of FOR on length(time_asf)
-                loopout(j,9) = max(cumnr_model);
-            else
-                for i=1:length(time_asf)
-                    if time_asf(i) <= fT1
-                        if pval1 ~= 1
-                            cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                        else
-                            cm = kval1*log(time_asf(i)/cval1+1);
-                        end
-                        cumnr_model = [cumnr_model; cm];
-                    else
-                        if (pval1 ~= 1 & pval2 ~= 1)
-                            cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1))+ kval2/(pval2-1)*(cval2^(1-pval2)-(time_asf(i)-fT1+cval2)^(1-pval2));
-                        else
-                            cm = kval1*log(time_asf(i)/cval1+1) + kval2*log((time_asf(i)-fT1)/cval2+1);
-                        end
-                        cumnr_model = [cumnr_model; cm];
-                    end %END of IF on fT1
-                end % End of FOR length(time_asf)
-                loopout(j,9) = max(cumnr_model);
-            end % End of if on nMod
-            pfloop = plot(time_asf,cumnr_model,'color',[0.8 0.8 0.8]);
-            set(gca,'NextPlot','add')
-            %drawnow
-        end
+        pval1s = loopout(:,1);
+        pval2s = loopout(:,2);
+        cval1s = loopout(:,3);
+        cval2s = loopout(:,4);
+        kval1s = loopout(:,5);
+        kval2s = loopout(:,6);
+        
+        cumnr_model = OmoriModel.doForecast(nMod, time_asf, pval1s, cval1s, kval1s, fT1, kval2s, pval2s, cval2s);
+        
+        loopout(:,9)=max(cumnr_model);
+        
+        pfloop = plot(time_asf,cumnr_model,'color',[0.8 0.8 0.8]);
+        set(gca,'NextPlot','add')
+        
+        warning('This uses only the last values')
         % 2nd moment of bootstrap number of forecasted number of events
         fStdBst = std(loopout(:,9),1,'omitnan');
         %
         % Plot the forecast ...
         cumnrf = (1:length(time_asf))';
-        cumnr_modelf = [];
-        if nMod == 1
-            for i=1:length(time_asf)
-                if pval1 ~= 1
-                    cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                else
-                    cm = kval1*log(time_asf(i)/cval1+1);
-                end
-                cumnr_modelf = [cumnr_modelf; cm];
-            end % END of FOR on length(time_asf)
-        else
-            for i=1:length(time_asf)
-                if time_asf(i) <= fT1
-                    if pval1 ~= 1
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1));
-                    else
-                        cm = kval1*log(time_asf(i)/cval1+1);
-                    end
-                    cumnr_modelf = [cumnr_modelf; cm];
-                else
-                    if (pval1 ~= 1 & pval2 ~= 1)
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_asf(i)+cval1)^(1-pval1))+ kval2/(pval2-1)*(cval2^(1-pval2)-(time_asf(i)-fT1+cval2)^(1-pval2));
-                    else
-                        cm = kval1*log(time_asf(i)/cval1+1) + kval2*log((time_asf(i)-fT1)/cval2+1);
-                    end
-                    cumnr_modelf = [cumnr_modelf; cm];
-                end %END of IF on fT1
-            end % End of FOR length(time_asf)
-        end % End of if on nMod
+        
+        cumnr_modelf = OmoriModel.doForecast(nMod, time_asf, pval1s(end), cval1s(end), kval1s(end), fT1, kval2s(end), pval2s(end), cval2s(end));
+        
         time_asf=sort(time_asf);
         cumnr_modelf=sort(cumnr_modelf);
 
@@ -195,38 +142,9 @@ report_this_filefun();
         % Cumulative number of observed events
         cumnr = (1:length(time_as))';
         cumnr_model = [];
-        if nMod == 1
-            for i=1:length(time_as)
-                if pval1 ~= 1
-                    cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1));
-                else
-                    cm = kval1*log(time_as(i)/cval1+1);
-                end
-                cumnr_model = [cumnr_model; cm];
-            end % END of FOR on length(time_as)
-        else
-            for i=1:length(time_as)
-                if time_as(i) <= fT1
-                    if pval1 ~= 1
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1));
-                    else
-                        cm = kval1*log(time_as(i)/cval1+1);
-                    end
-                    cumnr_model = [cumnr_model; cm];
-                else
-                    if (pval1 ~= 1 & pval2 ~= 1)
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1))+ kval2/(pval2-1)*(cval2^(1-pval2)-(time_as(i)-fT1+cval2)^(1-pval2));
-                    elseif (pval1 ~= 1  &&  pval2 == 1)
-                        cm = kval1/(pval1-1)*(cval1^(1-pval1)-(time_as(i)+cval1)^(1-pval1))+ kval2*log((time_as(i)-fT1)/cval2+1);
-                    elseif (pval1 == 1  &&  pval2 ~= 1)
-                        cm = kval1*log(time_as(i)/cval1+1) + + kval2/(pval2-1)*(cval2^(1-pval2)-(time_as(i)-fT1+cval2)^(1-pval2));
-                    else
-                        cm = kval1*log(time_as(i)/cval1+1) + kval2*log((time_as(i)-fT1)/cval2+1);
-                    end
-                    cumnr_model = [cumnr_model; cm];
-                end %END of IF on fT1
-            end % End of FOR length(time_as)
-        end % End of if on nMod
+        cumnr_model= OmoriModel.doForecast(nMod, time_as, pval1s(end), cval1s(end), kval1s(end), fT1, kval2s(end), pval2s(end), cval2s(end));
+        
+        
         time_as=sort(time_as);
         cumnr_model=sort(cumnr_model);
         p1 = plot(time_as,cumnr_model,'r','Linewidth',2,'Linestyle','--');
@@ -235,38 +153,8 @@ report_this_filefun();
 
         % Plot the forecast from median value
         cumnr_modelmed = [];
-        if nMod == 1
-            for i=1:length(time_asf)
-                if pval1 ~= 1
-                    cm = kmed1/(pmed1-1)*(cmed1^(1-pmed1)-(time_asf(i)+cmed1)^(1-pmed1));
-                else
-                    cm = kmed1*log(time_asf(i)/cmed1+1);
-                end
-                cumnr_modelmed = [cumnr_modelmed; cm];
-            end % END of FOR on length(time_asf)
-        else
-            for i=1:length(time_asf)
-                if time_asf(i) <= fT1
-                    if pmed1 ~= 1
-                        cm = kmed1/(pmed1-1)*(cmed1^(1-pmed1)-(time_asf(i)+cmed1)^(1-pmed1));
-                    else
-                        cm = kmed1*log(time_asf(i)/cmed1+1);
-                    end
-                    cumnr_modelmed = [cumnr_modelmed; cm];
-                else
-                    if (pmed1 ~= 1 & pmed2 ~= 1)
-                        cm = kmed1/(pmed1-1)*(cmed1^(1-pmed1)-(time_asf(i)+cmed1)^(1-pmed1))+ kmed2/(pmed2-1)*(cmed2^(1-pmed2)-(time_asf(i)-fT1+cmed2)^(1-pmed2));
-                    elseif (pmed1 ~= 1  &&  pmed2 == 1)
-                        cm = kmed1/(pmed1-1)*(cmed1^(1-pmed1)-(time_asf(i)+cmed1)^(1-pmed1))+ kmed2*log((time_asf(i)-fT1)/cmed2+1);
-                    elseif (pmed1 == 1  &&  pmed2 ~= 1)
-                        cm = kmed1*log(time_asf(i)/cmed1+1) + kmed2/(pmed2-1)*(cmed2^(1-pmed2)-(time_asf(i)-fT1+cmed2)^(1-pmed2));
-                    else
-                        cm = kmed1*log(time_asf(i)/cmed1+1) + kmed2*log((time_asf(i)-fT1)/cmed2+1);
-                    end
-                    cumnr_modelmed = [cumnr_modelmed; cm];
-                end %END of IF on fT1
-            end % End of FOR length(time_asf)
-        end % End of if on nMod
+        cumnr_modelmed= OmoriModel.doForecast(nMod, time_asf, pmed1, cmed1, kmed1, fT1, kmed2, pmed2, cmed2);
+        
         time_asf=sort(time_asf);
         cumnr_modelmed=sort(cumnr_modelmed);
         pmedmod =  plot(time_asf,cumnr_modelmed,'y-.','Linewidth',2);
@@ -300,61 +188,69 @@ report_this_filefun();
         fRc_Bst = (numreal-nummod)/fStdBst;
 
         % Round values for output
-        pval1 = round(100*pval1)/100;
-        pval2 = round(100*pval2)/100;
-        cval1 = round(1000*cval1)/1000;
-        cval2 = round(1000*cval2)/1000;
-        kval1 = round(10*kval1)/10;
-        kval2 = round(10*kval2)/10;
-        pmed1 = round(100*pmed1)/100; mStdL(1,1) = round(100*mStdL(1,1))/100;
-        pmed2 = round(100*pmed2)/100; mStdL(1,2) = round(100*mStdL(1,2))/100;
-        cmed1 = round(1000*cmed1)/1000; mStdL(1,3) = round(1000*mStdL(1,3))/1000;
-        cmed2 = round(1000*cmed2)/1000; mStdL(1,4) = round(1000*mStdL(1,4))/1000;
-        kmed1 = round(10*kmed1)/10; mStdL(1,5) = round(100*mStdL(1,5))/100;
-        kmed2 = round(10*kmed2)/10; mStdL(1,6)= round(100*mStdL(1,6))/100;
-        fAIC = round(100*fAIC)/100;
-        fStdBst = round(100*fStdBst)/100;
-        fRc_Bst = round(100*fRc_Bst)/100;
+        pval1 = round(pval1,2);
+        pval2 = round(pval2,2);
+        cval1 = round(cval1,3);
+        cval2 = round(cval2,3);
+        kval1 = round(kval1,1);
+        kval2 = round(kval2,1);
+        pmed1 = round(pmed1,2); mStdL(1,1) = round(mStdL(1,1),2);
+        pmed2 = round(pmed2,2); mStdL(1,2) = round(mStdL(1,2),2);
+        cmed1 = round(cmed1,3); mStdL(1,3) = round(mStdL(1,3),3);
+        cmed2 = round(cmed2,3); mStdL(1,4) = round(mStdL(1,4),3);
+        kmed1 = round(kmed1,1); mStdL(1,5) = round(mStdL(1,5),2);
+        kmed2 = round(kmed2,1); mStdL(1,6)= round(mStdL(1,6),2);
+        fAIC = round(fAIC,2);
+        fStdBst = round(fStdBst,2);
+        fRc_Bst = round(fRc_Bst,2);
 
         % Set line for learning period
         yy = get(gca,'ylim');
         plot([max(time_as) max(time_as)],[0 yy(2)],'k-.')
-        if nMod == 1
-            string1=['p = ' num2str(pval1) '; c = ' num2str(cval1) '; k = ' num2str(kval1) ];
-            string3=['pm = ' num2str(pmed1) '+-' num2str(mStdL(1,1)) '; cm = ' num2str(cmed1) '+-' num2str(mStdL(1,3)) '; km = ' num2str(kmed1) '+-' num2str(mStdL(1,5))];
-            text(max(time_asf)*0.1,yy(2)*0.9,string1,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.8,string3,'FontSize',8);
-        elseif nMod == 2
-            string1=['p = ' num2str(pval1) '; c = ' num2str(cval1) '; k1 = ' num2str(kval1) '; k2 = ' num2str(kval2) ];
-            string3=['pm = ' num2str(pmed1) '+-' num2str(mStdL(1,1)) '; cm = ' num2str(cmed1) '+-' num2str(mStdL(1,3)) '; km1 = ' num2str(kmed1) '+-' num2str(mStdL(1,5)) '; km2 = ' num2str(kmed2) '+-' num2str(mStdL(1,6))];
-            text(max(time_asf)*0.1,yy(2)*0.9,string1,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.8,string3,'FontSize',8);
-        elseif nMod == 3
-            string1=['p1 = ' num2str(pval1) '; c = ' num2str(cval1) '; k1 = ' num2str(kval1) ];
-            string2=['p2 = ' num2str(pval2) '; k2 = ' num2str(kval2) ];
-            string3=['pm1 = ' num2str(pmed1) '+-' num2str(mStdL(1,1)) '; cm = ' num2str(cmed1) '+-' num2str(mStdL(1,3)) '; km1 = ' num2str(kmed1) '+-' num2str(mStdL(1,5))];
-            string4=['pm2 = ' num2str(pmed2) '+-' num2str(mStdL(1,2)) '; km2 = ' num2str(kmed2) '+-' num2str(mStdL(1,6))];
-            text(max(time_asf)*0.1,yy(2)*0.9,string1,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.85,string2,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.8,string3,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.75,string4,'FontSize',8);
-        else
-            string1=['p1 = ' num2str(pval1) '; c1 = ' num2str(cval1) '; k1 = ' num2str(kval1) ];
-            string2=['p2 = ' num2str(pval2) '; c2 = ' num2str(cval2) '; k2 = ' num2str(kval2) ];
-            string3=['pm1 = ' num2str(pmed1) '+-' num2str(mStdL(1,1)) '; cm1 = ' num2str(cmed1) '+-' num2str(mStdL(1,3)) '; km1 = ' num2str(kmed1) '+-' num2str(mStdL(1,5))];
-            string4=['pm2 = ' num2str(pmed2) '+-' num2str(mStdL(1,2)) '; cm2 = ' num2str(cmed2) '+-' num2str(mStdL(1,4)) '; km2 = ' num2str(kmed2) '+-' num2str(mStdL(1,6))];
-            text(max(time_asf)*0.1,yy(2)*0.9,string1,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.85,string2,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.8,string3,'FontSize',8);
-            text(max(time_asf)*0.1,yy(2)*0.75,string4,'FontSize',8);
+        textX = max(time_asf)*0.1;
+        textY = @(z) yy(2)* z;
+        
+        switch nMod
+            case OmoriModel.pck
+                string1 = sprintf('p = %g; c = %g; k = %g', pval1, cval1, kval1);
+                string3 = sprintf('pm = %g+-%g; cm = %g+-%g; km = %g+-%g', mped1, mStdL(1,1), cmed1, mStdL(1,3), kmed1, mStdL(1,5));
+                % string3=['pm = ' num2str(pmed1) '+-' num2str(mStdL(1,1)) '; cm = ' num2str(cmed1) '+-' num2str(mStdL(1,3)) '; km = ' num2str(kmed1) '+-' num2str(mStdL(1,5))];
+                text(textX,textY(0.9),string1,'FontSize',8);
+                text(textX,textY(0.8),string3,'FontSize',8);
+            case  OmoriModel.pckk
+                string1 = sprintf('p = %g; c = %g; k1 = %g; k2 = %g', pval1, cval1, kval1, kval2);
+                string3 = sprintf('pm = %g+-%g; cm = %g+-%g; km1 = %g+-%g; km2 = %g+-%g',...
+                    mped1, mStdL(1,1), cmed1, mStdL(1,3), kmed1, mStdL(1,5), kmed2, mStdL(1,6));
+                text(textX,textY(0.9),string1,'FontSize',8);
+                text(textX,textY(0.8),string3,'FontSize',8);
+            case OmoriModel.ppckk
+                string1 = sprintf('p1 = %g; c = %g; k1 = %g', pval1, cval1, kval1);
+                string2 = sprintf('p2 = %g; k2 = %g', pval2, kval2);
+                string3 = sprintf('pm1 = %g+-%g; cm = %g+-%g; km1 = %g+-%g', mped1, mStdL(1,1), cmed1, mStdL(1,3), kmed1, mStdL(1,5));
+                string4 = sprintf('pm2 = %g+-%g; km2 = %g+-%g', mped2, mStdL(1,2), kmed2, mStdL(1,6));
+                text(textX,textY(0.9),string1,'FontSize',8);
+                text(textX,textY(0.85),string2,'FontSize',8);
+                text(textX,textY(0.8),string3,'FontSize',8);
+                text(textX,textY(0.75),string4,'FontSize',8);
+            case OmoriModel.ppcckk
+                string1 = sprintf('p1 = %g; c1 = %g; k1 = %g', pval1, cval1, kval1);
+                string2 = sprintf('p2 = %g; c2 = %g; k2 = %g', pval2, cval2, kval2);
+                string3 = sprintf('pm1 = %g+-%g; cm1 = %g+-%g; km1 = %g+-%g', mped1, mStdL(1,1), cmed1, mStdL(1,3), kmed1, mStdL(1,5));
+                string4 = sprintf('pm2 = %g+-%g; cm2 = %g+-%g; km2 = %g+-%g', mped2, mStdL(1,2), cmed2, mStdL(1,4), kmed2, mStdL(1,6));
+                text(textX,textY(0.9),string1,'FontSize',8);
+                text(textX,textY(0.85),string2,'FontSize',8);
+                text(textX,textY(0.8),string3,'FontSize',8);
+                text(textX,textY(0.75),string4,'FontSize',8);
         end
-        string=['\sigma(Bst) = ' num2str(fStdBst) ' Rc = ' num2str(fRc_Bst) ];%' Rc(Obfit) = ' num2str(fRc_Bst2)];
-        text(max(time_asf)*0.1,yy(2)*0.1,string,'FontSize',8);
-        sAIC = ['AIC = ' num2str(fAIC)];
-        text(max(time_asf)*0.1,yy(2)*0.05,sAIC,'FontSize',8);
+        string=sprintf('\sigma(Bst) = %g Rc = %g',fStdBst, fRc_Bst);%' Rc(Obfit) = ' num2str(fRc_Bst2)];
+        text(textX,yy(2)*0.1,string,'FontSize',8);
+        
+        sAIC = sprintf('AIC = %g',fAIC);
+        text(textX,yy(2)*0.05,sAIC,'FontSize',8);
+        
         paf = plot(fT1, 0,'h','MarkerFaceColor',[1 1 0],'MarkerSize',12,'MarkerEdgeColor',[0 0 0] );
-        sGoodfit = ['KS Test: H = ' num2str(H) ', KS statistic = ' num2str(KSSTAT) ' P value = ' num2str(P) '; RMS = ' num2str(fRMS)];
-        text(max(time_asf)*0.1,yy(2)*0.15,sGoodfit,'FontSize',8);
+        sGoodfit = sprintf('KS Test: H = %g, KS statistic = %g P value = %g; RMS = %g', H, KSSTAG, P,fRMS);
+        text(textX,yy(2)*0.15,sGoodfit,'FontSize',8);
         % Legend
         legend([p2 p1 pf1 pf3 pmedmod min(ps2) paf],'data','model to data','forecast','observed', 'Mean Bst-model', '\sigma (Bst)','Sec. AF', 'location', 'Best');
     else

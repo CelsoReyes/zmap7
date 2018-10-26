@@ -78,7 +78,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         if ok
             [~, uOutput.Name] = fileparts(code);
             if mean(uOutput.Depth >= 1000)
-                warning('depths look like they are in m instead of km! scaling')
+                warning('ZMAP:unexpectedUnit','depths look like they are in m instead of km! scaling')
                 uOutput.Depth= uOutput.Depth ./ 1000;
             end
         end
@@ -127,9 +127,116 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     disp(['sending request to:' baseurl 'query  with options'])
     disp(varargin)
     
+    hasParallel=license('test','Distrib_Computing_Toolbox') && ZG.ParallelProcessingOpts.Enable;
     try
-        data = webread([baseurl 'query'], varargin{:},'format','text',options);
+        if hasParallel
+            fn = tempname;
+            p=gcp();
+            f=parfeval(p,@websave,1,fn, [baseurl 'query'], varargin{:},'format','text',options);
+            warning('off','MATLAB:table:ModifiedAndSavedVarnames');
+            nQuakes = 0;
+            lastsize = 0;
+            infmt = string(missing);
+            earliest = datetime(missing);
+            latest=datetime(missing);
+            myfig = figure('Name','Downloading events');
+            ax1=subplot(2,1,1);
+            scDate=scatter(ax1,NaT,nan,'.');title(ax1,'Date of downloaded events');
+            ax2=subplot(2,1,2);
+            scLoc=scatter(ax2,nan,nan,'.');title(ax2,'Location of downloaded events');
+            while f.State=="running"
+                startDownloadTime = f.StartDateTime;
+                pause(1);
+                d=dir(fn);
+                if isempty(d) || d.bytes == lastsize
+                    fprintf('.');
+                    continue
+                end
+                lastsize=d.bytes;
+                rightnow = datetime;
+                rightnow.TimeZone = f.StartDateTime.TimeZone;
+                elapsedTime = rightnow - f.StartDateTime;
+                bytes_per_second = lastsize / seconds(elapsedTime);
+                try
+                    tb=readtable(fn);
+                catch ME
+                    continue
+                end
+                if ~isempty(tb) && any([ismissing(tb.Time(end)) ismissing(tb.Magnitude(end))])
+                    tb(end,:)=[];
+                end
+                if isempty(tb)
+                    continue
+                end
+                events_per_minute = height(tb) / minutes(elapsedTime);
+                if ismissing(infmt)
+                    infmt = "uuuu-MM-dd'T'HH:mm:ss";
+                    infmt{1}([5 8])=tb.Time{1}(5);
+                    infmt{1}(12)=tb.Time{1}(11);
+                end
+                tb.Time = datetime(extractBefore(tb.Time,20),'InputFormat',infmt);
+                if isvalid(scDate)
+                set(scDate,'XData',tb.Time,'YData',tb.Magnitude);
+                end
+                if isvalid(scLoc)
+                    set(scLoc,'XData',tb.Longitude,'YData',tb.Latitude);
+                end
+                drawnow nocallbacks
+                nQuakes=height(tb);
+                minTime = min(tb.Time); 
+                maxTime=max(tb.Time);
+                minMag=min(tb.Magnitude);
+                maxMag=max(tb.Magnitude);
+                if minTime ~= earliest
+                    earliest=minTime;
+                    earlyStr = "<strong>"+string(earliest)+"</strong>";
+                else
+                    earlyStr=string(earliest);
+                end
+                if maxTime ~= latest
+                    latest=maxTime;
+                    lateStr = "<strong>"+string(earliest)+"</strong>";
+                else
+                    lateStr=string(latest);
+                end
+                timespan_per_minute = (latest - earliest) / minutes(elapsedTime);
+                if timespan_per_minute > years(1)
+                    timespan_per_minute.Format='y';
+                elseif timespan_per_minute > days(5)
+                    timespan_per_minute.Format='d';
+                end
+                
+                msg.dbfprintf("[<strong>%d</strong> events found... still downloading ]\n"+...
+                    "  Download Statistics:\n"+...
+                    "    Elapsed Time   : <strong>%s</strong>\n"+...
+                    "    Bytes / sec    : %d\n"+...
+                    "    Events / min   : %d\n"+...
+                    "    Timespan / min : %s\n\n" +...                
+                    "  Catalog Statistics:\n"+...
+                    "    start time      : %s\n"+...
+                    "    end time        : %s\n"+...
+                    "    magnitude range : [%g  to  %g]\n",...
+                    nQuakes, elapsedTime,...
+                    round(bytes_per_second), round(events_per_minute), string(timespan_per_minute),...
+                    earlyStr, lateStr, min(tb.Magnitude), max(tb.Magnitude));
+                fprintf('\nwaiting for next update');
+            end
+            msg.dbfprintf('\nDone finding events. Final total: %d\n', nQuakes);
+            warning('on','MATLAB:table:ModifiedAndSavedVarnames');
+            fetchOutputs(f);
+            data = fileread(fn);
+            delete(fn);
+            if isvalid(myfig)
+                close(myfig)
+            end
+        else
+            data = webread([baseurl 'query'], varargin{:},'format','text',options);
+        end
     catch ME
+        cancel(f)
+        if isvalid(myfig)
+            close(myfig)
+        end
         switch ME.identifier
             %case 'MATLAB:webservices:CopyContentToDataStreamError'
             otherwise

@@ -39,7 +39,7 @@ classdef TimeDepthPlotter < TimeSomethingPlotter
             c=findobj(f,'Tag','TimeDepthContext');
             if isempty(c)
                 c=uicontextmenu('Tag','TimeDepthContext');
-                uimenu(c,'Label','Use Log Scale',MenuSelectedField(),{@logtoggle,'Y'});
+                uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
             end
             ax.YLabel.UIContextMenu=c;
             

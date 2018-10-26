@@ -117,7 +117,7 @@ function showmovi()
     
     frame_slide = uicontrol('style','slider','max',b1,'min',1,'uni','norm');
     set(frame_slide,'value',1,'pos',[.750 .25 .04 .5], 'callback',@callbackfun_002);
-    frame = uicontrol('style','edit','value',10,'string',num2str(i),'callback',@callbackfun_003);
+    frame = uicontrol('style','edit','value',10,'string',num2str(i), 'Callback', @callbackfun_003);
     flabel = uicontrol('style','text','units','norm','pos',[.55 .13 .2 .05]);
     set(flabel,'string','Speed','background',color_fbg);
     set(frame,'units','norm','pos',[.60 .07 .1 .05],'min',0.1,'max',30);
@@ -133,7 +133,7 @@ function showmovi()
     bac = uicontrol('style','pushbutton','unit','norm','pos',[0.75 .80 .04 .05]);
     set(bac,'string','<');
     set(bac, 'callback',@callbackfun_005);
-    time = uicontrol('style','edit','value',3,'string',num2str(3),'callback',@callbackfun_006);
+    time = uicontrol('style','edit','value',3,'string',num2str(3), 'Callback', @callbackfun_006);
     set(time,'units','norm','pos',[.23 .07 .1 .05],'min',1,'max',1000);
     tlabel = uicontrol('style','text','units','norm','pos',[.18 .13 .2 .05]);
     set(tlabel,'string','# of runs','background',color_fbg);
@@ -147,7 +147,7 @@ function showmovi()
     
     set_ni = uicontrol('style','edit','value',100,'string',num2str(100));
     
-    set(set_ni,'callback',@callbackfun_009);
+    set(set_ni, 'Callback', @callbackfun_009);
     
     set(set_ni,'units','norm','pos',[.40 .02 .15 .05],'min',10,'max',10000);
     nilabel = uicontrol('style','text','units','norm','pos',[.36 .02 .04 .05]);
@@ -179,21 +179,7 @@ function showmovi()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         v = get(cs,'value');
-        if v==1
-            cur_color = 'hsv';
-        elseif v==2
-            cur_color = 'hot';
-        elseif v==3
-            cur_color = 'cool';
-        elseif v==4
-            cur_color = 'pink';
-        elseif v==5
-            cur_color = 'bone';
-        elseif v==6
-            cur_color = 'gray';
-        elseif v==7
-            cur_color = 'jet';
-        end
+        cur_color=lower(v);
         colormap(cur_color);
         movie(m(:,i),1,1);
     end
@@ -264,7 +250,6 @@ function showmovi()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         clear m;
         close(mov);
-        ZmapMessageCenter();
         
     end
     

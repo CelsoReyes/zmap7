@@ -12,19 +12,19 @@ function crclparain()
     
     input1 = uicontrol('Style','popupmenu','Position',[.75 .77 .23 .09],...
         'Units','normalized','String','Automatic Range|Manual Fixed Range',...
-        'Value',1,'callback',@callbackfun_001);
+        'Value',1, 'Callback', @callbackfun_001);
     
     input2 = uicontrol('Style','edit','Position',[.34 .51 .10 .09],...
         'Units','normalized','String',num2str(radm), 'enable', 'off',...
-        'Value',1,'callback',@callbackfun_002);
+        'Value',1, 'Callback', @callbackfun_002);
     
     input3 = uicontrol('Style','edit','Position',[.75 .51 .10 .09],...
         'Units','normalized','String',num2str(rasm), 'enable', 'off',...
-        'Value',1,'callback',@callbackfun_003);
+        'Value',1, 'Callback', @callbackfun_003);
     
     input4 = uicontrol('Style','edit','Position',[.75 .34 .10 .09],...
         'Units','normalized','String',num2str(ra),'enable', 'off',...
-        'Value',1,'callback',@callbackfun_004);
+        'Value',1, 'Callback', @callbackfun_004);
     
     
     
@@ -50,7 +50,7 @@ function crclparain()
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .20 .15 ],...
-        'Units','normalized','callback',@callbackfun_005,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_005,'String','Cancel');
     
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .20 .15 ],...
@@ -95,7 +95,6 @@ function crclparain()
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     

@@ -1,4 +1,4 @@
-function myTab = findOrCreateTab(fig, container, title, varargin)
+function myTab = findOrCreateTab(fig, look_here_containers, create_here_tabgroup, title, varargin)
     % FINDORCREATETAB return handle to a specified tab. if the tab doesn't exist, it is created
     %
     % tabH = FINDORCREATETAB( FIG, CONTAINER_TAG, TITLE, OPTS)
@@ -6,28 +6,32 @@ function myTab = findOrCreateTab(fig, container, title, varargin)
     %    belonging to this figure are returned. If the tab doesn't already exist, it will be
     %    created with the title TITLE within the container identified by the CONTAINER_TAG.
     %
-    %    OPTS can be 'deleteable'
+    %    OPTS can be 'deleteable',
     %    CONTAINER_TAG can be the handle to a container, too.
     %
-    %
+    
     import callbacks.copytab
 
+    assert(isgraphics(look_here_containers) && isvalid(look_here_containers), 'expected valid container');
+    
     deleteable= ismember('deleteable',varargin);
     if deleteable
         myTag='CopytabToFigDeleteable';
     else
         myTag='CopyTabToFig';
     end
-    if ischar(container) || isstring(container)
-        myContainer=findobj(fig,'Type','uitabgroup','-and','Tag',container);
-    elseif isgraphics(container) && isvalid(container)
-        myContainer=container;
+    
+    if ischar(create_here_tabgroup) || isstring(create_here_tabgroup)
+        myContainer=findobj(fig,'Type','uitabgroup','-and','Tag',create_here_tabgroup);
+    elseif isgraphics(create_here_tabgroup) && isvalid(create_here_tabgroup)
+        myContainer=create_here_tabgroup;
         assert(ancestor(myContainer,'figure')==fig);
     else
         error('unspecified container');
     end
         
-    myTab=findobj(myContainer.Children,'flat','Title',title,'-and','Type','uitab');
+    myTab=findobj(look_here_containers, 'Title', title, '-and', 'Type', 'uitab');
+    
     if isempty(myTab)
         myTab=uitab(myContainer, 'Title',title);
 

@@ -8,8 +8,6 @@ function loadmovz()
     if length(path1) > 1
         load([path1 file1])
         showmovi
-    else
-        ZmapMessageCenter();
     end   % if exist
     
     

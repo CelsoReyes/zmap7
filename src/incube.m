@@ -45,7 +45,7 @@ function incube()
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.80 .05 .15 .12 ],...
-        'Units','normalized','callback',@callbackfun_004,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_004,'String','Cancel');
     
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.10 .05 .35 .12 ],...
@@ -218,7 +218,7 @@ function incube()
         abo2 = abo;
         iala = ZG.compare_window_dur;
         try
-            ZmapMessageCenter.set_info('Save Alarm Cube?','  ');
+            msg.infodisp('  ','Save Alarm Cube?');
             [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Save Alarm Cube Datafile?',400,400);
             if length(file1) > 1
                 save([path1 file1],'cumuall','abo','loc','abo2','iala','winlen_years' )
@@ -311,9 +311,5 @@ function callbackfun_008(mysrc,myevt)
     f1=gcf;
     f2=gpf;
     set(f1,'Visible','off');
-    if f1~=f2
-        ZmapMessageCenter();
-        
-    end
 end
 

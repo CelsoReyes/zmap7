@@ -5,7 +5,7 @@ function fmdplot(obj, tabgrouptag)
     Tags.xs = 'fmd xs contextmenu';
     
     % the fmd object is actually stored in the axes into which it plots
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, 'FMD');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'FMD');
     ax=findobj(myTab,'Type','axes');
     if isempty(ax)
         ax=axes(myTab);
@@ -16,7 +16,7 @@ function fmdplot(obj, tabgrouptag)
             bAnalysisWin = AnalysisBvalues(ax,bdiffobj);
             ax.UserData = bAnalysisWin;
             % ax.UserData=bdiffobj; %stash this, but keep it with the ZMapMainWindow.
-            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(),{@crop_to_mc,bdiffobj});
+            uimenu(ax.UIContextMenu,'Label','Cut catalog at Mc',MenuSelectedField(), @(s,v)crop_to_mc(s, v, bdiffobj) );
         end
         
     elseif isempty(obj.catalog)
@@ -98,8 +98,6 @@ function fmdplot(obj, tabgrouptag)
         ZG=ZmapGlobal.Data;
         ZG.newt2=obj.catalog.subset(obj.CrossSections(idx).inside(obj.catalog));
         ZG.newt2.Name=sprintf('Events within %g km of %s',obj.CrossSections(idx).name);
-        %ctp=CumTimePlot(ZG.newt2);
-        %ctp.plot();
     end
     
     

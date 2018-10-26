@@ -1792,6 +1792,8 @@ classdef FancyColors
                 assert(isequal(size(d),[1,3]),'Expected [R G B]');
             elseif length(val)==6&& all(ismember(val,'ABCDEF0123456789'))
                 d=FancyColors.colors{FancyColors.hex2idx(val),2};
+            elseif isnumeric(val) && numel(val)==3 && all(val>=0 & val<=1)
+                d(1,1:3)=val; % always return as 1x3
             else
                 d=FancyColors.colors{FancyColors.name2idx(val),2};
             end

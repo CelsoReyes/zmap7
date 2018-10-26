@@ -78,7 +78,6 @@ function mamovie()
         close(cube);
         close(vie);
         clear m;
-        ZmapMessageCenter();
     end
     
     function callbackfun_005(mysrc,myevt)

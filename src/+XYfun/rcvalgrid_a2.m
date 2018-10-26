@@ -280,7 +280,7 @@ function [sel]=orig_rcvalgrid_a2()
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = ZG.primeCatalog.DateRange() ;
+        [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
         n = ZG.primeCatalog.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         

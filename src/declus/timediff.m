@@ -9,7 +9,7 @@ function [tdiff, ac]  = timediff(j,ci,tau, clus, eqtimes)
     % clus: clusters (length of catalog)
     % eqtimes: datetimes for event catalog (newcat)
     
-    tdiff=0;
+    tdiff=duration(missing);
     n=1;    % tdiff index
     ac=[];
     

@@ -12,7 +12,8 @@ function Dcross(sel)
     
     % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
     % D = [x,y,z ]
-    Da = [eq0p(1,:)' eq0p(2,:)' ZG.primeCatalog.Date ZG.primeCatalog.Date.Month ZG.primeCatalog.Date.Day ZG.primeCatalog.Magnitude ZG.primeCatalog.Depth];
+    catalog=ZG.primeCatalog;
+    Da = [eq0p(1,:)' eq0p(2,:)' catalog.Date catalog.Date.Month catalog.Date.Day catalog.Magnitude catalog.Depth];
     Da0 = find(Da(:,7) > -2.99);
     Da = Da.subset(Da0);
     clear Da0;
@@ -92,11 +93,11 @@ function Dcross(sel)
         
         close_button=uicontrol('Style','Pushbutton',...
             'Position',[.45 .05 .15 .13 ],...
-            'Units','normalized','callback',@callbackfun_007,'String','Cancel');
+            'Units','normalized', 'Callback', @callbackfun_007,'String','Cancel');
         
         help_button=uicontrol('Style','Pushbutton',...
             'Position',[.70 .05 .15 .13 ],...
-            'Units','normalized','callback',@callbackfun_008,'String','Help');
+            'Units','normalized', 'Callback', @callbackfun_008,'String','Help');
         
         
         go_button1=uicontrol('Style','Pushbutton',...
@@ -198,7 +199,7 @@ function Dcross(sel)
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = newa.DateRange() ;
+        [t0b, teb] = bounds(newa.Date) ;
         n = newa.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));
@@ -341,7 +342,7 @@ function Dcross(sel)
             old = valueMap;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(catalog.Latitude',catalog.Longitude',catalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')

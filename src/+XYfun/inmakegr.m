@@ -26,7 +26,7 @@ classdef inmakegr < ZmapHGridFunction
             obj@ZmapHGridFunction(zap, 'shallow_mag');
             report_this_filefun();
             obj.parseParameters(varargin);
-            warning('apparently still broken');
+            warning('ZMAP:unimplemented','apparently still broken');
                 
             obj.StartProcess();
         end
@@ -81,7 +81,7 @@ function orig_inmakegr(catalog)
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .15 .12 ],...
-        'Units','normalized','callback',@callbackfun_cancel,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_cancel,'String','Cancel');
     
     go_button1=uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .15 .12 ],...
@@ -141,7 +141,7 @@ function orig_inmakegr(catalog)
         
         %  make grid, calculate start- endtime etc.  ...
         %
-        [t0b, teb] = catalog.DateRange() ;
+        [t0b, teb] = bounds(catalog.Date) ;
         n = catalog.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         cumu = zeros(length(t0b:days(ZG.bin_dur):teb)+2);
@@ -214,7 +214,7 @@ function orig_inmakegr(catalog)
             [.7 .10 .2 .12],'String','Options ', 'callback',@(~,~)zmapmenu)
         
         uicontrol('Units','normal','Position',...
-            [.3 .10 .2 .12],'String','Back', 'Callback',@(~,~)ZmapMessageCenter())
+            [.3 .10 .2 .12],'String','Back', 'Callback',@(~,~)close())
         
         return
         

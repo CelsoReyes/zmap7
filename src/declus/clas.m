@@ -9,7 +9,7 @@ function clas
     % start and end time
     %
     
-    
+    watchon
     %
     %  winlen_days is the cutoff at the beginning and end of the analyses
     %  to afoid spikes at the end

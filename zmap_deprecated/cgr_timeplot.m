@@ -110,7 +110,7 @@ function CreateMenu(obj)
         
         op4B = uimenu(analyzemenu,'Label','Rate changes (beta and z-values) ');
         uimenu(op4B, 'Label', 'beta values: LTA(t) function',MenuSelectedField(),{@cb_z_beta_ratechanges,'bet'});
-        uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',MenuSelectedField(), {@cb_betaTriangle,'newcat'})
+        uimenu(op4B, 'Label', 'beta values: "Triangle" Plot',MenuSelectedField(), @(~,~)cb_betaTriangle('newcat'));
         uimenu(op4B,'Label','z-values: AS(t)function',MenuSelectedField(),{@cb_z_beta_ratechanges,'ast'})
         uimenu(op4B,'Label','z-values: Rubberband function',MenuSelectedField(),{@cb_z_beta_ratechanges,'rub'})
         uimenu(op4B,'Label','z-values: LTA(t) function ',MenuSelectedField(),{@cb_z_beta_ratechanges,'lta'});
@@ -134,17 +134,17 @@ function CreateMenu(obj)
         
         %In the following instruction the program pvalcat2.m is called. This program computes a map of p in function of the chosen values for the minimum magnitude and
         %initial time.
-        uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(),@(~,~)MyPvalClass.pvalcat2())
+        uimenu(op5,'Label','p as a function of time and magnitude',MenuSelectedField(), @(~,~)MyPvalClass.pvalcat2())
         uimenu(op5,'Label','Cut catalog at mainshock time',...
             MenuSelectedField(),@cb_cut_mainshock)
         
         op6 = uimenu(analyzemenu,'Label','Fractal dimension estimation');
-        uimenu(op6,'Label','Compute the fractal dimension D',MenuSelectedField(),{@cb_computefractal,2});
-        uimenu(op6,'Label','Compute D for random catalog',MenuSelectedField(),{@cb_computefractal,5});
-        uimenu(op6,'Label','Compute D with time',MenuSelectedField(),{@cb_computefractal,6});
-        uimenu(op6,'Label',' Help/Info on  fractal dimension',MenuSelectedField(),@(~,~)showweb('fractal'))
+        uimenu(op6,'Label','Compute the fractal dimension D',MenuSelectedField(), @(~,~)cb_computefractal(2));
+        uimenu(op6,'Label','Compute D for random catalog',MenuSelectedField(), @(~,~)cb_computefractal(5));
+        uimenu(op6,'Label','Compute D with time',MenuSelectedField(), @(~,~)cb_computefractal(6));
+        uimenu(op6,'Label',' Help/Info on  fractal dimension',MenuSelectedField(), @(~,~)showweb('fractal'))
         
-        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ',MenuSelectedField(),@(~,~)morel())
+        uimenu(ztoolsmenu,'Label','Cumlative Moment Release ',MenuSelectedField(), @(~,~)morel())
         
         op7 = uimenu(analyzemenu,'Label','Stress Tensor Inversion Tools');
         uimenu(op7,'Label','Invert for stress-tensor - Michael''s Method ',MenuSelectedField(),@(~,~)doinverse_michael())
@@ -154,10 +154,10 @@ function CreateMenu(obj)
         uimenu(op7,'Label',' Help/Info on  stress tensor inversions',MenuSelectedField(),@(~,~)showweb('stress'))
         op5C = uimenu(plotmenu,'Label','Histograms');
         
-        uimenu(op5C,'Label','Magnitude',MenuSelectedField(),{@cb_histogram,'Magnitude'});
-        uimenu(op5C,'Label','Depth',MenuSelectedField(),{@cb_histogram,'Depth'});
-        uimenu(op5C,'Label','Time',MenuSelectedField(),{@cb_histogram,'Date'});
-        uimenu(op5C,'Label','Hr of the day',MenuSelectedField(),{@cb_histogram,'Hour'});
+        uimenu(op5C,'Label','Magnitude',MenuSelectedField(), @(~,~)cb_histogram('Magnitude') );
+        uimenu(op5C,'Label','Depth',MenuSelectedField(), @(~,~)cb_histogram('Depth') );
+        uimenu(op5C,'Label','Time',MenuSelectedField(), @(~,~)cb_histogram('Date') );
+        uimenu(op5C,'Label','Hr of the day',MenuSelectedField(), @(~,~)cb_histogram('Hour') );
         
         
         uimenu(ztoolsmenu,'Label','Save cumulative number curve',...
@@ -278,7 +278,7 @@ function timeplot(mycat, nosort)
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     
     global statime
-    [t0b, teb] = mycat.DateRange() ;
+    [t0b, teb] = bounds(mycat.Date) ;
     ZG = ZmapGlobal.Data;
     if ~exist('xt','var')
         xt=[]; % time series that will be used
@@ -394,7 +394,7 @@ function timeplot(mycat, nosort)
     %calculate start -end time of overall catalog
     statime=[];
     par2=ZG.bin_dur;
-    [t0b, teb] = ZG.primeCatalog.DateRange() ;
+    [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
     
     tdiff = (teb-t0b)/ZG.bin_dur;
     
@@ -485,8 +485,9 @@ function timeplot(mycat, nosort)
     
     function cut_tmd_callback(~,~)
         cf = @()ZG.newt2;
-        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-        ZG.newt2=tmpcat.Catalog();
+        app = range_selector(ZG.newt2);
+        waitfor(app);
+        ZG.maepi=ZG.newt2.subset(ZG.newt2.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
         ctp=CumTimePlot(ZG.newt2);
         ctp.plot();
     end
@@ -522,35 +523,30 @@ function timeplot(mycat, nosort)
         newsta(sta, ZG.newt2);
     end
     
-    function cb_betaTriangle(~, ~, catname)
-        betatriangle(ZG.(catname),t0b:ZG.bin_dur:teb);
+    function cb_betaTriangle(catname)
+        betatriangle(ZG.(catname), t0b : ZG.bin_dur : teb);
     end
-    function cb_010(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_010(~,~)
         ZG.hold_state=false;
         bdiff2();
     end
     
-    function plotwithtime(mysrc,myevt,sPar)
+    function plotwithtime(sPar)
         %sPar tells what to plot.  'mc', 'b'
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plot_McBwtime('ThisIsACatalog',sPar);
     end
     
     
-    function cb_016(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_016(~,~)
         unimplemented_error()
     end
     
-    function cb_pestimate(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_pestimate(~,~)
         ZG.hold_state=false;
         MyPvalClass.pvalcat();
     end
     
-    function cb_cut_mainshock(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_cut_mainshock(~,~)
         l = min(find( mycat.Magnitude == max(mycat.Magnitude) ));
         mycat = mycat(l+1:mycat.Count,:);
         z
@@ -559,16 +555,14 @@ function timeplot(mycat, nosort)
         ctp.plot();
     end
     
-    function cb_computefractal(mysrc,myevt, org)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_computefractal(org)
         if org==2
             E = mycat;
         end % FIXME this is probably unneccessary, but would need to be traced in startfd before deleted
         startfd(org);
     end
     
-    function cb_histogram(mysrc,myevt,hist_type)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_histogram(hist_type)
         hisgra(mycat, hist_type);
     end
     
@@ -587,12 +581,11 @@ function timeplot(mycat, nosort)
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.newcat = mycat;
         replaceMainCatalog(mycat) ;
-        %ZmapMessageCenter.update_catalog();
-        zmap_update_displays();
     end
     
     function cb_rename_cat(~,~)
-        s.prompt='Catalog Name:'; s.value=mycat.Name;
+        s.prompt='Catalog Name:'; 
+        s.value=mycat.Name;
         [~,~, mycat.Name]=smart_inputdlg('Rename',s);
     end
 end

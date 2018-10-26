@@ -86,9 +86,9 @@ function dramap_z(colback, valuemap)
     colormap(j); brighten(0.1);
     axis off;
     
-    if ~exist('colback', 'var'); colback = 1; end
+    if ~exist('colback', 'var'); colback = 'w'; end
     
-    if colback == 2  % black background
+    if colback == 'k'  % black background
         fg='w';
         bg='k';
     else % white background

@@ -20,7 +20,9 @@ elseif nFunction == FilterOp.importCatalog
 
 
     for i = 1:length(mData)
-        if rem(i,100) == 0 ; disp([ num2str(i) ' of ' num2str(length(mData)) ' events processed ']); end
+        if rem(i,100) == 0 ; 
+            disp([ num2str(i) ' of ' num2str(length(mData)) ' events processed ']); 
+        end
         try
             %             uOutput(i,1) = str2num(mData{i}(33:41));    %lon
             %             uOutput(i,2) = str2num(mData{i}(24:31));    %lat
@@ -49,7 +51,7 @@ elseif nFunction == FilterOp.importCatalog
             uOutput(i,9) = str2num(mData{i}(16:17));    %min
             %uOutput(i,:);
         catch
-            disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
+            msg.dbfprintf('Import: Problem in line %d of %s. Line ignored.\n',i, sFilename);
             uOutput(i,:)=nan;
         end
     end

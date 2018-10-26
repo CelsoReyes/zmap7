@@ -10,7 +10,7 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
     %   timef       forecast period: Set timef=0, anyway it is forced to 0 [days]
     %   bootloops   Number of bootstraps
     %   ZG.maepi       Mainshock values
-    %   nMod        Model for aftershock sequence
+    %   nMod        Model for aftershock sequence (of type OmoriModel)
     %
     % Output parameters:
     %   mResult    Structure containing p-, c-, and k-values, mean bootstrap p,c,k-values and their uncertainties
@@ -74,26 +74,18 @@ function [mResult] = calc_Omoriparams(mycat,time,timef,bootloops,maepi,nMod)
 
     % Calculate fits of different models
     mRes = [];
-    % Modified Omori law (pck)
-    if nMod == 1
-        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-        % MOL with secondary aftershock (pckk)
-    elseif nMod == 2
-        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-        % MOL with secondary aftershock (ppckk)
-    elseif nMod == 3
-        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
-    else % MOL with secondary aftershock (ppcckk)
-        nMod = 4;
-        [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
-        mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+    switch nMod
+        case { OmoriModel.pck, OmoriModel.pckk, OmoriModel.ppckk, OmoriModel.ppcckk }
+            [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+            mRes = [mRes; nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
+            
+        otherwise
+            nMod = OmoriModel.ppcckk;
+            error('Unknown OmoriModel');
     end %END if nMod
 
     % Model to use for bootstrapping as of lowest AIC to observed data
-    mResult.nMod = mRes(1,1);
+    mResult.nMod = OmoriModel(mRes(1,1));
     mResult.pval1= mRes(1,2); mResult.pval2= mRes(1,3);
     mResult.cval1= mRes(1,4); mResult.cval2= mRes(1,5);
     mResult.kval1= mRes(1,6); mResult.kval2= mRes(1,7);

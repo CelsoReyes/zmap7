@@ -113,7 +113,7 @@ function zgrid3d_orig(sel,catalog)
         %  make grid, calculate start- endtime etc.  ...
         %
         [zvg, ram] = deal(nan(vol_dimensions));
-        [t0b, teb] = catalog.DateRange() ;
+        [t0b, teb] = bounds(catalog.Date) ;
         n = catalog.Count;
         tdiff = round((teb-t0b)/ZG.bin_dur);
         loc = zeros(3, length(gx)*length(gy));

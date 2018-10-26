@@ -8,6 +8,12 @@ function [dist1, dist2] = distance2(i,bgevent,ac)
     global err derr
     ZG=ZmapGlobal.Data;
 
+    if isempty(err) 
+        err=1.5; % from InitVariables --epicenter error
+    end
+    if isempty(derr)
+        derr=2; % from InitVariables --depth error
+    end
     pi2 = 1.570796;
     rad = 1.745329e-2;
     flat= 0.993231;
@@ -39,6 +45,7 @@ function [dist1, dist2] = distance2(i,bgevent,ac)
     colat(:,2)=pi2-(alatr2+blatr)/2;
     radius=6371.227*(1+(3.37853e-3)*(1/3-((cos(colat)).^2)));
     r=delr.*radius;            %epicenter distance
+    
     r=r-1.5*err;               %influence of epicenter error
     tmp1=find(r<0);
     if ~isempty(tmp1)

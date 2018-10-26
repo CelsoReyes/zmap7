@@ -64,49 +64,19 @@ function [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, boo
     %% Compute best fitting pair of variates
     % TODO (maybe) vectorize this
     n_time_asf = length(time_asf);
-    for j = 1:size(loopout,1)
-        thisloop = loopout(j,:);
-        %cumnr = (1:n_time_asf)';
-        cumnr_model = nan(n_time_asf,1);
-        pval1 = thisloop(1);
-        pval2 = thisloop(2);
-        cval1 = thisloop(3);
-        cval2 = thisloop(4);
-        kval1 = thisloop(5);
-        kval2 = thisloop(6);
-        if nMod == 1
-            if pval1 ~= 1
-                cumnr_model = kval1./(pval1-1).*(cval1.^(1-pval1)-(time_asf+cval1).^(1-pval1));
-            else
-                cumnr_model = kval1.*log(time_asf./cval1+1);
-            end
-            
-        else
-            % pick which functions to use, based on these pvalues
-            if pval1 ~=1
-                % calculate values for aftershocks occurring before biggest aftershock
-                modelfnBefore = @(ev) kval1./(pval1-1) .*(cval1.^(1-pval1)-(ev+cval1).^(1-pval1) );
-                if pval2~=1
-                    modelfnAfter=@(ev) kval1 ./ (pval1-1)  .* (cval1.^(1-pval1) - (ev+cval1).^(1-pval1)) + kval2/(pval2-1)  .* (cval2.^(1-pval2)-(ev-fT1+cval2).^(1-pval2) );
-                else
-                    modelfnAfter=@(ev) kval1 .* log(ev/cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
-                end
-            else
-                modelfnBefore = @(ev) kval1 .* log(ev ./ cval1 + 1);
-                modelfnAfter = @(ev) kval1 .* log(ev./cval1+1) + kval2.*log((ev-fT1)./cval2 + 1);
-            end
-            
-            % calculate values for aftershocks occurring before biggest aftershock
-            isBefore= time_as <= fT1;
-            cumnr_model(isBefore) = modelfnBefore(time_as(isBefore));
-            
-            % calculate values for aftershocks occurring after biggest aftershock
-            cumnr_model(~isBefore) = modelfnAfter(time_as(~isBefore));
-          
-        end % End of if on nMod
-        
-        loopout(j,9) = max(cumnr_model);
-    end
+    
+    
+    
+    pv1=loopout(:,1);
+    pv2=loopout(:,2);
+    cv1=loopout(:,3);
+    cv2=loopout(:,4);
+    kv1=loopout(:,5);
+    kv2=loopout(:,6);
+    
+    cumnr_model = OmoriModel.doForecast(nMod,time_asf, pv1, cv1, kv1, fT1, kv2, pv2, cv2);
+    loopout(:,9) = max(cumnr_model);
+    
     %%
     [Y, in] = sort(loopout(:,9));
     loops = loopout(in,:);

@@ -94,7 +94,7 @@ function plot_McBwtime(catalog, sPar)
     ylabel(ax,myYLabel,'Fontweight','bold','FontSize',12);
     ax.NextPlot='replace';
     
-    xlim(ax,[min(x) max(x)])
+    xlim(ax, bounds2(x))
     ylim(ax, [floor(min(y-yStd)) ceil(max(y+yStd))]);
     
     l1=legend(ax,myLegend{:});

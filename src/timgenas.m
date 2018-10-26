@@ -9,11 +9,13 @@ function timgenas(gx,gy)
     report_this_filefun();
     
     it = t0b + 1;
-    mess = gcf;
+    mess = findobj(allchild(groot),'flat','Tag','GenAS-Grid Time Selection');
+    if isempty(mes)
+        mess=figure('Name','GenAS-Grid Time Selection','Tag',);
+    end
     clf
     set(gca,'visible','off')
-    set(gcf,'pos',[ 0.02  0.9 0.3 0.35])
-    set(gcf,'Name','GenAS-Grid Time Selection');
+    set(mess,'pos',[ 0.02  0.9 0.3 0.35])
     
     inp5=uicontrol('Style','edit','Position',[.70 .50 .22 .06],...
         'Units','normalized','String',num2str(it),...
@@ -24,7 +26,7 @@ function timgenas(gx,gy)
         'String','Time to display (e.g. 84.537): ');
     
     close_button = uicontrol('Units','normal','Position',...
-        [.1 .7 .2 .12],'String','Close ', 'Callback',@(~,~)ZmapMessageCenter());
+        [.1 .7 .2 .12],'String','Close ', 'Callback',@(~,~)close());
     
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.35 .22 .20 .10 ],...

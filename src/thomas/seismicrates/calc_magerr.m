@@ -2,7 +2,7 @@ function [mCatNew, mMagShift] =calc_magerr(mCat,mDeltaMag)
     % calculate magnitude shifts
     %
     % Example:  [mCatNew, mHyposhift]=calc_magerr(mCatalog,mDeltaMag)
-    % Input paramter:
+    % Input parameter:
     % mCat    Earthquake catalog in zmap format
     % mDelta Error bounds given provided by network ( [dLon, dLat, dDepth] )
     % nDim  0 : error bounds in lon / lat, 1: errorbounds in [km]

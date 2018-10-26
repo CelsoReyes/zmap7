@@ -393,7 +393,7 @@ function loadhypo(choice)
         end
         % read the first three lines as a test...
         fid = fopen([path1 file1],'r');
-        ZmapMessageCenter.set_info(' ','Loading data...hang on');
+        msg.infodisp('Loading data...hang on',' ');
         so = fscanf(fid,'%c',[nu+1, inf]);
         fclose(fid);
         so = so';
@@ -452,11 +452,10 @@ function loadhypo(choice)
         ZG=ZmapGlobal.Data;
         ZG.mainmap_plotby='depth';
         do = 'view';
-        
-        [ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
-        %ZmapMessageCenter.update_catalog();
-        %zmap_update_displays();
-        
+        mycat=ZG.primeCatalog; % points to same thing!
+        app = range_selector(mycat);
+        waitfor(app);
+        ZG.maepi=mycat.subset(mycat.Magnitude >=ZG.CatalogOpts.BigEvents.MinMag);
     end
     
     function callbackfun_001(mysrc,myevt)

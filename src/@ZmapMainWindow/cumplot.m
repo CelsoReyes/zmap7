@@ -7,7 +7,7 @@ function cumplot(obj, tabgrouptag)
     Tags.ax = 'CumPlot axes';
     
     % set up the axes
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, 'cumplot');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'cumplot');
     ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
     if isempty(ax)
         ax            = axes(myTab);

@@ -152,7 +152,7 @@ function dramap_stress2()
     colormap(j); brighten(0.1);
     axis off;
     
-    if ~exist('colback', 'var'); colback = 1; end
+    if ~exist('colback', 'var'); colback = 'w'; end
     
     setm(gca,'mlabellocation',dlo)
     setm(gca,'meridianlabel','on')
@@ -161,7 +161,7 @@ function dramap_stress2()
     
     
     
-    if colback == 2  % black background
+    if colback == 'k'  % black background
         set(gcf,'color','k')
         setm(gca,'ffacecolor','k')
         setm(gca,'fedgecolor','w','flinewidth',3);

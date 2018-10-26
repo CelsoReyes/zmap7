@@ -27,14 +27,15 @@ classdef MapFeature < handle
     % % PLOT FEATURE ON "NORMAL" PLOT AXES
     % % - SET UP THE AXES
     % ax1=subplot(1,2,1);
-    % ylim(ax1,[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)])
-    % xlim(ax1,[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)])
+    % ylim(ax1,bounds2(ZG.primeCatalog.Latitude));
+    % xlim(ax1,bounds2(ZG.primeCatalog.Longitude));
     % title(ax1,'normal plot')
     %
     % % PLOT FEATURE ON "MAP" PLOT AXES
     % % - SET UP THE AXES
     % ax2=subplot(1,2,2);
-    % ax2m=axesm('lambert','MapLatLimit',[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)],'MapLonLimit',[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)]);
+    % ax2m=axesm('lambert','MapLatLimit',bounds2(ZG.primeCatalog.Latitude),...
+    %  'MapLonLimit',bounds2(ZG.primeCatalog.Longitude));
     % setm(ax2m,'MLineLocation',.25, 'PLineLocation',.25); % degrees for grid lines
     % setm(ax2m,'Grid','on')
     % setm(ax2m,'MeridianLabel','on','ParallelLabel','on')
@@ -281,11 +282,11 @@ classdef MapFeature < handle
             
             obj.MenuToggle = uimenu(parentH,...
                 'Label',['Hide ' obj.Name],...
-                MenuSelectedField(),{@obj.toggle_showhide_menu, ax});
+                MenuSelectedField(), @(s,~)obj.toggle_showhide_menu(ax));
         end
-        function toggle_showhide_menu(obj, src, ~, ax, contingencyFunction)
+        function toggle_showhide_menu(obj, src, ax, contingencyFunction)
             % switch the show/hide menu between the "Show" and "Hide" stat
-            % obj.toggle_showhide_menu(src, ~, contingencyFunction
+            % obj.toggle_showhide_menu(src, contingencyFunction
             %   this is intended to be the Callback for the addToggleMenu.
             %
             % if the plot this toggles no longer exists, then

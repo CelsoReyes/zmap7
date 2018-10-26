@@ -1,8 +1,7 @@
 function pl = timeplot 
     % timeplot plots selected events as cummulative # over time
     %
-    % operates on catalog newt2 which is set by incomming routine
-    % tracks its view using ZG.Views.timeplot
+    % operates on catalog newt2 which is set by incoming routine
     %
     % original view, when figure first called, is stored in figure's UserData as UserData.View
     %

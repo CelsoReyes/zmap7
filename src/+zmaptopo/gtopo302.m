@@ -189,7 +189,7 @@ function [map,maplegend] = gtopo30c(rd,samplefactor,latlim,lonlim)
     fileexist = 1;
     for i = 1:length(do)
         if ~exist([ffname{i},'.DEM'],'file')
-            warning([ffname{i},'.dem does not exist'])
+            warning('ZMAP:topo:missingFile',[ffname{i},'.dem does not exist'])
             fileexist = 0;
         end
     end

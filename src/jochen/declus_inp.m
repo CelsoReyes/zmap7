@@ -17,7 +17,7 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     mCatalog=catalog; % Script works on mCatalog
     
     methoddescriptions=string(enumeration('DeclusterWindowingMethods'));
-    nMethod = DeclusterWindowingMethods.GardinerKnopoff1974  % default declusting methods
+    nMethod = DeclusterWindowingMethods.GardinerKnopoff1974;  % default declusting methods
     % Make the interface
     %
     bas_fig=figure_w_normalized_uicontrolunits(...
@@ -47,7 +47,9 @@ function [out,nMethod] = declus_inp(catalog, varargin)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %% Input
     uicontrol('Style','popup','Position',[.20 .6 .5 .1],...
-        'Units','normalized','String',methoddescriptions,'Value',nMethod,...
+        'Units','normalized',...
+        'String',methoddescriptions,...
+        'Value', methoddescriptions==string(nMethod),...
         'Callback',@cb_setmethod);
     
     % Buttons

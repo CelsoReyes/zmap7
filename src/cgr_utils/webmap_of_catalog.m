@@ -33,10 +33,9 @@ function [hwm,hwmm]=webmap_of_catalog(catalog,force)
         catalog.Latitude(i), catalog.Longitude(i), catalog.Depth(i), catalog.Magnitude(i))}; 
     end
     %disp('title');
-    tit=cellstr(char(catalog.Date,'uuuu-MM-dd hh:mm:ss'));
+    tit=cellstr(char(catalog.Date,'uuuu-MM-dd HH:mm:ss'));
     hwm=webmap('World Topographic Map');
-    wmlimits(hwm,[min(catalog.Latitude) max(catalog.Latitude)],...
-        [min(catalog.Longitude) max(catalog.Longitude)])
+    wmlimits(hwm,bounds2(catalog.Latitude), bounds2(catalog.Longitude))
     %disp('wmmarker');
     
     magrange = [10:-1:-2]; 

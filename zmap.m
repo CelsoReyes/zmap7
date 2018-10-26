@@ -5,7 +5,7 @@ function zmap(varargin)
     %
     % Options:
     %   -debug : enables debugging functionality
-    %   -restart
+    %   -restart : clear all windows and variables, then restart zmap
     %   -initonly : set up zmap paths and prefs, but don't open a window
     %
     % Options to be probably implemented
@@ -25,16 +25,13 @@ function zmap(varargin)
     %  - scripts have been turned into functions and classes (allowing zmap functions to be run programmatically)
     %  - GUI elements have been consolidated, updated
     %  - unreachable code (& scripts not appearing in any menus) have been removed
-    %  - ability to import catalogs from FDSN web services.
+    %  - added ability to import catalogs from FDSN web services.
     %  - global variables have been minimized. Data sharing occurs through one class.
     %  - only result variables should appear in the base workspace.
     %  - requires minimum of matlab v 2018a,
     %
     %
     %  see README.md and the help for individual parts of ZMAP for other change details
-    %
-    % ADDING CUSTOM FUNCTIONS to ZMAP:
-    % -
     %
     
     % The matlab searchpaths are updated, existing windows closed.
@@ -59,6 +56,11 @@ function zmap(varargin)
     
     disp(varargin)
     % advise matlab where it can find everything zmap
+    if ~exist('set_zmap_paths','var')
+        p = mfilename('fullpath'); 
+        p(end-length(mfilename) : end)=[];
+        addpath(fullfile(p,'src'));
+    end
     set_zmap_paths;
     ZG = ZmapGlobal.Data;
     disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
@@ -97,7 +99,7 @@ function zmap(varargin)
     tested_systems = {'MAC','PCW'};
     prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
     if ~ismember( sys(1:3), tested_systems)
-        warndlg(' Warning: ZMAP has not been tested on this computer type.','Untested System')
+        warndlg('ZMAP:zmap:UntestedComputer', ' Warning: ZMAP has not been tested on this computer type.','Untested System')
         pause(5)
     end
     
@@ -140,5 +142,6 @@ function zmap(varargin)
         else
             ZmapMainWindow(cw);
         end
+        show_a_tip();
     end
 end

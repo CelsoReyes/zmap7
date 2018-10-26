@@ -26,7 +26,6 @@ function [c,ok] = get_fdsn_data_from_web_callback()
         
         ok = ~isequal(cur_cat_stats, new_cat_stats);
         ZG.primeCatalog = c;
-        ZG.Views.primary = ZmapCatalogView(@()ZG.primeCatalog);
         
         uimemorize_catalog();
     end

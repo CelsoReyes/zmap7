@@ -78,7 +78,7 @@ classdef ZmapMainWindow < handle
         plot_base_events(obj, container, featurelist)
         plotmainmap(obj)
         c = context_menus(obj, tag, createmode, varargin) % manage context menus used in figure
-        plothist(obj, name, values, tabgrouptag)
+        plothist(obj, name, tabgrouptag)
         fmdplot(obj, tabgrouptag)
         
         cummomentplot(obj, tabgrouptag)
@@ -172,10 +172,7 @@ classdef ZmapMainWindow < handle
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
             if ~isa(in_catalog, 'ZmapCatalog')
-                rawview = ZG.Views.primary;
-                if ~isempty(rawview)
-                    obj.rawcatalog = ZG.Views.primary.Catalog;
-                end
+                obj.rawcatalog = ZG.primeCatalog;
             else
                 obj.rawcatalog = in_catalog;
             end
@@ -185,12 +182,12 @@ classdef ZmapMainWindow < handle
             %obj.shape.subscribe('ShapeChanged', @obj.shapeChangedFcn);
             
             if isempty(obj.rawcatalog)
-                obj.daterange   = [NaT NaT];
+                obj.daterange   = [missing missing];
                 obj.catalog     = ZmapCatalog();
                 obj.mdate       = [];
                 obj.mshape      = [];
             else
-                obj.daterange   = [min(obj.rawcatalog.Date) max(obj.rawcatalog.Date)];
+                obj.daterange   = bounds2(obj.rawcatalog.Date);
                 [obj.mdate, obj.mshape] = obj.filter_catalog();
             end
             % retrieve default values from ZmapGlobal.
@@ -398,7 +395,7 @@ classdef ZmapMainWindow < handle
         
         function cb_timeplot(obj, ~, ~)
             disp('oh')
-            ctp = CumTimePlot(@()obj.catalog);
+            ctp = CumTimePlot(obj.catalog);
             ctp.plot();
         end
         
@@ -478,14 +475,14 @@ classdef ZmapMainWindow < handle
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig, 'Tag',['xsTabContext' mytitle]))
             c = uicontextmenu(obj.fig, 'Tag',['xsTabContext' mytitle]);
-            uimenu(c, 'Label', 'Copy Contents to new figure (static)', 'Callback',@copytab);
+            uimenu(c, 'Label', 'Copy Contents to new figure (static)', CallbackFld, @copytab);
             uimenu(c, 'Label', 'Info', 'Separator', 'on', CallbackFld,@obj.cb_info);
-            uimenu(c, 'Label', 'Change Width', CallbackFld,@obj.cb_chwidth);
-            uimenu(c, 'Label', 'Change Color', CallbackFld,@obj.cb_chcolor);
-            uimenu(c, 'Label', 'Examine This Area', CallbackFld,{@obj.cb_cropToXS, xsec});
+            uimenu(c, 'Label', 'Change Width'       , CallbackFld, @(~,~)obj.cb_chwidth);
+            uimenu(c, 'Label', 'Change Color'       , CallbackFld, @obj.cb_chcolor);
+            uimenu(c, 'Label', 'Examine This Area'  , CallbackFld, @(~,~)obj.cb_cropToXS(xsec));
             uimenu(c, 'Separator', 'on',...
                 'Label', 'Delete',...
-                CallbackFld,{@obj.cb_deltab, xsec});
+                CallbackFld, @(~,~)obj.cb_deltab(xsec));
             mytab.UIContextMenu = c;
             
             
@@ -500,13 +497,13 @@ classdef ZmapMainWindow < handle
             
         end
         
-        function cb_cropToXS(obj,~,~, xsec)
+        function cb_cropToXS(obj, xsec)
             sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
             set_my_shape(obj, sh);
             %obj.replot_all();
         end
         
-        function cb_deltab(obj, ~,~, xsec)
+        function cb_deltab(obj, xsec)
             prevPtr = obj.fig.Pointer;
             obj.fig.Pointer = 'watch';
             mytitle = get(gco, 'Title');
@@ -535,7 +532,7 @@ classdef ZmapMainWindow < handle
             end
         end
         
-        function cb_chwidth(obj,~,~)
+        function cb_chwidth(obj)
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
@@ -717,17 +714,21 @@ classdef ZmapMainWindow < handle
             % prepare the Tab Group for the upper-right plots [fmd, histograms, etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.UR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation', TabLocation, 'Tag', 'UR plots');
+                'TabLocation', TabLocation, 'Tag', 'Upper Right panel');
             
             % prepare the Tab Group for the lower-right plots [cumulative , etc]
             uitabgroup(obj.fig, 'Units', 'normalized', 'Position', obj.TabGroupPositions.LR,...
                 'Visible', 'off', 'SelectionChangedFcn',@cb_selectionChanged,...
-                'TabLocation', TabLocation, 'Tag', 'LR plots');
+                'TabLocation', TabLocation, 'Tag', 'Lower Right panel');
             
             
             % prepare the Tab Group for the cross sections (subordinate to the main tab)
-            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
+            obj.maintab     = findOrCreateTab(obj.fig, obj.maingroup, obj.maingroup, "MAINMAP:" + obj.catalog.Name);
             obj.maintab.Tag = 'mainmap_tab';
+            if isempty(findobj(obj.fig,'Name','Move Tab','-and','Type','uimenu'))
+                uimenu(obj.maintab.UIContextMenu,'Text','Move Tab', ...
+                    MenuSelectedField(),@(~,~)callbacks.switchtabgroup(obj.maingroup));
+            end
             
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...
                 'Position', obj.TabGroupPositions.XS,...
@@ -749,8 +750,8 @@ classdef ZmapMainWindow < handle
             
             obj.replot_all();
             obj.fig.Visible = 'on';
-            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'LR plots'), 'Visible', 'on');
-            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'UR plots'), 'Visible', 'on');
+            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Lower Right panel'), 'Visible', 'on');
+            set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Upper Right panel'), 'Visible', 'on');
             
             drawnow nocallbacks
             
@@ -769,6 +770,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 obj.disable_non_load_menus();
             end
+            if isvalid(h), delete(h),end
             obj.fig.Pointer = 'arrow';
             
             function addTimeStamp(h)
@@ -811,17 +813,17 @@ classdef ZmapMainWindow < handle
             
             % add Y-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Y'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Y'));
             obj.sharedContextMenus.LogLinearYScale = c;
             
             % add X-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'X'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'X'));
             obj.sharedContextMenus.LogLinearXScale = c;
             
             % add Z-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld,{@logtoggle, 'Z'});
+            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Z'));
             obj.sharedContextMenus.LogLinearZScale = c;
         end
         
@@ -842,7 +844,9 @@ classdef ZmapMainWindow < handle
             h = allchild(findall(obj.fig, 'Label', 'Get/Load Catalog'));
             if iscell(h)
                 for i = 1:numel(h)
-                    set(h{i}(~startsWith(get(h{i}, 'Label'), 'from ')), 'Enable', 'off');
+                    if ~isempty(h{i})
+                        set(h{i}(~startsWith(get(h{i}, 'Label'), 'from ')), 'Enable', 'off');
+                    end
                 end
             else
                 set(h(~startsWith(get(h, 'Label'), 'from ')), 'Enable', 'off');
@@ -923,12 +927,22 @@ classdef ZmapMainWindow < handle
             drawnow nocallbacks;
         end
         
+        function cb_updateSelections(obj,~,~)
+            if obj.maingroup.SelectedTab==obj.maintab
+            ev.NewValue = obj.maintab;
+            ev.OldValue = obj.maingroup.SelectedTab;
+            else
+            ev.NewValue = obj.maingroup.SelectedTab;
+            ev.OldValue = obj.maintab;
+            end
+            obj.cb_mainMapSelectionChanged([],ev);
+        end
+            
         function cb_mainMapSelectionChanged(obj, ~, ev)
             % make sure that the selections you see match the map you're looking at
             
             % functions should all modify the analysis windows in a similar way
             % the mainmap has a unique set of displays.
-            
             disp('cb_mainMapSelectionChanged');
             toMainmap = ev.NewValue == obj.maintab;
             fromMainmap = ev.OldValue == obj.maintab;
@@ -973,6 +987,7 @@ classdef ZmapMainWindow < handle
                 set(toShow,'Visible','off');
                 set(findobj(obj.fig.Children,'Tag','lookmenu'),'Enable','on');
             end
+            clear_empty_legend_entries(obj.fig);
         end
  
     end

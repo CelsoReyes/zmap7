@@ -84,7 +84,7 @@ classdef bgrid3dB < Zmap3DGridFunction
             %
             [bvg, bvg_wls, ram, go, avm, mcma] = deal(nan(vol_dimensions));
             
-            [t0b, teb] = ZG.primeCatalog.DateRange() ;
+            [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
             n = ZG.primeCatalog.Count;
             tdiff = round((teb-t0b)/ZG.bin_dur);
             loc = zeros(3, length(gx)*length(gy));

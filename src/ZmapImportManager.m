@@ -56,7 +56,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     try
         save(saveFile, 'catalog');
     catch ME
-        warning('unable to save the catalog');
+        warning('ZMAP:unableToSaveCatalog','unable to save the catalog');
         warning(ME.message);
     end
     
@@ -68,10 +68,7 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
         % ZG.mainmap_plotby='depth';
         
         setDefaultValues(ZG.primeCatalog);
-        cf=@()ZG.primeCatalog;
-        ZG.Views.primary=ZmapCatalogView(cf); % repeat for other loads?
         ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
-        %[ZG.Views.primary,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZG.Views.primary, ZG.CatalogOpts.BigEvents.MinMag);
         
         % OPTIONALLY CLEAR SHAPE
         if ~isempty(ShapeGeneral.ShapeStash)
@@ -94,8 +91,6 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
             end
         end
         
-        ZmapMessageCenter.update_catalog();
-        
         uimemorize_catalog();
         
     end
@@ -107,7 +102,7 @@ function setDefaultValues(A)
     ZG=ZmapGlobal.Data; % get zmap globals
     
     %  default values
-    [t0b, teb] = A.DateRange() ;
+    [t0b, teb] = bounds(A.Date) ;
     ttdif = days(teb - t0b);
     if ~exist('bin_dur','var')
         ZG.bin_dur = days(ceil(ttdif/100));

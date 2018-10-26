@@ -43,7 +43,7 @@ elseif nFunction == FilterOp.importCatalog
                         return
                     end
                 end
-                disp(['Import: Problem in line ' num2str(i) ' of ' sFilename '. Line ignored.']);
+                msg.dbfprintf('Import: Problem in line %d of %s. Line ignored.\n',i, sFilename);
                 uOutput(i,:)=nan;
                 Error_lines = [Error_lines; i];
             end

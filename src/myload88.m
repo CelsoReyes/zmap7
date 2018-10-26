@@ -1,4 +1,4 @@
-function myload88(da,inda) 
+function myload88(~) 
     % This script file load a data set using fscanf
     % The default reads Northern California Hypoellipse Format
     %
@@ -13,26 +13,46 @@ function myload88(da,inda)
     % Lets make sure the file is closed...
     safe_fclose(fid);
     
-    % reset paramteres
+    % reset parameteres
     replaceMainCatalog([]); b = []; n = 0;
     
-    if inda == 1
-        % initial selection option
-        tmin   = 10.0001;
-        tmax   = 98.000;
-        lonmin = -180.0;
-        lonmax =  180.0;
-        latmin =  -90.00;
-        latmax =  90.0 ;
-        Mmin   = -4.0;
-        Mmax   = 10.;
-        mindep = -10;
-        maxdep = 700;
-        
-        % call the pre-selection window
-        presel(@myload88);
-        return
+    % initial selection option
+    tmin   = 10.0001;
+    tmax   = 98.000;
+    lonmin = -180.0;
+    lonmax =  180.0;
+    latmin =  -90.00;
+    latmax =  90.0 ;
+    Mmin   = -4.0;
+    Mmax   = 10.;
+    mindep = -10;
+    maxdep = 700;
+    
+    
+    zdlg = ZmapDialog();
+    zdlg.AddEdit('latmin','min Latitude',latmin,'');
+    zdlg.AddEdit('latmax','max Latitude',latmax,'');
+    zdlg.AddEdit('lonmin','min Longitude',lonmin,'');
+    zdlg.AddEdit('lonmax','max Longitude',lonmax,'');
+    zdlg.AddEdit('tmin','Start time',tmin,'');
+    zdlg.AddEdit('tmax','End time',tmax,'');
+    zdlg.AddEdit('Mmin','min Lat', Mmin,'');
+    zdlg.AddEdit('Mmax','max Lat',Mmax,'');
+    zdlg.AddEdit('mindep','min Lat',mindep,'');
+    zdlg.AddEdit('maxdep','max Lat',maxdep,'');
+    [s, okPressed] = zdlg.Create('Name','Pre-selection parameters');
+    if ~okPressed
+        return;
     end
+    
+    latmin=s.latmin;
+    latmax=s.latmax;
+    lonmin=s.lonmin;
+    lonmax=s.lonmax;
+    tmin=s.tmin;
+    tmax=s.tmax;
+    Mmin=s.Mmin;
+    Mmax=s.Mmax;
     
     % open the file and read 10000 lines at a time
     [file1,path1] = uigetfile([ '*.dat'],' Earthquake Datafile');
@@ -54,7 +74,7 @@ function myload88(da,inda)
         b = [ -l(9,:)-l(10,:)/6000 ; l(7,:)+l(8,:)/6000 ; l(1,:);l(2,:);l(3,:);
             l(13,:)/10;l(11,:)/100;l(4,:);l(5,:); l(14,:)/100;l(12,:)/10];
         b = b';
-        l =  b.Magnitude >= Mmin & b(:,1) >= lonmin & b(:,1) <= lonmax & ...
+        l =  b.Magnitude >= Mmin & b.Magnitude <= Mmax &  b(:,1) >= lonmin & b(:,1) <= lonmax & ...
             b(:,2) >= latmin & b(:,2) <= latmax & b.Date <= tmax  & ...
             b.Date >= tmin  ;
         a = [a ; b(l,:)];
@@ -102,7 +122,4 @@ function myload88(da,inda)
     if length(file1) > 1;
         save([path1 file1], 'a');
     end
-    
-    % call the map window
-    zmap_update_displays();
 end

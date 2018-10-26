@@ -61,7 +61,7 @@ function deprat()
     if isempty(ZG.newcat)
         ZG.newcat = a;
     end
-    [t0b, teb] = ZG.newcat.DateRange() ;
+    [t0b, teb] = bounds(ZG.newcat.Date) ;
     n = ZG.newcat.Count;
     tdiff = round(teb - t0b);
     
@@ -131,10 +131,6 @@ function deprat()
         f1=gcf;
         f2=gpf;
         set(f1,'Visible','off');
-        if f1~=f2
-            ZmapMessageCenter();
-            
-        end
     end
     
     function callbackfun_003(mysrc,myevt)

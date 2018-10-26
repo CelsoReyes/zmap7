@@ -18,7 +18,7 @@ function pdc3()
     
     Ho_Wb = waitbar(0,'Calculating the fractal dimension D');
     Hf_Cfig = gcf;
-    Hf_child = get(groot,'children');
+    Hf_child = allchild(groot);
     set(Hf_child,'pointer','watch','papertype','A4');
     %
     %
@@ -101,7 +101,7 @@ function pdc3()
     
     clear i j k
     close(Ho_Wb);
-    Hf_child = get(groot,'children');
+    Hf_child = allchild(groot);
     set(Hf_child,'pointer','arrow');
     
     

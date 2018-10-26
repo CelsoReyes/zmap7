@@ -182,9 +182,9 @@ function view_av2(lab1,valueMap)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
             MenuSelectedField(),@callbackfun_004)
         uimenu(options,'Label','Select Eqs in Polygon - new',...
-            MenuSelectedField(),{@cb_selectPoly,false});
+            MenuSelectedField(),{@(~,~)cb_selectPoly(false));
         uimenu(options,'Label','Select Eqs in Polygon - hold',...
-            MenuSelectedField(),{@cb_selectPoly,true});
+            MenuSelectedField(),{@(~,~)cb_selectPoly(true));
         
         % Menu 'Maps'
         op1 = uimenu('Label',' Maps ');
@@ -250,9 +250,7 @@ function view_av2(lab1,valueMap)
         cicros(0);
     end
     
-    function cb_selectPoly(mysrc,myevt, h_state)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_selectPoly(h_state)
         ZG=ZmapGlobal.Data;
         ZG.hold_state=h_state;
         [newa2,pl]=crosssel(newa);

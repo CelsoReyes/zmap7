@@ -45,7 +45,7 @@ function bvalfit()
         if mima > 0
             mima = 0 ;
         end
-    [t0b, teb] = ZG.newcat.DateRange() ;
+    [t0b, teb] = bounds(ZG.newcat.Date) ;
         n = ZG.newcat.Count;
         tdiff = round(teb - t0b);
         
@@ -248,7 +248,8 @@ function bvalfit()
         stri = [' Log N = ' num2str(aa_) num2str(bb) '*M '];
         te = text(0.01,0.78, stri) ;
         set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
-        disp([' Correlation coefficient for background = ', num2str(r) ]);                                disp([' Correlation coefficient for foreground = ', num2str(rr) ]);
+        disp([' Correlation coefficient for background = ', num2str(r) ]);                                
+        disp([' Correlation coefficient for foreground = ', num2str(rr) ]);
         %  find simple shift
         % first find Mmin ( M for which the background relation
         % departs from straight line by more than std )
@@ -260,7 +261,8 @@ function bvalfit()
         dM = magi - min_backg;        % magnitude shift
         ld = abs(foreg_ab - polyval(pp,magsteps_desc)) <= std_foreg;
         [min_foreg, ldf] = min(magsteps_desc(ld));        % min_foreg is Mmin of foreground
-        disp([' Mmin for background = ', num2str(min_backg) ]);                                disp([' Mmin for foreground = ', num2str(min_foreg) ]);
+        disp([' Mmin for background = ', num2str(min_backg) ]);                                
+        disp([' Mmin for foreground = ', num2str(min_foreg) ]);
         stri = [ 'Minimum magnitude for Background = ' num2str(min_backg) ];
         te = text(0.01,0.73, stri) ;
         set(te,'FontSize',ZmapGlobal.Data.fontsz.s);
@@ -555,10 +557,6 @@ function bvalfit()
         f1=gcf;
         f2=gpf;
         set(f1,'Visible','off');
-        if f1~=f2
-            % ZmapMessageCenter();
-            
-        end
     end
     
     function callbackfun_009(mysrc,myevt)

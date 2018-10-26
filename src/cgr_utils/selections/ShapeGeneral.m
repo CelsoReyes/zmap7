@@ -33,7 +33,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     %  SHAPEGENERAL methods:
     %     SHAPEGENERAL -
     %     Outline - get shape outline. like Points, except guaranteed to give outline instead of centerpoints
-    %     isInside - return a vector of size otherLon that is true where item is inside polygon
+    %     isinterior - return a vector of size otherLon that is true where item is inside polygon
     %     plot
     %     clearplot
     %     deemphasizeplot
@@ -101,7 +101,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % ShapeGeneral create a shape
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
-            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('changing shape units'));
+            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('ZMAP:polygon:changingUnits','changing polygon units'));
         end
         
         function notifyShapeChange(obj,metaprop, evt)
@@ -151,8 +151,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             val = polyarea(xs,ys);
         end
         
-        function [mask]=isInside(obj,otherLon, otherLat)
-            % [mask]=isInside(obj,otherLon, otherLat)
+        function [mask]=isinterior(obj,otherLon, otherLat)
+            % [mask]=isinterior(obj,otherLon, otherLat)
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
@@ -183,7 +183,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             %delete(shapegencontext)
             
             if isempty(shout)
-                set(gca,'NextPlot','add');
+                set(ax,'NextPlot','add');
                 shout=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
                     'LineStyle','-',...
                     'Color','r',...
@@ -194,7 +194,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 %moveable_item(p,[],@(moved,deltas)obj.finishedMoving(moved,deltas),...
                 %    'movepoints',obj.AllowVertexEditing,'xtol',.05,'ytol',0.05,...
                 %    'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
-                set(gca,'NextPlot','replace');
+                set(ax,'NextPlot','replace');
             else
                 set(shout,'XData',obj.Lon,'YData',obj.Lat,...
                     'LineStyle','-',...
@@ -233,11 +233,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     nm=obj.AnalysisFunctions{i,2};
                     uimenu(c,'Label',sprintf('Analyze EQ inside Shape (%s)',nm),...
                         'separator','on',...
-                        MenuSelectedField(),{@obj.cb_selectp,fn,'inside'}); %@cb_analyze
+                        MenuSelectedField(), @(~,~)obj.cb_selectp(fn,'inside')); % @cb_analyze
                     uimenu(c,'Label',sprintf('Analyze EQ outside Shape (%s)',nm),...
-                        MenuSelectedField(),{@obj.cb_selectp,fn,'outside'});
+                        MenuSelectedField(), @(~,~)obj.cb_selectp(fn,'outside'));
                     uimenu(c,'Label',sprintf('Compare Inside vs Outside (%s)',nm),...
-                        MenuSelectedField(),{@compare_in_out, fn});
+                        MenuSelectedField(), @(~,~)compare_in_out(fn));
                 end
                 
                 uimenu(c,...
@@ -245,7 +245,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                     MenuSelectedField(),@latscale);
                 obj.add_shape_specific_context(c);
                 
-                function compare_in_out(src,ev)
+                function compare_in_out(src,ev,fn)
                     beep;
                     error('not implemented');
                 end
@@ -328,18 +328,23 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
         end
         
-        function cb_selectp(obj,~,~,analysis_fn, in_or_out)
+        function cb_selectp(obj, analysis_fn, in_or_out)
             % analyze EQ inside/outside shape works from view in current figure
             
             ZG = ZmapGlobal.Data;
             
             % apply shape to current figure's view (inverting if necessary)
             fig = gcf;
-            if isfield(fig.UserData,'View')
+            if isprop(fig.UserData,'rawcatalog')
+                myview=ZmapCatalogView(fig.UserData.rawcatalog);
+                myview = myview.PolygonApply(obj.Outline);
+                
+            elseif isfield(fig.UserData,'View')
                 myview=fig.UserData.View.PolygonApply(obj.Outline);
             else
                 myview=ZG.Views.primary.PolygonApply(obj.Outline);
             end
+            
             if in_or_out == "outside"
                 myview=myview.PolygonInvert();
             end

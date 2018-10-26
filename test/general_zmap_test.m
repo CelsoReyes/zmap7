@@ -79,7 +79,7 @@ for j=1:numel(itemsToTry)
     catch ME
         for j = 1:numel(ME.stack)
             if endsWith(ME.stack(j).file,'.m')
-                warning("STACK %d: %s [%s] : line %d", j, ME.stack(j).name,ME.stack(j).file, ME.stack(j).line);
+                warning('ZMAP:stackReport',STACK %d: %s [%s] : line %d', j, ME.stack(j).name,ME.stack(j).file, ME.stack(j).line);
             end
         end
         warning(ME.message);

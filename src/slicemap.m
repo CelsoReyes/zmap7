@@ -85,10 +85,10 @@ function slicemap()
         
         uicontrol('Units','normal',...
             'Position',[.96 .90 .04 .04],'String',' V1',...
-            'callback',{@callbackfun_vX,'samp1'});
+            'Callback',@(~,~)callbackfun_vX('samp1'));
         uicontrol('Units','normal',...
             'Position',[.96 .85 .04 .04],'String',' V2',...
-            'callback',{@callbackfun_vX,'samp2'});
+            'Callback',@(~,~)callbackfun_vX('samp2'));
         uicontrol('Units','normal',...
             'Position',[.0 .95 .15 .04],'String',' Define X-section',...
             'callback',@callbackfun_define_xsection)
@@ -343,9 +343,7 @@ function slicemap()
         myslicer();
     end
     
-    function callbackfun_vX(mysrc,myevt, whichsamp)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_vX(whichsamp)
         anseiswa(whichsamp,ds);
         ZG=ZmapGlobal; 
         ctp=CumTimePlot(ZG.newt2);

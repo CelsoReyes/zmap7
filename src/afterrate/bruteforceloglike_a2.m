@@ -36,60 +36,61 @@ function [pv1, pv2, cv1, cv2, kv1, kv2, fAIC, fL] = bruteforceloglike_a2(tas, fT
     fKmin2 = 10;
     fKmax2 = 4000;
 
-    if nMod == 1
-        % Modified Omori law
-        % 3 free parameters: p, c , k
-        fPar = 3;
-        vStartValues = [1.1 0.5 50];
-        [vValues, fL] = fmincon(@bruteloglike, vStartValues, [], [], [], [],...
-            [fPmin fCmin fKmin1 ], [fPmax fCmax fKmax1 ], [], options, tas);
-
-        pv1 = vValues(1);
-        pv2 = vValues(1);
-        cv1 = vValues(2);
-        cv2 = vValues(2);
-        kv1 = vValues(3);
-        kv2 = vValues(3);
-    elseif nMod == 2
-        % 4 free parameters: p, c , k1, k2
-        fPar = 4;
-        vStartValues = [1.1 0.5 50 50];
-        [vValues, fL] = fmincon(@bruteloglike_pck2, vStartValues, [], [], [], [],...
-            [fPmin fCmin fKmin1 fKmin2], [fPmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
-
-        pv1 = vValues(1);
-        pv2 = vValues(1);
-        cv1 = vValues(2);
-        cv2 = vValues(2);
-        kv1 = vValues(3);
-        kv2 = vValues(4);
-
-    elseif nMod == 3
-        % 5 free parameters: p1,p2,c,k1,k2
-        fPar = 5;
-        vStartValues = [1.1 1.1 0.5 0.5 50 50];
-        [vValues, fL] = fmincon(@bruteloglike_p2ck2, vStartValues, [], [], [], [],...
-            [fPmin fPmin fCmin fCmin fKmin1 fKmin2], [fPmax fPmax fCmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
-
-        pv1 = vValues(1);
-        pv2 = vValues(2);
-        cv1 = vValues(3);
-        cv2 = vValues(3);
-        kv1 = vValues(5);
-        kv2 = vValues(6);
-    else
-        % 6 free parameters: p1,p2,c1, c2,k1,k2
-        fPar =6;
-        vStartValues = [1.1 1.1 0.5 0.5 50 50];
-        [vValues, fL] = fmincon(@bruteloglike_p2c2k2, vStartValues, [], [], [], [],...
-            [fPmin fPmin fCmin fCmin fKmin1 fKmin2], [fPmax fPmax fCmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
-
-        pv1 = vValues(1);
-        pv2 = vValues(2);
-        cv1 = vValues(3);
-        cv2 = vValues(4);
-        kv1 = vValues(5);
-        kv2 = vValues(6);
+    switch nMod
+        case OmoriModel.pck
+            % Modified Omori law
+            % 3 free parameters: p, c , k
+            fPar = 3;
+            vStartValues = [1.1 0.5 50];
+            [vValues, fL] = fmincon(@bruteloglike, vStartValues, [], [], [], [],...
+                [fPmin fCmin fKmin1 ], [fPmax fCmax fKmax1 ], [], options, tas);
+            
+            pv1 = vValues(1);
+            pv2 = vValues(1);
+            cv1 = vValues(2);
+            cv2 = vValues(2);
+            kv1 = vValues(3);
+            kv2 = vValues(3);
+        case OmoriModel.pckk
+            % 4 free parameters: p, c , k1, k2
+            fPar = 4;
+            vStartValues = [1.1 0.5 50 50];
+            [vValues, fL] = fmincon(@bruteloglike_pck2, vStartValues, [], [], [], [],...
+                [fPmin fCmin fKmin1 fKmin2], [fPmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
+            
+            pv1 = vValues(1);
+            pv2 = vValues(1);
+            cv1 = vValues(2);
+            cv2 = vValues(2);
+            kv1 = vValues(3);
+            kv2 = vValues(4);
+            
+        case OmoriModel.ppckk
+            % 5 free parameters: p1,p2,c,k1,k2
+            fPar = 5;
+            vStartValues = [1.1 1.1 0.5 0.5 50 50];
+            [vValues, fL] = fmincon(@bruteloglike_p2ck2, vStartValues, [], [], [], [],...
+                [fPmin fPmin fCmin fCmin fKmin1 fKmin2], [fPmax fPmax fCmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
+            
+            pv1 = vValues(1);
+            pv2 = vValues(2);
+            cv1 = vValues(3);
+            cv2 = vValues(3);
+            kv1 = vValues(5);
+            kv2 = vValues(6);
+        case OmoriModel.ppcckk
+            % 6 free parameters: p1,p2,c1, c2,k1,k2
+            fPar =6;
+            vStartValues = [1.1 1.1 0.5 0.5 50 50];
+            [vValues, fL] = fmincon(@bruteloglike_p2c2k2, vStartValues, [], [], [], [],...
+                [fPmin fPmin fCmin fCmin fKmin1 fKmin2], [fPmax fPmax fCmax fCmax fKmax1 fKmax2], [], options, tas, fT1);
+            
+            pv1 = vValues(1);
+            pv2 = vValues(2);
+            cv1 = vValues(3);
+            cv2 = vValues(4);
+            kv1 = vValues(5);
+            kv2 = vValues(6);
     end
     % corrected Akaike Information Criterion
     [fk,~]=size(tas);

@@ -213,7 +213,7 @@ function view_Omoricross(src_table, mygrid, field_name)
         
         for j = 1 : length(viewable)
             uimenu(op1, 'Label',viewable{j,1},'Tag',viewable{j,2},...
-                MenuSelectedField(),{@callback_changeplot,viewable{j,2}}); %Table header IS the title AND tag
+                MenuSelectedField(), @(s,v)callback_changeplot(s, v, viewable{j,2}) ); %Table header IS the title AND tag
         end
         add_display_menu(1)
     end

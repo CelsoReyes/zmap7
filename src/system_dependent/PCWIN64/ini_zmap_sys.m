@@ -1,4 +1,4 @@
-function ini_zmap_PCWIN64()
+function ini_zmap_sys()
     %    This is the  ZMAP default file used for the system specified in title
     %    It's purpose is to modify the ZmapGlobal variables as necessary
     %    to fit the system.

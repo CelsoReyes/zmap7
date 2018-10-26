@@ -14,7 +14,7 @@ function dispma()
         ZG.newcat = ZG.primeCatalog ;
     end
     maxmag = max(ZG.newcat.Magnitude);
-    [t0b, teb] = ZG.newcat.DateRange() ;
+    [t0b, teb] = bounds(ZG.newcat.Date) ;
     n = ZG.newcat.Count;
     tdiff = round(teb - t0b);
     

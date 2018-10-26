@@ -6,28 +6,24 @@ function mcwtidays(catalog)
     report_this_filefun();
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
-    bv2 = [];
     bv3 = [] ;
     me = [];
     def = {'150'};
     ni2 = inputdlg('Number of events in each window?','Input',1,def);
     l = ni2{:};
     ni = str2double(l);
-    BV = [];
     
     
     itervector=1:ni/5:catalog.Count - ni;
+    nIter=numel(itervector);
     % expect trouble elsewhere if bv2 or BV are reused... they've changed from matrices to structs
     % to handle dates better.
-    bv2=struct(...
-        'magco',nan(numel(itervector),1),...
-        'date',NaT(numel(itervector),1) );
-    bV=struct(...
-        'magco',nan(numel(itervector)*3,1),... was inf!
-        'date',NaT(numel(itervector)*3,1));
+    bv2.magco(1:nIter,1) = double(missing);
+    bv2.date(1:nIter,1)  = datetime(missing);
+
+    bV.magco(1:nIter*3,1) = double(missing);
+    bv.date(1:nIter*3,1)  = datetime(missing);
     
-    %bv2=nan(numel(itervector),2);
-    %BV= nan(numel(itervector)*3,2);
     for n = 1:numel(itervector)
         i=itervector(n);
         [~, magco, ~ ] =  bvalca2(catalog.subset(i:i+ni));

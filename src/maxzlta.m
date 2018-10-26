@@ -1,8 +1,6 @@
 function maxzlta() 
     % maxzlta calculates the maximum z value for the LTA function. 
     % The parameter step (window) can be defined by the user.
-    %
-    % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();

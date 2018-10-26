@@ -12,15 +12,15 @@ function fdparain(gobut)
     
     input1 = uicontrol('Style','popupmenu','Position',[.75 .75 .23 .09],...
         'Units','normalized','String','Automatic Range|Manual Fixed Range|Manual',...
-        'Value',1,'callback',@callbackfun_001);
+        'Value',1, 'Callback', @callbackfun_001);
     
     input2 = uicontrol('Style','edit','Position',[.34 .43 .10 .09],...
         'Units','normalized','String',num2str(radm), 'enable', 'off',...
-        'Value',1,'callback',@callbackfun_002);
+        'Value',1, 'Callback', @callbackfun_002);
     
     input3 = uicontrol('Style','edit','Position',[.75 .43 .10 .09],...
         'Units','normalized','String',num2str(rasm), 'enable', 'off',...
-        'Value',1,'callback',@callbackfun_003);
+        'Value',1, 'Callback', @callbackfun_003);
     
     
     
@@ -43,7 +43,7 @@ function fdparain(gobut)
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .20 .15 ],...
-        'Units','normalized','callback',@callbackfun_004,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_004,'String','Cancel');
     
     
     switch (gobut)
@@ -105,7 +105,6 @@ function fdparain(gobut)
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     

@@ -82,7 +82,7 @@ function plotala()
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km,3),...
             'background','y');
-        set(set_ni2,'callback',@cb_set_threshhold_km);
+        set(set_ni2, 'Callback', @cb_set_threshhold_km);
         set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
         
         
@@ -99,7 +99,7 @@ function plotala()
     figure(cube);
     delete(gca)
     abo = abo2;
-    if isempty(abo);ZmapMessageCenter.set_info(' ','No data above threshold'); return; end
+    if isempty(abo);msg.infodisp('No data above threshold',' '); return; end
     rect= [0.2 0.2 0.6 0.6];
     axes('pos',rect)
     set(gca,'visible','off')
@@ -246,7 +246,7 @@ function plotala()
             ' the calculation with a ^C. The results         '
             ' calculated so far are stored in the variable re'];
         
-        ZmapMessageCenter.set_message(titStr,messtext);
+        msg.dbdisp(messtext, titStr);
         figure(mess);
         
         def = {'5','0.1'};
@@ -529,7 +529,6 @@ function make_movie()
         close(cube);
         close(vie);
         clear m;
-        ZmapMessageCenter();
     end
     
     function cb_info(mysrc,myevt)

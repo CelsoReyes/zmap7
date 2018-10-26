@@ -41,7 +41,7 @@ function view_bvtmap(lab1,valueMap)
         set(nilabel2,'string','Min Probability:');
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
             'background','y');
-        set(set_ni2,'callback',@callbackfun_021)
+        set(set_ni2, 'Callback', @callbackfun_021)
         set(set_ni2,'units','norm','pos',[.85 .92 .08 .04],'min',0.01,'max',10000);
         
         uicontrol('Units','normal',...

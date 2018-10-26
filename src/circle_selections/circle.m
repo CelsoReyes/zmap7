@@ -9,7 +9,6 @@ function circle()
     % outCatalog: newt2, newcat
     % mouse controlled
     % closest events
-    % calls: timeplot
     %
     % turned into function by Celso G Reyes 2017
     %

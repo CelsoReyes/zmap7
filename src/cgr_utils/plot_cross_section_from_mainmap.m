@@ -149,176 +149,75 @@ end
 
 function create_my_menu(c2)
         add_menu_divider();
-        options = uimenu('Label','Select');
-        %uimenu(options,'Label','Select EQ inside Polygon ',MenuSelectedField(),@cb_select_eq_inside_poly);
-        %uimenu(options,'Label','Refresh ',MenuSelectedField(),@cb_refresh2);
+        opts = uimenu('Label','Select');
+        %uimenu(opts,'Label','Select EQ inside Polygon ',MenuSelectedField(),@cb_select_eq_inside_poly);
+        %uimenu(opts,'Label','Refresh ',MenuSelectedField(),@cb_refresh2);
         
-        options = uimenu('Label','Ztools');
-        
-        
-        uimenu(options,'Label', 'differential b ',...
-            MenuSelectedField(),@cb_diff_b);
-        
-        uimenu(options,'Label','Fractal Dimension',...
-            MenuSelectedField(),@cb_fractaldim);
-        
-        uimenu(options,'Label','Mean Depth',...
-            MenuSelectedField(),{@cb_meandepth,c2});
-        
-        uimenu(options,'Label','z-value grid',...
-            MenuSelectedField(),@cb_zvaluegrid);
-        
-        uimenu(options,'Label','b and Mc grid ',...
-            MenuSelectedField(),@cb_b_mc_grid);
-        
-        uimenu(options,'Label','Prob. forecast test',...
-            MenuSelectedField(),@cb_probforecast_test);
-        
-        uimenu(options,'Label','beCubed',...
-            MenuSelectedField(),@cb_becubed);
-        
-        uimenu(options,'Label','b diff (bootstrap)',...
-            MenuSelectedField(),@cb_b_diff_boot);
-        
-        uimenu(options,'Label','Stress Variance',...
-            MenuSelectedField(),@cb_stressvariance);
+        opts = uimenu('Label','Ztools');
         
         
-        uimenu(options,'Label','Time Plot ',...
-            MenuSelectedField(),{@cb_timeplot, c2});
-        
-        uimenu(options,'Label',' X + topo ',...
-            MenuSelectedField(),@cb_xplustopo);
-        
-        uimenu(options,'Label','Vert. Exaggeration',...
-            MenuSelectedField(),@cb_vertexaggeration);
-        
-        uimenu(options,'Label','Rate change grid',...
-            MenuSelectedField(),@cb_ratechangegrid);
-        
-        uimenu(options,'Label','Omori parameter grid',...
-            MenuSelectedField(),@cb_omoriparamgrid); % formerly pcross
+        uimenu(opts,'Label', 'differential b '       , MenuSelectedField(), @cb_diff_b);
+        uimenu(opts,'Label','Fractal Dimension'      , MenuSelectedField(), @(~,~)Dcross());
+        uimenu(opts,'Label','Mean Depth'             , MenuSelectedField(), @(~,~)cb_meandepth(c2));
+        uimenu(opts,'Label','z-value grid'           , MenuSelectedField(), @(~,~)magrcros());
+        uimenu(opts,'Label','b and Mc grid '         , MenuSelectedField(), @(~,~)bcross('in'));
+        uimenu(opts,'Label','Prob. forecast test'    , MenuSelectedField(), @cb_probforecast_test);
+        uimenu(opts,'Label','beCubed'                , MenuSelectedField(), @cb_becubed);
+        uimenu(opts,'Label','b diff (bootstrap)'     , MenuSelectedField(), @cb_b_diff_boot);
+        uimenu(opts,'Label','Stress Variance'        , MenuSelectedField(), @(~,~)cross_stress());
+        uimenu(opts,'Label','Time Plot '             , MenuSelectedField(), @(~,~)timcplo(c2));
+        uimenu(opts,'Label',' X + topo '             , MenuSelectedField(), @(~,~)xsectopo());
+        uimenu(opts,'Label','Vert. Exaggeration'     , MenuSelectedField(), @(~,~)vert_exaggeration());
+        uimenu(opts,'Label','Rate change grid'       , MenuSelectedField(), @(~,~)rc_cross_a2());
+        uimenu(opts,'Label','Omori parameter grid'   , MenuSelectedField(), @(~,~)calc_Omoricross()); % formerly pcross
         
     end
     
     %% callback functions
     
     function cb_select_eq_inside_poly(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
         stri = 'Polygon';
         selectp;
     end
     
     
-    function cb_diff_b(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_diff_b(~,~)
         h1=gca;
         bcrossVt2();
     end
     
-    function cb_fractaldim(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        Dcross();
-    end
-    
-    function cb_meandepth(mysrc,myevt,mycat)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_meandepth(mycat)
         meandepx(mycat, mycat.dist_along_strike_km);
     end
-    
-    function cb_zvaluegrid(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        magrcros();
-    end
-    
-    function cb_b_mc_grid(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        sel = 'in';
-        bcross(sel);
-    end
-    
-    function cb_probforecast_test(mysrc,myevt)
+   
+    function rContainer = update_container()
         ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
         rContainer.Lon1 = lon1;
         rContainer.Lat1 = lat1;
         rContainer.Lon2 = lon2;
         rContainer.Lat2 = lat2;
-        pt_start(newa, xsec_fig(), 0, rContainer, name);
+    end
+        
+    function cb_probforecast_test(~,~)
+        pt_start(newa, xsec_fig(), 0, update_container(), name);
     end
     
-    function cb_becubed(mysrc,myevt)
-
-        ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
-        rContainer.Lon1 = lon1;
-        rContainer.Lat1 = lat1;
-        rContainer.Lon2 = lon2;
-        rContainer.Lat2 = lat2;
-        bc_start(newa, xsec_fig(), 0, rContainer);
+    function cb_becubed(~,~)
+        bc_start(newa, xsec_fig(), 0, update_container());
     end
     
     function cb_b_diff_boot(mysrc,myevt)
-
+        st_start(newa, xsec_fig(), 0, update_container());
+    end
+    
+    function cb_refresh(~,~)
         ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rContainer.fXSWidth = ZG.xsec_defaults.WidthKm;
-        rContainer.Lon1 = lon1;
-        rContainer.Lat1 = lat1;
-        rContainer.Lon2 = lon2;
-        rContainer.Lat2 = lat2;
-        st_start(newa, xsec_fig(), 0, rContainer);
-    end
-    
-    function cb_stressvariance(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        cross_stress();
-    end
-    
-    function cb_timeplot(mysrc,myevt, c2)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        timcplo(c2);
-    end
-    
-    function cb_xplustopo(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        xsectopo;
-    end
-    
-    function cb_vertexaggeration(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        vert_exaggeration;
-    end
-    
-    function cb_ratechangegrid(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        rc_cross_a2();
-    end
-    
-    function cb_omoriparamgrid(mysrc,myevt)
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        calc_Omoricross();
-    end
-    
-    function cb_refresh(mysrc,myevt)
-
-        ZG=ZmapGlobal.Data;
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
     end
     
-    function cb_refresh2(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_refresh2(~,~)
         delete(uic2);
         delete(findobj(mapl,'Type','axes'));
         nlammap2;

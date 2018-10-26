@@ -32,7 +32,7 @@ function brand2(catalog)
     function cb_go(~,~)
         
         ZG.newt2 = catalog;
-        warningdlg('this needs updating...');
+        warningdlg('ZMAP:unimplmented','this needs updating...');
         bvalmapt(ZmapAnalysisPkg('newt2'));
     end
     

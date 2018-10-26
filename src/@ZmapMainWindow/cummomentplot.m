@@ -7,7 +7,7 @@ function cummomentplot(obj,tabgrouptag)
     Tags.ax = 'CumMom axes';
     
     
-    myTab = findOrCreateTab(obj.fig, tabgrouptag, 'Moment');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'Moment');
     ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
     if isempty(ax)
         ax              = axes(myTab);

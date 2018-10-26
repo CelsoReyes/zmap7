@@ -15,7 +15,8 @@ function nlammap()
     %{
 %% This is how you do it with the mapping toolbox -CGR
 fig = figure;
-axm=axesm('lambert','MapLatLimit',[min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude)],'MapLonLimit',[min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude)]);
+axm=axesm('lambert','MapLatLimit',bounds2(ZG.primeCatalog.Latitude),...
+  'MapLonLimit',bounds2(ZG.primeCatalog.Longitude));
 plm=plotm(coastlat,coastlon,'k');
 plm=plotm(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,'.');
 disp('Select one end of cross-section')

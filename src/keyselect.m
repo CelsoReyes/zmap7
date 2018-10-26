@@ -142,8 +142,6 @@ function keyselect()
     function callbackfun_007(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
-        
         delete(keysel_fig);
     end
     

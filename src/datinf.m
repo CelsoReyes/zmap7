@@ -120,7 +120,7 @@ function datinf()
     function save_cb(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        infstri = get(uic,'String');ZmapMessageCenter.set_info('Save Data','  ');
+        infstri = get(uic,'String');msg.infodisp('  ','Save Data');
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             try

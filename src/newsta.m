@@ -21,7 +21,7 @@ function newsta(sta, catalog)
     [ZG.compare_window_dur, ZG.bin_dur] = choose_parameters(ZG.compare_window_dur, ZG.bin_dur); % window length, bin length
     
     
-    [t0b, teb] = catalog.DateRange() ;
+    [t0b, teb] = bounds(catalog.Date) ;
     tdiff = round((teb - t0b)/ZG.bin_dur); % in days/ZG.bin_dur
     
     % for hist, xt & 2nd parameter were centers.  for histcounts, it is edges.
@@ -113,7 +113,7 @@ function newsta(sta, catalog)
     
     idx = find(as == max(as),1);
     
-    tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(idx),'uuuu-MM-dd hh:mm:ss'));
+    tet1 =sprintf('Zmax: %3.1f at %s ',max(as),char(xt(idx),'uuuu-MM-dd HH:mm:ss'));
     
     vx = xlim;
     vy = ylim;

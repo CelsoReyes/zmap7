@@ -91,7 +91,7 @@ function [bv, magco, std_backg, av, pr] =  bvalca3(magnitudes, mc_auto_estimate,
     if nargout >=5
         % calculate probability [OF WHAT?]
         if ~exist('overall_b_value','var')
-            warning('provide overall_bvalue, which is needed to calc pr');
+            warning('ZMAP:missingParameter','provide overall_bvalue, which is needed to calc pr');
             ZG = ZmapGlobal.Data;
             overall_b_value = ZG.overall_b_value;
         elseif isempty(overall_b_value)

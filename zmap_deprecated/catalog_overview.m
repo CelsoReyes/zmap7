@@ -1,4 +1,4 @@
-function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag)
+function [mycat, bigEventCat, bigEventMag] = catalog_overview(in_cat, bigEventMag)
     % catalog_overview presents a window where catalog summary statistics show and can be edited
     % mycat should be a ZmapCatalogView
     %
@@ -17,16 +17,20 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
     %if ~exist('ZG.bin_dur', 'var')   %select bin length respective to time in catalog
     %    ZG.bin_dur = days(30);
     %end
+    if isa(in_cat,'ZmapCatalog')
+        mycat = ZmapCatalogView(@()in_cat);
+    else
+        mycat = in_cat;
+    end
     
     big_evt_minmag = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     bigEventCat = mycat.subset(mycat.Magnitude > big_evt_minmag);
-    daterange = mycat.DateRange;
-    minti = daterange(1);
-    maxti  = daterange(2);
-    magrange = mycat.MagnitudeRange;
+    [minti, maxti] = bounds(mycat.Date);
+    daterange = [minti, maxti];
+    magrange = bounds2(mycat.Magnitude);
     minma = magrange(1);
     maxma = magrange(2);
-    depthrange= mycat.DepthRange;
+    depthrange = bounds2(mycat.Depth);
     mindep = depthrange(1);
     maxdep = depthrange(2);
     
@@ -128,7 +132,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         uicontrol('Parent',filter_panel,...
             'Style','edit','Position',[.45 0.75 .52 all_h],...
             'Units','pixels',...
-            'String',char(minti,'yyyy-MM-dd HH:mm:ss'),...
+            'String',char(minti,'uuuu-MM-dd HH:mm:ss'),...
             'Value', datenum(minti),...
             'HorizontalAlignment','center',...
             'Callback',@update_editfield_date,...
@@ -148,7 +152,7 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         uicontrol('Parent',filter_panel,...
             'Style','edit','Position',[.45 0.55 .52 all_h],...
             'Units', 'pixels', ...
-            'String',char(maxti,'yyyy-MM-dd HH:mm:ss'),...
+            'String',char(maxti,'uuuu-MM-dd HH:mm:ss'),...
             'Value', datenum(maxti),...
             'Callback',@update_editfield_date,...
             'Tag','mapview_end_field',...
@@ -290,9 +294,9 @@ function [mycat, bigEventCat, bigEventMag] = catalog_overview(mycat, bigEventMag
         % following code originally from sele_sub.m
         %    Create  reduced (in time and magnitude) catalogs "primeCatalog" and "newcat"
         %
-        mycat.DepthRange=[mindep, maxdep];
-        mycat.DateRange=[minti, maxti];
-        mycat.MagnitudeRange=[minma, maxma];
+        mycat.DepthLims=[mindep, maxdep];
+        mycat.DateLims=[minti, maxti];
+        mycat.MagnitudeLims=[minma, maxma];
         
         %create catalog of "big events" if not merged with the original one:
         %
@@ -329,7 +333,7 @@ function distro_callback(src,~,mycat)
     watchon; drawnow;
     dlg = main_dialog_figure('handle');
     if numel(dlg) >1
-        warning('multiple dialog windows found')
+        warning('ZMAP:nonUniqueHandle','multiple dialog windows found')
     end
     
     f = findall(0,'Tag','catoverview_distribution_pane');

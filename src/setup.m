@@ -154,7 +154,7 @@ function setup()
         
         uicontrol('Style','Pushbutton',...
             'Position',[.75 .03 .15 .08 ],...
-            'Units','normalized','callback',@close_callback,'String','Cancel');
+            'Units','normalized', 'Callback', @close_callback,'String','Cancel');
         
         uicontrol('Style','Pushbutton',...
             'Position',[.05 .03 .25 .08 ],...
@@ -249,13 +249,12 @@ function setup()
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter();
     end
     
     function save_callback(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter.set_info('Save Data','  ');
+        msg.infodisp('  ','Save Data');
         
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Filename?');
         save(fullfile(path1, file1),'a','faults','mainfault','coastline','main','infstri');

@@ -38,7 +38,7 @@ function cirbva_bdepth2()
         ' The "ni" events nearest to this point          '
         ' will be selected and displayed in the map.     '];
     
-    ZmapMessageCenter.set_message(titStr,messtext);
+    msg.dbdisp(messtext, titStr);
     
     % Input center of circle with mouse
     %
@@ -79,7 +79,7 @@ function cirbva_bdepth2()
     
     messtext = ['Radius of selected Circle:' circle_r  ' km' ];
     disp(messtext)
-    ZmapMessageCenter.set_message('Message',messtext)
+    msg.dbdisp(messtext, 'Message')
     
     set(gca,'NextPlot','add')
     

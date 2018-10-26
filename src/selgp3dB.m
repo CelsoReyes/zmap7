@@ -13,7 +13,7 @@ function [t5, xvect, yvect, zvect] = selgp3dB(dx, dy, dz, z1, z2)
     end
     mapfig=findobj(0,'Tag','seismicity_map');
     if isempty(mapfig)
-        ZmapMessageCenter.set_error('Unable to find main map figure','Unable to find main map figure');
+        msg.errordisp('Unable to find main map figure','Unable to find main map figure');
         return
     end
     figure(mapfig);

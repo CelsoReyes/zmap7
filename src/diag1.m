@@ -35,7 +35,7 @@ function diag1()
     
     close_button=uicontrol('Style','Pushbutton',...
         'Position', [.60 .05 .15 .15 ],...
-        'Units','normalized','callback',@(~,~)zmapmenu(),'String','Cancel');
+        'Units','normalized', 'Callback', @(~,~)zmapmenu(),'String','Cancel');
     
     go_button=uicontrol('Style','Pushbutton',...
         'Position',[.25 .05 .15 .15 ],...
@@ -75,7 +75,6 @@ function diag1()
     function callbackfun_004(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ZmapMessageCenter();
         show_map('maz','calma',ZG.compare_window_dur);
     end
     

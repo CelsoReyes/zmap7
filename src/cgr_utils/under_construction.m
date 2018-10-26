@@ -7,5 +7,5 @@ function under_construction(varargin)
     if ZmapGlobal.Data.Interactive
         warndlg('Under Construction','Not reimplemented yet');
     end
-    warning('ZMAP:UNDERCONSTRUCTION','Under Construction : Not implemented / reimplemented yet');
+    warning('ZMAP:unimplmented','Under Construction : Not implemented / reimplemented yet');
 end

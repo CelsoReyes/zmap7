@@ -74,8 +74,8 @@ function h=hisgra(mycat, opt, ax)
         
         xlabel(ax, getLabel(opt));
         yl = ylabel(ax, '# Events per bin');
-        mycontextmenu=findobj(ancestor(ax,'figure'),'uicontextmenu','-and','Tag',['histogram ' opt]);
-        if isempty(mycontextmenu)
+        c=findobj(ancestor(ax,'figure'),'uicontextmenu','-and','Tag',['histogram ' opt]);
+        if isempty(c)
             c=uicontextmenu('Tag',['histogram ' opt]);
             uimenu(c,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
             uimenu(c,'Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
@@ -84,10 +84,10 @@ function h=hisgra(mycat, opt, ax)
             addcontext(opt,c);
             ax.UIContextMenu=c;
         else
-            ax.UIContextMenu=mycontextmenu;
+            ax.UIContextMenu=c;
         end
         
-        uimenu(c,'Label','Use Log Scale',MenuSelectedField(),{@logtoggle,'Y'});
+        uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
         yl.UIContextMenu=c;
         
     end
@@ -232,6 +232,8 @@ function h=hisgra(mycat, opt, ax)
         th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');
         th.Interpreter='none';
     end
+    
+    
 end
 
 function [fig,ax,h] = src2handles(src)

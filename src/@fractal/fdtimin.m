@@ -14,7 +14,7 @@ function fdtimin()
     
     input2 = uicontrol('Style','edit','Position',[.75 .50 .20 .12],...
         'Units','normalized','String',num2str(inc),...
-        'Value',1,'callback',@callbackfun_002);
+        'Value',1, 'Callback', @callbackfun_002);
     
     
     tx1 = text('Position',[0 .90 0 ], ...
@@ -27,7 +27,7 @@ function fdtimin()
     
     close_button = uicontrol('Style','Pushbutton',...
         'Position',[.60 .05 .20 .20 ],...
-        'Units','normalized','callback',@callbackfun_003,'String','Cancel');
+        'Units','normalized', 'Callback', @callbackfun_003,'String','Cancel');
     
     go_button = uicontrol('Style','Pushbutton',...
         'Position',[.20 .05 .20 .20 ],...
@@ -57,7 +57,6 @@ function fdtimin()
         
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close;
-        ZmapMessageCenter.set_info(' ',' ');
         
     end
     

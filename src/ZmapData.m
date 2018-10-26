@@ -4,7 +4,7 @@ classdef ZmapData < handle
     %
     % h = ZmapGlobal.Data;          % get pointer to all the global data
     %
-    % catalogcopy = h.catalog;      % get a particlar item
+    % catalogcopy = h.catalog;      % get a particular item
     % h.catalog = modified_catalog; % set the item, with changes visible EVERYWHERE
     % 
     %  several of these variables exist as carryovers from previous version of Zmap
@@ -123,7 +123,7 @@ classdef ZmapData < handle
         debug           matlab.lang.OnOffSwitchState    = matlab.lang.OnOffSwitchState.off % makes special menus visible
         debugLevel      (1,1) double                    = 0
         
-        Views           struct          = struct('primary',[],'layers',[]) % catalog views
+        % Views           struct          = struct('primary',[],'layers',[]) % catalog views
         
         % Datastore                       = DataStore % mapseis DataStore adapter
         
@@ -183,12 +183,12 @@ classdef ZmapData < handle
                             fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
                             disp(obj.primeCatalog)
                         else
-                            warning("default catalog file does not contain a zmap catalog");
+                            warning('ZMAP:missingCatalog','default catalog file does not contain a zmap catalog');
                             % failed to open the last catalog
                             obj.primeCatalog=ZmapCatalog('empty catalog');
                         end
                     else
-                        warning('could not find the default catalog file %s', catalogFile);
+                        warning('ZMAP:missingCatalog','could not find the default catalog file %s', catalogFile);
                     end
                 end
             end
@@ -261,21 +261,6 @@ classdef ZmapData < handle
             end
         end
         
-        function disp_views(obj)
-            f=fields(obj.Views);
-            for n=1:numel(f)
-                cl=class(obj.Views.(f{n}));
-                switch cl
-                    case 'ZmapCatalogView'
-                        fprintf('%20s : ',f{n})
-                        try
-                            blurb(obj.Views.(f{n}));
-                        catch
-                            disp(' unable to show');
-                        end
-                end
-            end
-        end
     end
 end
 

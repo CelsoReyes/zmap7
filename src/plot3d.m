@@ -216,7 +216,6 @@ function plot3d()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         close(map3);
         close(vie);
-        ZmapMessageCenter();
     end
     
     function callbackfun_003(mysrc,myevt)

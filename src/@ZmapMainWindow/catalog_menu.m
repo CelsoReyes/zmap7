@@ -1,31 +1,9 @@
 function catalog_menu(obj, force)
     % catalog_menu was create_catalog_menu adds a menu designed to handle catalog modifications
-    % catalog_menu(mycatalog, force, handle)
-    % mycatalog is a name of the ZmapGlobal.Data field containing a ZmapCatalog
-    % myview is a name of the ZmapGlobal.Data.View field containing a ZmapCatalogView
-    %
-    % Menu Options:
-    %   Crop catalog to window -
-    %   Edit Ranges -
-    %   Rename -
-    %   - - -
-    %   Memorize/Recall Catalog -
-    %   Clear Memorized Catalog -
-    %   - - -
-    %   Combine Catalogs -
-    %   Compare Catalogs -
-    %   Save Current Catalog - save as a ZmapCatalog (.mat) or a v6 or v7+ ASCII table (.dat)
-    %   - - -
-    %   Stats -
-    %   Get/Load Catalog -
-    %   Reload Last Catalog -
     
-    
-    %TODO clear up mess between ZG.catalogs and ZG.Views.view
     
     % to find this menu, use findobj(obj.fig, 'Tag');
     
-    %mycatalog = 'primeCatalog';
     ZG = ZmapGlobal.Data; % for use in all subroutines
     h = findobj(obj.fig,'Tag','menu_catalog');
     if ~exist('force','var')
@@ -46,13 +24,14 @@ function catalog_menu(obj, force)
         'Enable','off');
     
     uimenu(catmenu,'Label','from *.mat file',...
-        MenuSelectedField(), {@cb_importer,@load_zmapfile});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @load_zmapfile));
+    
     uimenu(catmenu,'Label','from other formatted file',...
-        MenuSelectedField(), {@cb_importer,@zdataimport});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @zdataimport));
     uimenu(catmenu,'Label','from FDSN webservice',...
-        MenuSelectedField(), {@cb_importer,@get_fdsn_data_from_web_callback});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @get_fdsn_data_from_web_callback));
     uimenu(catmenu,'Label','from the current MATLAB Workspace',...
-        MenuSelectedField(), {@cb_importer,@cb_catalog_from_workspace});
+        MenuSelectedField(), @(s,v)cb_importer(s, v, @cb_catalog_from_workspace));
     
     
     uimenu(submenu,'Label','Save current catalog',MenuSelectedField(),@(~,~)save_zmapcatalog(obj.catalog));
@@ -65,11 +44,12 @@ function catalog_menu(obj, force)
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
         MenuSelectedField(),@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
-    uimenu(catmenu,'Separator','on','Label','Reset',...
-        MenuSelectedField(),@cb_resetcat); % Resets the catalog to the original selection
+    
+    %uimenu(catmenu,'Separator','on','Label','Reset',...
+    %    MenuSelectedField(),@cb_resetcat); % Resets the catalog to the original selection
     
     uimenu(submenu,'Separator','on',...
-        'Label','Edit Ranges...',MenuSelectedField(),@cb_editrange);
+        'Label','Edit Raw Catalog Range...',MenuSelectedField(),@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
     
@@ -92,7 +72,7 @@ function catalog_menu(obj, force)
     
     
     uimenu (submenu,'Label','Decluster the catalog',...
-        MenuSelectedField(),@(~,~)ResenbergDeclusterClass(obj.catalog));
+        MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog));
     
     function cb_recall(~,~)
         mcm = MemorizedCatalogManager;
@@ -100,8 +80,8 @@ function catalog_menu(obj, force)
             obj.rawcatalog = mcm.recall();
             
             [obj.mshape,obj.mdate]=obj.filter_catalog();
-            obj.map_axes.XLim=[min(obj.rawcatalog.Longitude),max(obj.rawcatalog.Longitude)];
-            obj.map_axes.YLim=[min(obj.rawcatalog.Latitude), max(obj.rawcatalog.Latitude)];
+            obj.map_axes.XLim=bounds2(obj.rawcatalog.Longitude);
+            obj.map_axes.YLim=bounds2(obj.rawcatalog.Latitude);
             
             hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
             hh.delay_for_close(1);
@@ -153,7 +133,7 @@ function catalog_menu(obj, force)
                 fields={'Date','',''};
             otherwise
                 fields={'','',''};
-                warning('Do not know how to crop catalog to these axes');
+                warning('ZMAP:unknownCatalogCut','Do not know how to crop catalog to these axes');
         end
         
         if isequal(v , [0 90]) % XY view
@@ -193,22 +173,27 @@ function catalog_menu(obj, force)
             errordlg('No polygon exists. Create one from the selection menu first','Cannot crop to polygon');
             return
         end
-        events_in_shape = obj.shape.isInside(obj.catalog.Longitude, obj.catalog.Latitude);
+        events_in_shape = obj.shape.isinterior(obj.catalog.Longitude, obj.catalog.Latitude);
         obj.catalog=obj.catalog.subset(events_in_shape);
         
         zmap_update_displays();
         
         % adjust the size of the main map if the current figure IS the main map
         set(obj.map_axes,...
-            'XLim',[min(obj.catalog.Longitude),max(obj.catalog.Longitude)],...
-            'YLim',[min(obj.catalog.Latitude),max(obj.catalog.Latitude)]);
+            'XLim',bounds2(obj.catalog.Longitude),...
+            'YLim',bounds2(obj.catalog.Latitude));
     end
     
     function cb_editrange(~,~)
-        cf=@()obj.catalog;
-        [tmpcat,ZG.maepi,ZG.CatalogOpts.BigEvents.MinMag] = catalog_overview(ZmapCatalogView(cf), ZG.CatalogOpts.BigEvents.MinMag);
-        obj.pushState();
-        obj.rawcatalog=tmpcat.Catalog();
+        watchon;
+        summ = obj.rawcatalog.summary;
+        app=range_selector(obj.rawcatalog);
+        waitfor(app);
+        if ~isequal(summ, obj.rawcatalog.summary)
+            obj.catalog = obj.rawcatalog;
+            ZG.maepi = obj.catalog.subset(obj.catalog.Magnitude>=ZG.CatalogOpts.BigEvents.MinMag);
+        end
+        watchoff
         obj.replot_all;
     end
     
@@ -223,11 +208,6 @@ function catalog_menu(obj, force)
     
     function cb_combinecatalogs(~,~)
         combine_catalogs;
-        %{
-        ZG.newcat=comcat(ZG.Views.(myview));
-        ctp=CumTimePlot(ZG.newcat);
-        ctp.plot();
-        %}
     end
     
     function cb_importer(src, ev, fun)

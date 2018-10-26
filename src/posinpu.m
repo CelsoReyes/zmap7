@@ -103,7 +103,6 @@ function posinpu()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
         nlammap2;
-        ZmapMessageCenter();
         close(hInpuCoord);
     end
     

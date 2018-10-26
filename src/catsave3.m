@@ -2,8 +2,7 @@ function catsave3(version)
     % save catalog and associated items, collated from various methods
 
     %TODO detangle this
-    warning('not saving');
-    ZmapMessageCenter.set_info('Save Grid','  ');
+    msg.infodisp('  ','Save Grid');
     switch version
         
         case 'bcross'
