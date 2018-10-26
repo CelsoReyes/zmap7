@@ -82,7 +82,7 @@ function plotala()
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km,3),...
             'background','y');
-        set(set_ni2,'callback',@cb_set_threshhold_km);
+        set(set_ni2, 'Callback', @cb_set_threshhold_km);
         set(set_ni2,'units','norm','pos',[.80 .92 .13 .06],'min',0.01,'max',10000);
         
         

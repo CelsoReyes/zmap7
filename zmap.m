@@ -142,5 +142,6 @@ function zmap(varargin)
         else
             ZmapMainWindow(cw);
         end
+        show_a_tip();
     end
 end

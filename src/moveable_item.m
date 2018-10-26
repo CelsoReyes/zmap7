@@ -144,14 +144,14 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
             menu_addpoint = findobj(h.UIContextMenu.Children,'Label','add point');
             if isempty(menu_addpoint) && p.Results.addpoints
                 uimenu(h.UIContextMenu,'Label','add point',...
-                    'callback',@add_point,...
-                    'enable','off');
+                    MenuSelectedField(), @add_point,...
+                    'Enable','off');
             end
             menu_delpoint = findobj(h.UIContextMenu.Children,'Label','delete point');
             if isempty(menu_delpoint) && p.Results.delpoints
                 uimenu(h.UIContextMenu,'Label','delete point',...
-                    'callback',{@delete_point,[]},...
-                    'enable','off');
+                    MenuSelectedField(),@(~,~)delete_point([]),...
+                    'Enable','off');
             end
         end
     else
@@ -221,7 +221,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
                 dp = findobj(h.UIContextMenu.Children,'Label','delete point');
                 set(findobj(h.UIContextMenu.Children,'Label','add point'),'enable','off');
                 set(dp,'enable','on');
-                dp.Callback={@delete_point,pointToMove};
+                dp.(MenuSelectedField()) = @(~,~)delete_point(pointToMove);
             end
             return 
         end
@@ -406,7 +406,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
         
     end
         
-    function delete_point(~,~,pointToDelete)
+    function delete_point(pointToDelete)
         c=copyobj(h,ax);
         set(c,COPY);
         if pointToDelete(1)==1 && numel(pointToDelete)>1

@@ -123,7 +123,7 @@ function overmaptb()
         'Position', [0.02 0.15 0.10 .03],'Units','Normalized','Callback', @(~,~)brighten (0.1));
     
     ha9= uicontrol('Style', 'pushbutton', 'String', ' Black/White',...
-        'Position', [0.7 0.08 0.10 .03],'Units','Normalized','callback',@callbackfun_006);
+        'Position', [0.7 0.08 0.10 .03],'Units','Normalized', 'Callback', @callbackfun_006);
     
     
     

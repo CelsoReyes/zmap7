@@ -143,6 +143,8 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             set(wai,'NumberTitle','off','Name','Decluster - Percent done');
             drawnow
             
+            %TODO: parallelize this
+            
             %for every earthquake in catalog, main loop
             for i = 1: (obj.RawCatalog.Count-1)
                 
@@ -297,6 +299,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             end
         end
         
+        % TODO: clean this up
         function juggle_catalogs(obj, clus)
             ZG = ZmapGlobal.Data;
             ZG.primeCatalog=build_declustered_cat('interactive');  % create new catalog for main program

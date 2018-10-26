@@ -133,11 +133,11 @@ function zmapmenu()
     
     uicontrol('BackGroundColor',[0.9 0.9 0.9],'Style','Pushbutton',...
         'Position',[.65 .75 .30 .04 ],...
-        'Units','normalized','callback',@cb_alarm,'String','Alarm');
+        'Units','normalized', 'Callback', @cb_alarm,'String','Alarm');
     
     uicontrol('BackGroundColor',[0.9 0.9 0.9],'Style','Pushbutton',...
         'Position',[.65 .65 .30 .04 ],...
-        'Units','normalized','callback',@cb_loadcube,'String','Load Cube');
+        'Units','normalized', 'Callback', @cb_loadcube,'String','Load Cube');
     
     watchoff
     

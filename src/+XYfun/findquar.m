@@ -107,7 +107,7 @@ classdef findquar < ZmapHGridFunction
                     'string',[num2str(i-1) ' - ' num2str(i) ],...
                     'Units','normalized',...
                     'Position',chkpos(i),'tag',num2str(i),...
-                    'Callback',{@cb_flip,i});
+                    'Callback', @(~,~)cb_flip(i));
             end
             
             obj.CalcLocalNoon();
@@ -128,16 +128,21 @@ classdef findquar < ZmapHGridFunction
             update_histograms();
             %nightHist.Data(obj.inDaytime)=nan;
             legend(hax,'show');
-            if isempty(findobj(fifhr,'Tag','quarryinfo'))
+
+            if isempty(findobj(fifhr, 'Tag', 'quarryinfo'))
                 add_menu_divider();
-                uimenu(fifhr,'Label','Info',MenuSelectedField(),@cb_info,'tag','quarryinfo');
+                uimenu(fifhr,'Label','Info',...
+                MenuSelectedField(), @(~,~)web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm']),...
+                 'tag', 'quarryinfo');
             end
             
-            uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,'Position',[330 10 60 25]);
+            uicontrol(fifhr,'style','pushbutton','String','GO','Callback',@cb_go,...
+            'Position',[330 10 60 25]);
             
-            uicontrol(fifhr,'style','pushbutton','String','Cancel','Callback',@cb_cancel,'Position',[400 10 60 25]);
+            uicontrol(fifhr,'style','pushbutton','String','Cancel','Callback',@(~,~)close,...
+            'Position',[400 10 60 25]);
             
-            function cb_flip(~,~,i)
+            function cb_flip(i)
                 obj.inDaytime(i) = ~obj.inDaytime(i);
                 update_histograms();
             end
@@ -155,9 +160,6 @@ classdef findquar < ZmapHGridFunction
                 obj.doIt();
             end
             
-            function cb_cancel(~,~)
-                close;
-            end
         end
         
         function results=Calculate(obj)
@@ -399,9 +401,8 @@ end %classdef
 % All callbacks should set values within the same field. Leave
 % the gathering of values to the SetValuesFromDialog button.
 
-function cb_info(mysrc,myevt)
+function cb_info(~,~)
     ZG=ZmapGlobal.Data;
-    callback_tracker(mysrc,myevt,mfilename('fullpath'));
-    web(['file:' ZG.hodi '/help/quarry.htm']) ;
+    web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm']) ;
 end
 

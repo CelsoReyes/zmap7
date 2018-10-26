@@ -53,7 +53,7 @@ function [catalog, OK] = load_zmapfile(myfile)%
     % find and load the ZmapCatalog variable from the file
     S=whos('-file',myfile);
     ZCats=S(startsWith({S.class},'ZmapCatalog'));
-    if ~isempty(ZCats) && numel(ZCats == 1)
+    if ~isempty(ZCats) && numel(ZCats) == 1
         catalog=loadCatalog(path1, file1, ZCats);
         OK=~isempty(catalog);
         return

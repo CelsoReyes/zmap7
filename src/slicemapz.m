@@ -102,10 +102,10 @@ function slicemapz()
         uicontrol('Units','normal',...
             'Position',[.96 .93 .04 .04],...
             'String',' V1',...
-            'callback',{@callbackfun_vX,'samp1'});
+            'Callback',@(~,~)callbackfun_vX('samp1');
         uicontrol('Units','normal',...
             'Position',[.96 .85 .04 .04],'String',' V2',...
-            'callback',{@callbackfun_vZ,'samp2'});
+            'Callback',@(~,~)callbackfun_vX('samp2');
         uicontrol('Units','normal',...
             'Position',[.0 .10 .12 .04],'String',' Define X-section',...
             'callback',@callbackfun_define_xsection);
@@ -193,14 +193,14 @@ function slicemapz()
             'Style','edit', ...
             'callback',@callbackfun_010) ;
         
-        slh1 = uicontrol('units','norm',...
+        slh1 = uicontrol('Style','slider', ...
+            'units','norm',...
             'BackgroundColor',[0.7 0.7 0.70], ...
             'ListboxTop',0, ...
             'callback',@callbackfun_011, ...
             'Max',max(abs(gz)),'Min',0, ...
             'Position',[0.1 0.90 0.3 0.02], ...
             'SliderStep',[0.05 0.15], ...
-            'Style','slider', ...
             'Tag','Slider1', ...
             'TooltipString','Move the slider to select the z-value map depth');
         
@@ -630,9 +630,7 @@ function slicemapz()
     
     %% callbacks
     
-    function callbackfun_vX(mysrc,myevt, whichsamp)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function callbackfun_vX(whichsamp)
         anseiswa(whichsamp,ds);
         ZG=ZmapGlobal; 
         ctp=CumTimePlot(ZG.newt2);
@@ -640,14 +638,10 @@ function slicemapz()
     end
     
     function callbackfun_define_xsection(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         animator('start', @my_newslice);
     end
     
     function setcolormap_callback(mysrc,~)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         cmapname = mysrc.String{mysrc.Value};
         mycolormap = colormap(cmapname);
         if cmapname == "jet"
@@ -658,21 +652,15 @@ function slicemapz()
     
     
     function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         my_newtype();
     end
     
     function callbackfun_climmin(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fix1 =  str2double(mysrc.String); % colorbar min
         my_newclim(fix1, fix2)
     end
     
     function callbackfun_climmax(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fix2 = str2double(mysrc.String); %colorbar max
         my_newclim(fix1, fix2)
     end
@@ -685,8 +673,6 @@ function slicemapz()
     end
     
     function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ti2 = str2num(get(ed4,'string'));
         tiz = floor((ti2-t0b)*100/tdiff);
         set(slh2,'value',[tiz]);
@@ -694,8 +680,6 @@ function slicemapz()
     end
     
     function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni = str2num(get(ed5,'string'));
         anseiswa('tipl2',ds);
         anseiswa('tipl',ds);
@@ -703,15 +687,11 @@ function slicemapz()
     end
     
     function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ds = min(get(slh1,'Value'));
         my_newdep();
     end
     
     function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         tiz = min(get(slh2,'Value'))+1;
         my_newtime();
     end

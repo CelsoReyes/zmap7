@@ -475,14 +475,14 @@ classdef ZmapMainWindow < handle
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig, 'Tag',['xsTabContext' mytitle]))
             c = uicontextmenu(obj.fig, 'Tag',['xsTabContext' mytitle]);
-            uimenu(c, 'Label', 'Copy Contents to new figure (static)', 'Callback',@copytab);
+            uimenu(c, 'Label', 'Copy Contents to new figure (static)', CallbackFld, @copytab);
             uimenu(c, 'Label', 'Info', 'Separator', 'on', CallbackFld,@obj.cb_info);
-            uimenu(c, 'Label', 'Change Width', CallbackFld,@obj.cb_chwidth);
-            uimenu(c, 'Label', 'Change Color', CallbackFld,@obj.cb_chcolor);
-            uimenu(c, 'Label', 'Examine This Area', CallbackFld,{@obj.cb_cropToXS, xsec});
+            uimenu(c, 'Label', 'Change Width'       , CallbackFld, @(~,~)obj.cb_chwidth);
+            uimenu(c, 'Label', 'Change Color'       , CallbackFld, @obj.cb_chcolor);
+            uimenu(c, 'Label', 'Examine This Area'  , CallbackFld, @(~,~)obj.cb_cropToXS(xsec));
             uimenu(c, 'Separator', 'on',...
                 'Label', 'Delete',...
-                CallbackFld,{@obj.cb_deltab, xsec});
+                CallbackFld, @(~,~)obj.cb_deltab(xsec));
             mytab.UIContextMenu = c;
             
             
@@ -497,13 +497,13 @@ classdef ZmapMainWindow < handle
             
         end
         
-        function cb_cropToXS(obj,~,~, xsec)
+        function cb_cropToXS(obj, xsec)
             sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
             set_my_shape(obj, sh);
             %obj.replot_all();
         end
         
-        function cb_deltab(obj, ~,~, xsec)
+        function cb_deltab(obj, xsec)
             prevPtr = obj.fig.Pointer;
             obj.fig.Pointer = 'watch';
             mytitle = get(gco, 'Title');
@@ -532,7 +532,7 @@ classdef ZmapMainWindow < handle
             end
         end
         
-        function cb_chwidth(obj,~,~)
+        function cb_chwidth(obj)
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
@@ -727,7 +727,7 @@ classdef ZmapMainWindow < handle
             obj.maintab.Tag = 'mainmap_tab';
             if isempty(findobj(obj.fig,'Name','Move Tab','-and','Type','uimenu'))
                 uimenu(obj.maintab.UIContextMenu,'Text','Move Tab', ...
-                    MenuSelectedField(),{@callbacks.switchtabgroup,obj.maingroup});
+                    MenuSelectedField(),@(~,~)callbacks.switchtabgroup(obj.maingroup));
             end
             
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...

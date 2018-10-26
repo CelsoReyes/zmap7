@@ -42,12 +42,16 @@ classdef CatalogExplorationPlot < handle
             y=c.(obj.y_by);
             z=c.(obj.z_by);
             s=c.(obj.size_by);
-            s=obj.sizeFcn(s);
+            if ~iscategorical(s)
+                s=obj.sizeFcn(s);
+            end
             if obj.color_by == "-none-"
                 cl=[0 0 0];
             else
                 cl=c.(obj.color_by);
-                cl=obj.colorFcn(cl);
+                if ~iscategorical(cl)
+                    cl=obj.colorFcn(cl);
+                end
             end
             % delete(findobj(obj.ax,'Tag',tag));
             if isempty(obj.myscatter)
@@ -98,12 +102,25 @@ classdef CatalogExplorationPlot < handle
                         if ~isequal(size(cdata),[1,3])
                             cdata = [0 0 0];
                         end
+                    case 'MagnitudeType'
+                        cdata= c.(obj.color_by);
+                        set(obj.myscatter,'CData',cdata);
+                        cc = categories(cdata);
+                        ncats = numel(cc);
+                        colormap(obj.ax, lines(ncats) );
+                        centers = linspace(1.5, ncats - 0.5, ncats);
+                        colorbar('Limits',[1,ncats],...
+                            'Ytick', centers,...
+                            'YtickLabel', cc)
                     otherwise
                         cdata= obj.colorFcn(c.(obj.color_by));
+                        
                 end
                 switch obj.size_by
                     case 'Single Size'
                         sdata=obj.sizeFcn(1);
+                    case 'MagnitudeType'
+                        sdata=c.(obj.size_by);
                     otherwise
                         sdata=obj.sizeFcn(c.(obj.size_by));
                 end
@@ -126,6 +143,8 @@ classdef CatalogExplorationPlot < handle
                         switch obj.size_by
                             case 'Single Size'
                                 set(obj.myscatter,'SizeData',obj.sizeFcn(1));
+                    case 'MagnitudeType'
+                                set(obj.myscatter,'SizeData',c.(obj.size_by));
                             otherwise
                                 set(obj.myscatter,'SizeData',obj.sizeFcn(c.(obj.size_by)));
                         end
@@ -133,6 +152,16 @@ classdef CatalogExplorationPlot < handle
                         switch obj.color_by
                             case '-none-'
                                 set(obj.myscatter,'CData',obj.colorFcn(1));
+                            case 'MagnitudeType'
+                                cdata= c.(obj.color_by);
+                                set(obj.myscatter,'CData',cdata);
+                                cc = categories(cdata);
+                                ncats = numel(cc);
+                                colormap(obj.ax, lines(ncats) );
+                                centers = linspace(1.5, ncats - 0.5, ncats);
+                                colorbar('Limits',[1,ncats],...
+                                    'Ytick', centers,...
+                                    'YtickLabel', cc)
                             otherwise
                                 set(obj.myscatter,'CData',obj.colorFcn(c.(obj.color_by)));
                         end
@@ -310,7 +339,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(),{@obj.change,'x_by'});
+                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(), @(s,~)obj.change(s,'x_by'));
                 end
                 obj.add_axes_toggles(h,'X');
                 xl.UIContextMenu=h;
@@ -326,7 +355,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i},MenuSelectedField(),{@obj.change,'y_by'});
+                    uimenu(h,'Label',obj.axes_choices{i},MenuSelectedField(),@(s,~)obj.change(s,'y_by'));
                 end
                 obj.add_axes_toggles(h,'Y');
                 yl.UIContextMenu=h;
@@ -342,7 +371,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(),{@obj.change,'z_by'});
+                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(), @(s,v)obj.change(s,v,'z_by'));
                 end
                 obj.add_axes_toggles(h,'Z');
                 zl.UIContextMenu=h;
@@ -356,14 +385,14 @@ classdef CatalogExplorationPlot < handle
             delete(findobj(f,'Tag',tag));
             h=uicontextmenu(f,'Tag',tag);
             szm = uimenu(h,'Label','Size by...',...
-                MenuSelectedField(),{@obj.cleanChildren_cb,'size_by'});
+                MenuSelectedField(), @(src,~)obj.cleanChildren_cb(src, 'size_by'));
             clm = uimenu(h,'Label','Color by...',...
-                MenuSelectedField(),{@obj.cleanChildren_cb,'color_by'});
+                MenuSelectedField(), @(src,~)obj.cleanChildren_cb(src, 'color_by'));
             obj.sizeContextMenu(szm);
             obj.colorContextMenu(clm);
             sc.UIContextMenu=h;
         end
-        function cleanChildren_cb(obj,src,ev,bywhat)
+        function cleanChildren_cb(obj,src,bywhat)
             m=findobj(src.Children,'Type','uimenu');
             labels = get(m,'Label');
             ison = get(m,'Checked') == "on";
@@ -418,7 +447,7 @@ classdef CatalogExplorationPlot < handle
                 end
             end
         end
-        function change(obj,src,~,whatby)
+        function change(obj,src,whatby)
             % whatby is x_by, y_by, etc...
             
             % remove checkmarks
@@ -503,10 +532,13 @@ classdef CatalogExplorationPlot < handle
             end
             
             function x=normalize(x, minval, scalar, modifier)
-                if isa(x,'datetime')
+                if iscategorical(x)
+                    return;
+                end
+                if isdatetime(x)
                     x=x - min(x); % now duration
                 end
-                if isa(x,'duration')
+                if isduration(x)
                     x=days(x);
                 end
                 x = (x-min(x)) / range(x);

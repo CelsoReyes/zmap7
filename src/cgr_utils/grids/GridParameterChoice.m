@@ -314,12 +314,12 @@ classdef GridParameterChoice < handle
             gpc=GridParameterChoice(f,t,lcp,A,B,Z);
             
             inwidth=f.Position(3);
-            uicontrol('style','pushbutton','string','OK','callback',@ok_cb,'Position',[inwidth-140 10 60 25]);
+            uicontrol('style','pushbutton','string','OK', 'Callback', @ok_cb,'Position',[inwidth-140 10 60 25]);
             
-            uicontrol('style','pushbutton','string','Cancel','callback',@cancel_cb,'Position',[inwidth-70 10 60 25]);
+            uicontrol('style','pushbutton','string','Cancel', 'Callback', @cancel_cb,'Position',[inwidth-70 10 60 25]);
             uiwait(f);
             
-            %uicontrol('style','pushbutton','string','show','callback',@(~,~)disp(gpc.toStruct()));
+            %uicontrol('style','pushbutton','string','show', 'Callback', @(~,~)disp(gpc.toStruct()));
             
             function ok_cb(src,~)
                 gpc_out=gpc;

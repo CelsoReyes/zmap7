@@ -282,11 +282,11 @@ classdef MapFeature < handle
             
             obj.MenuToggle = uimenu(parentH,...
                 'Label',['Hide ' obj.Name],...
-                MenuSelectedField(),{@obj.toggle_showhide_menu, ax});
+                MenuSelectedField(), @(s,~)obj.toggle_showhide_menu(ax));
         end
-        function toggle_showhide_menu(obj, src, ~, ax, contingencyFunction)
+        function toggle_showhide_menu(obj, src, ax, contingencyFunction)
             % switch the show/hide menu between the "Show" and "Hide" stat
-            % obj.toggle_showhide_menu(src, ~, contingencyFunction
+            % obj.toggle_showhide_menu(src, contingencyFunction
             %   this is intended to be the Callback for the addToggleMenu.
             %
             % if the plot this toggles no longer exists, then

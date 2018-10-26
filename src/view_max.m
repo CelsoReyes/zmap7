@@ -103,7 +103,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
         create_my_menu();
         
         set_nia = uicontrol('style','edit','value',ni,'string',num2str(ni));
-        set(set_nia,'callback',@callbackfun_021);
+        set(set_nia, 'Callback', @callbackfun_021);
         set(set_nia,'units','norm','pos',[.94 .85 .06 .05],'min',10,'max',10000);
         nilabel = uicontrol('style','text','units','norm','pos',[.90 .85 .04 .05]);
         set(nilabel,'string','ni:','background',[.7 .7 .7]);
@@ -114,7 +114,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
         set(nilabel2,'string','MinRad (in km):','background',color_fbg);
         set_ni2 = uicontrol('style','edit','value',ZG.tresh_km,'string',num2str(ZG.tresh_km),...
             'background','y');
-        set(set_ni2,'callback',@callbackfun_022); %FIXME callback does nothing!
+        set(set_ni2, 'Callback', @callbackfun_022); %FIXME callback does nothing!
         set(set_ni2,'units','norm','pos',[.85 .92 .08 .06],'min',0.01,'max',10000);
         
         uicontrol('Units','normal',...

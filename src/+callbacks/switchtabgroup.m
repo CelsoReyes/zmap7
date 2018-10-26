@@ -1,4 +1,4 @@
-function switchtabgroup(~,~, disallowedH)
+function switchtabgroup(disallowedH)
     % only valid for tabs
     meObj = gco;
     meGroup = meObj.Parent;
