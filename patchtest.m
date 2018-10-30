@@ -54,12 +54,16 @@ This has 41 unique Y values
      scatter(gr_s.X(:),gr_s.Y(:),'r+','Tag','thegrid');
     
     do_not_use = isnan(results.x)|isnan(results.y)|isnan(results.(col));
-    results(do_not_use,:)=[];
+    
+    results.x(do_not_use) = myX(do_not_use);
+    results.(col)(do_not_use)=-987654321;
+    %results(do_not_use,:)=[];
     F=scatteredInterpolant(results.x,results.y,results.(col));
     F.ExtrapolationMethod='none';
-    F.Method='linear';
+    F.Method='nearest';
     vert=F(vX,vY);
     mypatch.FaceVertexCData=vert(:);
     disp(F)
     set(gca,'Children',circshift(get(gca,'Children'),-1))
 end
+

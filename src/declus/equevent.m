@@ -1,4 +1,4 @@
-function equi=equevent(mycat,clus)
+function equi=equevent(mycat, clus, bg)
 % equevent calc equivalent event to cluster
 % equi = equevent(catalog, cluster, bg)
 %   catalog : earthquake catalog
@@ -11,8 +11,6 @@ function equi=equevent(mycat,clus)
     %
      report_this_filefun();
    
-    global bg
-
     equi=ZmapCatalog;
     equi.Name='clusters';
 
@@ -39,7 +37,6 @@ function equi=equevent(mycat,clus)
 
 
     %equivalent events for each cluster
-    %TODO put this in a ZmapCatalog
     equi.Latitude=elat(:);
     equi.Longitude=elon(:);
     equi.Date=mycat.Date(bg); % why is this dissimilar?
@@ -47,7 +44,7 @@ function equi=equevent(mycat,clus)
     equi.Magnitude=emag(:);
     equi.MagnitudeType=repmat(categorical({''}),size(equi.Date));
     equi.Depth=edep(:);
-    [equi.Dip equi.DipDirection, equi.Rake]=deal(repmat(nan,size(equi.Date)));
+    [equi.Dip, equi.DipDirection, equi.Rake]=deal(repmat(nan,size(equi.Date)));
     
 
 
