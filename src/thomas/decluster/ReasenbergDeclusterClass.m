@@ -139,7 +139,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             wai = waitbar(0,' Please Wait ...  ');
             set(wai,'NumberTitle','off','Name','Decluster - Percent done');
             drawnow
-            
+            declustering_start = tic;
             %for every earthquake in catalog, main loop
             for i = 1: (obj.RawCatalog.Count-1)
                 
@@ -199,7 +199,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                     end
                     
                     %calculate distances from the epicenter of biggest and most recent eq
-                    [dist1,dist2]=distance2(i,bg_ev_for_dist,ac);
+                    [dist1,dist2]=distance2(i,bg_ev_for_dist,ac, obj.RawCatalog);
                     
                     %extract eqs that fit the spatial interaction time
                     sl0 = dist1<= rtest1 | dist2<= rtest2;
@@ -244,7 +244,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             end                            %for loop
             
             close(wai);
-            
+            toc(declustering_start)
             
             if ~any(clus)
                 outputcatalog=obj.RawCatalog;
@@ -319,9 +319,9 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 pl.ZData=ZG.cluscat.Depth;
             %}
             st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...
-                ' events (out of %d). ',...'The map window now display the declustered catalog containing %d events.'...
-                ...'The individual clusters are displayed as magenta on the  map.' ] ...
-                , biggest_events_in_cluster.Count, ZG.cluscat.Count, ZG.original.Count , ZG.primeCatalog.Count);
+                ' events (out of %d). The map window [would] now display the declustered catalog containing %d events.'...
+                'The individual clusters are displayed as magenta on the  map.' ], ...
+                biggest_events_in_cluster.Count, ZG.cluscat.Count, ZG.original.Count , ZG.primeCatalog.Count);
             
             msgbox(st1,'Declustering Information')
             
