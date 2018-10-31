@@ -114,6 +114,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             if ~obj.ScaleWithLatitude
                 obj.Points = obj.Points + delta;
             else
+                unimplemented_error()
                 % TODO: deferred math
             end
         end
@@ -243,6 +244,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 uimenu(c,...
                     'Label','Change shape with latitude?',...
                     MenuSelectedField(),@latscale);
+                uimenu(c,'Label','Specify Shape Center',MenuSelectedField(),@(~,~)obj.specify_center);
                 obj.add_shape_specific_context(c);
                 
                 function compare_in_out(src,ev,fn)
@@ -357,6 +359,18 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             ZG.newcat=ZG.newt2;
             analysis_fn();
             
+        end
+        
+        function specify_center(obj)
+            zdlg=ZmapDialog();
+            zdlg.AddHeader('Select the polygon center');
+            zdlg.AddEdit('x_center','Center Longitude (X)',obj.X0,'');
+            zdlg.AddEdit('y_center','Center Latitude (Y)',obj.Y0,'');
+            % add shape specific options here (?)
+            [v,ok]=zdlg.Create('Name','Polygon');
+            if ok
+                obj.moveTo(v.x_center, v.y_center);
+            end
         end
         
         function finishedMoving(obj, movedObject, movedDelta)
