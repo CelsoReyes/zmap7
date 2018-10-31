@@ -389,6 +389,9 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             feats = findobj(allchild(findobj('Tag','mainmap_ax')),'-regexp','Tag','mainmap_.+');
             copyobj(feats,ax); %copy features
             
+            
+            ax = subplot(2,2,2);
+            
             ax=subplot(2,1,2);
             
             isInClust = ~ismissing(obj.Result.values.cluster_details.clusterNumber);

@@ -33,7 +33,7 @@ end
 function reportIssue()
         h=helpdlg('Please enter an issue in the Github project main page');
         uiwait(h);
-    if datetime < datetime(2018,6,30)
+    if datetime < datetime(2018,12,31)
         %web('https://gitlab.seismo.ethz.ch/reyesc/zmap/issues','-browser');
         web('https://github.com/CelsoReyes/zmap7/issues','-browser');
     else
