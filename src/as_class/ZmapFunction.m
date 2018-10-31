@@ -174,7 +174,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             delete(obj.hPlot);
             obj.hPlot=[];
         end
-        
+                
         function doIt(obj)
             % DOIT called by the interactive dialog box once OK is pressed. 
             % Calls, in turn: Calculate, plot, ModifyGlobals, saveToDesktop

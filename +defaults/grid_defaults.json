@@ -2,10 +2,11 @@
    "LineProps":{
       "Marker":"+",
       "LineWidth":0.25,
-      "Color":"tequila",
+      "Color":"[0.9000 0.7000 0.5000]",
       "MarkerSize":2
    },
    "SeparationProps":{
+      "AutomaticGridCalculation":true,
       "Dx":5,
       "Dy":5,
       "Dz":1,

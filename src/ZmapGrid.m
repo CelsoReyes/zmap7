@@ -133,6 +133,9 @@ classdef ZmapGrid
                         ax=findobj(gcf,'Tag','mainmap_ax');
                         if ~isempty(ax)
                             xl = xlim(ax); yl=ylim(ax);
+                        elseif isprop(varargin{1},'AbsoluteGridLimits')
+                            xl=varargin{1}.AbsoluteGridLimits(1:2);
+                            yl=varargin{1}.AbsoluteGridLimits(3:4);
                         else
                             xl=[-180 180]; yl=[-90 90];
                         end

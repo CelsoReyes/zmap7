@@ -83,9 +83,9 @@ classdef ShapePolygon < ShapeGeneral
             if isequal(outline(1,:),outline(end,:))
                 nPts=nPts-1;
             end
-            line1= sprintf('Polygon with %d points',nPts);
-            line2= sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            line3= sprintf('Area is approximately %.2f km^2',obj.Area);
+            line1 = sprintf('Polygon with %d points',nPts);
+            line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
+            line3 = sprintf('Area is approximately %.2f km^2',obj.Area);
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         

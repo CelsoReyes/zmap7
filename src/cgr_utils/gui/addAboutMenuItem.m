@@ -17,21 +17,23 @@ function addAboutMenuItem(fig)
         end
         
     end
-    
+    uimenu(mainhelp,'Label','v-- ZMAP --v','Separator','on','Enable','off','Tag','zmaphelpmenuitem');
     uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
         MenuSelectedField(),@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
     
-    uimenu(mainhelp,'Label','ZMAP Tutorial videos','Separator','on','Tag','zmaphelpmenuitem',...
+    uimenu(mainhelp,'Label','ZMAP Tutorial videos','Tag','zmaphelpmenuitem',...
         MenuSelectedField(),@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
     
     uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
         MenuSelectedField(),@(~,~)aboutZmapDialog);
+        uimenu(mainhelp,'Label','ZMAP Tips','Tag','zmaphelpmenuitem',...
+            MenuSelectedField(),@(~,~)show_a_tip);
 end
 
 function reportIssue()
         h=helpdlg('Please enter an issue in the Github project main page');
         uiwait(h);
-    if datetime < datetime(2018,6,30)
+    if datetime < datetime(2018,12,31)
         %web('https://gitlab.seismo.ethz.ch/reyesc/zmap/issues','-browser');
         web('https://github.com/CelsoReyes/zmap7/issues','-browser');
     else

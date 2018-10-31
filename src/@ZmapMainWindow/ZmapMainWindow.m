@@ -192,8 +192,12 @@ classdef ZmapMainWindow < handle
             end
             % retrieve default values from ZmapGlobal.
             [obj.mdate, obj.mshape] = obj.filter_catalog();
-            obj.Grid                = ZG.Grid;
-            obj.gridopt             = ZG.gridopt;
+            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation
+                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog);
+            else
+                obj.Grid                = ZG.Grid;
+                obj.gridopt             = ZG.gridopt;
+            end
             obj.evsel               = ZG.GridSelector;
             obj.xscats              = containers.Map();
             obj.xscatinfo           = containers.Map();
@@ -458,6 +462,7 @@ classdef ZmapMainWindow < handle
                 % do not set segment
             end
             if isempty(xsec), return, end
+            watchon;
             mytitle = xsec.name;
             
             
@@ -494,7 +499,7 @@ classdef ZmapMainWindow < handle
             
             % make this the active tab
             mytab.Parent.SelectedTab = mytab;
-            
+            watchoff
         end
         
         function cb_cropToXS(obj, xsec)

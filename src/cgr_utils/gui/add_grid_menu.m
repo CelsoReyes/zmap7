@@ -13,6 +13,7 @@ function add_grid_menu(obj)
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
     uimenu(parent,'Label','Select events in POLYGON', MenuSelectedFcn,@cb_makepolygon);
+    uimenu(parent,'Label','Wrap events in POLYGON (complex hull)', MenuSelectedFcn,@cb_makehull);
     uimenu(parent,'Label','about editing polygons...',MenuSelectedFcn,@(~,~)moveable_item('help'));
     uimenu(parent,'Separator','on',...
         'Label','Delete polygon', MenuSelectedFcn, @cb_clear_shape);
@@ -43,6 +44,13 @@ function add_grid_menu(obj)
         set_my_shape(obj,sh);
     end
     
+    function cb_makehull(src,ev)
+        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        eqs = [obj.catalog.Longitude, obj.catalog.Latitude];
+        ch=convhull(eqs,'simplify',true);
+        sh=ShapePolygon('polygon',eqs(ch,:));
+        set_my_shape(obj,sh);
+    end
     function cb_clear_shape(src,ev)
         ShapeGeneral.clearplot();
         delete(obj.shape);

@@ -45,7 +45,10 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
     % assumptions
     % simple curve, so events are only closest to 1 point
     % distance grows 
-    d2c=memoize(@distance2curve);
+    
+    % d2c=memoize(@distance2curve);
+    d2c = @distance2curve;
+    
     refEllipse = wgs84Ellipsoid; % defaults to length unit of meters
     lat0 = median(curvelats);
     lon0 = median(curvelons);

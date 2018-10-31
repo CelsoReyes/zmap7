@@ -213,8 +213,7 @@ classdef ZmapDialog < handle
         
         function [results,okPressed]=Create(obj, varargin)
             % Create creates a dialog box based on a cell description of types within.
-            % [results,okPressed]=Create(obj, dlgTitle)
-            % [results,okPressed]=Create(obj, dlgTitle)
+            % [results,okPressed]=Create(obj, 'Name', dlgTitle)
             % ... Create(obj, ...,'Style','figure') % or uifigure
             % ... Create(obj, ...,'CreatedFcn', fnHandle) where DialogCreatedFcn is a function to execute
             %        'OkFcn' 

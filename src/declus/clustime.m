@@ -2,15 +2,9 @@ function eqtime = clustime(some_cat)
     % These routine calculates the time in days of the eqs. in ZG.newcat relative
     % to the year 1902
     % A.Allmann
+    % used to modify / use newcat.
   
     %rewritten by Celso Reyes 2017
     
-    ZG=ZmapGlobal.Data;
-    if exist('some_cat','var')
-        ZG.newcat = some_cat;
-    else
-        % just use ZG.newcat
-    end
-    eqtime = ZG.newcat.Date - datetime(1902,01,01);
-    eqtime.Format='d';
+    eqtime = days(some_cat.Date - datetime(1902,01,01));
 end

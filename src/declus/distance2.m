@@ -1,12 +1,12 @@
-function [dist1, dist2] = distance2(i,bgevent,ac)
+function [dist1, dist2] = distance2(i,bgevent,ac, newcat)
     % calculates the distance in [km] between two eqs
     % precise version based on Raesenbergs Program
     % the calculation is done simultaniously for the biggest event in the
     % cluster and for the current event
+    %
     % A. Allmann
 
     global err derr
-    ZG=ZmapGlobal.Data;
 
     if isempty(err) 
         err=1.5; % from InitVariables --epicenter error
@@ -18,12 +18,12 @@ function [dist1, dist2] = distance2(i,bgevent,ac)
     rad = 1.745329e-2;
     flat= 0.993231;
 
-    alatr1=ZG.newcat.Latitude(i)*rad;     %conversion from degrees to rad
-    alonr1=ZG.newcat.Longitude(i)*rad;
-    alatr2=ZG.newcat.Latitude(bgevent)*rad;
-    alonr2=ZG.newcat.Longitude(bgevent)*rad;
-    blonr=ZG.newcat.Longitude(ac)*rad;
-    blatr=ZG.newcat.Latitude(ac)*rad;
+    alatr1=newcat.Latitude(i)*rad;     %conversion from degrees to rad
+    alonr1=newcat.Longitude(i)*rad;
+    alatr2=newcat.Latitude(bgevent)*rad;
+    alonr2=newcat.Longitude(bgevent)*rad;
+    blonr=newcat.Longitude(ac)*rad;
+    blatr=newcat.Latitude(ac)*rad;
 
     tana(1)=flat*tan(alatr1);
     tana(2)=flat*tan(alatr2);
@@ -51,8 +51,8 @@ function [dist1, dist2] = distance2(i,bgevent,ac)
     if ~isempty(tmp1)
         r(tmp1)=zeros(length(tmp1),1);
     end
-    z(:,1)=abs(ZG.newcat.Depth(ac)-ZG.newcat.Depth(i));    %depth distance
-    z(:,2)=abs(ZG.newcat.Depth(ac)-ZG.newcat.Depth(bgevent));
+    z(:,1)=abs(newcat.Depth(ac)-newcat.Depth(i));    %depth distance
+    z(:,2)=abs(newcat.Depth(ac)-newcat.Depth(bgevent));
     z=z-derr;
     tmp2=find(z<0);
     if ~isempty(tmp2)

@@ -1,25 +1,21 @@
-function [tau] = clustLookAheadTime(xk,mbg,k1,xmeff,bgdiff,P)
+function [tau] = clustLookAheadTime(xk,biggest_mag,xmeff,bgdiff,P)
 % CLUSTLOOKAHEAD calculate look ahead time for clustered events
 %
-% [tau] = CLUSTLOOKAHEAD( xk,mbg,k1,xmeff,bgdiff,P)
+% [tau] = CLUSTLOOKAHEAD( xk,biggest_mag,xmeff,bgdiff,P)
 %   xk  : factor used for xmeff
-%   mbg : biggest magnitude in each cluster
-%   k1  :
+%   mbg : biggest magnitude in ths cluster
 %   xmeff :
 %   bgdiff
 %   P : 
 %
 % A.Allmann
 
+deltam = (1-xk) * biggest_mag - xmeff;        %delta in magnitude
 
-% global xk mbg xmeff k1 P
-% global top denom deltam bgdiff
-
-
-deltam = (1-xk)*mbg(k1)-xmeff;        %delta in magnitude
 if deltam<0
- deltam=0;
+    deltam=0;
 end
+
 denom  = 10^((deltam-1)*2/3);              %expected rate of aftershocks
 top    = -log(1-P)*bgdiff;
 tau    = top/denom;                        %equation out of Raesenberg paper

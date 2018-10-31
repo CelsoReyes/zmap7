@@ -52,6 +52,7 @@ function [catalog, OK] = load_zmapfile(myfile)%
     
     % find and load the ZmapCatalog variable from the file
     S=whos('-file',myfile);
+    S([S.bytes]==0) = [];
     ZCats=S(startsWith({S.class},'ZmapCatalog'));
     if ~isempty(ZCats) && numel(ZCats) == 1
         catalog=loadCatalog(path1, file1, ZCats);
@@ -70,14 +71,14 @@ function [catalog, OK] = load_zmapfile(myfile)%
     szStr=strrep(szStr,' ','x');
     popupString = '<html><strong>'+ string({S.name}) + '</strong> : ' + string({S.class}) + ' : '+ szStr;
     zdlg=ZmapDialog();
-    zdlg.AddPopup('mycatvar','Variables in file: ',popupString,1,@(x)S.name(x))
+    zdlg.AddPopup('mycatvar','Variables in file: ',popupString,1,'',@(x)S(x.Value).name);
     [v,OK]=zdlg.Create('Name','Choose your CATALOG');
     if ~OK
         return
     end
     % ZmapCatalog didn't exist in the file. Perhaps it is an old version?
     % If so, then catalog would have been saved in "a" as a matrix
-    catalog=loadCatalog(path1,file1,S);
+    catalog=loadCatalog(path1,file1,v.mycatvar);
     %{
     S=whos('-file',myfile,'a');
     if ~isempty(S)
@@ -98,8 +99,11 @@ function   A=loadCatalog(path, file, S)
     %
     lopa = fullfile(path, file);
     A=ZmapCatalog();
-    
-    varName=ensureSingleVariable(S);
+    if ischar(S) || (isstring(S) && isscalar(S))
+        varName = S;
+    else
+        varName=ensureSingleVariable(S);
+    end
     
     try
         tmp=load(lopa,varName);

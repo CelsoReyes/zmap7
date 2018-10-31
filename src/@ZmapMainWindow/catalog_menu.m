@@ -71,8 +71,8 @@ function catalog_menu(obj, force)
         'Separator','on');
     
     
-    uimenu (submenu,'Label','Decluster the catalog',...
-        MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog));
+    %uimenu (submenu,'Label','Decluster the catalog',...
+    %    MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog));
     
     function cb_recall(~,~)
         mcm = MemorizedCatalogManager;
