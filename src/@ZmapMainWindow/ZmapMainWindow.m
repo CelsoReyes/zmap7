@@ -462,6 +462,7 @@ classdef ZmapMainWindow < handle
                 % do not set segment
             end
             if isempty(xsec), return, end
+            watchon;
             mytitle = xsec.name;
             
             
@@ -498,7 +499,7 @@ classdef ZmapMainWindow < handle
             
             % make this the active tab
             mytab.Parent.SelectedTab = mytab;
-            
+            watchoff
         end
         
         function cb_cropToXS(obj, xsec)

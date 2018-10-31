@@ -14,4 +14,4 @@ Discover new functionality|Right-click on everything! Many of the axes, axes lab
 Change the symbols on your map|Choose "Edit Main Map Symbos" from the Display menu
 Learn more about your results|When looking at a results map, certain keys have special functionality.  Press '?' to get a list of functions, including getting full results for a point and choosing multiple points to compare
 Confine the sample grid to your events|To reduce the nubmer of grid points to evaluate without manually selecting a polygon, choose "Wrap events in POLYGON (complex hull)" from the Sampling menu.
-
+Experiencing huge holes in your bvalue results?|You could try to first cut the catalog to an approximate magnitude of completion, and THEN run your analysis.
