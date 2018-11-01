@@ -4,12 +4,14 @@ classdef AnalysisPoint < handle
         ax
         eventCircleProps={'LineStyle','-.','Color',[.75 .75 .75], 'LineWidth',1.5}
         clickLocProps={'LineStyle','--','Color',[.75 .75 .75], 'LineWidth',0.5,'HitTest','off'}
+        refEllipsoid referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
     end
     
     
     methods
-        function obj = AnalysisPoint(ax)
+        function obj = AnalysisPoint(ax, refEllipse)
             obj.ax=ax;
+            obj.refEllipsoid = refEllipse;
         end
         
         function c = color(obj, tagID)
@@ -72,7 +74,7 @@ classdef AnalysisPoint < handle
                 myLine.YData=[axy;tb.y];
                 
                 % modify selected event circle
-                [lat,lon]=scircle1(tb.y,tb.x,km2deg(tb.RadiusKm));
+                [lat,lon]=scircle1(tb.y,tb.x,tb.RadiusKm,[],obj.refEllipsoid);
                 myCircle.XData=lon;
                 myCircle.YData=lat;
             end

@@ -39,6 +39,10 @@ classdef XSection < handle
         DeleteFcn function_handle % a function to remove the plotted polygon from the map
         
     end
+    properties(SetAccess=immutable)
+        refellipsoid referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
+    end
+        
     
     properties(Access=private)
         handles=gobjects(0);
@@ -57,7 +61,7 @@ classdef XSection < handle
     end
     
     methods
-        function obj=XSection(ax, zans, startpt, endpt)
+        function obj=XSection(ax, zans, startpt, endpt, ref_ellipsoid)
             % XSECTION create a cross section
             % obj = XSECTION(ax, zans, startpt, endpt)
             %  where zans is a struct with fields: 'width_km', 'startlabel', 'endlabel', and 'color'
@@ -67,6 +71,15 @@ classdef XSection < handle
             obj.startlabel = zans.startlabel;   % startlabel
             obj.endlabel = zans.endlabel;       % endlabel
             obj.color = zans.color;             % color
+            
+            if exist('ref_ellipsoid','var')
+                if ischar(ref_ellipsoid)||isstring(ref_ellipsoid)
+                    obj.refellipsoid = referenceEllipsoid(ref_ellipsoid,'kilometer');
+                else
+                    obj.refellipsoid = ref_ellipsoid;
+                end
+            end
+                
             
             % dialog box to choose cross-section
             if ~exist('startpt','var')||~exist('endpt','var')
@@ -91,7 +104,7 @@ classdef XSection < handle
         end
         
         function ln = get.length_km(obj)
-            ln=deg2km(distance(obj.startpt,obj.endpt));
+            ln=distance(obj.startpt,obj.endpt,obj.refellipsoid);
         end
         
         function change_width(obj, w)
@@ -164,7 +177,7 @@ classdef XSection < handle
             if exist('ax','var')
                 % pick first point
                 try
-                    ptdetails = selectSegmentUsingMouse(ax, 'deg','km',obj.color);
+                    ptdetails = selectSegmentUsingMouse(ax, obj.color, obj.ref_ellipsoid);
                     obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
                     obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
                 catch ME
@@ -309,7 +322,7 @@ classdef XSection < handle
         end
         
         function recalculate_boundary(obj)
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
+            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2,false,obj.refellipsoid);
         end
         
         function recalculate_xsec_curve(obj)
@@ -407,8 +420,8 @@ classdef XSection < handle
     
     methods(Static)
         
-        function obj=initialize_with_mouse(ax, default_width)
-                ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m'); % could throw
+        function obj=initialize_with_mouse(ax, default_width, ref_ellipsoid)
+                ptdetails = selectSegmentUsingMouse(ax, 'm',ref_ellipsoid); % could throw
                 if isequal(ptdetails.xy1,ptdetails.xy2)
                     error('Cannot create a zero-length cross section');
                 end

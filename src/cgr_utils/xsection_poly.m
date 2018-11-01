@@ -1,4 +1,4 @@
-function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
+function [lats, lons] = xsection_poly(endpointA, endpointB, r_km, roundTips, ref_ellipsoid)
     % XSECTION_POLY returns the polygon with radius r (km) surrounding a linear cross-section
     % [LATS, LONS] = XSECTION_POLY(endpointA, endpointB, radius)
     % ... XSECTION_POLY(..., true) will extend the polygon to the radius around the end points
@@ -32,12 +32,14 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
     % see also reckon, azimuth
     % NOT THREAD SAFE
     
+    %TODO: change from gcwaypts to track using the ellipsoid
+    
     persistent prevParams
     persistent prevPoly
     if ~exist('roundTips','var')
         roundTips = false;
     end
-    params = struct('endA',endpointA,'endB',endpointB','radius',r,'extendEnds',roundTips);
+    params = struct('endA',endpointA,'endB',endpointB','radius',r_km,'extendEnds',roundTips);
     if isequal(params,prevParams)
         % return previous answer
         lats = prevPoly.lats;
@@ -45,10 +47,9 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
         return;
     end
     prevParams = params;
-    degr = km2deg(r);
     % get points along the great circle path
-    tdist_km = deg2km(distance(endpointA,endpointB));
-    npoints = round(tdist_km/(r)); % choose a number of points based on length/width ratio
+    tdist_km = distance(endpointA,endpointB,ref_ellipsoid);
+    npoints = round(tdist_km/(r_km)); % choose a number of points based on length/width ratio
     if npoints
         [gclats, gclons] = gcwaypts(endpointA(1),endpointA(2),endpointB(1),endpointB(2), npoints);
     else
@@ -62,15 +63,15 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
     % calculate going up the left
     for n = 1 : numel(gclats)-1
         AZ= azimuth(gclats(n),gclons(n),gclats(n+1),gclons(n+1));
-        [lats(end+1,1),lons(end+1,1)]=reckon(gclats(n),gclons(n),degr,AZ-90);
+        [lats(end+1,1),lons(end+1,1)] = reckon(gclats(n),gclons(n), r_km, AZ-90, ref_ellipsoid);
     end
     
     % calculate left of last point, but using backazimuth
     AZ = azimuth(gclats(end),gclons(end),gclats(end-1),gclons(end-1)); %backazimuth
-    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(end),gclons(end),degr,AZ+90);
+    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(end),gclons(end),r_km,AZ+90, ref_ellipsoid);
     
     if roundTips
-        [circlat,circlon]=reckon(endpointB(1),endpointB(2),degr,AZ+90+(.25:.25:179.75)');
+        [circlat,circlon]=reckon(endpointB(1),endpointB(2),r_km,AZ+90+(.25:.25:179.75)',ref_ellipsoid);
         lats=[lats;circlat(:)];
         lons=[lons;circlon(:)];
     end
@@ -78,19 +79,20 @@ function [lats, lons] = xsection_poly(endpointA, endpointB, r, roundTips)
     % calculate going down the right
     for n = numel(gclats): -1 : 2
         AZ= azimuth(gclats(n),gclons(n),gclats(n-1),gclons(n-1));
-        [lats(end+1,1),lons(end+1,1)]=reckon(gclats(n),gclons(n),degr,AZ-90);
+        [lats(end+1,1),lons(end+1,1)]=reckon(gclats(n),gclons(n),r_km,AZ-90, ref_ellipsoid);
     end
     
     % calculate right of first point, but using backazimuth
     AZ = azimuth(gclats(1),gclons(1),gclats(2),gclons(2)); %backazimuth
-    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(1),gclons(1),degr,AZ+90);
+    [lats(end+1,1),lons(end+1,1)]=reckon(gclats(1),gclons(1),r_km,AZ+90, ref_ellipsoid);
     
     if roundTips
-        [circBlat,circBlon]=reckon(endpointA(1),endpointA(2),degr,AZ+90+(.25:.25:179.75)');
+        [circBlat,circBlon]=reckon(endpointA(1),endpointA(2),r_km,AZ+90+(.25:.25:179.75)',ref_ellipsoid);
         lats=[lats;circBlat(:)];
         lons=[lons;circBlon(:)];
     end
-    lats(end+1)=lats(1);lons(end+1)=lons(1);
+    lats(end+1)=lats(1);
+    lons(end+1)=lons(1);
     
     prevPoly=struct('lats',lats,'lons',lons);
 end

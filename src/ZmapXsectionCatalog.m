@@ -24,7 +24,7 @@ classdef ZmapXsectionCatalog < ZmapCatalog
             if nargin==0
                 return
             end
-            tdist_km = deg2km(distance(p1,p2));
+            tdist_km = distance(p1,p2,catalog.RefEllipsoid);
             nlegs = ceil(tdist_km / width_km) .*2;
             [curvelats,curvelons]=gcwaypts(p1(1),p1(2),p2(1),p2(2),nlegs);
             scale = min(.1,tdist_km / 10000);
@@ -43,7 +43,7 @@ classdef ZmapXsectionCatalog < ZmapCatalog
             p=obj.curve(end,:);
         end
         function p=get.curvelength_km(obj)
-            p=deg2km(distance(obj.startPoint,obj.endPoint));
+            p=distance(obj.startPoint,obj.endPoint,obj.RefEllipsoid);
         end
         
         function me = copyFrom(me, other)

@@ -33,6 +33,7 @@ classdef ZmapMainWindow < handle
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
+        refEllipsoid  referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
     end
     
     properties(Constant)
@@ -455,7 +456,7 @@ classdef ZmapMainWindow < handle
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
             try
-                xsec = XSection.initialize_with_mouse(axm, 20);
+                xsec = XSection.initialize_with_mouse(axm, 20, obj.refEllipsoid);
             catch ME
                 warning(ME.message)
                 return

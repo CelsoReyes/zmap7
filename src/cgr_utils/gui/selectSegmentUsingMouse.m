@@ -1,19 +1,14 @@
-function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUpdateFcn)
+function [obj, ok]=selectSegmentUsingMouse(ax, color, refEllipse, addlUpdateFcn)
     % tracks user mouse movements to define a great-circle line segment
-    % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, AXUNITS, DISPUNITS, COLOR) where AX is the axis in which to
-    % draw your line segment.  AXUNITS is the distance units of the axis. ex. 'degrees', 'kilometer', 'mm'.
-    % If axis is degrees, then the line segment is drawn as the great-circle line.  Otherwise, it is a 
-    % straight line (in cartesian coords). DISPUNITS are the units in which the distance is reported
-    % color is the color in which the line segment is drawn.
+    % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, COLOR, refEllipse) where AX is the axis in which to
+    % draw your line segment as the great-circle line.
     %
     % RESULT is a struct with fields:
     %   xy1 : starting point [x , y]
     %   xy2 : ending point [x , y]
-    %   dispunits affects the fieldname for the distance returned
-    %   IF dispunits is 'kilometer', then the field returned is:
-    %   dist_km : distance between x & y in kilometer.
-    %   IF dispunits is 'degrees', then the field returned is:
-    %   dist_deg : distance between x & y in degrees
+    %   refEllipse affects the fieldname for the distance returned
+    %   IF refEllipse.LengthUnit is 'kilometer', then the field returned is:
+    %   dist_kilometer : distance between x & y in kilometer.
     %
     % once the segment has been chosen, it is removed from the plot.
     
@@ -40,19 +35,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     if ~exist('color','var')
         color='r';
     end
-    
-    if ~exist('axunits','var') || isempty(axunits)
-        axunits='kilometer';
-    else
-        axunits = standardizeDistanceUnits(axunits);
-    end
-    
-    if ~exist('dispunits','var') || isempty(dispunits)
-        dispunits='kilometer';
-    else
-        dispunits = standardizeDistanceUnits(dispunits);
-    end
-    
+        
     if ~exist('addlUpdateFcn','var')
         addlUpdateFcn=@do_nothing;
     end
@@ -61,7 +44,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
     fig=gcf;
     started=false;
     
-    obj=struct('xy1',[nan nan],'xy2',[nan nan],['dist_',dispunits],0);
+    obj=struct('xy1',[nan nan],'xy2',[nan nan],['dist_',refEllipse.LengthUnit],0);
     
     [x1, y1, x2, y2]=deal(nan);
     
@@ -91,35 +74,9 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         'FontWeight','bold','HitTest','off','BackgroundColor','w');
     
     
-    switch dispunits
-        case 'kilometer'
-            switch axunits
-                case 'kilometer'
-                    dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2);
-                case 'degrees'
-                    dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2));
-                otherwise
-                    dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits, axunits);
-            end
-        case 'degrees'
-            switch axunits
-                case 'kilometer'
-                    dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2));
-                case 'degrees'
-                    dist=@(x1,y1,x2, y2)distance(y1,x1,y2,x2);
-                otherwise
-                    dist=@(x1,y1,x2,y2)km2deg(sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(axunits,'kilometer') );
-            end
-        otherwise
-            switch axunits
-                case 'degrees'
-                    dist=@(x1,y1,x2, y2)deg2km( distance(y1,x1,y2,x2)) .* unitsratio(dispunits,'kilometer');
-                otherwise
-                    dist=@(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2) .* unitsratio(dispunits,axunits);
-            end
-            
-    end
-    distfld=(['dist_',dispunits]);
+    dist=@(x1,y1,x2, y2) distance(y1,x1,y2,x2,refEllipse);
+    
+    distfld=(['dist_',refEllipse.LengthUnit]);
     
     %% pause because we need completed user input before exiting this function
     while ~started
@@ -180,14 +137,11 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         started=true;
         
         % write the text
-        h(2)=text((x1+x2)/2,(y1+y2)/2,['Dist: 0 ' dispunits],...
+        h(2)=text((x1+x2)/2,(y1+y2)/2,['Dist: 0 ' refEllipse.LengthUnit],...
             'FontSize',12,'FontWeight','bold','Color',color);
-        switch axunits
-            case 'degrees'
-                f.WindowButtonMotionFcn=@moveMouseGC;
-            otherwise
-                f.WindowButtonMotionFcn=@moveMouse;
-        end
+        
+        f.WindowButtonMotionFcn=@moveMouseGC;
+        
         instructionTextFmt = 'Choose end point\n (x:%g, y:%g)';
         instructionText.String=sprintf(instructionTextFmt,x1,y1);
     end
@@ -225,7 +179,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         h(1).YData(2)=y2;
         obj.(distfld)=dist(x1,y1,x2,y2);
         h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
-        h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' dispunits];
+        h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' refEllipse.LengthUnit];
         
         % update instruction text
         dx=abs(diff(ax.XLim))/100;
@@ -247,7 +201,7 @@ function [obj, ok]=selectSegmentUsingMouse(ax, axunits, dispunits, color, addlUp
         h(1).MarkerIndices=[1 numel(h(1).YData)];
         obj.(distfld)=dist(x1,y1,x2,y2);
         h(2).Position(1:2)= [(x1+x2)/2,(y1+y2)/2];
-        h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' dispunits];
+        h(2).String=['Dist:' num2str(obj.(distfld),4) ' ' refEllipse.LengthUnit];
         
         % update instruction text
         dx=abs(diff(ax.XLim))/100;

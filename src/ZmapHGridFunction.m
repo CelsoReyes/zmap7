@@ -578,7 +578,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             CR = sp.thisradius;
             if obj.showRing && ~isempty(tb)
                 % update samplecircle
-               [La,Lo]=reckon(tb.y, tb.x, km2deg(obj.Result.values.RadiusKm(obj.nearestSample)), 0:2:360);
+               assert(obj.RawCatalog.RefEllipsoid.LengthUnit=="kilometer");
+               [La,Lo]=reckon(tb.y, tb.x, obj.Result.values.RadiusKm(obj.nearestSample), 0:2:360, obj.RawCatalog.RefEllipsoid);
                 set(CR,'XData',Lo,'YData',La,'LineStyle','--');
             else
                 set(CR,'XData',nan,'YData',nan);

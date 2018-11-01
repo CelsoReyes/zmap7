@@ -75,6 +75,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         DipDirection % unused?
         Rake % unused?
         MomentTensor table = table([],[],[],[],[],[],'VariableNames', {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'})
+        RefEllipsoid referenceEllipsoid = referenceEllipsoid('wgs84','kilometer'); % reference ellipsoid for Longitude and Latitude as specified in QuakeML
         % additions to this table need to be also added to a bunch of functions:
         %    summary (?), getCropped, sort, subset,
     end
@@ -211,6 +212,19 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         
         function propval = get.DayOfYear(obj)
             propval = fix(datenum(obj.Date)) - datenum(obj.Date.Year - 1, 12 , 31);
+        end
+        
+        function set.RefEllipsoid(obj, value)
+            % change reference ellipsoid associated with data WITHOUT updating lat & lon positions.
+            % Reference ellipsoid is always of length unit 'kilometer'
+            if ischar(value)||isstring(value)
+                obj.RefEllipsoid = referenceEllipsoid(value,'kilometer');
+            elseif isa(value,'referenceEllipsoid')
+                obj.RefEllipsoid = value;
+                obj.RefEllipsoid.LengthUnit='kilometer';
+            else
+                error('Trying to set the reference ellipsoid with unknown value. use a name (ex. ''wgs84'') or provide a referenceEllipsoid');
+            end
         end
         
         function set.MomentTensor(obj, value)
@@ -487,7 +501,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             max_km = max(dists_km(mask));
         end
         
-        function obj = blank(obj2)
+        function obj = blank(~)
             % allows subclass-aware use of empty objects
             obj = ZmapCatalog();
         end
@@ -646,6 +660,10 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             %
             % For example:
             %   c = mycat.removeDuplicates('tolDepth_m', 20 , 'tolTime', milliseconds(50))
+            %
+            % this only compares events adjacent in the catalog (sorted by time).
+            %
+            % catalog is returned in DateOrder
 
             
             obj.sort('Date');
@@ -666,11 +684,11 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 tols.tolTime, tols.tolDist_m, tols.tolDepth_m, tols.tolMag);
             % Dip, DipDirection, Rake, MomentTensor are not included in calculation
             
-            dist_deg = distance(obj.Latitude(1:end-1),obj.Longitude(1:end-1),...
-                obj.Latitude(2:end),obj.Longitude(2:end));
+            dist_km = distance(obj.Latitude(1:end-1),obj.Longitude(1:end-1),...
+                obj.Latitude(2:end),obj.Longitude(2:end), obj.RefEllipsoid);
             
             isSame = abs(diff(obj.Date)) <= tols.tolTime & ...
-                dist_deg <= km2deg(tols.tolDist_m / 1000) & ...
+                dist_km <= (tols.tolDist_m / 1000) & ...
                 abs(diff(obj.Depth))     <= (tols.tolDepth_m / 1000) & ...
                 abs(diff(obj.Magnitude)) <= tols.tolMag;
             sameidx = [false; isSame];
@@ -706,7 +724,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         end
                         fprintf('\t%20s : %d categories [ %s ]\n', pn, numel(c), s);
                     case 'logical'
-                        fprintf('\t%20s : logical, %d are true cell> \n',pn,sum(obj.(pn)));
+                        fprintf('\t%20s : <logical> [%d of %d are true] \n',pn,sum(obj.(pn)),numel(obj.(pn)));
                         
                     case 'cell'
                         fprintf('\t%20s : <%s cell> \n',pn,strjoin(num2str(size(obj.(pn))),'x'));
@@ -718,6 +736,9 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                         else
                             fprintf('\t%20s : [ %s  to  %s ]\n',pn, min(obj.(pn)), max(obj.(pn)));
                         end
+                        
+                    case 'referenceEllipsoid'
+                        fprintf('\t%20s : %s [Units:%s]',pn,obj.(pn).Name,obj.(pn).LengthUnit);
                         
                     otherwise
                         try
@@ -739,88 +760,6 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
         end
         
-        function h = plot(obj,varargin)
-            error('use a ZmapCatalogView instead');
-        end
-        %{
-            function h=plot(obj, ax, varargin)
-            % plot this catalog. It will plot on
-            %
-            % see also refreshPlot
-
-            if has_toolbox('Mapping Toolbox') && ismap(ax)
-                h=obj.plotm(ax,varargin{:});
-                return
-            end
-            
-            hastag=find(strcmp('Tag',varargin),1,'last');
-            
-            if ~isempty(hastag)
-                mytag=varargin{hastag+1};
-            else
-                mytag=['catalog_',obj.Name];
-                varargin(end+1:end+2)={'Tag',mytag};
-            end
-            
-            % fprintf('plotting catalog with %d events and tag:%s\n',obj.Count,mytag);
-            % clear the existing layer
-            h = findobj(ax,'Tag',mytag);
-            if ~isempty(h)
-                delete(h);
-            end
-            
-            holdstatus = ishold(ax);
-            ax.NextPlot='add';
-            
-            % val = obj.getTrimmedData();
-            h=plot(ax,nan,nan,'x');
-            set(h,'XData',obj.Longitude,'YData', obj.Latitude, 'ZData',obj.Depth);
-            set(h,varargin{:}); % if Tag is in varargin, it will override default tag
-            %h.ZData = obj.Depth;
-            
-            if ~holdstatus; ax.NextPlot='replace'; end
-            
-        end
-        %}
-        function h = plotm(obj,varargin)
-            error('use a ZmapCatalogView instead');
-        end
-        %{
-            function h=plotm(obj,ax, varargin)
-            % plot this layer onto a map (Requires mapping toolbox)
-            % will delete layer if it exists
-            % note features will only plot the subset of features within the
-            % currently visible axes
-            %
-            % see also refreshPlot
-            
-            
-            if isempty(ax) || ~isvalid(ax) || ~ismap(ax)
-                error('Feature "%s" ->plot has no associated axis or is not a map',obj.Name);
-            end
-            
-            hastag=find(strcmp('Tag',varargin));
-            if ~isempty(hastag)
-                mytag=varargin{hastag}+1;
-            else
-                mytag=['catalog_',obj.Name];
-                varargin(end+1:end+2)={'Tag',mytag};
-            end
-            
-            h = findobj(ax,'Tag',mytag);
-            if ~isempty(h)
-                delete(h);
-            end
-            
-            holdstatus = ishold(ax); ax.NextPlot='add';
-            h=plotm(obj.Latitude, obj.Longitude, '.',varargin{:});
-            set(h, 'ZData',obj.Depth);
-            set(ax,'ZDir','reverse');
-            daspectm('km');
-            if ~holdstatus; ax.NextPlot='replace'; end
-            
-        end
-        %}
         function plotFocalMechanisms(obj,ax,color)
             % PLOTFOCALMECHANISMS plot the focal mechanisms of a catalog (if they exist)
             % plotFocalMechanisms(catalog, ax, color)
@@ -829,7 +768,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
             
             
-            pbar    = pbaspect(ax);
+            %pbar    = pbaspect(ax);
             pbar    = daspect(ax);
             asp     = pbar(1)/pbar(2);
             if isempty(obj.MomentTensor)
@@ -838,6 +777,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             axes(ax)
             set(gca, 'NextPlot', 'add');
             set(findobj(gcf,'Type','Legend'), 'AutoUpdate', 'off'); %
+            h=gobjects(obj.Count,1);
             for i=1:obj.Count
                 mt = obj.MomentTensor{i,:};
                 if istable(mt)
@@ -855,23 +795,17 @@ classdef ZmapCatalog < matlab.mixin.Copyable
             end
             set(findobj(gcf,'Type','Legend'),'AutoUpdate','on')
         end
-        
-        function dists_deg = epicentralArcDistanceTo(obj, to_lat, to_lon)
-            % get epicentral (lat-lon) distance to another point
-            % dists_km = catalog.EPICENTRALARCDISTANCETO(to_lat, to_lon)
-            dists_deg   = distance(obj.Latitude, obj.Longitude, to_lat, to_lon);
-        end
-        
+                
         function dists_km = epicentralDistanceTo(obj, to_lat, to_lon)
             % get epicentral (lat-lon) distance to another point
             % dists_km = catalog.EPICENTRALDISTANCETO(to_lat, to_lon)
-            dists_km    = deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
+            dists_km    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
         end
         
         function dists_km = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
             % get HYPOCENTRALDISTANCETO (lat,lon,z) distance to another point
             % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
-            dists_km    = deg2km(distance(obj.Latitude, obj.Longitude, to_lat, to_lon));
+            dists_km    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
             delta_dep   = (obj.Depth - to_depth_km);
             dists_km    = sqrt( dists_km .^ 2 + delta_dep .^ 2);
         end

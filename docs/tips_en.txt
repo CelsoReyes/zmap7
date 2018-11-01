@@ -11,7 +11,11 @@ Get cross-section info|Choose "Info" from the drop-down menu accessed by right-c
 Explore the cross section in different ways|Right-click on the axes labels, or on the data points to change how the data is shown. You can change the X and Y axes, as well as the color and size.
 Explore the catalog|Choose "Explore Catalog" from the "Ztools" menu to open an interactive axes, where you can change which catalog attributes plot to the  X and Y axes, as well as the with color and size. 
 Discover new functionality|Right-click on everything! Many of the axes, axes labels, tabs, lines, and scatterplots are interactive. They contain menus that provide additional options.
-Change the symbols on your map|Choose "Edit Main Map Symbos" from the Display menu
+Change the symbols on your map|Choose "Edit Main Map Symbols" from the Display menu
 Learn more about your results|When looking at a results map, certain keys have special functionality.  Press '?' to get a list of functions, including getting full results for a point and choosing multiple points to compare
 Confine the sample grid to your events|To reduce the nubmer of grid points to evaluate without manually selecting a polygon, choose "Wrap events in POLYGON (complex hull)" from the Sampling menu.
 Experiencing huge holes in your bvalue results?|You could try to first cut the catalog to an approximate magnitude of completion, and THEN run your analysis.
+Load [almost] any text file | Many arbitrary delimited-text catalog files can be loaded, as long as they contain a similarly delimited header row.|ZMAP looks for headers like: Longitude, Latitude, Depth, Magnitude, MagnitudeType, Day, Month, Year, Hour, Minute, Second, and (more generally) Date. 
+Modify your cross-section|Right-click on cross-section's tab to change some of its properties
+Reprt an issue with ZMAP|If you experiencing errors or "funny" behavior with ZMAP, create a new issue in GitHub.  Simply choose "Report a ZMAP issue" from the help Menu.
+Reuse your polygon|Polygons can be saved and reloaded, allowing you to select the exact same region for different catalogs.

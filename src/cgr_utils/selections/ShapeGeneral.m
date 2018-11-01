@@ -71,6 +71,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     properties
         ApplyGrid logical = true % apply grid options to the selected shape.
         ScaleWithLatitude logical = false
+        RefEllipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
     end
     
     properties (NonCopyable = true)
@@ -143,13 +144,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         
         function val=get.Area(obj)
             % Area attempts to scale according to lat/lon
-            lats=obj.Lat;
-            lons=obj.Lon;
-            ys=deg2km(lats);
-            latscale=cosd(lats);
-            xs= deg2km(latscale .* lons);
-            
-            val = polyarea(xs,ys);
+            val = areaint(obj.Lat,obj.Lon,obj.RefEllipsoid);
         end
         
         function [mask]=isinterior(obj,otherLon, otherLat)
@@ -298,6 +293,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             s.Y0=obj.Y0;
             s.Lat=obj.Outline(:,2);
             s.Lon=obj.Outline(:,1);
+            s.RefEllipsoid = obj.RefEllipsoid
         end
         
         function save(obj, data_dir)

@@ -57,7 +57,7 @@ classdef ShapeCircle < ShapeGeneral
         
         function val=Outline(obj,col)
             % TODO: look into using scircle1 or scircle2
-            [lat,lon]=reckon(obj.Y0,obj.X0,km2deg(obj.Radius),(0:.1:360)');
+            [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
             val=[lon, lat];
             if exist('col','var')
                 val=val(:,col);
@@ -127,8 +127,8 @@ classdef ShapeCircle < ShapeGeneral
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon
-                dists=distance(obj.Y0, obj.X0, otherLat, otherLon);
-                mask=deg2km(dists) <= obj.Radius;
+                dists=distance(obj.Y0, obj.X0, otherLat, otherLon, obj.RefEllipsoid);
+                mask=dists <= obj.Radius;
             end
         end
         
@@ -172,9 +172,12 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=selectUsingMouse(ax)
+        function obj=selectUsingMouse(ax,ref_ellipsoid)
+            if ~exist('ref_ellipse','var')
+                ref_ellipsoid = referenceEllipsoid('wgs84','kilometer');
+            end
             
-            [ss,ok] = selectSegmentUsingMouse(ax,'degrees','kilometer','r',@circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', ref_ellipsoid, @circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];
@@ -189,11 +192,12 @@ classdef ShapeCircle < ShapeGeneral
                 if isempty(h)
                     h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                [lat,lon]=reckon(stxy(2),stxy(1),km2deg(d),(0:3:360)');
+                [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
                 h.XData=lon;
                 h.YData=lat;
             end
         end
+        %{
         function obj=select(varargin)
             % ShapeCircle.select()
             % ShapeCircle.select()
@@ -223,7 +227,7 @@ classdef ShapeCircle < ShapeGeneral
             obj.Radius=varargin{1};
             obj.Points=[x1,y1];
         end
-        
+        %}
     end
     
             

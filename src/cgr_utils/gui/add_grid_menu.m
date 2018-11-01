@@ -28,7 +28,8 @@ function add_grid_menu(obj)
     
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        sh=ShapeCircle.selectUsingMouse(obj.map_axes);
+        
+        sh=ShapeCircle.selectUsingMouse(obj.map_axes,obj.refEllipsoid);
         set_my_shape(obj,sh);
     end
     

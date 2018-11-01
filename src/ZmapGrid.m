@@ -45,7 +45,9 @@ classdef ZmapGrid
     %
     %
     % see also gridfun, EventSelectionChoice, autogrid
-    %
+    
+    % TODO: update this to use a referenceEllipse
+    
     properties
         Name (1,:)      char         = ZmapGlobal.Data.GridOpts.Name % name of this grid
         Units (1,:)     char         = 'unk'                % degrees or kilometer
@@ -544,7 +546,6 @@ classdef ZmapGrid
             %    distance(lat0,lon0,lat0,lon0+dLon,'degrees'),...
             %    distance(lat0,lon0,lat0+dLat,lon0,'degrees')]);
             
-            %d.String=sprintf('Dist: %.3f (degrees) [%.3f (kilometer)]',dist_arc,deg2km(dist_arc));
             zMat=[];
             % origin point
             lon0=lonLatZ0(1);

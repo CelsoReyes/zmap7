@@ -19,17 +19,17 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
         return
     end
     
-    tdist_km = deg2km(distance(pt1,pt2));
+    tdist_km = distance(pt1,pt2,catalog.RefEllipsoid);
     nlegs = ceil(tdist_km / dx_km); % was doubled.
     
     % limit the catalog to the appropriate distance from the curve
-    [las,los]=xsection_poly(pt1,pt2,maxdist_km,false);
+    [las,los]=xsection_poly(pt1,pt2,maxdist_km,false,catalog.RefEllipsoid);
     mask=polygon_filter(los,las,catalog.Longitude,catalog.Latitude,'inside');
     projectedcat=catalog.subset(mask);
     
     % create the curve
     [curvelats,curvelons]=gcwaypts(pt1(1),pt1(2),pt2(1),pt2(2),nlegs);
-    gcDistances=deg2km(distance(pt1(1),pt1(2),curvelats,curvelons));
+    gcDistances = distance(pt1(1),pt1(2),curvelats,curvelons,catalog.RefEllipsoid);
     % find closest point for each event
     eqLats=projectedcat.Latitude;
     % eqLons=projectedcat.Longitude;
@@ -37,7 +37,7 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     
     [projectedcat2, mindist2, arcpos] = tryit(projectedcat, curvelats, curvelons);
     
-    gcDist_km=arcpos .* max(gcDistances); % where along line is it
+    gcDist_km = arcpos .* max(gcDistances); % where along line is it
 end
 
 
@@ -49,7 +49,7 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
     % d2c=memoize(@distance2curve);
     d2c = @distance2curve;
     
-    refEllipse = wgs84Ellipsoid; % defaults to length unit of meters
+    refEllipse = catalog.RefEllipsoid; % defaults to length unit of meters
     lat0 = median(curvelats);
     lon0 = median(curvelons);
     [xEast,yNorth, zUp] = geodetic2enu(catalog.Latitude, catalog.Longitude, -catalog.Depth*1000,...
@@ -57,7 +57,7 @@ function [catalog, dist,t] = tryit(catalog, curvelats, curvelons)
     [xCurveEast, yCurveNorth] = geodetic2enu(curvelats, curvelons, 0, median(curvelats), median(curvelons), 0, refEllipse);
     
     [xy,dist,t]=d2c([xCurveEast(:) yCurveNorth(:)], [xEast, yNorth]);
-    [catalog.Latitude, catalog.Longitude]= enu2geodetic(xy(:,1), xy(:,2), zUp, lat0, lon0, 0, wgs84Ellipsoid); 
+    [catalog.Latitude, catalog.Longitude]= enu2geodetic(xy(:,1), xy(:,2), zUp, lat0, lon0, 0, refEllipse); 
 end
 
 function [ProjPoint, length_q] = ProjectPoint(vector, q)

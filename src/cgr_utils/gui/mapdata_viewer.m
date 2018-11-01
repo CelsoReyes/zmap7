@@ -102,7 +102,7 @@ function mapdata_viewer(res,catalog,resfig)
     evdepax=subplot(2,2,3);
     momentax=subplot(2,2,4);
     
-    analyPt = AnalysisPoint(mapax);
+    analyPt = AnalysisPoint(mapax,catalog.RefEllipsoid);
     
     
     % b-value axes, showing b-value rates
