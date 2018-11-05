@@ -68,8 +68,8 @@ function h=make_better_helpdlg(n,texts,mytitle)
         h.Visible='off';
         h.Name = "ZMAP TIP #" + string(n);
         hbutts = findobj(h.Children,'flat','Style','pushbutton');
-        set(findobj(h.Children,'Tag','message'),'String',texts);
-        set(findobj(h.Children,'Tag','title'),'String',mytitle);
+        set(findobj(h.Children,'Tag','message'),'String',texts,'Units','normalized');
+        set(findobj(h.Children,'Tag','title'),'String',mytitle,'Units','normalized');
         hbutts(get(hbutts,'Tag')=="prev button").Callback = @(~,~)show_a_tip(n-1);
         hbutts(get(hbutts,'Tag')=="next button").Callback = @(~,~)show_a_tip(n+1);
     end

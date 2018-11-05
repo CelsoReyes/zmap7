@@ -207,7 +207,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 h = obj.Grid.pcolor(ax,p, coldesc);
                 shading(ax,'flat')
             else
-                [~,h]=obj.Grid.contourf(ax,obj.Result.values.(colname), coldesc, ZmapGlobal.Data.ResultOpts.NumContours);
+                % [~,h]=obj.Grid.contourf(ax,obj.Result.values.(colname), coldesc, ZmapGlobal.Data.ResultOpts.NumContours);
+                h=obj.patchplot(ax,colname);
             end
             
             % move the contour to the bottom layer so other graphical elements can be interacted with
@@ -256,7 +257,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 if minV==maxV
                     ax.CLim=[-inf inf];
                 else
-                    ax.CLim=[floor(minV), ceil(maxV)];
+                    %ax.CLim=[floor(minV), ceil(maxV)];
                 end
                 pretty_colorbar(ax,coldesc,colunits);
             catch ME
@@ -341,7 +342,65 @@ classdef ZmapHGridFunction < ZmapGridFunction
             
         end % plot function
         
+       function mypatch=patchplot(obj,ax, choice)
+    
+    %{
+    some_results is the results from one of the ZmapGridFunctions. It will contain:
+    1.  a field called "values" which is a table.  This table will have columns for 'x', 'y' and 
+        col_heading (where col_heading is the name of one of the columns).
+    2.  a field called Grid, which is a ZmapGrid and contains fields X, Y
         
+    %}
+    gr_s = obj.Grid;
+    results = obj.Result.values;
+    axes(ax);
+    myX= obj.Result.values.x;
+    myX=reshape(myX,size(obj.Grid.X));
+    hold on;
+    % assume: dx is constant for every latitude
+    dx_at_lat = min(diff(myX,[],2),[],2);   % Nx1
+    
+    
+    
+    % fill all X position nans, because they will cause holes
+    for i=1:size(myX,1)
+        AnchorIdx = find(~ismissing(myX(i,:)),1,'first');
+        AnchorVal = myX(i,AnchorIdx);
+        missIdx = find(ismissing(myX(i,:)));
+        myX(i,missIdx) = (missIdx - AnchorIdx) .* dx_at_lat(i) + AnchorVal;
+    end
+    
+    % assume dy is constant everywhere
+    dy = mean(min(diff(gr_s.Y)));
+    shifted_X = myX - repmat(dx_at_lat ./2, 1, size(myX,2)) ;
+    shifted_Y = gr_s.Y-dy./2;
+    
+    myresults=obj.Result.values.(choice);
+    myresults=reshape(myresults,size(shifted_X));
+    
+    %% because surfaces and patches are based on the lower-left corner, add col & row.
+    
+    % add row to top with same values as existing last (top)row
+    myresults(end+1,:)=myresults(end,:);
+    shifted_X(end+1,:)=shifted_X(end,:);
+    shifted_Y(end+1,:)=shifted_Y(end,:) + dy;
+    
+    % add column to end with same values as existing last (right) column
+    myresults(:,end+1)=myresults(:,end);
+    shifted_X(:,end+1)=shifted_X(:,end) + [dx_at_lat; dx_at_lat(end)];
+    shifted_Y(:,end+1)=shifted_Y(:,end);
+    
+    pa=surf2patch(shifted_X,shifted_Y,zeros(size(shifted_X)),myresults);
+    
+    mypatch=patch(pa);
+    mypatch.Faces(end,:)=[]; %this point was made up.
+    mypatch.Tag='result overlay';
+    mypatch.HitTest='off';
+    shading faceted;
+    
+    set(gca,'Children',circshift(get(gca,'Children'),-1)); % put this patch at the end
+end
+ 
         function updateClickPoint(obj,~,ev)
             % If user clicks in the active axis, then the point and sample are updated
             % disp(ev)
@@ -733,8 +792,16 @@ classdef ZmapHGridFunction < ZmapGridFunction
             activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             activeax  = findobj(activeTab.Children,'Type','axes');
             
-            uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('interp'));
-            uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('flat'));
+            shadingOptions = string({'interp','flat','faceted'});
+            for jj=1:numel(shadingOptions)
+                
+                uimenu(shademenu,'Label',shadingOptions(jj),...
+                    MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading(shadingOptions(jj)));
+            end
+                
+            % uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('interp'));
+            % uimenu(shademenu,'Label','flat',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('flat'));
+            % uimenu(shademenu,'Label','faceted',MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading('faceted'));
             
             plottype=uimenu(lookmenu,'Label','plot type');
             
@@ -747,22 +814,22 @@ classdef ZmapHGridFunction < ZmapGridFunction
                 'Enable','off',...not fully unimplmented
                 MenuSelectedField(),@(src,~)obj.contourf(obj.active_col));
             %}
-            uimenu(lookmenu,'Label','change contour interval',...
-                ...'Enable','off',...
-                MenuSelectedField(), @ZmapGridFunction.cb_changecontours);
+            %uimenu(lookmenu,'Label','change contour interval',...
+            %    ...'Enable','off',...
+            %    MenuSelectedField(), @ZmapGridFunction.cb_changecontours);
             
             uimenu(lookmenu,'Separator','on',...
                 'Label','brighten active map',...
                 MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(0.4));
             uimenu(lookmenu,'Label','darken active map',...
                 MenuSelectedField(),@(~,~)ZmapGridFunction.cb_brighten(-0.4));
-            %{
+            
             uimenu(lookmenu,'Separator','on',...
-                'Label','increase alpha ( +0.2 )',...
+                'Label','derease transparency (alpha) ( +0.2 )',...
                 MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( 0.2));
-            uimenu(lookmenu,'Label','decrease alpha ( -0.2 )',...
+            uimenu(lookmenu,'Label','increase transparency (alpha) ( -0.2 )',...
                 MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
-                %}
+                
             uimenu(lookmenu,'Separator','on',...
                 'Label','Save results',...
                 MenuSelectedField(),@save);

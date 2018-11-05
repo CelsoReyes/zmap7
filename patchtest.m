@@ -1,34 +1,24 @@
-function patchtest(some_results, col)
+function mypatch=patchtest(some_results, col_heading)
+    
+    %{
+    some_results is the results from one of the ZmapGridFunctions. It will contain:
+    1.  a field called "values" which is a table.  This table will have columns for 'x', 'y' and 
+        col_heading (where col_heading is the name of one of the columns).
+    2.  a field called Grid, which is a ZmapGrid and contains fields X, Y
+        
+    %}
     gr_s = some_results.Grid;
     results = some_results.values;
-    %% testing the grid conversion, to display results in a patch
-    %{
-gr_s =
-
-  struct with fields:
-
-    ActivePoints: [41×37 logical]
-               X: [41×37 double]  %  [Lat, Lon]
-               Y: [41×37 double]
-         Xactive: [1517×1 double]
-         Yactive: [1517×1 double]
-      GridVector: [1517×2 double]
-
-This has 41 unique Y values
-    %}
-    myX = gr_s.X;
-    %f=figure(3);
-    %clf
-    %f.Name='patchy patch patch';
-    ax=gca;
+    
+    myX=some_results.values.x;
+    myX=reshape(myX,size(some_results.Grid.X));
     hold on;
     % assume: dx is constant for every latitude
     dx_at_lat = min(diff(myX,[],2),[],2);   % Nx1
     
-    % assume dy is constant everywhere
-    dy = mean(min(diff(gr_s.Y)));
     
-    % fill all nans.
+    
+    % fill all X position nans, because they will cause holes
     for i=1:size(myX,1)
         AnchorIdx = find(~ismissing(myX(i,:)),1,'first');
         AnchorVal = myX(i,AnchorIdx);
@@ -36,34 +26,34 @@ This has 41 unique Y values
         myX(i,missIdx) = (missIdx - AnchorIdx) .* dx_at_lat(i) + AnchorVal;
     end
     
-    vX = [myX(:,1)-dx_at_lat ./2 , myX + repmat(dx_at_lat,1,size(myX,2)) ./2];
-    vX= [vX ; vX(end,:)]; % ugly approximation
+    % assume dy is constant everywhere
+    dy = mean(min(diff(gr_s.Y)));
+    shifted_X = myX - repmat(dx_at_lat ./2, 1, size(myX,2)) ;
+    shifted_Y = gr_s.Y-dy./2;
     
-    dy = diff(gr_s.Y,[],1)./2;
-    dy = [ -dy(1,:) ; dy ; dy(end,:) ];
-    vY = [gr_s.Y(1,:) ; gr_s.Y] + dy;
-    vY=  [vY, vY(:,end)];
+    myresults=results.(col_heading);
+    myresults=reshape(myresults,size(shifted_X));
     
-    %pa=surf2patch(gr_s.X, gr_s.Y,zeros(size(gr_s.X))); % as surf2patch(X,Y,Z)
-    pa=surf2patch(vX, vY, zeros(size(vX)),'triangles'); % as surf2patch(X,Y,Z)
-    %pa=surf2patch(gr_s.X, gr_s.Y);
-    pa.FaceVertexCData = linspace(0,1,length(pa.vertices))';
+    %% because surfaces and patches are based on the lower-left corner, add col & row.
+    
+    % add row to top with same values as existing last (top)row
+    myresults(end+1,:)=myresults(end,:);
+    shifted_X(end+1,:)=shifted_X(end,:);
+    shifted_Y(end+1,:)=shifted_Y(end,:) + dy;
+    
+    % add column to end with same values as existing last (right) column
+    myresults(:,end+1)=myresults(:,end);
+    shifted_X(:,end+1)=shifted_X(:,end) + [dx_at_lat; dx_at_lat(end)];
+    shifted_Y(:,end+1)=shifted_Y(:,end);
+    
+    pa=surf2patch(shifted_X,shifted_Y,zeros(size(shifted_X)),myresults);
+    
     mypatch=patch(pa);
-    shading flat;
-    hold on;
-     scatter(gr_s.X(:),gr_s.Y(:),'r+','Tag','thegrid');
+    mypatch.Faces(end,:)=[]; %this point was made up.
+    mypatch.Tag='the_patch';
+    mypatch.HitTest='off';
+    shading faceted;
     
-    do_not_use = isnan(results.x)|isnan(results.y)|isnan(results.(col));
-    
-    results.x(do_not_use) = myX(do_not_use);
-    results.(col)(do_not_use)=-987654321;
-    %results(do_not_use,:)=[];
-    F=scatteredInterpolant(results.x,results.y,results.(col));
-    F.ExtrapolationMethod='none';
-    F.Method='nearest';
-    vert=F(vX,vY);
-    mypatch.FaceVertexCData=vert(:);
-    disp(F)
-    set(gca,'Children',circshift(get(gca,'Children'),-1))
+    set(gca,'Children',circshift(get(gca,'Children'),-1)); % put this patch at the end
 end
 

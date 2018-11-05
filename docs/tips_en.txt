@@ -19,3 +19,5 @@ Load [almost] any text file | Many arbitrary delimited-text catalog files can be
 Modify your cross-section|Right-click on cross-section's tab to change some of its properties
 Reprt an issue with ZMAP|If you experiencing errors or "funny" behavior with ZMAP, create a new issue in GitHub.  Simply choose "Report a ZMAP issue" from the help Menu.
 Reuse your polygon|Polygons can be saved and reloaded, allowing you to select the exact same region for different catalogs.
+Cut the catalog to the Mc|You can remove events from the catalog that fall below the Mc directly from the FMD plot. Right click in the plot, and choose "Cut catalog at Mc".|You will have the option to modify the cutoff magnitude before committing.
+Save your results|From the "Results", Choose "Save results", and then specify the desired format. Some options:|  "Results as ASCII file" : all fields as columns|  "bvalgrid object" : all fields and other meta information, best for reevaluating later|  "Entire figure" : saves figure|  "Results as table" : saves a table of all fields|"X,Y,VAL..." saves only the displayed values in an 3-column table
