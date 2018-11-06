@@ -422,7 +422,7 @@ classdef bdiff2 < ZmapFunction
             set(ax,'visible','on',fontProps{:});
             set(ax,obj.plotProps.Axes);
             
-            legend(ax,'show');
+            legend(ax,'show','Location','south');
             % ax.Legend.String(~(startsWith(ax.Legend.String,'Cum') | startsWith(ax.Legend.String,'Discrete')))=[];
             if ax.Parent ~= ancestor(ax,'figure')
                 legend(ax,'hide');
@@ -524,7 +524,7 @@ classdef bdiff2 < ZmapFunction
             else
                 bvl.XData = obj.Result.mag_zone;
                 bvl.YData = obj.fitted;
-                % bvl.DisplayName=bvdispname;
+                bvl.DisplayName=bvdispname;
             end
             
             set(findobj(obj.ax,'Tag','catalog bvaltext'), 'String', obj.descriptive_text());
