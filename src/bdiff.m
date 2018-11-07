@@ -60,12 +60,12 @@ function  bdiff(mycat, holdplot)
         rect = [0.2,  0.3, 0.70, 0.6];           % plot Freq-Mag curves
         axes('position',rect);
     end
-    
+    ge_symbol = char(8805);
     pl =semilogy(magsteps_desc,bvalsum3,'sb',...
         'LineWidth',1.0,'MarkerSize',6,...
         'MarkerFaceColor','w',...
         'MarkerEdgeColor','k',...
-        'DisplayName','M >= ');
+        'DisplayName',['M ', ge_symbol, ' ']);
     set(gca,'NextPlot','add')
     
     difb = [0 diff(bvalsum3) ];
@@ -147,7 +147,7 @@ function  bdiff(mycat, holdplot)
     h2=axes('position',rect);
     set(h2,'visible','off');
     
-    bvalue_wls_str = ['b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' ± ', tt2 ',  a-value = ' , num2str(aw) ];
+    bvalue_wls_str = ['b-value (w LS, M  ', ge_symbol, ' ', num2str(M1b(1)) '): ',tt1, ' ± ', tt2 ',  a-value = ' , num2str(aw) ];
     
     if ZG.hold_state
         set(pl,'LineWidth',1.0,'MarkerSize',6,...
@@ -158,7 +158,7 @@ function  bdiff(mycat, holdplot)
     else
         text(.16, .14, bvalue_wls_str,...
             'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        bvalue_maxlik_str = ['b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' ± ', tt5,',   a-value = ' , num2str(av)];
+        bvalue_maxlik_str = ['b-value (max lik, M ', ge_symbol, ' ', num2str(min(mycat.Magnitude)) '): ',tt4, ' ± ', tt5,',   a-value = ' , num2str(av)];
         text(.16, .10,bvalue_maxlik_str,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
     end

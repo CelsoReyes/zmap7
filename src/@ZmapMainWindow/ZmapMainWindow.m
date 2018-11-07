@@ -28,7 +28,7 @@ classdef ZmapMainWindow < handle
         replotting                                          = false % keep from plotting while plotting
         mdate %
         mshape %
-        WinPos (4,1)                                        = position_in_current_monitor(Percent(95), Percent(90))% position of main window
+        WinPos (4,1)                                        = position_in_current_monitor(Percent(90), Percent(85))% position of main window
         mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication

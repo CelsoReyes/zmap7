@@ -177,14 +177,15 @@ function  bdiff_bdepth(mycat)
     set(h2,'visible','off');
     
     %if ZG.hold_state
+    ge_symbol = char(8805);
     if dloop == 2
         set(pldepth,'LineWidth',1.0,'MarkerSize',6,...
             'MarkerFaceColor','y','MarkerEdgeColor','g','Marker','o');
         set(cua,'Ylim',[ 1   ni ] );
         
-        txt1=text(.10, .08,['Bottom Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
+        txt1=text(.10, .08,['Bottom Zone b-value (w LS, M  ', ge_symbol, ' ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2 ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','r')
-        txt1=text(.10, .04,['Bottom Zone b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.10, .04,['Bottom Zone b-value (max lik, M ', ge_symbol, ' ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s, 'Color', 'r')
         lsbb = bw; mxlkbb = bv;
         
@@ -195,9 +196,9 @@ function  bdiff_bdepth(mycat)
         set(txt3,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'Color','b')
         %  leg(2)=pldepth
     else
-        txt1=text(.10, .18,['Top Zone b-value (w LS, M  >= ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
+        txt1=text(.10, .18,['Top Zone b-value (w LS, M  ', ge_symbol, ' ', num2str(M1b(1)) '): ',tt1, ' +/- ', tt2, ',a-value = ' , num2str(aw) ]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-        txt1=text(.10, .14,['Top Zone b-value (max lik, M >= ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
+        txt1=text(.10, .14,['Top Zone b-value (max lik, M ', ge_symbol, ' ', num2str(min(mycat.Magnitude)) '): ',tt4, ' +/- ', tt5,',a-value = ' , num2str(av)]);
         set(txt1,'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
         set(gcf,'PaperPosition',[0.5 0.5 4.0 5.5])
         lsbt = bw; mxlkbt = bv;

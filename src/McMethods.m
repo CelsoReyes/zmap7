@@ -34,7 +34,7 @@ classdef McMethods < uint32
                     s="Calculate Mc using the Entire Magnitude Range (EMR) method";
                 case McMethods.McDueB_ShiBolt
                     s="Calculate Mc using the function b-value vs. cut-off-magnitude.  "+...
-                        "Decision criterion for b and Mc: b_i-std_Shi(b_i) <= b_ave <= b_i+std_Shi(b_i)";
+                        "Decision criterion for b and Mc: b_i-std_Shi(b_i) "+char(8804)+" b_ave "+char(8804)+" b_i+std_Shi(b_i)";
                 case McMethods.McDueB_Bootstrap
                     s="Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach";
                 case McMethods.McDueB_Cao

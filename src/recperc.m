@@ -30,8 +30,9 @@ function recperc()
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
         'LineWidth',1.2,'Box','on','TickDir','out')
-    xlabel('Tr [years]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
-    ylabel('Percentage (T >= Tr)','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    xlabel('Tr [years]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m);
+    ge_sign = char(8805); % >=
+    ylabel(['Percentage (T ',ge_sign,' Tr)'],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
     ;
     

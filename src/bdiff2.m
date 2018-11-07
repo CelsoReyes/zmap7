@@ -533,8 +533,9 @@ classdef bdiff2 < ZmapFunction
         function tx=descriptive_text(obj,gBdiff)
             res = obj.Result;
             if obj.ZG.hold_state
-                ba_text = sprintf('b-value (w LS, M >= %f): %.2f +/-%.2f \na-value = %.3f',...
-                    res.MaxCurveMag ,res.b_value, res.b_value_std, res.a_value );
+                ge_sign=char(8805);
+                ba_text = sprintf('b-value (w LS, M %c %f): %.2f +/-%.2f \na-value = %.3f',...
+                    ge_sign, res.MaxCurveMag ,res.b_value, res.b_value_std, res.a_value );
                 
                 p_text = sprintf('p=  %.2g', obj.Result.pr);
                 if exist('gBdiff','var')

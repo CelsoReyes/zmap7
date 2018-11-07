@@ -25,6 +25,7 @@ function create_all_menus(obj, force)
     
     
     uimenu('Label','|>','Enable','off');% 
+    funcsymbol = char(402);
     create_time_analysis_menu();
     create_map_analysis_menu();
     create_xsec_analysis_menu();
@@ -62,7 +63,7 @@ function create_all_menus(obj, force)
     
     %% time analysis_menu
     function create_time_analysis_menu()
-        submenu = uimenu('Label','ƒ(t)');
+        submenu = uimenu('Label',[funcsymbol '(t)']);
         uimenu(submenu,'Label','functions evaluated through time','enable','off');
         uimenu(submenu,'Label','Analyze time series ...',...
             'Separator','on',...
@@ -99,7 +100,7 @@ function create_all_menus(obj, force)
     %% map-view analysis menu
     % analyze items according to spacing in a horizontal plane
     function create_map_analysis_menu()
-        submenu = uimenu('Label','ƒ(x,y)'); % 'Map');
+        submenu = uimenu('Label',[funcsymbol '(x,y)']); % 'Map');
         
         uimenu(submenu,'Label','functions evaluated over a planar grid','enable','off');
         
@@ -138,7 +139,7 @@ function create_all_menus(obj, force)
     % analyze items according to position & depth along strike.
     
     function create_xsec_analysis_menu()
-        submenu = uimenu('Label','ƒ(s,z)'); %'X-sect');
+        submenu = uimenu('Label',[funcsymbol '(s,z)']); %'X-sect');
         uimenu(submenu,'Label','functions evaluated along a cross-section','enable','off');
         uimenu(submenu,'Separator','on',...
             'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');
@@ -165,7 +166,7 @@ function create_all_menus(obj, force)
     % analyze items in a volume
     
     function create_3d_analysis_menu()
-        submenu = uimenu('Label','ƒ(x,y,z)'); %'3D-Vol');
+        submenu = uimenu('Label',[funcsymbol '(x,y,z)']); %'3D-Vol');
         uimenu(submenu,'Label','functions over a 3-D grid','enable','off');
         uimenu(submenu,'Separator', 'on', 'Label','Nothing here yet','Enable','off');
         
