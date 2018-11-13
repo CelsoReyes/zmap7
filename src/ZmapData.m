@@ -203,10 +203,14 @@ classdef ZmapData < handle
             if isfield(ZDefaults,'grid')
                 obj.GridOpts = ZDefaults.grid;
                 sepProps = obj.GridOpts.SeparationProps;
-                
-                obj.gridopt = GridOptions(...
-                    sepProps.Dx, sepProps.Dy, sepProps.Dz, lower(sepProps.xyunits),...
-                    sepProps.FollowMeridians, 'off');
+                if sepProps.FollowMeridians
+                    obj.gridopt = GridOptions('XYZ',...
+                        [sepProps.Dx, sepProps.Dy, sepProps.Dz],...
+                        'FollowMeridians');
+                else
+                    obj.gridopt = GridOptions('XYZ',...
+                        [sepProps.Dx, sepProps.Dy, sepProps.Dz], sepProps.xyunits);
+                end
             end
             
             if isfield(ZDefaults,'mainmap')

@@ -33,10 +33,10 @@ function [lat, lon,depth] = convertToNewReferenceEllipsoid(lat,lon, varargin)
     else
         error('Incorrect number of input arguments.\n\n%s',help('convertToNewReferenceEllipsoid'));
     end
-    if ischar(sourceEllipsoid)||isstring(sourceEllipsoid)
+    if ischarlike(sourceEllipsoid)
         sourceEllipsoid = referenceEllipsoid(sourceEllipsoid,'kilometers');
     end
-    if ischar(targetEllipsoid)||isstring(targetEllipsoid)
+    if ischarlike(targetEllipsoid)
         targetEllipsoid = referenceEllipsoid(targetEllipsoid,'kilometers');
     end
     

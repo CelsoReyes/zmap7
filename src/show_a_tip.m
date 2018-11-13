@@ -7,7 +7,7 @@ function show_a_tip(n)
     % ('showall') 
     
     persistent tips
-    if exist('n', 'var') && (ischar(n)||isstring(n))
+    if exist('n', 'var') && (ischarlike(n))
         switch n
             case "reload"
             tips=[];

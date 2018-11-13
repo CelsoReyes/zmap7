@@ -343,7 +343,7 @@ classdef ZmapDialog < handle
             
             if ~exist('conversion_function','var') || isempty(conversion_function)
                 conversion_function = @(x)x;
-            elseif ischar(conversion_function) || isstring(conversion_function)
+            elseif ischarlike(conversion_function)
                 conversion_function = str2func(conversion_function);
             end
             idx = numel(obj.parts)+1;
@@ -459,7 +459,7 @@ classdef ZmapDialog < handle
             if ~exist('conversion_function','var') || isempty(conversion_function)
                 conversion_function = @(x)x;
                 conversion_function = @(h)conversion_function(h.Value);
-            elseif ischar(conversion_function)|| isstring(conversion_function)
+            elseif ischarlike(conversion_function)
                 conversion_function = str2func(conversion_function);
                 conversion_function = @(h)conversion_function(h.Value);
             end
@@ -537,7 +537,7 @@ classdef ZmapDialog < handle
             if ~exist('conversion_function','var') || isempty(conversion_function)
                 % conversion_function = callback;
                 conversion_function = str2func(class(value));
-            elseif ischar(conversion_function) || isstring(conversion_function)
+            elseif ischarlike(conversion_function)
                 conversion_function = str2func(conversion_function);
             end
             
@@ -595,7 +595,7 @@ classdef ZmapDialog < handle
                 else
                     conversion_function = str2func(class(value));
                 end
-            elseif ischar(conversion_function)|| isstring(conversion_function)
+            elseif ischarlike(conversion_function)
                 conversion_function = str2func(conversion_function);
             end
             

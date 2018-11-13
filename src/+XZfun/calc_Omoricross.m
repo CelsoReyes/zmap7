@@ -269,7 +269,7 @@ classdef calc_Omoricross < ZmapVGridFunction
                 end % of if bGridEntireArea
                 
                 % CREATE THE GRID (NEW WAY)
-                gridopts = GridOptions(dx, dy, [], 'km',false, false);
+                gridopts = GridOptions('XY',[dx dy], 'kilometer');
                 mygrid = ZmapGrid('omoricross',gridopt);
                 mygrid = mygrid.MaskWithShape(ShapeGeneral.ShapeStash);
                 mygrid.plot();

@@ -18,7 +18,7 @@ function add_menu_divider(fig,tag)
         fig = gcf;
         tag = 'menu_divider';
     elseif nargin==1
-        if ischar(fig) || isstring(fig)
+        if ischarlike(fig)
             tag = fig;
             fig = gcf;
         elseif isgraphics(fig) && isprop(fig,'Type') && fig.Type == "figure"

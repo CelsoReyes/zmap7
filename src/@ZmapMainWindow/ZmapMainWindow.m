@@ -193,8 +193,8 @@ classdef ZmapMainWindow < handle
             end
             % retrieve default values from ZmapGlobal.
             [obj.mdate, obj.mshape] = obj.filter_catalog();
-            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation
-                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog);
+            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation && ~isempty(obj.rawcatalog)
+                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog, obj.refEllipsoid);
             else
                 obj.Grid                = ZG.Grid;
                 obj.gridopt             = ZG.gridopt;
@@ -338,7 +338,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog();
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
             else
                 fprintf('Using existing grid:\n');
             end
@@ -798,7 +798,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.Grid)
                 set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
                 try
-                    obj.Grid = ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
+                    obj.Grid = ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape, obj.refEllipsoid);
                 catch ME
                     switch ME.identifier
                         case 'ZMAPGRID:get_grid:TooManyGridPoints'

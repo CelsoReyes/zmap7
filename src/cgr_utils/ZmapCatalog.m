@@ -217,7 +217,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
         function set.RefEllipsoid(obj, value)
             % change reference ellipsoid associated with data WITHOUT updating lat & lon positions.
             % Reference ellipsoid is always of length unit 'kilometer'
-            if ischar(value)||isstring(value)
+            if ischarlike(value)
                 obj.RefEllipsoid = referenceEllipsoid(value,'kilometer');
             elseif isa(value,'referenceEllipsoid')
                 obj.RefEllipsoid = value;

@@ -73,7 +73,7 @@ classdef XSection < handle
             obj.color = zans.color;             % color
             
             if exist('ref_ellipsoid','var')
-                if ischar(ref_ellipsoid)||isstring(ref_ellipsoid)
+                if ischarlike(ref_ellipsoid)
                     obj.refellipsoid = referenceEllipsoid(ref_ellipsoid,'kilometer');
                 else
                     obj.refellipsoid = ref_ellipsoid;

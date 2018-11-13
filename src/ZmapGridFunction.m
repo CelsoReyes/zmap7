@@ -245,7 +245,7 @@ classdef ZmapGridFunction < ZmapFunction
                 errfn = @error;
             end
             
-            if ischar(v)||isstring(v)
+            if ischarlike(v)
                 vn = genvarname(v); % make it safe!
                 if v ~= vn
                     errfn("[" + v + "] is not a valid variable name");

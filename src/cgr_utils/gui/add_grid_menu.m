@@ -96,7 +96,7 @@ function add_grid_menu(obj)
         delete(todel);
         
         [tmpgrid,obj.gridopt]=autogrid(obj.catalog,...
-            false,... % plot histogram
+            obj.refEllipsoid,... % plot histogram
             true... % put on map
             );
         obj.Grid = tmpgrid.MaskWithShape(obj.shape);
@@ -107,12 +107,11 @@ function add_grid_menu(obj)
     function cb_gridfigure(src,ev)
         watchon
         drawnow
-        [gr, gro] = GridOptions.fromDialog(obj.gridopt);
+        [gr, gro] = GridOptions.fromDialog(obj.gridopt, obj.refEllipsoid);
         if ~isempty(gr)
             obj.Grid = gr;
             obj.gridopt = gro;
         end
-        % [obj.Grid, obj.gridopt] = GridOptions.fromDialog(obj.gridopt);
         mygr=findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
         delete(mygr);
         obj.Grid.plot(obj.map_axes,'ActiveOnly');

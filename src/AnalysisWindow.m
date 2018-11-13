@@ -48,7 +48,7 @@ classdef AnalysisWindow < handle
             
             p = inputParser();
             p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
-            p.addRequired('tagID',      @(x)ischar(tagID)|| isstring(tagID));
+            p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...
                 @(x)isa(x,'function_handle') && ... 

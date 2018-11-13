@@ -7,8 +7,8 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     % CREATE_GRID(PTS) PTS is a polygon. only grid points with PTS will be shown
     %  GR is all data points, as [lon,lat; ...]
     %  ZGR is a ZmapGrid.
-    % CREATE_GRID(PTS, FOLLOW_PARALLELS) if FOLLOW_PARALLELS is false, then distances are constant.
-    % if FOLLOW_PARALLELS is TRUE, then degrees of longitude are constant.
+    % CREATE_GRID(PTS, FOLLOW_MERIDIANS) if FOLLOW_MERIDIANS is false, then distances are constant.
+    % if FOLLOW_MERIDIANS is TRUE, then degrees of longitude are constant.
     %
     % Choose an origin point
     % Choose a point to define initial spacing
@@ -19,18 +19,18 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     %  create_grid('testpoly')
     %  create_grid('testworld');
     %
-    % If FOLLOW_PARALLELS is true, then grid gets smaller as pole is approached.
+    % If FOLLOW_MERIDIANS is true, then grid gets smaller as pole is approached.
     % Unfortunately, routines like pcolor this is necessary for pcolor, when Y axis is a lon.
     % This could be avoided if coordinate system was transformed into X-Y.
     %
-    % When FOLLOW_PARALLELS is false, then longitudes drift in order to keep consistent sized boxes.
+    % When FOLLOW_MERIDIANS is false, then longitudes drift in order to keep consistent sized boxes.
     
     % TODO: add edit fields that allow grid to be further modified
     % TODO: add SAVE and LOAD buttons
     % TODO: make this work with gridfun
     
     
-    FOLLOW_PARALLELS = exist('follow_parallels','var') && follow_meridians;
+    FOLLOW_MERIDIANS = exist('follow_meridians','var') && follow_meridians;
     USEPOLY=exist('pts','var') && ~isempty(pts) && ~isnan(pts(1));
     name='grid';
     changed=false;
@@ -139,16 +139,16 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
     
     function set_grid(~,~)
         ZG.Grid=ZmapGrid(name,pgr.xs, pgr.ys, 'deg');
-        if FOLLOW_PARALLELS
-            ZG.gridopt = GridOptions(deg2km(dx),deg2km(dy),[],'deg', FOLLOW_PARALLELS);
+        if FOLLOW_MERIDIANS
+            ZG.gridopt = GridOptions(deg2km(dx),deg2km(dy),[],'deg', FOLLOW_MERIDIANS);
         else
-            ZG.gridopt = GridOptions(dx, dy, [], 'km', FOLLOW_PARALLELS);
+            ZG.gridopt = GridOptions(dx, dy, [], 'km', FOLLOW_MERIDIANS);
         end
         changed=false;
     end
     
     function toggle_parallels(src,~)
-        FOLLOW_PARALLELS=src.Value==1;
+        FOLLOW_MERIDIANS=src.Value==1;
         update_plot();
     end
     
@@ -201,7 +201,7 @@ function [pgr] = create_grid(pts, follow_meridians, trim_final_grid_to_shape)
         lonMat=[];
         latMat=[];
         
-        if FOLLOW_PARALLELS
+        if FOLLOW_MERIDIANS
             % when following the meridian lines, the longitude span covered by
             % the arc-distance at lat0 (along the rhumb!) remains constant.
             % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
