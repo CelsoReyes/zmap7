@@ -524,7 +524,7 @@ classdef bdiff2 < ZmapFunction
             else
                 bvl.XData = obj.Result.mag_zone;
                 bvl.YData = obj.fitted;
-                bvl.DisplayName=bvdispname;
+                % bvl.DisplayName=bvdispname;
             end
             
             set(findobj(obj.ax,'Tag','catalog bvaltext'), 'String', obj.descriptive_text());
