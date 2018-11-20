@@ -156,7 +156,7 @@ classdef XSection < handle
             %
             % mask = obj.INSIDE(catalog)
             
-            mask=polygon_filter(obj.polylons,obj.polylats,catalog.Longitude,catalog.Latitude,'inside');
+            mask=inpoly([catalog.Longitude,catalog.Latitude],[obj.polylons,obj.polylats]);
         end
         
         function c2 = project(obj,catalog)

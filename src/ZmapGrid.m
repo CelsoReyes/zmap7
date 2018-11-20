@@ -1,7 +1,7 @@
 classdef ZmapGrid
     % ZMAPGRID evenly-spaced X,Y [Z] grid with ability to be masked
     %
-    % OBJ = ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) 
+    % OBJ = ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians)
     % OBJ = ZMAPGRID(NAME, GPC_STRUCT)
     %
     % ZMAPGRID properties:
@@ -78,7 +78,7 @@ classdef ZmapGrid
             %   OBJ = ZMAPGRID(NAME, grid_options) where grid_options is a GridOptions object
             %
             % ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) where
-            %   origin_degs is (Lon, Lat) or (Lon, Lat, Z_km). 
+            %   origin_degs is (Lon, Lat) or (Lon, Lat, Z_km).
             %   delta_degs is [dLon, dLat] or [dLon, dLat, dZ_km]
             %   limits_degs is [lonMin lonMax ; latMin LatMax] or
             %      [lonMin lonMax ; latMin LatMax ; depthMin_km depthMax_km]
@@ -122,11 +122,11 @@ classdef ZmapGrid
                 obj.Units = varargin{end};
                 varargin(end)=[];
             end
-                
+            
             switch numel(varargin)
                 case 1
                     if isnumeric(varargin{1})
-                       point_definition(varargin{:}) % allpoints as Nx2 or Nx3 
+                        point_definition(varargin{:}) % allpoints as Nx2 or Nx3
                         
                     elseif isa(varargin{1},'GridOptions')
                         grid_option_definition(varargin{1},refEllipsoid);
@@ -217,7 +217,7 @@ classdef ZmapGrid
             end
             
             function point_definition(all_points)
-                % where all_points is either 
+                % where all_points is either
                 %    [X1 Y1 ; ... ; Xn Yn] )
                 % or
                 %    [X1 Y1 Z1 ; ... ; Zn Yn Zn])
@@ -295,14 +295,14 @@ classdef ZmapGrid
             % does not change the actual grid!
             % obj = obj.MASKWITHSHAPE(shape)
             % obj = obj.MASKWITHSHAPE(polyX, polyY) where polyX and polyY define the polygon
-            report_this_filefun();
+            
             narginchk(1,3);
             nargoutchk(1,1);
             switch nargin
                 case 2 % OBJ, POLYX
                     if isa(polyX,'ShapeGeneral')
-                        polyY=polyX.Lat;
-                        polyX=polyX.Lon;
+                        obj.ActivePoints = polyX.isinterior(obj.X, obj.Y);
+                        return
                     else
                         assert(size(polyX,2)==2, 'expecting [lon1, lat1 ; ...]');
                         polyY=polyX(:,2);
@@ -317,7 +317,8 @@ classdef ZmapGrid
                     end
             end
             if ~isempty(polyX) && ~isnan(polyX(1))
-                obj.ActivePoints = polygon_filter(polyX,polyY, obj.X, obj.Y, 'inside');
+                obj.ActivePoints = inpoly([obj.X, obj.Y],[polyX, polyY]);
+                %obj.ActivePoints = polygon_filter(polyX,polyY, obj.X, obj.Y, 'inside');
             else
                 obj.ActivePoints = true(size(obj.X));
                 disp('not filtering polygon, since no polygon provided');
@@ -372,19 +373,19 @@ classdef ZmapGrid
             if ~isempty(prev_grid)
                 prev_grid.XData=obj.(x)(:);
                 prev_grid.YData=obj.(y)(:);
-                disp('reusing grid on plot');
+                % disp('reusing grid on plot');
             else
                 ax.NextPlot='add';
                 prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Tag',grid_tag);
                 ax.NextPlot='replace';
-                disp('created new grid on plot');
+                % disp('created new grid on plot');
             end
             % make sure that grid is on the bottom layer
             chh=ax.Children;
             if ~isempty(prev_grid)
                 ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
             end
-             
+            
             if ~isempty(varargin)
                 set(prev_grid,varargin{:});
             end
@@ -414,21 +415,21 @@ classdef ZmapGrid
         end
         function [c,h]=contourf(obj, ax, values, name, nlevels)
             % [c,h]=CONTOURF(obj,ax, values, name, nlevels)
-                if ~exist('nlevels','var') || ~isempty(nlevels)
-                    nlevels=20;
+            if ~exist('nlevels','var') || ~isempty(nlevels)
+                nlevels=20;
+            end
+            
+            [c,h]=contourf(ax,obj.X, obj.Y, reshape(values, size(obj.X)));
+            % set the title
+            h.LineStyle='none';
+            h.DisplayName=name;
+            if ~all(isnan(values))
+                if numel(nlevels)>1
+                    h.LevelList = nlevels;
+                else
+                    h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), nlevels);
                 end
-                
-                [c,h]=contourf(ax,obj.X, obj.Y, reshape(values, size(obj.X)));
-                % set the title
-                h.LineStyle='none';
-                h.DisplayName=name;
-                if ~all(isnan(values))
-                    if numel(nlevels)>1
-                        h.LevelList = nlevels;
-                    else
-                        h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), nlevels);
-                    end
-                end
+            end
         end
         
         function h=imagesc(obj, ax, values, name)
@@ -491,35 +492,6 @@ classdef ZmapGrid
     end
     
     methods(Static, Access=protected)
-        function [xs, ys] = cols2matrix(lonCol,latCol, lon0)
-            % COLS2MATRIX convert columns of lats & lons into a matrix.
-            %
-            % [XS,YS]=cols2matrix(lonCol,latCol,lon0)
-            %    LONCOL: column of longitudes, non-unique
-            %    LATCOL: column of latitudes, non-unique
-            %       Together, all points in grid would be included in [LONCOL, LATCOL]
-            %    LON0: longitudes that are supposed to line up. this should be a longitude that
-            %          exists at every latitude.
-            
-            ugy=unique(latCol); % lats in matrix
-            nrows=numel(ugy); % number of latitudes in matrix
-            [~,example]=min(abs(latCol(:))); % latitude closest to equator will have most number of lons in matrix
-            mostCommonY=latCol(example); % account for the abs possibly flipping signs
-            base_lon_idx=find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
-            ncols=sum(latCol(:)==mostCommonY); % most number of lons in matrix
-            ys=repmat(ugy(:),1,ncols);
-            xs=nan(nrows,ncols);
-            for n=1:nrows
-                thislat=ugy(n); % lat for this row
-                these_lons=lonCol(latCol==thislat); % lons in this row
-                row_length=numel(these_lons); % number of lons in this row
-                
-                main_lon_idx=find(these_lons==lon0); % offset of X in this row
-                offset=base_lon_idx - main_lon_idx;
-                xs(n,(1:row_length)+offset)=these_lons;
-            end
-            
-        end
     end
     
     methods(Static)
@@ -549,9 +521,9 @@ classdef ZmapGrid
             
             mapWESN = axis(ax);
             x_start = max(mapWESN(1), min(catalog.Longitude));
-            x_end = min(mapWESN(2), max(catalog.Longitude));
+            x_end   = min(mapWESN(2), max(catalog.Longitude));
             y_start = max(mapWESN(1), min(catalog.Latitude));
-            y_end = min(mapWESN(2), max(catalog.Latitude));
+            y_end   = min(mapWESN(2), max(catalog.Latitude));
             %z_start = 0;
             %z_end = max(catalog.Depth);
             dx= (x_end - x_start)/XBINS;
@@ -579,11 +551,6 @@ classdef ZmapGrid
             % ylims_deg = ylim(ax);
             % xlims_deg = xlim(ax);
             
-            % base grid on a single distance, so that instead of separate dx & dy, we use dd
-            %dist_arc = max([...
-            %    distance(lat0,lon0,lat0,lon0+dLon,'degrees'),...
-            %    distance(lat0,lon0,lat0+dLat,lon0,'degrees')]);
-            
             zMat=[];
             % origin point
             lon0=lonLatZ0(1);
@@ -603,7 +570,7 @@ classdef ZmapGrid
             
             
             if ~exist('FOLLOW_MERIDIANS','var')
-                 FOLLOW_MERIDIANS = deltaUnits == "degrees" || deltaUnits == "degree" || deltaUnits == "deg";
+                FOLLOW_MERIDIANS = deltaUnits == "degrees" || deltaUnits == "degree" || deltaUnits == "deg";
             end
             
             if FOLLOW_MERIDIANS
@@ -626,28 +593,6 @@ classdef ZmapGrid
                 [~,dLon_per_lat]=reckon('rh',lats,0,dLon,90);
                 
                 [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xlims_deg, lon0, lats);
-                %{
-                totEstPts= ceil(sum( ( 1./dLon_per_lat ) .* range(xlims_deg) ));
-                if totEstPts > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
-                    error('ZMAPGRID:get_grid:TooManyGridPoints','Too many grid points: est. %d',totEstPts);
-                end
-                lonMat=nan(totEstPts,1);
-                latMat=nan(totEstPts,1);
-                totCalcPts=0;
-                for n=1:numel(lats)
-                    theseLonValues = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), xlims_deg);
-                    myEnd = totCalcPts + numel(theseLonValues);
-                    lonMat(totCalcPts+1 : myEnd) = theseLonValues(:);
-                    latMat(totCalcPts+1 : myEnd) =lats(n);
-                    totCalcPts = myEnd;
-                end
-                if totCalcPts < totEstPts
-                    lonMat(totCalcPts+1:end)=[];
-                    latMat(totCalcPts+1:end)=[];
-                end
-                [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
-                % each gridx & gridy are vectors.
-                %}
             end
             if numel(deltasXYZ)==3
                 zlims_km=limsLonLatZ(3,:);
@@ -676,6 +621,9 @@ classdef ZmapGrid
                             case 'kilometer'
                                 deltaUnits = 'kilometer';
                                 dLon=km2deg(ZG.gridopt.dx);
+                            otherwise
+                                deltaUnits = standardizeDistanceUnits( ZG.gridopt.dx_units);
+                                dLon = km2deg(ZG.gridopt.dx .* unitsratio('kilometer', deltaUnits));
                         end
                         switch standardizeDistanceUnits(ZG.gridopt.dy_units)
                             case 'degrees'
@@ -686,15 +634,17 @@ classdef ZmapGrid
                     case 1
                         dLat = deltasXYZ;
                         dLon = deltasXYZ;
+                        dZ = [];
                     case 2
                         dLat = deltasXYZ(2);
                         dLon = deltasXYZ(1);
+                        dZ = [];
                     case 3
                         dLat = deltasXYZ(2);
                         dLon = deltasXYZ(1);
                         dZ = deltasXYZ(3);
                 end
-                
+                error('make sure this is correct')
                 switch standardizeDistanceUnits( deltaUnits )
                     case 'degrees'
                         % do nothing
@@ -702,7 +652,9 @@ classdef ZmapGrid
                         dLat = km2deg(dLat);
                         dLon = km2deg(dLon);
                     otherwise
-                        error('Unknown units: should be "degrees" or "kilometer" [%s]',deltaUnits);
+                        dLat = km2deg(dLat .* unitsratio('kilometer',deltaUnits));
+                        dLon = km2deg(dLon .* unitsratio('kilometer',deltaUnits));
+                        %error('Unknown units: should be "degrees" or "kilometer" [%s]',deltaUnits);
                 end
             end
         end
@@ -712,70 +664,19 @@ classdef ZmapGrid
             % leverages the refEllipsoid
             % [lonMat,latMat,zMat] = get_grid2(lonLatZ0, deltasXYZ, limsLonLatZ, refEllipsoid)
             % all delta units are the refEllipsoid units.  eg, km, m, cm, etc.
-            % 
-            lat0 = lonLatZ0(2);
-            lon0 = lonLatZ0(1);
-            dX = deltasXYZ(1);
             
-            dY = deltasXYZ(2);
-            latBounds = limsLonLatZ(2,:);
+            lats = get_grid_lats( ...
+                lonLatZ0        , ...  grid origin points, guaranteed to be in grid
+                deltasXYZ(2)    , ...  delta Y
+                limsLonLatZ(2,:), ...  Y limits
+                refEllipsoid);
             
-            if latBounds(1) > latBounds(2)
-                latBounds = latBounds([2,1]);
-            end
+            xTotalDists = bounded_distance_at_each_latitude(limsLonLatZ(1,:), lats, refEllipsoid);
             
-            % calculate how far to the north and south the bounded region extends
-            [NS_extents,az] = distance(lat0,lon0, latBounds,lon0, refEllipsoid);
-            NS_extents(az==180)=-NS_extents(az==180); % swap signs for anything that is to the origin's south.
+            [~,dLon_per_lat] = reckon('rh', lats(:), 0, deltasXYZ(1), 90, refEllipsoid);
             
-            % create evenly spaced values radiating from our latitude origin
-            Ys = [fliplr( 0 : -dY : NS_extents(1)), dY : dY: NS_extents(2) ];  % relative offset in units from lat
-            Ys(Ys>NS_extents(2) | Ys<NS_extents(1) ) = [];
+            [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xTotalDists, lonLatZ0(1), lats, limsLonLatZ(1,:));
             
-            % project on the ellipsoid, getting latitudes for each of or rows of grid points.
-            [lats,~] = reckon('rh', lat0,lon0, Ys, 0, refEllipsoid);
-            lats = lats(:);
-            
-            % calculate points representing the bounded region.
-            lonBounds = limsLonLatZ(1,:);
-            mins_along_lon0 =  [lats(:), repmat(min(lonBounds), size(lats))];
-            maxs_along_lon0 =  [lats(:), repmat(max(lonBounds), size(lats))];
-            
-            % how much physical distance is covered within the set boundaries for each latitude?
-            xTotalDists = distance('rh', mins_along_lon0, maxs_along_lon0, refEllipsoid); %ellipsoid units
-            if ~any(xTotalDists)
-                % oops, reached around the entire ellipsoid. calculate half distance, then double it
-                xTotalDists=distance('rh', [lats,lats.*0], (maxs_along_lon0-mins_along_lon0)/2, refEllipsoid) .*2;
-            end
-            % physical X-distance between points at each latitude
-            [~,dLon_per_lat] = reckon('rh', lats(:), 0, dX, 90, refEllipsoid);
-            
-            [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xTotalDists, lon0, lats, lonBounds);
-            
-            %{
-            % make sure there aren't a crazy number of points, which might indicate a units problem
-            totEstPts= ceil(sum( ( 1./dLon_per_lat ) .* range(xTotalDists) ));
-            if totEstPts > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
-                error('ZMAPGRID:get_grid:TooManyGridPoints','Too many grid points: est. %d',totEstPts);
-            end
-            
-            lonMat=nan(totEstPts,1);
-            latMat=nan(totEstPts,1);
-            totCalcPts=0;
-            
-            for n=1:numel(lats)
-                theseLonValues = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), lonBounds);
-                myEnd = totCalcPts + numel(theseLonValues);
-                lonMat(totCalcPts+1 : myEnd) = theseLonValues(:);
-                latMat(totCalcPts+1 : myEnd) =lats(n);
-                totCalcPts = myEnd;
-            end
-            if totCalcPts < totEstPts
-                lonMat(totCalcPts+1:end)=[];
-                latMat(totCalcPts+1:end)=[];
-            end
-            [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
-            %}
         end
         
         function totEstPts = estimate_points(dLon_per_lat , xTotalDists)
@@ -802,11 +703,12 @@ classdef ZmapGrid
                 latMat(totCalcPts+1 : myEnd) =lats(n);
                 totCalcPts = myEnd;
             end
+            
             if totCalcPts < totEstPts
                 lonMat(totCalcPts+1:end)=[];
                 latMat(totCalcPts+1:end)=[];
             end
-            [lonMat,latMat] = ZmapGrid.cols2matrix(lonMat,latMat,lon0);
+            [lonMat,latMat] = cols2matrix(lonMat,latMat,lon0);
         end
         
         function v = vector_including_origin(orig_deg, delta_deg, lims_deg)
@@ -855,4 +757,72 @@ classdef ZmapGrid
             end
         end
     end
+end
+
+%% -- other helper functions --
+
+function lats = get_grid_lats(lonLatZ0, dY, latBounds, refEllipsoid)
+    lat0 = lonLatZ0(2);
+    lon0 = lonLatZ0(1);
+    
+    if latBounds(1) > latBounds(2)
+        latBounds = latBounds([2,1]);
+    end
+    
+    % calculate how far to the north and south the bounded region extends
+    [NS_extents,az] = distance(lat0,lon0, latBounds,lon0, refEllipsoid);
+    NS_extents(az==180)=-NS_extents(az==180); % swap signs for anything that is to the origin's south.
+    
+    % create evenly spaced values radiating from our latitude origin
+    % dY = deltasXYZ(2);
+    Ys = [fliplr( 0 : -dY : NS_extents(1)), dY : dY: NS_extents(2) ];  % relative offset in units from lat
+    Ys(Ys>NS_extents(2) | Ys<NS_extents(1) ) = [];
+    
+    % project on the ellipsoid, getting latitudes for each of or rows of grid points.
+    [lats,~] = reckon('rh', lat0,lon0, Ys, 0, refEllipsoid);
+    lats = lats(:);
+end
+
+function xTotalDists = bounded_distance_at_each_latitude(lonBounds, lats, refEllipsoid)
+    % calculate points representing the bounded region.
+    mins_along_lon0 =  [lats(:), repmat(min(lonBounds), size(lats))];
+    maxs_along_lon0 =  [lats(:), repmat(max(lonBounds), size(lats))];
+    
+    % how much physical distance is covered within the set boundaries for each latitude?
+    xTotalDists = distance('rh', mins_along_lon0, maxs_along_lon0, refEllipsoid); %ellipsoid units
+    if ~any(xTotalDists)
+        % oops, reached around the entire ellipsoid. calculate half distance, then double it
+        xTotalDists=distance('rh', [lats,lats.*0], (maxs_along_lon0-mins_along_lon0)/2, refEllipsoid) .*2;
+    end
+    
+end
+
+function [xs, ys] = cols2matrix(lonCol,latCol, lon0)
+    % COLS2MATRIX convert columns of lats & lons into a matrix.
+    %
+    % [XS,YS]=cols2matrix(lonCol,latCol,lon0)
+    %    LONCOL: column of longitudes, non-unique
+    %    LATCOL: column of latitudes, non-unique
+    %       Together, all points in grid would be included in [LONCOL, LATCOL]
+    %    LON0: longitudes that are supposed to line up. this should be a longitude that
+    %          exists at every latitude.
+    
+    ugy=unique(latCol); % lats in matrix
+    nrows=numel(ugy); % number of latitudes in matrix
+    [~,example]=min(abs(latCol(:))); % latitude closest to equator will have most number of lons in matrix
+    mostCommonY=latCol(example); % account for the abs possibly flipping signs
+    base_lon_idx=find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
+    ncols=sum(latCol(:)==mostCommonY); % most number of lons in matrix
+    ys=repmat(ugy(:),1,ncols);
+    xs=nan(nrows,ncols);
+    for n=1:nrows
+        thislat=ugy(n); % lat for this row
+        these_lons=lonCol(latCol==thislat); % lons in this row
+        row_length=numel(these_lons); % number of lons in this row
+        
+        main_lon_idx=find(these_lons==lon0); % offset of X in this row
+        offset=base_lon_idx - main_lon_idx;
+        xs(n,(1:row_length)+offset)=these_lons;
+    end
+    
 end

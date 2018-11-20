@@ -1,7 +1,6 @@
 function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
     % REPLOT_ALL(obj, metaProp, eventData)
-    
     obj.AllAxes=findobj(obj.fig,'Type','axes');
     
     if ~exist('eventData','var') || eventData.EventName == "PostSet"
@@ -9,11 +8,11 @@ function replot_all(obj,metaProp,eventData)
     else
         eventName = eventData.EventName;
     end
-    if exist('metaprop','var') && isprop(metaProp,'Name')
-        msg.dbdisp(['Replotting because:', eventName, ' (', metaProp.Name, ')' ]);
-    else
-        msg.dbdisp(['Replotting because:', eventName]);
-    end
+    %     if exist('metaprop','var') && isprop(metaProp,'Name')
+    %         msg.dbdisp(['Replotting because:', eventName, ' (', metaProp.Name, ')' ]);
+    %     else
+    %         msg.dbdisp(['Replotting because:', eventName]);
+    %     end
     md=[];
     k={};
     obj.set_figure_name();
@@ -25,27 +24,27 @@ function replot_all(obj,metaProp,eventData)
     obj.replotting=true;
     switch eventName
         case 'XsectionAdded'
-            msg.dbdisp('add a cross section to plots')
+            % msg.dbdisp('add a cross section to plots')
             k=obj.XSectionTitles;
             if numel(k)>1
                 k = k(~ismember(k,get(obj.xsgroup.Children,'Title')));
             end
             
         case {'XsectionRemoved'}
-            msg.dbdisp('remove cross section from plots')
+            % msg.dbdisp('remove cross section from plots')
             
         case {'XsectionChanged'}
-            msg.dbdisp('replot cross sections')
+            % msg.dbdisp('replot cross sections')
             k=obj.XSectionTitles;
             
         case 'XsectionEmptied'
             
         case {'CatalogChanged','ReplotAll','DateRangeChanged','ShapeChanged'}
-            msg.dbdisp('replot everything touched by catalog')
+            % msg.dbdisp('replot everything touched by catalog')
             k=obj.XSectionTitles;
             if eventName=="ShapeChanged"
-                msg.dbdisp(eventData.Source);
-                disp(metaProp);
+                % msg.dbdisp(eventData.Source);
+                % disp(metaProp);
                 obj.shape=eventData.Source;
             end
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
@@ -86,13 +85,9 @@ function replot_all(obj,metaProp,eventData)
     end
     
     obj.fmdplot('Upper Right panel');
-    %obj.plothist('Magnitude',obj.catalog.Magnitude,'Upper Right panel');
     obj.plothist('Magnitude','Upper Right panel');
     obj.cumplot('Lower Right panel');
     
-    %obj.plothist('Depth',obj.catalog.Depth,'Upper Right panel');
-    %obj.plothist('Date',obj.catalog.Date,'Upper Right panel');
-    %obj.plothist('Hour',hours(obj.catalog.Date.Hour),'Upper Right panel');
     obj.cummomentplot('Lower Right panel');
     obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'Lower Right panel');
     obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'Lower Right panel');
@@ -139,7 +134,7 @@ function [mytab] = plot_xsection(obj, k, currcatsummary,md)
     idx = strcmp(obj.XSectionTitles,k);
     
     % only reproject if the catalog is changed since memorizing
-    %if ~isequal(currcatsummary,obj.xscatinfo(k))
+    if ~isequal(obj.rawcatalog.summary(),obj.xscatinfo(k))
         
         % store the projected catalog. only events within the strip [ignoring shape] are stored
         if ~isempty(md)
@@ -149,7 +144,7 @@ function [mytab] = plot_xsection(obj, k, currcatsummary,md)
         end
         
         % store the information about the current catalog used to project
-        obj.xscatinfo(k)=currcatsummary;
+        obj.xscatinfo(k)=obj.rawcatalog.summary();
         
         % plot
         mytab=findobj(obj.xsgroup,'Title',k,'-and','Type','uitab');
@@ -159,6 +154,6 @@ function [mytab] = plot_xsection(obj, k, currcatsummary,md)
         myax=findobj(mytab,'Type','axes');
         obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(k),true);
         myax.Title=[];
-    %end
+    end
 end
 

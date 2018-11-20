@@ -147,13 +147,25 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             val = areaint(obj.Lat,obj.Lon,obj.RefEllipsoid);
         end
         
-        function [mask]=isinterior(obj,otherLon, otherLat)
+        function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
             % [mask]=isinterior(obj,otherLon, otherLat)
+            %
+            %
+            % see also inpoly, inpolygon [slower as of 2018a]
+            if ~exist('include_boundary','var')
+                include_boundary = true;
+            end
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon
-                mask = polygon_filter(obj.Lon, obj.Lat, otherLon, otherLat, 'inside');
+                if include_boundary
+                    mask = inpoly([otherLon(:) otherLat(:)],obj.Points );
+                else
+                    [mask,bnd] = inpoly([otherLon otherLat],obj.Points);
+                    mask(bnd)=false;
+                end
+                %mask = polygon_filter(obj.Lon, obj.Lat, otherLon, otherLat, 'inside');
             end
         end
         

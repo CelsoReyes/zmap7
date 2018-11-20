@@ -79,9 +79,10 @@ classdef GridOptions < handle
             if ~exist('ellipsoid','var')
                 ellipsoid=ZmapGlobal.Data.referenceEllipsoid;
             end
-            gc = grid_chooser(ellipsoid);
             if exist('existing_gridopt','var') && ~isempty(existing_gridopt)
-                gc.GridOpts = existing_gridopt; 
+                gc = grid_chooser(ellipsoid, existing_gridopt); 
+            else
+                gc = grid_chooser(ellipsoid);
             end
             gc.ResultDump = @set_values;
             waitfor(gc)

@@ -12,7 +12,6 @@ function plotmainmap(obj)
         obj.shape = ShapeGeneral;
     end
     % %
-    
     axm = obj.map_axes;
     axm.Visible = 'off';
     assert(~isempty(axm), 'Somehow lost track of main map');
@@ -26,7 +25,6 @@ function plotmainmap(obj)
     if mainEventOpts.UseDotsForTooManyEvents && obj.catalog.Count > mainEventOpts.HowManyAreTooMany
         mainEventOpts.Marker = '.';
     end
-    
     if isempty(eq) 
         % CREATE the plot
         
@@ -65,7 +63,6 @@ function plotmainmap(obj)
             eq.DisplayName = dispname;
         end
     end
-    
     set_valid_properties(eq, mainEventOpts);
     
     % update the largest events

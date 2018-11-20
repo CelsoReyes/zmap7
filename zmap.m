@@ -138,7 +138,7 @@ function zmap(varargin)
         end
         cw = figure;
         if ~isempty(ZG.primeCatalog)
-            ZmapMainWindow(cw,ZG.primeCatalog);
+            ZmapMainWindow(cw, ZG.primeCatalog);
         else
             ZmapMainWindow(cw);
         end

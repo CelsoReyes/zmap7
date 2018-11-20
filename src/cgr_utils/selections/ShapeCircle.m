@@ -117,18 +117,25 @@ classdef ShapeCircle < ShapeGeneral
             
         end
         
-        function [mask]=isinterior(obj,otherLon, otherLat)
+        function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
             % isinterior true if value is within this circle's radius of center. Radius inclusive.
             %
             % overridden because using polygon approximation is too inaccurate for circles
             %
             % [mask]=obj.isinterior(otherLon, otherLat)
+            if ~exist('include_boundary','var')
+                include_boundary = true;
+            end
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon
                 dists=distance(obj.Y0, obj.X0, otherLat, otherLon, obj.RefEllipsoid);
-                mask=dists <= obj.Radius;
+                if ~include_boundary
+                    mask=dists < obj.Radius;
+                else
+                    mask=dists <= obj.Radius;
+                end
             end
         end
         

@@ -25,10 +25,10 @@ classdef ZmapXsectionCatalog < ZmapCatalog
                 return
             end
             tdist_km = distance(p1,p2,catalog.RefEllipsoid);
-            nlegs = ceil(tdist_km / width_km) .*2;
-            [curvelats,curvelons]=gcwaypts(p1(1),p1(2),p2(1),p2(2),nlegs);
-            scale = min(.1,tdist_km / 10000);
-            [c2,mindist,~,gcDist_km]=project_on_gcpath(p1,p2, catalog, width_km/2, scale);
+            nlegs    = ceil(tdist_km / width_km) .*2;
+            [curvelats,curvelons] = gcwaypts(p1(1),p1(2),p2(1),p2(2),nlegs);
+            scale = min(.1, tdist_km / 10000);
+            [c2,mindist,~,gcDist_km] = project_on_gcpath(p1,p2, catalog, width_km/2, scale);
             obj=obj.copyFrom(c2); % necessary, otherwise this turns into a ZmapCatalog
             obj.curve=[curvelats, curvelons];
             obj.dist_along_strike_km=gcDist_km;
