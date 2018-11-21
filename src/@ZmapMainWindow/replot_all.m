@@ -1,18 +1,35 @@
 function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
     % REPLOT_ALL(obj, metaProp, eventData)
+    %
+    % REPLOT_ALL(obj)
+    % REPLOT_ALL(obj, metaProp, eventData) when called from listener
+    % REPLOT_ALL(obj, eventName) when called elsewhere
+    
+    narginchk(1,3)
+    eventName = 'ReplotAll'; %default event name
+    switch nargin
+        case 1
+            % called with obj only
+            % msg.dbdisp(['Replotting because:', eventName]);
+        case 2
+            % called elsewhere with an EventName
+            eventName = metaProp;
+            % msg.dbdisp(['Replotting because:', eventName]);
+        case 3
+            % called by listener, with metaProp and eventData
+             if eventData.EventName ~= "PostSet"
+                 eventName = eventData.EventName;
+             end
+             if isprop(metaProp,'Name')
+                 % msg.dbdisp(['Replotting because:', eventName, ' (', metaProp.Name, ')' ]);
+             else
+                 % msg.dbdisp(['Replotting because:', eventName, ' [', class(metaProp) ']' ]);
+             end
+    end
+    
     obj.AllAxes=findobj(obj.fig,'Type','axes');
     
-    if ~exist('eventData','var') || eventData.EventName == "PostSet"
-        eventName='ReplotAll';
-    else
-        eventName = eventData.EventName;
-    end
-    %     if exist('metaprop','var') && isprop(metaProp,'Name')
-    %         msg.dbdisp(['Replotting because:', eventName, ' (', metaProp.Name, ')' ]);
-    %     else
-    %         msg.dbdisp(['Replotting because:', eventName]);
-    %     end
     md=[];
     k={};
     obj.set_figure_name();
@@ -42,11 +59,7 @@ function replot_all(obj,metaProp,eventData)
         case {'CatalogChanged','ReplotAll','DateRangeChanged','ShapeChanged'}
             % msg.dbdisp('replot everything touched by catalog')
             k=obj.XSectionTitles;
-            if eventName=="ShapeChanged"
-                % msg.dbdisp(eventData.Source);
-                % disp(metaProp);
-                obj.shape=eventData.Source;
-            end
+            
             obj.undohandle.Enable=tf2onoff(~isempty(obj.prev_states));
             [md, ~, mall]=obj.filter_catalog(); %md:mask date, ms:mask shape   % only show events if they aren't all selected
             evs=findobj(obj.maintab,'Tag','all events');

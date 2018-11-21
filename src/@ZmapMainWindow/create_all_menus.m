@@ -139,7 +139,7 @@ function create_all_menus(obj, force)
     % analyze items according to position & depth along strike.
     
     function create_xsec_analysis_menu()
-        submenu = uimenu('Label',[funcsymbol '(s,z)']); %'X-sect');
+        submenu = uimenu('Label',XSection.MainMenuLabel);
         uimenu(submenu,'Label','functions evaluated along a cross-section','enable','off');
         uimenu(submenu,'Separator','on',...
             'Label','Define a cross-section',MenuSelectedField(),@obj.cb_xsection,'Tag','CreateXsec');

@@ -311,11 +311,11 @@ classdef ZmapMainWindow < handle
         end
         function set_my_shape(obj, sh)
             % call this whenever shape is replaced, otherwise catalog will not adjust to it
+            msg.dbdisp('set my shape...');
             if ~isempty(sh) && ~isequal(sh,obj.shape)
+                subscribe(sh, 'ShapeChanged',@obj.replot_all); % subscribe before assigning (ok, 'cause it is a handle)
                 obj.shape = sh;
-                subscribe(obj.shape, 'ShapeChanged',@obj.replot_all);
                 obj.shape.plot(obj.map_axes);
-                obj.replot_all('ShapeChanged');
             end
         end
         
@@ -525,10 +525,9 @@ classdef ZmapMainWindow < handle
                 
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
-                    set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
-                    % a notification will be sent notifying that we have no more
-                else
-                    notify(obj, 'XsectionRemoved');
+                    % disable the menu subitems for X-sect
+                    h_xs = findobj(obj.fig, 'Label', XSection.MainMenuLabel);
+                    set(findobj(obj.fig, 'Parent', h_xs, '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
                 end
                 
                 obj.fig.Pointer = prevPtr;
@@ -768,7 +767,7 @@ classdef ZmapMainWindow < handle
             
             
             if isempty(obj.CrossSections)
-                set(findobj('Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off')
+                set(findobj('Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off')
             end
             
             obj.fig.UserData = obj;
@@ -891,7 +890,7 @@ classdef ZmapMainWindow < handle
         end
         
         function activateXsections(obj)
-            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'on');
+            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'on');
             
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes, 'Position', obj.MapPos_S);
@@ -904,7 +903,7 @@ classdef ZmapMainWindow < handle
         end
         
         function deactivateXsections(obj)
-            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
+            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
             obj.xsgroup.Visible = 'off';
             set(obj.map_axes, 'Position', obj.MapPos_L);
             

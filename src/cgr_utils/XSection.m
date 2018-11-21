@@ -54,6 +54,10 @@ classdef XSection < handle
         name
     end
     
+    properties(Constant)
+        MainMenuLabel = [char(402) , '(s,z)'];
+    end
+    
     events
         XsecChanged; % event to send that will force a redraw.
         LabelChanged; %
@@ -67,10 +71,10 @@ classdef XSection < handle
             %  where zans is a struct with fields: 'width_km', 'startlabel', 'endlabel', and 'color'
             % and startpt, endpoint are each [lat,lon]
             
-            obj.width_km = zans.slicewidth_km;  % slicewidth_km
-            obj.startlabel = zans.startlabel;   % startlabel
-            obj.endlabel = zans.endlabel;       % endlabel
-            obj.color = zans.color;             % color
+            obj.width_km    = zans.slicewidth_km;   % slicewidth_km
+            obj.startlabel  = zans.startlabel;      % startlabel
+            obj.endlabel    = zans.endlabel;        % endlabel
+            obj.color       = zans.color;           % color
             
             if exist('ref_ellipsoid','var')
                 if ischarlike(ref_ellipsoid)
@@ -89,11 +93,11 @@ classdef XSection < handle
                 obj.endpt = endpt;
             end
             
-            addlistener(obj,'width_km','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'startpt','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'endpt','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'startlabel','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'endlabel','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj, 'width_km'  , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'startpt'   , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'endpt'     , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'startlabel', 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'endlabel'  , 'PostSet', @XSection.handlePropertyEvents);
             
             obj.recalculate_xsec_curve();
             obj.recalculate_boundary();
