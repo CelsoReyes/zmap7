@@ -108,7 +108,7 @@ function pltopo(plt,h1)
                 fac = str2double(l);
             end
             
-            if ~exist('tbase.bin', 'var')
+            if ~exist('tbase.bin', 'file')
                 plt = 'err';
                 pltopo
             else
@@ -132,7 +132,7 @@ function pltopo(plt,h1)
         case 'lo2'
             
             
-            if ~exist('topo_6.2.img', 'var')
+            if ~exist('topo_6.2.img', 'file')
                 helpdlg('You do not have the topo_6.2.img database in your search path. It should be in the ./dem directory. If you have a later version of topo, please rename it to topo_6.2.img ','Error')
                 return
             end

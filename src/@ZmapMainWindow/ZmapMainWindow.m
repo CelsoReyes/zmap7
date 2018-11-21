@@ -311,7 +311,7 @@ classdef ZmapMainWindow < handle
         end
         function set_my_shape(obj, sh)
             % call this whenever shape is replaced, otherwise catalog will not adjust to it
-            msg.dbdisp('set my shape...');
+            % msg.dbdisp('set my shape...');
             if ~isempty(sh) && ~isequal(sh,obj.shape)
                 subscribe(sh, 'ShapeChanged',@obj.replot_all); % subscribe before assigning (ok, 'cause it is a handle)
                 obj.shape = sh;

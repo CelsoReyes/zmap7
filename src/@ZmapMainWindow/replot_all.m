@@ -1,6 +1,5 @@
 function replot_all(obj,metaProp,eventData)
     % REPLOT all the windows
-    % REPLOT_ALL(obj, metaProp, eventData)
     %
     % REPLOT_ALL(obj)
     % REPLOT_ALL(obj, metaProp, eventData) when called from listener

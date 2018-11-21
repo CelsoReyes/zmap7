@@ -8,124 +8,201 @@ function add_topo(varargin)
     %
     % see also demcmap
     
+    RootFolder = 'dem';
+    
+    % create a MAP that contains all the necessary detail for each region of interest
+    
+    DEM_Details = containers.Map;
+    
+    %% define all the details for the swiss DEM
+    s.Name          = 'Switzerland';
+    s.SourceUrl     = 'https://opendata.swiss/en/dataset/das-digitale-hohenmodell-der-schweiz-mit-einer-maschenweite-von-200-m';
+    s.DataUrl       = 'http://data.geo.admin.ch/ch.swisstopo.digitales-hoehenmodell_25/data.zip';
+    s.LastChecked   = datetime(2018,11,21);
+    s.Tag           = 'topographic_map_switzerland';
+    s.FileName      = 'DHM200.asc';
+    s.DisplayName   = 'Swiss topography';
+    s.PutIntoCorrectFolder  = @move_to_correct_folder_CH;
+    s.ZipFileName   = 'chdata.zip';
+    s.Locale        = 'CH';
+       
+    DEM_Details(s.Locale) = s;
+    
+    
+    s(:)=[]; % start on next detail
+    
+    %% define all the details for the world DEM
+    s(1).Name       = 'World';
+    s.SourceUrl     = 'https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/bedrock/cell_registered/georeferenced_tiff/';
+    s.DataUrl       = 'https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/bedrock/cell_registered/georeferenced_tiff/ETOPO1_Bed_c_geotiff.zip';
+    s.LastChecked   = datetime(2018,11,21);
+    s.Tag           = 'topographic_map_world';
+    s.FileName      = 'ETOPO1_Bed_c_geotiff.tif';
+    s.DisplayName   = 'world topography';
+    s.PutIntoCorrectFolder  = @move_to_correct_folder_WORLD;
+    s.ZipFileName   = 'worlddata.zip';
+    s.Locale        = 'WORLD';
+    
+    DEM_Details(s.Locale) = s;
+    
+    %%
+    % - - - - - - - - - -
+    
     p = inputParser();
-    p.addOptional('ax',gca,@isgraphics);
-    p.addParameter('locale','world');
-    p.addParameter('colormap','demcmap');
-    p.addParameter('ShadedOnly',false);
+    p.addOptional('ax'          , gca,@isgraphics);
+    p.addParameter('locale'     , 'world');
+    p.addParameter('colormap'   , 'demcmap');
+    p.addParameter('ShadedOnly' , false);
     p.parse(varargin{:});
     
-    ax=p.Results.ax;
-    locale = p.Results.locale;
+    ax          = p.Results.ax;
+    locale      = p.Results.locale;
     colorscheme = p.Results.colormap;
     
     if p.Results.ShadedOnly
         colorscheme = [0.5 0.5 0.5];
     end
+        
+    deets = DEM_Details(upper(locale));
     
-    xl = ax.XLim;
-    yl  =ax.YLim;
-    switch locale
-        case 'CH'
-            tag='topographic_map_switzerland';
-            delete(findobj(ax,'Tag',tag,'-and','Type','surface'));
-            fname='DHM200.asc';
-            if ~exist(fullfile('CH',fname),'file')
-                CHSourceURL='https://opendata.swiss/en/dataset/das-digitale-hohenmodell-der-schweiz-mit-einer-maschenweite-von-200-m';
-                error('Data for this topographic model cannot be found. Expected "%s" in folder dem/CH/\n\nPossibly downloadable from:\n%s',fname,CHSourceURL);
-            end
+    delete(findobj(ax,'Tag',deets.Tag,'-and','Type','surface'));
+    watchon
+    my_dem_file = fullfile(RootFolder, deets.Locale, deets.FileName);
+    
+    if ~exist(my_dem_file, 'file')
+        try_to_aquire_file(deets, RootFolder);
+    end
+    
+    watchoff
+    
+    if ~exist(my_dem_file, 'file')
+        error(['Data for this topographic model cannot be found or downloaded. ', ...
+            'Expected "%s" in folder dem/%s/\n', ...
+            '\nPossibly downloadable from:\n%s'], ...
+            deets.FileName, deets.Locale, Deets.SourceUrl);
+    end
+    
             
-            filename=fullfile('CH',fname); % expected to be in dem directory
-            [Z,~] = arcgridread(filename);
+    switch deets.Locale
+        case 'CH'
+            
+            [Z,~] = arcgridread(my_dem_file);
             
             % limits picked manually out of accompanying metadata file
             LonLims=[5.867,10.921];
             LatLims=[45.803,47.866];
-            lats=fliplr(linspace(LatLims(1),LatLims(2),size(Z,1)));
-            lons=linspace(LonLims(1),LonLims(2),size(Z,2));
+            lats=fliplr(linspace(LatLims(1), LatLims(2), size(Z,1)));
+            lons=linspace(LonLims(1), LonLims(2), size(Z,2));
             
-            lonidx = lons >=xl(1) & lons <= xl(2); 
-            latidx = lats >=yl(1) & lats <= yl(2); 
             
-            % expand the borders by 1 sample in each direction
-            lonidx(find(diff(lonidx)==1))=true; 
-            lastadd=find(diff(lonidx)==-1); 
-            if ~isempty(lastadd)
-                lonidx(lastadd+1)=true;
-            end
+        case 'WORLD'
+                        
+            [Z,R] = geotiffread(my_dem_file);
             
-            latidx(find(diff(latidx)==1))=true; 
-            lastadd=find(diff(latidx)==-1);
-            if ~isempty(lastadd)
-                latidx(lastadd+1)=true; 
-            end
-            Z=Z(latidx,lonidx);
+            lons = linspace(R.XWorldLimits(1), R.XWorldLimits(2), R.RasterSize(2));
+            lats = fliplr(linspace(R.YWorldLimits(1), R.YWorldLimits(2), R.RasterSize(1)));
             
-            %set(ax,'YDir','normal')
-            ax.NextPlot = 'add';
-            pc=pcolor(ax,lons(lonidx),lats(latidx),Z);
-            pc.Tag=tag;
-            pc.DisplayName='Swiss topography';
-            ax.NextPlot = 'replace';
-            shading (ax,'flat')
-            ax.Children=circshift(ax.Children,-1); %this gets put at the bottom of the plot heirarchy
-            % geoshow(topo,topoR,'DisplayType','texturemap')
-            set_topo_colormap()
         otherwise
-            tag='topographic_map_world';
-            delete(findobj(ax,'Tag',tag,'-and','Type','surface'));
-            fname='ETOPO1_Bed_c_geotiff.tif';
-            if ~exist(fullfile('WORLD',fname),'file')
-                WorldSourceURL='https://www.ngdc.noaa.gov/mgg/global/relief/ETOPO1/data/bedrock/cell_registered/georeferenced_tiff/';
-                error('Data for this topographic model cannot be found. Expected "%s" in folder dem/WORLD/\nPossibly downloadable from:\n%s',fname,WorldSourceURL);
-            end
             
-            [Z,R]=geotiffread(fullfile('WORLD',fname));
-            lons = linspace(R.XWorldLimits(1),R.XWorldLimits(2),R.RasterSize(2));
-            lats = fliplr(linspace(R.YWorldLimits(1),R.YWorldLimits(2),R.RasterSize(1)));
+            error('Unknown locale');
             
-            lonidx = lons >=xl(1) & lons <= xl(2); 
-            latidx = lats >=yl(1) & lats <= yl(2); 
-            
-            % expand the borders by 1 sample in each direction
-            lonidx(find(diff(lonidx)==1))=true; 
-            lastadd=find(diff(lonidx)==-1); 
-            if ~isempty(lastadd)
-                lonidx(lastadd+1)=true;
-            end
-            latidx(find(diff(latidx)==1))=true; 
-            lastadd=find(diff(latidx)==-1);
-            if ~isempty(lastadd)
-                latidx(lastadd+1)=true; 
-            end
-            Z=Z(latidx,lonidx);
-            
-            ax.NextPlot = 'add';
-            %{
-            pc=surf(ax,lons(lonidx),lats(latidx),Z./1000);
-%            light(ax)
- %           lightangle(ax,45,60)
-  %          lighting phong
-   %         material dull
-            %}
-            pc=pcolor(ax,lons(lonidx),lats(latidx),Z);
-            
-            pc.Tag=tag;
-            pc.DisplayName='world topography';
-            
-            ax.NextPlot = 'replace';
-            shading (ax,'flat')
-            % contourf(miniLon,fliplr(miniLat),miniA,20)
-            ax.Children=circshift(ax.Children,-1); %this gets put at the bottom of the plot heirarchy
-            set_topo_colormap()
-    end
-    pc.HitTest='off';
-    
-    function set_topo_colormap()
-        if isequal(colorscheme,'demcmap')
-            colorscheme=demcmap(Z);
-        end
-        colormap(ax, colorscheme);
     end
     
+    plot_the_colormap(ax, deets, lats, lons, Z, colorscheme);
+    watchoff
+    
+end
+
+function set_topo_colormap(ax, colorscheme, Z)
+    if isequal(colorscheme, 'demcmap')
+        colorscheme=demcmap(Z);
+    end
+    colormap(ax, colorscheme);
+end
+
+function x = expand_border(x)
+    % expand the borders by 1 sample in each direction
+    x(find(diff(x)==1))=true;
+    lastadd=find(diff(x)==-1);
+    if ~isempty(lastadd)
+        x(lastadd+1)=true;
+    end
+end
+
+function download_if_necessary(deets, zfn)
+    if ~exist(zfn,'file')...
+            && questdlg([deets.DisplayName, ' does not exist, attempt to download?'],'Download')=="Yes"
+        msg.dbdisp('downloading...')
+        websave(zfn, deets.DataUrl);
+    end
+    if ~exist(zfn,'file')
+        error(['Data for this topographic model cannot be found. ', ...
+            'Expected "%s" in folder dem/%s/\n', ...
+            '\nPossibly downloadable from:\n%s'], ...
+            deets.FileName, deets.Locale, Deets.SourceUrl);
+    end
+end
+
+function move_to_correct_folder_CH(deets, zfn, folder_name)
+    msg.dbdisp('unzipping')
+    unzip(zfn, fullfile(folder_name));
+    from_folder = fullfile(folder_name,'data');
+    to_folder = fullfile(folder_name, deets.Locale);
+    msg.dbdisp('moving');
+    movefile(from_folder, to_folder);
+end
+
+function move_to_correct_folder_WORLD(deets, zfn, folder_name)
+    f=watchon
+    drawnow
+    msg.dbdisp('unzipping')
+    unzip(zfn, fullfile(folder_name, deets.Locale));
+    watchoff(f)
+end
+
+function delete_downloaded_file(deets, downloaded_file_name)
+    if questdlg("Delete temporary zip file ["+ downloaded_file_name + "] containing "+ deets.Locale +" topography?",'Delete zip')=="Yes"
+        delete(downloaded_file_name)
+    end
+end
+
+function  try_to_aquire_file(deets, RootFolder)
+    folder_name = fullfile(ZmapGlobal.Data.hodi, RootFolder);
+    try
+        zfn=fullfile(folder_name, deets.ZipFileName);
+        download_if_necessary(deets, zfn); % will throw if aborted or not successful
+        deets.PutIntoCorrectFolder(deets, zfn, folder_name);
+        delete_downloaded_file(deets, zfn);
+        
+    catch
+        watchoff
+        error('Data for this topographic model cannot be found. Expected "%s" in folder dem/%s/\n\nPossibly downloadable from:\n%s',deets.FileName, deets.Locale, Deets.SourceUrl);
+    end
+end
+
+function plot_the_colormap(ax, deets, lats, lons, Z, colorscheme)
+    xl = ax.XLim;
+    yl  =ax.YLim;
+    
+    lonidx = lons >=xl(1) & lons <= xl(2);
+    latidx = lats >=yl(1) & lats <= yl(2);
+    
+    lonidx = expand_border(lonidx);  % expand the borders by 1 sample in each direction
+    latidx = expand_border(latidx);
+    
+    Z = Z(latidx,lonidx);
+    
+    %set(ax,'YDir','normal')
+    ax.NextPlot = 'add';
+    
+    pc = pcolor(ax,lons(lonidx),lats(latidx),Z);
+    pc.Tag          = deets.Tag;
+    pc.DisplayName  = deets.DisplayName;
+    pc.HitTest      = 'off';
+    
+    ax.NextPlot = 'replace';
+    shading (ax,'flat')
+    ax.Children = circshift(ax.Children,-1); %this gets put at the bottom of the plot heirarchy
+    % geoshow(topo,topoR,'DisplayType','texturemap')
+    set_topo_colormap(ax, colorscheme, Z)
 end
