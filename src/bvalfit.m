@@ -9,7 +9,6 @@ function bvalfit()
     %   Nnew = fac*Nold     , i.e. Rate change (N = number of events)
     %                                      R. Zuniga IGF-UNAM/GI-UAF  6/94
     %                                      Rev. 4/2001
-    % turned into function by Celso G Reyes 2017
     
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
@@ -45,26 +44,13 @@ function bvalfit()
         if mima > 0
             mima = 0 ;
         end
-    [t0b, teb] = bounds(ZG.newcat.Date) ;
+        [t0b, teb] = bounds(ZG.newcat.Date) ;
         n = ZG.newcat.Count;
         tdiff = round(teb - t0b);
         
         % number of mag units
         nmagu = (maxmag-mima*10)+1;
         
-        bval = zeros(1,nmagu);
-        bval2 = zeros(1,nmagu);
-        bvalsum = zeros(1,nmagu);
-        bvalsum2 = zeros(1,nmagu);
-        bvalsum3 = zeros(1,nmagu);
-        bvalsum4 = zeros(1,nmagu);
-        backg_ab = [ ];
-        foreg_ab = [ ];
-        backg_be = [ ];
-        foreg_be = [ ];
-        foreg = [ ];
-        backg_beN = [ ];
-        backg_abN = [ ];
         td12 = t2p(1) - t1p(1);
         td34 = t4p(1) - t3p(1);
         
@@ -138,14 +124,12 @@ function bvalfit()
         
         pause(1)
         
-        M1b = [];
         M1b = ginput(1);
         tx1 = text( M1b(1),M1b(2),['M1'] );
         set(seti,'String','Select Mag2');
         
         pause(0.1)
         
-        M2b = [];
         M2b = ginput(1);
         tx2 = text( M2b(1),M2b(2),['M2'] );
         

@@ -1,6 +1,6 @@
 function xsectopo() 
     % turned into function by Celso G Reyes 2017
-    
+    import zmaptopo.TopoToFlag
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();
     
@@ -15,7 +15,7 @@ function xsectopo()
     tmap(l) = -300;
     
     
-    if toflag == '3' || toflag == '1'
+    if toflag == TopoToFlag.three || toflag == TopoToFlag.one
         [vlat , vlon] = meshgrat(tmap,tmapleg);
         vlat = vlat(:,1);
         vlon = vlon(1,:);

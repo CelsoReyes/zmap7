@@ -38,9 +38,7 @@ function  bdiff(mycat, holdplot)
     
     % number of mag units
     nmagu = (maxmag*10)+1;
-    
-    bvalsum3 = zeros(1,nmagu);
-    
+        
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval); % N for M <=
     bval2 = fliplr(bval); %reverse order
@@ -217,7 +215,7 @@ function  bdiff(mycat, holdplot)
     function cb_est_recurr(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem(mycat, onesigma, aw, bw);
+        est_recurrence_time_prob(mycat, onesigma, aw, bw);
     end
     
     function cb_plot_ts(mysrc,myevt)

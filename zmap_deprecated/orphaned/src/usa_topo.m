@@ -1,5 +1,6 @@
 % This plot a DEM map plus eq on top... for an area that overlaps
 % two DEM files.
+import zmaptopo.TopoToFlag
 
 report_this_filefun(mfilename('fullpath'));
 
@@ -74,7 +75,7 @@ my = s4:1/(tmapleg1(1)+1):s3;
 l = tmap == 0 ;
 tmap(l) = nan;
 
-toflag = '5';
+toflag = TopoToFlag.Five;
 plt = 'plo'; % pltopo;
 
 

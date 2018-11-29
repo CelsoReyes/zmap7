@@ -75,9 +75,7 @@ function view_ratecomp(det,valueMap)
     fix_caxis.ApplyIfFrozen(gca); 
     
     if  det == 'per'
-        coma = jet;
-        coma = coma(64:-1:1,:);
-        colormap(coma)
+        colormap( flipud(jet(64)) );
     end
     
     title([  num2str(t1,6) ' - ' num2str(t2,6) ' - compared with ' num2str(t3,6) ' - ' num2str(t4,6) ],'FontSize',ZmapGlobal.Data.fontsz.m,...
@@ -170,8 +168,7 @@ function view_ratecomp(det,valueMap)
             MenuSelectedField(),@(~,~)dramap_z(2,valueMap))
         uimenu(op1,'Label','Histogram of map-values',MenuSelectedField(),@(~,~)zhist())
         uimenu(op1,'Label','Colormap InvertGray',MenuSelectedField(),@callbackfun_015)
-        uimenu(op1,'Label','Colormap Invertjet',...
-            MenuSelectedField(),@callbackfun_016)
+        uimenu(op1,'Label','Colormap Invertjet',MenuSelectedField(), @(~,~) colormap( flipud(jet(64)) ));
         
         uimenu(op1,'Label','shading flat',MenuSelectedField(), @(~,~)cb_shading('flat'))
         uimenu(op1,'Label','shading interpolated',MenuSelectedField(), @(~,~)cb_shading('interp'))
@@ -267,21 +264,10 @@ function view_ratecomp(det,valueMap)
     
 
     function callbackfun_015(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        g=gray;
-        g = g(64:-1:1,:);
-        colormap(g);
-        brighten(.4);
+        colormap( flipud(gray(64)) );
+        brighten(0.4);
     end
-    
-    function callbackfun_016(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        g=jet;
-        g = g(64:-1:1,:);
-        colormap(g);
-    end
+ 
     
     function cb_shading(shading_style)
         ZG.shading_style=shading_style;

@@ -644,7 +644,7 @@ classdef ZmapGrid
                         dLon = deltasXYZ(1);
                         dZ = deltasXYZ(3);
                 end
-                error('make sure this is correct')
+               % error('make sure this is correct')
                 switch standardizeDistanceUnits( deltaUnits )
                     case 'degrees'
                         % do nothing

@@ -1230,8 +1230,7 @@ function memifig2()
     set(gca,'NextPlot','add')
     pco1 = pcolor(xvect,yvect,normlap2);
     shading interp
-    j = jet(10); j = j(10:-1:1,:);
-    colormap(j)
+    colormap(flipud(jet(10)));
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     
@@ -1587,9 +1586,7 @@ function memifig()
     set(gca,'NextPlot','add')
     pco1 = pcolor(xvect,yvect,normlap2);
     shading interp
-    j = jet(64);
-    j = j(64:-1:1,:);
-    colormap(j);
+    colormap( flipud(jet(64)) );
     axis([ min(gx) max(gx) min(gy) max(gy)])
     axis image
     

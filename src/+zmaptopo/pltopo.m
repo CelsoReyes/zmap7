@@ -55,7 +55,7 @@ function pltopo(plt,h1)
             my = s4:1/tmapleg(1):s3+0.1;
             mx = s2:1/tmapleg(1):s1+0.1;
             [m,n] = size(tmap);
-            toflag = '5';
+            toflag = TopoToFlag.five;
             plt = 'plo'; pltopo;
             
             
@@ -85,7 +85,7 @@ function pltopo(plt,h1)
             vlon = mx;
             vlat = my;
             [m,n] = size(tmap);
-            toflag = '5';
+            toflag = TopoToFlag.five;
             plt = 'plo'; pltopo;
             
         case 'lo5'
@@ -125,14 +125,18 @@ function pltopo(plt,h1)
             my = s4:1/tmapleg(1):s3+0.1;
             mx = s2:1/tmapleg(1):s1+0.1;
             [m,n] = size(tmap);
-            toflag = '5';
+            toflag = TopoToFlag.five;
             plt = 'plo'; pltopo;
             
             
         case 'lo2'
             
             
-            if ~exist('topo_6.2.img', 'file')
+            if ~exist(fullfile('dem','topo_6.2.img'), 'file')
+                if exist(fullfile('dem','topo_6.2.img.zip'),'file')
+                    error('implement code to unzip the topo 6.2 file')
+                    %unzip(fullfile)
+                end
                 helpdlg('You do not have the topo_6.2.img database in your search path. It should be in the ./dem directory. If you have a later version of topo, please rename it to topo_6.2.img ','Error')
                 return
             end
@@ -150,7 +154,7 @@ function pltopo(plt,h1)
             s3 = l(2); s4 = l(1);
             region = [s4 s3 s2 s1];
             
-            toflag = '2';
+            toflag = TopoToFlag.two;
             [tmap,vlat,vlon] = mygrid_sand(region);
             
             plt = 'plo2'; pltopo;
@@ -198,7 +202,7 @@ function pltopo(plt,h1)
             my = s4:1/tmapleg(1):s3+0.1;
             mx = s2:1/tmapleg(1):s1+0.1;
             [m,n] = size(tmap);
-            toflag = '3';
+            toflag = TopoToFlag.three;
             plt = 'plo'; pltopo;
             
         case 'yourdem'
@@ -231,7 +235,7 @@ function pltopo(plt,h1)
             l3 = max(find(my <= s3));
             l4 = min(find(my >= s4));
             
-            toflag = '1';
+            toflag = TopoToFlag.one;
             
             
             tmap = mydem(l4:l3,l2:l1);

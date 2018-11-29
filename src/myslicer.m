@@ -405,8 +405,7 @@ function myslicer(ac2)
         material([.2 .2 0.6]);
         lighting gouraud
         
-        hc2 = gray(64); hc2 = hc2(64:-1:1,:);
-        mycolormap = [hc2; jet(64)];
+        mycolormap = [flipud(gray(64)) ; jet(64)];
         colormap(mycolormap)
         
         general_topo_endpart(1000);
@@ -698,18 +697,10 @@ function chooseint()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         %  case 'eva2'
         in3 =get(hColormaps,'Value');
-        if in3 == 1 ; colormap(hsv) ; end
-        if in3 == 2 ; colormap(hot) ; end
-        if in3 == 3 ; colormap(jet) ; end
-        if in3 == 4 ; colormap(cool) ; end
-        if in3 == 5 ; colormap(pink) ; end
-        if in3 == 6 ; colormap(gray) ; end
-        if in3 == 7 ; colormap(bone) ; end
-        if in3 == 8
-            mycolormap = jet; 
-            mycolormap = mycolormap(64:-1:1,:); 
-            colormap(mycolormap) ; 
-        end
+
+        reversejet=@(n)flipud(jet(n));
+        colormaps = {@hsv, @hot, @jet, @cool, @pink, @gray, @bone, @reversejet};
+        colormap(colormaps{in3}(64))
     end
     
     function callbackfun_009(mysrc,myevt)

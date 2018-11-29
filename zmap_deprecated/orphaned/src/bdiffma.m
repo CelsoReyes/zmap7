@@ -10,7 +10,7 @@ function  bdiffma(newcat)
     think
     %zmap_message_center.set_info('  ','Calculating b-value...')
     global cluscat mess bfig backcat xt3 bvalsum3
-    global  ttcat les n teb t0b cua b1 b2 n1 n2
+    global  ttcat teb t0b cua b1 b2 n1 n2
     report_this_filefun(mfilename('fullpath'));
 
     [existFlag,figNumber]=figure_exists('frequency-magnitude distribution',1);
@@ -124,11 +124,6 @@ function  bdiffma(newcat)
     ll = xt3 >= M1b(1) & xt3 <= M2b(1);
     x = xt3(ll);
 
-    %n   = ((M2b(1)+0.05) - (M1b(1)-0.05))/0.1;
-    %les = (mean(newcat.Magnitude) - (min(newcat.Magnitude-0.05)))/0.1;
-    %global n les
-    %so = fzero('sofu',1.0);
-    %bv = log(so)/(-2.3026*0.1);
     [ av,bv,si] = bmemag(newcat);
 
     pause(0.1)

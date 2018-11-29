@@ -179,9 +179,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
     fix_caxis.ApplyIfFrozen(gca); 
     
     if  myselector == 'per'
-        coma = jet;
-        coma = coma(64:-1:1,:);
-        colormap(coma)
+        colormap( flipud(jet(64)) )
     end
     set(gca,'dataaspect',[1 cosd(mean(ZG.primeCatalog.Latitude)) 1]);
     
@@ -327,20 +325,12 @@ function view_max(valueMap,gx,gy,stri,myselector)
     end
     
     function callbackfun_010(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        g=gray;
-        g = g(64:-1:1,:);
-        colormap(g);
+        colormap( flipud(gray(64)) );
         brighten(.4);
     end
     
     function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        g=jet;
-        g = g(64:-1:1,:);
-        colormap(g);
+        colormap( flipud( jet(64) ));
     end
     
     function callbackfun_012(mysrc,myevt)

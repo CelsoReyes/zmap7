@@ -2,6 +2,8 @@ report_this_filefun(mfilename('fullpath'));
 
 % make a x-section plus topography...
 
+import zmaptopo.TopoToFlag
+
 if ~exist('tmap', 'var')
     update(mainmap())
     warndlg('Please create a topo map first')
@@ -11,7 +13,7 @@ l = isnan(tmap);
 tmap(l) = -300;
 
 
-if toflag == '3'
+if toflag == TopoToFlag.three
     [vlat , vlon] = meshgrat(tmap,tmapleg);
     vlat = vlat(:,1);
     vlon = vlon(1,:);

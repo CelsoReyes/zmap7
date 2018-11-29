@@ -483,16 +483,13 @@ function slicemapz()
         set(gcf,'Color','k','InvertHardcopy','off')
         slax = gca;
         in3 =get(hndl2,'Value');
-        if in3 == 1 ; colormap(hsv(64)); end
-        if in3 == 2 ; colormap(hot(64)) ; end
-        if in3 == 3 ; colormap(jet(64)) ; end
-        if in3 == 4 ; colormap(cool(64)) ; end
-        if in3 == 5 ; colormap(pink(64)) ; end
-        if in3 == 6 ; colormap(gray(64)) ; end
-        if in3 == 7 ; colormap(bone(64)) ; end
-        if in3 == 8; mycolormap = jet; mycolormap = mycolormap(64:-1:1,:); colormap(mycolormap) ; end
+
+        reversejet=@(n)flipud(jet(n));
+
+        colormaps = {@hsv, @hot, @jet, @cool, @pink, @gray, @bone, @reversejet};
         
-        
+        colormap(colormaps{in3}(64));
+                
         if get(hndl3,'Value') == 2
             
             chil = allchild(hsc);
@@ -501,10 +498,10 @@ function slicemapz()
             zvals(l)  = log10(1- normcdf(zvals(l),mu,varz)); %
             
             set(chil(length(chil)),'Cdata',zvals);
-            fix1 = -4; fix2 = -1.3;
+            fix1 = -4; 
+            fix2 = -1.3;
             axes(hsc)
-            j = jet(64);
-            j = [  j(64:-1:1,:);  zeros(1,3)+0.4; ];
+            j = [  flipud(jet(64)) ;  zeros(1,3)+0.4; ];
             colormap(j); colorbar
             
         end
@@ -563,9 +560,7 @@ function slicemapz()
             colormap(bone);
         end
         if in3 == 8
-            mycolormap = jet;
-            mycolormap = mycolormap(64:-1:1,:);
-            colormap(mycolormap) ;
+            colormap( flipud(jet(64)) );
         end
         
         

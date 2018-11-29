@@ -1,7 +1,5 @@
-function plorem(catalog, onesigma, aw, bw)
+function est_recurrence_time_prob(catalog, onesigma, aw, bw)
     % plorem Estimate recurrence time/probability
-    % works on catalog
-    % turned into function by Celso G Reyes 2017
     
     report_this_filefun();
     deltaT=max(catalog.Date) - min(catalog.Date); %teb - t0b

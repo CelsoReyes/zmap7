@@ -1,4 +1,5 @@
 % This plot a DEM map plus eq on top...
+import zmaptopo.TopoToFlag
 
 report_this_filefun(mfilename('fullpath'));
 
@@ -32,7 +33,7 @@ switch(plt)
         my = s4:1/tmapleg(1):s3+0.1;
         mx = s2:1/tmapleg(1):s1+0.1;
         [m,n] = size(tmap);
-        toflag = '5';
+        toflag = TopoToFlag.five;
         plt = 'ploM'; pltopo;
 
     case 'lo5'
@@ -65,7 +66,7 @@ switch(plt)
         my = s4:1/tmapleg(1):s3+0.1;
         mx = s2:1/tmapleg(1):s1+0.1;
         [m,n] = size(tmap);
-        toflag = '5';
+        toflag = TopoToFlag.five;
         plt = 'plo'; pltopo;
 
 
@@ -78,7 +79,7 @@ switch(plt)
         region = [s4 s3 s2 s1];
 
         do = ['  [tmap,vlat,vlon] = mygrid_sand(region); '];
-        toflag = '2';
+        toflag = TopoToFlag.two;
         err = [' plt = ''err2''; pltopo '];
         eval(do,err);
 
@@ -110,7 +111,7 @@ switch(plt)
         l3 = max(find(my <= s3));
         l4 = min(find(my >= s4));
 
-        toflag = '1';
+        toflag = TopoToFlag.one;
 
 
         tmap = mydem(l4:l3,l2:l1);

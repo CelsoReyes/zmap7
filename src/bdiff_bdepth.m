@@ -9,7 +9,7 @@ function  bdiff_bdepth(mycat)
     %  Stefan Wiemer 1/95
     %
     global cluscat mess bfig backcat magsteps_desc bvalsum3  bval aw bw t1 t2 t3 t4 dloop leg1 leg2
-    global les teb t0b cua  ew onesigma mrt bvalsumhold
+    global teb t0b cua  ew onesigma mrt bvalsumhold
     global gBdiff % contains b1, n1, b2, n2
     global mxlkbt lsbt ni
     ZG=ZmapGlobal.Data;
@@ -31,10 +31,10 @@ function  bdiff_bdepth(mycat)
         
         uicontrol('Units','normal',...
             'Position',[.0 .85 .08 .06],'String','Info ',...
-            'callback',@callbackfun_001);
+            'callback',@(~,~)infoz(1));
         uicontrol('Units','normal',...
             'Position',[.0 .45 .10 .06],'String','Manual ',...
-            'callback',@callbackfun_002);
+            'callback',@(~,~)bfitnew(mycat));
         
         uicontrol('Units','normal',...
             'Position',[.0 .35 .10 .06],'String','RecTime ',...
@@ -239,22 +239,10 @@ function  bdiff_bdepth(mycat)
     
     set(gca,'NextPlot','replace');
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        infoz(1);
-    end
-    
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        bfitnew(mycat);
-    end
-    
     function callbackfun_003(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        plorem(mhcat, onesigma, aw, bw);
+        est_recurrence_time_prob(mhcat, onesigma, aw, bw);
     end
     
     function cb_timeplot(mysrc,myevt)

@@ -26,7 +26,7 @@ function mcwtidays(catalog)
     
     for n = 1:numel(itervector)
         i=itervector(n);
-        [~, magco, ~ ] =  bvalca2(catalog.subset(i:i+ni));
+        magco =  bvalca2(catalog.subset(i:i+ni));
         bv2.magco(n) = magco;
         bv2.date(n) = catalog.Date(i+ni/2);
         BV.magco(n*3-2:n*3-1) = magco;

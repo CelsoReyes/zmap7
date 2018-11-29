@@ -13,7 +13,6 @@ function [projectedcat,mindist,mask,gcDist_km]=project_on_gcpath(pt1,pt2,catalog
     %  great circle (along strike), (distance in km from pt1)
     %
     % see also gcwaypts
-    assert(all(catalog.Longitude>0))
     if nargin==1 && pt1 == "test"
         [projectedcat,mindist,mask,gcDist_km]=test_this;
         return

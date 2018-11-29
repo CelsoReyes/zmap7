@@ -1,6 +1,3 @@
-function y = f(x)
+function y = f(x, n, les)
 
-    report_this_filefun(mfilename('fullpath'));
-
-    global les n
     y = les - (x/(1-x) - (n*x^n)/(1 - x^n))  ;

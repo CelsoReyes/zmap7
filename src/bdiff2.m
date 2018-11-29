@@ -615,7 +615,7 @@ classdef bdiff2 < ZmapFunction
             
             function callbackfun_recurrence(~,~)
                 global onesigma
-                plorem(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
+                est_recurrence_time_prob(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
             end
             
             function callbackfun_ts(~,~)

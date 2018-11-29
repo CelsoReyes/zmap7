@@ -66,10 +66,16 @@ function add_display_menu(version)
     end
     function add_colormap_section(parent)
         uimenu(parent,'Label','Colormap InvertGray',...
-            MenuSelectedField(),'g=gray; g = g(64:-1:1,:);colormap(g);brighten(.4)');
+            MenuSelectedField(),@(~,~)flip_and_brighten(@gray,0.4));
         uimenu(parent,'Label','Colormap Invertjet',...
-            MenuSelectedField(),'g=jet; g = g(64:-1:1,:);colormap(g)');
+            MenuSelectedField(),@(~,~)flip_and_brighten(@jet,0));
+
+        function flip_and_brighten(colorfn,brightenamount)
+            colormap(flipud(colorfn(64)));
+            if brightenamount; brighten(brightenamount); end
+        end
     end
+
     function add_shading_section(parent)
         %TODO make this 1 option, simple inputdlg box, or flip the names
         uimenu(parent,'Label','shading flat',...
