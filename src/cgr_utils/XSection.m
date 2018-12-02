@@ -297,7 +297,7 @@ classdef XSection < handle
                 lolaz( st : ed , 3) = zs_km(n);
             end
             gname=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
-            gr=ZmapVGrid(gname, lolaz);
+            gr=ZmapVGrid(gname, 'FromPoints', lolaz);
         end
         
         function s = get.name(obj)

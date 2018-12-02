@@ -23,7 +23,6 @@ classdef ZmapGrid
     %     Creation methods:
     %
     %     ZmapGrid - create a ZmapGrid
-    %     AutoCreateDeg -create ZDataGrid based on current Map extent/Catalog extent, whichever is smaller
     %
     %     Plotting methods:
     %
@@ -73,76 +72,103 @@ classdef ZmapGrid
     end
     
     methods
-        function obj = ZmapGrid(name, varargin)
+        function obj = ZmapGrid(name, createFrom, varargin)
             %ZMAPGRID create a grid of points
-            %   OBJ = ZMAPGRID(NAME, grid_options) where grid_options is a GridOptions object
             %
-            % ZMAPGRID(name,origin_degs, deltas_degs, limits_degs, follow_meridians) where
-            %   origin_degs is (Lon, Lat) or (Lon, Lat, Z_km).
-            %   delta_degs is [dLon, dLat] or [dLon, dLat, dZ_km]
-            %   limits_degs is [lonMin lonMax ; latMin LatMax] or
-            %      [lonMin lonMax ; latMin LatMax ; depthMin_km depthMax_km]
-            %   follow_meridians is true or false.
+            %  OBJ = ZMAPGRID(); creates an empty grid
+            %  
+            %  OBJ = ZMAPGRID( NAME , 'FromGridOptions', GRID_OPTIONS) creates a grid from a 
+            %  GridOptions object, which defines parameters such as delta-distances and units.
             %
-            %   ZMAPGRID(NAME, ALL_X, ALL_Y, UNITS) create a grid, where the X is the provided ALL_X
-            %   Y is the provided ALL_Y.  This creates a grid [X1 Y1; X1 Y2; ... Xn Ym
+            %  OBJ = ZMAPGRID( NAME , 'FromPoints', POINT_VECTOR) creates a grid given the sets of
+            %  sets of points [X Y;...] or [X Y Z; ...] 
+            % 
+            %  OBJ = ZMAPGRID( NAME , 'FromMatrices', Xmatrix, Ymatrix [, Zmatrix]) creates the grid
+            %  from a set of same-sized matrices 
             %
-            %   ZMAPGRID(NAME,ALL_POINTS,UNITS); % NOT RECOMMENDED
+            %Additional options:
+            %  ZMAPGRID(... , 'Shape', SHAPEOBJECT) where ShapeObject decended from the ShapeGeneral
+            %  class.  For example, this could be a ShapeCircle or ShapePolygon. Active Grid points 
+            %  are bounded by the shape
             %
-            %   ZMAPGRID(...,'shape',ShapeObject) where ShapeObject is an object of a class decended
-            %   from ShapeGeneral
+            %  ZMAPGRID(... , 'RefEllipsoid', REF_ELLIPSOID) when provided with a referenceEllipsoid,
+            %  units will be determined by the ellipsoid's LengthUnits.
             %
+            %  ZMAPGRID(... , 'Units', UNIT_NAME)
+            %
+            %  ZMAPGRID(... , 'OriginPoint', [Lat, Lon, Depth]) defines the point within the Grid
+            %  that is unmoving, even when the grid is resized, resampled, etc.
             %
             % see also: MESHGRID
+            if ~exist('createFrom','var')
+                createFrom = "FromNothing";
+            end                
             
+            %% gather and validate input
             
-            if numel(varargin)>1 && ischarlike(varargin{end-1}) && varargin{end-1}=="shape"
-                myshape=varargin{end};
-                varargin(end-1:end)=[];
-            else
-                myshape=ShapeGeneral.ShapeStash();
-            end
+            p = inputParser;
             
-            if exist('name','var')
-                obj.Name = name;
-            end
-            if numel(varargin)==0
-                return
-            end
-            
-            rElNum = cellfun(@(x)isa(x,'referenceEllipsoid'),varargin);
-            if any(rElNum)
-                refEllipsoid = varargin{rElNum};
-                varargin(rElNum)= [];
-            else
-                refEllipsoid = [];
-            end
-            
-            if ischarlike(varargin{end})
-                obj.Units = varargin{end};
-                varargin(end)=[];
-            end
-            
-            switch numel(varargin)
-                case 1
-                    if isnumeric(varargin{1})
-                        point_definition(varargin{:}) % allpoints as Nx2 or Nx3
+            if nargin < 2 ,     createFrom = "FromNothing";   end
+            if nargin > 0 ,     obj.Name   = name;            end
                         
-                    elseif isa(varargin{1},'GridOptions')
-                        grid_option_definition(varargin{1},refEllipsoid);
+            switch createFrom
+                case "FromPoints"
+                    p.addRequired('pointvector', @(x)isempty(x) || size(x,2)==2 || size(x,2)==3);
+                    p.addParameter('Units','');
+                case "FromMatrices"
+                    p.addRequired('xmatrix');
+                    p.addRequired('ymatrix');
+                    p.addOptional('zmatrix',[]);
+                    p.addParameter('Units','');
+                case "FromGridOptions"
+                    p.addRequired('gridoptions',@(x)isa(x,'GridOptions'));
+                case "FromNothing"
+                    % do nothing
+                otherwise
+                    error('do not know what to create from');
+            end
+            p.addParameter('OriginPoint'  , [nan nan 0]          , @(x)numel(x)==3 && isnumeric(x));
+            p.addParameter('Shape'        , ShapeGeneral.ShapeStash()  , @(x)isa(x,'ShapeGeneral'));
+            p.addParameter('RefEllipsoid' , []    , @(x)isa(x,'referenceEllipsoid') || isempty(x) );
+            
+            p.parse(varargin{:});
+            
+            myshape = p.Results.Shape;
+            refEllipsoid = p.Results.RefEllipsoid; % contains units
+            
+            if ~isempty(refEllipsoid)
+                obj.Units = refEllipsoid.LengthUnit;
+            end
+            
+            %% create the grids
+            switch createFrom
+                case "FromPoints"
+                    point_definition(p.Results.pointvector);
+                    obj.Units = p.Results.Units;
+                    
+                case "FromMatrices"
+                    hasSameSize =@(A,B) isequal(size(A), size(B));
+                    
+                    if isempty(p.Results.zmatrix)
+                        assert(hasSameSize(p.Results.xmatrix, p.Results.ymatrix) );
+                        matrix_definition(p.Results.xmatrix, p.Results.ymatrix);
                     else
-                        error('unknown: class %s',class(varargin{1}));
+                        assert(hasSameSize(p.Results.xmatrix, p.Results.ymatrix) );
+                        assert(hasSameSize(p.Results.xmatrix, p.Results.zmatrix) );
+                        matrix_definition(p.Results.xmatrix, p.Results.ymatrix, p.Results.zmatrix);
                     end
+                    obj.Units = p.Results.Units;
                     
-                case {2,3}
-                    matrix_definition(varargin{:}); % (Xmatrix, Ymatrix[, Zmatrix])
+                case "FromGridOptions"
+                    grid_option_definition(p.Results.gridoptions, refEllipsoid);
                     
-                case 5
-                    explicit_definition_old(varargin{:});
+                case "FromNothing"
+                    return
                     
                 otherwise
-                    error('incorrect number of arguments %d', nargin);
+                    error('unknown grid options');
             end
+                                    
             
             if isempty(obj.ActivePoints)
                 obj.ActivePoints=true(size(obj.X));
@@ -240,11 +266,6 @@ classdef ZmapGrid
                 end
             end
             
-            function explicit_definition_old(lonLatZ0, deltasLonLatZ, delta_units, limsLonLatZ, follow_meridians)
-                obj.Origin = lonLatZ0;
-                obj.Units  = delta_units;
-                [obj.X, obj.Y, obj.Z] = ZmapGrid.get_grid(lonLatZ0, deltasLonLatZ, delta_units,limsLonLatZ, follow_meridians);
-            end
             
         end
         
@@ -495,45 +516,7 @@ classdef ZmapGrid
     end
     
     methods(Static)
-        function obj=AutoCreateDeg(name, ax, catalog)
-            % creates a ZDataGrid based on current Map extent/Catalog extent, whichever is smaller.
-            % obj = ZMAPGRID.AUTOCREATEDEG() greates a catalog based on mainmap and primary catalog
-            % obj = ZMAPGRID.AUTOCREATEDEG(ax, catalog) specifies a map axis handle and a catalog to use.
-            
-            XBINS=20;
-            YBINS=20;
-            %ZBINS=5;
-            ZG=ZmapGlobal.Data;
-            switch nargin
-                case 0
-                    name='unnamed';
-                    ax=findobj(gcf,'Tag','mainmap_ax');
-                    catalog=ZG.primeCatalog;
-                case 1
-                    ax=findobj(gcf,'Tag','mainmap_ax');
-                    catalog=ZG.primeCatalog;
-                case 3
-                    assert(isa(catalog,'ZmapCatalog'));
-                    assert(isvalid(ax));
-                otherwise
-                    error('Either use AutoCreate(name) or AutoCreate(name, ax, catalog)');
-            end
-            
-            mapWESN = axis(ax);
-            x_start = max(mapWESN(1), min(catalog.Longitude));
-            x_end   = min(mapWESN(2), max(catalog.Longitude));
-            y_start = max(mapWESN(1), min(catalog.Latitude));
-            y_end   = min(mapWESN(2), max(catalog.Latitude));
-            %z_start = 0;
-            %z_end = max(catalog.Depth);
-            dx= (x_end - x_start)/XBINS;
-            dy= (y_end - y_start)/YBINS;
-            %dz =  (z_end - z_start)/ZBINS;
-            %TODO make spacing more intelligent. maybe.
-            %FIXME map units and this unit might be out of whack.
-            obj=ZmapGrid(name,x_start, dx, x_end, y_start, dy, y_end, 'degrees');
-        end
-        
+
         function [lonMat,latMat,zMat] = get_grid(lonLatZ0, deltasXYZ, deltaUnits,limsLonLatZ, FOLLOW_MERIDIANS)
             % GET_GRID given an origin point and dlon, dlat, returns a grid as 2 matrices
             %
@@ -676,7 +659,7 @@ classdef ZmapGrid
             [~,dLon_per_lat] = reckon('rh', lats(:), 0, deltasXYZ(1), 90, refEllipsoid);
             
             [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xTotalDists, lonLatZ0(1), lats, limsLonLatZ(1,:));
-            
+            zMat=[];
         end
         
         function totEstPts = estimate_points(dLon_per_lat , xTotalDists)

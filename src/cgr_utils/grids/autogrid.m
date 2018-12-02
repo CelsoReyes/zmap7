@@ -44,7 +44,7 @@ function [zgrid, gpc] = autogrid(catalog, refEllipse, plotOnMap)
     gpc.AbsoluteGridLimits = [bounds2(catalog.Longitude), bounds2(catalog.Latitude)];
     
     
-    zgrid=ZmapGrid('autogrid',gpc, refEllipse);
+    zgrid=ZmapGrid('autogrid','FromGridOptions', gpc, 'RefEllipsoid', refEllipse);
 
     if exist('plotOnMap','var') && plotOnMap
         zgrid.plot(findobj(gcf,'Tag','mainmap_ax'));

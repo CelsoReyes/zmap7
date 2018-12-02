@@ -150,13 +150,15 @@ function [mytab] = plot_xsection(obj, k, currcatsummary,md)
         
         % store the projected catalog. only events within the strip [ignoring shape] are stored
         if ~isempty(md)
-            obj.xscats(k)=obj.CrossSections(idx).project(obj.rawcatalog.subset(md));
+            tempCatalog = obj.CrossSections(idx).project(obj.rawcatalog.subset(md));
         else
-            obj.xscats(k)=obj.CrossSections(idx).project(obj.rawcatalog);
+            tempCatalog = obj.CrossSections(idx).project(obj.rawcatalog);
         end
+        obj.append_xsec_to_catalog_name(tempCatalog, k);
+        obj.xscats(k) = tempCatalog;
         
         % store the information about the current catalog used to project
-        obj.xscatinfo(k)=obj.rawcatalog.summary();
+        obj.xscatinfo(k) = obj.rawcatalog.summary();
         
         % plot
         mytab=findobj(obj.xsgroup,'Title',k,'-and','Type','uitab');
