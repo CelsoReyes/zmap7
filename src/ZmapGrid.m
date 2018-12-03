@@ -56,6 +56,7 @@ classdef ZmapGrid
         Z               double          % all Y positions in matrix.
         Origin                          % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
         PlotOpts        struct      = ZmapGlobal.Data.GridOpts.LineProps;
+            
     end
     
     properties(Dependent)
@@ -69,6 +70,7 @@ classdef ZmapGrid
     end
     properties(Constant,Hidden)
         POSSIBLY_TOO_MANY_POINTS = 1000 * 1000 * 10;
+        Planet = 'earth'
     end
     
     methods
@@ -195,7 +197,8 @@ classdef ZmapGrid
                     xl=varargin{1}.AbsoluteGridLimits(1:2);
                     yl=varargin{1}.AbsoluteGridLimits(3:4);
                 else
-                    xl=[-179.9999 180]; yl=[-90 90];
+                    xl=[-179.9999 180]; 
+                    yl=[-90 90];
                 end
                 minX=max([xl(1), -180]);
                 maxX=min([xl(2), 180]);
@@ -219,24 +222,20 @@ classdef ZmapGrid
                 obj.Units = standardizeDistanceUnits(gridopt.horizUnits);
                 
                 obj.Origin=lonLatZ0;
-                if gridopt.GridType == "XYZ"
+                if gridopt.GridType == "XYZ" || gridopt.GridType == "XY"
                     if isempty(refEllipsoid)
-                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,obj.Units, limsLonLatZ, gridopt.followMeridians);
+                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_degree_grid(lonLatZ0,deltasLonLatZ,obj.Units, limsLonLatZ, gridopt.followMeridians);
                     else
-                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_grid2(lonLatZ0, deltasLonLatZ, limsLonLatZ, refEllipsoid);
-                    end
-                elseif gridopt.GridType == "XY"
-                    if isempty(refEllipsoid)
-                        [obj.X,obj.Y] = ZmapGrid.get_grid(lonLatZ0,deltasLonLatZ,obj.Units, limsLonLatZ, gridopt.followMeridians);
-                        obj.Z=[];
-                    else
-                        [obj.X,obj.Y] = ZmapGrid.get_grid2(lonLatZ0, deltasLonLatZ, limsLonLatZ, refEllipsoid);
-                        obj.Z=[];
+                        [obj.X,obj.Y,obj.Z] = ZmapGrid.get_nondegree_grid(lonLatZ0, deltasLonLatZ, limsLonLatZ, refEllipsoid);
                     end
                 else
                     % "XZ"
                     unimplemented_error()
                 end
+                if gridopt.GridType == "XY"
+                    obj.Z=[];
+                end
+                
                 if use_shape
                     obj=obj.MaskWithShape(myshape.Points);
                 end
@@ -269,7 +268,7 @@ classdef ZmapGrid
             
         end
         
-        % basic access routines
+        %% basic access routines
         function gp = get.GridVector(obj)
             if ~isempty(obj)
                 if isempty(obj.Z)
@@ -282,7 +281,7 @@ classdef ZmapGrid
             end
         end
         
-        % masked access routines
+        %% masked access routines
         function x = get.Xactive(obj)
             x=obj.X(obj.ActivePoints);
         end
@@ -354,6 +353,7 @@ classdef ZmapGrid
             obj=ZmapGrid();
         end
         
+        %% plotting routines
         function prev_grid=plot(obj, ax,varargin)
             % plot the current grid over axes(ax)
             % obj.PLOT() plots on the current axes
@@ -434,6 +434,7 @@ classdef ZmapGrid
             end
             h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
+        
         function [c,h]=contourf(obj, ax, values, name, nlevels)
             % [c,h]=CONTOURF(obj,ax, values, name, nlevels)
             if ~exist('nlevels','var') || ~isempty(nlevels)
@@ -491,12 +492,7 @@ classdef ZmapGrid
             set(ax,'YDir','normal');
         end
         
-        function setGlobal(obj)
-            % set the globally used grid to this one.
-            ZG=ZmapGlobal.Data;
-            ZG.grid=obj;
-        end
-        
+        %% io routines
         function save(obj, filename, pathname)
             % save grid to .mat file
             ZG=ZmapGlobal.Data;
@@ -512,12 +508,9 @@ classdef ZmapGrid
         end
     end
     
-    methods(Static, Access=protected)
-    end
-    
     methods(Static)
 
-        function [lonMat,latMat,zMat] = get_grid(lonLatZ0, deltasXYZ, deltaUnits,limsLonLatZ, FOLLOW_MERIDIANS)
+        function [lonMat,latMat,zMat] = get_degree_grid(lonLatZ0, deltasXYZ, deltaUnits,limsLonLatZ, FOLLOW_MERIDIANS)
             % GET_GRID given an origin point and dlon, dlat, returns a grid as 2 matrices
             %
             %[lonMat,latMat] = ZMAPGRID.GET_GRID(lon0,lat0,dLon,dLat, FOLLOW_MERIDIANS)
@@ -525,127 +518,113 @@ classdef ZmapGrid
             %    If FOLLOW_MERIDIANS, then x distances converge toward poles. otherwise
             %    they remain (relatiely) constant
             %
+            %
+            % when following the meridian lines, the longitude span covered by
+            % the arc-distance at lat0 (along the rhumb!) remains constant.
+            % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
+            %
+            % when ignoring meridian lines, and aiming for an approximately constant distance,
+            % the dLon at each latitude will differ.
+            %
             % output is  (lon, lat) or [lon, lat, z]
             %
             % limits can be retrieved from an axes
             %
             % use the axes limits (assumed degrees) to control size of grid
             % limsLonLatZ=[xlim(ax); ylim(ax); zlim(ax)]
-            % ylims_deg = ylim(ax);
-            % xlims_deg = xlim(ax);
             
-            zMat=[];
+            zMat    = [];
             % origin point
-            lon0=lonLatZ0(1);
-            lat0=lonLatZ0(2);
+            lon0    = lonLatZ0(1);
+            lat0    = lonLatZ0(2);
             
             %
             % deltas
-            [dLat, dLon, dZ, deltaUnits] = parse_deltas(deltasXYZ, deltaUnits);
+            [dLat, dLon, dZ, deltaUnits] = deltasToDegrees(deltasXYZ, deltaUnits);            
             
-            
-            xlims_deg=limsLonLatZ(1,:);
-            ylims_deg=limsLonLatZ(2,:);
+            xlims_deg = limsLonLatZ(1,:);
+            ylims_deg = limsLonLatZ(2,:);
             % pick out latitude spacing. Our grid will have this many rows.
-            lats = ZmapGrid.vector_including_origin(lat0, dLat, ylims_deg);
-            lonMat=[];
-            latMat=[];
-            
+            lats = ZmapGrid.vector_including_origin(lat0, dLat, ylims_deg);            
             
             if ~exist('FOLLOW_MERIDIANS','var')
-                FOLLOW_MERIDIANS = deltaUnits == "degrees" || deltaUnits == "degree" || deltaUnits == "deg";
+                FOLLOW_MERIDIANS = standardizeDistanceUnits(deltaUnits) == "degrees";
             end
             
             if FOLLOW_MERIDIANS
-                % when following the meridian lines, the longitude span covered by
-                % the arc-distance at lat0 (along the rhumb!) remains constant.
-                % that is, dLon 45 from origin (0,0) will always be 45, regardless of latitude.
-                [~,dLon]=reckon('rh',lat0,0,dLon,90);
+                [~,dLon] = reckon('rh', lat0, 0, dLon,90);
                 
                 % resulting in a rectangular matrix where, on a globe lines will converge, but on a graph
                 lonValues = ZmapGrid.vector_including_origin(lon0, dLon, xlims_deg);
                 
                 %creates a meshgrid of size numel(lonValues) x numel(lats)
-                [lonMat,latMat]=meshgrid(lonValues,lats);
+                [lonMat,latMat] = meshgrid(lonValues,lats);
                 
             else
-                % when ignoring meridian lines, and aiming for an approximately constant distance,
-                % the dLon at each latitude will differ.
                 
                 % number of degrees longitude covered by the arclength at each latitude
-                [~,dLon_per_lat]=reckon('rh',lats,0,dLon,90);
+                [~,dLon_per_lat] = reckon('rh', lats, 0, dLon, 90);
                 
-                [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xlims_deg, lon0, lats);
+                [lonMat, latMat] = ZmapGrid.get_lalo_matrices(dLon_per_lat, xlims_deg, lon0, lats, xlims_deg);
             end
+            
             if numel(deltasXYZ)==3
-                zlims_km=limsLonLatZ(3,:);
-                zs = ZmapGrid.vector_including_origin(lonLatZ0, deltasXYZ(3), zlims_km);
-                lonMat=repmat(lonMat,1,1,numel(zs));
-                latMat=repmat(latMat,1,1,numel(zs));
-                zMat=ones(size(lonMat));
+                zlims_km = limsLonLatZ(3,:);
+                zs       = ZmapGrid.vector_including_origin(lonLatZ0, deltasXYZ(3), zlims_km);
+                lonMat   = repmat(lonMat,1,1,numel(zs));
+                latMat   = repmat(latMat,1,1,numel(zs));
+                zMat     = ones(size(lonMat));
                 for n=1:numel(zs)
-                    zMat(:,:,n)=zs(n);
+                    zMat(:,:,n) = zs(n);
                 end
                 assert(isequal(size(lonMat),size(zMat)));
             end
             
-            %% subfunction
-            function  [dLat, dLon, dZ, deltaUnits] = parse_deltas(deltasXYZ, deltaUnits)
+            %% subfunctions
+            function d = toDegrees(value, originalUnit)
+                % convert from any unit to degrees
+                deltaUnits = standardizeDistanceUnits( originalUnit );
+                if deltaUnits == "degrees"
+                    d = value;
+                else
+                    d = km2deg(value .* unitsratio('kilometer', deltaUnits), obj.Planet);
+                end     
+            end
+            
+            function  [dLat, dLon, dZ, deltaUnits] = deltasToDegrees(deltasXYZ, deltaUnits)
+                % get deltas in degrees (Horiz) and km (Vert) translating horiz units as necessary                    
                 switch(numel(deltasXYZ))
                     case 0
-                        % get from Zmap Global
-                        ZG=ZmapGloba.Data;
-                        assert(~isempty(ZG.gridopt),...
+                        gop = ZmapGlobal.Data.gridopt;
+                        assert(~isempty(gop),...
                             'Grid options haven''t been defined. Define them or specify delta values for this function');
-                        switch standardizeDistanceUnits( ZG.gridopt.dx_units)
-                            case 'degrees'
-                                deltaUnits = 'degrees';
-                                dLon=ZG.gridopt.dx;
-                            case 'kilometer'
-                                deltaUnits = 'kilometer';
-                                dLon=km2deg(ZG.gridopt.dx);
-                            otherwise
-                                deltaUnits = standardizeDistanceUnits( ZG.gridopt.dx_units);
-                                dLon = km2deg(ZG.gridopt.dx .* unitsratio('kilometer', deltaUnits));
-                        end
-                        switch standardizeDistanceUnits(ZG.gridopt.dy_units)
-                            case 'degrees'
-                                dLat=ZG.gridopt.dy;
-                            case 'kilometer'
-                                dLon=Zkm2deg(ZG.gridopt.dy);
-                        end
+                        assert(gop.dx_units == gop.dy_units, 'expected dx & dy to be same units');
+                        
+                        dY         = gop.dy;
+                        dX         = gop.dx;
+                        deltaUnits = gop.dx_units; % assumes dx & dy are the same!
+                        % dZ = gop.dz;
                     case 1
-                        dLat = deltasXYZ;
-                        dLon = deltasXYZ;
+                        dY = deltasXYZ;
+                        dX = deltasXYZ;
                         dZ = [];
                     case 2
-                        dLat = deltasXYZ(2);
-                        dLon = deltasXYZ(1);
+                        dY = deltasXYZ(2);
+                        dX = deltasXYZ(1);
                         dZ = [];
                     case 3
-                        dLat = deltasXYZ(2);
-                        dLon = deltasXYZ(1);
+                        dY = deltasXYZ(2);
+                        dX = deltasXYZ(1);
                         dZ = deltasXYZ(3);
                 end
-               % error('make sure this is correct')
-                switch standardizeDistanceUnits( deltaUnits )
-                    case 'degrees'
-                        % do nothing
-                    case 'kilometer'
-                        dLat = km2deg(dLat);
-                        dLon = km2deg(dLon);
-                    otherwise
-                        dLat = km2deg(dLat .* unitsratio('kilometer',deltaUnits));
-                        dLon = km2deg(dLon .* unitsratio('kilometer',deltaUnits));
-                        %error('Unknown units: should be "degrees" or "kilometer" [%s]',deltaUnits);
-                end
+                dLon = toDegrees(dX, deltaUnits);
+                dLat = toDegrees(dY, deltaUnits);
             end
         end
         
         
-        function [lonMat,latMat,zMat] = get_grid2(lonLatZ0, deltasXYZ, limsLonLatZ, refEllipsoid)
-            % leverages the refEllipsoid
-            % [lonMat,latMat,zMat] = get_grid2(lonLatZ0, deltasXYZ, limsLonLatZ, refEllipsoid)
+        function [lonMat,latMat,zMat] = get_nondegree_grid(lonLatZ0, deltasXYZ, limsLonLatZ, refEllipsoid)
+            % [lonMat,latMat,zMat] = get_nondegree_grid(lonLatZ0, deltasXYZ, limsLonLatZ, refEllipsoid)
             % all delta units are the refEllipsoid units.  eg, km, m, cm, etc.
             
             lats = get_grid_lats( ...
@@ -658,7 +637,7 @@ classdef ZmapGrid
             
             [~,dLon_per_lat] = reckon('rh', lats(:), 0, deltasXYZ(1), 90, refEllipsoid);
             
-            [lonMat, latMat] = ZmapGrid.unnamed_function(dLon_per_lat, xTotalDists, lonLatZ0(1), lats, limsLonLatZ(1,:));
+            [lonMat, latMat] = ZmapGrid.get_lalo_matrices(dLon_per_lat, xTotalDists, lonLatZ0(1), lats, limsLonLatZ(1,:));
             zMat=[];
         end
         
@@ -669,27 +648,25 @@ classdef ZmapGrid
             end
         end
         
-        function [lonMat, latMat] = unnamed_function(dLon_per_lat, xTotalDists, lon0, lats, lonBounds)
+        function [lonMat, latMat] = get_lalo_matrices(dLon_per_lat, xTotalDists, lon0, lats, lonBounds)
+            % This function deserves a name
             totEstPts = ZmapGrid.estimate_points(dLon_per_lat , xTotalDists);
-            if ~exist('lonBounds','var')
-                lonBounds = xTotalDists;
-            end
             
             lonMat=nan(totEstPts,1);
             latMat=nan(totEstPts,1);
-            totCalcPts=0;
+            nPts=0;
             
             for n=1:numel(lats)
-                theseLonValues = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), lonBounds);
-                myEnd = totCalcPts + numel(theseLonValues);
-                lonMat(totCalcPts+1 : myEnd) = theseLonValues(:);
-                latMat(totCalcPts+1 : myEnd) =lats(n);
-                totCalcPts = myEnd;
+                theseLonValues  = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), lonBounds);
+                myEnd                   = nPts + numel(theseLonValues);
+                lonMat(nPts+1 : myEnd)  = theseLonValues(:);
+                latMat(nPts+1 : myEnd)  = lats(n);
+                nPts                    = myEnd;
             end
             
-            if totCalcPts < totEstPts
-                lonMat(totCalcPts+1:end)=[];
-                latMat(totCalcPts+1:end)=[];
+            if nPts < totEstPts
+                lonMat(nPts+1:end) = [];
+                latMat(nPts+1:end) = [];
             end
             [lonMat,latMat] = cols2matrix(lonMat,latMat,lon0);
         end
@@ -698,8 +675,11 @@ classdef ZmapGrid
             % VECTOR_INCLUDING_ORIGIN returns values in a range, gaurenteed to contain the origin value
             %
             % ZMAPGRID.VECTOR_INCLUDING_ORIGIN(orig_deg, delta_deg, lims_deg)
-            v = unique([orig_deg : -delta_deg : min(lims_deg) , orig_deg : delta_deg :max(lims_deg)]);
-            v(v>max(lims_deg)| v<min(lims_deg))=[];
+            v = unique([...
+                orig_deg : -delta_deg : min(lims_deg) ,...
+                orig_deg :  delta_deg : max(lims_deg)...
+                ]);
+            v( min(lims_deg)>v | v>max(lims_deg) ) = [];
         end
         
         function obj=load(filename, pathname)
@@ -754,12 +734,12 @@ function lats = get_grid_lats(lonLatZ0, dY, latBounds, refEllipsoid)
     
     % calculate how far to the north and south the bounded region extends
     [NS_extents,az] = distance(lat0,lon0, latBounds,lon0, refEllipsoid);
-    NS_extents(az==180)=-NS_extents(az==180); % swap signs for anything that is to the origin's south.
+    NS_extents(az==180) = -NS_extents(az==180); % swap signs for anything that is to the origin's south.
     
     % create evenly spaced values radiating from our latitude origin
     % dY = deltasXYZ(2);
     Ys = [fliplr( 0 : -dY : NS_extents(1)), dY : dY: NS_extents(2) ];  % relative offset in units from lat
-    Ys(Ys>NS_extents(2) | Ys<NS_extents(1) ) = [];
+    Ys(NS_extents(2)<Ys | Ys<NS_extents(1) ) = [];
     
     % project on the ellipsoid, getting latitudes for each of or rows of grid points.
     [lats,~] = reckon('rh', lat0,lon0, Ys, 0, refEllipsoid);
@@ -790,22 +770,23 @@ function [xs, ys] = cols2matrix(lonCol,latCol, lon0)
     %    LON0: longitudes that are supposed to line up. this should be a longitude that
     %          exists at every latitude.
     
-    ugy=unique(latCol); % lats in matrix
-    nrows=numel(ugy); % number of latitudes in matrix
-    [~,example]=min(abs(latCol(:))); % latitude closest to equator will have most number of lons in matrix
-    mostCommonY=latCol(example); % account for the abs possibly flipping signs
-    base_lon_idx=find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
-    ncols=sum(latCol(:)==mostCommonY); % most number of lons in matrix
-    ys=repmat(ugy(:),1,ncols);
-    xs=nan(nrows,ncols);
+    ugy         = unique(latCol);               % lats in matrix
+    nrows       = numel(ugy);                   % number of latitudes in matrix
+    [~,example] = min(abs(latCol(:)));          % latitude closest to equator has most lons
+    mostCommonY = latCol(example);              % account for the abs possibly flipping signs
+    base_lon_idx= find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
+    ncols       = sum(latCol(:)==mostCommonY);  % most lons in matrix
+    ys          = repmat(ugy(:),1,ncols);
+    xs          = nan(nrows,ncols);
+    
     for n=1:nrows
-        thislat=ugy(n); % lat for this row
-        these_lons=lonCol(latCol==thislat); % lons in this row
-        row_length=numel(these_lons); % number of lons in this row
+        thislat     = ugy(n);                   % lat for this row
+        these_lons  = lonCol(latCol==thislat);  % lons in this row
+        row_length  = numel(these_lons);        % number of lons in this row
         
-        main_lon_idx=find(these_lons==lon0); % offset of X in this row
-        offset=base_lon_idx - main_lon_idx;
-        xs(n,(1:row_length)+offset)=these_lons;
+        main_lon_idx= find(these_lons==lon0);   % offset of X in this row
+        offset      = base_lon_idx - main_lon_idx;
+        xs(n,(1:row_length)+offset) = these_lons;
     end
     
 end

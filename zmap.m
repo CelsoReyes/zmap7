@@ -137,10 +137,10 @@ function zmap(varargin)
             end
         end
         cw = figure;
-        if ~isempty(ZG.primeCatalog)
+        if ~isempty(ZG.primeCatalog) && questdlg('Open previous catalog?','ZMAP','Yes')=="Yes"
             ZmapMainWindow(cw, ZG.primeCatalog);
         else
-            ZmapMainWindow(cw);
+            ZmapMainWindow(cw, ZmapCatalog);
         end
         show_a_tip();
     end
