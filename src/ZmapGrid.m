@@ -587,7 +587,7 @@ classdef ZmapGrid
                 if deltaUnits == "degrees"
                     d = value;
                 else
-                    d = km2deg(value .* unitsratio('kilometer', deltaUnits), obj.Planet);
+                    d = km2deg(value .* unitsratio('kilometer', deltaUnits), ZmapGrid.Planet);
                 end     
             end
             
