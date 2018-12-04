@@ -95,7 +95,7 @@ function ran = dorand(obj, params)
                 E = E(1:numran,:);
             else
                 
-                str5 = 'Not an appropriate input value: the number of random events must be equal or smaller than the numnber of events in the real distribution';
+                str5 = 'Not an appropriate input value: the number of random events must be equal or smaller than the number of events in the real distribution';
                 msg3 = msgbox(str5, 'Input Error');
                 waitforbuttonpress;
                 close(msg3);

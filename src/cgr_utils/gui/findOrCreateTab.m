@@ -21,7 +21,7 @@ function myTab = findOrCreateTab(fig, look_here_containers, create_here_tabgroup
         myTag='CopyTabToFig';
     end
     
-    if ischar(create_here_tabgroup) || isstring(create_here_tabgroup)
+    if ischarlike(create_here_tabgroup)
         myContainer=findobj(fig,'Type','uitabgroup','-and','Tag',create_here_tabgroup);
     elseif isgraphics(create_here_tabgroup) && isvalid(create_here_tabgroup)
         myContainer=create_here_tabgroup;

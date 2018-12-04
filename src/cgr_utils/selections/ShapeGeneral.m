@@ -71,6 +71,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     properties
         ApplyGrid logical = true % apply grid options to the selected shape.
         ScaleWithLatitude logical = false
+        RefEllipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
     end
     
     properties (NonCopyable = true)
@@ -143,22 +144,28 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         
         function val=get.Area(obj)
             % Area attempts to scale according to lat/lon
-            lats=obj.Lat;
-            lons=obj.Lon;
-            ys=deg2km(lats);
-            latscale=cosd(lats);
-            xs= deg2km(latscale .* lons);
-            
-            val = polyarea(xs,ys);
+            val = areaint(obj.Lat,obj.Lon,obj.RefEllipsoid);
         end
         
-        function [mask]=isinterior(obj,otherLon, otherLat)
+        function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
             % [mask]=isinterior(obj,otherLon, otherLat)
+            %
+            %
+            % see also inpoly, inpolygon [slower as of 2018a]
+            if ~exist('include_boundary','var')
+                include_boundary = true;
+            end
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon
-                mask = polygon_filter(obj.Lon, obj.Lat, otherLon, otherLat, 'inside');
+                if include_boundary
+                    mask = inpoly([otherLon(:) otherLat(:)],obj.Points );
+                else
+                    [mask,bnd] = inpoly([otherLon otherLat],obj.Points);
+                    mask(bnd)=false;
+                end
+                %mask = polygon_filter(obj.Lon, obj.Lat, otherLon, otherLat, 'inside');
             end
         end
         
@@ -298,6 +305,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             s.Y0=obj.Y0;
             s.Lat=obj.Outline(:,2);
             s.Lon=obj.Outline(:,1);
+            s.RefEllipsoid = obj.RefEllipsoid
         end
         
         function save(obj, data_dir)

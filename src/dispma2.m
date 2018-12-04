@@ -1,6 +1,6 @@
 function dispma2(ic) 
     % dispma2 compare two rates (fit)
-    % selects 4 times to define begining and end of two segments in cumulative number curve and calls bvalfit
+    % selects 4 times to define beginning and end of two segments in cumulative number curve and calls bvalfit
     %
     % turned into function by Celso G Reyes 2017
     

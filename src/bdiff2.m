@@ -422,7 +422,7 @@ classdef bdiff2 < ZmapFunction
             set(ax,'visible','on',fontProps{:});
             set(ax,obj.plotProps.Axes);
             
-            legend(ax,'show');
+            legend(ax,'show','Location','south');
             % ax.Legend.String(~(startsWith(ax.Legend.String,'Cum') | startsWith(ax.Legend.String,'Discrete')))=[];
             if ax.Parent ~= ancestor(ax,'figure')
                 legend(ax,'hide');
@@ -533,8 +533,9 @@ classdef bdiff2 < ZmapFunction
         function tx=descriptive_text(obj,gBdiff)
             res = obj.Result;
             if obj.ZG.hold_state
-                ba_text = sprintf('b-value (w LS, M >= %f): %.2f +/-%.2f \na-value = %.3f',...
-                    res.MaxCurveMag ,res.b_value, res.b_value_std, res.a_value );
+                ge_sign=char(8805);
+                ba_text = sprintf('b-value (w LS, M %c %f): %.2f +/-%.2f \na-value = %.3f',...
+                    ge_sign, res.MaxCurveMag ,res.b_value, res.b_value_std, res.a_value );
                 
                 p_text = sprintf('p=  %.2g', obj.Result.pr);
                 if exist('gBdiff','var')
@@ -614,7 +615,7 @@ classdef bdiff2 < ZmapFunction
             
             function callbackfun_recurrence(~,~)
                 global onesigma
-                plorem(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
+                est_recurrence_time_prob(obj.RawCatalog, onesigma, obj.Result.a_value, obj.Result.b_value);
             end
             
             function callbackfun_ts(~,~)

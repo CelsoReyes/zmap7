@@ -39,6 +39,10 @@ classdef XSection < handle
         DeleteFcn function_handle % a function to remove the plotted polygon from the map
         
     end
+    properties(SetAccess=immutable)
+        refellipsoid referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
+    end
+        
     
     properties(Access=private)
         handles=gobjects(0);
@@ -50,6 +54,10 @@ classdef XSection < handle
         name
     end
     
+    properties(Constant)
+        MainMenuLabel = [char(402) , '(s,z)'];
+    end
+    
     events
         XsecChanged; % event to send that will force a redraw.
         LabelChanged; %
@@ -57,16 +65,25 @@ classdef XSection < handle
     end
     
     methods
-        function obj=XSection(ax, zans, startpt, endpt)
+        function obj=XSection(ax, zans, startpt, endpt, ref_ellipsoid)
             % XSECTION create a cross section
             % obj = XSECTION(ax, zans, startpt, endpt)
             %  where zans is a struct with fields: 'width_km', 'startlabel', 'endlabel', and 'color'
             % and startpt, endpoint are each [lat,lon]
             
-            obj.width_km = zans.slicewidth_km;  % slicewidth_km
-            obj.startlabel = zans.startlabel;   % startlabel
-            obj.endlabel = zans.endlabel;       % endlabel
-            obj.color = zans.color;             % color
+            obj.width_km    = zans.slicewidth_km;   % slicewidth_km
+            obj.startlabel  = zans.startlabel;      % startlabel
+            obj.endlabel    = zans.endlabel;        % endlabel
+            obj.color       = zans.color;           % color
+            
+            if exist('ref_ellipsoid','var')
+                if ischarlike(ref_ellipsoid)
+                    obj.refellipsoid = referenceEllipsoid(ref_ellipsoid,'kilometer');
+                else
+                    obj.refellipsoid = ref_ellipsoid;
+                end
+            end
+                
             
             % dialog box to choose cross-section
             if ~exist('startpt','var')||~exist('endpt','var')
@@ -76,11 +93,11 @@ classdef XSection < handle
                 obj.endpt = endpt;
             end
             
-            addlistener(obj,'width_km','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'startpt','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'endpt','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'startlabel','PostSet',@XSection.handlePropertyEvents);
-            addlistener(obj,'endlabel','PostSet',@XSection.handlePropertyEvents);
+            addlistener(obj, 'width_km'  , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'startpt'   , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'endpt'     , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'startlabel', 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'endlabel'  , 'PostSet', @XSection.handlePropertyEvents);
             
             obj.recalculate_xsec_curve();
             obj.recalculate_boundary();
@@ -91,7 +108,7 @@ classdef XSection < handle
         end
         
         function ln = get.length_km(obj)
-            ln=deg2km(distance(obj.startpt,obj.endpt));
+            ln=distance(obj.startpt,obj.endpt,obj.refellipsoid);
         end
         
         function change_width(obj, w)
@@ -143,7 +160,7 @@ classdef XSection < handle
             %
             % mask = obj.INSIDE(catalog)
             
-            mask=polygon_filter(obj.polylons,obj.polylats,catalog.Longitude,catalog.Latitude,'inside');
+            mask=inpoly([catalog.Longitude,catalog.Latitude],[obj.polylons,obj.polylats]);
         end
         
         function c2 = project(obj,catalog)
@@ -164,7 +181,7 @@ classdef XSection < handle
             if exist('ax','var')
                 % pick first point
                 try
-                    ptdetails = selectSegmentUsingMouse(ax, 'deg','km',obj.color);
+                    ptdetails = selectSegmentUsingMouse(ax, obj.color, obj.ref_ellipsoid);
                     obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
                     obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
                 catch ME
@@ -280,7 +297,7 @@ classdef XSection < handle
                 lolaz( st : ed , 3) = zs_km(n);
             end
             gname=sprintf('gridxs %s - %s',obj.startlabel, obj.endlabel);
-            gr=ZmapVGrid(gname, lolaz);
+            gr=ZmapVGrid(gname, 'FromPoints', lolaz);
         end
         
         function s = get.name(obj)
@@ -309,7 +326,7 @@ classdef XSection < handle
         end
         
         function recalculate_boundary(obj)
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2);
+            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2,false,obj.refellipsoid);
         end
         
         function recalculate_xsec_curve(obj)
@@ -407,8 +424,8 @@ classdef XSection < handle
     
     methods(Static)
         
-        function obj=initialize_with_mouse(ax, default_width)
-                ptdetails = selectSegmentUsingMouse(ax, 'deg','km','m'); % could throw
+        function obj=initialize_with_mouse(ax, default_width, ref_ellipsoid)
+                ptdetails = selectSegmentUsingMouse(ax, 'm',ref_ellipsoid); % could throw
                 if isequal(ptdetails.xy1,ptdetails.xy2)
                     error('Cannot create a zero-length cross section');
                 end

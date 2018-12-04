@@ -180,7 +180,6 @@ classdef ZmapGridFunction < ZmapFunction
             end
         end
         
-        
         function add_grid_centers(obj)
             % show grid centers, but don't make them clickable
             report_this_filefun();
@@ -245,7 +244,7 @@ classdef ZmapGridFunction < ZmapFunction
                 errfn = @error;
             end
             
-            if ischar(v)||isstring(v)
+            if ischarlike(v)
                 vn = genvarname(v); % make it safe!
                 if v ~= vn
                     errfn("[" + v + "] is not a valid variable name");
@@ -339,7 +338,6 @@ classdef ZmapGridFunction < ZmapFunction
                 disp(ME.message)
             end
         end
-        
         
         function cb_deleteTab(src,ev)
             % also delete the selection lines

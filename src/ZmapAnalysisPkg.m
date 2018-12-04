@@ -24,7 +24,7 @@ classdef ZmapAnalysisPkg
         
         Catalog % a ZMapCatalog. Do not change this catalog directly
         EventSel    EventSelectionParameters
-        Grid % ZmapGrid used to sample at points in space
+        Grid {mustBeZmapGrid} = ZmapGrid()% ZmapGrid used to sample at points in space
         Shape % Shape used to mask a catalog
         
     end
@@ -37,6 +37,8 @@ classdef ZmapAnalysisPkg
             %
             %   obj = ZmapAnalysisPkg(s, catalogField, eventField, gridField, shapeField) retrieve all
             %         values from the structure or object "s".
+            
+            narginchk(5,5)
             
             if isempty(s)
                 obj.Catalog = catinfo;
@@ -58,6 +60,7 @@ classdef ZmapAnalysisPkg
             % FROMGLOBAL create the package from the Zmap Globals, using the catalog specified
             %
             % obj = ZMAPANALYSISPKG.FROMGLOBAL(catname)
+            % obj = ZMAPANALYSISPKG.FROMGLOBAL(catname, polygon)
             %
             % see also ZMAPDATA, ZMAPGLOBAL
             ZG=ZmapGlobal.Data;

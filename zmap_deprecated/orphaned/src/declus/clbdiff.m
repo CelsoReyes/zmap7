@@ -135,12 +135,6 @@ function clbdiff(var1)
     ll = xt3 >= M1b(1) & xt3 <= M2b(1);
     x = xt3(ll);
 
-
-    % n   = ((M2b(1)+0.05) - (M1b(1)-0.05))/0.1;
-    %les = (mean(newcat.Magnitude) - (min(newcat.Magnitude-0.05)))/0.1;
-    %global n les
-    %so = fzero('sofu',1.0);
-    %bv = log(so)/(-2.3026*0.1);
     [ av, bv, si] = bmemag(newcat)  ;
 
 

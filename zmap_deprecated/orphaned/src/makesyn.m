@@ -114,14 +114,12 @@ std_backg=fix(100*std_backg)/100;
 tt2=num2str(std_backg);
 tt1=num2str(p);
 
-global n les
-
 n = length(x)+3;
 l = b(:,6) > M1b(1) & b(:,6) <= M2b(1);
 les = (mean(b(l,6)) - (M1b(1)+0.05))/0.1;
-%les =  (sum(bvalfl.*xt3)/(sum(bval))-M1b(1))/0.1;
-%so = fzero('y = les - ( x/(1-x) - n*x^n/(1-x^n) ); ',1);
-so = fzero('sofu',1.0);
+
+mysofu = @(x)sofu(x,n,les);
+so = fzero(mysofu,1.0);
 me2 = log(so)/(-2.3026*0.1)
 
 

@@ -33,7 +33,7 @@ classdef AnalysisBvalues < AnalysisWindow
             xl = obj.ax.XLim;
             
             p=inputParser();
-            p.addRequired('tagID', @(x)isstring(tagID)||ischar(tagID));
+            p.addRequired('tagID', @(x)ischarlike(tagID));
             p.addParameter('Ypos',0.6);
             p.KeepUnmatched=true;
             p.parse(tagID,varargin{:});

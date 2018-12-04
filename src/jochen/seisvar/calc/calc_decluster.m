@@ -37,6 +37,7 @@ function [declusteredCatalog, aftershockCatalog, vCluster, vCl, vMainCluster] = 
     %%% Remember: Improve zero length cluster problem which might appear
     
     %% Initialize Vectors and Matrices
+    report_this_filefun();
     assert(issorted(inCatalog.Date),'Catalog must be sorted by date before declusting');
     
     declusteredCatalog = [];

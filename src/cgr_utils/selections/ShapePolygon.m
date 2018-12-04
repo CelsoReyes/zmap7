@@ -85,7 +85,7 @@ classdef ShapePolygon < ShapeGeneral
             end
             line1 = sprintf('Polygon with %d points',nPts);
             line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            line3 = sprintf('Area is approximately %.2f km^2',obj.Area);
+            line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
@@ -211,15 +211,15 @@ classdef ShapePolygon < ShapeGeneral
     methods(Access=private)
         
         function [obj,ok]=select_box(obj,varargin)
-            
-            [ss,ok] = selectSegmentUsingMouse(gca,'deg','km','r',@box_update);
-            h=findobj(gca,'Tag','tmp_box_outline');
+            ax=gca;
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', obj.RefEllipsoid, @box_update);
+            h=findobj(ax,'Tag','tmp_box_outline');
             if ~isempty(h)
                 x=h.XData;
                 y=h.YData;
             end
-            set(gcf,'CurrentCharacter',' ');
-            delete(findobj(gca,'Tag','tmp_box_outline'));
+            set(ancestor(ax,'figure'),'CurrentCharacter',' ');
+            delete(findobj(ax,'Tag','tmp_box_outline'));
             if ~ok
                 obj=[];
             else

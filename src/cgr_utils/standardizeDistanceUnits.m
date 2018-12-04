@@ -7,8 +7,6 @@ function stdunit = standardizeDistanceUnits(unit)
     switch lower(unit)
         case {'deg','degs','degree','degrees'}
             stdunit = 'degrees';
-        case {'km','kms','kilometers','kilometer'}
-            stdunit = 'kilometer';
         case {'rad','rads','radian','radians'}
             stdunit = 'radians';
         otherwise

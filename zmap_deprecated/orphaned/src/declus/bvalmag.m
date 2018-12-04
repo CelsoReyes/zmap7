@@ -8,7 +8,7 @@ function bvalmag(newcat,var1)
     %
 
     global cluscat mess bmfig backcat
-    global  ttcat les n teb t0b cua
+    global  ttcat teb t0b cua
     global wex wey freq_field1 freq_field2 freq_field3
     global freq_field4 dx dy ni nh go_button bm2fig binfo_b
     global bcat bmplot1 bmplot2 bmplot3 zoom1 zoom2 zoom3

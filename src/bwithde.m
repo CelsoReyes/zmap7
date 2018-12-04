@@ -16,7 +16,7 @@ function bwithde(mycat)
     
     for tt = 1:ni/4:length(mycat)-ni
         % calculate b-value based an weighted LS
-        [bv av stan ] =  bvalca2(mycat.subset(tt:tt+ni));
+        [~, bv, stan, av ] =  bvalca2(mycat.subset(tt:tt+ni));
         bv2 = [bv2 ; bv mycat.Magnitude(tt) ; bv mycat.Magnitude(tt+ni) ; inf inf];
         bv3 = [bv3 ; bv mycat.Magnitude(tt+round(ni/2)) stan ];
         mag = [mag ; av mycat.Magnitude(tt+round(ni/2))];

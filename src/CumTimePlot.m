@@ -174,7 +174,9 @@ classdef (Sealed) CumTimePlot < handle
             % plot big events on curve
             ZG=ZmapGlobal.Data;
             % select "big" events
-            bigDisplayName = sprintf('Events >= mag %g',ZG.CatalogOpts.BigEvents.MinMag); 
+            bigDisplayName = sprintf('Events %c mag %g',...
+               char(8805),... ascii representation of >=
+               ZG.CatalogOpts.BigEvents.MinMag); 
             bigMask= obj.catalog.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag;
             bigCat = obj.catalog.subset( bigMask );
             

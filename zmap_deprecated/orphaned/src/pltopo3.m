@@ -1,5 +1,8 @@
 % This plot a DEM map plus eq on top...
 % Benoetigt gtopo302 Modifikation von gtopo30
+
+import zmaptopo.TopoToFlag
+
 report_this_filefun(mfilename('fullpath'));
 
 
@@ -65,7 +68,7 @@ mx = s2:1/tmapleg(1):s1+0.1;
 vlon = mx;
 vlat = my;
 [m,n] = size(tmap);
-toflag = '5';
+toflag = TopoToFlag.five;
 
 % entspricht pltopo mitplt='plo'
 

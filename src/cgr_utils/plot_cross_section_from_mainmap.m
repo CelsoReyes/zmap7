@@ -34,7 +34,7 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     xs_line=plot(curvelons,curvelats,'--','LineWidth',1.5,'Color',C);
     
     % plot width polygon
-    [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth_km/2);
+    [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth_km/2,false,catalog.RefEllipsoid);
     xspoly=plot(plon,plat,'-.','Color',C);
     
     %label it: put labels offset and outside the great-circle line.

@@ -1,7 +1,7 @@
 function xsectopobw() 
     % make a x-section plus topography...
     % turned into function by Celso G Reyes 2017
-    
+    import zmaptopo.TopoToFlag
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
     if ~exist('tmap', 'var')
@@ -13,7 +13,7 @@ function xsectopobw()
     tmap(l) = -300;
     
     
-    if toflag == '3'
+    if toflag == TopoToFlag.three
         [vlat , vlon] = meshgrat(tmap,tmapleg);
         vlat = vlat(:,1);
         vlon = vlon(1,:);

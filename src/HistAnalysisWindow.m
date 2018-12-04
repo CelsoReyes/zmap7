@@ -71,7 +71,7 @@ classdef HistAnalysisWindow < AnalysisWindow
             
             p = inputParser();
             p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
-            p.addRequired('tagID',      @(x)ischar(tagID) || isstring(tagID));
+            p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.KeepUnmatched = true;
             p.parse(catalog, tagID, varargin{:});

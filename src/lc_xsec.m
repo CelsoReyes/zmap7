@@ -13,7 +13,7 @@ function xscat = lc_xsec(catalog, width_km, pt1, varargin)
             xscat = ZmapXsectionCatalog(pt1, varargin{1}, width_km);
         case 5
             % LC_XSEC(CATALOG, WIDTH_KM, PT1, LENGTH, AZ)
-            [pt2lat, pt2lon] = reckon(pt1(1),pt2(1),km2deg(varargin{1}), varargin{2});
+            [pt2lat, pt2lon] = reckon(pt1(1),pt2(1),varargin{1}, varargin{2}, catalog.RefEllipsoid);
             xscat = ZmapXsectionCatalog(pt1, [pt2lat pt2lon], width_km);
     end
     

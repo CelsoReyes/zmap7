@@ -42,7 +42,7 @@ function [hwm,hwmm]=webmap_of_catalog(catalog,force)
     cmp=jet(numel(magrange));
     
     for j=2:numel(magrange)
-        name(j)={sprintf('%.1f <= M < %.1f',magrange(j),magrange(j-1))};
+        name(j)={sprintf('%.1f %c M < %.1f',magrange(j),char(8804),magrange(j-1))};
         idx(j)={catalog.Magnitude >= magrange(j) & catalog.Magnitude < magrange(j-1)};
         nInRange(j)=sum(idx{j});
     end
@@ -59,7 +59,7 @@ function [hwm,hwmm]=webmap_of_catalog(catalog,force)
     cmp=jet(nDepthBins);
     %quakeIcons={}
     for q=1:numel(edgs)-1
-        depthnames(q) ={ sprintf(' %.1f <= Z < %.1f km', edgs(q),edgs(q+1))};
+        depthnames(q) ={ sprintf(' %.1f %c Z < %.1f km', edgs(q), char(8804), edgs(q+1))};
     end
     
     

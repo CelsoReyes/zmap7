@@ -28,11 +28,12 @@ classdef ZmapMainWindow < handle
         replotting                                          = false % keep from plotting while plotting
         mdate %
         mshape %
-        WinPos (4,1)                                        = position_in_current_monitor(Percent(95), Percent(90))% position of main window
+        WinPos (4,1)                                        = position_in_current_monitor(Percent(90), Percent(85))% position of main window
         mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
+        refEllipsoid  referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
     end
     
     properties(Constant)
@@ -192,8 +193,8 @@ classdef ZmapMainWindow < handle
             end
             % retrieve default values from ZmapGlobal.
             [obj.mdate, obj.mshape] = obj.filter_catalog();
-            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation
-                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog);
+            if ZG.GridOpts.SeparationProps.AutomaticGridCalculation && ~isempty(obj.rawcatalog)
+                [obj.Grid, obj.gridopt] = autogrid(obj.rawcatalog, obj.refEllipsoid);
             else
                 obj.Grid                = ZG.Grid;
                 obj.gridopt             = ZG.gridopt;
@@ -310,11 +311,11 @@ classdef ZmapMainWindow < handle
         end
         function set_my_shape(obj, sh)
             % call this whenever shape is replaced, otherwise catalog will not adjust to it
+            % msg.dbdisp('set my shape...');
             if ~isempty(sh) && ~isequal(sh,obj.shape)
+                subscribe(sh, 'ShapeChanged',@obj.replot_all); % subscribe before assigning (ok, 'cause it is a handle)
                 obj.shape = sh;
-                subscribe(obj.shape, 'ShapeChanged',@obj.replot_all);
                 obj.shape.plot(obj.map_axes);
-                obj.replot_all('ShapeChanged');
             end
         end
         
@@ -337,7 +338,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog();
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
             else
                 fprintf('Using existing grid:\n');
             end
@@ -455,7 +456,7 @@ classdef ZmapMainWindow < handle
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
             try
-                xsec = XSection.initialize_with_mouse(axm, 20);
+                xsec = XSection.initialize_with_mouse(axm, 20, obj.refEllipsoid);
             catch ME
                 warning(ME.message)
                 return
@@ -524,10 +525,9 @@ classdef ZmapMainWindow < handle
                 
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
-                    set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
-                    % a notification will be sent notifying that we have no more
-                else
-                    notify(obj, 'XsectionRemoved');
+                    % disable the menu subitems for X-sect
+                    h_xs = findobj(obj.fig, 'Label', XSection.MainMenuLabel);
+                    set(findobj(obj.fig, 'Parent', h_xs, '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
                 end
                 
                 obj.fig.Pointer = prevPtr;
@@ -767,7 +767,7 @@ classdef ZmapMainWindow < handle
             
             
             if isempty(obj.CrossSections)
-                set(findobj('Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off')
+                set(findobj('Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off')
             end
             
             obj.fig.UserData = obj;
@@ -797,7 +797,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.Grid)
                 set(groot, 'CurrentFigure', obj.fig); % following line uses current figure to assign properties
                 try
-                    obj.Grid = ZmapGrid('Grid', obj.gridopt, 'shape', obj.shape);
+                    obj.Grid = ZmapGrid('Grid', 'FromGridOptions', obj.gridopt, 'Shape', obj.shape, 'RefEllipsoid', obj.refEllipsoid);
                 catch ME
                     switch ME.identifier
                         case 'ZMAPGRID:get_grid:TooManyGridPoints'
@@ -872,12 +872,22 @@ classdef ZmapMainWindow < handle
             obj.xscatinfo.remove(key);
         end
         
+        function append_xsec_to_catalog_name(~, xscat, key)
+            if isempty(xscat.Name)
+                xscat.Name = key;
+            else
+                xscat.Name = xscat.Name + ": " + key;
+            end
+        end
+
         function xsec_add(obj, key, xsec)
             %XSEC_ADD add/replace cross section
             isUpdating = ismember(key, obj.XSectionTitles);
             
             % add catalog generated by the cross section (ignoring shape)
-            obj.xscats(key) = xsec.project(obj.rawcatalog.subset(obj.mdate));
+            tempCatalog = xsec.project(obj.rawcatalog.subset(obj.mdate));
+            obj.append_xsec_to_catalog_name(tempCatalog, key);
+            obj.xscats(key) = tempCatalog;
             % add the information about the catalog used
             obj.xscatinfo(key) = obj.catalog.summary('stats');
             
@@ -890,7 +900,7 @@ classdef ZmapMainWindow < handle
         end
         
         function activateXsections(obj)
-            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'on');
+            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'on');
             
             obj.xsgroup.Visible = 'on';
             set(obj.map_axes, 'Position', obj.MapPos_S);
@@ -903,7 +913,7 @@ classdef ZmapMainWindow < handle
         end
         
         function deactivateXsections(obj)
-            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', 'X-sect'), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
+            set(findobj(obj.fig, 'Parent', findobj(obj.fig, 'Label', XSection.MainMenuLabel), '-not', 'Tag', 'CreateXsec'), 'Enable', 'off');
             obj.xsgroup.Visible = 'off';
             set(obj.map_axes, 'Position', obj.MapPos_L);
             

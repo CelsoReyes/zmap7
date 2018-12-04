@@ -1,20 +1,20 @@
-function [in,bnd] = inpoly(p,node,cnect)
+function [in,bnd] = inpoly(p, node, cnect)
 
 % Determine which points are inside a 2D polygonal region via the crossing number test. Should be much faster than inpolygon.
 %
 % TWO INPUT CALL:
 %
-%   [in,bnd] = inpoly(p,node)
+%   [in,bnd] = inpoly(points,polygon_node)
 %
 % The first input is an Nx2 vector defining the points to be tested:
 %
-%   p = [x1,y1; x2,y2; etc]
+%   points = [x1,y1; x2,y2; etc]
 %
 % The second input defines the vertices of the polygon, which are assumed
 % to be passed in consectutive order (so that the 1st is joined to the 2nd
 % and so on):
 %
-%   node  = [x1,y1; x2,y2; etc], endpoints of boundaries
+%   polygon_node  = [x1,y1; x2,y2; etc], endpoints of boundaries
 %
 % Two length N logical arrays 'in' and 'bnd' are returned. The first is
 % true for points inside and on the boundaries of the region, while the
@@ -85,7 +85,7 @@ end
 
 % Error checking
 if (size(p,2)~=2) || (size(node,2)~=2)
-    error('Wrong input dimensions')
+    error('Wrong input dimensions p:%s  node:%s',strjoin(string(size(p)),'x') , strjoin(string(size(node)),'x'))
 end
 
 % Deal with connectivity

@@ -53,10 +53,6 @@ function bfitnew(mycat)
     % number of mag units
     nmagu = (maxmag*10)+1;
     
-    bval = zeros(1,nmagu);
-    bvalsum = zeros(1,nmagu);
-    bvalsum3 = zeros(1,nmagu);
-    
     [bval,xt2] = hist(mycat.Magnitude,(mima:0.1:maxmag));
     bvalsum = cumsum(bval);                        % N for M <=
     bvalsum3 = cumsum(bval(end:-1:1));    % N for M >= (counted backwards)
@@ -93,7 +89,6 @@ function bfitnew(mycat)
     
     pause(1)
     
-    M1b = [];
     M1b = ginput(1);
     tt3=num2str(fix(100*M1b(1))/100);
     text( M1b(1),M1b(2),['|: M1=',tt3] )
@@ -101,7 +96,6 @@ function bfitnew(mycat)
     
     pause(0.1)
     
-    M2b = [];
     M2b = ginput(1);
     tt4=num2str(fix(100*M2b(1))/100);
     text( M2b(1),M2b(2),['|: M2=',tt4] )

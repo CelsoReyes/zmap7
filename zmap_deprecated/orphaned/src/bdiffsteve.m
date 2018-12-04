@@ -10,7 +10,7 @@
 think
 %zmap_message_center.set_info('  ','Calculating b-value...')
 global cluscat mess bfig backcat
-global ttcat les n
+global ttcat
 report_this_filefun(mfilename('fullpath'));
 
 [existFlag,figNumber]=figure_exists('b-value curve',1);

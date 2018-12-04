@@ -1,6 +1,6 @@
 function synsig3() 
     % Calculates magnitude signatures, yet another version, this time
-    % Computes a synthetic signature, using corrections found by bvalfit
+    % Computes a synthetic signature, using corrections found by BVALFIT
     %
     %                                  R. Zuniga IGF-UNAM/GI-UAF  7/94
     %uicontrol('Units','normal','Position',[.90 .10 .10 %.10],'String','Wait... ')

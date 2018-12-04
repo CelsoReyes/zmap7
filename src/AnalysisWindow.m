@@ -48,7 +48,7 @@ classdef AnalysisWindow < handle
             
             p = inputParser();
             p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
-            p.addRequired('tagID',      @(x)ischar(tagID)|| isstring(tagID));
+            p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...
                 @(x)isa(x,'function_handle') && ... 
@@ -161,7 +161,7 @@ classdef AnalysisWindow < handle
                 bigProps.SizeFcn = @(c) sizeFcn(c.Magnitude);
             end
             bigProps.YData       = idx;
-            bigProps.DisplayName = "Events >= " + minbigmag;
+            bigProps.DisplayName = "Events "+char(8805)+" " + minbigmag; %char(8805) is '>='
             obj.add_series(catalog.subset(idx), 'big events', bigProps);
          
         end

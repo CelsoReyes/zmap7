@@ -1,5 +1,5 @@
 function [bv, magco, std_backg, av, me, mer , me2, rt , pr] =  bvalcalc(b)
-    global  backcat n les teb t0b no1 bo1
+    global  backcat n teb t0b no1 bo1
 
     report_this_filefun(mfilename('fullpath'));
 
@@ -51,9 +51,6 @@ function [bv, magco, std_backg, av, me, mer , me2, rt , pr] =  bvalcalc(b)
     r = r(1,2);
     %std_backg = std(y - polyval(p,x));      % standard deviation of fit
     std_backg = ew;
-
-    l = b(:,6) >= M1b(1) & b(:,6) <= M2b(1);
-    les = (mean(b(l,6)) - M1b(1))/dm1;
 
     av=p(1,2);
     p=-p(1,1);

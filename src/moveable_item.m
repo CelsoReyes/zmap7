@@ -78,7 +78,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
     %
     % By Celso G Reyes, PhD  2018
     
-    if nargin==1 && (ischar(h) || isstring(h))
+    if nargin==1 && (ischarlike(h))
         if h=="demo"
         demo();
         return

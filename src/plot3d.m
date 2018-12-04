@@ -183,7 +183,7 @@ function plot3d()
             'LineStyle','none',...
             'MarkerSize',ZG.ms6,...
             'Tag','mapax_part0');
-        h.DisplayName = sprintf('Z <= %.1f km', divs(1));
+        h.DisplayName = sprintf('Z %c %.1f km', char(8804), divs(1));
         
         for i = 1 : numel(divs)
             mask = mycat.Depth > divs(i);

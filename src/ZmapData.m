@@ -22,7 +22,7 @@ classdef ZmapData < handle
         min_matlab_release  = '2018a'
         hodi                = fileparts(which('zmap')) % zmap home directory
         torad               = pi / 180
-        Re                  = 6378.137 % radius of earth, km
+        Re                  = 6378.137 % semimajor Axis radius of earth, km
         
         % positional
         fipo           = get(groot,'ScreenSize') - [ 0 0 0 150]
@@ -32,6 +32,8 @@ classdef ZmapData < handle
     end
     
     properties
+        
+        ref_ellipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer')
         % catalogs
         primeCatalog    ZmapCatalog     = ZmapCatalog('empty catalog')
         newcat          ZmapCatalog     = ZmapCatalog('empty catalog')
@@ -201,10 +203,14 @@ classdef ZmapData < handle
             if isfield(ZDefaults,'grid')
                 obj.GridOpts = ZDefaults.grid;
                 sepProps = obj.GridOpts.SeparationProps;
-                
-                obj.gridopt = GridOptions(...
-                    sepProps.Dx, sepProps.Dy, sepProps.Dz, lower(sepProps.xyunits),...
-                    sepProps.FollowMeridians, 'off');
+                if sepProps.FollowMeridians
+                    obj.gridopt = GridOptions('XYZ',...
+                        [sepProps.Dx, sepProps.Dy, sepProps.Dz],...
+                        'FollowMeridians');
+                else
+                    obj.gridopt = GridOptions('XYZ',...
+                        [sepProps.Dx, sepProps.Dy, sepProps.Dz], sepProps.xyunits);
+                end
             end
             
             if isfield(ZDefaults,'mainmap')
