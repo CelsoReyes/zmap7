@@ -177,7 +177,7 @@ classdef NDK
             mt.Properties.VariableNames={'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
             c.MomentTensor= mt;
             c.Dip=double(obj.allNDKs.Dip_NodalPlane1);
-            c.DipDirection=double(obj.allNDKs.Strike_NodalPlane1)+ 90;
+            c.DipDirection = mod(double(obj.allNDKs.Strike_NodalPlane1)+ 90, 360 );
             c.Rake=double(obj.allNDKs.Rake_NodalPlane1);
         end
     end

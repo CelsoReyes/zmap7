@@ -202,6 +202,12 @@ function plot_base_events(obj, container, featurelist)
         yl = [min(ol(:,2)) max(ol(:,2))];
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
+
+        % update the grid boundaries, too
+        obj.gridopt.AbsoluteGridLimits = [xl , yl];
+        % obj.Grid = obj.Grid.MaskWithShape(obj.shape);
+        obj.Grid = ZmapGrid(obj.Grid.Name, 'FromGridOptions',obj.gridopt,'Shape',obj.shape);
+        
     end
     
     function cb_crop_to_axes(~, ~)

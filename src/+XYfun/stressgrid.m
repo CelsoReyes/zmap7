@@ -1,7 +1,7 @@
 classdef stressgrid < ZmapHGridFunction
     % STRESSGRID calculate stress grid for event that have Dip, DipDirection, and Rake
     properties
-        
+        calcmethod
     end
     
     properties(Constant)
