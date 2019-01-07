@@ -85,6 +85,7 @@ function catalog_menu(obj, force)
             
             hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
             hh.delay_for_close(1);
+            %obj.replot_all();
         else
             warndlg('No catalog is currently memorized','Recall Catalog');
         end

@@ -14,7 +14,7 @@ classdef MyPvalClass
     %   % DOIT
     %   [P, P_stddev, C, C_stddev, K, K_stddev] = mypvc.mypval2m()
     %
-    %    
+    
     properties
         targetCerr              = 0.001 % calculation stops once error in C is below this value
         targetPerr              = 0.001 % calculation stops once error in P is below this value
@@ -431,13 +431,11 @@ classdef MyPvalClass
             minDaysAfterMainshock = days(str2double(answer{2}));
             valeg2 = str2double(answer{3});
             
-            % cut catalog at mainshock time:
-            l = catalog.Date > mainshockDate;
-            catalog = catalog.subset(l); %keep events AFTER mainshock
+             % keep events AFTER mainshock
+            catalog = catalog.subset( catalog.Date > mainshockDate );
             
-            % cat at selected magnitude threshold
-            l = catalog.Magnitude >= obj.MinThreshMag;
-            catalog = catalog.subset(l); %keep big-enough events
+             % keep big-enough events
+            catalog = catalog.subset( catalog.Magnitude >= obj.MinThreshMag );
             
             ZG.hold_state2=true;
             ctp=CumTimePlot(catalog);
@@ -465,7 +463,6 @@ classdef MyPvalClass
             tmin = min(timeSinceMainshock);
             tmax = max(timeSinceMainshock);
             
-            tint = [tmin tmax];
             
             [pv, pstd, cv, cstd, kv, kstd, rja, rjb] = mypval2m(obj, eqDates, eqMags,'date',valeg2,CO);
             
@@ -524,6 +521,7 @@ classdef MyPvalClass
             
             ratac = numv ./ dursir;
             
+            tint = [tmin tmax];
             frf = kv ./ ((tavg + cv).^pv);
             frf2 = kv ./ ((days(tint) + cv).^pv);
             
