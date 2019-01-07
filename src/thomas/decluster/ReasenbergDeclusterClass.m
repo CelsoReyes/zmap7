@@ -5,32 +5,46 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     properties
         taumin  duration    = days(1)   % look ahead time for not clustered events
         taumax  duration    = days(10)  % maximum look ahead time for clustered events
-        P                   = 0.95      % confidence level, that you are observing next event in sequence
+        P                   = 0.95      % confidence level that this is next event in sequence
         xk                  = 0.5       % is the factor used in xmeff
-        xmeff               = 1.5       % effective" lower magnitude cutoff for catalog. it is raised by a factor xk*cmag1 during clusters
+        
+        % effective lower magnitude cutoff for catalog. 
+        % During clusteres, it is raised by a factor xk*cmag1
+        xmeff               = 1.5       
+        
         rfact               = 10        % factor for interaction radius for dependent events
         err                 = 1.5       % epicenter error
         derr                = 2         % depth error, km
         %declustRoutine      = "ReasenbergDeclus"
         declusteredCatalog   ZmapCatalog
         replaceSequenceWithEquivMainshock   logical = false
-        clusterDetailsVariableName          char    = 'cluster_details'     % if empty, clustering details will not be saved to workspace
-        declusteredCatalogVariableName      char    = 'declustered_catalog' % if empty, catalog will not be saved to workspace
+        
+         % if empty, clustering details will not be saved to workspace
+        clusterDetailsVariableName          char    = 'cluster_details'
+        
+        % if empty, catalog will not be saved to workspace
+        declusteredCatalogVariableName      char    = 'declustered_catalog' 
+        memorizeOriginalCatalog             logical = true
     end
     
     properties(Constant)
         PlotTag = "ReasenbergDecluster"
+        
         ParameterableProperties = ["taumin", "taumax", "P",...
             "xk","xmeff","rfact","err","derr",..."declustRoutine",...
             "replaceSequenceWithEquivMainshock",...
             "clusterDetailsVariableName",...
-            "declusteredCatalogVariableName"];
-        References = 'Paul Reasenberg (1985) "Second -order Moment of Central California Seismicity", JGR, Vol 90, P. 5479-5495.';
+            "declusteredCatalogVariableName",...
+            "memorizeOriginalCatalog"];
+        
+        References = ['Paul Reasenberg (1985) ',...
+            '"Second -order Moment of Central California Seismicity"',...
+            ', JGR, Vol 90, P. 5479-5495.'];
         
     end
     
     methods
-        function obj=ReasenbergDeclusterClass(catalog, varargin)
+        function obj = ReasenbergDeclusterClass(catalog, varargin)
             % BVALGRID 
             % obj = BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
             %
@@ -61,17 +75,31 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             zdlg.AddEdit('rfact',   'Interation radius factor:',    obj.rfact,      '<b>RFACT>/b>factor for interaction radius for dependent events');
             zdlg.AddEdit('err',     'Epicenter error',              obj.err,        '<b>Epicenter</b> error');
             zdlg.AddEdit('derr',    'Depth error',                  obj.derr,       '<b>derr</b>Depth error');
+            %zdlg.AddHeader('Output')
+            zdlg.AddCheckbox('replaceSequenceWithEquivMainshock','Replace clusters with equivalent event',...
+                obj.replaceSequenceWithEquivMainshock, {},...
+                'Will replace each set of cluster earthquakes with a single event of equivalent Magnitude');
+            zdlg.AddEdit('clusterDetailsVariableName',      'Save Clusters to workspace as', ...
+                obj.clusterDetailsVariableName, 'if empty, then nothing will be separately saved');
+            zdlg.AddEdit('declusteredCatalogVariableName',  'Save Declustered catalog to workspace as', ...
+                obj.declusteredCatalogVariableName,'if empty, then nothing will be separately saved');
+            zdlg.AddCheckbox('memorizeOriginalCatalog',     'Memorize Original catalog after sucessful decluster:', ...
+                obj.memorizeOriginalCatalog, {}, 'Memorize original catalog prior to declustering');
             
-            zdlg.Create('Name', 'Reasenberg Declustering','WriteToObj',obj,'OkFcn',@obj.declus);
+            
+            
+            zdlg.Create('Name', 'Reasenberg Declustering','WriteToObj',obj,'OkFcn',@obj.Calculate);
           
         end
         
         function Results = Calculate(obj)
             calcFn = @obj.declus;
-            [declustered_catalog, misc] = calcFn(obj);
+            [obj.declusteredCatalog, misc] = calcFn(obj);
             if nargout == 1
-                Results = declustered_catalog;
+                Results = obj.declusteredCatalog;
             end
+            
+            obj.CalcFinishedFcn();
         end
         
         
@@ -121,14 +149,14 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             %% calculate interaction_zone  (1 value per event)
             
             interactzone_main_km = 0.011*10.^(0.4* obj.RawCatalog.Magnitude); %interaction zone for mainshock
-            interactzone_in_clust_km = obj.rfact * interactzone_main_km;                  %interaction zone if included in a cluster
+            interactzone_in_clust_km = obj.rfact * interactzone_main_km;      %interaction zone if included in a cluster
                       
             
             tau_min = days(obj.taumin);
             tau_max = days(obj.taumax);
             
             %calculation of the eq-time relative to 1902
-            eqtime=clustime(obj.RawCatalog);
+            eqtime = clustime(obj.RawCatalog);
             
             %variable to store information whether earthquake is already clustered
             clus = zeros(1,obj.RawCatalog.Count);
@@ -140,6 +168,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             drawnow
             declustering_start = tic;
             %for every earthquake in catalog, main loop
+            confine_value = @(value, min_val, max_val) max( min( value, max_val), min_val);
             for i = 1: (obj.RawCatalog.Count-1)
                 
                 % "myXXX" refers to the XXX for this event
@@ -152,7 +181,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 end
                 
                 % variable needed for distance and timediff
-                my_cluster=clus(i);
+                my_cluster = clus(i);
                 alreadyInCluster = my_cluster~=0;
                 
                 % attach interaction time
@@ -160,37 +189,36 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 if alreadyInCluster  
                     if my_mag >= max_mag_in_cluster(my_cluster)
                         max_mag_in_cluster(my_cluster) = my_mag;
-                        idx_biggest_event_in_cluster(my_cluster)=i;
-                        look_ahead_days=tau_min;
+                        idx_biggest_event_in_cluster(my_cluster) = i;
+                        look_ahead_days = tau_min;
                     else
                         bgdiff = eqtime(i) - eqtime(idx_biggest_event_in_cluster(my_cluster));
                         look_ahead_days = clustLookAheadTime(obj.xk, max_mag_in_cluster(my_cluster), obj.xmeff, bgdiff, obj.P);
-                        look_ahead_days = min(look_ahead_days, tau_max);
-                        look_ahead_days = max(look_ahead_days, tau_min);
+                        look_ahead_days = confine_value(look_ahead_days, tau_min, tau_max);
                     end
                 else
-                    look_ahead_days=tau_min;
+                    look_ahead_days = tau_min;
                 end
                 
                 %extract eqs that fit interation time window
-                [~,ac]=timediff(i, look_ahead_days, clus, eqtime);
+                [~,ac] = timediff(i, look_ahead_days, clus, eqtime);
                 
                 
                 
                 
                 if ~isempty(ac)   %if some eqs qualify for further examination
                     
-                    rtest1=interactzone_in_clust_km(i);
-                    if look_ahead_days==obj.taumin
+                    rtest1 = interactzone_in_clust_km(i);
+                    if look_ahead_days == obj.taumin
                         rtest2 = 0;
                     else
-                        rtest2=interactzone_main_km(idx_biggest_event_in_cluster(my_cluster));
+                        rtest2 = interactzone_main_km(idx_biggest_event_in_cluster(my_cluster));
                     end
                     
-                    if alreadyInCluster                       % if i is already related with a cluster
-                        tm1 = clus(ac) ~= my_cluster;       %eqs with a clustnumber different than i
+                    if alreadyInCluster                % if i is already related with a cluster
+                        tm1 = clus(ac) ~= my_cluster;  % eqs with a clustnumber different than i
                         if any(tm1)
-                            ac=ac(tm1);
+                            ac = ac(tm1);
                         end
                         bg_ev_for_dist = idx_biggest_event_in_cluster(my_cluster);
                     else
@@ -203,22 +231,22 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                     %extract eqs that fit the spatial interaction time
                     sl0 = dist1<= rtest1 | dist2<= rtest2;
                     
-                    if any(sl0)    %if some eqs qualify for further examination
-                        ll=ac(sl0);       %eqs that fit spatial and temporal criterion
-                        lla=ll(clus(ll)~=0);   %eqs which are already related with a cluster
-                        llb=ll(clus(ll)==0);   %eqs that are not already in a cluster
-                        if ~isempty(lla)            %find smallest clustnumber in the case several
-                            sl1=min(clus(lla));            %numbers are possible
+                    if any(sl0)             %if some eqs qualify for further examination
+                        ll = ac(sl0);            %eqs that fit spatial and temporal criterion
+                        lla = ll(clus(ll)~=0);   %eqs which are already related with a cluster
+                        llb = ll(clus(ll)==0);   %eqs that are not already in a cluster
+                        if ~isempty(lla)         %find smallest clustnumber in the case several
+                            sl1 = min(clus(lla));     %numbers are possible
                             if alreadyInCluster
-                                my_cluster= min([sl1,my_cluster]);
+                                my_cluster = min([sl1, my_cluster]);
                             else
                                 my_cluster = sl1;
                             end
                             if clus(i)==0
-                                clus(i)=my_cluster;
+                                clus(i) = my_cluster;
                             end
-                            %merge all related clusters together in the cluster with the smallest number
-                            sl2 = lla(clus(lla)~=my_cluster);
+                            % merge related clusters together into cluster with the smallest number
+                            sl2 = lla(clus(lla) ~= my_cluster);
                             for j1 = [i,sl2]
                                 if clus(j1) ~= my_cluster
                                     clus(clus==clus(j1)) = my_cluster;
@@ -227,62 +255,63 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                         end
                         
                         if my_cluster==0   %if there was neither an event in the interaction zone nor i, already related to cluster
-                            k=k+1;                         %
-                            my_cluster=k;
+                            k = k+1;                         %
+                            my_cluster = k;
                             clus(i) = my_cluster;
                             max_mag_in_cluster(my_cluster) = my_mag;
                             idx_biggest_event_in_cluster(my_cluster) = i;
                         end
                         
-                        if size(llb)>0     %attach clustnumber to events not already related to a cluster
+                        if size(llb)>0     % attach clustnumber to events yet unrelated to a cluster
                             clus(llb) = my_cluster * ones(1,length(llb));  %
                         end
                         
-                    end                          %if ac
-                end                           %if sl0
-            end                            %for loop
+                    end       %if ac
+                end         %if sl0
+            end
             
             close(wai);
             msg.dbfprintf('Declustering complete. It took %g seconds\n',toc(declustering_start));
             
             %% this table contains all we need to know about the clusters. maybe.
             details = table;
-            details.Properties.UserData=struct;
-            for j=1 : numel(obj.ParameterableProperties)
-                details.Properties.UserData.(obj.ParameterableProperties(j))=obj.(obj.ParameterableProperties(j));
+            details.Properties.UserData = struct;
+            for j = 1 : numel(obj.ParameterableProperties)
+                details.Properties.UserData.(obj.ParameterableProperties(j)) = obj.(obj.ParameterableProperties(j));
             end
-            details.Properties.Description='Details for cluster as done by reasenberg declustering';
-            details.eventNumber = (1:obj.RawCatalog.Count)';
-            details.clusterNumber = clus(:);
-            details.clusterNumber(details.clusterNumber==0)=missing;
-            details.isBiggest=false(size(details.clusterNumber));
-            details.isBiggest(idx_biggest_event_in_cluster)=true;
             
-            details.Latitude = obj.RawCatalog.Latitude;
-            details.Properties.VariableUnits(width(details))={'degrees'};
+            details.Properties.Description  = 'Details for cluster, from reasenberg declustering';
+            details.eventNumber             = (1:obj.RawCatalog.Count)';
+            details.clusterNumber           = clus(:);
+            details.clusterNumber(details.clusterNumber==0) = missing;
+            details.isBiggest               = false(size(details.clusterNumber));
+            details.isBiggest(idx_biggest_event_in_cluster) = true;
             
-            details.Longitude = obj.RawCatalog.Longitude;
-            details.Properties.VariableUnits(width(details))={'degrees'};
+            details.Latitude                = obj.RawCatalog.Latitude;
+            details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Depth = obj.RawCatalog.Depth;
-            details.Properties.VariableUnits(width(details))={'kilometers'};
+            details.Longitude               = obj.RawCatalog.Longitude;
+            details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Magnitude = obj.RawCatalog.Magnitude;
+            details.Depth                   = obj.RawCatalog.Depth;
+            details.Properties.VariableUnits(width(details)) = {'kilometers'};
             
-            details.MagnitudeType = obj.RawCatalog.MagnitudeType;
+            details.Magnitude               = obj.RawCatalog.Magnitude;
             
-            details.Date = obj.RawCatalog.Date;
+            details.MagnitudeType           = obj.RawCatalog.MagnitudeType;
             
-            details.InteractionZoneIfMain= interactzone_main_km;
-            details.Properties.VariableUnits(width(details))={'kilometers'};
+            details.Date                    = obj.RawCatalog.Date;
+            
+            details.InteractionZoneIfMain   = interactzone_main_km;
+            details.Properties.VariableUnits(width(details)) = {'kilometers'};
             
             details.InteractionZoneIfInClust = interactzone_in_clust_km;
-            details.Properties.VariableUnits(width(details))={'kilometers'};
+            details.Properties.VariableUnits(width(details)) = {'kilometers'};
             
             clusterFreeCatalog = obj.RawCatalog.subset(ismissing(details.clusterNumber));
             %biggest_events_in_cluster = obj.RawCatalog.subset(details.isBiggest);
             
-            outputcatalog=clusterFreeCatalog;
+            outputcatalog = clusterFreeCatalog;
             
             if ~any(clus)
                 return
@@ -292,93 +321,66 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             %build a matrix clust that stored clusters
             [~, biggest_events_in_cluster, max_mag_in_cluster,~,~] = funBuildclu(obj.RawCatalog,idx_biggest_event_in_cluster,clus,max_mag_in_cluster);
             
-            %% replace each cluster sequence with one event that summarizes it
+            
+            % replace cluster sequences with summary events
             if obj.replaceSequenceWithEquivMainshock
-                ans_ = 'Replace';
+                equi = obj.equevent(details(~ismissing(details.clusterNumber),:));  % calculates equivalent events
+                if isempty(equi)
+                    disp('No clusters in the catalog with this input parameters');
+                    return;
+                end
+                tmpcat = cat(clusterFreeCatalog, equi);  %new, unsorted catalog
+                
             else
-                ans_ = 'No';
+                tmpcat = cat(clusterFreeCatalog, biggest_events_in_cluster); % builds catalog with biggest events instead
+                disp('Original mainshocks kept');
             end
             
-            if obj.InteractiveMode
-                ans_ = questdlg('Replace mainshocks with equivalent events?',...
-                    'Replace mainshocks with equivalent events?',...
-                    'Replace','No',ans_ );
-            end
+            tmpcat.sort('Date');
             
-            switch ans_
-                case 'Replace'
-                    equi = obj.equevent(details(~ismissing(details.clusterNumber),:));  % calculates equivalent events
-                    if isempty(equi)
-                        disp('No clusters in the catalog with this input parameters');
-                        return;
-                    end
-                    tmpcat=cat(clusterFreeCatalog, equi);  %new catalog, but not sorted
-                case 'No'
-                    tmpcat=cat(clusterFreeCatalog, biggest_events_in_cluster); % builds catalog with biggest events instead
-                    disp('Original mainshocks kept');
-                    
-            end
-            
+            tmpcat.Name = string(tmpcat.Name) + " (declust)";
                       
-            %% save the clustering details
-            if obj.InteractiveMode
-                answer=inputdlg('Save cluster information to workspace as:','Declustering details',...
-                    1,{obj.clusterDetailsVariableName});
-            else
-                answer = {obj.clusterDetailsVariableName};
-            end
-            if ~isempty(answer)
-                assignin('base',matlab.lang.makeValidName(answer{1}),details);
+            % save clustering details to workspace
+            if ~isempty(obj.clusterDetailsVariableName)
+                assignin('base',matlab.lang.makeValidName(obj.clusterDetailsVariableName),details);
             end
             
-            tmpcat.sort('Date')
-            
-            
-            ZG = ZmapGlobal.Data;
-            ZG.original=obj.RawCatalog;       %save catalog in variable original
-            ZG.newcat=ZG.primeCatalog;
-            ZG.storedcat=ZG.original;
-            ZG.cluscat=ZG.original.subset(clus(clus~=0));
-            
-            %% save the declustered catalog
-            if obj.InteractiveMode
-                answer=inputdlg('Save declustered catalog to workspace as:','Declustered catalog',...
-                    1,{obj.declusteredCatalogVariableName});
-            else
-                answer = {obj.declusteredCatalogVariableName};
-            end
-            if ~isempty(answer)
-                assignin('base', answer{1}, tmpcat);
+            if obj.memorizeOriginalCatalog
+                mm = MemorizedCatalogManager();
+                mm.memorize(obj.RawCatalog,'predeclust')
             end
             
+            ZG              = ZmapGlobal.Data;
+            ZG.original     = obj.RawCatalog;       %save catalog in variable original
+            %ZG.newcat       = ZG.primeCatalog;
+            %ZG.storedcat    = ZG.original;
+            ZG.cluscat      = ZG.original.subset(clus(clus~=0));
             
-            %{
-                warning('should somehow zmap_update_displays()');
-                plot_ax = findobj(gcf,'Tag','mainmap_ax');
-                hold(plot_ax,'on');
-                pl=scatter3(plot_ax,ZG.cluscat.Longitude, ZG.cluscat.Latitude,ZG.cluscat.Depth,[],'m', 'DisplayName','Clustered Events');
-                pl.ZData=ZG.cluscat.Depth;
-            %}
+            % save declustered catalog to workspace
+            if ~isempty(obj.declusteredCatalogVariableName)
+                assignin('base', obj.declusteredCatalogVariableName, tmpcat);
+            end
+                
             st1 = sprintf([' The declustering found %d clusters of earthquakes, a total of %d'...
-                ' events (out of %d). The map window [would] now display the declustered catalog containing %d events.'...
-                'The individual clusters are displayed as magenta on the  map.' ], ...
+                ' events (out of %d). The map window now displays the declustered catalog containing %d events.'], ...
                 biggest_events_in_cluster.Count, ZG.cluscat.Count, ZG.original.Count , ZG.primeCatalog.Count);
             
             msgbox(st1,'Declustering Information')
             
             watchoff
-            outputcatalog=ZG.cluscat;
+            outputcatalog = tmpcat;
                         
             obj.Result(1).values.cluster_details  = details;
+            
         end
         
         function plot(obj, varargin)
-            f=figure('Name','Reasenberg Deslustering Results');
-            ax=subplot(2,2,1);
-            ZG=ZmapGlobal.Data;
+            f = figure('Name','Reasenberg Deslustering Results');
+            ax = subplot(2,2,1);
+            ZG = ZmapGlobal.Data;
             biggest = obj.Result.values.cluster_details(obj.Result.values.cluster_details.isBiggest,:);
-            non_cluster= obj.Result.values.cluster_details(ismissing(obj.Result.values.cluster_details.clusterNumber),:);
-            msf=str2func(ZG.MainEventOpts.MarkerSizeFcn);
+            non_cluster = obj.Result.values.cluster_details(ismissing(obj.Result.values.cluster_details.clusterNumber),:);
+            msf = str2func(ZG.MainEventOpts.MarkerSizeFcn);
             scatter3(biggest.Longitude,biggest.Latitude,biggest.Depth,msf(biggest.Magnitude));
             ax.ZDir='reverse';
             title(ax,'Biggest events in each cluster');
@@ -392,7 +394,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             
             ax = subplot(2,2,2);
             
-            ax=subplot(2,1,2);
+            ax = subplot(2,1,2);
             
             isInClust = ~ismissing(obj.Result.values.cluster_details.clusterNumber);
             isNotBig = ~obj.Result.values.cluster_details.isBiggest;
@@ -401,7 +403,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             ax.YDir='reverse';
             hold on;
             scatter(biggest.Date,biggest.Depth,msf(biggest.Magnitude),categorical(biggest.clusterNumber),'DisplayName','primary events in each cluster');
-            cb=colorbar;
+            cb = colorbar;
             cb.Label.String = 'Cluster #';
             ax.YLabel.String = 'Depth [km]';
             ax.XLabel.String = 'Date';
@@ -411,14 +413,14 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,catalog)
+        function h = AddMenuItem(parent,catalog)
             % create a menu item
             label='Reasenberg Decluster';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
+            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
         end
         
         
-        function equi=equevent(tb)
+        function equi = equevent(tb)
             % equevent calc equivalent event to cluster
             % equi = equevent(catalog, cluster, bg)
             %   catalog : earthquake catalog
@@ -431,19 +433,19 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             %
             report_this_filefun();
             
-            equi=ZmapCatalog;
+            equi = ZmapCatalog;
             equi.Name='clusters';
             
             if isempty(tb)
                 return
             end
-            j=0;
+            j = 0;
             nClusts = max(tb.clusterNumber);
             [elat, elon, edep, emag] = deal(nan(nClusts,1));
             edate(nClusts,1) = datetime(missing);
-            emagtype(nClusts,1)=categorical(missing);
+            emagtype(nClusts,1) = categorical(missing);
             
-            for n=1 : max(tb.clusterNumber)
+            for n = 1 : max(tb.clusterNumber)
                 clust_events = tb(tb.clusterNumber==n,:);
                 if isempty(clust_events)
                     continue;
@@ -451,7 +453,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 j = j + 1;
                 
                 eqmoment = 10.^(clust_events.Magnitude .* 1.2);
-                emoment=sum(eqmoment);         %moment
+                emoment = sum(eqmoment);         %moment
                 
                 weights = eqmoment./emoment;      %weightfactor
                 elat(j)     = sum(clust_events.Latitude .* weights);
@@ -471,10 +473,11 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             equi.Date = edate(1:j);
             equi.Magnitude = emag(1:j);
             equi.MagnitudeType = emagtype(1:j);
-            equi.Depth=edep(1:j);
+            equi.Depth = edep(1:j);
             [equi.Dip, equi.DipDirection, equi.Rake]=deal(nan(size(equi.Date)));
         end
     end
+    
     
 end
 

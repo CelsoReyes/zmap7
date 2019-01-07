@@ -455,7 +455,7 @@ function create_all_menus(obj, force)
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent,'Label','Decluster the catalog');
         
-        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog),...
+        uimenu(submenu,'Label','Decluster (Reasenberg)',MenuSelectedField(),@cb_reasen,...
             'Separator','on');
         uimenu(submenu,'Label','Decluster (Gardner & Knopoff)',...
             'Enable','off',...
@@ -464,5 +464,19 @@ function create_all_menus(obj, force)
     function cb_declus_inp(~,~)
         [out,nMethod]=declus_inp(obj.catalog)
         error('declustered. now what to do with results?');
+    end
+    
+    function cb_reasen(~,~)
+        rdc = ReasenbergDeclusterClass(obj.catalog, "CalcFinishedFcn",@update_window_with_declust);
+        
+        function update_window_with_declust()
+            if ~isempty(rdc.declusteredCatalog)
+                msg.dbdisp('replacing the catalog')
+                obj.rawcatalog = rdc.declusteredCatalog;
+                obj.replot_all()
+            else
+                errordlg('Empty declustered catalog, Main window will not be updated')
+            end
+        end
     end
 end

@@ -62,6 +62,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         AutoShowPlots   logical      = true; % will plots be generated upon calculation?
         InteractiveMode logical      = true;
         DelayProcessing logical      = false;
+        CalcFinishedFcn function_handle = @do_nothing ; %call this once calculation ("do it") has finished.
     end
     
     properties(Constant,Abstract)
@@ -145,6 +146,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             p.addParameter('AutoShowPlots',   obj.AutoShowPlots)
             p.addParameter('InteractiveMode', obj.InteractiveMode);
             p.addParameter('DelayProcessing', obj.DelayProcessing);
+            p.addParameter('CalcFinishedFcn', obj.CalcFinishedFcn);
             p.parse(varginstuff{:});
             
             % assign values from parameter to this object
@@ -154,6 +156,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             obj.AutoShowPlots = p.Results.AutoShowPlots;
             obj.InteractiveMode = p.Results.InteractiveMode;
             obj.DelayProcessing = p.Results.DelayProcessing;
+            obj.CalcFinishedFcn = p.Results.CalcFinishedFcn;
         end
         
         function StartProcess(obj)
