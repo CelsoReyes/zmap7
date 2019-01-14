@@ -221,7 +221,7 @@ classdef ZmapCatalog < matlab.mixin.Copyable
                 obj.RefEllipsoid = referenceEllipsoid(value,'kilometer');
             elseif isa(value,'referenceEllipsoid')
                 obj.RefEllipsoid = value;
-                obj.RefEllipsoid.LengthUnit='kilometer';
+                %obj.RefEllipsoid.LengthUnit='kilometer'; %% why forcing km?
             else
                 error('Trying to set the reference ellipsoid with unknown value. use a name (ex. ''wgs84'') or provide a referenceEllipsoid');
             end

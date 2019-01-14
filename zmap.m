@@ -4,15 +4,18 @@ function zmap(varargin)
     % This files start up ZMAP.
     %
     % Options:
-    %   -debug : enables debugging functionality
-    %   -restart : clear all windows and variables, then restart zmap
+    %   -debug    : enables debugging functionality
+    %   -restart  : clear all windows and variables, then restart zmap
     %   -initonly : set up zmap paths and prefs, but don't open a window
+    %   -RT       : implement real-time mode
+    %   -catalog alt_cat: use alt_cat as the prime catalog instead. It may be a variable name, a
+    %               ZmapCatalog, or a value that canbe converted by ZmapCatalog
+    %               
     %
     % Options to be probably implemented
     %   -grid :
     %   -selector :
     %   -shape :
-    %   -catalog :
     %   -state :
     %   -bordersonly :
     %   
@@ -54,7 +57,6 @@ function zmap(varargin)
     %       ZG.ra = 23  % changes ra globally
     
     
-    disp(varargin)
     % advise matlab where it can find everything zmap
     if ~exist('set_zmap_paths','var')
         p = mfilename('fullpath'); 
@@ -64,23 +66,54 @@ function zmap(varargin)
     set_zmap_paths;
     ZG = ZmapGlobal.Data;
     disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
-    startWindow=true;
-    if ismember('-debug',varargin)
-        ZG.debug=true;
-    end
-    if nargin==1
-        switch varargin{1}
+    startWindow      = true;
+    
+    possible_options = varargin(cellfun(@ischarlike,varargin));
+    options          = lower(possible_options(startsWith(possible_options,'-')));
+    for option = string(options)
+        switch option
+            case "-debug"
+                msg.infodisp('debug mode enabled','initialization')
+                ZG.debug = true;
             case "-restart"
-                disp('Restarting ZMAP');
+                msg.infodisp('Restarting ZMAP','initialization')
                 restartZmap('restart');
                 return
             case "-quit"
-                disp('Quitting ZMAP');
+                msg.infodisp('Quitting ZMAP','initialization')
                 restartZmap('quit');
                 return
             case "-initonly"
-                disp('Initializing Zmap without starting the default main window');
-                startWindow=false;
+                msg.infodisp('Initializing Zmap without starting the default main window','initialization')
+                startWindow = false;
+            case "-rt"
+                msg.infodisp('RealTimeMode enabled','initialization');
+                ZG.RealTimeMode = true;
+            case "-catalog"
+                vaa = varargin; 
+                notstrings =cellfun(@(x)~ischarlike(x),varargin);
+                vaa(notstrings)={''};
+                idx = find(vaa == "-catalog",1,'last'); %requres all members of vaa be strings
+                c = varargin{idx+1};
+                if ischarlike(c) && isvarname(c)
+                    v=evalin('base',"whos('"+ c +"')");
+                    if isempty(v)
+                        msg.errordisp("cannot find the variable " + c, 'catalog specified');
+                        return
+                    end
+                    alt_cat = evalin('base',"ZmapCatalog(" + v.name + ")");
+                    if isa(alt_cat, 'ZmapCatalog')
+                        ZG.primeCatalog = alt_cat;
+                    end
+                    msg.infodisp("set primary catalog to the value from : " + v.name, 'catalog specified');
+                else
+                    ZG.primeCatalog = ZmapCatalog(c);
+                    msg.infodisp("set primary catalog from a : " + class(c), 'catalog specified');
+                end
+                    
+            otherwise
+                msg.errordisp('Unknown ZMAP option: ' + option, 'Unknown ZMAP option, stopping');
+                return
         end
     end
     
@@ -90,6 +123,7 @@ function zmap(varargin)
     if verLessThan('matlab',ZG.min_matlab_version)
         baseMsg = 'You are running a version of MATLAB older than %s. ZMAP %s requires MATLAB %s or newer';
         messtext = sprintf(baseMsg, ZG.min_matlab_release, ZG.zmap_version, ZG.min_matlab_version);
+        msg.errordisp(messtext,  'Incompatible MATLAB Version');
         errordlg(messtext,'Warning!')
         pause(5)
         return
@@ -97,9 +131,9 @@ function zmap(varargin)
     
     
     tested_systems = {'MAC','PCW'};
-    prviously_tested_systems = {'PCW', 'SOL', 'SUN', 'HP7', 'LNX', 'MAC'};
     if ~ismember( sys(1:3), tested_systems)
-        warndlg('ZMAP:zmap:UntestedComputer', ' Warning: ZMAP has not been tested on this computer type.','Untested System')
+        msg.warndisp('ZMAP has not been tested on this computer type', 'Untested System')
+        warndlg('Warning: ZMAP has not been tested on this computer type.','Untested System')
         pause(5)
     end
     

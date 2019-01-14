@@ -129,7 +129,10 @@ classdef ZmapData < handle
         
         % Datastore                       = DataStore % mapseis DataStore adapter
         
-        Interactive = true;
+        Interactive     logical     = true
+        
+        RealTimeMode    logical     = false
+        RealTimeAgent               = [];
     end
     
     properties(Dependent)

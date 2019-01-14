@@ -42,7 +42,7 @@ function replot_all(obj,metaProp,eventData)
         case 'XsectionAdded'
             % msg.dbdisp('add a cross section to plots')
             k=obj.XSectionTitles;
-            if numel(k)>1
+            if numel(k) > 1
                 k = k(~ismember(k,get(obj.xsgroup.Children,'Title')));
             end
             
@@ -70,16 +70,16 @@ function replot_all(obj,metaProp,eventData)
                     evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
                 else
                     % catalog is out of sync. replot
-                    evs.XData=obj.rawcatalog.Longitude;
-                    evs.YData=obj.rawcatalog.Latitude;
-                    evs.ZData=obj.rawcatalog.Depth;
-                    evs.XData(mall)=nan;
+                    evs.XData       = obj.rawcatalog.Longitude;
+                    evs.YData       = obj.rawcatalog.Latitude;
+                    evs.ZData       = obj.rawcatalog.Depth;
+                    evs.XData(mall) = nan;
                 end
                 evs.Visible='on';
                 
             end
-            ZG=ZmapGlobal.Data;
-            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude >ZG.CatalogOpts.BigEvents.MinMag);
+            ZG = ZmapGlobal.Data;
+            obj.bigEvents = obj.catalog.subset(ZG.CatalogOpts.BigEvents.MinMag < obj.catalog.Magnitude);
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;

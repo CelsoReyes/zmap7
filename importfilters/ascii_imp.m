@@ -27,10 +27,10 @@ end
 
 function tf = is_old_zmap_style(tb)
     varNames = tb.Properties.VariableNames;
-    tf = numel(varNames)>=9 && numel(varNames) <=10; % with or without seconds
+    tf = 9 <= numel(varNames) && numel(varNames) <=10; % with or without seconds
     tf = tf && all(startsWith(varNames,'Var')); % no variable specified in file
-    tf = tf && all(tb.Var1 >=-180 & tb.Var1 <= 180);
-    tf = tf && all(tb.Var2 >= -90 & tb.Var2 < 90);
+    tf = tf && all(-180 <= tb.Var1 -180 & tb.Var1 <= 180);
+    tf = tf && all(-90 <= tb.Var2 -90 & tb.Var2 < 90);
     tf = tf && all(0 <= tb.Var9 & tb.Var9 <= 60); % minutes
     tf = tf && all(0 <= tb.Var8 & tb.Var8 <= 24); % hours
     tf = tf && all(0 <= tb.Var5 & tb.Var5 <= 31); % days
