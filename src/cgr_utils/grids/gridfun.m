@@ -53,6 +53,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     %
     
     % set flags for how to treat this data
+    QUICKDISTANCES = true; 
     multifun=iscell(infun);
     
     assert(isa(selcrit,'EventSelectionParameters'));
@@ -114,6 +115,22 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     h=msgbox_nobutton({ 'Please wait.' , gridmsg },gridttl);
         
+    if QUICKDISTANCES
+        refLat = median(catalog.Latitude);
+        refLon = median(catalog.Longitude);
+        refDepth = 0;
+        % get XYZ positions of cataloged events
+        [xNcat, yEcat, zDcat] = geodetic2ned(catalog.Latitude, catalog.Longitude, catalog.Depth,...
+            refLat, refLon, refDepth, catalog.RefEllipsoid);
+        % getXYZ position of grid points
+        if isempty(zgrid.Z)
+            inDepth = 0;
+        else
+            inDepth = zgrid.Z;
+        end
+        [xNgrid, yEgrid, zDgrid] = geodetic2ned(zgrid.Y, zgrid.X, inDepth,...
+            refLat, refLon, refDepth, catalog.RefEllipsoid); %TOFIX should be GRID's RefEllipsoid, but must have same units as catalog's
+    end
     if multifun
         error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
@@ -147,6 +164,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         activeidx = find(zgrid.ActivePoints);
         doZ=~isempty(zgrid.Z);
         
+        yEgrid=yEgrid(activeidx);
+        xNgrid=xNgrid(activeidx);
+        if doZ
+            zDgrid=zDgrid(activeidx);
+        end
+        
         assert(isa(selcrit,'EventSelectionParameters'));
         for i=1:numel(activeidx)
             fun=myfun; % local copy of function
@@ -154,12 +177,24 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             write_idx = activeidx(i);
             x=gridpoints(i,1);
             y=gridpoints(i,2);
-            
-            if doZ
-                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
-            else
+            if QUICKDISTANCES
+                if doZ
+                    dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2 + (zDcat - zDgrid(i)).^2);
+                else
+                    dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2);
+                end
+                %isWithinRadius = dd <= MaxSampleRadius .^ 2;
+                mask = selcrit.SelectionFromDistances(dd, catalog.RefEllipsoid.LengthUnit);
+                minicat = catalog.subset(mask);
+                maxd = max(dd(mask));
                 
-                [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+            else
+                if doZ
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
+                else
+
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                end
             end
             
             nEvents(write_idx)=minicat.Count;
@@ -198,9 +233,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         doZ=~isempty(zgrid.Z);
         if doZ
             z=gridpoints(:,3);
+            zDgrid=zDgrid(activeidx);
         else
             z=nan(size(x));
         end
+        yEgrid=yEgrid(activeidx);
+        xNgrid=xNgrid(activeidx);
         nTotal = numel(x);
         nEvaluated=0;
         D = parallel.pool.DataQueue;
@@ -208,13 +246,24 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         p=gcp('nocreate'); % get parallel pool details
         parfor i=1:nTotal
             fun=myfun; % local copy of function;
-            size(selcrit);
-            size(catalog,1);
-            if doZ
-                [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),z(i));
-            else
+            if QUICKDISTANCES
+                if doZ
+                    dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2 + (zDcat - zDgrid(i)).^2);
+                else
+                    dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2);
+                end
+                %isWithinRadius = dd <= MaxSampleRadius .^ 2;
+                mask = selcrit.SelectionFromDistances(dd, catalog.RefEllipsoid.LengthUnit);
+                minicat = catalog.subset(mask);
+                maxd = max(dd(mask));
                 
-                [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),[]);
+            else
+                if doZ
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),z(i));
+                else
+
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x(i),y(i),[]);
+                end
             end
             % is this point of interest?
             %write_idx = activeidx(i);
