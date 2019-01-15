@@ -33,7 +33,7 @@ function dofdim()
                 
             end
             
-            v = find(r2 >= rad & r2 <= ras);	% v= Vector of the all the interevent distances that fall in the interval [rn,rs]
+            v = find(rad <= r2 rad & r2 <= ras);	% v= Vector of the all the interevent distances that fall in the interval [rn,rs]
             lr = log10(r2(v));
             lc = log10(corint(v));
             r3 = r2(7:end,1);
@@ -104,7 +104,7 @@ function dofdim()
             v = [];lr =[]; lc =[];
             rad = min(g(:,1));
             ras = max(g(:,1));
-            v = find(r2 >= rad & r2 <= ras);
+            v = find(rad <= r2 rad & r2 <= ras);
             r3 = r(7:end,1);%(7:v(end)+10,1);
             
             lr = log10(r2(v));

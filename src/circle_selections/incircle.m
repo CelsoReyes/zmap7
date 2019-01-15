@@ -181,7 +181,7 @@ function incircle()
         elseif ic == 2
             figure(map);
             axes(h1)
-            ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, rad);
+            ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, rad,'kilometer');
             %
             % plot events on map as 'x':
             

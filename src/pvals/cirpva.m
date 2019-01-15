@@ -41,7 +41,7 @@ if met == 'ni'
     messtext = ['Radius of selected Circle:' num2str(maxrad)  ' km' ];
     disp(messtext)
 elseif  met == 'ra'
-    ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, ra);
+    ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, ra,'kilometer');
     messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
     disp(messtext)
 elseif met == 'ti'

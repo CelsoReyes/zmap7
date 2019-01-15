@@ -120,7 +120,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             function [cat_learn, cat_forecast] = prep_catalog(catalog)
                 % Choose between constant radius or constant number of events with maximum radius
                 if UseEventsInRadius   % take point within r
-                    catalog = ZG.primeCatalog.selectRadius(y,x,ra);
+                    catalog = ZG.primeCatalog.selectRadius(y,x,ra,'kilometer');
                     fMaxDist = max(catalog.epicentralDistanceTo(y,x));
                     % Calculate number of events per gridnode in learning period learn_period
                     cat_learn = catalog.subset(catalog.Date <= learn_to_date);
@@ -301,7 +301,7 @@ function [sel]=orig_rcvalgrid_a2()
             
             % Choose between constant radius or constant number of events with maximum radius
             if UseEventsInRadius   % take point within r
-                cat_all = ZG.primeCatalog.selectRadius(y,x,ra);
+                cat_all = ZG.primeCatalog.selectRadius(y,x,ra,'kilometer');
                 fMaxDist = max(cat_all.epicentralDistanceTo(y,x));
                 % Calculate number of events per gridnode in learning period learn_period
                 vSel = cat_all.Date <= ZG.maepi.Date(1)+days(learn_period);

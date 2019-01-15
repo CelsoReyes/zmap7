@@ -35,24 +35,24 @@ classdef ZmapData < handle
         
         ref_ellipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer')
         % catalogs
-        primeCatalog    ZmapCatalog     = ZmapCatalog('empty catalog')
-        newcat          ZmapCatalog     = ZmapCatalog('empty catalog')
-        newt2           ZmapCatalog     = ZmapCatalog('empty catalog')
-        catalog_working ZmapCatalog     = ZmapCatalog('empty catalog')
+        primeCatalog    {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')
+        newcat          {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')
+        newt2           {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')
+        catalog_working {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
-        original        ZmapCatalog     = ZmapCatalog('empty catalog')% used with declustering
+        original        {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')% used with declustering
         
         % cluster catalogs 
-        newccat          ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat            ZmapCatalog	% some sort of clustered catalog? selclust
-        cluscat          ZmapCatalog	% some sort of clustered catalog? selclust
-        newclcat         ZmapCatalog	% some sort of clustered catalog? selclust
+        newccat          {mustBeZmapCatalog}     = ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat            {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        cluscat          {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        newclcat         {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
         
         % map features that can be looked up by name. ex. ZG.features('volcanoes')
         features      containers.Map    = get_features('h')         
         well                                                        % well locations
         main
-        maepi            ZmapCatalog    = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
+        maepi            {mustBeZmapCatalog}    = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
         
         % niceties
         fontsz       FontSizeTracker    = FontSizeTracker

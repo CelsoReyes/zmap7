@@ -106,7 +106,7 @@ function ran = dorand(obj, params)
             clear str5 msg3
             
             ran1 = [E.Longitude+ nerrx, E.Latitude + nerry, rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1), (E.Depth + nerrz)];
-            %ran2 = find(ran1(:,7)>0.1);
+            %ran2 = find(ran1(:,7) > 0.1);
             ran = ran1;%(ran2,:);
             ranp = ran(:,[1 2 7]);
             ranp(:,3) = [-ranp(:,3)];

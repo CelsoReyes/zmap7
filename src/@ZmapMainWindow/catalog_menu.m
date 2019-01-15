@@ -147,17 +147,10 @@ function catalog_menu(obj, force)
             style='XYZ';
         end
         mask=true(obj.catalog.Count,1);
-        if contains(style,'X') && ~isempty(fields{1})
-            mask=mask & obj.catalog.(fields{1}) >= ax.XLim(1) &...
-                obj.catalog.(fields{1}) <= ax.XLim(2);
-        end
-        if contains(style,'Y') && ~isempty(fields{2})
-            mask=mask & obj.catalog.(fields{2}) >= ax.YLim(1) &...
-                obj.catalog.(fields{2}) <= ax.YLim(2);
-        end
-        if contains(style,'Z') && ~isempty(fields{3})
-            mask=mask & obj.catalog.(fields{3}) >= ax.YLim(1) &...
-                obj.catalog.(fields{3}) <= ax.YLim(2);
+        for n = 1 : len(style)
+            fname = fields{n}
+            lims = ax.([style(n) , 'Lim']);
+            mask = mask & lims(1) <= obj.catalog.(fname) & obj.catalog.(fname) <= lims(2);
         end
         obj.catalog.subset_in_place(mask);
         zmap_update_displays();

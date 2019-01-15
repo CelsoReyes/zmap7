@@ -181,7 +181,7 @@ classdef bpvalgrid < ZmapHGridFunction
                 [~, Mc90, ~, ~, ~]=bvalca3(b.Magnitude, McAutoEstimate.manual);
                 maxcat = b.subset(b.Magnitude >= Mc90-0.05);
                 magco = Mc90;
-                if maxcat.Count  >= Nmin
+                if Nmin <= maxcat.Count
                     mpvc = mpvc.setEvents(maxcat);
                     [bv, ~, stan, av] =  bvalca3(maxcat.Magnitude, McAutoEstimate.manual, overall_b_value );
                     [bv2, stan2] = calc_bmemag(maxcat.Magnitude,0.1);

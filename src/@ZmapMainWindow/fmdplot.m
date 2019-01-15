@@ -109,7 +109,7 @@ function fmdplot(obj, tabgrouptag)
             'Choose magnitude to cut the catalog');
         [res,okpressed] = zdlg.Create('Name', 'Choose Cut Magnitude');
         if okpressed
-            obj.rawcatalog = obj.rawcatalog.subset(obj.rawcatalog.Magnitude>= res.mc);
+            obj.rawcatalog = obj.rawcatalog.subset(res.mc <= obj.rawcatalog.Magnitude);
             obj.replot_all;
         end
     end

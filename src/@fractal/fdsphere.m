@@ -26,7 +26,7 @@ function fdsphere()
     ctr = [(slon1 + slon2)/2, (slat1 + slat2)/2, (sdep1 + sdep2)/2];		% Center point of the volume
     %ctr = [-152.4, (slat1 + slat2)/2, (sdep1 + sdep2)/2];
     
-    %Ein = find(E.Depth>-15 & E.Depth<0);
+    %Ein = find(-15 < E.Depth & E.Depth < 0);
     %E1 = E(Ein,:);
     E1 = E;
     N1 = size(E1,1);			% N= # of events in the earthquake catalogue, or random catalog

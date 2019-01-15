@@ -86,7 +86,7 @@ function anseiswa(action, ds)
         x = get(xc1,'Xdata');
         y = get(xc1,'Ydata');
         z = ds;
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
@@ -134,7 +134,7 @@ function anseiswa(action, ds)
             x = get(xc2,'Xdata');
             y = get(xc2,'Ydata');
             z = ds;
-            l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+            l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
             [s,is] = sort(l);
             ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             if tgl1 == 0   % take point within r

@@ -52,7 +52,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         % THESE ARE ACCESSIBLE BY ALL DERRIVED CLASSES
         
          % holds complete catalog to be analyzed. defaults to the primary catalog
-        RawCatalog      ZmapCatalog  = ZmapGlobal.Data.primeCatalog
+        RawCatalog      {mustBeZmapCatalog}  = ZmapGlobal.Data.primeCatalog
         Result          struct            % results of the calculation, stored in a struct
         
         ZG                           = ZmapGlobal.Data; % provides access to the ZMAP global variables.

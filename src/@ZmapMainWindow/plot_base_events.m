@@ -16,7 +16,7 @@ function plot_base_events(obj, container, featurelist)
     unselOpts.HitTest           = 'off';
     
     if isempty(obj.map_axes)
-        obj.map_axes=axes(container,'Units','normalized','Position',obj.MapPos_L);
+        obj.map_axes = axes(container,'Units','normalized','Position',obj.MapPos_L);
         
         obj.map_axes.Tag        = 'mainmap_ax';
         obj.map_axes.TickDir    = 'out';
@@ -153,9 +153,9 @@ function plot_base_events(obj, container, featurelist)
     
     function cb_toggle_grid(~, ~)
         gr = findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
-        if numel(gr)==1
+        if numel(gr) == 1
             gr.Visible=toggleOnOff(gr.Visible);
-        elseif numel(gr)>1
+        elseif numel(gr) > 1
             error('multiple grids available to toggle');
         end
     end
@@ -215,9 +215,9 @@ function plot_base_events(obj, container, featurelist)
         yl = obj.map_axes.YLim;
 
         obj.rawcatalog.subset_in_place(...
-            obj.rawcatalog.Longitude >= xl(1) &...
+            xl(1) <= obj.rawcatalog.Longitude &...
             obj.rawcatalog.Longitude <= xl(2) &...
-            obj.rawcatalog.Latitude  >= yl(1) &...
+            yl(1) <= obj.rawcatalog.Latitude  &...
             obj.rawcatalog.Latitude  <= yl(2));
         obj.replot_all();
     end

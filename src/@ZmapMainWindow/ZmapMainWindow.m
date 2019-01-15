@@ -2,38 +2,38 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable, AbortSet)
-        catalog         ZmapCatalog % event catalog
-        bigEvents       ZmapCatalog
-        shape                           {mustBeShape}       = ShapeGeneral.ShapeStash % used to subset catalog by selected area
-        Grid                            {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
-        daterange       datetime % used to subset the catalog with date ranges
-        colorField                                          = ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices
+        catalog                 {mustBeZmapCatalog} = ZmapCatalog % event catalog
+        bigEvents               {mustBeZmapCatalog} = ZmapCatalog
+        shape                   {mustBeShape}       = ShapeGeneral.ShapeStash % used to subset catalog by selected area
+        Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
+        daterange     datetime                        % used to subset the catalog with date ranges
+        colorField                                  = ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices
         CrossSections
-        rawcatalog      ZmapCatalog;
+        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog;
     end
     
     properties
-        gridopt % used to define the grid
-        evsel           EventSelectionParameters             = ZmapGlobal.Data.GridSelector % how events are chosen
-        fig % figure handle
-        map_axes % main map axes handle
+        gridopt             % used to define the grid
+        evsel           EventSelectionParameters    = ZmapGlobal.Data.GridSelector % how events are chosen
+        fig                 % figure handle
+        map_axes            % main map axes handle
         xsgroup
-        maingroup % maps will be plotted in here
-        maintab % handle to tab where the main map is plotted
-        xscats % ZmapXsectionCatalogs corresponding to each cross section
-        xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
-        prev_states     Stack                               = Stack(10);
+        maingroup           % maps will be plotted in here
+        maintab             % handle to tab where the main map is plotted
+        xscats              % ZmapXsectionCatalogs corresponding to each cross section
+        xscatinfo           % stores details about the last catalog used to get cross section, avoids projecting multiple times.
+        prev_states     Stack                       = Stack(10);
         undohandle
-        Features                                            = containers.Map();
-        replotting                                          = false % keep from plotting while plotting
+        Features                                 	= containers.Map();
+        replotting                                	= false % keep from plotting while plotting
         mdate %
         mshape %
-        WinPos (4,1)                                        = position_in_current_monitor(Percent(90), Percent(85))% position of main window
-        mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
+        WinPos (4,1)                              	= position_in_current_monitor(Percent(90), Percent(85))% position of main window
+        mainEventProps                            	= ZmapGlobal.Data.MainEventOpts; % properties describing the main events
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
-        refEllipsoid  referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
+        refEllipsoid  referenceEllipsoid            = referenceEllipsoid('wgs84','kilometer');
     end
     
     properties(Constant)
@@ -145,7 +145,7 @@ classdef ZmapMainWindow < handle
             %if the figure was specified, but wasn't empty, then clear it out.
             if ~isempty(fig) && isvalid(fig)
                 isMainMapWindow   = isa(fig.UserData, 'ZmapMainWindow');
-                resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children)>1;
+                resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children) > 1;
                 %shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
                 %grid_exists = isMainMapWindow && ~isempty(fig.UserData.Grid);
                 %catalog_exists = isMainMapWindow && isempty(fig.UserData.rawcatalog);
@@ -205,7 +205,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 obj.bigEvents       = obj.rawcatalog;
             else
-                obj.bigEvents       = obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag);
+                obj.bigEvents       = obj.rawcatalog.subset(ZG.CatalogOpts.BigEvents.MinMag <= obj.rawcatalog.Magnitude);
             end
             %% prepare the figure
             obj.prepareMainFigure();

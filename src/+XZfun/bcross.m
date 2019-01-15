@@ -145,12 +145,12 @@ classdef bcross < ZmapVGridFunction
                 %estimate the completeness and b-value
                 ZG.newt2 = b;
                 
-                if length(b) >= Nmin
+                if Nmin <= length(b)
                     % Added to obtain goodness-of-fit to powerlaw value
                     [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
                     [fMc] = calc_Mc(b, obj.mc_choice, fBinning, fMccorr);
-                    l = b.Magnitude >= fMc-(fBinning/2);
-                    if length(b(l,:)) >= Nmin
+                    l = (fMc-(fBinning/2)) <= b.Magnitude;
+                    if Nmin <= length(b(l,:))
                         [ fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
                     else
                         %fMc = NaN;
@@ -160,8 +160,8 @@ classdef bcross < ZmapVGridFunction
                     % Bootstrap uncertainties
                     if bBst_button
                         % Check Mc from original catalog
-                        l = b.Magnitude >= fMc-(fBinning/2);
-                        if length(b(l,:)) >= Nmin
+                        l = (fMc-(fBinning/2)) <= b.Magnitude;
+                        if Nmin <= length(b(l,:))
                             [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, b_value] = calc_McBboot(b, fBinning, nBstSample, obj.mc_choice);
                         else
                             %fMc = NaN;

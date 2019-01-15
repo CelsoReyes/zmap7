@@ -215,7 +215,7 @@ function slicemap()
         set(gca,'NextPlot','add')
         x = mean(gx)+std(gx)/2; y = mean(gy)+std(gy)/2 ; z = ds;
         
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         ZG.newt2 = ZG.newt2(1:ni,:);

@@ -28,7 +28,7 @@ function [deltar]=dofdnofig(corint, r, radm, rasm)
         
     end
     
-    v = find(r2 >= rad & r2 <= ras);        % v= Vector of the all the interevent distances that fall in the interval [rn,rs]
+    v = find(rad <= r2 & r2 <= ras);        % v= Vector of the all the interevent distances that fall in the interval [rn,rs]
     lr = log10(r2(v));
     lc = log10(corint(v));
     

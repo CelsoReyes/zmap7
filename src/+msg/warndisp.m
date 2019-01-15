@@ -1,4 +1,5 @@
 function warndisp(msg,msgTitle)
+    % display a warning message to command line
     if ~ZmapGlobal.Data.debug
         return
     end
