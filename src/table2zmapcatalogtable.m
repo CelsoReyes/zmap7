@@ -57,7 +57,7 @@ function colpropexprs = create_colname2property_map()
     colpropexprs.Longitude = "^lon.*";
     colpropexprs.Depth     = "^dep.*";
     colpropexprs.Magnitude = ["^mag$", "^mags$", "^magnitude$", "^magnitudes$"];
-    colpropexprs.Date      = "^date.";
+    colpropexprs.Date      = "^date.?";
     
     colpropexprs.DecYear   = ["^decyear", "^decimalyear"];
     colpropexprs.JulianDay = ["^julian.*","^jday"];
@@ -131,7 +131,15 @@ end
 
 function dt = munge_dates(tb)
     vn = tb.Properties.VariableNames;
-    if any(vn == "DecYear")
+    if any(vn == "Date")
+        if isa(tb.Date,'datetime')
+            dt = tb.Date;
+            return
+        end
+        fmt = timestr_to_fmt(tb.Date(1));
+        dt = datetime(tb.Date, 'InputFormat',fmt);
+        return
+    elseif any(vn == "DecYear")
         disp('decyear detected')
         yelapsed = years(tb.DecYear); %duration
         dt = datetime(0,0,0) + yelapsed;
@@ -173,7 +181,9 @@ end
 
 function fmt = timestr_to_fmt(val)
     % look at format for the date
-    if iscell(val); val=val{1};end
+    if iscell(val)
+        val=val{1};
+    end
     hasDatePart = all(ismember(val(1:4),'1234567890')); %assume 4 digit year.
     hasTimePart = any(ismember(val,':')); % time
     
