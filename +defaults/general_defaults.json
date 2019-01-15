@@ -5,7 +5,7 @@
       "working":"./working"
    },
    "ParallelProcessing":{
-      "Enable":true,
+      "Enable":false,
       "Threshhold":10000
    },
    "DebugMode":true,

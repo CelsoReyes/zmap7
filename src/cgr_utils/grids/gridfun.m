@@ -130,6 +130,11 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         end
         [xNgrid, yEgrid, zDgrid] = geodetic2ned(zgrid.Y, zgrid.X, inDepth,...
             refLat, refLon, refDepth, catalog.RefEllipsoid); %TOFIX should be GRID's RefEllipsoid, but must have same units as catalog's
+    else
+        xNgrid=[];
+        yEgrid=[];
+        zDgrid=[];
+        [xNcat, yEcat, zDcat] = deal([]);
     end
     if multifun
         error('Unimplemented. Cannot yet do Multifun');
@@ -163,13 +168,13 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         % where to put the value back into the matrix
         activeidx = find(zgrid.ActivePoints);
         doZ=~isempty(zgrid.Z);
-        
-        yEgrid=yEgrid(activeidx);
-        xNgrid=xNgrid(activeidx);
-        if doZ
-            zDgrid=zDgrid(activeidx);
+        if QUICKDISTANCES
+            yEgrid=yEgrid(activeidx);
+            xNgrid=xNgrid(activeidx);
+            if doZ
+                zDgrid=zDgrid(activeidx);
+            end
         end
-        
         assert(isa(selcrit,'EventSelectionParameters'));
         for i=1:numel(activeidx)
             fun=myfun; % local copy of function
@@ -233,12 +238,16 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         doZ=~isempty(zgrid.Z);
         if doZ
             z=gridpoints(:,3);
-            zDgrid=zDgrid(activeidx);
+            if QUICKDISTANCES
+                zDgrid=zDgrid(activeidx);
+            end
         else
             z=nan(size(x));
         end
-        yEgrid=yEgrid(activeidx);
-        xNgrid=xNgrid(activeidx);
+        if QUICKDISTANCES
+            yEgrid=yEgrid(activeidx);
+            xNgrid=xNgrid(activeidx);
+        end
         nTotal = numel(x);
         nEvaluated=0;
         D = parallel.pool.DataQueue;
