@@ -140,7 +140,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         error('Unimplemented. Cannot yet do Multifun');
         %doMultifun(infun)
     elseif UseParallelProcessing
-        doParSinglefun(infun);
+        doParSinglefun(infun, selcrit, catalog, zgrid);
     else 
         doSinglefun(infun);
     end
@@ -225,14 +225,14 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     end
 
     
-    function doParSinglefun(myfun)
+    function doParSinglefun(myfun, selcrit, catalog, zgrid)
             
         gridpoints = zgrid.GridVector;
-        gridpoints=gridpoints(zgrid.ActivePoints,:);
+        gridpoints = gridpoints(zgrid.ActivePoints,:);
         
         % where to put the value back into the matrix
         activeidx = find(zgrid.ActivePoints);
-        size(activeidx)
+        size(activeidx);
         x=gridpoints(:,1);
         y=gridpoints(:,2);
         doZ=~isempty(zgrid.Z);
@@ -251,10 +251,15 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         nTotal = numel(x);
         nEvaluated=0;
         D = parallel.pool.DataQueue;
+        updateFreq = ceil(length(zgrid)/50);
         D.afterEach(@updateWaitBar)
-        p=gcp('nocreate'); % get parallel pool details
-        parfor i=1:nTotal
-            fun=myfun; % local copy of function;
+        
+        
+        p = gcp('nocreate'); % get parallel pool details
+        refel = catalog.RefEllipsoid.LengthUnit;
+        
+        parfor i=1 : nTotal
+            fun = myfun; % local copy of function;
             if QUICKDISTANCES
                 if doZ
                     dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2 + (zDcat - zDgrid(i)).^2);
@@ -262,7 +267,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                     dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2);
                 end
                 %isWithinRadius = dd <= MaxSampleRadius .^ 2;
-                mask = selcrit.SelectionFromDistances(dd, catalog.RefEllipsoid.LengthUnit);
+                mask = selcrit.SelectionFromDistances(dd, refel);
                 minicat = catalog.subset(mask);
                 maxd = max(dd(mask));
                 
@@ -277,11 +282,12 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             % is this point of interest?
             %write_idx = activeidx(i);
         
+            assert(~isempty(minicat.Count));
             
-            nEvents(i)=minicat.Count; %%
-            maxDist(i)=maxd; %%
+            nEvents(i) = minicat.Count;
             if ~isempty(minicat)
-                maxMag(i)=max(minicat.Magnitude); %%
+                maxDist(i) = maxd; 
+                maxMag(i) = max(minicat.Magnitude);
             end
             % are there enough events to do the calculation?
             if minicat.Count < requiredNumEvents
@@ -309,7 +315,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         
         function updateWaitBar(~)
             nEvaluated=nEvaluated+1;
-            if ~mod(nEvaluated,ceil(length(zgrid)/50))
+            if ~mod(nEvaluated, updateFreq)
                 h.String={"Parallel Computation: " + p.NumWorkers + " workers",sprintf('Computing grid values: %5d / %d Total points', nEvaluated, nTotal)};
                 drawnow limitrate nocallbacks
             end
