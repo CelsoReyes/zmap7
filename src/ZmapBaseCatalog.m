@@ -1,4 +1,11 @@
 classdef ZmapBaseCatalog < matlab.mixin.Copyable
+    %
+    %
+    %
+    %
+    % Notes for creating dependent objects
+    % 1. create the following overridden functions
+    %    obj = blank(~)
     properties
         Date            datetime                        % date and time of event (capable of storing data to microseconds)
         Magnitude       double                          % Magnitude of each event
@@ -14,7 +21,12 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
     
     properties(Hidden)
         XYZ             (:,3) double
-        PositionUnits   char        = 'meter'
+        PositionUnits   (1,:) char        = 'meter'
+        ZUnits          (1,:) char        = 'meter'
+        XLabel (1,:) char = 'X'
+        YLabel (1,:) char = 'Y'
+        ZLabel (1,:) char = 'Z'
+        ZDir   (1,:) char = 'normal';
     end
     
     properties(Dependent)
@@ -22,13 +34,19 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
         DayOfYear % read-only
         Count       % read-only number of events in catalog
         DateSpan    % read-only duration
+        X           % read-only X position
+        Y           % read-only Y position
+        Z           % read-only Z position
     end
     
-    methods(Abstract)
-        obj = blank(~)
+    properties(SetAccess=immutable)
+        Type        (1,:) char
     end
     
     methods
+        function obj = ZmapBaseCatalog(varargin)
+            obj.Type = lower(class(obj));
+        end
         
         function val = get.Count(obj)
             if numel(obj) == 0
@@ -37,7 +55,6 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
                 val = size(obj.XYZ,1);
             end
         end
-        
         
         function out = get.DateSpan(obj)
             % dspan = obj.DateSpan  returns difference between min & max dates
@@ -53,6 +70,15 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
         
         function propval = get.DayOfYear(obj)
             propval = fix(datenum(obj.Date)) - datenum(obj.Date.Year - 1, 12 , 31);
+        end
+        function propval = get.X(obj)
+            propval = obj.XYZ(:,1);
+        end
+        function propval = get.Y(obj)
+            propval = obj.XYZ(:,2);
+        end
+        function propval = get.Z(obj)
+            propval = obj.XYZ(:,3);
         end
         
         function TF = isempty(obj)
@@ -76,56 +102,60 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
         function disp(obj)
             disp(obj.blurb)
             disp('with properties:');
-            p=properties(obj);
-            for i=1:numel(p)
+            
+            show_categorical = @(f) {numel(categories(obj.(f))), get_limited_categories(obj.(f))};
+            show_logical = @(f) {sum(obj.(f)), numel(obj.(f))};
+            show_cell    = @(f) {strjoin(num2str(size(obj.(f))),'x')};
+            show_simple  = @(f) {obj.(f)};
+            show_range   = @(f) {min(obj.(f)), max(obj.(f))};
+            show_refellipse=@(f) {obj.(f).Name, obj.(f).LengthUnit};
+            
+            business = { ... classname , dispformat, dispfun
+                "categorical"   , '%d categories [ %s ]'        , show_categorical;...
+                "logical"       , '<logical> [%d of %d are true]' , show_logical;...
+                "cell"          , '<%s cell>'                   , show_cell;...
+                "char"          , '''%s'''                      , show_simple;...
+                "string"        , '''%s'''                      , show_simple;...
+                "datetime"      , {'%s', '[ %s  to  %s ]'}      , {show_simple, show_range};...
+                "duration"      , {'%s', '[ %s  to  %s ]'}      , {show_simple, show_range};...
+                "referenceEllipsoid" , '%s [Units:%s]'          , show_refellipse;...
+                ""              , {'%g', '[ %g  to  %g ]'}      , {show_simple, show_range}...
+                };
+            
+            p = obj.display_order();
+            for i = 1:numel(p)
                 pn = p{i};
-                switch class(obj.(pn))
-                    case 'categorical'
-                        c=categories(obj.(pn));
-                        s = strjoin(c,', ');
-                        if numel(s) > 80
-                            commas = find(s==',');
-                            break1=max(commas(commas<25));
-                            break2=min(commas(commas>(length(s)-25)));
-                            
-                            s=[s(1:break1),'...',s(break2:end)];
-                        end
-                        fprintf('\t%20s : %d categories [ %s ]\n', pn, numel(c), s);
-                    case 'logical'
-                        fprintf('\t%20s : <logical> [%d of %d are true] \n',pn,sum(obj.(pn)),numel(obj.(pn)));
-                        
-                    case 'cell'
-                        fprintf('\t%20s : <%s cell> \n',pn,strjoin(num2str(size(obj.(pn))),'x'));
-                    case {'char','string'}
-                        fprintf('\t%20s : ''%s''\n',pn,obj.(pn));
-                    case {'datetime','duration'}
-                        if numel(obj.(pn))==1
-                            fprintf('\t%20s : %s\n',pn, obj.(pn));
-                        else
-                            fprintf('\t%20s : [ %s  to  %s ]\n',pn, min(obj.(pn)), max(obj.(pn)));
-                        end
-                        
-                    case 'referenceEllipsoid'
-                        fprintf('\t%20s : %s [Units:%s]',pn,obj.(pn).Name,obj.(pn).LengthUnit);
-                        
-                    otherwise
-                        try
-                            
-                            if numel(obj.(pn))==1
-                                fprintf('\t%20s : %g\n', pn, obj.(pn));
-                            else
-                                fprintf('\t%20s : [ %g  to  %g ]\n', pn, min(obj.(pn)), max(obj.(pn)));
-                            end
-                        catch
-                            if isempty(obj.(pn))
-                                fprintf('\t%20s : empty <%s>\n',pn,class(obj.(pn)))
-                            else
-                                fprintf('\t%20s : <%s>\n',pn,class(obj.(pn)));
-                            end
-                        end
+                logic = business(class(obj.(pn))==[business{:,1}], :);
+                if isempty(logic)
+                    logic = business(end,:);
+                end
+                fn = logic{3};
+                fmtstr = logic{2};
+                if iscell(logic{2})
+                    if numel(obj.(pn)) > 1
+                        fmtstr = fmtstr{2};
+                        fn = fn{2};
+                    else
+                        fmtstr = fmtstr{1};
+                        fn = fn{1};
+                    end
                 end
                 
+                try
+                    values = fn(pn);
+                catch
+                    if isempty(obj.(pn))
+                        fmtstr = 'empty <%s>';
+                    else
+                        fmtstr = '<%s>';
+                    end
+                    values = class(obj.(pn));
+                end
+                fmtstr = "\t%20s : " + fmtstr + "\n";
+                
+                fprintf(fmtstr, pn, values{:});
             end
+            
         end
         
         function tbl = table(obj)
@@ -143,25 +173,192 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
             tbl      = struct2table(st);
             tbl.Properties.Description = obj.Name;
         end
+        function s = summary(obj, verbosity)
+            % SUMMARY return a summary of this catalog
+            % valid verbosity values: 'simple', 'stats'
+            
+            tFmt = 'uuuu-MM-dd HH:mm:ss';
+            
+            % add additional ways to look at catalog if it makes sense
+            if ~exist('verbosity','var')
+                verbosity = '';
+            end
+            if numel(obj) > 1
+                s = sprintf('%d Catalogs',numel(obj));
+                return
+            end
+            
+            if isempty(obj) || obj.Count==0
+                s = sprintf('Empty Catalog, named "%s"',obj.Name);
+                return
+            end
+            leq = char(8804); %pretty version of <= , because a typed representation doesn't work across all platforms.
+            
+            shortZUnitList = {
+                'kilometer','km';
+                'meter','m';
+                'centimeter','cm';
+                'millimeter','mm';
+                'micron','nm';
+                'mile','mi';
+                'foot','ft';
+                'inch','in';
+                'yard','yd'
+                };
+            depUn = shortZUnitList{string(obj.ZUnits)==shortZUnitList(:,1),2};
+            
+            switch verbosity
+                case 'simple'
+                    trange = bounds2(obj.Date);
+                    mrange = bounds2(obj.Magnitude);
+                    drange = bounds2(obj.Z);
+                    mtypes  = cat2mtypestring();
+                    fmtstr  = [...
+                        'Catalog "%s" with %d events\n',...
+                        'Start Date: %s\n',...
+                        'End Date:   %s\n',...
+                        obj.ZLabel,':     %4.2f ',depUn,' ',leq,' Z ',leq,' %4.2f', depUn,'\n',...
+                        'Magnitudes: %2.1f ',leq,' M ',leq,' %2.1f\n',...
+                        'MagnitudeTypes: %s'];
+                    s = sprintf(fmtstr, obj.Name, obj.Count, string(trange(:),tFmt), drange, mrange, mtypes);
+                case 'stats'
+                    trange = bounds2(obj.Date);
+                    mrange = bounds2(obj.Magnitude);
+                    drange = bounds2(obj.Z);
+                    
+                    fmtstr = [...
+                        'Catalog "%s"\nNumber of events: %d\n',...
+                        'Start Date: %s\n',...
+                        'End Date:   %s\n',...
+                        '  %s\n',...
+                        obj.ZLabel,':     %4.2f ',depUn,' ',leq,' Z ',leq,' %4.2f ',depUn,'\n',...
+                        '  %s\n',...
+                        'Magnitudes: %2.1f ',leq,' M ',leq,' %2.1f\n',...
+                        '  %s\n',...
+                        'Magnitude Types: %s'];
+                    
+                    mean_int    = mean(diff(obj.Date));
+                    median_int  = median(diff(obj.Date));
+                    std_int     = std(diff(obj.Date));
+                    mean_int.Format     = 'd';
+                    median_int.Format   = 'd';
+                    std_int.Format      = 'd';
+                    if std_int < 10
+                        std_int.Format      = 'hh:mm:ss';
+                    end
+                    if mean_int < 10
+                        mean_int.Format     = 'hh:mm:ss';
+                    end
+                    if median_int < 10
+                        median_int.Format   = 'hh:mm:ss';
+                    end
+                    meanstdmedian = @(x) [mean(x), std(x) median(x)];
+                    s = sprintf(fmtstr, obj.Name, obj.Count, ...
+                        string(trange, tFmt),...
+                        sprintf('intervals: mean: %s ±std %s , median: %s', mean_int, std_int, median_int),...
+                        drange, sprintf('mean: %.3f ±std %.3f , median: %.3f', meanstdmedian(obj.Z)),...
+                        mrange, sprintf('mean: %.2f ±std %.2f , median: %.2f', meanstdmedian(obj.Magnitude)),...
+                        cat2mtypestring());
+                case 'list'
+                    fprintf('Catalog "%s" with %d events\n', obj.Name, obj.Count);
+                    fprintf('Date                      %3s       %3s   %3s(%s)    Mag  MagType\n', obj.YLabel, obj.XLabel, obj.ZLabel, depUn);
+                    for n=1:obj.Count
+                        fmtstr  = '%s  %8.4f  %9.4f   %6.2f   %4.1f   %s\n';
+                        mt      = obj.MagnitudeType(n);
+                        fprintf( fmtstr, string(obj.Date(n), tFmt),...
+                            obj.Y(n), obj.X(n), obj.Z(n), obj.Magnitude(n), mt);
+                    end
+                otherwise
+                    s = sprintf('Catalog "%s", containing %d events', obj.Name, obj.Count);
+            end
+            function mtypes = cat2mtypestring()
+                % CAT2MTYPESTRING returns a string representation of the catalog type
+                % mtypes = CAT2MTYPESTRING()
+                mtypes = strjoin(categories(unique(obj.MagnitudeType)), ',');
+                if isempty(mtypes)
+                    mtypes = '-none-';
+                end
+            end
+        end
+        %% set operations
+        %
         
-        %% subsetting, set, and sorting functions
+        function [C, IA] = setdiff(A, B)
+            % returns values that are in A but not in B with no repetitions. NO tolerance.
+            % based solely on Date, X, Y, Z, and Magnitude
+            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSSSSSS';
+            
+            compstrA = string(A.Date,dateFmt)+join(string(A.XYZ))+" "+string(A.Magnitude);
+            compstrB = string(B.Date,dateFmt)+join(string(B.XYZ))+" "+string(B.Magnitude);
+            IA=ismember(compstrA,compstrB);
+            C=A.subset(~IA);
+        end
+        
+        function E = setxor(A,B)
+            % return combination of values that are either in A or B, but not in both. no tolerance
+            % based solely on Date,  X, Y, Z, and Magnitude
+            C=setdiff(A,B); % in A, not in B
+            D=setdiff(B,A); % in B, not in A
+            E = C.cat(D);
+        end
+        
+        function [C,IA,IB] = intersect(A,B)
+            % return values common to both events, no repetitions. no tolerance
+            % based solely on Date,  X, Y, Z, and Magnitude
+            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSSSSSS';
+            compstrA = string(A.Date,dateFmt)+join(string(A.XYZ))+" "+string(A.Magnitude);
+            compstrB = string(B.Date,dateFmt)+join(string(B.XYZ))+" "+string(B.Magnitude);
+            IA=ismember(compstrA,compstrB);
+            if nargout==3
+                IB=ismember(compstrB,compstrA);
+            end
+            C=A.subset(IA);
+        end
+        
+        %% subsetting and sorting functions
         %
         
         function subset_in_place(obj,range)
-            obj.Date = obj.Date(range);
-            obj.XYZ = obj.XYZ(range,:);
-            obj.Magnitude       = obj.Magnitude(range) ;
-            obj.MagnitudeType   = obj.MagnitudeType(range) ;
+            % SUBSET_IN_PLACE modifies this object, not a copy of it.
+            the_fields = obj.fields_that_must_be_nevent_length();
+            for n = 1 : numel(the_fields)
+                fn = the_fields{n};
+                obj.(fn) = obj.(fn)(range,:); % always copy rows
+            end
+            
+            the_fields = obj.possibly_empty_fields();
+            for n = 1 : numel(the_fields)
+                fn = the_fields{n};
+                if ~isempty(obj.(fn))
+                    obj.(fn) = obj.(fn)(range,:); % always copy rows
+                end
+            end
         end
         
         function newobj = subset(obj, range)
+            % SUBSET get a subset of this object
+            % newcatalog = catalog.SUBSET(mask) where mask is a t/f array matching obj.Count
+            %    will keep all "true" events
+            % newcatalog = catalog.SUBSET(range), where range evaluates to an integer array
+            %    will retrieve the specified events.
+            %    this option can be used to change the order of the catalog too
+            
             newobj             = obj.blank();
             newobj.Name        = obj.Name;
             
-            newobj.Date             = obj.Date(range);       % datetime
-            newobj.XYZ              = obj.XYZ(range,:);
-            newobj.Magnitude        = obj.Magnitude(range);
-            newobj.MagnitudeType    = obj.MagnitudeType(range) ;
+            the_fields = obj.fields_that_must_be_nevent_length();
+            for n = 1 : numel(the_fields)
+                fn = the_fields{n};
+                newobj.(fn) = obj.(fn)(range,:); % always copy rows
+            end
+            
+            the_fields = obj.possibly_empty_fields();
+            for n = 1 : numel(the_fields)
+                fn = the_fields{n};
+                if ~isempty(obj.(fn))
+                    newobj.(fn) = obj.(fn)(range,:); % always copy rows
+                end
+            end
         end
         
         
@@ -187,46 +384,93 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
             % duplicates are not removed
             initialCount = objA.Count + objB.Count;
             obj = copy(objA);
-            obj.Date           = [objA.Date;           objB.Date];
-            obj.XYZ            = [objA.XYZ;            objB.XYZ];
-            obj.Magnitude      = [objA.Magnitude;      objB.Magnitude];
-            obj.MagnitudeType  = [objA.MagnitudeType;  objB.MagnitudeType];
+            
+            
+            the_fields = obj.fields_that_must_be_nevent_length();
+            for n = 1 : numel(the_fields)
+                f= the_fields{n};
+                obj.(f) = [objA.(f) ; objB.(f)];
+            end
+            
+            the_fields = obj.possibly_empty_fields();
+            for n = 1 : numel(the_fields)
+                fn = the_fields{n};
+                
+                if isempty(objA.(fn)) && isempty(objB.(fn))
+                    continue
+                end
+                
+                if istable(objA.(fn))
+                    cols=@(x) 1;
+                else
+                    cols=@(x)size(x,2);
+                end
+                
+                if isempty(objA.(fn))
+                    obj.(fn) = [repmat(missing, objA.Count, cols(objB.(fn)))	; objB.(fn)];
+                elseif isempty(objB.(fn))
+                    obj.(fn) = [objA.(fn)   ; repmat(missing, objB.Count, cols(objA.(fn)))];
+                else
+                    obj.(fn)        = [objA.(fn);            objB.(fn)];
+                end
+                
+            end
             obj.clearFilter();
             assert(obj.Count == initialCount);
-        end
-        
-        function [C, IA] = setdiff(A, B)
-            % returns values that are in A but not in B with no repetitions. NO tolerance.
-            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
-            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSSSSSS';
             
-            compstrA = string(A.Date,dateFmt)+join(string(A.XYZ))+" "+string(A.Magnitude);
-            compstrB = string(B.Date,dateFmt)+join(string(B.XYZ))+" "+string(B.Magnitude);
-            IA=ismember(compstrA,compstrB);
-            C=A.subset(~IA);
+            
         end
         
-        function E = setxor(A,B)
-            % return combination of values that are either in A or B, but not in both. no tolerance
-            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
-            C=setdiff(A,B); % in A, not in B
-            D=setdiff(B,A); % in B, not in A
-            E = C.cat(D);
-        end
-        
-        function [C,IA,IB] = intersect(A,B)
-            % return values common to both events, no repetitions. no tolerance
-            % based solely on Date, Longitude, Latitude, Depth, and Magnitude
-            dateFmt='uuuu-MM-dd''T''HH:mm:ss.SSSSSSSSS';
-            compstrA = string(A.Date,dateFmt)+join(string(A.XYZ))+" "+string(A.Magnitude);
-            compstrB = string(B.Date,dateFmt)+join(string(B.XYZ))+" "+string(B.Magnitude);
-            IA=ismember(compstrA,compstrB);
-            if nargout==3
-                IB=ismember(compstrB,compstrA);
+        function [obj, sameidx] = removeDuplicates(obj, varargin)
+            % REMOVEDUPLICATES removes events from catalog that are similar within tolerances
+            %
+            % catalog = catalog.REMOVEDUPLICATES() removes the duplicates according to default
+            % tolerances. To specify tolerances, add them as NAME - VALUE pairs.
+            %
+            % Valid Tolerances names are:
+            %   'tolHoriz_m'  : Horizontal distance tolerance, in meters
+            %   'tolVert_m' : Z tolerance, in meters
+            %   'tolTime'    : Time tolerance (in seconds) OR a duration
+            %   'tolMag'     : Magnitude Tolerance
+            %
+            % For example:
+            %   c = mycat.removeDuplicates('tolVert_m', 20 , 'tolTime', milliseconds(50))
+            %
+            % this only compares events adjacent in the catalog (sorted by time).
+            %
+            % catalog is returned in DateOrder
+            
+            
+            obj.sort('Date');
+            orig_size = obj.Count;
+            p = inputParser();
+            non_neg_scalar = @(x) isscalar(x) && x>=0;      % used to verify inputs
+            p.addOptional('tolHoriz_m'  , 10            , non_neg_scalar );
+            p.addOptional('tolVert_m'   , 0.5           , non_neg_scalar );
+            p.addOptional('tolTime'     , seconds(0.01) , non_neg_scalar );
+            p.addOptional('tolMag'      , 0.001         , non_neg_scalar );
+            p.parse(varargin{:})
+            
+            tols = p.Results;
+            if ~isduration(tols.tolTime)
+                tols.tolTime = seconds(tols.tolTime);
             end
-            C=A.subset(IA);
+            msg.dbfprintf(['Removing duplicates\n Using Tolerances:\n'...
+                '     Time : %10s\n Horiz Dist : %6g m\n    Vert Dist : %6g m\n      Mag : %6.3f\n'],...
+                tols.tolTime, tols.tolHoriz_m, tols.tolVert_m, tols.tolMag);
+            % Dip, DipDirection, Rake, MomentTensor are not included in calculation
+            
+            [dist,units] = obj.DistanceTo(obj.Y(1:end-1),obj.X(1:end-1),...
+                obj.Y(2:end),obj.X(2:end));
+            
+            isSame = abs(diff(obj.Date)) <= tols.tolTime & ...
+                dist <= tols.tolHoriz_m * unitsratio('meter',units') & ...
+                abs(diff(obj.Z))     <= tols.tolVert_m * unitsratio('meters',units) & ...
+                abs(diff(obj.Magnitude)) <= tols.tolMag;
+            sameidx = [false; isSame];
+            obj = obj.subset(~sameidx);
+            msg.dbfprintf('Removed %d duplicates\n', orig_size - obj.Count);
         end
-        
         
         function sort(obj, field, direction)
             % SORT this catalog by the specified field (IN PLACE)
@@ -269,7 +513,7 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
         
         %% spatial functions
         %
-       
+        
         function [dists, units] = hypocentralDistanceTo(obj, x, y, z)
             % [dists, units] = obj.hypocentralDistanceTo(x,y,z)
             % [dists, units] = obj.hypocentralDistanceTo([x,y,z])
@@ -300,19 +544,20 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
         function [other, max_km] = selectClosestEvents(obj, x, y, z, n)
             % SELECTCLOSESTEVENTS determine which N events are closest to a point (x,y, z).
             % [otherCat, max_km] = catalog.SELECTCLOSESTEVENTS(x,y, z, nEvents)
-            % for epicentral distance, leave depth empty.
+            % for epicentral distance, leave Z empty.
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
+            %
+            % sorting is unaffected
             %
             % see also selectCircle, selectRadius
             
             [dists, distunits] = obj.DistanceTo(x, y, z);
-            [sorted_dists,I]=sort(dists);
-            n=min(n, obj.Count); %protect against indexing errors
-            evIdx = I(1:n);
+            [smallest_dists,I] = mink(dists, n);
+            evIdx=false(size(dists));
+            evIdx(I)=true;
+            max_km = smallest_dists(end) .* unitsratio('kilometer', distunits);
             other = obj.subset(evIdx);
-            max_km = sorted_dists(n) .* unitsratio('kilometer', distunits);
-            
         end
         
         function other = selectRadius(obj, x, y, z, radius, radius_units)
@@ -360,6 +605,8 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
                 ax = gca;
             end
             h = scatter(ax,obj.XYZ(:,1), obj.XYZ(:,2),varargin{:});
+            ax.XLabel.String = obj.XLabel;
+            ax.YLabel.String = obj.YLabel;
         end
         
         function h = scatter3(obj, varargin)
@@ -369,11 +616,14 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
                 ax = gca;
             end
             h = scatter3(ax, obj.XYZ(:,1), obj.XYZ(:,2), obj.XYZ(:,3), varargin{:});
+            ax.XLabel.String = obj.XLabel;
+            ax.YLabel.String = obj.YLabel;
+            ax.ZLabel.String = obj.ZLabel;
+            ax.ZDir = obj.ZDir;
         end
         
         
         %% other functions
-        %
         %
         %
         
@@ -394,6 +644,45 @@ classdef ZmapBaseCatalog < matlab.mixin.Copyable
             end
         end
         
+        %% validation
+        function validate(obj)
+            data_len_fn = @(x)size(obj.(x),1);
+            flds =  obj.fields_that_must_be_nevent_length();
+            data_lengths = unique(cellfun(data_len_fn, flds));
+            
+            assert(numel(unique(data_lengths)) == 1, 'not all data fields are same length: %s', mat2str(data_lengths));
+            expected_len = data_lengths(1);
+            data_len_fn = @(x) isempty(obj.(x)) || numel(obj.(x)) == expected_len; % returns TF vector
+            
+            flds = obj.possibly_empty_fields();
+            data_len_ok = cellfun(data_len_fn, flds );
+            assert( all(data_lengths_ok), 'incorrect field lengths for: %s', strjoin(flds(~data_len_ok),','));
+        end
+    end
+    
+    methods(Static)
+        function obj = blank()
+            % allows subclass-aware use of empty objects
+            obj = ZmapBaseCatalog();
+        end
+    end
+    methods(Static, Hidden)
+        function s = display_order()
+            % get fields to display, in order.
+            s = {'Name','Type','Date','DateSpan',...
+                'X','Y','Z','PositionUnits',...
+                'Magnitude','MagnitudeType',...
+                'IsSortedBy','SortDirection' ...
+                };
+        end
         
+        function pef = possibly_empty_fields()
+            % fields that may either match the # of events, or be empty
+            pef = {'MagnitudeType', 'Filter'};
+        end
+        
+        function mbnel = fields_that_must_be_nevent_length()
+            mbnel = {'Date','Magnitude','XYZ'};
+        end
     end
 end
