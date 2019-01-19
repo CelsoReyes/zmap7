@@ -152,7 +152,7 @@ function catalog_menu(obj, force)
             lims = ax.([style(n) , 'Lim']);
             mask = mask & lims(1) <= obj.catalog.(fname) & obj.catalog.(fname) <= lims(2);
         end
-        obj.catalog.subset_in_place(mask);
+        obj.catalog.subsetInPlace(mask);
         zmap_update_displays();
     end
     

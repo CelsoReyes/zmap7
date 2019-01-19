@@ -1,82 +1,41 @@
 classdef ZmapCatalog < ZmapBaseCatalog
-    % ZmapCatalog represents an event catalog
+    % ZmapCatalog represents an event catalog, tied to the Latitude/Longitude/Depth system and including Displacement information
     %
     % ZmapCatalog properties:
-    %   Name - name of catalog, used when labeling plots
-    %   Date - catalog event times
+    %   * all Properties specified by ZmapBaseCatalog, plus:
     %
     %   Longitude - Longitude (Deg) of each event
     %   Latitude - Latitude (Deg) of each event
     %   Depth -  Depth (km) of events
     %
-    %   Magnitude - Magnitude of each event
-    %   MagnitudeType - Magnitude[unit of each event
+    %   Dip - angle of dip
+    %   DipDirection - direction of dip
+    %   Rake - direction of movement for hanging wall block
     %
-    %    Dip         - unused?
-    %    DipDirection - unused?
-    %    Rake - unused?
+    %   MomentTensor - table, as mrr, mtt, mff, mrt, mrf, mtf
     %
-    %   MomentTensor - as mrr, mtt, mff, mrt, mrf, mtf
-    %
-    %   DecimalYear - date as a decimal year (for backward compatibility, not recommended)
-    %   DayOfYear - day of the year for each event
-    %   Count - number of events in catalog
-    %   DateSpan - duration between first and last events in catalog
+    %   RefEllipsoid - reference ellipsoid upon which Latitude and Longitude are based. Distance units are locked to km.
     %
     % ZmapCatalog methods:
+    %   * all Methods specified by ZmapBaseCatalog, plus:
     %
     %   ZmapCatalog -  create an empty ZmapCatalog, or from an array
-    %
-    %   isempty - returns true if catalog contains no events
-    %
-    %   cat - concatenate catalogs
-    %   removeDuplicates - remove duplicate events, based on tolerance values
-    %   subset - get a subset of the catalog, based on an index (numeric, or logical)
-    %
-    %   Output Methods:
-    %
-    %   disp - display simple details for catalog
-    %   summary - get text that describe this catalog
-    %   plot - plot the catalog
-    %   plotm - plot the catalog on a map
-    %
-    %   Export Methods:
-    %
     %   ZmapArray - get an array in the style of older Zmap versions
     %
-    %   Filtering Methods:
-    %
-    %   * Filtering methods have been outsourced into the ZmapCatalogView class.
-    %
-    %   getCropped - apply filters to get a NEW smaller ZmapCatalog
-    %
-    %   Sorting Methods:
-    %
-    %   sort - sort the catalog according to a field, either ascending or descending
-    %   sortedByDistanceTo - sort catalog according to event distance to a point
-    %
-    %   Spatial Methods:
-    %
-    %   epicentralDistanceTo - get distance to a point, considering only Lat/Lon. default units are specified by this Catalog's RefEllipsoid
-    %   hypocentralDistanceTo - get distance to a point, taking depth into consideration. default units are specified by this Catalog's RefEllipsoid
-    %   selectClosestEvents - return a catalog containing only N closest events
-    %   selectRadius - return a catalog containing only events within a radius
+    % see also ZmapBaseCatalog
     
-    % TODO consider using matlab.mixin.CustomDisplay
     properties
-        Dip             double
-        DipDirection    double
-        Rake            double
-        MomentTensor    table               = get_empty_moment_tensor()
+        Dip             double      % angle of dip, between 0 (horiz) and 90 degrees (vert)
+        DipDirection    double      % direction of dip (clockwise from north
+        Rake            double      % direction of movement for hanging wall block
+        MomentTensor    table               = get_empty_moment_tensor() % moment tensor information
         RefEllipsoid    referenceEllipsoid  = referenceEllipsoid('wgs84','kilometer'); % reference ellipsoid for Longitude and Latitude as specified in QuakeML
-        % additions to this table need to be also added to a bunch of functions:
-        %    summary (?), getCropped, sort, subset
     end
     
     properties(Dependent)
-        Depth           double                          % Depth of events (in kilometers)
-        Longitude       double                          % Longitude (Deg) of each event
-        Latitude        double                          % Latitude (Deg) of each event
+        Depth           double     	% Depth of events (in kilometers)
+        Longitude       double     	% Longitude (Deg) of each event
+        Latitude        double     	% Latitude (Deg) of each event
         DepthUnits
     end
     
@@ -87,10 +46,7 @@ classdef ZmapCatalog < ZmapBaseCatalog
     
     
     methods
-        % % %
-        % constructor
-        % % %
-        
+
         function obj = ZmapCatalog(other, varargin)
             % ZMAPCATALOG create a ZmapCatalog object
             %
@@ -181,11 +137,7 @@ classdef ZmapCatalog < ZmapBaseCatalog
             obj.Filter=true(size(obj.Longitude));
         end
        
-        % % %
-        %
-        % positional interpretations (lat, lon, depth from/to base class)
-        %
-        % % %
+
         function val = get.Depth(obj)
             val = obj.XYZ(:,3);
         end
@@ -213,11 +165,19 @@ classdef ZmapCatalog < ZmapBaseCatalog
         function set.Longitude(obj,val)
             obj.XYZ(1:numel(val),1)=val;
         end
-                
-        %% 
-        %
-        %
-        
+               
+        function set.MomentTensor(obj, value)
+            MomentTensorColumns = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
+            if istable(value)
+                assert(isequal(value.Properties.VariableNames,MomentTensorColumns));
+                obj.MomentTensor = value;
+            elseif isnumeric(value)
+                assert(size(value,2) == 6,...
+                    'expect moment tensors to have 6 columns %s:', strjoin(MomentTensorColumns,', '));
+                obj.MomentTensor     = array2table(value, 'VariableNames', MomentTensorColumns);
+            end
+        end
+
         function set.RefEllipsoid(obj, value)
             % change reference ellipsoid associated with data WITHOUT updating lat & lon positions.
             % Reference ellipsoid is always of length unit 'kilometer'
@@ -230,19 +190,25 @@ classdef ZmapCatalog < ZmapBaseCatalog
                 error('Trying to set the reference ellipsoid with unknown value. use a name (ex. ''wgs84'') or provide a referenceEllipsoid');
             end
         end
-        
-        function set.MomentTensor(obj, value)
-            MomentTensorColumns = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
-            if istable(value)
-                assert(isequal(value.Properties.VariableNames,MomentTensorColumns));
-                obj.MomentTensor = value;
-            elseif isnumeric(value)
-                assert(size(value,2) == 6,...
-                    'expect moment tensors to have 6 columns %s:', strjoin(MomentTensorColumns,', '));
-                obj.MomentTensor     = array2table(value, 'VariableNames', MomentTensorColumns);
-            end
+
+        function [dists, units] = epicentralDistanceTo(obj, to_lat, to_lon)
+            % get epicentral (lat-lon) distance to another point
+            % [dists, units] = catalog.EPICENTRALDISTANCETO(to_lat, to_lon) returns the distance in the same
+            % units as the catalog's RefEllipsoid.
+            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
+            units = obj.RefEllipsoid.LengthUnit;
         end
         
+        function [dists, units] = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
+            % get hypocentral distance (3-D distance) to another point
+            % [dists_km, units] = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
+            assert(obj.RefEllipsoid.LengthUnit == "kilometer") % we make this assumption because of depth units
+            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
+            delta_dep   = (obj.Depth - to_depth_km);
+            dists    = sqrt( dists .^ 2 + delta_dep .^ 2);            
+            units = obj.RefEllipsoid.LengthUnit;
+        end
+                
         function outval = ZmapArray(obj)
             % ZMAPARRAY create a zmap array from this catalog
             % zmarr = catalog.ZMAPARRAY()
@@ -264,32 +230,6 @@ classdef ZmapCatalog < ZmapBaseCatalog
             % obj.Rake % position 12 of 12
         end        
         
-        %%  distance functions that are lat/lon aware
-        %
-        %
-        
-        function [dists, units] = epicentralDistanceTo(obj, to_lat, to_lon)
-            % get epicentral (lat-lon) distance to another point
-            % dists = catalog.EPICENTRALDISTANCETO(to_lat, to_lon) returns the distance in the same
-            % units as the catalog's RefEllipsoid.
-            %
-            % dists = catalog.EPICENTRALDISTANCETO(to_lat, to_lon, dist_units) converts the distances
-            % into the desired units for further calculation
-            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
-            units = obj.RefEllipsoid.LengthUnit;
-        end
-        
-        function [dists, units] = hypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
-            % get HYPOCENTRALDISTANCETO (lat,lon,z) distance to another point
-            % dists_km = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
-            assert(obj.RefEllipsoid.LengthUnit == "kilometer") % we make this assumption because of depth units
-            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
-            delta_dep   = (obj.Depth - to_depth_km);
-            dists    = sqrt( dists .^ 2 + delta_dep .^ 2);            
-            units = obj.RefEllipsoid.LengthUnit;
-        end
-        
-       
     end
     
     methods(Static)
@@ -310,6 +250,9 @@ classdef ZmapCatalog < ZmapBaseCatalog
                 'Dip','DipDirection','Rake','MomentTensor'...
                 };
         end
+        
+        % % % intentionally not implementing: fields_that_must_be_nevent_length(); 
+        
         function pef = possibly_empty_fields()
             % fields that are either empty, or have the same length as event.
             pef = [possibly_empty_fields@ZmapBaseCatalog , {'Dip','DipDirection','Rake', 'MomentTensor'}];
