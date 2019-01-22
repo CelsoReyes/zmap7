@@ -133,11 +133,16 @@ classdef ShapeCircle < ShapeGeneral
                 otherX(ismissing(otherY))= missing;
                 otherY(ismissing(otherX))= missing;
                 % return a vector of size otherX that is true where item is inside polygon
-                dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid); %TOFIX: remove assumption that we're not working in simple  XYZ coords.
-                if ~include_boundary
-                    mask=dists < obj.Radius;
+                    
+                if obj.CoordinateSystem == "geodetic"
+                    dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid); %TOFIX: remove assumption that we're not working in simple  XYZ coords.
                 else
-                    mask=dists <= obj.Radius;
+                    dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
+                end
+                if ~include_boundary
+                    mask = dists < obj.Radius;
+                else
+                    mask = dists <= obj.Radius;
                 end
             end
         end

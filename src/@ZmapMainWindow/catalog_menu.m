@@ -58,11 +58,14 @@ function catalog_menu(obj, force)
     uimenu(submenu,'Separator','on',...
         'Label','Memorize Catalog',  MenuSelectedField(), @cb_memorize);
     uimenu(submenu,'Label','Recall Catalog', MenuSelectedField(), @cb_recall);
-    
-    uimenu(submenu,'Label','Clear Memorized Catalog',MenuSelectedField(),@cb_clearmemorized);
-    
+        
     uimenu(submenu,'Label','Combine catalogs',MenuSelectedField(),@cb_combinecatalogs,...
         'Separator','on');
+    
+    
+    uimenu(submenu,'Label','Split and Compare', ...
+        MenuSelectedField(),@(~,~)multi_range_selector(obj.catalog, ...
+        @(x)assignin('base','CatalogA',x), @(x)assignin('base','CatalogB',x)) );
     
     uimenu(submenu,'Label','Compare catalogs - find identical events',MenuSelectedField(),@(~,~)comp2cat);
     
