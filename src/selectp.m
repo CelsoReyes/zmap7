@@ -23,7 +23,7 @@ function selectp(in_or_out)
     ZG.newt2 = [ ];           % reset catalogue variables
     %a=storedcat;              % uses the catalogue with the pre-selected main
     % general parameters
-    ZG.newcat = ZG.primeCatalog;
+    ZG.newcat = copy(ZG.primeCatalog);
     
     delete(findobj('Tag','mouse_points_overlay'));
     delete(findobj('Tag','poly_selected_events'));

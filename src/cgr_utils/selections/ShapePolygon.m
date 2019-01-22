@@ -85,7 +85,11 @@ classdef ShapePolygon < ShapeGeneral
             end
             line1 = sprintf('Polygon with %d points',nPts);
             line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
+            if obj.CoordinateSystem == "geodetic"
+                line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
+            else
+                line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
+            end
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
@@ -192,7 +196,7 @@ classdef ShapePolygon < ShapeGeneral
                 save(filelocation,'zmap_shape');
             else
                 if ~exist('delimiter','var'), delimiter = ',';end
-                tb=table(obj.Lat, obj.Lon,'VariableNames',{'Latitude','Longitude'});
+                tb=table(obj.X, obj.Y,'VariableNames',{'X', 'Y'});
                 writetable(tb,filelocation,'Delimiter',delimiter);
             end
                 

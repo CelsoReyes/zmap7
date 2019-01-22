@@ -64,7 +64,9 @@ function bvanofit(mycat, seg1, seg2)
     %delete(findobj(bvfig,'Type','axes'));
     format short;
     
-    if isempty(mycat), mycat = ZG.primeCatalog; end
+    if isempty(mycat),
+        mycat = ZG.primeCatalog;  % points to same thing
+    end
     [minmag2, maxmag] = bounds(mycat.Magnitude);
     n = mycat.Count;
     tdiff = round(days(mycat.DateSpan()));

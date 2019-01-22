@@ -10,7 +10,9 @@ function incircle()
     
     report_this_filefun();
     %
-    if isempty(ZG.newcat), ZG.newcat = ZG.primeCatalog; end   % verify whether to start with
+    if isempty(ZG.newcat), 
+        ZG.newcat = copy(ZG.primeCatalog); 
+    end   % verify whether to start with
     % original catalogue
     % make the interface for input
     %

@@ -85,7 +85,7 @@ function [c2,mindist,mask,gcDist]=test_this()
     disp('testing... this test expects that you are currently looking at the map')
     %% some scripts that can be used to test:
     ZG=ZmapGlobal.Data;
-    catalog=ZG.primeCatalog;
+    catalog=ZG.primeCatalog; % points to same thing
     [lon, lat] = ginput(2);
     [c2,mindist,mask,gcDist]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,20,0.1);
     figure

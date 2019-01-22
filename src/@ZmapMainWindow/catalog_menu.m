@@ -80,8 +80,8 @@ function catalog_menu(obj, force)
             obj.rawcatalog = mcm.recall();
             
             [obj.mshape,obj.mdate]=obj.filter_catalog();
-            obj.map_axes.XLim=bounds2(obj.rawcatalog.Longitude);
-            obj.map_axes.YLim=bounds2(obj.rawcatalog.Latitude);
+            obj.map_axes.XLim=bounds2(obj.rawcatalog.X);
+            obj.map_axes.YLim=bounds2(obj.rawcatalog.Y);
             
             hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
             hh.delay_for_close(1);
@@ -129,7 +129,7 @@ function catalog_menu(obj, force)
         v=ax.View;
         switch ax.Tag
             case 'mainmap_ax'
-                fields={'Longitude','Latitude','Depth'};
+                fields={obj.XLabel, obj.YLabel, obj.ZLabel};
             case 'cumtimeplot_ax'
                 fields={'Date','',''};
             otherwise
@@ -148,7 +148,7 @@ function catalog_menu(obj, force)
         end
         mask=true(obj.catalog.Count,1);
         for n = 1 : len(style)
-            fname = fields{n}
+            fname = fields{n};
             lims = ax.([style(n) , 'Lim']);
             mask = mask & lims(1) <= obj.catalog.(fname) & obj.catalog.(fname) <= lims(2);
         end
@@ -167,15 +167,15 @@ function catalog_menu(obj, force)
             errordlg('No polygon exists. Create one from the selection menu first','Cannot crop to polygon');
             return
         end
-        events_in_shape = obj.shape.isinterior(obj.catalog.Longitude, obj.catalog.Latitude);
+        events_in_shape = obj.shape.isinterior(obj.catalog.X, obj.catalog.Y);
         obj.catalog=obj.catalog.subset(events_in_shape);
         
         zmap_update_displays();
         
         % adjust the size of the main map if the current figure IS the main map
         set(obj.map_axes,...
-            'XLim',bounds2(obj.catalog.Longitude),...
-            'YLim',bounds2(obj.catalog.Latitude));
+            'XLim',bounds2(obj.catalog.X),...
+            'YLim',bounds2(obj.catalog.Y));
     end
     
     function cb_editrange(~,~)

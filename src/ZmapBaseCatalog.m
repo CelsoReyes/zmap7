@@ -1,4 +1,4 @@
-classdef ZmapBaseCatalog < matlab.mixin.Copyable
+classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
     % ZmapBaseCatalog represents the basic utilities for an event catalog
     %
     % ZmapBaseCatalog properties:

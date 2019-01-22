@@ -329,8 +329,8 @@ classdef ZmapHGridFunction < ZmapGridFunction
             end
             colorbar
             title(obj.ax,mydesc)
-            xlabel(obj.ax,'Longitude')
-            ylabel(obj.ax,'Latitude')
+            xlabel(obj.ax,obj.RawCatalog.XLabel)
+            ylabel(obj.ax,obj.RawCatalog.YLabel)
             
             if isempty(findobj(f,'Tag','lookmenu'))
                 ZmapHGridFunction.add_menus(choice);
@@ -573,7 +573,7 @@ end
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
                 set(gca,'NextPlot','add')
-                line(catalog.Longitude, catalog.Latitude, 'Marker','o',...
+                line(catalog.X, catalog.Y, 'Marker','o',...
                     'MarkerSize',3,...
                     'MarkerEdgeColor',[.2 .2 .2],...
                     'LineStyle','none',...
@@ -694,7 +694,7 @@ end
             c = obj.catalogForThisPoint;
             thetag = [obj.PlotTag ' ' obj.pointChoice, ' selection'];
             cellfun(@(aw) aw.add_series(c, thetag, plOpt), analysisWindows,'UniformOutput',false);
-            set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.Longitude','YData',c.Latitude);
+            set(findobj(obj.ax,'Tag',['selection', obj.pointChoice]),'XData',c.X','YData',c.Y);
             % clear_empty_legend_entries(gcf);
         end
         

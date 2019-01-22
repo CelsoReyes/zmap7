@@ -37,8 +37,8 @@ classdef ShapeCircle < ShapeGeneral
             elseif strcmpi(varargin{1},'dlg')
                 stashedshape = ShapeGeneral.ShapeStash;
                 sdlg.prompt='Radius (km):'; sdlg.value=ra;
-                sdlg(2).prompt='Center X (Lon):'; sdlg(2).value=stashedshape.X0;
-                sdlg(3).prompt='Center Y (Lat):'; sdlg(3).value=stashedshape.Y0;
+                sdlg(2).prompt='Center X :'; sdlg(2).value=stashedshape.X0;
+                sdlg(3).prompt='Center Y :'; sdlg(3).value=stashedshape.Y0;
                 [~,cancelled,obj.Radius,obj.Points(1),obj.Points(2)]=smart_inputdlg('Define Circle',sdlg);
                 if cancelled
                     beep
@@ -117,20 +117,23 @@ classdef ShapeCircle < ShapeGeneral
             
         end
         
-        function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
+        function [mask]=isinterior(obj,otherX, otherY, include_boundary)
             % isinterior true if value is within this circle's radius of center. Radius inclusive.
             %
             % overridden because using polygon approximation is too inaccurate for circles
             %
-            % [mask]=obj.isinterior(otherLon, otherLat)
+            % [mask]=obj.isinterior(otherX, otherY)
+            global interiorhit
+            disp(dbstack)
+            interiorhit(end+1)={dbstack};
             if ~exist('include_boundary','var')
                 include_boundary = true;
             end
             if isempty(obj.Points)||isnan(obj.Points(1))
-                mask = ones(size(otherLon));
+                mask = ones(size(otherX));
             else
-                % return a vector of size otherLon that is true where item is inside polygon
-                dists=distance(obj.Y0, obj.X0, otherLat, otherLon, obj.RefEllipsoid);
+                % return a vector of size otherX that is true where item is inside polygon
+                dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid); %TOFIX: remove assumption that we're not working in simple  XYZ coords.
                 if ~include_boundary
                     mask=dists < obj.Radius;
                 else
@@ -166,7 +169,7 @@ classdef ShapeCircle < ShapeGeneral
             end
             [savepath,~,ext] = fileparts(filelocation); 
             if ext==".mat"
-                zmap_shape=obj;
+                zmap_shape = obj;
                 save(filelocation,'zmap_shape');
             else
                 if ~exist('delimiter','var'), delimiter = ',';end
@@ -204,37 +207,6 @@ classdef ShapeCircle < ShapeGeneral
                 h.YData=lat;
             end
         end
-        %{
-        function obj=select(varargin)
-            % ShapeCircle.select()
-            % ShapeCircle.select()
-            % ShapeCircle.select(radius)
-            % ShapeCircle.select('circle', [x,y], radius)
-            
-            obj=ShapeCircle;
-            if nargin==0
-                obj = ShapeCircle.selectUsingMouse(gca);
-                return
-            end
-            % select center point, if it isn't provided
-            if numel(varargin)==2
-                x1=varargin{2}(1); y1=varargin{2}(2); b=32;
-            else
-                disp('click in center of circle. ESC aborts');
-                [x1,y1,b] = ginput(1);
-            end
-            if numel(varargin)==2
-                varargin=varargin(2);
-            end
-            
-            if b==27 %escape
-                error('ESCAPE pressed. aborting circle creation'); %to calling routine: catch me!
-            end
-            
-            obj.Radius=varargin{1};
-            obj.Points=[x1,y1];
-        end
-        %}
     end
     
             

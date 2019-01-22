@@ -11,7 +11,7 @@ function dispma()
     set(myfig,'Units','normalized','NumberTitle','off','Name','b-value curves');
     set(myfig,'pos',[ 0.2  0.8 0.5 0.8])
     if isempty(ZG.newcat)
-        ZG.newcat = ZG.primeCatalog ;
+        ZG.newcat = copy(ZG.primeCatalog) ;
     end
     maxmag = max(ZG.newcat.Magnitude);
     [t0b, teb] = bounds(ZG.newcat.Date) ;

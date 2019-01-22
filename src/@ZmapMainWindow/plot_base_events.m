@@ -37,9 +37,9 @@ function plot_base_events(obj, container, featurelist)
             uns=line(obj.map_axes,'XData', nan, 'YData', nan, 'ZData', nan);
         else
             uns=line(obj.map_axes,...
-                'XData', obj.rawcatalog.Longitude,...
-                'YData', obj.rawcatalog.Latitude,...
-                'ZData', obj.rawcatalog.Depth);
+                'XData', obj.rawcatalog.X,...
+                'YData', obj.rawcatalog.Y,...
+                'ZData', obj.rawcatalog.Z);
         end
         set_valid_properties(uns, unselOpts);
     end
@@ -61,10 +61,10 @@ function plot_base_events(obj, container, featurelist)
         z=[];
         Sz=[];
     else
-        x  = obj.bigEvents.Longitude;
-        y  = obj.bigEvents.Latitude;
+        x  = obj.bigEvents.X;
+        y  = obj.bigEvents.Y;
         Sz = SzFcn(obj.bigEvents.Magnitude);
-        z  = obj.bigEvents.Depth;
+        z  = obj.bigEvents.Z;
     end
         
     bev=scatter(obj.map_axes, x, y, Sz,...
@@ -75,8 +75,8 @@ function plot_base_events(obj, container, featurelist)
     
     set(obj.map_axes, 'NextPlot', 'replace')
     
-    obj.map_axes.XLabel.String = 'Longitude';
-    obj.map_axes.YLabel.String = 'Latitude';
+    obj.map_axes.XLabel.String = obj.catalog.XLabel;
+    obj.map_axes.YLabel.String = obj.catalog.YLabel;
     ZG = ZmapGlobal.Data;
     
     

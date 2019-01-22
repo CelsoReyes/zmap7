@@ -256,7 +256,7 @@ classdef XSection < handle
         function plot_events_along_strike(obj,ax, catalog, noproject)
             % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
             if exist('noproject','var') && isa(catalog,'ZmapXsectionCatalog') && noproject
-                mycat=catalog;
+                mycat = catalog;
             else
                 mycat = obj.project(catalog);
             end

@@ -12,7 +12,7 @@ function Dcross(sel)
     
     % the new data vector to be analysed is called Da, relative to the center of the x-section and already in km
     % D = [x,y,z ]
-    catalog=ZG.primeCatalog;
+    catalog=ZG.primeCatalog; % points to same thing
     Da = [eq0p(1,:)' eq0p(2,:)' catalog.Date catalog.Date.Month catalog.Date.Day catalog.Magnitude catalog.Depth];
     Da0 = find(-2.99 < Da(:,7));
     Da = Da.subset(Da0);

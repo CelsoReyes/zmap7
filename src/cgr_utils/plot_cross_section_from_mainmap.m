@@ -9,7 +9,7 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     % and histograms of events along sgtrike and with depth
     
     ZG=ZmapGlobal.Data;
-    catalog=ZG.primeCatalog;
+    catalog=ZG.primeCatalog; % points to same thing
     
     % dialog box to choose cross-section
     zdlg=ZmapDialog();

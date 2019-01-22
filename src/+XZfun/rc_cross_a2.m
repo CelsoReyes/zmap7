@@ -226,7 +226,7 @@ function orig_rc_cross_a2()
     
     report_this_filefun();
     ZG=ZmapGlobal.Data;
-    catalog = ZG.primeCatalog;
+    catalog = ZG.primeCatalog; % points to same thing
     catalog.sort('Date')
 
     % Do we have to create the dialogbox?

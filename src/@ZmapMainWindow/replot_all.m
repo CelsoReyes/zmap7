@@ -4,7 +4,6 @@ function replot_all(obj,metaProp,eventData)
     % REPLOT_ALL(obj)
     % REPLOT_ALL(obj, metaProp, eventData) when called from listener
     % REPLOT_ALL(obj, eventName) when called elsewhere
-    
     narginchk(1,3)
     eventName = 'ReplotAll'; %default event name
     switch nargin
@@ -67,12 +66,12 @@ function replot_all(obj,metaProp,eventData)
             else
                 if numel(evs.XData)==numel(obj.rawcatalog.Count)
                     evs.XData(mall)=nan;
-                    evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
+                    evs.XData(~mall)=obj.rawcatalog.X(~mall);
                 else
                     % catalog is out of sync. replot
-                    evs.XData       = obj.rawcatalog.Longitude;
-                    evs.YData       = obj.rawcatalog.Latitude;
-                    evs.ZData       = obj.rawcatalog.Depth;
+                    evs.XData       = obj.rawcatalog.X;
+                    evs.YData       = obj.rawcatalog.Y;
+                    evs.ZData       = obj.rawcatalog.Z;
                     evs.XData(mall) = nan;
                 end
                 evs.Visible='on';

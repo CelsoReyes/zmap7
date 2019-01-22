@@ -21,7 +21,7 @@ classdef MemorizedCatalogManager<handle
                 name = 'default';
             end
             assert(isa(catalog,'ZmapCatalog'));
-            obj.MemorizedCatalogs(name) = copy(catalog);
+            obj.MemorizedCatalogs(name) = copy(catalog); %must be copied, otherwise it will change
         end
         
         function catalog = recall(obj, name)

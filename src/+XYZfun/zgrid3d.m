@@ -83,7 +83,7 @@ function zgrid3d_orig(sel,catalog)
     report_this_filefun();
     
     if ~exist('catalog')
-        catalog=ZG.primeCatalog;
+        catalog=ZG.primeCatalog; % points to same thing
     end
     
     if ~exist('sel','var') || sel == 'in'

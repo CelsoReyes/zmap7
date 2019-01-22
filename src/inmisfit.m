@@ -14,7 +14,7 @@ function inmisfit(catalog)
     %  return
     %end
     
-    ZG.newcat = catalog;
+    ZG.newcat = copy(catalog);
     
     %{
     if size(a(1,:)) < 12

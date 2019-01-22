@@ -287,13 +287,13 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             details.isBiggest               = false(size(details.clusterNumber));
             details.isBiggest(idx_biggest_event_in_cluster) = true;
             
-            details.Latitude                = obj.RawCatalog.Latitude;
+            details.Latitude                = obj.RawCatalog.Y;
             details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Longitude               = obj.RawCatalog.Longitude;
+            details.Longitude               = obj.RawCatalog.X;
             details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Depth                   = obj.RawCatalog.Depth;
+            details.Depth                   = obj.RawCatalog.Z;
             details.Properties.VariableUnits(width(details)) = {'kilometers'};
             
             details.Magnitude               = obj.RawCatalog.Magnitude;
@@ -351,9 +351,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             end
             
             ZG              = ZmapGlobal.Data;
-            ZG.original     = obj.RawCatalog;       %save catalog in variable original
-            %ZG.newcat       = ZG.primeCatalog;
-            %ZG.storedcat    = ZG.original;
+            ZG.original     = obj.RawCatalog;    %save catalog in variable original
             ZG.cluscat      = ZG.original.subset(clus(clus~=0));
             
             % save declustered catalog to workspace

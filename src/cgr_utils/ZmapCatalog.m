@@ -1,4 +1,4 @@
-classdef ZmapCatalog < ZmapBaseCatalog
+classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
     % ZmapCatalog represents an event catalog, tied to the Latitude/Longitude/Depth system and including Displacement information
     %
     % ZmapCatalog properties:

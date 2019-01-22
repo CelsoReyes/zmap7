@@ -408,8 +408,6 @@ classdef MyPvalClass
             report_this_filefun();
             ZG=ZmapGlobal.Data;
             
-            nn2 = catalog;
-            
             prompt = {'Minimum magnitude',...
                 'Min. time after mainshock (in days)',...
                 'Enter a negative value if you wish to fix c'};

@@ -60,7 +60,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     
     properties(SetObservable = true)
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
-        Units = 'degrees'; % either 'degrees' or 'kilometer'
+        CoordinateSystem char {mustBeMember(CoordinateSystem,{'geodetic','cartesian'})} = 'geodetic'
     end
     
     properties(SetAccess = protected)
@@ -82,9 +82,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         Center % geographic center of shape
         X0 % center X coordinate (center of shape extent)
         Y0 % center Y coordinate (center of shape extent)
+        X  % X coordinate for the shape outline
+        Y   % Y coordinate for the shape outline
         Lat % Y coordinate for the shape outline
         Lon % X coordinate for the shape outline
-        Area % approximate area of shape (km^2)
+        Area % approximate area of shape. Units depend upon CoordinateSystem
     end
     
     properties(Constant)
@@ -102,7 +104,6 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             % ShapeGeneral create a shape
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
-            addlistener(obj, 'Units', 'PostSet',@(A,B)warning('ZMAP:polygon:changingUnits','changing polygon units'));
         end
         
         function notifyShapeChange(obj,metaprop, evt)
@@ -142,9 +143,27 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             val=obj.Outline(1);
         end
         
-        function val=get.Area(obj)
-            % Area attempts to scale according to lat/lon
-            val = areaint(obj.Lat,obj.Lon,obj.RefEllipsoid);
+        function val=get.Y(obj)
+            val= obj.Outline(2);
+        end
+        
+        function val=get.X(obj)
+            val=obj.Outline(1);
+        end
+        function val = get.Area(obj)
+            % get area of polygon. Method depends upon coordiate system.
+            %
+            %  val = shape.area() provides the area for a shape. If using a geodetic coordinate
+            %  system, then the polygon's vertices are assumed to be expressed in lat-lon terms
+            %  with the result returned in units specified by the referenceEllipsoid.
+            %
+            %  If using cartesian coordinates, then area is in whatever units x and y are.
+            
+            if obj.CoordinateSystem == "geodetic"
+                val = areaint(obj.Y,obj.X, obj.RefEllipsoid);
+            else
+                val = polyarea(obj.X, obj.Y);
+            end
         end
         
         function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
@@ -161,11 +180,12 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 % return a vector of size otherLon that is true where item is inside polygon
                 if include_boundary
                     mask = inpoly([otherLon(:) otherLat(:)],obj.Points );
+                    % mask = inpoly_cr([otherLon(:) otherLat(:)],obj.Points );
                 else
                     [mask,bnd] = inpoly([otherLon otherLat],obj.Points);
+                    %[mask,bnd] = inpoly_cr([otherLon otherLat],obj.Points);
                     mask(bnd)=false;
                 end
-                %mask = polygon_filter(obj.Lon, obj.Lat, otherLon, otherLat, 'inside');
             end
         end
         
@@ -192,7 +212,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             
             if isempty(shout)
                 set(ax,'NextPlot','add');
-                shout=line(ax, obj.Lon,obj.Lat,'Color','k','LineWidth',2.0,...
+                shout=line(ax, obj.X,obj.Y,'Color','k','LineWidth',2.0,...
                     'LineStyle','-',...
                     'Color','r',...
                     'Tag','shapeoutline',...
@@ -204,7 +224,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 %    'delpoints',obj.AllowVertexEditing,'addpoints',obj.AllowVertexEditing);
                 set(ax,'NextPlot','replace');
             else
-                set(shout,'XData',obj.Lon,'YData',obj.Lat,...
+                set(shout,'XData',obj.X,'YData',obj.Y,...
                     'LineStyle','-',...
                     'Color','r');
                 %shout.UIContextMenu=makeuicontext();
@@ -296,16 +316,16 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function s=toStr(obj)
             s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1)-1);
         end
-        function s=toStruct(obj)
-            s.Points=obj.Points;
-            s.Type=obj.Type;
-            s.ApplyGrid=obj.ApplyGrid;
-            s.Center=obj.Center;
-            s.X0=obj.X0;
-            s.Y0=obj.Y0;
-            s.Lat=obj.Outline(:,2);
-            s.Lon=obj.Outline(:,1);
-            s.RefEllipsoid = obj.RefEllipsoid
+        function s = toStruct(obj)
+            s.Points = obj.Points;
+            s.Type = obj.Type;
+            s.ApplyGrid = obj.ApplyGrid;
+            s.Center = obj.Center;
+            s.X0 = obj.X0;
+            s.Y0 = obj.Y0;
+            s.Lat = obj.Outline(:,2);
+            s.Lon = obj.Outline(:,1);
+            s.RefEllipsoid = obj.RefEllipsoid;
         end
         
         function save(obj, data_dir)

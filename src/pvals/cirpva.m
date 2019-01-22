@@ -46,7 +46,7 @@ elseif  met == 'ra'
     disp(messtext)
 elseif met == 'ti'
     global t1 t2 t3 t4
-    ZG.newt2 = ZG.primeCatalog;
+    ZG.newt2 = copy(ZG.primeCatalog);
     lt =  ZG.newt2.Date >= t1 &  ZG.newt2.Date <t2 ;
     bdiff(ZG.newt2.subset(lt));
     ZG.hold_state=true;

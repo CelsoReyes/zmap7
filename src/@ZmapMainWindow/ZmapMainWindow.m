@@ -173,9 +173,9 @@ classdef ZmapMainWindow < handle
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
             if ~isa(in_catalog, 'ZmapCatalog')
-                obj.rawcatalog = ZG.primeCatalog;
+                obj.rawcatalog = copy(ZG.primeCatalog);
             else
-                obj.rawcatalog = in_catalog;
+                obj.rawcatalog = copy(in_catalog);
             end
             
             % TODO: make this handle a default shape once again
@@ -359,11 +359,9 @@ classdef ZmapMainWindow < handle
                 zp = [];
                 return
             end
-            
-            ZG = ZmapGlobal.Data;
-            
-            z_min = floor(min([0 min(obj.catalog.Depth)]));
-            z_max = round(max(obj.catalog.Depth) + 4.9999 , -1);
+                       
+            z_min = floor(min([0 min(obj.catalog.Z)]));
+            z_max = round(max(obj.catalog.Z) + 4.9999 , -1);
             
             zdlg = ZmapDialog();
             if ~exist('xsTitle', 'var')
@@ -585,8 +583,8 @@ classdef ZmapMainWindow < handle
                     grid(axm, 'on');
                     zlim(axm, 'auto');
                     %axis(ax, 'tight');
-                    zlabel(axm, 'Depth [km]', 'UserData', field_unit.Depth);
-                    axm.ZDir = 'reverse';
+                    zlabel(axm, [obj.catalog.ZLabel, '[', obj.catalog.ZUnits, ']'], 'UserData', field_unit.Depth);
+                    axm.ZDir = obj.catalog.ZDir;
                     rotate3d(axm, 'on'); %activate rotation tool
                     hold(axm, 'off');
                     src.Label = '2-D view';
