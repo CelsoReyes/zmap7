@@ -123,15 +123,15 @@ classdef ShapeCircle < ShapeGeneral
             % overridden because using polygon approximation is too inaccurate for circles
             %
             % [mask]=obj.isinterior(otherX, otherY)
-            global interiorhit
-            disp(dbstack)
-            interiorhit(end+1)={dbstack};
+
             if ~exist('include_boundary','var')
                 include_boundary = true;
             end
             if isempty(obj.Points)||isnan(obj.Points(1))
                 mask = ones(size(otherX));
             else
+                otherX(ismissing(otherY))= missing;
+                otherY(ismissing(otherX))= missing;
                 % return a vector of size otherX that is true where item is inside polygon
                 dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid); %TOFIX: remove assumption that we're not working in simple  XYZ coords.
                 if ~include_boundary
