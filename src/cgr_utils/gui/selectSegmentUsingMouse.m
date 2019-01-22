@@ -1,6 +1,6 @@
-function [obj, ok]=selectSegmentUsingMouse(ax, color, refEllipse, addlUpdateFcn)
+function [obj, ok]=selectSegmentUsingMouse(ax, color, coordSystem, refEllipse, addlUpdateFcn)
     % tracks user mouse movements to define a great-circle line segment
-    % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, COLOR, refEllipse) where AX is the axis in which to
+    % RESULT = SELECTSEGMENTSUSINGMOUSE( AX, coordSystem, COLOR, refEllipse) where AX is the axis in which to
     % draw your line segment as the great-circle line.
     %
     % RESULT is a struct with fields:

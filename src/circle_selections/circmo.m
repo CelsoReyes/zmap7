@@ -24,7 +24,7 @@ function circmo()
     axes(hmo)
 
     % interactively get the circle of interest
-    shape=ShapeCircle();
+    shape=ShapeCircle(newa.CoordinateSystem);
 
     [ZG.newt2, max_km] = selectCircle(newa, shape.toStruct());
     

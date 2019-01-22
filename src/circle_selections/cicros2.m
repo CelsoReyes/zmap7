@@ -24,7 +24,7 @@ function cicros2()
     axes(h1)
 
     % interactively get the circle of interest
-    shape=ShapeCircle();
+    shape=ShapeCircle(newa.CoordinateSystem);
 
     [ZG.newt2, ~] = selectCircle(newa, shape.toStruct());
     

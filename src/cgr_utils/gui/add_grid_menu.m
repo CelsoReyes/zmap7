@@ -29,19 +29,19 @@ function add_grid_menu(obj)
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         
-        sh=ShapeCircle.selectUsingMouse(obj.map_axes,obj.refEllipsoid);
+        sh=ShapeCircle.selectUsingMouse(obj.map_axes, obj.CoordinateSystem, obj.refEllipsoid);
         set_my_shape(obj,sh);
     end
     
     function cb_makebox(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        sh=ShapePolygon('box');
+        sh=ShapePolygon(obj.CoordinateSystem, 'box');
         set_my_shape(obj,sh);
     end
     
     function cb_makepolygon(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        sh=ShapePolygon('polygon');
+        sh=ShapePolygon(obj.CoordinateSystem, 'polygon');
         set_my_shape(obj,sh);
     end
     
@@ -49,13 +49,13 @@ function add_grid_menu(obj)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         eqs = [obj.catalog.Longitude, obj.catalog.Latitude];
         ch=convhull(eqs,'simplify',true);
-        sh=ShapePolygon('polygon',eqs(ch,:));
+        sh=ShapePolygon(obj.CoordinateSystem, 'polygon',eqs(ch,:));
         set_my_shape(obj,sh);
     end
     function cb_clear_shape(src,ev)
         ShapeGeneral.clearplot();
         delete(obj.shape);
-        obj.shape=ShapeGeneral;
+        obj.shape=ShapeGeneral(obj.CoordinateSystem);
         %obj.replot_all();
     end
     

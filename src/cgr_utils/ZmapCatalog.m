@@ -61,6 +61,7 @@ classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
             obj.ZLabel = 'Depth';
             obj.ZDir   = 'reverse';
             obj.ZUnits = 'kilometer';
+            obj.CoordinateSystem = CoordinateSystems.geodetic;
             
             if nargin==0                                        % ZMAPCATALOG()
                 return

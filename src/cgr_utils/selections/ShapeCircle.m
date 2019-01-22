@@ -9,17 +9,20 @@ classdef ShapeCircle < ShapeGeneral
     
     
     methods
-        function obj=ShapeCircle(varargin)
+        function obj=ShapeCircle(coordinate_system, varargin)
             % SHAPECIRCLE create a circular shape
             %
-            % ShapeCircle() :
-            % ShapeCircle('dlg') create via a dialg box
+            % ShapeCircle(coordinate_system) :
+            % ShapeCircle(coordinate_system,'dlg') create via a dialg box
             %
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             
             % UNASSIGNED: clear shape
             
-            obj@ShapeGeneral;
+            obj@ShapeGeneral(coordinate_system);
+            if ~isempty(varargin)
+               dosomething
+            end
             
             report_this_filefun();
             
@@ -32,7 +35,7 @@ classdef ShapeCircle < ShapeGeneral
             end
             obj.AllowVertexEditing = false;
             addlistener(obj, 'Radius', 'PostSet', @obj.notifyShapeChange);
-            if nargin==0
+            if numel(varargin)==0
                 do_nothing;
             elseif strcmpi(varargin{1},'dlg')
                 stashedshape = ShapeGeneral.ShapeStash;
@@ -46,7 +49,7 @@ classdef ShapeCircle < ShapeGeneral
                     return
                 end
             else
-                oo=ShapeCircle.selectUsingMouse(gca);
+                oo=ShapeCircle.selectUsingMouse(gca, coordinate_system);
                 if ~isempty(oo)
                     obj=oo;
                 else
@@ -56,11 +59,21 @@ classdef ShapeCircle < ShapeGeneral
         end
         
         function val=Outline(obj,col)
-            % TODO: look into using scircle1 or scircle2
-            [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
-            val=[lon, lat];
-            if exist('col','var')
-                val=val(:,col);
+            switch obj.CoordinateSystem
+                case CoordinateSystems.geodetic
+                    [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
+                    val=[lon, lat];
+                    if exist('col','var')
+                        val=val(:,col);
+                    end
+                case CoordinateSystems.cartesian
+                    pts = exp(1i*pi*linspace(0,2*pi,3600)') .* obj.Radius;
+                    x = real(pts)+ obj.X0;
+                    y = imag(pts) + obj.Y0;
+                    val = [x,y];
+                    val = val(:,col);
+                otherwise
+                    error('unspecified coordinate system')
             end
         end
         
@@ -133,11 +146,14 @@ classdef ShapeCircle < ShapeGeneral
                 otherX(ismissing(otherY))= missing;
                 otherY(ismissing(otherX))= missing;
                 % return a vector of size otherX that is true where item is inside polygon
-                    
-                if obj.CoordinateSystem == "geodetic"
-                    dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid); %TOFIX: remove assumption that we're not working in simple  XYZ coords.
-                else
-                    dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
+                   
+                switch obj.CoordinateSystem
+                    case CoordinateSystems.geodetic
+                        dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid);
+                    case CoordinateSystems.cartesian
+                        dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
+                    otherwise
+                        error('unknown coordinate system')
                 end
                 if ~include_boundary
                     mask = dists < obj.Radius;
@@ -187,18 +203,18 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=selectUsingMouse(ax,ref_ellipsoid)
+        function obj=selectUsingMouse(ax, coord_system, ref_ellipsoid)
             if ~exist('ref_ellipse','var')
                 ref_ellipsoid = referenceEllipsoid('wgs84','kilometer');
             end
             
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', ref_ellipsoid, @circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', coord_system, ref_ellipsoid, @circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];
                 return
             end
-            obj=ShapeCircle;
+            obj=ShapeCircle(coord_system);
             obj.Points=ss.xy1;
             obj.Radius=ss.dist_kilometer;
             
@@ -207,9 +223,18 @@ classdef ShapeCircle < ShapeGeneral
                 if isempty(h)
                     h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
-                h.XData=lon;
-                h.YData=lat;
+                switch coord_system
+                    case  CoordinateSystems.geodetic
+                        [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
+                        h.XData=lon;
+                        h.YData=lat;
+                    case CoordinateSystems.cartesian
+                        pts = exp(1i*pi*linspace(0,2*pi,120)') .* d;
+                        h.XData = real(pts)+ stxy(1); 
+                        h.YData = imag(pts) + stxy(2);
+                    otherwise
+                        error('Unknown coordinate system')
+                end
             end
         end
     end

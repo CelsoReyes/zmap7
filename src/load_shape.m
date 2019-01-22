@@ -74,13 +74,24 @@ function obj = load_shape(filelocation)
                     end
                 else
                     % have user figure out which column is which
-                    
-                    [latIdx,ok] = listdlg('PromptString','Select Latitude (N-S)',...
+                    quest= {'Which coordinate system is this?','  geodetic = lat & lon','  cartesian = x & y'}
+                    coordinate_system = questdlg(quest','Coordinate System','geodetic','cartesian','geodetic');
+                    switch a
+                        case 'geodetic'
+                            yprompt = 'Select Latitude (N-S)';
+                            xprompt = 'Select Longitude (E-W)';
+                        otherwise
+                            yprompt = 'Select Y values';
+                            xprompt = 'Select X values';
+                    end
+                            
+                            
+                    [latIdx,ok] = listdlg('PromptString',yprompt,...
                         'SelectionMode','single',...
                         'ListString',vn_with_example(tb, tb.Properties.VariableNames));
                     if ~ok; return; end
                     if width(tb)~=2
-                        [lonIdx,ok] = listdlg('PromptString','Select Longitude (E-W)',...
+                        [lonIdx,ok] = listdlg('PromptString', xprompt,...
                             'SelectionMode','single',...
                             'ListString',vn_with_example(tb, tb.Properties.VariableNames));
                         if ~ok; return; end
@@ -121,13 +132,13 @@ function obj = load_shape(filelocation)
             radIdx = startsWith(vn,"radius");
             if height(tb)==1 && ~isempty(radIdx)
                 % we selected a circle
-                obj = ShapeCircle;
-                obj.Points=[myLons, myLats];
+                obj = ShapeCircle(coordinate_system);
+                obj.Points = [myLons, myLats];
                 obj.Radius = tb{1,radIdx};
                 
             else
                 % we selected a polygon
-                obj = ShapePolygon('Polygon',[myLons, myLats]);
+                obj = ShapePolygon(coordinate_system,'Polygon',[myLons, myLats]);
             end
             
     end %switch

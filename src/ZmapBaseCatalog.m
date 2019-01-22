@@ -87,6 +87,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         SortDirection   char            = ''    % describes sorting direction
         Filter          logical                 % logical filter for subsetting events
         XYZ             (:,3) double            % position of each event
+        CoordinateSystem (1,:) char = 'cartesian'
     end
     
     properties(Hidden)

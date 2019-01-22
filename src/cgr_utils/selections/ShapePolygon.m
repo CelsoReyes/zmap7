@@ -5,7 +5,7 @@ classdef ShapePolygon < ShapeGeneral
     
     
     methods
-        function obj=ShapePolygon(shapeType, varargin)
+        function obj=ShapePolygon(coordinate_system, shapeType, varargin)
             % ShapePolygon create a shape
             % shapeType is one of 'axes', 'box', 'polygon'}
             % AXES: use current main map axes as a box
@@ -14,7 +14,7 @@ classdef ShapePolygon < ShapeGeneral
             %
             % UNASSIGNED: clear shape
             %
-            obj@ShapeGeneral;
+            obj@ShapeGeneral(coordinate_system);
             report_this_filefun();
             
             if nargin==0
@@ -85,10 +85,13 @@ classdef ShapePolygon < ShapeGeneral
             end
             line1 = sprintf('Polygon with %d points',nPts);
             line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            if obj.CoordinateSystem == "geodetic"
-                line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
-            else
-                line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
+            switch obj.CoordinateSystem
+                case CoordinateSystems.geodetic
+                    line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
+                case CoordinateSystems.cartesian
+                    line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
+                otherwise
+                    line3 = sprintf('??? unknown coordinate system, area cannot be calculated ???');
             end
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
@@ -216,7 +219,7 @@ classdef ShapePolygon < ShapeGeneral
         
         function [obj,ok]=select_box(obj,varargin)
             ax=gca;
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', obj.RefEllipsoid, @box_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', obj.CoordinateSystem, obj.RefEllipsoid, @box_update);
             h=findobj(ax,'Tag','tmp_box_outline');
             if ~isempty(h)
                 x=h.XData;

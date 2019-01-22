@@ -26,6 +26,7 @@ classdef XSection < handle
         endpt (1,2) double % [lat lon] end point for cross section
         startlabel char % label for start point
         endlabel char % label for end point
+        CoordinateSystem (1,:) char
     end
     
     properties
@@ -181,7 +182,7 @@ classdef XSection < handle
             if exist('ax','var')
                 % pick first point
                 try
-                    ptdetails = selectSegmentUsingMouse(ax, obj.color, obj.ref_ellipsoid);
+                    ptdetails = selectSegmentUsingMouse(ax, obj.color, obj.CoordinateSystem, obj.ref_ellipsoid);
                     obj.startpt=[ptdetails.xy1(2), ptdetails.xy1(1)];
                     obj.endpt=[ptdetails.xy2(2), ptdetails.xy2(1)];
                 catch ME
@@ -424,8 +425,8 @@ classdef XSection < handle
     
     methods(Static)
         
-        function obj=initialize_with_mouse(ax, default_width, ref_ellipsoid)
-                ptdetails = selectSegmentUsingMouse(ax, 'm',ref_ellipsoid); % could throw
+        function obj=initialize_with_mouse(ax, default_width, coord_system, ref_ellipsoid)
+                ptdetails = selectSegmentUsingMouse(ax, 'm', coord_system, ref_ellipsoid); % could throw
                 if isequal(ptdetails.xy1,ptdetails.xy2)
                     error('Cannot create a zero-length cross section');
                 end

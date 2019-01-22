@@ -4,12 +4,13 @@ classdef ZmapMainWindow < handle
     properties(SetObservable, AbortSet)
         catalog                 {mustBeZmapCatalog} = ZmapCatalog % event catalog
         bigEvents               {mustBeZmapCatalog} = ZmapCatalog
-        shape                   {mustBeShape}       = ShapeGeneral.ShapeStash % used to subset catalog by selected area
+        shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
         Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange     datetime                        % used to subset the catalog with date ranges
-        colorField                                  = ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices
+        colorField                                  = ZmapGlobal.Data.mainmap_plotby % see ValidColorFields for choices
         CrossSections
-        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog;
+        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
+        CoordinateSystem  CoordinateSystems         = 'geodetic'
     end
     
     properties
@@ -22,14 +23,14 @@ classdef ZmapMainWindow < handle
         maintab             % handle to tab where the main map is plotted
         xscats              % ZmapXsectionCatalogs corresponding to each cross section
         xscatinfo           % stores details about the last catalog used to get cross section, avoids projecting multiple times.
-        prev_states     Stack                       = Stack(10);
+        prev_states     Stack                       = Stack(10)
         undohandle
-        Features                                 	= containers.Map();
+        Features                                 	= containers.Map()
         replotting                                	= false % keep from plotting while plotting
         mdate %
         mshape %
-        WinPos (4,1)                              	= position_in_current_monitor(Percent(90), Percent(85))% position of main window
-        mainEventProps                            	= ZmapGlobal.Data.MainEventOpts; % properties describing the main events
+        WinPos (4,1)                              	= position_in_current_monitor(Percent(90), Percent(85)) % position of main window
+        mainEventProps                            	= ZmapGlobal.Data.MainEventOpts % properties describing the main events
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
@@ -113,7 +114,7 @@ classdef ZmapMainWindow < handle
                     % either CATALOG or FIG is provided
                     try
                         switch varargin{1}.Type
-                            case 'zmapcatalog'
+                            case {'zmapcatalog', 'zmapbasecatalog'}
                                 in_catalog = varargin{1};
                             case 'figure'
                                 fig = varargin{1};
@@ -134,13 +135,12 @@ classdef ZmapMainWindow < handle
                         error('Usage: ZmapMainWindow(FIG, catalog)\n%s', '  First argument was not a figure');
                     end
                     
-                    if isa(varargin{2}, 'ZmapCatalog')
+                    if isa(varargin{2}, 'ZmapBaseCatalog')
                         in_catalog = varargin{2};
                     else
                         error('Usage: ZmapMainWindow(fig, CATALOG).\nSecond argument was not a catalog');
                     end
             end
-            
             
             %if the figure was specified, but wasn't empty, then clear it out.
             if ~isempty(fig) && isvalid(fig)
@@ -172,11 +172,13 @@ classdef ZmapMainWindow < handle
             %% prepare the catalog
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
-            if ~isa(in_catalog, 'ZmapCatalog')
+            if ~isa(in_catalog, 'ZmapBaseCatalog')
                 obj.rawcatalog = copy(ZG.primeCatalog);
             else
                 obj.rawcatalog = copy(in_catalog);
             end
+            
+            obj.CoordinateSystem = obj.rawcatalog.CoordinateSystem;
             
             % TODO: make this handle a default shape once again
             
@@ -454,7 +456,7 @@ classdef ZmapMainWindow < handle
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
             try
-                xsec = XSection.initialize_with_mouse(axm, 20, obj.refEllipsoid);
+                xsec = XSection.initialize_with_mouse(axm, 20, obj.CoordinateSystem, obj.refEllipsoid);
             catch ME
                 warning(ME.message)
                 return
@@ -502,7 +504,7 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_cropToXS(obj, xsec)
-            sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            sh = ShapePolygon(obj.CoordinateSystem,'polygon',[xsec.polylons(:), xsec.polylats(:)]);
             set_my_shape(obj, sh);
             %obj.replot_all();
         end
