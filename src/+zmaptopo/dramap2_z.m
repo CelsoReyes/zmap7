@@ -135,7 +135,7 @@ function dramap2_z()
     end
     
     if ~isempty(ZG.maepi)
-        pl = plotm(ZG.maepi.Latitude,ZG.maepi.Longitude,'hw');
+        pl = plotm(ZG.maepi.Y,ZG.maepi.X,'hw');
         set(pl,'LineWidth',1,'MarkerSize',14,...
             'MarkerFaceColor','w','MarkerEdgeColor','k')
     end

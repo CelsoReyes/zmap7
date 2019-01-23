@@ -61,7 +61,7 @@ classdef MyPvalClass
             % obj = obj.setMainEvent(zcat) provide a zmap catalog with a single mainshock event
             % obj = obj.setMainEvent(date, mag) provide the date (datetime format) and a mag
             if numel(varargin) == 1
-                if ~isa(varargin{1},'ZmapCatalog') || varargin{1}.Count ~= 1
+                if ~isa(varargin{1},'ZmapBaseCatalog') || varargin{1}.Count ~= 1
                     error('accepts a Zmap Catalog with ONE event');
                 end
                 obj.mainEventMag = varargin{1}.Magnitude;

@@ -12,7 +12,7 @@ classdef ZmapGridFunction < ZmapFunction
         NodeMinEventCount   double {mustBeInteger}     = 1; % minimum number of events in a sample for that sample to be calculated
         OverallMinEventCount   double {mustBeInteger}  = 1; % minimum number of events in catalog, for calculations to operate
         Shape                       {mustBeShape}       = ShapeGeneral % shape to be used
-        do_memoize                                      = true;
+        do_memoize                                      = false;
     end
     properties(Constant,Abstract)
         

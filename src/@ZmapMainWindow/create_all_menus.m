@@ -73,7 +73,7 @@ function create_all_menus(obj, force)
             % pick which time series we are investigating
             if ~isempty(obj.shape)
                 items = ["Selected Events (IN polygon)", "Unselected Events (OUTSIDE polygon)"];
-                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isinterior(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude))};
+                items_data = {@()obj.catalog, @()obj.rawcatalog.subset(~obj.shape.isinterior(obj.rawcatalog.X,obj.rawcatalog.Y))};
             else
                 items = ["Selected Events"];
                 items_data = {@()obj.catalog};

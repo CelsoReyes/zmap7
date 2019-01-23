@@ -343,18 +343,6 @@ function resp = get_low_level_fdsn_query(uri)
         ,'ConnectTimeout',30 ... % in seconds
         );
     [resp,req,hist] = request.send(U,options,consumer);
-    %{
-    % if there is an error, it would be shown in hist.Response.Body.Data
-    ss=strsplit(string(resp.Body.Data),newline)';
-    numel(ss)
     
-    %%
-    f=fopen('junkk.dat','w');
-    fprintf(f,"%s",resp.Body.Data); %resp.Body.Payload
-    fclose(f);
-    %%
-    ZG.primeCatalog = import_fdsn_event(1,'junk.dat')
-    % ZmapMainWindow(ZG.primeCatalog)
-    %}
 end
 

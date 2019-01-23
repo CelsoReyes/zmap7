@@ -375,6 +375,7 @@ function calc_across_orig(sel)
         ZG.overall_b_value = bv;
         no1 = newa.Count;
         %
+        globalcatalog = ZG.primeCatalog;
         for i= 1:length(newgri(:,1))
             x = newgri(i,1);y = newgri(i,2);
             allcount = allcount + 1.;
@@ -389,8 +390,8 @@ function calc_across_orig(sel)
             if tgl1 == 0   % take point within r
                 l3 = l <= ra;
                 l4 = l <= ri;
-                b = ZG.primeCatalog.subset(l3);        % new data per grid point (b) is sorted in distance
-                bri = ZG.primeCatalog.subset(l4);
+                b = globalcatalog.subset(l3);        % new data per grid point (b) is sorted in distance
+                bri = globalcatalog.subset(l4);
                 rd = ra;
             else
                 % take first ni points
@@ -566,7 +567,7 @@ function calc_across_orig(sel)
             valueMap = aValueMap;
             
             nlammap
-            [xsecx xsecy,  inde] =mysect(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(globalcatalog.Y',globalcatalog.X',globalcatalog.Z,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')

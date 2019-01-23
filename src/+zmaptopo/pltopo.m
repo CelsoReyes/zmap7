@@ -6,7 +6,7 @@ function pltopo(plt,h1)
     
     report_this_filefun();
     ZG=ZmapGlobal.Data;
-    
+    globalcatalog = ZG.primeCatalog;
     switch(plt)
         
         case 'lo3'
@@ -274,7 +274,7 @@ function pltopo(plt,h1)
             set(gca,'FontSize',12,'FontWeight','bold','TickDir','out','Ticklength',[0.02 0.02])
             set(gcf,'Color','w','InvertHardcopy','off')
             set(gcf,'renderer','zbuffer')
-            set(gca,'dataaspect',[1 cosd(nanmean(ZG.primeCatalog.Latitude)) 1])
+            set(gca,'dataaspect',[1 cosd(nanmean(globalcatalog.Latitude)) 1])
             
             
         case 'plo2'
@@ -304,7 +304,7 @@ function pltopo(plt,h1)
             set(gcf,'Color','w','InvertHardcopy','off')
             xlabel('Longitude'),ylabel('Latitude')
             set(gcf,'renderer','zbuffer')
-            set(gca,'dataaspect',[1 cosd(mean(ZG.primeCatalog.Latitude)) 1])
+            set(gca,'dataaspect',[1 cosd(mean(globalcatalog.Latitude)) 1])
             
             
         case 'ploy'
@@ -329,7 +329,7 @@ function pltopo(plt,h1)
             set(gcf,'Color','w','InvertHardcopy','off')
             axis([ s2 s1 s4 s3])
             set(gcf,'renderer','zbuffer')
-            set(gca,'dataaspect',[1 cosd(mean(ZG.primeCatalog.Latitude)) 1])
+            set(gca,'dataaspect',[1 cosd(mean(globalcatalog.Latitude)) 1])
             
             
         case 'err'  % Tbase data not found

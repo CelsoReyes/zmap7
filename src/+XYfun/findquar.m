@@ -274,7 +274,7 @@ classdef findquar < ZmapHGridFunction
             %
             set(gca,'NextPlot','add')
             %zmap_update_displays();
-            ploeq = plot(obj.ax,obj.RawCatalog.Longitude,obj.RawCatalog.Latitude,'k.');
+            ploeq = plot(obj.ax,obj.RawCatalog.X,obj.RawCatalog.Y,'k.');
             set(ploeq,'Tag','eq_plot','MarkerSize',obj.ZG.ms6,'Marker','.','Color',obj.ZG.someColor,'Visible','on')
             
             set(obj.ax,'visible','on','FontSize',obj.ZG.fontsz.s,'FontWeight','bold',...

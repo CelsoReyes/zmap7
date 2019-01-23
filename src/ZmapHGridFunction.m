@@ -47,7 +47,7 @@ classdef ZmapHGridFunction < ZmapGridFunction
             'RemovePoint'       , sprintf('\b'),...
             'KeyHelp'           , '?'...
             );
-        Type = 'XY';
+        Type = GridTypes.XY;
     end
     
     properties(Dependent)

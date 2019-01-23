@@ -140,35 +140,36 @@ function overmaptb()
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         %case 'eq'
         inp =get(ha2,'Value');
+        globalcatalog = ZG.primeCatalog;
         
         if eqontop==0  &&  (inp==3 || inp==4)
             clear('depq')
             [lat,lon] = meshgrat(tmap,tmapleg);
-            depq=interp2(lon,lat,tmap,ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude);
+            depq=interp2(lon,lat,tmap,globalcatalog.Longitude,globalcatalog.Latitude);
             % depq=depq'
             eqontop=1
         end
         
-        %   if inp == 1 ; ploe = scatterm(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,8,'r','filled'); end
+        %   if inp == 1 ; ploe = scatterm(globalcatalog.Latitude,globalcatalog.Longitude,8,'r','filled'); end
         if inp == 1
-            ploe=plotm(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,'wo');
+            ploe=plotm(globalcatalog.Latitude,globalcatalog.Longitude,'wo');
             set(ploe,'LineWidth',0.1,'MarkerSize',2,...
                 'MarkerFaceColor','none','MarkerEdgeColor','w')
             zdatam(handlem('allline'),max(tmap(:)))
             
         elseif inp == 2
-            ploe=plotm(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,'ro');
+            ploe=plotm(globalcatalog.Latitude,globalcatalog.Longitude,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',3,...
                 'MarkerFaceColor','w','MarkerEdgeColor','k')
             zdatam(handlem('allline'),max(tmap(:)))
             
         elseif inp == 3
-            ploe=plot3m(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,depq+25,'ro');
+            ploe=plot3m(globalcatalog.Latitude,globalcatalog.Longitude,depq+25,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',2,...
                 'MarkerFaceColor','w','MarkerEdgeColor','r')
             
         elseif inp == 4
-            ploe=plot3m(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,depq+25,'ro');
+            ploe=plot3m(globalcatalog.Latitude,globalcatalog.Longitude,depq+25,'ro');
             set(ploe,'LineWidth',0.1,'MarkerSize',3,...
                 'MarkerFaceColor','w','MarkerEdgeColor','k')
         end

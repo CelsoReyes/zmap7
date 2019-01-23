@@ -47,7 +47,7 @@ function add_grid_menu(obj)
     
     function cb_makehull(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        eqs = [obj.catalog.Longitude, obj.catalog.Latitude];
+        eqs = [obj.catalog.X, obj.catalog.Y];
         ch=convhull(eqs,'simplify',true);
         sh=ShapePolygon(obj.CoordinateSystem, 'polygon',eqs(ch,:));
         set_my_shape(obj,sh);

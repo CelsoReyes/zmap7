@@ -61,6 +61,7 @@ classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
             obj.ZLabel = 'Depth';
             obj.ZDir   = 'reverse';
             obj.ZUnits = 'kilometer';
+            obj.PositionUnits = 'degrees';
             obj.CoordinateSystem = CoordinateSystems.geodetic;
             
             if nargin==0                                        % ZMAPCATALOG()
@@ -130,7 +131,7 @@ classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
                     obj.Name        = varargin{1};
                 end
                 
-            elseif isa(other,'ZmapCatalog')                     % ZMAPCATALOG(zmapcatalog)
+            elseif isa(other,'ZmapBaseCatalog')                     % ZMAPCATALOG(zmapcatalog)
                 idx      = true(other.Count,1);
                 obj      = other.subset(idx); % force a copy
                 obj.Name = other.Name;

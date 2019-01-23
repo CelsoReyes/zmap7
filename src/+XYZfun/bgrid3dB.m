@@ -62,8 +62,8 @@ classdef bgrid3dB < Zmap3DGridFunction
             zdlg.AddPopup('mc_choice','Mc Estimation Option:',labelList2,5,'Magnitude of completion option')
             obj.AddDialogOption(zdlg,'EventSelector');
             zdlg.AddGridSpacing('gridopt',.1,'deg',.1,'deg',5,'km')
-            zdlg.AddEdit('minz','Shallowest Boundary [km]',min(ZG.primeCatalog.Depth),'Shallowest boundary'); %z1
-            zdlg.AddEdit('maxz','Deepest Boundary [km]',max(ZG.primeCatalog.Depth),'Deepest boundary'); %z2
+            zdlg.AddEdit('minz','Shallowest Boundary [km]',min(obj.RawCatalog.Depth),'Shallowest boundary'); %z1
+            zdlg.AddEdit('maxz','Deepest Boundary [km]',max(obj.RawCatalog.Depth),'Deepest boundary'); %z2
             zdlg.Create('Name', 'b-value 3D Grid','WriteToObj',obj,'OkFcn',@obj.doIt);
         end
         
@@ -84,8 +84,8 @@ classdef bgrid3dB < Zmap3DGridFunction
             %
             [bvg, bvg_wls, ram, go, avm, mcma] = deal(nan(vol_dimensions));
             
-            [t0b, teb] = bounds(ZG.primeCatalog.Date) ;
-            n = ZG.primeCatalog.Count;
+            [t0b, teb] = bounds(obj.RawCatalog.Date) ;
+            n = obj.RawCatalog.Count;
             tdiff = round((teb-t0b)/ZG.bin_dur);
             loc = zeros(3, length(gx)*length(gy));
             ZG.Rconst = R;
@@ -99,7 +99,7 @@ classdef bgrid3dB < Zmap3DGridFunction
             
             z0 = 0; x0 = 0; y0 = 0; dt = 1;
             % loop over all points
-            [bvg,nEvents,maxDists,maxMag, ll]= gridfun(@calculation_function,ZG.primeCatalog, zg3, res.evsel);
+            [bvg,nEvents,maxDists,maxMag, ll]= gridfun(@calculation_function,obj.RawCatalog, zg3, res.evsel);
             %modify answer
             bvg(:,strcmp('x',returnFields))=obj.Grid.X;
             bvg(:,strcmp('y',returnFields))=obj.Grid.Y;
@@ -127,13 +127,13 @@ classdef bgrid3dB < Zmap3DGridFunction
                 allcount = allcount + 1.;
                 
                 % calculate distance from center point and sort wrt distance
-                l = sqrt(((ZG.primeCatalog.Longitude-x)*cosd(y)*111).^2 + ((ZG.primeCatalog.Latitude-y)*111).^2 + ((ZG.primeCatalog.Depth - z)).^2 ) ;
+                l = sqrt(((obj.RawCatalog.X-x)*cosd(y)*111).^2 + ((obj.RawCatalog.Y-y)*111).^2 + ((obj.RawCatalog.Z - z)).^2 ) ;
                 [s,is] = sort(l);
                 b = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
                 
                 if useRadius  % take point within r
                     l3 = l <= R;
-                    b = ZG.primeCatalog.subset(l3);      % new data per grid point (b) is sorted in distanc
+                    b = obj.RawCatalog.subset(l3);      % new data per grid point (b) is sorted in distanc
                     rd = b.Count;
                 else
                     % take first ni points

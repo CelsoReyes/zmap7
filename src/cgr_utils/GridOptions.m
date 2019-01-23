@@ -12,11 +12,12 @@ classdef GridOptions < handle
         FixedAnchorPoint    double                                      = []
         % grid cannot be used past these limits [xmin xmax ymin ymax]
         AbsoluteGridLimits  double                                      = [-180 180 -90 90] 
-        GridType            char {mustBeMember(GridType,{'XY','XZ','XYZ'})} = 'XY';
+        GridType            GridTypes = 'XY';
+        CoordinateSystem CoordinateSystems
     end
     
     methods
-        function obj = GridOptions(grid_type, dx_dy_dz, spatial_units, gridEntireArea)
+        function obj = GridOptions(coordinate_system, grid_type, dx_dy_dz, spatial_units, gridEntireArea)
             % old usage: obj = GridOptions(dx, dy, dz_km, horiz_units, follow_meridians, gridEntireArea)
             % GRIDOPTIONS defines parameters that are used to create ZmapGrids
             % obj = GRIDOPTIONS( [dx,dy,dz], UNITS);
@@ -35,7 +36,8 @@ classdef GridOptions < handle
             %  see also ZmapGrid, referenceEllipsoid
             
             
-            narginchk(3,4);
+            narginchk(4,5);
+            obj.CoordinateSystem = coordinate_system;
             obj.GridType = grid_type;
             switch grid_type
                 case 'XY'
@@ -77,7 +79,7 @@ classdef GridOptions < handle
             mygrid=[];
             mygridopts=[];
             if ~exist('ellipsoid','var')
-                ellipsoid=ZmapGlobal.Data.referenceEllipsoid;
+                ellipsoid = ZmapGlobal.Data.referenceEllipsoid;
             end
             if exist('existing_gridopt','var') && ~isempty(existing_gridopt)
                 gc = grid_chooser(ellipsoid, existing_gridopt); 

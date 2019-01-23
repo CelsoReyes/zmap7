@@ -70,7 +70,7 @@ classdef HistAnalysisWindow < AnalysisWindow
             %          BinMethod, LineWidth, etc...
             
             p = inputParser();
-            p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
+            p.addRequired('catalog',    @(x)isa(x,'ZmapBaseCatalog'));
             p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.KeepUnmatched = true;
@@ -285,7 +285,7 @@ classdef HistAnalysisWindow < AnalysisWindow
     
     methods(Static) % to be hidden
         function mustBeCatalogProperty(x)
-            assert(ismember(x,properties('ZmapCatalog')));
+            assert(ismember(x,properties('ZmapCatalog'))); %beware of ZmapBaseCatalog
         end
         
         function s = fillValidHistogramFields()

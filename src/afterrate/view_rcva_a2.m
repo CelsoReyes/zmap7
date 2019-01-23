@@ -131,14 +131,15 @@ function view_rcva_a2(lab1,valueMap)
     fix_caxis.ApplyIfFrozen(gca); 
     
     
-    xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
-    ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+    globalcatalog=ZG.primeCatalog;
+    xlabel(globalcatalog.XLabelWithUnits,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+    ylabel(globalcatalog.YLabelWithUnits,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
     
     % plot overlay
     %
     set(gca,'NextPlot','add')
     zmap_update_displays();
-    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
+    ploeq = plot(globalcatalog.X,globalcatalog.Y,'k.');
     set(ploeq,'Tag','eq_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     

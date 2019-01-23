@@ -158,7 +158,8 @@ function view_qva(lab1,valueMap)
     %
     set(gca,'NextPlot','add')
     zmap_update_displays();
-    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
+    globalcatalog = ZG.primeCatalog;
+    ploeq = plot(globalcatalog.X,globalcatalog.Y,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...

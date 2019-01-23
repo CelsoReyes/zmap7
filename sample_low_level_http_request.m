@@ -29,5 +29,4 @@ fprintf(f,"%s",resp.Body.Data); %resp.Body.Payload
 fclose(f);
 %%
 ZG.primeCatalog = import_fdsn_event(1,'junk.dat')
-% ZmapMainWindow(ZG.primeCatalog)
 toc

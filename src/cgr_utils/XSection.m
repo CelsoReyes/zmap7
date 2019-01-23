@@ -26,7 +26,7 @@ classdef XSection < handle
         endpt (1,2) double % [lat lon] end point for cross section
         startlabel char % label for start point
         endlabel char % label for end point
-        CoordinateSystem (1,:) char
+        CoordinateSystem CoordinateSystems
     end
     
     properties
@@ -161,7 +161,7 @@ classdef XSection < handle
             %
             % mask = obj.INSIDE(catalog)
             
-            mask=inpoly([catalog.Longitude,catalog.Latitude],[obj.polylons,obj.polylats]);
+            mask=inpoly([catalog.X,catalog.Y],[obj.polylons,obj.polylats]);
         end
         
         function c2 = project(obj,catalog)

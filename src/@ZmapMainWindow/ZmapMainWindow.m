@@ -10,7 +10,7 @@ classdef ZmapMainWindow < handle
         colorField                                  = ZmapGlobal.Data.mainmap_plotby % see ValidColorFields for choices
         CrossSections
         rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
-        CoordinateSystem  CoordinateSystems         = 'geodetic'
+        CoordinateSystem  CoordinateSystems         = ZmapGlobal.Data.CoordinateSystem
     end
     
     properties
@@ -340,7 +340,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog(obj.CoordinateSystem, [],obj.refEllipsoid);
             else
                 fprintf('Using existing grid:\n');
             end

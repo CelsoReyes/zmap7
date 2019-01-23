@@ -32,21 +32,21 @@ function plotmainmap(obj)
         dispname = replace(obj.catalog.Name,'_','\_');
         
         szFcn = str2func(mainEventOpts.MarkerSizeFcn);
-        eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
+        eq=scatter(axm, obj.catalog.X, obj.catalog.Y, ...
             szFcn(obj.catalog.Magnitude), getLegalColors(),...
             'Tag','active quakes',...
             'HitTest','off',...
             'DisplayName',dispname);
-        eq.ZData = obj.catalog.Depth;
+        eq.ZData = obj.catalog.Z;
         axm.NextPlot='replace';
         %obj.do_colorbar(axm);
         
     else
         
         % REUSE the plot
-        eq.XData = obj.catalog.Longitude;
-        eq.YData = obj.catalog.Latitude;
-        eq.ZData = obj.catalog.Depth;
+        eq.XData = obj.catalog.X;
+        eq.YData = obj.catalog.Y;
+        eq.ZData = obj.catalog.Z;
         eq.SizeData = szFcn(obj.catalog.Magnitude);
         eq.MarkerEdgeColor='flat';
         eq.CData = getLegalColors();
@@ -94,9 +94,9 @@ function plotmainmap(obj)
         beq = findobj(axm,'Tag','big events');
         
         if ~isempty(obj.bigEvents)
-            beq.XData = obj.bigEvents.Longitude;
-            beq.YData = obj.bigEvents.Latitude;
-            beq.ZData = obj.bigEvents.Depth;
+            beq.XData = obj.bigEvents.X;
+            beq.YData = obj.bigEvents.Y;
+            beq.ZData = obj.bigEvents.Z;
             beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
         else
             [beq.XData, beq.YData, beq.ZData, beq.SizeData]=deal([]);

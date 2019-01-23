@@ -12,15 +12,7 @@ function plot_constnrbootfitF()
     % interactively get the circle of interest
     shape=ShapeCircle(newa.CoordinateSystem); 
     [ZG.newt2, max_km] = selectCircle(newa, shape.toStruct());
-    %{
-    %  Calculate distance for each earthquake from center point
-    %  and sort by distance l
-    l = ZG.primeCatalog.epicentralDistanceTo(ya0,xa0);
-    [~,is] = sort(l);
-    ZG.newt2 = ZG.primeCatalog.subset(is(:,1)) ;
-    
-    l =  sort(l);
-    %}
+
     % Select events in learning time period
     vSel = (ZG.newt2.Date <= ZG.maepi.Date(1)+days(time));
     newt2_learn = ZG.newt2.subset(vSel);

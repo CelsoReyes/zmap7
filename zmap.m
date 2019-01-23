@@ -64,8 +64,8 @@ function zmap(varargin)
         addpath(fullfile(p,'src'));
     end
     set_zmap_paths;
-    ZG = ZmapGlobal.Data;
-    disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
+    
+    constructor_options = struct();
     startWindow      = true;
     
     possible_options = varargin(cellfun(@ischarlike,varargin));
@@ -74,22 +74,32 @@ function zmap(varargin)
         switch option
             case "-debug"
                 msg.infodisp('debug mode enabled','initialization')
-                ZG.debug = true;
+                constructor_options.debug = true;
+                
             case "-restart"
                 msg.infodisp('Restarting ZMAP','initialization')
                 restartZmap('restart');
                 return
+                
             case "-quit"
                 msg.infodisp('Quitting ZMAP','initialization')
                 restartZmap('quit');
                 return
+                
             case "-initonly"
                 msg.infodisp('Initializing Zmap without starting the default main window','initialization')
                 startWindow = false;
+                
             case "-rt"
                 msg.infodisp('RealTimeMode enabled','initialization');
-                ZG.RealTimeMode = true;
-            case "-catalog"
+                constructor_options.RealTimeMode = true;
+                
+            case "-cartesian"
+                constructor_options.CoordinateSystem = CoordinateSystems.cartesian;
+                
+                %{ 
+                
+            case {"-catalog"} % must be modified to handle ZmapBaseCatalog classes
                 vaa = varargin; 
                 notstrings =cellfun(@(x)~ischarlike(x),varargin);
                 vaa(notstrings)={''};
@@ -102,21 +112,26 @@ function zmap(varargin)
                         return
                     end
                     alt_cat = evalin('base',"ZmapCatalog(" + v.name + ")");
-                    if isa(alt_cat, 'ZmapCatalog')
-                        ZG.primeCatalog = alt_cat;
+                    if isa(alt_cat, 'ZmapBaseCatalog')
+                        constructor_options.primeCatalog = alt_cat;
                     end
                     msg.infodisp("set primary catalog to the value from : " + v.name, 'catalog specified');
                 else
-                    ZG.primeCatalog = ZmapCatalog(c);
+                    constructor_options.primeCatalog = ZmapCatalog(c);
                     msg.infodisp("set primary catalog from a : " + class(c), 'catalog specified');
                 end
-                    
+                    %}
+                
             otherwise
                 msg.errordisp('Unknown ZMAP option: ' + option, 'Unknown ZMAP option, stopping');
                 return
         end
+        
     end
+    setappdata(groot,'zmapdataconstructoroptions',constructor_options);
+    ZG = ZmapGlobal.Data;
     
+    disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
     % Set up the different computer systems
     sys = computer;
     

@@ -17,7 +17,7 @@ function [mdate, mshape, mall]=filter_catalog(obj)
         obj.shape = ShapeGeneral(obj.CordinateSystem); % it was invalid
     end
     if ~isempty(obj.shape)
-        mshape = obj.shape.isinterior(obj.rawcatalog.Longitude,obj.rawcatalog.Latitude);
+        mshape = obj.shape.isinterior(obj.rawcatalog.X,obj.rawcatalog.Y);
     else
         mshape=true(size(mdate));
     end

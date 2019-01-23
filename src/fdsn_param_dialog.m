@@ -470,7 +470,7 @@ function Fetch_Callback(~, ~, handles)
     
     % CONVERT
     msg.infodisp('Converting to a ZmapCatalog','FDSN Fetch');
-    if ~isa(tmp,'ZmapCatalog')
+    if ~isa(tmp,'ZmapBaseCatalog')
         ZG.primeCatalog=ZmapCatalog(tmp);
     else
         ZG.primeCatalog=tmp;

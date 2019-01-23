@@ -694,7 +694,7 @@ function orig_rc_cross_a2()
             valueMap = mRelchange;
             lab1 = 'Rate change';
             nlammap
-            [xsecx xsecy,  inde] =mysect(catalog.Latitude',catalog.Longitude',catalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
+            [xsecx xsecy,  inde] =mysect(catalog.Y',catalog.X',catalog.Z,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
             % Plot all grid points
             set(gca,'NextPlot','add')
             

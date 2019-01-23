@@ -7,7 +7,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
         features={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
     end
     properties(Constant)
-        Type = 'XYZ';
+        Type = GridTypes.XYZ;
     end
     
     methods

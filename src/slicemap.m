@@ -7,6 +7,7 @@ function slicemap()
     
     report_this_filefun();
     ZG=ZmapGlobal.Data;
+    globalCatalog = ZG.primeCatalog;
     
     global pli gz
     
@@ -20,7 +21,6 @@ function slicemap()
         fix1 = minzvg;
         fix2 = maxzvg;
     end
-    
     my_new()
     
     function my_new()
@@ -166,7 +166,7 @@ function slicemap()
         
         set(gca,'NextPlot','add')
         x = mean(gx); y = mean(gy) ; z = ds;
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=globalcatalog.hypocentralDistanceTo(x,y,z); %km
         
         [s,is] = sort(l);
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
@@ -175,7 +175,7 @@ function slicemap()
         di = sort(l); Rjma = di(ni);
         
         plot(ZG.newt2.Date,(1:ZG.newt2.Count),'m-','LineWidth',2.0,'Tag','tiplo2')
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(ZG.primeCatalog.Date)) ceil(max(ZG.primeCatalog.Date))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(globalcatalog.Date)) ceil(max(globalcatalog.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
         
         xlabel('Time [yrs]');
@@ -215,7 +215,7 @@ function slicemap()
         set(gca,'NextPlot','add')
         x = mean(gx)+std(gx)/2; y = mean(gy)+std(gy)/2 ; z = ds;
         
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
+        l=globalcatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         ZG.newt2 = ZG.newt2(1:ni,:);
@@ -223,7 +223,7 @@ function slicemap()
         di = sort(l); Rjma = di(ni);
         
         plot(ZG.newt2.Date,(1:ZG.newt2.Count),'c-','LineWidth',2.0,'tag','tiplo1')
-        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(ZG.primeCatalog.Date)) ceil(max(ZG.primeCatalog.Date))]);
+        set(gca,'YLim',[0 ni+15],'Xlim',[ floor(min(globalcatalog.Date)) ceil(max(globalcatalog.Date))]);
         set(gca,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
         
         xlabel('Magnitude');
@@ -297,7 +297,7 @@ function slicemap()
         di = deg2km(distance(lat1,lon1,lat2,lon2));
         
         if ~exist('ZG.xsec_defaults.WidthKm', 'var'); ZG.xsec_defaults.WidthKm = 10; end
-        [Ax, Ay, inde] = mysectnoplo(ZG.primeCatalog.Latitude',ZG.primeCatalog.Longitude',ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lat2,lon1,lon2);
+        [Ax, Ay, inde] = mysectnoplo(globalcatalog.Latitude',globalcatalog.Longitude',globalcatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lat2,lon1,lon2);
         set(gca,'NextPlot','add')
         %figure
         plot(di-Ax,-Ay,'.k','Markersize',1);

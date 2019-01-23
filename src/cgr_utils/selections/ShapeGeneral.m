@@ -102,8 +102,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         
         function obj=ShapeGeneral(coordinate_system)
             % ShapeGeneral create a shape
-            if ~isempty(coordinate_system)
-                obj.CoordinateSystem = coordinate_system;
+            if ~exist('coordinate_system','var') || isempty(coordinate_system)
+                obj.CoordinateSystem = ZmapGlobal.Data.CoordinateSystem;
             end
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);

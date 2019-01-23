@@ -54,9 +54,10 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     % set flags for how to treat this data
     QUICKDISTANCES = true; 
-    multifun=iscell(infun);
+    multifun = iscell(infun);
     
     assert(isa(selcrit,'EventSelectionParameters'));
+    assert(catalog.CoordinateSystem == zgrid.CoordinateSystem);
     
     nSkippedDueToInsufficientEvents = 0;
     % check input data
@@ -65,9 +66,9 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         requiredNumEvents = 1;
     end
     
-    check_provided_functions(multifun);
+    check_provided_functions(multifun, infun);
     
-    if ~isa(catalog, 'ZmapCatalog')
+    if ~isa(catalog, 'ZmapBaseCatalog')
         error('CATALOG should be a ZmapCatalog');
     end
     if ~isa(zgrid, 'ZmapGrid')
@@ -78,7 +79,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         answidth=1;
     end
     
-    values = initialize_from_grid(answidth);
+    values = nan(length(zgrid),answidth); % initialize from grid
     resultsize = [size(values,1),1];
     
     nEvents = zeros(resultsize);
@@ -89,95 +90,78 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     drawnow nocallbacks
     
+    
     % start parallel pool if necessary, but warn user!
-    ZG = ZmapGlobal.Data;
-    
-    
-    UseParallelProcessing = ZG.ParallelProcessingOpts.Enable && ...
-        (length(zgrid) >= ZG.ParallelProcessingOpts.Threshhold || ~isempty(gcp('nocreate'))); % get parallel pool details
-    
-    try
-        if UseParallelProcessing
-            start_the_parallel_pool();
-        end
-    catch ME
-        warning(ME.message);
-    end
+    UseParallelProcessing = act_upon_parallel_processing_options(length(zgrid));
     
     mytic = tic;    
     
-    gridmsg = sprintf('Computing values across grid.            %d Total points', length(zgrid));
-    if ~iscell(infun)
-        gridttl = sprintf('Zmap: %s', func2str(infun));
-    else
-        gridttl = sprintf('Zmap: [%d functions]', numel(infun));
-    end
     
-    h=msgbox_nobutton({ 'Please wait.' , gridmsg },gridttl);
-        
+    h = show_computation_dlg(infun,length(zgrid));
+    
+    
+    % shortcut only applies if we are dealing with lat/lon
+    QUICKDISTANCES = QUICKDISTANCES && catalog.CoordinateSystem == CoordinateSystems.geodetic;
+    
     if QUICKDISTANCES
-        refLat = median(catalog.Latitude);
-        refLon = median(catalog.Longitude);
-        refDepth = 0;
-        % get XYZ positions of cataloged events
-        [xNcat, yEcat, zDcat] = geodetic2ned(catalog.Latitude, catalog.Longitude, catalog.Depth,...
-            refLat, refLon, refDepth, catalog.RefEllipsoid);
-        % getXYZ position of grid points
-        if isempty(zgrid.Z)
-            inDepth = 0;
-        else
-            inDepth = zgrid.Z;
-        end
-        [xNgrid, yEgrid, zDgrid] = geodetic2ned(zgrid.Y, zgrid.X, inDepth,...
-            refLat, refLon, refDepth, catalog.RefEllipsoid); %TOFIX should be GRID's RefEllipsoid, but must have same units as catalog's
+        [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
     else
-        xNgrid=[];
-        yEgrid=[];
-        zDgrid=[];
+        [xNgrid, yEgrid, zDgrid] = deal([]);
         [xNcat, yEcat, zDcat] = deal([]);
     end
+    
     if multifun
         error('Unimplemented. Cannot yet do Multifun');
-        %doMultifun(infun)
+        
     elseif UseParallelProcessing
         doParSinglefun(infun, selcrit, catalog, zgrid);
     else 
         doSinglefun(infun);
     end
+    
     toc(mytic)
-    h.ButtonVisible=true;
-    h.String={'Calculation Complete.',...
-        sprintf('skipped %d grid points due to insuffient events\n', nSkippedDueToInsufficientEvents)};
+    h.ButtonVisible = true;
+    h.String = {'Calculation Complete.',...
+        sprintf('skipped %d grid points due to insufficient events\n', nSkippedDueToInsufficientEvents)};
     
     % close the window after a while. this is probably a kludge.
     %h.delay_for_close(seconds(2));
     
     if answidth==1 && ~isempty(varargin) && ~any(varargin == "noreshape")
-        reshaper=@(x) reshape(x, size(zgrid.X));
-        values=reshaper(values);
+        reshaper = @(x) reshape(x, size(zgrid.X));
+        values = reshaper(values);
     end
  
+    return
+    
+    %% calculation functions
+    %
+    %
+    
     function doSinglefun(myfun)
-        if UseParallelProcessing
-            error('disabled parallel processing')
-        end
             
         gridpoints = zgrid.GridVector;
-        gridpoints=gridpoints(zgrid.ActivePoints,:);
+        gridpoints = gridpoints(zgrid.ActivePoints,:);
         
         % where to put the value back into the matrix
         activeidx = find(zgrid.ActivePoints);
-        doZ=~isempty(zgrid.Z);
+        doZ = ~isempty(zgrid.Z);
+        
+        
         if QUICKDISTANCES
-            yEgrid=yEgrid(activeidx);
-            xNgrid=xNgrid(activeidx);
+            yEgrid = yEgrid(activeidx);
+            xNgrid = xNgrid(activeidx);
             if doZ
-                zDgrid=zDgrid(activeidx);
-            end
+                zDgrid = zDgrid(activeidx);
+            end   
         end
+        
         assert(isa(selcrit,'EventSelectionParameters'));
+        
+        lengthUnit = catalog.RefEllipsoid.LengthUnit;
+        
         for i=1:numel(activeidx)
-            fun=myfun; % local copy of function
+            fun = myfun; % local copy of function
             % is this point of interest?
             write_idx = activeidx(i);
             x=gridpoints(i,1);
@@ -188,24 +172,22 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 else
                     dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2);
                 end
-                %isWithinRadius = dd <= MaxSampleRadius .^ 2;
-                mask = selcrit.SelectionFromDistances(dd, catalog.RefEllipsoid.LengthUnit);
+                mask = selcrit.SelectionFromDistances(dd, lengthUnit);
                 minicat = catalog.subset(mask);
                 maxd = max(dd(mask));
                 
             else
                 if doZ
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,gridpoints(i,3));
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x, y, gridpoints(i,3));
                 else
-
-                    [minicat, maxd] = catalog.selectCircle(selcrit, x,y,[]);
+                    [minicat, maxd] = catalog.selectCircle(selcrit, x, y,[]);
                 end
             end
             
             nEvents(write_idx)=minicat.Count;
             if ~isempty(minicat)
-                maxMag(write_idx)=max(minicat.Magnitude);
-                maxDist(write_idx)=maxd;
+                maxMag(write_idx) = max(minicat.Magnitude);
+                maxDist(write_idx) = maxd;
             end
             % are there enough events to do the calculation?
             if minicat.Count < requiredNumEvents
@@ -249,7 +231,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             xNgrid=xNgrid(activeidx);
         end
         nTotal = numel(x);
-        nEvaluated=0;
+        nEvaluated = 0;
         D = parallel.pool.DataQueue;
         updateFreq = ceil(length(zgrid)/50);
         D.afterEach(@updateWaitBar)
@@ -257,7 +239,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         
         p = gcp('nocreate'); % get parallel pool details
         refel = catalog.RefEllipsoid.LengthUnit;
-        
+        selectFromDistances = @(d) selcrit.SelectionFromDistances(d, refel);
         parfor i=1 : nTotal
             fun = myfun; % local copy of function;
             if QUICKDISTANCES
@@ -266,8 +248,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
                 else
                     dd = sqrt((xNcat-xNgrid(i)).^2 + (yEcat-yEgrid(i)).^2);
                 end
-                %isWithinRadius = dd <= MaxSampleRadius .^ 2;
-                mask = selcrit.SelectionFromDistances(dd, refel);
+                mask = selectFromDistances(dd); % selcrit.SelectionFromDistances(dd, refel);
                 minicat = catalog.subset(mask);
                 maxd = max(dd(mask));
                 
@@ -322,34 +303,74 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         end
     end
 
+end
+
+function check_provided_functions(multifun, infun)
     
-    % helper functions
-    function check_provided_functions(multifun)
-        
-        if multifun
-            assert(size(infun,2)==2,...
-                'if FUN is a cell, it should be Nx2, like {@fun1, ''field1'';...;@funN, ''fieldN''}');
-            for q=1:size(infun,1)
-                assert(isa(infun{q,1},'function_handle'),'element %d,1 of FUN isn''t a function handle',q);
-                assert(ischar(infun{q,2}),'element %d,2 of FUN isn''t a string',q);
-            end
-        else
-            assert(isa(infun,'function_handle'),...
-                'FUN should be a function handle that accepts a catalog and returns a value');
-            assert(nargin(infun)==1, 'FUN should take one input: a catalog')
+    if multifun
+        assert(size(infun,2)==2,...
+            'if FUN is a cell, it should be Nx2, like {@fun1, ''field1'';...;@funN, ''fieldN''}');
+        for q=1:size(infun,1)
+            assert(isa(infun{q,1},'function_handle'),'element %d,1 of FUN isn''t a function handle',q);
+            assert(ischar(infun{q,2}),'element %d,2 of FUN isn''t a string',q);
         end
+    else
+        assert(isa(infun,'function_handle'),...
+            'FUN should be a function handle that accepts a catalog and returns a value');
+        assert(nargin(infun)==1, 'FUN should take one input: a catalog')
     end
+end
     
-    function values = initialize_from_grid(answidth)
-            values=nan(length(zgrid),answidth);
-    end
+function UseParallelProcessing = act_upon_parallel_processing_options(gridlength)
+    ZG = ZmapGlobal.Data;
     
-    function start_the_parallel_pool()
-        p=gcp('nocreate');
-        if isempty(p)
-            msgbox_nobutton('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
-            parpool();
+    % get parallel pool details
+    
+    UseParallelProcessing = ZG.ParallelProcessingOpts.Enable && ...
+        (gridlength >= ZG.ParallelProcessingOpts.Threshhold || ...
+        ~isempty(gcp('nocreate'))); 
+    
+    try
+        if UseParallelProcessing
+            start_the_parallel_pool();
         end
+    catch ME
+        warning(ME.message);
+    end
+end
+    
+function start_the_parallel_pool()
+    p=gcp('nocreate');
+    if isempty(p)
+        msgbox_nobutton('Parallel pool starting up for first time...this might take a moment','Starting Parpool');
+        parpool();
     end
 end
 
+function h = show_computation_dlg(infun, nPoints)
+    gridmsg = sprintf('Computing values across grid.            %d Total points', nPoints);
+    if ~iscell(infun)
+        gridttl = sprintf('Zmap: %s', func2str(infun));
+    else
+        gridttl = sprintf('Zmap: [%d functions]', numel(infun));
+    end
+    
+    h = msgbox_nobutton({ 'Please wait.' , gridmsg },gridttl);
+end
+
+function [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid)
+    refLat = median(catalog.Latitude);
+    refLon = median(catalog.Longitude);
+    refDepth = 0;
+    % get XYZ positions of cataloged events
+    [xNcat, yEcat, zDcat] = geodetic2ned(catalog.Latitude, catalog.Longitude, catalog.Depth,...
+        refLat, refLon, refDepth, catalog.RefEllipsoid);
+    % getXYZ position of grid points
+    if isempty(zgrid.Z)
+        inDepth = 0;
+    else
+        inDepth = zgrid.Z;
+    end
+    [xNgrid, yEgrid, zDgrid] = geodetic2ned(zgrid.Y, zgrid.X, inDepth,...
+        refLat, refLon, refDepth, catalog.RefEllipsoid); %TOFIX should be GRID's RefEllipsoid, but must have same units as catalog's
+end

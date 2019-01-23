@@ -44,12 +44,10 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'FontWeight','bold');
 
     % mask so that we can plot original quakes in original positions
-    mask=polygon_filter(plon,plat,catalog.Longitude,catalog.Latitude,'inside');
+    mask=polygon_filter(plon,plat,catalog.X,catalog.Y,'inside');
     
     c2=ZmapXsectionCatalog(catalog, [lat(1),lon(1)],[lat(2),lon(2)], zans.slicewidth_km);
-    
-    %[c2,mindist,mask,gcDist_km]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km/2,0.1);
-    
+  
     % PLOT X-SECTION IN NEW FIGURE
     f=create_cross_section_figure(zans, catalog, c2, mask);
     f.DeleteFcn = @(~,~)delete([xs_endpts,xs_line,slabel,elabel, xspoly]); % autodelete xsection when figure is closed
@@ -109,12 +107,12 @@ function plot3_events(ax,c2, catalog, mask, featurelist)
     % create a 3-d plot of this cross section, with overlaid map
     
     % plot relevant events (at depth)
-    scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,mag2dotsize(c2.Magnitude),c2.dist_along_strike_km,'+')
+    scatter3(ax,c2.X,c2.Y,c2.Z,mag2dotsize(c2.Magnitude),c2.dist_along_strike_km,'+')
     
     set(gca,'NextPlot','add')
     % plot all events as gray on surface
-    plot(ax,catalog.Longitude,catalog.Latitude,'.','Color',[.75 .75 .75],'MarkerSize',1);
-    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,c2.displacement_km)
+    plot(ax,catalog.X,catalog.Y,'.','Color',[.75 .75 .75],'MarkerSize',1);
+    scatter3(catalog.X(mask),catalog.Y(mask),c2.Z,3,c2.displacement_km)
     ax.ZDir='reverse'; % Depths are + down
     
     

@@ -134,10 +134,10 @@ function overtopo()
     function callbackfun_004(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        
+        globalcatalog = ZG.primeCatalog;
         in3 =get(hndl4,'Value');
-        if in3 == 1 ; ploe = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'.r','MarkerSize',1) ; end
-        if in3 == 2 ; ploe = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'or','MarkerSize',2) ; end
+        if in3 == 1 ; ploe = plot(globalcatalog.Longitude,globalcatalog.Latitude,'.r','MarkerSize',1) ; end
+        if in3 == 2 ; ploe = plot(globalcatalog.Longitude,globalcatalog.Latitude,'or','MarkerSize',2) ; end
         if in3 == 3 ; delete(ploe);  end
     end
     

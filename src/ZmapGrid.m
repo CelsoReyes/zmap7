@@ -56,6 +56,7 @@ classdef ZmapGrid
         Z               double          % all Y positions in matrix.
         Origin                          % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
         PlotOpts        struct      = ZmapGlobal.Data.GridOpts.LineProps;
+        CoordinateSystem  CoordinateSystems = ZmapGlobal.Data.CoordinateSystem
             
     end
     

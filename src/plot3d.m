@@ -12,6 +12,7 @@ function plot3d()
     report_this_filefun()
     
     ZG=ZmapGlobal.Data; % get zmap globals;
+    globalcatalog = ZG.primeCatalog;
     tag='mainmap3_ax';
     watchon
     
@@ -82,14 +83,14 @@ function plot3d()
             
             %plot earthquakes according time
         case 'tim'
-            timidx = ZG.primeCatalog.Date<=tim2&ZG.primeCatalog.Date>=tim1;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'+b');
+            timidx = globalcatalog.Date<=tim2&globalcatalog.Date>=tim1;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'+b');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.primeCatalog.Date<=tim3&ZG.primeCatalog.Date>tim2;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'og');
+            timidx = globalcatalog.Date<=tim3&globalcatalog.Date>tim2;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'og');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.primeCatalog.Date<=tim4&ZG.primeCatalog.Date>tim3;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'xr');
+            timidx = globalcatalog.Date<=tim4&globalcatalog.Date>tim3;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'xr');
             set(plo,'MarkerSize',6,'LineWidth',1.)
             
             ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -130,7 +131,7 @@ function plot3d()
         set(pl3b,'LineWidth',3.0)
     end
     
-    axis([ min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude) min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude) min(-ZG.primeCatalog.Depth) max(-ZG.primeCatalog.Depth)  ])
+    axis([ min(globalcatalog.Longitude) max(globalcatalog.Longitude) min(globalcatalog.Latitude) max(globalcatalog.Latitude) min(-globalcatalog.Depth) max(-globalcatalog.Depth)  ])
     orient tall
     
     set(gca,'box','on',...

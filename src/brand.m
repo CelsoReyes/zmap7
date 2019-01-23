@@ -26,6 +26,9 @@ function brand()
     %nr = str2double(prmptdlg('Numer of samples drawn ','100'));
     tic
     niv = n1:ns:n2;
+    
+    globalcatalog=ZG.primeCatalog;
+
     for ni = n1:ns:n2
         ni
         ar = [];
@@ -33,11 +36,11 @@ function brand()
         br = [];
         brm = [];
         for i = 1:nr
-            l = ceil(rand([ni 1])*ZG.primeCatalog.Count);
+            l = ceil(rand([ni 1])*globalcatalog.Count);
             %[bv magco stan,  av] =  bvalca3(newa(l,:), McAutoEstimate.manual);
             %br = [br bv];
             %ar = [ar av];
-            [bv2 stan av2 ] = calc_bmemag(ZG.primeCatalog.Magnitude(l),0.1);
+            [bv2 stan av2 ] = calc_bmemag(globalcatalog.Magnitude(l),0.1);
             brm = [brm bv2];
             arm = [arm av2];
         end

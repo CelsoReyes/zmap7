@@ -141,7 +141,7 @@ function zgrid3d_orig(sel,catalog)
             i2 = i2+1;
             
             % calculate distance from center point and sort wrt distance
-            di = sqrt(((catalog.Longitude-x)*cosd(y)*111).^2 + ((catalog.Latitude-y)*111).^2 + ((catalog.Depth - z)).^2 ) ;
+            di = sqrt(((catalog.X-x)*cosd(y)*111).^2 + ((catalog.Y-y)*111).^2 + ((catalog.Z - z)).^2 ) ;
             [s,is] = sort(di);
             
             l2 = find(is <= 300);

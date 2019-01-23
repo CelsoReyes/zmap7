@@ -13,18 +13,6 @@ function plot_constnrbootfit_a2()
     shape=ShapeCircle(newa.CoordinateSystem); 
     [ZG.newt2, max_km] = selectCircle(newa, shape.toStruct());
     
-    %{
-    % Input center of circle with mouse
-    %
-    
-    %  Calculate distance for each earthquake from center point
-    %  and sort by distance l
-    l = ZG.primeCatalog.epicentralDistanceTo(ya0,xa0);
-    ZG.newt2=ZG.primeCatalog.subset(l); % order by epicentral distance
-    
-    l =  sort(l);
-    %}
-    
     if ~ensure_mainshock()
         return
     end

@@ -9,7 +9,7 @@ function replaceMainCatalog(otherCatalog)
     if isa(otherCatalog,'ZmapCatalogView')
         otherCatalog=otherCatalog.Catalog();
     end
-    assert(isa(otherCatalog,'ZmapCatalog'));
+    assert(isa(otherCatalog,'ZmapBaseCatalog'));
     
     ZG = ZmapGlobal.Data;
     ZG.primeCatalog=ZmapCatalog(otherCatalog);

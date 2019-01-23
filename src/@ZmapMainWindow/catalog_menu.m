@@ -37,7 +37,7 @@ function catalog_menu(obj, force)
     uimenu(submenu,'Label','Save current catalog',MenuSelectedField(),@(~,~)save_zmapcatalog(obj.catalog));
     
     catexport = uimenu(submenu,'Label','Export current catalog...');
-    uimenu(catexport,'Label','to workspace (ZmapCatalog)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'ZmapCatalog'));
+    uimenu(catexport,'Label','to workspace (as catalog)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'catalog'));
     uimenu(catexport,'Label','to workspace (Table)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'table'));
         uimenu(catexport,'Label','to workspace (old ZmapArray)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
     
@@ -231,7 +231,7 @@ function exportToWorkspace(catalog, fmt)
     if ~isempty(fn)
         safername = matlab.lang.makeValidName(fn{1});
         switch lower(fmt)
-        case 'zmapcatalog'
+        case 'catalog'
             assignin('base',safername,catalog);
         case 'zmaparray'
             assignin('base',safername,catalog.ZmapArray);

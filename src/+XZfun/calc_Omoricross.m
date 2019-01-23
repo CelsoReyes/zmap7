@@ -171,7 +171,7 @@ classdef calc_Omoricross < ZmapVGridFunction
             label='omori parameters (p-, k-,c-) [xsec]';
             h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.calc_Omoricross(zapFcn()));
         end
-        
+        %{
         function calc_Omoricross_orig()
             % Calculate Omori parameters on cross section using different choices for Mc
             % Data is displayed with view_Omoricross.m
@@ -446,7 +446,8 @@ classdef calc_Omoricross < ZmapVGridFunction
                         % Initial map set to relative rate change
                     valueMap = mPval;
                     nlammap
-                    [xsecx, xsecy inde] =mysect(ZG.(wCat).Latitude',ZG.(wCat).Longitude',ZG.(wCat).Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
+                    thecat = ZG.(wCat);
+                    [xsecx, xsecy inde] =mysect(thecat.Y',thecat.X',thecat.Z,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
                     % Plot all grid points
                     set(gca,'NextPlot','add')
                     
@@ -497,5 +498,6 @@ classdef calc_Omoricross < ZmapVGridFunction
                 my_calculate();
             end
         end
+        %}
     end
 end

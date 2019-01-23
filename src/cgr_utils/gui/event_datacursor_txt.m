@@ -44,12 +44,13 @@ function txt = parse_quakes(event_obj)
     assignin('base','clickedevent',event_obj)
     evpos=event_obj.Position;
     ZG=ZmapGlobal.Data;
+    globalcatalog = ZG.primeCatalog;
       evNum=find(...
-         abs(evpos(2) - ZG.primeCatalog.Latitude) < latTol &...
-         abs(evpos(1) - ZG.primeCatalog.Longitude) < lonTol &...
-         abs(evpos(3) - ZG.primeCatalog.Depth < depthTol));
+         abs(evpos(2) - globalcatalog.Y) < latTol &...
+         abs(evpos(1) - globalcatalog.X) < lonTol &...
+         abs(evpos(3) - globalcatalog.Z < depthTol));
     
-     minicat=ZG.primeCatalog.subset(evNum);
+     minicat=globalcatalog.subset(evNum);
      minicat.Name=sprintf('datacursor:%s', char(datetime(),'uuuuMMdd''T''hhmmss'));
      assignin('base',OUTPUT_NAME,minicat);
      

@@ -87,7 +87,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         SortDirection   char            = ''    % describes sorting direction
         Filter          logical                 % logical filter for subsetting events
         XYZ             (:,3) double            % position of each event
-        CoordinateSystem (1,:) char = 'cartesian'
+        CoordinateSystem CoordinateSystems = 'cartesian'
     end
     
     properties(Hidden)
@@ -107,7 +107,11 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         X           % X position of each event
         Y           % Y position of each event
         Z           % Z position of each event
+        XLabelWithUnits
+        YLabelWithUnits
+        ZLabelWithUnits
     end
+    
     
     properties(SetAccess=immutable)
         Type        (1,:) char
@@ -150,6 +154,18 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         end
         function propval = get.Z(obj)
             propval = obj.XYZ(:,3);
+        end
+        
+        function lb = get.XLabelWithUnits(obj)
+            lb = [obj.XLabel, ' [',obj.PositionUnits,']'];
+        end
+        
+        function lb = get.YLabelWithUnits(obj)
+            lb = [obj.YLabel, ' [',obj.PositionUnits,']'];
+        end
+        
+        function lb = get.ZLabelWithUnits(obj)
+            lb = [obj.ZLabel, ' [',obj.ZUnits,']'];
         end
         
         function s = blurb(obj)

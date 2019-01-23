@@ -47,7 +47,7 @@ classdef AnalysisWindow < handle
             %          such as 'FontSize','LineWidth', etc...
             
             p = inputParser();
-            p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
+            p.addRequired('catalog',    @(x)isa(x,'ZmapBaseCatalog'));
             p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...

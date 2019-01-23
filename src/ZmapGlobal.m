@@ -17,6 +17,7 @@ classdef ZmapGlobal
     % see also ZmapData
     
     properties (Constant)
-        Data = ZmapData % handle-based class containing global variables & constants
+        Data = ZmapData(getappdata(groot,'zmapdataconstructoroptions')) % handle-based class containing global variables & constants
     end
+    
 end
