@@ -65,17 +65,16 @@ function zmap(varargin)
     end
     set_zmap_paths;
     
-    constructor_options = struct();
     startWindow      = true;
+    debugMode        = false;
     
     possible_options = varargin(cellfun(@ischarlike,varargin));
     options          = lower(possible_options(startsWith(possible_options,'-')));
+    
+    % set application data
+    
     for option = string(options)
         switch option
-            case "-debug"
-                msg.infodisp('debug mode enabled','initialization')
-                constructor_options.debug = true;
-                
             case "-restart"
                 msg.infodisp('Restarting ZMAP','initialization')
                 restartZmap('restart');
@@ -86,16 +85,21 @@ function zmap(varargin)
                 restartZmap('quit');
                 return
                 
+            case "-debug"
+                msg.infodisp('debug mode enabled','initialization')
+                debugMode = true;
+                
             case "-initonly"
                 msg.infodisp('Initializing Zmap without starting the default main window','initialization')
                 startWindow = false;
                 
             case "-rt"
                 msg.infodisp('RealTimeMode enabled','initialization');
-                constructor_options.RealTimeMode = true;
+                setappdata(groot,'ZmapRealTimeMode', true);
                 
             case "-cartesian"
-                constructor_options.CoordinateSystem = CoordinateSystems.cartesian;
+                % must be set prior to acessing ZmapGlobal for the first time
+                setappdata(groot,'ZmapCoordinateSystem', CoordinateSystems.cartesian);
                 
                 %{ 
                 
@@ -128,8 +132,9 @@ function zmap(varargin)
         end
         
     end
-    setappdata(groot,'zmapdataconstructoroptions',constructor_options);
+    
     ZG = ZmapGlobal.Data;
+    ZG.debug = debugMode;
     
     disp(['This is zmap.m - version ', ZmapGlobal.Data.zmap_version])
     % Set up the different computer systems

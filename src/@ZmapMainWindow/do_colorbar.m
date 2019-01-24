@@ -21,16 +21,14 @@ function do_colorbar(obj,src,evt,origCallback)
                 h.TickLabels=datestr(h.Ticks,'yyyy-mm-dd');
                 h.Label.String='Date';
                 h.Direction='normal';
-            case 'Magnitude'
-                h.Label.String=obj.colorField;
-                h.TickLabels=string([h.Ticks]');
-                h.Direction='normal';
             case 'Depth'
                 h.Label.String=obj.colorField;
                 h.TickLabels=string([h.Ticks]');
                 h.Direction='reverse';
             otherwise
-                error('unanticipated colorfield')
+                h.Label.String=obj.colorField;
+                h.TickLabels=string([h.Ticks]');
+                h.Direction='normal';
         end
         
     else

@@ -259,7 +259,10 @@ classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
             % fields that are either empty, or have the same length as event.
             pef = [possibly_empty_fields@ZmapBaseCatalog , {'Dip','DipDirection','Rake', 'MomentTensor'}];
         end
-        
+
+        function val = GetFieldnamesForColorby()
+            val = {'Depth','Date', 'Magnitude', '-none-'};
+        end
     end
 end
 

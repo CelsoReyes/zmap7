@@ -219,8 +219,8 @@ function create_all_menus(obj, force)
         grid(axm,char(ZmapGlobal.Data.mainmap_grid));
         
         % choose what to plot by
-        for j=1:numel(obj.ValidColorFields)
-            myfn = obj.ValidColorFields{j};
+        for j=1:numel(obj.rawcatalog.FieldnamesForColorby)
+            myfn = obj.rawcatalog.FieldnamesForColorby{j};
             um(j)=uimenu(mapoptionmenu,'Label',['Color by ' myfn],MenuSelectedField(), @(s,v)set_colorby(s, v, myfn) ,...
                 'Checked',tf2onoff(strcmp(obj.colorField,myfn)));
             if j==1
@@ -302,25 +302,19 @@ function create_all_menus(obj, force)
             
             % update menus
             for jj=1:numel(um)
-                myfn = obj.ValidColorFields{jj};
+                myfn = obj.rawcatalog.FieldnamesForColorby{jj};
                 um(jj).Checked = tf2onoff(strcmp(obj.colorField,myfn));
             end
             h=findobj(obj.fig,'Type','colorbar','-and','Parent',obj.fig);
-            % hascolorbar=~isempty(h) && ~isempty(obj.colorField);
+            
             delete(h)
             obj.plotmainmap();
-            %obj.fig.CurrentAxes=findobj(obj.fig,'Tag','mainmap_ax');
-            % redraw the colorbar?
-            %if hascolorbar
-            %    obj.do_colorbar();
-            %end
         end
         
         function cb_plotby(~,~, s)
             ZG=ZmapGlobal.Data;
             ZG.mainmap_plotby=s;
             watchon;
-            % zmap_update_displays();
             watchoff;
         end
         
@@ -359,7 +353,6 @@ function create_all_menus(obj, force)
         
         create_topo_map_menu(submenu);
         create_random_data_simulations_menu(submenu);
-        % uimenu(submenu,'Label','Create [simple] cross-section',MenuSelectedField(),@obj.cb_xsection);
         
         % create_histogram_menu(submenu);
         create_explore_catalog_menu(submenu);

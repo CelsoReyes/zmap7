@@ -63,6 +63,9 @@ function plotmainmap(obj)
             eq.DisplayName = dispname;
         end
     end
+    
+    fix_colorbar()
+        
     set_valid_properties(eq, mainEventOpts);
     
     % update the largest events
@@ -116,6 +119,36 @@ function plotmainmap(obj)
         end
     end
     
+    function fix_colorbar()
+        h = obj.map_axes.Colorbar;
+        if isempty(h) && obj.colorField ~= "-none-"
+            h = colorbar(obj.map_axes);
+        end
         
+        if isempty(h) || h.Label.String == string(obj.colorField)
+            return
+        end
+        
+        h.Label.String = obj.colorField;
+        
+        switch obj.colorField
+            case '-none-'
+                delete(h)
+                
+            case 'Depth'
+                h.Direction = 'reverse';
+                h.TickLabels = h.Ticks;
+                
+                
+            case 'Date'
+                    h.TickLabels   = datestr(h.Ticks,'yyyy-mm-dd');
+                    h.Label.String = 'Date';
+                    h.Direction    = 'normal';
+                    
+            otherwise
+                h.Direction = 'normal';
+        end 
+            
+    end
     
 end

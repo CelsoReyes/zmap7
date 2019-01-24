@@ -32,7 +32,7 @@ classdef ZmapData < handle
     end
     
     properties(SetAccess = immutable)
-        CoordinateSystem CoordinateSystems %may only be changed when ZMAP starts anew
+        CoordinateSystem CoordinateSystems  = CoordinateSystems.geodetic % may only be changed when ZMAP starts anew
     end
     
     properties
@@ -70,7 +70,7 @@ classdef ZmapData < handle
         
         lock_aspect     matlab.lang.OnOffSwitchState    % use fixed aspect ratio
         mainmap_grid    matlab.lang.OnOffSwitchState    % show the grid on the main map
-        mainmap_plotby  (1,:) char                      % was typele
+        mainmap_plotby  (1,:) char      = '-none-'      % was typele
         
         % features that will be loaded on the main map
         mainmap_features                = {'borders','coastline','faults','lakes','plates',...
@@ -149,24 +149,23 @@ classdef ZmapData < handle
         primeCatalog
     end
     
-    properties(Constant, Access = private)
-        DefaultCoordinateSystem CoordinateSystems = CoordinateSystems.geodetic;
-    end
-    
     methods
-        function obj=ZmapData(varargin)
+        function obj=ZmapData()
             % initialize zmap data
+            
             def_files = defaults.availableDefaults;
             ZDefaults = struct();
-            p = inputParser();
-            p.KeepUnmatched = true;
-            p.addParameter("CoordinateSystem", obj.DefaultCoordinateSystem);
-            p.parse(varargin{:});
-            argumentSettings=fieldnames(p.Unmatched);
-            for i=1:numel(argumentSettings)
-                obj.(argumentSettings{i}) = p.Unmatched.(argumentSettings{i});
+            
+            % set defaults
+            if isappdata(groot,'ZmapCoordinateSystem')
+                obj.CoordinateSystem = getappdata(groot, 'ZmapCoordinateSystem');
             end
-            obj.CoordinateSystem = p.Results.CoordinateSystem;
+            
+            if isappdata(groot,'ZmapRealTimeMode')
+                obj.RealTimeMode = getappdata(groot, 'ZmapRealTimeMode');
+            end
+            
+            
             
             %% a note about defaults
             % default settings are set in the ZmapSettings.mlapp. R2018a
@@ -264,11 +263,6 @@ classdef ZmapData < handle
                         obj.SamplingOpts = ZDefaults.sampling;
                         obj.GridSelector = EventSelectionParameters.fromStruct(obj.SamplingOpts);
                 end
-            end
-            
-            % we're doing this again to make sure nothing was overwritten
-            for i=1:numel(argumentSettings)
-                obj.(argumentSettings{i}) = p.Unmatched.(argumentSettings{i});
             end
             
         end

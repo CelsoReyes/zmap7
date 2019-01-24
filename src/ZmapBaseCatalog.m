@@ -112,15 +112,28 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         ZLabelWithUnits
     end
     
+    properties(Dependent, Hidden)
+        FieldnamesForColorby
+    end
     
     properties(SetAccess=immutable)
         Type        (1,:) char
+    end
+    
+    methods(Static, Hidden)
+        function val = GetFieldnamesForColorby()
+            val = {'Z','Date', 'Magnitude', '-none-'};
+        end
     end
     
     methods
         % ordered as: Constructors, dependent property methods, alphabetical list of all others
         function obj = ZmapBaseCatalog(varargin)
             obj.Type = lower(class(obj));
+        end
+        
+        function val = get.FieldnamesForColorby(obj)
+            val =obj.GetFieldnamesForColorby;
         end
         
         function val = get.Count(obj)

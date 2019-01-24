@@ -167,8 +167,8 @@ function plot_base_events(obj, container, featurelist)
     end
     
     function cb_zoom(~ ,~)
-        xl = bounds2(obj.catalog.Longitude);
-        yl = bounds2(obj.catalog.Latitude);
+        xl = bounds2(obj.catalog.X);
+        yl = bounds2(obj.catalog.Y);
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end
@@ -215,10 +215,10 @@ function plot_base_events(obj, container, featurelist)
         yl = obj.map_axes.YLim;
 
         obj.rawcatalog.subsetInPlace(...
-            xl(1) <= obj.rawcatalog.Longitude &...
-            obj.rawcatalog.Longitude <= xl(2) &...
-            yl(1) <= obj.rawcatalog.Latitude  &...
-            obj.rawcatalog.Latitude  <= yl(2));
+            xl(1) <= obj.rawcatalog.X &...
+            obj.rawcatalog.X <= xl(2) &...
+            yl(1) <= obj.rawcatalog.Y  &...
+            obj.rawcatalog.Y  <= yl(2));
         obj.replot_all();
     end
 

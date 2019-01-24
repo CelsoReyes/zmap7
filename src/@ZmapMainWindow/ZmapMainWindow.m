@@ -7,7 +7,7 @@ classdef ZmapMainWindow < handle
         shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
         Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange     datetime                        % used to subset the catalog with date ranges
-        colorField                                  = ZmapGlobal.Data.mainmap_plotby % see ValidColorFields for choices
+        colorField                                  = ZmapGlobal.Data.mainmap_plotby
         CrossSections
         rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
         CoordinateSystem  CoordinateSystems         = ZmapGlobal.Data.CoordinateSystem
@@ -49,7 +49,6 @@ classdef ZmapMainWindow < handle
         MapCBPos_S          = [0.5975    0.5600    0.0167    0.4000]
         MapCBPos_L          = [0.5975    0.5600    0.0167    0.4000]
         FeaturesToPlot      = ZmapGlobal.Data.mainmap_features
-        ValidColorFields    = {'Depth', 'Date', 'Magnitude', '-none-'}
         Type                = 'zmapwindow'
     end
     
