@@ -21,7 +21,8 @@ classdef XSection < handle
     %   obj.plot_events_along_strike(ax,c2, true); %plot a ZmapXsectionCatalog without projecting
     
     properties(SetObservable, AbortSet)
-        width_km (1,1) double = ZmapGlobal.Data.CrossSectionOpts.WidthKm; % width of cross section, in kilometers
+        width (1,1) double = ZmapGlobal.Data.CrossSectionOpts.WidthKm; % width of cross section
+        width_units (1,:) char = 'kilometer'
         startpt (1,2) double % [lat lon] start point for cross section
         endpt (1,2) double % [lat lon] end point for cross section
         startlabel char % label for start point
@@ -69,10 +70,10 @@ classdef XSection < handle
         function obj=XSection(ax, zans, startpt, endpt, ref_ellipsoid)
             % XSECTION create a cross section
             % obj = XSECTION(ax, zans, startpt, endpt)
-            %  where zans is a struct with fields: 'width_km', 'startlabel', 'endlabel', and 'color'
+            %  where zans is a struct with fields: 'width', 'startlabel', 'endlabel', and 'color'
             % and startpt, endpoint are each [lat,lon]
             
-            obj.width_km    = zans.slicewidth_km;   % slicewidth_km
+            obj.width    = zans.slicewidth_km;   % slicewidth_km
             obj.startlabel  = zans.startlabel;      % startlabel
             obj.endlabel    = zans.endlabel;        % endlabel
             obj.color       = zans.color;           % color
@@ -94,7 +95,7 @@ classdef XSection < handle
                 obj.endpt = endpt;
             end
             
-            addlistener(obj, 'width_km'  , 'PostSet', @XSection.handlePropertyEvents);
+            addlistener(obj, 'width'  , 'PostSet', @XSection.handlePropertyEvents);
             addlistener(obj, 'startpt'   , 'PostSet', @XSection.handlePropertyEvents);
             addlistener(obj, 'endpt'     , 'PostSet', @XSection.handlePropertyEvents);
             addlistener(obj, 'startlabel', 'PostSet', @XSection.handlePropertyEvents);
@@ -117,9 +118,9 @@ classdef XSection < handle
             %
             % obj = obj.CHANGE_WIDTH( WIDTH_KM, AZ)
             if ~exist('w','var') || isempty(w)
-                obj.width_km = obj.widthZmapGlobal.Data.CrossSectionOpts.WidthKm;
+                obj.width = obj.widthZmapGlobal.Data.CrossSectionOpts.WidthKm;
             else
-                obj.width_km = w;
+                obj.width = w;
             end
 
         end
@@ -169,7 +170,7 @@ classdef XSection < handle
             % 
             % projectedCat = obj.PROJECT(catalog)
             
-            c2=ZmapXsectionCatalog(catalog, obj.startpt, obj.endpt, obj.width_km);
+            c2=ZmapXsectionCatalog(catalog, obj.startpt, obj.endpt, obj.width);
         end
         
         function set_endpoints(obj,ax)
@@ -307,8 +308,8 @@ classdef XSection < handle
         
         function s = info(obj)
             displayer=@(x)sprintf(...
-                    'X-Sec %s: %g km long by %g km wide [(%g,%g) to (%g,%g)]',...
-                    x.name, x.length_km, x.width_km, x.startpt, x.endpt);
+                    'X-Sec %s: %g km long by %g %ss wide [(%g,%g) to (%g,%g)]',...
+                    x.name, x.length_km, x.width, x.width_units, x.startpt, x.endpt);
             nObj = numel(obj);
             if isempty(nObj)
                 s=('No cross section(s) or empty cross section');
@@ -327,7 +328,7 @@ classdef XSection < handle
         end
         
         function recalculate_boundary(obj)
-            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width_km/2,false,obj.refellipsoid);
+            [obj.polylats,obj.polylons] = xsection_poly(obj.startpt, obj.endpt, obj.width/2,false,obj.refellipsoid);
         end
         
         function recalculate_xsec_curve(obj)
@@ -530,7 +531,7 @@ classdef XSection < handle
         function handlePropertyEvents(src,ev)
             obj = ev.AffectedObject;
             switch src.Name
-                case 'width_km'
+                case 'width'
                     obj.recalculate_boundary();
                     obj.update_xsec_plots();
                     notify(obj,'XsecChanged');

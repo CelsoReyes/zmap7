@@ -10,7 +10,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
             obj@CatalogExplorationPlot(ax, catalogFcn);
             obj.xsec = xsec;
             obj.y_by='Depth'; 
-            obj.x_by='dist_along_strike_km';
+            obj.x_by='dist_along_strike';
         end
         function scatter(obj, tag, varargin)
             % scatter plot
@@ -51,13 +51,13 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
                         obj.ax.ZTickLabelMode='auto';
                 end
             end
-            if (isempty(specific) || specific == "x_by") && obj.x_by == "dist_along_strike_km"
+            if (isempty(specific) || specific == "x_by") && obj.x_by == "dist_along_strike"
                 modify_axis('XLim','XLabel','XTick','XTickLabel');
             end
-            if (isempty(specific) || specific == "y_by") && obj.y_by == "dist_along_strike_km"
+            if (isempty(specific) || specific == "y_by") && obj.y_by == "dist_along_strike"
                 modify_axis('YLim','YLabel','YTick','YTickLabel');
             end
-            if (isempty(specific) || specific == "z_by") && obj.z_by == "dist_along_strike_km"
+            if (isempty(specific) || specific == "z_by") && obj.z_by == "dist_along_strike"
                 modify_axis('ZLim','ZLabel','ZTick','ZTickLabel');
             end
  

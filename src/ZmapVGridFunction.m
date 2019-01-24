@@ -60,7 +60,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
             ax.XLabel.String='Distance along Strike (km)';
             ax.YLabel.String='Depth';
             ax.YDir='reverse';
-            ax.XLim=[0 obj.RawCatalog.curvelength_km];
+            ax.XLim=[0 obj.RawCatalog.curvelength];
             ax.YLim=[max(0,min(obj.Grid.Z)) max(obj.Grid.Z)];
 
             dcm_obj=datacursormode(gcf);
@@ -131,7 +131,7 @@ classdef ZmapVGridFunction < ZmapGridFunction
             qtag=findobj(gcf,'tag','quakes');
             if isempty(qtag)
                 set(gca,'NextPlot','add')
-                line(catalog.dist_along_strike_km, catalog.Depth, 'Marker','o',...
+                line(catalog.dist_along_strike, catalog.Z, 'Marker','o',...
                     'MarkerSize',3,...
                     'MarkerEdgeColor',[.2 .2 .2],...
                     'LineStyle','none',...

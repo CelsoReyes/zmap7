@@ -541,10 +541,10 @@ classdef ZmapMainWindow < handle
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
-            prompt      = {'Enter the New Width:'};
+            prompt      = {'Enter the New Width [',obj.CrossSections(idx).width_units,']:'};
             name        = 'Cross Section Width';
             numlines    = 1;
-            defaultanswer = {num2str(obj.CrossSections(idx).width_km)};
+            defaultanswer = {num2str(obj.CrossSections(idx).width)};
             answer        = inputdlg(prompt, name, numlines, defaultanswer);
             if ~isempty(answer)
                 obj.CrossSections(idx).change_width(str2double(answer));
