@@ -43,7 +43,6 @@ function fmdplot(obj, tabgrouptag)
             ax.UIContextMenu = c;
         end
         addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
-        
     end
     
     baw = ax.UserData;

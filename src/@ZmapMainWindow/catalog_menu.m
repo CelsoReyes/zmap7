@@ -65,7 +65,7 @@ function catalog_menu(obj, force)
     
     uimenu(submenu,'Label','Split and Compare', ...
         MenuSelectedField(),@(~,~)multi_range_selector(obj.catalog, ...
-        @(x)assignin('base','CatalogA',x), @(x)assignin('base','CatalogB',x)) );
+        @(x)ZG.catalogs.set('CatalogA',x), @(x)ZG.catalogs.set('CatalogB',x)) );
     
     uimenu(submenu,'Label','Compare catalogs - find identical events',MenuSelectedField(),@(~,~)comp2cat);
     

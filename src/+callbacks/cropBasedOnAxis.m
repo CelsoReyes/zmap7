@@ -17,7 +17,7 @@ function deets=cropBasedOnAxis(src,evt)
     s.fig = ancestor(ax,'figure');
     
     
-    % only do the actuall cropping if there was a doubleclick
+    % no longer accurate->% only do the actual cropping if there was a doubleclick
     
     cp = get(ax,'CurrentPoint');
     x = cp(1,1);
@@ -28,9 +28,9 @@ function deets=cropBasedOnAxis(src,evt)
     s.Y.Name = ax.YLabel.String;
     stored=s;
     deets=s;
-    if s.fig.SelectionType ~= "open"
-        return
-    end
+    %if s.fig.SelectionType ~= "open"
+    %    return
+    %end
     fprintf('Click at:\n  %20s : %s\n  %20s : %s\n', s.X.Name, string(s.X.Value), s.Y.Name, string(s.Y.Value));
     QuickCatalogCrop() %app
 end

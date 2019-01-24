@@ -109,8 +109,9 @@ function plot_base_events(obj, container, featurelist)
         'Label', 'Delete polygon',               MenuSelectedField(), @(s,v)updatewrapper(s, v, @(~,~)cb_shapedelete) );
     uimenu(c,'Label', 'Zoom to polygon',         MenuSelectedField(), @cb_zoom_shape);
     uimenu(c,'Label', 'Crop to polygon',         MenuSelectedField(), @cb_crop_to_selection);
-    uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom)
-    uimenu(c,'Label', 'Crop to axes limits',     MenuSelectedField(), @cb_crop_to_axes)
+    uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom);
+    uimenu(c,'Label', 'Crop to axes limits',     MenuSelectedField(), @cb_crop_to_axes);
+    uimenu(c,'Label','Crop or Split HERE'      , MenuSelectedField(), @callbacks.cropBasedOnAxis)
     uimenu(c,'Separator', 'on',...
         'Label', 'Define X-section',             MenuSelectedField(), @obj.cb_xsection);
     uimenu(c,'Separator', 'on', 'Tag', 'ToggleGrid',...
