@@ -2,14 +2,14 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable, AbortSet)
-        catalog                 {mustBeZmapCatalog} = ZmapCatalog % event catalog
-        bigEvents               {mustBeZmapCatalog} = ZmapCatalog
+        catalog                 {mustBeZmapCatalog} = getEmptyCatalog % event catalog
+        bigEvents               {mustBeZmapCatalog} = getEmptyCatalog
         shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
         Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange     datetime                        % used to subset the catalog with date ranges
         colorField                                  = ZmapGlobal.Data.mainmap_plotby
         CrossSections
-        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
+        rawcatalog              {mustBeZmapCatalog} = getEmptyCatalog
         CoordinateSystem  CoordinateSystems         = ZmapGlobal.Data.CoordinateSystem
     end
     
@@ -48,7 +48,7 @@ classdef ZmapMainWindow < handle
         XSAxPos             = [0.0600    0.2000    0.8600    0.7000] % inside XSPos
         MapCBPos_S          = [0.5975    0.5600    0.0167    0.4000]
         MapCBPos_L          = [0.5975    0.5600    0.0167    0.4000]
-        FeaturesToPlot      = ZmapGlobal.Data.mainmap_features
+        FeaturesToPlot      = getFeaturesToPlot()
         Type                = 'zmapwindow'
     end
     
@@ -178,6 +178,7 @@ classdef ZmapMainWindow < handle
             end
             
             obj.CoordinateSystem = obj.rawcatalog.CoordinateSystem;
+            obj.refEllipsoid.LengthUnit = obj.rawcatalog.PositionUnits;
             
             % TODO: make this handle a default shape once again
             
@@ -503,7 +504,7 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_cropToXS(obj, xsec)
-            sh = ShapePolygon(obj.CoordinateSystem,'polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
             set_my_shape(obj, sh);
             %obj.replot_all();
         end
@@ -589,14 +590,15 @@ classdef ZmapMainWindow < handle
                     rotate3d(axm, 'on'); %activate rotation tool
                     hold(axm, 'off');
                     src.Label = '2-D view';
+                    % set_rotation_pointer(obj.fig); % this doesn't work because matlab does something when mouseover axes
                 otherwise
                     view(axm,2);
                     grid(axm, 'on');
                     zlim(axm, 'auto');
                     rotate3d(axm, 'off'); %activate rotation tool
                     src.Label = '3-D view';
+                    watchoff
             end
-            watchoff
             drawnow;
         end
         
@@ -1023,5 +1025,26 @@ function s = CallbackFld()
         s = 'Callback';
     else
         s = MenuSelectedField();
+    end
+end
+
+function c=getEmptyCatalog()
+    cs = getappdata(groot,'ZmapCoordinateSystem');
+    switch cs
+        case CoordinateSystems.cartesian
+            c=ZmapBaseCatalog;
+        case CoordinateSystems.geodetic
+            c=ZmapCatalog;
+    end
+end
+
+function f = getFeaturesToPlot()
+    cs = getappdata(groot,'ZmapCoordinateSystem');
+    switch cs
+        case CoordinateSystems.cartesian
+            f={}; %TODO: create a shape that defines the surface boundary 
+            
+        case CoordinateSystems.geodetic
+            f=ZmapGlobal.Data.mainmap_features;
     end
 end

@@ -74,7 +74,7 @@ function replot_all(obj,metaProp,eventData)
                     evs.ZData       = obj.rawcatalog.Z;
                     evs.XData(mall) = nan;
                 end
-                evs.Visible='on';
+                evs.Visible=get(findobj(obj.fig,'Label','Show unselected events'),'Checked');
                 
             end
             ZG = ZmapGlobal.Data;

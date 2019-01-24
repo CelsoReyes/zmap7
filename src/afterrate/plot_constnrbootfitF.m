@@ -10,7 +10,7 @@ function plot_constnrbootfitF()
     ShapeGeneral.clearplot(); % was tag plos1
     
     % interactively get the circle of interest
-    shape=ShapeCircle(newa.CoordinateSystem); 
+    shape=ShapeCircle(); 
     [ZG.newt2, max_km] = selectCircle(newa, shape.toStruct());
 
     % Select events in learning time period

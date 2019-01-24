@@ -19,6 +19,9 @@ classdef TimeSomethingPlotter < handle
     
     methods
         function obj = TimeSomethingPlotter(yv, yunits)
+            if yv=="Depth"
+                yv = 'Z';
+            end
             obj.YVar=yv;
             obj.YUnits=yunits;
             

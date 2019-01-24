@@ -116,6 +116,10 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         FieldnamesForColorby
     end
     
+    events
+        ValueChange
+    end
+    
     properties(SetAccess=immutable)
         Type        (1,:) char
     end
@@ -129,7 +133,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
     methods
         % ordered as: Constructors, dependent property methods, alphabetical list of all others
         function obj = ZmapBaseCatalog(varargin)
-            obj.Type = lower(class(obj));
+            obj.Type = 'zmapcatalog';
         end
         
         function val = get.FieldnamesForColorby(obj)

@@ -132,13 +132,13 @@ function obj = load_shape(filelocation)
             radIdx = startsWith(vn,"radius");
             if height(tb)==1 && ~isempty(radIdx)
                 % we selected a circle
-                obj = ShapeCircle(coordinate_system);
+                obj = ShapeCircle();
                 obj.Points = [myLons, myLats];
                 obj.Radius = tb{1,radIdx};
                 
             else
                 % we selected a polygon
-                obj = ShapePolygon(coordinate_system,'Polygon',[myLons, myLats]);
+                obj = ShapePolygon('Polygon',[myLons, myLats]);
             end
             
     end %switch

@@ -49,11 +49,11 @@ classdef ZmapGrid
     
     properties
         Name  (1,:)     char         = ZmapGlobal.Data.GridOpts.Name % name of this grid
-        Units (1,:)     char         = 'unk'                % degrees or kilometer
+        Units (1,:)     char         = 'unk'
         ActivePoints    logical                             % logical mask
         X               double          % all X positions in matrix
         Y               double          % all Y positions in matrix
-        Z               double          % all Y positions in matrix.
+        Z               double          % all Z positions in matrix.
         Origin                          % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
         PlotOpts        struct      = ZmapGlobal.Data.GridOpts.LineProps;
         CoordinateSystem  CoordinateSystems = ZmapGlobal.Data.CoordinateSystem
@@ -163,7 +163,11 @@ classdef ZmapGrid
                     obj.Units = p.Results.Units;
                     
                 case "FromGridOptions"
-                    grid_option_definition(p.Results.gridoptions, refEllipsoid);
+                    if p.Results.gridoptions.CoordinateSystem == CoordinateSystems.cartesian
+                        grid_option_definition_cartesian(p.Results.gridoptions);
+                    else
+                        grid_option_definition(p.Results.gridoptions, refEllipsoid);
+                    end
                     
                 case "FromNothing"
                     return
@@ -180,6 +184,40 @@ classdef ZmapGrid
             return
             
             %% - - - specific creation helpers - - - %%
+            
+            function grid_option_definition_cartesian(gridopt)
+                
+                use_shape = gridopt.gridEntireArea & ~isempty(myshape);
+                
+                assert(isprop(varargin{1}, 'AbsoluteGridLimits'), 'cartesian grids must have specified boundaries');
+                abs_limits = varargin{1}.AbsoluteGridLimits;
+                xl = abs_limits(1:2);
+                yl = abs_limits(3:4);
+                
+                obj.Units = standardizeDistanceUnits(gridopt.horizUnits);
+                
+                x = ZmapGrid.vector_including_origin(0, gridopt.dx, xl);
+                y = ZmapGrid.vector_including_origin(0, gridopt.dy, yl);
+                switch gridopt.GridType
+                    case  GridTypes.XYZ
+                        obj.Origin=[0 0 0];
+                        zl = abs_limits(5:6);
+                        z = ZmapGrid.vector_including_origin(0, gridopt.dz, zl);
+                        [obj.X, obj.Y, obj.Z] = meshgrid(x,y,z);
+                        
+                    case GridTypes.XY
+                        obj.Origin=[0 0];
+                        [obj.X, obj.Y] = meshgrid(x,y);
+                        obj.Z = [];
+                    otherwise
+                        % "XZ"
+                        unimplemented_error()
+                end
+                
+                if use_shape
+                    obj=obj.MaskWithShape(myshape.Points);
+                end
+            end
             
             function grid_option_definition(gridopt, refEllipsoid)
                 
@@ -672,15 +710,15 @@ classdef ZmapGrid
             [lonMat,latMat] = cols2matrix(lonMat,latMat,lon0);
         end
         
-        function v = vector_including_origin(orig_deg, delta_deg, lims_deg)
+        function v = vector_including_origin(orig, delta, limits)
             % VECTOR_INCLUDING_ORIGIN returns values in a range, gaurenteed to contain the origin value
             %
             % ZMAPGRID.VECTOR_INCLUDING_ORIGIN(orig_deg, delta_deg, lims_deg)
             v = unique([...
-                orig_deg : -delta_deg : min(lims_deg) ,...
-                orig_deg :  delta_deg : max(lims_deg)...
+                orig : -delta : min(limits) ,...
+                orig :  delta : max(limits)...
                 ]);
-            v( min(lims_deg)>v | v>max(lims_deg) ) = [];
+            v( min(limits)>v | v>max(limits) ) = [];
         end
         
         function obj=load(filename, pathname)

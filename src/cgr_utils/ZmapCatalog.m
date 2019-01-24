@@ -40,9 +40,6 @@ classdef (ConstructOnLoad) ZmapCatalog < ZmapBaseCatalog
     end
     
     
-    events
-        ValueChange
-    end
     
     
     methods

@@ -9,17 +9,17 @@ classdef ShapeCircle < ShapeGeneral
     
     
     methods
-        function obj=ShapeCircle(coordinate_system, varargin)
+        function obj=ShapeCircle(varargin)
             % SHAPECIRCLE create a circular shape
             %
-            % ShapeCircle(coordinate_system) :
-            % ShapeCircle(coordinate_system,'dlg') create via a dialg box
+            % ShapeCircle() :
+            % ShapeCircle('dlg') create via a dialg box
             %
             % CIRCLE: select using circle with a defined radius. define with 2 clicks or mouseover and press "R"
             
             % UNASSIGNED: clear shape
             
-            obj@ShapeGeneral(coordinate_system);
+            obj@ShapeGeneral();
             if ~isempty(varargin)
                dosomething
             end
@@ -63,17 +63,16 @@ classdef ShapeCircle < ShapeGeneral
                 case CoordinateSystems.geodetic
                     [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
                     val=[lon, lat];
-                    if exist('col','var')
-                        val=val(:,col);
-                    end
                 case CoordinateSystems.cartesian
                     pts = exp(1i*pi*linspace(0,2*pi,3600)') .* obj.Radius;
                     x = real(pts)+ obj.X0;
                     y = imag(pts) + obj.Y0;
                     val = [x,y];
-                    val = val(:,col);
                 otherwise
                     error('unspecified coordinate system')
+            end
+            if exist('col','var')
+                val=val(:,col);
             end
         end
         
@@ -94,8 +93,9 @@ classdef ShapeCircle < ShapeGeneral
             isN=obj.Y0>=0; NS=cardinalDirs(isN+1);
             
             isE=obj.X0>=0; EW=cardinalDirs(isE+3);
-            s = sprintf('Circle with R:%s km, centered at ( %s %s, %s %s)',...
+            s = sprintf('Circle with R:%s %s, centered at ( %s %s, %s %s)',...
                 num2str(obj.Radius),...
+                obj.RefEllipsoid.LengthUnit,...
                 num2str(abs(obj.Y0)), NS,...
                 num2str(abs(obj.X0)), EW);
         end
@@ -204,8 +204,8 @@ classdef ShapeCircle < ShapeGeneral
     methods(Static)
         
         function obj=selectUsingMouse(ax, coord_system, ref_ellipsoid)
-            if ~exist('ref_ellipse','var')
-                ref_ellipsoid = referenceEllipsoid('wgs84','kilometer');
+            if ~exist('ref_ellipsoid','var')
+                ref_ellipsoid = referenceEllipsoid('wgs84',ZmapGlobal.Data.primeCatalog.PositionUnits);
             end
             
             [ss,ok] = selectSegmentUsingMouse(ax,'r', coord_system, ref_ellipsoid, @circ_update);
@@ -214,9 +214,9 @@ classdef ShapeCircle < ShapeGeneral
                 obj=[];
                 return
             end
-            obj=ShapeCircle(coord_system);
+            obj=ShapeCircle();
             obj.Points=ss.xy1;
-            obj.Radius=ss.dist_kilometer;
+            obj.Radius=ss.dist;
             
             function circ_update(stxy, ~, d)
                 h=findobj(gca,'Tag','tmp_circle_outline');

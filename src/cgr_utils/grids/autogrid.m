@@ -27,39 +27,45 @@ function [zgrid, gpc] = autogrid(catalog, refEllipse, plotOnMap)
         error('cannot create autogrid for a catalog with less than 2 points');
     end
     
-    if ~exist('refEllipse','var') || isempty(refEllipse)
-        refEllipse = ZmapGlobal.Data.ref_ellipsoid;
-    end
-    
-    if catalog.Count==2
-        switch catalog.CoordinateSystem
-            case CoordinateSystems.geodetic
-                line_len = distance(catalog.Y(1), catalog.X(1),...
-                    catalog.Y(2), catalog.X(2), refEllipse);
-            case CoordinateSystems.cartesian
-                line_len = sqrt((catalog.Y(2)-catalog.Y(1)).^2 + (catalog.X(2)-catalog.X(1))^2);
-            otherwise
-                error("unknown CoordinateSystem")
+    if catalog.CoordinateSystem == CoordinateSystems.cartesian
+        % skip so much stuff.
+        if catalog.Count==2
+            line_len = sqrt((catalog.Y(2)-catalog.Y(1)).^2 + (catalog.X(2)-catalog.X(1))^2);
+        else
+            ch = convhull(xy,'simplify',true);
+            area = polyarea(xy(ch,1), xy(ch,2));
+            line_len = sqrt(area); % assuming a square area, it would be this long on a side.
         end
+        dS = round(line_len/30,2);
+        gpc = GridOptions(catalog.CoordinateSystem, 'XY',[dS, dS], catalog.PositionUnits, 'gridEntireArea');
+        gpc.dzUnits = catalog.ZUnits;
+        gpc.FixedAnchorPoint = [0 0 0];
+        gpc.AbsoluteGridLimits = [bounds2(catalog.X), bounds2(catalog.Y)];
+        zgrid = ZmapGrid('autogrid', 'FromGridOptions', gpc);
+        
+        
     else
-        ch = convhull(xy,'simplify',true);
-        switch catalog.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    area = areaint(xy(ch,2), xy(ch,1), refEllipse);
-                case CoordinateSystems.cartesian
-                    area = polyarea(xy(ch,1), xy(ch,2));
-                otherwise
-                    error('unknown coordinate system');
+        
+        if ~exist('refEllipse','var') || isempty(refEllipse)
+            refEllipse = ZmapGlobal.Data.ref_ellipsoid;
         end
-        line_len = sqrt(area); % assuming a square area, it would be this long on a side.
+        
+        if catalog.Count==2
+            line_len = distance(catalog.Y(1), catalog.X(1),...
+                catalog.Y(2), catalog.X(2), refEllipse);
+        else
+            ch = convhull(xy,'simplify',true);
+            area = areaint(xy(ch,2), xy(ch,1), refEllipse);
+            line_len = sqrt(area); % assuming a square area, it would be this long on a side.
+        end
+        dS = line_len/30;
+        gpc = GridOptions(catalog.CoordinateSystem, 'XY',[dS, dS], refEllipse, 'gridEntireArea');
+        gpc.AbsoluteGridLimits = [bounds2(catalog.X), bounds2(catalog.Y)];
+        
+        
+        zgrid = ZmapGrid('autogrid','FromGridOptions', gpc, 'RefEllipsoid', refEllipse);
     end
-    dS = line_len/30;
-    gpc = GridOptions(catalog.CoordinateSystem, 'XY',[dS, dS], refEllipse, 'gridEntireArea');
-    gpc.AbsoluteGridLimits = [bounds2(catalog.X), bounds2(catalog.Y)];
     
-    
-    zgrid = ZmapGrid('autogrid','FromGridOptions', gpc, 'RefEllipsoid', refEllipse);
-
     if exist('plotOnMap','var') && plotOnMap
         zgrid.plot(findobj(gcf,'Tag','mainmap_ax'));
     end

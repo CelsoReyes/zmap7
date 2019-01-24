@@ -11,17 +11,7 @@ classdef HistAnalysisWindow < AnalysisWindow
     end
     
     properties(Constant)
-        HistogrammableCatalogProperties = cell2table({... 
-            'Date'          , years(1/12),'';...
-            'Depth'         , 5, 'kilometers';  ...  % km
-            'Latitude'      , 0.5, 'degrees'; ... % deg
-            'Longitude'     , 0.5, 'degrees'; ... % deg
-            'Magnitude'     , 0.1, ''; ...
-            'MagnitudeType' , 'category', '';...
-            'Dip'           , 5, 'degrees';...  % deg
-            'DipDirection'  , 5, 'degrees';...  % deg
-            'Rake'          , 5, 'degrees'},... % deg
-            'VariableNames', {'field', 'default_bin_width','units'});
+        HistogrammableCatalogProperties = getHistogrammableProperties()
         ValidHistogramFields        = HistAnalysisWindow.fillValidHistogramFields;
         
         % DateRules contains the logic table describing bin widths for catalogs of certain date ranges
@@ -477,3 +467,28 @@ function addcontext(obj, c)
     
     
 end
+
+function p=getHistogrammableProperties()
+    
+    switch getappdata(groot,'ZmapCoordinateSystem')
+        case CoordinateSystems.geodetic
+            c=ZmapCatalog;
+            additional = {'Dip'           , 5, 'degrees';... 
+            'DipDirection'  , 5, 'degrees';...
+            'Rake'          , 5, 'degrees'};
+        case CoordinateSystems.cartesian
+            c=ZmapBaseCatalog;
+            additional={};
+    end
+    label_with_units = {...
+        'Date'          , years(1/12),'';...
+        c.ZLabel        , 5, c.ZUnits;  ...
+        c.YLabel        , 0.5, c.PositionUnits; ...
+        c.XLabel        , 0.5, c.PositionUnits;  ...
+        'Magnitude'     , 0.1, ''; ...
+        'MagnitudeType' , 'category', ''};
+    
+    label_with_units=[label_with_units; additional];
+    p=cell2table(label_with_units, 'VariableNames', {'field', 'default_bin_width','units'});
+end
+

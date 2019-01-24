@@ -60,7 +60,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     
     properties(SetObservable = true)
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
-        CoordinateSystem CoordinateSystems = 'geodetic'
+
+    end
+    
+    properties(SetAccess = immutable)
+         CoordinateSystem CoordinateSystems
     end
     
     properties(SetAccess = protected)
@@ -100,11 +104,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     
     methods
         
-        function obj=ShapeGeneral(coordinate_system)
+        function obj=ShapeGeneral()
             % ShapeGeneral create a shape
-            if ~exist('coordinate_system','var') || isempty(coordinate_system)
-                obj.CoordinateSystem = ZmapGlobal.Data.CoordinateSystem;
-            end
+            obj.CoordinateSystem = ZmapGlobal.Data.CoordinateSystem;
+            obj.RefEllipsoid.LengthUnit = ZmapGlobal.Data.primeCatalog.PositionUnits;
+            
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
         end
@@ -452,11 +456,11 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             end
             
             if isnumeric(stashed_shape)
-                stashed_shape = ShapeGeneral([]);
+                stashed_shape = ShapeGeneral();
             end
             
             if ~isvalid(stashed_shape) %shape could have been deleted
-                stashed_shape = ShapeGeneral([]);
+                stashed_shape = ShapeGeneral();
             end
             
             if nargin==0

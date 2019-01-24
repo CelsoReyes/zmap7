@@ -65,7 +65,7 @@ classdef ZmapAnalysisPkg
             % see also ZMAPDATA, ZMAPGLOBAL
             ZG=ZmapGlobal.Data;
             if ~exist('polyg','var')
-                polyg = ShapeGeneral(ZG.(catname).CoordinateSystem);
+                polyg = ShapeGeneral();
             end
             obj = ZmapAnalysisPkg([], ZG.(catname), ZG.GridSelector, ZG.Grid, polyg);
         end

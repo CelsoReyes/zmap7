@@ -164,7 +164,7 @@ function plot_base_events(obj, container, featurelist)
     function cb_shapedelete
         ShapeGeneral.clearplot();
         delete(obj.shape);
-        obj.shape = ShapeGeneral(obj.CoordinateSystem);
+        obj.shape = ShapeGeneral();
     end
     
     function cb_zoom(~ ,~)

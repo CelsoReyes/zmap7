@@ -35,13 +35,13 @@ function add_grid_menu(obj)
     
     function cb_makebox(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        sh=ShapePolygon(obj.CoordinateSystem, 'box');
+        sh=ShapePolygon('box');
         set_my_shape(obj,sh);
     end
     
     function cb_makepolygon(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        sh=ShapePolygon(obj.CoordinateSystem, 'polygon');
+        sh=ShapePolygon('polygon');
         set_my_shape(obj,sh);
     end
     
@@ -49,13 +49,13 @@ function add_grid_menu(obj)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         eqs = [obj.catalog.X, obj.catalog.Y];
         ch=convhull(eqs,'simplify',true);
-        sh=ShapePolygon(obj.CoordinateSystem, 'polygon',eqs(ch,:));
+        sh=ShapePolygon('polygon',eqs(ch,:));
         set_my_shape(obj,sh);
     end
     function cb_clear_shape(src,ev)
         ShapeGeneral.clearplot();
         delete(obj.shape);
-        obj.shape=ShapeGeneral(obj.CoordinateSystem);
+        obj.shape=ShapeGeneral();
         %obj.replot_all();
     end
     

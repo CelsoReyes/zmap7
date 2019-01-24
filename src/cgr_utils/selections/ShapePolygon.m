@@ -5,7 +5,7 @@ classdef ShapePolygon < ShapeGeneral
     
     
     methods
-        function obj=ShapePolygon(coordinate_system, shapeType, varargin)
+        function obj=ShapePolygon(shapeType, varargin)
             % ShapePolygon create a shape
             % shapeType is one of 'axes', 'box', 'polygon'}
             % AXES: use current main map axes as a box
@@ -14,7 +14,7 @@ classdef ShapePolygon < ShapeGeneral
             %
             % UNASSIGNED: clear shape
             %
-            obj@ShapeGeneral(coordinate_system);
+            obj@ShapeGeneral();
             report_this_filefun();
             
             if nargin==0

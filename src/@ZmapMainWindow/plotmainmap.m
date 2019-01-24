@@ -9,7 +9,7 @@ function plotmainmap(obj)
     % this probably belongs somewhere else...
     if ~isempty(obj.shape) && ~isvalid(obj.shape)
         msg.dbdisp('shape had been deleted');
-        obj.shape = ShapeGeneral(obj.CoordinateSystem);
+        obj.shape = ShapeGeneral();
     end
     % %
     axm = obj.map_axes;

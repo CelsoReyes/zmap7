@@ -206,16 +206,24 @@ function create_all_menus(obj, force)
         uimenu(mapoptionmenu,'Label','3-D view',...
             MenuSelectedField(),@obj.set_3d_view); % callback was plot3d
         
-        uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
-            MenuSelectedField(),@set_aspects_cb, ...
-            'Checked',char(ZmapGlobal.Data.lock_aspect));
-        if ZmapGlobal.Data.lock_aspect
-            daspect(obj.get_all_map_axes(), [1 cosd(mean(axm.YLim)) 10]);
+        if obj.CoordinateSystem == CoordinateSystems.geodetic
+            uimenu(mapoptionmenu,'Label','Set aspect ratio by latitude',...
+                MenuSelectedField(),@set_aspects_cb, ...
+                'Checked',char(ZmapGlobal.Data.lock_aspect));
+                
+            if ZmapGlobal.Data.lock_aspect
+                daspect(obj.get_all_map_axes(), [1 cosd(mean(axm.YLim)) 10]);
+            end
         end
-        
-        uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
+        m=uimenu(mapoptionmenu,'Label','Toggle Lat/Lon Grid',...
             MenuSelectedField(),@toggle_grid,...
             'checked',char(ZmapGlobal.Data.mainmap_grid));
+
+        if obj.CoordinateSystem == CoordinateSystems.cartesian
+             axis(obj.get_all_map_axes,'equal'); 
+             m.Label = 'Toggle X/Y Grid';
+        end
+        
         grid(axm,char(ZmapGlobal.Data.mainmap_grid));
         
         % choose what to plot by
@@ -231,6 +239,9 @@ function create_all_menus(obj, force)
         uimenu(mapoptionmenu,'Label','Edit Current Map Symbols',MenuSelectedField(),@manage_symbols_for_current_map);
         % add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu,'Label','Layers');
+        uimenu(ovmenu,'Label','Show unselected events', MenuSelectedField(), @toggle_unselected_events,...
+            'Checked',"on");
+            
         try
             MapFeature.foreach(obj.Features,'addToggleMenu',ovmenu,axm)
         catch ME
@@ -294,6 +305,18 @@ function create_all_menus(obj, force)
         function manage_mainmap_symbols(src,ev)
             obj.make_map_active('notify');
             SymbolManager.cb(src,ev,axm);
+        end
+        
+        function toggle_unselected_events(src,~)
+            h_events = findobj(obj.map_axes,'Tag','all events');
+            if h_events.Visible == "on"
+                h_events.Visible = 'off';
+                src.Checked = 'off';
+            else
+                h_events.Visible = 'on';
+                src.Checked = 'on';
+            end
+            
         end
         
         function set_colorby(~,~,val)
