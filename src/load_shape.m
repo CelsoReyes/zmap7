@@ -65,39 +65,31 @@ function obj = load_shape(filelocation)
             vn =lower(tb.Properties.VariableNames);
             % lat
             if all(startsWith(tb.Properties.VariableNames,'Var'))
-                % no column headings were specifed. See if they can be figured out automatically?
-                if width(tb) == 2 && (any(abs(tb{:,1})>90) || any(abs(tb{:,2})>90))
-                    if any(abs(tb{:,1})>90)
-                        lonIdx=1; latIdx=2;
-                    elseif any(abs(tb{:,2})>90)
-                        lonIdx=2; latIdx=1;
-                    end
-                else
-                    % have user figure out which column is which
-                    quest= {'Which coordinate system is this?','  geodetic = lat & lon','  cartesian = x & y'}
-                    coordinate_system = questdlg(quest','Coordinate System','geodetic','cartesian','geodetic');
-                    switch a
-                        case 'geodetic'
-                            yprompt = 'Select Latitude (N-S)';
-                            xprompt = 'Select Longitude (E-W)';
-                        otherwise
-                            yprompt = 'Select Y values';
-                            xprompt = 'Select X values';
-                    end
-                            
-                            
-                    [latIdx,ok] = listdlg('PromptString',yprompt,...
+                
+                % have user figure out which column is which
+                quest = {'Which coordinate system is this?','  geodetic = lat & lon','  cartesian = x & y'};
+                coordinate_system = questdlg(quest','Coordinate System','geodetic','cartesian','geodetic');
+                switch a
+                    case 'geodetic'
+                        yprompt = 'Select Latitude (N-S)';
+                        xprompt = 'Select Longitude (E-W)';
+                    otherwise
+                        yprompt = 'Select Y values';
+                        xprompt = 'Select X values';
+                end
+                
+                
+                [latIdx,ok] = listdlg('PromptString',yprompt,...
+                    'SelectionMode','single',...
+                    'ListString',vn_with_example(tb, tb.Properties.VariableNames));
+                if ~ok; return; end
+                if width(tb)~=2
+                    [lonIdx,ok] = listdlg('PromptString', xprompt,...
                         'SelectionMode','single',...
                         'ListString',vn_with_example(tb, tb.Properties.VariableNames));
                     if ~ok; return; end
-                    if width(tb)~=2
-                        [lonIdx,ok] = listdlg('PromptString', xprompt,...
-                            'SelectionMode','single',...
-                            'ListString',vn_with_example(tb, tb.Properties.VariableNames));
-                        if ~ok; return; end
-                    else
-                        lonIdx = 2-latIdx+1;
-                    end
+                else
+                    lonIdx = 2-latIdx+1;
                 end
             else
                 
@@ -126,20 +118,24 @@ function obj = load_shape(filelocation)
             
             assert(~isempty(lonIdx) && ~isempty(latIdx), 'indices should have already been chosen by this point');
             
-            myLats = tb.(tb.Properties.VariableNames{latIdx});
-            myLons = tb.(tb.Properties.VariableNames{lonIdx});
+            myYs = tb.(tb.Properties.VariableNames{latIdx});
+            myXs = tb.(tb.Properties.VariableNames{lonIdx});
             
             radIdx = startsWith(vn,"radius");
+            myunits = extractBetween(vn{radIdx},'[',']');
+            if isempty(myunits), myunits = {'km'}; end
             if height(tb)==1 && ~isempty(radIdx)
                 % we selected a circle
                 obj = ShapeCircle();
-                obj.Points = [myLons, myLats];
+                obj.Points = [myXs, myYs];
                 obj.Radius = tb{1,radIdx};
                 
             else
                 % we selected a polygon
-                obj = ShapePolygon('Polygon',[myLons, myLats]);
+                obj = ShapePolygon('Polygon',[myXs, myYs]);
             end
+            obj.RefEllipsoid.LengthUnit = validateLengthUnit(myunits{:});
+            
             
     end %switch
 end

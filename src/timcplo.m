@@ -45,17 +45,17 @@ function timcplo(newa)
     axes('position',rect)
     p5 = gca;
     
-    scatter(newa.dist_along_strike, newa.Date, mag2dotsize(newa.Magnitude),newa.Magnitude)%,'.b','MarkerSize',ZG.ms6,'Marker','+');
+    scatter(newa.DistAlongStrike, newa.Date, mag2dotsize(newa.Magnitude),newa.Magnitude)%,'.b','MarkerSize',ZG.ms6,'Marker','+');
     c=colorbar;
     c.Label.String='Magnitude';
     %{
     targ = newa.Depth<=dep1;
-    plot(dist_along_strike(targ),newa.Date(targ),'.b','MarkerSize',ZG.ms6,'Marker',ty1);
+    plot(DistAlongStrike(targ),newa.Date(targ),'.b','MarkerSize',ZG.ms6,'Marker',ty1);
     set(gca,'NextPlot','add')
     targ=newa.Depth<=dep2&newa.Depth>dep1;
-    plot(dist_along_strike(targ),newa.Date(targ),'.g','MarkerSize',ZG.ms6,'Marker',ty2);
+    plot(DistAlongStrike(targ),newa.Date(targ),'.g','MarkerSize',ZG.ms6,'Marker',ty2);
     targ=newa.Depth<=dep3&newa.Depth>dep2;
-    plot(dist_along_strike(targ),newa.Date(targ),'.r','MarkerSize',ZG.ms6,'Marker',ty3);
+    plot(DistAlongStrike(targ),newa.Date(targ),'.r','MarkerSize',ZG.ms6,'Marker',ty3);
     %}
     title('Events along strike through time')
     xlabel(['Distance in [',newa.PositionUnits,'] '],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

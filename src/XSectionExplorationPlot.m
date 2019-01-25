@@ -9,23 +9,23 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
         function obj=XSectionExplorationPlot(ax,catalogFcn,xsec)
             obj@CatalogExplorationPlot(ax, catalogFcn);
             obj.xsec = xsec;
-            obj.y_by='Depth'; 
-            obj.x_by='dist_along_strike';
+            obj.y_by='Z'; 
+            obj.x_by='DistAlongStrike';
         end
         function scatter(obj, tag, varargin)
             % scatter plot
             obj.scatter@CatalogExplorationPlot(tag, varargin);
             obj.fix_alongstrike_axis();
             obj.ax.YDir='reverse';    
-            obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
-            obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
-            obj.ax.Title.String=sprintf('Profile: %s to %s',obj.xsec.startlabel,obj.xsec.endlabel);
+            obj.ax.XAxis.Color=obj.xsec.Color .* 0.5;
+            obj.ax.YAxis.Color=obj.xsec.Color .* 0.5;
+            obj.ax.Title.String=sprintf('Profile: %s to %s',obj.xsec.StartLabel,obj.xsec.EndLabel);
         end
         function update(obj, varargin)
             % updates the cross section plot
             obj.update@CatalogExplorationPlot(varargin{:})
-            obj.ax.XAxis.Color=obj.xsec.color .* 0.5;
-            obj.ax.YAxis.Color=obj.xsec.color .* 0.5;
+            obj.ax.XAxis.Color=obj.xsec.Color .* 0.5;
+            obj.ax.YAxis.Color=obj.xsec.Color .* 0.5;
             obj.fix_alongstrike_axis(varargin{:})
         end
         
@@ -51,30 +51,30 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
                         obj.ax.ZTickLabelMode='auto';
                 end
             end
-            if (isempty(specific) || specific == "x_by") && obj.x_by == "dist_along_strike"
+            if (isempty(specific) || specific == "x_by") && obj.x_by == "DistAlongStrike"
                 modify_axis('XLim','XLabel','XTick','XTickLabel');
             end
-            if (isempty(specific) || specific == "y_by") && obj.y_by == "dist_along_strike"
+            if (isempty(specific) || specific == "y_by") && obj.y_by == "DistAlongStrike"
                 modify_axis('YLim','YLabel','YTick','YTickLabel');
             end
-            if (isempty(specific) || specific == "z_by") && obj.z_by == "dist_along_strike"
+            if (isempty(specific) || specific == "z_by") && obj.z_by == "DistAlongStrike"
                 modify_axis('ZLim','ZLabel','ZTick','ZTickLabel');
             end
  
 
             function modify_axis( xyzlim, xyzlabel, xyztick, xyzticklabel)
                 % make the plot pretty.
-                obj.ax.(xyzlabel).String='Dist along strike [km]';
-                obj.ax.(xyzlim)=[0 obj.xsec.length_km];
+                obj.ax.(xyzlabel).String='Dist along strike [',shortenLengthUnit(obj.xsec.LengthUnit),']';
+                obj.ax.(xyzlim)=[0 obj.xsec.Extent];
                 if obj.ax.(xyztick)(1) ~=0
                     obj.ax.(xyztick)=[0 obj.ax.(xyztick)];
                 end
-                obj.ax.(xyzticklabel)(1)={['\bf' obj.xsec.startlabel]};
-                if obj.ax.(xyztick)(end) ~= obj.xsec.length_km
-                    obj.ax.(xyztick)(end+1)= obj.xsec.length_km;
+                obj.ax.(xyzticklabel)(1)={['\bf' obj.xsec.StartLabel]};
+                if obj.ax.(xyztick)(end) ~= obj.xsec.Extent
+                    obj.ax.(xyztick)(end+1)= obj.xsec.Extent;
                 end
                 %\bf makes it bold, and assumes interpreter TEX
-                obj.ax.(xyzticklabel)(length(obj.ax.(xyztick)))={['\bf' obj.xsec.endlabel]};
+                obj.ax.(xyzticklabel)(length(obj.ax.(xyztick)))={['\bf' obj.xsec.EndLabel]};
             end
         end
     end

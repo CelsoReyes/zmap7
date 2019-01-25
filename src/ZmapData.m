@@ -147,6 +147,7 @@ classdef ZmapData < handle
         t0b             % start time for earthquakes in primary catalog
         teb             % end time for earthquakes in primary catalog
         primeCatalog
+        defaultCatalogConstructor
     end
     
     methods
@@ -273,6 +274,15 @@ classdef ZmapData < handle
         function set.primeCatalog(obj, val)
             obj.catalogs.set('prime', val);
         end
+        function ch = get.defaultCatalogConstructor(obj)
+            switch obj.CoordinateSystem
+                case CoordinateSystems.geodetic
+                    ch=@ZmapCatalog;
+                case CoordinateSystems.cartesian
+                    ch=@ZmapBaseCatalog;
+            end
+        end
+        
         function set.GridSelector(obj,val)
             if isstruct(val)
                 obj.GridSelector = EventSelectionParameters(val);

@@ -12,7 +12,7 @@ classdef ZmapGrid
     %     X - all X positions (points will repeat, since they represent matrix nodes)
     %     Y - all Y positions (points will repeat, since they represent matrix nodes)
     %
-    %     Units - degrees or kilometers
+    %     Units - length units
     %     ActivePoints - logical mask
     %
     %     Xactive - X positions for active points [read-only]
@@ -49,8 +49,8 @@ classdef ZmapGrid
     
     properties
         Name  (1,:)     char         = ZmapGlobal.Data.GridOpts.Name % name of this grid
-        Units (1,:)     char         = 'unk'
-        ActivePoints    logical                             % logical mask
+        Units (1,:)     char         = ''
+        ActivePoints    logical         % logical mask
         X               double          % all X positions in matrix
         Y               double          % all Y positions in matrix
         Z               double          % all Z positions in matrix.

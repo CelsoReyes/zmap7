@@ -219,7 +219,7 @@ classdef ShapePolygon < ShapeGeneral
         
         function [obj,ok]=select_box(obj,varargin)
             ax=gca;
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', obj.CoordinateSystem, obj.RefEllipsoid, @box_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', @box_update);
             h=findobj(ax,'Tag','tmp_box_outline');
             if ~isempty(h)
                 x=h.XData;

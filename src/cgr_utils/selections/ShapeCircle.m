@@ -4,7 +4,7 @@ classdef ShapeCircle < ShapeGeneral
     % see also ShapeGeneral, ShapePolygon
     
     properties (SetObservable = true, AbortSet=true)
-        Radius (1,1) double = 5 % active radius km
+        Radius (1,1) double = 5 % active radius in units defined by the RefEllipsoid
     end
     
     
@@ -39,9 +39,10 @@ classdef ShapeCircle < ShapeGeneral
                 do_nothing;
             elseif strcmpi(varargin{1},'dlg')
                 stashedshape = ShapeGeneral.ShapeStash;
-                sdlg.prompt='Radius (km):'; sdlg.value=ra;
-                sdlg(2).prompt='Center X :'; sdlg(2).value=stashedshape.X0;
-                sdlg(3).prompt='Center Y :'; sdlg(3).value=stashedshape.Y0;
+                sdlg.prompt = ['Choose Radius [',obj.RefEllipsoid.LengthUnit,']:'];
+                sdlg.value = ra;
+                sdlg(2).prompt = 'Center X :'; sdlg(2).value=stashedshape.X0;
+                sdlg(3).prompt = 'Center Y :'; sdlg(3).value=stashedshape.Y0;
                 [~,cancelled,obj.Radius,obj.Points(1),obj.Points(2)]=smart_inputdlg('Define Circle',sdlg);
                 if cancelled
                     beep
@@ -120,7 +121,8 @@ classdef ShapeCircle < ShapeGeneral
             end
             
             function chooseRadius(~,~)
-                nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
+                radiusInputText = ['Choose Radius [',obj.RefEllipsoid.LengthUnit,']'];
+                nc=inputdlg(radiusInputText,'Edit Circle',1,{num2str(obj.Radius)});
                 nc=str2double(nc{1});
                 if ~isempty(nc) && ~isnan(nc)
                     obj.Radius=nc;
@@ -190,11 +192,12 @@ classdef ShapeCircle < ShapeGeneral
             end
             [savepath,~,ext] = fileparts(filelocation); 
             if ext==".mat"
-                zmap_shape = obj;
+                zmap_shape = obj; %#ok<NASGU>
                 save(filelocation,'zmap_shape');
             else
                 if ~exist('delimiter','var'), delimiter = ',';end
-                tb=table(obj.X0, obj.Y0,obj.Radius,'VariableNames',{'Latitude','Longitude','Radius[km]'});
+                radiusName = ['Radius[',shortenLengthUnit(obj.RefEllipsoid.LengthUnit),']'];
+                tb=table(obj.X0, obj.Y0,obj.Radius,'VariableNames',{'Latitude','Longitude',radiusName});
                 writetable(tb,filelocation,'Delimiter',delimiter);
             end
                 
@@ -208,7 +211,7 @@ classdef ShapeCircle < ShapeGeneral
                 ref_ellipsoid = referenceEllipsoid('wgs84',ZmapGlobal.Data.primeCatalog.PositionUnits);
             end
             
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', coord_system, ref_ellipsoid, @circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', @circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];

@@ -194,8 +194,11 @@ function zmap(varargin)
         if ~isempty(ZG.primeCatalog) && questdlg('Open previous catalog?','ZMAP','Yes')=="Yes"
             ZmapMainWindow(cw, ZG.primeCatalog);
         else
-            ZmapMainWindow(cw, ZmapCatalog);
+            ZmapMainWindow(cw, ZG.defaultCatalogConstructor());
         end
-        show_a_tip();
+        if ~isappdata(groot,'ZmapShowTips') || getappdata(groot,'ZmapShowTips')
+            show_a_tip();
+            setappdata(groot,'ZmapShowTips',false);
+        end
     end
 end

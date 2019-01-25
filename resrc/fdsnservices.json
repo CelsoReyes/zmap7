@@ -32,5 +32,15 @@
             "stationService": "https://service.geonet.org.nz/fdsnws/station/1/",
             "eventService": "https://service.geonet.org.nz/fdsnws/event/1/"
         }
+    },
+    {
+        "name": "COSEISMIQ",
+        "description": "Coseismiq catalog",
+        "website": "http://coseismiq.ethz.ch",
+        "location": "Iceland",
+        "lastUpdate": "Jan 22, 2019 10:40:00 AM",
+        "serviceURLs": {
+            "eventService": "http://coseismiq.ethz.ch:8080/fdsnws/event/1/"
+        }
     }
 ]

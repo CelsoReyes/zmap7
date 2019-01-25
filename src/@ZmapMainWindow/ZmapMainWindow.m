@@ -2,14 +2,14 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable, AbortSet)
-        catalog                 {mustBeZmapCatalog} = getEmptyCatalog % event catalog
-        bigEvents               {mustBeZmapCatalog} = getEmptyCatalog
+        catalog                 {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor() % event catalog
+        bigEvents               {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor()
         shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
         Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange     datetime                        % used to subset the catalog with date ranges
         colorField                                  = ZmapGlobal.Data.mainmap_plotby
         CrossSections
-        rawcatalog              {mustBeZmapCatalog} = getEmptyCatalog
+        rawcatalog              {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor()
         CoordinateSystem  CoordinateSystems         = ZmapGlobal.Data.CoordinateSystem
     end
     
@@ -34,7 +34,7 @@ classdef ZmapMainWindow < handle
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
-        refEllipsoid  referenceEllipsoid            = referenceEllipsoid('wgs84','kilometer');
+        refEllipsoid  referenceEllipsoid            = ZmapGlobal.Data.ref_ellipsoid;
     end
     
     properties(Constant)
@@ -177,7 +177,7 @@ classdef ZmapMainWindow < handle
                 obj.rawcatalog = copy(in_catalog);
             end
             
-            obj.CoordinateSystem = obj.rawcatalog.CoordinateSystem;
+            obj.CoordinateSystem = ZG.CoordinateSystem;
             obj.refEllipsoid.LengthUnit = obj.rawcatalog.PositionUnits;
             
             % TODO: make this handle a default shape once again
@@ -186,7 +186,7 @@ classdef ZmapMainWindow < handle
             
             if isempty(obj.rawcatalog)
                 obj.daterange   = [missing missing];
-                obj.catalog     = ZmapCatalog();
+                obj.catalog     = copy(obj.rawcatalog);
                 obj.mdate       = [];
                 obj.mshape      = [];
             else
@@ -242,7 +242,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.CrossSections)
                 xst={};
             else
-                xst =  {obj.CrossSections.name};
+                xst =  {obj.CrossSections.Name};
             end
         end
         
@@ -377,9 +377,10 @@ classdef ZmapMainWindow < handle
             xsIndex = strcmp(obj.XSectionTitles, xsTitle);
             zdlg.AddPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
             zdlg.AddEventSelector('evsel', obj.evsel);
-            zdlg.AddEdit('x_km', 'Horiz Spacing [km]', 5, 'Distance along strike, in kilometers');
-            zdlg.AddEdit('z_min', 'min Z [km]', z_min, 'Shallowest grid point');
-            zdlg.AddEdit('z_max', 'max Z [km]', z_max, 'Deepest grid point, in kilometers');
+            lenUnits = ['[',shortenLengthUnit(obj.refEllipsoid.LengthUnit),']'];
+            zdlg.AddEdit('x_km', ['Horiz Spacing ',lenUnits], 5, ['Distance along strike, ',obj.refEllipsoid.LengthUnit]);
+            zdlg.AddEdit('z_min', ['min Z ',lenUnits], z_min, ['Shallowest grid point, ', obj.refEllipsoid.LengthUnit]);
+            zdlg.AddEdit('z_max', ['max Z ',lenUnits], z_max, ['Deepest grid point, ',obj.refEllipsoid.LengthUnit]);
             zdlg.AddEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
             [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters');
             if ~okPressed
@@ -455,16 +456,16 @@ classdef ZmapMainWindow < handle
             % main map axes, where the cross section outline will be plotted
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
-            try
-                xsec = XSection.initialize_with_mouse(axm, 20, obj.CoordinateSystem, obj.refEllipsoid);
-            catch ME
-                warning(ME.message)
-                return
+            %try
+                xsec = XSection.initialize_with_mouse(axm, 20);
+            %catch ME
+                %warning(ME.message)
+                %return
                 % do not set segment
-            end
+            %end
             if isempty(xsec), return, end
             watchon;
-            mytitle = xsec.name;
+            mytitle = xsec.Name;
             
             
             mytab = findobj(obj.fig, 'Title', mytitle, '-and', 'Type', 'uitab');
@@ -472,7 +473,7 @@ classdef ZmapMainWindow < handle
                 delete(mytab);
             end
             
-            mytab = uitab(obj.xsgroup, 'Title', mytitle, 'ForegroundColor', xsec.color, 'DeleteFcn', xsec.DeleteFcn);
+            mytab = uitab(obj.xsgroup, 'Title', mytitle, 'ForegroundColor', xsec.Color, 'DeleteFcn', xsec.DeleteFcn);
             
             % keep tabs alphabetized
             [~, idx] = sort({obj.xsgroup.Children.Title});
@@ -504,7 +505,7 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_cropToXS(obj, xsec)
-            sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            sh = ShapePolygon('polygon',[xsec.PolyX(:), xsec.PolyY(:)]);
             set_my_shape(obj, sh);
             %obj.replot_all();
         end
@@ -515,13 +516,13 @@ classdef ZmapMainWindow < handle
             mytitle = get(gco, 'Title');
             try
                 
-                if get(gco, 'Type') == "uitab" && strcmp(get(gco, 'Title'), xsec.name)
+                if get(gco, 'Type') == "uitab" && strcmp(get(gco, 'Title'), xsec.Name)
                     delete(gco);
                 else
                     error('Supposed to delete tab, but gco is not what is expected');
                 end
                 % drawnow
-                delete(findobj(obj.fig, 'Type', 'uicontextmenu', '-and', '-regexp', 'Tag',['.sel_ctxt .*' xsec.name '$']))
+                delete(findobj(obj.fig, 'Type', 'uicontextmenu', '-and', '-regexp', 'Tag',['.sel_ctxt .*' xsec.Name '$']))
                 
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
@@ -541,7 +542,7 @@ classdef ZmapMainWindow < handle
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
-            prompt      = {'Enter the New Width [',obj.CrossSections(idx).width_units,']:'};
+            prompt      = {'Enter the New Width [',obj.CrossSections(idx).LengthUnit,']:'};
             name        = 'Cross Section Width';
             numlines    = 1;
             defaultanswer = {num2str(obj.CrossSections(idx).width)};
@@ -686,6 +687,10 @@ classdef ZmapMainWindow < handle
                 obj.fig = figure();
             end
             
+            % these two states may be used by anything that plots within this figure
+            setappdata(obj.fig,'CoordinateSystem', obj.CoordinateSystem);
+            setappdata(obj.fig,'RefEllipsoid', obj.refEllipsoid);
+            
             obj.fig.Visible     = 'off';
             obj.fig.Name        = 'Catalog Name and Date';
             obj.fig.Tag         = 'Zmap Main Window';
@@ -751,9 +756,9 @@ classdef ZmapMainWindow < handle
             
             %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
-            
-            obj.setGrid();
-            
+            if ~isempty(obj.rawcatalog)
+                obj.setGrid();
+            end
             obj.replot_all();
             obj.fig.Visible = 'on';
             set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Lower Right panel'), 'Visible', 'on');
@@ -1028,15 +1033,6 @@ function s = CallbackFld()
     end
 end
 
-function c=getEmptyCatalog()
-    cs = getappdata(groot,'ZmapCoordinateSystem');
-    switch cs
-        case CoordinateSystems.cartesian
-            c=ZmapBaseCatalog;
-        case CoordinateSystems.geodetic
-            c=ZmapCatalog;
-    end
-end
 
 function f = getFeaturesToPlot()
     cs = getappdata(groot,'ZmapCoordinateSystem');

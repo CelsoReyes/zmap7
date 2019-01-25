@@ -627,19 +627,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
                 return
             end
             leq = char(8804); %pretty version of <= , because a typed representation doesn't work across all platforms.
-            
-            shortZUnitList = {
-                'kilometer','km';
-                'meter','m';
-                'centimeter','cm';
-                'millimeter','mm';
-                'micron','nm';
-                'mile','mi';
-                'foot','ft';
-                'inch','in';
-                'yard','yd'
-                };
-            depUn = shortZUnitList{string(obj.ZUnits)==shortZUnitList(:,1),2};
+            depUn = shortenLengthUnit(obj.ZUnits);
             
             switch verbosity
                 case 'simple'

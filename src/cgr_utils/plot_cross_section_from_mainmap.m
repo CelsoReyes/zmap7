@@ -8,6 +8,11 @@ function [c2, gcDist, zans] = plot_cross_section_from_mainmap
     % brings up new figure containing cross-section, with selected events plotted with depth, 
     % and histograms of events along sgtrike and with depth
     
+    % TODO: cannibalize this to make cross section plotting viable
+    % TODO: this code doesn't reflect the current state of ZmapXsectionCatalogs
+    
+    error('end of road')
+    
     ZG=ZmapGlobal.Data;
     catalog=ZG.primeCatalog; % points to same thing
     units = catalog.PositionUnits;
@@ -79,13 +84,13 @@ function f=create_cross_section_figure(zans,catalog, c2, mask)
     plot3_events(ax, c2, catalog, mask);
     plot_events_along_strike(subplot(3,3,[1 5]),c2,zans)
     
-    plot_events_along_strike_hist(subplot(3,3,[7 8]),zans, c2.dist_along_strike);
+    plot_events_along_strike_hist(subplot(3,3,[7 8]),zans, c2.DistAlongStrike);
     plot_depth_profile(subplot(3,3,[3 6]), c2.Depth);
     create_my_menu(c2)
 end
 
 function plot_events_along_strike(ax,c2,zans)
-    scatter(ax, c2.dist_along_strike, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
+    scatter(ax, c2.DistAlongStrike, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
     ax.YDir='reverse';
     ax.XLim=[0 c2.curvelength];
     ax.XTickLabel{1}=zans.startlabel;
@@ -107,7 +112,7 @@ function plot3_events(ax,c2, catalog, mask, featurelist)
     % create a 3-d plot of this cross section, with overlaid map
     
     % plot relevant events (at depth)
-    scatter3(ax,c2.X,c2.Y,c2.Z,mag2dotsize(c2.Magnitude),c2.dist_along_strike,'+')
+    scatter3(ax,c2.X,c2.Y,c2.Z,mag2dotsize(c2.Magnitude),c2.DistAlongStrike,'+')
     
     set(gca,'NextPlot','add')
     % plot all events as gray on surface
@@ -186,7 +191,7 @@ function create_my_menu(c2)
     end
     
     function cb_meandepth(mycat)
-        meandepx(mycat, mycat.dist_along_strike);
+        meandepx(mycat, mycat.DistAlongStrike);
     end
    
     function rContainer = update_container()
