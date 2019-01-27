@@ -178,7 +178,8 @@ classdef ZmapMainWindow < handle
             end
             
             obj.CoordinateSystem = ZG.CoordinateSystem;
-            obj.refEllipsoid.LengthUnit = obj.rawcatalog.PositionUnits;
+            obj.refEllipsoid    = ZG.ref_ellipsoid;
+                
             
             % TODO: make this handle a default shape once again
             

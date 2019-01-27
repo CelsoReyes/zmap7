@@ -1,4 +1,4 @@
-classdef ZmapXsectionCatalog
+classdef ZmapXsectionCatalog < dynamicprops
     % ZMAPXSECTIONCATALOG a catalog specifically along a cross section
     % meaning, all events are on a great-circle line
     %
@@ -10,6 +10,7 @@ classdef ZmapXsectionCatalog
         CurveLength        = 0;
         ProjectedPoints    double = []
         Name
+        Width               double
     end
     
     properties(SetAccess = immutable)
@@ -19,16 +20,9 @@ classdef ZmapXsectionCatalog
     properties(Dependent)
         startPoint % as y,x
         endPoint   % as y,x
-        X
-        Y
-        Z
-        Magnitude
-        MagnitudeType
-        Date
         ProjectedX
         ProjectedY
         ProjectedZ
-        Count
     end
     
     
@@ -46,14 +40,21 @@ classdef ZmapXsectionCatalog
                 obj.Catalog = catalog;
             end
             obj.Name=catalog.Name;
+            obj.Width = width;
+            
+            % add catalog properties as though they were our own
+            % this makes this class queryable and settable as though it were the catalog it is using
+            % note, this is for properties, not methods!
+            obj.attach_catalog_properties()
+            
             switch ZmapGlobal.Data.CoordinateSystem
                 case CoordinateSystems.geodetic
                     tdist = distance(p1yx,p2yx,catalog.RefEllipsoid);
-                    nlegs    = ceil(tdist_km / width) .*2;
+                    nlegs    = ceil(tdist / width) .*2;
                     [curvelats,curvelons] = gcwaypts(p1yx(1),p1yx(2),p2yx(1),p2yx(2),nlegs);
                     scale = min(.1, tdist.*unitsratio('kilometer',catalog.RefEllipsoid.LengthUnit) / 10000);
-                    [c2,mindist,~,gcDist] = project_on_gcpath(p1yx,p2yx, catalog, width/2, scale);
-                    obj = obj.copyFrom(c2); % necessary, otherwise this turns into a ZmapCatalog
+                    [mindist,mask,gcDist] = project_on_gcpath(p1yx,p2yx, catalog, width/2, scale);
+                    obj.Catalog = obj.Catalog.subset(mask); % necessary, otherwise this turns into a ZmapCatalog
                     obj.Curve = [curvelats, curvelons];
                     obj.DistAlongStrike = gcDist;
                     obj.Displacement    = mindist;
@@ -65,7 +66,11 @@ classdef ZmapXsectionCatalog
                     p2 = [p2yx(2), p2yx(1)];
                     [obj.ProjectedPoints,obj.DistAlongStrike, obj.Displacement]=projection(p1, p2, [catalog.X, catalog.Y]);
                     obj.ProjectedPoints(:,3)=catalog.Z;
+                    mask = obj.DistAlongStrike>=0&obj.DistAlongStrike<obj.CurveLength &...
+                        obj.Displacement<=obj.Width;
+                    obj.Catalog = obj.Catalog.subset(mask);
             end
+            
             
             function [newQuake, DistAlongPlane, perp_dist]=projection(startPt, endPt, quake)
                 V1 = endPt - startPt; % vector to project upon
@@ -82,6 +87,16 @@ classdef ZmapXsectionCatalog
 
 
         end
+        
+        function setCatalogProperty(obj,name,val)
+            obj.Catalog.(name) = val;
+        end
+        
+        function val = getCatalogProperty(obj,name)
+            val = obj.Catalog.(name);
+        end
+        
+        %{
         function c = get.Count(obj)
             c = obj.Catalog.Count;
         end
@@ -118,7 +133,7 @@ classdef ZmapXsectionCatalog
         function mt = get.MagnitudeType(obj)
             mt = obj.Catalog.MagnitudeType;
         end
-        
+        %}
         function p=get.startPoint(obj)
             p=obj.Curve(1,:);
         end
@@ -148,6 +163,10 @@ classdef ZmapXsectionCatalog
             fprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
                 sp(1),sp(2), ep(1),ep(2), obj.CurveLength);
         end
+        
+        function s=summary(obj,varargin)
+            s=obj.Catalog.summary(varargin{:});
+        end
 
         function s=info(obj)
             s=sprintf('cross-section catalog with %d events\n',obj.Count);
@@ -157,12 +176,15 @@ classdef ZmapXsectionCatalog
         end
         
         function obj = subset(existobj, range)
-            obj=subset@ZmapCatalog(existobj,range);
+            obj = ZmapXsectionCatalog(existobj.Catalog.subset(range),existobj.startPoint, existobj.endPoint, existobj.Width);
+            %{
+            obj.Catalog = existobj.Catalog.subset(range);
             
             obj.DistAlongStrike = existobj.DistAlongStrike(range);
             obj.Displacement = existobj.Displacement(range);
             obj.CurveLength=existobj.CurveLength;
             obj.Curve = existobj.Curve;
+            %}
         end
         
         function obj = cat(objA, ObjB)
@@ -176,7 +198,20 @@ classdef ZmapXsectionCatalog
         end
     end
     
-    
+    methods(Access=private)
+        function attach_catalog_properties(obj)
+            pr = properties(obj.Catalog);
+            
+            for idx = 1:numel(pr)
+                if isprop(obj,pr{idx})
+                    continue
+                end
+                p=obj.addprop(pr{idx});
+                p.SetMethod=@(val) obj.setCatalogProperty(pr{idx},val);
+                p.GetMethod=@(val) obj.getCatalogProperty(pr{idx});
+            end
+        end
+    end
     
     methods(Static)
         function [lon, lat,h] = create_endpoints(ax,C)

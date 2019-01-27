@@ -107,7 +107,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         function obj=ShapeGeneral()
             % ShapeGeneral create a shape
             obj.CoordinateSystem = ZmapGlobal.Data.CoordinateSystem;
-            obj.RefEllipsoid.LengthUnit = ZmapGlobal.Data.primeCatalog.PositionUnits;
+            obj.RefEllipsoid = ZmapGlobal.Data.primeCatalog.RefEllipsoid;
             
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);

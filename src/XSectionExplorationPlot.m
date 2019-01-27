@@ -64,7 +64,7 @@ classdef XSectionExplorationPlot < CatalogExplorationPlot
 
             function modify_axis( xyzlim, xyzlabel, xyztick, xyzticklabel)
                 % make the plot pretty.
-                obj.ax.(xyzlabel).String='Dist along strike [',shortenLengthUnit(obj.xsec.LengthUnit),']';
+                obj.ax.(xyzlabel).String=['Dist along strike [',shortenLengthUnit(obj.xsec.LengthUnit),']'];
                 obj.ax.(xyzlim)=[0 obj.xsec.Extent];
                 if obj.ax.(xyztick)(1) ~=0
                     obj.ax.(xyztick)=[0 obj.ax.(xyztick)];

@@ -324,7 +324,7 @@ classdef XSection < handle
         function s = info(obj)
             displayer=@(x)sprintf(...
                     'X-Sec %s: %g km long by %g %ss wide [(%g,%g) to (%g,%g)]',...
-                    x.Name, x.length_km, x.Width, x.LengthUnit, x.StartPoint, x.EndPoint);
+                    x.Name, x.Extent, x.Width, x.LengthUnit, x.StartPoint, x.EndPoint);
             nObj = numel(obj);
             if isempty(nObj)
                 s=('No cross section(s) or empty cross section');
