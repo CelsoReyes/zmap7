@@ -219,7 +219,7 @@ function create_all_menus(obj, force)
             MenuSelectedField(),@toggle_grid,...
             'checked',char(ZmapGlobal.Data.mainmap_grid));
 
-        if obj.CoordinateSystem == CoordinateSystems.cartesian
+        if iscartesian(obj.refEllipsoid)
              axis(obj.get_all_map_axes,'equal'); 
              m.Label = 'Toggle X/Y Grid';
         end

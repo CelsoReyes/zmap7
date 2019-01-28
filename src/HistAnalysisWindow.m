@@ -60,7 +60,7 @@ classdef HistAnalysisWindow < AnalysisWindow
             %          BinMethod, LineWidth, etc...
             
             p = inputParser();
-            p.addRequired('catalog',    @(x)isa(x,'ZmapBaseCatalog'));
+            p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
             p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.KeepUnmatched = true;
@@ -275,7 +275,7 @@ classdef HistAnalysisWindow < AnalysisWindow
     
     methods(Static) % to be hidden
         function mustBeCatalogProperty(x)
-            assert(ismember(x,properties('ZmapCatalog'))); %beware of ZmapBaseCatalog
+            assert(ismember(x,properties('ZmapCatalog')));
         end
         
         function s = fillValidHistogramFields()
@@ -470,25 +470,22 @@ end
 
 function p=getHistogrammableProperties()
     
-    switch getappdata(groot,'ZmapCoordinateSystem')
-        case CoordinateSystems.geodetic
-            c=ZmapCatalog;
-            additional = {'Dip'           , 5, 'degrees';... 
-            'DipDirection'  , 5, 'degrees';...
-            'Rake'          , 5, 'degrees'};
-        case CoordinateSystems.cartesian
-            c=ZmapBaseCatalog;
-            additional={};
-    end
+    c=ZmapCatalog;
+    
+    % additional = {'Dip' , 5, 'degrees';... 
+    %     'DipDirection'  , 5, 'degrees';...
+    %     'Rake'          , 5, 'degrees'};
+    additional = {}
+
     label_with_units = {...
         'Date'          , years(1/12),'';...
-        c.ZLabel        , 5, c.ZUnits;  ...
+        c.ZLabel        , 5, c.LengthUnit;  ...
         c.YLabel        , 0.5, c.PositionUnits; ...
-        c.XLabel        , 0.5, c.PositionUnits;  ...
+        c.XLabel        , 0.5, c.HorizontalUnits;  ...
         'Magnitude'     , 0.1, ''; ...
         'MagnitudeType' , 'category', ''};
     
-    label_with_units=[label_with_units; additional];
-    p=cell2table(label_with_units, 'VariableNames', {'field', 'default_bin_width','units'});
+    label_with_units = [label_with_units; additional];
+    p = cell2table(label_with_units, 'VariableNames', {'field', 'default_bin_width','units'});
 end
 

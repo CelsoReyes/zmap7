@@ -2,15 +2,14 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable, AbortSet)
-        catalog                 {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor() % event catalog
-        bigEvents               {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor()
+        catalog                 {mustBeZmapCatalog} = ZmapCatalog% event catalog
+        bigEvents               {mustBeZmapCatalog} = ZmapCatalog
         shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
         Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
         daterange     datetime                        % used to subset the catalog with date ranges
         colorField                                  = ZmapGlobal.Data.mainmap_plotby
         CrossSections
-        rawcatalog              {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor()
-        CoordinateSystem  CoordinateSystems         = ZmapGlobal.Data.CoordinateSystem
+        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
     end
     
     properties
@@ -134,7 +133,7 @@ classdef ZmapMainWindow < handle
                         error('Usage: ZmapMainWindow(FIG, catalog)\n%s', '  First argument was not a figure');
                     end
                     
-                    if isa(varargin{2}, 'ZmapBaseCatalog')
+                    if isa(varargin{2}, 'ZmapCatalog')
                         in_catalog = varargin{2};
                     else
                         error('Usage: ZmapMainWindow(fig, CATALOG).\nSecond argument was not a catalog');
@@ -171,7 +170,7 @@ classdef ZmapMainWindow < handle
             %% prepare the catalog
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
-            if ~isa(in_catalog, 'ZmapBaseCatalog')
+            if ~isa(in_catalog, 'ZmapCatalog')
                 obj.rawcatalog = copy(ZG.primeCatalog);
             else
                 obj.rawcatalog = copy(in_catalog);
@@ -341,7 +340,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog(obj.CoordinateSystem, [],obj.refEllipsoid);
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
             else
                 fprintf('Using existing grid:\n');
             end
@@ -1036,12 +1035,9 @@ end
 
 
 function f = getFeaturesToPlot()
-    cs = getappdata(groot,'ZmapCoordinateSystem');
-    switch cs
-        case CoordinateSystems.cartesian
-            f={}; %TODO: create a shape that defines the surface boundary 
-            
-        case CoordinateSystems.geodetic
-            f=ZmapGlobal.Data.mainmap_features;
+    if iscartesian(Zmap.Global.Data.ref_ellipsoid)
+        f = {}; %TODO: create a shape that defines the surface boundary
+    else
+        f = ZmapGlobal.Data.mainmap_features;
     end
 end

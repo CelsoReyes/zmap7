@@ -22,7 +22,7 @@ classdef (Sealed) CumTimePlot < handle
             % CUMTIMEPLOT creates a new Cumulative Time Plot axes
             if isa(zmw,'ZmapMainWindow')
                 obj.zmw = zmw;
-            elseif isa(zmw,'ZmapBaseCatalog')
+            elseif isa(zmw,'ZmapCatalog')
                 % pretend we have a zmw with a catalog
                 obj.zmw.catalog = zmw;
             else
@@ -81,7 +81,7 @@ classdef (Sealed) CumTimePlot < handle
                 msg.errordisp('CumTimePlot was passed an empty catalog','No Catalog');
                 return
             end
-            if ~isempty(varargin) && isa(varargin{1},'ZmapBaseCatalog')
+            if ~isempty(varargin) && isa(varargin{1},'ZmapCatalog')
                 obj.ax.NextPlot = 'add';
             end
             

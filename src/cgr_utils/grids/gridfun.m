@@ -68,7 +68,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     check_provided_functions(multifun, infun);
     
-    if ~isa(catalog, 'ZmapBaseCatalog')
+    if ~isa(catalog, 'ZmapCatalog')
         error('CATALOG should be a ZmapCatalog');
     end
     if ~isa(zgrid, 'ZmapGrid')

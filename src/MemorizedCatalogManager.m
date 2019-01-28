@@ -20,7 +20,7 @@ classdef MemorizedCatalogManager<handle
             if ~exist('name','var')
                 name = 'default';
             end
-            assert(isa(catalog,'ZmapBaseCatalog'));
+            assert(isa(catalog,'ZmapCatalog'));
             obj.MemorizedCatalogs(name) = copy(catalog); %must be copied, otherwise it will change
         end
         

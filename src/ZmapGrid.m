@@ -49,14 +49,13 @@ classdef ZmapGrid
     
     properties
         Name  (1,:)     char         = ZmapGlobal.Data.GridOpts.Name % name of this grid
-        Units (1,:)     char         = ''
         ActivePoints    logical         % logical mask
         X               double          % all X positions in matrix
         Y               double          % all Y positions in matrix
         Z               double          % all Z positions in matrix.
         Origin                          % [lon0, lat0, z0] of grid origin point. grid is created outward from here.
         PlotOpts        struct      = ZmapGlobal.Data.GridOpts.LineProps;
-        CoordinateSystem  CoordinateSystems = ZmapGlobal.Data.CoordinateSystem
+        RefEllipsoid    referenceEllipsoid % reference Ellipsoid for geodetic-based or a nonEllpsoid for XYZ based
             
     end
     
@@ -65,6 +64,7 @@ classdef ZmapGrid
         Yactive                         % all Y positions for active points
         Zactive                         % all Z positions for active points
         GridVector                      % Nx2 or Nx3 of all grid points [X1 Y1;...] or [X1,Y1,Z1; ...]
+        Units
     end
     properties(Constant)
         Type                        = 'zmapgrid';
@@ -115,41 +115,41 @@ classdef ZmapGrid
             if nargin > 0 ,     obj.Name   = name;            end
                         
             switch createFrom
-                case "FromPoints"
+                case 'FromPoints'
                     p.addRequired('pointvector', @(x)isempty(x) || size(x,2)==2 || size(x,2)==3);
                     p.addParameter('Units','');
-                case "FromMatrices"
+                case 'FromMatrices'
                     p.addRequired('xmatrix');
                     p.addRequired('ymatrix');
                     p.addOptional('zmatrix',[]);
                     p.addParameter('Units','');
-                case "FromGridOptions"
+                case 'FromGridOptions'
                     p.addRequired('gridoptions',@(x)isa(x,'GridOptions'));
-                case "FromNothing"
+                case 'FromNothing'
                     % do nothing
                 otherwise
                     error('do not know what to create from');
             end
             p.addParameter('OriginPoint'  , [nan nan 0]          , @(x)numel(x)==3 && isnumeric(x));
             p.addParameter('Shape'        , ShapeGeneral.ShapeStash()  , @(x)isa(x,'ShapeGeneral'));
-            p.addParameter('RefEllipsoid' , []    , @(x)isa(x,'referenceEllipsoid') || isempty(x) );
+            p.addParameter('RefEllipsoid' , getappdata(groot,'ZmapDefaultReferenceEllipsoid') , @(x)isa(x,'referenceEllipsoid'));
             
             p.parse(varargin{:});
             
             myshape = p.Results.Shape;
-            refEllipsoid = p.Results.RefEllipsoid; % contains units
-            
-            if ~isempty(refEllipsoid)
-                obj.Units = refEllipsoid.LengthUnit;
+            obj.RefEllipsoid = p.Results.RefEllipsoid; % contains units
+            if isfield(p.Results,'Units')
+                obj.RefEllipsoid.LengthUnit = p.Results.Units
             end
+            
             
             %% create the grids
             switch createFrom
-                case "FromPoints"
+                case 'FromPoints'
                     point_definition(p.Results.pointvector);
                     obj.Units = p.Results.Units;
                     
-                case "FromMatrices"
+                case 'FromMatrices'
                     hasSameSize =@(A,B) isequal(size(A), size(B));
                     
                     if isempty(p.Results.zmatrix)
@@ -160,16 +160,15 @@ classdef ZmapGrid
                         assert(hasSameSize(p.Results.xmatrix, p.Results.zmatrix) );
                         matrix_definition(p.Results.xmatrix, p.Results.ymatrix, p.Results.zmatrix);
                     end
-                    obj.Units = p.Results.Units;
                     
-                case "FromGridOptions"
-                    if p.Results.gridoptions.CoordinateSystem == CoordinateSystems.cartesian
+                case 'FromGridOptions'
+                    if iscartesian(refEllipsoid)
                         grid_option_definition_cartesian(p.Results.gridoptions);
                     else
-                        grid_option_definition(p.Results.gridoptions, refEllipsoid);
+                        grid_option_definition(p.Results.gridoptions, obj.RefEllipsoid);
                     end
                     
-                case "FromNothing"
+                case 'FromNothing'
                     return
                     
                 otherwise
@@ -318,6 +317,10 @@ classdef ZmapGrid
             else
                 gp = [];
             end
+        end
+        
+        function u = get.Units(obj)
+            u = obj.RefEllipsoid.LengthUnit;
         end
         
         %% masked access routines

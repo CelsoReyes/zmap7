@@ -13,7 +13,7 @@ classdef CatalogStorage < handle
         
         function set(obj, label, val)
             assert(ismember(label, obj.ValidCatalogList),'Unknown Catalog')
-            assert(isa(val,'ZmapBaseCatalog'),'This isn''t a catalog')
+            assert(isa(val,'ZmapCatalog'),'This isn''t a catalog')
             obj.Catalogs(1).(label)= val;
         end
         

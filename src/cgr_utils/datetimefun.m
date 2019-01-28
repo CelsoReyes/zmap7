@@ -49,7 +49,7 @@ function [ values, nEvents, dateSpread, maxMag, wasEvaluated ] = datetimefun( in
     
     check_provided_functions(multifun);
     
-    assert(isa(catalog,'ZmapBaseCatalog'), 'CATALOG should be a Zmap catalog');
+    assert(isa(catalog,'ZmapCatalog'), 'CATALOG should be a Zmap catalog');
     
     if ~exist('answidth','var')
         answidth=1;

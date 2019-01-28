@@ -391,7 +391,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             % VERIFY_CATALOG makes sure the catalog is valid and has events
             % verify_catalog( CATALOG )
             assert(~isempty(c),'Catalog is empty');
-            assert(isa(c,'ZmapBaseCatalog'),'Please provide a Zmap catalog, not a ',class(c));
+            assert(isa(c,'ZmapCatalog'),'Please provide a Zmap catalog, not a ',class(c));
         end
     end
 end

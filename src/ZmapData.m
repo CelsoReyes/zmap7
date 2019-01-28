@@ -36,24 +36,24 @@ classdef ZmapData < handle
     end
     
     properties
-        ref_ellipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer')
+        ref_ellipsoid   referenceEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
         catalogs        CatalogStorage = CatalogStorage({'prime','newcat','newt2',...
             'catalog_working','storedcat','original','catalogA','catalogB'})
         cluster_catalogs CatalogStorage = CatalogStorage({'newccat','ttcat','cluscat','newclcat'})
         
         % catalogs
-        % primeCatalog    {mustBeZmapCatalog}     = ZmapBaseCatalog
-        newcat          {mustBeZmapCatalog}     = ZmapBaseCatalog
-        newt2           {mustBeZmapCatalog}     = ZmapBaseCatalog
-        catalog_working {mustBeZmapCatalog}     = ZmapBaseCatalog
+        % primeCatalog    {mustBeZmapCatalog}     = ZmapCatalog
+        newcat          {mustBeZmapCatalog}     = ZmapCatalog
+        newt2           {mustBeZmapCatalog}     = ZmapCatalog
+        catalog_working {mustBeZmapCatalog}     = ZmapCatalog
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
         original        {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')% used with declustering
         
         % cluster catalogs 
-        newccat          {mustBeZmapCatalog}     = ZmapBaseCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat            {mustBeZmapCatalog}     = ZmapBaseCatalog	% some sort of clustered catalog? selclust
-        cluscat          {mustBeZmapCatalog}     = ZmapBaseCatalog	% some sort of clustered catalog? selclust
-        newclcat         {mustBeZmapCatalog}     = ZmapBaseCatalog	% some sort of clustered catalog? selclust
+        newccat          {mustBeZmapCatalog}     = ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat            {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        cluscat          {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        newclcat         {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
         
         % map features that can be looked up by name. ex. ZG.features('volcanoes')
         features      containers.Map    = get_features('h')         
@@ -147,7 +147,6 @@ classdef ZmapData < handle
         t0b             % start time for earthquakes in primary catalog
         teb             % end time for earthquakes in primary catalog
         primeCatalog
-        defaultCatalogConstructor
     end
     
     methods
@@ -213,7 +212,7 @@ classdef ZmapData < handle
                             catalogFile = fullfile(obj.Directories.working, ZDefaults.catalog.LastCatalogFilename);
                             if exist(catalogFile,'file')
                                 tmp = load(catalogFile,'catalog');
-                                if isa(tmp.catalog,'ZmapBaseCatalog')
+                                if isa(tmp.catalog,'ZmapCatalog')
                                     obj.primeCatalog = tmp.catalog;
                                     fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
                                     disp(obj.primeCatalog)
@@ -234,16 +233,17 @@ classdef ZmapData < handle
                     case "grid"
                         
                         obj.GridOpts = ZDefaults.grid;
-                        coord_system = CoordinateSystems.geodetic; % TODO: get from somewhere else.
                         sepProps = obj.GridOpts.SeparationProps;
+                        opts = {};
                         if sepProps.FollowMeridians
-                            obj.gridopt = GridOptions( coord_system, GridTypes.XYZ,...
-                                [sepProps.Dx, sepProps.Dy, sepProps.Dz],...
-                                'FollowMeridians');
-                        else
-                            obj.gridopt = GridOptions( coord_system, GridTypes.XYZ,...
-                                [sepProps.Dx, sepProps.Dy, sepProps.Dz], sepProps.xyunits);
+                            opts = [opts,{'FollowMeridians',true}]; %#ok<AGROW>
                         end
+                        dxdydz = [sepProps.Dx, sepProps.Dy, sepProps.Dz];
+                        myRefEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
+                        myRefEllipsoid.LengthUnits = sepProps.xyunits;
+                        
+                        obj.gridopt = GridOptions( GridTypes.XYZ, dxdydz, myRefEllipsoid, opts);
+                        clear opts dxdydz sepProps myRefEllipsoid
                         
                     case "mainmap"
                         
@@ -274,14 +274,6 @@ classdef ZmapData < handle
         function set.primeCatalog(obj, val)
             obj.catalogs.set('prime', val);
         end
-        function ch = get.defaultCatalogConstructor(obj)
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    ch=@ZmapCatalog;
-                case CoordinateSystems.cartesian
-                    ch=@ZmapBaseCatalog;
-            end
-        end
         
         function set.GridSelector(obj,val)
             if isstruct(val)
@@ -309,7 +301,7 @@ classdef ZmapData < handle
             for n=1:numel(p)
                 cl=class(obj.(p{n}));
                 switch cl
-                    case {'ZmapCatalog', 'ZmapBaseCatalog'}
+                    case {'ZmapCatalog'}
                         fprintf('%20s : ',p{n})
                         disp(obj.(p{n}));
                 end
@@ -317,12 +309,7 @@ classdef ZmapData < handle
         end
        
         function c = generateEmptyCatalog(obj)
-            switch obj.CoordinateSystem
-                case CoordinateSystems.cartesian
-                    c = ZmapBaseCatalog();
-                case CoordinateSystems.geodetic
-                    c = ZmapCatalog();
-            end
+            c = ZmapCatalog();
         end
     end
     

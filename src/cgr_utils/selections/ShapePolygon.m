@@ -85,13 +85,10 @@ classdef ShapePolygon < ShapeGeneral
             end
             line1 = sprintf('Polygon with %d points',nPts);
             line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
-                case CoordinateSystems.cartesian
-                    line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
-                otherwise
-                    line3 = sprintf('??? unknown coordinate system, area cannot be calculated ???');
+            if iscartesian(obj.RefEllipsoid)
+            	line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
+            else
+              	line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
             end
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end

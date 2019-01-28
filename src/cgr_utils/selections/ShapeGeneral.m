@@ -62,11 +62,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         Points (:,2) double = [nan nan] % points within polygon [X1,Y1;...;Xn,Yn] circles have one value, so safest to use Outline
 
     end
-    
-    properties(SetAccess = immutable)
-         CoordinateSystem CoordinateSystems
-    end
-    
+        
     properties(SetAccess = protected)
         Type (1,:) char = 'unassigned' % shape type
         AllowVertexEditing = true;
@@ -75,7 +71,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
     properties
         ApplyGrid logical = true % apply grid options to the selected shape.
         ScaleWithLatitude logical = false
-        RefEllipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
+        RefEllipsoid   referenceEllipsoid;
     end
     
     properties (NonCopyable = true)
@@ -90,7 +86,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         Y   % Y coordinate for the shape outline
         Lat % Y coordinate for the shape outline
         Lon % X coordinate for the shape outline
-        Area % approximate area of shape. Units depend upon CoordinateSystem
+        Area % approximate area of shape. Units depend upon RefEllipsoid
     end
     
     properties(Constant)
@@ -102,12 +98,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         ShapeChanged
     end
     
-    methods
-        
+    methods        
         function obj=ShapeGeneral()
             % ShapeGeneral create a shape
-            obj.CoordinateSystem = ZmapGlobal.Data.CoordinateSystem;
-            obj.RefEllipsoid = ZmapGlobal.Data.primeCatalog.RefEllipsoid;
+            obj.RefEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
             
             report_this_filefun();
             addlistener(obj, 'Points', 'PostSet', @obj.notifyShapeChange);
@@ -166,13 +160,10 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             %
             %  If using cartesian coordinates, then area is in whatever units x and y are.
             
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    val = areaint(obj.Y, obj.X, obj.RefEllipsoid);
-                case CoordinateSystems.cartesian
-                    val = polyarea(obj.X, obj.Y);
-                otherwise
-                    error('unknown coordinate system');
+            if iscartesian(obj.RefEllipsoid)
+                val = polyarea(obj.X, obj.Y);
+            else
+                val = areaint(obj.Y, obj.X, obj.RefEllipsoid);
             end
         end
         

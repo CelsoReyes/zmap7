@@ -1,7 +1,7 @@
-classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
-    % ZmapBaseCatalog represents the basic utilities for an event catalog
+classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
+    % ZmapCatalog represents the basic utilities for an event catalog
     %
-    % ZmapBaseCatalog properties:
+    % ZmapCatalog properties:
     %   Name - name of this catalog
     %   Date - date and time of event
     %   XYZ - position of each event
@@ -13,7 +13,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
     %
     %   Filter - logical filter for subsetting events
     %
-    % ZmapBaseCatalog read-only properties:
+    % ZmapCatalog read-only properties:
     %   Count - number of events in catalog
     %
     %   X - read-only X position
@@ -25,10 +25,10 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
     %   DecimalYear - dates represented as a decimal year
     %
     %
-    % ZmapBaseCatalog methods:
+    % ZmapCatalog methods:
     %
     %  Catalog construction:
-    %   ZmapBaseCatalog -
+    %   ZmapCatalog -
     %   blank - return a blank catalog
     %   cat - combines two catalogs
     %   copy - copy catalog. otherwise handles likely point to same object
@@ -87,12 +87,10 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         SortDirection   char            = ''    % describes sorting direction
         Filter          logical                 % logical filter for subsetting events
         XYZ             (:,3) double            % position of each event
-        CoordinateSystem CoordinateSystems = 'cartesian'
+        OtherFields     ZmapCatalogAddon  % TODO: implement this. 1st implementaion is MomentTensorAddon
     end
     
     properties(Hidden)
-        PositionUnits   (1,:) char      = 'meter'
-        ZUnits          (1,:) char      = 'meter'
         XLabel          (1,:) char      = 'X'
         YLabel          (1,:) char      = 'Y'
         ZLabel          (1,:) char      = 'Z'
@@ -104,36 +102,66 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         DayOfYear   % dates represented as the day of year
         Count       % the number of events in catalog
         DateSpan    % the time between first and last events in catalog
-        X           % X position of each event
-        Y           % Y position of each event
-        Z           % Z position of each event
+        X               double      % X position of each event
+        Y               double      % Y position of each event
+        Z               double      % Z position of each event
         XLabelWithUnits
         YLabelWithUnits
         ZLabelWithUnits
+        Longitude       double     	% Longitude (Deg) of each event
+        Latitude        double     	% Latitude (Deg) of each event
+        Depth           double     	% Depth of events
+        LengthUnit                 % units for X, Y, Z offsets
     end
     
     properties(Dependent, Hidden)
         FieldnamesForColorby
+        HorizontalUnits
     end
     
     events
         ValueChange
     end
     
-    properties(SetAccess=immutable)
-        Type        (1,:) char
+    properties(Constant)
+        DefaultRefEllipsoid = @()getappdata(groot,'ZmapDefaultReferenceEllipsoid');
+        CoordinateSystem = getappdata(groot,'ZmapCoordinateSystem');
     end
     
-    methods(Static, Hidden)
-        function val = GetFieldnamesForColorby()
-            val = {'Z','Date', 'Magnitude', '-none-'};
-        end
+    properties(SetAccess=immutable)
+        Type        (1,:) char
+        RefEllipsoid referenceEllipsoid = ZmapCatalog.DefaultRefEllipsoid();
     end
+    
+    properties(SetAccess=immutable, Hidden)
+        distanceFcn2d   function_handle     = @obj.cartesianEpicentralDistanceTo;
+        distanceFcn3d   function_handle     = @obj.cartesianHypocentralDistanceTo;
+    end
+    
     
     methods
         % ordered as: Constructors, dependent property methods, alphabetical list of all others
-        function obj = ZmapBaseCatalog(varargin)
+        function obj = ZmapCatalog(varargin)
             obj.Type = 'zmapcatalog';
+            if ~isempty(varargin)
+                p = inputParser;
+                p.addParameter('ReferenceEllipsoid', obj.RefEllipsoid);
+                p.addParameter('Name',obj.Name);
+                p.addParameter('LengthUnit',obj.RefEllipsoid.LengthUnit);
+                p.parse(varargin{:});
+                obj.RefEllipsoid = p.Results.ReferenceEllipsoid;
+                obj.RefEllipsoid.LengthUnit = p.Result.LengthUnit;
+                obj.Name = p.Results.Name;
+            end
+            
+            if ~iscartesian(obj.RefEllipsoid)
+                obj.XLabel = 'Longitude';
+                obj.YLabel = 'Latitude';
+                obj.ZLabel = 'Depth';
+                obj.ZDir   = 'reverse';
+                obj.distanceFcn2d   = @obj.geodeticEpicentralDistanceTo;
+                obj.distanceFcn3d   = @obj.geodeticHypocentralDistanceTo;
+            end
         end
         
         function val = get.FieldnamesForColorby(obj)
@@ -173,16 +201,52 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
             propval = obj.XYZ(:,3);
         end
         
+        function lu = get.LengthUnit(obj)
+            lu = obj.RefEllipsoid.LengthUnit;
+        end
+        
+        function hu = get.HorizontalUnits(obj)
+            if iscartesian(obj.RefEllipsoid)
+                hu = obj.RefEllipsoid.LengthUnit;
+            else
+                hu = 'degree';
+            end
+        end
+        
         function lb = get.XLabelWithUnits(obj)
-            lb = [obj.XLabel, ' [',obj.PositionUnits,']'];
+            lb = [obj.XLabel, ' [',obj.HorizontalUnits,']'];
         end
         
         function lb = get.YLabelWithUnits(obj)
-            lb = [obj.YLabel, ' [',obj.PositionUnits,']'];
+            lb = [obj.YLabel, ' [',obj.HorizontalUnits,']'];
         end
         
         function lb = get.ZLabelWithUnits(obj)
-            lb = [obj.ZLabel, ' [',obj.ZUnits,']'];
+            lb = [obj.ZLabel, ' [',obj.LengthUnit,']'];
+        end
+        
+        function val = get.Depth(obj)
+            val = obj.XYZ(:,3);
+        end
+        
+        function set.Depth(obj,val)
+            obj.XYZ(1:numel(val),3)=val;
+        end
+        
+        function val = get.Latitude(obj)
+            val = obj.XYZ(:,2);
+        end
+        
+        function set.Latitude(obj,val)
+            obj.XYZ(1:numel(val),2)=val;
+        end
+        
+        function val = get.Longitude(obj)
+            val = obj.XYZ(:,1);
+        end
+        
+        function set.Longitude(obj,val)
+            obj.XYZ(1:numel(val),1)=val;
         end
         
         function s = blurb(obj)
@@ -302,22 +366,6 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
             
         end
         
-        function [dists, units] = distanceTo(obj, x, y, z)
-            % get distance to events in catalog from a point or set of points
-            
-            if ~exist('z','var')||isempty(z)
-                [dists, units] = obj.epicentralDistanceTo(x,y);
-            else
-                [dists, units] = obj.hypocentralDistanceTo(x,y,z);
-            end
-        end
-        
-        function [dists, units] = epicentralDistanceTo(obj, x, y)
-            % get distance from all events to a point (assuming Z is same for all)
-            dists = sqrt(sum((obj.XYZ(:,1:2) - [x,y]).^ 2));
-            units = obj.PositionUnits;
-        end
-        
         function obj = getCropped(existobj)
             % GETCROPPED get a new, cropped ZmapCatalog from this one
             
@@ -328,18 +376,24 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
             end
         end
         
-        function [dists, units] = hypocentralDistanceTo(obj, x, y, z)
-            % get 3D distance from all events to a point
-            %
-            % [dists, units] = obj.hypocentralDistanceTo(x,y,z)
-            % [dists, units] = obj.hypocentralDistanceTo([x,y,z])
-            if nargin == 2 && ( isequal(size(x),[1 3]) || isequal(size(x),size(obj.XYZ)) )
-                dists = sqrt(sum((obj.XYZ - x) .^2));
+        function [dists, units] = distanceTo(obj, x, y, z)
+            % get distance to events in catalog from a point or set of points
+            if ~exist('z','var')||isempty(z)
+                [dists, units] = obj.distanceFcn2d(x, y);
             else
-                dists = sqrt(sum((obj.XYZ - [x,y,z]) .^2));
+                [dists, units] = obj.distanceFcn3d(x, y, z);
             end
-            units = obj.PositionUnits;
         end
+        
+        function [dists, units] = epicentralDistanceTo(obj, x, y)
+            [dists, units] = obj.distanceFcn2d(x, y);
+        end
+        
+        function [dists, units] = hypocentralDistanceTo(obj, x, y, z)
+            [dists, units] = obj.distanceFcn3d(x, y, z);
+        end
+        
+        
         
         function [C,IA,IB] = intersect(A,B)
             % return values common to both events, no repetitions. no tolerance
@@ -718,7 +772,7 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
             tbl      = struct2table(st);
             tbl.Properties.Description = obj.Name;
         end
-                    
+        
         
         function validate(obj)
             % check validity of the catalog
@@ -736,31 +790,163 @@ classdef (ConstructOnLoad) ZmapBaseCatalog < matlab.mixin.Copyable
         end
     end
     
-    methods(Static)
-        function obj = blank()  % To be implemented by every ZmapBaseCatalog subclass
-            % return a blank catalog
-            obj = ZmapBaseCatalog();
-        end
-    end
-    methods(Static, Hidden)
-        function s = display_order()  % To be implemented by every ZmapBaseCatalog subclass
-            % get fields to display, in order.
-            s = {'Name','Type','Date','DateSpan',...
-                'X','Y','Z','PositionUnits',...
-                'Magnitude','MagnitudeType',...
-                'IsSortedBy','SortDirection' ...
-                };
+    methods(Hidden)
+        % helper methods
+        function [dists, units] = cartesianEpicentralDistanceTo(obj, x, y)
+            % get distance from all events to a point (assuming Z is same for all)
+            dists = sqrt(sum((obj.XYZ(:,1:2) - [x,y]).^ 2));
+            units = obj.PositionUnits;
         end
         
-        function mbnel = fields_that_must_be_nevent_length()  % To be implemented by every ZmapBaseCatalog subclass
+        function [dists, units] = cartesianHypocentralDistanceTo(obj, x, y, z)
+            % get 3D distance from all events to a point
+            %
+            % [dists, units] = obj.hypocentralDistanceTo(x,y,z)
+            % [dists, units] = obj.hypocentralDistanceTo([x,y,z])
+            if nargin == 2 && ( isequal(size(x),[1 3]) || isequal(size(x),size(obj.XYZ)) )
+                dists = sqrt(sum((obj.XYZ - x) .^2));
+            else
+                dists = sqrt(sum((obj.XYZ - [x,y,z]) .^2));
+            end
+            units = obj.PositionUnits;
+        end
+        
+        function [dists, units] = geodeticEpicentralDistanceTo(obj, to_lat, to_lon)
+            % get epicentral (lat-lon) distance to another point
+            % [dists, units] = catalog.EPICENTRALDISTANCETO(to_lat, to_lon) returns the distance in the same
+            % units as the catalog's RefEllipsoid.
+            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
+            units = obj.RefEllipsoid.LengthUnit;
+        end
+        
+        function [dists, units] = geodeticHypocentralDistanceTo(obj, to_lat, to_lon, to_depth_km)
+            % get hypocentral distance (3-D distance) to another point
+            % [dists_km, units] = catalog.HYPOCENTRALDISTANCETO(to_lat, to_lon, to_depth_km)
+            assert(obj.RefEllipsoid.LengthUnit == "kilometer") % we make this assumption because of depth units
+            dists    = distance(obj.Latitude, obj.Longitude, to_lat, to_lon, obj.RefEllipsoid);
+            delta_dep   = (obj.Depth - to_depth_km);
+            dists    = sqrt( dists .^ 2 + delta_dep .^ 2);
+            units = obj.RefEllipsoid.LengthUnit;
+        end
+    end
+    
+    methods(Static)
+        function obj = blank()  % To be implemented by every ZmapCatalog subclass
+            % return a blank catalog
+            obj = ZmapCatalog();
+        end
+        
+        function obj = fromTable(other)
+            % catalog = ZMAPCATALOG(table) create a catalog from a table
+            assert(istable(other))                          % ZMAPCATALOG(table)
+            
+            other = table2zmapcatalogtable(other);
+            
+            vn = other.Properties.VariableNames;
+            for i=1:numel(vn)
+                fieldname = vn{i};
+                try
+                    obj.(fieldname) = other.(fieldname);
+                catch ME
+                    fprintf('Error interpreting field: %s\n',fieldname);
+                    warning(ME.message);
+                end
+            end
+            
+            if isempty(obj.MagnitudeType)
+                obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
+            end
+            
+            obj.Name    = other.Properties.Description;
+            pu          = other.Properties.VariableUnits;
+            
+            % automatically convert depth units
+            if ~isempty(pu) && ~isempty(pu(vn=="Depth"))
+                units       = validateLengthUnit(pu{vn=="Depth"});
+                obj.Depth   = unitsratio(obj.DepthUnits,units) * obj.Depth;
+            end
+            
+            obj.Filter=true(size(obj.Longitude));
+        end
+        
+        function obj = fromZmapArray(other, refEllipse)
+            % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
+            %   [longitude, latitude, decyear, month, day, magnitude, depth_km, hour, minute, second]
+            assert( isnumeric(other) )                            % ZMAPCATALOG(zmaparray)
+            % import Catalog from Array
+            nCols = size(other,2);
+            assert( nCols==10 || nCols == 9, ['Expected 9 or 10 columns, containing:\n',...
+              '[ lon lat decyr month day mag dep hr min [sec] ]']);
+            msg.dbfprintf(['importing from old catalog array with %d columns and %d events:\n'...
+                '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(other,1));
+            
+            if ~exist('refEllipse','var')
+                refEllipse = referenceEllipsoid('earth','kilometer');
+            end
+            
+            assert(ZmapCatalog.CoordinateSystem ~= CoordinateSystems.cartesian,...
+                'ZMAP arrays are in Lat-Lon, and is incompatible with this ZMAP session, which is in cartesian mode');
+            
+            assert(any(other(:,3) > 100), ['The catalog dates appear to have 2-digits years.',...
+                ' Change to 4-digit years before importing']);
+            
+            obj = ZmapCatalog();
+            other(:,7) = other(:,7) .* unitsratio(obj.LengthUnit,refEllipse.LengthUnit);
+            obj.XYZ = other(:,[1,2,7]);
+            if nCols==9 % no column for SECONDS
+                other(:,10)=0;
+            end
+            obj.Date = datetime([floor(other(:,3)), other(:,[4,5,8,9,10])]);
+            
+            obj.Magnitude       = other(:,6);
+            obj.MagnitudeType   = repmat(categorical(missing), size(obj.Magnitude));
+            
+            obj.Filter=true(size(obj.Longitude));
+        end
+        
+        
+        
+        
+    end
+    methods(Static, Hidden)
+        
+        function val = GetFieldnamesForColorby()
+            if iscartesian(ZmapData.Global.ref_ellipsoid)
+                val = {'Z','Date', 'Magnitude', '-none-'};
+            else
+                val = {'Depth','Date', 'Magnitude', '-none-'};
+            end
+        end
+        
+        function s = display_order()  % To be implemented by every ZmapCatalog subclass
+            % get fields to display, in order.
+            
+            if iscartesian(ZmapCatalog.DefaultRefEllipsoid())
+                    s = {'Name','Type','Date','DateSpan',...
+                        'X','Y','Z','LengthUnit',...
+                        'Magnitude','MagnitudeType',...
+                        'IsSortedBy','SortDirection' ...
+                        };
+            else
+                    % get fields to display, in order.
+                    s = {'Name','Type','Date','DateSpan',...
+                        'RefEllipsoid',...
+                        'Longitude','Latitude','Depth','LengthUnit',...
+                        'Magnitude','MagnitudeType',...
+                        'IsSortedBy','SortDirection', ...
+                        };
+            end
+        end
+        
+        function mbnel = fields_that_must_be_nevent_length()  % To be implemented by every ZmapCatalog subclass
             mbnel = {'Date','Magnitude','XYZ'};
         end
         
-        function pef = possibly_empty_fields()  % To be implemented by every ZmapBaseCatalog subclass
+        function pef = possibly_empty_fields()  % To be implemented by every ZmapCatalog subclass
             % fields that may either match the # of events, or be empty
             pef = {'MagnitudeType', 'Filter'};
         end
         
-
+        
     end
 end

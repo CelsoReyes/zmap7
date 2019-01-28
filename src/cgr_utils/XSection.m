@@ -26,7 +26,6 @@ classdef XSection < handle
         EndPoint        (1,2)   double      % [lat lon] end point for cross section
         StartLabel              char        % label for start point
         EndLabel                char        % label for end point
-        CoordinateSystem        CoordinateSystems
     end
     
     properties
@@ -83,14 +82,12 @@ classdef XSection < handle
             obj.Color       = zans.color;           % color
             
             fig = ancestor(ax,'figure');
-            obj.CoordinateSystem = getappdata(fig,'CoordinateSystem');
             obj.RefEllipsoid = getappdata(fig,'RefEllipsoid');
             
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    obj.DistCalculation = @(obj) distance(obj.StartPoint,obj.EndPoint,obj.RefEllipsoid);
-                case CoordinateSystems.cartesian
-                    obj.DistCalculation = @(obj) sqrt(sum( (obj.StartPoint-obj.EndPoint).^2));
+            if iscartesian(obj.RefEllipsoid)
+                obj.DistCalculation = @(obj) sqrt(sum( (obj.StartPoint-obj.EndPoint).^2));
+            else
+                obj.DistCalculation = @(obj) distance(obj.StartPoint,obj.EndPoint,obj.RefEllipsoid);
             end
             
             
@@ -343,36 +340,34 @@ classdef XSection < handle
         end
         
         function recalculate_boundary(obj)
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    [obj.PolyY,obj.PolyX] = xsection_poly(obj.StartPoint, obj.EndPoint, obj.Width/2,false,obj.RefEllipsoid);
-
-                case CoordinateSystems.cartesian
-                    theta=90;
-                    w=obj.Width/2;
-                    x1 = obj.StartPoint(2); x2 = obj.EndPoint(2);
-                    y1 = obj.StartPoint(1); y2 = obj.EndPoint(1);
-                    d = sqrt(sum((obj.StartPoint - obj.EndPoint).^2));
-                    dx=(x2-x1)/d; 
-                    dy=(y2-y1)/d;
-                    xp = (dx .* cosd(theta) - dy .* sind(theta)) .* w;
-                    yp = (dy .* cosd(theta) + dx .* sind(theta)) .* w;
-                    
-                    obj.PolyY = [y1+yp; y2+yp; y2-yp; y1-yp; y1+yp];
-                    obj.PolyX = [x1+xp; x2+xp; x2-xp; x1-xp; x1+xp];
+            if iscartesian(obj.RefEllipsoid)
+                theta=90;
+                w=obj.Width/2;
+                x1 = obj.StartPoint(2); x2 = obj.EndPoint(2);
+                y1 = obj.StartPoint(1); y2 = obj.EndPoint(1);
+                d = sqrt(sum((obj.StartPoint - obj.EndPoint).^2));
+                dx=(x2-x1)/d;
+                dy=(y2-y1)/d;
+                xp = (dx .* cosd(theta) - dy .* sind(theta)) .* w;
+                yp = (dy .* cosd(theta) + dx .* sind(theta)) .* w;
+                
+                obj.PolyY = [y1+yp; y2+yp; y2-yp; y1-yp; y1+yp];
+                obj.PolyX = [x1+xp; x2+xp; x2-xp; x1-xp; x1+xp];
+            else
+                [obj.PolyY,obj.PolyX] = xsection_poly(obj.StartPoint, obj.EndPoint, obj.Width/2,false,obj.RefEllipsoid);
+                
             end
         end
         
         function recalculate_xsec_curve(obj)
             % RECALCULATE if the width, startpoint, or endpoint changes, then recalculate boundaries
             % get waypoints along the great-circle curve
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    nPoints  = 100;
-                    [obj.CurveY, obj.CurveX]=gcwaypts(obj.StartPoint(1), obj.StartPoint(2), obj.EndPoint(1),obj.EndPoint(2),nPoints);
-                case CoordinateSystems.cartesian
-                    obj.CurveY = [obj.StartPoint(1); obj.EndPoint(1)];
-                    obj.CurveX = [obj.StartPoint(2); obj.EndPoint(2)];
+            if iscartesian(obj.RefEllipsoid)
+                obj.CurveY = [obj.StartPoint(1); obj.EndPoint(1)];
+                obj.CurveX = [obj.StartPoint(2); obj.EndPoint(2)];
+            else
+                nPoints  = 100;
+                [obj.CurveY, obj.CurveX]=gcwaypts(obj.StartPoint(1), obj.StartPoint(2), obj.EndPoint(1),obj.EndPoint(2),nPoints);
             end
         end
         

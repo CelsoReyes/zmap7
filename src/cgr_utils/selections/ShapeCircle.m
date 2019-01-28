@@ -59,18 +59,15 @@ classdef ShapeCircle < ShapeGeneral
             end
         end
         
-        function val=Outline(obj,col)
-            switch obj.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
-                    val=[lon, lat];
-                case CoordinateSystems.cartesian
-                    pts = exp(1i*pi*linspace(0,2*pi,3600)') .* obj.Radius;
-                    x = real(pts)+ obj.X0;
-                    y = imag(pts) + obj.Y0;
-                    val = [x,y];
-                otherwise
-                    error('unspecified coordinate system')
+        function val=Outline(obj, col)
+            if iscartesian(obj.RefEllipsoid)
+                pts = exp(1i*pi*linspace(0,2*pi,3600)') .* obj.Radius;
+                x = real(pts)+ obj.X0;
+                y = imag(pts) + obj.Y0;
+                val = [x,y];
+            else
+                [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
+                val=[lon, lat];
             end
             if exist('col','var')
                 val=val(:,col);
@@ -149,14 +146,13 @@ classdef ShapeCircle < ShapeGeneral
                 otherY(ismissing(otherX))= missing;
                 % return a vector of size otherX that is true where item is inside polygon
                    
-                switch obj.CoordinateSystem
-                    case CoordinateSystems.geodetic
-                        dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid);
-                    case CoordinateSystems.cartesian
-                        dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
-                    otherwise
-                        error('unknown coordinate system')
+                
+                if iscartesian(obj.RefEllipsoid)
+                    dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
+                else
+                    dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid);
                 end
+                
                 if ~include_boundary
                     mask = dists < obj.Radius;
                 else
@@ -226,17 +222,14 @@ classdef ShapeCircle < ShapeGeneral
                 if isempty(h)
                     h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                switch coord_system
-                    case  CoordinateSystems.geodetic
-                        [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
-                        h.XData=lon;
-                        h.YData=lat;
-                    case CoordinateSystems.cartesian
-                        pts = exp(1i*pi*linspace(0,2*pi,120)') .* d;
-                        h.XData = real(pts)+ stxy(1); 
-                        h.YData = imag(pts) + stxy(2);
-                    otherwise
-                        error('Unknown coordinate system')
+                if iscartesian(obj.RefEllipsoid)
+                    pts = exp(1i*pi*linspace(0,2*pi,120)') .* d;
+                    h.XData = real(pts)+ stxy(1); 
+                    h.YData = imag(pts) + stxy(2);
+                else
+                    [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
+                    h.XData=lon;
+                    h.YData=lat;
                 end
             end
         end

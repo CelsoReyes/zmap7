@@ -7,14 +7,14 @@ classdef ZmapXsectionCatalog < dynamicprops
         Curve              = [nan,nan] % points along the curve [y,x]
         DistAlongStrike    double  % distance for each event from startPoint in units
         Displacement       double  % perpendicular distance of each event from the line in units
-        CurveLength        = 0;
+        CurveLength        = 0; % length of this cross-section
         ProjectedPoints    double = []
         Name
         Width               double
     end
     
     properties(SetAccess = immutable)
-        Catalog     {mustBeZmapCatalog} = ZmapGlobal.Data.defaultCatalogConstructor() % points to an underlying zmap catalog
+        Catalog     {mustBeZmapCatalog} = ZmapCatalog % points to an underlying zmap catalog
     end
     
     properties(Dependent)
@@ -35,11 +35,11 @@ classdef ZmapXsectionCatalog < dynamicprops
             % see also project_on_gcpath
             class(catalog)
             if isa(catalog,'ZmapXsectionCatalog')
-                obj.Catalog=catalog.Catalog;
+                obj.Catalog = catalog.Catalog;
             else
                 obj.Catalog = catalog;
             end
-            obj.Name=catalog.Name;
+            obj.Name = catalog.Name;
             obj.Width = width;
             
             % add catalog properties as though they were our own
@@ -47,28 +47,35 @@ classdef ZmapXsectionCatalog < dynamicprops
             % note, this is for properties, not methods!
             obj.attach_catalog_properties()
             
-            switch ZmapGlobal.Data.CoordinateSystem
-                case CoordinateSystems.geodetic
-                    tdist = distance(p1yx,p2yx,catalog.RefEllipsoid);
-                    nlegs    = ceil(tdist / width) .*2;
-                    [curvelats,curvelons] = gcwaypts(p1yx(1),p1yx(2),p2yx(1),p2yx(2),nlegs);
-                    scale = min(.1, tdist.*unitsratio('kilometer',catalog.RefEllipsoid.LengthUnit) / 10000);
-                    [mindist,mask,gcDist] = project_on_gcpath(p1yx,p2yx, catalog, width/2, scale);
-                    obj.Catalog = obj.Catalog.subset(mask); % necessary, otherwise this turns into a ZmapCatalog
-                    obj.Curve = [curvelats, curvelons];
-                    obj.DistAlongStrike = gcDist;
-                    obj.Displacement    = mindist;
-                    obj.CurveLength     = tdist;
-                case CoordinateSystems.cartesian
-                    obj.Curve = [p1yx; p2yx];
-                    obj.CurveLength = sqrt(sum((p1yx-p2yx).^2));
-                    p1 = [p1yx(2), p1yx(1)];
-                    p2 = [p2yx(2), p2yx(1)];
-                    [obj.ProjectedPoints,obj.DistAlongStrike, obj.Displacement]=projection(p1, p2, [catalog.X, catalog.Y]);
-                    obj.ProjectedPoints(:,3)=catalog.Z;
-                    mask = obj.DistAlongStrike>=0&obj.DistAlongStrike<obj.CurveLength &...
-                        obj.Displacement<=obj.Width;
-                    obj.Catalog = obj.Catalog.subset(mask);
+            
+            if iscartesian(catalog.RefEllipsoid)
+                % deal with cartesian coordinates
+                obj.Curve = [p1yx; p2yx];
+                obj.CurveLength = sqrt(sum((p1yx-p2yx).^2));
+                p1 = [p1yx(2), p1yx(1)]; % flip from lat-lon to x-y
+                p2 = [p2yx(2), p2yx(1)]; % flip from lat-lon to x-y
+                [obj.ProjectedPoints, ...
+                    obj.DistAlongStrike, ...
+                    obj.Displacement] = projection(p1, p2, catalog.XYZ(:,[1,2]) );
+                obj.ProjectedPoints(:,3) = catalog.Z;
+                mask = obj.DistAlongStrike>=0 & obj.DistAlongStrike<obj.CurveLength &...
+                    obj.Displacement<=obj.Width;
+                obj.Catalog = obj.Catalog.subset(mask);
+                
+            else
+                
+                % deal with geodetic coordinates
+                CurveLength = distance(p1yx,p2yx,catalog.RefEllipsoid);
+                nlegs    = ceil(CurveLength / width) .*2;
+                [curvelats,curvelons] = gcwaypts(p1yx(1), p1yx(2), p2yx(1), p2yx(2), nlegs);
+                curveInKm = CurveLength.*unitsratio('kilometer',catalog.RefEllipsoid.LengthUnit);
+                scale = min(.1, curveInKm / 10000); %usded to determine how path is sampled
+                [mindist,mask,gcDist] = project_on_gcpath(p1yx,p2yx, catalog, width/2, scale);
+                obj.Catalog = obj.Catalog.subset(mask); % necessary, otherwise this turns into a ZmapCatalog
+                obj.Curve = [curvelats, curvelons];
+                obj.DistAlongStrike = gcDist;
+                obj.Displacement    = mindist;
+                obj.CurveLength     = CurveLength;
             end
             
             
@@ -96,44 +103,6 @@ classdef ZmapXsectionCatalog < dynamicprops
             val = obj.Catalog.(name);
         end
         
-        %{
-        function c = get.Count(obj)
-            c = obj.Catalog.Count;
-        end
-        function x = get.X(obj)
-            x = obj.Catalog.X;
-        end
-        function x = get.ProjectedX(obj)
-            x = obj.ProjectedPoints(:,1);
-        end
-        
-        function y = get.Y(obj)
-            y = obj.Catalog.Y;
-        end
-        
-        function y = get.ProjectedY(obj)
-            y = obj.ProjectedPoints(:,2);
-        end
-        
-        function z = get.Z(obj)
-            z = obj.Catalog.Z;
-        end
-        function z = get.ProjectedZ(obj)
-            z = obj.ProjectedPoitns(:,3);
-        end
-        
-        function d = get.Date(obj)
-            d = obj.Catalog.Date;
-        end
-        
-        function m = get.Magnitude(obj)
-            m = obj.Catalog.Magnitude;
-        end
-        
-        function mt = get.MagnitudeType(obj)
-            mt = obj.Catalog.MagnitudeType;
-        end
-        %}
         function p=get.startPoint(obj)
             p=obj.Curve(1,:);
         end
@@ -192,10 +161,6 @@ classdef ZmapXsectionCatalog < dynamicprops
             unimplemented_error()
         end
         
-        function obj=blank(obj2)
-            % BLANK creates a cleared-out object of this class
-            obj=ZmapXsectionCatalog();
-        end
     end
     
     methods(Access=private)

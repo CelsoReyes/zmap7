@@ -71,7 +71,9 @@ function zmap(varargin)
     possible_options = varargin(cellfun(@ischarlike,varargin));
     options          = lower(possible_options(startsWith(possible_options,'-')));
     
-    % set application data
+   setappdata(groot,'ZmapCoordinateSystem', CoordinateSystems.geodetic);
+   
+   % set application data
     
     for option = string(options)
         switch option
@@ -103,7 +105,7 @@ function zmap(varargin)
                 
                 %{ 
                 
-            case {"-catalog"} % must be modified to handle ZmapBaseCatalog classes
+            case {"-catalog"}
                 vaa = varargin; 
                 notstrings =cellfun(@(x)~ischarlike(x),varargin);
                 vaa(notstrings)={''};
@@ -116,7 +118,7 @@ function zmap(varargin)
                         return
                     end
                     alt_cat = evalin('base',"ZmapCatalog(" + v.name + ")");
-                    if isa(alt_cat, 'ZmapBaseCatalog')
+                    if isa(alt_cat, 'ZmapCatalog')
                         constructor_options.primeCatalog = alt_cat;
                     end
                     msg.infodisp("set primary catalog to the value from : " + v.name, 'catalog specified');
@@ -132,6 +134,14 @@ function zmap(varargin)
         end
         
     end
+    
+    switch getappdata(groot,'ZmapCoordinateSystem')
+        case CoordinateSystems.geodetic
+            setappdata(groot,'ZmapDefaultReferenceEllipsoid',referenceEllipsoid('earth','kilometer'));
+        case CoordinateSystems.cartesian
+            setappdata(groot,'ZmapDefaultReferenceEllipsoid',nonEllipsoid);
+    end
+            
     
     ZG = ZmapGlobal.Data;
     ZG.debug = debugMode;
@@ -194,7 +204,7 @@ function zmap(varargin)
         if ~isempty(ZG.primeCatalog) && questdlg('Open previous catalog?','ZMAP','Yes')=="Yes"
             ZmapMainWindow(cw, ZG.primeCatalog);
         else
-            ZmapMainWindow(cw, ZG.defaultCatalogConstructor());
+            ZmapMainWindow(cw, ZmapCatalog);
         end
         if ~isappdata(groot,'ZmapShowTips') || getappdata(groot,'ZmapShowTips')
             show_a_tip();

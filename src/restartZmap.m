@@ -7,9 +7,16 @@ function restartZmap(choice)
     switch lower(choice)
         case 'quit'
             close all
+            remove_appdata();
             evalin('base','clear all');
         case 'restart'
             close all
+            remove_appdata();
             evalin('base','clear all;zmap');
     end
+end
+
+function remove_appdata()
+    rmappdata(groot,'ZmapCoordinateSystem');
+    rmappdata(groot,'ZmapDefaultReferenceEllipsoid');
 end
