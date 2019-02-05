@@ -178,8 +178,7 @@ function show_mov(in, in2)
             s = cumuall(n1,:);
             normlap2(ll)= s(:);
             r=reshape(normlap2,length(yvect),length(xvect));
-            l = r > ZG.tresh_km;
-            re4(l) = nan(1,length(find(l)));
+            re4(r > ZG.tresh_km) = nan;
             
             orient landscape
             set(gcf,'PaperPosition',[ 0.1 0.1 8 6])

@@ -187,13 +187,13 @@ classdef HistAnalysisWindow < AnalysisWindow
                     return
                 end
                 set(h,'NumBins',str2double(binsS{1}));
-                obj.BinWidth.(obj.BinBy)=h(1).BinWidth;
+                obj.BinWidth.(obj.BinBy) = h(1).BinWidth;
                 label_x(obj)
             end
             function cb_reset(~,~)
                 h=findobj(obj.ax.Children,'flat','Type','histogram');
                 if ~isempty(h)
-                    idx = find(string(obj.BinBy)==HistAnalysisWindow.HistogrammableCatalogProperties.field);
+                    idx =string(obj.BinBy)==HistAnalysisWindow.HistogrammableCatalogProperties.field;
                     obj.BinWidth.(obj.BinBy) = HistAnalysisWindow.HistogrammableCatalogProperties.default_bin_width{idx};
                     set(h,'BinWidth',obj.BinWidth.(obj.BinBy));
                 end
@@ -461,8 +461,8 @@ function addcontext(obj, c)
                 nmonths=ceil(years(delta) .* 12);
                 edges = mindate + calendarDuration(0,0:nmonths,0);
         end
-        set(findobj(ax,'Type','histogram'),'BinEdges',edges);
-        ax.YLabel.String=['# Events per ' unit];
+        set(findobj(obj.ax,'Type','histogram'),'BinEdges',edges);
+        obj.ax.YLabel.String=['# Events per ' unit];
     end
     
     
@@ -470,18 +470,18 @@ end
 
 function p=getHistogrammableProperties()
     
-    c=ZmapCatalog;
+    c = ZmapCatalog;
     
     % additional = {'Dip' , 5, 'degrees';... 
     %     'DipDirection'  , 5, 'degrees';...
     %     'Rake'          , 5, 'degrees'};
-    additional = {}
+    additional = {};
 
     label_with_units = {...
         'Date'          , years(1/12),'';...
         c.ZLabel        , 5, c.LengthUnit;  ...
-        c.YLabel        , 0.5, c.PositionUnits; ...
-        c.XLabel        , 0.5, c.HorizontalUnits;  ...
+        c.YLabel        , 0.5, c.LengthUnit; ...
+        c.XLabel        , 0.5, c.LengthUnit;  ...
         'Magnitude'     , 0.1, ''; ...
         'MagnitudeType' , 'category', ''};
     

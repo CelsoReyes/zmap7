@@ -51,8 +51,8 @@ function dramap_stress2(catalog)
     def = {'1','1','5',num2str(min(valueMap(:)),4),num2str(max(valueMap(:)),4) };
     
     tit ='Topo map input parameters';
-    prompt={ [catalog.XLabel,' label spacing in ',catalog.PositionUnits],...
-        [catalog.YLabel,' label spacing in ',catalog.PositionUnits],...
+    prompt={ [catalog.XLabel,' label spacing in ',catalog.HorizontalUnit],...
+        [catalog.YLabel,' label spacing in ',catalog.HorizontalUnit],...
         'Topo data-aspect (steepness) ',...
         ' Minimum datavalue (cmin)',...
         ' maximum datavalue cmap',...
@@ -79,17 +79,14 @@ function dramap_stress2(catalog)
         
         switch ButtonName
             case 'Yes'
-                l= tmap <= 0.1;
-                tmap(l) = NaN;
+                tmap(tmap <= 0.1) = NaN;
         end % switch
     end
     
     
     
-    l = valueMap < mic;
-    valueMap(l) = mic+0.1 ;
-    l = valueMap > mac;
-    valueMap(l) = mac;
+    valueMap(valueMap < mic) = mic+0.1 ;
+    valueMap(valueMap > mac) = mac;
     
     
     [lat,lon] = meshgrat(tmap,tmapleg);

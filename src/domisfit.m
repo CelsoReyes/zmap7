@@ -17,8 +17,7 @@ function domisfit(catalog,sig,plu,az,phi,R)
     
     % prepare the focal; mechnism in Gephard format ...
     tmp = [catalog(:,10:12) ];
-    l = tmp(:,2) >89.999;
-    tmp(l,2) = tmp(l,2)*0+89.;
+    tmp(tmp(:,2) >89.999,2) = 89.;
     
     try
         save data.inp tmp -ascii

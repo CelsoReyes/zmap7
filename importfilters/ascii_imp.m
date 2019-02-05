@@ -16,7 +16,7 @@ function [uOutput,ok] = ascii_imp(nFunction, sFilename)
         if is_old_zmap_style(tb)
             tb = from_old_zmap_style(tb);
         end
-        uOutput = ZmapCatalog(tb);
+        uOutput = ZmapCatalog.from(tb);
         ok = true;
     end
 end

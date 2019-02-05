@@ -50,7 +50,7 @@ classdef ShapeCircle < ShapeGeneral
                     return
                 end
             else
-                oo=ShapeCircle.selectUsingMouse(gca, coordinate_system);
+                oo=ShapeCircle.selectUsingMouse(gca, obj.RefEllipsoid);
                 if ~isempty(oo)
                     obj=oo;
                 else
@@ -202,10 +202,7 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=selectUsingMouse(ax, coord_system, ref_ellipsoid)
-            if ~exist('ref_ellipsoid','var')
-                ref_ellipsoid = referenceEllipsoid('wgs84',ZmapGlobal.Data.primeCatalog.PositionUnits);
-            end
+        function obj=selectUsingMouse(ax, ref_ellipsoid)
             
             [ss,ok] = selectSegmentUsingMouse(ax,'r', @circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));

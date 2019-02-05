@@ -14,9 +14,7 @@ function Dcross(sel)
     % D = [x,y,z ]
     catalog=ZG.primeCatalog; % points to same thing
     Da = [eq0p(1,:)' eq0p(2,:)' catalog.Date catalog.Date.Month catalog.Date.Day catalog.Magnitude catalog.Depth];
-    Da0 = find(-2.99 < Da(:,7));
-    Da = Da.subset(Da0);
-    clear Da0;
+    Da = Da.subset(-2.99 < Da(:,7));
     if exist('sel','var')
         switch sel
             case 'ca'

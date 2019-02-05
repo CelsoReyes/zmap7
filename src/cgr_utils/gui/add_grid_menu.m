@@ -29,7 +29,7 @@ function add_grid_menu(obj)
     function cb_makecircle(src,ev)
         bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         
-        sh=ShapeCircle.selectUsingMouse(obj.map_axes, obj.CoordinateSystem, obj.refEllipsoid);
+        sh=ShapeCircle.selectUsingMouse(obj.map_axes, obj.refEllipsoid);
         set_my_shape(obj,sh);
     end
     
@@ -107,7 +107,7 @@ function add_grid_menu(obj)
     function cb_gridfigure(src,ev)
         watchon
         drawnow
-        [gr, gro] = GridOptions.fromDialog(obj.gridopt, obj.refEllipsoid);
+        [gr, gro] = GridOptions.fromDialog(obj.gridopt, obj.refEllipsoid,obj.shape);
         if ~isempty(gr)
             obj.Grid = gr;
             obj.gridopt = gro;

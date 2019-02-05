@@ -117,13 +117,13 @@ function zmap(varargin)
                         msg.errordisp("cannot find the variable " + c, 'catalog specified');
                         return
                     end
-                    alt_cat = evalin('base',"ZmapCatalog(" + v.name + ")");
+                    alt_cat = evalin('base',"ZmapCatalog('Name', " + v.name + ")");
                     if isa(alt_cat, 'ZmapCatalog')
                         constructor_options.primeCatalog = alt_cat;
                     end
                     msg.infodisp("set primary catalog to the value from : " + v.name, 'catalog specified');
                 else
-                    constructor_options.primeCatalog = ZmapCatalog(c);
+                    constructor_options.primeCatalog = ZmapCatalog.from(c);
                     msg.infodisp("set primary catalog from a : " + class(c), 'catalog specified');
                 end
                     %}

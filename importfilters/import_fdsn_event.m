@@ -196,7 +196,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         % spacing in header line is not guaranteed
         
         if isempty(data)
-            uOutput = ZmapCatalog('nodata');
+            uOutput = ZmapCatalog('Name','nodata');
             ok=false;
             return
         end
@@ -252,7 +252,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         for j=1:length(conversionDetails)
             tb.(conversionDetails{j,3}) = mData{midx(conversionDetails{j,1})};
         end
-        uOutput = ZmapCatalog(tb);
+        uOutput = ZmapCatalog.from(tb);
            
         %%
         

@@ -57,7 +57,6 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     multifun = iscell(infun);
     
     assert(isa(selcrit,'EventSelectionParameters'));
-    assert(catalog.CoordinateSystem == zgrid.CoordinateSystem);
     
     nSkippedDueToInsufficientEvents = 0;
     % check input data

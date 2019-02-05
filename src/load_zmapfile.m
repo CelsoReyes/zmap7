@@ -115,15 +115,8 @@ function   A=loadCatalog(path, file, S)
     
 
     clear tmp
-    if isnumeric(A) ||istable(A)
-        % convert to a ZmapCatalog
-        A=ZmapCatalog(A);
-        
-        if max(A.Magnitude) > 10
-            errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
-            warndlg(errdisp)
-        end 
-    end
+    A = ZmapCatalog.from(A);
+    
     if isempty(A.Name)
         A.Name = file;
     end

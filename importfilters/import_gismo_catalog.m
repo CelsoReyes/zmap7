@@ -47,7 +47,7 @@ function [uOutput] = import_gismo_catalog(nfunction, catalog)
             catalog.mag,...
             catalog.magtype,...
             'VariableNames',{'Date','Latitude','Longitude','Depth','Magnitude','MagnitudeType'});
-        uOutput=ZmapCatalog(tb);
+        uOutput=ZmapCatalog.from(tb);
         
         uOutput.Name=inputname(2);
             

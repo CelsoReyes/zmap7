@@ -37,9 +37,8 @@ function cin_lta()
     %[len, ncu] = size(cumuall);
     s = cumuall(len,:);
     r = reshape(s,length(gy),length(gx));
-    l = r > ZG.tresh_km;
     re4 = valueMap;
-    re4(l) = nan(1,length(find(l)));
+    re4(r > ZG.tresh_km) = nan;
     
     figure(tmp);
     clf reset

@@ -56,8 +56,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
     
     if myselector == 'pro'
         valueMap = old;
-        l = valueMap < 2.57;
-        valueMap(l) = ones(1,length(find(l)))*2.57;
+        valueMap(valueMap < 2.57) = 2.57;
         pr = 0.0024 + 0.03*(valueMap - 2.57).^2;
         pr = (1-1./(exp(pr)));
         valueMap = pr;
@@ -162,8 +161,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
     
     
     %r = reshape(cumuall(len,:),length(gy),length(gx));
-    l = r > ZG.tresh_km;
-    re4(l) = nan(1,length(find(l)));
+    re4(r > ZG.tresh_km) = nan;
     
     % plot image
     %

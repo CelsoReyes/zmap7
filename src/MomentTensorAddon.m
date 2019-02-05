@@ -27,7 +27,7 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
             % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
             %   [longitude, latitude, decyear, month, day, magnitude, depth_km, hour, minute, second]
             obj.ZUnits = 'kilometer';
-            obj.PositionUnits = 'degree';
+            obj.HorizontalUnit = 'degree';
             
             if nargin==0                                        % ZMAPCATALOG()
                 return

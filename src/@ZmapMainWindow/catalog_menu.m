@@ -79,14 +79,14 @@ function catalog_menu(obj, force)
     
     function cb_recall(~,~)
         mcm = MemorizedCatalogManager;
-        if ~isempty(mcm) && any(mcm.list=="default")
+        if ~isempty(mcm) && any(mcm.list == "default")
             obj.rawcatalog = mcm.recall();
             
-            [obj.mshape,obj.mdate]=obj.filter_catalog();
-            obj.map_axes.XLim=bounds2(obj.rawcatalog.X);
-            obj.map_axes.YLim=bounds2(obj.rawcatalog.Y);
+            [obj.mshape,obj.mdate] = obj.filter_catalog();
+            obj.map_axes.XLim = bounds2(obj.rawcatalog.X);
+            obj.map_axes.YLim = bounds2(obj.rawcatalog.Y);
             
-            hh=msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
+            hh = msgbox_nobutton('The catalog has been recalled.','Recall Catalog');
             hh.delay_for_close(1);
             %obj.replot_all();
         else
@@ -107,7 +107,7 @@ function catalog_menu(obj, force)
             warndlg('No catalogs are currently memorized','Clear Memorized Catalog');
         else
             mcm.remove();
-            hh=msgbox_nobutton('The memorized catalog has been cleared.','Clear Memorized Catalog');
+            hh = msgbox_nobutton('The memorized catalog has been cleared.','Clear Memorized Catalog');
             hh.delay_for_close(1);
         end
     end
@@ -120,7 +120,7 @@ function catalog_menu(obj, force)
         ed=errordlg(['not yet fully implemented. To get data from the worskpace into zmap do one of the following:' newline ...
             'for a ZmapCatalog MyCat, use ', newline , ...
             '   ZmapMainWindow(MyCat)'...
-            newline 'If loading a table MyCat, use: ' newline '   ZmapMainWindow(ZmapCatalog(MyCat))', newline, newline...
+            newline 'If loading a table MyCat, use: ' newline '   ZmapMainWindow(ZmapCatalog.from(MyCat))', newline, newline...
             'You can also specify the figure, as in ZmapMainWindow(fig, MyCat)']);
         app=catalog_from_workbench();
         uiwait(app)
@@ -128,26 +128,26 @@ function catalog_menu(obj, force)
     
     function cb_crop(~,~)
         ax = findobj(obj.fig, 'Type','Axes');
-        all_ax=[ax.Xaxis, ax.Yaxis, ax.Zaxis];
-        v=ax.View;
+        all_ax = [ax.Xaxis, ax.Yaxis, ax.Zaxis];
+        v = ax.View;
         switch ax.Tag
             case 'mainmap_ax'
-                fields={obj.XLabel, obj.YLabel, obj.ZLabel};
+                fields = {obj.XLabel, obj.YLabel, obj.ZLabel};
             case 'cumtimeplot_ax'
-                fields={'Date','',''};
+                fields = {'Date','',''};
             otherwise
-                fields={'','',''};
+                fields = {'','',''};
                 warning('ZMAP:unknownCatalogCut','Do not know how to crop catalog to these axes');
         end
         
         if isequal(v , [0 90]) % XY view
-            style='XY';
+            style = 'XY';
         elseif isequal(v,[0 0]) % XZ view
-            style='XZ';
+            style = 'XZ';
         elseif isequal(v,[90 0]) % YZ view
-            style='YZ';
+            style = 'YZ';
         else % all three views
-            style='XYZ';
+            style = 'XYZ';
         end
         mask=true(obj.catalog.Count,1);
         for n = 1 : len(style)
@@ -161,7 +161,7 @@ function catalog_menu(obj, force)
     
     
     function cb_replace_main(~,~)
-        ZG.primeCatalog=obj.catalog;
+        ZG.primeCatalog = obj.catalog;
         obj.replot_all();
     end
     
@@ -171,7 +171,7 @@ function catalog_menu(obj, force)
             return
         end
         events_in_shape = obj.shape.isinterior(obj.catalog.X, obj.catalog.Y);
-        obj.catalog=obj.catalog.subset(events_in_shape);
+        obj.catalog = obj.catalog.subset(events_in_shape);
         
         zmap_update_displays();
         
@@ -195,11 +195,11 @@ function catalog_menu(obj, force)
     end
     
     function cb_rename(~,~)
-        oldname=obj.rawcatalog.Name;
-        [~,~,newname]=smart_inputdlg('Rename',...
+        oldname = obj.rawcatalog.Name;
+        [~,~,newname] = smart_inputdlg('Rename',...
             struct('prompt','Catalog Name:','value',oldname));
-        obj.rawcatalog.Name=newname;
-        obj.catalog.Name=newname;
+        obj.rawcatalog.Name = newname;
+        obj.catalog.Name = newname;
     end
     
     
@@ -208,7 +208,7 @@ function catalog_menu(obj, force)
     end
     
     function cb_importer(src, ev, fun)
-        f=get(groot,'CurrentFigure');
+        f = get(groot,'CurrentFigure');
         f.Pointer = 'watch';
         drawnow('nocallbacks');
         ok=ZmapImportManager(fun);
@@ -226,15 +226,15 @@ function catalog_menu(obj, force)
 end
 
 function exportToWorkspace(catalog, fmt)
-    safername=matlab.lang.makeValidName(catalog.Name);
-    fn=inputdlg('Variable Name for export:','Export to workspace',1,{safername});
+    safername = matlab.lang.makeValidName(catalog.Name);
+    fn = inputdlg('Variable Name for export:','Export to workspace',1,{safername});
     if ~isempty(fn)
         safername = matlab.lang.makeValidName(fn{1});
         switch lower(fmt)
         case 'catalog'
             assignin('base',safername,catalog);
         case 'zmaparray'
-            assignin('base',safername,catalog.ZmapArray);
+            assignin('base',safername,ZmapArray(catalog));
         case 'table'
             assignin('base',safername,catalog.table())
         end
@@ -242,13 +242,13 @@ function exportToWorkspace(catalog, fmt)
 end
 
 function info_summary_callback(mycatalog)
-    summarytext=mycatalog.summary('stats');
-    f=msgbox(summarytext,'Catalog Details');
-    f.Visible='off';
-    f.Children(2).Children.FontName='FixedWidth';
-    p=f.Position;
-    p(3)=p(3)+95;
-    p(4)=p(4)+10;
-    f.Position=p;
-    f.Visible='on';
+    summarytext = mycatalog.summary('stats');
+    f = msgbox(summarytext,'Catalog Details');
+    f.Visible = 'off';
+    f.Children(2).Children.FontName = 'FixedWidth';
+    p = f.Position;
+    p(3) = p(3)+95;
+    p(4) = p(4)+10;
+    f.Position = p;
+    f.Visible = 'on';
 end

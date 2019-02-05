@@ -116,7 +116,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     
     properties(Dependent, Hidden)
         FieldnamesForColorby
-        HorizontalUnits
+        HorizontalUnit
     end
     
     events
@@ -125,7 +125,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     
     properties(Constant)
         DefaultRefEllipsoid = @()getappdata(groot,'ZmapDefaultReferenceEllipsoid');
-        CoordinateSystem = getappdata(groot,'ZmapCoordinateSystem');
     end
     
     properties(SetAccess=immutable)
@@ -150,7 +149,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 p.addParameter('LengthUnit',obj.RefEllipsoid.LengthUnit);
                 p.parse(varargin{:});
                 obj.RefEllipsoid = p.Results.ReferenceEllipsoid;
-                obj.RefEllipsoid.LengthUnit = p.Result.LengthUnit;
+                obj.RefEllipsoid.LengthUnit = p.Results.LengthUnit;
                 obj.Name = p.Results.Name;
             end
             
@@ -205,7 +204,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             lu = obj.RefEllipsoid.LengthUnit;
         end
         
-        function hu = get.HorizontalUnits(obj)
+        function hu = get.HorizontalUnit(obj)
             if iscartesian(obj.RefEllipsoid)
                 hu = obj.RefEllipsoid.LengthUnit;
             else
@@ -214,11 +213,11 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         end
         
         function lb = get.XLabelWithUnits(obj)
-            lb = [obj.XLabel, ' [',obj.HorizontalUnits,']'];
+            lb = [obj.XLabel, ' [',obj.HorizontalUnit,']'];
         end
         
         function lb = get.YLabelWithUnits(obj)
-            lb = [obj.YLabel, ' [',obj.HorizontalUnits,']'];
+            lb = [obj.YLabel, ' [',obj.HorizontalUnit,']'];
         end
         
         function lb = get.ZLabelWithUnits(obj)
@@ -470,16 +469,16 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 tols.tolTime, tols.tolHoriz_m, tols.tolVert_m, tols.tolMag);
             % Dip, DipDirection, Rake, MomentTensor are not included in calculation
             
-            [dist,units] = obj.distanceTo(obj.Y(1:end-1),obj.X(1:end-1),...
-                obj.Y(2:end),obj.X(2:end));
+            [dist,units] = obj.subset((1:obj.Count-1)).distanceTo(obj.Y(2:end), obj.X(2:end));
             
             isSame = abs(diff(obj.Date)) <= tols.tolTime & ...
-                dist <= tols.tolHoriz_m * unitsratio('meter',units') & ...
+                dist <= tols.tolHoriz_m * unitsratio('meter',units) & ...
                 abs(diff(obj.Z))     <= tols.tolVert_m * unitsratio('meters',units) & ...
                 abs(diff(obj.Magnitude)) <= tols.tolMag;
             sameidx = [false; isSame];
             obj = obj.subset(~sameidx);
             msg.dbfprintf('Removed %d duplicates\n', orig_size - obj.Count);
+            obj.sort('Date')
         end
         
         function h = scatter(obj, varargin)
@@ -681,7 +680,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 return
             end
             leq = char(8804); %pretty version of <= , because a typed representation doesn't work across all platforms.
-            depUn = shortenLengthUnit(obj.ZUnits);
+            depUn = shortenLengthUnit(obj.LengthUnit);
             
             switch verbosity
                 case 'simple'
@@ -795,7 +794,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         function [dists, units] = cartesianEpicentralDistanceTo(obj, x, y)
             % get distance from all events to a point (assuming Z is same for all)
             dists = sqrt(sum((obj.XYZ(:,1:2) - [x,y]).^ 2));
-            units = obj.PositionUnits;
+            units = obj.HorizontalUnit;
         end
         
         function [dists, units] = cartesianHypocentralDistanceTo(obj, x, y, z)
@@ -808,7 +807,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             else
                 dists = sqrt(sum((obj.XYZ - [x,y,z]) .^2));
             end
-            units = obj.PositionUnits;
+            units = obj.HorizontalUnit;
         end
         
         function [dists, units] = geodeticEpicentralDistanceTo(obj, to_lat, to_lon)
@@ -836,12 +835,28 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj = ZmapCatalog();
         end
         
+        function obj = from(other)
+            % create a zmap catalog from something else.
+            % if it is another zmap catalog, then it is copied
+            if isnumeric(other)
+                obj = ZmapCatalog.fromZmapArray(other);
+            elseif istable(other)
+                obj = ZmapCatalog.fromTable(other);
+            elseif isstruct(other)
+                obj = ZmapCatalog.fromStruct(other);
+            elseif isa(other,'ZmapCatalog')
+                obj = copy(other);
+            else
+                error('ZmapCatalog doesn''t know how to be created from this item')
+            end
+        end
+        
         function obj = fromTable(other)
             % catalog = ZMAPCATALOG(table) create a catalog from a table
             assert(istable(other))                          % ZMAPCATALOG(table)
             
             other = table2zmapcatalogtable(other);
-            
+            obj=ZmapCatalog();
             vn = other.Properties.VariableNames;
             for i=1:numel(vn)
                 fieldname = vn{i};
@@ -853,7 +868,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 end
             end
             
-            if isempty(obj.MagnitudeType)
+            if ~any(vn=="MagnitudeType") || isempty(obj.MagnitudeType)
                 obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
             end
             
@@ -884,7 +899,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 refEllipse = referenceEllipsoid('earth','kilometer');
             end
             
-            assert(ZmapCatalog.CoordinateSystem ~= CoordinateSystems.cartesian,...
+            assert(~iscartesian(ZmapCatalog.DefaultRefEllipsoid()),...
                 'ZMAP arrays are in Lat-Lon, and is incompatible with this ZMAP session, which is in cartesian mode');
             
             assert(any(other(:,3) > 100), ['The catalog dates appear to have 2-digits years.',...
@@ -904,14 +919,39 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj.Filter=true(size(obj.Longitude));
         end
         
-        
-        
+        function obj = fromStruct(other)
+            % requires exact names: [Longitude, Latitude, (or XYZ)], Magnitude,Depth,Date,MagnitudeType,Name[,Filter]
+            obj=ZmapCatalog();
+            if isfield(other, 'Name'), obj.Name = other.Name;end
+            if isfield(other, 'Date')
+                assert(isdatetime(other.Date))
+                obj.Date = other.Date(:);
+            end
+            if isfield(other, 'XYZ')
+                obj.XYZ = other.XYZ;
+            elseif isfield(other, 'Latitude')
+                obj.XYZ=[other.Longitude(:), other.Latitude(:), other.Depth(:)];
+            elseif isfield(other, 'X')
+                obj.XYZ=[other.X(:), other.Y(:), other.Z(:)];
+            else
+                error('unable to determine XYZ or Latitude/Longitude/Depth')
+            end
+            if isfield(other, 'Filter') && islogical(other.Filter)
+                obj.Filter=other.Filter;
+            end
+            if isfield(other, 'Magnitude')
+                obj.Magnitude = other.Magnitude(:);
+            end
+            if isfield(other, 'MagnitudeType')
+                obj.MagnitudeType = other.MagnitudeType(:);
+            end
+        end
         
     end
     methods(Static, Hidden)
         
         function val = GetFieldnamesForColorby()
-            if iscartesian(ZmapData.Global.ref_ellipsoid)
+            if iscartesian(ZmapGlobal.Data.ref_ellipsoid)
                 val = {'Z','Date', 'Magnitude', '-none-'};
             else
                 val = {'Depth','Date', 'Magnitude', '-none-'};

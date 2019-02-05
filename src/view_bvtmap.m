@@ -78,8 +78,7 @@ function view_bvtmap(lab1,valueMap)
     % set values gretaer ZG.tresh_km = nan
     %
     re4 = valueMap;
-    l = pro < ZG.tresh_km;
-    re4(l) = nan(1,length(find(l)));
+    re4(pro < ZG.tresh_km) = nan;
     
     % plot image
     %
@@ -98,9 +97,7 @@ function view_bvtmap(lab1,valueMap)
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
     fix_caxis.ApplyIfFrozen(gca); 

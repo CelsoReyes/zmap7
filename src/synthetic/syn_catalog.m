@@ -31,7 +31,7 @@ function [synCat] = syn_catalog(nEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, f
     report_this_filefun();
 
     % Create empty catalog
-    synCat = ZmapCatalog(nan(nEvents,10),'synthetic');
+    synCat = ZmapCatalog('Name','synthetic');
 
     % Create magnitudes
     [synCat] = syn_create_magnitudes(synCat, fBValue, fMc, fInc);

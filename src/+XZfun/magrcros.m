@@ -183,12 +183,12 @@ classdef magrcros < ZmapVGridFunction
             obj.Result.cutoff = obj.cutoff;
             obj.Result.bin_dur = obj.bin_dur;
             
-            function out=calc_probability(old)
+            function out = calc_probability(old)
                 %calculate probabliity, where old is one of the zmaps.
                 % salvaged from vi_cucro
                 valueMap = old;
                 l = valueMap < 2.57;
-                valueMap(l) = ones(1,length(find(l)))*2.65;
+                valueMap(l) = 2.65;
                 pr = 0.0024 + 0.03*(valueMap - 2.57).^2;
                 pr = (1-1./(exp(pr)));
                 out = pr;

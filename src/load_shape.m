@@ -69,7 +69,7 @@ function obj = load_shape(filelocation)
                 % have user figure out which column is which
                 quest = {'Which coordinate system is this?','  geodetic = lat & lon','  cartesian = x & y'};
                 coordinate_system = questdlg(quest','Coordinate System','geodetic','cartesian','geodetic');
-                switch a
+                switch coordinate_system
                     case 'geodetic'
                         yprompt = 'Select Latitude (N-S)';
                         xprompt = 'Select Longitude (E-W)';

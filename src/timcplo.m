@@ -58,7 +58,7 @@ function timcplo(newa)
     plot(DistAlongStrike(targ),newa.Date(targ),'.r','MarkerSize',ZG.ms6,'Marker',ty3);
     %}
     title('Events along strike through time')
-    xlabel(['Distance in [',newa.PositionUnits,'] '],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
+    xlabel(['Distance in [',newa.HorizontalUnit,'] '],'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Time  in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     
     set(gca,'box','on',...

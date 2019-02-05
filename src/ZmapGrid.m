@@ -139,7 +139,7 @@ classdef ZmapGrid
             myshape = p.Results.Shape;
             obj.RefEllipsoid = p.Results.RefEllipsoid; % contains units
             if isfield(p.Results,'Units')
-                obj.RefEllipsoid.LengthUnit = p.Results.Units
+                obj.RefEllipsoid.LengthUnit = p.Results.Units;
             end
             
             
@@ -162,10 +162,13 @@ classdef ZmapGrid
                     end
                     
                 case 'FromGridOptions'
-                    if iscartesian(refEllipsoid)
+                    if iscartesian(obj.RefEllipsoid)
                         grid_option_definition_cartesian(p.Results.gridoptions);
                     else
                         grid_option_definition(p.Results.gridoptions, obj.RefEllipsoid);
+                    end
+                    if ~p.Results.gridoptions.gridEntireArea
+                        obj=obj.MaskWithShape(p.Results.Shape);
                     end
                     
                 case 'FromNothing'
@@ -264,6 +267,8 @@ classdef ZmapGrid
                     if isempty(refEllipsoid)
                         [obj.X,obj.Y,obj.Z] = ZmapGrid.get_degree_grid(lonLatZ0,deltasLonLatZ,obj.Units, limsLonLatZ, gridopt.followMeridians);
                     else
+                        ratio=unitsratio(refEllipsoid.LengthUnit, obj.RefEllipsoid.LengthUnit);
+                        deltasLonLatZ([1 2]) = deltasLonLatZ([1 2]) .* ratio;
                         [obj.X,obj.Y,obj.Z] = ZmapGrid.get_nondegree_grid(lonLatZ0, deltasLonLatZ, limsLonLatZ, refEllipsoid);
                     end
                 else
@@ -323,6 +328,10 @@ classdef ZmapGrid
             u = obj.RefEllipsoid.LengthUnit;
         end
         
+        function obj = set.Units(obj, u)
+            obj.RefEllipsoid.LengthUnit = u;
+        end
+            
         %% masked access routines
         function x = get.Xactive(obj)
             x=obj.X(obj.ActivePoints);
@@ -363,7 +372,9 @@ classdef ZmapGrid
             switch nargin
                 case 2 % OBJ, POLYX
                     if isa(polyX,'ShapeGeneral')
-                        obj.ActivePoints = polyX.isinterior(obj.X, obj.Y);
+                        if ~ismissing(polyX.X0) 
+                            obj.ActivePoints = polyX.isinterior(obj.X, obj.Y);
+                        end
                         return
                     else
                         assert(size(polyX,2)==2, 'expecting [lon1, lat1 ; ...]');

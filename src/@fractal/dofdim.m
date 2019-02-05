@@ -10,7 +10,7 @@ function dofdim()
     deriv = diff(log10(corint),1,1)./diff(log10(r),1,1);			% deriv= Vector of the appr. derivatives
     r2 = r(1:(end-1));	% Forward difference approximation: deriv has one element less, and r must have the # of elements so r2
     
-    switch(dofd)
+    switch dofd
         
         case 'fd'
             
@@ -33,7 +33,7 @@ function dofdim()
                 
             end
             
-            v = find(rad <= r2 rad & r2 <= ras);	% v= Vector of the all the interevent distances that fall in the interval [rn,rs]
+            v = rad <= r2 & r2 <= ras;	% v= Vector of the all the interevent distances that fall in the interval [rn,rs]
             lr = log10(r2(v));
             lc = log10(corint(v));
             r3 = r2(7:end,1);
@@ -43,7 +43,7 @@ function dofdim()
             
             rlc = lc(end:-1:1);
             rlr = lr(end:-1:1);
-            reg = [ones(size(v,1),1),lr];
+            reg = [ones(sum(v),1),lr];
             
             [sl, cint, res, resint, stat] = regress(lc, reg, 0.66);
             sl
@@ -101,10 +101,9 @@ function dofdim()
             
         case 'newrange'
             
-            v = [];lr =[]; lc =[];
             rad = min(g(:,1));
             ras = max(g(:,1));
-            v = find(rad <= r2 rad & r2 <= ras);
+            v = rad <= r2 & r2 <= ras;
             r3 = r(7:end,1);%(7:v(end)+10,1);
             
             lr = log10(r2(v));
@@ -115,7 +114,7 @@ function dofdim()
             
             rlc = lc(end:-1:1);
             rlr = lr(end:-1:1);
-            reg = [ones(size(v,1),1),lr];
+            reg = [ones(sum(v),1),lr];
             
             [sl, cint, res, resint, stat] = regress(lc, reg, 0.66);
             sl

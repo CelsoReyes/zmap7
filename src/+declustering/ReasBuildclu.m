@@ -17,10 +17,10 @@ function[cluslength,bgevent,mbg,bg,clustnumbers] = ReasBuildclu(ShortCat,bgevent
 	uniClust=unique(clusterID);
 	uniClust=uniClust(~isnan(uniClust));
 	for j=uniClust		                         %for all clusters
-	    cluslength(j)=length(find(clusterID==j));  %length of each clusters
+	    cluslength(j)=sum(clusterID==j);  %length of each clusters
 	end
 	
-	tmp=find(cluslength);      %numbers of clusters that are not empty
+	tmp = cluslength ~= 0;      %numbers of clusters that are not empty
 	
 	%That could be done better, for instance use 'unique' on clus and process only the numbers which really are
 	%used, optional it might also be an idea see if the thing could be vectorized, although it might be a bit
@@ -35,6 +35,6 @@ function[cluslength,bgevent,mbg,bg,clustnumbers] = ReasBuildclu(ShortCat,bgevent
 	bg=bgevent;
 	bgevent=ShortCat(bg,:); %biggest event in a cluster(if more than one,take first)
 	
-	clustnumbers=(1:length(tmp));    %stores numbers of clusters
+	clustnumbers=(1:sum(tmp));    %stores numbers of clusters
 
 end

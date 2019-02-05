@@ -11,8 +11,7 @@ function recperc()
     report_this_filefun();
     
     l = isnan(re4);
-    rt = re4;
-    rt(l) = [];
+    rt = re4(~isnan(re4));
     le = length(rt); pe = [];
     
     for i = min(rt) : min(rt)/10: min(rt)*10;

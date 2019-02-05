@@ -122,9 +122,7 @@ function view_rcva_a2(lab1,valueMap)
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
 

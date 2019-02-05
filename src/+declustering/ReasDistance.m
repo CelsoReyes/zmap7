@@ -49,18 +49,13 @@ function [dist1, dist2] = ReasDistance(i,bgevent,ac,newcat,err,derr)
 	radius=6371.227*(1+(3.37853e-3)*(1/3-((cos(colat)).^2)));
 	r=delr.*radius;            %epicenter distance
 	r=r-1.5*err;               %influence of epicenter error
-	tmp1=find(r<0);
-	if ~isempty(tmp1)
-	  r(tmp1)=zeros(length(tmp1),1);
-	end
+	r(r<0) = 0;
 	
 	z(:,1)=abs(newcat(ac,3)-newcat(i,3));    %depth distance
 	z(:,2)=abs(newcat(ac,3)-newcat(bgevent,3)); 
 	z=z-derr;
-	tmp2=find(z<0);
-	if ~isempty(tmp2)
-	 z(tmp2)=zeros(length(tmp2),1);
-	end
+	z(z<0) = 0;
+	
 	r=sqrt(z.^2+r.^2);                   %hypocenter distance 
 	%alpha=atan2(z,r);
 	%ca =cos(alpha);

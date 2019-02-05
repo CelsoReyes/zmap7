@@ -15,7 +15,7 @@ function [c2, gcDist, zans] = plot_cross_section_from_mainmap
     
     ZG=ZmapGlobal.Data;
     catalog=ZG.primeCatalog; % points to same thing
-    units = catalog.PositionUnits;
+    units = catalog.HorizontalUnit;
     % dialog box to choose cross-section
     zdlg=ZmapDialog();
     zdlg.AddEdit('slicewidth',['Width of slice [',units,']'],20,'distance from slice for which to select events. 1/2 distance in either direction');
@@ -103,8 +103,8 @@ function plot_events_along_strike(ax,c2,zans)
         
         
     grid(ax,'on');
-    xlabel(['Distance along strike [',c2.PositionUnits,']'] );
-    ylabel(['Depth [',c2.ZUnits,']']);
+    xlabel(['Distance along strike [',c2.HorizontalUnit,']'] );
+    ylabel(['Depth [',c2.LengthUnit,']']);
     title(sprintf('Profile: %s to %s',zans.startlabel, zans.endlabel));
 end
 
@@ -145,7 +145,7 @@ function plot_depth_profile(ax,depths)
     histogram(depths,'Orientation','horizontal');
     set(gca, 'YDir','reverse')
     xlabel('# events');
-    ylabel('Distance Depth Profile (',ZmapGlobal.Data.primeCatalog.PositionUnits,')');
+    ylabel('Distance Depth Profile (',ZmapGlobal.Data.primeCatalog.HorizontalUnit,')');
 end
 
 

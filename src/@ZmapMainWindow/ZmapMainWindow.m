@@ -176,7 +176,6 @@ classdef ZmapMainWindow < handle
                 obj.rawcatalog = copy(in_catalog);
             end
             
-            obj.CoordinateSystem = ZG.CoordinateSystem;
             obj.refEllipsoid    = ZG.ref_ellipsoid;
                 
             
@@ -340,7 +339,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid,obj.shape);
             else
                 fprintf('Using existing grid:\n');
             end
@@ -586,7 +585,7 @@ classdef ZmapMainWindow < handle
                     grid(axm, 'on');
                     zlim(axm, 'auto');
                     %axis(ax, 'tight');
-                    zlabel(axm, [obj.catalog.ZLabel, '[', obj.catalog.ZUnits, ']'], 'UserData', field_unit.Depth);
+                    zlabel(axm, [obj.catalog.ZLabel, '[', obj.catalog.LengthUnit, ']'], 'UserData', field_unit.Depth);
                     axm.ZDir = obj.catalog.ZDir;
                     rotate3d(axm, 'on'); %activate rotation tool
                     hold(axm, 'off');
@@ -688,7 +687,6 @@ classdef ZmapMainWindow < handle
             end
             
             % these two states may be used by anything that plots within this figure
-            setappdata(obj.fig,'CoordinateSystem', obj.CoordinateSystem);
             setappdata(obj.fig,'RefEllipsoid', obj.refEllipsoid);
             
             obj.fig.Visible     = 'off';
@@ -1035,7 +1033,7 @@ end
 
 
 function f = getFeaturesToPlot()
-    if iscartesian(Zmap.Global.Data.ref_ellipsoid)
+    if iscartesian(ZmapGlobal.Data.ref_ellipsoid)
         f = {}; %TODO: create a shape that defines the surface boundary
     else
         f = ZmapGlobal.Data.mainmap_features;

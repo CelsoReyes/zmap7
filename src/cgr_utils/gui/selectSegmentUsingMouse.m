@@ -33,7 +33,6 @@ function [obj, ok]=selectSegmentUsingMouse(ax, varargin)
     end
         
     refEllipse  = getappdata(fig, 'RefEllipsoid');
-    coordSystem = getappdata(fig, 'CoordinateSystem');
     
     %% 
     started=false;
@@ -69,10 +68,10 @@ function [obj, ok]=selectSegmentUsingMouse(ax, varargin)
     instructionText     = text(nan,nan,'Choose start point','FontSize',12,...
         'FontWeight','bold','HitTest','off','BackgroundColor','w');
     
-    if coordSystem == CoordinateSystems.geodetic
-        dist = @(x1,y1,x2, y2) distance(y1,x1,y2,x2,refEllipse);
-    else
+    if iscartesian(refEllipse)
         dist = @(x1,y1,x2,y2) sqrt((x1-x2).^2 + (y1-y2).^2);
+    else
+        dist = @(x1,y1,x2, y2) distance(y1,x1,y2,x2,refEllipse);
     end
     
     %% pause because we need completed user input before exiting this function

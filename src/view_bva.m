@@ -89,9 +89,7 @@ function view_bva(lab1, valueMap,gx,gy)
 
     % make the scaling for the recurrence time map reasonable
     if ~isempty(lab1)&& lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
 
@@ -162,9 +160,9 @@ function view_bva(lab1, valueMap,gx,gy)
         lineNo=1;
         answer=inputdlg(prompt,dlgTitle,lineNo,def);
         re4 = valueMap;
-        l = answer{1,1}; Mmin = str2double(l) ;
-        l = answer{2,1}; ZG.tresh_km = str2double(l) ;
-        l = answer{3,1}; minpe = str2double(l) ;
+        Mmin = str2double(answer{1,1}) ;
+        ZG.tresh_km = str2double(answer{2,1}) ;
+        minpe = str2double(answer{3,1}) ;
     end
     
     %% ui functions

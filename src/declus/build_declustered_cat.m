@@ -18,7 +18,7 @@ function newt2=build_declustered_cat(from_where)
         
         switch ans_
             case 'Replace'
-                tmpcat=cat(ZG.newcat.subset(eq_noclus), ZmapCatalog(equi));  %new catalog, but not sorted
+                tmpcat=cat(ZG.newcat.subset(eq_noclus), ZmapCatalog.from(equi));  %new catalog, but not sorted
             case 'No'
                 tmpcat=cat(ZG.newcat.subset(eq_noclus),bgevent); % builds catalog with biggest events instead
                 
@@ -32,9 +32,9 @@ function newt2=build_declustered_cat(from_where)
         
     elseif from_where == "original"
         if isempty(backequi)
-            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(equi));
+            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog.from(equi));
         else
-            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog(backequi));
+            tmpcat=cat(original.subset(eq_noclus),ZmapCatalog.from(backequi));
         end
     else
         error('unknown option for build_declustered_cat "%s"',from_where);

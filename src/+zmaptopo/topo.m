@@ -469,10 +469,9 @@ function varargout = draw_Callback(h, eventdata, handles, varargin)
         cmin=min(min(resu(inp).data));
         cmax=max(max(resu(inp).data));
         mi = min(ren(:));
-        l =  isnan(ren);
-        ren(l) = mi-20;
-        ll = tmap < 0 & ren < 0;
-        ren(ll) = ren(ll)*0 + 20;
+        ren(isnan(ren)) = mi-20;
+        
+        ren(tmap < 0 & ren < 0) = 20;
         resmap=meshm(ren,tmapleg,size(tmap),tmap);
         daspectm('m',05);
         tightmap;

@@ -92,17 +92,21 @@ classdef GridOptions < handle
     end % methods section
     
     methods(Static)
-        function [mygrid, mygridopts] = fromDialog(existing_gridopt, ellipsoid)
+        function [mygrid, mygridopts] = fromDialog(existing_gridopt, ellipsoid, shape)
             % FROMDIALOG shows an interactive dialog box allowing user to choose grid
             mygrid=[];
             mygridopts=[];
             if ~exist('ellipsoid','var')
                 ellipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
             end
+            
+            if ~exist('shape','var')
+                shape = ShapeGeneral();
+            end
             if exist('existing_gridopt','var') && ~isempty(existing_gridopt)
-                gc = grid_chooser(ellipsoid, existing_gridopt); 
+                gc = grid_chooser(ellipsoid, existing_gridopt,shape); 
             else
-                gc = grid_chooser(ellipsoid);
+                gc = grid_chooser(ellipsoid,[],shape);
             end
             gc.ResultDump = @set_values;
             waitfor(gc)

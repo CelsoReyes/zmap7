@@ -340,7 +340,7 @@ end
 
 
 function outcat = my_loadcatalog(desc)            %% load first catalog
-    outcat=ZmapCatalog();
+    outcat = ZmapCatalog();
     [file1,path1] = uigetfile( '*.mat',[desc, ' catalog in *.mat format']);
     if isempty(file1)
         warningdlg('Cancelled');
@@ -349,7 +349,7 @@ function outcat = my_loadcatalog(desc)            %% load first catalog
     tmp=load(fullfile(path1,file1),'a'); % assume catalog in variable a
     assert(isfield('a','tmp'),'file does not contain expected variable name');
     if ~isa(tmp.primeCatalog,'ZmapCatalog')
-        outcat=ZmapCatalog(tmp.primeCatalog);
+        outcat=ZmapCatalog.from(tmp.primeCatalog);
     else
         outcat=tmp.primeCatalog;
     end

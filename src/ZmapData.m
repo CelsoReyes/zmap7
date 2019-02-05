@@ -47,7 +47,7 @@ classdef ZmapData < handle
         newt2           {mustBeZmapCatalog}     = ZmapCatalog
         catalog_working {mustBeZmapCatalog}     = ZmapCatalog
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
-        original        {mustBeZmapCatalog}     = ZmapCatalog('empty catalog')% used with declustering
+        original        {mustBeZmapCatalog}     = ZmapCatalog('Name','empty catalog')% used with declustering
         
         % cluster catalogs 
         newccat          {mustBeZmapCatalog}     = ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
@@ -59,7 +59,7 @@ classdef ZmapData < handle
         features      containers.Map    = get_features('h')         
         well                                                        % well locations
         main
-        maepi            {mustBeZmapCatalog}    = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
+        maepi            {mustBeZmapCatalog}    = ZmapCatalog('Name','big events') % large earthquakes, determined by user cutoff
         
         % niceties
         fontsz       FontSizeTracker    = FontSizeTracker
@@ -219,7 +219,7 @@ classdef ZmapData < handle
                                 else
                                     warning('ZMAP:missingCatalog','default catalog file does not contain a zmap catalog');
                                     % failed to open the last catalog
-                                    obj.primeCatalog = ZmapCatalog('empty catalog');
+                                    obj.primeCatalog = ZmapCatalog('Name','empty catalog');
                                 end
                             else
                                 warning('ZMAP:missingCatalog','could not find the default catalog file %s', catalogFile);
@@ -240,9 +240,9 @@ classdef ZmapData < handle
                         end
                         dxdydz = [sepProps.Dx, sepProps.Dy, sepProps.Dz];
                         myRefEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
-                        myRefEllipsoid.LengthUnits = sepProps.xyunits;
+                        myRefEllipsoid.LengthUnit = sepProps.xyunits;
                         
-                        obj.gridopt = GridOptions( GridTypes.XYZ, dxdydz, myRefEllipsoid, opts);
+                        obj.gridopt = GridOptions( GridTypes.XYZ, dxdydz, myRefEllipsoid, opts{:});
                         clear opts dxdydz sepProps myRefEllipsoid
                         
                     case "mainmap"

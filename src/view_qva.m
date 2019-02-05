@@ -127,8 +127,7 @@ function view_qva(lab1,valueMap)
     % set values gretaer ZG.tresh_km = nan
     %
     re4 = valueMap;
-    l = r > ZG.tresh_km;
-    re4(l) = nan(1,length(find(l)));
+    re4(r > ZG.tresh_km) = nan;
     
     % plot image
     %
