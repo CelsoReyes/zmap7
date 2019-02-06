@@ -10,6 +10,9 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
     % used to pull from newt2
     
     % 
+    
+    MIN_EVENT_COUNT = 25;
+    
     magwin_centers = -2 : 0.1 : 6;
     [bval,xt2] = histcounts(magnitudes, centers2edges(magwin_centers));
     xt2=edges2centers(xt2);
@@ -17,27 +20,16 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
     magco0 =  xt2(l);
     
     loopMags= magco0-0.5 : 0.1 : magco0+0.7; % from near magnitude of completion to a little past it.
-    nMags = numel(loopMags);
-    dat=nan(nMags,2);
-    for n = 1:nMags
-        thisMag = loopMags(n);
-        l = magnitudes >= thisMag - 0.0499;
-        nEvents=sum(l);
-        if nEvents >= 25
-            smallcat = magnitudes(l);
-            %[bv magco stan,  av] =  bvalca3(catalog.Magnitude(l), McAutoEstimate.manual);
-            [bv2, stan2, av] = calc_bmemag(smallcat, 0.1);
-            try
-                res2=synthb_aut(smallcat, bv2,thisMag, 0.1);
-            catch ME
-                warning(ME.message);
-                res2=nan;
-            end
-            dat(n,:) = [thisMag, res2];
-        else
-            dat(n,:) = [thisMag NaN];
-        end
         
+    ls = magnitudes>=loopMags-0.0499; % magnitudes x loopMags logical array
+    dat(:,1)=loopMags;
+    dat(:,2)=NaN;
+    mask = find(sum(ls) > MIN_EVENT_COUNT);
+    for idx = mask
+        smallcat = magnitudes(ls(:,idx));
+        bv2 = calc_bmemag(smallcat, 0.1);
+        res2 = synthb_aut(smallcat, bv2, loopMags(idx), 0.1);
+        dat(idx,2)=res2;
     end
     
     j =  find(dat(:,2) < 10 , 1 );
@@ -77,4 +69,5 @@ function [Mc, Mc90, Mc95, magco, prf]= mcperc_ca3(magnitudes)
         prf = 100 - dat(j2,2);
     end
     %disp(['Completeness Mc: ' num2str(Mc) ]);
+    
 end

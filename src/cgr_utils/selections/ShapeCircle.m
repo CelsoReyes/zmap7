@@ -112,7 +112,14 @@ classdef ShapeCircle < ShapeGeneral
                 nc=round(str2double(nc{1}));
                 if ~isempty(nc) && ~isnan(nc)
                     ZG.ni=nc;
-                    [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
+                    zmw=get(ancestor(c,'figure'),'UserData');
+                    if isa(zmw,'ZmapWindow')
+                        ca=zmw.rawcatalog;
+                    else
+                        ca=ZG.primeCatalog;
+                    end
+                        
+                    [~,obj.Radius]=ca.selectClosestEvents(obj.Y0, obj.X0, [],nc,'DistanceOnly');
                     obj.Radius=obj.Radius;%+0.005;
                 end
             end
@@ -219,7 +226,7 @@ classdef ShapeCircle < ShapeGeneral
                 if isempty(h)
                     h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                if iscartesian(obj.RefEllipsoid)
+                if iscartesian(ref_ellipsoid)
                     pts = exp(1i*pi*linspace(0,2*pi,120)') .* d;
                     h.XData = real(pts)+ stxy(1); 
                     h.YData = imag(pts) + stxy(2);

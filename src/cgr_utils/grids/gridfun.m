@@ -100,7 +100,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     
     % shortcut only applies if we are dealing with lat/lon
-    QUICKDISTANCES = QUICKDISTANCES && catalog.CoordinateSystem == CoordinateSystems.geodetic;
+    QUICKDISTANCES = QUICKDISTANCES && ~iscartesian(catalog.RefEllipsoid);
     
     if QUICKDISTANCES
         [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);

@@ -189,12 +189,12 @@ function [obj, ok]=selectSegmentUsingMouse(ax, varargin)
         x2 = range_limited(cp(1,1), ax.XLim);
         y2 = range_limited(cp(1,2), ax.YLim);
         
-        if coordSystem == CoordinateSystems.geodetic
-            [h(1).YData, h(1).XData] = gcwaypts(y1,x1, y2, x2,20);
-            h(1).MarkerIndices = [1 numel(h(1).YData)];
-        else
+        if iscartesian(refEllipse)
             h(1).XData(2) = x2;
             h(1).YData(2) = y2;
+        else
+            [h(1).YData, h(1).XData] = gcwaypts(y1,x1, y2, x2,20);
+            h(1).MarkerIndices = [1 numel(h(1).YData)];
         end
         
         obj.dist = dist(x1,y1,x2,y2);

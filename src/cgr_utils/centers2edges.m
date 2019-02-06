@@ -20,31 +20,46 @@ function [xs, ys, values]=centers2edges(xs, ys, values)
     %
     % see also EDGES2CENTERS, HISTCOUNTS, HISTOGRAM
     
+    if nargout ~= nargin
+        error('Each input should have a corresponding output');
+    end
+    
     if nargin==1 && isvector(xs)
-        assert(nargout == 1, 'Too many outputs');
         if isempty(xs)
-            xs = [];
+            % nothing to do. return the empty value
         else
-            assert(numel(xs) >= 2, 'need at least 2 centers to determine bin size')
+            if numel(xs) <2
+                error('need at least 2 centers to determine bin size')
+            end
             half_dx = diff(xs) ./ 2;
-            assert(all(half_dx>0), 'values should be in ascending order');
+            if any(half_dx <= 0)
+                error('values should be in ascending order');
+            end
             half_dx = [-half_dx(1); half_dx(:); half_dx(end)];
             xs(2:end+1)=xs;
             xs = xs + reshape(half_dx,size(xs));
         end
     else
-        assert(isequal(size(xs),size(ys)),'X and Y matrices should be same size');
-        assert(min(size(xs))>1, 'X and Y must be matrices, not vectors');
-        assert(nargout==nargin, 'Each input should have a corresponding output');
+        if ~isequal(size(xs), size(ys))
+            error('X and Y matrices should be same size');
+        end
+        if min(size(xs) ==1)
+            error('X and Y must be matrices, not vectors');
+        end
         % expand grid in each direction so that xs and ys are in the centers
         half_dx = diff(xs,[],2) ./ 2;
-        assert(all(half_dx(~isnan(half_dx))>0),'X vector should be in ascending order') 
+        if any(half_dx <= 0)
+            error('X vector should be in ascending order') 
+        end
         half_dx = [-half_dx(:,1) , half_dx , half_dx(:,end)];
         xs=[xs(:,1), xs] + half_dx;
         xs(end+1,:)=xs(end,:);
         
         half_dy = diff(ys,[],1) ./ 2;
-        assert(all(half_dy(:)>0),'Y vector should be in ascending order') 
+        
+        if any(half_dx <= 0)
+            error('Y vector should be in ascending order');
+        end
         half_dy = [-half_dy(1,:) ; half_dy ; half_dy(end,:)];
         ys=[ys(1,:); ys] + half_dy;
         ys(:,end+1)=ys(:,end);
@@ -53,8 +68,8 @@ function [xs, ys, values]=centers2edges(xs, ys, values)
             assert(isequal(size(xs)-1,size(values)),'size of VALUES doesn''t match X and Y matrices');
             values(end+1,:)=nan;
             values(:,end+1)=nan;
-        else
-            assert(nargout < 3, 'Values will only be returned if provided');
+        elseif nargout >=3
+            error('Values will only be returned if provided');
         end
     end
 end

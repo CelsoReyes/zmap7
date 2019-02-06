@@ -203,7 +203,7 @@ classdef EventSelectionParameters
             
             
             if isinf(obj.MaxSampleRadius)                                 % distances do not matter
-                mask = true(size(distances)); 
+                mask = true; % scaler because unused later 
             elseif distUnits == obj.DistanceUnits                       % simple case: Units match
                 mask = distances <= obj.MaxSampleRadius;
             else

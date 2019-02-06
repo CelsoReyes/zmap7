@@ -76,16 +76,16 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     %   validate - check validity of the catalog
     
     properties
-        Date            datetime                % date and time of event
-        Magnitude       double                  % Magnitude of each event
-        MagnitudeType   categorical             % Magnitude units, such as M, ML, MW, etc.
+        Date            (:,1) datetime          % date and time of event
+        Magnitude       (:,1) double            % Magnitude of each event
+        MagnitudeType   (:,1) categorical       % Magnitude units, such as M, ML, MW, etc.
     end
     
     properties(SetObservable, AbortSet)
         Name            (1,:) char      = ''    % name of this catalog
         IsSortedBy      char            = ''    % describes sort order
         SortDirection   char            = ''    % describes sorting direction
-        Filter          logical                 % logical filter for subsetting events
+        Filter          (:,1) logical           % logical filter for subsetting events
         XYZ             (:,3) double            % position of each event
         OtherFields     ZmapCatalogAddon  % TODO: implement this. 1st implementaion is MomentTensorAddon
     end
@@ -250,7 +250,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         
         function s = blurb(obj)
             % BLURB get simple statement about catalog
-            if numel(obj)>0 && obj.Count > 0
+            if numel(obj)>1
+                s = sprintf('%s catalog matrix', strjoin(string(size(obj)),'x'));
+            elseif numel(obj)==1 && obj.Count > 0
                 s = sprintf('%s "%s" with %d events\n',class(obj), obj.Name,obj.Count);
             else
                 s = sprintf('empty %s', class(obj));
@@ -303,10 +305,14 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         function clearFilter(obj)
             % CLEARFILTER sets all items in Filter to true
             % catalog.CLEARFILTER
-            obj.Filter = true(size(obj.XYZ,1));
+            obj.Filter = true(obj.Count,1);
         end
         
         function disp(obj)
+            if numel(obj)>1
+                disp(obj.blurb);
+                return
+            end
             disp(obj.blurb)
             disp('with properties:');
             
@@ -524,13 +530,18 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             max_km = max(dists(mask));
         end
         
-        function [other, max_km] = selectClosestEvents(obj, x, y, z, n)
+        function [other, max_km] = selectClosestEvents(obj, x, y, z, n , flag)
             % SELECTCLOSESTEVENTS determine which N events are closest to a point (x,y, z).
             % [otherCat, max_km] = catalog.SELECTCLOSESTEVENTS(x,y, z, nEvents)
             % for epicentral distance, leave Z empty.
             %  ex.  selectClosestEvents(mycatalog, 82, -120, [], 20);
             % the distance to the nth closest event
             %
+            %  catalog.SELECTCLOSESTEVENTS(... 'DistanceOnly')
+            %  FLAG can be 'DistanceOnly', which means otherCat is never created.
+            %  Use this optionwhen calling with a tilde.  For example: 
+            %   [~,xxx] = catalog.SELECTCLOSESTEVENTS(x,y,z, nEvents, 'DistOnly')
+            % 
             % sorting is unaffected
             %
             % see also selectCircle, selectRadius
@@ -540,7 +551,11 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             evIdx=false(size(dists));
             evIdx(I)=true;
             max_km = smallest_dists(end) .* unitsratio('kilometer', distunits);
-            other = obj.subset(evIdx);
+            if exist('flag','var') && flag=="DistanceOnly"
+                other = obj.subset(evIdx);
+            else
+                other=[];
+            end
         end
         
         function other = selectRadius(obj, x, y, z, radius, radius_units)
@@ -627,6 +642,18 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             
             newobj             = obj.blank();
             newobj.Name        = obj.Name;
+            
+            if isempty(range) || ~any(range)
+                return
+            end
+            
+            if islogical(range)
+                if ~any(size(range)==obj.Count)
+                    error('When using logical indexing, one dimension must be the length of the catalog')
+                end
+            elseif ~isvector(range)
+                error('multiple concurrent subsets not supported')
+            end
             
             the_fields = obj.fields_that_must_be_nevent_length();
             for n = 1 : numel(the_fields)
