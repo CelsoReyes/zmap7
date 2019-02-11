@@ -394,8 +394,8 @@ classdef (Sealed) CumTimePlot < handle
             end
             
             function cb_cut_mainshock(~,~)
-                l = min(find( obj.catalog.Magnitude == max(obj.catalog.Magnitude) ));
-                obj.catalog = obj.catalog.subset(l:obj.catalog.Count);
+                biggestEvent = find( obj.catalog.Magnitude == max(obj.catalog.Magnitude) , 1 );
+                obj.catalog = obj.catalog.subset(biggestEvent:obj.catalog.Count);
                 ctp=CumTimePlot(obj.catalog);
                 ctp.plot();
             end

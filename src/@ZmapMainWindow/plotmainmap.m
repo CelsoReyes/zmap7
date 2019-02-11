@@ -14,7 +14,9 @@ function plotmainmap(obj)
     % %
     axm = obj.map_axes;
     axm.Visible = 'off';
-    assert(~isempty(axm), 'Somehow lost track of main map');
+    if isempty(axm)||~isvalid(axm)
+        error('Somehow lost track of main map');
+    end
     
     % update the active earthquakes
     eq=findobj(axm,'Tag','active quakes');

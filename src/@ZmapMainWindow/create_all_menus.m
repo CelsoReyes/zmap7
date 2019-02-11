@@ -183,7 +183,7 @@ function create_all_menus(obj, force)
     
     
     function create_results_menu()
-        ZmapHGridFunction.add_menus();
+        ResultsDisplay.Hdisplay.add_menus();
         set(findobj(allchild(gcf),'flat','Tag','lookmenu'),'Enable','off');
     end
     

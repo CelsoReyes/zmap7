@@ -1,10 +1,12 @@
-function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, catalog, zgrid, selcrit, requiredNumEvents, answidth,varargin )
+function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fcn, catalog, zgrid, selcrit, requiredNumEvents, answidth,varargin )
     %GRIDFUN Applies a function to each grid point using events determined by selection criteria
     %
     %
-    %  VALUES = GRIDFUN( FUN, CATALOG, GRID, SELCRIT, requiredNumEvents) will apply the function FUN to each point
-    %  in GRID, by choosing appropriate events from CATALOG using the selection criteria SELCRIT.
-    %  FUN is a function handle that takes a ZmapCatalog as input, and returns a number.
+    %  VALUES = GRIDFUN( FUN, CATALOG, GRID, SELCRIT, requiredNumEvents) will apply the function 
+    %  FUN to each point in GRID, by choosing appropriate events from CATALOG using the 
+    %  selection criteria SELCRIT.
+    %
+    %  FUN is a function handle that takes a ZmapCatalog as input, and returns a value.
     %  GRID is a ZmapGrid.
     %  SELCRIT is an EventSelectionParameters object
     %
@@ -54,26 +56,17 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     
     % set flags for how to treat this data
     QUICKDISTANCES = true; 
-    multifun = iscell(infun);
     
-    assert(isa(selcrit,'EventSelectionParameters'));
-    
+    p = inputParser();
+    p.addRequired('fcn'  , @check_provided_functions)
+    p.addRequired('catalog', @mustBeZmapCatalog)
+    p.addRequired('zgrid'  , @mustBeZmapGrid);
+    p.addRequired('selcrit', @(x)isa(x,'EventSelectionParameters'));
+    p.addOptional('requiredNumEvents', requiredNumEvents, @mustBeNumeric);
+    p.parse(fcn, catalog, zgrid, selcrit, requiredNumEvents)
     nSkippedDueToInsufficientEvents = 0;
     % check input data
-    
-    if isempty(requiredNumEvents)
-        requiredNumEvents = 1;
-    end
-    
-    check_provided_functions(multifun, infun);
-    
-    if ~isa(catalog, 'ZmapCatalog')
-        error('CATALOG should be a ZmapCatalog');
-    end
-    if ~isa(zgrid, 'ZmapGrid')
-        error('Grid should be ZmapGrid, is a %s',class(zgrid));
-    end
-    
+        
     if ~exist('answidth', 'var')
         answidth=1;
     end
@@ -96,7 +89,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
     mytic = tic;    
     
     
-    h = show_computation_dlg(infun,length(zgrid));
+    h = show_computation_dlg(fcn,length(zgrid));
     
     
     % shortcut only applies if we are dealing with lat/lon
@@ -109,13 +102,10 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
         [xNcat, yEcat, zDcat] = deal([]);
     end
     
-    if multifun
-        error('Unimplemented. Cannot yet do Multifun');
-        
-    elseif UseParallelProcessing
-        doParSinglefun(infun, selcrit, catalog, zgrid);
+    if UseParallelProcessing
+        doParSinglefun(fcn, selcrit, catalog, zgrid);
     else 
-        doSinglefun(infun);
+        doSinglefun(fcn);
     end
     
     toc(mytic)
@@ -199,7 +189,8 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
             
             wasEvaluated(write_idx)=true;
             if ~mod(i,ceil(length(zgrid)/50))
-                h.String=sprintf('Computing values across grid.   %5d / %d Total points', i, length(zgrid));
+                h.String=sprintf('Computing values across grid.   %5d / %d Total points',...
+                    i, length(zgrid));
                 drawnow limitrate nocallbacks
             end
         end
@@ -304,19 +295,9 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( infun, ca
 
 end
 
-function check_provided_functions(multifun, infun)
-    
-    if multifun
-        assert(size(infun,2)==2,...
-            'if FUN is a cell, it should be Nx2, like {@fun1, ''field1'';...;@funN, ''fieldN''}');
-        for q=1:size(infun,1)
-            assert(isa(infun{q,1},'function_handle'),'element %d,1 of FUN isn''t a function handle',q);
-            assert(ischar(infun{q,2}),'element %d,2 of FUN isn''t a string',q);
-        end
-    else
-        assert(isa(infun,'function_handle'),...
-            'FUN should be a function handle that accepts a catalog and returns a value');
-        assert(nargin(infun)==1, 'FUN should take one input: a catalog')
+function check_provided_functions(fcn)
+    if ~(isa(fcn,'function_handle') &&  nargin(fcn) == 1)
+        error('FUN should be a function handle that accepts a catalog and returns a value')
     end
 end
     
@@ -346,14 +327,9 @@ function start_the_parallel_pool()
     end
 end
 
-function h = show_computation_dlg(infun, nPoints)
+function h = show_computation_dlg(fcn, nPoints)
     gridmsg = sprintf('Computing values across grid.            %d Total points', nPoints);
-    if ~iscell(infun)
-        gridttl = sprintf('Zmap: %s', func2str(infun));
-    else
-        gridttl = sprintf('Zmap: [%d functions]', numel(infun));
-    end
-    
+    gridttl = sprintf('Zmap: %s', func2str(fcn));
     h = msgbox_nobutton({ 'Please wait.' , gridmsg },gridttl);
 end
 

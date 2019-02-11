@@ -609,7 +609,10 @@ classdef ZmapMainWindow < handle
             %  similar to what is returned via EventelectionChoice.quickshow
             
             if ~isempty(val)
-                assert(isa(val,'EventSelectionParameters')); % could do more detailed checking of fields
+                if ~ isa(val,'EventSelectionParamters')
+                    error('val must be an EventSelectionParametrs'); % TODO: detailed checking of fields
+                end
+                
                 obj.evsel = val;
             elseif isempty(ZmapGlobal.Data.GridSelector)
                 obj.evsel = EventSelectionChoice.quickshow();

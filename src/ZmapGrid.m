@@ -189,9 +189,11 @@ classdef ZmapGrid
             
             function grid_option_definition_cartesian(gridopt)
                 
-                use_shape = gridopt.gridEntireArea & ~isempty(myshape);
+                if ~isprop(varargin{1}, 'AbsoluteGridLimits')
+                    error('cartesian grids must have specified boundaries');
+                end
                 
-                assert(isprop(varargin{1}, 'AbsoluteGridLimits'), 'cartesian grids must have specified boundaries');
+                use_shape = gridopt.gridEntireArea & ~isempty(myshape);
                 abs_limits = varargin{1}.AbsoluteGridLimits;
                 xl = abs_limits(1:2);
                 yl = abs_limits(3:4);

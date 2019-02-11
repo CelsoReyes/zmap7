@@ -71,6 +71,10 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         References % paper references for calculations contained within this fn
     end
     
+    properties(Transient)
+        ResultDisplayer ResultsDisplay.ZmapResultsPlugin = ResultsDisplay.Hdisplay% chosen from +ResultsDisplay
+    end
+    
     properties(Dependent)
         FunctionCall    char; % text representation of the function call.
     end
@@ -81,6 +85,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
                 obj.RawCatalog=catalog;
                 obj.verify_catalog(catalog);
             end
+            obj.ResultDisplayer.Parent = obj;
         end
         
         function fcall = get.FunctionCall(obj)
@@ -209,37 +214,9 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
             fprintf('%s  %% called by Zmap : %s\n',obj.FunctionCall, char(datetime));
             fprintf('%% results in: %s\n',vname);
         end
-        
-        function f=Figure(obj,option, menufun)
-            % finds my figure, and will create if necessary
-            % sets obj.ax to any/all axes in figure
-            % option:
-            %    'deleteaxes' : all axes for this figure be deleted
-            %
-            % if figure needs to be created, then menufun is called
-            % menufun is a function handle
-            if ~exist('option','var')
-                option='';
-            end
-            
-            
-            f=findobj(groot,'Tag',obj.PlotTag,'-and','Type','figure');
-            if isempty(f)
-                f=figure('Tag',obj.PlotTag);
-                if exist('menufun','var') && isa(menufun, 'function_handle')
-                    menufun();
-                end
-            end
-            
-            figure(f);
-            obj.ax=findobj(f,'Type','axes');
-            switch option
-                case 'deleteaxes'
-                    delete(obj.ax);
-                case ''
-                otherwise
-                    error('unknown');
-            end
+     
+        function plot(obj, varargin)
+            obj.ResultDisplayer.plot(varargin{:})
         end
     end % PUBLIC METHODS
     
@@ -256,18 +233,15 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         % PLOT visually communicate results to the user
         %
         % obj.PLOT(varargin) plot results, passing along all parameters
-        %
-        % if plots can be generalized, such as xsection-plots, or map-view plots, then
-        % sublcass ZmapFunction and define the plot in the subclass. Then, make your function
-        % a subclass of THAT class. 
-        % for examples, see also ZmapGridFunction, ZmapTimeFunction,  ZmapHGridFunction
-        plot(obj,varargin); % plot
+        
         
     end %ABSTRACT METHODS
     
     methods % will be protected
         function t = helptext(obj, subject)
             % provides help text, based on the subject.
+            % -all lists everything
+            % -choice gives list of topics one can ask about
             switch subject
                 case 'PlotTag'
                     t = "Title for this plot will be <strong>'" + obj.PlotTag+"'</strong>";
@@ -305,7 +279,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
                             t=t+ " that " + strjoin(fn,',');
                         end
                         catch ME
-                            disp("error wile parsing validator functions:"+ me.identifier)
+                            disp("error wile parsing validator functions:"+ ME.identifier)
                         end
                     end
                     
@@ -351,6 +325,8 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
                     
                 case "-choices"
                     t = ["PlotTag","ParameterableProperties","ReturnDetails", "References"];
+                    t = [t,  obj.ResultDisplayer.helptext(subject)];
+                    t = t(~ismissing(t)) ;
                 case "-all"
                     ch = obj.helptext("-choices");
                     t="";
@@ -359,8 +335,15 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
                     end
                     
                 otherwise
+                    placesToLook = "ResultDisplayer"; %comma separated string list
+                    for i = placesToLook
+                        t = obj.ResultDisplayer.helptext(subject);
+                        if ~ismissing(t) 
+                            return
+                        end
+                    end
                     error('help for item %s not found', subject)
-            end
+             end
         end
     end
     
