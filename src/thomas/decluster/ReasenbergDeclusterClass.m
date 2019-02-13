@@ -245,9 +245,13 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                     end
                     % merge related clusters together into cluster with the smallest number
                     sl2 = lla(clus(lla) ~= my_cluster);
-                    for j1 = [i,sl2]
+                    if clus(i) ~= my_cluster
+                        clus(clus==clus(i)) = my_cluster;
+                    end
+                    
+                    for j1 = sl2
                         if clus(j1) ~= my_cluster
-                            clus(clus==clus(j1)) = my_cluster;
+                            clus(clus==clus(i)) = my_cluster;
                         end
                     end
                 end
