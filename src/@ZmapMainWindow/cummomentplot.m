@@ -80,9 +80,9 @@ function cummomentplot(obj,tabgrouptag)
     
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
-        mytag               = ['Xsection cummomplot ' xs.name];
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
+        mytag               = ['Xsection cummomplot ' xs.Name];
         h = craw.add_series(xscat, mytag, xsProps);
        
     end

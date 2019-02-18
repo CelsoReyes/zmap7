@@ -82,10 +82,10 @@ function fmdplot(obj, tabgrouptag)
     %% 
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
         xsProps.Marker = 'x';
-        mytag               = ['Xsection fmd ' xs.name];
+        mytag               = ['Xsection fmd ' xs.Name];
         h = baw.add_series(xscat, mytag, xsProps);
         
     end

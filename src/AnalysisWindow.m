@@ -14,11 +14,11 @@ classdef AnalysisWindow < handle
 
     methods
         function obj = AnalysisWindow(ax)
-            if ~exist('ax','var') || isempty(ax)
-                ax=axes(figure);
+            if ~exist('ax', 'var') || isempty(ax)
+                ax = axes(figure);
             elseif ~isa(ax,'matlab.graphics.axis.Axes')
                 try
-                    ax=axes(ax);
+                    ax = axes(ax);
                 catch
                     error('Did not get axes handle, or axes could not be created')
                 end
@@ -47,17 +47,17 @@ classdef AnalysisWindow < handle
             %          such as 'FontSize','LineWidth', etc...
             
             p = inputParser();
-            p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
+            p.addRequired('catalog');
             p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.addParameter('UseCalculation', @obj.calculate, ...
                 @(x)isa(x,'function_handle') && ... 
-                (nargout(x)==2 || nargout(x)==-1) ...
+                (nargout(x) == 2 || nargout(x) == -1) ...
             );
         
             % if either SizeFcn or ColorFcn are defined, then this will create a scatter plot.
             % otherwise, it will create a line
-            emptyfun=@(x)[];
+            emptyfun = @(x)[];
             p.addParameter('SizeFcn',  emptyfun,  @(x)nargin(x)==1);
             p.addParameter('ColorFcn', emptyfun,  @(x)nargin(x)==1);
             p.addParameter('MinBigMag', inf);
@@ -75,7 +75,7 @@ classdef AnalysisWindow < handle
                 plotFcn = @line; 
                 % set properties unique to a line
                 marker_indices = round(linspace(1, length(y), obj.nMarkers));
-                if any(marker_indices==0)
+                if any(marker_indices == 0)
                     marker_indices = [];
                 end
                 props.MarkerIndices = marker_indices;
@@ -109,9 +109,9 @@ classdef AnalysisWindow < handle
             
             if isempty(h)
                 obj.ax.NextPlot = 'add';
-                h=plotFcn(obj.ax, x, y);
+                h = plotFcn(obj.ax, x, y);
                 set_valid_properties(h, props);
-                obj.ax.NextPlot ='replace';
+                obj.ax.NextPlot = 'replace';
             else
                 h.XData = x;
                 h.YData = y;
@@ -122,7 +122,7 @@ classdef AnalysisWindow < handle
             end
         end
         
-        function remove_series(obj,tagID)
+        function remove_series(obj, tagID)
             % remove a data series from this axes. Specify the tag(s) to delete
             
             if isempty(tagID)
@@ -131,11 +131,11 @@ classdef AnalysisWindow < handle
                 
             if iscell(tagID) || isstring(tagID)
                 for i=1:numel(tagID)
-                    myplot=findobj(obj.ax,'Tag',tagID{i});
+                    myplot = findobj(obj.ax,'Tag', tagID{i});
                     delete(myplot);
                 end
             else
-               myplot=findobj(obj.ax,'Tag',tagID);
+               myplot = findobj(obj.ax, 'Tag', tagID);
                 delete(myplot);
             end
         end
@@ -148,7 +148,7 @@ classdef AnalysisWindow < handle
         prepare_axes(obj)  
         
          % results of this function are what are graphed
-        [x,y]=calculate(obj,catalog)
+        [x,y] = calculate(obj,catalog)
     end
     
     methods(Access=protected)
@@ -161,7 +161,7 @@ classdef AnalysisWindow < handle
                 bigProps.SizeFcn = @(c) sizeFcn(c.Magnitude);
             end
             bigProps.YData       = idx;
-            bigProps.DisplayName = "Events "+char(8805)+" " + minbigmag; %char(8805) is '>='
+            bigProps.DisplayName = "Events " + char(8805) + " " + minbigmag; %char(8805) is '>='
             obj.add_series(catalog.subset(idx), 'big events', bigProps);
          
         end
@@ -169,15 +169,15 @@ classdef AnalysisWindow < handle
     
     methods(Access=protected, Static)
         
-        function [v,found,strippedC] = getProperty(C,name,defaultval)
+        function [v, found, strippedC] = getProperty(C, name, defaultval)
             % [v, found,strippedC] = GETPROPERTY(C,name,defaultval)
             % looks for property NAME in cell C. if not found, returns DEFAULTVAL
-            flds=C(1:2:end);
-            strippedC=C;
-            is_the_one=strcmpi(flds,name);
-            found=any(is_the_one);
+            flds = C(1:2:end);
+            strippedC = C;
+            is_the_one = strcmpi(flds,name);
+            found = any(is_the_one);
             if found
-                valIdx=find(is_the_one, 1, 'last') * 2;
+                valIdx = find(is_the_one, 1, 'last') * 2;
                 v = C{valIdx};
                 strippedC(valIdx-1:valIdx) = [];
             else
@@ -192,7 +192,7 @@ classdef AnalysisWindow < handle
 end
 
 function mustBeAxesOrEmpty(val)
-    if ~( isempty(val) || val.Type=="axes" )
+    if ~( isempty(val) || val.Type == "axes" )
         error("value must be an axes or be empty")
     end
 end

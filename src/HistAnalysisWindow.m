@@ -60,11 +60,15 @@ classdef HistAnalysisWindow < AnalysisWindow
             %          BinMethod, LineWidth, etc...
             
             p = inputParser();
-            p.addRequired('catalog',    @(x)isa(x,'ZmapCatalog'));
+            p.addRequired('catalog');
             p.addRequired('tagID',      @(x)ischarlike(tagID));
             
             p.KeepUnmatched = true;
             p.parse(catalog, tagID, varargin{:});
+            
+            if ~isa(p.Results.catalog, 'ZmapCatalog')
+                catalog = p.Results.catalog.Catalog;
+            end
             
             props = p.Unmatched;
             

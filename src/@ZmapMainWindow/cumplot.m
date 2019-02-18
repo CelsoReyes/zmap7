@@ -79,9 +79,9 @@ function cumplot(obj, tabgrouptag)
         
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
-        mytag               = ['Xsection cumplot ' xs.name];
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
+        mytag               = ['Xsection cumplot ' xs.Name];
         h = craw.add_series(xscat, mytag, xsProps);
     end
     

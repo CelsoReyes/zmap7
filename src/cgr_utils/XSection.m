@@ -140,23 +140,23 @@ classdef XSection < handle
             %
             % obj = obj.CHANGE_COLOR(color, ax)
             if isempty(color)
-                color=uisetcolor(obj.color,['Color for ' obj.Name]);
+                color = uisetcolor(obj.Color, ['Color for ' obj.Name]);
             end
                 
             obj.Color = color;
             
-            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.Name],'Type','line'), 'Color',color);
-            mytexts = findobj(container,'-regexp','Tag',['Xsection .*' obj.Name],'Type','text');
+            set(findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'line'), 'Color',color);
+            mytexts = findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'text');
             set(mytexts, 'Color', color .* 0.8);
             
-            set(findobj(mytexts,'-regexp','Tag',['Xsection .*' obj.Name, '$']), 'EdgeColor',color);
+            set(findobj(mytexts, '-regexp', 'Tag', ['Xsection .*' obj.Name, '$']), 'EdgeColor', color);
             
-            ax=findobj(container,'-regexp','Tag',['Xsection .*' obj.Name],'Type','axes');
+            ax = findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'axes');
             if ~isempty(ax)
-                set(get(ax,'XAxis'),'color',color .* 0.5);
-                set(get(ax,'YAxis'),'color',color .* 0.5);
+                set(get(ax, 'XAxis'), 'color', color .* 0.5);
+                set(get(ax, 'YAxis'), 'color', color .* 0.5);
             end
-            set(findobj(container,'-regexp','Tag',['Xsection .*' obj.Name],'Type','histogram'), 'EdgeColor',color);
+            set(findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'histogram'), 'EdgeColor',color);
 
         end
         
@@ -172,7 +172,7 @@ classdef XSection < handle
             %
             % mask = obj.INSIDE(catalog)
             
-            mask=inpoly([catalog.X,catalog.Y], [obj.PolyX,obj.PolyY]);
+            mask = inpoly([catalog.X, catalog.Y], [obj.PolyX, obj.PolyY]);
         end
         
         function c2 = project(obj,catalog)
@@ -180,7 +180,7 @@ classdef XSection < handle
             % 
             % projectedCat = obj.PROJECT(catalog)
             
-            c2=ZmapXsectionCatalog(catalog, obj.StartPoint, obj.EndPoint, obj.Width);
+            c2 = ZmapXsectionCatalog(catalog, obj.StartPoint, obj.EndPoint, obj.Width);
         end
         
         function set_endpoints(obj,ax)
@@ -193,9 +193,9 @@ classdef XSection < handle
             if exist('ax','var')
                 % pick first point
                 try
-                    ptdetails = selectSegmentUsingMouse(ax, obj.Color);
-                    obj.StartPoint=[ptdetails.xy1(2), ptdetails.xy1(1)];
-                    obj.EndPoint=[ptdetails.xy2(2), ptdetails.xy2(1)];
+                    ptdetails      = selectSegmentUsingMouse(ax, obj.Color);
+                    obj.StartPoint = [ptdetails.xy1(2), ptdetails.xy1(1)];
+                    obj.EndPoint   = [ptdetails.xy2(2), ptdetails.xy2(1)];
                 catch ME
                     warning(ME.message)
                 end
@@ -213,76 +213,76 @@ classdef XSection < handle
             % ability to avoid this
             ZGOpts = ZmapGlobal.Data.CrossSectionOpts;
             
-            hold(ax,'on')
-            prev_xlimmode=ax.XLimMode;
-            ax.XLimMode='manual';
-            prev_ylimmode=ax.YLimMode;
-            ax.YLimMode='manual';
-            xs_line=line(ax,obj.CurveX,obj.CurveY,...
-                'LineStyle',ZGOpts.LineProps.LineStyle,...
-                'LineWidth',obj.LineWidth,...
-                'Color',obj.Color,...
-                'MarkerIndices',[1 numel(obj.CurveX)],...
-                'Marker',ZGOpts.LineProps.Marker,...
-                'MarkerSize',obj.MarkerSize,...
-                'Tag',['Xsection Line ', obj.Name],...
-                'DisplayName',['Xsection ' obj.StartLabel]);
+            hold(ax, 'on')
+            prev_xlimmode   = ax.XLimMode;
+            ax.XLimMode     = 'manual';
+            prev_ylimmode   = ax.YLimMode;
+            ax.YLimMode     = 'manual';
+            xs_line=line(ax, obj.CurveX, obj.CurveY,...
+                'LineStyle'     , ZGOpts.LineProps.LineStyle,...
+                'LineWidth'     , obj.LineWidth,...
+                'Color'         , obj.Color,...
+                'MarkerIndices' , [1 numel(obj.CurveX)],...
+                'Marker'        , ZGOpts.LineProps.Marker,...
+                'MarkerSize'    , obj.MarkerSize,...
+                'Tag'           , ['Xsection Line ', obj.Name],...
+                'DisplayName'   , ['Xsection ' obj.StartLabel]);
             
             % plot width polygon (border)
-            xs_poly=line(ax,obj.PolyX,obj.PolyY,...
-                'LineStyle',ZGOpts.BorderProps.LineStyle,...
-                'Color',obj.Color,...
-                'LineWidth',ZGOpts.BorderProps.LineWidth,...
-                'Tag',['Xsection Area ' obj.Name],...
-                'DisplayName','');
+            xs_poly=line(ax, obj.PolyX, obj.PolyY,...
+                'LineStyle'     , ZGOpts.BorderProps.LineStyle,...
+                'Color'         , obj.Color,...
+                'LineWidth'     , ZGOpts.BorderProps.LineWidth,...
+                'Tag'           , ['Xsection Area ' obj.Name],...
+                'DisplayName'   , '');
             
             %label it: put labels offset and outside the great-circle line.
             
             xs_slabel = text(ax, obj.StartPoint(2), obj.StartPoint(1),obj.StartLabel,...
-                'Color',obj.Color.*0.8, ...
-                'FontSize',ZGOpts.LabelProps.FontSize,...
-                'FontWeight',ZGOpts.LabelProps.FontWeight,...
-                'BackgroundColor',FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
-                'EdgeColor',obj.Color,...
-                'Tag',['Xsection Start ' obj.Name]);
+                'Color'         , obj.Color.*0.8, ...
+                'FontSize'      , ZGOpts.LabelProps.FontSize,...
+                'FontWeight'    , ZGOpts.LabelProps.FontWeight,...
+                'BackgroundColor' , FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
+                'EdgeColor'     , obj.Color,...
+                'Tag'           , ['Xsection Start ' obj.Name]);
             
             
-            xs_elabel = text(ax,obj.EndPoint(2),obj.EndPoint(1),obj.EndLabel,...
-                'Color',obj.Color.*0.8,... 
-                'FontSize',ZGOpts.LabelProps.FontSize,...
-                'FontWeight',ZGOpts.LabelProps.FontWeight,...
-                'BackgroundColor',FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
-                'EdgeColor',obj.Color,...
-                'Tag',['Xsection End ' obj.Name]);
+            xs_elabel = text(ax, obj.EndPoint(2), obj.EndPoint(1), obj.EndLabel,...
+                'Color'         , obj.Color.*0.8,... 
+                'FontSize'      , ZGOpts.LabelProps.FontSize,...
+                'FontWeight'    , ZGOpts.LabelProps.FontWeight,...
+                'BackgroundColor', FancyColors.rgb(ZGOpts.LabelProps.BackgroundColor),...
+                'EdgeColor'     , obj.Color,...
+                'Tag'           , ['Xsection End ' obj.Name]);
             
-            obj.add_graphics(ax,xs_line, xs_slabel, xs_elabel, xs_poly);
-            obj.update_label('StartLabel',ax);
-            obj.update_label('EndLabel',ax);
+            obj.add_graphics(ax, xs_line, xs_slabel, xs_elabel, xs_poly);
+            obj.update_label('StartLabel'   , ax);
+            obj.update_label('EndLabel'     , ax);
             
-            ax.XLimMode=prev_xlimmode;
-            ax.YLimMode=prev_ylimmode;
+            ax.XLimMode = prev_xlimmode;
+            ax.YLimMode = prev_ylimmode;
             drawnow
         end
         
         % TODO add method to toggle between shape and not
-        function plot_events_along_strike(obj,ax, xsCat, noproject)
+        function plot_events_along_strike(obj, ax, xsCat, noproject)
             % PLOT_EVENTS_ALONG_STRIKE plots dist along x vs depth, sized by magnitude, colored by date
-            assert(isa(xsCat,'ZmapXsectionCatalog'))
+            assert(isa(xsCat, 'ZmapXsectionCatalog'))
             
-            if exist('noproject','var') && noproject
+            if exist('noproject', 'var') && noproject
                 mycat = xsCat;
             else
                 mycat = obj.project(xsCat);
             end
             % PLOT_EVENTS_ALONG_STRIKE plots X vs Depth
-            if isstruct(ax.UserData) && isfield(ax.UserData,'cep')
-                cep=ax.UserData.cep;
-                cep.catalogFcn=@()mycat;
+            if isstruct(ax.UserData) && isfield(ax.UserData, 'cep')
+                cep = ax.UserData.cep;
+                cep.catalogFcn = @()mycat;
             else
-                cep=XSectionExplorationPlot(ax,@()mycat,obj);
+                cep = XSectionExplorationPlot(ax, @()mycat,obj);
             end
             cep.scatter(['Xsection plot ' obj.Name]);
-            ax.Tag=['Xsection strikeplot ' obj.Name];
+            ax.Tag = ['Xsection strikeplot ' obj.Name];
         end
         
         function gr = getGrid(obj, x_km, zs_km)
@@ -326,11 +326,11 @@ classdef XSection < handle
             if isempty(nObj)
                 s=('No cross section(s) or empty cross section');
             elseif nObj==1
-                s=sprintf('%s', displayer(obj));
+                s = sprintf('%s', displayer(obj));
             else
-                s=sprintf('%d XSection slices:', nObj);
+                s = sprintf('%d XSection slices:', nObj);
                 for n=1:nObj
-                    s=sprintf('%s]n%s',s,displayer(nObj(n)));
+                    s = sprintf('%s]n%s', s, displayer(nObj(n)));
                 end
             end
         end
@@ -346,8 +346,8 @@ classdef XSection < handle
                 x1 = obj.StartPoint(2); x2 = obj.EndPoint(2);
                 y1 = obj.StartPoint(1); y2 = obj.EndPoint(1);
                 d = sqrt(sum((obj.StartPoint - obj.EndPoint).^2));
-                dx=(x2-x1)/d;
-                dy=(y2-y1)/d;
+                dx = (x2 - x1) / d;
+                dy = (y2 - y1) / d;
                 xp = (dx .* cosd(theta) - dy .* sind(theta)) .* w;
                 yp = (dy .* cosd(theta) + dx .* sind(theta)) .* w;
                 
@@ -367,7 +367,8 @@ classdef XSection < handle
                 obj.CurveX = [obj.StartPoint(2); obj.EndPoint(2)];
             else
                 nPoints  = 100;
-                [obj.CurveY, obj.CurveX]=gcwaypts(obj.StartPoint(1), obj.StartPoint(2), obj.EndPoint(1),obj.EndPoint(2),nPoints);
+                [obj.CurveY, obj.CurveX] = gcwaypts(obj.StartPoint(1), obj.StartPoint(2),...
+                                                    obj.EndPoint(1),obj.EndPoint(2),nPoints);
             end
         end
         
@@ -380,23 +381,23 @@ classdef XSection < handle
     
     methods(Access=private)
         function add_graphics(obj, ax,hLine, hStart, hEnd, hPoly)
-            obj.handles(end+1,1:5)=[ax, hLine, hStart, hEnd, hPoly];
+            obj.handles(end+1,1:5) = [ax, hLine, hStart, hEnd, hPoly];
         end
         function delete_graphics(obj, ax)
             if exist('ax','var')
                 thisRow = obj.handles(:,1)==ax;
             else
-                thisRow= true(size(obj.handles,1),1);
+                thisRow = true(size(obj.handles,1),1);
             end
             delete(obj.handles(thisRow, 2:5 ));
-            obj.handles(thisRow)=[];
+            obj.handles(thisRow) = [];
         end
 
         function update_label(obj,whichLabel, ax)
             % update the label names as well as their position relative to the xsection
             
             if ~exist('ax','var')
-                i=true(size(obj.handle,1),1);
+                i = true(size(obj.handle,1),1);
             else
                 i = obj.handles(:,1)==ax;
             end

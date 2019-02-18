@@ -1,23 +1,16 @@
-classdef ReasenbergDeclusterClass < ZmapFunction
-    % Reasenberg Declustering codes
-    % made from code originally from A.Allman that has chopped up and rebuilt
+classdef ZaliapinDeclusterClass < ZmapFunction
+    % Zaliapin Declustering Codes
+    
+    % inital code by Shyam Nandan, Conformed to ZMAP by Celso Reyes
     
     properties
-        taumin  duration    = days(1)   % look ahead time for not clustered events
-        taumax  duration    = days(10)  % maximum look ahead time for clustered events
-        P                   = 0.95      % confidence level that this is next event in sequence
-        xk                  = 0.5       % is the factor used in xmeff
+        fractalDimension    double = 1
+        bvalue              double = 1
+        theta               double = 1
+        threshhold          double = nan
         
-        % effective lower magnitude cutoff for catalog. 
-        % During clusteres, it is raised by a factor xk*cmag1
-        xmeff               = 1.5       
-        
-        rfact               = 10        % factor for interaction radius for dependent events
-        err                 = 1.5       % epicenter error
-        derr                = 2         % depth error, km
         %declustRoutine      = "ReasenbergDeclus"
         declusteredCatalog   ZmapCatalog
-        replaceSequenceWithEquivMainshock   logical = false
         
          % if empty, clustering details will not be saved to workspace
         clusterDetailsVariableName          char    = 'cluster_details'
@@ -30,22 +23,19 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     properties(Constant)
         PlotTag = "ReasenbergDecluster"
         
-        ParameterableProperties = ["taumin", "taumax", "P",...
-            "xk","xmeff","rfact","err","derr",..."declustRoutine",...
-            "replaceSequenceWithEquivMainshock",...
+        ParameterableProperties = ["fractalDimension", "bvalue", "theta",...
             "clusterDetailsVariableName",...
             "declusteredCatalogVariableName",...
             "memorizeOriginalCatalog"];
         
-        References = ['Paul Reasenberg (1985) ',...
-            '"Second -order Moment of Central California Seismicity"',...
-            ', JGR, Vol 90, P. 5479-5495.'];
+        References = ['Zaliapin, I., Gabrielov, A., Keilis-Borok, V. and Wong, H., 2008.', ...
+            'Clustering analysis of seismicity and aftershock identification. ', ...
+            'Physical review letters, 101(1), p.018501.'];
         
     end
     
     methods
-        function obj = ReasenbergDeclusterClass(catalog, varargin)
-            % ReasenbergDeclusterClass
+        function obj = ZaliapinDeclusterClass(catalog, varargin)
             
             obj@ZmapFunction(catalog);
             
@@ -61,21 +51,15 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             % make the interface
             
             zdlg = ZmapDialog();
-            zdlg.AddHeader('Reasenberg Declustering parameters','FontSize',12);
-            zdlg.AddHeader('look-ahead times');
-            zdlg.AddDurationEdit('taumin', '(min) for UNclustered events' ,obj.taumin, '<b>TauMin</b> look ahead time for not clustered events',@days);
-            zdlg.AddDurationEdit('taumax', '(max) for   clustered events', obj.taumax,  '<b>TauMax</b> maximum look ahead time for clustered events',@days);
+            zdlg.AddHeader('Zaliapin Declustering parameters','FontSize',12);
+            zdlg.AddHeader('Delustering factors');
+            zdlg.AddEdit('fractalDimension' , 'Fractal Dimension' , obj.fractalDimension, '<b>fractalDimension</b> weight for spatial distance');
+            zdlg.AddEdit('theta'            , 'Theta'             , obj.theta, '<b>theta</b> weight for temporal distance');
+            zdlg.AddEdit('bvalue'           , 'B value'           , obj.bvalue, '<b>Bvalue</b> used to weight magnitude distance');
             zdlg.AddHeader('');
-            zdlg.AddEdit('P',       'Confidence Level',             obj.P,          '<b>P1</b> Confidence level : observing the next event in the sequence');
-            zdlg.AddEdit('xk',      'XK factor',                    obj.xk,         '<b>XK</b> factor used in xmeff');
-            zdlg.AddEdit('xmeff',   'Effective min mag cutoff',     obj.xmeff,   '<b>XMEFF</b> "effective" lower magnitude cutoff for catalog, during clusters, it is xmeff^{xk*cmag1}');
-            zdlg.AddEdit('rfact',   'Interation radius factor:',    obj.rfact,      '<b>RFACT>/b>factor for interaction radius for dependent events');
-            zdlg.AddEdit('err',     'Epicenter error',              obj.err,        '<b>Epicenter</b> error');
-            zdlg.AddEdit('derr',    'Depth error',                  obj.derr,       '<b>derr</b>Depth error');
-            %zdlg.AddHeader('Output')
-            zdlg.AddCheckbox('replaceSequenceWithEquivMainshock','Replace clusters with equivalent event',...
-                obj.replaceSequenceWithEquivMainshock, {},...
-                'Will replace each set of cluster earthquakes with a single event of equivalent Magnitude');
+            % zdlg.AddEdit('threshhold'       , 'Cluster Threshhold', obj.threshhold,'<b>threshhold</b>Independence Probabilities above threshold considered cluster ');
+            % zdlg.AddHeader('');
+            % zdlg.AddHeader('Output')
             zdlg.AddEdit('clusterDetailsVariableName',      'Save Clusters to workspace as', ...
                 obj.clusterDetailsVariableName, 'if empty, then nothing will be separately saved');
             zdlg.AddEdit('declusteredCatalogVariableName',  'Save Declustered catalog to workspace as', ...
@@ -85,7 +69,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             
             
             
-            zdlg.Create('Name', 'Reasenberg Declustering','WriteToObj',obj,'OkFcn',@obj.Calculate);
+            zdlg.Create('Name', 'Zaliapin Declustering','WriteToObj',obj,'OkFcn',@obj.Calculate);
           
         end
         
@@ -125,147 +109,56 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             
             
             
-            max_mag_in_cluster=[];
-            idx_biggest_event_in_cluster=[];
+            totalEvents = obj.RawCatalog.Count;
+            evDay = days(obj.RawCatalog.Date - min(obj.RawCatalog.Date));
+            [y,x] = geodetic2ned(obj.RawCatalog.Latitude,obj.RawCatalog.Longitude, 0,...
+                median(obj.RawCatalog.Latitude), median(obj.RawCatalog.Longitude), 0,...
+                obj.RawCatalog.RefEllipsoid);
             
-            %% calculate interaction_zone  (1 value per event)
             
-            interactzone_main_km = 0.011*10.^(0.4* obj.RawCatalog.Magnitude); %interaction zone for mainshock
-            interactzone_in_clust_km = obj.rfact * interactzone_main_km;      %interaction zone if included in a cluster
-                      
+            xy_km = [x,y];
+            mag = obj.RawCatalog.Magnitude;
             
-            tau_min = days(obj.taumin);
-            tau_max = days(obj.taumax);
+            nearestNeighborDist   = nan(totalEvents,1);
             
-            %calculation of the eq-time relative to 1902
-            eqtime = days( obj.RawCatalog.Date - min(obj.RawCatalog.Date) );
+            pdist_yk_ver2 = @(A,B) sqrt((B(:,1) - A(1)).^2 + (B(:,2)-A(2)).^2);
             
-            %variable to store information whether earthquake is already clustered
-            clus = zeros(1,obj.RawCatalog.Count);
-            
-            k = 0;                                %clusterindex
             
             wai = waitbar(0,' Please Wait ...  Declustering the catalog');
             set(wai,'NumberTitle','off','Name','Declustering Progress');
             drawnow
             declustering_start = tic;
             %for every earthquake in catalog, main loop
-            confine_value = @(value, min_val, max_val) max( min( value, max_val), min_val);
-            for i = 1: (obj.RawCatalog.Count-1)
+            effective_magnitudes = 10 .^ (-obj.bvalue * mag);
+            for fromEv=2:totalEvents
                 
-                % "myXXX" refers to the XXX for this event
-                
-                my_mag = obj.RawCatalog.Magnitude(i);
-                
-                
-                if rem(i,50)==0
-                    waitbar(i/(obj.RawCatalog.Count-1));
+                if rem(fromEv,50)==0
+                    waitbar(fromEv / (obj.RawCatalog.Count-1));
                 end
                 
-                % variable needed for distance and timediff
-                my_cluster = clus(i);
-                alreadyInCluster = my_cluster~=0;
-                not_classified = my_cluster==0;
-                assert(not_classified~=alreadyInCluster)
+                toEv = 1:(fromEv-1);
+                deltaDist    = pdist_yk_ver2(xy_km(fromEv,:), xy_km(toEv,:)) .^ obj.fractalDimension;
+                deltaTime    = (evDay(fromEv) - evDay(toEv)) .^ obj.theta;
                 
-                % attach interaction time
-                if not_classified
-                    look_ahead_days = tau_min;
-                else
-                    if my_mag >= max_mag_in_cluster(my_cluster)
-                        max_mag_in_cluster(my_cluster) = my_mag;
-                        idx_biggest_event_in_cluster(my_cluster) = i;
-                        look_ahead_days = tau_min;
-                    else
-                        bgdiff = eqtime(i) - eqtime(idx_biggest_event_in_cluster(my_cluster));
-                        look_ahead_days = clustLookAheadTime(obj.xk, max_mag_in_cluster(my_cluster), obj.xmeff, bgdiff, obj.P);
-                        look_ahead_days = confine_value(look_ahead_days, tau_min, tau_max);
-                    end
-                end
-                
-                %extract eqs that fit interation time window
-                temporal_evs = timediff(i, look_ahead_days, clus, eqtime); %local version
-                
-                
-                
-                if isempty(temporal_evs)
-                    continue;
-                end
-                
-                % ---------------------------
-                % only continue if events passed the time test
-                % ---------------------------
-                
-                rtest1 = interactzone_in_clust_km(i);
-                if look_ahead_days == obj.taumin
-                    rtest2 = 0;
-                else
-                    rtest2 = interactzone_main_km(idx_biggest_event_in_cluster(my_cluster));
-                end
-                
-                if alreadyInCluster                % if i is already related with a cluster
-                    tm1 = clus(temporal_evs) ~= my_cluster;  % eqs with a clustnumber different than i
-                    if any(tm1)
-                        temporal_evs = temporal_evs(tm1);
-                    end
-                    bg_ev_for_dist = idx_biggest_event_in_cluster(my_cluster);
-                else
-                    bg_ev_for_dist = i;
-                end
-                
-                %calculate distances from the epicenter of biggest and most recent eq
-                [dist1,dist2]=distance2(i,bg_ev_for_dist,temporal_evs, obj.RawCatalog);
-                
-                %extract eqs that fit the spatial interaction time
-                sl0 = dist1<= rtest1 | dist2<= rtest2;
-                
-                if ~any(sl0)
-                    continue
-                end
-                
-                % ----------
-                % only continue if events passed the distance test
-                % ----------
-                
-                ll = temporal_evs(sl0);            %eqs that fit spatial and temporal criterion
-                lla = ll(clus(ll)~=0);   %eqs which are already related with a cluster
-                llb = ll(clus(ll)==0);   %eqs that are not already in a cluster
-                if ~isempty(lla)         %find smallest clustnumber in the case several
-                    sl1 = min(clus(lla));     %numbers are possible
-                    if alreadyInCluster
-                        my_cluster = min([sl1, my_cluster]);
-                    else
-                        my_cluster = sl1;
-                    end
-                    if clus(i)==0
-                        clus(i) = my_cluster;
-                    end
-                    % merge related clusters together into cluster with the smallest number
-                    sl2 = lla(clus(lla) ~= my_cluster);
-                    if clus(i) ~= my_cluster
-                        clus(clus==clus(i)) = my_cluster;
-                    end
-                    
-                    for j1 = sl2
-                        if clus(j1) ~= my_cluster
-                            clus(clus==clus(i)) = my_cluster;
-                        end
-                    end
-                end
-                
-                if my_cluster==0   %if there was neither an event in the interaction zone nor i, already related to cluster
-                    k = k+1;                         %
-                    my_cluster = k;
-                    clus(i) = my_cluster;
-                    max_mag_in_cluster(my_cluster) = my_mag;
-                    idx_biggest_event_in_cluster(my_cluster) = i;
-                end
-                
-                if size(llb)>0     % attach clustnumber to events yet unrelated to a cluster
-                    clus(llb) = my_cluster;  %
-                end
-                    
+                nearestNeighborDist(fromEv) = min( deltaDist .* deltaTime .* effective_magnitudes(toEv) );
             end
+            
+            nearestNeighborDist(nearestNeighborDist == 0) = nan;
+            logNearestNeighborDist = log10(nearestNeighborDist);
+             
+            % Fit a Gaussian mixture distribution to data
+            gmmObj = fitgmdist(logNearestNeighborDist,2);
+            
+            % mu is the mean for each found gaussian curve.  The larger value of mu represents
+            % the curve matching the background events. It is this value that provides the 
+            % independence probabilities, which we return.
+            
+            [~, indbkg] = max(gmmObj.mu);  % mu is Matrix of component means.
+            IP = gmmObj.posterior(logNearestNeighborDist);
+            
+            IP = IP(:,indbkg);
+            IP(1) = 1;
+            IP(isnan(IP)) = 0;
             
             close(wai);
             msg.dbfprintf('Declustering complete. It took %g seconds\n',toc(declustering_start));
@@ -277,10 +170,8 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 details.Properties.UserData.(obj.ParameterableProperties(j)) = obj.(obj.ParameterableProperties(j));
             end
             
-            details.Properties.Description  = 'Details for cluster, from reasenberg declustering';
+            details.Properties.Description  = 'Details for cluster, from Zaliapin declustering';
             details.eventNumber             = (1:obj.RawCatalog.Count)';
-            details.clusterNumber           = clus(:);
-            details.clusterNumber(details.clusterNumber==0) = missing;
             details.isBiggest               = false(size(details.clusterNumber));
             details.isBiggest(idx_biggest_event_in_cluster) = true;
             
@@ -370,7 +261,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
         end
         
         function plot(obj, varargin)
-            f = figure('Name','Reasenberg Deslustering Results');
+            f = figure('Name','Zaliapin Deslustering Results');
             ax = subplot(2,2,1);
             ZG = ZmapGlobal.Data;
             biggest = obj.Result.values.cluster_details(obj.Result.values.cluster_details.isBiggest,:);
@@ -410,8 +301,8 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     methods(Static)
         function h = AddMenuItem(parent,catalog)
             % create a menu item
-            label='Reasenberg Decluster';
-            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
+            label='Zaliapin Decluster';
+            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ZaliapinDeclusterClass(catalog));
         end
         
         
@@ -474,51 +365,5 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     
-end
-
-%% helper 
-function ac  = timediff(clus_idx, look_ahead_time, clus, eqtimes)
-    % TIMEDIFF calculates the time difference between the ith and jth event
-    % works with variable eqtime from function CLUSTIME
-    % gives the indices ac of the eqs not already related to cluster k1
-    % eqtimes should be sorted!
-    %
-    % clus_idx : ith cluster (ci)
-    % look_ahead : look-ahead time (tau)
-    % clus: clusters (length of catalog)
-    % eqtimes: datetimes for event catalog, in days  [did not use duration because of overhead]
-    %
-    % tdiff: is time between jth event and eqtimes(clus_idx)
-    % ac: index of each event within the cluster
-    
-    %assert(clus_idx <100, 'testing. remove me')
-    
-    comparetime = eqtimes(clus_idx);
-    
-    first_event = clus_idx + 1; % in cluster
-    last_event = numel(eqtimes);
-    max_elapsed = comparetime + look_ahead_time;
-    
-    if eqtimes(end) >= max_elapsed
-        last_event = find(eqtimes(first_event : last_event) < max_elapsed, 1, 'last') + clus_idx;
-    end
-        
-    if first_event == last_event
-        % no additional events were found.
-        ac = [];
-        return
-    end
-    
-    this_clusternum = clus(clus_idx);
-    
-    range = first_event : last_event;
-    
-    if this_clusternum == 0
-        ac = range;
-    else
-        % indices of eqs not already related to this cluster
-        ac = (find(clus(range) ~= this_clusternum)) + clus_idx;
-    end
-    ac = ac(:);
 end
 

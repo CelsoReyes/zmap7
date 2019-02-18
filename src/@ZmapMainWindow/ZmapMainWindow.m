@@ -541,16 +541,16 @@ classdef ZmapMainWindow < handle
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
-            prompt      = {'Enter the New Width [',obj.CrossSections(idx).LengthUnit,']:'};
+            prompt      = {['Enter the New Width [', obj.CrossSections(idx).LengthUnit, ']:']};
             name        = 'Cross Section Width';
             numlines    = 1;
-            defaultanswer = {num2str(obj.CrossSections(idx).width)};
+            defaultanswer = {num2str(obj.CrossSections(idx).Width)};
             answer        = inputdlg(prompt, name, numlines, defaultanswer);
             if ~isempty(answer)
                 obj.CrossSections(idx).change_width(str2double(answer));
             end
             ax = findobj(gco, 'Type', 'axes', '-and', '-regexp', 'Tag', 'Xsection strikeplot.*');
-            ax.UserData.cep.catalogFcn = @()obj.xscats(obj.CrossSections(idx).name);
+            ax.UserData.cep.catalogFcn = @()obj.xscats(obj.CrossSections(idx).Name);
             ax.UserData.cep.update();
             ax.Title = [];
             obj.notify('XsectionChanged')
@@ -560,7 +560,7 @@ classdef ZmapMainWindow < handle
             secTitle = get(gco, 'Title');
             idx = strcmp(secTitle, obj.XSectionTitles);
             obj.CrossSections(idx).change_color([], obj.fig);
-            set(gco, 'ForegroundColor', obj.CrossSections(idx).color); %was mytab
+            set(gco, 'ForegroundColor', obj.CrossSections(idx).Color); % was mytab
         end
         
         function cb_info(obj,~,~)
@@ -935,7 +935,7 @@ classdef ZmapMainWindow < handle
             % plotfn is a function like: [@(xs, xcat)plot(...)] that does plotting and returns a handle
             for j = 1:numel(obj.CrossSections)
                 set(gca, 'NextPlot', 'add')
-                tit = obj.CrossSections(j).name;
+                tit = obj.CrossSections(j).Name;
                 h = plotfn(obj.CrossSections(j), obj.xscats(tit) );
                 h.Tag = [tagBase, ' ' , tit];
             end
