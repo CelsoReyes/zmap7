@@ -347,7 +347,8 @@ function create_all_menus(obj, force)
             [~,~,ZG.CatalogOpts.BigEvents.MinMag] = smart_inputdlg('Choose magnitude threshold',...
                 struct('prompt','Mark events with M > ? ','value',ZG.CatalogOpts.BigEvents.MinMag));
             src.Label = "Mark large event with M > " + ZG.CatalogOpts.BigEvents.MinMag;
-            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
+            obj.bigEvents = obj.catalog.subset(obj.catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
+            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)
             set(findobj(obj.fig,'Tag','big events'), 'DisplayName', src.Label);
         end
         
@@ -489,6 +490,7 @@ function create_all_menus(obj, force)
             if ~isempty(rdc.declusteredCatalog)
                 msg.dbdisp('replacing the catalog')
                 obj.rawcatalog = rdc.declusteredCatalog;
+                obj.CatalogManager.RawCatalog = obj.rawcatalog
                 obj.replot_all()
             else
                 errordlg('Empty declustered catalog, Main window will not be updated')

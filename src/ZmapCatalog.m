@@ -87,7 +87,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         SortDirection   char            = ''    % describes sorting direction
         Filter          (:,1) logical           % logical filter for subsetting events
         XYZ             (:,3) double            % position of each event
-        OtherFields     ZmapCatalogAddon  % TODO: implement this. 1st implementaion is MomentTensorAddon
+        OtherFields     cell % of ZmapCatalogAddon  % TODO:  1st implementaion is MomentTensorAddon
     end
     
     properties(Hidden)
@@ -163,6 +163,35 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             end
         end
         
+        % -----------------
+        function tf = hasAddon(obj, type)
+            tf =  any(cellfun(@(x)x.Type==string(type), obj.OtherFields));
+        end
+        
+        function list = getAddonTypes(obj)
+            list = cellfun(@(x)x.Type, obj.OtherFields, 'UniformOutput',false);
+        end
+        
+        function aoFnc = getAddon(obj,type)
+            idx = cellfun(@(x)x.Type == string(type), obj.OtherFields);
+            if any(idx)
+                aoFnc = obj.OtherFields{idx};
+            end
+        end
+        function aoFnc = setAddon(obj, other)
+            type = other.Type;
+            if obj.hasAddon(type)
+                idx = getAddonTypes==string(type);
+                obj.OtherFields(idx) = {other};
+            else
+                if ~iscell(obj.OtherFields)
+                    obj.OtherFields={};
+                end
+                obj.OtherFields(end+1) = {other};
+            end
+        end
+        % -----------------
+            
         function val = get.FieldnamesForColorby(obj)
             val =obj.GetFieldnamesForColorby;
         end
@@ -367,6 +396,12 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 fmtstr = "\t%20s : " + fmtstr + "\n";
                 
                 fprintf(fmtstr, pn, values{:});
+            end
+            if ~isempty(obj.OtherFields)
+                disp(" With other fields:")
+                for j = 1:numel(obj.OtherFields)
+                    disp(obj.OtherFields{j})
+                end
             end
             
         end
@@ -668,6 +703,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                     newobj.(fn) = obj.(fn)(range,:); % always copy rows
                 end
             end
+            for n = 1 : numel(obj.OtherFields)
+                newobj.OtherFields{n} = obj.OtherFields{n}.subset(range);
+            end
         end
         
         function subsetInPlace(obj,range)
@@ -684,6 +722,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 if ~isempty(obj.(fn))
                     obj.(fn) = obj.(fn)(range,:); % always copy rows
                 end
+            end
+            for n = 1 : numel(obj.OtherFields)
+                obj.OtherFields{n}.subsetInPlace(range);
             end
         end
         

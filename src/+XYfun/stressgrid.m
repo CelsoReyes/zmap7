@@ -171,11 +171,13 @@ classdef stressgrid < ZmapHGridFunction
                 toc
                 disp('^-old   new-v');
                 %}
-                tic
+                %tic
                 
                 %[fBeta2, fStdBeta2, fTauFit2, fAvgTau2, fStdTau2]=slick([b.DipDirection b.Dip b.Rake]);
-                [bvg(7), ~, ~, bvg(1), bvg(2), bvg(3), bvg(4), bvg(5), bvg(6)]=slick([b.DipDirection b.Dip b.Rake]);
-                toc
+                b = b.getAddon('MomentTensor');
+                [bvg(7), ~, ~, bvg(1), bvg(2), bvg(3), bvg(4), bvg(5), bvg(6)]= slick(...
+                    [b.DipDirection b.Dip b.Rake]);
+                % toc
 
             end
         end

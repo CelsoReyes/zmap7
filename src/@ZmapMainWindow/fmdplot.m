@@ -109,6 +109,7 @@ function fmdplot(obj, tabgrouptag)
         [res,okpressed] = zdlg.Create('Name', 'Choose Cut Magnitude');
         if okpressed
             obj.rawcatalog = obj.rawcatalog.subset(res.mc <= obj.rawcatalog.Magnitude);
+            obj.CatalogManager.RawCatalog = obj.rawcatalog;
             obj.replot_all;
         end
     end

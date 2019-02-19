@@ -81,6 +81,7 @@ function catalog_menu(obj, force)
         mcm = MemorizedCatalogManager;
         if ~isempty(mcm) && any(mcm.list == "default")
             obj.rawcatalog = mcm.recall();
+            obj.CatalogManager.RawCatalog = obj.RawCatalog;
             
             [obj.mshape,obj.mdate] = obj.filter_catalog();
             obj.map_axes.XLim = bounds2(obj.rawcatalog.X);

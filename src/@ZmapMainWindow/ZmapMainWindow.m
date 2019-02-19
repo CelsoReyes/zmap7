@@ -34,6 +34,8 @@ classdef ZmapMainWindow < handle
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
         refEllipsoid  referenceEllipsoid            = ZmapGlobal.Data.ref_ellipsoid;
+        
+        CatalogManager
     end
     
     properties(Constant)
@@ -175,7 +177,14 @@ classdef ZmapMainWindow < handle
             else
                 obj.rawcatalog = copy(in_catalog);
             end
-            
+            obj.CatalogManager = CatalogManager(obj.rawcatalog); %Soon to replace obj.rawcatalog
+            try
+                fn=@(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag
+                obj.CatalogManager.AddSubset('big events', fn);
+            catch
+                obj.CatalogManager.ChangeFilter('big events', fn);
+            end
+                
             obj.refEllipsoid    = ZG.ref_ellipsoid;
                 
             

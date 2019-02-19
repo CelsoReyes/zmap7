@@ -5,8 +5,11 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
     %   Rake - direction of movement for hanging wall block
     %
     %   MomentTensor - table, as mrr, mtt, mff, mrt, mrf, mtf
-    %
+    %               r : up , t: south, f or p:east
     
+    properties(Constant)
+        Type = 'MomentTensor' % unique name used when querying catalog
+    end
     properties
         Dip             double      % angle of dip, between 0 (horiz) and 90 degrees (vert)
         DipDirection    double      % direction of dip (clockwise from north
@@ -14,99 +17,45 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
         MomentTensor    table       = get_empty_moment_tensor() % moment tensor information
     end
        
+    properties(Dependent, Transient)
+        mrr % radial-radial aka up-up
+        mtt % theta-theta aka north-north
+        mff % phi-phi aka east-east
+        mrt % radial-theta aka up-south
+        mrf % radial-phi aka up-east
+        mtf % theta-phi aka south-east
+        
+    end
+    
+    properties(Dependent, Hidden, Transient)
+        mpp % phi-phi aka east-east
+        mrp % radial-phi aka up-east
+        mtp % theta-phi aka south-east
+        
+        mzz % down-down
+        mnn % north-north
+        mee % east-east
+        mnz % north-down
+        mez % east-down    (-mrf)
+        mne % north-east   (-mtf)
+    end
+        
     
     methods
 
-        function obj = ZmapCatalog(other, varargin)
-            % ZMAPCATALOG create a ZmapCatalog object
+        function obj = MomentTensorAddon(value)
             %
-            % catalog = ZMAPCATALOG() get an empty catalog
-            % catalog = ZMAPCATALOG(name) get an empty catalog, but set the name
-            % catalog = ZMAPCATALOG(otherCatalog) get a copy of a catalog
-            % catalog = ZMAPCATALOG(table) create a catalog from a table
-            % catalog = ZMAPCATALOG(zmaparray) create a catalog from a ZmapArray with columns:
-            %   [longitude, latitude, decyear, month, day, magnitude, depth_km, hour, minute, second]
-            obj.ZUnits = 'kilometer';
-            obj.HorizontalUnit = 'degree';
             
-            if nargin==0                                        % ZMAPCATALOG()
-                return
-                
-            elseif nargin==1 && ischar(other)                   % ZMAPCATALOG(name)
-                obj.Name = other;
-                
-            elseif istable(other)                               % ZMAPCATALOG(table)
-                
-                other = table2zmapcatalogtable(other);
-                
-                vn = other.Properties.VariableNames;
-                for i=1:numel(vn)
-                    fieldname = vn{i};
-                    try
-                        obj.(fieldname) = other.(fieldname);
-                    catch ME
-                        fprintf('Error interpreting field: %s\n',fieldname);
-                        warning(ME.message);
-                    end
-                end
-                
-                if isempty(obj.MagnitudeType)
-                    obj.MagnitudeType = repmat(categorical({''}),size(obj.Magnitude));
-                end
-                
-                obj.Name    = other.Properties.Description;
-                pu          = other.Properties.VariableUnits;
-                
-                % automatically convert depth units
-                if ~isempty(pu) && ~isempty(pu(vn=="Depth"))
-                    units       = validateLengthUnit(pu{vn=="Depth"});
-                    obj.Depth   = unitsratio(obj.DepthUnits,units) * obj.Depth;
-                end
-                
-                
-            elseif isnumeric(other)                             % ZMAPCATALOG(zmaparray)
-                % import Catalog from Array
-                nCols = size(other,2);
-                fprintf(['importing from old catalog array with %d columns and %d events:\n'...
-                    '[ lon lat decyr month day mag dep hr min sec ]\n'],nCols, size(other,1));
-                obj.Longitude   = other(:,1);
-                obj.Latitude    = other(:,2);
-                if all(other(:,3) < 100)
-                    other(:,3) = other(:,3)+1900;
-                    errdisp =  'The catalog dates appear to have 2 digits years. Action taken: added 1900 for Y2K compliance';
-                    warndlg(errdisp)
-                end
-                if nCols==9
-                    nRows=size(other,1);
-                    obj.Date = datetime([floor(other(:,3)),...
-                        other(:,[4,5,8,9]),...
-                        zeros(nRows,1)]);
-                else
-                    obj.Date        = datetime([floor(other(:,3)), other(:,[4,5,8,9,10])]);
-                end
-                obj.Depth           = other(:,7) .* unitsratio(obj.DepthUnits,'kilometer');
-                obj.Magnitude       = other(:,6);
-                
-                obj.MagnitudeType   = repmat(categorical({''}),size(obj.Magnitude));
-                obj.Dip             = nan(obj.Count,1);
-                obj.DipDirection    = nan(obj.Count,1);
-                obj.Rake            = nan(obj.Count,1);
-                
-                if nargin==2 && ischar(varargin{1})
-                    obj.Name        = varargin{1};
-                end
-                
-            elseif isa(other,'ZmapCatalog')                     % ZMAPCATALOG(zmapcatalog)
-                idx      = true(other.Count,1);
-                obj      = other.subset(idx); % force a copy
-                obj.Name = other.Name;
-            end
-            obj.Filter=true(size(obj.Longitude));
-        end
-       
-               
-        function set.MomentTensor(obj, value)
             MomentTensorColumns = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
+            %{
+            Two possible coordinate systems could be in use.
+                r-theta-phi         translates to    up - south - east
+                    Note: "phi" can be represented by 'f' or 'p'
+                n-e-z               translates to   north - east - down
+            so:
+                mrr == mzz , mrt == mnz , mtt == mnn ,  mrp = -mez , mff == mee , mtf == -mne
+            %}
+            
             if istable(value)
                 assert(isequal(value.Properties.VariableNames,MomentTensorColumns));
                 obj.MomentTensor = value;
@@ -117,27 +66,39 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
             end
         end
 
-        function outval = ZmapArray(obj)
+        function outval = ZmapArrayColumns(obj)
             % ZMAPARRAY create a zmap array from this catalog
             % zmarr = catalog.ZMAPARRAY()
             outval = [...
-                obj.Longitude, ...   % 1
-                obj.Latitude, ...    % 2
-                obj.DecimalYear, ... % 3
-                obj.Date.Month, ...  % 4
-                obj.Date.Day,...     % 5
-                obj.Magnitude, ...   % 6
-                obj.Depth ...        % 7
-                obj.Date.Hour,...    % 8
-                obj.Date.Minute, ... % 9
-                obj.Date.Second]; % position 10 of 10
-            
-            % ZmapArray that had 12 values is like above, except...
-            % obj.Dip % position 10 of 12
-            % obj.DipDirection % position 11 of 12
-            % obj.Rake % position 12 of 12
+                obj.Dip,... 
+                obj.DipDirection,... 
+                obj.Rake...
+            ];
         end        
         
+        
+        
+        function v=get.mrr(obj); v = obj.MomentTensor.mrr; end
+        function v=get.mzz(obj); v = obj.MomentTensor.mrr; end
+        
+        function v=get.mtt(obj); v = obj.MomentTensor.mtt; end
+        function v=get.mnn(obj); v = obj.MomentTensor.mtt; end
+        
+        function v=get.mff(obj); v = obj.MomentTensor.mff; end
+        function v=get.mpp(obj); v = obj.MomentTensor.mff; end
+        function v=get.mee(obj); v = obj.MomentTensor.mff; end
+        
+        function v=get.mrt(obj); v = obj.MomentTensor.mrt; end
+        function v=get.mnz(obj); v = obj.MomentTensor.mrt; end
+        
+        
+        function v=get.mrp(obj); v = obj.MomentTensor.mrf; end
+        function v=get.mrf(obj); v = obj.MomentTensor.mrf; end
+        function v=get.mez(obj); v = -obj.MomentTensor.mrf; end
+                
+        function v=get.mtf(obj); v = obj.MomentTensor.mtf; end
+        function v=get.mtp(obj); v = obj.MomentTensor.mtf; end
+        function v=get.mne(obj); v = -obj.MomentTensor.mtf; end
     end
     
     methods(Static)
@@ -151,13 +112,12 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
         
         % % % intentionally not implementing: fields_that_must_be_nevent_length(); 
         function s = display_order()
-            s = ZmapCatalog.display_order();
-            s = [s,{'Dip','DipDirection','Rake','MomentTensor'}];
+            s = {'Dip','DipDirection','Rake','MomentTensor'};
         end
         
         function pef = possibly_empty_fields()
             % fields that are either empty, or have the same length as event.
-            pef = [possibly_empty_fields@ZmapCatalog , {'Dip','DipDirection','Rake', 'MomentTensor'}];
+            pef = {'Dip','DipDirection','Rake', 'MomentTensor'};
         end
 
     end

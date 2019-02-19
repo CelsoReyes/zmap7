@@ -79,6 +79,7 @@ function replot_all(obj,metaProp,eventData)
             end
             ZG = ZmapGlobal.Data;
             obj.bigEvents = obj.catalog.subset(ZG.CatalogOpts.BigEvents.MinMag < obj.catalog.Magnitude);
+            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;
