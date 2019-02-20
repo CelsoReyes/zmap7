@@ -15,7 +15,7 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
         ax.Title=[];
         ax.UserData.TimeSomethingPlotter=whichplotter;
     else
-        whichplotter=ax.UserData.TimeSomethingPlotter;
+        whichplotter = ax.UserData.TimeSomethingPlotter;
         whichplotter.update(obj.catalog, obj.bigEvents);
     end
     

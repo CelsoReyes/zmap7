@@ -79,7 +79,7 @@ function replot_all(obj,metaProp,eventData)
             end
             ZG = ZmapGlobal.Data;
             obj.bigEvents = obj.catalog.subset(ZG.CatalogOpts.BigEvents.MinMag < obj.catalog.Magnitude);
-            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)
+            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag);
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;
@@ -101,8 +101,8 @@ function replot_all(obj,metaProp,eventData)
     obj.cumplot('Lower Right panel');
     
     obj.cummomentplot('Lower Right panel');
-    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'Lower Right panel');
-    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'Lower Right panel');
+    obj.timedepthplot('Lower Right panel');
+    obj.timemagplot('Lower Right panel');
     
     obj.replotting=false;
     drawnow nocallbacks

@@ -1,4 +1,4 @@
-classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
+classdef (ConstructOnLoad, Sealed) MomentTensorAddon < ZmapCatalogAddon
     %   MomentTensorAddon for a ZmapCatalog
     %   Dip - angle of dip
     %   DipDirection - direction of dip
@@ -44,6 +44,10 @@ classdef (ConstructOnLoad) MomentTensorAddon < ZmapCatalogAddon
     methods
 
         function obj = MomentTensorAddon(value)
+            obj@ZmapCatalogAddon;
+            if ~exist('value','var')
+                return
+            end
             %
             
             MomentTensorColumns = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};

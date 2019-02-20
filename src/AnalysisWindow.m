@@ -83,7 +83,12 @@ classdef AnalysisWindow < handle
                 plotFcn = @scatter;
                 % set properties unique to a scatter
                 props.SizeData = p.Results.SizeFcn(catalog);
-                props.CData = p.Results.ColorFcn(catalog);
+                cdata = p.Results.ColorFcn(catalog);
+                if ~isempty(cdata)
+                    props.CData = p.Results.ColorFcn(catalog);
+                elseif isfield(props,'Color')
+                    props.CData = props.Color;
+                end
             end
             
             % allow MarkerIndices to be overridden by incoming parameters

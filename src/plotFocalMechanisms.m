@@ -16,7 +16,7 @@ function plotFocalMechanisms(catalog,ax,color)
     axes(ax)
     set(gca, 'NextPlot', 'add');
     set(findobj(gcf,'Type','Legend'), 'AutoUpdate', 'off'); %
-    h = {}%gobjects(catalog.Count,1);
+    h = {}
     mts = catalog.getAddon('MomentTensor');
     for i=1:catalog.Count
         mt = [mts.mrr(i), mts.mtt(i), mts.mff(i), mts.mrt(i), mts.mrf(i), mts.mtf(i)];

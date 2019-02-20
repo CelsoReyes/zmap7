@@ -348,7 +348,7 @@ function create_all_menus(obj, force)
                 struct('prompt','Mark events with M > ? ','value',ZG.CatalogOpts.BigEvents.MinMag));
             src.Label = "Mark large event with M > " + ZG.CatalogOpts.BigEvents.MinMag;
             obj.bigEvents = obj.catalog.subset(obj.catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
-            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)
+            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag);
             set(findobj(obj.fig,'Tag','big events'), 'DisplayName', src.Label);
         end
         

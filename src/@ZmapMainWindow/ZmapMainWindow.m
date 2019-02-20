@@ -84,7 +84,9 @@ classdef ZmapMainWindow < handle
         fmdplot(obj, tabgrouptag)
         
         cummomentplot(obj, tabgrouptag)
-        time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
+        % time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
+        timedepthplot(obj, tabgrouptag)
+        timemagplot(obj, tabgrouptag)
         cumplot(obj, tabgrouptag)
         
         % push and pop state
@@ -179,7 +181,7 @@ classdef ZmapMainWindow < handle
             end
             obj.CatalogManager = CatalogManager(obj.rawcatalog); %Soon to replace obj.rawcatalog
             try
-                fn=@(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag
+                fn = @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
                 obj.CatalogManager.AddSubset('big events', fn);
             catch
                 obj.CatalogManager.ChangeFilter('big events', fn);
@@ -464,13 +466,9 @@ classdef ZmapMainWindow < handle
             % main map axes, where the cross section outline will be plotted
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
-            %try
-                xsec = XSection.initialize_with_mouse(axm, 20);
-            %catch ME
-                %warning(ME.message)
-                %return
-                % do not set segment
-            %end
+            
+            xsec = XSection.initialize_with_mouse(axm, 20);
+            
             if isempty(xsec), return, end
             watchon;
             mytitle = xsec.Name;
@@ -515,7 +513,6 @@ classdef ZmapMainWindow < handle
         function cb_cropToXS(obj, xsec)
             sh = ShapePolygon('polygon',[xsec.PolyX(:), xsec.PolyY(:)]);
             set_my_shape(obj, sh);
-            %obj.replot_all();
         end
         
         function cb_deltab(obj, xsec)

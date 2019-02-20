@@ -958,6 +958,14 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             assert( isnumeric(other) )                            % ZMAPCATALOG(zmaparray)
             % import Catalog from Array
             nCols = size(other,2);
+            if nCols==12
+                mta = MomentTensorAddon();
+                mta.Dip = other(:,10);
+                mta.DipDirection = other(:,11);
+                mta.Rake = other(:,12);
+                nCols=9;
+                % instead of seconds, it is dip, dip direction, and rake.
+            end
             assert( nCols==10 || nCols == 9, ['Expected 9 or 10 columns, containing:\n',...
               '[ lon lat decyr month day mag dep hr min [sec] ]']);
             msg.dbfprintf(['importing from old catalog array with %d columns and %d events:\n'...
@@ -985,6 +993,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj.MagnitudeType   = repmat(categorical(missing), size(obj.Magnitude));
             
             obj.Filter=true(size(obj.Longitude));
+            if exist('mta','var')
+                obj.OtherFields{1}=mta;
+            end
         end
         
         function obj = fromStruct(other)
