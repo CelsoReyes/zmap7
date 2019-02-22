@@ -143,6 +143,10 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         function obj = ZmapCatalog(varargin)
             obj.Type = 'zmapcatalog';
             if ~isempty(varargin)
+                if nargin==1 && isa(varargin{1},'ZmapCatalog')
+                    obj = copy(varargin{1});
+                    return
+                end
                 p = inputParser;
                 p.addParameter('ReferenceEllipsoid', obj.RefEllipsoid);
                 p.addParameter('Name',obj.Name);

@@ -80,6 +80,7 @@ classdef ZmapMainWindow < handle
         plot_base_events(obj, container, featurelist)
         plotmainmap(obj)
         c = context_menus(obj, tag, createmode, varargin) % manage context menus used in figure
+        
         plothist(obj, name, tabgrouptag)
         fmdplot(obj, tabgrouptag)
         
@@ -549,11 +550,14 @@ classdef ZmapMainWindow < handle
             idx         = strcmp(secTitle, obj.XSectionTitles);
             prompt      = {['Enter the New Width [', obj.CrossSections(idx).LengthUnit, ']:']};
             name        = 'Cross Section Width';
-            numlines    = 1;
             defaultanswer = {num2str(obj.CrossSections(idx).Width)};
-            answer        = inputdlg(prompt, name, numlines, defaultanswer);
+            answer        = inputdlg(prompt, name, 1, defaultanswer);
             if ~isempty(answer)
-                obj.CrossSections(idx).change_width(str2double(answer));
+                new_width = str2double(answer);
+                obj.CrossSections(idx).change_width(new_width);
+                the_xscat = obj.xscats(secTitle); % modifying the_xscat modifies the stored version because handle
+                the_xscat.Width = new_width;
+                the_xscat.updateFromCatalog(obj.rawcatalog);
             end
             ax = findobj(gco, 'Type', 'axes', '-and', '-regexp', 'Tag', 'Xsection strikeplot.*');
             ax.UserData.cep.catalogFcn = @()obj.xscats(obj.CrossSections(idx).Name);
@@ -712,9 +716,7 @@ classdef ZmapMainWindow < handle
             
             addTimeStamp(obj.fig);
             
-            
             obj.set_figure_name();
-            
             
             TabLocation = 'top'; % 'top', 'bottom', 'left', 'right'
             

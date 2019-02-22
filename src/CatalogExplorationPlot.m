@@ -22,9 +22,9 @@ classdef CatalogExplorationPlot < handle
             % creates a plot with arbitrarily modifiable axes
             % obj=CATALOGEXPLORATIONPLOT(ax, catalogFcn)
             mycat = catalogFcn();
-            obj.x_by = mycat.Catalog.XLabel;
-            obj.y_by = mycat.Catalog.YLabel;
-            obj.z_by = mycat.Catalog.ZLabel;
+            obj.x_by = mycat.XLabel;
+            obj.y_by = mycat.YLabel;
+            obj.z_by = mycat.ZLabel;
             obj.catalogFcn = catalogFcn;
             obj.set_valid_axes_choices();
             obj.set_conversions();

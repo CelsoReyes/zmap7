@@ -45,7 +45,7 @@ function fmdplot(obj, tabgrouptag)
         addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
     end
     
-    baw = ax.UserData;
+    analy_win = ax.UserData;
     
     
     %% plot & synchronize cross sections
@@ -66,7 +66,7 @@ function fmdplot(obj, tabgrouptag)
         % delete cross sections that shouldn't exist
         %todel = plotted_xs(~startsWith(plotted_xs,existing_xs));
         %todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-        baw.remove_series(todel);
+        analy_win.remove_series(todel);
     end
     
     %% if necessary, add context menu to figure
@@ -86,7 +86,7 @@ function fmdplot(obj, tabgrouptag)
         xsProps.Color       = xs.Color;
         xsProps.Marker = 'x';
         mytag               = ['Xsection fmd ' xs.Name];
-        h = baw.add_series(xscat, mytag, xsProps);
+        h = analy_win.add_series(xscat, mytag, xsProps);
         
     end
     

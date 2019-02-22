@@ -140,12 +140,18 @@ classdef XSection < handle
             %
             % obj = obj.CHANGE_COLOR(color, ax)
             if isempty(color)
+                watchon
+               
                 color = uisetcolor(obj.Color, ['Color for ' obj.Name]);
+                watchoff
             end
                 
             obj.Color = color;
             
             set(findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'line'), 'Color',color);
+            myscatters = findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'scatter');
+            myscatters({myscatters.Tag}=="Xsection plot " + obj.Name) = []; % KLUDGE. keeps original plot from changing color
+            set(myscatters, 'CData', color);
             mytexts = findobj(container, '-regexp', 'Tag', ['Xsection .*' obj.Name], 'Type', 'text');
             set(mytexts, 'Color', color .* 0.8);
             

@@ -1,4 +1,4 @@
-classdef ZmapXsectionCatalog < dynamicprops
+classdef ZmapXsectionCatalog < ZmapCatalog
     % ZMAPXSECTIONCATALOG a catalog specifically along a cross section
     % meaning, all events are on a great-circle line
     %
@@ -9,12 +9,7 @@ classdef ZmapXsectionCatalog < dynamicprops
         Displacement       double  % perpendicular distance of each event from the line in units
         CurveLength        = 0; % length of this cross-section
         ProjectedPoints    double = []
-        Name
-        Width               double
-    end
-    
-    properties(SetAccess = immutable)
-        Catalog     {mustBeZmapCatalog} = ZmapCatalog % points to an underlying zmap catalog
+        Width              double 
     end
     
     properties(Dependent)
@@ -33,20 +28,7 @@ classdef ZmapXsectionCatalog < dynamicprops
             % endpoint1 and endpoint2 are each (lat, lon)
             %
             % see also project_on_gcpath
-            class(catalog)
-            if isa(catalog,'ZmapXsectionCatalog')
-                obj.Catalog = catalog.Catalog;
-            else
-                obj.Catalog = catalog;
-            end
-            obj.Name = catalog.Name;
             obj.Width = width;
-            
-            % add catalog properties as though they were our own
-            % this makes this class queryable and settable as though it were the catalog it is using
-            % note, this is for properties, not methods!
-            obj.attach_catalog_properties()
-            
             
             if iscartesian(catalog.RefEllipsoid)
                 % deal with cartesian coordinates
@@ -60,7 +42,7 @@ classdef ZmapXsectionCatalog < dynamicprops
                 obj.ProjectedPoints(:,3) = catalog.Z;
                 mask = obj.DistAlongStrike>=0 & obj.DistAlongStrike<obj.CurveLength &...
                     obj.Displacement<=obj.Width;
-                obj.Catalog = obj.Catalog.subset(mask);
+                obj = obj.copyFrom(catalog.subset(mask)); % necessary, otherwise this turns into a ZmapCatalog
                 
             else
                 
@@ -71,38 +53,39 @@ classdef ZmapXsectionCatalog < dynamicprops
                 curveInKm = CurveLength.*unitsratio('kilometer',catalog.RefEllipsoid.LengthUnit);
                 scale = min(.1, curveInKm / 10000); %usded to determine how path is sampled
                 [mindist,mask,gcDist] = project_on_gcpath(p1yx,p2yx, catalog, width/2, scale);
-                obj.Catalog = obj.Catalog.subset(mask); % necessary, otherwise this turns into a ZmapCatalog
+                obj = obj.copyFrom(catalog.subset(mask)); % necessary, otherwise this turns into a ZmapCatalog
                 obj.Curve = [curvelats, curvelons];
                 obj.DistAlongStrike = gcDist;
                 obj.Displacement    = mindist;
                 obj.CurveLength     = CurveLength;
             end
             
-            
-            function [newQuake, DistAlongPlane, perp_dist]=projection(startPt, endPt, quake)
-                V1 = endPt - startPt; % vector to project upon
-                V2 = quake - startPt; % vector to project
-                dfun=@(vec1, vec2)sqrt(sum((vec1-vec2).^2,2)); %nx2 vectors
-                AngleToPlane   = angle(V1(:,1) + 1i*(V1(:,2)));
-                AngleToQuake = angle(V2(:,1) + 1i*(V2(:,2)));
-                orientedAngle = wrapToPi(AngleToQuake - AngleToPlane);
-                DistAlongPlane = cos(orientedAngle) .* dfun(V2,[0,0]);
-                NewOffset =  [cos(AngleToPlane),sin(AngleToPlane)] .* DistAlongPlane;
-                newQuake = NewOffset + startPt;
-                perp_dist = sqrt(sum((quake-newQuake).^2,2));
+
+        end
+        function updateFromCatalog(obj, catalog)
+            if iscartesian(catalog.RefEllipsoid)
+                % deal with cartesian coordinates
+                p1 = obj.startPoint([2,1]); % flip from lat-lon to x-y
+                p2 = obj.endpoint([2,1]); % flip from lat-lon to x-y
+                [obj.ProjectedPoints, ...
+                    obj.DistAlongStrike, ...
+                    obj.Displacement] = obj.projection(p1, p2, catalog.XYZ(:,[1,2]) );
+                obj.ProjectedPoints(:,3) = catalog.Z;
+                mask = obj.DistAlongStrike>=0 & obj.DistAlongStrike<obj.CurveLength &...
+                    obj.Displacement<=obj.Width;
+                obj = obj.copyFrom(catalog.subset(mask)); % necessary, otherwise this turns into a ZmapCatalog
+                
+            else                
+                % deal with geodetic coordinates
+                curveInKm = obj.CurveLength.*unitsratio('kilometer',catalog.RefEllipsoid.LengthUnit);
+                scale = min(.1, curveInKm / 10000); %used to determine how path is sampled
+                [mindist,mask,gcDist] = project_on_gcpath(obj.startPoint,obj.endPoint, catalog, obj.Width/2, scale);
+                obj = obj.copyFrom(catalog.subset(mask)); % necessary, otherwise this turns into a ZmapCatalog
+                obj.DistAlongStrike = gcDist;
+                obj.Displacement    = mindist;
             end
-
-
         end
-        
-        function setCatalogProperty(obj,name,val)
-            obj.Catalog.(name) = val;
-        end
-        
-        function val = getCatalogProperty(obj,name)
-            val = obj.Catalog.(name);
-        end
-        
+                
         function p=get.startPoint(obj)
             p=obj.Curve(1,:);
         end
@@ -133,48 +116,28 @@ classdef ZmapXsectionCatalog < dynamicprops
                 sp(1),sp(2), ep(1),ep(2), obj.CurveLength);
         end
         
-        function s=summary(obj,varargin)
-            s=obj.Catalog.summary(varargin{:});
-        end
-
         function s=info(obj)
             s=sprintf('cross-section catalog with %d events\n',obj.Count);
             sp=obj.startPoint; ep=obj.endPoint;
             s=[s,sprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
                 sp(1),sp(2), ep(1),ep(2), obj.CurveLength)];
         end
-        
+        function subsetInPlace(obj, range)
+            subsetInPlace@ZmapCatalog(obj, range)
+        end
+                
         function obj = subset(existobj, range)
-            obj = ZmapXsectionCatalog(existobj.Catalog.subset(range),existobj.startPoint, existobj.endPoint, existobj.Width);
-            %{
-            obj.Catalog = existobj.Catalog.subset(range);
-            
-            obj.DistAlongStrike = existobj.DistAlongStrike(range);
-            obj.Displacement = existobj.Displacement(range);
-            obj.CurveLength=existobj.CurveLength;
-            obj.Curve = existobj.Curve;
-            %}
+            obj = copy(existobj);
+            obj.subsetInPlace(range);
         end
         
         function obj = cat(objA, ObjB)
-            % cannot currently concatinate two of these
+            % cannot currently concatenate two of these
             unimplemented_error()
         end
         
-    end
-    
-    methods(Access=private)
-        function attach_catalog_properties(obj)
-            pr = properties(obj.Catalog);
-            
-            for idx = 1:numel(pr)
-                if isprop(obj,pr{idx})
-                    continue
-                end
-                p=obj.addprop(pr{idx});
-                p.SetMethod=@(val) obj.setCatalogProperty(pr{idx},val);
-                p.GetMethod=@(val) obj.getCatalogProperty(pr{idx});
-            end
+        function obj = blank(~)
+            obj = ZmapXsectionCatalog(blank@ZmapCatalog);
         end
     end
     
@@ -194,5 +157,21 @@ classdef ZmapXsectionCatalog < dynamicprops
             h.XData=lon;
             h.YData=lat;
         end
+    
+        
+            
+        function [newQuake, DistAlongPlane, perp_dist] = projection(startPt, endPt, quake)
+            V1 = endPt - startPt; % vector to project upon
+            V2 = quake - startPt; % vector to project
+            dfun=@(vec1, vec2)sqrt(sum((vec1-vec2).^2,2)); %nx2 vectors
+            AngleToPlane   = angle(V1(:,1) + 1i*(V1(:,2)));
+            AngleToQuake = angle(V2(:,1) + 1i*(V2(:,2)));
+            orientedAngle = wrapToPi(AngleToQuake - AngleToPlane);
+            DistAlongPlane = cos(orientedAngle) .* dfun(V2,[0,0]);
+            NewOffset =  [cos(AngleToPlane),sin(AngleToPlane)] .* DistAlongPlane;
+            newQuake = NewOffset + startPt;
+            perp_dist = sqrt(sum((quake-newQuake).^2,2));
+        end
+
     end
 end

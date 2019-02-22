@@ -18,20 +18,18 @@ function timemagplot(obj, tabgrouptag)
         ax.UserData   = TimeMagnitudeAnalysisWindow(ax);
         grid(ax, 'on');
     end
-    craw = ax.UserData; % craw is the timedepthplot analysisWindow
+    analy_win = ax.UserData; % craw is the timedepthplot analysisWindow
     
     %% plot the main series
     lineProps.Color         = [0 0 0];
     lineProps.Marker        = 's';
     lineProps.MarkerEdgeAlpha = 0.5;
-    % lineProps.LineWidth     = 2.5;
     lineProps.UIContextMenu = line_plot_context_menu();
     lineProps.MinBigMag     = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     lineProps.DisplayName   = obj.catalog.Name;
-    lineProps.SizeFcn       = @(c)(rescale(c.Magnitude)*5+0.5).^3;
-    %lineProps.SizeFcn       = @(c)mag2dotsize(c.Magnitude);
+    lineProps.SizeFcn       = @(c)(rescale(c.Magnitude)*5+0.5).^3; % mag2dotsize()
     
-    craw.add_series(obj.catalog, 'catalog', lineProps);
+    analy_win.add_series(obj.catalog, 'catalog', lineProps);
     
     
     %% plot & synchronize cross sections
@@ -43,7 +41,7 @@ function timemagplot(obj, tabgrouptag)
      existing_xs = obj.XSectionTitles;
         % delete cross sections that shouldn't exist
         todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-        craw.remove_series(todel);
+        analy_win.remove_series(todel);
     end
     %% if necessary, add context menu to figure
     cxs=findobj(obj.fig,'Tag',Tags.xs);
@@ -89,7 +87,7 @@ function timemagplot(obj, tabgrouptag)
         xsProps.MarkerEdgeAlpha = 0.5;
         xsProps.SizeFcn     = @(c)(rescale(c.Magnitude)*5+0.5).^3;
         mytag               = ['Xsection timemagplot ' xs.Name];
-        h = craw.add_series(xscat, mytag, xsProps);
+        h = analy_win.add_series(xscat, mytag, xsProps);
     end
     
     function cb_xstimedepthplot(~,~)
