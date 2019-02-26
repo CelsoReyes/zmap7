@@ -14,6 +14,7 @@ function obj = load_shape(filelocation)
     fileTypes = {'*.*', 'ALL files';...
         '*.mat', 'MAT-files (*.mat)';...
         '*.csv;*.txt;*.dat',  'other ascii file (*.csv, *.txt, *.dat)'};
+    FilterNames = ["ALL" "MAT" "ASCII"];
     if nargin==0
         % nothing provided, user selects the file
         [filename,pathname,filterindex]=uigetfile(fileTypes,...
@@ -38,27 +39,29 @@ function obj = load_shape(filelocation)
         return
     end
     
-    if filterindex == 1
+    filtername = FilterNames(filterindex);
+    
+    if filtername == "ALL"
         [~,~, ftype] = fileparts(filename);
         switch ftype
             case '.mat'
-                filterindex = 2;
+                filtername = "MAT";
             case {'.csv','.txt','.dat'}
-                filterindex = 3;
+                filtername = "ASCII";
             otherwise
-                filterindex = 1;
+                filtername = "ALL";
         end
     end
     
     lastdirectory = pathname;
     obj=[];
     
-    switch filterindex
-        case 2
+    switch filtername
+        case "MAT"
             % load from a .mat file
             tmp=load(fullfile(pathname,filename),'zmap_shape');
             obj=tmp.zmap_shape;
-        case {1, 3}
+        case {"ALL", "ASCII"}
             % load from a text file
             tb = readtable(fullfile(pathname, filename));
             
@@ -122,9 +125,13 @@ function obj = load_shape(filelocation)
             myXs = tb.(tb.Properties.VariableNames{lonIdx});
             
             radIdx = startsWith(vn,"radius");
-            myunits = extractBetween(vn{radIdx},'[',']');
-            if isempty(myunits), myunits = {'km'}; end
-            if height(tb)==1 && ~isempty(radIdx)
+            if any(radIdx)
+                myunits = extractBetween(vn{radIdx},'[',']');
+            end
+            if ~exist('myunits','var') || isempty(myunits)
+                myunits = {'km'}; 
+            end
+            if height(tb)==1 && any(radIdx)
                 % we selected a circle
                 obj = ShapeCircle();
                 obj.Points = [myXs, myYs];

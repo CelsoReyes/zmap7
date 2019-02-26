@@ -54,6 +54,7 @@ classdef AnalysisWindow < handle
                 @(x)isa(x,'function_handle') && ... 
                 (nargout(x) == 2 || nargout(x) == -1) ...
             );
+            p.addParameter('PlotAtIndex',[])
         
             % if either SizeFcn or ColorFcn are defined, then this will create a scatter plot.
             % otherwise, it will create a line
@@ -70,6 +71,10 @@ classdef AnalysisWindow < handle
             altcalc = p.Results.UseCalculation;
             
             [x,y] = altcalc(catalog);
+            if ~isempty(p.Results.PlotAtIndex)
+                x=x(p.Results.PlotAtIndex);
+                y=y(p.Results.PlotAtIndex);
+            end
             
             if isequal(p.Results.SizeFcn,emptyfun) && isequal(p.Results.ColorFcn,emptyfun)
                 plotFcn = @line; 
@@ -84,8 +89,14 @@ classdef AnalysisWindow < handle
                 % set properties unique to a scatter
                 props.SizeData = p.Results.SizeFcn(catalog);
                 cdata = p.Results.ColorFcn(catalog);
+                if ~isempty(p.Results.PlotAtIndex)
+                    props.SizeData = props.SizeData(p.Results.PlotAtIndex);
+                end
                 if ~isempty(cdata)
                     props.CData = p.Results.ColorFcn(catalog);
+                    if ~isempty(p.Results.PlotAtIndex)
+                        props.CData = cdata(p.Results.PlotAtIndex,:);
+                    end
                 elseif isfield(props,'Color')
                     props.CData = props.Color;
                 end
@@ -165,9 +176,11 @@ classdef AnalysisWindow < handle
                 sizeFcn = str2func(ZmapGlobal.Data.MainEventOpts.MarkerSizeFcn);
                 bigProps.SizeFcn = @(c) sizeFcn(c.Magnitude);
             end
-            bigProps.YData       = idx;
+            
+            %bigProps.YData       = y(idx);
+            %bigProps.XData       = x(idx);
             bigProps.DisplayName = "Events " + char(8805) + " " + minbigmag; %char(8805) is '>='
-            obj.add_series(catalog.subset(idx), 'big events', bigProps);
+            obj.add_series(catalog, 'big events', bigProps,'PlotAtIndex',idx);
          
         end
     end
