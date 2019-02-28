@@ -20,7 +20,7 @@ function create_all_menus(obj, force)
     
     create_decluster_menu(findobj(obj.fig,'Label','Catalog','-and','type','uimenu'));
     
-    add_grid_menu(obj);
+    add_sampling_menu(obj);
     create_ztools_menu();
     
     

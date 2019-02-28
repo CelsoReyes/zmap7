@@ -5,12 +5,12 @@ classdef GridOptions < handle
         dz              double                              % vertical distance between grid points
         % Defines whether horizontal distances are constant, or whether they scale as the grid
         % deviates from the equator. 
-        followMeridians     matlab.lang.OnOffSwitchState                = 'off'
-        gridEntireArea      matlab.lang.OnOffSwitchState                = 'off'
-        FixedAnchorPoint    double                                      = []
+        followMeridians     matlab.lang.OnOffSwitchState  	= 'off'
+        gridEntireArea      matlab.lang.OnOffSwitchState    = 'off'
+        FixedAnchorPoint    double                          = []
         % grid cannot be used past these limits [xmin xmax ymin ymax]
         AbsoluteGridLimits  (1,4) double
-        GridType            GridTypes           = GridTypes.XY;
+        GridType            GridTypes                       = GridTypes.XY;
         RefEllipsoid        referenceEllipsoid
     end
     
@@ -46,14 +46,14 @@ classdef GridOptions < handle
             p.addRequired('GridType');
             p.addRequired('dx_dy_dz');
             p.addRequired('RefEllipsoid');
-            p.addParameter('FollowMeridians',false);
+            p.addParameter('FollowMeridians', false);
             p.addParameter('GridEntireArea', false);
-            p.parse(grid_type, dx_dy_dz,RefEllipsoid,varargin{:})
+            p.parse(grid_type, dx_dy_dz, RefEllipsoid,varargin{:})
             
-            obj.GridType = p.Results.GridType;
-            obj.RefEllipsoid = p.Results.RefEllipsoid;
+            obj.GridType        = p.Results.GridType;
+            obj.RefEllipsoid    = p.Results.RefEllipsoid;
             obj.followMeridians = p.Results.FollowMeridians;
-            obj.gridEntireArea = p.Results.GridEntireArea;
+            obj.gridEntireArea  = p.Results.GridEntireArea;
             
             if iscartesian(obj.RefEllipsoid)
                 assert(p.Results.FollowMeridians == false, 'Cannot follow Meridians for a cartesian grid');
@@ -94,19 +94,19 @@ classdef GridOptions < handle
     methods(Static)
         function [mygrid, mygridopts] = fromDialog(existing_gridopt, ellipsoid, shape)
             % FROMDIALOG shows an interactive dialog box allowing user to choose grid
-            mygrid=[];
-            mygridopts=[];
-            if ~exist('ellipsoid','var')
-                ellipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
+            mygrid = [];
+            mygridopts = [];
+            if ~exist('ellipsoid', 'var')
+                ellipsoid = getappdata(groot, 'ZmapDefaultReferenceEllipsoid');
             end
             
-            if ~exist('shape','var')
+            if ~exist('shape', 'var')
                 shape = ShapeGeneral();
             end
-            if exist('existing_gridopt','var') && ~isempty(existing_gridopt)
-                gc = grid_chooser(ellipsoid, existing_gridopt,shape); 
+            if exist('existing_gridopt', 'var') && ~isempty(existing_gridopt)
+                gc = grid_chooser(ellipsoid, existing_gridopt, shape); 
             else
-                gc = grid_chooser(ellipsoid,[],shape);
+                gc = grid_chooser(ellipsoid, [], shape);
             end
             gc.ResultDump = @set_values;
             waitfor(gc)

@@ -171,16 +171,15 @@ classdef AnalysisWindow < handle
         function add_big_series(obj, catalog, minbigmag)
             % controls the plotting of "big" events 
             bigProps = ZmapGlobal.Data.BigEventOpts;
-            idx = find(catalog.Magnitude >= minbigmag);
+            idx = catalog.Magnitude >= minbigmag;
             if bigProps.UseMainEventSizeFunction
                 sizeFcn = str2func(ZmapGlobal.Data.MainEventOpts.MarkerSizeFcn);
                 bigProps.SizeFcn = @(c) sizeFcn(c.Magnitude);
             end
-            
             %bigProps.YData       = y(idx);
             %bigProps.XData       = x(idx);
             bigProps.DisplayName = "Events " + char(8805) + " " + minbigmag; %char(8805) is '>='
-            obj.add_series(catalog, 'big events', bigProps,'PlotAtIndex',idx);
+            obj.add_series(catalog, 'big events', bigProps,'PlotAtIndex', idx);
          
         end
     end

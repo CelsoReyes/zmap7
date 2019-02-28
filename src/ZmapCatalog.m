@@ -11,8 +11,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     %   IsSortedBy - describes sort order
     %   SortDirection - describes sorting direction
     %
-    %   Filter - logical filter for subsetting events
-    %
     % ZmapCatalog read-only properties:
     %   Count - number of events in catalog
     %
@@ -55,8 +53,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     %   intersect - return values common to both events, no repetitions. no tolerance
     %
     %  Sorting, Filtering, Subsetting methods:
-    %   clearFilter - sets all items in Filter to true
-    %   getCropped - get a new, cropped ZmapCatalog from this one (based on Filters)
     %   removeDuplicates - removes events from catalog that are similar within tolerances
     %   sort - sort this catalog by the specified field (IN PLACE)
     %   subset - get a subset of this catalog.
@@ -335,12 +331,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             
         end
         
-        function clearFilter(obj)
-            % CLEARFILTER sets all items in Filter to true
-            % catalog.CLEARFILTER
-            obj.Filter = true(obj.Count,1);
-        end
-        
         function disp(obj)
             if numel(obj)>1
                 disp(obj.blurb);
@@ -409,17 +399,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             end
             
         end
-        
-        function obj = getCropped(existobj)
-            % GETCROPPED get a new, cropped ZmapCatalog from this one
-            
-            if isempty(existobj.Filter)
-                obj = existobj;
-            else
-                obj = existobj.subset(existobj.Filter);
-            end
-        end
-        
+
         function [dists, units] = distanceTo(obj, x, y, z)
             % get distance to events in catalog from a point or set of points
             if ~exist('z','var')||isempty(z)
@@ -652,9 +632,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             end
             [~,idx] = sort(obj.(field),direction);
             obj.subsetInPlace(idx);
-            if isempty(obj.Filter)
-                obj.clearFilter();
-            end
             obj.IsSortedBy      = field;
             obj.SortDirection   = direction;
         end
@@ -952,8 +929,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 units       = validateLengthUnit(pu{vn=="Depth"});
                 obj.Depth   = unitsratio(obj.DepthUnits,units) * obj.Depth;
             end
-            
-            obj.Filter=true(size(obj.Longitude));
         end
         
         function obj = fromZmapArray(other, refEllipse)
@@ -996,7 +971,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj.Magnitude       = other(:,6);
             obj.MagnitudeType   = repmat(categorical(missing), size(obj.Magnitude));
             
-            obj.Filter=true(size(obj.Longitude));
             if exist('mta','var')
                 obj.OtherFields{1}=mta;
             end
@@ -1018,9 +992,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 obj.XYZ=[other.X(:), other.Y(:), other.Z(:)];
             else
                 error('unable to determine XYZ or Latitude/Longitude/Depth')
-            end
-            if isfield(other, 'Filter') && islogical(other.Filter)
-                obj.Filter=other.Filter;
             end
             if isfield(other, 'Magnitude')
                 obj.Magnitude = other.Magnitude(:);

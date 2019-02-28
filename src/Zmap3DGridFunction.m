@@ -112,7 +112,7 @@ classdef Zmap3DGridFunction < ZmapGridFunction
     
     methods(Access=protected)
         function plot_image_for_cursor_browsing(obj, myname, mydesc, choice)
-            h=obj.Grid.imagesc([],obj.Result.values.(myname), mydesc);
+            h=obj.Grid.imagesc([],obj.Result.values.(myname));
             h.AlphaData=zeros(size(h.AlphaData))+0.0;
             
             % add some details that can be picked up by the interactive data cursor

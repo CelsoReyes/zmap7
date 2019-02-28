@@ -117,14 +117,14 @@ classdef ZmapGrid
             switch createFrom
                 case 'FromPoints'
                     p.addRequired('pointvector', @(x)isempty(x) || size(x,2)==2 || size(x,2)==3);
-                    p.addParameter('Units','');
+                    p.addParameter('Units', '');
                 case 'FromMatrices'
                     p.addRequired('xmatrix');
                     p.addRequired('ymatrix');
-                    p.addOptional('zmatrix',[]);
-                    p.addParameter('Units','');
+                    p.addOptional('zmatrix', []);
+                    p.addParameter('Units', '');
                 case 'FromGridOptions'
-                    p.addRequired('gridoptions',@(x)isa(x,'GridOptions'));
+                    p.addRequired('gridoptions', @(x)isa(x, 'GridOptions'));
                 case 'FromNothing'
                     % do nothing
                 otherwise
@@ -150,7 +150,7 @@ classdef ZmapGrid
                     obj.Units = p.Results.Units;
                     
                 case 'FromMatrices'
-                    hasSameSize =@(A,B) isequal(size(A), size(B));
+                    hasSameSize = @(A,B) isequal(size(A), size(B));
                     
                     if isempty(p.Results.zmatrix)
                         assert(hasSameSize(p.Results.xmatrix, p.Results.ymatrix) );
@@ -168,7 +168,7 @@ classdef ZmapGrid
                         grid_option_definition(p.Results.gridoptions, obj.RefEllipsoid);
                     end
                     if ~p.Results.gridoptions.gridEntireArea
-                        obj=obj.MaskWithShape(p.Results.Shape);
+                        obj = obj.MaskWithShape(p.Results.Shape);
                     end
                     
                 case 'FromNothing'
@@ -180,7 +180,7 @@ classdef ZmapGrid
                                     
             
             if isempty(obj.ActivePoints)
-                obj.ActivePoints=true(size(obj.X));
+                obj.ActivePoints = true(size(obj.X));
             end
             
             return
@@ -204,13 +204,13 @@ classdef ZmapGrid
                 y = ZmapGrid.vector_including_origin(0, gridopt.dy, yl);
                 switch gridopt.GridType
                     case  GridTypes.XYZ
-                        obj.Origin=[0 0 0];
+                        obj.Origin = [0 0 0];
                         zl = abs_limits(5:6);
                         z = ZmapGrid.vector_including_origin(0, gridopt.dz, zl);
                         [obj.X, obj.Y, obj.Z] = meshgrid(x,y,z);
                         
                     case GridTypes.XY
-                        obj.Origin=[0 0];
+                        obj.Origin = [0 0];
                         [obj.X, obj.Y] = meshgrid(x,y);
                         obj.Z = [];
                     otherwise
@@ -219,7 +219,7 @@ classdef ZmapGrid
                 end
                 
                 if use_shape
-                    obj=obj.MaskWithShape(myshape.Points);
+                    obj = obj.MaskWithShape(myshape.Points);
                 end
             end
             
@@ -228,32 +228,32 @@ classdef ZmapGrid
                 % ZMAPGRID( NAME, GRIDOPTIONS)
                 
                 % assume it came from GridParameterChoice
-                use_shape=gridopt.gridEntireArea & ~isempty(myshape);
+                use_shape = gridopt.gridEntireArea & ~isempty(myshape);
                 
                 % also, assume it is requesting a 2d gid
                 
                 % 1st: FIGURE OUT ORIGIN POINT OF GRID
-                ax=findobj(gcf,'Tag','mainmap_ax');
+                ax = findobj(gcf, 'Tag', 'mainmap_ax');
                 if ~isempty(ax)
                     xl = xlim(ax); yl=ylim(ax);
-                elseif isprop(varargin{1},'AbsoluteGridLimits')
-                    xl=varargin{1}.AbsoluteGridLimits(1:2);
-                    yl=varargin{1}.AbsoluteGridLimits(3:4);
+                elseif isprop(varargin{1}, 'AbsoluteGridLimits')
+                    xl = varargin{1}.AbsoluteGridLimits(1:2);
+                    yl = varargin{1}.AbsoluteGridLimits(3:4);
                 else
-                    xl=[-179.9999 180]; 
-                    yl=[-90 90];
+                    xl = [-179.9999 180]; 
+                    yl = [-90 90];
                 end
-                minX=max([xl(1), -180]);
-                maxX=min([xl(2), 180]);
-                minY=max([yl(1), -90]);
-                maxY=min([yl(2), 90]);
+                minX = max([xl(1), -180]);
+                maxX = min([xl(2), 180]);
+                minY = max([yl(1), -90]);
+                maxY = min([yl(2), 90]);
                 
                 if  ~isempty(gridopt.FixedAnchorPoint)
-                    lonLatZ0=gridopt.FixedAnchorPoint;
+                    lonLatZ0 = gridopt.FixedAnchorPoint;
                 elseif use_shape
-                    lonLatZ0=[myshape.X0 myshape.Y0];
+                    lonLatZ0 = [myshape.X0 myshape.Y0];
                 else
-                    lonLatZ0=[mean([minX, maxX]), mean([minY, maxY])];
+                    lonLatZ0 = [mean([minX, maxX]), mean([minY, maxY])];
                 end
                 
                 % 2nd: FIGURE OUT DELTAS
@@ -278,11 +278,11 @@ classdef ZmapGrid
                     unimplemented_error()
                 end
                 if gridopt.GridType == "XY"
-                    obj.Z=[];
+                    obj.Z = [];
                 end
                 
                 if use_shape
-                    obj=obj.MaskWithShape(myshape.Points);
+                    obj = obj.MaskWithShape(myshape.Points);
                 end
             end
             
@@ -292,20 +292,20 @@ classdef ZmapGrid
                 % or
                 %    [X1 Y1 Z1 ; ... ; Zn Yn Zn])
                 
-                assert(size(all_points,2) >= 2 && size(all_points,2) <=3);
-                obj.X=all_points(:,1);
-                obj.Y=all_points(:,2);
-                if size(all_points,2)==3
+                assert(size(all_points, 2) >= 2 && size(all_points, 2) <= 3);
+                obj.X = all_points(:,1);
+                obj.Y = all_points(:,2);
+                if size(all_points,2) == 3
                     obj.Z = all_points(:,3);
                 end
             end
             
             function matrix_definition(Xmatrix, Ymatrix, Zmatrix)
-                assert(isequal(size(Xmatrix),size(Ymatrix)),'X and Y should be the same size')
-                obj.X=Xmatrix;
-                obj.Y=Ymatrix;
-                if exist('Zmatrix','var') && ~isempty(Zmatrix)
-                    assert(isequal(size(Xmatrix),size(Ymatrix)),'size of Z matrix should match X and Y matrices');
+                assert(isequal(size(Xmatrix), size(Ymatrix)), 'X and Y should be the same size')
+                obj.X = Xmatrix;
+                obj.Y = Ymatrix;
+                if exist('Zmatrix', 'var') && ~isempty(Zmatrix)
+                    assert(isequal(size(Xmatrix), size(Ymatrix)), 'size of Z matrix should match X and Y matrices');
                     obj.Z = Zmatrix;
                 end
             end
@@ -400,16 +400,16 @@ classdef ZmapGrid
             end
         end
         
-        function obj=delete(obj)
+        function obj = delete(obj)
             % remove current grid entirely
             grid_tag = ['grid_' obj.Name];
-            prev_grid = findobj('Tag',grid_tag);
+            prev_grid = findobj('Tag', grid_tag);
             delete(prev_grid);
-            obj=ZmapGrid();
+            obj = ZmapGrid();
         end
         
         %% plotting routines
-        function prev_grid=plot(obj, ax,varargin)
+        function prev_grid = plot(obj, ax, varargin)
             % plot the current grid over axes(ax)
             % obj.PLOT() plots on the current axes
             %  obj.PLOT(ax) plots on the specified axes. if ax is empty, then the current axes will
@@ -425,49 +425,49 @@ classdef ZmapGrid
             if ~exist('ax','var') || isempty(ax)
                 ax=gca;
             end
-            def_opts={'color',FancyColors.rgb(obj.PlotOpts.Color),...
-                'displayname','grid points',...
-                'MarkerSize',obj.PlotOpts.MarkerSize,...
-                'Marker',obj.PlotOpts.Marker,...
-                'LineWidth',obj.PlotOpts.LineWidth,...
-                'LineStyle','none'};
-            varargin=[def_opts, varargin];
-            useActiveOnly= numel(varargin)>0 && strcmpi(varargin{end},'ActiveOnly');
+            def_opts={'color', FancyColors.rgb(obj.PlotOpts.Color),...
+                'displayname', 'grid points',...
+                'MarkerSize' , obj.PlotOpts.MarkerSize,...
+                'Marker'     , obj.PlotOpts.Marker,...
+                'LineWidth'  , obj.PlotOpts.LineWidth,...
+                'LineStyle'  , 'none'};
+            varargin = [def_opts, varargin];
+            useActiveOnly = numel(varargin) > 0 && strcmpi(varargin{end}, 'ActiveOnly');
             if useActiveOnly && ~isempty(obj.ActivePoints)
-                varargin(end)=[];
-                x='Xactive';
-                y='Yactive';
+                varargin(end) = [];
+                x = 'Xactive';
+                y = 'Yactive';
             else
-                x='X';
-                y='Y';
+                x = 'X';
+                y = 'Y';
             end
             if ~all(ishandle(ax))
                 error('invalid axes provided. If not specifying axes, but are providing additional options, lead with "[]". ex. obj.plot([],''color'',[ 1 1 0])');
             end
             grid_tag = ['grid_' obj.Name];
-            prev_grid = findobj(ax,'Tag',grid_tag);
+            prev_grid = findobj(ax, 'Tag', grid_tag);
             if ~isempty(prev_grid)
-                prev_grid.XData=obj.(x)(:);
-                prev_grid.YData=obj.(y)(:);
+                prev_grid.XData = obj.(x)(:);
+                prev_grid.YData = obj.(y)(:);
                 % disp('reusing grid on plot');
             else
-                ax.NextPlot='add';
-                prev_grid=line(ax,obj.(x)(:),obj.(y)(:),'Tag',grid_tag);
-                ax.NextPlot='replace';
+                ax.NextPlot = 'add';
+                prev_grid = line(ax, obj.(x)(:), obj.(y)(:), 'Tag', grid_tag);
+                ax.NextPlot = 'replace';
                 % disp('created new grid on plot');
             end
             % make sure that grid is on the bottom layer
-            chh=ax.Children;
+            chh = ax.Children;
             if ~isempty(prev_grid)
-                ax.Children=[ax.Children(chh~=prev_grid); ax.Children(chh==prev_grid)];
+                ax.Children = [ax.Children(chh ~= prev_grid); ax.Children(chh == prev_grid)];
             end
             
             if ~isempty(varargin)
-                set(prev_grid,varargin{:});
+                set(prev_grid, varargin{:});
             end
         end
         
-        function h=pcolor(obj, ax, values, name)
+        function h = pcolor(obj, ax, values, name)
             % PCOLOR create a pcolor plot where each point of the grid is center of cell
             % h = obj.PCOLOR(ax, values) plos the values as a pcolor plot, where
             % each grid point is contained within a color cell. the cells are divided halfway
@@ -480,28 +480,28 @@ classdef ZmapGrid
             % h is a handle to the pcolor object
             %
             % see also gridpcolor
-            if ~exist('name','var')
+            if ~exist('name', 'var')
                 name = '';
             end
-            assert(numel(obj.X)==numel(values),'Number of values doesn''t match number of points')
+            assert(numel(obj.X) == numel(values), 'Number of values doesn''t match number of points')
             if isvector(values) && ~isvector(obj.X)
-                values=reshape(values,size(obj.X));
+                values = reshape(values, size(obj.X));
             end
-            h=gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
+            h = gridpcolor(ax,obj.X, obj.Y, values, obj.ActivePoints, name);
         end
         
-        function [c,h]=contourf(obj, ax, values, name, nlevels)
+        function [c,h] = contourf(obj, ax, values, name, nlevels)
             % [c,h]=CONTOURF(obj,ax, values, name, nlevels)
-            if ~exist('nlevels','var') || ~isempty(nlevels)
-                nlevels=20;
+            if ~exist('nlevels', 'var') || ~isempty(nlevels)
+                nlevels = 20;
             end
             
-            [c,h]=contourf(ax,obj.X, obj.Y, reshape(values, size(obj.X)));
+            [c,h] = contourf(ax, obj.X, obj.Y, reshape(values, size(obj.X)));
             % set the title
-            h.LineStyle='none';
-            h.DisplayName=name;
+            h.LineStyle = 'none';
+            h.DisplayName = name;
             if ~all(isnan(values))
-                if numel(nlevels)>1
+                if numel(nlevels) > 1
                     h.LevelList = nlevels;
                 else
                     h.LevelList = linspace(floor(min(values(:))), ceil(max(values)), nlevels);
@@ -509,7 +509,7 @@ classdef ZmapGrid
             end
         end
         
-        function h=imagesc(obj, ax, values, name)
+        function h = imagesc(obj, ax, values)
             % imagesc create a imagesc plot where each point of the grid is center of cell
             % h = obj.pcolor(ax, values) plots the values as a pcolor plot, where
             % each grid point is contained within a color cell. the cells are divided halfway
@@ -522,43 +522,40 @@ classdef ZmapGrid
             % h is a handle to the pcolor object
             %
             % see also gridpcolor
-            if ~exist('name','var')
-                name = '';
-            end
-            assert(numel(values)==numel(obj.X),'expect same number of values');
-            if ~isequal(size(values),size(obj.X))
-                values = reshape(values,size(obj.X));
+
+            assert(numel(values) == numel(obj.X), 'expect same number of values');
+            if ~isequal(size(values), size(obj.X))
+                values = reshape(values, size(obj.X));
             end
             
             % corners for image
             x = bounds2(obj.X);
             y = bounds2(obj.Y);
             try
-                values(~obj.ActivePoints)=nan;
+                values(~obj.ActivePoints) = nan;
             catch
-                values=double(values);
-                values(~obj.ActivePoints)=nan;
+                values = double(values);
+                values(~obj.ActivePoints) = nan;
             end
             %axes ax
-            imAlpha=ones(size(values));
-            imAlpha(isnan(values))=0;
+            imAlpha = ones(size(values));
+            imAlpha(isnan(values)) = 0;
             %imAlpha=~obj.ActivePoints;
-            h=imagesc(x, y, values,'AlphaData',imAlpha);%, obj.ActivePoints,name);
-            set(ax,'YDir','normal');
+            h = imagesc(x, y, values, 'AlphaData', imAlpha);
+            set(ax, 'YDir', 'normal');
         end
         
         %% io routines
         function save(obj, filename, pathname)
             % save grid to .mat file
-            ZG=ZmapGlobal.Data;
-            if ~exist('filename','var')
-                filename = fullfile(pathname,['zmapgrid_',obj.Name,'.m']);
-                uisave('zmapgrid',filename)
-            elseif ~exist('path','var')
-                filename = fullfile(ZG.Directories.data,['zmapgrid_',obj.Name,'.m']);
-                uisave('zmapgrid',filename)
+            if ~exist('filename', 'var')
+                filename = fullfile(pathname,['zmapgrid_', obj.Name,'.m']);
+                uisave('zmapgrid', filename)
+            elseif ~exist('path', 'var')
+                filename = fullfile(ZmapGlobal.Data.Directories.data, ['zmapgrid_', obj.Name, '.m']);
+                uisave('zmapgrid', filename)
             else
-                uisave('zmapgrid',fullfile(pathname,filename));
+                uisave('zmapgrid', fullfile(pathname, filename));
             end
         end
     end
@@ -597,8 +594,8 @@ classdef ZmapGrid
             % deltas
             [dLat, dLon, dZ, deltaUnits] = deltasToDegrees(deltasXYZ, deltaUnits);            
             
-            xlims_deg = limsLonLatZ(1,:);
-            ylims_deg = limsLonLatZ(2,:);
+            xlims_deg = limsLonLatZ(1, :);
+            ylims_deg = limsLonLatZ(2, :);
             % pick out latitude spacing. Our grid will have this many rows.
             lats = ZmapGrid.vector_including_origin(lat0, dLat, ylims_deg);            
             
@@ -607,32 +604,32 @@ classdef ZmapGrid
             end
             
             if FOLLOW_MERIDIANS
-                [~,dLon] = reckon('rh', lat0, 0, dLon,90);
+                [~,dLon] = reckon('rh', lat0, 0, dLon, 90);
                 
                 % resulting in a rectangular matrix where, on a globe lines will converge, but on a graph
                 lonValues = ZmapGrid.vector_including_origin(lon0, dLon, xlims_deg);
                 
                 %creates a meshgrid of size numel(lonValues) x numel(lats)
-                [lonMat,latMat] = meshgrid(lonValues,lats);
+                [lonMat, latMat] = meshgrid(lonValues, lats);
                 
             else
                 
                 % number of degrees longitude covered by the arclength at each latitude
-                [~,dLon_per_lat] = reckon('rh', lats, 0, dLon, 90);
+                [~, dLon_per_lat] = reckon('rh', lats, 0, dLon, 90);
                 
                 [lonMat, latMat] = ZmapGrid.get_lalo_matrices(dLon_per_lat, xlims_deg, lon0, lats, xlims_deg);
             end
             
-            if numel(deltasXYZ)==3
-                zlims_km = limsLonLatZ(3,:);
+            if numel(deltasXYZ) == 3
+                zlims_km = limsLonLatZ(3, :);
                 zs       = ZmapGrid.vector_including_origin(lonLatZ0, deltasXYZ(3), zlims_km);
-                lonMat   = repmat(lonMat,1,1,numel(zs));
-                latMat   = repmat(latMat,1,1,numel(zs));
+                lonMat   = repmat(lonMat, 1, 1, numel(zs));
+                latMat   = repmat(latMat, 1, 1, numel(zs));
                 zMat     = ones(size(lonMat));
                 for n=1:numel(zs)
-                    zMat(:,:,n) = zs(n);
+                    zMat(:, :, n) = zs(n);
                 end
-                assert(isequal(size(lonMat),size(zMat)));
+                assert(isequal(size(lonMat), size(zMat)));
             end
             
             %% subfunctions
@@ -685,19 +682,19 @@ classdef ZmapGrid
             lats = get_grid_lats( ...
                 lonLatZ0        , ...  grid origin points, guaranteed to be in grid
                 deltasXYZ(2)    , ...  delta Y
-                limsLonLatZ(2,:), ...  Y limits
+                limsLonLatZ(2, :), ...  Y limits
                 refEllipsoid);
             
             xTotalDists = bounded_distance_at_each_latitude(limsLonLatZ(1,:), lats, refEllipsoid);
             
-            [~,dLon_per_lat] = reckon('rh', lats(:), 0, deltasXYZ(1), 90, refEllipsoid);
+            [~, dLon_per_lat] = reckon('rh', lats(:), 0, deltasXYZ(1), 90, refEllipsoid);
             
             [lonMat, latMat] = ZmapGrid.get_lalo_matrices(dLon_per_lat, xTotalDists, lonLatZ0(1), lats, limsLonLatZ(1,:));
-            zMat=[];
+            zMat = [];
         end
         
         function totEstPts = estimate_points(dLon_per_lat , xTotalDists)
-            totEstPts= ceil(sum( ( 1./dLon_per_lat ) .* range(xTotalDists) ));
+            totEstPts = ceil(sum( ( 1./dLon_per_lat ) .* range(xTotalDists) ));
             if totEstPts > ZmapGrid.POSSIBLY_TOO_MANY_POINTS
                 error('ZMAPGRID:get_grid:TooManyGridPoints','Too many grid points: est. %d',totEstPts);
             end
@@ -705,11 +702,11 @@ classdef ZmapGrid
         
         function [lonMat, latMat] = get_lalo_matrices(dLon_per_lat, xTotalDists, lon0, lats, lonBounds)
             % This function deserves a name
-            totEstPts = ZmapGrid.estimate_points(dLon_per_lat , xTotalDists);
+            totEstPts = ZmapGrid.estimate_points(dLon_per_lat, xTotalDists);
             
-            lonMat=nan(totEstPts,1);
-            latMat=nan(totEstPts,1);
-            nPts=0;
+            lonMat = nan(totEstPts, 1);
+            latMat = nan(totEstPts, 1);
+            nPts = 0;
             
             for n=1:numel(lats)
                 theseLonValues  = ZmapGrid.vector_including_origin(lon0, dLon_per_lat(n), lonBounds);
@@ -723,7 +720,7 @@ classdef ZmapGrid
                 lonMat(nPts+1:end) = [];
                 latMat(nPts+1:end) = [];
             end
-            [lonMat,latMat] = cols2matrix(lonMat,latMat,lon0);
+            [lonMat, latMat] = cols2matrix(lonMat, latMat, lon0);
         end
         
         function v = vector_including_origin(orig, delta, limits)
@@ -750,26 +747,26 @@ classdef ZmapGrid
             switch nargin
                 case 0
                     [filename, pathname] = uigetfile('zmapgrid_*.m', 'Pick a ZmapGrid file');
-                    fullfilename= fullfile(pathname,filename);
+                    fullfilename = fullfile(pathname,filename);
                 case 1
-                    if exist(fullfile(ZG.Directories.data,filename),'file')
-                        fullfilename=fullfile(ZG.Directories.data,filename);
+                    if exist(fullfile(ZG.Directories.data, filename), 'file')
+                        fullfilename = fullfile(ZG.Directories.data, filename);
                     elseif exist(filename,'file')
-                        fullfilename=filename;
+                        fullfilename = filename;
                     else
-                        fullfilename=fullfile(ZG.Directories.data,['zmapgrid_' filename '.m']);
+                        fullfilename = fullfile(ZG.Directories.data, ['zmapgrid_' filename '.m']);
                     end
                 case 2
-                    if exist(fullfile(pathname,filename),'file')
-                        fullfilename=fullfile(pathname,filename);
+                    if exist(fullfile(pathname, filename),'file')
+                        fullfilename = fullfile(pathname, filename);
                     else
-                        fullfilename=fullfile(pathname,['zmapgrid_' filename '.m']);
+                        fullfilename = fullfile(pathname, ['zmapgrid_' filename '.m']);
                     end
             end
             try
-                tmp=load(fullfilename,'zmapgrid');
-                obj=tmp.zmapgrid;
-                assert(isa(obj,'ZmapGrid'));
+                tmp = load(fullfilename, 'zmapgrid');
+                obj = tmp.zmapgrid;
+                assert(isa(obj, 'ZmapGrid'));
             catch ME
                 errordlg(ME.message);
             end
@@ -784,20 +781,20 @@ function lats = get_grid_lats(lonLatZ0, dY, latBounds, refEllipsoid)
     lon0 = lonLatZ0(1);
     
     if latBounds(1) > latBounds(2)
-        latBounds = latBounds([2,1]);
+        latBounds = latBounds([2, 1]);
     end
     
     % calculate how far to the north and south the bounded region extends
     [NS_extents,az] = distance(lat0,lon0, latBounds,lon0, refEllipsoid);
-    NS_extents(az==180) = -NS_extents(az==180); % swap signs for anything that is to the origin's south.
+    NS_extents(az == 180) = -NS_extents(az == 180); % swap signs for anything that is to the origin's south.
     
     % create evenly spaced values radiating from our latitude origin
     % dY = deltasXYZ(2);
     Ys = [fliplr( 0 : -dY : NS_extents(1)), dY : dY: NS_extents(2) ];  % relative offset in units from lat
-    Ys(NS_extents(2)<Ys | Ys<NS_extents(1) ) = [];
+    Ys(NS_extents(2) < Ys | Ys < NS_extents(1) ) = [];
     
     % project on the ellipsoid, getting latitudes for each of or rows of grid points.
-    [lats,~] = reckon('rh', lat0,lon0, Ys, 0, refEllipsoid);
+    [lats,~] = reckon('rh', lat0, lon0, Ys, 0, refEllipsoid);
     lats = lats(:);
 end
 
@@ -810,7 +807,7 @@ function xTotalDists = bounded_distance_at_each_latitude(lonBounds, lats, refEll
     xTotalDists = distance('rh', mins_along_lon0, maxs_along_lon0, refEllipsoid); %ellipsoid units
     if ~any(xTotalDists)
         % oops, reached around the entire ellipsoid. calculate half distance, then double it
-        xTotalDists=distance('rh', [lats,lats.*0], (maxs_along_lon0-mins_along_lon0)/2, refEllipsoid) .*2;
+        xTotalDists = distance('rh', [lats,lats.*0], (maxs_along_lon0-mins_along_lon0)/2, refEllipsoid) .*2;
     end
     
 end
@@ -829,19 +826,19 @@ function [xs, ys] = cols2matrix(lonCol,latCol, lon0)
     nrows       = numel(ugy);                   % number of latitudes in matrix
     [~,example] = min(abs(latCol(:)));          % latitude closest to equator has most lons
     mostCommonY = latCol(example);              % account for the abs possibly flipping signs
-    base_lon_idx= find(lonCol(latCol==mostCommonY)==lon0); % longitudes that must line up
-    ncols       = sum(latCol(:)==mostCommonY);  % most lons in matrix
-    ys          = repmat(ugy(:),1,ncols);
-    xs          = nan(nrows,ncols);
+    base_lon_idx= find(lonCol(latCol == mostCommonY) == lon0); % longitudes that must line up
+    ncols       = sum(latCol(:) == mostCommonY);  % most lons in matrix
+    ys          = repmat(ugy(:), 1, ncols);
+    xs          = nan(nrows, ncols);
     
     for n=1:nrows
         thislat     = ugy(n);                   % lat for this row
-        these_lons  = lonCol(latCol==thislat);  % lons in this row
+        these_lons  = lonCol(latCol == thislat);  % lons in this row
         row_length  = numel(these_lons);        % number of lons in this row
         
-        main_lon_idx= find(these_lons==lon0);   % offset of X in this row
+        main_lon_idx= find(these_lons == lon0);   % offset of X in this row
         offset      = base_lon_idx - main_lon_idx;
-        xs(n,(1:row_length)+offset) = these_lons;
+        xs(n, (1:row_length) + offset) = these_lons;
     end
     
 end
