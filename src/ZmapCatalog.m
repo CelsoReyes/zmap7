@@ -325,7 +325,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 end
                 
             end
-            obj.clearFilter();
             assert(obj.Count == initialCount);
             
             
