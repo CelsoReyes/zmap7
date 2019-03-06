@@ -771,7 +771,7 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             theObj = actt.UserData;
             uimenu(lookmenu,'Separator','on',...
                 'Label','Save results',...
-                MenuSelectedField(),@theObj.save);
+                MenuSelectedField(),@theObj.Parent.save);
         end
     end
 end

@@ -65,7 +65,7 @@ function catalog_menu(obj, force)
     
     uimenu(submenu,'Label','Split and Compare', ...
         MenuSelectedField(),@(~,~)multi_range_selector(obj.catalog, ...
-        @(x)ZG.catalogs.set('CatalogA',x), @(x)ZG.catalogs.set('CatalogB',x)) );
+        @(x)ZG.catalogs.set('catalogA',x), @(x)ZG.catalogs.set('catalogB',x)) );
     
     uimenu(submenu,'Label','Compare catalogs - find identical events',MenuSelectedField(),@(~,~)comp2cat);
     
@@ -81,7 +81,7 @@ function catalog_menu(obj, force)
         mcm = MemorizedCatalogManager;
         if ~isempty(mcm) && any(mcm.list == "default")
             obj.rawcatalog = mcm.recall();
-            obj.CatalogManager.RawCatalog = obj.RawCatalog;
+            obj.CatalogManager.RawCatalog = obj.rawcatalog;
             
             [obj.mshape,obj.mdate] = obj.filter_catalog();
             obj.map_axes.XLim = bounds2(obj.rawcatalog.X);
