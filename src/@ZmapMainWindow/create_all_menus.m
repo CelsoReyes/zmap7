@@ -297,9 +297,13 @@ function create_all_menus(obj, force)
         function clear_result_tabs(src,ev)
             delete(obj.maingroup.Children(obj.maingroup.Children ~= obj.maintab))
         end
-        function manage_symbols_for_current_map(src,ev)
-            ax=findobj(obj.maingroup.SelectedTab,'Type','axes');
-            SymbolManager.cb(src,ev,ax);
+        function manage_symbols_for_current_map(src, ev)
+            % 
+            
+            % look for plots, but only direct children of the selected tab.
+            % this way we don't access axes such as the x-section plots
+            ax = findobj(obj.maingroup.SelectedTab.Children, 'flat', 'Type', 'axes');
+            SymbolManager.cb(src, ev, ax);
         end
         
         function manage_mainmap_symbols(src,ev)
