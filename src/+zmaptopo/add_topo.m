@@ -79,7 +79,7 @@ function add_topo(varargin)
         error(['Data for this topographic model cannot be found or downloaded. ', ...
             'Expected "%s" in folder dem/%s/\n', ...
             '\nPossibly downloadable from:\n%s'], ...
-            deets.FileName, deets.Locale, Deets.SourceUrl);
+            deets.FileName, deets.Locale, deets.SourceUrl);
     end
     
             
@@ -139,7 +139,7 @@ function download_if_necessary(deets, zfn)
         error(['Data for this topographic model cannot be found. ', ...
             'Expected "%s" in folder dem/%s/\n', ...
             '\nPossibly downloadable from:\n%s'], ...
-            deets.FileName, deets.Locale, Deets.SourceUrl);
+            deets.FileName, deets.Locale, deets.SourceUrl);
     end
 end
 
@@ -176,7 +176,7 @@ function  try_to_aquire_file(deets, RootFolder)
         
     catch
         watchoff
-        error('Data for this topographic model cannot be found. Expected "%s" in folder dem/%s/\n\nPossibly downloadable from:\n%s',deets.FileName, deets.Locale, Deets.SourceUrl);
+        error('Data for this topographic model cannot be found. Expected "%s" in folder dem/%s/\n\nPossibly downloadable from:\n%s',deets.FileName, deets.Locale, deets.SourceUrl);
     end
 end
 
