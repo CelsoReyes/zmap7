@@ -175,7 +175,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
             if ~exist('include_boundary','var')
                 include_boundary = true;
             end
-            if isempty(obj.Points)||isnan(obj.Points(1))
+            if isempty(obj.Points) || isnan(obj.Points(1))
                 mask = ones(size(otherLon));
             else
                 % return a vector of size otherLon that is true where item is inside polygon
@@ -312,7 +312,7 @@ classdef ShapeGeneral < matlab.mixin.Copyable
         end
         
         function tf=isempty(obj)
-            tf=isvalid(obj) && isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points));
+            tf=numel(obj)==0 || (isvalid(obj) && isequal(size(obj.Points),[1,2]) && all(isnan(obj.Points)));
         end
         function s=toStr(obj)
             s = sprintf('%s Shape, with %d points.',obj.Type,size(obj.Outline,1)-1);
