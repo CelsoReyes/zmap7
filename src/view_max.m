@@ -170,7 +170,7 @@ function view_max(valueMap,gx,gy,stri,myselector)
     axes('position',rect)
     set(gca,'NextPlot','add')
     pco1 = pcolor(gx,gy,re4);
-    axis([ s2 s1 s4 s3])
+    axis([ s2_west s1_east s4_south s3_north])
 
     shading(ZG.shading_style);
 

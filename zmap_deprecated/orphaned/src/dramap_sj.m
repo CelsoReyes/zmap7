@@ -113,10 +113,10 @@ mapz
 mapz(selz,:)
 hold on; axis off
 % axesm('MapProjection',mapz(selz,:),'MapParallels',[],...
-%    'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+%    'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
 
 axesm('MapProjection',mapz(selz,:),...
-    'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+    'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
 
 
 

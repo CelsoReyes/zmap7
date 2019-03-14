@@ -155,18 +155,18 @@ function mainmap_overview()
     hold off
     
     % find min and Maximum axes points
-    s1 = max(mycat.Longitude);
-    s2 = min(mycat.Longitude);
-    s3 = max(mycat.Latitude);
-    s4 = min(mycat.Latitude);
+    s1_east = max(mycat.Longitude);
+    s2_west = min(mycat.Longitude);
+    s3_north = max(mycat.Latitude);
+    s4_south = min(mycat.Latitude);
     
-    if s1 == s2
-        s2 = s2 +- 0.1 ;
-        s1 = s1 - 0.1;
+    if s1_east == s2_west
+        s2_west = s2_west +- 0.1 ;
+        s1_east = s1_east - 0.1;
     end
-    if s3 == s4
-        s3 = s3 + 0.1;
-        s4 = s4 - 0.1;
+    if s3_north == s4_south
+        s3_north = s3_north + 0.1;
+        s4_south = s4_south - 0.1;
     end
     orient landscape
     set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
@@ -428,7 +428,7 @@ function mainmap_overview()
     %
     %  Plots epicenters  and faults
     overlay_
-    axis([ s2 s1 s4 s3])
+    axis([ s2_west s1_east s4_south s3_north])
     
     %rough choice for map aspect ratio
     set(main_map_ax,'DataAspectRatio',[1 cosd(mean(ylim)) 10]); % adjust for latitude

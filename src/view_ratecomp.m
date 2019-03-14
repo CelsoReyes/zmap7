@@ -68,7 +68,7 @@ function view_ratecomp(det,valueMap)
     axes('position',rect)
     set(gca,'NextPlot','add')
     pcolor(gx,gy,valueMap);
-    axis([ s2 s1 s4 s3])
+    axis([ s2_west s1_east s4_south s3_north])
     
     shading(ZG.shading_style);
 

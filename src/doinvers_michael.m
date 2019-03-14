@@ -302,32 +302,32 @@ function doinvers_michael(mycat)
         web http://www.world-stress-map.org/;
     end
     
-    function ftype = faultType(s1, s2, s3)
-        % faultTypes determine faulting ftype from the s1,s2,s3 plunge values
+    function ftype = faultType(s1_east, s2_west, s3_north)
+        % faultTypes determine faulting ftype from the s1_east,s2_west,s3_north plunge values
         % returns a string description
         ftype = 'Unknow';
         
-        if s1>52                         && s3<35
+        if s1_east>52                         && s3_north<35
             ftype = 'Normal';
         end
         
-        if 40<s1  && s1<52               && s3<20
+        if 40<s1_east  && s1_east<52               && s3_north<20
             ftype = 'Normal to Strike Slip';
         end
         
-        if s1<40            && s2>45     && s3<20
+        if s1_east<40            && s2_west>45     && s3_north<20
             ftype = 'Strike Slip';
         end
         
-        if s1<20            && s2>45     && s3<40
+        if s1_east<20            && s2_west>45     && s3_north<40
             ftype = 'Strike Slip';
         end
         
-        if s1<20                         && 40<s3 && s3<52
+        if s1_east<20                         && 40<s3_north && s3_north<52
             ftype = 'Thrust to Strike Slip';
         end
         
-        if s1<35                         && s3>52
+        if s1_east<35                         && s3_north>52
             ftype = 'Thrust';
         end
     end

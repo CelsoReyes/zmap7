@@ -186,7 +186,7 @@ function show_mov(in, in2)
             set(gca,'NextPlot','add')
             pco1 = pcolor(gx,gy,re4);
             caxis([ZG.minc ZG.maxc]);
-            axis([ s2 s1 s4 s3])
+            axis([ s2_west s1_east s4_south s3_north])
             set(gca,'NextPlot','add')
             %overlay
             if in == 'ast'

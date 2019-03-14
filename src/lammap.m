@@ -41,17 +41,17 @@ function lammap()
     end
     set(gca,'NextPlot','add')
     if length(coastline) > 1
-        lc_map(coastline(:,2),coastline(:,1),s3,s4,s1,s2)
+        lc_map(coastline(:,2),coastline(:,1),s3_north,s4_south,s1_east,s2_west)
         g = allchild(gca);
         set(g,'Color','k')
     end
     set(gca,'NextPlot','add')
     if length(faults) > 10
-        lc_map(faults(:,2),faults(:,1),s3,s4,s1,s2)
+        lc_map(faults(:,2),faults(:,1),s3_north,s4_south,s1_east,s2_west)
     end
     set(gca,'NextPlot','add')
     if ~isempty(mainfault)
-        lc_map(mainfault(:,2),mainfault(:,1),s3,s4,s1,s2)
+        lc_map(mainfault(:,2),mainfault(:,1),s3_north,s4_south,s1_east,s2_west)
     end
     lc_event(ZG.primeCatalog.Latitude,ZG.primeCatalog.Longitude,'.k')
     if ~isempty(ZG.maepi)

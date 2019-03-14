@@ -285,8 +285,8 @@ sl = slice(X,Y,Z,pro,X2,Y2,Z2);
 hold on
 rotate3d on
 caxis([0 0.3])
-%set(gca,'XLim',[s1 s2],'xgrid','off')
-%set(gca,'YLim',[s4 s3],'ygrid','off')
+%set(gca,'XLim',[s1_east s2_west],'xgrid','off')
+%set(gca,'YLim',[s4_south s3_north],'ygrid','off')
 %set(gca,'ZLim',[ -max(a.Depth)-2 0 ],'zgrid','off')
 
 shading interp

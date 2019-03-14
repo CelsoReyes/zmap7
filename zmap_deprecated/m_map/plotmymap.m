@@ -138,12 +138,12 @@ classdef plotmymap < ZmapFunction
             watchon
             drawnow
             l  = get(h1,'XLim');
-            s1 = l(2); s2 = l(1);
+            s1_east = l(2); s2_west = l(1);
             l  = get(h1,'YLim');
-            s3 = l(2); s4 = l(1);
+            s3_north = l(2); s4_south = l(1);
             
             projs={'lambert','miller','mollweide','Oblique Mercator'};
-            mproj(projs{obj.proj},'long',[s2 s1],'lat',[s4 s3]);
+            mproj(projs{obj.proj},'long',[s2_west s1_east],'lat',[s4_south s3_north]);
             resOrder='clih';
             indicator=resOrder(obj.resolution);
             myfn=str2func(['m_gshhs_' indicator]);

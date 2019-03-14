@@ -133,12 +133,12 @@ function plotala()
     set(gca,'NextPlot','add')
     
     if ~isempty(coastline)
-        l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf | coastline(: ,1) == -inf;
+        l = coastline(:,1) < s1_east  & coastline(:,1) > s2_west & coastline(:,2) < s3_north & coastline(:,2) > s4_south| coastline(:,1) == inf | coastline(: ,1) == -inf;
         pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*t0b,'k');
         pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*teb,'k');
     end
     if ~isempty(faults)
-        l = faults(:,1) < s1  & faults(:,1) > s2 & faults(:,2) < s3 & faults(:,2) > s4| faults(:,1) == inf;
+        l = faults(:,1) < s1_east  & faults(:,1) > s2_west & faults(:,2) < s3_north & faults(:,2) > s4_south| faults(:,1) == inf;
         pl1 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*t0b,'k');
         pl4 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*teb,'k');
     end
@@ -161,7 +161,7 @@ function plotala()
         set(pl8,'LineWidth',2.0,'MarkerSize',10)
     end
     
-    axis([ s2-0.1 s1+0.1 s4-0.1 s3+0.1 t0b teb+1  ])
+    axis([ s2_west-0.1 s1_east+0.1 s4_south-0.1 s3_north+0.1 t0b teb+1  ])
     strib4 = [  ' Alarm Cube of '  name '; wl =  '  char(ZG.compare_window_dur) '; Zcut = ' num2str(tre2,3)  ];
     title(strib4,'FontWeight','bold',...
         'FontSize',ZmapGlobal.Data.fontsz.m,'Color','k')

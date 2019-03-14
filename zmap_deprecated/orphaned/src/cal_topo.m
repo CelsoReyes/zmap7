@@ -4,11 +4,11 @@ import zmaptopo.TopoToFlag
 report_this_filefun(mfilename('fullpath'));
 
 l  = get(h1,'XLim');
-s1 = l(2); s2 = l(1);
+s1_east = l(2); s2_west = l(1);
 l  = get(h1,'YLim');
-s3 = l(2); s4 = l(1);
+s3_north = l(2); s4_south = l(1);
 fac = 1;
-if abs(s4-s3) > 10 | abs(s1-s2) > 10 
+if abs(s4_south-s3_north) > 10 | abs(s1_east-s2_west) > 10 
     def = {'3'};
     ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
     l = ni2{:};
@@ -16,14 +16,14 @@ if abs(s4-s3) > 10 | abs(s1-s2) > 10
 end
 try
     cd(fullfile(hodi, 'dem','gtopo30'));
-    [tmap, tmapleg] = gtopo30('test',fac,[s4 s3],[ s2 s1]);
-    [tmap2, tmapleg2] = gtopo30('test',fac,[s4 s3],[ s2 s1]);
+    [tmap, tmapleg] = gtopo30('test',fac,[s4_south s3_north],[ s2_west s1_east]);
+    [tmap2, tmapleg2] = gtopo30('test',fac,[s4_south s3_north],[ s2_west s1_east]);
 catch
     disp('failed to load gtopo30');
 end
 
-my = s4:1/tmapleg(1):s3+0.1;
-mx = s2:1/tmapleg(1):s1+0.1;
+my = s4_south:1/tmapleg(1):s3_north+0.1;
+mx = s2_west:1/tmapleg(1):s1_east+0.1;
 toflag = TopoToFlag.five;
 plt = 'plo'; % pltopo;
 
@@ -32,8 +32,8 @@ plt = 'plo'; % pltopo;
 total_map(1:ro1,1:co1) = tmap(1:ro1,1:co1);
 total_map(ro1+1:ro1+ro2,1:co2) = tmap2(1:ro2,1:co2);
 total_legend = tmapleg;
-tdiff1 = s3 - tmapleg(2);
-tdiff2 = s3 - tmapleg2(2);
+tdiff1 = s3_north - tmapleg(2);
+tdiff2 = s3_north - tmapleg2(2);
 if abs(tdiff2) < abs(tdiff1)
     total_legend(2) = tmapleg2(2);
 end

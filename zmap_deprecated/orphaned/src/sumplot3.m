@@ -43,10 +43,10 @@ report_this_filefun(mfilename('fullpath'));
 %
 % %set(set_ni3,'String',num2str(ni));
 % % find min and Maximum axes points
-% s1 = max(a.Longitude);
-% s2 = min(a.Longitude);
-% s3 = max(a.Latitude);
-% s4 = min(a.Latitude);
+% s1_east = max(a.Longitude);
+% s2_west = min(a.Longitude);
+% s3_north = max(a.Latitude);
+% s4_south = min(a.Latitude);
 % %ni = 100;
 % orient landscape
 % set(gcf,'PaperPosition',[ 1.0 1.0 8 6])
@@ -85,7 +85,7 @@ report_this_filefun(mfilename('fullpath'));
 %
 % %le =legend('+b',ls1,'og',ls2,'xr',ls3);
 % %set(le,'position',[ 0.75 0.50 0.12 0.07],'FontSize',6)
-% axis([ s2 s1 s4 s3])
+% axis([ s2_west s1_east s4_south s3_north])
 % %xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
 % %ylabel('Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
 % %strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];

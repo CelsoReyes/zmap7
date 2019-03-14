@@ -111,11 +111,11 @@ function plot3d()
     set(gca,'NextPlot','add')
     
     %if ~isempty(coastline)
-    %l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf;
+    %l = coastline(:,1) < s1_east  & coastline(:,1) > s2_west & coastline(:,2) < s3_north & coastline(:,2) > s4_south| coastline(:,1) == inf;
     %pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*0,'k');
     %end
     if ~isempty(faults)
-        l = faults(:,1) < s1  & faults(:,1) > s2 & faults(:,2) < s3 & faults(:,2) > s4| faults(:,1) == inf;
+        l = faults(:,1) < s1_east  & faults(:,1) > s2_west & faults(:,2) < s3_north & faults(:,2) > s4_south| faults(:,1) == inf;
         pl1 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*0,'k');
     end
     if ~isempty(mainfault)

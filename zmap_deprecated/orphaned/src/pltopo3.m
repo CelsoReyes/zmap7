@@ -7,13 +7,13 @@ report_this_filefun(mfilename('fullpath'));
 
 
 gtopo30s([46 47],[6 7])
-s4=20;
-s3=50;
-s2=30;
-s1=50;
+s4_south=20;
+s3_north=50;
+s2_west=30;
+s1_east=50;
 
 
-cegt=gtopo30s([s4 s3],[s2 s1]);
+cegt=gtopo30s([s4_south s3_north],[s2_west s1_east]);
 disp('GTOPO30 files')
 disp(cegt)
 
@@ -27,12 +27,12 @@ disp(cegt)
 
 % VON ZMAP WIEDER BENOETIGT
 
-%     s1 = l(2); s2 = l(1);
+%     s1_east = l(2); s2_west = l(1);
 %     l  = get(h1,'YLim');
-%     s3 = l(2); s4 = l(1);
+%     s3_north = l(2); s4_south = l(1);
 %     fac = 1;
 
-if abs(s4-s3) > 10 | abs(s1-s2) > 10 
+if abs(s4_south-s3_north) > 10 | abs(s1_east-s2_west) > 10 
     def = {'3'};
     ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
     l = ni2{:};
@@ -46,25 +46,25 @@ end
 
 
 %     if exist('gtopo30s2') == 2
-%         fname = gtopo30s([s4 s3],[ s2 s1])
-%         do = [' [tmap, tmapleg] = gtopo30(fname,fac,[s4 s3],[ s2 s1]); '];
+%         fname = gtopo30s([s4_south s3_north],[ s2_west s1_east])
+%         do = [' [tmap, tmapleg] = gtopo30(fname,fac,[s4_south s3_north],[ s2_west s1_east]); '];
 %     else
-%         do = [' [tmap, tmapleg] = gtopo30(''test'',fac,[s4 s3],[ s2 s1]); '];
+%         do = [' [tmap, tmapleg] = gtopo30(''test'',fac,[s4_south s3_north],[ s2_west s1_east]); '];
 %     end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% fname=gtopo30s([s4 s3],[ s2 s1])
+% fname=gtopo30s([s4_south s3_north],[ s2_west s1_east])
 % fname=upper(fname{1})
-% [tmap, tmapleg] = gtopo30(fname,fac,[s4 s3],[ s2 s1]);
-[tmap, tmapleg] = gtopo302('c:\ZMAP6\dem\gtopo30',fac,[s4 s3],[s2 s1]);
+% [tmap, tmapleg] = gtopo30(fname,fac,[s4_south s3_north],[ s2_west s1_east]);
+[tmap, tmapleg] = gtopo302('c:\ZMAP6\dem\gtopo30',fac,[s4_south s3_north],[s2_west s1_east]);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-my = s4:1/tmapleg(1):s3+0.1;
-mx = s2:1/tmapleg(1):s1+0.1;
+my = s4_south:1/tmapleg(1):s3_north+0.1;
+mx = s2_west:1/tmapleg(1):s1_east+0.1;
 vlon = mx;
 vlat = my;
 [m,n] = size(tmap);

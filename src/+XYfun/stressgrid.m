@@ -339,7 +339,7 @@ classdef stressgrid < ZmapHGridFunction
             axis(ax, 'equal')
             % zmap_update_displays();
             set(ax,'PlotBoxAspectRatio',[0.827 1 1])
-            %axis(ax,[ s2 s1 s4 s3])
+            %axis(ax,[ s2_west s1_east s4_south s3_north])
             title(ax,sprintf('%s;  %g to %g', name, t0b, teb),'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'Color','k','FontWeight','normal');
             xlabel(ax,'Longitude ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)

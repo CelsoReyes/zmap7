@@ -33,7 +33,7 @@ figure
 
 hold on; axis off
 axesm('MapProjection','eqaconic','MapParallels',[],...
-    'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+    'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
 
 ll = tmap < 0 & ren < 0;
 ren(ll) = ren(ll)*0 + 20;

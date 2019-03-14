@@ -137,7 +137,7 @@ function view_stressmap(bvg)
     axis('equal')
     zmap_update_displays();
     set(gca,'aspectratio',[0.827 1])
-    axis([ s2 s1 s4 s3])
+    axis([ s2_west s1_east s4_south s3_north])
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
         'Color','k','FontWeight','normal');
     mygca = gca;

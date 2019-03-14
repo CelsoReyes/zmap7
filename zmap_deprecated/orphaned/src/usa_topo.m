@@ -6,11 +6,11 @@ report_this_filefun(mfilename('fullpath'));
 
 figure_w_normalized_uicontrolunits(map)
 l  = get(h1,'XLim');
-s1 = l(2); s2 = l(1);
+s1_east = l(2); s2_west = l(1);
 l  = get(h1,'YLim');
-s3 = l(2); s4 = l(1);
+s3_north = l(2); s4_south = l(1);
 fac = 1;
-if abs(s4-s3) > 0.4 || abs(s1-s2) > 0.4
+if abs(s4_south-s3_north) > 0.4 || abs(s1_east-s2_west) > 0.4
     def = {'3'};
     ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
     l = ni2{:};
@@ -26,7 +26,7 @@ end
 
 % which usgs dem 3 arc sec files do we need?
 
-[fname, qname] = usgsdems([s4 s3],[s2 s1])
+[fname, qname] = usgsdems([s4_south s3_north],[s2_west s1_east])
 er = 0;
 for i = 1:length(fname)
     l = fname{i};
@@ -44,19 +44,19 @@ if er == 1; return; end
 
 l = fname{1};
 disp(['Trying to read file  ' l '  .... ']);
-[tmap1, tmapleg1 ] =  usgsdem(l,fac,[ s4 ceil(s4)],[s2 ceil(s2)]);
+[tmap1, tmapleg1 ] =  usgsdem(l,fac,[ s4_south ceil(s4_south)],[s2_west ceil(s2_west)]);
 
 l = fname{3};
 disp(['Trying to read file  ' l '  .... ']);
-[tmap2, tmapleg2 ] =  usgsdem(l,fac,[ ceil(s4) s3],[s2 ceil(s2)]) ;
+[tmap2, tmapleg2 ] =  usgsdem(l,fac,[ ceil(s4_south) s3_north],[s2_west ceil(s2_west)]) ;
 
 l = fname{2};
 disp(['Trying to read file  ' l '  .... ']);
-[tmap3, tmapleg3 ] =  usgsdem(l,fac,[ s4 ceil(s4)],[ ceil(s2) s1]);
+[tmap3, tmapleg3 ] =  usgsdem(l,fac,[ s4_south ceil(s4_south)],[ ceil(s2_west) s1_east]);
 
 l = fname{4};
 disp(['Trying to read file  ' l '  .... ']);
-[tmap4, tmapleg4 ] =  usgsdem(l,fac,[ ceil(s4) s3],[ceil(s2) s1]);
+[tmap4, tmapleg4 ] =  usgsdem(l,fac,[ ceil(s4_south) s3_north],[ceil(s2_west) s1_east]);
 
 
 
@@ -70,8 +70,8 @@ tmapleg = [tmapleg1(1) tmapleg4(2) tmapleg1(3)];
 
 clear tmap1 tmap2 tmap3 tmap4 tmapa tmapb
 
-mx = s2:1/(tmapleg1(1)+1):s1;
-my = s4:1/(tmapleg1(1)+1):s3;
+mx = s2_west:1/(tmapleg1(1)+1):s1_east;
+my = s4_south:1/(tmapleg1(1)+1):s3_north;
 l = tmap == 0 ;
 tmap(l) = nan;
 

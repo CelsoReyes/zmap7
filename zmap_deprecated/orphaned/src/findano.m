@@ -24,7 +24,7 @@ figure
 plot(ba(:,1),ba(:,2),'rx')
 hold on
 plot(an(:,1),an(:,2),'bo')
-axis([ s2 s1 s4 s3])
+axis([ s2_west s1_east s4_south s3_north])
 xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
 strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];

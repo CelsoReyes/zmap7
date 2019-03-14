@@ -13,8 +13,8 @@ figure_w_normalized_uicontrolunits(map)
 ax = axis;
 if ax(1) < min(coastline(:,1)) | ax(2) > min(coastline(:,1))
     disp([' Regetting coastline ... ']);
-    struc = gshhs2('gshhs_h.b',[s4 s3],[s2 s1] );
-    s2 = ax(1);s1 = ax(2);s3 = ax(4);s4 = ax(3);
+    struc = gshhs2('gshhs_h.b',[s4_south s3_north],[s2_west s1_east] );
+    s2_west = ax(1);s1_east = ax(2);s3_north = ax(4);s4_south = ax(3);
 end
 %delete(mapplot);delete(plovo);delete(epimax);
 
@@ -122,4 +122,4 @@ if exist('faults', 'var')
         set(plo4,'LineWidth',0.2)
     end  % if exist faults
 end
-%axis([ s2 s1 s4 s3])
+%axis([ s2_west s1_east s4_south s3_north])

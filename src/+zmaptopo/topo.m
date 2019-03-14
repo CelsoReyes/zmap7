@@ -1,6 +1,6 @@
 function varargout = topo(varargin)
     % topo(frame,a,ZG.maepi,faults,res,gx,gy,s)
-    % frame=[s4 s3 s1 s2]
+    % frame=[s4_south s3_north s1_east s2_west]
     % s -> startup parameter
     % 8.2.2002
     %

@@ -68,10 +68,10 @@ function csubcat()
     set(gca,'NextPlot','replace')
     
     % find min and Maximum axes points
-    s1 = max(ZG.primeCatalog.Longitude);
-    s2 = min(ZG.primeCatalog.Longitude);
-    s3 = max(ZG.primeCatalog.Latitude);
-    s4 = min(ZG.primeCatalog.Latitude);
+    s1_east = max(ZG.primeCatalog.Longitude);
+    s2_west = min(ZG.primeCatalog.Longitude);
+    s3_north = max(ZG.primeCatalog.Latitude);
+    s4_south = min(ZG.primeCatalog.Latitude);
     orient landscape
     set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
     rect = [0.15,  0.20, 0.75, 0.65];
@@ -123,7 +123,7 @@ function csubcat()
     end
     le =legend('+b',ls1,'og',ls2,'xr',ls3);
     set(le,'position',[ 0.65 0.02 0.32 0.12])
-    axis([ s2 s1 s4 s3])
+    axis([ s2_west s1_east s4_south s3_north])
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     strib = [  ' Map of   '  name '; '  num2str(t0b) ' to ' num2str(teb) ];

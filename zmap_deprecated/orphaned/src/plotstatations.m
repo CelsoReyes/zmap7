@@ -8,7 +8,7 @@ str = [];
 fid = fopen([newpath newmatfile],'r') ;
 axes(h1)
 hold on
-dx = abs(s1-s2)*100;
+dx = abs(s1_east-s2_west)*100;
 
 while ferror(fid) == ''
     li = fgets(fid)
