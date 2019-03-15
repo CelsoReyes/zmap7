@@ -1,113 +1,184 @@
-function dramap_z(colback, valuemap)
+function dramap_z(STYLE, bg_color, value_map)
     % drap a colormap of variance, S1 orientation onto topography
+    %
+    % requires:
+    %   tmap : topography map
+    %   tmapleg : 
+    %   gx, gy
+    %   s1_north...s4_south
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
+    assert(ismember(STYLE, {'dramap2_z','dramap_z','stress2'}));
+    
     report_this_filefun();
     
-    j = colormap;
-    % check if mapping toolbox and topo map exists
-
+    % STYLE simply allows this function to merge functionality of
+    % two versions... 
+    %STYLE = "dramap2_z";
+    %STYLE = "stress2";
+    STYLE = "dramap_z";
+    USE_SCALE_RULER = false; % SCALE_RULER code was commmented out in dramap_z and dramap_stress2.
+                             % and didn't exist in dramap_z
+    
+    
     if ~has_mapping_toolbox()
         return
     end
     
-    if ~exist('tmap', 'var'); tmap = 0; end
+    if ~exist('tmap', 'var') 
+        tmap = 0;
+    end
     [xx, yy] = size(tmap);
     if xx*yy < 30
-        errordlg('Please create a topomap first, using the options from the seismicty map window');
+        errordlg('Please create a topomap first, using the options from the seismicity map window');
         return
     end
-    
-    def = {'1','1','5',num2str(min(valueMap(:)),4),num2str(max(valueMap(:)),4) };
-    
-    tit ='Topo map input parameters';
-    prompt={ 'Longitude label spacing in degrees ',...
-        'Latitude label spacing in degrees ',...
-        'Topo data-aspect (steepness) ',...
-        ' Minimum datavalue (cmin)',...
-        ' maximum datavalue cmap',...
+    if STYLE == "dramap2_z"
+        projections = {... % friendly name      , official
+            'Albers Equal-Area Conic'           , 'equaconic';...
+            'Mercator Projection'               , 'mercator';...
+            'Plate Carree Projection'           , 'pcarree'; ...
+            'Lambert Conformal Conic Projection', 'lambert';...
+            'Robinson Projection'               , 'robinson'};
+        selz = menu('Choose a projection', projections{:,1});
+        selected_proj = projections{selz, 2}; % was 'mapz(...)'
+        mic_offset = 0.1;
+    else
+        selected_proj = 'eqaconic';
+        mic_offset = 0;
+    end
         
-        };
-    ni2 = inputdlg(prompt,tit,1,def);
     
-    l = ni2{1}; dlo= str2double(l);
-    l = ni2{2}; dla= str2double(l);
-    l = ni2{3}; dda= str2double(l);
-    l = ni2{4}; mic= str2double(l);
-    l = ni2{5}; mac= str2double(l);
+    dlgtitle ='Topo map input parameters';
+    dstr(1).prompt = 'Longitude label spacing (degrees)';   dstr(1).value = 1;
+    dstr(2).prompt = 'Latitude label spacing (degrees)';    dstr(2).value = 1;
+    dstr(3).prompt = 'Topo data-aspect (steepness)';        dstr(3).value = 5;
+    dstr(4).prompt = ' Minimum datavalue (cmin)';           dstr(4).value = min(value_map(:));
+    dstr(5).prompt = ' Maximum datavalue cmap';             dstr(5).value = max(value_map(:));
+    dstr(6).prompt = ' Sea Level (set values below this to 0. ex 0.01)';     dstr(6).value = -inf;
+        
+    [~, ~, dlo, dla, dda, mic, mac, sealevel] = smart_inputdlg(dlgtitle, dstr);
     
     % use this for setting water levels to one color
-    %l = isnan(tmap);
-    %tmap(l) = 1;
+    %tmap(isnan(tmap)) = 1;
     
-    ButtonName=questdlg('Set water to zero?', ...
-        ' Question', ...
-        'Yes','No','no');
+    tmap(tmap < sealevel) = 0;
     
+    value_map(value_map < mic) = mic + mic_offset;
+    value_map(value_map > mac) = mac;
     
-    switch ButtonName
-        case 'Yes'
-            tmap(tmap< 0.1) = 0;
+    [lat, lon] = meshgrat(tmap, tmapleg);
+    [X , Y]  = meshgrid(gx, gy);
+    
+    ren = interp2(X, Y, value_map, lon, lat);
+    
+    ren(isnan(ren)) = min(ren(:)) - 20;
+    
+    if STYLE == "dramap2_z"
+        ren(tmap <= 1 & ren < mic) = nan;
     end
-    
-    
-    
-    valueMap(valueMap < mic) = mic;
-    valueMap(valueMap > mac) = mac;
-    
-    [lat,lon] = meshgrat(tmap,tmapleg);
-    [X , Y]  = meshgrid(gx,gy);
-    
-    ren = interp2(X,Y,valueMap,lon,lat);
-    
-    mi = min(ren(:));
-    l =  isnan(ren);
-    ren(l) = mi-20;
     
     %start figure
-    figure_w_normalized_uicontrolunits('pos',[50 100 800 600])
-    
-    set(gca,'NextPlot','add'); 
+    fig = figure_w_normalized_uicontrolunits('pos', [50 100 800 600]);
+    ax = gca;
+    set(ax, 'NextPlot', 'add'); 
     axis off
-    axesm('MapProjection','eqaconic','MapParallels',[],...
-        'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
+    axesm('MapProjection', selected_proj, 'MapParallels', [],...
+        'MapLatLimit', [s4_south s3_north], 'MapLonLimit', [s2_west s1_east])
     
-    meshm(ren,tmapleg,size(tmap),tmap);
+    meshm(ren, tmapleg, size(tmap), tmap);
     
-    daspectm('m',dda);
+    daspectm('m', dda);
     tightmap
     view([0 90])
-    camlight; lighting phong
-    set(gca,'projection','perspective');
+    camlight; 
+    lighting phong
+    set(ax, 'projection', 'perspective');
     
-    j = [ [ 0.9 0.9 0.9 ] ; j];
-    caxis([ mic*0.99 mac*1.01 ]);
-    
-    colormap(j); brighten(0.1);
-    axis off;
-    
-    if ~exist('colback', 'var'); colback = 'w'; end
-    
-    if colback == 'k'  % black background
-        fg='w';
-        bg='k';
-    else % white background
-        fg='k';
-        bg='w';
+    if STYLE == "stress2"
+        % plot the bars
+        plq = quiverm(newgri(:,2), newgri(:,1), -cos(ste(:,SA*2)*pi/180), sin(ste(:,SA*2)*pi/180),0.9);
+        set(plq,'LineWidth', 0.4, 'Color', 'k', 'Markersize',0.1);
+        set(gca,'NextPlot', 'add');
+        
+        delete(plq(2));
     end
-    set(gcf,'color',bg)
-    setm(gca,'ffacecolor',bg)
-    setm(gca,'fedgecolor',fg,'flinewidth',3);
+    
+    if STYLE == "dramap2_z" || STYLE == "stress2"
+        if ~isempty(coastline)
+            pl = plotm(coastline(:,2), coastline(:,1), 'k');
+            set(pl, 'LineWidth', 0.5)
+        end
+        
+        if ~isempty(ZG.maepi)
+            pl = plotm(ZG.maepi.Y, ZG.maepi.X, 'hw');
+            set(pl,'LineWidth', 1, 'MarkerSize', 14,...
+                'MarkerFaceColor', 'w', 'MarkerEdgeColor', 'k')
+        end
+        if STYLE == "stress2"
+            zdatam(handlem('allline'), max(tmap(:))) % keep line on surface
+        end
+        
+        j = jet(64); % different from dramap2_z
+        j = [ [ 0.8 0.8 0.8 ] ; j  ];
+    else
+        j = colormap;
+        j = [ [ 0.9 0.9 0.9 ] ; j];
+    end
+    
+    caxis([ mic * 0.99, mac * 1.01 ]);
+    colormap(j); 
+    brighten(0.1);
+    axis off;
+        
+    setm(ax,'mlabellocation', dlo)
+    setm(ax,'meridianlabel', 'on')
+    setm(ax,'plabellocation', dla)
+    setm(ax,'parallellabel', 'on')
+    
+    if ~exist('bg_color', 'var') || bg_color == 'w' % white background
+        fg = 'k';
+        bg = 'w';
+    else  % black background
+        fg = 'w';
+        bg = 'k';
+    end
+    
+    set(fig, 'color', bg)
+    setm(ax, 'ffacecolor', bg)
+    setm(ax, 'fedgecolor', fg, 'flinewidth', 3);
     
     % change the labels if needed
-    setm(gca,'mlabellocation',dlo)
-    setm(gca,'meridianlabel','on')
-    setm(gca,'plabellocation',dla)
-    setm(gca,'parallellabel','on')
-    setm(gca,'Fontcolor',fg,'Fontweight','bold','FontSize',12,'Labelunits','dm')
+    setm(ax,'Fontcolor', fg, 'Fontweight', 'bold', 'FontSize', 12, 'Labelunits', 'dm')
     
     h5 = colorbar;
-    set(h5,'position',[0.8 0.35 0.01 0.3],'TickDir','out','Ycolor',fg,'Xcolor',fg,...
-        'Fontweight','bold','FontSize',12);
-    set(gcf,'Inverthardcopy','off');
+    set(h5,'position',[0.8 0.35 0.01 0.3], 'TickDir', 'out', 'Ycolor', fg, 'Xcolor', fg,...
+        'Fontweight', 'bold', 'FontSize', 12);
+    set(fig, 'Inverthardcopy', 'off');
+    
+    if USE_SCALE_RULER 
+        scaleruler
+        if STYLE == "dramap2_z"
+            XLoc = -0.0133;
+            YLoc = 0.639;
+            MajorTick = 0:10:50;
+            majorTickLength = 4;
+        elseif STYLE == "stress2"
+            XLoc = 12;
+            YLoc = 40;
+            MajorTick = 0:50:200;
+            majorTickLength = 12;
+        end
+        
+        setm(handlem('scaleruler1'), 'XLoc', XLoc, 'YLoc', YLoc, 'units', 'km')
+        setm(handlem('scaleruler2'),'MajorTick', MajorTick,...
+                'MinorTick', 0:10:25, 'TickDir', 'down',...
+                'MajorTickLength', majorTickLength,...
+                'MinorTickLength', 4)
+            
+        setm(handlem('scaleruler1'), 'RulerStyle', 'ruler')
+        if STYLE == "dramap2_z"
+            setm(handlem('scaleruler2'), 'RulerStyle', 'patches')
+        end
+        refresh
+    end
 end

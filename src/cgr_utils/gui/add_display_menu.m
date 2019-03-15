@@ -27,9 +27,9 @@ function add_display_menu(version)
             fixscalefun=@(data)fix_caxis(data,'horiz');
             uimenu(op2e,'Label','Plot Map in lambert projection',MenuSelectedField(),@(~,~)plotmap)
             uimenu(op2e,'Label','Plot map on top of topography (white background)',...
-                MenuSelectedField(),'colback = ''w''; dramap2_z'); % this is different from case #1
+                MenuSelectedField(), @(~,~) dramap_z('dramap2_z','w', valueMap)); % this is different from case
             uimenu(op2e,'Label','Plot map on top of topography (black background)',...
-                MenuSelectedField(),'colback = ''k''; dramap2_z'); % this is different from case #1
+                MenuSelectedField(), @(~,~)dramap_z('dramap2_z','k', valueMap)); % this is different from case #1 
             %overlayfun=@overlay;
         case 5
             circlefun=@plotci2;

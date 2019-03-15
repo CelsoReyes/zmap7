@@ -50,7 +50,7 @@ function [dlgstruct , cancelled, varargout] = smart_inputdlg(dlgtitle, dlgstruct
         
         if isnumeric(v)
             dlgstruct(i).toChar = @(x)num2str(x);
-            dlgstruct(i).toValue = @(x)str2num(x);
+            dlgstruct(i).toValue = @(x)str2num(x); %#ok<ST2NM>
         elseif isa(v,'datetime')
             dlgstruct(i).toChar = @(x)char(x, 'uuuu-MM-dd HH:mm:ss');
             dlgstruct(i).toValue = @(s)datetime(s, 'InputFormat', 'uuuu-MM-dd HH:mm:ss');
@@ -78,6 +78,14 @@ function [dlgstruct , cancelled, varargout] = smart_inputdlg(dlgtitle, dlgstruct
         elseif ischar(v)
             dlgstruct(i).toChar = @(x)x;
             dlgstruct(i).toValue = @(x)x;
+        elseif islogical(v)
+            if numel(v) == 1
+            dlgstruct(i).toChar = @(x)char(string(x));
+            dlgstruct(i).toValue = @(x)(ismember(x,{'true','false'}) && x=="true") || (isnumeric(x) && x~=0);
+            else
+                dlgstruct(i).toChar = @(x) ['[', char(join(string([false true]),' ')), ']'];
+                dlgstruct(i).toValue = @(x) logical(str2num(x)); %#ok<ST2NM>
+            end
         end
         def(i) = {dlgstruct(i).toChar(v)};
     end

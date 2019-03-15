@@ -2,8 +2,6 @@
 % 2.11.2001 17:00
 
 report_this_filefun(mfilename('fullpath'));
-smenu=menu
-clear('menu')
 j = colormap;
 % check if mapping toolbox and topo map exists
 if ~license('test','map_toolbox')
@@ -20,7 +18,7 @@ if xx*yy < 30
         'Yes','No','no');
     switch ButtonName
         case 'Yes'
-            pltobo
+            pltopo
         case 'No'
             errdlg('Please create a topomap first, using the options from the seismicty map window');
             return

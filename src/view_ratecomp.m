@@ -163,9 +163,9 @@ function view_ratecomp(det,valueMap)
         uimenu(op1,'Label','Plot Map in Lambert projection',MenuSelectedField(),@callbackfun_010)
         uimenu(op1,'Label','Fix color (z) scale',MenuSelectedField(),@(~,~)fix_caxis(ZGvalueMap,'horz') )
         uimenu(op1,'Label','Plot map on top of topography (white background)',...
-            MenuSelectedField(),@(~,~)dramap_z(1,valueMap))
+            MenuSelectedField(),@(~,~)dramap_z('dramap_z','w', valueMap))
         uimenu(op1,'Label','Plot map on top of topography (black background)',...
-            MenuSelectedField(),@(~,~)dramap_z(2,valueMap))
+            MenuSelectedField(),@(~,~)dramap_z('dramap_z','k', valueMap))
         uimenu(op1,'Label','Histogram of map-values',MenuSelectedField(),@(~,~)zhist())
         uimenu(op1,'Label','Colormap InvertGray',MenuSelectedField(),@callbackfun_015)
         uimenu(op1,'Label','Colormap Invertjet',MenuSelectedField(), @(~,~) colormap( flipud(jet(64)) ));

@@ -3,7 +3,8 @@ function pltopo(plt, h1)
     %
     
     import zmaptopo.* %#ok<NSTIMP>
-    % TODO: change this from the prime catalog to the active catalo
+    % TODO: change this from the prime catalog to the active catalog
+    
     ZG = ZmapGlobal.Data;
     globalcatalog = ZG.primeCatalog;
     switch(plt)
@@ -56,6 +57,7 @@ function pltopo(plt, h1)
     end
     
     function lo3()
+        % load 3 arc second resolution (USGS DEM)
         [~, s4_south, s3_north, s2_west, s1_east] = limits2region(h1);
         fac = get_decimation_factor(3);
         
@@ -89,6 +91,7 @@ function pltopo(plt, h1)
     end
     
     function lo30()
+        % load 30 arc second resolution (GTOPO 30)
         [~, s4_south, s3_north, s2_west, s1_east] = limits2region(h1);
         fac = 1;
         if range([s4_south, s3_north]) > 10 || range([s1_east, s2_west]) > 10
@@ -105,7 +108,8 @@ function pltopo(plt, h1)
     end
     
     function lo5()
-        
+         % load 5 degree resolution (ETOPO 5, Terrain base) 
+         % from tbase.bin
         [~, s4_south, s3_north, s2_west, s1_east] = limits2region(h1);
         fac = 1;
         if range([s4_south, s3_north]) > 10 || range([s1_east, s2_west]) > 10
@@ -131,6 +135,8 @@ function pltopo(plt, h1)
     end
     
     function lo2()
+        % load 2 degree resolution (ETOPO 2)
+        % from topo_8.2.img
         expected_file = fullfile('dem','topo_8.2.img');
         zip_file = [expected_file, '.zip'];
         
@@ -151,7 +157,7 @@ function pltopo(plt, h1)
     end
     
     function lo1()
-                        
+        % load 30 arc second resolution (GLOBE DEM)  
         cd(ZG.hodi);
         if ~exist('pathdem', 'var')
             if exist('dem','dir')
