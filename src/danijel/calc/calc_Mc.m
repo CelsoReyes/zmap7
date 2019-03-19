@@ -47,40 +47,80 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     if ~exist('mcCorrectionFactor', 'var') || isempty(mcCorrectionFactor)
         mcCorrectionFactor = 0;
     end
-    switch calcMethod
-        case McMethods.MaxCurvature
-            methodFun = @(C)calc_McMaxCurvature(C.Magnitude);
-
-        case  McMethods.FixedMc
-            methodFun = @(C) min(C.Magnitude);
-
-        case  McMethods.Mc90
-            methodFun = @(C)method_mc90(C.Magnitude,binInterval);
-
-        case  McMethods.Mc95
-            methodFun = @(C)method_mc95(C.Magnitude,binInterval);
-
-        case McMethods.McBestCombo
-            methodFun = @(C)method_bestcombo(C.Magnitude,binInterval);
-
-        case  McMethods.McEMR
-            methodFun = @(C)calc_McEMR(C,binInterval); %requires catalog Magnitude AND Date
-            
-        case  McMethods.McDueB_ShiBolt
-            methodFun = @(C)calc_Mcdueb(C.Magnitude, binInterval);
-            
-        case McMethods.McDueB_Bootstrap
-            nSample = 500;
-            nWindowSize = 5;
-            nMinEvents = 50;
-            methodFun = @(C) calc_McduebBst(C.Magnitude, binInterval, nWindowSize, nMinEvents,nSample);
-
-        case McMethods.McDueB_Cao 
-            methodFun = @(C, ~)calc_McduebCao(C.Magnitude);
-
-        otherwise
-            error('unknown Mc method');
+    
+    if isnumeric(mCatalog) && isvector(mCatalog)
+        switch calcMethod
+            case McMethods.MaxCurvature
+                methodFun = @calc_McMaxCurvature;
+                
+            case  McMethods.FixedMc
+                methodFun = @min;
+                
+            case  McMethods.Mc90
+                methodFun = @(C)method_mc90(C,binInterval);
+                
+            case  McMethods.Mc95
+                methodFun = @(C)method_mc95(C,binInterval);
+                
+            case McMethods.McBestCombo
+                methodFun = @(C)method_bestcombo(C,binInterval);
+                
+            case  McMethods.McEMR
+                error('this only works with full catalogs')
+                %methodFun = @(C)calc_McEMR(C,binInterval); %requires catalog Magnitude AND Date
+                
+            case  McMethods.McDueB_ShiBolt
+                methodFun = @(C)calc_Mcdueb(C, binInterval);
+                
+            case McMethods.McDueB_Bootstrap
+                nSample = 500;
+                nWindowSize = 5;
+                nMinEvents = 50;
+                methodFun = @(C) calc_McduebBst(C, binInterval, nWindowSize, nMinEvents,nSample);
+                
+            case McMethods.McDueB_Cao
+                methodFun = @(C, ~)calc_McduebCao(C);
+                
+            otherwise
+                error('unknown Mc method');
+        end
+    else % catalog object
+        switch calcMethod
+            case McMethods.MaxCurvature
+                methodFun = @(C)calc_McMaxCurvature(C.Magnitude);
+                
+            case  McMethods.FixedMc
+                methodFun = @(C) min(C.Magnitude);
+                
+            case  McMethods.Mc90
+                methodFun = @(C)method_mc90(C.Magnitude,binInterval);
+                
+            case  McMethods.Mc95
+                methodFun = @(C)method_mc95(C.Magnitude,binInterval);
+                
+            case McMethods.McBestCombo
+                methodFun = @(C)method_bestcombo(C.Magnitude,binInterval);
+                
+            case  McMethods.McEMR
+                methodFun = @(C)calc_McEMR(C,binInterval); %requires catalog Magnitude AND Date
+                
+            case  McMethods.McDueB_ShiBolt
+                methodFun = @(C)calc_Mcdueb(C.Magnitude, binInterval);
+                
+            case McMethods.McDueB_Bootstrap
+                nSample = 500;
+                nWindowSize = 5;
+                nMinEvents = 50;
+                methodFun = @(C) calc_McduebBst(C.Magnitude, binInterval, nWindowSize, nMinEvents,nSample);
+                
+            case McMethods.McDueB_Cao
+                methodFun = @(C, ~)calc_McduebCao(C.Magnitude);
+                
+            otherwise
+                error('unknown Mc method');
+        end
     end
+    
     % lock the method into this calculation
     mc_calculator = @(C) do_calculation(methodFun, C, mcCorrectionFactor);
 
@@ -89,7 +129,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     
 end
 
-function fMc=do_calculation(methodFun, mCatalog, mcCorrectionFactor)
+function fMc = do_calculation(methodFun, mCatalog, mcCorrectionFactor)
     if isempty(mCatalog) 
         fMc=nan;
         return
@@ -110,9 +150,11 @@ end
 function fMc = method_mc90(mags, binInterval)
     [~, ~, fMc] = calc_McBest(mags, binInterval);
 end
+
 function fMc = method_mc95(mags, binInterval)
     [~, fMc] = calc_McBest(mags, binInterval);
 end
+
 function fMc = method_bestcombo(mags, binInterval)
         [~, Mc95, Mc90] = calc_McBest(mags, binInterval);
         if ~isnan(Mc95)

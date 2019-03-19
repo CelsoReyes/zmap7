@@ -55,7 +55,11 @@ end
 fMcBound = fMcTry;
 
 % Calculate FMD for original catalog
-[vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog.Magnitude);
+[vFMDorg, vNonCFMDorg, fmdbins] = calc_FMD(mCatalog.Magnitude);
+% convert answer back to this file's expectations...
+vFMDorg = [fmdbins'; vFMDorg'] % as rows
+vNonCFMDorg = [fmdbins'; vNonCFMDorg'];
+
 fMinMag = min(vNonCFMDorg(1,:));
 
 %% Shift to positive values
@@ -68,7 +72,6 @@ for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     vFMD = vFMDorg;
     vNonCFMD = vNonCFMDorg;
     vNonCFMD = fliplr(vNonCFMD);
-    %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
     % Select magnitudes to calculate b- anda-value
     vSel = mCatalog.Magnitude > fMc-fBinning/2;
     if sum(vSel) >= 20

@@ -55,7 +55,7 @@ mDatPredBest = [];
 fMaxMag = ceil(10 * max(magnitudes)) / 10;
 
 % Set starting value for Mc loop and LSQ fitting procedure
-fMcTry= calc_Mc(magnitudes, McMethods.MaxCurvature);
+fMcTry = calc_Mc(magnitudes, McMethods.MaxCurvature);
 fSmu = abs(fMcTry/2);
 fSSigma = abs(fMcTry/4);
 if (fSmu > 1)
@@ -65,20 +65,19 @@ end
 fMcBound = fMcTry;
 
 % Calculate FMD for original catalog
-[vFMDorg, vNonCFMDorg] = calc_FMD(magnitudes);
+[vFMDorg, vNonCFMDorg, fmdbins] = calc_FMD(magnitudes);
+% convert this back to the old format so that I don't have to change this file
+vFMDorg = [fmdbins'; vFMDorg'] % as rows
+vNonCFMDorg = [fmdbins'; vNonCFMDorg'];
+
 fMinMag = min(vNonCFMDorg(1,:));
 
-%% Shift to positive values
-% if fMinMag ~= 0
-%     fMcBound = fMcTry-fMinMag;
-% end
 % Loop over Mc-values
 for fMc = fMcBound-0.4:0.1:fMcBound+0.8
     fMc = round(fMc, -1);
     vFMD = vFMDorg;
     vNonCFMD = vNonCFMDorg;
     vNonCFMD = fliplr(vNonCFMD);
-    %[nIndexLo, fMagHi, vSel, vMagnitudes] = fMagToFitBValue(mCatalog, vFMD, fMc);
     % Select magnitudes to calculate b- anda-value
     vSel = magnitudes > fMc-fBinning/2;
     if sum(vSel) >= 20

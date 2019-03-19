@@ -44,7 +44,10 @@ function aux_1FMD(params, hParentFigure)
     end
     
     % Create the frequency magnitude distribution vectors for the two time periods
-    [vFMD, vNonCFMD] = calc_FMD(mNodeCatalog_);
+    [vFMD, vNonCFMD, fmdbins] = calc_FMD(mNodeCatalog_);
+    % convert answer back to this file's expectations...
+    vFMD = [fmdbins'; vFMD'] % as rows
+    vNonCFMD = [fmdbins'; vNonCFMD'];
     
     if exist('new_fig','var') &&  ishandle(new_fig)
         set(0,'Currentfigure',new_fig);

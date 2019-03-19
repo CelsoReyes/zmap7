@@ -60,7 +60,11 @@ function [mResult, fMls, fMc, fMu, fSigma, mDatPredBest, vPredBest, fBvalue, fAv
     fMcBound = fMcTry;
     
     % Calculate FMD for original catalog
-    [vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog);
+    [vFMDorg, vNonCFMDorg, fmdbins] = calc_FMD(mCatalog);
+    % convert answer back to this file's expectations...
+    vFMDorg = [fmdbins'; vFMDorg'] % as rows
+    vNonCFMDorg = [fmdbins'; vNonCFMDorg'];
+
     fMinMag = min(vNonCFMDorg(1,:));
     
     %% Shift to positive values

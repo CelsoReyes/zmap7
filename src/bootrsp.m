@@ -1,4 +1,4 @@
-function[out]=bootrsp(indata,B)
+function[out] = bootrsp(indata,B)
     %   BOOTRSP Bootstrap  resampling  procedure
     %
     %   out=bootrsp(indata,B)
@@ -39,18 +39,21 @@ function[out]=bootrsp(indata,B)
     %               indata Signal Processing. IEEE Signal Processing Magazine,
     %               Vol. 15, No. 1, pp. 55-76, 1998.
     
-    if ~exist('B','var'), B=1;  end
-    if ~exist('indata','var'), error('Provide input data'); end
+    if ~exist('B','var')
+        B=1;  
+    end
+    if ~exist('indata','var')
+        error('Provide input data'); 
+    end
     
-    s=size(indata);
+    s = size(indata);
     if length(s)>2
         error('Input data can be a vector or a 2D matrix only');
     end
     if min(s)==1
-        %out=indata(ceil(max(s)*rand(max(s),B)));
-        out=indata(randi(max(s) , max(s),B));
+        out = indata(randi(max(s) , max(s),B));
     else
-        out=indata(randi(s(1)*s(2) , s(1),s(2),B));
+        out = indata(randi(s(1)*s(2) , s(1),s(2),B));
     end
 end
 

@@ -64,10 +64,7 @@ function [fBValue, fAValue, fStdDev, fMc, fMeanMag] = plot_FMD(mCatalog, varargi
     
     
     % Create the frequency magnitude distribution vector
-    [vFMD, vNonCFMD] = calc_FMD(mCatalog.Magnitude);
-    magX = vFMD(1,:);
-    nEvsCum = vFMD(2,:);
-    nEvsNonCum = vNonCFMD(2,:);
+    [nEvsCum, nEvsNonCum, magX] = calc_FMD(mCatalog.Magnitude);
 
     
     % Plot the frequency magnitude distribution

@@ -95,8 +95,10 @@ function plot_McBwtime(catalog, sPar)
     ax.NextPlot='replace';
     
     xlim(ax, bounds2(x))
-    ylim(ax, [floor(min(y-yStd)) ceil(max(y+yStd))]);
-    
+    y_bounds = [floor(min(y-yStd)) ceil(max(y+yStd))];
+    if ~any(ismissing(y_bounds))
+        ylim(ax, [floor(min(y-yStd)) ceil(max(y+yStd))]);
+    end
     l1=legend(ax,myLegend{:});
     set(l1,'Fontweight','bold')
     

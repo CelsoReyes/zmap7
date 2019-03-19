@@ -70,7 +70,11 @@ function [fMls, fMc, fStd_Mc, fMu, fSigma, fBvalue, fStd_B, fAvalue, fStd_A, bH,
     
     
     % Calculate FMD for original catalog
-    [vFMDorg, vNonCFMDorg] = calc_FMD(mCatalog);
+    [vFMDorg, vNonCFMDorg, fmdbins] = calc_FMD(mCatalog);
+    % convert answer back to this file's expectations...
+    vFMDorg = [fmdbins'; vFMDorg'] % as rows
+    vNonCFMDorg = [fmdbins'; vNonCFMDorg'];
+
     fMinMag = min(vNonCFMDorg(1,:));
     
     fMc = roundn(fMc,-1);
