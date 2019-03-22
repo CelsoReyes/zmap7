@@ -99,7 +99,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             depth_ratio = top_b_overall/bottom_b_overall;
             disp(depth_ratio);
             
-            [~,mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
+            [~, mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
             
             % loop over all points
             obj.gridCalculations(@calculation_function);

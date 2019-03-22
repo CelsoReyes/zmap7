@@ -17,16 +17,15 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep)
     % surprisingly, 'res' does not depend on the synthetic catalog at all.  This was verified
     % by looking at old (2014 source code) -CGR
     
-    %report_this_filefun();
-    nEvents=numel(actualMags);
-    mags= startMag : magStep : 10;
+    nEvents = numel(actualMags);
+    mags = startMag : magStep : 10;
     
     N = 10 .^ (log10(nEvents) - B*(mags - startMag)); %expected events per mag step
 
-    N=round(N / sum(N) * nEvents); % get distribution at this number
+    N = round(N / sum(N) * nEvents); % get distribution at this number
     
     N(1) = N(1) + (nEvents - sum(N)); % we might be off by an event or two due to rounding
-    mags(N<1)=[];
+    mags(N<1) = [];
     N(N<1) = [];
     
     halfStep = magStep /2;
@@ -36,17 +35,20 @@ function [res, newMags]=synthb_aut(actualMags, B, startMag, magStep)
     b3 = cumsum(bval,'reverse');
     res = sum(abs(b3 - N)) / sum(b3)*100;
     
-    if nargout==2
+    if nargout == 2
         
-        newMags=zeros(nEvents,1);
+        newMags = zeros(nEvents,1);
         
-        lasts=cumsum(N)';
-        nexts=[0;lasts(1:end-1)]+1;
+        lasts = cumsum(N)';
+        nexts = [0;lasts(1:end-1)]+1;
         
-        for i=1:numel(N)
+        for i = 1:numel(N)
             newMags(nexts(i):lasts(i),1) = mags(i);
         end
         
         newMags = newMags(randperm(nEvents));
     end
 end
+
+% NOTE about moving to deprecated: the functionality was only used in mcperc_ca3, and only some of
+% this at that.  So this functionality was split up and placed in that function.

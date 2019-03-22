@@ -105,7 +105,7 @@ classdef calc_Omoricross < ZmapVGridFunction
                 fMcFix=0;
             end
                         
-           [~,mcCalculator] = calc_mc([], obj.mc_method, fBinning, fMcFix);
+           [~, mcCalculator] = calc_mc([], obj.mc_method, fBinning, fMcFix);
             
             obj.gridCalculations(@calculation_function); % Workhorse that calls calculation_function
         

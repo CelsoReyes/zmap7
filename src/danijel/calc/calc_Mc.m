@@ -1,9 +1,9 @@
-function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCorrectionFactor)
+function [fMc, mcCalculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCorrectionFactor)
     % CALC_MC Calculates the magnitude of completeness for a given catalog
     %
-    % [fMc] = CALC_MC(mCatalog, nMethod, binInterval, mcCorrectionFactor)
-    % [fMc, mc_calculator]=CALC_MC(...) will return a function handle to the calculation
-    % method, so it can be reused in heavy loops.  MC_CALCULATOR hs the form:
+    % fMc = CALC_MC(mCatalog, nMethod, binInterval, mcCorrectionFactor)
+    % [fMc, mc_calculator] = CALC_MC(...) returns a function handle to the calculation
+    % method, so it can be reused in heavy loops.  MC_CALCULATOR has the form:
     %    fMc =  MY_CALCULATOR(catalog, bins, correction);
     %
     % --------------------------------------------------------------------
@@ -18,6 +18,7 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     %
     % Output parameters:
     %   fMc            Magnitude of completeness
+    %   mc_calculator
     %
     %
     % Copyright (C) 2004 by Danijel Schorlemmer, Jochen Woessner
@@ -41,8 +42,9 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     if ~exist('binInterval', 'var') || isempty(binInterval)
         binInterval = 0.1;
     end
-    assert(isa(calcMethod,'McMethods'),'Expected an actual method (McMethods) but received something else');
-    
+    if ~isa(calcMethod,'McMethod')
+        error('Expected an actual method (McMethods) but received something else.\n See McMethods');
+    end
     % Correction
     if ~exist('mcCorrectionFactor', 'var') || isempty(mcCorrectionFactor)
         mcCorrectionFactor = 0;
@@ -73,10 +75,10 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
                 methodFun = @(C)calc_Mcdueb(C, binInterval);
                 
             case McMethods.McDueB_Bootstrap
-                nSample = 500;
+                nSample     = 500;
                 nWindowSize = 5;
-                nMinEvents = 50;
-                methodFun = @(C) calc_McduebBst(C, binInterval, nWindowSize, nMinEvents,nSample);
+                nMinEvents  = 50;
+                methodFun   = @(C) calc_McduebBst(C, binInterval, nWindowSize, nMinEvents,nSample);
                 
             case McMethods.McDueB_Cao
                 methodFun = @(C, ~)calc_McduebCao(C);
@@ -108,10 +110,10 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
                 methodFun = @(C)calc_Mcdueb(C.Magnitude, binInterval);
                 
             case McMethods.McDueB_Bootstrap
-                nSample = 500;
+                nSample     = 500;
                 nWindowSize = 5;
-                nMinEvents = 50;
-                methodFun = @(C) calc_McduebBst(C.Magnitude, binInterval, nWindowSize, nMinEvents,nSample);
+                nMinEvents  = 50;
+                methodFun   = @(C) calc_McduebBst(C.Magnitude, binInterval, nWindowSize, nMinEvents,nSample);
                 
             case McMethods.McDueB_Cao
                 methodFun = @(C, ~)calc_McduebCao(C.Magnitude);
@@ -122,16 +124,20 @@ function [fMc, mc_calculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCor
     end
     
     % lock the method into this calculation
-    mc_calculator = @(C) do_calculation(methodFun, C, mcCorrectionFactor);
+    mcCalculator = @(C) do_calculation(methodFun, C, mcCorrectionFactor);
 
-    % do the calculation
-    fMc = mc_calculator(mCatalog);
+    if ~isempy(mCatalog)
+        % do the calculation
+        fMc = mcCalculator(mCatalog);
+    else
+        fMc = [];
+    end
     
 end
 
 function fMc = do_calculation(methodFun, mCatalog, mcCorrectionFactor)
     if isempty(mCatalog) 
-        fMc=nan;
+        fMc = nan;
         return
     end
     

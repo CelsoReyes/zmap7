@@ -301,19 +301,6 @@ if compflag == 'of'
     text(.1,.15,['p = ',num2str(x(4))]);
 end
 
-% compare the FMD
-%l = tcut_cat(:,3) > maepi(1,3)+fore_sd/365;
-%precat = tcut_cat(l,:);
-%bdiff(precat)
-%hold on
-%tmp = newt2;
-%newt2 = precat;
-%mcperc_ca3
-%axes(cua)
-%synthb_autp
-%plot(PM,10.^PN,'m','linewidth',2);
-%newt2 = tmp;
-
 newt2 = hold_newt2;
 
 

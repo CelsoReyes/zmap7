@@ -1,4 +1,4 @@
-function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin)
+function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin) %shi-bolt
     % Calculate Mc using the function b-value vs. cut-off-magnitude
     % [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, fBinning, nWindowSize, nMinNumberEvents)
     %----------------------------------------------------------------------------------------------------
@@ -24,17 +24,17 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin)
     % Modified CGReyes 2018
     
     % Check input
-    p=inputParser();
+    p = inputParser();
     p.addRequired('magnitudes');
-    p.addOptional('binInterval',0.1);
-    p.addOptional('windowSize',5);
-    p.addOptional('minNumberEvents',50);
+    p.addOptional('binInterval'     , 0.1);
+    p.addOptional('windowSize'      , 5);
+    p.addOptional('minNumberEvents' , 50);
     p.parse(magnitudes, varargin{:});
     
-    magnitudes =        p.Results.magnitudes;
-    fBinning =          p.Results.binInterval;
-    nWindowSize =       p.Results.windowSize;
-    nMinNumberEvents =  p.Results.minNumberEvents;
+    magnitudes       = p.Results.magnitudes;
+    fBinning         = p.Results.binInterval;
+    nWindowSize      = p.Results.windowSize;
+    nMinNumberEvents = p.Results.minNumberEvents;
     
     
     if isrow(magnitudes)

@@ -35,7 +35,7 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
     report_this_filefun();
     
     % allocate matrix for synthetc catalog
-    mNewCatalog=nan(nNumberEvents,14);
+    mNewCatalog = nan(nNumberEvents,14);
     
     % initial shift of hypocenter from reference event.
     fHypoShift=5;
@@ -44,7 +44,7 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
         %     mNewCatalog = nan(nNumberEvents, 10);
         
         % Create magnitudes
-        [mNewCatalog] = syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);
+        mNewCatalog(:,6) = syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);
         
         % Randomize
         rng('shuffle');
@@ -59,10 +59,8 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
         
         % Create focal times
         mNewCatalog(:,3) = rand(nNumberEvents, 1) * (fMaxTime-fMinTime) + fMinTime;
-        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by
-        % decyear2mat.
+        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by decyear2mat.
         mNewCatalog(:,3)=mNewCatalog(randperm(size(mNewCatalog,1)),3);
-        % [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9)] = datevec(mNewCatalog(:,3));
         [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9) tmp] = decyear2mat(mNewCatalog(:,3));
         
         % Remove column 10 (seconds)
@@ -78,29 +76,24 @@ function [mNewCatalog] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat,
         rng('shuffle');
         % Create focal times
         mNewCatalog(:,3) = rand(nNumberEvents, 1) * (fMaxTime-fMinTime) + fMinTime;
-        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by
-        % decyear2mat.
-        % [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9)] = datevec(mNewCatalog(:,3));
+        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by decyear2mat.
         [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9) tmp] = decyear2mat(mNewCatalog(:,3));
         mNewCatalog=mNewCatalog(:,1:10);
-    elseif nSynMode==2
+    elseif nSynMode == 2
         for i=1:nNumberEvents
-            mNewCatalog(i,:)=mCatalog(ceil(rand(1,1)*size(mCatalog,1)),1:end);
+            mNewCatalog(i,:) = mCatalog(ceil(rand(1,1)*size(mCatalog,1)),1:end);
         end
         % create new magnitudes
-        mTmp=syn_create_magnitudes(mNewCatalog, fBValue, fMc, fInc);
-        mNewCatalog(:,6)=mTmp(:,6);
+        mNewCatalog(:,6) = syn_create_magnitudes(nNumberEvents, fBValue, fMc, fInc);
         % create new  times
         % Randomize
         rng('shuffle');
         % Create focal times
         mNewCatalog(:,3) = rand(nNumberEvents, 1) * (fMaxTime-fMinTime) + fMinTime;
-        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by
-        % decyear2mat.
-        % [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9)] = datevec(mNewCatalog(:,3));
+        % vst: datevec does not transform mNewCatalog(:,3) properly. Replaced by decyear2mat.
         [mNewCatalog(:,10) mNewCatalog(:,4) mNewCatalog(:,5) mNewCatalog(:,8) mNewCatalog(:,9) tmp] = decyear2mat(mNewCatalog(:,3));
         % shift hypocenters
-        vTmp=km2deg(rand(nNumberEvents,2).*fHypoShift-fHypoShift/2);
+        vTmp = km2deg(rand(nNumberEvents,2).*fHypoShift-fHypoShift/2);
         mNewCatalog(:,1:2)=mNewCatalog(:,1:2)+vTmp;
     end
 end

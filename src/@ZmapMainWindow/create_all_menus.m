@@ -434,6 +434,7 @@ function create_all_menus(obj, force)
         function cb_create_permutated(~,~)
             % will replace existing primary catalog
             [rand_catalog, ok] = syn_invoke_random_dialog(obj.catalog);
+            
             if ok
                 ZmapMainWindow(figure, rand_catalog);
             end

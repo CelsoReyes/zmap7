@@ -49,7 +49,6 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
         % Reset randomizer
         rng('shuffle');
         % Create bootstrap samples using bootstrap matlab toolbox
-        % mMag_bstsamp = bootrsp(vMags,nSample);
         % Determine Mc uncertainty
         vMc = nan(nBootstraps,1);
         mBvalue = nan(nBootstraps,4);
@@ -62,25 +61,19 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
                 fMcs = mc_calculator(allmags);
                 vMc(:) = fMcs;
                 for nSamp = 1:nBootstraps
-                    %mags = bootrsp(vMags,1);
-                    %fMc = mc_calculator(mags);
-                    % vMc(nSamp) =  fMc;
-                    % Select magnitude range and calculate b-value
-                    %mCatMag = mags( mags >= fMc-halfBinInterval );
                     idx = allmags(:,nSamp) >= fMcs(nSamp)-halfBinInterval;
                     mCatMag = allmags(idx, nSamp );
                     
                     % Check static for length of catalog
                     if length(mCatMag) >= nMinNum
                         [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
-                        %fMeanMag = mean(mCatMag);
                         fMeanMag = sum(mCatMag)/numel(mCatMag);
                         mBvalue(nSamp,:) = [fMeanMag fBvalue fStdDev fAvalue];
                     end
                     
                 end
             else % deal with entire catalogs (slower)
-                [~, mc_calculator] = calc_Mc(mCatalog, mcCalcMethod, binInterval, fMcCorr);
+                [~, mc_calculator] = calc_Mc([mCatalog], mcCalcMethod, binInterval, fMcCorr);
                 
                 for nSamp = 1:nBootstraps
                     mCatalog.Magnitude = bootrsp(vMags,1);
@@ -99,23 +92,6 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
                 end
             end
         end
-        %{
-        for nSamp = 1:nBootstraps
-            mCatalog.Magnitude = bootrsp(vMags,1);
-            fMc = mc_calculator(mCatalog);
-            vMc(nSamp) =  fMc;
-            % Select magnitude range and calculate b-value
-            mCatMag = mCatalog.Magnitude( mCatalog.Magnitude >= fMc-binInterval/2 );
-            
-            % Check static for length of catalog
-            if length(mCatMag) >= nMinNum
-                [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
-                fMeanMag = mean(mCatMag);
-                mBvalue(nSamp,:) = [fMeanMag fBvalue fStdDev fAvalue];
-            end
-            
-        end
-        %}
         % Calculate mean Mc and standard deviation
         vMc(isnan(vMc))=[]; 
         fStd_Mc = std(vMc,1,'omitnan');

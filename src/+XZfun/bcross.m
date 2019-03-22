@@ -148,7 +148,7 @@ classdef bcross < ZmapVGridFunction
                 if Nmin <= length(b)
                     % Added to obtain goodness-of-fit to powerlaw value
                     [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
-                    [fMc] = calc_Mc(b, obj.mc_choice, fBinning, fMccorr);
+                    fMc = calc_Mc(b, obj.mc_choice, fBinning, fMccorr);
                     l = (fMc-(fBinning/2)) <= b.Magnitude;
                     if Nmin <= length(b(l,:))
                         [ fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);

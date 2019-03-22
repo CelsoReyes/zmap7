@@ -82,7 +82,7 @@ classdef bvalgrid < ZmapHGridFunction
             bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_auto_est); %ignore all the other outputs
             
             obj.ZG.overall_b_value = bv;
-            [~,mcCalculator]= calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
+            [~, mcCalculator] = calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
             obj.gridCalculations(@calculation_function);
         
             if nargout
@@ -94,8 +94,8 @@ classdef bvalgrid < ZmapHGridFunction
                 
                 % Added to obtain goodness-of-fit to powerlaw value
                 % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
-                [~, ~, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
-                fail_reason=nan;
+                [~, ~, ~, ~, prf] = mcperc_ca3(catalog.Magnitude);
+                fail_reason = nan;
                 Mc_value = mcCalculator(catalog);
                 
                 l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);

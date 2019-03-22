@@ -5,7 +5,7 @@ function brand2(catalog)
     %                                                 Ram�n Z��iga 9/2000
 
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
+    ZG = ZmapGlobal.Data; % used by get_zmap_globals
     report_this_filefun();
     
     % first create a new catalog with original data changing the year values

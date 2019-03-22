@@ -331,7 +331,7 @@ classdef (Sealed) CumTimePlot < handle
             
             
             op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-            uimenu(op4,'Label','automatic'          , msfield, @cb_auto_mc_b_estimation)
+            uimenu(op4,'Label','FMD'          , msfield, @cb_auto_mc_b_estimation)
             uimenu(op4,'label','Mc with time '      , msfield, @(~,~)plotwithtime('mc'));
             uimenu(op4,'Label','b with depth'       , msfield, @(~,~)bwithde2(obj.catalog));
             uimenu(op4,'label','b with magnitude'   , msfield, @(~,~)bwithmag(obj.catalog));
