@@ -435,7 +435,7 @@ function create_all_menus(obj, force)
             % will replace existing primary catalog
             [rand_catalog, ok] = syn_invoke_random_dialog(obj.catalog);
             
-            if ok
+            if ok && ~isempty(rand_catalog)
                 ZmapMainWindow(figure, rand_catalog);
             end
         end

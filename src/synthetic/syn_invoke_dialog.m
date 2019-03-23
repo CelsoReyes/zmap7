@@ -1,47 +1,40 @@
-function [newCat, ok] = syn_invoke_dialog(mCatalog)
+function [synthCat, ok] = syn_invoke_dialog(catalog)
 % SYN_INVOKE_DIALOG interactive creation of a synthetic catalog
 %
-% [newCat, ok] = syn_invoke_dialog(catalog)
-%
-    report_this_filefun();
+% [newCat, ok] = syn_invoke_dialog(catalog) uses an existing dialog to create default values
 
-    ok=false;
-    % Open figure
-    hDialog = syn_dialog(mCatalog);
-
-    % Analyze Output
-    if ~ishandle(hDialog)
-        answer = 0;
-        newCat = mCatalog;
-    else
-        handles = guidata(hDialog);
-        answer = handles.answer;
-        % OK pressed
-        if answer == 1
-            % Get the values from figure
-            nNumberEvents = str2double(get(handles.txtNumber, 'String'));
-            fBValue = str2double(get(handles.txtBValue, 'String'));
-            fMc = str2double(get(handles.txtMC, 'String'));
-            fInc = str2double(get(handles.txtInc, 'String'));
-            fMinLat = str2double(get(handles.txtMinLat, 'String'));
-            fMaxLat = str2double(get(handles.txtMaxLat, 'String'));
-            fMinLon = str2double(get(handles.txtMinLon, 'String'));
-            fMaxLon = str2double(get(handles.txtMaxLon, 'String'));
-            fMinDepth = str2double(get(handles.txtMinDepth, 'String'));
-            fMaxDepth = str2double(get(handles.txtMaxDepth, 'String'));
-            fMinTime = str2double(get(handles.txtMinTime, 'String'));
-            fMaxTime = str2double(get(handles.txtMaxTime, 'String'));
-
-            % Remove figure from memory
-            delete(hDialog);
-
-            % Create the new catalog
-            [newCat] = syn_catalog(nNumberEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, fMinLon, fMaxLon, fMinDepth, fMaxDepth, fMinTime, fMaxTime);
-            newCat.sort('Date');
-            ok=true;
-        else
-            delete(hDialog);
-            newCat = mCatalog;
-        end
+    synthCat = [];
+    if nargin==0
+        catalog = struct();
+        catalog.Count = 10000;
+        catalog.Date = [datetime(1980,1,1) datetime(1990,1,1)];
+        catalog.Longitude = [-118 -116];
+        catalog.Latitude = [30 35];
+        catalog.Depth = [0 25];
     end
+    zdlg = ZmapDialog();
+    zdlg.AddHeader('Create a Synthetic Catalog');
+    zdlg.AddEdit('nEvents', 'Number of events', catalog.Count, 'number of events in complete catalog');
+    zdlg.AddHeader('Temporal Properties');
+    zdlg.AddEdit('minTime','Earliest possible date', min(catalog.Date), 'First possibledate in catalog');
+    zdlg.AddEdit('maxTime','Latest possible date', max(catalog.Date), 'Last possible date in catalog');
+    zdlg.AddHeader('Positional Properties');
+    zdlg.AddNumericRange('Lons','Longitude Bounds (deg)', bounds2(catalog.Longitude),[-180 180],'[]', 'Longitudes');
+    zdlg.AddNumericRange('Lats','Latitude Bounds (deg)', bounds2(catalog.Latitude),[-90 90],'[]', 'Latitudes');
+    zdlg.AddNumericRange('Depths','Depth Bounds (km)', bounds2(catalog.Depth),[-6 6000],'[]', 'Depth');
+    zdlg.AddHeader('Magnitude Properties');
+    zdlg.AddEdit('fBValue', 'b-value', 1, 'tooltip');
+    zdlg.AddEdit('fMc', 'Magnitude of completeness', 1, 'tooltip');
+    zdlg.AddEdit('fInc', 'Bin spacing', 0.1, 'bins into which magnitudes will fall');
+
+    [res, ok] = zdlg.Create('Name', 'Create a synthetic catalog');
+    if ~ok
+        return
+    end
+    
+    synthCat = syn_catalog(res.nEvents, res.fBValue, res.fMc, res.fInc, ...
+        res.Lats(1), res.Lats(2), res.Lons(1), res.Lons(2), res.Depths(1), res.Depths(2),...
+        res.minTime, res.maxTime);
+    
+    return
 end

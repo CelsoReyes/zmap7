@@ -19,17 +19,14 @@ function newMags = syn_create_magnitudes(nEvents, B, startMag, magStep)
     mags(N<1) = [];
     N(N<1) = [];
     
-    if nargout == 2
-        
-        newMags = zeros(nEvents,1);
-        
-        lasts = cumsum(N)';
-        nexts = [0;lasts(1:end-1)]+1;
-        
-        for i = 1:numel(N)
-            newMags(nexts(i):lasts(i),1) = mags(i);
-        end
-        
-        newMags = newMags(randperm(nEvents));
+    newMags = zeros(nEvents,1);
+    
+    lasts = cumsum(N)';
+    nexts = [0;lasts(1:end-1)]+1;
+    
+    for i = 1:numel(N)
+        newMags(nexts(i):lasts(i),1) = mags(i);
     end
+    
+    newMags = newMags(randperm(nEvents));
 end

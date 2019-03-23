@@ -141,7 +141,7 @@ classdef ZmapMainWindow < handle
                     if isa(varargin{2}, 'ZmapCatalog')
                         in_catalog = varargin{2};
                     else
-                        error('Usage: ZmapMainWindow(fig, CATALOG).\nSecond argument was not a catalog');
+                        error('%s\n%s','Usage: ZmapMainWindow(fig, CATALOG).','Second argument was not a catalog');
                     end
             end
             

@@ -37,12 +37,13 @@ function [synCat] = syn_catalog(nEvents, fBValue, fMc, fInc, fMinLat, fMaxLat, f
     
     tb.Date = dateshift(getRandomVals(fMinTime, fMaxTime),'start','minute');
     tb.Magnitude = syn_create_magnitudes(nEvents, fBValue, fMc, fInc);
-    tb.Longitude = getRandomVals(fMinLon,fMaxLon);
-    tb.Latitude  = getRandomVals(fMinLat,fMaxLat);
+    tb.Longitude = getRandomVals(fMinLon, fMaxLon);
+    tb.Latitude  = getRandomVals(fMinLat, fMaxLat);
     tb.Depth     = getRandomVals(fMinDepth, fMaxDepth);
     
     synCat = ZmapCatalog.fromTable(tb);
     synCat.Name = 'synthetic';
+    synCat.sort('Date','ascend');
     return
     
     %% code salvaged from thomas/synthetic/syn_catalog

@@ -42,15 +42,15 @@ function [fMc, mcCalculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCorr
     if ~exist('binInterval', 'var') || isempty(binInterval)
         binInterval = 0.1;
     end
-    if ~isa(calcMethod,'McMethod')
+    if ~isa(calcMethod,'McMethods')
         error('Expected an actual method (McMethods) but received something else.\n See McMethods');
     end
     % Correction
     if ~exist('mcCorrectionFactor', 'var') || isempty(mcCorrectionFactor)
         mcCorrectionFactor = 0;
     end
-    
-    if isnumeric(mCatalog) && isvector(mCatalog)
+    useNumeric = isnumeric(mCatalog) || (ischarlike(mCatalog) && mCatalog == "AsMagnitudes");
+    if useNumeric
         switch calcMethod
             case McMethods.MaxCurvature
                 methodFun = @calc_McMaxCurvature;
@@ -126,7 +126,7 @@ function [fMc, mcCalculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCorr
     % lock the method into this calculation
     mcCalculator = @(C) do_calculation(methodFun, C, mcCorrectionFactor);
 
-    if ~isempy(mCatalog)
+    if ~isempty(mCatalog)
         % do the calculation
         fMc = mcCalculator(mCatalog);
     else

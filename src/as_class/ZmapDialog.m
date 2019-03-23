@@ -706,6 +706,82 @@ classdef ZmapDialog < handle
             end
         end
         
+        function AddNumericRange(obj, tag, label, values, minmax_values, boundaries, tooltip)
+            bIdx = boundaries==["[]", "(]", "()", "[)"]; % where [,] means inclusive and (,) means exclusive
+            assert(any(bIdx))  
+            opfns = {{@ge,@le}, {@gt, @le}, {@gt, @lt}, {@ge, @lt}};
+            descs = {{'>=','<='},{'>','<='},{'>','<'},{'>=','<'}};
+            myMinFcn = opfns{bIdx}{1};
+            myMaxFcn = opfns{bIdx}{2};
+            assert(minmax_values(2) > minmax_values(1));
+            assert(values(2)>= values(1))
+            assert(myMinFcn(values(1), minmax_values(1)), 'minimum value out of range');
+            assert(myMaxFcn(values(2), minmax_values(2)), 'maximum value out of range');
+            conversion_function = @(v)double(string(v));
+            
+            idx = numel(obj.parts)+1;
+            obj.parts(idx).Style        = 'numericrange';
+            obj.parts(idx).CreatorFcn.OldStyle   =  @createNumericRange;
+            obj.parts(idx).CreatorFcn.NewStyle   =  @createUINumericRange;
+            obj.parts(idx).ConversionFcn.figure = @(h)conversion_function(h.String);
+            obj.parts(idx).ConversionFcn.uifigure = @(h)conversion_function(h.Value);
+            obj.parts(idx).Height       = obj.rowH;
+            obj.parts(idx).Tag          = tag;
+            
+            
+            function h = createNumericRange()
+                mintooltip = sprintf('%s (value %s %g)',tooltip, descs{bIdx}{1}, minmax_values(1));
+                maxtooltip = sprintf('%s (value %s %g)',tooltip, descs{bIdx}{2}, minmax_values(2));
+                uicontrol('Style','text',...
+                    'String',[label, ' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'ToolTipString',tooltip,...
+                    'Tag',[tag '_label']);
+                
+                mystr=string(values);
+                if ismissing(mystr)
+                    mystr='';
+                end
+                
+                h(1) = uicontrol('Style','edit',...
+                    'String',mystr(1),...
+                    'Tag',[tag '_min'],...
+                    'ToolTipString', mintooltip,...
+                    'Position',[obj.editX, obj.labelY, obj.editW/2, obj.rowH-10]);
+                
+                h(2) = uicontrol('Style','edit',...
+                    'String',mystr(2),...
+                    'Tag',[tag '_max'],...
+                    'ToolTipString', maxtooltip,...
+                    'Position',[obj.editX+obj.editW/2, obj.labelY, obj.editW/2, obj.rowH-10]);
+                
+            end
+            
+            function h = createUINumericRange()
+                uilabel('Parent',obj.hDialog,...
+                    'Text',[label, ' : '],...
+                    'HorizontalAlignment','right',...
+                    'Position',[obj.labelX obj.labelY obj.labelW obj.rowH-10],...
+                    'Tag',[tag '_label']);
+                
+                mystr=string(value);
+                if ismissing(mystr)
+                    mystr='';
+                end
+                
+                h(1) = uieditfield('Parent',obj.hDialog,...
+                    'Value',mystr,...
+                    'Tag',[tag '_min'],...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+                
+                h(2) = uieditfield('Parent',obj.hDialog,...
+                    'Value',mystr,...
+                    'Tag',[tag '_max'],...
+                    'Position',[obj.editX obj.labelY obj.editW obj.rowH-10]);
+            end
+        end
+        
         function AddGridSpacing(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits) 
             % Add a grid parameter widget to the box.
             % AddGridSpacing(obj,tag,dx,dxunits, dy,dyunits, dz,dzunits)
@@ -883,7 +959,14 @@ classdef ZmapDialog < handle
                 if isempty(tag) % not meant to be analyzed
                     continue
                 end
-                valueToWrite =  me.ConversionFcn.(obj.figureType)(h);
+                if numel(h) == 1
+                    valueToWrite =  me.ConversionFcn.(obj.figureType)(h);
+                else
+                    clear valueToWrite;
+                    for j = numel(h) : -1 : 1
+                        valueToWrite(j) =  me.ConversionFcn.(obj.figureType)(h(j));
+                    end
+                end
                 obj.WriteToObj.(tag) = valueToWrite;
             end
             
