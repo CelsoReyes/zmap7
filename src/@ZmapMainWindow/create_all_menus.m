@@ -16,7 +16,8 @@ function create_all_menus(obj, force)
     end
     create_overlay_menu();
     
-    obj.catalog_menu(force);
+    catmen = obj.catalog_menu(force);
+    create_random_data_simulations_menu(catmen);
     
     create_decluster_menu(findobj(obj.fig, 'Label', 'Catalog', '-and', 'type', 'uimenu'));
     
@@ -290,6 +291,9 @@ function create_all_menus(obj, force)
             'Separator', 'on',...
             MenuSelectedField(), @obj.cb_redraw);
         
+        uimenu(mapoptionmenu, 'label', 'Open printable figure', ...
+            MenuSelectedField(), @(~,~)make_printable_figure_copy(obj.fig));
+        
         function set_aspects_cb(src, ev)
             callbacks.toggle_aspectratio(src, ev, obj.get_all_map_axes(), "SetGlobal");
         end
@@ -380,7 +384,8 @@ function create_all_menus(obj, force)
             MenuSelectedField(), @(~,~)create_projectedmap_from_mainmap(obj.fig));
         
         create_topo_map_menu(submenu);
-        create_random_data_simulations_menu(submenu);
+        uimenu(submenu,'Label', 'Random data simulations has moved to CATALOG menu', 'Enable', 'off');
+        % create_random_data_simulations_menu(submenu);
         
         % create_histogram_menu(submenu);
         create_explore_catalog_menu(submenu);
@@ -422,7 +427,7 @@ function create_all_menus(obj, force)
     end
     
     function create_random_data_simulations_menu(parent)
-        submenu  =   uimenu(parent, 'Label', 'Random data simulations');
+        submenu  =   uimenu(parent, 'Label', 'Create Synthetic/Permuted catalog', 'Separator', 'on');
         uimenu(submenu, 'label', 'Create permutated catalog (also new b-value)...', MenuSelectedField(), @cb_create_permutated);
         uimenu(submenu, 'label', 'Create synthetic catalog...', MenuSelectedField(), @cb_create_synhthetic_cat);
         

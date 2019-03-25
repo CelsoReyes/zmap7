@@ -93,7 +93,7 @@ classdef ZmapMainWindow < handle
         % push and pop state
         pushState(obj)
         popState(obj)
-        catalog_menu(obj, force)
+        h = catalog_menu(obj, force)
         [mdate, mshape, mall]=filter_catalog(obj)
         create_all_menus(obj, force)
         
@@ -419,14 +419,26 @@ classdef ZmapMainWindow < handle
         function cb_starthere(obj, ax)
             disp(ax)
             [x,~] = click_to_datetime(ax);
+            zdlg = ZmapDialog();
+            zdlg.AddEdit('theDate', 'Start catalog at', x, 'select the catalog starting point');
+            [res, okPressed] = zdlg.Create('Name', 'Trim catalog');
+            if ~okPressed
+                return
+            end
             obj.pushState();
-            obj.daterange(1) = x;
+            obj.daterange(1) = res.theDate;
         end
         
         function cb_endhere(obj, ax)
             [x,~] = click_to_datetime(ax);
+            zdlg = ZmapDialog();
+            zdlg.AddEdit('theDate', 'End catalog at', x, 'select the catalog ending point');
+            [res, okPressed] = zdlg.Create('Name', 'Trim catalog');
+            if ~okPressed
+                return
+            end
             obj.pushState();
-            obj.daterange(2) = x;
+            obj.daterange(2) = res.theDate;
         end
         
         function cb_trim_to_largest(obj,~,~)
@@ -750,10 +762,11 @@ classdef ZmapMainWindow < handle
                     MenuSelectedField(),@(~,~)callbacks.switchtabgroup(obj.maingroup));
             end
             
-            if isempty(findobj(obj.fig,'Name','Open Printable Figure','-and','Type','uimenu'))
-                uimenu(obj.maintab.UIContextMenu,'Text','Open Printable Figure',...
+            if isempty(findobj(obj.fig,'Tag','printable_figure_tab','-and','Type','uimenu'))
+                uimenu(obj.maintab.UIContextMenu,'Text','open printable Figure',...
                 'Separator','on', ...
-                    MenuSelectedField(),@(~,~)make_printable_figure_copy(obj.fig));
+                    MenuSelectedField(),@(~,~)make_printable_figure_copy(obj.fig),...
+                    'Tag', 'printable_figure_tab');
             end
 
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...

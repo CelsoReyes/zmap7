@@ -1,18 +1,19 @@
-function catalog_menu(obj, force)
+function submenu = catalog_menu(obj, force)
     % catalog_menu was create_catalog_menu adds a menu designed to handle catalog modifications
     
     
     % to find this menu, use findobj(obj.fig, 'Tag');
     
     ZG = ZmapGlobal.Data; % for use in all subroutines
-    h = findobj(obj.fig,'Tag','menu_catalog');
+    submenu = findobj(obj.fig,'Tag','menu_catalog');
     if ~exist('force','var')
         force=false;
     end
-    if ~isempty(h) && force
-        delete(h); h=[];
+    if ~isempty(submenu) && force
+        delete(submenu); 
+        submenu=[];
     end
-    if ~isempty(h)
+    if ~isempty(submenu)
         return
     end
     

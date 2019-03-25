@@ -31,7 +31,7 @@ function bwithmag(catalog)
     watchoff
     
     %% plot it
-    myFigName='b-value with magnitude';
+    myFigName = 'b-value with magnitude';
     errorColor = [0.5, 0.5, 0.5];
         
     bdep = findobj('Type', 'Figure', '-and', 'Name', myFigName);
