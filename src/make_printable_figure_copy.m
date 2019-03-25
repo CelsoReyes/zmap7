@@ -37,7 +37,7 @@ function make_printable_figure_copy(fig_to_copy)
         end
         nTrys = nTrys + 1;
         if nTrys > 5
-            error('got into some sort of recursion loop');
+            error('probably got into some sort of recursion loop');
         end
     end
     

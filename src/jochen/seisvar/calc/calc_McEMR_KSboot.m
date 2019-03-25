@@ -1,8 +1,7 @@
 function [fMls, fMc, fStd_Mc, fMu, fSigma, fBvalue, fStd_B, fAvalue, fStd_A, bH, fPval, fKsstat,mResult] = calc_McEMR_KSboot(mCatalog, fBinning, nBst, nMethod)
-    % Determine Mc using bootstrap approach function calc_McBboot
+    % Determine Mc using bootstrap approach
     % [fMls, fMc, fStd_Mc, fMu, fSigma, fBvalue, fStd_B, fAvalue, fStd_A, bH, fPval, fKsstat, mResult] = calc_McEMR_KSboot(mCatalog, fBinning, nBst, nMethod);
     % ---------------------------------------------------------------------------------------------------------------------------------------
-    % Determine Mc using bootstrap approach function calc_McBboot
     % The KS-Test is used to verify if the EMR-model for the bootstrap Mc
     % results in a good-fit (0) or not (1) at 0.05 significance level.
     %

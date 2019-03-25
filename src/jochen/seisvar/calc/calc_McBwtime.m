@@ -84,8 +84,6 @@ function [result] = calc_McBwtime(catalog, varargin)
             % Select samples
             eventsInWindow = catalog.subset( windowStarts(i) : windowEnds(i) );
             [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = doMcBootCalc(eventsInWindow);
-            % [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = calc_McBboot(eventsInWindow, binWidth, nBstSample, nMethod,nMinNumberevents,fMcCorr);
-            %mResult(i,:) = [fTime fMc fStd_Mc fBvalue fStd_B fAvalue fStd_A];
             
             result(i).meanSampleTime   = mean(eventsInWindow.Date);
             result(i).mcMeanWithTime   = fMc;
