@@ -155,7 +155,6 @@ function create_all_menus(obj, force)
         uimenu(submenu, 'enable', 'off', 'Label', 'Calc a b-value cross-section', MenuSelectedField(), @(~,~)nlammap(@()obj.xsec_zap));
         
         h = bcross.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
-        h = bcrossV2.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
         h = bcrossVt2.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
         h = calc_Omoricross.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
         h = calc_across.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
@@ -489,6 +488,7 @@ function create_all_menus(obj, force)
         uimenu(submenu, 'Label', 'Decluster (Gardner & Knopoff)',...
             'Enable', 'off',...
             MenuSelectedField(), @cb_declus_inp);
+        % uimenu(submenu, 'Label', 'Decluster (Zaliapin)', MenuSelectedField(), @cb_zaliapin);
     end
     function cb_declus_inp(~,~)
         [out, nMethod] = declus_inp(obj.catalog)
@@ -497,6 +497,21 @@ function create_all_menus(obj, force)
     
     function cb_reasen(~,~)
         rdc = ReasenbergDeclusterClass(obj.catalog, "CalcFinishedFcn", @update_window_with_declust);
+        
+        function update_window_with_declust()
+            if ~isempty(rdc.declusteredCatalog)
+                msg.dbdisp('replacing the catalog')
+                obj.rawcatalog = rdc.declusteredCatalog;
+                obj.CatalogManager.RawCatalog = obj.rawcatalog;
+                obj.replot_all()
+            else
+                errordlg('Empty declustered catalog, Main window will not be updated')
+            end
+        end
+    end
+
+    function cb_zaliapin(~,~)
+        rdc = ZaliapinDeclusterClass(obj.catalog, "CalcFinishedFcn", @update_window_with_declust);
         
         function update_window_with_declust()
             if ~isempty(rdc.declusteredCatalog)

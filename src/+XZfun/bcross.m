@@ -1,28 +1,39 @@
 classdef bcross < ZmapVGridFunction
     % BCROSS calculate b-values along a cross section
     properties
-        mc_auto         McAutoEstimate
-        mc_choice       McMethods
+        nBstSample   {mustBeNonnegative,mustBeInteger}  = 100   % number of bootstrap samples
+        useBootstrap logical            = false  % perform bootstrapping?
+        fMccorr      double             = 0.2   % magnitude correction
+        fBinning     {mustBePositive}   = 0.1   % magnitude bins
+        mc_choice    McMethods          = McMethods.MaxCurvature % magnitude of completion method
+        mc_auto_est  McAutoEstimate     = McAutoEstimate.auto
         
     end
     
     properties(Constant)
         PlotTag         = 'bcross'
-        ReturnDetails   = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
-            'magComp',  'Mc map', '';...
-            'McStdDev', 'Standard deviation Mc', '';...
-            'b_value',  'b-value', '';...
-            'mStdB',    'Standard deviation b-value', '';...
-            'a_value',  'a-value M(0)', '';...
-            'mStdA',    'Standard deviation a-value', '';...
-            'fitToPowerlaw', 'Goodness of fit to power-law map', '';...
-            'ro',       'Whatever this is', '';...
+        ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
+            'Mc_value'      , 'Magnitude of Completion (Mc)'    , '';...
+            'Mc_std'        ,'Std. of Magnitude of Completion'  , '';...
+            'b_value'       , 'b-value'                         , '';...
+            'b_value_std'   , 'Std. of b-value'                 , '';...
+            'a_value'       , 'a-value'                         , '';...
+            'a_value_std'   , 'Std. of a-value'                 , '';...
+            'power_fit'     , 'Goodness of fit to power-law'    , '';...
+            'Additional_Runs_b_std'  , 'Additional runs: Std b-value'   , '';...
+            'Additional_Runs_Mc_std' , 'Additional runs: Std of Mc'     , '';...
+            'failreason'    , 'reason b-value was nan'                  , '';...
+            'nEvents_gt_local_Mc', 'nEvents > local Mc'                 , '';...
             }, 'VariableNames', {'Names','Descriptions','Units'})
         
-        CalcFields      = {'magComp','McStdDev','b_value','mStdB','a_value','mStdA','fitToPowerlaw','ro'} % cell array of charstrings, matching into ReturnDetails.Names
         
-        ParameterableProperties = []; % array of strings matching into obj.Properties
-        References="";
+        CalcFields = {'Mc_value', 'Mc_std', 'b_value', 'b_value_std',...
+            'a_value', 'a_value_std', 'power_fit',...
+            'Additional_Runs_b_std', 'Additional_Runs_Mc_std', 'failreason', 'nEvents_gt_local_Mc'}
+        
+        ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr",...
+            "fBinning", "mc_choice", "mc_auto_est"];
+        References = "";
     end
     
     methods
@@ -33,9 +44,7 @@ classdef bcross < ZmapVGridFunction
             % obj = CBCROSS(ZAP) where ZAP is a ZmapAnalysisPkg
             
             obj@ZmapVGridFunction(zap, 'b_value');
-            
-            report_this_filefun();
-            unimplemented_error()
+            obj.NodeMinEventCount         =   50;
             obj.parseParameters(varargin);
             obj.StartProcess();
         end
@@ -44,196 +53,107 @@ classdef bcross < ZmapVGridFunction
             % create a dialog that allows user to select parameters neccessary for the calculation
             
             %% make the interface
+            
+            checkboxTargets = {'nBstSample', 'nBstSample_label'};
+            
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
             
-            
             zdlg.AddMcMethodDropdown('mc_choice');
-            zdlg.AddGridSpacing('gridOpts',dx,'km',[],'',dd,'km');
-            obj.AddDialogOption(zdlg,'EventSelector');
+            % zdlg.AddGridSpacing('gridOpts', dx, 'km' , [], '' , dd, 'km');
+            % obj.AddDialogOption(zdlg, 'EventSelector');
             
-            zdlg.AddEdit('fBinning','Magnitude binning', fBinning,...
+            zdlg.AddEdit('fBinning'         , 'Magnitude binning'       , obj.fBinning,...
                 'Bins for magnitudes');
             obj.AddDialogOption(zdlg, 'NodeMinEventCount');
-            zdlg.AddEdit('fMcFix', 'Fixed Mc',fMcFix,...
-                'fixed magnitude of completeness (Mc)');
-            zdlg.AddEdit('fMccorr', 'Mc correction factor',fMccorr,...
+            %zdlg.AddEdit('fMcFix'           , 'Fixed Mc'                , fMcFix,...
+            %    'fixed magnitude of completeness (Mc)');
+            zdlg.AddEdit('fMccorr'          , 'Mc correction factor'    , obj.fMccorr,...
                 'Correction term to be added to Mc');
-            zdlg.AddCheckbox('useBootstrap','Use Bootstrapping', false, {'nBstSample','nBstSample_label'},...
-                're takes longer, but provides more accurate results');
-            zdlg.AddEdit('nBstSample','Number of bootstraps', nBstSample,...
+            zdlg.AddCheckbox('useBootstrap' , 'Use Bootstrapping'       , false, checkboxTargets,...
+                'bootstrapping takes longer, but provides more accurate results');
+            zdlg.AddEdit('nBstSample'       , 'Number of bootstraps'    , obj.nBstSample,...
                 'Number of bootstraps to determine Mc');
             
-            
-            [res,okPressed] = zdlg.Create('Name', 'B-Value Parameters [xsec]');
-            if ~okPressed
-                return
-            end
-            obj.SetValuesFromDialog(res);
-            obj.doIt()
+            zdlg.Create('Name', 'b-Value XSec Parameters', 'WriteToObj', obj, 'OkFcn', @obj.doIt);
         end
         
-        function SetValuesFromDialog(obj, res)
-            % called when the dialog's OK button is pressed
-            obj.hndl2=res.mc_choice;
-            obj.dx = res.gridOpts.dx;
-            obj.dd = res.gridOpts.dz;
-            obj.tgl1 = res.eventSelector.UseNumClosestEvents;
-            obj.tgl2 = ~tgl1;
-            obj.ni = res.eventSelector.NumClosestEvents;
-            obj.ra = res.eventSelector.RadiusKm;
-            obj.bGridEntireArea = res.gridOpts.GridEntireArea;
-            obj.bBst_button = res.useBootstrap;
-            obj.nBstSample = res.nBstSample;
-            obj.fMccorr = res.fMccorr;
-            obj.fBinning = res.fBinning;
-            
-        end
-        
-        function results=Calculate(obj)
+        function results = Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
-            % get the grid-size interactively and calculate the values in the grid by sorting the
-            % seismicity and selecting the appropriate neighbors to each grid point
+            % get the grid-size interactively and calculate the b-value in the grid by sorting the
+            % seismicity and selecting the ni neighbors to each grid point
             
-            % Select and create grid
-            [newgri, xvect, yvect, ll] = ex_selectgrid(xsec_fig(), dx, dd, bGridEntireArea);
+            % Overall b-value
+            bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_auto_est); %ignore all the other outputs
             
-            % Plot all grid points
-            plot(newgri(:,1),newgri(:,2),'+k')
+            obj.ZG.overall_b_value = bv;
+            [~, mcCalculator] = calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
+            obj.useBootstrap = obj.useBootstrap && obj.nBstSample > 0;
+            if obj.useBootstrap
+                obj.gridCalculations(@(catalog) do_calculation(catalog, @calculate_boot));
+            else
+                obj.gridCalculations(@(catalog) do_calculation(catalog, @calculate_noboot));
+            end
             
-            %  make grid, calculate start- endtime etc.  ...
-            %
-            [t0b, teb] = bounds(newa.Date) ;
-            n = newa.Count;
-            tdiff = round((teb-t0b)/ZG.bin_dur);
+            if nargout
+                results = obj.Result.values;
+            end
             
-            % loop over  all points
-            % Set size for output matrix
-            bvg = NaN(length(newgri),12);
-            allcount = 0.;
-            wai = waitbar(0,' Please Wait ...  ');
-            set(wai,'NumberTitle','off','Name','b-value grid - percent done');
-            drawnow
-            itotal = length(newgri(:,1));
-            %
-            % loop
-            %
-            for i= 1:length(newgri(:,1))
-                x = newgri(i,1);y = newgri(i,2);
-                allcount = allcount + 1.;
+            return
+            %%
+            
+            function out = do_calculation(catalog, calcFcn)
+                % calculate values at a single point
+                out = nan(1,11);
                 
-                % calculate distance from center point and sort wrt distance
-                l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
-                [s,is] = sort(l);
-                b = newa(is(:,1),:) ;       % re-orders matrix to agree row-wise
+                % Added to obtain goodness-of-fit to powerlaw value
+                [~, ~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude);
+                Mc_value = mcCalculator(catalog);
                 
+                idx = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
+                nEvents_gt_local_mc = sum(idx);
                 
-                if tgl1 == 0   % take point within r
-                    l3 = l <= ra;
-                    b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
-                    rd = ra;
+                out(11) = nEvents_gt_local_mc;
+                
+                if nEvents_gt_local_mc >= obj.NodeMinEventCount
+                    out = calcFcn(catalog, idx, out); % runs either calculation_function_boot or calculation_function_noboot
                 else
-                    % take first ni points
-                    b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
-                    rd = s(ni);
+                    out(10) = 1;
                 end
+            end
+            
+            function out = calculate_boot(catalog, idx, out)
+                [   out(1), out(2), ... % Mc      , Mc_std
+                    out(3), out(4), ... % b-value , b-value std
+                    out(5), out(6), ... % a-value , a-value std
+                    Additional_Runs_b_std,...
+                    Additional_Runs_Mc_std] = ...
+                    calc_McBboot(catalog.subset(idx), obj.fBinning, obj.nBstSample, obj.mc_choice);
+                % where Additiona_Runs_Mc_std = nBoot x [fMeanMag fBvalue fStdDev fAvalue];
                 
-                % Number of earthquakes per node
-                [nX,nY] = size(b);
-                
-                %estimate the completeness and b-value
-                ZG.newt2 = b;
-                
-                if Nmin <= length(b)
-                    % Added to obtain goodness-of-fit to powerlaw value
-                    [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
-                    fMc = calc_Mc(b, obj.mc_choice, fBinning, fMccorr);
-                    l = (fMc-(fBinning/2)) <= b.Magnitude;
-                    if Nmin <= length(b(l,:))
-                        [ fBValue, fStd_B, fAValue] =  calc_bmemag(b(l,:), fBinning);
-                    else
-                        %fMc = NaN;
-                        fBValue = NaN; fStd_B = NaN; fAValue= NaN;
-                    end
-                    
-                    % Bootstrap uncertainties
-                    if bBst_button
-                        % Check Mc from original catalog
-                        l = (fMc-(fBinning/2)) <= b.Magnitude;
-                        if Nmin <= length(b(l,:))
-                            [fMc, fStd_Mc, fBValue, fStd_B, fAValue, fStd_A, vMc, b_value] = calc_McBboot(b, fBinning, nBstSample, obj.mc_choice);
-                        else
-                            %fMc = NaN;
-                            %fStd_Mc = NaN;
-                            fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
-                        end
-                    else
-                        % Set standard deviation of a-value to NaN;
-                        fStd_A= NaN; fStd_Mc = NaN;
-                    end
-                    
-                else % of if length(b) >= Nmin
-                    fMc = NaN; fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A = NaN;
-                    %bv = NaN; bv2 = NaN; stan = NaN; stan2 = NaN; prf = NaN; magco = NaN; av = NaN; av2 = NaN;
-                    prf = NaN;
-                    b = [NaN NaN NaN NaN NaN NaN NaN NaN NaN];
-                    nX = NaN;
-                end
-                mab = max(b.Magnitude) ;
-                if isempty(mab)
-                    mab = NaN;
-                end
-                
-                % Result matrix
-                %bvg(allcount,:)  = [bv magco x y rd bv2 stan2 av stan prf  mab av2 fStdDevB fStdDevMc nX];
-                bvg(allcount,:)  = [fMc fStd_Mc x y rd fBValue fStd_B fAValue fStd_A prf mab nX];
-                waitbar(allcount/itotal)
-            end  % for  newgri
+                out(8) = std(Additional_Runs_b_std);
+                out(9) = std(Additional_Runs_Mc_std(:,1));
+            end
             
-            drawnow
-            gx = xvect;gy = yvect;
-            
-            catsave3('bcross_orig');
-            %corrected window positioning error
-            close(wai)
-            watchoff
-            
-            % initialize a few matrices
-            [magComp, McStdDev, mRadRes, b_value, mStdB, a_value, mStdA, fitToPowerlaw, ro, mNumEq] = deal(NaN(length(yvect), length(xvect)));
-            % replace the indexed values within
-            
-            magComp(ll) = bvg(:,1);         % Mc map
-            McStdDev(ll) = bvg(:,2);       % Standard deviation Mc
-            mRadRes(ll) = bvg(:,5);     % Radius resolution
-            b_value(ll) = bvg(:,6);      % b-value
-            mStdB(ll) = bvg(:,7);        % Standard deviation b-value
-            a_value(ll) = bvg(:,8);      % a-value M(0)
-            mStdA(ll) = bvg(:,9);        % Standard deviation a-value
-            fitToPowerlaw(ll) = bvg(:,10);       % Goodness of fit to power-law map
-            ro(ll) = bvg(:,11);          % Whatever this is
-            mNumEq(ll) = bvg(:,12);     % number of events
-            
-            valueMap = b_value;
-            kll = ll;
-            % View the b-value map
-            view_bv2([],valueMap)
-            
-            
-            function out=calculation_function(catalog)
-                % calulate values at a single point
+            function out = calculate_noboot(catalog,idx, out)
+                [out(3), out(4), out(5)] =  calc_bmemag(catalog.Magnitude(idx), obj.fBinning);
             end
         end
+        
+        % view_bv2([],valueMap) % view the b-value map
         
         function ModifyGlobals(obj)
+            obj.ZG.bvg  = obj.Result.values;
+            obj.ZG.Grid = obj.Grid; %TODO do we really write back the grid?
         end
     end
     
     methods(Static)
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
-            label='b-value [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcross(zapFcn()));
+            label = 'b-value [xsec]';
+            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcross(zapFcn()));
         end
     end
 end

@@ -663,7 +663,11 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             end
             
             if islogical(range)
-                if ~any(size(range)==obj.Count)
+                cnt = obj.Count;
+                if numel(range) == 1 && range && cnt > 1
+                    range = true(cnt, 1);
+                end
+                if ~any(size(range) == cnt)
                     error('When using logical indexing, one dimension must be the length of the catalog')
                 end
             elseif ~isvector(range)

@@ -2,7 +2,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
     % Zaliapin Declustering Codes
     
     % inital code by Shyam Nandan, Conformed to ZMAP by Celso Reyes
-    
+    % TOFIX this isn't really hooked up yet, it's half Zaliapin and half reasenberg
     properties
         fractalDimension    double = 1
         bvalue              double = 1
@@ -21,7 +21,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
     end
     
     properties(Constant)
-        PlotTag = "ReasenbergDecluster"
+        PlotTag = "ZaliapinDecluster"
         
         ParameterableProperties = ["fractalDimension", "bvalue", "theta",...
             "clusterDetailsVariableName",...
@@ -57,7 +57,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
             zdlg.AddEdit('theta'            , 'Theta'             , obj.theta, '<b>theta</b> weight for temporal distance');
             zdlg.AddEdit('bvalue'           , 'B value'           , obj.bvalue, '<b>Bvalue</b> used to weight magnitude distance');
             zdlg.AddHeader('');
-            % zdlg.AddEdit('threshhold'       , 'Cluster Threshhold', obj.threshhold,'<b>threshhold</b>Independence Probabilities above threshold considered cluster ');
+            zdlg.AddEdit('threshhold'       , 'Cluster Threshhold', obj.threshhold,'<b>threshhold</b>Independence Probabilities above threshold considered cluster ');
             % zdlg.AddHeader('');
             % zdlg.AddHeader('Output')
             zdlg.AddEdit('clusterDetailsVariableName',      'Save Clusters to workspace as', ...
@@ -111,7 +111,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
             
             totalEvents = obj.RawCatalog.Count;
             evDay = days(obj.RawCatalog.Date - min(obj.RawCatalog.Date));
-            [y,x] = geodetic2ned(obj.RawCatalog.Latitude,obj.RawCatalog.Longitude, 0,...
+            [y,x] = geodetic2ned(obj.RawCatalog.Latitude, obj.RawCatalog.Longitude, 0,...
                 median(obj.RawCatalog.Latitude), median(obj.RawCatalog.Longitude), 0,...
                 obj.RawCatalog.RefEllipsoid);
             
@@ -171,9 +171,10 @@ classdef ZaliapinDeclusterClass < ZmapFunction
             end
             
             details.Properties.Description  = 'Details for cluster, from Zaliapin declustering';
+            details.IndependenceProbability = IP;
             details.eventNumber             = (1:obj.RawCatalog.Count)';
-            details.isBiggest               = false(size(details.clusterNumber));
-            details.isBiggest(idx_biggest_event_in_cluster) = true;
+            %details.isBiggest               = false(size(details.clusterNumber));
+            %details.isBiggest(idx_biggest_event_in_cluster) = true;
             
             details.Latitude                = obj.RawCatalog.Y;
             details.Properties.VariableUnits(width(details)) = {'degrees'};
@@ -190,13 +191,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
             
             details.Date                    = obj.RawCatalog.Date;
             
-            details.InteractionZoneIfMain   = interactzone_main_km;
-            details.Properties.VariableUnits(width(details)) = {'kilometers'};
-            
-            details.InteractionZoneIfInClust = interactzone_in_clust_km;
-            details.Properties.VariableUnits(width(details)) = {'kilometers'};
-            
-            clusterFreeCatalog = obj.RawCatalog.subset(ismissing(details.clusterNumber));
+            clusterFreeCatalog = obj.RawCatalog.subset(ismissing(details.IndependenceProbability >= obj.threshhold ));
             %biggest_events_in_cluster = obj.RawCatalog.subset(details.isBiggest);
             
             outputcatalog = clusterFreeCatalog;
@@ -207,7 +202,7 @@ classdef ZaliapinDeclusterClass < ZmapFunction
             
             
             %build a matrix clust that stored clusters
-            [~, biggest_events_in_cluster, max_mag_in_cluster,~,~] = funBuildclu(obj.RawCatalog,idx_biggest_event_in_cluster,clus,max_mag_in_cluster);
+            [~, biggest_events_in_cluster, max_mag_in_cluster,~,~] = funBuildclu(obj.RawCatalog, idx_biggest_event_in_cluster, clus, max_mag_in_cluster);
             
             
             % replace cluster sequences with summary events

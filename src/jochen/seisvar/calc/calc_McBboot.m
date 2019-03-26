@@ -34,81 +34,113 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
         nMinNum = 50;
     end
     
-    % Correction
     if ~exist('fMcCorr', 'var')
         fMcCorr = 0;
     end
     
     % Initialize
+    mBvalue = [];
     vMc = [];
+    [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = deal(NaN);
     
-    % Restrict to minimum number
-    if catalog.Count >= nMinNum
-        % Get magnitudes
-        vMags = catalog.Magnitude;
-        % Reset randomizer
-        rng('shuffle');
-        % Create bootstrap samples using bootstrap matlab toolbox
-        % Determine Mc uncertainty
-        vMc = nan(nBootstraps,1);
-        mBvalue = nan(nBootstraps,4);
-        halfBinInterval = binInterval/2;
-        if nBootstraps > 0
-            % get the calculator for faster calculations within the loop
-            if ~ismember(mcCalcMethod, [McMethods.McDueB_Bootstrap, McMethods.McEMR])  % work with magnitudes only (faster, but uses more memory)
-                [~, mc_calculator] = calc_Mc(vMags, mcCalcMethod, binInterval, fMcCorr);
-                allmags = bootrsp(vMags, nBootstraps);
-                fMcs = mc_calculator(allmags);
-                vMc(:) = fMcs;
-                for nSamp = 1:nBootstraps
-                    idx = allmags(:, nSamp) >= fMcs(nSamp)-halfBinInterval;
-                    mCatMag = allmags(idx, nSamp );
-                    
-                    % Check static for length of catalog
-                    if length(mCatMag) >= nMinNum
-                        [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
-                        fMeanMag = sum(mCatMag)/numel(mCatMag);
-                        mBvalue(nSamp, :) = [fMeanMag fBvalue fStdDev fAvalue];
-                    end
-                    
-                end
-            else % deal with entire catalogs (slower)
-                [~, mc_calculator] = calc_Mc(catalog, mcCalcMethod, binInterval, fMcCorr);
-                
-                for nSamp = 1 : nBootstraps
-                    catalog.Magnitude = bootrsp(vMags,1);
-                    fMc = mc_calculator(catalog);
-                    vMc(nSamp) =  fMc;
-                    % Select magnitude range and calculate b-value
-                    mCatMag = catalog.Magnitude( catalog.Magnitude >= fMc-halfBinInterval );
-                    
-                    % Check static for length of catalog
-                    if length(mCatMag) >= nMinNum
-                        [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
-                        fMeanMag = mean(mCatMag);
-                        mBvalue(nSamp, :) = [fMeanMag fBvalue fStdDev fAvalue];
-                    end
-                    
-                end
-            end
+    if nBootstraps <= 0
+        return
+    end
+    
+    if isnumeric(catalog)
+        results = process_magnitudes(catalog);
+    else
+        if McMethods.acceptsMagnitudes(mcCalcMethod)
+            results = process_magnitudes(catalog.Magnitude);
+        else
+            results = process_catalog(catalog);
         end
+        % provided entire catalog
+    end
+    if ~isempty(results)
+        % fill in returns
         
+    
         % Calculate mean Mc and standard deviation
-        vMc(isnan(vMc))=[]; 
-        fStd_Mc = std(vMc,1,'omitnan');
-        fMc = nanmean(vMc);
-        
+        vMc(isnan(vMc))=[];
+        fStd_Mc = std(vMc);
+        fMc = mean(vMc);
+
         % Calculate mean b-value and standard deviation
         fStd_B = std(mBvalue(:,2),1,'omitnan');
         fStd_A = std(mBvalue(:,4),1,'omitnan');
         fBvalue = nanmean(mBvalue(:,2));
         fAvalue = nanmean(mBvalue(:,4));
-        
-    else
-        mBvalue = [];
-        sString = ['Less than N = ' num2str(nMinNum) ' events'];
-        msg.dbdisp(sString)
-        % Set all values to NaN
-        [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = deal(NaN);
     end
     
+    return
+    
+    %%
+        
+    function [vMc, mBvalue, halfBinInterval, mc_calculator]= prepare_calculation(McInputType)
+        rng('shuffle');
+        
+        % Create bootstrap samples using bootstrap matlab toolbox
+        % Determine Mc uncertainty
+        vMc = nan(nBootstraps,1);
+        mBvalue = nan(nBootstraps,4);
+        halfBinInterval = binInterval/2;
+        [~, mc_calculator] = calc_Mc(McInputType, mcCalcMethod, binInterval, fMcCorr);
+        
+    end
+    
+    function results = process_catalog(catalog)
+        if catalog.Count < nMinNum
+            results = [];
+            return
+        end
+        
+        [vMc, mBvalue, halfBinInterval, mc_calculator] = prepare_calculation("AsCatalogs");
+        vMags = catalog.Magnitude;
+        for nSamp = 1 : nBootstraps
+            catalog.Magnitude = bootrsp(vMags,1);
+            fMc = mc_calculator(catalog);
+            vMc(nSamp) =  fMc;
+            % Select magnitude range and calculate b-value
+            mCatMag = catalog.Magnitude( catalog.Magnitude >= fMc - halfBinInterval );
+            
+            % Check static for length of catalog
+            if length(mCatMag) >= nMinNum
+                [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
+                fMeanMag = mean(mCatMag);
+                mBvalue(nSamp, :) = [fMeanMag, fBvalue, fStdDev, fAvalue];
+            end
+            
+        end
+        
+        % Calculate mean Mc and standard deviation
+        results = true;
+    end
+    
+    function results = process_magnitudes(magnitudes)
+        if catalog.Count < nMinNum
+            results = [];
+            return
+        end
+        
+        [vMc, mBvalue, halfBinInterval, mc_calculator] = prepare_calculation("AsMagnitudes");
+        allmags = bootrsp(magnitudes, nBootstraps);
+        fMcs = mc_calculator(allmags);
+        vMc(:) = fMcs;
+        
+        for nSamp = 1:nBootstraps
+            idx = allmags(:, nSamp) >= fMcs(nSamp) - halfBinInterval;
+            mCatMag = allmags(idx, nSamp);
+            
+            % Check static for length of catalog
+            if length(mCatMag) >= nMinNum
+                [ fBvalue, fStdDev, fAvalue] = calc_bmemag(mCatMag, binInterval);
+                fMeanMag = sum(mCatMag) / numel(mCatMag);
+                mBvalue(nSamp, :) = [fMeanMag, fBvalue, fStdDev, fAvalue];
+            end
+            
+        end
+        results = true;
+    end
+end
+

@@ -296,7 +296,7 @@ classdef XSection < handle
             if numel(x_km) == 1
                 % x_km is the delta spacing in km
                 % keep x_km/2 away from both edges to avoid edge effects
-                xDists_deg = km2deg( (x_km/2) : x_km : (obj.length_km - x_km/2));
+                xDists_deg = km2deg( (x_km/2) : x_km : (obj.Extent - x_km/2));
             else
                 xDists_deg = km2deg(x_km);
             end

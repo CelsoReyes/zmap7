@@ -136,7 +136,7 @@ function [fMc, mcCalculator] = calc_Mc(mCatalog, calcMethod, binInterval, mcCorr
 end
 
 function fMc = do_calculation(methodFun, mCatalog, mcCorrectionFactor)
-    if isempty(mCatalog) 
+    if isempty(mCatalog) || ischarlike(mCatalog)
         fMc = nan;
         return
     end

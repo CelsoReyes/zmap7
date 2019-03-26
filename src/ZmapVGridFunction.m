@@ -57,21 +57,21 @@ classdef ZmapVGridFunction < ZmapGridFunction
             
             colorbar
             ax.Title.String=mydesc;
-            ax.XLabel.String='Distance along Strike (km)';
-            ax.YLabel.String='Depth';
-            ax.YDir='reverse';
-            ax.XLim=[0 obj.RawCatalog.curvelength];
-            ax.YLim=[max(0,min(obj.Grid.Z)) max(obj.Grid.Z)];
+            ax.XLabel.String = 'Distance along Strike (km)';
+            ax.YLabel.String = 'Depth';
+            ax.YDir = 'reverse';
+            ax.XLim = [0 obj.RawCatalog.CurveLength];
+            ax.YLim = [max(0,min(obj.Grid.Z)) max(obj.Grid.Z)];
 
-            dcm_obj=datacursormode(gcf);
-            dcm_obj.Updatefcn=@ZmapGridFunction.mydatacursor;
+            dcm_obj = datacursormode(gcf);
+            dcm_obj.Updatefcn = @ZmapGridFunction.mydatacursor;
             if isempty(findobj(gcf,'Tag','lookmenu'))
                 add_menu_divider();
-                lookmenu=uimenu(gcf,'label','graphics','Tag','lookmenu');
-                shademenu=uimenu(lookmenu,'Label','shading','Tag','shading');
+                lookmenu = uimenu(gcf,'label','graphics','Tag','lookmenu');
+                shademenu = uimenu(lookmenu,'Label','shading','Tag','shading');
                 
                 % TODO: combine mapdata_viewer with this function
-                exploremenu=uimenu(gcf,'label','explore');
+                exploremenu = uimenu(gcf,'label','explore');
                 uimenu(exploremenu,'label','explore',MenuSelectedField(),@(src,ev)mapdata_viewer(obj.Result,obj.RawCatalog,gcf));
                 
                 uimenu(shademenu,'Label','interpolated',MenuSelectedField(),@(~,~)shading('interp'));

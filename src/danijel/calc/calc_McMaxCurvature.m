@@ -21,6 +21,9 @@ function [fMc] = calc_McMaxCurvature(magnitudes)
         fMc = nan;
         return
     end
+    if ~isnumeric(magnitudes)
+        magnitudes = magnitudes.Magnitude; % treat as catalog
+    end
     fMaxMagnitude = max(magnitudes(:));
     fMinMagnitude = min(magnitudes(:));
     if fMinMagnitude > 0

@@ -12,19 +12,19 @@ classdef bvalgrid < ZmapHGridFunction
     end
     
     properties(Constant)
-        PlotTag='bvalgrid';
+        PlotTag='bvalgrid'
         ReturnDetails = cell2table({ ... VariableNames, VariableDescriptions, VariableUnits
-            'Mc_value',     'Magnitude of Completion (Mc)', '';...
-            'Mc_std',       'Std. of Magnitude of Completion', '';...
-            'b_value',      'b-value', '';...
-            'b_value_std',  'Std. of b-value', '';...
-            'a_value',      'a-value', '';...
-            'a_value_std',  'Std. of a-value', '';...
-            'power_fit',    'Goodness of fit to power-law', '';...
-            'Additional_Runs_b_std',  'Additional runs: Std b-value', '';...
-            'Additional_Runs_Mc_std', 'Additional runs: Std of Mc', '';...
-            'failreason',   'reason b-value was nan', '';...
-            'nEvents_gt_local_Mc', 'nEvents > local Mc','';...
+            'Mc_value'      , 'Magnitude of Completion (Mc)'    , '';...
+            'Mc_std'        ,'Std. of Magnitude of Completion'  , '';...
+            'b_value'       , 'b-value'                         , '';...
+            'b_value_std'   , 'Std. of b-value'                 , '';...
+            'a_value'       , 'a-value'                         , '';...
+            'a_value_std'   , 'Std. of a-value'                 , '';...
+            'power_fit'     , 'Goodness of fit to power-law'    , '';...
+            'Additional_Runs_b_std'  , 'Additional runs: Std b-value'   , '';...
+            'Additional_Runs_Mc_std' , 'Additional runs: Std of Mc'     , '';...
+            'failreason'    , 'reason b-value was nan'                  , '';...
+            'nEvents_gt_local_Mc', 'nEvents > local Mc'                 , '';...
             }, 'VariableNames', {'Names','Descriptions','Units'})
             
         
@@ -33,7 +33,8 @@ classdef bvalgrid < ZmapHGridFunction
             'a_value', 'a_value_std', 'power_fit',...
             'Additional_Runs_b_std', 'Additional_Runs_Mc_std', 'failreason', 'nEvents_gt_local_Mc'}
         
-        ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr", "fBinning", "mc_choice", "mc_auto_est"];
+        ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr",...
+            "fBinning", "mc_choice", "mc_auto_est"];
         
         References = "";
     end
@@ -47,7 +48,6 @@ classdef bvalgrid < ZmapHGridFunction
             
             obj@ZmapHGridFunction(zap, 'b_value');
             obj.NodeMinEventCount         =   50;
-            report_this_filefun();
             obj.parseParameters(varargin);
             obj.StartProcess();
         end
@@ -56,24 +56,27 @@ classdef bvalgrid < ZmapHGridFunction
             % create a dialog that allows user to select parameters neccessary for the calculation
             
             %% make the interface
+            
+            checkboxTargets = {'nBstSample', 'nBstSample_label'};
+            
             zdlg = ZmapDialog();
             
             zdlg.AddHeader('Choose stuff');
             zdlg.AddMcAutoEstimateCheckbox('mc_auto_est');
             zdlg.AddMcMethodDropdown('mc_choice'); % McMethods.MaxCurvature
-            checkboxTargets= {'nBstSample','nBstSample_label'};
             obj.AddDialogOption(zdlg, 'NodeMinEventCount'); 
-            zdlg.AddEdit('fMccorr', 'Mc correction factor',   obj.fMccorr,'Correction term to be added to Mc');
-            zdlg.AddCheckbox('useBootstrap',   'Use Bootstrapping',        false,  checkboxTargets ,...
-                're takes longer, but provides more accurate results');
-            zdlg.AddEdit('nBstSample',         'Number of bootstraps',     obj.nBstSample,...
+            zdlg.AddEdit('fMccorr'         , 'Mc correction factor' , obj.fMccorr,...
+                'Correction term to be added to Mc');
+            zdlg.AddCheckbox('useBootstrap', 'Use Bootstrapping'    , false    , checkboxTargets,...
+                'bootstrapping takes longer, but provides more accurate results');
+            zdlg.AddEdit('nBstSample'      , 'Number of bootstraps' , obj.nBstSample,...
                 'Number of bootstraps to determine Mc');
             obj.AddDialogOption(zdlg,   'EventSelector')
             
-            zdlg.Create('Name', 'b-Value Grid Parameters','WriteToObj',obj,'OkFcn', @obj.doIt);
+            zdlg.Create('Name', 'b-Value Grid Parameters', 'WriteToObj', obj, 'OkFcn', @obj.doIt);
         end
         
-        function results=Calculate(obj)
+        function results = Calculate(obj)
             % once the properties have been set, either by the constructor or by interactive_setup
             % get the grid-size interactively and calculate the b-value in the grid by sorting the 
             % seismicity and selecting the ni neighbors to each grid point
@@ -82,66 +85,56 @@ classdef bvalgrid < ZmapHGridFunction
             bv =  bvalca3(obj.RawCatalog.Magnitude, obj.mc_auto_est); %ignore all the other outputs
             
             obj.ZG.overall_b_value = bv;
-            [~, mcCalculator] = calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);
-            obj.gridCalculations(@calculation_function);
-        
-            if nargout
-                results=obj.Result.values;
+            [~, mcCalculator] = calc_Mc([], obj.mc_choice, obj.fBinning, obj.fMccorr);            
+            obj.useBootstrap = obj.useBootstrap && obj.nBstSample > 0;
+            if obj.useBootstrap
+                obj.gridCalculations(@(catalog) do_calculation(catalog, @calculate_boot));
+            else
+               obj.gridCalculations(@(catalog) do_calculation(catalog, @calculate_noboot));
             end
             
-            function out=calculation_function(catalog)
+            if nargout
+                results = obj.Result.values;
+            end
+            
+            return 
+            %%
+            
+            function out = do_calculation(catalog, calcFcn)       
                 % calculate values at a single point
+                out = nan(1,11);         
                 
-                % Added to obtain goodness-of-fit to powerlaw value
-                % [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(catalog.Magnitude);
-                [~, ~, ~, ~, prf] = mcperc_ca3(catalog.Magnitude);
-                fail_reason = nan;
+                % Added to obtain goodness-of-fit to powerlaw value  
+                [~, ~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude); 
                 Mc_value = mcCalculator(catalog);
                 
-                l = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
-                nEvents_gt_local_mc = sum(l);
-                if sum(l) >= obj.NodeMinEventCount
-                    [b_value, b_value_std, a_value] =  calc_bmemag(catalog.Magnitude(l), obj.fBinning);
-                    % otherwise, they should be NaN
+                idx = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
+                nEvents_gt_local_mc = sum(idx);
+                
+                out(11) = nEvents_gt_local_mc;
+                
+                if nEvents_gt_local_mc >= obj.NodeMinEventCount
+                    out = calcFcn(catalog, idx, out); % runs either calculation_function_boot or calculation_function_noboot
                 else
-                    fail_reason=1;
-                    [b_value, b_value_std, a_value] = deal(nan);
+                    out(10) = 1;
                 end
+            end
+            
+            function out = calculate_boot(catalog, idx, out)
+                [   out(1), out(2), ... % Mc      , Mc_std
+                    out(3), out(4), ... % b-value , b-value std
+                    out(5), out(6), ... % a-value , a-value std
+                    Additional_Runs_b_std,...
+                    Additional_Runs_Mc_std] = ...
+                    calc_McBboot(catalog.subset(idx), obj.fBinning, obj.nBstSample, obj.mc_choice);
+                % where Additiona_Runs_Mc_std = nBoot x [fMeanMag fBvalue fStdDev fAvalue];
                 
-                % Bootstrap uncertainties FOR EACH CELL
-                if obj.useBootstrap
-                    % Check Mc from original catalog
-                    if sum(l) >= obj.NodeMinEventCount
-                        % following line has only b, but maybe should be catalog.subset(l)
-                        [Mc_value, Mc_std, ...
-                            b_value, b_value_std, ...
-                            a_value, a_value_std, ...
-                            Additional_Runs_b_std, Additional_Runs_Mc_std] = ...
-                            calc_McBboot(catalog, obj.fBinning, obj.nBstSample, obj.mc_choice);
-                        % where Additiona_Runs_Mc_std = nBoot x [fMeanMag fBvalue fStdDev fAvalue];
-                    else
-                        fail_reason=2;
-                        Mc_std=NaN;
-                        Mc_value = NaN;
-                        a_value_std=NaN;
-                        Additional_Runs_b_std=NaN;
-                        Additional_Runs_Mc_std=NaN;
-                        % fStd_Mc = NaN; fBValue = NaN; fStd_B = NaN; fAValue= NaN; fStd_A= NaN;
-                    end
-                else
-                    % Set standard deviation of a-value to NaN;
-                    a_value_std= NaN;
-                    Mc_std = NaN;
-                    Additional_Runs_b_std=NaN;
-                    Additional_Runs_Mc_std=NaN;
-                end
-                
-                
-                % Result matrix
-                out  = [Mc_value Mc_std,...
-                    b_value b_value_std a_value a_value_std,...
-                    prf std(Additional_Runs_b_std) std(Additional_Runs_Mc_std(:,1)), fail_reason,nEvents_gt_local_mc];
-                
+                out(8) = std(Additional_Runs_b_std);
+                out(9) = std(Additional_Runs_Mc_std(:,1));
+            end
+            
+            function out = calculate_noboot(catalog,idx, out)
+                [out(3), out(4), out(5)] =  calc_bmemag(catalog.Magnitude(idx), obj.fBinning);
             end
         end
         
