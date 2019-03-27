@@ -1,8 +1,8 @@
-classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
+classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
     % provides plug-in results display functionality
     
     properties(SetObservable, AbortSet)
-        features cell ={'borders'}; % features to show on the map, such as 'borders','lakes','coast',etc.
+        features cell ={}; % features to show on the map, such as 'borders','lakes','coast',etc.
         
         showRing        logical     = true; % show ring
         showPointValue	logical     = false;
@@ -80,9 +80,11 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
                 % then become the base for displaying results
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
                 ax=findobj(resTab,'Tag','mainmap_ax');
+                cla(ax)
                 ax.Tag      = 'result_map';
                 ax.Units    = 'normalized';
-                ax.Position = [0.025 0.05 .95 .90];
+                ax.Position = [0.05 0.05 .90 .90];
+                daspect(ax,[1 1 1]);
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
                 
                 % de-emphasize all line objects
@@ -117,7 +119,11 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
                 % [~,h]=obj.Parent.Grid.contourf(ax,obj.Data.(colname), coldesc, ZmapGlobal.Data.ResultOpts.NumContours);
                 h=obj.patchplot(ax,colname);
             end
-            
+
+            axis tight
+            ax.YDir = 'reverse';
+            xlabel(ax,'Distance along strike');
+            ylabel(ax,'Depth')
             % move the contour to the bottom layer so other graphical elements can be interacted with
             ax.Children = circshift(ax.Children,-1);
             
@@ -249,7 +255,7 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             
         end % plot function
         
-        function mypatch=patchplot(obj,ax, choice)
+        function mypatch = patchplot(obj,ax, choice)
             
             %{
     some_results is the results from one of the ZmapGridFunctions. It will contain:
@@ -260,52 +266,48 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             %}
             gr_s = obj.Parent.Grid;
             results = obj.Data;
+            results.DisplacementAlongStrike = obj.Parent.Grid.d_km;
             axes(ax);
-            myX= obj.Data.x;
-            myX=reshape(myX,size(gr_s.X));
+            myX = results.DisplacementAlongStrike;
+            nPointsAlongStrike = find(myX(1:end-1) > myX(2:end),1);
+            myX = reshape(myX, size(gr_s.d_km));
             hold on;
-            % assume: dx is constant for every latitude
-            dx_at_lat = min(diff(myX,[],2),[],2);   % Nx1
+            % assume: dx is constant everywhere
+            % TOFIX there is an extra point in d_km at end that is a Longitude instead!
+            Xvec = unique(myX(1:end-1));
+            Zvec = unique(gr_s.Z(1:end-1));
+            [xs,zs] = meshgrid(Xvec, Zvec);
             
+            myresultstmp = results.(choice);
+            myresults = reshape(myresultstmp(1:end-1), size(xs));
+            dx = (Xvec(2)-Xvec(1))/2;
+            dz = (Zvec(2)-Zvec(1))/2;
+            shifted_X = xs - dx;
+            shifted_Z = zs - dz;
             
-            
-            % fill all X position nans, because they will cause holes
-            for i=1:size(myX,1)
-                AnchorIdx = find(~ismissing(myX(i,:)),1,'first');
-                AnchorVal = myX(i,AnchorIdx);
-                missIdx = find(ismissing(myX(i,:)));
-                myX(i,missIdx) = (missIdx - AnchorIdx) .* dx_at_lat(i) + AnchorVal;
-            end
-            
-            % assume dy is constant everywhere
-            dy = mean(min(diff(gr_s.Y)));
-            shifted_X = myX - repmat(dx_at_lat ./2, 1, size(myX,2)) ;
-            shifted_Y = gr_s.Y-dy./2;
-            
-            myresults=obj.Data.(choice);
-            myresults=reshape(myresults,size(shifted_X));
+            % myresults = reshape(myresults, size(shifted_X));
             
             %% because surfaces and patches are based on the lower-left corner, add col & row.
             
             % add row to top with same values as existing last (top)row
-            myresults(end+1,:)=myresults(end,:);
-            shifted_X(end+1,:)=shifted_X(end,:);
-            shifted_Y(end+1,:)=shifted_Y(end,:) + dy;
+            myresults(end+1,:) = myresults(end,:);
+            shifted_X(end+1,:) = shifted_X(end,:);
+            shifted_Z(end+1,:) = shifted_Z(end,:) + dz;
             
             % add column to end with same values as existing last (right) column
-            myresults(:,end+1)=myresults(:,end);
-            shifted_X(:,end+1)=shifted_X(:,end) + [dx_at_lat; dx_at_lat(end)];
-            shifted_Y(:,end+1)=shifted_Y(:,end);
+            myresults(:,end+1) = myresults(:,end);
+            shifted_X(:,end+1) = shifted_X(:,end) + dx;
+            shifted_Z(:,end+1) = shifted_Z(:,end);
             
-            pa=surf2patch(shifted_X,shifted_Y,zeros(size(shifted_X)),myresults);
+            pa = surf2patch(shifted_X, shifted_Z, zeros(size(shifted_X)), myresults);
             
-            mypatch=patch(pa);
-            mypatch.Faces(end,:)=[]; %this point was made up.
-            mypatch.Tag='result overlay';
-            mypatch.HitTest='off';
+            mypatch = patch(pa);
+            mypatch.Faces(end,:) = []; %this point was made up.
+            mypatch.Tag     = 'result overlay';
+            mypatch.HitTest = 'off';
             shading faceted;
             
-            set(gca,'Children',circshift(get(gca,'Children'),-1)); % put this patch at the end
+            set(gca, 'Children', circshift(get(gca,'Children'),-1)); % put this patch at the end
         end
         
         function updateClickPoint(obj,~,ev)
@@ -761,7 +763,7 @@ end
 %% helper functions
 
 function pretty_colorbar(ax, cb_title, cb_units)
-    h=colorbar('peer',ax, 'location','EastOutside');
+    h = colorbar('peer',ax, 'location','EastOutside');
     if isempty(cb_units)
         h.Label.String = cb_title;
     else

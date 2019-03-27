@@ -297,8 +297,10 @@ classdef XSection < handle
                 % x_km is the delta spacing in km
                 % keep x_km/2 away from both edges to avoid edge effects
                 xDists_deg = km2deg( (x_km/2) : x_km : (obj.Extent - x_km/2));
+                startat = x_km / 2;
             else
                 xDists_deg = km2deg(x_km);
+                startat = x_km
             end
             
             [latout, lonout]=reckon(...
@@ -309,15 +311,15 @@ classdef XSection < handle
             
             nPts = numel(latout(:));
             nZs = numel(zs_km);
-            lolaz=[ lonout(:), latout(:), zeros(nPts,1)];
-            lolaz=repmat(lolaz,nZs,1);
+            lolaz = [ lonout(:), latout(:), zeros(nPts,1)];
+            lolaz = repmat(lolaz, nZs, 1);
             for n=1:nZs
                 st = (n - 1) * nPts + 1;
                 ed = st + nPts;
                 lolaz( st : ed , 3) = zs_km(n);
             end
-            gname=sprintf('gridxs %s - %s',obj.StartLabel, obj.EndLabel);
-            gr=ZmapVGrid(gname, 'FromPoints', lolaz);
+            gname = sprintf('gridxs %s - %s',obj.StartLabel, obj.EndLabel);
+            gr = ZmapVGrid(startat, gname, 'FromPoints', lolaz);
         end
         
         function s = get.Name(obj)

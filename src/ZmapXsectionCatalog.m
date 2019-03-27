@@ -111,16 +111,18 @@ classdef ZmapXsectionCatalog < ZmapCatalog
         
         function disp(obj)
             fprintf('cross-section catalog with %d events\n',obj.Count);
-            sp=obj.startPoint; ep=obj.endPoint;
+            sp = obj.startPoint;
+            ep = obj.endPoint;
             fprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
                 sp(1),sp(2), ep(1),ep(2), obj.CurveLength);
         end
         
         function s=info(obj)
-            s=sprintf('cross-section catalog with %d events\n',obj.Count);
-            sp=obj.startPoint; ep=obj.endPoint;
-            s=[s,sprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
-                sp(1),sp(2), ep(1),ep(2), obj.CurveLength)];
+            s = sprintf('cross-section catalog with %d events\n', obj.Count);
+            sp = obj.startPoint; 
+            ep = obj.endPoint;
+            s = [s,sprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
+                sp(1), sp(2), ep(1),ep(2), obj.CurveLength)];
         end
         function subsetInPlace(obj, range)
             subsetInPlace@ZmapCatalog(obj, range)
@@ -139,23 +141,47 @@ classdef ZmapXsectionCatalog < ZmapCatalog
         function obj = blank(~)
             obj = ZmapXsectionCatalog(blank@ZmapCatalog);
         end
+        
+        function [minicat, max_km] = selectPerpendicularCylander(obj, esp, offset, depth)
+            
+            if ~(esp.UseEventsInRadius || esp.UseNumClosestEvents)
+                error('Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
+            end
+            [dists, distunits] = obj.inPlaneDistanceTo(offset, depth);
+            mask = esp.SelectionFromDistances(dists, distunits);
+            minicat = obj.subset(mask);
+            max_km = max(dists(mask));
+        end
+        
+        function [dists, units] = inPlaneDistanceTo(obj, strikeOffset, depth)
+            % get distance from all events to a point along x-section, ignoring displacement
+            dists = sqrt(sum(([obj.DistAlongStrike, obj.Z] - [strikeOffset, depth]).^ 2));
+            units = obj.HorizontalUnit;
+        end
+        
+        function [dists, units] = planarHypocentralDistanceTo(obj, strikeOffset, depth)
+            % get distance from all events to a point along x-section, taking displacement into account
+            dists = sqrt(sum(([obj.DistAlongStrike, obj.Z, obj.Displacement] - [strikeOffset, depth, 0]).^ 2));
+            units = obj.HorizontalUnit;
+        end
+        
     end
     
     methods(Static)
-        function [lon, lat,h] = create_endpoints(ax,C)
+        function [lon, lat, h] = create_endpoints(ax,C)
             % create_endpoints returns lat, lon where each is [start,end] along with handle used to pick endpoints
             
             disp('click on start and end points for cross section');
             
             % pick first point
             [lon, lat] = ginput(1);
-            set(gca,'NextPlot','add');
-            h=scatter(ax,lon,lat,'Marker','x','LineWidth',2,'MarkerSize',5,'Color',C);
+            set(gca, 'NextPlot', 'add');
+            h = scatter(ax, lon, lat, 'Marker', 'x', 'LineWidth', 2, 'MarkerSize', 5, 'Color', C);
             
             % pick second point
             [lon(2), lat(2)] = ginput(1);
-            h.XData=lon;
-            h.YData=lat;
+            h.XData = lon;
+            h.YData = lat;
         end
     
         
@@ -163,12 +189,12 @@ classdef ZmapXsectionCatalog < ZmapCatalog
         function [newQuake, DistAlongPlane, perp_dist] = projection(startPt, endPt, quake)
             V1 = endPt - startPt; % vector to project upon
             V2 = quake - startPt; % vector to project
-            dfun=@(vec1, vec2)sqrt(sum((vec1-vec2).^2,2)); %nx2 vectors
-            AngleToPlane   = angle(V1(:,1) + 1i*(V1(:,2)));
-            AngleToQuake = angle(V2(:,1) + 1i*(V2(:,2)));
+            dfun = @(vec1, vec2)sqrt(sum((vec1-vec2).^2,2)); %nx2 vectors
+            AngleToPlane  = angle(V1(:,1) + 1i*(V1(:,2)));
+            AngleToQuake  = angle(V2(:,1) + 1i*(V2(:,2)));
             orientedAngle = wrapToPi(AngleToQuake - AngleToPlane);
             DistAlongPlane = cos(orientedAngle) .* dfun(V2,[0,0]);
-            NewOffset =  [cos(AngleToPlane),sin(AngleToPlane)] .* DistAlongPlane;
+            NewOffset =  [cos(AngleToPlane), sin(AngleToPlane)] .* DistAlongPlane;
             newQuake = NewOffset + startPt;
             perp_dist = sqrt(sum((quake-newQuake).^2,2));
         end

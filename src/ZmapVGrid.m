@@ -4,20 +4,29 @@ classdef ZmapVGrid < ZmapGrid
     % overrides some important drawing functions
     
     properties (Dependent)
-        d_km            double% distance in km along strike to grid point
+        d_km            double % distance in km along strike to grid point
         d_km_active     double
+    end
+    
+    properties
+        offset double % distance in km along strike to first grid point
     end
     
     methods
         function v = get.d_km(obj)
-            v=deg2km(distance([obj.Y(1) obj.X(1)],[obj.Y(1:end-1) obj.X(1:end-1)]));
+            v = deg2km(distance([obj.Y(1) obj.X(1)],[obj.Y obj.X]));
         end
         function v = get.d_km_active(obj)
-            v=obj.d_km(obj.ActivePoints(1:end-1)); % FIXME all this end-1 stuff!
+            v = obj.d_km(obj.ActivePoints);
         end
         
-        function obj=ZmapVGrid(varargin)
+        function obj = ZmapVGrid(distanceFromSectionStart, varargin)
+            % ZmapVGrid is used by cross-sections and is defined by a series of points in 3d space
+            % keep track of distanceFromSectionStart so that grids can be aligned with
+            % the cross-sections. (The first grid point is not at the cross-section's 0 distance.
+            
             obj@ZmapGrid(varargin{:});
+            obj.offset = distanceFromSectionStart;
         end
         
         function prev_grid=plot(obj, ax,varargin)

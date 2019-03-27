@@ -91,12 +91,22 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fcn, cata
     
     h = show_computation_dlg(fcn,length(zgrid));
     
+    usePlanarDistance = isa(catalog, 'ZmapXsectionCatalog') && isa(zgrid, 'ZmapVGrid');
     
     % shortcut only applies if we are dealing with lat/lon
-    QUICKDISTANCES = QUICKDISTANCES && ~iscartesian(catalog.RefEllipsoid);
+    QUICKDISTANCES = QUICKDISTANCES && (~iscartesian(catalog.RefEllipsoid) || usePlanarDistance);
     
     if QUICKDISTANCES
-        [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
+        if usePlanarDistance
+            xNcat = catalog.DistAlongStrike;
+            yEcat = catalog.Depth;
+            xNgrid = zgrid.d_km + zgrid.offset;
+            yEgrid = zgrid.Z;
+            
+            [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
+        else
+            [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
+        end
     else
         [xNgrid, yEgrid, zDgrid] = deal([]);
         [xNcat, yEcat, zDcat] = deal([]);
@@ -127,6 +137,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fcn, cata
     %
     %
     
+    
     function doSinglefun(myfun)
             
         gridpoints = zgrid.GridVector;
@@ -134,7 +145,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fcn, cata
         
         % where to put the value back into the matrix
         activeidx = find(zgrid.ActivePoints);
-        doZ = ~isempty(zgrid.Z);
+        doZ = ~isempty(zgrid.Z) && ~usePlanarDistance;
         
         
         if QUICKDISTANCES
