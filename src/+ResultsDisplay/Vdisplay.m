@@ -73,18 +73,24 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             
             tabGroup = resTab.Parent;
             
-            ax=findobj(resTab,'Type','axes','-and','Tag','result_map');
+            ax = findobj(resTab,'Type','axes','-and','Tag','result_map');
             set(findobj(allchild(gcf),'Tag','lookmenu'),'Enable','on');
             if isempty(ax)
                 % copy entire main map to this axes, and de-emphasized, and
                 % then become the base for displaying results
                 copyobj(findobj(tabGroup,'Tag','mainmap_ax'),resTab);
-                ax=findobj(resTab,'Tag','mainmap_ax');
+                ax = findobj(resTab,'Tag','mainmap_ax');
                 cla(ax)
                 ax.Tag      = 'result_map';
                 ax.Units    = 'normalized';
                 ax.Position = [0.05 0.05 .90 .90];
                 daspect(ax,[1 1 1]);
+                
+                zmw = get(ancestor(ax,'figure'),'UserData');
+                mainEventOpts = zmw.mainEventProps; % local copy
+                szFcn = str2func(mainEventOpts.MarkerSizeFcn);
+                scatter(ax, obj.Parent.RawCatalog.DistAlongStrike, obj.Parent.RawCatalog.Z,...
+                    szFcn(obj.Parent.RawCatalog.Magnitude),[0 0 0],'Marker','.', 'Tag','active quakes');
                 set(findobj(ax,'Type','scatter'),'MarkerEdgeAlpha',0.4);
                 
                 % de-emphasize all line objects
