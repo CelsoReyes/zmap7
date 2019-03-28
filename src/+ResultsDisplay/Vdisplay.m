@@ -121,6 +121,7 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             end
 
             axis tight
+            axis equal
             ax.YDir = 'reverse';
             xlabel(ax,'Distance along strike');
             ylabel(ax,'Depth')
@@ -131,14 +132,14 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             s           = findobj(ax, 'Tag', obj.Parent.Grid.Name);
             if isempty(s)
                 % overlay colored grid on top of existing data
-                s = scatter(ax,obj.Data.x, obj.Data.y, ...
+                s = scatter(ax,obj.Data.distance_along_strike, obj.Data.z, ...
                     obj.gridMarkerSize, val, obj.gridMarker, 'Tag', obj.Parent.Grid.Name);
                 s.MarkerFaceAlpha = obj.gridMarkerFaceAlpha;
             else
                 if islogical(val)
                     val = double(val);
                 end
-                set(s,'XData',obj.Data.x,'YData',obj.Data.y,'CData',val);
+                set(s,'XData',obj.Data.distance_along_strike,'YData',obj.Data.z,'CData',val);
             end
             
             h.Tag = 'result overlay';
@@ -266,20 +267,19 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
             %}
             gr_s = obj.Parent.Grid;
             results = obj.Data;
-            results.DisplacementAlongStrike = obj.Parent.Grid.d_km;
             axes(ax);
-            myX = results.DisplacementAlongStrike;
+            myX = results.distance_along_strike;
             nPointsAlongStrike = find(myX(1:end-1) > myX(2:end),1);
-            myX = reshape(myX, size(gr_s.d_km));
+            myX = reshape(myX, nPointsAlongStrike, []);
             hold on;
             % assume: dx is constant everywhere
             % TOFIX there is an extra point in d_km at end that is a Longitude instead!
-            Xvec = unique(myX(1:end-1));
-            Zvec = unique(gr_s.Z(1:end-1));
+            Xvec =myX(:,1);
+            Zvec = unique(gr_s.Z);
             [xs,zs] = meshgrid(Xvec, Zvec);
             
             myresultstmp = results.(choice);
-            myresults = reshape(myresultstmp(1:end-1), size(xs));
+            myresults = reshape(myresultstmp, fliplr(size(xs)))';
             dx = (Xvec(2)-Xvec(1))/2;
             dz = (Zvec(2)-Zvec(1))/2;
             shifted_X = xs - dx;

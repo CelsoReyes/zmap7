@@ -103,7 +103,7 @@ function [ values, nEvents, maxDist, maxMag, wasEvaluated ] = gridfun( fcn, cata
             xNgrid = zgrid.d_km + zgrid.offset;
             yEgrid = zgrid.Z;
             
-            [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
+            % [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
         else
             [xNcat, yEcat, zDcat, xNgrid, yEgrid, zDgrid] = transformGeodetic2ned(catalog, zgrid);
         end

@@ -228,6 +228,13 @@ classdef ZmapVGridFunction < ZmapGridFunction
             obj.ResultDisplayer.update(varargin{:})
         end
         
+        function gridCalculations(obj, calculationFcn, varargin)
+            gridCalculations@ZmapGridFunction(obj, calculationFcn, varargin{:});
+            obj.Result.values.distance_along_strike = obj.Grid.d_km;
+            obj.Result.values.Properties.VariableUnits(end) = {'km'};
+            obj.Result.values(end,:)=[]; % TOFIX: here, I'm deleting garbage without finding root cause.
+        end
+        
         function plot_image_for_cursor_browsing_deprecated(obj, myname, mydesc, choice)
             h=obj.Grid.imagesc([],obj.Result.values.(myname));
             h.AlphaData=zeros(size(h.AlphaData))+0.0;

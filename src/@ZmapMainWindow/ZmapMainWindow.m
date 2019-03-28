@@ -376,7 +376,6 @@ classdef ZmapMainWindow < handle
             z_min = floor(min([0 min(obj.catalog.Z)]));
             z_max = round(max(obj.catalog.Z) + 4.9999 , -1);
             
-            zdlg = ZmapDialog();
             if ~exist('xsTitle', 'var')
                 xsTitle = obj.xsgroup.SelectedTab.Title;
             else
@@ -385,24 +384,75 @@ classdef ZmapMainWindow < handle
                     xsTitle = obj.xsgroup.SelectedTab.Title;
                 end
             end
-            xsIndex = strcmp(obj.XSectionTitles, xsTitle);
+            default.xsIndex = strcmp(obj.XSectionTitles, xsTitle);
+            default.x_km = 5;
+            default.z_min = z_min;
+            default.z_max = z_max;
+            default.z_delta = 1;
+            default.z_count = round((z_max - z_min) / default.z_delta) + 1;
+            default.useNLayers = true;
+            default.useDelta = false;
+            default.evsel = obj.evsel;
+            zdlg = create_my_dialog(default);
+            
+            %{                
+            zdlg = ZmapDialog();
             zdlg.AddPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
             zdlg.AddEventSelector('evsel', obj.evsel);
             lenUnits = ['[',shortenLengthUnit(obj.refEllipsoid.LengthUnit),']'];
             zdlg.AddEdit('x_km', ['Horiz Spacing ',lenUnits], 5, ['Distance along strike, ',obj.refEllipsoid.LengthUnit]);
             zdlg.AddEdit('z_min', ['min Z ',lenUnits], z_min, ['Shallowest grid point, ', obj.refEllipsoid.LengthUnit]);
             zdlg.AddEdit('z_max', ['max Z ',lenUnits], z_max, ['Deepest grid point, ',obj.refEllipsoid.LengthUnit]);
-            zdlg.AddEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
-            [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters');
-            if ~okPressed
-                zp = [];
-                return
+            zdlg.AddCheckbox('useNLayers', 'Specify number of layers', true, {'z_count'},'')
+            zdlg.AddEdit('z_count', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
+            zdlg.AddCheckbox('useDelta', 'Specify vertical spacing', false, {'z_delta'},'')
+            zdlg.AddEdit('z_delta', ['Vertical spacing, in ', lenUnits], 1,'vertical grid spacing');
+            %}
+            
+            good = false;
+            while ~good
+                [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters')
+                if ~okPressed
+                    zp = [];
+                    return
+                end
+                if  xor(zans.useNLayers, zans.useDelta)
+                    good = true;
+                else
+                    if ~isequal(linspace(zans.z_min, zans.z_max, zans.z_count), z_min : zans.z_delta : z_max);
+                        msg.errordisp(['Number of layers and spacing contradict each other.',...
+                            'Choose EITHER number of layers, or spacing'], 'choose xs and xs grid');
+                        zans.xsIndex = strcmp(zans.xsTitle, obj.XSectionTitles);
+                        zdlg = create_my_dialog(zans);
+                    else
+                        good = true; 
+                    end
+                end
+            end
+            if zans.useDelta
+                zs_km = z_min : zans.z_delta : z_max;
+            else
+                zs_km   = linspace(zans.z_min, zans.z_max, zans.z_count);
             end
             
-            zs_km   = linspace(zans.z_min, zans.z_max, zans.z_delta);
-            idx     = strcmp(xsTitle, obj.XSectionTitles);
-            gr      = obj.CrossSections(idx).getGrid(zans.x_km, zs_km);
-            zp      = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
+            % idx     = zans.xsIndex; % strcmp(zans.xsTitle, obj.XSectionTitles);
+            gr      = obj.CrossSections(zans.xsIndex).getGrid(zans.x_km, zs_km);
+            zp      = ZmapAnalysisPkg( [], obj.xscats(obj.XSectionTitles{zans.xsIndex}), zans.evsel, gr, obj.shape);
+            
+            function zdlg = create_my_dialog(def)
+                unitsLo = obj.refEllipsoid.LengthUnit;
+                unitsSh = ['[',shortenLengthUnit(obj.refEllipsoid.LengthUnit),']'];
+                zdlg = ZmapDialog();
+                zdlg.AddPopup('xsIndex', 'Cross Section:', obj.XSectionTitles, def.xsIndex, 'Choose the cross section');
+                zdlg.AddEventSelector('evsel', def.evsel);
+                zdlg.AddEdit('x_km'   , ['Horiz Spacing ',unitsSh], def.x_km, ['Distance along strike, ',unitsLo]);
+                zdlg.AddEdit('z_min'  , ['min Z ',unitsSh], def.z_min, ['Shallowest grid point, ', unitsLo]);
+                zdlg.AddEdit('z_max'  , ['max Z ',unitsSh], def.z_max, ['Deepest grid point, ', unitsLo]);
+                zdlg.AddCheckbox('useNLayers', 'Specify number of layers', def.useNLayers, {'z_count'}, '')
+                zdlg.AddEdit('z_count', 'number of layers', def.z_count, 'Number of horizontal layers ');
+                zdlg.AddCheckbox('useDelta', 'Specify vertical spacing', def.useDelta, {'z_delta'}, '')
+                zdlg.AddEdit('z_delta', ['Vertical spacing, in ', unitsSh], def.z_delta, 'vertical grid spacing');
+            end
             
         end
         
