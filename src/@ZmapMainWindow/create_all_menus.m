@@ -107,29 +107,23 @@ function create_all_menus(obj, force)
         
         import XYfun.* % the map functions exist in the XYfun package
         % AB menu
-        h = bvalgrid.AddMenuItem(submenu, @()obj.map_zap);
-        h.Separator = 'on'; % add separator to first item in list
+        bvalgrid.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         bvalmapt.AddMenuItem(submenu, @()obj.map_zap);
         bdepth_ratio.AddMenuItem(submenu, @()obj.map_zap);
         
         % P menu
-        h = bpvalgrid.AddMenuItem(submenu, @()obj.map_zap);
-        h2 = rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap);
-        h2.Enable = 'off';
-        h.Separator = 'on';
+        bpvalgrid.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
+        rcvalgrid_a2.AddMenuItem(submenu, @()obj.map_zap, 'Enable', 'off');
         
         % Rate Change menu
-        h = comp2periodz.AddMenuItem(submenu, @()obj.map_zap);
+        comp2periodz.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         uimenu(submenu, 'Label', 'Calculate a z-value map', 'Enable', 'off', MenuSelectedField(), @(~,~)inmakegr(obj.catalog));
-        h.Separator = 'on';
         
         % Quarry menu : detect quarry contamination
-        h = findquar.AddMenuItem(submenu, @()obj.map_zap);
-        h.Separator = 'on';
+        findquar.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         
-        %h = uimenu(submenu, 'Label', 'Map stress tensor', MenuSelectedField(), @(~,~)stressgrid());
-        h = stressgrid.AddMenuItem(submenu, @()obj.map_zap);
-        h.Separator = 'on';
+        %uimenu(submenu, 'Label', 'Map stress tensor', MenuSelectedField(), @(~,~)stressgrid());
+        stressgrid.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         %{
             uimenu(tmp, 'Label', 'Load...', 'Enable', 'off', MenuSelectedField(),  @(~,~)rcvalgrid_a2('lo'));
             uimenu(submenu, 'Label', 'Load a z-value movie (map-view)', MenuSelectedField(), @(~,~)loadmovz());
@@ -147,18 +141,16 @@ function create_all_menus(obj, force)
         
         import XZfun.* % the cross-section functions exist in the XZfun package
         
-        h = magrcros.AddMenuItem(submenu, @()obj.xsec_zap);% @()obj.map_zap);
+        magrcros.AddMenuItem(submenu, @()obj.xsec_zap, 'Separator','on');
         rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
-        
-        h.Separator = 'on';
-        
+                
         uimenu(submenu, 'enable', 'off', 'Label', 'Calc a b-value cross-section', MenuSelectedField(), @(~,~)nlammap(@()obj.xsec_zap));
         
-        h = bcross.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
-        h = bcrossVt2.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
-        h = calc_Omoricross.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
-        h = calc_across.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
-        h = cross_stress.AddMenuItem(submenu, @()obj.xsec_zap); h.Enable = 'off';
+        bcross.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
+        bcrossVt2.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
+        calc_Omoricross.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
+        calc_across.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
+        cross_stress.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
     end
     
     
@@ -172,8 +164,8 @@ function create_all_menus(obj, force)
         
         import XYZfun.* % the cross-section functions exist in the XYZfun package
         
-        h = bgrid3dB.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
-        h = zgrid3d.AddMenuItem(submenu, @()obj.map_zap); h.Enable = 'off';
+        bgrid3dB.AddMenuItem(submenu, @()obj.map_zap, 'Enable', 'off');
+        zgrid3d.AddMenuItem(submenu, @()obj.map_zap, 'Enable', 'off');
         
         %{
             uimenu(submenu, 'Label', 'Load a 3D b-value grid', MenuSelectedField(), @(~,~)myslicer('load'));

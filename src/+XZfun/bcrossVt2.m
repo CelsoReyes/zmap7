@@ -336,12 +336,12 @@ classdef bcrossVt2 < ZmapVGridFunction
         end
     end
     methods(Static)
-        function h=AddMenuItem(parent, catalogfn, label)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            if ~exist('label','var')
-                label='differential b-value [xsec]';
-            end
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcrossVt2(catalogfn()));
+            label='differential b-value [xsec]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.bcrossVt2(zapFcn()),...
+                varargin{:});
         end
         
     end % static method

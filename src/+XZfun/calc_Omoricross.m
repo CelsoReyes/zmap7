@@ -166,10 +166,12 @@ classdef calc_Omoricross < ZmapVGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='omori parameters (p-, k-,c-) [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.calc_Omoricross(zapFcn()));
+            label = 'omori parameters (p-, k-,c-) [xsec]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.calc_Omoricross(zapFcn()),...
+                varargin{:});
         end
         
     end

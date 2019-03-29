@@ -175,10 +175,12 @@ classdef bdepth_ratio < ZmapHGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='b-value depth ratio grid';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bdepth_ratio(zapFcn()));
+            label = 'b-value depth ratio grid';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.bdepth_ratio(zapFcn()),...
+                varargin{:});
         end
         
         function obj=my_load()

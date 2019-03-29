@@ -265,10 +265,12 @@ classdef bgrid3dB < Zmap3DGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='B value grid [3D]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYZfun.bgrid3dB(zapFcn()));
+            label = 'B value grid [3D]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYZfun.bgrid3dB(zapFcn()),...
+                varargin{:});
         end
     end
 end

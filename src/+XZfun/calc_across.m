@@ -90,10 +90,12 @@ classdef calc_across < ZmapVGridFunction
     methods(Hidden)
     end
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='a-value [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.calc_across(zapFcn()));
+            label = 'a-value [xsec]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.calc_across(zapFcn()),...
+                varargin{:});
         end
     end
 end

@@ -294,10 +294,12 @@ classdef ZaliapinDeclusterClass < ZmapFunction
     end
     
     methods(Static)
-        function h = AddMenuItem(parent,catalog)
+        function h = AddMenuItem(parent, catalog, varargin)
             % create a menu item
-            label='Zaliapin Decluster';
-            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ZaliapinDeclusterClass(catalog));
+            label = 'Zaliapin Decluster';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)ZaliapinDeclusterClass(catalog),...
+                varargin{:});
         end
         
         

@@ -284,10 +284,12 @@ classdef magrcros < ZmapVGridFunction
 
     end % methods
     methods(Static)
-        function h=AddMenuItem(parent,zap_Fcn) %xsec_zap
+        function h = AddMenuItem(parent, zapFcn, varargin) %xsec_zap
             % create a menu item
-            label='Z-value section map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.magrcros(zap_Fcn()));
+            label = 'Z-value section map';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.magrcros(zapFcn()),...
+                varargin{:});
         end
             
         %{

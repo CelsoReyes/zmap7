@@ -235,10 +235,12 @@ classdef bpvalgrid < ZmapHGridFunction
         end
     end
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='p- and b-value map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bpvalgrid(zapFcn()));
+            label = 'p- and b-value map';
+            h =  uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.bpvalgrid(zapFcn()),...
+                varargin{:});
         end
     end
 end

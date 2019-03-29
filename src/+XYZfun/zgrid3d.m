@@ -59,10 +59,12 @@ classdef zgrid3d < Zmap3DGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='3D  z-value distribution';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.zgrid3d(zapFcn()));
+            label = '3D  z-value distribution';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.zgrid3d(zapFcn()),...
+                varargin{:});
         end
     end % static methods
     

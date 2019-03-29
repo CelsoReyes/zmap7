@@ -124,8 +124,11 @@ classdef ZmapXsectionCatalog < ZmapCatalog
             s = [s,sprintf('From (%g,%g) to (%g,%g) [%g km]\n',...
                 sp(1), sp(2), ep(1),ep(2), obj.CurveLength)];
         end
+        
         function subsetInPlace(obj, range)
             subsetInPlace@ZmapCatalog(obj, range)
+            obj.DistAlongStrike = obj.DistAlongStrike(range);
+            obj.Displacement = obj.Displacement(range);
         end
                 
         function obj = subset(existobj, range)

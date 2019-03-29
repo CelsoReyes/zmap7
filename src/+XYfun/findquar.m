@@ -224,10 +224,12 @@ classdef findquar < ZmapHGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item that will be used to call this function/class
-            label='Find Quarry Events';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.findquar(zapFcn()));
+            label = 'Find Quarry Events';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.findquar(zapFcn()),...
+                varargin{:});
         end
         
         function ct = ToHourlyCategorical(val)

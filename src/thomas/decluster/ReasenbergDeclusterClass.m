@@ -408,10 +408,12 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     methods(Static)
-        function h = AddMenuItem(parent,catalog)
+        function h = AddMenuItem(parent, catalog, varargin)
             % create a menu item
-            label='Reasenberg Decluster';
-            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
+            label = 'Reasenberg Decluster';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog),...
+                varargin{:});
         end
         
         

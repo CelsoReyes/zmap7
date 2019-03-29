@@ -689,10 +689,12 @@ classdef bdiff2 < ZmapFunction
     
     methods(Static)
         
-        function h=AddMenuItem(parent,catalogFcn)
+        function h = AddMenuItem(parent, catalogFcn, varargin)
             % create a menu item
-            label='FMD plot';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)bdiff2(catalogFcn()));
+            label = 'FMD plot';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)bdiff2(catalogFcn()),...
+                varargin{:});
         end
         
         function [allpassed, failMethods] = test(catalog, varargin)

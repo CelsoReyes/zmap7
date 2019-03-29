@@ -127,15 +127,15 @@ classdef fix_caxis < ZmapFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent,catalogfn)
+        function h =  AddMenuItem(parent, catalogfn, varargin)
             % create a menu item that will be used to call this function/class
             
-            h=uimenu(parent,'Label','fix c-axes',...    CHANGE THIS TO YOUR MENUNAME
-                MenuSelectedField(), @(~,~)fix_caxis(catalogfn())... CHANGE THIS TO YOUR CALLBACK
-                );
+            h = uimenu(parent, 'Label', 'fix c-axes',...
+                MenuSelectedField(), @(~,~)fix_caxis(catalogfn()),...
+                varargin{:});
         end
         function ApplyIfFrozen(ax)
-            ZG=ZmapGlobal.Data;
+            ZG = ZmapGlobal.Data;
             if ZG.freeze_colorbar.freeze
                 caxis(ax,[ZG.freeze_colorbar.minval, ZG.freeze_colorbar.maxval]);
             end

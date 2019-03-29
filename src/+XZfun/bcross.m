@@ -150,10 +150,12 @@ classdef bcross < ZmapVGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
             label = 'b-value [xsec]';
-            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcross(zapFcn()));
+            h = uimenu(parent, 'Label', label, ...
+                MenuSelectedField(), @(~,~)XZfun.bcross(zapFcn()),...
+                varargin{:});
         end
     end
 end

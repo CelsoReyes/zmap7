@@ -210,10 +210,12 @@ classdef rc_cross_a2 < ZmapVGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='Rate change, p-,c-,k-value map in aftershock sequence [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.rc_cross_a2(zapFcn()));
+            label = 'Rate change, p-,c-,k-value map in aftershock sequence [xsec]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.rc_cross_a2(zapFcn()),...
+                varargin{:});
         end
     end
 end

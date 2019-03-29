@@ -352,7 +352,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         % create a menu item that will be used to call this function/class (Define this as a static member of your class)
         %    sample implementation here:
         %
-        %    function h=AddMenuItem(parent,zapFcn)
+        %    function h = AddMenuItem(parent, zapFcn, varargin)
         %        % ADDMENUITEM create a menu item that will be used to call this function/class
         %        % h = AddMenuItem(parent, zapFcn) creates a menu item under the container PARENT
         %        %     that will call this class/fuction.  ZAPFCN is a function_handle that, when
@@ -361,11 +361,11 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         %
         %       label = 'testmenuitem';                        % CHANGE THIS TO YOUR MENUNAME
         %       cb = @(~,~)sample_ZmapFunction(zapFcn());      % CHANGE THIS TO YOUR CALLBACK
-        %       h=uimenu(parent,'Label',label,MenuSelectedField(),cb);
+        %       h = uimenu(parent, 'Label', label, MenuSelectedField(), cb, varargin{:});
         %    end
         %
         % you can copy/paste the above into your Static methods section
-        AddMenuItem(parent, zapFcn)
+        AddMenuItem(parent, zapFcn, varargin)
         
     end % STATIC ABSTRACT METHODS
     
