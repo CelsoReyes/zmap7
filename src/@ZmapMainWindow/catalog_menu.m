@@ -55,7 +55,9 @@ function submenu = catalog_menu(obj, force)
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
     
     uimenu(submenu,'Label','Rename...',MenuSelectedField(),@cb_rename);
-    
+    uimenu(submenu,'Separator','on',...
+        'Label','Remove inactive events',...
+        MenuSelectedField(), @cb_usesubset);
     uimenu(submenu,'Separator','on',...
         'Label','Memorize Catalog',  MenuSelectedField(), @cb_memorize);
     uimenu(submenu,'Label','Recall Catalog', MenuSelectedField(), @cb_recall);
@@ -112,6 +114,15 @@ function submenu = catalog_menu(obj, force)
             hh = msgbox_nobutton('The memorized catalog has been cleared.','Clear Memorized Catalog');
             hh.delay_for_close(1);
         end
+    end
+    
+    function cb_usesubset(~,~)
+        ZG = ZmapGlobal.Data;
+        ZG.primeCatalog = obj.catalog;
+        obj.rawcatalog = obj.catalog;
+        obj.map_axes.XLim = bounds2(obj.catalog.X);
+        obj.map_axes.YLim = bounds2(obj.catalog.Y);
+        obj.replot_all;
     end
     
     function [catalog,ok]=cb_catalog_from_workspace(opt, fn)

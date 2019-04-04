@@ -6,7 +6,7 @@ classdef calc_Omoricross < ZmapVGridFunction
         bootloops       double      = 50
         learningPeriod  duration    = days(100)
         Nmin            double      = 50
-        MainShock       ZMapCatalog
+        MainShock       ZmapCatalog
         MainShockSelection char {mustBeMember({'Largest','FirstInGlobal','LargestInXsection'})} = 'Largest'
     end
     

@@ -269,7 +269,11 @@ classdef ZmapData < handle
         end
         
         function c = get.primeCatalog(obj)
-            c = obj.catalogs.get('prime');
+            try
+                c = obj.catalogs.get('prime');
+            catch
+                c = ZmapCatalog();
+            end
         end
         function set.primeCatalog(obj, val)
             obj.catalogs.set('prime', val);

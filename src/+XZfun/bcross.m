@@ -3,7 +3,7 @@ classdef bcross < ZmapVGridFunction
     properties
         nBstSample   {mustBeNonnegative,mustBeInteger}  = 100   % number of bootstrap samples
         useBootstrap logical            = false  % perform bootstrapping?
-        fMccorr      double             = 0.2   % magnitude correction
+        fMccorr      double             = 0.0   % magnitude correction
         fBinning     {mustBePositive}   = 0.1   % magnitude bins
         mc_choice    McMethods          = McMethods.MaxCurvature % magnitude of completion method
         mc_auto_est  McAutoEstimate     = McAutoEstimate.auto
@@ -33,7 +33,7 @@ classdef bcross < ZmapVGridFunction
         
         ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr",...
             "fBinning", "mc_choice", "mc_auto_est"];
-        References = "";
+        References = ""
     end
     
     methods
@@ -61,14 +61,9 @@ classdef bcross < ZmapVGridFunction
             zdlg.AddHeader('Choose stuff');
             
             zdlg.AddMcMethodDropdown('mc_choice');
-            % zdlg.AddGridSpacing('gridOpts', dx, 'km' , [], '' , dd, 'km');
-            % obj.AddDialogOption(zdlg, 'EventSelector');
-            
             zdlg.AddEdit('fBinning'         , 'Magnitude binning'       , obj.fBinning,...
                 'Bins for magnitudes');
             obj.AddDialogOption(zdlg, 'NodeMinEventCount');
-            %zdlg.AddEdit('fMcFix'           , 'Fixed Mc'                , fMcFix,...
-            %    'fixed magnitude of completeness (Mc)');
             zdlg.AddEdit('fMccorr'          , 'Mc correction factor'    , obj.fMccorr,...
                 'Correction term to be added to Mc');
             zdlg.AddCheckbox('useBootstrap' , 'Use Bootstrapping'       , false, checkboxTargets,...
@@ -145,7 +140,6 @@ classdef bcross < ZmapVGridFunction
         
         function ModifyGlobals(obj)
             obj.ZG.bvg  = obj.Result.values;
-            obj.ZG.Grid = obj.Grid; %TODO do we really write back the grid?
         end
     end
     

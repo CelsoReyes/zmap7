@@ -34,7 +34,7 @@ classdef bvalgrid < ZmapHGridFunction
             'Additional_Runs_b_std', 'Additional_Runs_Mc_std', 'failreason', 'nEvents_gt_local_Mc'}
         
         ParameterableProperties = ["NodeMinEventCount", "nBstSample", "useBootstrap", "fMccorr",...
-            "fBinning", "mc_choice", "mc_auto_est"];
+            "fBinning", "mc_choice", "mc_auto_est"]
         
         References = "";
     end

@@ -139,12 +139,15 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
             ok=false;
         case "BadRequest"
             disp(resp.Body.Data)
-            
+            numbers= double(regexp(extractBefore(resp.Body.Data,'Request:'),'\d\d\d+','match'));
+            % first number is the error, so ignore it.
+            numbers(1)=[];
+            % second number is 
             % as of 2018-12-14, USGS returns this result when limit is exceeded. these depend on the error message wording
-            maxSearchLimit = double(extractBefore(extractAfter(resp.Body.Data,'exceeds search limit of '),'.'));
-            nFound = double(extractBefore(extractAfter(resp.Body.Data,'exceeds search limit of '),'.'));
+            maxSearchLimit = min(numbers);
+            nFound =  max(numbers);
             if ~ismissing(maxSearchLimit)
-                warning("maximum number of events [%d] exceeded. atttempting to limit results", maxSearchLimit);
+                warning("maximum number of events [%d] exceeded. attempting to limit results", maxSearchLimit);
                 % try again, in chunks of maxSearchLimit
                 disp('* trying again while limiting results')
                 [resp, ok] = get_in_chunks(myuri, maxSearchLimit, nFound);
