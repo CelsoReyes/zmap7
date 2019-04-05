@@ -78,7 +78,7 @@ Clicking on the `see distributions` button will show a few histograms that may h
 ### Main Map Screen
 
 Once a catalog is loaded, earthquakes will be plotted in the Main Window.
-![MainMapScreen](resources/img/ZmapMainWindow_20180216.png)
+![MainMapScreen](docs/img/ZmapMainWindow_20180216.png)
 This is where most of the work will happen.  The screen is divided into several sections.  When first presented, all events will be hilighted, and the main map will take up the entirety of the left side of the window.
 
 The plots on the right side of the screen will reflect statistics for the entire catalog.

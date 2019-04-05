@@ -9,12 +9,14 @@ function plotmainmap(obj)
     % this probably belongs somewhere else...
     if ~isempty(obj.shape) && ~isvalid(obj.shape)
         msg.dbdisp('shape had been deleted');
-        obj.shape = ShapeGeneral;
+        obj.shape = ShapeGeneral();
     end
     % %
     axm = obj.map_axes;
     axm.Visible = 'off';
-    assert(~isempty(axm), 'Somehow lost track of main map');
+    if isempty(axm)||~isvalid(axm)
+        error('Somehow lost track of main map');
+    end
     
     % update the active earthquakes
     eq=findobj(axm,'Tag','active quakes');
@@ -32,28 +34,28 @@ function plotmainmap(obj)
         dispname = replace(obj.catalog.Name,'_','\_');
         
         szFcn = str2func(mainEventOpts.MarkerSizeFcn);
-        eq=scatter(axm, obj.catalog.Longitude, obj.catalog.Latitude, ...
+        eq=scatter(axm, obj.catalog.X, obj.catalog.Y, ...
             szFcn(obj.catalog.Magnitude), getLegalColors(),...
             'Tag','active quakes',...
             'HitTest','off',...
             'DisplayName',dispname);
-        eq.ZData = obj.catalog.Depth;
+        eq.ZData = obj.catalog.Z;
         axm.NextPlot='replace';
         %obj.do_colorbar(axm);
         
     else
         
         % REUSE the plot
-        eq.XData = obj.catalog.Longitude;
-        eq.YData = obj.catalog.Latitude;
-        eq.ZData = obj.catalog.Depth;
+        eq.XData = obj.catalog.X;
+        eq.YData = obj.catalog.Y;
+        eq.ZData = obj.catalog.Z;
         eq.SizeData = szFcn(obj.catalog.Magnitude);
         eq.MarkerEdgeColor='flat';
         eq.CData = getLegalColors();
         
         % this is a kludge, because if a MarkerEdgeColor is defined that isn't specifically 'flat'
         % then it overrides the CData colors.
-        if size(eq.CData(:,1)>1)
+        if size(eq.CData(:,1) > 1)
             mainEventOpts=renameStructField(mainEventOpts,'MarkerEdgeColor','Marker_Edge_Color');
         else
             mainEventOpts=renameStructField(mainEventOpts,'Marker_Edge_Color','MarkerEdgeColor');
@@ -63,6 +65,9 @@ function plotmainmap(obj)
             eq.DisplayName = dispname;
         end
     end
+    
+    fix_colorbar()
+        
     set_valid_properties(eq, mainEventOpts);
     
     % update the largest events
@@ -94,9 +99,9 @@ function plotmainmap(obj)
         beq = findobj(axm,'Tag','big events');
         
         if ~isempty(obj.bigEvents)
-            beq.XData = obj.bigEvents.Longitude;
-            beq.YData = obj.bigEvents.Latitude;
-            beq.ZData = obj.bigEvents.Depth;
+            beq.XData = obj.bigEvents.X;
+            beq.YData = obj.bigEvents.Y;
+            beq.ZData = obj.bigEvents.Z;
             beq.SizeData=mag2dotsize(obj.bigEvents.Magnitude);
         else
             [beq.XData, beq.YData, beq.ZData, beq.SizeData]=deal([]);
@@ -116,6 +121,36 @@ function plotmainmap(obj)
         end
     end
     
+    function fix_colorbar()
+        h = obj.map_axes.Colorbar;
+        if isempty(h) && obj.colorField ~= "-none-"
+            h = colorbar(obj.map_axes);
+        end
         
+        if isempty(h) || h.Label.String == string(obj.colorField)
+            return
+        end
+        
+        h.Label.String = obj.colorField;
+        
+        switch obj.colorField
+            case '-none-'
+                delete(h)
+                
+            case 'Depth'
+                h.Direction = 'reverse';
+                h.TickLabels = h.Ticks;
+                
+                
+            case 'Date'
+                    h.TickLabels   = datestr(h.Ticks,'yyyy-mm-dd');
+                    h.Label.String = 'Date';
+                    h.Direction    = 'normal';
+                    
+            otherwise
+                h.Direction = 'normal';
+        end 
+            
+    end
     
 end

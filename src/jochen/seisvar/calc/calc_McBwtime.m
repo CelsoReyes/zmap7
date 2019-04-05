@@ -58,8 +58,8 @@ function [result] = calc_McBwtime(catalog, varargin)
     % fMinMag = min(catalog.Magnitude);
     fMaxMag = max(catalog.Magnitude);
     
-    stride = nSampleSize / p.Results.nOverlap;
-    windowStarts = 1 : stride : catalog.Count-nSampleSize ;
+    stride = max(round(nSampleSize .* p.Results.nOverlap ./ 100), 1);
+    windowStarts = 1 : stride : catalog.Count - nSampleSize ;
     windowEnds = windowStarts + nSampleSize - 1;
     nWindows = numel(windowStarts);
     
@@ -80,12 +80,10 @@ function [result] = calc_McBwtime(catalog, varargin)
         p.Results.nMethod, p.Results.nMinNumberEvents, p.Results.fMcCorr);
         
     if p.Results.ParMode
-        parfor i = 1:nWindows
+        parfor i = 1 : nWindows
             % Select samples
             eventsInWindow = catalog.subset( windowStarts(i) : windowEnds(i) );
             [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = doMcBootCalc(eventsInWindow);
-            % [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = calc_McBboot(eventsInWindow, binWidth, nBstSample, nMethod,nMinNumberevents,fMcCorr);
-            %mResult(i,:) = [fTime fMc fStd_Mc fBvalue fStd_B fAvalue fStd_A];
             
             result(i).meanSampleTime   = mean(eventsInWindow.Date);
             result(i).mcMeanWithTime   = fMc;
@@ -98,10 +96,9 @@ function [result] = calc_McBwtime(catalog, varargin)
         end % END of FOR fMag
         
     else
-        nCnt = 1;
         hWait = waitbar(0,'Please wait...');
-        
-        for i = 1:nWindows
+        updateInterval = ceil(nWindows/100);
+        for i = 1 : nWindows
             % Select samples
             eventsInWindow = catalog.subset( windowStarts(i) : windowEnds(i) );
             
@@ -109,9 +106,9 @@ function [result] = calc_McBwtime(catalog, varargin)
             [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A] = doMcBootCalc(eventsInWindow);
             
             % mResult(i,:) = [fTime fMc fStd_Mc fBvalue fStd_B fAvalue fStd_A];
-            
-            waitbar(nWindows)
-            nCnt = nCnt + 1;
+            if mod(i, updateInterval) == 0
+                waitbar(i/nWindows)
+            end
             
             result(i).meanSampleTime   = mean(eventsInWindow.Date);
             result(i).mcMeanWithTime   = fMc;

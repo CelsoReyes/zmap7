@@ -16,7 +16,7 @@ function plot_base_events(obj, container, featurelist)
     unselOpts.HitTest           = 'off';
     
     if isempty(obj.map_axes)
-        obj.map_axes=axes(container,'Units','normalized','Position',obj.MapPos_L);
+        obj.map_axes = axes(container,'Units','normalized','Position',obj.MapPos_L);
         
         obj.map_axes.Tag        = 'mainmap_ax';
         obj.map_axes.TickDir    = 'out';
@@ -37,9 +37,9 @@ function plot_base_events(obj, container, featurelist)
             uns=line(obj.map_axes,'XData', nan, 'YData', nan, 'ZData', nan);
         else
             uns=line(obj.map_axes,...
-                'XData', obj.rawcatalog.Longitude,...
-                'YData', obj.rawcatalog.Latitude,...
-                'ZData', obj.rawcatalog.Depth);
+                'XData', obj.rawcatalog.X,...
+                'YData', obj.rawcatalog.Y,...
+                'ZData', obj.rawcatalog.Z);
         end
         set_valid_properties(uns, unselOpts);
     end
@@ -61,10 +61,10 @@ function plot_base_events(obj, container, featurelist)
         z=[];
         Sz=[];
     else
-        x  = obj.bigEvents.Longitude;
-        y  = obj.bigEvents.Latitude;
+        x  = obj.bigEvents.X;
+        y  = obj.bigEvents.Y;
         Sz = SzFcn(obj.bigEvents.Magnitude);
-        z  = obj.bigEvents.Depth;
+        z  = obj.bigEvents.Z;
     end
         
     bev=scatter(obj.map_axes, x, y, Sz,...
@@ -75,8 +75,8 @@ function plot_base_events(obj, container, featurelist)
     
     set(obj.map_axes, 'NextPlot', 'replace')
     
-    obj.map_axes.XLabel.String = 'Longitude';
-    obj.map_axes.YLabel.String = 'Latitude';
+    obj.map_axes.XLabel.String = obj.catalog.XLabel;
+    obj.map_axes.YLabel.String = obj.catalog.YLabel;
     ZG = ZmapGlobal.Data;
     
     
@@ -109,8 +109,9 @@ function plot_base_events(obj, container, featurelist)
         'Label', 'Delete polygon',               MenuSelectedField(), @(s,v)updatewrapper(s, v, @(~,~)cb_shapedelete) );
     uimenu(c,'Label', 'Zoom to polygon',         MenuSelectedField(), @cb_zoom_shape);
     uimenu(c,'Label', 'Crop to polygon',         MenuSelectedField(), @cb_crop_to_selection);
-    uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom)
-    uimenu(c,'Label', 'Crop to axes limits',     MenuSelectedField(), @cb_crop_to_axes)
+    uimenu(c,'Label', 'Zoom to selected events', MenuSelectedField(), @cb_zoom);
+    uimenu(c,'Label', 'Crop to axes limits',     MenuSelectedField(), @cb_crop_to_axes);
+    uimenu(c,'Label','Crop or Split HERE'      , MenuSelectedField(), @callbacks.cropBasedOnAxis)
     uimenu(c,'Separator', 'on',...
         'Label', 'Define X-section',             MenuSelectedField(), @obj.cb_xsection);
     uimenu(c,'Separator', 'on', 'Tag', 'ToggleGrid',...
@@ -153,9 +154,9 @@ function plot_base_events(obj, container, featurelist)
     
     function cb_toggle_grid(~, ~)
         gr = findobj(obj.map_axes.Children,'flat','-regexp','Tag','grid_\w.*');
-        if numel(gr)==1
+        if numel(gr) == 1
             gr.Visible=toggleOnOff(gr.Visible);
-        elseif numel(gr)>1
+        elseif numel(gr) > 1
             error('multiple grids available to toggle');
         end
     end
@@ -163,12 +164,12 @@ function plot_base_events(obj, container, featurelist)
     function cb_shapedelete
         ShapeGeneral.clearplot();
         delete(obj.shape);
-        obj.shape = ShapeGeneral;
+        obj.shape = ShapeGeneral();
     end
     
     function cb_zoom(~ ,~)
-        xl = bounds2(obj.catalog.Longitude);
-        yl = bounds2(obj.catalog.Latitude);
+        xl = bounds2(obj.catalog.X);
+        yl = bounds2(obj.catalog.Y);
         obj.map_axes.XLim = xl;
         obj.map_axes.YLim = yl;
     end
@@ -214,11 +215,11 @@ function plot_base_events(obj, container, featurelist)
         xl = obj.map_axes.XLim;
         yl = obj.map_axes.YLim;
 
-        obj.rawcatalog.subset_in_place(...
-            obj.rawcatalog.Longitude >= xl(1) &...
-            obj.rawcatalog.Longitude <= xl(2) &...
-            obj.rawcatalog.Latitude  >= yl(1) &...
-            obj.rawcatalog.Latitude  <= yl(2));
+        obj.rawcatalog.subsetInPlace(...
+            xl(1) <= obj.rawcatalog.X &...
+            obj.rawcatalog.X <= xl(2) &...
+            yl(1) <= obj.rawcatalog.Y  &...
+            obj.rawcatalog.Y  <= yl(2));
         obj.replot_all();
     end
 

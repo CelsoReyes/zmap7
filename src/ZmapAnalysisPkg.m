@@ -22,7 +22,7 @@ classdef ZmapAnalysisPkg
     properties(SetAccess = immutable)
         % can only be set in constructor
         
-        Catalog % a ZMapCatalog. Do not change this catalog directly
+        Catalog % a ZmapCatalog. Do not change this catalog directly
         EventSel    EventSelectionParameters
         Grid {mustBeZmapGrid} = ZmapGrid()% ZmapGrid used to sample at points in space
         Shape % Shape used to mask a catalog
@@ -65,7 +65,7 @@ classdef ZmapAnalysisPkg
             % see also ZMAPDATA, ZMAPGLOBAL
             ZG=ZmapGlobal.Data;
             if ~exist('polyg','var')
-                polyg = ShapeGeneral;
+                polyg = ShapeGeneral();
             end
             obj = ZmapAnalysisPkg([], ZG.(catname), ZG.GridSelector, ZG.Grid, polyg);
         end

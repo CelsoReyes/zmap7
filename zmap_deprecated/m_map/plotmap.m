@@ -3,14 +3,14 @@
 
 
    l  = get(h1,'XLim');
-   s1 = l(2); s2 = l(1);
+   s1_east = l(2); s2_west = l(1);
    l  = get(h1,'YLim');
-   s3 = l(2); s4 = l(1);
+   s3_north = l(2); s4_south = l(1);
 
 cl =  get(h1,'Clim');
 
-%m_proj('lambert','long',[s2 s1],'lat',[s4 s3]);
-m_proj('lambert','long',[s2 s1],'lat',[s4 s3]);
+%m_proj('lambert','long',[s2_west s1_east],'lat',[s4_south s3_north]);
+m_proj('lambert','long',[s2_west s1_east],'lat',[s4_south s3_north]);
 
 %m_coast('patch',[1 .85 .7]);
 

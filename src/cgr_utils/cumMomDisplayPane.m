@@ -104,18 +104,18 @@ classdef cumMomDisplayPane < ZmapDisplayPane
     methods(Access=private)
         
         function h = xsplotter(xs, xscat)
-            h=findobj(ax,'DisplayName',xs.name,'-and','Type','line');
+            h=findobj(ax,'DisplayName',xs.Name,'-and','Type','line');
             if isempty(h)
                 [~, vmom, ~] = calc_moment(xscat);
-                h=line(ax,xscat.Date, vmom,'LineWidth',1.5,'DisplayName',xs.name,...
-                    'Tag',['Xsection cummomplot ' xs.name],'Color',xs.color,...
+                h=line(ax,xscat.Date, vmom,'LineWidth',1.5,'DisplayName',xs.Name,...
+                    'Tag',['Xsection cummomplot ' xs.Name],'Color',xs.Color,...
                     'UIContextMenu',cxs);
             else
                 if ~isequal(xscat.Date,h.XData)
                     [~, vmom, ~] = calc_moment(xscat);
-                    set(h,'XData',xscat.Date, 'YData', vmom,'LineWidth',1.5,'Color',xs.color);
+                    set(h,'XData',xscat.Date, 'YData', vmom,'LineWidth',1.5,'Color',xs.Color);
                 else
-                    set(h,'Color',xs.color);
+                    set(h,'Color',xs.Color);
                 end
             end
         end

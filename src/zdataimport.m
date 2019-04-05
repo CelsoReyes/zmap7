@@ -12,8 +12,8 @@ function [catalog, OK] = zdataimport()
         % import cancelled / failed
         return
     end
-    if isnumeric(catalog)
-        catalog=ZmapCatalog(catalog);
+    if ~isa(catalog,'ZmapCatalog')
+        catalog=ZmapCatalog.from(catalog);
     end
     OK= ~isempty(catalog);
     disp(['Catalog loaded with ' num2str(catalog.Count) ' events ']);

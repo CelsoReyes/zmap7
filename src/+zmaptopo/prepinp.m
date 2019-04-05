@@ -50,7 +50,7 @@ function prepinp()
     end
     
     
-    %frame=[s2 s1 s4 s3];
+    %frame=[s2_west s1_east s4_south s3_north];
     figure(map);
     frame=[get(gca,'XLim') get(gca,'Ylim')];
     

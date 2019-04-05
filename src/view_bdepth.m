@@ -120,12 +120,9 @@ function view_bdepth(lab1, valueMap)
     % set values gretaer ZG.tresh_km = nan
     %
     re4 = valueMap;
-    l = r > ZG.tresh_km;
-    re4(l) = nan(1,length(find(l)));
-    l = Prmap < minpe;
-    re4(l) = nan(1,length(find(l)));
-    l = old1 <  Mmin;
-    re4(l) = nan(1,length(find(l)));
+    re4(r > ZG.tresh_km) = nan;
+    re4(Prmap < minpe) = nan;
+    re4(old1 <  Mmin) = nan;
     
     % plot image
     %
@@ -144,9 +141,7 @@ function view_bdepth(lab1, valueMap)
     
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
 
@@ -371,15 +366,13 @@ function view_bdepth(lab1, valueMap)
         answer=inputdlg(prompt,dlgTitle,lineNo,def);
         re4 = valueMap;
         
-        l = answer{2,1}; ZG.tresh_km = str2double(l) ;
-        l = answer{1,1}; minpe = str2double(l) ;
+        ZG.tresh_km = str2double(answer{2,1}) ;
+        minpe = str2double(answer{1,1}) ;
         
         if ZG.tresh_km >= 0
-            l = Prmap < ZG.tresh_km;
-            valueMap(l) = valueMap(l)*0+1;
+            valueMap(Prmap < ZG.tresh_km) = 1;
         elseif minpe >= 0
-            l = r >= minpe;
-            valueMap(l) = valueMap(l)*0+1;
+            valueMap(r >= minpe) = 1;
         end
         
         ca = caxis;

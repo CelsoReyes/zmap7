@@ -6,12 +6,12 @@ function [mask, max_km] = closestEvents(catalog, lat, lon, depth, n)
     %
     % see also eventsInRadius
     if isempty(depth)
-        dists_km = catalog.epicentralDistanceTo(lat, lon);
+        dists = catalog.epicentralDistanceTo(lat, lon,'kilometer');
     else
-        dists_km = catalog.hypocentralDistanceTo(lat, lon, depth);
+        dists = catalog.hypocentralDistanceTo(lat, lon, depth,'kilometer');
     end
     % find nth closest by grabbing from the sorted distances
-    sorted_dists = sort(dists_km);
+    sorted_dists = sort(dists);
     max_km = sorted_dists(n);
     
     mask = dists_km <= max_km;

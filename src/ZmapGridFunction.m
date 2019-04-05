@@ -12,7 +12,7 @@ classdef ZmapGridFunction < ZmapFunction
         NodeMinEventCount   double {mustBeInteger}     = 1; % minimum number of events in a sample for that sample to be calculated
         OverallMinEventCount   double {mustBeInteger}  = 1; % minimum number of events in catalog, for calculations to operate
         Shape                       {mustBeShape}       = ShapeGeneral % shape to be used
-        do_memoize                                      = true;
+        do_memoize                                      = false;
     end
     properties(Constant,Abstract)
         
@@ -62,6 +62,22 @@ classdef ZmapGridFunction < ZmapFunction
             end
         end
         
+        function [numeric_choice, name, desc, units] = ActiveDataColumnDetails(obj, choice)
+            if ~exist('choice','var')
+                choice = obj.active_col;
+            end
+            
+            if ~isnumeric(choice)
+                numeric_choice = find(strcmp(obj.Result.values.Properties.VariableNames, choice));
+            else
+                numeric_choice = choice;
+            end
+            
+            desc = obj.Result.values.Properties.VariableDescriptions{numeric_choice};
+            name = obj.Result.values.Properties.VariableNames{numeric_choice};
+            units = obj.Result.values.Properties.VariableUnits{choice};
+            
+        end
         
     end
     methods(Access=protected)
@@ -192,22 +208,6 @@ classdef ZmapGridFunction < ZmapFunction
             gph.Visible=char(obj.showgridcenters);
         end
         
-        function [numeric_choice, name, desc, units] = ActiveDataColumnDetails(obj, choice)
-            if ~exist('choice','var')
-                choice = obj.active_col;
-            end
-            
-            if ~isnumeric(choice)
-                numeric_choice = find(strcmp(obj.Result.values.Properties.VariableNames, choice));
-            else
-                numeric_choice = choice;
-            end
-            
-            desc = obj.Result.values.Properties.VariableDescriptions{numeric_choice};
-            name = obj.Result.values.Properties.VariableNames{numeric_choice};
-            units = obj.Result.values.Properties.VariableUnits{choice};
-            
-        end
         
         function AddDialogOption(obj, zdlg, choice)
             switch choice
@@ -292,7 +292,7 @@ classdef ZmapGridFunction < ZmapFunction
            
     end % Protected methods
     
-    methods(Access=protected, Static)
+    methods(Static) % was protected
         
         function txt = mydatacursor(~,event_obj)
             try
@@ -361,9 +361,9 @@ classdef ZmapGridFunction < ZmapFunction
         end
         function cb_shading(val)
             % must be in function because ax must be evaluated in real-time
-            activeTab=get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-            ax=findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
-            shading(ax,val)
+            activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+            ax = findobj(activeTab.Children,'Type','axes','-and','Tag','result_map');
+            shading(ax, val)
         end
         
         function cb_brighten(val)

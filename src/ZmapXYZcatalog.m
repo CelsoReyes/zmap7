@@ -1,0 +1,3 @@
+classdef ZmapXYZcatalog < ZmapCatalog
+
+end

@@ -8,7 +8,7 @@ classdef AnalysisBvalues < AnalysisWindow
     methods
         function obj = AnalysisBvalues(ax, other_bobj)
             obj@AnalysisWindow(ax);
-            obj.nMarkers=2;
+            obj.nMarkers = 2;
             if exist('other_bobj','var')
                 obj.bobj = other_bobj;
             end
@@ -29,39 +29,40 @@ classdef AnalysisBvalues < AnalysisWindow
         function h=add_series(obj, catalog, tagID, varargin)
             % obj.ADD_SERIES(catalog, tagID, [[Name, Value],...])
             % fit line
-            xlm=obj.ax.XLimMode;
+            xlm = obj.ax.XLimMode;
             xl = obj.ax.XLim;
             
-            p=inputParser();
+            p = inputParser();
             p.addRequired('tagID', @(x)ischarlike(tagID));
-            p.addParameter('Ypos',0.6);
-            p.KeepUnmatched=true;
-            p.parse(tagID,varargin{:});
+            p.addParameter('Ypos', 0.6);
+            p.KeepUnmatched = true;
+            p.parse(tagID, varargin{:});
             
             
             countProps = p.Unmatched;
-            countProps.LineStyle='none';
-            countProps.MarkerIndices='all';
-            countProps.LineWidth=1;
-            obj.ax.XLimMode='auto';
+            countProps.LineStyle = 'none';
+            countProps.MarkerIndices = 'all';
+            countProps.LineWidth = 1;
+            obj.ax.XLimMode = 'auto';
             
-            h=add_series@AnalysisWindow(obj, catalog, tagID, countProps);
+            h = add_series@AnalysisWindow(obj, catalog, tagID, countProps);
             
-            obj.ax.XLimMode='Manual';
+            obj.ax.XLimMode = 'Manual';
             
-            seriesText=obj.bobj.descriptive_text([]);
-            textHandle = findobj('Type','text','-and','-regexp','Tag',[tagID,' txt']);
-            xStart = range(xlim(obj.ax))*0.6 + min(xlim(obj.ax));
+            seriesText = obj.bobj.descriptive_text([]);
+            textHandle = findobj('Type', 'text', '-and', '-regexp', 'Tag', [tagID,' txt']);
+            xStart = range(xlim(obj.ax)) * 0.6 + min(xlim(obj.ax));
             if ~isempty(textHandle)
-                textHandle.String=seriesText;
-                textHandle.Position(1)=xStart;
+                textHandle.String = seriesText;
+                textHandle.Position(1) = xStart;
             else
                 logLim = log10(ylim(obj.ax));
-                myLogY = p.Results.Ypos * range(logLim)+min(logLim);
+                myLogY = p.Results.Ypos * range(logLim) + min(logLim);
                 if ~isfield(p.Unmatched,'Color')
-                    p.Unmatched.Color=[.2 .2 .2]; 
+                    p.Unmatched.Color = [.2 .2 .2]; 
                 end
-                text(obj.ax, xStart, 10^myLogY, seriesText,'Color',p.Unmatched.Color .* 0.75,'Tag',[tagID,' txt'],'EdgeColor','none');
+                text(obj.ax, xStart, 10^myLogY, seriesText, 'Color', p.Unmatched.Color .* 0.75,...
+                    'Tag', [tagID,' txt'], 'EdgeColor', 'none');
             end
             
             % maybe each other add_series should contribute to h, too.
@@ -78,48 +79,52 @@ classdef AnalysisBvalues < AnalysisWindow
             
             % linear fit
             lineProps = p.Unmatched; 
-            lineProps.LineWidth = 2;
-            lineProps.MarkerFaceColor = 'auto';
-            lineProps.DisplayName = '';
-            lineProps.MarkerIndices=2;
-            lineProps.MarkerSize=10;
-            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation',@obj.getBvalLine, lineProps);
-            obj.ax.XLim=xl;
-            obj.ax.XLimMode=xlm;
+            lineProps.LineWidth         = 2;
+            lineProps.MarkerFaceColor   = 'auto';
+            lineProps.DisplayName       = '';
+            lineProps.MarkerIndices     = 2;
+            lineProps.MarkerSize        = 10;
+            add_series@AnalysisWindow(obj, catalog, [tagID, ' line'], 'UseCalculation', @obj.getBvalLine, lineProps);
+            obj.ax.XLim     = xl;
+            obj.ax.XLimMode = xlm;
         end   
         
         function [x,y] = calculate(obj,catalog)
             % Cumulative events by magnitude
             if isempty(catalog)
-                x=nan;
-                y=nan;
+                x = nan;
+                y = nan;
             else
-                obj.bobj.RawCatalog=catalog;
+                if isa(catalog,'ZmapCatalog')
+                    obj.bobj.RawCatalog = catalog;
+                else
+                    obj.bobj.RawCatalog = catalog.Catalog;
+                end
                 obj.bobj.Calculate();
-                x=obj.bobj.mag_bin_centers;
-                y=obj.bobj.cum_b_values;
+                x = obj.bobj.mag_bin_centers;
+                y = obj.bobj.cum_b_values;
             end
         end
         
         function [x,y] = getMc(obj,~)
             % Determine magnitude of completion. X is magnitude, y is approximately # of events below MC
             if isempty(obj.bobj)
-                y=nan;
-                x=nan;
+                y = nan;
+                x = nan;
             else
-                x=obj.bobj.Result.Mc_value;
-                y=obj.bobj.cum_b_values(obj.bobj.Result.index_low)*1.5;
+                x = obj.bobj.Result.Mc_value;
+                y = obj.bobj.cum_b_values(obj.bobj.Result.index_low) * 1.5;
             end
         end
         
         function [x,y] = getBvalLine(obj,~)
             % Show the B-value trend line
             if isempty(obj.bobj) || isempty(obj.bobj.Result.mag_zone)
-                x=[nan nan];
-                y=[nan nan];
+                x = [nan nan];
+                y = [nan nan];
             else
-                x=obj.bobj.Result.mag_zone([1 end]);
-                y=obj.bobj.fitted([1 end]);
+                x = obj.bobj.Result.mag_zone([1 end]);
+                y = obj.bobj.fitted([1 end]);
             end
         end
         

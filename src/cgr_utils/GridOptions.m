@@ -1,43 +1,65 @@
 classdef GridOptions < handle
     properties
-        dx {isfinite}                           % east-west distance between grid points
-        dy                                      % north-south distance between grid points
-        dz                                      % vertical distance between grid points
-        horizUnits          char       = 'kilometer'
-        dzUnits             char       = 'kilometer'
+        dx              double {isfinite}                   % east-west distance between grid points
+        dy              double                              % north-south distance between grid points
+        dz              double                              % vertical distance between grid points
         % Defines whether horizontal distances are constant, or whether they scale as the grid
         % deviates from the equator. 
-        followMeridians     matlab.lang.OnOffSwitchState                = 'off'
-        gridEntireArea      matlab.lang.OnOffSwitchState                = 'off'
-        FixedAnchorPoint    double                                      = []
+        followMeridians     matlab.lang.OnOffSwitchState  	= 'off'
+        gridEntireArea      matlab.lang.OnOffSwitchState    = 'off'
+        FixedAnchorPoint    double                          = []
         % grid cannot be used past these limits [xmin xmax ymin ymax]
-        AbsoluteGridLimits  double                                      = [-180 180 -90 90] 
-        GridType            char {mustBeMember(GridType,{'XY','XZ','XYZ'})} = 'XY';
+        AbsoluteGridLimits  (1,4) double
+        GridType            GridTypes                       = GridTypes.XY;
+        RefEllipsoid        referenceEllipsoid
+    end
+    
+    properties(Dependent, Hidden)
+        horizUnits
+        dzUnits
     end
     
     methods
-        function obj = GridOptions(grid_type, dx_dy_dz, spatial_units, gridEntireArea)
+        function obj = GridOptions(grid_type, dx_dy_dz, RefEllipsoid, varargin)
             % old usage: obj = GridOptions(dx, dy, dz_km, horiz_units, follow_meridians, gridEntireArea)
             % GRIDOPTIONS defines parameters that are used to create ZmapGrids
-            % obj = GRIDOPTIONS( [dx,dy,dz], UNITS);
-            % obj = GRIDOPTIONS( [dx,dy,dz], ELLPSOID ) units are used from the reference ellipsoid
             %
-            % obj = GRIDOPTIONS( [dx,dy,dz], 'FollowMeridians') Horizontal Units are assumed to be
-            %       degrees, Vertical units are assumed to be kilometers.
+            % obj = GRIDOPTIONS( GRID_TYPE, [dx,dy,dz], ELLPSOID ) where GRID_TYPE is a GridType,
+            % and defines the spatial orientation of the grid.  [dx,dy,dz] are a doublet or triplet 
+            % describing the grid spacing, and ELLIPSOID defines how everything will be interpreted.
+            % the ellipsoid's LengthUnit determines the units of this grid.  (See the option for
+            % FollowMeridians, below). An specifying the Ellipsoid value of nonEllipsoid() will 
+            % declare that this is a cartesian grid instead of a geodetic one.
+            %
+            % obj = GRIDOPTIONS( ..., 'FollowMeridians',true) Horizontal Units are degrees and grid
+            % therefore narrows toward the poles.
             % 
-            % obj = GRIDOPTIONS(...,'GridEntireArea') grids entire area.
+            % obj = GRIDOPTIONS(...,'GridEntireArea',true) grids entire area.
             %
             % For a horizontal grid, the first parameter should be [dx, dy] or [dx,dy,nan]
             % For a cross-sectional grid, the first parameter should be [dS nan dz], where dS is
             % a linear distance.
             % For a 3-d grid, the first parameters should be [dx,dy,dz]
             %
-            %  see also ZmapGrid, referenceEllipsoid
+            %  see also ZmapGrid, referenceEllipsoid, GridType, nonEllipsoid
+            p = inputParser;
+            p.addRequired('GridType');
+            p.addRequired('dx_dy_dz');
+            p.addRequired('RefEllipsoid');
+            p.addParameter('FollowMeridians', false);
+            p.addParameter('GridEntireArea', false);
+            p.parse(grid_type, dx_dy_dz, RefEllipsoid,varargin{:})
             
+            obj.GridType        = p.Results.GridType;
+            obj.RefEllipsoid    = p.Results.RefEllipsoid;
+            obj.followMeridians = p.Results.FollowMeridians;
+            obj.gridEntireArea  = p.Results.GridEntireArea;
             
-            narginchk(3,4);
-            obj.GridType = grid_type;
-            switch grid_type
+            if iscartesian(obj.RefEllipsoid)
+                assert(p.Results.FollowMeridians == false, 'Cannot follow Meridians for a cartesian grid');
+            end
+            
+            switch obj.GridType
                 case 'XY'
                     obj.dx = dx_dy_dz(1);
                     obj.dy = dx_dy_dz(2);
@@ -53,36 +75,38 @@ classdef GridOptions < handle
                     obj.dy = dx_dy_dz(2);
                     obj.dz = dx_dy_dz(3);
             end
-            obj.followMeridians = ischarlike(spatial_units) && spatial_units=="FollowMeridians";
-            if isa(spatial_units,'referenceEllipsoid')
-                obj.horizUnits = spatial_units.LengthUnit;
-            elseif obj.followMeridians
-                obj.horizUnits = 'degrees';
-            else
-                obj.horizUnits = spatial_units;
-            end
-            
-            
-            obj.gridEntireArea = exist('GridEntireArea','var') && strcmpi(gridEntireArea,'GridEntireArea');
-            
-            
         end
         
+        function u = get.horizUnits(obj) % for backwards compatibility
+            if obj.followMeridians
+                u = 'degree';
+            else
+                u = obj.RefEllipsoid.LengthUnit;
+            end
+        end
+        
+        function u = get.dzUnits(obj) % for backwards compatibility
+            u = obj.RefEllipsoid.LengthUnit;
+        end
         
     end % methods section
     
     methods(Static)
-        function [mygrid, mygridopts] = fromDialog(existing_gridopt, ellipsoid)
+        function [mygrid, mygridopts] = fromDialog(existing_gridopt, ellipsoid, shape)
             % FROMDIALOG shows an interactive dialog box allowing user to choose grid
-            mygrid=[];
-            mygridopts=[];
-            if ~exist('ellipsoid','var')
-                ellipsoid=ZmapGlobal.Data.referenceEllipsoid;
+            mygrid = [];
+            mygridopts = [];
+            if ~exist('ellipsoid', 'var')
+                ellipsoid = getappdata(groot, 'ZmapDefaultReferenceEllipsoid');
             end
-            if exist('existing_gridopt','var') && ~isempty(existing_gridopt)
-                gc = grid_chooser(ellipsoid, existing_gridopt); 
+            
+            if ~exist('shape', 'var')
+                shape = ShapeGeneral();
+            end
+            if exist('existing_gridopt', 'var') && ~isempty(existing_gridopt)
+                gc = grid_chooser(ellipsoid, existing_gridopt, shape); 
             else
-                gc = grid_chooser(ellipsoid);
+                gc = grid_chooser(ellipsoid, [], shape);
             end
             gc.ResultDump = @set_values;
             waitfor(gc)

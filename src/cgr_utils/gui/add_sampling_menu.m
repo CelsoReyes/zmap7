@@ -1,14 +1,21 @@
-function add_grid_menu(obj)
+function add_sampling_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
+    % obj is a ZmapMainWindow object.
     parent = uimenu(obj.fig,'Label','Sampling');
     MenuSelectedFcn=MenuSelectedField();
+    
+    %% Grid menu items
+    
     uimenu(parent,'Label','Quick-Grid (auto)',MenuSelectedFcn,@cb_autogrid);
     uimenu(parent,'Label','Define Grid',MenuSelectedFcn,@cb_gridfigure);
     uimenu(parent,'Label','Redraw Grid',MenuSelectedFcn,@cb_refresh);
     uimenu(parent,'Label','Clear Grid (Delete)',MenuSelectedFcn,@cb_clear);
     
+    %% Sampling menu items
     uimenu(parent,'Separator','on','Label','Choose Sample Radius',MenuSelectedFcn,@cb_manualradius);
     XYfun.sample_preview.AddMenuItem(parent, @()obj.map_zap);
+    
+    %% Polygon menu items
     uimenu(parent,'Separator','on',...
         'Label','Select events in CIRCLE',MenuSelectedFcn,@cb_makecircle);
     uimenu(parent,'Label','Select events in BOX', MenuSelectedFcn,@cb_makebox);
@@ -27,27 +34,30 @@ function add_grid_menu(obj)
     % uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.Directories.data));
     
     function cb_makecircle(src,ev)
-        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        
-        sh=ShapeCircle.selectUsingMouse(obj.map_axes,obj.refEllipsoid);
+        bringToForeground(obj.map_axes);
+        %bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        sh=ShapeCircle.selectUsingMouse(obj.map_axes, obj.refEllipsoid);
         set_my_shape(obj,sh);
     end
     
     function cb_makebox(src,ev)
-        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        bringToForeground(obj.map_axes);
+        %bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         sh=ShapePolygon('box');
         set_my_shape(obj,sh);
     end
     
     function cb_makepolygon(src,ev)
-        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        bringToForeground(obj.map_axes);
+        %bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         sh=ShapePolygon('polygon');
         set_my_shape(obj,sh);
     end
     
     function cb_makehull(src,ev)
-        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
-        eqs = [obj.catalog.Longitude, obj.catalog.Latitude];
+        bringToForeground(obj.map_axes);
+        %bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        eqs = [obj.catalog.X, obj.catalog.Y];
         ch=convhull(eqs,'simplify',true);
         sh=ShapePolygon('polygon',eqs(ch,:));
         set_my_shape(obj,sh);
@@ -55,7 +65,7 @@ function add_grid_menu(obj)
     function cb_clear_shape(src,ev)
         ShapeGeneral.clearplot();
         delete(obj.shape);
-        obj.shape=ShapeGeneral;
+        obj.shape=ShapeGeneral();
         %obj.replot_all();
     end
     
@@ -67,7 +77,8 @@ function add_grid_menu(obj)
         end
     end
     function cb_load_shape(src,ev)
-        bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
+        bringToForeground(obj.map_axes);
+        %bringToForeground(findobj(obj.fig,'Tag','mainmap_ax'));
         sh = load_shape();
         if isempty(sh)
             errordlg('Unable to load shape, or operation was cancelled');
@@ -95,10 +106,7 @@ function add_grid_menu(obj)
         end
         delete(todel);
         
-        [tmpgrid,obj.gridopt]=autogrid(obj.catalog,...
-            obj.refEllipsoid,... % plot histogram
-            true... % put on map
-            );
+        [tmpgrid,obj.gridopt]=autogrid(obj.catalog, obj.refEllipsoid, obj.map_axes);
         obj.Grid = tmpgrid.MaskWithShape(obj.shape);
         obj.Grid.plot(obj.map_axes,'ActiveOnly');
 
@@ -107,7 +115,7 @@ function add_grid_menu(obj)
     function cb_gridfigure(src,ev)
         watchon
         drawnow
-        [gr, gro] = GridOptions.fromDialog(obj.gridopt, obj.refEllipsoid);
+        [gr, gro] = GridOptions.fromDialog(obj.gridopt, obj.refEllipsoid,obj.shape);
         if ~isempty(gr)
             obj.Grid = gr;
             obj.gridopt = gro;

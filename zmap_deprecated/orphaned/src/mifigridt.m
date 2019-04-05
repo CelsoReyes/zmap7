@@ -223,7 +223,7 @@ elseif var1==2           %area selection
         shading interp
         j = jet(10); j = j(10:-1:1,:);
         colormap(j)
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
         box on
         hold on
         overlay_

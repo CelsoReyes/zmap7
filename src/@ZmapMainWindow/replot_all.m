@@ -4,7 +4,6 @@ function replot_all(obj,metaProp,eventData)
     % REPLOT_ALL(obj)
     % REPLOT_ALL(obj, metaProp, eventData) when called from listener
     % REPLOT_ALL(obj, eventName) when called elsewhere
-    
     narginchk(1,3)
     eventName = 'ReplotAll'; %default event name
     switch nargin
@@ -42,7 +41,7 @@ function replot_all(obj,metaProp,eventData)
         case 'XsectionAdded'
             % msg.dbdisp('add a cross section to plots')
             k=obj.XSectionTitles;
-            if numel(k)>1
+            if numel(k) > 1
                 k = k(~ismember(k,get(obj.xsgroup.Children,'Title')));
             end
             
@@ -67,19 +66,20 @@ function replot_all(obj,metaProp,eventData)
             else
                 if numel(evs.XData)==numel(obj.rawcatalog.Count)
                     evs.XData(mall)=nan;
-                    evs.XData(~mall)=obj.rawcatalog.Longitude(~mall);
+                    evs.XData(~mall)=obj.rawcatalog.X(~mall);
                 else
                     % catalog is out of sync. replot
-                    evs.XData=obj.rawcatalog.Longitude;
-                    evs.YData=obj.rawcatalog.Latitude;
-                    evs.ZData=obj.rawcatalog.Depth;
-                    evs.XData(mall)=nan;
+                    evs.XData       = obj.rawcatalog.X;
+                    evs.YData       = obj.rawcatalog.Y;
+                    evs.ZData       = obj.rawcatalog.Z;
+                    evs.XData(mall) = nan;
                 end
-                evs.Visible='on';
+                evs.Visible=get(findobj(obj.fig,'Label','Show unselected events'),'Checked');
                 
             end
-            ZG=ZmapGlobal.Data;
-            obj.bigEvents=obj.catalog.subset(obj.catalog.Magnitude >ZG.CatalogOpts.BigEvents.MinMag);
+            ZG = ZmapGlobal.Data;
+            obj.bigEvents = obj.catalog.subset(ZG.CatalogOpts.BigEvents.MinMag < obj.catalog.Magnitude);
+            obj.CatalogManager.ChangeFilter('big events', @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag);
             obj.plotmainmap();
         otherwise
             k=obj.XSectionTitles;
@@ -101,8 +101,8 @@ function replot_all(obj,metaProp,eventData)
     obj.cumplot('Lower Right panel');
     
     obj.cummomentplot('Lower Right panel');
-    obj.time_vs_something_plot('Time-Mag', TimeMagnitudePlotter(), 'Lower Right panel');
-    obj.time_vs_something_plot('Time-Depth', TimeDepthPlotter(), 'Lower Right panel');
+    obj.timedepthplot('Lower Right panel');
+    obj.timemagplot('Lower Right panel');
     
     obj.replotting=false;
     drawnow nocallbacks

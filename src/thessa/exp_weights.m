@@ -1,4 +1,4 @@
-function [weights] = exp_weights(catalog, lat,lon,depth)
+function [weights] = exp_weights(catalog, lat,lon, depth)
     % EXP_WEIGHTS get distance-dependent weights for a catalog
     % calculates weights for catalog based on exponential decay from a point. weights have
     % size [catalog.Count, 1]
@@ -21,9 +21,9 @@ function [weights] = exp_weights(catalog, lat,lon,depth)
     
     % cut events based on selectionCriteria [EventSelectionChoice]
     if exist('depth','var')
-        dists=catalog.hypocentralDistanceTo(lat,lon,depth);
+        dists=catalog.hypocentralDistanceTo(lat,lon,depth,'kilometer');
     else
-        dists=catalog.epicentralDistanceTo(lat,lon);
+        dists=catalog.epicentralDistanceTo(lat,lon,'kilometer');
     end
     
     if max(dists)<=LOCAL_DISTANCE_KM

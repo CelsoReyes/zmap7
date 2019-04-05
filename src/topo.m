@@ -1,6 +1,6 @@
 function varargout = topo(varargin)
     % topo(frame,a,ZG.maepi,faults,res,gx,gy,s)
-    % frame=[s4 s3 s1 s2]
+    % frame=[s4_south s3_north s1_east s2_west]
     % s -> startup parameter
     % 8.2.2002
     %
@@ -469,10 +469,9 @@ function varargout = draw_Callback(h, eventdata, handles, varargin)
         cmin=min(min(resu(inp).data));
         cmax=max(max(resu(inp).data));
         mi = min(ren(:));
-        l =  isnan(ren);
-        ren(l) = mi-20;
-        ll = tmap < 0 & ren < 0;
-        ren(ll) = ren(ll)*0 + 20;
+        ren(isnan(ren)) = mi-20;
+        
+        ren(tmap < 0 & ren < 0) = 20;
         resmap=meshm(ren,tmapleg,size(tmap),tmap);
         daspectm('m',05);
         tightmap;

@@ -119,9 +119,7 @@ function view_rccross_a2(lab1,valueMap)
     
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
     
@@ -139,7 +137,8 @@ function view_rccross_a2(lab1,valueMap)
     %
     set(gca,'NextPlot','add')
     zmap_update_displays();
-    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
+    globalcatalog=ZG.primeCatalog;
+    ploeq = plot(globalcatalog.X, globalcatalog.Y,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','bold',...

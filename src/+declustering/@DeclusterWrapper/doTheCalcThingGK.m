@@ -5,7 +5,7 @@ function doTheCalcThingGK(obj)
 		
 		
 		%get parameter into variables
-		ZmapCatalog = getZMAPFormat(obj.Datastore,obj.SendedEvents);
+		Zmap_Catalog = getZMAPFormat(obj.Datastore,obj.SendedEvents);
 		WinMethod=obj.CalcParameter.GK_Method;
 		SetMain=obj.CalcParameter.GK_SetMain;
 	
@@ -15,7 +15,7 @@ function doTheCalcThingGK(obj)
 		%run declustering
 		disp('please wait....');
 		tic;
-		[clusterID,EventType,AlgoInfo] = calc_decluster_gardKnop(ZmapCatalog,WinMethod,SetMain);
+		[clusterID,EventType,AlgoInfo] = calc_decluster_gardKnop(Zmap_Catalog,WinMethod,SetMain);
 		obj.CalcTime=toc;
 		disp('finished!');
 		

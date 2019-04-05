@@ -12,5 +12,5 @@ function replaceMainCatalog(otherCatalog)
     assert(isa(otherCatalog,'ZmapCatalog'));
     
     ZG = ZmapGlobal.Data;
-    ZG.primeCatalog=ZmapCatalog(otherCatalog);
+    ZG.primeCatalog=copy(otherCatalog);
 end

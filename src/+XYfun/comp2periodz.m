@@ -147,10 +147,12 @@ classdef comp2periodz < ZmapHGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='Compare two periods (z, beta, probabilty)';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.comp2periodz(zapFcn()));
+            label = 'Compare two periods (z, beta, probabilty)';
+            h =  uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.comp2periodz(zapFcn()),...
+                varargin{:});
         end
     end % static methods
 end % classdef

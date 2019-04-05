@@ -1,9 +1,9 @@
 classdef CatalogExplorationPlot < handle
     % CATALOGEXPLORATIONPLOT create a plot where x,y,z,color, and size are modifiable
     properties
-        x_by (1,:)      char            ='Latitude'
-        y_by (1,:)      char            ='Longitude'
-        z_by (1,:)      char            ='Depth'
+        x_by (1,:)      char
+        y_by (1,:)      char
+        z_by (1,:)      char
         color_by (1,:)  char            = ZmapGlobal.Data.mainmap_plotby%'Date'
         size_by (1,:)   char            ='Magnitude'
         colorFcn        function_handle = @datenum
@@ -21,7 +21,11 @@ classdef CatalogExplorationPlot < handle
         function obj=CatalogExplorationPlot(ax, catalogFcn)
             % creates a plot with arbitrarily modifiable axes
             % obj=CATALOGEXPLORATIONPLOT(ax, catalogFcn)
-            obj.catalogFcn=catalogFcn;
+            mycat = catalogFcn();
+            obj.x_by = mycat.XLabel;
+            obj.y_by = mycat.YLabel;
+            obj.z_by = mycat.ZLabel;
+            obj.catalogFcn = catalogFcn;
             obj.set_valid_axes_choices();
             obj.set_conversions();
             obj.ax=ax;

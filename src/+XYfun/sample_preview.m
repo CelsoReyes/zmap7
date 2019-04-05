@@ -67,10 +67,12 @@ classdef sample_preview < ZmapHGridFunction
     end % methods
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='sampling preview';
-            h=uimenu(parent,'Label',label, MenuSelectedField(), @(~,~)XYfun.sample_preview(zapFcn()));
+            label = 'sampling preview';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.sample_preview(zapFcn()),...
+                varargin{:});
         end
     end % static methods
     

@@ -14,7 +14,7 @@ classdef ShapePolygon < ShapeGeneral
             %
             % UNASSIGNED: clear shape
             %
-            obj@ShapeGeneral;
+            obj@ShapeGeneral();
             report_this_filefun();
             
             if nargin==0
@@ -85,7 +85,11 @@ classdef ShapePolygon < ShapeGeneral
             end
             line1 = sprintf('Polygon with %d points',nPts);
             line2 = sprintf('Extent has center of (%f lat , %f lon)',obj.Y0,obj.X0);
-            line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
+            if iscartesian(obj.RefEllipsoid)
+            	line3 = sprintf('Area is approximately %.2f units^2',obj.Area);
+            else
+              	line3 = sprintf('Area is approximately %.2f %ss^2',obj.Area, obj.RefEllipsoid.LengthUnit);
+            end
             helpdlg(sprintf('%s\n%s\n%s',line1,line2,line3),'Polygon');
         end
         
@@ -192,7 +196,7 @@ classdef ShapePolygon < ShapeGeneral
                 save(filelocation,'zmap_shape');
             else
                 if ~exist('delimiter','var'), delimiter = ',';end
-                tb=table(obj.Lat, obj.Lon,'VariableNames',{'Latitude','Longitude'});
+                tb=table(obj.X, obj.Y,'VariableNames',{'X', 'Y'});
                 writetable(tb,filelocation,'Delimiter',delimiter);
             end
                 
@@ -212,7 +216,7 @@ classdef ShapePolygon < ShapeGeneral
         
         function [obj,ok]=select_box(obj,varargin)
             ax=gca;
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', obj.RefEllipsoid, @box_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', @box_update);
             h=findobj(ax,'Tag','tmp_box_outline');
             if ~isempty(h)
                 x=h.XData;

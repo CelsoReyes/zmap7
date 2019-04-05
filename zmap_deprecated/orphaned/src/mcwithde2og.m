@@ -93,7 +93,7 @@ for ib=1:5
     y=BV3(:,2);
     l = x > 0 & y > 0;
     x = x(l); y = y(l);
-    [bap(ib,:),s1]=polyfit(y,x,n);
+    [bap(ib,:),s1_east]=polyfit(y,x,n);
     ymaxb(ib)=max(y);
 
     if ib==1

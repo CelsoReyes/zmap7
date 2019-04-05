@@ -9,8 +9,8 @@ function synthetic219()
     ZG=ZmapGlobal.Data; % used by get_zmap_globals
     
     report_this_filefun();
-    
-    TN = ZG.primeCatalog.Count;%total number of events
+    globalcatalog = ZG.primeCatalog;
+    TN = globalcatalog.Count;%total number of events
     B = 1 ;%b-value
     IM= 1;%starting magnitude (hypothetical Mc)
     inc = 0.1 ;%magnitude increment
@@ -112,16 +112,16 @@ function synthetic219()
     syn(:,6)=tmpo(1:TN);
     
     rng('shuffle');
-    %if TN==ZG.primeCatalog.Count
-    %	syn(:,3)=rand(TN,1)*(max(ZG.primeCatalog.Date-min(ZG.primeCatalog.Date)))  + min(ZG.primeCatalog.Date);
-    %	syn(:,1)=ZG.primeCatalog.Longitude;
-    %	syn(:,2)=ZG.primeCatalog.Latitude;
-    %	syn(:,7)=ZG.primeCatalog.Depth;
+    %if TN==globalcatalog.Count
+    %	syn(:,3)=rand(TN,1)*(max(globalcatalog.Date-min(globalcatalog.Date)))  + min(globalcatalog.Date);
+    %	syn(:,1)=globalcatalog.Longitude;
+    %	syn(:,2)=globalcatalog.Latitude;
+    %	syn(:,7)=globalcatalog.Depth;
     %else
-    syn(:,3)=rand(TN,1)*(max(ZG.primeCatalog.Date-min(ZG.primeCatalog.Date)))  + min(ZG.primeCatalog.Date);
-    syn(:,1)=rand(TN,1)*(max(ZG.primeCatalog.Longitude-min(ZG.primeCatalog.Longitude)))  + min(ZG.primeCatalog.Longitude);
-    syn(:,2)=rand(TN,1)*(max(ZG.primeCatalog.Latitude-min(ZG.primeCatalog.Latitude)))  + min(ZG.primeCatalog.Latitude);
-    syn(:,7)=rand(TN,1)*(max(ZG.primeCatalog.Depth-min(ZG.primeCatalog.Depth)))  + min(ZG.primeCatalog.Depth);
+    syn(:,3)=rand(TN,1)*(max(globalcatalog.Date-min(globalcatalog.Date)))  + min(globalcatalog.Date);
+    syn(:,1)=rand(TN,1)*(max(globalcatalog.Longitude-min(globalcatalog.Longitude)))  + min(globalcatalog.Longitude);
+    syn(:,2)=rand(TN,1)*(max(globalcatalog.Latitude-min(globalcatalog.Latitude)))  + min(globalcatalog.Latitude);
+    syn(:,7)=rand(TN,1)*(max(globalcatalog.Depth-min(globalcatalog.Depth)))  + min(globalcatalog.Depth);
     %end
     %changing decimal year to year,month,day,hour,minute.
     

@@ -29,7 +29,7 @@ function fdallfig()
             HCIfig = figure_w_normalized_uicontrolunits('Numbertitle','off','Name','Correlation Integral', 'Visible','on');
             Haxes = gca;
             
-            if D < 0.6 | D > 3.3
+            if D < 0.6 | 3.3 < D
                 
                 str5 = 'The fractal dimension calculated is not comprised in the interval 0.6-3.3. The scaling range might be the problem. ';
                 msg3 = msgbox(str5, 'Input Error');

@@ -31,28 +31,35 @@ classdef ZmapData < handle
         map_len        = [750 650] % winx winy
     end
     
+    properties(SetAccess = immutable)
+        CoordinateSystem CoordinateSystems  = CoordinateSystems.geodetic % may only be changed when ZMAP starts anew
+    end
+    
     properties
+        ref_ellipsoid   referenceEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
+        catalogs        CatalogStorage = CatalogStorage({'prime','newcat','newt2',...
+            'catalog_working','storedcat','original','catalogA','catalogB'})
+        cluster_catalogs CatalogStorage = CatalogStorage({'newccat','ttcat','cluscat','newclcat'})
         
-        ref_ellipsoid   referenceEllipsoid = referenceEllipsoid('wgs84','kilometer')
         % catalogs
-        primeCatalog    ZmapCatalog     = ZmapCatalog('empty catalog')
-        newcat          ZmapCatalog     = ZmapCatalog('empty catalog')
-        newt2           ZmapCatalog     = ZmapCatalog('empty catalog')
-        catalog_working ZmapCatalog     = ZmapCatalog('empty catalog')
+        % primeCatalog    {mustBeZmapCatalog}     = ZmapCatalog
+        newcat          {mustBeZmapCatalog}     = ZmapCatalog
+        newt2           {mustBeZmapCatalog}     = ZmapCatalog
+        catalog_working {mustBeZmapCatalog}     = ZmapCatalog
         storedcat                       % automatically stored catalog, used by synthetic catalogs, etc.
-        original        ZmapCatalog     = ZmapCatalog('empty catalog')% used with declustering
+        original        {mustBeZmapCatalog}     = ZmapCatalog('Name','empty catalog')% used with declustering
         
         % cluster catalogs 
-        newccat          ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
-        ttcat            ZmapCatalog	% some sort of clustered catalog? selclust
-        cluscat          ZmapCatalog	% some sort of clustered catalog? selclust
-        newclcat         ZmapCatalog	% some sort of clustered catalog? selclust
+        newccat          {mustBeZmapCatalog}     = ZmapCatalog	% apparently main clustered catalog (csubcat, capara, clpickp)
+        ttcat            {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        cluscat          {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
+        newclcat         {mustBeZmapCatalog}     = ZmapCatalog	% some sort of clustered catalog? selclust
         
         % map features that can be looked up by name. ex. ZG.features('volcanoes')
         features      containers.Map    = get_features('h')         
         well                                                        % well locations
         main
-        maepi            ZmapCatalog    = ZmapCatalog('big events') % large earthquakes, determined by user cutoff
+        maepi            {mustBeZmapCatalog}    = ZmapCatalog('Name','big events') % large earthquakes, determined by user cutoff
         
         % niceties
         fontsz       FontSizeTracker    = FontSizeTracker
@@ -63,7 +70,7 @@ classdef ZmapData < handle
         
         lock_aspect     matlab.lang.OnOffSwitchState    % use fixed aspect ratio
         mainmap_grid    matlab.lang.OnOffSwitchState    % show the grid on the main map
-        mainmap_plotby  (1,:) char                      % was typele
+        mainmap_plotby  (1,:) char      = '-none-'      % was typele
         
         % features that will be loaded on the main map
         mainmap_features                = {'borders','coastline','faults','lakes','plates',...
@@ -129,20 +136,36 @@ classdef ZmapData < handle
         
         % Datastore                       = DataStore % mapseis DataStore adapter
         
-        Interactive = true;
+        Interactive     logical     = true
+        
+        RealTimeMode    logical     = false
+        RealTimeAgent               = [];
     end
     
     properties(Dependent)
         
         t0b             % start time for earthquakes in primary catalog
         teb             % end time for earthquakes in primary catalog
+        primeCatalog
     end
     
     methods
         function obj=ZmapData()
             % initialize zmap data
+            
             def_files = defaults.availableDefaults;
-            ZDefaults=struct();
+            ZDefaults = struct();
+            
+            % set defaults
+            if isappdata(groot,'ZmapCoordinateSystem')
+                obj.CoordinateSystem = getappdata(groot, 'ZmapCoordinateSystem');
+            end
+            
+            if isappdata(groot,'ZmapRealTimeMode')
+                obj.RealTimeMode = getappdata(groot, 'ZmapRealTimeMode');
+            end
+            
+            
             
             %% a note about defaults
             % default settings are set in the ZmapSettings.mlapp. R2018a
@@ -156,8 +179,10 @@ classdef ZmapData < handle
                 ZDefaults.(erase(def_files{i},'_defaults')) = defaults.readDefaults(def_files{i});
             end
             
-            if isfield(ZDefaults,'general')
-                
+            disp(ZDefaults)
+            
+            % first always process the "general" defaults
+            if isfield(ZDefaults, 'general')
                 % directories
                 d = ZDefaults.general.Directories;
                 dnames = fieldnames(d);
@@ -172,66 +197,86 @@ classdef ZmapData < handle
                 % debug
                 obj.debug = ZDefaults.general.DebugMode;
             end
-            
-            if isfield(ZDefaults,'catalog')
-                obj.CatalogOpts = ZDefaults.catalog;
                 
-                if obj.CatalogOpts.ReopenLastCatalog
-                    catalogFile = fullfile(obj.Directories.working,ZDefaults.catalog.LastCatalogFilename);
-                    if exist(catalogFile,'file')
-                        tmp = load(catalogFile,'catalog');
-                        if isa(tmp.catalog,'ZmapCatalog')
-                            obj.primeCatalog = tmp.catalog;
-                            fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
-                            disp(obj.primeCatalog)
-                        else
-                            warning('ZMAP:missingCatalog','default catalog file does not contain a zmap catalog');
-                            % failed to open the last catalog
-                            obj.primeCatalog=ZmapCatalog('empty catalog');
+            for fn = fieldnames(ZDefaults)'   % each field must be column
+                switch string(fn)
+                    
+                    case "general"
+                        % already processed
+                        
+                    case "catalog"
+                        
+                        obj.CatalogOpts = ZDefaults.catalog;
+                        
+                        if obj.CatalogOpts.ReopenLastCatalog
+                            catalogFile = fullfile(obj.Directories.working, ZDefaults.catalog.LastCatalogFilename);
+                            if exist(catalogFile,'file')
+                                tmp = load(catalogFile,'catalog');
+                                if isa(tmp.catalog,'ZmapCatalog')
+                                    obj.primeCatalog = tmp.catalog;
+                                    fprintf('<strong>Loaded previous catalog</strong> from: %s\n',catalogFile);
+                                    disp(obj.primeCatalog)
+                                else
+                                    warning('ZMAP:missingCatalog','default catalog file does not contain a zmap catalog');
+                                    % failed to open the last catalog
+                                    obj.primeCatalog = ZmapCatalog('Name','empty catalog');
+                                end
+                            else
+                                warning('ZMAP:missingCatalog','could not find the default catalog file %s', catalogFile);
+                            end
                         end
-                    else
-                        warning('ZMAP:missingCatalog','could not find the default catalog file %s', catalogFile);
-                    end
+                        
+                    case "cross_section"
+                        
+                        obj.CrossSectionOpts = ZDefaults.cross_section;
+                        
+                    case "grid"
+                        
+                        obj.GridOpts = ZDefaults.grid;
+                        sepProps = obj.GridOpts.SeparationProps;
+                        opts = {};
+                        if sepProps.FollowMeridians
+                            opts = [opts,{'FollowMeridians',true}]; %#ok<AGROW>
+                        end
+                        dxdydz = [sepProps.Dx, sepProps.Dy, sepProps.Dz];
+                        myRefEllipsoid = getappdata(groot,'ZmapDefaultReferenceEllipsoid');
+                        myRefEllipsoid.LengthUnit = sepProps.xyunits;
+                        
+                        obj.gridopt = GridOptions( GridTypes.XYZ, dxdydz, myRefEllipsoid, opts{:});
+                        clear opts dxdydz sepProps myRefEllipsoid
+                        
+                    case "mainmap"
+                        
+                        obj.MainEventOpts = ZDefaults.mainmap.MainEvents;
+                        obj.BigEventOpts = ZDefaults.mainmap.BigEvents;
+                        obj.UnselectedEventOpts = ZDefaults.mainmap.UnselectedEvents;
+                        
+                        obj.lock_aspect = ZDefaults.mainmap.AspectRatioByLatitude;
+                        obj.mainmap_grid = ZDefaults.mainmap.ShowLatLonGrid;
+                        obj.mainmap_plotby = obj.MainEventOpts.ColorBy;
+                        
+                    case "result"
+                        
+                        obj.ResultOpts = ZDefaults.result;
+                        
+                    case "sampling"
+                        
+                        obj.SamplingOpts = ZDefaults.sampling;
+                        obj.GridSelector = EventSelectionParameters.fromStruct(obj.SamplingOpts);
                 end
             end
             
-            if isfield(ZDefaults,'cross_section')
-                obj.CrossSectionOpts = ZDefaults.cross_section;
+        end
+        
+        function c = get.primeCatalog(obj)
+            try
+                c = obj.catalogs.get('prime');
+            catch
+                c = ZmapCatalog();
             end
-            
-            
-            if isfield(ZDefaults,'grid')
-                obj.GridOpts = ZDefaults.grid;
-                sepProps = obj.GridOpts.SeparationProps;
-                if sepProps.FollowMeridians
-                    obj.gridopt = GridOptions('XYZ',...
-                        [sepProps.Dx, sepProps.Dy, sepProps.Dz],...
-                        'FollowMeridians');
-                else
-                    obj.gridopt = GridOptions('XYZ',...
-                        [sepProps.Dx, sepProps.Dy, sepProps.Dz], sepProps.xyunits);
-                end
-            end
-            
-            if isfield(ZDefaults,'mainmap')
-                obj.MainEventOpts = ZDefaults.mainmap.MainEvents;
-                obj.BigEventOpts = ZDefaults.mainmap.BigEvents;
-                obj.UnselectedEventOpts = ZDefaults.mainmap.UnselectedEvents;
-                
-                obj.lock_aspect = ZDefaults.mainmap.AspectRatioByLatitude;
-                obj.mainmap_grid = ZDefaults.mainmap.ShowLatLonGrid;
-                obj.mainmap_plotby = obj.MainEventOpts.ColorBy;
-            end
-            
-            if isfield(ZDefaults,'result')
-                obj.ResultOpts = ZDefaults.result;
-            end
-            
-            if isfield(ZDefaults,'sampling')
-                obj.SamplingOpts = ZDefaults.sampling;
-                obj.GridSelector = EventSelectionParameters.fromStruct(obj.SamplingOpts);
-            end
-            
+        end
+        function set.primeCatalog(obj, val)
+            obj.catalogs.set('prime', val);
         end
         
         function set.GridSelector(obj,val)
@@ -260,14 +305,18 @@ classdef ZmapData < handle
             for n=1:numel(p)
                 cl=class(obj.(p{n}));
                 switch cl
-                    case 'ZmapCatalog'
+                    case {'ZmapCatalog'}
                         fprintf('%20s : ',p{n})
                         disp(obj.(p{n}));
                 end
             end
         end
-        
+       
+        function c = generateEmptyCatalog(obj)
+            c = ZmapCatalog();
+        end
     end
+    
 end
 
 function out = get_features(level)

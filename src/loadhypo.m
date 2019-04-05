@@ -439,7 +439,7 @@ function loadhypo(choice)
         elseif length(a(1,:))==9       %if catalog includes hr and minutes
             ZG.primeCatalog.Date = decyear(a(:,[3:5 8 9]));
         end
-        a = ZmapCatalog(a);
+        a = ZmapCatalog.from(a);
         ZG.primeCatalog.sort('Date');
         
         ZG.CatalogOpts.BigEvents.MinMag = max(ZG.primeCatalog.Magnitude) -0.2;       %  as a default

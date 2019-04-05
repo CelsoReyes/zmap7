@@ -2,38 +2,40 @@ classdef ZmapMainWindow < handle
     % ZMAPMAINWINDOW controls the main interactive window for ZMAP
     
     properties(SetObservable, AbortSet)
-        catalog         ZmapCatalog % event catalog
-        bigEvents       ZmapCatalog
-        shape                           {mustBeShape}       = ShapeGeneral.ShapeStash % used to subset catalog by selected area
-        Grid                            {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
-        daterange       datetime % used to subset the catalog with date ranges
-        colorField                                          = ZmapGlobal.Data.mainmap_plotby; % see ValidColorFields for choices
+        catalog                 {mustBeZmapCatalog} = ZmapCatalog% event catalog
+        bigEvents               {mustBeZmapCatalog} = ZmapCatalog
+        shape                   {mustBeShape}       = ShapeGeneral.ShapeStash() % used to subset catalog by selected area
+        Grid                    {mustBeZmapGrid}    = ZmapGlobal.Data.Grid % grid that covers entire catalog area
+        daterange     datetime                        % used to subset the catalog with date ranges
+        colorField                                  = ZmapGlobal.Data.mainmap_plotby
         CrossSections
-        rawcatalog      ZmapCatalog;
+        rawcatalog              {mustBeZmapCatalog} = ZmapCatalog
     end
     
     properties
-        gridopt % used to define the grid
-        evsel           EventSelectionParameters             = ZmapGlobal.Data.GridSelector % how events are chosen
-        fig % figure handle
-        map_axes % main map axes handle
+        gridopt             % used to define the grid
+        evsel           EventSelectionParameters    = ZmapGlobal.Data.GridSelector % how events are chosen
+        fig                 % figure handle
+        map_axes            % main map axes handle
         xsgroup
-        maingroup % maps will be plotted in here
-        maintab % handle to tab where the main map is plotted
-        xscats % ZmapXsectionCatalogs corresponding to each cross section
-        xscatinfo %stores details about the last catalog used to get cross section, avoids projecting multiple times.
-        prev_states     Stack                               = Stack(10);
+        maingroup           % maps will be plotted in here
+        maintab             % handle to tab where the main map is plotted
+        xscats              % ZmapXsectionCatalogs corresponding to each cross section
+        xscatinfo           % stores details about the last catalog used to get cross section, avoids projecting multiple times.
+        prev_states     Stack                       = Stack(10)
         undohandle
-        Features                                            = containers.Map();
-        replotting                                          = false % keep from plotting while plotting
+        Features                                 	= containers.Map()
+        replotting                                	= false % keep from plotting while plotting
         mdate %
         mshape %
-        WinPos (4,1)                                        = position_in_current_monitor(Percent(90), Percent(85))% position of main window
-        mainEventProps                                      = ZmapGlobal.Data.MainEventOpts; % properties describing the main events
+        WinPos (4,1)                              	= position_in_current_monitor(Percent(90), Percent(85)) % position of main window
+        mainEventProps                            	= ZmapGlobal.Data.MainEventOpts % properties describing the main events
         % context menus that are are used in multiple graphical objects within this window
         % enables easy reuse/access, and lessens duplication
         sharedContextMenus
-        refEllipsoid  referenceEllipsoid = referenceEllipsoid('wgs84','kilometer');
+        refEllipsoid  referenceEllipsoid            = ZmapGlobal.Data.ref_ellipsoid;
+        
+        CatalogManager
     end
     
     properties(Constant)
@@ -47,8 +49,7 @@ classdef ZmapMainWindow < handle
         XSAxPos             = [0.0600    0.2000    0.8600    0.7000] % inside XSPos
         MapCBPos_S          = [0.5975    0.5600    0.0167    0.4000]
         MapCBPos_L          = [0.5975    0.5600    0.0167    0.4000]
-        FeaturesToPlot      = ZmapGlobal.Data.mainmap_features
-        ValidColorFields    = {'Depth', 'Date', 'Magnitude', '-none-'}
+        FeaturesToPlot      = getFeaturesToPlot()
         Type                = 'zmapwindow'
     end
     
@@ -79,17 +80,20 @@ classdef ZmapMainWindow < handle
         plot_base_events(obj, container, featurelist)
         plotmainmap(obj)
         c = context_menus(obj, tag, createmode, varargin) % manage context menus used in figure
+        
         plothist(obj, name, tabgrouptag)
         fmdplot(obj, tabgrouptag)
         
         cummomentplot(obj, tabgrouptag)
-        time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
+        % time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
+        timedepthplot(obj, tabgrouptag)
+        timemagplot(obj, tabgrouptag)
         cumplot(obj, tabgrouptag)
         
         % push and pop state
         pushState(obj)
         popState(obj)
-        catalog_menu(obj, force)
+        h = catalog_menu(obj, force)
         [mdate, mshape, mall]=filter_catalog(obj)
         create_all_menus(obj, force)
         
@@ -113,7 +117,7 @@ classdef ZmapMainWindow < handle
                     % either CATALOG or FIG is provided
                     try
                         switch varargin{1}.Type
-                            case 'zmapcatalog'
+                            case {'zmapcatalog', 'zmapbasecatalog'}
                                 in_catalog = varargin{1};
                             case 'figure'
                                 fig = varargin{1};
@@ -137,15 +141,14 @@ classdef ZmapMainWindow < handle
                     if isa(varargin{2}, 'ZmapCatalog')
                         in_catalog = varargin{2};
                     else
-                        error('Usage: ZmapMainWindow(fig, CATALOG).\nSecond argument was not a catalog');
+                        error('%s\n%s','Usage: ZmapMainWindow(fig, CATALOG).','Second argument was not a catalog');
                     end
             end
-            
             
             %if the figure was specified, but wasn't empty, then clear it out.
             if ~isempty(fig) && isvalid(fig)
                 isMainMapWindow   = isa(fig.UserData, 'ZmapMainWindow');
-                resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children)>1;
+                resultplot_exists = isMainMapWindow && numel(fig.UserData.maingroup.Children) > 1;
                 %shape_exists =  isMainMapWindow && ~isempty(fig.UserData.shape);
                 %grid_exists = isMainMapWindow && ~isempty(fig.UserData.Grid);
                 %catalog_exists = isMainMapWindow && isempty(fig.UserData.rawcatalog);
@@ -173,10 +176,20 @@ classdef ZmapMainWindow < handle
             % if no catalog is provided, then use the default primary catalog.
             ZG = ZmapGlobal.Data;
             if ~isa(in_catalog, 'ZmapCatalog')
-                obj.rawcatalog = ZG.primeCatalog;
+                obj.rawcatalog = copy(ZG.primeCatalog);
             else
-                obj.rawcatalog = in_catalog;
+                obj.rawcatalog = copy(in_catalog);
             end
+            obj.CatalogManager = CatalogManager(obj.rawcatalog); %Soon to replace obj.rawcatalog
+            try
+                fn = @(c) c.Magnitude > ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
+                obj.CatalogManager.AddSubset('big events', fn);
+            catch
+                obj.CatalogManager.ChangeFilter('big events', fn);
+            end
+                
+            obj.refEllipsoid    = ZG.ref_ellipsoid;
+                
             
             % TODO: make this handle a default shape once again
             
@@ -184,7 +197,7 @@ classdef ZmapMainWindow < handle
             
             if isempty(obj.rawcatalog)
                 obj.daterange   = [missing missing];
-                obj.catalog     = ZmapCatalog();
+                obj.catalog     = copy(obj.rawcatalog);
                 obj.mdate       = [];
                 obj.mshape      = [];
             else
@@ -205,7 +218,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.rawcatalog)
                 obj.bigEvents       = obj.rawcatalog;
             else
-                obj.bigEvents       = obj.rawcatalog.subset(obj.rawcatalog.Magnitude >= ZG.CatalogOpts.BigEvents.MinMag);
+                obj.bigEvents       = obj.rawcatalog.subset(ZG.CatalogOpts.BigEvents.MinMag <= obj.rawcatalog.Magnitude);
             end
             %% prepare the figure
             obj.prepareMainFigure();
@@ -240,7 +253,7 @@ classdef ZmapMainWindow < handle
             if isempty(obj.CrossSections)
                 xst={};
             else
-                xst =  {obj.CrossSections.name};
+                xst =  {obj.CrossSections.Name};
             end
         end
         
@@ -338,7 +351,7 @@ classdef ZmapMainWindow < handle
                     matlab.unittest.diagnostics.ConstraintDiagnostic.getDisplayableString(obj.evsel));
             end
             if isempty(obj.Grid)
-                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid);
+                [obj.gridopt, obj.Grid] = GridOptions.fromDialog([],obj.refEllipsoid,obj.shape);
             else
                 fprintf('Using existing grid:\n');
             end
@@ -359,13 +372,10 @@ classdef ZmapMainWindow < handle
                 zp = [];
                 return
             end
+                       
+            z_min = floor(min([0 min(obj.catalog.Z)]));
+            z_max = round(max(obj.catalog.Z) + 4.9999 , -1);
             
-            ZG = ZmapGlobal.Data;
-            
-            z_min = floor(min([0 min(obj.catalog.Depth)]));
-            z_max = round(max(obj.catalog.Depth) + 4.9999 , -1);
-            
-            zdlg = ZmapDialog();
             if ~exist('xsTitle', 'var')
                 xsTitle = obj.xsgroup.SelectedTab.Title;
             else
@@ -374,23 +384,75 @@ classdef ZmapMainWindow < handle
                     xsTitle = obj.xsgroup.SelectedTab.Title;
                 end
             end
-            xsIndex = strcmp(obj.XSectionTitles, xsTitle);
+            default.xsIndex = strcmp(obj.XSectionTitles, xsTitle);
+            default.x_km = 5;
+            default.z_min = z_min;
+            default.z_max = z_max;
+            default.z_delta = 1;
+            default.z_count = round((z_max - z_min) / default.z_delta) + 1;
+            default.useNLayers = true;
+            default.useDelta = false;
+            default.evsel = obj.evsel;
+            zdlg = create_my_dialog(default);
+            
+            %{                
+            zdlg = ZmapDialog();
             zdlg.AddPopup('xsTitle', 'Cross Section:', obj.XSectionTitles, xsIndex, 'Choose the cross section');
             zdlg.AddEventSelector('evsel', obj.evsel);
-            zdlg.AddEdit('x_km', 'Horiz Spacing [km]', 5, 'Distance along strike, in kilometers');
-            zdlg.AddEdit('z_min', 'min Z [km]', z_min, 'Shallowest grid point');
-            zdlg.AddEdit('z_max', 'max Z [km]', z_max, 'Deepest grid point, in kilometers');
-            zdlg.AddEdit('z_delta', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
-            [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters');
-            if ~okPressed
-                zp = [];
-                return
+            lenUnits = ['[',shortenLengthUnit(obj.refEllipsoid.LengthUnit),']'];
+            zdlg.AddEdit('x_km', ['Horiz Spacing ',lenUnits], 5, ['Distance along strike, ',obj.refEllipsoid.LengthUnit]);
+            zdlg.AddEdit('z_min', ['min Z ',lenUnits], z_min, ['Shallowest grid point, ', obj.refEllipsoid.LengthUnit]);
+            zdlg.AddEdit('z_max', ['max Z ',lenUnits], z_max, ['Deepest grid point, ',obj.refEllipsoid.LengthUnit]);
+            zdlg.AddCheckbox('useNLayers', 'Specify number of layers', true, {'z_count'},'')
+            zdlg.AddEdit('z_count', 'number of layers', round(z_max-z_min)+1, 'Number of horizontal layers ');
+            zdlg.AddCheckbox('useDelta', 'Specify vertical spacing', false, {'z_delta'},'')
+            zdlg.AddEdit('z_delta', ['Vertical spacing, in ', lenUnits], 1,'vertical grid spacing');
+            %}
+            
+            good = false;
+            while ~good
+                [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters')
+                if ~okPressed
+                    zp = [];
+                    return
+                end
+                if  xor(zans.useNLayers, zans.useDelta)
+                    good = true;
+                else
+                    if ~isequal(linspace(zans.z_min, zans.z_max, zans.z_count), z_min : zans.z_delta : z_max);
+                        msg.errordisp(['Number of layers and spacing contradict each other.',...
+                            'Choose EITHER number of layers, or spacing'], 'choose xs and xs grid');
+                        zans.xsIndex = strcmp(zans.xsTitle, obj.XSectionTitles);
+                        zdlg = create_my_dialog(zans);
+                    else
+                        good = true; 
+                    end
+                end
+            end
+            if zans.useDelta
+                zs_km = z_min : zans.z_delta : z_max;
+            else
+                zs_km   = linspace(zans.z_min, zans.z_max, zans.z_count);
             end
             
-            zs_km   = linspace(zans.z_min, zans.z_max, zans.z_delta);
-            idx     = strcmp(xsTitle, obj.XSectionTitles);
-            gr      = obj.CrossSections(idx).getGrid(zans.x_km, zs_km);
-            zp      = ZmapAnalysisPkg( [], obj.xscats(xsTitle), zans.evsel, gr, obj.shape);
+            % idx     = zans.xsIndex; % strcmp(zans.xsTitle, obj.XSectionTitles);
+            gr      = obj.CrossSections(zans.xsIndex).getGrid(zans.x_km, zs_km);
+            zp      = ZmapAnalysisPkg( [], obj.xscats(obj.XSectionTitles{zans.xsIndex}), zans.evsel, gr, obj.shape);
+            
+            function zdlg = create_my_dialog(def)
+                unitsLo = obj.refEllipsoid.LengthUnit;
+                unitsSh = ['[',shortenLengthUnit(obj.refEllipsoid.LengthUnit),']'];
+                zdlg = ZmapDialog();
+                zdlg.AddPopup('xsIndex', 'Cross Section:', obj.XSectionTitles, def.xsIndex, 'Choose the cross section');
+                zdlg.AddEventSelector('evsel', def.evsel);
+                zdlg.AddEdit('x_km'   , ['Horiz Spacing ',unitsSh], def.x_km, ['Distance along strike, ',unitsLo]);
+                zdlg.AddEdit('z_min'  , ['min Z ',unitsSh], def.z_min, ['Shallowest grid point, ', unitsLo]);
+                zdlg.AddEdit('z_max'  , ['max Z ',unitsSh], def.z_max, ['Deepest grid point, ', unitsLo]);
+                zdlg.AddCheckbox('useNLayers', 'Specify number of layers', def.useNLayers, {'z_count'}, '')
+                zdlg.AddEdit('z_count', 'number of layers', def.z_count, 'Number of horizontal layers ');
+                zdlg.AddCheckbox('useDelta', 'Specify vertical spacing', def.useDelta, {'z_delta'}, '')
+                zdlg.AddEdit('z_delta', ['Vertical spacing, in ', unitsSh], def.z_delta, 'vertical grid spacing');
+            end
             
         end
         
@@ -407,14 +469,26 @@ classdef ZmapMainWindow < handle
         function cb_starthere(obj, ax)
             disp(ax)
             [x,~] = click_to_datetime(ax);
+            zdlg = ZmapDialog();
+            zdlg.AddEdit('theDate', 'Start catalog at', x, 'select the catalog starting point');
+            [res, okPressed] = zdlg.Create('Name', 'Trim catalog');
+            if ~okPressed
+                return
+            end
             obj.pushState();
-            obj.daterange(1) = x;
+            obj.daterange(1) = res.theDate;
         end
         
         function cb_endhere(obj, ax)
             [x,~] = click_to_datetime(ax);
+            zdlg = ZmapDialog();
+            zdlg.AddEdit('theDate', 'End catalog at', x, 'select the catalog ending point');
+            [res, okPressed] = zdlg.Create('Name', 'Trim catalog');
+            if ~okPressed
+                return
+            end
             obj.pushState();
-            obj.daterange(2) = x;
+            obj.daterange(2) = res.theDate;
         end
         
         function cb_trim_to_largest(obj,~,~)
@@ -455,16 +529,12 @@ classdef ZmapMainWindow < handle
             % main map axes, where the cross section outline will be plotted
             axm = obj.map_axes;
             obj.fig.CurrentAxes = axm;
-            try
-                xsec = XSection.initialize_with_mouse(axm, 20, obj.refEllipsoid);
-            catch ME
-                warning(ME.message)
-                return
-                % do not set segment
-            end
+            
+            xsec = XSection.initialize_with_mouse(axm, 20);
+            
             if isempty(xsec), return, end
             watchon;
-            mytitle = xsec.name;
+            mytitle = xsec.Name;
             
             
             mytab = findobj(obj.fig, 'Title', mytitle, '-and', 'Type', 'uitab');
@@ -472,7 +542,7 @@ classdef ZmapMainWindow < handle
                 delete(mytab);
             end
             
-            mytab = uitab(obj.xsgroup, 'Title', mytitle, 'ForegroundColor', xsec.color, 'DeleteFcn', xsec.DeleteFcn);
+            mytab = uitab(obj.xsgroup, 'Title', mytitle, 'ForegroundColor', xsec.Color, 'DeleteFcn', xsec.DeleteFcn);
             
             % keep tabs alphabetized
             [~, idx] = sort({obj.xsgroup.Children.Title});
@@ -504,9 +574,8 @@ classdef ZmapMainWindow < handle
         end
         
         function cb_cropToXS(obj, xsec)
-            sh = ShapePolygon('polygon',[xsec.polylons(:), xsec.polylats(:)]);
+            sh = ShapePolygon('polygon',[xsec.PolyX(:), xsec.PolyY(:)]);
             set_my_shape(obj, sh);
-            %obj.replot_all();
         end
         
         function cb_deltab(obj, xsec)
@@ -515,13 +584,13 @@ classdef ZmapMainWindow < handle
             mytitle = get(gco, 'Title');
             try
                 
-                if get(gco, 'Type') == "uitab" && strcmp(get(gco, 'Title'), xsec.name)
+                if get(gco, 'Type') == "uitab" && strcmp(get(gco, 'Title'), xsec.Name)
                     delete(gco);
                 else
                     error('Supposed to delete tab, but gco is not what is expected');
                 end
                 % drawnow
-                delete(findobj(obj.fig, 'Type', 'uicontextmenu', '-and', '-regexp', 'Tag',['.sel_ctxt .*' xsec.name '$']))
+                delete(findobj(obj.fig, 'Type', 'uicontextmenu', '-and', '-regexp', 'Tag',['.sel_ctxt .*' xsec.Name '$']))
                 
                 obj.xsec_remove(mytitle);
                 if isempty(obj.CrossSections)
@@ -541,16 +610,19 @@ classdef ZmapMainWindow < handle
             % change width of a cross-section
             secTitle    = get(gco, 'Title');
             idx         = strcmp(secTitle, obj.XSectionTitles);
-            prompt      = {'Enter the New Width:'};
+            prompt      = {['Enter the New Width [', obj.CrossSections(idx).LengthUnit, ']:']};
             name        = 'Cross Section Width';
-            numlines    = 1;
-            defaultanswer = {num2str(obj.CrossSections(idx).width_km)};
-            answer        = inputdlg(prompt, name, numlines, defaultanswer);
+            defaultanswer = {num2str(obj.CrossSections(idx).Width)};
+            answer        = inputdlg(prompt, name, 1, defaultanswer);
             if ~isempty(answer)
-                obj.CrossSections(idx).change_width(str2double(answer));
+                new_width = str2double(answer);
+                obj.CrossSections(idx).change_width(new_width);
+                the_xscat = obj.xscats(secTitle); % modifying the_xscat modifies the stored version because handle
+                the_xscat.Width = new_width;
+                the_xscat.updateFromCatalog(obj.rawcatalog);
             end
             ax = findobj(gco, 'Type', 'axes', '-and', '-regexp', 'Tag', 'Xsection strikeplot.*');
-            ax.UserData.cep.catalogFcn = @()obj.xscats(obj.CrossSections(idx).name);
+            ax.UserData.cep.catalogFcn = @()obj.xscats(obj.CrossSections(idx).Name);
             ax.UserData.cep.update();
             ax.Title = [];
             obj.notify('XsectionChanged')
@@ -560,7 +632,7 @@ classdef ZmapMainWindow < handle
             secTitle = get(gco, 'Title');
             idx = strcmp(secTitle, obj.XSectionTitles);
             obj.CrossSections(idx).change_color([], obj.fig);
-            set(gco, 'ForegroundColor', obj.CrossSections(idx).color); %was mytab
+            set(gco, 'ForegroundColor', obj.CrossSections(idx).Color); % was mytab
         end
         
         function cb_info(obj,~,~)
@@ -585,19 +657,20 @@ classdef ZmapMainWindow < handle
                     grid(axm, 'on');
                     zlim(axm, 'auto');
                     %axis(ax, 'tight');
-                    zlabel(axm, 'Depth [km]', 'UserData', field_unit.Depth);
-                    axm.ZDir = 'reverse';
+                    zlabel(axm, [obj.catalog.ZLabel, '[', obj.catalog.LengthUnit, ']'], 'UserData', field_unit.Depth);
+                    axm.ZDir = obj.catalog.ZDir;
                     rotate3d(axm, 'on'); %activate rotation tool
                     hold(axm, 'off');
                     src.Label = '2-D view';
+                    % set_rotation_pointer(obj.fig); % this doesn't work because matlab does something when mouseover axes
                 otherwise
                     view(axm,2);
                     grid(axm, 'on');
                     zlim(axm, 'auto');
                     rotate3d(axm, 'off'); %activate rotation tool
                     src.Label = '3-D view';
+                    watchoff
             end
-            watchoff
             drawnow;
         end
         
@@ -608,7 +681,10 @@ classdef ZmapMainWindow < handle
             %  similar to what is returned via EventelectionChoice.quickshow
             
             if ~isempty(val)
-                assert(isa(val,'EventSelectionParameters')); % could do more detailed checking of fields
+                if ~ isa(val,'EventSelectionParamters')
+                    error('val must be an EventSelectionParametrs'); % TODO: detailed checking of fields
+                end
+                
                 obj.evsel = val;
             elseif isempty(ZmapGlobal.Data.GridSelector)
                 obj.evsel = EventSelectionChoice.quickshow();
@@ -685,6 +761,9 @@ classdef ZmapMainWindow < handle
                 obj.fig = figure();
             end
             
+            % these two states may be used by anything that plots within this figure
+            setappdata(obj.fig,'RefEllipsoid', obj.refEllipsoid);
+            
             obj.fig.Visible     = 'off';
             obj.fig.Name        = 'Catalog Name and Date';
             obj.fig.Tag         = 'Zmap Main Window';
@@ -699,9 +778,7 @@ classdef ZmapMainWindow < handle
             
             addTimeStamp(obj.fig);
             
-            
             obj.set_figure_name();
-            
             
             TabLocation = 'top'; % 'top', 'bottom', 'left', 'right'
             
@@ -735,6 +812,13 @@ classdef ZmapMainWindow < handle
                     MenuSelectedField(),@(~,~)callbacks.switchtabgroup(obj.maingroup));
             end
             
+            if isempty(findobj(obj.fig,'Tag','printable_figure_tab','-and','Type','uimenu'))
+                uimenu(obj.maintab.UIContextMenu,'Text','open printable Figure',...
+                'Separator','on', ...
+                    MenuSelectedField(),@(~,~)make_printable_figure_copy(obj.fig),...
+                    'Tag', 'printable_figure_tab');
+            end
+
             obj.xsgroup = uitabgroup(obj.maintab, 'Units', 'normalized',...
                 'Position', obj.TabGroupPositions.XS,...
                 'TabLocation', TabLocation, 'Tag', 'xsections',...
@@ -750,9 +834,9 @@ classdef ZmapMainWindow < handle
             
             %-- plot all events from catalog as dots before it gets filtered by shapes, etc.
             obj.plot_base_events(obj.maintab, obj.FeaturesToPlot);
-            
-            obj.setGrid();
-            
+            if ~isempty(obj.rawcatalog)
+                obj.setGrid();
+            end
             obj.replot_all();
             obj.fig.Visible = 'on';
             set(findobj(obj.fig, 'Type', 'uitabgroup', '-and', 'Tag', 'Lower Right panel'), 'Visible', 'on');
@@ -928,7 +1012,7 @@ classdef ZmapMainWindow < handle
             % plotfn is a function like: [@(xs, xcat)plot(...)] that does plotting and returns a handle
             for j = 1:numel(obj.CrossSections)
                 set(gca, 'NextPlot', 'add')
-                tit = obj.CrossSections(j).name;
+                tit = obj.CrossSections(j).Name;
                 h = plotfn(obj.CrossSections(j), obj.xscats(tit) );
                 h.Tag = [tagBase, ' ' , tit];
             end
@@ -1024,5 +1108,14 @@ function s = CallbackFld()
         s = 'Callback';
     else
         s = MenuSelectedField();
+    end
+end
+
+
+function f = getFeaturesToPlot()
+    if iscartesian(ZmapGlobal.Data.ref_ellipsoid)
+        f = {}; %TODO: create a shape that defines the surface boundary
+    else
+        f = ZmapGlobal.Data.mainmap_features;
     end
 end

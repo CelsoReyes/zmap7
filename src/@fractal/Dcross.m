@@ -10,13 +10,11 @@ function Dcross(sel)
     
     global eq0p
     
-    % the new data vector to be analysed is called Da, relative to the conter of the x-section and already in km
+    % the new data vector to be analysed is called Da, relative to the center of the x-section and already in km
     % D = [x,y,z ]
-    catalog=ZG.primeCatalog;
+    catalog=ZG.primeCatalog; % points to same thing
     Da = [eq0p(1,:)' eq0p(2,:)' catalog.Date catalog.Date.Month catalog.Date.Day catalog.Magnitude catalog.Depth];
-    Da0 = find(Da(:,7) > -2.99);
-    Da = Da.subset(Da0);
-    clear Da0;
+    Da = Da.subset(-2.99 < Da(:,7));
     if exist('sel','var')
         switch sel
             case 'ca'

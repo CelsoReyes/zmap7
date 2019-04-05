@@ -171,11 +171,13 @@ classdef stressgrid < ZmapHGridFunction
                 toc
                 disp('^-old   new-v');
                 %}
-                tic
+                %tic
                 
                 %[fBeta2, fStdBeta2, fTauFit2, fAvgTau2, fStdTau2]=slick([b.DipDirection b.Dip b.Rake]);
-                [bvg(7), ~, ~, bvg(1), bvg(2), bvg(3), bvg(4), bvg(5), bvg(6)]=slick([b.DipDirection b.Dip b.Rake]);
-                toc
+                b = b.getAddon('MomentTensor');
+                [bvg(7), ~, ~, bvg(1), bvg(2), bvg(3), bvg(4), bvg(5), bvg(6)]= slick(...
+                    [b.DipDirection b.Dip b.Rake]);
+                % toc
 
             end
         end
@@ -337,7 +339,7 @@ classdef stressgrid < ZmapHGridFunction
             axis(ax, 'equal')
             % zmap_update_displays();
             set(ax,'PlotBoxAspectRatio',[0.827 1 1])
-            %axis(ax,[ s2 s1 s4 s3])
+            %axis(ax,[ s2_west s1_east s4_south s3_north])
             title(ax,sprintf('%s;  %g to %g', name, t0b, teb),'FontSize',ZmapGlobal.Data.fontsz.s,...
                 'Color','k','FontWeight','normal');
             xlabel(ax,'Longitude ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
@@ -365,10 +367,12 @@ classdef stressgrid < ZmapHGridFunction
     end
     methods(Static)
        
-        function h=AddMenuItem(parent,zapFcn)
+        function h=  AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='Map Stress Tensor';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.stressgrid(zapFcn()));
+            label = 'Map Stress Tensor';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.stressgrid(zapFcn()),...
+                varargin{:});
         end
     end % static methods
 end

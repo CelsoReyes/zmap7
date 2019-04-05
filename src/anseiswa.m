@@ -21,6 +21,7 @@ function anseiswa(action, ds)
     ZG=ZmapGlobal.Data;
     xc1=findobj('Tag','xc1');
     xc2=findobj('Tag','xc2');
+    globalcatalog = ZG.primeCatalog;
     switch(action)
         case 'start1'
             axes(findobj(groot,'Tag','hs'))
@@ -49,11 +50,11 @@ function anseiswa(action, ds)
             
         case 'samp1' %V1
             x = get(xc1,'Xdata'); y = get(xc1,'Ydata'); z = ds;
-            ZG.newt2 = ZG.primeCatalog.selectClosestEvents(y,x,z,ni);
+            ZG.newt2 = globalcatalog.selectClosestEvents(y,x,z,ni);
             
         case 'samp2'
             x = get(xc2,'Xdata'); y = get(xc2,'Ydata'); z = ds;
-            ZG.newt2 = ZG.primeCatalog.selectClosestEvents(y,x,z,ni);
+            ZG.newt2 = globalcatalog.selectClosestEvents(y,x,z,ni);
             
     end  % switch
     
@@ -86,7 +87,7 @@ function anseiswa(action, ds)
         x = get(xc1,'Xdata');
         y = get(xc1,'Ydata');
         z = ds;
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=globalcatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
@@ -104,7 +105,7 @@ function anseiswa(action, ds)
         ZG.newt2.sort('Date');   % re-sort wrt time for cumulative count
         set(findobj('Tag','tiplo2'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
         ax3=findobj('Tag','ax3');
-        set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.primeCatalog.Date)) (max(ZG.primeCatalog.Date))]);
+        set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(globalcatalog.Date)) (max(globalcatalog.Date))]);
         set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
         
         bv = bvalca3(ZG.newt2.Magnitude,McAutoEstimate.auto);
@@ -134,7 +135,7 @@ function anseiswa(action, ds)
             x = get(xc2,'Xdata');
             y = get(xc2,'Ydata');
             z = ds;
-            l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+            l=globalcatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
             [s,is] = sort(l);
             ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
             if tgl1 == 0   % take point within r
@@ -148,7 +149,7 @@ function anseiswa(action, ds)
             end
             ZG.newt2.sort('Date');
             set(findobj('Tag','tiplo1'),'Xdata',[ZG.newt2.Date ; teb],'Ydata',[(1:ZG.newt2.Count) ZG.newt2.Count  ] );
-            set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(ZG.primeCatalog.Date)) (max(ZG.primeCatalog.Date))]);
+            set(ax3,'YLim',[0 ZG.newt2.Count+15],'Xlim',[ (min(globalcatalog.Date)) (max(globalcatalog.Date))]);
             set(ax3,'YTick',[ 0 ni/4 ni/2 ni*3/4 ni]);
             
             bv = bvalca3(ZG.newt2.Magnitude,McAutoEstimate.auto);

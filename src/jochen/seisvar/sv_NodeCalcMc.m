@@ -74,7 +74,6 @@ if params.bBstnum
     % Mc bootstrap and uncertainty
     % EMR method
     % nCalculateMC=params.fBstMethod;
- %   [result.fMc_Bst, result.fStd_Mc, result.fBvalue_Bst, result.fStd_B, result.fAvalue_Bst, result.fStd_A, vMc, mBvalue] = calc_McBboot(mCatalog, params.fBinning, params.fBstnum, nCalculateMC);
     [~, result.fMc_Bst, result.fStd_Mc, ~, ~, result.fBvalue_Bst, result.fStd_B, result.fAvalue_Bst, result.fStd_A,...
             result.bH_Bst, result.fPval_Bst, ~,~] = calc_McEMR_KSboot(mCatalog, params.fBinning, params.fBstnum,params.fBstMethod);
 end

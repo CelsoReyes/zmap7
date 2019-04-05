@@ -10,7 +10,9 @@ function incircle()
     
     report_this_filefun();
     %
-    if isempty(ZG.newcat), ZG.newcat = ZG.primeCatalog; end   % verify whether to start with
+    if isempty(ZG.newcat), 
+        ZG.newcat = copy(ZG.primeCatalog); 
+    end   % verify whether to start with
     % original catalogue
     % make the interface for input
     %
@@ -181,7 +183,7 @@ function incircle()
         elseif ic == 2
             figure(map);
             axes(h1)
-            ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, rad);
+            ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, rad,'kilometer');
             %
             % plot events on map as 'x':
             

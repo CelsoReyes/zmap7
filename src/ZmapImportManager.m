@@ -63,12 +63,12 @@ function [ok,catalog] = ZmapImportManager(fun, funArguments, varargin)
     function post_load()
         disp('post load')
         ZG = ZmapGlobal.Data;
-        ZG.primeCatalog = catalog;
+        ZG.primeCatalog = catalog; % since a catalog is a handle, they point to same thing
         
         % ZG.mainmap_plotby='depth';
         
-        setDefaultValues(ZG.primeCatalog);
-        ZG.maepi=ZG.primeCatalog.subset(ZG.primeCatalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
+        setDefaultValues(catalog);
+        ZG.maepi=catalog.subset(catalog.Magnitude > ZG.CatalogOpts.BigEvents.MinMag);
         
         % OPTIONALLY CLEAR SHAPE
         if ~isempty(ShapeGeneral.ShapeStash)

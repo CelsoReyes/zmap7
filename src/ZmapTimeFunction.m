@@ -1,5 +1,5 @@
 classdef ZmapTimeFunction < ZmapFunction
-    % ZMAPTimeFUNCTION is a ZmapFunction that produces results that vary through time, but are NOT spatially dependent
+    % ZMAPTIMEFUNCTION is a ZmapFunction that produces results that vary through time, but are NOT spatially dependent
     %
     % see also ZMAPFUNCTION
     
@@ -8,8 +8,7 @@ classdef ZmapTimeFunction < ZmapFunction
         WindowDuration    duration        = seconds(nan) % size of analysis window
         TimeStep          duration        = seconds(nan)
         FirstStartTime    datetime        = missing
-        ForceStartBounds  char      {ismember('','year','quarter','month','day','hour','minute','second')} = '';
-        do_memoize        logical         = false
+        ForceStartBounds  char      {ismember('','year','quarter','month','day','hour','minute','second')} = ''
     end
     properties(Constant,Abstract)
         
@@ -41,7 +40,26 @@ classdef ZmapTimeFunction < ZmapFunction
             saveToDesktop@ZmapFunction(obj) 
         end
         
-
+        function t = helptext(obj, subject)
+            % provides help text, based on the subject.
+            % -all lists everything
+            % -choice gives list of topics one can ask about
+            switch subject
+                %{
+                % replace <Subject> with the actual property or subject you are describing.
+                
+                case <Subject>
+                    % display the details for this property
+                    t = "details pertaining to this subject, emphasized with <strong>like this</strong>"
+                    
+                case "-choices"
+                    t = helptext@ZmapFunction(obj, subject);
+                    t = [t, <Subject>];
+                %}
+                otherwise
+                    t= helptext@ZmapFunction(obj,subject);
+            end
+        end
     end
     methods(Access=protected)
         

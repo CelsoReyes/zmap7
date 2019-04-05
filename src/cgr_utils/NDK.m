@@ -164,21 +164,22 @@ classdef NDK
         end
         
         function c = toZmapCatalog(obj)
-            c=ZmapCatalog;
-            c.Name='ndk';
-            c.Longitude=obj.allNDKs.Longitude;
-            c.Latitude=obj.allNDKs.Latitude;
-            c.Depth=obj.allNDKs.Depth;
-            c.Date=obj.allNDKs.ReferenceEventDateTime;
-            c.Magnitude=obj.allNDKs.ReportedMagnitudes(:,1);
-            c.MagnitudeType=repmat(categorical({''}),size(c.Magnitude));
-            mt=obj.allNDKs(:,{'Mrr','Mtt','Mpp','Mrt','Mrp','Mtp'});
-            mt{:,:}=mt{:,:}.* 10.^double(obj.allNDKs.ExponentForAllMomentValues);
-            mt.Properties.VariableNames={'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
-            c.MomentTensor= mt;
-            c.Dip=double(obj.allNDKs.Dip_NodalPlane1);
-            c.DipDirection = mod(double(obj.allNDKs.Strike_NodalPlane1)+ 90, 360 );
-            c.Rake=double(obj.allNDKs.Rake_NodalPlane1);
+            c = ZmapCatalog;
+            c.Name          = 'ndk';
+            c.Longitude     = obj.allNDKs.Longitude;
+            c.Latitude      = obj.allNDKs.Latitude;
+            c.Depth         = obj.allNDKs.Depth;
+            c.Date          = obj.allNDKs.ReferenceEventDateTime;
+            c.Magnitude     = obj.allNDKs.ReportedMagnitudes(:,1);
+            c.MagnitudeType = repmat(categorical({''}),size(c.Magnitude));
+            mt      = obj.allNDKs(:,{'Mrr','Mtt','Mpp','Mrt','Mrp','Mtp'});
+            mt{:,:} = mt{:,:}.* 10.^double(obj.allNDKs.ExponentForAllMomentValues);
+            mt.Properties.VariableNames = {'mrr', 'mtt', 'mff', 'mrt', 'mrf', 'mtf'};
+            mtAddon                 = MomentTensorAddon(mt);
+            mtAddon.Dip             = double(obj.allNDKs.Dip_NodalPlane1);
+            mtAddon.DipDirection    = mod(double(obj.allNDKs.Strike_NodalPlane1)+ 90, 360 );
+            mtAddon.Rake            = double(obj.allNDKs.Rake_NodalPlane1);
+            c.setAddon(mtAddon);
         end
     end
     

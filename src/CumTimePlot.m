@@ -331,7 +331,7 @@ classdef (Sealed) CumTimePlot < handle
             
             
             op4 = uimenu(analyzemenu,'Label','Mc and b-value estimation');
-            uimenu(op4,'Label','automatic'          , msfield, @cb_auto_mc_b_estimation)
+            uimenu(op4,'Label','FMD'          , msfield, @cb_auto_mc_b_estimation)
             uimenu(op4,'label','Mc with time '      , msfield, @(~,~)plotwithtime('mc'));
             uimenu(op4,'Label','b with depth'       , msfield, @(~,~)bwithde2(obj.catalog));
             uimenu(op4,'label','b with magnitude'   , msfield, @(~,~)bwithmag(obj.catalog));
@@ -341,7 +341,7 @@ classdef (Sealed) CumTimePlot < handle
             
             %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
             %displayed (the catalog mycat).
-            uimenu(op5,'Label','Completeness in days after mainshock', msfield,@(~,~)mcwtidays(obj.catalog))
+            uimenu(op5,'Label','Completeness in days relative to mainshock', msfield,@(~,~)mcwtidays(obj.catalog))
             uimenu(op5,'Label','Define mainshock',...
                 'Enable','off', msfield, @cb_016);
             uimenu(op5,'Label','Estimate p',msfield,@cb_pestimate);
@@ -394,8 +394,8 @@ classdef (Sealed) CumTimePlot < handle
             end
             
             function cb_cut_mainshock(~,~)
-                l = min(find( obj.catalog.Magnitude == max(obj.catalog.Magnitude) ));
-                obj.catalog = obj.catalog.subset(l:obj.catalog.Count);
+                biggestEvent = find( obj.catalog.Magnitude == max(obj.catalog.Magnitude) , 1 );
+                obj.catalog = obj.catalog.subset(biggestEvent:obj.catalog.Count);
                 ctp=CumTimePlot(obj.catalog);
                 ctp.plot();
             end

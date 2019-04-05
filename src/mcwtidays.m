@@ -78,7 +78,7 @@ function mcwtidays(catalog)
     ax.YLabel.String = 'Mc';
     %set(gca,'Xlim',[t0b teb]);
     
-    xlabel('Time in days after mainshock')
+    xlabel('Days relative to mainshock')
     tist = [  catalog.Name ' - b(t), ni = ' num2str(ni) ];
     title(tist,'interpreter','none')
     

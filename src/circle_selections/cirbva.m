@@ -48,7 +48,7 @@ function cirbva()
     %  and sort by distance
     %
     l = ZG.primeCatalog.epicentralDistanceTo(ya0,xa0);
-    ZG.newt2=ZG.primeCatalog;
+    ZG.newt2=ZG.primeCatalog; % points to same thing
     if met == 'ni'
         % take first ni and sort by time
         [ZG.newt2, R2] = ZG.primeCatalog.selectClosestEvents(ni);

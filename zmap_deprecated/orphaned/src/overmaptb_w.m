@@ -239,5 +239,5 @@ end
 
 scaleruler off
 scaleruler on
-[xlo,ylo] = mfwdtran(s4-tilat/3,s2);
+[xlo,ylo] = mfwdtran(s4_south-tilat/3,s2_west);
 setm(handlem('scaleruler'),'XLoc',xlo,'YLoc',ylo,'RulerStyle','patches','FontSize',10)

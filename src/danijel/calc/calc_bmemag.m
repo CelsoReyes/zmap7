@@ -1,4 +1,4 @@
-function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval)
+function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval, nanOption)
     % a- and b-value based on the maximum likelihood estimation (with b-value's std dev)
     %
     % [ bValue, bStdDev, aValue] =  calc_bmemag(magnitudes , binInterval)
@@ -8,13 +8,16 @@ function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval)
     % standard deviation of the b-value
     %
     % Input parameters:
-    %   magnitudes        vector of magnitudes
-    %   binInterval        Binning of the earthquake magnitudes
+    %   magnitudes      column vector of magnitudes
+    %   binInterval     Binning of the earthquake magnitudes
+    %   nanOption       'includenan' or 'omitnan' describes how to treat nan magnitude values
     %
     % Output parameters:
     %   bValue          b-value
     %   bStdDev         Standard deviation of b-value
     %   aValue          a-value
+    %
+    % vectorized, nans are ignored
     
     % Copyright (C) 2003 by Danijel Schorlemmer based on Stefan Wiemer's code,
     % now modified by CGReyes
@@ -33,25 +36,34 @@ function [bValue, bStdDev, aValue] =  calc_bmemag(magnitudes, binInterval)
     % along with this program; if not, write to the
     % Free Software Foundation, Inc.,
     % 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-    
-    
-    
+         
     % Set the default value if not passed to the function
 
-    narginchk(2,2)
-    
+    if ~exist('nanOption','var')
+        nanOption = 'omitnan';
+    end
+    if iscolumn(magnitudes) 
+        % ok
+        n = size(magnitudes,1);
+    else
+        n = sum(~isnan(magnitudes), 1);
+    end
     % Calculate the minimum and mean magnitude, length of catalog
-    n = length(magnitudes);
     minMag = min(magnitudes);
-    meanMag = mean(magnitudes);
+    meanMag = sum(magnitudes, nanOption) ./ n;
     
     % Calculate the b-value (maximum likelihood)
-    bValue = (1/(meanMag-(minMag-(binInterval/2))))*log10(exp(1));
-    
+    bValue = (1 ./ (meanMag + binInterval .* 0.5 - minMag) ) .* log10(exp(1));
+    if nargout<=1
+        return
+    end
     % Calculate the standard deviation
-    bStdDev = (sum((magnitudes-meanMag).^2)) / (n*(n-1));
-    bStdDev = 2.30 * sqrt(bStdDev) * bValue^2;
     
+    bVariance_by_n = var(magnitudes - meanMag, nanOption) ./ n; %actual denominator becomes (n-1*n)
+    bStdDev = 2.30 .* sqrt(bVariance_by_n) .* bValue .^ 2;
+    if nargout==2
+        return
+    end
     % Calculate the a-value
-    aValue = log10(n) + bValue * minMag;
+    aValue = log10(n) + bValue .* minMag;
 end

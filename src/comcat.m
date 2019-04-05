@@ -18,11 +18,11 @@ function outcat = my_loadcatalog(desc)            %% load first catalog
         warningdlg('Cancelled');
         return;
     end
-    tmp=load(fullfile(path1,file1),'a'); % assume catalog in variable a
+    tmp = load(fullfile(path1,file1),'a'); % assume catalog in variable a
     assert(isfield('a','tmp'),'file does not contain expected variable name');
     if ~isa(tmp.primeCatalog,'ZmapCatalog')
-        outcat=ZmapCatalog(tmp.primeCatalog);
+        outcat = ZmapCatalog.from(tmp.primeCatalog);
     else
-        outcat=tmp.primeCatalog;
+        outcat = tmp.primeCatalog;
     end
 end

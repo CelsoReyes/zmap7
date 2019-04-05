@@ -248,10 +248,12 @@ classdef bvalmapt < ZmapHGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='Differential b-value map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bvalmapt(zapFcn()));
+            label =  'Differential b-value map';
+            h =  uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.bvalmapt(zapFcn()),...
+                varargin{:});
         end
         function obj= load()
             %RZ Load existing  diff b-grid

@@ -1,4 +1,4 @@
-function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
+function [c2, gcDist, zans] = plot_cross_section_from_mainmap
     %PLOT_CROSS_SECTION_FROM_MAINMAP create a cross-section from the map.
     %  [CatalogInCrossSection, distanceAlongStrike, optionsUsed] = PLOT_CROSS_SECTION_FROM_MAINMAP
     %
@@ -8,12 +8,17 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     % brings up new figure containing cross-section, with selected events plotted with depth, 
     % and histograms of events along sgtrike and with depth
     
-    ZG=ZmapGlobal.Data;
-    catalog=ZG.primeCatalog;
+    % TODO: cannibalize this to make cross section plotting viable
+    % TODO: this code doesn't reflect the current state of ZmapXsectionCatalogs
     
+    error('end of road')
+    
+    ZG=ZmapGlobal.Data;
+    catalog=ZG.primeCatalog; % points to same thing
+    units = catalog.HorizontalUnit;
     % dialog box to choose cross-section
     zdlg=ZmapDialog();
-    zdlg.AddEdit('slicewidth_km','Width of slice [km]',20,'distance from slice for which to select events. 1/2 distance in either direction');
+    zdlg.AddEdit('slicewidth',['Width of slice [',units,']'],20,'distance from slice for which to select events. 1/2 distance in either direction');
     zdlg.AddEdit('startlabel','start label','A','start label for map');
     zdlg.AddEdit('endlabel','end label','A''','start label for map');
     zdlg.AddCheckbox('choosecolor','choose cross-section color [red]', false,{},...
@@ -34,7 +39,7 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     xs_line=plot(curvelons,curvelats,'--','LineWidth',1.5,'Color',C);
     
     % plot width polygon
-    [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth_km/2,false,catalog.RefEllipsoid);
+    [plat,plon] = xsection_poly([lat(1),lon(1)], [lat(2) lon(2)], zans.slicewidth/2,false,catalog.RefEllipsoid);
     xspoly=plot(plon,plat,'-.','Color',C);
     
     %label it: put labels offset and outside the great-circle line.
@@ -44,12 +49,10 @@ function [c2, gcDist_km, zans] = plot_cross_section_from_mainmap
     elabel = text(hOffset(lon(2),1),vOffset(lat(2),1),zans.endlabel,'Color',C.*0.8, 'FontWeight','bold');
 
     % mask so that we can plot original quakes in original positions
-    mask=polygon_filter(plon,plat,catalog.Longitude,catalog.Latitude,'inside');
+    mask=polygon_filter(plon,plat,catalog.X,catalog.Y,'inside');
     
-    c2=ZmapXsectionCatalog(catalog, [lat(1),lon(1)],[lat(2),lon(2)], zans.slicewidth_km);
-    
-    %[c2,mindist,mask,gcDist_km]=project_on_gcpath([lat(1),lon(1)],[lat(2),lon(2)],catalog,zans.slicewidth_km/2,0.1);
-    
+    c2=ZmapXsectionCatalog(catalog, [lat(1),lon(1)],[lat(2),lon(2)], zans.slicewidth);
+  
     % PLOT X-SECTION IN NEW FIGURE
     f=create_cross_section_figure(zans, catalog, c2, mask);
     f.DeleteFcn = @(~,~)delete([xs_endpts,xs_line,slabel,elabel, xspoly]); % autodelete xsection when figure is closed
@@ -81,18 +84,18 @@ function f=create_cross_section_figure(zans,catalog, c2, mask)
     plot3_events(ax, c2, catalog, mask);
     plot_events_along_strike(subplot(3,3,[1 5]),c2,zans)
     
-    plot_events_along_strike_hist(subplot(3,3,[7 8]),zans, c2.dist_along_strike_km);
+    plot_events_along_strike_hist(subplot(3,3,[7 8]),zans, c2.DistAlongStrike);
     plot_depth_profile(subplot(3,3,[3 6]), c2.Depth);
     create_my_menu(c2)
 end
 
 function plot_events_along_strike(ax,c2,zans)
-    scatter(ax, c2.dist_along_strike_km, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
+    scatter(ax, c2.DistAlongStrike, c2.Depth,mag2dotsize(c2.Magnitude),years(c2.Date-min(c2.Date)));
     ax.YDir='reverse';
-    ax.XLim=[0 c2.curvelength_km];
+    ax.XLim=[0 c2.curvelength];
     ax.XTickLabel{1}=zans.startlabel;
-    if ax.XTick(end) ~= c2.curvelength_km
-        ax.XTick(end+1)=c2.curvelength_km;
+    if ax.XTick(end) ~= c2.curvelength
+        ax.XTick(end+1)=c2.curvelength;
         ax.XTickLabel{end+1}=zans.endlabel;
     else
         ax.XTickLabel{end}=zans.endlabel;
@@ -100,21 +103,21 @@ function plot_events_along_strike(ax,c2,zans)
         
         
     grid(ax,'on');
-    xlabel('Distance along strike [km]');
-    ylabel('Depth');
-    title(sprintf('Profile: %s to %s',zans.startlabel,zans.endlabel));
+    xlabel(['Distance along strike [',c2.HorizontalUnit,']'] );
+    ylabel(['Depth [',c2.LengthUnit,']']);
+    title(sprintf('Profile: %s to %s',zans.startlabel, zans.endlabel));
 end
 
 function plot3_events(ax,c2, catalog, mask, featurelist)
     % create a 3-d plot of this cross section, with overlaid map
     
     % plot relevant events (at depth)
-    scatter3(ax,c2.Longitude,c2.Latitude,c2.Depth,mag2dotsize(c2.Magnitude),c2.dist_along_strike_km,'+')
+    scatter3(ax,c2.X,c2.Y,c2.Z,mag2dotsize(c2.Magnitude),c2.DistAlongStrike,'+')
     
     set(gca,'NextPlot','add')
     % plot all events as gray on surface
-    plot(ax,catalog.Longitude,catalog.Latitude,'.','Color',[.75 .75 .75],'MarkerSize',1);
-    scatter3(catalog.Longitude(mask),catalog.Latitude(mask),c2.Depth,3,c2.displacement_km)
+    plot(ax,catalog.X,catalog.Y,'.','Color',[.75 .75 .75],'MarkerSize',1);
+    scatter3(catalog.X(mask),catalog.Y(mask),c2.Z,3,c2.displacement)
     ax.ZDir='reverse'; % Depths are + down
     
     
@@ -134,7 +137,7 @@ function h=plot_events_along_strike_hist(ax, zans, gcDist)
     h.Parent.XTickLabel{1}=zans.startlabel;
     h.Parent.XTickLabel{end}=zans.endlabel;
     ylabel('# events');
-    xlabel('Distance along strike (km)');
+    xlabel('Distance along strike (',zans,')');
 end
 
 function plot_depth_profile(ax,depths)
@@ -142,7 +145,7 @@ function plot_depth_profile(ax,depths)
     histogram(depths,'Orientation','horizontal');
     set(gca, 'YDir','reverse')
     xlabel('# events');
-    ylabel('Distance Depth Profile (km)');
+    ylabel('Distance Depth Profile (',ZmapGlobal.Data.primeCatalog.HorizontalUnit,')');
 end
 
 
@@ -188,7 +191,7 @@ function create_my_menu(c2)
     end
     
     function cb_meandepth(mycat)
-        meandepx(mycat, mycat.dist_along_strike_km);
+        meandepx(mycat, mycat.DistAlongStrike);
     end
    
     function rContainer = update_container()

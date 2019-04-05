@@ -37,7 +37,7 @@ figure_w_normalized_uicontrolunits('pos',[150 500 1000 700])
 
 hold on; axis off
 axesm('MapProjection','eqaconic','MapParallels',[],...
-    'MapLatLimit',[s4 s3 ],'MapLonLimit',[s2 s1])
+    'MapLatLimit',[s4_south s3_north ],'MapLonLimit',[s2_west s1_east])
 
 meshm(ren,tmapleg,size(tmap),tmap);
 

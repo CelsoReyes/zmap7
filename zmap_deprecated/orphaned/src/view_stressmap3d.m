@@ -72,7 +72,7 @@ axis('equal')
 overlay_
 
 
-axis([ s2 s1 s4 s3])
+axis([ s2_west s1_east s4_south s3_north])
 
 title2([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
     'Color','k','FontWeight','normal')

@@ -106,7 +106,7 @@ function ran = dorand(obj, params)
             clear str5 msg3
             
             ran1 = [E.Longitude+ nerrx, E.Latitude + nerry, rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1),rand(size(E,1),1), (E.Depth + nerrz)];
-            %ran2 = find(ran1(:,7)>0.1);
+            %ran2 = find(ran1(:,7) > 0.1);
             ran = ran1;%(ran2,:);
             ranp = ran(:,[1 2 7]);
             ranp(:,3) = [-ranp(:,3)];
@@ -127,8 +127,8 @@ function ran = dorand(obj, params)
             norlat = max(abs(rannor(:,2)));
             nordept = max(abs(rannor(:,7)));
             ran = [(((rannor(:,1)./norlon).*long)+(long1+long2)/2), (((rannor(:,2)./norlat).*lati)+(lati1+lati2)/2), rand(numran,1),rand(numran,1),rand(numran,1),rand(numran,1), (((rannor(:,7)./nordept).*dept)+(-(dept1+dept2)/2))];
-            elim = find(ran(:,7) < 0);
-            ran = ran(elim,:);
+            
+            ran = ran(ran(:,7) < 0,:);
             
             long1 = min(ran(:,1));
             long2 = max(ran(:,1));
@@ -137,7 +137,7 @@ function ran = dorand(obj, params)
             dept1 = min(abs(ran(:,7)));
             dept2 = max(abs(ran(:,7)));
             
-            clear norlon norlat nordept elim;
+            clear norlon norlat nordept
             plot_it(distr)
             
             butto = 'button';
@@ -170,7 +170,7 @@ function ran = dorand(obj, params)
                     %rlong = (radiusx.*sin(phi).*cos(teta)) + centerx;  % The next three lines create a disc.
                     %rlat = (radiusy.*sin(phi).*cos(teta)) + centery;
                     %rdep = (radiusz.*cos(phi)) + centerz;
-                    fi = find(rdep<0);
+                    fi = rdep<0;
                     rdep = rdep(fi);
                     rlong = rlong(fi);
                     rlat = rlat(fi);

@@ -23,11 +23,13 @@ function musec()
     msg.dbdisp(messtext', 'Select Mutiple segments for x-section');
     
     % first lets input the endpoints
-    but = 1;x=[];y=[];
+    but = 1;
+    x=[];
+    y=[];
     while but == 1 || but == 112
-        [xi,yi,but] = ginput(1);
+        [xi, yi, but] = ginput(1);
         [lat1, lon1] = lc_froca(xi,yi);
-        lc_event(lat1,lon1,'rx',6,2)
+        lc_event(lat1,lon1,'rx', 6, 2)
         x = [x; lon1];
         y = [y; lat1];
     end
@@ -42,7 +44,7 @@ function musec()
             xsecx = -xsecx +max(xsecx);
         end
         if i==1
-            ma = 0; 
+            ma = 0;
         else
             ma = max(newa(:,po));
         end
@@ -53,12 +55,15 @@ function musec()
     maex = newa(l,po);
     maey = newa(l,7);
     if isempty(maex)
-     maex = 0;
-      maey = 0;
-      end
-    if length(maex)>1 ; maex = maex(1); maey = maey(1);end
+        maex = 0;
+        maey = 0;
+    end
+    if length(maex)>1 
+        maex = maex(1); 
+        maey = maey(1);
+    end
     newa(:,po) = newa(:,po) - maex;
-    maex = 0*maex;
+    maex = zeros(size(maex));
     
     [st,ist] = sort(newa);   % re-sort wrt time for cumulative count
     newa = newa(ist(:,3),:);
@@ -154,13 +159,13 @@ function musec()
     sel = 'in';
     
     function callbackfun_003(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         [xsecx xsecy,  inde] =mysect(tmp1,tmp2,ZG.primeCatalog.Depth,ZG.xsec_defaults.WidthKm,0,lat1,lon1,lat2,lon2);
     end
     
     function callbackfun_007(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         newa2=crosssel(newa);
         ZG.newt2=newa2;
@@ -171,10 +176,10 @@ function musec()
     
     
     function callbackfun_009(mysrc,myevt)
-
+        
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         delete(uic2);
-
+        
         delete(findobj(xsec_fig_h,'Type','axes'));
         nlammap;
     end

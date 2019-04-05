@@ -97,10 +97,10 @@ function plothist(obj, name, tabgrouptag)
 
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 2;
-        xsProps.DisplayName = xs.name;
-        xsProps.EdgeColor       = xs.color;
+        xsProps.DisplayName = xs.Name;
+        xsProps.EdgeColor       = xs.Color;
         xsProps.DisplayStyle = 'stair';
-        mytag               = ['Xsection hist ' xs.name];
+        mytag               = ['Xsection hist ' xs.Name];
         h = craw.add_series(xscat, mytag, xsProps);
     end
     

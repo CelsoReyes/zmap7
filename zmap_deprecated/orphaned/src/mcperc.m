@@ -11,12 +11,9 @@ dat = [];
 for i = magco0 - 0.9:0.1:magco0+1.5
     i
     l = newt2.Magnitude >= i - 0.0499; nu = length(newt2(l,6));
-    %[bv magco stan,  av] =  bvalca3(newt2(l,:),2,2);
     [mw bv2 stan2,  av] =  bmemag(newt2(l,:));
     synthb_aut
     res0 = res;
-    % bv = bv + stan ; synthb_aut; res1 = res;
-    % bv = bv - 2*stan ; synthb_aut; res2 = res;
 
     nc = 10.^(av - bv2*(i+0.05)) ;
     nc1 = 10.^(av - (bv2-stan/2)*(i+0.05)) ;

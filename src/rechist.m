@@ -47,8 +47,7 @@ function rechist()
     set(gca,'NextPlot','add')
     [m,n] = size(valueMap);
     reall = reshape(valueMap,1,m*n);
-    l = isnan(reall);
-    reall(l) = [];
+    reall(isnan(reall)) = [];
     %[n,x] =histogram(reall,min(reall):10:5*min(reall));
     [n,x] =hist(log10(reall),30);
     bar(x,n,'k'); %change the obsolet fillbar to bar

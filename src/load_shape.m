@@ -14,6 +14,7 @@ function obj = load_shape(filelocation)
     fileTypes = {'*.*', 'ALL files';...
         '*.mat', 'MAT-files (*.mat)';...
         '*.csv;*.txt;*.dat',  'other ascii file (*.csv, *.txt, *.dat)'};
+    FilterNames = ["ALL" "MAT" "ASCII"];
     if nargin==0
         % nothing provided, user selects the file
         [filename,pathname,filterindex]=uigetfile(fileTypes,...
@@ -38,55 +39,60 @@ function obj = load_shape(filelocation)
         return
     end
     
-    if filterindex == 1
+    filtername = FilterNames(filterindex);
+    
+    if filtername == "ALL"
         [~,~, ftype] = fileparts(filename);
         switch ftype
             case '.mat'
-                filterindex = 2;
+                filtername = "MAT";
             case {'.csv','.txt','.dat'}
-                filterindex = 3;
+                filtername = "ASCII";
             otherwise
-                filterindex = 1;
+                filtername = "ALL";
         end
     end
     
     lastdirectory = pathname;
     obj=[];
     
-    switch filterindex
-        case 2
+    switch filtername
+        case "MAT"
             % load from a .mat file
             tmp=load(fullfile(pathname,filename),'zmap_shape');
             obj=tmp.zmap_shape;
-        case {1, 3}
+        case {"ALL", "ASCII"}
             % load from a text file
             tb = readtable(fullfile(pathname, filename));
             
             vn =lower(tb.Properties.VariableNames);
             % lat
             if all(startsWith(tb.Properties.VariableNames,'Var'))
-                % no column headings were specifed. See if they can be figured out automatically?
-                if width(tb) == 2 && (any(abs(tb{:,1})>90) || any(abs(tb{:,2})>90))
-                    if any(abs(tb{:,1})>90)
-                        lonIdx=1; latIdx=2;
-                    elseif any(abs(tb{:,2})>90)
-                        lonIdx=2; latIdx=1;
-                    end
-                else
-                    % have user figure out which column is which
-                    
-                    [latIdx,ok] = listdlg('PromptString','Select Latitude (N-S)',...
+                
+                % have user figure out which column is which
+                quest = {'Which coordinate system is this?','  geodetic = lat & lon','  cartesian = x & y'};
+                coordinate_system = questdlg(quest','Coordinate System','geodetic','cartesian','geodetic');
+                switch coordinate_system
+                    case 'geodetic'
+                        yprompt = 'Select Latitude (N-S)';
+                        xprompt = 'Select Longitude (E-W)';
+                    otherwise
+                        yprompt = 'Select Y values';
+                        xprompt = 'Select X values';
+                end
+                
+                
+                [latIdx,ok] = listdlg('PromptString',yprompt,...
+                    'SelectionMode','single',...
+                    'ListString',vn_with_example(tb, tb.Properties.VariableNames));
+                if ~ok; return; end
+                if width(tb)~=2
+                    [lonIdx,ok] = listdlg('PromptString', xprompt,...
                         'SelectionMode','single',...
                         'ListString',vn_with_example(tb, tb.Properties.VariableNames));
                     if ~ok; return; end
-                    if width(tb)~=2
-                        [lonIdx,ok] = listdlg('PromptString','Select Longitude (E-W)',...
-                            'SelectionMode','single',...
-                            'ListString',vn_with_example(tb, tb.Properties.VariableNames));
-                        if ~ok; return; end
-                    else
-                        lonIdx = 2-latIdx+1;
-                    end
+                else
+                    lonIdx = 2-latIdx+1;
                 end
             else
                 
@@ -115,20 +121,28 @@ function obj = load_shape(filelocation)
             
             assert(~isempty(lonIdx) && ~isempty(latIdx), 'indices should have already been chosen by this point');
             
-            myLats = tb.(tb.Properties.VariableNames{latIdx});
-            myLons = tb.(tb.Properties.VariableNames{lonIdx});
+            myYs = tb.(tb.Properties.VariableNames{latIdx});
+            myXs = tb.(tb.Properties.VariableNames{lonIdx});
             
             radIdx = startsWith(vn,"radius");
-            if height(tb)==1 && ~isempty(radIdx)
+            if any(radIdx)
+                myunits = extractBetween(vn{radIdx},'[',']');
+            end
+            if ~exist('myunits','var') || isempty(myunits)
+                myunits = {'km'}; 
+            end
+            if height(tb)==1 && any(radIdx)
                 % we selected a circle
-                obj = ShapeCircle;
-                obj.Points=[myLons, myLats];
+                obj = ShapeCircle();
+                obj.Points = [myXs, myYs];
                 obj.Radius = tb{1,radIdx};
                 
             else
                 % we selected a polygon
-                obj = ShapePolygon('Polygon',[myLons, myLats]);
+                obj = ShapePolygon('Polygon',[myXs, myYs]);
             end
+            obj.RefEllipsoid.LengthUnit = validateLengthUnit(myunits{:});
+            
             
     end %switch
 end

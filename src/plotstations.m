@@ -90,7 +90,7 @@ function plotstations(ax, options)
     options = rmfield(options, {'StartTime','EndTime','Network', 'ShowNames'});
     
     set(gca,'NextPlot','add')
-    dx = abs(s1-s2)/130;
+    dx = abs(s1_east-s2_west)/130;
     pl = plot(ax, stas.Longitude,stas.Latitude,options.Marker);
     set(pl,'LineWidth',1,options);
     if showNames

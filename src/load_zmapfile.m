@@ -53,7 +53,7 @@ function [catalog, OK] = load_zmapfile(myfile)%
     % find and load the ZmapCatalog variable from the file
     S=whos('-file',myfile);
     S([S.bytes]==0) = [];
-    ZCats=S(startsWith({S.class},'ZmapCatalog'));
+    ZCats=S(startsWith({S.class},'Zmap') & contains({S.class},'Catalog'));
     if ~isempty(ZCats) && numel(ZCats) == 1
         catalog=loadCatalog(path1, file1, ZCats);
         OK=~isempty(catalog);
@@ -115,15 +115,8 @@ function   A=loadCatalog(path, file, S)
     
 
     clear tmp
-    if isnumeric(A) ||istable(A)
-        % convert to a ZmapCatalog
-        A=ZmapCatalog(A);
-        
-        if max(A.Magnitude) > 10
-            errdisp = ' Error -  Magnitude greater than 10 detected - please check magnitude!!';
-            warndlg(errdisp)
-        end 
-    end
+    A = ZmapCatalog.from(A);
+    
     if isempty(A.Name)
         A.Name = file;
     end

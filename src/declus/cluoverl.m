@@ -67,10 +67,10 @@ function cluoverl(var1)
 
 
         % find min and Maximum axes points
-        s1 = max(ZG.primeCatalog.Longitude);
-        s2 = min(ZG.primeCatalog.Longitude);
-        s3 = max(ZG.primeCatalog.Latitude);
-        s4 = min(ZG.primeCatalog.Latitude);
+        s1_east = max(ZG.primeCatalog.Longitude);
+        s2_west = min(ZG.primeCatalog.Longitude);
+        s3_north = max(ZG.primeCatalog.Latitude);
+        s4_south = min(ZG.primeCatalog.Latitude);
         ni = ZG.ni;
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
@@ -102,7 +102,7 @@ function cluoverl(var1)
             ZG.primeCatalog.Latitude(ZG.primeCatalog.Depth<=dep3&ZG.primeCatalog.Depth>dep2),'.r');
         set(dplo3_h,'MarkerSize',ZG.ms6,'Marker',ty)
 
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
         xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         if isempty(backequi)
@@ -143,17 +143,17 @@ function cluoverl(var1)
         cla
         set(gca,'visible','off')
         set(gca,'NextPlot','replace')
-        s1 = max(ZG.primeCatalog.Longitude);       %limits for area plot
-        s2 = min(ZG.primeCatalog.Longitude);
-        s3 = max(ZG.primeCatalog.Latitude);
-        s4 = min(ZG.primeCatalog.Latitude);
-        if s1==s2                %to avoid error when all earthquakes have
-            s1=s1+0.05;              %same longitude and/or latitude
-            s2=s2-0.05;
+        s1_east = max(ZG.primeCatalog.Longitude);       %limits for area plot
+        s2_west = min(ZG.primeCatalog.Longitude);
+        s3_north = max(ZG.primeCatalog.Latitude);
+        s4_south = min(ZG.primeCatalog.Latitude);
+        if s1_east==s2_west                %to avoid error when all earthquakes have
+            s1_east=s1_east+0.05;              %same longitude and/or latitude
+            s2_west=s2_west-0.05;
         end
-        if s3==s4
-            s3=s3+0.05;
-            s4=s4-0.05;
+        if s3_north==s4_south
+            s3_north=s3_north+0.05;
+            s4_south=s4_south-0.05;
         end
         orient landscape
         rect = [0.15,  0.12, 0.75, 0.75];
@@ -200,7 +200,7 @@ function cluoverl(var1)
         end
         set(after_button,'value',1);
         set(fore_button,'value',1);
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
         xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
         strib = [  ' Map of   '  file1 ' #' num2str(new(10))];

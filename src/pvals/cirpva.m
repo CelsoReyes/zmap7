@@ -41,12 +41,12 @@ if met == 'ni'
     messtext = ['Radius of selected Circle:' num2str(maxrad)  ' km' ];
     disp(messtext)
 elseif  met == 'ra'
-    ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, ra);
+    ZG.newt2 = ZG.primeCatalog.selectRadius(ya0, xa0, ra,'kilometer');
     messtext = ['Number of selected events: ' num2str(ZG.newt2.Count)  ];
     disp(messtext)
 elseif met == 'ti'
     global t1 t2 t3 t4
-    ZG.newt2 = ZG.primeCatalog;
+    ZG.newt2 = copy(ZG.primeCatalog);
     lt =  ZG.newt2.Date >= t1 &  ZG.newt2.Date <t2 ;
     bdiff(ZG.newt2.subset(lt));
     ZG.hold_state=true;

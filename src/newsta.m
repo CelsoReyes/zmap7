@@ -387,15 +387,18 @@ function newsta(sta, catalog)
         pq = -log10(1-Pbeta); l = isinf(pq);pq(l) = 18 ;
         pl1 = plot(xt,pq,'color',[0.0 0.5 0.9]);
         set(gca,'NextPlot','add')
-        l = pq < 1.3; pq(l) = nan;
+        pq(pq < 1.3) = nan;
         pl3 = plot(xt,pq,'b','Linewidth',2);
         
-        pq = -log10(Pbeta);l = isinf(pq);pq(l) = 18 ;
+        pq = -log10(Pbeta);
+        pq(isinf(pq)) = 18 ;
         pl2 = plot(xt,pq,'color',[0.8 0.6 0.8]);
-        l = pq < 1.3; pq(l) = nan;
+        pq(pq < 1.3) = nan;
         pl4 = plot(xt,pq,'r','Linewidth',2);
         
-        maxd = [get(pl1,'Ydata') get(pl2,'ydata') ]; maxd(isinf(maxd)) = []; maxd = max(maxd);
+        maxd = [get(pl1,'YData') get(pl2,'YData') ]; 
+        maxd(isinf(maxd)) = []; 
+        maxd = max(maxd);
         if maxd < 5 ; maxd = 5; end
         if isnan(maxd) == 1 ; maxd = 10; end
         

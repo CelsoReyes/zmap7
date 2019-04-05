@@ -52,13 +52,13 @@ function slicemapz()
             for i = 1:length(l)
                 s0 = squeeze(zv3(l(i),l2(i),1:ni));
                 cumu = histogram(ZG.primeCatalog.Date(s0),(t0b:(teb-t0b)/99:teb));
-                s1 = cumu(tiz:tiz+lta_win);
-                s2 = cumu; s2(tiz:tiz+lta_win) = [];
-                var1= cov(s1);
-                var2= cov(s2);
-                me1= mean(s1);
-               me_s2= mean(s2);
-                zvg(l(i),l2(i),j) = -(me1 -me_s2)/(sqrt(var1/(length(s1))+var2/length(s2)));
+                s1_east = cumu(tiz:tiz+lta_win);
+                s2_west = cumu; s2_west(tiz:tiz+lta_win) = [];
+                var1= cov(s1_east);
+                var2= cov(s2_west);
+                me1= mean(s1_east);
+               me_s2= mean(s2_west);
+                zvg(l(i),l2(i),j) = -(me1 -me_s2)/(sqrt(var1/(length(s1_east))+var2/length(s2_west)));
             end % for i
         end % for j
         
@@ -267,7 +267,7 @@ function slicemapz()
         set(gca,'NextPlot','add')
         x = mean(gx); y = mean(gy) ; z = ds;
         
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         ZG.newt2 = ZG.newt2(1:ni,:);
@@ -319,7 +319,7 @@ function slicemapz()
         axes(ax3)
         set(gca,'NextPlot','add')
         x = mean(gx)+std(gx)/2; y = mean(gy)+std(gy)/2 ; z = ds;
-        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z); %km
+        l=ZG.primeCatalog.hypocentralDistanceTo(x,y,z,'kilometer'); %km
         [s,is] = sort(l);
         ZG.newt2 = a(is(:,1),:) ;       % re-orders matrix to agree row-wise
         ZG.newt2 = ZG.newt2(1:ni,:);
@@ -396,13 +396,13 @@ function slicemapz()
                 for i = 1:length(l)
                     s0 = squeeze(zv3(l(i),l2(i),1:ni));
                     cumu = histogram(ZG.primeCatalog.Date(s0),(t0b:(teb-t0b)/99:teb));
-                    s1 = cumu(tiz:tiz+lta_win);
-                    s2 = cumu; s2(tiz:tiz+lta_win) = [];
-                    var1= cov(s1);
-                    var2= cov(s2);
-                    me1= mean(s1);
-                   me_s2= mean(s2);
-                    zvg(l(i),l2(i),j) = -(me1 -me_s2)/(sqrt(var1/(length(s1))+var2/length(s2)));
+                    s1_east = cumu(tiz:tiz+lta_win);
+                    s2_west = cumu; s2_west(tiz:tiz+lta_win) = [];
+                    var1= cov(s1_east);
+                    var2= cov(s2_west);
+                    me1= mean(s1_east);
+                   me_s2= mean(s2_west);
+                    zvg(l(i),l2(i),j) = -(me1 -me_s2)/(sqrt(var1/(length(s1_east))+var2/length(s2_west)));
                 end % for i
             end % for j
             
@@ -584,13 +584,13 @@ function slicemapz()
             s0 = ceil(rand(ni,1)*(ZG.primeCatalog.Count-1));
             tizr = ceil(  rand(1,1)*(100 -lta_win));
             cumu = histogram(ZG.primeCatalog.Date(s0),(t0b:(teb-t0b)/99:teb));
-            s1 = cumu(tizr:tizr+lta_win);
-            s2 = cumu; s2(tizr:tizr+lta_win) = [];
-            var1= cov(s1);
-            var2= cov(s2);
-            me1= mean(s1);
-           me_s2= mean(s2);
-            as(i) = (me1 -me_s2)/(sqrt(var1/(length(s1))+var2/length(s2)));
+            s1_east = cumu(tizr:tizr+lta_win);
+            s2_west = cumu; s2_west(tizr:tizr+lta_win) = [];
+            var1= cov(s1_east);
+            var2= cov(s2_west);
+            me1= mean(s1_east);
+           me_s2= mean(s2_west);
+            as(i) = (me1 -me_s2)/(sqrt(var1/(length(s1_east))+var2/length(s2_west)));
         end % for i
         
         mu = mean(as);

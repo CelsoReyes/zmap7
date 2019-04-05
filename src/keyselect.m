@@ -13,7 +13,7 @@ function keyselect()
     ZG.newt2 = ZmapCatalog();   % reset catalogue variables
     %a=storedcat;              % uses the catalogue with the pre-selected main
     % general parameters
-    ZG.newcat = ZG.primeCatalog;
+    ZG.newcat = copy(ZG.primeCatalog);
     
     xcordinate=0;
     ycordinate=0;

@@ -124,9 +124,7 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
 
     % make the scaling for the recurrence time map reasonable
     if lab1(1) =='T'
-        l = isnan(valueMap);
-        re = valueMap;
-        re(l) = [];
+        re = valueMap(~isnan(valueMap));
         caxis([min(re) 5*min(re)]);
     end
     
@@ -138,14 +136,15 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
         'Color','r','FontWeight','bold')
     
-    xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
-    ylabel('Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+    globalcatalog=ZG.primeCatalog;
+    xlabel(globalcatalog.XLabelWithUnits,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
+    ylabel(globalcatalog.YLabelWithUnits,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
     
     % plot overlay
     %
     set(gca,'NextPlot','add')
     zmap_update_displays();
-    ploeq = plot(ZG.primeCatalog.Longitude,ZG.primeCatalog.Latitude,'k.');
+    ploeq = plot(globalcatalog.X,globalcatalog.Y,'k.');
     set(ploeq,'Tag','eq_plot','MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     

@@ -18,7 +18,7 @@ function cummomentplot(obj,tabgrouptag)
         ax.UserData     = CumMomentAnalysisWindow(ax);
         grid(ax, 'on');
     end
-    craw = ax.UserData;
+    analy_win = ax.UserData;
     
     
     %% plot the main series
@@ -28,7 +28,7 @@ function cummomentplot(obj,tabgrouptag)
     lineProps.MinBigMag     = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     lineProps.DisplayName   = obj.catalog.Name;
     
-    craw.add_series(obj.catalog, 'catalog', lineProps);
+    analy_win.add_series(obj.catalog, 'catalog', lineProps);
     
     %% plot & synchronize cross sections
     
@@ -40,18 +40,18 @@ function cummomentplot(obj,tabgrouptag)
      existing_xs = obj.XSectionTitles;
         % delete cross sections that shouldn't exist
         todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-        craw.remove_series(todel);
+        analy_win.remove_series(todel);
     end
     %% if necessary, add context menu to figure
-    cxs=findobj(obj.fig,'Tag',Tags.xs);
+    cxs = findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
-        cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
-        uimenu(cxs,'Label','Open in new window',MenuSelectedField(),@cb_xstimeplot);
+        cxs = uicontextmenu(obj.fig,'tag',Tags.xs);
+        uimenu(cxs,'Label','Open in new window', MenuSelectedField(), @cb_xstimeplot);
     end
     
     obj.plot_xsections(@xsplotter, 'Xsection cummomplot');
     
-    ax.YLabel.UIContextMenu=obj.sharedContextMenus.LogLinearYScale;
+    ax.YLabel.UIContextMenu = obj.sharedContextMenus.LogLinearYScale;
     
     %% add context menu to the axes
     cbg=findobj(obj.fig,'Tag',Tags.bg);
@@ -80,10 +80,10 @@ function cummomentplot(obj,tabgrouptag)
     
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
-        mytag               = ['Xsection cummomplot ' xs.name];
-        h = craw.add_series(xscat, mytag, xsProps);
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
+        mytag               = ['Xsection cummomplot ' xs.Name];
+        h = analy_win.add_series(xscat, mytag, xsProps);
        
     end
     

@@ -1,4 +1,4 @@
-function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin)
+function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin) %shi-bolt
     % Calculate Mc using the function b-value vs. cut-off-magnitude
     % [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, fBinning, nWindowSize, nMinNumberEvents)
     %----------------------------------------------------------------------------------------------------
@@ -24,50 +24,66 @@ function [fMc, fBvalue, fBStd, fAvalue] = calc_Mcdueb(magnitudes, varargin)
     % Modified CGReyes 2018
     
     % Check input
-    p=inputParser();
+    p = inputParser();
     p.addRequired('magnitudes');
-    p.addOptional('binInterval',0.1);
-    p.addOptional('windowSize',5);
-    p.addOptional('minNumberEvents',50);
+    p.addOptional('binInterval'     , 0.1);
+    p.addOptional('windowSize'      , 5);
+    p.addOptional('minNumberEvents' , 50);
     p.parse(magnitudes, varargin{:});
     
-    magnitudes =        p.Results.magnitudes;
-    fBinning =          p.Results.binInterval;
-    nWindowSize =       p.Results.windowSize;
-    nMinNumberEvents =  p.Results.minNumberEvents;
+    magnitudes       = p.Results.magnitudes;
+    fBinning         = p.Results.binInterval;
+    nWindowSize      = p.Results.windowSize;
+    nMinNumberEvents = p.Results.minNumberEvents;
     
     
-    %column indexes for use with mBvalue
-    BVAL = 1; BSTD = 2; AVAL = 3; MAG = 4; %unused is COUNT = 5;
-   
+    if isrow(magnitudes)
+        magnitudes=magnitudes';
+    end
     
-    % Calculate b-with magnitude
-    [mBvalue] = calc_bwithmag(magnitudes, fBinning, nMinNumberEvents);
     
-    % Remove NANs
-    mBvalue = mBvalue( ~isnan(mBvalue(:,BVAL)) , : );
+    %TODO: vectorize properly.
+    for j=1:size(magnitudes,2)
+        [fMc(j), fBvalue(j), fBStd(j), fAvalue(j)] = do_calculation(j);
+    end
     
-    % Use Shi & Bolt uncertainty to decide for Mc
-    bAverages = movmean(mBvalue(:,BVAL) , nWindowSize, 'Endpoints','discard');
-    calcRange = 1:length(bAverages);
-    mBvalue = mBvalue(calcRange, 1:4);
-    
-    theseBvals = mBvalue(:, BVAL);
-    theseBStds = mBvalue(:, BSTD);
-    
-    % Criterion: If fBave is in in between the error estimate of the b-value of the first cut-off magnitude
-    % take it as guess
-    goodSteps = abs(bAverages - theseBvals) <= theseBStds;
-    latest_good = find(goodSteps,1,'last');
-    if ~isempty(latest_good)
-        fMc     = mBvalue( latest_good, MAG);
-        fBvalue = mBvalue( latest_good, BVAL);
-        fAvalue = mBvalue( latest_good, AVAL);
-        fBStd   = mBvalue( latest_good, BSTD);
-    else
-        fMc     = nan;
-        fBvalue = nan;
-        fAvalue = nan;
-        fBStd   = nan;
+    function [fMc, fBvalue, fBStd, fAvalue] = do_calculation(idx)
+        these_mags = magnitudes(~isnan(magnitudes(:,idx)));
+        
+        % Calculate b-with magnitude
+        
+        [bv, bstd, aval, mags] = calc_bwithmag(these_mags, fBinning, nMinNumberEvents);
+        
+        to_remove = isnan(bv);
+        bv(to_remove) = [];
+        bstd(to_remove) = [];
+        aval(to_remove) = [];
+        mags(to_remove) = [];
+        
+        % Remove NANs
+        
+        % Use Shi & Bolt uncertainty to decide for Mc
+        bAverages = movmean(bv , nWindowSize, 'Endpoints', 'discard');
+        calcRange = 1:length(bAverages);
+        
+        theseBvals = bv(calcRange);
+        theseBStds = bstd(calcRange);
+        
+        % Criterion: If fBave is in in between the error estimate of the b-value of the first cut-off magnitude
+        % take it as guess
+        goodSteps = abs(bAverages - theseBvals) <= theseBStds;
+        latest_good = find(goodSteps,1,'last');
+        
+        if ~isempty(latest_good)
+            fMc     = mags(latest_good);
+            fBvalue = bv(latest_good);
+            fAvalue = aval(latest_good);
+            fBStd   = bstd(latest_good);
+        else
+            fMc     = nan;
+            fBvalue = nan;
+            fAvalue = nan;
+            fBStd   = nan;
+        end
     end
 end

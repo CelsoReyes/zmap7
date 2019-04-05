@@ -1,113 +1,129 @@
-function bwithde2(catalog) 
+function bwithde2(catalog)
     % BWITHDE2 plot b-values with depth
-    % BWITHDE2(catalog_name);
+    % BWITHDE2(catalog);
     
     % turned into function by Celso G Reyes 2017
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    report_this_filefun();
-    myFigName='b-value with depth';
+    ZG = ZmapGlobal.Data; % used by get_zmap_globals
     
-    BV = [];
     BV3 = [];
-    mag = [];
-    me = [];
-    av2=[];
     Nmin = 50;
-    sdlg.prompt='Number of events in each window';sdlg.value=150;
-    sdlg(2).prompt='Overlap factor';sdlg(2).value=5;
+    zdlg = ZmapDialog();
+    nEventsPerWindow = 150;
+    overlap = 5;
     
-    [~,~, ni, ofac] = smart_inputdlg('b with depth input parameters',sdlg);
+    minMag = min(catalog.Magnitude);
     
-    ButtonName=questdlg('Mc determination?', ...
-        ' Question', ...
-        'Automatic','Fixed Mc=Mmin','Automatic');
+    zdlg.AddEdit('nEventsPerWindow', 'Number of events in each window', nEventsPerWindow, 'tooltip');
+    zdlg.AddEdit('overlap', 'Overlap Factor (advances 1/overlap)', overlap, 'tooltip');
+    zdlg.AddPopup('mcCalculator', 'Determine Mc using:', {'Automatic','Fixed Mc=Mmin'},1, 'tooltip',...
+        {@auto_mc, @(~)minMag });
     
-    newt1=catalog;
-    newt1.sort('Depth');
+    [res, okPressed] = zdlg.Create('Name','B-value with depth parameters');
+    if ~okPressed
+        return
+    end
     watchon;
     
-    for t = 1:ni/ofac:newt1.Count-ni
+    [allDepths, I] = sort(catalog.Depth);
+    allMagnitudes = catalog.Magnitude(I);
+    
+    nEventsPerWindow = res.nEventsPerWindow;
+    overlap = res.overlap;
+    
+    
+    stepSize = nEventsPerWindow / overlap;
+    stepSize = max(stepSize, 1);
+    startIdxs = 1 : stepSize : numel(allDepths) - nEventsPerWindow;
+    endIdxs = startIdxs + nEventsPerWindow - 1;
+    nSteps = numel(startIdxs);
+    
+    
+    for t = 1 : nSteps
         % calculate b-value based an weighted LS
-        b = newt1.subset(t:t+ni);
+        startIdx = startIdxs(t);
+        endIdx   = endIdxs(t);
+        magnitudes = allMagnitudes(startIdx : endIdx);
         
-        switch ButtonName
-            case 'Automatic'
-                [Mc, Mc90, Mc95, magco]=mcperc_ca3(b.Magnitude);
-                if ~isnan(Mc95)
-                    magco = Mc95;
-                elseif ~isnan(Mc90)
-                    magco = Mc90;
-                else
-                    [bv, magco, stan, av] =  bvalca3(b.Magnitude, McAutoEstimate.auto);
-                end
-            case 'Fixed Mc=Mmin'
-                magco = min(newt1.Magnitude);
-        end
+        magco = res.mcCalculator(magnitudes);
         
-        l = b.Magnitude >= magco-0.05;
+        l = magnitudes >= magco - 0.05;
         if sum(l) >= Nmin
-            [bv, stan, av] = calc_bmemag(b.Magnitude(l), 0.1);
+            [bv, stan, ~] = calc_bmemag(magnitudes(l), 0.1);
         else
-            [bv, bv2, magco, av, av2] = deal(nan);
+            [bv, stan] = deal(nan);
         end
-        BV = [BV ; bv newt1.Depth(t) ; bv newt1.Depth(t+ni) ; inf inf];
-        BV3 = [BV3 ; bv newt1.Depth(t+round(ni/2)) stan ];
+        minDepth = allDepths(startIdx);
+        maxDepth = allDepths(endIdx);
+        medianDepth = allDepths(startIdx + round(nEventsPerWindow/2));
+        tripleidx = t.*3 - 2;
+        bvalueTriplet(tripleidx : tripleidx+2, 1)     = [bv; bv; inf];
+        mimaDepTriplet(tripleidx : tripleidx+2, 1) = [minDepth; maxDepth; inf];
+        
+        BV3(t,1:3) = [bv, medianDepth, stan];
     end
     
     watchoff
     
-    % Find out if figure already exists
-    %
-    bdep=findobj('Type','Figure','-and','Name',myFigName);
+    plot_it(bvalueTriplet, mimaDepTriplet, BV3(:,1), BV3(:,2), BV3(:,3))
+    return
     
-    % Set up the Cumulative Number window
     
-    if isempty(bdep)
-        bdep = figure_w_normalized_uicontrolunits( ...
-            'Name',myFigName,...
-            'NumberTitle','off', ...
-            'NextPlot','add', ...
-            'backingstore','on',...
-            'Visible','on', ...
-            'Position',position_in_current_monitor(ZG.map_len(1)-50, ZG.map_len(2)-20));
+    function plot_it(bvTriplet, minmaxDepthTriplet, bv, medianDepth, stan)
+        myFigName='b-value with depth';
+        errorColor = [0.5, 0.5, 0.5];
+        % Find out if figure already exists
+        %
+        bdep = findobj('Type','Figure','-and','Name', myFigName);
         
-   %     uicontrol('Units','normal',...
-   %         'Position',[.0 .85 .08 .06],'String','Info ',...
-   %        'callback',@(~,~)infoz(1));
+        % Set up the Cumulative Number window
+        
+        if isempty(bdep)
+            bdep = figure('Name'  , myFigName,...
+                'NumberTitle'   , 'off', ...
+                'NextPlot'      , 'add', ...
+                'backingstore'  , 'on',...
+                'Visible'       , 'on', ...
+                'Position'      , position_in_current_monitor(ZG.map_len(1)-50, ZG.map_len(2)-20));
+        else
+            figure(bdep);
+            clf(bdep);
+        end
+        orient tall
+        rect    = [0.25, 0.15, 0.5, 0.75];
+        ax      = axes(bdep, 'position',rect);
+        ple     = errorbar(ax, medianDepth, bv, stan, stan, 'k');
+        ple(1).Color = errorColor;
+        
+        ax.NextPlot = 'add';
+        plot(ax, minmaxDepthTriplet, bvTriplet, 'color', errorColor);
+        plot(ax, medianDepth, bv, 'sk', 'LineWidth', 1.0, 'MarkerSize', 4,...
+            'MarkerFaceColor', 'w', 'MarkerEdgeColor', 'k', 'Marker','s');
+        
+        set(ax, 'box','on', 'SortMethod', 'childorder',...
+            'TickDir', 'out', 'Ticklength', [ 0.02, 0.02],...
+            'FontWeight', 'bold', 'FontSize', ZmapGlobal.Data.fontsz.m,...
+            'Linewidth', 1)
+        strib = sprintf('%s, ni = %g, Mmin = %g', catalog.Name, nEventsPerWindow, minMag);
+        ylabel(ax, 'b-value')
+        xlabel(ax, 'Depth [km]')
+        title(ax, strib, 'FontWeight', 'bold', ...
+            'FontSize', ZmapGlobal.Data.fontsz.m,...
+            'Color', 'k',...
+            'Interpreter', 'none')
+        
+        view(ax, [90 90])
     end
     
-    figure(bdep);
-    delete(findobj(bdep,'Type','axes'));
-    axis off
-    set(gca,'NextPlot','add')
-    orient tall
-    rect = [0.25 0.15 0.5 0.75];
-    axes('position',rect);
-    ple = errorbar(BV3(:,2),BV3(:,1),BV3(:,3),BV3(:,3),'k');
-    set(ple(1),'color',[0.5 0.5 0.5]);
-    
-    set(gca,'NextPlot','add')
-    pl = plot(BV(:,2),BV(:,1),'color',[0.5 0.5 0.5]);
-    pl = plot(BV3(:,2),BV3(:,1),'sk');
-    
-    set(pl,'LineWidth',1.0,'MarkerSize',4,...
-        'MarkerFaceColor','w','MarkerEdgeColor','k','Marker','s');
-    
-    set(gca,'box','on',...
-        'SortMethod','childorder','TickDir','out','FontWeight',...
-        'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1,'Ticklength',[ 0.02 0.02])
-    
-    bax = gca;
-    strib = [catalog.Name ', ni = ' num2str(ni), ', Mmin = ' num2str(min(catalog.Magnitude)) ];
-    ylabel('b-value')
-    xlabel('Depth [km]')
-    title(strib,'FontWeight','bold',...
-        'FontSize',ZmapGlobal.Data.fontsz.m,...
-        'Color','k',...
-        'Interpreter','none')
-    
-    xl = get(gca,'Xlim');
-    view([90 90])
-    
+end
+
+function [magco] = auto_mc(magnitudes)
+    [~, Mc90, Mc95, ~] = mcperc_ca3(magnitudes);
+    if ~isnan(Mc95)
+        magco = Mc95;
+    elseif ~isnan(Mc90)
+        magco = Mc90;
+    else
+        [magco] =  bvalca3(magnitudes, McAutoEstimate.auto);
+    end
 end

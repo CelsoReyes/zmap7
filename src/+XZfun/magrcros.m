@@ -26,7 +26,7 @@ classdef magrcros < ZmapVGridFunction
             'nAfterCutoff',         '','';...
             'nInWindow',            '','';...
             'nNotInWindow',         '','';...
-            'dist_along_strike',    'Distance along strike','km'...
+            'DistAlongStrike',    'Distance along strike','km'...
             }, 'VariableNames', {'Names','Descriptions','Units'});
         
         CalcFields      = {...
@@ -183,12 +183,12 @@ classdef magrcros < ZmapVGridFunction
             obj.Result.cutoff = obj.cutoff;
             obj.Result.bin_dur = obj.bin_dur;
             
-            function out=calc_probability(old)
+            function out = calc_probability(old)
                 %calculate probabliity, where old is one of the zmaps.
                 % salvaged from vi_cucro
                 valueMap = old;
                 l = valueMap < 2.57;
-                valueMap(l) = ones(1,length(find(l)))*2.65;
+                valueMap(l) = 2.65;
                 pr = 0.0024 + 0.03*(valueMap - 2.57).^2;
                 pr = (1-1./(exp(pr)));
                 out = pr;
@@ -284,10 +284,12 @@ classdef magrcros < ZmapVGridFunction
 
     end % methods
     methods(Static)
-        function h=AddMenuItem(parent,zap_Fcn) %xsec_zap
+        function h = AddMenuItem(parent, zapFcn, varargin) %xsec_zap
             % create a menu item
-            label='Z-value section map';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.magrcros(zap_Fcn()));
+            label = 'Z-value section map';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.magrcros(zapFcn()),...
+                varargin{:});
         end
             
         %{

@@ -9,11 +9,11 @@ switch(plt)
     case 'lo30'
 
         l  = get(h1,'XLim');
-        s1 = l(2); s2 = l(1);
+        s1_east = l(2); s2_west = l(1);
         l  = get(h1,'YLim');
-        s3 = l(2); s4 = l(1);
+        s3_north = l(2); s4_south = l(1);
         fac = 1;
-        if abs(s4-s3) > 10 | abs(s1-s2) > 10 
+        if abs(s4_south-s3_north) > 10 | abs(s1_east-s2_west) > 10 
             def = {'3'};
             ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
             l = ni2{:};
@@ -23,15 +23,15 @@ switch(plt)
         do = ['cd dem/gtopo30']; eval(do);
 
         try
-            [tmap, tmapleg] = gtopo30('test',fac,[s4 s3],[ s2 s1]);
+            [tmap, tmapleg] = gtopo30('test',fac,[s4_south s3_north],[ s2_west s1_east]);
         catch ME
             handle_error(ME,@do_nothing);
             plt = 'err2';
             pltopo
         end
 
-        my = s4:1/tmapleg(1):s3+0.1;
-        mx = s2:1/tmapleg(1):s1+0.1;
+        my = s4_south:1/tmapleg(1):s3_north+0.1;
+        mx = s2_west:1/tmapleg(1):s1_east+0.1;
         [m,n] = size(tmap);
         toflag = TopoToFlag.five;
         plt = 'ploM'; pltopo;
@@ -39,11 +39,11 @@ switch(plt)
     case 'lo5'
 
         l  = get(h1,'XLim');
-        s1 = l(2); s2 = l(1);
+        s1_east = l(2); s2_west = l(1);
         l  = get(h1,'YLim');
-        s3 = l(2); s4 = l(1);
+        s3_north = l(2); s4_south = l(1);
         fac = 1;
-        if abs(s4-s3) > 10 | abs(s1-s2) > 10 
+        if abs(s4_south-s3_north) > 10 | abs(s1_east-s2_west) > 10 
             def = {'3'};
             ni2 = inputdlg('Decimation factor for DEM data?','Input',1,def);
             l = ni2{:};
@@ -55,7 +55,7 @@ switch(plt)
         else
 
             try
-                [tmap, tmapleg] = tbase(fac,[s4 s3],[ s2 s1]);
+                [tmap, tmapleg] = tbase(fac,[s4_south s3_north],[ s2_west s1_east]);
             catch ME
                 handle_error(ME,@do_nothing);
                 plt = 'err2';
@@ -63,8 +63,8 @@ switch(plt)
             end
         end
 
-        my = s4:1/tmapleg(1):s3+0.1;
-        mx = s2:1/tmapleg(1):s1+0.1;
+        my = s4_south:1/tmapleg(1):s3_north+0.1;
+        mx = s2_west:1/tmapleg(1):s1_east+0.1;
         [m,n] = size(tmap);
         toflag = TopoToFlag.five;
         plt = 'plo'; pltopo;
@@ -73,10 +73,10 @@ switch(plt)
     case 'lo2'
 
         l  = get(h1,'XLim');
-        s1 = l(2); s2 = l(1);
+        s1_east = l(2); s2_west = l(1);
         l  = get(h1,'YLim');
-        s3 = l(2); s4 = l(1);
-        region = [s4 s3 s2 s1];
+        s3_north = l(2); s4_south = l(1);
+        region = [s4_south s3_north s2_west s1_east];
 
         do = ['  [tmap,vlat,vlon] = mygrid_sand(region); '];
         toflag = TopoToFlag.two;
@@ -90,10 +90,10 @@ switch(plt)
     case 'yourdem'
 
         l  = get(h1,'XLim');
-        s1 = l(2); s2 = l(1);
+        s1_east = l(2); s2_west = l(1);
         l  = get(h1,'YLim');
-        s3 = l(2); s4 = l(1);
-        region = [s4 s3 s2 s1];
+        s3_north = l(2); s4_south = l(1);
+        region = [s4_south s3_north s2_west s1_east];
 
         % is mydem defined?
         if ~exist('mydem','var');
@@ -106,10 +106,10 @@ switch(plt)
                 return ;
             end
         end
-        l2 = min(find(mx >= s2));
-        l1 = max(find(mx <= s1));
-        l3 = max(find(my <= s3));
-        l4 = min(find(my >= s4));
+        l2 = min(find(mx >= s2_west));
+        l1 = max(find(mx <= s1_east));
+        l3 = max(find(my <= s3_north));
+        l4 = min(find(my >= s4_south));
 
         toflag = TopoToFlag.one;
 
@@ -161,7 +161,7 @@ switch(plt)
 
         hold on; axis off
         axesm('MapProjection','eqaconic','MapParallels',[],...
-            'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+            'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
         surflm(lat,lon,tmap); colormap(bone)
         %surfm(lat,lon,tmap,tmap); demcmap(tmap)
         set(gca,'DataAspectRatio',[1 1 .5])
@@ -219,7 +219,7 @@ switch(plt)
 
         set(gca,'FontSize',12,'FontWeight','bold','TickDir','out','Color',[0 0 0.5])
         set(gcf,'Color','k','InvertHardcopy','off')
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
 
 
     case 'err'  % Tbase data not found
@@ -251,7 +251,7 @@ switch(plt)
         end %swith butt
 
     case 'err2'  % Tbase data not found
-        [file1,path1] = uigetfile([ '*.img'],' Please define the path to the file topo_6.2.img (2 min DEM)');
+        [file1,path1] = uigetfile([ '*.img'],' Please define the path to the file topo_8.2.img (2 min DEM)');
 
         if length(path1) < 2
             zmap_message_center.clear_message();;done

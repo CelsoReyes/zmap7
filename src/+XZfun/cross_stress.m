@@ -71,10 +71,12 @@ classdef cross_stress < ZmapVGridFunction
     end
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='stress map [xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.cross_stress(zapFcn()));
+            label = 'stress map [xsec]';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XZfun.cross_stress(zapFcn()),...
+                varargin{:});
         end
     end
 end

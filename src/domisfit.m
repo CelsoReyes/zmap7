@@ -17,8 +17,7 @@ function domisfit(catalog,sig,plu,az,phi,R)
     
     % prepare the focal; mechnism in Gephard format ...
     tmp = [catalog(:,10:12) ];
-    l = tmp(:,2) >89.999;
-    tmp(l,2) = tmp(l,2)*0+89.;
+    tmp(tmp(:,2) >89.999,2) = 89.;
     
     try
         save data.inp tmp -ascii
@@ -635,7 +634,7 @@ function plotmima(var1, mi)
     end
     
     set(gca,'NextPlot','add')
-    %axis([ s2 s1 s4 s3])
+    %axis([ s2_west s1_east s4_south s3_north])
     %zmap_update_displays();
     
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
@@ -1098,7 +1097,7 @@ function mifigrid(var1,mi)
         pco1 = pcolor(xvect,yvect,normlap2);
         shading interp
         colormap(jet)
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
         set(gca,'NextPlot','add')
         colorbar
         overlay
@@ -1114,7 +1113,7 @@ function mifigrid(var1,mi)
         axes('position',rect)
         set(gca,'NextPlot','add')
         pco1 = pcolor(xvect,yvect,normlap3);
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
         set(gca,'NextPlot','add')
         shading interp
         colormap(jet)
@@ -1454,7 +1453,7 @@ function mificrgr( mi, inde)
         pco1 = pcolor(xvect,yvect,normlap2);
         shading interp
         colormap(jet)
-        %axis([ s2 s1 s4 s3])
+        %axis([ s2_west s1_east s4_south s3_north])
         axis([ min(gx) max(gx) min(gy) max(gy)])
         axis image
         

@@ -4,7 +4,7 @@ classdef ShapeCircle < ShapeGeneral
     % see also ShapeGeneral, ShapePolygon
     
     properties (SetObservable = true, AbortSet=true)
-        Radius (1,1) double = 5 % active radius km
+        Radius (1,1) double = 5 % active radius in units defined by the RefEllipsoid
     end
     
     
@@ -19,7 +19,10 @@ classdef ShapeCircle < ShapeGeneral
             
             % UNASSIGNED: clear shape
             
-            obj@ShapeGeneral;
+            obj@ShapeGeneral();
+            if ~isempty(varargin)
+               dosomething
+            end
             
             report_this_filefun();
             
@@ -32,13 +35,14 @@ classdef ShapeCircle < ShapeGeneral
             end
             obj.AllowVertexEditing = false;
             addlistener(obj, 'Radius', 'PostSet', @obj.notifyShapeChange);
-            if nargin==0
+            if numel(varargin)==0
                 do_nothing;
             elseif strcmpi(varargin{1},'dlg')
                 stashedshape = ShapeGeneral.ShapeStash;
-                sdlg.prompt='Radius (km):'; sdlg.value=ra;
-                sdlg(2).prompt='Center X (Lon):'; sdlg(2).value=stashedshape.X0;
-                sdlg(3).prompt='Center Y (Lat):'; sdlg(3).value=stashedshape.Y0;
+                sdlg.prompt = ['Choose Radius [',obj.RefEllipsoid.LengthUnit,']:'];
+                sdlg.value = ra;
+                sdlg(2).prompt = 'Center X :'; sdlg(2).value=stashedshape.X0;
+                sdlg(3).prompt = 'Center Y :'; sdlg(3).value=stashedshape.Y0;
                 [~,cancelled,obj.Radius,obj.Points(1),obj.Points(2)]=smart_inputdlg('Define Circle',sdlg);
                 if cancelled
                     beep
@@ -46,7 +50,7 @@ classdef ShapeCircle < ShapeGeneral
                     return
                 end
             else
-                oo=ShapeCircle.selectUsingMouse(gca);
+                oo=ShapeCircle.selectUsingMouse(gca, obj.RefEllipsoid);
                 if ~isempty(oo)
                     obj=oo;
                 else
@@ -55,10 +59,16 @@ classdef ShapeCircle < ShapeGeneral
             end
         end
         
-        function val=Outline(obj,col)
-            % TODO: look into using scircle1 or scircle2
-            [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
-            val=[lon, lat];
+        function val=Outline(obj, col)
+            if iscartesian(obj.RefEllipsoid)
+                pts = exp(1i*pi*linspace(0,2*pi,3600)') .* obj.Radius;
+                x = real(pts)+ obj.X0;
+                y = imag(pts) + obj.Y0;
+                val = [x,y];
+            else
+                [lat,lon]=reckon(obj.Y0,obj.X0,obj.Radius,(0:.1:360)',obj.RefEllipsoid);
+                val=[lon, lat];
+            end
             if exist('col','var')
                 val=val(:,col);
             end
@@ -81,8 +91,9 @@ classdef ShapeCircle < ShapeGeneral
             isN=obj.Y0>=0; NS=cardinalDirs(isN+1);
             
             isE=obj.X0>=0; EW=cardinalDirs(isE+3);
-            s = sprintf('Circle with R:%s km, centered at ( %s %s, %s %s)',...
+            s = sprintf('Circle with R:%s %s, centered at ( %s %s, %s %s)',...
                 num2str(obj.Radius),...
+                obj.RefEllipsoid.LengthUnit,...
                 num2str(abs(obj.Y0)), NS,...
                 num2str(abs(obj.X0)), EW);
         end
@@ -101,13 +112,21 @@ classdef ShapeCircle < ShapeGeneral
                 nc=round(str2double(nc{1}));
                 if ~isempty(nc) && ~isnan(nc)
                     ZG.ni=nc;
-                    [~,obj.Radius]=ZG.primeCatalog.selectClosestEvents(obj.Y0, obj.X0, [],nc);
+                    zmw=get(ancestor(c,'figure'),'UserData');
+                    if isa(zmw,'ZmapWindow')
+                        ca=zmw.rawcatalog;
+                    else
+                        ca=ZG.primeCatalog;
+                    end
+                        
+                    [~,obj.Radius]=ca.selectClosestEvents(obj.Y0, obj.X0, [],nc,'DistanceOnly');
                     obj.Radius=obj.Radius;%+0.005;
                 end
             end
             
             function chooseRadius(~,~)
-                nc=inputdlg('Choose Radius (km)','Edit Circle',1,{num2str(obj.Radius)});
+                radiusInputText = ['Choose Radius [',obj.RefEllipsoid.LengthUnit,']'];
+                nc=inputdlg(radiusInputText,'Edit Circle',1,{num2str(obj.Radius)});
                 nc=str2double(nc{1});
                 if ~isempty(nc) && ~isnan(nc)
                     obj.Radius=nc;
@@ -117,24 +136,34 @@ classdef ShapeCircle < ShapeGeneral
             
         end
         
-        function [mask]=isinterior(obj,otherLon, otherLat, include_boundary)
+        function [mask]=isinterior(obj,otherX, otherY, include_boundary)
             % isinterior true if value is within this circle's radius of center. Radius inclusive.
             %
             % overridden because using polygon approximation is too inaccurate for circles
             %
-            % [mask]=obj.isinterior(otherLon, otherLat)
+            % [mask]=obj.isinterior(otherX, otherY)
+
             if ~exist('include_boundary','var')
                 include_boundary = true;
             end
             if isempty(obj.Points)||isnan(obj.Points(1))
-                mask = ones(size(otherLon));
+                mask = ones(size(otherX));
             else
-                % return a vector of size otherLon that is true where item is inside polygon
-                dists=distance(obj.Y0, obj.X0, otherLat, otherLon, obj.RefEllipsoid);
-                if ~include_boundary
-                    mask=dists < obj.Radius;
+                otherX(ismissing(otherY))= missing;
+                otherY(ismissing(otherX))= missing;
+                % return a vector of size otherX that is true where item is inside polygon
+                   
+                
+                if iscartesian(obj.RefEllipsoid)
+                    dists = sqrt((otherY-obj.Y0).^2 + (otherX-obj.X0).^2);
                 else
-                    mask=dists <= obj.Radius;
+                    dists = distance(obj.Y0, obj.X0, otherY, otherX, obj.RefEllipsoid);
+                end
+                
+                if ~include_boundary
+                    mask = dists < obj.Radius;
+                else
+                    mask = dists <= obj.Radius;
                 end
             end
         end
@@ -166,11 +195,12 @@ classdef ShapeCircle < ShapeGeneral
             end
             [savepath,~,ext] = fileparts(filelocation); 
             if ext==".mat"
-                zmap_shape=obj;
+                zmap_shape = obj; %#ok<NASGU>
                 save(filelocation,'zmap_shape');
             else
                 if ~exist('delimiter','var'), delimiter = ',';end
-                tb=table(obj.X0, obj.Y0,obj.Radius,'VariableNames',{'Latitude','Longitude','Radius[km]'});
+                radiusName = ['Radius[',shortenLengthUnit(obj.RefEllipsoid.LengthUnit),']'];
+                tb=table(obj.X0, obj.Y0,obj.Radius,'VariableNames',{'Latitude','Longitude',radiusName});
                 writetable(tb,filelocation,'Delimiter',delimiter);
             end
                 
@@ -179,62 +209,34 @@ classdef ShapeCircle < ShapeGeneral
     
     methods(Static)
         
-        function obj=selectUsingMouse(ax,ref_ellipsoid)
-            if ~exist('ref_ellipse','var')
-                ref_ellipsoid = referenceEllipsoid('wgs84','kilometer');
-            end
+        function obj=selectUsingMouse(ax, ref_ellipsoid)
             
-            [ss,ok] = selectSegmentUsingMouse(ax,'r', ref_ellipsoid, @circ_update);
+            [ss,ok] = selectSegmentUsingMouse(ax,'r', @circ_update);
             delete(findobj(gca,'Tag','tmp_circle_outline'));
             if ~ok
                 obj=[];
                 return
             end
-            obj=ShapeCircle;
+            obj=ShapeCircle();
             obj.Points=ss.xy1;
-            obj.Radius=ss.dist_kilometer;
+            obj.Radius=ss.dist;
             
             function circ_update(stxy, ~, d)
                 h=findobj(gca,'Tag','tmp_circle_outline');
                 if isempty(h)
                     h=line(nan,nan,'Color','r','DisplayName','Rough Outline','LineWidth',2,'Tag','tmp_circle_outline');
                 end
-                [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
-                h.XData=lon;
-                h.YData=lat;
+                if iscartesian(ref_ellipsoid)
+                    pts = exp(1i*pi*linspace(0,2*pi,120)') .* d;
+                    h.XData = real(pts)+ stxy(1); 
+                    h.YData = imag(pts) + stxy(2);
+                else
+                    [lat,lon]=reckon(stxy(2),stxy(1),d,(0:3:360)',ref_ellipsoid);
+                    h.XData=lon;
+                    h.YData=lat;
+                end
             end
         end
-        %{
-        function obj=select(varargin)
-            % ShapeCircle.select()
-            % ShapeCircle.select()
-            % ShapeCircle.select(radius)
-            % ShapeCircle.select('circle', [x,y], radius)
-            
-            obj=ShapeCircle;
-            if nargin==0
-                obj = ShapeCircle.selectUsingMouse(gca);
-                return
-            end
-            % select center point, if it isn't provided
-            if numel(varargin)==2
-                x1=varargin{2}(1); y1=varargin{2}(2); b=32;
-            else
-                disp('click in center of circle. ESC aborts');
-                [x1,y1,b] = ginput(1);
-            end
-            if numel(varargin)==2
-                varargin=varargin(2);
-            end
-            
-            if b==27 %escape
-                error('ESCAPE pressed. aborting circle creation'); %to calling routine: catch me!
-            end
-            
-            obj.Radius=varargin{1};
-            obj.Points=[x1,y1];
-        end
-        %}
     end
     
             

@@ -149,7 +149,7 @@ function myslicer(ac2)
         zmap_update_displays();
         whitebg(gcf,[0 0 0]);
         sl1 = gca; axis equal
-        axis([ s2 s1 s4 s3])
+        axis([ s2_west s1_east s4_south s3_north])
     end
     
     function my_newslice()
@@ -329,25 +329,24 @@ function myslicer(ac2)
     end
     
     function tmap=general_topo(nanval,spacing)
-        s1 = max(gx); s2 = min(gx);
-        s3 = max(gy); s4 = min(gy);
-        region = [s4 s3 s2 s1];
+        s1_east = max(gx); s2_west = min(gx);
+        s3_north = max(gy); s4_south = min(gy);
+        region = [s4_south s3_north s2_west s1_east];
         if ~exist('mydem','var')
             try
                 [mydem,my,mx] = mygrid_sand(region);
             catch ME
                 error_handler(ME, @do_nothing);
-                plt = 'err2';
-                pltopo
+                pltopo('err2')
             end
         end
         
         if max(mx) > 180; mx = mx-360;end
         
-        l2 = min(find(mx >= s2));
-        l1 = max(find(mx <= s1));
-        l3 = max(find(my <= s3));
-        l4 = min(find(my >= s4));
+        l2 = min(find(mx >= s2_west));
+        l1 = max(find(mx <= s1_east));
+        l3 = max(find(my <= s3_north));
+        l4 = min(find(my >= s4_south));
         tmap = mydem(l4:l3,l2:l1);
         vlat = my(l4:l3);
         vlon = mx(l2:l1);

@@ -7,7 +7,7 @@ function cumplot(obj, tabgrouptag)
     Tags.ax = 'CumPlot axes';
     
     % set up the axes
-    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'cumplot');
+    myTab = findOrCreateTab(obj.fig, obj.fig, tabgrouptag, 'Cum #');
     ax=findobj(myTab.Children,'flat','Tag',Tags.ax);
     if isempty(ax)
         ax            = axes(myTab);
@@ -18,7 +18,7 @@ function cumplot(obj, tabgrouptag)
         ax.UserData   = CumRateAnalysisWindow(ax);
         grid(ax, 'on');
     end
-    craw = ax.UserData; % craw is the cumplot analysisWindow
+    analy_win = ax.UserData; % cumplot analysisWindow
     
     %% plot the main series
     lineProps.Color         = [0 0 0];
@@ -27,7 +27,7 @@ function cumplot(obj, tabgrouptag)
     lineProps.MinBigMag     = ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag;
     lineProps.DisplayName   = obj.catalog.Name;
     
-    craw.add_series(obj.catalog, 'catalog', lineProps);
+    analy_win.add_series(obj.catalog, 'catalog', lineProps);
     
     
     %% plot & synchronize cross sections
@@ -39,7 +39,7 @@ function cumplot(obj, tabgrouptag)
      existing_xs = obj.XSectionTitles;
         % delete cross sections that shouldn't exist
         todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-        craw.remove_series(todel);
+        analy_win.remove_series(todel);
     end
     %% if necessary, add context menu to figure
     cxs=findobj(obj.fig,'Tag',Tags.xs);
@@ -79,10 +79,10 @@ function cumplot(obj, tabgrouptag)
         
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
-        mytag               = ['Xsection cumplot ' xs.name];
-        h = craw.add_series(xscat, mytag, xsProps);
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
+        mytag               = ['Xsection cumplot ' xs.Name];
+        h = analy_win.add_series(xscat, mytag, xsProps);
     end
     
     function cb_xstimeplot(~,~)

@@ -158,11 +158,11 @@ function view_varmap(lab1,valueMap)
         op1 = uimenu('Label',' Maps ');
         
         uimenu(op1,'Label','Variance map',...
-            MenuSelectedField(),@callbackfun_005)
+            MenuSelectedField(),@cb_variancemap)
         uimenu(op1,'Label','Resolution map',...
-            MenuSelectedField(),@callbackfun_006)
+            MenuSelectedField(),@cb_resolutionmap)
         uimenu(op1,'Label','Plot map on top of topography ',...
-            MenuSelectedField(),@callbackfun_007)
+            MenuSelectedField(),@cb_plot_on_topography)
         
         uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
@@ -215,7 +215,7 @@ function view_varmap(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_005(mysrc,myevt)
+    function cb_variancemap(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='b-value';
@@ -223,7 +223,7 @@ function view_varmap(lab1,valueMap)
         view_varmap(lab1,valueMap);
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_resolutionmap(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1 ='Radius';
@@ -231,11 +231,10 @@ function view_varmap(lab1,valueMap)
         view_varmap(lab1,valueMap);
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_plot_on_topography(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        colback = 'w';
-        dramap_stress2;
+        dramap_z('stress2','w',valueMap);
     end
 
 end

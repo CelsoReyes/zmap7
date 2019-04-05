@@ -43,10 +43,9 @@ function fmdplot(obj, tabgrouptag)
             ax.UIContextMenu = c;
         end
         addLegendToggleContextMenuItem(ax.UIContextMenu,'bottom','above');
-        
     end
     
-    baw = ax.UserData;
+    analy_win = ax.UserData;
     
     
     %% plot & synchronize cross sections
@@ -67,7 +66,7 @@ function fmdplot(obj, tabgrouptag)
         % delete cross sections that shouldn't exist
         %todel = plotted_xs(~startsWith(plotted_xs,existing_xs));
         %todel = plotted_xs(~ismember(plotted_xs,existing_xs));
-        baw.remove_series(todel);
+        analy_win.remove_series(todel);
     end
     
     %% if necessary, add context menu to figure
@@ -83,11 +82,11 @@ function fmdplot(obj, tabgrouptag)
     %% 
     function h = xsplotter(xs, xscat)
         xsProps.LineWidth   = 1.5;
-        xsProps.DisplayName = xs.name;
-        xsProps.Color       = xs.color;
+        xsProps.DisplayName = xs.Name;
+        xsProps.Color       = xs.Color;
         xsProps.Marker = 'x';
-        mytag               = ['Xsection fmd ' xs.name];
-        h = baw.add_series(xscat, mytag, xsProps);
+        mytag               = ['Xsection fmd ' xs.Name];
+        h = analy_win.add_series(xscat, mytag, xsProps);
         
     end
     
@@ -109,7 +108,8 @@ function fmdplot(obj, tabgrouptag)
             'Choose magnitude to cut the catalog');
         [res,okpressed] = zdlg.Create('Name', 'Choose Cut Magnitude');
         if okpressed
-            obj.rawcatalog = obj.rawcatalog.subset(obj.rawcatalog.Magnitude>= res.mc);
+            obj.rawcatalog = obj.rawcatalog.subset(res.mc <= obj.rawcatalog.Magnitude);
+            obj.CatalogManager.RawCatalog = obj.rawcatalog;
             obj.replot_all;
         end
     end

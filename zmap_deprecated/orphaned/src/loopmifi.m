@@ -132,7 +132,7 @@ hold on
 pco1 = pcolor(xvect,yvect,normlap2);
 shading flat
 colormap(jet)
-%axis([ s2 s1 s4 s3])
+%axis([ s2_west s1_east s4_south s3_north])
 axis([ min(gx) max(gx) min(gy) max(gy)])
 axis image
 

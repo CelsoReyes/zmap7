@@ -6,7 +6,7 @@ function uimemorize_catalog(catalog)
     hasMemorized = ~isempty(mcm);
     if ~exist('catalog','var')
         ZG=ZmapGlobal.Data;
-        catalog = ZG.primeCatalog;
+        catalog = ZG.primeCatalog; % points to same thing
     end
     
     if hasMemorized

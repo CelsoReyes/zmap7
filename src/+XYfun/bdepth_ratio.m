@@ -85,10 +85,10 @@ classdef bdepth_ratio < ZmapHGridFunction
             %
             
             % find row index of ratio midpoint
-            l = obj.RawCatalog.Depth >= obj.topzone_ceiling & obj.RawCatalog.Depth <  obj.topzone_floor;
+            l =  obj.topzone_ceiling <= obj.RawCatalog.Depth & obj.RawCatalog.Depth <  obj.topzone_floor;
             top_zone = obj.RawCatalog.subset(l);
             
-            l = obj.RawCatalog.Depth >= obj.bottomzone_ceiling & obj.RawCatalog.Depth <  obj.bottomzone_floor;
+            l = obj.bottomzone_ceiling <= obj.RawCatalog.Depth & obj.RawCatalog.Depth <  obj.bottomzone_floor;
             bot_zone = obj.RawCatalog.subset(l);
             
             
@@ -99,7 +99,7 @@ classdef bdepth_ratio < ZmapHGridFunction
             depth_ratio = top_b_overall/bottom_b_overall;
             disp(depth_ratio);
             
-            [~,mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
+            [~, mcCalculator] = calc_Mc([], obj.mc_choice,obj.fBinning);
             
             % loop over all points
             obj.gridCalculations(@calculation_function);
@@ -118,10 +118,10 @@ classdef bdepth_ratio < ZmapHGridFunction
             % to View the b-value map : view_bdepth
             
             function out=calculation_function(b)
-                topb = b.subset( b.Depth >= obj.topzone_ceiling & b.Depth <  obj.topzone_floor );
+                topb = b.subset( obj.topzone_ceiling <= b.Depth & b.Depth <  obj.topzone_floor );
                 per_in_top = (topb.Count/b.Count)*100.0;
                 
-                botb = b.subset( b.Depth >= obj.bottomzone_ceiling & b.Depth <  obj.bottomzone_floor );
+                botb = b.subset( obj.bottomzone_ceiling<= b.Depth & b.Depth <  obj.bottomzone_floor );
                 per_in_bot = (botb.Count/b.Count)*100.0;
                 
                 
@@ -159,9 +159,9 @@ classdef bdepth_ratio < ZmapHGridFunction
                 
                 function [bv, bv2, magco, av, n] = calc_bval_both_ways(mycat,magco,b_overall)
                     % where mycat is already the subset value
-                    idx = mycat.Magnitude >= magco-0.05;
+                    idx = (magco-0.05) <= mycat.Magnitude5;
                     n=sum(idx);
-                    if sum(idx) >= obj.NodeMinEventCount
+                    if obj.NodeMinEventCount <= sum(idx)
                         [bv, magco, ~, av] =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.manual, b_overall); %not automatic estimate of Mcomp 
                         bv2 =  bvalca3(mycat.Magnitude(idx), McAutoEstimate.auto); % automatic estimate of Mcomp 
                     else
@@ -175,10 +175,12 @@ classdef bdepth_ratio < ZmapHGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent,zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item
-            label='b-value depth ratio grid';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.bdepth_ratio(zapFcn()));
+            label = 'b-value depth ratio grid';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.bdepth_ratio(zapFcn()),...
+                varargin{:});
         end
         
         function obj=my_load()

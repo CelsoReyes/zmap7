@@ -210,166 +210,7 @@ classdef findquar < ZmapHGridFunction
                 val=[myratio normalizedRatioByHoursInDay nDay nNight];
             end
         end
-        %{
-        function plot(obj,varargin)
-            % plots the results somewhere
-            f=obj.Figure('deleteaxes',@create_my_menu); % nothing or 'deleteaxes'
-            set(f,'Name','q-detect-map',...
-                    'NumberTitle','off', ...
-                    'NextPlot','new', ...
-                    'backingstore','on',...
-                    ...'Visible','off', ...
-                    'Position',[ 50 50 800 600]);
-                
-            obj.ax=axes(f);
-            
-            obj.ZG.tresh_km = nan;
-            re4 = obj.Result.valueMap;
-            
-            colormap(cool)
-            
-            %  plot the color-map of the value
-            
-            set(obj.ax,...
-                ...'visible','off',
-                'FontSize',ZmapGlobal.Data.fontsz.s,...
-                'FontWeight','bold',...
-                'FontWeight','bold','LineWidth',1.5,...
-                'Box','on','SortMethod','childorder')
-            
-            % find max and min of data for automatic scaling
-            %
-            re4(obj.Result.maxRad > obj.ZG.tresh_km) = nan;
-            maxc = ceil(max(re4(:)));
-            minc = floor(min(re4(:)));
-            % set values greater ZG.tresh_km = nan
-            %
-            
-            % plot image
-            %
-            orient landscape
-            
-            set(obj.ax,'position',[0.18,  0.10, 0.7, 0.75]);
-            set(gca,'NextPlot','add')
-            pco1 = gridpcolor(obj.ax, obj.Grid.X, obj.Grid.Y, re4');
-            
-            axis(obj.ax, [ min(obj.Grid.X(:)) max(obj.Grid.X(:)) min(obj.Grid.Y(:)) max(obj.Grid.Y(:))])
-            axis(obj.ax, 'image');
-            hold(obj.ax, 'on');
-            
-            shading(obj.ax, obj.ZG.shading_style);
-            
-            fix_caxis(re4,'horiz',minc,maxc,false);
-            fix_caxis.ApplyIfFrozen(obj.ax);
-            titlestr = sprintf('%s; %s to %s',...
-                obj.RawCatalog.Name, min(obj.RawCatalog.Date), max(obj.RawCatalog.Date));
-            title(obj.ax, titlestr, ...
-                'FontSize', ZmapGlobal.Data.fontsz.s,...
-                'Interpreter', 'none', 'FontWeight', 'bold')
-            
-            xlabel(obj.ax,'Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
-            ylabel(obj.ax,'Latitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.s)
-            
-            % plot overlay
-            %
-            set(gca,'NextPlot','add')
-            %zmap_update_displays();
-            ploeq = plot(obj.ax,obj.RawCatalog.Longitude,obj.RawCatalog.Latitude,'k.');
-            set(ploeq,'Tag','eq_plot','MarkerSize',obj.ZG.ms6,'Marker','.','Color',obj.ZG.someColor,'Visible','on')
-            
-            set(obj.ax,'visible','on','FontSize',obj.ZG.fontsz.s,'FontWeight','bold',...
-                'FontWeight','bold','LineWidth',1.5,...
-                'Box','on','TickDir','out')
-            h1 = gca;
-            hzma = gca;
-            
-            % Create a colorbar
-            %
-            h5 = colorbar('horiz');
-            set(h5,...'Pos',[0.35 0.05 0.4 0.02],...
-                'FontWeight','bold','FontSize',obj.ZG.fontsz.s)
-            
-            axes('position',[0.00,  0.0, 1, 1])
-            axis('off')
-            %  Text Object Creation
-            txt1 = text(...
-                'Units','normalized',...
-                'Position',[ 0.33 0.07 0 ],...
-                'HorizontalAlignment','right',...
-                'FontSize',obj.ZG.fontsz.s,....
-                'FontWeight','bold',...
-                'String','Day-Night ratio');
-            
-            % Make the figure visible
-            %
-            set(gca,'FontSize',obj.ZG.fontsz.s,'FontWeight','bold',...
-                'FontWeight','bold','LineWidth',1.5,...
-                'Box','on','TickDir','out')
-            axes(h1)
-            whitebg(gcf,[ 0 0 0 ])
-            
-            %% ui functions
-            function create_my_menu()
-                add_menu_divider();
-                
-                add_symbol_menu('eq_plot');
-                
-                options = uimenu('Label',' Select ');
-                uimenu(options,'Label','Refresh ', MenuSelectedField(),@cb_refresh)
-                uimenu(options,'Label','Edit Selection parameters',MenuSelectedField(),@(~,~)obj.InteractiveSetup());
-                uimenu(options,'Label','Histogram: EQ in Circle', MenuSelectedField(),@cb_select_circle)
-                uimenu(options,'Label','Histogram: EQ in Polygon ', MenuSelectedField(),@cb_select_poly)
-                uimenu(options,'Label','Info',MenuSelectedField(),@cb_info);
-                op1 = uimenu('Label',' Maps ');
-                uimenu(op1,'Label','REVERT day/night value map',...
-                    MenuSelectedField(),@callbackfun_005)
-                
-                
-                add_display_menu(1);
-            end
-            
-            %% callback functions
-            
-            function cb_refresh(mysrc,myevt)
-                callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                delete(findobj(qmap,'Type','axes'));
-                obj.plot();
-            end
-            
-            function cb_select_circle(mysrc,myevt)
-                callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                h1 = gca;
-                
-                % circle;
-                hisgra(ZG.newt2.Date.Hour,'Hour',ZG.newt2.Name);
-            end
-            
-            function cb_select_poly(mysrc,myevt)
-                callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                stri = 'Polygon';
-                h1 = gca;
-                cufi = gcf;
-                selectp;
-                hisgra(obj.ZG.newt2,'Hour');
-            end
-            
-            function callbackfun_005(mysrc,myevt)
-                obj.Result.valueMap = obj.oldratios;
-                obj.plot();
-            end
-            
-            function callbackfun_bva_go(mysrc,myevt)
-                
-                callback_tracker(mysrc,myevt,mfilename('fullpath'));
-                
-                pause(1);
-                re4 =valueMap;
-                view_bva(valueMap);
-            end
-            
-        end
-        %}
-        
+
         function ModifyGlobals(obj)
             % change the ZmapGlobal variable, if appropriate
             % obj.ZG.SOMETHING = obj.Result.SOMETHING
@@ -383,10 +224,12 @@ classdef findquar < ZmapHGridFunction
     end %methods
     
     methods(Static)
-        function h=AddMenuItem(parent, zapFcn)
+        function h = AddMenuItem(parent, zapFcn, varargin)
             % create a menu item that will be used to call this function/class
-            label='Find Quarry Events';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XYfun.findquar(zapFcn()));
+            label = 'Find Quarry Events';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)XYfun.findquar(zapFcn()),...
+                varargin{:});
         end
         
         function ct = ToHourlyCategorical(val)

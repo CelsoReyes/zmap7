@@ -18,6 +18,9 @@ classdef CumMomentAnalysisWindow < AnalysisWindow
         end
         
         function [x,y]=calculate(~,catalog)
+            if ~isa(catalog,'ZmapCatalog')
+                catalog=catalog.Catalog;
+            end
             % return the datetime and cumulative-moment for each event in the catalog
             x=catalog.Date;
             [~, y, ~] = calc_moment(catalog);

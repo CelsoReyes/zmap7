@@ -15,7 +15,7 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
         ax.Title=[];
         ax.UserData.TimeSomethingPlotter=whichplotter;
     else
-        whichplotter=ax.UserData.TimeSomethingPlotter;
+        whichplotter = ax.UserData.TimeSomethingPlotter;
         whichplotter.update(obj.catalog, obj.bigEvents);
     end
     
@@ -24,8 +24,8 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
     
     if isempty(c)
         c=uicontextmenu(obj.fig,'Tag', contextTag);
-        uimenu(c, 'Label', 'Open in new window',...
-            MenuSelectedField(), @cb_context);
+        uimenu(c, 'Label','Crop or Split HERE', MenuSelectedField(), @callbacks.cropBasedOnAxis)
+        uimenu(c, 'Label', 'Open in new window', MenuSelectedField(), @cb_context);
         addLegendToggleContextMenuItem(c,'bottom','above');
     end
     ax.UIContextMenu=c;
@@ -43,8 +43,8 @@ function time_vs_something_plot(obj, name, whichplotter, tabgrouptag)
             'Marker',       '.', ...
             'LineStyle',    'none',...
             'LineWidth',    1.5,...
-            'Color',        xs.color,...
-            'DisplayName',  xs.name);
+            'Color',        xs.Color,...
+            'DisplayName',  xs.Name);
         
     
     obj.plot_xsections(xsplotter,'Xsection timeplot')

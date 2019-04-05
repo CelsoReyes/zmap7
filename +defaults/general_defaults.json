@@ -1,11 +1,11 @@
 {
    "Directories":{
-      "output":"./output",
-      "data":"./eq_data",
-      "working":"./working"
+      "output":"../m_zmap_files/output",
+      "data":"../my_zmap_files/eq_data",
+      "working":"../my_zmap_files/zmap7/working"
    },
    "ParallelProcessing":{
-      "Enable":true,
+      "Enable":false,
       "Threshhold":10000
    },
    "DebugMode":true,

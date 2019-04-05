@@ -2,8 +2,6 @@
 % 2.11.2001 17:00
 
 report_this_filefun(mfilename('fullpath'));
-smenu=menu
-clear('menu')
 j = colormap;
 % check if mapping toolbox and topo map exists
 if ~license('test','map_toolbox')
@@ -20,7 +18,7 @@ if xx*yy < 30
         'Yes','No','no');
     switch ButtonName
         case 'Yes'
-            pltobo
+            pltopo
         case 'No'
             errdlg('Please create a topomap first, using the options from the seismicty map window');
             return
@@ -113,10 +111,10 @@ mapz
 mapz(selz,:)
 hold on; axis off
 % axesm('MapProjection',mapz(selz,:),'MapParallels',[],...
-%    'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+%    'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
 
 axesm('MapProjection',mapz(selz,:),...
-    'MapLatLimit',[s4 s3],'MapLonLimit',[s2 s1])
+    'MapLatLimit',[s4_south s3_north],'MapLonLimit',[s2_west s1_east])
 
 
 

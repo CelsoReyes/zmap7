@@ -1,7 +1,6 @@
 function copytab(~,~)
     % COPYTAB copy the contents from a tab into a new figure
-    assert(get(gco,'Type') == "uitab");
-    thetab=gco;
+    thetab = ancestor(gco,'uitab');
     tocopy=thetab.Children;
     newfig = figure('Name',thetab.Title);
     copyobj(tocopy,newfig);

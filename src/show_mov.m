@@ -178,8 +178,7 @@ function show_mov(in, in2)
             s = cumuall(n1,:);
             normlap2(ll)= s(:);
             r=reshape(normlap2,length(yvect),length(xvect));
-            l = r > ZG.tresh_km;
-            re4(l) = nan(1,length(find(l)));
+            re4(r > ZG.tresh_km) = nan;
             
             orient landscape
             set(gcf,'PaperPosition',[ 0.1 0.1 8 6])
@@ -187,7 +186,7 @@ function show_mov(in, in2)
             set(gca,'NextPlot','add')
             pco1 = pcolor(gx,gy,re4);
             caxis([ZG.minc ZG.maxc]);
-            axis([ s2 s1 s4 s3])
+            axis([ s2_west s1_east s4_south s3_north])
             set(gca,'NextPlot','add')
             %overlay
             if in == 'ast'

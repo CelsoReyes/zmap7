@@ -1,6 +1,6 @@
-function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = calc_McduebBst(magnitudes, fBinning, nWindowSize, nMinNumberEvents, nSample)
-% calc_McduebBst  Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach
-    % [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = calc_McduebBst(mCatalog, fBinning, nWindowSize, nMinNumberEvents, nSample)
+function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi] = calc_McduebBst(magnitudes, varargin)
+    % calc_McduebBst  Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach
+    % [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi] = calc_McduebBst(mCatalog, fBinning, nWindowSize, nMinNumberEvents, nSample)
     %-------------------------------------------------------------------------------------------------------
     % Calculate Mc using the function b-value vs. cut-off-magnitude: Bootstrap approach
     % Decision criterion for b and Mc: b_i-std_Bst(b_i) <= b_ave <= b_i+std_Bst(b_i)
@@ -22,8 +22,6 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     % fAvalue          :a-value
     % fSigmaLow        : 16-percentile of b-value distribution
     % fSigmaHi         : 84-percentile of b-value distribution
-    % mBave            : Result matrix for plotting (average values)
-    % mBvalue          : Result matrix for plotting
     % Author: J. Woessner
     % updated: 04.06.03
     
@@ -33,7 +31,9 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     p.addOptional('nWindowSize',5);
     p.addOptional('nMinNumberEvents',50);
     p.addOptional('nSample',100);
-    p.parse(fBinning, nWindowSize, nMinNumberEvents, nSample);
+    p.parse(varargin{:});
+    
+    PCTL_RANGE = [16, 84];
     
     fBinning            = p.Results.fBinning;
     nWindowSize         = p.Results.nWindowSize;
@@ -46,104 +46,84 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi, mBave, mBvalue] = c
     fMaxMag = max(magnitudes);
     
     % Create bootstrap samples using bootstrap matlab toolbox
+    deepdim = 1; % for deepdim = 1:size(magnitudes,2)
     mMag_bstsamp = bootrsp(magnitudes,nSample);
-    
     % Calculate b-with magnitude
-    magBins = fMinMag:fBinning:fMaxMag; 
+    magBins = fMinMag:fBinning:fMaxMag;
+    nBins = numel(magBins);
     
-    mBvalue = nan(numel(magBins), 7);
+    % mBvalue = nan(nBins, 7); % contains [meanb_value, meanb_value_std, meana_value vSigma(1) vSigma(2), fStdBst]
+    mean_b_value     = nan(nBins,1);
+    mean_b_value_std = nan(nBins,1);
+    mean_a_value     = nan(nBins,1);
+    mean_mag         = nan(nBins,1);
+    sigmas           = nan(nSample,2);
+    std_bst          = nan(nBins,1);
     
-    for i = 1:numel(magBins)
+    for i = 1 : nBins
         fMag = magBins(i);
-        mBvalue_bst = nan(nSample, 4); % resets each pass
+        mBvalue_bst = nan(nSample, 4); % resets each pass, contains [b_value, b_value_std, a_value, magvalue]
         
         magMask = mMag_bstsamp >= fMag - 0.05;
         
+        idxs        = (i-1).* nSample + (1:nSample);
+        b_value     = nan(nSample,1);
+        b_value_std = nan(nSample,1);
+        a_value     = nan(nSample,1);
+        
+        mBvalue_bst(idxs,4) = fMag; 
         for nSamp=1:nSample
-            idx = (i-1)*nSample + nSamp;
-            bvalIsNan = magMask(:,nSamp);
-            mCat = mMag_bstsamp(bvalIsNan,nSamp);
-            %{
-            sampmagnitudes = mMag_bstsamp(:,nSamp);
-            % Select magnitude range
-            vSel = sampmagnitudes >= fMag-0.05;
-            mCat = sampmagnitudes(vSel);
-            %}
+            bvalIsNan = magMask(:, nSamp);
+            mCat = mMag_bstsamp(bvalIsNan, nSamp);
+            
             % Check for minimum number of events
             
-            mBvalue_bst(idx,4) = fMag;
-            
             if numel(mCat) >= nMinNumberEvents
-                try
-                    [ fBValue, fStdDev, fAValue] =  calc_bmemag(mCat, fBinning);
-                    mBvalue_bst( idx, 1:3) = [fBValue fStdDev fAValue];
-                catch ME
-                    warning(ME.message);
-                end
+                [ b_value(nSamp), b_value_std(nSamp), a_value(nSamp)] =  calc_bmemag(mCat, fBinning);
             end
         end
+        mBvalue_bst(idxs, 1:3) = [b_value, b_value_std, a_value];
         
         % Check for Nan and create output for [16 84]-percentile
-        bvalIsNan = isnan(mBvalue_bst(:,1));
-        bvalOnly = mBvalue_bst(~bvalIsNan, 1);
-        if (~isempty(isempty(bvalOnly)) &&  length(bvalOnly) > 1)
-            vSigma = prctile(bvalOnly,[16 84]);
-        elseif (~isempty(bvalOnly)  &&  length(bvalOnly) == 1)
-            vSigma = prctile(bvalOnly,[16 84]);
-            vSigma = vSigma';
-        else
-            vSigma = [NaN NaN];
-        end
-        % Calculate 2nd moment
-        if ~isempty(bvalOnly)
-            fStdBst = std(bvalOnly,1,'omitnan');
-        else
-            fStdBst = NaN;
+        bvalIsNan   = isnan(b_value);
+        bval_nonans = b_value(~bvalIsNan);
+        
+        if ~isempty(bval_nonans)
+            vSigma = prctile(bval_nonans, PCTL_RANGE);
+            if length(bval_nonans)==1
+                vSigma = vSigma';
+            end
+            fStdBst = std(bval_nonans, 1, 'omitnan'); % Calculate 2nd moment
+            
+            sigmas(i,:)         = vSigma;
+            std_bst(i)          = fStdBst;
         end
         
-        % mBvalue: b std_bolt(b) a Mc 16-perc 18-perc std(b_2nd moment)
-        try
-            mBvalue(i,:) = [nanmean(mBvalue_bst) vSigma fStdBst];
-        catch ME
-            warning(ME.message)
-        end
+        mean_b_std_a_mag    = nanmean(mBvalue_bst);
+        mean_b_value(i)     = mean_b_std_a_mag(1);
+        mean_b_value_std(i) = mean_b_std_a_mag(2);
+        mean_a_value(i)     = mean_b_std_a_mag(3);
+        mean_mag(i)         = mean_b_std_a_mag(4);
+        
+        % mBvalue(i,:) = [nanmean(mBvalue_bst), vSigma(1), vSigma(2), fStdBst]; % contains [meanb_value, meanb_value_std, meana_value, meanmag, vSigma(1), vSigma(2), fStdBst]
         
     end % END of FOR fMag
     
     % Use bootstrap percentiles to decide for Mc
-    totalSteps = size(mBvalue,1) - nWindowSize;
-    mBave = nan(totalSteps, 1 + size(mBvalue,2));
-    mMcBA = nan(totalSteps, 1 + size(mBvalue,2)); % maximum likely size
-    idx = 0; % because mMcBA doesn't necessarily grow at every step, we track it separately
-    for nStep = 1 : totalSteps
-        fBave = mean(mBvalue(nStep : nStep+nWindowSize, 1));
-        mBave(nStep,:) = [fBave mBvalue(nStep,:)];
-        % Criterion: If fBave is in in between the error estimate of the b-value of the first cut-off magnitude
-        % take it as guess
-        if (fBave >= mBvalue(nStep,5) && fBave <= mBvalue(nStep,6))
-            idx = idx + 1;
-            mMcBA(idx,:) = [fBave mBvalue(nStep,:)];
-        end
-    end
+    totalSteps = nBins - nWindowSize + 1;
     
-    mMcBA = mMcBA(1:idx,:); % chop off unused portion
+    b_avg       = movmean(mean_b_value, nWindowSize, 'Endpoints','discard');
+    keeprows    = sigmas(1:totalSteps, 1) <= b_avg & b_avg <= sigmas(1:totalSteps, 2);
     
-    % Create output
+    % b_avg       = b_avg(keeprows); % apply to b_avg before changing it's size
     
-    if ~isempty(mMcBA)
-        fMc         = mMcBA(1,5);
-        fBvalue     = mMcBA(1,2);
-        fAvalue     = mMcBA(1,4);
-        fBStd       = mMcBA(1,8);
-        fSigmaLow   = mMcBA(1,6);
-        fSigmaHi    = mMcBA(1,7);
-    else
+    keeprows(nBins) = false; % OK, because len(keeprows) (aka. totalsteps) is always less than nBins
+    fMc         = mean_mag(keeprows);
+    fBvalue     = mean_b_value(keeprows);
+    fAvalue     = mean_a_value(keeprows);
+    fBStd       = mean_b_value_std(keeprows);
+    fSigmaLow   = sigmas(keeprows, 1);
+    fSigmaHi    = sigmas(keeprows, 2);
         
-        fMc         = NaN;
-        fBvalue     = NaN;
-        fAvalue     = NaN;
-        fBStd       = NaN;
-        fSigmaLow   = NaN;
-        fSigmaHi    = NaN;
-    end
+
 end

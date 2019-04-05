@@ -44,7 +44,7 @@ function plotmima(var1, mi)
     end
     
     hold on
-    %axis([ s2 s1 s4 s3])
+    %axis([ s2_west s1_east s4_south s3_north])
     %zmap_update_displays();
     
     xlabel('Longitude [deg]','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)

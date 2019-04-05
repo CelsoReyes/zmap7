@@ -133,7 +133,7 @@ function ctimeplot()
         'Box','on','SortMethod','childorder')
     
     if isempty(ZG.newcat)
-        ZG.newcat =ZG.primeCatalog;
+        ZG.newcat =ZG.primeCatalog; % points to same thing
     end
     
     % select big events ( > ZG.CatalogOpts.BigEvents.MinMag)

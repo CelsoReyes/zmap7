@@ -12,6 +12,7 @@ function plot3d()
     report_this_filefun()
     
     ZG=ZmapGlobal.Data; % get zmap globals;
+    globalcatalog = ZG.primeCatalog;
     tag='mainmap3_ax';
     watchon
     
@@ -82,14 +83,14 @@ function plot3d()
             
             %plot earthquakes according time
         case 'tim'
-            timidx = ZG.primeCatalog.Date<=tim2&ZG.primeCatalog.Date>=tim1;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'+b');
+            timidx = globalcatalog.Date<=tim2&globalcatalog.Date>=tim1;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'+b');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.primeCatalog.Date<=tim3&ZG.primeCatalog.Date>tim2;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'og');
+            timidx = globalcatalog.Date<=tim3&globalcatalog.Date>tim2;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'og');
             set(plo,'MarkerSize',6,'LineWidth',1.)
-            timidx = ZG.primeCatalog.Date<=tim4&ZG.primeCatalog.Date>tim3;
-            plo =plot3(ZG.primeCatalog.Longitude(timidx),ZG.primeCatalog.Latitude(timidx),-ZG.primeCatalog.Depth(timidx),'xr');
+            timidx = globalcatalog.Date<=tim4&globalcatalog.Date>tim3;
+            plo =plot3(globalcatalog.Longitude(timidx),globalcatalog.Latitude(timidx),-globalcatalog.Depth(timidx),'xr');
             set(plo,'MarkerSize',6,'LineWidth',1.)
             
             ls1 = sprintf('%3.1f < t < %3.1f ',tim1,tim2);
@@ -110,11 +111,11 @@ function plot3d()
     set(gca,'NextPlot','add')
     
     %if ~isempty(coastline)
-    %l = coastline(:,1) < s1  & coastline(:,1) > s2 & coastline(:,2) < s3 & coastline(:,2) > s4| coastline(:,1) == inf;
+    %l = coastline(:,1) < s1_east  & coastline(:,1) > s2_west & coastline(:,2) < s3_north & coastline(:,2) > s4_south| coastline(:,1) == inf;
     %pl1 =plot3(coastline(l,1),coastline(l,2),ones(length(coastline(l,:)),1)*0,'k');
     %end
     if ~isempty(faults)
-        l = faults(:,1) < s1  & faults(:,1) > s2 & faults(:,2) < s3 & faults(:,2) > s4| faults(:,1) == inf;
+        l = faults(:,1) < s1_east  & faults(:,1) > s2_west & faults(:,2) < s3_north & faults(:,2) > s4_south| faults(:,1) == inf;
         pl1 =plot3(faults(l,1),faults(l,2),ones(length(faults(l,:)),1)*0,'k');
     end
     if ~isempty(mainfault)
@@ -130,7 +131,7 @@ function plot3d()
         set(pl3b,'LineWidth',3.0)
     end
     
-    axis([ min(ZG.primeCatalog.Longitude) max(ZG.primeCatalog.Longitude) min(ZG.primeCatalog.Latitude) max(ZG.primeCatalog.Latitude) min(-ZG.primeCatalog.Depth) max(-ZG.primeCatalog.Depth)  ])
+    axis([ min(globalcatalog.Longitude) max(globalcatalog.Longitude) min(globalcatalog.Latitude) max(globalcatalog.Latitude) min(-globalcatalog.Depth) max(-globalcatalog.Depth)  ])
     orient tall
     
     set(gca,'box','on',...

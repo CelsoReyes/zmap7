@@ -19,4 +19,5 @@ classdef ZmapGlobal
     properties (Constant)
         Data = ZmapData % handle-based class containing global variables & constants
     end
+    
 end

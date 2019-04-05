@@ -73,6 +73,13 @@ classdef McMethods < uint32
             s =string(methods);
             % s = strjoin(arrayfun(@McMethods.taggeddescription, methods), '|');
         end
+        function tf = acceptsMagnitudes(val)
+            % true if the calculation can be passed magnitudes instead of full catalogs
+            % 
+            % compares against functions known to require more information than magnitudes,
+            % thus requireing a full catalog.
+            tf = val ~= McMethods.McEMR && val ~= McMethods.McDueB_Bootstrap;
+        end
     end
 end
     

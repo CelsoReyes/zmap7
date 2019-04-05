@@ -45,10 +45,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     
     methods
         function obj = ReasenbergDeclusterClass(catalog, varargin)
-            % BVALGRID 
-            % obj = BVALGRID() takes catalog, grid, and eventselection from ZmapGlobal.Data
-            %
-            % obj = BVALGRID(ZAP) where ZAP is a ZmapAnalysisPkg
+            % ReasenbergDeclusterClass
             
             obj@ZmapFunction(catalog);
             
@@ -126,21 +123,6 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             % modified by Celso Reyes, 2017
             
             
-            report_this_filefun();
-            
-            % FIXME this apparently can return empty clusters (?)
-            
-            %declaration of global variables
-            %
-            %global clus % number of the cluster with which this event is associated.
-            % global eqtime   %time of all earthquakes catalogs
-            % global k k1 bg mbg bgevent bgdiff          %indices
-            % global equi %[OUT]
-            % global clust
-            % global clustnumbers
-            % global cluslength %[OUT]
-            %  global taumin taumax
-            % global xk xmeff P
             
             
             max_mag_in_cluster=[];
@@ -156,7 +138,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             tau_max = days(obj.taumax);
             
             %calculation of the eq-time relative to 1902
-            eqtime = clustime(obj.RawCatalog);
+            eqtime = days( obj.RawCatalog.Date - min(obj.RawCatalog.Date) );
             
             %variable to store information whether earthquake is already clustered
             clus = zeros(1,obj.RawCatalog.Count);
@@ -183,10 +165,13 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                 % variable needed for distance and timediff
                 my_cluster = clus(i);
                 alreadyInCluster = my_cluster~=0;
+                not_classified = my_cluster==0;
+                assert(not_classified~=alreadyInCluster)
                 
                 % attach interaction time
-                
-                if alreadyInCluster  
+                if not_classified
+                    look_ahead_days = tau_min;
+                else
                     if my_mag >= max_mag_in_cluster(my_cluster)
                         max_mag_in_cluster(my_cluster) = my_mag;
                         idx_biggest_event_in_cluster(my_cluster) = i;
@@ -196,78 +181,90 @@ classdef ReasenbergDeclusterClass < ZmapFunction
                         look_ahead_days = clustLookAheadTime(obj.xk, max_mag_in_cluster(my_cluster), obj.xmeff, bgdiff, obj.P);
                         look_ahead_days = confine_value(look_ahead_days, tau_min, tau_max);
                     end
-                else
-                    look_ahead_days = tau_min;
                 end
                 
                 %extract eqs that fit interation time window
-                [~,ac] = timediff(i, look_ahead_days, clus, eqtime);
+                temporal_evs = timediff(i, look_ahead_days, clus, eqtime); %local version
                 
                 
                 
+                if isempty(temporal_evs)
+                    continue;
+                end
                 
-                if ~isempty(ac)   %if some eqs qualify for further examination
-                    
-                    rtest1 = interactzone_in_clust_km(i);
-                    if look_ahead_days == obj.taumin
-                        rtest2 = 0;
+                % ---------------------------
+                % only continue if events passed the time test
+                % ---------------------------
+                
+                rtest1 = interactzone_in_clust_km(i);
+                if look_ahead_days == obj.taumin
+                    rtest2 = 0;
+                else
+                    rtest2 = interactzone_main_km(idx_biggest_event_in_cluster(my_cluster));
+                end
+                
+                if alreadyInCluster                % if i is already related with a cluster
+                    tm1 = clus(temporal_evs) ~= my_cluster;  % eqs with a clustnumber different than i
+                    if any(tm1)
+                        temporal_evs = temporal_evs(tm1);
+                    end
+                    bg_ev_for_dist = idx_biggest_event_in_cluster(my_cluster);
+                else
+                    bg_ev_for_dist = i;
+                end
+                
+                %calculate distances from the epicenter of biggest and most recent eq
+                [dist1,dist2]=distance2(i,bg_ev_for_dist,temporal_evs, obj.RawCatalog);
+                
+                %extract eqs that fit the spatial interaction time
+                sl0 = dist1<= rtest1 | dist2<= rtest2;
+                
+                if ~any(sl0)
+                    continue
+                end
+                
+                % ----------
+                % only continue if events passed the distance test
+                % ----------
+                
+                ll = temporal_evs(sl0);            %eqs that fit spatial and temporal criterion
+                lla = ll(clus(ll)~=0);   %eqs which are already related with a cluster
+                llb = ll(clus(ll)==0);   %eqs that are not already in a cluster
+                if ~isempty(lla)         %find smallest clustnumber in the case several
+                    sl1 = min(clus(lla));     %numbers are possible
+                    if alreadyInCluster
+                        my_cluster = min([sl1, my_cluster]);
                     else
-                        rtest2 = interactzone_main_km(idx_biggest_event_in_cluster(my_cluster));
+                        my_cluster = sl1;
+                    end
+                    if clus(i)==0
+                        clus(i) = my_cluster;
+                    end
+                    % merge related clusters together into cluster with the smallest number
+                    sl2 = lla(clus(lla) ~= my_cluster);
+                    if clus(i) ~= my_cluster
+                        clus(clus==clus(i)) = my_cluster;
                     end
                     
-                    if alreadyInCluster                % if i is already related with a cluster
-                        tm1 = clus(ac) ~= my_cluster;  % eqs with a clustnumber different than i
-                        if any(tm1)
-                            ac = ac(tm1);
+                    for j1 = sl2
+                        if clus(j1) ~= my_cluster
+                            clus(clus==clus(i)) = my_cluster;
                         end
-                        bg_ev_for_dist = idx_biggest_event_in_cluster(my_cluster);
-                    else
-                        bg_ev_for_dist = i;
                     end
+                end
+                
+                if my_cluster==0   %if there was neither an event in the interaction zone nor i, already related to cluster
+                    k = k+1;                         %
+                    my_cluster = k;
+                    clus(i) = my_cluster;
+                    max_mag_in_cluster(my_cluster) = my_mag;
+                    idx_biggest_event_in_cluster(my_cluster) = i;
+                end
+                
+                if size(llb)>0     % attach clustnumber to events yet unrelated to a cluster
+                    clus(llb) = my_cluster;  %
+                end
                     
-                    %calculate distances from the epicenter of biggest and most recent eq
-                    [dist1,dist2]=distance2(i,bg_ev_for_dist,ac, obj.RawCatalog);
-                    
-                    %extract eqs that fit the spatial interaction time
-                    sl0 = dist1<= rtest1 | dist2<= rtest2;
-                    
-                    if any(sl0)             %if some eqs qualify for further examination
-                        ll = ac(sl0);            %eqs that fit spatial and temporal criterion
-                        lla = ll(clus(ll)~=0);   %eqs which are already related with a cluster
-                        llb = ll(clus(ll)==0);   %eqs that are not already in a cluster
-                        if ~isempty(lla)         %find smallest clustnumber in the case several
-                            sl1 = min(clus(lla));     %numbers are possible
-                            if alreadyInCluster
-                                my_cluster = min([sl1, my_cluster]);
-                            else
-                                my_cluster = sl1;
-                            end
-                            if clus(i)==0
-                                clus(i) = my_cluster;
-                            end
-                            % merge related clusters together into cluster with the smallest number
-                            sl2 = lla(clus(lla) ~= my_cluster);
-                            for j1 = [i,sl2]
-                                if clus(j1) ~= my_cluster
-                                    clus(clus==clus(j1)) = my_cluster;
-                                end
-                            end
-                        end
-                        
-                        if my_cluster==0   %if there was neither an event in the interaction zone nor i, already related to cluster
-                            k = k+1;                         %
-                            my_cluster = k;
-                            clus(i) = my_cluster;
-                            max_mag_in_cluster(my_cluster) = my_mag;
-                            idx_biggest_event_in_cluster(my_cluster) = i;
-                        end
-                        
-                        if size(llb)>0     % attach clustnumber to events yet unrelated to a cluster
-                            clus(llb) = my_cluster * ones(1,length(llb));  %
-                        end
-                        
-                    end       %if ac
-                end         %if sl0
             end
             
             close(wai);
@@ -287,13 +284,13 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             details.isBiggest               = false(size(details.clusterNumber));
             details.isBiggest(idx_biggest_event_in_cluster) = true;
             
-            details.Latitude                = obj.RawCatalog.Latitude;
+            details.Latitude                = obj.RawCatalog.Y;
             details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Longitude               = obj.RawCatalog.Longitude;
+            details.Longitude               = obj.RawCatalog.X;
             details.Properties.VariableUnits(width(details)) = {'degrees'};
             
-            details.Depth                   = obj.RawCatalog.Depth;
+            details.Depth                   = obj.RawCatalog.Z;
             details.Properties.VariableUnits(width(details)) = {'kilometers'};
             
             details.Magnitude               = obj.RawCatalog.Magnitude;
@@ -351,9 +348,7 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             end
             
             ZG              = ZmapGlobal.Data;
-            ZG.original     = obj.RawCatalog;       %save catalog in variable original
-            %ZG.newcat       = ZG.primeCatalog;
-            %ZG.storedcat    = ZG.original;
+            ZG.original     = obj.RawCatalog;    %save catalog in variable original
             ZG.cluscat      = ZG.original.subset(clus(clus~=0));
             
             % save declustered catalog to workspace
@@ -413,10 +408,12 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     methods(Static)
-        function h = AddMenuItem(parent,catalog)
+        function h = AddMenuItem(parent, catalog, varargin)
             % create a menu item
-            label='Reasenberg Decluster';
-            h = uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog));
+            label = 'Reasenberg Decluster';
+            h = uimenu(parent, 'Label', label,...
+                MenuSelectedField(), @(~,~)ReasenbergDeclusterClass(catalog),...
+                varargin{:});
         end
         
         
@@ -479,5 +476,51 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     
+end
+
+%% helper 
+function ac  = timediff(clus_idx, look_ahead_time, clus, eqtimes)
+    % TIMEDIFF calculates the time difference between the ith and jth event
+    % works with variable eqtime from function CLUSTIME
+    % gives the indices ac of the eqs not already related to cluster k1
+    % eqtimes should be sorted!
+    %
+    % clus_idx : ith cluster (ci)
+    % look_ahead : look-ahead time (tau)
+    % clus: clusters (length of catalog)
+    % eqtimes: datetimes for event catalog, in days  [did not use duration because of overhead]
+    %
+    % tdiff: is time between jth event and eqtimes(clus_idx)
+    % ac: index of each event within the cluster
+    
+    %assert(clus_idx <100, 'testing. remove me')
+    
+    comparetime = eqtimes(clus_idx);
+    
+    first_event = clus_idx + 1; % in cluster
+    last_event = numel(eqtimes);
+    max_elapsed = comparetime + look_ahead_time;
+    
+    if eqtimes(end) >= max_elapsed
+        last_event = find(eqtimes(first_event : last_event) < max_elapsed, 1, 'last') + clus_idx;
+    end
+        
+    if first_event == last_event
+        % no additional events were found.
+        ac = [];
+        return
+    end
+    
+    this_clusternum = clus(clus_idx);
+    
+    range = first_event : last_event;
+    
+    if this_clusternum == 0
+        ac = range;
+    else
+        % indices of eqs not already related to this cluster
+        ac = (find(clus(range) ~= this_clusternum)) + clus_idx;
+    end
+    ac = ac(:);
 end
 

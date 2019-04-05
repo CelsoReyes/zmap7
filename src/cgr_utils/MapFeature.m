@@ -27,8 +27,8 @@ classdef MapFeature < handle
     % % PLOT FEATURE ON "NORMAL" PLOT AXES
     % % - SET UP THE AXES
     % ax1=subplot(1,2,1);
-    % ylim(ax1,bounds2(ZG.primeCatalog.Latitude));
-    % xlim(ax1,bounds2(ZG.primeCatalog.Longitude));
+    % ylim(ax1,bounds2(ZG.primeCatalog.Y));
+    % xlim(ax1,bounds2(ZG.primeCatalog.X));
     % title(ax1,'normal plot')
     %
     % % PLOT FEATURE ON "MAP" PLOT AXES

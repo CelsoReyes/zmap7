@@ -166,9 +166,9 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 		if size(suitableEq)~=0   %if some eqs qualify for further examination
 	      		
 			if ~isnan(oldClustID)                     % if i is already related with a cluster
-			 	tmp1=find(clusterID(suitableEq)~=oldClustID);       %eqs with a clustnumber different than i
+			 	tmp1 = clusterID(suitableEq)~=oldClustID;       %eqs with a clustnumber different than i
 			 
-			 	if ~isempty(tmp1)
+			 	if any(tmp1)
 			 		suitableEq=suitableEq(tmp1); 
 			 	end
 			 	%may not be needed as ReasTimediff does something similar
@@ -200,7 +200,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	      
 	      
 	      		%extract eqs that fit the spatial interaction time (time&spatial? probably a typo DE)         
-			inRange0=find(dist1<= rtest1 | dist2<= rtest2); %sl0
+			inRange0=dist1<= rtest1 | dist2<= rtest2; %sl0
 			
 			
 			%dist1 seems to be distance between current event and all other event pausible (ac) and dist2 seems to be
@@ -211,12 +211,12 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 					
 			%Here the cluster indexes are set and clusters merged (DE)
 			%--
-			if size(inRange0)~=0    %if some eqs qualify for further examination
+			if any(inRange0)    %if some eqs qualify for further examination
 				inRanTim=suitableEq(inRange0);      %ll %eqs that fit spatial and temporal criterion 
 				inRanTimA=inRanTim(~isnan(clusterID(inRanTim))); %lla   %eqs which are already related with a cluster
 				inRanTimB=inRanTim(isnan(clusterID(inRanTim))); %llb   %eqs that are not already in a cluster
-				%inRanTimA=suitableEq(find(~isnan(clusterID(inRanTim))));
-				%inRanTimB=suitableEq(find(isnan(clusterID(inRanTim))));
+				%inRanTimA=suitableEq(~ismissing(clusterID(inRanTim)));
+				%inRanTimB=suitableEq(~(ismissing(clusterID(inRanTim)));
 				%this could be written better without the find command (DE) (used logical indexes)
 				
 				
@@ -235,7 +235,7 @@ function [clusterID,EventType,AlgoInfo] = ReasenbergDecluster(taumin,taumax,xk,x
 	      
 					%merge all related clusters together in the cluster with the smallest number
 					smallTwo=inRanTimA(clusterID(inRanTimA)~=oldClustID); %sl2       
-					%smallTwo=inRanTimA(find(clusterID(inRanTimA)~=oldClustID)); %sl2
+					%smallTwo=inRanTimA(clusterID(inRanTimA)~=oldClustID); %sl2
 			
 					%Hmmm, again a for-loop, there might be a way to prefent this (DE)
 					for j1=[i,smallTwo]

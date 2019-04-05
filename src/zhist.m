@@ -45,10 +45,10 @@ function zhist()
     rect = [0.25,  0.18, 0.60, 0.70];
     axes('position',rect)
     set(gca,'NextPlot','add')
-    [m,n] = size(ZG.valueMap);
-    reall = reshape(ZG.valueMap,1,m*n);
-    l = isnan(reall);
-    reall(l) = [];
+    reall = ZG.valueMap(~ismissing(ZG.valueMap))
+    if ~isrow(reall)
+        reall=reall(:)'
+    end
     [n,x] =hist(reall,30);
     bar(x,n,'k');
     grid
