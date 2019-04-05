@@ -34,7 +34,7 @@ function plot_McBwtime(catalog, sPar)
     zdlg.AddMcMethodDropdown('methodChoice', default_method);
     zdlg.AddEdit('nSampleSize'   , 'Sample window size' , nSampleSize   , 'number of events in each window');
     zdlg.AddEdit('minEventCount' , 'Min. # of events'   , minEventCount , 'minimum number of events in order to calc. window');
-    zdlg.AddEdit('nOverlap'      , 'Window overlap'     , nOverlap      , 'Samplesize/nOverlap determines overlap of moving windows');
+    zdlg.AddEdit('nOverlap'      , 'Window overlap (%)'     , nOverlap      , 'Samplesize/nOverlap determines overlap of moving windows');
     zdlg.AddEdit('nBstSample'    , 'Bootstraps'         , nBstSample    , 'Number of samples in bootstrap(?)');
     zdlg.AddEdit('fMcCorr'       , 'Mc correction'      , fMcCorr       , 'correction for the magnitude of completeness');
     zdlg.AddEdit('fBinning'      , 'Magnitude Binning'  , fBinning      , 'size of magnitude bins');

@@ -341,7 +341,7 @@ classdef (Sealed) CumTimePlot < handle
             
             %The following instruction calls a program for the computation of the parameters in Omori formula, for the catalog of which the cumulative number graph" is
             %displayed (the catalog mycat).
-            uimenu(op5,'Label','Completeness in days after mainshock', msfield,@(~,~)mcwtidays(obj.catalog))
+            uimenu(op5,'Label','Completeness in days relative to mainshock', msfield,@(~,~)mcwtidays(obj.catalog))
             uimenu(op5,'Label','Define mainshock',...
                 'Enable','off', msfield, @cb_016);
             uimenu(op5,'Label','Estimate p',msfield,@cb_pestimate);

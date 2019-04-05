@@ -18,7 +18,7 @@ function bwithti(mycat)
     me = [];
 
     sdlg.prompt='Number of events in each window';sdlg.value=150
-    sdlg(2).prompt='Overlap factor';sdlg(2).value=5;
+    sdlg(2).prompt='Overlap [%]';sdlg(2).value=5;
     
     [~,~, ni, ofac] = smart_inputdlg('b with depth input parameters',sdlg) 
     
@@ -27,8 +27,8 @@ function bwithti(mycat)
         'Automatic','Fixed Mc=Mmin','Money');
     
     
-    
-    for i = 1:ni/ofac:mycat.Count-ni
+    stride = max(round(ni .* ofac ./ 100) , 1);
+    for i = 1:stride : mycat.Count-ni
         
         b = mycat.subset(i:i+ni);
         

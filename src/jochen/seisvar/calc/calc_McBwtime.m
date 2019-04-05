@@ -58,8 +58,8 @@ function [result] = calc_McBwtime(catalog, varargin)
     % fMinMag = min(catalog.Magnitude);
     fMaxMag = max(catalog.Magnitude);
     
-    stride = nSampleSize / p.Results.nOverlap;
-    windowStarts = 1 : stride : catalog.Count-nSampleSize ;
+    stride = max(round(nSampleSize .* p.Results.nOverlap ./ 100), 1);
+    windowStarts = 1 : stride : catalog.Count - nSampleSize ;
     windowEnds = windowStarts + nSampleSize - 1;
     nWindows = numel(windowStarts);
     
