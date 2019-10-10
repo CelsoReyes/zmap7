@@ -104,7 +104,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             forecast_to_date = learn_to_date + obj.forec_period;
             l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > obj.minThreshMag;
             
-            assert(any(l),'no events meet the criteria of being after the mainshock ,and greater than threshold magnitude');
+            assert(any(l),'no events meet the criteria of being after the mainshock and greater than threshold magnitude');
             
             obj.RawCatalog=obj.RawCatalog.subset(l);
             ZG.newt2=obj.RawCatalog;
@@ -153,7 +153,7 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
                 
             end
             
-            function out=calculation_function(catalog)
+            function out = calculation_function(catalog)
                 
                 error('hey developer, finish editing the prep_catalog function first')
                 [cat_learn, cat_forecast] = prep_catalog(catalog);

@@ -26,6 +26,8 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     % get list of data providers that support the FDSN Event query
     persistent datacenter_details
     
+
+    
     % Filter function switchyard
     if nFunction == FilterOp.getDescription
         uOutput = 'FDSNWS Events (text) - import ascii data downloaded from one of the FDSN webservice datacenters';
@@ -33,6 +35,14 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     end
     if nFunction == FilterOp.getWebpage
         uOutput = 'fdsntext.html'; % location of fdsn format documentation
+        return
+    end
+    
+    % make sure we are connected to internet
+    if ~haveInet('service.iris.edu')
+        msg.errordisp('Cannot connect to the datacenter server. Perhaps this machine is not connected to the internet?');
+        uOutput = []; 
+        ok = false;
         return
     end
     
@@ -349,3 +359,12 @@ function resp = get_low_level_fdsn_query(uri)
     
 end
 
+function tf = haveInet(server)
+    % returns true if able to connect to the internet
+    % adapted from  Stack Overflow: https://stackoverflow.com/a/19560468/949344
+  tf = false;
+  try %#ok<TRYNC>
+    [~] = java.net.InetAddress.getByName(server);
+    tf = true;
+  end
+end

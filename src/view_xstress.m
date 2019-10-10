@@ -1,4 +1,4 @@
-function view_xstress(lab1,valueMap)
+function view_xstress(lab1, valueMap)
     % Script to display results creates with cross_stress.m
     %
     % Needs valueMap, gx, gy, stri
@@ -137,42 +137,42 @@ function view_xstress(lab1,valueMap)
         
         % Menu Select
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedField(),@cb_refresh)
         uimenu(options,'Label','Select N closest EQs',...
-            MenuSelectedField(),@callbackfun_002)
+            MenuSelectedField(),@cb_select_n_closest)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedField(),@callbackfun_003)
+            MenuSelectedField(),@cb_select_eq_in_circle_constr)
         uimenu(options,'Label','Select EQ in Polygon',...
-            MenuSelectedField(),@callbackfun_004)
+            MenuSelectedField(),@cb_select_eq_in_poly)
         
         % Menu Maps
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','Variance',...
-            MenuSelectedField(),@callbackfun_005)
+            MenuSelectedField(),@cb_sigma)
         uimenu(op1,'Label','Phi',...
-            MenuSelectedField(),@callbackfun_006)
+            MenuSelectedField(),@cb_phi)
         uimenu(op1,'Label','Trend S1',...
-            MenuSelectedField(),@callbackfun_007)
+            MenuSelectedField(),@cb_s1trend)
         uimenu(op1,'Label','Plunge S1',...
-            MenuSelectedField(),@callbackfun_008)
+            MenuSelectedField(),@cb_s1plunge)
         uimenu(op1,'Label','Trend S2',...
-            MenuSelectedField(),@callbackfun_009)
+            MenuSelectedField(),@cb_s2trend)
         uimenu(op1,'Label','Plunge S2',...
-            MenuSelectedField(),@callbackfun_010)
+            MenuSelectedField(),@cb_s2plunge)
         uimenu(op1,'Label','Trend S3',...
-            MenuSelectedField(),@callbackfun_011)
+            MenuSelectedField(),@cb_s3trend)
         uimenu(op1,'Label','Plunge S3',...
-            MenuSelectedField(),@callbackfun_012)
+            MenuSelectedField(),@cb_s3plunge)
         uimenu(op1,'Label','Angular misfit',...
-            MenuSelectedField(),@callbackfun_013)
+            MenuSelectedField(),@cb_beta)
         uimenu(op1,'Label','\tau spread',...
-            MenuSelectedField(),@callbackfun_014)
+            MenuSelectedField(),@cb_tau)
         uimenu(op1,'Label','Resolution map (const. Radius)',...
-            MenuSelectedField(),@callbackfun_015)
+            MenuSelectedField(),@cb_resolution)
         uimenu(op1,'Label','Resolution map',...
-            MenuSelectedField(),@callbackfun_016)
+            MenuSelectedField(),@cb_nevents)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
-            MenuSelectedField(),@callbackfun_017)
+            MenuSelectedField(),@cb_s1trend_to_strike)
         %uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         % Menu Display
@@ -181,14 +181,14 @@ function view_xstress(lab1,valueMap)
     
     %% callback functions
     
-    function callbackfun_001(mysrc,myevt)
+    function cb_refresh(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         valueMap = r;
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_002(mysrc,myevt)
+    function cb_select_n_closest(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -200,7 +200,7 @@ function view_xstress(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_003(mysrc,myevt)
+    function cb_select_eq_in_circle_constr(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1 = gca;
@@ -212,7 +212,7 @@ function view_xstress(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_004(mysrc,myevt)
+    function cb_select_eq_in_poly(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         h1=gca;
@@ -224,7 +224,7 @@ function view_xstress(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_005(mysrc,myevt)
+    function cb_sigma(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\sigma';
@@ -232,7 +232,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_006(mysrc,myevt)
+    function cb_phi(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\Phi';
@@ -240,7 +240,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_007(mysrc,myevt)
+    function cb_s1trend(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend [deg]';
@@ -248,7 +248,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_008(mysrc,myevt)
+    function cb_s1plunge(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 plunge [deg]';
@@ -256,7 +256,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_009(mysrc,myevt)
+    function cb_s2trend(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 trend [deg]';
@@ -264,7 +264,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_010(mysrc,myevt)
+    function cb_s2plunge(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S2 plunge [deg]';
@@ -272,7 +272,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_011(mysrc,myevt)
+    function cb_s3trend(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 trend [deg]';
@@ -280,7 +280,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_012(mysrc,myevt)
+    function cb_s3plunge(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S3 plunge [deg]';
@@ -288,7 +288,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_013(mysrc,myevt)
+    function cb_beta(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\beta [deg]';
@@ -296,7 +296,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_014(mysrc,myevt)
+    function cb_tau(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='\tau [deg]';
@@ -304,7 +304,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_015(mysrc,myevt)
+    function cb_resolution(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Radius in [km]';
@@ -312,7 +312,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_016(mysrc,myevt)
+    function cb_nevents(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='Number of events';
@@ -320,7 +320,7 @@ function view_xstress(lab1,valueMap)
         view_xstress(lab1,valueMap);
     end
     
-    function callbackfun_017(mysrc,myevt)
+    function cb_s1trend_to_strike(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
         lab1='S1 trend to strike [deg]';

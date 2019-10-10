@@ -58,9 +58,9 @@ function zmap(varargin)
     
     
     % advise matlab where it can find everything zmap
-    if ~exist('set_zmap_paths','var')
+    if ~exist('set_zmap_paths','file')
         p = mfilename('fullpath'); 
-        p(end-length(mfilename) : end)=[];
+        p(end-length(mfilename) : end) = [];
         addpath(fullfile(p,'src'));
     end
     set_zmap_paths;

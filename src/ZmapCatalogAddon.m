@@ -1,5 +1,5 @@
 classdef (ConstructOnLoad, Abstract)ZmapCatalogAddon < matlab.mixin.Copyable
-    % ZMAPCATALOGADDON is a base class for add-ons to a zmap catalog. FOr exaample, Moment Tensors
+    % ZMAPCATALOGADDON is a base class for add-ons to a zmap catalog. For example, Moment Tensors
     properties(Abstract, Constant)
         Type
     end

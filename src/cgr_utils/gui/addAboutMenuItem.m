@@ -66,7 +66,7 @@ function aboutZmapDialog()
     tooltipMsg = ['<html><b>', strrep(citationText, '. ' , '.<br>'), '</b>', ...
         '<br><br>Left-click for copy options'];
     
-    contributors = fileread('ZmapContributorList.txt');
+    contributors = fileread('docs/ZmapContributorList.txt');
     
     % create the window
     
