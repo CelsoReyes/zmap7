@@ -292,7 +292,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             % CAT combines two catalogs
             % combinedCatalog = cat(catalogA, catalogB)
             % duplicates are not removed
-            initialCount = objA.Count + objB.Count;
             obj = copy(objA);
             
             
@@ -325,7 +324,6 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 end
                 
             end
-            % assert(obj.Count == initialCount);
             
             
         end
@@ -450,7 +448,8 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 case 'datetime'
                     rt = obj.Date - datetime;
                 otherwise
-                    error('do not know how to compare to a .. try giving a specific date');
+                    error('ZMAP:ZmapCatalog:relativeTimes:unknownComparison',...
+                        'do not know how to compare to a %s try giving a specific date',class(other));
             end
         end
         
@@ -539,7 +538,8 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             %
             % see also selectClosestEvents, selectRadius, EventSelectionParameters
             if ~(esp.UseEventsInRadius || esp.UseNumClosestEvents)
-                error('Error: No selection criteria was chosen. Results would be one value (based on entire catalog) repeated');
+                error('ZMAP:ZmapCatalog:selectCircle:NoCriteriaChosen',...
+                    'Error: Neither selection criteria was chosen. Results would be one value (repeated)');
             end
             [dists, distunits] = obj.distanceTo(y, x, z);
             
@@ -624,7 +624,8 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             % see also sortedByDistanceTo
             
             if ~isprop(obj, field)
-                error('%s is not a valid property of a ZmapCatalog', field);
+                error('ZMAP:ZmapCatalog:sort:invalidSortField',...
+                    '%s is not a valid property of a ZmapCatalog', field);
             end
             if ~exist('direction', 'var')
                 direction = 'ascend';
@@ -668,10 +669,10 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                     range = true(cnt, 1);
                 end
                 if ~any(size(range) == cnt)
-                    error('When using logical indexing, one dimension must be the length of the catalog')
+                    error('ZMAP:ZmapCatalog:subset:invalidDimension','When using logical indexing, one dimension must be the length of the catalog')
                 end
             elseif ~isvector(range)
-                error('multiple concurrent subsets not supported')
+                error('ZMAP:ZmapCatalog:subset:tooManySubsets','multiple concurrent subsets not supported')
             end
             
             the_fields = obj.fields_that_must_be_nevent_length();
@@ -831,7 +832,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             flds =  obj.fields_that_must_be_nevent_length();
             data_lengths = unique(cellfun(data_len_fn, flds));
             if numel(unique(data_lengths)) ~= 1
-                error( 'not all data fields are same length: %s', mat2str(data_lengths));
+                error( 'ZMAP:ZmapCatalog:validate:inconsistentFieldLengths', 'not all data fields are same length: %s', mat2str(data_lengths));
             end
             expected_len = data_lengths(1);
             data_len_fn = @(x) isempty(obj.(x)) || numel(obj.(x)) == expected_len; % returns TF vector
@@ -839,7 +840,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             flds = obj.possibly_empty_fields();
             data_len_ok = cellfun(data_len_fn, flds );
             if ~all(data_lengths_ok)
-                error('incorrect field lengths for: %s', strjoin(flds(~data_len_ok), ','));
+                error('ZMAP:ZmapCatalog:validate:incorrectFieldLengths','incorrect field lengths for: %s', strjoin(flds(~data_len_ok), ','));
             end
         end
     end
@@ -882,7 +883,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             dists     = sqrt( dists .^ 2 + delta_dep .^ 2);
             units     = obj.RefEllipsoid.LengthUnit;
             else
-                error('For geodetic hypocentral distance, the ref ellipsoid must be kilometer, not %s',...
+                error('ZMAP:ZmapCatalog:incompatibleLengthUnit','For geodetic hypocentral distance, the ref ellipsoid must be kilometer, not %s',...
                     obj.RefEllipsoid.LengthUnit);
             end
         end
@@ -906,13 +907,17 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             elseif isa(other, 'ZmapCatalog')
                 obj = copy(other);
             else
-                error('ZmapCatalog doesn''t know how to be created from this item')
+                error('ZMAP:ZmapCatalog:unableToConvertfrom',...
+                    'There is no known method to create a ZmapCatalog from a %s', class(other))
             end
         end
         
         function obj = fromTable(other)
             % catalog = ZMAPCATALOG(table) create a catalog from a table
-            assert(istable(other))                          % ZMAPCATALOG(table)
+            if ~istable(other)
+                error('ZMAP:ZmapCatalog:unableToConvertFrom',...
+                      'attempted to create a ZmapCatalog from a table, but was instead provided a %s',class(other));
+            end                          % ZMAPCATALOG(table)
             
             other = table2zmapcatalogtable(other);
             obj=ZmapCatalog();
@@ -953,7 +958,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             
             validArray = isnumeric(other) && nCols >= 9 ...
                 && all(abs(other(:,1)) <= 180)  ... check longitude
-                && all(abs(other(:,2) <= 90)) ... check latitude
+                && all(abs(other(:,2)) <= 90) ... check latitude
                 && all(other(:,4) > 0) && all(other(:,4) <= 12) ... check month
                 && all(other(:,8) >= 0) && all(other(:,8) <= 24) ... check hour
                 && all(other(:,9) >= 0) && all(other(:,9) <= 60); % check minute
@@ -963,12 +968,12 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             end
             
             if ~validArray 
-                error(['Expected 9 or 10 column numeric matrix, containing:\n',...
+                error('ZMAP:ZmapCatalog:unableToConvertFrom', ['(older) Zmap Arrays are Expected to be 9 or 10 column numeric matrix, containing:\n',...
               '[ lon lat decyr month day mag dep hr min [sec] ]']')
             end
             
             if ~any(other(:,3) > 100) && all(other(:,3)>=0)
-                error(['The catalog dates appear to have 2-digits years.',...
+                error('ZMAP:ZmapCatalog:ambiguousDates', ['The catalog dates appear to have 2-digits years.',...
                 ' Change to 4-digit years before importing']);
             end
             
@@ -987,10 +992,10 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             if ~exist('refEllipse', 'var')
                 refEllipse = referenceEllipsoid('earth', 'kilometer');
             end
-            
-            assert(~iscartesian(ZmapCatalog.DefaultRefEllipsoid()),...
+            if iscartesian(ZmapCatalog.DefaultRefEllipsoid()),...
+                error('ZMAP:ZmapCatalog:incompatibleRefEllipsoid',...
                 'ZMAP arrays are in Lat-Lon, and is incompatible with this ZMAP session, which is in cartesian mode');
-                        
+            end   
             obj = ZmapCatalog();
             other(:, 7) = other(:, 7) .* unitsratio(obj.LengthUnit, refEllipse.LengthUnit);
             obj.XYZ = other(:, [1, 2, 7]);
@@ -1012,7 +1017,10 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj=ZmapCatalog();
             if isfield(other, 'Name'), obj.Name = other.Name;end
             if isfield(other, 'Date')
-                assert(isdatetime(other.Date))
+                if ~isdatetime(other.Date)
+                    error('ZMAP:ZmapCatalog:unableToConvertFrom',...
+                        'Incoming dates must have datetime values, not %s',class(other.Date))
+                end
                 obj.Date = other.Date(:);
             end
             if isfield(other, 'XYZ')
@@ -1022,7 +1030,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             elseif isfield(other, 'X')
                 obj.XYZ=[other.X(:), other.Y(:), other.Z(:)];
             else
-                error('unable to determine XYZ or Latitude/Longitude/Depth')
+                error('ZMAP:ZmapCatalog:unableToConvertFrom',...
+                    ['unable to determine XYZ or Latitude/Longitude/Depth. Please make sure the',...
+                    ' field names are exact. ''XYZ'' or ''Latitude'',''Longitude'', and ''Depth'''])
             end
             if isfield(other, 'Magnitude')
                 obj.Magnitude = other.Magnitude(:);

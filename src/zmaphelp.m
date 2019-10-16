@@ -1,5 +1,5 @@
-function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
-    % HELPFUN Utility function for displaying help text conveniently.
+function zmaphelp(titleStr,helpStr1,helpStr2,helpStr3)
+    % ZMAPHELP Utility function for displaying help text conveniently.
     
     %	Ned Gulley, 6-21-93
     %	Copyright (c) 1984-94 by The MathWorks, Inc.
@@ -76,10 +76,8 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
         
         %====================================
         % Information for all buttons
-        labelColor=[0.8 0.8 0.8];
         top=0.95;
         bottom=0.05;
-        yInitPos=0.80;
         left=0.80;
         btnWid=0.15;
         btnHt=0.10;
@@ -112,7 +110,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
                 'String',labelStr, ...
                 'UserData',txtHndlList(count), ...
                 'Visible','off', ...
-                'callback',@callbackfun_001);
+                'callback',@cb_go_to_page);
         end
         
         %====================================
@@ -123,7 +121,7 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
             'Units','normalized', ...
             'Position',[left 0.05 btnWid 0.10], ...
             'String','Close', ...
-            'callback',@callbackfun_002);
+            'callback',@cb_close);
         
         hndlList=[ttlHndl txtHndlList btnHndlList];
         
@@ -159,18 +157,14 @@ function helpfun(titleStr,helpStr1,helpStr2,helpStr3)
     figure(figNumber);
     watchoff
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_go_to_page(~,~)
         txtHndl=get(gco,'UserData');
         hndlList=get(gcf,'UserData');
         set(hndlList(2:4),'Visible','off');
         set(txtHndl,'Visible','on');
     end
     
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_close(~,~)
         f1=gcf;
         f2=gpf;
         set(f1,'Visible','off');

@@ -1,8 +1,8 @@
 function [uOutput] = import_Iceland_2(nFunction, sFilename)
-
+% import 'Iceland 2 (unknown origin)'
 % Filter function switchyard
 if nFunction == FilterOp.getDescription
-  uOutput = 'Iceland Mw (Bergthora Iceland)';
+  uOutput = 'Iceland 2 (unknown origin)';
 elseif nFunction == FilterOp.getWebpage
   uOutput = '';
 elseif nFunction == FilterOp.importCatalog
@@ -30,7 +30,7 @@ elseif nFunction == FilterOp.importCatalog
           return
         end
       end
-      msg.fprintf('Import: Problem in line %d of %s. Line ignored.\n', nCnt, sFilename);
+      msg.fprintf('Import: problem in line %d of %s. Line ignored.\n', nCnt, sFilename);
       %uOutput(nCnt,:) = nan;
     end
   end
@@ -46,7 +46,7 @@ uEvent(2) = str2double(mData(i,21:28));  % Latitude
 uEvent(3) = str2num(mData(i,1:4));    % Year
 uEvent(4) = str2num(mData(i,5:6));    % Month
 uEvent(5) = str2num(mData(i,7:8));   % Day
-uEvent(6) = str2num(mData(i,47:51));  % Magnitude
+uEvent(6) = str2num(mData(i,48:51));  % Magnitude
 uEvent(7) = str2num(mData(i,40:45));  % Depth
 uEvent(8) = str2num(mData(i,10:11));  % Hour
 uEvent(9) = str2num(mData(i,12:13));  % Minute

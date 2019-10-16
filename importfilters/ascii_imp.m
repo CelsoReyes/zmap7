@@ -1,4 +1,5 @@
 function [uOutput,ok] = ascii_imp(nFunction, sFilename)
+    % impor ascii delimited files data
     
     ok=false;
     % Filter function switchyard
@@ -38,6 +39,7 @@ function tf = is_old_zmap_style(tb)
 end
     
 function tb = from_old_zmap_style(tb)
+    % relabel the zmap table columns [VariableNames] so that it can be automatically recognized
     if numel(tb.Properties.VariableNames) == 9
         tb.Properties.VariableNames = {...
             'Longitude', 'Latitude', 'Year','Month','Day','Magnitude','Depth','Hours','Minutes'};

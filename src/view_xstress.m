@@ -4,7 +4,9 @@ function view_xstress(lab1, valueMap)
     % Needs valueMap, gx, gy, stri
     %
     % last modified: J. Woessner, 02.2004
-    if isempty(lab1); lab1='';end; %CR
+    if isempty(lab1)
+        lab1='';
+    end %CR
     ZG=ZmapGlobal.Data;
     report_this_filefun();
     % Color shortcut
@@ -173,7 +175,6 @@ function view_xstress(lab1, valueMap)
             MenuSelectedField(),@cb_nevents)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
             MenuSelectedField(),@cb_s1trend_to_strike)
-        %uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         % Menu Display
         add_display_menu(1);
@@ -181,16 +182,12 @@ function view_xstress(lab1, valueMap)
     
     %% callback functions
     
-    function cb_refresh(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_refresh(~,~)
         valueMap = r;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_select_n_closest(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_n_closest(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -200,9 +197,7 @@ function view_xstress(lab1, valueMap)
         watchoff;
     end
     
-    function cb_select_eq_in_circle_constr(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_eq_in_circle_constr(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -212,9 +207,7 @@ function view_xstress(lab1, valueMap)
         watchoff;
     end
     
-    function cb_select_eq_in_poly(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_eq_in_poly(~,~)
         h1=gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -224,105 +217,79 @@ function view_xstress(lab1, valueMap)
         watchoff;
     end
     
-    function cb_sigma(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_sigma(~,~)
         lab1='\sigma';
         valueMap = mVariance;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_phi(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_phi(~,~)
         lab1='\Phi';
         valueMap = mPhi;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s1trend(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s1trend(~,~)
         lab1='S1 trend [deg]';
         valueMap = mTS1;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s1plunge(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s1plunge(~,~)
         lab1='S1 plunge [deg]';
         valueMap = mPS1;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s2trend(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s2trend(~,~)
         lab1='S2 trend [deg]';
         valueMap = mTS2;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s2plunge(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s2plunge(~,~)
         lab1='S2 plunge [deg]';
         valueMap = mPS2;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s3trend(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s3trend(~,~)
         lab1='S3 trend [deg]';
         valueMap = mTS3;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s3plunge(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s3plunge(~,~)
         lab1='S3 plunge [deg]';
         valueMap = mPS3;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_beta(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_beta(~,~)
         lab1='\beta [deg]';
         valueMap = mBeta;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_tau(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_tau(~,~)
         lab1='\tau [deg]';
         valueMap = mTau;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_resolution(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_resolution(~,~)
         lab1='Radius in [km]';
         valueMap = mResolution;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_nevents(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_nevents(~,~)
         lab1='Number of events';
         valueMap = mNumber;
         view_xstress(lab1,valueMap);
     end
     
-    function cb_s1trend_to_strike(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_s1trend_to_strike(~,~)
         lab1='S1 trend to strike [deg]';
         valueMap = mTS1Rel;
         view_xstress(lab1,valueMap);

@@ -220,7 +220,7 @@ function submenu = catalog_menu(obj, force)
         combine_catalogs;
     end
     
-    function cb_importer(src, ev, fun)
+    function cb_importer(~, ~, fun)
         f = get(groot,'CurrentFigure');
         f.Pointer = 'watch';
         drawnow('nocallbacks');

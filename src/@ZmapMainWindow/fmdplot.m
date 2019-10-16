@@ -101,7 +101,7 @@ function fmdplot(obj, tabgrouptag)
     
     
     
-    function crop_to_mc(src,ev, bdiffobj)
+    function crop_to_mc(~,~, bdiffobj)
         % should this crop the raw catalog?
         zdlg = ZmapDialog();
         zdlg.AddEdit('mc', "Cut Magnitude [Mc:" + bdiffobj.Result.Mc_value + "]", bdiffobj.Result.Mc_value,...

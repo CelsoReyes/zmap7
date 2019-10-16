@@ -141,7 +141,7 @@ classdef bdepth_ratio < ZmapHGridFunction
                 av = topav/botav;
                 
                 n = n1+n2;
-                ZG.overall_b_value = topbv;
+                obj.ZG.overall_b_value = topbv;
                 da = -2*n*log(n) + 2*n1*log(n1+n2 * topbv/botbv) + 2*n2*log(n1 * botbv/topbv + n2) - 2;
                 pr = (1  -  exp(-da/2-2))*100;
                 

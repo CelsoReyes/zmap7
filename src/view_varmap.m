@@ -1,4 +1,4 @@
-function view_varmap(lab1,valueMap)
+function view_varmap(lab1,valueMap, newgri, sor)
     % view_maxz plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
     % needs valueMap, gx, gy, stri
@@ -6,12 +6,7 @@ function view_varmap(lab1,valueMap)
     % define size of the plot etc.
     %
     ZG=ZmapGlobal.Data;
-    if ~exist('Prmap','var') || isempty(Prmap)
-        Prmap = nan(size(valueMap));
-    end
-
-    
-    report_this_filefun();
+    % Prmap = nan(size(valueMap));
     
     % Find out if figure already exists
     %
@@ -36,7 +31,9 @@ function view_varmap(lab1,valueMap)
         re4 = valueMap;
         
         colormap(jet)
-        ZG.tresh_km = nan; minpe = nan; Mmin = nan;
+        ZG.tresh_km = nan; 
+        minpe = nan; 
+        Mmin = nan;
         
     end   % This is the end of the figure setup
     
@@ -45,83 +42,81 @@ function view_varmap(lab1,valueMap)
     figure(bmap);
     delete(findobj(bmap,'Type','axes'));
     % delete(sizmap);
-    reset(gca)
-    cla
-    set(gca,'NextPlot','replace')
+    ax = reset(gca);
+    cla(ax)
+    set(ax,'NextPlot','replace')
     watchon;
-    set(gca,'visible','off','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
+    set(ax,'visible','off',...
+        'FontSize',ZmapGlobal.Data.fontsz.s,...
+        'FontWeight','normal',...
         'LineWidth',1,...
         'Box','on','SortMethod','childorder')
-    
-    rect = [0.12,  0.10, 0.8, 0.8];
-    rect1 = rect;
-    
+        
     % find max and min of data for automatic scaling
-    %
-    ZG.maxc = max(valueMap(:));
-    ZG.maxc = fix(ZG.maxc)+1;
-    ZG.minc = min(valueMap(:));
-    ZG.minc = fix(ZG.minc)-1;
+    ZG.maxc = fix(max(valueMap(:))+1);
+    ZG.minc = fix(min(valueMap(:)))-1;
     
     % set values gretaer ZG.tresh_km = nan
     %
     re4 = valueMap;
     
-    
     % plot image
     %
-    orient landscape
-    %set(gcf,'PaperPosition', [0.5 1 9.0 4.0])
+    orient(ax,'landscape')
     
-    axes('position',rect)
+    ax.Position = [0.12,  0.10, 0.8, 0.8];
     set(gca,'NextPlot','add')
-    pco1 = pcolor(gx,gy,re4);
+    pcolor(ax, gx,gy,re4);
     
-    axis([ min(gx) max(gx) min(gy) max(gy)])
-    axis image
+    axis(ax, [min(gx) max(gx) min(gy) max(gy)])
+    axis(ax,'image')
     set(gca,'NextPlot','add')
     
-    shading(ZG.shading_style);
+    shading(ax, ZG.shading_style);
 
     % make the scaling for the recurrence time map reasonable
 
-    fix_caxis.ApplyIfFrozen(gca); 
+    fix_caxis.ApplyIfFrozen(ax); 
     
+    title(ax, sprintf('%s ;  %g to %g',name, t0b, teb),...
+        'FontSize',ZmapGlobal.Data.fontsz.s,...
+        'Color','k',...
+        'FontWeight','normal')
     
-    title([name ';  '   num2str(t0b) ' to ' num2str(teb) ],'FontSize',ZmapGlobal.Data.fontsz.s,...
-        'Color','k','FontWeight','normal')
-    
-    xlabel('Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
-    ylabel('Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+    xlabel(ax, 'Longitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
+    ylabel(ax, 'Latitude [deg]','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s)
     
     % plot overlay
     %
-    set(gca,'NextPlot','add')
+    set(ax,'NextPlot','add')
     zmap_update_displays();
     
-    set(gca,'NextPlot','add')
-    plq = quiver(newgri(:,1),newgri(:,2),-cos(sor(:,SA*2)*pi/180),sin(sor(:,SA*2)*pi/180),0.8,'.');
-    set(plq,'LineWidth',1,'Color','k')
-    set(gca,'NextPlot','add')
+    set(ax,'NextPlot','add')
+    quiver(ax, newgri(:,1),newgri(:,2), -cos(sor(:,SA*2)*pi/180), sin(sor(:,SA*2)*pi/180),0.8,'.', ...
+        'LineWidth',1, 'Color','k')
     
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
-        'FontWeight','normal','LineWidth',1,...
-        'Box','on','TickDir','out');
+    set(ax,'visible','on','FontSize',ZmapGlobal.Data.fontsz.s,...
+        'FontWeight','normal',...
+        'LineWidth',1,...
+        'Box','on',...
+        'TickDir','out');
     
-    h1 = gca;
-    hzma = gca;
+    h1 = ax;
+    hzma = ax;
     
     % Create a colorbar
     %
     h5 = colorbar('horiz');
     set(h5,'Pos',[0.35 0.06 0.4 0.02],...
-        'FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.s,'TickDir','out')
+        'FontWeight','normal',...
+        'FontSize',ZmapGlobal.Data.fontsz.s,...
+        'TickDir','out')
     
-    rect = [0.00,  0.0, 1 1];
-    axes('position',rect)
+    rect = ;
+    axes('position', [0.00,  0.0, 1 1])
     axis('off')
     %  Text Object Creation
-    txt1 = text(...
+    text(...
         'Units','normalized',...
         'Position',[ 0.33 0.06 0 ],...
         'HorizontalAlignment','right',...
@@ -131,14 +126,13 @@ function view_varmap(lab1,valueMap)
     
     % Make the figure visible
     %
-    set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,'FontWeight','normal',...
+    set(gca,'FontSize',ZmapGlobal.Data.fontsz.s,...
         'FontWeight','normal','LineWidth',1,...
         'Box','on','TickDir','out');
     set(gcf,'color','w');
     figure(bmap);
     axes(h1)
     watchoff(bmap)
-    %whitebg(gcf,[ 0 0 0 ])
     
     
     %% ui functions
@@ -146,14 +140,14 @@ function view_varmap(lab1,valueMap)
         add_menu_divider();
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ',MenuSelectedField(),@cb_refresh)
         uimenu(options,'Label','Select EQ in Circle',...
-            MenuSelectedField(),@callbackfun_002)
+            MenuSelectedField(),@select_in_circle)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedField(),@callbackfun_003)
+            MenuSelectedField(),@cb_select_in_constr)
         
         uimenu(options,'Label','Select EQ in Polygon -new ',...
-            MenuSelectedField(),@callbackfun_004)
+            MenuSelectedField(),@cb_select_in_polygon_new)
         
         op1 = uimenu('Label',' Maps ');
         
@@ -171,15 +165,11 @@ function view_varmap(lab1,valueMap)
     
     %% callback functions
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_varmap(lab1,[]);
+    function cb_refresh(~,~)
+        view_varmap(lab1, re4);
     end
     
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function select_in_circle(~,~)
         h1 = gca;
         met = 'ni';
         ZG=ZmapGlobal.Data;
@@ -190,9 +180,7 @@ function view_varmap(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_in_constr(~,~)
         h1 = gca;
         met = 'ra';
         ZG=ZmapGlobal.Data;
@@ -203,9 +191,7 @@ function view_varmap(lab1,valueMap)
         watchoff;
     end
     
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_in_polygon_new(~,~)
         cufi = gcf;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -215,25 +201,15 @@ function view_varmap(lab1,valueMap)
         watchoff;
     end
     
-    function cb_variancemap(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1 ='b-value';
-        valueMap = r;
-        view_varmap(lab1,valueMap);
+    function cb_variancemap(~,~)
+        view_varmap('b-value',r);
     end
     
-    function cb_resolutionmap(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1 ='Radius';
-        valueMap = rama;
-        view_varmap(lab1,valueMap);
+    function cb_resolutionmap(~,~)
+        view_varmap('Radius', rama);
     end
     
-    function cb_plot_on_topography(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_plot_on_topography(~,~)
         dramap_z('stress2','w',valueMap);
     end
 

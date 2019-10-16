@@ -1,39 +1,74 @@
 function [uOutput] = yourfilterimp(nFunction, sFilename)
+% Import filter template -- copy and modify to import your own delimted ascii files
 %
-% Import filter template
+% To use this:
+%   - Copy it into an appropriate new name (still in the importfilters directory)
+%   - Change it
+
+% Assume this function is to convert a comma-separated file formatted thusly:
+%
+%  ID, La, Lo, Dp, Yr, Mo, Dy, Tm, Ma, MagT, cm
+%  01, 46.0, 10.3, 4.0, 2015, 12, 3, 3.1, 12:00:03, Mb, comment
+%  02, 45.2, 6.4, 6.0, 2015, 12, 4, 3.2, 03:00:03, Mb, comment
+%  03, 45.8, 9.1, 8.0, 2015, 12, 3, 2.0, 12:00:03, Mb, comment
+%   ... etc ...
+%
+%  The goal is to turn this into a ZmapCatalog.
 %
 
+% if the file did not have a header, you would specify the column names here:
+%
+% ColumnNamesInFile = {'ID','Latitude','Longitude','Depth','Year','Month','Day','Time','Magnitude','MagnitudeType', 'Comment'}
+
+% if the names need to be remapped, create the mapping here:
+%   - note, if a column is not mentioned, it will be unchanged
+%   - note, if a column is mapped to [], it will be removed
+fileCols2catalogCols = {'La', 'Latitude';...
+                        'Lo', 'Longitude';...
+                        'Dp', 'Depth';...
+                        'Ma', 'Magnitude';...
+                        'MagT', 'MagnitudeType';...
+                        'cm', []...
+                        };
+                    
+
 % Filter function switchyard
-if nFunction == FilterOp.getDescription
-    uOutput = 'Your data format - adjust the file yourfilterimp.m';
-elseif nFunction == FilterOp.importCatalog
-    % Read formated data
-    mData = textread(sFilename, '%s', 'delimiter', '\n', 'whitespace', ''); % USE TEXTSCAN INSTEAD OF TEXTREAD
-    % Create empty catalog
-    uOutput = zeros(length(mData), 15);
-    % Loop thru all lines of catalog and convert them
-    for i = 1:length(mData)
-        try
-            uOutput(i,1) = str2num(mData{i}(41:48));  % Longitude
-            uOutput(i,2) = str2num(mData{i}(34:39));  % Latitude
-            uOutput(i,3) = str2num(mData{i}(1:4));    % Year
-            uOutput(i,4) = str2num(mData{i}(6:7));    % Month
-            uOutput(i,5) = str2num(mData{i}(9:10));   % Day
-            uOutput(i,6) = str2num(mData{i}(26:28));  % Magnitude
-            uOutput(i,7) = str2num(mData{i}(51:54));  % Depth
-            uOutput(i,8) = str2num(mData{i}(12:13));  % Hour
-            uOutput(i,9) = str2num(mData{i}(15:16));  % Minute
-            uOutput(i,10) = str2num(mData{i}(15:16));  % Second
-            %uOutput(i,11) = str2num(mData{i}(15:16));  % leave empty for cross section values
-            uOutput(i,12) = str2num(mData{i}(15:16));  % strike
-            uOutput(i,13) = str2num(mData{i}(15:16));  % dip direction
-            uOutput(i,14) = str2num(mData{i}(15:16));  % rake
-            uOutput(i,15) = str2num(mData{i}(15:16));  % dip
-            % Create decimal year
-             uOutput(i,3) = decyear([uOutput(i,3) uOutput(i,4) uOutput(i,5) uOutput(i,8) uOutput(i,9) uOutput(i,10) ]);
-        catch
-            msg.dbfprintf('Import: Problem in line %d of %s. Line ignored.\n',i, sFilename);
+switch nFunction
+    case FilterOp.getDescription
+        % return a short description which will appear in the drop-down list
+        uOutput = 'Your data format - adjust the file yourfilterimp.m';
+    case FilterOp.getWebpage
+        % return a web-page detailing your format
+        uOutput = 'yourfilterimp.html';
+    case FilterOp.importCatalog
+        
+        opts = detectImportOptions(sFilename);
+        tb = readtable(sFilename, opts);
+        
+        % now add or change column names, thesemay not map directly to ZmapCatalog yet
+        if exist('ColumnNamesInFile','var')
+            tb.Properties.VariableNames = ColumnNamesInFile;
         end
-    end
+        
+        % now calculate any columns as necessary.
+        tb.Date = datetime(tb.Yr, tb.Mo, tb.Dy) + tb.Tm;  % in this case, tm was automatically converted to a duration
+        
+        % now rename and delete columns as desired
+        if exist('fileCols2catalogCols','var')
+            remapper = containers.Map(fileCols2catalogCols(:,1),fileCols2catalogCols(:,2));
+            for idx = numel(tb.Properties.VariableNames) : -1 : 1 % going backwards avoids trouble deleting
+                fcolname = tb.Properties.VariableNames{idx};
+                if ismember(fcolname, remapper.keys())
+                    if isempty(remapper(fcolname))
+                        tb.(fcolname) = [];
+                    else
+                        tb.Properties.VariableNames{idx} = remapper(fcolname);
+                    end
+                end
+            end
+        end
+        uOutput = ZmapCatalog.from(tb);
+        return
+    
 end
 

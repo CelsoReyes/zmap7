@@ -1,4 +1,4 @@
-function view_Dv() 
+function view_Dv(valueMap, lab1, Da) 
     % plots the maxz LTA values calculated
     % with maxzlta.m or other similar values as a color map
     % needs valueMap, gx, gy, stri
@@ -16,7 +16,7 @@ function view_Dv()
     myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
     ZG.someColor = 'w';
     
-    bmapc=myFigFinder();
+    bmapc = myFigFinder();
     
     
     % Set up the Seismicity Map window Enviroment
@@ -43,7 +43,6 @@ function view_Dv()
     %
     figure(bmapc);
     delete(findobj(bmapc,'Type','axes'));
-    % delete(sizmap);
     reset(gca)
     cla
     watchon;
@@ -57,51 +56,43 @@ function view_Dv()
     % set values greater ZG.tresh_km = nan
     %
     re4 = valueMap;
-    re4(r > ZG.tresh_km) = nan
+    re4(r > ZG.tresh_km) = nan;
     
     % plot image
     %
     orient portrait
-    %set(gcf,'PaperPosition', [2. 1 7.0 5.0])
     
-    axes('position',rect)
-    set(gca,'NextPlot','add')
-    % Here is the importnnt  line ...
+    ax = axes('position',rect);
+    set(gca,'NextPlot','add');
+    % Here is the important  line ...
     pco1 = pcolor(gx,gy,re4);
     
-    axis([ min(gx) max(gx) min(gy) max(gy)])
-    axis image
-    set(gca,'NextPlot','add');
+    axis(ax, [ min(gx) max(gx) min(gy) max(gy)]);
+    axis(ax,'image');
+    set(ax,'NextPlot','add');
     
-    shading(ZG.shading_style);
-    
-    %end
-    
+    shading(ax, ZG.shading_style);
+        
 
-    fix_caxis.ApplyIfFrozen(gca); 
+    fix_caxis.ApplyIfFrozen(ax); 
     
-    title([name],'FontSize',12,...
-        'Color','w','FontWeight','bold')
-    %num2str(t0b,4) ' to ' num2str(teb,4)
-    xlabel('Distance in [km]','FontWeight','bold','FontSize',12)
-    ylabel('Depth in [km]','FontWeight','bold','FontSize',12)
+    title(ax, name,'FontSize',12,'Color','w','FontWeight','bold')
+    xlabel(ax, 'Distance in [km]','FontWeight','bold','FontSize',12)
+    ylabel(ax, 'Depth in [km]','FontWeight','bold','FontSize',12)
     
     % plot overlay
-    %
-    ploeqc = plot(Da(:,1),-Da(:,7),'.k');
-    set(ploeq,'Tag','eqc_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
+    ploeqc = plot(ax, Da(:,1),-Da(:,7),'.k');
+    set(ploeq,'Tag', 'eqc_plot''MarkerSize',ZG.ms6,'Marker',ty,'Color',ZG.someColor,'Visible','on')
     
     
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
+    set(ax,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
-    h1 = gca;
     hzma = gca;
     
     % Create a colorbar
     %
     h5 = colorbar('horz');
-    apo = get(h1,'pos');
     set(h5,'Pos',[0.3 0.1 0.4 0.02],...
         'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'TickDir','out')
     
@@ -122,7 +113,7 @@ function view_Dv()
     % Make the figure visible
     
     axes(h1)
-    set(gca,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,'FontWeight','bold',...
+    set(ax,'visible','on','FontSize',ZmapGlobal.Data.fontsz.m,...
         'FontWeight','bold','LineWidth',1.5,...
         'Box','on','TickDir','out')
     whitebg(gcf,[0 0 0])
@@ -140,59 +131,57 @@ function view_Dv()
         
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_002)
+        uimenu(options,'Label','Refresh ',MenuSelectedField(), @cb_refresh)
         
         uimenu(options,'Label','Select EQ in Sphere (const N)',...
-            MenuSelectedField(),@callbackfun_003)
+            MenuSelectedField(),@cb_select_eq_sphere)
         uimenu(options,'Label','Select EQ in Sphere (const R)',...
-            MenuSelectedField(),@callbackfun_004)
+            MenuSelectedField(),@cb_select_eq_constr)
         uimenu(options,'Label','Select EQ in Sphere (N) - Overlay existing plot',...
-            MenuSelectedField(),@callbackfun_005)
+            MenuSelectedField(),@cb_select_eq_spheren)
         %
         %
         
         op1 = uimenu('Label',' Maps ');
         
         uimenu(op1,'Label','D-value Map (weighted LS)',...
-            MenuSelectedField(),@callbackfun_006);
+            MenuSelectedField(),@cb_dvalue);
         
         %  uimenu(op1,'Label','Goodness of fit  map',...
         %      MenuSelectedField(),@callbackfun_007);
         
         uimenu(op1,'Label','b-value Map',...
-            MenuSelectedField(),@callbackfun_008);
+            MenuSelectedField(),@cb_bval);
         
         uimenu(op1,'Label','resolution Map',...
-            MenuSelectedField(),@callbackfun_009);
+            MenuSelectedField(),@cb_resolution);
         
-        uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist());
+        uimenu(op1,'Label','Histogram ',MenuSelectedField(),@cb_hist);
         
         uimenu(op1,'Label','D versus b',...
-            MenuSelectedField(),@callbackfun_011);
+            MenuSelectedField(),@cb_d_vs_b);
         
         uimenu(op1,'Label','D versus Resolution',...
-            MenuSelectedField(),@callbackfun_012)
+            MenuSelectedField(),@cb_d_vs_resolution)
         %
         add_display_menu(3);
     end
     
     %% callback functions
     
-    function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_hist(~,~)
+        zhist(re4)
+    end
+    
+    function callbackfun_001(~,~)
         zmaphelp(ttlStr,hlpStr1zmap,hlpStr2zmap);
     end
     
-    function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        view_Dv;
+    function cb_refresh(~,~)
+        view_Dv(re4, lab1, Da);
     end
     
-    function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_eq_sphere(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -201,9 +190,7 @@ function view_Dv()
         startfd(5);
     end
     
-    function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_eq_constr(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=false;
@@ -212,9 +199,7 @@ function view_Dv()
         startfd(5);
     end
     
-    function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_select_eq_spheren(~,~)
         h1 = gca;
         ZG=ZmapGlobal.Data;
         ZG.hold_state=true;
@@ -223,47 +208,27 @@ function view_Dv()
         startfd(5);
     end
     
-    function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='D-value';
-        valueMap = old;
-        view_Dv;
+    function cb_dvalue(~,~)
+        view_Dv(old, 'D-value', Da);
     end
     
-    function callbackfun_007(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='%';
-        valueMap = Prmap;
-        view_Dv;
+    function cb_pct(~,~)
+        view_Dv(Prmap, '%', Da);
     end
     
-    function callbackfun_008(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='b-value';
-        valueMap = BM;
-        view_Dv;
+    function cb_bval(~,~)
+        view_Dv(BM, 'b-value', Da);
     end
     
-    function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        lab1='Radius in [km]';
-        valueMap = reso;
-        view_Dv;
+    function cb_resolution(~,~)
+        view_Dv(reso, 'Radius in [km]',Da);
     end
     
-    function callbackfun_011(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_d_vs_b(~,~)
         Dvbspat;
     end
     
-    function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
+    function cb_d_vs_resolution(~,~)
         Dvresfig;
     end
     

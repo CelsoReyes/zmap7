@@ -98,11 +98,9 @@ classdef bpvalgrid < ZmapHGridFunction
             end
             
             % cut catalog at mainshock time:
-            l = obj.RawCatalog.Date > mainshock.Date;
-            obj.RawCatalog = obj.RawCatalog.subset(l);
+            obj.RawCatalog = obj.RawCatalog.subset(obj.RawCatalog.Date > mainshock.Date);
             
             % cut cat at selected magnitude threshold
-            l = obj.RawCatalog.Magnitude >= minThreshMag;
             obj.RawCatalog = obj.RawCatalog.subset(obj.RawCatalog.Magnitude >= minThreshMag);
             
             %%%%%%%
@@ -130,7 +128,7 @@ classdef bpvalgrid < ZmapHGridFunction
             % calculate at all points
             obj.gridCalculations(calculation_function);
             
-            % prepare output to dektop
+            % prepare output to desktop
             obj.Result.minpe         = obj.minpe; %min goodness of fit (%)
             
             % ADDITIONAL VALUES
@@ -154,7 +152,7 @@ classdef bpvalgrid < ZmapHGridFunction
             
             
             function bpvg = calcguts_opt1(b)
-                [bv, magco, stan, av] =  bvalca3(b.Magnitude,McAutoEstimate.auto);
+                [bv, magco, stan, av] =  bvalca3(b.Magnitude, McAutoEstimate.auto);
                 maxcat = b.subset(b.Magnitude >= magco-0.05);
                 if maxcat.Count  >= Nmin
                     mpvc = mpvc.setEvents(maxcat);
@@ -193,7 +191,7 @@ classdef bpvalgrid < ZmapHGridFunction
             end
             
             function bpvg = calcguts_opt4(b)
-                [~, ~, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
+                [~, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
                 maxcat= b.subset(b.Magnitude >= Mc95-0.05);
                 magco = Mc95;
                 if maxcat.Count >= Nmin
@@ -209,7 +207,7 @@ classdef bpvalgrid < ZmapHGridFunction
             end
             
             function bpvg = calcguts_opt5(b)
-                [~, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
+                [Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
                 if ~isnan(Mc95)
                     magco = Mc95;
                 elseif ~isnan(Mc90)

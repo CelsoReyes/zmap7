@@ -25,7 +25,7 @@ function [dist1, dist2] = distance2(i, bgevent, ac, newcat)
     assert(numel(i)==1)
     assert(numel(bgevent) == 1)
     
-    evs = newcat.XYZ([i,bgevent,ac(:)'],:);
+    evs = newcat.XYZ([i,bgevent,reshape(ac,1,[])],:);
     
     evs(:,[LAT,LON]) = deg2rad(evs(:,[LAT,LON])); % convert lats & lons to radians
     

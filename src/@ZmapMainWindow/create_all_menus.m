@@ -81,8 +81,9 @@ function create_all_menus(obj, force)
             end
             if ~isempty(obj.XSectionTitles)
                 items(end+1 : end + numel(obj.XSectionTitles)) = strcat("XSEC: ", string(obj.XSectionTitles));
-                for i = 1:numel(obj.XSectionTitles)
-                    items_data(end+1) = {@()obj.xscats(obj.XSectionTitles{i}) };
+                data_start = numel(items_data);
+                for i = numel(obj.XSectionTitles) : -1 : 1
+                    items_data(data_start+i) = {@()obj.xscats(obj.XSectionTitles{i}) };
                 end
             end
             items(end+1) = "FULL (raw) Catalog";

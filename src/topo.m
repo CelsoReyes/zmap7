@@ -70,9 +70,9 @@ function varargout = topo(varargin)
         end
     end
     
-    
+end
     % --------------------------------------------------------------------%
-function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
+function varargout = gemapwi_Callback(~, ~, handles, varargin)
     disp('this is topo|gemapwi')
     global psloc;
     global pgt30;
@@ -184,8 +184,9 @@ function varargout = gemapwi_Callback(h, eventdata, handles, varargin)
     guidata(gcbo,handles);
     maptool;
     set(handles.draw,'Visible','on');
+end
     % --------------------------------------------------------------------
-function varargout = popeq_Callback(h, eventdata, handles, varargin)
+function varargout = popeq_Callback(~, ~, handles, varargin)
     disp('this is topo|popeq')
     A=handles.equ;
     depq=handles.depq;
@@ -239,9 +240,9 @@ function varargout = popeq_Callback(h, eventdata, handles, varargin)
     handles.depq=depq;
     
     guidata(gcbo,handles);
-    
+end
     % --------------------------------------------------------------------
-function varargout = popfau_Callback(h, eventdata, handles, varargin)
+function varargout = popfau_Callback(~, ~, handles, varargin)
     disp('this is topo|popfau')
     depf=handles.depf;
     faults=handles.faults;
@@ -280,9 +281,9 @@ function varargout = popfau_Callback(h, eventdata, handles, varargin)
     handles.plof=plof;
     handles.depf=depf;
     guidata(gcbo,handles)
-    
+end
     % --------------------------------------------------------------------
-function varargout = popspec_Callback(h, eventdata, handles, varargin)
+function varargout = popspec_Callback(~, ~, handles, varargin)
     disp('this is topo|popspec')
     s=handles.spec;
     inp = handles.pop3.String(handles.pop3.Value);
@@ -336,9 +337,9 @@ function varargout = popspec_Callback(h, eventdata, handles, varargin)
     handles.plos=plos;
     handles.depsp=desp;
     guidata(gcbo,handles)
-    
+end
     % -------------------------------------------------------------------
-function varargout = ploli_Callback(h, eventdata, handles, varargin)
+function varargout = ploli_Callback(~, ~, handles, varargin)
     disp('this is topo|ploli')
     inp =handles.pop4.String(handles.pop4.Value);
     if ~(inp == "No Special Objects")
@@ -375,9 +376,9 @@ function varargout = ploli_Callback(h, eventdata, handles, varargin)
     handles.ploli=ploli;
     handles.depl=depl;
     guidata(gcbo,handles);
-    
+end
     % --------------------------------------------------------------------
-function varargout = colorsty_Callback(h, eventdata, handles, varargin)
+function varargout = colorsty_Callback(~, ~, handles, varargin)
     disp('this is topo|colorsty')
     tmap=handles.tmap;
     figure_w_normalized_uicontrolunits(handles.plma);
@@ -398,34 +399,35 @@ function varargout = colorsty_Callback(h, eventdata, handles, varargin)
         daspectm('m',05);
     end
     handles.tmap=tmap;
+end
     % --------------------------------------------------------------------
-function varargout = callaxesmui_Callback(h, eventdata, handles, varargin)
+function varargout = callaxesmui_Callback(~, ~, handles, varargin)
     axesmui (handles.axm);
-    
+end
     % --------------------------------------------------------------------
-function varargout = wtob_Callback(h, eventdata, handles, varargin)
+function varargout = wtob_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     whitebg('black');
     set(gcf,'color','k');
-    
+end
     % --------------------------------------------------------------------
-function varargout = btow_Callback(h, eventdata, handles, varargin)
+function varargout = btow_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     whitebg('white');
     set(gcf,'color','w');
-    
+end
     % --------------------------------------------------------------------
-function varargout = calldarken_Callback(h, eventdata, handles, varargin)
+function varargout = calldarken_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     brighten(handles.plma,-.1);
-    
+end
     % --------------------------------------------------------------------
-function varargout = callbrighten_Callback(h, eventdata, handles, varargin)
+function varargout = callbrighten_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     brighten(handles.plma,+.1);
-    
+end
     % --------------------------------------------------------------------
-function varargout = draw_Callback(h, eventdata, handles, varargin)
+function varargout = draw_Callback(~, ~, handles, varargin)
     disp('this is topo|draw')
     
     if handles.maptype==1
@@ -502,8 +504,8 @@ function varargout = draw_Callback(h, eventdata, handles, varargin)
     set(handles.draw,'Visible','off');
     guidata(gcbo,handles);
     % --------------------------------------------------------------------
-    
-function varargout = drawcob_Callback(h, eventdata, handles, varargin)
+end
+function varargout = drawcob_Callback(~, ~, handles, varargin)
     disp('this is topo|drawcob')
     figure_w_normalized_uicontrolunits(handles.plma);
     
@@ -525,18 +527,18 @@ function varargout = drawcob_Callback(h, eventdata, handles, varargin)
         'FontSize',10,....
         'FontWeight','normal',...
         'String',ret);
-    
+end 
     % --------------------------------------------------------------------
-function varargout = listdem_Callback(h, eventdata, handles, varargin)
-    
+function varargout = listdem_Callback(~, ~, ~, varargin)
+end
     % --------------------------------------------------------------------
-function varargout = listres_Callback(h, eventdata, handles, varargin)
-    
+function varargout = listres_Callback(~, ~, ~, varargin)
+end 
     % --------------------------------------------------------------------
-function varargout = listvec_Callback(h, eventdata, handles, varargin)
-    
+function varargout = listvec_Callback(~, ~, ~, varargin)
+end
     % --------------------------------------------------------------------
-function varargout = dvmap_Callback(h, eventdata, handles, varargin)
+function varargout = dvmap_Callback(~, ~, handles, varargin)
     disp('this is topo|dvmap')
     inp = handles.listvec.String(handles.listvec.Value);
     inp = extractbefore(inp,' '); %get first word, which will be one of: "crude", "low", "intermediate", "high"
@@ -598,27 +600,28 @@ function varargout = dvmap_Callback(h, eventdata, handles, varargin)
     set(handles.draw,'Visible','on');
     guidata(gcbo,handles);
     maptool;
-    
+end
     % --------------------------------------------------------------------
-function varargout = listbox4_Callback(h, eventdata, handles, varargin)
-    
+function varargout = listbox4_Callback(~, ~, handles, varargin)
+end
     % --------------------------------------------------------------------
-function varargout = maflat_Callback(h, eventdata, handles, varargin)
+function varargout = maflat_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     shading flat;
-    
+end
     % --------------------------------------------------------------------
-function varargout = mainterp_Callback(h, eventdata, handles, varargin)
+function varargout = mainterp_Callback(~, ~, handles, varargin)
     figure_w_normalized_uicontrolunits(handles.plma);
     shading interp;
-    
+end
     % --------------------------------------------------------------------
-function varargout = vexag_Callback(h, eventdata, handles, varargin)
+function varargout = vexag_Callback(~, ~, handles, varargin)
     disp('this is topo|vexag')
     figure_w_normalized_uicontrolunits(handles.plma);
     exavg=get(handles.edit1,'string');
     fexavg=str2double(exavg);
     daspectm('m',fexavg);
     tightmap
+end
     
     

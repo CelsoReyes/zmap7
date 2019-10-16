@@ -1,4 +1,5 @@
 function [uOutput] = scecdcimp(nFunction, sFilename)
+% import UW catalog
 
 % Filter function switchyard
 if nFunction == FilterOp.getDescription

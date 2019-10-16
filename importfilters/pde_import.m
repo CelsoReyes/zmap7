@@ -1,5 +1,5 @@
 function [uOutput] = scecdcimp(nFunction, sFilename)
-
+% import USGS PDE Data Center Compressed Format comma delimited(stringconvert)
 %example
 %1973,03,05,235946.60, 27.686,  33.644,4.5, 25,PDE
 

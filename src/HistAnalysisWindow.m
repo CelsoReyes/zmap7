@@ -183,8 +183,8 @@ classdef HistAnalysisWindow < AnalysisWindow
             yl.UIContextMenu=c;
             
             
-            function cb_change_nBins(src,~)
-                h=findobj(obj.ax.Children,'flat','Type','histogram');
+            function cb_change_nBins(~,~)
+                h = findobj(obj.ax.Children,'flat','Type','histogram');
                 def = num2str(h(1).NumBins);
                 binsS = inputdlg('Choose number of bins','Histogram Params',1, {def});
                 if isempty(binsS)

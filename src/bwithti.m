@@ -34,7 +34,7 @@ function bwithti(mycat)
         
         switch ButtonName
             case 'Automatic'
-                [Mc, Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
+                [Mc90, Mc95, magco, prf]=mcperc_ca3(b.Magnitude);
                 if isnan(Mc95) == 0
                     magco = Mc95;
                 elseif isnan(Mc90) == 0

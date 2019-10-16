@@ -5,8 +5,6 @@ function wulff()
     % xp = rho*cos(theta) and yp = rho*cos(theta)
     % turned into function by Celso G Reyes 2017
     
-    ZG=ZmapGlobal.Data; % used by get_zmap_globals
-    
     N = 50;
     cx = cos(0:pi/N:2*pi);                           % points on circle
     cy = sin(0:pi/N:2*pi);
@@ -33,7 +31,7 @@ function wulff()
     for i = 1:8                                     %plot small circles
         alpha = i*(pi/18);
         xlim = sin(alpha);
-        ylim = cos(alpha);
+        % ylim = cos(alpha);
         x = -xlim:0.01:xlim;
         d = 1/cos(alpha);
         rd = d*sin(alpha);
@@ -44,7 +42,4 @@ function wulff()
     end
     axis('square');
     set(gcf,'color','w');
-    
-    
-    
 end

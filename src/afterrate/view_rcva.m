@@ -244,7 +244,6 @@ myFigFinder=@() findobj('Type','Figure','-and','Name',myFigName);
             MenuSelectedField(),@callbackfun_021)
         uimenu(op1,'Label','k-value standard deviation',...
             MenuSelectedField(),@callbackfun_022)
-        %    uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         add_display_menu(1);
     end

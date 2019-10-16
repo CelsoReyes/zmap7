@@ -353,7 +353,6 @@ classdef stressgrid < ZmapHGridFunction
             % View the variance map
             valueMap = r;
             ZG.shading_style = 'interp';
-            %view_varmap([],valueMap);
             set(ax,'NextPlot','add')
             
             obj.add_grid_centers();

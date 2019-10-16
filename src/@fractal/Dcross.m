@@ -314,7 +314,7 @@ function Dcross(sel)
         old = valueMap;
         
         % View the b-value map
-        view_Dv
+        view_Dv(valueMap, lab1, Da)
         
     end
     
@@ -344,7 +344,7 @@ function Dcross(sel)
             % Plot all grid points
             set(gca,'NextPlot','add')
             plot(newgri(:,1),newgri(:,2),'+k')
-            view_Dv
+            view_Dv(valueMap, lab1, Da)
         else
             return
         end

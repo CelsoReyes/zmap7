@@ -138,7 +138,7 @@ classdef bcrossVt2 < ZmapVGridFunction
                 out = nan(1,12);         
                 
                 % Added to obtain goodness-of-fit to powerlaw value  
-                [~, ~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude); 
+                [~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude); 
                 Mc_value = mcCalculator(catalog);
                 
                 idx = catalog.Magnitude >= Mc_value-(obj.fBinning/2);

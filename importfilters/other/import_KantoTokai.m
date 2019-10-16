@@ -1,4 +1,5 @@
 function [uOutput] = import_KantoTokai(nFunction, sFilename)
+% Import Kanto-Tokai data of a selfmade ASCII-file.
 % [uOutput] = import_KantoTokai(nFunction, sFilename)
 % ------------------------------------------------------------
 % Imports Kanto-Tokai data of a selfmade ASCII-file.

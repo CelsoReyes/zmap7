@@ -279,7 +279,7 @@ classdef ZmapMainWindow < handle
             % addlistener(obj, 'Grid',      'PostSet', @(~,~)disp('**Grid Changed'));
             addlistener(obj, 'CrossSections', 'PostSet',@obj.notifyXsectionChange);
             
-            function cb_alert(src,ev)
+            function cb_alert(~,~)
                 msg.dbdisp('refiltering because rawcatalog changed','rawcatalog changed')
                 [obj.mdate, obj.mshape]=obj.filter_catalog();
             end
@@ -411,7 +411,7 @@ classdef ZmapMainWindow < handle
             
             good = false;
             while ~good
-                [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters')
+                [zans, okPressed] = zdlg.Create('Name', 'Cross Section Sample parameters');
                 if ~okPressed
                     zp = [];
                     return
@@ -419,7 +419,7 @@ classdef ZmapMainWindow < handle
                 if  xor(zans.useNLayers, zans.useDelta)
                     good = true;
                 else
-                    if ~isequal(linspace(zans.z_min, zans.z_max, zans.z_count), z_min : zans.z_delta : z_max);
+                    if ~isequal(linspace(zans.z_min, zans.z_max, zans.z_count), z_min : zans.z_delta : z_max)
                         msg.errordisp(['Number of layers and spacing contradict each other.',...
                             'Choose EITHER number of layers, or spacing'], 'choose xs and xs grid');
                         zans.xsIndex = strcmp(zans.xsTitle, obj.XSectionTitles);
@@ -753,7 +753,7 @@ classdef ZmapMainWindow < handle
             % set up figure
             % this is only called to create a brand-new figure.
             
-            h = msgbox_nobutton('drawing the main window. Please wait'); %#ok<NASGU>
+            h = msgbox_nobutton('drawing the main window. Please wait');
             
             
             %% create the main figure

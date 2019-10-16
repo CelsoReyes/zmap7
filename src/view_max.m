@@ -264,14 +264,10 @@ function view_max(valueMap,gx,gy,stri,myselector)
     
     %% callback functions
     function callbackfun_001(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         printdlg;
     end
     
     function callbackfun_002(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         f1=gcf; 
         f2=gpf; 
         set(f1,'Visible','off');
@@ -282,40 +278,28 @@ function view_max(valueMap,gx,gy,stri,myselector)
     end
     
     function callbackfun_003(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         helpdlg(help('view_max'),'Help for view_max')
     end
     
     function callbackfun_004(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         zmapmenu ;
     end
     
     function callbackfun_005(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plotmap ;
     end
     
     function callbackfun_006(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         fix_caxis(ZGvalueMap,'horiz') ;
     end
     
     function callbackfun_008(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         myselector = 'pro';
         ZG.freeze_colorbar = false;
         view_max(valueMap,gx,gy,myselector);
     end
     
     function callbackfun_009(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         myselector = 'nop';
         ZG.freeze_colorbar = false;
         valueMap = old;
@@ -332,8 +316,6 @@ function view_max(valueMap,gx,gy,stri,myselector)
     end
     
     function callbackfun_012(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         valueMap = r;
         ZG.freeze_colorbar = false;
         myselector = 'res';
@@ -341,65 +323,47 @@ function view_max(valueMap,gx,gy,stri,myselector)
     end
     
     function callbackfun_013(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plot(newgri(:,1),newgri(:,2),'+k');
     end
     
     function callbackfun_014(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         plotci2;
     end
     
     function callbackfun_015(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.shading_style='flat';
         axes(hzma);
         shading flat;
     end
     
     function callbackfun_016(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ZG.shading_style='interp';
         axes(hzma);
         shading interp;
     end
     
     function callbackfun_017(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         axes(hzma);
         brighten(0.4);
     end
     
     function callbackfun_018(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         axes(hzma);
         brighten(-0.4);
     end
     
     function callbackfun_019(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         set(gca,'NextPlot','add');
         zmap_update_displays();
     end
     
     function callbackfun_020(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
         ni=str2num(set_nia.String);
         'String';
         num2str(ni);
     end
     
     function callbackfun_021(mysrc,myevt)
-
-        callback_tracker(mysrc,myevt,mfilename('fullpath'));
     end
     
     function callbackfun_022(mysrc,myevt)
@@ -412,7 +376,6 @@ function view_max(valueMap,gx,gy,stri,myselector)
     function callbackfun_023(mysrc,myevt)
 
         callback_tracker(mysrc,myevt,mfilename('fullpath'));
-        ;
         pause(1);
         re4 =valueMap;
         view_maxview_max(valueMap,gx,gy,myselector);

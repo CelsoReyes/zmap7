@@ -106,8 +106,8 @@ classdef rcvalgrid_a2 < ZmapHGridFunction
             
             assert(any(l),'no events meet the criteria of being after the mainshock and greater than threshold magnitude');
             
-            obj.RawCatalog=obj.RawCatalog.subset(l);
-            ZG.newt2=obj.RawCatalog;
+            obj.RawCatalog = obj.RawCatalog.subset(l);
+            obj.ZG.newt2 = obj.RawCatalog;
             
             
             obj.gridCalculations(@calculation_function);

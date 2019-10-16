@@ -91,9 +91,8 @@ function replot_all(obj,metaProp,eventData)
         return
     end
     
-    currcatsummary = obj.catalog.summary('stats');
     for j=1:numel(k)
-        plot_xsection(obj,k{j},currcatsummary,md);
+        plot_xsection(obj,k{j},md);
     end
     
     obj.fmdplot('Upper Right panel');
@@ -140,13 +139,13 @@ function rearrange_axes_items(obj)
         ch(items.topos)];   
 end
 
-function [mytab] = plot_xsection(obj, k, currcatsummary,md)
+function [mytab] = plot_xsection(obj, mytitle, md)
     % plot into the xsection tab area
     set(gca,'NextPlot','add')
-    idx = strcmp(obj.XSectionTitles,k);
+    idx = strcmp(obj.XSectionTitles, mytitle);
     
     % only reproject if the catalog is changed since memorizing
-    if ~isequal(obj.rawcatalog.summary(),obj.xscatinfo(k))
+    if ~isequal(obj.rawcatalog.summary(), obj.xscatinfo(mytitle))
         
         % store the projected catalog. only events within the strip [ignoring shape] are stored
         if ~isempty(md)
@@ -154,20 +153,20 @@ function [mytab] = plot_xsection(obj, k, currcatsummary,md)
         else
             tempCatalog = obj.CrossSections(idx).project(obj.rawcatalog);
         end
-        obj.append_xsec_to_catalog_name(tempCatalog, k);
-        obj.xscats(k) = tempCatalog;
+        obj.append_xsec_to_catalog_name(tempCatalog, mytitle);
+        obj.xscats(mytitle) = tempCatalog;
         
         % store the information about the current catalog used to project
-        obj.xscatinfo(k) = obj.rawcatalog.summary();
+        obj.xscatinfo(mytitle) = obj.rawcatalog.summary();
         
         % plot
-        mytab=findobj(obj.xsgroup,'Title',k,'-and','Type','uitab');
+        mytab=findobj(obj.xsgroup,'Title', mytitle,'-and','Type','uitab');
         if isempty(mytab)
             % we lost the tab somehow.
         end
-        myax=findobj(mytab,'Type','axes');
-        obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(k),true);
-        myax.Title=[];
+        myax = findobj(mytab,'Type','axes');
+        obj.CrossSections(idx).plot_events_along_strike(myax,obj.xscats(mytitle),true);
+        myax.Title = [];
     end
 end
 
