@@ -123,7 +123,7 @@ classdef bvalmapt < ZmapHGridFunction
             ra = obj.EventSelector.RadiusKm;
         end
         
-        function obj = set.EventSelectorRadius(obj,ra)
+        function set.EventSelectorRadius(obj,ra)
             obj.EventSelector.RadiusKm = ra;
         end
         

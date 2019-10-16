@@ -213,7 +213,7 @@ classdef MapFeature < handle
             
             val = obj.getTrimmedData();
             layer=plotm(val.Latitude, val.Longitude); %not allowed to specify axes
-            zdatam(layer, val.Depth(:)');
+            zdatam(layer, reshape(val.Depth,1,[]));
             daspectm('km');
             if ~holdstatus; ax.NextPlot='replace'; end
             

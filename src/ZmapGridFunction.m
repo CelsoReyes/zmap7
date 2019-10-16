@@ -100,19 +100,20 @@ classdef ZmapGridFunction < ZmapFunction
         end
         
         function gridCalculations(obj, calculationFcn, modificationFcn)
-            % GRIDCALCULATIONS do requested calculation for each gridpoint and store result in obj.Result
+            % GRIDCALCULATIONS perform calculation at each gridpoint, storing result in obj.Result
             % GRIDCALCULATIONS(obj, calculationFcn, modificationfcn)
             % calculate values at all points
             %
-            % Determine the sample catalogs, based on existing object properties,
-            % then calculate metrics for each. The results of which are then
-            % turned into an annotated table, and kept in obj.ReturnDetails
+            % 1. Determine the sample catalogs, based on existing object properties
+            % 2. calculate metrics for each sample catalog. 
+            % 3. Turn results into an annotated table, stored in obj.ReturnDetails
             %
-            % once metrics aree calculated for each point, the modificationFcn (if it exists)
-            % will be run, using the results table as an input. eg:
+            % And if modificationFcn is provided....
+            %
+            % 4. Run the modificationFcn on obj.ReturnDetails.  eg:
             %    myResultsTable = modificationFcn(myResultsTable)
             %
-            % The idea is that addiional calculations that rely upon calculated table values
+            % The idea is that additional calculations that rely upon calculated table values
             % may be done outside the main spatial loop. Generally, these are confined to
             % matrix/vector operations.
             
@@ -391,7 +392,7 @@ classdef ZmapGridFunction < ZmapFunction
     end % Protected STATIC methods
 end
 
-%% nice-to-have functionality for gridfucntions or its children:
+%% nice-to-have functionality for gridfunctions or its children:
 %     Threshold: You can set the maximum size that
 %       a volume is allowed to have in order to be
 % displayed in the map. Therefore, areas with

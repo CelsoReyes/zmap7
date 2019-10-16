@@ -15,7 +15,7 @@ classdef inmakegr < ZmapHGridFunction
         % and should match items first column of ReturnDetails
         CalcFields = {'nEvents_top', 'mean_mag_top', 'nEvents_bottom', 'mean_mag_bottom'};
         
-        ParameterableProperties = ["depth_km"];
+        ParameterableProperties = "depth_km";
             
         PlotTag      = 'inmakegr';
         References = "";

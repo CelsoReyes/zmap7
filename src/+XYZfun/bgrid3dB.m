@@ -193,7 +193,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                 switch obj.mc_choice
                     
                     case 3 % Automatic Mcomp (90% probability)
-                        [~, Mc90, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
+                        [Mc90, ~, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         l = catalog.Magnitude >= Mc90-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
@@ -203,7 +203,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                         end
                         
                     case 4 % Automatic Mcomp (95% probability)
-                        [~, ~, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
+                        [~, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         l = catalog.Magnitude >= Mc95-0.05;
                         if sum(l) >= Nmin
                             minicat=catalog.subset(l);
@@ -213,7 +213,7 @@ classdef bgrid3dB < Zmap3DGridFunction
                         end
                         
                     case 5% Best (?) combination (Mc95 - Mc90 - max curvature)
-                        [~, Mc90, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
+                        [Mc90, Mc95, ~, prf]=mcperc_ca3(catalog.Magnitude);
                         if ~isnan(Mc95)
                             magco = Mc95;
                         elseif ~isnan(Mc90)

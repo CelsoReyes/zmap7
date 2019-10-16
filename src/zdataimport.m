@@ -3,7 +3,6 @@ function [catalog, OK] = zdataimport()
     % 
     % turned into function by Celso G Reyes 2017
     OK = false;
-    catalog = ZmapCatalog();
     
     % start filters
     

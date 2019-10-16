@@ -41,6 +41,9 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             '"Second -order Moment of Central California Seismicity"',...
             ', JGR, Vol 90, P. 5479-5495.'];
         
+        % interaction formula bundles assumptions about stress drop into a mag-dependent formula
+        InteractFormula = struct('Reasenberg1985', @(m) 0.011 .* 10.^ (0.4 .* m),...
+            'WellsCoppersmith1994', @(m) 0.01 * 10 .^ (0.5 * m)) 
     end
     
     methods
@@ -99,6 +102,203 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             obj.CalcFinishedFcn();
         end
         
+        %{
+        function [clustnum, eqs_in_clust] = decluster_from_python(obj)
+              obj.verbose = config.get('verbose', obj.verbose);
+            % Get relevant parameters
+            neq = catalog.get_number_events()  % Number of earthquakes
+
+            min_lookahead_days = obj.taumin;
+            max_lookahead_days = obj.taumax;
+
+            % Get elapsed days
+            elapsed = days_from_first_event(catalog);
+
+            assert(all(elapsed(2:end) >= elapsed(1:end-1)), "catalog needs to be in ascending date order")
+
+            % easy-access variables
+            dmethod='p2p';
+            switch dmethod
+                case 'gc'
+                    surf_pos = [catalog.latitude, catalog.longitude];
+                    event_distance = event_gc_distance;
+                case'p2p'
+                    surf_pos = geodetic_to_ecef(catalog.latitude, catalog.longitude);  % assumes at surface
+                    event_distance = event_p2p_distance;
+                otherwise
+                    except(ValueError("unknown configuration dmethod. it should be 'gc' or 'p2p'"))
+            end
+            
+            mags = catalog.magnitude;
+            deps = catalog.depth;
+
+            if isempty(obj.err)
+                horiz_error = catalog.data.get('horizError', 0);
+            else
+                horiz_error = obj.err;
+            end
+            if isempty(obj.derr)
+                depth_error = catalog.data.get('depthError', 0);
+            else
+                depth_error = obj.derr;
+            end
+            % Pre-allocate cluster index vectors
+            vcl = zeros(neq, 1);
+
+            % set the interaction zones, in km
+            % Reasenberg 1987 or alternate version: Wells & Coppersmith 1994 / Helmstetter (SRL) 2007
+            zone_noclust, zone_clust = obj.get_zone_distances_per_mag(mags, obj.rfact,...
+                obj.interaction_formulas.(obj.interaction_formula), obj.taumax)
+
+            k = 0  % clusterindex
+
+            % variable to store information whether earthquake is already clustered
+            clusmaxmag = ones(neq,1) * -inf;
+            clus_biggest_idx = zeros(neq,1);
+
+            % for every earthquake in catalog, main loop
+            for i = 0 : neq-1 % in range(neq - 1)
+                my_mag = mags(i);
+
+                % variable needed for distance and timediff
+                my_cluster = vcl(i);
+                not_classified = my_cluster == 0;
+
+                % attach interaction time
+
+                if not_classified
+                    obj.debug_print(i, ' is not in a cluster')
+                    % this event is not associated with a cluster, yet
+                    look_ahead_days = min_lookahead_days;
+
+                elseif my_mag >= clusmaxmag(my_cluster)
+                    % note, if this is now the biggest, then the cluster range collapses into its radius
+                    printf('%d is the biggest event of cluster M=%g\n', i, my_mag);
+                    % this is the biggest event  in this cluster, so far (or equal to it).
+                    clusmaxmag(my_cluster) = my_mag;
+                    clus_biggest_idx(my_cluster) = i;
+                    look_ahead_days = min_lookahead_days;
+                else
+                    printf('%d is already in cluster, but not biggest', i);
+                    % this event is already tied to a cluster, but is not the largest
+                    idx_biggest = clus_biggest_idx(my_cluster);
+                    days_since_biggest = elapsed(i) - elapsed(idx_biggest);
+                    look_ahead_days = obj.clust_look_ahead_time(clusmaxmag(my_cluster),...
+                        days_since_biggest, obj.xk, obj.xmeff, obj.P);
+                    
+                    look_ahead_days(look_ahead_days<min_lookahead_days) = min_lookahead_days;
+                    look_ahead_days(look_ahead_days>max_lookahead_days) = max_lookahead_days;
+                end
+                % extract eqs that fit interaction time window --------------
+
+                max_elapsed = elapsed(i) + look_ahead_days;
+                next_event = i + 1;
+                last_event = bisect_left(elapsed, max_elapsed, next_event);
+                temporal_evs = np.arange(next_event, last_event)
+                if my_cluster ~= 0
+                    temporal_evs = temporal_evs(vcl(temporal_evs) ~= my_cluster);
+                end
+                if len(temporal_evs) == 0
+                    continue
+                end
+                % ------------------------------------
+                % one or more events have now passed the time window test. Now compare
+                % this subcatalog in space to A) most recent and B) largest event in cluster
+                % ------------------------------------
+
+                obj.debug_print('temporal_evs:', temporal_evs)
+                my_biggest_idx = clus_biggest_idx(my_cluster)
+                if not_classified
+                    bg_ev_for_dist = i;
+                else
+                    bg_ev_for_dist = my_biggest_idx;
+                end
+
+                obj.debug_print('bg_ev_for_dist:', bg_ev_for_dist)
+                % noinspection PyTypeChecker
+                dist_to_recent = event_distance(surf_pos, deps, i, temporal_evs, horiz_error, depth_error)
+                dist_to_biggest = event_distance(surf_pos, deps, bg_ev_for_dist, temporal_evs, horiz_error, depth_error)
+                printf('dist_to_recent', dist_to_recent)
+                printf('dist_to_biggest', dist_to_biggest)
+                % extract eqs that fit the spatial interaction
+                if look_ahead_days == min_lookahead_days
+                    l_big = dist_to_biggest == 0;  % all false
+                    l_recent = dist_to_recent <= zone_noclust(my_mag);
+                    printf('Connecting those near to this event [dist <= {zone_noclust[my_mag]}]')
+                else
+                    l_big = dist_to_biggest <= zone_clust(clusmaxmag(my_cluster))
+                    l_recent = dist_to_recent <= zone_clust(clusmaxmag(my_cluster))
+                    printf('Connecting those near to this OR largest event [dist <= {zone_clust[clusmaxmag(my_cluster)]}]')
+                end
+                spatial_evs = l_recent | l_big;
+
+                if ~any(spatial_evs)
+                    continue
+                end
+                % ------------------------------------
+                % one or more events have now passed both spatial and temporal window tests
+                %
+                % if there are events in this cluster that are already related to another
+                % cluster, figure out the smallest cluster number. Then, assign all events
+                % (both previously clustered and unclustered) to this new cluster number.
+                % ------------------------------------
+
+                % spatial events only include events AFTER i, not i itself
+                % so vcl(events_in_any_cluster) is independent from vcl(i)
+
+                candidates = temporal_evs(spatial_evs) ; % eqs that fit spatial and temporal criterion
+                events_in_any_cluster = candidates(vcl(candidates) ~= 0);  % eqs which are already related with a cluster
+                events_in_no_cluster = candidates(vcl(candidates) == 0);  % eqs that are not already in a cluster
+
+                % if this cluster overlaps with any other cluster, then merge them
+                % assign every event in all related clusters to the same (lowest) cluster number
+                % set this cluster's maximum magnitude "clusmaxmag" to the largest magnitude of all combined events
+                % set this cluster's clus_biggest_idx to the most recent largest event of all combined events
+
+                if len(events_in_any_cluster) > 0
+                    if not_classified
+                        related_clust_nums = unique(vcl(events_in_any_cluster));
+                    else
+                        % include this cluster number in the reckoning
+                        related_clust_nums = unique(np.hstack((vcl(events_in_any_cluster), my_cluster,)))
+                    end
+                    % associate all related events with my cluster
+                    my_cluster = related_clust_nums(0);
+                    vcl(i) = my_cluster;
+                    vcl(candidates) = my_cluster;
+
+                    for clustnum  = related_clust_nums
+                        vcl(vcl == clustnum) = my_cluster;
+                    end
+                    events_in_my_cluster = vcl == my_cluster;
+                    biggest_mag = np.max(mags(events_in_my_cluster));
+                    biggest_mag_idx = find(mags == biggest_mag & events_in_my_cluster, 1, 'last');
+
+                    % reset values for other clusters
+                    clusmaxmag(related_clust_nums) = -inf;
+                    clus_biggest_idx(related_clust_nums) = 0;
+
+                    % assign values for this cluster
+                    clusmaxmag(my_cluster) = biggest_mag;
+                    clus_biggest_idx(my_cluster) = biggest_mag_idx;
+
+                elseif my_cluster == 0
+                    k = k + 1;
+                    vcl(i) = k;
+                    my_cluster = k;
+                    clusmaxmag(my_cluster) = my_mag;
+                    clus_biggest_idx(my_cluster) = i;
+                else
+                    pass  % no events found, and attached to existing cluster
+                end
+                % attach clustnumber to catalog yet unrelated to a cluster
+                vcl(events_in_no_cluster) = my_cluster;
+
+            end
+            clustnum = vcl;
+            eqs_in_clust = vcl > 0;
+        end
+        %}    
         
         function [outputcatalog, details] = declus(obj, vals) 
             % DECLUS main decluster algorithm
@@ -121,18 +321,14 @@ classdef ReasenbergDeclusterClass < ZmapFunction
             % k1     working index for cluster
             %
             % modified by Celso Reyes, 2017
-            
-            
-            
-            
+                        
             max_mag_in_cluster=[];
             idx_biggest_event_in_cluster=[];
             
             %% calculate interaction_zone  (1 value per event)
             
-            interactzone_main_km = 0.011*10.^(0.4* obj.RawCatalog.Magnitude); %interaction zone for mainshock
+            interactzone_main_km = obj.InteractFormula.Reasenberg1985(obj.RawCatalog.Magnitude); %interaction zone for mainshock
             interactzone_in_clust_km = obj.rfact * interactzone_main_km;      %interaction zone if included in a cluster
-                      
             
             tau_min = days(obj.taumin);
             tau_max = days(obj.taumax);
@@ -408,6 +604,17 @@ classdef ReasenbergDeclusterClass < ZmapFunction
     end
     
     methods(Static)
+        function tau = clust_look_ahead_time(mag_big, dt_big, xk, xmeff, P)
+            % CLUSTLOOKAHEAD calculate look ahead time for clustered events (days)
+            deltam = (1-xk) .* mag_big - xmeff;
+            if deltam < 0
+                deltam = 0;
+            end
+            denom = 10.0 .^ ((deltam - 1) * (2/3));
+            top = log(1 - P) * dt_big;
+            tau = top / denom;
+        end
+                
         function h = AddMenuItem(parent, catalog, varargin)
             % create a menu item
             label = 'Reasenberg Decluster';

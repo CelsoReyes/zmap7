@@ -1,5 +1,5 @@
 function [uOutput] = import_gismo_catalog(nfunction, catalog)
-    % Create a ZMAP-format data matrix from a Catalog object
+    % import from a GISMO Catalog object
     % Catalog objects are part of the GISMO suite
     %
     % to get helptext:

@@ -1,5 +1,5 @@
-function [uOutput] = ncedc_imp(nFunction, sFilename)
-
+function [uOutput] = scecimp(nFunction, sFilename)
+% import SCEC (Caltech) Data Center format
 % Filter function switchyard
 %%%%     CHANGE THESE LINES %%%%%%%%%%%
 if nFunction == FilterOp.getDescription

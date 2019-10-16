@@ -1,11 +1,12 @@
 classdef rc_cross_a2 < ZmapVGridFunction
-    % RC_CROSS_A2 Calculates relative rate change map, p-,c-,k- values and standard deviations after model selection by AIC
+    % RC_CROSS_A2 relative rate change map, p-,c-,k- values and standard deviations 
+    % after model selection by AIC
     % Uses view_rcva_a2 to plot the results
     properties
         bootloops                   = 100 % number of bootstrap loops [bootloops]
-        forec_period       duration        = days(20) % forecast period [forec_period]
-        learn_period        duration        = days(47)% learning period  [learn_period]
-        addtofig    logical         = false % should this plot in current figure? [oldfig_button]
+        forec_period 	duration	= days(20) % forecast period [forec_period]
+        learn_period	duration	= days(47)% learning period  [learn_period]
+        addtofig        logical     = false % should this plot in current figure? [oldfig_button]
     end
     
     properties(Constant)
@@ -53,20 +54,15 @@ classdef rc_cross_a2 < ZmapVGridFunction
     end
     methods
         function obj=rc_cross_a2(zap,varargin)
-            report_this_filefun();
-            
-            obj@ZmapVGridFunction(zap, 'fRcBst'); % rfRcBst is rate change
-            
-            obj.parseParameters(varargin);
-                
+            report_this_filefun();            
+            obj@ZmapVGridFunction(zap, 'fRcBst'); % rfRcBst is rate change            
+            obj.parseParameters(varargin);                
             obj.StartProcess();
         end
         function InteractiveSetup(obj)
             
-            zdlg = ZmapDialog();
-            
-            zdlg.AddMcMethodDropdown('mc_choice');
-            
+            zdlg = ZmapDialog();            
+            zdlg.AddMcMethodDropdown('mc_choice');            
             % add fMaxRadius
             obj.AddDialogOption(zdlg,'NodeMinEventCount');
             obj.AddDialogOption(zdlg,'EventSelector');
@@ -96,11 +92,11 @@ classdef rc_cross_a2 < ZmapVGridFunction
             mainshock_time = mainshock.Date;
             learn_to_date = mainshock_time + obj.learn_period;
             forecast_to_date = learn_to_date + obj.forec_period;
-            l = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > minThreshMag;
+            meets_time_dist_criteria = obj.RawCatalog.Date > mainshock_time & obj.RawCatalog.Magnitude > minThreshMag;
             
-            assert(any(l),'no events meet the criteria of being after the mainshock ,and greater than threshold magnitude');
+            assert(any(meets_time_dist_criteria), 'no events meet the criteria of being after the mainshock and greater than threshold magnitude');
             
-            obj.RawCatalog=obj.RawCatalog.subset(l);
+            obj.RawCatalog=obj.RawCatalog.subset(meets_time_dist_criteria);
             ZG.newt2=obj.RawCatalog;
             
             
@@ -111,80 +107,10 @@ classdef rc_cross_a2 < ZmapVGridFunction
             end
             %view_rccross_a2(lab1,valueMap)
             
-            function [catA, catB] = prep_catalog(catalog)
-                
-                % Select subcatalog
-                % Calculate distance from center point and sort with distance
-                l = sqrt(((xsecx' - x)).^2 + ((xsecy + y)).^2) ;
-                [s,is] = sort(l);
-                b = newa(is(:,1),:) ;       % re-orders matrix to agree row-wise
-                
-                %         % Choose method of constant radius or constant number
-                %         if tgl1 == 0   % take point within r
-                %             l3 = l <= ra;
-                %             b = newa.subset(l3);      % new data per grid point (b) is sorted in distanc
-                %             rd = ra;
-                %         else
-                %             % take first ni points
-                %             b = b(1:ni,:);      % new data per grid point (b) is sorted in distance
-                %             rd = s(ni);
-                %         end
-                % Choose between constant radius or constant number of events with maximum radius
-                if tgl1 == 0   % take point within r
-                    % Use Radius to determine grid node catalogs
-                    l3 = l <= ra;
-                    b = catalog.subset(l3);      % new data per grid point (b) is sorted in distance
-                    rd = ra;
-                    vDist = sort(l(l3));
-                    fMaxDist = max(vDist);
-                    % Calculate number of events per gridnode in learning period learn_period
-                    vSel = b.Date <= learn_to_date;
-                    mb_tmp = b(vSel,:);
-                else
-                    % Determine ni number of events in learning period
-                    % Set minimum number to constant number
-                    NodeMinEventCount = ni;
-                    % Select events in learning learn_period period
-                    vSel = (b.Date <= learn_to_date);
-                    b_learn = b(vSel,:);
-                    vSel2 = (b.Date > learn_to_date & b.Date <= forecast_to_date);
-                    b_forecast = b(vSel2,:);
-                    
-                    % Distance from grid node for learning period and forecast period
-                    vDist = sort(l(vSel));
-                    vDist_forecast = sort(l(vSel2));
-                    
-                    % Select constant number
-                    b_learn = b_learn(1:ni,:);
-                    % Maximum distance of events in learning period
-                    fMaxDist = vDist(ni);
-                    
-                    if fMaxDist <= fMaxRadius
-                        vSel3 = vDist_forecast <= fMaxDist;
-                        b_forecast = b_forecast(vSel3,:);
-                        b = [b_learn; b_forecast];
-                    else
-                        vSel4 = (l < fMaxRadius & b.Date <= learn_to_date);
-                        b = b(vSel4,:);
-                        b_learn = b;
-                    end
-                    length(b_learn)
-                    length(b_forecast)
-                    length(b)
-                    mb_tmp = b_learn;
-                end % End If on tgl1
-                
-                %Set catalog after selection
-                ZG.newt2 = b;
-            end
-            
-            function out=calculation_function(catalog)
-                error('hey developer, finish editing the prep_catalog function first')
-                % [catA, catB] = prep_catalog(catalog);
-                
+            function out = calculation_function(catalog)
                 % Calculate the relative rate change, p, c, k, resolution
-                if length(b) >= obj.NodeMinEventCount  % enough events?
-                    [mRc] = calc_rcloglike_a2(catalog,obj.learn_period,obj.forec_period,obj.bootloops, mainshock_time);
+                if length(catalog) >= obj.NodeMinEventCount  % enough events?
+                    [mRc] = calc_rcloglike_a2(catalog, obj.learn_period ,obj.forec_period, obj.bootloops, mainshock_time);
                     % Relative rate change normalized to sigma of bootstrap
                     if mRc.fStdBst~=0
                         mRc.fRcBst = mRc.absdiff/mRc.fStdBst;
@@ -219,7 +145,7 @@ classdef rc_cross_a2 < ZmapVGridFunction
         end
     end
 end
-
+%{
 function orig_rc_cross_a2()
     % Calculate relative rate changes and Omori_parameters on cross section.
     % J. Woessner
@@ -709,3 +635,4 @@ function orig_rc_cross_a2()
     end
     
 end
+%}

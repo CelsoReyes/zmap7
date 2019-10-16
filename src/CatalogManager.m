@@ -1,5 +1,32 @@
 classdef CatalogManager < handle
-    % Manage a bunch of catalogs, filtering according to each catalog's associated filter function as needed
+    % Manage a bunch of catalogs, filtering according to each catalog's associated filter function
+    %
+    % Usage:
+    %   % associate the CatalogManager with a catalog
+    %   cm = CatalogManger(someZmapCatalog)
+    %
+    %   % add a 'live' subsetter that will track the large (M>5) events
+    %
+    %   cm.AddSubset( 'big_events', @(c)c.Magnitude > 5)
+    %
+    %   % add another subsetter that will track shallow northen hemisphere events
+    %
+    %   cm.AddSubset( 'shallow_northern', @(c)c.Depth<5 & c.Latitude>0)
+    %
+    %
+    %   % if you would like ot modify the filter, then use 'ChangeFilter'
+    %   %     - using AddSubset would be an error, since it already exists
+    %   cm.ChangeFilter(('shallow_northern', @(c)c.Depth<8 & c.Latitude>0)
+    %
+    %
+    %   % to get the subcatalog, use 'GetSubset'
+    %   shallow_northern_cat = cm.GetSubset('shallow_northern')
+    %
+    %   % change the catalog and get some new results...
+    %   cm.RawCatalog = someOtherZmapCatalog
+    %   shallow_northern_cat = cm.GetSubset('shallow_northern')
+    %
+    
     properties
         RawCatalog % this is the catalog that will be filtered
     end
@@ -17,7 +44,7 @@ classdef CatalogManager < handle
             obj.RawCatalog = catalog;
         end
         
-        function AddSubset(obj, Tag, filterFcn, whoToNotify)
+        function AddSubset(obj, Tag, filterFcn, ~)
             subcatalog.FilterFcn = filterFcn; % filterFcn returns a logical mask
             subcatalog.Filter = subcatalog.FilterFcn(obj.RawCatalog);
             if ismember(Tag, keys(obj.Catalogs))
@@ -66,7 +93,7 @@ classdef CatalogManager < handle
         
         function recalculateAllFilters(obj)
             for key = keys(obj.Catalogs)
-                obj.Recalculate(key{1});
+                obj.RecalculateFilter(key{1});
             end
         end
         

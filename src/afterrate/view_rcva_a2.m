@@ -233,7 +233,6 @@ function view_rcva_a2(lab1,valueMap)
             MenuSelectedField(),@callbackfun_026)
         uimenu(op1,'Label','k2-value standard deviation',...
             MenuSelectedField(),@callbackfun_027)
-        %    uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
         
         add_display_menu(2);
     end

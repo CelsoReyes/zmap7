@@ -55,7 +55,7 @@ function plotmainmap(obj)
         
         % this is a kludge, because if a MarkerEdgeColor is defined that isn't specifically 'flat'
         % then it overrides the CData colors.
-        if size(eq.CData(:,1) > 1)
+        if size(eq.CData(:,1)) > 1
             mainEventOpts=renameStructField(mainEventOpts,'MarkerEdgeColor','Marker_Edge_Color');
         else
             mainEventOpts=renameStructField(mainEventOpts,'Marker_Edge_Color','MarkerEdgeColor');

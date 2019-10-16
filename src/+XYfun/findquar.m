@@ -102,7 +102,7 @@ classdef findquar < ZmapHGridFunction
             evsel=EventSelectionChoice(fifhr,'evsel', [40,100], obj.EventSelector);
             
             chkpos = @(n)[.80 1-n/28-0.03 .17 1/26];
-            for i = 1:24
+            for i = 24:-1:1
                 hHourly(i)=uicontrol(fifhr,'Style','checkbox',...
                     'string',[num2str(i-1) ' - ' num2str(i) ],...
                     'Units','normalized',...
@@ -245,7 +245,6 @@ end %classdef
 % the gathering of values to the SetValuesFromDialog button.
 
 function cb_info(~,~)
-    ZG=ZmapGlobal.Data;
     web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm']) ;
 end
 

@@ -8,7 +8,7 @@ function c=context_menus(obj, tag, createmode, varargin)
     existing_contexts = findobj(obj.fig,'Type','uicontextmenu');
     c = findobj(existing_contexts, 'Tag',tag);
     
-    switch method
+    switch createmode
         case 'overwrite'
             % delete existing context first, then recreate it and return handle
         case 'reuse'

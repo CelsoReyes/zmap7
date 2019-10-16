@@ -118,7 +118,7 @@ function bwithde2(catalog)
 end
 
 function [magco] = auto_mc(magnitudes)
-    [~, Mc90, Mc95, ~] = mcperc_ca3(magnitudes);
+    [Mc90, Mc95] = mcperc_ca3(magnitudes);
     if ~isnan(Mc95)
         magco = Mc95;
     elseif ~isnan(Mc90)

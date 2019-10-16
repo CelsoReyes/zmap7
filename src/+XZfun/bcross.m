@@ -103,7 +103,7 @@ classdef bcross < ZmapVGridFunction
                 out = nan(1,11);
                 
                 % Added to obtain goodness-of-fit to powerlaw value
-                [~, ~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude);
+                [~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude);
                 Mc_value = mcCalculator(catalog);
                 
                 idx = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
@@ -154,6 +154,7 @@ classdef bcross < ZmapVGridFunction
     end
 end
 
+%{
 function bcross_orig(sel)
     % This subroutine  creates a grid with
     % spacing dx,dy (in degreees). The size will
@@ -300,5 +301,6 @@ function bcross_orig(sel)
             return
         end
     end
-    
 end
+
+%}

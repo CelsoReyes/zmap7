@@ -42,17 +42,17 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     
     % Estimation of Omori parameters from learning period
     l = tas <= time;
-    time_as=tas(l);
+    time_as = tas(l);
     % Times up to the forecast time
-    lf = tas <= time+timef ;
-    time_asf= [tas(lf) ];
-    time_asf=sort(time_asf);
+    lf = tas <= time + timef ;
+    time_asf = tas(lf);
+    time_asf = sort(time_asf);
     
     % Select biggest aftershock earliest in time, but more than 1 day after
     % mainshock and in learning period
     mAfLearnCat = eqcatalogue(l,:);
     fDay = 1; %days
-    vSel = (mAfLearnCat.Date > mainshock_date + days(fDay)) & mAfLearnCat.Date<= mainshock_date+days(time);
+    vSel = (mAfLearnCat.Date > mainshock_date + days(fDay)) & mAfLearnCat.Date <= mainshock_date+days(time);
     mCat = mAfLearnCat.subset(vSel);
     vSel = mCat.Magnitude == max(mCat.Magnitude);
     vBigAf = mCat(vSel,:);
@@ -106,27 +106,45 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     
     % Calculate uncertainty and mean values of p,c,and k
     [mMedModF, mStdL, loopout] = brutebootloglike_a2(time_as, time_asf, bootloops,fT1,nMod);
-    pmed1 = mMedModF(1,1); pmedStd1 = mStdL(1,1);
-    pmed2 = mMedModF(1,3); pmedStd2 = mStdL(1,2);
-    cmed1 = mMedModF(1,5); cmedStd1 = mStdL(1,3);
-    cmed2 = mMedModF(1,7); cmedStd2 = mStdL(1,4);
-    kmed1 = mMedModF(1,9); kmedStd1 = mStdL(1,5);
-    kmed2 = mMedModF(1,11); kmedStd2 = mStdL(1,6);
+    pmed1 = mMedModF(1,1); 
+    pmedStd1 = mStdL(1,1);
+    pmed2 = mMedModF(1,3); 
+    pmedStd2 = mStdL(1,2);
+    cmed1 = mMedModF(1,5); 
+    cmedStd1 = mStdL(1,3);
+    cmed2 = mMedModF(1,7); 
+    cmedStd2 = mStdL(1,4);
+    kmed1 = mMedModF(1,9); 
+    kmedStd1 = mStdL(1,5);
+    kmed2 = mMedModF(1,11); 
+    kmedStd2 = mStdL(1,6);
     
     %rc = [time absdiff sigma numreal nummod pval pvalstd cval cvalstd kval kvalstd fStdBst];
     if isnan(pval1) || isnan(pval2)
-        rc.time = nan; rc.absdiff = nan;
-        rc.numreal = nan; rc.nummod = nan;
-        rc.pval1 = nan; rc.pval2 = nan;
-        rc.cval1 = nan; rc.cval2 = nan;
-        rc.kval1 = nan; rc.kval2 = nan;
-        rc.pmed1 =  nan; rc.pmedStd1 =  nan;
-        rc.cmed1 =  nan; rc.cmedStd1 = nan;
-        rc.kmed1 = nan; rc.kmedStd1 = nan;
-        rc.pmed2 =  nan; rc.pmedStd2 =  nan;
-        rc.cmed2 =  nan; rc.cmedStd2 = nan;
-        rc.kmed2 = nan; rc.kmedStd2 = nan;
-        rc.fStdBst = nan; rc.nMod = nan;
+        rc.time = nan; 
+        rc.absdiff = nan;
+        rc.numreal = nan; 
+        rc.nummod = nan;
+        rc.pval1 = nan; 
+        rc.pval2 = nan;
+        rc.cval1 = nan; 
+        rc.cval2 = nan;
+        rc.kval1 = nan; 
+        rc.kval2 = nan;
+        rc.pmed1 =  nan; 
+        rc.pmedStd1 =  nan;
+        rc.cmed1 =  nan; 
+        rc.cmedStd1 = nan;
+        rc.kmed1 = nan; 
+        rc.kmedStd1 = nan;
+        rc.pmed2 =  nan; 
+        rc.pmedStd2 =  nan;
+        rc.cmed2 =  nan; 
+        rc.cmedStd2 = nan;
+        rc.kmed2 = nan; 
+        rc.kmedStd2 = nan;
+        rc.fStdBst = nan; 
+        rc.nMod = nan;
         rc.fTBigAf = nan;
         return
     end
@@ -143,7 +161,7 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     % Find amount of events in forecast period for modeled data
     nummod = max(cumnr_modelf)-cumnr_modelf(length(time_as));
     % Find amount of  events in forecast period for observed data
-    l = time_asf <=time+timef & time_asf > time;
+    l = (time_asf <= time + timef) & (time_asf > time);
     numreal = sum(l); % observed number of aftershocks
     absdiff = numreal-nummod;
     
@@ -155,25 +173,48 @@ function [rc] = calc_rcloglike_a2(mycat,time,timef,bootloops,mainshock_date)
     kv1=loopout(:,5);
     kv2=loopout(:,6);
     
-    cm = OmoriModel.doForecast(nMod,time_asf, pv1, cv1, kv1, fT1, kv2, pv2, cv2);
+    cm = OmoriModel.doForecast(nMod, time_asf, pv1, cv1, kv1, fT1, kv2, pv2, cv2);
     loopout(:,9) = max(cm); % each column of cm is an itteration
     
     % 2nd moment of bootstrap number of forecasted number of events
     fStdBst = std(loopout(:,9),1,'omitnan');
     
     % Results
-    rc.time = time; rc.absdiff = absdiff;
-    rc.numreal = numreal; rc.nummod = nummod;
-    rc.pval1 = pval1; rc.pval2 = pval2;
-    rc.cval1 = cval1; rc.cval2 = cval2;
-    rc.kval1 = kval1; rc.kval2 = kval2;
-    rc.pmed1 =  pmed1; rc.pmedStd1 =  pmedStd1;
-    rc.cmed1 =  cmed1; rc.cmedStd1 = cmedStd1;
-    rc.kmed1 = kmed1; rc.kmedStd1 = kmedStd1;
-    rc.pmed2 =  pmed2; rc.pmedStd2 =  pmedStd2;
-    rc.cmed2 =  cmed2; rc.cmedStd2 = cmedStd2;
-    rc.kmed2 = kmed2; rc.kmedStd2 = kmedStd2;
-    rc.fStdBst = fStdBst; rc.nMod = nMod;
+    rc.time = time; 
+    rc.absdiff = absdiff;
+    rc.numreal = numreal; 
+    rc.nummod = nummod;
+    rc.pval1 = pval1; 
+    rc.pval2 = pval2;
+    rc.cval1 = cval1; 
+    rc.cval2 = cval2;
+    rc.kval1 = kval1; 
+    rc.kval2 = kval2;
+    rc.pmed1 =  pmed1; 
+    rc.pmedStd1 =  pmedStd1;
+    rc.cmed1 =  cmed1; 
+    rc.cmedStd1 = cmedStd1;
+    rc.kmed1 = kmed1; 
+    rc.kmedStd1 = kmedStd1;
+    rc.pmed2 =  pmed2; 
+    rc.pmedStd2 =  pmedStd2;
+    rc.cmed2 =  cmed2; 
+    rc.cmedStd2 = cmedStd2;
+    rc.kmed2 = kmed2; 
+    rc.kmedStd2 = kmedStd2;
+    rc.fStdBst = fStdBst; 
+    rc.nMod = nMod;
     rc.fTBigAf = fT1;
     
+end
+
+function run_model(nMod, tb)
+    % JUST STARTED... 
+    if nargin == 1
+        tb = table('Size', [1,9],...
+            'VariableTypes', {'string','float','float','float','float','float','float','float','float'}) 
+    end
+    tb(height(tb)+1,2:9) = bruteforceloglike_a2(time_as,fT1,nMod);
+    [pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL] = bruteforceloglike_a2(time_as,fT1,nMod);
+    mRes(1,:) = [nMod, pval1, pval2, cval1, cval2, kval1, kval2, fAIC, fL];
 end

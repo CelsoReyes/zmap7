@@ -9,7 +9,7 @@ tic
 U = matlab.net.URI('http://service.iris.edu/fdsnws/event/1/query?starttime=2018-09-11T00:00:00&orderby=time&format=text&nodata=404');
 method = matlab.net.http.RequestMethod.GET;
 type1 = matlab.net.http.MediaType('text/*');
-acceptField = matlab.net.http.field.AcceptField([type1]);
+acceptField = matlab.net.http.field.AcceptField(type1);
 contentTypeField = matlab.net.http.field.ContentTypeField('text/plain');
 header = [acceptField contentTypeField];
 request = matlab.net.http.RequestMessage(method,header);
@@ -28,5 +28,5 @@ f=fopen('junkk.dat','w');
 fprintf(f,"%s",resp.Body.Data); %resp.Body.Payload
 fclose(f);
 %%
-ZG.primeCatalog = import_fdsn_event(1,'junk.dat')
+ZG.primeCatalog = import_fdsn_event(1,'junk.dat');
 toc

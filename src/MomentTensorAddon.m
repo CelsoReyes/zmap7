@@ -11,9 +11,9 @@ classdef (ConstructOnLoad, Sealed) MomentTensorAddon < ZmapCatalogAddon
         Type = 'MomentTensor' % unique name used when querying catalog
     end
     properties
-        Dip             double      % angle of dip, between 0 (horiz) and 90 degrees (vert)
-        DipDirection    double      % direction of dip (clockwise from north
-        Rake            double      % direction of movement for hanging wall block
+        Dip  (:,1)           double      % angle of dip, between 0 (horiz) and 90 degrees (vert)
+        DipDirection (:,1)    double      % direction of dip (clockwise from north
+        Rake (:,1)          double      % direction of movement for hanging wall block
         MomentTensor    table       = get_empty_moment_tensor() % moment tensor information
     end
        
@@ -74,9 +74,9 @@ classdef (ConstructOnLoad, Sealed) MomentTensorAddon < ZmapCatalogAddon
             % ZMAPARRAY create a zmap array from this catalog
             % zmarr = catalog.ZMAPARRAY()
             outval = [...
-                obj.Dip,... 
-                obj.DipDirection,... 
-                obj.Rake...
+                obj.Dip(:),... 
+                obj.DipDirection(:),... 
+                obj.Rake(:)...
             ];
         end        
         

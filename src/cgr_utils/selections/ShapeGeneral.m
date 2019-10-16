@@ -181,10 +181,8 @@ classdef ShapeGeneral < matlab.mixin.Copyable
                 % return a vector of size otherLon that is true where item is inside polygon
                 if include_boundary
                     mask = inpoly([otherLon(:) otherLat(:)],obj.Points );
-                    % mask = inpoly_cr([otherLon(:) otherLat(:)],obj.Points );
                 else
                     [mask,bnd] = inpoly([otherLon otherLat],obj.Points);
-                    %[mask,bnd] = inpoly_cr([otherLon otherLat],obj.Points);
                     mask(bnd)=false;
                 end
             end

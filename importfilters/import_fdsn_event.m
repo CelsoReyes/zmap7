@@ -26,6 +26,8 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     % get list of data providers that support the FDSN Event query
     persistent datacenter_details
     
+
+    
     % Filter function switchyard
     if nFunction == FilterOp.getDescription
         uOutput = 'FDSNWS Events (text) - import ascii data downloaded from one of the FDSN webservice datacenters';
@@ -33,6 +35,14 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
     end
     if nFunction == FilterOp.getWebpage
         uOutput = 'fdsntext.html'; % location of fdsn format documentation
+        return
+    end
+    
+    % make sure we are connected to internet
+    if ~haveInet('service.iris.edu')
+        msg.errordisp('Cannot connect to the datacenter server. Perhaps this machine is not connected to the internet?');
+        uOutput = []; 
+        ok = false;
         return
     end
     
@@ -200,25 +210,25 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         
         if isempty(data)
             uOutput = ZmapCatalog('Name','nodata');
-            ok=false;
+            ok = false;
             return
         end
-        ok=true;
+        ok = true;
         % scan only the relevant fields
         
         %This version makes no assumptions other than the field titles it expects.
         % various FDSN services tend to disagree on formats.. time, spellings, capitalization, etc.
         newlines = find(data==newline,2);
-        headerline =data(1:newlines(1)-1);
-        hdrs=lower(strip(split(headerline,'|')));
+        headerline = data(1:newlines(1)-1);
+        hdrs = lower(strip(split(headerline,'|')));
         firstrow = data(newlines(1)+1:newlines(2)-1);
         
         mappings = determine_field_mappings(hdrs, firstrow);
         
         midx = containers.Map;
-        fmtstr=[];
+        fmtstr = [];
         next_idx = 1;
-        for ij=1:numel(hdrs)
+        for ij = 1:numel(hdrs)
             
             field = hdrs{ij};
             if field == "longtitude" % SCEDC mispelling
@@ -226,7 +236,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
                 field = hdrs{ij};
             end
             if mappings.isKey(field)
-                fmtstr=[fmtstr, mappings(field)]; %field of interest
+                fmtstr = [fmtstr, mappings(field)]; %field of interest
                 midx(field) = next_idx;
                 next_idx = next_idx + 1;
             else
@@ -298,9 +308,9 @@ function  mappings = determine_field_mappings(hdrs, firstrow)
     
     % look at separator between date & time fields
     if ismember('T', vals{time_pos}) % FDSN date standard
-        mappings('time')=['%{', date_format, '''T''', time_format, '}D'];
+        mappings('time') = ['%{', date_format, '''T''', time_format, '}D'];
     else
-        mappings('time')=['%{', date_format, ' ', time_format, '}D'];
+        mappings('time') = ['%{', date_format, ' ', time_format, '}D'];
     end
     
 end
@@ -349,3 +359,12 @@ function resp = get_low_level_fdsn_query(uri)
     
 end
 
+function tf = haveInet(server)
+    % returns true if able to connect to the internet
+    % adapted from  Stack Overflow: https://stackoverflow.com/a/19560468/949344
+  tf = false;
+  try %#ok<TRYNC>
+    [~] = java.net.InetAddress.getByName(server);
+    tf = true;
+  end
+end
