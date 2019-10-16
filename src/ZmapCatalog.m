@@ -944,7 +944,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 depthIdx = vn == "Depth";
                 if any(depthIdx)
                     units       = validateLengthUnit(pu{depthIdx});
-                    obj.Depth   = unitsratio(obj.DepthUnits, units) * obj.Depth;
+                    obj.Depth   = unitsratio(obj.LengthUnit, units) * obj.Depth;
                 end
             end
         end
