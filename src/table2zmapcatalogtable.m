@@ -16,6 +16,20 @@ function tb = table2zmapcatalogtable(tb)
         make_conformant(fn{i}, Candidates.(fn{i}))
     end
     
+    % by now, the table should have certain fields. The only ones we actually check is Longitude
+    critical_fields = {'Longitude','Latitude','Depth','Magnitude'};
+    missing_critical = ~ismember(critical_fields, tbNames);
+    if any(missing_critical)
+        error(['The table cannot be interpreted as a catalog. ',...
+            'One or more critical columns cannot be found:\n\n-->%s<--\n',...
+            '\nPlease ensure the table contains these columns, plus date/time columns and that the \n',...
+            'column labels (contained in the table''s properties.VariableNames )\n',...
+            'are spelled correctly.  Existing columns are:\n\n  # Cols:%d\n  Col Names:"%s"\n'],...
+            string(join(critical_fields(missing_critical),', ')),width(tb), ...
+            string(join(tbNames,', ')))
+    end
+        
+        
     % remove empty lines.  [these may have been comments]
     missing_rows = ismissing(tb.Longitude);
     tb(missing_rows,:) = []; % remove empty lines
