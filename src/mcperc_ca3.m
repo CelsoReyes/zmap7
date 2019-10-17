@@ -18,7 +18,7 @@ function [Mc90, Mc95, magco, prf] = mcperc_ca3(magnitudes)
     
     loopMags = magco0-0.5 : 0.1 : magco0+0.7; % from near magnitude of completion to a little past it.
     loopMags = loopMags(:);
-    ls = magnitudes >= loopMags-0.0499; % magnitudes x loopMags logical array
+    ls = magnitudes(:)' >= loopMags-0.0499; % magnitudes x loopMags logical array
     res2s = NaN(size(loopMags));
     mask = find(sum(ls) > MIN_EVENT_COUNT);
     for idx = mask
