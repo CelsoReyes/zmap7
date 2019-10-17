@@ -107,13 +107,13 @@ classdef bvalgrid < ZmapHGridFunction
                 % Added to obtain goodness-of-fit to powerlaw value  
                 [~, ~, ~, out(7)] = mcperc_ca3(catalog.Magnitude); 
                 Mc_value = mcCalculator(catalog);
+                
                 idx = catalog.Magnitude >= Mc_value-(obj.fBinning/2);
                 nEvents_gt_local_mc = sum(idx);
                 
                 out(11) = nEvents_gt_local_mc;
                 
                 if nEvents_gt_local_mc >= obj.NodeMinEventCount
-                    out(1) = Mc_value;
                     out = calcFcn(catalog, idx, out); % runs either calculation_function_boot or calculation_function_noboot
                 else
                     out(10) = 1;
