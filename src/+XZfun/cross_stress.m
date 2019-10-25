@@ -131,17 +131,10 @@ classdef cross_stress < ZmapVGridFunction
 
                 % slick calculates the best solution for the stress tensor according to
                 % Michael(1987): creates data2.oput
-                switch(computer)
-                    % all files were relative to current directory '.'
-                    case 'GLNX86'
-                        unix([fullfile(ZG.hodi ,'slick_linux'),' data2 ']);
-                    case 'MAC'
-                        unix([fullfile(ZG.hodi ,'slick_macppc'),' data2 ']);
-                    case 'MACI'
-                        unix([fullfile(ZG.hodi ,'slick_maci'),' data2 ']);
-                    otherwise
-                        dos([fullfile(ZG.hodi ,'slick.exe'),' data2 ']);
-                end
+                slick_program = append_system_specific_postfix('slick');
+                slfast_program = append_system_specific_postfix('slfast');
+                system([fullfile(ZG.hodi, slick_program), ' data2 '])
+
 
                 % Get data from data2.oput
                 sFilename = 'data2.oput';
@@ -152,16 +145,8 @@ classdef cross_stress < ZmapVGridFunction
                 delete(sData2);
 
                 % Stress tensor inversion
-                switch(computer)
-                    case 'GLNX86'
-                        unix(fullfile(ZG.hodi, 'external','slfast_linux'),' data2 ');
-                    case 'MAC'
-                        unix(fullfile(ZG.hodi, 'external','slfast_macpcc'),' data2 ');
-                    case 'MACI'
-                        unix(fullfile(ZG.hodi, 'external','slfast_maci'),' data2 ');
-                    otherwise
-                        dos(fullfile(ZG.hodi, 'external','slfast.exe'),' data2 ');
-                end
+                system([fullfile(ZG.hodi, 'external', slfast_program),' data2']);
+
                 sGetFile = fullfile(ZG.hodi, 'external', 'data2.slboot');
                 external_results = load(sGetFile);
                 d0 = external_results.data2;

@@ -68,22 +68,8 @@ classdef stressgrid < ZmapHGridFunction
             
             % get new grid if needed
             d = pwd;
-            
-            switch computer
-                case 'GLNX86'
-                    postfix = '_linux';
-                case 'MAC'
-                    postfix = '_macppc';
-                case 'MACI'
-                    postfix = '_maci';
-                case 'MACI64'
-                    postfix = '_maci64';
-                otherwise
-                    postfix = '.exe';
-            end
-            
-            slick_cmd = sprintf('".%cslick%s" ',filesep, postfix); % eg.   >> "./slick.exe" data2
-            slfast_cmd = sprintf('"%s%cslfast%s" ', obj.ExtDir,filesep, postfix);
+            slick_cmd = fullfile(obj.ExtDir, append_system_specific_postfix('slick'))
+            slfast_cmd = fullfile(obj.ExtDir, append_system_specific_postfix('slfast'))
             
             try
                 cd(obj.ExtDir);

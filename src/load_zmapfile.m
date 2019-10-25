@@ -123,6 +123,9 @@ function   A=loadCatalog(path, file, S)
     if isempty(A.MagnitudeType)
         A.MagnitudeType=repmat(categorical({''}),size(A.Longitude));
     end
+    if isempty(A.EventID)
+        A.EventID = A.generate_event_ids(A.Date, ['unk:' file]);
+    end
     A.sort('Date')
 end
 

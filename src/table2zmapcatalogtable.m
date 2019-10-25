@@ -17,7 +17,7 @@ function tb = table2zmapcatalogtable(tb)
     end
     
     % by now, the table should have certain fields. The only ones we actually check is Longitude
-    critical_fields = {'Longitude','Latitude','Depth','Magnitude'};
+    critical_fields = {'longitude','latitude','depth','magnitude'};
     missing_critical = ~ismember(critical_fields, tbNames);
     if any(missing_critical)
         error(['The table cannot be interpreted as a catalog. ',...
@@ -56,7 +56,7 @@ function tb = table2zmapcatalogtable(tb)
     end
     
     function tb = remove_unused_columns(tb)
-        fieldsToKeep = {'Date','Latitude','Longitude','Magnitude','Depth',...
+        fieldsToKeep = {'EventID','Date','Latitude','Longitude','Magnitude','Depth',...
             'MagnitudeType','Rake','Dip','DipDirection','MomentTensor'};
         vn       = tb.Properties.VariableNames;
         toRemove = vn(~ismember(vn,fieldsToKeep'));
@@ -88,6 +88,7 @@ function colpropexprs = create_colname2property_map()
     colpropexprs.DipDirection  = "^dipd.*";
     colpropexprs.Rake          = "^rake";
     colpropexprs.MomentTensor  = "^momenttensor";
+    colpropexprs.EventID       = ["^eventid$","^event_id$","^eventids$","^id$","^ids$"];
     
     % do test to make sure this will work correctly in a loop
     assert(all(structfun(@isrow, colpropexprs)));

@@ -55,18 +55,11 @@ function doinvers_michael(mycat)
     % Michael(1987): creates data2.slboot for bootslickw
     %[stat, res] = unix(['.' fs 'slfast data2 ']);
     
-    switch computer
-        case 'GLNX86'
-            [stat, res] = unix(['".' fs 'slfast_linux" data2 ']);
-        case 'MAC'
-            [stat, res] = unix(['".' fs 'slfast_macppc" data2 ']);
-        case 'MACI'
-            [stat, res] = unix(['".' fs 'slfast_maci" data2 ']);
-        case 'MACI64'
-            [stat, res] = unix(['".' fs 'slfast_maci" data2 ']);
-        otherwise
-            [stat, res] = dos(['".' fs 'slfast.exe" data2 ']);
-    end
+    slick_program = append_system_specific_postfix('slick');
+    slfast_program = append_system_specific_postfix('slfast');
+    bootslickw_program = append_system_specific_postfix('bootslickw');
+
+    [stat, res] =  system([fullfile(ZG.hodi, slfast_program), ' data2'])
     
     if strcmp(res,'') == 0
         helpdlg('It seems that the inversion did not run, because the command slick_* data2 could not be executed. Is the executebale slick in the directory extrenal? ','error inverting');
@@ -74,21 +67,10 @@ function doinvers_michael(mycat)
     end
     % slick calculates the best solution for the stress tensor according to
     % Michael(1987): creates data2.oput
-    
-    switch computer
-        case 'GLNX86'
-            unix(['".' fs 'slick_linux" data2 ']);
-        case 'MAC'
-            unix(['".' fs 'slick_macppc" data2 ']);
-        case 'MACI'
-            unix(['".' fs 'slick_maci" data2 ']);
-        case 'MACI64'
-            unix(['".' fs 'slick_maci" data2 ']);
-        otherwise
-            dos(['".' fs 'slick.exe" data2 ']);
-    end
+    system([fullfile(ZG.hodi, slick_program), ' data2'])
+
     % Get data from data2.oput
-    sFilename = ['data2.oput'];
+    sFilename = 'data2.oput';
     [fBeta, fStdBeta, fTauFit, fAvgTau, fStdTau] = import_slickoput(sFilename);
     
     load data2.slboot
@@ -96,18 +78,7 @@ function doinvers_michael(mycat)
     d0 = data2;
     
     % bootslickw resamples the data and uses slfast to calculate the best fitting stress tensor
-    switch computer
-        case 'GLNX86'
-            unix(['".' fs 'bootslickw_linux" data2 ' num2str(rep) ' 0.5' ]);
-        case 'MAC'
-            unix(['".' fs 'bootslickw_macppc" data2 ' num2str(rep) ' 0.5' ]);
-        case 'MACI'
-            unix(['".' fs 'bootslickw_maci" data2 ' num2str(rep) ' 0.5' ]);
-        case 'MACI64'
-            unix(['".' fs 'bootslickw_maci" data2 ' num2str(rep) ' 0.5' ]);
-        otherwise
-            dos(['".' fs 'bootslickw.exe" data2 ' num2str(rep) ' 0.5' ]);
-    end
+    system(sprintf('"%s" data2 %d 0.5', fullfile('.',bootslickw_program), rep));
     
     disp(' Done !  ')
     watchoff
