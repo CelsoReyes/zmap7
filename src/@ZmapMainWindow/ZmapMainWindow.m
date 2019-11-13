@@ -673,6 +673,17 @@ classdef ZmapMainWindow < handle
             end
             drawnow;
         end
+        function set_z_ratio(obj, ~, ~)
+            z = obj.map_axes.DataAspectRatio(3);
+            zfig = uifigure('Name','Depth Ratio'); 
+            zfig.Position([3,4]) = [150,300];
+            slider = uislider(zfig, 'Value', z, 'Limits',[1 100], 'Orientation', 'Vertical');
+            slider.Position([1,2, 4]) = [50,50, 200];
+            slider.ValueChangedFcn = @cb;
+            function cb(src, ~)
+                obj.map_axes.DataAspectRatio(3) = src.Value;
+            end
+        end
         
         function set_event_selection(obj, val)
             % SET_EVENT_SELECTION changes the event selection criteria (radius, # events)
