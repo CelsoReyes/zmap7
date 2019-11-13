@@ -662,6 +662,7 @@ classdef ZmapMainWindow < handle
                     rotate3d(axm, 'on'); %activate rotation tool
                     hold(axm, 'off');
                     src.Label = '2-D view';
+                    set(findobj(obj.fig,'Tag','z_aspectratio_menu'),'Enable','on');
                     % set_rotation_pointer(obj.fig); % this doesn't work because matlab does something when mouseover axes
                 otherwise
                     view(axm,2);
@@ -669,6 +670,7 @@ classdef ZmapMainWindow < handle
                     zlim(axm, 'auto');
                     rotate3d(axm, 'off'); %activate rotation tool
                     src.Label = '3-D view';
+                    set(findobj(obj.fig,'Tag','z_aspectratio_menu'),'Enable','off');
                     watchoff
             end
             drawnow;
