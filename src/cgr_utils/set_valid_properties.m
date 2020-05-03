@@ -8,6 +8,10 @@ function [usedfields, unusedfields] = set_valid_properties(obj, s)
     m = ismember(f,p);
     usedfields = f(m);
     unusedfields = f(~m);
+    if ismember("ColorBy",p) &&  s.ColorBy ~= "-none-"
+        % otherwise, it will undo our colorby
+        unusedfields(end+1) = {'MarkerEdgeColor'};
+    end
     try
         set(obj, rmfield(s,unusedfields));
     catch ME

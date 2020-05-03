@@ -324,6 +324,7 @@ function create_all_menus(obj, force)
         
         function set_colorby(~, ~, val)
             obj.colorField = val;
+            obj.mainEventProps.ColorBy = val;
             obj.make_map_active('notify')
             
             % update menus
