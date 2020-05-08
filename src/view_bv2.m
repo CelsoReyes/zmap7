@@ -173,54 +173,54 @@ function view_bv2()
         add_symbol_menu('eqc_plot');
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle (const N)',...
-            MenuSelectedField(),@callbackfun_002)
+            'MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle (const R)',...
-            MenuSelectedField(),@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-            MenuSelectedField(),@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         uimenu(options,'Label','Select Eqs in Polygon - new',...
-            MenuSelectedField(), @(~,~)cb_selectPoly(false));
+            'MenuSelectedFcn', @(~,~)cb_selectPoly(false));
         uimenu(options,'Label','Select Eqs in Polygon - hold',...
-            MenuSelectedField(), @(~,~)cb_selectPoly(true));
+            'MenuSelectedFcn', @(~,~)cb_selectPoly(true));
         
         op1 = uimenu('Label',' Maps ');
         %   uimenu(op1,'Label','b-value map (weighted LS)',...
-        %      MenuSelectedField(),@callbackfun_007)
+        %      'MenuSelectedFcn',@callbackfun_007)
         uimenu(op1,'Label','b-value map (max likelihood)',...
-            MenuSelectedField(),@callbackfun_008)
+            'MenuSelectedFcn',@callbackfun_008)
         uimenu(op1,'Label','b-value standard deviation ',...
-            MenuSelectedField(),@callbackfun_009)
+            'MenuSelectedFcn',@callbackfun_009)
         uimenu(op1,'Label','Mag of completness map',...
-            MenuSelectedField(),@callbackfun_010)
+            'MenuSelectedFcn',@callbackfun_010)
         uimenu(op1,'Label','Mc standard deviation',...
-            MenuSelectedField(),@callbackfun_011)
+            'MenuSelectedFcn',@callbackfun_011)
         uimenu(op1,'Label','Goodness of fit to power law map',...
-            MenuSelectedField(),@callbackfun_012)
+            'MenuSelectedFcn',@callbackfun_012)
         
         if exist('mStdDevB')
             AverageStdDevMenu = uimenu(op1,'Label', 'Additional random simulation');
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of b-value',...
-                MenuSelectedField(),@callbackfun_013)
+                'MenuSelectedFcn',@callbackfun_013)
             uimenu(AverageStdDevMenu,'Label', 'Bootstrapped standard deviation of Mc',...
-                MenuSelectedField(),@callbackfun_014)
+                'MenuSelectedFcn',@callbackfun_014)
             uimenu(AverageStdDevMenu,'Label', 'b-value map (max likelihood) with std. deviation',...
-                MenuSelectedField(),@callbackfun_015)
+                'MenuSelectedFcn',@callbackfun_015)
         end
         
         uimenu(op1,'Label','a-value map at given M',...
-            MenuSelectedField(),@callbackfun_016)
+            'MenuSelectedFcn',@callbackfun_016)
         
         uimenu(op1,'Label','Resolution map',...
-            MenuSelectedField(),@callbackfun_017)
+            'MenuSelectedFcn',@callbackfun_017)
         uimenu(op1,'Label','Earthquake density map',...
-            MenuSelectedField(),@callbackfun_018)
+            'MenuSelectedFcn',@callbackfun_018)
         uimenu(op1,'Label','Earthquakes per node',...
-            MenuSelectedField(),@callbackfun_019)
+            'MenuSelectedFcn',@callbackfun_019)
         
-        uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
-        uimenu(op1,'Label','Save map to ASCII file ',MenuSelectedField(),@callbackfun_021)
+        uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
+        uimenu(op1,'Label','Save map to ASCII file ','MenuSelectedFcn',@callbackfun_021)
         
         add_display_menu(3);
         

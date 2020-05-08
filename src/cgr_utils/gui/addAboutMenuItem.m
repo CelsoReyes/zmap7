@@ -19,15 +19,15 @@ function addAboutMenuItem(fig)
     end
     uimenu(mainhelp,'Label','v-- ZMAP --v','Separator','on','Enable','off','Tag','zmaphelpmenuitem');
     uimenu(mainhelp,'Label','Report a ZMAP Issue','Separator','on',...
-        MenuSelectedField(),@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
+        'MenuSelectedFcn',@(~,~)reportIssue,'Tag','zmaphelpmenuitem');
     
     uimenu(mainhelp,'Label','ZMAP Tutorial videos','Tag','zmaphelpmenuitem',...
-        MenuSelectedField(),@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
+        'MenuSelectedFcn',@(~,~) web('https://www.youtube.com/playlist?list=PLXUrwVIXIt9wQ5gkCP5B96k8EHzAX6bJX','-browser'))
     
     uimenu(mainhelp,'Label','About ZMAP','Separator','on','Tag','zmaphelpmenuitem',...
-        MenuSelectedField(),@(~,~)aboutZmapDialog);
+        'MenuSelectedFcn',@(~,~)aboutZmapDialog);
         uimenu(mainhelp,'Label','ZMAP Tips','Tag','zmaphelpmenuitem',...
-            MenuSelectedField(),@(~,~)show_a_tip);
+            'MenuSelectedFcn',@(~,~)show_a_tip);
 end
 
 function reportIssue()
@@ -109,13 +109,13 @@ function aboutZmapDialog()
     % add a context menu that allows contents to be copied.
     c = uicontextmenu('Tag','citation contextmenu');
     uimenu(c,'Label','view original Wiemer 2001 document',...
-        MenuSelectedField(),@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
+        'MenuSelectedFcn',@(~,~)web('https://doi.org/10.1785/gssrl.72.3.373','-browser'));
     uimenu(c,'Label','copy to Wiemer, 2001 clipboard',...
-        MenuSelectedField(),@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
+        'MenuSelectedFcn',@(~,~)clipboard('copy',[citationText '. doi: ' citationDOI]));
     uimenu(c,'Label','view Reyes & Wiemer, 2019',...
-        MenuSelectedField(),@(~,~)web(abstractCW,'-browser'));
+        'MenuSelectedFcn',@(~,~)web(abstractCW,'-browser'));
         uimenu(c,'Label','view Reyes & Wiemer, 2020. From ZMAP to ZMAP7',...
-            MenuSelectedField(),@(~,~)web('https://meetingorganizer.copernicus.org/EGU2020/session/37050','-browser'));
+            'MenuSelectedFcn',@(~,~)web('https://meetingorganizer.copernicus.org/EGU2020/session/37050','-browser'));
     h.UIContextMenu=c;
     t.UIContextMenu=c;
     t.TooltipString = tooltipMsg;

@@ -361,7 +361,7 @@ classdef(Abstract) ZmapFunction < matlab.mixin.Copyable
         %
         %       label = 'testmenuitem';                        % CHANGE THIS TO YOUR MENUNAME
         %       cb = @(~,~)sample_ZmapFunction(zapFcn());      % CHANGE THIS TO YOUR CALLBACK
-        %       h = uimenu(parent, 'Label', label, MenuSelectedField(), cb, varargin{:});
+        %       h = uimenu(parent, 'Label', label, 'MenuSelectedFcn', cb, varargin{:});
         %    end
         %
         % you can copy/paste the above into your Static methods section

@@ -551,14 +551,14 @@ classdef ZmapMainWindow < handle
             % add context menu to tab allowing modifications to x-section
             delete(findobj(obj.fig, 'Tag',['xsTabContext' mytitle]))
             c = uicontextmenu(obj.fig, 'Tag',['xsTabContext' mytitle]);
-            uimenu(c, 'Label', 'Copy Contents to new figure (static)', CallbackFld, @copytab);
-            uimenu(c, 'Label', 'Info', 'Separator', 'on', CallbackFld,@obj.cb_info);
-            uimenu(c, 'Label', 'Change Width'       , CallbackFld, @(~,~)obj.cb_chwidth);
-            uimenu(c, 'Label', 'Change Color'       , CallbackFld, @obj.cb_chcolor);
-            uimenu(c, 'Label', 'Examine This Area'  , CallbackFld, @(~,~)obj.cb_cropToXS(xsec));
+            uimenu(c, 'Label', 'Copy Contents to new figure (static)', 'MenuSelectedFcn', @copytab);
+            uimenu(c, 'Label', 'Info', 'Separator', 'on', 'MenuSelectedFcn',@obj.cb_info);
+            uimenu(c, 'Label', 'Change Width'       , 'MenuSelectedFcn', @(~,~)obj.cb_chwidth);
+            uimenu(c, 'Label', 'Change Color'       , 'MenuSelectedFcn', @obj.cb_chcolor);
+            uimenu(c, 'Label', 'Examine This Area'  , 'MenuSelectedFcn', @(~,~)obj.cb_cropToXS(xsec));
             uimenu(c, 'Separator', 'on',...
                 'Label', 'Delete',...
-                CallbackFld, @(~,~)obj.cb_deltab(xsec));
+                'MenuSelectedFcn', @(~,~)obj.cb_deltab(xsec));
             mytab.UIContextMenu = c;
             
             
@@ -822,13 +822,13 @@ classdef ZmapMainWindow < handle
             obj.maintab.Tag = 'mainmap_tab';
             if isempty(findobj(obj.fig,'Name','Move Tab','-and','Type','uimenu'))
                 uimenu(obj.maintab.UIContextMenu,'Text','Move Tab', ...
-                    MenuSelectedField(),@(~,~)callbacks.switchtabgroup(obj.maingroup));
+                    'MenuSelectedFcn',@(~,~)callbacks.switchtabgroup(obj.maingroup));
             end
             
             if isempty(findobj(obj.fig,'Tag','printable_figure_tab','-and','Type','uimenu'))
                 uimenu(obj.maintab.UIContextMenu,'Text','open printable Figure',...
                 'Separator','on', ...
-                    MenuSelectedField(),@(~,~)make_printable_figure_copy(obj.fig),...
+                    'MenuSelectedFcn',@(~,~)make_printable_figure_copy(obj.fig),...
                     'Tag', 'printable_figure_tab');
             end
 
@@ -915,17 +915,17 @@ classdef ZmapMainWindow < handle
             
             % add Y-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'yscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Y'));
+            uimenu(c, 'Label', 'Use Log Scale', 'MenuSelectedFcn', @(s,~)logtoggle(s,'Y'));
             obj.sharedContextMenus.LogLinearYScale = c;
             
             % add X-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'xscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'X'));
+            uimenu(c, 'Label', 'Use Log Scale', 'MenuSelectedFcn', @(s,~)logtoggle(s,'X'));
             obj.sharedContextMenus.LogLinearXScale = c;
             
             % add Z-axis scale toggle
             c = uicontextmenu(obj.fig, 'tag', 'zscale contextmenu');
-            uimenu(c, 'Label', 'Use Log Scale', CallbackFld, @(s,~)logtoggle(s,'Z'));
+            uimenu(c, 'Label', 'Use Log Scale', 'MenuSelectedFcn', @(s,~)logtoggle(s,'Z'));
             obj.sharedContextMenus.LogLinearZScale = c;
         end
         
@@ -1114,16 +1114,6 @@ function cb_selectionChanged(~,~)
     %subax = findobj(alltabs(~isselected), 'Type', 'axes')
     %set(subax, 'visible', 'off');
 end
-
-
-function s = CallbackFld()
-    if verLessThan('matlab','9.3')
-        s = 'Callback';
-    else
-        s = MenuSelectedField();
-    end
-end
-
 
 function f = getFeaturesToPlot()
     if iscartesian(ZmapGlobal.Data.ref_ellipsoid)

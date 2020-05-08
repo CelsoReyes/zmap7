@@ -218,40 +218,40 @@ function view_bdepth(lab1, valueMap)
         
         add_symbol_menu('eq_plot');
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_002)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle',...
-            MenuSelectedField(),@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         
         op1 = uimenu('Label',' Maps ');
         
         adjmenu =  uimenu(op1,'Label','Adjust Map Display Parameters');
         uimenu(adjmenu,'Label','Adjust Rmax cut',...
-            MenuSelectedField(),@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         uimenu(adjmenu,'Label','Adjust goodness of fit cut',...
-            MenuSelectedField(),@callbackfun_005)
+            'MenuSelectedFcn',@callbackfun_005)
         
         
         uimenu(op1,'Label','Depth Ratio Map',...
-            MenuSelectedField(),@callbackfun_013)
+            'MenuSelectedFcn',@callbackfun_013)
         
         uimenu(op1,'Label','Utsu Probability Map',...
-            MenuSelectedField(),@callbackfun_014)
+            'MenuSelectedFcn',@callbackfun_014)
         
         uimenu(op1,'Label','Top Zone b value Map',...
-            MenuSelectedField(),@callbackfun_015)
+            'MenuSelectedFcn',@callbackfun_015)
         
         uimenu(op1,'Label','Bottom Zone b value Map',...
-            MenuSelectedField(),@callbackfun_016)
+            'MenuSelectedFcn',@callbackfun_016)
         
         uimenu(op1,'Label','% of nodal EQs within top zone',...
-            MenuSelectedField(),@callbackfun_017)
+            'MenuSelectedFcn',@callbackfun_017)
         
         uimenu(op1,'Label','% of nodal EQs within bottom zone',...
-            MenuSelectedField(),@callbackfun_018)
+            'MenuSelectedFcn',@callbackfun_018)
         
         uimenu(op1,'Label','resolution Map',...
-            MenuSelectedField(),@callbackfun_019)
-        uimenu(op1,'Label','Histogram ',MenuSelectedField(),@(~,~)zhist())
+            'MenuSelectedFcn',@callbackfun_019)
+        uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@(~,~)zhist())
         
         add_display_menu(1);
     end

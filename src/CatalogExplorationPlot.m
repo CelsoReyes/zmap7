@@ -343,7 +343,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(), @(s,~)obj.change(s,'x_by'));
+                    uimenu(h,'Label',obj.axes_choices{i}, 'MenuSelectedFcn', @(s,~)obj.change(s,'x_by'));
                 end
                 obj.add_axes_toggles(h,'X');
                 xl.UIContextMenu=h;
@@ -359,7 +359,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i},MenuSelectedField(),@(s,~)obj.change(s,'y_by'));
+                    uimenu(h,'Label',obj.axes_choices{i},'MenuSelectedFcn',@(s,~)obj.change(s,'y_by'));
                 end
                 obj.add_axes_toggles(h,'Y');
                 yl.UIContextMenu=h;
@@ -375,7 +375,7 @@ classdef CatalogExplorationPlot < handle
                 delete(findobj(fig,'Type','uicontextmenu','-and','Tag',mytag));
                 h=uicontextmenu('Tag',mytag);
                 for i=1:numel(obj.axes_choices)
-                    uimenu(h,'Label',obj.axes_choices{i}, MenuSelectedField(), @(s,v)obj.change(s,v,'z_by'));
+                    uimenu(h,'Label',obj.axes_choices{i}, 'MenuSelectedFcn', @(s,v)obj.change(s,v,'z_by'));
                 end
                 obj.add_axes_toggles(h,'Z');
                 zl.UIContextMenu=h;
@@ -389,9 +389,9 @@ classdef CatalogExplorationPlot < handle
             delete(findobj(f,'Tag',tag));
             h=uicontextmenu(f,'Tag',tag);
             szm = uimenu(h,'Label','Size by...',...
-                MenuSelectedField(), @(src,~)obj.cleanChildren_cb(src, 'size_by'));
+                'MenuSelectedFcn', @(src,~)obj.cleanChildren_cb(src, 'size_by'));
             clm = uimenu(h,'Label','Color by...',...
-                MenuSelectedField(), @(src,~)obj.cleanChildren_cb(src, 'color_by'));
+                'MenuSelectedFcn', @(src,~)obj.cleanChildren_cb(src, 'color_by'));
             obj.sizeContextMenu(szm);
             obj.colorContextMenu(clm);
             sc.UIContextMenu=h;
@@ -409,24 +409,24 @@ classdef CatalogExplorationPlot < handle
         
         function sizeContextMenu(obj,h)
             for i=1:numel(obj.axes_choices)
-                uimenu(h,'Label',obj.axes_choices{i},MenuSelectedField(),@obj.changeSize);
+                uimenu(h,'Label',obj.axes_choices{i},'MenuSelectedFcn',@obj.changeSize);
             end
-            uimenu(h,'Separator','on','Label','Single Size',MenuSelectedField(),@obj.changeSize);
+            uimenu(h,'Separator','on','Label','Single Size','MenuSelectedFcn',@obj.changeSize);
             
         end
         
         function colorContextMenu(obj,h)
             for i=1:numel(obj.axes_choices)
-                uimenu(h,'Label',obj.axes_choices{i},MenuSelectedField(),@obj.changeColor);
+                uimenu(h,'Label',obj.axes_choices{i},'MenuSelectedFcn',@obj.changeColor);
             end
-            uimenu(h,'Separator','on','Label','-none-',MenuSelectedField(),@obj.changeColor);
+            uimenu(h,'Separator','on','Label','-none-','MenuSelectedFcn',@obj.changeColor);
         end
         
         function add_axes_toggles(obj,h,letter)
             uimenu(h,'Label','Flip axes direction','Separator','on',...
-                MenuSelectedField(),@(src,~)cb_axisdir(letter));
+                'MenuSelectedFcn',@(src,~)cb_axisdir(letter));
             uimenu(h,'Label','Toggle Log/Linear scale','Separator','on',...
-                MenuSelectedField(),@(src,~)cb_axisscale(letter));
+                'MenuSelectedFcn',@(src,~)cb_axisscale(letter));
             
             function cb_axisdir(letter)
                 dirs={'normal','reverse'};

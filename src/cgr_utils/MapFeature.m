@@ -282,7 +282,7 @@ classdef MapFeature < handle
             
             obj.MenuToggle = uimenu(parentH,...
                 'Label',['Hide ' obj.Name],...
-                MenuSelectedField(), @(s,~)obj.toggle_showhide_menu(s, ax));
+                'MenuSelectedFcn', @(s,~)obj.toggle_showhide_menu(s, ax));
         end
         function toggle_showhide_menu(obj, src, ax, contingencyFunction)
             % switch the show/hide menu between the "Show" and "Hide" stat

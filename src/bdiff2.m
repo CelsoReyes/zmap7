@@ -165,7 +165,7 @@ classdef bdiff2 < ZmapFunction
             ax.UIContextMenu=c;
             uimenu(ax.UIContextMenu,...
                 'Label','Open as new figure',...
-                MenuSelectedField(),@open_as_new_figure_cb);
+                'MenuSelectedFcn',@open_as_new_figure_cb);
                 
             obj.write_globals();
             
@@ -437,7 +437,7 @@ classdef bdiff2 < ZmapFunction
             end
             if isempty(findobj(ax.UIContextMenu.Children,'Label','info'))
                 uimenu(ax.UIContextMenu,'Separator','on',...
-                    'Label','info',MenuSelectedField(),@(~,~)msgbox(tx,'b-Value results','modal'));
+                    'Label','info','MenuSelectedFcn',@(~,~)msgbox(tx,'b-Value results','modal'));
             end
         end
         
@@ -561,15 +561,15 @@ classdef bdiff2 < ZmapFunction
         end
         %% ui functions
         function create_my_menu(obj,c)
-            uimenu(c,'Label','Estimate recurrence time/probability',MenuSelectedField(),@callbackfun_recurrence);
-            uimenu(c,'Label','Plot time series',MenuSelectedField(),@callbackfun_ts);
-            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)',MenuSelectedField(),@cb_nonlin_optimize);
-            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)',MenuSelectedField(),@cb_nonlin_keepmc);
-            uimenu(c,'Label','Show discrete curve',MenuSelectedField(),@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
-            uimenu(c,'Label','Save values to file',MenuSelectedField(),@simple_save_cb);
+            uimenu(c,'Label','Estimate recurrence time/probability','MenuSelectedFcn',@callbackfun_recurrence);
+            uimenu(c,'Label','Plot time series','MenuSelectedFcn',@callbackfun_ts);
+            uimenu(c,'Label','Examine Nonlinearity (optimize  Mc)','MenuSelectedFcn',@cb_nonlin_optimize);
+            uimenu(c,'Label','Examine Nonlinearity (Keep Mc)','MenuSelectedFcn',@cb_nonlin_keepmc);
+            uimenu(c,'Label','Show discrete curve','MenuSelectedFcn',@cb_toggleDiscrete,'Checked',char(obj.showDiscrete));
+            uimenu(c,'Label','Save values to file','MenuSelectedFcn',@simple_save_cb);
             uimenu(c,'Separator','on', 'Label','Modify Parameters for this calculation...',...
-                MenuSelectedField(),@(~,~)obj.InteractiveSetup);
-            uimenu(c,'Label','Change Axes Limits...',MenuSelectedField(),@cb_axedit);
+                'MenuSelectedFcn',@(~,~)obj.InteractiveSetup);
+            uimenu(c,'Label','Change Axes Limits...','MenuSelectedFcn',@cb_axedit);
             addAboutMenuItem();
             
             function cb_axedit(src,ev)
@@ -693,7 +693,7 @@ classdef bdiff2 < ZmapFunction
             % create a menu item
             label = 'FMD plot';
             h = uimenu(parent, 'Label', label,...
-                MenuSelectedField(), @(~,~)bdiff2(catalogFcn()),...
+                'MenuSelectedFcn', @(~,~)bdiff2(catalogFcn()),...
                 varargin{:});
         end
         

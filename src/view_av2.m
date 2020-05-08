@@ -171,42 +171,42 @@ function view_av2(lab1,valueMap)
         add_symbol_menu('eqc_plot');
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@callbackfun_001)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@callbackfun_001)
         uimenu(options,'Label','Select EQ in Circle (const N)',...
-            MenuSelectedField(),@callbackfun_002)
+            'MenuSelectedFcn',@callbackfun_002)
         uimenu(options,'Label','Select EQ in Circle (const R)',...
-            MenuSelectedField(),@callbackfun_003)
+            'MenuSelectedFcn',@callbackfun_003)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
-            MenuSelectedField(),@callbackfun_004)
+            'MenuSelectedFcn',@callbackfun_004)
         uimenu(options,'Label','Select Eqs in Polygon - new',...
-            MenuSelectedField(),{@(~,~)cb_selectPoly(false));
+            'MenuSelectedFcn',{@(~,~)cb_selectPoly(false));
         uimenu(options,'Label','Select Eqs in Polygon - hold',...
-            MenuSelectedField(),{@(~,~)cb_selectPoly(true));
+            'MenuSelectedFcn',{@(~,~)cb_selectPoly(true));
         
         % Menu 'Maps'
         op1 = uimenu('Label',' Maps ');
         % A-Value map calculated by the MaxLikelihoodA...
         uimenu(op1,'Label','a-value map ',...
-            MenuSelectedField(),@callbackfun_007)
+            'MenuSelectedFcn',@callbackfun_007)
         % B-Value map (fixed b-value by input from calc_avalgrid.m
         uimenu(op1,'Label','b-value map ',...
-            MenuSelectedField(),@callbackfun_008)
+            'MenuSelectedFcn',@callbackfun_008)
         % Magnitude of completeness calculated by MaxCurvature
         uimenu(op1,'Label','Magnitude of completness map ',...
-            MenuSelectedField(),@callbackfun_009)
+            'MenuSelectedFcn',@callbackfun_009)
         % Resolution estimation by mapping the needed radius to cover ni
         % earthquakes
         uimenu(op1,'Label','Resolution map',...
-            MenuSelectedField(),@callbackfun_010)
+            'MenuSelectedFcn',@callbackfun_010)
         % Earthquake density map
         uimenu(op1,'Label','Earthquake density map',...
-            MenuSelectedField(),@callbackfun_011)
+            'MenuSelectedFcn',@callbackfun_011)
         % Mu-value of the normal CDF
         uimenu(op1,'Label','Mu-value of the normal CDF',...
-            MenuSelectedField(),@callbackfun_012)
+            'MenuSelectedFcn',@callbackfun_012)
         %  Sigma-value of the normal CDF
         uimenu(op1,'Label','Sigma-value of the normal CDF',...
-            MenuSelectedField(),@callbackfun_013)
+            'MenuSelectedFcn',@callbackfun_013)
         
         
         add_display_menu(3)

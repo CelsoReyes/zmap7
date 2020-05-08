@@ -21,64 +21,64 @@ function submenu = catalog_menu(obj, force)
     
     catmenu = uimenu(submenu,'Label','Get/Load Catalog');
     
-    uimenu(submenu,'Label','Reload last catalog',MenuSelectedField(),@cb_reloadlast,...
+    uimenu(submenu,'Label','Reload last catalog','MenuSelectedFcn',@cb_reloadlast,...
         'Enable','off');
     
     uimenu(catmenu,'Label','from *.mat file',...
-        MenuSelectedField(), @(s,v)cb_importer(s, v, @load_zmapfile));
+        'MenuSelectedFcn', @(s,v)cb_importer(s, v, @load_zmapfile));
     
     uimenu(catmenu,'Label','from other formatted file',...
-        MenuSelectedField(), @(s,v)cb_importer(s, v, @zdataimport));
+        'MenuSelectedFcn', @(s,v)cb_importer(s, v, @zdataimport));
     uimenu(catmenu,'Label','from FDSN webservice',...
-        MenuSelectedField(), @(s,v)cb_importer(s, v, @get_fdsn_data_from_web_callback));
+        'MenuSelectedFcn', @(s,v)cb_importer(s, v, @get_fdsn_data_from_web_callback));
     uimenu(catmenu,'Label','from the current MATLAB Workspace',...
-        MenuSelectedField(), @(s,v)cb_importer(s, v, @cb_catalog_from_workspace));
+        'MenuSelectedFcn', @(s,v)cb_importer(s, v, @cb_catalog_from_workspace));
     
     
-    uimenu(submenu,'Label','Save current catalog',MenuSelectedField(),@(~,~)save_zmapcatalog(obj.catalog));
+    uimenu(submenu,'Label','Save current catalog','MenuSelectedFcn',@(~,~)save_zmapcatalog(obj.catalog));
     
     catexport = uimenu(submenu,'Label','Export current catalog...');
-    uimenu(catexport,'Label','to workspace (as catalog)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'catalog'));
-    uimenu(catexport,'Label','to workspace (Table)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'table'));
-        uimenu(catexport,'Label','to workspace (old ZmapArray)',MenuSelectedField(),@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
+    uimenu(catexport,'Label','to workspace (as catalog)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'catalog'));
+    uimenu(catexport,'Label','to workspace (Table)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'table'));
+        uimenu(catexport,'Label','to workspace (old ZmapArray)','MenuSelectedFcn',@(~,~)exportToWorkspace(obj.catalog,'ZmapArray'));
     
     
     uimenu(catmenu,'Separator','on','Label','Set as main catalog',...
-        MenuSelectedField(),@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
+        'MenuSelectedFcn',@cb_replace_main); % Replaces the primary catalog, and replots this subset in the map window
     
     %uimenu(catmenu,'Separator','on','Label','Reset',...
-    %    MenuSelectedField(),@cb_resetcat); % Resets the catalog to the original selection
+    %    'MenuSelectedFcn',@cb_resetcat); % Resets the catalog to the original selection
     
     uimenu(submenu,'Separator','on',...
-        'Label','Edit Raw Catalog Range...',MenuSelectedField(),@cb_editrange);
+        'Label','Edit Raw Catalog Range...','MenuSelectedFcn',@cb_editrange);
     
     % choose a time range by clicking on the axes. only available if x-axis is a datetime axis.
     
-    uimenu(submenu,'Label','Rename...',MenuSelectedField(),@cb_rename);
+    uimenu(submenu,'Label','Rename...','MenuSelectedFcn',@cb_rename);
     uimenu(submenu,'Separator','on',...
         'Label','Remove inactive events',...
-        MenuSelectedField(), @cb_usesubset);
+        'MenuSelectedFcn', @cb_usesubset);
     uimenu(submenu,'Separator','on',...
-        'Label','Memorize Catalog',  MenuSelectedField(), @cb_memorize);
-    uimenu(submenu,'Label','Recall Catalog', MenuSelectedField(), @cb_recall);
+        'Label','Memorize Catalog',  'MenuSelectedFcn', @cb_memorize);
+    uimenu(submenu,'Label','Recall Catalog', 'MenuSelectedFcn', @cb_recall);
         
-    uimenu(submenu,'Label','Combine catalogs',MenuSelectedField(),@cb_combinecatalogs,...
+    uimenu(submenu,'Label','Combine catalogs','MenuSelectedFcn',@cb_combinecatalogs,...
         'Separator','on');
     
     
     uimenu(submenu,'Label','Split and Compare', ...
-        MenuSelectedField(),@(~,~)multi_range_selector(obj.catalog, ...
+        'MenuSelectedFcn',@(~,~)multi_range_selector(obj.catalog, ...
         @(x)ZG.catalogs.set('catalogA',x), @(x)ZG.catalogs.set('catalogB',x)) );
     
-    uimenu(submenu,'Label','Compare catalogs - find identical events',MenuSelectedField(),@(~,~)comp2cat);
+    uimenu(submenu,'Label','Compare catalogs - find identical events','MenuSelectedFcn',@(~,~)comp2cat);
     
 
-    uimenu(submenu,'Label','Info (Summary)',MenuSelectedField(),@(~,~)info_summary_callback(obj.catalog),...
+    uimenu(submenu,'Label','Info (Summary)','MenuSelectedFcn',@(~,~)info_summary_callback(obj.catalog),...
         'Separator','on');
     
     
     %uimenu (submenu,'Label','Decluster the catalog',...
-    %    MenuSelectedField(),@(~,~)ReasenbergDeclusterClass(obj.catalog));
+    %    'MenuSelectedFcn',@(~,~)ReasenbergDeclusterClass(obj.catalog));
     
     function cb_recall(~,~)
         mcm = MemorizedCatalogManager;

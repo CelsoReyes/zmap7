@@ -157,15 +157,15 @@ classdef (Sealed) CumTimePlot < handle
                 mm=uimenu(fig, 'Label', 'TimePlot');
             end
             
-            uimenu(mm, 'Label', 'Reset', MenuSelectedField(), @(~,~)obj.reset);
+            uimenu(mm, 'Label', 'Reset', 'MenuSelectedFcn', @(~,~)obj.reset);
             
             % HISTOGRAMS
             op5C = uimenu(mm,'Label','Histograms');
             
-            % uimenu(op5C,'Label','Magnitude', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Magnitude'));
-            % uimenu(op5C,'Label','Depth', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Depth'));
-            % uimenu(op5C,'Label','Time', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Date'));
-            uimenu(op5C,'Label','Hr of the day', MenuSelectedField(), @(~,~)hisgra(obj.catalog,'Hour'));
+            % uimenu(op5C,'Label','Magnitude', 'MenuSelectedFcn', @(~,~)hisgra(obj.catalog,'Magnitude'));
+            % uimenu(op5C,'Label','Depth', 'MenuSelectedFcn', @(~,~)hisgra(obj.catalog,'Depth'));
+            % uimenu(op5C,'Label','Time', 'MenuSelectedFcn', @(~,~)hisgra(obj.catalog,'Date'));
+            uimenu(op5C,'Label','Hr of the day', 'MenuSelectedFcn', @(~,~)hisgra(obj.catalog,'Hour'));
             
             obj.add_cumtimeplot_zmenu(mm)
         end
@@ -272,7 +272,7 @@ classdef (Sealed) CumTimePlot < handle
                 else
                     mycatalog = obj.catalog.subset(obj.catalog.Date <= res.enddate);
                 end
-                obj.zmw=struct('catalog',mycatalog);
+                obj.zmw = struct('catalog',mycatalog);
                 obj.reset();
             else
                 beep;
@@ -287,13 +287,13 @@ classdef (Sealed) CumTimePlot < handle
             
             uimenu(c, 'Label', 'filter',...
                 'Enable','off',...
-                MenuSelectedField(),@unimplemented_error);
+                'MenuSelectedFcn',@unimplemented_error);
             uimenu(c, 'Label', 'also plot main catalog',...
                 'Enable','off',...
-                MenuSelectedField(),@unimplemented_error);
-            uimenu(c, 'separator','on','Label', 'start here',MenuSelectedField(),@obj.start_here);
-            uimenu(c, 'Label', 'end here',MenuSelectedField(),@obj.end_here);
-            uimenu(c, 'Label', 'trim to largest event',MenuSelectedField(),@obj.trim_to_largest);
+                'MenuSelectedFcn',@unimplemented_error);
+            uimenu(c, 'separator','on','Label', 'start here','MenuSelectedFcn',@obj.start_here);
+            uimenu(c, 'Label', 'end here','MenuSelectedFcn',@obj.end_here);
+            uimenu(c, 'Label', 'trim to largest event','MenuSelectedFcn',@obj.trim_to_largest);
             item.UIContextMenu = c;
         end
         
@@ -303,7 +303,7 @@ classdef (Sealed) CumTimePlot < handle
             
             analyzemenu=parent;%uimenu(parent,'Label','analyze');
             ztoolsmenu=uimenu(parent,'Label','ztools');
-            msfield = MenuSelectedField();
+            msfield = 'MenuSelectedFcn';
             
             % uimenu(ztoolsmenu,'Label','Date Ticks in different format',msfield,@(~,~)newtimetick,'Enable','off');
             

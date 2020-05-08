@@ -144,13 +144,13 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
             menu_addpoint = findobj(h.UIContextMenu.Children,'Label','add point');
             if isempty(menu_addpoint) && p.Results.addpoints
                 uimenu(h.UIContextMenu,'Label','add point',...
-                    MenuSelectedField(), @add_point,...
+                    'MenuSelectedFcn', @add_point,...
                     'Enable','off');
             end
             menu_delpoint = findobj(h.UIContextMenu.Children,'Label','delete point');
             if isempty(menu_delpoint) && p.Results.delpoints
                 uimenu(h.UIContextMenu,'Label','delete point',...
-                    MenuSelectedField(),@(~,~)delete_point([]),...
+                    'MenuSelectedFcn',@(~,~)delete_point([]),...
                     'Enable','off');
             end
         end
@@ -221,7 +221,7 @@ function moveable_item(h, updateFcn, doneFcn, varargin)
                 dp = findobj(h.UIContextMenu.Children,'Label','delete point');
                 set(findobj(h.UIContextMenu.Children,'Label','add point'),'enable','off');
                 set(dp,'enable','on');
-                dp.(MenuSelectedField()) = @(~,~)delete_point(pointToMove);
+                dp.('MenuSelectedFcn') = @(~,~)delete_point(pointToMove);
             end
             return 
         end
