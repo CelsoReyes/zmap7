@@ -38,9 +38,14 @@ function create_all_menus(obj, force)
     
     % modify the file menu to add ZMAP stuff
     hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
-    % copyobj(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu, 'legacy'); %PROBLEM!!!
-    %copyobj(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
-    copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    if force
+        if ~isempty(hFileMenu)
+            delete(findobj(hFileMenu,'Label','Get/Load Catalog'))
+        end
+        copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    elseif isempty(hFileMenu)
+        copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    end
     addPreferencesMenuItem();
     addQuitMenuItem();
     addAboutMenuItem();
