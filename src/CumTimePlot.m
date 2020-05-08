@@ -268,11 +268,12 @@ classdef (Sealed) CumTimePlot < handle
             [res,ok] = zdlg.Create('Name', 'Cut catalog');
             if ok
                 if res.inclusive
-                    obj.catalog = obj.catalog.subset(obj.catalog.Date < res.enddate);
+                    mycatalog = obj.catalog.subset(obj.catalog.Date < res.enddate);
                 else
-                    obj.catalog = obj.catalog.subset(obj.catalog.Date <= res.enddate);
+                    mycatalog = obj.catalog.subset(obj.catalog.Date <= res.enddate);
                 end
-                obj.plot();
+                obj.zmw=struct('catalog',mycatalog);
+                obj.reset();
             else
                 beep;
             end
