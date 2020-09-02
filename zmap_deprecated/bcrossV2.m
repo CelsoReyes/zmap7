@@ -63,7 +63,7 @@ classdef bcrossV2 < ZmapVGridFunction
         function h=AddMenuItem(parent,zapFcn)
             % create a menu item
             label='b-value V2[xsec]';
-            h=uimenu(parent,'Label',label,MenuSelectedField(), @(~,~)XZfun.bcrossV2(zapFcn()));
+            h=uimenu(parent,'Label',label,'MenuSelectedFcn', @(~,~)XZfun.bcrossV2(zapFcn()));
         end
     end
 end

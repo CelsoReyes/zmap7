@@ -163,9 +163,9 @@ function csubcat()
         %
         add_symbol_menu([]); %FIXME Figure out which target to affect
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Time ',...
-            MenuSelectedField(),@callbackfun_001);
+            'MenuSelectedFcn',@callbackfun_001);
         TypeMenu = uimenu(symbolmenu,'Label',' Legend by Depth ',...
-            MenuSelectedField(),@callbackfun_002);
+            'MenuSelectedFcn',@callbackfun_002);
         
         cal6 = ...
             [ 'set(deplo1,''MarkerSize'',ZG.ms6,''LineStyle'',ty1,''visible'',''on'');',...
@@ -175,45 +175,45 @@ function csubcat()
         cufi = gcf;
         options = uimenu('Label',' Select ');
         uimenu(options,'Label','Cluster Window Values',...
-            MenuSelectedField(),@callbackfun_003);
+            'MenuSelectedFcn',@callbackfun_003);
         uimenu(options,'Label','Expanded Cluster Values ',...
-            MenuSelectedField(),@callbackfun_004);
+            'MenuSelectedFcn',@callbackfun_004);
         uimenu(options,'Label','Select new parameters',...
-            MenuSelectedField(),@callbackfun_005);
+            'MenuSelectedFcn',@callbackfun_005);
         uimenu(options,'Label','Select EQ in Polygon (Menu) ',...
-            MenuSelectedField(),@callbackfun_006);
+            'MenuSelectedFcn',@callbackfun_006);
         
         uimenu(options,'Label','Select EQ in Polygon ',...
-            MenuSelectedField(),@callbackfun_007);
+            'MenuSelectedFcn',@callbackfun_007);
         
         %    uimenu(options,'Label','Select EQ in Circle (Menu) ',...
-        %          MenuSelectedField(),@callbackfun_008);
+        %          'MenuSelectedFcn',@callbackfun_008);
         
         op2 = uimenu('Label','Catalog');
         uimenu(op2,'Label','Refresh Window ',...
-            MenuSelectedField(),@callbackfun_009);
+            'MenuSelectedFcn',@callbackfun_009);
         
         uimenu(op2,'Label','Reset Catalog ',...
-            MenuSelectedField(),@callbackfun_010);
+            'MenuSelectedFcn',@callbackfun_010);
         uimenu(op2,'label','Declustered catalog',...
-            MenuSelectedField(),@callbackfun_011);
+            'MenuSelectedFcn',@callbackfun_011);
         
         op3 = uimenu('Label','Tools');
         uimenu(op3,'Label','Plot Cumulative Number ',...
-            MenuSelectedField(),@callbackfun_012);
+            'MenuSelectedFcn',@callbackfun_012);
         
         uimenu(op3,'Label','Create Cross-section ',...
-            MenuSelectedField(),@callbackfun_013);
+            'MenuSelectedFcn',@callbackfun_013);
         uimenu(op3,'Label','3 D view ',...
-            MenuSelectedField(),@callbackfun_014);
+            'MenuSelectedFcn',@callbackfun_014);
         uimenu(op3,'Label','Time Depth Plot ',...
-            MenuSelectedField(),@(~,~)TimeDepthPlotter.plot(ZG.newt2));
+            'MenuSelectedFcn',@(~,~)TimeDepthPlotter.plot(ZG.newt2));
         uimenu(op3,'Label','Time magnitude Plot ',...
-            MenuSelectedField(),@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
+            'MenuSelectedFcn',@(~,~)TimeMagnitudePlotter.plot(ZG.newt2));
         uimenu(op3,'Label','Decluster the catalog',...
-            MenuSelectedField(),@callbackfun_015);
+            'MenuSelectedFcn',@callbackfun_015);
         uimenu(op3,'Label','get coordinates with Cursor',...
-            MenuSelectedField(),@callbackfun_016);
+            'MenuSelectedFcn',@callbackfun_016);
         
         %calculate several histogramms
         stt1='Magnitude ';stt2='Depth';stt3='Duration';st4='Foreshock Duration';
@@ -222,11 +222,11 @@ function csubcat()
         op5 = uimenu(op3,'Label','Histograms');
         
         uimenu(op5,'Label','Magnitude',...
-            MenuSelectedField(),@(~,~)cb_histogram('Magnitude'));
+            'MenuSelectedFcn',@(~,~)cb_histogram('Magnitude'));
         uimenu(op5,'Label','Depth',...
-            MenuSelectedField(),@(~,~)cb_histogram('Depth'));
+            'MenuSelectedFcn',@(~,~)cb_histogram('Depth'));
         uimenu(op5,'Label','Time',...
-            MenuSelectedField(),@(~,~)cb_histogram('Date'));
+            'MenuSelectedFcn',@(~,~)cb_histogram('Date'));
     end
     
     %% callback functions

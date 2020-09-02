@@ -167,17 +167,17 @@ classdef HistAnalysisWindow < AnalysisWindow
             c=findobj(ancestor(obj.ax,'figure'),'uicontextmenu','-and','Tag',['histogram ' obj.BinBy]);
             if isempty(c)
                 c=uicontextmenu('Tag',['histogram ' obj.BinBy]);
-                uimenu(c,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
-                uimenu(c,'Enable','of','Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
-                uimenu(c,'Label','Default',MenuSelectedField(),@cb_reset);
-                uimenu(c,'Label','Open as new figure',MenuSelectedField(),@open_as_new_fig); %FIXME
+                uimenu(c,'Label','Change Number of Bins...','MenuSelectedFcn',@cb_change_nBins);
+                uimenu(c,'Enable','of','Label','Change Bin Edges...','MenuSelectedFcn',@cb_change_bVector);
+                uimenu(c,'Label','Default','MenuSelectedFcn',@cb_reset);
+                uimenu(c,'Label','Open as new figure','MenuSelectedFcn',@open_as_new_fig); %FIXME
                 addcontext(obj,c);
                 obj.ax.UIContextMenu=c;
             else
                 obj.ax.UIContextMenu=c;
             end
         
-            uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
+            uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',@(s,~)logtoggle(s,'Y'));
             
             yl = ylabel(obj.ax, '# Events per bin');
             yl.UIContextMenu=c;
@@ -440,10 +440,10 @@ function addcontext(obj, c)
     h=findobj(obj.ax,'Type','histogram');
     switch obj.BinBy
         case 'Date'
-            uimenu(c,'separator','on','Label','Events per Day',MenuSelectedField(),@(~,~)cb_set_to_period(h,'day'));
-            uimenu(c,'Label','Events per Week',MenuSelectedField(),@(~,~)cb_set_to_period(h,'week'));
-            uimenu(c,'Label','Events per Month',MenuSelectedField(),@(~,~)cb_set_to_period(h,'month'));
-            uimenu(c,'Label','Events per Year',MenuSelectedField(),@(~,~)cb_set_to_period(h,'year'));
+            uimenu(c,'separator','on','Label','Events per Day','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'day'));
+            uimenu(c,'Label','Events per Week','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'week'));
+            uimenu(c,'Label','Events per Month','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'month'));
+            uimenu(c,'Label','Events per Year','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'year'));
         otherwise
             do_nothing();
     end

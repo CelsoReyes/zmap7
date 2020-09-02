@@ -38,9 +38,14 @@ function create_all_menus(obj, force)
     
     % modify the file menu to add ZMAP stuff
     hFileMenu = findall(obj.fig, 'tag', 'figMenuFile');
-    % copyobj(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu, 'legacy'); %PROBLEM!!!
-    %copyobj(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
-    copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    if force
+        if ~isempty(hFileMenu)
+            delete(findobj(hFileMenu,'Label','Get/Load Catalog'))
+        end
+        copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    elseif isempty(hFileMenu)
+        copymenus(findobj(obj.fig, 'Label', 'Get/Load Catalog'), hFileMenu);
+    end
     addPreferencesMenuItem();
     addQuitMenuItem();
     addAboutMenuItem();
@@ -48,7 +53,7 @@ function create_all_menus(obj, force)
     if ZmapGlobal.Data.debug
         mainhelp = findall(obj.fig, 'Tag', 'figMenuHelp');
         uimenu(mainhelp, 'Label', 'Export ZmapMainWindow to workspace',...
-            'Separator', 'on', MenuSelectedField(), @export_me);
+            'Separator', 'on', 'MenuSelectedFcn', @export_me);
     end
     
     function export_me(~,~)
@@ -68,7 +73,7 @@ function create_all_menus(obj, force)
         uimenu(submenu, 'Label', 'functions evaluated through time', 'enable', 'off');
         uimenu(submenu, 'Label', 'Analyze time series ...',...
             'Separator', 'on',...
-            MenuSelectedField(), @analyze_time_series_cb);
+            'MenuSelectedFcn', @analyze_time_series_cb);
                 
         function analyze_time_series_cb(~,~)
             % pick which time series we are investigating
@@ -118,16 +123,16 @@ function create_all_menus(obj, force)
         
         % Rate Change menu
         comp2periodz.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
-        uimenu(submenu, 'Label', 'Calculate a z-value map', 'Enable', 'off', MenuSelectedField(), @(~,~)inmakegr(obj.catalog));
+        uimenu(submenu, 'Label', 'Calculate a z-value map', 'Enable', 'off', 'MenuSelectedFcn', @(~,~)inmakegr(obj.catalog));
         
         % Quarry menu : detect quarry contamination
         findquar.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         
-        %uimenu(submenu, 'Label', 'Map stress tensor', MenuSelectedField(), @(~,~)stressgrid());
+        %uimenu(submenu, 'Label', 'Map stress tensor', 'MenuSelectedFcn', @(~,~)stressgrid());
         stressgrid.AddMenuItem(submenu, @()obj.map_zap, 'Separator', 'on');
         %{
-            uimenu(tmp, 'Label', 'Load...', 'Enable', 'off', MenuSelectedField(),  @(~,~)rcvalgrid_a2('lo'));
-            uimenu(submenu, 'Label', 'Load a z-value movie (map-view)', MenuSelectedField(), @(~,~)loadmovz());
+            uimenu(tmp, 'Label', 'Load...', 'Enable', 'off', 'MenuSelectedFcn',  @(~,~)rcvalgrid_a2('lo'));
+            uimenu(submenu, 'Label', 'Load a z-value movie (map-view)', 'MenuSelectedFcn', @(~,~)loadmovz());
         %}
     end
     
@@ -138,14 +143,14 @@ function create_all_menus(obj, force)
         submenu = uimenu('Label', XSection.MainMenuLabel);
         uimenu(submenu, 'Label', 'functions evaluated along a cross-section', 'enable', 'off');
         uimenu(submenu, 'Separator', 'on',...
-            'Label', 'Define a cross-section', MenuSelectedField(), @obj.cb_xsection, 'Tag', 'CreateXsec');
+            'Label', 'Define a cross-section', 'MenuSelectedFcn', @obj.cb_xsection, 'Tag', 'CreateXsec');
         
         import XZfun.* % the cross-section functions exist in the XZfun package
         
         magrcros.AddMenuItem(submenu, @()obj.xsec_zap, 'Separator','on');
         rc_cross_a2.AddMenuItem(submenu, @()obj.xsec_zap);
                 
-        uimenu(submenu, 'enable', 'off', 'Label', 'Calc a b-value cross-section', MenuSelectedField(), @(~,~)nlammap(@()obj.xsec_zap));
+        uimenu(submenu, 'enable', 'off', 'Label', 'Calc a b-value cross-section', 'MenuSelectedFcn', @(~,~)nlammap(@()obj.xsec_zap));
         
         bcross.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
         bcrossVt2.AddMenuItem(submenu, @()obj.xsec_zap, 'Enable', 'off');
@@ -169,7 +174,7 @@ function create_all_menus(obj, force)
         zgrid3d.AddMenuItem(submenu, @()obj.map_zap, 'Enable', 'off');
         
         %{
-            uimenu(submenu, 'Label', 'Load a 3D b-value grid', MenuSelectedField(), @(~,~)myslicer('load'));
+            uimenu(submenu, 'Label', 'Load a 3D b-value grid', 'MenuSelectedFcn', @(~,~)myslicer('load'));
         %}
         
     end
@@ -197,14 +202,14 @@ function create_all_menus(obj, force)
         mapoptionmenu = uimenu(obj.fig, 'Label', 'Display', 'Tag', 'mainmap_menu_overlay');
         
         uimenu(mapoptionmenu, 'Label', '3-D view',...
-            MenuSelectedField(), @obj.set_3d_view); % callback was plot3d
+            'MenuSelectedFcn', @obj.set_3d_view); % callback was plot3d
         
         uimenu(mapoptionmenu, 'Label', 'Change Z aspect ratio', 'Tag', 'z_aspectratio_menu',...
-            MenuSelectedField(), @obj.set_z_ratio, 'Enable', 'off'); % callback was plot3d
+            'MenuSelectedFcn', @obj.set_z_ratio, 'Enable', 'off'); % callback was plot3d
         
         if ~iscartesian(obj.refEllipsoid)
             uimenu(mapoptionmenu, 'Label', 'Set aspect ratio by latitude',...
-                MenuSelectedField(), @set_aspects_cb, ...
+                'MenuSelectedFcn', @set_aspects_cb, ...
                 'Checked', char(ZmapGlobal.Data.lock_aspect));
                 
             if ZmapGlobal.Data.lock_aspect
@@ -212,7 +217,7 @@ function create_all_menus(obj, force)
             end
         end
         m = uimenu(mapoptionmenu, 'Label', 'Toggle Lat/Lon Grid',...
-            MenuSelectedField(), @toggle_grid,...
+            'MenuSelectedFcn', @toggle_grid,...
             'checked', char(ZmapGlobal.Data.mainmap_grid));
 
         if iscartesian(obj.refEllipsoid)
@@ -225,17 +230,17 @@ function create_all_menus(obj, force)
         % choose what to plot by
         for j = 1:numel(obj.rawcatalog.FieldnamesForColorby)
             myfn = obj.rawcatalog.FieldnamesForColorby{j};
-            um(j) = uimenu(mapoptionmenu, 'Label', ['Color by ' myfn], MenuSelectedField(), @(s,v)set_colorby(s, v, myfn) ,...
+            um(j) = uimenu(mapoptionmenu, 'Label', ['Color by ' myfn], 'MenuSelectedFcn', @(s,v)set_colorby(s, v, myfn) ,...
                 'Checked', tf2onoff(strcmp(obj.colorField, myfn)));
             if j == 1
                 um(j).Separator = 'on';
             end
         end
-        uimenu(mapoptionmenu, 'Label', 'Edit Main Map Symbols', MenuSelectedField(), @manage_mainmap_symbols);
-        uimenu(mapoptionmenu, 'Label', 'Edit Current Map Symbols', MenuSelectedField(), @manage_symbols_for_current_map);
+        uimenu(mapoptionmenu, 'Label', 'Edit Main Map Symbols', 'MenuSelectedFcn', @manage_mainmap_symbols);
+        uimenu(mapoptionmenu, 'Label', 'Edit Current Map Symbols', 'MenuSelectedFcn', @manage_symbols_for_current_map);
         % add_symbol_menu(axm, mapoptionmenu, 'Map Symbols');
         ovmenu = uimenu(mapoptionmenu, 'Label', 'Layers');
-        uimenu(ovmenu, 'Label', 'Show unselected events', MenuSelectedField(), @toggle_unselected_events,...
+        uimenu(ovmenu, 'Label', 'Show unselected events', 'MenuSelectedFcn', @toggle_unselected_events,...
             'Checked', "on");
             
         try
@@ -246,12 +251,12 @@ function create_all_menus(obj, force)
         
         uimenu(ovmenu, 'Label', 'Plot stations + station names',...
             'Separator', 'on',...
-            MenuSelectedField(), @(~,~)plotstations(axm));
+            'MenuSelectedFcn', @(~,~)plotstations(axm));
         
         lemenu = uimenu(mapoptionmenu, 'Label', 'Legend by ...  ', 'Enable', 'off');
         
         uimenu(lemenu, 'Label', 'Change legend breakpoints',...
-            MenuSelectedField(), @change_legend_breakpoints);
+            'MenuSelectedFcn', @change_legend_breakpoints);
         legend_types = {'Legend by time', 'tim';...
             'Legend by depth', 'depth';...
             'Legend by magnitudes', 'mag';...
@@ -261,7 +266,7 @@ function create_all_menus(obj, force)
         
         for i = 1:size(legend_types, 1)
             m = uimenu(lemenu, 'Label', legend_types{i, 1},...
-                MenuSelectedField(), @(s,v)cb_plotby(s, v, legend_types{i, 2}) );
+                'MenuSelectedFcn', @(s,v)cb_plotby(s, v, legend_types{i, 2}) );
             if i == 1
                 m.Separator = 'on';
             end
@@ -269,25 +274,25 @@ function create_all_menus(obj, force)
         clear legend_types
         
         uimenu(mapoptionmenu, 'Label', 'Change font size ...', 'Enable', 'off',...
-            MenuSelectedField(), @change_map_fonts);
+            'MenuSelectedFcn', @change_map_fonts);
         
         uimenu(mapoptionmenu, 'Label', 'Change background colors',...
-            MenuSelectedField(), @(~,~)setcol, 'Enable', 'off'); %
+            'MenuSelectedFcn', @(~,~)setcol, 'Enable', 'off'); %
         
         uimenu(mapoptionmenu,...
             'Label', ['Mark large event with M > ' num2str(ZmapGlobal.Data.CatalogOpts.BigEvents.MinMag)],...
-            MenuSelectedField(), @cb_plot_large_quakes);
+            'MenuSelectedFcn', @cb_plot_large_quakes);
         
         uimenu(mapoptionmenu,...
             'Separator', 'on',...
-            'Label', 'Close all result tabs', MenuSelectedField(), @clear_result_tabs);
+            'Label', 'Close all result tabs', 'MenuSelectedFcn', @clear_result_tabs);
 
         uimenu(mapoptionmenu, 'label', 'Redraw',...
             'Separator', 'on',...
-            MenuSelectedField(), @obj.cb_redraw);
+            'MenuSelectedFcn', @obj.cb_redraw);
         
         uimenu(mapoptionmenu, 'label', 'Open printable figure', ...
-            MenuSelectedField(), @(~,~)make_printable_figure_copy(obj.fig));
+            'MenuSelectedFcn', @(~,~)make_printable_figure_copy(obj.fig));
         
         function set_aspects_cb(src, ev)
             callbacks.toggle_aspectratio(src, ev, obj.get_all_map_axes(), "SetGlobal");
@@ -377,7 +382,7 @@ function create_all_menus(obj, force)
         submenu = uimenu('Label', 'ZTools', 'Tag', 'mainmap_menu_ztools');
         
         uimenu(submenu, 'Label', 'Plot Current Map into Projection',...
-            MenuSelectedField(), @(~,~)create_projectedmap_from_mainmap(obj.fig));
+            'MenuSelectedFcn', @(~,~)create_projectedmap_from_mainmap(obj.fig));
         
         create_topo_map_menu(submenu);
         uimenu(submenu,'Label', 'Random data simulations has moved to CATALOG menu', 'Enable', 'off');
@@ -386,26 +391,26 @@ function create_all_menus(obj, force)
         % create_histogram_menu(submenu);
         create_explore_catalog_menu(submenu);
         
-        uimenu(submenu, 'Label', 'Misfit calculation', MenuSelectedField(), @(~,~)inmisfit(),...
+        uimenu(submenu, 'Label', 'Misfit calculation', 'MenuSelectedFcn', @(~,~)inmisfit(),...
             'Enable', 'off'); %FIXME: misfitcalclulation poorly documented, not sure what it is comparing.
 
     end
     function create_topo_map_menu(parent)
         submenu   =  uimenu(parent, 'Label', 'Plot topographic map');
-        uimenu(submenu, 'Label', 'Open a Web Map Display', MenuSelectedField(), @(~,~)webmap_of_catalog(obj.catalog, true));
-        uimenu(submenu, 'Label', 'Plot Topography on main map', MenuSelectedField(), @add_topography_to_main_map);
-        uimenu(submenu, 'Label', 'Plot Swiss Topography on main map', MenuSelectedField(), @(s,v)add_topography_to_main_map(s, v, 'CH') );
+        uimenu(submenu, 'Label', 'Open a Web Map Display', 'MenuSelectedFcn', @(~,~)webmap_of_catalog(obj.catalog, true));
+        uimenu(submenu, 'Label', 'Plot Topography on main map', 'MenuSelectedFcn', @add_topography_to_main_map);
+        uimenu(submenu, 'Label', 'Plot Swiss Topography on main map', 'MenuSelectedFcn', @(s,v)add_topography_to_main_map(s, v, 'CH') );
         
         % FIXME the following need to be found and fixed
         %{
-        uimenu(submenu, 'Label', 'Open DEM GUI', MenuSelectedField(), @(~,~)zmaptopo.prepinp());
-        uimenu(submenu, 'Label', '3 arc sec resolution (USGS DEM)', MenuSelectedField(), @(~,~)pltopo('lo3'));
-        uimenu(submenu, 'Label', '30 arc sec resolution (GLOBE DEM)', MenuSelectedField(), @(~,~)pltopo('lo1'));
-        uimenu(submenu, 'Label', '30 arc sec resolution (GTOPO30)', MenuSelectedField(), @(~,~)pltopo('lo30'));
-        uimenu(submenu, 'Label', '2 deg resolution (ETOPO 2)', MenuSelectedField(), @(~,~)pltopo('lo2'));
-        uimenu(submenu, 'Label', '5 deg resolution (ETOPO 5, Terrain Base)', MenuSelectedField(), @(~,~)pltopo('lo5'));
-        uimenu(submenu, 'Label', 'Your topography (mydem, mx, my must be defined)', MenuSelectedField(), @(~,~)pltopo('yourdem'));
-        uimenu(submenu, 'Label', 'Help on plotting topography', MenuSelectedField(), @(~,~)pltopo('genhelp'));
+        uimenu(submenu, 'Label', 'Open DEM GUI', 'MenuSelectedFcn', @(~,~)zmaptopo.prepinp());
+        uimenu(submenu, 'Label', '3 arc sec resolution (USGS DEM)', 'MenuSelectedFcn', @(~,~)pltopo('lo3'));
+        uimenu(submenu, 'Label', '30 arc sec resolution (GLOBE DEM)', 'MenuSelectedFcn', @(~,~)pltopo('lo1'));
+        uimenu(submenu, 'Label', '30 arc sec resolution (GTOPO30)', 'MenuSelectedFcn', @(~,~)pltopo('lo30'));
+        uimenu(submenu, 'Label', '2 deg resolution (ETOPO 2)', 'MenuSelectedFcn', @(~,~)pltopo('lo2'));
+        uimenu(submenu, 'Label', '5 deg resolution (ETOPO 5, Terrain Base)', 'MenuSelectedFcn', @(~,~)pltopo('lo5'));
+        uimenu(submenu, 'Label', 'Your topography (mydem, mx, my must be defined)', 'MenuSelectedFcn', @(~,~)pltopo('yourdem'));
+        uimenu(submenu, 'Label', 'Help on plotting topography', 'MenuSelectedFcn', @(~,~)pltopo('genhelp'));
         %}
     end
     
@@ -424,12 +429,12 @@ function create_all_menus(obj, force)
     
     function create_random_data_simulations_menu(parent)
         submenu  =   uimenu(parent, 'Label', 'Create Synthetic/Permuted catalog', 'Separator', 'on');
-        uimenu(submenu, 'label', 'Create permutated catalog (also new b-value)...', MenuSelectedField(), @cb_create_permutated);
-        uimenu(submenu, 'label', 'Create synthetic catalog...', MenuSelectedField(), @cb_create_synhthetic_cat);
+        uimenu(submenu, 'label', 'Create permutated catalog (also new b-value)...', 'MenuSelectedFcn', @cb_create_permutated);
+        uimenu(submenu, 'label', 'Create synthetic catalog...', 'MenuSelectedFcn', @cb_create_synhthetic_cat);
         
-        % uimenu(submenu, 'Label', 'Evaluate significance of b- and a-values', MenuSelectedField(), @(~,~)brand());
-        %  uimenu(submenu, 'Label', 'Calculate a random b map and compare to observed data', MenuSelectedField(), @(~,~)brand2());
-        uimenu(submenu, 'Label', 'Info on synthetic catalogs', MenuSelectedField(), @(~,~)web(['file:' ZmapGlobal.Data.hodi '/zmapwww/syntcat.htm']));
+        % uimenu(submenu, 'Label', 'Evaluate significance of b- and a-values', 'MenuSelectedFcn', @(~,~)brand());
+        %  uimenu(submenu, 'Label', 'Calculate a random b map and compare to observed data', 'MenuSelectedFcn', @(~,~)brand2());
+        uimenu(submenu, 'Label', 'Info on synthetic catalogs', 'MenuSelectedFcn', @(~,~)web(['file:' ZmapGlobal.Data.hodi '/zmapwww/syntcat.htm']));
         
         
         function cb_create_permutated(~,~)
@@ -454,7 +459,7 @@ function create_all_menus(obj, force)
     
     function create_explore_catalog_menu(parent)
         uimenu(parent, 'Separator', 'on',...
-            'Label', 'Explore Catalog', MenuSelectedField(), @explore_catalog);
+            'Label', 'Explore Catalog', 'MenuSelectedFcn', @explore_catalog);
         
         function explore_catalog(~,~)
             t = findOrCreateTab(obj.fig, obj.maingroup, obj.maingroup, 'Exploration', 'deleteable');
@@ -480,16 +485,49 @@ function create_all_menus(obj, force)
     function create_decluster_menu(parent)
         submenu = parent;% uimenu(parent, 'Label', 'Decluster the catalog');
         
-        uimenu(submenu, 'Label', 'Decluster (Reasenberg)', MenuSelectedField(), @cb_reasen,...
+        uimenu(submenu, 'Label', 'Decluster (Reasenberg)', 'MenuSelectedFcn', @cb_reasen,...
             'Separator', 'on');
         uimenu(submenu, 'Label', 'Decluster (Gardner & Knopoff)',...
-            'Enable', 'off',...
-            MenuSelectedField(), @cb_declus_inp);
-        % uimenu(submenu, 'Label', 'Decluster (Zaliapin)', MenuSelectedField(), @cb_zaliapin);
+            ...'Enable', 'off',...
+            'MenuSelectedFcn', @cb_declus_inp);
+        % uimenu(submenu, 'Label', 'Decluster (Zaliapin)', 'MenuSelectedFcn', @cb_zaliapin);
     end
     function cb_declus_inp(~,~)
-        [out, nMethod] = declus_inp(obj.catalog)
-        error('declustered. now what to do with results?');
+        [out, eMethod] = declus_inp(obj.catalog);
+        if isempty(eMethod)
+            return
+        end
+        % Return Decluster results to the main window
+        disp('Summary of Gardiner-Knopoff clusters using window:' + string(eMethod))
+        disp('Cluster #     Number of Events (inc. mainshock)')
+        summary(categorical(out.allClusterIdx(out.allClusterIdx ~= 0)))
+
+        assignin('base', 'gk_decluster_output', out);
+        disp(out.description)
+        
+        choice = questdlg({'Replace Main Catalog with:','',...
+            sprintf('\\bfDeclustered\\rm : background + mainshocks [%d evts]', out.declusteredCatalog.Count),...
+            sprintf('\\bfMainshocks\\rm: only mainshocks [%d evts]', sum(out.mainshockClusterIdx ~= 0)),...
+            sprintf('\\bfClusters\\rm: only fore- and aftershocks) [%d evts]',out.aftershockCatalog.Count),...
+            '','\itClose dialog to keep original catalog\rm',...
+            '','Decluster results have been written to workspace as \itgk\_decluster\_output\rm'},...
+            'Declust: close to keep orig cat',... % dialog title
+            'Declustered','Mainshocks', 'Clusters',... % up to 3 buttons
+            struct('Default','Declustered','Interpreter','tex'));  % Default choice
+        switch choice
+            case 'Declustered'
+                obj.rawcatalog = out.declusteredCatalog;
+                %replaceMainCatalog(out.declusteredCatalog)
+            case 'Mainshocks'
+                obj.rawcatalog = obj.catalog.subset(out.mainshockClusterIdx ~=0);
+                obj.rawcatalog.Name = "GK Declust ("+string(eMethod)+") " + obj.rawcatalog.Name
+                %replaceMainCatalog(obj.catalog.subset(out.mainshockClusterIdx ~=0))
+            case 'Clusters'
+                obj.rawcatalog = out.aftershockCatalog;
+                %replaceMainCatalog(out.aftershockCatalog)                
+        end
+        figure(obj.fig)
+        obj.replot_all()
     end
     
     function cb_reasen(~,~)

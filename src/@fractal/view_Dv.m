@@ -131,38 +131,38 @@ function view_Dv(valueMap, lab1, Da)
         
         
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(), @cb_refresh)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn', @cb_refresh)
         
         uimenu(options,'Label','Select EQ in Sphere (const N)',...
-            MenuSelectedField(),@cb_select_eq_sphere)
+            'MenuSelectedFcn',@cb_select_eq_sphere)
         uimenu(options,'Label','Select EQ in Sphere (const R)',...
-            MenuSelectedField(),@cb_select_eq_constr)
+            'MenuSelectedFcn',@cb_select_eq_constr)
         uimenu(options,'Label','Select EQ in Sphere (N) - Overlay existing plot',...
-            MenuSelectedField(),@cb_select_eq_spheren)
+            'MenuSelectedFcn',@cb_select_eq_spheren)
         %
         %
         
         op1 = uimenu('Label',' Maps ');
         
         uimenu(op1,'Label','D-value Map (weighted LS)',...
-            MenuSelectedField(),@cb_dvalue);
+            'MenuSelectedFcn',@cb_dvalue);
         
         %  uimenu(op1,'Label','Goodness of fit  map',...
-        %      MenuSelectedField(),@callbackfun_007);
+        %      'MenuSelectedFcn',@callbackfun_007);
         
         uimenu(op1,'Label','b-value Map',...
-            MenuSelectedField(),@cb_bval);
+            'MenuSelectedFcn',@cb_bval);
         
         uimenu(op1,'Label','resolution Map',...
-            MenuSelectedField(),@cb_resolution);
+            'MenuSelectedFcn',@cb_resolution);
         
-        uimenu(op1,'Label','Histogram ',MenuSelectedField(),@cb_hist);
+        uimenu(op1,'Label','Histogram ','MenuSelectedFcn',@cb_hist);
         
         uimenu(op1,'Label','D versus b',...
-            MenuSelectedField(),@cb_d_vs_b);
+            'MenuSelectedFcn',@cb_d_vs_b);
         
         uimenu(op1,'Label','D versus Resolution',...
-            MenuSelectedField(),@cb_d_vs_resolution)
+            'MenuSelectedFcn',@cb_d_vs_resolution)
         %
         add_display_menu(3);
     end

@@ -179,16 +179,16 @@ function cltiplot(var1)
     function create_my_menu()
         add_menu_divider();
         op1=uimenu('Label','Tools');
-        uimenu(op1,'label','AS'         , MenuSelectedField(), @(~,~)clas() )
-        uimenu(op1,'label','LTA'        , MenuSelectedField(), @(~,~)cllta(1) )
-        uimenu(op1,'label','Timecut'    , MenuSelectedField(), @cb_timecut)
-        uimenu(op1,'label','Back'       , MenuSelectedField(), @back_menu_cb);
+        uimenu(op1,'label','AS'         , 'MenuSelectedFcn', @(~,~)clas() )
+        uimenu(op1,'label','LTA'        , 'MenuSelectedFcn', @(~,~)cllta(1) )
+        uimenu(op1,'label','Timecut'    , 'MenuSelectedFcn', @cb_timecut)
+        uimenu(op1,'label','Back'       , 'MenuSelectedFcn', @back_menu_cb);
             
         op2=uimenu(op1,'label','P-Value');
-        uimenu(op2,'label','manual'     , MenuSelectedField(), @cb_manual );
-        uimenu(op2,'label','automatic'  , MenuSelectedField(), @cb_auto );
-        uimenu(op2,'label','with time'  , MenuSelectedField(), @(~,~)cltipval(2) );
-        uimenu(op2,'label','with magnitude', MenuSelectedField(), @(~,~)cltipval(1) );
+        uimenu(op2,'label','manual'     , 'MenuSelectedFcn', @cb_manual );
+        uimenu(op2,'label','automatic'  , 'MenuSelectedFcn', @cb_auto );
+        uimenu(op2,'label','with time'  , 'MenuSelectedFcn', @(~,~)cltipval(2) );
+        uimenu(op2,'label','with magnitude', 'MenuSelectedFcn', @(~,~)cltipval(1) );
         
     end
     

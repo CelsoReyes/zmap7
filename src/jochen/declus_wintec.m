@@ -1,14 +1,13 @@
-function [mCluster,out]=declus_wintec(mCatalog, nMethod)
+function out=declus_wintec(mCatalog, eMethod)
     % DECLUS_WINTEC execute declustering by windowing technique
     %
     % DECLUS_WINTEC(catalog, nMethod)
     %
     % Incoming variables:
     % mCatalog : EQ catalog in ZMAP format
-    % nMethod  : Number describing the window used for declustering
+    % eMethod  : a choice from DeclusterWindowingMethods
     %
     %
-    % mCluster : catalog containing only events that are in clusters
     % out : struct of declustered details [output from CALC_DECLUSTER]
     % J. Woessner, woessner@seismo.ifg.ethz.ch
     % updated: 14.08.02
@@ -20,13 +19,21 @@ function [mCluster,out]=declus_wintec(mCatalog, nMethod)
     
     %%% Decluster catalog using window technique
     out = struct;
-    [out.mCatDecluster, out.mCatAfter, out.vCluster, out.vCl, out.vMain] = calc_decluster(mCatalog,nMethod);
-    vSel = (out.vMain(:,1) > 0); % Selects mainshocks of clusters
-    mCluster = mCatalog.subset(vSel);
+    % [out.mCatDecluster, out.mCatAfter, out.vCluster, out.vCl, out.vMain] = calc_decluster(mCatalog,eMethod);
+    [out.declusteredCatalog, out.aftershockCatalog, out.aftershockClusterIdx, out.allClusterIdx, out.mainshockClusterIdx] = calc_decluster(mCatalog,eMethod);
+    %vSel = (out.vMain(:,1) > 0); % Selects mainshocks of clusters
+    %mCluster = mCatalog.subset(vSel);
+    out.description = ["Decluster results have been written to gk_decluster_output with the following fields";...
+    	"  declusteredCatalog: Declustered earthquake catalog (with mainshocks, no fore/aftershocks)";...
+        "  aftershockCatalog: Catalog of aftershocks (and foreshocks)";...
+        "  aftershockClusterIdx : Vector indicating only aftershocks/foreshocks in cluster using a cluster number (background seismicity == 0)";...
+        "  allClusterIdx: Vector indicating all events in clusters using a cluster number (background seismicity == 0)";...
+        "  mainshockClusterIdx: index into original catalog, indicating mainshocks, where any non-zero value is the cluster number"];
     
     %%% Plot comparison to window length
-    %[vMags, vClusTime, vDist]= plot_cluscomp(vMain, vCluster, mCatalog, nMethod);
-    plot_cluscomp(out.vMain, vCluster, mCatalog, nMethod); % output arguments weren't being used
+    %[vMags, vClusTime, vDist]= plot_cluscomp(vMain, vCluster, mCatalog, eMethod);
+    % plot_cluscomp(out.mainshockClusterIdx, out.aftershockClusterIdx, mCatalog, eMethod); % output arguments weren't being used
+    return % CGR - Sep 1 2020
     
     %%% Plot seismicity map, clusters and mainshocks
     replaceMainCatalog(out.mCatDecluster);

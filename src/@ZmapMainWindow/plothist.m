@@ -48,7 +48,7 @@ function plothist(obj, name, tabgrouptag)
     cxs=findobj(obj.fig,'Tag',Tags.xs);
     if isempty(cxs)
         cxs=uicontextmenu(obj.fig,'tag',Tags.xs);
-        %uimenu(cxs,'Label','Open in new window',MenuSelectedField(),@cb_xstimeplot);
+        %uimenu(cxs,'Label','Open in new window','MenuSelectedFcn',@cb_xstimeplot);
     end
     
     obj.plot_xsections(@xsplotter, 'Xsection hist');

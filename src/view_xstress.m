@@ -139,42 +139,42 @@ function view_xstress(lab1, valueMap)
         
         % Menu Select
         options = uimenu('Label',' Select ');
-        uimenu(options,'Label','Refresh ',MenuSelectedField(),@cb_refresh)
+        uimenu(options,'Label','Refresh ','MenuSelectedFcn',@cb_refresh)
         uimenu(options,'Label','Select N closest EQs',...
-            MenuSelectedField(),@cb_select_n_closest)
+            'MenuSelectedFcn',@cb_select_n_closest)
         uimenu(options,'Label','Select EQ in Circle - Constant R',...
-            MenuSelectedField(),@cb_select_eq_in_circle_constr)
+            'MenuSelectedFcn',@cb_select_eq_in_circle_constr)
         uimenu(options,'Label','Select EQ in Polygon',...
-            MenuSelectedField(),@cb_select_eq_in_poly)
+            'MenuSelectedFcn',@cb_select_eq_in_poly)
         
         % Menu Maps
         op1 = uimenu('Label',' Maps ');
         uimenu(op1,'Label','Variance',...
-            MenuSelectedField(),@cb_sigma)
+            'MenuSelectedFcn',@cb_sigma)
         uimenu(op1,'Label','Phi',...
-            MenuSelectedField(),@cb_phi)
+            'MenuSelectedFcn',@cb_phi)
         uimenu(op1,'Label','Trend S1',...
-            MenuSelectedField(),@cb_s1trend)
+            'MenuSelectedFcn',@cb_s1trend)
         uimenu(op1,'Label','Plunge S1',...
-            MenuSelectedField(),@cb_s1plunge)
+            'MenuSelectedFcn',@cb_s1plunge)
         uimenu(op1,'Label','Trend S2',...
-            MenuSelectedField(),@cb_s2trend)
+            'MenuSelectedFcn',@cb_s2trend)
         uimenu(op1,'Label','Plunge S2',...
-            MenuSelectedField(),@cb_s2plunge)
+            'MenuSelectedFcn',@cb_s2plunge)
         uimenu(op1,'Label','Trend S3',...
-            MenuSelectedField(),@cb_s3trend)
+            'MenuSelectedFcn',@cb_s3trend)
         uimenu(op1,'Label','Plunge S3',...
-            MenuSelectedField(),@cb_s3plunge)
+            'MenuSelectedFcn',@cb_s3plunge)
         uimenu(op1,'Label','Angular misfit',...
-            MenuSelectedField(),@cb_beta)
+            'MenuSelectedFcn',@cb_beta)
         uimenu(op1,'Label','\tau spread',...
-            MenuSelectedField(),@cb_tau)
+            'MenuSelectedFcn',@cb_tau)
         uimenu(op1,'Label','Resolution map (const. Radius)',...
-            MenuSelectedField(),@cb_resolution)
+            'MenuSelectedFcn',@cb_resolution)
         uimenu(op1,'Label','Resolution map',...
-            MenuSelectedField(),@cb_nevents)
+            'MenuSelectedFcn',@cb_nevents)
         uimenu(op1,'Label','Trend S1 relative to fault strike',...
-            MenuSelectedField(),@cb_s1trend_to_strike)
+            'MenuSelectedFcn',@cb_s1trend_to_strike)
         
         % Menu Display
         add_display_menu(1);
