@@ -186,7 +186,9 @@ function [declusteredCatalog, aftershockCatalog, vCluster, vCl, vMainCluster] = 
     %% Create a catalog of aftershocks (aftershockCatalog) and of declustered catalog (declusteredCatalog)
     inSomeCluster = (vCluster(:,1) > 0);
     declusteredCatalog=inCatalog.subset(~inSomeCluster);
+    declusteredCatalog.Name = "GK-Declustered("+string(dcwMethod)+") "+ declusteredCatalog.Name;
     aftershockCatalog = inCatalog.subset(inSomeCluster);
+    aftershockCatalog.Name = "GK-Fore/Aftershocks("+string(dcwMethod)+") " + aftershockCatalog.Name;
 end
 
 function inZone = getIndexForEventsInZone(quakes, thisEvent)

@@ -488,13 +488,46 @@ function create_all_menus(obj, force)
         uimenu(submenu, 'Label', 'Decluster (Reasenberg)', 'MenuSelectedFcn', @cb_reasen,...
             'Separator', 'on');
         uimenu(submenu, 'Label', 'Decluster (Gardner & Knopoff)',...
-            'Enable', 'off',...
+            ...'Enable', 'off',...
             'MenuSelectedFcn', @cb_declus_inp);
         % uimenu(submenu, 'Label', 'Decluster (Zaliapin)', 'MenuSelectedFcn', @cb_zaliapin);
     end
     function cb_declus_inp(~,~)
-        [out, nMethod] = declus_inp(obj.catalog)
-        error('declustered. now what to do with results?');
+        [out, eMethod] = declus_inp(obj.catalog);
+        if isempty(eMethod)
+            return
+        end
+        % Return Decluster results to the main window
+        disp('Summary of Gardiner-Knopoff clusters using window:' + string(eMethod))
+        disp('Cluster #     Number of Events (inc. mainshock)')
+        summary(categorical(out.allClusterIdx(out.allClusterIdx ~= 0)))
+
+        assignin('base', 'gk_decluster_output', out);
+        disp(out.description)
+        
+        choice = questdlg({'Replace Main Catalog with:','',...
+            sprintf('\\bfDeclustered\\rm : background + mainshocks [%d evts]', out.declusteredCatalog.Count),...
+            sprintf('\\bfMainshocks\\rm: only mainshocks [%d evts]', sum(out.mainshockClusterIdx ~= 0)),...
+            sprintf('\\bfClusters\\rm: only fore- and aftershocks) [%d evts]',out.aftershockCatalog.Count),...
+            '','\itClose dialog to keep original catalog\rm',...
+            '','Decluster results have been written to workspace as \itgk\_decluster\_output\rm'},...
+            'Declust: close to keep orig cat',... % dialog title
+            'Declustered','Mainshocks', 'Clusters',... % up to 3 buttons
+            struct('Default','Declustered','Interpreter','tex'));  % Default choice
+        switch choice
+            case 'Declustered'
+                obj.rawcatalog = out.declusteredCatalog;
+                %replaceMainCatalog(out.declusteredCatalog)
+            case 'Mainshocks'
+                obj.rawcatalog = obj.catalog.subset(out.mainshockClusterIdx ~=0);
+                obj.rawcatalog.Name = "GK Declust ("+string(eMethod)+") " + obj.rawcatalog.Name
+                %replaceMainCatalog(obj.catalog.subset(out.mainshockClusterIdx ~=0))
+            case 'Clusters'
+                obj.rawcatalog = out.aftershockCatalog;
+                %replaceMainCatalog(out.aftershockCatalog)                
+        end
+        figure(obj.fig)
+        obj.replot_all()
     end
     
     function cb_reasen(~,~)
