@@ -58,7 +58,7 @@ for i = 1:ni2/1:length(newt2)-ni2
 
 end
 
-allsum = nanmean(BB);
+allsum = mean(BB, 'omitnan');
 bvalsum = cumsum(allsum); % N for M <=
 bvalsum3 = cumsum(allsum(length(allsum):-1:1));    % N for M >= (counted backwards)
 pl =semilogy(xt3,bvalsum3,'hb');

@@ -73,6 +73,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
     
     properties
         Date            (:,1) datetime          % date and time of event
+        EventID         (:,1) string            % id of this event
         Magnitude       (:,1) double            % Magnitude of each event
         MagnitudeType   (:,1) categorical       % Magnitude units, such as M, ML, MW, etc.
     end
@@ -935,6 +936,9 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             if ~any(vn == "MagnitudeType") || isempty(obj.MagnitudeType)
                 obj.MagnitudeType = repmat(categorical({''}), size(obj.Magnitude));
             end
+            if ~any(vn == "EventID") || isempty(obj.EventID)
+                obj.EventID = generate_event_ids(obj.Date);
+            end
             
             obj.Name    = other.Properties.Description;
             pu          = other.Properties.VariableUnits;
@@ -1007,6 +1011,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             obj.Magnitude       = other(:, 6);
             obj.MagnitudeType   = repmat(categorical(missing), size(obj.Magnitude));
             
+            obj.EventID = generate_event_ids(obj.Date);
             if exist('mta', 'var')
                 obj.OtherFields{1}=mta;
             end
@@ -1033,6 +1038,16 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
                 error('ZMAP:ZmapCatalog:unableToConvertFrom',...
                     ['unable to determine XYZ or Latitude/Longitude/Depth. Please make sure the',...
                     ' field names are exact. ''XYZ'' or ''Latitude'',''Longitude'', and ''Depth'''])
+            end
+            
+            if isfield(other,'EventID')
+                obj.EventID = other.EventID;
+            else
+                if ~isempty(obj.Date)
+                    obj.EventID = generate_event_ids(obj.Date);
+                else
+                    obj.EventID = generate_event_ids(1:size(obj.XYZ,1));
+                end
             end
             if isfield(other, 'Magnitude')
                 obj.Magnitude = other.Magnitude(:);
@@ -1074,7 +1089,7 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         end
         
         function mbnel = fields_that_must_be_nevent_length()  % To be implemented by every ZmapCatalog subclass
-            mbnel = {'Date', 'Magnitude', 'XYZ'};
+            mbnel = {'Date', 'Magnitude', 'XYZ','EventID'};
         end
         
         function pef = possibly_empty_fields()  % To be implemented by every ZmapCatalog subclass
@@ -1082,6 +1097,16 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
             pef = {'MagnitudeType', 'Filter'};
         end
         
-        
+
     end
+end
+
+
+function EventIDs = generate_event_ids(values_to_sort_by, prefix)
+    if ~exist('prefix','var')
+        prefix = 'zmapunk.';
+    end
+    [~, orig_idx] = sort(values_to_sort_by);
+    fmtstr="n%0" + ceil(log10(numel(orig_idx))+1) + "d";
+    EventIDs = strcat(string(prefix), arrayfun(@(n)sprintf(fmtstr,n),orig_idx));
 end

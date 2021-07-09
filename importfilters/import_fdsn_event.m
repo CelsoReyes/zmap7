@@ -231,6 +231,9 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         for ij = 1:numel(hdrs)
             
             field = hdrs{ij};
+            if startsWith(field,'#')
+                field = field(2:end);
+            end
             if field == "longtitude" % SCEDC mispelling
                 hdrs{ij} = 'longitude';
                 field = hdrs{ij};
@@ -252,6 +255,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
         end
         
         conversionDetails = {... midxVal, type, TableVarName
+            'eventid', 'string', 'EventID';...
             'longitude', 'double', 'Longitude';...
             'latitude',  'double', 'Latitude';...
             'time', 'datetime', 'Date';...
@@ -259,7 +263,7 @@ function [uOutput, ok] = import_fdsn_event(nFunction, code, varargin)
             'depth/km', 'double', 'Depth';...
             'magtype', 'categorical', 'MagnitudeType'};
             
-        tb=table('Size', [numel(mData{1}), 6], ...
+        tb=table('Size', [numel(mData{1}), 7], ...
             'VariableTypes', conversionDetails(:,2),...
             'VariableNames', conversionDetails(:,3));
         for j=1:length(conversionDetails)
@@ -284,6 +288,7 @@ function  mappings = determine_field_mappings(hdrs, firstrow)
     mappings('depth/km')='%f';
     mappings('magnitude')='%f';
     mappings('magtype')='%s';
+    mappings('eventid')='%s';
     
     % the TIME could be in one of several different formats. Figure out which one.
     time_pos = find(hdrs == "time");

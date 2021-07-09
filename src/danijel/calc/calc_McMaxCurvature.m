@@ -24,8 +24,9 @@ function [fMc] = calc_McMaxCurvature(magnitudes)
     if ~isnumeric(magnitudes)
         magnitudes = magnitudes.Magnitude; % treat as catalog
     end
-    fMaxMagnitude = max(magnitudes(:));
-    fMinMagnitude = min(magnitudes(:));
+    magnitudes = magnitudes(:);
+    fMaxMagnitude = max(magnitudes);
+    fMinMagnitude = min(magnitudes);
     if fMinMagnitude > 0
         fMinMagnitude = 0;
     end

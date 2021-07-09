@@ -9,9 +9,9 @@ function timgenas(gx,gy)
     report_this_filefun();
     
     it = t0b + 1;
-    mess = findobj(allchild(groot),'flat','Tag','GenAS-Grid Time Selection');
-    if isempty(mes)
-        mess=figure('Name','GenAS-Grid Time Selection','Tag',);
+    mess = findobj(allchild(groot),'flat','Name','GenAS-Grid Time Selection');
+    if isempty(mess)
+        mess=figure('Name','GenAS-Grid Time Selection');
     end
     clf
     set(gca,'visible','off')

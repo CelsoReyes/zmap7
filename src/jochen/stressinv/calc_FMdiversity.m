@@ -38,23 +38,8 @@ function [fRms] = calc_FMdiversity(vDipDir,vDip,vRake)
     % Calculate diversity using j. Hardebecks Fortran code
     sPath = pwd;
     
-    switch computer
-        case 'GLNX86'
-            %file missing at the moment
-            unix([sZmapPath 'external/fmdiversity_linux ' sPath '/Xtemp ']);
-        case 'MAC'
-            unix([sZmapPath 'external/fmdiversity_macppc ' sPath '/Xtemp ']);
-        case 'MACI'
-            unix([sZmapPath 'external/fmdiversity_maci ' sPath '/Xtemp ']);
-        case 'MACI64'
-            unix([sZmapPath 'external/fmdiversity_maci64 ' sPath '/Xtemp ']);
-        otherwise
-            %file missing at the moment
-            dos([sZmapPath 'external/fmdiversity.exe ' sPath '/Xtemp ']);
-    end
-    
-    %unix([sZmapPath 'external/fmdiversity ' sPath '/Xtemp ']);
-    
+    fmdiversity_cmd = append_system_specific_postfix(fullfile(sZmapPath,'external','fmdiversity'))
+    system([fmdiversity_cmd, ' ', fullfile(sPath,Xtemp)])
     sGetFile = ['Xtemp.div'];
     fRms = load(sGetFile);
     

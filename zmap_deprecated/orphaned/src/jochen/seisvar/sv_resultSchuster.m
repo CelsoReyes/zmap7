@@ -105,7 +105,7 @@ try
   % Set information values
   set(handles.lblMin, 'String', num2str(min(min(handles.mPlotValues)), 3));
   set(handles.lblMax, 'String', num2str(max(max(handles.mPlotValues)), 3));
-  set(handles.lblMean, 'String', num2str(nanmean(handles.vResult.mValueGrid(:,nIdx)), 3));
+  set(handles.lblMean, 'String', num2str(mean(handles.vResult.mValueGrid(:,nIdx),'omitnan'), 3));
   if get(handles.chkKeepColormap, 'Value') == 0
     set(handles.txtMin, 'String', num2str(min(min(handles.mPlotValues)), 3));
     set(handles.txtMax, 'String', num2str(max(max(handles.mPlotValues)), 3));

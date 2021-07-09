@@ -135,8 +135,8 @@ function mycat=cpara(option, mycat)
         
         set(gcf,'visible','on');
         
-        
-    elseif option=='use_existing'
+    end
+    if option=='use_existing'  % TOFIX this was an else-if, but at the end of the above if-else chain. (?)
         
         tmp11=mycat.Longitude>=tmp1 & mycat.Longitude<=tmp2 &...
             mycat.Latitude>=tmp3 & mycat.Latitude<=tmp4 &...

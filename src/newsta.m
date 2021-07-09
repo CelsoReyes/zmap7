@@ -85,19 +85,21 @@ function newsta(sta, catalog)
     % orient tall
     set(gcf,'PaperPosition',[2 1 5.5 7.5])
     rect = [0.2,  0.15, 0.65, 0.75];
-    axes('position',rect)
-    [pyy,ax1,ax2] = plotyy(xt,cumu2,xt,as);
-    ax1.Tag='cumulativeplot';
-    ax1.Tag='valueplot';
-    set(pyy(2),'YLim',[min(as)-2  max(as)+5],'XLim',[t0b teb],...
-        'XTicklabel',[],'TickDir','out')
-    xl = get(pyy(2),'XLim');
-    set(pyy(1),'XLim',xl);
+    ax = axes('position',rect)
+    % [pyy,ax1,ax2] = plotyy(xt,cumu2,xt,as);
+    yyaxis left
+    ax1 = plot(xt,cumu2,'LineWidth',2.0,'Color','b', 'tag', 'cumulativeplot');
+    ylabel('Cumulative Number','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+
+    yyaxis right
+    ax2 = plot(xt,as,'LineWidth',1.0,'Color','r', 'tag', 'valueplot');
+    ylabel('valueplot','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+    xlabel(ax, 'Time in years ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
     
-    set(ax1,'LineWidth',2.0,'Color','b')
-    set(ax2,'LineWidth',1.0,'Color','r')
-    xlabel('Time in years ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
-    ylabel('Cumulative Number ','FontWeight','normal','FontSize',ZmapGlobal.Data.fontsz.m)
+    xlim(ax,[T0b, teb]);
+    ylim([min(as)-2  max(as)+5])
+    set(ax, 'XTicklabel',[],'TickDir','out')
+    
     
     %{
     %  DISABLED  the underlying function is in shambles....

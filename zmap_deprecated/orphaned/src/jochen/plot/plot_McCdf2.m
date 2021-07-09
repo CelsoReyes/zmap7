@@ -182,7 +182,7 @@ for fMc = fMcBound-0.8:0.1:fMcBound+0.8
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
              % Keep best fitting model for plotting
-            if (fProbability == nanmin(vProbability))
+            if (fProbability == nan(vProbability))
                 vDeltaBest = delta;
                 vPredBest = [mDataTest(:,2)+fMinMag vPred*fNmax*fPeriod1 delta*fNmax*fPeriod1]; % Gives back uncertainty
                 vNBest = vN;
@@ -231,9 +231,9 @@ end
 mResult = [mResult; vProbability vMc vX_res vNmaxBest vABValue];
 
 % Find best estimate, excluding the case of mResult all NAN
-if  ~isempty(nanmin(mResult))
-    if ~isnan(nanmin(mResult(:,1)))
-        vSel = find(nanmin(mResult(:,1)) == mResult(:,1));
+if  ~isempty(nan(mResult))
+    if ~isnan(nan(mResult(:,1)))
+        vSel = find(nan(mResult(:,1)) == mResult(:,1));
         fMc = min(mResult(vSel,2));
         fMls = min(mResult(vSel,1));
         fMu = min(mResult(vSel,3));

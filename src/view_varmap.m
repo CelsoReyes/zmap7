@@ -112,7 +112,7 @@ function view_varmap(lab1,valueMap, newgri, sor)
         'FontSize',ZmapGlobal.Data.fontsz.s,...
         'TickDir','out')
     
-    rect = ;
+    
     axes('position', [0.00,  0.0, 1 1])
     axis('off')
     %  Text Object Creation

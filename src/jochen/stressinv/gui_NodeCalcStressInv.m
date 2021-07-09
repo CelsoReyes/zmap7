@@ -37,22 +37,8 @@ fclose(fid);
 % Michael(1987): creates data2.oput
 sPath = pwd;
 
-
-%unix([sZmapPath 'external/slick ' sPath '/data2 ']);
-
-%added support for different architectures
-switch computer
-    case 'GLNX86'
-        unix([sZmapPath 'external/slick_linux ' sPath '/data2 ']);
-    case 'MAC'
-        unix([sZmapPath 'external/slick_macppc ' sPath '/data2 ']);
-    case 'MACI'
-        unix([sZmapPath 'external/slick_maci ' sPath '/data2 ']);
-    case 'MACI64'
-        unix([sZmapPath 'external/slick_maci64 ' sPath '/data2 ']);
-    otherwise
-        dos([sZmapPath 'external/slick.exe ' sPath '/data2 ']);
-end
+slick_cmd = fullfile(sZmapPath, 'external', append_system_specific_postfix('slick'))
+system([slick_cmd, ' ', fullfile(sPath,'data2')])
 
 % Get data from data2.oput
 sFilename = ['data2.oput'];
@@ -68,22 +54,9 @@ delete(sData2);
 %unix([sZmapPath 'external/slfast ' sPath '/data2 ']);
 
 %added support for different architectures
-switch computer
-    case 'GLNX86'
-        unix([sZmapPath 'external/slfast_linux ' sPath '/data2 ']);
-    case 'MAC'
-        unix([sZmapPath 'external/slfast_macppc ' sPath '/data2 ']);
-    case 'MACI'
-        unix([sZmapPath 'external/slfast_maci ' sPath '/data2 ']);
-    case 'MACI64'
-        unix([sZmapPath 'external/slfast_maci64 ' sPath '/data2 ']);
-    otherwise
-        dos([sZmapPath 'external/slfast.exe ' sPath '/data2 ']);
-end
 
-
-
-
+slfast_cmd = fullfile(sZmapPath, 'external', append_system_specific_postfix('slick'))
+system([slfast_cmd, ' ', fullfile(sPath,'data2')])
 
 sGetFile = ['data2.slboot'];
 load(sGetFile);

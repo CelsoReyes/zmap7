@@ -56,3 +56,4 @@ function [mNewCatalog] = bc_SelectMechanism(mCatalog, nType, fAngle, nRake1, nRa
             vSel = abs(vRakes) <= fAngle;
         end
     end
+end

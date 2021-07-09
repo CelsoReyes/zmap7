@@ -41,7 +41,7 @@ classdef fractal < handle
         pdc3(obj)
         pdc3nofig(obj)
         params=randomcat(obj)
-        view_Dv(obj, valueMap, lab1, Da))
+        view_Dv(obj, valueMap, lab1, Da)
     end
     
     methods(Static)

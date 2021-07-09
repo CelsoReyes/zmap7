@@ -634,7 +634,6 @@ function h = DemcmapUIBox(value0,map0,size0,rgbs0,rgbl0)
     h.fig = dialog('Name','DEM Colormap Input',...
         'Units','Points',  'Position',PixelFactor*72*[1.5 1 3.5 3.5], ...
         'Visible','off');
-    colordef(h.fig,'white');
     figclr = get(h.fig,'Color');
     
     % shift window if it comes up partly offscreen

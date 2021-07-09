@@ -16,6 +16,20 @@ function tb = table2zmapcatalogtable(tb)
         make_conformant(fn{i}, Candidates.(fn{i}))
     end
     
+    % by now, the table should have certain fields. The only ones we actually check is Longitude
+    critical_fields = {'longitude','latitude','depth','magnitude'};
+    missing_critical = ~ismember(critical_fields, tbNames);
+    if any(missing_critical)
+        error(['The table cannot be interpreted as a catalog. ',...
+            'One or more critical columns cannot be found:\n\n-->%s<--\n',...
+            '\nPlease ensure the table contains these columns, plus date/time columns and that the \n',...
+            'column labels (contained in the table''s properties.VariableNames )\n',...
+            'are spelled correctly.  Existing columns are:\n\n  # Cols:%d\n  Col Names:"%s"\n'],...
+            string(join(critical_fields(missing_critical),', ')),width(tb), ...
+            string(join(tbNames,', ')))
+    end
+        
+        
     % remove empty lines.  [these may have been comments]
     missing_rows = ismissing(tb.Longitude);
     tb(missing_rows,:) = []; % remove empty lines
@@ -42,7 +56,7 @@ function tb = table2zmapcatalogtable(tb)
     end
     
     function tb = remove_unused_columns(tb)
-        fieldsToKeep = {'Date','Latitude','Longitude','Magnitude','Depth',...
+        fieldsToKeep = {'EventID','Date','Latitude','Longitude','Magnitude','Depth',...
             'MagnitudeType','Rake','Dip','DipDirection','MomentTensor'};
         vn       = tb.Properties.VariableNames;
         toRemove = vn(~ismember(vn,fieldsToKeep'));
@@ -74,6 +88,7 @@ function colpropexprs = create_colname2property_map()
     colpropexprs.DipDirection  = "^dipd.*";
     colpropexprs.Rake          = "^rake";
     colpropexprs.MomentTensor  = "^momenttensor";
+    colpropexprs.EventID       = ["^eventid$","^event_id$","^eventids$","^id$","^ids$"];
     
     % do test to make sure this will work correctly in a loop
     assert(all(structfun(@isrow, colpropexprs)));

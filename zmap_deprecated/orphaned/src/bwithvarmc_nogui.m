@@ -34,7 +34,7 @@ for i = 1:2:length(TMC)-1
 end
 l = isinf(BB); BB(l) = 0;
 
-allsum = nanmean(BB);
+allsum = mean(BB, 'omitnan');
 allsum2 = allsum(length(allsum):-1:1);
 bvalsum = cumsum(allsum); % N for M <=
 bvalsum3 = cumsum(allsum(length(allsum):-1:1));    % N for M >= (counted backwards)

@@ -484,7 +484,10 @@ function ast_misfit()
     % orient tall
     rect = [0.1,  0.10, 0.8, 0.7];
     axes('position',rect);
-    pyy = plotyy(xt,as,xt,cumu2);
+    yyaxis('left')
+    plot(xt,as);
+    yyaxis('right')
+    plot(xt,cumu2);
     xlabel('Event');
     ylabel('z-value');
     grid

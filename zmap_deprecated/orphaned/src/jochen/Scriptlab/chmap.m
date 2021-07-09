@@ -77,7 +77,7 @@ while fTime < fMaxTime-2*fTimeWindow
     % Relative rate change
     normlap2(ll)= mRes(:,2);
     mTimeMaxChange = reshape(normlap2,length(yvect),length(xvect));
-    re3 = mTimeMaxChange/nanmean(mRes(:,2));
+    re3 = mTimeMaxChange/mean(mRes(:,2),'omitnan');
 
 
     % Define colormap

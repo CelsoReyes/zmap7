@@ -16,7 +16,7 @@ function obj = startfd(org)
             range = 1;
             radm = [];
             rasm = [];
-            obj=
+            obj=fractal()
             obj.fdparain(obj.gobut);
             
             

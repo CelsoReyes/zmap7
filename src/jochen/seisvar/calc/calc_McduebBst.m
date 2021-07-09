@@ -99,13 +99,13 @@ function [fMc, fBvalue, fBStd, fAvalue, fSigmaLow, fSigmaHi] = calc_McduebBst(ma
             std_bst(i)          = fStdBst;
         end
         
-        mean_b_std_a_mag    = nanmean(mBvalue_bst);
+        mean_b_std_a_mag    = mean(mBvalue_bst,'omitnan');
         mean_b_value(i)     = mean_b_std_a_mag(1);
         mean_b_value_std(i) = mean_b_std_a_mag(2);
         mean_a_value(i)     = mean_b_std_a_mag(3);
         mean_mag(i)         = mean_b_std_a_mag(4);
         
-        % mBvalue(i,:) = [nanmean(mBvalue_bst), vSigma(1), vSigma(2), fStdBst]; % contains [meanb_value, meanb_value_std, meana_value, meanmag, vSigma(1), vSigma(2), fStdBst]
+        % mBvalue(i,:) = [mean(mBvalue_bst,'omitnan'), vSigma(1), vSigma(2), fStdBst]; % contains [meanb_value, meanb_value_std, meana_value, meanmag, vSigma(1), vSigma(2), fStdBst]
         
     end % END of FOR fMag
     

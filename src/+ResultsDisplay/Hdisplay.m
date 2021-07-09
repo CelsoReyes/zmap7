@@ -728,11 +728,11 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             activeTab = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             activeax  = findobj(activeTab.Children,'Type','axes');
             
-            shadingOptions = string({'interp','flat','faceted'});
-            for jj=1:numel(shadingOptions)
+            shadingOptions = ["interp", "flat", "faceted"];
+            for sop = shadingOptions
                 
-                uimenu(shademenu,'Label',shadingOptions(jj),...
-                    'MenuSelectedFcn',@(~,~)ZmapGridFunction.cb_shading(shadingOptions(jj)));
+                uimenu(shademenu,'Label', sop,...
+                    MenuSelectedField(),@(~,~)ZmapGridFunction.cb_shading(sop));
             end
            
             
@@ -751,11 +751,18 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
             % in the main plots, the object is stored in the UserData of each result's tab
             actt = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
             theObj = actt.UserData;
+            % psave = @()theObj.Parent.save
             uimenu(lookmenu,'Separator','on',...
                 'Label','Save results',...
-                'MenuSelectedFcn',@theObj.Parent.save);
+                MenuSelectedField(),@save_a_result);
         end
     end
+end
+
+function save_a_result(~,~)
+    actt = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+    theObj = actt.UserData;
+    theObj.Parent.save
 end
 
 %% helper functions

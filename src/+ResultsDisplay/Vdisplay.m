@@ -766,16 +766,21 @@ classdef Vdisplay < ResultsDisplay.ZmapResultsPlugin
                 'MenuSelectedFcn', @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
            
             % in the main plots, the object is stored in the UserData of each result's tab
-            actt = get(findobj(gcf, 'Tag', 'main plots'),'SelectedTab');
-            theObj = actt.UserData;
+
             uimenu(lookmenu, 'Separator', 'on',...
                 'Label', 'Save results',...
-                'MenuSelectedFcn',@theObj.Parent.save);
+                MenuSelectedField(),@save_a_result);
         end
     end
 end
 
 %% helper functions
+
+function save_a_result()
+    actt = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
+    theObj = actt.UserData;
+    theObj.Parent.save
+end
 
 function pretty_colorbar(ax, cb_title, cb_units)
     h = colorbar('peer', ax, 'location', 'EastOutside');

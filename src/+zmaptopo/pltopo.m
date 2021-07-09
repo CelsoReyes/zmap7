@@ -177,7 +177,11 @@ function pltopo(plt, h1)
         fname = globedems([s4_south s3_north], [s2_west s1_east]);
         
         try
-            [tmap, tmapleg] = globedem(fname{1}, fac, [s4_south s3_north], [s2_west s1_east]);
+            % TODO finish changeover to new RASTER based system. all plotting etc...
+            % [tmap, tmapleg] = globedem(fname{1}, fac, [s4_south s3_north], [s2_west s1_east]);
+            [Z, R] = readgeoraster(fname{1},'CoordinateSystemType','geographic');
+            [Z, R] = geocrop(Z,R,[s4_south s3_north],[s2_west s1_east]);
+            [Z, R] = georesize(Z,R,1/fac);
         catch ME
             do_nothing();
         end
@@ -185,7 +189,7 @@ function pltopo(plt, h1)
         my = s4_south: 1/tmapleg(1) : s3_north+0.1;
         mx = s2_west : 1/tmapleg(1) : s1_east+0.1;
         toflag = TopoToFlag.three;
-        plo(mx, my, tmap);
+        plo_raster(mx, my, tmap);
     end
     
     function yourdem(mydem, mx, my)
@@ -247,6 +251,11 @@ function pltopo(plt, h1)
         set(h1topo, 'color', [ 0.341 0.776 1.000 ]);
         
         postfig(h1topo, to1);
+    end
+    
+    function plo_raster(Z, R)
+        % To contain new plotting, since globedem is going to be removed from matlab.
+        % 
     end
     
     function plo2(vlon, vlat, tmap)
@@ -316,7 +325,7 @@ function pltopo(plt, h1)
                 end
             case 'Help'
                 try
-                    web(fullfile(fullfile(ZG.hodi , 'help','plottopo.htm')));
+                    web(fullfile(fullfile(ZG.hodi , 'help','plottopo.htm')), '-browser');
                 catch
                     errordlg('Error while opening, please open the browser first and try again or open the file ./help/topo.hmt manually');
                 end
