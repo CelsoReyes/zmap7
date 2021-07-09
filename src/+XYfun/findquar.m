@@ -132,7 +132,7 @@ classdef findquar < ZmapHGridFunction
             if isempty(findobj(fifhr, 'Tag', 'quarryinfo'))
                 add_menu_divider();
                 uimenu(fifhr,'Label','Info',...
-                MenuSelectedField(), @(~,~)web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm']),...
+                MenuSelectedField(), @(~,~)web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm'], '-browser'),...
                  'tag', 'quarryinfo');
             end
             
@@ -245,6 +245,6 @@ end %classdef
 % the gathering of values to the SetValuesFromDialog button.
 
 function cb_info(~,~)
-    web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm']) ;
+    web(['file:' ZmapGlobal.Data.hodi '/help/quarry.htm'], '-browser') ;
 end
 

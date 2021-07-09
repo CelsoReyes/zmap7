@@ -21,5 +21,4 @@ function ini_zmap_sys()
     set(0,'DefaultAxesTickLength',[0.01 0.01]);
     set(0,'DefaultFigurePaperPositionMode','auto');
     
-    system_dependent(14,'on') % helps with possible wierd copy/paste issues with windows
 end

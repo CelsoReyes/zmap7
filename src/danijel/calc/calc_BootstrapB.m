@@ -51,8 +51,8 @@ function [fStdDevB, fStdDevMc, fBValue, fMc, vBValues] = calc_BootstrapB(mCatalo
         mResult = [mResult; fBValue fMc];
     end
     % Return values
-    fBValue = nanmean(mResult(:,1));
-    fMc = nanmean(mResult(:,2));
+    fBValue = mean(mResult(:,1), 'omitnan');
+    fMc = mean(mResult(:,2), 'omitnan');
     % Compute the standard deviation of Mc as the second moment of the Mc distribution
     vSel = ~isnan(mResult(:,2));
     vDist = mResult(vSel,2);

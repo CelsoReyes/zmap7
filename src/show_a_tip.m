@@ -50,8 +50,11 @@ function h=make_better_helpdlg(n,texts,text_heading)
             'NumberTitle', 'off',...
             'Position', get_reasonable_pos(dlg_width, dlg_height),...
             'MenuBar', 'none');
-        
-        add_icon(h);
+        try
+            add_icon(h);
+        catch
+            % likely the internal access for grabbing an icon broke. its usage was unsupported.
+        end
         
         % header for dialog
         h_hdr = uicontrol(h, 'Style', 'text',...
@@ -125,6 +128,7 @@ function add_icon(f)
         'Position'  , [7 120 32 32] ,...
         'Tag'       , 'IconAxes');
     
+ 
     [iconData] = matlab.ui.internal.dialog.DialogUtils.imreadDefaultIcon('help');  
     Img=image('CData',iconData, 'Parent',IconAxes);
     if ~isempty(Img.XData) && ~isempty(Img.YData)

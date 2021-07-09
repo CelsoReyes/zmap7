@@ -7,8 +7,8 @@ load(sFilename)
 %% plot results mean z values
 cmin=-4;cmax=4;
 figure_w_normalized_uicontrolunits('Name','Z-Value','Position',[100 25 400 400]);
-mData=nan(size(nanmedian(params.mZ,1)));
-mData=nanmedian(params.mZ,1);
+mData=nan(size(median(params.mZ,1, 'omitnan')));
+mData=median(params.mZ,1, 'omitnan');
 % mData=params.mZ;
 pcolor(params.vX,params.vY,...
     reshape(mData,...
@@ -25,8 +25,8 @@ xlim([-117.1 -115.6]);
 ylim([33 35.2]);
 
 % figure_w_normalized_uicontrolunits('Name','Std Z-Value');
-% mData=nan(size(nanmean(params.mZ)));
-% mData=nanstd(params.mZ);
+% mData=nan(size(mean(params.mZ,'omitnan')));
+% mData=std(params.mZ, 'omitnan');
 % pcolor(params.vX,params.vY,...
 %     reshape(mData,...
 %     size(params.vY,1),size(params.vX,1)));
@@ -70,8 +70,8 @@ ylim([33 35.2]);
 %% plot results mean B-values
 cmin=-4;cmax=4;
 % figure_w_normalized_uicontrolunits('Name','Median Beta-Value');
-% mData=nan(size(nanmedian(-params.mB)));
-% mData=nanmedian(params.mB);
+% mData=nan(size(median(-params.mB, 'omitnan')));
+% mData=median(params.mB, 'omitnan');
 % pcolor(params.vX,params.vY,...
 %     reshape(mData,...
 %     size(params.vY,1),size(params.vX,1)));
@@ -84,8 +84,8 @@ cmin=-4;cmax=4;
 % hold on;plot(params.mCatalog(:,1),params.mCatalog(:,2),'k.','MarkerSize',0.5);
 %
 % figure_w_normalized_uicontrolunits('Name','Std Beta-Value');
-% mData=nan(size(nanstd(params.mB)));
-% mData=nanstd(params.mB);
+% mData=nan(size(std(params.mB, 'omitnan')));
+% mData=std(params.mB, 'omitnan');
 % pcolor(params.vX,params.vY,...
 %     reshape(mData,...
 %     size(params.vY,1),size(params.vX,1)));

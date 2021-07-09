@@ -34,6 +34,6 @@ function [fAverageBValue, fAverageStdDev] = calc_RandomBValue(mCatalog, nSampleS
     end
     
     % Return average values
-    fAverageBValue = nanmean(vBValue);
-    fAverageStdDev = nanmean(vStdDev);
+    fAverageBValue = mean(vBValue, 'omitnan');
+    fAverageStdDev = mean(vStdDev, 'omitnan');
 end

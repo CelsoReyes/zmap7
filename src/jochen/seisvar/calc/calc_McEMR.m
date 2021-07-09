@@ -178,8 +178,8 @@ function [fMc, fBvalue, fAvalue, mu, fSigma] = calc_McEMR(catalog, binInterval)
     mResult = [mResult; vProbability vMc vX_res vNmaxBest vABValue];
     
     % Find best estimate, excluding the case of mResult all NAN
-    if  ~isempty(nanmin(mResult)) && ~isnan(nanmin(mResult(:,1)))
-        vSel = find(nanmin(mResult(:,1)) == mResult(:,1));
+    if  ~isempty(min(mResult)) && ~isnan(min(mResult(:,1)))
+        vSel = find(min(mResult(:,1)) == mResult(:,1));
         fMc = min(mResult(vSel,2));
         %fMls = min(mResult(vSel,1));
         mu = min(mResult(vSel,3));

@@ -70,5 +70,5 @@ function [fAverageStdDev] = kj_CalcOverallStdDev(params)
     end % of for nNode
     
     % Return average value
-    fAverageStdDev = nanmean(vStdDev);
+    fAverageStdDev = mean(vStdDev, 'omitnan');
 end

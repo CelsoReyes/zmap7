@@ -179,9 +179,9 @@ function view_av2(lab1,valueMap)
         uimenu(options,'Label','Select EQ in Circle - Overlay existing plot',...
             MenuSelectedField(),@callbackfun_004)
         uimenu(options,'Label','Select Eqs in Polygon - new',...
-            MenuSelectedField(),{@(~,~)cb_selectPoly(false));
+            MenuSelectedField(),{@(~,~)cb_selectPoly(false)});
         uimenu(options,'Label','Select Eqs in Polygon - hold',...
-            MenuSelectedField(),{@(~,~)cb_selectPoly(true));
+            MenuSelectedField(),{@(~,~)cb_selectPoly(true)});
         
         % Menu 'Maps'
         op1 = uimenu('Label',' Maps ');

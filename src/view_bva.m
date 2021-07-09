@@ -82,7 +82,7 @@ function view_bva(lab1, valueMap,gx,gy)
     pco1 = pcolor(gx,gy,valueMap);
     
     axis([ min(gx) max(gx) min(gy) max(gy)])
-    set(gca,'dataaspect',[1 cosd(nanmean(ZG.primeCatalog.Latitude)) 1]);
+    set(gca,'dataaspect',[1 cosd(mean(ZG.primeCatalog.Latitude, 'omitnan')) 1]);
     set(gca,'NextPlot','add')
     
     shading(ZG.shading_style);

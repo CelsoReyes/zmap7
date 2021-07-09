@@ -122,7 +122,7 @@ function [ params ]= sr_startZ
                     end
                 else
                     params.mNumDeclus=mNumDeclus_;
-                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj);
+                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj));
                     save(nm, 'mNumDeclus', '-mat');
                 end
             case 1
@@ -151,7 +151,7 @@ function [ params ]= sr_startZ
                     end
                 else
                     params.mNumDeclus=mNumDeclus_;
-                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj);
+                    nm = fullfile(name, sprintf('vDeclusMain%04.0f.mat',jj));
                     save(nm, 'mNumDeclus', '-mat');
                 end
                 

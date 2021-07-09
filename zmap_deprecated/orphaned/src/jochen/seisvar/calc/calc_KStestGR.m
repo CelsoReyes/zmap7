@@ -70,7 +70,7 @@ for nE = 1:nEvents
         vD = [vD; fD];
     end
 end
-fDmax = nanmax(vD);
+fDmax = max(vD);
 fAlpha = exp(-2*nEvents*(fDmax+1/(6*nEvents))^2);
 % vAlpha = exp(-2*nEvents.*(vD+1/(6*nEvents)).^2)
 % disp('v')

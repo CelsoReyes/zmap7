@@ -89,6 +89,6 @@ function stresswtime(mycat)
         'bold','FontSize',ZmapGlobal.Data.fontsz.m,'Linewidth',1.5)
     xlabel('Time [dec. year]');
     ylabel('\beta [deg]')
-    fBetamean = nanmean(mResStress(:,9))
-    fBetastd = nanmean(mResStress(:,10))
+    fBetamean = mean(mResStress(:,9), 'omitnan')
+    fBetastd = mean(mResStress(:,10), 'omitnan')
 end

@@ -182,7 +182,7 @@ if params.bRandom
       end
       params.mValueGrid = [params.mValueGrid; vProbDiff(nNode) vProbK(nNode) vProbO(nNode)];
     end  % for nNode
-    params.vRandomMeans = [params.vRandomMeans; nanmean(params.mValueGrid(:, 1))];
+    params.vRandomMeans = [params.vRandomMeans; mean(params.mValueGrid(:, 1), 'omitnan')];
     disp(['Run #' num2str(nCnt) ' of ' num2str(params.nCalculation) ' calculated']);
   end % of for nCalculation
   if params.bSignificance

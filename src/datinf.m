@@ -124,7 +124,7 @@ function datinf()
         [file1,path1] = uiputfile(fullfile(ZmapGlobal.Data.Directories.data, '*.mat'), 'Earthquake Datafile');
         if length(file1) > 1
             try
-                save([path1, file1, 'a','faults','main','mainfault','coastline','infstri')
+                save([path1, file1], 'a','faults','main','mainfault','coastline','infstri')
             catch ME
                 errordlg(ME.message,'Error saving data');
             end

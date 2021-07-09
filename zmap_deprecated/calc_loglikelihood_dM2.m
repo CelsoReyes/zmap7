@@ -72,7 +72,7 @@ try
     %%% Find the minimum loglikelihood score: if the minimum score is obtained several times, calculate MEAN
     %%% of the magnitude shift
     vdMloglikeli = [vfProbability vMshift];
-    vSel = (vdMloglikeli == nanmin(vdMloglikeli(:,1)));
+    vSel = (vdMloglikeli == nan(vdMloglikeli(:,1)));
     vdMloglikeli = vdMloglikeli(vSel,:);
     if length(vdMloglikeli(:,1)) > 1
         fProbability = min(vdMloglikeli(:,1));

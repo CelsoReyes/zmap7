@@ -126,7 +126,11 @@ function varargout = gemapwi_Callback(~, ~, handles, varargin)
             latlim = [la1 la2];
             lonlim = [lo1 lo2];
             pack
-            [map,maplegend] = nanm(latlim,lonlim,30);
+            % [map,maplegend] = nanm (latlim,lonlim,30);
+            R = georefcells(latlim, lonlim, 1/30, 1/30);
+            Z = NaN(R.RasterSize);
+            map = Z;
+            maplegend = R; % TODO : probably not correct. this was changed for compatibility reasons from a `nanm` call
             % original was about 1 cell per degree
             tmap = imbedm(lat,lon,gtmap,map,maplegend);
             tmapleg=maplegend;
@@ -138,10 +142,10 @@ function varargout = gemapwi_Callback(~, ~, handles, varargin)
             tmap(isnan(tmap)) = -1; %Replace the NaNs in the ocean with -1 to color them blue
     end
     
-    lai=abs((la2-la1)/4);
-    tilat=transpose([la1+0.5*lai la1+1.5*lai la1+2.5*lai la1+3.5*lai]);
-    loi=abs((lo2-lo1)/4);
-    tilon=transpose([lo1+0.5*loi lo1+1.5*loi lo1+2.5*loi lo1+3.5*loi]);
+    lai = abs((la2-la1)/4);
+    tilat = la1 + lai * [0.5; 1.5; 2.5; 3.5];
+    loi = abs((lo2-lo1)/4);
+    tilon = lo1 + loi * [0.5; 1.5; 2.5; 3.5];
     
     meshm(tmap,tmapleg,size(tmap),tmap);demcmap(tmap);
     setm(handles.axm,'maplatlimit',latlim,'maplonlimit',lonlim);

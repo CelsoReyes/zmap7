@@ -194,9 +194,9 @@ end % END of FOR fMc
 mResult = [mResult; vProbability vMc vX_res vNmaxBest vABValue];
 
 % Find best estimate, excluding the case of mResult all NAN
-if  ~isempty(nanmin(mResult))
-    if ~isnan(nanmin(mResult(:,1)))
-        vSel = find(nanmin(mResult(:,1)) == mResult(:,1));
+if  ~isempty(min(mResult))
+    if ~isnan(min(mResult(:,1)))
+        vSel = find(min(mResult(:,1)) == mResult(:,1));
         fMc = min(mResult(vSel,2));
         fMls = min(mResult(vSel,1));
         fMu = min(mResult(vSel,3));

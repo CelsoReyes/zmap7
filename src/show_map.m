@@ -99,7 +99,7 @@ function show_map(calc_type, in2, compare_window_dur)
                 [as, var1, var2] = calc_lta(ncu, ti, winlen_days, len, cumuall);
             case 'maz'
                 [maxlta, maxlta2, mean1, mean2] = calc_maz(ncu, cumuall, len);
-            otherwise:
+            otherwise
                 error('ZMAP:show_map:unknownOperation','not sure which operation to do')
         end
         

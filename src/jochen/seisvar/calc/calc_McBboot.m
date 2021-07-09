@@ -69,8 +69,8 @@ function [fMc, fStd_Mc, fBvalue, fStd_B, fAvalue, fStd_A, vMc, mBvalue] = calc_M
         % Calculate mean b-value and standard deviation
         fStd_B = std(mBvalue(:,2),1,'omitnan');
         fStd_A = std(mBvalue(:,4),1,'omitnan');
-        fBvalue = nanmean(mBvalue(:,2));
-        fAvalue = nanmean(mBvalue(:,4));
+        fBvalue = mean(mBvalue(:,2), 'omitnan');
+        fAvalue = mean(mBvalue(:,4), 'omitnan');
     end
     
     return

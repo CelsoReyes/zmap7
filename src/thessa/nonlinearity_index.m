@@ -419,7 +419,7 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
                 [~,i2]=min([markeracc.NLIndexw]);
                 markeracc=markeracc(i2:end);
                 bestmc=markeracc(1).mcut;
-                bestb=nanmedian([markeracc.b1]);
+                bestb=median([markeracc.b1], 'omitnan');
                 i1=find(round(10*Mrange)==round(10*bestmc));
                 besta=log10(Ncum(i1))+bestb*bestmc;
                 NMc=Ncum(i1);
@@ -466,7 +466,7 @@ function [bestmc,bestb,result_flag]=nonlinearity_index(zCat,Mcmin,mode)
                 %----------------------------------------------------------
                 
                 bestmc=Mrange(1);
-                bestb=nanmedian([marker.b1]);
+                bestb=median([marker.b1], 'omitnan');
                 besta=log10(Ncum(1))+bestb*bestmc;
                 NMc=Ncum(1);
                 NMtarg=10^(besta-bestb*Mtarg);

@@ -68,7 +68,7 @@ function doinvers()
         system([ hodi '/stinvers/datasetupDD < ' ZmapGlobal.Data.Directories.output 'inmifi.dat '])
         system(['grep  "1.0" ' outfi  '>'  outfi2])
         
-        load([ZmapGlobal.Data.Directories.output,'tmpout2.dat'];
+        load([ZmapGlobal.Data.Directories.output,'tmpout2.dat']);
     end
     
 end

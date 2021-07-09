@@ -193,7 +193,6 @@ function view_qva(lab1,valueMap)
     figure(qmap);
     axes(h1)
     watchoff(qmap)
-    whitebg(gcf,[ 0 0 0 ])
     
     
     %% ui functions

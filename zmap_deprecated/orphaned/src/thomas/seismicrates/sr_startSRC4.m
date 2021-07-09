@@ -157,7 +157,7 @@ for jj=1:nJ
 
 end
 
-mSamples_=round(nanmean(mSamples)');
+mSamples_=round(mean(mSamples,'omitnan')');
 % preallocate matrices
 mSynZ=nan(size(mSamples_,1),nJ);
 mSynB=mSynZ;
@@ -200,8 +200,8 @@ mSynZs=[mInf(1,:); mSynZs; mInf(end,:)];
 vSelNoZ=(sum(isnan(mSynZs))==nJ);
 mSynZs(:,vSelNoZ)=nan(size(mSynZs,1),sum(vSelNoZ));
 % calculate median
-mZmedian=nanmedian(mZ,1);
-mSynZmedian=nanmedian(mSynZ,1);
+mZmedian=median(mZ,1, 'omitnan');
+mSynZmedian=median(mSynZ,1, 'omitnan');
 % Preallocate Vectors and Matrices for Z
 vPcrZ=nan(size(mZ,2),1);
 vPolZ=nan(size(mZ,2),1);
@@ -220,8 +220,8 @@ mSynBs=[mInf(1,:); mSynBs; mInf(end,:)];
 vSelNoB=(sum(isnan(mSynBs))==nJ);
 mSynBs(:,vSelNoB)=nan(size(mSynBs,1),sum(vSelNoB));
 % calculate median
-mBmedian=nanmedian(mB,1);
-mSynBmedian=nanmedian(mSynB,1);
+mBmedian=median(mB,1, 'omitnan');
+mSynBmedian=median(mSynB,1, 'omitnan');
 % Preallocate Vectors and Matrices for Z
 vPcrB=nan(size(mB,2),1);
 vPolB=nan(size(mB,2),1);
@@ -266,7 +266,7 @@ for i=1:size(mZ,2);
             vX=(-25:0.01:25)';
             vY1i=interp1q(vX1,vY1,vX);vY2i=interp1q(vX2,vY2,vX);
             [tmp,nI]=min((vY1i-vY2i).^2);
-            vPolZ(i)=nanmean([vY1i(nI) vY2i(nI)]);
+            vPolZ(i)=mean([vY1i(nI) vY2i(nI)],'omitnan');
             vXolZ(i)=vX(nI);
         catch
             vPolZ(i)=nan;vXolZ(i)=nan;
@@ -279,17 +279,17 @@ for i=1:size(mZ,2);
             vX=(-25:0.01:25)';
             vY1i=interp1q(vX1,vY1,vX);vY2i=interp1q(vX2,vY2,vX);
             [tmp,nI]=min((vY1i-vY2i).^2);
-            vPolB(i)=nanmean([vY1i(nI) vY2i(nI)]);
+            vPolB(i)=mean([vY1i(nI) vY2i(nI)],'omitnan');
             vXolB(i)=vX(nI);
         catch
             vPolB(i)=nan;vXolB(i)=nan;
         end
 
         % calculate mean and std of Z and B
-        vMeanZ(i)=nanmean(mZ(:,i),1);
-        vMeanB(i)=nanmean(mB(:,i),1);
-        vStdZ(i)=nanstd(mZ(:,i),1);
-        vStdB(i)=nanstd(mB(:,i),1);
+        vMeanZ(i)=mean(mZ(:,i),1,'omitnan');
+        vMeanB(i)=mean(mB(:,i),1,'omitnan');
+        vStdZ(i)=std(mZ(:,i),1, 'omitnan');
+        vStdB(i)=std(mB(:,i),1, 'omitnan');
     end
 end
 

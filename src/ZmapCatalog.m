@@ -1098,15 +1098,15 @@ classdef (ConstructOnLoad) ZmapCatalog < matlab.mixin.Copyable
         end
         
 
-        function EventIDs = generate_event_ids(values_to_sort_by, prefix)
-            if ~exist('prefix','var')
-                prefix = 'zmapunk.';
-            end
-            [~, orig_idx] = sort(values_to_sort_by);
-            fmtstr="n%0" + ceil(log10(numel(orig_idx))+1) + "d";
-            EventIDs = strcat(string(prefix), arrayfun(@(n)sprintf(fmtstr,n),orig_idx));
-        end
-
-
     end
+end
+
+
+function EventIDs = generate_event_ids(values_to_sort_by, prefix)
+    if ~exist('prefix','var')
+        prefix = 'zmapunk.';
+    end
+    [~, orig_idx] = sort(values_to_sort_by);
+    fmtstr="n%0" + ceil(log10(numel(orig_idx))+1) + "d";
+    EventIDs = strcat(string(prefix), arrayfun(@(n)sprintf(fmtstr,n),orig_idx));
 end

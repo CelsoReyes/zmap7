@@ -44,7 +44,11 @@ function clas
     orient tall
     rect = [0.2,  0.20, 0.65, 0.75];
     axes('position',rect)
-    pyy = plotyy(xt,cumu2,'ob',xt,as,'r',[0 0 0 NaN NaN NaN NaN min(as)*3-1  max(as*3)+1  ]);
+    yyaxis left
+    plot(xt, cumu2, 'ob');
+    yyaxis right
+    plot(xt,as,'r',[0 0 0 NaN NaN NaN NaN min(as)*3-1  max(as*3)+1  ])
+    pyy = plotyy(xt,as,'r',[0 0 0 NaN NaN NaN NaN min(as)*3-1  max(as*3)+1  ]);
     
     xlabel('Time in years ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
     ylabel('Cumulative Number ','FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m)
