@@ -749,8 +749,6 @@ classdef Hdisplay < ResultsDisplay.ZmapResultsPlugin
                 MenuSelectedField(), @(~,~)ZmapGridFunction.cb_alpha( - 0.2));
            
             % in the main plots, the object is stored in the UserData of each result's tab
-            actt = get(findobj(gcf,'Tag','main plots'),'SelectedTab');
-            theObj = actt.UserData;
             % psave = @()theObj.Parent.save
             uimenu(lookmenu,'Separator','on',...
                 'Label','Save results',...
