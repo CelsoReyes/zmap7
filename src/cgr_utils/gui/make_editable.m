@@ -322,11 +322,11 @@ function returnstate = make_editable(p, finalUpdateFn, intermedUpdateFn, BEHAVIO
     function c=pointcontext(p)
         c=uicontextmenu('Tag','PointEditableContext');
         if BEHAVIOR ~= "nopoint"
-            uimenu(c,'Label','delete point',MenuSelectedField(),@(~,~)delpoint(p));
-            uimenu(c,'Label','add point',MenuSelectedField(),@(~,~)addpoint(p));
-            uimenu(c,'Label','Finished', 'Separator','on',MenuSelectedField(),@(~,~)returnstate());
+            uimenu(c,'Label','delete point','MenuSelectedFcn',@(~,~)delpoint(p));
+            uimenu(c,'Label','add point','MenuSelectedFcn',@(~,~)addpoint(p));
+            uimenu(c,'Label','Finished', 'Separator','on','MenuSelectedFcn',@(~,~)returnstate());
         else
-            uimenu(c,'Label','Finished',MenuSelectedField(),@(~,~)returnstate());
+            uimenu(c,'Label','Finished','MenuSelectedFcn',@(~,~)returnstate());
         end
     end
     

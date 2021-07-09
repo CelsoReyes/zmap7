@@ -2,7 +2,7 @@ function add_sampling_menu(obj)
     % add grid menu for modifying grid in a ZmapMainWindow
     % obj is a ZmapMainWindow object.
     parent = uimenu(obj.fig,'Label','Sampling');
-    MenuSelectedFcn=MenuSelectedField();
+    MenuSelectedFcn='MenuSelectedFcn';
     
     %% Grid menu items
     
@@ -29,8 +29,8 @@ function add_sampling_menu(obj)
     uimenu(shapeiomenu,'Label','get default', MenuSelectedFcn, @(~,~)cb_get_default_shape);
     uimenu(shapeiomenu,'Label','set as default', MenuSelectedFcn, @(~,~)ShapeGeneral.ShapeStash(obj.shape));
     uimenu(shapeiomenu,'Separator','on',...
-        'Label','Load a polygon',MenuSelectedField(),@cb_load_shape)
-    uimenu(shapeiomenu,'Label','Save a polygon',MenuSelectedField(),@cb_save_shape)
+        'Label','Load a polygon','MenuSelectedFcn',@cb_load_shape)
+    uimenu(shapeiomenu,'Label','Save a polygon','MenuSelectedFcn',@cb_save_shape)
     % uimenu(shapeiomenu,'Label','save', MenuSelectedFcn, @(~,~)obj.shape.save(ZmapGlobal.Data.Directories.data));
     
     function cb_makecircle(src,ev)

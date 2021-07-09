@@ -149,6 +149,7 @@ function plotmainmap(obj)
                     
             otherwise
                 h.Direction = 'normal';
+                h.TickLabels = h.Ticks;
         end 
             
     end

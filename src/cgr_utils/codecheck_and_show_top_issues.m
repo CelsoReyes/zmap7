@@ -1,7 +1,8 @@
 % check the code using codecheck() and report top issues
-fn=dir('*.m');
-fn={fn.name};
-A=checkcode(fn);
+fn=[dir('*/*.m'); dir('*.m')];
+ff=fullfile({fn.folder}, {fn.name});
+%fn={fn.name};
+A=checkcode(ff);
 z=struct('message',''); 
 for n=1:numel(A)
     for m=1:numel(A{n})
@@ -22,7 +23,7 @@ for c=1:numel(zc)
 end
 [B, I] = sort(cnt,'descend');
 sortedcnt = cnt(I); sortedissues=issue(I);
-for i=1:40
+for i=1:50
     fprintf('%d : %s\n', sortedcnt(i), sortedissues{i});
 end
 if ~exist('last_issue_count','var')

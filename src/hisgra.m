@@ -37,9 +37,9 @@ function h=hisgra(mycat, opt, ax)
             
             add_menu_divider();
             op1 = uimenu('Label','Display');
-            uimenu(op1,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
-            uimenu(op1,'Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
-            uimenu(op1,'Label','Default',MenuSelectedField(),@cb_reset);
+            uimenu(op1,'Label','Change Number of Bins...','MenuSelectedFcn',@cb_change_nBins);
+            uimenu(op1,'Label','Change Bin Edges...','MenuSelectedFcn',@cb_change_bVector);
+            uimenu(op1,'Label','Default','MenuSelectedFcn',@cb_reset);
             addAboutMenuItem(hfig);
         end
         
@@ -77,17 +77,17 @@ function h=hisgra(mycat, opt, ax)
         c=findobj(ancestor(ax,'figure'),'uicontextmenu','-and','Tag',['histogram ' opt]);
         if isempty(c)
             c=uicontextmenu('Tag',['histogram ' opt]);
-            uimenu(c,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
-            uimenu(c,'Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
-            uimenu(c,'Label','Default',MenuSelectedField(),@cb_reset);
-            uimenu(c,'Label','Open as new figure',MenuSelectedField(),@open_as_new_fig); %FIXME
+            uimenu(c,'Label','Change Number of Bins...','MenuSelectedFcn',@cb_change_nBins);
+            uimenu(c,'Label','Change Bin Edges...','MenuSelectedFcn',@cb_change_bVector);
+            uimenu(c,'Label','Default','MenuSelectedFcn',@cb_reset);
+            uimenu(c,'Label','Open as new figure','MenuSelectedFcn',@open_as_new_fig); %FIXME
             addcontext(opt,c);
             ax.UIContextMenu=c;
         else
             ax.UIContextMenu=c;
         end
         
-        uimenu(c,'Label','Use Log Scale',MenuSelectedField(),@(s,~)logtoggle(s,'Y'));
+        uimenu(c,'Label','Use Log Scale','MenuSelectedFcn',@(s,~)logtoggle(s,'Y'));
         yl.UIContextMenu=c;
         
     end
@@ -171,10 +171,10 @@ function h=hisgra(mycat, opt, ax)
         h=findobj(ax,'Type','histogram');
         switch opt
             case 'Date'
-                uimenu(c,'separator','on','Label','Events per Day',MenuSelectedField(),@(~,~)cb_set_to_period(h,'day'));
-                uimenu(c,'Label','Events per Week',MenuSelectedField(),@(~,~)cb_set_to_period(h,'week'));
-                uimenu(c,'Label','Events per Month',MenuSelectedField(),@(~,~)cb_set_to_period(h,'month'));
-                uimenu(c,'Label','Events per Year',MenuSelectedField(),@(~,~)cb_set_to_period(h,'year'));
+                uimenu(c,'separator','on','Label','Events per Day','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'day'));
+                uimenu(c,'Label','Events per Week','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'week'));
+                uimenu(c,'Label','Events per Month','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'month'));
+                uimenu(c,'Label','Events per Year','MenuSelectedFcn',@(~,~)cb_set_to_period(h,'year'));
             otherwise
                 do_nothing();
         end
@@ -224,9 +224,9 @@ function h=hisgra(mycat, opt, ax)
         
         add_menu_divider();
         op1 = uimenu('Label','Display');
-        uimenu(op1,'Label','Change Number of Bins...',MenuSelectedField(),@cb_change_nBins);
-        uimenu(op1,'Label','Change Bin Edges...',MenuSelectedField(),@cb_change_bVector);
-        uimenu(op1,'Label','Default',MenuSelectedField(),@cb_reset);
+        uimenu(op1,'Label','Change Number of Bins...','MenuSelectedFcn',@cb_change_nBins);
+        uimenu(op1,'Label','Change Bin Edges...','MenuSelectedFcn',@cb_change_bVector);
+        uimenu(op1,'Label','Default','MenuSelectedFcn',@cb_reset);
         copyobj(ax,histo)
         
         th= title(titlestr,'FontWeight','bold','FontSize',ZmapGlobal.Data.fontsz.m,'Color','k');

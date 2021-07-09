@@ -99,55 +99,55 @@ function nlammap2()
         add_menu_divider();
         options = uimenu('Label','Select');
         uimenu(options,'Label','Select EQ inside Polygon ',...
-            MenuSelectedField(),@cb_select_eq_inside_poly);
+            'MenuSelectedFcn',@cb_select_eq_inside_poly);
         uimenu(options,'Label','Refresh ',...
-            MenuSelectedField(),@cb_refresh2);
+            'MenuSelectedFcn',@cb_refresh2);
         
         options = uimenu('Label','Ztools');
         
         
         uimenu(options,'Label', 'differential b ',...
-            MenuSelectedField(),@cb_diff_b);
+            'MenuSelectedFcn',@cb_diff_b);
         
         uimenu(options,'Label','Fractal Dimension',...
-            MenuSelectedField(),@cb_fractaldim);
+            'MenuSelectedFcn',@cb_fractaldim);
         
         uimenu(options,'Label','Mean Depth',...
-            MenuSelectedField(),@cb_meandepth);
+            'MenuSelectedFcn',@cb_meandepth);
         
         uimenu(options,'Label','z-value grid',...
-            MenuSelectedField(),@cb_zvaluegrid);
+            'MenuSelectedFcn',@cb_zvaluegrid);
         
         uimenu(options,'Label','b and Mc grid ',...
-            MenuSelectedField(),@cb_b_mc_grid);
+            'MenuSelectedFcn',@cb_b_mc_grid);
         
         uimenu(options,'Label','Prob. forecast test',...
-            MenuSelectedField(),@cb_probforecast_test);
+            'MenuSelectedFcn',@cb_probforecast_test);
         
         uimenu(options,'Label','beCubed',...
-            MenuSelectedField(),@cb_becubed);
+            'MenuSelectedFcn',@cb_becubed);
         
         uimenu(options,'Label','b diff (bootstrap)',...
-            MenuSelectedField(),@cb_b_diff_boot);
+            'MenuSelectedFcn',@cb_b_diff_boot);
         
         uimenu(options,'Label','Stress Variance',...
-            MenuSelectedField(),@cb_stressvariance);
+            'MenuSelectedFcn',@cb_stressvariance);
         
         
         uimenu(options,'Label','Time Plot ',...
-            MenuSelectedField(),@cb_timeplot);
+            'MenuSelectedFcn',@cb_timeplot);
         
         uimenu(options,'Label',' X + topo ',...
-            MenuSelectedField(),@cb_xplustopo);
+            'MenuSelectedFcn',@cb_xplustopo);
         
         uimenu(options,'Label','Vert. Exaggeration',...
-            MenuSelectedField(),@cb_vertexaggeration);
+            'MenuSelectedFcn',@cb_vertexaggeration);
         
         uimenu(options,'Label','Rate change grid',...
-            MenuSelectedField(),@cb_ratechangegrid);
+            'MenuSelectedFcn',@cb_ratechangegrid);
         
         uimenu(options,'Label','Omori parameter grid',...
-            MenuSelectedField(),@cb_omoriparamgrid); % formerly pcross
+            'MenuSelectedFcn',@cb_omoriparamgrid); % formerly pcross
         
     end
     
